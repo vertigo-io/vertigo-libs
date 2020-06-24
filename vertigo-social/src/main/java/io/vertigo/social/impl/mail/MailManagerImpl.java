@@ -42,8 +42,8 @@ public final class MailManagerImpl implements MailManager {
 	@Inject
 	public MailManagerImpl(final LocaleManager localeManager, final SendMailPlugin sendMailPlugin) {
 		Assertion.check()
-				.notNull(localeManager)
-				.notNull(sendMailPlugin);
+				.isNotNull(localeManager)
+				.isNotNull(sendMailPlugin);
 		//-----
 		localeManager.add("io.vertigo.social.impl.mail.Mail", io.vertigo.social.impl.mail.Resources.values());
 		this.sendMailPlugin = sendMailPlugin;
@@ -52,7 +52,7 @@ public final class MailManagerImpl implements MailManager {
 	/** {@inheritDoc} */
 	@Override
 	public void sendMail(final Mail mail) {
-		Assertion.check().notNull(mail);
+		Assertion.check().isNotNull(mail);
 		//-----
 		sendMailPlugin.sendMail(mail);
 	}

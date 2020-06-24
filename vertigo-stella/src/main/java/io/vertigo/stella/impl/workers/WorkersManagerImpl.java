@@ -51,7 +51,7 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 			final WorkersPlugin workerPlugin) {
 		Assertion.check()
 				.isNotBlank(nodeId)
-				.notNull(workerPlugin)
+				.isNotNull(workerPlugin)
 				.isNotBlank(workTypes);
 		//-----
 		workersCoordinator = new WorkersCoordinator(workersCount);

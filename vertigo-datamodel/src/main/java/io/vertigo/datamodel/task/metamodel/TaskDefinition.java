@@ -76,11 +76,11 @@ public final class TaskDefinition implements Definition {
 		DefinitionUtil.checkName(name, TaskDefinition.class);
 		Assertion.check()
 				.isNotBlank(dataSpace)
-				.state(DtDefinition.REGEX_DATA_SPACE.matcher(dataSpace).matches(), "collection {0} must match pattern {1}", dataSpace, DtDefinition.REGEX_DATA_SPACE)
-				.notNull(taskEngineClass, "a taskEngineClass is required")
-				.notNull(request, "a request is required")
-				.notNull(inTaskAttributes)
-				.notNull(outTaskAttributeOption);
+				.isTrue(DtDefinition.REGEX_DATA_SPACE.matcher(dataSpace).matches(), "collection {0} must match pattern {1}", dataSpace, DtDefinition.REGEX_DATA_SPACE)
+				.isNotNull(taskEngineClass, "a taskEngineClass is required")
+				.isNotNull(request, "a request is required")
+				.isNotNull(inTaskAttributes)
+				.isNotNull(outTaskAttributeOption);
 		//-----
 		this.name = name;
 		this.packageName = packageName;
@@ -108,7 +108,7 @@ public final class TaskDefinition implements Definition {
 		final Map<String, TaskAttribute> map = new LinkedHashMap<>();
 		for (final TaskAttribute taskAttribute : taskAttributes) {
 			Assertion.check()
-					.notNull(taskAttribute)
+					.isNotNull(taskAttribute)
 					.argument(!map.containsKey(taskAttribute.getName()), "attribut {0} existe déjà", taskAttribute.getName());
 			//-----
 			map.put(taskAttribute.getName(), taskAttribute);
@@ -123,10 +123,10 @@ public final class TaskDefinition implements Definition {
 	 * @return Définition de l'attribut.
 	 */
 	public TaskAttribute getInAttribute(final String attributeName) {
-		Assertion.check().notNull(attributeName);
+		Assertion.check().isNotNull(attributeName);
 		//-----
 		final TaskAttribute taskAttribute = inTaskAttributes.get(attributeName);
-		Assertion.check().notNull(taskAttribute, "nom d''attribut :{0} non trouvé pour le service :{1}", attributeName, this);
+		Assertion.check().isNotNull(taskAttribute, "nom d''attribut :{0} non trouvé pour le service :{1}", attributeName, this);
 		return taskAttribute;
 	}
 

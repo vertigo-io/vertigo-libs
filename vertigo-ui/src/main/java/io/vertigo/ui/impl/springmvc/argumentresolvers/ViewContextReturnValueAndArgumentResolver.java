@@ -50,8 +50,8 @@ public class ViewContextReturnValueAndArgumentResolver extends AbstractMessageCo
 	@Override
 	public void handleReturnValue(final Object returnValue, final MethodParameter returnType, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest) throws Exception {
 		Assertion.check()
-				.notNull(mavContainer)
-				.notNull(returnValue);
+				.isNotNull(mavContainer)
+				.isNotNull(returnValue);
 		//---
 		mavContainer.setRequestHandled(true);
 		final ServletServerHttpRequest inputMessage = createInputMessage(webRequest);

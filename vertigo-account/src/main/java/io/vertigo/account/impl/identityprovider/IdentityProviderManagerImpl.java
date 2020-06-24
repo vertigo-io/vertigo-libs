@@ -42,7 +42,7 @@ public final class IdentityProviderManagerImpl implements IdentityProviderManage
 	@Inject
 	public IdentityProviderManagerImpl(
 			final IdentityProviderPlugin identityProviderPlugin) {
-		Assertion.check().notNull(identityProviderPlugin);
+		Assertion.check().isNotNull(identityProviderPlugin);
 		//-----
 		this.identityProviderPlugin = identityProviderPlugin;
 	}

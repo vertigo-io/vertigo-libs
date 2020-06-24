@@ -42,7 +42,7 @@ final class WFuture<R> implements Future<R>, WorkResultHandler<R> {
 	private final WorkResultHandler<R> redirect;
 
 	WFuture(final WorkResultHandler<R> redirect) {
-		Assertion.check().notNull(redirect);
+		Assertion.check().isNotNull(redirect);
 		//---
 		this.redirect = redirect;
 	}

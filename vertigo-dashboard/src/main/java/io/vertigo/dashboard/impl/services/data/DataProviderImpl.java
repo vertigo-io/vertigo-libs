@@ -50,8 +50,8 @@ public final class DataProviderImpl implements DataProvider {
 			@ParamValue("appName") final Optional<String> appNameOpt,
 			final TimeSeriesDataBaseManager timeSeriesDataBaseManager) {
 		Assertion.check()
-				.notNull(appNameOpt)
-				.notNull(timeSeriesDataBaseManager);
+				.isNotNull(appNameOpt)
+				.isNotNull(timeSeriesDataBaseManager);
 		//---
 		appName = appNameOpt.orElseGet(() -> Home.getApp().getNodeConfig().getAppName());
 		this.timeSeriesDataBaseManager = timeSeriesDataBaseManager;
@@ -60,9 +60,9 @@ public final class DataProviderImpl implements DataProvider {
 	@Override
 	public TimedDatas getTimeSeries(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
 		Assertion.check()
-				.notNull(measures)
-				.notNull(dataFilter)
-				.notNull(timeFilter.getDim());// we check dim is not null because we need it
+				.isNotNull(measures)
+				.isNotNull(dataFilter)
+				.isNotNull(timeFilter.getDim());// we check dim is not null because we need it
 		//---
 		return timeSeriesDataBaseManager.getTimeSeries(appName, measures, dataFilter, timeFilter);
 
@@ -71,14 +71,14 @@ public final class DataProviderImpl implements DataProvider {
 	@Override
 	public TimedDatas getClusteredTimeSeries(final ClusteredMeasure clusteredMeasure, final DataFilter dataFilter, final TimeFilter timeFilter) {
 		Assertion.check()
-				.notNull(dataFilter)
-				.notNull(timeFilter)
-				.notNull(timeFilter.getDim()) // we check dim is not null because we need it
-				.notNull(clusteredMeasure)
+				.isNotNull(dataFilter)
+				.isNotNull(timeFilter)
+				.isNotNull(timeFilter.getDim()) // we check dim is not null because we need it
+				.isNotNull(clusteredMeasure)
 				//---
 				.isNotBlank(clusteredMeasure.getMeasure())
-				.notNull(clusteredMeasure.getThresholds())
-				.state(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
+				.isNotNull(clusteredMeasure.getThresholds())
+				.isTrue(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
 		//we use the natural order
 		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
 		//---

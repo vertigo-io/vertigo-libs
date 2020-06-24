@@ -39,7 +39,7 @@ public final class ActivityDefinition {
 		Assertion.check()
 				.isNotBlank(name)
 				.isNotBlank(label)
-				.notNull(engineClass);
+				.isNotNull(engineClass);
 		//-----
 		this.name = name;
 		this.label = label;

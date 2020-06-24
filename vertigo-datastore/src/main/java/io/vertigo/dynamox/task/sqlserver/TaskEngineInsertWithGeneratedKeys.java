@@ -71,8 +71,8 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 			final SqlStatement sqlStatement,
 			final SqlConnection connection) throws SQLException {
 		Assertion.check()
-				.notNull(sqlStatement)
-				.notNull(connection);
+				.isNotNull(sqlStatement)
+				.isNotNull(connection);
 		//--
 		final GenerationMode generationMode = connection.getDataBase().getSqlDialect().getGenerationMode();
 

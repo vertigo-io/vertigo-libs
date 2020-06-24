@@ -57,7 +57,7 @@ public final class DataSourceConnectionProviderPlugin extends AbstractSqlConnect
 			@ParamValue("classname") final String dataBaseName,
 			@ParamValue("source") final String dataSource) {
 		super(name.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), createDataBase(dataBaseName));
-		Assertion.check().notNull(dataSource);
+		Assertion.check().isNotNull(dataSource);
 		//-----
 		// Initialisation de la source de données
 		try {

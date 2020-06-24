@@ -150,9 +150,9 @@ final class SqlStatementDriver {
 			final ResultSet resultSet,
 			final Integer limit) throws SQLException {
 		Assertion.check()
-				.notNull(dataType)
-				.notNull(sqlMapping)
-				.notNull(resultSet);
+				.isNotNull(dataType)
+				.isNotNull(sqlMapping)
+				.isNotNull(resultSet);
 		//-----
 		return retrieveData(dataType, basicTypeAdapters, sqlMapping, resultSet, limit);
 	}
@@ -276,7 +276,7 @@ final class SqlStatementDriver {
 			final SqlConnection connection) throws SQLException {
 		Assertion.check()
 				.isNotBlank(columnName)
-				.notNull(dataType);
+				.isNotNull(dataType);
 		//-----
 		// L'utilisation des generatedKeys permet d'avoir un seul appel réseau entre le
 		// serveur d'application et la base de données pour un insert et la récupération de la

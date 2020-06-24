@@ -57,7 +57,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	SmartTypeDefinitionBuilder(final String name, final BasicType dataType) {
 		Assertion.check()
 				.isNotBlank(name)
-				.notNull(dataType);
+				.isNotNull(dataType);
 		//---
 		myName = name;
 		myScope = SmartTypeDefinition.Scope.PRIMITIVE;
@@ -73,7 +73,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	SmartTypeDefinitionBuilder(final String name, final Class valueObjectClass) {
 		Assertion.check()
 				.isNotBlank(name)
-				.notNull(valueObjectClass);
+				.isNotNull(valueObjectClass);
 		//---
 		myName = name;
 		myScope = SmartTypeDefinition.Scope.VALUE_OBJECT;
@@ -85,7 +85,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	 * @return this builder
 	 */
 	public SmartTypeDefinitionBuilder withScope(final Scope scope) {
-		Assertion.check().notNull(scope);
+		Assertion.check().isNotNull(scope);
 		//---
 		myScope = scope;
 		return this;
@@ -96,7 +96,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	 * @return this builder
 	 */
 	public SmartTypeDefinitionBuilder withFormatter(final FormatterConfig formatterConfig) {
-		Assertion.check().notNull(formatterConfig);
+		Assertion.check().isNotNull(formatterConfig);
 		//---
 		myformatterConfig = formatterConfig;
 		return this;
@@ -107,7 +107,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	 * @return this builder
 	 */
 	public SmartTypeDefinitionBuilder withConstraints(final List<ConstraintConfig> constraintConfigs) {
-		Assertion.check().notNull(constraintConfigs);
+		Assertion.check().isNotNull(constraintConfigs);
 		//---
 		myConstraintConfigs = constraintConfigs;
 		return this;
@@ -118,7 +118,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	* @return this builder
 	*/
 	public SmartTypeDefinitionBuilder withProperties(final Properties properties) {
-		Assertion.check().notNull(properties);
+		Assertion.check().isNotNull(properties);
 		//---
 		myProperties = properties;
 		return this;
@@ -130,8 +130,8 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	*/
 	public SmartTypeDefinitionBuilder addAdapter(final String type, final Class<? extends BasicTypeAdapter> adapterClass, final BasicType targetDataType) {
 		Assertion.check()
-				.notNull(adapterClass)
-				.notNull(targetDataType);
+				.isNotNull(adapterClass)
+				.isNotNull(targetDataType);
 		//---
 		myAdapterConfigs.add(new AdapterConfig(type, adapterClass, targetDataType));
 		return this;

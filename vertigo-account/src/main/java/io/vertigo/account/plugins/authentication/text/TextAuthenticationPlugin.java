@@ -66,7 +66,7 @@ public class TextAuthenticationPlugin implements AuthenticationPlugin, Activeabl
 	 */
 	@Inject
 	public TextAuthenticationPlugin(@ParamValue("filePath") final String filePath, final ResourceManager resourceManager) {
-		Assertion.check().notNull(resourceManager);
+		Assertion.check().isNotNull(resourceManager);
 		// -----
 		this.resourceManager = resourceManager;
 		this.filePath = filePath;
@@ -113,7 +113,7 @@ public class TextAuthenticationPlugin implements AuthenticationPlugin, Activeabl
 	private void parseUserInfo(final String line) {
 		final Matcher matcher = FILE_PATTERN.matcher(line);
 		final boolean matches = matcher.matches();
-		Assertion.check().state(matches, "No match found for entry '{0}' and pattern '{1}'", line, FILE_PATTERN_STR);
+		Assertion.check().isTrue(matches, "No match found for entry '{0}' and pattern '{1}'", line, FILE_PATTERN_STR);
 		//---
 		final String accountKey = matcher.group(1);
 		final String username = matcher.group(2);

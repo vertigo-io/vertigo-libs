@@ -55,8 +55,8 @@ public final class Measure {
 			final Map<String, String> tags) {
 		Assertion.check()
 				.isNotBlank(measurement)
-				.notNull(instant)
-				.state(fields.size() > 0, "At least one field is required on a measure");
+				.isNotNull(instant)
+				.isTrue(fields.size() > 0, "At least one field is required on a measure");
 		//---
 		this.measurement = measurement;
 		this.instant = instant;

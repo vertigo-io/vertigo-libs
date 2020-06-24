@@ -49,7 +49,7 @@ public final class MasterManagerImpl implements MasterManager, Activeable {
 	 */
 	@Inject
 	public MasterManagerImpl(final MasterPlugin masterPlugin) {
-		Assertion.check().notNull(masterPlugin);
+		Assertion.check().isNotNull(masterPlugin);
 		//-----
 		workListener = new WorkListenerImpl(/*analyticsManager*/);
 		masterCoordinator = new MasterCoordinator(masterPlugin);
@@ -77,8 +77,8 @@ public final class MasterManagerImpl implements MasterManager, Activeable {
 	@Override
 	public <W, R> WorkPromise<R> process(final W work, final Class<? extends WorkEngine<W, R>> workEngineClass) {
 		Assertion.check()
-				.notNull(work)
-				.notNull(workEngineClass);
+				.isNotNull(work)
+				.isNotNull(workEngineClass);
 		//-----
 		final WorkItem<W, R> workItem = new WorkItem<>(createWorkId(), work, workEngineClass);
 		final WorkResultHandler<R> emptyWorkResultHandler = new WorkResultHandler<>() {
@@ -100,9 +100,9 @@ public final class MasterManagerImpl implements MasterManager, Activeable {
 	@Override
 	public <W, R> void schedule(final W work, final Class<? extends WorkEngine<W, R>> workEngineClass, final WorkResultHandler<R> workResultHandler) {
 		Assertion.check()
-				.notNull(work)
-				.notNull(workEngineClass)
-				.notNull(workResultHandler);
+				.isNotNull(work)
+				.isNotNull(workEngineClass)
+				.isNotNull(workResultHandler);
 		//-----
 		final WorkItem<W, R> workItem = new WorkItem<>(createWorkId(), work, workEngineClass);
 		submit(workItem, workResultHandler);

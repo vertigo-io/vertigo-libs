@@ -126,10 +126,10 @@ public final class DtField {
 			final String fkDtDefinitionName) {
 		Assertion.check()
 				.isNotBlank(id)
-				.notNull(type)
-				.notNull(smartType)
-				.notNull(type)
-				.notNull(cardinality);
+				.isNotNull(type)
+				.isNotNull(smartType)
+				.isNotNull(type)
+				.isNotNull(cardinality);
 		//-----
 		this.id = id;
 		smartTypeRef = new DefinitionReference<>(smartType);
@@ -137,21 +137,21 @@ public final class DtField {
 		this.cardinality = cardinality;
 		//-----
 		Assertion.check()
-				.notNull(fieldName)
+				.isNotNull(fieldName)
 				.argument(fieldName.length() <= FIELD_NAME_MAX_LENGTH, "the name of the field {0} has a limit size of {1}", fieldName, FIELD_NAME_MAX_LENGTH)
 				.argument(StringUtil.isLowerCamelCase(fieldName), "the name of the field {0} must be in lowerCamelCase", fieldName);
 		name = fieldName;
 		//-----
-		Assertion.check().notNull(label);
+		Assertion.check().isNotNull(label);
 		this.label = label;
 		//-----
 		Assertion.check().argument(!(getType() == FieldType.COMPUTED && persistent), "a computed field can't be persistent");
 		this.persistent = persistent;
 		//-----
 		if (getType() == FieldType.FOREIGN_KEY) {
-			Assertion.check().notNull(fkDtDefinitionName, "Le champ {0} de type clé étrangère doit référencer une définition ", fieldName);
+			Assertion.check().isNotNull(fkDtDefinitionName, "Le champ {0} de type clé étrangère doit référencer une définition ", fieldName);
 		} else {
-			Assertion.check().state(fkDtDefinitionName == null, "Le champ {0} n''est pas une clé étrangère", fieldName);
+			Assertion.check().isTrue(fkDtDefinitionName == null, "Le champ {0} n''est pas une clé étrangère", fieldName);
 		}
 		this.fkDtDefinitionName = fkDtDefinitionName;
 		//-----
@@ -217,7 +217,7 @@ public final class DtField {
 	 */
 	//Todo changer le nom
 	public DtDefinition getFkDtDefinition() {
-		Assertion.check().notNull(fkDtDefinitionName);
+		Assertion.check().isNotNull(fkDtDefinitionName);
 		//-----
 		return Home.getApp().getDefinitionSpace().resolve(fkDtDefinitionName, DtDefinition.class);
 	}

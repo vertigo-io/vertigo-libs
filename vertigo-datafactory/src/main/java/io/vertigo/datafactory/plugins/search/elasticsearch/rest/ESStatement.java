@@ -93,9 +93,9 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final RestHighLevelClient esClient, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		Assertion.check()
 				.isNotBlank(indexName)
-				.notNull(esDocumentCodec)
-				.notNull(esClient)
-				.notNull(typeAdapters);
+				.isNotNull(esDocumentCodec)
+				.isNotNull(esClient)
+				.isNotNull(typeAdapters);
 		//-----
 		this.indexName = indexName;
 		this.esClient = esClient;
@@ -157,7 +157,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 * @param query Requete de filtrage des documents à supprimer
 	 */
 	void remove(final ListFilter query) {
-		Assertion.check().notNull(query);
+		Assertion.check().isNotNull(query);
 		//-----
 		try {
 			final QueryBuilder queryBuilder = AsbtractESSearchRequestBuilder.translateToQueryBuilder(query);
@@ -180,7 +180,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 * @param uid UID du document à supprimer
 	 */
 	void remove(final UID uid) {
-		Assertion.check().notNull(uid);
+		Assertion.check().isNotNull(uid);
 		//-----
 		try {
 			final DeleteRequest request = new DeleteRequest(indexName, uid.urn()) //index, doc_id
@@ -202,7 +202,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 * @return Résultat de la recherche
 	 */
 	FacetedQueryResult<I, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
-		Assertion.check().notNull(searchQuery);
+		Assertion.check().isNotNull(searchQuery);
 		//-----
 		final SearchRequest searchRequest = new ESSearchRequestBuilder(indexName, esClient, typeAdapters)
 				.withSearchIndexDefinition(indexDefinition)

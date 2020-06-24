@@ -59,8 +59,8 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 			final @ParamValue("proxyHost") Optional<String> proxyHost,
 			final @ParamValue("proxyPort") Optional<String> proxyPort) {
 		Assertion.check()
-				.notNull(proxyHost)
-				.notNull(proxyPort)
+				.isNotNull(proxyHost)
+				.isNotNull(proxyPort)
 				.argument((proxyHost.isPresent() && proxyPort.isPresent()) || (proxyHost.isEmpty() && proxyPort.isEmpty()),
 						"les deux paramètres host et port doivent être tous les deux remplis ou vides");
 		//-----
@@ -78,7 +78,7 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 	 * @return Document
 	 */
 	private BanResponse geoCode(final String address) {
-		Assertion.check().notNull(address);
+		Assertion.check().isNotNull(address);
 		//-----
 		final String urlString;
 		try {
@@ -95,7 +95,7 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 		}
 
 		//-----
-		Assertion.check().notNull(url);
+		Assertion.check().isNotNull(url);
 		try {
 			final HttpURLConnection connection = proxyOpt.isPresent() ? (HttpURLConnection) url.openConnection(proxyOpt.get()) : (HttpURLConnection) url.openConnection();
 			connection.setConnectTimeout(500); //500 ms timeout
@@ -116,7 +116,7 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public GeoLocation findLocation(final String address) {
-		Assertion.check().notNull(address);
+		Assertion.check().isNotNull(address);
 		//-----
 		final BanResponse banResponse = geoCode(address);
 		if (banResponse == null) {
@@ -124,7 +124,7 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 		}
 		//-----
 		// 0- Vérification du status
-		Assertion.check().state(banResponse.features.size() <= 1, "Only one address when looking for a single location");
+		Assertion.check().isTrue(banResponse.features.size() <= 1, "Only one address when looking for a single location");
 		if (banResponse.features.size() == 0) {
 			return GeoLocation.UNDEFINED;
 		}

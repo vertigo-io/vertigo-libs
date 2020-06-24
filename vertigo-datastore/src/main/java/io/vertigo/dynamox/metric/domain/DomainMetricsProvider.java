@@ -57,8 +57,8 @@ public final class DomainMetricsProvider implements Component {
 	@Inject
 	public DomainMetricsProvider(final VTransactionManager transactionManager, final EntityStoreManager entityStoreManager) {
 		Assertion.check()
-				.notNull(transactionManager)
-				.notNull(entityStoreManager);
+				.isNotNull(transactionManager)
+				.isNotNull(entityStoreManager);
 		//-----
 		this.transactionManager = transactionManager;
 		this.entityStoreManager = entityStoreManager;
@@ -124,7 +124,7 @@ public final class DomainMetricsProvider implements Component {
 	}
 
 	private static double countTaskDependencies(final SmartTypeDefinition smartTypeDefinition) {
-		Assertion.check().notNull(smartTypeDefinition);
+		Assertion.check().isNotNull(smartTypeDefinition);
 		//---
 		int count = 0;
 		for (final TaskDefinition taskDefinition : Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)) {
@@ -143,7 +143,7 @@ public final class DomainMetricsProvider implements Component {
 	}
 
 	private static double countDtDefinitionDependencies(final SmartTypeDefinition smartTypeDefinition) {
-		Assertion.check().notNull(smartTypeDefinition);
+		Assertion.check().isNotNull(smartTypeDefinition);
 		//---
 		return Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
 				.stream()
@@ -189,8 +189,8 @@ public final class DomainMetricsProvider implements Component {
 
 	private Metric doExecute(final DtDefinition dtDefinition, final VTransactionWritable transaction) {
 		Assertion.check()
-				.notNull(dtDefinition)
-				.state(dtDefinition.isPersistent(), "Count can only be performed on persistent entities, DtDefinition '{0}' is not", dtDefinition.getName());
+				.isNotNull(dtDefinition)
+				.isTrue(dtDefinition.isPersistent(), "Count can only be performed on persistent entities, DtDefinition '{0}' is not", dtDefinition.getName());
 		//-----
 		final MetricBuilder metricBuilder = Metric.builder()
 				.withName("entityCount")

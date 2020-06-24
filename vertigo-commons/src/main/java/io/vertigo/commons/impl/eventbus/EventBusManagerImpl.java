@@ -68,7 +68,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 	 * @param suscriberInstance
 	 */
 	private static List<EventBusSubscriptionDefinition> createEventSubscriptions(final String componentId, final CoreComponent subscriberInstance, final AopPlugin aopPlugin) {
-		Assertion.check().notNull(subscriberInstance);
+		Assertion.check().isNotNull(subscriberInstance);
 		//-----
 		//1. search all methods
 		return Stream.of(aopPlugin.unwrap(subscriberInstance).getClass().getMethods())
@@ -108,7 +108,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 	/** {@inheritDoc} */
 	@Override
 	public void post(final Event event) {
-		Assertion.check().notNull(event);
+		Assertion.check().isNotNull(event);
 		//-----
 		final long emitted = subscriptions.stream()
 				.filter(subscription -> subscription.match(event))
@@ -125,7 +125,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 	/** {@inheritDoc} */
 	@Override
 	public void registerDead(final Consumer<Event> eventConsumer) {
-		Assertion.check().notNull(eventConsumer);
+		Assertion.check().isNotNull(eventConsumer);
 		//-----
 		deadEventListeners.add(eventConsumer);
 	}

@@ -211,7 +211,7 @@ public final class RemoteConverterManagerTest {
 
 	private static VFile createVFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) {
 		try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
-			Assertion.check().notNull(in, "fichier non trouvé : {0}", fileName);
+			Assertion.check().isNotNull(in, "fichier non trouvé : {0}", fileName);
 			final File file = new TempFile("tmp", '.' + FileUtil.getFileExtension(fileName));
 			FileUtil.copy(in, file);
 			return fileManager.createFile(file);

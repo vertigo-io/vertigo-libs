@@ -66,7 +66,7 @@ public final class Authorization implements Definition {
 		Assertion.check()
 				.isNotBlank(code)
 				.isNotBlank(label)
-				.notNull(comment);
+				.isNotNull(comment);
 		//-----
 		name = PREFIX + code;
 		this.label = label;
@@ -101,11 +101,11 @@ public final class Authorization implements Definition {
 		Assertion.check()
 				.isNotBlank(operation)
 				.isNotBlank(label)
-				.notNull(overrides)
-				.notNull(grants)
-				.notNull(entityDefinition)
-				.notNull(rules)
-				.notNull(comment);
+				.isNotNull(overrides)
+				.isNotNull(grants)
+				.isNotNull(entityDefinition)
+				.isNotNull(rules)
+				.isNotNull(comment);
 		//-----
 		name = PREFIX + entityDefinition.getLocalName() + '$' + operation;
 		this.label = label;

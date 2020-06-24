@@ -54,13 +54,13 @@ public final class SecurityDimension {
 			final List<String> values) {
 		Assertion.check()
 				.isNotBlank(name)
-				.notNull(type)
-				.notNull(fields)
-				.notNull(values);
+				.isNotNull(type)
+				.isNotNull(fields)
+				.isNotNull(values);
 		Assertion.when(SecurityDimensionType.ENUM == type) // == because enum
-				.state(() -> fields.isEmpty() && values.size() > 1, "SecurityDimension of type ENUM ({0}) needs the ordered list of values and no field (name is use)", name);
+				.isTrue(() -> fields.isEmpty() && values.size() > 1, "SecurityDimension of type ENUM ({0}) needs the ordered list of values and no field (name is use)", name);
 		Assertion.when(SecurityDimensionType.TREE == type) // == because enum
-				.state(() -> fields.size() > 1 && values.isEmpty(), "SecurityDimension of type TREE ({0}) needs more than on fields and the no values", name);
+				.isTrue(() -> fields.size() > 1 && values.isEmpty(), "SecurityDimension of type TREE ({0}) needs more than on fields and the no values", name);
 		//----
 		this.name = name;
 		this.type = type;

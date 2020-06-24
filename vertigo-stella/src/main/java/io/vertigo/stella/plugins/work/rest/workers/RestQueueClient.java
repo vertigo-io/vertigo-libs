@@ -65,7 +65,7 @@ final class RestQueueClient {
 	RestQueueClient(final String serverUrl, final int timeoutSeconds, final CodecManager codecManager) {
 		Assertion.check()
 				.isNotBlank(serverUrl)
-				.notNull(codecManager);
+				.isNotNull(codecManager);
 		//-----
 		this.serverUrl = serverUrl;
 		this.codecManager = codecManager;

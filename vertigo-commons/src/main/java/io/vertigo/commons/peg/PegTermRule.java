@@ -35,7 +35,7 @@ final class PegTermRule implements PegRule<String> {
 	 * @param term Terminal
 	 */
 	PegTermRule(final String term) {
-		Assertion.check().notNull(term, "Terminal is required");
+		Assertion.check().isNotNull(term, "Terminal is required");
 		//-----
 		this.term = term;
 		expression = "'" + term + "'";

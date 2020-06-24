@@ -47,7 +47,7 @@ public class VFileMethodArgumentResolver implements HandlerMethodArgumentResolve
 			final WebDataBinderFactory binderFactory) throws Exception {
 		final HttpServletRequest request = getRequest(webRequest);
 		final QueryParam requestParam = parameter.getParameterAnnotation(QueryParam.class);
-		Assertion.check().notNull(requestParam, "File name wasn't found. Use @QueryParam('myFileRequestParam') in your controller.");
+		Assertion.check().isNotNull(requestParam, "File name wasn't found. Use @QueryParam('myFileRequestParam') in your controller.");
 		return VFileUtil.readQueryFile(request, requestParam.value());
 	}
 

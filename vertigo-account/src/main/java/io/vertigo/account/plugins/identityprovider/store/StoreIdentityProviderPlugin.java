@@ -75,8 +75,8 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 		Assertion.check()
 				.isNotBlank(userIdentityEntity)
 				.isNotBlank(userAuthField)
-				.notNull(entityStoreManager)
-				.notNull(fileStoreManager);
+				.isNotNull(entityStoreManager)
+				.isNotNull(fileStoreManager);
 		//---
 		this.userIdentityEntity = userIdentityEntity;
 		this.userAuthField = userAuthField;
@@ -92,8 +92,8 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 		final Criteria<Entity> criteriaByAuthToken = Criterions.isEqualTo(() -> userAuthField, userAuthToken);
 		final DtList<Entity> results = entityStoreManager.find(userIdentityDefinition, criteriaByAuthToken, DtListState.of(2));
 		Assertion.check()
-				.state(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken)
-				.state(!results.isEmpty(), "No user found for this authToken {0}", userAuthToken);
+				.isTrue(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken)
+				.isTrue(!results.isEmpty(), "No user found for this authToken {0}", userAuthToken);
 		return (E) results.get(0);
 	}
 

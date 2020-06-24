@@ -39,7 +39,7 @@ public final class AjaxResponseBuilder {
 	 * @param useBuffer Si l'on utilise un buffer avant envoi
 	 */
 	AjaxResponseBuilder(final PrintWriter writer, final boolean useBuffer) {
-		Assertion.check().notNull(writer);
+		Assertion.check().isNotNull(writer);
 		//-----
 		this.writer = writer;
 		this.useBuffer = useBuffer;
@@ -68,7 +68,7 @@ public final class AjaxResponseBuilder {
 	 * @return AjaxResponseBuilder
 	 */
 	public AjaxResponseBuilder appendHtml(final String content) {
-		Assertion.check().notNull(content);
+		Assertion.check().isNotNull(content);
 		//-----
 		if (useBuffer) {
 			sb.append("<htmlUpdate>");

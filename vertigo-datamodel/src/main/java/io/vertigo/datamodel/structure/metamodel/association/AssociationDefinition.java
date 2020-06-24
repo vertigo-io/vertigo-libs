@@ -60,8 +60,8 @@ public abstract class AssociationDefinition implements Definition {
 	AssociationDefinition(final String name, final AssociationNode associationNodeA, final AssociationNode associationNodeB) {
 		Assertion.check()
 				.isNotBlank(name)
-				.notNull(associationNodeA)
-				.notNull(associationNodeB);
+				.isNotNull(associationNodeA)
+				.isNotNull(associationNodeB);
 		//-----
 		this.name = name;
 		this.associationNodeA = associationNodeA;
@@ -75,7 +75,7 @@ public abstract class AssociationDefinition implements Definition {
 	private static void checkNavigability(final AssociationNode associationNode, final String associationName) {
 		//-----
 		Assertion.when(associationNode.isNavigable())
-				.state(() -> associationNode.getDtDefinition().getStereotype().isPersistent(), "assocation : {0}. you cannot navigate towards an object that is not an entity ", associationName);
+				.isTrue(() -> associationNode.getDtDefinition().getStereotype().isPersistent(), "assocation : {0}. you cannot navigate towards an object that is not an entity ", associationName);
 	}
 
 	/**

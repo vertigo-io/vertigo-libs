@@ -52,7 +52,7 @@ final class ScriptParser {
 	 * @param separators Séparateurs pris en compte
 	 */
 	ScriptParser(final ScriptSeparator separator) {
-		Assertion.check().notNull(separator);
+		Assertion.check().isNotNull(separator);
 		//-----
 		this.separator = separator;
 	}
@@ -66,8 +66,8 @@ final class ScriptParser {
 	 */
 	void parse(final String script, final ScriptParserHandler scriptHandler) {
 		Assertion.check()
-				.notNull(script)
-				.notNull(scriptHandler);
+				.isNotNull(script)
+				.isNotNull(scriptHandler);
 		//-----
 		int index = 0;
 		int endCar = -1;

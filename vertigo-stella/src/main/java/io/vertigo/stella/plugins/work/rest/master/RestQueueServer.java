@@ -69,7 +69,7 @@ final class RestQueueServer {
 	 * @param daemonManager Daemons manager
 	 */
 	public RestQueueServer(final int nodeTimeOutSec, final CodecManager codecManager, final int pullTimeoutSec) {
-		Assertion.check().notNull(codecManager);
+		Assertion.check().isNotNull(codecManager);
 		//-----
 		this.nodeTimeOutSec = nodeTimeOutSec;
 		this.pullTimeoutSec = pullTimeoutSec;
@@ -195,7 +195,7 @@ final class RestQueueServer {
 		LOG.info("onDone {} : ({})", success, workId);
 		//-----
 		final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.remove(workId);
-		Assertion.check().notNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", workId);
+		Assertion.check().isNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", workId);
 
 		final byte[] serializedResult = codecManager.getBase64Codec().decode(base64Result);
 		final Object value = codecManager.getCompressedSerializationCodec().decode(serializedResult);
@@ -244,7 +244,7 @@ final class RestQueueServer {
 	 * @param workItem Work et WorkResultHandler
 	 */
 	<R, W> void putWorkItem(final WorkItem<R, W> workItem) {
-		Assertion.check().notNull(workItem);
+		Assertion.check().isNotNull(workItem);
 		if (!isActiveWorkType(workItem.getWorkEngineClass().getName())) {
 			LOG.warn("No active node for this workType : {}", workItem.getWorkEngineClass().getName());
 		}

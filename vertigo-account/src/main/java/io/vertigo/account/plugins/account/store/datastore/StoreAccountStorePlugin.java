@@ -114,9 +114,9 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		super(userIdentityEntity, userToAccountMappingStr);
 		Assertion.check().isNotBlank(userIdentityEntity)
 				.isNotBlank(userAuthField)
-				.notNull(smartTypeManager)
-				.notNull(entityStoreManager)
-				.notNull(fileStoreManager)
+				.isNotNull(smartTypeManager)
+				.isNotNull(entityStoreManager)
+				.isNotNull(fileStoreManager)
 				.isNotBlank(groupToGroupAccountMappingStr);
 
 		this.groupIdentityEntity = groupIdentityEntity;
@@ -160,9 +160,9 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 			}
 		}
 		Assertion.check()
-				.notNull(associationUserGroup, "Association between User ({0}) and Group ({1}) not found",
+				.isNotNull(associationUserGroup, "Association between User ({0}) and Group ({1}) not found",
 						getUserDtDefinition().getClassSimpleName(), userGroupDtDefinition.getClassSimpleName())
-				.state(associationUserGroup instanceof AssociationSimpleDefinition || associationUserGroup instanceof AssociationNNDefinition,
+				.isTrue(associationUserGroup instanceof AssociationSimpleDefinition || associationUserGroup instanceof AssociationNNDefinition,
 						"Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());
 	}
 
@@ -250,7 +250,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		final Criteria<Entity> criteriaByAuthToken = Criterions.isEqualTo(() -> userAuthField, userAuthTokenValue);
 		return executeInTransaction(() -> {
 			final DtList<Entity> results = entityStoreManager.find(getUserDtDefinition(), criteriaByAuthToken, DtListState.of(2));
-			Assertion.check().state(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken);
+			Assertion.check().isTrue(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken);
 			if (!results.isEmpty()) {
 				return Optional.of(userToAccount(results.get(0)));
 			}

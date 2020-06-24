@@ -55,7 +55,7 @@ public class MemoryProcessDefinitionStorePlugin implements ProcessDefinitionStor
 		Assertion.check().isNotBlank(processName);
 		// ---
 		final ProcessDefinition processDefinition = processDefinitions.get(processName);
-		Assertion.check().notNull(processDefinition, "ProcessDefinition '{0}' not found in ({1})", processName, processDefinitions.keySet());
+		Assertion.check().isNotNull(processDefinition, "ProcessDefinition '{0}' not found in ({1})", processName, processDefinitions.keySet());
 		return processDefinition;
 	}
 

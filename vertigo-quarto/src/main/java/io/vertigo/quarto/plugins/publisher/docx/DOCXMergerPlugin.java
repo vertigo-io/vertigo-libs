@@ -55,15 +55,15 @@ public final class DOCXMergerPlugin implements MergerPlugin {
 	 */
 	@Inject
 	public DOCXMergerPlugin(final ScriptManager scriptManager) {
-		Assertion.check().notNull(scriptManager);
+		Assertion.check().isNotNull(scriptManager);
 		//-----
 		mergerProcessors = createMergerProcessors(scriptManager, ScriptGrammarUtil.createScriptGrammar());
 	}
 
 	private static List<MergerProcessor> createMergerProcessors(final ScriptManager scriptManager, final ScriptGrammar scriptGrammar) {
 		Assertion.check()
-				.notNull(scriptManager)
-				.notNull(scriptGrammar);
+				.isNotNull(scriptManager)
+				.isNotNull(scriptGrammar);
 		//-----
 		return List.of(
 				// Extraction des variables.
@@ -87,8 +87,8 @@ public final class DOCXMergerPlugin implements MergerPlugin {
 	@Override
 	public File execute(final URL modelFileURL, final PublisherData data) throws IOException {
 		Assertion.check()
-				.notNull(modelFileURL)
-				.notNull(data);
+				.isNotNull(modelFileURL)
+				.isNotNull(data);
 		//-----
 		final File file = DOCXUtil.obtainModelFile(modelFileURL);
 		file.setReadOnly(); //on protège le fichier

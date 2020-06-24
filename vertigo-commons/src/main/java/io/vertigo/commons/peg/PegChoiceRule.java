@@ -39,7 +39,7 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 	 * @param rules the list of rules to test
 	 */
 	PegChoiceRule(final List<PegRule<?>> rules) {
-		Assertion.check().notNull(rules);
+		Assertion.check().isNotNull(rules);
 		//-----
 		this.rules = Collections.unmodifiableList(rules);
 		//---
@@ -73,7 +73,7 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 					best = keepBestUncompleteRule(parserCursor.getBestUncompleteRule().get(), best);
 				}
 				if (best != null && end < best.getIndex()) {
-					Assertion.check().notNull(best, "best exception should be set at same time of bestIndex");
+					Assertion.check().isNotNull(best, "best exception should be set at same time of bestIndex");
 					//Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
 					PegLogger.log("Reject CHOICE pos" + start + " : " + choiceIndex + " at " + end);
 					throw best;
@@ -93,7 +93,7 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 	}
 
 	private PegNoMatchFoundException keepBestUncompleteRule(final PegNoMatchFoundException first, final PegNoMatchFoundException otherNullable) {
-		Assertion.check().notNull(first);
+		Assertion.check().isNotNull(first);
 		//----
 		if (otherNullable == null || otherNullable.getIndex() < first.getIndex()) {
 			return first;

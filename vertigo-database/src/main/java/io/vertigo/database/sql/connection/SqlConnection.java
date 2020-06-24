@@ -47,8 +47,8 @@ public final class SqlConnection implements VTransactionResource {
 	 */
 	public SqlConnection(final Connection jdbcConnection, final SqlDataBase dataBase) throws SQLException {
 		Assertion.check()
-				.notNull(jdbcConnection)
-				.notNull(dataBase);
+				.isNotNull(jdbcConnection)
+				.isNotNull(dataBase);
 		//-----
 		this.jdbcConnection = jdbcConnection;
 		this.dataBase = dataBase;

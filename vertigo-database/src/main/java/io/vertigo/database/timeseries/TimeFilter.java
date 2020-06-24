@@ -39,8 +39,8 @@ public final class TimeFilter implements Serializable {
 			final String to,
 			final String dim) {
 		Assertion.check()
-				.notNull(from)
-				.notNull(to);
+				.isNotNull(from)
+				.isNotNull(to);
 		//---
 		this.from = from;
 		this.to = to;

@@ -60,7 +60,7 @@ public class ContentItemComponentProcessor extends AbstractElementModelProcessor
 	protected void doProcess(final ITemplateContext context, final IModel model, final IElementModelStructureHandler structureHandler) {
 		final Map<String, String> attributes = processAttribute(model);
 		final Object content = context.getVariable(CONTENT_VAR_NAME);
-		Assertion.check().notNull(content, "'" + CONTENT_VAR_NAME + "' variable missing. For loop use th:each=\"" + CONTENT_VAR_NAME + ":contentTags\".");
+		Assertion.check().isNotNull(content, "'" + CONTENT_VAR_NAME + "' variable missing. For loop use th:each=\"" + CONTENT_VAR_NAME + ":contentTags\".");
 		//-----
 		removeCurrentTag(model);
 		final IModel defaultModel = model.cloneModel(); //default is the body of the content tag

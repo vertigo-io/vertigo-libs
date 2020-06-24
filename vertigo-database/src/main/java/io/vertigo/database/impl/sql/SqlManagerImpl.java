@@ -72,16 +72,16 @@ public final class SqlManagerImpl implements SqlDataBaseManager {
 			final AnalyticsManager analyticsManager,
 			final List<SqlConnectionProviderPlugin> sqlConnectionProviderPlugins) {
 		Assertion.check()
-				.notNull(localeManager)
-				.notNull(analyticsManager)
-				.notNull(sqlConnectionProviderPlugins);
+				.isNotNull(localeManager)
+				.isNotNull(analyticsManager)
+				.isNotNull(sqlConnectionProviderPlugins);
 		//-----
 		this.analyticsManager = analyticsManager;
 		connectionProviderPluginMap = new HashMap<>();
 		for (final SqlConnectionProviderPlugin sqlConnectionProviderPlugin : sqlConnectionProviderPlugins) {
 			final String name = sqlConnectionProviderPlugin.getName();
 			final SqlConnectionProvider previous = connectionProviderPluginMap.put(name, sqlConnectionProviderPlugin);
-			Assertion.check().state(previous == null, "ConnectionProvider {0}, was already registered", name);
+			Assertion.check().isTrue(previous == null, "ConnectionProvider {0}, was already registered", name);
 		}
 		localeManager.add("io.vertigo.database.impl.sql.DataBase", io.vertigo.database.impl.sql.Resources.values());
 		//---
@@ -92,7 +92,7 @@ public final class SqlManagerImpl implements SqlDataBaseManager {
 	@Override
 	public SqlConnectionProvider getConnectionProvider(final String name) {
 		final SqlConnectionProvider sqlConnectionProvider = connectionProviderPluginMap.get(name);
-		Assertion.check().notNull(sqlConnectionProvider, "ConnectionProvider {0}, wasn't registered.", name);
+		Assertion.check().isNotNull(sqlConnectionProvider, "ConnectionProvider {0}, wasn't registered.", name);
 		return sqlConnectionProvider;
 	}
 
@@ -105,9 +105,9 @@ public final class SqlManagerImpl implements SqlDataBaseManager {
 			final Integer limit,
 			final SqlConnection connection) throws SQLException {
 		Assertion.check()
-				.notNull(sqlStatement)
-				.notNull(dataType)
-				.notNull(connection);
+				.isNotNull(sqlStatement)
+				.isNotNull(dataType)
+				.isNotNull(connection);
 		//-----
 		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
 			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), basicTypeAdapters, connection);
@@ -149,11 +149,11 @@ public final class SqlManagerImpl implements SqlDataBaseManager {
 			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlConnection connection) throws SQLException {
 		Assertion.check()
-				.notNull(sqlStatement)
-				.notNull(generationMode)
-				.notNull(columnName)
-				.notNull(dataType)
-				.notNull(connection);
+				.isNotNull(sqlStatement)
+				.isNotNull(generationMode)
+				.isNotNull(columnName)
+				.isNotNull(dataType)
+				.isNotNull(connection);
 		//---
 		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), generationMode, new String[] { columnName }, connection)) {
 			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), basicTypeAdapters, connection);
@@ -174,8 +174,8 @@ public final class SqlManagerImpl implements SqlDataBaseManager {
 			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlConnection connection) throws SQLException {
 		Assertion.check()
-				.notNull(sqlStatement)
-				.notNull(connection);
+				.isNotNull(sqlStatement)
+				.isNotNull(connection);
 		//---
 		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
 			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), basicTypeAdapters, connection);
@@ -201,7 +201,7 @@ public final class SqlManagerImpl implements SqlDataBaseManager {
 		private final SQLException sqlException;
 
 		WrappedSqlException(final SQLException sqlException) {
-			Assertion.check().notNull(sqlException);
+			Assertion.check().isNotNull(sqlException);
 			//---
 			this.sqlException = sqlException;
 		}
@@ -219,8 +219,8 @@ public final class SqlManagerImpl implements SqlDataBaseManager {
 			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlConnection connection) throws SQLException {
 		Assertion.check()
-				.notNull(sqlStatement)
-				.notNull(connection);
+				.isNotNull(sqlStatement)
+				.isNotNull(connection);
 		//---
 		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
 			for (final List<SqlParameter> parameters : sqlStatement.getSqlParametersForBatch()) {

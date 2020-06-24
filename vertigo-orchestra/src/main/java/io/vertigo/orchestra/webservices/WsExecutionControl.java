@@ -61,7 +61,7 @@ public class WsExecutionControl implements WebServices {
 	@AnonymousAccessAllowed
 	public void endExecution(@InnerBodyParam("aceId") final Long activityExecutionId, @InnerBodyParam("token") final String token) {
 		Assertion.check()
-				.notNull(activityExecutionId)
+				.isNotNull(activityExecutionId)
 				.isNotBlank(token);
 		// ---
 		orchestraServices.getExecutor()
@@ -79,7 +79,7 @@ public class WsExecutionControl implements WebServices {
 	@AnonymousAccessAllowed
 	public void onError(@InnerBodyParam("aceId") final Long activityExecutionId, @InnerBodyParam("token") final String token, @InnerBodyParam("errorMessage") final String errorMessage) {
 		Assertion.check()
-				.notNull(activityExecutionId)
+				.isNotNull(activityExecutionId)
 				.isNotBlank(token)
 				.isNotBlank(errorMessage);
 		// ---
@@ -96,7 +96,7 @@ public class WsExecutionControl implements WebServices {
 	@SessionLess
 	@AnonymousAccessAllowed
 	public void executeNow(@InnerBodyParam("processName") final String processName, @InnerBodyParam("initialParams") final Map<String, String> initialParams) {
-		Assertion.check().notNull(processName);
+		Assertion.check().isNotNull(processName);
 		// ---
 		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition(processName);
 		orchestraServices.getScheduler()

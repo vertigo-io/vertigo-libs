@@ -87,10 +87,10 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 			final SearchResponse queryResponse,
 			final SearchQuery searchQuery) {
 		Assertion.check()
-				.notNull(esDocumentCodec)
-				.notNull(indexDefinition)
-				.notNull(queryResponse)
-				.notNull(searchQuery);
+				.isNotNull(esDocumentCodec)
+				.isNotNull(indexDefinition)
+				.isNotNull(queryResponse)
+				.isNotNull(searchQuery);
 		//-----
 		this.esDocumentCodec = esDocumentCodec;
 		this.indexDefinition = indexDefinition;

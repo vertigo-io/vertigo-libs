@@ -39,17 +39,17 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 	/** {@inheritDoc} */
 	@Override
 	public void register(final MasterDataDefinition masterDataDefinition) {
-		Assertion.check().notNull(masterDataDefinition);
+		Assertion.check().isNotNull(masterDataDefinition);
 		//-----
 		register(masterDataDefinition.getUri(), masterDataDefinition.getPredicate());
 	}
 
 	private void register(final DtListURIForMasterData uri, final Predicate dtListFilter) {
 		Assertion.check()
-				.notNull(uri)
+				.isNotNull(uri)
 				.argument(!mdlUriFilterMap.containsKey(uri), "Il existe deja une liste de référence enregistrée {0}.", uri)
 				//Criteria peut être null
-				.notNull(dtListFilter);
+				.isNotNull(dtListFilter);
 		//-----
 
 		mdlUriFilterMap.put(uri, dtListFilter);
@@ -63,7 +63,7 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 	/** {@inheritDoc} */
 	@Override
 	public boolean containsMasterData(final DtDefinition dtDefinition) {
-		Assertion.check().notNull(dtDefinition);
+		Assertion.check().isNotNull(dtDefinition);
 		//-----
 		return defaultMdlMap2.containsKey(dtDefinition);
 	}
@@ -71,7 +71,7 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 	/** {@inheritDoc} */
 	@Override
 	public DtListURIForMasterData getDtListURIForMasterData(final DtDefinition dtDefinition) {
-		Assertion.check().notNull(dtDefinition);
+		Assertion.check().isNotNull(dtDefinition);
 		//-----
 		final DtListURIForMasterData uri = defaultMdlMap2.get(dtDefinition);
 		return uri;
@@ -80,7 +80,7 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 	/** {@inheritDoc} */
 	@Override
 	public Predicate getFilter(final DtListURIForMasterData uri) {
-		Assertion.check().notNull(uri);
+		Assertion.check().isNotNull(uri);
 		//-----
 		final Predicate predicate = mdlUriFilterMap.get(uri);
 		return predicate != null ? predicate : x -> true;

@@ -41,7 +41,7 @@ public final class PegResult<R> {
 	 * @param result
 	 */
 	PegResult(final int index, final R result) {
-		Assertion.check().notNull(result);
+		Assertion.check().isNotNull(result);
 		//---
 		this.index = index;
 		this.value = result;
@@ -55,7 +55,7 @@ public final class PegResult<R> {
 	 * @param bestUncompleteRule
 	 */
 	PegResult(final int index, final R result, final PegNoMatchFoundException bestUncompleteRule) {
-		Assertion.check().notNull(result);
+		Assertion.check().isNotNull(result);
 		//---
 		this.index = index;
 		this.value = result;

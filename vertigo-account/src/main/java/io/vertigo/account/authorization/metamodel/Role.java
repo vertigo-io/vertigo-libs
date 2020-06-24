@@ -48,7 +48,7 @@ public final class Role implements Definition {
 		Assertion.check()
 				.isNotBlank(name)
 				.isNotBlank(description)
-				.notNull(authorizations);
+				.isNotNull(authorizations);
 		//-----
 		this.name = name;
 		this.description = description;

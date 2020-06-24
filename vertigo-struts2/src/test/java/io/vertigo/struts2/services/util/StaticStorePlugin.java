@@ -61,7 +61,7 @@ public final class StaticStorePlugin extends AbstractStaticEntityStorePlugin imp
 	public StaticStorePlugin(@ParamValue("values") final String values, @ParamValue("dtDefinitionName") final String dtDefinitionName) {
 		super();
 		Assertion.check()
-				.notNull(dtDefinitionName)
+				.isNotNull(dtDefinitionName)
 				.isNotBlank(values)
 				.argument(values.contains("="), "StaticStorePlugin takes a list of key value like : key1=Label1;key2=Label2;...");
 		//----
@@ -149,8 +149,8 @@ public final class StaticStorePlugin extends AbstractStaticEntityStorePlugin imp
 	@Override
 	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
 		Assertion.check()
-				.notNull(dtDefinition)
-				.notNull(dtListState)
+				.isNotNull(dtDefinition)
+				.isNotNull(dtListState)
 				.argument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName())
 				.argument(criteria == null, "This store could only load all data, not {0}", criteria);
 		//----

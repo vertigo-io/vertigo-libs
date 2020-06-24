@@ -135,7 +135,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 			initContextUrlParameters(request);
 			//TODO vérifier que l'action demandée n'attendait pas de context : il va etre recrée vide ce qui n'est pas bon dans certains cas.
 			preInitContext();
-			Assertion.check().state(context.containsKey(UTIL_CONTEXT_KEY), "Pour surcharger preInitContext vous devez rappeler les parents super.preInitContext(). Action: {0}",
+			Assertion.check().isTrue(context.containsKey(UTIL_CONTEXT_KEY), "Pour surcharger preInitContext vous devez rappeler les parents super.preInitContext(). Action: {0}",
 					getClass().getSimpleName());
 			initContext();
 		}

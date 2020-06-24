@@ -45,7 +45,7 @@ public final class ConverterManagerImpl implements ConverterManager {
 	@Inject
 	public ConverterManagerImpl(final ConverterPlugin converterPlugin) {
 		// La connexion au serveur openOffice est instanciée lors du start
-		Assertion.check().notNull(converterPlugin);
+		Assertion.check().isNotNull(converterPlugin);
 		//-----
 		this.converterPlugin = converterPlugin;
 	}
@@ -54,7 +54,7 @@ public final class ConverterManagerImpl implements ConverterManager {
 	@Override
 	public VFile convert(final VFile inputFile, final String format) {
 		Assertion.check()
-				.notNull(inputFile)
+				.isNotNull(inputFile)
 				.isNotBlank(format);
 		//-----
 		return converterPlugin.convertToFormat(inputFile, format);

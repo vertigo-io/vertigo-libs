@@ -134,7 +134,7 @@ public final class VCollectors {
 	 * @return A collector for DtList
 	 */
 	public static <T extends DtObject> Collector<T, ?, DtList<T>> toDtList(final DtDefinition dtDefinition) {
-		Assertion.check().notNull(dtDefinition);
+		Assertion.check().isNotNull(dtDefinition);
 		//---
 		final Supplier<DtList<T>> dtSupplier = () -> new DtList<>(dtDefinition);
 		return new CollectorImpl<>(dtSupplier, List::add, (left, right) -> {
@@ -148,7 +148,7 @@ public final class VCollectors {
 	 * @return A collector for DtList
 	 */
 	public static <T extends DtObject> Collector<T, ?, DtList<T>> toDtList(final Class<T> dtClass) {
-		Assertion.check().notNull(dtClass);
+		Assertion.check().isNotNull(dtClass);
 		//---
 		return toDtList(DtObjectUtil.findDtDefinition(dtClass));
 	}

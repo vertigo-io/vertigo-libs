@@ -42,7 +42,7 @@ public final class CommentManagerImpl implements CommentManager {
 	 */
 	@Inject
 	public CommentManagerImpl(final CommentPlugin commentsPlugin) {
-		Assertion.check().notNull(commentsPlugin);
+		Assertion.check().isNotNull(commentsPlugin);
 		//-----
 		this.commentsPlugin = commentsPlugin;
 	}
@@ -51,8 +51,8 @@ public final class CommentManagerImpl implements CommentManager {
 	@Override
 	public void publish(final UID<Account> accountURI, final Comment comment, final UID<? extends KeyConcept> keyConceptUri) {
 		Assertion.check()
-				.notNull(comment)
-				.notNull(keyConceptUri);
+				.isNotNull(comment)
+				.isNotNull(keyConceptUri);
 		//-----
 		final Instant creationDate = Instant.now();
 		final Comment savedComment = Comment.builder()
@@ -67,7 +67,7 @@ public final class CommentManagerImpl implements CommentManager {
 	/** {@inheritDoc} */
 	@Override
 	public List<Comment> getComments(final UID<? extends KeyConcept> keyConceptUri) {
-		Assertion.check().notNull(keyConceptUri);
+		Assertion.check().isNotNull(keyConceptUri);
 		//-----
 		return commentsPlugin.getComments(keyConceptUri);
 	}
@@ -75,11 +75,11 @@ public final class CommentManagerImpl implements CommentManager {
 	/** {@inheritDoc} */
 	@Override
 	public void update(final UID<Account> accountURI, final Comment comment) {
-		Assertion.check().notNull(comment);
+		Assertion.check().isNotNull(comment);
 		//-----
 		final Comment originalComment = commentsPlugin.get(comment.getUuid());
 		final boolean authorized = accountURI.equals(comment.getAuthor()) && originalComment.getAuthor().equals(comment.getAuthor());
-		Assertion.check().state(authorized, "The comment editing is only available for the comment's author.");
+		Assertion.check().isTrue(authorized, "The comment editing is only available for the comment's author.");
 
 		final Comment savedComment = Comment.builder()
 				.withUuid(originalComment.getUuid())

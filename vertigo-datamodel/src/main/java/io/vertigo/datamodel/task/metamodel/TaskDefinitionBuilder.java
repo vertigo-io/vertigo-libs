@@ -49,7 +49,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @param taskDefinitionName the name of the taskDefinition (TK_XXX_YYY)
 	 */
 	TaskDefinitionBuilder(final String taskDefinitionName) {
-		Assertion.check().notNull(taskDefinitionName);
+		Assertion.check().isNotNull(taskDefinitionName);
 		//-----
 		myTaskDefinitionName = taskDefinitionName;
 	}
@@ -62,7 +62,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 */
 	public TaskDefinitionBuilder withEngine(final Class<? extends TaskEngine> taskEngineClass) {
 		Assertion.check()
-				.notNull(taskEngineClass)
+				.isNotNull(taskEngineClass)
 				.argument(TaskEngine.class.isAssignableFrom(taskEngineClass), "class must extends TaskEngine");
 		//We have to do this  test because generics are not safe
 		//---
@@ -75,7 +75,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @return this builder
 	 */
 	public TaskDefinitionBuilder withRequest(final String request) {
-		Assertion.check().notNull(request);
+		Assertion.check().isNotNull(request);
 		//-----
 		//Pour unifier la saisie de la request sous un environnement unix ou dos
 		// et pour éviter la disparité de gestion des retours chariot

@@ -49,11 +49,11 @@ public final class DslExpression {
 			final DslQuery query,
 			final String postBody) {
 		Assertion.check()
-				.notNull(preBody)
-				.notNull(field)
-				.notNull(multiField)
-				.notNull(query)
-				.notNull(postBody);
+				.isNotNull(preBody)
+				.isNotNull(field)
+				.isNotNull(multiField)
+				.isNotNull(query)
+				.isNotNull(postBody);
 		//-----
 		this.preBody = preBody;
 		fieldOptional = field;

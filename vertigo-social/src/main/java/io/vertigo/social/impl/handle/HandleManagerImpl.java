@@ -44,9 +44,9 @@ public final class HandleManagerImpl implements HandleManager, Activeable {
 			final VTransactionManager transactionManager,
 			final HandlePlugin handlePlugin) {
 		Assertion.check()
-				.notNull(entityStoreManager)
-				.notNull(transactionManager)
-				.notNull(handlePlugin);
+				.isNotNull(entityStoreManager)
+				.isNotNull(transactionManager)
+				.isNotNull(handlePlugin);
 		//---
 		this.entityStoreManager = entityStoreManager;
 		this.transactionManager = transactionManager;
@@ -111,7 +111,7 @@ public final class HandleManagerImpl implements HandleManager, Activeable {
 
 	@Override
 	public List<Handle> searchHandles(final String handlePrefix) {
-		Assertion.check().notNull(handlePrefix);
+		Assertion.check().isNotNull(handlePrefix);
 		//---
 		if (!StringUtil.isBlank(handlePrefix) && isStartingByDtDefinition(handlePrefix).isPresent()) {
 			// search with the plugin

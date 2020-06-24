@@ -34,8 +34,8 @@ final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 
 	CriteriaExpression(final CriteriaLogicalOperator operator, final Criteria<E>[] leftOperands, final Criteria<E> rightOperand) {
 		Assertion.check()
-				.notNull(operator)
-				.notNull(leftOperands);
+				.isNotNull(operator)
+				.isNotNull(leftOperands);
 		//---
 		this.operator = operator;
 		final int size = leftOperands.length + 1;
@@ -48,8 +48,8 @@ final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 
 	CriteriaExpression(final CriteriaLogicalOperator operator, final Criteria<E> leftOperand, final Criteria<E> rightOperand) {
 		Assertion.check()
-				.notNull(operator)
-				.notNull(leftOperand);
+				.isNotNull(operator)
+				.isNotNull(leftOperand);
 		//---
 		this.operator = operator;
 		this.operands = new Criteria[] { leftOperand, rightOperand };

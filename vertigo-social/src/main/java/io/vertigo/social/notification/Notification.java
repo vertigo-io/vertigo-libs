@@ -53,17 +53,17 @@ public final class Notification {
 	Notification(final UUID uuid, final String sender, final String type, final String title, final String content,
 			final int ttlInSeconds, final Instant creationDate, final String targetUrl, final Optional<String> userContent) {
 		Assertion.check()
-				.notNull(uuid)
+				.isNotNull(uuid)
 				.isNotBlank(sender)
 				.isNotBlank(type)
 				.isNotBlank(title)
 				.isNotBlank(content)
 				.argument(ttlInSeconds == -1 || ttlInSeconds > 0, "ttl must be positive or undefined (-1).")
 				.isNotBlank(targetUrl)
-				.notNull(creationDate)
-				.notNull(userContent);
+				.isNotNull(creationDate)
+				.isNotNull(userContent);
 		Assertion.when(userContent.isPresent())
-				.state(() -> userContent.get().length() > 0, "userContent can't be empty if set");
+				.isTrue(() -> userContent.get().length() > 0, "userContent can't be empty if set");
 		//-----
 		this.uuid = uuid;
 		this.sender = sender;

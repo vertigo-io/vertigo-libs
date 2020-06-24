@@ -88,8 +88,8 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 			@ParamValue("developmentMailTo") final String developmentMailTo,
 			@ParamValue("charset") final Optional<String> charsetOpt) {
 		Assertion.check()
-				.notNull(fileManager)
-				.notNull(mailSessionConnector)
+				.isNotNull(fileManager)
+				.isNotNull(mailSessionConnector)
 				.isNotBlank(developmentMailTo);
 		//-----
 		this.fileManager = fileManager;
@@ -102,7 +102,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void sendMail(final Mail mail) {
-		Assertion.check().notNull(mail);
+		Assertion.check().isNotNull(mail);
 		//-----
 		final Session session = mailSessionConnector.createSession();
 		try {
@@ -147,8 +147,8 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 
 	private static void setFromAddress(final String from, final Message message) throws MessagingException {
 		Assertion.check()
-				.notNull(from)
-				.notNull(message);
+				.isNotNull(from)
+				.isNotNull(message);
 		//-----
 		try {
 			message.setFrom(createInternetAddress(from));
@@ -160,8 +160,8 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 
 	private static void setReplyToAddress(final String replyTo, final Message message) throws MessagingException {
 		Assertion.check()
-				.notNull(message)
-				.notNull(replyTo);
+				.isNotNull(message)
+				.isNotNull(replyTo);
 		//-----
 		try {
 			final InternetAddress[] replyToArray = { createInternetAddress(replyTo) };
@@ -190,9 +190,9 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 
 	private void setDestAddress(final List<String> addressList, final Message message, final Message.RecipientType type) throws MessagingException {
 		Assertion.check()
-				.notNull(addressList)
+				.isNotNull(addressList)
 				.argument(!addressList.isEmpty(), "La liste des destinataires ne doit pas être vide")
-				.notNull(message);
+				.isNotNull(message);
 		//-----
 		final InternetAddress[] addresses = new InternetAddress[addressList.size()];
 		for (int i = 0; i < addressList.size(); i++) {
@@ -213,7 +213,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	private void setBodyContent(final String textContent, final String htmlContent, final Part bodyPart) throws MessagingException {
 		Assertion.check()
 				.argument(textContent != null || htmlContent != null, "Le mail n'a pas de contenu, ni en text, ni en html")
-				.notNull(bodyPart);
+				.isNotNull(bodyPart);
 		//-----
 		if (textContent != null && htmlContent != null) {
 			final Multipart multipart = new MimeMultipart("alternative");

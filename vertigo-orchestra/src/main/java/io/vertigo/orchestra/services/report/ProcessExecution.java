@@ -60,7 +60,7 @@ public final class ProcessExecution implements Serializable {
 			final Instant checkingDate,
 			final String checkingComment,
 			final Boolean hasLogFile) {
-		Assertion.check().notNull(preId);
+		Assertion.check().isNotNull(preId);
 		// ---
 		this.preId = preId;
 		this.beginTime = beginTime;

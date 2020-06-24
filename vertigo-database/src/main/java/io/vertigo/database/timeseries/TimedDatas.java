@@ -37,8 +37,8 @@ public final class TimedDatas implements Serializable {
 			final List<TimedDataSerie> timedDataSeries,
 			final List<String> seriesNames) {
 		Assertion.check()
-				.notNull(timedDataSeries)
-				.notNull(seriesNames);
+				.isNotNull(timedDataSeries)
+				.isNotNull(seriesNames);
 		//---
 		this.timedDataSeries = timedDataSeries;
 		this.seriesNames = seriesNames;

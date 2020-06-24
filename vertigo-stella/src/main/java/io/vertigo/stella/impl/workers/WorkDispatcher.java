@@ -37,8 +37,8 @@ final class WorkDispatcher implements Runnable {
 				.isNotBlank(nodeId)
 				.isNotBlank(workType)
 				.argument(workType.indexOf('^') == -1, "Number of dispatcher per WorkType must be managed by NodeManager {0}", workType)
-				.notNull(localWorker)
-				.notNull(nodePlugin);
+				.isNotNull(localWorker)
+				.isNotNull(nodePlugin);
 		//-----
 		this.nodeId = nodeId;
 		this.workType = workType;

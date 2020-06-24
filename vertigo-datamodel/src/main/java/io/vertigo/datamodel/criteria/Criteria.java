@@ -70,7 +70,7 @@ public abstract class Criteria<E extends Entity> implements Serializable {
 	 * @return a tuple with the query and the sql params
 	 */
 	public Tuple<String, CriteriaCtx> toStringAnCtx(final CriteriaEncoder criteriaEncoder) {
-		Assertion.check().notNull(criteriaEncoder);
+		Assertion.check().isNotNull(criteriaEncoder);
 		//---
 		final CriteriaCtx ctx = new CriteriaCtx();
 		final String sql = this.toString(ctx, criteriaEncoder);

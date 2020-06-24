@@ -37,9 +37,9 @@ public final class DslField {
 	 */
 	public DslField(final String preBody, final String fieldName, final String postBody) {
 		Assertion.check()
-				.notNull(preBody)
-				.notNull(fieldName)
-				.notNull(postBody);
+				.isNotNull(preBody)
+				.isNotNull(fieldName)
+				.isNotNull(postBody);
 		//-----
 		this.preBody = preBody;
 		this.fieldName = fieldName;

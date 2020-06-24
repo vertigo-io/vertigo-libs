@@ -92,7 +92,7 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
 	@Override
 	public void register(final Node node) {
-		Assertion.check().notNull(node);
+		Assertion.check().isNotNull(node);
 		//---
 		final String request = "insert into V_NODE(NODE_ID,JSON) values (?,?)";
 		executeCallableSql(request, node.getId(), gson.toJson(node));
@@ -101,7 +101,7 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
 	@Override
 	public void unregister(final Node node) {
-		Assertion.check().notNull(node);
+		Assertion.check().isNotNull(node);
 		// ---
 		final String request = "delete from V_NODE where NODE_ID = ?";
 		executeCallableSql(request, node.getId());
@@ -120,7 +120,7 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 		// ---
 		final String request = "select NODE_ID, JSON from V_NODE where NODE_ID = ?";
 		final List<Node> result = retrieveNodes(request, nodeId);
-		Assertion.check().state(result.size() <= 1, "Loaded two many rows when retrieving node with id : '{0}'", nodeId);
+		Assertion.check().isTrue(result.size() <= 1, "Loaded two many rows when retrieving node with id : '{0}'", nodeId);
 
 		if (result.size() == 1) {
 			return Optional.of(result.get(0));
@@ -132,7 +132,7 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
 	@Override
 	public void updateStatus(final Node node) {
-		Assertion.check().notNull(node);
+		Assertion.check().isNotNull(node);
 		// ---
 		final String request = "update V_NODE set JSON = ? where NODE_ID = ?";
 		executeCallableSql(request, gson.toJson(node), node.getId());

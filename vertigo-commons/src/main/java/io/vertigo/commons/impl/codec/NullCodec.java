@@ -29,7 +29,7 @@ final class NullCodec<S, T> implements Codec<S, T> {
 	private final Codec<S, T> delegateCodec;
 
 	NullCodec(final Codec<S, T> delegateCodec) {
-		Assertion.check().notNull(delegateCodec);
+		Assertion.check().isNotNull(delegateCodec);
 		//-----
 		this.delegateCodec = delegateCodec;
 	}

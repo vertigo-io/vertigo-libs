@@ -33,7 +33,7 @@ final class PegParseAllRule<O> implements PegRule<O> {
 	 * Constructor.
 	 */
 	PegParseAllRule(final PegRule<O> innerRule) {
-		Assertion.check().notNull(innerRule);
+		Assertion.check().isNotNull(innerRule);
 		//-----
 		this.innerRule = innerRule;
 		//---

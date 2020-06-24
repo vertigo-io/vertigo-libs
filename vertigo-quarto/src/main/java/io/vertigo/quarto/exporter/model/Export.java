@@ -57,10 +57,10 @@ public final class Export {
 	 */
 	Export(final ExportFormat format, final String fileName, final String title, final String author, final Export.Orientation orientation, final List<ExportSheet> sheets) {
 		Assertion.check()
-				.notNull(format)
+				.isNotNull(format)
 				.isNotBlank(fileName, "a fileName is required")
-				.notNull(orientation)
-				.notNull(sheets);
+				.isNotNull(orientation)
+				.isNotNull(sheets);
 		//-----
 		this.format = format;
 		this.fileName = fileName;

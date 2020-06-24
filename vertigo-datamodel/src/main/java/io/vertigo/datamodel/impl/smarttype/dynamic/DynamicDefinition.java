@@ -20,8 +20,8 @@ public final class DynamicDefinition {
 			final DefinitionSupplier definitionSupplier) {
 		Assertion.check()
 				.isNotBlank(name)
-				.notNull(definitionLinkNames)
-				.notNull(definitionSupplier);
+				.isNotNull(definitionLinkNames)
+				.isNotNull(definitionSupplier);
 		//---
 		this.name = name;
 		this.definitionLinkNames = definitionLinkNames;

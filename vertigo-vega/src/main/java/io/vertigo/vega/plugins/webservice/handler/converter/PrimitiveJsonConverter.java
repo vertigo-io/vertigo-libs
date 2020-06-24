@@ -42,7 +42,7 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 	 */
 	@Inject
 	public PrimitiveJsonConverter(final JsonEngine jsonReaderEngine) {
-		Assertion.check().notNull(jsonReaderEngine);
+		Assertion.check().isNotNull(jsonReaderEngine);
 		//-----
 		this.jsonReaderEngine = jsonReaderEngine;
 	}
@@ -90,7 +90,7 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 	}
 
 	private <D> D readPrimitiveValue(final String json, final Class<D> paramClass) {
-		Assertion.check().notNull(json); //never null (because after instanceof)
+		Assertion.check().isNotNull(json); //never null (because after instanceof)
 		//-----
 		if (paramClass.isPrimitive()) {
 			return jsonReaderEngine.fromJson(json, paramClass);
@@ -116,7 +116,7 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 
 	private static String escapeJsonValue(final String json) {
 		if (json.startsWith("\"")) {
-			Assertion.check().state(json.endsWith("\""), "Json value badly escaped by \"\" ({0})", json);
+			Assertion.check().isTrue(json.endsWith("\""), "Json value badly escaped by \"\" ({0})", json);
 			return json;
 		}
 		return "\"" + json + "\"";

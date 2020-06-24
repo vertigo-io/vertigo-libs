@@ -86,7 +86,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	 * @return Handler du tag pour ce tag (même instance que pour l'ouverture)
 	 */
 	private ScriptTag closeBlock(final String tagName) {
-		Assertion.check().notNull(tagName);
+		Assertion.check().isNotNull(tagName);
 		//-----
 		if (!blockStack.isEmpty()) {
 			final TagStackEntry tagStackEntry = blockStack.pop();
@@ -106,8 +106,8 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	 */
 	private void openBlock(final String tagName, final ScriptTag tagHandler) {
 		Assertion.check()
-				.notNull(tagName)
-				.notNull(tagHandler);
+				.isNotNull(tagName)
+				.isNotNull(tagHandler);
 		//-----
 		blockStack.push(new TagStackEntry(tagName, tagHandler));
 	}
@@ -131,7 +131,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	@Override
 	public void onExpression(final String expression, final ScriptSeparator separator) {
 		Assertion.check()
-				.state(!isGrammarClosed, "l'évaluateur de grammaire ne peut pas être réutilisé car il a été fermé")
+				.isTrue(!isGrammarClosed, "l'évaluateur de grammaire ne peut pas être réutilisé car il a été fermé")
 				.argument(expression != null, "un tag ne doit pas etre vide");
 		//-----
 		final ScriptTagContent tagContent = scriptGrammar.parseTag(expression);

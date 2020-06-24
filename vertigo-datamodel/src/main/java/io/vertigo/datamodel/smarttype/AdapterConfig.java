@@ -15,8 +15,8 @@ public class AdapterConfig {
 			final Class<? extends BasicTypeAdapter> adapterClass, final BasicType targetBasicType) {
 		Assertion.check()
 				.isNotBlank(type)
-				.notNull(adapterClass)
-				.notNull(targetBasicType);
+				.isNotNull(adapterClass)
+				.isNotNull(targetBasicType);
 		//---
 		this.type = type;
 		this.adapterClass = adapterClass;

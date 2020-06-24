@@ -65,8 +65,8 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 	 */
 	public FileActionSave add(final InputStream inputStream, final String path) {
 		Assertion.check()
-				.notNull(inputStream)
-				.notNull(path);
+				.isNotNull(inputStream)
+				.isNotNull(path);
 		//-----
 		final File txFinalFile = new File(path);
 		final File txNewFile = new File(path + EXT_SEPARATOR + System.currentTimeMillis() + EXT_SEPARATOR + EXT_NEW);

@@ -27,7 +27,7 @@ public final class CommandParam {
 	private final Type paramType;
 
 	public CommandParam(final Type paramType) {
-		Assertion.check().notNull(paramType);
+		Assertion.check().isNotNull(paramType);
 		//---
 		this.paramType = paramType;
 	}

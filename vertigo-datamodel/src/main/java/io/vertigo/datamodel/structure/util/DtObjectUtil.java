@@ -57,7 +57,7 @@ public final class DtObjectUtil {
 	 * @return the new instance
 	 */
 	public static DtObject createDtObject(final DtDefinition dtDefinition) {
-		Assertion.check().notNull(dtDefinition);
+		Assertion.check().isNotNull(dtDefinition);
 		//-----
 		//La création des DtObject n'est pas sécurisée
 		return ClassUtil.newInstance(dtDefinition.getClassCanonicalName(), DtObject.class);
@@ -79,7 +79,7 @@ public final class DtObjectUtil {
 	 * @return the id of the specified 'DtObject'
 	 */
 	public static Object getId(final Entity entity) {
-		Assertion.check().notNull(entity);
+		Assertion.check().isNotNull(entity);
 		//-----
 		final DtDefinition dtDefinition = findDtDefinition(entity);
 		final DtField idField = dtDefinition.getIdField().get();
@@ -104,9 +104,9 @@ public final class DtObjectUtil {
 	 */
 	public static <E extends Entity> UID<E> createUID(final DtObject dto, final String associationDefinitionName, final Class<E> dtoTargetClass) {
 		Assertion.check()
-				.notNull(associationDefinitionName)
-				.notNull(dto)
-				.notNull(dtoTargetClass);
+				.isNotNull(associationDefinitionName)
+				.isNotNull(dto)
+				.isNotNull(dtoTargetClass);
 		//-----
 		final AssociationSimpleDefinition associationSimpleDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
 		// 1. On recherche le nom du champ portant l'objet référencé (Exemple : personne)
@@ -132,9 +132,9 @@ public final class DtObjectUtil {
 	 */
 	public static DtListURIForSimpleAssociation createDtListURIForSimpleAssociation(final Entity entity, final String associationDefinitionName, final String roleName) {
 		Assertion.check()
-				.notNull(associationDefinitionName)
-				.notNull(roleName)
-				.notNull(entity);
+				.isNotNull(associationDefinitionName)
+				.isNotNull(roleName)
+				.isNotNull(entity);
 		//-----
 		final AssociationSimpleDefinition associationDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
 		return new DtListURIForSimpleAssociation(associationDefinition, entity.getUID(), roleName);
@@ -149,9 +149,9 @@ public final class DtObjectUtil {
 	 */
 	public static DtListURIForNNAssociation createDtListURIForNNAssociation(final Entity entity, final String associationDefinitionName, final String roleName) {
 		Assertion.check()
-				.notNull(associationDefinitionName)
-				.notNull(roleName)
-				.notNull(entity);
+				.isNotNull(associationDefinitionName)
+				.isNotNull(roleName)
+				.isNotNull(entity);
 		//-----
 		final AssociationNNDefinition associationDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationNNDefinition.class);
 		return new DtListURIForNNAssociation(associationDefinition, entity.getUID(), roleName);
@@ -163,7 +163,7 @@ public final class DtObjectUtil {
 	 * @return related entity UID
 	 */
 	public static <E extends Entity, F extends Fragment<E>> UID<E> createEntityUID(final F fragment) {
-		Assertion.check().notNull(fragment);
+		Assertion.check().isNotNull(fragment);
 		//-----
 		final DtDefinition dtDefinition = findDtDefinition(fragment);
 		final DtDefinition entityDtDefinition = dtDefinition.getFragment().get();
@@ -178,7 +178,7 @@ public final class DtObjectUtil {
 	 * @return Représentation sous forme text du dtObject.
 	 */
 	public static String toString(final DtObject dto) {
-		Assertion.check().notNull(dto);
+		Assertion.check().isNotNull(dto);
 		//-----
 		return findDtDefinition(dto).getFields()
 				.stream()
@@ -193,7 +193,7 @@ public final class DtObjectUtil {
 	 * @return the id
 	 */
 	public static DtDefinition findDtDefinition(final DtObject dto) {
-		Assertion.check().notNull(dto);
+		Assertion.check().isNotNull(dto);
 		//-----
 		return findDtDefinition(dto.getClass());
 	}
@@ -204,7 +204,7 @@ public final class DtObjectUtil {
 	 * @return the id
 	 */
 	public static DtDefinition findDtDefinition(final Class<? extends DtObject> dtObjectClass) {
-		Assertion.check().notNull(dtObjectClass);
+		Assertion.check().isNotNull(dtObjectClass);
 		//-----
 		final String name = DT_DEFINITION_PREFIX + dtObjectClass.getSimpleName();
 		return Home.getApp().getDefinitionSpace().resolve(name, DtDefinition.class);
@@ -216,7 +216,7 @@ public final class DtObjectUtil {
 	 * @return the id
 	 */
 	public static DtDefinition findDtDefinition(final String className) {
-		Assertion.check().notNull(className);
+		Assertion.check().isNotNull(className);
 		//-----
 		final String simpleName = className.substring(className.lastIndexOf('.') + 1);
 		return Home.getApp().getDefinitionSpace().resolve(simpleName, DtDefinition.class);
@@ -231,7 +231,7 @@ public final class DtObjectUtil {
 	 * @return compare value1 to value2
 	 */
 	public static int compareFieldValues(final DtObject dtoObject1, final DtObject dtoObject2, final DtField dtField, final boolean sortDesc) {
-		Assertion.check().state(DtObjectUtil.findDtDefinition(dtoObject1).equals(DtObjectUtil.findDtDefinition(dtoObject2)), "Only Dtobjects of the same type can be compared, you try to compare object types '{0}' and '{1}'", dtoObject1.getClass(), dtoObject2.getClass());
+		Assertion.check().isTrue(DtObjectUtil.findDtDefinition(dtoObject1).equals(DtObjectUtil.findDtDefinition(dtoObject2)), "Only Dtobjects of the same type can be compared, you try to compare object types '{0}' and '{1}'", dtoObject1.getClass(), dtoObject2.getClass());
 		final DataAccessor dataAccessor = dtField.getDataAccessor();
 		return compareFieldValues(dataAccessor.getValue(dtoObject1), dataAccessor.getValue(dtoObject2), sortDesc);
 	}

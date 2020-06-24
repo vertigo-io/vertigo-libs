@@ -42,8 +42,8 @@ public final class EntityStoreConfigImpl implements EntityStoreConfig {
 	 */
 	public EntityStoreConfigImpl(final List<EntityStorePlugin> dataStorePlugins, final CacheManager cacheManager) {
 		Assertion.check()
-				.notNull(dataStorePlugins)
-				.notNull(cacheManager);
+				.isNotNull(dataStorePlugins)
+				.isNotNull(cacheManager);
 		//-----
 		cacheStoreConfig = new CacheDataStoreConfig(cacheManager);
 		logicalDataStoreConfig = new LogicalEntityStoreConfig(dataStorePlugins);

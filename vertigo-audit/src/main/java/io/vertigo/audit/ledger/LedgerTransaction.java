@@ -50,15 +50,15 @@ public final class LedgerTransaction {
 			final BigInteger value,
 			final String message) {
 		Assertion.check()
-				.notNull(hash)
-				.notNull(nonce)
-				.notNull(blockHash)
-				.notNull(blockNumber)
-				.notNull(transactionIndex)
-				.notNull(from)
-				.notNull(to)
-				.notNull(value)
-				.notNull(message);
+				.isNotNull(hash)
+				.isNotNull(nonce)
+				.isNotNull(blockHash)
+				.isNotNull(blockNumber)
+				.isNotNull(transactionIndex)
+				.isNotNull(from)
+				.isNotNull(to)
+				.isNotNull(value)
+				.isNotNull(message);
 		//-----
 		this.hash = hash;
 		this.nonce = nonce;

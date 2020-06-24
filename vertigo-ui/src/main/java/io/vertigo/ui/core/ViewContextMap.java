@@ -69,10 +69,10 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	/** {@inheritDoc} */
 	@Override
 	public Serializable get(final Object key) {
-		Assertion.check().notNull(key);
+		Assertion.check().isNotNull(key);
 		//-----
 		final Serializable o = super.get(key);
-		Assertion.check().notNull(o, "Objet :{0} non trouvé! Vérifier que l objet est bien enregistré avec la clé. Clés disponibles {1}", key, keySet());
+		Assertion.check().isNotNull(o, "Objet :{0} non trouvé! Vérifier que l objet est bien enregistré avec la clé. Clés disponibles {1}", key, keySet());
 		return o;
 	}
 
@@ -141,7 +141,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	/** {@inheritDoc} */
 	@Override
 	public boolean containsKey(final Object key) {
-		Assertion.check().notNull(key);
+		Assertion.check().isNotNull(key);
 		//-----
 		return super.containsKey(key);
 	}
@@ -151,7 +151,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @return Clé de context de l'élément (null si non trouvé)
 	 */
 	public String findKey(final UiObject<?> uiObject) {
-		Assertion.check().notNull(uiObject);
+		Assertion.check().isNotNull(uiObject);
 		//-----
 		final String contextKey = reverseUiObjectIndex.get(uiObject);
 		if (contextKey != null) {
@@ -171,7 +171,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @return Clé de context de l'élément (null si non trouvé)
 	 */
 	public String findKey(final DtObject dtObject) {
-		Assertion.check().notNull(dtObject);
+		Assertion.check().isNotNull(dtObject);
 		//-----
 		final String contextKey = reverseUiObjectIndex.get(dtObject);
 		if (contextKey != null) {
@@ -190,9 +190,9 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	@Override
 	public Serializable put(final String key, final Serializable value) {
 		Assertion.check()
-				.state(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX))
+				.isTrue(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX))
 				.isNotBlank(key)
-				.notNull(value, "la valeur doit être renseignée pour {0}", key)
+				.isNotNull(value, "la valeur doit être renseignée pour {0}", key)
 				.argument(!(value instanceof DtObject), "Vous devez poser des uiObject dans le context pas des objets métiers ({0})", key)
 				.argument(!(value instanceof DtList), "Vous devez poser des uiList dans le context pas des listes d'objets métiers ({0})", key);
 		//-----
@@ -210,8 +210,8 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	@Override
 	public Serializable remove(final Object key) {
 		Assertion.check()
-				.state(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX))
-				.state(key instanceof String, "La clé doit être de type String");
+				.isTrue(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX))
+				.isTrue(key instanceof String, "La clé doit être de type String");
 		//---
 		final String keyString = (String) key;
 		Assertion.check().isNotBlank(keyString);
@@ -242,7 +242,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * passe le context en non-modifiable.
 	 */
 	public void makeUnmodifiable() {
-		Assertion.check().state(!dirty, "Can't fixed a dirty context");
+		Assertion.check().isTrue(!dirty, "Can't fixed a dirty context");
 		//-----
 		unmodifiable = true;
 	}
@@ -308,19 +308,19 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	}
 
 	public void addKeyForClient(final String object, final String fieldName) {
-		Assertion.check().state(containsKey(object), "No {0} in context", object);
+		Assertion.check().isTrue(containsKey(object), "No {0} in context", object);
 		//----
 		keysForClient.computeIfAbsent(object, k -> new HashSet<>()).add(fieldName);
 	}
 
 	public void addKeyForClient(final String object) {
-		Assertion.check().state(containsKey(object), "No {0} in context", object);
+		Assertion.check().isTrue(containsKey(object), "No {0} in context", object);
 		//----
 		keysForClient.put(object, Collections.emptySet());// notmodifiable because used only for primitives
 	}
 
 	public void addProtectedValueTransformer(final String objectKey, final String objectFieldName) {
-		Assertion.check().state(containsKey(objectKey), "No {0} in context", objectKey);
+		Assertion.check().isTrue(containsKey(objectKey), "No {0} in context", objectKey);
 		//----
 		valueTransformers.computeIfAbsent(objectKey,
 				k -> new HashMap<>()).put(objectFieldName,
@@ -329,8 +329,8 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 
 	public String obtainFkList(final String objectKey, final String objectFieldName) {
 		Assertion.check()
-				.state(containsKey(objectKey), "No {0} in context", objectKey)
-				.state(objectFieldName.endsWith("_display"), "Can't accept {0}, only '_display' transformer is accepted", objectKey);
+				.isTrue(containsKey(objectKey), "No {0} in context", objectKey)
+				.isTrue(objectFieldName.endsWith("_display"), "Can't accept {0}, only '_display' transformer is accepted", objectKey);
 		//----
 		final String fieldName = objectFieldName.substring(0, objectFieldName.length() - "_display".length());
 		final DtDefinition fkDefinition = getUiObject(objectKey).getDtDefinition().getField(fieldName).getFkDtDefinition();
@@ -382,13 +382,13 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	}
 
 	private Function<Serializable, String> createValueTransformer(final List<String> params) {
-		Assertion.check().state(params.size() > 0, "ValueTransformer should be typed in first param, provided params {0}", params);
+		Assertion.check().isTrue(params.size() > 0, "ValueTransformer should be typed in first param, provided params {0}", params);
 		final String transformerType = params.get(0);
 
 		if (PROTECTED_VALUE_TRANSFORMER.equals(transformerType)) {
 			return ProtectedValueUtil::generateProtectedValue;
 		} else if (MAP_VALUE_TRANSFORMER.equals(transformerType)) {
-			Assertion.check().state(params.size() == 3 + 1, "ListValueTransformer requires 3 params, provided params {0}", params);
+			Assertion.check().isTrue(params.size() == 3 + 1, "ListValueTransformer requires 3 params, provided params {0}", params);
 			// ---
 			final String listKey = params.get(1);
 			final String listKeyFieldName = params.get(2);

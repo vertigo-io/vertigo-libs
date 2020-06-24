@@ -95,7 +95,7 @@ public final class MailManagerTest {
 	 */
 	@Test
 	public void testNotNull() {
-		Assertion.check().notNull(mailManager);
+		Assertion.check().isNotNull(mailManager);
 	}
 
 	/**

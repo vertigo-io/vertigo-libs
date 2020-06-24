@@ -41,7 +41,7 @@ public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Ite
 
 	@Inject
 	public ItemSearchLoader(final SearchManager searchManager) {
-		Assertion.check().notNull(searchManager);
+		Assertion.check().isNotNull(searchManager);
 		//---
 		this.searchManager = searchManager;
 	}
@@ -50,7 +50,7 @@ public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Ite
 	 * @param boundedDataBase Database to bound with this loader (specific for tests)
 	 */
 	public void bindDataBase(final ItemDataBase boundedDataBase) {
-		Assertion.check().notNull(boundedDataBase);
+		Assertion.check().isNotNull(boundedDataBase);
 		//----
 		itemDataBase = boundedDataBase;
 	}
@@ -58,7 +58,7 @@ public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Ite
 	/** {@inheritDoc} */
 	@Override
 	public List<SearchIndex<Item, Item>> loadData(final SearchChunk<Item> searchChunk) {
-		Assertion.check().notNull(itemDataBase, "itemDataBase not bound");
+		Assertion.check().isNotNull(itemDataBase, "itemDataBase not bound");
 		//-----
 		final SearchIndexDefinition indexDefinition = searchManager.findFirstIndexDefinitionByKeyConcept(Item.class);
 		final List<SearchIndex<Item, Item>> itemIndexes = new ArrayList<>();

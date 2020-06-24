@@ -59,8 +59,8 @@ public final class Task {
 	 */
 	Task(final TaskDefinition taskDefinition, final Map<TaskAttribute, Object> inTaskAttributes) {
 		Assertion.check()
-				.notNull(taskDefinition)
-				.notNull(inTaskAttributes);
+				.isNotNull(taskDefinition)
+				.isNotNull(inTaskAttributes);
 		//-----
 		this.taskDefinition = taskDefinition;
 		this.inTaskAttributes = inTaskAttributes;

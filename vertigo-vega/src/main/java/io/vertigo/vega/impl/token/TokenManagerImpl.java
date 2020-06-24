@@ -57,8 +57,8 @@ public final class TokenManagerImpl implements TokenManager {
 			final KVStoreManager kvStoreManager) {
 		Assertion.check()
 				.isNotBlank(collection)
-				.notNull(securityManager)
-				.notNull(kvStoreManager);
+				.isNotNull(securityManager)
+				.isNotNull(kvStoreManager);
 		//-----
 		this.collection = collection;
 		this.securityManager = securityManager;
@@ -72,7 +72,7 @@ public final class TokenManagerImpl implements TokenManager {
 	/** {@inheritDoc} */
 	@Override
 	public String put(final Serializable data) {
-		Assertion.check().notNull(data, "Data is mandatory");
+		Assertion.check().isNotNull(data, "Data is mandatory");
 		//-----
 		final String objectUUID = UUID.randomUUID().toString();
 		final String tokenKey = makeTokenKey(objectUUID);

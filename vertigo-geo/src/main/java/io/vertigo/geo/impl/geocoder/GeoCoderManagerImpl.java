@@ -37,7 +37,7 @@ public final class GeoCoderManagerImpl implements GeoCoderManager {
 	 */
 	@Inject
 	public GeoCoderManagerImpl(final GeoCoderPlugin geoCoderPlugin) {
-		Assertion.check().notNull(geoCoderPlugin);
+		Assertion.check().isNotNull(geoCoderPlugin);
 		//-----
 		this.geoCoderPlugin = geoCoderPlugin;
 

@@ -79,10 +79,10 @@ public final class FacetedQueryDefinition implements Definition {
 			final String geoSearchQuery) {
 		Assertion.check()
 				.isNotBlank(name)
-				.notNull(facetDefinitions)
-				.notNull(criteriaSmartType)
-				.notNull(listFilterBuilderClass)
-				.notNull(listFilterBuilderQuery);
+				.isNotNull(facetDefinitions)
+				.isNotNull(criteriaSmartType)
+				.isNotNull(listFilterBuilderClass)
+				.isNotNull(listFilterBuilderQuery);
 		//Assertion.check().notNull(geoSearchQuery);
 		//-----
 		this.name = name;
@@ -106,7 +106,7 @@ public final class FacetedQueryDefinition implements Definition {
 		//-----
 		final FacetDefinition facetDefinition = facetDefinitions.get(facetName);
 		//-----
-		Assertion.check().notNull(facetDefinition, "Aucune Définition de facette trouvée pour {0}", facetName);
+		Assertion.check().isNotNull(facetDefinition, "Aucune Définition de facette trouvée pour {0}", facetName);
 		return facetDefinition;
 	}
 

@@ -51,7 +51,7 @@ public abstract class TaskEngine {
 	 * @return TaskResult contenant les résultats
 	 */
 	public final TaskResult process(final Task task) {
-		Assertion.check().notNull(task);
+		Assertion.check().isNotNull(task);
 		//-----
 		input = task;
 		execute();
@@ -79,7 +79,7 @@ public abstract class TaskEngine {
 	protected final void setResult(final Object o) {
 		Assertion.check()
 				.argument(o != Void.TYPE, "you can't  invoke setResult with Void, use null instead")
-				.state(result == Void.TYPE, "you can't  invoke setResult more than one time");
+				.isTrue(result == Void.TYPE, "you can't  invoke setResult more than one time");
 		//-----
 		result = o;
 	}

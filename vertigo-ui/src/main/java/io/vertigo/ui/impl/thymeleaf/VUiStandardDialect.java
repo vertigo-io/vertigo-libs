@@ -44,7 +44,7 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 
 	public VUiStandardDialect(final Set<NamedComponentDefinition> components) {
 		super(NAME, PREFIX, PROCESSOR_PRECEDENCE);
-		Assertion.check().notNull(components);
+		Assertion.check().isNotNull(components);
 		//---
 		this.components = components;
 	}

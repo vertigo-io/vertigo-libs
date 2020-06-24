@@ -33,7 +33,7 @@ public final class ScriptTagContent {
 
 	ScriptTagContent(final ScriptTagDefinition definition, final String attribute) {
 		Assertion.check()
-				.notNull(definition)
+				.isNotNull(definition)
 				.argument(attribute == null || attribute.length() > 0, "Les attributs doivent faire plus de 1 caractère");
 		//-----
 		this.definition = definition;

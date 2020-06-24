@@ -52,8 +52,8 @@ public final class Facet implements Serializable {
 	 */
 	public Facet(final FacetDefinition facetDefinition, final Map<FacetValue, Long> facetValues) {
 		Assertion.check()
-				.notNull(facetDefinition)
-				.notNull(facetValues)
+				.isNotNull(facetDefinition)
+				.isNotNull(facetValues)
 				.argument(facetValues instanceof LinkedHashMap || facetValues instanceof SortedMap,
 						"FacetValues must be sorted, shoud implements SortedMap or LinkedHashMap ({0})", facetValues.getClass().getSimpleName());
 		//-----

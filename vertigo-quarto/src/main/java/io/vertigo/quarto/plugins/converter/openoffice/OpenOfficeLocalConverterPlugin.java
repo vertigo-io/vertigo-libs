@@ -86,7 +86,7 @@ public final class OpenOfficeLocalConverterPlugin extends AbstractOpenOfficeConv
 			LOGGER.debug("Openning document... {}", inputUrl);
 		}
 		final XComponent xDoc = openOfficeConnection.getDesktop().loadComponentFromURL(inputUrl, "_blank", 0, loadProps);
-		Assertion.check().notNull(xDoc, "Le document n''a pas été chargé : {0}", inputUrl);
+		Assertion.check().isNotNull(xDoc, "Le document n''a pas été chargé : {0}", inputUrl);
 
 		return xDoc;
 	}

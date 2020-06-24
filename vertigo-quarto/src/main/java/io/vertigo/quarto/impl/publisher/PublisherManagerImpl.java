@@ -49,9 +49,9 @@ public final class PublisherManagerImpl implements PublisherManager {
 	@Inject
 	public PublisherManagerImpl(final ScriptManager scriptManager, final FileManager fileManager, final MergerPlugin mergerPlugin) {
 		Assertion.check()
-				.notNull(fileManager)
-				.notNull(scriptManager)
-				.notNull(mergerPlugin);
+				.isNotNull(fileManager)
+				.isNotNull(scriptManager)
+				.isNotNull(mergerPlugin);
 		//-----
 		this.fileManager = fileManager;
 		this.mergerPlugin = mergerPlugin;
@@ -61,9 +61,9 @@ public final class PublisherManagerImpl implements PublisherManager {
 	@Override
 	public VFile publish(final String fileName, final URL modelFileURL, final PublisherData data) {
 		Assertion.check()
-				.notNull(fileName)
-				.notNull(modelFileURL)
-				.notNull(data);
+				.isNotNull(fileName)
+				.isNotNull(modelFileURL)
+				.isNotNull(data);
 		//-----
 		try {
 			return generateFile(fileName, modelFileURL, data);

@@ -46,7 +46,7 @@ public final class AnalyticsWebServiceHandlerPlugin implements WebServiceHandler
 	 */
 	@Inject
 	public AnalyticsWebServiceHandlerPlugin(final AnalyticsManager analyticsManager) {
-		Assertion.check().notNull(analyticsManager);
+		Assertion.check().isNotNull(analyticsManager);
 		//-----
 		this.analyticsManager = analyticsManager;
 	}

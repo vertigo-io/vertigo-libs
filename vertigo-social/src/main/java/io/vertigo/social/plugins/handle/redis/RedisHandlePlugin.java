@@ -27,8 +27,8 @@ public class RedisHandlePlugin implements HandlePlugin {
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<RedisConnector> redisConnectors) {
 		Assertion.check()
-				.notNull(connectorNameOpt)
-				.notNull(redisConnectors);
+				.isNotNull(connectorNameOpt)
+				.isNotNull(redisConnectors);
 		//---
 		final String connectorName = connectorNameOpt.orElse("main");
 		redisConnector = redisConnectors.stream()

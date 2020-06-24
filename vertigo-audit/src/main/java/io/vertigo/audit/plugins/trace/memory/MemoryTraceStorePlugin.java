@@ -47,8 +47,8 @@ public final class MemoryTraceStorePlugin implements TraceStorePlugin {
 	@Override
 	public void create(final Trace auditTrace) {
 		Assertion.check()
-				.notNull(auditTrace)
-				.state(auditTrace.getId() == null, "A new audit trail must not have an id");
+				.isNotNull(auditTrace)
+				.isTrue(auditTrace.getId() == null, "A new audit trail must not have an id");
 		//---
 		final long generatedId = memorySequenceGenerator.addAndGet(1);
 		auditTrace.setId(generatedId);

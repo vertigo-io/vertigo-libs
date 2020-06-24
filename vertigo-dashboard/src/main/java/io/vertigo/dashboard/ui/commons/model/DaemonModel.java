@@ -30,8 +30,8 @@ public final class DaemonModel {
 			final DaemonDefinition daemonDefinition,
 			final DaemonStat daemonStat) {
 		Assertion.check()
-				.notNull(daemonDefinition)
-				.notNull(daemonStat);
+				.isNotNull(daemonDefinition)
+				.isNotNull(daemonStat);
 		//---
 		this.daemonDefinition = daemonDefinition;
 		this.daemonStat = daemonStat;

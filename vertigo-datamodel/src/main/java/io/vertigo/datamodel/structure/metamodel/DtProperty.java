@@ -86,7 +86,7 @@ public final class DtProperty {
 		try {
 			final Field field = DtProperty.class.getDeclaredField(propertyName);
 			final Property<?> property = Property.class.cast(field.get(DtProperty.class));
-			Assertion.check().notNull(property);
+			Assertion.check().isNotNull(property);
 			return property;
 		} catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
 			throw WrappedException.wrap(e, "property '{0}' not found on DtProperty", propertyName);

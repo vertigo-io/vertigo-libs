@@ -68,10 +68,10 @@ public final class ProcessDefinition implements Definition {
 		Assertion.check()
 				.isNotBlank(name)
 				.isNotBlank(label)
-				.notNull(processType)
-				.notNull(metadatas)
-				.notNull(triggeringStrategy)
-				.notNull(activities);
+				.isNotNull(processType)
+				.isNotNull(metadatas)
+				.isNotNull(triggeringStrategy)
+				.isNotNull(activities);
 		//---
 		this.name = name;
 		this.label = label;

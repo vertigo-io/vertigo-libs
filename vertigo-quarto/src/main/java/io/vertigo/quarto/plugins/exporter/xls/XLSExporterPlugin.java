@@ -56,7 +56,7 @@ public final class XLSExporterPlugin implements ExporterPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public boolean accept(final ExportFormat exportFormat) {
-		Assertion.check().notNull(exportFormat);
+		Assertion.check().isNotNull(exportFormat);
 		//---
 		return exportFormat == ExportFormat.XLS;
 	}

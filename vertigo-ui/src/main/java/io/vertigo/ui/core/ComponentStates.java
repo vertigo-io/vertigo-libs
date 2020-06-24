@@ -58,7 +58,7 @@ public final class ComponentStates extends HashMap<String, Serializable> {
 		public HashMap<String, Serializable> addObjectToList(final String listKey, final Map object) {
 			Assertion.check()
 					.isNotBlank(listKey)
-					.notNull(object);
+					.isNotNull(object);
 			//---
 			final HashMap<String, Serializable> modifiableObject = new HashMap<>(object);// just to have a modifiable map
 			((List) get(listKey)).add(modifiableObject);

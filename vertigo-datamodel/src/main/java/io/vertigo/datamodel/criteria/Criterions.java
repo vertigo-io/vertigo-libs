@@ -132,8 +132,8 @@ public final class Criterions {
 	 */
 	public static <E extends Entity> Criteria<E> isBetween(final DtFieldName<E> dtFieldName, final CriterionLimit<E> min, final CriterionLimit<E> max) {
 		Assertion.check()
-				.notNull(min)
-				.notNull(max);
+				.isNotNull(min)
+				.isNotNull(max);
 		return new Criterion<>(dtFieldName, CriterionOperator.BETWEEN, min, max);
 	}
 

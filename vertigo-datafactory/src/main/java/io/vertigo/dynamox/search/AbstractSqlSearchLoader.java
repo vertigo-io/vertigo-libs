@@ -69,8 +69,8 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 			final TaskManager taskManager,
 			final VTransactionManager transactionManager) {
 		Assertion.check()
-				.notNull(taskManager)
-				.notNull(transactionManager);
+				.isNotNull(taskManager)
+				.isNotNull(transactionManager);
 		// -----
 		this.taskManager = taskManager;
 		this.transactionManager = transactionManager;
@@ -133,7 +133,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 				.append(pkFieldName)
 				.append('#');
 		final String sqlQueryFilter = getSqlQueryFilter();
-		Assertion.check().notNull(sqlQueryFilter, "getSqlQueryFilter can't be null");
+		Assertion.check().isNotNull(sqlQueryFilter, "getSqlQueryFilter can't be null");
 		if (!sqlQueryFilter.isEmpty()) {
 			request.append(" and (").append(sqlQueryFilter).append(')');
 		}

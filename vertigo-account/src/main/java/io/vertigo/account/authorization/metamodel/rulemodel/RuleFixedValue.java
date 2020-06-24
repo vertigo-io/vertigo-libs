@@ -32,7 +32,7 @@ public final class RuleFixedValue implements RuleValue {
 	 * @param fixedValue Fixed content
 	 */
 	public RuleFixedValue(final String fixedValue) {
-		Assertion.check().notNull(fixedValue);
+		Assertion.check().isNotNull(fixedValue);
 		//-----
 		this.fixedValue = fixedValue;
 	}

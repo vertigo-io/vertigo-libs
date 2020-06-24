@@ -81,8 +81,8 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 			final LocaleManager localeManager,
 			final AnalyticsManager analyticsManager) {
 		Assertion.check()
-				.notNull(searchServicesPlugin)
-				.notNull(analyticsManager);
+				.isNotNull(searchServicesPlugin)
+				.isNotNull(analyticsManager);
 		//-----
 		this.searchServicesPlugin = searchServicesPlugin;
 		this.analyticsManager = analyticsManager;
@@ -234,12 +234,12 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	@Override
 	public void markAsDirty(final List<UID<? extends KeyConcept>> keyConceptUris) {
 		Assertion.check()
-				.notNull(keyConceptUris)
+				.isNotNull(keyConceptUris)
 				.argument(!keyConceptUris.isEmpty(), "dirty keyConceptUris cant be empty");
 		//-----
 		final DtDefinition keyConceptDefinition = keyConceptUris.get(0).getDefinition();
 		final List<SearchIndexDefinition> searchIndexDefinitions = findIndexDefinitionByKeyConcept(keyConceptDefinition);
-		Assertion.check().notNull(!searchIndexDefinitions.isEmpty(), "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptDefinition.getName());
+		Assertion.check().isNotNull(!searchIndexDefinitions.isEmpty(), "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptDefinition.getName());
 		//-----
 		for (final SearchIndexDefinition searchIndexDefinition : searchIndexDefinitions) {
 			final Set<UID<? extends KeyConcept>> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());

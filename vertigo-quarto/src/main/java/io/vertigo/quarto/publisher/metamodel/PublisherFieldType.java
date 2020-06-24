@@ -63,7 +63,7 @@ public enum PublisherFieldType {
 	 * @return Si la valeur correspond au type du champ.
 	 */
 	public boolean checkValue(final Object value) {
-		Assertion.check().notNull(value, "La valeur du champ est obligatoire.");
+		Assertion.check().isNotNull(value, "La valeur du champ est obligatoire.");
 		//-----
 		switch (this) {
 			case Boolean:

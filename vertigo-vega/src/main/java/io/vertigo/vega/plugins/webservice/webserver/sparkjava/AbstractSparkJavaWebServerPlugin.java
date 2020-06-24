@@ -38,9 +38,9 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin, Acti
 	private final Optional<String> apiPrefix;
 
 	public AbstractSparkJavaWebServerPlugin(final Optional<String> apiPrefix) {
-		Assertion.check().notNull(apiPrefix);
+		Assertion.check().isNotNull(apiPrefix);
 		Assertion.when(apiPrefix.isPresent())
-				.state(() -> apiPrefix.get().startsWith("/"), "Global route apiPrefix must starts with /");
+				.isTrue(() -> apiPrefix.get().startsWith("/"), "Global route apiPrefix must starts with /");
 		//-----
 		this.apiPrefix = apiPrefix;
 	}
@@ -66,8 +66,8 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin, Acti
 	@Override
 	public final void registerWebServiceRoute(final HandlerChain handlerChain, final Collection<WebServiceDefinition> webServiceDefinitions) {
 		Assertion.check()
-				.notNull(handlerChain)
-				.notNull(webServiceDefinitions);
+				.isNotNull(handlerChain)
+				.isNotNull(webServiceDefinitions);
 		//-----
 		boolean corsProtected = false;
 		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {

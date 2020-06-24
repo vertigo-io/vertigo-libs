@@ -49,7 +49,7 @@ public final class ExportBuilder implements Builder<Export> {
 	 */
 	public ExportBuilder(final ExportFormat format, final String fileName) {
 		Assertion.check()
-				.notNull(format)
+				.isNotNull(format)
 				.isNotBlank(fileName, "FileName doit être non vide");
 		//-----
 		this.format = format;
@@ -102,7 +102,7 @@ public final class ExportBuilder implements Builder<Export> {
 	 * @param sheet parametre de données(DTO ou DTC) à ajouter à ce document.
 	 */
 	ExportBuilder addSheet(final ExportSheet sheet) {
-		Assertion.check().notNull(sheet);
+		Assertion.check().isNotNull(sheet);
 		//-----
 		sheets.add(sheet);
 		return this;

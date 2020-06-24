@@ -12,7 +12,7 @@ public final class Handle {
 			final UID uid,
 			final String code) {
 		Assertion.check()
-				.notNull(uid)
+				.isNotNull(uid)
 				.isNotBlank(code);
 		//---
 		this.uid = uid;

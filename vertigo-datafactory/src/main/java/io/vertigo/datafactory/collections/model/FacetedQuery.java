@@ -41,8 +41,8 @@ public final class FacetedQuery implements Serializable {
 	 */
 	public FacetedQuery(final FacetedQueryDefinition facetedQueryDefinition, final SelectedFacetValues selectedFacetValue) {
 		Assertion.check()
-				.notNull(facetedQueryDefinition)
-				.notNull(selectedFacetValue);
+				.isNotNull(facetedQueryDefinition)
+				.isNotNull(selectedFacetValue);
 		//-----
 		facetedQueryDefinitionRef = new DefinitionReference<>(facetedQueryDefinition);
 		selectedFacetValues = selectedFacetValue;

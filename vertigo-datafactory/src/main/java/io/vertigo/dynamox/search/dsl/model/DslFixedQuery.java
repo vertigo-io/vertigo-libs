@@ -32,7 +32,7 @@ public final class DslFixedQuery implements DslQuery {
 	 * @param fixedQuery Fixed content
 	 */
 	public DslFixedQuery(final String fixedQuery) {
-		Assertion.check().notNull(fixedQuery);
+		Assertion.check().isNotNull(fixedQuery);
 		//-----
 		this.fixedQuery = fixedQuery;
 	}

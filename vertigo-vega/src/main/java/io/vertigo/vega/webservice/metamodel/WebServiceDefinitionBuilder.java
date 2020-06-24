@@ -61,7 +61,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	 * @param method Method to bind to this webService
 	 */
 	WebServiceDefinitionBuilder(final Method method) {
-		Assertion.check().notNull(method);
+		Assertion.check().isNotNull(method);
 		//-----
 		myMethod = method;
 	}
@@ -136,11 +136,11 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	 * @return this builder
 	 */
 	public WebServiceDefinitionBuilder with(final Verb verb, final String path) {
-		Assertion.check().state(myVerb == null, "A verb is already specified on {0}.{1} ({2})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName(), myVerb);
+		Assertion.check().isTrue(myVerb == null, "A verb is already specified on {0}.{1} ({2})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName(), myVerb);
 		Assertion.when(StringUtil.isBlank(myPathPrefix))
-				.state(() -> !StringUtil.isBlank(path), "Route path must be specified on {0}.{1} (at least you should defined a pathPrefix)", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
+				.isTrue(() -> !StringUtil.isBlank(path), "Route path must be specified on {0}.{1} (at least you should defined a pathPrefix)", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
 		Assertion.when(!StringUtil.isBlank(path))
-				.state(() -> path.startsWith("/"), "Route path must be empty (then use pathPrefix) or starts with / (on {0}.{1})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
+				.isTrue(() -> path.startsWith("/"), "Route path must be empty (then use pathPrefix) or starts with / (on {0}.{1})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
 		//-----
 		myVerb = verb;
 		myPath = path;
@@ -195,7 +195,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	 * @return this builder
 	 */
 	public WebServiceDefinitionBuilder addExcludedFields(final String... excludedFields) {
-		Assertion.check().notNull(excludedFields);
+		Assertion.check().isNotNull(excludedFields);
 		//-----
 		myExcludedFields.addAll(Arrays.asList(excludedFields));
 		return this;
@@ -206,7 +206,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	 * @return this builder
 	 */
 	public WebServiceDefinitionBuilder addIncludedFields(final String... includedFields) {
-		Assertion.check().notNull(includedFields);
+		Assertion.check().isNotNull(includedFields);
 		//-----
 		myIncludedFields.addAll(Arrays.asList(includedFields));
 		return this;

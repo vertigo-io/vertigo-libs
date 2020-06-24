@@ -45,7 +45,7 @@ public final class VFileResponseBuilder {
 	 * @param httpResponse ServletResponse
 	 */
 	public VFileResponseBuilder(final HttpServletResponse httpResponse) {
-		Assertion.check().notNull(httpResponse);
+		Assertion.check().isNotNull(httpResponse);
 		//-----
 		this.httpResponse = httpResponse;
 	}

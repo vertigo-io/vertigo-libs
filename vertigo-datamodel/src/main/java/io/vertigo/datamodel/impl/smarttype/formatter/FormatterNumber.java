@@ -80,12 +80,12 @@ public class FormatterNumber implements Formatter {
 	 * @param args args
 	 */
 	protected final void initParameters(final String args) {
-		Assertion.check().notNull(args);
+		Assertion.check().isNotNull(args);
 		//-----
 		pattern = args;
 		//-----
 		//On vérifie la syntaxe de DecimalFormat
-		Assertion.check().notNull(new DecimalFormat(pattern));
+		Assertion.check().isNotNull(new DecimalFormat(pattern));
 	}
 
 	/**

@@ -79,8 +79,8 @@ public final class StrutsUiObject<D extends DtObject> extends VegaUiObject<D> im
 	public String put(final String fieldName, final Serializable value) {
 		Assertion.check()
 				.isNotBlank(fieldName)
-				.notNull(value, "La valeur formatée ne doit pas être null mais vide ({0})", fieldName)
-				.state(value instanceof String || value instanceof String[], "Les données saisies doivent être de type String ou String[] ({0} : {1})", fieldName, value.getClass());
+				.isNotNull(value, "La valeur formatée ne doit pas être null mais vide ({0})", fieldName)
+				.isTrue(value instanceof String || value instanceof String[], "Les données saisies doivent être de type String ou String[] ({0} : {1})", fieldName, value.getClass());
 		//-----
 		final DtField dtField = getDtField(fieldName);
 		final String strValue;

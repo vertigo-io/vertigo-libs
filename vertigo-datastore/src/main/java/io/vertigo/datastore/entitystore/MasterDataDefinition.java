@@ -38,8 +38,8 @@ public class MasterDataDefinition implements Definition {
 			final Predicate predicate) {
 		Assertion.check()
 				.isNotBlank(name)
-				.notNull(uri)
-				.notNull(predicate);
+				.isNotNull(uri)
+				.isNotNull(predicate);
 		//---
 		this.name = name;
 		this.uri = uri;

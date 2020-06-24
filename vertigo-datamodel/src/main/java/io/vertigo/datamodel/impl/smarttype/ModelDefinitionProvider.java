@@ -41,7 +41,7 @@ public class ModelDefinitionProvider implements DefinitionProvider {
 
 	@Override
 	public void addDefinitionResourceConfig(final DefinitionResourceConfig definitionResourceConfig) {
-		Assertion.check().notNull(definitionResourceConfig);
+		Assertion.check().isNotNull(definitionResourceConfig);
 		//
 		definitionResourceConfigs.add(definitionResourceConfig);
 	}

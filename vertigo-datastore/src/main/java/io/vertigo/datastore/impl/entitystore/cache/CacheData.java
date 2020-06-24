@@ -42,7 +42,7 @@ public final class CacheData {
 	 * @param cacheManager Cache manager
 	 */
 	CacheData(final CacheManager cacheManager) {
-		Assertion.check().notNull(cacheManager);
+		Assertion.check().isNotNull(cacheManager);
 		//-----
 		this.cacheManager = cacheManager;
 	}
@@ -67,7 +67,7 @@ public final class CacheData {
 	 * @param entity entity
 	 */
 	void putDtObject(final Entity entity) {
-		Assertion.check().notNull(entity);
+		Assertion.check().isNotNull(entity);
 		//-----
 		final String context = getContext(DtObjectUtil.findDtDefinition(entity));
 		//2.On met à jour l'objet
@@ -81,7 +81,7 @@ public final class CacheData {
 	 * @param <D> Dt type
 	 */
 	<D extends DtObject> DtList<D> getDtList(final DtListURI dtcUri) {
-		Assertion.check().notNull(dtcUri);
+		Assertion.check().isNotNull(dtcUri);
 		//-----
 		return DtList.class.cast(cacheManager.get(getContext(dtcUri.getDtDefinition()), dtcUri));
 	}
@@ -91,7 +91,7 @@ public final class CacheData {
 	 * @param dtc DTC
 	 */
 	void putDtList(final DtList<? extends Entity> dtc) {
-		Assertion.check().notNull(dtc);
+		Assertion.check().isNotNull(dtc);
 		//-----
 		final String context = getContext(dtc.getDefinition());
 
@@ -107,7 +107,7 @@ public final class CacheData {
 	 * @param dtDefinition Dt definition to clear
 	 */
 	void clear(final DtDefinition dtDefinition) {
-		Assertion.check().notNull(dtDefinition);
+		Assertion.check().isNotNull(dtDefinition);
 		//-----
 		cacheManager.clear(getContext(dtDefinition));
 	}

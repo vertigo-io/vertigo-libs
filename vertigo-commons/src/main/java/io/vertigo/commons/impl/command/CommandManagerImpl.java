@@ -57,7 +57,7 @@ public final class CommandManagerImpl implements CommandManager, SimpleDefinitio
 				.filter(method -> method.isAnnotationPresent(Command.class))
 				.map(
 						method -> {
-							Assertion.check().state(
+							Assertion.check().isTrue(
 									CommandResponse.class.isAssignableFrom(method.getReturnType()),
 									"Method {0} on component {1} must return a CommandResult to be used as a command", method.getName(), component.getClass().getName());
 							//---
@@ -96,7 +96,7 @@ public final class CommandManagerImpl implements CommandManager, SimpleDefinitio
 	@Override
 	public CommandResponse executeCommand(final String handle, final String... commandParams) {
 		final CommandDefinition commandDefinition = findCommand(handle);
-		Assertion.check().state(
+		Assertion.check().isTrue(
 				commandParams.length == commandDefinition.getParams().size(),
 				"Command '{0}' takes {1} arguments and {2} were passed", commandDefinition.getCommand(), commandDefinition.getParams().size(), commandParams.length);
 		final Object[] actualArguments = IntStream.range(0, commandParams.length)

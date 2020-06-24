@@ -93,7 +93,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 		final String msg = sqle.getMessage();
 		// recherche le nom de la contrainte d'intégrité
 		final String constraintName = extractConstraintName(msg);
-		Assertion.check().notNull(constraintName, "Impossible d''extraire le nom de la contrainte : {0}", msg);
+		Assertion.check().isNotNull(constraintName, "Impossible d''extraire le nom de la contrainte : {0}", msg);
 
 		// recherche le message pour l'utilisateur
 		//On crée une clé de MessageText dynamiquement sur le nom de la contrainte d'intégrité

@@ -65,7 +65,7 @@ public class MemoryProcessExecutorPlugin implements ProcessExecutorPlugin, Activ
 	 */
 	@Inject
 	public MemoryProcessExecutorPlugin(@ParamValue("workersCount") final Integer workersCount) {
-		Assertion.check().notNull(workersCount);
+		Assertion.check().isNotNull(workersCount);
 		// ---
 		localExecutor = Executors.newFixedThreadPool(workersCount);
 	}
@@ -135,8 +135,8 @@ public class MemoryProcessExecutorPlugin implements ProcessExecutorPlugin, Activ
 				// We try the execution and we keep the result
 				resultWorkspace = activityEngine.execute(workspaceIn);
 				Assertion.check()
-						.notNull(resultWorkspace)
-						.notNull(resultWorkspace.getValue("status"), "Le status est obligatoire dans le résultat");
+						.isNotNull(resultWorkspace)
+						.isNotNull(resultWorkspace.getValue("status"), "Le status est obligatoire dans le résultat");
 				// we call the posttreament
 				resultWorkspace = activityEngine.successfulPostTreatment(resultWorkspace);
 

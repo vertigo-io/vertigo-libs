@@ -53,7 +53,7 @@ final class WhereInPreProcessor {
 	 * @param inTaskAttributes Valeur des paramètres
 	 */
 	WhereInPreProcessor(final Map<TaskAttribute, Object> inTaskAttributes) {
-		Assertion.check().notNull(inTaskAttributes);
+		Assertion.check().isNotNull(inTaskAttributes);
 		//-----
 		this.inTaskAttributes = inTaskAttributes;
 	}
@@ -96,7 +96,7 @@ final class WhereInPreProcessor {
 			final String inputParamName = matcher.group(DTC_INPUTNAME_GROUP);
 			final boolean isNotIn = matcher.group(OPTIONNAL_NOT_GROUP) != null; //null if not found
 			final TaskAttribute attribute = obtainInTaskAttribute(inputParamName);
-			Assertion.check().state(attribute.getCardinality().hasMany(), "Attribute {0} can't be use in WherInPreProcessor. Check it was declared as IN and is DtList type.", inputParamName);
+			Assertion.check().isTrue(attribute.getCardinality().hasMany(), "Attribute {0} can't be use in WherInPreProcessor. Check it was declared as IN and is DtList type.", inputParamName);
 
 			//-----
 			final List<?> listObject = (List<?>) inTaskAttributes.get(attribute);
@@ -124,7 +124,7 @@ final class WhereInPreProcessor {
 				}
 			}
 		}
-		Assertion.check().state(lastMatchOffset > 0, "WhereInPreProcessor not applied. Keywords found but query doesn't match. Check syntaxe : XXX_ID <<not>> in (#YYY.ROWNUM.ZZZ_ID#) of {0}", sqlQuery);
+		Assertion.check().isTrue(lastMatchOffset > 0, "WhereInPreProcessor not applied. Keywords found but query doesn't match. Check syntaxe : XXX_ID <<not>> in (#YYY.ROWNUM.ZZZ_ID#) of {0}", sqlQuery);
 
 		buildQuery.append(sqlQuery.substring(lastMatchOffset));
 		return buildQuery.toString();

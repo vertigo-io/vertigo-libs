@@ -62,8 +62,8 @@ public final class FileInfoURI implements Serializable {
 	 */
 	public FileInfoURI(final FileInfoDefinition fileInfoDefinition, final Object key) {
 		Assertion.check()
-				.notNull(key)
-				.notNull(fileInfoDefinition);
+				.isNotNull(key)
+				.isNotNull(fileInfoDefinition);
 		//-----
 		this.key = Serializable.class.cast(key);
 		fileInfoDefinitionRef = new DefinitionReference<>(fileInfoDefinition);
@@ -174,7 +174,7 @@ public final class FileInfoURI implements Serializable {
 	 * @return FileInfoURI for this URN
 	 */
 	public static FileInfoURI fromURN(final String urn) {
-		Assertion.check().notNull(urn);
+		Assertion.check().isNotNull(urn);
 		//-----
 		final int i = urn.indexOf(D2A_SEPARATOR);
 		final String dname = urn.substring(0, i);

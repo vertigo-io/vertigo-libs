@@ -76,14 +76,14 @@ public final class AccountMapperHelper<S, D> {
 	}
 
 	public AccountMapperHelper<S, D> withReservedDestField(final String... fieldNames) {
-		Assertion.check().notNull(fieldNames);
+		Assertion.check().isNotNull(fieldNames);
 		//-----
 		reservedDestField.addAll(Arrays.asList(fieldNames));
 		return this;
 	}
 
 	public AccountMapperHelper<S, D> withMandatoryDestField(final D... fields) {
-		Assertion.check().notNull(fields);
+		Assertion.check().isNotNull(fields);
 		//-----
 		mandatoryDestField.addAll(Arrays.asList(fields));
 		return this;
@@ -95,7 +95,7 @@ public final class AccountMapperHelper<S, D> {
 			Assertion.check().argument(splitedMapping.length == 2,
 					"Mapping should respect the pattern sourceFields:destFields :(like sourceAttr1:destAttr1, sourceAttr2:destAttr2, ... (check : {0})", sourceToDestMappingStr);
 			Assertion.when(sourceDtDefinition.isPresent())
-					.state(() -> sourceDtDefinition.get().contains(splitedMapping[1]), "sourceField {0} must be in DtDefinition {1}", splitedMapping[1], sourceDtDefinition.orElse(null));
+					.isTrue(() -> sourceDtDefinition.get().contains(splitedMapping[1]), "sourceField {0} must be in DtDefinition {1}", splitedMapping[1], sourceDtDefinition.orElse(null));
 			//It's reverse compared to config String : we keep a map of key:destAttribute -> value:sourceAttribute
 			final S source;
 			if (sourceDtDefinition.isPresent()) {
@@ -105,7 +105,7 @@ public final class AccountMapperHelper<S, D> {
 			}
 			if (!reservedDestField.contains(splitedMapping[0])) {
 				Assertion.when(destDtDefinition.isPresent())
-						.state(() -> destDtDefinition.get().contains(splitedMapping[0]), "destField {0} must be in DtDefinition {1}", splitedMapping[0], destDtDefinition.orElse(null));
+						.isTrue(() -> destDtDefinition.get().contains(splitedMapping[0]), "destField {0} must be in DtDefinition {1}", splitedMapping[0], destDtDefinition.orElse(null));
 				final D dest;
 				if (destDtDefinition.isPresent()) {
 					dest = (D) destDtDefinition.get().getField(splitedMapping[0]);
@@ -121,7 +121,7 @@ public final class AccountMapperHelper<S, D> {
 			}
 		}
 		for (final D destField : mandatoryDestField) {
-			Assertion.check().notNull(destToSourceMapping.get(destField), "Mapping must declare mapping for destProperty {0}" + destField);
+			Assertion.check().isNotNull(destToSourceMapping.get(destField), "Mapping must declare mapping for destProperty {0}" + destField);
 		}
 
 		return this;

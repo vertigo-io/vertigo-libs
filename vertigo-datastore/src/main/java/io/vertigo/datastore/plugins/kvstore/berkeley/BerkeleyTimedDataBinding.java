@@ -39,7 +39,7 @@ final class BerkeleyTimedDataBinding extends TupleBinding<Serializable> {
 	 * @param serializableBinding TupleBinding for serializable value
 	 */
 	BerkeleyTimedDataBinding(final long timeToLiveSeconds, final TupleBinding<Serializable> serializableBinding) {
-		Assertion.check().notNull(serializableBinding);
+		Assertion.check().isNotNull(serializableBinding);
 		//-----
 		this.serializableBinding = serializableBinding;
 		this.timeToLiveSeconds = timeToLiveSeconds;

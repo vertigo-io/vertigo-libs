@@ -53,9 +53,9 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 			final VSecurityManager securityManager,
 			final List<AuthenticationPlugin> authenticationPlugins) {
 		Assertion.check()
-				.notNull(accountManager)
-				.notNull(securityManager)
-				.notNull(authenticationPlugins);
+				.isNotNull(accountManager)
+				.isNotNull(securityManager)
+				.isNotNull(authenticationPlugins);
 		//----
 		this.accountManager = accountManager;
 		this.securityManager = securityManager;
@@ -100,7 +100,7 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 				}
 			}
 		}
-		Assertion.check().state(tokenSupported, "No authenticationPlugin found to support this token ({0}), in plugins ({1})", token.getClass().getSimpleName(), authenticationPlugins);
+		Assertion.check().isTrue(tokenSupported, "No authenticationPlugin found to support this token ({0}), in plugins ({1})", token.getClass().getSimpleName(), authenticationPlugins);
 		return Optional.empty();
 	}
 }

@@ -47,7 +47,7 @@ public final class ExportSheet {
 
 	public ExportSheet(final String title, final List<ExportField> exportFields, final DtObject dto, final DtList dtc) {
 		Assertion.check()
-				.notNull(exportFields)
+				.isNotNull(exportFields)
 				.argument(dto == null ^ dtc == null, "a dto or a dtc is required");
 		//title may be null
 		//-----
@@ -75,7 +75,7 @@ public final class ExportSheet {
 	 * @return Données sous forme d'un DTO, ceci est un cast donc il y a levé d'une assertion si ce n'est pas un DTO
 	 */
 	public DtObject getDtObject() {
-		Assertion.check().notNull(dto);
+		Assertion.check().isNotNull(dto);
 		//-----
 		return dto;
 	}
@@ -84,7 +84,7 @@ public final class ExportSheet {
 	 * @return Données sous forme d'une DTC, ceci est un cast donc il y a levé d'une assertion si ce n'est pas une DTC
 	 */
 	public DtList<?> getDtList() {
-		Assertion.check().notNull(dtc);
+		Assertion.check().isNotNull(dtc);
 		//-----
 		return dtc;
 	}

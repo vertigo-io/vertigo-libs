@@ -42,7 +42,7 @@ public final class ConstraintNumberMaximum implements Constraint<Number, Number>
 	public ConstraintNumberMaximum(final String args, final Optional<String> overrideMessageOpt) {
 		Assertion.check()
 				.argument(args != null && args.length() > 0, "Vous devez préciser la valeur maximum comme argument de ConstraintNumberMaximum")
-				.notNull(overrideMessageOpt);
+				.isNotNull(overrideMessageOpt);
 		//-----
 		maxValue = Double.parseDouble(args);
 		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MAXIMUM, maxValue);

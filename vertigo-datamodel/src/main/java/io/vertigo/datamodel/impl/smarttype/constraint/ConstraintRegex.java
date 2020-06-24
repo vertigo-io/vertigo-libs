@@ -43,7 +43,7 @@ public final class ConstraintRegex implements Constraint<String, String> {
 	public ConstraintRegex(final String regex, final Optional<String> overrideMessageOpt) {
 		Assertion.check()
 				.isNotBlank(regex)
-				.notNull(overrideMessageOpt);
+				.isNotNull(overrideMessageOpt);
 		//---
 		pattern = Pattern.compile(regex);
 		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern());

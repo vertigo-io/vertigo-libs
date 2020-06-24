@@ -42,7 +42,7 @@ public final class ConstraintNumberMinimum implements Constraint<Number, Number>
 	public ConstraintNumberMinimum(final String args, final Optional<String> overrideMessageOpt) {
 		Assertion.check()
 				.argument(args != null && args.length() > 0, "Vous devez préciser la valeur minimum comme argument de ConstraintNumberMinimum")
-				.notNull(overrideMessageOpt);
+				.isNotNull(overrideMessageOpt);
 		//-----
 		minValue = Double.parseDouble(args);
 		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue);

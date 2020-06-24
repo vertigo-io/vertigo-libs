@@ -30,7 +30,7 @@ public class VRequestToViewNameTranslator implements RequestToViewNameTranslator
 	@Override
 	public String getViewName(final HttpServletRequest request) throws Exception {
 		final String defaultViewName = (String) request.getAttribute(AbstractVSpringMvcController.DEFAULT_VIEW_NAME_ATTRIBUTE);
-		Assertion.check().notNull(defaultViewName);
+		Assertion.check().isNotNull(defaultViewName);
 		//---
 		return defaultViewName;
 	}

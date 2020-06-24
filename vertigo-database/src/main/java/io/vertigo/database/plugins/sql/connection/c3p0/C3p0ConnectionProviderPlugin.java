@@ -59,8 +59,8 @@ public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionPro
 			@ParamValue("jdbcUrl") final String jdbcUrl) {
 		super(name.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), ClassUtil.newInstance(dataBaseClass, SqlDataBase.class));
 		Assertion.check()
-				.notNull(jdbcUrl)
-				.notNull(jdbcDriver);
+				.isNotNull(jdbcUrl)
+				.isNotNull(jdbcDriver);
 		//-----
 		pooledDataSource = createPooledDataSource(jdbcDriver, jdbcUrl);
 	}

@@ -39,8 +39,8 @@ public final class NotificationEvent {
 	 */
 	NotificationEvent(final Notification notification, final Set<UID<Account>> accountURIs) {
 		Assertion.check()
-				.notNull(notification)
-				.notNull(accountURIs);
+				.isNotNull(notification)
+				.isNotNull(accountURIs);
 		//-----
 		this.notification = notification;
 		this.accountURIs = accountURIs;

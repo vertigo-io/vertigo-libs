@@ -64,22 +64,22 @@ public final class ESDocumentCodec {
 	 */
 	public ESDocumentCodec(final CodecManager codecManager, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		Assertion.check()
-				.notNull(codecManager)
-				.notNull(typeAdapters);
+				.isNotNull(codecManager)
+				.isNotNull(typeAdapters);
 		//-----
 		this.codecManager = codecManager;
 		this.typeAdapters = typeAdapters;
 	}
 
 	private <I extends DtObject> String encode(final I dto) {
-		Assertion.check().notNull(dto);
+		Assertion.check().isNotNull(dto);
 		//-----
 		final byte[] data = codecManager.getCompressedSerializationCodec().encode(dto);
 		return codecManager.getBase64Codec().encode(data);
 	}
 
 	private <R extends DtObject> R decode(final String base64Data) {
-		Assertion.check().notNull(base64Data);
+		Assertion.check().isNotNull(base64Data);
 		//-----
 		final byte[] data = codecManager.getBase64Codec().decode(base64Data);
 		return (R) codecManager.getCompressedSerializationCodec().decode(data);
@@ -120,7 +120,7 @@ public final class ESDocumentCodec {
 	 * @throws IOException Json exception
 	 */
 	public <S extends KeyConcept, I extends DtObject> XContentBuilder index2XContentBuilder(final SearchIndex<S, I> index) throws IOException {
-		Assertion.check().notNull(index);
+		Assertion.check().isNotNull(index);
 		//-----
 
 		final DtDefinition dtDefinition = index.getDefinition().getIndexDtDefinition();
@@ -160,8 +160,8 @@ public final class ESDocumentCodec {
 
 	public Object encodeValue(final Object value, final SmartTypeDefinition smartTypeDefinition) {
 		Assertion.check()
-				.notNull(value)
-				.notNull(smartTypeDefinition);
+				.isNotNull(value)
+				.isNotNull(smartTypeDefinition);
 		//-----
 		Object encodedValue = value;
 		switch (smartTypeDefinition.getScope()) {

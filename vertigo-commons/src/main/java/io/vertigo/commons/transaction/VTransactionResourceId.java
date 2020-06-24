@@ -53,8 +53,8 @@ public final class VTransactionResourceId<R extends VTransactionResource> {
 	 */
 	public VTransactionResourceId(final Priority priority, final String name) {
 		Assertion.check()
-				.notNull(priority)
-				.notNull(name);
+				.isNotNull(priority)
+				.isNotNull(name);
 		//-----
 		this.priority = priority;
 		this.name = name;

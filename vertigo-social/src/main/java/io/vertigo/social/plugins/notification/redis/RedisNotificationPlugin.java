@@ -58,8 +58,8 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<RedisConnector> redisConnectors) {
 		Assertion.check()
-				.notNull(connectorNameOpt)
-				.notNull(redisConnectors);
+				.isNotNull(connectorNameOpt)
+				.isNotNull(redisConnectors);
 		//-----
 		final String connectorName = connectorNameOpt.orElse("main");
 		redisConnector = redisConnectors.stream()
@@ -70,7 +70,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void send(final NotificationEvent notificationEvent) {
-		Assertion.check().notNull(notificationEvent);
+		Assertion.check().isNotNull(notificationEvent);
 		//-----
 		//1 notif is store 5 times :
 		// - data in map with key= notif:$uuid (with expiration)
@@ -142,7 +142,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public List<Notification> getCurrentNotifications(final UID<Account> accountURI) {
-		Assertion.check().notNull(accountURI);
+		Assertion.check().isNotNull(accountURI);
 		//-----
 		final List<Response<Map<String, String>>> responses = new ArrayList<>();
 		final List<Response<String>> responsesUserContent = new ArrayList<>();
@@ -173,8 +173,8 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	@Override
 	public void updateUserContent(final UID<Account> accountURI, final UUID notificationUUID, final String userContent) {
 		Assertion.check()
-				.notNull(accountURI)
-				.notNull(notificationUUID);
+				.isNotNull(accountURI)
+				.isNotNull(notificationUUID);
 		//-----
 		try (final Jedis jedis = redisConnector.getClient()) {
 			final String uuid = notificationUUID.toString();
@@ -192,8 +192,8 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	@Override
 	public void remove(final UID<Account> accountURI, final UUID notificationUUID) {
 		Assertion.check()
-				.notNull(accountURI)
-				.notNull(notificationUUID);
+				.isNotNull(accountURI)
+				.isNotNull(notificationUUID);
 		//-----
 		try (final Jedis jedis = redisConnector.getClient()) {
 			final String notifiedAccount = "notifs:" + accountURI.getId();

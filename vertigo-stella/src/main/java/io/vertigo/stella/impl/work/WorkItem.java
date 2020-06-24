@@ -40,9 +40,9 @@ public final class WorkItem<W, R> {
 	 */
 	public WorkItem(final String id, final W work, final Class<? extends WorkEngine<W, R>> workEngineClass) {
 		Assertion.check()
-				.notNull(id)
+				.isNotNull(id)
 				//work can be null
-				.notNull(workEngineClass);
+				.isNotNull(workEngineClass);
 		//-----
 		this.id = id;
 		this.work = work;

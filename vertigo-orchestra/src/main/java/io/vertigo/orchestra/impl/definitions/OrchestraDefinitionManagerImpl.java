@@ -47,11 +47,11 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 	@Inject
 	public OrchestraDefinitionManagerImpl(final List<ProcessDefinitionStorePlugin> processDefinitionStorePlugins) {
 		Assertion.check()
-				.notNull(processDefinitionStorePlugins)
-				.state(!processDefinitionStorePlugins.isEmpty(), "At least one ProcessDefinitionStorePlugin is required");
+				.isNotNull(processDefinitionStorePlugins)
+				.isTrue(!processDefinitionStorePlugins.isEmpty(), "At least one ProcessDefinitionStorePlugin is required");
 		// ---
 		for (final ProcessDefinitionStorePlugin storePlugin : processDefinitionStorePlugins) {
-			Assertion.check().state(!processDefinitionStorePluginsByProcessType.containsKey(storePlugin.getHandledProcessType()), "Only one plugin can manage the processType {0}",
+			Assertion.check().isTrue(!processDefinitionStorePluginsByProcessType.containsKey(storePlugin.getHandledProcessType()), "Only one plugin can manage the processType {0}",
 					storePlugin.getHandledProcessType());
 			processDefinitionStorePluginsByProcessType.put(storePlugin.getHandledProcessType(), storePlugin);
 		}
@@ -82,10 +82,10 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 	/** {@inheritDoc} */
 	@Override
 	public void createOrUpdateDefinition(final ProcessDefinition processDefinition) {
-		Assertion.check().notNull(processDefinition);
+		Assertion.check().isNotNull(processDefinition);
 		//---
 		final ProcessDefinitionStorePlugin storePlugin = processDefinitionStorePluginsByProcessType.get(processDefinition.getProcessType());
-		Assertion.check().notNull(storePlugin, "No plugin found for managing processType {0}", processDefinition.getProcessType());
+		Assertion.check().isNotNull(storePlugin, "No plugin found for managing processType {0}", processDefinition.getProcessType());
 		// ---
 		storePlugin.createOrUpdateDefinition(processDefinition);
 	}
@@ -100,8 +100,8 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 			final boolean active) {
 		Assertion.check()
 				.isNotBlank(processName)
-				.notNull(cronExpression)
-				.notNull(rescuePeriod);
+				.isNotNull(cronExpression)
+				.isNotNull(rescuePeriod);
 		//---
 		final ProcessDefinition processDefinition = getProcessDefinition(processName);
 		getPluginByType(processDefinition.getProcessType()).updateProcessDefinitionProperties(processDefinition, cronExpression, multiExecution, rescuePeriod, active);
@@ -112,7 +112,7 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 	public void updateProcessDefinitionInitialParams(final String processName, final Map<String, String> initialParams) {
 		Assertion.check()
 				.isNotBlank(processName)
-				.notNull(initialParams);
+				.isNotNull(initialParams);
 		//---
 		final ProcessDefinition processDefinition = getProcessDefinition(processName);
 		getPluginByType(processDefinition.getProcessType()).updateProcessDefinitionInitialParams(processDefinition, initialParams);
@@ -120,13 +120,13 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 
 	private ProcessDefinitionStorePlugin getPluginByType(final ProcessType processType) {
 		final ProcessDefinitionStorePlugin storePlugin = processDefinitionStorePluginsByProcessType.get(processType);
-		Assertion.check().notNull(storePlugin, "No plugin found for managing processType {0}", processType.name());
+		Assertion.check().isNotNull(storePlugin, "No plugin found for managing processType {0}", processType.name());
 		return storePlugin;
 	}
 
 	@Override
 	public List<ProcessDefinition> getAllProcessDefinitionsByType(final ProcessType processType) {
-		Assertion.check().notNull(processType);
+		Assertion.check().isNotNull(processType);
 		//---
 		return getPluginByType(processType).getAllProcessDefinitions();
 	}

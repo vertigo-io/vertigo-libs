@@ -74,9 +74,9 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 			final EventBusManager eventBusManager,
 			final SmartTypeManager smartTypeManager) {
 		Assertion.check()
-				.notNull(localeManager)
-				.notNull(cacheManager)
-				.notNull(smartTypeManager);
+				.isNotNull(localeManager)
+				.isNotNull(cacheManager)
+				.isNotNull(smartTypeManager);
 		//-----
 		this.cacheManager = cacheManager;
 		this.smartTypeManager = smartTypeManager;
@@ -128,7 +128,7 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 	}
 
 	private <D extends DtObject> RamLuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
-		Assertion.check().notNull(fullDtc);
+		Assertion.check().isNotNull(fullDtc);
 		//-----
 		final RamLuceneIndex<D> luceneDb = new RamLuceneIndex<>(fullDtc.getDefinition(), smartTypeManager);
 		luceneDb.addAll(fullDtc, storeValue);

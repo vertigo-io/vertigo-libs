@@ -67,7 +67,7 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 			final WebDataBinderFactory binderFactory) throws Exception {
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
 		final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
-		Assertion.check().notNull(viewContext);
+		Assertion.check().isNotNull(viewContext);
 		//---
 		final String contextKey = parameter.getParameterAnnotation(ViewAttribute.class).value();
 		//---
@@ -86,7 +86,7 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 			}
 			return viewContext.getSelectedFacetValues(() -> contextKey);
 		} else if (DtObject.class.isAssignableFrom(parameter.getParameterType()) || DtList.class.isAssignableFrom(parameter.getParameterType())) {
-			Assertion.check().notNull(uiMessageStack);
+			Assertion.check().isNotNull(uiMessageStack);
 			//---
 			final Object value;
 			if (DtObject.class.isAssignableFrom(parameter.getParameterType())) {

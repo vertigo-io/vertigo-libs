@@ -91,7 +91,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	 * @param typeAdapters Mapping to basic type adapter
 	 */
 	public AsbtractESSearchRequestBuilder(final Map<Class, BasicTypeAdapter> typeAdapters) {
-		Assertion.check().notNull(typeAdapters);
+		Assertion.check().isNotNull(typeAdapters);
 		//-----
 		this.myTypeAdapters = typeAdapters;
 	}
@@ -101,7 +101,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	 * @return this builder
 	 */
 	public T withSearchIndexDefinition(final SearchIndexDefinition indexDefinition) {
-		Assertion.check().notNull(indexDefinition);
+		Assertion.check().isNotNull(indexDefinition);
 		//-----
 		myIndexDefinition = indexDefinition;
 		return (T) this;
@@ -112,7 +112,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	 * @return this builder
 	 */
 	public T withSearchQuery(final SearchQuery searchQuery) {
-		Assertion.check().notNull(searchQuery);
+		Assertion.check().isNotNull(searchQuery);
 		//-----
 		mySearchQuery = searchQuery;
 		return (T) this;
@@ -124,7 +124,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	 * @return this builder
 	 */
 	public T withListState(final DtListState listState, final int defaultMaxRows) {
-		Assertion.check().notNull(listState);
+		Assertion.check().isNotNull(listState);
 		//-----
 		myListState = listState;
 		myDefaultMaxRows = defaultMaxRows;
@@ -143,11 +143,11 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	@Override
 	public R build() {
 		Assertion.check()
-				.notNull(myIndexDefinition, "You must set IndexDefinition")
-				.notNull(mySearchQuery, "You must set SearchQuery")
-				.notNull(myListState, "You must set ListState");
+				.isNotNull(myIndexDefinition, "You must set IndexDefinition")
+				.isNotNull(mySearchQuery, "You must set SearchQuery")
+				.isNotNull(myListState, "You must set ListState");
 		Assertion.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent()) //si il y a un cluster on vérifie le maxRows
-				.state(() -> myListState.getMaxRows().get() < TOPHITS_SUBAGGREGATION_MAXSIZE,
+				.isTrue(() -> myListState.getMaxRows().get() < TOPHITS_SUBAGGREGATION_MAXSIZE,
 						"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE);
 		//-----
 		appendListState(mySearchQuery, myListState, myDefaultMaxRows, myIndexDefinition);
@@ -283,7 +283,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 			final DtListState listState,
 			final boolean useHighlight,
 			final Map<Class, BasicTypeAdapter> typeAdapters) {
-		Assertion.check().notNull(searchRequestBuilder);
+		Assertion.check().isNotNull(searchRequestBuilder);
 		//-----
 		//On ajoute le cluster, si présent
 		if (searchQuery.isClusteringFacet()) { //si il y a un cluster on le place en premier
@@ -398,7 +398,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 		final List<KeyedFilter> filters = new ArrayList<>();
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
-			Assertion.check().state(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			Assertion.check().isTrue(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
 			filters.add(new KeyedFilter(facetRange.getCode(), QueryBuilders.queryStringQuery(filterValue)));
 		}
 		return AggregationBuilders.filters(facetDefinition.getName(), filters.toArray(new KeyedFilter[filters.size()]));
@@ -409,7 +409,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 				.field(dtField.getName());
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
-			Assertion.check().state(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			Assertion.check().isTrue(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
 			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
 			final Optional<Double> minValue = convertToDouble(parsedFilter[3]);
 			final Optional<Double> maxValue = convertToDouble(parsedFilter[4]);
@@ -430,7 +430,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 				.format(DATE_PATTERN);
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
-			Assertion.check().state(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			Assertion.check().isTrue(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
 			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
 			final String minValue = parsedFilter[3];
 			final String maxValue = parsedFilter[4];
@@ -455,7 +455,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 			final String filterValue = facetRange.getListFilter().getFilterValue();
 			final DslGeoExpression dslGeoExpression = DslParserUtil.parseGeoExpression(filterValue);
 			final String geoFieldName = dslGeoExpression.getField().getFieldName();
-			Assertion.check().state(geoFieldName.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			Assertion.check().isTrue(geoFieldName.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
 
 			final DslGeoDistanceQuery geoStartDistanceQuery;
 			final DslGeoDistanceQuery geoEndDistanceQuery;
@@ -467,7 +467,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 					originExpression = geoEndDistanceQuery.getGeoPoint().toString();
 					rangeBuilder = AggregationBuilders.geoDistance(facetDefinition.getName(), geoPoint).field(geoFieldName);
 				} else {
-					Assertion.check().state(geoEndDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoEndDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
+					Assertion.check().isTrue(geoEndDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoEndDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
 				}
 			} else if (dslGeoExpression.getGeoQuery() instanceof DslGeoRangeQuery) {
 				final DslGeoRangeQuery geoRangeQuery = (DslGeoRangeQuery) dslGeoExpression.getGeoQuery();
@@ -479,8 +479,8 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 					rangeBuilder = AggregationBuilders.geoDistance(facetDefinition.getName(), geoPoint).field(geoFieldName);
 				} else {
 					Assertion.check()
-							.state(geoStartDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoStartDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName())
-							.state(geoEndDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoEndDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
+							.isTrue(geoStartDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoStartDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName())
+							.isTrue(geoEndDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoEndDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
 				}
 			} else {
 				throw new IllegalArgumentException("Only GeoDistanceQuery or Range of GeoDistanceQuery are supported in range facet (in " + facetDefinition.getName() + ")");
@@ -507,7 +507,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	 * @return QueryBuilder
 	 */
 	public static QueryBuilder translateToQueryBuilder(final ListFilter listFilter) {
-		Assertion.check().notNull(listFilter);
+		Assertion.check().isNotNull(listFilter);
 		//-----
 		final String query = new StringBuilder()
 				.append(" +(")

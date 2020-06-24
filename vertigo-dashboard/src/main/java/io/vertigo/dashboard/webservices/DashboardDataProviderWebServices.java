@@ -85,7 +85,7 @@ public class DashboardDataProviderWebServices implements WebServices {
 			@InnerBodyParam("timeFilter") final TimeFilter timeFilter,
 			@InnerBodyParam("groupBy") final String groupBy,
 			@InnerBodyParam("maxRows") final int maxRows) {
-		Assertion.check().state(measures.size() == 1, "One and only one measure must be queried for a top request");
+		Assertion.check().isTrue(measures.size() == 1, "One and only one measure must be queried for a top request");
 		//---
 		return dataProvider.getTops(measures.get(0), dataFilter, timeFilter, groupBy, maxRows);
 	}

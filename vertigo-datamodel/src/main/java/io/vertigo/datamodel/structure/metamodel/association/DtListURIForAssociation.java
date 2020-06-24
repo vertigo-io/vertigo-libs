@@ -43,9 +43,9 @@ public abstract class DtListURIForAssociation<A extends AssociationDefinition> e
 	protected DtListURIForAssociation(final A associationDefinition, final UID source, final String roleName) {
 		super(AssociationUtil.getAssociationNode(associationDefinition, roleName).getDtDefinition());
 		Assertion.check()
-				.notNull(associationDefinition)
-				.notNull(source)
-				.notNull(roleName);
+				.isNotNull(associationDefinition)
+				.isNotNull(source)
+				.isNotNull(roleName);
 		//-----
 		this.roleName = roleName;
 

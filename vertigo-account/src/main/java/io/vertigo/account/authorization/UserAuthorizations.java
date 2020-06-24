@@ -74,7 +74,7 @@ public final class UserAuthorizations implements Serializable {
 	 * @return this UserAuthorizations
 	 */
 	public UserAuthorizations addRole(final Role role) {
-		Assertion.check().notNull(role);
+		Assertion.check().isNotNull(role);
 		//-----
 		roleRefs.add(new DefinitionReference<>(role));
 		role.getAuthorizations().stream()
@@ -97,7 +97,7 @@ public final class UserAuthorizations implements Serializable {
 	 * @return if user has this role
 	 */
 	public boolean hasRole(final Role role) {
-		Assertion.check().notNull(role);
+		Assertion.check().isNotNull(role);
 		//-----
 		return roleRefs.contains(new DefinitionReference<>(role));
 	}
@@ -119,7 +119,7 @@ public final class UserAuthorizations implements Serializable {
 	 * @return this UserAuthorizations
 	 */
 	public UserAuthorizations addAuthorization(final Authorization authorization) {
-		Assertion.check().notNull(authorization);
+		Assertion.check().isNotNull(authorization);
 		//-----
 		authorizationRefs.put(authorization.getName(), new DefinitionReference<>(authorization));
 		if (authorization.getEntityDefinition().isPresent()) {
@@ -164,7 +164,7 @@ public final class UserAuthorizations implements Serializable {
 	 * @return true if user has this authorization
 	 */
 	public boolean hasAuthorization(final AuthorizationName... authorizationNames) {
-		Assertion.check().notNull(authorizationNames);
+		Assertion.check().isNotNull(authorizationNames);
 		//-----
 		return Arrays.stream(authorizationNames)
 				.anyMatch(authorizationName -> authorizationRefs.containsKey(authorizationName.name()));

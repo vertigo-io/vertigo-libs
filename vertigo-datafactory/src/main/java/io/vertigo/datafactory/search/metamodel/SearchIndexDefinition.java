@@ -84,12 +84,12 @@ public final class SearchIndexDefinition implements Definition {
 			final String searchLoaderId) {
 		Assertion.check()
 				.isNotBlank(name)
-				.notNull(keyConceptDtDefinition)
+				.isNotNull(keyConceptDtDefinition)
 				.argument(
 						keyConceptDtDefinition.getStereotype() == DtStereotype.KeyConcept,
 						"keyConceptDtDefinition ({0}) must be a DtDefinition of a KeyConcept class", keyConceptDtDefinition.getName())
-				.notNull(indexDtDefinition)
-				.notNull(indexCopyFromFieldsMap)
+				.isNotNull(indexDtDefinition)
+				.isNotNull(indexCopyFromFieldsMap)
 				.isNotBlank(searchLoaderId);
 		//-----
 		this.name = name;
@@ -130,7 +130,7 @@ public final class SearchIndexDefinition implements Definition {
 	 */
 	public List<DtField> getIndexCopyToFields(final DtField fromField) {
 		final List<DtField> copyToFields = indexCopyToFieldsMap.get(fromField);
-		Assertion.check().notNull(copyToFields);
+		Assertion.check().isNotNull(copyToFields);
 		//-----
 		return Collections.unmodifiableList(copyToFields);
 	}

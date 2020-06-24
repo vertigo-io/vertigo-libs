@@ -52,17 +52,17 @@ public final class CommandDefinition implements Definition {
 		Assertion.check()
 				.isNotBlank(command)
 				.isNotBlank(description)
-				.notNull(questions)
-				.state(COMMAND_PATTERN.matcher(command).matches(), "handle '{0}' must respect the pattern '{1}'", command, COMMAND_PATTERN)
-				.notNull(action);
+				.isNotNull(questions)
+				.isTrue(COMMAND_PATTERN.matcher(command).matches(), "handle '{0}' must respect the pattern '{1}'", command, COMMAND_PATTERN)
+				.isNotNull(action);
 		//---
 		commandParams
 				.forEach(commandParam -> {
 					final Type type = commandParam.getType();
 					if (type instanceof Class) {
-						Assertion.check().state(String.class.isAssignableFrom((Class) type), "Only ParamUID and String params are allowed for command");
+						Assertion.check().isTrue(String.class.isAssignableFrom((Class) type), "Only ParamUID and String params are allowed for command");
 					} else if (type instanceof ParameterizedType) {
-						Assertion.check().state(GenericUID.class.isAssignableFrom((Class) ((ParameterizedType) type).getRawType()), "Only ParamUID and String params are allowed for command");
+						Assertion.check().isTrue(GenericUID.class.isAssignableFrom((Class) ((ParameterizedType) type).getRawType()), "Only ParamUID and String params are allowed for command");
 					}
 				});
 

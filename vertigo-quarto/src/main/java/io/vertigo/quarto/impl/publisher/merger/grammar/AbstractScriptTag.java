@@ -139,8 +139,8 @@ abstract class AbstractScriptTag {
 	 */
 	protected static final String[] parseAttribute(final String attribute, final Pattern regEexpPattern) {
 		Assertion.check()
-				.notNull(attribute)
-				.notNull(regEexpPattern);
+				.isNotNull(attribute)
+				.isNotNull(regEexpPattern);
 		//-----
 
 		final String[] groups;

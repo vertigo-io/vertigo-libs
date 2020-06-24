@@ -98,7 +98,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 			@ParamValue("groupFilePattern") final String groupFilePatternStr,
 			final ResourceManager resourceManager) {
 		Assertion.check()
-				.notNull(resourceManager)
+				.isNotNull(resourceManager)
 				.isNotBlank(accountFilePatternStr)
 				.argument(accountFilePatternStr.contains("(?<"),
 						"accountFilePattern should be a regexp of named group for each Account's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<email>)(?<authToken>[^\\s;]+);(?<photoUrl>[^\\s;]+)' )");
@@ -162,7 +162,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	@Override
 	public Optional<VFile> getPhoto(final UID<Account> accountURI) {
 		final AccountInfo accountInfo = accounts.get(accountURI.getId());
-		Assertion.check().notNull(accountInfo, "No account found for {0}", accountURI);
+		Assertion.check().isNotNull(accountInfo, "No account found for {0}", accountURI);
 		if (accountInfo.getPhotoUrl() == null || accountInfo.getPhotoUrl().isEmpty()) {
 			return Optional.empty();
 		}
@@ -226,7 +226,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	private void parseAccounts(final String line) {
 		final Matcher matcher = accountFilePattern.matcher(line);
 		final boolean matches = matcher.matches();
-		Assertion.check().state(matches, "AccountFile ({2}) can't be parse by this regexp :\nline:{0}\nregexp:{1}", line, matches, accountFilePath);
+		Assertion.check().isTrue(matches, "AccountFile ({2}) can't be parse by this regexp :\nline:{0}\nregexp:{1}", line, matches, accountFilePath);
 		final String id = matcher.group(AccountProperty.id.name());
 		final String displayName = matcher.group(AccountProperty.displayName.name());
 		final String email = matcher.group(AccountProperty.email.name());
@@ -243,7 +243,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	private void parseGroups(final String line) {
 		final Matcher matcher = groupFilePattern.matcher(line);
 		final boolean matches = matcher.matches();
-		Assertion.check().state(matches, "GroupFile ({2}) can't be parse by this regexp :\nline:{0}\nregexp:{1}", line, matches, groupFilePath);
+		Assertion.check().isTrue(matches, "GroupFile ({2}) can't be parse by this regexp :\nline:{0}\nregexp:{1}", line, matches, groupFilePath);
 		final String groupId = matcher.group(GroupProperty.id.name());
 		final String displayName = matcher.group(GroupProperty.displayName.name());
 		final String accountIds = matcher.group(GroupProperty.accountIds.name());
@@ -254,7 +254,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 		for (final String accountId : accountIds.split(";")) {
 			groupsPerAccount.computeIfAbsent(accountId, k -> new ArrayList<>()).add(accountGroup);
 			final Account account = accounts.get(accountId).getAccount();
-			Assertion.check().notNull(account, "Group {0} reference an undeclared account {1}", groupId, accountId);
+			Assertion.check().isNotNull(account, "Group {0} reference an undeclared account {1}", groupId, accountId);
 			groupAccounts.add(account);
 		}
 		accountsPerGroup.put(groupId, groupAccounts);

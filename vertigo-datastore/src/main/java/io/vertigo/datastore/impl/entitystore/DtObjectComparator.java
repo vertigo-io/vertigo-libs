@@ -61,7 +61,7 @@ public final class DtObjectComparator<D extends DtObject> implements Comparator<
 	 * @param sortDesc sort order
 	 */
 	public DtObjectComparator(final EntityStoreManager entityStoreManager, final DtField sortField, final boolean sortDesc) {
-		Assertion.check().notNull(sortField);
+		Assertion.check().isNotNull(sortField);
 		//-----
 		this.sortField = sortField;
 		//On recherche le comparateur associé au champ de la collection
@@ -82,8 +82,8 @@ public final class DtObjectComparator<D extends DtObject> implements Comparator<
 	@Override
 	public int compare(final D dto1, final D dto2) {
 		Assertion.check()
-				.notNull(dto1)
-				.notNull(dto2);
+				.isNotNull(dto1)
+				.isNotNull(dto2);
 		//Les DTC ne contiennent pas d'éléments null.
 		//-----
 		final DataAccessor dataAccessor = sortField.getDataAccessor();
@@ -96,8 +96,8 @@ public final class DtObjectComparator<D extends DtObject> implements Comparator<
 	 */
 	private static Comparator<Object> createMasterDataComparator(final boolean sortDesc, final EntityStoreManager entityStoreManager, final DtListURIForMasterData dtcURIForMasterData) {
 		Assertion.check()
-				.notNull(entityStoreManager)
-				.notNull(dtcURIForMasterData);
+				.isNotNull(entityStoreManager)
+				.isNotNull(dtcURIForMasterData);
 		//-----
 		final DtField mdFieldSort = dtcURIForMasterData.getDtDefinition().getSortField().get();
 		return new MasterDataComparator(dtcURIForMasterData, sortDesc, entityStoreManager, mdFieldSort);

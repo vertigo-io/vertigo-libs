@@ -51,7 +51,7 @@ final class RamLuceneQueryFactory {
 	private final Analyzer queryAnalyzer;
 
 	RamLuceneQueryFactory(final Analyzer queryAnalyzer) {
-		Assertion.check().notNull(queryAnalyzer);
+		Assertion.check().isNotNull(queryAnalyzer);
 		//-----
 		this.queryAnalyzer = queryAnalyzer;
 	}

@@ -25,7 +25,7 @@ public final class UiexecutionsPAO implements StoreServices {
 	 */
 	@Inject
 	public UiexecutionsPAO(final TaskManager taskManager) {
-		Assertion.check().notNull(taskManager);
+		Assertion.check().isNotNull(taskManager);
 		//-----
 		this.taskManager = taskManager;
 	}

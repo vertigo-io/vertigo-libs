@@ -96,21 +96,21 @@ public final class WebServiceDefinition implements Definition {
 			final boolean fileAttachment) {
 		Assertion.check()
 				.isNotBlank(name)
-				.notNull(verb)
+				.isNotNull(verb)
 				.isNotBlank(path)
 				.isNotBlank(sortPath)
 				.isNotBlank(acceptType)
-				.notNull(method)
-				.notNull(includedFields)
-				.notNull(excludedFields)
-				.notNull(webServiceParams)
-				.notNull(doc); //doc can be empty
+				.isNotNull(method)
+				.isNotNull(includedFields)
+				.isNotNull(excludedFields)
+				.isNotNull(webServiceParams)
+				.isNotNull(doc); //doc can be empty
 		final String userFriendlyMethodName = method.getDeclaringClass().getSimpleName() + "." + method.getName();
 		Assertion.when(accessTokenConsume)
-				.state(() -> accessTokenMandatory, "AccessToken mandatory for accessTokenConsume ({0})", userFriendlyMethodName);
+				.isTrue(() -> accessTokenMandatory, "AccessToken mandatory for accessTokenConsume ({0})", userFriendlyMethodName);
 		Assertion.when(serverSideSave)
-				.state(() -> needSession, "Session mandatory for serverSideState ({0})", userFriendlyMethodName)
-				.state(() -> !Void.TYPE.equals(method.getReturnType()), "Return object mandatory for serverSideState ({0})", userFriendlyMethodName);
+				.isTrue(() -> needSession, "Session mandatory for serverSideState ({0})", userFriendlyMethodName)
+				.isTrue(() -> !Void.TYPE.equals(method.getReturnType()), "Return object mandatory for serverSideState ({0})", userFriendlyMethodName);
 		checkPathParams(path, webServiceParams, userFriendlyMethodName);
 		//-----
 		this.name = name;

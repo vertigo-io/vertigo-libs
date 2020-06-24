@@ -82,7 +82,7 @@ final class AnnotationsWebServiceScannerUtil {
 	 * @return List of WebServiceDefinition found
 	 */
 	static List<WebServiceDefinition> scanWebService(final Class<? extends WebServices> webServicesClass) {
-		Assertion.check().notNull(webServicesClass);
+		Assertion.check().isNotNull(webServicesClass);
 		//-----
 		return Arrays.stream(webServicesClass.getMethods())
 				.map(AnnotationsWebServiceScannerUtil::buildWebServiceDefinition)

@@ -95,7 +95,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 
 	private Map<String, DelayedMemoryCacheValue> getCollectionData(final String collection) {
 		final Map<String, DelayedMemoryCacheValue> collectionData = collectionsData.get(collection);
-		Assertion.check().notNull(collectionData, "collection {0} is null", collection);
+		Assertion.check().isNotNull(collectionData, "collection {0} is null", collection);
 		return collectionData;
 	}
 
@@ -111,7 +111,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 		Assertion.check()
 				.isNotBlank(collection)
 				.isNotBlank(key)
-				.notNull(element);
+				.isNotNull(element);
 		//-----
 		final DelayedMemoryCacheValue cacheValue = new DelayedMemoryCacheValue(element);
 		getCollectionData(collection).put(key, cacheValue);
@@ -142,7 +142,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 		Assertion.check()
 				.isNotBlank(collection)
 				.isNotBlank(key)
-				.notNull(clazz);
+				.isNotNull(clazz);
 		//-----
 		final DelayedMemoryCacheValue cacheValue = getCollectionData(collection).get(key);
 		if (cacheValue != null && !isTooOld(cacheValue)) {
@@ -192,7 +192,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 		 * @param delayedMemoryKVDataStorePlugin This plugin
 		 */
 		public RemoveTooOldElementsDaemon(final DelayedMemoryKVStorePlugin delayedMemoryKVDataStorePlugin) {
-			Assertion.check().notNull(delayedMemoryKVDataStorePlugin);
+			Assertion.check().isNotNull(delayedMemoryKVDataStorePlugin);
 			//------
 			this.delayedMemoryKVDataStorePlugin = delayedMemoryKVDataStorePlugin;
 		}

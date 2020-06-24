@@ -81,8 +81,8 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 			final @ParamValue("proxyHost") Optional<String> proxyHost,
 			@ParamValue("proxyPort") final Optional<String> proxyPort) {
 		Assertion.check()
-				.notNull(proxyHost)
-				.notNull(proxyPort)
+				.isNotNull(proxyHost)
+				.isNotNull(proxyPort)
 				.argument((proxyHost.isPresent() && proxyPort.isPresent()) || (proxyHost.isEmpty() && proxyPort.isEmpty()),
 						"les deux paramètres host et port doivent être tous les deux remplis ou vides");
 		//-----
@@ -108,7 +108,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	}
 
 	private HttpURLConnection doCreateConnection(final URL url) throws IOException {
-		Assertion.check().notNull(url);
+		Assertion.check().isNotNull(url);
 		//-----
 		final HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
 		connection.setDoOutput(true);
@@ -122,7 +122,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	 * @return Document
 	 */
 	private Document geoCode(final String address) {
-		Assertion.check().notNull(address);
+		Assertion.check().isNotNull(address);
 		//-----
 		final String urlString;
 		try {
@@ -168,7 +168,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	 */
 	private NodeList findNodes(final Document xml, final String xPathString) {
 		Assertion.check()
-				.notNull(xml)
+				.isNotNull(xml)
 				.isNotBlank(xPathString);
 		//-----
 		final XPath xpath = xPathFactory.newXPath();
@@ -189,7 +189,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	 */
 	private Node findNode(final Document xml, final String xPathString) {
 		Assertion.check()
-				.notNull(xml)
+				.isNotNull(xml)
 				.isNotBlank(xPathString);
 		//-----
 		final XPath xpath = xPathFactory.newXPath();
@@ -221,7 +221,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public GeoLocation findLocation(final String address) {
-		Assertion.check().notNull(address);
+		Assertion.check().isNotNull(address);
 		//-----
 		final Document geocoderResultDocument = geoCode(address);
 		if (geocoderResultDocument == null) {

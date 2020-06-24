@@ -47,7 +47,7 @@ public final class EnumStoreVAccessor<E extends Entity, V extends Enum<V> & Mast
 	public EnumStoreVAccessor(final Class<E> clazz, final String role, final Class<V> enumClass) {
 		super(clazz, role);
 		//---
-		Assertion.check().state(enumClass.isEnum() && MasterDataEnum.class.isAssignableFrom(enumClass), "Enum '{0}' must implement StaticMasterDataEnum", enumClass.getCanonicalName());
+		Assertion.check().isTrue(enumClass.isEnum() && MasterDataEnum.class.isAssignableFrom(enumClass), "Enum '{0}' must implement StaticMasterDataEnum", enumClass.getCanonicalName());
 		this.enumClass = enumClass;
 	}
 

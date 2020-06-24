@@ -54,7 +54,7 @@ public final class AccessTokenWebServiceHandlerPlugin implements WebServiceHandl
 	 */
 	@Inject
 	public AccessTokenWebServiceHandlerPlugin(final TokenManager tokenManager) {
-		Assertion.check().notNull(tokenManager);
+		Assertion.check().isNotNull(tokenManager);
 		//-----
 		this.tokenManager = tokenManager;
 	}

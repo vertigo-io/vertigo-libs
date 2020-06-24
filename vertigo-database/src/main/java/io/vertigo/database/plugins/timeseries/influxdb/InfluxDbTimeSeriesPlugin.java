@@ -221,14 +221,14 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	@Override
 	public TimedDatas getClusteredTimeSeries(final String appName, final ClusteredMeasure clusteredMeasure, final DataFilter dataFilter, final TimeFilter timeFilter) {
 		Assertion.check()
-				.notNull(dataFilter)
-				.notNull(timeFilter)
-				.notNull(timeFilter.getDim()) // we check dim is not null because we need it
-				.notNull(clusteredMeasure)
+				.isNotNull(dataFilter)
+				.isNotNull(timeFilter)
+				.isNotNull(timeFilter.getDim()) // we check dim is not null because we need it
+				.isNotNull(clusteredMeasure)
 				//---
 				.isNotBlank(clusteredMeasure.getMeasure())
-				.notNull(clusteredMeasure.getThresholds())
-				.state(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
+				.isNotNull(clusteredMeasure.getThresholds())
+				.isTrue(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
 		//we use the natural order
 		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
 		//---
@@ -280,7 +280,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 	@Override
 	public TimedDatas getFlatTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final Optional<Long> limit) {
-		Assertion.check().notNull(limit);
+		Assertion.check().isNotNull(limit);
 		// -----
 		final Long resolvedLimit = limit.map(l -> Math.min(l, 5000L)).orElse(500L);
 
@@ -344,9 +344,9 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	@Override
 	public TimedDatas getTimeSeries(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
 		Assertion.check()
-				.notNull(measures)
-				.notNull(dataFilter)
-				.notNull(timeFilter.getDim());// we check dim is not null because we need it
+				.isNotNull(measures)
+				.isNotNull(dataFilter)
+				.isNotNull(timeFilter.getDim());// we check dim is not null because we need it
 		//---
 		final String q = buildQuery(measures, dataFilter, timeFilter, true)
 				.append(" group by time(").append(timeFilter.getDim()).append(')')
@@ -374,7 +374,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	public void insertMeasure(final String dbName, final Measure measure) {
 		Assertion.check()
 				.isNotBlank(dbName)
-				.notNull(measure);
+				.isNotNull(measure);
 		//---
 		influxDB.setDatabase(dbName);
 		influxDB.write(Point.measurement(measure.getMeasurement())
@@ -445,7 +445,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	}
 
 	private static StringBuilder buildQuery(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean needAggregatedMeasures) {
-		Assertion.check().notNull(measures);
+		Assertion.check().isNotNull(measures);
 		//---
 		final StringBuilder queryBuilder = new StringBuilder("select ");
 		String separator = "";
@@ -453,8 +453,8 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 			final boolean isAggregated = measure.contains(":");
 
 			Assertion.check()
-					.state(!needAggregatedMeasures || isAggregated, "No aggregation function provided for measure '{0}'. Provide it with ':' as in 'measure:sum'.", measure)
-					.state(needAggregatedMeasures || !isAggregated, "No support for aggregation function in this case. Measure '{0}'.", measure);
+					.isTrue(!needAggregatedMeasures || isAggregated, "No aggregation function provided for measure '{0}'. Provide it with ':' as in 'measure:sum'.", measure)
+					.isTrue(needAggregatedMeasures || !isAggregated, "No support for aggregation function in this case. Measure '{0}'.", measure);
 
 			final String measureQuery = isAggregated ? buildMeasureQuery(measure, measure) : '"' + measure + '"';
 

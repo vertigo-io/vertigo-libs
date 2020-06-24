@@ -39,12 +39,12 @@ public final class FileStoreConfig {
 	 * @param fileStorePlugins FileStore plugins
 	 */
 	public FileStoreConfig(final List<FileStorePlugin> fileStorePlugins) {
-		Assertion.check().notNull(fileStorePlugins);
+		Assertion.check().isNotNull(fileStorePlugins);
 		//-----
 		for (final FileStorePlugin fileStorePlugin : fileStorePlugins) {
 			final String name = fileStorePlugin.getName();
 			final FileStorePlugin previous = fileStoresMap.put(name, fileStorePlugin);
-			Assertion.check().state(previous == null, "FileStorePlugin {0}, was already registered", name);
+			Assertion.check().isTrue(previous == null, "FileStorePlugin {0}, was already registered", name);
 		}
 	}
 
@@ -54,11 +54,11 @@ public final class FileStoreConfig {
 	 * @return Store utilisé pour cette definition
 	 */
 	public FileStorePlugin getPhysicalFileStore(final FileInfoDefinition definition) {
-		Assertion.check().notNull(definition);
+		Assertion.check().isNotNull(definition);
 		//-----
 		//On regarde si il existe un store enregistré spécifiquement pour cette Definition
 		final FileStorePlugin fileStore = fileStoresMap.get(definition.getStoreName());
-		Assertion.check().notNull(fileStore, "No FileStore found for this definition '{0}'", definition.getName());
+		Assertion.check().isNotNull(fileStore, "No FileStore found for this definition '{0}'", definition.getName());
 		return fileStore;
 	}
 }

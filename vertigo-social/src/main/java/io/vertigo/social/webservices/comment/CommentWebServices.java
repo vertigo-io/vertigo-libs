@@ -98,8 +98,8 @@ public final class CommentWebServices implements WebServices {
 	@PUT("/api/comments/{uuid}")
 	public Comment updateComment(@PathParam("uuid") final String uuid, final Comment comment) {
 		Assertion.check()
-				.notNull(uuid)
-				.notNull(comment)
+				.isNotNull(uuid)
+				.isNotNull(comment)
 				.argument(uuid.equals(comment.getUuid().toString()), "Comment uuid ({0}) must match WebService route ({1})", comment.getUuid(), uuid);
 		//-----
 		commentServices.update(getLoggedAccountURI(), comment);

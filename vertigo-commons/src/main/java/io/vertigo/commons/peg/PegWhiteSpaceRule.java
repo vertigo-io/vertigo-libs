@@ -37,7 +37,7 @@ final class PegWhiteSpaceRule implements PegRule<Dummy> {
 	 */
 	PegWhiteSpaceRule(final String blanks) {
 		super();
-		Assertion.check().notNull(blanks);
+		Assertion.check().isNotNull(blanks);
 		//-----
 		rule = PegRules.word(true, blanks, PegWordRule.Mode.ACCEPT, "_");
 		expression = rule.getExpression();

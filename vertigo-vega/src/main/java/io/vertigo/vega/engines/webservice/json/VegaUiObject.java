@@ -83,8 +83,8 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 */
 	public VegaUiObject(final D inputDto, final Set<String> modifiedFields) {
 		Assertion.check()
-				.notNull(inputDto, "inputObject can't be null")
-				.notNull(modifiedFields, "modifiedFields can't be null");
+				.isNotNull(inputDto, "inputObject can't be null")
+				.isNotNull(modifiedFields, "modifiedFields can't be null");
 		//-----
 		this.inputDto = inputDto;
 		this.dtDefinitionRef = new DefinitionReference<>(DtObjectUtil.findDtDefinition(inputDto));
@@ -129,7 +129,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 */
 	@Override
 	public void setServerSideObject(final D serverSideDto) {
-		Assertion.check().notNull(serverSideDto, "ServerSideObject can't be null");
+		Assertion.check().isNotNull(serverSideDto, "ServerSideObject can't be null");
 		//-----
 		this.serverSideDto = serverSideDto;
 	}
@@ -169,8 +169,8 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 
 	private void mergeInput() {
 		Assertion.check()
-				.notNull(serverSideDto, "serverSideDto is mandatory")
-				.notNull(inputDto, "inputDto is mandatory");
+				.isNotNull(serverSideDto, "serverSideDto is mandatory")
+				.isNotNull(inputDto, "inputDto is mandatory");
 		//-----
 		for (final DtField dtField : getDtDefinition().getFields()) {
 			if (isModified(dtField.getName())) {
@@ -201,12 +201,12 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 */
 	@Override
 	public D mergeAndCheckInput(final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack) {
-		Assertion.check().notNull(dtObjectValidators);
+		Assertion.check().isNotNull(dtObjectValidators);
 		//-----
 		if (!isChecked) {
 			checkFormat(uiMessageStack);
 		}
-		Assertion.check().state(!getDtObjectErrors().hasError(), "Unable to merge input on a object that as format errors : {0}", this);
+		Assertion.check().isTrue(!getDtObjectErrors().hasError(), "Unable to merge input on a object that as format errors : {0}", this);
 		//we update inputBuffer with older datas
 		if (serverSideDto != null) { //If serverSideObject was kept, we merge input with server object
 			mergeInput();
@@ -292,7 +292,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	public void setInputValue(final String fieldName, final String stringValue) {
 		Assertion.check()
 				.isNotBlank(fieldName)
-				.notNull(stringValue, "formatted value can't be null, but may be empty : {0}", fieldName);
+				.isNotNull(stringValue, "formatted value can't be null, but may be empty : {0}", fieldName);
 		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		//-----
 		final DtField dtField = getDtField(fieldName);
@@ -332,7 +332,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	public <T> T getTypedValue(final String fieldName, final Class<T> type) {
 		Assertion.check()
 				.isNotBlank(fieldName)
-				.notNull(type);
+				.isNotNull(type);
 		//-----
 		if (hasFormatError(fieldName)) {
 			throw new IllegalAccessError("Le champ " + fieldName + " possède une erreur de formattage et doit être lu par son UiObject");

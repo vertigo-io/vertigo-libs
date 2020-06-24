@@ -119,11 +119,11 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 			final TaskManager taskManager,
 			final SqlDataBaseManager sqlDataBaseManager) {
 		Assertion.check()
-				.notNull(optDataSpace)
-				.notNull(optConnectionName)
-				.notNull(optSequencePrefix)
-				.notNull(taskManager)
-				.notNull(sqlDataBaseManager);
+				.isNotNull(optDataSpace)
+				.isNotNull(optConnectionName)
+				.isNotNull(optSequencePrefix)
+				.isNotNull(taskManager)
+				.isNotNull(sqlDataBaseManager);
 		//-----
 		dataSpace = optDataSpace.orElse(EntityStoreManager.MAIN_DATA_SPACE_NAME);
 		connectionName = optConnectionName.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
@@ -168,7 +168,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	}
 
 	private static DtField getIdField(final DtDefinition dtDefinition) {
-		Assertion.check().notNull(dtDefinition);
+		Assertion.check().isNotNull(dtDefinition);
 		//---
 		return dtDefinition.getIdField().orElseThrow(() -> new IllegalStateException("no ID found"));
 	}
@@ -210,8 +210,8 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	@Override
 	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
 		Assertion.check()
-				.notNull(dtDefinition)
-				.notNull(dtcUri);
+				.isNotNull(dtDefinition)
+				.isNotNull(dtcUri);
 		//-----
 		final String entityName = getEntityName(dtDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
@@ -262,8 +262,8 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	@Override
 	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
 		Assertion.check()
-				.notNull(dtDefinition)
-				.notNull(dtcUri);
+				.isNotNull(dtDefinition)
+				.isNotNull(dtcUri);
 		//---
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Serializable value = dtcUri.getSource().getId();
@@ -275,9 +275,9 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	@Override
 	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
 		Assertion.check()
-				.notNull(dtDefinition)
-				.notNull(criteria)
-				.notNull(dtListState);
+				.isNotNull(dtDefinition)
+				.isNotNull(criteria)
+				.isNotNull(dtListState);
 		//---
 		final String entityName = getEntityName(dtDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
@@ -338,7 +338,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void update(final DtDefinition dtDefinition, final Entity entity) {
-		Assertion.check().notNull(DtObjectUtil.getId(entity), "Need an id to update an object ");
+		Assertion.check().isNotNull(DtObjectUtil.getId(entity), "Need an id to update an object ");
 		//-----
 		final boolean insert = false;
 		put(entity, insert);
@@ -428,8 +428,8 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	@Override
 	public void delete(final DtDefinition dtDefinition, final UID uri) {
 		Assertion.check()
-				.notNull(dtDefinition)
-				.notNull(uri);
+				.isNotNull(dtDefinition)
+				.isNotNull(uri);
 		//---
 		final DtField idField = getIdField(dtDefinition);
 		final String entityName = getEntityName(dtDefinition);
@@ -470,7 +470,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	@Override
 	public int count(final DtDefinition dtDefinition) {
 		Assertion.check()
-				.notNull(dtDefinition)
+				.isNotNull(dtDefinition)
 				.argument(dtDefinition.isPersistent(), "DtDefinition is not  persistent");
 		//-----
 		final String entityName = getEntityName(dtDefinition);

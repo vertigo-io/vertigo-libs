@@ -43,7 +43,7 @@ public final class ComponentRef<T> implements Serializable {
 	 * @param lazy Si référencement à la première demande
 	 */
 	private ComponentRef(final Class<T> componentClazz, final boolean lazy) {
-		Assertion.check().notNull(componentClazz);
+		Assertion.check().isNotNull(componentClazz);
 		//-----
 		componentId = null;
 		this.componentClazz = componentClazz;

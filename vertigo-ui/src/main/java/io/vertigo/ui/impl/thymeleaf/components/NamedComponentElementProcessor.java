@@ -122,7 +122,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			if (!slotNames.isEmpty()) {
 				final Map<String, IModel> slotContents = removeAndExtractSlots(contentModel, context);
 				for (final Map.Entry<String, IModel> entry : slotContents.entrySet()) {
-					Assertion.check().state(slotNames.contains(entry.getKey()), "Component {0} have no slot {1} (accepted slots : {3})", componentName, entry.getKey(), slotNames);
+					Assertion.check().isTrue(slotNames.contains(entry.getKey()), "Component {0} have no slot {1} (accepted slots : {3})", componentName, entry.getKey(), slotNames);
 					//-----
 					structureHandler.setLocalVariable(entry.getKey(), entry.getValue());
 				}
@@ -155,7 +155,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			final ITemplateEvent templateEvent = contentModel.get(0); //get always first (because we remove it)
 			if (templateEvent instanceof IOpenElementTag) {
 				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
-					Assertion.check().state(tapDepth == 0, "Can't parse slot {0} it contains another slot", slotName);
+					Assertion.check().isTrue(tapDepth == 0, "Can't parse slot {0} it contains another slot", slotName);
 					slotName = ((IProcessableElementTag) templateEvent).getAttributeValue("name");
 				} else if (tapDepth == 0) {
 					break; //slots must be set at first
@@ -166,7 +166,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			} else if (templateEvent instanceof IStandaloneElementTag) {
 				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
 					//we accept empty slot (to clear a component default slot)
-					Assertion.check().state(tapDepth == 0, "Can't parse slot {0} it contains another slot", slotName);
+					Assertion.check().isTrue(tapDepth == 0, "Can't parse slot {0} it contains another slot", slotName);
 					slotName = ((IProcessableElementTag) templateEvent).getAttributeValue("name");
 				} else if (tapDepth == 0) {
 					break;
@@ -177,7 +177,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 			if (tapDepth == 0) {
 				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
-					Assertion.check().notNull(slotName);
+					Assertion.check().isNotNull(slotName);
 					//Si on est à la base, on ajout que le model qu'on a préparé, on le close et on reset pour la boucle suivante
 					final IModel firstLevelTagModel = buildingModel.cloneModel();
 					if (isVisible(context, firstLevelTagModel)) {
@@ -190,7 +190,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				}
 			}
 		}
-		Assertion.check().state(tapDepth == 0, "Can't extract component slots, tags may be missclosed in slot {0}", slotName);
+		Assertion.check().isTrue(tapDepth == 0, "Can't extract component slots, tags may be missclosed in slot {0}", slotName);
 		return slotContents;
 	}
 
@@ -453,7 +453,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			//We prepared prefixed placeholders variables.
 			addPlaceholderVariable(placeholders, attributeKey, attributeValue);
 		} else if (!parameterNames.contains(attributeKey)) {
-			Assertion.check().state(
+			Assertion.check().isTrue(
 					unnamedPlaceholderPrefix.isPresent(),
 					"Component '{0}' can't accept this parameter : '{1}' (accepted params : {2})", componentName, attributeKey, parameterNames);
 			//We prepared unnamed placeholder variable

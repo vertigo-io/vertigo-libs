@@ -48,7 +48,7 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 	 */
 	public ConstraintBigDecimal(final String args, final Optional<String> overrideMessageOpt) {
 		final String[] beforeAfter = args.split(SEPARATOR_ARGS);
-		Assertion.check().state(beforeAfter.length == 2, "L'argument doit être au format M,D. M le nombre de chiffre au total (precision) et D le nombre de chiffre à droite de la virgule (scale).");
+		Assertion.check().isTrue(beforeAfter.length == 2, "L'argument doit être au format M,D. M le nombre de chiffre au total (precision) et D le nombre de chiffre à droite de la virgule (scale).");
 		try {
 			maxPrecision = Integer.valueOf(beforeAfter[0]);
 		} catch (final NumberFormatException e) {
@@ -61,8 +61,8 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 		}
 		// ---
 		Assertion.check()
-				.notNull(maxPrecision, "Le nombre de chiffres ne peut pas être null")
-				.notNull(maxScale, "Le nombre de chiffres après la virgule ne peut pas être null")
+				.isNotNull(maxPrecision, "Le nombre de chiffres ne peut pas être null")
+				.isNotNull(maxScale, "Le nombre de chiffres après la virgule ne peut pas être null")
 				.argument(maxScale <= maxPrecision, "Le nombre de chiffres après la virgule doit être inférieur au nombre total de chiffres");
 		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get())
 				: MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED,

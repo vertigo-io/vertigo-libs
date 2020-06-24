@@ -45,8 +45,8 @@ public final class LedgerManagerImpl implements LedgerManager {
 	@Inject
 	public LedgerManagerImpl(final CodecManager codecManager, final LedgerPlugin ledgerPlugin) {
 		Assertion.check()
-				.notNull(codecManager)
-				.notNull(ledgerPlugin);
+				.isNotNull(codecManager)
+				.isNotNull(ledgerPlugin);
 		//---
 		this.codecManager = codecManager;
 		this.ledgerPlugin = ledgerPlugin;
@@ -85,7 +85,7 @@ public final class LedgerManagerImpl implements LedgerManager {
 
 	@Override
 	public BigInteger getWalletBalance(final LedgerAddress ledgerAddress) {
-		Assertion.check().notNull(ledgerAddress);
+		Assertion.check().isNotNull(ledgerAddress);
 		//---
 		return ledgerPlugin.getWalletBalance(ledgerAddress);
 	}

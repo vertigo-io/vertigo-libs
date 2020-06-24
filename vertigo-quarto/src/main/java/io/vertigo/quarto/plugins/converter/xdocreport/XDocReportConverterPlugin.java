@@ -64,7 +64,7 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 				"Le format de sortie est identique à celui d'entrée ; la conversion est inutile");
 		final DocumentKind inputFormat = DocumentKind.fromMimeType(file.getMimeType());
 		Assertion.check()
-				.notNull(inputFormat,
+				.isNotNull(inputFormat,
 						"Seul les formats " + Arrays.toString(DocumentKind.values()) + " peuvent être utilisés en entrée (typeMime " + file.getMimeType() + " non supporté)")
 				.argument(targetFormat.equalsIgnoreCase(ConverterFormat.PDF.name()),
 						"Seul le format PDF peut être utilisé en sortie");

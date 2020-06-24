@@ -58,10 +58,10 @@ public final class ZipUtil {
 	 */
 	public static String readEntry(final ZipFile odtFile, final String entryName) throws IOException {
 		Assertion.check()
-				.notNull(odtFile)
+				.isNotNull(odtFile)
 				.isNotBlank(entryName);
 		final ZipEntry zipEntry = odtFile.getEntry(entryName);
-		Assertion.check().notNull(zipEntry, "Le modèle {0} ne contient pas {1}, vérifier que le modèle est un document valide et du bon type.", odtFile.getName(), entryName);
+		Assertion.check().isNotNull(zipEntry, "Le modèle {0} ne contient pas {1}, vérifier que le modèle est un document valide et du bon type.", odtFile.getName(), entryName);
 		//-----
 		final StringBuilder resultat = new StringBuilder();
 

@@ -77,14 +77,14 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * @param dtDefinition DtDefinition
 	 */
 	AbstractUiListUnmodifiable(final DtDefinition dtDefinition, final Optional<DtFieldName<O>> keyFieldNameOpt) {
-		Assertion.check().notNull(dtDefinition);
+		Assertion.check().isNotNull(dtDefinition);
 		//-----
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
 		final Optional<DtField> idFieldOption = getDtDefinition().getIdField();
 		if (idFieldOption.isPresent()) {
 			camelIdFieldName = idFieldOption.get().getName();
 		} else {
-			Assertion.check().state(keyFieldNameOpt.isPresent(), "DtDefinition : {0} is not an entity, you must provide a keyFieldName", dtDefinition.getName());
+			Assertion.check().isTrue(keyFieldNameOpt.isPresent(), "DtDefinition : {0} is not an entity, you must provide a keyFieldName", dtDefinition.getName());
 			camelIdFieldName = keyFieldNameOpt.get().name();
 		}
 	}
@@ -140,7 +140,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	@Override
 	public final UiObject<O> get(final int index) {
 		return uiObjectByIndex.computeIfAbsent(index, i -> {
-			Assertion.check().state(uiObjectByIndex.size() < 1000, "Trop d'élément dans le buffer uiObjectByIndex de la liste de {0}", getDtDefinition().getName());
+			Assertion.check().isTrue(uiObjectByIndex.size() < 1000, "Trop d'élément dans le buffer uiObjectByIndex de la liste de {0}", getDtDefinition().getName());
 			return new MapUiObject<>(obtainDtList().get(i));
 		});
 	}
@@ -167,7 +167,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * @return index de l'objet dans la liste
 	 */
 	private int indexOfUiObject(final UiObject<O> uiObject) {
-		Assertion.check().notNull(uiObject);
+		Assertion.check().isNotNull(uiObject);
 		//-----
 		return obtainDtList().indexOf(uiObject.getServerSideObject());
 	}
@@ -177,7 +177,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * @return index de l'objet dans la liste
 	 */
 	private int indexOfDtObject(final DtObject dtObject) {
-		Assertion.check().notNull(dtObject);
+		Assertion.check().isNotNull(dtObject);
 		//-----
 		return obtainDtList().indexOf(dtObject);
 	}
@@ -191,7 +191,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * @throws FormatterException Format error
 	 */
 	public UiObject<O> getById(final String keyFieldName, final Serializable keyValue) {
-		Assertion.check().notNull(keyValue);
+		Assertion.check().isNotNull(keyValue);
 		//-----
 		final Map<Serializable, UiObject<O>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
 		UiObject<O> uiObject = uiObjectById.get(keyValue);
@@ -204,7 +204,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	private UiObject<O> loadMissingEntity(final String keyFieldName, final Serializable keyValue, final Map<Serializable, UiObject<O>> uiObjectById) {
 		final DtDefinition dtDefinition = getDtDefinition();
 		// ---
-		Assertion.check().state(dtDefinition.getIdField().isPresent(), "The definition : {0} must have an id to retrieve elements by Id", dtDefinition);
+		Assertion.check().isTrue(dtDefinition.getIdField().isPresent(), "The definition : {0} must have an id to retrieve elements by Id", dtDefinition);
 		// ---
 		UiObject<O> uiObject;
 		final DtField dtField = dtDefinition.getField(keyFieldName);
@@ -213,7 +213,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		final O entity = (O) loadDto(keyValue);
 		uiObject = new MapUiObject<>(entity);
 		uiObjectById.put(keyValue, uiObject);
-		Assertion.check().state(uiObjectById.size() < NB_MAX_ELEMENTS, "Trop d'élément dans le buffer uiObjectById de la liste de {0}", getDtDefinition().getName());
+		Assertion.check().isTrue(uiObjectById.size() < NB_MAX_ELEMENTS, "Trop d'élément dans le buffer uiObjectById de la liste de {0}", getDtDefinition().getName());
 		return uiObject;
 	}
 

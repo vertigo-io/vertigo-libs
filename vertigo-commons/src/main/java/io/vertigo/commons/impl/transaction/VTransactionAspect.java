@@ -41,7 +41,7 @@ public final class VTransactionAspect implements Aspect {
 	 */
 	@Inject
 	public VTransactionAspect(final VTransactionManager transactionManager) {
-		Assertion.check().notNull(transactionManager);
+		Assertion.check().isNotNull(transactionManager);
 		//-----
 		this.transactionManager = transactionManager;
 	}

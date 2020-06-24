@@ -47,7 +47,7 @@ public final class ActivityExecutionWorkspace {
 	 * @param params un workspace sous forme de Map
 	 */
 	public ActivityExecutionWorkspace(final Map<String, String> params) {
-		Assertion.check().notNull(params);
+		Assertion.check().isNotNull(params);
 		//---
 		this.params = params;
 	}
@@ -58,7 +58,7 @@ public final class ActivityExecutionWorkspace {
 	 * @return la valeur
 	 */
 	public String getValue(final String key) {
-		Assertion.check().notNull(key);
+		Assertion.check().isNotNull(key);
 		//---
 		return params.get(key);
 	}
@@ -69,7 +69,7 @@ public final class ActivityExecutionWorkspace {
 	 * @return true si la clé existe
 	 */
 	public boolean containsKey(final String key) {
-		Assertion.check().notNull(key);
+		Assertion.check().isNotNull(key);
 		//---
 		return params.containsKey(key);
 	}
@@ -81,8 +81,8 @@ public final class ActivityExecutionWorkspace {
 	 */
 	public void setValue(final String key, final String value) {
 		Assertion.check()
-				.notNull(key)
-				.state(!STATUS_KEY.equals(key), "Status cannot be set directly");
+				.isNotNull(key)
+				.isTrue(!STATUS_KEY.equals(key), "Status cannot be set directly");
 		// ---
 		params.put(key, value);
 	}
@@ -92,7 +92,7 @@ public final class ActivityExecutionWorkspace {
 	 * @param key la clé à retirer
 	 */
 	public void removeKey(final String key) {
-		Assertion.check().notNull(key);
+		Assertion.check().isNotNull(key);
 		// ---
 		params.remove(key);
 	}

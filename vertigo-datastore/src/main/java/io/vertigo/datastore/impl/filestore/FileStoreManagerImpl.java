@@ -47,7 +47,7 @@ public final class FileStoreManagerImpl implements FileStoreManager, SimpleDefin
 	 */
 	@Inject
 	public FileStoreManagerImpl(final List<FileStorePlugin> fileStorePlugins) {
-		Assertion.check().notNull(fileStorePlugins);
+		Assertion.check().isNotNull(fileStorePlugins);
 		//-----
 		this.fileStorePlugins = fileStorePlugins;
 		fileStoreConfig = new FileStoreConfig(fileStorePlugins);
@@ -69,7 +69,7 @@ public final class FileStoreManagerImpl implements FileStoreManager, SimpleDefin
 	/** {@inheritDoc} */
 	@Override
 	public FileInfo create(final FileInfo fileInfo) {
-		Assertion.check().notNull(fileInfo);
+		Assertion.check().isNotNull(fileInfo);
 		//-----
 		return getPhysicalStore(fileInfo.getDefinition()).create(fileInfo);
 	}
@@ -77,7 +77,7 @@ public final class FileStoreManagerImpl implements FileStoreManager, SimpleDefin
 	/** {@inheritDoc} */
 	@Override
 	public void update(final FileInfo fileInfo) {
-		Assertion.check().notNull(fileInfo);
+		Assertion.check().isNotNull(fileInfo);
 		//-----
 		getPhysicalStore(fileInfo.getDefinition()).update(fileInfo);
 	}
@@ -85,7 +85,7 @@ public final class FileStoreManagerImpl implements FileStoreManager, SimpleDefin
 	/** {@inheritDoc} */
 	@Override
 	public void delete(final FileInfoURI uri) {
-		Assertion.check().notNull(uri);
+		Assertion.check().isNotNull(uri);
 		//-----
 		getPhysicalStore(uri.getDefinition()).delete(uri);
 	}
@@ -93,11 +93,11 @@ public final class FileStoreManagerImpl implements FileStoreManager, SimpleDefin
 	/** {@inheritDoc} */
 	@Override
 	public FileInfo read(final FileInfoURI uri) {
-		Assertion.check().notNull(uri);
+		Assertion.check().isNotNull(uri);
 		//-----
 		final FileInfo fileInfo = getPhysicalStore(uri.getDefinition()).read(uri);
 		//-----
-		Assertion.check().notNull(fileInfo, "Le fichier {0} n''a pas été trouvé", uri);
+		Assertion.check().isNotNull(fileInfo, "Le fichier {0} n''a pas été trouvé", uri);
 		return fileInfo;
 	}
 

@@ -62,7 +62,7 @@ public final class WritableFuture<V> implements Future<V> {
 	/** {@inheritDoc} */
 	@Override
 	public synchronized V get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-		Assertion.check().notNull(unit, "Time unit was null");
+		Assertion.check().isNotNull(unit, "Time unit was null");
 		//-----
 		final long msecs = unit.toMillis(timeout);
 		final long startTime = msecs <= 0 ? 0 : System.currentTimeMillis();
@@ -102,7 +102,7 @@ public final class WritableFuture<V> implements Future<V> {
 	 * @param result Result of execution
 	 */
 	public synchronized void success(final V result) {
-		Assertion.check().state(!this.completed, "Task already completed");
+		Assertion.check().isTrue(!this.completed, "Task already completed");
 		//-----
 		this.completed = true;
 		this.futureResult = result;
@@ -114,7 +114,7 @@ public final class WritableFuture<V> implements Future<V> {
 	 * @param exception Failure reason
 	 */
 	public synchronized void fail(final Exception exception) {
-		Assertion.check().state(!this.completed, "Task already completed");
+		Assertion.check().isTrue(!this.completed, "Task already completed");
 		//-----
 		this.completed = true;
 		this.futureException = exception;

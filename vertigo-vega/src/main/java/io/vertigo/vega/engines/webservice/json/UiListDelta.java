@@ -53,10 +53,10 @@ public final class UiListDelta<D extends DtObject> implements Serializable {
 	// TODO remettre protected
 	public UiListDelta(final Class<D> objectType, final Map<String, UiObject<D>> collCreates, final Map<String, UiObject<D>> collUpdates, final Map<String, UiObject<D>> collDeletes) {
 		Assertion.check()
-				.notNull(objectType)
-				.notNull(collCreates)
-				.notNull(collUpdates)
-				.notNull(collDeletes);
+				.isNotNull(objectType)
+				.isNotNull(collCreates)
+				.isNotNull(collUpdates)
+				.isNotNull(collDeletes);
 		//-----
 		this.objectType = objectType;
 		this.collCreates = collCreates;
@@ -99,7 +99,7 @@ public final class UiListDelta<D extends DtObject> implements Serializable {
 	 * @return Updated and validated business object
 	 */
 	public DtListDelta<D> mergeAndCheckInput(final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack) {
-		Assertion.check().notNull(dtObjectValidators);
+		Assertion.check().isNotNull(dtObjectValidators);
 		//-----
 		final DtList<D> dtListCreates = mergeAndCheckInput(collCreates, dtObjectValidators, uiMessageStack);
 		final DtList<D> dtListUpdates = mergeAndCheckInput(collUpdates, dtObjectValidators, uiMessageStack);

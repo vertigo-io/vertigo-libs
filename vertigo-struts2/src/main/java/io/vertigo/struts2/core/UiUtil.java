@@ -130,7 +130,7 @@ public final class UiUtil implements Serializable {
 		final ActionContext actionContext = ActionContext.getContext();
 		final Object contextObject = actionContext.getValueStack().findValue(contextKey);
 		Assertion.check()
-				.notNull(contextObject, "{0} n''est pas dans le context", contextKey)
+				.isNotNull(contextObject, "{0} n''est pas dans le context", contextKey)
 				.argument(contextObject instanceof UiObject || contextObject instanceof UiList, "{0}({1}) doit être un UiObject ou une UiList ", contextKey,
 						contextObject.getClass().getSimpleName());
 
@@ -141,8 +141,8 @@ public final class UiUtil implements Serializable {
 			dtDefinition = ((UiList<?>) contextObject).getDtDefinition();
 		}
 		Assertion.check()
-				.notNull(dtDefinition) //, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
-				.notNull(dtDefinition, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
+				.isNotNull(dtDefinition) //, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
+				.isNotNull(dtDefinition, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
 		return dtDefinition.getField(fieldName);
 
 	}

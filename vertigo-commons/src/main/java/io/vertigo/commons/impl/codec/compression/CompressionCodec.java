@@ -63,7 +63,7 @@ public final class CompressionCodec implements Codec<byte[], byte[]> {
 	 */
 	@Override
 	public byte[] encode(final byte[] unCompressedObject) {
-		Assertion.check().notNull(unCompressedObject);
+		Assertion.check().isNotNull(unCompressedObject);
 		checkMaxSize(unCompressedObject.length);
 		//-----
 		if (unCompressedObject.length < MIN_SIZE_FOR_COMPRESSION) {
@@ -104,7 +104,7 @@ public final class CompressionCodec implements Codec<byte[], byte[]> {
 	 */
 	@Override
 	public byte[] decode(final byte[] compressedObject) {
-		Assertion.check().notNull(compressedObject);
+		Assertion.check().isNotNull(compressedObject);
 		//-----
 		byte[] uncompressedObject = compressedObject;
 		final byte[] compressHeader = new byte[COMPRESS_KEY.length];

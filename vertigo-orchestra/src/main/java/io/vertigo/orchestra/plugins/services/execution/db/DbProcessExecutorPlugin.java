@@ -129,15 +129,15 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 			@ParamValue("workersCount") final Optional<Integer> workersCountOpt,
 			@ParamValue("executionPeriodSeconds") final Optional<Integer> executionPeriodSecondsOpt) {
 		Assertion.check()
-				.notNull(nodeManager)
-				.notNull(transactionManager);
+				.isNotNull(nodeManager)
+				.isNotNull(transactionManager);
 		// ---
 		this.nodeManager = nodeManager;
 		this.transactionManager = transactionManager;
 		this.nodeName = nodeName;
 		workersCount = workersCountOpt.orElse(10);
 		// ---
-		Assertion.check().state(workersCount >= 1, "We need at least 1 worker");
+		Assertion.check().isTrue(workersCount >= 1, "We need at least 1 worker");
 		// ---
 		executionPeriodSeconds = executionPeriodSecondsOpt.orElse(30);
 		// ---
@@ -160,7 +160,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private void executeProcesses() {
 		ThreadContext.put("module", "orchestra");
 		try {
-			Assertion.check().notNull(nodId, "Node not already registered");
+			Assertion.check().isNotNull(nodId, "Node not already registered");
 			executeToDo();
 			nodeManager.updateHeartbeat(nodId);
 			handleDeadNodeProcesses();
@@ -194,7 +194,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	/** {@inheritDoc} */
 	@Override
 	public void execute(final ProcessDefinition processDefinition, final Optional<String> initialParams) {
-		Assertion.check().notNull(processDefinition);
+		Assertion.check().isNotNull(processDefinition);
 		// ---
 		// We need to be as short as possible for the commit
 		if (transactionManager.hasCurrentTransaction()) {
@@ -217,21 +217,21 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	@Override
 	public void endPendingActivityExecution(final Long activityExecutionId, final String token, final ExecutionState executionState, final Optional<String> errorMessageOpt) {
 		Assertion.check()
-				.notNull(activityExecutionId)
-				.notNull(token);
+				.isNotNull(activityExecutionId)
+				.isNotNull(token);
 		// ---
 		OActivityExecution activityExecution;
 		ActivityExecutionWorkspace workspace;
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			activityExecution = activityExecutionDAO.getActivityExecutionByToken(activityExecutionId, token);
-			Assertion.check().notNull(activityExecution, "Activity token and id are not compatible");
+			Assertion.check().isNotNull(activityExecution, "Activity token and id are not compatible");
 			workspace = getWorkspaceForActivityExecution(activityExecution.getAceId(), false);
 			transaction.commit();
 		}
 		// ---
 		Assertion.check()
-				.state(ExecutionState.PENDING.name().equals(activityExecution.getEstCd()), "Only pending executions can be ended remotly")
-				.state(workspace != null, "Workspace for activityExecution not found");
+				.isTrue(ExecutionState.PENDING.name().equals(activityExecution.getEstCd()), "Only pending executions can be ended remotly")
+				.isTrue(workspace != null, "Workspace for activityExecution not found");
 
 		// We execute the postTreatment of the pending activity when it's released
 		// ---
@@ -287,7 +287,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	}
 
 	private void doSetActivityExecutionPending(final Long activityExecutionId, final ActivityExecutionWorkspace workspace) {
-		Assertion.check().notNull(activityExecutionId);
+		Assertion.check().isNotNull(activityExecutionId);
 		// ---
 		final OActivityExecution activityExecution = activityExecutionDAO.get(activityExecutionId);
 		endActivityExecution(activityExecution, ExecutionState.PENDING);
@@ -368,8 +368,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 				// We try the execution and we keep the result
 				resultWorkspace = activityEngine.execute(workspace);
 				Assertion.check()
-						.notNull(resultWorkspace)
-						.notNull(resultWorkspace.getValue("status"), "Le status est obligatoire dans le résultat");
+						.isNotNull(resultWorkspace)
+						.isNotNull(resultWorkspace.getValue("status"), "Le status est obligatoire dans le résultat");
 				// if pending we delegated the treatment to a third party so we are not sure that we are successful
 				if (!resultWorkspace.isPending()) {
 					// we call the posttreament
@@ -403,8 +403,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 			endActivityExecution(activityExecution, ExecutionState.ERROR);
 		} else {
 			Assertion.check()
-					.notNull(workspaceOut)
-					.notNull(workspaceOut.getValue("status"), "Le status est obligatoire dans le résultat");
+					.isNotNull(workspaceOut)
+					.isNotNull(workspaceOut.getValue("status"), "Le status est obligatoire dans le résultat");
 			//---
 			if (workspaceOut.isSuccess()) {
 				endActivityExecution(activityExecution, ExecutionState.DONE);
@@ -432,7 +432,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	}
 
 	private OProcessExecution initProcessExecution(final ProcessDefinition processDefinition) {
-		Assertion.check().notNull(processDefinition);
+		Assertion.check().isNotNull(processDefinition);
 		// ---
 		final OProcessExecution newProcessExecution = new OProcessExecution();
 		newProcessExecution.setProId(processDefinition.getId());
@@ -452,8 +452,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void initFirstActivityExecution(final OProcessExecution processExecution, final Optional<String> initialParams) {
 		Assertion.check()
-				.notNull(processExecution.getProId())
-				.notNull(processExecution.getPreId());
+				.isNotNull(processExecution.getProId())
+				.isNotNull(processExecution.getPreId());
 		// ---
 		final OActivity firstActivity = activityDAO.getFirstActivityByProcess(processExecution.getProId());
 		final OActivityExecution firstActivityExecution = initActivityExecutionWithActivity(firstActivity, processExecution.getPreId());
@@ -478,7 +478,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	}
 
 	private static OActivityExecution initActivityExecutionWithActivity(final OActivity activity, final Long preId) {
-		Assertion.check().notNull(preId);
+		Assertion.check().isNotNull(preId);
 		// ---
 		final OActivityExecution activityExecution = new OActivityExecution();
 
@@ -539,8 +539,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void endActivityExecution(final OActivityExecution activityExecution, final ExecutionState executionState) {
 		Assertion.check()
-				.notNull(activityExecution)
-				.notNull(executionState);
+				.isNotNull(activityExecution)
+				.isNotNull(executionState);
 		// ---
 
 		switch (executionState) {
@@ -566,8 +566,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private ActivityExecutionWorkspace getWorkspaceForActivityExecution(final Long aceId, final Boolean in) {
 		Assertion.check()
-				.notNull(aceId)
-				.notNull(in);
+				.isNotNull(aceId)
+				.isNotNull(in);
 		// ---
 		final OActivityWorkspace activityWorkspace = activityWorkspaceDAO.getActivityWorkspace(aceId, in).get();
 		return new ActivityExecutionWorkspace(mapCodec.decode(activityWorkspace.getWorkspace()));
@@ -575,9 +575,9 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void saveActivityExecutionWorkspace(final Long aceId, final ActivityExecutionWorkspace workspace, final Boolean in) {
 		Assertion.check()
-				.notNull(aceId)
-				.notNull(in)
-				.notNull(workspace);
+				.isNotNull(aceId)
+				.isNotNull(in)
+				.isNotNull(workspace);
 		// ---
 		lockActivityExecution(aceId);
 		// we need at most one workspace in and one workspace out
@@ -596,7 +596,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	}
 
 	private void doChangeExecutionState(final OActivityExecution activityExecution, final ExecutionState executionState) {
-		Assertion.check().notNull(activityExecution);
+		Assertion.check().isNotNull(activityExecution);
 		// ---
 		changeActivityExecutionState(activityExecution, executionState);
 		activityExecutionDAO.save(activityExecution);
@@ -620,7 +620,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	}
 
 	private void doFinishProcessExecution(final OActivityExecution activityExecution) {
-		Assertion.check().notNull(activityExecution);
+		Assertion.check().isNotNull(activityExecution);
 		// ---
 		endActivity(activityExecution);
 		endProcessExecution(activityExecution.getPreId(), ExecutionState.DONE);
@@ -658,8 +658,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void saveActivityLogs(final Long aceId, final ActivityLogger activityLogger, final ActivityExecutionWorkspace resultWorkspace) {
 		Assertion.check()
-				.notNull(aceId)
-				.notNull(activityLogger);
+				.isNotNull(aceId)
+				.isNotNull(activityLogger);
 		// ---
 		// we need at most on log per activityExecution
 		final OActivityLog activityLog = activityLogDAO.getActivityLogByAceId(aceId).orElseGet(OActivityLog::new);
@@ -675,7 +675,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	}
 
 	private int getUnusedWorkersCount() {
-		Assertion.check().notNull(workers);
+		Assertion.check().isNotNull(workers);
 		// ---
 		if (workers instanceof ThreadPoolExecutor) {
 			final ThreadPoolExecutor workersPool = (ThreadPoolExecutor) workers;

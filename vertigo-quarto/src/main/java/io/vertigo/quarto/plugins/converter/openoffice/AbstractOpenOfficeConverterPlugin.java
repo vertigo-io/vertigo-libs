@@ -74,7 +74,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 	protected AbstractOpenOfficeConverterPlugin(final FileManager fileManager, final String unoHost, final String unoPort, final int convertTimeoutSeconds) {
 		super();
 		Assertion.check()
-				.notNull(fileManager)
+				.isNotNull(fileManager)
 				.isNotBlank(unoHost)
 				.argument(convertTimeoutSeconds >= 1 && convertTimeoutSeconds <= 900, "Le timeout de conversion est exprimé en seconde et doit-être compris entre 1s et 15min (900s)");
 		//-----
@@ -106,8 +106,8 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 
 	private VFile convertToFormat(final VFile file, final ConverterFormat targetFormat) {
 		Assertion.check()
-				.notNull(file)
-				.notNull(targetFormat)
+				.isNotNull(file)
+				.isNotNull(targetFormat)
 				// si le format de sortie est celui d'entrée la convertion est inutile
 				.argument(!targetFormat.getTypeMime().equals(file.getMimeType()), "Le format de sortie est identique à celui d'entrée ; la conversion est inutile");
 		//-----
@@ -205,7 +205,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 
 	private static PropertyValue[] getFileProperties(final ConverterFormat docType, final XOutputStream outputStream, final XInputStream inputStream) {
 		Assertion.check()
-				.notNull(docType, "Le type du format de sortie est obligatoire")
+				.isNotNull(docType, "Le type du format de sortie est obligatoire")
 				.argument(outputStream == null || inputStream == null, "Les properties pointent soit un fichier local, soit un flux d'entrée, soit un flux de sortie");
 		final List<PropertyValue> fileProps = new ArrayList<>(3);
 

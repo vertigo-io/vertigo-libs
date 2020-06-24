@@ -87,8 +87,8 @@ public final class PublisherDataUtil {
 	 */
 	public static void populateData(final DtObject dto, final PublisherNode publisherDataNode) {
 		Assertion.check()
-				.notNull(dto)
-				.notNull(publisherDataNode);
+				.isNotNull(dto)
+				.isNotNull(publisherDataNode);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final List<String> dtFieldNames = getDtFieldList(dtDefinition);
@@ -141,7 +141,7 @@ public final class PublisherDataUtil {
 					throw new IllegalArgumentException("Type unknown : " + publisherField.getFieldType());
 			}
 		}
-		Assertion.check().state(nbMappedField > 0,
+		Assertion.check().isTrue(nbMappedField > 0,
 				"Aucun champ du Dt ne correspond à ceux du PublisherNode, vérifier vos définitions. ({0}:{1}) et ({2}:{3})", "PN",
 				pnDefinition.getFields(), dtDefinition.getName(), dtFieldNames);
 	}

@@ -80,7 +80,7 @@ public final class ValidationUserException extends VUserException {
 	private ValidationUserException(final MessageText messageText, final String constFieldName, final DtObject dto) {
 		super(messageText);
 		Assertion.check()
-				.notNull(dto, "L'objet est obligatoire")
+				.isNotNull(dto, "L'objet est obligatoire")
 				.isNotBlank(constFieldName, "Le champs est obligatoire");
 		//-----
 		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(constFieldName);

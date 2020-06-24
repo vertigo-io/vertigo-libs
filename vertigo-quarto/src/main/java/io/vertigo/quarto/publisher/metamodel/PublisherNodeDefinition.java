@@ -39,7 +39,7 @@ public final class PublisherNodeDefinition {
 	private final Map<String, PublisherField> publisherFieldMap;
 
 	PublisherNodeDefinition(final List<PublisherField> publisherFields) {
-		Assertion.check().notNull(publisherFields);
+		Assertion.check().isNotNull(publisherFields);
 		//-----
 		publisherFieldMap = new LinkedHashMap<>();
 		for (final PublisherField publisherField : publisherFields) {
@@ -62,7 +62,7 @@ public final class PublisherNodeDefinition {
 	public PublisherField getField(final String fieldName) {
 		final PublisherField field = publisherFieldMap.get(fieldName);
 		//-----
-		Assertion.check().notNull(field, "Le champ {0} n''est pas dans la définition de ce noeud, champs disponibles [{1}]", fieldName, publisherFieldMap.keySet());
+		Assertion.check().isNotNull(field, "Le champ {0} n''est pas dans la définition de ce noeud, champs disponibles [{1}]", fieldName, publisherFieldMap.keySet());
 		return field;
 	}
 

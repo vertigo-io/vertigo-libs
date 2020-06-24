@@ -185,12 +185,12 @@ public final class ProcessorXMLUtil {
 		}
 
 		int endTagIndex = content.indexOf('>', 0);
-		Assertion.check().state(endTagIndex != -1, "Une balise est mal fermée (manque le >) : {0}", content);
+		Assertion.check().isTrue(endTagIndex != -1, "Une balise est mal fermée (manque le >) : {0}", content);
 		int beginTagIndex = content.indexOf('<', endTagIndex);
 
 		while (beginTagIndex == endTagIndex + 1) {
 			endTagIndex = content.indexOf('>', beginTagIndex);
-			Assertion.check().state(endTagIndex != -1, "Une balise est mal fermée (manque le >) : {0}", content.substring(beginTagIndex));
+			Assertion.check().isTrue(endTagIndex != -1, "Une balise est mal fermée (manque le >) : {0}", content.substring(beginTagIndex));
 			beginTagIndex = content.indexOf('<', endTagIndex);
 		}
 
@@ -212,12 +212,12 @@ public final class ProcessorXMLUtil {
 		}
 
 		int beginTagIndex = content.lastIndexOf('<', lastIndex);
-		Assertion.check().state(beginTagIndex != -1, "Une balise est mal ouverte (manque le <) : {0}", content);
+		Assertion.check().isTrue(beginTagIndex != -1, "Une balise est mal ouverte (manque le <) : {0}", content);
 		int endTagIndex = content.lastIndexOf('>', beginTagIndex);
 
 		while (beginTagIndex == endTagIndex + 1 && endTagIndex != -1) {
 			beginTagIndex = content.lastIndexOf('<', endTagIndex);
-			Assertion.check().state(beginTagIndex != -1, "Une balise est mal ouverte (manque le <) : {0}", content);
+			Assertion.check().isTrue(beginTagIndex != -1, "Une balise est mal ouverte (manque le <) : {0}", content);
 			endTagIndex = content.lastIndexOf('>', beginTagIndex);
 		}
 

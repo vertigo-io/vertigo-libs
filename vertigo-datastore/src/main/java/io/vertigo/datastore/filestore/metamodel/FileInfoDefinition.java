@@ -86,7 +86,7 @@ public final class FileInfoDefinition implements Definition {
 	 * @return FileInfoDefinition from class
 	 */
 	public static FileInfoDefinition findFileInfoDefinition(final Class<? extends FileInfo> fileInfoClass) {
-		Assertion.check().notNull(fileInfoClass);
+		Assertion.check().isNotNull(fileInfoClass);
 		//-----
 		final String name = DefinitionUtil.getPrefix(FileInfoDefinition.class) + fileInfoClass.getSimpleName();
 		return Home.getApp().getDefinitionSpace().resolve(name, FileInfoDefinition.class);

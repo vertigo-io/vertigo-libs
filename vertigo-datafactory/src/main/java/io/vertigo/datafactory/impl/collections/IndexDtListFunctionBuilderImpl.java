@@ -42,7 +42,7 @@ final class IndexDtListFunctionBuilderImpl<D extends DtObject> implements IndexD
 	 * @param indexPlugin Index plugin
 	 */
 	IndexDtListFunctionBuilderImpl(final IndexPlugin indexPlugin) {
-		Assertion.check().notNull(indexPlugin);
+		Assertion.check().isNotNull(indexPlugin);
 		//-----
 		indexFilterFunction = new IndexFilterFunction<>(indexPlugin);
 	}
@@ -64,7 +64,7 @@ final class IndexDtListFunctionBuilderImpl<D extends DtObject> implements IndexD
 	/** {@inheritDoc} */
 	@Override
 	public IndexDtListFunctionBuilder<D> filterByValue(final String fieldName, final String value) {
-		Assertion.check().notNull(value);
+		Assertion.check().isNotNull(value);
 		//-----
 		final String escapedValue = value.replace("\"", "\\\"");
 		final ListFilter listFilter = ListFilter.of(fieldName + ":\"" + escapedValue + "\"");

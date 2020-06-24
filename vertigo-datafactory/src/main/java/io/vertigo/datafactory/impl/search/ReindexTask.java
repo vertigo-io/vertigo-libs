@@ -53,9 +53,9 @@ final class ReindexTask implements Runnable {
 
 	ReindexTask(final SearchIndexDefinition searchIndexDefinition, final Set<UID<? extends KeyConcept>> dirtyElements, final SearchManager searchManager) {
 		Assertion.check()
-				.notNull(searchIndexDefinition)
-				.notNull(dirtyElements)
-				.notNull(searchManager);
+				.isNotNull(searchIndexDefinition)
+				.isNotNull(dirtyElements)
+				.isNotNull(searchManager);
 		//-----
 		this.searchIndexDefinition = searchIndexDefinition;
 		this.dirtyElements = dirtyElements; //On ne fait pas la copie ici

@@ -75,7 +75,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 	 * @param hash méthode de hashage
 	 */
 	public HashEncoder(final Hash hash) {
-		Assertion.check().notNull(hash);
+		Assertion.check().isNotNull(hash);
 		//-----
 		this.hash = hash;
 	}
@@ -83,7 +83,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 	/** {@inheritDoc} */
 	@Override
 	public byte[] encode(final byte[] data) {
-		Assertion.check().notNull(data);
+		Assertion.check().isNotNull(data);
 		//-----
 		final MessageDigest messageDigest = hash.getMessageDigest();
 		messageDigest.update(data);

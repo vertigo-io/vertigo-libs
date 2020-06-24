@@ -37,7 +37,7 @@ public final class PublisherDataDefinition implements Definition {
 	public PublisherDataDefinition(final String name, final PublisherNodeDefinition rootNodeDefinition) {
 		Assertion.check()
 				.isNotBlank(name)
-				.notNull(rootNodeDefinition);
+				.isNotNull(rootNodeDefinition);
 		//-----
 		this.name = name;
 		this.rootNodeDefinition = rootNodeDefinition;

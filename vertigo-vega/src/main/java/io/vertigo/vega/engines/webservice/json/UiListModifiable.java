@@ -58,7 +58,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractUiListMo
 	 */
 	@Override
 	public DtList<D> mergeAndCheckInput(final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack) {
-		Assertion.check().notNull(dtObjectValidators);
+		Assertion.check().isNotNull(dtObjectValidators);
 		//-----
 		final DtList<D> dtList = new DtList<>(getObjectType());
 		for (final UiObject<D> element : this) {

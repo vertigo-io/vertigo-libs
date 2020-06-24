@@ -67,14 +67,14 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	}
 
 	public SearchQueryBuilder withGeoSearchQuery(final String geoSearchQuery) {
-		Assertion.check().notNull(geoSearchQuery);
+		Assertion.check().isNotNull(geoSearchQuery);
 		//-----
 		this.myGeoSearchQuery = geoSearchQuery;
 		return this;
 	}
 
 	public SearchQueryBuilder withCriteria(final Object criteria) {
-		Assertion.check().notNull(criteria);
+		Assertion.check().isNotNull(criteria);
 		//-----
 		myCriteria = criteria;
 		return this;
@@ -93,7 +93,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 */
 	public SearchQueryBuilder withDateBoost(final DtField dateField, final int numDaysOfBoostRef, final int mostRecentBoost) {
 		Assertion.check()
-				.notNull(dateField)
+				.isNotNull(dateField)
 				.argument(numDaysOfBoostRef > 1 && mostRecentBoost > 1, "numDaysOfBoostRef et mostRecentBoost doivent être strictement supérieurs à 1.");
 		//-----
 		myDateField = dateField;
@@ -116,8 +116,8 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 */
 	public SearchQueryBuilder withFacet(final FacetedQuery facetedQuery) {
 		Assertion.check()
-				.notNull(facetedQuery)
-				.state(myFacetedQuery == null, "Facets already set (may have set via FacetedQueryDefinition {0})", facetedQueryDefinition.getName());
+				.isNotNull(facetedQuery)
+				.isTrue(myFacetedQuery == null, "Facets already set (may have set via FacetedQueryDefinition {0})", facetedQueryDefinition.getName());
 		//-----
 		myFacetedQuery = facetedQuery;
 		return this;
@@ -128,7 +128,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * @return this builder
 	 */
 	public SearchQueryBuilder withSecurityFilter(final ListFilter securityListFilter) {
-		Assertion.check().notNull(securityListFilter);
+		Assertion.check().isNotNull(securityListFilter);
 		//-----
 		mySecurityListFilter = securityListFilter;
 		return this;
@@ -140,7 +140,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * @return this builder
 	 */
 	public SearchQueryBuilder withFacetClustering(final FacetDefinition clusteringFacetDefinition) {
-		Assertion.check().notNull(clusteringFacetDefinition);
+		Assertion.check().isNotNull(clusteringFacetDefinition);
 		//-----
 		myClusteringFacetDefinition = clusteringFacetDefinition;
 		return this;

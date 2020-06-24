@@ -42,7 +42,7 @@ public final class HandlerChain {
 	 * @param handlers Handlers
 	 */
 	public HandlerChain(final List<WebServiceHandlerPlugin> handlers) {
-		Assertion.check().notNull(handlers);
+		Assertion.check().isNotNull(handlers);
 		//-----
 		this.handlers = Collections.unmodifiableList(new ArrayList<>(handlers));
 		offset = 0;
@@ -52,7 +52,7 @@ public final class HandlerChain {
 	 * private constructor for go forward in chain
 	 */
 	private HandlerChain(final List<WebServiceHandlerPlugin> handlers, final int offset) {
-		Assertion.check().state(offset < MAX_NB_HANDLERS, "HandlerChain go through {0} handlers. Force halt : infinit loop suspected.", MAX_NB_HANDLERS);
+		Assertion.check().isTrue(offset < MAX_NB_HANDLERS, "HandlerChain go through {0} handlers. Force halt : infinit loop suspected.", MAX_NB_HANDLERS);
 		//-----
 		this.handlers = handlers;
 		this.offset = offset + 1; //new offset

@@ -40,7 +40,7 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 	private final Map<String, WorkResultHandler> workResultHandlers = Collections.synchronizedMap(new HashMap<String, WorkResultHandler>());
 
 	public MasterCoordinator(final MasterPlugin masterPlugin) {
-		Assertion.check().notNull(masterPlugin);
+		Assertion.check().isNotNull(masterPlugin);
 		//-----
 		this.masterPlugin = masterPlugin;
 		watcher = createWatcher();

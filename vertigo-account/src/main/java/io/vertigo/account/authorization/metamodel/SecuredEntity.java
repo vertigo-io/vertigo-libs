@@ -59,10 +59,10 @@ public final class SecuredEntity implements Definition {
 			final List<SecurityDimension> advancedDimensions,
 			final List<Authorization> operations) {
 		Assertion.check()
-				.notNull(entityDefinition)
-				.notNull(securityFields)
-				.notNull(advancedDimensions)
-				.notNull(operations);
+				.isNotNull(entityDefinition)
+				.isNotNull(securityFields)
+				.isNotNull(advancedDimensions)
+				.isNotNull(operations);
 		//---
 		name = "Sec" + entityDefinition.getName();
 		this.entityDefinition = entityDefinition;

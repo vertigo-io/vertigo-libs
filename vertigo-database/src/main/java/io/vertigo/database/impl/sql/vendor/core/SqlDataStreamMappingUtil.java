@@ -57,8 +57,8 @@ public final class SqlDataStreamMappingUtil {
 	 */
 	public static DataStream getDataStream(final ResultSet rs, final int col) throws SQLException {
 		Assertion.check()
-				.notNull(rs)
-				.notNull(col);
+				.isNotNull(rs)
+				.isNotNull(col);
 		//-----
 		try (final InputStream in = rs.getBinaryStream(col)) {
 			if (in != null) { //le flux est null, s'il n'a jamais été setté (si champs non persistant par exemple)
@@ -91,7 +91,7 @@ public final class SqlDataStreamMappingUtil {
 		//1ere étape : on recopie le contenu de la mémoire dans le fichier. (car on ne peut pas relire le Blob)
 		try (final OutputStream fileOut = Files.newOutputStream(tmpFile.toPath()); final InputStream memoryIn = new ByteArrayInputStream(bytes)) {
 			copy(memoryIn, fileOut, FILE_MAX_LENGTH);
-			Assertion.check().state(tmpFile.length() <= MEMORY_MAX_LENTH, "Le fichier n'a pas repris le debut de l'export (RAM)");
+			Assertion.check().isTrue(tmpFile.length() <= MEMORY_MAX_LENTH, "Le fichier n'a pas repris le debut de l'export (RAM)");
 			//2eme Etape : on copie la suite
 			final long length = copy(in, fileOut, FILE_MAX_LENGTH);
 			//La longueur totale du fichier est la somme.
@@ -123,7 +123,7 @@ public final class SqlDataStreamMappingUtil {
 		private final byte[] bytes;
 
 		ByteArrayDataStream(final byte[] bytes) {
-			Assertion.check().notNull(bytes);
+			Assertion.check().isNotNull(bytes);
 			//-----
 			this.bytes = bytes;
 		}

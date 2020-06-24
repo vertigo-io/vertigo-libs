@@ -37,8 +37,8 @@ public final class TimedDataSerie implements Serializable {
 
 	public TimedDataSerie(final Instant time, final Map<String, Object> values) {
 		Assertion.check()
-				.notNull(time)
-				.notNull(values);
+				.isNotNull(time)
+				.isNotNull(values);
 		//---
 		this.time = time;
 		this.values = values;

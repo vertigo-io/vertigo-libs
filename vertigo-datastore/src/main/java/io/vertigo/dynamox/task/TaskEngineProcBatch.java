@@ -67,8 +67,8 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 			final SqlStatement sqlStatement,
 			final SqlConnection connection) throws SQLException {
 		Assertion.check()
-				.notNull(sqlStatement)
-				.notNull(connection);
+				.isNotNull(sqlStatement)
+				.isNotNull(connection);
 		//---
 		return getDataBaseManager().executeBatch(sqlStatement, getModelManager().getTypeAdapters("sql"), connection);
 	}
@@ -80,7 +80,7 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 				.filter(inAttribute -> inAttribute.getCardinality().hasMany())// multiple
 				.collect(Collectors.toList());
 
-		Assertion.check().state(potentialBatchAttributes.size() == 1, "For batch a single List param is required");
+		Assertion.check().isTrue(potentialBatchAttributes.size() == 1, "For batch a single List param is required");
 		final TaskAttribute listAttribute = potentialBatchAttributes.get(0);
 
 		final List<TaskAttribute> otherAttributes = getTaskDefinition().getInAttributes()

@@ -68,8 +68,8 @@ public final class ExecutionSummary implements Serializable {
 			final String health) {
 		this.proId = proId;
 		Assertion.check()
-				.notNull(proId)
-				.notNull(processName);
+				.isNotNull(proId)
+				.isNotNull(processName);
 		// ---
 		this.processName = processName;
 		this.processLabel = processLabel;

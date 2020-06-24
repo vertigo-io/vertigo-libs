@@ -81,7 +81,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]> {
 	 * @param crypto Algorithme et Taille de clé à utiliser pour crypter le contexte.
 	 */
 	public CryptoCodec(final Crypto crypto) {
-		Assertion.check().notNull(crypto);
+		Assertion.check().isNotNull(crypto);
 		//-----
 		this.crypto = crypto;
 		key = createKey();
@@ -118,7 +118,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]> {
 	}
 
 	private byte[] cipher(final byte[] data, final int mode) {
-		Assertion.check().notNull(data);
+		Assertion.check().isNotNull(data);
 		//-----
 		try {
 			final Cipher cipher = Cipher.getInstance(crypto.getAlgoName());

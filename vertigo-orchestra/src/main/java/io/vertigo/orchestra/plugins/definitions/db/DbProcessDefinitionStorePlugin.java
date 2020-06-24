@@ -70,7 +70,7 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 	private final MapCodec mapCodec = new MapCodec();
 
 	private void createDefinition(final ProcessDefinition processDefinition) {
-		Assertion.check().notNull(processDefinition);
+		Assertion.check().isNotNull(processDefinition);
 		//-----
 		final OProcess process = new OProcess();
 
@@ -148,8 +148,8 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 
 	private ProcessDefinition decodeProcessDefinition(final OProcess process, final List<OActivity> oActivities) {
 		Assertion.check()
-				.notNull(process)
-				.notNull(oActivities);
+				.isNotNull(process)
+				.isNotNull(oActivities);
 		// ---
 		final ProcessDefinitionBuilder processDefinitionBuilder = ProcessDefinition.builder(process.getName(), process.getLabel());
 		processDefinitionBuilder.withRescuePeriod(process.getRescuePeriod());
@@ -197,7 +197,7 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 	/** {@inheritDoc} */
 	@Override
 	public void createOrUpdateDefinition(final ProcessDefinition processDefinition) {
-		Assertion.check().notNull(processDefinition);
+		Assertion.check().isNotNull(processDefinition);
 		// ---
 		final String processName = processDefinition.getName();
 
@@ -215,7 +215,7 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 	}
 
 	private void updateDefinition(final ProcessDefinition processDefinition) {
-		Assertion.check().notNull(processDefinition);
+		Assertion.check().isNotNull(processDefinition);
 		// ---
 		final String processName = processDefinition.getName();
 		definitionPAO.disableOldProcessDefinitions(processName);
@@ -230,9 +230,9 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 	public void updateProcessDefinitionProperties(final ProcessDefinition processDefinition, final Optional<String> cronExpression, final boolean multiExecution, final int rescuePeriod,
 			final boolean active) {
 		Assertion.check()
-				.notNull(processDefinition)
-				.notNull(cronExpression)
-				.notNull(rescuePeriod);
+				.isNotNull(processDefinition)
+				.isNotNull(cronExpression)
+				.isNotNull(rescuePeriod);
 		// ---
 		final OProcess process = getOProcessByName(processDefinition.getName());
 		if (cronExpression.isPresent()) {
@@ -253,8 +253,8 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 	@Override
 	public void updateProcessDefinitionInitialParams(final ProcessDefinition processDefinition, final Map<String, String> initialParams) {
 		Assertion.check()
-				.notNull(processDefinition)
-				.notNull(initialParams);
+				.isNotNull(processDefinition)
+				.isNotNull(initialParams);
 		// ---
 		final OProcess process = getOProcessByName(processDefinition.getName());
 		process.setInitialParams(mapCodec.encode(initialParams));

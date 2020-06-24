@@ -35,7 +35,7 @@ public final class PublisherData {
 	 * @param dataDefinition Definition des données de publication
 	 */
 	public PublisherData(final PublisherDataDefinition dataDefinition) {
-		Assertion.check().notNull(dataDefinition);
+		Assertion.check().isNotNull(dataDefinition);
 		//-----
 		publisherDataDefinition = dataDefinition;
 		root = new PublisherNode(dataDefinition.getRootNodeDefinition());

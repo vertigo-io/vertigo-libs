@@ -70,14 +70,14 @@ public final class DtListPatternFilterUtil {
 
 	static <D extends DtObject> Predicate<D> createDtListFilterForPattern(final FilterPattern filterPattern, final String[] parsedFilter, final DtDefinition dtDefinition) {
 		Assertion.check()
-				.notNull(filterPattern)
-				.notNull(parsedFilter)
-				.notNull(dtDefinition);
+				.isNotNull(filterPattern)
+				.isNotNull(parsedFilter)
+				.isNotNull(dtDefinition);
 		//-----
 		//Si on trouve un pattern, on passe sur du code spécifique
 		final String fieldName = parsedFilter[1]; //attention parsedFilter[0] = filtre entier
 		final DtField dtField = dtDefinition.getField(fieldName);
-		Assertion.check().state(dtField.getSmartTypeDefinition().getScope().isPrimitive(), "Only primitive types can be used in pattern");
+		Assertion.check().isTrue(dtField.getSmartTypeDefinition().getScope().isPrimitive(), "Only primitive types can be used in pattern");
 		final BasicType dataType = dtField.getSmartTypeDefinition().getBasicType();
 
 		switch (filterPattern) {
@@ -101,8 +101,8 @@ public final class DtListPatternFilterUtil {
 	 **/
 	public static Optional<String[]> parseFilter(final String filterString, final Pattern parsingPattern) {
 		Assertion.check()
-				.notNull(filterString)
-				.notNull(parsingPattern);
+				.isNotNull(filterString)
+				.isNotNull(parsingPattern);
 		//-----
 		final Matcher matcher = parsingPattern.matcher(filterString);
 		if (!matcher.matches()) {

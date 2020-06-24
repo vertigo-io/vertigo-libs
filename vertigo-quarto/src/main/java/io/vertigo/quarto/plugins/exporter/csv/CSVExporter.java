@@ -74,9 +74,9 @@ final class CSVExporter {
 			final EntityStoreManager entityStoreManager,
 			final SmartTypeManager smartTypeManager) {
 		Assertion.check()
-				.notNull(codecManager)
-				.notNull(entityStoreManager)
-				.notNull(smartTypeManager);
+				.isNotNull(codecManager)
+				.isNotNull(entityStoreManager)
+				.isNotNull(smartTypeManager);
 		//-----
 		csvEncoder = codecManager.getCsvEncoder();
 		this.entityStoreManager = entityStoreManager;

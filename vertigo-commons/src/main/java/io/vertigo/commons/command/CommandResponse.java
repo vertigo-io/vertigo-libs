@@ -33,8 +33,8 @@ public final class CommandResponse<P> {
 			final P payload,
 			final String targetUrl) {
 		Assertion.check()
-				.notNull(responseStatus)
-				.notNull(display);
+				.isNotNull(responseStatus)
+				.isNotNull(display);
 		//---
 		this.responseStatus = responseStatus;
 		this.display = display;

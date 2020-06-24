@@ -46,13 +46,13 @@ public final class LogicalEntityStoreConfig {
 	 * @param dataStorePlugins DataStore plugins
 	 */
 	public LogicalEntityStoreConfig(final List<EntityStorePlugin> dataStorePlugins) {
-		Assertion.check().notNull(dataStorePlugins);
+		Assertion.check().isNotNull(dataStorePlugins);
 		//-----
 		final Map<String, EntityStorePlugin> pluginsMap = new HashMap<>();
 		for (final EntityStorePlugin dataStorePlugin : dataStorePlugins) {
 			final String dataSpace = dataStorePlugin.getDataSpace();
 			final EntityStorePlugin previous = pluginsMap.put(dataSpace, dataStorePlugin);
-			Assertion.check().state(previous == null, "this dataSpace {0} is already registered", dataSpace);
+			Assertion.check().isTrue(previous == null, "this dataSpace {0} is already registered", dataSpace);
 		}
 		dataStorePluginsMap = Collections.unmodifiableMap(pluginsMap);
 	}
@@ -64,7 +64,7 @@ public final class LogicalEntityStoreConfig {
 	 * @return the dataStore used for the specified 'DtDefinition'
 	 */
 	public EntityStorePlugin getPhysicalDataStore(final DtDefinition dtDefinition) {
-		Assertion.check().notNull(dtDefinition);
+		Assertion.check().isNotNull(dtDefinition);
 		//-----
 		return getDataStorePlugin(dtDefinition.getDataSpace());
 	}
@@ -84,7 +84,7 @@ public final class LogicalEntityStoreConfig {
 		Assertion.check().isNotBlank(dataSpace);
 		//-----
 		final EntityStorePlugin dataStore = dataStorePluginsMap.get(dataSpace);
-		Assertion.check().notNull(dataStore, "No store found mapped to collection '{0}'", dataSpace);
+		Assertion.check().isNotNull(dataStore, "No store found mapped to collection '{0}'", dataSpace);
 		return dataStore;
 	}
 }

@@ -86,7 +86,7 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 
 	private SqlParameter buildSqlParameter(final SqlNamedParam namedParam, final Map<String, Tuple<Class, Object>> params) {
 		final Tuple<Class, Object> tuple = params.get(namedParam.getAttributeName());
-		Assertion.check().notNull(tuple, "no data found for param {0} in sql {1}", namedParam, rawSqlQuery);
+		Assertion.check().isNotNull(tuple, "no data found for param {0} in sql {1}", namedParam, rawSqlQuery);
 		final Object rootHolder = tuple.getVal2();
 		final Class rootType = tuple.getVal1();
 		//---
@@ -131,7 +131,7 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 		final String[] tokens = (" " + query + " ").split(String.valueOf(SEPARATOR));
 		//...#p1#..... => 3 tokens
 		//...#p1#.....#p2#... => 5 tokens
-		Assertion.check().state(tokens.length % 2 == 1, "a tag is missing on query {0}", query);
+		Assertion.check().isTrue(tokens.length % 2 == 1, "a tag is missing on query {0}", query);
 
 		final List<SqlNamedParam> sqlNamedParams = new ArrayList<>();
 		final StringBuilder sql = new StringBuilder();

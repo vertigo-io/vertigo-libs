@@ -38,9 +38,9 @@ public final class DtListDelta<D extends DtObject> implements Serializable {
 
 	public DtListDelta(final DtList<D> dtListCreates, final DtList<D> dtListUpdates, final DtList<D> dtListDeletes) {
 		Assertion.check()
-				.notNull(dtListCreates)
-				.notNull(dtListUpdates)
-				.notNull(dtListDeletes);
+				.isNotNull(dtListCreates)
+				.isNotNull(dtListUpdates)
+				.isNotNull(dtListDeletes);
 		//---
 		this.dtListCreates = dtListCreates;
 		this.dtListUpdates = dtListUpdates;

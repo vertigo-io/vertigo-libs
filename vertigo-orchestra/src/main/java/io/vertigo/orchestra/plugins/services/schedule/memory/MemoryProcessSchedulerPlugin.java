@@ -57,7 +57,7 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 	@Inject
 	public MemoryProcessSchedulerPlugin(
 			final OrchestraDefinitionManager orchestraDefinitionManager) {
-		Assertion.check().notNull(orchestraDefinitionManager);
+		Assertion.check().isNotNull(orchestraDefinitionManager);
 		//---
 		this.orchestraDefinitionManager = orchestraDefinitionManager;
 	}
@@ -73,7 +73,7 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 
 	@Override
 	public void setProcessExecutor(final ProcessExecutor processExecutor) {
-		Assertion.check().notNull(processExecutor);
+		Assertion.check().isNotNull(processExecutor);
 		//---
 		myProcessExecutor = processExecutor;
 	}
@@ -106,9 +106,9 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 	@Override
 	public void scheduleAt(final ProcessDefinition processDefinition, final Instant planifiedTime, final Map<String, String> initialParams) {
 		Assertion.check()
-				.notNull(processDefinition)
-				.notNull(planifiedTime)
-				.notNull(initialParams);
+				.isNotNull(processDefinition)
+				.isNotNull(planifiedTime)
+				.isNotNull(initialParams);
 		//---
 		final TimerTask task = createTimerTask(processDefinition, initialParams);
 		timerPool.getTimer(processDefinition.getName()).schedule(task, new Date(planifiedTime.toEpochMilli()));

@@ -56,9 +56,9 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 	 */
 	private SearchIndex(final SearchIndexDefinition indexDefinition, final UID<K> uid, final I indexDtObject) {
 		Assertion.check()
-				.notNull(uid)
-				.notNull(indexDefinition)
-				.notNull(indexDtObject)
+				.isNotNull(uid)
+				.isNotNull(indexDefinition)
+				.isNotNull(indexDtObject)
 				//On vérifie la consistance des données.
 				.argument(indexDefinition.getKeyConceptDtDefinition().equals(uid.getDefinition()),
 						"Le type de l'URI de l'objet indexé  ({0}) ne correspond pas au KeyConcept de l'index ({1})", uid.toString(), indexDefinition.getKeyConceptDtDefinition().getName())

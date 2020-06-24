@@ -93,7 +93,7 @@ public final class DtObjectsLoader implements Loader {
 	public void load(final String resourcePath, final Map<String, DynamicDefinition> dynamicDefinitions) {
 		Assertion.check()
 				.isNotBlank(resourcePath)
-				.notNull(dynamicDefinitions);
+				.isNotNull(dynamicDefinitions);
 		//-----
 		//--Enregistrement des fichiers java annotés
 		for (final Class<DtObject> javaClass : selectClasses(resourcePath, DtObject.class)) {
@@ -102,7 +102,7 @@ public final class DtObjectsLoader implements Loader {
 	}
 
 	private static void load(final Class<DtObject> clazz, final Map<String, DynamicDefinition> dslDefinitionRepository) {
-		Assertion.check().notNull(dslDefinitionRepository);
+		Assertion.check().isNotNull(dslDefinitionRepository);
 		//-----
 		parseDynamicDefinitionBuilder(clazz, dslDefinitionRepository);
 	}
@@ -243,7 +243,7 @@ public final class DtObjectsLoader implements Loader {
 
 	private static String parseDataSpaceAnnotation(final Class<?> clazz) {
 		final DataSpace[] dataSpaceAnnotations = clazz.getAnnotationsByType(DataSpace.class);
-		Assertion.check().state(dataSpaceAnnotations.length <= 1, "Entity {0} can have at max one DataSpace", clazz.getSimpleName());
+		Assertion.check().isTrue(dataSpaceAnnotations.length <= 1, "Entity {0} can have at max one DataSpace", clazz.getSimpleName());
 		// ---
 		if (dataSpaceAnnotations.length == 1) {
 			return dataSpaceAnnotations[0].value();
@@ -309,10 +309,10 @@ public final class DtObjectsLoader implements Loader {
 					final Boolean navigabilityB = association.foreignIsNavigable();
 					//---
 					Assertion.check()
-							.notNull(multiplicityA)
-							.notNull(navigabilityA)
-							.notNull(multiplicityB)
-							.notNull(navigabilityB);
+							.isNotNull(multiplicityA)
+							.isNotNull(navigabilityA)
+							.isNotNull(multiplicityB)
+							.isNotNull(navigabilityB);
 					// Vérification que l'on est bien dans le cas d'une association simple de type 1-n
 					if (AssociationUtil.isMultiple(multiplicityB) && AssociationUtil.isMultiple(multiplicityA)) {
 						//Relation n-n
@@ -386,7 +386,7 @@ public final class DtObjectsLoader implements Loader {
 	 * @return Constante représentant le nom du champ
 	 */
 	private static String createFieldName(final Field field) {
-		Assertion.check().notNull(field);
+		Assertion.check().isNotNull(field);
 		//-----
 		final String fieldName = field.getName();
 		if (StringUtil.isLowerCamelCase(fieldName)) {
@@ -401,7 +401,7 @@ public final class DtObjectsLoader implements Loader {
 	 * @return Constante représentant le nom du champ
 	 */
 	private static String createFieldName(final Method method) {
-		Assertion.check().notNull(method);
+		Assertion.check().isNotNull(method);
 		//-----
 		if (method.getName().startsWith("get")) {
 			final String propertyName = method.getName().substring("get".length());

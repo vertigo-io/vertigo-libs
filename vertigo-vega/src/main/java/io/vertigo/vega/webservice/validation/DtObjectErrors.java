@@ -57,7 +57,7 @@ public final class DtObjectErrors {
 	 * @param fieldName the fieldName (camelCase)
 	 */
 	public void clearErrors(final String fieldName) {
-		Assertion.check().notNull(fieldName);
+		Assertion.check().isNotNull(fieldName);
 		//-----
 		fieldsErrors.remove(fieldName);
 	}

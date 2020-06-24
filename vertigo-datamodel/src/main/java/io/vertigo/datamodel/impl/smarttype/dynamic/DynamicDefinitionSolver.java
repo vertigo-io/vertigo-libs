@@ -29,8 +29,8 @@ public final class DynamicDefinitionSolver {
 	*/
 	public static List<DynamicDefinition> solve(final DefinitionSpace definitionSpace, final Map<String, DynamicDefinition> definitionRepository) {
 		Assertion.check()
-				.notNull(definitionSpace)
-				.notNull(definitionRepository);
+				.isNotNull(definitionSpace)
+				.isNotNull(definitionRepository);
 		//-----
 		//Liste des clés résolues
 		final List<DynamicDefinition> sortedList = new ArrayList<>();

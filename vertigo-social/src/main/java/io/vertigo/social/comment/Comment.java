@@ -38,11 +38,11 @@ public final class Comment {
 
 	Comment(final UUID uuid, final UID<Account> author, final String authorDisplayName, final String msg, final Instant creationDate, final Instant lastModified) {
 		Assertion.check()
-				.notNull(uuid)
-				.notNull(author)
+				.isNotNull(uuid)
+				.isNotNull(author)
 				.isNotBlank(authorDisplayName)
 				.isNotBlank(msg)
-				.notNull(creationDate);
+				.isNotNull(creationDate);
 		//lastModified is nullable
 		//-----
 		this.uuid = uuid;

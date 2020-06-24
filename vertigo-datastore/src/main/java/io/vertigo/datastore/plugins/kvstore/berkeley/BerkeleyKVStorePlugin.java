@@ -92,7 +92,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 		Assertion.check()
 				.isNotBlank(collections)
 				.isNotBlank(dbFilePath)
-				.notNull(transactionManager);
+				.isNotNull(transactionManager);
 		//-----
 		collectionConfigs = parseCollectionConfigs(collections);
 		collectionNames = collectionConfigs
@@ -115,13 +115,13 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 			boolean inMemory = false;
 			for (final String collectionDetail : collection.split(";")) {
 				if (collectionDetail.startsWith("TTL=")) {
-					Assertion.check().state(timeToLiveSeconds == -1L, "Time to live already defined on {0}", collection);
+					Assertion.check().isTrue(timeToLiveSeconds == -1L, "Time to live already defined on {0}", collection);
 					timeToLiveSeconds = Long.parseLong(collectionDetail.substring("TTL=".length()));
 				} else if (collectionDetail.startsWith("inMemory")) {
-					Assertion.check().state(!inMemory, "inMemory already defined on {0}", collection);
+					Assertion.check().isTrue(!inMemory, "inMemory already defined on {0}", collection);
 					inMemory = true;
 				} else {
-					Assertion.check().state(collectionName == null, "collectionName already defined on {0}", collection);
+					Assertion.check().isTrue(collectionName == null, "collectionName already defined on {0}", collection);
 					collectionName = collectionDetail;
 				}
 			}
@@ -218,7 +218,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 
 	private BerkeleyDatabase getDatabase(final String collection) {
 		final BerkeleyDatabase database = databases.get(collection);
-		Assertion.check().notNull("database {0} not null", collection);
+		Assertion.check().isNotNull("database {0} not null", collection);
 		return database;
 	}
 

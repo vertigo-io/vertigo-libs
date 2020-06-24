@@ -57,8 +57,8 @@ public final class ContextListModifiable<O extends DtObject> {
 	public ContextListModifiable(final String contextKey, final DtObjectValidator<O> validator, final AbstractActionSupport action) {
 		Assertion.check()
 				.isNotBlank(contextKey)
-				.notNull(action)
-				.notNull(validator);
+				.isNotNull(action)
+				.isNotNull(validator);
 		//-----
 		this.contextKey = contextKey;
 		this.action = action;

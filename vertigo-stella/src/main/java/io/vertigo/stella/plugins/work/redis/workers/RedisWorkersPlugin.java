@@ -52,8 +52,8 @@ public final class RedisWorkersPlugin implements WorkersPlugin {
 			final List<RedisConnector> redisConnectors,
 			final CodecManager codecManager) {
 		Assertion.check()
-				.notNull(codecManager)
-				.notNull(redisConnectors);
+				.isNotNull(codecManager)
+				.isNotNull(redisConnectors);
 		//-----
 		final String connectorName = connectorNameOpt.orElse("main");
 		final RedisConnector redisConnector = redisConnectors.stream()

@@ -56,7 +56,7 @@ public class MailBuilder implements Builder<Mail> {
 	public MailBuilder withSubject(final String subject) {
 		Assertion.check()
 				.isNotBlank(subject)
-				.state(mySubject == null, "subject is already completed");
+				.isTrue(mySubject == null, "subject is already completed");
 		//-----
 		mySubject = subject;
 		return this;
@@ -69,7 +69,7 @@ public class MailBuilder implements Builder<Mail> {
 	 */
 	public MailBuilder from(final String from) {
 		Assertion.check()
-				.state(myFrom == null, "from is already completed")
+				.isTrue(myFrom == null, "from is already completed")
 				.isNotBlank(from);
 		//-----
 		myFrom = from;
@@ -82,7 +82,7 @@ public class MailBuilder implements Builder<Mail> {
 	 * @return MailBuilder
 	 */
 	public MailBuilder replyTo(final String replyTo) {
-		Assertion.check().state(myReplyTo == null, "replyTo is already completed")
+		Assertion.check().isTrue(myReplyTo == null, "replyTo is already completed")
 				.isNotBlank(replyTo);
 		//-----
 		myReplyTo = replyTo;
@@ -95,7 +95,7 @@ public class MailBuilder implements Builder<Mail> {
 	 * @return MailBuilder
 	 */
 	public MailBuilder to(final String... addresses) {
-		Assertion.check().notNull(addresses);
+		Assertion.check().isNotNull(addresses);
 		//-----
 		for (final String address : addresses) {
 			Assertion.check().isNotBlank(address);
@@ -110,7 +110,7 @@ public class MailBuilder implements Builder<Mail> {
 	 * @return MailBuilder
 	 */
 	public MailBuilder cc(final String... addresses) {
-		Assertion.check().notNull(addresses);
+		Assertion.check().isNotNull(addresses);
 		//-----
 		for (final String address : addresses) {
 			Assertion.check().isNotBlank(address);
@@ -126,7 +126,7 @@ public class MailBuilder implements Builder<Mail> {
 	 */
 	public MailBuilder withTextContent(final String textContent) {
 		Assertion.check()
-				.state(myTextContent == null, "textContent is already completed")
+				.isTrue(myTextContent == null, "textContent is already completed")
 				.isNotBlank(textContent);
 		//-----
 		myTextContent = textContent;
@@ -140,7 +140,7 @@ public class MailBuilder implements Builder<Mail> {
 	 */
 	public MailBuilder withHtmlContent(final String htmlContent) {
 		Assertion.check()
-				.state(myHtmlContent == null, "htmlContent is already completed")
+				.isTrue(myHtmlContent == null, "htmlContent is already completed")
 				.isNotBlank(htmlContent);
 		//-----
 		myHtmlContent = htmlContent;
@@ -153,10 +153,10 @@ public class MailBuilder implements Builder<Mail> {
 	 * @return MailBuilder
 	 */
 	public MailBuilder withAttachments(final VFile... files) {
-		Assertion.check().notNull(files);
+		Assertion.check().isNotNull(files);
 		//-----
 		for (final VFile attachment : files) {
-			Assertion.check().notNull(attachment);
+			Assertion.check().isNotNull(attachment);
 			myAttachments.add(attachment);
 		}
 		return this;

@@ -62,9 +62,9 @@ public final class TaskAttribute {
 	 */
 	TaskAttribute(final String attributeName, final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality) {
 		Assertion.check()
-				.notNull(attributeName)
-				.notNull(smartTypeDefinition)
-				.notNull(cardinality)
+				.isNotNull(attributeName)
+				.isNotNull(smartTypeDefinition)
+				.isNotNull(cardinality)
 				.argument(StringUtil.isLowerCamelCase(attributeName), "the name of the attribute {0} must be in lowerCamelCase", attributeName);
 		//-----
 		name = attributeName;
@@ -107,7 +107,7 @@ public final class TaskAttribute {
 	public void checkAttribute(final Object value) {
 		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		if (cardinality.hasOne()) {
-			Assertion.check().notNull(value, "Attribut task {0} ne doit pas etre null (cf. paramétrage task)", getName());
+			Assertion.check().isNotNull(value, "Attribut task {0} ne doit pas etre null (cf. paramétrage task)", getName());
 		}
 		try {
 			if (cardinality.hasMany()) {

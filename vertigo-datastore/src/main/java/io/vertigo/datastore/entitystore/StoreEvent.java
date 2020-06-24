@@ -50,8 +50,8 @@ public final class StoreEvent implements Event {
 	 */
 	public StoreEvent(final Type type, final UID uid) {
 		Assertion.check()
-				.notNull(type)
-				.notNull(uid);
+				.isNotNull(type)
+				.isNotNull(uid);
 		//-----
 		this.type = type;
 		this.uid = uid;

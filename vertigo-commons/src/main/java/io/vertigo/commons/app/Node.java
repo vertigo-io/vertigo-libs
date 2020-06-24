@@ -70,10 +70,10 @@ public final class Node {
 		Assertion.check()
 				.isNotBlank(id)
 				.isNotBlank(appName)
-				.notNull(lastStatus)
-				.notNull(lastTouch)
-				.notNull(endPointOpt)
-				.notNull(skills);
+				.isNotNull(lastStatus)
+				.isNotNull(lastTouch)
+				.isNotNull(endPointOpt)
+				.isNotNull(skills);
 		// ---
 		this.id = id;
 		this.appName = appName;
@@ -121,7 +121,7 @@ public final class Node {
 	 * @return the protocol
 	 */
 	public String getProtocol() {
-		Assertion.check().state(endPointOpt.isPresent(), "Cannot get a protocol if no Endpoint is defined");
+		Assertion.check().isTrue(endPointOpt.isPresent(), "Cannot get a protocol if no Endpoint is defined");
 		// ---
 		final String endPoint = endPointOpt.get();
 		return endPoint.substring(0, endPoint.indexOf(':'));

@@ -44,14 +44,14 @@ public final class ProcessSchedulerImpl implements ProcessScheduler {
 	 */
 	public ProcessSchedulerImpl(final List<ProcessSchedulerPlugin> schedulerPlugins, final ProcessExecutor processExecutor) {
 		Assertion.check()
-				.notNull(schedulerPlugins)
-				.notNull(processExecutor);
+				.isNotNull(schedulerPlugins)
+				.isNotNull(processExecutor);
 		//---
 		for (final ProcessSchedulerPlugin schedulerPlugin : schedulerPlugins) {
 			//-1-- start
 			schedulerPlugin.setProcessExecutor(processExecutor);
 			//-2-- register
-			Assertion.check().state(!schedulerPluginsMap.containsKey(schedulerPlugin.getHandledProcessType()), "Only one plugin can manage the processType {0}", schedulerPlugin.getHandledProcessType());
+			Assertion.check().isTrue(!schedulerPluginsMap.containsKey(schedulerPlugin.getHandledProcessType()), "Only one plugin can manage the processType {0}", schedulerPlugin.getHandledProcessType());
 			schedulerPluginsMap.put(schedulerPlugin.getHandledProcessType(), schedulerPlugin);
 		}
 	}
@@ -64,9 +64,9 @@ public final class ProcessSchedulerImpl implements ProcessScheduler {
 	@Override
 	public void scheduleAt(final ProcessDefinition processDefinition, final Instant planifiedTime, final Map<String, String> initialParams) {
 		Assertion.check()
-				.notNull(processDefinition)
-				.notNull(planifiedTime)
-				.notNull(initialParams);
+				.isNotNull(processDefinition)
+				.isNotNull(planifiedTime)
+				.isNotNull(initialParams);
 		// ---
 		getPluginByType(processDefinition.getProcessType())
 				.scheduleAt(processDefinition, planifiedTime, initialParams);
@@ -74,7 +74,7 @@ public final class ProcessSchedulerImpl implements ProcessScheduler {
 
 	private ProcessSchedulerPlugin getPluginByType(final ProcessType processType) {
 		final ProcessSchedulerPlugin schedulerPlugin = schedulerPluginsMap.get(processType);
-		Assertion.check().notNull(schedulerPlugin, "No plugin found for managing processType {0}", processType.name());
+		Assertion.check().isNotNull(schedulerPlugin, "No plugin found for managing processType {0}", processType.name());
 		return schedulerPlugin;
 	}
 

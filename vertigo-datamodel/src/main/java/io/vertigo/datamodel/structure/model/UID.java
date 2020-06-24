@@ -63,8 +63,8 @@ public final class UID<E extends Entity> implements Serializable {
 	 */
 	private UID(final DtDefinition definition, final Object id) {
 		Assertion.check()
-				.notNull(id)
-				.notNull(definition);
+				.isNotNull(id)
+				.isNotNull(definition);
 		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		smartTypeManager.checkValue(definition.getIdField().get().getSmartTypeDefinition(), id);
 		//-----
@@ -82,7 +82,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 * @return URI to result
 	 */
 	public static <E extends Entity> UID<E> of(final String urn) {
-		Assertion.check().notNull(urn);
+		Assertion.check().isNotNull(urn);
 		//-----
 		final int i = urn.indexOf(SEPARATOR);
 		final String dname = urn.substring(0, i);
@@ -115,7 +115,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 * @return the entity UID
 	 */
 	public static <E extends Entity> UID<E> of(final E entity) {
-		Assertion.check().notNull(entity);
+		Assertion.check().isNotNull(entity);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		return new UID<>(dtDefinition, DtObjectUtil.getId(entity));
@@ -202,7 +202,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 * @return Chaine représentant la clé
 	 */
 	private static String idToString(final Serializable id) {
-		Assertion.check().notNull(id);
+		Assertion.check().isNotNull(id);
 		//---
 		if (id instanceof String) {
 			return StringUtil.isBlank((String) id) ? null : "s-" + ((String) id).trim();

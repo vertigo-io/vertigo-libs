@@ -49,8 +49,8 @@ public final class EventBusSubscriptionDefinition<E extends Event> implements De
 	public EventBusSubscriptionDefinition(final String name, final Class<E> eventType, final Consumer<E> eventListener) {
 		Assertion.check()
 				.isNotBlank(name)
-				.notNull(eventType)
-				.notNull(eventListener);
+				.isNotNull(eventType)
+				.isNotNull(eventListener);
 		//-----
 		this.name = name;
 		this.eventType = eventType;
@@ -63,7 +63,7 @@ public final class EventBusSubscriptionDefinition<E extends Event> implements De
 	 * @return true if it matches
 	 */
 	public boolean match(final Event event) {
-		Assertion.check().notNull(event);
+		Assertion.check().isNotNull(event);
 		//-----
 		return eventType.isInstance(event);
 	}

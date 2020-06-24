@@ -62,8 +62,8 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 */
 	ExportSheetBuilder(final ExportBuilder exportBuilder, final DtObject dto, final String title) {
 		Assertion.check()
-				.notNull(exportBuilder)
-				.notNull(dto);
+				.isNotNull(exportBuilder)
+				.isNotNull(dto);
 		// title may be null
 		//-----
 		this.exportBuilder = exportBuilder;
@@ -81,8 +81,8 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 */
 	ExportSheetBuilder(final ExportBuilder exportBuilder, final DtList<?> dtc, final String title) {
 		Assertion.check()
-				.notNull(exportBuilder)
-				.notNull(dtc);
+				.isNotNull(exportBuilder)
+				.isNotNull(dtc);
 		// title may be null
 		//-----
 		this.exportBuilder = exportBuilder;
@@ -121,7 +121,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 */
 	public ExportSheetBuilder addField(final DtFieldName fieldName, final MessageText overridedLabel) {
 		Assertion.check()
-				.notNull(fieldName)
+				.isNotNull(fieldName)
 				// On vérifie que la colonne est bien dans la définition de la DTC
 				.argument(dtDefinition.contains(fieldName.name()), "Le champ " + fieldName.name() + " n'est pas dans la liste à exporter");
 		// On ne vérifie pas que les champs ne sont placés qu'une fois
@@ -141,7 +141,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 */
 	public ExportSheetBuilder addField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield, final MessageText overridedLabel) {
 		Assertion.check()
-				.notNull(fieldName)
+				.isNotNull(fieldName)
 				// On vérifie que la colonne est bien dans la définition de la DTC
 				.argument(dtDefinition.contains(fieldName.name()), "Le champ " + fieldName.name() + " n'est pas dans la liste à exporter")
 				.argument(list.getDefinition().contains(displayfield.name()), "Le champ " + displayfield.name() + " n'est pas dans la liste de dénorm");

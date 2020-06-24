@@ -56,7 +56,7 @@ public final class IndexFilterFunction<D extends DtObject> implements UnaryOpera
 	 * @param indexPlugin Index plugin
 	 */
 	public IndexFilterFunction(final IndexPlugin indexPlugin) {
-		Assertion.check().notNull(indexPlugin, "An IndexPlugin is required to use this method");
+		Assertion.check().isNotNull(indexPlugin, "An IndexPlugin is required to use this method");
 		//-----
 		this.indexPlugin = indexPlugin;
 	}
@@ -69,9 +69,9 @@ public final class IndexFilterFunction<D extends DtObject> implements UnaryOpera
 	 */
 	public void filter(final String userKeywords, final int maxRows, final Collection<DtField> keywordsSearchedFields) {
 		Assertion.check()
-				.state(keywords == null, "Keywords was already set on this processor : {0}. Only one is supported.", keywords)
-				.notNull(userKeywords)
-				.notNull(keywordsSearchedFields);
+				.isTrue(keywords == null, "Keywords was already set on this processor : {0}. Only one is supported.", keywords)
+				.isNotNull(userKeywords)
+				.isNotNull(keywordsSearchedFields);
 		//-----
 		keywords = userKeywords;
 		top = maxRows;
@@ -85,7 +85,7 @@ public final class IndexFilterFunction<D extends DtObject> implements UnaryOpera
 	 * @param desc if sort desc
 	 */
 	public void sort(final String fieldName, final boolean desc) {
-		Assertion.check().state(sortFieldName == null, "sortFieldName was already set on this processor : {0}. Only one is supported.", sortFieldName);
+		Assertion.check().isTrue(sortFieldName == null, "sortFieldName was already set on this processor : {0}. Only one is supported.", sortFieldName);
 		//-----
 		sortFieldName = fieldName;
 		sortDesc = desc;
@@ -116,7 +116,7 @@ public final class IndexFilterFunction<D extends DtObject> implements UnaryOpera
 	/** {@inheritDoc} */
 	@Override
 	public DtList<D> apply(final DtList<D> dtc) {
-		Assertion.check().notNull(dtc);
+		Assertion.check().isNotNull(dtc);
 		//-----
 		final DtListState dtListState = DtListState.of(top, skip, sortFieldName, sortDesc);
 		return indexPlugin.getCollection(keywords, searchedFields, listFilters, dtListState, Optional.empty(), dtc);

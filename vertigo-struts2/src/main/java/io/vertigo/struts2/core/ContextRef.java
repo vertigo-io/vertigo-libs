@@ -42,8 +42,8 @@ public final class ContextRef<O extends Serializable> {
 	public ContextRef(final String contextKey, final Class<O> valueClass, final AbstractActionSupport action) {
 		Assertion.check()
 				.isNotBlank(contextKey)
-				.notNull(action)
-				.notNull(valueClass)
+				.isNotNull(action)
+				.isNotNull(valueClass)
 				.argument(
 						String[].class.equals(valueClass) ||
 								String.class.equals(valueClass) ||

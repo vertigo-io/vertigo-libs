@@ -50,7 +50,7 @@ public final class RequestContainerWrapper implements Container {
 	@Override
 	public <T> T resolve(final String id, final Class<T> componentClass) {
 		final String[] values = request.getParameterValues(id);
-		Assertion.check().notNull(values, "Le paramètre {0} est obligatoire.", id);
+		Assertion.check().isNotNull(values, "Le paramètre {0} est obligatoire.", id);
 		final String firstValue = values.length > 0 ? values[0] : null;
 
 		if (String[].class.equals(componentClass)) {

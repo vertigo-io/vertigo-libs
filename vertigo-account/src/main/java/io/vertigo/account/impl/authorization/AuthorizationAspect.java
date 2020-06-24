@@ -48,7 +48,7 @@ public final class AuthorizationAspect implements Aspect {
 	 */
 	@Inject
 	public AuthorizationAspect(final AuthorizationManager authorizationManager) {
-		Assertion.check().notNull(authorizationManager);
+		Assertion.check().isNotNull(authorizationManager);
 		//-----
 		this.authorizationManager = authorizationManager;
 	}
@@ -59,7 +59,7 @@ public final class AuthorizationAspect implements Aspect {
 				? methodInvocation.getMethod().getDeclaringClass().getAnnotation(Secured.class)
 				: methodInvocation.getMethod().getAnnotation(Secured.class);
 
-		Assertion.check().notNull(secured, "No Aspect if not @Secured (on {0})", methodInvocation.getMethod());
+		Assertion.check().isNotNull(secured, "No Aspect if not @Secured (on {0})", methodInvocation.getMethod());
 		final AuthorizationName[] authorizationNames = Arrays.stream(secured.value()).map(value -> (AuthorizationName) () -> Authorization.PREFIX + value).toArray(AuthorizationName[]::new);
 		if (!authorizationManager.hasAuthorization(authorizationNames)) {
 			throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log

@@ -64,8 +64,8 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 			final MasterDataConfig masterDataConfig,
 			final EntityStoreConfigImpl dataStoreConfig) {
 		Assertion.check()
-				.notNull(masterDataConfig)
-				.notNull(dataStoreConfig);
+				.isNotNull(masterDataConfig)
+				.isNotNull(dataStoreConfig);
 		//-----
 		this.masterDataConfig = masterDataConfig;
 		cacheDataStoreConfig = dataStoreConfig.getCacheStoreConfig();
@@ -82,7 +82,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 	 * @return Element by uid
 	 */
 	public <E extends Entity> E readNullable(final UID<E> uid) {
-		Assertion.check().notNull(uid);
+		Assertion.check().isNotNull(uid);
 		//-----
 		final DtDefinition dtDefinition = uid.getDefinition();
 		E entity;
@@ -118,7 +118,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 	}
 
 	private <E extends Entity> DtList<E> doLoadList(final DtDefinition dtDefinition, final DtListURI listUri) {
-		Assertion.check().notNull(listUri);
+		Assertion.check().isNotNull(listUri);
 		//-----
 		final DtList<E> list;
 		if (listUri instanceof DtListURIForMasterData) {
@@ -138,7 +138,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 
 	private <E extends Entity> DtList<E> loadMDList(final DtListURIForMasterData uri) {
 		Assertion.check()
-				.notNull(uri)
+				.isNotNull(uri)
 				.argument(uri.getDtDefinition().getSortField().isPresent(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
 		//-----
 		//On cherche la liste complete
@@ -159,7 +159,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 	 * @return List of this uri
 	 */
 	public <E extends Entity> DtList<E> findAll(final DtListURI uri) {
-		Assertion.check().notNull(uri);
+		Assertion.check().isNotNull(uri);
 		//-----
 		//- Prise en compte du cache
 		//On ne met pas en cache les URI d'une association NN
@@ -192,7 +192,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 
 	/* On notifie la mise à jour du cache, celui-ci est donc vidé. */
 	private void clearCache(final DtDefinition dtDefinition) {
-		Assertion.check().notNull(dtDefinition);
+		Assertion.check().isNotNull(dtDefinition);
 		//-----
 		// On ne vérifie pas que la definition est cachable, Lucene utilise le même cache
 		// A changer si on gère lucene différemment

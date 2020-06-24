@@ -39,7 +39,7 @@ final class PegOptionalRule<R> implements PegRule<Optional<R>> {
 	 */
 	PegOptionalRule(final PegRule<R> rule) {
 		super();
-		Assertion.check().notNull(rule);
+		Assertion.check().isNotNull(rule);
 		//-----
 		expression = rule.getExpression() + "?";
 		this.rule = rule;

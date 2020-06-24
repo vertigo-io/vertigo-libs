@@ -88,10 +88,10 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 			final TaskManager taskManager,
 			final List<EntityStorePlugin> entityStorePlugins) {
 		Assertion.check()
-				.notNull(cacheManager)
-				.notNull(transactionManager)
-				.notNull(eventBusManager)
-				.notNull(taskManager);
+				.isNotNull(cacheManager)
+				.isNotNull(transactionManager)
+				.isNotNull(eventBusManager)
+				.isNotNull(taskManager);
 		//-----
 		dataStoreConfig = new EntityStoreConfigImpl(entityStorePlugins, cacheManager);
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
@@ -128,12 +128,12 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E readOneForUpdate(final UID<E> uri) {
-		Assertion.check().notNull(uri);
+		Assertion.check().isNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
 		final E entity = getPhysicalStore(dtDefinition).readNullableForUpdate(dtDefinition, uri);
 		//-----
-		Assertion.check().notNull(entity, "no entity found for : '{0}'", uri);
+		Assertion.check().isNotNull(entity, "no entity found for : '{0}'", uri);
 		//-----
 		fireAfterCommit(StoreEvent.Type.UPDATE, uri);
 		return entity;
@@ -153,7 +153,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E create(final E entity) {
-		Assertion.check().notNull(entity);
+		Assertion.check().isNotNull(entity);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final E createdEntity = getPhysicalStore(dtDefinition).create(dtDefinition, entity);
@@ -166,7 +166,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	/** {@inheritDoc} */
 	@Override
 	public void update(final Entity entity) {
-		Assertion.check().notNull(entity);
+		Assertion.check().isNotNull(entity);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		getPhysicalStore(dtDefinition).update(dtDefinition, entity);
@@ -178,7 +178,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	/** {@inheritDoc} */
 	@Override
 	public void delete(final UID<? extends Entity> uri) {
-		Assertion.check().notNull(uri);
+		Assertion.check().isNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
 		getPhysicalStore(dtDefinition).delete(dtDefinition, uri);
@@ -189,22 +189,22 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E readOne(final UID<E> uri) {
-		Assertion.check().notNull(uri);
+		Assertion.check().isNotNull(uri);
 		//-----
 		final E entity = cacheDataStore.readNullable(uri);
 		//-----
-		Assertion.check().notNull(entity, "no entity found for : '{0}'", uri);
+		Assertion.check().isNotNull(entity, "no entity found for : '{0}'", uri);
 		return entity;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> DtList<E> findAll(final DtListURI uri) {
-		Assertion.check().notNull(uri);
+		Assertion.check().isNotNull(uri);
 		//-----
 		final DtList<E> list = cacheDataStore.findAll(uri);
 		//-----
-		Assertion.check().notNull(list);
+		Assertion.check().isNotNull(list);
 		return list;
 	}
 
@@ -218,12 +218,12 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	@Override
 	public <E extends Entity> DtList<E> find(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
 		Assertion.check()
-				.notNull(dtDefinition)
-				.notNull(dtListState);
+				.isNotNull(dtDefinition)
+				.isNotNull(dtListState);
 		//-----
 		final DtList<E> list = cacheDataStore.findByCriteria(dtDefinition, criteria != null ? criteria : CRITERIA_ALWAYS_TRUE, dtListState);
 		//-----
-		Assertion.check().notNull(list);
+		Assertion.check().isNotNull(list);
 		return list;
 
 	}
@@ -260,7 +260,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	@Override
 	public <D extends DtObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc) {
 		Assertion.check()
-				.notNull(list)
+				.isNotNull(list)
 				.isNotBlank(fieldName);
 		//-----
 		final Comparator<D> comparator = new DtObjectComparator<>(this, list.getDefinition().getField(fieldName), desc);

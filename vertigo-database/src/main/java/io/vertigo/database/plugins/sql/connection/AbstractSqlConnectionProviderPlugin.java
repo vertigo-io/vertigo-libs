@@ -42,7 +42,7 @@ public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnecti
 	protected AbstractSqlConnectionProviderPlugin(final String name, final SqlDataBase dataBase) {
 		Assertion.check()
 				.isNotBlank(name)
-				.notNull(dataBase);
+				.isNotNull(dataBase);
 		//-----
 		this.name = name;
 		this.dataBase = dataBase;

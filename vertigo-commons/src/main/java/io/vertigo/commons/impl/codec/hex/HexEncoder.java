@@ -33,7 +33,7 @@ public final class HexEncoder implements Encoder<byte[], String> {
 	/** {@inheritDoc} */
 	@Override
 	public String encode(final byte[] data) {
-		Assertion.check().notNull(data);
+		Assertion.check().isNotNull(data);
 		//-----
 		final char[] chars = new char[data.length * 2];
 		for (int i = 0; i < data.length; i++) {

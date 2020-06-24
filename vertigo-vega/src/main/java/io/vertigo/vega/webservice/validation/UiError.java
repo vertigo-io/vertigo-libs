@@ -40,9 +40,9 @@ public final class UiError {
 	 */
 	UiError(final DtObject dtObject, final DtField dtField, final MessageText messageText) {
 		Assertion.check()
-				.notNull(dtObject)
-				.notNull(dtField)
-				.notNull(messageText);
+				.isNotNull(dtObject)
+				.isNotNull(dtField)
+				.isNotNull(messageText);
 		//-----
 		this.dtObject = dtObject;
 		this.dtField = dtField;

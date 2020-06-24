@@ -35,7 +35,7 @@ public abstract class AbstractRule<R, M> implements PegRule<R> {
 	private final String expression;
 
 	protected AbstractRule(final PegRule<M> mainRule) {
-		Assertion.check().notNull(mainRule);
+		Assertion.check().isNotNull(mainRule);
 		//-----
 		this.innerRule = mainRule;
 		this.mainRule = innerRule;
@@ -44,7 +44,7 @@ public abstract class AbstractRule<R, M> implements PegRule<R> {
 
 	protected AbstractRule(final PegRule<M> mainRule, final String ruleName) {
 		Assertion.check()
-				.notNull(mainRule)
+				.isNotNull(mainRule)
 				.isNotBlank(ruleName);
 		//-----
 		this.innerRule = mainRule;

@@ -201,8 +201,8 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 
 	private static boolean isDOCXNode(final Node node, final DOCXUtil.DOCXNode nodeType) {
 		Assertion.check()
-				.notNull(node)
-				.notNull(nodeType);
+				.isNotNull(node)
+				.isNotNull(nodeType);
 		//-----
 		if (!node.hasChildNodes()) {
 			return false;

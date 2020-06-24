@@ -50,7 +50,7 @@ public final class MeasureBuilder implements Builder<Measure> {
 	public MeasureBuilder addField(final String field, final boolean value) {
 		Assertion.check()
 				.isNotBlank(field)
-				.notNull(value);
+				.isNotNull(value);
 		//---
 		fields.put(field, value);
 		return this;
@@ -59,7 +59,7 @@ public final class MeasureBuilder implements Builder<Measure> {
 	public MeasureBuilder addField(final String field, final double value) {
 		Assertion.check()
 				.isNotBlank(field)
-				.notNull(value);
+				.isNotNull(value);
 		//---
 		fields.put(field, value);
 		return this;
@@ -67,7 +67,7 @@ public final class MeasureBuilder implements Builder<Measure> {
 
 	public MeasureBuilder addField(final String field, final long value) {
 		Assertion.check().isNotBlank(field)
-				.notNull(value);
+				.isNotNull(value);
 		//---
 		fields.put(field, value);
 		return this;
@@ -76,7 +76,7 @@ public final class MeasureBuilder implements Builder<Measure> {
 	public MeasureBuilder addField(final String field, final String value) {
 		Assertion.check()
 				.isNotBlank(field)
-				.notNull(value);
+				.isNotNull(value);
 		//---
 		fields.put(field, value);
 		return this;
@@ -102,7 +102,7 @@ public final class MeasureBuilder implements Builder<Measure> {
 	public MeasureBuilder tag(final String tagName, final String value) {
 		Assertion.check()
 				.isNotBlank(tagName)
-				.notNull(value);
+				.isNotNull(value);
 		//---
 		tags.put(tagName, value);
 		return this;
@@ -117,7 +117,7 @@ public final class MeasureBuilder implements Builder<Measure> {
 	 */
 	public MeasureBuilder time(final Instant measureInstant) {
 		Assertion.check()
-				.notNull(measureInstant);
+				.isNotNull(measureInstant);
 		//---
 		instant = measureInstant;
 		return this;

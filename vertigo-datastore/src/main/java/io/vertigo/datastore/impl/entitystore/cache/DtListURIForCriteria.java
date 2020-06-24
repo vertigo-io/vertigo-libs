@@ -57,8 +57,8 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	DtListURIForCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
 		super(dtDefinition);
 		Assertion.check()
-				.notNull(criteria)
-				.notNull(dtListState);
+				.isNotNull(criteria)
+				.isNotNull(dtListState);
 		this.criteria = criteria;
 		this.sortFieldName = dtListState.getSortFieldName().orElse(null);
 		this.sortDesc = dtListState.isSortDesc().orElse(null);
@@ -87,7 +87,7 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	* @return Criteria resultant
 	*/
 	public static <E extends Entity> Criteria<E> createCriteria(final DtObject dtoCriteria) {
-		Assertion.check().notNull(dtoCriteria);
+		Assertion.check().isNotNull(dtoCriteria);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtoCriteria);
 

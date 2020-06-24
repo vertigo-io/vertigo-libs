@@ -111,11 +111,11 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 			final SqlDataBaseManager sqlDataBaseManager,
 			final SmartTypeManager smartTypeManager) {
 		Assertion.check()
-				.notNull(scriptManager)
-				.notNull(transactionManager)
-				.notNull(entityStoreManager)
-				.notNull(sqlDataBaseManager)
-				.notNull(smartTypeManager);
+				.isNotNull(scriptManager)
+				.isNotNull(transactionManager)
+				.isNotNull(entityStoreManager)
+				.isNotNull(sqlDataBaseManager)
+				.isNotNull(smartTypeManager);
 		//-----
 		this.scriptManager = scriptManager;
 		this.transactionManager = transactionManager;

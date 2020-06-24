@@ -47,7 +47,7 @@ public final class RestMasterWebService implements WebServices {
 	@Inject
 	public RestMasterWebService(final MasterPlugin masterPlugin) {
 		Assertion.check()
-				.notNull(masterPlugin)
+				.isNotNull(masterPlugin)
 				.argument(masterPlugin instanceof RestMasterPlugin, "Node MasterPlugin must be a RestMasterPlugin, in order to use Rest protocol ({0})", masterPlugin.getClass().getName());
 		//-----
 		restQueueServer = ((RestMasterPlugin) masterPlugin).getRestQueueServer();

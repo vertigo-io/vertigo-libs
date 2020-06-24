@@ -60,7 +60,7 @@ public class MonitoringServicesImpl implements MonitoringServices {
 	/** {@inheritDoc} */
 	@Override
 	public DtList<OProcessPlanification> getPlanificationsByProId(final Long proId) {
-		Assertion.check().notNull(proId);
+		Assertion.check().isNotNull(proId);
 		// ---
 		return processPlanificationDAO.getPlanificationsByProId(proId);
 	}
@@ -68,7 +68,7 @@ public class MonitoringServicesImpl implements MonitoringServices {
 	/** {@inheritDoc} */
 	@Override
 	public DtList<OProcessExecution> getExecutionsByProId(final Long proId) {
-		Assertion.check().notNull(proId);
+		Assertion.check().isNotNull(proId);
 		// ---
 		return processExecutionDAO.getExecutionsByProId(proId);
 	}
@@ -76,7 +76,7 @@ public class MonitoringServicesImpl implements MonitoringServices {
 	/** {@inheritDoc} */
 	@Override
 	public DtList<OActivityExecution> getActivityExecutionsByPreId(final Long preId) {
-		Assertion.check().notNull(preId);
+		Assertion.check().isNotNull(preId);
 		// ---
 		return activityExecutionDAO.getActivityExecutionsByPreId(preId);
 	}
@@ -84,7 +84,7 @@ public class MonitoringServicesImpl implements MonitoringServices {
 	/** {@inheritDoc} */
 	@Override
 	public OActivityWorkspace getActivityWorkspaceByAceId(final Long aceId, final boolean isIn) {
-		Assertion.check().notNull(aceId);
+		Assertion.check().isNotNull(aceId);
 		// ---
 		return activityWorkspaceDAO.getActivityWorkspace(aceId, isIn).get();
 	}
@@ -92,7 +92,7 @@ public class MonitoringServicesImpl implements MonitoringServices {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<OActivityLog> getActivityLogByAceId(final Long aceId) {
-		Assertion.check().notNull(aceId);
+		Assertion.check().isNotNull(aceId);
 		// ---
 		return activityLogDAO.getActivityLogByAceId(aceId);
 

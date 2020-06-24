@@ -57,7 +57,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	 */
 	@Inject
 	public VSecurityManagerImpl(final LocaleManager localeManager, @ParamValue("userSessionClassName") final String userSessionClassName) {
-		Assertion.check().notNull(localeManager)
+		Assertion.check().isNotNull(localeManager)
 				.isNotBlank(userSessionClassName);
 		//-----
 		this.localeManager = localeManager;
@@ -98,7 +98,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	/** {@inheritDoc} */
 	@Override
 	public void startCurrentUserSession(final UserSession user) {
-		Assertion.check().notNull(user);
+		Assertion.check().isNotNull(user);
 		//On verifie que la UserSession précédante a bien été retiree (securite et memoire).
 		if (USER_SESSION_THREAD_LOCAL.get() != null) {
 			throw new IllegalStateException("UserSession already created in this thread, check to close session by stopCurrentUserSession in a finally");

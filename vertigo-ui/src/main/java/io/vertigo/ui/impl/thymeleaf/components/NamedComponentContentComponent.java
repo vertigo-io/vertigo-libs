@@ -43,7 +43,7 @@ public final class NamedComponentContentComponent {
 	private final Map<String, String> attributes;
 
 	public NamedComponentContentComponent(final IModel innerModel) {
-		Assertion.check().notNull(innerModel);
+		Assertion.check().isNotNull(innerModel);
 		//-----
 		this.innerModel = innerModel;
 		final IElementTag firstLevelTag = (IElementTag) innerModel.get(0);

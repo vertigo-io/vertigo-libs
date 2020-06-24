@@ -61,7 +61,7 @@ final class BrokerNNImpl implements BrokerNN {
 		private final DtField targetField;
 
 		DescriptionNN(final DtListURIForNNAssociation dtListURIForAssociation) {
-			Assertion.check().notNull(dtListURIForAssociation);
+			Assertion.check().isNotNull(dtListURIForAssociation);
 			final AssociationNNDefinition associationNNDefinition = dtListURIForAssociation.getAssociationDefinition();
 
 			tableName = associationNNDefinition.getTableName();
@@ -83,7 +83,7 @@ final class BrokerNNImpl implements BrokerNN {
 	 * @param taskManager Manager des Tasks
 	 */
 	BrokerNNImpl(final TaskManager taskManager) {
-		Assertion.check().notNull(taskManager);
+		Assertion.check().isNotNull(taskManager);
 		//-----
 		this.taskManager = taskManager;
 		integerSmartType = SmartTypeDefinition.builder("STyIntegerBroker", BasicType.Integer).build();
@@ -92,7 +92,7 @@ final class BrokerNNImpl implements BrokerNN {
 	/** {@inheritDoc} */
 	@Override
 	public void appendNN(final DtListURIForNNAssociation dtListURI, final UID uriToAppend) {
-		Assertion.check().notNull(uriToAppend);
+		Assertion.check().isNotNull(uriToAppend);
 		//-----
 		appendNN(new DescriptionNN(dtListURI), uriToAppend.getId());
 	}
@@ -107,7 +107,7 @@ final class BrokerNNImpl implements BrokerNN {
 	/** {@inheritDoc} */
 	@Override
 	public void removeNN(final DtListURIForNNAssociation dtListURI, final UID uriToDelete) {
-		Assertion.check().notNull(uriToDelete);
+		Assertion.check().isNotNull(uriToDelete);
 		//-----
 		removeNN(new DescriptionNN(dtListURI), uriToDelete.getId());
 	}
@@ -115,7 +115,7 @@ final class BrokerNNImpl implements BrokerNN {
 	/** {@inheritDoc} */
 	@Override
 	public void updateNN(final DtListURIForNNAssociation dtListURI, final List<UID> newUriList) {
-		Assertion.check().notNull(newUriList);
+		Assertion.check().isNotNull(newUriList);
 		//-----
 		final DescriptionNN descriptionNN = new DescriptionNN(dtListURI);
 		//1. on supprime tout

@@ -171,9 +171,9 @@ public final class UiUtil implements Serializable {
 
 	public static Double getStep(final Double minValue, final Double maxValue) {
 		Assertion.check()
-				.notNull(minValue)
-				.notNull(maxValue)
-				.state(maxValue > minValue, "Unable to calculate step : maxValue '{0}' must be superior to minValue '{1}'", maxValue, minValue);
+				.isNotNull(minValue)
+				.isNotNull(maxValue)
+				.isTrue(maxValue > minValue, "Unable to calculate step : maxValue '{0}' must be superior to minValue '{1}'", maxValue, minValue);
 		//---
 		final Double rawStep = (maxValue - minValue) / 200; // we allow at max 200 possible values
 
@@ -270,7 +270,7 @@ public final class UiUtil implements Serializable {
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
 		final Object contextObject = viewContext.get(contextKey);
 		Assertion.check()
-				.notNull(contextObject, "{0} n''est pas dans le context", contextKey)
+				.isNotNull(contextObject, "{0} n''est pas dans le context", contextKey)
 				.argument(contextObject instanceof UiObject || contextObject instanceof UiList, "{0}({1}) doit être un UiObject ou une UiList ", contextKey,
 						contextObject.getClass().getSimpleName());
 
@@ -281,8 +281,8 @@ public final class UiUtil implements Serializable {
 			dtDefinition = ((UiList<?>) contextObject).getDtDefinition();
 		}
 		Assertion.check()
-				.notNull(dtDefinition) //, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
-				.notNull(dtDefinition, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
+				.isNotNull(dtDefinition) //, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
+				.isNotNull(dtDefinition, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
 		return dtDefinition.getField(fieldName);
 
 	}

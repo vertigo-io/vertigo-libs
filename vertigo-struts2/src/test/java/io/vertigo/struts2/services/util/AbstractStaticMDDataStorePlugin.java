@@ -69,8 +69,8 @@ public class AbstractStaticMDDataStorePlugin implements EntityStorePlugin {
 	@Override
 	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final UID<E> uri) {
 		Assertion.check()
-				.notNull(dtDefinition)
-				.notNull(uri);
+				.isNotNull(dtDefinition)
+				.isNotNull(uri);
 		//-----
 		final String methodName = "get" + dtDefinition.getClassSimpleName() + "MDObject";
 		return (E) invokeMethod(methodName, uri.getId());
@@ -92,8 +92,8 @@ public class AbstractStaticMDDataStorePlugin implements EntityStorePlugin {
 	@Override
 	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
 		Assertion.check()
-				.notNull(dtDefinition)
-				.notNull(dtListState)
+				.isNotNull(dtDefinition)
+				.isNotNull(dtListState)
 				.argument(criteria == null, "This store could only load all data, not {0}", criteria);
 		//-----
 		final String methodName = "get" + dtDefinition.getClassSimpleName() + "MDList";

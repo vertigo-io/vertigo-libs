@@ -62,7 +62,7 @@ public class VAccessor<E extends Entity> implements Serializable {
 	 */
 	public VAccessor(final DtDefinition targetDtDefinition, final String role) {
 		Assertion.check()
-				.notNull(targetDtDefinition)
+				.isNotNull(targetDtDefinition)
 				.isNotBlank(role);
 		//---
 		this.targetDtDefinitionRef = new DefinitionReference(targetDtDefinition);
@@ -73,7 +73,7 @@ public class VAccessor<E extends Entity> implements Serializable {
 	 * @return the entity
 	 */
 	public final E get() {
-		Assertion.check().state(status == State.LOADED, "Accessor is not loaded, you must load it before calling get method");
+		Assertion.check().isTrue(status == State.LOADED, "Accessor is not loaded, you must load it before calling get method");
 		//---
 		return value;
 	}
@@ -97,7 +97,7 @@ public class VAccessor<E extends Entity> implements Serializable {
 	 * @param entity the entity
 	 */
 	public final void set(final E entity) {
-		Assertion.check().notNull(entity);
+		Assertion.check().isNotNull(entity);
 		//---
 		value = entity;
 		targetURI = entity.getUID();
@@ -132,7 +132,7 @@ public class VAccessor<E extends Entity> implements Serializable {
 	 * @param uid the entity uri
 	 */
 	public final void setUID(final UID<E> uid) {
-		Assertion.check().notNull(uid);
+		Assertion.check().isNotNull(uid);
 		//---
 		targetURI = uid; //maybe null
 		//we have to reset the value and the state

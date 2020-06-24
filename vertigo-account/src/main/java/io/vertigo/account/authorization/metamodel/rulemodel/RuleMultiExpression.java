@@ -92,9 +92,9 @@ public final class RuleMultiExpression {
 			final List<RuleExpression> expressions,
 			final List<RuleMultiExpression> multiExpressions) {
 		Assertion.check()
-				.notNull(boolOperator)
-				.notNull(expressions)
-				.notNull(multiExpressions);
+				.isNotNull(boolOperator)
+				.isNotNull(expressions)
+				.isNotNull(multiExpressions);
 		//-----
 		this.block = block;
 		alwaysTrue = false;

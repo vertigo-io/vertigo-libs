@@ -53,7 +53,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			mainCriteria = orCriteria(mainCriteria, toCriteria(expression));
 		}
 		Assertion.check()
-				.notNull(mainCriteria);//can't be null
+				.isNotNull(mainCriteria);//can't be null
 		return mainCriteria;
 	}
 
@@ -78,7 +78,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			}
 		}
 		Assertion.check()
-				.notNull(mainCriteria);//can be null ?
+				.isNotNull(mainCriteria);//can be null ?
 		return mainCriteria;
 	}
 
@@ -90,19 +90,19 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 				Criteria<E> mainCriteria = null; //comment collecter en stream ?
 				for (final Serializable userValue : userValues) {
 					Assertion.check()
-							.notNull(userValue);
+							.isNotNull(userValue);
 					Assertion.when(!userValue.getClass().isArray())
-							.state(() -> userValue instanceof Comparable,
+							.isTrue(() -> userValue instanceof Comparable,
 									"Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName());
 					Assertion
 							.when(userValue.getClass().isArray())
-							.state(() -> Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
+							.isTrue(() -> Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
 									"Security keys must be serializable AND comparable (here : {0})", userValue.getClass().getComponentType());
 					//----
 					mainCriteria = orCriteria(mainCriteria, toCriteria(expression.getFieldName(), expression.getOperator(), userValue));
 				}
 				Assertion.check()
-						.notNull(mainCriteria);//can't be null
+						.isNotNull(mainCriteria);//can't be null
 				return mainCriteria;
 			}
 			return Criterions.alwaysFalse();
@@ -273,7 +273,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			}
 		}
 		Assertion.check()
-				.notNull(mainCriteria);//can be null ?
+				.isNotNull(mainCriteria);//can be null ?
 		return mainCriteria;
 	}
 

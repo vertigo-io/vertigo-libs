@@ -45,8 +45,8 @@ public final class DataFilter implements Serializable {
 			final Map<String, String> filters,
 			final String additionalWhereClause) {
 		Assertion.check()
-				.notNull(measurement)
-				.notNull(filters);
+				.isNotNull(measurement)
+				.isNotNull(filters);
 		//---
 		this.measurement = measurement;
 		this.filters = filters;

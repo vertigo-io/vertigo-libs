@@ -55,14 +55,14 @@ public class TimeSeriesManagerImpl implements TimeSeriesDataBaseManager {
 			final AnalyticsManager analyticsManager,
 			final List<TimeSeriesPlugin> timeSeriesPlugins) {
 		Assertion.check()
-				.notNull(analyticsManager)
-				.notNull(timeSeriesPlugins);
+				.isNotNull(analyticsManager)
+				.isNotNull(timeSeriesPlugins);
 		//---
 		this.analyticsManager = analyticsManager;
 		timeSeriesPlugins.forEach(
 				plugin -> plugin.getDbNames()
 						.forEach(dbName -> {
-							Assertion.check().state(!timeSeriesPluginByDb.containsKey(dbName), "Db '{0}' already registered ", dbName);
+							Assertion.check().isTrue(!timeSeriesPluginByDb.containsKey(dbName), "Db '{0}' already registered ", dbName);
 							//---
 							timeSeriesPluginByDb.put(dbName, plugin);
 
@@ -99,9 +99,9 @@ public class TimeSeriesManagerImpl implements TimeSeriesDataBaseManager {
 	public TimedDatas getTimeSeries(final String dbName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
 		Assertion.check()
 				.isNotBlank(dbName)
-				.notNull(measures)
-				.notNull(dataFilter)
-				.notNull(timeFilter.getDim());// we check dim is not null because we need it
+				.isNotNull(measures)
+				.isNotNull(dataFilter)
+				.isNotNull(timeFilter.getDim());// we check dim is not null because we need it
 		//---
 		return analyticsManager.traceWithReturn(
 				TIMESERIES_CATEGORY,
@@ -114,15 +114,15 @@ public class TimeSeriesManagerImpl implements TimeSeriesDataBaseManager {
 	public TimedDatas getClusteredTimeSeries(final String dbName, final ClusteredMeasure clusteredMeasure, final DataFilter dataFilter, final TimeFilter timeFilter) {
 		Assertion.check()
 				.isNotBlank(dbName)
-				.notNull(dataFilter)
-				.notNull(timeFilter)
-				.notNull(timeFilter.getDim()) // we check dim is not null because we need it
-				.notNull(clusteredMeasure);
+				.isNotNull(dataFilter)
+				.isNotNull(timeFilter)
+				.isNotNull(timeFilter.getDim()) // we check dim is not null because we need it
+				.isNotNull(clusteredMeasure);
 		//---
 		Assertion.check()
 				.isNotBlank(clusteredMeasure.getMeasure())
-				.notNull(clusteredMeasure.getThresholds())
-				.state(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
+				.isNotNull(clusteredMeasure.getThresholds())
+				.isTrue(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
 		//we use the natural order
 		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
 		//---

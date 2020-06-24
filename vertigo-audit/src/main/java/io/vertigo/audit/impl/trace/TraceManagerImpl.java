@@ -39,7 +39,7 @@ public final class TraceManagerImpl implements TraceManager {
 	 */
 	@Inject
 	public TraceManagerImpl(final TraceStorePlugin auditTraceStorePlugin) {
-		Assertion.check().notNull(auditTraceStorePlugin);
+		Assertion.check().isNotNull(auditTraceStorePlugin);
 		//---
 		this.auditTraceStorePlugin = auditTraceStorePlugin;
 	}

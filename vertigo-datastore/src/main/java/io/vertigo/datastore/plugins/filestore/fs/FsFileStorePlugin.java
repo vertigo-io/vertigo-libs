@@ -114,12 +114,12 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 			final VTransactionManager transactionManager,
 			final FileManager fileManager) {
 		Assertion.check()
-				.notNull(name)
+				.isNotNull(name)
 				.isNotBlank(storeDtDefinitionName)
 				.isNotBlank(path)
 				.isNotBlank(fileInfoClassName)
-				.notNull(transactionManager)
-				.notNull(fileManager)
+				.isNotNull(transactionManager)
+				.isNotNull(fileManager)
 				.argument(path.endsWith("/"), "store path must ends with / ({0})", path);
 		//-----
 		this.name = name.orElse(FileStoreManager.MAIN_DATA_SPACE_NAME);
@@ -219,7 +219,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	public FileInfo create(final FileInfo fileInfo) {
 		Assertion.check()
 				.argument(!readOnly, STORE_READ_ONLY)
-				.notNull(fileInfo.getURI() == null, "Only file without any id can be created.");
+				.isNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
 		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
 		//-----
@@ -227,7 +227,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 
 		// cas de la création
 		final Object fileInfoDtoId = DtObjectUtil.getId(fileInfoDto);
-		Assertion.check().notNull(fileInfoDtoId, "File's id must be set.");
+		Assertion.check().isNotNull(fileInfoDtoId, "File's id must be set.");
 		final FileInfoURI uri = createURI(fileInfo.getDefinition(), fileInfoDtoId);
 		fileInfo.setURIStored(uri);
 
@@ -247,7 +247,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	public void update(final FileInfo fileInfo) {
 		Assertion.check()
 				.argument(!readOnly, STORE_READ_ONLY)
-				.notNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
+				.isNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
 		//-----
 		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
 		//-----
@@ -288,7 +288,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 * @return URI du DTO utilisé en BDD pour stocker.
 	 */
 	private UID<Entity> createDtObjectURI(final FileInfoURI uri) {
-		Assertion.check().notNull(uri, "file uri must be provided.");
+		Assertion.check().isNotNull(uri, "file uri must be provided.");
 		//-----
 		// Il doit exister un DtObjet associé, avec la structure attendue.
 		return UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.getSmartTypeDefinition().getJavaClass()));
@@ -301,7 +301,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 * @return DTO utilisé en BDD pour stocker.
 	 */
 	private Entity createFileInfoEntity(final FileInfoDefinition fileInfoDefinition) {
-		Assertion.check().notNull(fileInfoDefinition, "fileInfoDefinition must be provided.");
+		Assertion.check().isNotNull(fileInfoDefinition, "fileInfoDefinition must be provided.");
 		//-----
 		// Il doit exister un DtObjet associé, avec la structure attendue.
 		return DtObjectUtil.createEntity(storeDtDefinition);

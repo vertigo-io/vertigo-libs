@@ -70,11 +70,11 @@ public final class Mail {
 		Assertion.check()
 				.isNotBlank(subject, "Sujet du mail obligatoire")
 				.isNotBlank(fromAddress, "Adresse email de l'émetteur obligatoire")
-				.notNull(toAddresses)
+				.isNotNull(toAddresses)
 				.argument(!toAddresses.isEmpty(), "Le mail doit avoir au moins un destinataire.")
-				.notNull(ccAddresses)
+				.isNotNull(ccAddresses)
 				.argument(textContent != null || htmlContent != null, "Le mail doit avoir un contenu, soit en text, soit en html")
-				.notNull(attachments);
+				.isNotNull(attachments);
 		//-----
 		this.subject = subject;
 		this.replyTo = replyTo;

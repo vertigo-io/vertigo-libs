@@ -119,7 +119,7 @@ public class NamedComponentParser extends AbstractMarkupHandler {
 		final Pattern parametersPattern = Pattern.compile("^\\s*([^(]+)\\s*(?:\\((.*)\\))?");
 		final Matcher matcher = parametersPattern.matcher(fragmentAttribute);
 		final boolean matches = matcher.matches();
-		Assertion.check().state(matches, "fragment '{0}' should match 'xxx' or 'xxx(params, ...)'", fragmentAttribute);
+		Assertion.check().isTrue(matches, "fragment '{0}' should match 'xxx' or 'xxx(params, ...)'", fragmentAttribute);
 		//----
 		final String frag = matcher.group(1);
 		final Optional<String> parameters = Optional.ofNullable(matcher.group(2));

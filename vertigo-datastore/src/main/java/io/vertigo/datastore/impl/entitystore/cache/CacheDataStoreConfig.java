@@ -70,7 +70,7 @@ public final class CacheDataStoreConfig {
 	public void registerCacheable(
 			final DtDefinition dtDefinition,
 			final boolean isReloadedByList) {
-		Assertion.check().notNull(dtDefinition);
+		Assertion.check().isNotNull(dtDefinition);
 		//-----
 		cacheableDtDefinitionMap.put(dtDefinition, isReloadedByList);
 	}
@@ -80,7 +80,7 @@ public final class CacheDataStoreConfig {
 	 * @return Si ce type d'objet doit être chargé de façon ensembliste ou non.
 	 */
 	boolean isReloadedByList(final DtDefinition dtDefinition) {
-		Assertion.check().notNull(dtDefinition);
+		Assertion.check().isNotNull(dtDefinition);
 		//-----
 		return cacheableDtDefinitionMap.get(dtDefinition);
 	}

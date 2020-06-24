@@ -32,7 +32,7 @@ final class PostgreSqlDialect implements SqlDialect {
 	public String createInsertQuery(final String idFieldName, final List<String> dataFieldsName, final String sequencePrefix, final String tableName) {
 		Assertion.check()
 				.isNotBlank(idFieldName)
-				.notNull(dataFieldsName)
+				.isNotNull(dataFieldsName)
 				.isNotBlank(sequencePrefix)
 				.isNotBlank(tableName);
 		//---

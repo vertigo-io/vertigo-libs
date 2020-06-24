@@ -51,7 +51,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 * @param uuid Notification uuid
 	 */
 	NotificationBuilder(final UUID uuid) {
-		Assertion.check().notNull(uuid);
+		Assertion.check().isNotNull(uuid);
 		//-----
 		this.uuid = uuid;
 	}
@@ -88,7 +88,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	public NotificationBuilder withCreationDate(final Instant creationInstant) {
 		Assertion.check()
 				.argument(myCreationInstant == null, "creationDate already set")
-				.notNull(creationInstant);
+				.isNotNull(creationInstant);
 		//-----
 		myCreationInstant = creationInstant;
 		return this;
@@ -151,7 +151,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	public NotificationBuilder withUserContent(final String userContent) {
 		Assertion.check()
 				.argument(myUserContent == null, "userContent already set")
-				.notNull(userContent);
+				.isNotNull(userContent);
 		//-----
 		myUserContent = ("".equals(userContent) ? null : userContent);// "" translated to Optional.empty
 		return this;

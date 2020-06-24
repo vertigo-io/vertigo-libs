@@ -62,7 +62,7 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 	 */
 	public ListVAccessor(final Entity entity, final String associationDefinitionName, final String roleName) {
 		Assertion.check()
-				.notNull(entity)
+				.isNotNull(entity)
 				.isNotBlank(associationDefinitionName)
 				.isNotBlank(roleName);
 		//---
@@ -97,13 +97,13 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 	 * Loads the value if needed.
 	 */
 	public final DtList<E> get() {
-		Assertion.check().state(status == State.LOADED, "Accessor is not loaded, you must load it before calling get method");
+		Assertion.check().isTrue(status == State.LOADED, "Accessor is not loaded, you must load it before calling get method");
 		//--
 		return value;
 	}
 
 	public void set(final DtList<E> dtList) {
-		Assertion.check().notNull(dtList);
+		Assertion.check().isNotNull(dtList);
 		//---
 		value = dtList;
 		//--

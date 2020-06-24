@@ -42,7 +42,7 @@ public final class MigrationManagerImpl implements DataBaseMigrationManager, Act
 	public MigrationManagerImpl(
 			@ParamValue("mode") final Optional<String> modeOpt,
 			final List<MigrationPlugin> dataBaseMigrationPlugins) {
-		Assertion.check().notNull(dataBaseMigrationPlugins);
+		Assertion.check().isNotNull(dataBaseMigrationPlugins);
 		//---
 		this.dataBaseMigrationPlugins = dataBaseMigrationPlugins
 				.stream()
@@ -81,7 +81,7 @@ public final class MigrationManagerImpl implements DataBaseMigrationManager, Act
 	public void check(final String connectionName) {
 		Assertion.check()
 				.isNotBlank(connectionName)
-				.state(dataBaseMigrationPlugins.containsKey(connectionName), "No DataBaseMigrationPlugin for connection", connectionName);
+				.isTrue(dataBaseMigrationPlugins.containsKey(connectionName), "No DataBaseMigrationPlugin for connection", connectionName);
 		//---
 		dataBaseMigrationPlugins.get(connectionName).check();
 	}
@@ -91,7 +91,7 @@ public final class MigrationManagerImpl implements DataBaseMigrationManager, Act
 	public void update(final String connectionName) {
 		Assertion.check()
 				.isNotBlank(connectionName)
-				.state(dataBaseMigrationPlugins.containsKey(connectionName), "No DataBaseMigrationPlugin for connection", connectionName);
+				.isTrue(dataBaseMigrationPlugins.containsKey(connectionName), "No DataBaseMigrationPlugin for connection", connectionName);
 		//---
 		dataBaseMigrationPlugins.get(connectionName).update();
 	}

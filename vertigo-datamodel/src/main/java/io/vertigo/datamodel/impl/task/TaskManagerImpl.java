@@ -58,7 +58,7 @@ public final class TaskManagerImpl implements TaskManager, SimpleDefinitionProvi
 	 */
 	@Inject
 	public TaskManagerImpl(final AnalyticsManager analyticsManager) {
-		Assertion.check().notNull(analyticsManager);
+		Assertion.check().isNotNull(analyticsManager);
 		//-----
 		this.analyticsManager = analyticsManager;
 	}
@@ -141,7 +141,7 @@ public final class TaskManagerImpl implements TaskManager, SimpleDefinitionProvi
 
 	private static SmartTypeDefinition findOutSmartType(final Method method) {
 		final TaskOutput taskOutput = method.getAnnotation(TaskOutput.class);
-		Assertion.check().notNull(taskOutput, "The return method '{0}' must be annotated with '{1}'", method, TaskOutput.class);
+		Assertion.check().isNotNull(taskOutput, "The return method '{0}' must be annotated with '{1}'", method, TaskOutput.class);
 		return resolveSmartTypeDefinition(taskOutput.smartType());
 	}
 }

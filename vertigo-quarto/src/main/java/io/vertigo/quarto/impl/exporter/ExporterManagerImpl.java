@@ -52,8 +52,8 @@ public final class ExporterManagerImpl implements ExporterManager {
 	@Inject
 	public ExporterManagerImpl(final FileManager fileManager, final List<ExporterPlugin> exporterPlugins) {
 		Assertion.check()
-				.notNull(fileManager)
-				.notNull(exporterPlugins);
+				.isNotNull(fileManager)
+				.isNotNull(exporterPlugins);
 		//-----
 		this.fileManager = fileManager;
 		this.exporterPlugins = Collections.unmodifiableList(exporterPlugins);
@@ -66,7 +66,7 @@ public final class ExporterManagerImpl implements ExporterManager {
 	 * @return Plugin d'export associé au format
 	 */
 	private ExporterPlugin getExporterPlugin(final ExportFormat exportFormat) {
-		Assertion.check().notNull(exportFormat);
+		Assertion.check().isNotNull(exportFormat);
 		//-----
 		return exporterPlugins
 				.stream()
@@ -78,7 +78,7 @@ public final class ExporterManagerImpl implements ExporterManager {
 	/** {@inheritDoc} */
 	@Override
 	public VFile createExportFile(final Export export) {
-		Assertion.check().notNull(export);
+		Assertion.check().isNotNull(export);
 		//-----
 		try {
 			return generateFile(export);

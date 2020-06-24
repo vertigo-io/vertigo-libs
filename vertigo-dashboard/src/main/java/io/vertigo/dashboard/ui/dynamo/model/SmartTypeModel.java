@@ -27,7 +27,7 @@ public class SmartTypeModel {
 	private final Double dtDefinitionCount; // may be null for UI (displayed as N/A)
 
 	public SmartTypeModel(final SmartTypeDefinition smartTypeDefinition, final Double taskCount, final Double dtDefinitionCount) {
-		Assertion.check().notNull(smartTypeDefinition);
+		Assertion.check().isNotNull(smartTypeDefinition);
 		//---
 		this.smartTypeDefinition = smartTypeDefinition;
 		this.taskCount = taskCount;

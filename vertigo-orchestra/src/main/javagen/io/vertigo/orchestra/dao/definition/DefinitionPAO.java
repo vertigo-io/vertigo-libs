@@ -25,7 +25,7 @@ public final class DefinitionPAO implements StoreServices {
 	 */
 	@Inject
 	public DefinitionPAO(final TaskManager taskManager) {
-		Assertion.check().notNull(taskManager);
+		Assertion.check().isNotNull(taskManager);
 		//-----
 		this.taskManager = taskManager;
 	}

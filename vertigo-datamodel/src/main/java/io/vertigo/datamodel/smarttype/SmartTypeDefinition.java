@@ -96,11 +96,11 @@ public final class SmartTypeDefinition implements Definition {
 			final Properties properties) {
 		Assertion.check()
 				.isNotBlank(name)
-				.notNull(scope)
-				.notNull(valueObjectClassName)
-				.notNull(adapterConfigs)
-				.notNull(constraintConfigs)
-				.notNull(properties);
+				.isNotNull(scope)
+				.isNotNull(valueObjectClassName)
+				.isNotNull(adapterConfigs)
+				.isNotNull(constraintConfigs)
+				.isNotNull(properties);
 		//-----
 		this.name = name;
 		this.scope = scope;
@@ -140,7 +140,7 @@ public final class SmartTypeDefinition implements Definition {
 	}
 
 	public BasicType getBasicType() {
-		Assertion.check().state(basicTypeOpt.isPresent(), "Only smarttypes that are derived from BasicTypes have a basic type, use a dedicated adapter instead to convert the value into a BasicType");
+		Assertion.check().isTrue(basicTypeOpt.isPresent(), "Only smarttypes that are derived from BasicTypes have a basic type, use a dedicated adapter instead to convert the value into a BasicType");
 		return basicTypeOpt.get();
 	}
 

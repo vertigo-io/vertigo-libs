@@ -50,8 +50,8 @@ public final class TasksMetricsProvider implements Component {
 	@Inject
 	public TasksMetricsProvider(final VTransactionManager transactionManager, final TaskManager taskManager) {
 		Assertion.check()
-				.notNull(transactionManager)
-				.notNull(taskManager);
+				.isNotNull(transactionManager)
+				.isNotNull(taskManager);
 		//-----
 		this.transactionManager = transactionManager;
 		this.taskManager = taskManager;
@@ -119,7 +119,7 @@ public final class TasksMetricsProvider implements Component {
 	}
 
 	private static boolean canBeExecutedForMetric(final TaskDefinition taskDefinition) {
-		Assertion.check().notNull(taskDefinition);
+		Assertion.check().isNotNull(taskDefinition);
 		//---
 		return TaskEngineSelect.class.isAssignableFrom(taskDefinition.getTaskEngineClass()) && !hasNotNullOutParams(taskDefinition);
 	}

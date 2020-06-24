@@ -56,7 +56,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 	 */
 	@Inject
 	public DefaultJsonSerializer(final JsonEngine jsonWriterEngine) {
-		Assertion.check().notNull(jsonWriterEngine);
+		Assertion.check().isNotNull(jsonWriterEngine);
 		//-----
 		this.jsonWriterEngine = jsonWriterEngine;
 	}
@@ -223,7 +223,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 	}
 
 	private String writeValue(final Object value, final Response response, final WebServiceDefinition webServiceDefinition) {
-		Assertion.check().notNull(value);
+		Assertion.check().isNotNull(value);
 		//-----
 		if (value instanceof String
 				|| value instanceof Date || value instanceof LocalDate || value instanceof Instant

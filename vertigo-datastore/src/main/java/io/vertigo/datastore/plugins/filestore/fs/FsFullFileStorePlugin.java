@@ -103,11 +103,11 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			final VTransactionManager transactionManager,
 			@ParamValue("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
 		Assertion.check()
-				.notNull(name)
+				.isNotNull(name)
 				.isNotBlank(path)
 				.isNotBlank(fileInfoClassName)
-				.notNull(fileManager)
-				.notNull(transactionManager)
+				.isNotNull(fileManager)
+				.isNotNull(transactionManager)
 				.argument(path.endsWith("/"), "store path must ends with / ({0})", path);
 		//-----
 		this.name = name.orElse(DEFAULT_STORE_NAME);
@@ -115,7 +115,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		this.transactionManager = transactionManager;
 		documentRoot = Paths.get(FileUtil.translatePath(path));
 		Assertion.when(Files.exists(documentRoot))
-				.state(() -> Files.isDirectory(documentRoot), "documentRoot ({0}) must be a directory", documentRoot.toAbsolutePath().toString());
+				.isTrue(() -> Files.isDirectory(documentRoot), "documentRoot ({0}) must be a directory", documentRoot.toAbsolutePath().toString());
 
 		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
 		this.fileInfoClassName = fileInfoClassName;
@@ -205,7 +205,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	@Override
 	public FileInfo create(final FileInfo fileInfo) {
 		Assertion.check()
-				.notNull(fileInfo)
+				.isNotNull(fileInfo)
 				.argument(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
 		final VFile vFile = fileInfo.getVFile();
@@ -233,7 +233,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void update(final FileInfo fileInfo) {
-		Assertion.check().notNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
+		Assertion.check().isNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
 		//-----
 		final VFile vFile = fileInfo.getVFile();
 		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INFOS_DATE_PATTERN)

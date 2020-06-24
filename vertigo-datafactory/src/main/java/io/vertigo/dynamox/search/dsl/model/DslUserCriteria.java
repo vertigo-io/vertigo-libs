@@ -49,12 +49,12 @@ public final class DslUserCriteria {
 			final String overridedPostModifier,
 			final String postMissingPart) {
 		Assertion.check()
-				.notNull(preMissingPart)
-				.notNull(overridedFieldName)
-				.notNull(overridedPreModifier)
+				.isNotNull(preMissingPart)
+				.isNotNull(overridedFieldName)
+				.isNotNull(overridedPreModifier)
 				.isNotBlank(criteriaWord)
-				.notNull(overridedPostModifier)
-				.notNull(postMissingPart);
+				.isNotNull(overridedPostModifier)
+				.isNotNull(postMissingPart);
 		//-----
 		this.preMissingPart = preMissingPart;
 		this.overridedFieldName = overridedFieldName;

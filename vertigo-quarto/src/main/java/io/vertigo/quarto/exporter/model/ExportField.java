@@ -36,7 +36,7 @@ public class ExportField {
 	 * @param dtField DtField
 	 */
 	public ExportField(final DtField dtField, final MessageText label) {
-		Assertion.check().notNull(dtField);
+		Assertion.check().isNotNull(dtField);
 		//label may be null
 		//-----
 		this.dtField = dtField;

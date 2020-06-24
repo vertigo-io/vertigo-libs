@@ -176,8 +176,8 @@ public final class AssociationUtil {
 	 */
 	public static AssociationNode getAssociationNode(final AssociationDefinition associationDefinition, final String roleNameSource) {
 		Assertion.check()
-				.notNull(associationDefinition)
-				.notNull(roleNameSource);
+				.isNotNull(associationDefinition)
+				.isNotNull(roleNameSource);
 		//-----
 		if (roleNameSource.equals(associationDefinition.getAssociationNodeA().getRole())) {
 			return associationDefinition.getAssociationNodeA();
@@ -194,7 +194,7 @@ public final class AssociationUtil {
 	 * @return AssociationNode
 	 */
 	public static AssociationNode getAssociationNodeTarget(final AssociationDefinition associationDefinition, final String roleNameSource) {
-		Assertion.check().notNull(roleNameSource);
+		Assertion.check().isNotNull(roleNameSource);
 		//-----
 		if (roleNameSource.equals(associationDefinition.getAssociationNodeA().getRole())) {
 			return associationDefinition.getAssociationNodeB();

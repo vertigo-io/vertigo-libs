@@ -40,9 +40,9 @@ final class ScriptEvaluator {
 	 */
 	ScriptEvaluator(final ExpressionEvaluatorPlugin expressionEvaluatorPlugin, final SeparatorType separatorType, final List<ExpressionParameter> parameters) {
 		Assertion.check()
-				.notNull(expressionEvaluatorPlugin)
-				.notNull(parameters)
-				.notNull(parameters);
+				.isNotNull(expressionEvaluatorPlugin)
+				.isNotNull(parameters)
+				.isNotNull(parameters);
 		//-----
 		this.separatorType = separatorType;
 		this.parameters = parameters;
@@ -56,8 +56,8 @@ final class ScriptEvaluator {
 	 */
 	String evaluate(final String script) {
 		Assertion.check()
-				.notNull(script)
-				.notNull(parameters);
+				.isNotNull(script)
+				.isNotNull(parameters);
 		//-----
 		final ScriptParserHandlerImpl scriptHandler = new ScriptParserHandlerImpl(expressionEvaluatorPlugin, script, parameters);
 

@@ -117,11 +117,11 @@ public final class WebServiceParam {
 				consumeServerSideToken,
 				dtObjectValidatorClasses);
 
-		Assertion.check().notNull(name);
+		Assertion.check().isNotNull(name);
 		Assertion.when(paramType == WebServiceParamType.Implicit)
-				.state(() -> isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
+				.isTrue(() -> isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
 		Assertion.when(name.isEmpty())
-				.state(() -> WebServiceTypeUtil.isAssignableFrom(DtListState.class, type)
+				.isTrue(() -> WebServiceTypeUtil.isAssignableFrom(DtListState.class, type)
 						|| WebServiceTypeUtil.isAssignableFrom(DtObject.class, type),
 						"Only DtObject and DtListState can be map from Query parameters"); //msg don't talk about deprecated class
 	}
@@ -147,11 +147,11 @@ public final class WebServiceParam {
 			final boolean consumeServerSideToken,
 			final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		Assertion.check()
-				.notNull(paramType)
-				.notNull(type)
-				.notNull(includedFields)
-				.notNull(excludedFields)
-				.notNull(dtObjectValidatorClasses)
+				.isNotNull(paramType)
+				.isNotNull(type)
+				.isNotNull(includedFields)
+				.isNotNull(excludedFields)
+				.isNotNull(dtObjectValidatorClasses)
 				.argument(dtObjectValidatorClasses.isEmpty()
 						|| WebServiceTypeUtil.isAssignableFrom(DtObject.class, type)
 						|| WebServiceTypeUtil.isParameterizedBy(DtObject.class, type), "Validators aren't supported for {0}", type);

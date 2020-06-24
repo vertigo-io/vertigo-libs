@@ -53,8 +53,8 @@ public final class GeoLocation {
 
 	public GeoLocation(final double latitude, final double longitude, final String countryCode, final String level1, final String level2, final String locality) {
 		Assertion.check()
-				.notNull(latitude)
-				.notNull(longitude)
+				.isNotNull(latitude)
+				.isNotNull(longitude)
 				.argument((!Double.isNaN(latitude) && !Double.isNaN(longitude)), "UNDEFINDED or defined");
 		//-----
 		this.latitude = Double.isNaN(latitude) ? null : latitude;

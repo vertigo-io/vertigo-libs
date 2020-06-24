@@ -67,9 +67,9 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 			final List<RedisConnector> redisConnectors,
 			final CodecManager codecManager) {
 		Assertion.check()
-				.notNull(connectorNameOpt)
-				.notNull(redisConnectors)
-				.notNull(codecManager);
+				.isNotNull(connectorNameOpt)
+				.isNotNull(redisConnectors)
+				.isNotNull(codecManager);
 		//-----
 
 		final String connectorName = connectorNameOpt.orElse("main");
@@ -82,7 +82,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void putAccount(final Account account) {
-		Assertion.check().notNull(account);
+		Assertion.check().isNotNull(account);
 		//-----
 		try (final Jedis jedis = redisConnector.getClient()) {
 			try (final Transaction tx = jedis.multi()) {
@@ -97,7 +97,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Account> getAccount(final UID<Account> accountUID) {
-		Assertion.check().notNull(accountUID);
+		Assertion.check().isNotNull(accountUID);
 		//-----
 		try (final Jedis jedis = redisConnector.getClient()) {
 			final String key = HACCOUNT_START_KEY + accountUID.getId();
@@ -111,7 +111,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void putGroup(final AccountGroup group) {
-		Assertion.check().notNull(group);
+		Assertion.check().isNotNull(group);
 		//-----
 		//----
 		try (final Jedis jedis = redisConnector.getClient()) {
@@ -126,7 +126,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<AccountGroup> getGroup(final UID<AccountGroup> groupUID) {
-		Assertion.check().notNull(groupUID);
+		Assertion.check().isNotNull(groupUID);
 		//-----
 		try (final Jedis jedis = redisConnector.getClient()) {
 			final String key = HGROUP_START_KEY + groupUID.getId();
@@ -168,8 +168,8 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	@Override
 	public void attach(final Set<UID<Account>> accountsUID, final UID<AccountGroup> groupUID) {
 		Assertion.check()
-				.notNull(accountsUID)
-				.notNull(groupUID);
+				.isNotNull(accountsUID)
+				.isNotNull(groupUID);
 		//-----
 		try (final Jedis jedis = redisConnector.getClient()) {
 			try (final Transaction tx = jedis.multi()) {
@@ -186,8 +186,8 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	@Override
 	public void attach(final UID<Account> accountUID, final Set<UID<AccountGroup>> groupUIDs) {
 		Assertion.check()
-				.notNull(accountUID)
-				.notNull(groupUIDs);
+				.isNotNull(accountUID)
+				.isNotNull(groupUIDs);
 		//-----
 		try (final Jedis jedis = redisConnector.getClient()) {
 			try (final Transaction tx = jedis.multi()) {
@@ -203,7 +203,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Set<UID<Account>> getAccountUIDs(final UID<AccountGroup> groupUID) {
-		Assertion.check().notNull(groupUID);
+		Assertion.check().isNotNull(groupUID);
 		//-----
 		final Set<UID<Account>> set = new HashSet<>();
 		try (final Jedis jedis = redisConnector.getClient()) {
@@ -218,7 +218,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Set<UID<AccountGroup>> getGroupUIDs(final UID<Account> accountUID) {
-		Assertion.check().notNull(accountUID);
+		Assertion.check().isNotNull(accountUID);
 		//-----
 		final Set<UID<AccountGroup>> set = new HashSet<>();
 		try (final Jedis jedis = redisConnector.getClient()) {
@@ -262,8 +262,8 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	@Override
 	public void setPhoto(final UID<Account> accountUID, final VFile photo) {
 		Assertion.check()
-				.notNull(accountUID)
-				.notNull(photo);
+				.isNotNull(accountUID)
+				.isNotNull(photo);
 		//-----
 		final Map<String, String> vFileMapPhoto = photoCodec.vFile2Map(photo);
 		try (final Jedis jedis = redisConnector.getClient()) {

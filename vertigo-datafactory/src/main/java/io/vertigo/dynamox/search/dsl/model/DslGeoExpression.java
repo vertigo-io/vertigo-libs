@@ -38,8 +38,8 @@ public final class DslGeoExpression {
 			final DslField field,
 			final DslQuery geoQuery) {
 		Assertion.check()
-				.notNull(field)
-				.notNull(geoQuery)
+				.isNotNull(field)
+				.isNotNull(geoQuery)
 				.argument(geoQuery instanceof DslGeoDistanceQuery || geoQuery instanceof DslGeoRangeQuery, "GeoExpression only support distance or boundingbox queries ({0})", geoQuery);
 		//-----
 		this.field = field;

@@ -368,7 +368,7 @@ public final class CronExpression {
 	 *         <CODE>CronExpression</CODE>
 	 */
 	public CronExpression(final String cronExpression) throws ParseException {
-		Assertion.check().notNull(cronExpression, "cronExpression cannot be null");
+		Assertion.check().isNotNull(cronExpression, "cronExpression cannot be null");
 		//--
 
 		this.cronExpression = cronExpression.toUpperCase(Locale.FRENCH);

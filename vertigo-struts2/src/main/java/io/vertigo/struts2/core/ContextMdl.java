@@ -41,7 +41,7 @@ public final class ContextMdl<O extends Entity> {
 	public ContextMdl(final String contextKey, final AbstractActionSupport action) {
 		Assertion.check()
 				.isNotBlank(contextKey)
-				.notNull(action);
+				.isNotNull(action);
 		//-----
 		this.contextKey = contextKey;
 		this.action = action;

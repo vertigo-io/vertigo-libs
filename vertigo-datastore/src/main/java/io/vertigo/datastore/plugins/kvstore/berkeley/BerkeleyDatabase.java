@@ -66,8 +66,8 @@ final class BerkeleyDatabase {
 	 */
 	BerkeleyDatabase(final Database database, final long timeToLiveSeconds, final VTransactionManager transactionManager, final CodecManager codecManager) {
 		Assertion.check()
-				.notNull(database)
-				.notNull(transactionManager);
+				.isNotNull(database)
+				.isNotNull(transactionManager);
 		//-----
 		this.transactionManager = transactionManager;
 		this.database = database;
@@ -101,8 +101,8 @@ final class BerkeleyDatabase {
 	 */
 	<C> Optional<C> find(final String id, final Class<C> clazz) {
 		Assertion.check()
-				.notNull(id)
-				.notNull(clazz);
+				.isNotNull(id)
+				.isNotNull(clazz);
 		//-----
 		final DatabaseEntry idEntry = new DatabaseEntry();
 		final DatabaseEntry dataEntry = new DatabaseEntry();
@@ -132,7 +132,7 @@ final class BerkeleyDatabase {
 	void put(final String id, final Object object) {
 		Assertion.check()
 				.isNotBlank(id)
-				.notNull(object)
+				.isNotNull(object)
 				.argument(object instanceof Serializable, "Value must be Serializable {0}", object.getClass().getSimpleName());
 		//-----
 		//-----

@@ -65,7 +65,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 	 */
 	@Inject
 	public ServerSideStateWebServiceHandlerPlugin(final TokenManager tokenManager) {
-		Assertion.check().notNull(tokenManager);
+		Assertion.check().isNotNull(tokenManager);
 		//-----
 		this.tokenManager = tokenManager;
 	}
@@ -144,7 +144,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 
 	private Serializable writeServerSideObject(final Object returnValue) {
 		Assertion.check()
-				.notNull(returnValue, "Return null value can't be saved ServerSide")
+				.isNotNull(returnValue, "Return null value can't be saved ServerSide")
 				.argument(DtObject.class.isInstance(returnValue)
 						|| DtList.class.isInstance(returnValue)
 						|| UiContext.class.isInstance(returnValue)

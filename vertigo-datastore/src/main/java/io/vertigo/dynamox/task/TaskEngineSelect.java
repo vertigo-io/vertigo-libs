@@ -103,7 +103,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 							.collect(VCollectors.toDtList(outAttribute.getSmartTypeDefinition().getJavaClass()));
 					setResult(dtList);
 				} else {
-					Assertion.check().state(result.size() <= 1, "Limit exceeded");
+					Assertion.check().isTrue(result.size() <= 1, "Limit exceeded");
 					setResult(result.isEmpty() ? null : result.get(0));
 				}
 				break;
@@ -112,7 +112,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 				if (outAttribute.getCardinality().hasMany()) {
 					setResult(result);
 				} else {
-					Assertion.check().state(result.size() <= 1, "Limit exceeded");
+					Assertion.check().isTrue(result.size() <= 1, "Limit exceeded");
 					setResult(result.isEmpty() ? null : result.get(0));
 				}
 				break;

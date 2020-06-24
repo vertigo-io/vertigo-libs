@@ -111,9 +111,9 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 				.isNotBlank(ldapUserAuthAttribute)
 				.isNotBlank(userIdentityEntity)
 				.isNotBlank(ldapUserAttributeMappingStr)
-				.notNull(codecManager)
-				.notNull(smartTypeManager)
-				.notNull(ldapConnectors)
+				.isNotNull(codecManager)
+				.isNotNull(smartTypeManager)
+				.isNotNull(ldapConnectors)
 				.argument(!ldapConnectors.isEmpty(), "At least one LdapConnector espected");
 		//-----
 		this.ldapAccountBaseDn = ldapAccountBaseDn;
@@ -188,8 +188,8 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	private Entity getUserByAuthToken(final String authToken, final LdapContext ctx) {
 		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, "(&(" + ldapUserAuthAttribute + "=" + protectLdap(authToken) + "))", 2, mapperHelper.sourceAttributes(), ctx);
 		Assertion.check()
-				.state(!result.isEmpty(), "Can't found any user with authToken : {0}", ldapUserAuthAttribute)
-				.state(result.size() == 1, "Too many user with same authToken ({0} shoud be unique)", ldapUserAuthAttribute);
+				.isTrue(!result.isEmpty(), "Can't found any user with authToken : {0}", ldapUserAuthAttribute)
+				.isTrue(result.size() == 1, "Too many user with same authToken ({0} shoud be unique)", ldapUserAuthAttribute);
 		return parseUser(result.get(0));
 	}
 
@@ -204,8 +204,8 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		final String ldapIdAttr = mapperHelper.getSourceIdField();
 		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, "(" + ldapIdAttr + "=" + accountId + ")", 2, returningAttributes, ldapContext);
 		Assertion.check()
-				.state(!result.isEmpty(), "Can't found any user with id : {0}", accountId)
-				.state(result.size() == 1, "Too many user with same id ({0} shoud be unique)", accountId);
+				.isTrue(!result.isEmpty(), "Can't found any user with id : {0}", accountId)
+				.isTrue(result.size() == 1, "Too many user with same id ({0} shoud be unique)", accountId);
 		return result.get(0);
 	}
 
@@ -230,7 +230,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 			if (attribute != null) {
 				try {
 					final Object value = attribute.get();
-					Assertion.check().notNull(value);
+					Assertion.check().isNotNull(value);
 					return String.valueOf(value);
 				} catch (final NamingException e) {
 					throw WrappedException.wrap(e, "Ldap attribute {0} found, but is empty", attributeName);
@@ -246,7 +246,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 			if (attribute != null) {
 				try {
 					final Object value = attribute.get();
-					Assertion.check().notNull(value);
+					Assertion.check().isNotNull(value);
 					return value;
 				} catch (final NamingException e) {
 					throw WrappedException.wrap(e, "Ldap attribute {0} found, but is empty", attributeName);
@@ -320,7 +320,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	}
 
 	private static String[] buildReturingAttributes(final Collection<String> returningAttributes) {
-		Assertion.check().notNull(returningAttributes);
+		Assertion.check().isNotNull(returningAttributes);
 		//-----
 		return returningAttributes.toArray(new String[returningAttributes.size()]);
 	}

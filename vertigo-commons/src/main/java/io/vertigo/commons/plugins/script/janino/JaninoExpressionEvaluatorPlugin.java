@@ -39,9 +39,9 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 	@Override
 	public <J> J evaluate(final String expression, final List<ExpressionParameter> parameters, final Class<J> type) {
 		Assertion.check()
-				.notNull(expression)
-				.notNull(parameters)
-				.notNull(type);
+				.isNotNull(expression)
+				.isNotNull(parameters)
+				.isNotNull(type);
 		//-----
 		//0. Init Janino parameters defined by their names, types and values.
 		final int size = parameters.size();

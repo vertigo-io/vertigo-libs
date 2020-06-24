@@ -97,8 +97,8 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 			final ResourceManager resourceManager,
 			final SmartTypeManager smartTypeManager) {
 		Assertion.check()
-				.notNull(resourceManager)
-				.notNull(smartTypeManager)
+				.isNotNull(resourceManager)
+				.isNotNull(smartTypeManager)
 				.isNotBlank(filePatternStr)
 				.argument(filePatternStr.contains("(?<"),
 						"filePattern should be a regexp of named group for each User's entity fields plus reserved field '{0}' (like : '(?<id>\\S+);(?<name>\\S+);(?<email>\\S+);;(?<{0}>\\S+)' )", PHOTO_URL_RESERVED_FIELD)
@@ -154,7 +154,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	@Override
 	public <E extends Entity> Optional<VFile> getPhoto(final UID<E> accountURI) {
 		final IdentityUserInfo identityAccountInfo = idsToUsers.get(accountURI.getId());
-		Assertion.check().notNull(identityAccountInfo, "No identity found for {0}", accountURI);
+		Assertion.check().isNotNull(identityAccountInfo, "No identity found for {0}", accountURI);
 		final String photoUrl = identityAccountInfo.getPhotoUrl();
 		if (photoUrl == null || photoUrl.isEmpty()) {
 			return Optional.empty();
@@ -192,7 +192,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	@Override
 	public void start() {
 		final DtDefinition userDtDefinition = Home.getApp().getDefinitionSpace().resolve(userIdentityEntity, DtDefinition.class);
-		Assertion.check().state(userDtDefinition.contains(userAuthField), "User definition ({0}) should contains the userAuthField ({1})", userIdentityEntity, userAuthField);
+		Assertion.check().isTrue(userDtDefinition.contains(userAuthField), "User definition ({0}) should contains the userAuthField ({1})", userIdentityEntity, userAuthField);
 
 		final URL realmURL = resourceManager.resolve(filePath);
 		int lineNumber = -1;

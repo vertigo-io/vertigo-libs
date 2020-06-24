@@ -51,10 +51,10 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 			final AssociationNode associationNodeB) {
 		super(name, associationNodeA, associationNodeB);
 		Assertion.check()
-				.notNull(fkFieldName)
+				.isNotNull(fkFieldName)
 				//We check that this assocation is not multiple
 				.argument(!(associationNodeA.isMultiple() && associationNodeB.isMultiple()), "assocation : {0}. n-n assocation is prohibited in a simple assocation", name)
-				.notNull(fkFieldName)
+				.isNotNull(fkFieldName)
 				.argument(StringUtil.isLowerCamelCase(fkFieldName), "the name of the field {0} must be in lowerCamelCase", fkFieldName);
 		//-----
 		// Which node is the key node (the primary key)
@@ -72,7 +72,7 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 		this.fkFieldName = fkFieldName;
 		//-----
 		// no one can make an association with you if you're not identified by a key (for now, before refac, isPersistent is the way to make the test isPersistent() <=> isEntity() )
-		Assertion.check().state(primaryAssociationNode.getDtDefinition().getStereotype().isPersistent(), "assocation : {0}. The primary associationNode must be an entity ", name);
+		Assertion.check().isTrue(primaryAssociationNode.getDtDefinition().getStereotype().isPersistent(), "assocation : {0}. The primary associationNode must be an entity ", name);
 	}
 
 	/**

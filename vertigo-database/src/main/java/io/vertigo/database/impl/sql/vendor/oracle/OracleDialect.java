@@ -44,7 +44,7 @@ class OracleDialect implements SqlDialect {
 			final String tableName) {
 		Assertion.check()
 				.isNotBlank(idFieldName)
-				.notNull(dataFieldsName)
+				.isNotNull(dataFieldsName)
 				.isNotBlank(sequencePrefix)
 				.isNotBlank(tableName);
 		//---

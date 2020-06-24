@@ -27,8 +27,8 @@ final class AuthenticationAccountInfo {
 
 	AuthenticationAccountInfo(final String accountKey, final AuthenticationToken authenticationToken) {
 		Assertion.check()
-				.notNull(accountKey)
-				.notNull(authenticationToken);
+				.isNotNull(accountKey)
+				.isNotNull(authenticationToken);
 		//-----
 		this.accountKey = accountKey;
 		this.authenticationToken = authenticationToken;

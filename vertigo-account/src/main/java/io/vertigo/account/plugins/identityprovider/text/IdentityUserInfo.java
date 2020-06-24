@@ -28,8 +28,8 @@ final class IdentityUserInfo {
 
 	IdentityUserInfo(final Entity user, final String photoUrl) {
 		Assertion.check()
-				.notNull(user)
-				.notNull(photoUrl);
+				.isNotNull(user)
+				.isNotNull(photoUrl);
 		//-----
 		this.user = user;
 		this.photoUrl = photoUrl;

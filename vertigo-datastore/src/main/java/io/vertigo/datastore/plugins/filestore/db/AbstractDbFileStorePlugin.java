@@ -63,7 +63,7 @@ abstract class AbstractDbFileStorePlugin {
 			@ParamValue("name") final Optional<String> name,
 			final String fileInfoClassName) {
 		Assertion.check()
-				.notNull(name)
+				.isNotNull(name)
 				.isNotBlank(fileInfoClassName);
 		//-----
 		readOnly = false;

@@ -80,14 +80,14 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 			@ParamValue("walletPassword") final String walletPassword,
 			@ParamValue("walletPath") final String walletPath) {
 		Assertion.check()
-				.notNull(eventBusManager)
+				.isNotNull(eventBusManager)
 				.isNotBlank(myAccountName)
 				.isNotBlank(myPublicAddr)
 				.isNotBlank(defaultDestAccountName)
 				.isNotBlank(defaultDestPublicAddr)
 				.isNotBlank(walletPassword)
 				.isNotBlank(walletPath)
-				.notNull(eventBusManager);
+				.isNotNull(eventBusManager);
 		//---
 		this.eventBusManager = eventBusManager;
 		//---
@@ -127,7 +127,7 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 
 	@Override
 	public BigInteger getWalletBalance(final LedgerAddress ledgerAddress) {
-		Assertion.check().notNull(ledgerAddress);
+		Assertion.check().isNotNull(ledgerAddress);
 		//---
 		final EthGetBalance balance;
 		try {
@@ -151,8 +151,8 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 	private void sendData(final String data, final LedgerAddress ledgerAddress, final LedgerTransactionPriorityEnum priority) {
 		Assertion.check()
 				.isNotBlank(data)
-				.notNull(ledgerAddress)
-				.notNull(priority);
+				.isNotNull(ledgerAddress)
+				.isNotNull(priority);
 		//---
 		try {
 			final TransactionReceipt transactionReceipt = EthereumTransfer.sendFunds(web3j, credentials, ledgerAddress.getPublicAddress(),

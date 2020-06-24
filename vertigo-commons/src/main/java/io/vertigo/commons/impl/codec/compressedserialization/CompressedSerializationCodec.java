@@ -40,8 +40,8 @@ public final class CompressedSerializationCodec implements Codec<Serializable, b
 	 */
 	public CompressedSerializationCodec(final Codec<Serializable, byte[]> serializationCodec, final Codec<byte[], byte[]> compressionCodec) {
 		Assertion.check()
-				.notNull(serializationCodec)
-				.notNull(compressionCodec);
+				.isNotNull(serializationCodec)
+				.isNotNull(compressionCodec);
 		//-----
 		this.serializationCodec = serializationCodec;
 		this.compressionCodec = compressionCodec;
@@ -50,7 +50,7 @@ public final class CompressedSerializationCodec implements Codec<Serializable, b
 	/** {@inheritDoc} */
 	@Override
 	public byte[] encode(final Serializable data) {
-		Assertion.check().notNull(data);
+		Assertion.check().isNotNull(data);
 		//-----
 		return compressionCodec.encode(serializationCodec.encode(data));
 
@@ -59,7 +59,7 @@ public final class CompressedSerializationCodec implements Codec<Serializable, b
 	/** {@inheritDoc} */
 	@Override
 	public Serializable decode(final byte[] data) {
-		Assertion.check().notNull(data);
+		Assertion.check().isNotNull(data);
 		//-----
 		return serializationCodec.decode(compressionCodec.decode(data));
 	}

@@ -54,7 +54,7 @@ public final class WebServiceParamBuilder implements Builder<WebServiceParam> {
 	 * @param paramType param type
 	 */
 	WebServiceParamBuilder(final Type paramType) {
-		Assertion.check().notNull(paramType);
+		Assertion.check().isNotNull(paramType);
 		//-----
 		optional = WebServiceTypeUtil.isAssignableFrom(Optional.class, paramType);
 		if (optional) {
@@ -73,8 +73,8 @@ public final class WebServiceParamBuilder implements Builder<WebServiceParam> {
 	 */
 	public WebServiceParamBuilder with(final WebServiceParamType restParamType, final String restParamName) {
 		Assertion.check()
-				.notNull(restParamType)
-				.notNull(restParamName); //empty names were check on WebServiceParam constructor
+				.isNotNull(restParamType)
+				.isNotNull(restParamName); //empty names were check on WebServiceParam constructor
 		//-----
 		myWebServiceParamType = restParamType;
 		myWebServiceParamName = restParamName;
@@ -86,7 +86,7 @@ public final class WebServiceParamBuilder implements Builder<WebServiceParam> {
 	 * @return Builder
 	 */
 	public WebServiceParamBuilder addValidatorClasses(final Class<? extends DtObjectValidator>... validatorClasses) {
-		Assertion.check().notNull(validatorClasses);
+		Assertion.check().isNotNull(validatorClasses);
 		//-----
 		myValidatorClasses.addAll(Arrays.asList(validatorClasses));
 		return this;
@@ -97,7 +97,7 @@ public final class WebServiceParamBuilder implements Builder<WebServiceParam> {
 	 * @return Builder
 	 */
 	public WebServiceParamBuilder addExcludedFields(final String... excludedFields) {
-		Assertion.check().notNull(excludedFields);
+		Assertion.check().isNotNull(excludedFields);
 		//-----
 		myExcludedFields.addAll(Arrays.asList(excludedFields));
 		return this;
@@ -108,7 +108,7 @@ public final class WebServiceParamBuilder implements Builder<WebServiceParam> {
 	 * @return Builder
 	 */
 	public WebServiceParamBuilder addIncludedFields(final String... includedFields) {
-		Assertion.check().notNull(includedFields);
+		Assertion.check().isNotNull(includedFields);
 		//-----
 		myIncludedFields.addAll(Arrays.asList(includedFields));
 		return this;

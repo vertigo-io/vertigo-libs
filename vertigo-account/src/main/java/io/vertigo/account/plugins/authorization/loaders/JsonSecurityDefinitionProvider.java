@@ -58,7 +58,7 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 	 */
 	@Inject
 	public JsonSecurityDefinitionProvider(final ResourceManager resourceManager) {
-		Assertion.check().notNull(resourceManager);
+		Assertion.check().isNotNull(resourceManager);
 		// -----
 		this.resourceManager = resourceManager;
 		definitionSuppliers = new ArrayList<>();
@@ -73,7 +73,7 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 	/** {@inheritDoc} */
 	@Override
 	public void addDefinitionResourceConfig(final DefinitionResourceConfig definitionResourceConfig) {
-		Assertion.check().state("security".equals(definitionResourceConfig.getType()), "Type {0} not supported",
+		Assertion.check().isTrue("security".equals(definitionResourceConfig.getType()), "Type {0} not supported",
 				definitionResourceConfig.getType());
 		// -----
 		final URL authConfURL = resourceManager.resolve(definitionResourceConfig.getPath());

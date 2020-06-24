@@ -46,8 +46,8 @@ public final class ExportHelper {
 			final EntityStoreManager entityStoreManager,
 			final SmartTypeManager smartTypeManager) {
 		Assertion.check()
-				.notNull(entityStoreManager)
-				.notNull(smartTypeManager);
+				.isNotNull(entityStoreManager)
+				.isNotNull(smartTypeManager);
 		//-----
 		this.entityStoreManager = entityStoreManager;
 		this.smartTypeManager = smartTypeManager;

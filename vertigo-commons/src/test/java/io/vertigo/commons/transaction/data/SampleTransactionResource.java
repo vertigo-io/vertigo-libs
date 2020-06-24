@@ -38,7 +38,7 @@ public final class SampleTransactionResource implements VTransactionResource, Sa
 	private State state = State.Started;
 
 	public SampleTransactionResource(final SampleDataBase sampleDataBase) {
-		Assertion.check().notNull(sampleDataBase);
+		Assertion.check().isNotNull(sampleDataBase);
 		//-----
 		this.sampleDataBase = sampleDataBase;
 	}

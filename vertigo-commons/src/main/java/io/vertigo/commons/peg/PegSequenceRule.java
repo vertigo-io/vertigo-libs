@@ -43,7 +43,7 @@ final class PegSequenceRule implements PegRule<List<Object>> {
 	 */
 	PegSequenceRule(final List<PegRule<?>> rules) {
 		Assertion.check()
-				.notNull(rules)
+				.isNotNull(rules)
 				.argument(rules.size() > 1, "A sequence must contain at least 2 rules");
 		//-----
 		this.rules = Collections.unmodifiableList(rules);
@@ -89,7 +89,7 @@ final class PegSequenceRule implements PegRule<List<Object>> {
 	}
 
 	private PegNoMatchFoundException keepBestUncompleteRule(final PegNoMatchFoundException first, final PegNoMatchFoundException otherNullable) {
-		Assertion.check().notNull(first);
+		Assertion.check().isNotNull(first);
 		//----
 		if (otherNullable == null || otherNullable.getIndex() < first.getIndex()) {
 			return first;

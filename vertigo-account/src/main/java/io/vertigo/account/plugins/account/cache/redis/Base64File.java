@@ -57,7 +57,7 @@ final class Base64File implements VFile {
 			final Long length,
 			final Instant lastModified,
 			final String base64Content) {
-		Assertion.check().notNull(codecManager);
+		Assertion.check().isNotNull(codecManager);
 		//---
 		this.codecManager = codecManager;
 		this.fileName = fileName;

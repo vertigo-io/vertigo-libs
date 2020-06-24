@@ -62,7 +62,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	public CollectionsManagerImpl(
 			final SmartTypeManager smartTypeManager,
 			final Optional<IndexPlugin> indexPluginOpt) {
-		Assertion.check().notNull(indexPluginOpt);
+		Assertion.check().isNotNull(indexPluginOpt);
 		//-----
 		this.indexPluginOpt = indexPluginOpt;
 		facetFactory = new FacetFactory(this, smartTypeManager);
@@ -72,8 +72,8 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	@Override
 	public <R extends DtObject> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery, final Optional<FacetDefinition> clusterFacetDefinition) {
 		Assertion.check()
-				.notNull(dtList)
-				.notNull(facetedQuery);
+				.isNotNull(dtList)
+				.isNotNull(facetedQuery);
 		//-----
 		//1- on applique les filtres
 		final DtList<R> resultDtList;
@@ -131,7 +131,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	/** {@inheritDoc} */
 	@Override
 	public <D extends DtObject> IndexDtListFunctionBuilder<D> createIndexDtListFunctionBuilder() {
-		Assertion.check().state(indexPluginOpt.isPresent(), "An IndexPlugin is required to use this function");
+		Assertion.check().isTrue(indexPluginOpt.isPresent(), "An IndexPlugin is required to use this function");
 		//-----
 		return new IndexDtListFunctionBuilderImpl<>(indexPluginOpt.get());
 	}

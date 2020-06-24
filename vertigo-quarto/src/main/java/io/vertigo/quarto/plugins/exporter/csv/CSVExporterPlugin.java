@@ -53,9 +53,9 @@ public final class CSVExporterPlugin implements ExporterPlugin {
 			final CodecManager codecManager,
 			final SmartTypeManager smartTypeManager) {
 		Assertion.check()
-				.notNull(entityStoreManager)
-				.notNull(codecManager)
-				.notNull(smartTypeManager);
+				.isNotNull(entityStoreManager)
+				.isNotNull(codecManager)
+				.isNotNull(smartTypeManager);
 		//-----
 		this.codecManager = codecManager;
 		this.entityStoreManager = entityStoreManager;
@@ -71,7 +71,7 @@ public final class CSVExporterPlugin implements ExporterPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public boolean accept(final ExportFormat exportFormat) {
-		Assertion.check().notNull(exportFormat);
+		Assertion.check().isNotNull(exportFormat);
 		//---
 		return exportFormat == ExportFormat.CSV;
 	}

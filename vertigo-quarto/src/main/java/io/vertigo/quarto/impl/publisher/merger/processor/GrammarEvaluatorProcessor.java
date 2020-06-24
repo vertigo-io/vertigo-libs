@@ -42,8 +42,8 @@ public final class GrammarEvaluatorProcessor implements MergerProcessor {
 	 */
 	public GrammarEvaluatorProcessor(final ScriptManager scriptManager, final ScriptGrammar scriptGrammar) {
 		Assertion.check()
-				.notNull(scriptManager)
-				.notNull(scriptGrammar);
+				.isNotNull(scriptManager)
+				.isNotNull(scriptGrammar);
 		//-----
 		this.scriptManager = scriptManager;
 		this.scriptGrammar = scriptGrammar;

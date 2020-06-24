@@ -33,7 +33,7 @@ public final class EntityModel {
 			final Double count,
 			final Double taskCount,
 			final Double fieldCount) {
-		Assertion.check().notNull(dtDefinition);
+		Assertion.check().isNotNull(dtDefinition);
 		//---
 		this.dtDefinition = dtDefinition;
 		this.count = count;

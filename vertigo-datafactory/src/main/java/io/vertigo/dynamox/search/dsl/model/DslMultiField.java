@@ -40,9 +40,9 @@ public final class DslMultiField {
 	 */
 	public DslMultiField(final String preBody, final List<DslField> fields, final String postBody) {
 		Assertion.check()
-				.notNull(preBody)
-				.notNull(fields)
-				.notNull(postBody);
+				.isNotNull(preBody)
+				.isNotNull(fields)
+				.isNotNull(postBody);
 		//-----
 		this.preBody = preBody;
 		this.fields = fields;

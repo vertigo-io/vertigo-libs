@@ -97,7 +97,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @return this builder
 	 */
 	public DtDefinitionBuilder withFragment(final DtDefinition fragment) {
-		Assertion.check().notNull(fragment);
+		Assertion.check().isNotNull(fragment);
 		//---
 		myStereotype = DtStereotype.Fragment;
 		myFragmentRef = new DefinitionReference<>(fragment);
@@ -111,7 +111,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @return this builder
 	 */
 	public DtDefinitionBuilder withStereoType(final DtStereotype stereotype) {
-		Assertion.check().notNull(stereotype);
+		Assertion.check().isNotNull(stereotype);
 		//-----
 		myStereotype = stereotype;
 		return this;
@@ -313,7 +313,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	/** {@inheritDoc} */
 	@Override
 	public DtDefinition build() {
-		Assertion.check().state(dtDefinition == null, "build() already executed");
+		Assertion.check().isTrue(dtDefinition == null, "build() already executed");
 		//-----
 		if (myStereotype == null) {
 			myStereotype = myIdField == null ? DtStereotype.ValueObject : DtStereotype.Entity;

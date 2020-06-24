@@ -47,7 +47,7 @@ public final class SqlParameter<O> {
 	 * @param value the param value
 	 */
 	private SqlParameter(final Class<O> dataType, final O value) {
-		Assertion.check().notNull(dataType);
+		Assertion.check().isNotNull(dataType);
 		//---
 		this.dataType = dataType;
 		this.value = value;
