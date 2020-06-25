@@ -57,8 +57,8 @@ public final class DtListDeltaJsonConverter implements JsonConverter {
 	public void populateWebServiceCallContext(final Object input, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		final Class<?> paramClass = webServiceParam.getType();
 		Assertion.check()
-				.argument(canHandle(paramClass), "This JsonConverter can't read the asked type {0}. Only {1} is supported", paramClass.getSimpleName(), UiListDelta.class.getSimpleName())
-				.argument(getSupportedInputs()[0].isInstance(input) || getSupportedInputs()[1].isInstance(input), "This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
+				.isTrue(canHandle(paramClass), "This JsonConverter can't read the asked type {0}. Only {1} is supported", paramClass.getSimpleName(), UiListDelta.class.getSimpleName())
+				.isTrue(getSupportedInputs()[0].isInstance(input) || getSupportedInputs()[1].isInstance(input), "This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
 		//-----
 		final Type paramGenericType = webServiceParam.getGenericType();
 		final String objectPath;

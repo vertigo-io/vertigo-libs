@@ -206,7 +206,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		if (!isChecked) {
 			checkFormat(uiMessageStack);
 		}
-		Assertion.check().isTrue(!getDtObjectErrors().hasError(), "Unable to merge input on a object that as format errors : {0}", this);
+		Assertion.check().isFalse(getDtObjectErrors().hasError(), "Unable to merge input on a object that as format errors : {0}", this);
 		//we update inputBuffer with older datas
 		if (serverSideDto != null) { //If serverSideObject was kept, we merge input with server object
 			mergeInput();
@@ -267,7 +267,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	public String getInputValue(final String fieldName) {
 		Assertion.check()
 				.isNotBlank(fieldName)
-				.argument(Character.isLowerCase(fieldName.charAt(0)) && !fieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", fieldName);
+				.isTrue(Character.isLowerCase(fieldName.charAt(0)) && !fieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", fieldName);
 		//-----
 		if (hasFormatError(fieldName)) {
 			return inputBuffer.get(fieldName);

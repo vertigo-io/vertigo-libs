@@ -180,7 +180,7 @@ public final class SearchQuery implements Serializable {
 	 * @return Facette utilisé pour le clustering
 	 */
 	public FacetDefinition getClusteringFacetDefinition() {
-		Assertion.check().argument(isClusteringFacet(), "Le clustering des documents par facette n'est pas activé sur cette recherche");
+		Assertion.check().isTrue(isClusteringFacet(), "Le clustering des documents par facette n'est pas activé sur cette recherche");
 		//-----
 		return clusteringFacetDefinitionRef.get();
 	}
@@ -200,7 +200,7 @@ public final class SearchQuery implements Serializable {
 	 * @return Nom du champ portant la date du document
 	 */
 	public String getBoostedDocumentDateField() {
-		Assertion.check().argument(isBoostMostRecent(), "Le boost des documents les plus récent n'est pas activé sur cette recherche");
+		Assertion.check().isTrue(isBoostMostRecent(), "Le boost des documents les plus récent n'est pas activé sur cette recherche");
 		//-----
 		return boostedDocumentDateFieldName;
 	}
@@ -210,7 +210,7 @@ public final class SearchQuery implements Serializable {
 	 * @return Age des documents servant de référence pour le boost des plus récents par rapport à eux
 	 */
 	public int getNumDaysOfBoostRefDocument() {
-		Assertion.check().argument(isBoostMostRecent(), "Le boost des documents les plus récent, n'est pas activé sur cette recherche");
+		Assertion.check().isTrue(isBoostMostRecent(), "Le boost des documents les plus récent, n'est pas activé sur cette recherche");
 		//-----
 		return numDaysOfBoostRefDocument;
 	}
@@ -220,7 +220,7 @@ public final class SearchQuery implements Serializable {
 	 * @return Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1).
 	 */
 	public int getMostRecentBoost() {
-		Assertion.check().argument(isBoostMostRecent(), "Le boost des documents les plus récent, n'est pas activé sur cette recherche");
+		Assertion.check().isTrue(isBoostMostRecent(), "Le boost des documents les plus récent, n'est pas activé sur cette recherche");
 		//-----
 		return mostRecentBoost;
 	}

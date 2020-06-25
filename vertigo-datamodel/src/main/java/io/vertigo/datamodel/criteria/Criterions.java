@@ -77,7 +77,7 @@ public final class Criterions {
 	 * @param value the value
 	 */
 	public static <E extends Entity> Criteria<E> isGreaterThan(final DtFieldName<E> dtFieldName, final Serializable value) {
-		Assertion.check().argument(value == null || value instanceof Comparable, "value must be comparable");
+		Assertion.check().isTrue(value == null || value instanceof Comparable, "value must be comparable");
 		//---
 		return new Criterion<>(dtFieldName, CriterionOperator.GT, value);
 	}
@@ -88,7 +88,7 @@ public final class Criterions {
 	 * @param value the value
 	 */
 	public static <E extends Entity> Criteria<E> isGreaterThanOrEqualTo(final DtFieldName<E> dtFieldName, final Serializable value) {
-		Assertion.check().argument(value == null || value instanceof Comparable, "value must be comparable");
+		Assertion.check().isTrue(value == null || value instanceof Comparable, "value must be comparable");
 		//---
 		return new Criterion<>(dtFieldName, CriterionOperator.GTE, value);
 	}
@@ -99,7 +99,7 @@ public final class Criterions {
 	 * @param value the value
 	 */
 	public static <E extends Entity> Criteria<E> isLessThan(final DtFieldName<E> dtFieldName, final Serializable value) {
-		Assertion.check().argument(value == null || value instanceof Comparable, "value must be comparable");
+		Assertion.check().isTrue(value == null || value instanceof Comparable, "value must be comparable");
 		//---
 		return new Criterion<>(dtFieldName, CriterionOperator.LT, value);
 	}
@@ -110,7 +110,7 @@ public final class Criterions {
 	 * @param value the value
 	 */
 	public static <E extends Entity> Criteria<E> isLessThanOrEqualTo(final DtFieldName<E> dtFieldName, final Serializable value) {
-		Assertion.check().argument(value == null || value instanceof Comparable, "value must be comparable");
+		Assertion.check().isTrue(value == null || value instanceof Comparable, "value must be comparable");
 		//---
 		return new Criterion<>(dtFieldName, CriterionOperator.LTE, value);
 	}

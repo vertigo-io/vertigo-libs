@@ -152,7 +152,7 @@ public final class WebServiceParam {
 				.isNotNull(includedFields)
 				.isNotNull(excludedFields)
 				.isNotNull(dtObjectValidatorClasses)
-				.argument(dtObjectValidatorClasses.isEmpty()
+				.isTrue(dtObjectValidatorClasses.isEmpty()
 						|| WebServiceTypeUtil.isAssignableFrom(DtObject.class, type)
 						|| WebServiceTypeUtil.isParameterizedBy(DtObject.class, type), "Validators aren't supported for {0}", type);
 		//-----

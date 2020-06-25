@@ -299,7 +299,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		if (firstEvent instanceof IOpenElementTag) {
 			final String elementCompleteName = ((IOpenElementTag) firstEvent).getElementCompleteName();
 			final ITemplateEvent lastEvent = model.get(model.size() - 1);
-			Assertion.check().argument(lastEvent instanceof ICloseElementTag
+			Assertion.check().isTrue(lastEvent instanceof ICloseElementTag
 					&& !((ICloseElementTag) lastEvent).isSynthetic()
 					&& elementCompleteName.equals(((ICloseElementTag) lastEvent).getElementCompleteName()),
 					"Can't find endTag of {0} in {1} line {2} col {3}", elementCompleteName, firstEvent.getTemplateName(), firstEvent.getLine(), firstEvent.getCol());

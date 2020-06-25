@@ -124,7 +124,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	public WebServiceDefinitionBuilder withPathPrefix(final String pathPrefix) {
 		Assertion.check()
 				.isNotBlank(pathPrefix, "Route pathPrefix must be specified on {0}.{1}", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName())
-				.argument(pathPrefix.startsWith("/"), "Route pathPrefix must starts with / (on {0}.{1})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
+				.isTrue(pathPrefix.startsWith("/"), "Route pathPrefix must starts with / (on {0}.{1})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
 		//-----
 		myPathPrefix = pathPrefix;
 		return this;

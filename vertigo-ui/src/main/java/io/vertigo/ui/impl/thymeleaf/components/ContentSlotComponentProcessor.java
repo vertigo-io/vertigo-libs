@@ -58,7 +58,7 @@ public class ContentSlotComponentProcessor extends AbstractElementModelProcessor
 	protected void doProcess(final ITemplateContext context, final IModel model, final IElementModelStructureHandler structureHandler) {
 		final Map<String, String> attributes = processAttribute(model);
 		final String attributeValue = attributes.get("name");
-		Assertion.check().argument(
+		Assertion.check().isTrue(
 				attributeValue.endsWith(SlotAttributeTagProcessor.VARIABLE_PLACEHOLDER_SEPARATOR + SlotAttributeTagProcessor.SLOTS_SUFFIX),
 				"{0} isn't a slot. Tag vu:content-slot supports only slots, names must ends with '_slot'", attributeValue);
 		//-----

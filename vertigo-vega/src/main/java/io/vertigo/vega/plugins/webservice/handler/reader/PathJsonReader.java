@@ -43,7 +43,7 @@ public final class PathJsonReader implements JsonReader<String> {
 	/** {@inheritDoc} */
 	@Override
 	public String extractData(final Request request, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
-		Assertion.check().argument(
+		Assertion.check().isTrue(
 				getSupportedInput()[0].equals(webServiceParam.getParamType()),
 				"This JsonReader can't read the asked request ParamType {0}. Only {1} is supported", webServiceParam.getParamType(), Arrays.toString(getSupportedInput()));
 		//-----

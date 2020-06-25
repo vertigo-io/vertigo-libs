@@ -145,7 +145,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 	private Serializable writeServerSideObject(final Object returnValue) {
 		Assertion.check()
 				.isNotNull(returnValue, "Return null value can't be saved ServerSide")
-				.argument(DtObject.class.isInstance(returnValue)
+				.isTrue(DtObject.class.isInstance(returnValue)
 						|| DtList.class.isInstance(returnValue)
 						|| UiContext.class.isInstance(returnValue)
 						|| ExtendedObject.class.isInstance(returnValue), "Return type can't be saved ServerSide : {0}", returnValue.getClass().getSimpleName());
@@ -172,7 +172,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		} else if (returnValue instanceof ExtendedObject) {
 			overridedReturnValue = (ExtendedObject<Object>) returnValue;
 			savedObject = ((ExtendedObject<Object>) returnValue).getInnerObject();
-			Assertion.check().argument(DtObject.class.isInstance(savedObject)
+			Assertion.check().isTrue(DtObject.class.isInstance(savedObject)
 					|| DtList.class.isInstance(savedObject)
 					|| UiContext.class.isInstance(savedObject), "Return type can't be saved ServerSide : {0}", savedObject.getClass().getSimpleName());
 		} else {

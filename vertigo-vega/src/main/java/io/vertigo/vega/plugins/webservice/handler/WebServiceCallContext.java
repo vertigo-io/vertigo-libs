@@ -111,7 +111,7 @@ public final class WebServiceCallContext {
 	 * @param contextKeyMap Map of elements contextKey
 	 */
 	public void registerUpdatedDtObjects(final WebServiceParam webServiceParam, final Serializable updatedValue, final Map<String, DtObject> contextKeyMap) {
-		Assertion.check().argument(updatedValue instanceof DtObject
+		Assertion.check().isTrue(updatedValue instanceof DtObject
 				|| updatedValue instanceof DtList
 				|| updatedValue instanceof DtListDelta,
 				"Context {0} format {1} not supported. Should be a DtObject, a DtList or a DtListDelta", webServiceParam.getFullName(), updatedValue.getClass().getSimpleName());

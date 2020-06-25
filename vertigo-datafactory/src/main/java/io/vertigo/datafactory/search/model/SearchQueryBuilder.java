@@ -94,7 +94,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	public SearchQueryBuilder withDateBoost(final DtField dateField, final int numDaysOfBoostRef, final int mostRecentBoost) {
 		Assertion.check()
 				.isNotNull(dateField)
-				.argument(numDaysOfBoostRef > 1 && mostRecentBoost > 1, "numDaysOfBoostRef et mostRecentBoost doivent être strictement supérieurs à 1.");
+				.isTrue(numDaysOfBoostRef > 1 && mostRecentBoost > 1, "numDaysOfBoostRef et mostRecentBoost doivent être strictement supérieurs à 1.");
 		//-----
 		myDateField = dateField;
 		myNumDaysOfBoostRef = numDaysOfBoostRef;

@@ -40,7 +40,7 @@ public final class DslGeoExpression {
 		Assertion.check()
 				.isNotNull(field)
 				.isNotNull(geoQuery)
-				.argument(geoQuery instanceof DslGeoDistanceQuery || geoQuery instanceof DslGeoRangeQuery, "GeoExpression only support distance or boundingbox queries ({0})", geoQuery);
+				.isTrue(geoQuery instanceof DslGeoDistanceQuery || geoQuery instanceof DslGeoRangeQuery, "GeoExpression only support distance or boundingbox queries ({0})", geoQuery);
 		//-----
 		this.field = field;
 		this.geoQuery = geoQuery;

@@ -162,11 +162,11 @@ public final class WebServiceDefinition implements Definition {
 		}
 		final Set<String> notUsed = new HashSet<>(urlPathParam);
 		notUsed.removeAll(inputPathParam);
-		Assertion.check().argument(notUsed.isEmpty(), "Some pathParam of {1} declared in path are not used {0}", notUsed, methodName);
+		Assertion.check().isTrue(notUsed.isEmpty(), "Some pathParam of {1} declared in path are not used {0}", notUsed, methodName);
 
 		final Set<String> notDeclared = new HashSet<>(inputPathParam);
 		notDeclared.removeAll(urlPathParam);
-		Assertion.check().argument(notDeclared.isEmpty(), "Some pathParam of {1} are not declared in path {0}", notDeclared, methodName);
+		Assertion.check().isTrue(notDeclared.isEmpty(), "Some pathParam of {1} are not declared in path {0}", notDeclared, methodName);
 	}
 
 	/**

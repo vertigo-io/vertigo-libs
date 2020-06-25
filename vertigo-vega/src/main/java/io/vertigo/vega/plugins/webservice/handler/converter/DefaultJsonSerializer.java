@@ -254,7 +254,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 			final ExtendedObject<?> extendedObject = (ExtendedObject<?>) value;
 			return toJson(extendedObject.getInnerObject(), extendedObject, webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
 		} else {
-			Assertion.check().argument(webServiceDefinition.getIncludedFields().isEmpty() && webServiceDefinition.getExcludedFields().isEmpty(),
+			Assertion.check().isTrue(webServiceDefinition.getIncludedFields().isEmpty() && webServiceDefinition.getExcludedFields().isEmpty(),
 					"IncludedFields and ExcludedFields aren't supported for this object type: {0}, on WebService {1}", value.getClass().getSimpleName(), webServiceDefinition.getMethod());
 			return jsonWriterEngine.toJson(value);
 		}

@@ -91,7 +91,7 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 		Assertion.check()
 				.isNotNull(webServiceScannerPlugin)
 				.isNotNull(webServerPlugin)
-				.argument(!restHandlerPlugins.isEmpty(), "No WebServiceHandlerPlugins found, check you have declared your WebServiceHandlerPlugins in RestManagerImpl.\n{0}",
+				.isTrue(!restHandlerPlugins.isEmpty(), "No WebServiceHandlerPlugins found, check you have declared your WebServiceHandlerPlugins in RestManagerImpl.\n{0}",
 						STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG)
 				.isNotNull(webServerPlugin);
 		//-----
@@ -100,7 +100,7 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 				.sorted(Comparator.comparingInt(WebServiceHandlerPlugin::getStackIndex))
 				.collect(Collectors.toList());
 		//-----
-		Assertion.check().argument(sortedWebServiceHandlerPlugins.get(sortedWebServiceHandlerPlugins.size() - 1) instanceof RestfulServiceWebServiceHandlerPlugin,
+		Assertion.check().isTrue(sortedWebServiceHandlerPlugins.get(sortedWebServiceHandlerPlugins.size() - 1) instanceof RestfulServiceWebServiceHandlerPlugin,
 				"WebServiceHandlerPlugins must end with a RestfulServiceHandler in order to dispatch request to WebService, check your WebServiceHandlerPlugins in RestManagerImpl.\n{0}",
 				STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
 		//-----

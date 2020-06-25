@@ -100,16 +100,16 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 		Assertion.check()
 				.isNotNull(resourceManager)
 				.isNotBlank(accountFilePatternStr)
-				.argument(accountFilePatternStr.contains("(?<"),
+				.isTrue(accountFilePatternStr.contains("(?<"),
 						"accountFilePattern should be a regexp of named group for each Account's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<email>)(?<authToken>[^\\s;]+);(?<photoUrl>[^\\s;]+)' )");
-		Assertion.check().argument(groupFilePatternStr.contains("(?<"),
+		Assertion.check().isTrue(groupFilePatternStr.contains("(?<"),
 				"groupFilePattern should be a regexp of named group for each group's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )");
 		for (final AccountProperty accountProperty : AccountProperty.values()) {
-			Assertion.check().argument(accountFilePatternStr.contains("(?<" + accountProperty.name() + ">"),
+			Assertion.check().isTrue(accountFilePatternStr.contains("(?<" + accountProperty.name() + ">"),
 					"filePattern should be a regexp of named group for each Account fields (missing {0} field) (like : '(?<id>\\S+);(?<displayName>\\S+);(?<email>)(?<authToken>\\S+);(?<photoUrl>\\S+)' )", accountProperty.name());
 		}
 		for (final GroupProperty groupProperty : GroupProperty.values()) {
-			Assertion.check().argument(groupFilePatternStr.contains("(?<" + groupProperty.name() + ">"),
+			Assertion.check().isTrue(groupFilePatternStr.contains("(?<" + groupProperty.name() + ">"),
 					"filePattern should be a regexp of named group for each Group fields (missing {0} field) (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )", groupProperty.name());
 		}
 		// -----
@@ -185,8 +185,8 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 			return Optional.empty();
 		}
 		Assertion.check()
-				.argument(photoFile.toFile().exists(), "Account {0} photo {1} not found", accountURI, photoUrl)
-				.argument(photoFile.toFile().isFile(), "Account {0} photo {1} must be a file", accountURI, photoUrl);
+				.isTrue(photoFile.toFile().exists(), "Account {0} photo {1} not found", accountURI, photoUrl)
+				.isTrue(photoFile.toFile().isFile(), "Account {0} photo {1} must be a file", accountURI, photoUrl);
 		try {
 			final String contentType = Files.probeContentType(photoFile);
 			return Optional.of(new FSFile(photoFile.getFileName().toString(), contentType, photoFile));

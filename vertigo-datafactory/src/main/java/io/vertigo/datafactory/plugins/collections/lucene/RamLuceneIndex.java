@@ -257,7 +257,7 @@ final class RamLuceneIndex<D extends DtObject> {
 		Assertion.check()
 				.isNotNull(searchedFields)
 				.isNotNull(dtListState)
-				.argument(dtListState.getMaxRows().isPresent(), "MaxRows is mandatory, can't get all data :(");
+				.isTrue(dtListState.getMaxRows().isPresent(), "MaxRows is mandatory, can't get all data :(");
 		//-----
 		final Query filterQuery = luceneQueryFactory.createFilterQuery(keywords, searchedFields, listFilters, boostedField);
 		final Optional<Sort> optSort = createSort(dtListState);

@@ -117,8 +117,8 @@ final class VFileUtil {
 	private static VFile readQueryFile(final Request request, final WebServiceParam webServiceParam) {
 		try {
 			Assertion.check()
-					.argument(request.contentType().contains("multipart/form-data"), "File {0} not found. Request contentType isn't \"multipart/form-data\"", webServiceParam.getName())
-					.argument(!request.raw().getParts().isEmpty(),
+					.isTrue(request.contentType().contains("multipart/form-data"), "File {0} not found. Request contentType isn't \"multipart/form-data\"", webServiceParam.getName())
+					.isTrue(!request.raw().getParts().isEmpty(),
 							"File {0} not found. Request is multipart but there is no Parts. : Check you have defined MultipartConfig (example for Tomcat set allowCasualMultipartParsing=\"true\" on context tag in your context definition, for Jetty use JettyMultipartConfig)",
 							webServiceParam.getName());
 			final Part file = request.raw().getPart(webServiceParam.getName());
@@ -138,7 +138,7 @@ final class VFileUtil {
 	private static void send(final VFile vFile, final boolean isAttachment, final Response response)
 			throws IOException {
 		final Long length = vFile.getLength();
-		Assertion.check().argument(length < Integer.MAX_VALUE, "Too big file to be send. It's "
+		Assertion.check().isTrue(length < Integer.MAX_VALUE, "Too big file to be send. It's "
 				+ length / 1024 + " Ko long, but maximum was " + Integer.MAX_VALUE / 1024
 				+ " Ko.");
 		response.header("Content-Length", String.valueOf(length.intValue()));

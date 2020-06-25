@@ -45,7 +45,7 @@ public final class ImplicitJsonConverter implements JsonConverter, JsonSerialize
 	/** {@inheritDoc} */
 	@Override
 	public void populateWebServiceCallContext(final Object input, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
-		Assertion.check().argument(getSupportedInputs()[0].isInstance(input), "This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
+		Assertion.check().isTrue(getSupportedInputs()[0].isInstance(input), "This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
 		//-----
 		final Object value = readImplicitValue((Request) input, webServiceParam, routeContext);
 		routeContext.setParamValue(webServiceParam, value);
@@ -74,7 +74,7 @@ public final class ImplicitJsonConverter implements JsonConverter, JsonSerialize
 	@Override
 	public String toJson(final Object result, final Response response, final WebServiceDefinition webServiceDefinition) {
 		Assertion.check()
-				.argument(HttpServletResponse.class.isInstance(result), "This JsonConverter doesn't support this output type {0}. Only {1} is supported", result.getClass().getSimpleName(), HttpServletResponse.class.getSimpleName())
+				.isTrue(HttpServletResponse.class.isInstance(result), "This JsonConverter doesn't support this output type {0}. Only {1} is supported", result.getClass().getSimpleName(), HttpServletResponse.class.getSimpleName())
 				//-----
 				.isTrue(((HttpServletResponse) result).isCommitted(), "The httpResponse returned wasn't close. Ensure you have close your streams.");
 		//-----

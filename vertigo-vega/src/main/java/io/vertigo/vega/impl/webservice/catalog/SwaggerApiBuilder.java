@@ -100,7 +100,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	public SwaggerApiBuilder withWebServiceDefinitions(final Collection<WebServiceDefinition> webServiceDefinitions) {
 		Assertion.check()
 				.isNotNull(webServiceDefinitions, "webServiceDefinitions can't be null")
-				.argument(!webServiceDefinitions.isEmpty(), "webServiceDefinitions can't be empty")
+				.isTrue(!webServiceDefinitions.isEmpty(), "webServiceDefinitions can't be empty")
 				.isTrue(builderWebServiceDefinitions == null, "webServiceDefinitions was already set");
 		//-----
 		builderWebServiceDefinitions = webServiceDefinitions;
@@ -111,7 +111,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	@Override
 	public SwaggerApi build() {
 		Assertion.check()
-		.isNotNull(builderWebServiceDefinitions, "webServiceDefinitions must be set");
+				.isNotNull(builderWebServiceDefinitions, "webServiceDefinitions must be set");
 		//-----
 		final SwaggerApi swagger = new SwaggerApi();
 		swagger.put("swagger", "2.0");

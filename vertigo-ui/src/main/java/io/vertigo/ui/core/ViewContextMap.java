@@ -190,11 +190,11 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	@Override
 	public Serializable put(final String key, final Serializable value) {
 		Assertion.check()
-				.isTrue(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX))
+				.isFalse(unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX))
 				.isNotBlank(key)
 				.isNotNull(value, "la valeur doit être renseignée pour {0}", key)
-				.argument(!(value instanceof DtObject), "Vous devez poser des uiObject dans le context pas des objets métiers ({0})", key)
-				.argument(!(value instanceof DtList), "Vous devez poser des uiList dans le context pas des listes d'objets métiers ({0})", key);
+				.isTrue(!(value instanceof DtObject), "Vous devez poser des uiObject dans le context pas des objets métiers ({0})", key)
+				.isTrue(!(value instanceof DtList), "Vous devez poser des uiList dans le context pas des listes d'objets métiers ({0})", key);
 		//-----
 		if (value instanceof UiObject) {
 			reverseUiObjectIndex.put(value, key);
@@ -210,7 +210,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	@Override
 	public Serializable remove(final Object key) {
 		Assertion.check()
-				.isTrue(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX))
+				.isFalse(unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX))
 				.isTrue(key instanceof String, "La clé doit être de type String");
 		//---
 		final String keyString = (String) key;
@@ -242,7 +242,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * passe le context en non-modifiable.
 	 */
 	public void makeUnmodifiable() {
-		Assertion.check().isTrue(!dirty, "Can't fixed a dirty context");
+		Assertion.check().isFalse(dirty, "Can't fixed a dirty context");
 		//-----
 		unmodifiable = true;
 	}
