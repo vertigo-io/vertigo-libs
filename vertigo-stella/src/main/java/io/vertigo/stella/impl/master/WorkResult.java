@@ -39,7 +39,7 @@ public final class WorkResult<R> {
 	public WorkResult(final String workId, final R result, final Throwable error) {
 		Assertion.check()
 				.isNotBlank(workId)
-				.argument(result == null ^ error == null, "result xor error is null");
+				.isTrue(result == null ^ error == null, "result xor error is null");
 		//-----
 		this.workId = workId;
 		this.error = error;

@@ -37,7 +37,7 @@ public final class DslGeoToQueryBuilderUtil {
 			final DslQuery dslStartGeoPoint = geoRangeQuery.getStartGeoPoint();
 			final DslQuery dslEndGeoPoint = geoRangeQuery.getEndGeoPoint();
 			if (dslStartGeoPoint instanceof DslGeoDistanceQuery || dslEndGeoPoint instanceof DslGeoDistanceQuery) { //range by distance
-				Assertion.check().argument(dslStartGeoPoint instanceof DslGeoDistanceQuery && dslEndGeoPoint instanceof DslGeoDistanceQuery, "When using query by range geo distance, start AND end must be GeoDistanceQuery ({0})", dslGeoExpression);
+				Assertion.check().isTrue(dslStartGeoPoint instanceof DslGeoDistanceQuery && dslEndGeoPoint instanceof DslGeoDistanceQuery, "When using query by range geo distance, start AND end must be GeoDistanceQuery ({0})", dslGeoExpression);
 				//----
 				final QueryBuilder startGeoDistanceQuery = translateToGeoDistanceQuery(fieldName, (DslGeoDistanceQuery) dslStartGeoPoint, myCriteria, typeAdapters);
 				final QueryBuilder endGeoDistanceQuery = translateToGeoDistanceQuery(fieldName, (DslGeoDistanceQuery) dslEndGeoPoint, myCriteria, typeAdapters);
@@ -69,7 +69,7 @@ public final class DslGeoToQueryBuilderUtil {
 	}
 
 	public static GeoPoint computeGeoPoint(final DslQuery dslGeoPoint, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
-		Assertion.check().argument(dslGeoPoint instanceof DslGeoPointFixed
+		Assertion.check().isTrue(dslGeoPoint instanceof DslGeoPointFixed
 				|| dslGeoPoint instanceof DslGeoPointCriteria, "geoPoint must be a fixed gedoPoint or a criteria ({0})", dslGeoPoint);
 		final GeoPoint esGeoPoint;
 		if (dslGeoPoint instanceof DslGeoPointFixed) {

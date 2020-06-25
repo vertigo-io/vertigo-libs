@@ -146,7 +146,7 @@ public final class FileUtil {
 	 * @param userPath Path to check
 	 */
 	public static void checkUserPath(final String userPath) {
-		Assertion.check().argument(!userPath.contains("..")
+		Assertion.check().isTrue(!userPath.contains("..")
 				&& userPath.indexOf((char) 0) == -1, //char 0
 				USER_CHECK_ERROR_MSG);
 	}
@@ -156,7 +156,7 @@ public final class FileUtil {
 	 * @param userFileName FileName to check
 	 */
 	public static void checkUserFileName(final String userFileName) {
-		Assertion.check().argument(userFileName.indexOf('\\') == -1 //Windows path_separator
+		Assertion.check().isTrue(userFileName.indexOf('\\') == -1 //Windows path_separator
 				&& userFileName.indexOf('/') == -1 //Linux path_separator
 				&& userFileName.indexOf((char) 0) == -1, //char 0
 				USER_CHECK_ERROR_MSG);

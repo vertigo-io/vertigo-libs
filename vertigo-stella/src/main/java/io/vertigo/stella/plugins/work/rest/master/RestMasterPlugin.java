@@ -49,7 +49,7 @@ public final class RestMasterPlugin implements MasterPlugin, WebServices {
 	public RestMasterPlugin(
 			@ParamValue("timeoutSeconds") final int timeoutSeconds,
 			final CodecManager codecManager) {
-		Assertion.check().argument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
+		Assertion.check().isTrue(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
 		//-----
 		restQueueServer = new RestQueueServer(20, codecManager, 5);
 	}

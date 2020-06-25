@@ -76,7 +76,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 		Assertion.check()
 				.isNotNull(fileManager)
 				.isNotBlank(unoHost)
-				.argument(convertTimeoutSeconds >= 1 && convertTimeoutSeconds <= 900, "Le timeout de conversion est exprimé en seconde et doit-être compris entre 1s et 15min (900s)");
+				.isTrue(convertTimeoutSeconds >= 1 && convertTimeoutSeconds <= 900, "Le timeout de conversion est exprimé en seconde et doit-être compris entre 1s et 15min (900s)");
 		//-----
 		this.fileManager = fileManager;
 		this.unoHost = unoHost;
@@ -109,7 +109,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 				.isNotNull(file)
 				.isNotNull(targetFormat)
 				// si le format de sortie est celui d'entrée la convertion est inutile
-				.argument(!targetFormat.getTypeMime().equals(file.getMimeType()), "Le format de sortie est identique à celui d'entrée ; la conversion est inutile");
+				.isTrue(!targetFormat.getTypeMime().equals(file.getMimeType()), "Le format de sortie est identique à celui d'entrée ; la conversion est inutile");
 		//-----
 		final File inputFile = fileManager.obtainReadOnlyFile(file);
 		final Callable<File> convertTask = new Callable<>() {
@@ -137,7 +137,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 	 */
 	synchronized File doConvertToFormat(final File inputFile, final ConverterFormat targetFormat) throws Exception {
 		try (final OpenOfficeConnection openOfficeConnection = connectOpenOffice()) {
-			Assertion.check().argument(inputFile.exists(), "Le document à convertir n''existe pas : {0}", inputFile.getAbsolutePath());
+			Assertion.check().isTrue(inputFile.exists(), "Le document à convertir n''existe pas : {0}", inputFile.getAbsolutePath());
 			final XComponent xDoc = loadDocument(inputFile, openOfficeConnection);
 			try {
 				refreshDocument(xDoc);
@@ -206,7 +206,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 	private static PropertyValue[] getFileProperties(final ConverterFormat docType, final XOutputStream outputStream, final XInputStream inputStream) {
 		Assertion.check()
 				.isNotNull(docType, "Le type du format de sortie est obligatoire")
-				.argument(outputStream == null || inputStream == null, "Les properties pointent soit un fichier local, soit un flux d'entrée, soit un flux de sortie");
+				.isTrue(outputStream == null || inputStream == null, "Les properties pointent soit un fichier local, soit un flux d'entrée, soit un flux de sortie");
 		final List<PropertyValue> fileProps = new ArrayList<>(3);
 
 		PropertyValue fileProp = new PropertyValue();

@@ -49,7 +49,7 @@ final class BerkeleyTimedDataBinding extends TupleBinding<Serializable> {
 	@Override
 	public Serializable entryToObject(final TupleInput ti) {
 		final String prefix = ti.readString();
-		Assertion.check().argument(PREFIX.equals(prefix), "Can't read this entry {0}", prefix);
+		Assertion.check().isTrue(PREFIX.equals(prefix), "Can't read this entry {0}", prefix);
 		final long createTime = ti.readLong();
 		if (isValueTooOld(createTime)) {
 			//si donnée trop vieille on fait l'économie de la déserialization

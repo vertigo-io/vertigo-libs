@@ -63,7 +63,7 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 		Assertion.check()
 				.isNotNull(maxPrecision, "Le nombre de chiffres ne peut pas être null")
 				.isNotNull(maxScale, "Le nombre de chiffres après la virgule ne peut pas être null")
-				.argument(maxScale <= maxPrecision, "Le nombre de chiffres après la virgule doit être inférieur au nombre total de chiffres");
+				.isTrue(maxScale <= maxPrecision, "Le nombre de chiffres après la virgule doit être inférieur au nombre total de chiffres");
 		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get())
 				: MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED,
 						new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale),

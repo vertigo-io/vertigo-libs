@@ -109,7 +109,7 @@ public final class TaskDefinition implements Definition {
 		for (final TaskAttribute taskAttribute : taskAttributes) {
 			Assertion.check()
 					.isNotNull(taskAttribute)
-					.argument(!map.containsKey(taskAttribute.getName()), "attribut {0} existe déjà", taskAttribute.getName());
+					.isTrue(!map.containsKey(taskAttribute.getName()), "attribut {0} existe déjà", taskAttribute.getName());
 			//-----
 			map.put(taskAttribute.getName(), taskAttribute);
 		}

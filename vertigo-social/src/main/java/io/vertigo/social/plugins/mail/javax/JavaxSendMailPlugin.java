@@ -191,7 +191,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	private void setDestAddress(final List<String> addressList, final Message message, final Message.RecipientType type) throws MessagingException {
 		Assertion.check()
 				.isNotNull(addressList)
-				.argument(!addressList.isEmpty(), "La liste des destinataires ne doit pas être vide")
+				.isTrue(!addressList.isEmpty(), "La liste des destinataires ne doit pas être vide")
 				.isNotNull(message);
 		//-----
 		final InternetAddress[] addresses = new InternetAddress[addressList.size()];
@@ -212,7 +212,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 
 	private void setBodyContent(final String textContent, final String htmlContent, final Part bodyPart) throws MessagingException {
 		Assertion.check()
-				.argument(textContent != null || htmlContent != null, "Le mail n'a pas de contenu, ni en text, ni en html")
+				.isTrue(textContent != null || htmlContent != null, "Le mail n'a pas de contenu, ni en text, ni en html")
 				.isNotNull(bodyPart);
 		//-----
 		if (textContent != null && htmlContent != null) {

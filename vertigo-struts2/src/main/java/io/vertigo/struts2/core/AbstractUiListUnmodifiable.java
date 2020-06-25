@@ -200,7 +200,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		// ---
 		UiObject<O> uiObject;
 		final DtField dtField = dtDefinition.getField(keyFieldName);
-		Assertion.check().argument(dtField.getType().isId(), "La clé {0} de la liste doit être la PK", keyFieldName);
+		Assertion.check().isTrue(dtField.getType().isId(), "La clé {0} de la liste doit être la PK", keyFieldName);
 		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		final Object key = smartTypeManager.stringToValue(dtField.getSmartTypeDefinition(), keyValueAsString);
 		final O entity = (O) loadDto(key);

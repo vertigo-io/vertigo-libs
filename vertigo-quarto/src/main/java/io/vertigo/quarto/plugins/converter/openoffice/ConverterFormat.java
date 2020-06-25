@@ -86,7 +86,7 @@ enum ConverterFormat {
 	static ConverterFormat find(final String sFormat) {
 		Assertion.check()
 				.isNotNull(sFormat)
-				.argument(sFormat.equals(sFormat.trim().toUpperCase(Locale.ENGLISH)), "Le format doit être en majuscule, et sans espace");
+				.isTrue(sFormat.equals(sFormat.trim().toUpperCase(Locale.ENGLISH)), "Le format doit être en majuscule, et sans espace");
 		//-----
 		return valueOf(sFormat);
 	}

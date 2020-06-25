@@ -88,7 +88,7 @@ public final class OracleSqlStoreManagerTest extends AbstractSqlStoreManagerTest
 
 	@Override
 	protected void nativeInsertCar(final Car car) {
-		Assertion.check().argument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
+		Assertion.check().isTrue(car.getId() == null, "L'id n'est pas null {0}", car.getId());
 		//-----
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final SmartTypeDefinition smartTypeCar = definitionSpace.resolve("STyDtCar", SmartTypeDefinition.class);

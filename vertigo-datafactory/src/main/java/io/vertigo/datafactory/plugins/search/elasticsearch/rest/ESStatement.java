@@ -145,7 +145,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 					.setRefreshPolicy(DEFAULT_REFRESH);
 			final IndexResponse indexeResponse = esClient.index(indexRequest, RequestOptions.DEFAULT);
 			//-----
-			Assertion.check().argument(indexeResponse.getResult() == DocWriteResponse.Result.CREATED
+			Assertion.check().isTrue(indexeResponse.getResult() == DocWriteResponse.Result.CREATED
 					|| indexeResponse.getResult() == DocWriteResponse.Result.UPDATED, "Can't put on {0}", indexName);
 		} catch (final IOException e) {
 			handleIOException(e);
@@ -187,7 +187,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 					.setRefreshPolicy(DEFAULT_REFRESH);
 			final DeleteResponse deleteResponse = esClient.delete(request, RequestOptions.DEFAULT);
 			//----
-			Assertion.check().argument(deleteResponse.getResult() == DocWriteResponse.Result.DELETED,
+			Assertion.check().isTrue(deleteResponse.getResult() == DocWriteResponse.Result.DELETED,
 					"Can't remove on {0}", indexName);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error in remove() on {0}", indexName);

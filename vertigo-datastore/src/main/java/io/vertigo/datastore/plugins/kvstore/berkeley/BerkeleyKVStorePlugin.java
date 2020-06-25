@@ -118,7 +118,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 					Assertion.check().isTrue(timeToLiveSeconds == -1L, "Time to live already defined on {0}", collection);
 					timeToLiveSeconds = Long.parseLong(collectionDetail.substring("TTL=".length()));
 				} else if (collectionDetail.startsWith("inMemory")) {
-					Assertion.check().isTrue(!inMemory, "inMemory already defined on {0}", collection);
+					Assertion.check().isFalse(inMemory, "inMemory already defined on {0}", collection);
 					inMemory = true;
 				} else {
 					Assertion.check().isTrue(collectionName == null, "collectionName already defined on {0}", collection);
@@ -205,7 +205,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	 */
 	@DaemonScheduled(name = "DmnPurgeBerkeleyKvStore", periodInSeconds = REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS)
 	public void removeTooOldElements() {
-		Assertion.check().argument(MAX_REMOVED_TOO_OLD_ELEMENTS > 0 && MAX_REMOVED_TOO_OLD_ELEMENTS < 100000, "maxRemovedTooOldElements must stay between 1 and 100000");
+		Assertion.check().isTrue(MAX_REMOVED_TOO_OLD_ELEMENTS > 0 && MAX_REMOVED_TOO_OLD_ELEMENTS < 100000, "maxRemovedTooOldElements must stay between 1 and 100000");
 		//---
 		for (final String collection : collectionNames) {
 			try {

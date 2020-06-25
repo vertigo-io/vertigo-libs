@@ -58,7 +58,7 @@ public final class Notification {
 				.isNotBlank(type)
 				.isNotBlank(title)
 				.isNotBlank(content)
-				.argument(ttlInSeconds == -1 || ttlInSeconds > 0, "ttl must be positive or undefined (-1).")
+				.isTrue(ttlInSeconds == -1 || ttlInSeconds > 0, "ttl must be positive or undefined (-1).")
 				.isNotBlank(targetUrl)
 				.isNotNull(creationDate)
 				.isNotNull(userContent);

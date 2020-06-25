@@ -120,7 +120,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 				.isNotBlank(fileInfoClassName)
 				.isNotNull(transactionManager)
 				.isNotNull(fileManager)
-				.argument(path.endsWith("/"), "store path must ends with / ({0})", path);
+				.isTrue(path.endsWith("/"), "store path must ends with / ({0})", path);
 		//-----
 		this.name = name.orElse(FileStoreManager.MAIN_DATA_SPACE_NAME);
 		readOnly = false;
@@ -218,7 +218,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	@Override
 	public FileInfo create(final FileInfo fileInfo) {
 		Assertion.check()
-				.argument(!readOnly, STORE_READ_ONLY)
+				.isTrue(!readOnly, STORE_READ_ONLY)
 				.isNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
 		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
@@ -246,7 +246,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	@Override
 	public void update(final FileInfo fileInfo) {
 		Assertion.check()
-				.argument(!readOnly, STORE_READ_ONLY)
+				.isTrue(!readOnly, STORE_READ_ONLY)
 				.isNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
 		//-----
 		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
@@ -265,7 +265,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public void delete(final FileInfoURI uri) {
-		Assertion.check().argument(!readOnly, STORE_READ_ONLY);
+		Assertion.check().isTrue(!readOnly, STORE_READ_ONLY);
 
 		final UID<Entity> dtoUri = createDtObjectURI(uri);
 		//-----suppression du fichier

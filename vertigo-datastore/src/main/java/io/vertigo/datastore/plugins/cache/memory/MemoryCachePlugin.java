@@ -81,11 +81,11 @@ public final class MemoryCachePlugin implements Activeable, CachePlugin {
 	public void put(final String context, final Serializable key, final Object value) {
 		Assertion.check()
 				.isNotNull(value, "CachePlugin can't cache null value. (context: {0}, key:{1})", context, key)
-				.isTrue(!(value instanceof byte[]), "Ce CachePlugin ne permet pas de mettre en cache des byte[].");
+				.isFalse((value instanceof byte[]), "Ce CachePlugin ne permet pas de mettre en cache des byte[].");
 		//-----
 		//On regarde la conf du cache pour vérifier s'il on serialize/clone les éléments ou non.
 		if (getCacheDefinition(context).shouldSerializeElements()) {
-			Assertion.check().argument(value instanceof Serializable,
+			Assertion.check().isTrue(value instanceof Serializable,
 					"Object to cache isn't Serializable. Make it Serializable or change its CacheConfig 'serializeElement' parameter. (context: {0}, key:{1}, class:{2})",
 					context, key, value.getClass().getSimpleName());
 			// Sérialisation avec compression

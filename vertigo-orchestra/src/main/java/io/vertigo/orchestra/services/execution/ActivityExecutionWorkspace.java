@@ -82,7 +82,7 @@ public final class ActivityExecutionWorkspace {
 	public void setValue(final String key, final String value) {
 		Assertion.check()
 				.isNotNull(key)
-				.isTrue(!STATUS_KEY.equals(key), "Status cannot be set directly");
+				.isFalse(STATUS_KEY.equals(key), "Status cannot be set directly");
 		// ---
 		params.put(key, value);
 	}

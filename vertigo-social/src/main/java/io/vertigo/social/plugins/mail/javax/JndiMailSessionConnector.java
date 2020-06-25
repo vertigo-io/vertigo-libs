@@ -45,7 +45,7 @@ public final class JndiMailSessionConnector implements MailSessionConnector {
 			@ParamValue("mail.session") final String jndiMailSession) {
 		Assertion.check()
 				.isNotBlank(jndiMailSession)
-				.argument(jndiMailSession.startsWith("java:comp/env"), "{0} (mail.session) is the jndi url of mail server resource. Must start by 'java:comp/env'", jndiMailSession);
+				.isTrue(jndiMailSession.startsWith("java:comp/env"), "{0} (mail.session) is the jndi url of mail server resource. Must start by 'java:comp/env'", jndiMailSession);
 		//-----
 		this.jndiMailSession = jndiMailSession;
 	}

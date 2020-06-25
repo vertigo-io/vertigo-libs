@@ -63,7 +63,7 @@ public final class StaticStorePlugin extends AbstractStaticEntityStorePlugin imp
 		Assertion.check()
 				.isNotNull(dtDefinitionName)
 				.isNotBlank(values)
-				.argument(values.contains("="), "StaticStorePlugin takes a list of key value like : key1=Label1;key2=Label2;...");
+				.isTrue(values.contains("="), "StaticStorePlugin takes a list of key value like : key1=Label1;key2=Label2;...");
 		//----
 		this.dtDefinitionName = dtDefinitionName;
 		this.values = values;
@@ -73,8 +73,8 @@ public final class StaticStorePlugin extends AbstractStaticEntityStorePlugin imp
 	public void start() {
 		staticDtDefinition = Home.getApp().getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
 		Assertion.check()
-				.argument(staticDtDefinition.getIdField().isPresent(), "The Static MasterDataList {0} must have a IdField", staticDtDefinition.getClassSimpleName())
-				.argument(staticDtDefinition.getDisplayField().isPresent(), "The Static MasterDataList {0} must have a DisplayField", staticDtDefinition.getClassSimpleName());
+				.isTrue(staticDtDefinition.getIdField().isPresent(), "The Static MasterDataList {0} must have a IdField", staticDtDefinition.getClassSimpleName())
+				.isTrue(staticDtDefinition.getDisplayField().isPresent(), "The Static MasterDataList {0} must have a DisplayField", staticDtDefinition.getClassSimpleName());
 		idField = staticDtDefinition.getIdField().get();
 		displayField = staticDtDefinition.getDisplayField().get();
 		dataSpace = staticDtDefinition.getDataSpace();
@@ -134,14 +134,14 @@ public final class StaticStorePlugin extends AbstractStaticEntityStorePlugin imp
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final UID<E> uri) {
-		Assertion.check().argument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
+		Assertion.check().isTrue(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final UID<?> uri) {
-		Assertion.check().argument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
+		Assertion.check().isTrue(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
 		throw new UnsupportedOperationException();
 	}
 
@@ -151,8 +151,8 @@ public final class StaticStorePlugin extends AbstractStaticEntityStorePlugin imp
 		Assertion.check()
 				.isNotNull(dtDefinition)
 				.isNotNull(dtListState)
-				.argument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName())
-				.argument(criteria == null, "This store could only load all data, not {0}", criteria);
+				.isTrue(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName())
+				.isTrue(criteria == null, "This store could only load all data, not {0}", criteria);
 		//----
 		return (DtList<E>) dtc;
 	}

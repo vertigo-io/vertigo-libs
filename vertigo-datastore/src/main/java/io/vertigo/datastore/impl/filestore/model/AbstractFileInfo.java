@@ -62,7 +62,7 @@ public abstract class AbstractFileInfo implements FileInfo {
 		Assertion.check()
 				.isNotNull(storedUri)
 				.isTrue(uri == null, "Impossible de setter deux fois l'uri de stockage")
-				.argument(getDefinition().getName().equals(storedUri.<FileInfoDefinition> getDefinition().getName()),
+				.isTrue(getDefinition().getName().equals(storedUri.<FileInfoDefinition> getDefinition().getName()),
 						"L''URI ({0}) n''est pas compatible avec ce FileInfo ({1})", storedUri, fileInfoDefinitionRef);
 		//-----
 		uri = storedUri;

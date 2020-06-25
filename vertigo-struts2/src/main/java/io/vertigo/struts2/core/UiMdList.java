@@ -48,7 +48,7 @@ final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
 	 */
 	public UiMdList(final DtListURIForMasterData dtListURIForMasterData) {
 		super(dtListURIForMasterData.getDtDefinition(), Optional.empty());
-		Assertion.check().argument(entityStoreManager.get().getMasterDataConfig().containsMasterData(dtListURIForMasterData.getDtDefinition()), "UiMdList can't be use with {0}, it's not a MasterDataList.",
+		Assertion.check().isTrue(entityStoreManager.get().getMasterDataConfig().containsMasterData(dtListURIForMasterData.getDtDefinition()), "UiMdList can't be use with {0}, it's not a MasterDataList.",
 				dtListURIForMasterData.getDtDefinition().getName());
 		// -------------------------------------------------------------------------
 		this.dtListURIForMasterData = dtListURIForMasterData;

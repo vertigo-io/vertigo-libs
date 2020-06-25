@@ -128,7 +128,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 		Assertion.check()
 				.isNotBlank(envIndexPrefix)
 				.isNotNull(elasticSearchConnectors)
-				.argument(!elasticSearchConnectors.isEmpty(), "At least one ElasticSearchConnector espected");
+				.isTrue(!elasticSearchConnectors.isEmpty(), "At least one ElasticSearchConnector espected");
 		//Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
 		//Assertion.when(!indexNameIsPrefix).check(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
 		//-----
@@ -269,7 +269,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 		Assertion.check()
 				.isNotNull(indexDefinition)
 				.isNotNull(index)
-				.argument(indexDefinition.equals(index.getDefinition()), "les Définitions ne sont pas conformes");
+				.isTrue(indexDefinition.equals(index.getDefinition()), "les Définitions ne sont pas conformes");
 		//-----
 		final ESStatement<S, I> statement = createElasticStatement(indexDefinition);
 		statement.put(index);
@@ -317,10 +317,10 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 
 	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
 		Assertion.check()
-				.argument(indexSettingsValid,
+				.isTrue(indexSettingsValid,
 						"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.")
 				.isNotNull(indexDefinition)
-				.argument(types.contains(indexDefinition.getName()), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
+				.isTrue(types.contains(indexDefinition.getName()), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
 		//-----
 		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), esClient, typeAdapters);
 	}
@@ -400,7 +400,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 					.setType("_doc")
 					.setSource(typeMapping.prettyPrint())
 					.get();
-			Assertion.check().argument(putMappingResponse.isAcknowledged(), "Can't put index mapping of {0}", myIndexName);
+			Assertion.check().isTrue(putMappingResponse.isAcknowledged(), "Can't put index mapping of {0}", myIndexName);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Serveur ElasticSearch indisponible");
 		}

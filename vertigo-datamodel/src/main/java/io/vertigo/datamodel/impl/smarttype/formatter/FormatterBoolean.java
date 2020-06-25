@@ -70,13 +70,13 @@ public final class FormatterBoolean implements Formatter {
 	}
 
 	private static void assertArgs(final boolean test, final String args) {
-		Assertion.check().argument(test, "Les arguments pour la construction de FormatterBoolean sont invalides: format oui; format non (ici:{0})", args);
+		Assertion.check().isTrue(test, "Les arguments pour la construction de FormatterBoolean sont invalides: format oui; format non (ici:{0})", args);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String valueToString(final Object objValue, final BasicType dataType) {
-		Assertion.check().argument(dataType == BasicType.Boolean, "Formatter ne s'applique qu'aux booléens");
+		Assertion.check().isTrue(dataType == BasicType.Boolean, "Formatter ne s'applique qu'aux booléens");
 		//-----
 		return booleanToString((Boolean) objValue);
 	}
@@ -84,7 +84,7 @@ public final class FormatterBoolean implements Formatter {
 	/** {@inheritDoc} */
 	@Override
 	public Boolean stringToValue(final String strValue, final BasicType dataType) throws FormatterException {
-		Assertion.check().argument(dataType == BasicType.Boolean, "Formatter ne s'applique qu'aux booléens");
+		Assertion.check().isTrue(dataType == BasicType.Boolean, "Formatter ne s'applique qu'aux booléens");
 		//-----
 		final String sValue = StringUtil.isBlank(strValue) ? null : strValue.trim();
 

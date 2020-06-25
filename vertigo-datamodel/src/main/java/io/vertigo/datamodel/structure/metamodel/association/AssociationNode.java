@@ -55,7 +55,7 @@ public final class AssociationNode {
 				.isNotNull(dtDefinition)
 				.isNotNull(label)
 				.isNotNull(role)
-				.argument(role.indexOf(' ') == -1, "Le role ne doit pas être un label : {0}", role);
+				.isTrue(role.indexOf(' ') == -1, "Le role ne doit pas être un label : {0}", role);
 		//-----
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
 		this.role = role;

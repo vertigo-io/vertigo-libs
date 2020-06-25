@@ -77,7 +77,7 @@ public final class VFileResponseBuilder {
 
 	private void doSend(final VFile vFile, final boolean attachment) throws IOException {
 		final Long length = vFile.getLength();
-		Assertion.check().argument(length.longValue() < Integer.MAX_VALUE,
+		Assertion.check().isTrue(length.longValue() < Integer.MAX_VALUE,
 				"Le fichier est trop gros pour être envoyé. Il fait " + length.longValue() / 1024 + " Ko, mais le maximum acceptable est de " + (Integer.MAX_VALUE / 1024) + " Ko.");
 		httpResponse.setContentLength(length.intValue());
 		httpResponse.addHeader("Content-Disposition", encodeFileNameToContentDisposition(vFile.getFileName(), attachment));

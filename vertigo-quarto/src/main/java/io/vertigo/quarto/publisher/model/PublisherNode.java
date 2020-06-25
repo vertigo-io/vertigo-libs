@@ -76,8 +76,8 @@ public final class PublisherNode implements Serializable {
 		//-----
 		final PublisherFieldType currentFieldType = nodeDefinition.getField(fieldName).getFieldType();
 		Assertion.check()
-				.argument(currentFieldType == fieldType, "Le field {0} n''est pas du type {1} mais de type {2}", fieldName, fieldType, currentFieldType)
-				.argument(fieldType.checkValue(value), "La valeur {0} n'est pas conforme au type '{1}' sur le champ '{2}'", value, fieldType, fieldName);
+				.isTrue(currentFieldType == fieldType, "Le field {0} n''est pas du type {1} mais de type {2}", fieldName, fieldType, currentFieldType)
+				.isTrue(fieldType.checkValue(value), "La valeur {0} n'est pas conforme au type '{1}' sur le champ '{2}'", value, fieldType, fieldName);
 	}
 
 	/**
@@ -87,7 +87,7 @@ public final class PublisherNode implements Serializable {
 	 */
 	public PublisherNode createNode(final String fieldName) {
 		final Optional<PublisherNodeDefinition> childNodeDefinition = nodeDefinition.getField(fieldName).getNodeDefinition();
-		Assertion.check().argument(childNodeDefinition.isPresent(), "Le champ {0} n'accepte pas l'ajout de noeud", fieldName);
+		Assertion.check().isTrue(childNodeDefinition.isPresent(), "Le champ {0} n'accepte pas l'ajout de noeud", fieldName);
 		return new PublisherNode(childNodeDefinition.get());
 	}
 

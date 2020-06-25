@@ -51,7 +51,7 @@ public final class RestWorkersPlugin implements WorkersPlugin {
 			final CodecManager codecManager) {
 		Assertion.check()
 				.isNotBlank(serverUrl)
-				.argument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
+				.isTrue(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
 		//-----
 		restQueueClient = new RestQueueClient(serverUrl + "/backend/workQueue", timeoutSeconds, codecManager);
 	}

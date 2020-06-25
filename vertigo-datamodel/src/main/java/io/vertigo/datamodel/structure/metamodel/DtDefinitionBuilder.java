@@ -218,7 +218,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			final String fieldName,
 			final String label,
 			final SmartTypeDefinition domain) {
-		Assertion.check().argument(myIdField == null, "only one ID per Entity is permitted, error on {0}", myPackageName);
+		Assertion.check().isTrue(myIdField == null, "only one ID per Entity is permitted, error on {0}", myPackageName);
 		//---
 		//le champ ID est tjrs required
 		final Cardinality cardinality = Cardinality.ONE;

@@ -131,8 +131,8 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	@Override
 	public void onExpression(final String expression, final ScriptSeparator separator) {
 		Assertion.check()
-				.isTrue(!isGrammarClosed, "l'évaluateur de grammaire ne peut pas être réutilisé car il a été fermé")
-				.argument(expression != null, "un tag ne doit pas etre vide");
+				.isFalse(isGrammarClosed, "l'évaluateur de grammaire ne peut pas être réutilisé car il a été fermé")
+				.isTrue(expression != null, "un tag ne doit pas etre vide");
 		//-----
 		final ScriptTagContent tagContent = scriptGrammar.parseTag(expression);
 		tagContent.setCurrentVariable(scriptContext.peek());

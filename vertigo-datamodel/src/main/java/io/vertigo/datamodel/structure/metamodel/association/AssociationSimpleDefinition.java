@@ -53,9 +53,9 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 		Assertion.check()
 				.isNotNull(fkFieldName)
 				//We check that this assocation is not multiple
-				.argument(!(associationNodeA.isMultiple() && associationNodeB.isMultiple()), "assocation : {0}. n-n assocation is prohibited in a simple assocation", name)
+				.isTrue(!(associationNodeA.isMultiple() && associationNodeB.isMultiple()), "assocation : {0}. n-n assocation is prohibited in a simple assocation", name)
 				.isNotNull(fkFieldName)
-				.argument(StringUtil.isLowerCamelCase(fkFieldName), "the name of the field {0} must be in lowerCamelCase", fkFieldName);
+				.isTrue(StringUtil.isLowerCamelCase(fkFieldName), "the name of the field {0} must be in lowerCamelCase", fkFieldName);
 		//-----
 		// Which node is the key node (the primary key)
 		final boolean isAPrimaryNode = AssociationUtil.isAPrimaryNode(

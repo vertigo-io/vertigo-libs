@@ -78,7 +78,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		final String keyFieldName = String.class.cast(key);
 		Assertion.check()
 				.isNotBlank(keyFieldName)
-				.argument(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
+				.isTrue(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//-----
 		final DtField dtField = getDtField(keyFieldName);
 		if (isMultiple(dtField)) {
@@ -271,7 +271,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		final String keyFieldName = String.class.cast(key);
 		Assertion.check()
 				.isNotBlank(keyFieldName)
-				.argument(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
+				.isTrue(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//---
 		final DtField dtField = getDtField(keyFieldName);
 		final SmartTypeDefinition smartType = dtField.getSmartTypeDefinition();

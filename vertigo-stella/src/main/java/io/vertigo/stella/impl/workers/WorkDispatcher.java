@@ -36,7 +36,7 @@ final class WorkDispatcher implements Runnable {
 		Assertion.check()
 				.isNotBlank(nodeId)
 				.isNotBlank(workType)
-				.argument(workType.indexOf('^') == -1, "Number of dispatcher per WorkType must be managed by NodeManager {0}", workType)
+				.isTrue(workType.indexOf('^') == -1, "Number of dispatcher per WorkType must be managed by NodeManager {0}", workType)
 				.isNotNull(localWorker)
 				.isNotNull(nodePlugin);
 		//-----

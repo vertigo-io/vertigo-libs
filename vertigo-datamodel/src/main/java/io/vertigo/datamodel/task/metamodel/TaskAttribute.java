@@ -65,7 +65,7 @@ public final class TaskAttribute {
 				.isNotNull(attributeName)
 				.isNotNull(smartTypeDefinition)
 				.isNotNull(cardinality)
-				.argument(StringUtil.isLowerCamelCase(attributeName), "the name of the attribute {0} must be in lowerCamelCase", attributeName);
+				.isTrue(StringUtil.isLowerCamelCase(attributeName), "the name of the attribute {0} must be in lowerCamelCase", attributeName);
 		//-----
 		name = attributeName;
 		this.smartTypeDefinition = smartTypeDefinition;

@@ -104,7 +104,7 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 	}
 
 	private static String prepareSqlInArgument(final Serializable value) {
-		Assertion.check().argument(
+		Assertion.check().isTrue(
 				value instanceof String
 						|| value instanceof Integer
 						|| value instanceof Long,

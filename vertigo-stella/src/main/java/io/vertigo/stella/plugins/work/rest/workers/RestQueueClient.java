@@ -142,7 +142,7 @@ final class RestQueueClient {
 	<R> void putResult(final String workId, final R result, final Throwable error) {
 		Assertion.check()
 				.isNotBlank(workId)
-				.argument(result == null ^ error == null, "result xor error is null");
+				.isTrue(result == null ^ error == null, "result xor error is null");
 		//-----
 		final String address;
 		final Object value;

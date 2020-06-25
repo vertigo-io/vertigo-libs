@@ -55,7 +55,7 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 	public ConstraintIntegerLength(final String args, final Optional<String> overrideMessageOpt) {
 		super(args);
 		//-----
-		Assertion.check().argument(getMaxLength() < 10, "Longueur max doit être strictement inférieure à 10");
+		Assertion.check().isTrue(getMaxLength() < 10, "Longueur max doit être strictement inférieure à 10");
 		//-----
 		int tmpMaxValue = 1;
 		tmpMaxValue = 1;

@@ -44,7 +44,7 @@ public final class WorkersCoordinator implements Coordinator, Closeable {
 	 * @param workerCount paramètres d'initialisation du pool
 	 */
 	public WorkersCoordinator(final int workerCount) {
-		Assertion.check().argument(workerCount >= 1, "At least one thread must be allowed to process asynchronous works.");
+		Assertion.check().isTrue(workerCount >= 1, "At least one thread must be allowed to process asynchronous works.");
 		//-----
 		workers = Executors.newFixedThreadPool(workerCount);
 	}

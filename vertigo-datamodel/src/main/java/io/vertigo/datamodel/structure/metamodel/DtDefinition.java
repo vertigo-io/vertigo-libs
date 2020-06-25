@@ -140,7 +140,7 @@ public final class DtDefinition implements Definition {
 	void registerDtField(final DtField dtField) {
 		Assertion.check()
 				.isNotNull(dtField)
-				.argument(!dtField.getType().isId(), "interdit d'ajouter les champs ID ");
+				.isTrue(!dtField.getType().isId(), "interdit d'ajouter les champs ID ");
 		//-----
 		doRegisterDtField(dtField);
 	}
@@ -148,7 +148,7 @@ public final class DtDefinition implements Definition {
 	private void doRegisterDtField(final DtField dtField) {
 		Assertion.check()
 				.isNotNull(dtField)
-				.argument(!mappedFields.containsKey(dtField.getName()), "Field {0} déjà enregistré sur {1}", dtField.getName(), this);
+				.isTrue(!mappedFields.containsKey(dtField.getName()), "Field {0} déjà enregistré sur {1}", dtField.getName(), this);
 		//-----
 		fields.add(dtField);
 		mappedFields.put(dtField.getName(), dtField);

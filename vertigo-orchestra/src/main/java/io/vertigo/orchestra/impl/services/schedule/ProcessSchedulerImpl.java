@@ -51,7 +51,7 @@ public final class ProcessSchedulerImpl implements ProcessScheduler {
 			//-1-- start
 			schedulerPlugin.setProcessExecutor(processExecutor);
 			//-2-- register
-			Assertion.check().isTrue(!schedulerPluginsMap.containsKey(schedulerPlugin.getHandledProcessType()), "Only one plugin can manage the processType {0}", schedulerPlugin.getHandledProcessType());
+			Assertion.check().isFalse(schedulerPluginsMap.containsKey(schedulerPlugin.getHandledProcessType()), "Only one plugin can manage the processType {0}", schedulerPlugin.getHandledProcessType());
 			schedulerPluginsMap.put(schedulerPlugin.getHandledProcessType(), schedulerPlugin);
 		}
 	}

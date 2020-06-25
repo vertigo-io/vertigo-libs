@@ -60,13 +60,13 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 	@Override
 	public VFile convertToFormat(final VFile file, final String targetFormat) {
 		final ConverterFormat targetConverterFormat = ConverterFormat.find(targetFormat);
-		Assertion.check().argument(!targetConverterFormat.getTypeMime().equals(file.getMimeType()),
+		Assertion.check().isTrue(!targetConverterFormat.getTypeMime().equals(file.getMimeType()),
 				"Le format de sortie est identique à celui d'entrée ; la conversion est inutile");
 		final DocumentKind inputFormat = DocumentKind.fromMimeType(file.getMimeType());
 		Assertion.check()
 				.isNotNull(inputFormat,
 						"Seul les formats " + Arrays.toString(DocumentKind.values()) + " peuvent être utilisés en entrée (typeMime " + file.getMimeType() + " non supporté)")
-				.argument(targetFormat.equalsIgnoreCase(ConverterFormat.PDF.name()),
+				.isTrue(targetFormat.equalsIgnoreCase(ConverterFormat.PDF.name()),
 						"Seul le format PDF peut être utilisé en sortie");
 		//-----
 
@@ -106,7 +106,7 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 		public SnapshotBuiltinFont() {
 			super(null, false);
 			synchronized (BuiltinFonts14) {
-				Assertion.check().argument(BuiltinFonts14.size() >= 14, "Default iText BuiltinFonts14, not correclty loaded (only {0} elements instead of 14)", BuiltinFonts14.size());
+				Assertion.check().isTrue(BuiltinFonts14.size() >= 14, "Default iText BuiltinFonts14, not correclty loaded (only {0} elements instead of 14)", BuiltinFonts14.size());
 				//----
 				savedBuiltinFonts14 = Collections.unmodifiableMap(new HashMap<String, PdfName>(BuiltinFonts14));
 			}

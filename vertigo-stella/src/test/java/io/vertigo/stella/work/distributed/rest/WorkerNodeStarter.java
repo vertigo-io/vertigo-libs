@@ -38,7 +38,7 @@ public class WorkerNodeStarter {
 	 * @throws InterruptedException Interrupt
 	 */
 	public static void main(final String[] args) throws InterruptedException {
-		Assertion.check().argument(args.length >= 1 && args.length <= 2, "Usage WorkerNodeStarter managers.xml <maxLifeTime>");
+		Assertion.check().isTrue(args.length >= 1 && args.length <= 2, "Usage WorkerNodeStarter managers.xml <maxLifeTime>");
 		//-----
 		final long timeToWait = args.length == 2 ? Long.parseLong(args[1]) * 1000L : 5 * 60 * 1000L;
 

@@ -55,7 +55,7 @@ public abstract class DtListURIForAssociation<A extends AssociationDefinition> e
 		final AssociationNode target = AssociationUtil.getAssociationNode(associationDefinition, roleName);
 
 		//On vérifie la cardinalité de la cible
-		Assertion.check().argument(target.isMultiple(), "le noeud cible doit être multiple");
+		Assertion.check().isTrue(target.isMultiple(), "le noeud cible doit être multiple");
 
 		this.source = source;
 	}

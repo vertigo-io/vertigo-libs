@@ -86,9 +86,9 @@ public final class CommuneStorePlugin extends AbstractStaticEntityStorePlugin {
 		Assertion.check()
 				.isNotNull(dtDefinition)
 				.isNotNull(dtListState)
-				.argument(DtDefinitions.Definitions.Commune.name().equals(dtDefinition.getClassSimpleName()), "This store should be use for Commune only, not {0}",
+				.isTrue(DtDefinitions.Definitions.Commune.name().equals(dtDefinition.getClassSimpleName()), "This store should be use for Commune only, not {0}",
 						dtDefinition.getClassSimpleName())
-				.argument(criteria == null || criteria.equals(Criterions.alwaysTrue()), "This store could only load all data, not {0}", criteria);
+				.isTrue(criteria == null || criteria.equals(Criterions.alwaysTrue()), "This store could only load all data, not {0}", criteria);
 		//----
 		return (DtList<E>) loadAllCommunes();
 	}

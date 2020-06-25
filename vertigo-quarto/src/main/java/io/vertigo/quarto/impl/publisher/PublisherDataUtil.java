@@ -104,7 +104,7 @@ public final class PublisherDataUtil {
 			nbMappedField++;
 			switch (publisherField.getFieldType()) {
 				case Boolean:
-					Assertion.check().argument(value instanceof Boolean, "Le champ {0} du DT {1} doit être un Boolean (non null)", fieldName, dtDefinition.getName());
+					Assertion.check().isTrue(value instanceof Boolean, "Le champ {0} du DT {1} doit être un Boolean (non null)", fieldName, dtDefinition.getName());
 					publisherDataNode.setBoolean(fieldName, (Boolean) value);
 					break;
 				case String:

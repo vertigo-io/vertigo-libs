@@ -130,7 +130,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		Assertion.check()
 				.isNotBlank(envIndexPrefix)
 				.isNotNull(elasticSearchConnectors)
-				.argument(!elasticSearchConnectors.isEmpty(), "At least one ElasticSearchConnector espected");
+				.isTrue(!elasticSearchConnectors.isEmpty(), "At least one ElasticSearchConnector espected");
 		//Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
 		//Assertion.when(!indexNameIsPrefix).check(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
 		//-----
@@ -205,7 +205,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 				}
 			}
 			final AcknowledgedResponse createIndexResponse = esClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
-			Assertion.check().argument(createIndexResponse.isAcknowledged(), "Can't create index settings of {0}", myIndexName);
+			Assertion.check().isTrue(createIndexResponse.isAcknowledged(), "Can't create index settings of {0}", myIndexName);
 		} else if (configFileUrl != null) {
 			// If we use local config file, we check config against ES server
 			try (InputStream is = configFileUrl.openStream()) {
@@ -265,7 +265,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		Assertion.check()
 				.isNotNull(indexDefinition)
 				.isNotNull(index)
-				.argument(indexDefinition.equals(index.getDefinition()), "les Définitions ne sont pas conformes");
+				.isTrue(indexDefinition.equals(index.getDefinition()), "les Définitions ne sont pas conformes");
 		//-----
 		final ESStatement<S, I> statement = createElasticStatement(indexDefinition);
 		statement.put(index);
@@ -313,7 +313,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 
 	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
 		Assertion.check()
-				.argument(indexSettingsValid,
+				.isTrue(indexSettingsValid,
 						"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.")
 				.isNotNull(indexDefinition);
 		//-----
@@ -395,7 +395,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 
 			LOGGER.info("set index mapping of {} as {}", myIndexName, typeMapping);
 			final AcknowledgedResponse putMappingResponse = esClient.indices().putMapping(putMappingRequest, RequestOptions.DEFAULT);
-			Assertion.check().argument(putMappingResponse.isAcknowledged(), "Can't put index mapping of {0}", myIndexName);
+			Assertion.check().isTrue(putMappingResponse.isAcknowledged(), "Can't put index mapping of {0}", myIndexName);
 		}
 	}
 
@@ -446,7 +446,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 
 			final ClusterHealthResponse response = esClient.cluster().health(request, RequestOptions.DEFAULT);
 			//-----
-			Assertion.check().argument(!response.isTimedOut(), "ElasticSearch cluster waiting yellow status Timedout");
+			Assertion.check().isTrue(!response.isTimedOut(), "ElasticSearch cluster waiting yellow status Timedout");
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error on waitForYellowStatus");
 		}

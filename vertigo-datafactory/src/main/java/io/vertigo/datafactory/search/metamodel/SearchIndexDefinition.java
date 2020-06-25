@@ -85,7 +85,7 @@ public final class SearchIndexDefinition implements Definition {
 		Assertion.check()
 				.isNotBlank(name)
 				.isNotNull(keyConceptDtDefinition)
-				.argument(
+				.isTrue(
 						keyConceptDtDefinition.getStereotype() == DtStereotype.KeyConcept,
 						"keyConceptDtDefinition ({0}) must be a DtDefinition of a KeyConcept class", keyConceptDtDefinition.getName())
 				.isNotNull(indexDtDefinition)

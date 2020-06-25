@@ -328,7 +328,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E create(final DtDefinition dtDefinition, final E entity) {
-		Assertion.check().argument(DtObjectUtil.getId(entity) == null, "Only object without any id can be created");
+		Assertion.check().isTrue(DtObjectUtil.getId(entity) == null, "Only object without any id can be created");
 		//------
 		final boolean insert = true;
 		put(entity, insert);
@@ -471,7 +471,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	public int count(final DtDefinition dtDefinition) {
 		Assertion.check()
 				.isNotNull(dtDefinition)
-				.argument(dtDefinition.isPersistent(), "DtDefinition is not  persistent");
+				.isTrue(dtDefinition.isPersistent(), "DtDefinition is not  persistent");
 		//-----
 		final String entityName = getEntityName(dtDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);

@@ -47,7 +47,7 @@ public final class EncoderDate {
 	}
 
 	public static String valueToString(final Object objValue, final BasicType dataType) {
-		Assertion.check().argument(dataType.isAboutDate(), "this formatter only applies on date formats");
+		Assertion.check().isTrue(dataType.isAboutDate(), "this formatter only applies on date formats");
 		//-----
 		if (objValue == null) {
 			return ""; //Affichage d'une date non renseignée;
@@ -63,7 +63,7 @@ public final class EncoderDate {
 	}
 
 	public static Object stringToValue(final String strValue, final BasicType dataType) throws FormatterException {
-		Assertion.check().argument(dataType.isAboutDate(), "Formatter ne s'applique qu'aux dates");
+		Assertion.check().isTrue(dataType.isAboutDate(), "Formatter ne s'applique qu'aux dates");
 		//-----
 		if (StringUtil.isBlank(strValue)) {
 			return null;

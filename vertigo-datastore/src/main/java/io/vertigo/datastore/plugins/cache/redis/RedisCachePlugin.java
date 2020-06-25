@@ -73,8 +73,8 @@ public class RedisCachePlugin implements CachePlugin {
 	public void put(final String context, final Serializable key, final Object value) {
 		Assertion.check()
 				.isNotNull(value, "CachePlugin can't cache null value. (context: {0}, key:{1})", context, key)
-				.isTrue(!(value instanceof byte[]), "CachePlugin can't cache byte[] values")
-				.argument(value instanceof Serializable,
+				.isFalse((value instanceof byte[]), "CachePlugin can't cache byte[] values")
+				.isTrue(value instanceof Serializable,
 						"Object to cache isn't Serializable. Make it unmodifiable or add it in noSerialization's plugin parameter. (context: {0}, key:{1}, class:{2})",
 						context, key, value.getClass().getSimpleName());
 		//---

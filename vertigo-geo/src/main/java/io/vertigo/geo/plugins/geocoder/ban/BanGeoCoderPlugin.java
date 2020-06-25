@@ -61,7 +61,7 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 		Assertion.check()
 				.isNotNull(proxyHost)
 				.isNotNull(proxyPort)
-				.argument((proxyHost.isPresent() && proxyPort.isPresent()) || (proxyHost.isEmpty() && proxyPort.isEmpty()),
+				.isTrue((proxyHost.isPresent() && proxyPort.isPresent()) || (proxyHost.isEmpty() && proxyPort.isEmpty()),
 						"les deux paramètres host et port doivent être tous les deux remplis ou vides");
 		//-----
 		if (proxyHost.isPresent()) {

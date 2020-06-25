@@ -43,7 +43,7 @@ abstract class AbstractConstraintLength<D> implements Constraint<Integer, D> {
 	protected AbstractConstraintLength(final String max) {
 		maxLength = Integer.parseInt(max);
 		//-----
-		Assertion.check().argument(maxLength > 0, "Longueur max doit être strictement positive");
+		Assertion.check().isTrue(maxLength > 0, "Longueur max doit être strictement positive");
 	}
 
 	/**

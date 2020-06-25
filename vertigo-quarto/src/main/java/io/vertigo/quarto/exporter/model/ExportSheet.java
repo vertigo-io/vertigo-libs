@@ -48,7 +48,7 @@ public final class ExportSheet {
 	public ExportSheet(final String title, final List<ExportField> exportFields, final DtObject dto, final DtList dtc) {
 		Assertion.check()
 				.isNotNull(exportFields)
-				.argument(dto == null ^ dtc == null, "a dto or a dtc is required");
+				.isTrue(dto == null ^ dtc == null, "a dto or a dtc is required");
 		//title may be null
 		//-----
 		this.exportFields = java.util.Collections.unmodifiableList(new ArrayList<>(exportFields));

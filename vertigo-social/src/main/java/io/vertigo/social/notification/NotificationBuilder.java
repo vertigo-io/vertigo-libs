@@ -62,7 +62,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 */
 	public NotificationBuilder withSender(final String sender) {
 		Assertion.check()
-				.argument(mySender == null, "sender already set")
+				.isTrue(mySender == null, "sender already set")
 				.isNotBlank(sender);
 		//-----
 		mySender = sender;
@@ -74,7 +74,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 * @return this builder
 	 */
 	public NotificationBuilder withType(final String type) {
-		Assertion.check().argument(myType == null, "type already set");
+		Assertion.check().isTrue(myType == null, "type already set");
 		//type is nullable
 		//-----
 		myType = type;
@@ -87,7 +87,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 */
 	public NotificationBuilder withCreationDate(final Instant creationInstant) {
 		Assertion.check()
-				.argument(myCreationInstant == null, "creationDate already set")
+				.isTrue(myCreationInstant == null, "creationDate already set")
 				.isNotNull(creationInstant);
 		//-----
 		myCreationInstant = creationInstant;
@@ -100,7 +100,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 */
 	public NotificationBuilder withTitle(final String title) {
 		Assertion.check()
-				.argument(myTitle == null, "title already set")
+				.isTrue(myTitle == null, "title already set")
 				.isNotBlank(title);
 		//-----
 		myTitle = title;
@@ -113,7 +113,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 */
 	public NotificationBuilder withContent(final String content) {
 		Assertion.check()
-				.argument(myContent == null, "content already set")
+				.isTrue(myContent == null, "content already set")
 				.isNotBlank(content);
 		//-----
 		myContent = content;
@@ -125,7 +125,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 * @return this builder
 	 */
 	public NotificationBuilder withTTLInSeconds(final int ttlInSeconds) {
-		Assertion.check().argument(ttlInSeconds > 0 || ttlInSeconds == -1, "ttl must be strictly positive or undefined.");
+		Assertion.check().isTrue(ttlInSeconds > 0 || ttlInSeconds == -1, "ttl must be strictly positive or undefined.");
 		//-----
 		myTtlInSeconds = ttlInSeconds;
 		return this;
@@ -137,7 +137,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 */
 	public NotificationBuilder withTargetUrl(final String targetUrl) {
 		Assertion.check()
-				.argument(myTargetUrl == null, "targetUrl already set")
+				.isTrue(myTargetUrl == null, "targetUrl already set")
 				.isNotBlank(targetUrl);
 		//-----
 		myTargetUrl = targetUrl;
@@ -150,7 +150,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 */
 	public NotificationBuilder withUserContent(final String userContent) {
 		Assertion.check()
-				.argument(myUserContent == null, "userContent already set")
+				.isTrue(myUserContent == null, "userContent already set")
 				.isNotNull(userContent);
 		//-----
 		myUserContent = ("".equals(userContent) ? null : userContent);// "" translated to Optional.empty

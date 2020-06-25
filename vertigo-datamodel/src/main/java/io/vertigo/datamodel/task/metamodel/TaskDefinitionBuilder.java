@@ -63,7 +63,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	public TaskDefinitionBuilder withEngine(final Class<? extends TaskEngine> taskEngineClass) {
 		Assertion.check()
 				.isNotNull(taskEngineClass)
-				.argument(TaskEngine.class.isAssignableFrom(taskEngineClass), "class must extends TaskEngine");
+				.isTrue(TaskEngine.class.isAssignableFrom(taskEngineClass), "class must extends TaskEngine");
 		//We have to do this  test because generics are not safe
 		//---
 		myTaskEngineClass = taskEngineClass;

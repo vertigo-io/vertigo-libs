@@ -105,7 +105,7 @@ public class FormatterNumber implements Formatter {
 	}
 
 	private static void checkType(final BasicType dataType) {
-		Assertion.check().argument(dataType.isNumber(), "FormatterNumber ne s'applique qu'aux Nombres");
+		Assertion.check().isTrue(dataType.isNumber(), "FormatterNumber ne s'applique qu'aux Nombres");
 	}
 
 	/** {@inheritDoc} */

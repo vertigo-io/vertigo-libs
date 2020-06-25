@@ -108,7 +108,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 				.isNotNull(dto)
 				.isNotNull(dtos);
 		Arrays.stream(dtos)
-				.forEach(other -> Assertion.check().argument(dto.getClass().equals(other.getClass()), "all dtos must have the same type"));
+				.forEach(other -> Assertion.check().isTrue(dto.getClass().equals(other.getClass()), "all dtos must have the same type"));
 		//---
 		final DtList<D> dtList = new DtList<>(DtObjectUtil.findDtDefinition(dto));
 		//---
@@ -161,7 +161,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	public boolean add(final D dto) {
 		Assertion.check().isNotNull(dto);
 		final DtDefinition foundDtDefinition = DtObjectUtil.findDtDefinition(dto);
-		Assertion.check().argument(getDefinition().equals(foundDtDefinition), "Ne peut pas inserer un dto '{0}' dans une collection '{1}'", foundDtDefinition, getDefinition());
+		Assertion.check().isTrue(getDefinition().equals(foundDtDefinition), "Ne peut pas inserer un dto '{0}' dans une collection '{1}'", foundDtDefinition, getDefinition());
 		//-----
 		return dtObjects.add(dto);
 	}

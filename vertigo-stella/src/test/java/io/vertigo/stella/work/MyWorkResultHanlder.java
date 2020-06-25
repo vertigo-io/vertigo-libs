@@ -59,7 +59,7 @@ public final class MyWorkResultHanlder<R> implements WorkResultHandler<R> {
 
 	@Override
 	public synchronized void onDone(final R result, final Throwable error) {
-		Assertion.check().argument(result == null ^ error == null, "result xor error is null");
+		Assertion.check().isTrue(result == null ^ error == null, "result xor error is null");
 		//-----
 		lastResult = result;
 		lastError = error;

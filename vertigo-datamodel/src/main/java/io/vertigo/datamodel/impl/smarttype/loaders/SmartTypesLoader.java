@@ -50,7 +50,7 @@ public class SmartTypesLoader implements Loader {
 						throw WrappedException.wrap(e);
 					}
 				}).forEach(dynamicDefinition -> {
-					Assertion.check().isTrue(!dynamicDefinitions.containsKey(dynamicDefinition.getName()), "SmartType with name {0} is declared twice", dynamicDefinition.getName());
+					Assertion.check().isFalse(dynamicDefinitions.containsKey(dynamicDefinition.getName()), "SmartType with name {0} is declared twice", dynamicDefinition.getName());
 					dynamicDefinitions.put(dynamicDefinition.getName(), dynamicDefinition);
 				});
 

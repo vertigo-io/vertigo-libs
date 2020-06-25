@@ -73,7 +73,7 @@ public final class UID<E extends Entity> implements Serializable {
 		//---
 		//Calcul de l'urn
 		urn = toURN(this);
-		Assertion.check().argument(UID.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, UID.REGEX_URN);
+		Assertion.check().isTrue(UID.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, UID.REGEX_URN);
 	}
 
 	/**

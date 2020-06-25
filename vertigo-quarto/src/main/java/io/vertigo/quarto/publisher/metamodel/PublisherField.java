@@ -49,13 +49,13 @@ public final class PublisherField {
 		Assertion.check()
 				.isNotBlank(name)
 				.isNotNull(fieldType)
-				.argument(REGEX_FIELD_NAME.matcher(name).matches(), "Le nom du champ {0} doit matcher le pattern {1}", name, REGEX_FIELD_NAME);
+				.isTrue(REGEX_FIELD_NAME.matcher(name).matches(), "Le nom du champ {0} doit matcher le pattern {1}", name, REGEX_FIELD_NAME);
 		if (publisherDataNodeDefinition != null) {
-			Assertion.check().argument(
+			Assertion.check().isTrue(
 					fieldType == PublisherFieldType.Node || fieldType == PublisherFieldType.List,
 					"Le champ {0} n''est pas du bon type ({1}). Les champs de type Data ou List ont besoin d''une nodeDefinition", name, fieldType);
 		} else {
-			Assertion.check().argument(
+			Assertion.check().isTrue(
 					fieldType != PublisherFieldType.Node && fieldType != PublisherFieldType.List,
 					"Le champ {0} n''est pas du bon type ({1}). Seul les champs de type Data ou List ont besoin d''une nodeDefinition", name, fieldType);
 		}

@@ -94,8 +94,8 @@ public final class OpenOfficeMergerPlugin implements MergerPlugin {
 			throw new IOException("Model URL invalid", e);
 		}
 		Assertion.check()
-				.argument(file.exists(), "Le fichier du modèle est introuvable")
-				.argument(file.canRead(), "Le fichier du modèle n'est pas lisible");
+				.isTrue(file.exists(), "Le fichier du modèle est introuvable")
+				.isTrue(file.canRead(), "Le fichier du modèle n'est pas lisible");
 		file.setReadOnly();
 		try {
 			return doExecute(file, data);

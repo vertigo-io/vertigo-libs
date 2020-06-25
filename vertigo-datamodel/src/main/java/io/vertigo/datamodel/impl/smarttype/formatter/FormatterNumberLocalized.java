@@ -136,7 +136,7 @@ public class FormatterNumberLocalized extends FormatterNumber {
 	}
 
 	private static void assertArgs(final boolean test) {
-		Assertion.check().argument(
+		Assertion.check().isTrue(
 				test,
 				"Les arguments pour la construction de FormatterNumber sont invalides: format d'affichage{|séparateur de décimal}{|séparateur de millier}");
 	}
@@ -144,12 +144,12 @@ public class FormatterNumberLocalized extends FormatterNumber {
 	private void checkConflict(final Locale currentLocale, final DecimalFormatSymbols decimalFormatSymbols) {
 		if (decimalSep != null) {
 			for (final char decimalChar : decimalSep.getDisplay().toCharArray()) {
-				Assertion.check().argument(
+				Assertion.check().isTrue(
 						decimalChar != decimalFormatSymbols.getGroupingSeparator(),
 						"A decimal separator ({0}) is in conflict with a grouping separator {1}", decimalChar, currentLocale.getDisplayName());
 				if (groupSep != null) {
 					final String groupSepValue = groupSep.getDisplay();
-					Assertion.check().argument(
+					Assertion.check().isTrue(
 							groupSepValue.indexOf(decimalChar) == -1,
 							"A decimal separator ({0}) is in conflict with a grouping separator {1}", decimalChar, currentLocale.getDisplayName());
 				}

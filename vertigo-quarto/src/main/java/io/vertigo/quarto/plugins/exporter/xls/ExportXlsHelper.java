@@ -86,8 +86,8 @@ public final class ExportXlsHelper<R extends DtObject> {
 		Assertion.check()
 				.isNotNull(dtcToExport, "The list of the objects to be exported must exist and not be empty")
 				.isNotNull(collectionColumnNameList, "The list of the columns to be exported must exist and not be empty")
-				.argument(!dtcToExport.isEmpty(), "The list of the objects to be exported must exist and not be empty")
-				.argument(!collectionColumnNameList.isEmpty(), "The list of the columns to be exported must exist and not be empty");
+				.isTrue(!dtcToExport.isEmpty(), "The list of the objects to be exported must exist and not be empty")
+				.isTrue(!collectionColumnNameList.isEmpty(), "The list of the columns to be exported must exist and not be empty");
 
 		//-----
 
@@ -114,7 +114,7 @@ public final class ExportXlsHelper<R extends DtObject> {
 	public final void addDtObject(final DtObject criterion, final List<String> criterionExcludedColumnNames) {
 		Assertion.check()
 				.isNotNull(criterion)
-				.argument(criterionExcludedColumnNames != null, "The list of the columns to be excluded must exist");
+				.isTrue(criterionExcludedColumnNames != null, "The list of the columns to be excluded must exist");
 
 		//-----
 

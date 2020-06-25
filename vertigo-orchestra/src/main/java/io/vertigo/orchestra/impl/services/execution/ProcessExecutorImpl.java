@@ -37,7 +37,7 @@ public final class ProcessExecutorImpl implements ProcessExecutor {
 		Assertion.check().isNotNull(processExecutorPlugins);
 		// ---
 		for (final ProcessExecutorPlugin processExecutorPlugin : processExecutorPlugins) {
-			Assertion.check().isTrue(!executorPluginsMap.containsKey(processExecutorPlugin.getHandledProcessType()), "Only one plugin can manage the processType {0}",
+			Assertion.check().isFalse(executorPluginsMap.containsKey(processExecutorPlugin.getHandledProcessType()), "Only one plugin can manage the processType {0}",
 					processExecutorPlugin.getHandledProcessType());
 			executorPluginsMap.put(processExecutorPlugin.getHandledProcessType(), processExecutorPlugin);
 		}

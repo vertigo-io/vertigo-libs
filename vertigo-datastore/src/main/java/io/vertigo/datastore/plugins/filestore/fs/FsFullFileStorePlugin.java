@@ -108,7 +108,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 				.isNotBlank(fileInfoClassName)
 				.isNotNull(fileManager)
 				.isNotNull(transactionManager)
-				.argument(path.endsWith("/"), "store path must ends with / ({0})", path);
+				.isTrue(path.endsWith("/"), "store path must ends with / ({0})", path);
 		//-----
 		this.name = name.orElse(DEFAULT_STORE_NAME);
 		this.fileManager = fileManager;
@@ -206,7 +206,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	public FileInfo create(final FileInfo fileInfo) {
 		Assertion.check()
 				.isNotNull(fileInfo)
-				.argument(fileInfo.getURI() == null, "Only file without any id can be created.");
+				.isTrue(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
 		final VFile vFile = fileInfo.getVFile();
 		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INFOS_DATE_PATTERN)

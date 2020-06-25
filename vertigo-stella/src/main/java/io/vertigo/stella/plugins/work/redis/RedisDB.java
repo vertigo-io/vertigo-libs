@@ -139,7 +139,7 @@ public final class RedisDB {
 	public <R> void putResult(final String workId, final R result, final Throwable error) {
 		Assertion.check()
 				.isNotBlank(workId)
-				.argument(result == null ^ error == null, "result xor error is null");
+				.isTrue(result == null ^ error == null, "result xor error is null");
 		//-----
 		final Map<String, String> datas = new HashMap<>();
 		try (Jedis jedis = redisConnector.getClient()) {

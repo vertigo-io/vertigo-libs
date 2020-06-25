@@ -133,7 +133,7 @@ final class BerkeleyDatabase {
 		Assertion.check()
 				.isNotBlank(id)
 				.isNotNull(object)
-				.argument(object instanceof Serializable, "Value must be Serializable {0}", object.getClass().getSimpleName());
+				.isTrue(object instanceof Serializable, "Value must be Serializable {0}", object.getClass().getSimpleName());
 		//-----
 		//-----
 		final DatabaseEntry idEntry = new DatabaseEntry();

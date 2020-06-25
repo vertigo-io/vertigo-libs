@@ -117,11 +117,11 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 	public void put(final String cacheName, final Serializable key, final Object value) {
 		Assertion.check()
 				.isNotNull(value, "CachePlugin can't cache null value. (context: {0}, key:{1})", cacheName, key)
-				.isTrue(!(value instanceof byte[]), "CachePlugin can't cache byte[] values");
+				.isFalse((value instanceof byte[]), "CachePlugin can't cache byte[] values");
 		//-----
 		//On regarde la conf du cache pour vérifier s'il on serialize/clone les éléments ou non.
 		if (getCacheDefinition(cacheName).shouldSerializeElements()) {
-			Assertion.check().argument(value instanceof Serializable,
+			Assertion.check().isTrue(value instanceof Serializable,
 					"Object to cache isn't Serializable. Make it unmodifiable or add it in noSerialization's plugin parameter. (context: {0}, key:{1}, class:{2})",
 					cacheName, key, value.getClass().getSimpleName());
 			// Sérialisation avec compression
