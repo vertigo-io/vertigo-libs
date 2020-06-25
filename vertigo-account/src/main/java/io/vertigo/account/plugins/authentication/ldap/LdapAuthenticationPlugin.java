@@ -62,7 +62,7 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 			final List<LdapConnector> ldapConnectors) {
 		Assertion.check()
 				.isNotNull(ldapConnectors)
-				.isTrue(!ldapConnectors.isEmpty(), "At least one LdapConnector espected");
+				.isFalse(ldapConnectors.isEmpty(), "At least one LdapConnector espected");
 		//----
 		parseUserLoginTemplate(userLoginTemplate);
 		final String connectorName = connectorNameOpt.orElse("main");

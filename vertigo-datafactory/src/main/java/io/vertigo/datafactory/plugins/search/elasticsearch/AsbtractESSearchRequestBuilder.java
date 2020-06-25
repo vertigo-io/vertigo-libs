@@ -446,7 +446,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	}
 
 	private static AggregationBuilder geoRangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
-		Assertion.check().isTrue(!facetDefinition.getFacetRanges().isEmpty(), "Range facet can't be empty {0}", facetDefinition.getName());
+		Assertion.check().isFalse(facetDefinition.getFacetRanges().isEmpty(), "Range facet can't be empty {0}", facetDefinition.getName());
 		//-----
 		String originExpression = null;
 		GeoDistanceAggregationBuilder rangeBuilder = null;//AggregationBuilders.geoDistance(name, origin)range(facetDefinition.getName())//

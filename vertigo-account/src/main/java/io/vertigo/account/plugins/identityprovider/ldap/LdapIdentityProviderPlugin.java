@@ -114,7 +114,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 				.isNotNull(codecManager)
 				.isNotNull(smartTypeManager)
 				.isNotNull(ldapConnectors)
-				.isTrue(!ldapConnectors.isEmpty(), "At least one LdapConnector espected");
+				.isFalse(ldapConnectors.isEmpty(), "At least one LdapConnector espected");
 		//-----
 		this.ldapAccountBaseDn = ldapAccountBaseDn;
 		this.ldapUserAuthAttribute = ldapUserAuthAttribute;

@@ -145,7 +145,7 @@ public final class DtField {
 		Assertion.check().isNotNull(label);
 		this.label = label;
 		//-----
-		Assertion.check().isTrue(!(getType() == FieldType.COMPUTED && persistent), "a computed field can't be persistent");
+		Assertion.check().isFalse(!getType() == FieldType.COMPUTED && persistent), "a computed field can't be persistent");
 		this.persistent = persistent;
 		//-----
 		if (getType() == FieldType.FOREIGN_KEY) {

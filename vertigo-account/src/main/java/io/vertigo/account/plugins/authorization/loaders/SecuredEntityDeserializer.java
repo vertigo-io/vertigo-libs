@@ -74,7 +74,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		final Map<String, Authorization> permissionPerOperations = new HashMap<>();// on garde la map des operations pour resoudre les grants
 		for (final JsonElement operation : jsonSecuredEntity.get("operations").getAsJsonArray()) { //TODO if null ?
 			final Authorization permission = deserializeOperations(entityDefinition, operation.getAsJsonObject(), context, permissionPerOperations);
-			Assertion.check().isTrue(!permissionPerOperations.containsKey(permission.getOperation().get()),
+			Assertion.check().isFalse(permissionPerOperations.containsKey(permission.getOperation().get()),
 					"Operation {0} already declared on {1}", permission.getOperation().get(), entityDefinition.getName());
 			permissionPerOperations.put(permission.getOperation().get(), permission);
 		}
