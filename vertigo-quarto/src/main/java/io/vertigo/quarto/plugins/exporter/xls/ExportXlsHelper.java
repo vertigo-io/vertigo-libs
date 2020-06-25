@@ -86,8 +86,8 @@ public final class ExportXlsHelper<R extends DtObject> {
 		Assertion.check()
 				.isNotNull(dtcToExport, "The list of the objects to be exported must exist and not be empty")
 				.isNotNull(collectionColumnNameList, "The list of the columns to be exported must exist and not be empty")
-				.isTrue(!dtcToExport.isEmpty(), "The list of the objects to be exported must exist and not be empty")
-				.isTrue(!collectionColumnNameList.isEmpty(), "The list of the columns to be exported must exist and not be empty");
+				.isFalse(dtcToExport.isEmpty(), "The list of the objects to be exported must exist and not be empty")
+				.isFalse(collectionColumnNameList.isEmpty(), "The list of the columns to be exported must exist and not be empty");
 
 		//-----
 

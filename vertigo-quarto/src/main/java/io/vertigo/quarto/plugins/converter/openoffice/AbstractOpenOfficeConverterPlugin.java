@@ -109,7 +109,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 				.isNotNull(file)
 				.isNotNull(targetFormat)
 				// si le format de sortie est celui d'entrée la convertion est inutile
-				.isTrue(!targetFormat.getTypeMime().equals(file.getMimeType()), "Le format de sortie est identique à celui d'entrée ; la conversion est inutile");
+				.isFalse(targetFormat.getTypeMime().equals(file.getMimeType()), "Le format de sortie est identique à celui d'entrée ; la conversion est inutile");
 		//-----
 		final File inputFile = fileManager.obtainReadOnlyFile(file);
 		final Callable<File> convertTask = new Callable<>() {

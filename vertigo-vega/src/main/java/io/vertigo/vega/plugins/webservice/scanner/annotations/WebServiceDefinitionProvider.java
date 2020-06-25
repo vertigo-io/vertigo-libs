@@ -44,7 +44,7 @@ public final class WebServiceDefinitionProvider implements SimpleDefinitionProvi
 	/** {@inheritDoc} */
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		Assertion.check().isTrue(!definitionResourceConfigs.isEmpty(), "No definitionResource registered");
+		Assertion.check().isFalse(definitionResourceConfigs.isEmpty(), "No definitionResource registered");
 		//-----
 		final List<Definition> webServiceDefinitions = new ArrayList<>();
 		for (final DefinitionResourceConfig definitionResourceConfig : definitionResourceConfigs) {
@@ -56,7 +56,7 @@ public final class WebServiceDefinitionProvider implements SimpleDefinitionProvi
 				webServiceDefinitions.addAll(scanWebServices(webServicesClass));
 			}
 		}
-		Assertion.check().isTrue(!webServiceDefinitions.isEmpty(), "No webService found by WebServiceDefinitionProvider");
+		Assertion.check().isFalse(webServiceDefinitions.isEmpty(), "No webService found by WebServiceDefinitionProvider");
 		//----
 		return webServiceDefinitions;
 	}

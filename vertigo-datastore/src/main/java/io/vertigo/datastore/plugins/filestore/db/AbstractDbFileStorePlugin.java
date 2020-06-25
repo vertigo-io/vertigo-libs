@@ -89,7 +89,7 @@ abstract class AbstractDbFileStorePlugin {
 	 * Check readonly.
 	 */
 	protected void checkReadonly() {
-		Assertion.check().isTrue(!readOnly, STORE_READ_ONLY);
+		Assertion.check().isFalse(readOnly, STORE_READ_ONLY);
 	}
 
 	/**

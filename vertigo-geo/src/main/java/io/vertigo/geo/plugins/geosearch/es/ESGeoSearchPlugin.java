@@ -74,7 +74,7 @@ public final class ESGeoSearchPlugin implements GeoSearchPlugin, Activeable {
 		Assertion.check()
 				.isNotBlank(envIndexPrefix)
 				.isNotNull(elasticSearchConnectors)
-				.isTrue(!elasticSearchConnectors.isEmpty(), "At least one ElasticSearchConnector espected");
+				.isFalse(elasticSearchConnectors.isEmpty(), "At least one ElasticSearchConnector espected");
 		//-----
 		//------
 		this.envIndexPrefix = envIndexPrefix;
@@ -145,7 +145,7 @@ public final class ESGeoSearchPlugin implements GeoSearchPlugin, Activeable {
 
 			final ClusterHealthResponse response = esClient.cluster().health(request, RequestOptions.DEFAULT);
 			//-----
-			Assertion.check().isTrue(!response.isTimedOut(), "ElasticSearch cluster waiting yellow status Timedout");
+			Assertion.check().isFalse(response.isTimedOut(), "ElasticSearch cluster waiting yellow status Timedout");
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error on waitForYellowStatus");
 		}

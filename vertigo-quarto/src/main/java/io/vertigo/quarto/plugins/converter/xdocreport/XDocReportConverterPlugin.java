@@ -60,7 +60,7 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 	@Override
 	public VFile convertToFormat(final VFile file, final String targetFormat) {
 		final ConverterFormat targetConverterFormat = ConverterFormat.find(targetFormat);
-		Assertion.check().isTrue(!targetConverterFormat.getTypeMime().equals(file.getMimeType()),
+		Assertion.check().isFalse(targetConverterFormat.getTypeMime().equals(file.getMimeType()),
 				"Le format de sortie est identique à celui d'entrée ; la conversion est inutile");
 		final DocumentKind inputFormat = DocumentKind.fromMimeType(file.getMimeType());
 		Assertion.check()

@@ -47,7 +47,7 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 	private void register(final DtListURIForMasterData uri, final Predicate dtListFilter) {
 		Assertion.check()
 				.isNotNull(uri)
-				.isTrue(!mdlUriFilterMap.containsKey(uri), "Il existe deja une liste de référence enregistrée {0}.", uri)
+				.isFalse(mdlUriFilterMap.containsKey(uri), "Il existe deja une liste de référence enregistrée {0}.", uri)
 				//Criteria peut être null
 				.isNotNull(dtListFilter);
 		//-----

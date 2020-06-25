@@ -71,7 +71,7 @@ public final class Mail {
 				.isNotBlank(subject, "Sujet du mail obligatoire")
 				.isNotBlank(fromAddress, "Adresse email de l'émetteur obligatoire")
 				.isNotNull(toAddresses)
-				.isTrue(!toAddresses.isEmpty(), "Le mail doit avoir au moins un destinataire.")
+				.isFalse(toAddresses.isEmpty(), "Le mail doit avoir au moins un destinataire.")
 				.isNotNull(ccAddresses)
 				.isTrue(textContent != null || htmlContent != null, "Le mail doit avoir un contenu, soit en text, soit en html")
 				.isNotNull(attachments);

@@ -218,7 +218,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	@Override
 	public FileInfo create(final FileInfo fileInfo) {
 		Assertion.check()
-				.isTrue(!readOnly, STORE_READ_ONLY)
+				.isFalse(readOnly, STORE_READ_ONLY)
 				.isNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
 		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
@@ -246,7 +246,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	@Override
 	public void update(final FileInfo fileInfo) {
 		Assertion.check()
-				.isTrue(!readOnly, STORE_READ_ONLY)
+				.isFalse(readOnly, STORE_READ_ONLY)
 				.isNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
 		//-----
 		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
@@ -265,7 +265,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public void delete(final FileInfoURI uri) {
-		Assertion.check().isTrue(!readOnly, STORE_READ_ONLY);
+		Assertion.check().isFalse(readOnly, STORE_READ_ONLY);
 
 		final UID<Entity> dtoUri = createDtObjectURI(uri);
 		//-----suppression du fichier

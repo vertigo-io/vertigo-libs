@@ -207,7 +207,7 @@ public final class FacetDefinition implements Definition {
 	 * @return Custom facet params
 	 */
 	public Map<String, String> getCustomParams() {
-		Assertion.check().isTrue(!customFacetParams.isEmpty(), "Cette facette ({0}) n'est pas custom.", getName());
+		Assertion.check().isFalse(customFacetParams.isEmpty(), "Cette facette ({0}) n'est pas custom.", getName());
 		//-----
 		return customFacetParams;
 	}

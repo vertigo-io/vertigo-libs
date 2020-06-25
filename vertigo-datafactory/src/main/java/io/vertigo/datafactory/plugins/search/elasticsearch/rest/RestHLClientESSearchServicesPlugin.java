@@ -130,7 +130,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		Assertion.check()
 				.isNotBlank(envIndexPrefix)
 				.isNotNull(elasticSearchConnectors)
-				.isTrue(!elasticSearchConnectors.isEmpty(), "At least one ElasticSearchConnector espected");
+				.isFalse(elasticSearchConnectors.isEmpty(), "At least one ElasticSearchConnector espected");
 		//Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
 		//Assertion.when(!indexNameIsPrefix).check(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
 		//-----
@@ -446,7 +446,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 
 			final ClusterHealthResponse response = esClient.cluster().health(request, RequestOptions.DEFAULT);
 			//-----
-			Assertion.check().isTrue(!response.isTimedOut(), "ElasticSearch cluster waiting yellow status Timedout");
+			Assertion.check().isFalse(response.isTimedOut(), "ElasticSearch cluster waiting yellow status Timedout");
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error on waitForYellowStatus");
 		}

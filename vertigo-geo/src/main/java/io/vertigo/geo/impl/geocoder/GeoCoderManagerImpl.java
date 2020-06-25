@@ -53,8 +53,8 @@ public final class GeoCoderManagerImpl implements GeoCoderManager {
 	@Override
 	public double distanceKm(final GeoLocation geoLocation1, final GeoLocation geoLocation2) {
 		Assertion.check()
-				.isTrue(!geoLocation1.isUndefined(), "le premier point n'est pas défini")
-				.isTrue(!geoLocation2.isUndefined(), "le second point n'est pas défini");
+				.isFalse(geoLocation1.isUndefined(), "le premier point n'est pas défini")
+				.isFalse(geoLocation2.isUndefined(), "le second point n'est pas défini");
 		//-----
 		final int R = 6371; // km
 		final double theta = Math.toRadians(geoLocation2.getLongitude() - geoLocation1.getLongitude());

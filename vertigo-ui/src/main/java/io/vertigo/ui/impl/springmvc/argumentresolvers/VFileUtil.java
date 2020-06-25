@@ -73,7 +73,7 @@ final class VFileUtil {
 		try {
 			Assertion.check()
 					.isTrue(request.getContentType().contains("multipart/form-data"), "File {0} not found. Request contentType isn't \"multipart/form-data\"", requestParamName)
-					.isTrue(!request.getParts().isEmpty(),
+					.isFalse(request.getParts().isEmpty(),
 							"File {0} not found. Request is multipart but there is no Parts. : Check you have defined MultipartConfig (example for Tomcat set allowCasualMultipartParsing=\"true\" on context tag in your context definition, for Jetty use JettyMultipartConfig)",
 							requestParamName);
 			final Part file = request.getPart(requestParamName);

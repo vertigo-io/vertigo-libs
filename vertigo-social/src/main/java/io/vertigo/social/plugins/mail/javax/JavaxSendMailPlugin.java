@@ -191,7 +191,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	private void setDestAddress(final List<String> addressList, final Message message, final Message.RecipientType type) throws MessagingException {
 		Assertion.check()
 				.isNotNull(addressList)
-				.isTrue(!addressList.isEmpty(), "La liste des destinataires ne doit pas être vide")
+				.isFalse(addressList.isEmpty(), "La liste des destinataires ne doit pas être vide")
 				.isNotNull(message);
 		//-----
 		final InternetAddress[] addresses = new InternetAddress[addressList.size()];
