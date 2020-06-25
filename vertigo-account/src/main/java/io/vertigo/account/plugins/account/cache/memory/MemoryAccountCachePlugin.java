@@ -83,7 +83,7 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 		//-----
 		final UID<AccountGroup> uid = group.getUID();
 		//----
-		Assertion.check().argument(!groupByUID.containsKey(uid), "this group is already registered, you can't create it");
+		Assertion.check().isTrue(!groupByUID.containsKey(uid), "this group is already registered, you can't create it");
 		//-----
 		accountByGroupUID.put(uid, new HashSet<UID<Account>>());
 		groupByUID.put(uid, group);

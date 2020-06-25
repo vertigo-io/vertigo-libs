@@ -100,11 +100,11 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 				.isNotNull(resourceManager)
 				.isNotNull(smartTypeManager)
 				.isNotBlank(filePatternStr)
-				.argument(filePatternStr.contains("(?<"),
+				.isTrue(filePatternStr.contains("(?<"),
 						"filePattern should be a regexp of named group for each User's entity fields plus reserved field '{0}' (like : '(?<id>\\S+);(?<name>\\S+);(?<email>\\S+);;(?<{0}>\\S+)' )", PHOTO_URL_RESERVED_FIELD)
-				.argument(filePatternStr.contains("(?<" + PHOTO_URL_RESERVED_FIELD + ">"),
+				.isTrue(filePatternStr.contains("(?<" + PHOTO_URL_RESERVED_FIELD + ">"),
 						"filePattern should be a regexp of named group for each User's entity fields plus reserved field '{0}' (like : '(?<id>\\S+);(?<name>\\S+);(?<email>\\S+);;(?<{0}>\\S+)' )", PHOTO_URL_RESERVED_FIELD)
-				.argument(filePatternStr.contains("(?<" + userAuthField + ">"),
+				.isTrue(filePatternStr.contains("(?<" + userAuthField + ">"),
 						"filePattern should contains the userAuthField : {0}", userAuthField)
 				.isNotBlank(userIdentityEntity)
 				.isNotBlank(userAuthField);
@@ -178,8 +178,8 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 			return Optional.empty();
 		}
 		Assertion.check()
-				.argument(photoFile.toFile().exists(), "Identity {0} photo {1} not found", accountURI, photoUrl)
-				.argument(photoFile.toFile().isFile(), "Identity {0} photo {1} must be a file", accountURI, photoUrl);
+				.isTrue(photoFile.toFile().exists(), "Identity {0} photo {1} not found", accountURI, photoUrl)
+				.isTrue(photoFile.toFile().isFile(), "Identity {0} photo {1} must be a file", accountURI, photoUrl);
 		try {
 			final String contentType = Files.probeContentType(photoFile);
 			return Optional.of(new FSFile(photoFile.getFileName().toString(), contentType, photoFile));

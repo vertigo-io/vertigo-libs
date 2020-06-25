@@ -62,7 +62,7 @@ public class TimeSeriesManagerImpl implements TimeSeriesDataBaseManager {
 		timeSeriesPlugins.forEach(
 				plugin -> plugin.getDbNames()
 						.forEach(dbName -> {
-							Assertion.check().isTrue(!timeSeriesPluginByDb.containsKey(dbName), "Db '{0}' already registered ", dbName);
+							Assertion.check().isFalse(timeSeriesPluginByDb.containsKey(dbName), "Db '{0}' already registered ", dbName);
 							//---
 							timeSeriesPluginByDb.put(dbName, plugin);
 
@@ -122,7 +122,7 @@ public class TimeSeriesManagerImpl implements TimeSeriesDataBaseManager {
 		Assertion.check()
 				.isNotBlank(clusteredMeasure.getMeasure())
 				.isNotNull(clusteredMeasure.getThresholds())
-				.isTrue(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
+				.isFalse(clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
 		//we use the natural order
 		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
 		//---

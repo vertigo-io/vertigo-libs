@@ -106,8 +106,8 @@ public final class IndexFilterFunction<D extends DtObject> implements UnaryOpera
 	 */
 	public void filterSubList(final int start, final int end) {
 		Assertion.check()
-				.argument(start >= 0, "IndexOutOfBoundException, le start du subList doit être positif (start:{0}, end:{1})", String.valueOf(start), String.valueOf(end))
-				.argument(start < end, "IndexOutOfBoundException, le start du subList doit être inférieur au end (start:{0}, end:{1})", String.valueOf(start), String.valueOf(end));
+				.isTrue(start >= 0, "IndexOutOfBoundException, le start du subList doit être positif (start:{0}, end:{1})", String.valueOf(start), String.valueOf(end))
+				.isTrue(start < end, "IndexOutOfBoundException, le start du subList doit être inférieur au end (start:{0}, end:{1})", String.valueOf(start), String.valueOf(end));
 		//-----
 		skip = start;
 		top = end - start;

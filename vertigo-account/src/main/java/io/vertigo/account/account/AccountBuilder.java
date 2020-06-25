@@ -48,7 +48,7 @@ public final class AccountBuilder implements Builder<Account> {
 	 */
 	public AccountBuilder withDisplayName(final String displayName) {
 		Assertion.check()
-				.argument(myDisplayName == null, "displayName already set")
+				.isTrue(myDisplayName == null, "displayName already set")
 				.isNotBlank(displayName);
 		//-----
 		myDisplayName = displayName;
@@ -61,7 +61,7 @@ public final class AccountBuilder implements Builder<Account> {
 	 * @return this builder
 	 */
 	public AccountBuilder withEmail(final String email) {
-		Assertion.check().argument(myEmail == null, "email already set");
+		Assertion.check().isTrue(myEmail == null, "email already set");
 		//email is nullable, we accept null value in case this builder is use by deserializer
 		//-----
 		myEmail = email;
@@ -74,7 +74,7 @@ public final class AccountBuilder implements Builder<Account> {
 	 * @return this builder
 	 */
 	public AccountBuilder withPhoto(final String photo) {
-		Assertion.check().argument(myPhoto == null, "photo already set");
+		Assertion.check().isTrue(myPhoto == null, "photo already set");
 		//photo is nullable, we accept null value in case this builder is use by deserializer
 		//-----
 		myPhoto = photo;
@@ -88,7 +88,7 @@ public final class AccountBuilder implements Builder<Account> {
 	 */
 	public AccountBuilder withAuthToken(final String authToken) {
 		Assertion.check()
-				.argument(myAuthToken == null, "authToken already set")
+				.isTrue(myAuthToken == null, "authToken already set")
 				.isNotBlank(authToken);
 		//-----
 		myAuthToken = authToken;

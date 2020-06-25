@@ -79,7 +79,7 @@ public final class TraceBuilder implements Builder<Trace> {
 	public TraceBuilder withContext(final List<String> context) {
 		Assertion.check()
 				.isNotNull(context)
-				.argument(context.isEmpty() == false, "The provided context is empty");
+				.isTrue(context.isEmpty() == false, "The provided context is empty");
 		//---
 		myContext = context
 				.stream()

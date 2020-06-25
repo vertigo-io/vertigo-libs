@@ -78,7 +78,7 @@ public final class DataProviderImpl implements DataProvider {
 				//---
 				.isNotBlank(clusteredMeasure.getMeasure())
 				.isNotNull(clusteredMeasure.getThresholds())
-				.isTrue(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
+				.isFalse(clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
 		//we use the natural order
 		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
 		//---

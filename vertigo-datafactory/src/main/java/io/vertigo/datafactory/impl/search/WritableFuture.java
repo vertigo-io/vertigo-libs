@@ -102,7 +102,7 @@ public final class WritableFuture<V> implements Future<V> {
 	 * @param result Result of execution
 	 */
 	public synchronized void success(final V result) {
-		Assertion.check().isTrue(!this.completed, "Task already completed");
+		Assertion.check().isFalse(this.completed, "Task already completed");
 		//-----
 		this.completed = true;
 		this.futureResult = result;
@@ -114,7 +114,7 @@ public final class WritableFuture<V> implements Future<V> {
 	 * @param exception Failure reason
 	 */
 	public synchronized void fail(final Exception exception) {
-		Assertion.check().isTrue(!this.completed, "Task already completed");
+		Assertion.check().isFalse(this.completed, "Task already completed");
 		//-----
 		this.completed = true;
 		this.futureException = exception;

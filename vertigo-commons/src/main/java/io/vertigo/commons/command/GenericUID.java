@@ -66,7 +66,7 @@ public final class GenericUID<O extends Object> implements Serializable {
 		//---
 		//Calcul de l'urn
 		urn = toURN(this);
-		Assertion.check().argument(GenericUID.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, GenericUID.REGEX_URN);
+		Assertion.check().isTrue(GenericUID.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, GenericUID.REGEX_URN);
 	}
 
 	/**

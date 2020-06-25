@@ -185,7 +185,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		}
 		//case N group per user
 		//other case checked in postStart by assertions
-		Assertion.check().argument(associationUserGroup instanceof AssociationNNDefinition,
+		Assertion.check().isTrue(associationUserGroup instanceof AssociationNNDefinition,
 				"Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());
 		final DtListURI groupDtListURI = new DtListURIForNNAssociation((AssociationNNDefinition) associationUserGroup, accountUID, associationGroupRoleName);
 
@@ -211,7 +211,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		if (associationUserGroup instanceof AssociationSimpleDefinition) {
 			userDtListURI = new DtListURIForSimpleAssociation((AssociationSimpleDefinition) associationUserGroup, groupUID, associationUserRoleName);
 		} else { //autres cas éliminés par assertion dans le postStart
-			Assertion.check().argument(associationUserGroup instanceof AssociationNNDefinition,
+			Assertion.check().isTrue(associationUserGroup instanceof AssociationNNDefinition,
 
 					"Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());
 			userDtListURI = new DtListURIForNNAssociation((AssociationNNDefinition) associationUserGroup, groupUID, associationUserRoleName);

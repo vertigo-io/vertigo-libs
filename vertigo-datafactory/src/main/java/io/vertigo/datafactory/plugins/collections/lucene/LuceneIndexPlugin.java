@@ -144,7 +144,7 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 			final DtListState listState,
 			final Optional<DtField> boostedField,
 			final DtList<D> dtc) {
-		Assertion.check().argument(listState.getMaxRows().isPresent(), "Can't return all results, you must define maxRows");
+		Assertion.check().isTrue(listState.getMaxRows().isPresent(), "Can't return all results, you must define maxRows");
 		try {
 			final RamLuceneIndex<D> index = indexList(dtc, false);
 			return index.getCollection(keywords, searchedFields, listFilters, listState, boostedField);

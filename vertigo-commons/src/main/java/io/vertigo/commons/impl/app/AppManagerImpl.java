@@ -63,7 +63,7 @@ public final class AppManagerImpl implements AppManager, Activeable {
 		nodeRegistryPlugin = nodeRegistryPluginOpt.orElseGet(() -> new SingleAppNodeRegistryPlugin());
 		nodeInfosPlugins
 				.forEach(plugin -> {
-					Assertion.check().isTrue(!nodeInfosPluginMap.containsKey(plugin.getProtocol()), "A plugin for the protocol {0} is already registered", plugin.getProtocol());
+					Assertion.check().isFalse(nodeInfosPluginMap.containsKey(plugin.getProtocol()), "A plugin for the protocol {0} is already registered", plugin.getProtocol());
 					//---
 					nodeInfosPluginMap.put(plugin.getProtocol(), plugin);
 				});

@@ -228,7 +228,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 				//---
 				.isNotBlank(clusteredMeasure.getMeasure())
 				.isNotNull(clusteredMeasure.getThresholds())
-				.isTrue(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
+				.isFalse(clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
 		//we use the natural order
 		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
 		//---
@@ -453,7 +453,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 			final boolean isAggregated = measure.contains(":");
 
 			Assertion.check()
-					.isTrue(!needAggregatedMeasures || isAggregated, "No aggregation function provided for measure '{0}'. Provide it with ':' as in 'measure:sum'.", measure)
+					.isFalse(needAggregatedMeasures || isAggregated, "No aggregation function provided for measure '{0}'. Provide it with ':' as in 'measure:sum'.", measure)
 					.isTrue(needAggregatedMeasures || !isAggregated, "No support for aggregation function in this case. Measure '{0}'.", measure);
 
 			final String measureQuery = isAggregated ? buildMeasureQuery(measure, measure) : '"' + measure + '"';

@@ -54,7 +54,7 @@ public final class FacetCustomDefinitionSupplier implements DefinitionSupplier {
 
 	@Override
 	public FacetDefinition get(final DefinitionSpace definitionSpace) {
-		Assertion.check().argument(!myParams.isEmpty(), "At least one params is mandatory for customFacet (in {0})", myName);
+		Assertion.check().isTrue(!myParams.isEmpty(), "At least one params is mandatory for customFacet (in {0})", myName);
 		final DtDefinition indexDtDefinition = definitionSpace.resolve(myDtDefinitionName, DtDefinition.class);
 		return FacetDefinition.createCustomFacetDefinition(
 				myName,

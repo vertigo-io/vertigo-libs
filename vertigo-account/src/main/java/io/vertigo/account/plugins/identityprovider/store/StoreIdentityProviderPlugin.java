@@ -93,7 +93,7 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 		final DtList<Entity> results = entityStoreManager.find(userIdentityDefinition, criteriaByAuthToken, DtListState.of(2));
 		Assertion.check()
 				.isTrue(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken)
-				.isTrue(!results.isEmpty(), "No user found for this authToken {0}", userAuthToken);
+				.isFalse(results.isEmpty(), "No user found for this authToken {0}", userAuthToken);
 		return (E) results.get(0);
 	}
 

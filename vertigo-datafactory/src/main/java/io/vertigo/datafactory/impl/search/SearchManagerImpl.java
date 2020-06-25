@@ -202,7 +202,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	@Override
 	public SearchIndexDefinition findFirstIndexDefinitionByKeyConcept(final Class<? extends KeyConcept> keyConceptClass) {
 		final Optional<SearchIndexDefinition> indexDefinition = findFirstIndexDefinitionByKeyConcept(DtObjectUtil.findDtDefinition(keyConceptClass));
-		Assertion.check().argument(indexDefinition.isPresent(), "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptClass.getSimpleName());
+		Assertion.check().isTrue(indexDefinition.isPresent(), "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptClass.getSimpleName());
 		return indexDefinition.get();
 	}
 
@@ -235,7 +235,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	public void markAsDirty(final List<UID<? extends KeyConcept>> keyConceptUris) {
 		Assertion.check()
 				.isNotNull(keyConceptUris)
-				.argument(!keyConceptUris.isEmpty(), "dirty keyConceptUris cant be empty");
+				.isTrue(!keyConceptUris.isEmpty(), "dirty keyConceptUris cant be empty");
 		//-----
 		final DtDefinition keyConceptDefinition = keyConceptUris.get(0).getDefinition();
 		final List<SearchIndexDefinition> searchIndexDefinitions = findIndexDefinitionByKeyConcept(keyConceptDefinition);

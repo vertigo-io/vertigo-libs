@@ -89,7 +89,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 					final Collection<SearchIndex<S, DtObject>> searchIndexes = searchLoader.loadData(searchChunk);
 
 					final Serializable maxUID = searchChunk.getLastUID().getId();
-					Assertion.check().isTrue(!maxUID.equals(lastUID), "SearchLoader ({0}) error : return the same uid list", searchIndexDefinition.getSearchLoaderId());
+					Assertion.check().isFalse(maxUID.equals(lastUID), "SearchLoader ({0}) error : return the same uid list", searchIndexDefinition.getSearchLoaderId());
 					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUID, maxUID));
 					if (!searchIndexes.isEmpty()) {
 						searchManager.putAll(searchIndexDefinition, searchIndexes);

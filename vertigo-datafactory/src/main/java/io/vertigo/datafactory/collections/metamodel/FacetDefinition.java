@@ -101,7 +101,7 @@ public final class FacetDefinition implements Definition {
 				.isNotNull(customFacetParams)
 				.isNotNull(order);
 		Assertion.when(rangeFacet)
-				.isTrue(!facetValues.isEmpty(), "La FacetDefinition '" + name + "' de type 'range' doit fournir la liste des segments non vides (FacetValues)");
+				.isFalse(facetValues.isEmpty(), "La FacetDefinition '" + name + "' de type 'range' doit fournir la liste des segments non vides (FacetValues)");
 		Assertion.when(!rangeFacet)
 				.isTrue(facetValues::isEmpty, "La FacetDefinition '" + name + "' de type 'term' doit fournir une liste des segments vide");
 		//-----
@@ -198,7 +198,7 @@ public final class FacetDefinition implements Definition {
 	 * @return Liste des sélections/range.
 	 */
 	public List<FacetValue> getFacetRanges() {
-		Assertion.check().argument(rangeFacet, "Cette facette ({0}) n'est pas segmentée.", getName());
+		Assertion.check().isTrue(rangeFacet, "Cette facette ({0}) n'est pas segmentée.", getName());
 		//-----
 		return facetValues;
 	}
@@ -207,7 +207,7 @@ public final class FacetDefinition implements Definition {
 	 * @return Custom facet params
 	 */
 	public Map<String, String> getCustomParams() {
-		Assertion.check().argument(!customFacetParams.isEmpty(), "Cette facette ({0}) n'est pas custom.", getName());
+		Assertion.check().isTrue(!customFacetParams.isEmpty(), "Cette facette ({0}) n'est pas custom.", getName());
 		//-----
 		return customFacetParams;
 	}

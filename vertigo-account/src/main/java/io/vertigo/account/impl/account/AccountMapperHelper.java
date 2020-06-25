@@ -92,7 +92,7 @@ public final class AccountMapperHelper<S, D> {
 	public AccountMapperHelper<S, D> parseAttributeMapping() {
 		for (final String mapping : ATTRIBUTES_PATTERN.split(sourceToDestMappingStr)) {
 			final String[] splitedMapping = ATTRIBUTE_VALUE_PATTERN.split(mapping);
-			Assertion.check().argument(splitedMapping.length == 2,
+			Assertion.check().isTrue(splitedMapping.length == 2,
 					"Mapping should respect the pattern sourceFields:destFields :(like sourceAttr1:destAttr1, sourceAttr2:destAttr2, ... (check : {0})", sourceToDestMappingStr);
 			Assertion.when(sourceDtDefinition.isPresent())
 					.isTrue(() -> sourceDtDefinition.get().contains(splitedMapping[1]), "sourceField {0} must be in DtDefinition {1}", splitedMapping[1], sourceDtDefinition.orElse(null));
@@ -148,11 +148,11 @@ public final class AccountMapperHelper<S, D> {
 	}
 
 	public S getSourceIdField() {
-		Assertion.check().argument(destDtDefinition.isPresent() || sourceDtDefinition.isPresent(), "Can't determine id field, if nor source nor dest are Entity");
+		Assertion.check().isTrue(destDtDefinition.isPresent() || sourceDtDefinition.isPresent(), "Can't determine id field, if nor source nor dest are Entity");
 		if (destDtDefinition.isPresent() && destDtDefinition.get().getIdField().isPresent()) {
 			return getSourceAttribute((D) destDtDefinition.get().getIdField().get());
 		} else if (sourceDtDefinition.isPresent()) {
-			Assertion.check().argument(sourceDtDefinition.get().getIdField().isPresent(), "Can't determine id field, if nor source nor dest are Entity");
+			Assertion.check().isTrue(sourceDtDefinition.get().getIdField().isPresent(), "Can't determine id field, if nor source nor dest are Entity");
 			return (S) sourceDtDefinition.get().getIdField().get();
 		}
 		throw new IllegalArgumentException("Can't determine id field, if nor source nor dest are Entity");

@@ -114,7 +114,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 				.isNotNull(codecManager)
 				.isNotNull(smartTypeManager)
 				.isNotNull(ldapConnectors)
-				.argument(!ldapConnectors.isEmpty(), "At least one LdapConnector espected");
+				.isTrue(!ldapConnectors.isEmpty(), "At least one LdapConnector espected");
 		//-----
 		this.ldapAccountBaseDn = ldapAccountBaseDn;
 		this.ldapUserAuthAttribute = ldapUserAuthAttribute;
@@ -188,7 +188,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	private Entity getUserByAuthToken(final String authToken, final LdapContext ctx) {
 		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, "(&(" + ldapUserAuthAttribute + "=" + protectLdap(authToken) + "))", 2, mapperHelper.sourceAttributes(), ctx);
 		Assertion.check()
-				.isTrue(!result.isEmpty(), "Can't found any user with authToken : {0}", ldapUserAuthAttribute)
+				.isFalse(result.isEmpty(), "Can't found any user with authToken : {0}", ldapUserAuthAttribute)
 				.isTrue(result.size() == 1, "Too many user with same authToken ({0} shoud be unique)", ldapUserAuthAttribute);
 		return parseUser(result.get(0));
 	}
@@ -204,7 +204,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		final String ldapIdAttr = mapperHelper.getSourceIdField();
 		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, "(" + ldapIdAttr + "=" + accountId + ")", 2, returningAttributes, ldapContext);
 		Assertion.check()
-				.isTrue(!result.isEmpty(), "Can't found any user with id : {0}", accountId)
+				.isFalse(result.isEmpty(), "Can't found any user with id : {0}", accountId)
 				.isTrue(result.size() == 1, "Too many user with same id ({0} shoud be unique)", accountId);
 		return result.get(0);
 	}

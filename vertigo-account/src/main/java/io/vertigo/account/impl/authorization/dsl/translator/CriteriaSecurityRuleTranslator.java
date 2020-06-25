@@ -123,7 +123,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			case SIMPLE: //TODO not use yet ?
 				return toCriteria(fieldName::toString, operator, value);
 			case ENUM:
-				Assertion.check().argument(value instanceof String, "Enum criteria must be a code String ({0})", value);
+				Assertion.check().isTrue(value instanceof String, "Enum criteria must be a code String ({0})", value);
 				//----
 				return enumToCriteria(securityDimension, operator, String.class.cast(value));
 			case TREE:
@@ -177,7 +177,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 	}
 
 	private Criteria<E> treeToCriteria(final SecurityDimension securityDimension, final ValueOperator operator, final Serializable value) {
-		Assertion.check().argument(value instanceof String[]
+		Assertion.check().isTrue(value instanceof String[]
 				|| value instanceof Integer[]
 				|| value instanceof Long[], "Security TREE axe ({0}) must be set in UserSession as Arrays (current:{1})", securityDimension.getName(), value.getClass().getName());
 		if (value instanceof String[]) {
@@ -194,7 +194,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		final List<String> strDimensionfields = securityDimension.getFields().stream()
 				.map(DtField::getName)
 				.collect(Collectors.toList());
-		Assertion.check().argument(strDimensionfields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strDimensionfields);
+		Assertion.check().isTrue(strDimensionfields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strDimensionfields);
 		Criteria<E> mainCriteria = null;
 
 		//cas particuliers du == et du !=
