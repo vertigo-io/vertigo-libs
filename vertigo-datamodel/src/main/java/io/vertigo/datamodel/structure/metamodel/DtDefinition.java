@@ -113,7 +113,7 @@ public final class DtDefinition implements Definition {
 				Assertion.check().isTrue(id == null, "Only one ID Field is allowed : {0}", name);
 				id = dtField;
 			}
-			doRegisterDtField(dtField);
+			registerDtField(dtField);
 		}
 		idFieldOpt = Optional.ofNullable(id);
 		this.dataSpace = dataSpace;
@@ -136,16 +136,7 @@ public final class DtDefinition implements Definition {
 		return new DtDefinitionBuilder(name);
 	}
 
-	//TODO A fermer
-	void registerDtField(final DtField dtField) {
-		Assertion.check()
-				.isNotNull(dtField)
-				.isFalse(dtField.getType().isId(), "interdit d'ajouter les champs ID ");
-		//-----
-		doRegisterDtField(dtField);
-	}
-
-	private void doRegisterDtField(final DtField dtField) {
+	private void registerDtField(final DtField dtField) {
 		Assertion.check()
 				.isNotNull(dtField)
 				.isFalse(mappedFields.containsKey(dtField.getName()), "Field {0} déjà enregistré sur {1}", dtField.getName(), this);
