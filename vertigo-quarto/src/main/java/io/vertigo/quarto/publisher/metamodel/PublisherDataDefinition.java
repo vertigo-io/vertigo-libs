@@ -19,7 +19,7 @@
 package io.vertigo.quarto.publisher.metamodel;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 
 /**
@@ -28,18 +28,16 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
  *
  * @author npiedeloup, pchretien
  */
-@DefinitionPrefix("Pu")
-public final class PublisherDataDefinition implements Definition {
-	/** Nom de la définition. */
-	private final String name;
+@DefinitionPrefix(PublisherDataDefinition.PREFIX)
+public final class PublisherDataDefinition extends AbstractDefinition {
+	public static final String PREFIX = "Pu";
 	private final PublisherNodeDefinition rootNodeDefinition;
 
 	public PublisherDataDefinition(final String name, final PublisherNodeDefinition rootNodeDefinition) {
-		Assertion.check()
-				.isNotBlank(name)
-				.isNotNull(rootNodeDefinition);
+		super(name);
+		//---
+		Assertion.check().isNotNull(rootNodeDefinition);
 		//-----
-		this.name = name;
 		this.rootNodeDefinition = rootNodeDefinition;
 	}
 
@@ -48,17 +46,5 @@ public final class PublisherDataDefinition implements Definition {
 	 */
 	public PublisherNodeDefinition getRootNodeDefinition() {
 		return rootNodeDefinition;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return name;
 	}
 }

@@ -24,7 +24,6 @@ import java.util.List;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Home;
-import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
@@ -200,9 +199,9 @@ public final class PublisherDataUtil {
 					break;
 				case DATA_OBJECT:
 					if (dtField.getCardinality().hasMany()) {
-						sb.append("\t\tlistField[").append(fieldName).append(")] = new NodeField (type = PN_").append(DefinitionUtil.getPrefix(DtDefinition.class) + dtField.getSmartTypeDefinition().getJavaClass().getSimpleName()).append(";);\n");
+						sb.append("\t\tlistField[").append(fieldName).append(")] = new NodeField (type = PN_").append(DtDefinition.PREFIX + dtField.getSmartTypeDefinition().getJavaClass().getSimpleName()).append(";);\n");
 					} else {
-						sb.append("\t\tdataField[").append(fieldName).append(")] = new NodeField (type = PN_").append(DefinitionUtil.getPrefix(DtDefinition.class) + dtField.getSmartTypeDefinition().getJavaClass().getSimpleName()).append(";);\n");
+						sb.append("\t\tdataField[").append(fieldName).append(")] = new NodeField (type = PN_").append(DtDefinition.PREFIX + dtField.getSmartTypeDefinition().getJavaClass().getSimpleName()).append(";);\n");
 					}
 					break;
 				case VALUE_OBJECT:

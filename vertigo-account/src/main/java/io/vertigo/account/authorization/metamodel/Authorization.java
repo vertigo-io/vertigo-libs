@@ -28,7 +28,7 @@ import java.util.Set;
 
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 
@@ -39,13 +39,12 @@ import io.vertigo.datamodel.structure.metamodel.DtDefinition;
  *
  * @author prahmoune, npiedeloup
  */
-@DefinitionPrefix("Atz")
-public final class Authorization implements Definition {
+@DefinitionPrefix(Authorization.PREFIX)
+public final class Authorization extends AbstractDefinition {
 	public static final String PREFIX = "Atz";
 	//soit authorization globale (sans règle)
 	//soit authorization = une opération sur une entity
 	private final Optional<String> comment;
-	private final String name;
 	private final String label;
 
 	private final Set<String> overrides;
@@ -63,12 +62,12 @@ public final class Authorization implements Definition {
 	 * @param comment Comment
 	 */
 	public Authorization(final String code, final String label, final Optional<String> comment) {
+		super(PREFIX + code);
+		//---
 		Assertion.check()
-				.isNotBlank(code)
 				.isNotBlank(label)
 				.isNotNull(comment);
-		//-----
-		name = PREFIX + code;
+		//---
 		this.label = label;
 
 		overrides = Collections.emptySet();
@@ -98,6 +97,8 @@ public final class Authorization implements Definition {
 			final DtDefinition entityDefinition,
 			final List<RuleMultiExpression> rules,
 			final Optional<String> comment) {
+		super(PREFIX + entityDefinition.getLocalName() + '$' + operation);
+		//---
 		Assertion.check()
 				.isNotBlank(operation)
 				.isNotBlank(label)
@@ -106,8 +107,7 @@ public final class Authorization implements Definition {
 				.isNotNull(entityDefinition)
 				.isNotNull(rules)
 				.isNotNull(comment);
-		//-----
-		name = PREFIX + entityDefinition.getLocalName() + '$' + operation;
+		//---
 		this.label = label;
 		this.overrides = new HashSet<>(overrides);
 		this.grants = new HashSet<>(grants);
@@ -115,12 +115,6 @@ public final class Authorization implements Definition {
 		operationOpt = Optional.of(operation);
 		this.rules = new ArrayList<>(rules);
 		this.comment = comment;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getName() {
-		return name;
 	}
 
 	/**

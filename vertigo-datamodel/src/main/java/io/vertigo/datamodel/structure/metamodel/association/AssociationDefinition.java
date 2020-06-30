@@ -19,7 +19,7 @@
 package io.vertigo.datamodel.structure.metamodel.association;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 
 /**
  * Décrit une association entre deux objets (A et B)
@@ -44,11 +44,7 @@ import io.vertigo.core.node.definition.Definition;
  *
  * @author  jcassignol, pchretien
  */
-public abstract class AssociationDefinition implements Definition {
-	/**
-	 * Nom de la définition.
-	 */
-	private final String name;
+public abstract class AssociationDefinition extends AbstractDefinition {
 	private final AssociationNode associationNodeA;
 	private final AssociationNode associationNodeB;
 
@@ -58,12 +54,12 @@ public abstract class AssociationDefinition implements Definition {
 	 * @param associationNodeB Noeud B
 	 */
 	AssociationDefinition(final String name, final AssociationNode associationNodeA, final AssociationNode associationNodeB) {
+		super(name);
+		//---
 		Assertion.check()
-				.isNotBlank(name)
 				.isNotNull(associationNodeA)
 				.isNotNull(associationNodeB);
 		//-----
-		this.name = name;
 		this.associationNodeA = associationNodeA;
 		this.associationNodeB = associationNodeB;
 		//-----
@@ -92,17 +88,5 @@ public abstract class AssociationDefinition implements Definition {
 	 */
 	public final AssociationNode getAssociationNodeB() {
 		return associationNodeB;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public final String getName() {
-		return name;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public final String toString() {
-		return name;
 	}
 }

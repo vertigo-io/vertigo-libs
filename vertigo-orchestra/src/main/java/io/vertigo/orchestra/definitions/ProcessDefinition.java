@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.orchestra.services.execution.RunnableActivityEngine;
 
@@ -31,12 +31,13 @@ import io.vertigo.orchestra.services.execution.RunnableActivityEngine;
  * Une définition doit être créee par le builder associé.
  * @author mlaroche.
  */
-@DefinitionPrefix("Pro")
-public final class ProcessDefinition implements Definition {
+@DefinitionPrefix(ProcessDefinition.PREFIX)
+public final class ProcessDefinition extends AbstractDefinition {
+	public static final String PREFIX = "Pro";
+
 	//TODO : ID doit être immutable!!
 	//---immutables
 	private long id;
-	private final String name;
 	private final List<ActivityDefinition> activities;
 	private final ProcessType processType;
 
@@ -65,15 +66,15 @@ public final class ProcessDefinition implements Definition {
 			final boolean needUpdate,
 			final ProcessTriggeringStrategy triggeringStrategy,
 			final List<ActivityDefinition> activities) {
+		super(name);
+		//---
 		Assertion.check()
-				.isNotBlank(name)
 				.isNotBlank(label)
 				.isNotNull(processType)
 				.isNotNull(metadatas)
 				.isNotNull(triggeringStrategy)
 				.isNotNull(activities);
 		//---
-		this.name = name;
 		this.label = label;
 		this.active = active;
 		this.processType = processType;
@@ -107,11 +108,6 @@ public final class ProcessDefinition implements Definition {
 
 	public void setId(final long id) {
 		this.id = id;
-	}
-
-	@Override
-	public String getName() {
-		return name;
 	}
 
 	public String getLabel() {

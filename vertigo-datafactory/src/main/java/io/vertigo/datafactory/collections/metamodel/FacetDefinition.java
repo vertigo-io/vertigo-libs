@@ -24,7 +24,7 @@ import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -51,9 +51,9 @@ import io.vertigo.datamodel.structure.metamodel.DtField;
  *
  * @author pchretien
  */
-@DefinitionPrefix("Fct")
-public final class FacetDefinition implements Definition {
-	private final String name;
+@DefinitionPrefix(FacetDefinition.PREFIX)
+public final class FacetDefinition extends AbstractDefinition {
+	public static final String PREFIX = "Fct";
 	private final DtField dtField;
 	private final MessageText label;
 	private final List<FacetValue> facetValues;
@@ -93,8 +93,9 @@ public final class FacetDefinition implements Definition {
 			final boolean rangeFacet,
 			final boolean multiSelectable,
 			final FacetOrder order) {
+		super(name);
+		//---
 		Assertion.check()
-				.isNotBlank(name)
 				.isNotNull(dtField)
 				.isNotNull(label)
 				.isNotNull(facetValues)
@@ -105,7 +106,6 @@ public final class FacetDefinition implements Definition {
 		Assertion.when(!rangeFacet)
 				.isTrue(facetValues::isEmpty, "La FacetDefinition '" + name + "' de type 'term' doit fournir une liste des segments vide");
 		//-----
-		this.name = name;
 		this.dtField = dtField;
 		this.label = label;
 		this.facetValues = Collections.unmodifiableList(facetValues);
@@ -238,17 +238,5 @@ public final class FacetDefinition implements Definition {
 	 */
 	public FacetOrder getOrder() {
 		return order;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return name;
 	}
 }

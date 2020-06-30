@@ -21,14 +21,14 @@ package io.vertigo.datastore.entitystore;
 import java.util.function.Predicate;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 
-@DefinitionPrefix("Md")
-public class MasterDataDefinition implements Definition {
+@DefinitionPrefix(MasterDataDefinition.PREFIX)
+public final class MasterDataDefinition extends AbstractDefinition {
+	public static final String PREFIX = "Md";
 
-	private final String name;
 	private final DtListURIForMasterData uri;
 	private final Predicate predicate;
 
@@ -36,19 +36,15 @@ public class MasterDataDefinition implements Definition {
 			final String name,
 			final DtListURIForMasterData uri,
 			final Predicate predicate) {
+		super(name);
+		//---
 		Assertion.check()
 				.isNotBlank(name)
 				.isNotNull(uri)
 				.isNotNull(predicate);
 		//---
-		this.name = name;
 		this.uri = uri;
 		this.predicate = predicate;
-	}
-
-	@Override
-	public String getName() {
-		return name;
 	}
 
 	public DtListURIForMasterData getUri() {
@@ -58,5 +54,4 @@ public class MasterDataDefinition implements Definition {
 	public Predicate getPredicate() {
 		return predicate;
 	}
-
 }

@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinition;
@@ -78,7 +77,7 @@ public class SmartTypesLoader implements Loader {
 			}
 			if (DtObject.class.isAssignableFrom(targetJavaClass)) {
 				scope = Scope.DATA_OBJECT;
-				Assertion.check().isTrue(field.getName().equals(DefinitionUtil.getPrefix(DtDefinition.class) + targetJavaClass.getSimpleName()), "The name of the SmartType {0} is not consistent with the class {1}", field.getName(), targetJavaClass);
+				Assertion.check().isTrue(field.getName().equals(DtDefinition.PREFIX + targetJavaClass.getSimpleName()), "The name of the SmartType {0} is not consistent with the class {1}", field.getName(), targetJavaClass);
 			} else {
 				Assertion.check().isTrue(adapters.length > 0,
 						"Your smarttype '{0}' is associated with a value object, you need to specify a mapper to a targeted DataType with the @Adapter annotation", smartTypeName);

@@ -27,7 +27,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -50,11 +50,9 @@ import io.vertigo.datamodel.structure.metamodel.DtStereotype;
  *
  * @author dchallas, npiedeloup
  */
-@DefinitionPrefix("Idx")
-public final class SearchIndexDefinition implements Definition {
-
-	/** Nom de l'index. */
-	private final String name;
+@DefinitionPrefix(SearchIndexDefinition.PREFIX)
+public final class SearchIndexDefinition extends AbstractDefinition {
+	public static final String PREFIX = "Idx";
 
 	/** Structure des éléments indexés. */
 	private final DtDefinition indexDtDefinition;
@@ -82,8 +80,9 @@ public final class SearchIndexDefinition implements Definition {
 			final DtDefinition indexDtDefinition,
 			final Map<DtField, List<DtField>> indexCopyFromFieldsMap,
 			final String searchLoaderId) {
+		super(name);
+		//---
 		Assertion.check()
-				.isNotBlank(name)
 				.isNotNull(keyConceptDtDefinition)
 				.isTrue(
 						keyConceptDtDefinition.getStereotype() == DtStereotype.KeyConcept,
@@ -92,7 +91,6 @@ public final class SearchIndexDefinition implements Definition {
 				.isNotNull(indexCopyFromFieldsMap)
 				.isNotBlank(searchLoaderId);
 		//-----
-		this.name = name;
 		this.keyConceptDtDefinition = keyConceptDtDefinition;
 		this.indexDtDefinition = indexDtDefinition;
 		this.indexCopyFromFieldsMap = indexCopyFromFieldsMap;
@@ -155,17 +153,5 @@ public final class SearchIndexDefinition implements Definition {
 	 */
 	public String getSearchLoaderId() {
 		return searchLoaderId;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return name;
 	}
 }

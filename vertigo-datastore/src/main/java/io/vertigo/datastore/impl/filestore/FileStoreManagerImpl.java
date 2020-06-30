@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
-import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
@@ -57,7 +56,7 @@ public final class FileStoreManagerImpl implements FileStoreManager, SimpleDefin
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		return fileStorePlugins.stream()
 				.map(fileStorePlugin -> new FileInfoDefinition(
-						DefinitionUtil.getPrefix(FileInfoDefinition.class) + fileStorePlugin.getFileInfoClass().getSimpleName(),
+						FileInfoDefinition.PREFIX + fileStorePlugin.getFileInfoClass().getSimpleName(),
 						fileStorePlugin.getName()))
 				.collect(Collectors.toList());
 	}

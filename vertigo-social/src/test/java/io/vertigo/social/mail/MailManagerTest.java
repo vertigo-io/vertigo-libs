@@ -495,7 +495,7 @@ public final class MailManagerTest {
 	 */
 	@Test
 	public void testSendMailWithBadCc() {
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+		Assertions.assertThrows(IllegalStateException.class, () -> {
 			final Mail mail = Mail.builder()
 					.from(DT_MAIL)
 					.withSubject("-12-testWritableMailWithBadCc")

@@ -37,9 +37,8 @@
  */
 package io.vertigo.datastore.cache;
 
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.core.node.definition.DefinitionUtil;
 
 /**
  * The cache definition defines the configuration of a cache.
@@ -52,9 +51,10 @@ import io.vertigo.core.node.definition.DefinitionUtil;
  *
  * @author pchretien
  */
-@DefinitionPrefix("Cache")
-public final class CacheDefinition implements Definition {
-	private final String name;
+@DefinitionPrefix(CacheDefinition.PREFIX)
+public final class CacheDefinition extends AbstractDefinition {
+	public static final String PREFIX = "Cache";
+
 	private final boolean serializeElements;
 	private final int maxElementsInMemory;
 	private final int timeToLiveSeconds;
@@ -76,20 +76,13 @@ public final class CacheDefinition implements Definition {
 			final int timeToLiveSeconds,
 			final int timeToIdleSeconds,
 			final boolean isReloadedByList) {
-		DefinitionUtil.checkName(name, CacheDefinition.class);
-		//-----
-		this.name = name;
+		super(name);
+		//---
 		this.serializeElements = serializeElements;
 		this.maxElementsInMemory = maxElementsInMemory;
 		this.timeToLiveSeconds = timeToLiveSeconds;
 		this.timeToIdleSeconds = timeToIdleSeconds;
 		this.isReloadedByList = isReloadedByList;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getName() {
-		return name;
 	}
 
 	/**

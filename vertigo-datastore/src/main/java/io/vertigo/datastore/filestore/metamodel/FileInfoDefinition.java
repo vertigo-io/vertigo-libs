@@ -20,9 +20,8 @@ package io.vertigo.datastore.filestore.metamodel;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.datastore.filestore.model.FileInfo;
 
 /**
@@ -34,12 +33,9 @@ import io.vertigo.datastore.filestore.model.FileInfo;
  *
  * @author  npiedeloup, pchretien
  */
-@DefinitionPrefix("Fi")
-public final class FileInfoDefinition implements Definition {
-	/**
-	 * Nom de la définition.
-	 */
-	private final String name;
+@DefinitionPrefix(FileInfoDefinition.PREFIX)
+public final class FileInfoDefinition extends AbstractDefinition {
+	public static final String PREFIX = "Fi";
 	/**
 	 * StoreName des fichiers de ce type.
 	 */
@@ -51,18 +47,11 @@ public final class FileInfoDefinition implements Definition {
 	 * @param storeName Nom du store de ces fichiers
 	 */
 	public FileInfoDefinition(final String name, final String storeName) {
-		Assertion.check()
-				.isNotBlank(name)
-				.isNotBlank(storeName);
-		//-----
-		this.name = name;
+		super(name);
+		//---
+		Assertion.check().isNotBlank(storeName);
+		//---
 		this.storeName = storeName;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getName() {
-		return name;
 	}
 
 	/**
@@ -70,12 +59,6 @@ public final class FileInfoDefinition implements Definition {
 	 */
 	public String getStoreName() {
 		return storeName;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return name;
 	}
 
 	//=========================================================================
@@ -87,8 +70,8 @@ public final class FileInfoDefinition implements Definition {
 	 */
 	public static FileInfoDefinition findFileInfoDefinition(final Class<? extends FileInfo> fileInfoClass) {
 		Assertion.check().isNotNull(fileInfoClass);
-		//-----
-		final String name = DefinitionUtil.getPrefix(FileInfoDefinition.class) + fileInfoClass.getSimpleName();
+		//---
+		final String name = FileInfoDefinition.PREFIX + fileInfoClass.getSimpleName();
 		return Home.getApp().getDefinitionSpace().resolve(name, FileInfoDefinition.class);
 	}
 }

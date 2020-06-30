@@ -21,7 +21,7 @@ package io.vertigo.commons.eventbus;
 import java.util.function.Consumer;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 
 /**
@@ -33,10 +33,9 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
  *
  * @param <E> type of event
  */
-@DefinitionPrefix("Evt")
-public final class EventBusSubscriptionDefinition<E extends Event> implements Definition {
-
-	private final String name;
+@DefinitionPrefix(EventBusSubscriptionDefinition.PREFIX)
+public final class EventBusSubscriptionDefinition<E extends Event> extends AbstractDefinition {
+	public static final String PREFIX = "Evt";
 	private final Class<E> eventType;
 	private final Consumer<E> eventListener;
 
@@ -47,12 +46,12 @@ public final class EventBusSubscriptionDefinition<E extends Event> implements De
 	 * @param eventListener the consumer of the event (what will be done with it)
 	 */
 	public EventBusSubscriptionDefinition(final String name, final Class<E> eventType, final Consumer<E> eventListener) {
+		super(name);
+		//---
 		Assertion.check()
-				.isNotBlank(name)
 				.isNotNull(eventType)
 				.isNotNull(eventListener);
-		//-----
-		this.name = name;
+		//---
 		this.eventType = eventType;
 		this.eventListener = eventListener;
 	}
@@ -74,12 +73,6 @@ public final class EventBusSubscriptionDefinition<E extends Event> implements De
 	 */
 	public Consumer<E> getListener() {
 		return eventListener;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getName() {
-		return name;
 	}
 
 	public Class<E> getEventType() {

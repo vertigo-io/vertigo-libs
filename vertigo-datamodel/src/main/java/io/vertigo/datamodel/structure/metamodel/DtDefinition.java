@@ -27,27 +27,24 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.core.node.definition.DefinitionReference;
-import io.vertigo.core.node.definition.DefinitionUtil;
 
 /**
  * The DtDefinition class defines the definition of data.
  *
  * @author pchretien
  */
-@DefinitionPrefix("Dt")
-public final class DtDefinition implements Definition {
+@DefinitionPrefix(DtDefinition.PREFIX)
+public final class DtDefinition extends AbstractDefinition {
+	public static final String PREFIX = "Dt";
 	/** the dataSpace must match this pattern. */
 	public static final Pattern REGEX_DATA_SPACE = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
 	public static final String DEFAULT_DATA_SPACE = "main";
 
 	/** if the definition is a fragment. */
 	private final Optional<DefinitionReference<DtDefinition>> fragmentOpt;
-
-	/** name of the definition. */
-	private final String name;
 
 	/** name of the package. */
 	private final String packageName;
@@ -82,7 +79,8 @@ public final class DtDefinition implements Definition {
 			final Optional<DtField> sortField,
 			final Optional<DtField> displayField,
 			final Optional<DtField> handleField) {
-		DefinitionUtil.checkName(name, DtDefinition.class);
+		super(name);
+		//---
 		Assertion.check()
 				.isNotNull(fragment)
 				.isNotNull(stereotype)
@@ -93,8 +91,6 @@ public final class DtDefinition implements Definition {
 				.isNotNull(displayField)
 				.isNotNull(handleField);
 		//-----
-		this.name = name;
-		//
 		fragmentOpt = fragment;
 		//
 		this.stereotype = stereotype;
@@ -235,19 +231,6 @@ public final class DtDefinition implements Definition {
 	}
 
 	/**
-	 * @return Nom de la définition sans prefix (XxxYyyy).
-	 */
-	public String getLocalName() {
-		return DefinitionUtil.getLocalName(name, DtDefinition.class);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	/**
 	 * @return Champ représentant l'affichage
 	 */
 	public Optional<DtField> getDisplayField() {
@@ -273,11 +256,5 @@ public final class DtDefinition implements Definition {
 	 */
 	public String getDataSpace() {
 		return dataSpace;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return name;
 	}
 }

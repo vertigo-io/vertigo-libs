@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
-import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.structure.metamodel.DataAccessor;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
@@ -44,7 +43,6 @@ import io.vertigo.datamodel.structure.model.UID;
  * @author pchretien
  */
 public final class DtObjectUtil {
-	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
 
 	private DtObjectUtil() {
 		//private constructor.
@@ -206,7 +204,7 @@ public final class DtObjectUtil {
 	public static DtDefinition findDtDefinition(final Class<? extends DtObject> dtObjectClass) {
 		Assertion.check().isNotNull(dtObjectClass);
 		//-----
-		final String name = DT_DEFINITION_PREFIX + dtObjectClass.getSimpleName();
+		final String name = DtDefinition.PREFIX + dtObjectClass.getSimpleName();
 		return Home.getApp().getDefinitionSpace().resolve(name, DtDefinition.class);
 	}
 

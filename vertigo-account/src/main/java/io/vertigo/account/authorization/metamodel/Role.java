@@ -21,7 +21,7 @@ package io.vertigo.account.authorization.metamodel;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 
 /**
@@ -31,9 +31,9 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
  *
  * @author prahmoune, npiedeloup
  */
-@DefinitionPrefix("R")
-public final class Role implements Definition {
-	private final String name;
+@DefinitionPrefix(Role.PREFIX)
+public final class Role extends AbstractDefinition {
+	public static final String PREFIX = "R";
 	private final String description;
 	private final List<Authorization> authorizations;
 
@@ -45,12 +45,13 @@ public final class Role implements Definition {
 	 * @param authorizations Authorizations list of this role
 	 */
 	public Role(final String name, final String description, final List<Authorization> authorizations) {
+		super(name);
+		//---
 		Assertion.check()
 				.isNotBlank(name)
 				.isNotBlank(description)
 				.isNotNull(authorizations);
-		//-----
-		this.name = name;
+		//---
 		this.description = description;
 		this.authorizations = authorizations;
 	}
@@ -67,13 +68,5 @@ public final class Role implements Definition {
 	 */
 	public List<Authorization> getAuthorizations() {
 		return authorizations;
-	}
-
-	/**
-	 * @return Role name
-	 */
-	@Override
-	public String getName() {
-		return name;
 	}
 }

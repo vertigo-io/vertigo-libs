@@ -25,9 +25,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.task.model.TaskEngine;
 
@@ -36,11 +35,9 @@ import io.vertigo.datamodel.task.model.TaskEngine;
  *
  * @author  fconstantin, pchretien
  */
-@DefinitionPrefix("Tk")
-public final class TaskDefinition implements Definition {
-	/** the name of the definition. */
-	private final String name;
-
+@DefinitionPrefix(TaskDefinition.PREFIX)
+public final class TaskDefinition extends AbstractDefinition {
+	public static final String PREFIX = "Tk";
 	/** the package name. */
 	private final String packageName;
 
@@ -73,7 +70,7 @@ public final class TaskDefinition implements Definition {
 			final String request,
 			final List<TaskAttribute> inTaskAttributes,
 			final Optional<TaskAttribute> outTaskAttributeOption) {
-		DefinitionUtil.checkName(name, TaskDefinition.class);
+		super(name);
 		Assertion.check()
 				.isNotBlank(dataSpace)
 				.isTrue(DtDefinition.REGEX_DATA_SPACE.matcher(dataSpace).matches(), "collection {0} must match pattern {1}", dataSpace, DtDefinition.REGEX_DATA_SPACE)
@@ -82,7 +79,6 @@ public final class TaskDefinition implements Definition {
 				.isNotNull(inTaskAttributes)
 				.isNotNull(outTaskAttributeOption);
 		//-----
-		this.name = name;
 		this.packageName = packageName;
 		this.dataSpace = dataSpace;
 		this.request = request;
@@ -181,17 +177,5 @@ public final class TaskDefinition implements Definition {
 	 */
 	public String getPackageName() {
 		return packageName;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return name;
 	}
 }

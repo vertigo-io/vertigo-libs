@@ -28,7 +28,6 @@ import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.locale.MessageKey;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.definition.DefinitionReference;
-import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 
@@ -247,7 +246,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			final boolean persistent,
 			final String fkDtDefinitionName) {
 
-		final String shortName = DefinitionUtil.getLocalName(myName, DtDefinition.class);
+		final String shortName = myName.substring(DtDefinition.PREFIX.length());
 		//-----
 		// Le DtField vérifie ses propres règles et gère ses propres optimisations
 		final String id = DtField.PREFIX + shortName + '$' + fieldName;

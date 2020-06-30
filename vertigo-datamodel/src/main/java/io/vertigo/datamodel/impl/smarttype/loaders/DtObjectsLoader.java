@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionSpace;
-import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.Selector;
 import io.vertigo.core.util.Selector.ClassConditions;
@@ -64,7 +63,6 @@ import io.vertigo.datamodel.structure.util.AssociationUtil;
  * @author pchretien, mlaroche
  */
 public final class DtObjectsLoader implements Loader {
-	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
 
 	/**
 	 * @return Liste des fichiers Java représentant des objets métiers.
@@ -110,7 +108,7 @@ public final class DtObjectsLoader implements Loader {
 	private static void parseDynamicDefinitionBuilder(final Class<DtObject> clazz, final Map<String, DynamicDefinition> dynamicModelRepository) {
 		final String simpleName = clazz.getSimpleName();
 		final String packageName = clazz.getPackage().getName();
-		final String dtDefinitionName = DT_DEFINITION_PREFIX + simpleName;
+		final String dtDefinitionName = DtDefinition.PREFIX + simpleName;
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
 		// un ordre relativement aléatoire et la lecture des annotations peut donc changer l'ordre
@@ -225,7 +223,7 @@ public final class DtObjectsLoader implements Loader {
 	}
 
 	private static void parseSmartTypes(final Class<DtObject> clazz, final Map<String, DynamicDefinition> dynamicModelRepository, final String simpleName, final String dtDefinitionName) {
-		final String smartTypeName = DefinitionUtil.getPrefix(SmartTypeDefinition.class) + dtDefinitionName;
+		final String smartTypeName = SmartTypeDefinition.PREFIX + dtDefinitionName;
 		final Adapter[] adapters = clazz.getAnnotationsByType(Adapter.class);
 		dynamicModelRepository.putIfAbsent(// smartTypes infered from the dtObject class is only used when no explicit SmartTypeDefinition is registered via a SmartTypesLoader
 				smartTypeName,

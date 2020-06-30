@@ -21,7 +21,7 @@ package io.vertigo.account.authorization.metamodel;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -37,9 +37,9 @@ import io.vertigo.datamodel.structure.metamodel.DtField;
  *
  * @author jgarnier, npiedeloup
  */
-@DefinitionPrefix("Sec")
-public final class SecuredEntity implements Definition {
-	private final String name;
+@DefinitionPrefix(SecuredEntity.PREFIX)
+public final class SecuredEntity extends AbstractDefinition {
+	public static final String PREFIX = "Sec";
 	private final DtDefinition entityDefinition;
 	private final List<DtField> securityFields;
 	private final List<SecurityDimension> advancedDimensions;
@@ -58,23 +58,18 @@ public final class SecuredEntity implements Definition {
 			final List<DtField> securityFields,
 			final List<SecurityDimension> advancedDimensions,
 			final List<Authorization> operations) {
+		super(PREFIX + entityDefinition.getName());
+		//---
 		Assertion.check()
 				.isNotNull(entityDefinition)
 				.isNotNull(securityFields)
 				.isNotNull(advancedDimensions)
 				.isNotNull(operations);
 		//---
-		name = "Sec" + entityDefinition.getName();
 		this.entityDefinition = entityDefinition;
 		this.securityFields = securityFields;
 		this.advancedDimensions = advancedDimensions;
 		this.operations = operations;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getName() {
-		return name;
 	}
 
 	/**

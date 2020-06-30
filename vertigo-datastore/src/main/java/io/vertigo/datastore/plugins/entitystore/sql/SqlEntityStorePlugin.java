@@ -31,7 +31,6 @@ import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Home;
-import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.database.sql.SqlDataBaseManager;
@@ -73,7 +72,7 @@ import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
  */
 public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
-	private static final String SMART_TYPE_PREFIX = DefinitionUtil.getPrefix(SmartTypeDefinition.class);
+	private static final String SMART_TYPE_PREFIX = SmartTypeDefinition.PREFIX;
 
 	private final String dataSpace;
 	private final String connectionName;

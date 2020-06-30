@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.structure.metamodel.Properties;
@@ -46,8 +46,10 @@ import io.vertigo.datamodel.structure.metamodel.Properties;
  *
  * @author pchretien
  */
-@DefinitionPrefix("STy")
-public final class SmartTypeDefinition implements Definition {
+@DefinitionPrefix(SmartTypeDefinition.PREFIX)
+public final class SmartTypeDefinition extends AbstractDefinition {
+	public static final String PREFIX = "STy";
+
 	public enum Scope {
 		PRIMITIVE,
 		VALUE_OBJECT,
@@ -75,7 +77,6 @@ public final class SmartTypeDefinition implements Definition {
 		}
 	}
 
-	private final String name;
 	private final Scope scope;
 	private final String valueObjectClassName;
 	private final Optional<BasicType> basicTypeOpt; //nullable
@@ -94,15 +95,15 @@ public final class SmartTypeDefinition implements Definition {
 			final FormatterConfig formatterConfig,
 			final List<ConstraintConfig> constraintConfigs,
 			final Properties properties) {
+		super(name);
+		//---
 		Assertion.check()
-				.isNotBlank(name)
 				.isNotNull(scope)
 				.isNotNull(valueObjectClassName)
 				.isNotNull(adapterConfigs)
 				.isNotNull(constraintConfigs)
 				.isNotNull(properties);
-		//-----
-		this.name = name;
+		//---
 		this.scope = scope;
 		this.valueObjectClassName = valueObjectClassName;
 		basicTypeOpt = BasicType.of(getJavaClass());
@@ -116,12 +117,6 @@ public final class SmartTypeDefinition implements Definition {
 		this.formatterConfig = formatterConfig;
 		this.constraintConfigs = constraintConfigs;
 
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getName() {
-		return name;
 	}
 
 	/**
@@ -176,11 +171,4 @@ public final class SmartTypeDefinition implements Definition {
 	public static SmartTypeDefinitionBuilder builder(final String name, final Class clazz) {
 		return new SmartTypeDefinitionBuilder(name, clazz);
 	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return name;
-	}
-
 }

@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 
@@ -36,12 +36,9 @@ import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
  *
  * @author pchretien
  */
-@DefinitionPrefix("Qry")
-public final class FacetedQueryDefinition implements Definition {
-	/**
-	 * Nom de la définition.
-	 */
-	private final String name;
+@DefinitionPrefix(FacetedQueryDefinition.PREFIX)
+public final class FacetedQueryDefinition extends AbstractDefinition {
+	public static final String PREFIX = "Qry";
 
 	/** Liste indexée des facettes.*/
 	private final Map<String, FacetDefinition> facetDefinitions = new LinkedHashMap<>();
@@ -77,15 +74,15 @@ public final class FacetedQueryDefinition implements Definition {
 			final Class<? extends ListFilterBuilder> listFilterBuilderClass,
 			final String listFilterBuilderQuery,
 			final String geoSearchQuery) {
+		super(name);
+		//---
 		Assertion.check()
-				.isNotBlank(name)
 				.isNotNull(facetDefinitions)
 				.isNotNull(criteriaSmartType)
 				.isNotNull(listFilterBuilderClass)
 				.isNotNull(listFilterBuilderQuery);
 		//Assertion.check().notNull(geoSearchQuery);
 		//-----
-		this.name = name;
 		for (final FacetDefinition facetDefinition : facetDefinitions) {
 			this.facetDefinitions.put(facetDefinition.getName(), facetDefinition);
 		}
@@ -108,12 +105,6 @@ public final class FacetedQueryDefinition implements Definition {
 		//-----
 		Assertion.check().isNotNull(facetDefinition, "Aucune Définition de facette trouvée pour {0}", facetName);
 		return facetDefinition;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getName() {
-		return name;
 	}
 
 	/**
@@ -149,11 +140,5 @@ public final class FacetedQueryDefinition implements Definition {
 	 */
 	public String getGeoSearchQuery() {
 		return geoSearchQuery;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return name;
 	}
 }

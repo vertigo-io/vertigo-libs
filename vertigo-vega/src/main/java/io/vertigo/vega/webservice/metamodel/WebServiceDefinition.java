@@ -29,7 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
 
@@ -37,17 +37,21 @@ import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
  * Web service definition.
  * @author npiedeloup
  */
-@DefinitionPrefix("Ws")
-public final class WebServiceDefinition implements Definition {
+@DefinitionPrefix(WebServiceDefinition.PREFIX)
+public final class WebServiceDefinition extends AbstractDefinition {
+	public static final String PREFIX = "Ws";
 
 	/**
 	 * HTTP Verb supported.
 	 */
 	public enum Verb {
-		Get, Post, Put, Patch, Delete,
+		Get,
+		Post,
+		Put,
+		Patch,
+		Delete,
 	}
 
-	private final String name;
 	private final String path;
 	private final String sortPath;
 	private final Verb verb;
@@ -94,8 +98,9 @@ public final class WebServiceDefinition implements Definition {
 			final String doc,
 			final boolean corsProtected,
 			final boolean fileAttachment) {
+		super(name);
+		//---
 		Assertion.check()
-				.isNotBlank(name)
 				.isNotNull(verb)
 				.isNotBlank(path)
 				.isNotBlank(sortPath)
@@ -113,7 +118,6 @@ public final class WebServiceDefinition implements Definition {
 				.isTrue(() -> !Void.TYPE.equals(method.getReturnType()), "Return object mandatory for serverSideState ({0})", userFriendlyMethodName);
 		checkPathParams(path, webServiceParams, userFriendlyMethodName);
 		//-----
-		this.name = name;
 		this.verb = verb;
 		this.path = path;
 		this.sortPath = sortPath;
@@ -167,14 +171,6 @@ public final class WebServiceDefinition implements Definition {
 		final Set<String> notDeclared = new HashSet<>(inputPathParam);
 		notDeclared.removeAll(urlPathParam);
 		Assertion.check().isTrue(notDeclared.isEmpty(), "Some pathParam of {1} are not declared in path {0}", notDeclared, methodName);
-	}
-
-	/**
-	 * @return name
-	 */
-	@Override
-	public String getName() {
-		return name;
 	}
 
 	/**

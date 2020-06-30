@@ -39,7 +39,6 @@ import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
-import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
@@ -235,7 +234,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 	public static SecuredEntity findSecuredEntity(final DtDefinition dtDefinition) {
 		Assertion.check().isNotNull(dtDefinition);
 		//---
-		final String name = DefinitionUtil.getPrefix(SecuredEntity.class) + dtDefinition.getName();
+		final String name = SecuredEntity.PREFIX + dtDefinition.getName();
 		return Home.getApp().getDefinitionSpace().resolve(name, SecuredEntity.class);
 	}
 

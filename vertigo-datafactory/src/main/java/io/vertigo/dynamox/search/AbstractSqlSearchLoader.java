@@ -30,7 +30,6 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Home;
-import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
@@ -53,8 +52,6 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
  * @param <I> Index type
  */
 public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends KeyConcept, I extends DtObject> extends AbstractSearchLoader<P, S, I> {
-
-	private static final String SMART_TYPE_PREFIX = DefinitionUtil.getPrefix(SmartTypeDefinition.class);
 	private static final int SEARCH_CHUNK_SIZE = 500;
 	private final TaskManager taskManager;
 	private final VTransactionManager transactionManager;
@@ -97,7 +94,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 					.withDataSpace(dtDefinition.getDataSpace())
 					.withRequest(request)
 					.addInAttribute(idFieldName, idField.getSmartTypeDefinition(), Cardinality.ONE)
-					.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
+					.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(SmartTypeDefinition.PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
 					.build();
 
 			final Task task = Task.builder(taskDefinition)

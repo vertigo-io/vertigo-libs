@@ -27,16 +27,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.core.util.StringUtil;
 
-@DefinitionPrefix("Cmd")
-public final class CommandDefinition implements Definition {
-
+@DefinitionPrefix(CommandDefinition.PREFIX)
+public final class CommandDefinition extends AbstractDefinition {
+	public static final String PREFIX = "Cmd";
 	private static final Pattern COMMAND_PATTERN = Pattern.compile("(\\/[a-zA-Z0-9]+)+");
 
-	private final String name;
 	private final String command;
 	private final String description;
 	private final List<String> questions;
@@ -49,8 +48,9 @@ public final class CommandDefinition implements Definition {
 			final List<String> questions,
 			final List<CommandParam> commandParams,
 			final Function<Object[], CommandResponse> action) {
+		super(buildName(command));
+		//---
 		Assertion.check()
-				.isNotBlank(command)
 				.isNotBlank(description)
 				.isNotNull(questions)
 				.isTrue(COMMAND_PATTERN.matcher(command).matches(), "handle '{0}' must respect the pattern '{1}'", command, COMMAND_PATTERN)
@@ -71,16 +71,17 @@ public final class CommandDefinition implements Definition {
 		this.description = description;
 		this.questions = questions;
 		this.commandParams = commandParams;
-		final String[] commandParts = command.substring(1).split("\\/"); // we remove the first slash
-		name = "Cmd"
-				+ StringUtil.first2UpperCase(commandParts[0])
-				+ Stream.of(commandParts).skip(1).collect(Collectors.joining("$"));
 		this.action = action;
 	}
 
-	@Override
-	public String getName() {
-		return name;
+	private static String buildName(String command) {
+		Assertion.check().isNotBlank(command);
+		//---
+		final String[] commandParts = command.substring(1).split("\\/"); // we remove the first slash
+		return "Cmd"
+				+ StringUtil.first2UpperCase(commandParts[0])
+				+ Stream.of(commandParts).skip(1).collect(Collectors.joining("$"));
+
 	}
 
 	public String getDescription() {
@@ -102,5 +103,4 @@ public final class CommandDefinition implements Definition {
 	public Function<Object[], CommandResponse> getAction() {
 		return action;
 	}
-
 }
