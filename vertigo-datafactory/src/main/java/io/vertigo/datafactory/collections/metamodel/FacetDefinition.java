@@ -102,7 +102,7 @@ public final class FacetDefinition extends AbstractDefinition {
 				.isNotNull(customFacetParams)
 				.isNotNull(order);
 		Assertion.when(rangeFacet)
-				.isFalse(facetValues.isEmpty(), "La FacetDefinition '" + name + "' de type 'range' doit fournir la liste des segments non vides (FacetValues)");
+				.isFalse(facetValues::isEmpty, "La FacetDefinition '" + name + "' de type 'range' doit fournir la liste des segments non vides (FacetValues)");
 		Assertion.when(!rangeFacet)
 				.isTrue(facetValues::isEmpty, "La FacetDefinition '" + name + "' de type 'term' doit fournir une liste des segments vide");
 		//-----
