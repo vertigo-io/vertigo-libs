@@ -149,7 +149,7 @@ public final class PegRulesHtmlRenderer {
 
 	private void populateGramar(final PegRule<?> rule, final String expressionHtml) {
 		Assertion.check()
-				.when(allRules.containsKey(rule), () -> Assertion.test()
+				.when(allRules.containsKey(rule), () -> Assertion.check()
 						.isTrue(expressionHtml.equals(allRules.get(rule)), "{0} already knowned but different", rule.toString()));
 		//---
 		allRules.put(rule, expressionHtml);

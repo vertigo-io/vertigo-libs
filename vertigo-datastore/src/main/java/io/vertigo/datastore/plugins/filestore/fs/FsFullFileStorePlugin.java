@@ -115,7 +115,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		this.transactionManager = transactionManager;
 		documentRoot = Paths.get(FileUtil.translatePath(path));
 		Assertion.check()
-				.when(Files.exists(documentRoot), () -> Assertion.test()
+				.when(Files.exists(documentRoot), () -> Assertion.check()
 						.isTrue(Files.isDirectory(documentRoot), "documentRoot ({0}) must be a directory", documentRoot.toAbsolutePath().toString()));
 
 		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
@@ -207,7 +207,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	public FileInfo create(final FileInfo fileInfo) {
 		Assertion.check()
 				.isNotNull(fileInfo)
-				.isTrue(fileInfo.getURI() == null, "Only file without any id can be created.");
+				.isNull(fileInfo.getURI(), "Only file without any id can be created.");
 		//-----
 		final VFile vFile = fileInfo.getVFile();
 		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INFOS_DATE_PATTERN)

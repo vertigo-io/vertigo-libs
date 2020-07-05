@@ -97,7 +97,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	public final S withCriteria(final Map<String, List<Serializable>> userCriteria) {
 		Assertion.check()
 				.isNotNull(userCriteria)
-				.isTrue(myUserCriteria == null, "criteria was already set : {0}", myUserCriteria);
+				.isNull(myUserCriteria, "criteria was already set : {0}", myUserCriteria);
 		//-----
 		myUserCriteria = userCriteria;
 		return (S) this;

@@ -146,7 +146,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 				.isNotNull(myIndexDefinition, "You must set IndexDefinition")
 				.isNotNull(mySearchQuery, "You must set SearchQuery")
 				.isNotNull(myListState, "You must set ListState")
-				.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent(), () -> Assertion.test() //si il y a un cluster on vérifie le maxRows
+				.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent(), () -> Assertion.check() //si il y a un cluster on vérifie le maxRows
 						.isTrue(myListState.getMaxRows().get() < TOPHITS_SUBAGGREGATION_MAXSIZE,
 								"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE));
 		//-----

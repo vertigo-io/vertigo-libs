@@ -62,7 +62,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 */
 	public NotificationBuilder withSender(final String sender) {
 		Assertion.check()
-				.isTrue(mySender == null, "sender already set")
+				.isNull(mySender, "sender already set")
 				.isNotBlank(sender);
 		//-----
 		mySender = sender;
@@ -74,7 +74,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 * @return this builder
 	 */
 	public NotificationBuilder withType(final String type) {
-		Assertion.check().isTrue(myType == null, "type already set");
+		Assertion.check().isNull(myType, "type already set");
 		//type is nullable
 		//-----
 		myType = type;
@@ -87,7 +87,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 */
 	public NotificationBuilder withCreationDate(final Instant creationInstant) {
 		Assertion.check()
-				.isTrue(myCreationInstant == null, "creationDate already set")
+				.isNull(myCreationInstant, "creationDate already set")
 				.isNotNull(creationInstant);
 		//-----
 		myCreationInstant = creationInstant;
@@ -100,7 +100,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 */
 	public NotificationBuilder withTitle(final String title) {
 		Assertion.check()
-				.isTrue(myTitle == null, "title already set")
+				.isNull(myTitle, "title already set")
 				.isNotBlank(title);
 		//-----
 		myTitle = title;
@@ -113,7 +113,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 */
 	public NotificationBuilder withContent(final String content) {
 		Assertion.check()
-				.isTrue(myContent == null, "content already set")
+				.isNull(myContent, "content already set")
 				.isNotBlank(content);
 		//-----
 		myContent = content;
@@ -137,7 +137,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 */
 	public NotificationBuilder withTargetUrl(final String targetUrl) {
 		Assertion.check()
-				.isTrue(myTargetUrl == null, "targetUrl already set")
+				.isNull(myTargetUrl, "targetUrl already set")
 				.isNotBlank(targetUrl);
 		//-----
 		myTargetUrl = targetUrl;
@@ -150,7 +150,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 */
 	public NotificationBuilder withUserContent(final String userContent) {
 		Assertion.check()
-				.isTrue(myUserContent == null, "userContent already set")
+				.isNull(myUserContent, "userContent already set")
 				.isNotNull(userContent);
 		//-----
 		myUserContent = ("".equals(userContent) ? null : userContent);// "" translated to Optional.empty

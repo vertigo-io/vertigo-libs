@@ -165,7 +165,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	 */
 	private void addInnerTransaction(final VTransactionImpl newInnerTransaction) {
 		Assertion.check()
-				.isTrue(innerTransaction == null, "the current transaction has already an inner transaction")
+				.isNull(innerTransaction, "the current transaction has already an inner transaction")
 				.isNotNull(newInnerTransaction);
 		newInnerTransaction.state.assertIsAlive();
 		//-----
@@ -194,7 +194,7 @@ final class VTransactionImpl implements VTransactionWritable {
 				.isNotNull(id);
 		//-----
 		final Object o = resources.put(id, resource);
-		Assertion.check().isTrue(o == null, "Ressource déjà enregistrée");
+		Assertion.check().isNull(o, "Resource already set");
 	}
 
 	/** {@inheritDoc} */

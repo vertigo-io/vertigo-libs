@@ -95,7 +95,7 @@ public final class AccountMapperHelper<S, D> {
 			Assertion.check()
 					.isTrue(splitedMapping.length == 2,
 							"Mapping should respect the pattern sourceFields:destFields :(like sourceAttr1:destAttr1, sourceAttr2:destAttr2, ... (check : {0})", sourceToDestMappingStr)
-					.when(sourceDtDefinition.isPresent(), () -> Assertion.test()
+					.when(sourceDtDefinition.isPresent(), () -> Assertion.check()
 							.isTrue(sourceDtDefinition.get().contains(splitedMapping[1]), "sourceField {0} must be in DtDefinition {1}", splitedMapping[1], sourceDtDefinition.orElse(null)));
 			//It's reverse compared to config String : we keep a map of key:destAttribute -> value:sourceAttribute
 			final S source;
@@ -106,7 +106,7 @@ public final class AccountMapperHelper<S, D> {
 			}
 			if (!reservedDestField.contains(splitedMapping[0])) {
 				Assertion.check()
-						.when(destDtDefinition.isPresent(), () -> Assertion.test())
+						.when(destDtDefinition.isPresent(), () -> Assertion.check())
 						.isTrue(destDtDefinition.get().contains(splitedMapping[0]), "destField {0} must be in DtDefinition {1}", splitedMapping[0], destDtDefinition.orElse(null));
 				final D dest;
 				if (destDtDefinition.isPresent()) {

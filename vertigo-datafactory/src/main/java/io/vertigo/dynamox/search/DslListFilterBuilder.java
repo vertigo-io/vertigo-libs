@@ -109,7 +109,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	public ListFilterBuilder<C> withDslQuery(final List<DslMultiExpression> dslQuery) {
 		Assertion.check()
 				.isNotNull(dslQuery)
-				.isTrue(myBuildQuery == null, "query was already set : {0}", dslQuery);
+				.isNull(myBuildQuery, "query was already set : {0}", dslQuery);
 		//-----
 		myBuildQuery = dslQuery;
 		return this;
@@ -124,7 +124,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	public ListFilterBuilder<C> withCriteria(final C criteria) {
 		Assertion.check()
 				.isNotNull(criteria)
-				.isTrue(myCriteria == null, "criteria was already set : {0}", myCriteria);
+				.isNull(myCriteria, "criteria was already set : {0}", myCriteria);
 		//-----
 		this.myCriteria = criteria;
 		return this;

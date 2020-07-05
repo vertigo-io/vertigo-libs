@@ -118,7 +118,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	public FileInfo create(final FileInfo fileInfo) {
 		checkReadonly();
 		checkDefinitionStoreBinding(fileInfo.getDefinition());
-		Assertion.check().isTrue(fileInfo.getURI() == null, "Only file without any id can be created");
+		Assertion.check().isNull(fileInfo.getURI(), "Only file without any id can be created");
 		//-----
 		final Entity fileMetadataDto = createMetaDataEntity(fileInfo);
 		final Entity fileEntity = createFileEntity(fileInfo);

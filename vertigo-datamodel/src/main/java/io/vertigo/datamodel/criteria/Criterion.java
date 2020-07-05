@@ -48,7 +48,7 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 				.isNotNull(dtFieldName)
 				.isNotNull(criterionOperator)
 				.isNotNull(values)
-				.when(CriterionOperator.IN != criterionOperator, () -> Assertion.test()
+				.when(CriterionOperator.IN != criterionOperator, () -> Assertion.check()
 						.isTrue(criterionOperator.getArity() == values.length, "Only {0} argument(s) functions are allowed for operator '{1}'",
 								criterionOperator.getArity(),
 								criterionOperator));

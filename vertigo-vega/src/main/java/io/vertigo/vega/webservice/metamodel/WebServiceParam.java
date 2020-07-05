@@ -119,9 +119,9 @@ public final class WebServiceParam {
 
 		Assertion.check()
 				.isNotNull(name)
-				.when(paramType == WebServiceParamType.Implicit, () -> Assertion.test()
+				.when(paramType == WebServiceParamType.Implicit, () -> Assertion.check()
 						.isTrue(isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name))
-				.when(name.isEmpty(), () -> Assertion.test()
+				.when(name.isEmpty(), () -> Assertion.check()
 						.isTrue(WebServiceTypeUtil.isAssignableFrom(DtListState.class, type)
 								|| WebServiceTypeUtil.isAssignableFrom(DtObject.class, type),
 								"Only DtObject and DtListState can be map from Query parameters")); //msg don't talk about deprecated class

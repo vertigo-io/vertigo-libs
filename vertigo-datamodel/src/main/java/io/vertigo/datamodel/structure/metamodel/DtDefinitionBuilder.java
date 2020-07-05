@@ -217,7 +217,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			final String fieldName,
 			final String label,
 			final SmartTypeDefinition domain) {
-		Assertion.check().isTrue(myIdField == null, "only one ID per Entity is permitted, error on {0}", myPackageName);
+		Assertion.check().isNull(myIdField, "only one ID per Entity is permitted, error on {0}", myPackageName);
 		//---
 		//le champ ID est tjrs required
 		final Cardinality cardinality = Cardinality.ONE;
@@ -312,7 +312,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	/** {@inheritDoc} */
 	@Override
 	public DtDefinition build() {
-		Assertion.check().isTrue(dtDefinition == null, "build() already executed");
+		Assertion.check().isNull(dtDefinition, "build() already executed");
 		//-----
 		if (myStereotype == null) {
 			myStereotype = myIdField == null ? DtStereotype.ValueObject : DtStereotype.Entity;

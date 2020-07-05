@@ -81,7 +81,7 @@ public final class SqlManagerImpl implements SqlDataBaseManager {
 		for (final SqlConnectionProviderPlugin sqlConnectionProviderPlugin : sqlConnectionProviderPlugins) {
 			final String name = sqlConnectionProviderPlugin.getName();
 			final SqlConnectionProvider previous = connectionProviderPluginMap.put(name, sqlConnectionProviderPlugin);
-			Assertion.check().isTrue(previous == null, "ConnectionProvider {0}, was already registered", name);
+			Assertion.check().isNull(previous, "ConnectionProvider {0}, was already registered", name);
 		}
 		localeManager.add("io.vertigo.database.impl.sql.DataBase", io.vertigo.database.impl.sql.Resources.values());
 		//---

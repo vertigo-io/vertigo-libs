@@ -56,7 +56,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	 */
 	public CommentBuilder withAuthor(final UID<Account> author) {
 		Assertion.check()
-				.isTrue(myAuthor == null, "author already set")
+				.isNull(myAuthor, "author already set")
 				.isNotNull(author);
 		//-----
 		myAuthor = author;
@@ -70,7 +70,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	 */
 	public CommentBuilder withUuid(final UUID uuid) {
 		Assertion.check()
-				.isTrue(myUuid == null, "UUID already set")
+				.isNull(myUuid, "UUID already set")
 				.isNotNull(uuid);
 		//-----
 		myUuid = uuid;
@@ -83,7 +83,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	 */
 	public CommentBuilder withMsg(final String msg) {
 		Assertion.check()
-				.isTrue(myMsg == null, "msg already set")
+				.isNull(myMsg, "msg already set")
 				.isNotBlank(msg);
 		//-----
 		myMsg = msg;
@@ -96,7 +96,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	 */
 	public CommentBuilder withCreationDate(final Instant creationInstant) {
 		Assertion.check()
-				.isTrue(myCreationInstant == null, "creationDate already set")
+				.isNull(myCreationInstant, "creationDate already set")
 				.isNotNull(creationInstant);
 		//-----
 		myCreationInstant = creationInstant;
@@ -108,7 +108,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	 * @return this builder
 	 */
 	public CommentBuilder withLastModified(final Instant lastModified) {
-		Assertion.check().isTrue(myLastModified == null, "lastModified already set");
+		Assertion.check().isNull(myLastModified, "lastModified already set");
 		//lastModified is optional
 		//-----
 		myLastModified = lastModified;

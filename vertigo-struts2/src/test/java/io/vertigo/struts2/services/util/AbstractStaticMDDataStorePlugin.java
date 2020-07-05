@@ -94,7 +94,7 @@ public class AbstractStaticMDDataStorePlugin implements EntityStorePlugin {
 		Assertion.check()
 				.isNotNull(dtDefinition)
 				.isNotNull(dtListState)
-				.isTrue(criteria == null, "This store could only load all data, not {0}", criteria);
+				.isNull(criteria, "This store could only load all data, not {0}", criteria);
 		//-----
 		final String methodName = "get" + dtDefinition.getClassSimpleName() + "MDList";
 		final DtList<E> dtList = (DtList<E>) invokeMethod(methodName, null);

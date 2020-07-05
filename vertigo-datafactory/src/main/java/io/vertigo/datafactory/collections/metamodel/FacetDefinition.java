@@ -101,9 +101,9 @@ public final class FacetDefinition extends AbstractDefinition {
 				.isNotNull(facetValues)
 				.isNotNull(customFacetParams)
 				.isNotNull(order)
-				.when(rangeFacet, () -> Assertion.test()
+				.when(rangeFacet, () -> Assertion.check()
 						.isFalse(facetValues.isEmpty(), "La FacetDefinition '" + name + "' de type 'range' doit fournir la liste des segments non vides (FacetValues)"))
-				.when(!rangeFacet, () -> Assertion.test()
+				.when(!rangeFacet, () -> Assertion.check()
 						.isTrue(facetValues.isEmpty(), "La FacetDefinition '" + name + "' de type 'term' doit fournir une liste des segments vide"));
 		//-----
 		this.dtField = dtField;

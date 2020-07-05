@@ -69,7 +69,7 @@ public final class IndexFilterFunction<D extends DtObject> implements UnaryOpera
 	 */
 	public void filter(final String userKeywords, final int maxRows, final Collection<DtField> keywordsSearchedFields) {
 		Assertion.check()
-				.isTrue(keywords == null, "Keywords was already set on this processor : {0}. Only one is supported.", keywords)
+				.isNull(keywords, "Keywords was already set on this processor : {0}. Only one is supported.", keywords)
 				.isNotNull(userKeywords)
 				.isNotNull(keywordsSearchedFields);
 		//-----
@@ -85,7 +85,7 @@ public final class IndexFilterFunction<D extends DtObject> implements UnaryOpera
 	 * @param desc if sort desc
 	 */
 	public void sort(final String fieldName, final boolean desc) {
-		Assertion.check().isTrue(sortFieldName == null, "sortFieldName was already set on this processor : {0}. Only one is supported.", sortFieldName);
+		Assertion.check().isNull(sortFieldName, "sortFieldName was already set on this processor : {0}. Only one is supported.", sortFieldName);
 		//-----
 		sortFieldName = fieldName;
 		sortDesc = desc;

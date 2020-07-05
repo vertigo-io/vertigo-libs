@@ -48,7 +48,7 @@ public final class ExpressionParameter {
 		Assertion.check()
 				.isNotBlank(name)
 				.isNotNull(type)
-				.when(value != null, () -> Assertion.test()
+				.when(value != null, () -> Assertion.check()
 						.isTrue(type.isInstance(value), "Valeur du paramètre '{0}' inconsistant avec son type '{1}'", name, type.getSimpleName()));
 		//---
 		this.name = name;

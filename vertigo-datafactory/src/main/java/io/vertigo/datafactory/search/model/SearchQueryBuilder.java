@@ -117,7 +117,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	public SearchQueryBuilder withFacet(final FacetedQuery facetedQuery) {
 		Assertion.check()
 				.isNotNull(facetedQuery)
-				.isTrue(myFacetedQuery == null, "Facets already set (may have set via FacetedQueryDefinition {0})", facetedQueryDefinition.getName());
+				.isNull(myFacetedQuery, "Facets already set (may have set via FacetedQueryDefinition {0})", facetedQueryDefinition.getName());
 		//-----
 		myFacetedQuery = facetedQuery;
 		return this;

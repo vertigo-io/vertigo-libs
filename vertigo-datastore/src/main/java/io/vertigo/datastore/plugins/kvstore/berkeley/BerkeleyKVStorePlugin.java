@@ -121,7 +121,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 					Assertion.check().isFalse(inMemory, "inMemory already defined on {0}", collection);
 					inMemory = true;
 				} else {
-					Assertion.check().isTrue(collectionName == null, "collectionName already defined on {0}", collection);
+					Assertion.check().isNull(collectionName, "collectionName already defined on {0}", collection);
 					collectionName = collectionDetail;
 				}
 			}

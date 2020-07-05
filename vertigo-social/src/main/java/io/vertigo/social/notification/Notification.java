@@ -62,7 +62,7 @@ public final class Notification {
 				.isNotBlank(targetUrl)
 				.isNotNull(creationDate)
 				.isNotNull(userContent)
-				.when(userContent.isPresent(), () -> Assertion.test()
+				.when(userContent.isPresent(), () -> Assertion.check()
 						.isTrue(userContent.get().length() > 0, "userContent can't be empty if set"));
 		//-----
 		this.uuid = uuid;

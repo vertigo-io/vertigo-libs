@@ -91,10 +91,10 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 				for (final Serializable userValue : userValues) {
 					Assertion.check()
 							.isNotNull(userValue)
-							.when(!userValue.getClass().isArray(), () -> Assertion.test()
+							.when(!userValue.getClass().isArray(), () -> Assertion.check()
 									.isTrue(userValue instanceof Comparable,
 											"Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName()))
-							.when(userValue.getClass().isArray(), () -> Assertion.test()
+							.when(userValue.getClass().isArray(), () -> Assertion.check()
 									.isTrue(Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
 											"Security keys must be serializable AND comparable (here : {0})", userValue.getClass().getComponentType()));
 					//----

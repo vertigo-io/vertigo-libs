@@ -56,7 +56,7 @@ public class MailBuilder implements Builder<Mail> {
 	public MailBuilder withSubject(final String subject) {
 		Assertion.check()
 				.isNotBlank(subject)
-				.isTrue(mySubject == null, "subject is already completed");
+				.isNull(mySubject, "subject is already completed");
 		//-----
 		mySubject = subject;
 		return this;
@@ -69,7 +69,7 @@ public class MailBuilder implements Builder<Mail> {
 	 */
 	public MailBuilder from(final String from) {
 		Assertion.check()
-				.isTrue(myFrom == null, "from is already completed")
+				.isNull(myFrom, "from is already completed")
 				.isNotBlank(from);
 		//-----
 		myFrom = from;
@@ -82,7 +82,8 @@ public class MailBuilder implements Builder<Mail> {
 	 * @return MailBuilder
 	 */
 	public MailBuilder replyTo(final String replyTo) {
-		Assertion.check().isTrue(myReplyTo == null, "replyTo is already completed")
+		Assertion.check()
+				.isNull(myReplyTo, "replyTo is already completed")
 				.isNotBlank(replyTo);
 		//-----
 		myReplyTo = replyTo;
@@ -126,7 +127,7 @@ public class MailBuilder implements Builder<Mail> {
 	 */
 	public MailBuilder withTextContent(final String textContent) {
 		Assertion.check()
-				.isTrue(myTextContent == null, "textContent is already completed")
+				.isNull(myTextContent, "textContent is already completed")
 				.isNotBlank(textContent);
 		//-----
 		myTextContent = textContent;
@@ -140,7 +141,7 @@ public class MailBuilder implements Builder<Mail> {
 	 */
 	public MailBuilder withHtmlContent(final String htmlContent) {
 		Assertion.check()
-				.isTrue(myHtmlContent == null, "htmlContent is already completed")
+				.isNull(myHtmlContent, "htmlContent is already completed")
 				.isNotBlank(htmlContent);
 		//-----
 		myHtmlContent = htmlContent;

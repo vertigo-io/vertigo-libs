@@ -112,9 +112,9 @@ public final class WebServiceDefinition extends AbstractDefinition {
 				.isNotNull(doc); //doc can be empty
 		final String userFriendlyMethodName = method.getDeclaringClass().getSimpleName() + "." + method.getName();
 		Assertion.check()
-				.when(accessTokenConsume, () -> Assertion.test()
+				.when(accessTokenConsume, () -> Assertion.check()
 						.isTrue(accessTokenMandatory, "AccessToken mandatory for accessTokenConsume ({0})", userFriendlyMethodName))
-				.when(serverSideSave, () -> Assertion.test()
+				.when(serverSideSave, () -> Assertion.check()
 						.isTrue(needSession, "Session mandatory for serverSideState ({0})", userFriendlyMethodName)
 						.isTrue(!Void.TYPE.equals(method.getReturnType()), "Return object mandatory for serverSideState ({0})", userFriendlyMethodName));
 		checkPathParams(path, webServiceParams, userFriendlyMethodName);

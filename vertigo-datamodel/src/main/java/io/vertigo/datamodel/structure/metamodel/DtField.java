@@ -151,7 +151,7 @@ public final class DtField {
 		if (getType() == FieldType.FOREIGN_KEY) {
 			Assertion.check().isNotNull(fkDtDefinitionName, "Le champ {0} de type clé étrangère doit référencer une définition ", fieldName);
 		} else {
-			Assertion.check().isTrue(fkDtDefinitionName == null, "Le champ {0} n''est pas une clé étrangère", fieldName);
+			Assertion.check().isNull(fkDtDefinitionName, "Le champ {0} n''est pas une clé étrangère", fieldName);
 		}
 		this.fkDtDefinitionName = fkDtDefinitionName;
 		//-----

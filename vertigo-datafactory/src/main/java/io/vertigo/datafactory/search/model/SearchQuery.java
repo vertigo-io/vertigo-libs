@@ -79,13 +79,13 @@ public final class SearchQuery implements Serializable {
 				.isNotNull(facetedQuery)
 				.isNotNull(queryCriteria)
 				.isNotNull(securityListFilter)
-				.when(boostedDocumentDateField != null, () -> Assertion.test()
+				.when(boostedDocumentDateField != null, () -> Assertion.check()
 						.isTrue(numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires."))
-				.when(boostedDocumentDateField == null, () -> Assertion.test()
+				.when(boostedDocumentDateField == null, () -> Assertion.check()
 						.isTrue(numDaysOfBoostRefDocument == null && mostRecentBoost == null, "Lorsque le boost des documents récents est désactivé, numDaysOfBoostRefDocument et mostRecentBoost doivent être null."))
-				.when(numDaysOfBoostRefDocument != null, () -> Assertion.test()
+				.when(numDaysOfBoostRefDocument != null, () -> Assertion.check()
 						.isTrue(numDaysOfBoostRefDocument.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1."))
-				.when(mostRecentBoost != null, () -> Assertion.test()
+				.when(mostRecentBoost != null, () -> Assertion.check()
 						.isTrue(mostRecentBoost.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1."));
 		//-----
 		this.facetedQuery = facetedQuery;
