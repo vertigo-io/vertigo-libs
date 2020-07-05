@@ -69,9 +69,9 @@ public abstract class AssociationDefinition extends AbstractDefinition {
 	}
 
 	private static void checkNavigability(final AssociationNode associationNode, final String associationName) {
-		//-----
-		Assertion.when(associationNode.isNavigable())
-				.isTrue(() -> associationNode.getDtDefinition().getStereotype().isPersistent(), "assocation : {0}. you cannot navigate towards an object that is not an entity ", associationName);
+		Assertion.check()
+				.when(associationNode.isNavigable(), () -> Assertion.test()
+						.isTrue(associationNode.getDtDefinition().getStereotype().isPersistent(), "assocation : {0}. you cannot navigate towards an object that is not an entity ", associationName));
 	}
 
 	/**

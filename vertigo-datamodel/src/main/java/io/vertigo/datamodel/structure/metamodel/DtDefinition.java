@@ -102,9 +102,10 @@ public final class DtDefinition extends AbstractDefinition {
 		handleFieldOpt = handleField;
 
 		for (final DtField dtField : dtFields) {
-			Assertion.when(stereotype.isPersistent() && dtField.isPersistent())
-					.isTrue(() -> !dtField.getCardinality().hasMany(),
-							"Only non multiple smarttype are allowed in entity '{0}'", name);
+			Assertion.check()
+					.when(stereotype.isPersistent() && dtField.isPersistent(), () -> Assertion.test()
+							.isTrue(!dtField.getCardinality().hasMany(),
+									"Only non multiple smarttype are allowed in entity '{0}'", name));
 			if (dtField.getType().isId()) {
 				Assertion.check().isTrue(id == null, "Only one ID Field is allowed : {0}", name);
 				id = dtField;
@@ -114,13 +115,14 @@ public final class DtDefinition extends AbstractDefinition {
 		idFieldOpt = Optional.ofNullable(id);
 		this.dataSpace = dataSpace;
 		//-----
-		Assertion.when(fragment.isPresent())
-				.isTrue(() -> DtStereotype.Fragment == stereotype, "Error on {0} with sterotype {1}, If an object is a fragment then it must have this stereotype", name, stereotype);
-		//Persistent => ID
-		Assertion.when(stereotype.isPersistent())
-				.isTrue(idFieldOpt::isPresent, "Error on {0}, If an object is persistent then it must have an ID", name);
-		Assertion.when(!stereotype.isPersistent())
-				.isTrue(() -> idFieldOpt.isEmpty(), "Error on {0}, If an object is not persistent then it must have no ID", name);
+		Assertion.check()
+				.when(fragment.isPresent(), () -> Assertion.test()
+						.isTrue(DtStereotype.Fragment == stereotype, "Error on {0} with sterotype {1}, If an object is a fragment then it must have this stereotype", name, stereotype))
+				//Persistent => ID
+				.when(stereotype.isPersistent(), () -> Assertion.test()
+						.isTrue(idFieldOpt.isPresent(), "Error on {0}, If an object is persistent then it must have an ID", name))
+				.when(!stereotype.isPersistent(), () -> Assertion.test()
+						.isTrue(idFieldOpt.isEmpty(), "Error on {0}, If an object is not persistent then it must have no ID", name));
 	}
 
 	/**

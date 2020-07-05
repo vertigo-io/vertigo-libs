@@ -98,13 +98,13 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 				String sep = "";
 				for (final Serializable userValue : userValues) {
 					Assertion.check()
-							.isNotNull(userValue);
-					Assertion.when(!userValue.getClass().isArray())
-							.isTrue(() -> userValue instanceof Comparable,
-									"Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName());
-					Assertion.when(userValue.getClass().isArray())
-							.isTrue(() -> Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
-									"Security keys must be serializable AND comparable (here : {0})", userValue.getClass().getComponentType());
+							.isNotNull(userValue)
+							.when(!userValue.getClass().isArray(), () -> Assertion.test()
+									.isTrue(userValue instanceof Comparable,
+											"Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName()))
+							.when(userValue.getClass().isArray(), () -> Assertion.test()
+									.isTrue(Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
+											"Security keys must be serializable AND comparable (here : {0})", userValue.getClass().getComponentType()));
 					//----
 					query.append(sep);
 					appendExpression(query, expressionDefinition.getFieldName(), expressionDefinition.getOperator(), userValue);

@@ -61,9 +61,9 @@ public final class Notification {
 				.isTrue(ttlInSeconds == -1 || ttlInSeconds > 0, "ttl must be positive or undefined (-1).")
 				.isNotBlank(targetUrl)
 				.isNotNull(creationDate)
-				.isNotNull(userContent);
-		Assertion.when(userContent.isPresent())
-				.isTrue(() -> userContent.get().length() > 0, "userContent can't be empty if set");
+				.isNotNull(userContent)
+				.when(userContent.isPresent(), () -> Assertion.test()
+						.isTrue(userContent.get().length() > 0, "userContent can't be empty if set"));
 		//-----
 		this.uuid = uuid;
 		this.sender = sender;

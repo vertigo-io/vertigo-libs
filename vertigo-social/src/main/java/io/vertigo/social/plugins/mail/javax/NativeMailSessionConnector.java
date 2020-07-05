@@ -63,12 +63,12 @@ public final class NativeMailSessionConnector implements MailSessionConnector {
 				.isNotBlank(mailHost)
 				.isNotNull(mailPort)
 				.isNotNull(mailLogin)
-				.isNotNull(mailPassword);
-		Assertion.when(mailLogin.isPresent())
-				.isTrue(() -> !StringUtil.isBlank(mailLogin.get()), // if set, login can't be empty
-						"When defined Login can't be empty");
-		Assertion.check().isTrue(mailLogin.isEmpty() ^ mailPassword.isPresent(), // login and password must be null or not null both
-				"Password is required when login is defined");
+				.isNotNull(mailPassword)
+				.when(mailLogin.isPresent(), () -> Assertion.test()
+						.isTrue(!StringUtil.isBlank(mailLogin.get()), // if set, login can't be empty
+								"When defined Login can't be empty"))
+				.isTrue(mailLogin.isEmpty() ^ mailPassword.isPresent(), // login and password must be null or not null both
+						"Password is required when login is defined");
 		//-----
 		this.mailStoreProtocol = mailStoreProtocol;
 		this.mailHost = mailHost;

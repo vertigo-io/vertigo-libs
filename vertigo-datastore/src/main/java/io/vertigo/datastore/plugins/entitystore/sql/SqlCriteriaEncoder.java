@@ -110,9 +110,10 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 						|| value instanceof Long,
 				"Only String,Long and Integers are allowed in a where in clause.");
 		// we check to avoid sql injection without espacing and parametizing the statement
-		Assertion.when(value instanceof String)
-				.isTrue(() -> ONLY_SIMPLE_CHAR_PATTERN.matcher((String) value).matches(), "Only simple characters are allowed");
-		// ---
+		Assertion.check()
+				.when(value instanceof String, () -> Assertion.test()
+						.isTrue(ONLY_SIMPLE_CHAR_PATTERN.matcher((String) value).matches(), "Only simple characters are allowed"));
+		//---
 		if (value instanceof String) {
 			return "'" + value.toString() + "'";
 		}

@@ -136,12 +136,13 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	 * @return this builder
 	 */
 	public WebServiceDefinitionBuilder with(final Verb verb, final String path) {
-		Assertion.check().isTrue(myVerb == null, "A verb is already specified on {0}.{1} ({2})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName(), myVerb);
-		Assertion.when(StringUtil.isBlank(myPathPrefix))
-				.isTrue(() -> !StringUtil.isBlank(path), "Route path must be specified on {0}.{1} (at least you should defined a pathPrefix)", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
-		Assertion.when(!StringUtil.isBlank(path))
-				.isTrue(() -> path.startsWith("/"), "Route path must be empty (then use pathPrefix) or starts with / (on {0}.{1})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
-		//-----
+		Assertion.check()
+				.isTrue(myVerb == null, "A verb is already specified on {0}.{1} ({2})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName(), myVerb)
+				.when(StringUtil.isBlank(myPathPrefix), () -> Assertion.test()
+						.isFalse(StringUtil.isBlank(path), "Route path must be specified on {0}.{1} (at least you should defined a pathPrefix)", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName()))
+				.when(!StringUtil.isBlank(path), () -> Assertion.test()
+						.isTrue(path.startsWith("/"), "Route path must be empty (then use pathPrefix) or starts with / (on {0}.{1})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName()));
+		//---
 		myVerb = verb;
 		myPath = path;
 		return this;

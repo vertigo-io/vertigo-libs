@@ -34,8 +34,10 @@ public class GeoSearchManagerImpl implements GeoSearchManager {
 			final Class<D> dtIndexClass,
 			final DtFieldName<D> fieldName,
 			final Optional<Integer> maxRowsOpt) {
-		Assertion.when(maxRowsOpt.isPresent())
-				.isTrue(() -> maxRowsOpt.get() < DEFAULT_MAX_ROWS, "Max rows must be lower than ", MAX_MAX_ROWS);
+		Assertion.check()
+				.when(maxRowsOpt.isPresent(), () -> Assertion.test()
+						.isTrue(maxRowsOpt.get() < DEFAULT_MAX_ROWS, "Max rows must be lower than ", MAX_MAX_ROWS));
+		//---
 		return geoSearchPlugin.searchInBoundingBox(topLeft, bottomRight, indexName, dtIndexClass, fieldName, maxRowsOpt.orElse(DEFAULT_MAX_ROWS));
 	}
 

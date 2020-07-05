@@ -92,10 +92,11 @@ public final class AccountMapperHelper<S, D> {
 	public AccountMapperHelper<S, D> parseAttributeMapping() {
 		for (final String mapping : ATTRIBUTES_PATTERN.split(sourceToDestMappingStr)) {
 			final String[] splitedMapping = ATTRIBUTE_VALUE_PATTERN.split(mapping);
-			Assertion.check().isTrue(splitedMapping.length == 2,
-					"Mapping should respect the pattern sourceFields:destFields :(like sourceAttr1:destAttr1, sourceAttr2:destAttr2, ... (check : {0})", sourceToDestMappingStr);
-			Assertion.when(sourceDtDefinition.isPresent())
-					.isTrue(() -> sourceDtDefinition.get().contains(splitedMapping[1]), "sourceField {0} must be in DtDefinition {1}", splitedMapping[1], sourceDtDefinition.orElse(null));
+			Assertion.check()
+					.isTrue(splitedMapping.length == 2,
+							"Mapping should respect the pattern sourceFields:destFields :(like sourceAttr1:destAttr1, sourceAttr2:destAttr2, ... (check : {0})", sourceToDestMappingStr)
+					.when(sourceDtDefinition.isPresent(), () -> Assertion.test()
+							.isTrue(sourceDtDefinition.get().contains(splitedMapping[1]), "sourceField {0} must be in DtDefinition {1}", splitedMapping[1], sourceDtDefinition.orElse(null)));
 			//It's reverse compared to config String : we keep a map of key:destAttribute -> value:sourceAttribute
 			final S source;
 			if (sourceDtDefinition.isPresent()) {
@@ -104,8 +105,9 @@ public final class AccountMapperHelper<S, D> {
 				source = (S) splitedMapping[1];
 			}
 			if (!reservedDestField.contains(splitedMapping[0])) {
-				Assertion.when(destDtDefinition.isPresent())
-						.isTrue(() -> destDtDefinition.get().contains(splitedMapping[0]), "destField {0} must be in DtDefinition {1}", splitedMapping[0], destDtDefinition.orElse(null));
+				Assertion.check()
+						.when(destDtDefinition.isPresent(), () -> Assertion.test())
+						.isTrue(destDtDefinition.get().contains(splitedMapping[0]), "destField {0} must be in DtDefinition {1}", splitedMapping[0], destDtDefinition.orElse(null));
 				final D dest;
 				if (destDtDefinition.isPresent()) {
 					dest = (D) destDtDefinition.get().getField(splitedMapping[0]);

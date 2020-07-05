@@ -78,15 +78,15 @@ public final class SearchQuery implements Serializable {
 		Assertion.check()
 				.isNotNull(facetedQuery)
 				.isNotNull(queryCriteria)
-				.isNotNull(securityListFilter);
-		Assertion.when(boostedDocumentDateField != null)
-				.isTrue(() -> numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires.");
-		Assertion.when(boostedDocumentDateField == null)
-				.isTrue(() -> numDaysOfBoostRefDocument == null && mostRecentBoost == null, "Lorsque le boost des documents récents est désactivé, numDaysOfBoostRefDocument et mostRecentBoost doivent être null.");
-		Assertion.when(numDaysOfBoostRefDocument != null)
-				.isTrue(() -> numDaysOfBoostRefDocument.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
-		Assertion.when(mostRecentBoost != null)
-				.isTrue(() -> mostRecentBoost.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
+				.isNotNull(securityListFilter)
+				.when(boostedDocumentDateField != null, () -> Assertion.test()
+						.isTrue(numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires."))
+				.when(boostedDocumentDateField == null, () -> Assertion.test()
+						.isTrue(numDaysOfBoostRefDocument == null && mostRecentBoost == null, "Lorsque le boost des documents récents est désactivé, numDaysOfBoostRefDocument et mostRecentBoost doivent être null."))
+				.when(numDaysOfBoostRefDocument != null, () -> Assertion.test()
+						.isTrue(numDaysOfBoostRefDocument.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1."))
+				.when(mostRecentBoost != null, () -> Assertion.test()
+						.isTrue(mostRecentBoost.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1."));
 		//-----
 		this.facetedQuery = facetedQuery;
 		this.queryCriteria = queryCriteria;
