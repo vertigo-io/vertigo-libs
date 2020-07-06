@@ -40,7 +40,7 @@ public final class SqlStatement {
 		return new SqlStatementBuilder(sqlQuery);
 	}
 
-	public SqlStatement(
+	SqlStatement(
 			final String sqlQuery,
 			final List<List<SqlParameter>> sqlParameters) {
 		Assertion.check()
