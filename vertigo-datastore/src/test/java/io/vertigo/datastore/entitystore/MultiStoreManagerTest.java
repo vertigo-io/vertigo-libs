@@ -34,6 +34,7 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -110,10 +111,10 @@ public final class MultiStoreManagerTest {
 
 	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.withLocales("fr_FR")
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.build())
 				.addModule(new CommonsFeatures()
 						.withScript()
 						.withJaninoScript()

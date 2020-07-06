@@ -36,6 +36,7 @@ import io.vertigo.connectors.elasticsearch.ElasticSearchFeatures;
 import io.vertigo.connectors.influxdb.InfluxDbFeatures;
 import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
@@ -75,11 +76,11 @@ public class DashboardLauncherTest {
 	private static NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.withAppName("dashboardtest")
-				.beginBoot()
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.withSocketLoggerAnalyticsConnector()
-				.withLocales("fr_FR")
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.withSocketLoggerAnalyticsConnector()
+						.withLocales("fr_FR")
+						.build())
 				.addModule(new RedisFeatures()
 						.withJedis(
 								Param.of("host", "redis-pic.part.klee.lan.net"),

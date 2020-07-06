@@ -32,6 +32,7 @@ import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.connectors.influxdb.InfluxDbFeatures;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -142,11 +143,12 @@ public final class TimeSeriesTest {
 	}
 
 	private NodeConfig buildNodeConfig() {
-		return NodeConfig.builder().beginBoot()
-				.withLocales("fr_FR")
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.addPlugin(URLResourceResolverPlugin.class)
-				.endBoot()
+		return NodeConfig.builder()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.addPlugin(URLResourceResolverPlugin.class)
+						.build())
 				.addModule(new InfluxDbFeatures().withInfluxDb(
 						Param.of("host", "http://analytica.part.klee.lan.net:8086"),
 						Param.of("user", "analytica"),

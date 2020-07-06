@@ -25,6 +25,7 @@ import io.vertigo.account.data.TestUserSession;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.connectors.ldap.LdapFeatures;
 import io.vertigo.connectors.redis.RedisFeatures;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -49,10 +50,10 @@ public final class MyNodeConfig {
 
 	public static NodeConfig config(final AuthentPlugin authentPlugin, final boolean redis) {
 		final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder()
-				.beginBoot()
-				.withLocales("fr")
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.endBoot();
+				.withBoot(BootConfig.builder()
+						.withLocales("fr")
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.build());
 
 		if (redis) {
 			nodeConfigBuilder.addModule(new RedisFeatures()

@@ -25,6 +25,7 @@ import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.plugins.authorization.loaders.JsonSecurityDefinitionProvider;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.app.infos.http.HttpAppNodeInfosPlugin;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -83,10 +84,10 @@ public final class MyNodeConfig {
 
 		return NodeConfig.builder()
 				.withEndPoint("http://localhost:" + WS_PORT)
-				.beginBoot()
-				.withLocales("fr")
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr")
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.build())
 				.addModule(new CommonsFeatures()
 						.withNodeInfosPlugin(HttpAppNodeInfosPlugin.class)
 						.build())

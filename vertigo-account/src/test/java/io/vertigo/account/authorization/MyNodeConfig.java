@@ -25,6 +25,7 @@ import io.vertigo.account.data.TestSmartTypes;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.data.model.DtDefinitions;
 import io.vertigo.account.plugins.authorization.loaders.JsonSecurityDefinitionProvider;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -36,10 +37,10 @@ public final class MyNodeConfig {
 
 	public static NodeConfig config() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.withLocales("fr_FR")
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.build())
 				.addModule(new AccountFeatures()
 						.withSecurity(
 								Param.of("userSessionClassName", TestUserSession.class.getName()))

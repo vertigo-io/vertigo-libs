@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -70,10 +71,11 @@ public final class PublisherManagerTest {
 	}
 
 	private NodeConfig buildNodeConfig() {
-		return NodeConfig.builder().beginBoot()
-				.withLocales("fr_FR")
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.endBoot()
+		return NodeConfig.builder()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.build())
 				.addModule(new CommonsFeatures()
 						.withScript()
 						.withJaninoScript()

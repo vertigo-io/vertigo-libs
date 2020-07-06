@@ -41,6 +41,7 @@ import org.w3c.dom.NodeList;
 
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.resource.ResourceManager;
@@ -102,9 +103,9 @@ public final class DOCXProcessorTest {
 
 	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.build())
 				.build();
 	}
 

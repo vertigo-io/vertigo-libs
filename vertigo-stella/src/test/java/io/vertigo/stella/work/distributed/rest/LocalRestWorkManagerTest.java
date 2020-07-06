@@ -34,8 +34,6 @@ public final class LocalRestWorkManagerTest extends AbstractWorkManagerTest {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
 				.addModule(new CommonsFeatures()
 						.build())
 				.addModule(new DataModelFeatures()

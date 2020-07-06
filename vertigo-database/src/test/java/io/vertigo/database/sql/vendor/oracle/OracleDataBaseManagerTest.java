@@ -21,6 +21,7 @@ package io.vertigo.database.sql.vendor.oracle;
 import org.junit.jupiter.api.Disabled;
 
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.database.DatabaseFeatures;
@@ -44,9 +45,9 @@ public final class OracleDataBaseManagerTest extends AbstractSqlManagerTest {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.withLocales("fr_FR")
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.build())
 				.addModule(new CommonsFeatures()
 						.build())
 				.addModule(new DatabaseFeatures()

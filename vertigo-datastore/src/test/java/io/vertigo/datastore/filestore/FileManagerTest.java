@@ -35,6 +35,7 @@ import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -73,9 +74,9 @@ public final class FileManagerTest {
 
 	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.build())
 				.addModule(new CommonsFeatures()
 						.build())
 				.addModule(new DataStoreFeatures()

@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -50,10 +51,10 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.withLocales("fr_FR")
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.build())
 				.addModule(new CommonsFeatures()
 						.withScript()
 						.withJaninoScript()

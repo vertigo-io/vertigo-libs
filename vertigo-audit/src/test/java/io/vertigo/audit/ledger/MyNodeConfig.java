@@ -37,8 +37,6 @@ public class MyNodeConfig {
 	 */
 	public static NodeConfig config() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
 				.addModule(new CommonsFeatures()
 						.build())
 				.addModule(new AuditFeatures()

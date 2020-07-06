@@ -30,6 +30,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.datastore.DataStoreFeatures;
@@ -70,9 +71,9 @@ public final class MailManagerTest {
 
 	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.withLocales("fr_FR")
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.build())
 				.addModule(new CommonsFeatures().build())
 				.addModule(new DataStoreFeatures().build())
 				.addModule(new SocialFeatures()

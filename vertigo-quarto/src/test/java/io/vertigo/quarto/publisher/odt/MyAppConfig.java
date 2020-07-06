@@ -19,6 +19,7 @@
 package io.vertigo.quarto.publisher.odt;
 
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -35,10 +36,11 @@ import io.vertigo.quarto.publisher.data.TestPublisherSmartTypes;
 class MyNodeConfig {
 
 	public static NodeConfig config() {
-		return NodeConfig.builder().beginBoot()
-				.withLocales("fr_FR")
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.endBoot()
+		return NodeConfig.builder()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.build())
 				.addModule(new CommonsFeatures()
 						.withScript()
 						.withJaninoScript()

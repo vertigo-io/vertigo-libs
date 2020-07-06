@@ -33,7 +33,6 @@ final class AppServletStarter extends AbstractAppServletStarter {
 	@Override
 	NodeConfig buildNodeConfig(final Properties bootConf) {
 		final YamlAppConfigBuilder nodeConfigBuilder = new YamlAppConfigBuilder(bootConf);
-		nodeConfigBuilder.beginBoot();
 
 		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 		if (bootConf.containsKey(LOG4J_CONFIGURATION_PARAM_NAME)) {

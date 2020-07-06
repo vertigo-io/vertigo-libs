@@ -23,6 +23,7 @@ import io.vertigo.account.plugins.account.cache.memory.MemoryAccountCachePlugin;
 import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.connectors.redis.RedisFeatures;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.config.NodeConfigBuilder;
@@ -51,10 +52,10 @@ public final class MyNodeConfig {
 		final String redisDatabase = "15";
 
 		final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder()
-				.beginBoot()
-				.withLocales("fr")
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.endBoot();
+				.withBoot(BootConfig.builder()
+						.withLocales("fr")
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.build());
 
 		final CommonsFeatures commonsFeatures = new CommonsFeatures();
 		if (redis) {

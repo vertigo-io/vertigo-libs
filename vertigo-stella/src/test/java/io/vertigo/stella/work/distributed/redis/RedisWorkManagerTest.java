@@ -32,8 +32,7 @@ public class RedisWorkManagerTest extends AbstractWorkManagerTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
-		return NodeConfig.builder().beginBoot()
-				.endBoot()
+		return NodeConfig.builder()
 				.addModule(new RedisFeatures()
 						.withJedis(
 								Param.of("host", "redis-pic.part.klee.lan.net"),

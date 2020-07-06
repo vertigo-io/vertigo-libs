@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintBigDecimal;
 import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintBigDecimalLength;
@@ -83,9 +84,9 @@ public final class ConstraintTest {
 
 	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.withLocales("fr_FR")
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.build())
 				.build();
 	}
 

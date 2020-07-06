@@ -46,8 +46,6 @@ public class RedisCacheManagerTest extends AbstractCacheManagerTest {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
 				.addModule(new CommonsFeatures()
 						.build())
 				.addModule(new RedisFeatures()

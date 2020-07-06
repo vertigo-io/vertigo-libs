@@ -28,8 +28,6 @@ public class StellaNodeConfigClientNode2 implements StellaNodeConfigClientNode {
 	@Override
 	public NodeConfig getNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
 				.addModule(new CommonsFeatures().build())
 				.addModule(new StellaFeatures()
 						.withWorker(

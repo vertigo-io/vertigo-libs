@@ -80,8 +80,6 @@ public final class RemoteConverterManagerTest {
 
 	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
 				.addModule(new CommonsFeatures().build())
 				.addModule(new DataStoreFeatures().build())
 				.addModule(new QuartoFeatures()

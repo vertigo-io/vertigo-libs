@@ -77,8 +77,6 @@ public final class VTransactionManagerTest {
 
 	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
 				.addModule(new CommonsFeatures()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")

@@ -72,8 +72,6 @@ public final class ScriptManagerTest {
 
 	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
 				.addModule(new CommonsFeatures()
 						.withScript()
 						.withJaninoScript()

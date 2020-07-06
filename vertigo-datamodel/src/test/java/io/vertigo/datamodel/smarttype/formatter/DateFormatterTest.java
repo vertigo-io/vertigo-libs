@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterDate;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
@@ -61,9 +62,9 @@ public class DateFormatterTest {
 
 	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.withLocalesAndDefaultZoneId("fr_FR", "UTC")
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLocalesAndDefaultZoneId("fr_FR", "UTC")
+						.build())
 				.build();
 	}
 

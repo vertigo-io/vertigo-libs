@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.database.DatabaseFeatures;
@@ -48,9 +49,9 @@ public class LiquibaseMigrationManagerTest {
 
 	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.withLocales("fr")
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr")
+						.build())
 				.addModule(new CommonsFeatures().build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()

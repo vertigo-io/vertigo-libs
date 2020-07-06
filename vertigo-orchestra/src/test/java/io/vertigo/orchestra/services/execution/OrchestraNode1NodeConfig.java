@@ -19,6 +19,7 @@
 package io.vertigo.orchestra.services.execution;
 
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.config.NodeConfigBuilder;
@@ -37,11 +38,11 @@ public final class OrchestraNode1NodeConfig {
 	public static NodeConfigBuilder createNodeConfigBuilder() {
 		return NodeConfig.builder()
 				.withNodeId("NodeTest2")
-				.beginBoot()
-				.withLocales("fr_FR")
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.addPlugin(URLResourceResolverPlugin.class)
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.addPlugin(URLResourceResolverPlugin.class)
+						.build())
 				.addModule(new CommonsFeatures()
 						.withScript()
 						.withJaninoScript()

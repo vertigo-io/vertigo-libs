@@ -70,8 +70,6 @@ public final class VTransactionBeforeAfterCommitTest {
 
 	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
 				.addModule(new CommonsFeatures()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")

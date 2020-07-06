@@ -20,6 +20,7 @@ package io.vertigo.orchestra;
 
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.config.NodeConfigBuilder;
@@ -47,11 +48,11 @@ public final class MyNodeConfig {
 	public static NodeConfigBuilder createNodeConfigBuilder() {
 		return NodeConfig.builder()
 				.withNodeId("NODE_TEST_1")
-				.beginBoot()
-				.withLocales("fr_FR")
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.addPlugin(URLResourceResolverPlugin.class)
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.addPlugin(URLResourceResolverPlugin.class)
+						.build())
 				.addModule(new CommonsFeatures()
 						.withScript()
 						.withJaninoScript()
