@@ -114,22 +114,22 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final String cacheName, final Serializable key, final Object value) {
+	public void put(final String context, final Serializable key, final Object value) {
 		Assertion.check()
-				.isNotNull(value, "CachePlugin can't cache null value. (context: {0}, key:{1})", cacheName, key)
+				.isNotNull(value, "CachePlugin can't cache null value. (context: {0}, key:{1})", context, key)
 				.isFalse((value instanceof byte[]), "CachePlugin can't cache byte[] values");
 		//-----
 		//On regarde la conf du cache pour vérifier s'il on serialize/clone les éléments ou non.
-		if (getCacheDefinition(cacheName).shouldSerializeElements()) {
+		if (getCacheDefinition(context).shouldSerializeElements()) {
 			Assertion.check().isTrue(value instanceof Serializable,
 					"Object to cache isn't Serializable. Make it unmodifiable or add it in noSerialization's plugin parameter. (context: {0}, key:{1}, class:{2})",
-					cacheName, key, value.getClass().getSimpleName());
+					context, key, value.getClass().getSimpleName());
 			// Sérialisation avec compression
 			final byte[] serializedObject = codecManager.getCompressedSerializationCodec().encode((Serializable) value);
 			//La sérialisation est équivalente à un deep Clone.
-			putEH(cacheName, key, serializedObject);
+			putEH(context, key, serializedObject);
 		} else {
-			putEH(cacheName, key, value);
+			putEH(context, key, value);
 		}
 	}
 
