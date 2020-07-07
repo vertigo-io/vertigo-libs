@@ -176,7 +176,7 @@ public class NumberFormatterTest {
 	 */
 	@Test
 	public void testFormatterNumberMLConflit() throws FormatterException {
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+		Assertions.assertThrows(IllegalStateException.class, () -> {
 			final FormatterNumber formatterNumberLocalized = new FormatterNumberLocalized("#,##0.##|.,|.");
 			formatterNumberLocalized.stringToValue("3.14", BasicType.BigDecimal);
 			//Détection du conflit entre séparateur décimal et de millier
