@@ -70,7 +70,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 	private final Set<String> excludeAttributes = singleton("params");
 	private final String componentName;
-	private final Optional<VariableExpression> selectionExpression;
+	private final Optional<VariableExpression> selectionExpressionOpt;
 	private final List<String> parameterNames;
 	private final Set<String> slotNames;
 	private final List<String> placeholderPrefixes;
@@ -89,7 +89,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		componentName = thymeleafComponent.getFragmentTemplate();
 		frag = thymeleafComponent.getFrag();
 
-		selectionExpression = thymeleafComponent.getSelectionExpression();
+		selectionExpressionOpt = thymeleafComponent.getSelectionExpression();
 		parameterNames = thymeleafComponent.getParameters();
 
 		slotNames = parameterNames.stream()
@@ -105,8 +105,8 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 	@Override
 	protected void doProcess(final ITemplateContext context, final IModel model, final IElementModelStructureHandler structureHandler) {
-		if (selectionExpression.isEmpty() //no selector
-				|| (boolean) selectionExpression.get().execute(context)) { //or selector valid
+		if (selectionExpressionOpt.isEmpty() //no selector
+				|| (boolean) selectionExpressionOpt.get().execute(context)) { //or selector valid
 
 			final IProcessableElementTag tag = processElementTag(context, model);
 			final Map<String, String> attributes = processAttribute(model, context, structureHandler);

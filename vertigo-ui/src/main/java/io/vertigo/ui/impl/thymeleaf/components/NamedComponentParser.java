@@ -122,7 +122,7 @@ public class NamedComponentParser extends AbstractMarkupHandler {
 		Assertion.check().isTrue(matches, "fragment '{0}' should match 'xxx' or 'xxx(params, ...)'", fragmentAttribute);
 		//----
 		final String frag = matcher.group(1);
-		final Optional<String> parameters = Optional.ofNullable(matcher.group(2));
+		final Optional<String> parametersOpt = Optional.ofNullable(matcher.group(2));
 
 		String name = getDynamicAttributeValue(element, dialectPrefix, NAME_ATTRIBUTE);
 		if (name == null) {
@@ -132,11 +132,11 @@ public class NamedComponentParser extends AbstractMarkupHandler {
 		final String selector = getDynamicAttributeValue(element, dialectPrefix, SELECTOR_ATTRIBUTE);
 		if (selector != null && !selector.isEmpty()) {
 			final Set<NamedComponentDefinition> thymeleafComponents = new HashSet<>();
-			thymeleafComponents.add(new NamedComponentDefinition(name, "components/" + componentName + ".html", selector, parameters, frag));
-			thymeleafComponents.add(new NamedComponentDefinition(frag, "components/" + componentName + ".html", parameters, frag)); //Fragment always accessible without selector
+			thymeleafComponents.add(new NamedComponentDefinition(name, "components/" + componentName + ".html", selector, parametersOpt, frag));
+			thymeleafComponents.add(new NamedComponentDefinition(frag, "components/" + componentName + ".html", parametersOpt, frag)); //Fragment always accessible without selector
 			return thymeleafComponents;
 		}
-		return Collections.singleton(new NamedComponentDefinition(name, "components/" + componentName + ".html", parameters, frag));
+		return Collections.singleton(new NamedComponentDefinition(name, "components/" + componentName + ".html", parametersOpt, frag));
 	}
 
 	private static boolean isThymeleafComponent(final Element element) {

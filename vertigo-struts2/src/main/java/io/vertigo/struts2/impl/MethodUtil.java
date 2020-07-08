@@ -47,12 +47,12 @@ public final class MethodUtil {
 	 * @return R Valeur retournée par l'invocation
 	 */
 	public static Object invoke(final Object instance, final String methodName, final Container container) {
-		final Optional<Method> actionMethod = findMethodByName(instance.getClass(), methodName);
-		if (actionMethod.isEmpty()) {
+		final Optional<Method> actionMethodOpt = findMethodByName(instance.getClass(), methodName);
+		if (actionMethodOpt.isEmpty()) {
 			throw new VSystemException("Méthode {0} non trouvée sur {1}", methodName, instance.getClass().getName());
 		}
-		actionMethod.get().setAccessible(true); //la méthode peut être protected
-		return invoke(instance, actionMethod.get(), container);
+		actionMethodOpt.get().setAccessible(true); //la méthode peut être protected
+		return invoke(instance, actionMethodOpt.get(), container);
 	}
 
 	/**

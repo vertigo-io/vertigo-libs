@@ -37,7 +37,7 @@ public final class PublisherField {
 	private final String name;
 	private final PublisherFieldType fieldType;
 
-	private final Optional<PublisherNodeDefinition> nodeDefinition;
+	private final Optional<PublisherNodeDefinition> nodeDefinitionOpt;
 
 	/**
 	 * Constructeur pour les champs composites (noeud de l'arbre de définition).
@@ -62,7 +62,7 @@ public final class PublisherField {
 		//-----
 		this.name = name;
 		this.fieldType = fieldType;
-		nodeDefinition = Optional.ofNullable(publisherDataNodeDefinition);
+		nodeDefinitionOpt = Optional.ofNullable(publisherDataNodeDefinition);
 	}
 
 	/**
@@ -85,6 +85,6 @@ public final class PublisherField {
 	 * Si et seulement si le champ est une liste ou un objet
 	 */
 	public Optional<PublisherNodeDefinition> getNodeDefinition() {
-		return nodeDefinition;
+		return nodeDefinitionOpt;
 	}
 }

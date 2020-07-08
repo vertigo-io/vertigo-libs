@@ -31,7 +31,7 @@ public final class NamedComponentDefinition {
 
 	private String name;
 	private String fragmentTemplate;
-	private final Optional<VariableExpression> selectionExpression;
+	private final Optional<VariableExpression> selectionExpressionOpt;
 	private final List<String> parameters;
 	private final String frag;
 
@@ -48,7 +48,7 @@ public final class NamedComponentDefinition {
 		this.name = name;
 		this.fragmentTemplate = fragmentTemplate;
 		final String trimmedSelectionExpression = selectionExpression.substring(2, selectionExpression.length() - 1);
-		this.selectionExpression = Optional.of(new VariableExpression(trimmedSelectionExpression));
+		this.selectionExpressionOpt = Optional.of(new VariableExpression(trimmedSelectionExpression));
 		this.parameters = splitAsSet(parameters);
 		this.frag = frag;
 	}
@@ -61,7 +61,7 @@ public final class NamedComponentDefinition {
 		//-----
 		this.name = name;
 		this.fragmentTemplate = fragmentTemplate;
-		selectionExpression = Optional.empty();
+		selectionExpressionOpt = Optional.empty();
 		this.parameters = splitAsSet(parameters);
 		this.frag = frag;
 	}
@@ -103,7 +103,7 @@ public final class NamedComponentDefinition {
 	}
 
 	public Optional<VariableExpression> getSelectionExpression() {
-		return selectionExpression;
+		return selectionExpressionOpt;
 	}
 
 	public List<String> getParameters() {

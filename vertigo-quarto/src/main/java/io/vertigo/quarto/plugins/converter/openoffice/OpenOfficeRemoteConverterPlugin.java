@@ -52,15 +52,15 @@ public final class OpenOfficeRemoteConverterPlugin extends AbstractOpenOfficeCon
 	 * @param fileManager Manager de gestion des fichiers
 	 * @param unoHost Hote du serveur OpenOffice
 	 * @param unoPort Port de connexion au serveur OpenOffice
-	 * @param convertTimeoutSeconds Timeout de conversion des documents
+	 * @param convertTimeoutSecondsOpt Timeout de conversion des documents
 	 */
 	@Inject
 	public OpenOfficeRemoteConverterPlugin(
 			final FileManager fileManager,
 			@ParamValue("unohost") final String unoHost,
 			@ParamValue("unoport") final String unoPort,
-			@ParamValue("convertTimeoutSeconds") final Optional<Integer> convertTimeoutSeconds) {
-		super(fileManager, unoHost, unoPort, convertTimeoutSeconds.orElse(60));
+			@ParamValue("convertTimeoutSeconds") final Optional<Integer> convertTimeoutSecondsOpt) {
+		super(fileManager, unoHost, unoPort, convertTimeoutSecondsOpt.orElse(60));
 	}
 
 	/** {@inheritDoc} */

@@ -80,9 +80,9 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		Assertion.check().isNotNull(dtDefinition);
 		//-----
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
-		final Optional<DtField> idFieldOption = getDtDefinition().getIdField();
-		if (idFieldOption.isPresent()) {
-			camelIdFieldName = idFieldOption.get().getName();
+		final Optional<DtField> idFieldOpt = getDtDefinition().getIdField();
+		if (idFieldOpt.isPresent()) {
+			camelIdFieldName = idFieldOpt.get().getName();
 		} else {
 			Assertion.check().isTrue(keyFieldNameOpt.isPresent(), "DtDefinition : {0} is not an entity, you must provide a keyFieldName", dtDefinition.getName());
 			camelIdFieldName = keyFieldNameOpt.get().name();

@@ -36,7 +36,7 @@ public final class Notification {
 	private final int ttlInSeconds;
 	private final String targetUrl;
 	private final Instant creationDate;
-	private final Optional<String> userContent;
+	private final Optional<String> userContentOpt;
 
 	/**
 	 * Constructor.
@@ -48,10 +48,10 @@ public final class Notification {
 	 * @param ttlInSeconds TimeToLive in seconds
 	 * @param creationDate Create date
 	 * @param targetUrl Target URL of this notification
-	 * @param userContent Reader's specific content of this notification (can't be empty)
+	 * @param userContentOpt Reader's specific content of this notification (can't be empty)
 	 */
 	Notification(final UUID uuid, final String sender, final String type, final String title, final String content,
-			final int ttlInSeconds, final Instant creationDate, final String targetUrl, final Optional<String> userContent) {
+			final int ttlInSeconds, final Instant creationDate, final String targetUrl, final Optional<String> userContentOpt) {
 		Assertion.check()
 				.isNotNull(uuid)
 				.isNotBlank(sender)
@@ -61,9 +61,9 @@ public final class Notification {
 				.isTrue(ttlInSeconds == -1 || ttlInSeconds > 0, "ttl must be positive or undefined (-1).")
 				.isNotBlank(targetUrl)
 				.isNotNull(creationDate)
-				.isNotNull(userContent)
-				.when(userContent.isPresent(), () -> Assertion.check()
-						.isTrue(userContent.get().length() > 0, "userContent can't be empty if set"));
+				.isNotNull(userContentOpt)
+				.when(userContentOpt.isPresent(), () -> Assertion.check()
+						.isTrue(userContentOpt.get().length() > 0, "userContent can't be empty if set"));
 		//-----
 		this.uuid = uuid;
 		this.sender = sender;
@@ -73,7 +73,7 @@ public final class Notification {
 		this.ttlInSeconds = ttlInSeconds;
 		this.creationDate = creationDate;
 		this.targetUrl = targetUrl;
-		this.userContent = userContent;
+		this.userContentOpt = userContentOpt;
 	}
 
 	/**
@@ -153,7 +153,7 @@ public final class Notification {
 	 * @return Specific content linked to reader
 	 */
 	public Optional<String> getUserContent() {
-		return userContent;
+		return userContentOpt;
 	}
 
 }

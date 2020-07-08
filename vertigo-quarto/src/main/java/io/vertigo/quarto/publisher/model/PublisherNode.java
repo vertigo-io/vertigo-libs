@@ -86,9 +86,9 @@ public final class PublisherNode implements Serializable {
 	 * @return PublisherNodeDataWritable pour ce champ.
 	 */
 	public PublisherNode createNode(final String fieldName) {
-		final Optional<PublisherNodeDefinition> childNodeDefinition = nodeDefinition.getField(fieldName).getNodeDefinition();
-		Assertion.check().isTrue(childNodeDefinition.isPresent(), "Le champ {0} n'accepte pas l'ajout de noeud", fieldName);
-		return new PublisherNode(childNodeDefinition.get());
+		final Optional<PublisherNodeDefinition> childNodeDefinitionOpt = nodeDefinition.getField(fieldName).getNodeDefinition();
+		Assertion.check().isTrue(childNodeDefinitionOpt.isPresent(), "Le champ {0} n'accepte pas l'ajout de noeud", fieldName);
+		return new PublisherNode(childNodeDefinitionOpt.get());
 	}
 
 	//=========================================================================

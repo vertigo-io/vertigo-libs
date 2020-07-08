@@ -47,34 +47,34 @@ public final class NativeMailSessionConnector implements MailSessionConnector {
 	 *
 	 * @param mailStoreProtocol Protocole utilisé
 	 * @param mailHost Serveur de mail
-	 * @param mailPort port à utiliser (facultatif)
-	 * @param mailLogin Login à utiliser lors de la connexion au serveur mail (facultatif)
-	 * @param mailPassword mot de passe à utiliser lors de la connexion au serveur mail (facultatif)
+	 * @param mailPortOpt port à utiliser (facultatif)
+	 * @param mailLoginOpt Login à utiliser lors de la connexion au serveur mail (facultatif)
+	 * @param mailPasswordOpt mot de passe à utiliser lors de la connexion au serveur mail (facultatif)
 	 */
 	@Inject
 	public NativeMailSessionConnector(
 			@ParamValue("storeProtocol") final String mailStoreProtocol,
 			@ParamValue("host") final String mailHost,
-			@ParamValue("port") final Optional<Integer> mailPort,
-			@ParamValue("login") final Optional<String> mailLogin,
-			@ParamValue("pwd") final Optional<String> mailPassword) {
+			@ParamValue("port") final Optional<Integer> mailPortOpt,
+			@ParamValue("login") final Optional<String> mailLoginOpt,
+			@ParamValue("pwd") final Optional<String> mailPasswordOpt) {
 		Assertion.check()
 				.isNotBlank(mailStoreProtocol)
 				.isNotBlank(mailHost)
-				.isNotNull(mailPort)
-				.isNotNull(mailLogin)
-				.isNotNull(mailPassword)
-				.when(mailLogin.isPresent(), () -> Assertion.check()
-						.isTrue(!StringUtil.isBlank(mailLogin.get()), // if set, login can't be empty
+				.isNotNull(mailPortOpt)
+				.isNotNull(mailLoginOpt)
+				.isNotNull(mailPasswordOpt)
+				.when(mailLoginOpt.isPresent(), () -> Assertion.check()
+						.isTrue(!StringUtil.isBlank(mailLoginOpt.get()), // if set, login can't be empty
 								"When defined Login can't be empty"))
-				.isTrue(mailLogin.isEmpty() ^ mailPassword.isPresent(), // login and password must be null or not null both
+				.isTrue(mailLoginOpt.isEmpty() ^ mailPasswordOpt.isPresent(), // login and password must be null or not null both
 						"Password is required when login is defined");
 		//-----
 		this.mailStoreProtocol = mailStoreProtocol;
 		this.mailHost = mailHost;
-		this.mailPort = mailPort;
-		this.mailLogin = mailLogin;
-		this.mailPassword = mailPassword;
+		this.mailPort = mailPortOpt;
+		this.mailLogin = mailLoginOpt;
+		this.mailPassword = mailPasswordOpt;
 	}
 
 	@Override

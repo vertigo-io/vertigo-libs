@@ -162,10 +162,10 @@ public final class CommentWebServices implements WebServices {
 	}
 
 	private static Object stringToId(final String id, final DtDefinition dtDefinition) {
-		final Optional<DtField> idFieldOption = dtDefinition.getIdField();
-		Assertion.check().isTrue(idFieldOption.isPresent(), "KeyConcept {0} must have an id field, in order to support Comment extension", dtDefinition.getLocalName());
+		final Optional<DtField> idFieldOpt = dtDefinition.getIdField();
+		Assertion.check().isTrue(idFieldOpt.isPresent(), "KeyConcept {0} must have an id field, in order to support Comment extension", dtDefinition.getLocalName());
 
-		final Class dataType = idFieldOption.get().getSmartTypeDefinition().getJavaClass();
+		final Class dataType = idFieldOpt.get().getSmartTypeDefinition().getJavaClass();
 		if (String.class.isAssignableFrom(dataType)) {
 			return id;
 		} else if (Integer.class.isAssignableFrom(dataType)) {

@@ -61,18 +61,18 @@ public class InjectParamsToActionMethodHandler implements UnknownHandler {
 	/** {@inheritDoc} */
 	@Override
 	public Object handleUnknownActionMethod(final Object action, final String methodName) {
-		Optional<Method> actionMethod = MethodUtil.findMethodByName(action.getClass(), methodName);
-		if (actionMethod.isEmpty()) {
+		Optional<Method> actionMethodOpt = MethodUtil.findMethodByName(action.getClass(), methodName);
+		if (actionMethodOpt.isEmpty()) {
 			//method non trouvée, on test doXXX comme struts2 le fait de base
 			final String prefixedMethodName = getPrefixedMethodName(methodName);
-			actionMethod = MethodUtil.findMethodByName(action.getClass(), prefixedMethodName);
-			if (actionMethod.isEmpty()) {
+			actionMethodOpt = MethodUtil.findMethodByName(action.getClass(), prefixedMethodName);
+			if (actionMethodOpt.isEmpty()) {
 				//method non trouvée
 				return null;
 			}
 		}
 		final RequestContainerWrapper container = new RequestContainerWrapper(ServletActionContext.getRequest());
-		return MethodUtil.invoke(action, actionMethod.get(), container);
+		return MethodUtil.invoke(action, actionMethodOpt.get(), container);
 	}
 
 	private static String getPrefixedMethodName(final String methodName) {

@@ -45,20 +45,20 @@ public abstract class AbstractFilter implements Filter {
 	protected static final String EXCLUDE_PATTERN_PARAM_NAME = "url-exclude-pattern";
 
 	private FilterConfig config;
-	private Optional<Pattern> pattern;
+	private Optional<Pattern> patternOpt;
 
 	/** {@inheritDoc} */
 	@Override
 	public final void init(final FilterConfig filterConfig) {
 		config = filterConfig;
-		pattern = parsePattern(config.getInitParameter(EXCLUDE_PATTERN_PARAM_NAME));
+		patternOpt = parsePattern(config.getInitParameter(EXCLUDE_PATTERN_PARAM_NAME));
 		doInit();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public final void doFilter(final ServletRequest req, final ServletResponse res, final FilterChain chain) throws IOException, ServletException {
-		if (isUrlMatch(req, pattern)) {
+		if (isUrlMatch(req, patternOpt)) {
 			chain.doFilter(req, res);
 			return;
 		}
