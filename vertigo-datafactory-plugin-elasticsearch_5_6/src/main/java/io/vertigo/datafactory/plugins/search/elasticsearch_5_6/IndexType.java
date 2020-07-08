@@ -43,7 +43,7 @@ final class IndexType {
 	private final boolean indexFieldData;
 
 	private IndexType(final String indexType, final SmartTypeDefinition smartTypeDefinition) {
-		Assertion.checkNotNull(smartTypeDefinition);
+		Assertion.check().isNotNull(smartTypeDefinition);
 		//-----
 		checkIndexType(indexType, smartTypeDefinition);
 		if (indexType == null) {
@@ -73,16 +73,16 @@ final class IndexType {
 				for (int i = 1; i < indexTypeArray.length; i++) {
 					final String indexTypeParam = indexTypeArray[i];
 					if (INDEX_STORED.equals(indexTypeParam) || INDEX_NOT_STORED.equals(indexTypeParam)) {
-						Assertion.checkArgument(parsedIndexStored == null, INDEX_TYPE_ERROR_MSG, indexType);
+						Assertion.check().isNull(parsedIndexStored, INDEX_TYPE_ERROR_MSG, indexType);
 						parsedIndexStored = INDEX_STORED.equals(indexTypeParam);
 					} else if (INDEX_SORTABLE.equals(indexTypeParam) || INDEX_NOT_SORTABLE.equals(indexTypeParam)) {
-						Assertion.checkArgument(parsedIndexSubKeyword == null, INDEX_TYPE_ERROR_MSG, indexType);
+						Assertion.check().isNull(parsedIndexSubKeyword, INDEX_TYPE_ERROR_MSG, indexType);
 						parsedIndexSubKeyword = INDEX_SORTABLE.equals(indexTypeParam);
 					} else if (INDEX_FACETABLE.equals(indexTypeParam) || INDEX_NOT_FACETABLE.equals(indexTypeParam)) {
-						Assertion.checkArgument(parsedIndexFieldData == null, INDEX_TYPE_ERROR_MSG, indexType);
+						Assertion.check().isNull(parsedIndexFieldData, INDEX_TYPE_ERROR_MSG, indexType);
 						parsedIndexFieldData = INDEX_FACETABLE.equals(indexTypeParam);
 					} else {
-						Assertion.checkArgument(parsedIndexDataType == null, INDEX_TYPE_ERROR_MSG, indexType);
+						Assertion.check().isNull(parsedIndexDataType, INDEX_TYPE_ERROR_MSG, indexType);
 						parsedIndexDataType = indexTypeParam;
 					}
 				}
@@ -109,15 +109,16 @@ final class IndexType {
 	private static String obtainDefaultIndexDataType(final SmartTypeDefinition smartTypeDefinition) {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
-		Assertion.checkState(smartTypeDefinition.getScope().isPrimitive()
-				|| smartTypeDefinition.getScope().isValueObject(), "Type de donnée non pris en charge pour le keyconcept indexé [" + smartTypeDefinition + "].");
+		Assertion.check().isTrue(
+				smartTypeDefinition.getScope().isPrimitive() || smartTypeDefinition.getScope().isValueObject(),
+				"Type de donnée non pris en charge pour le keyconcept indexé [" + smartTypeDefinition + "].");
 		final BasicType basicType;
 		if (smartTypeDefinition.getScope().isPrimitive()) {
 			basicType = smartTypeDefinition.getBasicType();
 		} else { // smartTypeDefinition.getScope().isValueObject()
 			basicType = smartTypeDefinition.getAdapterConfig("search").getTargetBasicType();
 		}
-		
+
 		switch (basicType) {
 			case Boolean:
 			case Double:
@@ -140,8 +141,9 @@ final class IndexType {
 	private static void checkIndexType(final String indexType, final SmartTypeDefinition smartTypeDefinition) {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
-		Assertion.checkState(smartTypeDefinition.getScope().isPrimitive()
-				|| smartTypeDefinition.getScope().isValueObject(), "Type de donnée non pris en charge pour le keyconcept indexé [" + smartTypeDefinition + "].");
+		Assertion.check().isTrue(
+				smartTypeDefinition.getScope().isPrimitive() || smartTypeDefinition.getScope().isValueObject(),
+				"Type de donnée non pris en charge pour le keyconcept indexé [" + smartTypeDefinition + "].");
 
 		final BasicType basicType;
 		if (smartTypeDefinition.getScope().isPrimitive()) {

@@ -51,7 +51,7 @@ final class RamLuceneQueryFactory {
 	private final Analyzer queryAnalyzer;
 
 	RamLuceneQueryFactory(final Analyzer queryAnalyzer) {
-		Assertion.checkNotNull(queryAnalyzer);
+		Assertion.check().isNotNull(queryAnalyzer);
 		//-----
 		this.queryAnalyzer = queryAnalyzer;
 	}
@@ -68,7 +68,7 @@ final class RamLuceneQueryFactory {
 	}
 
 	private static Query createKeywordQuery(final Analyzer queryAnalyser, final String keywords, final Collection<DtField> searchedFieldList, final Optional<DtField> boostedField) throws IOException {
-		if (StringUtil.isEmpty(keywords)) {
+		if (StringUtil.isBlank(keywords)) {
 			return new MatchAllDocsQuery();
 		}
 		//-----

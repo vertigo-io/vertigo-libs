@@ -84,7 +84,7 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 			final SmartTypeManager smartTypeManager,
 			final ResourceManager resourceManager) {
 		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, smartTypeManager, resourceManager);
-		Assertion.checkArgNotEmpty(elasticSearchHome);
+		Assertion.check().isNotBlank(elasticSearchHome);
 		//-----
 		elasticSearchHomeURL = resourceManager.resolve(elasticSearchHome);
 		httpPort = httpPortOpt.orElse(9200);
@@ -114,7 +114,7 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	}
 
 	private Node createNode(final URL esHomeURL) {
-		Assertion.checkNotNull(esHomeURL);
+		Assertion.check().isNotNull(esHomeURL);
 		//-----
 		final File home;
 		try {
@@ -122,8 +122,9 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 		} catch (final UnsupportedEncodingException e) {
 			throw WrappedException.wrap(e, "Error de parametrage du ElasticSearchHome " + esHomeURL);
 		}
-		Assertion.checkArgument(home.exists() && home.isDirectory(), "Le ElasticSearchHome : {0} n''existe pas, ou n''est pas un répertoire.", home.getAbsolutePath());
-		Assertion.checkArgument(home.canWrite(), "L''application n''a pas les droits d''écriture sur le ElasticSearchHome : {0}", home.getAbsolutePath());
+		Assertion.check()
+				.isTrue(home.exists() && home.isDirectory(), "Le ElasticSearchHome : {0} n''existe pas, ou n''est pas un répertoire.", home.getAbsolutePath())
+				.isTrue(home.canWrite(), "L''application n''a pas les droits d''écriture sur le ElasticSearchHome : {0}", home.getAbsolutePath());
 		return new MyNode(buildNodeSettings(home.getAbsolutePath()), Arrays.asList(Netty4Plugin.class, ReindexPlugin.class));
 	}
 

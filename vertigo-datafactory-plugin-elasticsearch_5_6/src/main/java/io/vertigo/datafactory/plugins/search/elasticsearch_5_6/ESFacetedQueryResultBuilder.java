@@ -85,10 +85,11 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			final SearchIndexDefinition indexDefinition,
 			final SearchResponse queryResponse,
 			final SearchQuery searchQuery) {
-		Assertion.checkNotNull(esDocumentCodec);
-		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkNotNull(queryResponse);
-		Assertion.checkNotNull(searchQuery);
+		Assertion.check()
+				.isNotNull(esDocumentCodec)
+				.isNotNull(indexDefinition)
+				.isNotNull(queryResponse)
+				.isNotNull(searchQuery);
 		//-----
 		this.esDocumentCodec = esDocumentCodec;
 		this.indexDefinition = indexDefinition;
@@ -251,7 +252,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		final String valueAsString = value.getKeyAsString();
 		final String term;
 		final String query;
-		if (!StringUtil.isEmpty(valueAsString)) {
+		if (!StringUtil.isBlank(valueAsString)) {
 			term = valueAsString;
 		} else {
 			term = EMPTY_TERM;

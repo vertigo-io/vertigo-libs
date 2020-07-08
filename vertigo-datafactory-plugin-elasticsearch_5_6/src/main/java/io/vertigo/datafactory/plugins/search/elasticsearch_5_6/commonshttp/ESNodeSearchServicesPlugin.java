@@ -78,12 +78,12 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 			final SmartTypeManager smartTypeManager,
 			final ResourceManager resourceManager) {
 		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, smartTypeManager, resourceManager);
-		Assertion.checkArgNotEmpty(serversNamesStr,
-				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
-		Assertion.checkArgument(!serversNamesStr.contains(";"),
-				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
-		Assertion.checkArgNotEmpty(clusterName, "Cluster's name must be defined");
-		Assertion.checkArgument(!"elasticsearch".equals(clusterName), "You have to define a cluster name different from the default one");
+		Assertion.check().isNotBlank(serversNamesStr,
+				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','")
+				.isFalse(serversNamesStr.contains(";"),
+						"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','")
+				.isNotBlank(clusterName, "Cluster's name must be defined")
+				.isFalse("elasticsearch".equals(clusterName), "You have to define a cluster name different from the default one");
 		// ---------------------------------------------------------------------
 		serversNames = serversNamesStr.split(",");
 		this.clusterName = clusterName;

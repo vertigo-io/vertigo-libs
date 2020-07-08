@@ -33,8 +33,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DataAccessor;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -64,22 +64,23 @@ final class ESDocumentCodec {
 	 * @param codecManager Manager de la modelisation (SmartTypes)
 	 */
 	ESDocumentCodec(final CodecManager codecManager, final SmartTypeManager smartTypeManager) {
-		Assertion.checkNotNull(codecManager);
-		Assertion.checkNotNull(smartTypeManager);
+		Assertion.check()
+				.isNotNull(codecManager)
+				.isNotNull(smartTypeManager);
 		//-----
 		this.codecManager = codecManager;
 		this.smartTypeManager = smartTypeManager;
 	}
 
 	private <I extends DtObject> String encode(final I dto) {
-		Assertion.checkNotNull(dto);
+		Assertion.check().isNotNull(dto);
 		//-----
 		final byte[] data = codecManager.getCompressedSerializationCodec().encode(dto);
 		return codecManager.getBase64Codec().encode(data);
 	}
 
 	private <R extends DtObject> R decode(final String base64Data) {
-		Assertion.checkNotNull(base64Data);
+		Assertion.check().isNotNull(base64Data);
 		//-----
 		final byte[] data = codecManager.getBase64Codec().decode(base64Data);
 		return (R) codecManager.getCompressedSerializationCodec().decode(data);
@@ -120,7 +121,7 @@ final class ESDocumentCodec {
 	 * @throws IOException Json exception
 	 */
 	<S extends KeyConcept, I extends DtObject> XContentBuilder index2XContentBuilder(final SearchIndex<S, I> index) throws IOException {
-		Assertion.checkNotNull(index);
+		Assertion.check().isNotNull(index);
 		//-----
 
 		final DtDefinition dtDefinition = index.getDefinition().getIndexDtDefinition();
@@ -147,7 +148,7 @@ final class ESDocumentCodec {
 			final DtDefinition indexDtDefinition = DtObjectUtil.findDtDefinition(dtIndex);
 			final Set<DtField> copyToFields = index.getDefinition().getIndexCopyToFields();
 			final Map<Class, BasicTypeAdapter> typeAdapters = smartTypeManager.getTypeAdapters("search");
-			
+
 			for (final DtField dtField : indexDtDefinition.getFields()) {
 				if (!copyToFields.contains(dtField)) {//On index pas les copyFields
 					final Object value = dtField.getDataAccessor().getValue(dtIndex);

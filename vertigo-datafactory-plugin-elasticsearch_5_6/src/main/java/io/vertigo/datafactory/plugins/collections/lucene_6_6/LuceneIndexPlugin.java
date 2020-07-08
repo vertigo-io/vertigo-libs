@@ -73,9 +73,10 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 			final CacheManager cacheManager,
 			final EventBusManager eventBusManager,
 			final SmartTypeManager smartTypeManager) {
-		Assertion.checkNotNull(localeManager);
-		Assertion.checkNotNull(cacheManager);
-		Assertion.checkNotNull(smartTypeManager);
+		Assertion.check()
+				.isNotNull(localeManager)
+				.isNotNull(cacheManager)
+				.isNotNull(smartTypeManager);
 		//-----
 		this.cacheManager = cacheManager;
 		localeManager.add(Resources.class.getName(), Resources.values());
@@ -127,7 +128,7 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 	}
 
 	private <D extends DtObject> RamLuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
-		Assertion.checkNotNull(fullDtc);
+		Assertion.check().isNotNull(fullDtc);
 		//-----
 		final RamLuceneIndex<D> luceneDb = new RamLuceneIndex<>(fullDtc.getDefinition(), smartTypeManager);
 		luceneDb.addAll(fullDtc, storeValue);
@@ -143,7 +144,7 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 			final DtListState listState,
 			final Optional<DtField> boostedField,
 			final DtList<D> dtc) {
-		Assertion.checkArgument(listState.getMaxRows().isPresent(), "Can't return all results, you must define maxRows");
+		Assertion.check().isTrue(listState.getMaxRows().isPresent(), "Can't return all results, you must define maxRows");
 		try {
 			final RamLuceneIndex<D> index = indexList(dtc, false);
 			return index.getCollection(keywords, searchedFields, listFilters, listState, boostedField);
