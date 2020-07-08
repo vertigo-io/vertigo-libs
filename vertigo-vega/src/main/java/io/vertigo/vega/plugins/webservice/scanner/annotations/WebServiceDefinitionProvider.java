@@ -62,7 +62,7 @@ public final class WebServiceDefinitionProvider implements SimpleDefinitionProvi
 	}
 
 	private static void scanAndAddPackage(final String packagePath, final List<Definition> webServiceDefinitions) {
-		final Collection<Class> webServicesClasses = new Selector()
+		final Collection<Class> webServicesClasses = Selector
 				.from(packagePath)
 				.filterClasses(ClassConditions.subTypeOf(WebServices.class))
 				.findClasses();

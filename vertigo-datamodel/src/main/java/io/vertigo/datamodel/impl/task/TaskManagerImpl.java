@@ -85,7 +85,8 @@ public final class TaskManagerImpl implements TaskManager, SimpleDefinitionProvi
 				.map(componentId -> Home.getApp().getComponentSpace().resolve(componentId, Object.class).getClass())
 				.collect(Collectors.toList());
 
-		return new Selector().from(componenentClasses)
+		return Selector
+				.from(componenentClasses)
 				.filterMethods(MethodConditions.annotatedWith(TaskAnnotation.class))
 				.findMethods()
 				.stream()
