@@ -239,7 +239,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		//-----
 		final DtDefinition keyConceptDefinition = keyConceptUris.get(0).getDefinition();
 		final List<SearchIndexDefinition> searchIndexDefinitions = findIndexDefinitionByKeyConcept(keyConceptDefinition);
-		Assertion.check().isNotNull(!searchIndexDefinitions.isEmpty(), "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptDefinition.getName());
+		Assertion.check().isFalse(searchIndexDefinitions.isEmpty(), "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptDefinition.getName());
 		//-----
 		for (final SearchIndexDefinition searchIndexDefinition : searchIndexDefinitions) {
 			final Set<UID<? extends KeyConcept>> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());
