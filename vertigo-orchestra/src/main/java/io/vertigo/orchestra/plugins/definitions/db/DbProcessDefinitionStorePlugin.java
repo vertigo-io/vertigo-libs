@@ -227,20 +227,20 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 
 	/** {@inheritDoc} */
 	@Override
-	public void updateProcessDefinitionProperties(final ProcessDefinition processDefinition, final Optional<String> cronExpression, final boolean multiExecution, final int rescuePeriod,
+	public void updateProcessDefinitionProperties(final ProcessDefinition processDefinition, final Optional<String> cronExpressionOpt, final boolean multiExecution, final int rescuePeriod,
 			final boolean active) {
 		Assertion.check()
 				.isNotNull(processDefinition)
-				.isNotNull(cronExpression)
+				.isNotNull(cronExpressionOpt)
 				.isNotNull(rescuePeriod);
 		// ---
 		final OProcess process = getOProcessByName(processDefinition.getName());
-		if (cronExpression.isPresent()) {
+		if (cronExpressionOpt.isPresent()) {
 			process.setTrtCd("SCHEDULED");
 		} else {
 			process.setTrtCd("MANUAL");
 		}
-		process.setCronExpression(cronExpression.orElse(null));
+		process.setCronExpression(cronExpressionOpt.orElse(null));
 		process.setMultiexecution(multiExecution);
 		process.setRescuePeriod(rescuePeriod);
 		process.setActive(active);

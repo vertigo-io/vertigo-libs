@@ -50,8 +50,15 @@ public final class Notification {
 	 * @param targetUrl Target URL of this notification
 	 * @param userContentOpt Reader's specific content of this notification (can't be empty)
 	 */
-	Notification(final UUID uuid, final String sender, final String type, final String title, final String content,
-			final int ttlInSeconds, final Instant creationDate, final String targetUrl, final Optional<String> userContentOpt) {
+	Notification(final UUID uuid,
+			final String sender,
+			final String type,
+			final String title,
+			final String content,
+			final int ttlInSeconds,
+			final Instant creationDate,
+			final String targetUrl,
+			final Optional<String> userContentOpt) {
 		Assertion.check()
 				.isNotNull(uuid)
 				.isNotBlank(sender)

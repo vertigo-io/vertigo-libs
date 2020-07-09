@@ -40,7 +40,7 @@ import io.vertigo.datastore.filestore.model.VFile;
 public final class LoaderAccountStorePlugin implements AccountStorePlugin, Activeable {
 
 	private final String accountLoaderName;
-	private final Optional<String> groupLoaderName;
+	private final Optional<String> groupLoaderNameOpt;
 	private AccountLoader accountLoader;
 	private Optional<GroupLoader> groupLoader;
 
@@ -57,18 +57,15 @@ public final class LoaderAccountStorePlugin implements AccountStorePlugin, Activ
 				.isNotNull(groupLoaderName);
 
 		this.accountLoaderName = accountLoaderName;
-		this.groupLoaderName = groupLoaderName;
+		this.groupLoaderNameOpt = groupLoaderName;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
 		accountLoader = Home.getApp().getComponentSpace().resolve(accountLoaderName, AccountLoader.class);
-		if (groupLoaderName.isPresent()) {
-			groupLoader = Optional.of(Home.getApp().getComponentSpace().resolve(groupLoaderName.get(), GroupLoader.class));
-		} else {
-			groupLoader = Optional.empty();
-		}
+		groupLoader = groupLoaderNameOpt
+				.map((groupLoaderName) -> Home.getApp().getComponentSpace().resolve(groupLoaderName, GroupLoader.class));
 	}
 
 	/** {@inheritDoc} */

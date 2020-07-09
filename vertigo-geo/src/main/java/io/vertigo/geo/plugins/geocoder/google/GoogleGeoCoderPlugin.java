@@ -86,11 +86,10 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 				.isTrue((proxyHostOpt.isPresent() && proxyPortOpt.isPresent()) || (proxyHostOpt.isEmpty() && proxyPortOpt.isEmpty()),
 						"les deux paramètres host et port doivent être tous les deux remplis ou vides");
 		//-----
-		if (proxyHostOpt.isPresent()) {
-			proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHostOpt.get(), Integer.parseInt(proxyPortOpt.get())));
-		} else {
-			proxy = Proxy.NO_PROXY;
-		}
+		proxy = proxyHostOpt
+				.map(proxyHost -> new Proxy(Proxy.Type.HTTP,
+						new InetSocketAddress(proxyHost, Integer.parseInt(proxyPortOpt.get()))))
+				.orElse(Proxy.NO_PROXY);
 	}
 
 	/**
