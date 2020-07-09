@@ -85,9 +85,10 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	 * @param esClient ElasticSearch client
 	 */
 	ESSearchRequestBuilder(final String indexName, final String typeName, final Client esClient) {
-		Assertion.checkArgNotEmpty(indexName);
-		Assertion.checkArgNotEmpty(typeName);
-		Assertion.checkNotNull(esClient);
+		Assertion.check()
+				.isNotBlank(indexName)
+				.isNotBlank(typeName)
+				.isNotNull(esClient);
 		//-----
 		searchRequestBuilder = esClient.prepareSearch()
 				.setIndices(indexName)
@@ -101,7 +102,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	 * @return this builder
 	 */
 	public ESSearchRequestBuilder withSearchIndexDefinition(final SearchIndexDefinition indexDefinition) {
-		Assertion.checkNotNull(indexDefinition);
+		Assertion.check().isNotNull(indexDefinition);
 		//-----
 		myIndexDefinition = indexDefinition;
 		return this;
@@ -112,7 +113,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	 * @return this builder
 	 */
 	public ESSearchRequestBuilder withSearchQuery(final SearchQuery searchQuery) {
-		Assertion.checkNotNull(searchQuery);
+		Assertion.check().isNotNull(searchQuery);
 		//-----
 		mySearchQuery = searchQuery;
 		return this;
@@ -124,7 +125,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	 * @return this builder
 	 */
 	public ESSearchRequestBuilder withListState(final DtListState listState, final int defaultMaxRows) {
-		Assertion.checkNotNull(listState);
+		Assertion.check().isNotNull(listState);
 		//-----
 		myListState = listState;
 		myDefaultMaxRows = defaultMaxRows;
@@ -143,12 +144,12 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	@Override
 	public SearchRequestBuilder build() {
 		Assertion.check()
-				.notNull(myIndexDefinition, "You must set IndexDefinition")
-				.notNull(mySearchQuery, "You must set SearchQuery")
-				.notNull(myListState, "You must set ListState");
-		Assertion.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent()) //si il y a un cluster on vérifie le maxRows
-				.state(() -> myListState.getMaxRows().get() < TOPHITS_SUBAGGREGATION_MAXSIZE,
-						"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE);
+				.isNotNull(myIndexDefinition, "You must set IndexDefinition")
+				.isNotNull(mySearchQuery, "You must set SearchQuery")
+				.isNotNull(myListState, "You must set ListState")
+				.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent(),
+						() -> Assertion.check().isTrue(myListState.getMaxRows().get() < TOPHITS_SUBAGGREGATION_MAXSIZE,
+								"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE));
 		//-----
 		appendListState();
 		appendSearchQuery(mySearchQuery, searchRequestBuilder, useHighlight);
@@ -256,7 +257,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			final SearchIndexDefinition myIndexDefinition,
 			final DtListState myListState,
 			final boolean useHighlight) {
-		Assertion.checkNotNull(searchRequestBuilder);
+		Assertion.check().isNotNull(searchRequestBuilder);
 		//-----
 		//On ajoute le cluster, si présent
 		if (searchQuery.isClusteringFacet()) { //si il y a un cluster on le place en premier
@@ -345,7 +346,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
 	private static AggregationBuilder rangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
 		//facette par range
-		Assertion.checkState(dtField.getSmartTypeDefinition().getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + dtField.getSmartTypeDefinition() + "].");
+		Assertion.check().isTrue(dtField.getSmartTypeDefinition().getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + dtField.getSmartTypeDefinition() + "].");
 		final BasicType dataType = dtField.getSmartTypeDefinition().getBasicType();
 		if (dataType == BasicType.LocalDate) {
 			return dateRangeFacetToAggregationBuilder(facetDefinition, dtField);
@@ -356,7 +357,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		final List<KeyedFilter> filters = new ArrayList<>();
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
-			Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			Assertion.check().isTrue(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
 			filters.add(new KeyedFilter(facetRange.getCode(), QueryBuilders.queryStringQuery(filterValue)));
 		}
 		return AggregationBuilders.filters(facetDefinition.getName(), filters.toArray(new KeyedFilter[filters.size()]));
@@ -367,7 +368,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 				.field(dtField.getName());
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
-			Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			Assertion.check().isTrue(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
 			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
 			final Optional<Double> minValue = convertToDouble(parsedFilter[3]);
 			final Optional<Double> maxValue = convertToDouble(parsedFilter[4]);
@@ -388,7 +389,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 				.format(DATE_PATTERN);
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
-			Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			Assertion.check().isTrue(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
 			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
 			final String minValue = parsedFilter[3];
 			final String maxValue = parsedFilter[4];
@@ -418,7 +419,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	 * @return QueryBuilder
 	 */
 	static QueryBuilder translateToQueryBuilder(final ListFilter listFilter) {
-		Assertion.checkNotNull(listFilter);
+		Assertion.check().isNotNull(listFilter);
 		//-----
 		final String listFilterString = cleanUserFilter(listFilter.getFilterValue());
 		final String query = new StringBuilder()

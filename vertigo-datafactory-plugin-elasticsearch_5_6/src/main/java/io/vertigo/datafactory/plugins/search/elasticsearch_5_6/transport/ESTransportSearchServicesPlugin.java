@@ -79,13 +79,13 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 			final SmartTypeManager smartTypeManager,
 			final ResourceManager resourceManager) {
 		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, smartTypeManager, resourceManager);
-		Assertion.checkArgNotEmpty(serversNamesStr,
-				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
-		Assertion.checkArgument(!serversNamesStr.contains(";"),
-				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
-		Assertion.checkArgNotEmpty(clusterName, "Cluster's name must be defined");
-		Assertion.checkArgument(!"elasticsearch".equals(clusterName),
-				"You have to define a cluster name different from the default one");
+		Assertion.check().isNotBlank(serversNamesStr,
+				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','")
+				.isFalse(serversNamesStr.contains(";"),
+						"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','")
+				.isNotBlank(clusterName, "Cluster's name must be defined")
+				.isFalse("elasticsearch".equals(clusterName),
+						"You have to define a cluster name different from the default one");
 		// ---------------------------------------------------------------------
 		serversNames = serversNamesStr.split(",");
 		this.clusterName = clusterName;
@@ -98,7 +98,7 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 		client = new PreBuiltTransportClient(buildNodeSettings());
 		for (final String serverName : serversNames) {
 			final String[] serverNameSplit = serverName.split(":");
-			Assertion.checkArgument(serverNameSplit.length == 2,
+			Assertion.check().isTrue(serverNameSplit.length == 2,
 					"La déclaration du serveur doit être au format host:port ({0}", serverName);
 			final int port = Integer.parseInt(serverNameSplit[1]);
 			client.addTransportAddress(new InetSocketTransportAddress(new InetSocketAddress(serverNameSplit[0], port)));

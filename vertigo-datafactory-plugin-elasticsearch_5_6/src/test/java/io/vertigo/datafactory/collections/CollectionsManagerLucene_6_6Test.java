@@ -19,6 +19,7 @@
 package io.vertigo.datafactory.collections;
 
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -37,10 +38,10 @@ public class CollectionsManagerLucene_6_6Test extends CollectionsManagerTest {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.withLocales("fr_FR")
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.build())
 				.addModule(new CommonsFeatures().build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()

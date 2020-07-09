@@ -110,12 +110,12 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final SmartTypeManager smartTypeManager,
 			final ResourceManager resourceManager) {
 		Assertion.check()
-				.argNotEmpty(indexNameOrPrefix)
-				.notNull(codecManager);
-		Assertion.when(indexNameIsPrefix)
-				.state(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
-		Assertion.when(!indexNameIsPrefix)
-				.state(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
+				.isNotBlank(indexNameOrPrefix)
+				.isNotNull(codecManager)
+				.when(indexNameIsPrefix,
+						() -> Assertion.check().isTrue(indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix))
+				.when(!indexNameIsPrefix,
+						() -> Assertion.check().isFalse(indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix));
 		//-----
 		this.defaultMaxRows = defaultMaxRows;
 		defaultListState = DtListState.of(defaultMaxRows);
@@ -245,7 +245,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	/** {@inheritDoc} */
 	@Override
 	public final <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
-		Assertion.checkNotNull(indexCollection);
+		Assertion.check().isNotNull(indexCollection);
 		//-----
 		final ESStatement<S, I> statement = createElasticStatement(indexDefinition);
 		statement.putAll(indexCollection);
@@ -255,9 +255,10 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	@Override
 	public final <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
 		//On vérifie la cohérence des données SO et SOD.
-		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkNotNull(index);
-		Assertion.checkArgument(indexDefinition.equals(index.getDefinition()), "les Définitions ne sont pas conformes");
+		Assertion.check()
+				.isNotNull(indexDefinition)
+				.isNotNull(index)
+				.isTrue(indexDefinition.equals(index.getDefinition()), "les Définitions ne sont pas conformes");
 		//-----
 		final ESStatement<S, I> statement = createElasticStatement(indexDefinition);
 		statement.put(index);
@@ -266,8 +267,8 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	/** {@inheritDoc} */
 	@Override
 	public final <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final UID<S> uri) {
-		Assertion.checkNotNull(uri);
-		Assertion.checkNotNull(indexDefinition);
+		Assertion.check().isNotNull(uri)
+				.isNotNull(indexDefinition);
 		//-----
 		createElasticStatement(indexDefinition).remove(uri);
 		markToOptimize(obtainIndexName(indexDefinition));
@@ -276,7 +277,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	/** {@inheritDoc} */
 	@Override
 	public final <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
-		Assertion.checkNotNull(searchQuery);
+		Assertion.check().isNotNull(searchQuery);
 		//-----
 		final ESStatement<KeyConcept, R> statement = createElasticStatement(indexDefinition);
 		final DtListState usedListState = listState != null ? listState : defaultListState;
@@ -286,7 +287,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	/** {@inheritDoc} */
 	@Override
 	public final long count(final SearchIndexDefinition indexDefinition) {
-		Assertion.checkNotNull(indexDefinition);
+		Assertion.check().isNotNull(indexDefinition);
 		//-----
 		return createElasticStatement(indexDefinition).count();
 	}
@@ -294,18 +295,20 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	/** {@inheritDoc} */
 	@Override
 	public final void remove(final SearchIndexDefinition indexDefinition, final ListFilter listFilter) {
-		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkNotNull(listFilter);
+		Assertion.check()
+				.isNotNull(indexDefinition)
+				.isNotNull(listFilter);
 		//-----
 		createElasticStatement(indexDefinition).remove(listFilter);
 		markToOptimize(obtainIndexName(indexDefinition));
 	}
 
 	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
-		Assertion.checkArgument(indexSettingsValid,
-				"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
-		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkArgument(types.contains(indexDefinition.getName()), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
+		Assertion.check()
+				.isTrue(indexSettingsValid,
+						"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.")
+				.isNotNull(indexDefinition)
+				.isTrue(types.contains(indexDefinition.getName()), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
 		//-----
 		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), indexDefinition.getName(), esClient);
 	}
@@ -313,7 +316,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private static String obtainPkIndexDataType(final SmartTypeDefinition smartType) {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
-		Assertion.checkState(smartType.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartType + "].");
+		Assertion.check().isTrue(smartType.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartType + "].");
 		switch (smartType.getBasicType()) {
 			case Boolean:
 			case Double:
@@ -336,7 +339,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	 * @param indexDefinition Index concerné
 	 */
 	private void updateTypeMapping(final SearchIndexDefinition indexDefinition, final boolean sortableNormalizer) {
-		Assertion.checkNotNull(indexDefinition);
+		Assertion.check().isNotNull(indexDefinition);
 		//-----
 		try (final XContentBuilder typeMapping = XContentFactory.jsonBuilder()) {
 			typeMapping.startObject()

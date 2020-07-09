@@ -106,8 +106,8 @@ public final class AccountMapperHelper<S, D> {
 			}
 			if (!reservedDestField.contains(splitedMapping[0])) {
 				Assertion.check()
-						.when(destDtDefinition.isPresent(), () -> Assertion.check())
-						.isTrue(destDtDefinition.get().contains(splitedMapping[0]), "destField {0} must be in DtDefinition {1}", splitedMapping[0], destDtDefinition.orElse(null));
+						.when(destDtDefinition.isPresent(), () -> Assertion.check()
+								.isTrue(destDtDefinition.get().contains(splitedMapping[0]), "destField {0} must be in DtDefinition {1}", splitedMapping[0], destDtDefinition.orElse(null)));
 				final D dest;
 				if (destDtDefinition.isPresent()) {
 					dest = (D) destDtDefinition.get().getField(splitedMapping[0]);

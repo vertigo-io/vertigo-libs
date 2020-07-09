@@ -19,6 +19,7 @@
 package io.vertigo.datafactory.search_5_6.standard;
 
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -43,10 +44,10 @@ public class SearchManagerTest extends AbstractSearchManagerTest {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.withLocales("fr_FR")
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.withLocales("fr_FR")
+						.build())
 				.addModule(new CommonsFeatures()
 						.build())
 				.addModule(new DataModelFeatures().build())

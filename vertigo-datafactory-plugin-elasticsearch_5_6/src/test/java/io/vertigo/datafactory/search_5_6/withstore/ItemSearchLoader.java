@@ -60,7 +60,7 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 	@Inject
 	public ItemSearchLoader(final TaskManager taskManager, final SearchManager searchManager, final VTransactionManager transactionManager) {
 		super(taskManager, transactionManager);
-		Assertion.checkNotNull(searchManager);
+		Assertion.check().isNotNull(searchManager);
 		//---
 		this.searchManager = searchManager;
 		definitionSpace = Home.getApp().getDefinitionSpace();
