@@ -197,14 +197,13 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 		}
 	}
 
-	private static final class OptionJsonSerializer implements JsonSerializer<Optional> {
+	private static final class OptionJsonSerializer implements JsonSerializer<Optional<?>> {
 		/** {@inheritDoc} */
 		@Override
-		public JsonElement serialize(final Optional src, final Type typeOfSrc, final JsonSerializationContext context) {
-			if (src.isPresent()) {
-				return context.serialize(src.get());
-			}
-			return null; //rien
+		public JsonElement serialize(final Optional<?> srcOpt, final Type typeOfSrc, final JsonSerializationContext context) {
+			return srcOpt
+					.map(src -> context.serialize(src))
+					.orElse(null);
 		}
 	}
 
