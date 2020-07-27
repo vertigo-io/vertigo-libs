@@ -40,9 +40,7 @@ public final class SqlStatement {
 		return new SqlStatementBuilder(sqlQuery);
 	}
 
-	SqlStatement(
-			final String sqlQuery,
-			final List<List<SqlParameter>> sqlParameters) {
+	SqlStatement(final String sqlQuery, final List<List<SqlParameter>> sqlParameters) {
 		Assertion.check()
 				.isNotBlank(sqlQuery)
 				.isNotNull(sqlParameters);

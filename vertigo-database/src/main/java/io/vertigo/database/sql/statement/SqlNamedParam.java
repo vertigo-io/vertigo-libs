@@ -44,35 +44,39 @@ final class SqlNamedParam {
 		//---
 		this.betweenCar = betweenCar;
 		final String[] tokens = betweenCar.split("\\.");
-		if (tokens.length == 1) {
-			//Simple bound param : CODE
-			attributeName = tokens[0];
-			fieldName = null;
-			rowNumber = null;
-		} else if (tokens.length == 2) {
-			// we have two cases : a list of primitive or an objet with a field
-			if (tokens[1].matches("\\d+")) {
-				//list of primivtives
-				// example : MOVIE_ID_LIST.0
+		switch (tokens.length) {
+			case 1:
+				//Simple bound param : CODE
 				attributeName = tokens[0];
 				fieldName = null;
-				rowNumber = parseDtcRowNumber(tokens[1]);
-			} else {
-				// a field of a bean is bound
-				// example : DTO_MOVIE.TITLE
-				attributeName = tokens[0];
-				fieldName = tokens[1];
 				rowNumber = null;
-			}
-		} else if (tokens.length == 3) {
-			// cas particulier des DTC : il y a qqc entre le premier et le deuxieme point
-			// qui doit être un entier >= 0
-			// exemple : DTC_PERSONNE.12.Nom
-			attributeName = tokens[0];
-			fieldName = tokens[2];
-			rowNumber = parseDtcRowNumber(tokens[1]);
-		} else {
-			throw new IllegalStateException();
+				break;
+			case 2:
+				// we have two cases : a list of primitive or an objet with a field
+				if (tokens[1].matches("\\d+")) {
+					//list of primivtives
+					// example : MOVIE_ID_LIST.0
+					attributeName = tokens[0];
+					fieldName = null;
+					rowNumber = parseDtcRowNumber(tokens[1]);
+				} else {
+					// a field of a bean is bound
+					// example : DTO_MOVIE.TITLE
+					attributeName = tokens[0];
+					fieldName = tokens[1];
+					rowNumber = null;
+				}
+				break;
+			case 3:
+				// cas particulier des DTC : il y a qqc entre le premier et le deuxieme point
+				// qui doit être un entier >= 0
+				// exemple : DTC_PERSONNE.12.Nom
+				attributeName = tokens[0];
+				fieldName = tokens[2];
+				rowNumber = parseDtcRowNumber(tokens[1]);
+				break;
+			default:
+				throw new IllegalStateException();
 		}
 		Assertion.check().isNotNull(attributeName);
 	}
