@@ -18,6 +18,9 @@
  */
 package io.vertigo.account.authorization;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -71,13 +74,13 @@ public final class VSecurityManagerTest {
 	private AutoCloseableApp app;
 
 	@BeforeEach
-	public final void setUp() {
+	public void setUp() {
 		app = new AutoCloseableApp(buildNodeConfig());
 		DIInjector.injectMembers(this, app.getComponentSpace());
 	}
 
 	@AfterEach
-	public final void tearDown() {
+	public void tearDown() {
 		if (app != null) {
 			app.close();
 		}
@@ -218,10 +221,10 @@ public final class VSecurityManagerTest {
 			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.read));
 			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.read));
 
-			Assertions.assertFalse(List.of("read", "read2", "read3").retainAll(authorizationManager.getAuthorizedOperations(record)));
-			Assertions.assertFalse(List.of("read", "read2", "read3").retainAll(authorizationManager.getAuthorizedOperations(recordTooExpensive)));
-			Assertions.assertFalse(List.of("read", "read2", "read3").retainAll(authorizationManager.getAuthorizedOperations(recordOtherUser)));
-			Assertions.assertFalse(List.of("read", "read2", "read3").retainAll(authorizationManager.getAuthorizedOperations(recordOtherUserAndTooExpensive)));
+			assertEqualsUnordered(List.of("read", "read2"), authorizationManager.getAuthorizedOperations(record));
+			assertEqualsUnordered(List.of("read", "read2", "read3"), authorizationManager.getAuthorizedOperations(recordTooExpensive));
+			assertEqualsUnordered(List.of("read", "read2", "read3"), authorizationManager.getAuthorizedOperations(recordOtherUser));
+			assertEqualsUnordered(Collections.emptyList(), authorizationManager.getAuthorizedOperations(recordOtherUserAndTooExpensive));
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -450,6 +453,11 @@ public final class VSecurityManagerTest {
 			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.create));
 			Assertions.assertTrue(authorizationManager.isAuthorized(recordArchivedNotWriteable, RecordOperations.create));
 
+			assertEqualsUnordered(List.of("read2", "read", "create"), authorizationManager.getAuthorizedOperations(record));
+			assertEqualsUnordered(List.of("read2", "read3", "read"), authorizationManager.getAuthorizedOperations(recordTooExpensive));
+			assertEqualsUnordered(List.of("read2", "read3", "read", "create"), authorizationManager.getAuthorizedOperations(recordOtherUser));
+			assertEqualsUnordered(Collections.emptyList(), authorizationManager.getAuthorizedOperations(recordOtherUserAndTooExpensive));
+			assertEqualsUnordered(List.of("read2", "read", "create"), authorizationManager.getAuthorizedOperations(recordArchivedNotWriteable));
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
@@ -488,6 +496,10 @@ public final class VSecurityManagerTest {
 			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.read));
 			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.read));
 
+			assertEqualsUnordered(List.of("readHp", "read"), authorizationManager.getAuthorizedOperations(record));
+			assertEqualsUnordered(List.of("readHp", "read"), authorizationManager.getAuthorizedOperations(recordTooExpensive));
+			assertEqualsUnordered(List.of("readHp", "read"), authorizationManager.getAuthorizedOperations(recordOtherUser));
+			assertEqualsUnordered(List.of("readHp", "read"), authorizationManager.getAuthorizedOperations(recordOtherUserAndTooExpensive));
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
@@ -536,6 +548,12 @@ public final class VSecurityManagerTest {
 			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.write));
 			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.write));
 			Assertions.assertFalse(authorizationManager.isAuthorized(recordArchivedNotWriteable, RecordOperations.write));
+
+			assertEqualsUnordered(List.of("read2", "read", "write"), authorizationManager.getAuthorizedOperations(record));
+			assertEqualsUnordered(List.of("read2", "read3", "read", "write"), authorizationManager.getAuthorizedOperations(recordTooExpensive));
+			assertEqualsUnordered(List.of("read2", "read3", "read", "write"), authorizationManager.getAuthorizedOperations(recordOtherUser));
+			assertEqualsUnordered(Collections.emptyList(), authorizationManager.getAuthorizedOperations(recordOtherUserAndTooExpensive));
+			assertEqualsUnordered(List.of("read2", "read"), authorizationManager.getAuthorizedOperations(recordArchivedNotWriteable));
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -634,6 +652,16 @@ public final class VSecurityManagerTest {
 			Assertions.assertFalse(authorizationManager.isAuthorized(recordRegion, RecordOperations.write));
 			Assertions.assertFalse(authorizationManager.isAuthorized(recordNational, RecordOperations.write));
 
+			assertEqualsUnordered(List.of("read2", "read", "write", "notify"), authorizationManager.getAuthorizedOperations(record));
+			assertEqualsUnordered(List.of("read2", "read"), authorizationManager.getAuthorizedOperations(recordOtherType));
+			assertEqualsUnordered(List.of("read2", "read"), authorizationManager.getAuthorizedOperations(recordOtherEtat));
+			assertEqualsUnordered(List.of("read2", "read3", "read", "notify", "write"), authorizationManager.getAuthorizedOperations(recordOtherUser));
+			assertEqualsUnordered(List.of("notify", "write"), authorizationManager.getAuthorizedOperations(recordOtherUserAndTooExpensive));
+			assertEqualsUnordered(List.of("read2", "read", "write", "notify"), authorizationManager.getAuthorizedOperations(recordOtherCommune));
+			assertEqualsUnordered(List.of("read2", "read", "write", "notify"), authorizationManager.getAuthorizedOperations(recordDepartement));
+			assertEqualsUnordered(List.of("read2", "read"), authorizationManager.getAuthorizedOperations(recordOtherDepartement));
+			assertEqualsUnordered(List.of("read2", "read"), authorizationManager.getAuthorizedOperations(recordRegion));
+			assertEqualsUnordered(List.of("read2", "read"), authorizationManager.getAuthorizedOperations(recordNational));
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
@@ -663,4 +691,10 @@ public final class VSecurityManagerTest {
 		return definitionSpace.resolve(authorizationName.name(), Authorization.class);
 	}
 
+	private void assertEqualsUnordered(final List<String> expected, final List<String> actual) {
+		final List<String> expectedList = new ArrayList<>(expected);
+		expectedList.sort(Comparator.naturalOrder());
+		actual.sort(Comparator.naturalOrder());
+		Assertions.assertLinesMatch(expectedList, actual);
+	}
 }
