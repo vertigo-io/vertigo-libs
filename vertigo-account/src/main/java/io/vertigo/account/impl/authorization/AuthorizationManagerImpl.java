@@ -105,26 +105,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		Assertion.check().isNotNull(keyConcept)
 				.isNotNull(operationName);
 		//---
-		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
-		if (userPermissionsOpt.isEmpty()) {
-			// Si il n'y a pas de session alors pas d'autorisation.
-			return false;
-		}
-
-		final UserAuthorizations userPermissions = userPermissionsOpt.get();
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
-		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
-
-		return userPermissions.getEntityAuthorizations(dtDefinition).stream()
-				.filter(permission -> permission.getOperation().get().equals(operationName.name())
-						|| permission.getOverrides().contains(operationName.name()))
-				.flatMap(permission -> permission.getRules().stream())
-				.anyMatch(rule -> new CriteriaSecurityRuleTranslator<K>()
-						.on(securedEntity)
-						.withRule(rule)
-						.withCriteria(userPermissions.getSecurityKeys())
-						.toCriteria()
-						.toPredicate().test(keyConcept));
+		return getAuthorizedOperations(keyConcept).contains(operationName.name());
 	}
 
 	/** {@inheritDoc} */
@@ -220,9 +201,19 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return Collections.emptyList();
 		}
+		final UserAuthorizations userPermissions = userPermissionsOpt.get();
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
-		return userPermissionsOpt.get().getEntityAuthorizations(dtDefinition).stream()
-				.map(permission -> permission.getOperation().get())
+		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
+
+		return userPermissions.getEntityAuthorizations(dtDefinition).stream()
+				.filter(permission -> permission.getRules().stream()
+						.anyMatch(rule -> new CriteriaSecurityRuleTranslator<K>()
+								.on(securedEntity)
+								.withRule(rule)
+								.withCriteria(userPermissions.getSecurityKeys())
+								.toCriteria()
+								.toPredicate().test(keyConcept)))
+				.flatMap(authorization -> Stream.concat(Stream.of(authorization.getOperation().get()), authorization.getOverrides().stream()))
 				.collect(Collectors.toList());
 	}
 
