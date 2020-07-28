@@ -30,8 +30,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.AutoCloseableApp;
-import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
@@ -297,7 +297,7 @@ public class FacetManagerTest {
 	}
 
 	private FacetDefinition obtainFacetDefinition(final String facetName) {
-		return Home.getApp().getDefinitionSpace().resolve(facetName, FacetDefinition.class);
+		return App.getApp().getDefinitionSpace().resolve(facetName, FacetDefinition.class);
 	}
 
 }

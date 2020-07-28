@@ -23,7 +23,7 @@ import java.util.List;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
@@ -105,7 +105,7 @@ public final class TaskAttribute {
 	 * @param value Valeur (Object primitif ou DtObject ou bien DtList)
 	 */
 	public void checkAttribute(final Object value) {
-		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
+		final SmartTypeManager smartTypeManager = App.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		if (cardinality.hasOne()) {
 			Assertion.check().isNotNull(value, "Attribut task {0} ne doit pas etre null (cf. paramétrage task)", getName());
 		}

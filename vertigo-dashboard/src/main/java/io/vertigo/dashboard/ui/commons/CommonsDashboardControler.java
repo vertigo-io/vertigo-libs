@@ -32,7 +32,6 @@ import io.vertigo.core.daemon.DaemonDefinition;
 import io.vertigo.core.daemon.DaemonManager;
 import io.vertigo.core.daemon.DaemonStat;
 import io.vertigo.core.node.App;
-import io.vertigo.core.node.Home;
 import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
 import io.vertigo.dashboard.ui.commons.model.CacheModel;
 import io.vertigo.dashboard.ui.commons.model.DaemonModel;
@@ -52,7 +51,7 @@ public class CommonsDashboardControler extends AbstractDashboardModuleControler 
 		final DaemonManager daemonManager = app.getComponentSpace().resolve(DaemonManager.class);
 		final List<DaemonStat> daemonStats = daemonManager.getStats();
 		//---
-		final List<DaemonModel> daemonModels = Home.getApp().getDefinitionSpace().getAll(DaemonDefinition.class)
+		final List<DaemonModel> daemonModels = App.getApp().getDefinitionSpace().getAll(DaemonDefinition.class)
 				.stream()
 				.map(daemonDefinition -> new DaemonModel(
 						daemonDefinition,
@@ -69,7 +68,7 @@ public class CommonsDashboardControler extends AbstractDashboardModuleControler 
 	}
 
 	private static void buildEventBusModel(final App app, final Map<String, Object> model) {
-		final Collection<EventBusSubscriptionDefinition> eventBusSubscriptions = Home.getApp().getDefinitionSpace().getAll(EventBusSubscriptionDefinition.class);
+		final Collection<EventBusSubscriptionDefinition> eventBusSubscriptions = App.getApp().getDefinitionSpace().getAll(EventBusSubscriptionDefinition.class);
 		final List<EventBusModel> events = eventBusSubscriptions
 				.stream()
 				.collect(Collectors.groupingBy(EventBusSubscriptionDefinition::getEventType))
@@ -84,7 +83,7 @@ public class CommonsDashboardControler extends AbstractDashboardModuleControler 
 	}
 
 	private static void buildCacheModel(final App app, final Map<String, Object> model) {
-		final List<CacheModel> caches = Home.getApp().getDefinitionSpace().getAll(CacheDefinition.class)
+		final List<CacheModel> caches = App.getApp().getDefinitionSpace().getAll(CacheDefinition.class)
 				.stream()
 				.map(cacheDefinition -> new CacheModel(cacheDefinition))
 				.collect(Collectors.toList());

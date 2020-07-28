@@ -1,18 +1,19 @@
 package io.vertigo.orchestra.dao.execution;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 
-import java.util.Optional;
 import io.vertigo.core.lang.Generated;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
+import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.metamodel.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
 import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.orchestra.domain.execution.OActivityLog;
 
 /**
@@ -40,7 +41,7 @@ public final class OActivityLogDAO extends DAO<OActivityLog, java.lang.Long> imp
 	 * @return the builder 
 	 */
 	private static TaskBuilder createTaskBuilder(final String name) {
-		final TaskDefinition taskDefinition = Home.getApp().getDefinitionSpace().resolve(name, TaskDefinition.class);
+		final TaskDefinition taskDefinition = App.getApp().getDefinitionSpace().resolve(name, TaskDefinition.class);
 		return Task.builder(taskDefinition);
 	}
 

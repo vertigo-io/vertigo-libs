@@ -42,7 +42,7 @@ import io.vertigo.account.impl.authorization.dsl.rules.DslParserUtil;
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -173,6 +173,6 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 
 	private static DtDefinition findDtDefinition(final String entityName) {
 		final String name = DtDefinition.PREFIX + entityName;
-		return Home.getApp().getDefinitionSpace().resolve(name, DtDefinition.class);
+		return App.getApp().getDefinitionSpace().resolve(name, DtDefinition.class);
 	}
 }

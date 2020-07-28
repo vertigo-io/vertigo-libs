@@ -18,7 +18,7 @@
  */
 package io.vertigo.datastore.impl.entitystore;
 
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.VAccessor;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
@@ -50,7 +50,7 @@ public class StoreVAccessor<E extends Entity> extends VAccessor<E> {
 	 */
 	public void load() {
 		if (getUID() != null) {
-			final EntityStoreManager entityStoreManager = Home.getApp().getComponentSpace().resolve(EntityStoreManager.class);
+			final EntityStoreManager entityStoreManager = App.getApp().getComponentSpace().resolve(EntityStoreManager.class);
 			final E value = entityStoreManager.readOne(getUID());
 			set(value);
 		}

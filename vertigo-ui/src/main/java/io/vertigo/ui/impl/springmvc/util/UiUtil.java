@@ -24,7 +24,7 @@ import java.util.List;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
@@ -154,7 +154,7 @@ public final class UiUtil implements Serializable {
 	 * @return rendu du champs boolean
 	 */
 	public static String formatBoolean(final String fieldPath, final Boolean value) {
-		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
+		final SmartTypeManager smartTypeManager = App.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
 			return DEFAULT_FORMATTER.valueToString(value, BasicType.Boolean);
 		}
@@ -232,7 +232,7 @@ public final class UiUtil implements Serializable {
 	 * @return the locale (in the quasar's style) to download the right js file
 	 */
 	public static String getCurrentLocalePrefixForQuasar() {
-		final LocaleManager localeManager = Home.getApp().getComponentSpace().resolve(LocaleManager.class);
+		final LocaleManager localeManager = App.getApp().getComponentSpace().resolve(LocaleManager.class);
 		final String currentLocaleTag = localeManager.getCurrentLocale().toLanguageTag();
 		// not so great but not other solutions (quasar's doesn't respect the standard...)
 		if (currentLocaleTag.startsWith("fr")) {

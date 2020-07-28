@@ -30,7 +30,7 @@ import org.springframework.web.servlet.HandlerExecutionChain;
 
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 
 public class VSpringDispatcherServlet extends DispatcherServlet {
 
@@ -80,7 +80,7 @@ public class VSpringDispatcherServlet extends DispatcherServlet {
 	}
 
 	private synchronized void setAnalyticsManager() {
-		analyticsManager = Home.getApp().getComponentSpace().resolve(AnalyticsManager.class);
+		analyticsManager = App.getApp().getComponentSpace().resolve(AnalyticsManager.class);
 	}
 
 }

@@ -23,7 +23,7 @@ import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
@@ -153,7 +153,7 @@ public final class PublisherDataUtil {
 	 */
 	public static String renderStringField(final DtObject dto, final DtField dtField) {
 		final String unit = dtField.getSmartTypeDefinition().getProperties().getValue(DtProperty.UNIT);
-		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
+		final SmartTypeManager smartTypeManager = App.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		final Object value = dtField.getDataAccessor().getValue(dto);
 		final String formattedValue = smartTypeManager.valueToString(dtField.getSmartTypeDefinition(), value);
 		return formattedValue + (!StringUtil.isBlank(unit) ? " " + unit : "");
@@ -179,7 +179,7 @@ public final class PublisherDataUtil {
 	public static String generatePublisherNodeDefinitionAsKsp(final String... dtDefinitions) {
 		final StringBuilder sb = new StringBuilder();
 		for (final String dtDefinitionUrn : dtDefinitions) {
-			appendPublisherNodeDefinition(sb, Home.getApp().getDefinitionSpace().resolve(dtDefinitionUrn, DtDefinition.class));
+			appendPublisherNodeDefinition(sb, App.getApp().getDefinitionSpace().resolve(dtDefinitionUrn, DtDefinition.class));
 			sb.append('\n');
 		}
 		return sb.toString();

@@ -30,7 +30,6 @@ import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.account.AccountManager;
 import io.vertigo.core.node.App;
 import io.vertigo.core.node.AutoCloseableApp;
-import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datamodel.structure.model.UID;
@@ -274,7 +273,7 @@ public abstract class AbstractNotificationManagerTest {
 
 		sleep(4100);
 
-		final NotificationPlugin notificationPlugin = Home.getApp().getComponentSpace().resolve("notificationPlugin", NotificationPlugin.class);
+		final NotificationPlugin notificationPlugin = App.getApp().getComponentSpace().resolve("notificationPlugin", NotificationPlugin.class);
 		if (notificationPlugin instanceof RedisNotificationPlugin) {
 			((RedisNotificationPlugin) notificationPlugin).cleanTooOldNotifications();
 		} else if (notificationPlugin instanceof MemoryNotificationPlugin) {

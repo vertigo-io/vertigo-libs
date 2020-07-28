@@ -28,7 +28,7 @@ import java.util.Optional;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
@@ -201,7 +201,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		UiObject<O> uiObject;
 		final DtField dtField = dtDefinition.getField(keyFieldName);
 		Assertion.check().isTrue(dtField.getType().isId(), "La clé {0} de la liste doit être la PK", keyFieldName);
-		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
+		final SmartTypeManager smartTypeManager = App.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		final Object key = smartTypeManager.stringToValue(dtField.getSmartTypeDefinition(), keyValueAsString);
 		final O entity = (O) loadDto(key);
 		uiObject = new StrutsUiObject<>(entity);

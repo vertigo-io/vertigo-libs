@@ -36,7 +36,7 @@ import org.ehcache.expiry.ExpiryPolicy;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.datastore.cache.CacheDefinition;
 import io.vertigo.datastore.impl.cache.CachePlugin;
@@ -76,7 +76,7 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 	}
 
 	private void registerCaches() {
-		Home.getApp().getDefinitionSpace()
+		App.getApp().getDefinitionSpace()
 				.getAll(CacheDefinition.class).stream()
 				.forEach(this::registerCache);
 	}
@@ -155,7 +155,7 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void clearAll() {
-		Home.getApp().getDefinitionSpace()
+		App.getApp().getDefinitionSpace()
 				.getAll(CacheDefinition.class).stream()
 				.forEach(cacheDefinition -> {
 					final Cache<?, ?> cache = manager.getCache(cacheDefinition.getName(), Serializable.class, Object.class);
@@ -186,6 +186,6 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 	}
 
 	private static CacheDefinition getCacheDefinition(final String cacheName) {
-		return Home.getApp().getDefinitionSpace().resolve(cacheName, CacheDefinition.class);
+		return App.getApp().getDefinitionSpace().resolve(cacheName, CacheDefinition.class);
 	}
 }

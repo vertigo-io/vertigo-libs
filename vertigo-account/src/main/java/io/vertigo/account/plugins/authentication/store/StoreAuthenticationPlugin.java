@@ -27,7 +27,7 @@ import io.vertigo.account.impl.authentication.AuthenticationPlugin;
 import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.criteria.Criteria;
@@ -123,7 +123,7 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		userCredentialDefinition = Home.getApp().getDefinitionSpace().resolve(userCredentialEntity, DtDefinition.class);
+		userCredentialDefinition = App.getApp().getDefinitionSpace().resolve(userCredentialEntity, DtDefinition.class);
 		defaultUserTrustedCredential = new UsernamePasswordAuthenticationToken("defaultLogin", "defaultPassword");
 	}
 

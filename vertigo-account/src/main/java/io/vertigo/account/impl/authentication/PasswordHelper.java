@@ -30,7 +30,7 @@ import javax.crypto.spec.PBEKeySpec;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 
 /**
  * Utility class used for password managment.
@@ -60,7 +60,7 @@ public final class PasswordHelper {
 			throw WrappedException.wrap(e);
 		}
 		defaultCharsetUTF8 = Charset.forName("UTF-8");
-		codecManager = Home.getApp().getComponentSpace().resolve(CodecManager.class);
+		codecManager = App.getApp().getComponentSpace().resolve(CodecManager.class);
 		rnd = new SecureRandom();
 	}
 

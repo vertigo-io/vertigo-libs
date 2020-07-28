@@ -20,7 +20,7 @@ package io.vertigo.ui.data.boot.initializer;
 
 import javax.inject.Inject;
 
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.component.ComponentInitializer;
 import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.ui.data.domain.movies.Movie;
@@ -38,6 +38,6 @@ public final class SearchInitializer implements ComponentInitializer {
 	/** {@inheritDoc} */
 	@Override
 	public void init() {
-		Home.getApp().registerPreActivateFunction(() -> searchManager.reindexAll(searchManager.findFirstIndexDefinitionByKeyConcept(Movie.class)));
+		App.getApp().registerPreActivateFunction(() -> searchManager.reindexAll(searchManager.findFirstIndexDefinitionByKeyConcept(Movie.class)));
 	}
 }

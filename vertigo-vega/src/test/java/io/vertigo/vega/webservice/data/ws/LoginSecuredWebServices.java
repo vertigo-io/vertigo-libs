@@ -26,7 +26,7 @@ import io.vertigo.account.authorization.AuthorizationManager;
 import io.vertigo.account.authorization.metamodel.Authorization;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.data.domain.Contact;
@@ -71,7 +71,7 @@ public class LoginSecuredWebServices implements WebServices {
 	}
 
 	private Authorization getAuthorization(final String authorizationName) {
-		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = App.getApp().getDefinitionSpace();
 		return definitionSpace.resolve(authorizationName, Authorization.class);
 	}
 

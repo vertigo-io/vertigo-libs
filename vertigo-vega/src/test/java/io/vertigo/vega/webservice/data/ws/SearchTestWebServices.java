@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.datafactory.collections.CollectionsManager;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
 import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
@@ -54,7 +54,7 @@ public final class SearchTestWebServices implements WebServices {
 
 	@POST("/selectedFacetValues")
 	public UiContext testSelectedFacetValues(final SelectedFacetValues selectedFacetValues) {
-		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryContactFacet", FacetedQueryDefinition.class);
+		final FacetedQueryDefinition facetedQueryDefinition = App.getApp().getDefinitionSpace().resolve("QryContactFacet", FacetedQueryDefinition.class);
 		final UiContext uiContext = new UiContext();
 		for (final FacetDefinition facetDefinition : facetedQueryDefinition.getFacetDefinitions()) {
 			if (!selectedFacetValues.getFacetValues(facetDefinition.getName()).isEmpty()) {
@@ -73,7 +73,7 @@ public final class SearchTestWebServices implements WebServices {
 	@IncludedFields({ "list.name", "list.conId", "list.firstName" })
 	public FacetedQueryResult<Contact, DtList<Contact>> testFacetedQueryResult(final SelectedFacetValues selectedFacetValues) {
 		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
-		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryContactFacet", FacetedQueryDefinition.class);
+		final FacetedQueryDefinition facetedQueryDefinition = App.getApp().getDefinitionSpace().resolve("QryContactFacet", FacetedQueryDefinition.class);
 		final FacetedQuery facetedQuery = new FacetedQuery(facetedQueryDefinition, selectedFacetValues);
 		return collectionsManager.facetList(allContacts, facetedQuery, Optional.empty());
 	}
@@ -83,13 +83,13 @@ public final class SearchTestWebServices implements WebServices {
 	@IncludedFields({ "list.name", "list.conId", "list.firstName" })
 	public FacetedQueryResult<Contact, DtList<Contact>> testFacetedClusterQueryResult(final SelectedFacetValues selectedFacetValues) {
 		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
-		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryContactFacet", FacetedQueryDefinition.class);
+		final FacetedQueryDefinition facetedQueryDefinition = App.getApp().getDefinitionSpace().resolve("QryContactFacet", FacetedQueryDefinition.class);
 		final FacetedQuery facetedQuery = new FacetedQuery(facetedQueryDefinition, selectedFacetValues);
 		return collectionsManager.facetList(allContacts, facetedQuery, Optional.of(obtainFacetDefinition("FctHonorificCode")));
 	}
 
 	private static FacetDefinition obtainFacetDefinition(final String facetName) {
-		return Home.getApp().getDefinitionSpace().resolve(facetName, FacetDefinition.class);
+		return App.getApp().getDefinitionSpace().resolve(facetName, FacetDefinition.class);
 	}
 
 	private static <D extends DtObject> DtList<D> asDtList(final Collection<D> values, final Class<D> dtObjectClass) {

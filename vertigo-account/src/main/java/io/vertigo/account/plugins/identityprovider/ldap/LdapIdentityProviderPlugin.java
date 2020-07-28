@@ -48,7 +48,7 @@ import io.vertigo.connectors.ldap.EsapiLdapEncoder;
 import io.vertigo.connectors.ldap.LdapConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
@@ -132,7 +132,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		final DtDefinition userDtDefinition = Home.getApp().getDefinitionSpace().resolve(userIdentityEntity, DtDefinition.class);
+		final DtDefinition userDtDefinition = App.getApp().getDefinitionSpace().resolve(userIdentityEntity, DtDefinition.class);
 		mapperHelper = new AccountMapperHelper(userDtDefinition, ldapUserAttributeMappingStr)
 				.withReservedDestField(PHOTO_RESERVED_FIELD)
 				.parseAttributeMapping();

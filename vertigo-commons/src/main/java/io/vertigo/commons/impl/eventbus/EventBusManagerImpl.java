@@ -29,7 +29,7 @@ import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.eventbus.EventBusSubscribed;
 import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.component.AopPlugin;
 import io.vertigo.core.node.component.CoreComponent;
@@ -50,16 +50,16 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 	 * Constructor.
 	 */
 	public EventBusManagerImpl() {
-		Home.getApp().registerPreActivateFunction(this::registerAllSubscribers);
+		App.getApp().registerPreActivateFunction(this::registerAllSubscribers);
 	}
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		// we need to unwrap the component to scan the real class and not the enhanced version
-		final AopPlugin aopPlugin = Home.getApp().getNodeConfig().getBootConfig().getAopPlugin();
-		return Home.getApp().getComponentSpace().keySet()
+		final AopPlugin aopPlugin = App.getApp().getNodeConfig().getBootConfig().getAopPlugin();
+		return App.getApp().getComponentSpace().keySet()
 				.stream()
-				.flatMap(id -> createEventSubscriptions(id, Home.getApp().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
+				.flatMap(id -> createEventSubscriptions(id, App.getApp().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
 				.collect(Collectors.toList());
 	}
 
@@ -101,7 +101,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 	}
 
 	private void registerAllSubscribers() {
-		subscriptions.addAll(Home.getApp().getDefinitionSpace().getAll(EventBusSubscriptionDefinition.class));
+		subscriptions.addAll(App.getApp().getDefinitionSpace().getAll(EventBusSubscriptionDefinition.class));
 
 	}
 

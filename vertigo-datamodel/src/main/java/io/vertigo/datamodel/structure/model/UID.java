@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
@@ -65,7 +65,7 @@ public final class UID<E extends Entity> implements Serializable {
 		Assertion.check()
 				.isNotNull(id)
 				.isNotNull(definition);
-		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
+		final SmartTypeManager smartTypeManager = App.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		smartTypeManager.checkValue(definition.getIdField().get().getSmartTypeDefinition(), id);
 		//-----
 		this.id = Serializable.class.cast(id);
@@ -89,7 +89,7 @@ public final class UID<E extends Entity> implements Serializable {
 		final Object id = stringToId(urn.substring(i + 1));
 
 		//On ne type pas, la seule chose que l'on sait est qu'il s'agit d'une définition.
-		final DtDefinition definition = Home.getApp().getDefinitionSpace().resolve(dname, DtDefinition.class);
+		final DtDefinition definition = App.getApp().getDefinitionSpace().resolve(dname, DtDefinition.class);
 		return new UID(definition, id);
 	}
 

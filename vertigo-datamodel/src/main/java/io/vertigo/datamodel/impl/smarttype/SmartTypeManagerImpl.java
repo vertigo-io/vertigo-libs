@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Tuple;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.MapBuilder;
@@ -33,16 +33,16 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 
 	@Override
 	public void start() {
-		formatterBySmartType = Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
+		formatterBySmartType = App.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
 				.filter(smartTypeDefinition -> smartTypeDefinition.getFormatterConfig() != null)
 				.collect(Collectors.toMap(SmartTypeDefinition::getName, smartTypeDefinition -> createFormatter(smartTypeDefinition)));
 
-		constraintsBySmartType = Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
+		constraintsBySmartType = App.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
 				.collect(Collectors.toMap(SmartTypeDefinition::getName, smartTypeDefinition -> createConstraints(smartTypeDefinition)));
 
-		Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
+		App.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
 				.filter(smartTypeDefinition -> smartTypeDefinition.getAdapterConfigs().containsKey("*"))
 				.forEach(smartTypeDefinition -> {
@@ -55,7 +55,7 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 					wildcardAdapters.put(smartTypeDefinition.getJavaClass(), createBasicTypeAdapter(wildcardAdapterConfig));
 				});
 
-		Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
+		App.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
 				.flatMap(smartTypeDefinition -> smartTypeDefinition.getAdapterConfigs().values().stream().map(adapterConfig -> Tuple.of(smartTypeDefinition, adapterConfig)))
 				.filter(tuple -> !"*".equals(tuple.getVal2().getType()))

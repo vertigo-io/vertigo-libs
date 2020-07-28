@@ -28,7 +28,7 @@ import java.util.StringTokenizer;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 
 /**
  * Formatteur multi-lingue.
@@ -89,7 +89,7 @@ public class FormatterNumberLocalized extends FormatterNumber {
 	@Override
 	protected DecimalFormatSymbols getDecimalFormatSymbols() {
 		//Il n'y a pas besoin de synchroniser la méthode car la map l'est déjà.
-		final Locale currentLocale = Home.getApp().getComponentSpace().resolve(LocaleManager.class).getCurrentLocale();
+		final Locale currentLocale = App.getApp().getComponentSpace().resolve(LocaleManager.class).getCurrentLocale();
 		DecimalFormatSymbols decimalFormatSymbols = decimalFormatSymbolsMap.get(currentLocale);
 		if (decimalFormatSymbols == null) {
 			// si Locale.FRANCE cela donne la virgule comme séparateur décimal

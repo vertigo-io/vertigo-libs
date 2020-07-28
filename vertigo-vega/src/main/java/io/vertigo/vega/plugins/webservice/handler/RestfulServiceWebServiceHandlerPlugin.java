@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.lang.VUserException;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.WebServices;
@@ -56,7 +56,7 @@ public final class RestfulServiceWebServiceHandlerPlugin implements WebServiceHa
 		final WebServiceDefinition webServiceDefinition = routeContext.getWebServiceDefinition();
 		final Object[] serviceArgs = makeArgs(routeContext);
 		final Method method = webServiceDefinition.getMethod();
-		final WebServices webServices = (WebServices) Home.getApp().getComponentSpace().resolve(method.getDeclaringClass());
+		final WebServices webServices = (WebServices) App.getApp().getComponentSpace().resolve(method.getDeclaringClass());
 
 		if (method.getName().startsWith("create")) {
 			//by convention, if method starts with 'create', an http 201 status code is returned (if ok)

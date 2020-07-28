@@ -28,7 +28,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
@@ -170,6 +170,6 @@ public final class FormatterDate implements Formatter {
 	}
 
 	private static LocaleManager getLocaleManager() {
-		return Home.getApp().getComponentSpace().resolve(LocaleManager.class);
+		return App.getApp().getComponentSpace().resolve(LocaleManager.class);
 	}
 }

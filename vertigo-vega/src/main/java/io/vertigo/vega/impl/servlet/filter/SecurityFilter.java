@@ -33,7 +33,7 @@ import javax.servlet.http.HttpSession;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.lang.Tuple;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.vega.webservice.exception.SessionException;
 
 /**
@@ -62,10 +62,10 @@ public final class SecurityFilter extends AbstractFilter {
 	/** {@inheritDoc} */
 	@Override
 	public void doInit() {
-		securityManager = Home.getApp().getComponentSpace().resolve(VSecurityManager.class);
+		securityManager = App.getApp().getComponentSpace().resolve(VSecurityManager.class);
 		noAuthentificationPattern = parsePattern(getFilterConfig().getInitParameter(NO_AUTHENTIFICATION_PATTERN_PARAM_NAME));
 		authenticationHandlerOpt = Optional.ofNullable(getFilterConfig().getInitParameter(DELEGATE_AUTHENTICATION_HANDLER_PARAM_NAME))
-				.map(authenticationHandlerName -> Home.getApp().getComponentSpace().resolve(authenticationHandlerName, DelegateAuthenticationFilterHandler.class));
+				.map(authenticationHandlerName -> App.getApp().getComponentSpace().resolve(authenticationHandlerName, DelegateAuthenticationFilterHandler.class));
 	}
 
 	/** {@inheritDoc} */

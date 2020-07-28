@@ -21,7 +21,7 @@ package io.vertigo.struts2.core;
 import java.io.Serializable;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 
 /**
  * Référence vers un composant.
@@ -76,9 +76,9 @@ public final class ComponentRef<T> implements Serializable {
 	public synchronized T get() {
 		if (instance == null) {
 			if (componentId != null) {
-				instance = Home.getApp().getComponentSpace().resolve(componentId, componentClazz);
+				instance = App.getApp().getComponentSpace().resolve(componentId, componentClazz);
 			} else {
-				instance = Home.getApp().getComponentSpace().resolve(componentClazz);
+				instance = App.getApp().getComponentSpace().resolve(componentClazz);
 			}
 		}
 		return instance;

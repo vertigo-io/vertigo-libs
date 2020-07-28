@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.account.identityprovider.MyNodeConfig.IdpPlugin;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.config.NodeConfig;
 
 public final class StoreIdentityManagerTest extends AbstractIdentityProviderManagerTest {
@@ -62,7 +62,7 @@ public final class StoreIdentityManagerTest extends AbstractIdentityProviderMana
 	}
 
 	protected VTransactionWritable obtainTx() {
-		return Home.getApp().getComponentSpace().resolve(VTransactionManager.class).createCurrentTransaction();
+		return App.getApp().getComponentSpace().resolve(VTransactionManager.class).createCurrentTransaction();
 	}
 
 	@Override

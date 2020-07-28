@@ -39,7 +39,7 @@ import io.vertigo.account.impl.authorization.dsl.translator.SearchSecurityRuleTr
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
@@ -227,7 +227,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		Assertion.check().isNotNull(dtDefinition);
 		//---
 		final String name = SecuredEntity.PREFIX + dtDefinition.getName();
-		return Home.getApp().getDefinitionSpace().resolve(name, SecuredEntity.class);
+		return App.getApp().getDefinitionSpace().resolve(name, SecuredEntity.class);
 	}
 
 }

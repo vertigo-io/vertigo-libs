@@ -25,7 +25,7 @@ import java.util.Optional;
 import io.vertigo.commons.app.Node;
 import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 
 /**
  * Memory implementation for a single node app.
@@ -53,7 +53,7 @@ public final class SingleAppNodeRegistryPlugin implements AppNodeRegistryPlugin 
 
 	@Override
 	public Optional<Node> find(final String nodeId) {
-		if (Home.getApp().getNodeConfig().getNodeId().equals(nodeId)) {
+		if (App.getApp().getNodeConfig().getNodeId().equals(nodeId)) {
 			return Optional.of(localNode);
 		}
 		return Optional.empty();

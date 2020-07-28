@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -107,7 +107,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		} else if (isAboutDate(dtField)) {
 			strValue = requestParameterToString(value);
 			try {
-				final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
+				final SmartTypeManager smartTypeManager = App.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 				final Object typedValue = EncoderDate.stringToValue(strValue, dtField.getSmartTypeDefinition().getBasicType());
 				strValue = smartTypeManager.valueToString(dtField.getSmartTypeDefinition(), typedValue);// we fall back in the normal case if everything is right -> go to formatter
 			} catch (final FormatterException e) {
@@ -288,7 +288,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	}
 
 	private String getFormattedValue(final String keyFieldName) {
-		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
+		final SmartTypeManager smartTypeManager = App.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		final DtField dtField = getDtField(keyFieldName);
 		final Serializable typedValue = getEncodedValue(keyFieldName);
 		return typedValue != null ? smartTypeManager.valueToString(dtField.getSmartTypeDefinition(), typedValue) : null;

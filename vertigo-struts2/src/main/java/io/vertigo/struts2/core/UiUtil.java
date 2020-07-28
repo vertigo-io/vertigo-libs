@@ -25,7 +25,7 @@ import com.opensymphony.xwork2.ActionContext;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
@@ -87,7 +87,7 @@ public final class UiUtil implements Serializable {
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans smartType
 			return DEFAULT_FORMATTER.valueToString(value, BasicType.Boolean);
 		}
-		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
+		final SmartTypeManager smartTypeManager = App.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		return smartTypeManager.valueToString(getDtField(fieldPath).getSmartTypeDefinition(), value);
 	}
 

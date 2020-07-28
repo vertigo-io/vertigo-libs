@@ -37,7 +37,6 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.App;
 import io.vertigo.core.node.AutoCloseableApp;
-import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.resource.ResourceManager;
@@ -350,7 +349,7 @@ public abstract class AbstractPublisherMergerTest {
 	//	}
 
 	protected static PublisherData createPublisherData(final String definitionName) {
-		final PublisherDataDefinition publisherDataDefinition = Home.getApp().getDefinitionSpace().resolve(definitionName, PublisherDataDefinition.class);
+		final PublisherDataDefinition publisherDataDefinition = App.getApp().getDefinitionSpace().resolve(definitionName, PublisherDataDefinition.class);
 		Assertions.assertNotNull(publisherDataDefinition);
 
 		final PublisherData publisherData = new PublisherData(publisherDataDefinition);

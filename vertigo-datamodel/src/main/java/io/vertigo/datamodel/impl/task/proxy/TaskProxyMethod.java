@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.component.amplifier.ProxyMethod;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.task.TaskManager;
@@ -45,7 +45,7 @@ public final class TaskProxyMethod implements ProxyMethod {
 	}
 
 	private static SmartTypeDefinition resolveSmartTypeDefinition(final String smartTypeName) {
-		return Home.getApp().getDefinitionSpace().resolve(smartTypeName, SmartTypeDefinition.class);
+		return App.getApp().getDefinitionSpace().resolve(smartTypeName, SmartTypeDefinition.class);
 	}
 
 	private static boolean hasOut(final Method method) {
@@ -69,7 +69,7 @@ public final class TaskProxyMethod implements ProxyMethod {
 	}
 
 	private static TaskManager getTaskManager() {
-		return Home.getApp().getComponentSpace().resolve(TaskManager.class);
+		return App.getApp().getComponentSpace().resolve(TaskManager.class);
 	}
 
 	@Override

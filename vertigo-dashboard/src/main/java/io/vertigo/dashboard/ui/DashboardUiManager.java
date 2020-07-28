@@ -18,7 +18,7 @@
  */
 package io.vertigo.dashboard.ui;
 
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.component.Manager;
 
@@ -26,7 +26,7 @@ public final class DashboardUiManager implements Manager, Activeable {
 
 	@Override
 	public void start() {
-		final DashboardRouter dashboardRouter = new DashboardRouter(Home.getApp());
+		final DashboardRouter dashboardRouter = new DashboardRouter(App.getApp());
 		dashboardRouter.route();
 	}
 

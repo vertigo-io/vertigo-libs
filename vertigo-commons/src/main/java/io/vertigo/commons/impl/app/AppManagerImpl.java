@@ -38,7 +38,6 @@ import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.App;
-import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.config.ModuleConfig;
 
@@ -72,17 +71,17 @@ public final class AppManagerImpl implements AppManager, Activeable {
 
 	@DaemonScheduled(name = "DmnUpdateNodeStatus", periodInSeconds = HEART_BEAT_SECONDS, analytics = false)
 	public void updateNodeStatus() {
-		nodeRegistryPlugin.updateStatus(toAppNode(Home.getApp()));
+		nodeRegistryPlugin.updateStatus(toAppNode(App.getApp()));
 	}
 
 	@Override
 	public void start() {
-		nodeRegistryPlugin.register(toAppNode(Home.getApp()));
+		nodeRegistryPlugin.register(toAppNode(App.getApp()));
 	}
 
 	@Override
 	public void stop() {
-		nodeRegistryPlugin.unregister(toAppNode(Home.getApp()));
+		nodeRegistryPlugin.unregister(toAppNode(App.getApp()));
 
 	}
 
@@ -106,7 +105,7 @@ public final class AppManagerImpl implements AppManager, Activeable {
 
 	@Override
 	public Node getCurrentNode() {
-		final String currentNodeId = Home.getApp().getNodeConfig().getNodeId();
+		final String currentNodeId = App.getApp().getNodeConfig().getNodeId();
 		return find(currentNodeId)
 				.orElseThrow(() -> new VSystemException("Current node with '{0}' cannot be found in the registry", currentNodeId));
 	}

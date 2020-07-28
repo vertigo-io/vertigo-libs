@@ -30,7 +30,7 @@ import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.util.MapBuilder;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -156,7 +156,7 @@ public final class CommentWebServices implements WebServices {
 	}
 
 	private static UID<KeyConcept> readKeyConceptURI(final String keyConcept, @QueryParam("id") final String id) {
-		final DtDefinition dtDefinition = Home.getApp().getDefinitionSpace().resolve("Dt" + keyConcept, DtDefinition.class);
+		final DtDefinition dtDefinition = App.getApp().getDefinitionSpace().resolve("Dt" + keyConcept, DtDefinition.class);
 		final Object keyConceptId = stringToId(id, dtDefinition);
 		return UID.of(dtDefinition, keyConceptId);
 	}

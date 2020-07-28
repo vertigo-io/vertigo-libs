@@ -33,7 +33,7 @@ import io.vertigo.commons.command.CommandResponse;
 import io.vertigo.commons.command.GenericUID;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.component.AopPlugin;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -45,10 +45,10 @@ public final class CommandManagerImpl implements CommandManager, SimpleDefinitio
 	@Override
 	public List<CommandDefinition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		// we need to unwrap the component to scan the real class and not the enhanced version
-		final AopPlugin aopPlugin = Home.getApp().getNodeConfig().getBootConfig().getAopPlugin();
-		return Home.getApp().getComponentSpace().keySet()
+		final AopPlugin aopPlugin = App.getApp().getNodeConfig().getBootConfig().getAopPlugin();
+		return App.getApp().getComponentSpace().keySet()
 				.stream()
-				.flatMap(id -> createCommandDefinition(Home.getApp().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
+				.flatMap(id -> createCommandDefinition(App.getApp().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
 				.collect(Collectors.toList());
 	}
 
@@ -78,7 +78,7 @@ public final class CommandManagerImpl implements CommandManager, SimpleDefinitio
 
 	@Override
 	public List<CommandDefinition> searchCommands(final String prefix) {
-		return Home.getApp().getDefinitionSpace().getAll(CommandDefinition.class)
+		return App.getApp().getDefinitionSpace().getAll(CommandDefinition.class)
 				.stream()
 				.filter(commandDefinition -> commandDefinition.getCommand().startsWith(prefix))
 				.collect(Collectors.toList());
@@ -86,7 +86,7 @@ public final class CommandManagerImpl implements CommandManager, SimpleDefinitio
 
 	@Override
 	public CommandDefinition findCommand(final String handle) {
-		return Home.getApp().getDefinitionSpace().getAll(CommandDefinition.class)
+		return App.getApp().getDefinitionSpace().getAll(CommandDefinition.class)
 				.stream()
 				.filter(commandDefinition -> commandDefinition.getCommand().equals(handle))
 				.findAny()

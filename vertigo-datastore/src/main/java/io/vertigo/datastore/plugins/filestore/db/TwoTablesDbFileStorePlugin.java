@@ -25,7 +25,7 @@ import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.DataStream;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
@@ -81,8 +81,8 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		Assertion.check().isNotNull(fileManager);
 		//-----
 		this.fileManager = fileManager;
-		storeMetaDataDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeMetaDataDtDefinitionName, DtDefinition.class);
-		storeFileDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeFileDtDefinitionName, DtDefinition.class);
+		storeMetaDataDtDefinition = App.getApp().getDefinitionSpace().resolve(storeMetaDataDtDefinitionName, DtDefinition.class);
+		storeFileDtDefinition = App.getApp().getDefinitionSpace().resolve(storeFileDtDefinitionName, DtDefinition.class);
 		storeMetaDataIdField = storeMetaDataDtDefinition.getIdField().get();
 	}
 

@@ -25,7 +25,7 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.datamodel.structure.model.UID;
 
 /**
@@ -47,7 +47,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	}
 
 	private static AccountManager getIdentityManager() {
-		return Home.getApp().getComponentSpace().resolve(AccountManager.class);
+		return App.getApp().getComponentSpace().resolve(AccountManager.class);
 	}
 
 	/**
