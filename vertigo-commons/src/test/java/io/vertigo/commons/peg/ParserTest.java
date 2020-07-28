@@ -294,7 +294,8 @@ public final class ParserTest {
 		assertEquals(1, results.size());
 		//-
 		results = MANY_AB_MORE
-				.parse2("abababab");
+				.parse("abababab")
+				.getValue();
 
 		assertEquals(4, results.size());
 		assertEquals("ab", results.get(0));
