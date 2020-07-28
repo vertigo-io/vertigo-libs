@@ -51,4 +51,8 @@ public interface PegRule<R> {
 	 * @return the new index and the result
 	 */
 	PegResult<R> parse(final String text, final int start) throws PegNoMatchFoundException;
+
+	default PegResult<R> parse(final String text) throws PegNoMatchFoundException {
+		return parse(text, 0);
+	}
 }

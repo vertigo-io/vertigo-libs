@@ -38,60 +38,60 @@ public class PegRulesTest {
 
 	@Test
 	public void choice() throws PegNoMatchFoundException {
-		Assertions.assertEquals(0, choice.parse("hi", 0).getValue().getChoiceIndex());
-		Assertions.assertEquals(1, choice.parse("ho", 0).getValue().getChoiceIndex());
-		Assertions.assertEquals(2, choice.parse("ha", 0).getValue().getChoiceIndex());
+		Assertions.assertEquals(0, choice.parse("hi").getValue().getChoiceIndex());
+		Assertions.assertEquals(1, choice.parse("ho").getValue().getChoiceIndex());
+		Assertions.assertEquals(2, choice.parse("ha").getValue().getChoiceIndex());
 	}
 
 	@Test
 	public void choice2() {
-		Assertions.assertThrows(PegNoMatchFoundException.class, () -> choice.parse("hu", 0));
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> choice.parse("hu"));
 	}
 
 	@Test
 	public void sequence() throws PegNoMatchFoundException {
-		Assertions.assertEquals(List.of("hi", "ho", "ha"), sequence.parse("hihoha", 0).getValue());
+		Assertions.assertEquals(List.of("hi", "ho", "ha"), sequence.parse("hihoha").getValue());
 	}
 
 	@Test
 	public void sequence2() {
 		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
-			Assertions.assertEquals(Arrays.asList("hi", "ho", "ha"), sequence.parse("hiho", 0).getValue());
+			Assertions.assertEquals(Arrays.asList("hi", "ho", "ha"), sequence.parse("hiho").getValue());
 		});
 	}
 
 	@Test
 	public void optional() throws PegNoMatchFoundException {
 		//option is not found => index =0
-		Assertions.assertEquals(0, PegRules.optional(choice).parse("hu", 0).getIndex());
+		Assertions.assertEquals(0, PegRules.optional(choice).parse("hu").getIndex());
 		//option is found => index =2
-		Assertions.assertEquals(2, PegRules.optional(choice).parse("ha", 0).getIndex());
+		Assertions.assertEquals(2, PegRules.optional(choice).parse("ha").getIndex());
 	}
 
 	@Test
 	public void oneOrMoreUntilTheEnd() throws PegNoMatchFoundException {
-		Assertions.assertEquals(List.of("hi", "hi", "hi"), oneOrMore.parse("hihihi", 0).getValue());
+		Assertions.assertEquals(List.of("hi", "hi", "hi"), oneOrMore.parse("hihihi").getValue());
 	}
 
 	@Test
 	public void oneOrMoreUntilTheEnd2() {
-		Assertions.assertThrows(PegNoMatchFoundException.class, () -> oneOrMore.parse("hihihiho", 0));
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> oneOrMore.parse("hihihiho"));
 	}
 
 	@Test
 	public void zerOrMoreUntilTheEnd() throws PegNoMatchFoundException {
-		Assertions.assertEquals(0, zeroOrMore.parse("", 0).getIndex());
-		Assertions.assertEquals(List.of("hi", "hi", "hi"), zeroOrMore.parse("hihihi", 0).getValue());
+		Assertions.assertEquals(0, zeroOrMore.parse("").getIndex());
+		Assertions.assertEquals(List.of("hi", "hi", "hi"), zeroOrMore.parse("hihihi").getValue());
 	}
 
 	@Test
 	public void zeroOrMoreUntilTheEnd2() {
-		Assertions.assertThrows(PegNoMatchFoundException.class, () -> zeroOrMore.parse("hihihiho", 0));
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> zeroOrMore.parse("hihihiho"));
 	}
 
 	@Test
 	public void skipBlanks() throws PegNoMatchFoundException {
-		Assertions.assertEquals(10, skipBlanks.parse("+++****+++", 0).getIndex());
+		Assertions.assertEquals(10, skipBlanks.parse("+++****+++").getIndex());
 	}
 
 	@Test

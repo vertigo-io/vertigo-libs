@@ -41,7 +41,7 @@ public final class DslParserUtil {
 			return new RuleMultiExpression(true);
 		}
 		return new DslMultiExpressionRule()
-				.parse(buildQuery, 0)
+				.parse(buildQuery)
 				.getValue();
 	}
 }

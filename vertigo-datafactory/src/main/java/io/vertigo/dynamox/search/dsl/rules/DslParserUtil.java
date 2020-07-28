@@ -60,7 +60,7 @@ public final class DslParserUtil {
 	 */
 	private static List<DslMultiExpression> parseMultiExpressionWithError(final String buildQuery) throws PegNoMatchFoundException {
 		return new DslSearchExpressionRule()
-				.parse(buildQuery, 0)
+				.parse(buildQuery)
 				.getValue();
 	}
 

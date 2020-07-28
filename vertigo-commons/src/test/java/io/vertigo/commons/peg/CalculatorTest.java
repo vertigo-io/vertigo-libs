@@ -27,7 +27,7 @@ public final class CalculatorTest {
 	private static final PegRule<Integer> MAIN = new CalculatorRule();
 
 	private static int eval(final String s) throws PegNoMatchFoundException {
-		return MAIN.parse(s, 0).getValue().intValue();
+		return MAIN.parse(s).getValue().intValue();
 	}
 
 	@Test
