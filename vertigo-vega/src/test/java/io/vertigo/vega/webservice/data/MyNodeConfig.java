@@ -35,7 +35,6 @@ import io.vertigo.datafactory.DataFactoryFeatures;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datastore.DataStoreFeatures;
-import io.vertigo.datastore.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.vega.VegaFeatures;
 import io.vertigo.vega.engines.webservice.cmd.ComponentCmdWebServices;
 import io.vertigo.vega.webservice.data.domain.Address;
@@ -97,7 +96,7 @@ public final class MyNodeConfig {
 						.withMemoryCache()
 						.withEntityStore()
 						.withKVStore()
-						.addPlugin(DelayedMemoryKVStorePlugin.class,
+						.withDelayedMemoryKV(
 								Param.of("collections", "tokens"),
 								Param.of("timeToLiveSeconds", "120"))
 						.build())

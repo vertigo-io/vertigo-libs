@@ -17,7 +17,6 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.task.TaskManager;
@@ -29,8 +28,6 @@ import io.vertigo.datastore.filestore.data.TestSmartTypes;
 import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoFs;
 import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoStd;
 import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoTemp;
-import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
-import io.vertigo.datastore.plugins.filestore.db.DbFileStorePlugin;
 
 public class DbFileStoreManagerTest extends AbstractFileStoreManagerTest {
 
@@ -76,7 +73,7 @@ public class DbFileStoreManagerTest extends AbstractFileStoreManagerTest {
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
-						.addPlugin(C3p0ConnectionProviderPlugin.class,
+						.withC3p0(
 								Param.of("dataBaseClass", H2DataBase.class.getCanonicalName()),
 								Param.of("jdbcDriver", Driver.class.getCanonicalName()),
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
@@ -87,8 +84,8 @@ public class DbFileStoreManagerTest extends AbstractFileStoreManagerTest {
 						.withMemoryCache()
 						.withEntityStore()
 						.withFileStore()
-						.addPlugin(SqlEntityStorePlugin.class)
-						.addPlugin(DbFileStorePlugin.class,
+						.withSqlEntityStore()
+						.withDbFileStore(
 								Param.of("storeDtName", "DtVxFileInfo"),
 								Param.of("fileInfoClass", FileInfoStd.class.getName()))
 						.withFsFileStore(Param.of("name", "fsStore"),

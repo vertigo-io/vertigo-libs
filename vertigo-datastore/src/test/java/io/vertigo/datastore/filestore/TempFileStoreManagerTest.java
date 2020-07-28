@@ -30,7 +30,6 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.task.TaskManager;
@@ -45,7 +44,6 @@ import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.FileUtil;
 import io.vertigo.datastore.impl.filestore.FileStorePlugin;
-import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
 import io.vertigo.datastore.plugins.filestore.fs.FsFullFileStorePlugin;
 
 public class TempFileStoreManagerTest {
@@ -110,7 +108,7 @@ public class TempFileStoreManagerTest {
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
-						.addPlugin(C3p0ConnectionProviderPlugin.class,
+						.withC3p0(
 								Param.of("dataBaseClass", H2DataBase.class.getCanonicalName()),
 								Param.of("jdbcDriver", Driver.class.getCanonicalName()),
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
@@ -121,7 +119,7 @@ public class TempFileStoreManagerTest {
 						.withMemoryCache()
 						.withEntityStore()
 						.withFileStore()
-						.addPlugin(SqlEntityStorePlugin.class)
+						.withSqlEntityStore()
 						.withFsFileStore(Param.of("name", "fsStore"),
 								Param.of("path", "${java.io.tmpdir}/testFsVertigo/"),
 								Param.of("storeDtName", "DtVxFileInfo"),

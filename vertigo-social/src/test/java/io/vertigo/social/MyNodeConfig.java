@@ -19,8 +19,6 @@
 package io.vertigo.social;
 
 import io.vertigo.account.AccountFeatures;
-import io.vertigo.account.plugins.account.cache.memory.MemoryAccountCachePlugin;
-import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.config.BootConfig;
@@ -34,10 +32,6 @@ import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.notification.data.TestUserSession;
 import io.vertigo.social.notification.webservices.TestLoginWebServices;
-import io.vertigo.social.plugins.comment.memory.MemoryCommentPlugin;
-import io.vertigo.social.plugins.comment.redis.RedisCommentPlugin;
-import io.vertigo.social.plugins.notification.memory.MemoryNotificationPlugin;
-import io.vertigo.social.plugins.notification.redis.RedisNotificationPlugin;
 import io.vertigo.social.webservices.account.AccountWebServices;
 import io.vertigo.social.webservices.comment.CommentWebServices;
 import io.vertigo.social.webservices.notification.NotificationWebServices;
@@ -91,21 +85,21 @@ public final class MyNodeConfig {
 		if (redis) {
 			return nodeConfigBuilder
 					.addModule(accountFeatures
-							.addPlugin(RedisAccountCachePlugin.class)
+							.withRedisAccountCache()
 							.build())
 					.addModule(socialFeatures
-							.addPlugin(RedisNotificationPlugin.class)
-							.addPlugin(RedisCommentPlugin.class)
+							.withRedisNotifications()
+							.withRedisComments()
 							.build());
 		}
 		//else we use memory
 		return nodeConfigBuilder
 				.addModule(accountFeatures
-						.addPlugin(MemoryAccountCachePlugin.class)
+						.withMemoryAccountCache()
 						.build())
 				.addModule(socialFeatures
-						.addPlugin(MemoryNotificationPlugin.class)
-						.addPlugin(MemoryCommentPlugin.class)
+						.withMemoryNotifications()
+						.withMemoryComments()
 						.build());
 	}
 

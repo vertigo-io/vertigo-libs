@@ -38,7 +38,6 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
-import io.vertigo.database.plugins.timeseries.influxdb.InfluxDbTimeSeriesPlugin;
 
 /**
  * Test of the IoT services.
@@ -157,7 +156,7 @@ public final class TimeSeriesTest {
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withTimeSeriesDataBase()
-						.addPlugin(InfluxDbTimeSeriesPlugin.class, Param.of("dbNames", "vertigo-test"))
+						.withInfluxDb(Param.of("dbNames", "vertigo-test"))
 						.build())
 				.build();
 	}

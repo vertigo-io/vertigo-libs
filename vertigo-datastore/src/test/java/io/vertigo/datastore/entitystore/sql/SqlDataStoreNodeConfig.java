@@ -26,14 +26,12 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
-import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.entitystore.StoreCacheDefinitionProvider;
 import io.vertigo.datastore.entitystore.data.DtDefinitions;
 import io.vertigo.datastore.entitystore.data.TestSmartTypes;
-import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
 
 /**
  * NodeConfig builder for SqlStore tests. (Params for db specificities)
@@ -54,7 +52,7 @@ public class SqlDataStoreNodeConfig {
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
-						.addPlugin(C3p0ConnectionProviderPlugin.class,
+						.withC3p0(
 								Param.of("dataBaseClass", dataBaseClass),
 								Param.of("jdbcDriver", jdbcDriver),
 								Param.of("jdbcUrl", jdbcUrl))
@@ -62,7 +60,7 @@ public class SqlDataStoreNodeConfig {
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
 						.withEntityStore()
-						.addPlugin(SqlEntityStorePlugin.class)
+						.withSqlEntityStore()
 						.withCache()
 						.withMemoryCache()
 						.build())
