@@ -32,7 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
@@ -65,20 +65,20 @@ public class CollectionsManagerTest {
 	private DtDefinition dtDefinitionItem;
 	@Inject
 	private CollectionsManager collectionsManager;
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		dtDefinitionItem = DtObjectUtil.findDtDefinition(SmartItem.class);
 	}
 
 	@AfterEach
 	public final void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 

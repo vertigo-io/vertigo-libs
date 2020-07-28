@@ -97,7 +97,7 @@ public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionPro
 
 	@Override
 	public void stop() {
-		// at app stop we close all the connections of the pool
+		// at node stop we close all the connections of the pool
 		pooledDataSource.close();
 	}
 }

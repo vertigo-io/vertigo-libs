@@ -30,7 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.search.metamodel.SearchChunk;
@@ -113,7 +113,7 @@ final class ReindexTask implements Runnable {
 	}
 
 	private void loadAndIndex(final SearchChunk<? extends KeyConcept> searchChunk) {
-		final SearchLoader searchLoader = App.getApp().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
+		final SearchLoader searchLoader = Node.getNode().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 		final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes;
 
 		searchIndexes = searchLoader.loadData(searchChunk);

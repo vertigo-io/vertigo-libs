@@ -28,8 +28,8 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.account.AccountManager;
-import io.vertigo.core.node.App;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datamodel.structure.model.UID;
@@ -52,12 +52,12 @@ public abstract class AbstractNotificationManagerTest {
 	private UID<Account> accountUID2;
 	private UID<AccountGroup> groupURI;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		accountUID0 = createAccountUID("0");
 		accountUID1 = createAccountUID("1");
@@ -69,15 +69,15 @@ public abstract class AbstractNotificationManagerTest {
 
 	@AfterEach
 	public final void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 
 	protected abstract NodeConfig buildNodeConfig();
 
-	protected final App getApp() {
-		return app;
+	protected final Node getApp() {
+		return node;
 	}
 
 	private static UID<Account> createAccountUID(final String id) {
@@ -92,7 +92,7 @@ public abstract class AbstractNotificationManagerTest {
 					.withSender(accountUID0.urn())
 					.withType("Test")
 					.withTitle("news")
-					.withContent("discover this amazing app !!")
+					.withContent("discover this amazing node !!")
 					.withTargetUrl("#keyConcept@2")
 					.build();
 			NotificationManager.send(notification, identityManager.getAccountUIDs(groupURI));
@@ -110,7 +110,7 @@ public abstract class AbstractNotificationManagerTest {
 				.withType("Test")
 				.withTitle("news")
 				.withTargetUrl("#keyConcept@2")
-				.withContent("discover this amazing app !!")
+				.withContent("discover this amazing node !!")
 				.build();
 
 		Assertions.assertEquals(0, NotificationManager.getCurrentNotifications(accountUID0).size());
@@ -138,7 +138,7 @@ public abstract class AbstractNotificationManagerTest {
 				.withType("Test")
 				.withTitle("news")
 				.withTargetUrl("#keyConcept@2")
-				.withContent("discover this amazing app !!")
+				.withContent("discover this amazing node !!")
 				.build();
 
 		Assertions.assertEquals(0, NotificationManager.getCurrentNotifications(accountUID0).size());
@@ -166,7 +166,7 @@ public abstract class AbstractNotificationManagerTest {
 				.withType("Test")
 				.withTitle("news")
 				.withTargetUrl("#keyConcept@2")
-				.withContent("discover this amazing app !!")
+				.withContent("discover this amazing node !!")
 				.withUserContent("defaultUserContent")
 				.build();
 
@@ -221,7 +221,7 @@ public abstract class AbstractNotificationManagerTest {
 				.withTitle("news")
 				.withTargetUrl("#keyConcept@2")
 				.withTTLInSeconds(5) //5s
-				.withContent("discover this amazing app !!")
+				.withContent("discover this amazing node !!")
 				.build();
 
 		Assertions.assertEquals(0, NotificationManager.getCurrentNotifications(accountUID0).size());
@@ -258,7 +258,7 @@ public abstract class AbstractNotificationManagerTest {
 				.withTitle("news")
 				.withTargetUrl("#keyConcept@2")
 				.withTTLInSeconds(4) //4s
-				.withContent("discover this amazing app !!")
+				.withContent("discover this amazing node !!")
 				.build();
 
 		Assertions.assertEquals(0, NotificationManager.getCurrentNotifications(accountUID0).size());
@@ -273,7 +273,7 @@ public abstract class AbstractNotificationManagerTest {
 
 		sleep(4100);
 
-		final NotificationPlugin notificationPlugin = App.getApp().getComponentSpace().resolve("notificationPlugin", NotificationPlugin.class);
+		final NotificationPlugin notificationPlugin = Node.getNode().getComponentSpace().resolve("notificationPlugin", NotificationPlugin.class);
 		if (notificationPlugin instanceof RedisNotificationPlugin) {
 			((RedisNotificationPlugin) notificationPlugin).cleanTooOldNotifications();
 		} else if (notificationPlugin instanceof MemoryNotificationPlugin) {

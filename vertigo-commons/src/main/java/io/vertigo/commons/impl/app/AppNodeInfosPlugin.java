@@ -21,7 +21,7 @@ package io.vertigo.commons.impl.app;
 import java.util.List;
 import java.util.Map;
 
-import io.vertigo.commons.app.Node;
+import io.vertigo.commons.app.AppNode;
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.node.component.Plugin;
 
@@ -33,11 +33,11 @@ import io.vertigo.core.node.component.Plugin;
 public interface AppNodeInfosPlugin extends Plugin {
 
 	// TODO : à terme NodeConfig
-	String getConfig(Node node);
+	String getConfig(AppNode appNode);
 
-	List<HealthCheck> getStatus(Node node);
+	List<HealthCheck> getStatus(AppNode appNode);
 
-	Map<String, Object> getStats(Node node);
+	Map<String, Object> getStats(AppNode appNode);
 
 	String getProtocol();
 

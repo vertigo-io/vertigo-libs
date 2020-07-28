@@ -22,12 +22,12 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
 import io.restassured.RestAssured;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
 
 public final class WebServiceManagerTest extends AbstractWebServiceManagerTest {
 
-	private static AutoCloseableApp app;
+	private static AutoCloseableNode node;
 
 	static {
 		//RestAsssured init
@@ -36,13 +36,13 @@ public final class WebServiceManagerTest extends AbstractWebServiceManagerTest {
 
 	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(MyNodeConfig.config(true));
+		node = new AutoCloseableNode(MyNodeConfig.config(true));
 	}
 
 	@AfterAll
 	public static void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 }

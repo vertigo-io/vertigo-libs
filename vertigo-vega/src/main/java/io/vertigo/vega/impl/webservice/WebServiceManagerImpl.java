@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.component.AopPlugin;
 import io.vertigo.core.node.component.ComponentSpace;
@@ -112,14 +112,14 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return scanComponents(App.getApp().getComponentSpace());
+		return scanComponents(Node.getNode().getComponentSpace());
 	}
 
 	@Override
 	public void start() {
 		//we do nothing with webServerPlugin
 		//2- We sort by path, parameterized path should be after strict path
-		final List<WebServiceDefinition> allWebServiceDefinitions = new ArrayList<>(App.getApp().getDefinitionSpace().getAll(WebServiceDefinition.class));
+		final List<WebServiceDefinition> allWebServiceDefinitions = new ArrayList<>(Node.getNode().getDefinitionSpace().getAll(WebServiceDefinition.class));
 		Collections.sort(allWebServiceDefinitions, Comparator.comparing(WebServiceDefinition::getSortPath));
 		webServerPlugin.registerWebServiceRoute(handlerChain, allWebServiceDefinitions);
 	}
@@ -135,7 +135,7 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 	 * @return Scanned webServiceDefinitions
 	 */
 	List<WebServiceDefinition> scanComponents(final ComponentSpace componentSpace) {
-		final AopPlugin aopPlugin = App.getApp().getNodeConfig().getBootConfig().getAopPlugin();
+		final AopPlugin aopPlugin = Node.getNode().getNodeConfig().getBootConfig().getAopPlugin();
 
 		final ListBuilder<WebServiceDefinition> allWebServiceDefinitionListBuilder = new ListBuilder<>();
 		//1- We introspect all RestfulService class

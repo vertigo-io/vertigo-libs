@@ -30,8 +30,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.node.App;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.Node;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
@@ -66,23 +66,23 @@ public class FacetManagerTest {
 	private FacetedQueryDefinition carFacetQueryDefinition;
 	private SmartCarDataBase smartCarDataBase;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		//On construit la BDD des voitures
 		smartCarDataBase = new SmartCarDataBase();
-		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		carFacetQueryDefinition = definitionSpace.resolve("QryCarFacet", FacetedQueryDefinition.class);
 	}
 
 	@AfterEach
 	public final void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 
@@ -297,7 +297,7 @@ public class FacetManagerTest {
 	}
 
 	private FacetDefinition obtainFacetDefinition(final String facetName) {
-		return App.getApp().getDefinitionSpace().resolve(facetName, FacetDefinition.class);
+		return Node.getNode().getDefinitionSpace().resolve(facetName, FacetDefinition.class);
 	}
 
 }

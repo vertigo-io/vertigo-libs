@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.association.AssociationDefinition;
@@ -69,7 +69,7 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 		this.entity = entity;
 		this.roleName = roleName;
 		//---
-		final AssociationDefinition associationDefinition = App.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationDefinition.class);
+		final AssociationDefinition associationDefinition = Node.getNode().getDefinitionSpace().resolve(associationDefinitionName, AssociationDefinition.class);
 		this.associationDefinitionReference = new DefinitionReference<>(associationDefinition);
 		final DtDefinition targetDefinition = Stream.of(associationDefinition.getAssociationNodeA(), associationDefinition.getAssociationNodeB())
 				.filter(associationNode -> roleName.equals(associationNode.getRole()))

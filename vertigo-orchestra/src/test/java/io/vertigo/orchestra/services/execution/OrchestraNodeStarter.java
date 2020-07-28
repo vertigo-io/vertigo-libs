@@ -22,7 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.orchestra.services.execution.engine.TestJob2;
@@ -53,7 +53,7 @@ public class OrchestraNodeStarter {
 	}
 
 	private static void run(final NodeConfig nodeConfig, final long timeToWait) {
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
 			System.out.println("Node started (timout in " + timeToWait / 1000 + "s)");
 			if (timeToWait > 0) {
 				final long startTime = System.currentTimeMillis();

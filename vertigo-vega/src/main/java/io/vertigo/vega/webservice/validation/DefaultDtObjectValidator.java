@@ -21,7 +21,7 @@ package io.vertigo.vega.webservice.validation;
 import java.util.List;
 
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.ConstraintException;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -37,7 +37,7 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 	/** {@inheritDoc} */
 	@Override
 	protected void checkMonoFieldConstraints(final O dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
-		final SmartTypeManager smartTypeManager = App.getApp().getComponentSpace().resolve(SmartTypeManager.class);
+		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		//---
 		final Object value = dtField.getDataAccessor().getValue(dtObject);
 		//pas d'assertion notNull, car le champs n'est pas forcément obligatoire

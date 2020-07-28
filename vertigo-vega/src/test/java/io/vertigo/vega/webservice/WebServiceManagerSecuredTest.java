@@ -34,7 +34,7 @@ import io.restassured.filter.session.SessionFilter;
 import io.restassured.parsing.Parser;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.core.util.MapBuilder;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
@@ -42,7 +42,7 @@ import io.vertigo.vega.webservice.data.MyNodeConfig;
 public final class WebServiceManagerSecuredTest {
 	private final SessionFilter loggedSessionFilter = new SessionFilter();
 	private final SessionFilter loggedSecuredSessionFilter = new SessionFilter();
-	private static AutoCloseableApp app;
+	private static AutoCloseableNode node;
 
 	static {
 		//RestAsssured init
@@ -51,7 +51,7 @@ public final class WebServiceManagerSecuredTest {
 
 	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(MyNodeConfig.config(true));
+		node = new AutoCloseableNode(MyNodeConfig.config(true));
 	}
 
 	@BeforeEach
@@ -68,9 +68,9 @@ public final class WebServiceManagerSecuredTest {
 
 	@AfterAll
 	public static void tearDown() {
-		if (app != null) {
-			app.close();
-			app = null;
+		if (node != null) {
+			node.close();
+			node = null;
 		}
 	}
 

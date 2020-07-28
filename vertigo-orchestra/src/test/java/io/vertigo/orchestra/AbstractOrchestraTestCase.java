@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.metamodel.TaskDefinition;
@@ -42,7 +42,7 @@ import io.vertigo.dynamox.task.TaskEngineProc;
  * @version $Id$
  */
 public abstract class AbstractOrchestraTestCase {
-	private static AutoCloseableApp app;
+	private static AutoCloseableNode node;
 
 	@Inject
 	private VTransactionManager transactionManager;
@@ -51,18 +51,18 @@ public abstract class AbstractOrchestraTestCase {
 
 	@BeforeAll
 	public static final void setUp() {
-		app = new AutoCloseableApp(MyNodeConfig.config());
+		node = new AutoCloseableNode(MyNodeConfig.config());
 	}
 
 	@AfterAll
 	public static final void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 
 	public final void setUpInjection() {
-		if (app != null) {
+		if (node != null) {
 			InjectorUtil.injectMembers(this);
 		}
 	}

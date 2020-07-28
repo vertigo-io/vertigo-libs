@@ -26,7 +26,7 @@ import javax.inject.Inject;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -105,12 +105,12 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	@Override
 	public void start() {
 		// register as cacheable the dtDefinitions that are persistant and have a corresponding CacheDefinition
-		App.getApp().getDefinitionSpace().getAll(DtDefinition.class).stream()
+		Node.getNode().getDefinitionSpace().getAll(DtDefinition.class).stream()
 				.filter(DtDefinition::isPersistent)
-				.filter(dtDefinition -> App.getApp().getDefinitionSpace().contains(CacheData.getContext(dtDefinition)))
-				.forEach(dtDefinition -> dataStoreConfig.getCacheStoreConfig().registerCacheable(dtDefinition, App.getApp().getDefinitionSpace().resolve(CacheData.getContext(dtDefinition), CacheDefinition.class).isReloadedByList()));
+				.filter(dtDefinition -> Node.getNode().getDefinitionSpace().contains(CacheData.getContext(dtDefinition)))
+				.forEach(dtDefinition -> dataStoreConfig.getCacheStoreConfig().registerCacheable(dtDefinition, Node.getNode().getDefinitionSpace().resolve(CacheData.getContext(dtDefinition), CacheDefinition.class).isReloadedByList()));
 
-		App.getApp().getDefinitionSpace().getAll(MasterDataDefinition.class)
+		Node.getNode().getDefinitionSpace().getAll(MasterDataDefinition.class)
 				.forEach(masterDataConfig::register);
 
 	}

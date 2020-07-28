@@ -26,7 +26,7 @@ import java.util.function.Function;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.impl.smarttype.formatter.Resources;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
@@ -126,6 +126,6 @@ public final class EncoderDate {
 	}
 
 	private static LocaleManager getLocaleManager() {
-		return App.getApp().getComponentSpace().resolve(LocaleManager.class);
+		return Node.getNode().getComponentSpace().resolve(LocaleManager.class);
 	}
 }

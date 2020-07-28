@@ -44,7 +44,7 @@ import io.vertigo.account.data.model.Record;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.lang.Tuple;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -71,18 +71,18 @@ public final class VSecurityManagerTest {
 	@Inject
 	private AuthorizationManager authorizationManager;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	@AfterEach
 	public void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 
@@ -140,7 +140,7 @@ public final class VSecurityManagerTest {
 
 	@Test
 	public void testRole() {
-		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		final Role admin = definitionSpace.resolve("RAdmin", Role.class);
 		Assertions.assertTrue("RAdmin".equals(admin.getName()));
 		final Role secretary = definitionSpace.resolve("RSecretary", Role.class);
@@ -687,7 +687,7 @@ public final class VSecurityManagerTest {
 	}
 
 	private Authorization getAuthorization(final AuthorizationName authorizationName) {
-		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		return definitionSpace.resolve(authorizationName.name(), Authorization.class);
 	}
 

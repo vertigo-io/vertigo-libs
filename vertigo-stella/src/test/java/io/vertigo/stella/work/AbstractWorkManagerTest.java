@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.stella.master.MasterManager;
@@ -48,12 +48,12 @@ public abstract class AbstractWorkManagerTest {
 
 	@Inject
 	private MasterManager workManager;
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() throws Exception {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		doSetUp();
 	}
@@ -64,11 +64,11 @@ public abstract class AbstractWorkManagerTest {
 
 	@AfterEach
 	public final void tearDown() throws Exception {
-		if (app != null) {
+		if (node != null) {
 			try {
 				doTearDown();
 			} finally {
-				app.close();
+				node.close();
 			}
 		}
 	}

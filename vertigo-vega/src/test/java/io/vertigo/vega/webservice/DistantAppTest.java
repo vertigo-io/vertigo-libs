@@ -29,21 +29,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.app.AppManager;
-import io.vertigo.commons.app.Node;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.commons.app.AppNode;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
 
 public final class DistantAppTest {
 
-	private static AutoCloseableApp app;
+	private static AutoCloseableNode node;
 
 	@Inject
 	private AppManager nodeManager;
 
 	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(MyNodeConfig.config(true));
+		node = new AutoCloseableNode(MyNodeConfig.config(true));
 	}
 
 	@BeforeEach
@@ -53,8 +53,8 @@ public final class DistantAppTest {
 
 	@AfterAll
 	public static void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 
@@ -62,7 +62,7 @@ public final class DistantAppTest {
 	public void testDistantNodeConfig() {
 
 		final String currentNodeId = nodeManager.getCurrentNode().getId();
-		final Optional<Node> appNode = nodeManager.find(currentNodeId);
+		final Optional<AppNode> appNode = nodeManager.find(currentNodeId);
 		Assertions.assertTrue(appNode.isPresent());
 
 		Assertions.assertTrue(nodeManager.getConfig().containsKey(currentNodeId));
@@ -72,7 +72,7 @@ public final class DistantAppTest {
 	public void testDistantAppHealth() {
 
 		final String currentNodeId = nodeManager.getCurrentNode().getId();
-		final Optional<Node> appNode = nodeManager.find(currentNodeId);
+		final Optional<AppNode> appNode = nodeManager.find(currentNodeId);
 		Assertions.assertTrue(appNode.isPresent());
 
 		Assertions.assertTrue(nodeManager.getStatus().containsKey(currentNodeId));

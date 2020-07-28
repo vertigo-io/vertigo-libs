@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import io.vertigo.core.analytics.health.HealthCheck;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.dashboard.services.data.DataProvider;
 
@@ -41,16 +41,16 @@ public abstract class AbstractDashboardModuleControler implements DashboardModul
 	}
 
 	@Override
-	public Map<String, Object> buildModel(final App app, final String moduleName) {
+	public Map<String, Object> buildModel(final Node node, final String moduleName) {
 		final Map<String, Object> model = new HashMap<>();
 		//---
-		initModuleModel(app, model, moduleName);
-		doBuildModel(app, model);
+		initModuleModel(node, model, moduleName);
+		doBuildModel(node, model);
 		return model;
 	}
 
-	private void initModuleModel(final App app, final Map<String, Object> model, final String moduleName) {
-		final Set<String> modules = app.getNodeConfig().getModuleConfigs().stream().map(ModuleConfig::getName).collect(Collectors.toSet());
+	private void initModuleModel(final Node node, final Map<String, Object> model, final String moduleName) {
+		final Set<String> modules = node.getNodeConfig().getModuleConfigs().stream().map(ModuleConfig::getName).collect(Collectors.toSet());
 		//---
 		model.put("modules", modules);
 		//---
@@ -72,6 +72,6 @@ public abstract class AbstractDashboardModuleControler implements DashboardModul
 		model.put("moduleName", moduleName);
 	}
 
-	public abstract void doBuildModel(final App app, final Map<String, Object> model);
+	public abstract void doBuildModel(final Node node, final Map<String, Object> model);
 
 }

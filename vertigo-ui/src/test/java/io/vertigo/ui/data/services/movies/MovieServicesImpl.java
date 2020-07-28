@@ -24,7 +24,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import io.vertigo.commons.transaction.Transactional;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
@@ -85,7 +85,7 @@ public class MovieServicesImpl implements MovieServices {
 	public FacetedQueryResult<MovieIndex, SearchQuery> searchMovies(final String criteria, final SelectedFacetValues listFilters, final DtListState dtListState, final Optional<String> group) {
 		final SearchQueryBuilder searchQueryBuilder = movieSearchClient.createSearchQueryBuilderMovie(criteria, listFilters);
 		if (group.isPresent()) {
-			final FacetDefinition clusteringFacetDefinition = App.getApp().getDefinitionSpace().resolve(group.get(), FacetDefinition.class);
+			final FacetDefinition clusteringFacetDefinition = Node.getNode().getDefinitionSpace().resolve(group.get(), FacetDefinition.class);
 			searchQueryBuilder.withFacetClustering(clusteringFacetDefinition);
 		}
 		return movieSearchClient.loadList(searchQueryBuilder.build(), dtListState);

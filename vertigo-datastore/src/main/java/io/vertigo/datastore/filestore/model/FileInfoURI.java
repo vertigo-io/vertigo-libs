@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
@@ -181,7 +181,7 @@ public final class FileInfoURI implements Serializable {
 		final Object key = stringToKey(urn.substring(i + 1));
 
 		//On ne type pas, la seule chose que l'on sait est qu'il s'agit d'une définition.
-		final FileInfoDefinition definition = App.getApp().getDefinitionSpace().resolve(dname, FileInfoDefinition.class);
+		final FileInfoDefinition definition = Node.getNode().getDefinitionSpace().resolve(dname, FileInfoDefinition.class);
 		return new FileInfoURI(definition, key);
 	}
 

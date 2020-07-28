@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datastore.TestUtil;
@@ -56,12 +56,12 @@ public abstract class AbstractFileStoreManagerTest {
 	@Inject
 	protected VTransactionManager transactionManager;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() throws Exception {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		doSetUp();
 	}
@@ -70,11 +70,11 @@ public abstract class AbstractFileStoreManagerTest {
 
 	@AfterEach
 	public final void tearDown() throws Exception {
-		if (app != null) {
+		if (node != null) {
 			try {
 				doTearDown();
 			} finally {
-				app.close();
+				node.close();
 			}
 		}
 

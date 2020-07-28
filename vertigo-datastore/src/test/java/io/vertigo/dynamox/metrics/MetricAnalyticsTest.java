@@ -31,7 +31,7 @@ import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
@@ -68,12 +68,12 @@ public final class MetricAnalyticsTest {
 
 	private SuperHeroDataBase superHeroDataBase;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() throws Exception {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		superHeroDataBase = new SuperHeroDataBase(transactionManager, taskManager);
 		superHeroDataBase.createDataBase();
@@ -82,8 +82,8 @@ public final class MetricAnalyticsTest {
 
 	@AfterEach
 	public final void tearDown() throws Exception {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 

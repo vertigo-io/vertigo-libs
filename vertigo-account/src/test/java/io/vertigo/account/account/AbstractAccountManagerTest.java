@@ -34,7 +34,7 @@ import io.vertigo.commons.transaction.VTransactionAfterCompletionFunction;
 import io.vertigo.commons.transaction.VTransactionResource;
 import io.vertigo.commons.transaction.VTransactionResourceId;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datamodel.structure.model.UID;
@@ -60,12 +60,12 @@ public abstract class AbstractAccountManagerTest {
 		return UID.of(AccountGroup.class, id);
 	}
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		accountUID0 = createAccountUID("0");
 		accountUID1 = createAccountUID("1");
@@ -76,8 +76,8 @@ public abstract class AbstractAccountManagerTest {
 
 	@AfterEach
 	public final void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 

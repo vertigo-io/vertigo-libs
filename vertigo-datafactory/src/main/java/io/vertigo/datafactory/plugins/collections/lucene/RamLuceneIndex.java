@@ -52,7 +52,7 @@ import org.apache.lucene.util.BytesRef;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VUserException;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
@@ -215,7 +215,7 @@ final class RamLuceneIndex<D extends DtObject> {
 	}
 
 	private static EntityStoreManager getEntityStoreManager() {
-		return App.getApp().getComponentSpace().resolve(EntityStoreManager.class);
+		return Node.getNode().getComponentSpace().resolve(EntityStoreManager.class);
 	}
 
 	private static String getStringValue(final DtObject dto, final DtField field, final SmartTypeManager smartTypeManager) {

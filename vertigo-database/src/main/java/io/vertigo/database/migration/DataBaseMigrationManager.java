@@ -9,7 +9,7 @@ import io.vertigo.database.sql.SqlDataBaseManager;
  * Two type of tasks can be performed  :
  *   <ul>
  *    <li>update : Update your database schema and data to the current version of your app</li>
- *    <li>check :  Check that app and database are in a coherent state</li>
+ *    <li>check :  Check that node and database are in a coherent state</li>
  *   </ul>
  * @author mlaroche
  *

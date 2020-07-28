@@ -26,7 +26,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -42,22 +42,22 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> {
 
 	@Inject
 	private CodecManager codecManager;
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		codec = obtainCodec(codecManager);
 	}
 
 	@AfterEach
 	public final void tearDown() throws Exception {
-		if (app != null) {
+		if (node != null) {
 			codec = null;
 			//---
-			app.close();
+			node.close();
 		}
 	}
 

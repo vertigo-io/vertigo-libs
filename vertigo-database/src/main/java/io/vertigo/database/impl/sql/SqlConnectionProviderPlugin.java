@@ -23,7 +23,7 @@ import java.util.Collections;
 import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.analytics.health.HealthMeasureBuilder;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
@@ -50,7 +50,7 @@ public interface SqlConnectionProviderPlugin extends SqlConnectionProvider, Plug
 		final String testQuery = getDataBase().getSqlDialect().getTestQuery();
 		try {
 
-			final SqlDataBaseManager sqlDataBaseManager = App.getApp().getComponentSpace().resolve(SqlDataBaseManager.class);
+			final SqlDataBaseManager sqlDataBaseManager = Node.getNode().getComponentSpace().resolve(SqlDataBaseManager.class);
 			try (final SqlConnection connection = obtainConnection()) {
 				sqlDataBaseManager.executeQuery(
 						SqlStatement.builder(testQuery).build(),

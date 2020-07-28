@@ -21,7 +21,7 @@ package io.vertigo.commons.impl.app;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.commons.app.Node;
+import io.vertigo.commons.app.AppNode;
 import io.vertigo.core.node.component.Plugin;
 
 /**
@@ -33,33 +33,33 @@ public interface AppNodeRegistryPlugin extends Plugin {
 
 	/**
 	 * Register a node
-	 * @param node the node to register
+	 * @param appNode the node to register
 	 */
-	void register(Node node);
+	void register(AppNode appNode);
 
 	/**
 	 * Unregister a node
-	 * @param node the node to unregister
+	 * @param appNode the node to unregister
 	 */
-	void unregister(Node node);
+	void unregister(AppNode appNode);
 
 	/**
 	 * Get the whole topology of the app
 	 * @return the list of node of the app
 	 */
-	List<Node> getTopology();
+	List<AppNode> getTopology();
 
 	/**
 	 * Find a node in the topology with the given id
 	 * @param nodeId the id to look for
 	 * @return an optional Node
 	 */
-	Optional<Node> find(String nodeId);
+	Optional<AppNode> find(String nodeId);
 
 	/**
 	 * Update the status of a node
-	 * @param node the node to update
+	 * @param appNode the node to update
 	 */
-	void updateStatus(Node node);
+	void updateStatus(AppNode appNode);
 
 }

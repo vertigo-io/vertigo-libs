@@ -35,7 +35,7 @@ import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.connectors.elasticsearch.ElasticSearchFeatures;
 import io.vertigo.connectors.influxdb.InfluxDbFeatures;
 import io.vertigo.connectors.redis.RedisFeatures;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -54,7 +54,7 @@ import io.vertigo.vega.VegaFeatures;
 
 public class DashboardLauncherTest {
 
-	private static AutoCloseableApp app;
+	private static AutoCloseableNode node;
 
 	static {
 		//RestAsssured init
@@ -63,13 +63,13 @@ public class DashboardLauncherTest {
 
 	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
+		node = new AutoCloseableNode(buildNodeConfig());
 	}
 
 	@AfterAll
 	public static void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 

@@ -32,8 +32,8 @@ import org.junit.jupiter.api.Test;
 import io.restassured.RestAssured;
 import io.restassured.filter.session.SessionFilter;
 import io.restassured.parsing.Parser;
-import io.vertigo.core.node.App;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
+import io.vertigo.core.node.Node;
 import io.vertigo.orchestra.MyNodeConfig;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
@@ -47,7 +47,7 @@ import io.vertigo.orchestra.services.execution.engine.EmptyActivityEngine;
  */
 public class OrchestraWsTest {
 
-	private static AutoCloseableApp app;
+	private static AutoCloseableNode node;
 
 	private final static SessionFilter loggedSessionFilter = new SessionFilter();
 
@@ -58,10 +58,10 @@ public class OrchestraWsTest {
 
 	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(MyNodeConfig.configWithVega());
+		node = new AutoCloseableNode(MyNodeConfig.configWithVega());
 
-		final OrchestraDefinitionManager orchestraDefinitionManager = App.getApp().getComponentSpace().resolve(OrchestraDefinitionManager.class);
-		final OrchestraServices orchestraServices = App.getApp().getComponentSpace().resolve(OrchestraServices.class);
+		final OrchestraDefinitionManager orchestraDefinitionManager = Node.getNode().getComponentSpace().resolve(OrchestraDefinitionManager.class);
+		final OrchestraServices orchestraServices = Node.getNode().getComponentSpace().resolve(OrchestraServices.class);
 
 		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestBasic", "TestBasic")
 				.addActivity("dumb activity", "dumb activity", EmptyActivityEngine.class)
@@ -86,8 +86,8 @@ public class OrchestraWsTest {
 
 	@AfterAll
 	public static void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 

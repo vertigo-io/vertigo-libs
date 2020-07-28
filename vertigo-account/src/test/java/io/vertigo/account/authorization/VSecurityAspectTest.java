@@ -35,7 +35,7 @@ import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.data.model.Record;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -65,18 +65,18 @@ public final class VSecurityAspectTest {
 	@Inject
 	private PartialSecuredServices partialSecuredServices;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	@AfterEach
 	public final void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 
@@ -278,7 +278,7 @@ public final class VSecurityAspectTest {
 	}
 
 	private Authorization getAuthorization(final AuthorizationName authorizationName) {
-		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		return definitionSpace.resolve(authorizationName.name(), Authorization.class);
 	}
 

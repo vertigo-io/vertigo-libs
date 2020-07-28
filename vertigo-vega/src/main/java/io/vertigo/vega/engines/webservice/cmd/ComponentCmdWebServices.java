@@ -31,7 +31,7 @@ import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -64,7 +64,7 @@ public final class ComponentCmdWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/vertigo/components")
 	public NodeConfig getNodeConfig() {
-		return App.getApp().getNodeConfig();
+		return Node.getNode().getNodeConfig();
 	}
 
 	@AnonymousAccessAllowed
@@ -94,7 +94,7 @@ public final class ComponentCmdWebServices implements WebServices {
 	}
 
 	private JsonArray doGetModuleConfigs() {
-		final String json = jsonEngine.toJson(App.getApp().getNodeConfig());
+		final String json = jsonEngine.toJson(Node.getNode().getNodeConfig());
 		final JsonParser parser = new JsonParser();
 		final JsonObject jsonObject = (JsonObject) parser.parse(json);
 		final JsonArray jsonModuleConfigs = jsonObject.get("moduleConfigs").getAsJsonArray();
@@ -119,21 +119,21 @@ public final class ComponentCmdWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/vertigo/definitions")
 	public DefinitionSpace getDefinitionsSpace() {
-		return App.getApp().getDefinitionSpace();
+		return Node.getNode().getDefinitionSpace();
 	}
 
 	@AnonymousAccessAllowed
 	@GET("/vertigo/types")
 	public Collection<Class<? extends Definition>> getDefinitionTypes() {
-		return App.getApp().getDefinitionSpace().getAllTypes();
+		return Node.getNode().getDefinitionSpace().getAllTypes();
 	}
 
 	@AnonymousAccessAllowed
 	@GET("/vertigo/definitions/types/{definitionType}")
 	public String getDefinitionType(@PathParam("definitionType") final String definitionType) {
-		for (final Class<? extends Definition> definitionClass : App.getApp().getDefinitionSpace().getAllTypes()) {
+		for (final Class<? extends Definition> definitionClass : Node.getNode().getDefinitionSpace().getAllTypes()) {
 			if (definitionClass.getSimpleName().equals(definitionType)) {
-				return jsonEngine.toJson(App.getApp().getDefinitionSpace().getAll(definitionClass));
+				return jsonEngine.toJson(Node.getNode().getDefinitionSpace().getAll(definitionClass));
 			}
 		}
 		throw new VSystemException("NotFoundException");
@@ -142,7 +142,7 @@ public final class ComponentCmdWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/vertigo/definitions/{definitionName}")
 	public Definition getDefinition(@PathParam("definitionName") final String definitionName) {
-		return App.getApp().getDefinitionSpace().resolve(definitionName, Definition.class);
+		return Node.getNode().getDefinitionSpace().resolve(definitionName, Definition.class);
 	}
 
 }

@@ -26,7 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
@@ -64,20 +64,20 @@ public class SearchManagerMultiIndexTest {
 
 	private ItemDataBase itemDataBase;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		itemDataBase = new ItemDataBase();
 	}
 
 	@AfterEach
 	public final void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 
@@ -115,7 +115,7 @@ public class SearchManagerMultiIndexTest {
 	 */
 	@Test
 	public void testIndex() {
-		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		final SearchIndexDefinition itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
 
 		for (final Item item : itemDataBase.getAllItems()) {
@@ -131,7 +131,7 @@ public class SearchManagerMultiIndexTest {
 	 */
 	@Test
 	public void testClean() {
-		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		final SearchIndexDefinition itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
 		final ListFilter removeQuery = ListFilter.of("*:*");
 		searchManager.removeAll(itemIndexDefinition, removeQuery);

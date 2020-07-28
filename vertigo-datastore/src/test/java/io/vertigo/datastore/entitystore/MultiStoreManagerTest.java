@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
@@ -69,12 +69,12 @@ public final class MultiStoreManagerTest {
 	@Inject
 	private EntityStoreManager entityStoreManager;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		//A chaque test on recrée la table famille dans l'autre base
 		SqlUtil.execRequests(
@@ -95,7 +95,7 @@ public final class MultiStoreManagerTest {
 
 	@AfterEach
 	public final void tearDown() {
-		if (app != null) {
+		if (node != null) {
 			try {
 				SqlUtil.execRequests(
 						transactionManager,
@@ -104,7 +104,7 @@ public final class MultiStoreManagerTest {
 						"TkShutDown",
 						Optional.empty());
 			} finally {
-				app.close();
+				node.close();
 			}
 		}
 	}

@@ -22,51 +22,51 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.commons.app.Node;
+import io.vertigo.commons.app.AppNode;
 import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 
 /**
- * Memory implementation for a single node app.
+ * Memory implementation for a single node node.
  * @author mlaroche
  *
  */
 public final class SingleAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
-	private Node localNode;
+	private AppNode localNode;
 
 	@Override
-	public void register(final Node node) {
+	public void register(final AppNode appNode) {
 		Assertion.check()
 				.isNull(localNode, "SingleNode has already been registered")
-				.isNotNull(node);
+				.isNotNull(appNode);
 		// ---
-		localNode = node;
+		localNode = appNode;
 
 	}
 
 	@Override
-	public synchronized void unregister(final Node node) {
+	public synchronized void unregister(final AppNode appNode) {
 		localNode = null;
 	}
 
 	@Override
-	public Optional<Node> find(final String nodeId) {
-		if (App.getApp().getNodeConfig().getNodeId().equals(nodeId)) {
+	public Optional<AppNode> find(final String nodeId) {
+		if (Node.getNode().getNodeConfig().getNodeId().equals(nodeId)) {
 			return Optional.of(localNode);
 		}
 		return Optional.empty();
 	}
 
 	@Override
-	public void updateStatus(final Node node) {
-		localNode = node;
+	public void updateStatus(final AppNode appNode) {
+		localNode = appNode;
 
 	}
 
 	@Override
-	public List<Node> getTopology() {
+	public List<AppNode> getTopology() {
 		if (localNode != null) {
 			return Collections.singletonList(localNode);
 		}

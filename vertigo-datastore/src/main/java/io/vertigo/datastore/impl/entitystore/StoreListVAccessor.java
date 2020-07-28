@@ -1,7 +1,7 @@
 package io.vertigo.datastore.impl.entitystore;
 
 import io.vertigo.core.lang.VSystemException;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.ListVAccessor;
@@ -21,7 +21,7 @@ public class StoreListVAccessor<E extends Entity> extends ListVAccessor<E> {
 	public final void load() {
 		// we are not lazy the uid of the parent might have changed
 		if (getSourceUID() != null) {
-			final EntityStoreManager entityStoreManager = App.getApp().getComponentSpace().resolve(EntityStoreManager.class);
+			final EntityStoreManager entityStoreManager = Node.getNode().getComponentSpace().resolve(EntityStoreManager.class);
 			final DtList<E> dtList = entityStoreManager.findAll(getDtListURI());
 			super.set(dtList);
 		} else {

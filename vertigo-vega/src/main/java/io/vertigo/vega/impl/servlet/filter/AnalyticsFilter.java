@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 
 /**
  * Filtre analytics des requetes HTTP. *
@@ -40,7 +40,7 @@ public final class AnalyticsFilter extends AbstractFilter {
 	/** {@inheritDoc} */
 	@Override
 	public void doInit() {
-		analyticsManager = App.getApp().getComponentSpace().resolve(AnalyticsManager.class);
+		analyticsManager = Node.getNode().getComponentSpace().resolve(AnalyticsManager.class);
 	}
 
 	/** {@inheritDoc} */

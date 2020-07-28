@@ -27,26 +27,26 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.node.App;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.Node;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.config.NodeConfigBuilder;
 
 public abstract class AbstractAppManagerTest {
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	@AfterEach
 	public final void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 
@@ -62,10 +62,10 @@ public abstract class AbstractAppManagerTest {
 
 	@Test
 	void testRegisterNode() {
-		final AppManager nodeManager = App.getApp().getComponentSpace().resolve(AppManager.class);
+		final AppManager nodeManager = Node.getNode().getComponentSpace().resolve(AppManager.class);
 
-		final List<Node> nodesWithDbSkill = nodeManager.locateSkills("db");
-		final List<Node> nodesWithOtherSkill = nodeManager.locateSkills("other");
+		final List<AppNode> nodesWithDbSkill = nodeManager.locateSkills("db");
+		final List<AppNode> nodesWithOtherSkill = nodeManager.locateSkills("other");
 
 		// ---
 		Assertions.assertEquals(1, nodesWithDbSkill.size());
@@ -75,7 +75,7 @@ public abstract class AbstractAppManagerTest {
 
 	@Disabled // ignored for now we need heartbeat of node update to be parametized for shorter tests
 	void testUpdate() throws InterruptedException {
-		final AppManager nodeManager = App.getApp().getComponentSpace().resolve(AppManager.class);
+		final AppManager nodeManager = Node.getNode().getComponentSpace().resolve(AppManager.class);
 		// ---
 		final Instant firstTouch = nodeManager.find("nodeTest1").get().getLastTouch();
 		Thread.sleep(7 * 1000L);

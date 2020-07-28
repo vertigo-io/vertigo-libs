@@ -28,7 +28,7 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.search.data.domain.Item;
@@ -63,7 +63,7 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 		Assertion.check().isNotNull(searchManager);
 		//---
 		this.searchManager = searchManager;
-		definitionSpace = App.getApp().getDefinitionSpace();
+		definitionSpace = Node.getNode().getDefinitionSpace();
 	}
 
 	/** {@inheritDoc} */

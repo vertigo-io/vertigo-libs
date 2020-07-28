@@ -93,7 +93,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 		//pour éviter le mécanisme d'attente du client lorsque le serveur est absend, on démarre le serveur puis le client
 		Thread.sleep(1000);
 		clientNode1 = startClientNode(1);
-		LOG.info(String.format("Jersey app started with WADL available at " + "%sapplication.wadl", BASE_URI));
+		LOG.info(String.format("Jersey node started with WADL available at " + "%sapplication.wadl", BASE_URI));
 	}
 
 	/**

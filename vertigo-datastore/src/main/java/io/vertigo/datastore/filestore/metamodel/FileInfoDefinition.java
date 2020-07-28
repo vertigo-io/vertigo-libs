@@ -19,7 +19,7 @@
 package io.vertigo.datastore.filestore.metamodel;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datastore.filestore.model.FileInfo;
@@ -72,6 +72,6 @@ public final class FileInfoDefinition extends AbstractDefinition {
 		Assertion.check().isNotNull(fileInfoClass);
 		//---
 		final String name = FileInfoDefinition.PREFIX + fileInfoClass.getSimpleName();
-		return App.getApp().getDefinitionSpace().resolve(name, FileInfoDefinition.class);
+		return Node.getNode().getDefinitionSpace().resolve(name, FileInfoDefinition.class);
 	}
 }

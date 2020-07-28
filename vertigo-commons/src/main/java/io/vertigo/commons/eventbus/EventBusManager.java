@@ -40,7 +40,7 @@ import io.vertigo.core.node.component.Manager;
  *
  * WARNING :
  *  By default, EventBus is not distributed.
- *  A cache component should listen : a modification in one app should flush cache all over the system : it's cache component responsibility to do this
+ *  A cache component should listen : a modification in one node should flush cache all over the system : it's cache component responsibility to do this
  *  An audit component should listen to do the audit log
  *
  * @author pchretien, npiedeloup

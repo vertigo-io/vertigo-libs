@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.core.node.definition.DefinitionProvider;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -29,7 +29,7 @@ public class SmartCarSearchClient implements Component, DefinitionProvider {
 	private CollectionsManager collectionsManager;
 
 	public FacetedQueryResult<SmartCar, DtList<SmartCar>> createSearchQueryBuilderBase(final DtList<SmartCar> smartCars, final SelectedFacetValues selectedFacetValues, final Optional<FacetDefinition> clusterFacetDefinitionOpt) {
-		final FacetedQueryDefinition facetedQueryDefinition = App.getApp().getDefinitionSpace().resolve("QryCarFacet", FacetedQueryDefinition.class);
+		final FacetedQueryDefinition facetedQueryDefinition = Node.getNode().getDefinitionSpace().resolve("QryCarFacet", FacetedQueryDefinition.class);
 		return collectionsManager.facetList(smartCars, new FacetedQuery(facetedQueryDefinition, selectedFacetValues), clusterFacetDefinitionOpt);
 	}
 

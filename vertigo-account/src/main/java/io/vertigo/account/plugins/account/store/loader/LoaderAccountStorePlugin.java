@@ -27,7 +27,7 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.impl.account.AccountStorePlugin;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.structure.model.UID;
@@ -63,9 +63,9 @@ public final class LoaderAccountStorePlugin implements AccountStorePlugin, Activ
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		accountLoader = App.getApp().getComponentSpace().resolve(accountLoaderName, AccountLoader.class);
+		accountLoader = Node.getNode().getComponentSpace().resolve(accountLoaderName, AccountLoader.class);
 		groupLoader = groupLoaderNameOpt
-				.map((groupLoaderName) -> App.getApp().getComponentSpace().resolve(groupLoaderName, GroupLoader.class));
+				.map((groupLoaderName) -> Node.getNode().getComponentSpace().resolve(groupLoaderName, GroupLoader.class));
 	}
 
 	/** {@inheritDoc} */

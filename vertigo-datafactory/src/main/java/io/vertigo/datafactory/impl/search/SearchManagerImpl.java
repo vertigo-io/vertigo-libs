@@ -39,7 +39,7 @@ import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
@@ -94,7 +94,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		for (final SearchIndexDefinition indexDefinition : App.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
+		for (final SearchIndexDefinition indexDefinition : Node.getNode().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			final Set<UID<? extends KeyConcept>> dirtyElements = new LinkedHashSet<>();
 			dirtyElementsPerIndexName.put(indexDefinition.getName(), dirtyElements);
 			executorService.scheduleWithFixedDelay(new ReindexTask(indexDefinition, dirtyElements, this), 1, 1, TimeUnit.SECONDS); //on dépile les dirtyElements toutes les 1 secondes
@@ -219,13 +219,13 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	}
 
 	private static Optional<SearchIndexDefinition> findFirstIndexDefinitionByKeyConcept(final DtDefinition keyConceptDtDefinition) {
-		return App.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class).stream()
+		return Node.getNode().getDefinitionSpace().getAll(SearchIndexDefinition.class).stream()
 				.filter(indexDefinition -> indexDefinition.getKeyConceptDtDefinition().equals(keyConceptDtDefinition))
 				.findFirst();
 	}
 
 	private static List<SearchIndexDefinition> findIndexDefinitionByKeyConcept(final DtDefinition keyConceptDtDefinition) {
-		return App.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class).stream()
+		return Node.getNode().getDefinitionSpace().getAll(SearchIndexDefinition.class).stream()
 				.filter(indexDefinition -> indexDefinition.getKeyConceptDtDefinition().equals(keyConceptDtDefinition))
 				.collect(Collectors.toList());
 	}

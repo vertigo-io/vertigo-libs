@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.webservice;
 
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
 
 /**
@@ -35,11 +35,11 @@ public final class WebServiceHandler {
 	//Spark.before(new CorsAllower());
 
 	public static void main(final String[] args) {
-		final AutoCloseableApp app = new AutoCloseableApp(MyNodeConfig.config(true));
+		final AutoCloseableNode node = new AutoCloseableNode(MyNodeConfig.config(true));
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				app.close();
+				node.close();
 			}
 		});
 	}

@@ -25,7 +25,7 @@ import javax.inject.Inject;
 
 import io.vertigo.account.impl.identityprovider.IdentityProviderPlugin;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.criteria.Criteria;
@@ -126,9 +126,9 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		userIdentityDefinition = App.getApp().getDefinitionSpace().resolve(userIdentityEntity, DtDefinition.class);
+		userIdentityDefinition = Node.getNode().getDefinitionSpace().resolve(userIdentityEntity, DtDefinition.class);
 		if (photoFileInfo.isPresent()) {
-			photoFileInfoDefinition = Optional.of(App.getApp().getDefinitionSpace().resolve(photoFileInfo.get(), FileInfoDefinition.class));
+			photoFileInfoDefinition = Optional.of(Node.getNode().getDefinitionSpace().resolve(photoFileInfo.get(), FileInfoDefinition.class));
 		}
 	}
 

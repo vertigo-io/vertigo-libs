@@ -36,7 +36,7 @@ import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.dashboard.ui.commons.CommonsDashboardControler;
 import io.vertigo.dashboard.ui.dynamo.DynamoDashboardControler;
@@ -60,13 +60,13 @@ public final class DashboardRouter {
 		controlerMap.put("vertigo-ui", VUiDashboardControler.class);
 	}
 
-	private final App app;
+	private final Node node;
 
 	/**
 	 * Creates a new studio for an existing app
-	 * @param app the app we are working on
+	 * @param node the node we are working on
 	 */
-	public DashboardRouter(final App app) {
+	public DashboardRouter(final Node node) {
 		configuration = new Configuration(Configuration.VERSION_2_3_23);
 		configuration.setTemplateLoader(new ClassTemplateLoader(DashboardRouter.class, "/"));
 		configuration.setClassForTemplateLoading(DashboardRouter.class, "");
@@ -78,7 +78,7 @@ public final class DashboardRouter {
 		} catch (final TemplateException e) {
 			LOGGER.error("Error putting settings", e);
 		}
-		this.app = app;
+		this.node = node;
 	}
 
 	/**
@@ -105,7 +105,7 @@ public final class DashboardRouter {
 		Spark.get("/dashboard/modules/:moduleName", (request, response) -> {
 			final String moduleName = request.params(":moduleName");
 			final DashboardModuleControler controler = InjectorUtil.newInstance(controlerMap.get(moduleName));
-			final Map<String, Object> model = controler.buildModel(app, moduleName);
+			final Map<String, Object> model = controler.buildModel(node, moduleName);
 			model.put("contextName", request.contextPath() != null ? request.contextPath() : "");
 			return render(response, "templates/" + moduleName + ".ftl", model);
 		});

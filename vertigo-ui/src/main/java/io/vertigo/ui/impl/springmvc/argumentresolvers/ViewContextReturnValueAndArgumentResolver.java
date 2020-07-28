@@ -31,7 +31,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
@@ -39,7 +39,7 @@ import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 public class ViewContextReturnValueAndArgumentResolver extends AbstractMessageConverterMethodProcessor {
 
 	public ViewContextReturnValueAndArgumentResolver() {
-		super(Collections.singletonList(DIInjector.newInstance(VegaJsonHttpMessageConverter.class, App.getApp().getComponentSpace())));
+		super(Collections.singletonList(DIInjector.newInstance(VegaJsonHttpMessageConverter.class, Node.getNode().getComponentSpace())));
 	}
 
 	@Override

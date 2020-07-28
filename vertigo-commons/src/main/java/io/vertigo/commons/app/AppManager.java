@@ -37,32 +37,32 @@ public interface AppManager extends Manager {
 	 * @param nodeId the id to look for
 	 * @return the optional found Node
 	 */
-	Optional<Node> find(String nodeId);
+	Optional<AppNode> find(String nodeId);
 
 	/**
 	 * Find node with a given skill
 	 * @param skills the skills to look for
 	 * @return the Node matching the skills
 	 */
-	List<Node> locateSkills(String... skills);
+	List<AppNode> locateSkills(String... skills);
 
 	/**
 	 * Get the whole topology of an app
 	 * @return the topology
 	 */
-	List<Node> getTopology();
+	List<AppNode> getTopology();
 
 	/**
 	 * Get the current node
 	 * @return the current node
 	 */
-	Node getCurrentNode();
+	AppNode getCurrentNode();
 
 	/**
 	 * List the dead nodes of the app
 	 * @return the dead nodes
 	 */
-	List<Node> getDeadNodes();
+	List<AppNode> getDeadNodes();
 
 	/**
 	 * A consolidated view of the cluster (id+status)

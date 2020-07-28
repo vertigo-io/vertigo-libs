@@ -13,7 +13,7 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.criteria.Criteria;
@@ -56,7 +56,7 @@ public final class HandleManagerImpl implements HandleManager, Activeable {
 
 	@Override
 	public void start() {
-		dtDefinitionsWithHandle = App.getApp().getDefinitionSpace().getAll(DtDefinition.class)
+		dtDefinitionsWithHandle = Node.getNode().getDefinitionSpace().getAll(DtDefinition.class)
 				.stream()
 				.filter(dtDefinition -> dtDefinition.getHandleField().isPresent())
 				.collect(Collectors.toList());

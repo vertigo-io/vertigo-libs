@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datastore.cache.CacheDefinition;
 import io.vertigo.datastore.impl.cache.CachePlugin;
@@ -134,7 +134,7 @@ public class RedisCachePlugin implements CachePlugin {
 	}
 
 	private static CacheDefinition getCacheDefinition(final String cacheName) {
-		return App.getApp().getDefinitionSpace().resolve(cacheName, CacheDefinition.class);
+		return Node.getNode().getDefinitionSpace().resolve(cacheName, CacheDefinition.class);
 	}
 
 	/*

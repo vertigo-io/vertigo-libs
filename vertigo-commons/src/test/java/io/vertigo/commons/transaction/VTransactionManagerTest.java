@@ -29,7 +29,7 @@ import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.data.SampleDataBase;
 import io.vertigo.commons.transaction.data.SampleDataBaseConnection;
 import io.vertigo.commons.transaction.data.SampleTransactionResource;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -54,21 +54,21 @@ public final class VTransactionManagerTest {
 		return "data - [" + count + "]" + String.valueOf(System.currentTimeMillis());
 	}
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() throws Exception {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		dataBase = new SampleDataBase();
 	}
 
 	@AfterEach
 	public final void tearDown() throws Exception {
-		if (app != null) {
+		if (node != null) {
 			try {
-				app.close();
+				node.close();
 			} finally {
 				Assertions.assertFalse(transactionManager.hasCurrentTransaction(), "transaction must be closed");
 			}
@@ -395,7 +395,7 @@ public final class VTransactionManagerTest {
 					currentTransaction.commit();
 				}
 			} catch (final RuntimeException e) {
-				throw e.getCause(); //we unwrapp RuntimeException
+				throw e.getCause(); //we unwrnode RuntimeException
 			} finally {
 				Assertions.assertTrue(sampleTransactionResource.commitCalled, "Commit resource must be called");
 				Assertions.assertFalse(sampleTransactionResource.rollbackCalled, "Rollback resource should not be called");
@@ -421,7 +421,7 @@ public final class VTransactionManagerTest {
 					currentTransaction.commit();
 				}
 			} catch (final RuntimeException e) {
-				throw e.getCause(); //we unwrapp RuntimeException
+				throw e.getCause(); //we unwrnode RuntimeException
 			} finally {
 				Assertions.assertTrue(sampleTransactionResource.commitCalled, "Commit resource must be called");
 				Assertions.assertFalse(sampleTransactionResource.rollbackCalled, "Rollback resource should not be called");
@@ -452,7 +452,7 @@ public final class VTransactionManagerTest {
 					currentTransaction.commit();
 				}
 			} catch (final RuntimeException e) {
-				throw e.getCause(); //we unwrapp RuntimeException
+				throw e.getCause(); //we unwrnode RuntimeException
 			} finally {
 				Assertions.assertTrue(sampleTransactionResource1.commitCalled, "Commit resource1 must be called");
 				Assertions.assertFalse(sampleTransactionResource1.rollbackCalled, "Rollback resource1 should not be called");

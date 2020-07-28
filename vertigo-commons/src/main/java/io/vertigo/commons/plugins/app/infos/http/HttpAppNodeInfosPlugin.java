@@ -40,7 +40,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
-import io.vertigo.commons.app.Node;
+import io.vertigo.commons.app.AppNode;
 import io.vertigo.commons.impl.app.AppNodeInfosPlugin;
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.lang.Assertion;
@@ -73,18 +73,18 @@ public final class HttpAppNodeInfosPlugin implements AppNodeInfosPlugin {
 			.create();
 
 	@Override
-	public String getConfig(final Node app) {
-		return callRestWS(app.getEndPoint().get() + "/vertigo/components", JsonObject.class).toString();
+	public String getConfig(final AppNode node) {
+		return callRestWS(node.getEndPoint().get() + "/vertigo/components", JsonObject.class).toString();
 	}
 
 	@Override
-	public List<HealthCheck> getStatus(final Node app) {
-		return callRestWS(app.getEndPoint().get() + "/vertigo/healthcheck", new TypeToken<List<HealthCheck>>() {
+	public List<HealthCheck> getStatus(final AppNode node) {
+		return callRestWS(node.getEndPoint().get() + "/vertigo/healthcheck", new TypeToken<List<HealthCheck>>() {
 			/**/}.getType());
 	}
 
 	@Override
-	public Map<String, Object> getStats(final Node app) {
+	public Map<String, Object> getStats(final AppNode node) {
 		return Collections.emptyMap();
 	}
 

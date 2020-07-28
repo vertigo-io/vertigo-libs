@@ -21,7 +21,7 @@ package io.vertigo.account.plugins.account.store;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.impl.account.AccountMapperHelper;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
@@ -61,7 +61,7 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public final void start() {
-		userDtDefinition = App.getApp().getDefinitionSpace().resolve(userDtDefinitionName, DtDefinition.class);
+		userDtDefinition = Node.getNode().getDefinitionSpace().resolve(userDtDefinitionName, DtDefinition.class);
 		mapperHelper = new AccountMapperHelper(userDtDefinition, AccountProperty.class, userToAccountMappingStr)
 				.withMandatoryDestField(AccountProperty.id)
 				.withMandatoryDestField(AccountProperty.displayName)

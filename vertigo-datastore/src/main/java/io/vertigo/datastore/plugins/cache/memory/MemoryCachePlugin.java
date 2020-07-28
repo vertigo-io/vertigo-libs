@@ -26,7 +26,7 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.datastore.cache.CacheDefinition;
 import io.vertigo.datastore.impl.cache.CachePlugin;
@@ -64,7 +64,7 @@ public final class MemoryCachePlugin implements Activeable, CachePlugin {
 	}
 
 	private void registerCaches() {
-		App.getApp().getDefinitionSpace()
+		Node.getNode().getDefinitionSpace()
 				.getAll(CacheDefinition.class).stream()
 				.forEach(this::registerCache);
 	}
@@ -151,6 +151,6 @@ public final class MemoryCachePlugin implements Activeable, CachePlugin {
 	}
 
 	private static CacheDefinition getCacheDefinition(final String cacheName) {
-		return App.getApp().getDefinitionSpace().resolve(cacheName, CacheDefinition.class);
+		return Node.getNode().getDefinitionSpace().resolve(cacheName, CacheDefinition.class);
 	}
 }

@@ -29,7 +29,7 @@ import javax.inject.Inject;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
@@ -80,9 +80,9 @@ public final class TaskManagerImpl implements TaskManager, SimpleDefinitionProvi
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		final List<Class> componenentClasses = App.getApp().getComponentSpace().keySet()
+		final List<Class> componenentClasses = Node.getNode().getComponentSpace().keySet()
 				.stream()
-				.map(componentId -> App.getApp().getComponentSpace().resolve(componentId, Object.class).getClass())
+				.map(componentId -> Node.getNode().getComponentSpace().resolve(componentId, Object.class).getClass())
 				.collect(Collectors.toList());
 
 		return Selector
@@ -123,7 +123,7 @@ public final class TaskManagerImpl implements TaskManager, SimpleDefinitionProvi
 	}
 
 	private static SmartTypeDefinition resolveSmartTypeDefinition(final String smartTypeName) {
-		return App.getApp().getDefinitionSpace().resolve(smartTypeName, SmartTypeDefinition.class);
+		return Node.getNode().getDefinitionSpace().resolve(smartTypeName, SmartTypeDefinition.class);
 	}
 
 	private static boolean hasOut(final Method method) {

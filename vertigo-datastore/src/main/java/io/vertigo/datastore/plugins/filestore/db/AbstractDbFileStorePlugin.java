@@ -24,7 +24,7 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.DataStream;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -209,6 +209,6 @@ abstract class AbstractDbFileStorePlugin {
 	 * @return StoreManager
 	 */
 	protected static EntityStoreManager getEntityStoreManager() {
-		return App.getApp().getComponentSpace().resolve(EntityStoreManager.class);
+		return Node.getNode().getComponentSpace().resolve(EntityStoreManager.class);
 	}
 }

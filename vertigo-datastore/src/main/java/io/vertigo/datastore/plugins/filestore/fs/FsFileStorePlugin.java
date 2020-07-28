@@ -34,7 +34,7 @@ import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
@@ -133,7 +133,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 
 	@Override
 	public void start() {
-		storeDtDefinition = App.getApp().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
+		storeDtDefinition = Node.getNode().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
 		storeIdField = storeDtDefinition.getIdField().get();
 	}
 
@@ -353,7 +353,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	}
 
 	private static EntityStoreManager getEntityStoreManager() {
-		return App.getApp().getComponentSpace().resolve(EntityStoreManager.class);
+		return Node.getNode().getComponentSpace().resolve(EntityStoreManager.class);
 	}
 
 	/** récupère la transaction courante. */

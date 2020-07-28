@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.connectors.redis.RedisConnector;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.model.KeyConcept;
@@ -49,14 +49,14 @@ public class CommentManagerTest {
 	@Inject
 	private RedisConnector redisConnector;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 	private UID<KeyConcept> keyConcept1Uri;
 
 	private UID<Account> accountURI1;
 
 	@BeforeEach
 	public void setUp() {
-		app = new AutoCloseableApp(MyNodeConfig.vegaConfig());
+		node = new AutoCloseableNode(MyNodeConfig.vegaConfig());
 		InjectorUtil.injectMembers(this);
 		try (final Jedis jedis = redisConnector.getClient()) {
 			jedis.flushAll();
@@ -72,8 +72,8 @@ public class CommentManagerTest {
 
 	@AfterEach
 	public void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 

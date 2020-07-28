@@ -24,7 +24,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
@@ -219,7 +219,7 @@ public final class DtField {
 	public DtDefinition getFkDtDefinition() {
 		Assertion.check().isNotNull(fkDtDefinitionName);
 		//-----
-		return App.getApp().getDefinitionSpace().resolve(fkDtDefinitionName, DtDefinition.class);
+		return Node.getNode().getDefinitionSpace().resolve(fkDtDefinitionName, DtDefinition.class);
 	}
 
 	/**

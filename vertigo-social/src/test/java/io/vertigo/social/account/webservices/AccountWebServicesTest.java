@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.vertigo.connectors.redis.RedisConnector;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.data.MockIdentities;
@@ -39,7 +39,7 @@ import redis.clients.jedis.Jedis;
  * @author npiedeloup
  */
 public final class AccountWebServicesTest {
-	private static AutoCloseableApp app;
+	private static AutoCloseableNode node;
 
 	@Inject
 	private MockIdentities mockIdentities;
@@ -52,7 +52,7 @@ public final class AccountWebServicesTest {
 
 	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(MyNodeConfig.vegaConfig());
+		node = new AutoCloseableNode(MyNodeConfig.vegaConfig());
 	}
 
 	@BeforeEach
@@ -67,8 +67,8 @@ public final class AccountWebServicesTest {
 
 	@AfterAll
 	public static void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 

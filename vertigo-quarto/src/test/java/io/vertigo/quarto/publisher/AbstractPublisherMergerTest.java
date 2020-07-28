@@ -35,8 +35,8 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.App;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.resource.ResourceManager;
@@ -75,24 +75,24 @@ public abstract class AbstractPublisherMergerTest {
 	@Inject
 	private FileManager fileManager;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
-	protected final App getApp() {
-		return app;
+	protected final Node getApp() {
+		return node;
 	}
 
 	@BeforeEach
 	public final void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	protected abstract NodeConfig buildNodeConfig();
 
 	@AfterEach
 	public final void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 
@@ -145,7 +145,7 @@ public abstract class AbstractPublisherMergerTest {
 		});
 	}
 
-	private void nop(VFile result) {
+	private void nop(final VFile result) {
 		//nop
 	}
 
@@ -349,7 +349,7 @@ public abstract class AbstractPublisherMergerTest {
 	//	}
 
 	protected static PublisherData createPublisherData(final String definitionName) {
-		final PublisherDataDefinition publisherDataDefinition = App.getApp().getDefinitionSpace().resolve(definitionName, PublisherDataDefinition.class);
+		final PublisherDataDefinition publisherDataDefinition = Node.getNode().getDefinitionSpace().resolve(definitionName, PublisherDataDefinition.class);
 		Assertions.assertNotNull(publisherDataDefinition);
 
 		final PublisherData publisherData = new PublisherData(publisherDataDefinition);

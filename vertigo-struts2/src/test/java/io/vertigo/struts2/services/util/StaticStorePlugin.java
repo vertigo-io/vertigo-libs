@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.criteria.Criteria;
@@ -71,7 +71,7 @@ public final class StaticStorePlugin extends AbstractStaticEntityStorePlugin imp
 
 	@Override
 	public void start() {
-		staticDtDefinition = App.getApp().getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
+		staticDtDefinition = Node.getNode().getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
 		Assertion.check()
 				.isTrue(staticDtDefinition.getIdField().isPresent(), "The Static MasterDataList {0} must have a IdField", staticDtDefinition.getClassSimpleName())
 				.isTrue(staticDtDefinition.getDisplayField().isPresent(), "The Static MasterDataList {0} must have a DisplayField", staticDtDefinition.getClassSimpleName());

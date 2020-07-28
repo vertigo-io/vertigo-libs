@@ -24,7 +24,7 @@ import java.util.List;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
@@ -154,7 +154,7 @@ public final class UiUtil implements Serializable {
 	 * @return rendu du champs boolean
 	 */
 	public static String formatBoolean(final String fieldPath, final Boolean value) {
-		final SmartTypeManager smartTypeManager = App.getApp().getComponentSpace().resolve(SmartTypeManager.class);
+		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
 			return DEFAULT_FORMATTER.valueToString(value, BasicType.Boolean);
 		}
@@ -227,12 +227,12 @@ public final class UiUtil implements Serializable {
 	}
 
 	/**
-	 * Get the current locale prefix (either the user's or the app (see LocaleManager javadoc)
+	 * Get the current locale prefix (either the user's or the node (see LocaleManager javadoc)
 	 * ex : fr, en-us, en-gb, es, it
 	 * @return the locale (in the quasar's style) to download the right js file
 	 */
 	public static String getCurrentLocalePrefixForQuasar() {
-		final LocaleManager localeManager = App.getApp().getComponentSpace().resolve(LocaleManager.class);
+		final LocaleManager localeManager = Node.getNode().getComponentSpace().resolve(LocaleManager.class);
 		final String currentLocaleTag = localeManager.getCurrentLocale().toLanguageTag();
 		// not so great but not other solutions (quasar's doesn't respect the standard...)
 		if (currentLocaleTag.startsWith("fr")) {
@@ -249,7 +249,7 @@ public final class UiUtil implements Serializable {
 	}
 
 	/**
-	 * Get the current locale tag (either the user's or the app (see LocaleManager javadoc)
+	 * Get the current locale tag (either the user's or the node (see LocaleManager javadoc)
 	 * ex : fr, enUs, enGb, es, it
 	 * @return the locale (in the quasar's style) to select the right language in quasar
 	 */

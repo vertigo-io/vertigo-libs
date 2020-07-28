@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -86,18 +86,18 @@ public final class DOCXProcessorTest {
 	//
 	// //////////////////////////////////////////////
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	@AfterEach
 	public final void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 
@@ -236,12 +236,12 @@ public final class DOCXProcessorTest {
 
 		final Document xmlDoc = DOCXUtil.loadDOM(DOCXTest.convertWrongFormattedTags(getDOCX(sb.toString())));
 		final NodeList nodeList = (NodeList) xpath.evaluate(DOCXUtil.XPATH_TAG_NODES, xmlDoc, XPathConstants.NODESET);
-		Node node;
+		Node domNode;
 		String content;
 		// on vérifie le contenu de chaque noeud.
 		for (int i = 0; i < nodeList.getLength(); i++) {
-			node = nodeList.item(i);
-			content = node.getLastChild().getTextContent();
+			domNode = nodeList.item(i);
+			content = domNode.getLastChild().getTextContent();
 			Assertions.assertEquals(results[i], content);
 		}
 		// vérifier l'intégrité du docx.

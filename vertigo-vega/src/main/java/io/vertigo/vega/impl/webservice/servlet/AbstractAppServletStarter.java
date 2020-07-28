@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.vega.plugins.webservice.servlet.ServletResourceResolverPlugin;
@@ -54,7 +54,7 @@ abstract class AbstractAppServletStarter {
 
 	/** Servlet listener */
 	private final AppServletListener appServletListener = new AppServletListener();
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	/**
 	 * Initialize and start Vertigo Home.
@@ -74,7 +74,7 @@ abstract class AbstractAppServletStarter {
 			Assertion.check().isTrue(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
 
 			// Initialisation de l'état de l'application
-			app = new AutoCloseableApp(buildNodeConfig(bootConf));
+			node = new AutoCloseableNode(buildNodeConfig(bootConf));
 
 			appServletListener.onServletStart(getClass().getName());
 		} catch (final Exception e) {
@@ -139,7 +139,7 @@ abstract class AbstractAppServletStarter {
 
 		/*
 		 * On récupère le paramètre du fichier de configuration des logs externe (-Dlog4j.configurationFileName).
-		 * Ce paramètre peut pointer sur un fichier de la webapp ou du FS.
+		 * Ce paramètre peut pointer sur un fichier de la webnode ou du FS.
 		 * Il peut aussi être dans le web.xml ou le EXTERNAL_PROPERTIES_PARAM_NAME
 		 */
 		String log4jConfigurationFileName = System.getProperty(LOG4J_CONFIGURATION_PARAM_NAME);
@@ -177,8 +177,8 @@ abstract class AbstractAppServletStarter {
 	 * @param servletContext ServletContext
 	 */
 	public void contextDestroyed(final ServletContext servletContext) {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		} else {
 			LOG.warn("Context destroyed : App wasn't started");
 		}

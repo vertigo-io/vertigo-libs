@@ -29,7 +29,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
@@ -276,7 +276,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		final DtField dtField = getDtField(fieldName);
 		final SmartTypeDefinition smartType = dtField.getSmartTypeDefinition();
 		if (!dtField.getCardinality().hasMany()) {
-			final SmartTypeManager smartTypeManager = App.getApp().getComponentSpace().resolve(SmartTypeManager.class);
+			final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 			if (smartType.getScope().isPrimitive()) {
 				return smartTypeManager.valueToString(smartType, value);// encodeValue
 			}
@@ -293,7 +293,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		Assertion.check()
 				.isNotBlank(fieldName)
 				.isNotNull(stringValue, "formatted value can't be null, but may be empty : {0}", fieldName);
-		final SmartTypeManager smartTypeManager = App.getApp().getComponentSpace().resolve(SmartTypeManager.class);
+		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		//-----
 		final DtField dtField = getDtField(fieldName);
 		//---

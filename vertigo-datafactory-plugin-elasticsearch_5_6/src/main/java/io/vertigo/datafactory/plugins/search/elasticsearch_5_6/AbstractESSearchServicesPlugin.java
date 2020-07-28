@@ -51,7 +51,7 @@ import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.analytics.health.HealthMeasureBuilder;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.datafactory.collections.ListFilter;
@@ -135,7 +135,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		//must wait yellow status to be sure prepareExists works fine (instead of returning false on a already exist index)
 		waitForYellowStatus();
 		//Init typeMapping IndexDefinition <-> Conf ElasticSearch
-		for (final SearchIndexDefinition indexDefinition : App.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
+		for (final SearchIndexDefinition indexDefinition : Node.getNode().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			final String myIndexName = obtainIndexName(indexDefinition);
 			createIndex(myIndexName);
 

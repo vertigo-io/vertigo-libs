@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
@@ -21,18 +21,18 @@ public class SmartTypeDefinitionProviderTest {
 	@Inject
 	private SmartTypeManager smartTypeManager;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	@AfterEach
 	public final void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 
@@ -50,13 +50,13 @@ public class SmartTypeDefinitionProviderTest {
 
 	@Test
 	public void testReadDefinition() {
-		app.getDefinitionSpace().getAll(SmartTypeDefinition.class)
+		node.getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.forEach(System.out::println);
 	}
 
 	@Test
 	public void testUpper() {
-		final SmartTypeDefinition smartTypeDefinition = app.getDefinitionSpace().resolve("STySiret2", SmartTypeDefinition.class);
+		final SmartTypeDefinition smartTypeDefinition = node.getDefinitionSpace().resolve("STySiret2", SmartTypeDefinition.class);
 		Assertions.assertEquals("AA", smartTypeManager.valueToString(smartTypeDefinition, "aa"));
 		Assertions.assertEquals("AA", smartTypeManager.valueToString(smartTypeDefinition, "AA"));
 		Assertions.assertEquals("AA", smartTypeManager.valueToString(smartTypeDefinition, "Aa"));

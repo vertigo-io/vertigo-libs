@@ -20,13 +20,13 @@ package io.vertigo.dashboard.ui.vui;
 
 import java.util.Map;
 
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
 
 public final class VUiDashboardControler extends AbstractDashboardModuleControler {
 
 	@Override
-	public void doBuildModel(final App app, final Map<String, Object> model) {
+	public void doBuildModel(final Node node, final Map<String, Object> model) {
 		//--- locations
 		model.put("locations", getDataProvider().getTagValues("page", "location"));
 	}

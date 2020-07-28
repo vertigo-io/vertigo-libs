@@ -35,12 +35,12 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
 
 public final class RoutesOrderTest {
 
-	private static AutoCloseableApp app;
+	private static AutoCloseableNode node;
 
 	static {
 		//RestAsssured init
@@ -49,7 +49,7 @@ public final class RoutesOrderTest {
 
 	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(MyNodeConfig.config(true));
+		node = new AutoCloseableNode(MyNodeConfig.config(true));
 	}
 
 	@BeforeEach
@@ -59,8 +59,8 @@ public final class RoutesOrderTest {
 
 	@AfterAll
 	public static void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 

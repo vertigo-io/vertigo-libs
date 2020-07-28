@@ -3,7 +3,7 @@ package io.vertigo.datamodel.smarttype;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -29,8 +29,8 @@ public class EdgeCasesSmartTypeDefinitionProviderTest {
 								.build())
 						.build())
 				.build();
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final SmartTypeDefinition dtBaseSmartType = app.getDefinitionSpace().resolve("STyDtBase", SmartTypeDefinition.class);
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			final SmartTypeDefinition dtBaseSmartType = node.getDefinitionSpace().resolve("STyDtBase", SmartTypeDefinition.class);
 			Assertions.assertEquals(FormatterId.class, dtBaseSmartType.getFormatterConfig().getFormatterClass());
 		}
 	}
@@ -51,8 +51,8 @@ public class EdgeCasesSmartTypeDefinitionProviderTest {
 				.build();
 
 		Assertions.assertThrows(IllegalStateException.class, () -> {
-			try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-				final SmartTypeDefinition dtBaseSmartType = app.getDefinitionSpace().resolve("STyDtBase", SmartTypeDefinition.class);
+			try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+				final SmartTypeDefinition dtBaseSmartType = node.getDefinitionSpace().resolve("STyDtBase", SmartTypeDefinition.class);
 				Assertions.assertEquals(FormatterId.class, dtBaseSmartType.getFormatterConfig().getFormatterClass());
 			}
 		});

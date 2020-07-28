@@ -36,7 +36,7 @@ import org.ehcache.expiry.ExpiryPolicy;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.datastore.cache.CacheDefinition;
 import io.vertigo.datastore.impl.cache.CachePlugin;
@@ -76,7 +76,7 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 	}
 
 	private void registerCaches() {
-		App.getApp().getDefinitionSpace()
+		Node.getNode().getDefinitionSpace()
 				.getAll(CacheDefinition.class).stream()
 				.forEach(this::registerCache);
 	}
@@ -155,7 +155,7 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void clearAll() {
-		App.getApp().getDefinitionSpace()
+		Node.getNode().getDefinitionSpace()
 				.getAll(CacheDefinition.class).stream()
 				.forEach(cacheDefinition -> {
 					final Cache<?, ?> cache = manager.getCache(cacheDefinition.getName(), Serializable.class, Object.class);
@@ -181,11 +181,11 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 
 	private Cache<Serializable, Object> getEHCache(final String context) {
 		final Cache<Serializable, Object> ehCache = manager.getCache(context, Serializable.class, Object.class);
-		Assertion.check().isNotNull(ehCache, "Cache {0} are not yet registered. Add it into a file ehcache.xml and put it into the WEB-INF directory of your webapp.", context);
+		Assertion.check().isNotNull(ehCache, "Cache {0} are not yet registered. Add it into a file ehcache.xml and put it into the WEB-INF directory of your webnode.", context);
 		return ehCache;
 	}
 
 	private static CacheDefinition getCacheDefinition(final String cacheName) {
-		return App.getApp().getDefinitionSpace().resolve(cacheName, CacheDefinition.class);
+		return Node.getNode().getDefinitionSpace().resolve(cacheName, CacheDefinition.class);
 	}
 }

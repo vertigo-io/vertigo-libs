@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
 import io.vertigo.datafactory.collections.model.FacetValue;
@@ -61,7 +61,7 @@ public final class UiSelectedFacetValues extends HashMap<String, List<String>> {
 		final SelectedFacetValuesBuilder selectedFacetValuesBuilder = SelectedFacetValues.empty();
 
 		for (final Map.Entry<String, List<String>> entry : entrySet()) {
-			final FacetDefinition facetDefinition = App.getApp().getDefinitionSpace().resolve(entry.getKey(), FacetDefinition.class);
+			final FacetDefinition facetDefinition = Node.getNode().getDefinitionSpace().resolve(entry.getKey(), FacetDefinition.class);
 			if (facetDefinition.isRangeFacet()) {
 				appendRangeFacetValues(entry.getValue(), facetDefinition, selectedFacetValuesBuilder);
 			} else {

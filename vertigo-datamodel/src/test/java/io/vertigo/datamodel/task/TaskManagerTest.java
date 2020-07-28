@@ -33,7 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
@@ -58,18 +58,18 @@ public final class TaskManagerTest {
 	@Inject
 	private TestComponentTaskAnnotation testComponentTaskAnnotation;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	@AfterEach
 	public void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 
@@ -93,7 +93,7 @@ public final class TaskManagerTest {
 	}
 
 	private TaskDefinition getTaskDefinition(final String taskDefinitionName) {
-		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		return definitionSpace.resolve(taskDefinitionName, TaskDefinition.class);
 	}
 
@@ -112,7 +112,7 @@ public final class TaskManagerTest {
 	@Test
 	public void testRegistryWithNull() {
 		Assertions.assertThrows(NullPointerException.class, () -> {
-			final DefinitionSpace definitionSpace = app.getDefinitionSpace();
+			final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 			//L'appel à la résolution doit remonter une assertion
 			final TaskDefinition taskDefinition = definitionSpace.resolve(null, TaskDefinition.class);
 			Assertions.assertNotNull(taskDefinition);

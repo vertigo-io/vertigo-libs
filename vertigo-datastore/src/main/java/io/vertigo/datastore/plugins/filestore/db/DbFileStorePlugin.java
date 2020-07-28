@@ -25,7 +25,7 @@ import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.DataStream;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
@@ -87,7 +87,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 
 	@Override
 	public void start() {
-		storeDtDefinition = App.getApp().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
+		storeDtDefinition = Node.getNode().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
 		storeIdField = storeDtDefinition.getIdField().get();
 	}
 

@@ -30,7 +30,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.datastore.filestore.util.FileUtil;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -67,7 +67,7 @@ public final class SwaggerWebServices implements WebServices {
 				+ (request.getRequestURI().substring(0, request.getRequestURI().indexOf("/swaggerApi")));
 		return new SwaggerApiBuilder()
 				.withContextPath(prefixUrl)
-				.withWebServiceDefinitions(App.getApp().getDefinitionSpace().getAll(WebServiceDefinition.class))
+				.withWebServiceDefinitions(Node.getNode().getDefinitionSpace().getAll(WebServiceDefinition.class))
 				.build();
 	}
 

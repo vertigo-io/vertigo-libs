@@ -34,7 +34,7 @@ import io.vertigo.commons.eventbus.data.MySubscriber;
 import io.vertigo.commons.eventbus.data.RedColorEvent;
 import io.vertigo.commons.eventbus.data.WhiteColorEvent;
 import io.vertigo.commons.eventbus.data.aspects.FlipAspect;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -51,20 +51,20 @@ public final class EventBusManagerTest {
 	private MySubscriber mySubscriber;
 	private int deadEvents = 0;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		eventBusManager.registerDead(event -> deadEvents++);
 	}
 
 	@AfterEach
 	public final void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 

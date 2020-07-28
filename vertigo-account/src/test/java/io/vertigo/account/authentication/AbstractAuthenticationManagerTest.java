@@ -32,7 +32,7 @@ import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 
@@ -48,23 +48,23 @@ abstract class AbstractAuthenticationManagerTest {
 	@Inject
 	protected AuthenticationManager authenticationManager;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		securityManager.startCurrentUserSession(securityManager.createUserSession());
 	}
 
 	@AfterEach
 	public final void tearDown() {
-		if (app != null) {
+		if (node != null) {
 			try {
 				securityManager.stopCurrentUserSession();
 			} finally {
-				app.close();
+				node.close();
 			}
 		}
 	}

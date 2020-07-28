@@ -46,7 +46,7 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -88,17 +88,17 @@ public abstract class AbstractSearchManagerTest {
 	private FacetDefinition yearFacetDefinition;
 	private ItemDataBase itemDataBase;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	/**
 	 * Initialise l'index.
 	 * @param indexName Nom de l'index
 	 */
 	protected final void init(final String indexName) {
-		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		//On construit la BDD des voitures
 		itemDataBase = new ItemDataBase();
-		final ItemSearchLoader itemSearchLoader = app.getComponentSpace().resolve(ItemSearchLoader.class);
+		final ItemSearchLoader itemSearchLoader = node.getComponentSpace().resolve(ItemSearchLoader.class);
 		itemSearchLoader.bindDataBase(itemDataBase);
 
 		manufacturerFacetDefinition = definitionSpace.resolve("FctManufacturerItem", FacetDefinition.class);
@@ -109,8 +109,8 @@ public abstract class AbstractSearchManagerTest {
 
 	@BeforeEach
 	public final void setUp() throws Exception {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		doSetUp();
 	}
 
@@ -120,8 +120,8 @@ public abstract class AbstractSearchManagerTest {
 
 	@AfterEach
 	public final void tearDown() throws Exception {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 

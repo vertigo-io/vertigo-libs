@@ -53,8 +53,8 @@ public final class HealthcheckWebServices implements WebServices {
 	}
 
 	/**
-	 * Complete app healthcheck WebService.
-	 * @return a complete health status of the app for all the monitored components.
+	 * Complete node healthcheck WebService.
+	 * @return a complete health status of the node for all the monitored components.
 	 */
 	@SessionLess
 	@AnonymousAccessAllowed

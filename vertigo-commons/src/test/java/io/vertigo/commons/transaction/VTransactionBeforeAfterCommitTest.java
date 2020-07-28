@@ -31,7 +31,7 @@ import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.data.SampleDataBase;
 import io.vertigo.commons.transaction.data.SampleDataBaseConnection;
 import io.vertigo.commons.transaction.data.SampleTransactionResource;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -51,20 +51,20 @@ public final class VTransactionBeforeAfterCommitTest {
 	private VTransactionManager transactionManager;
 	private SampleDataBase dataBase;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() throws Exception {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		dataBase = new SampleDataBase();
 	}
 
 	@AfterEach
 	public final void tearDown() throws Exception {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 

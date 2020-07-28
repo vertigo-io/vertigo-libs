@@ -32,7 +32,7 @@ import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
@@ -77,12 +77,12 @@ public final class TaskEngineProcBatchTest {
 
 	private SuperHeroDataBase superHeroDataBase;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() throws Exception {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		superHeroDataBase = new SuperHeroDataBase(transactionManager, taskManager);
 		superHeroDataBase.createDataBase();
@@ -90,8 +90,8 @@ public final class TaskEngineProcBatchTest {
 
 	@AfterEach
 	public final void tearDown() throws Exception {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 
@@ -139,7 +139,7 @@ public final class TaskEngineProcBatchTest {
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
-				.addInAttribute(DTC_SUPER_HERO_IN, app.getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class), Cardinality.MANY)
+				.addInAttribute(DTC_SUPER_HERO_IN, node.getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class), Cardinality.MANY)
 				.withRequest(request)
 				.build();
 
@@ -169,8 +169,8 @@ public final class TaskEngineProcBatchTest {
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
-				.addInAttribute(DTC_SUPER_HERO_IN, app.getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class), Cardinality.MANY)
-				.addInAttribute(OTHER_PARAM_IN, app.getDefinitionSpace().resolve(STY_STRING, SmartTypeDefinition.class), Cardinality.ONE)
+				.addInAttribute(DTC_SUPER_HERO_IN, node.getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class), Cardinality.MANY)
+				.addInAttribute(OTHER_PARAM_IN, node.getDefinitionSpace().resolve(STY_STRING, SmartTypeDefinition.class), Cardinality.ONE)
 				.withRequest(request)
 				.build();
 
@@ -200,7 +200,7 @@ public final class TaskEngineProcBatchTest {
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
-				.addInAttribute(SUPER_HERO_ID_LIST_IN, app.getDefinitionSpace().resolve(STY_ID, SmartTypeDefinition.class), Cardinality.MANY)
+				.addInAttribute(SUPER_HERO_ID_LIST_IN, node.getDefinitionSpace().resolve(STY_ID, SmartTypeDefinition.class), Cardinality.MANY)
 				.withRequest(request)
 				.build();
 
@@ -223,7 +223,7 @@ public final class TaskEngineProcBatchTest {
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkSelectHeroes")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from SUPER_HERO")
-				.withOutAttribute(DTC_SUPER_HERO_OUT, app.getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class), Cardinality.MANY)
+				.withOutAttribute(DTC_SUPER_HERO_OUT, node.getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class), Cardinality.MANY)
 				.build();
 		final Task task = Task.builder(taskDefinition).build();
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {

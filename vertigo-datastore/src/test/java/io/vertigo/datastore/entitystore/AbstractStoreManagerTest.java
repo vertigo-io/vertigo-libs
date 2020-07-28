@@ -35,8 +35,8 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.node.App;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -82,27 +82,27 @@ public abstract class AbstractStoreManagerTest {
 
 	private CarDataBase carDataBase;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
-	protected App getApp() {
-		return app;
+	protected Node getApp() {
+		return node;
 	}
 
 	@BeforeEach
 	public final void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		doSetUp();
 	}
 
 	@AfterEach
 	public final void tearDown() {
-		if (app != null) {
+		if (node != null) {
 			try {
 				doTearDown();
 			} finally {
-				app.close();
+				node.close();
 			}
 		}
 
@@ -265,7 +265,7 @@ public abstract class AbstractStoreManagerTest {
 	protected void nativeInsertCar(final Car car) {
 		Assertion.check().isNull(car.getId(), "L'id n'est pas null {0}", car.getId());
 		//-----
-		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		final SmartTypeDefinition smartTypeCar = definitionSpace.resolve("STyDtCar", SmartTypeDefinition.class);
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkInsertCar")
@@ -283,12 +283,12 @@ public abstract class AbstractStoreManagerTest {
 		nop(taskResult);
 	}
 
-	protected void nop(TaskResult taskResult) {
+	protected void nop(final TaskResult taskResult) {
 		//nop
 	}
 
 	protected final DtList<Car> nativeLoadCarList() {
-		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		final SmartTypeDefinition smartTypeCar = definitionSpace.resolve("STyDtCar", SmartTypeDefinition.class);
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkLoadAllCars")

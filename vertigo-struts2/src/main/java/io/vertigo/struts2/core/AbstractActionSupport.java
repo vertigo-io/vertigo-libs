@@ -197,7 +197,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	 * Si surcharger doit rappeler le super.preInitContext();
 	 */
 	protected void preInitContext() {
-		context.put("appVersion", paramManager.getParam("app.version").getValueAsString());
+		context.put("appVersion", paramManager.getParam("node.version").getValueAsString());
 		context.put(UTIL_CONTEXT_KEY, new UiUtil());
 		toModeReadOnly();
 	}

@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import io.vertigo.account.SqlUtil;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datamodel.task.TaskManager;
 
@@ -34,8 +34,8 @@ final class CreateTestDataBase {
 	}
 
 	public static void initMainStore() {
-		final VTransactionManager transactionManager = App.getApp().getComponentSpace().resolve(VTransactionManager.class);
-		final TaskManager taskManager = App.getApp().getComponentSpace().resolve(TaskManager.class);
+		final VTransactionManager transactionManager = Node.getNode().getComponentSpace().resolve(VTransactionManager.class);
+		final TaskManager taskManager = Node.getNode().getComponentSpace().resolve(TaskManager.class);
 
 		//A chaque test on recrée la table famille
 		SqlUtil.execRequests(

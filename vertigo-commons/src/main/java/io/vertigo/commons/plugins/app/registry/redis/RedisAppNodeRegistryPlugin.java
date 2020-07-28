@@ -33,7 +33,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import io.vertigo.commons.app.Node;
+import io.vertigo.commons.app.AppNode;
 import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
@@ -44,7 +44,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
 /**
- * Memory implementation for a single node app.
+ * Memory implementation for a single node node.
  * @author mlaroche
  *
  */
@@ -73,55 +73,55 @@ public final class RedisAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 	}
 
 	@Override
-	public void register(final Node node) {
+	public void register(final AppNode appNode) {
 		try (final Jedis jedis = redisConnector.getClient()) {
-			final Boolean isIdUsed = jedis.sismember(VERTIGO_NODES, node.getId());
-			Assertion.check().isFalse(isIdUsed, "A node id must be unique : Id '{0}' is already used ", node.getId());
+			final Boolean isIdUsed = jedis.sismember(VERTIGO_NODES, appNode.getId());
+			Assertion.check().isFalse(isIdUsed, "A node id must be unique : Id '{0}' is already used ", appNode.getId());
 			// ---
 			try (final Transaction tx = jedis.multi()) {
-				tx.hset(VERTIGO_NODE + node.getId(), "json", gson.toJson(node));
-				tx.sadd(VERTIGO_NODES, node.getId());
+				tx.hset(VERTIGO_NODE + appNode.getId(), "json", gson.toJson(appNode));
+				tx.sadd(VERTIGO_NODES, appNode.getId());
 				tx.exec();
 			}
 		}
 	}
 
 	@Override
-	public void unregister(final Node node) {
+	public void unregister(final AppNode appNode) {
 		try (final Jedis jedis = redisConnector.getClient()) {
 			try (final Transaction tx = jedis.multi()) {
-				tx.del(VERTIGO_NODE + node.getId());
-				tx.srem(VERTIGO_NODES, node.getId());
+				tx.del(VERTIGO_NODE + appNode.getId());
+				tx.srem(VERTIGO_NODES, appNode.getId());
 				tx.exec();
 			}
 		}
 	}
 
 	@Override
-	public Optional<Node> find(final String nodeId) {
+	public Optional<AppNode> find(final String nodeId) {
 		try (final Jedis jedis = redisConnector.getClient()) {
 			final String result = jedis.hget(VERTIGO_NODE + nodeId, "json");
 			if (result != null) {
-				return Optional.of(gson.fromJson(result, Node.class));
+				return Optional.of(gson.fromJson(result, AppNode.class));
 			}
 			return Optional.empty();
 		}
 	}
 
 	@Override
-	public void updateStatus(final Node node) {
+	public void updateStatus(final AppNode appNode) {
 		try (final Jedis jedis = redisConnector.getClient()) {
-			jedis.hset(VERTIGO_NODE + node.getId(), "json", gson.toJson(node));
+			jedis.hset(VERTIGO_NODE + appNode.getId(), "json", gson.toJson(appNode));
 		}
 	}
 
 	@Override
-	public List<Node> getTopology() {
+	public List<AppNode> getTopology() {
 		try (final Jedis jedis = redisConnector.getClient()) {
 			return jedis.smembers(VERTIGO_NODES)
 					.stream()
 					.map(nodeId -> jedis.hget(VERTIGO_NODE + nodeId, "json"))
-					.map(nodeJson -> gson.fromJson(nodeJson, Node.class))
+					.map(nodeJson -> gson.fromJson(nodeJson, AppNode.class))
 					.collect(Collectors.toList());
 
 		}

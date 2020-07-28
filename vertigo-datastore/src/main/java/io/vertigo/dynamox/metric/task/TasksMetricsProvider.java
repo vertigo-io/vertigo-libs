@@ -30,7 +30,7 @@ import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.metric.MetricBuilder;
 import io.vertigo.core.analytics.metric.Metrics;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.metamodel.TaskDefinition;
@@ -60,7 +60,7 @@ public final class TasksMetricsProvider implements Component {
 
 	@Metrics
 	public List<Metric> getTasksRequestSizeMetric() {
-		return App.getApp().getDefinitionSpace().getAll(TaskDefinition.class)
+		return Node.getNode().getDefinitionSpace().getAll(TaskDefinition.class)
 				.stream()
 				.map(taskDefinition -> Metric.builder()
 						.withName("taskRequestSize")
@@ -74,7 +74,7 @@ public final class TasksMetricsProvider implements Component {
 
 	@Metrics
 	public List<Metric> getTasksJoinMetric() {
-		return App.getApp().getDefinitionSpace().getAll(TaskDefinition.class)
+		return Node.getNode().getDefinitionSpace().getAll(TaskDefinition.class)
 				.stream()
 				.map(taskDefinition -> {
 					final double joinCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("JOIN").length - 1d;
@@ -92,7 +92,7 @@ public final class TasksMetricsProvider implements Component {
 
 	@Metrics
 	public List<Metric> getTasksSubRequestMetric() {
-		return App.getApp().getDefinitionSpace().getAll(TaskDefinition.class)
+		return Node.getNode().getDefinitionSpace().getAll(TaskDefinition.class)
 				.stream()
 				.map(taskDefinition -> Metric.builder()
 						.withName("taskSubrequestsCount")
@@ -106,7 +106,7 @@ public final class TasksMetricsProvider implements Component {
 
 	@Metrics
 	public List<Metric> getTasksPerformanceMetric() {
-		return App.getApp().getDefinitionSpace().getAll(TaskDefinition.class)
+		return Node.getNode().getDefinitionSpace().getAll(TaskDefinition.class)
 				.stream()
 				.filter(TasksMetricsProvider::canBeExecutedForMetric)
 				.map(taskDefinition -> {

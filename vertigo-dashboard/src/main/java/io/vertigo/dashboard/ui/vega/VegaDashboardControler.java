@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.core.lang.VUserException;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
 import io.vertigo.database.timeseries.DataFilter;
 import io.vertigo.database.timeseries.TimeFilter;
@@ -31,7 +31,7 @@ import io.vertigo.database.timeseries.TimedDatas;
 public final class VegaDashboardControler extends AbstractDashboardModuleControler {
 
 	@Override
-	public void doBuildModel(final App app, final Map<String, Object> model) {
+	public void doBuildModel(final Node node, final Map<String, Object> model) {
 		addGlobalIndicators(model);
 		//
 	}

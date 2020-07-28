@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.DataStream;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.database.sql.connection.SqlConnection;
@@ -103,12 +103,12 @@ public abstract class AbstractSqlManagerTest {
 	@Inject
 	protected SqlDataBaseManager dataBaseManager;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() throws Exception {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		try (final SqlConnection connection = obtainMainConnection()) {
 			execpreparedStatement(connection, createTableMovie());
@@ -121,7 +121,7 @@ public abstract class AbstractSqlManagerTest {
 
 	@AfterEach
 	public final void tearDown() throws Exception {
-		if (app != null) {
+		if (node != null) {
 			try (final SqlConnection connection = obtainMainConnection()) {
 				// we use a shared database so we need to drop the table
 				execpreparedStatement(connection, DROP_SEQUENCE_MOVIE);
@@ -130,7 +130,7 @@ public abstract class AbstractSqlManagerTest {
 					connection.commit();
 				}
 			} finally {
-				app.close();
+				node.close();
 			}
 		}
 	}

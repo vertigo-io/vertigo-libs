@@ -30,7 +30,7 @@ import io.vertigo.core.node.config.NodeConfig;
 public class MyNodeConfig {
 
 	/**
-	 * Configure the app for testing
+	 * Configure the node for testing
 	 * @return the application config for testing
 	 */
 	public static NodeConfig config() {

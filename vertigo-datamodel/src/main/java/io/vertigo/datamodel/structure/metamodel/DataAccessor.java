@@ -21,7 +21,7 @@ package io.vertigo.datamodel.structure.metamodel;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.util.BeanUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -51,7 +51,7 @@ public final class DataAccessor {
 	 * @param value Object
 	 */
 	public void setValue(final DtObject dto, final Object value) {
-		final SmartTypeManager smartTypeManager = App.getApp().getComponentSpace().resolve(SmartTypeManager.class);
+		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		//On vérifie le type java de l'objet.
 		if (dtField.getCardinality().hasMany()) {
 			if (!(value instanceof List)) {

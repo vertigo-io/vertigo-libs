@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
@@ -85,12 +85,12 @@ public class SearchManagerStoreTest {
 
 	private long initialDbItemSize = 0;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() throws Exception {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		doSetUp();
 	}
@@ -98,8 +98,8 @@ public class SearchManagerStoreTest {
 	@AfterEach
 	public final void tearDown() throws Exception {
 		doTearDown();
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 
@@ -147,7 +147,7 @@ public class SearchManagerStoreTest {
 	}
 
 	private void doSetUp() throws SQLException {
-		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
 
 		//A chaque test on recrée la table famille

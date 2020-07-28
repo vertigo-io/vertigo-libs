@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
 import io.vertigo.dashboard.ui.dynamo.model.EntityModel;
 import io.vertigo.dashboard.ui.dynamo.model.SmartTypeModel;
@@ -44,7 +44,7 @@ import io.vertigo.datamodel.task.metamodel.TaskDefinition;
 public final class DynamoDashboardControler extends AbstractDashboardModuleControler {
 
 	@Override
-	public void doBuildModel(final App app, final Map<String, Object> model) {
+	public void doBuildModel(final Node node, final Map<String, Object> model) {
 		final List<Metric> metrics = getDataProvider().getMetrics();
 		buildEntityModel(model, metrics);
 		buildDomainModel(model, metrics);
@@ -56,7 +56,7 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 		final TimeFilter timeFilter = TimeFilter.builder("now() - 1d", "now()").build();
 		final TabularDatas tabularDatas = getDataProvider().getTabularData(Arrays.asList("duration:median", "duration:count"), dataFilter, timeFilter, "name");
 
-		final List<TaskModel> tasks = App.getApp().getDefinitionSpace().getAll(TaskDefinition.class)
+		final List<TaskModel> tasks = Node.getNode().getDefinitionSpace().getAll(TaskDefinition.class)
 				.stream()
 				.map(taskDefinition -> new TaskModel(
 						taskDefinition,
@@ -103,7 +103,7 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 				.filter(metric -> "definitionFieldCount".equals(metric.getName()))
 				.forEach(metric -> fieldCount.put(metric.getFeature(), metric.getValue()));
 
-		final Collection<DtDefinition> dtDefinitions = App.getApp().getDefinitionSpace().getAll(DtDefinition.class);
+		final Collection<DtDefinition> dtDefinitions = Node.getNode().getDefinitionSpace().getAll(DtDefinition.class);
 		final List<EntityModel> entities = dtDefinitions
 				.stream()
 				.filter(DtDefinition::isPersistent)
@@ -134,7 +134,7 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 				.filter(metric -> "domainUsageInDtDefinitions".equals(metric.getName()))
 				.forEach(metric -> dtDefinitionCount.put(metric.getFeature(), metric.getValue()));
 
-		final Collection<SmartTypeDefinition> smartTypes = App.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class);
+		final Collection<SmartTypeDefinition> smartTypes = Node.getNode().getDefinitionSpace().getAll(SmartTypeDefinition.class);
 		final List<SmartTypeModel> smartTypeModels = smartTypes
 				.stream()
 				.filter(smartType -> smartType.getScope().isPrimitive()) // we display only primitives

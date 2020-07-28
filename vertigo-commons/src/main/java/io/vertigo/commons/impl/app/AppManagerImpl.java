@@ -31,13 +31,13 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import io.vertigo.commons.app.AppManager;
-import io.vertigo.commons.app.Node;
+import io.vertigo.commons.app.AppNode;
 import io.vertigo.commons.plugins.app.registry.single.SingleAppNodeRegistryPlugin;
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.config.ModuleConfig;
 
@@ -71,27 +71,27 @@ public final class AppManagerImpl implements AppManager, Activeable {
 
 	@DaemonScheduled(name = "DmnUpdateNodeStatus", periodInSeconds = HEART_BEAT_SECONDS, analytics = false)
 	public void updateNodeStatus() {
-		nodeRegistryPlugin.updateStatus(toAppNode(App.getApp()));
+		nodeRegistryPlugin.updateStatus(toAppNode(Node.getNode()));
 	}
 
 	@Override
 	public void start() {
-		nodeRegistryPlugin.register(toAppNode(App.getApp()));
+		nodeRegistryPlugin.register(toAppNode(Node.getNode()));
 	}
 
 	@Override
 	public void stop() {
-		nodeRegistryPlugin.unregister(toAppNode(App.getApp()));
+		nodeRegistryPlugin.unregister(toAppNode(Node.getNode()));
 
 	}
 
 	@Override
-	public Optional<Node> find(final String nodeId) {
+	public Optional<AppNode> find(final String nodeId) {
 		return nodeRegistryPlugin.find(nodeId);
 	}
 
 	@Override
-	public List<Node> locateSkills(final String... skills) {
+	public List<AppNode> locateSkills(final String... skills) {
 		return getTopology()
 				.stream()
 				.filter(node -> node.getSkills().containsAll(Arrays.asList(skills)))
@@ -99,19 +99,19 @@ public final class AppManagerImpl implements AppManager, Activeable {
 	}
 
 	@Override
-	public List<Node> getTopology() {
+	public List<AppNode> getTopology() {
 		return nodeRegistryPlugin.getTopology();
 	}
 
 	@Override
-	public Node getCurrentNode() {
-		final String currentNodeId = App.getApp().getNodeConfig().getNodeId();
+	public AppNode getCurrentNode() {
+		final String currentNodeId = Node.getNode().getNodeConfig().getNodeId();
 		return find(currentNodeId)
 				.orElseThrow(() -> new VSystemException("Current node with '{0}' cannot be found in the registry", currentNodeId));
 	}
 
 	@Override
-	public List<Node> getDeadNodes() {
+	public List<AppNode> getDeadNodes() {
 		return getTopology()
 				.stream()
 				// we wait two heartbeat to decide that a node is dead
@@ -121,48 +121,48 @@ public final class AppManagerImpl implements AppManager, Activeable {
 
 	@Override
 	public Map<String, List<HealthCheck>> getStatus() {
-		return aggregateResults(app -> getInfosPlugin(app).getStatus(app));
+		return aggregateResults(node -> getInfosPlugin(node).getStatus(node));
 	}
 
 	@Override
 	public Map<String, Object> getStats() {
-		return aggregateResults(app -> getInfosPlugin(app).getStats(app));
+		return aggregateResults(node -> getInfosPlugin(node).getStats(node));
 	}
 
 	@Override
 	public Map<String, String> getConfig() {
-		return aggregateResults(app -> getInfosPlugin(app).getConfig(app));
+		return aggregateResults(node -> getInfosPlugin(node).getConfig(node));
 	}
 
-	private <R> Map<String, R> aggregateResults(final Function<Node, R> functionToApply) {
+	private <R> Map<String, R> aggregateResults(final Function<AppNode, R> functionToApply) {
 		return nodeRegistryPlugin
 				.getTopology()
 				.stream()
 				.collect(Collectors.toMap(
-						Node::getId,
-						app -> functionToApply.apply(app)));
+						AppNode::getId,
+						node -> functionToApply.apply(node)));
 
 	}
 
-	private AppNodeInfosPlugin getInfosPlugin(final Node app) {
-		Assertion.check().isTrue(nodeInfosPluginMap.containsKey(app.getProtocol()), "No status plugin found for the protocol {0} when reach attempt on {1} ", app.getProtocol(), app.getEndPoint());
+	private AppNodeInfosPlugin getInfosPlugin(final AppNode node) {
+		Assertion.check().isTrue(nodeInfosPluginMap.containsKey(node.getProtocol()), "No status plugin found for the protocol {0} when reach attempt on {1} ", node.getProtocol(), node.getEndPoint());
 		//---
-		return nodeInfosPluginMap.get(app.getProtocol());
+		return nodeInfosPluginMap.get(node.getProtocol());
 	}
 
-	private static Node toAppNode(final App app) {
-		return new Node(
-				app.getNodeConfig().getNodeId(),
-				app.getNodeConfig().getAppName(),
+	private static AppNode toAppNode(final Node node) {
+		return new AppNode(
+				node.getNodeConfig().getNodeId(),
+				node.getNodeConfig().getAppName(),
 				NodeStatus.UP.name(),
 				Instant.now(),
-				app.getStart(),
-				app.getNodeConfig().getEndPoint(),
-				getSkills(app));
+				node.getStart(),
+				node.getNodeConfig().getEndPoint(),
+				getSkills(node));
 	}
 
-	private static List<String> getSkills(final App app) {
-		return app.getNodeConfig().getModuleConfigs().stream()
+	private static List<String> getSkills(final Node node) {
+		return node.getNodeConfig().getModuleConfigs().stream()
 				.map(ModuleConfig::getName)
 				.collect(Collectors.toList());
 	}

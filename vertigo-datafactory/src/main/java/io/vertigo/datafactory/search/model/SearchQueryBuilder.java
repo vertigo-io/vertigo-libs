@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
 import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
@@ -54,7 +54,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * @param listFilter ListFilter
 	 */
 	SearchQueryBuilder(final String facetedQueryDefinitionName) {
-		facetedQueryDefinition = App.getApp().getDefinitionSpace().resolve(facetedQueryDefinitionName, FacetedQueryDefinition.class);
+		facetedQueryDefinition = Node.getNode().getDefinitionSpace().resolve(facetedQueryDefinitionName, FacetedQueryDefinition.class);
 		listFilterBuilderQuery = facetedQueryDefinition.getListFilterBuilderQuery();
 		listFilterBuilderClass = facetedQueryDefinition.getListFilterBuilderClass();
 		myGeoSearchQuery = facetedQueryDefinition.getGeoSearchQuery();
@@ -154,7 +154,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	public SearchQueryBuilder withFacetClustering(final String clusteringFacetName) {
 		Assertion.check().isNotBlank(clusteringFacetName);
 		//-----
-		final FacetDefinition clusteringFacetDefinition = App.getApp().getDefinitionSpace().resolve(clusteringFacetName, FacetDefinition.class);
+		final FacetDefinition clusteringFacetDefinition = Node.getNode().getDefinitionSpace().resolve(clusteringFacetName, FacetDefinition.class);
 		withFacetClustering(clusteringFacetDefinition);
 		return this;
 	}

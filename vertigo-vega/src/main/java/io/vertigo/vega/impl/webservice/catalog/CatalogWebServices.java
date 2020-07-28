@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
@@ -44,7 +44,7 @@ public final class CatalogWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/catalog")
 	public List<String> publishCatalog() {
-		final List<WebServiceDefinition> webServiceDefinitions = new ArrayList<>(App.getApp().getDefinitionSpace().getAll(WebServiceDefinition.class));
+		final List<WebServiceDefinition> webServiceDefinitions = new ArrayList<>(Node.getNode().getDefinitionSpace().getAll(WebServiceDefinition.class));
 		Collections.sort(webServiceDefinitions, Comparator.comparing(WebServiceDefinition::getSortPath));
 		return publishCatalog(webServiceDefinitions);
 	}

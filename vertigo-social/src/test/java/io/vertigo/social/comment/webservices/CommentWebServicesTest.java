@@ -37,7 +37,7 @@ import io.restassured.response.Response;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.connectors.redis.RedisConnector;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.core.util.MapBuilder;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
@@ -54,7 +54,7 @@ import redis.clients.jedis.Jedis;
 public final class CommentWebServicesTest {
 	private static final int WS_PORT = 8088;
 	private final SessionFilter sessionFilter = new SessionFilter();
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	private static String CONCEPT_KEY_NAME;
 	private static UID<Account> account1Uri;
@@ -74,7 +74,7 @@ public final class CommentWebServicesTest {
 		RestAssured.baseURI = "http://localhost";
 		RestAssured.port = WS_PORT;
 		//---
-		app = new AutoCloseableApp(MyNodeConfig.vegaConfig());
+		node = new AutoCloseableNode(MyNodeConfig.vegaConfig());
 		InjectorUtil.injectMembers(this);
 		//---
 		try (final Jedis jedis = redisConnector.getClient()) {
@@ -94,8 +94,8 @@ public final class CommentWebServicesTest {
 
 	@AfterEach
 	public void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 

@@ -39,7 +39,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
-import io.vertigo.commons.app.Node;
+import io.vertigo.commons.app.AppNode;
 import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.JsonExclude;
@@ -91,35 +91,35 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 	}
 
 	@Override
-	public void register(final Node node) {
-		Assertion.check().isNotNull(node);
+	public void register(final AppNode appNode) {
+		Assertion.check().isNotNull(appNode);
 		//---
 		final String request = "insert into V_NODE(NODE_ID,JSON) values (?,?)";
-		executeCallableSql(request, node.getId(), gson.toJson(node));
+		executeCallableSql(request, appNode.getId(), gson.toJson(appNode));
 
 	}
 
 	@Override
-	public void unregister(final Node node) {
-		Assertion.check().isNotNull(node);
+	public void unregister(final AppNode appNode) {
+		Assertion.check().isNotNull(appNode);
 		// ---
 		final String request = "delete from V_NODE where NODE_ID = ?";
-		executeCallableSql(request, node.getId());
+		executeCallableSql(request, appNode.getId());
 	}
 
 	@Override
-	public List<Node> getTopology() {
+	public List<AppNode> getTopology() {
 		final String request = "select NODE_ID, JSON from V_NODE";
 		return retrieveNodes(request);
 
 	}
 
 	@Override
-	public Optional<Node> find(final String nodeId) {
+	public Optional<AppNode> find(final String nodeId) {
 		Assertion.check().isNotBlank(nodeId);
 		// ---
 		final String request = "select NODE_ID, JSON from V_NODE where NODE_ID = ?";
-		final List<Node> result = retrieveNodes(request, nodeId);
+		final List<AppNode> result = retrieveNodes(request, nodeId);
 		Assertion.check().isTrue(result.size() <= 1, "Loaded two many rows when retrieving node with id : '{0}'", nodeId);
 
 		if (result.size() == 1) {
@@ -131,11 +131,11 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 	}
 
 	@Override
-	public void updateStatus(final Node node) {
-		Assertion.check().isNotNull(node);
+	public void updateStatus(final AppNode appNode) {
+		Assertion.check().isNotNull(appNode);
 		// ---
 		final String request = "update V_NODE set JSON = ? where NODE_ID = ?";
-		executeCallableSql(request, gson.toJson(node), node.getId());
+		executeCallableSql(request, gson.toJson(appNode), appNode.getId());
 	}
 
 	private void executeCallableSql(final String sql, final String... params) {
@@ -152,19 +152,19 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 		}
 	}
 
-	private List<Node> retrieveNodes(final String sql, final String... params) {
+	private List<AppNode> retrieveNodes(final String sql, final String... params) {
 		try (final Connection connection = obtainConnection()) {
 			try (final PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 				for (int i = 0; i < params.length; i++) {
 					preparedStatement.setObject(i + 1, params[i]);
 				}
 				try (final ResultSet result = preparedStatement.executeQuery()) {
-					final List<Node> nodes = new ArrayList<>();
+					final List<AppNode> appNodes = new ArrayList<>();
 					while (result.next()) {
 						final String json = result.getString(2);
-						nodes.add(gson.fromJson(json, Node.class));
+						appNodes.add(gson.fromJson(json, AppNode.class));
 					}
-					return nodes;
+					return appNodes;
 				}
 			}
 		} catch (final SQLException e) {

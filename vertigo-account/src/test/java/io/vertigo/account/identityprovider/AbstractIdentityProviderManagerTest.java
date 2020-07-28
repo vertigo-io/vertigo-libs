@@ -35,7 +35,7 @@ import io.vertigo.account.data.model.DtDefinitions;
 import io.vertigo.account.identityprovider.model.User;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
@@ -59,21 +59,21 @@ abstract class AbstractIdentityProviderManagerTest {
 	@Inject
 	private IdentityProviderManager identityProviderManager;
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	@BeforeEach
 	public final void setUp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		securityManager.startCurrentUserSession(securityManager.createUserSession());
 	}
 
 	@AfterEach
 	public final void tearDown() {
-		if (app != null) {
+		if (node != null) {
 			try {
-				app.close();
+				node.close();
 			} finally {
 				securityManager.stopCurrentUserSession();
 			}

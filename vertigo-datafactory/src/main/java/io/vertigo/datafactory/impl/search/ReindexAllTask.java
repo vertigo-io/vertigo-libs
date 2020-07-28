@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.search.SearchManager;
@@ -81,7 +81,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 			final long startTime = System.currentTimeMillis();
 			try {
 				final Class<S> keyConceptClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getKeyConceptDtDefinition().getClassCanonicalName(), KeyConcept.class);
-				final SearchLoader<S, DtObject> searchLoader = App.getApp().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
+				final SearchLoader<S, DtObject> searchLoader = Node.getNode().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 				Serializable lastUID = null;
 				LOGGER.info("Reindexation of {} started", searchIndexDefinition.getName());
 

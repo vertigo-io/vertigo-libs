@@ -27,7 +27,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
 import io.vertigo.datafactory.collections.model.FacetValue;
@@ -43,7 +43,7 @@ public final class SelectedFacetValuesDeserializer implements JsonDeserializer<S
 
 		final JsonObject jsonObject = json.getAsJsonObject();
 		for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-			final FacetDefinition facetDefinition = App.getApp().getDefinitionSpace().resolve(entry.getKey(), FacetDefinition.class);
+			final FacetDefinition facetDefinition = Node.getNode().getDefinitionSpace().resolve(entry.getKey(), FacetDefinition.class);
 			if (facetDefinition.isRangeFacet()) {
 				appendRangeFacetValues(entry.getValue(), facetDefinition, selectedFacetValuesBuilder);
 			} else {

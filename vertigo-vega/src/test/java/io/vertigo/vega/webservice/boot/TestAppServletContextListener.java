@@ -32,7 +32,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.param.Param;
 import io.vertigo.vega.impl.webservice.filter.JettyMultipartCleaner;
 import io.vertigo.vega.impl.webservice.filter.JettyMultipartConfig;
@@ -50,7 +50,7 @@ public final class TestAppServletContextListener implements ServletContextListen
 
 	/** clés dans le fichier Web.xml */
 
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
 	/**
 	 * Initialize and start Vertigo Home.
@@ -68,7 +68,7 @@ public final class TestAppServletContextListener implements ServletContextListen
 			WebAppContextParamPlugin.setParams(webAppConf);
 
 			// Initialisation de l'état de l'application
-			app = new AutoCloseableApp(MyNodeConfig.config(false));
+			node = new AutoCloseableNode(MyNodeConfig.config(false));
 
 			final String tempDir = System.getProperty("java.io.tmpdir");
 			Spark.before(new JettyMultipartConfig(tempDir));
@@ -111,8 +111,8 @@ public final class TestAppServletContextListener implements ServletContextListen
 	 */
 	@Override
 	public void contextDestroyed(final ServletContextEvent sce) {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 			clearSparkServletFlag();
 		} else {
 			LOG.warn("Context destroyed : App wasn't started");

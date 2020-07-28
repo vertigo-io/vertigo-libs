@@ -20,9 +20,9 @@ package io.vertigo.dashboard.ui;
 
 import java.util.Map;
 
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 
 public interface DashboardModuleControler {
 
-	Map<String, Object> buildModel(final App app, final String moduleName);
+	Map<String, Object> buildModel(final Node node, final String moduleName);
 }

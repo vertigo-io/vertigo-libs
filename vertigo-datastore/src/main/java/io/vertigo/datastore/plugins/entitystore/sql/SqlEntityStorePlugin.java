@@ -30,7 +30,7 @@ import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VSystemException;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.database.sql.SqlDataBaseManager;
@@ -193,7 +193,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInAttribute(idFieldName, idField.getSmartTypeDefinition(), Cardinality.ONE)
-				.withOutAttribute("dto", App.getApp().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + uri.getDefinition().getName(), SmartTypeDefinition.class), Cardinality.OPTIONAL_OR_NULLABLE)
+				.withOutAttribute("dto", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + uri.getDefinition().getName(), SmartTypeDefinition.class), Cardinality.OPTIONAL_OR_NULLABLE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
@@ -243,7 +243,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInAttribute(fkFieldName, fkField.getSmartTypeDefinition(), Cardinality.ONE)
-				.withOutAttribute("dtc", App.getApp().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
+				.withOutAttribute("dtc", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
 				.build();
 
 		final UID uid = dtcUri.getSource();
@@ -297,7 +297,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder
-				.withOutAttribute("dtc", App.getApp().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
+				.withOutAttribute("dtc", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
 				.build();
 
 		final TaskBuilder taskBuilder = Task.builder(taskDefinition);
@@ -394,7 +394,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 				.withEngine(getTaskEngineClass(insert))
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute("dto", App.getApp().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.ONE)
+				.addInAttribute("dto", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.ONE)
 				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerSmartType, Cardinality.ONE)
 				.build();
 
@@ -513,7 +513,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInAttribute(idFieldName, idField.getSmartTypeDefinition(), Cardinality.ONE)
-				.withOutAttribute("dto", App.getApp().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + uri.getDefinition().getName(), SmartTypeDefinition.class), Cardinality.OPTIONAL_OR_NULLABLE)
+				.withOutAttribute("dto", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + uri.getDefinition().getName(), SmartTypeDefinition.class), Cardinality.OPTIONAL_OR_NULLABLE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)

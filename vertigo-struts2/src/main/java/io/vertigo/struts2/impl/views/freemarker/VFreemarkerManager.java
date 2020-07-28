@@ -37,12 +37,12 @@ import freemarker.cache.WebappTemplateLoader;
 /**
  *
  * Vertigo FreemarkerManager to override ftl loading order.
- * 1/ look into webapp directory
+ * 1/ look into webnode directory
  *     You can also override this behaviour with a context parameter in web.xml :
  *     The parameter's name is : TemplatePath
  *     The parameter is multivalued : Separator is ";"
  *     Possible prefixes :
- *     		webapp://<prefixdir> : Add a TemplateLoader using the webapp loader specifying the prefix : empty means "/"
+ *     		webapp://<prefixdir> : Add a TemplateLoader using the webnode loader specifying the prefix : empty means "/"
  *     		class://<prefixdir> : Add a TemplateLoader using the classpath specifying the prefix : empty means "/"
  *     		file://<absolutePath> : Add a loader using URL
  *     		struts2:// : The default struts2 templateLoader
@@ -57,7 +57,7 @@ import freemarker.cache.WebappTemplateLoader;
  */
 public final class VFreemarkerManager extends FreemarkerManager {
 	private static final String SEP = ";";
-	private static final String DEFAUT_TEMPLATES_PATH = "webapp://"; //presume that most apps will require the webapp and class template loader
+	private static final String DEFAUT_TEMPLATES_PATH = "webapp://"; //presume that most apps will require the webnode and class template loader
 	private static final String IMPLICIT_TEMPLATES_PATH = "class://io/vertigo/struts2/ftl;struts2://"; //struts2:// => default to struts2
 
 	/** {@inheritDoc} */

@@ -29,7 +29,7 @@ import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.metric.MetricBuilder;
 import io.vertigo.core.analytics.metric.Metrics;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
@@ -67,7 +67,7 @@ public final class DomainMetricsProvider implements Component {
 
 	@Metrics
 	public List<Metric> getFieldMetrics() {
-		return App.getApp().getDefinitionSpace().getAll(DtDefinition.class)
+		return Node.getNode().getDefinitionSpace().getAll(DtDefinition.class)
 				.stream()
 				.map(dtDefinition -> {
 					return Metric.builder()
@@ -83,7 +83,7 @@ public final class DomainMetricsProvider implements Component {
 
 	@Metrics
 	public List<Metric> getDependencyMetrics() {
-		return App.getApp().getDefinitionSpace().getAll(DtDefinition.class)
+		return Node.getNode().getDefinitionSpace().getAll(DtDefinition.class)
 				.stream()
 				.map(dtDefinition -> Metric.builder()
 						.withSuccess()
@@ -97,7 +97,7 @@ public final class DomainMetricsProvider implements Component {
 
 	@Metrics
 	public List<Metric> getSmartTypeUsageTasksMetrics() {
-		return App.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
+		return Node.getNode().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
 				.map(smartType -> Metric.builder()
 						.withSuccess()
@@ -111,7 +111,7 @@ public final class DomainMetricsProvider implements Component {
 
 	@Metrics
 	public List<Metric> getSmartTypeUsageDtDefinitionMetrics() {
-		return App.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
+		return Node.getNode().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
 				.map(smartType -> Metric.builder()
 						.withSuccess()
@@ -127,7 +127,7 @@ public final class DomainMetricsProvider implements Component {
 		Assertion.check().isNotNull(smartTypeDefinition);
 		//---
 		int count = 0;
-		for (final TaskDefinition taskDefinition : App.getApp().getDefinitionSpace().getAll(TaskDefinition.class)) {
+		for (final TaskDefinition taskDefinition : Node.getNode().getDefinitionSpace().getAll(TaskDefinition.class)) {
 			for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
 				if (smartTypeDefinition.equals(taskAttribute.getSmartTypeDefinition())) {
 					count++;
@@ -145,7 +145,7 @@ public final class DomainMetricsProvider implements Component {
 	private static double countDtDefinitionDependencies(final SmartTypeDefinition smartTypeDefinition) {
 		Assertion.check().isNotNull(smartTypeDefinition);
 		//---
-		return App.getApp().getDefinitionSpace().getAll(DtDefinition.class)
+		return Node.getNode().getDefinitionSpace().getAll(DtDefinition.class)
 				.stream()
 				.flatMap(dtDefinition -> dtDefinition.getFields().stream())
 				.filter(field -> smartTypeDefinition.equals(field.getSmartTypeDefinition()))
@@ -154,7 +154,7 @@ public final class DomainMetricsProvider implements Component {
 
 	private static double countTaskDependencies(final DtDefinition dtDefinition) {
 		int count = 0;
-		for (final TaskDefinition taskDefinition : App.getApp().getDefinitionSpace().getAll(TaskDefinition.class)) {
+		for (final TaskDefinition taskDefinition : Node.getNode().getDefinitionSpace().getAll(TaskDefinition.class)) {
 			for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
 				count += count(dtDefinition, taskAttribute);
 			}
@@ -178,7 +178,7 @@ public final class DomainMetricsProvider implements Component {
 	@Metrics
 	public List<Metric> getEntityCountMetrics() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			return App.getApp().getDefinitionSpace().getAll(DtDefinition.class)
+			return Node.getNode().getDefinitionSpace().getAll(DtDefinition.class)
 					.stream()
 					.filter(DtDefinition::isPersistent)
 					.map(dtDefinition -> doExecute(dtDefinition, transaction))

@@ -30,7 +30,7 @@ import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.analytics.health.HealthMeasureBuilder;
 import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.dashboard.services.data.DataProvider;
 import io.vertigo.database.timeseries.ClusteredMeasure;
@@ -53,7 +53,7 @@ public final class DataProviderImpl implements DataProvider {
 				.isNotNull(appNameOpt)
 				.isNotNull(timeSeriesDataBaseManager);
 		//---
-		appName = appNameOpt.orElseGet(() -> App.getApp().getNodeConfig().getAppName());
+		appName = appNameOpt.orElseGet(() -> Node.getNode().getNodeConfig().getAppName());
 		this.timeSeriesDataBaseManager = timeSeriesDataBaseManager;
 	}
 

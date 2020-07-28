@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.datastore.kvstore.KVStoreManager;
 
 /**
@@ -62,11 +62,11 @@ public final class ProtectedValueUtil {
 	}
 
 	private static VTransactionManager getTransactionManager() {
-		return App.getApp().getComponentSpace().resolve(VTransactionManager.class);
+		return Node.getNode().getComponentSpace().resolve(VTransactionManager.class);
 	}
 
 	private static KVStoreManager getKVStoreManager() {
-		return App.getApp().getComponentSpace().resolve(KVStoreManager.class);
+		return Node.getNode().getComponentSpace().resolve(KVStoreManager.class);
 	}
 
 }

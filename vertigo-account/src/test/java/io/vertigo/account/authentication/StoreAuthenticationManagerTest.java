@@ -24,7 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import io.vertigo.account.authentication.MyNodeConfig.AuthentPlugin;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.config.NodeConfig;
 
 /**
@@ -58,7 +58,7 @@ public final class StoreAuthenticationManagerTest extends AbstractAuthentication
 	}
 
 	protected VTransactionWritable obtainTx() {
-		return App.getApp().getComponentSpace().resolve(VTransactionManager.class).createCurrentTransaction();
+		return Node.getNode().getComponentSpace().resolve(VTransactionManager.class).createCurrentTransaction();
 	}
 
 }

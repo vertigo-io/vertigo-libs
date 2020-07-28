@@ -39,7 +39,7 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.account.AccountManager;
 import io.vertigo.connectors.redis.RedisConnector;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.MyNodeConfig;
@@ -51,7 +51,7 @@ import redis.clients.jedis.Jedis;
 public final class NotificationWebServicesTest {
 	private static final int WS_PORT = 8088;
 	private final SessionFilter sessionFilter = new SessionFilter();
-	private static AutoCloseableApp app;
+	private static AutoCloseableNode node;
 
 	@Inject
 	private MockIdentities mockIdentities;
@@ -65,7 +65,7 @@ public final class NotificationWebServicesTest {
 	@BeforeAll
 	public static void setUp() {
 		beforeSetUp();
-		app = new AutoCloseableApp(MyNodeConfig.vegaConfig());
+		node = new AutoCloseableNode(MyNodeConfig.vegaConfig());
 	}
 
 	@BeforeEach
@@ -98,8 +98,8 @@ public final class NotificationWebServicesTest {
 
 	@AfterAll
 	public static void tearDown() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 
