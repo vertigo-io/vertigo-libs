@@ -27,7 +27,6 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.util.MapBuilder;
 import io.vertigo.orchestra.AbstractOrchestraTestCase;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
@@ -109,10 +108,9 @@ public class LocalExecutionTest extends AbstractOrchestraTestCase {
 
 		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition("ProTestUnsupervisedManual3");
 
-		final Map<String, String> planifParams = new MapBuilder<String, String>()
-				.put(TestJob3.PARAM_KEY_1, "overide")
-				.put(TestJob3.PARAM_KEY_2, "value2")
-				.build();
+		final Map<String, String> planifParams = Map.of(
+				TestJob3.PARAM_KEY_1, "overide",
+				TestJob3.PARAM_KEY_2, "value2");
 
 		// We plan right now
 		orchestraServices.getScheduler()

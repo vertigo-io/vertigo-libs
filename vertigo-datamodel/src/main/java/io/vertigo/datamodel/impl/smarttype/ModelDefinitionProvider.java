@@ -14,7 +14,6 @@ import io.vertigo.core.node.definition.DefinitionProvider;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.core.util.MapBuilder;
 import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinition;
 import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinitionSolver;
 import io.vertigo.datamodel.impl.smarttype.loaders.DtObjectsLoader;
@@ -32,11 +31,9 @@ public class ModelDefinitionProvider implements DefinitionProvider {
 	 */
 	@Inject
 	public ModelDefinitionProvider(final ResourceManager resourceManager) {
-		loadersByType = new MapBuilder<String, Loader>()
-				.put("smarttypes", new SmartTypesLoader())
-				.put("dtobjects", new DtObjectsLoader())
-				.unmodifiable()
-				.build();
+		loadersByType = Map.of(
+				"smarttypes", new SmartTypesLoader(),
+				"dtobjects", new DtObjectsLoader());
 	}
 
 	@Override

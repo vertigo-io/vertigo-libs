@@ -27,7 +27,6 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.util.MapBuilder;
 import io.vertigo.orchestra.AbstractOrchestraTestCase;
 
 /**
@@ -76,7 +75,7 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCase {
 		// no initialParams
 		Assertions.assertTrue(orchestraDefinitionManager.getProcessDefinition("TestBasic").getTriggeringStrategy().getInitialParams().isEmpty());
 
-		orchestraDefinitionManager.updateProcessDefinitionInitialParams("TestBasic", new MapBuilder<String, String>().put("filePath", "toto/titi").build());
+		orchestraDefinitionManager.updateProcessDefinitionInitialParams("TestBasic", Map.of("filePath", "toto/titi"));
 		// with initialParams
 		Assertions.assertTrue(!orchestraDefinitionManager.getProcessDefinition("TestBasic").getTriggeringStrategy().getInitialParams().isEmpty());
 	}
