@@ -304,6 +304,57 @@ var VUi = {
 					}
 					return params;
 					
+				},
+				isDate: function (v) {
+					return Object.prototype.toString.call(v) === '[object Date]';
+				},
+				isNumber: function (v) {
+					return typeof v === 'number' && isFinite(v);
+				},
+				sortDate: function (a, b) {
+					return (new Date(a)) - (new Date(b));
+				},
+				sortCiAi: function (data, sortBy, descending) {
+					const col = this.columns.find(def => def.name === sortBy);
+					if (col === null || col.field === void 0) {
+						return data;
+					}
+					
+					const
+					  dir = descending === true ? -1 : 1,
+					  val = typeof col.field === 'function'
+					    ? v => col.field(v)
+					    : v => v[col.field]
+					
+					const collator = new Intl.Collator();
+					
+					return data.sort((a, b) => {
+						let	A = val(a),
+							B = val(b)
+							
+						if (A === null || A === void 0) {
+							return -1 * dir;
+						}
+						if (B === null || B === void 0) {
+							return 1 * dir;
+						}
+						if (col.sort !== void 0) {
+							return col.sort(A, B, a, b) * dir;
+						}
+						if (VUi.methods.isNumber(A) === true && VUi.methods.isNumber(B) === true) {
+							return (A - B) * dir;
+						}
+						if (VUi.methods.isDate(A) === true && VUi.methods.isDate(B) === true) {
+							return VUi.methods.sortDate(A, B) * dir;
+						}
+						if (typeof A === 'boolean' && typeof B === 'boolean') {
+							return (A - B) * dir;
+						}
+						
+						[A, B] = [A, B].map(s => (s + '').toLocaleString());
+						
+						return collator.compare(A, B) * dir;
+					})
 				}
 		}
 	}
