@@ -260,8 +260,8 @@ final class RamLuceneIndex<D extends DtObject> {
 				.isTrue(dtListState.getMaxRows().isPresent(), "MaxRows is mandatory, can't get all data :(");
 		//-----
 		final Query filterQuery = luceneQueryFactory.createFilterQuery(keywords, searchedFields, listFilters, boostedField);
-		final Optional<Sort> optSort = createSort(dtListState);
-		return executeQuery(filterQuery, dtListState.getSkipRows(), dtListState.getMaxRows().get(), optSort);
+		final Optional<Sort> sortOpt = createSort(dtListState);
+		return executeQuery(filterQuery, dtListState.getSkipRows(), dtListState.getMaxRows().get(), sortOpt);
 	}
 
 	private static void addKeyword(
@@ -287,14 +287,13 @@ final class RamLuceneIndex<D extends DtObject> {
 	}
 
 	private static Optional<Sort> createSort(final DtListState dtListState) {
-		if (dtListState.getSortFieldName().isPresent()) {
-			final String sortFieldName = dtListState.getSortFieldName().get();
-			final boolean sortDesc = dtListState.isSortDesc().get();
-			final SortField.Type luceneType = SortField.Type.STRING; //TODO : check if other type are necessary
-			final SortField sortField = new SortField(sortFieldName, luceneType, sortDesc);
-			sortField.setMissingValue(SortField.STRING_LAST);
-			return Optional.of(new Sort(sortField));
-		}
-		return Optional.empty();
+		return dtListState.getSortFieldName().map(
+				sortFieldName -> {
+					final boolean sortDesc = dtListState.isSortDesc().get();
+					final SortField.Type luceneType = SortField.Type.STRING; //TODO : check if other type are necessary
+					final SortField sortField = new SortField(sortFieldName, luceneType, sortDesc);
+					sortField.setMissingValue(SortField.STRING_LAST);
+					return new Sort(sortField);
+				});
 	}
 }

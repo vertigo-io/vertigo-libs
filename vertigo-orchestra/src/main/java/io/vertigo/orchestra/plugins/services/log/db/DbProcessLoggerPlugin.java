@@ -62,8 +62,8 @@ public class DbProcessLoggerPlugin implements ProcessLoggerPlugin {
 	public Optional<VFile> getLogFileForProcess(final Long processExecutionId) {
 		Assertion.check().isNotNull(processExecutionId);
 		// ---
-		final Optional<OActivityLog> activityLog = activityLogDAO.getLogByPreId(processExecutionId);
-		return getLogFileFromActivityLog(activityLog);
+		final Optional<OActivityLog> activityLogOpt = activityLogDAO.getLogByPreId(processExecutionId);
+		return getLogFileFromActivityLog(activityLogOpt);
 	}
 
 	/** {@inheritDoc} */
@@ -71,8 +71,8 @@ public class DbProcessLoggerPlugin implements ProcessLoggerPlugin {
 	public Optional<VFile> getActivityAttachment(final Long actityExecutionId) {
 		Assertion.check().isNotNull(actityExecutionId);
 		// ---
-		final Optional<OActivityLog> activityLog = activityLogDAO.getActivityLogByAceId(actityExecutionId);
-		return getLogFileFromActivityLog(activityLog);
+		final Optional<OActivityLog> activityLogOpt = activityLogDAO.getActivityLogByAceId(actityExecutionId);
+		return getLogFileFromActivityLog(activityLogOpt);
 	}
 
 	/** {@inheritDoc} */
@@ -80,31 +80,25 @@ public class DbProcessLoggerPlugin implements ProcessLoggerPlugin {
 	public Optional<VFile> getActivityLogFile(final Long actityExecutionId) {
 		Assertion.check().isNotNull(actityExecutionId);
 		// ---
-
-		final Optional<OActivityLog> activityLog = activityLogDAO.getActivityLogByAceId(actityExecutionId);
-		if (activityLog.isPresent()) {
-			final byte[] stringByteArray = activityLog.get().getLog().getBytes(StandardCharsets.UTF_8);
-
-			final InputStreamBuilder inputStreamBuilder = () -> new ByteArrayInputStream(stringByteArray);
-
-			final String fileName = TECHNICAL_LOG_PREFIX + actityExecutionId + TECHNICAL_LOG_EXTENSION;
-			final VFile file = fileManager.createFile(fileName, MimeTypes.getDefaultMimeByExtension(fileName), Instant.now(), stringByteArray.length, inputStreamBuilder);
-
-			return Optional.<VFile> of(file);
-		}
-		return Optional.<VFile> empty();
+		return activityLogDAO.getActivityLogByAceId(actityExecutionId)
+				.map(activityLog -> {
+					final byte[] stringByteArray = activityLog.getLog().getBytes(StandardCharsets.UTF_8);
+					final InputStreamBuilder inputStreamBuilder = () -> new ByteArrayInputStream(stringByteArray);
+					final String fileName = TECHNICAL_LOG_PREFIX + actityExecutionId + TECHNICAL_LOG_EXTENSION;
+					return fileManager.createFile(fileName, MimeTypes.getDefaultMimeByExtension(fileName), Instant.now(), stringByteArray.length, inputStreamBuilder);
+				});
 	}
 
-	private Optional<VFile> getLogFileFromActivityLog(final Optional<OActivityLog> activityLog) {
-		Assertion.check().isNotNull(activityLog);
+	private Optional<VFile> getLogFileFromActivityLog(final Optional<OActivityLog> activityLogOpt) {
+		Assertion.check().isNotNull(activityLogOpt);
 		// ---
-		if (activityLog.isPresent()) {
-			final File file = new File(paramManager.getParam(ROOT_DIRECTORY).getValueAsString() + activityLog.get().getAttachment());
-			if (file.exists()) {
-				return Optional.of(fileManager.createFile(file));
-			}
-			throw new IllegalArgumentException("Log File" + file.getAbsolutePath() + " not found");
-		}
-		return Optional.empty();
+		return activityLogOpt
+				.map(activityLog -> {
+					final File file = new File(paramManager.getParam(ROOT_DIRECTORY).getValueAsString() + activityLogOpt.get().getAttachment());
+					if (!file.exists()) {
+						throw new IllegalArgumentException("Log File" + file.getAbsolutePath() + " not found");
+					}
+					return fileManager.createFile(file);
+				});
 	}
 }
