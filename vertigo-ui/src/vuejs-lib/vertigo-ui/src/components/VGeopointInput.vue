@@ -17,6 +17,7 @@ export default {
     watch: { 
           value: function(newVal) {
               this.$data.inputObject = newVal ? newVal : {};
+              this.updateJson();
           }
     },
     beforeMount() {
@@ -25,10 +26,15 @@ export default {
     },
     methods: {
         updateJson() {
-          var newInputValue = JSON.stringify({  lon : this.$data.inputObject.lon, lat : this.$data.inputObject.lat});
+        var newInputValue;
+        if(this.$props.value) {
+          newInputValue = JSON.stringify({  lon : this.$data.inputObject.lon, lat : this.$data.inputObject.lat});
           this.$set(this.$props.value, '_v_inputValue', newInputValue );
-          this.$emit('input', this.$data.inputObject);
-        }
+        } else {
+          //this.$set(this.$props.value, null );
+        }        
+        this.$emit('input', this.$data.inputObject);        
       }
+    }
 }
 </script>
