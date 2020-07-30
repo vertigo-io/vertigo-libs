@@ -14,7 +14,7 @@
             <q-item v-for="comment in list" :key="comment.uuid" class="items-start" v-bind:class="{'cursor-pointer': comment.author==connectedAccount}">
                     <q-item-section avatar> <q-avatar><img :src="baseUrl+'/x/accounts/api/'+comment.author+'/photo'"></q-avatar></q-item-section>
                     <q-item-section>
-                        <q-item-label>{{comment.authorDisplayName}}<q-item-label>
+                        <q-item-label>{{comment.authorDisplayName}}</q-item-label>
                         <div>
                             {{comment.msg}}
                         </div>
