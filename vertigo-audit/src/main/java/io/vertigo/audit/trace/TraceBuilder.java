@@ -48,9 +48,9 @@ public final class TraceBuilder implements Builder<Trace> {
 	 */
 	public TraceBuilder(final String category, final String user, final Long item, final String message) {
 		Assertion.check()
-				.isNotNull(item)
 				.isNotBlank(category)
-				.isNotBlank(user);
+				.isNotBlank(user)
+				.isNotNull(item);
 		//---
 		myCategory = category;
 		myUser = user;
