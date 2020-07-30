@@ -17,6 +17,11 @@ module.exports = {
                 commonjs: 'ol',
                 commonjs2: 'ol',
                 root: 'ol'
+            },
+            vue: {
+                commonjs: 'vue',
+                commonjs2: 'vue',
+                root: 'Vue'
             }
         }
     }
