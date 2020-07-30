@@ -1,4 +1,4 @@
-Vue.component('v-map', {
+Vue.component('v-map2', {
 	template : '<div :id="id" >'
 +'					<div id="popup">'
 +'						<q-card  v-if="popupDisplayed" class="q-px-md">'
@@ -26,7 +26,7 @@ Vue.component('v-map', {
 		clusterCircleBorderColor: { type: String, 'default': "#000000" },
 		clusterTextColor: { type: String, 'default': "#000000" },
 		clusterTextSize: { type: Number, 'default': 12 },
-		clusterTextFont: { type: String, 'default' : 'sans-serif' }
+		clusterTextFont: { type: String, 'default' : 'sans-serif' },
 	},
 	data : function () {
 		return {
@@ -71,7 +71,7 @@ Vue.component('v-map', {
 		
 	},
 	mounted : function() {
-		this.$data.items = this.$props.list ? this.$props.list : [];		
+		this.$data.items = this.$props.list ? this.$props.list : [];
 		var view = new ol.View();
 
 		var vectorSource = new ol.source.Vector({
@@ -156,14 +156,26 @@ Vue.component('v-map', {
 		}
 		// handle refresh if an endPoint is specified
 		if (this.baseUrl) {
-			this.olMap.on('moveend', Quasar.utils.debounce(function(e) {
+			this.olMap.on('moveend', function(e) {
 				var mapExtent =  e.map.getView().calculateExtent();
 				var wgs84Extent = ol.proj.transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
 				var topLeft = ol.extent.getTopLeft(wgs84Extent);
 				var bottomRight = ol.extent.getBottomRight(wgs84Extent);
-				this.fetchList({lat:topLeft[0] , lon:topLeft[1]},{lat:bottomRight[0] , lon:bottomRight[1]});
+				Quasar.utils.debounce(this.fetchList({lat:topLeft[0] , lon:topLeft[1]},{lat:bottomRight[0] , lon:bottomRight[1]}),300);				
 			}
-			.bind(this), 300));
+			.bind(this));
+		} else {
+			this.olMap.on('moveend', function(e) {
+				var mapExtent =  e.map.getView().calculateExtent();
+				var wgs84Extent = ol.proj.transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
+				var topLeft = ol.extent.getTopLeft(wgs84Extent);
+				var bottomRight = ol.extent.getBottomRight(wgs84Extent);
+				Quasar.utils.debounce(this.$emit('moveend',topLeft, bottomRight) , 300);
+			}
+			.bind(this));
+			this.olMap.on('click', function(evt) {
+			    Quasar.utils.debounce(this.$emit('click',ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) , 300);
+			}.bind(this));
 		}
 		
 		if (this.$props.nameField) {
