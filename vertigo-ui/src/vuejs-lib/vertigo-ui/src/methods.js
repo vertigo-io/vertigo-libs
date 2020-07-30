@@ -212,11 +212,9 @@ export default {
         let componentStates = this.$data.componentStates;
         let vueData = this.$data.vueData;
         var selectedFacetsContextKey = contextKey +"_selectedFacets";
-        var params = {};
-        params['selectedFacets'] = JSON.stringify(vueData[selectedFacetsContextKey]);
         var criteriaContextKey = vueData[contextKey + '_criteriaContextKey'];
-        params['vContext['+criteriaContextKey+']'] = vueData[criteriaContextKey];
-        params['CTX'] = this.$data.vueData.CTX;
+        var params = this.vueDataParams([criteriaContextKey]);
+        params['selectedFacets'] = JSON.stringify(vueData[selectedFacetsContextKey]);
         
         var searchUrl = componentStates[contextKey+'Search'].searchUrl;
         var collectionComponentId = componentStates[contextKey+'Search'].collectionComponentId;
