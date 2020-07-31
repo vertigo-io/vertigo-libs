@@ -18,14 +18,21 @@
  */
 package io.vertigo.ui.core;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
@@ -52,6 +59,7 @@ final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
 				dtListURIForMasterData.getDtDefinition().getName());
 		// -------------------------------------------------------------------------
 		this.dtListURIForMasterData = dtListURIForMasterData;
+
 	}
 
 	// ==========================================================================
@@ -64,6 +72,10 @@ final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
 		if (lazyDtList == null) {
 			try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
 				lazyDtList = entityStoreManager.get().<E> findAll(dtListURIForMasterData);
+			}
+			if (lazyDtList.size() < 1000) {
+				//load UiObjects
+				initUiObjectByIdIndex();
 			}
 		}
 		return lazyDtList;
@@ -102,6 +114,23 @@ final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
 	@Override
 	public boolean checkFormat(final UiMessageStack uiMessageStack) {
 		return true;
+	}
+
+	/**
+	 * Return a Serializable List for client.
+	 * @param fieldsForClient List of fields
+	 * @param valueTransformers Map of transformers
+	 * @return ArrayList of HashMap (needed for Serializable)
+	 */
+	@Override
+	public ArrayList<HashMap<String, Serializable>> listForClient(final Set<String> fieldsForClient, final Map<String, Function<Serializable, String>> valueTransformers) {
+		obtainDtList(); // we need the list to be able to give it to the client
+
+		final ArrayList<HashMap<String, Serializable>> listForClient = new ArrayList<>();
+		for (final UiObject uiObject : getUiObjectBuffer()) {//if size if lower than 1000 we have prepared uiObjects
+			listForClient.add(((MapUiObject) uiObject).mapForClient(fieldsForClient, valueTransformers));
+		}
+		return listForClient;
 	}
 
 }

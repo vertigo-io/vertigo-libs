@@ -66,6 +66,12 @@
 			<version>8.2.0</version> <!-- 8.2.0 compatible with ElasticSearch 7.4.1 -->
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-queryparser</artifactId>
+			<version>8.2.0</version> <!-- 8.2.0 compatible with ElasticSearch 7.4.1 -->
+			<optional>true</optional>
+		</dependency>
 
 		<!-- Connections Pool -->
 		<dependency>
