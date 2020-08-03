@@ -17,8 +17,8 @@ create Task TkGetProcessByName {
         	from o_process pro   
         	where pro.NAME = #name# and pro.ACTIVE_VERSION is true  	
 			"
-	attribute name	 	{domain : DoOLibelle		cardinality: "1" 	inOut :"in"}
-	attribute dtOProcessUi	 	{domain : DoDtOProcessUi		cardinality: "1" 	inOut :"out"}
+    in name	 	{domain : DoOLibelle		cardinality: "1" }
+	out dtOProcessUi	 	{domain : DoDtOProcessUi		cardinality: "1" }
 }
 
 create Task TkSearchProcessByLabel {
@@ -37,7 +37,7 @@ create Task TkSearchProcessByLabel {
         	from o_process pro   
         	where lower(pro.LABEL) like lower(#search#)  and pro.ACTIVE_VERSION is true
 			"
-	attribute search	 	{domain : DoOLibelle		cardinality: "1" 	inOut :"in"}
-	attribute dtcOProcessUi	 	{domain : DoDtOProcessUi		cardinality: "*" 	inOut :"out"}
+	in search	 	{domain : DoOLibelle		cardinality: "1" }
+	out dtcOProcessUi	 	{domain : DoDtOProcessUi		cardinality: "*" }
 }
 

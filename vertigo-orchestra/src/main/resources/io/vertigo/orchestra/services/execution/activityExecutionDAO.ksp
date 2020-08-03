@@ -11,8 +11,8 @@ create Task TkGetActivitiesToLaunch {
         	and ace.NOD_ID = #nodId#
         	
 			"
-	attribute dtcActivityExecution	 	{domain : DoDtOActivityExecution 		cardinality: "*" 	inOut :"out"}
-	attribute nodId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
+	in nodId	 	{domain : DoOIdentifiant 		cardinality: "1" 	}
+	out dtcActivityExecution	 	{domain : DoDtOActivityExecution 		cardinality: "*" 	}
 }
 
 
@@ -25,11 +25,10 @@ create Task TkGetActivityExecutionByToken {
         	from o_activity_execution ace
         	where ace.ACE_ID = #aceId#
         	and ace.TOKEN = #token#
-        	
 			"
-	attribute dtActivityExecution	 	{domain : DoDtOActivityExecution 		cardinality: "1" 	inOut :"out"}
-	attribute aceId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
-	attribute token	 	{domain : DoOToken 		cardinality: "1" 	inOut :"in"}
+	in aceId	 	{domain : DoOIdentifiant 		cardinality: "1" 	}
+	in token	 	{domain : DoOToken 		cardinality: "1" 	}
+	out dtActivityExecution	 	{domain : DoDtOActivityExecution 		cardinality: "1" 	}
 }
 
 create Task TkReserveActivitiesToLaunch {
@@ -48,8 +47,8 @@ create Task TkReserveActivitiesToLaunch {
         			limit #maxNumber#
         	)
 			"
-		attribute nodId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
-		attribute maxNumber	 	{domain : DoONombre 		cardinality: "1" 	inOut :"in"}
+		in nodId	 	{domain : DoOIdentifiant 		cardinality: "1" 	}
+		in maxNumber	 	{domain : DoONombre 		cardinality: "1" 	}
 }
 
 
@@ -60,12 +59,11 @@ create Task TkGetActivityWorkspace {
         	select acw.*
         	 from o_activity_workspace acw
         	 where acw.ACE_ID = #aceId#
-        	 and   acw.IS_IN = #in#
-        	
+        	 and   acw.IS_IN = #workspaceIn#
 			"
 			
-		attribute aceId	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
-		attribute in	 	{domain : DoOBooleen 			cardinality: "1" 	inOut :"in"}
-		attribute dtOActivityWorkspace	 	{domain : DoDtOActivityWorkspace 		cardinality: "?" 	inOut :"out"}
+		in aceId			{domain : DoOIdentifiant 		cardinality: "1" 	}
+		in workspaceIn	 	{domain : DoOBooleen 			cardinality: "1" 	}
+		out dtOActivityWorkspace	 	{domain : DoDtOActivityWorkspace 		cardinality: "?" 	}
 }
 

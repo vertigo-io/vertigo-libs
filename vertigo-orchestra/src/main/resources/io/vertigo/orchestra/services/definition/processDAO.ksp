@@ -11,8 +11,8 @@ create Task TkGetActiveProcessByName {
 	        	and pro.ACTIVE_VERSION is true
         	
 			"
-	attribute name			 	{domain : DoOLibelle 				cardinality: "1"		inOut :"in"}
-	attribute dtProcess	 	{domain : DoDtOProcess 		cardinality: "?" 	inOut :"out"}
+	in name			 	{domain : DoOLibelle 				cardinality: "1"		}
+	out dtProcess	 	{domain : DoDtOProcess 		cardinality: "?" 	}
 }
 
 create Task TkGetProcessesByName {
@@ -25,8 +25,8 @@ create Task TkGetProcessesByName {
         	where pro.NAME = #name#
         	
 			"
-	attribute name			 	{domain : DoOLibelle 				cardinality: "1" 		inOut :"in"}
-	attribute nombre			 	{domain : DoONombre				cardinality: "1" 		inOut :"out"}
+	in name			 	{domain : DoOLibelle 				cardinality: "1" 		}
+	out nombre			 	{domain : DoONombre				cardinality: "1" 		}
 }
 
 
@@ -40,7 +40,7 @@ create Task TkGetAllActiveProcesses {
         	where pro.ACTIVE_VERSION is true
         	
 			"
-	attribute dtcProcesses	 	{domain : DoDtOProcess 		cardinality: "*" 	inOut :"out"}
+	out dtcProcesses	 	{domain : DoDtOProcess 		cardinality: "*" 	}
 }
 
 
@@ -54,5 +54,5 @@ create Task TkDisableOldProcessDefinitions {
         	where NAME = #name#
         	
 			"
-	attribute name			 	{domain : DoOLibelle 				cardinality: "1" 		inOut :"in"}
+	in name			 	{domain : DoOLibelle 				cardinality: "1" 		}
 }

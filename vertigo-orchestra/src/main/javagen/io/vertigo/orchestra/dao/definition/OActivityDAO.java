@@ -1,19 +1,18 @@
 package io.vertigo.orchestra.dao.definition;
 
-import java.util.Optional;
-
 import javax.inject.Inject;
 
+import java.util.Optional;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.core.node.Node;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.metamodel.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
 import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
+import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.orchestra.domain.definition.OActivity;
 
 /**
@@ -46,7 +45,7 @@ public final class OActivityDAO extends DAO<OActivity, java.lang.Long> implement
 	}
 
 	/**
-	 * Execute la tache StTkGetActivitiesByProId.
+	 * Execute la tache TkGetActivitiesByProId.
 	 * @param proId Long
 	 * @return DtList de OActivity dtOActivities
 	*/
@@ -68,7 +67,7 @@ public final class OActivityDAO extends DAO<OActivity, java.lang.Long> implement
 	}
 
 	/**
-	 * Execute la tache StTkGetAllActivitiesInActiveProcesses.
+	 * Execute la tache TkGetAllActivitiesInActiveProcesses.
 	 * @return DtList de OActivity dtOActivities
 	*/
 	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
@@ -89,7 +88,7 @@ public final class OActivityDAO extends DAO<OActivity, java.lang.Long> implement
 	}
 
 	/**
-	 * Execute la tache StTkGetFirstActivityByProcess.
+	 * Execute la tache TkGetFirstActivityByProcess.
 	 * @param proId Long
 	 * @return OActivity dtOActivity
 	*/
@@ -119,7 +118,7 @@ public final class OActivityDAO extends DAO<OActivity, java.lang.Long> implement
 	}
 
 	/**
-	 * Execute la tache StTkGetNextActivityByActId.
+	 * Execute la tache TkGetNextActivityByActId.
 	 * @param actId Long
 	 * @return Option de OActivity dtOActivity
 	*/

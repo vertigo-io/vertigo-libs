@@ -4,14 +4,14 @@ import javax.inject.Inject;
 
 import io.vertigo.core.lang.Generated;
 import io.vertigo.core.node.Node;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.metamodel.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
 import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
+import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.orchestra.domain.execution.OActivityExecution;
 
 /**
@@ -44,7 +44,7 @@ public final class OActivityExecutionDAO extends DAO<OActivityExecution, java.la
 	}
 
 	/**
-	 * Execute la tache StTkGetActivitiesToLaunch.
+	 * Execute la tache TkGetActivitiesToLaunch.
 	 * @param nodId Long
 	 * @return DtList de OActivityExecution dtcActivityExecution
 	*/
@@ -68,7 +68,7 @@ public final class OActivityExecutionDAO extends DAO<OActivityExecution, java.la
 	}
 
 	/**
-	 * Execute la tache StTkGetActivityExecutionByToken.
+	 * Execute la tache TkGetActivityExecutionByToken.
 	 * @param aceId Long
 	 * @param token String
 	 * @return OActivityExecution dtActivityExecution
@@ -94,7 +94,7 @@ public final class OActivityExecutionDAO extends DAO<OActivityExecution, java.la
 	}
 
 	/**
-	 * Execute la tache StTkGetActivityExecutionsByPreId.
+	 * Execute la tache TkGetActivityExecutionsByPreId.
 	 * @param preId Long
 	 * @return DtList de OActivityExecution dtcOActivityExecution
 	*/

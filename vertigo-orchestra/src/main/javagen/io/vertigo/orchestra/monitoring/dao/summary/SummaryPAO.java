@@ -2,9 +2,9 @@ package io.vertigo.orchestra.monitoring.dao.summary;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.node.Node;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Generated;
-import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.metamodel.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
@@ -41,7 +41,7 @@ public final class SummaryPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache StTkGetExecutionSummariesByDate.
+	 * Execute la tache TkGetExecutionSummariesByDate.
 	 * @param dateMin Instant
 	 * @param dateMax Instant
 	 * @param status String
@@ -136,7 +136,7 @@ public final class SummaryPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache StTkGetExecutionSummaryByDateAndName.
+	 * Execute la tache TkGetExecutionSummaryByDateAndName.
 	 * @param dateMin Instant
 	 * @param dateMax Instant
 	 * @param name String

@@ -4,14 +4,14 @@ import javax.inject.Inject;
 
 import io.vertigo.core.lang.Generated;
 import io.vertigo.core.node.Node;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.metamodel.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
 import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
+import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.orchestra.domain.execution.OProcessExecution;
 
 /**
@@ -44,7 +44,7 @@ public final class OProcessExecutionDAO extends DAO<OProcessExecution, java.lang
 	}
 
 	/**
-	 * Execute la tache StTkGetActiveProcessExecutionByProId.
+	 * Execute la tache TkGetActiveProcessExecutionByProId.
 	 * @param proId Long
 	 * @return DtList de OProcessExecution dtcProcessExecution
 	*/
@@ -68,7 +68,7 @@ public final class OProcessExecutionDAO extends DAO<OProcessExecution, java.lang
 	}
 
 	/**
-	 * Execute la tache StTkGetExecutionsByProId.
+	 * Execute la tache TkGetExecutionsByProId.
 	 * @param proId Long
 	 * @return DtList de OProcessExecution dtcOProcessExecution
 	*/

@@ -20,10 +20,10 @@ create Task TkGetExecutionByPreId {
 						where ace.PRE_ID = #preId#
 						order by ace.end_time desc limit 1) as HAS_ATTACHMENT
         	from o_process_execution pre   
-        	where pre.PRE_ID = #preId#     	
+        	where pre.PRE_ID = #preId#
 			"
-	attribute preId	 	{domain : DoOIdentifiant		cardinality: "1" 	inOut :"in"}
-	attribute dtOProcessExecutionUi	 	{domain : DoDtOProcessExecutionUi		cardinality: "1" 	inOut :"out"}
+	in preId	 	{domain : DoOIdentifiant		cardinality: "1" 	}
+	out dtOProcessExecutionUi	 	{domain : DoDtOProcessExecutionUi		cardinality: "1" 	}
 }
 
 
@@ -47,11 +47,11 @@ create Task TkGetExecutionsByProcessName {
         	offset #offset#
         	
 			"
-	attribute name	 	{domain : DoOLibelle		cardinality: "1" 	inOut :"in"}
-	attribute status	{domain : DoOCodeIdentifiant		cardinality: "1" 	inOut :"in"}
-	attribute limit	 	{domain : DoONombre		cardinality: "1" 	inOut :"in"}
-	attribute offset	 	{domain : DoONombre		cardinality: "1" 	inOut :"in"}
-	attribute dtcOProcessExecutionUi	 	{domain : DoDtOProcessExecutionUi		cardinality: "*" 	inOut :"out"}
+	in name	 	{domain : DoOLibelle		cardinality: "1" 	}
+	in status	{domain : DoOCodeIdentifiant		cardinality: "1" 	}
+	in limit	 	{domain : DoONombre		cardinality: "1" 	}
+	in offset	 	{domain : DoONombre		cardinality: "1" 	}
+	out dtcOProcessExecutionUi	 	{domain : DoDtOProcessExecutionUi		cardinality: "*" 	}
 }
 
 
@@ -77,8 +77,8 @@ create Task TkGetActivitiyByAceId {
         	group by ace.ACE_ID, act.LABEL, ace.BEGIN_TIME, ace.END_TIME, acl.ATTACHMENT, acl.LOG, ace.EST_CD
         	
 			"
-	attribute aceId	 	{domain : DoOIdentifiant		cardinality: "1" 	inOut :"in"}
-	attribute dtOActivityExecutionUi	 	{domain : DoDtOActivityExecutionUi		cardinality: "1" 	inOut :"out"}
+	in aceId	 	{domain : DoOIdentifiant		cardinality: "1" 	}
+	out dtOActivityExecutionUi	 	{domain : DoDtOActivityExecutionUi		cardinality: "1" 	}
 }
 
 create Task TkGetActivitiesByPreId {
@@ -103,6 +103,6 @@ create Task TkGetActivitiesByPreId {
         	group by ace.ACE_ID, act.LABEL, ace.BEGIN_TIME, ace.END_TIME, acl.ATTACHMENT, acl.LOG, ace.EST_CD
         	
 			"
-	attribute preId	 	{domain : DoOIdentifiant		cardinality: "1" 	inOut :"in"}
-	attribute dtcOActivityExecutionUi	 	{domain : DoDtOActivityExecutionUi		cardinality: "*" 	inOut :"out"}
+	in preId	 	{domain : DoOIdentifiant		cardinality: "1" 	}
+	out dtcOActivityExecutionUi	 	{domain : DoDtOActivityExecutionUi		cardinality: "*" 	}
 }

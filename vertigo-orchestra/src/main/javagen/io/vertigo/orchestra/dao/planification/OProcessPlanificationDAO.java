@@ -1,19 +1,18 @@
 package io.vertigo.orchestra.dao.planification;
 
-import java.util.Optional;
-
 import javax.inject.Inject;
 
+import java.util.Optional;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.core.node.Node;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.metamodel.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
 import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
+import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.orchestra.domain.planification.OProcessPlanification;
 
 /**
@@ -46,7 +45,7 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	}
 
 	/**
-	 * Execute la tache StTkGetAllLastPastPlanifications.
+	 * Execute la tache TkGetAllLastPastPlanifications.
 	 * @param currentDate Instant
 	 * @return DtList de OProcessPlanification processPlanifications
 	*/
@@ -68,7 +67,7 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	}
 
 	/**
-	 * Execute la tache StTkGetLastPlanificationByProId.
+	 * Execute la tache TkGetLastPlanificationByProId.
 	 * @param proId Long
 	 * @return Option de OProcessPlanification dtOProcessPlanification
 	*/
@@ -91,7 +90,7 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	}
 
 	/**
-	 * Execute la tache StTkGetPlanificationsByProId.
+	 * Execute la tache TkGetPlanificationsByProId.
 	 * @param proId Long
 	 * @return DtList de OProcessPlanification dtcOProcessPlanification
 	*/
@@ -113,7 +112,7 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	}
 
 	/**
-	 * Execute la tache StTkGetProcessToExecute.
+	 * Execute la tache TkGetProcessToExecute.
 	 * @param nodId Long
 	 * @return DtList de OProcessPlanification dtcOProcessPlanification
 	*/

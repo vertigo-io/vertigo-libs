@@ -21,8 +21,8 @@ create Task TkGetFirstActivityByProcess {
                  where 1=1
         	
 			"
-	attribute proId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
-	attribute dtOActivity	 	{domain : DoDtOActivity 		cardinality: "1" 	inOut :"out"}
+	in proId	 	{domain : DoOIdentifiant 		cardinality: "1" 	}
+	out dtOActivity	 	{domain : DoDtOActivity 		cardinality: "1" 	}
 }
 
 
@@ -46,8 +46,8 @@ create Task TkGetNextActivityByActId {
         	
         	
 			"
-		attribute actId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
-		attribute dtOActivity	 	{domain : DoDtOActivity		cardinality: "?" 	inOut :"out"}
+		in actId	 	{domain : DoOIdentifiant 		cardinality: "1" 	}
+		out dtOActivity	 	{domain : DoDtOActivity		cardinality: "?" 	}
 }
 
 
@@ -61,8 +61,8 @@ create Task TkGetActivitiesByProId {
                 where act.PRO_ID = #proId#
         	
 			"
-	attribute proId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
-	attribute dtOActivities	 	{domain : DoDtOActivity 		cardinality: "*" 	inOut :"out"}
+	in proId	 	{domain : DoOIdentifiant 		cardinality: "1" 	}
+	out dtOActivities	 	{domain : DoDtOActivity 		cardinality: "*" 	}
 }
 
 
@@ -77,5 +77,5 @@ create Task TkGetAllActivitiesInActiveProcesses {
                 where pro.ACTIVE_VERSION is true
         	
 			"
-	attribute dtOActivities	 	{domain : DoDtOActivity 		cardinality: "*" 	inOut :"out"}
+	out dtOActivities	 	{domain : DoDtOActivity 		cardinality: "*" 	}
 }

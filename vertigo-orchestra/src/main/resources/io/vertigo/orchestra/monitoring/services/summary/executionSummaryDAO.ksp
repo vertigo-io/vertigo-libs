@@ -78,10 +78,10 @@ create Task TkGetExecutionSummariesByDate {
 			;
         	
 			"
-	attribute dtcExecutionSummary	 	{domain : DoDtOExecutionSummary 		cardinality: "*" 	inOut :"out"}
-	attribute dateMin	 	{domain : DoOTimestamp 		cardinality: "1" 	inOut :"in"}
-	attribute dateMax	 	{domain : DoOTimestamp 		cardinality: "1" 	inOut :"in"}
-	attribute status	 	{domain : DoOCodeIdentifiant		cardinality: "1" 	inOut :"in"}
+	in dateMin	 	{domain : DoOTimestamp 		cardinality: "1" 	}
+	in dateMax	 	{domain : DoOTimestamp 		cardinality: "1" 	}
+	in status	 	{domain : DoOCodeIdentifiant		cardinality: "1" 	}
+	out dtcExecutionSummary	 	{domain : DoDtOExecutionSummary 		cardinality: "*" }
 }
 
 create Task TkGetExecutionSummaryByDateAndName {
@@ -156,8 +156,8 @@ create Task TkGetExecutionSummaryByDateAndName {
 					) lat_planif on true;
         	
 			"
-	attribute dtExecutionSummary	 	{domain : DoDtOExecutionSummary 		cardinality: "1" 	inOut :"out"}
-	attribute dateMin	 	{domain : DoOTimestamp 		cardinality: "1" 	inOut :"in"}
-	attribute dateMax	 	{domain : DoOTimestamp 		cardinality: "1" 	inOut :"in"}
-	attribute name	 		{domain : DoOLibelle 		cardinality: "1" 	inOut :"in"}
+	out dtExecutionSummary	 	{domain : DoDtOExecutionSummary 		cardinality: "1" 	}
+	in dateMin	 	{domain : DoOTimestamp 		cardinality: "1" 	}
+	in dateMax	 	{domain : DoOTimestamp 		cardinality: "1" 	}
+	in name	 		{domain : DoOLibelle 		cardinality: "1" 	}
 }
