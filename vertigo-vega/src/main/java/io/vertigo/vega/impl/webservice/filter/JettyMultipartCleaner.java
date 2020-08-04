@@ -33,7 +33,7 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class JettyMultipartCleaner implements Filter {
-	private static final String JETTY_MULTIPARTS = org.eclipse.jetty.server.Request.__MULTIPARTS;//"org.eclipse.multipartConfig";
+	private static final String JETTY_MULTIPARTS = org.eclipse.jetty.server.Request.MULTIPARTS;//"org.eclipse.multipartConfig";
 	private static final Logger LOG = LogManager.getLogger(JettyMultipartCleaner.class);
 
 	/** {@inheritDoc} */

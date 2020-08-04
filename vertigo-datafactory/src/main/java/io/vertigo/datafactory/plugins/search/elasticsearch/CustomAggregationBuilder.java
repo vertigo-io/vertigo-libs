@@ -9,11 +9,11 @@ import java.util.Objects;
 import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.QueryShardContext;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregatorFactories;
 import org.elasticsearch.search.aggregations.AggregatorFactory;
 import org.elasticsearch.search.aggregations.PipelineAggregationBuilder;
-import org.elasticsearch.search.internal.SearchContext;
 
 public final class CustomAggregationBuilder extends AggregationBuilder {
 
@@ -119,7 +119,7 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public CustomAggregationBuilder setMetaData(final Map<String, Object> metaData) {
+	public CustomAggregationBuilder setMetadata(final Map<String, Object> metaData) {
 		if (metaData == null) {
 			throw new IllegalArgumentException("[metaData] must not be null: [" + name + "]");
 		}
@@ -128,7 +128,7 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 	}
 
 	@Override
-	public Map<String, Object> getMetaData() {
+	public Map<String, Object> getMetadata() {
 		return metaData == null ? Collections.emptyMap() : Collections.unmodifiableMap(metaData);
 	}
 
@@ -139,7 +139,7 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 	}
 
 	@Override
-	public AggregatorFactory build(final SearchContext context, final AggregatorFactory parent) throws IOException {
+	public AggregatorFactory build(final QueryShardContext context, final AggregatorFactory parent) throws IOException {
 		throw new UnsupportedOperationException("not yet");
 	}
 
@@ -187,5 +187,10 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 		return Objects.equals(name, other.name)
 				&& Objects.equals(metaData, other.metaData)
 				&& Objects.equals(factoriesBuilder, other.factoriesBuilder);
+	}
+
+	@Override
+	public BucketCardinality bucketCardinality() {
+		return BucketCardinality.MANY;
 	}
 }

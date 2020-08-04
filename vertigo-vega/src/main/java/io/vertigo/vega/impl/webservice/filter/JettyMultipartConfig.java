@@ -32,7 +32,7 @@ public final class JettyMultipartConfig implements Filter {
 	private static final long MAX_PARTS_SIZE = 30 * 1024 * 1024L;
 	private static final int MAX_NB_PARTS = 5;
 	private static final int MAX_PART_SIZE_IN_MEMORY = 50 * 1024;
-	private static final String JETTY_CONFIG_ATTRIBUTE = org.eclipse.jetty.server.Request.__MULTIPART_CONFIG_ELEMENT;//"org.eclipse.multipartConfig";
+	private static final String JETTY_CONFIG_ATTRIBUTE = org.eclipse.jetty.server.Request.MULTIPART_CONFIG_ELEMENT;//"org.eclipse.multipartConfig";
 	private final MultipartConfigElement multipartConfigElement;
 
 	/**

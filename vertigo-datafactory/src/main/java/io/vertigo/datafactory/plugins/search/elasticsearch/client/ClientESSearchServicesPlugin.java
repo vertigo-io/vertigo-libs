@@ -40,7 +40,7 @@ import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
-import org.elasticsearch.cluster.metadata.MappingMetaData;
+import org.elasticsearch.cluster.metadata.MappingMetadata;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
@@ -244,10 +244,10 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 
 	private void logMappings(final String myIndexName) {
 		final IndicesAdminClient indicesAdmin = esClient.admin().indices();
-		final ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexMappings = indicesAdmin.prepareGetMappings(myIndexName).get().getMappings();
-		for (final ObjectObjectCursor<String, ImmutableOpenMap<String, MappingMetaData>> indexMapping : indexMappings) {
+		final ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetadata>> indexMappings = indicesAdmin.prepareGetMappings(myIndexName).get().getMappings();
+		for (final ObjectObjectCursor<String, ImmutableOpenMap<String, MappingMetadata>> indexMapping : indexMappings) {
 			LOGGER.info("Index {} CurrentMapping:", indexMapping.key);
-			for (final ObjectObjectCursor<String, MappingMetaData> dtoMapping : indexMapping.value) {
+			for (final ObjectObjectCursor<String, MappingMetadata> dtoMapping : indexMapping.value) {
 				LOGGER.info(" {} -> {}", dtoMapping.key, dtoMapping.value.source());
 			}
 		}

@@ -46,7 +46,7 @@ import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.client.indices.GetMappingsRequest;
 import org.elasticsearch.client.indices.GetMappingsResponse;
 import org.elasticsearch.client.indices.PutMappingRequest;
-import org.elasticsearch.cluster.metadata.MappingMetaData;
+import org.elasticsearch.cluster.metadata.MappingMetadata;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -242,9 +242,9 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		final GetMappingsRequest request = new GetMappingsRequest().indices(myIndexName);
 		final GetMappingsResponse getMappingsResponse = esClient.indices().getMapping(request, RequestOptions.DEFAULT);
 
-		final Map<String, MappingMetaData> indexMappings = getMappingsResponse.mappings();
+		final Map<String, MappingMetadata> indexMappings = getMappingsResponse.mappings();
 		LOGGER.info("Index {} CurrentMapping:", myIndexName);
-		for (final Entry<String, MappingMetaData> dtoMapping : indexMappings.entrySet()) {
+		for (final Entry<String, MappingMetadata> dtoMapping : indexMappings.entrySet()) {
 			LOGGER.info(" {} -> {}", dtoMapping.getKey(), dtoMapping.getValue().source());
 		}
 	}

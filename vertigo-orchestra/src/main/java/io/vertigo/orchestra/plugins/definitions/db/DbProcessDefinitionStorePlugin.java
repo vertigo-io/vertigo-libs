@@ -27,8 +27,8 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import com.google.common.reflect.TypeToken;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.core.lang.Assertion;
@@ -164,7 +164,7 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 			// voir si on fait mieux
 			processDefinitionBuilder.withMetadatas(new GsonBuilder().create().fromJson(process.getMetadatas(),
 					new TypeToken<Map<String, String>>() {
-						private static final long serialVersionUID = 1L;/*rien*/
+						/*rien*/
 					}.getType()));
 		}
 		if (process.getMultiexecution()) {
