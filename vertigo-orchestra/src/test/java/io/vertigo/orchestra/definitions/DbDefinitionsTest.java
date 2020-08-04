@@ -48,7 +48,7 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCase {
 		final Map<String, String> metadatas = new HashMap<>();
 		metadatas.put("test", "toto");
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestBasic", "TestBasic")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestBasic", "TestBasic")
 				.withMetadatas(metadatas)
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
@@ -57,7 +57,7 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCase {
 		//After :1
 		Assertions.assertEquals(1, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.SUPERVISED).size());
 
-		final ProcessDefinition processDefinition2 = orchestraDefinitionManager.getProcessDefinition("TestBasic");
+		final ProcessDefinition processDefinition2 = orchestraDefinitionManager.getProcessDefinition("ProTestBasic");
 		Assertions.assertEquals(processDefinition.getName(), processDefinition2.getName());
 		Assertions.assertTrue(processDefinition2.getMetadatas().containsKey("test"));
 	}
@@ -67,34 +67,34 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCase {
 	public void testUpateInitialParams() {
 		//Before : 0
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestBasic", "TestBasic")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestBasic", "TestBasic")
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
 		// no initialParams
-		Assertions.assertTrue(orchestraDefinitionManager.getProcessDefinition("TestBasic").getTriggeringStrategy().getInitialParams().isEmpty());
+		Assertions.assertTrue(orchestraDefinitionManager.getProcessDefinition("ProTestBasic").getTriggeringStrategy().getInitialParams().isEmpty());
 
-		orchestraDefinitionManager.updateProcessDefinitionInitialParams("TestBasic", Map.of("filePath", "toto/titi"));
+		orchestraDefinitionManager.updateProcessDefinitionInitialParams("ProTestBasic", Map.of("filePath", "toto/titi"));
 		// with initialParams
-		Assertions.assertTrue(!orchestraDefinitionManager.getProcessDefinition("TestBasic").getTriggeringStrategy().getInitialParams().isEmpty());
+		Assertions.assertTrue(!orchestraDefinitionManager.getProcessDefinition("ProTestBasic").getTriggeringStrategy().getInitialParams().isEmpty());
 	}
 
 	@Test
 	public void testUpateProperties() {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestUpdateCron", "TestUpdateCron")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestUpdateCron", "TestUpdateCron")
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
 		// no initialParams
-		Assertions.assertTrue(orchestraDefinitionManager.getProcessDefinition("TestUpdateCron").getTriggeringStrategy().getCronExpression().isEmpty());
+		Assertions.assertTrue(orchestraDefinitionManager.getProcessDefinition("ProTestUpdateCron").getTriggeringStrategy().getCronExpression().isEmpty());
 
-		orchestraDefinitionManager.updateProcessDefinitionProperties("TestUpdateCron", Optional.of("*/15 * * * * ?"), processDefinition.getTriggeringStrategy().isMultiExecution(),
+		orchestraDefinitionManager.updateProcessDefinitionProperties("ProTestUpdateCron", Optional.of("*/15 * * * * ?"), processDefinition.getTriggeringStrategy().isMultiExecution(),
 				processDefinition.getTriggeringStrategy().getRescuePeriod(),
 				processDefinition.isActive());
 		// with initialParams
-		Assertions.assertTrue(orchestraDefinitionManager.getProcessDefinition("TestUpdateCron").getTriggeringStrategy().getCronExpression().isPresent());
+		Assertions.assertTrue(orchestraDefinitionManager.getProcessDefinition("ProTestUpdateCron").getTriggeringStrategy().getCronExpression().isPresent());
 	}
 }

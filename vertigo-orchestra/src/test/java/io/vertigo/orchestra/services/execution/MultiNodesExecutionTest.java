@@ -75,7 +75,7 @@ public class MultiNodesExecutionTest extends ExecutionTest {
 	@Test
 	public void massExecution() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("Test3Activities", "Test3Activities")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTest3Activities", "Test3Activities")
 				.addActivity("100msActivity", "100MS ACTIVITY", io.vertigo.orchestra.services.execution.engine.TestJob2.class)
 				.addActivity("100msActivity", "100MS ACTIVITY", io.vertigo.orchestra.services.execution.engine.TestJob2.class)
 				.addActivity("100msActivity", "100MS ACTIVITY", io.vertigo.orchestra.services.execution.engine.TestJob2.class)

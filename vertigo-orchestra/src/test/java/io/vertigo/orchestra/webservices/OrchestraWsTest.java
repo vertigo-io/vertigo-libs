@@ -63,11 +63,11 @@ public class OrchestraWsTest {
 		final OrchestraDefinitionManager orchestraDefinitionManager = Node.getNode().getComponentSpace().resolve(OrchestraDefinitionManager.class);
 		final OrchestraServices orchestraServices = Node.getNode().getComponentSpace().resolve(OrchestraServices.class);
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestBasic", "TestBasic")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestBasic", "TestBasic")
 				.addActivity("dumb activity", "dumb activity", EmptyActivityEngine.class)
 				.build();
 
-		final ProcessDefinition processDefinition2 = ProcessDefinition.builder("TestBasic2", "TestBasic2")
+		final ProcessDefinition processDefinition2 = ProcessDefinition.builder("ProTestBasic2", "TestBasic2")
 				.addActivity("dumb activity 2", "dumb activity", io.vertigo.orchestra.services.execution.engine.EmptyActivityEngine.class)
 				.addActivity("dumb activity 3", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
@@ -98,11 +98,11 @@ public class OrchestraWsTest {
 				.expect()
 				.log()
 				.all()
-				.body("name", Matchers.equalTo("TestBasic"))
+				.body("name", Matchers.equalTo("ProTestBasic"))
 				.body("activities", Matchers.hasSize(1))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
-				.get("/orchestra/definitions/TestBasic");
+				.get("/orchestra/definitions/ProTestBasic");
 	}
 
 	@Test

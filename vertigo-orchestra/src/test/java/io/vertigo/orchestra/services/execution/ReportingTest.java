@@ -49,7 +49,7 @@ public class ReportingTest extends AbstractOrchestraTestCase {
 	private OrchestraServices processExecutionManager;
 
 	private ProcessDefinition executeProcess() throws InterruptedException {
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST_SINGLE", "TEST_SINGLE")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestSingle", "TEST_SINGLE")
 				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
 

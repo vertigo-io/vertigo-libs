@@ -70,7 +70,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 	@Test
 	public void singleExecution() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestManuel", "TestManuel")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestManuel", "TestManuel")
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
 
@@ -112,7 +112,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 	@Test
 	public void recurrentExecution() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestScheduled", "TestScheduled")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestScheduled", "TestScheduled")
 				.withCronExpression("*/15 * * * * ?")
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
@@ -154,7 +154,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 	@Test
 	public void executionError() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestError", "TestError")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestError", "TestError")
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
 
@@ -178,7 +178,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 	@Test
 	public void twoActivities() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("Test2Activities", "Test2Activities")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTest2Activities", "Test2Activities")
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
@@ -202,7 +202,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 	@Test
 	public void twoActivitiesWithError() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("Test2ActivitiesError", "Test2ActivitiesError")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTest2ActivitiesError", "Test2ActivitiesError")
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
@@ -225,7 +225,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 	 */
 	@Test
 	public void testWithInitialParams() throws InterruptedException {
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestInitialParams", "TestInitialParams")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestInitialParams", "TestInitialParams")
 				.addInitialParam("filePath", "toto/titi")
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
@@ -251,7 +251,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 	 */
 	@Test
 	public void testWithInitialParamsInPlanification() throws InterruptedException {
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestInitialParamsPlanif", "TestInitialParamsPlanif")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestInitialParamsPlanif", "TestInitialParamsPlanif")
 				.addInitialParam("filePath", "toto/titi")
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
@@ -281,7 +281,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 	@Test
 	public void testException() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestException", "TestException")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestException", "TestException")
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbExceptionActivityEngine.class)
 				.build();
 
@@ -305,7 +305,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 	@Test
 	public void testMonoExecutionMisfire() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestMultiMisfire", "TestMultiMisfire")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestMultiMisfire", "TestMultiMisfire")
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
 
@@ -330,7 +330,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 	@Test
 	public void testLog() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestLog", "TestLog")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestLog", "TestLog")
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbLoggedActivityEngine.class)
 				.build();
 
@@ -357,7 +357,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 	@Test
 	public void testMultiExecution() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST MULTI", "TEST MULTI")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestMulti", "TEST MULTI")
 				.withMultiExecution()
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
@@ -383,7 +383,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 	@Test
 	public void testFinishedExecution() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestMulti", "TestMulti")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestMulti", "TestMulti")
 				.withMultiExecution()
 				.addActivity("dumb activity finished", "dumb activity finished", io.vertigo.orchestra.services.execution.engine.DumbFinishedActivityEngine.class)
 				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
