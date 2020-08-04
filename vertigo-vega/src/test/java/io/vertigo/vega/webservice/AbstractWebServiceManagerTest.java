@@ -31,6 +31,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
@@ -1519,13 +1521,14 @@ abstract class AbstractWebServiceManagerTest {
 		final Map<String, Object> newContact = createDefaultContact(123L);
 		newContact.remove("name");
 
-		final List<Map<String, Object>> dtList = List.of(
+		final List<Map<String, Object>> dtList = Stream.of(
 				createDefaultContact(120L),
 				createDefaultContact(121L),
 				newContact,
 				createDefaultContact(124L),
 				createDefaultContact(125L),
-				createDefaultContact(126L));
+				createDefaultContact(126L))
+				.collect(Collectors.toList());
 
 		loggedAndExpect(given().body(dtList))
 				.body("globalErrors", Matchers.contains("Name is mandatory"))
@@ -1564,13 +1567,14 @@ abstract class AbstractWebServiceManagerTest {
 		final Map<String, Object> newContact = createDefaultContact(123L);
 		newContact.remove("name");
 
-		final List<Map<String, Object>> dtList = List.of(
+		final List<Map<String, Object>> dtList = Stream.of(
 				createDefaultContact(120L),
 				createDefaultContact(121L),
 				newContact,
 				createDefaultContact(124L),
 				createDefaultContact(125L),
-				createDefaultContact(126L));
+				createDefaultContact(126L))
+				.collect(Collectors.toList());
 
 		loggedAndExpect(given().body(dtList))
 				.body("globalErrors", Matchers.contains("Name is mandatory"))
