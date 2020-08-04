@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -31,7 +32,8 @@ import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.impl.account.AccountMapperHelper;
 import io.vertigo.account.impl.account.AccountStorePlugin;
 import io.vertigo.account.plugins.account.store.AbstractAccountStorePlugin;
-import io.vertigo.commons.transaction.Transactional;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
@@ -62,9 +64,10 @@ import io.vertigo.datastore.filestore.model.VFile;
  * Source of identity.
  * @author npiedeloup
  */
-@Transactional
 public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin implements AccountStorePlugin {
+
 	private final SmartTypeManager smartTypeManager;
+	private final VTransactionManager transactionManager;
 	private final EntityStoreManager entityStoreManager;
 	private final FileStoreManager fileStoreManager;
 
@@ -106,7 +109,8 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 			@ParamValue("groupToGroupAccountMapping") final String groupToGroupAccountMappingStr,
 			final SmartTypeManager smartTypeManager,
 			final EntityStoreManager entityStoreManager,
-			final FileStoreManager fileStoreManager) {
+			final FileStoreManager fileStoreManager,
+			final VTransactionManager transactionManager) {
 		super(userIdentityEntity, userToAccountMappingStr);
 		Assertion.check().isNotBlank(userIdentityEntity)
 				.isNotBlank(userAuthField)
@@ -121,6 +125,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		this.smartTypeManager = smartTypeManager;
 		this.entityStoreManager = entityStoreManager;
 		this.fileStoreManager = fileStoreManager;
+		this.transactionManager = transactionManager;
 		this.groupToGroupAccountMappingStr = groupToGroupAccountMappingStr;
 	}
 
@@ -224,8 +229,10 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		final Account account = getAccount(accountURI);
 		final String photoId = account.getPhoto();
 		if (photoId != null && photoFileInfoDefinition.isPresent()) {
-			final FileInfoURI photoUri = new FileInfoURI(photoFileInfoDefinition.get(), photoId);
-			return Optional.of(fileStoreManager.read(photoUri).getVFile());
+			return executeInTransaction(() -> {
+				final FileInfoURI photoUri = new FileInfoURI(photoFileInfoDefinition.get(), photoId);
+				return Optional.of(fileStoreManager.read(photoUri).getVFile());
+			});
 		}
 		return Optional.empty();
 	}
@@ -241,13 +248,14 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 			throw WrappedException.wrap(e);
 		}
 		final Criteria<Entity> criteriaByAuthToken = Criterions.isEqualTo(() -> userAuthField, userAuthTokenValue);
-
-		final DtList<Entity> results = entityStoreManager.find(getUserDtDefinition(), criteriaByAuthToken, DtListState.of(2));
-		Assertion.check().isTrue(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken);
-		if (!results.isEmpty()) {
-			return Optional.of(userToAccount(results.get(0)));
-		}
-		return Optional.empty();
+		return executeInTransaction(() -> {
+			final DtList<Entity> results = entityStoreManager.find(getUserDtDefinition(), criteriaByAuthToken, DtListState.of(2));
+			Assertion.check().isTrue(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken);
+			if (!results.isEmpty()) {
+				return Optional.of(userToAccount(results.get(0)));
+			}
+			return Optional.empty();
+		});
 	}
 
 	private AccountGroup groupToAccount(final Entity groupEntity) {
@@ -262,23 +270,36 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	}
 
 	private Entity readUserEntity(final UID<Account> accountURI) {
-		try {
-			final Serializable typedId = (Serializable) smartTypeManager.stringToValue(userIdField.getSmartTypeDefinition(), (String) accountURI.getId()); //account id IS always a String
-			final UID<Entity> userURI = UID.of(getUserDtDefinition(), typedId);
-			return entityStoreManager.readOne(userURI);
-		} catch (final FormatterException e) {
-			throw WrappedException.wrap(e, "Can't get UserEntity from Store");
-		}
+		return executeInTransaction(() -> {
+			try {
+				final Serializable typedId = (Serializable) smartTypeManager.stringToValue(userIdField.getSmartTypeDefinition(), (String) accountURI.getId()); //account id IS always a String
+				final UID<Entity> userURI = UID.of(getUserDtDefinition(), typedId);
+				return entityStoreManager.readOne(userURI);
+			} catch (final FormatterException e) {
+				throw WrappedException.wrap(e, "Can't get UserEntity from Store");
+			}
+		});
 	}
 
 	private Entity readGroupEntity(final UID<AccountGroup> accountGroupURI) {
-		try {
-			final Serializable typedId = (Serializable) smartTypeManager.stringToValue(groupIdField.getSmartTypeDefinition(), (String) accountGroupURI.getId()); //accountGroup id IS always a String
-			final UID<Entity> groupURI = UID.of(userGroupDtDefinition, typedId);
-			return entityStoreManager.readOne(groupURI);
-		} catch (final FormatterException e) {
-			throw WrappedException.wrap(e, "Can't get UserGroupEntity from Store");
-		}
+		return executeInTransaction(() -> {
+			try {
+				final Serializable typedId = (Serializable) smartTypeManager.stringToValue(groupIdField.getSmartTypeDefinition(), (String) accountGroupURI.getId()); //accountGroup id IS always a String
+				final UID<Entity> groupURI = UID.of(userGroupDtDefinition, typedId);
+				return entityStoreManager.readOne(groupURI);
+			} catch (final FormatterException e) {
+				throw WrappedException.wrap(e, "Can't get UserGroupEntity from Store");
+			}
+		});
 	}
 
+	private <O extends Object> O executeInTransaction(final Supplier<O> supplier) {
+		if (transactionManager.hasCurrentTransaction()) {
+			return supplier.get();
+		}
+		//Dans le cas ou il n'existe pas de transaction on en crée une.
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			return supplier.get();
+		}
+	}
 }
