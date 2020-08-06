@@ -46,11 +46,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.ui.Select;
 
-import com.machinepublishers.jbrowserdriver.JBrowserDriver;
-import com.machinepublishers.jbrowserdriver.Settings;
-import com.machinepublishers.jbrowserdriver.Timezone;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 public class TestUi {
 
@@ -89,10 +88,11 @@ public class TestUi {
 	@BeforeAll
 	public static void setUp() throws Exception {
 		startServer();
-		driver = new JBrowserDriver(Settings.builder()
+		driver = new HtmlUnitDriver(BrowserVersion.FIREFOX, true);
+		/*driver = new JBrowserDriver(Settings.builder()
 				.timezone(Timezone.EUROPE_PARIS)
 				.headless(true) //use false for debug purpose
-				.build());
+				.build());*/
 	}
 
 	private static void startServer() throws IOException, Exception {
@@ -314,7 +314,7 @@ public class TestUi {
 
 		findElement(By.xpath("//form[@id='autocompleteContextMdl']/table/tbody/tr/td/input[2]")).clear();
 		findElement(By.xpath("//form[@id='autocompleteContextMdl']/table/tbody/tr/td/input[2]")).sendKeys("blai");
-
+		Thread.sleep(5000);
 		assertEquals("BLAISE", waitElement(By.cssSelector("ul.ui-autocomplete span.col"), 10000).getText());
 
 		findElement(By.cssSelector("ul.ui-autocomplete span.col")).click();

@@ -18,6 +18,8 @@
 		<Root level="info">
 			<AppenderRef ref="Console" />
 		</Root>
+		<Logger name="com.opensymphony.xwork2.ognl.OgnlValueStack" level="error">
+		</Logger>
 	</Loggers>
 
 </Configuration>

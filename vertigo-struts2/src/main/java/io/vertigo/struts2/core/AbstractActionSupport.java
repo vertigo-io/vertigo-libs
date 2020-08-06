@@ -49,6 +49,7 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.datastore.kvstore.KVStoreManager;
@@ -197,7 +198,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	 * Si surcharger doit rappeler le super.preInitContext();
 	 */
 	protected void preInitContext() {
-		context.put("appVersion", paramManager.getParam("node.version").getValueAsString());
+		context.put("appVersion", paramManager.getOptionalParam("app.version").map(Param::getValueAsString).orElse(""));
 		context.put(UTIL_CONTEXT_KEY, new UiUtil());
 		toModeReadOnly();
 	}
