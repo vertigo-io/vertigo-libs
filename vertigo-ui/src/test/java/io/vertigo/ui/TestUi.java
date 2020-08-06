@@ -37,14 +37,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.web.SpringServletContainerInitializer;
 
-import com.machinepublishers.jbrowserdriver.JBrowserDriver;
-import com.machinepublishers.jbrowserdriver.Settings;
-import com.machinepublishers.jbrowserdriver.Timezone;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 public class TestUi {
 
@@ -69,10 +69,11 @@ public class TestUi {
 	@BeforeAll
 	public static void setUp() throws Exception {
 		startServer();
-		driver = new JBrowserDriver(Settings.builder()
+		/*driver = new JBrowserDriver(Settings.builder()
 				.timezone(Timezone.EUROPE_PARIS)
 				.headless(true) //use false for debug purpose
-				.build());
+				.build());*/
+		driver = new HtmlUnitDriver(BrowserVersion.FIREFOX, true);
 	}
 
 	private static void startServer() throws IOException, Exception {
@@ -146,21 +147,23 @@ public class TestUi {
 		assertEquals("Movie Information", waitElement(By.className("text-h6")).getText());
 		findElement(By.name("vContext[movie][title]")).clear();
 		findElement(By.name("vContext[movie][title]")).sendKeys("Test 1");
+		assertEquals("Test 1", findElement(By.name("vContext[movie][title]")).getAttribute("value"));
+		sendKeysJs(By.name("vContext[movie][title]"), "Test 1");
+
 		findElement(By.name("vContext[movie][year]")).clear();
-		findElement(By.name("vContext[movie][year]")).sendKeys("2020");
+		sendKeysJs(By.name("vContext[movie][year]"), "2020");
 		findElement(By.id("saveAction")).click();
 
 		assertEquals("Test 1", findElement(By.name("vContext[movie][title]")).getAttribute("value"));
 		assertEquals("2020", findElement(By.name("vContext[movie][year]")).getAttribute("value"));
 	}
 
-	/* May be use in nexts tests
-	private String getWebElementsAsString(final List<WebElement> webElements) {
-		return webElements.stream()
-				.map(WebElement::getText)
-				.collect(Collectors.joining(", "));
+	private void sendKeysJs(final By elementBy, final String keysToSend) {
+		final WebElement element = findElement(elementBy);
+		//element.sendKeys(keysToSend);
+		((JavascriptExecutor) driver).executeScript("document.getElementById(\"" + element.getAttribute("id") + "\").value = \"" + keysToSend + "\";\n");
 	}
-	*/
+
 	private WebElement waitElement(final By byElement) throws InterruptedException {
 		return waitElement(byElement, 1000);
 	}

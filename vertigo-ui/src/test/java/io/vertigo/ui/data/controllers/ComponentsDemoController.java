@@ -141,6 +141,11 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		viewContext.publishRef(currentZoneId, localeManager.getCurrentZoneId().getId());
 	}
 
+	@PostMapping("/_save")
+	public void doSave(final ViewContext viewContext, @ViewAttribute("movie") final Movie movie) {
+		viewContext.publishDto(movieKey, movie);
+	}
+
 	@PostMapping("/_read")
 	public void toRead() {
 		toModeReadOnly();

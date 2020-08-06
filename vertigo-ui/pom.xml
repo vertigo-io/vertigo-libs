@@ -118,12 +118,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.machinepublishers</groupId>
-			<artifactId>jbrowserdriver</artifactId>
-			<version>1.1.1</version>
+			<groupId>org.seleniumhq.selenium</groupId>
+		    <artifactId>htmlunit-driver</artifactId>
+		    <version>2.42.0</version>
 			<scope>test</scope>
 		</dependency>
-		
 		
 		<!-- CollectionsManager/LuceneIndexPlugin -->
 		<dependency>
