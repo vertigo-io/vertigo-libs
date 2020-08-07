@@ -112,27 +112,27 @@ public final class PublisherManagerTest {
 		final PublisherNodeDefinitionBuilder rootDefinitionBuilder = new PublisherNodeDefinitionBuilder();
 
 		try {
-			rootDefinitionBuilder.addStringField("testString");
+			rootDefinitionBuilder.addStringField("TEST_STRING");
 			Assertions.fail();
-		} catch (final IllegalArgumentException a) {
+		} catch (final IllegalStateException a) {
 			// succes
 		}
 		try {
 			rootDefinitionBuilder.addBooleanField("testBoolean.toto");
 			Assertions.fail();
-		} catch (final IllegalArgumentException a) {
+		} catch (final IllegalStateException a) {
 			// succes
 		}
 		try {
 			rootDefinitionBuilder.addImageField("testBoolean@toto");
 			Assertions.fail();
-		} catch (final IllegalArgumentException a) {
+		} catch (final IllegalStateException a) {
 			// succes
 		}
 		try {
 			rootDefinitionBuilder.addStringField("testBooleanazertyuiopqsdfghjklmwxcvbnAzertyuiopqsdfghjklmwxcvbn");
 			Assertions.fail();
-		} catch (final IllegalArgumentException a) {
+		} catch (final IllegalStateException a) {
 			// succes
 		}
 	}
