@@ -26,6 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.connectors.mail.MailFeatures;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.node.AutoCloseableNode;
@@ -74,6 +75,11 @@ public final class MailManagerTest {
 				.withBoot(BootConfig.builder()
 						.withLocales("fr_FR")
 						.build())
+				.addModule(new MailFeatures()
+						.withNativeMailConnector(
+								Param.of("storeProtocol", "smtp"),
+								Param.of("host", "localdelivery.klee.lan.net"))
+						.build())
 				.addModule(new CommonsFeatures().build())
 				.addModule(new DataStoreFeatures().build())
 				.addModule(new SocialFeatures()
@@ -81,14 +87,11 @@ public final class MailManagerTest {
 						.withJavaxMail(
 								Param.of("developmentMode", "true"),
 								Param.of("developmentMailTo", "klee-DevTest@yopmail.com"))
-						.withNativeMailConnector(
-								Param.of("storeProtocol", "smtp"),
-								Param.of("host", "localdelivery.klee.lan.net"))
 						.build())
 				.build();
 	}
 
-	private void nop(Object o) {
+	private void nop(final Object o) {
 		//nada
 	}
 

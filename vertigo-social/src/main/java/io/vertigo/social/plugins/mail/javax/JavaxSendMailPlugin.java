@@ -42,6 +42,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
+import io.vertigo.connectors.mail.MailSessionConnector;
 import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.lang.Assertion;
@@ -83,17 +84,22 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	@Inject
 	public JavaxSendMailPlugin(
 			final FileManager fileManager,
-			final MailSessionConnector mailSessionConnector,
+			final List<MailSessionConnector> mailSessionConnectors,
+			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			@ParamValue("developmentMode") final boolean developmentMode,
 			@ParamValue("developmentMailTo") final String developmentMailTo,
 			@ParamValue("charset") final Optional<String> charsetOpt) {
 		Assertion.check()
 				.isNotNull(fileManager)
-				.isNotNull(mailSessionConnector)
+				.isNotNull(connectorNameOpt)
+				.isNotNull(mailSessionConnectors)
 				.isNotBlank(developmentMailTo);
 		//-----
 		this.fileManager = fileManager;
-		this.mailSessionConnector = mailSessionConnector;
+		final String connectorName = connectorNameOpt.orElse("main");
+		mailSessionConnector = mailSessionConnectors.stream()
+				.filter(connector -> connectorName.equals(connector.getName()))
+				.findFirst().get();
 		this.developmentMailTo = developmentMailTo;
 		this.developmentMode = developmentMode;
 		charset = charsetOpt.orElseGet(StandardCharsets.ISO_8859_1::name);
@@ -104,7 +110,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	public void sendMail(final Mail mail) {
 		Assertion.check().isNotNull(mail);
 		//-----
-		final Session session = mailSessionConnector.createSession();
+		final Session session = mailSessionConnector.getClient();
 		try {
 			final Message message = createMessage(mail, session);
 			Transport.send(message);
@@ -258,7 +264,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	public HealthMeasure checkConnexion() {
 		// -----
 		try {
-			final Session session = mailSessionConnector.createSession();
+			final Session session = mailSessionConnector.getClient();
 			try (final Transport transport = session.getTransport()) {
 				// On tente la connexion
 				transport.connect();

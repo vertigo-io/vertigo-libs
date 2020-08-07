@@ -46,9 +46,9 @@
 		
 		<!-- Mail -->
 		<dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>javax.mail</artifactId>
-			<version>1.6.2</version><!-- for JavaxSendMailPlugin  -->
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-mail-connector</artifactId>
+			<version>${vertigo.version}</version>
 		</dependency>
 		<!-- /Mail -->
 
