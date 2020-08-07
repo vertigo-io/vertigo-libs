@@ -341,7 +341,7 @@ public abstract class AbstractSqlManagerTest {
 
 	@Test
 	public void testQuotedParam() throws Exception {
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+		Assertions.assertThrows(IllegalStateException.class, () -> {
 			//On crée les données
 			createDatas();
 			//----

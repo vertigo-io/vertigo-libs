@@ -48,7 +48,7 @@ public final class PostgreSqlDataBaseManagerTest extends AbstractSqlManagerTest 
 						.withC3p0(
 								Param.of("dataBaseClass", PostgreSqlDataBase.class.getName()),
 								Param.of("jdbcDriver", "org.postgresql.Driver"),
-								Param.of("jdbcUrl", "jdbc:postgresql://docker-vertigo.part.klee.lan.net:5432/postgres?user=postgres&amp;password=postgres"))
+								Param.of("jdbcUrl", "jdbc:postgresql://docker-vertigo.part.klee.lan.net:5432/postgres?user=postgres&password=postgres"))
 						.withC3p0(
 								Param.of("name", "secondary"),
 								Param.of("dataBaseClass", H2DataBase.class.getName()),
