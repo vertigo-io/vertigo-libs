@@ -112,7 +112,7 @@ public final class PublisherManagerTest {
 		final PublisherNodeDefinitionBuilder rootDefinitionBuilder = new PublisherNodeDefinitionBuilder();
 
 		try {
-			rootDefinitionBuilder.addStringField("TEST_STRING");
+			rootDefinitionBuilder.addStringField("testString");
 			Assertions.fail();
 		} catch (final IllegalArgumentException a) {
 			// succes
@@ -142,7 +142,7 @@ public final class PublisherManagerTest {
 	 */
 	@Test
 	public final void testDefinitionFieldDoubleRegister() {
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+		Assertions.assertThrows(IllegalStateException.class, () -> {
 			final PublisherNodeDefinitionBuilder rootDefinitionBuilder = new PublisherNodeDefinitionBuilder()
 					.addBooleanField("testString")
 					.addStringField("testString");
@@ -151,7 +151,7 @@ public final class PublisherManagerTest {
 		});
 	}
 
-	private void nop(PublisherNodeDefinition rootDefinition) {
+	private void nop(final PublisherNodeDefinition rootDefinition) {
 		// nop
 	}
 

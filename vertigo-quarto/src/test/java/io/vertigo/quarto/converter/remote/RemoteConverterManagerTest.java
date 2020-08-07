@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -99,9 +100,10 @@ public final class RemoteConverterManagerTest {
 	@Test
 	public void testConvertOdt2Odt() {
 		final VFile inputFile = createVFile(fileManager, "../data/testFile.odt", this.getClass());
-		resultFile = converterManager.convert(inputFile, "ODT");
-
-		log("Odt2Odt", resultFile);
+		Assertions.assertThrows(IllegalStateException.class, () -> {
+			resultFile = converterManager.convert(inputFile, "ODT");
+			log("Odt2Odt", resultFile);
+		});
 	}
 
 	/**
