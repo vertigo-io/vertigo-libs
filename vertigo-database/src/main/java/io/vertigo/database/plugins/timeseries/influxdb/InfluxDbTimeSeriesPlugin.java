@@ -453,8 +453,8 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 			final boolean isAggregated = measure.contains(":");
 
 			Assertion.check()
-					.isFalse(needAggregatedMeasures || isAggregated, "No aggregation function provided for measure '{0}'. Provide it with ':' as in 'measure:sum'.", measure)
-					.isTrue(needAggregatedMeasures || !isAggregated, "No support for aggregation function in this case. Measure '{0}'.", measure);
+					.when(needAggregatedMeasures, () -> Assertion.check().isTrue(isAggregated, "No aggregation function provided for measure '{0}'. Provide it with ':' as in 'measure:sum'.", measure))
+					.when(!needAggregatedMeasures, () -> Assertion.check().isFalse(isAggregated, "No support for aggregation function in this case. Measure '{0}'.", measure));
 
 			final String measureQuery = isAggregated ? buildMeasureQuery(measure, measure) : '"' + measure + '"';
 
