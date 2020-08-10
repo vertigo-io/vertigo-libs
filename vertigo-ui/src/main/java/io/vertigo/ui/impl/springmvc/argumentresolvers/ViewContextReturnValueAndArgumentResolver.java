@@ -31,6 +31,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor;
 
+import com.google.gson.GsonBuilder;
+
 import io.vertigo.lang.Assertion;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
@@ -38,7 +40,7 @@ import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 public class ViewContextReturnValueAndArgumentResolver extends AbstractMessageConverterMethodProcessor {
 
 	public ViewContextReturnValueAndArgumentResolver() {
-		super(Collections.singletonList(new GsonHttpMessageConverter()));
+		super(Collections.singletonList(new GsonHttpMessageConverter(new GsonBuilder().serializeNulls().create())));
 	}
 
 	@Override
