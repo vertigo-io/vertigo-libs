@@ -100,11 +100,12 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 				.replaceAll("\\{.*?\\}|\\*", "_");//.*? : reluctant quantifier; remove params which works like wildcards
 
 		//On rend le path plus lisible et compatible DefinitionName
-		final String normalizedConstString = argsRemovedPath.toUpperCase(Locale.ROOT)
+		final String normalizedConstString = StringUtil.camelToSnakeCase(argsRemovedPath)
 				.replaceAll("[\\-/]", "_")
 				.replaceAll("([0-9]+)([^0-9])", "_$1_$2")
 				.replaceAll("([0-9]+)", "_$1")
-				.replaceAll("_+", "_");
+				.replaceAll("_+", "_")
+				.toUpperCase(Locale.ROOT);
 		final String normalizedString = StringUtil.constToUpperCamelCase(normalizedConstString);
 		final String hashcodeAsHex = "$x" + Integer.toHexString(argsRemovedPath.hashCode());
 		//On limite sa taille pour avec un nom de définition acceptable

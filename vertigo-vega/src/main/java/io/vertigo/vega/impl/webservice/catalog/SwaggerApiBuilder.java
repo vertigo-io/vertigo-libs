@@ -64,7 +64,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 
 	private static final String DESCRIPTION = "description";
 
-	private static final String UNKNOWN_OBJECT_NAME = "unkwnown";
+	private static final String UNKNOWN_OBJECT_NAME = "unknown";
 
 	private final Map<String, Object> builderDefinitions = new LinkedHashMap<>();
 	private final Map<String, Object> unknownObjectRef = new LinkedHashMap<>();
@@ -266,7 +266,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 				//We have checked there is one parameter or we known that FacetedQueryResult has two parameterized type
 				final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0];
 				parameterClass = WebServiceTypeUtil.castAsClass(itemsType);
-				objectName = objectClass.getSimpleName() + "&lt;" + parameterClass.getSimpleName() + "&gt;";
+				objectName = objectClass.getSimpleName() + "<" + parameterClass.getSimpleName() + ">";
 			} else {
 				objectName = objectClass.getSimpleName();
 				parameterClass = null;
@@ -382,7 +382,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		}
 		if (!bodyParameter.isEmpty()) {
 			final String[] splittedDefinitionName = webServiceDefinition.getName().split("\\$");
-			final String bodyName = splittedDefinitionName[0].replaceAll("_+", "_") + "$" + splittedDefinitionName[1] + "Body";
+			final String bodyName = splittedDefinitionName[0].replaceAll("_+", "_") + "Body" + "$" + splittedDefinitionName[1];
 			final Map<String, Object> compositeSchema = (Map<String, Object>) bodyParameter.get(SCHEMA);
 			bodyParameter.put(SCHEMA, Collections.singletonMap("$ref", "#/definitions/" + bodyName));
 			final Map<String, Object> bodyDefinition = new LinkedHashMap<>();
