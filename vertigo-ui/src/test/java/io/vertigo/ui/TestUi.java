@@ -146,8 +146,6 @@ public class TestUi {
 
 		assertEquals("Movie Information", waitElement(By.className("text-h6")).getText());
 		findElement(By.name("vContext[movie][title]")).clear();
-		findElement(By.name("vContext[movie][title]")).sendKeys("Test 1");
-		assertEquals("Test 1", findElement(By.name("vContext[movie][title]")).getAttribute("value"));
 		sendKeysJs(By.name("vContext[movie][title]"), "Test 1");
 
 		findElement(By.name("vContext[movie][year]")).clear();
