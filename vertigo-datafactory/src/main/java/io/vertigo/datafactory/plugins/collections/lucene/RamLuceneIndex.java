@@ -74,8 +74,6 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
  * @param <D> Type d'objet
  */
 final class RamLuceneIndex<D extends DtObject> {
-	/** Prefix for a created field use for sorting. */
-	static final String SORT_FIELD_PREFIX = "4SORT_";
 
 	//DtDefinition est non serializable
 	private final DtDefinition dtDefinition;

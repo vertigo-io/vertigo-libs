@@ -41,7 +41,7 @@ public final class ConstraintNumberMaximum implements Constraint<Number, Number>
 	 */
 	public ConstraintNumberMaximum(final String args, final Optional<String> overrideMessageOpt) {
 		Assertion.check()
-				.isTrue(args != null && args.length() > 0, "Vous devez préciser la valeur maximum comme argument de ConstraintNumberMaximum")
+				.isNotBlank(args, "Vous devez préciser la valeur maximum comme argument de ConstraintNumberMaximum")
 				.isNotNull(overrideMessageOpt);
 		//-----
 		maxValue = Double.parseDouble(args);

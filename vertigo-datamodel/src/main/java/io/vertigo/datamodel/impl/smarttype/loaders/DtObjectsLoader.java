@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
@@ -78,8 +79,8 @@ public final class DtObjectsLoader implements Loader {
 		} else {
 			//by Iterable of classes
 			final Iterable dtDefinitionsClass = ClassUtil.newInstance(resourcePath, Iterable.class);
-			Iterator<Class> iterator = dtDefinitionsClass.iterator();
-			Set<Class> classes = new HashSet();
+			final Iterator<Class> iterator = dtDefinitionsClass.iterator();
+			final Set<Class> classes = new HashSet();
 			iterator.forEachRemaining(c -> classes.add(c));
 			selector = Selector
 					.from(classes);
@@ -88,7 +89,7 @@ public final class DtObjectsLoader implements Loader {
 				.filterClasses(ClassConditions.subTypeOf(filterClass))
 				.findClasses()
 				.stream()
-				.map(clazz -> (Class<F>) clazz)
+				.map(Function.identity())
 				.collect(Collectors.toSet());
 	}
 

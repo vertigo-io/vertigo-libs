@@ -107,9 +107,10 @@ public abstract class AbstractVSpringMvcController {
 				}
 				viewContext = new ViewContext(viewContextMap, jsonEngine);
 				viewContext.makeModifiable();
+				viewContext.setInputCtxId(ctxId);
+				attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
 			}
-			viewContext.setInputCtxId(ctxId);
-			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
+
 		} else {
 			viewContext = new ViewContext(new ViewContextMap(), jsonEngine);
 			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);

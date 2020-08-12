@@ -125,7 +125,7 @@ public final class VCollectors {
 
 		@SuppressWarnings("unchecked")
 		private static <I, R> Function<I, R> id() {
-			return i -> (R) i;
+			return (Function<I, R>) Function.identity();
 		}
 	}
 

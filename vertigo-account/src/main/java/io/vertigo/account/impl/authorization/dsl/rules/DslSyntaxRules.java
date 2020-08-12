@@ -41,27 +41,27 @@ final class DslSyntaxRules {
 	private static final String DELIMITERS = RESERVED + WHITE_SPACE;
 
 	/** règle de lectures des blancs. */
-	static final PegRule<?> SPACES = PegRules.word(true, WHITE_SPACE, PegWordRule.Mode.ACCEPT, "_");
+	protected static final PegRule<?> SPACES = PegRules.word(true, WHITE_SPACE, PegWordRule.Mode.ACCEPT, "_");
 
 	/** block start. */
-	static final PegRule<String> BLOCK_START = PegRules.term("(");
+	protected static final PegRule<String> BLOCK_START = PegRules.term("(");
 	/** block end. */
-	static final PegRule<String> BLOCK_END = PegRules.term(")");
+	protected static final PegRule<String> BLOCK_END = PegRules.term(")");
 
 	/** pre userProperty. */
-	static final PegRule<String> PRE_USER_PROPERTY_VALUE = PegRules.term("${");
+	protected static final PegRule<String> PRE_USER_PROPERTY_VALUE = PegRules.term("${");
 	/** post userProperty. */
-	static final PegRule<String> POST_USER_PROPERTY_VALUE = PegRules.term("}");
+	protected static final PegRule<String> POST_USER_PROPERTY_VALUE = PegRules.term("}");
 
 	//Il faut gérer le caractère d'évitement.
 	/** word. */
-	static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRule.Mode.REJECT, "WORD");
+	protected static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRule.Mode.REJECT, "WORD");
 
 	/** fixed word. */
-	static final PegRule<String> FIXED_WORD = PegRules.word(false, WHITE_SPACE + "]),", PegWordRule.Mode.REJECT, "!_");
+	protected static final PegRule<String> FIXED_WORD = PegRules.word(false, WHITE_SPACE + "]),", PegWordRule.Mode.REJECT, "!_");
 
 	/** depth overflow. */
-	static final PegRule<?> DEPTH_OVERFLOW = new DepthOverflowRule();
+	protected static final PegRule<?> DEPTH_OVERFLOW = new DepthOverflowRule();
 
 	private static class DepthOverflowRule implements PegRule<Void> {
 

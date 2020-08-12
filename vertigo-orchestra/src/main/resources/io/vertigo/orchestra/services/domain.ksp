@@ -16,7 +16,7 @@ create Domain DoOCodeIdentifiant {
 create Domain DoOLibelle {
 	dataType : String
 	storeType : "VARCHAR(100)"
-}
+} 
 
 create Domain DoOToken {
 	dataType : String

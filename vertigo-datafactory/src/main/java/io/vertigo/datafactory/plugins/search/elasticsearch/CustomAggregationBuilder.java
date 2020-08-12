@@ -2,6 +2,7 @@ package io.vertigo.datafactory.plugins.search.elasticsearch;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -58,17 +59,17 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 		for (final String operation : innerWriteToOperations) {
 			final String value = operation.substring(operation.indexOf('(') + 1, operation.indexOf(')'));
 			if (operation.startsWith("writeVInt(")) {
-				out.writeVInt(Integer.valueOf(value));
+				out.writeVInt(Integer.parseInt(value));
 			} else if (operation.startsWith("writeInt(")) {
-				out.writeInt(Integer.valueOf(value));
+				out.writeInt(Integer.parseInt(value));
 			} else if (operation.startsWith("writeVLong(")) {
-				out.writeVLong(Long.valueOf(value));
+				out.writeVLong(Long.parseLong(value));
 			} else if (operation.startsWith("writeLong(")) {
-				out.writeLong(Long.valueOf(value));
+				out.writeLong(Long.parseLong(value));
 			} else if (operation.startsWith("writeBoolean(")) {
-				out.writeBoolean(Boolean.valueOf(value));
+				out.writeBoolean(Boolean.parseBoolean(value));
 			} else if (operation.startsWith("writeDouble(")) {
-				out.writeDouble(Double.valueOf(value));
+				out.writeDouble(Double.parseDouble(value));
 			} else if (operation.startsWith("writeString(")) {
 				out.writeString(value);
 			}
@@ -139,7 +140,7 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 	}
 
 	@Override
-	public AggregatorFactory build(final QueryShardContext context, final AggregatorFactory parent) throws IOException {
+	public AggregatorFactory build(final QueryShardContext context, final AggregatorFactory parent) {
 		throw new UnsupportedOperationException("not yet");
 	}
 
@@ -152,7 +153,7 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 		}
 		for (final Map.Entry<String, String> entry : customParams.entrySet()) {
 			if (!INNER_WRITE_TO_PARAM.equals(entry.getKey())) {
-				builder.rawField(entry.getKey(), new ByteArrayInputStream(entry.getValue().getBytes()), XContentType.JSON);
+				builder.rawField(entry.getKey(), new ByteArrayInputStream(entry.getValue().getBytes(StandardCharsets.UTF_8)), XContentType.JSON);
 			}
 		}
 
