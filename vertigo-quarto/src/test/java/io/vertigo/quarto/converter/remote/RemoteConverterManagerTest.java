@@ -86,8 +86,8 @@ public final class RemoteConverterManagerTest {
 				.addModule(new QuartoFeatures()
 						.withConverter()
 						.withRemoteOpenOfficeConverter(
-								Param.of("unohost", "ficenrecette.part.klee.lan.net"),
-								Param.of("unoport", "8200"),
+								Param.of("unohost", "docker-vertigo.part.klee.lan.net"),
+								Param.of("unoport", "8997"),
 								Param.of("convertTimeoutSeconds", "10"))
 						.build())
 				.build();
