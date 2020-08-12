@@ -41,7 +41,7 @@ public final class ConstraintNumberMinimum implements Constraint<Number, Number>
 	 */
 	public ConstraintNumberMinimum(final String args, final Optional<String> overrideMessageOpt) {
 		Assertion.check()
-				.isTrue(args != null && args.length() > 0, "Vous devez préciser la valeur minimum comme argument de ConstraintNumberMinimum")
+				.isNotBlank(args, "Vous devez préciser la valeur minimum comme argument de ConstraintNumberMinimum")
 				.isNotNull(overrideMessageOpt);
 		//-----
 		minValue = Double.parseDouble(args);

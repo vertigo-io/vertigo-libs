@@ -187,9 +187,9 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 	@Override
 	public Set<String> getPriorAuthorizations() {
 		return getUserAuthorizationsOpt()
-				.map(userPermissions -> userPermissions.getPriorAuthorizationNames())
+				.map(UserAuthorizations::getPriorAuthorizationNames)
 				// Si il n'y a pas de userPermissions alors pas d'autorisation.
-				.orElse(Collections.<String> emptySet());
+				.orElseGet(Collections::emptySet);
 	}
 
 	/** {@inheritDoc} */

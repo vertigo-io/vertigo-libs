@@ -78,8 +78,8 @@ public final class DtObjectsLoader implements Loader {
 		} else {
 			//by Iterable of classes
 			final Iterable dtDefinitionsClass = ClassUtil.newInstance(resourcePath, Iterable.class);
-			Iterator<Class> iterator = dtDefinitionsClass.iterator();
-			Set<Class> classes = new HashSet();
+			final Iterator<Class> iterator = dtDefinitionsClass.iterator();
+			final Set<Class> classes = new HashSet();
 			iterator.forEachRemaining(c -> classes.add(c));
 			selector = Selector
 					.from(classes);

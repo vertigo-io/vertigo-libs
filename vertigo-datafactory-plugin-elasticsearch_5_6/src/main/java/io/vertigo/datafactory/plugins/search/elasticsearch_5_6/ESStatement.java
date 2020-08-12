@@ -63,7 +63,6 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 
 	private static final RefreshPolicy DEFAULT_REFRESH = RefreshPolicy.NONE; //mettre a true pour TU uniquement
 	private static final RefreshPolicy BULK_REFRESH = RefreshPolicy.NONE; //mettre a RefreshPolicy.IMMEDIATE pour TU uniquement
-	static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
 	private static final Logger LOGGER = LogManager.getLogger(ESStatement.class);
 
 	private final String indexName;
