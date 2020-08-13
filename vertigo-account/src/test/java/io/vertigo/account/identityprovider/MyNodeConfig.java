@@ -88,37 +88,43 @@ public final class MyNodeConfig {
 						Param.of("groupFilePath", "io/vertigo/account/data/groups.txt"),
 						Param.of("groupFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<accountIds>.*)$"));
 
-		if (idpPlugin == IdpPlugin.ldap) {
-			nodeConfigBuilder.addModule(new LdapFeatures().withLdap(
-					Param.of("host", "docker-vertigo.part.klee.lan.net"),
-					Param.of("port", "389"),
-					Param.of("readerLogin", "cn=admin,dc=vertigo,dc=io"),
-					Param.of("readerPassword", "v3rt1g0")).build());
+		switch (idpPlugin) {
+			case ldap:
+				nodeConfigBuilder.addModule(new LdapFeatures().withLdap(
+						Param.of("host", "docker-vertigo.part.klee.lan.net"),
+						Param.of("port", "389"),
+						Param.of("readerLogin", "cn=admin,dc=vertigo,dc=io"),
+						Param.of("readerPassword", "v3rt1g0")).build());
 
-			accountFeatures.withLdapIdentityProvider(
-					Param.of("ldapAccountBaseDn", "dc=vertigo,dc=io"),
-					Param.of("ldapUserAuthAttribute", "cn"),
-					Param.of("userIdentityEntity", "DtUser"),
-					Param.of("ldapUserAttributeMapping", "usrId:cn, fullName:description, photo:jpegPhoto"));
-		} else if (idpPlugin == IdpPlugin.text) {
-			accountFeatures.withTextIdentityProvider(
-					Param.of("identityFilePath", "io/vertigo/account/data/identities.txt"),
-					Param.of("identityFilePattern", "^(?<usrId>[^;]+);(?<fullName>[^;]+);(?<email>(?<authToken>[^;@]+)@[^;]+);(?<photoUrl>.*)$"),
-					Param.of("userAuthField", "email"),
-					Param.of("userIdentityEntity", "DtUser"));
-		} else if (idpPlugin == IdpPlugin.store) {
-			databaseFeatures
-					.withSqlDataBase()
-					.withC3p0(
-							Param.of("dataBaseClass", H2DataBase.class.getName()),
-							Param.of("jdbcDriver", "org.h2.Driver"),
-							Param.of("jdbcUrl", "jdbc:h2:mem:database"));
-			datastoreFeatures
-					.withEntityStore()
-					.withSqlEntityStore();
-			accountFeatures.withStoreIdentityProvider(
-					Param.of("userIdentityEntity", "DtUser"),
-					Param.of("userAuthField", "email"));
+				accountFeatures.withLdapIdentityProvider(
+						Param.of("ldapAccountBaseDn", "dc=vertigo,dc=io"),
+						Param.of("ldapUserAuthAttribute", "cn"),
+						Param.of("userIdentityEntity", "DtUser"),
+						Param.of("ldapUserAttributeMapping", "usrId:cn, fullName:description, photo:jpegPhoto"));
+				break;
+			case text:
+				accountFeatures.withTextIdentityProvider(
+						Param.of("identityFilePath", "io/vertigo/account/data/identities.txt"),
+						Param.of("identityFilePattern", "^(?<usrId>[^;]+);(?<fullName>[^;]+);(?<email>(?<authToken>[^;@]+)@[^;]+);(?<photoUrl>.*)$"),
+						Param.of("userAuthField", "email"),
+						Param.of("userIdentityEntity", "DtUser"));
+				break;
+			case store:
+				databaseFeatures
+						.withSqlDataBase()
+						.withC3p0(
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", "org.h2.Driver"),
+								Param.of("jdbcUrl", "jdbc:h2:mem:database"));
+				datastoreFeatures
+						.withEntityStore()
+						.withSqlEntityStore();
+				accountFeatures.withStoreIdentityProvider(
+						Param.of("userIdentityEntity", "DtUser"),
+						Param.of("userAuthField", "email"));
+				break;
+			default:
+				throw new IllegalStateException();
 		}
 
 		return nodeConfigBuilder
