@@ -179,53 +179,64 @@ public final class DtObjectsLoader implements Loader {
 							.withDataSpace(parseDataSpaceAnnotation(clazz));
 					if (Fragment.class.isAssignableFrom(clazz)) {
 						//Fragments
-						for (final Annotation annotation : clazz.getAnnotations()) {
-							if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Fragment) {
-								dtDefinitionBuilder.withStereoType(DtStereotype.Fragment);
-								dtDefinitionBuilder.withFragment(definitionSpace.resolve(((io.vertigo.datamodel.structure.stereotype.Fragment) annotation).fragmentOf(), DtDefinition.class));
-								break;
-							}
-						}
+						extractDynamicDefinitionForFragment(clazz, definitionSpace, dtDefinitionBuilder);
 					} else {
 						dtDefinitionBuilder.withStereoType(parseStereotype(clazz));
 					}
-					for (final Field field : fields) {
-						if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.Field.class)) {
-							//Le nom est automatiquement déduit du nom du champ
-							final io.vertigo.datamodel.structure.stereotype.Field fieldAnnotation = field.getAnnotation(io.vertigo.datamodel.structure.stereotype.Field.class);
-							parseAnnotation(createFieldName(field), dtDefinitionBuilder, fieldAnnotation, definitionSpace);
-						}
-						if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.SortField.class)) {
-							dtDefinitionBuilder.withSortField(createFieldName(field));
-						}
-						if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.DisplayField.class)) {
-							dtDefinitionBuilder.withDisplayField(createFieldName(field));
-						}
-
-					}
-					for (final Method method : methods) {
-						if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.Field.class)) {
-							final io.vertigo.datamodel.structure.stereotype.Field methodAnnotation = method.getAnnotation(io.vertigo.datamodel.structure.stereotype.Field.class);
-							final String fieldName = createFieldName(method);
-							parseAnnotation(fieldName, dtDefinitionBuilder, methodAnnotation, definitionSpace);
-						}
-						if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.SortField.class)) {
-							dtDefinitionBuilder.withSortField(createFieldName(method));
-						}
-						if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.DisplayField.class)) {
-							dtDefinitionBuilder.withDisplayField(createFieldName(method));
-						}
-						if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.ForeignKey.class)) {
-							//Le nom est automatiquement déduit du nom du champ
-							final io.vertigo.datamodel.structure.stereotype.ForeignKey foreignKeyAnnotation = method.getAnnotation(io.vertigo.datamodel.structure.stereotype.ForeignKey.class);
-							dtDefinitionBuilder.addForeignKey(createFieldName(method), foreignKeyAnnotation.label(), definitionSpace.resolve(foreignKeyAnnotation.smartType(), SmartTypeDefinition.class), foreignKeyAnnotation.cardinality(), foreignKeyAnnotation.fkDefinition());
-						}
-
-					}
+					extractDynamicDefinitionFromFields(fields, definitionSpace, dtDefinitionBuilder);
+					extractDynamicDefinitionFromMethods(methods, definitionSpace, dtDefinitionBuilder);
 					return dtDefinitionBuilder.build();
 				}
 
 		);
+	}
+
+	private static void extractDynamicDefinitionForFragment(final Class<DtObject> clazz, final DefinitionSpace definitionSpace, final DtDefinitionBuilder dtDefinitionBuilder) {
+		for (final Annotation annotation : clazz.getAnnotations()) {
+			if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Fragment) {
+				dtDefinitionBuilder.withStereoType(DtStereotype.Fragment);
+				dtDefinitionBuilder.withFragment(definitionSpace.resolve(((io.vertigo.datamodel.structure.stereotype.Fragment) annotation).fragmentOf(), DtDefinition.class));
+				break;
+			}
+		}
+	}
+
+	private static void extractDynamicDefinitionFromMethods(final Method[] methods, final DefinitionSpace definitionSpace, final DtDefinitionBuilder dtDefinitionBuilder) {
+		for (final Method method : methods) {
+			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.Field.class)) {
+				final io.vertigo.datamodel.structure.stereotype.Field methodAnnotation = method.getAnnotation(io.vertigo.datamodel.structure.stereotype.Field.class);
+				final String fieldName = createFieldName(method);
+				parseAnnotation(fieldName, dtDefinitionBuilder, methodAnnotation, definitionSpace);
+			}
+			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.SortField.class)) {
+				dtDefinitionBuilder.withSortField(createFieldName(method));
+			}
+			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.DisplayField.class)) {
+				dtDefinitionBuilder.withDisplayField(createFieldName(method));
+			}
+			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.ForeignKey.class)) {
+				//Le nom est automatiquement déduit du nom du champ
+				final io.vertigo.datamodel.structure.stereotype.ForeignKey foreignKeyAnnotation = method.getAnnotation(io.vertigo.datamodel.structure.stereotype.ForeignKey.class);
+				dtDefinitionBuilder.addForeignKey(createFieldName(method), foreignKeyAnnotation.label(), definitionSpace.resolve(foreignKeyAnnotation.smartType(), SmartTypeDefinition.class), foreignKeyAnnotation.cardinality(), foreignKeyAnnotation.fkDefinition());
+			}
+		}
+	}
+
+	private static void extractDynamicDefinitionFromFields(final List<Field> fields, final DefinitionSpace definitionSpace, final DtDefinitionBuilder dtDefinitionBuilder) {
+		for (final Field field : fields) {
+			if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.Field.class)) {
+				//Le nom est automatiquement déduit du nom du champ
+				final io.vertigo.datamodel.structure.stereotype.Field fieldAnnotation = field.getAnnotation(io.vertigo.datamodel.structure.stereotype.Field.class);
+				parseAnnotation(createFieldName(field), dtDefinitionBuilder, fieldAnnotation, definitionSpace);
+			}
+			if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.SortField.class)) {
+				dtDefinitionBuilder.withSortField(createFieldName(field));
+			}
+			if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.DisplayField.class)) {
+				dtDefinitionBuilder.withDisplayField(createFieldName(field));
+			}
+
+		}
 	}
 
 	private static void parseSmartTypes(final Class<DtObject> clazz, final Map<String, DynamicDefinition> dynamicModelRepository, final String simpleName, final String dtDefinitionName) {

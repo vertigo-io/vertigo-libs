@@ -18,7 +18,9 @@
  */
 package io.vertigo.datafactory.plugins.search.elasticsearch_5_6;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
@@ -27,6 +29,11 @@ import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtProperty;
 
 final class IndexType {
+	private static final String INDEX_DATA_TYPE_KEY = "indexDataType";
+	private static final String INDEX_STORED_KEY = "indexStored";
+	private static final String INDEX_SUB_KEYWORD_KEY = "indexSubKeyword";
+	private static final String INDEX_FIELD_DATA_KEY = "indexFieldData";
+
 	private static final String INDEX_TYPE_ERROR_MSG = "indexType ({0}) should respect this usage : indexType : "
 			+ "\"myAnalyzer\\{:myDataType\\}\\{:stored|notStored\\}\\{:sortable|notSortable\\}\\{:facetable|notFacetable\\}\"";
 	private static final String INDEX_STORED = "stored";
@@ -65,36 +72,38 @@ final class IndexType {
 				indexSubKeyword = false;
 				indexFieldData = false;
 			} else {
-				String parsedIndexDataType = null;
-				Boolean parsedIndexStored = null;
-				Boolean parsedIndexSubKeyword = null;
-				Boolean parsedIndexFieldData = null;
-				//On parcours les paramètres et on détermine si on reconnait un mot clé
-				for (int i = 1; i < indexTypeArray.length; i++) {
-					final String indexTypeParam = indexTypeArray[i];
-					if (INDEX_STORED.equals(indexTypeParam) || INDEX_NOT_STORED.equals(indexTypeParam)) {
-						Assertion.check().isNull(parsedIndexStored, INDEX_TYPE_ERROR_MSG, indexType);
-						parsedIndexStored = INDEX_STORED.equals(indexTypeParam);
-					} else if (INDEX_SORTABLE.equals(indexTypeParam) || INDEX_NOT_SORTABLE.equals(indexTypeParam)) {
-						Assertion.check().isNull(parsedIndexSubKeyword, INDEX_TYPE_ERROR_MSG, indexType);
-						parsedIndexSubKeyword = INDEX_SORTABLE.equals(indexTypeParam);
-					} else if (INDEX_FACETABLE.equals(indexTypeParam) || INDEX_NOT_FACETABLE.equals(indexTypeParam)) {
-						Assertion.check().isNull(parsedIndexFieldData, INDEX_TYPE_ERROR_MSG, indexType);
-						parsedIndexFieldData = INDEX_FACETABLE.equals(indexTypeParam);
-					} else {
-						Assertion.check().isNull(parsedIndexDataType, INDEX_TYPE_ERROR_MSG, indexType);
-						parsedIndexDataType = indexTypeParam;
-					}
-				}
+				final Map<String, Object> parsedIndexType = parseIndexType(indexTypeArray, indexType);
 				//valeurs par défaut
-				indexDataType = parsedIndexDataType != null ? parsedIndexDataType : obtainDefaultIndexDataType(smartTypeDefinition);
-				indexStored = parsedIndexStored != null ? parsedIndexStored : true;
-				indexSubKeyword = parsedIndexSubKeyword != null ? parsedIndexSubKeyword : false;
-				indexFieldData = parsedIndexFieldData != null ? parsedIndexFieldData : false;
+				indexDataType = (String) parsedIndexType.getOrDefault(INDEX_DATA_TYPE_KEY, obtainDefaultIndexDataType(smartTypeDefinition));
+				indexStored = (boolean) parsedIndexType.getOrDefault(INDEX_STORED_KEY, true);
+				indexSubKeyword = (boolean) parsedIndexType.getOrDefault(INDEX_SUB_KEYWORD_KEY, false);
+				indexFieldData = (boolean) parsedIndexType.getOrDefault(INDEX_FIELD_DATA_KEY, false);
 			}
 		}
 	}
 
+	private Map<String, Object> parseIndexType(final String[] indexTypeArray, final String indexType) {
+		final Map<String, Object> parsedIndexType = new HashMap<>();
+
+		//On parcours les paramètres et on détermine si on reconnait un mot clé
+		for (int i = 1; i < indexTypeArray.length; i++) {
+			final String indexTypeParam = indexTypeArray[i];
+			if (INDEX_STORED.equals(indexTypeParam) || INDEX_NOT_STORED.equals(indexTypeParam)) {
+				Assertion.check().isFalse(parsedIndexType.containsKey(INDEX_STORED_KEY), INDEX_TYPE_ERROR_MSG, indexType);
+				parsedIndexType.put(INDEX_STORED_KEY, INDEX_STORED.equals(indexTypeParam));
+			} else if (INDEX_SORTABLE.equals(indexTypeParam) || INDEX_NOT_SORTABLE.equals(indexTypeParam)) {
+				Assertion.check().isFalse(parsedIndexType.containsKey(INDEX_SUB_KEYWORD_KEY), INDEX_TYPE_ERROR_MSG, indexType);
+				parsedIndexType.put(INDEX_SUB_KEYWORD_KEY, INDEX_SORTABLE.equals(indexTypeParam));
+			} else if (INDEX_FACETABLE.equals(indexTypeParam) || INDEX_NOT_FACETABLE.equals(indexTypeParam)) {
+				Assertion.check().isFalse(parsedIndexType.containsKey(INDEX_FIELD_DATA_KEY), INDEX_TYPE_ERROR_MSG, indexType);
+				parsedIndexType.put(INDEX_FIELD_DATA_KEY, INDEX_FACETABLE.equals(indexTypeParam));
+			} else {
+				Assertion.check().isFalse(parsedIndexType.containsKey(INDEX_DATA_TYPE_KEY), INDEX_TYPE_ERROR_MSG, indexType);
+				parsedIndexType.put(INDEX_DATA_TYPE_KEY, indexTypeParam);
+			}
+		}
+		return parsedIndexType;
+	}
 	// par convention l'indexType du smartType => l'analyzer de l'index
 	// L'indexType peut-être compléter pour préciser le type si différente de string avec le séparateur :
 

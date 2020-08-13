@@ -62,9 +62,10 @@ public final class ContextRef<O extends Serializable> {
 	 * @param value Valeur à mettre dans le context
 	 */
 	public void set(final O value) {
-		if (value != null) {
-			Assertion.check().isTrue(valueClass.isInstance(value), "Cette valeur n'est pas du bon type ({0} au lieu de {1})", value.getClass(), valueClass);
-		}
+		Assertion.check()
+				.isNotNull(value, "la valeur doit être renseignée pour {0}", contextKey)
+				.isTrue(valueClass.isInstance(value), "Cette valeur n'est pas du bon type ({0} au lieu de {1})", value.getClass(), valueClass);
+		//----
 		action.getModel().put(contextKey, value);
 	}
 
