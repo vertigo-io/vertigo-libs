@@ -32,20 +32,23 @@ final class AppServletStarter extends AbstractAppServletStarter {
 	/** {@inheritDoc} */
 	@Override
 	NodeConfig buildNodeConfig(final Properties bootConf) {
-		final YamlAppConfigBuilder nodeConfigBuilder = new YamlAppConfigBuilder(bootConf);
-
+		final String logFileName;
 		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 		if (bootConf.containsKey(LOG4J_CONFIGURATION_PARAM_NAME)) {
-			final String logFileName = bootConf.getProperty(LOG4J_CONFIGURATION_PARAM_NAME);
+			logFileName = bootConf.getProperty(LOG4J_CONFIGURATION_PARAM_NAME);
 			bootConf.remove(LOG4J_CONFIGURATION_PARAM_NAME);
-			//-----
-			nodeConfigBuilder.withLogConfig(new LogConfig(logFileName));
+		} else {
+			logFileName = null;
 		}
 
 		final String configFileNames = bootConf.getProperty("boot.applicationConfiguration");
 		final String[] configFileNamesSplit = configFileNames.split(";");
 		bootConf.remove("boot.applicationConfiguration");
 		//-----
+		final YamlAppConfigBuilder nodeConfigBuilder = new YamlAppConfigBuilder(bootConf);
+		if (logFileName != null) {
+			nodeConfigBuilder.withLogConfig(new LogConfig(logFileName));
+		}
 		nodeConfigBuilder.withFiles(getClass(), configFileNamesSplit);
 
 		// Initialisation de l'état de l'application
