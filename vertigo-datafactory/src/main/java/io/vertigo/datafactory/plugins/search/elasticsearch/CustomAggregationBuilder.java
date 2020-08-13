@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
+import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -72,6 +73,12 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 				out.writeDouble(Double.parseDouble(value));
 			} else if (operation.startsWith("writeString(")) {
 				out.writeString(value);
+			} else if (operation.startsWith("writeGeoPoint(")) {
+				if (value.isBlank()) {
+					out.writeGeoPoint(new GeoPoint());
+				} else {
+					out.writeGeoPoint(new GeoPoint(value));
+				}
 			}
 		}
 	}
