@@ -83,33 +83,40 @@ public final class MyNodeConfig {
 						Param.of("groupFilePath", "io/vertigo/account/data/groups.txt"),
 						Param.of("groupFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<accountIds>.*)$"));
 
-		if (authentPlugin == AuthentPlugin.ldap) {
-			nodeConfigBuilder.addModule(new LdapFeatures().withLdap(
-					Param.of("host", "docker-vertigo.part.klee.lan.net"),
-					Param.of("port", "389"),
-					Param.of("readerLogin", "cn=admin,dc=vertigo,dc=io"),
-					Param.of("readerPassword", "v3rt1g0")).build());
-			accountFeatures.withLdapAuthentication(
-					Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"));
-		} else if (authentPlugin == AuthentPlugin.text) {
-			accountFeatures.withTextAuthentication(Param.of("filePath", "io/vertigo/account/data/userAccounts.txt"));
-		} else if (authentPlugin == AuthentPlugin.store) {
-			databaseFeatures
-					.withSqlDataBase()
-					.withC3p0(
-							Param.of("dataBaseClass", H2DataBase.class.getName()),
-							Param.of("jdbcDriver", "org.h2.Driver"),
-							Param.of("jdbcUrl", "jdbc:h2:mem:database"));
-			dataStoreFeatures
-					.withEntityStore()
-					.withSqlEntityStore();
-			accountFeatures.withStoreAuthentication(
-					Param.of("userCredentialEntity", "DtUserCredential"),
-					Param.of("userLoginField", "login"),
-					Param.of("userPasswordField", "password"),
-					Param.of("userTokenIdField", "login"));
-		} else if (authentPlugin == AuthentPlugin.mock) {
-			accountFeatures.withMockAuthentication();
+		switch (authentPlugin) {
+			case ldap:
+				nodeConfigBuilder.addModule(new LdapFeatures().withLdap(
+						Param.of("host", "docker-vertigo.part.klee.lan.net"),
+						Param.of("port", "389"),
+						Param.of("readerLogin", "cn=admin,dc=vertigo,dc=io"),
+						Param.of("readerPassword", "v3rt1g0")).build());
+				accountFeatures.withLdapAuthentication(
+						Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"));
+				break;
+			case text:
+				accountFeatures.withTextAuthentication(Param.of("filePath", "io/vertigo/account/data/userAccounts.txt"));
+				break;
+			case store:
+				databaseFeatures
+						.withSqlDataBase()
+						.withC3p0(
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", "org.h2.Driver"),
+								Param.of("jdbcUrl", "jdbc:h2:mem:database"));
+				dataStoreFeatures
+						.withEntityStore()
+						.withSqlEntityStore();
+				accountFeatures.withStoreAuthentication(
+						Param.of("userCredentialEntity", "DtUserCredential"),
+						Param.of("userLoginField", "login"),
+						Param.of("userPasswordField", "password"),
+						Param.of("userTokenIdField", "login"));
+				break;
+			case mock:
+				accountFeatures.withMockAuthentication();
+				break;
+			default:
+				throw new IllegalStateException();
 		}
 
 		return nodeConfigBuilder
