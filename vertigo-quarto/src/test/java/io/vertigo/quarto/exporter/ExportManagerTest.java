@@ -82,6 +82,7 @@ public final class ExportManagerTest {
 	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
 						.addPlugin(ClassPathResourceResolverPlugin.class)
 						.build())
 				.addModule(new CommonsFeatures().build())
@@ -122,7 +123,7 @@ public final class ExportManagerTest {
 		nop(result);
 	}
 
-	private void nop(Object o) {
+	private void nop(final Object o) {
 		// nop
 	}
 
