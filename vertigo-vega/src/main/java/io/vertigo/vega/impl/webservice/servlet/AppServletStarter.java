@@ -22,7 +22,7 @@ import java.util.Properties;
 
 import io.vertigo.core.node.config.LogConfig;
 import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.core.node.config.yaml.YamlAppConfigBuilder;
+import io.vertigo.core.node.config.yaml.YamlNodeConfigBuilder;
 
 /**
  * @author npiedeloup
@@ -45,7 +45,7 @@ final class AppServletStarter extends AbstractAppServletStarter {
 		final String[] configFileNamesSplit = configFileNames.split(";");
 		bootConf.remove("boot.applicationConfiguration");
 		//-----
-		final YamlAppConfigBuilder nodeConfigBuilder = new YamlAppConfigBuilder(bootConf);
+		final YamlNodeConfigBuilder nodeConfigBuilder = new YamlNodeConfigBuilder(bootConf);
 		if (logFileName != null) {
 			nodeConfigBuilder.withLogConfig(new LogConfig(logFileName));
 		}

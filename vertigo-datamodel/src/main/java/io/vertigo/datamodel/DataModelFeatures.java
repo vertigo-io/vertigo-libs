@@ -20,7 +20,9 @@ package io.vertigo.datamodel;
 
 import io.vertigo.core.node.config.Features;
 import io.vertigo.datamodel.impl.smarttype.SmartTypeManagerImpl;
+import io.vertigo.datamodel.impl.structure.metrics.StructureMetricsProvider;
 import io.vertigo.datamodel.impl.task.TaskManagerImpl;
+import io.vertigo.datamodel.impl.task.metrics.TasksMetricsProvider;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.task.TaskManager;
 
@@ -43,7 +45,9 @@ public final class DataModelFeatures extends Features<DataModelFeatures> {
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
 				.addComponent(SmartTypeManager.class, SmartTypeManagerImpl.class)
-				.addComponent(TaskManager.class, TaskManagerImpl.class);
+				.addComponent(TaskManager.class, TaskManagerImpl.class)
+				.addComponent(StructureMetricsProvider.class)
+				.addComponent(TasksMetricsProvider.class);
 
 	}
 }

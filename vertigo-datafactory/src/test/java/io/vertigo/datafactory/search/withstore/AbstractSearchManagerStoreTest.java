@@ -41,6 +41,7 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
+import io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder;
 import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.search.data.domain.Item;
 import io.vertigo.datafactory.search.data.domain.ItemDataBase;
@@ -49,7 +50,6 @@ import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
-import io.vertigo.dynamox.search.DslListFilterBuilder;
 
 /**
  * Test de l'implémentation standard couplé au store.

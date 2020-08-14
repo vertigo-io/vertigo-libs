@@ -22,7 +22,7 @@ import java.util.List;
 
 import io.vertigo.core.lang.Builder;
 import io.vertigo.datafactory.collections.ListFilter;
-import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
+import io.vertigo.datafactory.impl.search.dsl.model.DslMultiExpression;
 
 /**
  * Project specific builder from Criteria to ListFilter.

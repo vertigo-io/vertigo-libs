@@ -38,6 +38,7 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.datafactory.DataFactoryFeatures;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
+import io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder;
 import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.search.data.ItemSearchClient;
 import io.vertigo.datafactory.search.data.TestSearchSmartTypes;
@@ -49,7 +50,6 @@ import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.dynamox.search.DslListFilterBuilder;
 
 /**
  * @author  npiedeloup

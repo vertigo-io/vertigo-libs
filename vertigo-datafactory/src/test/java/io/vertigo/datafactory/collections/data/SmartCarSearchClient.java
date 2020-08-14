@@ -63,7 +63,7 @@ public class SmartCarSearchClient implements Component, DefinitionProvider {
 				// FacetedQueryDefinition
 				//-----
 				new FacetedQueryDefinitionSupplier("QryCarFacet")
-						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
+						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("#query#")
 						.withCriteriaSmartType("STyText")
 						.withFacet("FctDescriptionCar")

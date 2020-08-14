@@ -283,30 +283,32 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 
 	private static void doDeleteOldFiles(final Path documentRootFile, final long maxTime) {
 		final List<RuntimeException> processIOExceptions = new ArrayList<>();
-		try (Stream<Path> fileStream = Files.list(documentRootFile)) {
-			fileStream.forEach(subFile -> {
-				if (Files.isDirectory(subFile) && Files.isReadable(subFile)) { //canRead pour les pbs de droits
-					doDeleteOldFiles(subFile, maxTime);
-				} else {
-					boolean shouldDelete = false;
-					try {
-						shouldDelete = Files.getLastModifiedTime(subFile).toMillis() <= maxTime;
-						if (shouldDelete) {
-							Files.delete(subFile);
-						}
-					} catch (final IOException e) {
-						managedIOException(processIOExceptions, e);
-						if (shouldDelete) {
-							subFile.toFile().deleteOnExit();
+		if (Files.exists(documentRootFile)) { // if this is for temp files, the root directy might have been deleted by the os!
+			try (Stream<Path> fileStream = Files.list(documentRootFile)) {
+				fileStream.forEach(subFile -> {
+					if (Files.isDirectory(subFile) && Files.isReadable(subFile)) { //canRead pour les pbs de droits
+						doDeleteOldFiles(subFile, maxTime);
+					} else {
+						boolean shouldDelete = false;
+						try {
+							shouldDelete = Files.getLastModifiedTime(subFile).toMillis() <= maxTime;
+							if (shouldDelete) {
+								Files.delete(subFile);
+							}
+						} catch (final IOException e) {
+							managedIOException(processIOExceptions, e);
+							if (shouldDelete) {
+								subFile.toFile().deleteOnExit();
+							}
 						}
 					}
-				}
-			});
-		} catch (final IOException e) {
-			managedIOException(processIOExceptions, e);
-		}
-		if (!processIOExceptions.isEmpty()) {
-			throw processIOExceptions.get(0); //We throw the first exception (for daemon health stats), and log the others
+				});
+			} catch (final IOException e) {
+				managedIOException(processIOExceptions, e);
+			}
+			if (!processIOExceptions.isEmpty()) {
+				throw processIOExceptions.get(0); //We throw the first exception (for daemon health stats), and log the others
+			}
 		}
 	}
 

@@ -109,7 +109,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 				.collect(Collectors.toSet());
 
 		for (final String dbName : dbNames) {
-			if (TimeSeriesManagerImpl.WILDCARD_PLUGIN != dbName && !existingDatabases.contains(dbName)) {
+			if (!TimeSeriesManagerImpl.WILDCARD_PLUGIN.equals(dbName) && !existingDatabases.contains(dbName)) {
 				influxDB.query(new Query("CREATE DATABASE \"" + dbName + "\"", dbName));
 			}
 		}

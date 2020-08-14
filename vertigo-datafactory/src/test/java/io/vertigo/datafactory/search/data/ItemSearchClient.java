@@ -186,7 +186,7 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 				// FacetedQueryDefinition
 				//-----
 				new FacetedQueryDefinitionSupplier("QryItemFacet")
-						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
+						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
 						.withCriteriaSmartType("STyString")
 						.withFacet("FctDescriptionItem")
@@ -194,26 +194,26 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withFacet("FctManufacturerItemAlpha")
 						.withFacet("FctYearItem"),
 				new FacetedQueryDefinitionSupplier("QryItemOptionalFacet")
-						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
+						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
 						.withCriteriaSmartType("STyString")
 						.withFacet("FctOptionalStringItem"),
 				new FacetedQueryDefinitionSupplier("QryItemFacetMulti")
-						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
+						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
 						.withCriteriaSmartType("STyString")
 						.withFacet("FctDescriptionItem")
 						.withFacet("FctManufacturerItemMulti")
 						.withFacet("FctYearItem"),
 				new FacetedQueryDefinitionSupplier("QryItemFacetGeo")
-						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
+						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#+description*#")
 						.withGeoSearchQuery("localisation:#localisation#~50km") // distance
 						.withCriteriaSmartType("STyDtItem")
 						.withFacet("FctLocalisationItem")
 						.withFacet("FctLocalisationCircleItem"),
 				new FacetedQueryDefinitionSupplier("QryItemFacetGeo2")
-						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
+						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#+description*#")
 						.withGeoSearchQuery("localisation:[#localisation#~5km to #localisation#~50km]") // distance circle
 						.withCriteriaSmartType("STyDtItem")

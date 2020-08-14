@@ -54,15 +54,15 @@ import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.impl.collections.functions.filter.DtListPatternFilterUtil;
+import io.vertigo.datafactory.impl.search.dsl.model.DslGeoDistanceQuery;
+import io.vertigo.datafactory.impl.search.dsl.model.DslGeoExpression;
+import io.vertigo.datafactory.impl.search.dsl.model.DslGeoRangeQuery;
+import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.DtProperty;
 import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.dynamox.search.dsl.model.DslGeoDistanceQuery;
-import io.vertigo.dynamox.search.dsl.model.DslGeoExpression;
-import io.vertigo.dynamox.search.dsl.model.DslGeoRangeQuery;
-import io.vertigo.dynamox.search.dsl.rules.DslParserUtil;
 
 //vérifier
 /**

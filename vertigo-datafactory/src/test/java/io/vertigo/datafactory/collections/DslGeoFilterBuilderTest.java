@@ -25,11 +25,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.lang.BasicTypeAdapter;
+import io.vertigo.datafactory.impl.search.dsl.model.DslGeoExpression;
+import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
 import io.vertigo.datafactory.plugins.search.elasticsearch.DslGeoToQueryBuilderUtil;
 import io.vertigo.datafactory.search.data.domain.GeoPoint;
 import io.vertigo.datafactory.search.data.domain.GeoPointAdapter;
-import io.vertigo.dynamox.search.dsl.model.DslGeoExpression;
-import io.vertigo.dynamox.search.dsl.rules.DslParserUtil;
 
 /**
  * @author  npiedeloup

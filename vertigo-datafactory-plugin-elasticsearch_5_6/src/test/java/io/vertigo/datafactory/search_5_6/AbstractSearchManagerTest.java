@@ -57,6 +57,7 @@ import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
+import io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder;
 import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.search.data.domain.Item;
 import io.vertigo.datafactory.search.data.domain.ItemDataBase;
@@ -67,7 +68,6 @@ import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.dynamox.search.DslListFilterBuilder;
 
 /**
  * @author  npiedeloup

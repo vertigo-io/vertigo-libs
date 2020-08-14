@@ -49,7 +49,7 @@ import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.datafactory.DataFactoryFeatures;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datastore.DataStoreFeatures;
-import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
+import io.vertigo.datastore.entitystore.metrics.EntityMetricsProvider;
 import io.vertigo.vega.VegaFeatures;
 
 public class DashboardLauncherTest {
@@ -132,7 +132,7 @@ public class DashboardLauncherTest {
 						.build())
 				.addModule(
 						ModuleConfig.builder("metrics")
-								.addComponent(DomainMetricsProvider.class)
+								.addComponent(EntityMetricsProvider.class)
 								.build())
 				.build();
 	}

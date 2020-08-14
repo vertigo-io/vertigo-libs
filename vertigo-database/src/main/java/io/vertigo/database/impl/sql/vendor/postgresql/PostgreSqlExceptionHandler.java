@@ -61,20 +61,23 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 		return handleOtherSQLException(sqle, statementInfos);
 	}
 
-	private boolean isUserSQLException(final String errCode) {
+	private static boolean isUserSQLException(final String errCode) {
 		final String code = errCode != null ? errCode.substring(0, 2) : null;
-		// Default error message
-		switch (code) {
-			case "01":
-			case "02":
-			case "08":
-			case "22":
-			case "23":
-				// Erreur utilisateur
-				return true;
-			default:
-				return false;
+		if (code != null) {
+			// Default error message
+			switch (code) {
+				case "01":
+				case "02":
+				case "08":
+				case "22":
+				case "23":
+					// Erreur utilisateur
+					return true;
+				default:
+					return false;
+			}
 		}
+		return false;
 	}
 
 	/** {@inheritDoc} */

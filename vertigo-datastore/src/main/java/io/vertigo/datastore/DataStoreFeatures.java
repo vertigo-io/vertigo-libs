@@ -24,6 +24,7 @@ import io.vertigo.core.param.Param;
 import io.vertigo.datamodel.impl.task.proxy.TaskProxyMethod;
 import io.vertigo.datastore.cache.CacheManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.entitystore.metrics.EntityMetricsProvider;
 import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.impl.cache.CacheManagerImpl;
@@ -41,7 +42,6 @@ import io.vertigo.datastore.plugins.filestore.fs.FsFileStorePlugin;
 import io.vertigo.datastore.plugins.filestore.fs.FsFullFileStorePlugin;
 import io.vertigo.datastore.plugins.kvstore.berkeley.BerkeleyKVStorePlugin;
 import io.vertigo.datastore.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
-import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
 
 /**
  * Defines dynamo features.
@@ -139,10 +139,10 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 		return this;
 	}
 
-	@Feature("domainMetrics")
-	public DataStoreFeatures withDomainMetrics() {
+	@Feature("entityMetrics")
+	public DataStoreFeatures withEntityMetrics() {
 		getModuleConfigBuilder()
-				.addComponent(DomainMetricsProvider.class);
+				.addComponent(EntityMetricsProvider.class);
 		return this;
 	}
 

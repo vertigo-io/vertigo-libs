@@ -34,9 +34,9 @@ import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.DateUtil;
 import io.vertigo.datafactory.collections.metamodel.ListFilterBuilder;
-import io.vertigo.dynamox.search.DslListFilterBuilder;
-import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
-import io.vertigo.dynamox.search.dsl.rules.DslParserUtil;
+import io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder;
+import io.vertigo.datafactory.impl.search.dsl.model.DslMultiExpression;
+import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
 
 /**
  * @author  npiedeloup

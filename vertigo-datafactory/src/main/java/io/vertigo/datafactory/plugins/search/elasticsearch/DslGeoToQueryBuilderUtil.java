@@ -12,12 +12,12 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.BeanUtil;
-import io.vertigo.dynamox.search.dsl.model.DslGeoDistanceQuery;
-import io.vertigo.dynamox.search.dsl.model.DslGeoExpression;
-import io.vertigo.dynamox.search.dsl.model.DslGeoPointCriteria;
-import io.vertigo.dynamox.search.dsl.model.DslGeoPointFixed;
-import io.vertigo.dynamox.search.dsl.model.DslGeoRangeQuery;
-import io.vertigo.dynamox.search.dsl.model.DslQuery;
+import io.vertigo.datafactory.impl.search.dsl.model.DslGeoDistanceQuery;
+import io.vertigo.datafactory.impl.search.dsl.model.DslGeoExpression;
+import io.vertigo.datafactory.impl.search.dsl.model.DslGeoPointCriteria;
+import io.vertigo.datafactory.impl.search.dsl.model.DslGeoPointFixed;
+import io.vertigo.datafactory.impl.search.dsl.model.DslGeoRangeQuery;
+import io.vertigo.datafactory.impl.search.dsl.model.DslQuery;
 
 public final class DslGeoToQueryBuilderUtil {
 	private static final String USER_QUERY_KEYWORD = "query";

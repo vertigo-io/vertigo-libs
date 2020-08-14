@@ -31,6 +31,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
+import io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder;
 import io.vertigo.datafactory.search.MyNodeConfig;
 import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.search.data.domain.Item;
@@ -39,7 +40,6 @@ import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.dynamox.search.DslListFilterBuilder;
 
 /**
  * @author  npiedeloup

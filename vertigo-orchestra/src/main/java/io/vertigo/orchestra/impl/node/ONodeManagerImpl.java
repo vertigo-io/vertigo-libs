@@ -19,6 +19,7 @@
 package io.vertigo.orchestra.impl.node;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -52,7 +53,7 @@ public class ONodeManagerImpl implements ONodeManager {
 		// ---
 		final Optional<ONode> existingNode = nodeDAO.getNodeByName(nodeName);
 		final ONode node = existingNode.orElseGet(ONode::new);
-		lastHeartBeatTime = Instant.now();
+		lastHeartBeatTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 		node.setHeartbeat(lastHeartBeatTime);
 		if (existingNode.isPresent()) {
 			nodeDAO.update(node);
@@ -67,11 +68,11 @@ public class ONodeManagerImpl implements ONodeManager {
 	@Override
 	public void updateHeartbeat(final Long nodId) {
 		final ONode node = nodeDAO.get(nodId);
-		if (!lastHeartBeatTime.equals(node.getHeartbeat())) {
+		if (!lastHeartBeatTime.equals(node.getHeartbeat().truncatedTo(ChronoUnit.MILLIS))) {
 			//On ne veut pas d'exception, on ne fait que logger en ERROR
 			LOGGER.error("Two nodes running with same NodeName {}", node.getName());
 		}
-		lastHeartBeatTime = Instant.now();
+		lastHeartBeatTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 		node.setHeartbeat(lastHeartBeatTime);
 		nodeDAO.update(node);
 

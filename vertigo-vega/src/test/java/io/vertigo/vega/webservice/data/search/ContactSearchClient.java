@@ -64,7 +64,7 @@ public class ContactSearchClient implements Component, DefinitionProvider {
 				// FacetedQueryDefinition
 				//-----
 				new FacetedQueryDefinitionSupplier("QryContactFacet")
-						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
+						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("#criteria#")
 						.withCriteriaSmartType("STyTexte50")
 						.withFacet("FctHonorificCode")
