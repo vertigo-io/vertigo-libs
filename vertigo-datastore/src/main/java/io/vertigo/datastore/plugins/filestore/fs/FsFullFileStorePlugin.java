@@ -117,7 +117,11 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		Assertion.check()
 				.when(Files.exists(documentRoot), () -> Assertion.check()
 						.isTrue(Files.isDirectory(documentRoot), "documentRoot ({0}) must be a directory", documentRoot.toAbsolutePath().toString()));
-
+		try {
+			Files.createDirectories(documentRoot);
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Can't create file store root directory {0}", documentRoot.toAbsolutePath().toString());
+		}
 		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
 		this.fileInfoClassName = fileInfoClassName;
 	}
