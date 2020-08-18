@@ -36,6 +36,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -44,6 +45,7 @@ import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 import io.vertigo.vega.engines.webservice.json.SelectedFacetValuesDeserializer;
 import io.vertigo.vega.webservice.model.UiObject;
+import io.vertigo.vega.webservice.stereotype.Validate;
 import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -92,14 +94,14 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 			if (DtObject.class.isAssignableFrom(parameter.getParameterType())) {
 				//object
 				if (viewContext.getUiObject(() -> contextKey).checkFormat(uiMessageStack)) {
-					value = viewContext.getUiObject(() -> contextKey).mergeAndCheckInput(defaultDtObjectValidators, uiMessageStack);
+					value = viewContext.getUiObject(() -> contextKey).mergeAndCheckInput(getDtObjectValidators(parameter), uiMessageStack);
 				} else {
 					value = null;
 				}
 			} else {
 				//list
 				if (viewContext.getUiList(() -> contextKey).checkFormat(uiMessageStack)) {
-					value = viewContext.getUiList(() -> contextKey).mergeAndCheckInput(defaultDtObjectValidators, uiMessageStack);
+					value = viewContext.getUiList(() -> contextKey).mergeAndCheckInput(getDtObjectValidators(parameter), uiMessageStack);
 				} else {
 					value = null;
 				}
@@ -111,6 +113,19 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 			return value;
 		}
 		return viewContext.get(contextKey);// for primitive or other objects
+	}
+
+	private List<DtObjectValidator<DtObject>> getDtObjectValidators(final MethodParameter parameter) {
+		final Validate validateAnnotation = parameter.getParameterAnnotation(Validate.class);
+		List<DtObjectValidator<DtObject>> validators;
+		if (validateAnnotation != null) {
+			validators = Stream.of(validateAnnotation.value())
+					.map(InjectorUtil::newInstance)
+					.collect(Collectors.toList());
+		} else {
+			validators = defaultDtObjectValidators;
+		}
+		return validators;
 	}
 
 	private static boolean isNotLastDt(final MethodParameter parameter) {
