@@ -136,7 +136,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	 */
 	protected final void checkFieldNotNull(final O dto, final String fieldName, final DtObjectErrors dtObjectErrors, final MessageText messageText) {
 		final Object value = getValue(fieldName, dto);
-		if (value != null) {
+		if (value == null) {
 			dtObjectErrors.addError(fieldName, messageText);
 		}
 	}
