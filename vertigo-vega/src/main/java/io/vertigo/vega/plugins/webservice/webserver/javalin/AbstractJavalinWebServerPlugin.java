@@ -74,7 +74,7 @@ abstract class AbstractJavalinWebServerPlugin implements WebServerPlugin, Active
 		//-----
 		boolean corsProtected = false;
 		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {
-			final String routePath = convertJaxRsPathToSpark(apiPrefix.orElse("") + webServiceDefinition.getPath());
+			final String routePath = convertJaxRsPathToJavalin(apiPrefix.orElse("") + webServiceDefinition.getPath());
 			final JavalinRouteHandler javalinRouteHandler = new JavalinRouteHandler(webServiceDefinition, handlerChain);
 			switch (webServiceDefinition.getVerb()) {
 				case Get:
@@ -103,7 +103,7 @@ abstract class AbstractJavalinWebServerPlugin implements WebServerPlugin, Active
 		}
 	}
 
-	private static String convertJaxRsPathToSpark(final String path) {
+	private static String convertJaxRsPathToJavalin(final String path) {
 		return path.replaceAll("\\(", "%28")
 				.replaceAll("\\)", "%29")
 				.replaceAll("\\{(.+?)\\}", ":$1"); //.+? : Reluctant regexp
