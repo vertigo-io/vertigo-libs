@@ -18,11 +18,9 @@
  */
 package io.vertigo.vega.webservice.boot;
 
-import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -34,13 +32,9 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.param.Param;
-import io.vertigo.vega.impl.webservice.filter.JettyMultipartCleaner;
-import io.vertigo.vega.impl.webservice.filter.JettyMultipartConfig;
 import io.vertigo.vega.plugins.webservice.servlet.ServletResourceResolverPlugin;
 import io.vertigo.vega.plugins.webservice.servlet.WebAppContextParamPlugin;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
-import spark.Spark;
-import spark.globalstate.ServletFlag;
 
 /**
  * @author npiedeloup
@@ -70,9 +64,9 @@ public final class TestAppServletContextListener implements ServletContextListen
 			// Initialisation de l'état de l'application
 			node = new AutoCloseableNode(MyNodeConfig.config(false));
 
-			final String tempDir = System.getProperty("java.io.tmpdir");
+			/*final String tempDir = System.getProperty("java.io.tmpdir");
 			Spark.before(new JettyMultipartConfig(tempDir));
-			Spark.after(new JettyMultipartCleaner());
+			Spark.after(new JettyMultipartCleaner());*/
 
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
@@ -113,13 +107,13 @@ public final class TestAppServletContextListener implements ServletContextListen
 	public void contextDestroyed(final ServletContextEvent sce) {
 		if (node != null) {
 			node.close();
-			clearSparkServletFlag();
+			//clearSparkServletFlag();
 		} else {
 			LOG.warn("Context destroyed : App wasn't started");
 		}
 	}
 
-	private static void clearSparkServletFlag() {
+	/*private static void clearSparkServletFlag() {
 		try {
 			final Field isRunningFromServletField = ServletFlag.class.getDeclaredField("isRunningFromServlet");
 			isRunningFromServletField.setAccessible(true);
@@ -128,5 +122,5 @@ public final class TestAppServletContextListener implements ServletContextListen
 		} catch (final Exception e) {
 			throw new AssertionError(e);
 		}
-	}
+	}*/
 }

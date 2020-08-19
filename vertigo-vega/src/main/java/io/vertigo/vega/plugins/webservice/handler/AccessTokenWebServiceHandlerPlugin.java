@@ -22,6 +22,8 @@ import java.io.Serializable;
 import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.lang.Assertion;
@@ -30,8 +32,6 @@ import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import spark.Request;
-import spark.Response;
 
 /**
  * Params handler. Extract and Json convert.
@@ -67,10 +67,10 @@ public final class AccessTokenWebServiceHandlerPlugin implements WebServiceHandl
 
 	/** {@inheritDoc}  */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
+	public Object handle(final HttpServletRequest request, final HttpServletResponse response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		final String accessTokenKey;
 		if (routeContext.getWebServiceDefinition().isAccessTokenMandatory()) {
-			accessTokenKey = request.headers(HEADER_ACCESS_TOKEN);
+			accessTokenKey = request.getHeader(HEADER_ACCESS_TOKEN);
 			if (accessTokenKey == null) {
 				throw new VSecurityException(INVALID_ACCESS_TOKEN_MSG); //same message for no AccessToken or bad AccessToken
 			}
@@ -87,7 +87,7 @@ public final class AccessTokenWebServiceHandlerPlugin implements WebServiceHandl
 		}
 		if (routeContext.getWebServiceDefinition().isAccessTokenPublish()) {
 			final String newAccessTokenKey = tokenManager.put(TOKEN_DATA);
-			response.header(HEADER_ACCESS_TOKEN, newAccessTokenKey);
+			response.addHeader(HEADER_ACCESS_TOKEN, newAccessTokenKey);
 		}
 		return result;
 	}

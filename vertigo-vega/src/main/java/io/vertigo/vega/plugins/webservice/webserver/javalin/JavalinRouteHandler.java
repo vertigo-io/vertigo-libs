@@ -16,49 +16,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
+package io.vertigo.vega.plugins.webservice.webserver.javalin;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.javalin.http.Context;
+import io.javalin.http.Handler;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import spark.Request;
-import spark.Response;
-import spark.Route;
 
 /**
- * Webservice Route for Spark.
+ * Webservice Route for Javalin.
  * @author npiedeloup
  */
-final class SparkJavaRoute implements Route {
+final class JavalinRouteHandler implements Handler {
 
-	private static final Logger LOGGER = LogManager.getLogger(SparkJavaRoute.class);
+	private static final Logger LOGGER = LogManager.getLogger(JavalinRouteHandler.class);
 	private final WebServiceDefinition webServiceDefinition;
 	private final HandlerChain handlerChain;
-	private final String defaultContentCharset;
 
 	/**
 	 * @param webServiceDefinition webServiceDefinition
 	 * @param handlerChain handlerChain
 	 * @param defaultContentCharset DefaultContentCharset
 	 */
-	SparkJavaRoute(final WebServiceDefinition webServiceDefinition, final HandlerChain handlerChain, final String defaultContentCharset) {
+	JavalinRouteHandler(final WebServiceDefinition webServiceDefinition, final HandlerChain handlerChain) {
 		this.webServiceDefinition = webServiceDefinition;
 		this.handlerChain = handlerChain;
-		this.defaultContentCharset = defaultContentCharset;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response) {
+	public void handle(final Context ctx) {
 		try {
-			final Request requestWrapper = new SparkJavaRequestWrapper(request, defaultContentCharset);
-			return handlerChain.handle(requestWrapper, response, new WebServiceCallContext(requestWrapper, response, webServiceDefinition));
+			final Object result = handlerChain.handle(ctx.req, ctx.res, new WebServiceCallContext(new JavalinWebServiceContext(ctx), webServiceDefinition));
+
+			if (result instanceof String) {
+				ctx.result((String) result);
+			} else {
+				//TODO usefull ?
+				ctx.json(result);
+			}
+
 		} catch (final Throwable th) {
 			LOGGER.error(th.getMessage(), th);
-			return th.getMessage();
+			ctx.result(th.getMessage());
 		}
 	}
 }

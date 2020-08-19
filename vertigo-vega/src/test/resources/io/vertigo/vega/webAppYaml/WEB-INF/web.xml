@@ -7,9 +7,9 @@
 	<listener>
 		<listener-class>io.vertigo.vega.impl.webservice.servlet.AppServletContextListener</listener-class>
 	</listener>
-	<listener>
+	<!-- <listener>
 		<listener-class>io.vertigo.vega.webservice.boot.TestCleanerAppServletContextListener</listener-class>
-	</listener>
+	</listener> -->
 	<context-param>
 		<param-name>boot.applicationConfiguration</param-name>
 		<param-value>/io/vertigo/vega/webAppYaml/WEB-INF/testApp.yaml</param-value>

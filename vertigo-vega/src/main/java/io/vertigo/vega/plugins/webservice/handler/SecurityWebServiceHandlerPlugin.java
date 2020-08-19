@@ -21,6 +21,8 @@ package io.vertigo.vega.plugins.webservice.handler;
 import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.account.security.UserSession;
@@ -30,8 +32,6 @@ import io.vertigo.core.locale.MessageText;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import spark.Request;
-import spark.Response;
 
 /**
  * Security handler.
@@ -64,7 +64,7 @@ public final class SecurityWebServiceHandlerPlugin implements WebServiceHandlerP
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
+	public Object handle(final HttpServletRequest request, final HttpServletResponse response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		// 2. Check user is authentified
 		final Optional<UserSession> userSessionOption = securityManager.getCurrentUserSession();
 		if (userSessionOption.isEmpty() || !userSessionOption.get().isAuthenticated()) {

@@ -16,26 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
+package io.vertigo.vega.plugins.webservice.webserver.javalin;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.javalin.http.Context;
+import io.javalin.http.Handler;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition.Verb;
-import spark.Request;
-import spark.Response;
-import spark.Route;
 
 /**
  * Handler of Options preflight request.
  * @author npiedeloup
  */
-public final class SparkJavaOptionsRoute implements Route {
-	private static final Logger LOGGER = LogManager.getLogger(SparkJavaOptionsRoute.class);
+public final class JavalinOptionsRouteHandler implements Handler {
+	private static final Logger LOGGER = LogManager.getLogger(JavalinOptionsRouteHandler.class);
 
 	private final HandlerChain handlerChain;
 	private final WebServiceDefinition webServiceCors;
@@ -43,10 +42,10 @@ public final class SparkJavaOptionsRoute implements Route {
 	/**
 	 * @param handlerChain handlerChain
 	 */
-	SparkJavaOptionsRoute(final HandlerChain handlerChain) {
+	JavalinOptionsRouteHandler(final HandlerChain handlerChain) {
 		this.handlerChain = handlerChain;
 		//we use a fake webServiceDefinition, to ensure no webservice was called on Options request
-		webServiceCors = WebServiceDefinition.builder(ClassUtil.findMethod(SparkJavaOptionsRoute.class, "unsupported"))
+		webServiceCors = WebServiceDefinition.builder(ClassUtil.findMethod(JavalinOptionsRouteHandler.class, "unsupported"))
 				.with(Verb.Get, "/_OPTIONS_*")
 				.withCorsProtected(true)
 				.build();
@@ -61,12 +60,18 @@ public final class SparkJavaOptionsRoute implements Route {
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response) {
+	public void handle(final Context ctx) {
 		try {
-			return handlerChain.handle(request, response, new WebServiceCallContext(request, response, webServiceCors)); //no WebService
+			final Object result = handlerChain.handle(ctx.req, ctx.res, new WebServiceCallContext(new JavalinWebServiceContext(ctx), webServiceCors)); //no WebService
+			if (result instanceof String) {
+				ctx.result((String) result);
+			} else {
+				//TODO usefull ?
+				ctx.json(result);
+			}
 		} catch (final Exception e) {
 			LOGGER.error("Option route error", e);
-			return e.getMessage();
+			ctx.result(e.getMessage());
 		}
 	}
 }

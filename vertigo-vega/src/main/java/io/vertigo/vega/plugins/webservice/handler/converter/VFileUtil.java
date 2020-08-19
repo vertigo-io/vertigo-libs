@@ -26,6 +26,8 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.logging.log4j.LogManager;
@@ -38,8 +40,6 @@ import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
-import spark.Request;
-import spark.Response;
 
 /**
  * @author npiedeloup
@@ -57,9 +57,9 @@ final class VFileUtil {
 	 * @param request Request
 	 * @return If this request is multipart
 	 */
-	static boolean isMultipartRequest(final Request request) {
-		final String contentType = request.contentType();
-		return contentType != null && "POST".equalsIgnoreCase(request.raw().getMethod()) && contentType.startsWith("multipart/form-data");
+	static boolean isMultipartRequest(final HttpServletRequest request) {
+		final String contentType = request.getContentType();
+		return contentType != null && "POST".equalsIgnoreCase(request.getMethod()) && contentType.startsWith("multipart/form-data");
 	}
 
 	/**
@@ -75,7 +75,7 @@ final class VFileUtil {
 	 * @param webServiceParam WebService param
 	 * @return All VFile informations
 	 */
-	static VFile readVFileParam(final Request request, final WebServiceParam webServiceParam) {
+	static VFile readVFileParam(final HttpServletRequest request, final WebServiceParam webServiceParam) {
 		switch (webServiceParam.getParamType()) {
 			case Query:
 				return readQueryFile(request, webServiceParam);
@@ -101,11 +101,11 @@ final class VFileUtil {
 	 * @param result WebService result
 	 * @param response Response
 	 */
-	static void sendVFile(final Object result, final boolean attachment, final Response response) {
+	static void sendVFile(final Object result, final boolean attachment, final HttpServletResponse response) {
 		sendVFile((VFile) result, attachment, response);
 	}
 
-	private static void sendVFile(final VFile result, final boolean attachment, final Response response) {
+	private static void sendVFile(final VFile result, final boolean attachment, final HttpServletResponse response) {
 		try {
 			send(result, attachment, response);
 		} catch (final IOException e) {
@@ -114,16 +114,16 @@ final class VFileUtil {
 		// response already send
 	}
 
-	private static VFile readQueryFile(final Request request, final WebServiceParam webServiceParam) {
+	private static VFile readQueryFile(final HttpServletRequest request, final WebServiceParam webServiceParam) {
 		try {
 			Assertion.check()
-					.isTrue(request.contentType().contains("multipart/form-data"), "File {0} not found. Request contentType isn't \"multipart/form-data\"", webServiceParam.getName())
-					.isFalse(request.raw().getParts().isEmpty(),
+					.isTrue(request.getContentType().contains("multipart/form-data"), "File {0} not found. Request contentType isn't \"multipart/form-data\"", webServiceParam.getName())
+					.isFalse(request.getParts().isEmpty(),
 							"File {0} not found. Request is multipart but there is no Parts. : Check you have defined MultipartConfig (example for Tomcat set allowCasualMultipartParsing=\"true\" on context tag in your context definition, for Jetty use JettyMultipartConfig)",
 							webServiceParam.getName());
-			final Part file = request.raw().getPart(webServiceParam.getName());
+			final Part file = request.getPart(webServiceParam.getName());
 			if (file == null) {
-				final String sentParts = request.raw().getParts()
+				final String sentParts = request.getParts()
 						.stream()
 						.map(Part::getName)
 						.collect(Collectors.joining(", "));
@@ -135,21 +135,21 @@ final class VFileUtil {
 		}
 	}
 
-	private static void send(final VFile vFile, final boolean isAttachment, final Response response)
+	private static void send(final VFile vFile, final boolean isAttachment, final HttpServletResponse response)
 			throws IOException {
 		final Long length = vFile.getLength();
 		Assertion.check().isTrue(length < Integer.MAX_VALUE, "Too big file to be send. It's "
 				+ length / 1024 + " Ko long, but maximum was " + Integer.MAX_VALUE / 1024
 				+ " Ko.");
-		response.header("Content-Length", String.valueOf(length.intValue()));
-		response.header("Content-Disposition",
+		response.addHeader("Content-Length", String.valueOf(length.intValue()));
+		response.addHeader("Content-Disposition",
 				encodeFileNameToContentDisposition(vFile.getFileName(), isAttachment));
-		response.raw().addDateHeader("Last-Modified", vFile.getLastModified().toEpochMilli());
-		response.type(vFile.getMimeType());
-		response.header("Cache-Control", "private");
+		response.addDateHeader("Last-Modified", vFile.getLastModified().toEpochMilli());
+		response.setContentType(vFile.getMimeType());
+		response.addHeader("Cache-Control", "private");
 
 		try (final InputStream input = vFile.createInputStream()) {
-			try (final OutputStream output = response.raw().getOutputStream()) {
+			try (final OutputStream output = response.getOutputStream()) {
 				copy(input, output);
 			}
 		}

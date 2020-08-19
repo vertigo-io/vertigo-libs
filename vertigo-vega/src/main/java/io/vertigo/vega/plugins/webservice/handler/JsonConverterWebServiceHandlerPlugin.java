@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonSyntaxException;
@@ -55,8 +56,6 @@ import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-import spark.Request;
-import spark.Response;
 
 /**
  * Params handler.
@@ -126,7 +125,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 
 	/** {@inheritDoc}  */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
+	public Object handle(final HttpServletRequest request, final HttpServletResponse response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		//we can't read body at first : because if it's a multipart request call body() disabled getParts() access.
 		for (final WebServiceParam webServiceParam : routeContext.getWebServiceDefinition().getWebServiceParams()) {
 			readParameterValue(request, routeContext, webServiceParam);
@@ -135,7 +134,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 		return convertResultToJson(result, response, routeContext);
 	}
 
-	private void readParameterValue(final Request request, final WebServiceCallContext routeContext, final WebServiceParam webServiceParam) {
+	private void readParameterValue(final HttpServletRequest request, final WebServiceCallContext routeContext, final WebServiceParam webServiceParam) {
 		try {
 			boolean found = false;
 			JsonReader jsonReaderToApply = null;
@@ -182,12 +181,12 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 		}
 	}
 
-	private String convertResultToJson(final Object result, final Response response, final WebServiceCallContext routeContext) {
+	private String convertResultToJson(final Object result, final HttpServletResponse response, final WebServiceCallContext routeContext) {
 		//optimize most common case
 		if (result == null) {
 			//if status was not set, or set to OK we set it to NO_CONTENT
-			if (response.raw().getStatus() == HttpServletResponse.SC_OK || response.raw().getStatus() == 0) {
-				response.status(HttpServletResponse.SC_NO_CONTENT);
+			if (response.getStatus() == HttpServletResponse.SC_OK || response.getStatus() == 0) {
+				response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 			}
 			return ""; //jetty understand null as 404 not found
 		}

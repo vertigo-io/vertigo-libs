@@ -29,8 +29,6 @@ import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.ImplicitParam;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
-import spark.Request;
-import spark.Response;
 
 public final class ImplicitJsonConverter implements JsonConverter, JsonSerializer {
 
@@ -47,24 +45,24 @@ public final class ImplicitJsonConverter implements JsonConverter, JsonSerialize
 	public void populateWebServiceCallContext(final Object input, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		Assertion.check().isTrue(getSupportedInputs()[0].isInstance(input), "This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
 		//-----
-		final Object value = readImplicitValue((Request) input, webServiceParam, routeContext);
+		final Object value = readImplicitValue((HttpServletRequest) input, webServiceParam, routeContext);
 		routeContext.setParamValue(webServiceParam, value);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Class[] getSupportedInputs() {
-		return new Class[] { Request.class };
+		return new Class[] { HttpServletRequest.class };
 	}
 
-	private static Object readImplicitValue(final Request request, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
+	private static Object readImplicitValue(final HttpServletRequest request, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		switch (ImplicitParam.valueOf(webServiceParam.getName())) {
 			case UiMessageStack:
 				return routeContext.getUiMessageStack();
 			case Request:
-				return request.raw();
+				return request;
 			case Response:
-				return routeContext.getResponse().raw();
+				return routeContext.getResponse();
 			default:
 				throw new IllegalArgumentException("ImplicitParam : " + webServiceParam.getName());
 		}
@@ -72,7 +70,7 @@ public final class ImplicitJsonConverter implements JsonConverter, JsonSerialize
 
 	/** {@inheritDoc} */
 	@Override
-	public String toJson(final Object result, final Response response, final WebServiceDefinition webServiceDefinition) {
+	public String toJson(final Object result, final HttpServletResponse response, final WebServiceDefinition webServiceDefinition) {
 		Assertion.check()
 				.isTrue(HttpServletResponse.class.isInstance(result), "This JsonConverter doesn't support this output type {0}. Only {1} is supported", result.getClass().getSimpleName(), HttpServletResponse.class.getSimpleName())
 				//-----

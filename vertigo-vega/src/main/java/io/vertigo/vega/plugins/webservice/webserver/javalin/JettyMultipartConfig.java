@@ -16,19 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.impl.webservice.filter;
+package io.vertigo.vega.plugins.webservice.webserver.javalin;
 
 import javax.servlet.MultipartConfigElement;
 
-import spark.Filter;
-import spark.Request;
-import spark.Response;
+import io.javalin.http.Context;
+import io.javalin.http.Handler;
 
 /**
  * Filter to configure MultipartConfigElement for Jetty Request.
  * @author npiedeloup
  */
-public final class JettyMultipartConfig implements Filter {
+public final class JettyMultipartConfig implements Handler {
 	private static final long MAX_PARTS_SIZE = 30 * 1024 * 1024L;
 	private static final int MAX_NB_PARTS = 5;
 	private static final int MAX_PART_SIZE_IN_MEMORY = 50 * 1024;
@@ -45,9 +44,8 @@ public final class JettyMultipartConfig implements Filter {
 
 	/** {@inheritDoc} */
 	@Override
-	public void handle(final Request request, final Response response) {
-		request.raw().setAttribute(JETTY_CONFIG_ATTRIBUTE, multipartConfigElement);
-
+	public void handle(final Context ctx) throws Exception {
+		ctx.req.setAttribute(JETTY_CONFIG_ATTRIBUTE, multipartConfigElement);
 	}
 
 }

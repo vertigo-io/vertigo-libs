@@ -18,10 +18,11 @@
  */
 package io.vertigo.vega.plugins.webservice.handler.reader;
 
+import javax.servlet.http.HttpServletRequest;
+
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-import spark.Request;
 
 /**
  * Read request to extract a not converted parameter.
@@ -48,6 +49,6 @@ public interface JsonReader<O> {
 	 * @param routeContext routeContext
 	 * @return output value
 	 */
-	O extractData(Request request, WebServiceParam webServiceParam, WebServiceCallContext routeContext);
+	O extractData(HttpServletRequest request, WebServiceParam webServiceParam, WebServiceCallContext routeContext);
 
 }

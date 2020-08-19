@@ -16,28 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
+package io.vertigo.vega.plugins.webservice.webserver.javalin;
 
 import java.util.Collection;
 import java.util.Optional;
 
+import io.javalin.Javalin;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.vega.impl.webservice.WebServerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import spark.Spark;
 
 /**
  * RoutesRegisterPlugin use to register Spark-java route.
  * @author npiedeloup
  */
-abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin, Activeable {
-	private static final String DEFAULT_CONTENT_CHARSET = "UTF-8";
+abstract class AbstractJavalinWebServerPlugin implements WebServerPlugin, Activeable {
 	private final Optional<String> apiPrefix;
+	private Javalin javalinApp;
 
-	public AbstractSparkJavaWebServerPlugin(final Optional<String> apiPrefix) {
+	public AbstractJavalinWebServerPlugin(final Optional<String> apiPrefix) {
 		Assertion.check()
 				.isNotNull(apiPrefix)
 				.when(apiPrefix.isPresent(), () -> Assertion.check()
@@ -48,12 +48,14 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin, Acti
 
 	@Override
 	public void start() {
-		// nothing
+		javalinApp = startJavalin();
 	}
+
+	protected abstract Javalin startJavalin();
 
 	@Override
 	public void stop() {
-		Spark.stop();
+		javalinApp.stop();
 		// we need to sleep because spark starts a new thread to stop the server
 		try {
 			Thread.sleep(100L);
@@ -73,23 +75,22 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin, Acti
 		boolean corsProtected = false;
 		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {
 			final String routePath = convertJaxRsPathToSpark(apiPrefix.orElse("") + webServiceDefinition.getPath());
-			final String acceptType = webServiceDefinition.getAcceptType();
-			final SparkJavaRoute sparkJavaRoute = new SparkJavaRoute(webServiceDefinition, handlerChain, DEFAULT_CONTENT_CHARSET);
+			final JavalinRouteHandler javalinRouteHandler = new JavalinRouteHandler(webServiceDefinition, handlerChain);
 			switch (webServiceDefinition.getVerb()) {
 				case Get:
-					Spark.get(routePath, acceptType, sparkJavaRoute);
+					javalinApp.get(routePath, javalinRouteHandler);
 					break;
 				case Post:
-					Spark.post(routePath, acceptType, sparkJavaRoute);
+					javalinApp.post(routePath, javalinRouteHandler);
 					break;
 				case Put:
-					Spark.put(routePath, acceptType, sparkJavaRoute);
+					javalinApp.put(routePath, javalinRouteHandler);
 					break;
 				case Patch:
-					Spark.patch(routePath, acceptType, sparkJavaRoute);
+					javalinApp.patch(routePath, javalinRouteHandler);
 					break;
 				case Delete:
-					Spark.delete(routePath, acceptType, sparkJavaRoute);
+					javalinApp.delete(routePath, javalinRouteHandler);
 					break;
 				default:
 					throw new UnsupportedOperationException();
@@ -97,8 +98,8 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin, Acti
 			corsProtected = corsProtected || webServiceDefinition.isCorsProtected();
 		}
 		if (corsProtected) {
-			final SparkJavaOptionsRoute sparkJavaOptionsRoute = new SparkJavaOptionsRoute(handlerChain);
-			Spark.options("*", sparkJavaOptionsRoute);
+			final JavalinOptionsRouteHandler javalinOptionsRouteHandler = new JavalinOptionsRouteHandler(handlerChain);
+			javalinApp.options("*", javalinOptionsRouteHandler);
 		}
 	}
 

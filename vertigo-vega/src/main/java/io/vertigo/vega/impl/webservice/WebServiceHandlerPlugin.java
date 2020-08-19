@@ -18,14 +18,15 @@
  */
 package io.vertigo.vega.impl.webservice;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.plugins.webservice.handler.RestfulServiceWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import spark.Request;
-import spark.Response;
 
 /**
  * Handler of WebService Route, are defined as plugins of WebServiceManager.
@@ -42,16 +43,16 @@ public interface WebServiceHandlerPlugin extends Plugin {
 	/**
 	 * Do handle of this route.
 	 *
-	 * @param request spark.Request
-	 * @param response spark.Response
+	 * @param request Request
+	 * @param response Response
 	 * @param webServiceCallContext Context of this request
 	 * @param chain current HandlerChain.
 	 * @return Response body
 	 * @throws SessionException Session expired exception
 	 */
 	Object handle(
-			final Request request,
-			final Response response,
+			final HttpServletRequest request,
+			final HttpServletResponse response,
 			final WebServiceCallContext webServiceCallContext,
 			final HandlerChain chain) throws SessionException;
 

@@ -16,31 +16,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
+package io.vertigo.vega.plugins.webservice.webserver.javalin;
 
 import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.javalin.Javalin;
 import io.vertigo.core.param.ParamValue;
-import spark.globalstate.ServletFlag;
 
 /**
- * RoutesRegisterPlugin use to register Spark-java route.
+ * RoutesRegisterPlugin use to register Javalin route.
  * @author npiedeloup
  */
-public final class SparkJavaServletFilterWebServerPlugin extends AbstractSparkJavaWebServerPlugin {
+public final class JavalinServletFilterWebServerPlugin extends AbstractJavalinWebServerPlugin {
 
 	/**
 	 * Constructor.
 	 * @param apiPrefix Global apiPrefix
 	 */
 	@Inject
-	public SparkJavaServletFilterWebServerPlugin(@ParamValue("apiPrefix") final Optional<String> apiPrefix) {
+	public JavalinServletFilterWebServerPlugin(@ParamValue("apiPrefix") final Optional<String> apiPrefix) {
 		super(apiPrefix);
-		//-----
-		ServletFlag.runFromServlet();
-		//must start initialize JavaSpark before registering route, if not Spark will start a standalone Jetty server
+	}
+
+	@Override
+	protected Javalin startJavalin() {
+		return Javalin.createStandalone();
 	}
 
 }

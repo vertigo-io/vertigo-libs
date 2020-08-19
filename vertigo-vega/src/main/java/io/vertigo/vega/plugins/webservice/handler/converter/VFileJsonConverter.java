@@ -20,13 +20,14 @@ package io.vertigo.vega.plugins.webservice.handler.converter;
 
 import java.util.Arrays;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
-import spark.Request;
-import spark.Response;
 
 public final class VFileJsonConverter implements JsonConverter, JsonSerializer {
 
@@ -43,19 +44,19 @@ public final class VFileJsonConverter implements JsonConverter, JsonSerializer {
 				getSupportedInputs()[0].isInstance(input),
 				"This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
 		//-----
-		final VFile value = VFileUtil.readVFileParam((Request) input, webServiceParam);
+		final VFile value = VFileUtil.readVFileParam((HttpServletRequest) input, webServiceParam);
 		routeContext.setParamValue(webServiceParam, value);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Class[] getSupportedInputs() {
-		return new Class[] { Request.class };
+		return new Class[] { HttpServletRequest.class };
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public String toJson(final Object result, final Response response, final WebServiceDefinition webServiceDefinition) {
+	public String toJson(final Object result, final HttpServletResponse response, final WebServiceDefinition webServiceDefinition) {
 		VFileUtil.sendVFile(result, webServiceDefinition.isFileAttachment(), response);
 		return ""; // response already send but can't send null : javaspark understand it as : not consumed here
 	}

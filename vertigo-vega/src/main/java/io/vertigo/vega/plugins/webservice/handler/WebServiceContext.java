@@ -16,31 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.plugins.webservice.handler.reader;
+package io.vertigo.vega.plugins.webservice.handler;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
+/**
+* @author npiedeloup
+*/
+public interface WebServiceContext {
 
-public final class RequestJsonReader implements JsonReader<HttpServletRequest> {
+	HttpServletRequest getRequest();
 
-	/** {@inheritDoc} */
-	@Override
-	public WebServiceParamType[] getSupportedInput() {
-		return WebServiceParamType.values(); //default support all
-	}
+	HttpServletResponse getResponse();
 
-	/** {@inheritDoc} */
-	@Override
-	public Class<HttpServletRequest> getSupportedOutput() {
-		return HttpServletRequest.class;
-	}
+	String getPathParam(String pathName);
 
-	/** {@inheritDoc} */
-	@Override
-	public HttpServletRequest extractData(final HttpServletRequest request, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
-		return request;
-	}
+	String getBody();
+
 }

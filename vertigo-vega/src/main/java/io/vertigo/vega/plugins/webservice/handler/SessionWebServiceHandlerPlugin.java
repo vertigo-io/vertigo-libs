@@ -19,6 +19,9 @@
 package io.vertigo.vega.plugins.webservice.handler;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.account.security.UserSession;
@@ -27,9 +30,6 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import spark.Request;
-import spark.Response;
-import spark.Session;
 
 /**
  * Session handler.
@@ -67,8 +67,8 @@ public final class SessionWebServiceHandlerPlugin implements WebServiceHandlerPl
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
-		final Session session = request.session(true); //obtain session (create if needed)
+	public Object handle(final HttpServletRequest request, final HttpServletResponse response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
+		final HttpSession session = request.getSession(true); //obtain session (create if needed)
 		final UserSession user = obtainUserSession(session);
 		try {
 			// Bind userSession to SecurityManager
@@ -101,12 +101,12 @@ public final class SessionWebServiceHandlerPlugin implements WebServiceHandlerPl
 	 *
 	 * @return Session utilisateur
 	 */
-	private UserSession obtainUserSession(final Session session) {
-		UserSession user = session.attribute(USER_SESSION);
+	private UserSession obtainUserSession(final HttpSession session) {
+		UserSession user = (UserSession) session.getAttribute(USER_SESSION);
 		// Si la session user n'est pas créée on la crée
 		if (user == null) {
 			user = securityManager.createUserSession();
-			session.attribute(USER_SESSION, user);
+			session.setAttribute(USER_SESSION, user);
 		}
 		return user;
 	}

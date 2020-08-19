@@ -18,8 +18,9 @@
  */
 package io.vertigo.vega.plugins.webservice.handler.converter;
 
+import javax.servlet.http.HttpServletResponse;
+
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import spark.Response;
 
 /**
  * Converter result object into json.
@@ -40,6 +41,6 @@ public interface JsonSerializer {
 	 * @param webServiceDefinition WebService definition
 	 * @return Json (or empty string)
 	 */
-	String toJson(Object result, Response response, WebServiceDefinition webServiceDefinition);
+	String toJson(Object result, HttpServletResponse response, WebServiceDefinition webServiceDefinition);
 
 }

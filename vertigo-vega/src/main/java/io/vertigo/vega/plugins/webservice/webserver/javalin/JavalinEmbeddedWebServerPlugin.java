@@ -16,36 +16,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
+package io.vertigo.vega.plugins.webservice.webserver.javalin;
 
 import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.javalin.Javalin;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.vega.impl.webservice.filter.JettyMultipartCleaner;
-import io.vertigo.vega.impl.webservice.filter.JettyMultipartConfig;
-import spark.Spark;
 
 /**
- * RoutesRegisterPlugin use to register Spark-java route.
+ * RoutesRegisterPlugin use to register Javalin route.
  * @author npiedeloup
  */
-public final class SparkJavaEmbeddedWebServerPlugin extends AbstractSparkJavaWebServerPlugin {
+public final class JavalinEmbeddedWebServerPlugin extends AbstractJavalinWebServerPlugin {
+
+	private final int port;
+	private final Javalin javalinApp;
 
 	/**
 	 * @param apiPrefix globale api prefix
 	 * @param port Server port
 	 */
 	@Inject
-	public SparkJavaEmbeddedWebServerPlugin(
+	public JavalinEmbeddedWebServerPlugin(
 			@ParamValue("apiPrefix") final Optional<String> apiPrefix,
 			@ParamValue("port") final int port) {
 		super(apiPrefix);
-		Spark.port(port);
+		this.port = port;
 		//---
 		final String tempDir = System.getProperty("java.io.tmpdir");
-		Spark.before(new JettyMultipartConfig(tempDir));
-		Spark.after(new JettyMultipartCleaner());
+		javalinApp = Javalin.create()
+				.before(new JettyMultipartConfig(tempDir))
+				.after(new JettyMultipartCleaner());
+
+	}
+
+	@Override
+	protected Javalin startJavalin() {
+		return javalinApp.start(port);
 	}
 }

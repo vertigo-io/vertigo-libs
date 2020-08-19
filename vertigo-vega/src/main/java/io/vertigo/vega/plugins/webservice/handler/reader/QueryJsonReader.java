@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.model.DtListState;
@@ -32,8 +33,6 @@ import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-import spark.QueryParamsMap;
-import spark.Request;
 
 public final class QueryJsonReader implements JsonReader<String> {
 
@@ -63,15 +62,15 @@ public final class QueryJsonReader implements JsonReader<String> {
 
 	/** {@inheritDoc} */
 	@Override
-	public String extractData(final Request request, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
+	public String extractData(final HttpServletRequest request, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		Assertion.check().isTrue(
 				getSupportedInput()[0].equals(webServiceParam.getParamType()),
 				"This JsonReader can't read the asked request ParamType {0}. Only {1} is supported", webServiceParam.getParamType(), Arrays.toString(getSupportedInput()));
 		//-----
-		return readQueryValue(request.queryMap(), webServiceParam);
+		return readQueryValue(request.getParameterMap(), webServiceParam);
 	}
 
-	private String readQueryValue(final QueryParamsMap queryMap, final WebServiceParam webServiceParam) {
+	private String readQueryValue(final Map<String, String[]> queryMap, final WebServiceParam webServiceParam) {
 		final Class<?> paramClass = webServiceParam.getType();
 		final String paramName = webServiceParam.getName();
 		if (queryMap == null) {
@@ -81,13 +80,14 @@ public final class QueryJsonReader implements JsonReader<String> {
 				|| DtObject.class.isAssignableFrom(paramClass)) {
 			return convertToJson(queryMap, webServiceParam.getName());
 		}
-		return queryMap.get(paramName).value();
+		final String[] values = queryMap.get(paramName);
+		return values != null ? values[0] : null; //first or nothing
 	}
 
-	private String convertToJson(final QueryParamsMap queryMap, final String queryPrefix) {
+	private String convertToJson(final Map<String, String[]> queryMap, final String queryPrefix) {
 		final String checkedQueryPrefix = queryPrefix.isEmpty() ? "" : queryPrefix + ".";
 		final Map<String, Object> queryParams = new HashMap<>();
-		for (final Entry<String, String[]> entry : queryMap.toMap().entrySet()) {
+		for (final Entry<String, String[]> entry : queryMap.entrySet()) {
 			if (entry.getKey().startsWith(checkedQueryPrefix)) {
 				final String[] value = entry.getValue();
 				final Object simplerValue = value.length == 0 ? null : value.length == 1 ? value[0] : value;

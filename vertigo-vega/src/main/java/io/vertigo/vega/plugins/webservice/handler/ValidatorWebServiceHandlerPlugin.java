@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -39,8 +42,6 @@ import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
-import spark.Request;
-import spark.Response;
 
 /**
  * Params handler. Extract and Json convert.
@@ -59,7 +60,7 @@ public final class ValidatorWebServiceHandlerPlugin implements WebServiceHandler
 
 	/** {@inheritDoc}  */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
+	public Object handle(final HttpServletRequest request, final HttpServletResponse response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		final WebServiceDefinition webServiceDefinition = routeContext.getWebServiceDefinition();
 		final UiMessageStack uiMessageStack = routeContext.getUiMessageStack();
 		for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {

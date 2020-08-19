@@ -22,6 +22,9 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -31,8 +34,6 @@ import io.vertigo.vega.webservice.model.DtListDelta;
 import io.vertigo.vega.webservice.validation.UiContextResolver;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.VegaUiMessageStack;
-import spark.Request;
-import spark.Response;
 
 /**
 * @author npiedeloup
@@ -40,8 +41,9 @@ import spark.Response;
 public final class WebServiceCallContext {
 	private static final String UI_MESSAGE_STACK = "UiMessageStack";
 	private final WebServiceDefinition webServiceDefinition;
-	private final Request request;
-	private final Response response;
+	private final HttpServletRequest request;
+	private final HttpServletResponse response;
+	private final WebServiceContext webServiceContext;
 	private final UiContextResolver uiContextResolver;
 
 	/**
@@ -50,12 +52,13 @@ public final class WebServiceCallContext {
 	 * @param response Response
 	 * @param webServiceDefinition WebServiceDefinition
 	 */
-	public WebServiceCallContext(final Request request, final Response response, final WebServiceDefinition webServiceDefinition) {
-		this.request = request;
-		this.response = response;
+	public WebServiceCallContext(final WebServiceContext webServiceContext, final WebServiceDefinition webServiceDefinition) {
+		request = webServiceContext.getRequest();
+		response = webServiceContext.getResponse();
+		this.webServiceContext = webServiceContext;
 		this.webServiceDefinition = webServiceDefinition;
 		uiContextResolver = new UiContextResolver();
-		request.attribute(UI_MESSAGE_STACK, new VegaUiMessageStack(uiContextResolver));
+		request.setAttribute(UI_MESSAGE_STACK, new VegaUiMessageStack(uiContextResolver));
 	}
 
 	/**
@@ -69,20 +72,20 @@ public final class WebServiceCallContext {
 	 * @return UiMessageStack
 	 */
 	public UiMessageStack getUiMessageStack() {
-		return (UiMessageStack) request.attribute(UI_MESSAGE_STACK);
+		return (UiMessageStack) request.getAttribute(UI_MESSAGE_STACK);
 	}
 
 	/**
 	 * @return Request
 	 */
-	public Request getRequest() {
+	public HttpServletRequest getRequest() {
 		return request;
 	}
 
 	/**
 	 * @return Response
 	 */
-	public Response getResponse() {
+	public HttpServletResponse getResponse() {
 		return response;
 	}
 
@@ -92,7 +95,7 @@ public final class WebServiceCallContext {
 	 * @param value param value
 	 */
 	public void setParamValue(final WebServiceParam webServiceParam, final Object value) {
-		request.attribute(webServiceParam.getFullName(), ifOptional(webServiceParam, value));
+		request.setAttribute(webServiceParam.getFullName(), ifOptional(webServiceParam, value));
 	}
 
 	/**
@@ -101,7 +104,25 @@ public final class WebServiceCallContext {
 	 * @return param value
 	 */
 	public Object getParamValue(final WebServiceParam webServiceParam) {
-		return request.attribute(webServiceParam.getFullName());
+		return request.getAttribute(webServiceParam.getFullName());
+	}
+
+	/**
+	 * Get path param of an endpoint.
+	 * @param webServiceParam param name
+	 * @return path param value
+	 */
+	public String getPathParam(final WebServiceParam webServiceParam) {
+		return webServiceContext.getPathParam(webServiceParam.getName());
+	}
+
+	/**
+	 * Get path param of an endpoint.
+	 * @param webServiceParam param name
+	 * @return path param value
+	 */
+	public String getBody() {
+		return webServiceContext.getBody();
 	}
 
 	/**
@@ -119,8 +140,8 @@ public final class WebServiceCallContext {
 		for (final Map.Entry<String, DtObject> entry : contextKeyMap.entrySet()) {
 			uiContextResolver.register(entry.getKey(), entry.getValue());
 		}
-		request.attribute(webServiceParam.getFullName() + "-input", request.attribute(webServiceParam.getFullName()));
-		request.attribute(webServiceParam.getFullName(), ifOptional(webServiceParam, updatedValue));
+		request.setAttribute(webServiceParam.getFullName() + "-input", request.getAttribute(webServiceParam.getFullName()));
+		request.setAttribute(webServiceParam.getFullName(), ifOptional(webServiceParam, updatedValue));
 	}
 
 	private static Object ifOptional(final WebServiceParam webServiceParam, final Object value) {

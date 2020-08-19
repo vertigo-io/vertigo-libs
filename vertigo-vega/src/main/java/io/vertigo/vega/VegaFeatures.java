@@ -42,8 +42,8 @@ import io.vertigo.vega.plugins.webservice.handler.SessionInvalidateWebServiceHan
 import io.vertigo.vega.plugins.webservice.handler.SessionWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.ValidatorWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.scanner.annotations.AnnotationsWebServiceScannerPlugin;
-import io.vertigo.vega.plugins.webservice.webserver.sparkjava.SparkJavaEmbeddedWebServerPlugin;
-import io.vertigo.vega.plugins.webservice.webserver.sparkjava.SparkJavaServletFilterWebServerPlugin;
+import io.vertigo.vega.plugins.webservice.webserver.javalin.JavalinEmbeddedWebServerPlugin;
+import io.vertigo.vega.plugins.webservice.webserver.javalin.JavalinServletFilterWebServerPlugin;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.WebServiceManager;
 
@@ -162,13 +162,13 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 			if (myApiPrefix != null) {
 				params.add(Param.of("apiPrefix", myApiPrefix));
 			}
-			getModuleConfigBuilder().addPlugin(SparkJavaEmbeddedWebServerPlugin.class, params.build());
+			getModuleConfigBuilder().addPlugin(JavalinEmbeddedWebServerPlugin.class, params.build());
 		} else {
 			final ListBuilder<Param> params = new ListBuilder<>();
 			if (myApiPrefix != null) {
 				params.add(Param.of("apiPrefix", myApiPrefix));
 			}
-			getModuleConfigBuilder().addPlugin(SparkJavaServletFilterWebServerPlugin.class, params.build());
+			getModuleConfigBuilder().addPlugin(JavalinServletFilterWebServerPlugin.class, params.build());
 		}
 
 		getModuleConfigBuilder()

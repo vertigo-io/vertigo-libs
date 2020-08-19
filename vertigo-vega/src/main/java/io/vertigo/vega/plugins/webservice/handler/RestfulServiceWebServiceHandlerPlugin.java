@@ -21,6 +21,7 @@ package io.vertigo.vega.plugins.webservice.handler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.account.authorization.VSecurityException;
@@ -32,8 +33,6 @@ import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
-import spark.Request;
-import spark.Response;
 
 /**
  * RestfulServiceHandler : call service method.
@@ -52,7 +51,7 @@ public final class RestfulServiceWebServiceHandlerPlugin implements WebServiceHa
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
+	public Object handle(final HttpServletRequest request, final HttpServletResponse response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		final WebServiceDefinition webServiceDefinition = routeContext.getWebServiceDefinition();
 		final Object[] serviceArgs = makeArgs(routeContext);
 		final Method method = webServiceDefinition.getMethod();
@@ -60,7 +59,7 @@ public final class RestfulServiceWebServiceHandlerPlugin implements WebServiceHa
 
 		if (method.getName().startsWith("create")) {
 			//by convention, if method starts with 'create', an http 201 status code is returned (if ok)
-			response.status(HttpServletResponse.SC_CREATED);
+			response.setStatus(HttpServletResponse.SC_CREATED);
 		}
 		try {
 			return ClassUtil.invoke(webServices, method, serviceArgs);

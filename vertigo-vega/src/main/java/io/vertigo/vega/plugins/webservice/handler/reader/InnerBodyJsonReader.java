@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
@@ -32,7 +33,6 @@ import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-import spark.Request;
 
 public final class InnerBodyJsonReader implements JsonReader<UiContext> {
 
@@ -62,15 +62,15 @@ public final class InnerBodyJsonReader implements JsonReader<UiContext> {
 
 	/** {@inheritDoc} */
 	@Override
-	public UiContext extractData(final Request request, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
+	public UiContext extractData(final HttpServletRequest request, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		Assertion.check().isTrue(
 				getSupportedInput()[0].equals(webServiceParam.getParamType()),
 				"This JsonReader can't read the asked request ParamType {0}. Only {1} is supported", webServiceParam.getParamType(), Arrays.toString(getSupportedInput()));
 		//-----
-		UiContext uiContext = routeContext.getRequest().attribute("InnerBodyValues");
+		UiContext uiContext = (UiContext) request.getAttribute("InnerBodyValues");
 		if (uiContext == null) {
-			uiContext = readInnerBodyValue(request.body(), routeContext.getWebServiceDefinition().getWebServiceParams());
-			routeContext.getRequest().attribute("InnerBodyValues", uiContext);
+			uiContext = readInnerBodyValue(routeContext.getBody(), routeContext.getWebServiceDefinition().getWebServiceParams());
+			request.setAttribute("InnerBodyValues", uiContext);
 		}
 		return uiContext;
 	}

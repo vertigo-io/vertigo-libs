@@ -25,6 +25,8 @@ import java.util.Map.Entry;
 import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.lang.Assertion;
@@ -42,8 +44,6 @@ import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.model.ExtendedObject;
 import io.vertigo.vega.webservice.model.UiObject;
-import spark.Request;
-import spark.Response;
 
 /**
  * ServerSide state handler.
@@ -83,7 +83,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 
 	/** {@inheritDoc}  */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
+	public Object handle(final HttpServletRequest request, final HttpServletResponse response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		for (final WebServiceParam webServiceParam : routeContext.getWebServiceDefinition().getWebServiceParams()) {
 			if (webServiceParam.isNeedServerSideToken()) {
 				final Object webServiceValue = routeContext.getParamValue(webServiceParam);

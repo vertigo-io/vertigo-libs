@@ -26,6 +26,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
@@ -40,8 +42,6 @@ import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.exception.TooManyRequestException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import spark.Request;
-import spark.Response;
 
 /**
  * Rate limit handler.
@@ -108,7 +108,7 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 
 	/** {@inheritDoc}  */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
+	public Object handle(final HttpServletRequest request, final HttpServletResponse response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		Assertion.check()
 				.isNotNull(request)
 				.isNotNull(response)
@@ -116,21 +116,21 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 				.isNotNull(chain);
 		//-----
 		final String userKey = obtainUserKey(request, securityManager.getCurrentUserSession());
-		response.header(RATE_LIMIT_LIMIT, String.valueOf(limitValue));
-		response.header(RATE_LIMIT_RESET, String.valueOf(windowSeconds - (System.currentTimeMillis() - lastRateLimitResetTime) / 1000));
+		response.addHeader(RATE_LIMIT_LIMIT, String.valueOf(limitValue));
+		response.addHeader(RATE_LIMIT_RESET, String.valueOf(windowSeconds - (System.currentTimeMillis() - lastRateLimitResetTime) / 1000));
 
 		final long hits = touch(userKey);
 		if (hits > limitValue) {
 			throw new TooManyRequestException("Rate limit exceeded");
 		}
-		response.header(RATE_LIMIT_REMAINING, String.valueOf(limitValue - hits));
+		response.addHeader(RATE_LIMIT_REMAINING, String.valueOf(limitValue - hits));
 		return chain.handle(request, response, routeContext);
 	}
 
-	private static String obtainUserKey(final Request request, final Optional<UserSession> userSessionOpt) {
+	private static String obtainUserKey(final HttpServletRequest request, final Optional<UserSession> userSessionOpt) {
 		return userSessionOpt
 				.map(userSession -> userSession.getSessionUUID().toString())
-				.orElseGet(() -> request.ip() + ":" + request.headers("user-agent"));
+				.orElseGet(() -> request.getRemoteAddr() + ":" + request.getHeader("user-agent"));
 	}
 
 	private long touch(final String userKey) {

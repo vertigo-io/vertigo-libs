@@ -18,12 +18,13 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import spark.Request;
-import spark.Response;
-import spark.Session;
 
 /**
  * Invalidate session handler.
@@ -42,11 +43,11 @@ public final class SessionInvalidateWebServiceHandlerPlugin implements WebServic
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
+	public Object handle(final HttpServletRequest request, final HttpServletResponse response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		try {
 			return chain.handle(request, response, routeContext);
 		} finally {
-			final Session session = request.session();
+			final HttpSession session = request.getSession();
 			if (session != null) {
 				session.invalidate();
 			}

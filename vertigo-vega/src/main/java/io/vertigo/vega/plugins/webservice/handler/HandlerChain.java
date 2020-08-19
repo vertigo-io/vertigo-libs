@@ -22,11 +22,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
-import spark.Request;
-import spark.Response;
 
 /**
  * Chain of handlers to handle a Request.
@@ -67,7 +68,7 @@ public final class HandlerChain {
 	 * @return WebService result
 	 * @throws SessionException Session exception
 	 */
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext) throws SessionException {
+	public Object handle(final HttpServletRequest request, final HttpServletResponse response, final WebServiceCallContext routeContext) throws SessionException {
 		int lookAhead = 0;
 		while (offset + lookAhead < handlers.size()) {
 			final WebServiceHandlerPlugin nextHandler = handlers.get(offset + lookAhead);

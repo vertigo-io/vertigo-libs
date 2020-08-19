@@ -19,6 +19,7 @@
 package io.vertigo.vega.plugins.webservice.handler;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,8 +38,6 @@ import io.vertigo.vega.webservice.exception.TooManyRequestException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
-import spark.Request;
-import spark.Response;
 
 /**
  * Exceptions handler. Convert exception to response.
@@ -72,7 +71,7 @@ public final class ExceptionWebServiceHandlerPlugin implements WebServiceHandler
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) {
+	public Object handle(final HttpServletRequest request, final HttpServletResponse response, final WebServiceCallContext routeContext, final HandlerChain chain) {
 		try {
 			try {
 				return chain.handle(request, response, routeContext);
@@ -109,15 +108,15 @@ public final class ExceptionWebServiceHandlerPlugin implements WebServiceHandler
 		return cause;
 	}
 
-	private Object sendJsonUiMessageStack(final int statusCode, final UiMessageStack uiMessageStack, final Response response) {
-		response.status(statusCode);
-		response.type("application/json;charset=UTF-8");
+	private Object sendJsonUiMessageStack(final int statusCode, final UiMessageStack uiMessageStack, final HttpServletResponse response) {
+		response.setStatus(statusCode);
+		response.setContentType("application/json;charset=UTF-8");
 		return jsonWriterEngine.toJson(uiMessageStack);
 	}
 
-	private Object sendJsonError(final int statusCode, final Throwable e, final Response response) {
-		response.status(statusCode);
-		response.type("application/json;charset=UTF-8");
+	private Object sendJsonError(final int statusCode, final Throwable e, final HttpServletResponse response) {
+		response.setStatus(statusCode);
+		response.setContentType("application/json;charset=UTF-8");
 		return jsonWriterEngine.toJsonError(e);
 	}
 

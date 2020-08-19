@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.account.authorization.VSecurityException;
@@ -32,8 +33,6 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import spark.Request;
-import spark.Response;
 
 /**
  * Handler of Cross-Origin Resource Sharing (CORS).
@@ -79,11 +78,11 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
+	public Object handle(final HttpServletRequest request, final HttpServletResponse response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		putCorsResponseHeaders(request, response);
-		if ("OPTIONS".equalsIgnoreCase(request.raw().getMethod())) { //if Options request, we stop here
-			response.status(HttpServletResponse.SC_OK);
-			response.type("application/json;charset=UTF-8");
+		if ("OPTIONS".equalsIgnoreCase(request.getMethod())) { //if Options request, we stop here
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.setContentType("application/json;charset=UTF-8");
 			return "";
 		}
 		return chain.handle(request, response, routeContext);
@@ -93,22 +92,22 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	 * @param request Request
 	 * @param response Response
 	 */
-	public void putCorsResponseHeaders(final Request request, final Response response) {
+	public void putCorsResponseHeaders(final HttpServletRequest request, final HttpServletResponse response) {
 		/** @see "https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny" */
 		/* Step 1 : Check that we have only one and non empty instance of the "Origin" header */
-		final String origin = request.headers(REQUEST_HEADER_ORIGIN);
+		final String origin = request.getHeader(REQUEST_HEADER_ORIGIN);
 		if (origin != null) {
-			final String method = request.raw().getMethod();
+			final String method = request.getMethod();
 			if (!isAllowed(origin, originCORSFiltersSet) || !isAllowed(method, methodCORSFiltersSet)) {
-				response.status(HttpServletResponse.SC_FORBIDDEN);
-				response.raw().resetBuffer();
+				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+				response.resetBuffer();
 				throw new VSecurityException(MessageText.of("Invalid CORS Access (Origin:{0}, Method:{1})", origin, method));
 			}
 		}
-		response.header("Access-Control-Allow-Origin", originCORSFilter);
-		response.header("Access-Control-Allow-Methods", methodCORSFilter);
-		response.header("Access-Control-Allow-Headers", DEFAULT_ALLOW_HEADERS_CORS_FILTER);
-		response.header("Access-Control-Expose-Headers", DEFAULT_EXPOSED_HEADERS_CORS_FILTER);
+		response.addHeader("Access-Control-Allow-Origin", originCORSFilter);
+		response.addHeader("Access-Control-Allow-Methods", methodCORSFilter);
+		response.addHeader("Access-Control-Allow-Headers", DEFAULT_ALLOW_HEADERS_CORS_FILTER);
+		response.addHeader("Access-Control-Expose-Headers", DEFAULT_EXPOSED_HEADERS_CORS_FILTER);
 	}
 
 	private static boolean isAllowed(final String currentValue, final Set<String> allowedValues) {

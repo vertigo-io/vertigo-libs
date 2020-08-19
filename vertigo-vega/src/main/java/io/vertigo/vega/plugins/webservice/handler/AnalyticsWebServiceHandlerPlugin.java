@@ -19,6 +19,8 @@
 package io.vertigo.vega.plugins.webservice.handler;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
@@ -26,8 +28,6 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import spark.Request;
-import spark.Response;
 
 /**
  * Analytics handler.
@@ -59,7 +59,7 @@ public final class AnalyticsWebServiceHandlerPlugin implements WebServiceHandler
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext webServiceCallContext, final HandlerChain chain) throws SessionException {
+	public Object handle(final HttpServletRequest request, final HttpServletResponse response, final WebServiceCallContext webServiceCallContext, final HandlerChain chain) throws SessionException {
 		final WebServiceDefinition webServiceDefinition = webServiceCallContext.getWebServiceDefinition();
 		//On ne prend pas request.pathInfo qui peut contenir des paramètres : on en veut pas ca dans les stats
 		final String name = "/" + webServiceDefinition.getVerb().name() + "/" + webServiceDefinition.getPath();

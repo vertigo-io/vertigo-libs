@@ -20,11 +20,12 @@ package io.vertigo.vega.plugins.webservice.handler.reader;
 
 import java.util.Arrays;
 
+import javax.servlet.http.HttpServletRequest;
+
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-import spark.Request;
 
 public final class PathJsonReader implements JsonReader<String> {
 
@@ -42,12 +43,12 @@ public final class PathJsonReader implements JsonReader<String> {
 
 	/** {@inheritDoc} */
 	@Override
-	public String extractData(final Request request, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
+	public String extractData(final HttpServletRequest request, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		Assertion.check().isTrue(
 				getSupportedInput()[0].equals(webServiceParam.getParamType()),
 				"This JsonReader can't read the asked request ParamType {0}. Only {1} is supported", webServiceParam.getParamType(), Arrays.toString(getSupportedInput()));
 		//-----
-		return request.params(webServiceParam.getName());
+		return routeContext.getPathParam(webServiceParam);
 	}
 
 }

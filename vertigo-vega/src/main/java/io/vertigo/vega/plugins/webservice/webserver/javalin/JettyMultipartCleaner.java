@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.impl.webservice.filter;
+package io.vertigo.vega.plugins.webservice.webserver.javalin;
 
 import java.io.IOException;
 
@@ -24,23 +24,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.MultiParts;
 
-import spark.Filter;
-import spark.Request;
-import spark.Response;
+import io.javalin.http.Context;
+import io.javalin.http.Handler;
 
 /**
  * Filter to configure MultipartConfigElement for Jetty Request.
  * @author npiedeloup
  */
-public final class JettyMultipartCleaner implements Filter {
+public final class JettyMultipartCleaner implements Handler {
 	private static final String JETTY_MULTIPARTS = org.eclipse.jetty.server.Request.MULTIPARTS;//"org.eclipse.multipartConfig";
 	private static final Logger LOG = LogManager.getLogger(JettyMultipartCleaner.class);
 
 	/** {@inheritDoc} */
 	@Override
-	public void handle(final Request request, final Response response) {
-		final MultiParts multiParts = (MultiParts) request.raw()
-				.getAttribute(JETTY_MULTIPARTS);
+	public void handle(final Context ctx) {
+		final MultiParts multiParts = (MultiParts) ctx.req.getAttribute(JETTY_MULTIPARTS);
 		if (multiParts != null && !multiParts.isEmpty()) {
 			try {
 				// a multipart request to a servlet will have the parts cleaned up correctly, but

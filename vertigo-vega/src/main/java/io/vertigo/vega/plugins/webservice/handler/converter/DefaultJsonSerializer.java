@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
@@ -41,7 +42,6 @@ import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.model.ExtendedObject;
-import spark.Response;
 
 /**
  * Default JsonConverter.
@@ -162,13 +162,13 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 
 	/** {@inheritDoc} */
 	@Override
-	public String toJson(final Object result, final Response response, final WebServiceDefinition webServiceDefinition) {
+	public String toJson(final Object result, final HttpServletResponse response, final WebServiceDefinition webServiceDefinition) {
 		final EncodedType encodedType = findEncodedType(result);
 		final StringBuilder contentType = new StringBuilder("application/json;charset=UTF-8");
 		if (encodedType.getEncoderType() != EncoderType.JSON) {
 			contentType.append(';').append(encodedType.obtainContentType());
 		}
-		response.type(contentType.toString());
+		response.setContentType(contentType.toString());
 		return writeValue(result, response, webServiceDefinition);
 	}
 
@@ -222,7 +222,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 		return false;
 	}
 
-	private String writeValue(final Object value, final Response response, final WebServiceDefinition webServiceDefinition) {
+	private String writeValue(final Object value, final HttpServletResponse response, final WebServiceDefinition webServiceDefinition) {
 		Assertion.check().isNotNull(value);
 		//-----
 		if (value instanceof String
@@ -260,16 +260,16 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 		}
 	}
 
-	private void writeListMetaToHeader(final List<?> list, final Response response) {
+	private void writeListMetaToHeader(final List<?> list, final HttpServletResponse response) {
 		if (list instanceof DtList) {
 			final DtList<?> dtList = (DtList<?>) list;
 			for (final String entry : dtList.getMetaDataNames()) {
 				final Optional<Serializable> valueOpt = dtList.getMetaData(entry, Serializable.class);
 				if (valueOpt.isPresent()) {
 					if (valueOpt.get() instanceof String) {
-						response.header(entry, (String) valueOpt.get()); //TODO escape somethings ?
+						response.addHeader(entry, (String) valueOpt.get()); //TODO escape somethings ?
 					} else {
-						response.header(entry, jsonWriterEngine.toJson(valueOpt.get()));
+						response.addHeader(entry, jsonWriterEngine.toJson(valueOpt.get()));
 					}
 				}
 			}
