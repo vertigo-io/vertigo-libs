@@ -40,7 +40,6 @@ import io.vertigo.stella.work.MyWorkResultHanlder;
 import io.vertigo.stella.work.mock.SlowWork;
 import io.vertigo.stella.work.mock.SlowWorkEngine;
 import io.vertigo.vega.VegaFeatures;
-import spark.Spark;
 
 /**
  * @author npiedeloup
@@ -107,9 +106,6 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 			clientNode1.stop();
 			clientNode1 = null;
 		}
-		Spark.stop();
-		Thread.sleep(5_000);
-
 		LOG.info("All was stopped, quit now");
 	}
 
