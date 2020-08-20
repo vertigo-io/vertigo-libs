@@ -26,8 +26,6 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.eclipse.jetty.http.MimeTypes;
-
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamManager;
@@ -49,6 +47,7 @@ public class DbProcessLoggerPlugin implements ProcessLoggerPlugin {
 	private static final String ROOT_DIRECTORY = "orchestra.root.directory";
 	private static final String TECHNICAL_LOG_PREFIX = "technicalLog_";
 	private static final String TECHNICAL_LOG_EXTENSION = ".log";
+	private static final String TECHNICAL_LOG_MIMETYPE = "text/plain";
 
 	@Inject
 	private OActivityLogDAO activityLogDAO;
@@ -85,7 +84,7 @@ public class DbProcessLoggerPlugin implements ProcessLoggerPlugin {
 					final byte[] stringByteArray = activityLog.getLog().getBytes(StandardCharsets.UTF_8);
 					final InputStreamBuilder inputStreamBuilder = () -> new ByteArrayInputStream(stringByteArray);
 					final String fileName = TECHNICAL_LOG_PREFIX + actityExecutionId + TECHNICAL_LOG_EXTENSION;
-					return fileManager.createFile(fileName, MimeTypes.getDefaultMimeByExtension(fileName), Instant.now(), stringByteArray.length, inputStreamBuilder);
+					return fileManager.createFile(fileName, TECHNICAL_LOG_MIMETYPE, Instant.now(), stringByteArray.length, inputStreamBuilder);
 				});
 	}
 
