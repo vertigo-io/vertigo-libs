@@ -30,6 +30,7 @@ import io.vertigo.core.param.ParamValue;
  * @author npiedeloup
  */
 public final class JavalinServletFilterWebServerPlugin extends AbstractJavalinWebServerPlugin {
+	private final Javalin javalinApp;
 
 	/**
 	 * Constructor.
@@ -38,11 +39,16 @@ public final class JavalinServletFilterWebServerPlugin extends AbstractJavalinWe
 	@Inject
 	public JavalinServletFilterWebServerPlugin(@ParamValue("apiPrefix") final Optional<String> apiPrefix) {
 		super(apiPrefix);
+		javalinApp = Javalin.createStandalone();
 	}
 
 	@Override
 	protected Javalin startJavalin() {
-		return Javalin.createStandalone();
+		return javalinApp;
+	}
+
+	protected Javalin getJavalin() {
+		return javalinApp;
 	}
 
 }
