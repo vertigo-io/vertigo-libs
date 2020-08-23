@@ -85,13 +85,13 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 
 	private Supplier<Locale> createLocaleProvider() {
 		return () -> getCurrentUserSession()
-				.map(userSession -> userSession.getLocale())
+				.map(UserSession::getLocale)
 				.orElse(null);
 	}
 
 	private Supplier<ZoneId> createZoneIdProvider() {
 		return () -> getCurrentUserSession()
-				.map(userSession -> userSession.getZoneId())
+				.map(UserSession::getZoneId)
 				.orElse(null);
 	}
 
