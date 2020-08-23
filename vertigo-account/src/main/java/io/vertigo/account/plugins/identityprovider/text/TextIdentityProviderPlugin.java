@@ -195,23 +195,16 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		Assertion.check().isTrue(userDtDefinition.contains(userAuthField), "User definition ({0}) should contains the userAuthField ({1})", userIdentityEntity, userAuthField);
 
 		final URL realmURL = resourceManager.resolve(filePath);
-		int lineNumber = -1;
-		try {
-			final String confTest = FileUtil.read(realmURL);
-			try (final Scanner scanner = new Scanner(confTest)) {
-				while (scanner.hasNextLine()) {
-					lineNumber++;
-					final String line = scanner.nextLine();
-					parseAndPopulateUserInfo(line, userDtDefinition);
-
-				}
+		final String confTest = FileUtil.read(realmURL);
+		try (final Scanner scanner = new Scanner(confTest)) {
+			while (scanner.hasNextLine()) {
+				final String line = scanner.nextLine();
+				parseAndPopulateUserInfo(line, userDtDefinition);
 			}
-		} catch (final Exception e) {
-			throw WrappedException.wrap(e, "Erreur durant la lecture du Realm {0} line {1}", realmURL, lineNumber);
 		}
 	}
 
-	private void parseAndPopulateUserInfo(final String line, final DtDefinition userDtDefinition) throws FormatterException {
+	private void parseAndPopulateUserInfo(final String line, final DtDefinition userDtDefinition) {
 		final Matcher matcher = filePattern.matcher(line);
 		if (!matcher.find()) {
 			throw new IllegalArgumentException("Can't parse textIdentity file , pattern can't match");
@@ -238,9 +231,14 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		idsToUsers.put(user.getUID().getId(), userInfo);
 	}
 
-	private void setTypedValue(final DtDefinition userDtDefinition, final Entity user, final String fieldName, final String valueStr) throws FormatterException {
+	private void setTypedValue(final DtDefinition userDtDefinition, final Entity user, final String fieldName, final String valueStr) {
 		final DtField dtField = userDtDefinition.getField(fieldName);
-		final Serializable typedValue = (Serializable) smartTypeManager.stringToValue(dtField.getSmartTypeDefinition(), valueStr);
+		final Serializable typedValue;
+		try {
+			typedValue = (Serializable) smartTypeManager.stringToValue(dtField.getSmartTypeDefinition(), valueStr);
+		} catch (final FormatterException e) {
+			throw WrappedException.wrap(e);
+		}
 		dtField.getDataAccessor().setValue(user, typedValue);
 	}
 

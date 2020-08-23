@@ -33,7 +33,6 @@ import io.vertigo.account.impl.authentication.AuthenticationPlugin;
 import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
@@ -97,16 +96,12 @@ public class TextAuthenticationPlugin implements AuthenticationPlugin, Activeabl
 	@Override
 	public void start() {
 		final URL realmURL = resourceManager.resolve(filePath);
-		try {
-			final String confTest = FileUtil.read(realmURL);
-			try (final Scanner scanner = new Scanner(confTest)) {
-				while (scanner.hasNextLine()) {
-					final String line = scanner.nextLine();
-					parseUserInfo(line);
-				}
+		final String confTest = FileUtil.read(realmURL);
+		try (final Scanner scanner = new Scanner(confTest)) {
+			while (scanner.hasNextLine()) {
+				final String line = scanner.nextLine();
+				parseUserInfo(line);
 			}
-		} catch (final Exception e) {
-			throw WrappedException.wrap(e, "Erreur durant la lecture du Realm {0}", realmURL);
 		}
 	}
 

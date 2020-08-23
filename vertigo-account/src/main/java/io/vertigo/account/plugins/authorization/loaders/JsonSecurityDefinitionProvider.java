@@ -33,7 +33,6 @@ import com.google.gson.GsonBuilder;
 import io.vertigo.account.authorization.metamodel.Authorization;
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.config.DefinitionResourceConfig;
 import io.vertigo.core.node.definition.DefinitionProvider;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -78,13 +77,9 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 		// -----
 		final URL authConfURL = resourceManager.resolve(definitionResourceConfig.getPath());
 		final Gson gson = createGson();
-		try {
-			final String confJson = FileUtil.read(authConfURL);
-			final AdvancedSecurityConfiguration config = gson.fromJson(confJson, AdvancedSecurityConfiguration.class);
-			registerDefinitions(config);
-		} catch (final Exception e) {
-			throw WrappedException.wrap(e, "Erreur durant la lecture du fichier JSON {0}", authConfURL);
-		}
+		final String confJson = FileUtil.read(authConfURL);
+		final AdvancedSecurityConfiguration config = gson.fromJson(confJson, AdvancedSecurityConfiguration.class);
+		registerDefinitions(config);
 	}
 
 	private static Gson createGson() {
