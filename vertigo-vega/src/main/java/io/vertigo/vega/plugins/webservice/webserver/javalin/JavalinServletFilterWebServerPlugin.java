@@ -51,4 +51,9 @@ public final class JavalinServletFilterWebServerPlugin extends AbstractJavalinWe
 		return javalinApp;
 	}
 
+	@Override
+	protected void stopJavalin(final Javalin javalin) {
+		//rien
+	}
+
 }

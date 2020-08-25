@@ -56,4 +56,9 @@ public final class JavalinEmbeddedWebServerPlugin extends AbstractJavalinWebServ
 	protected Javalin startJavalin() {
 		return javalinApp.start(port);
 	}
+
+	@Override
+	protected void stopJavalin(final Javalin javalinApp) {
+		javalinApp.stop();
+	}
 }

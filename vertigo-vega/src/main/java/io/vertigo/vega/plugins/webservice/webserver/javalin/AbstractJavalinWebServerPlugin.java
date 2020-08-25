@@ -53,9 +53,11 @@ abstract class AbstractJavalinWebServerPlugin implements WebServerPlugin, Active
 
 	protected abstract Javalin startJavalin();
 
+	protected abstract void stopJavalin(Javalin javalin);
+
 	@Override
 	public void stop() {
-		javalinApp.stop();
+		stopJavalin(javalinApp);
 		// we need to sleep because spark starts a new thread to stop the server
 		try {
 			Thread.sleep(100L);
