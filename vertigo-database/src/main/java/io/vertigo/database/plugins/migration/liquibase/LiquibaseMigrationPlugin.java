@@ -14,7 +14,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.database.impl.migration.MigrationPlugin;
-import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
@@ -37,29 +37,29 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 
 	private static final Logger LOGGER = LogManager.getLogger(LiquibaseMigrationPlugin.class);
 
-	private final SqlDataBaseManager sqlDataBaseManager;
+	private final SqlManager sqlManager;
 
 	private final String connectionName;
 	private final String masterFile;
 
 	/**
 	 * @param masterFile configPath of liquibase
-	 * @param connectionNameOpt connectionName to use to performs the tasks (by default {@link SqlDataBaseManager}.MAIN_CONNECTION_PROVIDER_NAME
-	 * @param sqlDataBaseManager sqlDataBaseManager
+	 * @param connectionNameOpt connectionName to use to performs the tasks (by default {@link SqlManager}.MAIN_CONNECTION_PROVIDER_NAME
+	 * @param sqlManager sqlManager
 	 */
 	@Inject
 	public LiquibaseMigrationPlugin(
 			@ParamValue("masterFile") final String masterFile,
 			@ParamValue("connectionName") final Optional<String> connectionNameOpt,
-			final SqlDataBaseManager sqlDataBaseManager) {
+			final SqlManager sqlManager) {
 		Assertion.check()
 				.isNotNull(masterFile)
 				.isNotNull(connectionNameOpt)
-				.isNotNull(sqlDataBaseManager);
+				.isNotNull(sqlManager);
 		//---
 		this.masterFile = masterFile;
-		connectionName = connectionNameOpt.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
-		this.sqlDataBaseManager = sqlDataBaseManager;
+		connectionName = connectionNameOpt.orElse(SqlManager.MAIN_CONNECTION_PROVIDER_NAME);
+		this.sqlManager = sqlManager;
 	}
 
 	/** {@inheritDoc} */
@@ -67,7 +67,7 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 	public void update() {
 		LOGGER.info("Liquibase  : checking  on connection {}", connectionName);
 
-		try (final SqlConnection sqlConnection = sqlDataBaseManager.getConnectionProvider(connectionName).obtainConnection()) {
+		try (final SqlConnection sqlConnection = sqlManager.getConnectionProvider(connectionName).obtainConnection()) {
 			final Liquibase lb = createLiquibase();
 			final Collection<RanChangeSet> unexpectedChangeSets = lb.listUnexpectedChangeSets(new Contexts(), new LabelExpression());
 			Assertion.check().isTrue(unexpectedChangeSets.isEmpty(), "Database is to recent. Please make sure you run the correct version of the node.");
@@ -80,7 +80,7 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 	}
 
 	private Liquibase createLiquibase() throws DatabaseException {
-		final JdbcConnection jdbcConnection = new JdbcConnection(sqlDataBaseManager.getConnectionProvider(connectionName).obtainConnection().getJdbcConnection());
+		final JdbcConnection jdbcConnection = new JdbcConnection(sqlManager.getConnectionProvider(connectionName).obtainConnection().getJdbcConnection());
 		final Database db = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(jdbcConnection);
 		return new Liquibase(masterFile, new ClassLoaderResourceAccessor(), db);
 	}

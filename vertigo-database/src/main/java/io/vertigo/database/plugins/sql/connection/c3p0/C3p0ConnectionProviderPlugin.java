@@ -32,7 +32,7 @@ import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.database.plugins.sql.connection.AbstractSqlConnectionProviderPlugin;
-import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.vendor.SqlDataBase;
 
@@ -57,7 +57,7 @@ public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionPro
 			@ParamValue("dataBaseClass") final String dataBaseClass,
 			@ParamValue("jdbcDriver") final String jdbcDriver,
 			@ParamValue("jdbcUrl") final String jdbcUrl) {
-		super(name.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), ClassUtil.newInstance(dataBaseClass, SqlDataBase.class));
+		super(name.orElse(SqlManager.MAIN_CONNECTION_PROVIDER_NAME), ClassUtil.newInstance(dataBaseClass, SqlDataBase.class));
 		Assertion.check()
 				.isNotNull(jdbcUrl)
 				.isNotNull(jdbcDriver);

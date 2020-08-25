@@ -15,10 +15,10 @@ public interface MigrationPlugin extends Plugin {
 	 */
 	String getConnectionName();
 
-	/** {@see DataBaseMigrationManager} */
+	/** {@see MigrationManager} */
 	void update();
 
-	/** {@see DataBaseMigrationManager} */
+	/** {@see MigrationManager} */
 	void check();
 
 }

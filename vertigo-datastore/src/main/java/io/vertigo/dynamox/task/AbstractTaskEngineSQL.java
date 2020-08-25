@@ -31,7 +31,7 @@ import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionResourceId;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.statement.SqlStatement;
@@ -97,7 +97,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	private final ScriptManager scriptManager;
 	private final VTransactionManager transactionManager;
 	private final EntityStoreManager entityStoreManager;
-	private final SqlDataBaseManager sqlDataBaseManager;
+	private final SqlManager sqlManager;
 	private final SmartTypeManager smartTypeManager;
 
 	/**
@@ -108,19 +108,19 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 			final ScriptManager scriptManager,
 			final VTransactionManager transactionManager,
 			final EntityStoreManager entityStoreManager,
-			final SqlDataBaseManager sqlDataBaseManager,
+			final SqlManager sqlManager,
 			final SmartTypeManager smartTypeManager) {
 		Assertion.check()
 				.isNotNull(scriptManager)
 				.isNotNull(transactionManager)
 				.isNotNull(entityStoreManager)
-				.isNotNull(sqlDataBaseManager)
+				.isNotNull(sqlManager)
 				.isNotNull(smartTypeManager);
 		//-----
 		this.scriptManager = scriptManager;
 		this.transactionManager = transactionManager;
 		this.entityStoreManager = entityStoreManager;
-		this.sqlDataBaseManager = sqlDataBaseManager;
+		this.sqlManager = sqlManager;
 		this.smartTypeManager = smartTypeManager;
 	}
 
@@ -252,8 +252,8 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	/**
 	 * @return Manager de base de données
 	 */
-	protected final SqlDataBaseManager getDataBaseManager() {
-		return sqlDataBaseManager;
+	protected final SqlManager getDataBaseManager() {
+		return sqlManager;
 	}
 
 	/**

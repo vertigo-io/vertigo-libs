@@ -12,16 +12,16 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.database.migration.DataBaseMigrationManager;
+import io.vertigo.database.migration.MigrationManager;
 
 /**
- * Implementation of the DataBaseMigrationManager.
+ * Implementation of the MigrationManager.
  * At start-up we perform all the tasks tageted by the specified mode
  * Mode supported are 'check' and 'update'
  * @author mlaroche
  *
  */
-public final class MigrationManagerImpl implements DataBaseMigrationManager, Activeable {
+public final class MigrationManagerImpl implements MigrationManager, Activeable {
 
 	private final Map<String, MigrationPlugin> dataBaseMigrationPlugins;
 

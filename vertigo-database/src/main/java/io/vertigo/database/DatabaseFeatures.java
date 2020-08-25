@@ -24,14 +24,14 @@ import io.vertigo.core.param.Param;
 import io.vertigo.database.impl.migration.MigrationManagerImpl;
 import io.vertigo.database.impl.sql.SqlManagerImpl;
 import io.vertigo.database.impl.timeseries.TimeSeriesManagerImpl;
-import io.vertigo.database.migration.DataBaseMigrationManager;
+import io.vertigo.database.migration.MigrationManager;
 import io.vertigo.database.plugins.migration.liquibase.LiquibaseMigrationPlugin;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.database.plugins.sql.connection.datasource.DataSourceConnectionProviderPlugin;
 import io.vertigo.database.plugins.timeseries.fake.FakeTimeSeriesPlugin;
 import io.vertigo.database.plugins.timeseries.influxdb.InfluxDbTimeSeriesPlugin;
-import io.vertigo.database.sql.SqlDataBaseManager;
-import io.vertigo.database.timeseries.TimeSeriesDataBaseManager;
+import io.vertigo.database.sql.SqlManager;
+import io.vertigo.database.timeseries.TimeSeriesManager;
 
 /**
  * Defines database features.
@@ -54,7 +54,7 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	@Feature("sql")
 	public DatabaseFeatures withSqlDataBase() {
 		getModuleConfigBuilder()
-				.addComponent(SqlDataBaseManager.class, SqlManagerImpl.class);
+				.addComponent(SqlManager.class, SqlManagerImpl.class);
 		return this;
 	}
 
@@ -65,7 +65,7 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	@Feature("timeseries")
 	public DatabaseFeatures withTimeSeriesDataBase() {
 		getModuleConfigBuilder()
-				.addComponent(TimeSeriesDataBaseManager.class, TimeSeriesManagerImpl.class);
+				.addComponent(TimeSeriesManager.class, TimeSeriesManagerImpl.class);
 		return this;
 	}
 
@@ -76,7 +76,7 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	@Feature("migration")
 	public DatabaseFeatures withMigration(final Param... params) {
 		getModuleConfigBuilder()
-				.addComponent(DataBaseMigrationManager.class, MigrationManagerImpl.class, params);
+				.addComponent(MigrationManager.class, MigrationManagerImpl.class, params);
 		return this;
 	}
 

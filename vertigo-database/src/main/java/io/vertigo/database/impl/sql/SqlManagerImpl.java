@@ -36,7 +36,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.statement.SqlParameter;
@@ -49,7 +49,7 @@ import io.vertigo.database.sql.vendor.SqlMapping;
 *
 * @author pchretien
 */
-public final class SqlManagerImpl implements SqlDataBaseManager {
+public final class SqlManagerImpl implements SqlManager {
 
 	private static final int REQUEST_HEADER_FOR_TRACER = 50;
 

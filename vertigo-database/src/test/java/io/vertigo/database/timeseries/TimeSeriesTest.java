@@ -46,7 +46,7 @@ import io.vertigo.database.DatabaseFeatures;
  */
 public final class TimeSeriesTest {
 	@Inject
-	private TimeSeriesDataBaseManager timeSeriesDataBaseManager;
+	private TimeSeriesManager timeSeriesManager;
 
 	private AutoCloseableNode node;
 
@@ -69,7 +69,7 @@ public final class TimeSeriesTest {
 				.time(Instant.now())
 				.addField("temp", 12)
 				.build();
-		timeSeriesDataBaseManager.insertMeasure("vertigo-test", measure);
+		timeSeriesManager.insertMeasure("vertigo-test", measure);
 	}
 
 	@Test
@@ -82,12 +82,12 @@ public final class TimeSeriesTest {
 				.time(Instant.now())
 				.addField("temp", 12)
 				.build();
-		timeSeriesDataBaseManager.insertMeasures("vertigo-test", List.of(measure1, measure2));
+		timeSeriesManager.insertMeasures("vertigo-test", List.of(measure1, measure2));
 	}
 
 	@Test
 	public void testReadMeasures() {
-		timeSeriesDataBaseManager.getTimeSeries(
+		timeSeriesManager.getTimeSeries(
 				"vertigo-test",
 				Collections.singletonList("temp:mean"),
 				DataFilter.builder("test").build(),
@@ -96,7 +96,7 @@ public final class TimeSeriesTest {
 
 	@Test
 	public void testReadMeasuresClusteredTimeSeries() {
-		timeSeriesDataBaseManager.getClusteredTimeSeries(
+		timeSeriesManager.getClusteredTimeSeries(
 				"vertigo-test",
 				new ClusteredMeasure("test:mean", Collections.singletonList(10)),
 				DataFilter.builder("test").build(),
@@ -106,7 +106,7 @@ public final class TimeSeriesTest {
 	@Test
 	public void testReadMeasuresTimedTabular() {
 
-		timeSeriesDataBaseManager.getTabularTimedData(
+		timeSeriesManager.getTabularTimedData(
 				"vertigo-test",
 				Collections.singletonList("temp:mean"),
 				DataFilter.builder("test").build(),
@@ -115,7 +115,7 @@ public final class TimeSeriesTest {
 
 	@Test
 	public void testReadMeasuresTabular() {
-		timeSeriesDataBaseManager.getTabularData(
+		timeSeriesManager.getTabularData(
 				"vertigo-test",
 				Collections.singletonList("temp:mean"),
 				DataFilter.builder("test").build(),
@@ -124,7 +124,7 @@ public final class TimeSeriesTest {
 
 	@Test
 	public void testReadMeasuresTags() {
-		timeSeriesDataBaseManager.getTagValues(
+		timeSeriesManager.getTagValues(
 				"vertigo-test",
 				"temp",
 				"myTag");
@@ -132,7 +132,7 @@ public final class TimeSeriesTest {
 
 	@Test
 	public void testReadMeasuresTops() {
-		timeSeriesDataBaseManager.getTops(
+		timeSeriesManager.getTops(
 				"vertigo-test",
 				"temp:mean",
 				DataFilter.builder("test").build(),

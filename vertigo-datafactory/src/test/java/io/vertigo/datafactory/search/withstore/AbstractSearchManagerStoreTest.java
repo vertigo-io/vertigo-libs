@@ -36,7 +36,7 @@ import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
-import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.datafactory.collections.ListFilter;
@@ -58,7 +58,7 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
  */
 abstract class AbstractSearchManagerStoreTest {
 	@Inject
-	private SqlDataBaseManager dataBaseManager;
+	private SqlManager dataBaseManager;
 	@Inject
 	private EntityStoreManager entityStoreManager;
 	@Inject
@@ -370,8 +370,8 @@ abstract class AbstractSearchManagerStoreTest {
 	private class SqlConnectionCloseable implements AutoCloseable {
 		private final SqlConnection connection;
 
-		SqlConnectionCloseable(final SqlDataBaseManager dataBaseManager) {
-			connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
+		SqlConnectionCloseable(final SqlManager dataBaseManager) {
+			connection = dataBaseManager.getConnectionProvider(SqlManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
 		}
 
 		SqlConnection getConnection() {

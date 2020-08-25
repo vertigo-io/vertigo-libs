@@ -25,7 +25,7 @@ import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.analytics.health.HealthMeasureBuilder;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Plugin;
-import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.statement.SqlStatement;
@@ -50,9 +50,9 @@ public interface SqlConnectionProviderPlugin extends SqlConnectionProvider, Plug
 		final String testQuery = getDataBase().getSqlDialect().getTestQuery();
 		try {
 
-			final SqlDataBaseManager sqlDataBaseManager = Node.getNode().getComponentSpace().resolve(SqlDataBaseManager.class);
+			final SqlManager sqlManager = Node.getNode().getComponentSpace().resolve(SqlManager.class);
 			try (final SqlConnection connection = obtainConnection()) {
-				sqlDataBaseManager.executeQuery(
+				sqlManager.executeQuery(
 						SqlStatement.builder(testQuery).build(),
 						Integer.class,
 						Collections.emptyMap(),

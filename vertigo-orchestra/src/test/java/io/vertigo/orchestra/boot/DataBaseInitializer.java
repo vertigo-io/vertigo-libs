@@ -33,7 +33,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 
@@ -48,7 +48,7 @@ public class DataBaseInitializer implements Component, Activeable {
 	@Inject
 	private ResourceManager resourceManager;
 	@Inject
-	private SqlDataBaseManager sqlDataBaseManager;
+	private SqlManager sqlManager;
 
 	/** {@inheritDoc} */
 	@Override
@@ -63,8 +63,8 @@ public class DataBaseInitializer implements Component, Activeable {
 	}
 
 	private void createDataBase() {
-		try (final SqlConnection connection = sqlDataBaseManager.getConnectionProvider(ORCHESTRA_CONNECTION_NAME).obtainConnection()) {
-			execCallableStatement(connection, sqlDataBaseManager, "DROP ALL OBJECTS; ");
+		try (final SqlConnection connection = sqlManager.getConnectionProvider(ORCHESTRA_CONNECTION_NAME).obtainConnection()) {
+			execCallableStatement(connection, sqlManager, "DROP ALL OBJECTS; ");
 			execSqlScript(connection, "file:./src/main/database/scripts/install/orchestra_create_init_v1.0.0.sql");
 			connection.commit();
 		} catch (final SQLException e) {
@@ -82,7 +82,7 @@ public class DataBaseInitializer implements Component, Activeable {
 					crebaseSql.append(adaptedInputLine).append('\n');
 				}
 				if (inputLine.trim().endsWith(";")) {
-					execCallableStatement(connection, sqlDataBaseManager, crebaseSql.toString());
+					execCallableStatement(connection, sqlManager, crebaseSql.toString());
 					crebaseSql.setLength(0);
 				}
 			}
@@ -91,9 +91,9 @@ public class DataBaseInitializer implements Component, Activeable {
 		}
 	}
 
-	private static void execCallableStatement(final SqlConnection connection, final SqlDataBaseManager sqlDataBaseManager, final String sql) {
+	private static void execCallableStatement(final SqlConnection connection, final SqlManager sqlManager, final String sql) {
 		try {
-			sqlDataBaseManager.executeUpdate(SqlStatement.builder(sql).build(), Collections.emptyMap(), connection);
+			sqlManager.executeUpdate(SqlStatement.builder(sql).build(), Collections.emptyMap(), connection);
 		} catch (final SQLException e) {
 			throw WrappedException.wrap(e, "Can't exec command {0}", sql);
 		}

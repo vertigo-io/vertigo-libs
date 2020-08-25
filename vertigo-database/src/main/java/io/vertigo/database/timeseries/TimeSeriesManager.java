@@ -27,7 +27,7 @@ import io.vertigo.core.node.component.Manager;
  * Manages connections to a time series database.
  * @author mlaroche
  */
-public interface TimeSeriesDataBaseManager extends Manager {
+public interface TimeSeriesManager extends Manager {
 
 	void insertMeasure(
 			final String dbName,

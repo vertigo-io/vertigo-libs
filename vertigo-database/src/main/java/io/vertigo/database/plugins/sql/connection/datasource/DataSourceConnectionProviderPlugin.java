@@ -30,7 +30,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.database.plugins.sql.connection.AbstractSqlConnectionProviderPlugin;
-import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.vendor.SqlDataBase;
 
@@ -56,7 +56,7 @@ public final class DataSourceConnectionProviderPlugin extends AbstractSqlConnect
 			@ParamValue("name") final Optional<String> name,
 			@ParamValue("classname") final String dataBaseName,
 			@ParamValue("source") final String dataSource) {
-		super(name.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), createDataBase(dataBaseName));
+		super(name.orElse(SqlManager.MAIN_CONNECTION_PROVIDER_NAME), createDataBase(dataBaseName));
 		Assertion.check().isNotNull(dataSource);
 		//-----
 		// Initialisation de la source de données

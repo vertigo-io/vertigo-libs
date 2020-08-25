@@ -33,7 +33,7 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.CriteriaCtx;
@@ -108,7 +108,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	 * @param optConnectionName the name of the connection
 	 * @param optSequencePrefix the prefix of sequences
 	 * @param taskManager the taskManager
-	 * @param sqlDataBaseManager the sqlDataBaseManager
+	 * @param sqlManager the sqlDataBaseManager
 	 */
 	@Inject
 	public SqlEntityStorePlugin(
@@ -116,19 +116,19 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 			@ParamValue("connectionName") final Optional<String> optConnectionName,
 			@ParamValue("sequencePrefix") final Optional<String> optSequencePrefix,
 			final TaskManager taskManager,
-			final SqlDataBaseManager sqlDataBaseManager) {
+			final SqlManager sqlManager) {
 		Assertion.check()
 				.isNotNull(optDataSpace)
 				.isNotNull(optConnectionName)
 				.isNotNull(optSequencePrefix)
 				.isNotNull(taskManager)
-				.isNotNull(sqlDataBaseManager);
+				.isNotNull(sqlManager);
 		//-----
 		dataSpace = optDataSpace.orElse(EntityStoreManager.MAIN_DATA_SPACE_NAME);
-		connectionName = optConnectionName.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
+		connectionName = optConnectionName.orElse(SqlManager.MAIN_CONNECTION_PROVIDER_NAME);
 		sequencePrefix = optSequencePrefix.orElse("SEQ_");
 		this.taskManager = taskManager;
-		sqlDialect = sqlDataBaseManager.getConnectionProvider(connectionName).getDataBase().getSqlDialect();
+		sqlDialect = sqlManager.getConnectionProvider(connectionName).getDataBase().getSqlDialect();
 		criteriaEncoder = new SqlCriteriaEncoder(sqlDialect);
 		integerSmartType = SmartTypeDefinition.builder("STyIntegerSql", BasicType.Integer).build();
 	}

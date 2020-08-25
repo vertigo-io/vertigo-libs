@@ -19,18 +19,18 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.database.migration.DataBaseMigrationManager;
+import io.vertigo.database.migration.MigrationManager;
 import io.vertigo.database.migration.data.Movie;
-import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 
 public class LiquibaseMigrationManagerTest {
 
 	@Inject
-	private SqlDataBaseManager sqlDataBaseManager;
+	private SqlManager sqlManager;
 	@Inject
-	private DataBaseMigrationManager dataBaseMigrationManager;
+	private MigrationManager migrationManager;
 
 	private AutoCloseableNode node;
 
@@ -67,15 +67,15 @@ public class LiquibaseMigrationManagerTest {
 
 	@Test
 	public void updateAndCheck() throws SQLException {
-		dataBaseMigrationManager.check(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
+		migrationManager.check(SqlManager.MAIN_CONNECTION_PROVIDER_NAME);
 
-		try (final SqlConnection connection = sqlDataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection()) {
-			sqlDataBaseManager.executeUpdate(
+		try (final SqlConnection connection = sqlManager.getConnectionProvider(SqlManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection()) {
+			sqlManager.executeUpdate(
 					SqlStatement.builder("insert into movie (id, title, category) values (1, 'vertigo', 'thriller')").build(),
 					Collections.emptyMap(), connection);
 			//---
 			Integer limit = null;
-			List<Movie> movies = sqlDataBaseManager.executeQuery(SqlStatement.builder("select * from movie").build(), Movie.class, Collections.emptyMap(), limit, connection);
+			List<Movie> movies = sqlManager.executeQuery(SqlStatement.builder("select * from movie").build(), Movie.class, Collections.emptyMap(), limit, connection);
 			Assertions.assertEquals(1, movies.size());
 		}
 	}

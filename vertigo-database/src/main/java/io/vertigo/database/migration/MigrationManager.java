@@ -1,10 +1,10 @@
 package io.vertigo.database.migration;
 
 import io.vertigo.core.node.component.Manager;
-import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.SqlManager;
 
 /**
- * DataBaseMigrationManager is used to perform migration tasks on databases.
+ * MigrationManager is used to perform migration tasks on databases.
  * It's mainly a question of creating/migration database schemas.
  * Two type of tasks can be performed  :
  *   <ul>
@@ -14,17 +14,17 @@ import io.vertigo.database.sql.SqlDataBaseManager;
  * @author mlaroche
  *
  */
-public interface DataBaseMigrationManager extends Manager {
+public interface MigrationManager extends Manager {
 
 	/**
 	 * Check if database is ok.
-	 * @param connectionName ConnectionProviderName (in the Vertigo's way). For example @see {@link SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME}
+	 * @param connectionName ConnectionProviderName (in the Vertigo's way). For example @see {@link SqlManager.MAIN_CONNECTION_PROVIDER_NAME}
 	 */
 	void check(final String connectionName);
 
 	/**
 	 * Perform all taks on database to make it up to date.
-	 * @param connectionName ConnectionProviderName (in the Vertigo's way). For example @see {@link SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME}
+	 * @param connectionName ConnectionProviderName (in the Vertigo's way). For example @see {@link SqlManager.MAIN_CONNECTION_PROVIDER_NAME}
 	 */
 	void update(final String connectionName);
 

@@ -35,7 +35,7 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.ComponentInitializer;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.struts2.data.dao.movies.MovieDAO;
@@ -52,7 +52,7 @@ public class DataBaseInitializer implements ComponentInitializer {
 	@Inject
 	private VTransactionManager transactionManager;
 	@Inject
-	private SqlDataBaseManager sqlDataBaseManager;
+	private SqlManager sqlManager;
 	@Inject
 	private MovieDAO movieDao;
 
@@ -65,7 +65,7 @@ public class DataBaseInitializer implements ComponentInitializer {
 	}
 
 	private void createDataBase() {
-		final SqlConnection connection = sqlDataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
+		final SqlConnection connection = sqlManager.getConnectionProvider(SqlManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
 		execSqlScript(connection, "sqlgen/crebas.sql");
 		execSqlScript(connection, "sqlgen/crebas_inseeCsv.sql");
 		execSqlScript(connection, "sqlgen/crebas_staticOuiNon.sql");
@@ -81,7 +81,7 @@ public class DataBaseInitializer implements ComponentInitializer {
 					crebaseSql.append(adaptedInputLine).append('\n');
 				}
 				if (inputLine.trim().endsWith(";")) {
-					execCallableStatement(connection, sqlDataBaseManager, crebaseSql.toString());
+					execCallableStatement(connection, sqlManager, crebaseSql.toString());
 					crebaseSql.setLength(0);
 				}
 			}
@@ -90,8 +90,8 @@ public class DataBaseInitializer implements ComponentInitializer {
 		}
 	}
 
-	private static void execCallableStatement(final SqlConnection connection, final SqlDataBaseManager sqlDataBaseManager, final String sql) throws SQLException {
-		sqlDataBaseManager.executeUpdate(SqlStatement.builder(sql).build(), Collections.emptyMap(), connection);
+	private static void execCallableStatement(final SqlConnection connection, final SqlManager sqlManager, final String sql) throws SQLException {
+		sqlManager.executeUpdate(SqlStatement.builder(sql).build(), Collections.emptyMap(), connection);
 	}
 
 	private static void createInitialMovies(final MovieDAO movieDao, final VTransactionManager transactionManager) {

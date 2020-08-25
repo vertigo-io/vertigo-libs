@@ -101,7 +101,7 @@ public abstract class AbstractSqlManagerTest {
 		}
 	};
 	@Inject
-	protected SqlDataBaseManager dataBaseManager;
+	protected SqlManager dataBaseManager;
 
 	private AutoCloseableNode node;
 
@@ -139,7 +139,7 @@ public abstract class AbstractSqlManagerTest {
 
 	protected SqlConnection obtainMainConnection() {
 		return dataBaseManager
-				.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME)
+				.getConnectionProvider(SqlManager.MAIN_CONNECTION_PROVIDER_NAME)
 				.obtainConnection();
 	}
 
@@ -248,7 +248,7 @@ public abstract class AbstractSqlManagerTest {
 	}
 
 	protected final <O> List<O> executeQuery(final Class<O> dataType, final String sql, final Integer limit) throws SQLException, Exception {
-		final SqlConnectionProvider sqlConnectionProvider = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
+		final SqlConnectionProvider sqlConnectionProvider = dataBaseManager.getConnectionProvider(SqlManager.MAIN_CONNECTION_PROVIDER_NAME);
 		return executeQuery(dataType, sql, sqlConnectionProvider, limit);
 	}
 
@@ -364,7 +364,7 @@ public abstract class AbstractSqlManagerTest {
 
 	@Test
 	public void testBatchInserts() throws Exception {
-		final SqlConnectionProvider sqlConnectionProvider = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
+		final SqlConnectionProvider sqlConnectionProvider = dataBaseManager.getConnectionProvider(SqlManager.MAIN_CONNECTION_PROVIDER_NAME);
 		final String sql = INSERT_INTO_MOVIE_VALUES;
 
 		final List<Movie> movies = Movies.bondMovies();
@@ -439,7 +439,7 @@ public abstract class AbstractSqlManagerTest {
 		Assertions.assertEquals(1, resultMovie1.size());
 		Assertions.assertEquals("Star wars", resultMovie1.get(0).getTitle());
 
-		final List<Integer> result1 = executeQuery(Integer.class, "select count(*) from movie", dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), 1);
+		final List<Integer> result1 = executeQuery(Integer.class, "select count(*) from movie", dataBaseManager.getConnectionProvider(SqlManager.MAIN_CONNECTION_PROVIDER_NAME), 1);
 		Assertions.assertEquals(1, result1.size());
 		Assertions.assertEquals(3, result1.get(0).intValue());
 	}

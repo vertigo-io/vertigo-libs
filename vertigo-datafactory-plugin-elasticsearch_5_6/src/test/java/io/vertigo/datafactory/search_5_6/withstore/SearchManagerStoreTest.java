@@ -43,7 +43,7 @@ import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
-import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.datafactory.DataFactoryFeatures;
@@ -71,7 +71,7 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
  */
 public class SearchManagerStoreTest {
 	@Inject
-	private SqlDataBaseManager dataBaseManager;
+	private SqlManager dataBaseManager;
 	@Inject
 	private EntityStoreManager entityStoreManager;
 	@Inject
@@ -444,8 +444,8 @@ public class SearchManagerStoreTest {
 	private class SqlConnectionCloseable implements AutoCloseable {
 		private final SqlConnection connection;
 
-		SqlConnectionCloseable(final SqlDataBaseManager dataBaseManager) {
-			connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
+		SqlConnectionCloseable(final SqlManager dataBaseManager) {
+			connection = dataBaseManager.getConnectionProvider(SqlManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
 		}
 
 		SqlConnection getConnection() {

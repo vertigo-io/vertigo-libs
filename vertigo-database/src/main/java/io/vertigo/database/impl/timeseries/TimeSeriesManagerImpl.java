@@ -33,14 +33,14 @@ import io.vertigo.database.timeseries.DataFilter;
 import io.vertigo.database.timeseries.Measure;
 import io.vertigo.database.timeseries.TabularDatas;
 import io.vertigo.database.timeseries.TimeFilter;
-import io.vertigo.database.timeseries.TimeSeriesDataBaseManager;
+import io.vertigo.database.timeseries.TimeSeriesManager;
 import io.vertigo.database.timeseries.TimedDatas;
 
 /**
  * @author mlaroche
  *
  */
-public class TimeSeriesManagerImpl implements TimeSeriesDataBaseManager {
+public class TimeSeriesManagerImpl implements TimeSeriesManager {
 
 	public static final String WILDCARD_PLUGIN = "*";
 

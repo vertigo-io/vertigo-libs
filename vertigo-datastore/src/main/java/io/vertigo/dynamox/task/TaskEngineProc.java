@@ -25,7 +25,7 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
@@ -60,16 +60,16 @@ public class TaskEngineProc extends AbstractTaskEngineSQL {
 	 * @param scriptManager Manager de traitment de scripts
 	 * @param transactionManager Transaction manager
 	 * @param entityStoreManager Store manager
-	 * @param sqlDataBaseManager Sql dataBase manager
+	 * @param sqlManager Sql dataBase manager
 	 */
 	@Inject
 	public TaskEngineProc(
 			final ScriptManager scriptManager,
 			final VTransactionManager transactionManager,
 			final EntityStoreManager entityStoreManager,
-			final SqlDataBaseManager sqlDataBaseManager,
+			final SqlManager sqlManager,
 			final SmartTypeManager smartTypeManager) {
-		super(scriptManager, transactionManager, entityStoreManager, sqlDataBaseManager, smartTypeManager);
+		super(scriptManager, transactionManager, entityStoreManager, sqlManager, smartTypeManager);
 	}
 
 	/** {@inheritDoc} */

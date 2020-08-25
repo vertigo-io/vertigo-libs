@@ -35,7 +35,7 @@ import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
  * Manages connections to database.
  * @author pchretien
  */
-public interface SqlDataBaseManager extends Manager {
+public interface SqlManager extends Manager {
 	/** The name of the main connectionProvider. */
 	String MAIN_CONNECTION_PROVIDER_NAME = "main";
 
