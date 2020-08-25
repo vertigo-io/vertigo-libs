@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Emeric Vernat
  */
 class CompressionResponseStream extends ServletOutputStream {
+	private static final String GZIP = "gzip";
 	private final int compressionThreshold;
 	private final HttpServletResponse response;
 	private OutputStream stream;
@@ -75,7 +76,8 @@ class CompressionResponseStream extends ServletOutputStream {
 		// check if we are buffering too large of a file
 		if (stream instanceof ByteArrayOutputStream) {
 			final ByteArrayOutputStream baos = (ByteArrayOutputStream) stream;
-			if (baos.size() + length > compressionThreshold) {
+			if (baos.size() + length > compressionThreshold
+					&& !GZIP.equalsIgnoreCase(response.getHeader("Content-Encoding"))) { //we check stream wasn't already compressed
 				// files too large to keep in memory are sent to the client
 				flushToGZIP();
 			}
@@ -85,7 +87,7 @@ class CompressionResponseStream extends ServletOutputStream {
 	private void flushToGZIP() throws IOException {
 		if (stream instanceof ByteArrayOutputStream) {
 			// indication de compression
-			response.addHeader("Content-Encoding", "gzip");
+			response.addHeader("Content-Encoding", GZIP);
 			response.addHeader("Vary", "Accept-Encoding");
 
 			// make new gzip stream using the response output stream (content-encoding is in constructor)

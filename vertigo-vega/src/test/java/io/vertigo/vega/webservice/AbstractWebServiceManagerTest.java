@@ -1270,7 +1270,7 @@ abstract class AbstractWebServiceManagerTest {
 		final String testJson = "{ \"firstName\" : \"" + testFirstName + "\" }";
 
 		given().filter(loggedSessionFilter) //logged
-				.contentType("application/json;charset=") //We precise an incomplete charset otherwise Restassured add a default charset=ISO-8859-1 to contentType
+				.contentType("application/json") //We precise an incomplete charset otherwise Restassured add a default charset=ISO-8859-1 to contentType
 				.body(testJson.getBytes("UTF-8")) //We force the encode charset
 				.expect()
 				.body("firstName", Matchers.equalTo(testFirstName))
@@ -2124,7 +2124,7 @@ abstract class AbstractWebServiceManagerTest {
 		return RestAssured.given();
 	}
 
-	private ResponseSpecification loggedAndExpect() {
+	protected ResponseSpecification loggedAndExpect() {
 		return RestAssured.given()
 				.filter(loggedSessionFilter)
 				.expect().log().ifValidationFails();
