@@ -19,6 +19,7 @@
 package io.vertigo.stella.work.distributed.rest;
 
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.connectors.javalin.JavalinFeatures;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.datamodel.DataModelFeatures;
@@ -34,14 +35,16 @@ public final class LocalRestWorkManagerTest extends AbstractWorkManagerTest {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
+				.addModule(new JavalinFeatures()
+						.withEmbeddedServer(
+								Param.of("port", "10998"))
+						.build())
 				.addModule(new CommonsFeatures()
 						.build())
 				.addModule(new DataModelFeatures()
 						.build())
 				.addModule(new VegaFeatures()
 						.withWebServices()
-						.withWebServicesEmbeddedServer(
-								Param.of("port", "10998"))
 						.build())
 				.addModule(new StellaFeatures()
 						.withMaster()
