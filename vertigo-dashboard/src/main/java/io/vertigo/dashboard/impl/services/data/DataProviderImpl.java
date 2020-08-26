@@ -37,24 +37,24 @@ import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
 import io.vertigo.database.timeseries.TabularDatas;
 import io.vertigo.database.timeseries.TimeFilter;
-import io.vertigo.database.timeseries.TimeSeriesDataBaseManager;
+import io.vertigo.database.timeseries.TimeSeriesManager;
 import io.vertigo.database.timeseries.TimedDatas;
 
 public final class DataProviderImpl implements DataProvider {
 
-	private final TimeSeriesDataBaseManager timeSeriesDataBaseManager;
+	private final TimeSeriesManager timeSeriesManager;
 	private final String appName;
 
 	@Inject
 	public DataProviderImpl(
 			@ParamValue("appName") final Optional<String> appNameOpt,
-			final TimeSeriesDataBaseManager timeSeriesDataBaseManager) {
+			final TimeSeriesManager timeSeriesManager) {
 		Assertion.check()
 				.isNotNull(appNameOpt)
-				.isNotNull(timeSeriesDataBaseManager);
+				.isNotNull(timeSeriesManager);
 		//---
 		appName = appNameOpt.orElseGet(() -> Node.getNode().getNodeConfig().getAppName());
-		this.timeSeriesDataBaseManager = timeSeriesDataBaseManager;
+		this.timeSeriesManager = timeSeriesManager;
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public final class DataProviderImpl implements DataProvider {
 				.isNotNull(dataFilter)
 				.isNotNull(timeFilter.getDim());// we check dim is not null because we need it
 		//---
-		return timeSeriesDataBaseManager.getTimeSeries(appName, measures, dataFilter, timeFilter);
+		return timeSeriesManager.getTimeSeries(appName, measures, dataFilter, timeFilter);
 
 	}
 
@@ -82,27 +82,27 @@ public final class DataProviderImpl implements DataProvider {
 		//we use the natural order
 		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
 		//---
-		return timeSeriesDataBaseManager.getClusteredTimeSeries(appName, clusteredMeasure, dataFilter, timeFilter);
+		return timeSeriesManager.getClusteredTimeSeries(appName, clusteredMeasure, dataFilter, timeFilter);
 	}
 
 	@Override
 	public TimedDatas getTabularTimedData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		return timeSeriesDataBaseManager.getTabularTimedData(appName, measures, dataFilter, timeFilter, groupBy);
+		return timeSeriesManager.getTabularTimedData(appName, measures, dataFilter, timeFilter, groupBy);
 	}
 
 	@Override
 	public TabularDatas getTabularData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		return timeSeriesDataBaseManager.getTabularData(appName, measures, dataFilter, timeFilter, groupBy);
+		return timeSeriesManager.getTabularData(appName, measures, dataFilter, timeFilter, groupBy);
 	}
 
 	@Override
 	public TabularDatas getTops(final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
-		return timeSeriesDataBaseManager.getTops(appName, measure, dataFilter, timeFilter, groupBy, maxRows);
+		return timeSeriesManager.getTops(appName, measure, dataFilter, timeFilter, groupBy, maxRows);
 	}
 
 	@Override
 	public List<String> getTagValues(final String measurement, final String tag) {
-		return timeSeriesDataBaseManager.getTagValues(appName, measurement, tag);
+		return timeSeriesManager.getTagValues(appName, measurement, tag);
 	}
 
 	@Override

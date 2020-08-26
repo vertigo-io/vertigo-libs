@@ -18,16 +18,22 @@
  */
 package io.vertigo.dashboard.ui;
 
+import javax.inject.Inject;
+
+import io.vertigo.connectors.javalin.JavalinConnector;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.component.Manager;
 
 public final class DashboardUiManager implements Manager, Activeable {
 
+	@Inject
+	private JavalinConnector javalinConnector;
+
 	@Override
 	public void start() {
 		final DashboardRouter dashboardRouter = new DashboardRouter(Node.getNode());
-		dashboardRouter.route();
+		dashboardRouter.route(javalinConnector.getClient());
 	}
 
 	@Override

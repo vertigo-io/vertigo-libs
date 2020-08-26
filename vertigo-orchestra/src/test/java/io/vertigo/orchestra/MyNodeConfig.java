@@ -20,6 +20,7 @@ package io.vertigo.orchestra;
 
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.connectors.javalin.JavalinFeatures;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -96,6 +97,7 @@ public final class MyNodeConfig {
 
 	public static void addVegaEmbeded(final NodeConfigBuilder nodeConfigBuilder) {
 		nodeConfigBuilder
+				.addModule(new JavalinFeatures().withEmbeddedServer(Param.of("port", Integer.toString(WS_PORT))).build())
 				.addModule(new AccountFeatures()
 						.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
 						.build())
@@ -104,7 +106,6 @@ public final class MyNodeConfig {
 						.withWebServicesTokens(Param.of("tokens", "tokens"))
 						.withWebServicesSecurity()
 						.withWebServicesRateLimiting()
-						.withWebServicesEmbeddedServer(Param.of("port", Integer.toString(WS_PORT)))
 						.build());
 	}
 

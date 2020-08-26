@@ -26,7 +26,6 @@ import java.util.Map;
 import org.h2.Driver;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
@@ -34,6 +33,7 @@ import io.restassured.specification.ResponseSpecification;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.connectors.elasticsearch.ElasticSearchFeatures;
 import io.vertigo.connectors.influxdb.InfluxDbFeatures;
+import io.vertigo.connectors.javalin.JavalinFeatures;
 import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.config.BootConfig;
@@ -93,6 +93,9 @@ public class DashboardLauncherTest {
 								Param.of("user", "analytica"),
 								Param.of("password", "kleeklee"))
 						.build())
+				.addModule(new JavalinFeatures()
+						.withEmbeddedServer(Param.of("port", Integer.toString(8080)))
+						.build())
 				.addModule(new CommonsFeatures()
 						.build())
 				.addModule(new ElasticSearchFeatures()
@@ -124,7 +127,6 @@ public class DashboardLauncherTest {
 						.build())
 				.addModule(new VegaFeatures()
 						.withWebServices()
-						.withWebServicesEmbeddedServer(Param.of("port", Integer.toString(8080)))
 						.withWebServicesApiPrefix(Param.of("apiPrefix", "/api"))
 						.build())
 				.addModule(new DashboardFeatures()
@@ -138,7 +140,6 @@ public class DashboardLauncherTest {
 	}
 
 	@Test
-	@Disabled
 	public void server() {
 		while (!Thread.interrupted()) {
 			try {
