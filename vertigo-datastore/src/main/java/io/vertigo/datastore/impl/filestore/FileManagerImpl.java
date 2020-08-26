@@ -20,14 +20,12 @@ package io.vertigo.datastore.impl.filestore;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -45,7 +43,6 @@ import io.vertigo.core.util.TempFile;
 import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
-import io.vertigo.datastore.filestore.util.FileUtil;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.datastore.impl.filestore.model.StreamFile;
 
@@ -75,41 +72,9 @@ public final class FileManagerImpl implements FileManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public File obtainReadOnlyFile(final VFile file) {
-		return doObtainReadOnlyPath(file).toFile();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Path obtainReadOnlyPath(final VFile file) {
-		return doObtainReadOnlyPath(file);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public VFile createFile(final String fileName, final String typeMime, final File file) {
-		try {
-			return new FSFile(fileName, typeMime, file.toPath());
-		} catch (final IOException e) {
-			throw WrappedException.wrap(e);
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public VFile createFile(final String fileName, final String typeMime, final Path file) {
 		try {
 			return new FSFile(fileName, typeMime, file);
-		} catch (final IOException e) {
-			throw WrappedException.wrap(e);
-		}
-	}
-
-	/** {@inheritDoc}  */
-	@Override
-	public VFile createFile(final File file) {
-		try {
-			return new FSFile(file.getName(), Files.probeContentType(file.toPath()), file.toPath());
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}
@@ -139,12 +104,6 @@ public final class FileManagerImpl implements FileManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public VFile createFile(final String fileName, final String typeMime, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
-		return createFile(fileName, typeMime, lastModified.toInstant(), length, inputStreamBuilder);
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public VFile createFile(final String fileName, final String typeMime, final URL resourceUrl) {
 		final long length;
 		final Instant lastModified;
@@ -162,43 +121,6 @@ public final class FileManagerImpl implements FileManager {
 		Assertion.check().isTrue(length >= 0, "Can't get file meta from url");
 		final InputStreamBuilder inputStreamBuilder = resourceUrl::openStream;
 		return createFile(fileName, typeMime, lastModified, length, inputStreamBuilder);
-	}
-
-	/**
-	 * Crée un fichier temporaire à partir d'un fileInfo.
-	 * Attention le processus appelant doit s'assurer de la suppression de ce fichier temporaire.
-	 * @param vFile FileInfo à utiliser
-	 * @return Fichier temporaire.
-	 */
-	private static Path createTempFile(final VFile vFile) {
-		// TODO voir a ajouter une WeakRef sur FileInfo pour vérifier la suppression des fichiers temp après usage
-		try {
-			return doCreateTempPath(vFile);
-		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Can't create temp file for FileInfo {0}", vFile.getFileName());
-		}
-	}
-
-	private static Path doCreateTempPath(final VFile fileInfo) throws IOException {
-		final File tmpFile = new TempFile("fileInfo", '.' + FileUtil.getFileExtension(fileInfo.getFileName()));
-		try (final InputStream inputStream = fileInfo.createInputStream()) {
-			FileUtil.copy(inputStream, tmpFile);
-			return tmpFile.toPath();
-		}
-	}
-
-	/**
-	 * @param vFile FileInfo à lire
-	 * @return Fichier physique readOnly (pour lecture d'un FileInfo)
-	 */
-	private static Path doObtainReadOnlyPath(final VFile vFile) {
-		final Path inputFile;
-		if (vFile instanceof FSFile) {
-			inputFile = ((FSFile) vFile).getFile();
-		} else {
-			inputFile = createTempFile(vFile);
-		}
-		return inputFile;
 	}
 
 	/**

@@ -18,10 +18,10 @@
  */
 package io.vertigo.vega.webservice.data.ws;
 
-import java.io.File;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
@@ -95,7 +95,7 @@ public final class AdvancedTestWebServices implements WebServices {
 	@GET("/export/pdf/")
 	public VFile testExportContacts() throws URISyntaxException {
 		final URL tempFile = resourcetManager.resolve("io/vertigo/vega/webservice/data/ws/contacts.pdf");
-		final VFile result = fileManager.createFile(new File(tempFile.toURI()));
+		final VFile result = fileManager.createFile(Path.of(tempFile.toURI()));
 		//200
 		return result;
 	}
@@ -103,7 +103,7 @@ public final class AdvancedTestWebServices implements WebServices {
 	@GET("/export/pdf/{conId}")
 	public VFile testExportContact(@PathParam("conId") final long conId) throws URISyntaxException {
 		final URL tempFile = resourcetManager.resolve("io/vertigo/vega/webservice/data/ws/contact2.pdf");
-		final VFile result = fileManager.createFile(new File(tempFile.toURI()));
+		final VFile result = fileManager.createFile(Path.of(tempFile.toURI()));
 
 		//200
 		return result;

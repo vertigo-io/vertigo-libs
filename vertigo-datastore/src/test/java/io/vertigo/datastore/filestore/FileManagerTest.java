@@ -18,10 +18,10 @@
  */
 package io.vertigo.datastore.filestore;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
+import java.nio.file.Path;
 import java.time.Instant;
 
 import javax.inject.Inject;
@@ -46,6 +46,7 @@ import io.vertigo.datastore.TestUtil;
 import io.vertigo.datastore.filestore.data.TestSmartTypes;
 import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.filestore.util.FileUtil;
 
 /**
  * Test de l'implémentation standard.
@@ -60,13 +61,13 @@ public final class FileManagerTest {
 	private AutoCloseableNode node;
 
 	@BeforeEach
-	public final void setUp() {
+	public void setUp() {
 		node = new AutoCloseableNode(buildNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	@AfterEach
-	public final void tearDown() {
+	public void tearDown() {
 		if (node != null) {
 			node.close();
 		}
@@ -91,23 +92,23 @@ public final class FileManagerTest {
 
 	@Test
 	public void testCreateTempFile() {
-		final File file = TestUtil.getFile("data/testFile.txt", getClass());
+		final Path file = TestUtil.getFile("data/testFile.txt", getClass());
 		final VFile vFile = fileManager.createFile(file);
 		checkVFile(vFile, "testFile.txt", null, "text/plain", 71092L);
 	}
 
 	@Test
 	public void testObtainReadOnlyFile() {
-		final File file = TestUtil.getFile("data/testFile.txt", getClass());
+		final Path file = TestUtil.getFile("data/testFile.txt", getClass());
 		final VFile vFile = fileManager.createFile(file);
-		checVFile(fileManager.obtainReadOnlyFile(vFile), file);
+		checVFile(FileUtil.obtainReadOnlyPath(vFile), file);
 	}
 
 	@Test
 	public void testCreateTempFileWithFixedNameAndMime() {
 		final String fileName = "monTestFile.txt";
 		final String typeMime = "monTypeMime";
-		final File file = TestUtil.getFile("data/testFile.txt", getClass());
+		final Path file = TestUtil.getFile("data/testFile.txt", getClass());
 		final VFile vFile = fileManager.createFile(fileName, typeMime, file);
 		checkVFile(vFile, fileName, null, typeMime, 71092L);
 	}
@@ -158,11 +159,11 @@ public final class FileManagerTest {
 		}
 	}
 
-	private static void nop(InputStream in) {
+	private static void nop(final InputStream in) {
 		//nada
 	}
 
-	private static void checVFile(final File outFile, final File inFile) {
-		Assertions.assertEquals(inFile.getAbsolutePath(), outFile.getAbsolutePath());
+	private static void checVFile(final Path outFile, final Path inFile) {
+		Assertions.assertEquals(inFile.toFile().getAbsolutePath(), outFile.toFile().getAbsolutePath());
 	}
 }

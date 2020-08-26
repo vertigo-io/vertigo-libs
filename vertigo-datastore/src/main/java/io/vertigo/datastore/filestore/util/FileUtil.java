@@ -24,10 +24,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.util.TempFile;
+import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.impl.filestore.model.FSFile;
 
 /**
  * Utilitaire de gestion des fichiers et flux associés.
@@ -160,5 +165,42 @@ public final class FileUtil {
 				&& userFileName.indexOf('/') == -1 //Linux path_separator
 				&& userFileName.indexOf((char) 0) == -1, //char 0
 				USER_CHECK_ERROR_MSG);
+	}
+
+	/**
+	 * @param vFile FileInfo à lire
+	 * @return Fichier physique readOnly (pour lecture d'un FileInfo)
+	 */
+	public static Path obtainReadOnlyPath(final VFile vFile) {
+		final Path inputFile;
+		if (vFile instanceof FSFile) {
+			inputFile = ((FSFile) vFile).getFile();
+		} else {
+			inputFile = createTempFile(vFile);
+		}
+		return inputFile;
+	}
+
+	/**
+	 * Crée un fichier temporaire à partir d'un fileInfo.
+	 * Attention le processus appelant doit s'assurer de la suppression de ce fichier temporaire.
+	 * @param vFile FileInfo à utiliser
+	 * @return Fichier temporaire.
+	 */
+	private static Path createTempFile(final VFile vFile) {
+		// TODO voir a ajouter une WeakRef sur FileInfo pour vérifier la suppression des fichiers temp après usage
+		try {
+			return doCreateTempPath(vFile);
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Can't create temp file for FileInfo {0}", vFile.getFileName());
+		}
+	}
+
+	private static Path doCreateTempPath(final VFile fileInfo) throws IOException {
+		final File tmpFile = new TempFile("fileInfo", '.' + FileUtil.getFileExtension(fileInfo.getFileName()));
+		try (final InputStream inputStream = fileInfo.createInputStream()) {
+			FileUtil.copy(inputStream, tmpFile);
+			return tmpFile.toPath();
+		}
 	}
 }

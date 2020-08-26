@@ -28,14 +28,14 @@ import io.vertigo.quarto.publisher.model.PublisherData;
 
 /**
  * Merger Plugin pour la fusion de documents.
- * 
+ *
  * @author adufranne
  */
 public interface MergerPlugin extends Plugin {
 
 	/**
 	 * Point d'entrée du plugin.
-	 * 
+	 *
 	 * @param modelFileURL Chemin vers le fichier model
 	 * @param data Données à fusionner avec le model
 	 * @return le File généré.

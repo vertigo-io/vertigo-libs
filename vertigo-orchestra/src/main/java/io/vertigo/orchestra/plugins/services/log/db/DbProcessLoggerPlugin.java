@@ -97,7 +97,7 @@ public class DbProcessLoggerPlugin implements ProcessLoggerPlugin {
 					if (!file.exists()) {
 						throw new IllegalArgumentException("Log File" + file.getAbsolutePath() + " not found");
 					}
-					return fileManager.createFile(file);
+					return fileManager.createFile(file.toPath());
 				});
 	}
 }

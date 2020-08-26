@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
@@ -57,7 +58,7 @@ public final class TestUtil {
 				Assertion.check().isNotNull(in, "fichier non trouvé : {0}", fileName);
 				final File file = new TempFile("tmp", '.' + FileUtil.getFileExtension(fileName));
 				FileUtil.copy(in, file);
-				return fileManager.createFile(file);
+				return fileManager.createFile(file.toPath());
 			}
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
@@ -70,10 +71,10 @@ public final class TestUtil {
 	 * @param baseClass Class de base pour le chemin relatif
 	 * @return File
 	 */
-	public static File getFile(final String fileName, final Class<?> baseClass) {
+	public static Path getFile(final String fileName, final Class<?> baseClass) {
 		final URL fileURL = baseClass.getResource(fileName);
 		try {
-			return new File(fileURL.toURI());
+			return Path.of(fileURL.toURI());
 		} catch (final URISyntaxException e) {
 			throw WrappedException.wrap(e);
 		}

@@ -50,8 +50,8 @@ import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.MessageKey;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.filestore.util.FileUtil;
 import io.vertigo.social.impl.mail.Resources;
 import io.vertigo.social.impl.mail.SendMailPlugin;
 import io.vertigo.social.mail.Mail;
@@ -67,7 +67,6 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	public static final String HEALTH_COMPONENT_NAME = "Mailer";
 
 	private final String charset;
-	private final FileManager fileManager;
 	private final MailSessionConnector mailSessionConnector;
 	private final boolean developmentMode;
 	private final String developmentMailTo;
@@ -83,19 +82,16 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	 */
 	@Inject
 	public JavaxSendMailPlugin(
-			final FileManager fileManager,
 			final List<MailSessionConnector> mailSessionConnectors,
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			@ParamValue("developmentMode") final boolean developmentMode,
 			@ParamValue("developmentMailTo") final String developmentMailTo,
 			@ParamValue("charset") final Optional<String> charsetOpt) {
 		Assertion.check()
-				.isNotNull(fileManager)
 				.isNotNull(connectorNameOpt)
 				.isNotNull(mailSessionConnectors)
 				.isNotBlank(developmentMailTo);
 		//-----
-		this.fileManager = fileManager;
 		final String connectorName = connectorNameOpt.orElse("main");
 		mailSessionConnector = mailSessionConnectors.stream()
 				.filter(connector -> connectorName.equals(connector.getName()))
@@ -239,7 +235,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 
 	private BodyPart createBodyFile(final VFile vFile) throws MessagingException {
 		try {
-			final File file = fileManager.obtainReadOnlyFile(vFile);
+			final File file = FileUtil.obtainReadOnlyPath(vFile).toFile();
 			final MimeBodyPart bodyFile = new MimeBodyPart();
 			bodyFile.attachFile(file);
 			bodyFile.setFileName(vFile.getFileName());

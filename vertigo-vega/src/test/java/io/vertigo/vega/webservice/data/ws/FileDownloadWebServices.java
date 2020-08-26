@@ -18,9 +18,9 @@
  */
 package io.vertigo.vega.webservice.data.ws;
 
-import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
@@ -52,7 +52,7 @@ public final class FileDownloadWebServices implements WebServices {
 	@GET("/downloadFile")
 	public VFile testDownloadFile(final @QueryParam("id") Integer id) {
 		final URL imageUrl = resourcetManager.resolve("npi2loup.png");
-		final File imageFile = asFile(imageUrl);
+		final Path imageFile = asPath(imageUrl);
 		final VFile imageVFile = fileManager.createFile("image" + id + ".png", "image/png", imageFile);
 		return imageVFile;
 	}
@@ -79,7 +79,7 @@ public final class FileDownloadWebServices implements WebServices {
 	@GET("/downloadFileContentType")
 	public VFile testDownloadFileContentType(final @QueryParam("id") Integer id) {
 		final URL imageUrl = resourcetManager.resolve("npi2loup.png");
-		final File imageFile = asFile(imageUrl);
+		final Path imageFile = asPath(imageUrl);
 		return fileManager.createFile("image" + id + generateSpecialChars(id) + ".png", "image/png", imageFile);
 	}
 
@@ -100,11 +100,11 @@ public final class FileDownloadWebServices implements WebServices {
 		}
 	}
 
-	private static File asFile(final URL url) {
+	private static Path asPath(final URL url) {
 		try {
-			return new File(url.toURI());
+			return Path.of(url.toURI());
 		} catch (final URISyntaxException e) {
-			return new File(url.getPath());
+			return Path.of(url.getPath());
 		}
 	}
 }

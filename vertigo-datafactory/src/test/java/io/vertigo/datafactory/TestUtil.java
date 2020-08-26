@@ -57,7 +57,7 @@ public final class TestUtil {
 				Assertion.check().isNotNull(in, "fichier non trouvé : {0}", fileName);
 				final File file = new TempFile("tmp", '.' + FileUtil.getFileExtension(fileName));
 				FileUtil.copy(in, file);
-				return fileManager.createFile(file);
+				return fileManager.createFile(file.toPath());
 			}
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
