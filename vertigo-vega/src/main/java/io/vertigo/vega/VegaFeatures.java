@@ -42,8 +42,7 @@ import io.vertigo.vega.plugins.webservice.handler.SessionInvalidateWebServiceHan
 import io.vertigo.vega.plugins.webservice.handler.SessionWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.ValidatorWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.scanner.annotations.AnnotationsWebServiceScannerPlugin;
-import io.vertigo.vega.plugins.webservice.webserver.javalin.JavalinEmbeddedWebServerPlugin;
-import io.vertigo.vega.plugins.webservice.webserver.javalin.JavalinServletFilterWebServerPlugin;
+import io.vertigo.vega.plugins.webservice.webserver.javalin.JavalinWebServerPlugin;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.WebServiceManager;
 
@@ -54,7 +53,6 @@ import io.vertigo.vega.webservice.WebServiceManager;
 public final class VegaFeatures extends Features<VegaFeatures> {
 
 	private String myApiPrefix;
-	private String myPort;
 	private Param[] jsonParams = new Param[0];
 
 	public VegaFeatures() {
@@ -119,13 +117,6 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 		return this;
 	}
 
-	@Feature("webservices.embeddedServer")
-	public VegaFeatures withWebServicesEmbeddedServer(final Param... params) {
-		Assertion.check().isTrue(params.length == 1 && "port".equals(params[0].getName()), "port param should be provided ");
-		myPort = params[0].getValue();
-		return this;
-	}
-
 	@Feature("webservices.cors")
 	public VegaFeatures withWebServicesOriginCORSFilter(final Param... params) {
 		Assertion.check().isTrue(params.length == 1 && "originCORSFilter".equals(params[0].getName()), "originCORSFilter param should be provided ");
@@ -156,20 +147,11 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
-		if (myPort != null) {
-			final ListBuilder<Param> params = new ListBuilder()
-					.add(Param.of("port", myPort));
-			if (myApiPrefix != null) {
-				params.add(Param.of("apiPrefix", myApiPrefix));
-			}
-			getModuleConfigBuilder().addPlugin(JavalinEmbeddedWebServerPlugin.class, params.build());
-		} else {
-			final ListBuilder<Param> params = new ListBuilder<>();
-			if (myApiPrefix != null) {
-				params.add(Param.of("apiPrefix", myApiPrefix));
-			}
-			getModuleConfigBuilder().addPlugin(JavalinServletFilterWebServerPlugin.class, params.build());
+		final ListBuilder<Param> params = new ListBuilder();
+		if (myApiPrefix != null) {
+			params.add(Param.of("apiPrefix", myApiPrefix));
 		}
+		getModuleConfigBuilder().addPlugin(JavalinWebServerPlugin.class, params.build());
 
 		getModuleConfigBuilder()
 				.addComponent(JsonEngine.class, GoogleJsonEngine.class, jsonParams);

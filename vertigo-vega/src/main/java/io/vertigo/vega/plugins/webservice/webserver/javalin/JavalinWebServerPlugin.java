@@ -19,62 +19,56 @@
 package io.vertigo.vega.plugins.webservice.webserver.javalin;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
+import javax.inject.Inject;
+
 import io.javalin.Javalin;
+import io.vertigo.connectors.javalin.JavalinConnector;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.impl.webservice.WebServerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 
 /**
- * RoutesRegisterPlugin use to register Spark-java route.
+ * RoutesRegisterPlugin use to register Javalin route.
  * @author npiedeloup
  */
-abstract class AbstractJavalinWebServerPlugin implements WebServerPlugin, Activeable {
+public final class JavalinWebServerPlugin implements WebServerPlugin {
 	private final Optional<String> apiPrefix;
-	private Javalin javalinApp;
+	private final JavalinConnector javalinConnector;
 
-	public AbstractJavalinWebServerPlugin(final Optional<String> apiPrefix) {
+	@Inject
+	public JavalinWebServerPlugin(
+			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
+			@ParamValue("apiPrefix") final Optional<String> apiPrefix,
+			final List<JavalinConnector> javalinConnectors) {
 		Assertion.check()
+				.isNotNull(connectorNameOpt)
+				.isNotNull(javalinConnectors)
 				.isNotNull(apiPrefix)
 				.when(apiPrefix.isPresent(), () -> Assertion.check()
 						.isTrue(apiPrefix.get().startsWith("/"), "Global route apiPrefix must starts with /"));
 		//-----
 		this.apiPrefix = apiPrefix;
-	}
 
-	@Override
-	public void start() {
-		javalinApp = startJavalin();
-	}
-
-	protected abstract Javalin startJavalin();
-
-	protected abstract void stopJavalin(Javalin javalin);
-
-	@Override
-	public void stop() {
-		stopJavalin(javalinApp);
-		// we need to sleep because spark starts a new thread to stop the server
-		try {
-			Thread.sleep(100L);
-		} catch (final InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw WrappedException.wrap(e);
-		}
+		final String connectorName = connectorNameOpt.orElse("main");
+		javalinConnector = javalinConnectors.stream()
+				.filter(connector -> connectorName.equals(connector.getName()))
+				.findFirst().get();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final void registerWebServiceRoute(final HandlerChain handlerChain, final Collection<WebServiceDefinition> webServiceDefinitions) {
+	public void registerWebServiceRoute(final HandlerChain handlerChain, final Collection<WebServiceDefinition> webServiceDefinitions) {
 		Assertion.check()
 				.isNotNull(handlerChain)
 				.isNotNull(webServiceDefinitions);
 		//-----
 		boolean corsProtected = false;
+		final Javalin javalinApp = javalinConnector.getClient();
 		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {
 			final String routePath = convertJaxRsPathToJavalin(apiPrefix.orElse("") + webServiceDefinition.getPath());
 			final JavalinRouteHandler javalinRouteHandler = new JavalinRouteHandler(webServiceDefinition, handlerChain);

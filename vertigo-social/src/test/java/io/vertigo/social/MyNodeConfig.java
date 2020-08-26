@@ -20,6 +20,7 @@ package io.vertigo.social;
 
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.connectors.javalin.JavalinFeatures;
 import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.ModuleConfig;
@@ -109,10 +110,12 @@ public final class MyNodeConfig {
 
 	public static NodeConfig vegaConfig() {
 		return createNodeConfigBuilder(true)
+				.addModule(new JavalinFeatures()
+						.withEmbeddedServer(Param.of("port", Integer.toString(WS_PORT)))
+						.build())
 				.addModule(new VegaFeatures()
 						.withWebServices()
 						.withWebServicesSecurity()
-						.withWebServicesEmbeddedServer(Param.of("port", Integer.toString(WS_PORT)))
 						.build())
 				.addModule(ModuleConfig.builder("ws-account")
 						.addComponent(AccountWebServices.class)

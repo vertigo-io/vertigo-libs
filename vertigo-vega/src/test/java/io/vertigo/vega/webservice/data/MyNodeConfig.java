@@ -25,6 +25,7 @@ import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.plugins.authorization.loaders.JsonSecurityDefinitionProvider;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.app.infos.http.HttpAppNodeInfosPlugin;
+import io.vertigo.connectors.javalin.JavalinFeatures;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
@@ -69,6 +70,12 @@ public final class MyNodeConfig {
 	}
 
 	public static NodeConfig config(final boolean isEmbedded) {
+		final JavalinFeatures javalinFeatures = new JavalinFeatures();
+		if (isEmbedded) {
+			javalinFeatures.withEmbeddedServer(Param.of("port", Integer.toString(WS_PORT)));
+		} else {
+			javalinFeatures.withStandalone();
+		}
 
 		final VegaFeatures vegaFeatures = new VegaFeatures()
 				.withWebServices()
@@ -77,9 +84,6 @@ public final class MyNodeConfig {
 				.withWebServicesRateLimiting()
 				.withWebServicesSwagger()
 				.withWebServicesCatalog();
-		if (isEmbedded) {
-			vegaFeatures.withWebServicesEmbeddedServer(Param.of("port", Integer.toString(WS_PORT)));
-		}
 
 		return NodeConfig.builder()
 				.withEndPoint("http://localhost:" + WS_PORT)
@@ -105,6 +109,7 @@ public final class MyNodeConfig {
 						.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
 						.withAuthorization()
 						.build())
+				.addModule(javalinFeatures.build())
 				.addModule(vegaFeatures.build())
 				//-----
 				.addModule(ModuleConfig.builder("dao-app")

@@ -136,8 +136,8 @@ public final class SimplerTestWebServices implements WebServices {
 
 	@Doc("Not the same than /docTest/")
 	@GET("/docTest")
-	public void docTest() {
-		//rien
+	public String docTest() {
+		return "route called : \"/docTest\"";
 	}
 
 	@GET("/{conId}")

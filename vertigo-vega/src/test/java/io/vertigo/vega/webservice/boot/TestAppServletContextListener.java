@@ -29,6 +29,9 @@ import javax.servlet.ServletContextListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.vertigo.connectors.javalin.JavalinConnector;
+import io.vertigo.connectors.javalin.JettyMultipartCleaner;
+import io.vertigo.connectors.javalin.JettyMultipartConfig;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.param.Param;
@@ -64,9 +67,10 @@ public final class TestAppServletContextListener implements ServletContextListen
 			// Initialisation de l'état de l'application
 			node = new AutoCloseableNode(MyNodeConfig.config(false));
 
-			/*final String tempDir = System.getProperty("java.io.tmpdir");
-			Spark.before(new JettyMultipartConfig(tempDir));
-			Spark.after(new JettyMultipartCleaner());*/
+			final JavalinConnector javalinConnector = node.getComponentSpace().resolve(JavalinConnector.class);
+			final String tempDir = System.getProperty("java.io.tmpdir");
+			javalinConnector.getClient().before(new JettyMultipartConfig(tempDir));
+			javalinConnector.getClient().after(new JettyMultipartCleaner());
 
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);

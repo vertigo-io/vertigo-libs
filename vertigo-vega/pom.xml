@@ -63,23 +63,9 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>io.javalin</groupId>
-		    <artifactId>javalin</artifactId>
-		    <version>3.9.1</version>
-			<exclusions> <!-- jetty is optional in project -->
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-server</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-webapp</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty.websocket</groupId>
-					<artifactId>websocket-server</artifactId>
-				</exclusion>
-			</exclusions>
+		    <groupId>io.vertigo</groupId>
+		    <artifactId>vertigo-javalin-connector</artifactId>
+		    <version>${project.version}</version>
 		</dependency>
 		
 		<!-- For javalin embedded -->
@@ -87,13 +73,13 @@
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
 			<version>9.4.31.v20200723</version>
-			<optional>true</optional>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
 			<artifactId>websocket-server</artifactId>
 			<version>9.4.31.v20200723</version>
-			<optional>true</optional>
+			<scope>test</scope>
 		</dependency>
 
 
