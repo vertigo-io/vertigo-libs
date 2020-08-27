@@ -382,7 +382,7 @@ public abstract class AbstractPublisherMergerTest {
 				throw new IllegalArgumentException("File type not supported (" + fileExtension + ")");
 			}
 
-			return fileManager.createFile(file.getName(), mimeType, file);
+			return fileManager.createFile(file.getName(), mimeType, file.toPath());
 		}
 	}
 

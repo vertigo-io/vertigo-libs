@@ -21,6 +21,7 @@ package io.vertigo.quarto.plugins.converter.openoffice;
 import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -45,6 +46,7 @@ import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.util.TempFile;
 import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.filestore.util.FileUtil;
 import io.vertigo.quarto.impl.converter.ConverterPlugin;
 
 /**
@@ -111,16 +113,16 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 				// si le format de sortie est celui d'entrée la convertion est inutile
 				.isFalse(targetFormat.getTypeMime().equals(file.getMimeType()), "Le format de sortie est identique à celui d'entrée ; la conversion est inutile");
 		//-----
-		final File inputFile = fileManager.obtainReadOnlyFile(file);
-		final Callable<File> convertTask = new Callable<>() {
+		final Path inputFile = FileUtil.obtainReadOnlyPath(file);
+		final Callable<Path> convertTask = new Callable<>() {
 			@Override
-			public File call() throws Exception {
-				return doConvertToFormat(inputFile, targetFormat);
+			public Path call() throws Exception {
+				return doConvertToFormat(inputFile.toFile(), targetFormat).toPath();
 			}
 		};
-		final File targetFile;
+		final Path targetFile;
 		try {
-			final Future<File> targetFileFuture = executors.submit(convertTask);
+			final Future<Path> targetFileFuture = executors.submit(convertTask);
 			targetFile = targetFileFuture.get(convertTimeoutSeconds, TimeUnit.SECONDS);
 		} catch (final Exception e) {
 			throw WrappedException.wrap(e, "Erreur de conversion du document au format {0} ({1})", targetFormat.name(), e.getClass().getSimpleName());

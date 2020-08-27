@@ -66,13 +66,13 @@ public final class RemoteConverterManagerTest {
 	private AutoCloseableNode node;
 
 	@BeforeEach
-	public final void setUp() {
+	public void setUp() {
 		node = new AutoCloseableNode(buildNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	@AfterEach
-	public final void tearDown() {
+	public void tearDown() {
 		resultFile = null; //Les fichiers temporaires étant en WeakRef, cela supprime le fichier
 		if (node != null) {
 			node.close();
@@ -206,7 +206,8 @@ public final class RemoteConverterManagerTest {
 	}
 
 	private void log(final String methode, final VFile vFile) {
-		log.info(methode + " => " + fileManager.obtainReadOnlyFile(vFile).getAbsolutePath());
+		log.info(methode + " => " + FileUtil.obtainReadOnlyPath(vFile).toFile()
+				.getAbsolutePath());
 	}
 
 	private static VFile createVFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) {
@@ -214,7 +215,7 @@ public final class RemoteConverterManagerTest {
 			Assertion.check().isNotNull(in, "fichier non trouvé : {0}", fileName);
 			final File file = new TempFile("tmp", '.' + FileUtil.getFileExtension(fileName));
 			FileUtil.copy(in, file);
-			return fileManager.createFile(file);
+			return fileManager.createFile(file.toPath());
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}

@@ -63,13 +63,13 @@ public final class XDocReportConverterManagerTest {
 	private AutoCloseableNode node;
 
 	@BeforeEach
-	public final void setUp() {
+	public void setUp() {
 		node = new AutoCloseableNode(buildNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	@AfterEach
-	public final void tearDown() {
+	public void tearDown() {
 		resultFile = null; //Les fichiers temporaires étant en WeakRef, cela supprime le fichier
 		if (node != null) {
 			node.close();
@@ -107,7 +107,7 @@ public final class XDocReportConverterManagerTest {
 	}
 
 	private void log(final String methode, final VFile vFile) {
-		log.info(methode + " => " + fileManager.obtainReadOnlyFile(vFile).getAbsolutePath());
+		log.info(methode + " => " + FileUtil.obtainReadOnlyPath(vFile).toFile().getAbsolutePath());
 	}
 
 	private static VFile createVFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) throws IOException {
