@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import io.vertigo.core.lang.WrappedException;
+
 /**
  * Représentation d'un fichier créé à partir d'un FileSystem.
  *
@@ -68,6 +70,22 @@ public final class FSFile extends AbstractVFile {
 		//			inputStream.reset();
 		//		}
 		//return inputStream;
+	}
+
+	public static FSFile of(final String fileName, final String typeMime, final Path file) {
+		try {
+			return new FSFile(fileName, typeMime, file);
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
+		}
+	}
+
+	public static FSFile of(final Path file) {
+		try {
+			return new FSFile(file.getFileName().toString(), Files.probeContentType(file), file);
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
+		}
 	}
 
 }

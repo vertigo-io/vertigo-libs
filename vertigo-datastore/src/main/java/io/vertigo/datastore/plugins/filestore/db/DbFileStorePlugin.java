@@ -35,12 +35,12 @@ import io.vertigo.datamodel.structure.metamodel.DtFieldName;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
 import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.FileStorePlugin;
+import io.vertigo.datastore.impl.filestore.model.StreamFile;
 
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/
@@ -59,7 +59,6 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		fileName, mimeType, lastModified, length, fileData
 	}
 
-	private final FileManager fileManager;
 	private final String storeDtDefinitionName;
 	private DtField storeIdField;
 	private DtDefinition storeDtDefinition;
@@ -68,21 +67,17 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	 * Constructor.
 	 * @param name Store name
 	 * @param storeDtDefinitionName Nom du dt de stockage
-	 * @param fileManager Manager de gestion des fichiers
 	 */
 	@Inject
 	public DbFileStorePlugin(
 			@ParamValue("name") final Optional<String> name,
 			@ParamValue("storeDtName") final String storeDtDefinitionName,
-			@ParamValue("fileInfoClass") final String fileInfoClassName,
-			final FileManager fileManager) {
+			@ParamValue("fileInfoClass") final String fileInfoClassName) {
 		super(name, fileInfoClassName);
 		Assertion.check()
-				.isNotBlank(storeDtDefinitionName)
-				.isNotNull(fileManager);
+				.isNotBlank(storeDtDefinitionName);
 		//-----
 		this.storeDtDefinitionName = storeDtDefinitionName;
-		this.fileManager = fileManager;
 	}
 
 	@Override
@@ -110,7 +105,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		final String mimeType = getValue(fileInfoDto, DtoFields.mimeType, String.class);
 		final Instant lastModified = getValue(fileInfoDto, DtoFields.lastModified, Instant.class);
 		final Long length = getValue(fileInfoDto, DtoFields.length, Long.class);
-		final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
+		final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, inputStreamBuilder);
 		return new DatabaseFileInfo(uri.getDefinition(), vFile);
 	}
 

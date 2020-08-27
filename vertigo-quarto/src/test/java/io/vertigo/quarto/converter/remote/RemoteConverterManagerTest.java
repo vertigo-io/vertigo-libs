@@ -40,9 +40,9 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.util.TempFile;
 import io.vertigo.datastore.DataStoreFeatures;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.FileUtil;
+import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.quarto.QuartoFeatures;
 import io.vertigo.quarto.converter.ConverterManager;
 
@@ -57,9 +57,6 @@ public final class RemoteConverterManagerTest {
 
 	@Inject
 	private ConverterManager converterManager;
-
-	@Inject
-	private FileManager fileManager;
 
 	private VFile resultFile;
 
@@ -99,7 +96,7 @@ public final class RemoteConverterManagerTest {
 	 */
 	@Test
 	public void testConvertOdt2Odt() {
-		final VFile inputFile = createVFile(fileManager, "../data/testFile.odt", this.getClass());
+		final VFile inputFile = createVFile("../data/testFile.odt", this.getClass());
 		Assertions.assertThrows(IllegalStateException.class, () -> {
 			resultFile = converterManager.convert(inputFile, "ODT");
 			log("Odt2Odt", resultFile);
@@ -111,7 +108,7 @@ public final class RemoteConverterManagerTest {
 	 */
 	@Test
 	public void testConvertOdt2Doc() {
-		final VFile inputFile = createVFile(fileManager, "../data/testFile.odt", this.getClass());
+		final VFile inputFile = createVFile("../data/testFile.odt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "DOC");
 
 		log("Odt2Doc", resultFile);
@@ -122,7 +119,7 @@ public final class RemoteConverterManagerTest {
 	 */
 	@Test
 	public void testConvertOdt2Rtf() {
-		final VFile inputFile = createVFile(fileManager, "../data/testFile.odt", this.getClass());
+		final VFile inputFile = createVFile("../data/testFile.odt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "RTF");
 
 		log("Odt2Rtf", resultFile);
@@ -133,7 +130,7 @@ public final class RemoteConverterManagerTest {
 	 */
 	@Test
 	public void testConvertOdt2Pdf() {
-		final VFile inputFile = createVFile(fileManager, "../data/testFile.odt", this.getClass());
+		final VFile inputFile = createVFile("../data/testFile.odt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "PDF");
 
 		log("Odt2Pdf", resultFile);
@@ -144,7 +141,7 @@ public final class RemoteConverterManagerTest {
 	 */
 	@Test
 	public void testConvertOdt2Txt() {
-		final VFile inputFile = createVFile(fileManager, "../data/testFile.odt", this.getClass());
+		final VFile inputFile = createVFile("../data/testFile.odt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "TXT");
 
 		log("Odt2Txt", resultFile);
@@ -155,7 +152,7 @@ public final class RemoteConverterManagerTest {
 	 */
 	@Test
 	public void testConvertTxt2Odt() {
-		final VFile inputFile = createVFile(fileManager, "../data/testFile.txt", this.getClass());
+		final VFile inputFile = createVFile("../data/testFile.txt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "ODT");
 
 		log("Txt2Odt", resultFile);
@@ -166,7 +163,7 @@ public final class RemoteConverterManagerTest {
 	 */
 	@Test
 	public void testConvertTxt2Doc() {
-		final VFile inputFile = createVFile(fileManager, "../data/testFile.txt", this.getClass());
+		final VFile inputFile = createVFile("../data/testFile.txt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "DOC");
 
 		log("Txt2Doc", resultFile);
@@ -177,7 +174,7 @@ public final class RemoteConverterManagerTest {
 	 */
 	@Test
 	public void testConvertTxt2Rtf() {
-		final VFile inputFile = createVFile(fileManager, "../data/testFile.txt", this.getClass());
+		final VFile inputFile = createVFile("../data/testFile.txt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "RTF");
 
 		log("Txt2Rtf", resultFile);
@@ -188,7 +185,7 @@ public final class RemoteConverterManagerTest {
 	 */
 	@Test
 	public void testConvertTxt2Pdf() {
-		final VFile inputFile = createVFile(fileManager, "../data/testFile.txt", this.getClass());
+		final VFile inputFile = createVFile("../data/testFile.txt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "PDF");
 
 		log("Txt2Pdf", resultFile);
@@ -199,7 +196,7 @@ public final class RemoteConverterManagerTest {
 	 */
 	@Test
 	public void testConvertTxt2Txt() {
-		final VFile inputFile = createVFile(fileManager, "../data/testFile.txt", this.getClass());
+		final VFile inputFile = createVFile("../data/testFile.txt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "PDF");
 
 		log("Txt2Txt", resultFile);
@@ -210,12 +207,12 @@ public final class RemoteConverterManagerTest {
 				.getAbsolutePath());
 	}
 
-	private static VFile createVFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) {
+	private static VFile createVFile(final String fileName, final Class<?> baseClass) {
 		try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
 			Assertion.check().isNotNull(in, "fichier non trouvé : {0}", fileName);
 			final File file = new TempFile("tmp", '.' + FileUtil.getFileExtension(fileName));
 			FileUtil.copy(in, file);
-			return fileManager.createFile(file.toPath());
+			return FSFile.of(file.toPath());
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}

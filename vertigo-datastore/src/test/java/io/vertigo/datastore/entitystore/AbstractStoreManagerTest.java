@@ -58,7 +58,6 @@ import io.vertigo.datastore.entitystore.data.domain.car.MotorTypeEnum;
 import io.vertigo.datastore.entitystore.data.domain.famille.Famille;
 import io.vertigo.datastore.entitystore.data.domain.famille.Famille.CarFields;
 import io.vertigo.datastore.entitystore.sql.SqlUtil;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 
@@ -70,8 +69,6 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
 public abstract class AbstractStoreManagerTest {
 	@Inject
 	protected EntityStoreManager entityStoreManager;
-	@Inject
-	protected FileManager fileManager;
 	@Inject
 	protected VTransactionManager transactionManager;
 	@Inject

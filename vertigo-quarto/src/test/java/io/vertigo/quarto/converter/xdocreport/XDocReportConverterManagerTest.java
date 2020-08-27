@@ -37,9 +37,9 @@ import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.util.TempFile;
 import io.vertigo.datastore.DataStoreFeatures;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.FileUtil;
+import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.quarto.QuartoFeatures;
 import io.vertigo.quarto.converter.ConverterManager;
 
@@ -54,9 +54,6 @@ public final class XDocReportConverterManagerTest {
 
 	@Inject
 	private ConverterManager converterManager;
-
-	@Inject
-	private FileManager fileManager;
 
 	private VFile resultFile;
 
@@ -92,7 +89,7 @@ public final class XDocReportConverterManagerTest {
 	 */
 	@Test
 	public void testConvertOdt2Pdf() throws IOException {
-		final VFile inputFile = createVFile(fileManager, "../data/testFile.odt", this.getClass());
+		final VFile inputFile = createVFile("../data/testFile.odt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "PDF");
 
 		log("Odt2Pdf", resultFile);
@@ -100,7 +97,7 @@ public final class XDocReportConverterManagerTest {
 
 	@Test
 	public void testConvertDocx2Pdf() throws IOException {
-		final VFile inputFile = createVFile(fileManager, "../data/testFile.docx", this.getClass());
+		final VFile inputFile = createVFile("../data/testFile.docx", this.getClass());
 		resultFile = converterManager.convert(inputFile, "PDF");
 
 		log("Docx2Pdf", resultFile);
@@ -110,7 +107,7 @@ public final class XDocReportConverterManagerTest {
 		log.info(methode + " => " + FileUtil.obtainReadOnlyPath(vFile).toFile().getAbsolutePath());
 	}
 
-	private static VFile createVFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) throws IOException {
+	private static VFile createVFile(final String fileName, final Class<?> baseClass) throws IOException {
 		try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
 			Assertion.check().isNotNull(in, "fichier non trouvé : {0}", fileName);
 			final String fileExtension = FileUtil.getFileExtension(fileName);
@@ -126,7 +123,7 @@ public final class XDocReportConverterManagerTest {
 				throw new IllegalArgumentException("File type not supported (" + fileExtension + ")");
 			}
 
-			return fileManager.createFile(file.getName(), mimeType, file.toPath());
+			return FSFile.of(file.getName(), mimeType, file.toPath());
 		}
 	}
 }

@@ -45,7 +45,6 @@ import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfo;
@@ -55,6 +54,7 @@ import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.FileUtil;
 import io.vertigo.datastore.impl.filestore.FileStorePlugin;
 import io.vertigo.datastore.impl.filestore.model.AbstractFileInfo;
+import io.vertigo.datastore.impl.filestore.model.StreamFile;
 
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/
@@ -88,7 +88,6 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 * Le store est-il en mode readOnly ?
 	 */
 	private final boolean readOnly;
-	private final FileManager fileManager;
 	private final String name;
 	private final String documentRoot;
 	private DtField storeIdField;
@@ -101,7 +100,6 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 * Constructor.
 	 * @param name Store name
 	 * @param storeDtDefinitionName Nom du dt de stockage
-	 * @param fileManager Manager de gestion des fichiers
 	 * @param path le chemin jndi pour récupérer le paramètre path dans le context
 	 * @param transactionManager Manager des transactions
 	 */
@@ -111,21 +109,18 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 			@ParamValue("storeDtName") final String storeDtDefinitionName,
 			@ParamValue("path") final String path,
 			@ParamValue("fileInfoClass") final String fileInfoClassName,
-			final VTransactionManager transactionManager,
-			final FileManager fileManager) {
+			final VTransactionManager transactionManager) {
 		Assertion.check()
 				.isNotNull(name)
 				.isNotBlank(storeDtDefinitionName)
 				.isNotBlank(path)
 				.isNotBlank(fileInfoClassName)
 				.isNotNull(transactionManager)
-				.isNotNull(fileManager)
 				.isTrue(path.endsWith("/"), "store path must ends with / ({0})", path);
 		//-----
 		this.name = name.orElse(FileStoreManager.MAIN_DATA_SPACE_NAME);
 		readOnly = false;
 		this.transactionManager = transactionManager;
-		this.fileManager = fileManager;
 		documentRoot = FileUtil.translatePath(path);
 		this.storeDtDefinitionName = storeDtDefinitionName;
 		this.fileInfoClassName = fileInfoClassName;
@@ -166,7 +161,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		final String filePath = getValue(fileInfoDto, DtoFields.filePath, String.class);
 
 		final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(documentRoot + filePath));
-		final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
+		final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 		// retourne le fileinfo avec le fichier et son URI
 		final FsFileInfo fsFileInfo = new FsFileInfo(uri.getDefinition(), vFile);

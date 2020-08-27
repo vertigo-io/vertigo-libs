@@ -35,13 +35,13 @@ import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
 import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.FileStorePlugin;
+import io.vertigo.datastore.impl.filestore.model.StreamFile;
 
 /**
  * Permet de gérer le CRUD sur un fichier stocké sur deux tables (Méta données / Données).
@@ -58,7 +58,6 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		fileName, mimeType, lastModified, length, fileData, fmdId, fdtId
 	}
 
-	private final FileManager fileManager;
 	private final DtDefinition storeMetaDataDtDefinition;
 	private final DtField storeMetaDataIdField;
 	private final DtDefinition storeFileDtDefinition;
@@ -68,19 +67,15 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	 * @param name This store name
 	 * @param storeMetaDataDtDefinitionName MetaData storing dtDefinition
 	 * @param storeFileDtDefinitionName File storing dtDefinition
-	 * @param fileManager Files manager
 	 */
 	@Inject
 	public TwoTablesDbFileStorePlugin(
 			@ParamValue("name") final Optional<String> name,
 			@ParamValue("storeMetaDataDtName") final String storeMetaDataDtDefinitionName,
 			@ParamValue("storeFileDtName") final String storeFileDtDefinitionName,
-			@ParamValue("fileInfoClass") final String fileInfoClassName,
-			final FileManager fileManager) {
+			@ParamValue("fileInfoClass") final String fileInfoClassName) {
 		super(name, fileInfoClassName);
-		Assertion.check().isNotNull(fileManager);
 		//-----
-		this.fileManager = fileManager;
 		storeMetaDataDtDefinition = Node.getNode().getDefinitionSpace().resolve(storeMetaDataDtDefinitionName, DtDefinition.class);
 		storeFileDtDefinition = Node.getNode().getDefinitionSpace().resolve(storeFileDtDefinitionName, DtDefinition.class);
 		storeMetaDataIdField = storeMetaDataDtDefinition.getIdField().get();
@@ -105,7 +100,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		final String mimeType = getValue(fileMetadataDto, DtoFields.mimeType, String.class);
 		final Instant lastModified = getValue(fileMetadataDto, DtoFields.lastModified, Instant.class);
 		final Long length = getValue(fileMetadataDto, DtoFields.length, Long.class);
-		final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
+		final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 		//TODO passer par une factory de FileInfo à partir de la FileInfoDefinition (comme DomainFactory)
 		final FileInfo fileInfo = new DatabaseFileInfo(fileInfoUri.getDefinition(), vFile);

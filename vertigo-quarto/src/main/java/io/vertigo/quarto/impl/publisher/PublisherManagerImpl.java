@@ -27,8 +27,8 @@ import javax.inject.Inject;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.quarto.publisher.PublisherManager;
 import io.vertigo.quarto.publisher.model.PublisherData;
 
@@ -39,7 +39,6 @@ import io.vertigo.quarto.publisher.model.PublisherData;
  */
 public final class PublisherManagerImpl implements PublisherManager {
 	private final MergerPlugin mergerPlugin;
-	private final FileManager fileManager;
 
 	/**
 	 * Constructeur.
@@ -47,13 +46,11 @@ public final class PublisherManagerImpl implements PublisherManager {
 	 * @param fileManager Manager des fichiers
 	 */
 	@Inject
-	public PublisherManagerImpl(final ScriptManager scriptManager, final FileManager fileManager, final MergerPlugin mergerPlugin) {
+	public PublisherManagerImpl(final ScriptManager scriptManager, final MergerPlugin mergerPlugin) {
 		Assertion.check()
-				.isNotNull(fileManager)
 				.isNotNull(scriptManager)
 				.isNotNull(mergerPlugin);
 		//-----
-		this.fileManager = fileManager;
 		this.mergerPlugin = mergerPlugin;
 	}
 
@@ -80,6 +77,6 @@ public final class PublisherManagerImpl implements PublisherManager {
 		// mergeParameter.getOuputFileName()
 		//-----
 		final File fileToExport = mergerPlugin.execute(modelFileURL, data);
-		return fileManager.createFile(fileName, mergerPlugin.getPublisherFormat().getMimeType(), fileToExport.toPath());
+		return FSFile.of(fileName, mergerPlugin.getPublisherFormat().getMimeType(), fileToExport.toPath());
 	}
 }

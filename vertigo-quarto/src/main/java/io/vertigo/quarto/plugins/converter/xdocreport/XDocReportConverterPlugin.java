@@ -28,8 +28,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.Type3Font;
 
@@ -42,8 +40,8 @@ import fr.opensagres.xdocreport.core.document.DocumentKind;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.TempFile;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.quarto.impl.converter.ConverterPlugin;
 
 /**
@@ -53,9 +51,6 @@ import io.vertigo.quarto.impl.converter.ConverterPlugin;
  * @author jgarnier
  */
 public final class XDocReportConverterPlugin implements ConverterPlugin {
-
-	@Inject
-	private FileManager fileManager;
 
 	@Override
 	public VFile convertToFormat(final VFile file, final String targetFormat) {
@@ -84,7 +79,7 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 			try (final OutputStream out = Files.newOutputStream(resultFile.toPath())) {
 				converter.convert(in, out, options);
 			}
-			return fileManager.createFile(resultFile.getName(), ConverterFormat.PDF.getTypeMime(), resultFile.toPath());
+			return FSFile.of(resultFile.getName(), ConverterFormat.PDF.getTypeMime(), resultFile.toPath());
 		} catch (final IOException | XDocConverterException e) {
 			throw WrappedException.wrap(e);
 		} finally {

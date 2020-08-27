@@ -24,8 +24,6 @@ import java.io.StringBufferInputStream;
 import java.nio.file.Path;
 import java.time.Instant;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,16 +45,15 @@ import io.vertigo.datastore.filestore.data.TestSmartTypes;
 import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.FileUtil;
+import io.vertigo.datastore.impl.filestore.model.FSFile;
+import io.vertigo.datastore.impl.filestore.model.StreamFile;
 
 /**
  * Test de l'implémentation standard.
  *
  * @author dchallas
  */
-public final class FileManagerTest {
-
-	@Inject
-	private FileManager fileManager;
+public final class VFileTest {
 
 	private AutoCloseableNode node;
 
@@ -93,14 +90,14 @@ public final class FileManagerTest {
 	@Test
 	public void testCreateTempFile() {
 		final Path file = TestUtil.getFile("data/testFile.txt", getClass());
-		final VFile vFile = fileManager.createFile(file);
+		final VFile vFile = FSFile.of(file);
 		checkVFile(vFile, "testFile.txt", null, "text/plain", 71092L);
 	}
 
 	@Test
 	public void testObtainReadOnlyFile() {
 		final Path file = TestUtil.getFile("data/testFile.txt", getClass());
-		final VFile vFile = fileManager.createFile(file);
+		final VFile vFile = FSFile.of(file);
 		checVFile(FileUtil.obtainReadOnlyPath(vFile), file);
 	}
 
@@ -109,7 +106,7 @@ public final class FileManagerTest {
 		final String fileName = "monTestFile.txt";
 		final String typeMime = "monTypeMime";
 		final Path file = TestUtil.getFile("data/testFile.txt", getClass());
-		final VFile vFile = fileManager.createFile(fileName, typeMime, file);
+		final VFile vFile = FSFile.of(fileName, typeMime, file);
 		checkVFile(vFile, fileName, null, typeMime, 71092L);
 	}
 
@@ -124,7 +121,7 @@ public final class FileManagerTest {
 				return new StringBufferInputStream("Contenu test");
 			}
 		};
-		final VFile vFile = fileManager.createFile(fileName, lastModified, length, inputStreamBuilder);
+		final VFile vFile = StreamFile.of(fileName, lastModified, length, inputStreamBuilder);
 		checkVFile(vFile, fileName, lastModified, "text/plain", length);
 	}
 
@@ -140,7 +137,7 @@ public final class FileManagerTest {
 				return new StringBufferInputStream("Contenu test");
 			}
 		};
-		final VFile vFile = fileManager.createFile(fileName, typeMime, lastModified, length, inputStreamBuilder);
+		final VFile vFile = StreamFile.of(fileName, typeMime, lastModified, length, inputStreamBuilder);
 		checkVFile(vFile, fileName, lastModified, typeMime, length);
 	}
 

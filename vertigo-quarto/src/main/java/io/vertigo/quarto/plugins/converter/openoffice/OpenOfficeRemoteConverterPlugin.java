@@ -36,7 +36,6 @@ import com.sun.star.uno.UnoRuntime;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.quarto.plugins.converter.openoffice.stream.OOoFileInputStream;
 import io.vertigo.quarto.plugins.converter.openoffice.stream.OOoFileOutputStream;
 
@@ -49,18 +48,16 @@ public final class OpenOfficeRemoteConverterPlugin extends AbstractOpenOfficeCon
 
 	/**
 	 * Constructor.
-	 * @param fileManager Manager de gestion des fichiers
 	 * @param unoHost Hote du serveur OpenOffice
 	 * @param unoPort Port de connexion au serveur OpenOffice
 	 * @param convertTimeoutSecondsOpt Timeout de conversion des documents
 	 */
 	@Inject
 	public OpenOfficeRemoteConverterPlugin(
-			final FileManager fileManager,
 			@ParamValue("unohost") final String unoHost,
 			@ParamValue("unoport") final String unoPort,
 			@ParamValue("convertTimeoutSeconds") final Optional<Integer> convertTimeoutSecondsOpt) {
-		super(fileManager, unoHost, unoPort, convertTimeoutSecondsOpt.orElse(60));
+		super(unoHost, unoPort, convertTimeoutSecondsOpt.orElse(60));
 	}
 
 	/** {@inheritDoc} */

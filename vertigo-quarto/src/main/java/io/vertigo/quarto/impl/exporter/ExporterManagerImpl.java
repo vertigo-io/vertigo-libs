@@ -31,8 +31,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.TempFile;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.quarto.exporter.ExporterManager;
 import io.vertigo.quarto.exporter.model.Export;
 import io.vertigo.quarto.exporter.model.ExportFormat;
@@ -43,19 +43,16 @@ import io.vertigo.quarto.exporter.model.ExportFormat;
  * @author pchretien, npiedeloup
  */
 public final class ExporterManagerImpl implements ExporterManager {
-	private final FileManager fileManager;
 	private final List<ExporterPlugin> exporterPlugins;
 
 	/**
 	 * Constructor.
 	 */
 	@Inject
-	public ExporterManagerImpl(final FileManager fileManager, final List<ExporterPlugin> exporterPlugins) {
+	public ExporterManagerImpl(final List<ExporterPlugin> exporterPlugins) {
 		Assertion.check()
-				.isNotNull(fileManager)
 				.isNotNull(exporterPlugins);
 		//-----
-		this.fileManager = fileManager;
 		this.exporterPlugins = Collections.unmodifiableList(exporterPlugins);
 	}
 
@@ -109,7 +106,7 @@ public final class ExporterManagerImpl implements ExporterManager {
 			}
 			throw e;
 		}
-		return fileManager.createFile(export.getFileName() + "." + export.getFormat().name().toLowerCase(Locale.ENGLISH), export.getFormat().getTypeMime(), file.toPath());
+		return FSFile.of(export.getFileName() + "." + export.getFormat().name().toLowerCase(Locale.ENGLISH), export.getFormat().getTypeMime(), file.toPath());
 	}
 
 }

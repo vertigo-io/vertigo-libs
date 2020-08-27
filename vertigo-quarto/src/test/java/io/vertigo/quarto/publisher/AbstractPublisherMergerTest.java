@@ -42,9 +42,9 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.util.TempFile;
 import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.FileUtil;
+import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.quarto.impl.publisher.PublisherDataUtil;
 import io.vertigo.quarto.publisher.data.domain.Address;
 import io.vertigo.quarto.publisher.data.domain.Enquete;
@@ -72,8 +72,6 @@ public abstract class AbstractPublisherMergerTest {
 	private PublisherManager publisherManager;
 	@Inject
 	private ResourceManager resourceManager;
-	@Inject
-	private FileManager fileManager;
 
 	private AutoCloseableNode node;
 
@@ -264,7 +262,7 @@ public abstract class AbstractPublisherMergerTest {
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelImage." + getExtension());
-		final VFile image = createVFile(fileManager, "/" + DATA_PACKAGE + "logo.jpg", getClass());
+		final VFile image = createVFile("/" + DATA_PACKAGE + "logo.jpg", getClass());
 		publisherData.getRootNode().setImage("logo", image);
 		//
 		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionImage." + getExtension(), modelFileURL, publisherData);
@@ -366,7 +364,7 @@ public abstract class AbstractPublisherMergerTest {
 		}
 	}
 
-	private static VFile createVFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) throws IOException {
+	private static VFile createVFile(final String fileName, final Class<?> baseClass) throws IOException {
 		try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
 			Assertion.check().isNotNull(in, "fichier non trouvé : {0}", fileName);
 			final String fileExtension = FileUtil.getFileExtension(fileName);
@@ -382,7 +380,7 @@ public abstract class AbstractPublisherMergerTest {
 				throw new IllegalArgumentException("File type not supported (" + fileExtension + ")");
 			}
 
-			return fileManager.createFile(file.getName(), mimeType, file.toPath());
+			return FSFile.of(file.getName(), mimeType, file.toPath());
 		}
 	}
 

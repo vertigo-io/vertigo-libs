@@ -35,7 +35,6 @@ import com.sun.star.uno.UnoRuntime;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.datastore.filestore.FileManager;
 
 /**
  * Conversion des fichiers à partir de OpenOffice.
@@ -46,16 +45,14 @@ public final class OpenOfficeLocalConverterPlugin extends AbstractOpenOfficeConv
 
 	/**
 	 * Constructeur.
-	 * @param fileManager Manager de gestion des fichiers
 	 * @param unoPort Port de connexion au serveur OpenOffice
 	 * @param convertTimeoutSecondsOpt Timeout de conversion des documents
 	 */
 	@Inject
 	public OpenOfficeLocalConverterPlugin(
-			final FileManager fileManager,
 			@ParamValue("unoport") final String unoPort,
 			@ParamValue("convertTimeoutSeconds") final Optional<Integer> convertTimeoutSecondsOpt) {
-		super(fileManager, "localhost", unoPort, convertTimeoutSecondsOpt.orElse(60));
+		super("localhost", unoPort, convertTimeoutSecondsOpt.orElse(60));
 
 	}
 

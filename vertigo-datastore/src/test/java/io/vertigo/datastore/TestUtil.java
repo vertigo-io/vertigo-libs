@@ -28,9 +28,9 @@ import java.nio.file.Path;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.TempFile;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.FileUtil;
+import io.vertigo.datastore.impl.filestore.model.FSFile;
 
 /**
  * Utilitaire pour construire des cas de tests.
@@ -52,13 +52,13 @@ public final class TestUtil {
 	 * @param baseClass Class de base pour le chemin relatif
 	 * @return VFile
 	 */
-	public static VFile createVFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) {
+	public static VFile createVFile(final String fileName, final Class<?> baseClass) {
 		try {
 			try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
 				Assertion.check().isNotNull(in, "fichier non trouvé : {0}", fileName);
 				final File file = new TempFile("tmp", '.' + FileUtil.getFileExtension(fileName));
 				FileUtil.copy(in, file);
-				return fileManager.createFile(file.toPath());
+				return FSFile.of(file.toPath());
 			}
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);

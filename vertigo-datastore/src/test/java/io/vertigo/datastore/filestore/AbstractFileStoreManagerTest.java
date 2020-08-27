@@ -52,8 +52,6 @@ public abstract class AbstractFileStoreManagerTest {
 	@Inject
 	protected FileStoreManager fileStoreManager;
 	@Inject
-	protected FileManager fileManager;
-	@Inject
 	protected VTransactionManager transactionManager;
 
 	private AutoCloseableNode node;
@@ -101,7 +99,7 @@ public abstract class AbstractFileStoreManagerTest {
 
 	protected void doCreateFile(final Function<VFile, FileInfo> createFileInfoFct) throws Exception {
 		//1.Création du fichier depuis un fichier texte du FS
-		final VFile vFile = TestUtil.createVFile(fileManager, "./data/lautreamont.txt", AbstractFileStoreManagerTest.class);
+		final VFile vFile = TestUtil.createVFile("./data/lautreamont.txt", AbstractFileStoreManagerTest.class);
 		//2. Sauvegarde en BDD
 		final FileInfo fileInfo = createFileInfoFct.apply(vFile);
 		final FileInfo createdFileInfo;
@@ -149,7 +147,7 @@ public abstract class AbstractFileStoreManagerTest {
 
 	protected void doDeleteFile(final Function<VFile, FileInfo> createFileInfoFct) throws Exception {
 		//1.Création du fichier depuis un fichier texte du FS
-		final VFile vFile = TestUtil.createVFile(fileManager, "./data/lautreamont.txt", AbstractFileStoreManagerTest.class);
+		final VFile vFile = TestUtil.createVFile("./data/lautreamont.txt", AbstractFileStoreManagerTest.class);
 		//2. Sauvegarde en BDD
 		final FileInfo fileInfo = createFileInfoFct.apply(vFile);
 		final FileInfo createdFileInfo;
@@ -181,8 +179,8 @@ public abstract class AbstractFileStoreManagerTest {
 	protected void doUpdateFile(final Function<VFile, FileInfo> createFileInfoFct) throws Exception {
 		//1.Création du fichier depuis un fichier texte du FS
 
-		final VFile vFile = TestUtil.createVFile(fileManager, "./data/testFile.txt", AbstractFileStoreManagerTest.class);
-		final VFile vFile2 = TestUtil.createVFile(fileManager, "./data/lautreamont.txt", AbstractFileStoreManagerTest.class);
+		final VFile vFile = TestUtil.createVFile("./data/testFile.txt", AbstractFileStoreManagerTest.class);
+		final VFile vFile2 = TestUtil.createVFile("./data/lautreamont.txt", AbstractFileStoreManagerTest.class);
 		//2. Sauvegarde en BDD
 		final FileInfo createdFileInfo;
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -233,7 +231,7 @@ public abstract class AbstractFileStoreManagerTest {
 
 	@Test
 	public void testOtherStoreFile() throws Exception {
-		final VFile vFile = TestUtil.createVFile(fileManager, "./data/lautreamont.txt", AbstractFileStoreManagerTest.class);
+		final VFile vFile = TestUtil.createVFile("./data/lautreamont.txt", AbstractFileStoreManagerTest.class);
 		//1.Création du fichier depuis un fichier texte du FS
 		final FileInfo fileInfo = new FileInfoTemp(vFile);
 		final FileInfo createdFileInfo;

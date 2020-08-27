@@ -35,7 +35,6 @@ import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.datastore.DataStoreFeatures;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.social.SocialFeatures;
 
@@ -52,8 +51,6 @@ public final class MailManagerTest {
 
 	@Inject
 	private MailManager mailManager;
-	@Inject
-	private FileManager fileManager;
 
 	private AutoCloseableNode node;
 
@@ -591,7 +588,7 @@ public final class MailManagerTest {
 	 */
 	@Test
 	public void testSendMailWithPJ() {
-		final VFile image = TestUtil.createVFile(fileManager, "data/logo.jpg", getClass());
+		final VFile image = TestUtil.createVFile("data/logo.jpg", getClass());
 
 		final Mail mail = Mail.builder()
 				.from(DT_MAIL)
@@ -613,8 +610,8 @@ public final class MailManagerTest {
 				.to(NPI_MAIL)
 				.withSubject("9-testSendMailWithOneContentTwoPJ")
 				.withTextContent("Mon test en <b>TEXT</b>")
-				.withAttachments(TestUtil.createVFile(fileManager, "data/logo.jpg", getClass()))
-				.withAttachments(TestUtil.createVFile(fileManager, "data/test.txt", getClass()))
+				.withAttachments(TestUtil.createVFile("data/logo.jpg", getClass()))
+				.withAttachments(TestUtil.createVFile("data/test.txt", getClass()))
 				.build();
 		mailManager.sendMail(mail);
 	}
@@ -636,8 +633,8 @@ public final class MailManagerTest {
 				.to("Philippe Chretien (cc)<pchretien@kleegroup.com>")
 				.to("Denis Challas (cc)<dchallas@kleegroup.com>")
 
-				.withAttachments(TestUtil.createVFile(fileManager, "data/logo.jpg", getClass()))
-				.withAttachments(TestUtil.createVFile(fileManager, "data/test.txt", getClass()))
+				.withAttachments(TestUtil.createVFile("data/logo.jpg", getClass()))
+				.withAttachments(TestUtil.createVFile("data/test.txt", getClass()))
 				.build();
 		mailManager.sendMail(mail);
 	}

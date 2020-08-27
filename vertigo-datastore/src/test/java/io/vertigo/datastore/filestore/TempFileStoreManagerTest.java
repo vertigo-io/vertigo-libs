@@ -53,8 +53,6 @@ public class TempFileStoreManagerTest {
 	@Inject
 	private TaskManager taskManager;
 	@Inject
-	private FileManager fileManager;
-	@Inject
 	private FileStoreManager fileStoreManager;
 	@Inject
 	private List<FileStorePlugin> fileStorePlugins;
@@ -146,7 +144,7 @@ public class TempFileStoreManagerTest {
 
 		Thread.sleep(1000); //wait remove dir
 
-		final VFile vFile = TestUtil.createVFile(fileManager, "./data/lautreamont.txt", this.getClass());
+		final VFile vFile = TestUtil.createVFile("./data/lautreamont.txt", this.getClass());
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//1.Création du fichier depuis un fichier texte du FS
 			final FileInfo fileInfo = new FileInfoTemp(vFile);

@@ -31,8 +31,8 @@ import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.account.AccountManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.impl.filestore.model.StreamFile;
 
 /**
  * @author pchretien, npiedeloup
@@ -46,20 +46,17 @@ public final class AccountManagerImpl implements AccountManager {
 	 * Constructor.
 	 * @param accountStorePlugin the account store plugin
 	 * @param accountCachePlugin the account cache plugin
-	 * @param fileManager the file manager
 	 */
 	@Inject
 	public AccountManagerImpl(
 			final AccountStorePlugin accountStorePlugin,
-			final Optional<AccountCachePlugin> accountCachePlugin,
-			final FileManager fileManager) {
+			final Optional<AccountCachePlugin> accountCachePlugin) {
 		Assertion.check().isNotNull(accountStorePlugin)
-				.isNotNull(accountCachePlugin)
-				.isNotNull(fileManager);
+				.isNotNull(accountCachePlugin);
 		//-----
 		this.accountStorePlugin = accountStorePlugin;
 		this.accountCachePlugin = accountCachePlugin;
-		defaultPhoto = fileManager.createFile(
+		defaultPhoto = StreamFile.of(
 				"defaultPhoto.png",
 				"image/png",
 				AccountManagerImpl.class.getResource("defaultPhoto.png"));

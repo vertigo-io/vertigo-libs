@@ -18,15 +18,29 @@
  */
 package io.vertigo.datastore.impl.filestore;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.util.TempFile;
 import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfo;
@@ -37,17 +51,29 @@ import io.vertigo.datastore.filestore.model.FileInfoURI;
  * @author pchretien
  */
 public final class FileStoreManagerImpl implements FileStoreManager, SimpleDefinitionProvider {
+
+	private static final Logger LOG = LogManager.getLogger(FileStoreManagerImpl.class);
+
 	private final FileStoreConfig fileStoreConfig;
 	private final List<FileStorePlugin> fileStorePlugins;
+	private final Optional<Integer> purgeDelayMinutesOpt;
 
 	/**
 	 * Constructor.
 	 * @param fileStoreConfig Config of the fileStore
 	 */
 	@Inject
-	public FileStoreManagerImpl(final List<FileStorePlugin> fileStorePlugins) {
+	public FileStoreManagerImpl(
+			@ParamValue("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt,
+			final List<FileStorePlugin> fileStorePlugins) {
 		Assertion.check().isNotNull(fileStorePlugins);
 		//-----
+		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
+		final File documentRootFile = TempFile.VERTIGO_TMP_DIR_PATH.toFile();
+		Assertion.check()
+				.isTrue(documentRootFile.exists(), "Vertigo temp dir doesn't exists ({0})", TempFile.VERTIGO_TMP_DIR_PATH)
+				.isTrue(documentRootFile.canRead(), "Vertigo temp dir can't be read ({0})", TempFile.VERTIGO_TMP_DIR_PATH)
+				.isTrue(documentRootFile.canWrite(), "Vertigo temp dir can't be write ({0})", TempFile.VERTIGO_TMP_DIR_PATH);
 		this.fileStorePlugins = fileStorePlugins;
 		fileStoreConfig = new FileStoreConfig(fileStorePlugins);
 	}
@@ -98,6 +124,52 @@ public final class FileStoreManagerImpl implements FileStoreManager, SimpleDefin
 		//-----
 		Assertion.check().isNotNull(fileInfo, "Le fichier {0} n''a pas été trouvé", uri);
 		return fileInfo;
+	}
+
+	/**
+	 * Daemon for deleting old files.
+	 */
+	@DaemonScheduled(name = "DmnPurgeTempFile", periodInSeconds = 5 * 60)
+	public void deleteOldFiles() {
+		final Path documentRootFile = TempFile.VERTIGO_TMP_DIR_PATH;
+		final long maxTime = System.currentTimeMillis() - purgeDelayMinutesOpt.orElse(60) * 60L * 1000L;
+		if (Files.exists(documentRootFile)) {
+			doDeleteOldFiles(documentRootFile, maxTime);
+		}
+	}
+
+	private static void doDeleteOldFiles(final Path documentRootFile, final long maxTime) {
+		final List<RuntimeException> processIOExceptions = new ArrayList<>();
+		try (Stream<Path> fileStream = Files.list(documentRootFile)) {
+			fileStream.forEach(subFile -> {
+				if (Files.isDirectory(subFile) && Files.isReadable(subFile)) { //canRead pour les pbs de droits
+					doDeleteOldFiles(subFile, maxTime);
+				} else {
+					boolean shouldDelete = false;
+					try {
+						shouldDelete = Files.getLastModifiedTime(subFile).toMillis() <= maxTime;
+						if (shouldDelete) {
+							Files.delete(subFile);
+						}
+					} catch (final IOException e) {
+						managedIOException(processIOExceptions, e);
+						if (shouldDelete) {
+							subFile.toFile().deleteOnExit();
+						}
+					}
+				}
+			});
+		} catch (final IOException e) {
+			managedIOException(processIOExceptions, e);
+		}
+		if (!processIOExceptions.isEmpty()) {
+			throw processIOExceptions.get(0); //We throw the first exception (for daemon health stats), and log the others
+		}
+	}
+
+	private static void managedIOException(final List<RuntimeException> processIOExceptions, final IOException causeException) {
+		processIOExceptions.add(WrappedException.wrap(causeException));
+		LOG.error("doDeleteOldFiles error", causeException);
 	}
 
 }

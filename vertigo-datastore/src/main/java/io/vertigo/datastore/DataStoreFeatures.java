@@ -25,11 +25,9 @@ import io.vertigo.datamodel.impl.task.proxy.TaskProxyMethod;
 import io.vertigo.datastore.cache.CacheManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.entitystore.metrics.EntityMetricsProvider;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.impl.cache.CacheManagerImpl;
 import io.vertigo.datastore.impl.entitystore.EntityStoreManagerImpl;
-import io.vertigo.datastore.impl.filestore.FileManagerImpl;
 import io.vertigo.datastore.impl.filestore.FileStoreManagerImpl;
 import io.vertigo.datastore.impl.kvstore.KVStoreManagerImpl;
 import io.vertigo.datastore.kvstore.KVStoreManager;
@@ -80,9 +78,9 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 	 * @return  the feature
 	 */
 	@Feature("filestore")
-	public DataStoreFeatures withFileStore() {
+	public DataStoreFeatures withFileStore(final Param... params) {
 		getModuleConfigBuilder()
-				.addComponent(FileStoreManager.class, FileStoreManagerImpl.class);
+				.addComponent(FileStoreManager.class, FileStoreManagerImpl.class, params);
 		return this;
 	}
 
@@ -193,8 +191,6 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
-		getModuleConfigBuilder()
-				.addComponent(FileManager.class, FileManagerImpl.class);
-
+		//nothing by default
 	}
 }

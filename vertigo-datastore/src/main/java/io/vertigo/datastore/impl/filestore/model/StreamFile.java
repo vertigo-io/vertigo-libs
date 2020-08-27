@@ -20,8 +20,12 @@ package io.vertigo.datastore.impl.filestore.model;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.time.Instant;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 
 /**
@@ -50,5 +54,32 @@ public final class StreamFile extends AbstractVFile {
 	@Override
 	public InputStream createInputStream() throws IOException {
 		return inputStreamBuilder.createInputStream();
+	}
+
+	public static StreamFile of(final String fileName, final Instant lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
+		return of(fileName, URLConnection.guessContentTypeFromName(fileName), lastModified, length, inputStreamBuilder);
+	}
+
+	public static StreamFile of(final String fileName, final String typeMime, final URL resourceUrl) {
+		final long length;
+		final Instant lastModified;
+		try {
+			final URLConnection connection = resourceUrl.openConnection();
+			try {
+				length = connection.getContentLength();
+				lastModified = Instant.ofEpochMilli(connection.getLastModified());
+			} finally {
+				connection.getInputStream().close();
+			}
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Can't get file meta from url");
+		}
+		Assertion.check().isTrue(length >= 0, "Can't get file meta from url");
+		final InputStreamBuilder inputStreamBuilder = resourceUrl::openStream;
+		return of(fileName, typeMime, lastModified, length, inputStreamBuilder);
+	}
+
+	public static StreamFile of(final String fileName, final String typeMime, final Instant lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
+		return new StreamFile(fileName, typeMime, lastModified, length, inputStreamBuilder);
 	}
 }

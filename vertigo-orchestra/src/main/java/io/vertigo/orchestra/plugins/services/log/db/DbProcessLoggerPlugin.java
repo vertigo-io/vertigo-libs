@@ -29,9 +29,10 @@ import javax.inject.Inject;
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamManager;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.impl.filestore.model.FSFile;
+import io.vertigo.datastore.impl.filestore.model.StreamFile;
 import io.vertigo.orchestra.dao.execution.OActivityLogDAO;
 import io.vertigo.orchestra.domain.execution.OActivityLog;
 import io.vertigo.orchestra.impl.services.ProcessLoggerPlugin;
@@ -53,8 +54,6 @@ public class DbProcessLoggerPlugin implements ProcessLoggerPlugin {
 	private OActivityLogDAO activityLogDAO;
 	@Inject
 	private ParamManager paramManager;
-	@Inject
-	private FileManager fileManager;
 
 	/** {@inheritDoc} */
 	@Override
@@ -84,7 +83,7 @@ public class DbProcessLoggerPlugin implements ProcessLoggerPlugin {
 					final byte[] stringByteArray = activityLog.getLog().getBytes(StandardCharsets.UTF_8);
 					final InputStreamBuilder inputStreamBuilder = () -> new ByteArrayInputStream(stringByteArray);
 					final String fileName = TECHNICAL_LOG_PREFIX + actityExecutionId + TECHNICAL_LOG_EXTENSION;
-					return fileManager.createFile(fileName, TECHNICAL_LOG_MIMETYPE, Instant.now(), stringByteArray.length, inputStreamBuilder);
+					return StreamFile.of(fileName, TECHNICAL_LOG_MIMETYPE, Instant.now(), stringByteArray.length, inputStreamBuilder);
 				});
 	}
 
@@ -97,7 +96,7 @@ public class DbProcessLoggerPlugin implements ProcessLoggerPlugin {
 					if (!file.exists()) {
 						throw new IllegalArgumentException("Log File" + file.getAbsolutePath() + " not found");
 					}
-					return fileManager.createFile(file.toPath());
+					return FSFile.of(file.toPath());
 				});
 	}
 }

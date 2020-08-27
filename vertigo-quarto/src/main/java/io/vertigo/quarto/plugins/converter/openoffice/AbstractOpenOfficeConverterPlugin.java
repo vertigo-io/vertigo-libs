@@ -44,9 +44,9 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.util.TempFile;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.FileUtil;
+import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.quarto.impl.converter.ConverterPlugin;
 
 /**
@@ -61,26 +61,22 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 
 	private final ExecutorService executors = Executors.newFixedThreadPool(1);
 
-	private final FileManager fileManager;
 	private final String unoHost;
 	private final int unoPort;
 	private final int convertTimeoutSeconds;
 
 	/**
 	 * Constructor.
-	 * @param fileManager Manager de gestion des fichiers
 	 * @param unoHost Hote du serveur OpenOffice
 	 * @param unoPort Port de connexion au serveur OpenOffice
 	 * @param convertTimeoutSeconds Convert timeout in seconds
 	 */
-	protected AbstractOpenOfficeConverterPlugin(final FileManager fileManager, final String unoHost, final String unoPort, final int convertTimeoutSeconds) {
+	protected AbstractOpenOfficeConverterPlugin(final String unoHost, final String unoPort, final int convertTimeoutSeconds) {
 		super();
 		Assertion.check()
-				.isNotNull(fileManager)
 				.isNotBlank(unoHost)
 				.isTrue(convertTimeoutSeconds >= 1 && convertTimeoutSeconds <= 900, "Le timeout de conversion est exprimé en seconde et doit-être compris entre 1s et 15min (900s)");
 		//-----
-		this.fileManager = fileManager;
 		this.unoHost = unoHost;
 		this.unoPort = Integer.parseInt(unoPort);
 		this.convertTimeoutSeconds = convertTimeoutSeconds;
@@ -127,7 +123,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 		} catch (final Exception e) {
 			throw WrappedException.wrap(e, "Erreur de conversion du document au format {0} ({1})", targetFormat.name(), e.getClass().getSimpleName());
 		}
-		return fileManager.createFile(targetFile);
+		return FSFile.of(targetFile);
 	}
 
 	// On synchronize sur le plugin car OpenOffice supporte mal les accès concurrents.

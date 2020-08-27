@@ -35,10 +35,9 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.Node;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.impl.filestore.model.StreamFile;
 
 /**
  * @author npiedeloup
@@ -178,8 +177,7 @@ final class VFileUtil {
 		if (mimeType == null) {
 			mimeType = "application/octet-stream";
 		}
-		final FileManager fileManager = Node.getNode().getComponentSpace().resolve(FileManager.class);
-		return fileManager.createFile(fileName, mimeType, Instant.now(), file.getSize(), new FileInputStreamBuilder(file));
+		return StreamFile.of(fileName, mimeType, Instant.now(), file.getSize(), new FileInputStreamBuilder(file));
 	}
 
 	private static String getSubmittedFileName(final Part filePart) {

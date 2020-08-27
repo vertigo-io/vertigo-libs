@@ -44,8 +44,8 @@ import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datamodel.structure.util.VCollectors;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.data.domain.Contact;
@@ -82,8 +82,6 @@ public final class AdvancedTestWebServices implements WebServices {
 	@Inject
 	private ResourceManager resourcetManager;
 	@Inject
-	private FileManager fileManager;
-	@Inject
 	private ContactDao contactDao;
 
 	@GET("/grantAccess")
@@ -95,7 +93,7 @@ public final class AdvancedTestWebServices implements WebServices {
 	@GET("/export/pdf/")
 	public VFile testExportContacts() throws URISyntaxException {
 		final URL tempFile = resourcetManager.resolve("io/vertigo/vega/webservice/data/ws/contacts.pdf");
-		final VFile result = fileManager.createFile(Path.of(tempFile.toURI()));
+		final VFile result = FSFile.of(Path.of(tempFile.toURI()));
 		//200
 		return result;
 	}
@@ -103,7 +101,7 @@ public final class AdvancedTestWebServices implements WebServices {
 	@GET("/export/pdf/{conId}")
 	public VFile testExportContact(@PathParam("conId") final long conId) throws URISyntaxException {
 		final URL tempFile = resourcetManager.resolve("io/vertigo/vega/webservice/data/ws/contact2.pdf");
-		final VFile result = fileManager.createFile(Path.of(tempFile.toURI()));
+		final VFile result = FSFile.of(Path.of(tempFile.toURI()));
 
 		//200
 		return result;

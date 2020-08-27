@@ -52,7 +52,6 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
@@ -61,6 +60,7 @@ import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.FileUtil;
 import io.vertigo.datastore.impl.filestore.FileStorePlugin;
 import io.vertigo.datastore.impl.filestore.model.AbstractFileInfo;
+import io.vertigo.datastore.impl.filestore.model.StreamFile;
 
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/
@@ -78,7 +78,6 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	private static final String DEFAULT_STORE_NAME = "temp";
 	private static final String INFOS_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
-	private final FileManager fileManager;
 	private final String name;
 	private final Path documentRoot;
 	private final VTransactionManager transactionManager;
@@ -89,7 +88,6 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	/**
 	 * Constructor.
 	 * @param name Store name
-	 * @param fileManager File manager
 	 * @param path Root directory
 	 * @param transactionManager Transaction manager
 	 * @param purgeDelayMinutesOpt purge files older than this delay
@@ -99,19 +97,16 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			@ParamValue("name") final Optional<String> name,
 			@ParamValue("path") final String path,
 			@ParamValue("fileInfoClass") final String fileInfoClassName,
-			final FileManager fileManager,
 			final VTransactionManager transactionManager,
 			@ParamValue("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
 		Assertion.check()
 				.isNotNull(name)
 				.isNotBlank(path)
 				.isNotBlank(fileInfoClassName)
-				.isNotNull(fileManager)
 				.isNotNull(transactionManager)
 				.isTrue(path.endsWith("/"), "store path must ends with / ({0})", path);
 		//-----
 		this.name = name.orElse(DEFAULT_STORE_NAME);
-		this.fileManager = fileManager;
 		this.transactionManager = transactionManager;
 		documentRoot = Paths.get(FileUtil.translatePath(path));
 		Assertion.check()
@@ -157,7 +152,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			final Long length = Long.valueOf(infos.get(3));
 
 			final InputStreamBuilder inputStreamBuilder = new PathInputStreamBuilder(obtainFullFilePath(uri));
-			final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
+			final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 			// retourne le fileinfo avec le fichier et son URI
 			final FsFileInfo fsFileInfo = new FsFileInfo(uri.getDefinition(), vFile);

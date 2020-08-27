@@ -29,8 +29,8 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.FileAttachment;
@@ -46,14 +46,12 @@ public final class FileDownloadWebServices implements WebServices {
 
 	@Inject
 	private ResourceManager resourcetManager;
-	@Inject
-	private FileManager fileManager;
 
 	@GET("/downloadFile")
 	public VFile testDownloadFile(final @QueryParam("id") Integer id) {
 		final URL imageUrl = resourcetManager.resolve("npi2loup.png");
 		final Path imageFile = asPath(imageUrl);
-		final VFile imageVFile = fileManager.createFile("image" + id + ".png", "image/png", imageFile);
+		final VFile imageVFile = FSFile.of("image" + id + ".png", "image/png", imageFile);
 		return imageVFile;
 	}
 
@@ -80,7 +78,7 @@ public final class FileDownloadWebServices implements WebServices {
 	public VFile testDownloadFileContentType(final @QueryParam("id") Integer id) {
 		final URL imageUrl = resourcetManager.resolve("npi2loup.png");
 		final Path imageFile = asPath(imageUrl);
-		return fileManager.createFile("image" + id + generateSpecialChars(id) + ".png", "image/png", imageFile);
+		return FSFile.of("image" + id + generateSpecialChars(id) + ".png", "image/png", imageFile);
 	}
 
 	private static String generateSpecialChars(final Integer id) {
