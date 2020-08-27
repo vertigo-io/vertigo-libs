@@ -22,7 +22,6 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.impl.token.TokenManagerImpl;
@@ -52,7 +51,6 @@ import io.vertigo.vega.webservice.WebServiceManager;
  */
 public final class VegaFeatures extends Features<VegaFeatures> {
 
-	private String myApiPrefix;
 	private Param[] jsonParams = new Param[0];
 
 	public VegaFeatures() {
@@ -104,10 +102,9 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 		return this;
 	}
 
-	@Feature("webservices.apiPrefix")
-	public VegaFeatures withWebServicesApiPrefix(final Param... params) {
-		Assertion.check().isTrue(params.length == 1 && "apiPrefix".equals(params[0].getName()), "apiPrefix param should be provided ");
-		myApiPrefix = params[0].getValue();
+	@Feature("webservices.javalin")
+	public VegaFeatures withJavalinWebServerPlugin(final Param... params) {
+		getModuleConfigBuilder().addPlugin(JavalinWebServerPlugin.class, params);
 		return this;
 	}
 
@@ -147,12 +144,6 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
-		final ListBuilder<Param> params = new ListBuilder();
-		if (myApiPrefix != null) {
-			params.add(Param.of("apiPrefix", myApiPrefix));
-		}
-		getModuleConfigBuilder().addPlugin(JavalinWebServerPlugin.class, params.build());
-
 		getModuleConfigBuilder()
 				.addComponent(JsonEngine.class, GoogleJsonEngine.class, jsonParams);
 

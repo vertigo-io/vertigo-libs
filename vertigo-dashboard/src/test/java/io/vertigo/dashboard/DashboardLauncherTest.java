@@ -26,6 +26,7 @@ import java.util.Map;
 import org.h2.Driver;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
@@ -127,7 +128,7 @@ public class DashboardLauncherTest {
 						.build())
 				.addModule(new VegaFeatures()
 						.withWebServices()
-						.withWebServicesApiPrefix(Param.of("apiPrefix", "/api"))
+						.withJavalinWebServerPlugin(Param.of("apiPrefix", "/api"))
 						.build())
 				.addModule(new DashboardFeatures()
 						.withAnalytics(Param.of("appName", "dashboardtest"))
@@ -140,6 +141,7 @@ public class DashboardLauncherTest {
 	}
 
 	@Test
+	@Disabled
 	public void server() {
 		while (!Thread.interrupted()) {
 			try {
