@@ -58,8 +58,8 @@ public final class MyNodeConfig {
 			nodeConfigBuilder.addModule(new RedisFeatures()
 					.withJedis(
 							Param.of("host", REDIS_HOST),
-							Param.of("port", Integer.toString(REDIS_PORT)),
-							Param.of("database", Integer.toString(REDIS_DATABASE)))
+							Param.of("port", REDIS_PORT),
+							Param.of("database", REDIS_DATABASE))
 					.build());
 		}
 

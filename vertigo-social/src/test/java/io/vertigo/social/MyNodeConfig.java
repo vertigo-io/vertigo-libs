@@ -111,7 +111,7 @@ public final class MyNodeConfig {
 	public static NodeConfig vegaConfig() {
 		return createNodeConfigBuilder(true)
 				.addModule(new JavalinFeatures()
-						.withEmbeddedServer(Param.of("port", Integer.toString(WS_PORT)))
+						.withEmbeddedServer(Param.of("port", WS_PORT))
 						.build())
 				.addModule(new VegaFeatures()
 						.withWebServices()

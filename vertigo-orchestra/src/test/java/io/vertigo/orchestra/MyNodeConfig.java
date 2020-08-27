@@ -97,7 +97,7 @@ public final class MyNodeConfig {
 
 	public static void addVegaEmbeded(final NodeConfigBuilder nodeConfigBuilder) {
 		nodeConfigBuilder
-				.addModule(new JavalinFeatures().withEmbeddedServer(Param.of("port", Integer.toString(WS_PORT))).build())
+				.addModule(new JavalinFeatures().withEmbeddedServer(Param.of("port", WS_PORT)).build())
 				.addModule(new AccountFeatures()
 						.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
 						.build())

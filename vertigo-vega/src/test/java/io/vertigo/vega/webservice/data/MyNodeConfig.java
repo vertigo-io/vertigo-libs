@@ -72,7 +72,7 @@ public final class MyNodeConfig {
 	public static NodeConfig config(final boolean isEmbedded) {
 		final JavalinFeatures javalinFeatures = new JavalinFeatures();
 		if (isEmbedded) {
-			javalinFeatures.withEmbeddedServer(Param.of("port", Integer.toString(WS_PORT)));
+			javalinFeatures.withEmbeddedServer(Param.of("port", WS_PORT));
 		} else {
 			javalinFeatures.withStandalone();
 		}
