@@ -203,7 +203,7 @@ public abstract class AbstractVSpringMvcController {
 	}
 
 	/** {@inheritDoc} */
-	private static final ViewContext getViewContext() {
+	private static ViewContext getViewContext() {
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
 		final ViewContext viewContext = (ViewContext) attributes.getAttribute("viewContext", RequestAttributes.SCOPE_REQUEST);
 		Assertion.check().isNotNull(viewContext);

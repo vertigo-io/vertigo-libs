@@ -94,7 +94,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 
 	protected abstract UiObject<D> createUiObject(final D dto);
 
-	private final void rebuildBuffer() {
+	private void rebuildBuffer() {
 		uiListDelta.getCreatesMap().clear();
 		uiListDelta.getUpdatesMap().clear();
 		uiListDelta.getDeletesMap().clear();

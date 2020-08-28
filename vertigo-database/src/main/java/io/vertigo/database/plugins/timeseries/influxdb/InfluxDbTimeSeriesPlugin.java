@@ -64,7 +64,7 @@ import io.vertigo.database.timeseries.TimedDatas;
 public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activeable {
 
 	private final InfluxDB influxDB;
-	private List<String> dbNames;
+	private final List<String> dbNames;
 
 	@Inject
 	public InfluxDbTimeSeriesPlugin(

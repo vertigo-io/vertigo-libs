@@ -99,7 +99,7 @@ public final class Servlet3MultiPartRequest extends JakartaMultiPartRequest {
 	 */
 	private static final class PartFileItem extends DiskFileItem {
 
-		private transient Part part;
+		private final transient Part part;
 		private final File storeLocation;
 
 		public PartFileItem(final Part part, final String saveDir) {

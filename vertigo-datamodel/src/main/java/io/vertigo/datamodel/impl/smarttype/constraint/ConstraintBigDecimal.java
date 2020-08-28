@@ -38,8 +38,8 @@ import io.vertigo.datamodel.structure.metamodel.Property;
 public final class ConstraintBigDecimal implements Constraint<String, BigDecimal> {
 
 	private static final String SEPARATOR_ARGS = ",";
-	private Integer maxPrecision;
-	private Integer maxScale;
+	private final Integer maxPrecision;
+	private final Integer maxScale;
 	private final MessageText errorMessage;
 
 	/**

@@ -149,7 +149,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		return templateEngine;
 	}
 
-	private final Set<NamedComponentDefinition> getUiComponents(final VuiResourceTemplateResolver componentResolvers) {
+	private Set<NamedComponentDefinition> getUiComponents(final VuiResourceTemplateResolver componentResolvers) {
 		final NamedComponentParser parser = new NamedComponentParser("vu", componentResolvers);
 
 		final Set<NamedComponentDefinition> standardUiComponents = new HashSet<>();

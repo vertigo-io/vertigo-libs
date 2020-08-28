@@ -62,7 +62,7 @@ public final class WebServiceParam {
 	public enum ImplicitParam {
 		UiMessageStack(UiMessageStack.class), Request(HttpServletRequest.class), Response(HttpServletResponse.class),;
 
-		private Class<?> implicitType;
+		private final Class<?> implicitType;
 
 		ImplicitParam(final Class<?> implicitType) {
 			this.implicitType = implicitType;

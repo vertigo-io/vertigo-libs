@@ -138,7 +138,7 @@ final class DOCXUtil {
 		 */
 		SEPARATE("separate");
 
-		private String ns;
+		private final String ns;
 
 		/**
 		 * Constructeur.

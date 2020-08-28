@@ -24,7 +24,7 @@ package io.vertigo.commons.peg;
  * @author npiedeloup
  */
 public final class PegLogger {
-	private static boolean DISABLED = true;
+	private static final boolean DISABLED = true;
 
 	private static int tabs = 1;
 

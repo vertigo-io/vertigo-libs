@@ -214,10 +214,7 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 			return false;
 		}
 		final Node namedNode = node.getLastChild().getAttributes().getNamedItem(W_FLD_CHAR_TYPE);
-		if (namedNode != null && nodeType.getNs().equals(namedNode.getTextContent())) {
-			return true;
-		}
-		return false;
+		return namedNode != null && nodeType.getNs().equals(namedNode.getTextContent());
 	}
 
 	/**

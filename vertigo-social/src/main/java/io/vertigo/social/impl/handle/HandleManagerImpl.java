@@ -130,14 +130,14 @@ public final class HandleManagerImpl implements HandleManager, Activeable {
 		return handlePlugin.getByCode(code);
 	}
 
-	private final Optional<DtDefinition> isStartingByDtDefinition(final String handlePrefix) {
+	private Optional<DtDefinition> isStartingByDtDefinition(final String handlePrefix) {
 		return dtDefinitionsWithHandle
 				.stream()
 				.filter(dtDefinition -> handlePrefix.startsWith(StringUtil.first2LowerCase(dtDefinition.getLocalName()) + "/"))
 				.findAny();
 	}
 
-	private static final Handle toHandle(final DtDefinition dtDefinition, final Entity entity) {
+	private static Handle toHandle(final DtDefinition dtDefinition, final Entity entity) {
 		final DataAccessor dataAccessor = dtDefinition.getHandleField().get().getDataAccessor();
 		return new Handle(entity.getUID(),
 				StringUtil.first2LowerCase(dtDefinition.getLocalName()) + "/" +
