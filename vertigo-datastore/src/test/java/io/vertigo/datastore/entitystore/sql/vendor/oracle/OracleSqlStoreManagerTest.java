@@ -63,7 +63,7 @@ public final class OracleSqlStoreManagerTest extends AbstractSqlStoreManagerTest
 	protected List<String> getCreateCarRequests() {
 		return List.of(
 				" create table fam_car_location(fam_id NUMBER , ID NUMBER)",
-				" create table car(ID NUMBER, FAM_ID NUMBER, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50) )",
+				" create table car(ID NUMBER, FAM_ID NUMBER, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50), GEO_POINT CLOB )",
 				" create sequence SEQ_CAR start with 10001 increment by 1");
 	}
 

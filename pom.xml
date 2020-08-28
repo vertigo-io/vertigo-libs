@@ -33,12 +33,10 @@
 		<module>vertigo-datamodel</module>
 		<module>vertigo-datastore</module>
 		<module>vertigo-datafactory</module>
-		<module>vertigo-datafactory-plugin-elasticsearch_5_6</module>
 		<module>vertigo-account</module>
 		<module>vertigo-vega</module>
 		
 		<module>vertigo-audit</module>
-		<module>vertigo-struts2</module>
 		<module>vertigo-quarto</module>
 		<module>vertigo-stella</module>
 		<module>vertigo-geo</module>
