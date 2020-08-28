@@ -103,6 +103,7 @@ public final class MyNodeConfig {
 						.build())
 				.addModule(new VegaFeatures()
 						.withWebServices()
+						.withJavalinWebServerPlugin()
 						.withWebServicesTokens(Param.of("tokens", "tokens"))
 						.withWebServicesSecurity()
 						.withWebServicesRateLimiting()

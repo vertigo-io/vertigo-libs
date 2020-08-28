@@ -79,6 +79,7 @@ public final class MyNodeConfig {
 
 		final VegaFeatures vegaFeatures = new VegaFeatures()
 				.withWebServices()
+				.withJavalinWebServerPlugin()
 				.withWebServicesTokens(Param.of("tokens", "tokens"))
 				.withWebServicesSecurity()
 				.withWebServicesRateLimiting()

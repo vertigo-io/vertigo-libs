@@ -77,6 +77,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 						.build())
 				.addModule(new VegaFeatures()
 						.withWebServices()
+						.withJavalinWebServerPlugin()
 						.build())
 				.addModule(new StellaFeatures()
 						.withMaster()
