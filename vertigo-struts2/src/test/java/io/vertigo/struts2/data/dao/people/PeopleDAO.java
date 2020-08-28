@@ -32,7 +32,7 @@ public final class PeopleDAO extends DAO<People, java.lang.Long> implements Stor
 	 * Indique que le keyConcept associé à cette UID va être modifié.
 	 * Techniquement cela interdit les opérations d'ecriture en concurrence
 	 * et envoie un évenement de modification du keyConcept (à la fin de transaction eventuellement)
-	 * @param UID UID du keyConcept modifié
+	 * @param uid UID du keyConcept modifié
 	 * @return KeyConcept à modifier
 	 */
 	public People readOneForUpdate(final UID<People> uid) {

@@ -42,7 +42,6 @@ public final class SqlConnection implements VTransactionResource {
 	 *
 	 * @param jdbcConnection Connexion JDBC
 	 * @param dataBase Base de données
-	 * @param closeable Si cette connection peut-être fermée
 	 * @throws SQLException Exception sql
 	 */
 	public SqlConnection(final Connection jdbcConnection, final SqlDataBase dataBase) throws SQLException {

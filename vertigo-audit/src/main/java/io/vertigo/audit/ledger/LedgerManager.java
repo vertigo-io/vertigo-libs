@@ -26,7 +26,6 @@ public interface LedgerManager extends Manager {
 	/**
 	 * Sends data message on the ledger.
 	 * @param data
-	 * @return
 	 */
 	String sendData(String data);
 
@@ -39,13 +38,11 @@ public interface LedgerManager extends Manager {
 	/**
 	 * Gets the current balance of the provided address
 	 * @param ledgerAddress
-	 * @return
 	 */
 	BigInteger getWalletBalance(LedgerAddress ledgerAddress);
 
 	/**
-	 * Gets the current balance of the wallet
-	 * @return
+	 * Gets the current balance of the wallet	
 	 */
 	BigInteger getMyWalletBalance();
 }

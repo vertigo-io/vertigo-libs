@@ -57,7 +57,7 @@ public final class RedisAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
 	/**
 	 * Constructor
-	 * @param redisConnector the redisConnector
+	 * @param connectorNameOpt the optional redisConnector
 	 */
 	@Inject
 	public RedisAppNodeRegistryPlugin(

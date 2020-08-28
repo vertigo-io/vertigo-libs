@@ -36,15 +36,15 @@ public interface LedgerPlugin extends Plugin {
 	void sendData(String data);
 
 	/**
-	 * Get the current balance of the provided address
+	 * Gets the current balance of the provided address
 	 * @param ledgerAddress
-	 * @return
+	 * @return the current balance of the provided address
 	 */
 	BigInteger getWalletBalance(LedgerAddress ledgerAddress);
 
 	/**
 	 * Get the current balance of the wallet
-	 * @return
+	 * @return the current balance of the wallet
 	 */
 	BigInteger getMyWalletBalance();
 

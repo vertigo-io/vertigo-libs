@@ -109,10 +109,9 @@ public final class MeasureBuilder implements Builder<Measure> {
 	}
 
 	/**
-	 * Add a time to this point.
+	 * Adds a time to this point.
 	 *
-	 * @param timeToSet the time for this point
-	 * @param precisionToSet the TimeUnit
+	 * @param measureInstant rhe time for this point
 	 * @return the Builder instance.
 	 */
 	public MeasureBuilder time(final Instant measureInstant) {

@@ -41,7 +41,6 @@ public final class TraceBuilder implements Builder<Trace> {
 
 	/**
 	 * Builder for AuditTrace
-	 * @param id
 	 * @param category
 	 * @param user
 	 * @param item
