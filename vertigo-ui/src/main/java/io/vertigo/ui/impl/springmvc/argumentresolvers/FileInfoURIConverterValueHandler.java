@@ -18,7 +18,6 @@
  */
 package io.vertigo.ui.impl.springmvc.argumentresolvers;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
