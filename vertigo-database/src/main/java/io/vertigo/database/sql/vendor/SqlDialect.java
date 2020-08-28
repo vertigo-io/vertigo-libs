@@ -34,7 +34,7 @@ public interface SqlDialect {
 	 * @author pchretien
 	 *
 	 */
-	public enum GenerationMode {
+    enum GenerationMode {
 		GENERATED_KEYS, // H2, SQLServer, PostgreSQL...
 		GENERATED_COLUMNS, //Oracle...
 	}

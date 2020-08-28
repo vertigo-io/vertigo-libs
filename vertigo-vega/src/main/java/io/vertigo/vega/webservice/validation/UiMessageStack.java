@@ -32,7 +32,7 @@ public interface UiMessageStack extends Serializable {
 	 * Niveau du message.
 	 * @author npiedeloup
 	 */
-	public enum Level {
+    enum Level {
 		/** Erreur. */
 		ERROR,
 		/** Warning. */
@@ -40,8 +40,8 @@ public interface UiMessageStack extends Serializable {
 		/** Info. */
 		INFO,
 		/** Success. */
-		SUCCESS;
-	}
+		SUCCESS
+    }
 
 	/**
 	 * Ajoute un message.

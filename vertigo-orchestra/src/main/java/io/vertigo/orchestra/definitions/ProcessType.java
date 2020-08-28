@@ -22,6 +22,6 @@ public enum ProcessType {
 
 	SUPERVISED,
 
-	UNSUPERVISED;
+	UNSUPERVISED
 
 }

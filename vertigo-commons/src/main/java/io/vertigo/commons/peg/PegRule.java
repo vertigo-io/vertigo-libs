@@ -26,7 +26,7 @@ package io.vertigo.commons.peg;
  */
 public interface PegRule<R> {
 	/** Dummy class, used for rule that returns Void. */
-	public static final class Dummy {
+	final class Dummy {
 		/** singleton. */
 		public static final Dummy INSTANCE = new Dummy();
 

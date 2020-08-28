@@ -72,6 +72,6 @@ public enum OrchestraSmartTypes {
 	@SmartTypeDefinition(String.class)
 	@FormatterDefault
 	@SmartTypeProperty(property = "storeType", value = "TEXT")
-	OText;
+	OText
 
 }

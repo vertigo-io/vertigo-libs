@@ -35,8 +35,8 @@ public final class Export {
 		/**Paysage.*/
 		Landscape,
 		/**Portait.*/
-		Portait;
-	}
+		Portait
+    }
 
 	private final List<ExportSheet> sheets;
 

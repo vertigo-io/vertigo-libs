@@ -105,8 +105,7 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 
 			final Gson gson = new Gson();
 			try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
-				final BanResponse response = gson.fromJson(bufferedReader, BanResponse.class);
-				return response;
+				return gson.fromJson(bufferedReader, BanResponse.class);
 			}
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);

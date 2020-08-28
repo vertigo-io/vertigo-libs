@@ -83,7 +83,7 @@ public final class MeasureBuilder implements Builder<Measure> {
 	}
 
 	/**
-	 * Create a new Point.
+	 * Creates a new Point.
 	 *
 	 * @return the newly created Point.
 	 */

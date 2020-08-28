@@ -28,8 +28,8 @@ public final class MigrationManagerImpl implements MigrationManager, Activeable 
 	private enum MigrationMode {
 		check,
 		update,
-		none;
-	}
+		none
+    }
 
 	private final MigrationMode migrationMode;
 

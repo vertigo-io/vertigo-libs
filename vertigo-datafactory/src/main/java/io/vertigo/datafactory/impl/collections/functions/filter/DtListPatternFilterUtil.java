@@ -139,8 +139,7 @@ public final class DtListPatternFilterUtil {
 
 		final CriterionLimit min = minIncluded ? CriterionLimit.ofIncluded(minValue) : CriterionLimit.ofExcluded(minValue);
 		final CriterionLimit max = maxIncluded ? CriterionLimit.ofIncluded(maxValue) : CriterionLimit.ofExcluded(maxValue);
-		final Predicate predicate = Criterions.isBetween(() -> fieldName, min, max).toPredicate();
-		return predicate;
+		return Criterions.isBetween(() -> fieldName, min, max).toPredicate();
 	}
 
 	private static Serializable convertToValue(final String valueToConvert, final BasicType dataType, final boolean acceptJoker) {

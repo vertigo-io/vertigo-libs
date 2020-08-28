@@ -72,8 +72,7 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 		if (value == null) {
 			return true;
 		}
-		final long i = value;
-		return i > minValue && i < maxValue;
+		return value > minValue && value < maxValue;
 	}
 
 	/** {@inheritDoc} */

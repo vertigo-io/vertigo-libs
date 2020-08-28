@@ -168,7 +168,7 @@ public final class AppManagerImpl implements AppManager, Activeable {
 	}
 
 	public enum NodeStatus {
-		UP, DOWN;
+		UP, DOWN
 
 	}
 

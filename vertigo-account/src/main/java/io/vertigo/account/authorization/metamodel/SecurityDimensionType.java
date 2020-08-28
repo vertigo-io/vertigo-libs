@@ -31,5 +31,5 @@ public enum SecurityDimensionType {
 	/** Enumeration. */
 	ENUM,
 	/** Hierarchy tree. */
-	TREE;
+	TREE
 }

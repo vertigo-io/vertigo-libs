@@ -34,5 +34,5 @@ public enum SchedulerState {
 
 	MISFIRED,
 
-	RESCUED;
+	RESCUED
 }
