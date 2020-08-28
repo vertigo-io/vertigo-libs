@@ -19,6 +19,7 @@
 package io.vertigo.ui.impl.springmvc.argumentresolvers;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +48,7 @@ public final class FileInfoURIConverterValueHandler extends AbstractMessageConve
 	private final ParameterizedTypeValueHandlerHelper<FileInfoURI> parameterizedTypeValueHandlerHelper;
 
 	public FileInfoURIConverterValueHandler() {
-		super(Collections.singletonList(new StringHttpMessageConverter(Charset.forName("utf-8"))));
+		super(Collections.singletonList(new StringHttpMessageConverter(StandardCharsets.UTF_8)));
 		parameterizedTypeValueHandlerHelper = new ParameterizedTypeValueHandlerHelper<>(FileInfoURI.class, FileInfoURIConverterValueHandler::toFileInfoURI);
 		parameterizedTypeValueHandlerHelper.addSupportedParameterizedType(Optional.class);
 		parameterizedTypeValueHandlerHelper.addSupportedParameterizedType(List.class);

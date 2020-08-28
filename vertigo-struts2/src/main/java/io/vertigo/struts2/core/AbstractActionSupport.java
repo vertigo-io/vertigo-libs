@@ -25,6 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Map.Entry;
 
@@ -148,7 +149,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 			if (session != null) {
 				final Codec<byte[], String> base64Codec = codecManager.getBase64Codec();
 				final Encoder<byte[], byte[]> sha256Encoder = codecManager.getSha256Encoder();
-				final String sessionIdHash = base64Codec.encode(sha256Encoder.encode(session.getId().getBytes(Charset.forName("utf8"))));
+				final String sessionIdHash = base64Codec.encode(sha256Encoder.encode(session.getId().getBytes(StandardCharsets.UTF_8)));
 
 				return new StringBuilder(ctxId)
 						.append("-")

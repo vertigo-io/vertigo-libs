@@ -77,7 +77,7 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 
 	private void registerCaches() {
 		Node.getNode().getDefinitionSpace()
-				.getAll(CacheDefinition.class).stream()
+				.getAll(CacheDefinition.class)
 				.forEach(this::registerCache);
 	}
 
@@ -156,7 +156,7 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 	@Override
 	public void clearAll() {
 		Node.getNode().getDefinitionSpace()
-				.getAll(CacheDefinition.class).stream()
+				.getAll(CacheDefinition.class)
 				.forEach(cacheDefinition -> {
 					final Cache<?, ?> cache = manager.getCache(cacheDefinition.getName(), Serializable.class, Object.class);
 					if (cache != null) { //we maximized clear command, cache must exists

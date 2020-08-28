@@ -134,9 +134,7 @@ public final class AccountManagerImpl implements AccountManager {
 			final Optional<O> resultOpt = cacheSupplier.get().apply(uid);
 			if (resultOpt.isEmpty()) {
 				final Optional<O> result = storeSupplier.apply(uid);
-				if (result.isPresent()) {
-					cacheRegister.get().accept(result.get());
-				}
+				result.ifPresent(o -> cacheRegister.get().accept(o));
 				return result;
 			}
 		}

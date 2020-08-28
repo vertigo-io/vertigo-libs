@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -93,7 +94,7 @@ final class CSVExporter {
 	 * @throws IOException Exception d'ecriture
 	 */
 	void exportData(final Export documentParameters, final OutputStream out) throws IOException {
-		final Charset charset = Charset.forName("UTF-8");
+		final Charset charset = StandardCharsets.UTF_8;
 		try (final Writer writer = new OutputStreamWriter(out, charset.name())) {
 			// on met le BOM UTF-8 afin d'avoir des ouvertures correctes avec
 			// excel

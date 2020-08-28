@@ -110,7 +110,7 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 
 	@Override
 	public String buildUrn() {
-		final String sizeUrn = D2A_SEPARATOR + (skipRows != 0 ? String.valueOf(skipRows) + "-" : "") + (maxRows != null ? String.valueOf(maxRows) : "ALL");
+		final String sizeUrn = D2A_SEPARATOR + (skipRows != 0 ? skipRows + "-" : "") + (maxRows != null ? String.valueOf(maxRows) : "ALL");
 		final String sortUrn = sortFieldName != null ? D2A_SEPARATOR + sortFieldName + (sortDesc != null ? sortDesc ? "-Desc" : "-Asc" : "") : "";
 		return CRITERIA_PREFIX + sizeUrn + sortUrn + D2A_SEPARATOR + getCriteria().hashCode();
 	}

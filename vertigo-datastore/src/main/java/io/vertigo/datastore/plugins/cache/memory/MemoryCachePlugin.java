@@ -65,7 +65,7 @@ public final class MemoryCachePlugin implements Activeable, CachePlugin {
 
 	private void registerCaches() {
 		Node.getNode().getDefinitionSpace()
-				.getAll(CacheDefinition.class).stream()
+				.getAll(CacheDefinition.class)
 				.forEach(this::registerCache);
 	}
 

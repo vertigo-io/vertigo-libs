@@ -17,7 +17,7 @@ public class MemoryHandlePlugin implements HandlePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void add(final List<Handle> handles) {
-		handles.stream().forEach(handle -> {
+		handles.forEach(handle -> {
 			handlesPerUid.put(handle.getUid(), handle);
 			handlesPerCode.put(handle.getCode(), handle);
 		});
@@ -26,7 +26,7 @@ public class MemoryHandlePlugin implements HandlePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void remove(final List<UID> uids) {
-		uids.stream().forEach(uid -> {
+		uids.forEach(uid -> {
 			final Handle handle = handlesPerUid.remove(uid);
 			if (handle != null) {
 				handlesPerCode.remove(handle.getCode());

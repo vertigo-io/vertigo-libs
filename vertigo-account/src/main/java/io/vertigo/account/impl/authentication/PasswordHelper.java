@@ -19,6 +19,7 @@
 package io.vertigo.account.impl.authentication;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -59,7 +60,7 @@ public final class PasswordHelper {
 		} catch (final NoSuchAlgorithmException e) {
 			throw WrappedException.wrap(e);
 		}
-		defaultCharsetUTF8 = Charset.forName("UTF-8");
+		defaultCharsetUTF8 = StandardCharsets.UTF_8;
 		codecManager = Node.getNode().getComponentSpace().resolve(CodecManager.class);
 		rnd = new SecureRandom();
 	}

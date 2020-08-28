@@ -41,7 +41,7 @@ public abstract class AbstactKeycloakDelegateAuthenticationHandler implements De
 
 	protected final static Logger log = LogManager.getLogger("" + KeycloakOIDCFilter.class);
 	protected AdapterDeploymentContext deploymentContext;
-	protected SessionIdMapper idMapper = new InMemorySessionIdMapper();
+	protected final SessionIdMapper idMapper = new InMemorySessionIdMapper();
 	protected NodesRegistrationManagement nodesRegistrationManagement;
 
 	public void init(final KeycloakDeploymentConnector keycloakDeploymentConnector) {

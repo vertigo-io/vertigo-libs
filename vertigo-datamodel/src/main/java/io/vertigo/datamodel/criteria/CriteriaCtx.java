@@ -36,7 +36,7 @@ public final class CriteriaCtx {
 	private final Map<String, DtFieldName> attributeNames = new HashMap<>();
 
 	public String attributeName(final DtFieldName dtFieldName, final Object value) {
-		final String attributeValueName = dtFieldName.name() + String.valueOf(value);
+		final String attributeValueName = dtFieldName.name() + value;
 		String attributeName = fieldValueNames.get(attributeValueName);
 		if (attributeName == null) {
 			attributeName = dtFieldName.name() + i;

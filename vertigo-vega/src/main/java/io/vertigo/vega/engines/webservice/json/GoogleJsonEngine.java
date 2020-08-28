@@ -547,7 +547,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			if (serializeNulls) {
 				gsonBuilder.serializeNulls();
 			}
-			jsonBasicTypeAdapters.entrySet().stream()
+			jsonBasicTypeAdapters.entrySet()
 					.forEach(entry -> gsonBuilder.registerTypeAdapter(entry.getKey(), new SmartTypeAdapter(entry.getKey(), entry.getValue())));
 
 			return gsonBuilder

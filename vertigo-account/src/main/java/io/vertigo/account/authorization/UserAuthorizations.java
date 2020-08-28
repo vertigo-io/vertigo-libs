@@ -77,7 +77,7 @@ public final class UserAuthorizations implements Serializable {
 		Assertion.check().isNotNull(role);
 		//-----
 		roleRefs.add(new DefinitionReference<>(role));
-		role.getAuthorizations().stream()
+		role.getAuthorizations()
 				.forEach(this::addAuthorization);
 		return this;
 	}
