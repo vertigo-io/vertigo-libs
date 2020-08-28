@@ -45,6 +45,7 @@ public final class LocalRestWorkManagerTest extends AbstractWorkManagerTest {
 						.build())
 				.addModule(new VegaFeatures()
 						.withWebServices()
+						.withJavalinWebServerPlugin()
 						.build())
 				.addModule(new StellaFeatures()
 						.withMaster()

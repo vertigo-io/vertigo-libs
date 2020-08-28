@@ -115,6 +115,7 @@ public final class MyNodeConfig {
 						.build())
 				.addModule(new VegaFeatures()
 						.withWebServices()
+						.withJavalinWebServerPlugin()
 						.withWebServicesSecurity()
 						.build())
 				.addModule(ModuleConfig.builder("ws-account")
