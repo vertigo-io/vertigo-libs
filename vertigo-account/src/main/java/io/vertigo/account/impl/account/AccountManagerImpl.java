@@ -125,7 +125,7 @@ public final class AccountManagerImpl implements AccountManager {
 				() -> accountCachePlugin.get()::putAccount);
 	}
 
-	private <O extends Object, U extends Object> Optional<O> loadWithCacheOptionalValue(
+	private <O, U> Optional<O> loadWithCacheOptionalValue(
 			final U uid,
 			final Supplier<Function<U, Optional<O>>> cacheSupplier,
 			final Function<U, Optional<O>> storeSupplier,
@@ -142,7 +142,7 @@ public final class AccountManagerImpl implements AccountManager {
 
 	}
 
-	private <O extends Object, U extends Object> Set<O> loadWithCacheSetValue(
+	private <O, U> Set<O> loadWithCacheSetValue(
 			final U uid,
 			final Supplier<Function<U, Set<O>>> cacheSupplier,
 			final Function<U, Set<O>> storeSupplier,
@@ -161,7 +161,7 @@ public final class AccountManagerImpl implements AccountManager {
 
 	}
 
-	private <O extends Object, U extends Object> O loadWithCache(
+	private <O, U> O loadWithCache(
 			final U uid,
 			final Supplier<Function<U, Optional<O>>> cacheSupplier,
 			final Function<U, O> storeSupplier,

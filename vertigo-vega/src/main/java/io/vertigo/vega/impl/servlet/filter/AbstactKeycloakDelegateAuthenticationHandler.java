@@ -69,9 +69,7 @@ public abstract class AbstactKeycloakDelegateAuthenticationHandler implements De
 		final PreAuthActionsHandler preActions = new PreAuthActionsHandler(new UserSessionManagement() {
 			@Override
 			public void logoutAll() {
-				if (idMapper != null) {
-					idMapper.clear();
-				}
+				idMapper.clear();
 			}
 
 			@Override

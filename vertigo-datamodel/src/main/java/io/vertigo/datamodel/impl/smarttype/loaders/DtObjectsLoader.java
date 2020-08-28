@@ -319,9 +319,9 @@ public final class DtObjectsLoader implements Loader {
 				definitionSpace -> {
 
 					final String multiplicityA = association.primaryMultiplicity();
-					final Boolean navigabilityA = association.primaryIsNavigable();
+					final boolean navigabilityA = association.primaryIsNavigable();
 					final String multiplicityB = association.foreignMultiplicity();
-					final Boolean navigabilityB = association.foreignIsNavigable();
+					final boolean navigabilityB = association.foreignIsNavigable();
 					//---
 					Assertion.check()
 							.isNotNull(multiplicityA)

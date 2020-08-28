@@ -582,7 +582,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 
 	private void filterFields(final JsonElement jsonElement, final Set<String> includedAllFields, final Set<String> excludedAllFields) {
 		if (jsonElement == null) {
-			return; //if filtering an missing field
+			//if filtering an missing field
 		} else if (jsonElement.isJsonArray()) {
 			final JsonArray jsonArray = jsonElement.getAsJsonArray();
 			for (final JsonElement jsonSubElement : jsonArray) {

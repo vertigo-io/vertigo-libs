@@ -85,7 +85,7 @@ public final class UiRequestUtil {
 		attributes.setAttribute(name, value, RequestAttributes.SCOPE_REQUEST);
 	}
 
-	public static <O extends Object> Optional<O> getRequestScopedAttribute(final String name, final Class<O> valueClass) {
+	public static <O> Optional<O> getRequestScopedAttribute(final String name, final Class<O> valueClass) {
 		Assertion.check()
 				.isNotBlank(name)
 				.isNotNull(valueClass);

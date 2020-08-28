@@ -36,7 +36,7 @@ import io.vertigo.core.util.StringUtil;
  * @author  pchretien
  * @param <O> the type of entity
  */
-public final class GenericUID<O extends Object> implements Serializable {
+public final class GenericUID<O> implements Serializable {
 	private static final long serialVersionUID = -1L;
 	private static final char SEPARATOR = '@';
 

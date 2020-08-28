@@ -293,7 +293,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		});
 	}
 
-	private <O extends Object> O executeInTransaction(final Supplier<O> supplier) {
+	private <O> O executeInTransaction(final Supplier<O> supplier) {
 		if (transactionManager.hasCurrentTransaction()) {
 			return supplier.get();
 		}

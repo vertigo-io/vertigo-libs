@@ -149,7 +149,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			final String fileName = infos.get(0);
 			final String mimeType = infos.get(1);
 			final Instant lastModified = Instant.from(DateTimeFormatter.ofPattern(INFOS_DATE_PATTERN).withZone(ZoneOffset.UTC).parse(infos.get(2)));
-			final Long length = Long.valueOf(infos.get(3));
+			final long length = Long.parseLong(infos.get(3));
 
 			final InputStreamBuilder inputStreamBuilder = new PathInputStreamBuilder(obtainFullFilePath(uri));
 			final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, inputStreamBuilder);

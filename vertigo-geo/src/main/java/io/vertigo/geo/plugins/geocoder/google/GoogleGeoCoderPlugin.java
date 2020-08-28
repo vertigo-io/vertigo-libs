@@ -239,8 +239,8 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		final NodeList addressNodes = findNodes(geocoderResultDocument, XPATH_ADDRESSES);
 		//-----
 		// 2- Typage des données
-		final Double latitude = Double.valueOf(latitudeNode.getTextContent().trim());
-		final Double longitude = Double.valueOf(longitudeNode.getTextContent().trim());
+		final double latitude = Double.parseDouble(latitudeNode.getTextContent().trim());
+		final double longitude = Double.parseDouble(longitudeNode.getTextContent().trim());
 		//-----
 		// 2- Cas des adresses dites "political"
 		//		<address_component>

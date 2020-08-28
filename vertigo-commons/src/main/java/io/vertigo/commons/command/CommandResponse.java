@@ -42,7 +42,7 @@ public final class CommandResponse<P> {
 		this.targetUrl = targetUrl;
 	}
 
-	public static <P extends Object> CommandResponseBuilder<P> builder() {
+	public static <P> CommandResponseBuilder<P> builder() {
 		return new CommandResponseBuilder<>();
 	}
 

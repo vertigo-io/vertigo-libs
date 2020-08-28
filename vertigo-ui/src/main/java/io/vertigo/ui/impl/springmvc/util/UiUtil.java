@@ -175,7 +175,7 @@ public final class UiUtil implements Serializable {
 				.isNotNull(maxValue)
 				.isTrue(maxValue > minValue, "Unable to calculate step : maxValue '{0}' must be superior to minValue '{1}'", maxValue, minValue);
 		//---
-		final Double rawStep = (maxValue - minValue) / 200; // we allow at max 200 possible values
+		final double rawStep = (maxValue - minValue) / 200; // we allow at max 200 possible values
 
 		final double index = Math.floor(Math.log10(rawStep));
 		final double step = Math.pow(10, index);

@@ -28,5 +28,5 @@ public interface CommandManager extends Manager {
 
 	CommandDefinition findCommand(final String command);
 
-	<P extends Object> CommandResponse<P> executeCommand(String command, String... commandParams);
+	<P> CommandResponse<P> executeCommand(String command, String... commandParams);
 }

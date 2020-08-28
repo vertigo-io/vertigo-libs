@@ -99,12 +99,12 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 					}
 
 					@Override
-					public java.time.Duration getExpiryForAccess(final Serializable key, final Supplier<? extends Object> value) {
+					public java.time.Duration getExpiryForAccess(final Serializable key, final Supplier<?> value) {
 						return Duration.of(cacheDefinition.getTimeToIdleSeconds(), ChronoUnit.SECONDS); //time out after an access
 					}
 
 					@Override
-					public java.time.Duration getExpiryForUpdate(final Serializable key, final Supplier<? extends Object> oldValue, final Object newValue) {
+					public java.time.Duration getExpiryForUpdate(final Serializable key, final Supplier<?> oldValue, final Object newValue) {
 						return null; // Keeping the existing expiry
 					}
 				})

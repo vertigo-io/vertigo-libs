@@ -69,7 +69,7 @@ public final class GeoLocation {
 	 * @return Latitude du résultat
 	 */
 	public double getLatitude() {
-		Assertion.check().isTrue(latitude != null, "latitude is not defined, Use isUndefined");
+		Assertion.check().isNotNull(latitude, "latitude is not defined, Use isUndefined");
 		//-----
 		return latitude;
 	}
@@ -78,7 +78,7 @@ public final class GeoLocation {
 	 * @return Longitude du résultat
 	 */
 	public double getLongitude() {
-		Assertion.check().isTrue(longitude != null, "longitude is not defined, Use isUndefined");
+		Assertion.check().isNotNull(longitude, "longitude is not defined, Use isUndefined");
 		return longitude;
 	}
 

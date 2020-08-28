@@ -150,7 +150,7 @@ final class WhereInPreProcessor {
 					.append(IN_CHAR)
 					.append(inputParamName)
 					.append('.')
-					.append(String.valueOf(listObject.indexOf(object)));
+					.append(listObject.indexOf(object));
 			if (!isPrimitive) {
 				buildQuery
 						.append('.')

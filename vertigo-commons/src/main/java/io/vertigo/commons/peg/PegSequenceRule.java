@@ -73,8 +73,8 @@ final class PegSequenceRule implements PegRule<List<Object>> {
 		int index = start;
 		PegNoMatchFoundException best = null;
 		try {
-			for (final PegRule<? extends Object> rule : rules) {
-				final PegResult<? extends Object> cursor = rule
+			for (final PegRule<?> rule : rules) {
+				final PegResult<?> cursor = rule
 						.parse(text, index);
 				index = cursor.getIndex();
 				results.add(cursor.getValue());

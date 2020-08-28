@@ -71,7 +71,7 @@ import io.vertigo.datamodel.structure.model.DtListState;
  * @param R Type of ES searchRequest : SearchRequest for HLClent or SearchRequestBuilder for TransportClient
  * @param S Type of ES SearchSourceBuilder : SearchSourceBuilder for HLClent or SearchRequestBuilder for TransportClient
  */
-public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends Object, T extends AsbtractESSearchRequestBuilder> implements Builder<R> {
+public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESSearchRequestBuilder> implements Builder<R> {
 
 	private static final int TERM_AGGREGATION_SIZE = 50; //max 50 facets values per facet
 	private static final int TOPHITS_SUBAGGREGATION_MAXSIZE = 100; //max 100 documents per cluster when clusterization is used
