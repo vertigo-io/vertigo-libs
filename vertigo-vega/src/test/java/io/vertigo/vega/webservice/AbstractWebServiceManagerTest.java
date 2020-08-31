@@ -183,7 +183,7 @@ abstract class AbstractWebServiceManagerTest {
 	}
 
 	@Test
-	public void docTest3() {
+	public void docTest3TrailingSlashe() {
 		//Javalin don't match path which per / exactly, if there is a route without the final / it will matched
 		loggedAndExpect()
 				.statusCode(HttpStatus.SC_FORBIDDEN)
