@@ -35,8 +35,8 @@ public final class WritableFuture<V> implements Future<V> {
 
 	private volatile boolean completed;
 	private volatile boolean cancelled;
-	private volatile V futureResult;
-	private volatile Exception futureException;
+	private volatile V futureResult; //volatile used for reference of unmutable object
+	private volatile Exception futureException; //volatile used for reference of unmutable object
 
 	/** {@inheritDoc} */
 	@Override

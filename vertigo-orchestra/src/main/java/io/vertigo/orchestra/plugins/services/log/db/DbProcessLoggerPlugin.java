@@ -19,8 +19,9 @@
 package io.vertigo.orchestra.plugins.services.log.db;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -92,11 +93,11 @@ public class DbProcessLoggerPlugin implements ProcessLoggerPlugin {
 		// ---
 		return activityLogOpt
 				.map(activityLog -> {
-					final File file = new File(paramManager.getParam(ROOT_DIRECTORY).getValueAsString() + activityLogOpt.get().getAttachment());
-					if (!file.exists()) {
-						throw new IllegalArgumentException("Log File" + file.getAbsolutePath() + " not found");
+					final Path file = Path.of(paramManager.getParam(ROOT_DIRECTORY).getValueAsString(), activityLogOpt.get().getAttachment());
+					if (!Files.exists(file)) {
+						throw new IllegalArgumentException("Log File" + file + " not found");
 					}
-					return FSFile.of(file.toPath());
+					return FSFile.of(file);
 				});
 	}
 }

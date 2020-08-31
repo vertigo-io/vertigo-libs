@@ -25,7 +25,6 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Locale;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +36,6 @@ public final class RequestHelper {
 	private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(RequestHelper.class);
 
 	private final HttpServletRequest innerRequest;
-	Map<String, String> params;
 	private String body;
 
 	public RequestHelper(final HttpServletRequest request) {
