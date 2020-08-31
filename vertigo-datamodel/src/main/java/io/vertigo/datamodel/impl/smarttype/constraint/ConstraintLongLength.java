@@ -69,10 +69,8 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 	/** {@inheritDoc} */
 	@Override
 	public boolean checkConstraint(final Long value) {
-		if (value == null) {
-			return true;
-		}
-		return value > minValue && value < maxValue;
+		return value == null
+				|| value > minValue && value < maxValue;
 	}
 
 	/** {@inheritDoc} */

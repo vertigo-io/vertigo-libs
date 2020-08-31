@@ -62,10 +62,8 @@ public final class ConstraintDoubleLength extends AbstractConstraintLength<Doubl
 	/** {@inheritDoc} */
 	@Override
 	public boolean checkConstraint(final Double value) {
-		if (value == null) {
-			return true;
-		}
-		return value.compareTo(maxValue) < 0 && value.compareTo(minValue) > 0;
+		return value == null
+				|| value.compareTo(maxValue) < 0 && value.compareTo(minValue) > 0;
 	}
 
 	/** {@inheritDoc} */
