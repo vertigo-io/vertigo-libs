@@ -47,7 +47,7 @@ public final class MigrationManagerImpl implements MigrationManager, Activeable 
 		this.dataBaseMigrationPlugins = dataBaseMigrationPlugins
 				.stream()
 				.collect(Collectors.toMap(MigrationPlugin::getConnectionName, Function.identity()));
-		migrationMode = modeOpt.isPresent() ? MigrationMode.valueOf(modeOpt.get()) : MigrationMode.check;
+		migrationMode = modeOpt.map(MigrationMode::valueOf).orElse(MigrationMode.check);
 	}
 
 	/** {@inheritDoc} */

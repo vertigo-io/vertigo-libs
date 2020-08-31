@@ -84,7 +84,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 		this.count = count;
 		this.dtc = dtc;
 		this.facets = facets;
-		this.clusterFacetDefinitionRef = clusterFacetDefinition.isPresent() ? new DefinitionReference<>(clusterFacetDefinition.get()) : null;
+		this.clusterFacetDefinitionRef = clusterFacetDefinition.map(DefinitionReference::new).orElse(null);
 		this.clusteredDtc = clusteredDtc;
 		this.highlights = highlights;
 		this.source = source;

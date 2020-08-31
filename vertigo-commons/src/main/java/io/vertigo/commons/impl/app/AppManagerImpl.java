@@ -140,7 +140,7 @@ public final class AppManagerImpl implements AppManager, Activeable {
 				.stream()
 				.collect(Collectors.toMap(
 						AppNode::getId,
-						node -> functionToApply.apply(node)));
+						functionToApply));
 
 	}
 

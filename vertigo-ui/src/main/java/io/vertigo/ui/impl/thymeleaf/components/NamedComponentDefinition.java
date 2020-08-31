@@ -67,11 +67,8 @@ public final class NamedComponentDefinition {
 	}
 
 	private static List<String> splitAsSet(final Optional<String> parameters) {
-		if (parameters.isPresent()) {
-			return Arrays.asList(parameters.get().split("\\s*,\\s*"));
-		}
-		return Collections.emptyList();
-	}
+        return parameters.map(s -> Arrays.asList(s.split("\\s*,\\s*"))).orElse(Collections.emptyList());
+    }
 
 	/**
 	 * Returns the name of the component (e.g. panel)

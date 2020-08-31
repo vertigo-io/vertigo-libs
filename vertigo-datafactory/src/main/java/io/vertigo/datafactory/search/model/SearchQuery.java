@@ -103,11 +103,7 @@ public final class SearchQuery implements Serializable {
 			queryListFilter = listFilter.getFilterValue().isEmpty() ? ListFilter.of("*:*") : listFilter;
 		}
 
-		if (geoSearchQuery.isPresent()) {
-			dslGeoExpression = Optional.of(DslParserUtil.parseGeoExpression(geoSearchQuery.get()));
-		} else {
-			dslGeoExpression = Optional.empty();
-		}
+		dslGeoExpression = geoSearchQuery.map(DslParserUtil::parseGeoExpression);
 
 		this.securityListFilter = securityListFilter;
 		boostedDocumentDateFieldName = boostedDocumentDateField != null ? boostedDocumentDateField.getName() : null;

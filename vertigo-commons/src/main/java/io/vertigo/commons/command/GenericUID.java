@@ -74,7 +74,7 @@ public final class GenericUID<O> implements Serializable {
 	 * @param urn URN to parse
 	 * @return URI to result
 	 */
-	public static <O extends Object> GenericUID<O> of(final String urn) {
+	public static <O> GenericUID<O> of(final String urn) {
 		Assertion.check().isNotNull(urn);
 		//-----
 		final int i = urn.indexOf(SEPARATOR);
@@ -93,7 +93,7 @@ public final class GenericUID<O> implements Serializable {
 	 * @param id the entity id
 	 * @return the entity UID
 	 */
-	public static <O extends Object> GenericUID<O> of(final String dname, final Serializable id) {
+	public static <O> GenericUID<O> of(final String dname, final Serializable id) {
 		return new GenericUID<>(dname, id);
 	}
 
