@@ -126,7 +126,7 @@ public final class RoutesOrderTest {
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/authentifiedTest () -> interface java.util.List<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/contactExtended/{conId} (long :Path:conId) -> class io.vertigo.vega.webservice.model.ExtendedObject<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/dates (class java.util.Date :Query:date) -> UiContext"))
-				.body("get(" + i++ + ")", Matchers.equalTo(" /*Not the same than /docTest/*/\nGet /test/docTest ()"))
+				.body("get(" + i++ + ")", Matchers.equalTo(" /*Not the same than /docTest/*/\nGet /test/docTest () -> String"))
 				.body("get(" + i++ + ")", Matchers.equalTo(" /*Use passPhrase : RtFM*/\nGet /test/docTest/ () -> interface java.util.List<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo(" /*Use passPhrase : RtFM*/\nGet /test/docTest/{passPhrase} (class java.lang.String :Path:passPhrase) -> interface java.util.List<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/downloadEmbeddedFile (class java.lang.Integer :Query:id) -> VFile"))
