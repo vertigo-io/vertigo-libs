@@ -215,6 +215,8 @@ public final class RemoteConverterManagerTest {
 			final File file = new TempFile("tmp", '.' + FileUtil.getFileExtension(fileName));
 			Assertion.check().isNotNull(file, "Can't create tempfile : {0}", fileName);
 			FileUtil.copy(in, file);
+			Assertion.check().isNotNull(file.toPath(), "Can't file.toPath() : {0}", fileName);
+			Assertion.check().isNotNull(file.toPath().getFileName(), "Can't fileName : {0}", fileName);
 			return FSFile.of(file.toPath());
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
