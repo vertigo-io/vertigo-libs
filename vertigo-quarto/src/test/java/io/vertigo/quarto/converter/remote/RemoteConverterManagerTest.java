@@ -85,7 +85,7 @@ public final class RemoteConverterManagerTest {
 						.withRemoteOpenOfficeConverter(
 								Param.of("unohost", "docker-vertigo.part.klee.lan.net"),
 								Param.of("unoport", "8997"),
-								Param.of("convertTimeoutSeconds", "10"))
+								Param.of("convertTimeoutSeconds", "45"))
 						.build())
 				.build();
 	}
@@ -164,6 +164,8 @@ public final class RemoteConverterManagerTest {
 	@Test
 	public void testConvertTxt2Doc() {
 		final VFile inputFile = createVFile("../data/testFile.txt", this.getClass());
+		Assertion.check().isNotNull(inputFile, "Can't create inputFile : {0}", "../data/testFile.txt");
+		Assertion.check().isNotNull(converterManager, "Can't converterManager");
 		resultFile = converterManager.convert(inputFile, "DOC");
 
 		log("Txt2Doc", resultFile);
@@ -211,6 +213,7 @@ public final class RemoteConverterManagerTest {
 		try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
 			Assertion.check().isNotNull(in, "fichier non trouvé : {0}", fileName);
 			final File file = new TempFile("tmp", '.' + FileUtil.getFileExtension(fileName));
+			Assertion.check().isNotNull(file, "Can't create tempfile : {0}", fileName);
 			FileUtil.copy(in, file);
 			return FSFile.of(file.toPath());
 		} catch (final IOException e) {
