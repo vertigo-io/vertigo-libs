@@ -129,7 +129,7 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 		}
 	}
 
-	private boolean testBetweenCase(final Object value, final Serializable[] criterionValues) {
+	private static boolean testBetweenCase(final Object value, final Serializable[] criterionValues) {
 		if (value == null) {
 			return false;
 		}

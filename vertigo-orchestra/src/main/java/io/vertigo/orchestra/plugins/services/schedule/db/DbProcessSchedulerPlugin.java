@@ -310,7 +310,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 				.collect(Collectors.toList());
 	}
 
-	private void changeState(final OProcessPlanification processPlanification, final SchedulerState planificationState) {
+	private static void changeState(final OProcessPlanification processPlanification, final SchedulerState planificationState) {
 		Assertion.check()
 				.isNotNull(processPlanification)
 				.isNotNull(planificationState);

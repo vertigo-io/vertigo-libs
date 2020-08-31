@@ -186,7 +186,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		}
 	}
 
-	private void appendEnumExpression(final StringBuilder query, final SecurityDimension securityDimension, final ValueOperator operator, final String value) {
+	private static void appendEnumExpression(final StringBuilder query, final SecurityDimension securityDimension, final ValueOperator operator, final String value) {
 		final String fieldName = securityDimension.getName();
 		switch (operator) {
 			case EQ:
@@ -286,7 +286,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		query.append(')');
 	}
 
-	private <K extends Serializable> void appendBeforePivotPoint(final StringBuilder query, final K[] treeKeys, final List<String> strDimensionfields, final int lastIndexNotNull) {
+	private static <K extends Serializable> void appendBeforePivotPoint(final StringBuilder query, final K[] treeKeys, final List<String> strDimensionfields, final int lastIndexNotNull) {
 		String inSep = "";
 		for (int i = 0; i < lastIndexNotNull; i++) {
 			query.append(inSep).append('+');
@@ -295,7 +295,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		}
 	}
 
-	private <K extends Serializable> void appendPivotPoint(final StringBuilder query, final ValueOperator operator, final K treeKey, final String fieldName) {
+	private static <K extends Serializable> void appendPivotPoint(final StringBuilder query, final ValueOperator operator, final K treeKey, final String fieldName) {
 		switch (operator) {
 			case GT:
 				//pour > : doit être null (car non inclus)
@@ -323,7 +323,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		}
 	}
 
-	private void appendAfterPivotPoint(final StringBuilder query, final ValueOperator operator, final String firstInSep, final int lastIndexNotNull, final int i, final String fieldName) {
+	private static void appendAfterPivotPoint(final StringBuilder query, final ValueOperator operator, final String firstInSep, final int lastIndexNotNull, final int i, final String fieldName) {
 		String inSep = firstInSep;
 		switch (operator) {
 			case GT:

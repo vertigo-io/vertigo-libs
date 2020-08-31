@@ -182,14 +182,14 @@ final class SqlStatementDriver {
 		return list;
 	}
 
-	private <O> O readPrimitive(
+	private static <O> O readPrimitive(
 			final SqlMapping mapping,
 			final ResultSet resultSet,
 			final Class<O> dataType) throws SQLException {
 		return mapping.getValueForResultSet(resultSet, 1, dataType);
 	}
 
-	private <O> O readRow(
+	private static <O> O readRow(
 			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlMapping mapping,
 			final ResultSet resultSet,
