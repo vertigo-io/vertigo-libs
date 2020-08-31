@@ -44,43 +44,43 @@ final class DslSyntaxRules {
 	private static final String DELIMITERS = RESERVED + WHITE_SPACE;
 
 	/** règle de lectures des blancs. */
-	static final PegRule<?> SPACES = PegRules.word(true, WHITE_SPACE, PegWordRule.Mode.ACCEPT, "_");
+	protected static final PegRule<?> SPACES = PegRules.word(true, WHITE_SPACE, PegWordRule.Mode.ACCEPT, "_");
 
 	/** array start. */
-	static final PegRule<String> ARRAY_START = PegRules.term("["); //like arrays in json syntax
+	protected static final PegRule<String> ARRAY_START = PegRules.term("["); //like arrays in json syntax
 	/** array end. */
-	static final PegRule<String> ARRAY_END = PegRules.term("]");
+	protected static final PegRule<String> ARRAY_END = PegRules.term("]");
 	/** array separator. */
-	static final PegRule<String> ARRAY_SEPARATOR = PegRules.term(",");
+	protected static final PegRule<String> ARRAY_SEPARATOR = PegRules.term(",");
 
 	/** block start. */
-	static final PegRule<String> BLOCK_START = PegRules.term("(");
+	protected static final PegRule<String> BLOCK_START = PegRules.term("(");
 	/** block end. */
-	static final PegRule<String> BLOCK_END = PegRules.term(")");
+	protected static final PegRule<String> BLOCK_END = PegRules.term(")");
 
 	/** term mark. */
-	static final PegRule<String> TERM_MARK = PegRules.term("#");
+	protected static final PegRule<String> TERM_MARK = PegRules.term("#");
 	/** field end. */
-	static final PegRule<String> FIELD_END = PegRules.term(":");
+	protected static final PegRule<String> FIELD_END = PegRules.term(":");
 
 	/** premodifier. */
-	static final PegRule<String> PRE_MODIFIER_VALUE = PegRules.word(true, PRE_MODIFIER + WHITE_SPACE, PegWordRule.Mode.ACCEPT, "[~+-*?\" \\t\\n\\r]*");
+	protected static final PegRule<String> PRE_MODIFIER_VALUE = PegRules.word(true, PRE_MODIFIER + WHITE_SPACE, PegWordRule.Mode.ACCEPT, "[~+-*?\" \\t\\n\\r]*");
 	/** postmodifier. */
-	static final PegRule<String> POST_MODIFIER_VALUE = PegRules.word(true, POST_MODIFIER, PegWordRule.Mode.ACCEPT, "[~+-*?^0123456789\"]*");
+	protected static final PegRule<String> POST_MODIFIER_VALUE = PegRules.word(true, POST_MODIFIER, PegWordRule.Mode.ACCEPT, "[~+-*?^0123456789\"]*");
 
 	//Il faut gérer le caractère d'évitement.
 
 	/** fieldname : like word but accept . (dot)*/
-	static final PegRule<String> FIELD_NAME = PegRules.word(false, "()[]\"!#$%&'*+,-/:;<=>?@\\^`|~" + WHITE_SPACE, PegWordRule.Mode.REJECT, "WORD");
+	protected static final PegRule<String> FIELD_NAME = PegRules.word(false, "()[]\"!#$%&'*+,-/:;<=>?@\\^`|~" + WHITE_SPACE, PegWordRule.Mode.REJECT, "WORD");
 
 	/** word. */
-	static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRule.Mode.REJECT, "WORD");
+	protected static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRule.Mode.REJECT, "WORD");
 
 	/** fixed word. */
-	static final PegRule<String> FIXED_WORD = PegRules.word(false, WHITE_SPACE + "]),", PegWordRule.Mode.REJECT, "!_");
+	protected static final PegRule<String> FIXED_WORD = PegRules.word(false, WHITE_SPACE + "]),", PegWordRule.Mode.REJECT, "!_");
 
 	/** depth overflow. */
-	static final PegRule<?> DEPTH_OVERFLOW = new DepthOverflowRule();
+	protected static final PegRule<?> DEPTH_OVERFLOW = new DepthOverflowRule();
 
 	private static class DepthOverflowRule implements PegRule<Void> {
 
