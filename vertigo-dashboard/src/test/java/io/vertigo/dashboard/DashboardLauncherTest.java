@@ -141,7 +141,7 @@ public class DashboardLauncherTest {
 	}
 
 	@Test
-	@Disabled
+	@Disabled /* use it for local debuging */
 	public void server() {
 		while (!Thread.interrupted()) {
 			try {

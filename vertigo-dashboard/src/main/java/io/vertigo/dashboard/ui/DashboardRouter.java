@@ -101,7 +101,7 @@ public final class DashboardRouter {
 			final List<String> modules = Arrays.asList("vertigo-commons", "vertigo-dynamo", "vertigo-vega", "vertugo-ui");
 			final Map<String, Object> model = new HashMap<>();
 			model.put("modules", modules);
-			model.put("contextName", ctx.contextPath() != null ? ctx.contextPath() : "");
+			model.put("contextName", ctx.contextPath());
 			render(ctx.res, "templates/home.ftl", model);
 		});
 
@@ -109,7 +109,7 @@ public final class DashboardRouter {
 			final String moduleName = ctx.pathParam(":moduleName");
 			final DashboardModuleControler controler = InjectorUtil.newInstance(controlerMap.get(moduleName));
 			final Map<String, Object> model = controler.buildModel(node, moduleName);
-			model.put("contextName", ctx.contextPath() != null ? ctx.contextPath() : "");
+			model.put("contextName", ctx.contextPath());
 			render(ctx.res, "templates/" + moduleName + ".ftl", model);
 		});
 
