@@ -26,8 +26,8 @@ import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 import io.vertigo.vega.webservice.exception.SessionException;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 
 /**
  * Analytics handler.

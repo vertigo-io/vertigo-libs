@@ -20,7 +20,7 @@ package io.vertigo.datastore.entitystore;
 
 import io.vertigo.core.node.component.Manager;
 import io.vertigo.datamodel.criteria.Criteria;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtListURI;

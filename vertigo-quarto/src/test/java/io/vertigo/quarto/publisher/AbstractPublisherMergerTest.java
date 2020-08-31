@@ -52,7 +52,7 @@ import io.vertigo.quarto.publisher.data.domain.Enqueteur;
 import io.vertigo.quarto.publisher.data.domain.MisEnCause;
 import io.vertigo.quarto.publisher.data.domain.PublisherMock;
 import io.vertigo.quarto.publisher.data.domain.Ville;
-import io.vertigo.quarto.publisher.metamodel.PublisherDataDefinition;
+import io.vertigo.quarto.publisher.definitions.PublisherDataDefinition;
 import io.vertigo.quarto.publisher.model.PublisherData;
 import io.vertigo.quarto.publisher.model.PublisherNode;
 

@@ -27,8 +27,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.structure.metamodel.Formatter;
-import io.vertigo.datamodel.structure.metamodel.FormatterException;
+import io.vertigo.datamodel.structure.definitions.Formatter;
+import io.vertigo.datamodel.structure.definitions.FormatterException;
 
 /**
  * Gestion des formatages de nombres.

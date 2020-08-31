@@ -40,10 +40,10 @@ import io.vertigo.quarto.impl.publisher.PublisherManagerImpl;
 import io.vertigo.quarto.plugins.publisher.odt.OpenOfficeMergerPlugin;
 import io.vertigo.quarto.publisher.PublisherManager;
 import io.vertigo.quarto.publisher.data.TestPublisherSmartTypes;
-import io.vertigo.quarto.publisher.metamodel.PublisherDataDefinition;
-import io.vertigo.quarto.publisher.metamodel.PublisherField;
-import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinition;
-import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinitionBuilder;
+import io.vertigo.quarto.publisher.definitions.PublisherDataDefinition;
+import io.vertigo.quarto.publisher.definitions.PublisherField;
+import io.vertigo.quarto.publisher.definitions.PublisherNodeDefinition;
+import io.vertigo.quarto.publisher.definitions.PublisherNodeDefinitionBuilder;
 import io.vertigo.quarto.publisher.model.PublisherData;
 
 /**

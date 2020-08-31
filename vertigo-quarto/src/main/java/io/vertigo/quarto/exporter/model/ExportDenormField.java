@@ -19,7 +19,7 @@
 package io.vertigo.quarto.exporter.model;
 
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 
 /**

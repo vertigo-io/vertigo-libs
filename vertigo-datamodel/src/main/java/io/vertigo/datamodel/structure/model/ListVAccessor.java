@@ -25,13 +25,13 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionReference;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
-import io.vertigo.datamodel.structure.metamodel.association.AssociationDefinition;
-import io.vertigo.datamodel.structure.metamodel.association.AssociationNNDefinition;
-import io.vertigo.datamodel.structure.metamodel.association.AssociationSimpleDefinition;
-import io.vertigo.datamodel.structure.metamodel.association.DtListURIForAssociation;
-import io.vertigo.datamodel.structure.metamodel.association.DtListURIForNNAssociation;
-import io.vertigo.datamodel.structure.metamodel.association.DtListURIForSimpleAssociation;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.association.AssociationDefinition;
+import io.vertigo.datamodel.structure.definitions.association.AssociationNNDefinition;
+import io.vertigo.datamodel.structure.definitions.association.AssociationSimpleDefinition;
+import io.vertigo.datamodel.structure.definitions.association.DtListURIForAssociation;
+import io.vertigo.datamodel.structure.definitions.association.DtListURIForNNAssociation;
+import io.vertigo.datamodel.structure.definitions.association.DtListURIForSimpleAssociation;
 
 /**
  * This class is a way to access to a list of entities managed by a relationship.

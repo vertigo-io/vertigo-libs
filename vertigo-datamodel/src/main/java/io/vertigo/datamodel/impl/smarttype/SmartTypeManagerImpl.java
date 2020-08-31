@@ -17,12 +17,12 @@ import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.MapBuilder;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.AdapterConfig;
-import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.metamodel.Constraint;
-import io.vertigo.datamodel.structure.metamodel.ConstraintException;
-import io.vertigo.datamodel.structure.metamodel.Formatter;
-import io.vertigo.datamodel.structure.metamodel.FormatterException;
+import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
+import io.vertigo.datamodel.structure.definitions.Constraint;
+import io.vertigo.datamodel.structure.definitions.ConstraintException;
+import io.vertigo.datamodel.structure.definitions.Formatter;
+import io.vertigo.datamodel.structure.definitions.FormatterException;
 
 public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 

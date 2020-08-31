@@ -26,13 +26,13 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.datafactory.collections.ListFilter;
-import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
-import io.vertigo.datafactory.collections.metamodel.ListFilterBuilder;
+import io.vertigo.datafactory.collections.definitions.FacetDefinition;
+import io.vertigo.datafactory.collections.definitions.ListFilterBuilder;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.impl.search.dsl.model.DslGeoExpression;
 import io.vertigo.datafactory.impl.search.dsl.model.DslMultiExpression;
 import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
-import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.definitions.DtField;
 
 /**
  * Critères de recherche.

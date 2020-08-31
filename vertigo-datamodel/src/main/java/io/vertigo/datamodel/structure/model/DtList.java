@@ -31,7 +31,7 @@ import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionReference;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
 /**

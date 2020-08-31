@@ -25,7 +25,7 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.core.node.Node;
-import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
+import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datafactory.search.model.SearchQuery;

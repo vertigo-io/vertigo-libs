@@ -19,8 +19,8 @@
 package io.vertigo.datamodel.structure.util;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.metamodel.association.AssociationDefinition;
-import io.vertigo.datamodel.structure.metamodel.association.AssociationNode;
+import io.vertigo.datamodel.structure.definitions.association.AssociationDefinition;
+import io.vertigo.datamodel.structure.definitions.association.AssociationNode;
 
 /**
  * Classe utilitaire permettant de travailler sur les associations.

@@ -26,7 +26,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import io.vertigo.account.authorization.metamodel.Authorization;
+import io.vertigo.account.authorization.definitions.Authorization;
 
 /**
  * Deserializer json

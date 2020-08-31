@@ -31,7 +31,7 @@ import java.util.NoSuchElementException;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.vega.webservice.model.DtListDelta;

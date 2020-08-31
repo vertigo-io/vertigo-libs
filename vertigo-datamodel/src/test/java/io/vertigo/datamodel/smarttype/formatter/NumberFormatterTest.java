@@ -32,8 +32,8 @@ import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterNumber;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterNumberLocalized;
-import io.vertigo.datamodel.structure.metamodel.Formatter;
-import io.vertigo.datamodel.structure.metamodel.FormatterException;
+import io.vertigo.datamodel.structure.definitions.Formatter;
+import io.vertigo.datamodel.structure.definitions.FormatterException;
 
 /**
  * Test de l'implémentation standard.

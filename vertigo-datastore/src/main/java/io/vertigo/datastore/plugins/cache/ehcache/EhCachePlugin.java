@@ -38,7 +38,7 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
-import io.vertigo.datastore.cache.CacheDefinition;
+import io.vertigo.datastore.cache.definitions.CacheDefinition;
 import io.vertigo.datastore.impl.cache.CachePlugin;
 
 /**

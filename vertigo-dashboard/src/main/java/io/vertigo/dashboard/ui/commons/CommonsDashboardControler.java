@@ -24,19 +24,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
+import io.vertigo.commons.eventbus.definitions.EventBusSubscriptionDefinition;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.health.HealthStatus;
-import io.vertigo.core.daemon.DaemonDefinition;
 import io.vertigo.core.daemon.DaemonManager;
 import io.vertigo.core.daemon.DaemonStat;
+import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.node.Node;
 import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
 import io.vertigo.dashboard.ui.commons.model.CacheModel;
 import io.vertigo.dashboard.ui.commons.model.DaemonModel;
 import io.vertigo.dashboard.ui.commons.model.EventBusModel;
-import io.vertigo.datastore.cache.CacheDefinition;
+import io.vertigo.datastore.cache.definitions.CacheDefinition;
 
 public class CommonsDashboardControler extends AbstractDashboardModuleControler {
 

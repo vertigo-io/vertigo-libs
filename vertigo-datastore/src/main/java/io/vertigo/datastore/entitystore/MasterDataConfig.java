@@ -20,9 +20,10 @@ package io.vertigo.datastore.entitystore;
 
 import java.util.function.Predicate;
 
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datastore.entitystore.definitions.MasterDataDefinition;
 
 /**
  * Configuration des données de référence.

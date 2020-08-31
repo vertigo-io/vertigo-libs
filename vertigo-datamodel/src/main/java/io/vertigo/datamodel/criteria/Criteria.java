@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
-import io.vertigo.datamodel.structure.metamodel.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.Entity;
 
 /**

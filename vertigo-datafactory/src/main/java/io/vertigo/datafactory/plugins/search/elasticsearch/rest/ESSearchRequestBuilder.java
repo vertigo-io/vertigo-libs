@@ -32,7 +32,7 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.datafactory.plugins.search.elasticsearch.AsbtractESSearchRequestBuilder;
 import io.vertigo.datafactory.plugins.search.elasticsearch.ESDocumentCodec;
-import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
+import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.model.DtListState;
 

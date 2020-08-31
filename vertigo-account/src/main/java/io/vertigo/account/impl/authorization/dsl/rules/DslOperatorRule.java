@@ -23,7 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleOperator;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleOperator;
 import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;

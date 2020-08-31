@@ -16,6 +16,7 @@ import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.smarttype.data.TestSmartTypes;
 import io.vertigo.datamodel.smarttype.data.domain.Base;
+import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 
 public class SmartTypeDefinitionProviderTest {
 	@Inject

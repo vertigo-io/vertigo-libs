@@ -31,7 +31,7 @@ import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.Selector;
 import io.vertigo.core.util.Selector.ClassConditions;
 import io.vertigo.vega.webservice.WebServices;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 
 /**
  * Web service definition provider.

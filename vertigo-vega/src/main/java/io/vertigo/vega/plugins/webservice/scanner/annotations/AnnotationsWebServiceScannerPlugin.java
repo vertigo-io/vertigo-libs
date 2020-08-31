@@ -22,7 +22,7 @@ import java.util.List;
 
 import io.vertigo.vega.impl.webservice.WebServiceScannerPlugin;
 import io.vertigo.vega.webservice.WebServices;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 
 /**
  * @author npiedeloup

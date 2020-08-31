@@ -33,19 +33,19 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import io.vertigo.account.authorization.metamodel.Authorization;
-import io.vertigo.account.authorization.metamodel.SecuredEntity;
-import io.vertigo.account.authorization.metamodel.SecurityDimension;
-import io.vertigo.account.authorization.metamodel.SecurityDimensionType;
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
+import io.vertigo.account.authorization.definitions.Authorization;
+import io.vertigo.account.authorization.definitions.SecuredEntity;
+import io.vertigo.account.authorization.definitions.SecurityDimension;
+import io.vertigo.account.authorization.definitions.SecurityDimensionType;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression;
 import io.vertigo.account.impl.authorization.dsl.rules.DslParserUtil;
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
-import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtField;
 
 /**
  * Deserializer json

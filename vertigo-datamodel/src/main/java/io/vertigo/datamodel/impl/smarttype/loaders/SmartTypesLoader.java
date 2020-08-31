@@ -20,19 +20,19 @@ import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinition;
 import io.vertigo.datamodel.smarttype.AdapterConfig;
 import io.vertigo.datamodel.smarttype.ConstraintConfig;
 import io.vertigo.datamodel.smarttype.FormatterConfig;
-import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
-import io.vertigo.datamodel.smarttype.SmartTypeDefinition.Scope;
 import io.vertigo.datamodel.smarttype.annotations.Adapter;
 import io.vertigo.datamodel.smarttype.annotations.Constraint;
 import io.vertigo.datamodel.smarttype.annotations.Constraints;
 import io.vertigo.datamodel.smarttype.annotations.Formatter;
 import io.vertigo.datamodel.smarttype.annotations.FormatterDefault;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
-import io.vertigo.datamodel.structure.metamodel.DtProperty;
-import io.vertigo.datamodel.structure.metamodel.Properties;
-import io.vertigo.datamodel.structure.metamodel.PropertiesBuilder;
-import io.vertigo.datamodel.structure.metamodel.Property;
+import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition.Scope;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtProperty;
+import io.vertigo.datamodel.structure.definitions.Properties;
+import io.vertigo.datamodel.structure.definitions.PropertiesBuilder;
+import io.vertigo.datamodel.structure.definitions.Property;
 import io.vertigo.datamodel.structure.model.DtObject;
 
 public class SmartTypesLoader implements Loader {
@@ -104,8 +104,8 @@ public class SmartTypesLoader implements Loader {
 			constraintConfigs
 					.forEach(constraintConfig -> {
 						final Optional<String> msgOpt = StringUtil.isBlank(constraintConfig.getMsg()) ? Optional.empty() : Optional.of(constraintConfig.getMsg());
-						final Constructor<? extends io.vertigo.datamodel.structure.metamodel.Constraint> constructor = ClassUtil.findConstructor(constraintConfig.getConstraintClass(), new Class[] { String.class, Optional.class });
-						final io.vertigo.datamodel.structure.metamodel.Constraint newConstraint = ClassUtil.newInstance(constructor, new Object[] { constraintConfig.getArg(), msgOpt });
+						final Constructor<? extends io.vertigo.datamodel.structure.definitions.Constraint> constructor = ClassUtil.findConstructor(constraintConfig.getConstraintClass(), new Class[] { String.class, Optional.class });
+						final io.vertigo.datamodel.structure.definitions.Constraint newConstraint = ClassUtil.newInstance(constructor, new Object[] { constraintConfig.getArg(), msgOpt });
 						propertiesBuilder.addValue(newConstraint.getProperty(), newConstraint.getPropertyValue());
 					});
 

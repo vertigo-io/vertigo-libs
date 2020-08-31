@@ -24,6 +24,7 @@ import java.util.List;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.datastore.cache.definitions.CacheDefinition;
 
 /**
  * Initialisation du manager des caches.

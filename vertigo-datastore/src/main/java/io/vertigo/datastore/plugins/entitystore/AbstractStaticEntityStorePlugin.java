@@ -18,9 +18,9 @@
  */
 package io.vertigo.datastore.plugins.entitystore;
 
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
-import io.vertigo.datamodel.structure.metamodel.association.DtListURIForNNAssociation;
-import io.vertigo.datamodel.structure.metamodel.association.DtListURIForSimpleAssociation;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.association.DtListURIForNNAssociation;
+import io.vertigo.datamodel.structure.definitions.association.DtListURIForSimpleAssociation;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;

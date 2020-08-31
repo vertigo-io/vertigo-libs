@@ -39,7 +39,7 @@ import com.lowagie.text.Table;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.quarto.exporter.model.Export;

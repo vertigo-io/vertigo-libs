@@ -22,18 +22,18 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.vertigo.account.authorization.metamodel.SecurityDimension;
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression;
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression.ValueOperator;
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleFixedValue;
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression.BoolOperator;
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleUserPropertyValue;
+import io.vertigo.account.authorization.definitions.SecurityDimension;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleFixedValue;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleUserPropertyValue;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression.ValueOperator;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression.BoolOperator;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.metamodel.DtField;
-import io.vertigo.datamodel.structure.metamodel.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.Entity;
 
 /**

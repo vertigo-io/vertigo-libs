@@ -4,8 +4,9 @@ import java.util.Map;
 
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.node.component.Manager;
-import io.vertigo.datamodel.structure.metamodel.ConstraintException;
-import io.vertigo.datamodel.structure.metamodel.FormatterException;
+import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
+import io.vertigo.datamodel.structure.definitions.ConstraintException;
+import io.vertigo.datamodel.structure.definitions.FormatterException;
 
 public interface SmartTypeManager extends Manager {
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.datamodel.structure.model;
 
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
 
 /**
  * Gestion d'une liste de référence.

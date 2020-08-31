@@ -28,9 +28,9 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datastore.filestore.model.VFile;
-import io.vertigo.quarto.publisher.metamodel.PublisherField;
-import io.vertigo.quarto.publisher.metamodel.PublisherFieldType;
-import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinition;
+import io.vertigo.quarto.publisher.definitions.PublisherField;
+import io.vertigo.quarto.publisher.definitions.PublisherFieldType;
+import io.vertigo.quarto.publisher.definitions.PublisherNodeDefinition;
 
 /**
  * Conteneur de données utilisé par Publisher au sein d'un PublisherData.

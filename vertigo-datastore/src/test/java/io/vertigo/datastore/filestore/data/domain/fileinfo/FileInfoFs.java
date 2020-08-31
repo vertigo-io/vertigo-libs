@@ -18,7 +18,7 @@
  */
 package io.vertigo.datastore.filestore.data.domain.fileinfo;
 
-import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
+import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.AbstractFileInfo;
 

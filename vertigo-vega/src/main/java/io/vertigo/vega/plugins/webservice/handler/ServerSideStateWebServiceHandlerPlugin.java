@@ -39,9 +39,9 @@ import io.vertigo.vega.engines.webservice.json.UiListDelta;
 import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.token.TokenManager;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
+import io.vertigo.vega.webservice.definitions.WebServiceParam;
 import io.vertigo.vega.webservice.exception.SessionException;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.model.ExtendedObject;
 import io.vertigo.vega.webservice.model.UiObject;
 

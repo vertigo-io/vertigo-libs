@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.DateUtil;
-import io.vertigo.datafactory.collections.metamodel.ListFilterBuilder;
+import io.vertigo.datafactory.collections.definitions.ListFilterBuilder;
 import io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder;
 import io.vertigo.datafactory.impl.search.dsl.model.DslMultiExpression;
 import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;

@@ -45,7 +45,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datafactory.collections.ListFilter;
-import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.definitions.DtField;
 
 final class RamLuceneQueryFactory {
 	private final Analyzer queryAnalyzer;

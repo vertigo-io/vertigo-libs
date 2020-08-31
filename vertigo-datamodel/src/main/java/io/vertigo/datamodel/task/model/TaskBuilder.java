@@ -21,8 +21,8 @@ package io.vertigo.datamodel.task.model;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.util.MapBuilder;
-import io.vertigo.datamodel.task.metamodel.TaskAttribute;
-import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.task.definitions.TaskAttribute;
+import io.vertigo.datamodel.task.definitions.TaskDefinition;
 
 /**
  * Builder to build a task.

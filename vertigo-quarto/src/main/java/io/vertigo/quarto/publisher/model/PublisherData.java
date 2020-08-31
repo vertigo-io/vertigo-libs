@@ -19,7 +19,7 @@
 package io.vertigo.quarto.publisher.model;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.quarto.publisher.metamodel.PublisherDataDefinition;
+import io.vertigo.quarto.publisher.definitions.PublisherDataDefinition;
 
 /**
  * Données à fusionner.

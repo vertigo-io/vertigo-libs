@@ -21,8 +21,8 @@ package io.vertigo.datamodel.task.model;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.task.metamodel.TaskAttribute;
-import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.task.definitions.TaskAttribute;
+import io.vertigo.datamodel.task.definitions.TaskDefinition;
 
 /**
  * Résultat de l'exécution d'une tache.

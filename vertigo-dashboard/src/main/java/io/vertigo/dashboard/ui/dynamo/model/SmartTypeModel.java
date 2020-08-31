@@ -19,7 +19,7 @@
 package io.vertigo.dashboard.ui.dynamo.model;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 
 public class SmartTypeModel {
 	private final SmartTypeDefinition smartTypeDefinition;

@@ -6,7 +6,7 @@ import javax.inject.Inject;
 
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Component;
-import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.task.definitions.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
 import io.vertigo.datamodel.task.proxy.TaskAnnotation;
 import io.vertigo.datamodel.task.proxy.TaskInput;

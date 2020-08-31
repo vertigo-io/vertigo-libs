@@ -20,7 +20,7 @@ package io.vertigo.datastore.filestore.model;
 
 import java.io.Serializable;
 
-import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
+import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
 
 /**
  * Représentation d'un Fichier logique persistant.

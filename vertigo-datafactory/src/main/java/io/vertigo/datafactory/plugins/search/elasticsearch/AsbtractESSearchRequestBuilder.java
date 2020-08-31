@@ -49,8 +49,8 @@ import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.datafactory.collections.ListFilter;
-import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
-import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
+import io.vertigo.datafactory.collections.definitions.FacetDefinition;
+import io.vertigo.datafactory.collections.definitions.FacetedQueryDefinition;
 import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.impl.collections.functions.filter.DtListPatternFilterUtil;
@@ -58,10 +58,10 @@ import io.vertigo.datafactory.impl.search.dsl.model.DslGeoDistanceQuery;
 import io.vertigo.datafactory.impl.search.dsl.model.DslGeoExpression;
 import io.vertigo.datafactory.impl.search.dsl.model.DslGeoRangeQuery;
 import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
-import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
+import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.structure.metamodel.DtField;
-import io.vertigo.datamodel.structure.metamodel.DtProperty;
+import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.model.DtListState;
 
 //vérifier

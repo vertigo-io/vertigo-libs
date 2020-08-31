@@ -21,7 +21,7 @@ package io.vertigo.quarto.exporter.data;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import io.vertigo.datamodel.structure.metamodel.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.quarto.exporter.data.domain.Continent;
 import io.vertigo.quarto.exporter.data.domain.Country;
 

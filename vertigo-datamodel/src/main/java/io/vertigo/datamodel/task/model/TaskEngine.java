@@ -19,7 +19,7 @@
 package io.vertigo.datamodel.task.model;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.task.definitions.TaskDefinition;
 
 /**
  * Moteur précisant le mode d'exécution d'une définition de tache.

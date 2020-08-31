@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })
 public @interface Formatter {
-	Class<? extends io.vertigo.datamodel.structure.metamodel.Formatter> clazz();
+	Class<? extends io.vertigo.datamodel.structure.definitions.Formatter> clazz();
 
 	String arg() default "";
 

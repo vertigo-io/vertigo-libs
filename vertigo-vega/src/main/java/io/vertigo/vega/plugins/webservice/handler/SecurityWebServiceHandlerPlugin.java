@@ -30,8 +30,8 @@ import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 import io.vertigo.vega.webservice.exception.SessionException;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 
 /**
  * Security handler.

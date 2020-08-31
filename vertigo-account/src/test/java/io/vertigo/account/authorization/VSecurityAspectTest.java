@@ -27,8 +27,8 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.authorization.SecurityNames.GlobalAuthorizations;
 import io.vertigo.account.authorization.SecurityNames.RecordAuthorizations;
-import io.vertigo.account.authorization.metamodel.Authorization;
-import io.vertigo.account.authorization.metamodel.AuthorizationName;
+import io.vertigo.account.authorization.definitions.Authorization;
+import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.account.authorization.model.FullSecuredServices;
 import io.vertigo.account.authorization.model.PartialSecuredServices;
 import io.vertigo.account.data.TestUserSession;

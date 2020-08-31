@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.task.metamodel.TaskAttribute;
+import io.vertigo.datamodel.task.definitions.TaskAttribute;
 
 /**
  * Ce processor permet de remplacer le Where XXX_ID in (#YYY.ROWNUM.ZZZ_ID#) ou (#YYY.ROWNUM#).

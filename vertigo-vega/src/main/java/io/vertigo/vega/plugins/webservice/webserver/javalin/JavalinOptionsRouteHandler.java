@@ -26,8 +26,8 @@ import io.javalin.http.Handler;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition.Verb;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition.Verb;
 
 /**
  * Handler of Options preflight request.

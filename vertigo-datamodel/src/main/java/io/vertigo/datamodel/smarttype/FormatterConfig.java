@@ -1,6 +1,6 @@
 package io.vertigo.datamodel.smarttype;
 
-import io.vertigo.datamodel.structure.metamodel.Formatter;
+import io.vertigo.datamodel.structure.definitions.Formatter;
 
 public class FormatterConfig {
 

@@ -21,15 +21,15 @@ package io.vertigo.datamodel.task.model;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.task.metamodel.TaskAttribute;
-import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.task.definitions.TaskAttribute;
+import io.vertigo.datamodel.task.definitions.TaskDefinition;
 
 /**
  * Gestion des taches.
  *
  * Les taches sont implémentés par les classes dérivées de {@link io.vertigo.datamodel.task.model.TaskEngine}
  *
- * Une tache peut être perçue comme une instance d'une {@link io.vertigo.datamodel.task.metamodel.TaskDefinition} ;
+ * Une tache peut être perçue comme une instance d'une {@link io.vertigo.datamodel.task.definitions.TaskDefinition} ;
  * celle-ci doit être préalablement déclarée.
  *
  * L'utilisation d'une tache se fait en 4 étapes :

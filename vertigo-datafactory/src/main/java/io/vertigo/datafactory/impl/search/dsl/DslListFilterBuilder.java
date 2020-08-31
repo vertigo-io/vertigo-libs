@@ -35,7 +35,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.BeanUtil;
 import io.vertigo.datafactory.collections.ListFilter;
-import io.vertigo.datafactory.collections.metamodel.ListFilterBuilder;
+import io.vertigo.datafactory.collections.definitions.ListFilterBuilder;
 import io.vertigo.datafactory.impl.search.dsl.model.DslBlockQuery;
 import io.vertigo.datafactory.impl.search.dsl.model.DslExpression;
 import io.vertigo.datafactory.impl.search.dsl.model.DslField;

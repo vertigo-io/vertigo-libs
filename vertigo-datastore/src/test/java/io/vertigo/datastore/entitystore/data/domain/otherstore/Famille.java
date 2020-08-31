@@ -20,7 +20,7 @@ package io.vertigo.datastore.entitystore.data.domain.otherstore;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Generated;
-import io.vertigo.datamodel.structure.metamodel.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.DataSpace;
@@ -159,7 +159,7 @@ public final class Famille implements Entity {
 	 * @return URI de l'association
 	 */
 	@Deprecated
-	public io.vertigo.datamodel.structure.metamodel.association.DtListURIForSimpleAssociation getVoituresFamilleDtListURI() {
+	public io.vertigo.datamodel.structure.definitions.association.DtListURIForSimpleAssociation getVoituresFamilleDtListURI() {
 		return voituresFamilleAccessor.getDtListURI();
 	}
 
@@ -189,7 +189,7 @@ public final class Famille implements Entity {
 	 * @return URI de l'association
 	 */
 	@Deprecated
-	public io.vertigo.datamodel.structure.metamodel.association.DtListURIForNNAssociation getVoituresLocationDtListURI() {
+	public io.vertigo.datamodel.structure.definitions.association.DtListURIForNNAssociation getVoituresLocationDtListURI() {
 		return voituresLocationAccessor.getDtListURI();
 	}
 

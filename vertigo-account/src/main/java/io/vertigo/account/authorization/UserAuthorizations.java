@@ -29,12 +29,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.vertigo.account.authorization.metamodel.Authorization;
-import io.vertigo.account.authorization.metamodel.AuthorizationName;
-import io.vertigo.account.authorization.metamodel.Role;
+import io.vertigo.account.authorization.definitions.Authorization;
+import io.vertigo.account.authorization.definitions.AuthorizationName;
+import io.vertigo.account.authorization.definitions.Role;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionReference;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
 
 /**
  * This class list User's Authorizations.

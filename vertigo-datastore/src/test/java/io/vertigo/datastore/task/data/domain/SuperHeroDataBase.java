@@ -23,7 +23,7 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.task.TaskManager;
-import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.task.definitions.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamox.task.TaskEngineProc;

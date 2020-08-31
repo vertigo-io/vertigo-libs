@@ -31,7 +31,7 @@ import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
 import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam;
+import io.vertigo.vega.webservice.definitions.WebServiceParam;
 import io.vertigo.vega.webservice.model.UiList;
 
 public final class DtListJsonConverter implements JsonConverter {

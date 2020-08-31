@@ -32,7 +32,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.database.sql.connection.SqlConnection;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 

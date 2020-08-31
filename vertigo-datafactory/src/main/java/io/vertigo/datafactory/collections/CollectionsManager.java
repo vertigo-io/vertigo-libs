@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import io.vertigo.core.node.component.Manager;
-import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
+import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datamodel.structure.model.DtList;

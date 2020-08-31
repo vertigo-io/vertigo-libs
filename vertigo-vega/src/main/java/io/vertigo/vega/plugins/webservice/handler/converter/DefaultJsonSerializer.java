@@ -40,7 +40,7 @@ import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 import io.vertigo.vega.webservice.model.ExtendedObject;
 
 /**

@@ -39,14 +39,14 @@ import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.impl.collections.IndexPlugin;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
-import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtListURI;
 import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datastore.cache.CacheDefinition;
 import io.vertigo.datastore.cache.CacheManager;
+import io.vertigo.datastore.cache.definitions.CacheDefinition;
 import io.vertigo.datastore.entitystore.StoreEvent;
 
 /**

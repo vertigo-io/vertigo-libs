@@ -27,13 +27,13 @@ import java.util.function.Predicate;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
-import io.vertigo.datamodel.structure.metamodel.DtStereotype;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtStereotype;
 import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
-import io.vertigo.datastore.cache.CacheDefinition;
-import io.vertigo.datastore.entitystore.MasterDataDefinition;
+import io.vertigo.datastore.cache.definitions.CacheDefinition;
+import io.vertigo.datastore.entitystore.definitions.MasterDataDefinition;
 import io.vertigo.datastore.impl.entitystore.cache.CacheData;
 
 public abstract class AbstractMasterDataDefinitionProvider implements SimpleDefinitionProvider {

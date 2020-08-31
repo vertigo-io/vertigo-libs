@@ -21,7 +21,7 @@ package io.vertigo.vega.plugins.webservice.handler.converter;
 import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 
 public final class StringJsonSerializer implements JsonSerializer {
 

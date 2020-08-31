@@ -22,7 +22,7 @@ import java.util.Collection;
 
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 
 /**
  * Register an handlerchain as a route for this webService.

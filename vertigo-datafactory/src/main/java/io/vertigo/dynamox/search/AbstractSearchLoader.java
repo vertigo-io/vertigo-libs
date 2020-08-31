@@ -25,10 +25,10 @@ import java.util.NoSuchElementException;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
-import io.vertigo.datafactory.search.metamodel.SearchChunk;
-import io.vertigo.datafactory.search.metamodel.SearchLoader;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
-import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datafactory.search.definitions.SearchChunk;
+import io.vertigo.datafactory.search.definitions.SearchLoader;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;

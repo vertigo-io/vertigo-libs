@@ -18,7 +18,7 @@
  */
 package io.vertigo.account.impl.authorization.dsl.rules;
 
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression;
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 
 /**

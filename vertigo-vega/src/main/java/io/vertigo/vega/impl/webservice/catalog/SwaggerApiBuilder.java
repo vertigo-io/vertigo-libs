@@ -39,16 +39,16 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
-import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
+import io.vertigo.vega.webservice.definitions.WebServiceParam;
+import io.vertigo.vega.webservice.definitions.WebServiceParam.WebServiceParamType;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**

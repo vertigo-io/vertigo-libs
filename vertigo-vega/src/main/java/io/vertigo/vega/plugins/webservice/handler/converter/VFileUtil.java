@@ -38,7 +38,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.StreamFile;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam;
+import io.vertigo.vega.webservice.definitions.WebServiceParam;
 
 /**
  * @author npiedeloup

@@ -1,6 +1,6 @@
 package io.vertigo.datamodel.smarttype;
 
-import io.vertigo.datamodel.structure.metamodel.Constraint;
+import io.vertigo.datamodel.structure.definitions.Constraint;
 
 public class ConstraintConfig {
 

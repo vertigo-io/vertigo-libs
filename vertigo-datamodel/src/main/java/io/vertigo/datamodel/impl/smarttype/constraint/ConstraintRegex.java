@@ -24,9 +24,9 @@ import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.datamodel.structure.metamodel.Constraint;
-import io.vertigo.datamodel.structure.metamodel.DtProperty;
-import io.vertigo.datamodel.structure.metamodel.Property;
+import io.vertigo.datamodel.structure.definitions.Constraint;
+import io.vertigo.datamodel.structure.definitions.DtProperty;
+import io.vertigo.datamodel.structure.definitions.Property;
 
 /**
  * Exemple de contrainte utilisant une expression régulière.

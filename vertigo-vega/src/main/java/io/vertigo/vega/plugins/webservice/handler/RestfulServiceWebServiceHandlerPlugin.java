@@ -30,8 +30,8 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.WebServices;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 import io.vertigo.vega.webservice.exception.SessionException;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
 
 /**

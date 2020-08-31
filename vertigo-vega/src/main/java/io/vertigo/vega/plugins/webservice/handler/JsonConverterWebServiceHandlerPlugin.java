@@ -52,10 +52,10 @@ import io.vertigo.vega.plugins.webservice.handler.reader.JsonReader;
 import io.vertigo.vega.plugins.webservice.handler.reader.PathJsonReader;
 import io.vertigo.vega.plugins.webservice.handler.reader.QueryJsonReader;
 import io.vertigo.vega.plugins.webservice.handler.reader.RequestJsonReader;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
+import io.vertigo.vega.webservice.definitions.WebServiceParam;
+import io.vertigo.vega.webservice.definitions.WebServiceParam.WebServiceParamType;
 import io.vertigo.vega.webservice.exception.SessionException;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
 
 /**
  * Params handler.

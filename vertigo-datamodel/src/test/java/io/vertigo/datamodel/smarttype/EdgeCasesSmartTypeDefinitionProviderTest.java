@@ -13,6 +13,7 @@ import io.vertigo.datamodel.impl.smarttype.formatter.FormatterId;
 import io.vertigo.datamodel.smarttype.data.TestOverride;
 import io.vertigo.datamodel.smarttype.data.TestSmartTypes;
 import io.vertigo.datamodel.smarttype.data.domain.Base;
+import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 
 public class EdgeCasesSmartTypeDefinitionProviderTest {
 

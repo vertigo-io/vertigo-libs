@@ -30,7 +30,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.impl.webservice.WebServerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 
 /**
  * RoutesRegisterPlugin use to register Javalin route.

@@ -23,8 +23,8 @@ import java.util.List;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.metamodel.ConstraintException;
-import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.definitions.ConstraintException;
+import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 
 /**

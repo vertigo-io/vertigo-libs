@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
+import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
 
 /**
  * Implémentation Standard du StoreProvider.

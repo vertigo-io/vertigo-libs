@@ -29,7 +29,7 @@ import com.google.gson.JsonObject;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.ListFilter;
-import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
+import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues.SelectedFacetValuesBuilder;

@@ -26,14 +26,14 @@ import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
-import io.vertigo.datamodel.structure.metamodel.DtField;
-import io.vertigo.datamodel.structure.metamodel.DtProperty;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
-import io.vertigo.quarto.publisher.metamodel.PublisherField;
-import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinition;
+import io.vertigo.quarto.publisher.definitions.PublisherField;
+import io.vertigo.quarto.publisher.definitions.PublisherNodeDefinition;
 import io.vertigo.quarto.publisher.model.PublisherNode;
 
 /**

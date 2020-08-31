@@ -22,9 +22,9 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.datamodel.structure.metamodel.Constraint;
-import io.vertigo.datamodel.structure.metamodel.DtProperty;
-import io.vertigo.datamodel.structure.metamodel.Property;
+import io.vertigo.datamodel.structure.definitions.Constraint;
+import io.vertigo.datamodel.structure.definitions.DtProperty;
+import io.vertigo.datamodel.structure.definitions.Property;
 
 /**
  * Contrainte sur la valeur minimale d'un nombre.

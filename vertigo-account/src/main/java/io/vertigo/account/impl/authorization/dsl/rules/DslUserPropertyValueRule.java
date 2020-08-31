@@ -20,7 +20,7 @@ package io.vertigo.account.impl.authorization.dsl.rules;
 
 import java.util.List;
 
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleUserPropertyValue;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleUserPropertyValue;
 import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;

@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import io.vertigo.account.authorization.metamodel.SecuredEntity;
-import io.vertigo.account.authorization.metamodel.SecurityDimension;
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
+import io.vertigo.account.authorization.definitions.SecuredEntity;
+import io.vertigo.account.authorization.definitions.SecurityDimension;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression;
 import io.vertigo.account.impl.authorization.dsl.rules.DslParserUtil;
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.core.lang.Assertion;

@@ -31,8 +31,8 @@ import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 import io.vertigo.vega.webservice.exception.SessionException;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 
 /**
  * Handler of Cross-Origin Resource Sharing (CORS).

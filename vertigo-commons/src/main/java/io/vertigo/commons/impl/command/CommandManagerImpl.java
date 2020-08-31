@@ -26,11 +26,11 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import io.vertigo.commons.command.Command;
-import io.vertigo.commons.command.CommandDefinition;
 import io.vertigo.commons.command.CommandManager;
-import io.vertigo.commons.command.CommandParam;
 import io.vertigo.commons.command.CommandResponse;
 import io.vertigo.commons.command.GenericUID;
+import io.vertigo.commons.command.definitions.CommandDefinition;
+import io.vertigo.commons.command.definitions.CommandParam;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Node;

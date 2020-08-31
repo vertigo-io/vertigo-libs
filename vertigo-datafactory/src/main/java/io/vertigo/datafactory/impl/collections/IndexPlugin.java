@@ -24,7 +24,7 @@ import java.util.Optional;
 
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.datafactory.collections.ListFilter;
-import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;

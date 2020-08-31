@@ -19,7 +19,7 @@
 package io.vertigo.dashboard.ui.dynamo.model;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.task.definitions.TaskDefinition;
 
 public final class TaskModel {
 	private final TaskDefinition taskDefinition;

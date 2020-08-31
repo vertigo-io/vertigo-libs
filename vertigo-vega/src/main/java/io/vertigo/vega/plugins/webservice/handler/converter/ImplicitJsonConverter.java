@@ -25,9 +25,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam.ImplicitParam;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
+import io.vertigo.vega.webservice.definitions.WebServiceParam;
+import io.vertigo.vega.webservice.definitions.WebServiceParam.ImplicitParam;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 public final class ImplicitJsonConverter implements JsonConverter, JsonSerializer {

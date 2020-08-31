@@ -29,11 +29,11 @@ import javax.inject.Inject;
 
 import io.vertigo.account.authorization.AuthorizationManager;
 import io.vertigo.account.authorization.UserAuthorizations;
-import io.vertigo.account.authorization.metamodel.Authorization;
-import io.vertigo.account.authorization.metamodel.AuthorizationName;
-import io.vertigo.account.authorization.metamodel.OperationName;
-import io.vertigo.account.authorization.metamodel.SecuredEntity;
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
+import io.vertigo.account.authorization.definitions.Authorization;
+import io.vertigo.account.authorization.definitions.AuthorizationName;
+import io.vertigo.account.authorization.definitions.OperationName;
+import io.vertigo.account.authorization.definitions.SecuredEntity;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression;
 import io.vertigo.account.impl.authorization.dsl.translator.CriteriaSecurityRuleTranslator;
 import io.vertigo.account.impl.authorization.dsl.translator.SearchSecurityRuleTranslator;
 import io.vertigo.account.security.UserSession;
@@ -42,7 +42,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 

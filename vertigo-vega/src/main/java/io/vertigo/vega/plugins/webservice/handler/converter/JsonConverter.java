@@ -19,7 +19,7 @@
 package io.vertigo.vega.plugins.webservice.handler.converter;
 
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam;
+import io.vertigo.vega.webservice.definitions.WebServiceParam;
 
 /**
  * Converter source object into value object and put it into RouteContext.

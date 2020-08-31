@@ -26,11 +26,11 @@ import io.vertigo.core.analytics.metric.Metrics;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Component;
-import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
-import io.vertigo.datamodel.task.metamodel.TaskAttribute;
-import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.task.definitions.TaskAttribute;
+import io.vertigo.datamodel.task.definitions.TaskDefinition;
 
 /**
  * Composant to provide Metrics about domain

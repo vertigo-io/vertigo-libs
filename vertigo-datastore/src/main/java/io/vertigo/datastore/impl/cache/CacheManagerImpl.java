@@ -28,8 +28,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
-import io.vertigo.datastore.cache.CacheDefinition;
 import io.vertigo.datastore.cache.CacheManager;
+import io.vertigo.datastore.cache.definitions.CacheDefinition;
 
 /**
  * Manager de gestion du cache.

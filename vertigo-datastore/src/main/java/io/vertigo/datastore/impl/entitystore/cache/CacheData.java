@@ -19,7 +19,7 @@
 package io.vertigo.datastore.impl.entitystore.cache;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListURI;
 import io.vertigo.datamodel.structure.model.DtObject;

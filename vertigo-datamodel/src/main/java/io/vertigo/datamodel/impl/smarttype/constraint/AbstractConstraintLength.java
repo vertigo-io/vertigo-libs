@@ -19,9 +19,9 @@
 package io.vertigo.datamodel.impl.smarttype.constraint;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.metamodel.Constraint;
-import io.vertigo.datamodel.structure.metamodel.DtProperty;
-import io.vertigo.datamodel.structure.metamodel.Property;
+import io.vertigo.datamodel.structure.definitions.Constraint;
+import io.vertigo.datamodel.structure.definitions.DtProperty;
+import io.vertigo.datamodel.structure.definitions.Property;
 
 /**
  * Implémentation de base des contraintes de longueur sur une donnée quelconque.

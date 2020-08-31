@@ -25,7 +25,7 @@ import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 
 /**
  * Webservice Route for Javalin.

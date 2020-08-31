@@ -35,7 +35,7 @@ import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.VCollectors;
-import io.vertigo.datamodel.task.metamodel.TaskAttribute;
+import io.vertigo.datamodel.task.definitions.TaskAttribute;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 
 /**

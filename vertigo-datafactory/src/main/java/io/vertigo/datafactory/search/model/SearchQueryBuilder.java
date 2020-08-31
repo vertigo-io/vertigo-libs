@@ -24,12 +24,12 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.ListFilter;
-import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
-import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
-import io.vertigo.datafactory.collections.metamodel.ListFilterBuilder;
+import io.vertigo.datafactory.collections.definitions.FacetDefinition;
+import io.vertigo.datafactory.collections.definitions.FacetedQueryDefinition;
+import io.vertigo.datafactory.collections.definitions.ListFilterBuilder;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
-import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.definitions.DtField;
 
 /**
  * @author pchretien

@@ -30,8 +30,8 @@ import javax.inject.Inject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import io.vertigo.account.authorization.metamodel.Authorization;
-import io.vertigo.account.authorization.metamodel.SecuredEntity;
+import io.vertigo.account.authorization.definitions.Authorization;
+import io.vertigo.account.authorization.definitions.SecuredEntity;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.config.DefinitionResourceConfig;
 import io.vertigo.core.node.definition.DefinitionProvider;

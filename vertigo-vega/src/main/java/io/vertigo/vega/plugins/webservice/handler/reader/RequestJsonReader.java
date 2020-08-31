@@ -21,8 +21,8 @@ package io.vertigo.vega.plugins.webservice.handler.reader;
 import javax.servlet.http.HttpServletRequest;
 
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
+import io.vertigo.vega.webservice.definitions.WebServiceParam;
+import io.vertigo.vega.webservice.definitions.WebServiceParam.WebServiceParamType;
 
 public final class RequestJsonReader implements JsonReader<HttpServletRequest> {
 

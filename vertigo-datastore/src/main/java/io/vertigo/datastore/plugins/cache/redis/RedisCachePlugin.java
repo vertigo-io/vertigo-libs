@@ -29,7 +29,7 @@ import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.datastore.cache.CacheDefinition;
+import io.vertigo.datastore.cache.definitions.CacheDefinition;
 import io.vertigo.datastore.impl.cache.CachePlugin;
 import redis.clients.jedis.Jedis;
 

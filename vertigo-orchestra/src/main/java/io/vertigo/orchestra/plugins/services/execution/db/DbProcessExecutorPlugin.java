@@ -38,7 +38,7 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.process.AProcess;
 import io.vertigo.core.analytics.process.AProcessBuilder;
-import io.vertigo.core.daemon.DaemonDefinition;
+import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;

@@ -48,7 +48,7 @@ import io.vertigo.vega.plugins.webservice.handler.SessionWebServiceHandlerPlugin
 import io.vertigo.vega.plugins.webservice.handler.ValidatorWebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.WebServiceManager;
 import io.vertigo.vega.webservice.WebServices;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 
 /**
  * Webservice manager.

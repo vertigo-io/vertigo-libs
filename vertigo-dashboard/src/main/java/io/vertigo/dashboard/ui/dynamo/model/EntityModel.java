@@ -19,8 +19,8 @@
 package io.vertigo.dashboard.ui.dynamo.model;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
-import io.vertigo.datamodel.structure.metamodel.DtStereotype;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtStereotype;
 
 public final class EntityModel {
 	private final DtDefinition dtDefinition;

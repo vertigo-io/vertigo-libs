@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.function.UnaryOperator;
 
 import io.vertigo.core.lang.Builder;
-import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 

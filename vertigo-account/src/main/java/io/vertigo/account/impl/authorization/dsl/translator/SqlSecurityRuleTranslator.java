@@ -21,10 +21,10 @@ package io.vertigo.account.impl.authorization.dsl.translator;
 import java.io.Serializable;
 import java.util.List;
 
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression;
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleFixedValue;
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleUserPropertyValue;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleFixedValue;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleUserPropertyValue;
 
 /**
  *

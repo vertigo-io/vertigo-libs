@@ -23,7 +23,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.vertigo.account.authorization.AuthorizationManager;
-import io.vertigo.account.authorization.metamodel.Authorization;
+import io.vertigo.account.authorization.definitions.Authorization;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.node.Node;

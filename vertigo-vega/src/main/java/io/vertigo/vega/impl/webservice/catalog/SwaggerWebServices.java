@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import io.vertigo.core.node.Node;
 import io.vertigo.datastore.filestore.util.FileUtil;
 import io.vertigo.vega.webservice.WebServices;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
+import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.GET;
 import io.vertigo.vega.webservice.stereotype.PathParam;

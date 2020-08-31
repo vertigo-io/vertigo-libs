@@ -20,8 +20,8 @@ package io.vertigo.account.plugins.authorization.loaders;
 
 import java.util.List;
 
-import io.vertigo.account.authorization.metamodel.Authorization;
-import io.vertigo.account.authorization.metamodel.SecuredEntity;
+import io.vertigo.account.authorization.definitions.Authorization;
+import io.vertigo.account.authorization.definitions.SecuredEntity;
 
 /**
  * Configuration de la sécurité avancée.

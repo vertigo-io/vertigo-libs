@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionReference;
-import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
+import io.vertigo.datafactory.collections.definitions.FacetedQueryDefinition;
 
 /**
  * Requete de filtrage par facettes.

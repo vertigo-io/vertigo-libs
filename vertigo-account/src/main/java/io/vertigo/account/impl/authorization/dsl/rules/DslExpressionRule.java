@@ -20,9 +20,9 @@ package io.vertigo.account.impl.authorization.dsl.rules;
 
 import java.util.List;
 
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression;
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression.ValueOperator;
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleValue;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleValue;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression.ValueOperator;
 import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;

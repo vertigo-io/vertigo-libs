@@ -26,7 +26,7 @@ import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.metric.Metrics;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Component;
-import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.task.definitions.TaskDefinition;
 
 /**
  * Implémentation de TaskReportingManager.

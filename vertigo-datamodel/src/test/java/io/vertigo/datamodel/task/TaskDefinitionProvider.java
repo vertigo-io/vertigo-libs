@@ -30,8 +30,8 @@ import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
-import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
-import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
+import io.vertigo.datamodel.task.definitions.TaskDefinition;
 
 public final class TaskDefinitionProvider implements SimpleDefinitionProvider {
 	public static String TK_MULTIPLICATION = "TkMultiplication";

@@ -23,7 +23,7 @@ import java.util.Iterator;
 
 import io.vertigo.datafactory.collections.data.domain.SmartCar;
 import io.vertigo.datafactory.collections.data.domain.SmartItem;
-import io.vertigo.datamodel.structure.metamodel.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DtFieldName;
 
 public final class DtDefinitions implements Iterable<Class<?>> {
 	@Override
