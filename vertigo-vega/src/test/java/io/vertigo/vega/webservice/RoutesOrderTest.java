@@ -161,7 +161,7 @@ public final class RoutesOrderTest {
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /vertigo/definitions/types/{definitionType} (class java.lang.String :Path:definitionType) -> String"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /vertigo/definitions/{definitionName} (class java.lang.String :Path:definitionName) -> Definition"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /vertigo/healthcheck () -> interface java.util.List<HealthCheck>"))
-				.body("get(" + i++ + ")", Matchers.equalTo("Get /vertigo/types () -> interface java.util.Collection<class java.lang.Class<? extends io.vertigo.core.node.definitions.Definition>>"))
+				.body("get(" + i++ + ")", Matchers.equalTo("Get /vertigo/types () -> interface java.util.Collection<class java.lang.Class<? extends io.vertigo.core.node.definition.Definition>>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Post /contacts (class io.vertigo.vega.webservice.data.domain.Contact :Body:[1]) -> Contact"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Post /contacts/search() (class io.vertigo.vega.webservice.data.domain.ContactCriteria :Body:[1]) -> interface java.util.List<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Post /search/facetedClusteredResult (class io.vertigo.datafactory.collections.model.SelectedFacetValues :Body:[1]) -> class io.vertigo.datafactory.collections.model.FacetedQueryResult<Contact,class io.vertigo.datamodel.structure.model.DtList<Contact>>"))
