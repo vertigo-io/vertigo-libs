@@ -33,6 +33,7 @@ import io.vertigo.core.lang.WrappedException;
  */
 public final class FSFile extends AbstractVFile {
 	private static final long serialVersionUID = 1L;
+	private static final String DEFAULT_TYPE_MIME = "application/octet-stream";
 	private final File file; //Need File in order to kept the Serializable interface (noi.Path isn't Serializable)
 
 	/**
@@ -82,7 +83,8 @@ public final class FSFile extends AbstractVFile {
 
 	public static FSFile of(final Path file) {
 		try {
-			return new FSFile(file.getFileName().toString(), Files.probeContentType(file), file);
+			final String mimeType = Files.probeContentType(file);
+			return new FSFile(file.getFileName().toString(), mimeType != null ? mimeType : DEFAULT_TYPE_MIME, file);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}
