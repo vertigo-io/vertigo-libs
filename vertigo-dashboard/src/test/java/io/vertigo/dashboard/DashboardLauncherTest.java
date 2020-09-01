@@ -95,7 +95,7 @@ public class DashboardLauncherTest {
 								Param.of("password", "kleeklee"))
 						.build())
 				.addModule(new JavalinFeatures()
-						.withEmbeddedServer(Param.of("port", 8080))
+						.withEmbeddedServer(Param.of("port", 8082))
 						.build())
 				.addModule(new CommonsFeatures()
 						.build())
