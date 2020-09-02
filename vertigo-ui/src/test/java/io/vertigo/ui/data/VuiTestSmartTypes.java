@@ -3,36 +3,36 @@ package io.vertigo.ui.data;
 import java.time.Instant;
 import java.time.LocalDate;
 
-import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintNumberMaximum;
-import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintNumberMinimum;
-import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintRegex;
-import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength;
-import io.vertigo.datamodel.impl.smarttype.formatter.FormatterBoolean;
-import io.vertigo.datamodel.impl.smarttype.formatter.FormatterDate;
-import io.vertigo.datamodel.impl.smarttype.formatter.FormatterNumber;
-import io.vertigo.datamodel.impl.smarttype.formatter.FormatterString;
+import io.vertigo.basics.constraint.ConstraintNumberMaximum;
+import io.vertigo.basics.constraint.ConstraintNumberMinimum;
+import io.vertigo.basics.constraint.ConstraintRegex;
+import io.vertigo.basics.constraint.ConstraintStringLength;
+import io.vertigo.basics.formatter.FormatterBoolean;
+import io.vertigo.basics.formatter.FormatterDate;
+import io.vertigo.basics.formatter.FormatterDefault;
+import io.vertigo.basics.formatter.FormatterNumber;
+import io.vertigo.basics.formatter.FormatterString;
 import io.vertigo.datamodel.smarttype.annotations.Constraint;
 import io.vertigo.datamodel.smarttype.annotations.Formatter;
-import io.vertigo.datamodel.smarttype.annotations.FormatterDefault;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
 
 public enum VuiTestSmartTypes {
 
 	@SmartTypeDefinition(String.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(500)")
 	@SmartTypeProperty(property = "indexType", value = "multiple_code")
 	MultiValues,
 
 	@SmartTypeDefinition(String.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(250)")
 	@SmartTypeProperty(property = "indexType", value = "text_fr_not_tokenized")
 	TextNotTokenized,
 
 	@SmartTypeDefinition(String.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(10000)")
 	@SmartTypeProperty(property = "indexType", value = "text_fr")
 	Text,
@@ -45,7 +45,7 @@ public enum VuiTestSmartTypes {
 	Code,
 
 	@SmartTypeDefinition(String.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	@Constraint(clazz = ConstraintRegex.class, arg = "^[0-9]{5}$", msg = "")
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(5)")
 	CodePostal,
@@ -61,19 +61,19 @@ public enum VuiTestSmartTypes {
 	LastModified,
 
 	@SmartTypeDefinition(Integer.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	@Constraint(clazz = ConstraintNumberMinimum.class, arg = "1500", msg = "")
 	@Constraint(clazz = ConstraintNumberMaximum.class, arg = "2500", msg = "")
 	@SmartTypeProperty(property = "storeType", value = "NUMERIC")
 	Year,
 
 	@SmartTypeDefinition(Integer.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	@SmartTypeProperty(property = "storeType", value = "NUMERIC")
 	Duration,
 
 	@SmartTypeDefinition(String.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	@Constraint(clazz = ConstraintRegex.class, arg = "^[_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*\\.[a-zA-Z0-9-]{2,3}$", msg = "")
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(255)")
 	Email,
@@ -84,50 +84,50 @@ public enum VuiTestSmartTypes {
 	Id,
 
 	@SmartTypeDefinition(String.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	@Constraint(clazz = ConstraintStringLength.class, arg = "30", msg = "")
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(100)")
 	@SmartTypeProperty(property = "indexType", value = "text_fr:facetable")
 	Label,
 
 	@SmartTypeDefinition(String.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	@Constraint(clazz = ConstraintStringLength.class, arg = "50", msg = "")
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(50)")
 	@SmartTypeProperty(property = "indexType", value = "text_fr:facetable")
 	LabelShort,
 
 	@SmartTypeDefinition(String.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	@Constraint(clazz = ConstraintStringLength.class, arg = "250", msg = "")
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(250)")
 	LabelLong,
 
 	@SmartTypeDefinition(String.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	@Constraint(clazz = ConstraintStringLength.class, arg = "4000", msg = "")
 	@SmartTypeProperty(property = "storeType", value = "TEXT")
 	Comment,
 
 	@SmartTypeDefinition(String.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	@Constraint(clazz = ConstraintStringLength.class, arg = "50", msg = "")
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(50)")
 	Name,
 
 	@SmartTypeDefinition(String.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	@Constraint(clazz = ConstraintStringLength.class, arg = "50", msg = "")
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(50)")
 	Firstname,
 
 	@SmartTypeDefinition(String.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(250)")
 	Password,
 
 	@SmartTypeDefinition(Integer.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	@SmartTypeProperty(property = "storeType", value = "INT")
 	Rating,
 
@@ -137,7 +137,7 @@ public enum VuiTestSmartTypes {
 	OuiNon,
 
 	@SmartTypeDefinition(String.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(250)")
 	MultipleIds;
 }

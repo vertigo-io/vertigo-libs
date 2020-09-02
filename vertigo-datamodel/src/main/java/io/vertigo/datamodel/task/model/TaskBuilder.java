@@ -30,6 +30,7 @@ import io.vertigo.datamodel.task.definitions.TaskDefinition;
  */
 public final class TaskBuilder implements Builder<Task> {
 	private final MapBuilder<TaskAttribute, Object> taskAttributesBuilder = new MapBuilder<>();
+	private final MapBuilder<String, String> contextBuilder = new MapBuilder<>();
 	private final TaskDefinition taskDefinition;
 
 	/**
@@ -56,9 +57,21 @@ public final class TaskBuilder implements Builder<Task> {
 		return this;
 	}
 
+	/**
+	 * adds a property to the execution context.
+	 *
+	 * @param contextProperty the name of the context property
+	 * @param value the values
+	 * @return this builder
+	 */
+	public TaskBuilder addContextProperty(final String contextProperty, final String value) {
+		contextBuilder.putNullable(contextProperty, value);
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public Task build() {
-		return new Task(taskDefinition, taskAttributesBuilder.unmodifiable().build());
+		return new Task(taskDefinition, taskAttributesBuilder.unmodifiable().build(), contextBuilder.unmodifiable().build());
 	}
 }

@@ -3,7 +3,7 @@ package io.vertigo.orchestra.monitoring.dao.uiexecutions
 
 create Task TkGetExecutionByPreId {
 	storeName : "orchestra"
-    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+    className : "io.vertigo.basics.task.TaskEngineSelect"
         request : "
         	select  pre.PRE_ID as PRE_ID,
         			pre.BEGIN_TIME as BEGIN_TIME,
@@ -29,7 +29,7 @@ create Task TkGetExecutionByPreId {
 
 create Task TkGetExecutionsByProcessName {
 	storeName : "orchestra"
-    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+    className : "io.vertigo.basics.task.TaskEngineSelect"
         request : "
         	select  pre.PRE_ID as PRE_ID,
         			pre.BEGIN_TIME as BEGIN_TIME,
@@ -57,7 +57,7 @@ create Task TkGetExecutionsByProcessName {
 
 create Task TkGetActivitiyByAceId {
 	storeName : "orchestra"
-    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+    className : "io.vertigo.basics.task.TaskEngineSelect"
         request : "
         	select  ace.ACE_ID as ACE_ID,
         			act.LABEL as LABEL,
@@ -83,7 +83,7 @@ create Task TkGetActivitiyByAceId {
 
 create Task TkGetActivitiesByPreId {
 	storeName : "orchestra"
-    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+    className : "io.vertigo.basics.task.TaskEngineSelect"
         request : "
         	select  ace.ACE_ID as ACE_ID,
         			act.LABEL as LABEL,

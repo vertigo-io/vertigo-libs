@@ -21,12 +21,12 @@ package io.vertigo.account;
 import java.util.List;
 import java.util.Optional;
 
+import io.vertigo.basics.task.TaskEngineProc;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
-import io.vertigo.dynamox.task.TaskEngineProc;
 
 public final class SqlUtil {
 	public static void execRequests(

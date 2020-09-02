@@ -122,13 +122,14 @@ public final class SummaryPAO implements StoreServices {
  "				and s.MISFIRED_COUNT > 0" + 
  "			<%}%>" + 
  "			;",
-			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
 	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOExecutionSummary")
 	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary> getExecutionSummariesByDate(@io.vertigo.datamodel.task.proxy.TaskInput(name = "dateMin", smartType = "STyOTimestamp") final java.time.Instant dateMin, @io.vertigo.datamodel.task.proxy.TaskInput(name = "dateMax", smartType = "STyOTimestamp") final java.time.Instant dateMax, @io.vertigo.datamodel.task.proxy.TaskInput(name = "status", smartType = "STyOCodeIdentifiant") final String status) {
 		final Task task = createTaskBuilder("TkGetExecutionSummariesByDate")
 				.addValue("dateMin", dateMin)
 				.addValue("dateMax", dateMax)
 				.addValue("status", status)
+				.addContextProperty("connectionName", io.vertigo.datastore.impl.dao.StoreUtil.getConnectionName("orchestra"))
 				.build();
 		return getTaskManager()
 				.execute(task)
@@ -211,13 +212,14 @@ public final class SummaryPAO implements StoreServices {
  "						where planif.name = from_process.PROCESS_NAME" + 
  "						group by planif.name" + 
  "					) lat_planif on true;",
-			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
 	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOExecutionSummary")
 	public io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary getExecutionSummaryByDateAndName(@io.vertigo.datamodel.task.proxy.TaskInput(name = "dateMin", smartType = "STyOTimestamp") final java.time.Instant dateMin, @io.vertigo.datamodel.task.proxy.TaskInput(name = "dateMax", smartType = "STyOTimestamp") final java.time.Instant dateMax, @io.vertigo.datamodel.task.proxy.TaskInput(name = "name", smartType = "STyOLibelle") final String name) {
 		final Task task = createTaskBuilder("TkGetExecutionSummaryByDateAndName")
 				.addValue("dateMin", dateMin)
 				.addValue("dateMax", dateMax)
 				.addValue("name", name)
+				.addContextProperty("connectionName", io.vertigo.datastore.impl.dao.StoreUtil.getConnectionName("orchestra"))
 				.build();
 		return getTaskManager()
 				.execute(task)

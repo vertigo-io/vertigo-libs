@@ -54,16 +54,23 @@ public final class Task {
 	private final TaskDefinition taskDefinition;
 
 	/**
+	 * Définition de la tache.
+	 */
+	private final Map<String, String> context;
+
+	/**
 	 * Constructor.
 	 * Le constructeur est protégé, il est nécessaire de passer par le Builder.
 	 */
-	Task(final TaskDefinition taskDefinition, final Map<TaskAttribute, Object> inTaskAttributes) {
+	Task(final TaskDefinition taskDefinition, final Map<TaskAttribute, Object> inTaskAttributes, final Map<String, String> context) {
 		Assertion.check()
 				.isNotNull(taskDefinition)
-				.isNotNull(inTaskAttributes);
+				.isNotNull(inTaskAttributes)
+				.isNotNull(context);
 		//-----
 		this.taskDefinition = taskDefinition;
 		this.inTaskAttributes = inTaskAttributes;
+		this.context = context;
 		checkValues();
 	}
 
@@ -97,6 +104,16 @@ public final class Task {
 		// on préfère centraliser le cast ici plutot que dans les classes générées.
 		final TaskAttribute inTaskAttribute = taskDefinition.getInAttribute(attributeName);
 		return (V) inTaskAttributes.get(inTaskAttribute);
+	}
+
+	/**
+	 * Return the value of a property in the excecution context of the task
+	 *
+	 * @param contextParam name of the context param
+	 * @return Valeur
+	 */
+	public String getContextProperty(final String contextParam) {
+		return context.get(contextParam);
 	}
 
 	/**

@@ -3,7 +3,7 @@ package io.vertigo.orchestra.monitoring.dao.uidefinitions
 
 create Task TkGetProcessByName {
 	storeName : "orchestra"
-    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+    className : "io.vertigo.basics.task.TaskEngineSelect"
     request : "
         	select  pro.PRO_ID as PRO_ID,
         			pro.NAME as NAME,
@@ -23,7 +23,7 @@ create Task TkGetProcessByName {
 
 create Task TkSearchProcessByLabel {
 	storeName : "orchestra"
-    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+    className : "io.vertigo.basics.task.TaskEngineSelect"
     request : "
         	select  pro.PRO_ID as PRO_ID,
         			pro.NAME as NAME,

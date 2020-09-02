@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.vertigo.basics.task.TaskEngineSelect;
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -42,7 +43,6 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
-import io.vertigo.dynamox.task.TaskEngineSelect;
 
 /**
  * Default SearchLoader for Database datasource.

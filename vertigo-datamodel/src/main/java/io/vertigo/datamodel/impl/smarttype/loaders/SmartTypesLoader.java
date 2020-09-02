@@ -24,7 +24,6 @@ import io.vertigo.datamodel.smarttype.annotations.Adapter;
 import io.vertigo.datamodel.smarttype.annotations.Constraint;
 import io.vertigo.datamodel.smarttype.annotations.Constraints;
 import io.vertigo.datamodel.smarttype.annotations.Formatter;
-import io.vertigo.datamodel.smarttype.annotations.FormatterDefault;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition.Scope;
@@ -89,8 +88,6 @@ public class SmartTypesLoader implements Loader {
 		if (field.isAnnotationPresent(Formatter.class)) {
 			final Formatter formatter = field.getAnnotation(Formatter.class);
 			formatterConfig = new FormatterConfig(formatter.clazz(), formatter.arg());
-		} else if (field.isAnnotationPresent(FormatterDefault.class)) {
-			formatterConfig = new FormatterConfig(io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault.class, null);
 		} else {
 			formatterConfig = null;
 		}

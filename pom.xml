@@ -31,6 +31,7 @@
 		<module>vertigo-commons</module>
 		<module>vertigo-database</module>
 		<module>vertigo-datamodel</module>
+		<module>vertigo-basics</module>
 		<module>vertigo-datastore</module>
 		<module>vertigo-datafactory</module>
 		<module>vertigo-account</module>

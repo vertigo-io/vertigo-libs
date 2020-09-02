@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
@@ -34,6 +35,7 @@ import io.vertigo.datamodel.task.definitions.TaskDefinitionBuilder;
 import io.vertigo.datamodel.task.model.Task;
 import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datamodel.task.model.TaskResult;
+import io.vertigo.datamodel.task.proxy.TaskContextProperty;
 import io.vertigo.datamodel.task.proxy.TaskInput;
 import io.vertigo.datamodel.task.proxy.TaskOutput;
 
@@ -125,6 +127,8 @@ public final class TaskProxyMethod implements ProxyMethod {
 			}
 			taskBuilder.addValue(taskAttributeAnnotation.name(), arg);
 		}
+		Stream.of(method.getAnnotationsByType(TaskContextProperty.class))
+				.forEach(taskContextProperty -> taskBuilder.addContextProperty(taskContextProperty.name(), taskContextProperty.value()));
 		return taskBuilder.build();
 	}
 }

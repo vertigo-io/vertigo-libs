@@ -9,7 +9,7 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
-import io.vertigo.datamodel.impl.smarttype.formatter.FormatterId;
+import io.vertigo.datamodel.smarttype.data.FormatterTest;
 import io.vertigo.datamodel.smarttype.data.TestOverride;
 import io.vertigo.datamodel.smarttype.data.TestSmartTypes;
 import io.vertigo.datamodel.smarttype.data.domain.Base;
@@ -32,7 +32,7 @@ public class EdgeCasesSmartTypeDefinitionProviderTest {
 				.build();
 		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
 			final SmartTypeDefinition dtBaseSmartType = node.getDefinitionSpace().resolve("STyDtBase", SmartTypeDefinition.class);
-			Assertions.assertEquals(FormatterId.class, dtBaseSmartType.getFormatterConfig().getFormatterClass());
+			Assertions.assertEquals(FormatterTest.class, dtBaseSmartType.getFormatterConfig().getFormatterClass());
 		}
 	}
 
@@ -54,7 +54,7 @@ public class EdgeCasesSmartTypeDefinitionProviderTest {
 		Assertions.assertThrows(IllegalStateException.class, () -> {
 			try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
 				final SmartTypeDefinition dtBaseSmartType = node.getDefinitionSpace().resolve("STyDtBase", SmartTypeDefinition.class);
-				Assertions.assertEquals(FormatterId.class, dtBaseSmartType.getFormatterConfig().getFormatterClass());
+				Assertions.assertEquals(FormatterTest.class, dtBaseSmartType.getFormatterConfig().getFormatterClass());
 			}
 		});
 	}

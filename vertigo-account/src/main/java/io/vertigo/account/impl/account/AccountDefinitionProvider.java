@@ -20,12 +20,12 @@ package io.vertigo.account.impl.account;
 
 import java.util.List;
 
+import io.vertigo.basics.formatter.FormatterString;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
-import io.vertigo.datamodel.impl.smarttype.formatter.FormatterString;
 import io.vertigo.datamodel.smarttype.FormatterConfig;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;

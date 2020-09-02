@@ -3,28 +3,29 @@ package io.vertigo.quarto.exporter.data;
 import java.time.Instant;
 import java.time.LocalDate;
 
-import io.vertigo.datamodel.smarttype.annotations.FormatterDefault;
+import io.vertigo.basics.formatter.FormatterDefault;
+import io.vertigo.datamodel.smarttype.annotations.Formatter;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition;
 
 public enum TestExporterSmartTypes {
 
 	@SmartTypeDefinition(String.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	String,
 
 	@SmartTypeDefinition(Long.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	Id,
 
 	@SmartTypeDefinition(Boolean.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	Boolean,
 
 	@SmartTypeDefinition(LocalDate.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	LocalDate,
 
 	@SmartTypeDefinition(Instant.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	Instant;
 }

@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.basics.task.TaskEngineSelect;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -54,7 +55,6 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.task.data.TestSmartTypes;
 import io.vertigo.datastore.task.data.domain.SuperHero;
 import io.vertigo.datastore.task.data.domain.SuperHeroDataBase;
-import io.vertigo.dynamox.task.TaskEngineSelect;
 
 /**
  *

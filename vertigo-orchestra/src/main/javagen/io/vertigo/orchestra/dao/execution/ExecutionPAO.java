@@ -61,10 +61,11 @@ public final class ExecutionPAO implements StoreServices {
  "				from o_process_execution pre" + 
  "				join o_activity_execution ace on ace.PRE_ID = pre.PRE_ID" + 
  "				where ace.EST_CD = 'ABORTED');",
-			taskEngineClass = io.vertigo.dynamox.task.TaskEngineProc.class)
+			taskEngineClass = io.vertigo.basics.task.TaskEngineProc.class)
 	public void handleDeadProcessesOfNode(@io.vertigo.datamodel.task.proxy.TaskInput(name = "nodId", smartType = "STyOIdentifiant") final Long nodId) {
 		final Task task = createTaskBuilder("TkHandleDeadProcessesOfNode")
 				.addValue("nodId", nodId)
+				.addContextProperty("connectionName", io.vertigo.datastore.impl.dao.StoreUtil.getConnectionName("orchestra"))
 				.build();
 		getTaskManager().execute(task);
 	}
@@ -91,10 +92,11 @@ public final class ExecutionPAO implements StoreServices {
  "				from o_process_execution pre" + 
  "				join o_activity_execution ace on ace.PRE_ID = pre.PRE_ID" + 
  "				where ace.EST_CD = 'ABORTED');",
-			taskEngineClass = io.vertigo.dynamox.task.TaskEngineProc.class)
+			taskEngineClass = io.vertigo.basics.task.TaskEngineProc.class)
 	public void handleProcessesOfDeadNodes(@io.vertigo.datamodel.task.proxy.TaskInput(name = "maxDate", smartType = "STyOTimestamp") final java.time.Instant maxDate) {
 		final Task task = createTaskBuilder("TkHandleProcessesOfDeadNodes")
 				.addValue("maxDate", maxDate)
+				.addContextProperty("connectionName", io.vertigo.datastore.impl.dao.StoreUtil.getConnectionName("orchestra"))
 				.build();
 		getTaskManager().execute(task);
 	}
@@ -118,11 +120,12 @@ public final class ExecutionPAO implements StoreServices {
  "        			order by creation_time asc" + 
  "        			limit #maxNumber#" + 
  "        	)",
-			taskEngineClass = io.vertigo.dynamox.task.TaskEngineProc.class)
+			taskEngineClass = io.vertigo.basics.task.TaskEngineProc.class)
 	public void reserveActivitiesToLaunch(@io.vertigo.datamodel.task.proxy.TaskInput(name = "nodId", smartType = "STyOIdentifiant") final Long nodId, @io.vertigo.datamodel.task.proxy.TaskInput(name = "maxNumber", smartType = "STyONombre") final Integer maxNumber) {
 		final Task task = createTaskBuilder("TkReserveActivitiesToLaunch")
 				.addValue("nodId", nodId)
 				.addValue("maxNumber", maxNumber)
+				.addContextProperty("connectionName", io.vertigo.datastore.impl.dao.StoreUtil.getConnectionName("orchestra"))
 				.build();
 		getTaskManager().execute(task);
 	}
@@ -142,13 +145,14 @@ public final class ExecutionPAO implements StoreServices {
  "        		CHECKING_DATE = #checkingDate#," + 
  "        		CHECKING_COMMENT = #checkingComment#" + 
  "        		where PRE_ID = #preId#",
-			taskEngineClass = io.vertigo.dynamox.task.TaskEngineProc.class)
+			taskEngineClass = io.vertigo.basics.task.TaskEngineProc.class)
 	public void updateProcessExecutionTreatment(@io.vertigo.datamodel.task.proxy.TaskInput(name = "preId", smartType = "STyOIdentifiant") final Long preId, @io.vertigo.datamodel.task.proxy.TaskInput(name = "checked", smartType = "STyOBooleen") final Boolean checked, @io.vertigo.datamodel.task.proxy.TaskInput(name = "checkingDate", smartType = "STyOTimestamp") final java.time.Instant checkingDate, @io.vertigo.datamodel.task.proxy.TaskInput(name = "checkingComment", smartType = "STyOText") final String checkingComment) {
 		final Task task = createTaskBuilder("TkUpdateProcessExecutionTreatment")
 				.addValue("preId", preId)
 				.addValue("checked", checked)
 				.addValue("checkingDate", checkingDate)
 				.addValue("checkingComment", checkingComment)
+				.addContextProperty("connectionName", io.vertigo.datastore.impl.dao.StoreUtil.getConnectionName("orchestra"))
 				.build();
 		getTaskManager().execute(task);
 	}

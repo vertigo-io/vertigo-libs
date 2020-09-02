@@ -378,7 +378,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	@Override
 	public Iterator<Class<?>> iterator() {
 		return new Iterator<>() {
-			private final Iterator<Definitions> it = Arrays.asList(Definitions.values()).iterator();
+			private Iterator<Definitions> it = Arrays.asList(Definitions.values()).iterator();
 
 			/** {@inheritDoc} */
 			@Override

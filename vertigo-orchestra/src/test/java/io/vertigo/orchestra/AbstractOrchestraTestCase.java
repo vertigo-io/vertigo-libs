@@ -26,6 +26,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
+import io.vertigo.basics.task.TaskEngineProc;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.node.AutoCloseableNode;
@@ -33,7 +34,7 @@ import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
-import io.vertigo.dynamox.task.TaskEngineProc;
+import io.vertigo.datastore.impl.dao.StoreUtil;
 
 /**
  * Test Junit de Vertigo Orchestra.
@@ -87,7 +88,8 @@ public abstract class AbstractOrchestraTestCase {
 						.withEngine(TaskEngineProc.class)
 						.withRequest(request)
 						.build();
-				final Task task = Task.builder(taskDefinition).build();
+				final Task task = Task.builder(taskDefinition)
+						.addContextProperty("connectionName", StoreUtil.getConnectionName("orchestra")).build();
 				taskManager.execute(task);
 			}
 			transaction.commit();

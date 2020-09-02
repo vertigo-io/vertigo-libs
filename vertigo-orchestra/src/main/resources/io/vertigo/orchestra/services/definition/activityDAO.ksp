@@ -5,7 +5,7 @@ package io.vertigo.orchestra.dao.definition
 
 create Task TkGetFirstActivityByProcess {
 	storeName : "orchestra"
-    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+    className : "io.vertigo.basics.task.TaskEngineSelect"
         request : "
         
         	select act.* 
@@ -28,7 +28,7 @@ create Task TkGetFirstActivityByProcess {
 
 create Task TkGetNextActivityByActId {
 	storeName : "orchestra"
-    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+    className : "io.vertigo.basics.task.TaskEngineSelect"
         request : "
         	select act.* 
                 from O_ACTIVITY act 
@@ -53,7 +53,7 @@ create Task TkGetNextActivityByActId {
 
 create Task TkGetActivitiesByProId {
 	storeName : "orchestra"
-    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+    className : "io.vertigo.basics.task.TaskEngineSelect"
         request : "
         
         	select act.* 
@@ -68,7 +68,7 @@ create Task TkGetActivitiesByProId {
 
 create Task TkGetAllActivitiesInActiveProcesses {
 	storeName : "orchestra"
-    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+    className : "io.vertigo.basics.task.TaskEngineSelect"
         request : "
         
         	select act.* 

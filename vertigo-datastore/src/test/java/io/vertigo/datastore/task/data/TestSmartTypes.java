@@ -1,20 +1,21 @@
 package io.vertigo.datastore.task.data;
 
-import io.vertigo.datamodel.smarttype.annotations.FormatterDefault;
+import io.vertigo.basics.formatter.FormatterDefault;
+import io.vertigo.datamodel.smarttype.annotations.Formatter;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition;
 
 public enum TestSmartTypes {
 
 	@SmartTypeDefinition(String.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	String,
 
 	@SmartTypeDefinition(Long.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	Id,
 
 	@SmartTypeDefinition(Integer.class)
-	@FormatterDefault
+	@Formatter(clazz = FormatterDefault.class)
 	Integer,
 
 }

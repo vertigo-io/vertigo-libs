@@ -21,15 +21,16 @@ package io.vertigo.datastore.task;
 import java.util.List;
 import java.util.Optional;
 
+import io.vertigo.basics.task.TaskEngineProc;
+import io.vertigo.basics.task.TaskEngineSelect;
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.task.proxy.TaskContextProperty;
 import io.vertigo.datamodel.task.proxy.TaskInput;
 import io.vertigo.datamodel.task.proxy.TaskOutput;
 import io.vertigo.datamodel.task.proxy.TaskProxyAnnotation;
 import io.vertigo.datastore.task.data.domain.SuperHero;
-import io.vertigo.dynamox.task.TaskEngineProc;
-import io.vertigo.dynamox.task.TaskEngineSelect;
 
 @Transactional
 public interface SuperHeroDao extends Amplifier {
@@ -68,6 +69,7 @@ public interface SuperHeroDao extends Amplifier {
 			name = "TkUpdateSuperHeroNames",
 			request = "update  super_hero set name =#newName# where name=#oldName#",
 			taskEngineClass = TaskEngineProc.class)
+	@TaskContextProperty(name = "connectionName", value = "main")
 	void update(
 			@TaskInput(name = "oldName", smartType = "STyString") String oldName,
 			@TaskInput(name = "newName", smartType = "STyString") String newName);

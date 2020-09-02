@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Disabled;
 
+import io.vertigo.basics.task.TaskEngineProc;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.config.NodeConfig;
@@ -34,7 +35,6 @@ import io.vertigo.datamodel.task.model.TaskResult;
 import io.vertigo.datastore.entitystore.data.domain.car.Car;
 import io.vertigo.datastore.entitystore.sql.AbstractSqlStoreManagerTest;
 import io.vertigo.datastore.entitystore.sql.SqlDataStoreNodeConfig;
-import io.vertigo.dynamox.task.TaskEngineProc;
 
 /**
  * Test of sql storage in Oracle DB.

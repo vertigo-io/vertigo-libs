@@ -25,6 +25,10 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import io.vertigo.basics.task.AbstractTaskEngineSQL;
+import io.vertigo.basics.task.TaskEngineProc;
+import io.vertigo.basics.task.TaskEngineSelect;
+import io.vertigo.basics.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.Cardinality;
@@ -60,10 +64,6 @@ import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datamodel.task.model.TaskEngine;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.entitystore.EntityStorePlugin;
-import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
-import io.vertigo.dynamox.task.TaskEngineProc;
-import io.vertigo.dynamox.task.TaskEngineSelect;
-import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 
 /**
  * This class is the basic implementation of the dataStore in the sql way.
@@ -198,6 +198,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 		final Task task = Task.builder(taskDefinition)
 				.addValue(idFieldName, uri.getId())
+				.addContextProperty("connectionName", getConnectionName())
 				.build();
 
 		return taskManager
@@ -250,6 +251,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 		final Task task = Task.builder(taskDefinition)
 				.addValue(fkFieldName, uid.getId())
+				.addContextProperty("connectionName", getConnectionName())
 				.build();
 
 		return taskManager
@@ -304,8 +306,11 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		for (final String attributeName : ctx.getAttributeNames()) {
 			taskBuilder.addValue(attributeName, ctx.getAttributeValue(attributeName));
 		}
+
 		return taskManager
-				.execute(taskBuilder.build())
+				.execute(taskBuilder
+						.addContextProperty("connectionName", getConnectionName())
+						.build())
 				.getResult();
 	}
 
@@ -400,6 +405,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 		final Task task = Task.builder(taskDefinition)
 				.addValue("dto", entity)
+				.addContextProperty("connectionName", getConnectionName())
 				.build();
 
 		final int sqlRowCount = taskManager
@@ -452,6 +458,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 		final Task task = Task.builder(taskDefinition)
 				.addValue(idFieldName, uri.getId())
+				.addContextProperty("connectionName", getConnectionName())
 				.build();
 
 		final int sqlRowCount = taskManager
@@ -487,6 +494,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
+				.addContextProperty("connectionName", getConnectionName())
 				.build();
 
 		final Long count = taskManager
@@ -518,6 +526,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 		final Task task = Task.builder(taskDefinition)
 				.addValue(idFieldName, uri.getId())
+				.addContextProperty("connectionName", getConnectionName())
 				.build();
 
 		return taskManager

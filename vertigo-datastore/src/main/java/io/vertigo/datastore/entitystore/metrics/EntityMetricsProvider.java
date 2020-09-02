@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import io.vertigo.basics.task.AbstractTaskEngineSQL;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.analytics.metric.Metric;
@@ -34,7 +35,6 @@ import io.vertigo.core.node.component.Component;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
-import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 
 /**
  * Composant to provide Metrics about domain

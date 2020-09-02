@@ -60,7 +60,7 @@ public final class MoviesPAO implements StoreServices {
 					"						 RATED as USER_RATING" +
 					"				from MOVIE mov" +
 					"				where MOV_ID in (#movieIds.rownum#);",
-			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
 	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtMovieIndex")
 	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.ui.data.domain.movies.MovieIndex> loadMovieIndex(@io.vertigo.datamodel.task.proxy.TaskInput(name = "movieIds", smartType = "STyId") final java.util.List<Long> movieIds) {
 		final Task task = createTaskBuilder("TkLoadMovieIndex")

@@ -71,6 +71,16 @@ public abstract class TaskEngine {
 	}
 
 	/**
+	 * Return the value of a property in the excecution context of the task
+	 *
+	 * @param contextParam name of the context param
+	 * @return Valeur
+	 */
+	public String getContextProperty(final String contextParam) {
+		return input.getContextProperty(contextParam);
+	}
+
+	/**
 	 * Setter générique
 	 * Affecte la valeur d'un paramètre (OUTPUT)
 	 *

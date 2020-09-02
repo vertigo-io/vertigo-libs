@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.vertigo.basics.task.AbstractTaskEngineSQL;
+import io.vertigo.basics.task.TaskEngineProc;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.Cardinality;
@@ -40,8 +42,6 @@ import io.vertigo.datamodel.task.definitions.TaskDefinitionBuilder;
 import io.vertigo.datamodel.task.model.Task;
 import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.BrokerNN;
-import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
-import io.vertigo.dynamox.task.TaskEngineProc;
 
 /**
  * Gestion des tables de relations NN.

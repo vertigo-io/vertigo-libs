@@ -30,6 +30,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.basics.task.TaskEngineProc;
+import io.vertigo.basics.task.TaskEngineSelect;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
@@ -58,8 +60,6 @@ import io.vertigo.datastore.entitystore.data.domain.car.MotorTypeEnum;
 import io.vertigo.datastore.entitystore.data.domain.famille.Famille;
 import io.vertigo.datastore.entitystore.data.domain.famille.Famille.CarFields;
 import io.vertigo.datastore.entitystore.sql.SqlUtil;
-import io.vertigo.dynamox.task.TaskEngineProc;
-import io.vertigo.dynamox.task.TaskEngineSelect;
 
 /**
  * Test de l'implémentation standard.

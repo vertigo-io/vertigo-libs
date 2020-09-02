@@ -2,7 +2,7 @@ package io.vertigo.orchestra.monitoring.dao.summary
 
 create Task TkGetExecutionSummariesByDate {
 	storeName : "orchestra"
-    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+    className : "io.vertigo.basics.task.TaskEngineSelect"
         request : "
         	select 	* from (select 
         		from_exec.PRO_ID,
@@ -86,7 +86,7 @@ create Task TkGetExecutionSummariesByDate {
 
 create Task TkGetExecutionSummaryByDateAndName {
 	storeName : "orchestra"
-    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+    className : "io.vertigo.basics.task.TaskEngineSelect"
         request : "
         	select 
         		from_process.PRO_ID,

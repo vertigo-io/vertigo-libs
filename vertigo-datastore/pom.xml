@@ -27,7 +27,11 @@
 			<artifactId>vertigo-datamodel</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-basics</artifactId>
+			<version>${project.version}</version>
+		</dependency> 
 
 		<!-- tests -->
 		<dependency>
