@@ -28,7 +28,7 @@ final class LuceneConstants {
 	/**
 	 * Tableau des mots vides en Français et en Anglais.
 	 */
-	protected static final String[] OUR_STOP_WORDS = {
+	static final String[] OUR_STOP_WORDS = {
 			"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
 			"o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
 			// Anglais
@@ -49,7 +49,7 @@ final class LuceneConstants {
 	/**
 	 * Tableau des elisions.
 	 */
-	protected static final String[] ELISION_ARTICLES = { "l", "m", "t", "qu", "n", "s", "j" };
+	static final String[] ELISION_ARTICLES = { "l", "m", "t", "qu", "n", "s", "j" };
 
 	private LuceneConstants() {
 		//

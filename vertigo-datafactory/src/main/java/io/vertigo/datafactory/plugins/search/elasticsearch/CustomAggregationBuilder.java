@@ -20,8 +20,8 @@ import org.elasticsearch.search.aggregations.PipelineAggregationBuilder;
 public final class CustomAggregationBuilder extends AggregationBuilder {
 
 	private static final Object INNER_WRITE_TO_PARAM = "innerWriteTo";
-	protected Map<String, Object> metaData;
-	protected final Map<String, String> customParams;
+	private Map<String, Object> metaData;
+	private final Map<String, String> customParams;
 
 	/**
 	 * Constructs a new aggregation builder.
