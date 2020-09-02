@@ -31,10 +31,6 @@ public final class DataFilter implements Serializable {
 
 	private static final long serialVersionUID = -5464636083784385506L;
 
-	public static DataFilterBuilder builder(final String measurement) {
-		return new DataFilterBuilder(measurement);
-	}
-
 	private final String measurement;
 	private final Map<String, String> filters;
 
@@ -51,6 +47,10 @@ public final class DataFilter implements Serializable {
 		this.measurement = measurement;
 		this.filters = filters;
 		this.additionalWhereClause = additionalWhereClause;
+	}
+
+	public static DataFilterBuilder builder(final String measurement) {
+		return new DataFilterBuilder(measurement);
 	}
 
 	public String getAdditionalWhereClause() {
