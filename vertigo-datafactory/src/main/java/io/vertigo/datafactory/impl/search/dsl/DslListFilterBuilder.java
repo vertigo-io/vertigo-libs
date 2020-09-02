@@ -23,7 +23,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -45,8 +44,8 @@ import io.vertigo.datafactory.impl.search.dsl.model.DslMultiField;
 import io.vertigo.datafactory.impl.search.dsl.model.DslQuery;
 import io.vertigo.datafactory.impl.search.dsl.model.DslRangeQuery;
 import io.vertigo.datafactory.impl.search.dsl.model.DslTermQuery;
-import io.vertigo.datafactory.impl.search.dsl.model.DslUserCriteria;
 import io.vertigo.datafactory.impl.search.dsl.model.DslTermQuery.EscapeMode;
+import io.vertigo.datafactory.impl.search.dsl.model.DslUserCriteria;
 import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
 
 /**
@@ -78,7 +77,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	private static final String USER_QUERY_KEYWORD = "query";
 
-	private static final Set<String> RESERVED_QUERY_KEYWORDS = new HashSet<>(Arrays.asList(new String[] { "AND", "OR", "*" }));
+	private static final Set<String> RESERVED_QUERY_KEYWORDS = Set.of("AND", "OR", "*");
 	private static final String QUERY_RESERVERD_PATTERN_STR = "(?i)([\\+\\-\\=\\&\\|\\>\\<\\!\\(\\)\\{\\}\\[\\]\\^\"\\~\\*\\?\\:\\\\\\/])|((?<=\\s|^)(OR|AND)(?=\\s|$))";
 	private static final Pattern QUERY_RESERVERD_PATTERN = Pattern.compile(QUERY_RESERVERD_PATTERN_STR);
 	private static final String QUERY_INCOMPLETE_GRAMMAR_PATTERN_STR = "(?i)"
@@ -464,7 +463,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private static String firstNotEmpty(final String... elements) {
 		return Arrays.stream(elements)
 				.filter(element -> !element.isEmpty())
-				.findFirst().orElse("");
+				.findFirst()
+				.orElse("");
 	}
 
 	/**

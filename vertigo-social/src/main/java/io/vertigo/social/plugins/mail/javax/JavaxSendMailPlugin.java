@@ -264,7 +264,6 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 			try (final Transport transport = session.getTransport()) {
 				// On tente la connexion
 				transport.connect();
-				transport.close();
 			} // La connexion s'est passée correctement. On peut la fermer
 				// si on est ici, c'est que tout va bien
 			return HealthMeasure.builder().withGreenStatus("Connection OK to Mail Server " + session.getProperty("mail.host")).build();
