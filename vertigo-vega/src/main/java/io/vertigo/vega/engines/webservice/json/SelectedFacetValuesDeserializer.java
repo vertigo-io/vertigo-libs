@@ -44,10 +44,12 @@ public final class SelectedFacetValuesDeserializer implements JsonDeserializer<S
 		final JsonObject jsonObject = json.getAsJsonObject();
 		for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
 			final FacetDefinition facetDefinition = Node.getNode().getDefinitionSpace().resolve(entry.getKey(), FacetDefinition.class);
-			if (facetDefinition.isRangeFacet()) {
-				appendRangeFacetValues(entry.getValue(), facetDefinition, selectedFacetValuesBuilder);
-			} else {
-				appendTermFacetValues(entry.getValue(), facetDefinition, selectedFacetValuesBuilder);
+			if (!entry.getValue().isJsonNull()) {
+				if (facetDefinition.isRangeFacet()) {
+					appendRangeFacetValues(entry.getValue(), facetDefinition, selectedFacetValuesBuilder);
+				} else {
+					appendTermFacetValues(entry.getValue(), facetDefinition, selectedFacetValuesBuilder);
+				}
 			}
 		}
 		return selectedFacetValuesBuilder.build();
