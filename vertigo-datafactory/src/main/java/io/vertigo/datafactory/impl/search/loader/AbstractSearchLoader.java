@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamox.search;
+package io.vertigo.datafactory.impl.search.loader;
 
 import java.io.Serializable;
 import java.util.Iterator;

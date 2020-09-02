@@ -26,13 +26,13 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.datafactory.impl.search.loader.AbstractSearchLoader;
 import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.search.definitions.SearchChunk;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.dynamox.search.AbstractSearchLoader;
 
 public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Item> {
 	private static final int SEARCH_CHUNK_SIZE = 5;

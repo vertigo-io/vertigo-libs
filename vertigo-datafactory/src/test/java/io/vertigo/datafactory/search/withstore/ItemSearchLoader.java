@@ -31,6 +31,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.datafactory.impl.search.loader.AbstractSqlSearchLoader;
 import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.search.data.domain.Item;
 import io.vertigo.datafactory.search.definitions.SearchChunk;
@@ -42,7 +43,6 @@ import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
-import io.vertigo.dynamox.search.AbstractSqlSearchLoader;
 
 /**
  * SearchLoader of Item keyconcept, load uses StoreManager.
