@@ -39,6 +39,7 @@ import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Convert;
 
+import io.reactivex.disposables.Disposable;
 import io.vertigo.audit.impl.ledger.LedgerPlugin;
 import io.vertigo.audit.ledger.LedgerAddress;
 import io.vertigo.audit.ledger.LedgerTransaction;
@@ -50,7 +51,6 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
-import rx.Subscription;
 
 /**
  * Client RPC Ethereum (for Geth and Parity)
@@ -67,7 +67,7 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 	private final LedgerAddress defaultDestPublicAddr;
 	private final LedgerAddress myWalletAddress;
 
-	private Subscription subscription;
+	private Disposable disposable;
 
 	@Inject
 	public EthereumLedgerPlugin(
@@ -107,7 +107,7 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 
 	@Override
 	public void start() {
-		subscription = web3j.transactionObservable()
+		disposable = web3j.transactionFlowable()
 				.filter(tx -> tx.getTo().equals(myWalletAddress.getPublicAddress()))
 				.map(EthereumLedgerPlugin::convertTransactionToLedgerTransaction)
 				.subscribe(ledgerTransaction -> eventBusManager.post(new LedgerTransactionEvent(ledgerTransaction)));
@@ -116,8 +116,7 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 
 	@Override
 	public void stop() {
-		subscription.unsubscribe();
-
+		disposable.dispose();
 	}
 
 	@Override

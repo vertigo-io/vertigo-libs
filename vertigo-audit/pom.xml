@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>org.web3j</groupId>
 			<artifactId>core</artifactId>
-			<version>3.5.0</version>
+			<version>5.0.0</version>
 		    <optional>true</optional>
 		</dependency>
 		
@@ -41,7 +41,7 @@
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>3.14.0</version>
+			<version>3.17.1</version>
 			<scope>test</scope>
 		</dependency>
 	
