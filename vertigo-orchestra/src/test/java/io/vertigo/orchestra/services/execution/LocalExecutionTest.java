@@ -132,8 +132,8 @@ public class LocalExecutionTest extends AbstractOrchestraTestCase {
 
 		// process "PRO_TEST_UNSUPERVISED_RECURRENT" is scheduled with cron expression
 
-		// The task takes 10 secondes to run we wait 12 secondes to check the final states
-		Thread.sleep(1000 * 8);
+		// The task takes 10 secondes to run we wait 10 secondes to check the final states
+		Thread.sleep(1000 * 10);
 		Assertions.assertEquals(2, TestJobScheduled.getCount());
 	}
 

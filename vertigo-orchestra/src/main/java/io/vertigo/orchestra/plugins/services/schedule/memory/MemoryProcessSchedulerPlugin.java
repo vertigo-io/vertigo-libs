@@ -38,6 +38,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
@@ -52,23 +53,24 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 	 * Pool de timers permettant l'exécution des Jobs.
 	 */
 	private final TimerPool timerPool = new TimerPool();
-	private final OrchestraDefinitionManager orchestraDefinitionManager;
 
 	@Inject
 	public MemoryProcessSchedulerPlugin(
 			final OrchestraDefinitionManager orchestraDefinitionManager) {
 		Assertion.check().isNotNull(orchestraDefinitionManager);
 		//---
-		this.orchestraDefinitionManager = orchestraDefinitionManager;
+		Node.getNode().registerPreActivateFunction(() -> {
+			orchestraDefinitionManager.getAllProcessDefinitionsByType(getHandledProcessType())
+					.stream()
+					.filter(processDefinition -> processDefinition.getTriggeringStrategy().getCronExpression().isPresent())
+					.forEach(this::scheduleWithCron);
+		});
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		orchestraDefinitionManager.getAllProcessDefinitionsByType(getHandledProcessType())
-				.stream()
-				.filter(processDefinition -> processDefinition.getTriggeringStrategy().getCronExpression().isPresent())
-				.forEach(this::scheduleWithCron);
+		//
 	}
 
 	@Override
