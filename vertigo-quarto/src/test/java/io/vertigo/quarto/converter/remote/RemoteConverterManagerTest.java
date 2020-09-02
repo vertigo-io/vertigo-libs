@@ -32,7 +32,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
@@ -164,8 +163,6 @@ public final class RemoteConverterManagerTest {
 	@Test
 	public void testConvertTxt2Doc() {
 		final VFile inputFile = createVFile("../data/testFile.txt", this.getClass());
-		Assertion.check().isNotNull(inputFile, "Can't create inputFile : {0}", "../data/testFile.txt");
-		Assertion.check().isNotNull(converterManager, "Can't converterManager");
 		resultFile = converterManager.convert(inputFile, "DOC");
 
 		log("Txt2Doc", resultFile);
@@ -211,12 +208,8 @@ public final class RemoteConverterManagerTest {
 
 	private static VFile createVFile(final String fileName, final Class<?> baseClass) {
 		try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
-			Assertion.check().isNotNull(in, "fichier non trouvé : {0}", fileName);
 			final File file = new TempFile("tmp", '.' + FileUtil.getFileExtension(fileName));
-			Assertion.check().isNotNull(file, "Can't create tempfile : {0}", fileName);
 			FileUtil.copy(in, file);
-			Assertion.check().isNotNull(file.toPath(), "Can't file.toPath() : {0}", fileName);
-			Assertion.check().isNotNull(file.toPath().getFileName(), "Can't fileName : {0}", fileName);
 			return FSFile.of(file.toPath());
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
