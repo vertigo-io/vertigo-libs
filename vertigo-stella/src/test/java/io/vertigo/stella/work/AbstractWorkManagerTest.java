@@ -43,7 +43,7 @@ import io.vertigo.stella.work.mock.ThreadLocalWorkEngine;
  * @author pchretien
  */
 public abstract class AbstractWorkManagerTest {
-	private final long warmupTime = 5000; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s
+	private final long warmupTime = 10000; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s
 	private static final int WORKER_COUNT = 5; //Doit correspondre au workerCount déclaré dans managers.xlm
 
 	@Inject
@@ -79,7 +79,7 @@ public abstract class AbstractWorkManagerTest {
 
 	protected abstract NodeConfig buildNodeConfig();
 
-	protected final void nop(Object o) {
+	protected final void nop(final Object o) {
 		//nada
 	}
 
