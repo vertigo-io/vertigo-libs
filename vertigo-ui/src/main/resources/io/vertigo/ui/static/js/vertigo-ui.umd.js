@@ -1206,6 +1206,55 @@ $({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGT
 
 /***/ }),
 
+/***/ "4df4":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var bind = __webpack_require__("0366");
+var toObject = __webpack_require__("7b0b");
+var callWithSafeIterationClosing = __webpack_require__("9bdd");
+var isArrayIteratorMethod = __webpack_require__("e95a");
+var toLength = __webpack_require__("50c4");
+var createProperty = __webpack_require__("8418");
+var getIteratorMethod = __webpack_require__("35a1");
+
+// `Array.from` method implementation
+// https://tc39.github.io/ecma262/#sec-array.from
+module.exports = function from(arrayLike /* , mapfn = undefined, thisArg = undefined */) {
+  var O = toObject(arrayLike);
+  var C = typeof this == 'function' ? this : Array;
+  var argumentsLength = arguments.length;
+  var mapfn = argumentsLength > 1 ? arguments[1] : undefined;
+  var mapping = mapfn !== undefined;
+  var iteratorMethod = getIteratorMethod(O);
+  var index = 0;
+  var length, result, step, iterator, next, value;
+  if (mapping) mapfn = bind(mapfn, argumentsLength > 2 ? arguments[2] : undefined, 2);
+  // if the target is not iterable or it's an array with the default iterator - use a simple case
+  if (iteratorMethod != undefined && !(C == Array && isArrayIteratorMethod(iteratorMethod))) {
+    iterator = iteratorMethod.call(O);
+    next = iterator.next;
+    result = new C();
+    for (;!(step = next.call(iterator)).done; index++) {
+      value = mapping ? callWithSafeIterationClosing(iterator, mapfn, [step.value, index], true) : step.value;
+      createProperty(result, index, value);
+    }
+  } else {
+    length = toLength(O.length);
+    result = new C(length);
+    for (;length > index; index++) {
+      value = mapping ? mapfn(O[index], index) : O[index];
+      createProperty(result, index, value);
+    }
+  }
+  result.length = index;
+  return result;
+};
+
+
+/***/ }),
+
 /***/ "50c4":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1825,6 +1874,38 @@ module.exports = Object.create || function create(O, Properties) {
   } else result = NullProtoObject();
   return Properties === undefined ? result : defineProperties(result, Properties);
 };
+
+
+/***/ }),
+
+/***/ "7db0":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $ = __webpack_require__("23e7");
+var $find = __webpack_require__("b727").find;
+var addToUnscopables = __webpack_require__("44d2");
+var arrayMethodUsesToLength = __webpack_require__("ae40");
+
+var FIND = 'find';
+var SKIPS_HOLES = true;
+
+var USES_TO_LENGTH = arrayMethodUsesToLength(FIND);
+
+// Shouldn't skip holes
+if (FIND in []) Array(1)[FIND](function () { SKIPS_HOLES = false; });
+
+// `Array.prototype.find` method
+// https://tc39.github.io/ecma262/#sec-array.prototype.find
+$({ target: 'Array', proto: true, forced: SKIPS_HOLES || !USES_TO_LENGTH }, {
+  find: function find(callbackfn /* , that = undefined */) {
+    return $find(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
+  }
+});
+
+// https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
+addToUnscopables(FIND);
 
 
 /***/ }),
@@ -2861,6 +2942,26 @@ $({ target: 'Array', proto: true, forced: !STRICT_METHOD || !USES_TO_LENGTH }, {
   every: function every(callbackfn /* , thisArg */) {
     return $every(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
   }
+});
+
+
+/***/ }),
+
+/***/ "a630":
+/***/ (function(module, exports, __webpack_require__) {
+
+var $ = __webpack_require__("23e7");
+var from = __webpack_require__("4df4");
+var checkCorrectnessOfIteration = __webpack_require__("1c7e");
+
+var INCORRECT_ITERATION = !checkCorrectnessOfIteration(function (iterable) {
+  Array.from(iterable);
+});
+
+// `Array.from` method
+// https://tc39.github.io/ecma262/#sec-array.from
+$({ target: 'Array', stat: true, forced: INCORRECT_ITERATION }, {
+  from: from
 });
 
 
@@ -6748,6 +6849,9 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
     }
   }
 });
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.find.js
+var es_array_find = __webpack_require__("7db0");
+
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.join.js
 var es_array_join = __webpack_require__("a15b");
 
@@ -6789,7 +6893,265 @@ function _typeof(obj) {
 
   return _typeof(obj);
 }
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/arrayWithHoles.js
+function _arrayWithHoles(arr) {
+  if (Array.isArray(arr)) return arr;
+}
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/iterableToArrayLimit.js
+
+
+
+
+
+
+
+function _iterableToArrayLimit(arr, i) {
+  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+  var _arr = [];
+  var _n = true;
+  var _d = false;
+  var _e = undefined;
+
+  try {
+    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      _arr.push(_s.value);
+
+      if (i && _arr.length === i) break;
+    }
+  } catch (err) {
+    _d = true;
+    _e = err;
+  } finally {
+    try {
+      if (!_n && _i["return"] != null) _i["return"]();
+    } finally {
+      if (_d) throw _e;
+    }
+  }
+
+  return _arr;
+}
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.from.js
+var es_array_from = __webpack_require__("a630");
+
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/arrayLikeToArray.js
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+
+  return arr2;
+}
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/unsupportedIterableToArray.js
+
+
+
+
+
+
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/nonIterableRest.js
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js
+
+
+
+
+function _slicedToArray(arr, i) {
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+}
+// CONCATENATED MODULE: ./node_modules/quasar/src/utils/sort.js
+function sortString (a, b) {
+  if (typeof a !== 'string') {
+    throw new TypeError('The value for sorting must be a String')
+  }
+  return a.localeCompare(b)
+}
+
+function sortNumber (a, b) {
+  return a - b
+}
+
+function sortDate (a, b) {
+  return (new Date(a)) - (new Date(b))
+}
+
+function sortBoolean (a, b) {
+  return a && !b
+    ? -1
+    : (!a && b ? 1 : 0)
+}
+
+// CONCATENATED MODULE: ./node_modules/quasar/src/utils/is.js
+const
+  hasMap = typeof Map === 'function',
+  hasSet = typeof Set === 'function',
+  hasArrayBuffer = typeof ArrayBuffer === 'function'
+
+function isDeepEqual (a, b) {
+  if (a === b) {
+    return true
+  }
+
+  if (a !== null && b !== null && typeof a === 'object' && typeof b === 'object') {
+    if (a.constructor !== b.constructor) {
+      return false
+    }
+
+    let length, i
+
+    if (a.constructor === Array) {
+      length = a.length
+
+      if (length !== b.length) {
+        return false
+      }
+
+      for (i = length; i-- !== 0;) {
+        if (isDeepEqual(a[i], b[i]) !== true) {
+          return false
+        }
+      }
+
+      return true
+    }
+
+    if (hasMap === true && a.constructor === Map) {
+      if (a.size !== b.size) {
+        return false
+      }
+
+      i = a.entries().next()
+      while (i.done !== true) {
+        if (b.has(i.value[0]) !== true) {
+          return false
+        }
+        i = i.next()
+      }
+
+      i = a.entries().next()
+      while (i.done !== true) {
+        if (isDeepEqual(i.value[1], b.get(i.value[0])) !== true) {
+          return false
+        }
+        i = i.next()
+      }
+
+      return true
+    }
+
+    if (hasSet === true && a.constructor === Set) {
+      if (a.size !== b.size) {
+        return false
+      }
+
+      i = a.entries().next()
+      while (i.done !== true) {
+        if (b.has(i.value[0]) !== true) {
+          return false
+        }
+        i = i.next()
+      }
+
+      return true
+    }
+
+    if (hasArrayBuffer === true && a.buffer != null && a.buffer.constructor === ArrayBuffer) {
+      length = a.length
+
+      if (length !== b.length) {
+        return false
+      }
+
+      for (i = length; i-- !== 0;) {
+        if (a[i] !== b[i]) {
+          return false
+        }
+      }
+
+      return true
+    }
+
+    if (a.constructor === RegExp) {
+      return a.source === b.source && a.flags === b.flags
+    }
+
+    if (a.valueOf !== Object.prototype.valueOf) {
+      return a.valueOf() === b.valueOf()
+    }
+
+    if (a.toString !== Object.prototype.toString) {
+      return a.toString() === b.toString()
+    }
+
+    const keys = Object.keys(a)
+    length = keys.length
+
+    if (length !== Object.keys(b).length) {
+      return false
+    }
+
+    for (i = length; i-- !== 0;) {
+      const key = keys[i]
+      if (isDeepEqual(a[key], b[key]) !== true) {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  // true if both NaN, false otherwise
+  return a !== a && b !== b // eslint-disable-line no-self-compare
+}
+
+function isPrintableChar (v) {
+  return (v > 47 && v < 58) || // number keys
+    v === 32 || v === 13 || // spacebar & return key(s) (if you want to allow carriage returns)
+    (v > 64 && v < 91) || // letter keys
+    (v > 95 && v < 112) || // numpad keys
+    (v > 185 && v < 193) || // ;=,-./` (in order)
+    (v > 218 && v < 223)
+}
+
+function isObject (v) {
+  return Object(v) === v
+}
+
+function isDate (v) {
+  return Object.prototype.toString.call(v) === '[object Date]'
+}
+
+function isRegexp (v) {
+  return Object.prototype.toString.call(v) === '[object RegExp]'
+}
+
+function isNumber (v) {
+  return typeof v === 'number' && isFinite(v)
+}
+
+function isString (v) {
+  return typeof v === 'string'
+}
+
 // CONCATENATED MODULE: ./src/methods.js
+
+
+
+
+
 
 
 
@@ -6921,6 +7283,61 @@ function _typeof(obj) {
     }
 
     return this.$data.vueData[list];
+  },
+  sortCiAi: function sortCiAi(data, sortBy, descending) {
+    var col = this.colList.find(function (def) {
+      return def.name === sortBy;
+    });
+
+    if (col === void 0 || col.field === void 0) {
+      return data;
+    }
+
+    var dir = descending === true ? -1 : 1,
+        val = typeof col.field === 'function' ? function (v) {
+      return col.field(v);
+    } : function (v) {
+      return v[col.field];
+    };
+    var collator = new Intl.Collator();
+    return data.sort(function (a, b) {
+      var A = val(a),
+          B = val(b);
+
+      if (A === null || A === void 0) {
+        return -1 * dir;
+      }
+
+      if (B === null || B === void 0) {
+        return 1 * dir;
+      }
+
+      if (col.sort !== void 0) {
+        return col.sort(A, B, a, b) * dir;
+      }
+
+      if (isNumber(A) === true && isNumber(B) === true) {
+        return (A - B) * dir;
+      }
+
+      if (isDate(A) === true && isDate(B) === true) {
+        return sortDate(A, B) * dir;
+      }
+
+      if (typeof A === 'boolean' && typeof B === 'boolean') {
+        return (A - B) * dir;
+      }
+
+      var _map = [A, B].map(function (s) {
+        return (s + '').toLocaleString();
+      });
+
+      var _map2 = _slicedToArray(_map, 2);
+
+      A = _map2[0];
+      B = _map2[1];
+      return collator.compare(A, B) * dir;
+    });
   },
   selectedFunction: function selectedFunction(object, field, item)
   /*keyboard*/

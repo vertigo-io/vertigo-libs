@@ -1,4 +1,6 @@
 import Quasar from "quasar"
+import {sortDate } from "quasar/src/utils/sort.js"
+import {isNumber, isDate} from "quasar/src/utils/is.js"
 
 export default {
     onAjaxError : function(response) {
@@ -98,6 +100,50 @@ export default {
             return this.$data.vueData[list].slice(firstRowIndex, lastRowIndex);
         }
         return this.$data.vueData[list];
+    },
+
+
+    sortCiAi: function (data, sortBy, descending) {
+        const col = this.colList.find(def => def.name === sortBy)
+        if (col === void 0 || col.field === void 0) {
+          return data
+        }
+
+        const
+          dir = descending === true ? -1 : 1,
+          val = typeof col.field === 'function'
+            ? v => col.field(v)
+            : v => v[col.field]
+
+        const collator = new Intl.Collator();
+
+        return data.sort((a, b) => {
+            let	A = val(a),
+                B = val(b)
+
+            if (A === null || A === void 0) {
+                return -1 * dir;
+            }
+            if (B === null || B === void 0) {
+                return 1 * dir;
+            }
+            if (col.sort !== void 0) {
+                return col.sort(A, B, a, b) * dir;
+            }
+            if (isNumber(A) === true && isNumber(B) === true) {
+                return (A - B) * dir;
+            }
+            if (isDate(A) === true && isDate(B) === true) {
+                return sortDate(A, B) * dir;
+            }
+            if (typeof A === 'boolean' && typeof B === 'boolean') {
+                return (A - B) * dir;
+            }
+
+            [A, B] = [A, B].map(s => (s + '').toLocaleString());
+
+            return collator.compare(A, B) * dir;
+        })
     },
 
     selectedFunction : function (object, field, item, /*keyboard*/) {
