@@ -59,7 +59,7 @@ public class DashboardLauncherTest {
 
 	static {
 		//RestAsssured init
-		RestAssured.port = 8080;
+		RestAssured.port = 8082;
 	}
 
 	@BeforeAll

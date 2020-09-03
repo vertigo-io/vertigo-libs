@@ -19,7 +19,6 @@
 package io.vertigo.basics.constraint;
 
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;

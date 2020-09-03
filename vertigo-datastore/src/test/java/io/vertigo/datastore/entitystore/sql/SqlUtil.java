@@ -27,6 +27,8 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.impl.dao.StoreUtil;
 
 public final class SqlUtil {
 	public static void execRequests(
@@ -43,7 +45,9 @@ public final class SqlUtil {
 						.withRequest(request)
 						.withDataSpace(optDataSpace.orElse(null))
 						.build();
-				final Task task = Task.builder(taskDefinition).build();
+				final Task task = Task.builder(taskDefinition)
+						.addContextProperty("connectionName", StoreUtil.getConnectionName(optDataSpace.orElse(EntityStoreManager.MAIN_DATA_SPACE_NAME)))
+						.build();
 				taskManager.execute(task);
 			}
 		}
