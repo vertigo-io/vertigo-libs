@@ -116,7 +116,7 @@ public final class DashboardRouter {
 	}
 
 	private void render(final HttpServletResponse response, final String templateName, final Map<String, Object> model) throws TemplateException, IOException {
-		response.setStatus(200);
+		response.setStatus(HttpServletResponse.SC_OK);
 		response.setContentType("text/html");
 
 		final StringWriter stringWriter = new StringWriter();
