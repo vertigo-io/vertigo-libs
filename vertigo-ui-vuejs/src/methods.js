@@ -40,9 +40,9 @@ export default {
         }
         //Try to Use the Response Message
         if(Object.prototype.hasOwnProperty.call(response,'data')){
-            if(Object.prototype.hasOwnProperty.call(response.data, 'message') && response.data.message.length > 0){
+            if(Object.prototype.hasOwnProperty.call(response.data, 'message') && response.data.message && response.data.message.length > 0){
                 notif.message = response.data.message
-            } else if(Object.prototype.hasOwnProperty.call(response.data, 'globalErrors') && response.data.globalErrors.length > 0){
+            } else if(Object.prototype.hasOwnProperty.call(response.data, 'globalErrors') && response.data.globalErrors && response.data.globalErrors.length > 0){
                 notif.message = response.data.globalErrors.join('<br/>\n ');
             }
         }
@@ -358,12 +358,14 @@ export default {
 
     hasFieldsError: function (object, field) {
         var fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
-        return Object.prototype.hasOwnProperty.call(fieldsErrors, object) && Object.prototype.hasOwnProperty.call(fieldsErrors[object], field) && fieldsErrors[object][field].length > 0;
+        return fieldsErrors &&  Object.prototype.hasOwnProperty.call(fieldsErrors, object) &&
+        fieldsErrors[object] && Object.prototype.hasOwnProperty.call(fieldsErrors[object], field) && fieldsErrors[object][field].length > 0;
     },
 
     getErrorMessage: function (object, field) {
         var fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
-        if (Object.prototype.hasOwnProperty.call(fieldsErrors, object) && Object.prototype.hasOwnProperty.call(fieldsErrors[object], field)) {
+        if (fieldsErrors && Object.prototype.hasOwnProperty.call(fieldsErrors, object) &&
+            fieldsErrors[object] && Object.prototype.hasOwnProperty.call(fieldsErrors[object], field)) {
             return fieldsErrors[object][field].toString(); 
         } else { 
             return '';
