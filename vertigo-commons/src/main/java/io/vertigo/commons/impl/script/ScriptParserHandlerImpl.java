@@ -117,8 +117,8 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 			final int keyEnd = text.indexOf(TEXT_KEY_SUFFIX, keyStart);
 			final String key = text.substring(keyStart, keyEnd);
 
-			result.append(text.substring(textStart, textEnd));
-			result.append(texts.get(Integer.parseInt(key)));
+			result.append(text, textStart, textEnd)
+			.append(texts.get(Integer.parseInt(key)));
 			textStart = keyEnd + TEXT_KEY_SUFFIX.length();
 		}
 		// Dernier morceau
