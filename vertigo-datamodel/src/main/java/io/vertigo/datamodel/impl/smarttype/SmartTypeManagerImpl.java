@@ -36,11 +36,11 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 		formatterBySmartType = Node.getNode().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
 				.filter(smartTypeDefinition -> smartTypeDefinition.getFormatterConfig() != null)
-				.collect(Collectors.toMap(SmartTypeDefinition::getName, smartTypeDefinition -> createFormatter(smartTypeDefinition)));
+				.collect(Collectors.toMap(SmartTypeDefinition::getName, SmartTypeManagerImpl::createFormatter));
 
 		constraintsBySmartType = Node.getNode().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
-				.collect(Collectors.toMap(SmartTypeDefinition::getName, smartTypeDefinition -> createConstraints(smartTypeDefinition)));
+				.collect(Collectors.toMap(SmartTypeDefinition::getName, SmartTypeManagerImpl::createConstraints));
 
 		Node.getNode().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()

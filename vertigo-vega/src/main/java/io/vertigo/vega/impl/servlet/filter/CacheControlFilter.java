@@ -99,7 +99,7 @@ public final class CacheControlFilter extends AbstractFilter {
 		final HttpServletResponse httpResponse = (HttpServletResponse) res;
 		final Set<String> alreadySetHeaders = new HashSet<>(Collections.list(httpRequest.getHeaderNames()));
 		if (forceOverride || !alreadySetHeaders.contains("Cache-Control")) {
-			headers.forEach((k, v) -> httpResponse.setHeader(k, v));
+			headers.forEach(httpResponse::setHeader);
 		}
 		chain.doFilter(httpRequest, httpResponse);
 	}

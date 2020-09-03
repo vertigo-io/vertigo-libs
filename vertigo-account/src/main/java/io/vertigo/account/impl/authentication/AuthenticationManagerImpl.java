@@ -27,6 +27,7 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountManager;
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.authentication.AuthenticationToken;
+import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.lang.Assertion;
 
@@ -86,7 +87,7 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 	@Override
 	public void logout() {
 		securityManager.getCurrentUserSession()
-				.ifPresent(userSession -> userSession.logout());
+				.ifPresent(UserSession::logout);
 	}
 
 	private Optional<Account> tryLoginAccount(final AuthenticationToken token) {

@@ -86,8 +86,8 @@ final class AnnotationsWebServiceScannerUtil {
 		//-----
 		return Arrays.stream(webServicesClass.getMethods())
 				.map(AnnotationsWebServiceScannerUtil::buildWebServiceDefinition)
-				.filter(webServiceDefinitionOptional -> webServiceDefinitionOptional.isPresent())
-				.map(webServiceDefinitionOptional -> webServiceDefinitionOptional.get())
+				.filter(Optional::isPresent)
+				.map(Optional::get)
 				.collect(Collectors.toList());
 	}
 

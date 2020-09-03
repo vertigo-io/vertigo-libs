@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -90,7 +91,7 @@ public final class TaskManagerImpl implements TaskManager, SimpleDefinitionProvi
 				.filterMethods(MethodConditions.annotatedWith(TaskAnnotation.class))
 				.findMethods()
 				.stream()
-				.map(tuple -> tuple.getVal2())
+				.map(Tuple::getVal2)
 				.map(TaskManagerImpl::createTaskDefinition)
 				.collect(Collectors.toList());
 	}

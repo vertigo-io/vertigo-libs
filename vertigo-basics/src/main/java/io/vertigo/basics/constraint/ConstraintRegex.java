@@ -55,9 +55,8 @@ public final class ConstraintRegex implements Constraint<String, String> {
 		if (value == null) {
 			return true;
 		}
-		final String input = value;
-		final Matcher matcher = pattern.matcher(input);
-		return matcher.matches();
+		return pattern.matcher(value)
+				.matches();
 	}
 
 	/** {@inheritDoc} */

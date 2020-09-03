@@ -202,7 +202,7 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 		@Override
 		public JsonElement serialize(final Optional<?> srcOpt, final Type typeOfSrc, final JsonSerializationContext context) {
 			return srcOpt
-					.map(src -> context.serialize(src))
+					.map(context::serialize)
 					.orElse(null);
 		}
 	}

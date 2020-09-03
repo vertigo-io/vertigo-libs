@@ -128,7 +128,7 @@ public class RedisHandlePlugin implements HandlePlugin {
 				final ScanResult<String> scanResult = jedis.scan(cursor, handleScanParams);
 				cursor = scanResult.getCursor();
 				scanResult.getResult()
-						.forEach(key -> jedis.del(key));
+						.forEach(jedis::del);
 
 			} while (!"0".equals(cursor));
 			// cursor is 0... but still
@@ -140,7 +140,7 @@ public class RedisHandlePlugin implements HandlePlugin {
 				final ScanResult<String> scanResult = jedis.scan(cursor, urnScanParams);
 				cursor = scanResult.getCursor();
 				scanResult.getResult()
-						.forEach(key -> jedis.del(key));
+						.forEach(jedis::del);
 
 			} while (!"0".equals(cursor));
 

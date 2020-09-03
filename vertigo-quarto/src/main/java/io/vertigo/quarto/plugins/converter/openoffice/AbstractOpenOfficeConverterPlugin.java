@@ -110,12 +110,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 				.isFalse(targetFormat.getTypeMime().equals(file.getMimeType()), "Le format de sortie est identique à celui d'entrée ; la conversion est inutile");
 		//-----
 		final Path inputFile = FileUtil.obtainReadOnlyPath(file);
-		final Callable<Path> convertTask = new Callable<>() {
-			@Override
-			public Path call() throws Exception {
-				return doConvertToFormat(inputFile.toFile(), targetFormat).toPath();
-			}
-		};
+		final Callable<Path> convertTask = () -> doConvertToFormat(inputFile.toFile(), targetFormat).toPath();
 		final Path targetFile;
 		try {
 			final Future<Path> targetFileFuture = executors.submit(convertTask);

@@ -217,8 +217,8 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		Assertion.check().isNotBlank(keyString);
 		//---
 		// on garde les index en cohérence après un remove
-		reverseUiObjectIndex.values().removeIf(val -> keyString.equals(val));
-		reverseUiListIndex.values().removeIf(val -> keyString.equals(val));
+		reverseUiObjectIndex.values().removeIf(keyString::equals);
+		reverseUiListIndex.values().removeIf(keyString::equals);
 		// on fait le remove
 		return super.remove(key);
 	}

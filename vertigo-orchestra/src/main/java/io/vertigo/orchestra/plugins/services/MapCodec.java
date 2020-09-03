@@ -47,7 +47,7 @@ public final class MapCodec implements Codec<Map<String, String>, String> {
 				.entrySet()
 				.stream()
 				.collect(Collectors.toMap(
-						entry -> entry.getKey(),
+						Map.Entry::getKey,
 						entry -> entry.getValue().getAsString()));
 	}
 

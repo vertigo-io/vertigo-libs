@@ -85,7 +85,7 @@ public class CommonsDashboardControler extends AbstractDashboardModuleControler 
 	private static void buildCacheModel(final Node node, final Map<String, Object> model) {
 		final List<CacheModel> caches = Node.getNode().getDefinitionSpace().getAll(CacheDefinition.class)
 				.stream()
-				.map(cacheDefinition -> new CacheModel(cacheDefinition))
+				.map(CacheModel::new)
 				.collect(Collectors.toList());
 		model.put("caches", caches);
 		model.put("cacheStatus", getHealthStatus(node, model, "cache"));

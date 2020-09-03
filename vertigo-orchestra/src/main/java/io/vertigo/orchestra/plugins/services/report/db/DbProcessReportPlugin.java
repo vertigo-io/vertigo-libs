@@ -111,7 +111,7 @@ public class DbProcessReportPlugin implements ProcessReportPlugin {
 	private static List<ExecutionSummary> decodeSummaryList(final List<OExecutionSummary> summaries) {
 		return summaries
 				.stream()
-				.map(summary -> decodeSummary(summary))
+				.map(DbProcessReportPlugin::decodeSummary)
 				.collect(Collectors.toList());
 
 	}
@@ -132,7 +132,7 @@ public class DbProcessReportPlugin implements ProcessReportPlugin {
 	private static List<ProcessExecution> decodeExecutionList(final List<OProcessExecutionUi> executions) {
 		return executions
 				.stream()
-				.map(execution -> decodeExecution(execution))
+				.map(DbProcessReportPlugin::decodeExecution)
 				.collect(Collectors.toList());
 
 	}
@@ -154,7 +154,7 @@ public class DbProcessReportPlugin implements ProcessReportPlugin {
 	private static List<ActivityExecution> decodeActivityExecutionList(final List<OActivityExecutionUi> executions) {
 		return executions
 				.stream()
-				.map(execution -> decodeActivityExecution(execution))
+				.map(DbProcessReportPlugin::decodeActivityExecution)
 				.collect(Collectors.toList());
 
 	}

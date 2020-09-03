@@ -51,9 +51,16 @@ public final class SearchIndexDefinitionSupplier implements DefinitionSupplier {
 		final Map<DtField, List<DtField>> copyToFields = new HashMap<>(); //(map fromField : [toField, toField, ...])
 		for (final Map.Entry<String, String[]> indexCopyTo : myIndexCopyTo.entrySet()) {
 			final DtField dtFieldFrom = indexDtDefinition.getField(indexCopyTo.getKey());
-			final List<DtField> dtFieldTos = Stream.of(indexCopyTo.getValue()).map(toField -> indexDtDefinition.getField(toField)).collect(Collectors.toList());
+			final List<DtField> dtFieldTos = Stream.of(indexCopyTo.getValue())
+					.map(indexDtDefinition::getField)
+					.collect(Collectors.toList());
 			copyToFields.put(dtFieldFrom, dtFieldTos);
 		}
-		return new SearchIndexDefinition(myName, keyConceptDtDefinition, indexDtDefinition, copyToFields, myIndexLoaderId);
+		return new SearchIndexDefinition(
+				myName,
+				keyConceptDtDefinition,
+				indexDtDefinition,
+				copyToFields,
+				myIndexLoaderId);
 	}
 }
