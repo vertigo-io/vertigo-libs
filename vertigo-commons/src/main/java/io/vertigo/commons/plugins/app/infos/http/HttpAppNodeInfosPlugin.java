@@ -53,6 +53,8 @@ import io.vertigo.core.lang.WrappedException;
  */
 public final class HttpAppNodeInfosPlugin implements AppNodeInfosPlugin {
 
+	private static final int TIMEOUT_MS = 500;
+
 	private static class InstantAdapter implements JsonSerializer<Instant>, JsonDeserializer<Instant> {
 
 		/** {@inheritDoc} */
@@ -99,7 +101,7 @@ public final class HttpAppNodeInfosPlugin implements AppNodeInfosPlugin {
 		try {
 			final URL url = new URL(wsUrl);
 			final HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setConnectTimeout(500);
+			httpURLConnection.setConnectTimeout(TIMEOUT_MS);
 			httpURLConnection.setRequestProperty("Content-Type", "application/json");
 
 			final ByteArrayOutputStream result = new ByteArrayOutputStream();

@@ -46,6 +46,7 @@ import io.vertigo.datamodel.structure.definitions.FormatterException;
  * @author pchretien
  */
 public class FormatterNumber implements Formatter {
+	private static final char NON_BREAKING_SPACE = (char) 160;
 	/**
 	 * Format d'affichage des nombres.
 	 */
@@ -181,8 +182,8 @@ public class FormatterNumber implements Formatter {
 	protected static final String cleanStringNumber(final String sValue, final char decimalCharUsed, final char groupCharUsed) {
 		String result = sValue;
 		// 1 >> On supprime les blancs. (simples et insécables)
-		if (groupCharUsed == ' ' || groupCharUsed == (char) 160) {
-			result = result.replace((char) 160, ' '); //aussi rapide que l'indexOf si absent
+		if (groupCharUsed == ' ' || groupCharUsed == NON_BREAKING_SPACE) {
+			result = result.replace(NON_BREAKING_SPACE, ' '); //aussi rapide que l'indexOf si absent
 			result = StringUtil.replace(result, " ", "");
 		} else if (result.indexOf(groupCharUsed) != -1) {
 			// 2 >> On supprime les séparateurs de milliers.
