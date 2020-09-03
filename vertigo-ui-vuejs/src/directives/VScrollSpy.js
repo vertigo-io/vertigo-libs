@@ -75,9 +75,9 @@ export default {
                 const elScroll = document.querySelector(elScrollId)
                 if(elScroll) {
                     blockHeight.push(scrollPosition+elScroll.getBoundingClientRect().top);
-                    console.log(i+'  top: '+blockHeight[i] )
+                    //console.log(i+'  top: '+blockHeight[i] )
                 } else {
-                    console.warn('ScrollSpy element '+elScrollId+' not found')
+                    //console.warn('ScrollSpy element '+elScrollId+' not found')
                 }
             }
             

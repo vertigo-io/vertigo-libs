@@ -6785,11 +6785,9 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
         var elScroll = document.querySelector(elScrollId);
 
         if (elScroll) {
-          blockHeight.push(scrollPosition + elScroll.getBoundingClientRect().top);
-          console.log(_i + '  top: ' + blockHeight[_i]);
-        } else {
-          console.warn('ScrollSpy element ' + elScrollId + ' not found');
-        }
+          blockHeight.push(scrollPosition + elScroll.getBoundingClientRect().top); //console.log(i+'  top: '+blockHeight[i] )
+        } else {//console.warn('ScrollSpy element '+elScrollId+' not found')
+          }
       }
 
       var windowHeight = window.innerHeight || document.documentElement.clientHeight;
