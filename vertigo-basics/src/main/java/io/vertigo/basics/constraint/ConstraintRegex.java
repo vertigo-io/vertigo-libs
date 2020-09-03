@@ -19,7 +19,6 @@
 package io.vertigo.basics.constraint;
 
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
@@ -52,11 +51,9 @@ public final class ConstraintRegex implements Constraint<String, String> {
 	/** {@inheritDoc} */
 	@Override
 	public boolean checkConstraint(final String value) {
-		if (value == null) {
-			return true;
-		}
-		return pattern.matcher(value)
-				.matches();
+		return value == null
+				|| pattern.matcher(value)
+						.matches();
 	}
 
 	/** {@inheritDoc} */
