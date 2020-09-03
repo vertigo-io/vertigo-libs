@@ -35,6 +35,8 @@ import io.vertigo.core.locale.MessageText;
  * @author pchretien
  */
 public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
+	private static final int MAX_LENGHT = 19;
+
 	/**
 	 * Borne maximale au sens strict de Long (= 10 puissance maxLength)
 	 */
@@ -54,7 +56,7 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 	public ConstraintLongLength(final String args, final Optional<String> overrideMessageOpt) {
 		super(args);
 		//-----
-		Assertion.check().isTrue(getMaxLength() < 19, "Longueur max doit être strictement inférieure à 19");
+		Assertion.check().isTrue(getMaxLength() < MAX_LENGHT, "Longueur max doit être strictement inférieure à " + MAX_LENGHT);
 		//-----
 		long tmpMaxValue = 1;
 		for (int i = 0; i < getMaxLength(); i++) {

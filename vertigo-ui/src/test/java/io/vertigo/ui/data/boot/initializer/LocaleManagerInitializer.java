@@ -36,8 +36,8 @@ public final class LocaleManagerInitializer implements ComponentInitializer {
 	/** {@inheritDoc} */
 	@Override
 	public void init() {
-		localeManager.add("io.vertigo.datamodel.impl.smarttype.constraint.Constraint", io.vertigo.basics.constraint.Resources.values());
-		localeManager.add("io.vertigo.datamodel.impl.smarttype.formatter.Formatter", io.vertigo.basics.formatter.Resources.values());
+		localeManager.add("io.vertigo.basics.constraint.Constraint", io.vertigo.basics.constraint.Resources.values());
+		localeManager.add("io.vertigo.basics.formatter.Formatter", io.vertigo.basics.formatter.Resources.values());
 
 		// Messages Demo
 		//localeManager.add(io.vertigo.struts2.ui.util.Resources.class.getName(), io.vertigo.struts2.ui.util.Resources.values());
