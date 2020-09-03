@@ -9,6 +9,7 @@
 			auto-expand
 			th::multiple="${multiple}"
 			th::ref="|'${myComponentId}'|"
+			:form-fields="[{name:'CTX', value:vueData.CTX}]"
 			th:@added="|uploader_addedFile(${multiple}, '${myComponentId}')|"
 			th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}')|"
 			th:@removed="|uploader_removeFiles($event, '${myComponentId}')|"

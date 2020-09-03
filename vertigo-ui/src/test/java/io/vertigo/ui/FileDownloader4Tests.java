@@ -46,7 +46,6 @@ public class FileDownloader4Tests {
 
 	private static final Logger LOG = LogManager.getLogger(FileDownloader4Tests.class);
 	private final WebDriver driver;
-	private String localDownloadPath = System.getProperty("java.io.tmpdir");
 	private boolean followRedirects = true;
 	private boolean mimicWebDriverCookieState = true;
 	private int httpStatusOfLastDownloadAttempt = 0;
@@ -66,24 +65,6 @@ public class FileDownloader4Tests {
 	 */
 	public void followRedirectsWhenDownloading(final boolean value) {
 		followRedirects = value;
-	}
-
-	/**
-	 * Get the current location that files will be downloaded to.
-	 *
-	 * @return The filepath that the file will be downloaded to.
-	 */
-	public String localDownloadPath() {
-		return localDownloadPath;
-	}
-
-	/**
-	 * Set the path that files will be downloaded to.
-	 *
-	 * @param filePath The filepath that the file will be downloaded to.
-	 */
-	public void localDownloadPath(final String filePath) {
-		localDownloadPath = filePath;
 	}
 
 	/**
@@ -163,7 +144,7 @@ public class FileDownloader4Tests {
 		}
 
 		final URL fileToDownload = new URL(fileToDownloadLocation);
-		final File downloadedFile = new TempFile(localDownloadPath, "test");
+		final File downloadedFile = new TempFile("test", ".tmp");
 		if (downloadedFile.canWrite() == false) {
 			downloadedFile.setWritable(true);
 		}
