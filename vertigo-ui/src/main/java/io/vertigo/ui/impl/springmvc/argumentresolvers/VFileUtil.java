@@ -141,7 +141,7 @@ final class VFileUtil {
 					sb.append((char) c);
 				} else {
 					sb.append('%');
-					sb.append(Integer.toHexString(c & 0xff)); // we want byte as a char on one byte
+					sb.append(String.format("%02X", c)); // we want byte as a char on one byte
 				}
 			}
 		} catch (final UnsupportedEncodingException e) {
