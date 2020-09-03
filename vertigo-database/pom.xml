@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
-			<version>${project.version}</version>
+			<version>${vertigo.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
@@ -27,7 +27,7 @@
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-influxdb-connector</artifactId>
-			<version>${project.version}</version>
+			<version>${vertigo.version}</version>
 			<optional>true</optional>
 		</dependency>
 

@@ -21,13 +21,13 @@
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-commons</artifactId>
-			<version>${vertigo.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-datamodel</artifactId>
-			<version>${vertigo.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>

@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-commons</artifactId>
-			<version>${vertigo.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- Distributed -->
@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-vega</artifactId>
-			<version>${vertigo.version}</version>
+			<version>${project.version}</version>
 			<optional>true</optional> <!-- REST DistributedWork impl -->
 		</dependency>
 
