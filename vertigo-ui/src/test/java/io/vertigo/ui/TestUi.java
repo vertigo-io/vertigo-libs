@@ -1,8 +1,7 @@
 /**
- * vertigo - simple java starter
+ * vertigo - application development platform
  *
- * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
+ * Copyright (C) 2013-2020, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +18,7 @@
 package io.vertigo.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +35,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -88,7 +89,9 @@ public class TestUi {
 		context.setClassLoader(getUrlClassLoader());
 		context.setClassLoader(new WebAppClassLoader(TestUi.class.getClassLoader(), context));
 
-		server.setHandler(context);
+		final MultipartConfigInjectionHandler multipartConfigInjectionHandler = new MultipartConfigInjectionHandler();
+		multipartConfigInjectionHandler.setHandler(context);
+		server.setHandler(multipartConfigInjectionHandler);
 		server.start();
 	}
 
@@ -154,6 +157,32 @@ public class TestUi {
 
 		assertEquals("Test 1", findElement(By.name("vContext[movie][title]")).getAttribute("value"));
 		assertEquals("2020", findElement(By.name("vContext[movie][year]")).getAttribute("value"));
+	}
+
+	@Test
+	public void testDownload() throws Exception {
+		driver.get(baseUrl + "/test/componentsDemo/");
+
+		final FileDownloader4Tests fileDownloader4Tests = new FileDownloader4Tests(driver);
+		final WebElement downloadLink = findElement(By.linkText("insee.csv"));
+		final String downloadedFileAbsoluteLocation = fileDownloader4Tests.downloadFile(downloadLink);
+
+		assertTrue(new File(downloadedFileAbsoluteLocation).exists());
+		assertEquals(fileDownloader4Tests.getHTTPStatusOfLastDownloadAttempt(), 200);
+	}
+
+	@Test
+	@Disabled
+	public void testUpload() throws InterruptedException {
+		driver.get(baseUrl + "/test/componentsDemo/");
+
+		final String fullPath = getClass().getResource("/data/insee.csv").getFile();
+		findElement(By.id("uploadFile_fileTest")).clear();
+		findElement(By.id("uploadFile_fileTest")).sendKeys(fullPath);
+		findElement(By.id("uploadFile_uploadFileAccueil")).click();
+
+		assertEquals("Fichier recu : insee.csv (application/octet-stream)", findElement(By.cssSelector("span")).getText());
+		assertEquals("Previous file : insee.csv (application/octet-stream)", findElement(By.id("uploadFile")).getText());
 	}
 
 	private void sendKeysJs(final By elementBy, final String keysToSend) {
