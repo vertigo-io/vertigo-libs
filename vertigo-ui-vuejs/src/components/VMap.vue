@@ -3,10 +3,10 @@
         <div id="popup">
             <q-card  v-if="popupDisplayed" class="q-px-md">
                 <slot name="card" v-bind:objectDisplayed="objectDisplayed">
-                    <div class="text-subtitle2">{{objectDisplayed[nameField]}}</div>
+                      <div class="text-subtitle2">{{objectDisplayed[nameField]}}</div>
                 </slot>
             </q-card>
-        </div>
+        </div>	
     </div>
 </template>
 <script>
@@ -32,7 +32,7 @@ export default {
         clusterCircleBorderColor: { type: String, 'default': "#000000" },
         clusterTextColor: { type: String, 'default': "#000000" },
         clusterTextSize: { type: Number, 'default': 12 },
-        clusterTextFont: { type: String, 'default' : 'sans-serif' }
+        clusterTextFont: { type: String, 'default' : 'sans-serif' },
     },
     data : function () {
         return {
@@ -40,6 +40,13 @@ export default {
             objectDisplayed: {},
             items: [],
             olMap: {}
+        }
+    },
+    watch : {
+        list : function(newVal) {
+           this.$data.items = newVal;
+           this.olMap.getLayers().getArray()[1].getSource().getSource().clear();
+           this.olMap.getLayers().getArray()[1].getSource().getSource().addFeatures(this.features);
         }
     },
     computed : {
@@ -77,7 +84,7 @@ export default {
         
     },
     mounted : function() {
-        this.$data.items = this.$props.list ? this.$props.list : [];		
+        this.$data.items = this.$props.list ? this.$props.list : [];
         var view = new ol.View();
 
         var vectorSource = new ol.source.Vector({
@@ -102,7 +109,7 @@ export default {
         });
         
         var styleCache = {};
-        clusterLayer.setStyle(function(feature) {
+        clusterLayer.setStyle(function(feature, /*resolution*/) {
             var size = feature.get('features').length;
             if (size == 1) {
                 return styleIcon;
@@ -162,14 +169,26 @@ export default {
         }
         // handle refresh if an endPoint is specified
         if (this.baseUrl) {
-            this.olMap.on('moveend', Quasar.utils.debounce(function(e) {
+            this.olMap.on('moveend', function(e) {
                 var mapExtent =  e.map.getView().calculateExtent();
                 var wgs84Extent = ol.proj.transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
                 var topLeft = ol.extent.getTopLeft(wgs84Extent);
                 var bottomRight = ol.extent.getBottomRight(wgs84Extent);
-                this.fetchList({lat:topLeft[0] , lon:topLeft[1]},{lat:bottomRight[0] , lon:bottomRight[1]});
+                Quasar.utils.debounce(this.fetchList({lat:topLeft[0] , lon:topLeft[1]},{lat:bottomRight[0] , lon:bottomRight[1]}),300);				
             }
-            .bind(this), 300));
+            .bind(this));
+        } else {
+            this.olMap.on('moveend', function(e) {
+                var mapExtent =  e.map.getView().calculateExtent();
+                var wgs84Extent = ol.proj.transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
+                var topLeft = ol.extent.getTopLeft(wgs84Extent);
+                var bottomRight = ol.extent.getBottomRight(wgs84Extent);
+                Quasar.utils.debounce(this.$emit('moveend',topLeft, bottomRight) , 300);
+            }
+            .bind(this));
+            this.olMap.on('click', function(evt) {
+                Quasar.utils.debounce(this.$emit('click',ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) , 300);
+            }.bind(this));
         }
         
         if (this.$props.nameField) {

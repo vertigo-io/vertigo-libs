@@ -6317,12 +6317,12 @@ var VNotifications_component = normalizeComponent(
 )
 
 /* harmony default export */ var VNotifications = (VNotifications_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"64d561c1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/VMap.vue?vue&type=template&id=23c34f80&
-var VMapvue_type_template_id_23c34f80_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":_vm.id}},[_c('div',{attrs:{"id":"popup"}},[(_vm.popupDisplayed)?_c('q-card',{staticClass:"q-px-md"},[_vm._t("card",[_c('div',{staticClass:"text-subtitle2"},[_vm._v(_vm._s(_vm.objectDisplayed[_vm.nameField]))])],{"objectDisplayed":_vm.objectDisplayed})],2):_vm._e()],1)])}
-var VMapvue_type_template_id_23c34f80_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"64d561c1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/VMap.vue?vue&type=template&id=5256a40c&
+var VMapvue_type_template_id_5256a40c_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":_vm.id}},[_c('div',{attrs:{"id":"popup"}},[(_vm.popupDisplayed)?_c('q-card',{staticClass:"q-px-md"},[_vm._t("card",[_c('div',{staticClass:"text-subtitle2"},[_vm._v(_vm._s(_vm.objectDisplayed[_vm.nameField]))])],{"objectDisplayed":_vm.objectDisplayed})],2):_vm._e()],1)])}
+var VMapvue_type_template_id_5256a40c_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/VMap.vue?vue&type=template&id=23c34f80&
+// CONCATENATED MODULE: ./src/components/VMap.vue?vue&type=template&id=5256a40c&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.regexp.to-string.js
 var es_regexp_to_string = __webpack_require__("25f0");
@@ -6422,6 +6422,13 @@ var external_commonjs_ol_commonjs2_ol_root_ol_ = __webpack_require__("0f55");
       olMap: {}
     };
   },
+  watch: {
+    list: function list(newVal) {
+      this.$data.items = newVal;
+      this.olMap.getLayers().getArray()[1].getSource().getSource().clear();
+      this.olMap.getLayers().getArray()[1].getSource().getSource().addFeatures(this.features);
+    }
+  },
   computed: {
     features: function features() {
       var geoField = this.$props.field;
@@ -6484,7 +6491,9 @@ var external_commonjs_ol_commonjs2_ol_root_ol_ = __webpack_require__("0f55");
       })
     });
     var styleCache = {};
-    clusterLayer.setStyle(function (feature) {
+    clusterLayer.setStyle(function (feature)
+    /*resolution*/
+    {
       var size = feature.get('features').length;
 
       if (size == 1) {
@@ -6547,19 +6556,30 @@ var external_commonjs_ol_commonjs2_ol_root_ol_ = __webpack_require__("0f55");
 
 
     if (this.baseUrl) {
-      this.olMap.on('moveend', external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.debounce(function (e) {
+      this.olMap.on('moveend', function (e) {
         var mapExtent = e.map.getView().calculateExtent();
         var wgs84Extent = external_commonjs_ol_commonjs2_ol_root_ol_["proj"].transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
         var topLeft = external_commonjs_ol_commonjs2_ol_root_ol_["extent"].getTopLeft(wgs84Extent);
         var bottomRight = external_commonjs_ol_commonjs2_ol_root_ol_["extent"].getBottomRight(wgs84Extent);
-        this.fetchList({
+        external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.debounce(this.fetchList({
           lat: topLeft[0],
           lon: topLeft[1]
         }, {
           lat: bottomRight[0],
           lon: bottomRight[1]
-        });
-      }.bind(this), 300));
+        }), 300);
+      }.bind(this));
+    } else {
+      this.olMap.on('moveend', function (e) {
+        var mapExtent = e.map.getView().calculateExtent();
+        var wgs84Extent = external_commonjs_ol_commonjs2_ol_root_ol_["proj"].transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
+        var topLeft = external_commonjs_ol_commonjs2_ol_root_ol_["extent"].getTopLeft(wgs84Extent);
+        var bottomRight = external_commonjs_ol_commonjs2_ol_root_ol_["extent"].getBottomRight(wgs84Extent);
+        external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.debounce(this.$emit('moveend', topLeft, bottomRight), 300);
+      }.bind(this));
+      this.olMap.on('click', function (evt) {
+        external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.debounce(this.$emit('click', external_commonjs_ol_commonjs2_ol_root_ol_["proj"].transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')), 300);
+      }.bind(this));
     }
 
     if (this.$props.nameField) {
@@ -6611,8 +6631,8 @@ var external_commonjs_ol_commonjs2_ol_root_ol_ = __webpack_require__("0f55");
 
 var VMap_component = normalizeComponent(
   components_VMapvue_type_script_lang_js_,
-  VMapvue_type_template_id_23c34f80_render,
-  VMapvue_type_template_id_23c34f80_staticRenderFns,
+  VMapvue_type_template_id_5256a40c_render,
+  VMapvue_type_template_id_5256a40c_staticRenderFns,
   false,
   null,
   null,
