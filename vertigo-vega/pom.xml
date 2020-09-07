@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
-			<version>${project.version}</version>
+			<version>${vertigo.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
@@ -48,7 +48,7 @@
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-keycloak-connector</artifactId> <!-- For io.vertigo.vega.impl.servlet.filter.AbstactKeycloakDelegateAuthenticationHandler -->
-			<version>${project.version}</version>
+			<version>${vertigo.version}</version>
 			<optional>true</optional>
 		</dependency>
 		
@@ -65,7 +65,7 @@
 		<dependency>
 		    <groupId>io.vertigo</groupId>
 		    <artifactId>vertigo-javalin-connector</artifactId>
-		    <version>${project.version}</version>
+		    <version>${vertigo.version}</version>
 		</dependency>
 		
 		<!-- For javalin embedded -->
