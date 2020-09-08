@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -171,23 +172,37 @@ public class TestUi {
 		assertEquals(fileDownloader4Tests.getHTTPStatusOfLastDownloadAttempt(), 200);
 	}
 
-	@Test
 	@Disabled
-	public void testUpload() throws InterruptedException {
+	@Test
+	public void testUpload() throws InterruptedException, FileNotFoundException {
 		driver.get(baseUrl + "/test/componentsDemo/");
 
-		final String fullPath = getClass().getResource("/data/insee.csv").getFile();
-		findElement(By.id("uploadFile_fileTest")).clear();
-		findElement(By.id("uploadFile_fileTest")).sendKeys(fullPath);
-		findElement(By.id("uploadFile_uploadFileAccueil")).click();
+		final File file = new File(getClass().getResource("/data/insee.csv").getFile());
+		dropFile("uploadermyFilesUris", file);
 
 		assertEquals("Fichier recu : insee.csv (application/octet-stream)", findElement(By.cssSelector("span")).getText());
 		assertEquals("Previous file : insee.csv (application/octet-stream)", findElement(By.id("uploadFile")).getText());
 	}
 
+	private static final String JS_SEND_FILE = "var targetName = arguments[0],"
+			+ "myFile = arguments[1];" +
+			"    VUiPage.$refs[targetName].addFiles(myFile.files);";
+	private static final String JS_CREATE_FILE = "var input = document.createElement('INPUT');" +
+			"input.type = 'file';" +
+			"input.onchange = function () {" +
+			"  setTimeout(function () { document.body.removeChild(input); }, 500);" +
+			"};" +
+			"document.body.appendChild(input);" +
+			"return input;";
+
+	static void dropFile(final String targetName, final File file) throws FileNotFoundException {
+		final WebElement createdInput = (WebElement) ((JavascriptExecutor) driver).executeScript(JS_CREATE_FILE);
+		createdInput.sendKeys(file.getAbsolutePath());
+		((JavascriptExecutor) driver).executeScript(JS_SEND_FILE, targetName, createdInput);
+	}
+
 	private void sendKeysJs(final By elementBy, final String keysToSend) {
 		final WebElement element = findElement(elementBy);
-		//element.sendKeys(keysToSend);
 		((JavascriptExecutor) driver).executeScript("document.getElementById(\"" + element.getAttribute("id") + "\").value = \"" + keysToSend + "\";\n");
 	}
 
