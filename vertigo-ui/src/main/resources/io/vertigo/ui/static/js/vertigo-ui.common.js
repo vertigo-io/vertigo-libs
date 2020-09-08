@@ -7913,4 +7913,4 @@ module.exports = global.Promise;
 
 /******/ });
 });
-//# sourceMappingURL=vertigo-ui.umd.js.map
+//# sourceMappingURL=vertigo-ui.common.js.map

@@ -346,11 +346,11 @@ export default {
                 uiMessageStack[key] = response.body.uiMessageStack[key];
             });
             if (options && options.onSuccess) {
-                options.onSuccess(response);
+                options.onSuccess.bind(this).apply(response);
             }
         }.bind(this)).catch(function (response) {
             if (options && options.onError) {
-                options.onError(response.error);
+                options.onError.bind(this).apply(response);
             }
         })
         ;
