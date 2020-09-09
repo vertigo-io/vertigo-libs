@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -174,7 +173,7 @@ public class TestUi {
 
 	@Disabled
 	@Test
-	public void testUpload() throws InterruptedException, FileNotFoundException {
+	public void testUpload() {
 		driver.get(baseUrl + "/test/componentsDemo/");
 
 		final File file = new File(getClass().getResource("/data/insee.csv").getFile());
@@ -195,7 +194,7 @@ public class TestUi {
 			"document.body.appendChild(input);" +
 			"return input;";
 
-	static void dropFile(final String targetName, final File file) throws FileNotFoundException {
+	static void dropFile(final String targetName, final File file) {
 		final WebElement createdInput = (WebElement) ((JavascriptExecutor) driver).executeScript(JS_CREATE_FILE);
 		createdInput.sendKeys(file.getAbsolutePath());
 		((JavascriptExecutor) driver).executeScript(JS_SEND_FILE, targetName, createdInput);

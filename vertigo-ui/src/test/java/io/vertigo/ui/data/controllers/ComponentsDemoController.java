@@ -93,7 +93,7 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	private MovieServices movieServices;
 
 	@GetMapping("/")
-	public void initContext(final ViewContext viewContext) throws IOException, URISyntaxException {
+	public void initContext(final ViewContext viewContext) {
 		viewContext.publishDto(movieKey, new Movie());
 		viewContext.publishDto(castingKey, new Casting());
 		viewContext.publishDtList(movieList, movieServices.getMovies(DtListState.defaultOf(Movie.class)));
