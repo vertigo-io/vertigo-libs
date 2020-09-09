@@ -9,6 +9,7 @@ import VHandles from './components/VHandles.vue'
 import VJsonEditor from './components/VJsonEditor.vue'
 import VNotifications from './components/VNotifications.vue'
 import VMap from './components/VMap.vue'
+import VMapLayer from './components/VMapLayer.vue'
 
 
 import VMinify from './directives/VMinify'
@@ -39,6 +40,7 @@ export function install (Vue , /*options*/) {
     Vue.component("v-json-editor", VJsonEditor);
     Vue.component("v-notifications", VNotifications);
     Vue.component("v-map", VMap);
+    Vue.component("v-map-layer", VMapLayer);
     
     // directives
     Vue.directive("minify", VMinify);
