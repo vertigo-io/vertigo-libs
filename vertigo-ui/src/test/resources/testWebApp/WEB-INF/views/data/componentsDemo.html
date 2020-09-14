@@ -34,7 +34,8 @@
 						<vu:text-field object="movie" field="movId"/>
 						<vu:text-field object="movie" field="title" />
 						<vu:chips-autocomplete object="movie" field="tags" list="movies" staticData="false"/>
-					    <vu:grid-cell col="2">
+					    <vu:grid-cell />
+					    <vu:grid-cell col="md-4">
 						    <script>
 						    VUiExtensions.dataX.selectedTimeZoneListArray = '[[${model[selectedTimeZoneList]}]]'.split(';');
 						    </script>
