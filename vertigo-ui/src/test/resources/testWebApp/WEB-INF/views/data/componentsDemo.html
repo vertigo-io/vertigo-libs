@@ -14,7 +14,9 @@
 		<vu:message />
 			<vu:form>
 				<vu:block id="movie" title="Movie Information">
-					<vu:grid cols="3">
+					   <vu:include-data-primitive key='timeZoneList'/>
+                       <vu:include-data-primitive key='selectedTimeZoneList'/>
+                       <vu:grid cols="3">
 						<vu:text-field object="movie" field="movId"/>
 						<vu:text-field object="movie" field="title"/>
 						<vu:text-field object="movie" field="year"  debounce="500" hint="Debouncing 500ms" />
@@ -32,7 +34,14 @@
 						<vu:text-field object="movie" field="movId"/>
 						<vu:text-field object="movie" field="title" />
 						<vu:chips-autocomplete object="movie" field="tags" list="movies" staticData="false"/>
-					
+					    <vu:grid-cell col="2">
+						    <script>
+						    VUiExtensions.dataX.selectedTimeZoneListArray = '[[${model[selectedTimeZoneList]}]]'.split(';');
+						    </script>
+							<q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" @input="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
+						</vu:grid-cell>
+                        <q-btn th:@click="|httpPostAjax('@{_ajaxArray}', vueDataParams(['selectedTimeZoneList']))|" color="primary" label="Ajax save" ></q-btn>
+					    
 						<vu:grid-cell>
 							<a th:href="@{/componentsDemo/myFiles}">insee.csv</a>
 							<div v-for="(item, index) in vueData.myFiles" :name="index" > 

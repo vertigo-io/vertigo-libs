@@ -79,6 +79,7 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 
 	private static final String[] timeZoneListStatic = { "Europe/Paris", "America/Cayenne", "Indian/Reunion" };
 	private final ViewContextKey<String[]> timeZoneList = ViewContextKey.of("timeZoneList");
+	private final ViewContextKey<String> selectedTimeZoneList = ViewContextKey.of("selectedTimeZoneList");
 	private final ViewContextKey<String> zoneId = ViewContextKey.of("zoneId");
 
 	public static final ViewContextKey<String[]> myFiles = ViewContextKey.of("myFiles");
@@ -107,6 +108,7 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		viewContext.publishRef(currentZoneId, localeManager.getCurrentZoneId().getId());
 		viewContext.publishRef(zoneId, timeZoneListStatic[0]);
 		viewContext.publishRef(timeZoneList, timeZoneListStatic);
+		viewContext.publishRef(selectedTimeZoneList, "");
 
 		viewContext.publishRef(myFiles, new String[0]);
 
@@ -188,6 +190,13 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		getUiMessageStack().addGlobalMessage(Level.INFO, "Fichier recu : " + vFile.getFileName() + " (" + vFile.getMimeType() + ")");
 		final String protectedPath = ProtectedValueUtil.generateProtectedValue(FileUtil.obtainReadOnlyPath(vFile).toFile().getAbsolutePath());
 		return new FileInfoURI(new FileInfoDefinition("FiDummy", "none"), protectedPath);
+	}
+
+	@PostMapping("/_ajaxArray")
+	public ViewContext doAjaxValidation(final ViewContext viewContext, @ViewAttribute("selectedTimeZoneList") final String selected) {
+		getUiMessageStack().addGlobalMessage(Level.INFO, "selected " + selected);
+		viewContext.publishRef(selectedTimeZoneList, selected);
+		return viewContext;
 	}
 
 	private void nop(final Object obj) {
