@@ -14,7 +14,7 @@
 	<script th:if="${isVuiDevMode}" src="http://localhost:3000/js/app.js"></script>
 	<vu:vue-data/>
 	<script>
-		Vue.use(VertigoUi);
+		Vue.use(VertigoUi, {axios : axios});
 		Quasar.lang.set(Quasar.lang.[[${model.util.getCurrentLocaleForQuasar()}]])
 		var data = {
 				  vueData : VertigoUi.vueData,
@@ -26,7 +26,15 @@
 		var VUiPage = new Vue({
 		  el: '#page',
 		  data: data,
-		  methods: Vue.util.extend(VertigoUi.methods, VUiExtensions.methods ||  {}) 
+		  methods: Vue.util.extend(VertigoUi.methods, VUiExtensions.methods ||  {}),
+		  created : function() {
+			  this.$http.interceptors.response.use(function(response) {
+			        return response;
+			     }, function(error) {
+			          this.onAjaxError(error.response);
+			    }.bind(this))
+		  }
+		  
 		});
 
 		// fixes wrong components states due to firefox bfcache (back-forward cache)

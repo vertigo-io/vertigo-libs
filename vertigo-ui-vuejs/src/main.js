@@ -27,7 +27,7 @@ export function getBoundMethods(obj, methods) {
     return boundMethods;
 }
 
-export function install (Vue , /*options*/) {
+export function install (Vue , options) {
       
     // components
     Vue.component("v-chatbot", VChatbot);
@@ -46,10 +46,36 @@ export function install (Vue , /*options*/) {
     Vue.directive("minify", VMinify);
     Vue.directive("scroll-spy", VScrollSpy);
 
-    Vue.http.interceptors.push(function(/*request*/) {
-        return function(response) { if(!response.ok) { VMethods.onAjaxError.bind(this)(response); } };
-     });
 
+
+    if (!options.axios) {
+        console.error('You have to install axios')
+        return
+    }
+
+    Vue.axios = options.axios;
+    Vue.$http = options.axios;
+
+    Object.defineProperties(Vue.prototype, {
+        axios: {
+            get() {
+            return options.axios
+            }
+        },
+    
+        $http: {
+            get() {
+            return options.axios
+            }
+        },
+
+        $vui: {
+            get() {
+                return getBoundMethods(this, VMethods);
+            }
+        }
+    });
+    
     if (Quasar.lang.enUs) {
         Quasar.lang.enUs.vui = EnUs;
     }

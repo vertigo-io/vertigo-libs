@@ -29,8 +29,8 @@ export default {
         } else if(response.status === 422){
             //Validation Message
             notif.message = '';
-            Object.keys(response.body).forEach(function (key) {
-            this.$data.uiMessageStack[key] = response.body[key];
+            Object.keys(response.data).forEach(function (key) {
+            this.$data.uiMessageStack[key] = response.data[key];
             }.bind(this));
         } else if(response.status >= 500){
             notif.message = 'Server Error'
@@ -76,11 +76,11 @@ export default {
                 if (pagination.sortUrl) {
                     //order call the server
                     pagination.page = 1 //reset pagination
-                    this.$http.post(pagination.sortUrl, { sortFieldName : pagination.sortBy, sortDesc : pagination.descending, CTX: this.$data.vueData.CTX}, { emulateJSON: true })
+                    this.$http.post(pagination.sortUrl, this.objectToFormData({ sortFieldName : pagination.sortBy, sortDesc : pagination.descending, CTX: this.$data.vueData.CTX}))
                     .then( function (response ) {
-                        vueData[pagination.listKey] = response.body.model[pagination.listKey];
-                        this.$data.vueData.CTX = response.body.model['CTX'];
-                    });
+                        vueData[pagination.listKey] = response.data.model[pagination.listKey];
+                        this.$data.vueData.CTX = response.data.model['CTX'];
+                    }.bind(this));
                 } else {
                     //do locally
                     this.$refs[pagination.componentId].sortMethod.apply(this.$refs[pagination.componentId], [vueData[pagination.listKey], pagination.sortBy, pagination.descending])
@@ -155,16 +155,15 @@ export default {
             abort();
             return
         }
-        this.$http.post(url, {terms: terms, list : list , valueField : valueField,labelField : labelField, CTX: this.$data.vueData.CTX}, { emulateJSON: true }).then( function (response ) {
-            var finalList =  response.body.map(function (object) {
+        this.$http.post(url, this.objectToFormData({terms: terms, list : list , valueField : valueField,labelField : labelField, CTX: this.$data.vueData.CTX})).then( function (response ) {
+            var finalList =  response.data.map(function (object) {
                 return { value: object[valueField], label: object[labelField].toString()} // a label is always a string
             });
             update(function() {
                 this.$data.componentStates[componentId].options = finalList;
             }.bind(this));
-        }, 
-        function (response) {
-            this.$q.notify(response.status + ":" +response.statusText);
+        }.bind(this)).catch(function (error) {
+            this.$q.notify(error.response.status + ":" +error.response.statusText);
             update([]);
         });
         
@@ -260,15 +259,15 @@ export default {
         var selectedFacetsContextKey = contextKey +"_selectedFacets";
         var criteriaContextKey = vueData[contextKey + '_criteriaContextKey'];
         var params = this.vueDataParams([criteriaContextKey]);
-        params['selectedFacets'] = JSON.stringify(vueData[selectedFacetsContextKey]);
+        params.append('selectedFacets', JSON.stringify(vueData[selectedFacetsContextKey]));
         
         var searchUrl = componentStates[contextKey+'Search'].searchUrl;
         var collectionComponentId = componentStates[contextKey+'Search'].collectionComponentId;
         
         if (componentStates[collectionComponentId].pagination && componentStates[collectionComponentId].pagination.sortBy) {
             var collectionPagination = componentStates[collectionComponentId].pagination;
-            params['sortFieldName'] = collectionPagination.sortBy;
-            params['sortDesc'] = collectionPagination.descending;
+            params.append('sortFieldName', collectionPagination.sortBy);
+            params.append('sortDesc', collectionPagination.descending);
         }
         this.httpPostAjax(searchUrl, params, {  
             onSuccess : function (response ) {
@@ -323,34 +322,35 @@ export default {
                 } else {
                     componentFileUris.splice(0);
                 }
-            }, function(response) { //Ko
-                this.$q.notify(response.status + ":" +response.statusText+ " Can't remove temporary file");
-            });
+            }.bind(this))
+            .catch(function(error) { //Ko
+                this.$q.notify(error.response.status + ":" +error.response.statusText+ " Can't remove temporary file");
+            }.bind);
         }.bind(this));
     },
 
     httpPostAjax : function(url, params, options) {
         let vueData = this.$data.vueData;
         let uiMessageStack = this.$data.uiMessageStack;
-        params['CTX'] = vueData.CTX;
-        this.$http.post(url, params , { emulateJSON: true }).then( function (response ) {
-            if (response.body.model.CTX) {
-                vueData.CTX = response.body.model.CTX;
+        params.append('CTX',  vueData.CTX);
+        this.$http.post(url, params).then( function (response ) {
+            if (response.data.model.CTX) {
+                vueData.CTX = response.data.model.CTX;
             }
-            Object.keys(response.body.model).forEach(function (key) {
+            Object.keys(response.data.model).forEach(function (key) {
                 if ('CTX' != key) {
-                    vueData[key] = response.body.model[key];
+                    vueData[key] = response.data.model[key];
                 }
             });
-            Object.keys(response.body.uiMessageStack).forEach(function (key) {
-                uiMessageStack[key] = response.body.uiMessageStack[key];
+            Object.keys(response.data.uiMessageStack).forEach(function (key) {
+                uiMessageStack[key] = response.data.uiMessageStack[key];
             });
             if (options && options.onSuccess) {
                 options.onSuccess.bind(this).apply(response);
             }
-        }.bind(this)).catch(function (response) {
+        }.bind(this)).catch(function (error) {
             if (options && options.onError) {
-                options.onError.bind(this).apply(response);
+                options.onError.bind(this).apply(error.response);
             }
         })
         ;
@@ -373,7 +373,7 @@ export default {
     },
 
     vueDataParams: function (keys) {
-        var params = {};
+        var params = new FormData();
         for (var i = 0; i < keys.length; i++) {
             var contextKey = keys[i];
             var vueDataValue = this.$data.vueData[contextKey];
@@ -385,27 +385,33 @@ export default {
                         if (Array.isArray(vueDataValue[propertyKey])) {
                             vueDataValue[propertyKey].forEach(function (value, index) {
                                 if(vueDataValue[propertyKey][index] && typeof vueDataValue[propertyKey][index] === 'object' ) {
-                                    params['vContext['+contextKey+']['+propertyKey+']['+index+']'] = vueDataValue[propertyKey][index]['_v_inputValue'];
+                                    params.append('vContext['+contextKey+']['+propertyKey+']', vueDataValue[propertyKey][index]['_v_inputValue']);
                                 } else {
-                                    params['vContext['+contextKey+']['+propertyKey+']['+index+']'] = vueDataValue[propertyKey][index];
+                                    params.append('vContext['+contextKey+']['+propertyKey+']', vueDataValue[propertyKey][index]);
                                 }
                             });
                         } else {
                             if(vueDataValue[propertyKey] && typeof vueDataValue[propertyKey] === 'object' ) {
-                                params['vContext['+contextKey+']['+propertyKey+']'] = vueDataValue[propertyKey]['_v_inputValue'];
+                                params.append('vContext['+contextKey+']['+propertyKey+']', vueDataValue[propertyKey]['_v_inputValue']);
                             } else {
-                                params['vContext['+contextKey+']['+propertyKey+']'] = vueDataValue[propertyKey];
+                                params.append('vContext['+contextKey+']['+propertyKey+']', vueDataValue[propertyKey]);
                             }
                         }
                     }
                 });
             } else {
                 //primitive
-                params['vContext['+contextKey+']'] = vueDataValue;
+                params.append('vContext['+contextKey+']', vueDataValue);
             }
         }
         return params;
         
+    },
+
+    objectToFormData: function(object) {
+        const formData = new FormData();
+        Object.keys(object).forEach(key => formData.append(key, object[key]));
+        return formData;
     }
 
 }

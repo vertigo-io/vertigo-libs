@@ -138,7 +138,7 @@ export default {
                 this.$data.items = response.body;
                 this.$data.vectorSource.clear();
                 this.$data.vectorSource.addFeatures(this.features);
-            });
+            }.bind(this));
         },
             /**
      * Decode geohash to latitude/longitude (location is approximate centre of geohash cell,
