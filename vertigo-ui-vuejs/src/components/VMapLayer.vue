@@ -18,6 +18,7 @@ export default {
     props : {
         id: { type: String, required: true},
         list : { type: Array },
+        cluster : { type: Array },
         object : { type: Object },
         baseUrl : { type: String },
         field: { type: String, required: true},
@@ -38,13 +39,34 @@ export default {
             popupDisplayed : false,
             objectDisplayed: {},
             items: [],
+            clusters: [],
             olMap: {},
-            vectorSource : {}
+            vectorSource : {},
+            base32 : '0123456789bcdefghjkmnpqrstuvwxyz' // (geohash-specific) Base32 map
+            
         }
     },
     watch : {
         list : function(newVal) {
+        console.log('watch list');
            this.$data.items = newVal;
+           this.$data.vectorSource.clear();
+           this.$data.vectorSource.addFeatures(this.features);
+        },
+        cluster : function(newVal) {
+        console.log('watch cluster');
+           this.$data.items = [];
+           this.$data.clusters = [];
+           for(var i =0 ; i< newVal.length; i++) {
+                    if(newVal[i].totalCount == 1) {
+                        this.$data.items = this.$data.items.concat(newVal[i].list);                        
+                    } else {
+                        this.$data.clusters.push({
+                        geoHash:newVal[i].code,
+                        geoLocation:this.decode(newVal[i].code),
+                        totalCount:newVal[i].totalCount});
+                    }
+                }
            this.$data.vectorSource.clear();
            this.$data.vectorSource.addFeatures(this.features);
         },
@@ -74,23 +96,119 @@ export default {
                     if (this.$props.nameField) {
                         iconFeature.set('name', object[this.$props.nameField]);
                         iconFeature.set('innerObject', object);
+                        iconFeature.set('totalCount', object.totalCount);
                     }
                     return iconFeature;
                 } 
                 return null;
             }.bind(this));
-            return arrayOfFeatures;
+            
+            var arrayOfClusterFeatures = this.$data.clusters
+            .filter(function(object) {
+                return object[geoField]!=null;
+            }).map(function(object) {
+                var geoObject;
+                if (typeof object[geoField] === 'string' || object[geoField] instanceof String){
+                    geoObject = JSON.parse(object[geoField]);
+                } else {
+                    geoObject = object[geoField];
+                }
+                if(geoObject != null) {
+                    var iconFeature = new ol.Feature({
+                        geometry : new ol.geom.Point(ol.proj.fromLonLat([ geoObject.lon, geoObject.lat ])),
+                    });
+                    
+                    if (this.$props.nameField) {
+                        iconFeature.set('name', object[this.$props.nameField]);
+                        iconFeature.set('innerObject', object);
+                        iconFeature.set('totalCount', object.totalCount);
+                    }
+                    return iconFeature;
+                } 
+                return null;
+            }.bind(this));
+            return arrayOfFeatures.concat(arrayOfClusterFeatures);
         }
     },
     methods : {
         fetchList: function(topLeft, bottomRight) {
             this.$http.get(this.baseUrl+'_geoSearch?topLeft="'+ topLeft.lat+','+topLeft.lon+'"&bottomRight="'+ bottomRight.lat+','+bottomRight.lon+ '"', { timeout:5*1000, })
             .then( function (response) { //Ok
+                console.log('fetchList');
                 this.$data.items = response.body;
                 this.$data.vectorSource.clear();
                 this.$data.vectorSource.addFeatures(this.features);
             });
+        },
+            /**
+     * Decode geohash to latitude/longitude (location is approximate centre of geohash cell,
+     *     to reasonable precision).
+     *
+     * @param   {string} geohash - Geohash string to be converted to latitude/longitude.
+     * @returns {{lat:number, lon:number}} (Center of) geohashed location.
+     * @throws  Invalid geohash.
+     *
+     * @example
+     *     const latlon = Geohash.decode('u120fxw'); // => { lat: 52.205, lon: 0.1188 }
+     */
+    decode : function (geohash) {
+        const bounds = this.bounds(geohash); // <-- the hard work
+        // now just determine the centre of the cell...
+        const latMin = bounds.sw.lat, lonMin = bounds.sw.lon;
+        const latMax = bounds.ne.lat, lonMax = bounds.ne.lon;
+        // cell centre
+        let lat = (latMin + latMax)/2;
+        let lon = (lonMin + lonMax)/2;
+        // round to close to centre without excessive precision: ⌊2-log10(Δ°)⌋ decimal places
+        lat = lat.toFixed(Math.floor(2-Math.log(latMax-latMin)/Math.LN10));
+        lon = lon.toFixed(Math.floor(2-Math.log(lonMax-lonMin)/Math.LN10));
+        return { lat: Number(lat), lon: Number(lon) };
+    },
+    /**
+     * Returns SW/NE latitude/longitude bounds of specified geohash.
+     *
+     * @param   {string} geohash - Cell that bounds are required of.
+     * @returns {{sw: {lat: number, lon: number}, ne: {lat: number, lon: number}}}
+     * @throws  Invalid geohash.
+     */
+    bounds : function(geohash) {
+        if (geohash.length == 0) throw new Error('Invalid geohash');
+        geohash = geohash.toLowerCase();
+        let evenBit = true;
+        let latMin =  -90, latMax =  90;
+        let lonMin = -180, lonMax = 180;
+        for (let i=0; i<geohash.length; i++) {
+            const chr = geohash.charAt(i);
+            const idx = this.$data.base32.indexOf(chr);
+            if (idx == -1) throw new Error('Invalid geohash');
+            for (let n=4; n>=0; n--) {
+                const bitN = idx >> n & 1;
+                if (evenBit) {
+                    // longitude
+                    const lonMid = (lonMin+lonMax) / 2;
+                    if (bitN == 1) {
+                        lonMin = lonMid;
+                    } else {
+                        lonMax = lonMid;
+                    }
+                } else {
+                    // latitude
+                    const latMid = (latMin+latMax) / 2;
+                    if (bitN == 1) {
+                        latMin = latMid;
+                    } else {
+                        latMax = latMid;
+                    }
+                }
+                evenBit = !evenBit;
+            }
         }
+        const bounds = {
+            sw: { lat: latMin, lon: lonMin },
+            ne: { lat: latMax, lon: lonMax },
+        };
+        return bounds;
+    }
         
     },
    
@@ -98,9 +216,21 @@ export default {
         this.$parent.onMapLoad( function( olMap ) {
             this.$data.olMap = olMap;
             this.$data.items = [];
+            this.$data.clusters = [];
             if(this.$props.list) {
                 this.$data.items = this.$props.list
-            } else if(this.$props.object) {
+            } else if(this.$props.cluster) {
+                for(var i =0 ; i< this.$props.cluster.length; i++) {
+                    if(this.$props.cluster[i].totalCount == 1) {
+                        this.$data.items = this.$data.items.concat(this.$props.cluster[i].list);                        
+                    } else {
+                        this.$data.clusters.push({
+                        geoHash:this.$props.cluster[i].code,
+                        geoLocation:this.decode(this.$props.cluster[i].code),
+                        totalCount:this.$props.cluster[i].totalCount});
+                    }
+                }
+            } else  if(this.$props.object) {
                 this.$data.items = [this.$props.object];
             }
             this.$data.vectorSource = new ol.source.Vector({
@@ -126,8 +256,13 @@ export default {
             
             var styleCache = {};
             clusterLayer.setStyle(function(feature, /*resolution*/) {
-                var size = feature.get('features').length;
-                if (size == 1) {
+                var size = 0;
+                var agregateFeatures = feature.get('features');
+                for(var i = 0; i<agregateFeatures.length;i++) {
+                    var fSize = agregateFeatures[i].get('totalCount');
+                    size += !fSize?1:fSize;
+                }
+                if (!size || size == 1) {
                     return styleIcon;
                 } else {
                       // otherwise show the number of features
