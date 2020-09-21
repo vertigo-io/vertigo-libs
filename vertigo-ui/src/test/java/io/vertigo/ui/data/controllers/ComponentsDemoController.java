@@ -40,7 +40,7 @@ import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
 import io.vertigo.datastore.filestore.model.VFile;
-import io.vertigo.datastore.filestore.util.FileUtil;
+import io.vertigo.datastore.filestore.util.VFileUtil;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.ui.core.ProtectedValueUtil;
 import io.vertigo.ui.core.ViewContext;
@@ -188,7 +188,7 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	@PostMapping("/upload")
 	public FileInfoURI uploadFile(@QueryParam("file") final VFile vFile) {
 		getUiMessageStack().addGlobalMessage(Level.INFO, "Fichier recu : " + vFile.getFileName() + " (" + vFile.getMimeType() + ")");
-		final String protectedPath = ProtectedValueUtil.generateProtectedValue(FileUtil.obtainReadOnlyPath(vFile).toFile().getAbsolutePath());
+		final String protectedPath = ProtectedValueUtil.generateProtectedValue(VFileUtil.obtainReadOnlyPath(vFile).toFile().getAbsolutePath());
 		return new FileInfoURI(new FileInfoDefinition("FiDummy", "none"), protectedPath);
 	}
 

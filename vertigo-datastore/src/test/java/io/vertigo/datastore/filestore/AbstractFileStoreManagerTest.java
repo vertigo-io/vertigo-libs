@@ -35,12 +35,13 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
+import io.vertigo.core.util.FileUtil;
 import io.vertigo.datastore.TestUtil;
 import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoStd;
 import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoTemp;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.VFile;
-import io.vertigo.datastore.filestore.util.FileUtil;
+import io.vertigo.datastore.filestore.util.VFileUtil;
 
 /**
  * Test de l'implémentation standard.
