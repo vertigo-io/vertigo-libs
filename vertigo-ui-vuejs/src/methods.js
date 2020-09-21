@@ -155,18 +155,45 @@ export default {
             abort();
             return
         }
-        this.$http.post(url, this.objectToFormData({terms: terms, list : list , valueField : valueField,labelField : labelField, CTX: this.$data.vueData.CTX})).then( function (response ) {
+        this.$http.post(url, this.objectToFormData({terms: terms, list : list , valueField : valueField,labelField : labelField, CTX: this.$data.vueData.CTX}))
+        .then( function (response ) {
             var finalList =  response.data.map(function (object) {
                 return { value: object[valueField], label: object[labelField].toString()} // a label is always a string
             });
             update(function() {
                 this.$data.componentStates[componentId].options = finalList;
             }.bind(this));
-        }.bind(this)).catch(function (error) {
+        }.bind(this))
+        .catch(function (error) {
             this.$q.notify(error.response.status + ":" +error.response.statusText);
             update([]);
         });
         
+    },
+    loadAutocompleteById : function(list, valueField, labelField, componentId, url, objectName, fieldName) {
+        //Method use when value(id) is set by another way : like Ajax Viewcontext update, other component, ...
+        //if options already contains the value (id) : we won't reload.
+        if (!this.$data.vueData[objectName][fieldName] || (VUiPage.$data.componentStates[componentId].options
+		  .filter(function(option){ return option.value === VUiPage.vueData[objectName][fieldName]}).length>0)) {
+            return
+		}
+		this.$data.componentStates[componentId].loading=true;
+		this.$data.componentStates[componentId].options.push( { 'value' : this.$data.vueData[objectName][fieldName], 'label': ''})
+		this.$http.post(url, VUiPage.objectToFormData({value: this.$data.vueData[objectName][fieldName], list : list, valueField : valueField, labelField : labelField, CTX: this.$data.vueData.CTX}))
+			.then( function (response ) {
+            var finalList =  response.data.map(function (object) {
+                return { value: object[valueField], label: object[labelField].toString()} // a label is always a string
+			});
+			this.$data.componentStates[componentId].options.pop();
+            this.$data.componentStates[componentId].options = this.$data.componentStates[componentId].options.concat(finalList);
+		}.bind(this))
+		.catch(function (error) {
+			this.$data.componentStates[componentId].options.pop();
+			this.$q.notify(error.response.status + ":" +error.response.statusText);            
+		}.bind(this))
+		.then(function () {// always executed
+			this.$data.componentStates[componentId].loading=false;
+  		}.bind(this));
     },
 
     decodeDate : function (object, field, format) {
