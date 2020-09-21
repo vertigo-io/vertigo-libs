@@ -174,7 +174,7 @@ export default {
         //Method use when value(id) is set by another way : like Ajax Viewcontext update, other component, ...
         //if options already contains the value (id) : we won't reload.
         if (!this.$data.vueData[objectName][fieldName] || (this.$data.componentStates[componentId].options
-            .filter(function (option) { return option.value === this.vueData[objectName][fieldName] }).length > 0)) {
+            .filter(function (option) { return option.value === this.$data.vueData[objectName][fieldName] }.bind(this)).length > 0)) {
             return
         }
         this.$data.componentStates[componentId].loading = true;
