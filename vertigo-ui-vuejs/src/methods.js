@@ -385,16 +385,21 @@ export default {
     },
 
     hasFieldsError: function (object, field) {
-        var fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
-        return fieldsErrors && Object.prototype.hasOwnProperty.call(fieldsErrors, object) &&
-            fieldsErrors[object] && Object.prototype.hasOwnProperty.call(fieldsErrors[object], field) && fieldsErrors[object][field].length > 0;
+        const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
+        if (fieldsErrors) {
+            return Object.prototype.hasOwnProperty.call(fieldsErrors, object) &&
+            fieldsErrors[object] && Object.prototype.hasOwnProperty.call(fieldsErrors[object], field) && fieldsErrors[object][field].length > 0
+        }
+        return false;
     },
 
     getErrorMessage: function (object, field) {
-        var fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
-        if (fieldsErrors && Object.prototype.hasOwnProperty.call(fieldsErrors, object) &&
-            fieldsErrors[object] && Object.prototype.hasOwnProperty.call(fieldsErrors[object], field)) {
-            return fieldsErrors[object][field].toString();
+        const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
+        if (fieldsErrors) {
+            if (Object.prototype.hasOwnProperty.call(fieldsErrors, object) &&
+                fieldsErrors[object] && Object.prototype.hasOwnProperty.call(fieldsErrors[object], field)) {
+                return fieldsErrors[object][field].join(', ');
+            }
         } else {
             return '';
         }

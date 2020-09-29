@@ -11,13 +11,7 @@ import VNotifications from './components/VNotifications.vue'
 import VMap from './components/VMap.vue'
 import VMapLayer from './components/VMapLayer.vue'
 
-import OrchestraStandalone from './orchestra/views/Orchestra-Standalone.vue'
-import Orchestra from "./orchestra/views/Orchestra.vue"; 
-import OrchestraHome from "./orchestra/views/Home.vue";
-import OrchestraProcess from "./orchestra/views/Process.vue";
-
-
-//import VMinify from './directives/VMinify'
+import VMinify from './directives/VMinify'
 import VScrollSpy from './directives/VScrollSpy'
 
 import VMethods from './methods'
@@ -48,15 +42,8 @@ export function install (Vue , options) {
     Vue.component("v-map-layer", VMapLayer);
     
     // directives
-    //Vue.directive("minify", VMinify);
+    Vue.directive("minify", VMinify);
     Vue.directive("scroll-spy", VScrollSpy);
-
-    //orchestra
-    Vue.component("vui-orchestra-standalone", OrchestraStandalone);
-    Vue.component("vui-orchestra", Orchestra);
-    Vue.component("vui-orchestra-home", OrchestraHome);
-    Vue.component("vui-orchestra-process", OrchestraProcess);
-
 
     if (!options.axios) {
         console.error('You have to install axios')
