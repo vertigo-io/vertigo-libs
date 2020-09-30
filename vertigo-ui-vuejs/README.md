@@ -1,4 +1,4 @@
-# vertigo-ui
+# vertigo-ui-vuejs
 
 ## Project setup
 ```
@@ -14,13 +14,6 @@ For vertigo-ui, add a `vuiDevMode` attribute on `<vu:page>` tag, it will auto re
 
 ### Compiles and minifies for production
 ```
-npm run build
+npm run build-lib
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
