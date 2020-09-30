@@ -16,3 +16,5 @@ vertigo-x-release/
 mvn-release.txt
 createSymLink.bat
 .factorypath
+node_modules
+dist
