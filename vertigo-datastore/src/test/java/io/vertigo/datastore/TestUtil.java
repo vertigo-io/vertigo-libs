@@ -29,7 +29,6 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.FileUtil;
 import io.vertigo.core.util.TempFile;
 import io.vertigo.datastore.filestore.model.VFile;
-import io.vertigo.datastore.filestore.util.VFileUtil;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
 
 /**
