@@ -5040,6 +5040,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.d(__webpack_exports__, "getBoundMethods", function() { return /* reexport */ getBoundMethods; });
 __webpack_require__.d(__webpack_exports__, "install", function() { return /* reexport */ install; });
 __webpack_require__.d(__webpack_exports__, "methods", function() { return /* reexport */ main_methods; });
+__webpack_require__.d(__webpack_exports__, "initData", function() { return /* reexport */ initData; });
 
 // CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/setPublicPath.js
 // This file is imported into lib/wc client bundles.
@@ -8440,6 +8441,12 @@ function install(Vue, options) {
   }
 }
 var main_methods = methods;
+function initData(instance, json) {
+  instance.vueData = json.vueData;
+  instance.componentStates = json.componentStates;
+  instance.uiMessageStack = json.uiMessageStack;
+  instance.vuiLang = json.vuiLang;
+}
 // CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/entry-lib-no-default.js
 
 

@@ -85,3 +85,10 @@ export function install (Vue , options) {
 }
 
 export let methods = VMethods
+
+export function initData(instance, json) {
+    instance.vueData = json.vueData;
+	instance.componentStates = json.componentStates;
+    instance.uiMessageStack = json.uiMessageStack;
+    instance.vuiLang = json.vuiLang;
+}
