@@ -549,7 +549,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			jsonBasicTypeAdapters.entrySet()
 					.forEach(entry -> gsonBuilder.registerTypeAdapter(entry.getKey(), new SmartTypeAdapter(entry.getKey(), entry.getValue())));
 
-			return gsonBuilder
+			 gsonBuilder
 					.setPrettyPrinting()
 					//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 					.registerTypeHierarchyAdapter(Entity.class, new EntityJsonAdapter())
@@ -557,23 +557,29 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 					.registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
 					.registerTypeAdapter(ZonedDateTime.class, new ZonedDateTimeAdapter())
 					.registerTypeAdapter(Instant.class, new InstantAdapter())
-					.registerTypeAdapter(String.class, new EmptyStringAsNull())// add "" <=> null
 					.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
 					.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
 					.registerTypeHierarchyAdapter(UiList.class, new UiListDeserializer<>())
 					.registerTypeAdapter(DtList.class, new DtListDeserializer<>())
 					.registerTypeAdapter(DtListState.class, new DtListStateDeserializer())
 					.registerTypeAdapter(FacetedQueryResult.class, searchApiVersion.getJsonSerializerClass().newInstance())
-					.registerTypeAdapter(SelectedFacetValues.class, new SelectedFacetValuesDeserializer())
-					.registerTypeAdapter(List.class, new ListJsonSerializer())
-					.registerTypeAdapter(Map.class, new MapJsonSerializer())
+					.registerTypeAdapter(SelectedFacetValues.class, new SelectedFacetValuesDeserializer());
+			
+			if (!serializeNulls) {
+				gsonBuilder
+				.registerTypeAdapter(String.class, new EmptyStringAsNull())// add "" <=> null
+				.registerTypeAdapter(List.class, new ListJsonSerializer())
+				.registerTypeAdapter(Map.class, new MapJsonSerializer());
+			}
+				
+			gsonBuilder
 					.registerTypeAdapter(DefinitionReference.class, new DefinitionReferenceJsonSerializer())
 					.registerTypeAdapter(Optional.class, new OptionJsonSerializer())
 					.registerTypeAdapter(VAccessor.class, new VAccessorJsonSerializer())
 					.registerTypeAdapter(Class.class, new ClassJsonSerializer())
 					.registerTypeAdapter(UID.class, new URIJsonAdapter())
-					.addSerializationExclusionStrategy(new JsonExclusionStrategy())
-					.create();
+					.addSerializationExclusionStrategy(new JsonExclusionStrategy());
+			return gsonBuilder.create();
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw WrappedException.wrap(e, "Can't create Gson");
 		}
