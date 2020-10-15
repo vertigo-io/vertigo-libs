@@ -547,6 +547,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 					.registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
 					.registerTypeAdapter(ZonedDateTime.class, new ZonedDateTimeAdapter())
 					.registerTypeAdapter(Instant.class, new InstantAdapter())
+					.registerTypeAdapter(String.class, new EmptyStringAsNull())// add "" <=> null
 					.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
 					.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
 					.registerTypeHierarchyAdapter(UiList.class, new UiListDeserializer<>())
@@ -557,7 +558,6 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 
 			if (!serializeNulls) {
 				gsonBuilder
-						.registerTypeAdapter(String.class, new EmptyStringAsNull())// add "" <=> null
 						.registerTypeAdapter(List.class, new ListJsonSerializer())
 						.registerTypeAdapter(Map.class, new MapJsonSerializer());
 			}
