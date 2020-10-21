@@ -43,7 +43,6 @@ import io.vertigo.core.util.FileUtil;
 import io.vertigo.core.util.TempFile;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datastore.filestore.model.VFile;
-import io.vertigo.datastore.filestore.util.VFileUtil;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.quarto.impl.publisher.PublisherDataUtil;
 import io.vertigo.quarto.publisher.data.domain.Address;
