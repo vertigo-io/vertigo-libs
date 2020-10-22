@@ -129,18 +129,28 @@ public class TestUi {
 	public void testMovies() throws InterruptedException {
 		driver.get(baseUrl + "/test/movies/");
 		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
 	}
 
 	@Test
 	public void testMovieDetail() throws InterruptedException {
 		driver.get(baseUrl + "/test/movie/1000");
 		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
 	}
 
 	@Test
 	public void testDemo() throws InterruptedException {
 		driver.get(baseUrl + "/test/componentsDemo/");
 		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+	}
+
+	@Test
+	public void testSomeTags() throws InterruptedException {
+		driver.get(baseUrl + "/test/someTags/");
+		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
 	}
 
 	@Test
