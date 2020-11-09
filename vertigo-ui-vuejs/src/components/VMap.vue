@@ -20,11 +20,17 @@ export default {
             function checkForMap() {
               if (vm.olMap) {
                 found(vm.olMap);
+                vm.postInit()
               } else {
                 setTimeout(checkForMap, 50);
               }
             }
             checkForMap();
+          },
+          postInit() {
+              if (this.$props.initialZoomLevel) {
+                    this.olMap.getView().setZoom(this.$props.initialZoomLevel);
+               }
           }
     },
     mounted : function() {        
@@ -48,9 +54,7 @@ export default {
         if (this.$props.initialCenter) {
             this.olMap.getView().setCenter(ol.proj.fromLonLat([this.$props.initialCenter.lon, this.$props.initialCenter.lat]));
         }
-        if (this.$props.initialZoomLevel) {
-            this.olMap.getView().setZoom(this.$props.initialZoomLevel);
-        }
+        
         // handle refresh if an endPoint is specified
         this.olMap.on('moveend', function(e) {
             var mapExtent =  e.map.getView().calculateExtent();

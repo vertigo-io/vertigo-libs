@@ -134,8 +134,7 @@ export default {
         fetchList: function(topLeft, bottomRight) {
             this.$http.get(this.baseUrl+'_geoSearch?topLeft="'+ topLeft.lat+','+topLeft.lon+'"&bottomRight="'+ bottomRight.lat+','+bottomRight.lon+ '"', { timeout:5*1000, })
             .then( function (response) { //Ok
-                console.log('fetchList');
-                this.$data.items = response.body;
+                this.$data.items = response.data;
                 this.$data.vectorSource.clear();
                 this.$data.vectorSource.addFeatures(this.features);
             }.bind(this));

@@ -6724,12 +6724,12 @@ var VMap_component = normalizeComponent(
 )
 
 /* harmony default export */ var VMap = (VMap_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"33aabdfe-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/VMapLayer.vue?vue&type=template&id=f022459c&
-var VMapLayervue_type_template_id_f022459c_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":_vm.id}},[_c('div',{attrs:{"id":_vm.id+'Popup'}},[(_vm.popupDisplayed)?_c('q-card',{staticClass:"q-px-md"},[_vm._t("card",[_c('div',{staticClass:"text-subtitle2"},[_vm._v(_vm._s(_vm.objectDisplayed[_vm.nameField]))])],{"objectDisplayed":_vm.objectDisplayed})],2):_vm._e()],1)])}
-var VMapLayervue_type_template_id_f022459c_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"33aabdfe-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/VMapLayer.vue?vue&type=template&id=0871f7ba&
+var VMapLayervue_type_template_id_0871f7ba_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":_vm.id}},[_c('div',{attrs:{"id":_vm.id+'Popup'}},[(_vm.popupDisplayed)?_c('q-card',{staticClass:"q-px-md"},[_vm._t("card",[_c('div',{staticClass:"text-subtitle2"},[_vm._v(_vm._s(_vm.objectDisplayed[_vm.nameField]))])],{"objectDisplayed":_vm.objectDisplayed})],2):_vm._e()],1)])}
+var VMapLayervue_type_template_id_0871f7ba_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/VMapLayer.vue?vue&type=template&id=f022459c&
+// CONCATENATED MODULE: ./src/components/VMapLayer.vue?vue&type=template&id=0871f7ba&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.concat.js
 var es_array_concat = __webpack_require__("99af");
@@ -6938,7 +6938,6 @@ var es_regexp_to_string = __webpack_require__("25f0");
         timeout: 5 * 1000
       }).then(function (response) {
         //Ok
-        console.log('fetchList', response);
         this.$data.items = response.data;
         this.$data.vectorSource.clear();
         this.$data.vectorSource.addFeatures(this.features);
@@ -7214,8 +7213,8 @@ var es_regexp_to_string = __webpack_require__("25f0");
 
 var VMapLayer_component = normalizeComponent(
   components_VMapLayervue_type_script_lang_js_,
-  VMapLayervue_type_template_id_f022459c_render,
-  VMapLayervue_type_template_id_f022459c_staticRenderFns,
+  VMapLayervue_type_template_id_0871f7ba_render,
+  VMapLayervue_type_template_id_0871f7ba_staticRenderFns,
   false,
   null,
   null,
