@@ -17,4 +17,4 @@ mvn-release.txt
 createSymLink.bat
 .factorypath
 node_modules
-dist
+/vertigo-ui-vuejs/dist
