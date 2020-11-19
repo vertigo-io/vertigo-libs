@@ -164,9 +164,19 @@ public class TestUi {
 		findElement(By.name("vContext[movie][year]")).clear();
 		sendKeysJs(By.name("vContext[movie][year]"), "2020");
 		findElement(By.id("saveAction")).click();
-
+		Thread.sleep(5000);
 		assertEquals("Test 1", findElement(By.name("vContext[movie][title]")).getAttribute("value"));
 		assertEquals("2020", findElement(By.name("vContext[movie][year]")).getAttribute("value"));
+
+		findElement(By.name("vContext[movie][title]")).clear();
+		sendKeysJs(By.name("vContext[movie][title]"),
+				"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa "
+						+ "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa "
+						+ "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa "
+						+ "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ");
+		findElement(By.id("saveAction")).click();
+		Thread.sleep(5000);
+		assertEquals("la taille doit être inférieure à 250 caractères.", findElement(By.cssSelector(".fieldTitle .q-field__messages")).getText());
 	}
 
 	@Test

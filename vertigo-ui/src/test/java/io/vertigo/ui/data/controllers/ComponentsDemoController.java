@@ -116,7 +116,7 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/movies/{movieId}")
-	public void doSaveMovie(final ViewContext viewContext,
+	public void doSaveMovieManualValidation(final ViewContext viewContext,
 			@ViewAttribute("movie") final UiObject<Movie> movieUiObject,
 			@PathVariable("movieId") final Long movieId,
 			final UiMessageStack uiMessageStack) {
@@ -126,6 +126,11 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		}
 
 		viewContext.publishRef(currentInstant, Instant.now());
+	}
+
+	@PostMapping("/_save")
+	public void doSaveAutoValidation(final ViewContext viewContext, @ViewAttribute("movie") final Movie movie) {
+		viewContext.publishDto(movieKey, movie);
 	}
 
 	@PostMapping("/movies/_add")
@@ -156,11 +161,6 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		final TestUserSession userSession = securityManager.<TestUserSession> getCurrentUserSession().get();
 		userSession.setZoneId(ZoneId.of(zoneId.get()));
 		viewContext.publishRef(currentZoneId, localeManager.getCurrentZoneId().getId());
-	}
-
-	@PostMapping("/_save")
-	public void doSave(final ViewContext viewContext, @ViewAttribute("movie") final Movie movie) {
-		viewContext.publishDto(movieKey, movie);
 	}
 
 	@PostMapping("/_read")
