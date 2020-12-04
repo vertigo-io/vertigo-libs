@@ -10,8 +10,12 @@ more to come :)
 Release 3.0.0 - 2020/11/20
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-210-to-300)
+* [all] Use connectors for more ext libs
+* [all] fix features to allow connector name param
 * [Commons] Assertion refactor API isEmpty -> IsBlank; argNotEmpty -> isNotBlank; isNotNull, isTrue
 * [Commons] Using test to avoid exec when(false)
+* [Commons] Fixed PegManyRule to match only matched elements
+* [Commons] Keep best unparsed rule in optional and many rule
 * [Account] Fix getAuthorizedOperations wasn't taking into account neither rules nor overrides.
 * [account] @transactional
 * [Ui] Url mandatory on fileUpload component
@@ -42,6 +46,8 @@ Release 3.0.0 - 2020/11/20
 * [Ui] add VUiExtensions script
 * [Ui] Fix use of empty named components end tag wasn't removed correctly, if body was empty
 * [Ui] Gridcell simpler  
+* [ui] messageStack not flushed on ajax server error
+* [ui] don't serialize private fields in ajax params
 * [ui-vuejs] Bind callback to element to ease usage
 * [ui-vuejs] Switch to axios httpClient
 * [ui-vuejs] add orchestra ui
@@ -49,11 +55,20 @@ Release 3.0.0 - 2020/11/20
 * [Orchestra] switch to studio-config.yaml
 * [Orchestra] Fixed Vega javasparc to Javalin (removed MimeTypes)
 * [orchestra] fix ksp + regen
-* [database] builder => constructor must be package scoped
+* [orchestra] fix bug when ending Pending activities cleaned wrong thread which killed analytics
+* [Dynamo] Added RestHLElasticSearchPlugin. And moved previous client plugin.
+* [Dynamo] Fixed log4j placeholders {} instead of {0}
+* [Dynamo] Removed elastic search deprecated 'type'
+* [dynamo] add cardinality on DtField and removed multiple behaviour on domain
+* [Dynamo] move smart DtList sorting to StoreManager
+* [dynamo] split dynamo in 3 modules (model, store, data)
 * [DataStore] FsFileStorePlugin Create directories at startup
 * [DataStore] Default mimeType if probeContentType failed
 * [Datastore] Lock cache per context
 * [datastore] only one FileUtil
+* [Database] Added ojdbc driver from maven repo central
+* [database] builder => constructor must be package scoped
+* [datamodel] add ability to encode logical operators of criteria
 * [DataFactory] Added test jar
 * [DataFactory] Fixed geoHash facet
 * [datafactory, struts2] moved to dedicated repo
@@ -70,7 +85,12 @@ Release 3.0.0 - 2020/11/20
 * [Vega] serialize all dtObject the same way
 * [Vega] swagger remove old fix for missing contextPath needed with spark but not with javalin
 * [Vega] jsonEngine always treat empty string as null on the web
+* [vega] authorize character '-' in webservices routes
+* [vega] handler's stack is sorted with a dedicated index (not from the declaration order) allow addition of plugin inside the predefined stack
+* [vega] fix instant json serialization
 * [quarto] Added FileTypeDetector for quator
+* [quarto] correctly encoding line break in docx
+* [Quarto] Timeout for conversion
 * [File] Refactored FileManager
 * [Stella] Refact Vega Javaspark to Javalin
 * [Ui] upgrade js depencies 
