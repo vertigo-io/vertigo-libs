@@ -1,12 +1,123 @@
 Version history
 ===============
 
-Running 3.0.0
+Running 3.1.0
 ----------------------
 
 more to come :)
 
-#Release 2.1.0 - 2019/11/12
+
+Release 3.0.0 - 2020/11/20
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-210-to-300)
+* [Commons] Assertion refactor API isEmpty -> IsBlank; argNotEmpty -> isNotBlank; isNotNull, isTrue
+* [Commons] Using test to avoid exec when(false)
+* [Account] Fix getAuthorizedOperations wasn't taking into account neither rules nor overrides.
+* [account] @transactional
+* [Ui] Url mandatory on fileUpload component
+* [ui] switch to a real vuejs library instead of single file components
+* [Ui] Changed npm serve port to 3000
+* [Ui] Fixed VComments bad closed tag
+* [Ui] Fixed search autoreload
+* [Ui] Webpack packaging
+* [Ui] Added vuiDevMode for debug vertigo-ui.umd
+* [Ui] Fixed nullable geoPoint in geoInput
+* [Ui] v-map send event of border geoPoint and click location
+* [Ui] Updated vertigo-ui.umd.js
+* [Ui] fix #37 uimdlist implements it's own listForClient
+* [Ui] fixed a bug when using ajax with null field values
+* [Ui] Fixed test Ui
+* [Ui] Fixed columnClass override
+* [Ui] add support of validator via annotation
+* [Ui] fixed a bug on check in AbstractDtObjectValidator
+* [Ui] Local sort is now accent insensitive #36
+* [Ui] include vmap to vuejs bundle
+* [Ui] Protected value as randomuuid
+* [Ui] Refactor VMap and VMapLayer
+* [Ui] added FacetedQueryResult cluster result
+* [Ui] Add checkbox-multiple input component
+* [Ui] Autocomplete can restore label when value is changed by another component or script
+* [Ui] removed inline javascript
+* [Ui] orchestra in dedicated project
+* [Ui] add VUiExtensions script
+* [Ui] Fix use of empty named components end tag wasn't removed correctly, if body was empty
+* [Ui] Gridcell simpler  
+* [ui-vuejs] Bind callback to element to ease usage
+* [ui-vuejs] Switch to axios httpClient
+* [ui-vuejs] add orchestra ui
+* [Vega,ui] support multiple primitives in UiObjects
+* [Orchestra] switch to studio-config.yaml
+* [Orchestra] Fixed Vega javasparc to Javalin (removed MimeTypes)
+* [orchestra] fix ksp + regen
+* [database] builder => constructor must be package scoped
+* [DataStore] FsFileStorePlugin Create directories at startup
+* [DataStore] Default mimeType if probeContentType failed
+* [Datastore] Lock cache per context
+* [datastore] only one FileUtil
+* [DataFactory] Added test jar
+* [DataFactory] Fixed geoHash facet
+* [datafactory, struts2] moved to dedicated repo
+* [datafactory] add optional dependency for lucene when used without elasticsearch
+* [Vega] Replaced sparkjava per Javalin 2 fails tests to check /docTest match /docTest/ charset body don't default to utf8 if charset is inconsistent
+* [Vega] SparkJava to Javalin
+* [Vega] Fixed compression filter (check javalin had already gzip) and charset test
+* [Vega] No javalin stop when in Tomcat
+* [Vega] Updated swaggerUi 3.32.1
+* [Vega] Updated swaggerUi to 3.31.1 and better readeable names
+* [Vega] Removed used boot params before check ("boot.applicationConfiguration" and LOG4J_CONFIGURATION_PARAM_NAME )
+* [Vega] lazy initialisation of buffer uiObjects for size changing uiListModifiable
+* [Vega] when serializeNull in jsonEngine disable adapter that transform empty values into null
+* [Vega] serialize all dtObject the same way
+* [Vega] swagger remove old fix for missing contextPath needed with spark but not with javalin
+* [Vega] jsonEngine always treat empty string as null on the web
+* [quarto] Added FileTypeDetector for quator
+* [File] Refactored FileManager
+* [Stella] Refact Vega Javaspark to Javalin
+* [Ui] upgrade js depencies 
+  - quasar 1.14.3
+  - axios 0.21.0
+* [Struts2] Updated lib + fix tests with htmlUnit-driver
+  - struts2 2.5.20 -> 2.5.22
+  - c3p0 0.9.5.4 -> 0.9.5.5
+  - org.eclipse.jetty 9.4.21 -> 9.4.31
+  - org.apache.lucene 8.2.0 -> 8.5.1
+  - commons-io 2.6 -> 2.7
+  - slf4j-log4j12 1.7.28 -> 1.7.30
+* [All] Updated libs
+  - org.apache.logging.log4j 2.12.1 -> 2.13.3
+  - com.mchange. c3p0 0.9.5.4 -> 0.9.5.5
+  - org.codehaus.janino 3.1.0 -> 3.1.2
+  - org.liquibase 3.8.6 -> 4.1.1
+  - com.oracle.ojdbc.ojdbc8 19.3.0.0 -> com.oracle.database.jdbc.ojdbc10 19.7.0.0
+  - org.postgresql 42.2.8 -> 42.2.18
+  - c3p0 0.9.5.4 -> 0.9.5.5
+  - org.apache.lucene 8.2.0 -> 8.6.2
+  - org.elasticsearch 7.4.1 -> 7.9.3
+  - io.rest-assured 3.3.0 -> 4.3.2
+  - org.apache.poi 4.1.1 -> 4.1.2
+  - jersey-client 2.29.1 -> 2.31
+  - org.springframework 5.2.0 -> 5.2.8
+  - org.eclipse.jetty 9.4.21 -> 9.4.31
+  - com.fasterxml.jackson 2.10.0 -> 2.11.1
+  - slf4j-log4j12 1.7.28 -> 1.7.30
+  - web3j 3.5.0 -> 5.0.0
+  - assertj 3.14.0 -> 3.17.1
+  - freemarker 2.3.29 -> 2.3.30
+  - ehcache 3.8.1 -> 3.9.0
+  - h2 1.4.199 -> 1.4.200
+  - javax.servlet 3.1.0 -> 4.0.1
+  - selenium htmlunit-driver 2.42.0 -> 2.44.0
+  - javalin 3.11.0 -> 3.11.2
+  - keycloak-servlet-filter-adapter 11.0.2 -> 11.0.3
+  - neo4j 4.1.1 -> 4.1.3
+  - spring 5.2.8.RELEASE -> 5.3.0.RELEASE
+  - snakeyaml 1.26 -> 1.27
+  - junit-jupiter-engine 5.6.2 -> 5.7.0
+  - ojdbc10 19.7.0.0 -> 19.8.0.0
+  - thymeleaf-layout-dialect 2.4.1 -> 2.5.1
+
+Release 2.1.0 - 2019/11/12
+----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-200-to-210)
 * [Studio] unused attribute
 * [Core] More specific temp dir for TempFiles
@@ -24,13 +135,13 @@ more to come :)
 * [dynamo] fixed associations conventions in EA and OOM
 * [dynamo] move formatterId in dynamox
 * [dynamo] handles WIP
-* [vega] Merge pull request #138
-* [vega] Fix #141 Added serializeNulls params to GoogleJsonEngine. Default false
-* [vega] Fixed #142 Swagger parameterized type support only class or parameterizedType
-* [vega] Remaned AppServletStarter2 to AppServletStarterXml
-* [vega] Fixed #147 : can't close app if start fail
-* [vega] Fixed #148 when routes contains digits at end
-* [vega] Updated swagger ui site to v3.24.0
+* [Vega] Merge pull request #138
+* [Vega] Fix #141 Added serializeNulls params to GoogleJsonEngine. Default false
+* [Vega] Fixed #142 Swagger parameterized type support only class or parameterizedType
+* [Vega] Remaned AppServletStarter2 to AppServletStarterXml
+* [Vega] Fixed #147 : can't close app if start fail
+* [Vega] Fixed #148 when routes contains digits at end
+* [Vega] Updated swagger ui site to v3.24.0
 * [studio] fix generated javadoc for xAO
 * [all] Updated libs versions
     * junit-jupiter 5.4.2 -> 5.5.2
@@ -53,22 +164,22 @@ more to come :)
     * elasticsearch 7.1.0 -> 7.4.1
 * [all] remove all junit 4 (test suites + Plateform)
 * [quarto] removed K
-* [ui] fix autocomplete
+* [Ui] fix autocomplete
 * [struts2] Fix : Cleaning memory when republishing in context
 * [struts2] Renamed AppServletContextListener2 to AppServletContextList
-* __[ui] quasar update from 0.17 to 1.4.1__ 
-* [ui] Changed NamedComponent to support mono boolean attribute (like 'flat') in placeholders
-* [ui] fix DefaultViewName can be disabled (if needed)
-* [ui] Merge pull request #25 from nothingismagick/patch-1
-* [ui] Added support of vu:content override attribute, and class concat
-* [ui] Added support of contentItem getAttribute
-* [ui] Added buttons-group component
-* [ui] i18n in vue components 
-* [ui] Added required support on text-field
-* [ui] ajax improvments
-* [ui] fix internalization
-* [ui] block has action slot
-* [ui] add text-field-read-reactive
+* __[Ui] quasar update from 0.17 to 1.4.1__ 
+* [Ui] Changed NamedComponent to support mono boolean attribute (like 'flat') in placeholders
+* [Ui] fix DefaultViewName can be disabled (if needed)
+* [Ui] Merge pull request #25 from nothingismagick/patch-1
+* [Ui] Added support of vu:content override attribute, and class concat
+* [Ui] Added support of contentItem getAttribute
+* [Ui] Added buttons-group component
+* [Ui] i18n in vue components 
+* [Ui] Added required support on text-field
+* [Ui] ajax improvments
+* [Ui] fix internalization
+* [Ui] block has action slot
+* [Ui] add text-field-read-reactive
 * [social] Fixed #27 Splitted SendMailPlugin and MailSessionConnector.
 
 Release 2.0.0 - 2019/03/22
