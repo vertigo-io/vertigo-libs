@@ -14,7 +14,7 @@
 				<q-popup-proxy :breakpoint="600" transition-show="scale" transition-hide="scale" >
 		             <q-date 
 		             	th:v-model="|vueData.${object}.${field}|"
-		             	landscape
+		             	:landscape="$q.screen.gt.xs"
 		             	mask="DD/MM/YYYY"
 		             	th:attr="__${date_attrs}__"></q-date> 
 	       		</q-popup-proxy>

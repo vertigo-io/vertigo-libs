@@ -14,7 +14,7 @@
 				<q-popup-proxy :breakpoint="600" transition-show="scale" transition-hide="scale" >
 		              <q-date 
 		              	th:v-model="|vueData.${object}.${field}|" 
-		              	landscape 
+		              	:landscape="$q.screen.gt.xs"
 		                mask="DD/MM/YYYY HH:mm"
 		                th:attr="__${date_attrs}__"></q-date> 
 		        </q-popup-proxy>
@@ -25,7 +25,7 @@
 		        <q-popup-proxy :breakpoint="600" transition-show="scale" transition-hide="scale" >
 		               <q-time 
 		               		th:v-model="|vueData.${object}.${field}|"
-		               		landscape
+		               		:landscape="$q.screen.gt.xs"
 		                	mask="DD/MM/YYYY HH:mm"
 		                  	format24h
 		                  	th:attr="__${time_attrs}__" ></q-time>

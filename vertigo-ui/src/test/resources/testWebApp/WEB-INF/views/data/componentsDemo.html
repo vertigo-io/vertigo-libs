@@ -19,7 +19,7 @@
                        <vu:include-data-primitive key='selectedTimeZoneList'/>
                        <vu:grid cols="3">
                         <vu:text-field object="movie" field="movId"/>
-                        <vu:text-field object="movie" field="title" class="fieldTitle"/>
+                        <vu:text-field object="movie" field="title" class="fieldTitle v-field__required"/>
                         <vu:text-field object="movie" field="year"  debounce="500" hint="Debouncing 500ms" />
                         <vu:slider object="movie" field="year"  />
                         <vu:knob object="movie" field="year"/>
@@ -27,7 +27,7 @@
                         <vu:grid-cell>
                             <vu:text-area object="movie" field="title"/>
                         </vu:grid-cell>
-                        <vu:date object="movie" field="released"  />
+                        <vu:date object="movie" field="released"/>
                         <vu:datetime object="movie" field="lastModified" />
                         <vu:autocomplete object="movie" field="movId" list="moviesMdl" />
                         <vu:radio object="movie" field="movId" list="movies" layout="horizontal" labelField="movId"/>
