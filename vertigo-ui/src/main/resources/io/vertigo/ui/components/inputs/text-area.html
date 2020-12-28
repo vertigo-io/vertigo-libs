@@ -14,7 +14,7 @@
 			th::warning="${uiMessageStack.hasFieldWarnings('__${object}__', '__${field}__')}"
 			orientation="vertical"
 			stack-label
-			th:attr="__${input_attrs}__"
+			th:attr="__${label_attrs}__,__${input_attrs}__"
 		>
 		</q-input>
 </th:block>
@@ -31,7 +31,7 @@
 			orientation="vertical"
 			stack-label
 			borderless
-			th:attr="__${input_attrs}__"
+			th:attr="__${label_attrs}__,__${input_attrs}__"
 		>
 		</q-input>
 </th:block>
