@@ -1,4 +1,4 @@
-<th:block th:fragment="text-field-edit(object, field, label, suffix, label_attrs, input_attrs)" 
+<th:block th:fragment="text-field-edit(object, field, label, suffix, input_attrs, label_attrs)" 
 	vu:alias="text-field" vu:selector="${viewMode=='edit'}"
 	th:with="myLabel=${label?:model.util.label(object + '.' + field)}, required=${model.util.required(object + '.' + field)}"
 	th:assert="${object} != null and ${field} != null">
@@ -15,7 +15,7 @@
 		th::error-message="|getErrorMessage('${object}', '${field}')|"
 		orientation="vertical"
 		stack-label
-		th:attr="__${input_attrs}__"
+		th:attr="__${label_attrs}__,__${input_attrs}__"
 	>
 	</q-input>
 </th:block>
