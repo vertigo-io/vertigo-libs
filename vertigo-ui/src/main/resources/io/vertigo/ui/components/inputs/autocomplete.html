@@ -31,6 +31,6 @@
 	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
 </th:block> 
 
-<th:block th:fragment="autocomplete-read(object, field, label, list, valueField, labelField, label_attrs, input_attrs)" vu:alias="autocomplete" vu:selector="${viewMode=='read'}" >
-	<vu:select-read object="${object}" field="${field}" label="${label}" list="${list}" valueField="${valueField}" labelField="${labelField}" label_attrs="${label_attrs}" input_attrs="${input_attrs}" />
+<th:block th:fragment="autocomplete-read(object, field, label, list, valueField, labelField, input_attrs, label_attrs)" vu:alias="autocomplete" vu:selector="${viewMode=='read'}" >
+	<vu:select-read object="${object}" field="${field}" label="${label}" list="${list}" valueField="${valueField}" labelField="${labelField}" th:attr="__${label_attrs}__,__${input_attrs}__" />
 </th:block>
