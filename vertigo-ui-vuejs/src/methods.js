@@ -319,6 +319,11 @@ export default {
         componentStates[componentId].pagination.rowsPerPage = componentStates[componentId].pagination.rowsPerPage / showMoreCount * (showMoreCount + 1);
     },
 
+    uploader_changeIcon () {
+        this.$q.iconSet.uploader.removeUploaded = 'delete_sweep'
+        this.$q.iconSet.uploader.done = 'delete'
+    },
+    
     uploader_addedFile: function (isMultiple, componentId) {
         let componentStates = this.$data.componentStates;
         if (!isMultiple) {
@@ -333,6 +338,11 @@ export default {
             componentStates[componentId].fileUris.push(file.xhr.response);
             file.fileUri = file.xhr.response;
         });
+    },
+    uploader_uploadedFile: function (uploadInfo, componentId) {
+        let componentStates = this.$data.componentStates;
+        componentStates[componentId].fileUris.push(uploadInfo.file.xhr.response);
+        uploadInfo.file.fileUri = uploadInfo.file.xhr.response;
     },
 
     uploader_removeFiles: function (removedFiles, componentId) {
