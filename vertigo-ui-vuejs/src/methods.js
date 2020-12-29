@@ -323,6 +323,20 @@ export default {
         this.$q.iconSet.uploader.removeUploaded = 'delete_sweep'
         this.$q.iconSet.uploader.done = 'delete'
     },
+    uploader_dragenter(componentId) {
+        //var component = this.$refs['uploader'+componentId];
+        let componentStates = this.$data.componentStates;
+        componentStates[componentId].dragover = true;
+    },
+    uploader_dragleave(componentId) {
+        //var component = this.$refs['uploader'+componentId];
+        let componentStates = this.$data.componentStates;
+        componentStates[componentId].dragover = false;
+    },
+    uploader_drop(event, componentId) {
+        var component = this.$refs[componentId];
+        component.addFiles(event.dataTransfer.files);
+    },
     uploader_forceComputeUploadedSize: function (componentId) {
         var component = this.$refs[componentId];
         //recompute totalSize

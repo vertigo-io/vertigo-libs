@@ -191,6 +191,11 @@ img.avatar {
   opacity: 0;
   transition: .5s;
 }
+
+.dropzone-area {
+	position: relative;
+}
+
 /*
 .q-table .q-btn {
 	text-align:right;

@@ -17,6 +17,20 @@
 			th:attr="__${uploader_attrs}__">
 		</q-uploader>
 </th:block>
+<th:block th:fragment="fileupload-dropzone(key, dropzone_attrs)" 
+    th:assert="${key} != null"
+    th:with="myComponentId='uploader'+${key}+'drop',fileComponentId='uploader'+${key}"
+    th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('dragover',false)}" >
+        <div class="dropzone-area" 
+            th:@dragenter.prevent="|uploader_dragenter('${myComponentId}')|">
+	        <vu:content/>
+	        <div th:v-if="|componentStates.${myComponentId}.dragover|" class="absolute-full q-uploader__dnd"
+	        th:@dragleave.prevent="|uploader_dragleave('${myComponentId}')|"
+	        th:@drop.prevent="'uploader_dragleave(\''+${myComponentId}+'\'); uploader_drop($event, \''+${fileComponentId}+'\')'"
+            @dragover.prevent 
+            ></div>
+        </div>
+</th:block>
 <th:block th:fragment="fileupload-custom(url, key, multiple, uploader_attrs)" 
     th:assert="${key} != null and ${url} != null"
     th:with="myComponentId='uploaderCustom'+${key}"
@@ -35,7 +49,6 @@
             th:@removed="|uploader_removeFiles($event, '${myComponentId}')|"
             th:attr="__${uploader_attrs}__">
             <template v-slot:header="slotProps">
-	            <div class="q-uploader__header">
 		            <div class="q-uploader__header-content flex flex-center no-wrap q-gutter-xs">
 			            <q-btn v-if="slotProps.queuedFiles.length > 0" type="a" icon="clear_all" :flat="true" :dense="true" @click="slotProps.removeQueuedFiles"></q-btn>
 	                    <q-btn v-if="slotProps.uploadedFiles.length > 0" type="a" :icon="slotProps.$q.iconSet.uploader['removeUploaded']" :flat="true" :dense="true" @click="slotProps.removeUploadedFiles"></q-btn>
@@ -49,10 +62,8 @@
 			            <q-btn v-if="slotProps.hideUploadBtn === false && slotProps.canUpload === true" type="a" icon="cloud_upload" :flat="true" :dense="true" @click="slotProps.upload"></q-btn>
 	                    <q-btn v-if="slotProps.isUploading" type="a" icon="clear" :flat="true" :dense="true" @click="slotProps.abort"></q-btn>                    
 		            </div>
-	            </div>
             </template> 
             <template v-slot:list="slotProps">
-	            <div class="q-uploader__list scroll">
 	             <div v-for="file in slotProps.files"
 	            :key="file.name"
 	            class="q-uploader__file relative-position" 
@@ -71,7 +82,6 @@
 	                    <q-btn v-if="file.__status != 'uploading'" round dense flat :icon="slotProps.$q.iconSet.uploader[file.__status === 'uploaded' ? 'done' : 'clear']" 
 	                    @click="slotProps.removeFile(file)"></q-btn>                      
 	                </div>
-	            </div>
 	            </div>
             </template>   
         </q-uploader>            

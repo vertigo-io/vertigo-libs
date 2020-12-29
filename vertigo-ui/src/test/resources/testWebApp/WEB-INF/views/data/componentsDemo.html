@@ -12,9 +12,9 @@
 
 <body>
     <div layout:fragment="content">
-        <vu:message />
+        <vu:messages />
             <vu:form>
-                <vu:block id="movie" title="Movie Information">
+                <vu:block id="movie" title="#{movie.title.information}">
                        <vu:include-data-primitive key='timeZoneList'/>
                        <vu:include-data-primitive key='selectedTimeZoneList'/>
                        <vu:grid cols="3">
@@ -24,12 +24,12 @@
                         <vu:slider object="movie" field="year"  />
                         <vu:knob object="movie" field="year"/>
                         <vu:select object="movie" field="movId" list="movies" />
-                        <vu:grid-cell>
+                        <vu:grid-cell col="lg-6">
                             <vu:text-area object="movie" field="title"/>
                         </vu:grid-cell>
                         <vu:date object="movie" field="released"/>
                         <vu:datetime object="movie" field="lastModified" />
-                        <vu:autocomplete object="movie" field="movId" list="moviesMdl" />
+                        <vu:autocomplete object="movie" field="movId" list="moviesMdl"/>
                         <vu:radio object="movie" field="movId" list="movies" layout="horizontal" labelField="movId"/>
                         <vu:radio object="movie" field="movId" list="movies" />
                         <vu:text-field object="movie" field="movId"/>
@@ -49,8 +49,14 @@
                             <div v-for="(item, index) in vueData.myFiles" :name="index" > 
                                 <a href="|'@{/componentsDemo/myFiles/}'+item|">{{item}}</a>
                             </div>
-                            <vu:fileupload float-label="Upload file" th:url="'@{/componentsDemo/upload}'" key="myFilesUris" multiple />
                         </vu:grid-cell>
+                        <vu:grid-cell>
+                            <vu:fileupload-dropzone key="myFilesUris">
+                                <vu:fileupload float-label="Upload file" th:url="'@{/componentsDemo/upload}'" key="myFilesUris" multiple />           
+                            </vu:fileupload-dropzone>
+                        </vu:grid-cell>                
+                        <vu:fileupload-custom float-label="Custom upload file" th:url="'@{/componentsDemo/upload}'" key="myFilesUris" multiple/>                            
+                        
                         <vu:modal componentId="myModal" closeLabel="Close"/>
                         <vu:grid-cell>
                             <vu:button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}" color="primary"/>
@@ -60,7 +66,14 @@
                             <q-btn  th:label="OpenModal" th:@click="|openModal('myModal', '@{/movies/}')|"></q-btn>
                         </vu:grid-cell>
                     </vu:grid>
-                </vu:block>             
+                </vu:block>
+                <vu:block id="movieManual" title="Test manual grid">
+                 <div class="row">
+                    <vu:text-field class="col-6" object="movie" field="title" />
+                    <vu:text-field class="q-mx-md col-1" object="movie" field="movId" />
+                    <div class="col-grow"></div>
+                 </div>
+                </vu:block>
             </vu:form>
             
             <vu:cards list="movies" componentId="movieCards" cardClass="col-lg-3 col-md-6 col-xs-12" sortUrl="@{/movies/_sort}" rowsPerPage="8" showMore="true" showMoreLabel="Show more" >
