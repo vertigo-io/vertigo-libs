@@ -323,7 +323,14 @@ export default {
         this.$q.iconSet.uploader.removeUploaded = 'delete_sweep'
         this.$q.iconSet.uploader.done = 'delete'
     },
-    
+    uploader_forceComputeUploadedSize: function (componentId) {
+        var component = this.$refs[componentId];
+        //recompute totalSize
+        component.uploadedSize = 0;
+        component.uploadedFiles.forEach(function (file) { component.uploadedSize += file.size;});
+        component.uploadSize = component.uploadedSize;
+        component.queuedFiles.forEach(function (file) { component.uploadSize += file.size;}); 
+    },
     uploader_addedFile: function (isMultiple, componentId) {
         let componentStates = this.$data.componentStates;
         if (!isMultiple) {
@@ -331,7 +338,6 @@ export default {
             componentStates[componentId].fileUris = [];
         }
     },
-
     uploader_uploadedFiles: function (uploadInfo, componentId) {
         let componentStates = this.$data.componentStates;
         uploadInfo.files.forEach(function (file) {
@@ -339,17 +345,11 @@ export default {
             file.fileUri = file.xhr.response;
         });
     },
-    uploader_uploadedFile: function (uploadInfo, componentId) {
-        let componentStates = this.$data.componentStates;
-        componentStates[componentId].fileUris.push(uploadInfo.file.xhr.response);
-        uploadInfo.file.fileUri = uploadInfo.file.xhr.response;
-    },
-
     uploader_removeFiles: function (removedFiles, componentId) {
         let componentStates = this.$data.componentStates;
+        var component = this.$refs[componentId];
+        var componentFileUris = componentStates[componentId].fileUris;
         removedFiles.forEach(function (removedFile) {
-            var component = this.$refs[componentId];
-            var componentFileUris = componentStates[componentId].fileUris;
             var indexOfFileUri = componentFileUris.indexOf(removedFile.fileUri);
             var xhrParams = {};
             xhrParams[component.fieldName] = removedFile.fileUri;
@@ -365,6 +365,7 @@ export default {
                     this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't remove temporary file");
                 }.bind);
         }.bind(this));
+        this.uploader_forceComputeUploadedSize(componentId);
     },
 
     httpPostAjax: function (url, params, options) {
