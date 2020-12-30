@@ -28,6 +28,7 @@ import java.util.Collections;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -190,6 +191,11 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		getUiMessageStack().addGlobalMessage(Level.INFO, "Fichier recu : " + vFile.getFileName() + " (" + vFile.getMimeType() + ")");
 		final String protectedPath = ProtectedValueUtil.generateProtectedValue(VFileUtil.obtainReadOnlyPath(vFile).toFile().getAbsolutePath());
 		return new FileInfoURI(new FileInfoDefinition("FiDummy", "none"), protectedPath);
+	}
+
+	@DeleteMapping("/upload")
+	public FileInfoURI removeFile(@QueryParam("file") final FileInfoURI file) {
+		return file; //if no return, you must get the response. Prefer to return old uri.
 	}
 
 	@PostMapping("/_ajaxArray")
