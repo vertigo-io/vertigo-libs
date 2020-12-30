@@ -45,7 +45,7 @@ public class VFileReturnValueHandler implements HandlerMethodReturnValueHandler 
 		//---
 		mavContainer.setRequestHandled(true);
 		final HttpServletResponse response = getResponse(webRequest);
-		VFileUtil.sendVFile((VFile) returnValue, response);
+		SpringVFileUtil.sendVFile((VFile) returnValue, response);
 	}
 
 	/**
