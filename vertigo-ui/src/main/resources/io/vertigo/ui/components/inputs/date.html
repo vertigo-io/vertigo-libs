@@ -6,6 +6,7 @@
 		th:v-bind:value="|decodeDate('${object}', '${field}', '${myFormat}')|" 
 		th:@change="|function (event) { encodeDate('${object}','${field}', event.target.value, '${myFormat}') }|" 
 		th:label="${myLabel}"
+		stack-label
 		th::error="|hasFieldsError('${object}', '${field}')|"
 		th::error-message="|getErrorMessage('${object}', '${field}')|"
 		th:attr="__${input_attrs}__" >
