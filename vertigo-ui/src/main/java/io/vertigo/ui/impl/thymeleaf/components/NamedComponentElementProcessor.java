@@ -194,13 +194,15 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 	}
 
 	private static IModel replaceContentTag(final IModel fragmentModel, final Optional<IModel> contentModel) {
-		final int index = findTagIndex("vu:content", 0, fragmentModel, IProcessableElementTag.class);//Open or standalone
-		if (index > -1) {
+		int index = findTagIndex("vu:content", 0, fragmentModel, IProcessableElementTag.class);//Open or standalone
+		while (index > -1) {
+			final int size;
 			final int indexEnd = findTagIndex("vu:content", index, fragmentModel, ICloseElementTag.class);
 			if (indexEnd > -1) {
 				fragmentModel.remove(indexEnd);
 			}
 			if (contentModel.isPresent()) {
+				size = contentModel.get().size();
 				//We remove old body
 				if (indexEnd > -1) {
 					for (int i = indexEnd - 1; i > index; i--) {
@@ -210,9 +212,10 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				//We insert new body after content tag (index+1)
 				fragmentModel.insertModel(index + 1, contentModel.get());
 			} else {
-				//
+				size = 0;
 			}
 			fragmentModel.remove(index);
+			index = findTagIndex("vu:content", index + size, fragmentModel, IProcessableElementTag.class);//Open or standalone
 		}
 		return fragmentModel;
 	}
