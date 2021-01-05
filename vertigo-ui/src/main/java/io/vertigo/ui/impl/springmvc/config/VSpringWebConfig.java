@@ -116,6 +116,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		templateResolver.setPrefix("classpath://" + getCustomComponentsPathPrefix());
 		templateResolver.setSuffix(".html");
 		templateResolver.setResolvablePatterns(Collections.singleton("components/*"));
+		templateResolver.setCheckExistence(true);
 		// for dev purpose
 		templateResolver.setCacheable(!isDevMode());
 		return templateResolver;
@@ -132,14 +133,16 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		templateEngine.setTemplateResolver(viewsResolvers);
 		templateEngine.setEnableSpringELCompiler(true);
 		//---
-		// add components
-		final VuiResourceTemplateResolver componentResolvers = componentsResolver();
-		componentResolvers.setOrder(1);
-		templateEngine.addTemplateResolver(componentResolvers);
 		// add custom components
 		final VuiResourceTemplateResolver customComponentResolvers = customComponentsResolver();
-		customComponentResolvers.setOrder(2);
+		customComponentResolvers.setOrder(1); //TEST
 		templateEngine.addTemplateResolver(customComponentResolvers);
+
+		// add components
+		final VuiResourceTemplateResolver componentResolvers = componentsResolver();
+		componentResolvers.setOrder(2);
+		templateEngine.addTemplateResolver(componentResolvers);
+
 		//---
 		final VUiStandardDialect dialect = new VUiStandardDialect(getUiComponents(componentResolvers));
 		templateEngine.addDialect("vu", dialect);
