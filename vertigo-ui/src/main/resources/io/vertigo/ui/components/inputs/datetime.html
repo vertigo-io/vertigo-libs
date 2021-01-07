@@ -1,5 +1,6 @@
 <th:block th:fragment="datetime-edit(object, field, label, format, date_attrs, time_attrs, input_attrs)" vu:alias="datetime" vu:selector="${viewMode=='edit'}"
-		th:with="myLabel=${label?:model.util.label(object + '.' + field)}, myFormat=${format?:'DD/MM/YYYY HH:mm'}"
+		th:with="myLabel=${label?:model.util.label(object + '.' + field)}, myFormat=${format?:'DD/MM/YYYY HH:mm'},
+      required=${model.util.required(object + '.' + field)}"
 	  th:assert="${object} != null and ${field} != null">
 	<vu:include-data object="${object}" field="${field}"/>
 	<q-input 
@@ -7,6 +8,7 @@
 		th:@change="|function (event) { encodeDatetime('${object}','${field}', event.target.value, '${myFormat}') }|" 
 		th:label="${myLabel}"
 		stack-label
+		th:classappend="${required}?'v-field__required'"
 		th::error="|hasFieldsError('${object}', '${field}')|"
 		th::error-message="|getErrorMessage('${object}', '${field}')|"
 		th:attr="__${input_attrs}__" >
