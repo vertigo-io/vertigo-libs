@@ -1,5 +1,5 @@
 <th:block th:fragment="page(content, vuiDevMode, vuiSsr)"
-	th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, isVuiSsr=${vuiSsr != null ? vuiSsr : true}">
+	th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, isVuiSsr=${vuiSsr != null ? vuiSsr : false}">
 	<div th:if="${isVuiSsr}" id="page"></div>
 	<div th:if="${!isVuiSsr}" id="page">
 		<vu:content/>
