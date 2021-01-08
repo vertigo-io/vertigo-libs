@@ -99,24 +99,12 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		return templateResolver;
 	}
 
-	private VuiResourceTemplateResolver componentsResolver() {
+	private VuiResourceTemplateResolver componentsResolver(final String componentPath) {
 		final VuiResourceTemplateResolver templateResolver = new VuiResourceTemplateResolver();
 		templateResolver.setApplicationContext(applicationContext);
-		templateResolver.setPrefix("classpath://" + COMPONENT_PATH_PREFIX);
+		templateResolver.setPrefix("classpath://" + componentPath);
 		templateResolver.setSuffix(".html");
 		templateResolver.setResolvablePatterns(Collections.singleton("components/*"));
-		// for dev purpose
-		templateResolver.setCacheable(!isDevMode());
-		return templateResolver;
-	}
-
-	private VuiResourceTemplateResolver customComponentsResolver() {
-		final VuiResourceTemplateResolver templateResolver = new VuiResourceTemplateResolver();
-		templateResolver.setApplicationContext(applicationContext);
-		templateResolver.setPrefix("classpath://" + getCustomComponentsPathPrefix());
-		templateResolver.setSuffix(".html");
-		templateResolver.setResolvablePatterns(Collections.singleton("components/*"));
-		templateResolver.setCheckExistence(true);
 		// for dev purpose
 		templateResolver.setCacheable(!isDevMode());
 		return templateResolver;
@@ -134,12 +122,13 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		templateEngine.setEnableSpringELCompiler(true);
 		//---
 		// add custom components
-		final VuiResourceTemplateResolver customComponentResolvers = customComponentsResolver();
-		customComponentResolvers.setOrder(1); //TEST
+		final VuiResourceTemplateResolver customComponentResolvers = componentsResolver(getCustomComponentsPathPrefix());
+		customComponentResolvers.setOrder(1); //custom first
+		customComponentResolvers.setCheckExistence(true); //some components may missing
 		templateEngine.addTemplateResolver(customComponentResolvers);
 
 		// add components
-		final VuiResourceTemplateResolver componentResolvers = componentsResolver();
+		final VuiResourceTemplateResolver componentResolvers = componentsResolver(COMPONENT_PATH_PREFIX);
 		componentResolvers.setOrder(2);
 		templateEngine.addTemplateResolver(componentResolvers);
 
