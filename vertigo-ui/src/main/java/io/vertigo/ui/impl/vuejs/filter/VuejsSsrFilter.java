@@ -26,7 +26,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -55,10 +54,7 @@ import io.vertigo.vega.impl.servlet.filter.AbstractFilter;
  * @author mlaroche
  */
 public final class VuejsSsrFilter extends AbstractFilter {
-	private static final String NONCE_PATTERN = "${nonce}";
 	private String ssrServerUrl;
-	private Optional<String> cspPattern;
-	private boolean useNonce = false;
 
 	/** {@inheritDoc} */
 	@Override
@@ -66,8 +62,6 @@ public final class VuejsSsrFilter extends AbstractFilter {
 		final FilterConfig filterConfig = getFilterConfig();
 		ssrServerUrl = filterConfig.getInitParameter("ssrServerUrl");
 		Assertion.check().isNotNull(ssrServerUrl);
-		cspPattern = Optional.ofNullable(filterConfig.getInitParameter("cspPattern"));
-		useNonce = cspPattern.orElse("").contains(NONCE_PATTERN);
 	}
 
 	@Override
@@ -80,17 +74,7 @@ public final class VuejsSsrFilter extends AbstractFilter {
 		final HttpServletRequest request = (HttpServletRequest) req;
 		final HttpServletResponse response = (HttpServletResponse) res;
 
-		Optional<String> nonce = Optional.empty();
-		if (cspPattern.isPresent()) {
-			String cspToApply = cspPattern.get();
-			if (useNonce) {
-				nonce = Optional.of(UUID.randomUUID().toString());
-				cspToApply = cspToApply.replace(NONCE_PATTERN, nonce.get());
-			}
-			response.setHeader("Content-Security-Policy", cspToApply);
-		}
-		request.setAttribute("nonce", nonce);
-
+		final Optional<String> nonce = Optional.ofNullable((String) request.getAttribute(ContentSecurityPolicyFilter.NONCE_ATTRIBUTE_NAME));
 		//final Set<String> headers = new HashSet<>(Collections.list(request.getHeaderNames()));
 		try (final VuejsSsrServletResponseWrapper wrappedResponse = new VuejsSsrServletResponseWrapper(response)) {
 			boolean hasError = true;
