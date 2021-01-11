@@ -6,8 +6,8 @@
 	</head>
 </th:block>
 
-<th:block th:fragment="head-meta(vuiDevMode)" 
-        th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}">
+<th:block th:fragment="head-meta(vuejsDevMode)" 
+        th:with="isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false}">
 		<link th:href="@{/vertigo-ui/static/3rdParty/roboto/v20/css/roboto.css}" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v50/css/materialIcons.css}" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/3rdParty/use.fontawesome.com/releases/v5.7.1/css/all.min.css}" rel="stylesheet" type="text/css"/>
@@ -18,7 +18,8 @@
 		<link th:href="@{/vertigo-ui/static/css/vertigo-ui.css}" rel="stylesheet" type="text/css"/>
 		
 		<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.15.0/dist/quasar.ie.polyfills.umd.min.js}"></script>
-		<script th:if="${!isVuiDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js}"></script>
-        <script th:if="${isVuiDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js}"></script>
+		<script th:if="${!isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js}"></script>
+        <script th:if="${isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js}"></script>
+        <script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue-cookies@1.7.4/vue-cookies.js}"></script>
     	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/axios@0.21.0/dist/axios.min.js}" ></script>
 </th:block>
