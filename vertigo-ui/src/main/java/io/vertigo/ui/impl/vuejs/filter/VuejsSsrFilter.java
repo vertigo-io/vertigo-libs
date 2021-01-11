@@ -25,6 +25,8 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -53,8 +55,10 @@ import io.vertigo.vega.impl.servlet.filter.AbstractFilter;
  * @author mlaroche
  */
 public final class VuejsSsrFilter extends AbstractFilter {
-
+	private static final String NONCE_PATTERN = "${nonce}";
 	private String ssrServerUrl;
+	private Optional<String> cspPattern;
+	private boolean useNonce = false;
 
 	/** {@inheritDoc} */
 	@Override
@@ -62,6 +66,8 @@ public final class VuejsSsrFilter extends AbstractFilter {
 		final FilterConfig filterConfig = getFilterConfig();
 		ssrServerUrl = filterConfig.getInitParameter("ssrServerUrl");
 		Assertion.check().isNotNull(ssrServerUrl);
+		cspPattern = Optional.ofNullable(filterConfig.getInitParameter("cspPattern"));
+		useNonce = cspPattern.orElse("").contains(NONCE_PATTERN);
 	}
 
 	@Override
@@ -73,6 +79,18 @@ public final class VuejsSsrFilter extends AbstractFilter {
 
 		final HttpServletRequest request = (HttpServletRequest) req;
 		final HttpServletResponse response = (HttpServletResponse) res;
+
+		Optional<String> nonce = Optional.empty();
+		if (cspPattern.isPresent()) {
+			String cspToApply = cspPattern.get();
+			if (useNonce) {
+				nonce = Optional.of(UUID.randomUUID().toString());
+				cspToApply = cspToApply.replace(NONCE_PATTERN, nonce.get());
+			}
+			response.setHeader("Content-Security-Policy", cspToApply);
+		}
+		request.setAttribute("nonce", nonce);
+
 		//final Set<String> headers = new HashSet<>(Collections.list(request.getHeaderNames()));
 		try (final VuejsSsrServletResponseWrapper wrappedResponse = new VuejsSsrServletResponseWrapper(response)) {
 			boolean hasError = true;
@@ -80,7 +98,7 @@ public final class VuejsSsrFilter extends AbstractFilter {
 				chain.doFilter(request, wrappedResponse);
 				hasError = false;
 				try {
-					final String croppedHtml = vuejsSsr(wrappedResponse.getAsString(), ssrServerUrl);
+					final String croppedHtml = vuejsSsr(wrappedResponse.getAsString(), ssrServerUrl, nonce);
 					response.getWriter().print(croppedHtml);
 				} catch (final Exception e) {
 					response.getWriter().print(wrappedResponse.getAsString());
@@ -94,7 +112,7 @@ public final class VuejsSsrFilter extends AbstractFilter {
 		}
 	}
 
-	private static String vuejsSsr(final String fullContent, final String serverUrl) {
+	private static String vuejsSsr(final String fullContent, final String serverUrl, final Optional<String> nonce) {
 		final Pattern pattern = Pattern.compile("<([a-z]+)\\s[^>]*id=['\"]" + "vertigossr" + "['\"][^>]*>");
 		final Matcher matcher = pattern.matcher(fullContent);
 		final String before;
@@ -102,7 +120,7 @@ public final class VuejsSsrFilter extends AbstractFilter {
 		final String after;
 		if (matcher.find()) {
 			final int start = matcher.start();
-			final int startTagEnd = matcher.end();
+			//final int startTagEnd = matcher.end();
 			final String tag = matcher.group(1);
 			final int end = findEndTag(fullContent, start, tag, 0);
 			before = fullContent.substring(0, start);
@@ -111,7 +129,7 @@ public final class VuejsSsrFilter extends AbstractFilter {
 		} else {
 			throw new IllegalArgumentException("Can't find tag " + "page" + " in result");
 		}
-		return before + compileVueJsTemplate(templateToCompile, serverUrl) + after;
+		return before + compileVueJsTemplate(templateToCompile, serverUrl, nonce) + after;
 	}
 
 	private static int findEndTag(final String temp, final int from, final String tag, final int deep) {
@@ -126,7 +144,7 @@ public final class VuejsSsrFilter extends AbstractFilter {
 		return end;
 	}
 
-	public static String compileVueJsTemplate(final String template, final String serverUrl) {
+	public static String compileVueJsTemplate(final String template, final String serverUrl, final Optional<String> nonce) {
 		final JsonObject requestParameter = new JsonObject();
 		requestParameter.add("template", new JsonPrimitive(template));
 		final JsonObject compiledTemplate = callRestWS(serverUrl, GSON.toJson(requestParameter), JsonObject.class);
@@ -135,7 +153,7 @@ public final class VuejsSsrFilter extends AbstractFilter {
 				.map(JsonElement::getAsString)
 				.collect(Collectors.toList());
 
-		final StringBuilder renderJsFunctions = new StringBuilder("<script> var VertigoSsr = {}\r\n");
+		final StringBuilder renderJsFunctions = new StringBuilder("var VertigoSsr = {}\r\n");
 		renderJsFunctions.append("VertigoSsr.render = function(h) {\r\n")
 				.append(render).append(" \r\n")
 				.append("};\r\n")
@@ -144,9 +162,18 @@ public final class VuejsSsrFilter extends AbstractFilter {
 				.append("		  function () {\r\n")
 				.append(staticFn).append(" \r\n")
 				.append("		  }\r\n"));
-		renderJsFunctions.append("]\r\n")
+		renderJsFunctions.append("]\r\n");
+
+		final StringBuilder renderJsTag = new StringBuilder("<script");
+		if (nonce.isPresent()) {
+			renderJsTag.append(" nonce=\"")
+					.append(nonce.get())
+					.append("\"");
+		}
+		renderJsTag.append(">\r\n")
+				.append(renderJsFunctions)
 				.append("</script>\r\n");
-		return renderJsFunctions.toString();
+		return renderJsTag.toString();
 	}
 
 	private static final Gson GSON = new GsonBuilder().create();
