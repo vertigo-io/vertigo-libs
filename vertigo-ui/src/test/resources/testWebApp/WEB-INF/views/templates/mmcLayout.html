@@ -3,7 +3,7 @@
   xmlns:vu="https://vertigo.io/thymeleaf/vertigo-ui"
   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <vu:head-meta/>
+    <vu:head-meta vuejsDevMode/>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -12,13 +12,12 @@
     
   	<link rel="stylesheet" th:href="@{/static/css/mars.css}"/>
 	<link rel="icon" th:href="@{/static/img/favicon.ico}"/>
-   	<script src="https://unpkg.com/vue-cookies@1.5.12/vue-cookies.js"></script> 
    	<script th:src="@{/static/js/demo.js}"></script>
 </head>
 
 <body class="mat desktop no-touch platform-mat">
 
-	<vu:page>
+	<vu:page > <!-- vuiSsr-->
 	
       <q-layout view="hHh LpR fff" id="page" v-cloak>
 			<!-- BEGIN HEADER-->
