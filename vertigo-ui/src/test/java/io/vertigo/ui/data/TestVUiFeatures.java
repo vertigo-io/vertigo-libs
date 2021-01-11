@@ -21,6 +21,7 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.discovery.ModuleDiscoveryFeatures;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.ui.data.boot.initializer.TestVertigoUiMasterDataDefinitionProvider;
+import io.vertigo.ui.impl.vuejs.filter.VuejsSsrFilter;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 
@@ -47,6 +48,7 @@ public class TestVUiFeatures extends ModuleDiscoveryFeatures<TestVUiFeatures> {
 						.addDefinitionResource("dtobjects", "io.vertigo.ui.data.domain.DtDefinitions")
 						.build())
 				.addDefinitionProvider(TestVertigoUiMasterDataDefinitionProvider.class)
+				.addDefinitionProvider(VuejsSsrFilter.class)
 				.build();
 	}
 

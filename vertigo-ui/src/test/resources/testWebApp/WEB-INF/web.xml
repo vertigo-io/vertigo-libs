@@ -71,6 +71,10 @@
             <param-name>url-exclude-pattern</param-name>
             <param-value>/index.html;/static/*;/vertigo-ui/static/*</param-value>
         </init-param>
+        <init-param>
+            <param-name>doublePassRender</param-name>
+            <param-value>true</param-value>  
+        </init-param>
     </filter>
     <filter-mapping>
         <filter-name>vueJsSSR</filter-name>

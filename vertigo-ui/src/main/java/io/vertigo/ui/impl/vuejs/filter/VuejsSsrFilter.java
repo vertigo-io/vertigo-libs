@@ -24,8 +24,10 @@ import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -47,21 +49,47 @@ import com.google.gson.JsonPrimitive;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.Node;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.datastore.cache.CacheManager;
+import io.vertigo.datastore.cache.definitions.CacheDefinition;
 import io.vertigo.vega.impl.servlet.filter.AbstractFilter;
 
 /**
  * Filter to pre-compile vuejs template on the server-side to comply with CSP directives.
  * @author mlaroche
  */
-public final class VuejsSsrFilter extends AbstractFilter {
+public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefinitionProvider {
+	private static final String VUEJS_SSR_CACHE_COLLECTION = "CacheVuejsSSR";
 	private String ssrServerUrl;
+	private boolean doublePassRender = false;
+
+	/** Object token, by */
+	private CacheManager cacheManager;
 
 	/** {@inheritDoc} */
 	@Override
 	public void doInit() {
+		cacheManager = Node.getNode().getComponentSpace().resolve(CacheManager.class);
+
 		final FilterConfig filterConfig = getFilterConfig();
 		ssrServerUrl = filterConfig.getInitParameter("ssrServerUrl");
 		Assertion.check().isNotNull(ssrServerUrl);
+
+		doublePassRender = Boolean.parseBoolean(filterConfig.getInitParameter("doublePassRender"));
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return Collections.singletonList(new CacheDefinition(
+				VUEJS_SSR_CACHE_COLLECTION,
+				false,
+				1000, //1000 elements
+				10, //10s
+				10, //10s
+				false));
 	}
 
 	@Override
@@ -74,6 +102,13 @@ public final class VuejsSsrFilter extends AbstractFilter {
 		final HttpServletRequest request = (HttpServletRequest) req;
 		final HttpServletResponse response = (HttpServletResponse) res;
 
+		if (doublePassRender && request.getRequestURL().toString().contains("@SSR-")) {
+			final String uid = request.getRequestURL().toString();
+			final String scriptSSR = (String) cacheManager.get(VUEJS_SSR_CACHE_COLLECTION, uid);
+			response.getWriter().print(scriptSSR);
+			return;
+		}
+
 		final Optional<String> nonce = Optional.ofNullable((String) request.getAttribute(ContentSecurityPolicyFilter.NONCE_ATTRIBUTE_NAME));
 		//final Set<String> headers = new HashSet<>(Collections.list(request.getHeaderNames()));
 		try (final VuejsSsrServletResponseWrapper wrappedResponse = new VuejsSsrServletResponseWrapper(response)) {
@@ -82,7 +117,12 @@ public final class VuejsSsrFilter extends AbstractFilter {
 				chain.doFilter(request, wrappedResponse);
 				hasError = false;
 				try {
-					final String croppedHtml = vuejsSsr(wrappedResponse.getAsString(), ssrServerUrl, nonce);
+					final String croppedHtml;
+					if (!doublePassRender) {
+						croppedHtml = vuejsSsrNonce(wrappedResponse.getAsString(), ssrServerUrl, nonce);
+					} else {
+						croppedHtml = vuejsSsrDoublePass(wrappedResponse.getAsString(), ssrServerUrl, request.getRequestURL(), cacheManager);
+					}
 					response.getWriter().print(croppedHtml);
 				} catch (final Exception e) {
 					response.getWriter().print(wrappedResponse.getAsString());
@@ -96,7 +136,7 @@ public final class VuejsSsrFilter extends AbstractFilter {
 		}
 	}
 
-	private static String vuejsSsr(final String fullContent, final String serverUrl, final Optional<String> nonce) {
+	private static String vuejsSsrNonce(final String fullContent, final String serverUrl, final Optional<String> nonce) {
 		final Pattern pattern = Pattern.compile("<([a-z]+)\\s[^>]*id=['\"]" + "vertigossr" + "['\"][^>]*>");
 		final Matcher matcher = pattern.matcher(fullContent);
 		final String before;
@@ -113,7 +153,48 @@ public final class VuejsSsrFilter extends AbstractFilter {
 		} else {
 			throw new IllegalArgumentException("Can't find tag " + "page" + " in result");
 		}
-		return before + compileVueJsTemplate(templateToCompile, serverUrl, nonce) + after;
+		final StringBuilder pageJsTag = new StringBuilder(before);
+
+		pageJsTag.append("<script");
+		if (nonce.isPresent()) {
+			pageJsTag.append(" nonce=\"")
+					.append(nonce.get())
+					.append("\"");
+		}
+		pageJsTag.append(">\r\n")
+				.append(compileVueJsTemplate(templateToCompile, serverUrl))
+				.append("</script>\r\n");
+		pageJsTag.append(after);
+		return pageJsTag.toString();
+	}
+
+	private static String vuejsSsrDoublePass(final String fullContent, final String serverUrl, final StringBuffer currentUrl, final CacheManager cacheManager) {
+		final Pattern pattern = Pattern.compile("<([a-z]+)\\s[^>]*id=['\"]" + "vertigossr" + "['\"][^>]*>");
+		final Matcher matcher = pattern.matcher(fullContent);
+		final String before;
+		final String templateToCompile;
+		final String after;
+		if (matcher.find()) {
+			final int start = matcher.start();
+			//final int startTagEnd = matcher.end();
+			final String tag = matcher.group(1);
+			final int end = findEndTag(fullContent, start, tag, 0);
+			before = fullContent.substring(0, start);
+			templateToCompile = fullContent.substring(start, end + 3 + tag.length());
+			after = fullContent.substring(end + 3 + tag.length());
+		} else {
+			throw new IllegalArgumentException("Can't find tag " + "page" + " in result");
+		}
+		final String uid = currentUrl.append("@SSR-").append(UUID.randomUUID().toString()).append(".js").toString();
+		final String scriptContent = compileVueJsTemplate(templateToCompile, serverUrl);
+		cacheManager.put(VUEJS_SSR_CACHE_COLLECTION, uid, scriptContent);
+
+		final StringBuilder pageJsTag = new StringBuilder(before);
+		pageJsTag.append("<script src=\"")
+				.append(uid)
+				.append("\"></script>\r\n")
+				.append(after);
+		return pageJsTag.toString();
 	}
 
 	private static int findEndTag(final String temp, final int from, final String tag, final int deep) {
@@ -128,7 +209,7 @@ public final class VuejsSsrFilter extends AbstractFilter {
 		return end;
 	}
 
-	public static String compileVueJsTemplate(final String template, final String serverUrl, final Optional<String> nonce) {
+	public static String compileVueJsTemplate(final String template, final String serverUrl) {
 		final JsonObject requestParameter = new JsonObject();
 		requestParameter.add("template", new JsonPrimitive(template));
 		final JsonObject compiledTemplate = callRestWS(serverUrl, GSON.toJson(requestParameter), JsonObject.class);
@@ -147,17 +228,7 @@ public final class VuejsSsrFilter extends AbstractFilter {
 				.append(staticFn).append(" \r\n")
 				.append("		  }\r\n"));
 		renderJsFunctions.append("]\r\n");
-
-		final StringBuilder renderJsTag = new StringBuilder("<script");
-		if (nonce.isPresent()) {
-			renderJsTag.append(" nonce=\"")
-					.append(nonce.get())
-					.append("\"");
-		}
-		renderJsTag.append(">\r\n")
-				.append(renderJsFunctions)
-				.append("</script>\r\n");
-		return renderJsTag.toString();
+		return renderJsFunctions.toString();
 	}
 
 	private static final Gson GSON = new GsonBuilder().create();
