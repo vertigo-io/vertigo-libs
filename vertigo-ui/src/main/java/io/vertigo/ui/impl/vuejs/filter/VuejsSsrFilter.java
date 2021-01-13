@@ -41,6 +41,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -56,13 +59,20 @@ import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.datastore.cache.CacheManager;
 import io.vertigo.datastore.cache.definitions.CacheDefinition;
 import io.vertigo.vega.impl.servlet.filter.AbstractFilter;
+import io.vertigo.vega.impl.servlet.filter.ContentSecurityPolicyFilter;
 
 /**
  * Filter to pre-compile vuejs template on the server-side to comply with CSP directives.
  * @author mlaroche
  */
 public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefinitionProvider {
+	private static final Logger LOGGER = LogManager.getLogger(VuejsSsrFilter.class);
+	private static final String VUEJS_SSR_CACHE_URL_SUFFIX = "@SSR-";
 	private static final String VUEJS_SSR_CACHE_COLLECTION = "CacheVuejsSSR";
+	//	private static final String VERTIGO_SSR_TAG_PATTERN_STR = "<([a-z]+)\\s[^>]*id=['\"]" + "vertigossr" + "['\"][^>]*>";
+	private static final String VERTIGO_SSR_TAG_PATTERN_STR = "<(vertigo-ssr)(\\s[^>]*)?>";
+	private static final Pattern VERTIGO_SSR_TAG_PATTERN = Pattern.compile(VERTIGO_SSR_TAG_PATTERN_STR);
+
 	private String ssrServerUrl;
 	private boolean doublePassRender = false;
 
@@ -86,9 +96,9 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 		return Collections.singletonList(new CacheDefinition(
 				VUEJS_SSR_CACHE_COLLECTION,
 				false,
-				1000, //1000 elements
-				10, //10s
-				10, //10s
+				1000, //1000 elements max
+				5, //5s TTL
+				5, //5s TTI (idle)
 				false));
 	}
 
@@ -102,9 +112,10 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 		final HttpServletRequest request = (HttpServletRequest) req;
 		final HttpServletResponse response = (HttpServletResponse) res;
 
-		if (doublePassRender && request.getRequestURL().toString().contains("@SSR-")) {
+		if (doublePassRender && request.getRequestURL().toString().contains(VUEJS_SSR_CACHE_URL_SUFFIX)) {
 			final String uid = request.getRequestURL().toString();
 			final String scriptSSR = (String) cacheManager.get(VUEJS_SSR_CACHE_COLLECTION, uid);
+			cacheManager.remove(VUEJS_SSR_CACHE_COLLECTION, uid); //get only once
 			response.getWriter().print(scriptSSR);
 			return;
 		}
@@ -117,18 +128,24 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 				chain.doFilter(request, wrappedResponse);
 				hasError = false;
 				try {
-					final String croppedHtml;
+					final VueJsPageSplit vueJsPageSplit = vuejsContentSplit(wrappedResponse.getAsString());
+					final String compiledTemplate = compileVueJsTemplate(vueJsPageSplit.getTemplateToCompile(), ssrServerUrl);
+
+					final String replacedTemplate;
 					if (!doublePassRender) {
-						croppedHtml = vuejsSsrNonce(wrappedResponse.getAsString(), ssrServerUrl, nonce);
+						replacedTemplate = vuejsSsrNonce(compiledTemplate, nonce);
 					} else {
-						croppedHtml = vuejsSsrDoublePass(wrappedResponse.getAsString(), ssrServerUrl, request.getRequestURL(), cacheManager);
+						replacedTemplate = vuejsSsrDoublePass(compiledTemplate, request.getRequestURL(), cacheManager);
 					}
-					response.getWriter().print(croppedHtml);
+					response.getWriter().print(vueJsPageSplit.getBefore());
+					response.getWriter().print(replacedTemplate);
+					response.getWriter().print(vueJsPageSplit.getAfter());
 				} catch (final Exception e) {
+					LOGGER.error("Can't process VueJsSSR replacement", e);
 					response.getWriter().print(wrappedResponse.getAsString());
 				}
 			} finally {
-				if (hasError) {
+				if (hasError) { //it's error page
 					//text is already encoded by thymeleaf (content is already secure)
 					response.getWriter().print(wrappedResponse.getAsString());
 				}
@@ -136,75 +153,61 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 		}
 	}
 
-	private static String vuejsSsrNonce(final String fullContent, final String serverUrl, final Optional<String> nonce) {
-		final Pattern pattern = Pattern.compile("<([a-z]+)\\s[^>]*id=['\"]" + "vertigossr" + "['\"][^>]*>");
-		final Matcher matcher = pattern.matcher(fullContent);
+	private static VueJsPageSplit vuejsContentSplit(final String fullContent) {
+		final Matcher matcher = VERTIGO_SSR_TAG_PATTERN.matcher(fullContent);
 		final String before;
 		final String templateToCompile;
 		final String after;
 		if (matcher.find()) {
 			final int start = matcher.start();
-			//final int startTagEnd = matcher.end();
+			final int startTagEnd = matcher.end();
 			final String tag = matcher.group(1);
 			final int end = findEndTag(fullContent, start, tag, 0);
 			before = fullContent.substring(0, start);
-			templateToCompile = fullContent.substring(start, end + 3 + tag.length());
+			templateToCompile = fullContent.substring(startTagEnd, end); //crop container tag
 			after = fullContent.substring(end + 3 + tag.length());
 		} else {
 			throw new IllegalArgumentException("Can't find tag " + "page" + " in result");
 		}
-		final StringBuilder pageJsTag = new StringBuilder(before);
+		return new VueJsPageSplit(before, templateToCompile, after);
+	}
 
-		pageJsTag.append("<script");
+	private static String vuejsSsrNonce(final String compiledTemplate, final Optional<String> nonce) {
+		final StringBuilder replacedTemplate = new StringBuilder();
+		replacedTemplate.append("<script");
 		if (nonce.isPresent()) {
-			pageJsTag.append(" nonce=\"")
+			replacedTemplate.append(" nonce=\"")
 					.append(nonce.get())
 					.append("\"");
 		}
-		pageJsTag.append(">\r\n")
-				.append(compileVueJsTemplate(templateToCompile, serverUrl))
+		replacedTemplate.append(">\r\n")
+				.append(compiledTemplate)
 				.append("</script>\r\n");
-		pageJsTag.append(after);
-		return pageJsTag.toString();
+		return replacedTemplate.toString();
 	}
 
-	private static String vuejsSsrDoublePass(final String fullContent, final String serverUrl, final StringBuffer currentUrl, final CacheManager cacheManager) {
-		final Pattern pattern = Pattern.compile("<([a-z]+)\\s[^>]*id=['\"]" + "vertigossr" + "['\"][^>]*>");
-		final Matcher matcher = pattern.matcher(fullContent);
-		final String before;
-		final String templateToCompile;
-		final String after;
-		if (matcher.find()) {
-			final int start = matcher.start();
-			//final int startTagEnd = matcher.end();
-			final String tag = matcher.group(1);
-			final int end = findEndTag(fullContent, start, tag, 0);
-			before = fullContent.substring(0, start);
-			templateToCompile = fullContent.substring(start, end + 3 + tag.length());
-			after = fullContent.substring(end + 3 + tag.length());
-		} else {
-			throw new IllegalArgumentException("Can't find tag " + "page" + " in result");
-		}
-		final String uid = currentUrl.append("@SSR-").append(UUID.randomUUID().toString()).append(".js").toString();
-		final String scriptContent = compileVueJsTemplate(templateToCompile, serverUrl);
-		cacheManager.put(VUEJS_SSR_CACHE_COLLECTION, uid, scriptContent);
+	private static String vuejsSsrDoublePass(final String compiledTemplate, final StringBuffer currentUrl, final CacheManager cacheManager) {
+		final String uid = currentUrl.append(VUEJS_SSR_CACHE_URL_SUFFIX).append(UUID.randomUUID().toString()).append(".js").toString();
 
-		final StringBuilder pageJsTag = new StringBuilder(before);
-		pageJsTag.append("<script src=\"")
+		cacheManager.put(VUEJS_SSR_CACHE_COLLECTION, uid, compiledTemplate);
+
+		final StringBuilder replacedTemplate = new StringBuilder();
+		replacedTemplate.append("<script src=\"")
 				.append(uid)
-				.append("\"></script>\r\n")
-				.append(after);
-		return pageJsTag.toString();
+				.append("\"></script>\r\n");
+		return replacedTemplate.toString();
 	}
 
 	private static int findEndTag(final String temp, final int from, final String tag, final int deep) {
 		int end = temp.indexOf("</" + tag + ">", from);
 		Assertion.check().isTrue(end > 0, "Cant find en tag {0} after position {1}", "</" + tag + ">", from);
-		final int innerStart = temp.indexOf("<" + tag, from + 1 + tag.length());
-		if (innerStart != -1 && innerStart < end) {
-			final int innerEnd = findEndTag(temp, innerStart, tag, deep + 1);
-			end = findEndTag(temp, innerEnd + 3 + tag.length(), tag, deep);
-			Assertion.check().isTrue(end > 0, "Cant find en tag {0} after position {1} (deep", "</" + tag + ">", from);
+		int innerStart = temp.indexOf("<" + tag, from + 1 + tag.length());
+		int innerEnd = -1;
+		while (innerStart != -1 && innerStart < end) {
+			innerEnd = findEndTag(temp, innerStart, tag, deep + 1);
+			end = temp.indexOf("</" + tag + ">", innerEnd + 3 + tag.length());
+			Assertion.check().isTrue(end > 0, "Cant find en tag {0} after position {1} ({2})", "</" + tag + ">", from, deep);
+			innerStart = temp.indexOf("<" + tag, innerEnd);
 		}
 		return end;
 	}
@@ -263,5 +266,29 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 			throw WrappedException.wrap(e);
 		}
 
+	}
+
+	private static class VueJsPageSplit {
+		private final String before;
+		private final String templateToCompile;
+		private final String after;
+
+		public VueJsPageSplit(final String before, final String templateToCompile, final String after) {
+			this.before = before;
+			this.templateToCompile = templateToCompile;
+			this.after = after;
+		}
+
+		public String getBefore() {
+			return before;
+		}
+
+		public String getTemplateToCompile() {
+			return templateToCompile;
+		}
+
+		public String getAfter() {
+			return after;
+		}
 	}
 }
