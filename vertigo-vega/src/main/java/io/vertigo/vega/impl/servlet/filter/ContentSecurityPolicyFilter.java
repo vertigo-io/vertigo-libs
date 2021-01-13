@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui.impl.vuejs.filter;
+package io.vertigo.vega.impl.servlet.filter;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -29,11 +29,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.vega.impl.servlet.filter.AbstractFilter;
 
 /**
- * Filter to pre-compile vuejs template on the server-side to comply with CSP directives.
- * @author mlaroche
+ * Filter to add CSP directives; compute a nonce if necessary and put it in request attribute.
+ * @author npiedeloup
  */
 public final class ContentSecurityPolicyFilter extends AbstractFilter {
 	public static final String NONCE_ATTRIBUTE_NAME = "nonce";
