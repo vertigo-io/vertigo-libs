@@ -357,9 +357,10 @@ export default {
         }.bind(this));
     },
 
-    httpPostAjax: function (url, params, options) {
+    httpPostAjax: function (url, paramsIn, options) {
         let vueData = this.$data.vueData;
         let uiMessageStack = this.$data.uiMessageStack;
+        let params = this.isFormData(paramsIn) ? paramsIn : this.objectToFormData(paramsIn);
         params.append('CTX', vueData.CTX);
         this.$http.post(url, params).then(function (response) {
             if (response.data.model.CTX) {
@@ -445,6 +446,10 @@ export default {
         const formData = new FormData();
         Object.keys(object).forEach(key => formData.append(key, object[key]));
         return formData;
+    },
+    
+    isFormData: function(val) {
+        return (typeof FormData !== 'undefined') && (val instanceof FormData);
     }
 
 }
