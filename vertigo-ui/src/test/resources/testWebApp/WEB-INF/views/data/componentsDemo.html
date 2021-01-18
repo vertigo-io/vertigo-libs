@@ -8,6 +8,9 @@
 <head>
     <title>Movie Detail</title>
     <script type="text/javascript" th:src="@{/vertigo-ui/static/js/vertigo-ui-extensions.js}"></script>
+    <script th:nonce="${nonce}">
+       VUiExtensions.dataX.selectedTimeZoneListArray = '[[${model[selectedTimeZoneList]}]]'.split(';');
+    </script>                       
 </head>
 
 <body>
@@ -37,9 +40,6 @@
                         <vu:chips-autocomplete object="movie" field="tags" list="movies" staticData="false"/>
                         <vu:grid-cell/>
                         <vu:grid-cell col="md-4">
-                            <script>
-                            VUiExtensions.dataX.selectedTimeZoneListArray = '[[${model[selectedTimeZoneList]}]]'.split(';');
-                            </script>
                             <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" @input="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
                         </vu:grid-cell>
                         <q-btn th:@click="|httpPostAjax('@{_ajaxArray}', vueDataParams(['selectedTimeZoneList']))|" color="primary" label="Ajax save" ></q-btn>
@@ -96,5 +96,7 @@
                 </vu:column>
             </vu:table>
     </div>
+    
+    httpPostAjax
 </body>
 </html>
