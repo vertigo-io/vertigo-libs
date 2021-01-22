@@ -21,7 +21,8 @@
     th:with="myComponentId='uploader'+${key}+'drop',fileComponentId='uploader'+${key}"
     th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('dragover',false)}" >
         <div class="dropzone-area" 
-            th:@dragenter.prevent="|uploader_dragenter('${myComponentId}')|">
+            th:@dragenter.prevent="|uploader_dragenter('${myComponentId}')|"
+            th:attr="__${dropzone_attrs}__">
 	        <vu:content/>
 	        <div th:v-if="|componentStates.${myComponentId}.dragover|" class="absolute-full q-uploader__dnd"
 	        th:@dragleave.prevent="|uploader_dragleave('${myComponentId}')|"

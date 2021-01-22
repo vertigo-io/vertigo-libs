@@ -28,5 +28,5 @@
 </th:block> 
 
 <th:block th:fragment="date-read(object, field, label, format, date_attrs, input_attrs)" vu:alias="date" vu:selector="${viewMode=='read'}" >
-	<vu:text-field-read object="${object}" field="${field}" label="${label}" />
+	<vu:text-field-read object="${object}" field="${field}" label="${label}" th:attr="__${input_attrs}__" />
 </th:block>
