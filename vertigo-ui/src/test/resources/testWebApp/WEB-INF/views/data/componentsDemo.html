@@ -62,7 +62,18 @@
                         <vu:grid-cell>
                             <vu:button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}" color="primary"/>
                             <vu:button-submit th:if="${model.modeReadOnly}" label="Edit" action="@{_edit}" color="primary"/>
-                            <vu:button-submit-confirm th:if="${!model.modeReadOnly}"  id="saveAction" label="Save" action="@{_save}" formId="myFormId" confirmMessage="Etes vous sûr ?      " color="primary" />
+                            <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save" action="@{_save2}" formId="myFormId" confirmMessage="Etes vous sûr ?" color="primary" />
+                            <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save" action="@{_save}" formId="myFormId" color="primary">
+                               <span>C'est OK ?</span>
+                            </vu:button-submit-confirm>
+                            <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save" action="@{_save3}" formId="myFormId" confirmMessage="Etes vous sûr ?" color="primary">
+                               <vu:slot name="actions_slot">
+                                 <q-btn flat label="Cancel2" color="primary" v-close-popup />
+                                 <q-btn type="submit" th:formaction="@{_save}" form="myFormId" label="Ok2" color="primary" v-close-popup />
+                               </vu:slot>
+                               <span>C'est OK ?</span>
+                            </vu:button-submit-confirm>
+                            
                             <vu:button-link th:if="${model.modeEdit}"  label="Movies" url="@{/movies/}" color="primary" />
                             <q-btn  th:label="OpenModal" th:@click="|openModal('myModal', '@{/movies/}')|"></q-btn>
                         </vu:grid-cell>
