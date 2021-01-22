@@ -16,7 +16,7 @@
 <body>
     <div layout:fragment="content">
         <vu:messages />
-            <vu:form>
+            <vu:form id="myFormId">
                 <vu:block id="movie" title="#{movie.title.information}">
                        <vu:include-data-primitive key='timeZoneList'/>
                        <vu:include-data-primitive key='selectedTimeZoneList'/>
@@ -62,7 +62,7 @@
                         <vu:grid-cell>
                             <vu:button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}" color="primary"/>
                             <vu:button-submit th:if="${model.modeReadOnly}" label="Edit" action="@{_edit}" color="primary"/>
-                            <vu:button-submit th:if="${!model.modeReadOnly}"  id="saveAction" label="Save" action="@{_save}" color="primary" />
+                            <vu:button-submit-confirm th:if="${!model.modeReadOnly}"  id="saveAction" label="Save" action="@{_save}" formId="myFormId" confirmMessage="Etes vous sûr ?      " color="primary" />
                             <vu:button-link th:if="${model.modeEdit}"  label="Movies" url="@{/movies/}" color="primary" />
                             <q-btn  th:label="OpenModal" th:@click="|openModal('myModal', '@{/movies/}')|"></q-btn>
                         </vu:grid-cell>
