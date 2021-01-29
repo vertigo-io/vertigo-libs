@@ -359,7 +359,8 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 								&& ((String) attributeValue).equalsIgnoreCase("true") //boolean
 								&& ((String) attributeValue).equalsIgnoreCase("false"))) {
 			return "':" + attributeName + "'";
-		} else if (attributeName.matches("^[^'a-zA-Z].*")) {
+		} else if (!attributeName.startsWith("'") //if not only char and don't already start by ' add them
+				&& !attributeName.matches("^[a-zA-Z]*$")) {
 			return "'" + attributeName + "'";
 		}
 		return attributeName;
