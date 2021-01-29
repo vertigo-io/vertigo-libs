@@ -30,6 +30,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.http.CacheControl;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
@@ -48,6 +49,7 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import io.vertigo.connectors.spring.EnableVertigoSpringBridge;
 import io.vertigo.ui.controllers.ListAutocompleteController;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.DtListStateMethodArgumentResolver;
+import io.vertigo.ui.impl.springmvc.argumentresolvers.FileInfoURIConverter;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.FileInfoURIConverterValueHandler;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.UiMessageStackMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.VFileMethodArgumentResolver;
@@ -183,6 +185,11 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		resolver.setCharacterEncoding("UTF-8");
 		resolver.setTemplateEngine(templateEngine());
 		registry.viewResolver(resolver);
+	}
+
+	@Override
+	public void addFormatters(final FormatterRegistry registry) {
+		registry.addConverter(new FileInfoURIConverter());
 	}
 
 	@Override
