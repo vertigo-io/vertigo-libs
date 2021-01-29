@@ -55,7 +55,7 @@
     </filter>
     <filter-mapping>
         <filter-name>CSP</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/test2/*</url-pattern>
     </filter-mapping>
     <filter>
         <description>
@@ -78,7 +78,7 @@
     </filter>
     <filter-mapping>
         <filter-name>vueJsSSR</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/test2/*</url-pattern>
     </filter-mapping>
    
 	<!-- prevent Locking of static files on windows -->
