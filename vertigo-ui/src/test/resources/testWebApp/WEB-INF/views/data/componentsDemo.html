@@ -41,13 +41,27 @@
                         <vu:grid-cell/>
                         <vu:grid-cell col="md-4">
                             <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" @input="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
+                            <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" 
+                            :disabled="true || false"
+                            @input="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
                         </vu:grid-cell>
                         <q-btn th:@click="|httpPostAjax('@{_ajaxArray}', vueDataParams(['selectedTimeZoneList']))|" color="primary" label="Ajax save" ></q-btn>
                         
                         <vu:grid-cell>
                             <a th:href="@{/componentsDemo/myFiles}">insee.csv</a>
-                            <div v-for="(item, index) in vueData.myFiles" :name="index" > 
-                                <a href="|'@{/componentsDemo/myFiles/}'+item|">{{item}}</a>
+                        </vu:grid-cell>
+                        <vu:grid-cell>
+                            Server side file list
+                            <div th:each="file, iStat: ${model.vContext['storedFiles']}" 
+                                th:style="${iStat.odd}? 'font-weight: bold;'" 
+                                th:alt-title="${iStat.even}? 'even' : 'odd'">
+                                <a th:href="@{/componentsDemo/myFiles/}+${file.fileUri}" th:text="${file.name}"></a>                                
+                            </div>
+                        </vu:grid-cell>
+                        <vu:grid-cell>
+                            Client side file list
+                            <div v-for="file in vueData.storedFiles" >
+                                <a th::href="|'__@{/componentsDemo/myFiles/}__'+file.fileUri|">{{file.name}}</a>                                
                             </div>
                         </vu:grid-cell>
                         <vu:grid-cell>
@@ -56,7 +70,9 @@
                             </vu:fileupload-dropzone>
                         </vu:grid-cell>                
                         <vu:fileupload-custom label="Custom upload file" th:url="'@{/componentsDemo/upload}'" key="myFilesUris" multiple/>                            
-                        <vu:fileupload-simple label="Simple upload file" th:url="'@{/componentsDemo/upload}'" key="myFilesUris" multiple/>                            
+                        <vu:fileupload-simple label="Simple upload file" th:url="'@{/componentsDemo/upload}'" key="myFilesUris" fileInfoKey="storedFiles" multiple/>                            
+                       
+                        
                        
                         <vu:modal componentId="myModal" closeLabel="Close"/>
                         <vu:grid-cell>
