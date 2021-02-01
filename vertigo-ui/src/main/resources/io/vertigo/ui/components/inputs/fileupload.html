@@ -9,9 +9,9 @@
 			th::ref="|'${myComponentId}'|"
 			:form-fields="[{name:'CTX', value:vueData.CTX}]"
 			@start="uploader_changeIcon()"
-			th:@added="|uploader_addedFile(${multiple}, '${myComponentId}')|"
-			th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}')|"
-			th:@removed="|uploader_removeFiles($event, '${myComponentId}')|"
+			th:@added="|uploader_addedFile(${multiple}, '${myComponentId}', '${key}')|"
+			th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}', '${key}')|"
+			th:@removed="|uploader_removeFiles($event, '${myComponentId}', '${key}')|"
 			th:attr="__${uploader_attrs}__">
 		</q-uploader>
 </th:block>
@@ -37,7 +37,8 @@
     objectKey=${fileInfoKey!=null?model.vContext['componentStates'].get(myComponentId)['fileUris'].addAll(model.vContext.get(fileInfoKey).toURIList()):null}
     " >
         <vu:include-data-primitive th:if="${fileInfoKey} != null" th:key="${fileInfoKey}"/>
-        <input type="hidden" th:name="|${key}|" th:v-bind:value="|componentStates.${myComponentId}.fileUris|" />
+        <vu:include-data-primitive th:if="${key} != null" th:key="${key}" />
+        <input type="hidden" th:name="|vContext[${key}]|" th:v-model="|vueData.${key}|" />
         <q-uploader th:url="${url}"
             auto-upload
             field-name="file"
@@ -45,9 +46,9 @@
             th::ref="|'${myComponentId}'|"
             :form-fields="[{name:'CTX', value:vueData.CTX}]"
             @start="uploader_changeIcon();"
-            th:@added="|uploader_addedFile(${multiple}, '${myComponentId}')|"
-            th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}')|"
-            th:@removed="|uploader_removeFiles($event, '${myComponentId}')|"
+            th:@added="|uploader_addedFile(${multiple}, '${myComponentId}', '${key}')|"
+            th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}','${key}')|"
+            th:@removed="|uploader_removeFiles($event, '${myComponentId}','${key}')|"
             th:attr="__${uploader_attrs}__">
             <template v-slot:header="slotProps"></template> 
             <template v-slot:list="slotProps">
@@ -61,7 +62,7 @@
 			        <template v-slot:control>
                       <div class="col column justify-center">
                         <div th:v-for="'file in '+${fileInfoKey!=null?'vueData.'+fileInfoKey+'.concat(slotProps.files)':'slotProps.files'}"
-                              th:v-if="|componentStates.${myComponentId}.fileUris.includes(file.fileUri)|"
+                              th:v-if="|vueData.${key}.includes(file.fileUri)|"
                               :key="file.name"
                               class="q-uploader__file relative-position" 
                               :class="{'q-uploader__file--failed': file.__status === 'failed',
@@ -113,9 +114,9 @@
             th::ref="|'${myComponentId}'|"
             :form-fields="[{name:'CTX', value:vueData.CTX}]"
             @start="uploader_changeIcon()"
-            th:@added="|uploader_addedFile(${multiple}, '${myComponentId}')|"
-            th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}')|"
-            th:@removed="|uploader_removeFiles($event, '${myComponentId}')|"
+            th:@added="|uploader_addedFile(${multiple}, '${myComponentId}', '${key}')|"
+            th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}', '${key}')|"
+            th:@removed="|uploader_removeFiles($event, '${myComponentId}', '${key}')|"
             th:attr="__${uploader_attrs}__">
             <template v-slot:header="slotProps">
 		            <div class="q-uploader__header-content flex flex-center no-wrap q-gutter-xs">

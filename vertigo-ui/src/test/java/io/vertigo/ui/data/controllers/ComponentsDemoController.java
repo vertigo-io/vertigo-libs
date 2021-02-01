@@ -86,6 +86,7 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	private final ViewContextKey<String> zoneId = ViewContextKey.of("zoneId");
 
 	public static final ViewContextKey<FileInfo> storedFileInfo = ViewContextKey.of("storedFiles");
+	public static final ViewContextKey<ArrayList<String>> protectedFileUris = ViewContextKey.of("myFilesUris");
 
 	@Inject
 	private VSecurityManager securityManager;
@@ -101,7 +102,8 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 
 	@GetMapping("/")
 	public void initContext(final ViewContext viewContext) throws URISyntaxException, IOException {
-		viewContext.publishDto(movieKey, new Movie());
+		final Movie myMovie = new Movie();
+		viewContext.publishDto(movieKey, myMovie);
 		viewContext.publishDto(castingKey, new Casting());
 		viewContext.publishDtList(movieList, movieServices.getMovies(DtListState.defaultOf(Movie.class)));
 		viewContext.publishDtListModifiable(movieListModifiables, movieServices.getMovies(DtListState.defaultOf(Movie.class)));
@@ -127,6 +129,13 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		final FileInfo fileInfoTmp2 = supportServices.saveFile(dummyFile2);
 		storeFiles.add(fileInfoTmp2);
 		viewContext.publishFileInfo(storedFileInfo, storeFiles);
+
+		final ArrayList<String> fileUris = new ArrayList<>();
+		final UiFileInfoList<FileInfo> uiFileInfoList = viewContext.getUiFileInfoList(storedFileInfo);
+		fileUris.add(uiFileInfoList.get(0).getFileUri());
+		fileUris.add(uiFileInfoList.get(1).getFileUri());
+		viewContext.publishRef(protectedFileUris, fileUris);
+
 		toModeCreate();
 	}
 
@@ -212,9 +221,10 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	}
 
 	@DeleteMapping("/upload")
-	public FileInfoURI removeFile(@QueryParam("file") final FileInfoURI uri) {
-		supportServices.removeFile(uri);
-		return uri; //if no return, you must get the response. Prefer to return old uri.
+	public FileInfoURI removeFile(@QueryParam("file") final FileInfoURI fileInfoUri) {
+		//no CTX in this request
+		supportServices.removeFile(fileInfoUri);
+		return fileInfoUri; //if no return, you must get the response. Prefer to return old uri.
 	}
 
 	@PostMapping("/_ajaxArray")
