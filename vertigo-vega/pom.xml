@@ -72,13 +72,13 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>9.4.31.v20200723</version>
+			<version>9.4.35.v20201120</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
 			<artifactId>websocket-server</artifactId>
-			<version>9.4.31.v20200723</version>
+			<version>9.4.35.v20201120</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -87,7 +87,7 @@
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
-			<version>4.3.2</version>
+			<version>4.3.3</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -122,19 +122,19 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>apache-jstl</artifactId>
-			<version>9.4.31.v20200723</version>
+			<version>9.4.35.v20201120</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-plus</artifactId>
-			<version>9.4.31.v20200723</version>
+			<version>9.4.35.v20201120</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>9.4.31.v20200723</version>
+			<version>9.4.35.v20201120</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

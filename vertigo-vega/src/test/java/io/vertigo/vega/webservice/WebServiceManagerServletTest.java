@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Paths;
 
 import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
 import org.eclipse.jetty.server.Server;
@@ -59,7 +60,7 @@ public final class WebServiceManagerServletTest extends AbstractWebServiceManage
 
 	private static void startServer() throws IOException, Exception {
 		server = new Server(MyNodeConfig.WS_PORT);
-		final WebAppContext context = new WebAppContext(WebServiceManagerServletTest.class.getClassLoader().getResource("io/vertigo/vega/testWebApp/").getFile(), "/");
+		final WebAppContext context = new WebAppContext(Paths.get(WebServiceManagerServletTest.class.getClassLoader().getResource("io/vertigo/vega/testWebApp/").toURI()).toString(), "/");
 		System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
 		context.setAttribute("jacoco.exclClassLoaders", "*");
 		context.setAttribute("javax.servlet.context.tempdir", getScratchDir());

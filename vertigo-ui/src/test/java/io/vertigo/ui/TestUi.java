@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,7 +80,7 @@ public class TestUi {
 
 	private static void startServer() throws IOException, Exception {
 		server = new Server(port);
-		final WebAppContext context = new WebAppContext(TestUi.class.getClassLoader().getResource("testWebApp/").getFile(), "/test");
+		final WebAppContext context = new WebAppContext(Paths.get(TestUi.class.getClassLoader().getResource("testWebApp/").toURI()).toString(), "/test");
 		System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
 		context.setAttribute("jacoco.exclClassLoaders", "*");
 
