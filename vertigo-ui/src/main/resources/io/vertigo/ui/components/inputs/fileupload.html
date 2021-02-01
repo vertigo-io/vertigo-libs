@@ -37,18 +37,17 @@
     objectKey=${fileInfoKey!=null?model.vContext['componentStates'].get(myComponentId)['fileUris'].addAll(model.vContext.get(fileInfoKey).toURIList()):null}
     " >
         <vu:include-data-primitive th:if="${fileInfoKey} != null" th:key="${fileInfoKey}"/>
-        <vu:include-data-primitive th:if="${key} != null" th:key="${key}" />
-        <input type="hidden" th:name="|vContext[${key}]|" th:v-model="|vueData.${key}|" />
+        <input type="hidden" th:name="|vContext[${key}]|" th:v-bind:value="|vueData.${fileInfoKey}.map(x => x.fileUri)|" />
         <q-uploader th:url="${url}"
             auto-upload
             field-name="file"
             th::multiple="${multiple}"
             th::ref="|'${myComponentId}'|"
             :form-fields="[{name:'CTX', value:vueData.CTX}]"
-            @start="uploader_changeIcon();"
-            th:@added="|uploader_addedFile(${multiple}, '${myComponentId}', '${key}')|"
-            th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}','${key}')|"
-            th:@removed="|uploader_removeFiles($event, '${myComponentId}','${key}')|"
+            @hook:mounted="uploader_changeIcon();"
+            th:@added="|uploader_addedFile(${multiple}, '${myComponentId}', '${fileInfoKey}')|"
+            th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}','${fileInfoKey}')|"
+            th:@removed="|uploader_removeFiles($event, '${myComponentId}','${fileInfoKey}')|"
             th:attr="__${uploader_attrs}__">
             <template v-slot:header="slotProps"></template> 
             <template v-slot:list="slotProps">
@@ -62,7 +61,7 @@
 			        <template v-slot:control>
                       <div class="col column justify-center">
                         <div th:v-for="'file in '+${fileInfoKey!=null?'vueData.'+fileInfoKey+'.concat(slotProps.files)':'slotProps.files'}"
-                              th:v-if="|vueData.${key}.includes(file.fileUri)|"
+                              v-if="file.__status != 'uploaded' || file.fileUri!=null"
                               :key="file.name"
                               class="q-uploader__file relative-position" 
                               :class="{'q-uploader__file--failed': file.__status === 'failed',

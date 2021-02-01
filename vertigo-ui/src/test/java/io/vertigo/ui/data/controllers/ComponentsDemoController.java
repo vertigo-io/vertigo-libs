@@ -131,9 +131,9 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		viewContext.publishFileInfo(storedFileInfo, storeFiles);
 
 		final ArrayList<String> fileUris = new ArrayList<>();
-		final UiFileInfoList<FileInfo> uiFileInfoList = viewContext.getUiFileInfoList(storedFileInfo);
+		/*final UiFileInfoList<FileInfo> uiFileInfoList = viewContext.getUiFileInfoList(storedFileInfo);
 		fileUris.add(uiFileInfoList.get(0).getFileUri());
-		fileUris.add(uiFileInfoList.get(1).getFileUri());
+		fileUris.add(uiFileInfoList.get(1).getFileUri());*/
 		viewContext.publishRef(protectedFileUris, fileUris);
 
 		toModeCreate();
@@ -153,8 +153,10 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/_save")
-	public void doSaveAutoValidation(final ViewContext viewContext, @ViewAttribute("movie") final Movie movie) {
+	public void doSaveAutoValidation(final ViewContext viewContext, @ViewAttribute("movie") final Movie movie, @QueryParam("myFilesUris") final List<FileInfoURI> pictures) {
 		viewContext.publishDto(movieKey, movie);
+		//we may save files on a more persistent space
+		nop(pictures);
 	}
 
 	@PostMapping("/movies/_add")
@@ -210,21 +212,29 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/upload")
-	public FileInfoURI uploadFile(final ViewContext viewContext, @QueryParam("file") final VFile vFile) {
+	public ViewContext uploadFile(final ViewContext viewContext, @QueryParam("file") final VFile vFile) {
 		getUiMessageStack().addGlobalMessage(Level.INFO, "Fichier recu : " + vFile.getFileName() + " (" + vFile.getMimeType() + ")");
 		//No need to protectPath, FileInfoURI are always protected
 		//final String protectedPath = ProtectedValueUtil.generateProtectedValue(VFileUtil.obtainReadOnlyPath(vFile).toFile().getAbsolutePath());
 		final FileInfo storeFile = supportServices.saveFile(vFile);
 		final UiFileInfoList<FileInfo> storeFiles = viewContext.getUiFileInfoList(storedFileInfo);
 		storeFiles.add(storeFile);
-		return storeFile.getURI();
+		viewContext.markModifiedKeys(storedFileInfo);
+
+		/*final ArrayList<String> protectedUris = (ArrayList<String>) viewContext.get(protectedFileUris);
+		protectedUris.add(storeFiles.get(storeFiles.size() - 1).getFileUri());
+		viewContext.publishRef(protectedFileUris, protectedUris);*/
+
+		return viewContext;
 	}
 
 	@DeleteMapping("/upload")
-	public FileInfoURI removeFile(@QueryParam("file") final FileInfoURI fileInfoUri) {
-		//no CTX in this request
+	public ViewContext removeFile(final ViewContext viewContext, @QueryParam("file") final FileInfoURI fileInfoUri) {
 		supportServices.removeFile(fileInfoUri);
-		return fileInfoUri; //if no return, you must get the response. Prefer to return old uri.
+		final UiFileInfoList<FileInfo> storeFiles = viewContext.getUiFileInfoList(storedFileInfo);
+		storeFiles.remove(fileInfoUri);
+		viewContext.markModifiedKeys(storedFileInfo);
+		return viewContext; //if no return, you must get the response. Prefer to return old uri.
 	}
 
 	@PostMapping("/_ajaxArray")
