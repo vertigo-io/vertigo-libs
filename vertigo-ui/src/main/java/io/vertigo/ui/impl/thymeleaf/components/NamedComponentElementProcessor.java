@@ -337,16 +337,22 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		setLocalPlaceholderVariables(structureHandler, placeholders);
 	}
 
-	private static Object encodeAttributeValue(final Object attributeValue) {
+	private static Object encodeAttributeValue(final Object attributeValue, final boolean isPlaceholder) {
 		if (attributeValue == null) {
 			return "${true}";
-		} else if ("".equals(attributeValue)) {
+		} else if ("".equals(((String) attributeValue).trim())) {
 			return "''";
 		} else if (attributeValue instanceof String
 				&& !((String) attributeValue).equalsIgnoreCase("true") //not boolean
 				&& !((String) attributeValue).equalsIgnoreCase("false")
-				&& (((String) attributeValue).matches("^[a-zA-Z\\s]+[^$#|]*") //almost text
-						|| "".equals(((String) attributeValue).trim()))) { //or empty
+				&& !((String) attributeValue).matches("^[0-9\\.]+") //not number
+				&& (isPlaceholder //is a placeholder => escape for thymeleaf
+						|| ((String) attributeValue).matches("^[^$#@|][^$#@]+")) //no reserved char
+				&& ((String) attributeValue).matches("^[^$#@|].+")) { //don't start with reserved char
+			//We escape :
+			//IF placehodler or no thymeleaf's reserved char ($ @ # | )  (but autorized || )
+			//AND dont start with reserved char (for case like ${value} )
+			//BUT IF true, false or number (it become string instead)
 			return "'" + ((String) attributeValue).replaceAll("'", "\\'") + "'"; //escape as text
 		}
 		return attributeValue;
@@ -413,22 +419,22 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		return "class".equals(key); //TODO : found the great rule
 	}
 
-	private void addPlaceholderVariable(final Map<String, Map<String, Object>> placeholders, final String prefixedVariableName, final Object value) {
+	private void addPlaceholderVariable(final Map<String, Map<String, Object>> placeholders, final String prefixedVariableName, final Object value, final String dialectPrefix) {
 		for (final String placeholderPrefix : placeholderPrefixes) {
 			if (prefixedVariableName.startsWith(placeholderPrefix)) {
 				final String attributeName = prefixedVariableName.substring(placeholderPrefix.length());
-				addPlaceholderVariable(placeholders, placeholderPrefix, encodeAttributeName(attributeName, value), encodeAttributeValue(value));
+				addPlaceholderVariable(placeholders, placeholderPrefix, attributeName, value, dialectPrefix);
 			}
 		}
 	}
 
-	private static void addPlaceholderVariable(final Map<String, Map<String, Object>> placeholders, final String placeholderPrefix, final String attributeName, final Object value) {
+	private static void addPlaceholderVariable(final Map<String, Map<String, Object>> placeholders, final String placeholderPrefix, final String attributeName, final Object value, final String dialectPrefix) {
 		Map<String, Object> previousPlaceholderValues = placeholders.get(placeholderPrefix + ATTRS_SUFFIX);
 		if (previousPlaceholderValues == null) {
 			previousPlaceholderValues = new HashMap<>();
 			placeholders.put(placeholderPrefix + ATTRS_SUFFIX, previousPlaceholderValues);
 		}
-		previousPlaceholderValues.put(encodeAttributeName(attributeName, value), encodeAttributeValue(value));
+		previousPlaceholderValues.put(encodeAttributeName(attributeName, value), encodeAttributeValue(value, true));
 	}
 
 	private boolean isPlaceholder(final String prefixedVariableName) {
@@ -454,13 +460,13 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		//-----
 		if (isPlaceholder(attributeKey)) {
 			//We prepared prefixed placeholders variables.
-			addPlaceholderVariable(placeholders, attributeKey, attributeValue);
+			addPlaceholderVariable(placeholders, attributeKey, attributeValue, getDialectPrefix());
 		} else if (!parameterNames.contains(attributeKey)) {
 			Assertion.check().isTrue(
 					unnamedPlaceholderPrefix.isPresent(),
 					"Component '{0}' can't accept this parameter : '{1}' (accepted params : {2})", componentName, attributeKey, parameterNames);
 			//We prepared unnamed placeholder variable
-			addPlaceholderVariable(placeholders, unnamedPlaceholderPrefix.get(), attributeKey, attributeValue);
+			addPlaceholderVariable(placeholders, unnamedPlaceholderPrefix.get(), attributeKey, attributeValue, getDialectPrefix());
 		} else {
 
 			// Normally we would just allow the structure handler to be in charge of declaring the local variables
@@ -474,7 +480,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				engineContext = (IEngineContext) context;
 			}
 
-			final Object encodedAttributeValue = encodeAttributeValue(attributeValue);
+			final Object encodedAttributeValue = encodeAttributeValue(attributeValue, false);
 			final AssignationSequence assignations = AssignationUtils.parseAssignationSequence(context, attributeKey + "=" + encodedAttributeValue, false /* no parameters without value */);
 			if (assignations == null) {
 				throw new TemplateProcessingException("Could not parse value as attribute assignations: \"" + attributeKey + "=" + encodedAttributeValue + "\"");
