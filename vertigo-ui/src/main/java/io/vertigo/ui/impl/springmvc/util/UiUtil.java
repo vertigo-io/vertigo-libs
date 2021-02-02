@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -292,16 +293,6 @@ public final class UiUtil implements Serializable {
 				.append("		  }\r\n"));
 		renderJsFunctions.append("]\r\n");
 		return renderJsFunctions.toString();
-		/*return ",\r\n"
-				+ "render (h) {\r\n"
-				+ "	  with(this){return _c('div',{staticClass:\"column justify-center items-center\",attrs:{\"id\":\"page\"}},[_m(0),_v(\" \"),_c('form',{attrs:{\"action\":\"#\",\"method\":\"post\",\"autocomplete\":\"off\",\"spellcheck\":\"false\",\"accept-charset\":\"UTF-8\"}},[_c('div',{staticClass:\"q-gutter-y-md\"},[(uiMessageStack.globalErrors && uiMessageStack.globalErrors.length > 0)?_c('div',{staticClass:\"q-card bg-negative text-white col\"},[_c('div',{staticClass:\"q-card-main\"},[_c('div',{staticClass:\"q-list\"},_l((uiMessageStack.globalErrors),function(message){return _c('div',{staticClass:\"q-item\"},[_c('div',{staticClass:\"q-item-main\"},[_c('div',{staticClass:\"q-item-label\"},[_v(_s(message))])])])}),0)])]):_e(),_v(\" \"),(uiMessageStack.globalWarnings && uiMessageStack.globalWarnings.length > 0)?_c('div',{staticClass:\"q-card bg-warning text-white col\"},[_c('div',{staticClass:\"q-card-main\"},[_c('div',{staticClass:\"q-list\"},_l((uiMessageStack.globalWarnings),function(message){return _c('div',{staticClass:\"q-item\"},[_c('div',{staticClass:\"q-item-main\"},[_c('div',{staticClass:\"q-item-label\"},[_v(_s(message))])])])}),0)])]):_e(),_v(\" \"),(uiMessageStack.globalInfos && uiMessageStack.globalInfos.length > 0)?_c('div',{staticClass:\"q-card bg-info text-white col\"},[_c('div',{staticClass:\"q-card-main\"},[_c('div',{staticClass:\"q-list\"},_l((uiMessageStack.globalInfos),function(message){return _c('div',{staticClass:\"q-item\"},[_c('div',{staticClass:\"q-item-main\"},[_c('div',{staticClass:\"q-item-label\"},[_v(_s(message))])])])}),0)])]):_e(),_v(\" \"),(uiMessageStack.globalSuccess && uiMessageStack.globalSuccess.length > 0)?_c('div',{staticClass:\"q-card bg-positive text-white col\"},[_c('div',{staticClass:\"q-card-main\"},[_c('div',{staticClass:\"q-list\"},_l((uiMessageStack.globalSuccess),function(message){return _c('div',{staticClass:\"q-item\"},[_c('div',{staticClass:\"q-item-main\"},[_c('div',{staticClass:\"q-item-label\"},[_v(_s(message))])])])}),0)])]):_e(),_v(\" \"),_c('q-input',{attrs:{\"name\":\"login\",\"label\":\"Login\",\"stack-label\":\"\",\"orientation\":\"vertical\"},model:{value:(vueData.login),callback:function ($$v) {$set(vueData, \"login\", $$v)},expression:\"vueData.login\"}}),_c('q-input',{attrs:{\"type\":\"password\",\"name\":\"password\",\"label\":\"Password\",\"stack-label\":\"\",\"orientation\":\"vertical\"},model:{value:(vueData.password),callback:function ($$v) {$set(vueData, \"password\", $$v)},expression:\"vueData.password\"}}),_c('div',{staticClass:\"float-right\"},[_c('q-btn',{staticClass:\"bg-primary text-white\",attrs:{\"type\":\"submit\",\"label\":\"Login\",\"formaction\":\"_login\",\"aria-label\":\"Login\",\"title\":\"Login\",\"flat\":true}})],1)],1),_v(\" \"),_c('input',{attrs:{\"type\":\"hidden\",\"name\":\"CTX\"},domProps:{\"value\":vueData.CTX}})])])}  \r\n"
-				+ "  },\r\n"
-				+ "  staticRenderFns : [\r\n"
-				+ "		  function () {\r\n"
-				+ "			  with(this){return _c('div',{staticClass:\"title\"},[_c('h2',[_c('img',{attrs:{\"src\":\"/mars/static/img/titleMarsBaseNetwork.png\",\"alt\":\"Home mars network\"}})])])}\r\n"
-				+ "		  }\r\n"
-				+ "  ]";
-				*/
 	}
 
 	private static final Gson GSON = new GsonBuilder().create();
@@ -319,7 +310,7 @@ public final class UiUtil implements Serializable {
 			httpURLConnection.setDoOutput(true);
 
 			try (OutputStream os = httpURLConnection.getOutputStream()) {
-				final byte[] input = jsonPayload.getBytes("utf-8");
+				final byte[] input = jsonPayload.getBytes(StandardCharsets.UTF_8);
 				os.write(input, 0, input.length);
 			}
 
@@ -331,7 +322,7 @@ public final class UiUtil implements Serializable {
 					result.write(buffer, 0, length);
 				}
 			}
-			return GSON.fromJson(result.toString("UTF-8"), returnType);
+			return GSON.fromJson(result.toString(StandardCharsets.UTF_8), returnType);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}

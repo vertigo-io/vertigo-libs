@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -69,7 +70,6 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 	private static final Logger LOGGER = LogManager.getLogger(VuejsSsrFilter.class);
 	private static final String VUEJS_SSR_CACHE_URL_SUFFIX = "@SSR-";
 	private static final String VUEJS_SSR_CACHE_COLLECTION = "CacheVuejsSSR";
-	//	private static final String VERTIGO_SSR_TAG_PATTERN_STR = "<([a-z]+)\\s[^>]*id=['\"]" + "vertigossr" + "['\"][^>]*>";
 	private static final String VERTIGO_SSR_TAG_PATTERN_STR = "<(vertigo-ssr)(\\s[^>]*)?>";
 	private static final Pattern VERTIGO_SSR_TAG_PATTERN = Pattern.compile(VERTIGO_SSR_TAG_PATTERN_STR);
 
@@ -121,7 +121,6 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 		}
 
 		final Optional<String> nonce = Optional.ofNullable((String) request.getAttribute(ContentSecurityPolicyFilter.NONCE_ATTRIBUTE_NAME));
-		//final Set<String> headers = new HashSet<>(Collections.list(request.getHeaderNames()));
 		try (final VuejsSsrServletResponseWrapper wrappedResponse = new VuejsSsrServletResponseWrapper(response)) {
 			boolean hasError = true;
 			try {
@@ -178,7 +177,7 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 		if (nonce.isPresent()) {
 			replacedTemplate.append(" nonce=\"")
 					.append(nonce.get())
-					.append("\"");
+					.append('\"');
 		}
 		replacedTemplate.append(">\r\n")
 				.append(compiledTemplate)
@@ -249,7 +248,7 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 			httpURLConnection.setDoOutput(true);
 
 			try (OutputStream os = httpURLConnection.getOutputStream()) {
-				final byte[] input = jsonPayload.getBytes("utf-8");
+				final byte[] input = jsonPayload.getBytes(StandardCharsets.UTF_8);
 				os.write(input, 0, input.length);
 			}
 
@@ -261,7 +260,7 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 					result.write(buffer, 0, length);
 				}
 			}
-			return GSON.fromJson(result.toString("UTF-8"), returnType);
+			return GSON.fromJson(result.toString(StandardCharsets.UTF_8), returnType);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}
