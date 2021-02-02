@@ -72,20 +72,19 @@
                         <vu:fileupload-custom label="Custom upload file" th:url="'@{/componentsDemo/upload}'" key="myFilesUris" multiple/>                            
                         <vu:fileupload-simple label="Simple upload file" th:url="'@{/componentsDemo/upload}'" key="myFilesUris" fileInfoKey="storedFiles" multiple/>                            
                        
-                        
-                       
                         <vu:modal componentId="myModal" closeLabel="Close"/>
                         <vu:grid-cell>
                             <vu:button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}" color="primary"/>
                             <vu:button-submit th:if="${model.modeReadOnly}" label="Edit" action="@{_edit}" color="primary"/>
-                            <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save" action="@{_save2}" formId="myFormId" confirmMessage="Etes vous sûr ?" color="primary" />
-                            <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save" action="@{_save}" formId="myFormId" color="primary">
+                            <vu:button-submit th:if="${!model.modeReadOnly}" id="saveAction" label="Save (Default)" action="@{_save}" color="primary" />
+                            <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save (confirm with attr)" action="@{_save2}" formId="myFormId" confirmMessage="Etes vous sûr ?" color="primary" />
+                            <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save (confirm with content)" action="@{_save}" formId="myFormId" color="primary">
                                <span>C'est OK ?</span>
                             </vu:button-submit-confirm>
-                            <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save" action="@{_save3}" formId="myFormId" confirmMessage="Etes vous sûr ?" color="primary">
+                            <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save (confirm with custom actions)" action="@{notUsed}" formId="myFormId" confirmMessage="Etes vous sûr ?" color="primary">
                                <vu:slot name="actions_slot">
-                                 <q-btn flat label="Cancel2" color="primary" v-close-popup />
-                                 <q-btn type="submit" th:formaction="@{_save}" form="myFormId" label="Ok2" color="primary" v-close-popup />
+                                 <q-btn flat label="Cancel custom" color="primary" v-close-popup />
+                                 <q-btn type="submit" th:formaction="@{_save}" form="myFormId" label="Ok custom" color="primary" v-close-popup />
                                </vu:slot>
                                <span>C'est OK ?</span>
                             </vu:button-submit-confirm>
