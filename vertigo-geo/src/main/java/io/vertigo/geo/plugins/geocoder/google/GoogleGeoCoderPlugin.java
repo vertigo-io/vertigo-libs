@@ -43,6 +43,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -50,6 +52,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.geo.geocoder.GeoLocation;
@@ -60,6 +63,7 @@ import io.vertigo.geo.impl.geocoder.GeoCoderPlugin;
  *
  */
 public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
+	private static final Logger LOGGER = LogManager.getLogger(GoogleGeoCoderPlugin.class);
 	// Début de la requête http
 	private static final String GEOCODE_REQUEST_PREFIX = "https://maps.googleapis.com/maps/api/geocode/xml";
 	// Expression XPath permettant de récupérer la latitude, la longitude et
@@ -82,7 +86,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		Assertion.check()
 				.isNotNull(proxyHostOpt)
 				.isNotNull(proxyPortOpt)
-				.isTrue((proxyHostOpt.isPresent() && proxyPortOpt.isPresent()) || (proxyHostOpt.isEmpty() && proxyPortOpt.isEmpty()),
+				.isTrue(proxyHostOpt.isPresent() && proxyPortOpt.isPresent() || proxyHostOpt.isEmpty() && proxyPortOpt.isEmpty(),
 						"les deux paramètres host et port doivent être tous les deux remplis ou vides");
 		//-----
 		proxy = proxyHostOpt
@@ -126,7 +130,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		try {
 			urlString = GEOCODE_REQUEST_PREFIX + "?address=" + URLEncoder.encode(address, StandardCharsets.UTF_8.name()) + "&sensor=false";
 		} catch (final UnsupportedEncodingException e) {
-			throw new RuntimeException("Erreur lors de l'encodage de l'adresse", e);
+			throw new VSystemException(e, "Erreur lors de l'encodage de l'adresse");
 		}
 
 		final URL url;
@@ -257,8 +261,8 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 			final Node addressNode = addressNodes.item(i);
 			String shortName = null;
 			boolean isCountry = false;
-			boolean isAdministrative_area_level_1 = false;
-			boolean isAdministrative_area_level_2 = false;
+			boolean isAdministrativeAreaLevel1 = false;
+			boolean isAdministrativeAreaLevel2 = false;
 			boolean isLocality = false;
 
 			for (int j = 0; j < addressNode.getChildNodes().getLength(); j++) {
@@ -269,9 +273,9 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 					if ("country".equals(node.getTextContent())) {
 						isCountry = true;
 					} else if ("administrative_area_level_1".equals(node.getTextContent())) {
-						isAdministrative_area_level_1 = true;
+						isAdministrativeAreaLevel1 = true;
 					} else if ("administrative_area_level_2".equals(node.getTextContent())) {
-						isAdministrative_area_level_2 = true;
+						isAdministrativeAreaLevel2 = true;
 					} else if ("locality".equals(node.getTextContent())) {
 						isLocality = true;
 					}
@@ -279,9 +283,9 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 			}
 			if (isCountry) {
 				countryCode = shortName;
-			} else if (isAdministrative_area_level_1) {
+			} else if (isAdministrativeAreaLevel1) {
 				level1 = shortName;
-			} else if (isAdministrative_area_level_2) {
+			} else if (isAdministrativeAreaLevel2) {
 				level2 = shortName;
 			} else if (isLocality) {
 				locality = shortName;
@@ -289,9 +293,9 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		}
 		//-----
 		// 3- Création du résultat :  GeoLocation
-		System.out.println(">>address : " + address);
-		System.out.println("		>>level1 : " + level1);
-		System.out.println("		>>level2 : " + level2);
+		LOGGER.info("{ 'address': '" + address + "'"
+				+ "	'level1' : '" + level1 + "'"
+				+ "	'level2' : '" + level2 + "'}");
 
 		return new GeoLocation(latitude, longitude, countryCode, level1, level2, locality);
 	}
