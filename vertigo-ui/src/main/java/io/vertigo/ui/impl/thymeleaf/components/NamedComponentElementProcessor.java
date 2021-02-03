@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.thymeleaf.context.IEngineContext;
@@ -60,6 +61,15 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 
 public class NamedComponentElementProcessor extends AbstractElementModelProcessor {
+	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^[^$#@|].+";
+	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^[^$#@|][^$#@]+";
+	private static final String NUMBER_PATTERN_STR = "^[0-9\\.]+";
+	private static final String SIMPLE_TEXT_PATTERN_STR = "^[a-zA-Z]*$";
+	private static final Pattern NO_RESERVED_FIRST_CHAR_PATTERN = Pattern.compile(NO_RESERVED_FIRST_CHAR_PATTERN_STR);
+	private static final Pattern NO_RESERVED_TEXT_PATTERN = Pattern.compile(NO_RESERVED_TEXT_PATTERN_STR);
+	private static final Pattern NUMBER_PATTERN = Pattern.compile(NUMBER_PATTERN_STR);
+	private static final Pattern SIMPLE_TEXT_PATTERN = Pattern.compile(SIMPLE_TEXT_PATTERN_STR);
+
 	private static final String VARIABLE_PLACEHOLDER_SEPARATOR = "_";
 	private static final String SLOTS_SUFFIX = "slot";
 	private static final String ATTRS_SUFFIX = "attrs";
@@ -131,7 +141,6 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			final IModel fragmentModel = FragmentUtil.getFragmentModel(context, fragmentToUse + (param == null ? "" : "(" + param + ")"), structureHandler);
 			final IModel clonedFragmentModel = fragmentModel.cloneModel(); //le clone change l'index des éléments
 
-			//final IModel replacedContentSlotModel = replaceContentSlotTags(clonedFragmentModel, slotContents);
 			final IModel replacedContentFragmentModel = replaceContentTag(clonedFragmentModel, tag instanceof IStandaloneElementTag ? Optional.empty() : Optional.ofNullable(contentModel));
 
 			//We replace the whole model
@@ -343,12 +352,12 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		} else if ("".equals(((String) attributeValue).trim())) {
 			return "''";
 		} else if (attributeValue instanceof String
-				&& !((String) attributeValue).equalsIgnoreCase("true") //not boolean
-				&& !((String) attributeValue).equalsIgnoreCase("false")
-				&& !((String) attributeValue).matches("^[0-9\\.]+") //not number
+				&& !"true".equalsIgnoreCase((String) attributeValue) //not boolean
+				&& !"false".equalsIgnoreCase((String) attributeValue)
+				&& !NUMBER_PATTERN.matcher((String) attributeValue).matches() //not number
 				&& (isPlaceholder //is a placeholder => escape for thymeleaf
-						|| ((String) attributeValue).matches("^[^$#@|][^$#@]+")) //no reserved char
-				&& ((String) attributeValue).matches("^[^$#@|].+")) { //don't start with reserved char
+						|| NO_RESERVED_TEXT_PATTERN.matcher((String) attributeValue).matches()) //no reserved char
+				&& NO_RESERVED_FIRST_CHAR_PATTERN.matcher((String) attributeValue).matches()) { //don't start with reserved char
 			//We escape :
 			//IF placehodler or no thymeleaf's reserved char ($ @ # | )  (but autorized || )
 			//AND dont start with reserved char (for case like ${value} )
@@ -362,11 +371,11 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		if (!attributeName.startsWith(":") && !attributeName.startsWith("'")
 				&& (attributeValue == null
 						|| attributeValue instanceof String
-								&& ((String) attributeValue).equalsIgnoreCase("true") //boolean
-								&& ((String) attributeValue).equalsIgnoreCase("false"))) {
+								&& "true".equalsIgnoreCase((String) attributeValue) //boolean
+								&& "false".equalsIgnoreCase((String) attributeValue))) {
 			return "':" + attributeName + "'";
 		} else if (!attributeName.startsWith("'") //if not only char and don't already start by ' add them
-				&& !attributeName.matches("^[a-zA-Z]*$")) {
+				&& !SIMPLE_TEXT_PATTERN.matcher(attributeName).matches()) {
 			return "'" + attributeName + "'";
 		}
 		return attributeName;
@@ -419,16 +428,16 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		return "class".equals(key); //TODO : found the great rule
 	}
 
-	private void addPlaceholderVariable(final Map<String, Map<String, Object>> placeholders, final String prefixedVariableName, final Object value, final String dialectPrefix) {
+	private void addPlaceholderVariable(final Map<String, Map<String, Object>> placeholders, final String prefixedVariableName, final Object value) {
 		for (final String placeholderPrefix : placeholderPrefixes) {
 			if (prefixedVariableName.startsWith(placeholderPrefix)) {
 				final String attributeName = prefixedVariableName.substring(placeholderPrefix.length());
-				addPlaceholderVariable(placeholders, placeholderPrefix, attributeName, value, dialectPrefix);
+				addPlaceholderVariable(placeholders, placeholderPrefix, attributeName, value);
 			}
 		}
 	}
 
-	private static void addPlaceholderVariable(final Map<String, Map<String, Object>> placeholders, final String placeholderPrefix, final String attributeName, final Object value, final String dialectPrefix) {
+	private static void addPlaceholderVariable(final Map<String, Map<String, Object>> placeholders, final String placeholderPrefix, final String attributeName, final Object value) {
 		Map<String, Object> previousPlaceholderValues = placeholders.get(placeholderPrefix + ATTRS_SUFFIX);
 		if (previousPlaceholderValues == null) {
 			previousPlaceholderValues = new HashMap<>();
@@ -460,13 +469,13 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		//-----
 		if (isPlaceholder(attributeKey)) {
 			//We prepared prefixed placeholders variables.
-			addPlaceholderVariable(placeholders, attributeKey, attributeValue, getDialectPrefix());
+			addPlaceholderVariable(placeholders, attributeKey, attributeValue);
 		} else if (!parameterNames.contains(attributeKey)) {
 			Assertion.check().isTrue(
 					unnamedPlaceholderPrefix.isPresent(),
 					"Component '{0}' can't accept this parameter : '{1}' (accepted params : {2})", componentName, attributeKey, parameterNames);
 			//We prepared unnamed placeholder variable
-			addPlaceholderVariable(placeholders, unnamedPlaceholderPrefix.get(), attributeKey, attributeValue, getDialectPrefix());
+			addPlaceholderVariable(placeholders, unnamedPlaceholderPrefix.get(), attributeKey, attributeValue);
 		} else {
 
 			// Normally we would just allow the structure handler to be in charge of declaring the local variables
@@ -485,12 +494,8 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			if (assignations == null) {
 				throw new TemplateProcessingException("Could not parse value as attribute assignations: \"" + attributeKey + "=" + encodedAttributeValue + "\"");
 			}
-			final List<Assignation> assignationValues = assignations.getAssignations();
-			final int assignationValuesLen = assignationValues.size();
 
-			for (int i = 0; i < assignationValuesLen; i++) {
-
-				final Assignation assignation = assignationValues.get(i);
+			for (final Assignation assignation : assignations.getAssignations()) {
 
 				final IStandardExpression leftExpr = assignation.getLeft();
 				final Object leftValue = leftExpr.execute(context);
