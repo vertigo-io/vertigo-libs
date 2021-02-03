@@ -67,14 +67,16 @@ import io.vertigo.vega.impl.servlet.filter.ContentSecurityPolicyFilter;
  * @author mlaroche
  */
 public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefinitionProvider {
-	private static final Logger LOGGER = LogManager.getLogger(VuejsSsrFilter.class);
 	private static final String VUEJS_SSR_CACHE_URL_SUFFIX = "@SSR-";
 	private static final String VUEJS_SSR_CACHE_COLLECTION = "CacheVuejsSSR";
 	private static final String VERTIGO_SSR_TAG_PATTERN_STR = "<(vertigo-ssr)(\\s?[^>]*)>";
 	private static final Pattern VERTIGO_SSR_TAG_PATTERN = Pattern.compile(VERTIGO_SSR_TAG_PATTERN_STR);
 
+	private static final Logger LOGGER = LogManager.getLogger(VuejsSsrFilter.class);
+	private static final Gson GSON = new GsonBuilder().create();
+
 	private String ssrServerUrl;
-	private boolean doublePassRender = false;
+	private boolean doublePassRender; //default false
 
 	/** Object token, by */
 	private CacheManager cacheManager;
@@ -232,8 +234,6 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 		renderJsFunctions.append("]\r\n");
 		return renderJsFunctions.toString();
 	}
-
-	private static final Gson GSON = new GsonBuilder().create();
 
 	private static <R> R callRestWS(final String wsUrl, final String jsonPayload, final Type returnType) {
 		Assertion.check().isNotBlank(wsUrl);
