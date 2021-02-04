@@ -67,6 +67,7 @@ import io.vertigo.vega.impl.servlet.filter.ContentSecurityPolicyFilter;
  * @author mlaroche
  */
 public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefinitionProvider {
+	private static final int CONNECTION_TIMEOUT_MS = 500;
 	private static final String VUEJS_SSR_CACHE_URL_SUFFIX = "@SSR-";
 	private static final String VUEJS_SSR_CACHE_COLLECTION = "CacheVuejsSSR";
 	private static final String VERTIGO_SSR_TAG_PATTERN_STR = "<(vertigo-ssr)(\\s?[^>]*)>";
@@ -241,7 +242,7 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 		try {
 			final URL url = new URL(wsUrl);
 			final HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setConnectTimeout(500);
+			httpURLConnection.setConnectTimeout(CONNECTION_TIMEOUT_MS);
 			httpURLConnection.setRequestMethod("POST");
 			httpURLConnection.setRequestProperty("Content-Type", "application/json");
 			httpURLConnection.setRequestProperty("Accept", "application/json");
