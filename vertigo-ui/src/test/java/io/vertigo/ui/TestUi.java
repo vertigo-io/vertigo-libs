@@ -234,6 +234,7 @@ public class TestUi {
 		do {
 			try {
 				if (isElementPresent(byElement)) {
+					Thread.sleep(250);
 					return driver.findElement(byElement);
 				}
 			} catch (final Exception e) {
