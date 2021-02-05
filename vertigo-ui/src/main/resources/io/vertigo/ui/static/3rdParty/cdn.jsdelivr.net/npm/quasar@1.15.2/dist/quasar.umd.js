@@ -1,5 +1,5 @@
 /*!
- * Quasar Framework v1.15.0
+ * Quasar Framework v1.15.2
  * (c) 2015-present Razvan Stoenescu
  * Released under the MIT License.
  */
@@ -12,7 +12,7 @@
 
   Vue = Vue && Object.prototype.hasOwnProperty.call(Vue, 'default') ? Vue['default'] : Vue;
 
-  var version = "1.15.0";
+  var version = "1.15.2";
 
   /* eslint-disable no-useless-escape */
 
@@ -2584,6 +2584,7 @@
       transparent: Boolean,
       multiLine: Boolean,
       outline: Boolean,
+      rounded: Boolean,
 
       label: [Number, String],
 
@@ -2613,6 +2614,7 @@
           ) +
           (text !== void 0 ? (" text-" + text) : '') +
           (this.floating === true ? ' q-badge--floating' : '') +
+          (this.rounded === true ? ' q-badge--rounded' : '') +
           (this.transparent === true ? ' q-badge--transparent' : '')
       },
 
@@ -4698,9 +4700,10 @@
     return scrollTarget.scrollLeft
   }
 
-  function animScrollTo (el, to, duration) {
+  function animScrollTo (el, to, duration /* , prevTime */) {
     if ( duration === void 0 ) duration = 0;
 
+    var prevTime = arguments[3] === void 0 ? performance.now() : arguments[3];
     var pos = getScrollPosition(el);
 
     if (duration <= 0) {
@@ -4710,18 +4713,20 @@
       return
     }
 
-    requestAnimationFrame(function () {
-      var newPos = pos + (to - pos) / Math.max(16, duration) * 16;
+    requestAnimationFrame(function (nowTime) {
+      var frameTime = nowTime - prevTime;
+      var newPos = pos + (to - pos) / Math.max(frameTime, duration) * frameTime;
       setScroll(el, newPos);
       if (newPos !== to) {
-        animScrollTo(el, to, duration - 16);
+        animScrollTo(el, to, duration - frameTime, nowTime);
       }
     });
   }
 
-  function animHorizontalScrollTo (el, to, duration) {
+  function animHorizontalScrollTo (el, to, duration /* , prevTime */) {
     if ( duration === void 0 ) duration = 0;
 
+    var prevTime = arguments[3] === void 0 ? performance.now() : arguments[3];
     var pos = getHorizontalScrollPosition(el);
 
     if (duration <= 0) {
@@ -4731,11 +4736,12 @@
       return
     }
 
-    requestAnimationFrame(function () {
-      var newPos = pos + (to - pos) / Math.max(16, duration) * 16;
+    requestAnimationFrame(function (nowTime) {
+      var frameTime = nowTime - prevTime;
+      var newPos = pos + (to - pos) / Math.max(frameTime, duration) * frameTime;
       setHorizontalScroll(el, newPos);
       if (newPos !== to) {
-        animHorizontalScrollTo(el, to, duration - 16);
+        animHorizontalScrollTo(el, to, duration - frameTime, nowTime);
       }
     });
   }
@@ -5850,7 +5856,7 @@
       var this$1 = this;
 
       var child = this.btnOptions.map(function (opt) {
-        return h(QBtn, opt.options, opt.slot !== void 0 ? slot(this$1, opt.slot) : void 0)
+        return h(QBtn, Object.assign({}, opt.options), opt.slot !== void 0 ? slot(this$1, opt.slot) : void 0)
       });
 
       if (this.name !== void 0 && this.disable !== true && this.hasActiveValue === true) {
@@ -8383,7 +8389,7 @@
       },
 
       editable: function editable () {
-        return this.disable !== true && this.readonly !== true
+        return this.disable !== true && this.readonly !== true && this.min < this.max
       },
 
       decimals: function decimals () {
@@ -8394,11 +8400,19 @@
         return this.step === 0 ? 1 : this.step
       },
 
+      minMaxDiff: function minMaxDiff () {
+        return this.max - this.min
+      },
+
       markerStyle: function markerStyle () {
-        return {
-          backgroundSize: this.vertical === true
-            ? '2px ' + (100 * this.computedStep / (this.max - this.min)) + '%'
-            : (100 * this.computedStep / (this.max - this.min)) + '% 2px'
+        if (this.minMaxDiff !== 0) {
+          var size = 100 * this.computedStep / this.minMaxDiff;
+
+          return {
+            backgroundSize: this.vertical === true
+              ? '2px ' + size + '%'
+              : size + '% 2px'
+          }
         }
       },
 
@@ -8608,7 +8622,7 @@
       },
 
       modelRatio: function modelRatio () {
-        return (this.model - this.min) / (this.max - this.min)
+        return this.minMaxDiff === 0 ? 0 : (this.model - this.min) / this.minMaxDiff
       },
 
       trackStyle: function trackStyle () {
@@ -8691,7 +8705,11 @@
         this.model = getModel(ratio, this.min, this.max, this.step, this.decimals);
         this.curRatio = this.snap !== true || this.step === 0
           ? ratio
-          : (this.model - this.min) / (this.max - this.min);
+          : (
+            this.minMaxDiff === 0
+              ? 0
+              : (this.model - this.min) / this.minMaxDiff
+          );
       },
 
       __focus: function __focus () {
@@ -9118,13 +9136,15 @@
       },
 
       innerClass: function innerClass () {
-        return this.alignClass + (this.contentClass !== void 0 ? (" " + (this.contentClass)) : '')
+        return this.alignClass +
+          (this.contentClass !== void 0 ? (" " + (this.contentClass)) : '') +
+          (this.$q.platform.is.mobile === true ? ' scroll' : '')
       },
 
       domProps: function domProps () {
         return this.vertical === true
-          ? { container: 'height', content: 'offsetHeight', posLeft: 'top', posRight: 'bottom' }
-          : { container: 'width', content: 'offsetWidth', posLeft: 'left', posRight: 'right' }
+          ? { container: 'height', content: 'offsetHeight', scroll: 'scrollHeight' }
+          : { container: 'width', content: 'offsetWidth', scroll: 'scrollWidth' }
       },
 
       onEvents: function onEvents () {
@@ -9197,10 +9217,13 @@
 
         var
           size = domSize[this.domProps.container],
-          scrollSize = Array.prototype.reduce.call(
-            this.$refs.content.children,
-            function (acc, el) { return acc + el[this$1.domProps.content]; },
-            0
+          scrollSize = Math.min(
+            this.$refs.content[this.domProps.scroll],
+            Array.prototype.reduce.call(
+              this.$refs.content.children,
+              function (acc, el) { return acc + el[this$1.domProps.content]; },
+              0
+            )
           ),
           scroll = size > 0 && scrollSize > size; // when there is no tab, in Chrome, size === 0 and scrollSize === 1
 
@@ -9366,7 +9389,8 @@
         h('div', {
           ref: 'content',
           staticClass: 'q-tabs__content row no-wrap items-center self-stretch hide-scrollbar',
-          class: this.innerClass
+          class: this.innerClass,
+          on: this.arrowsEnabled === true ? cache(this, 'scroll', { scroll: this.__updateArrowsFn }) : void 0
         }, slot(this, 'default'))
       ];
 
@@ -17085,7 +17109,10 @@
     inject: {
       __qFab: {
         default: function default$1 () {
-          console.error('QFabAction needs to be child of QFab');
+          return {
+            showing: true,
+            __onChildClick: noop
+          }
         }
       }
     },
@@ -23385,11 +23412,11 @@
       },
 
       modelMinRatio: function modelMinRatio () {
-        return (this.model.min - this.min) / (this.max - this.min)
+        return this.minMaxDiff === 0 ? 0 : (this.model.min - this.min) / this.minMaxDiff
       },
 
       modelMaxRatio: function modelMaxRatio () {
-        return (this.model.max - this.min) / (this.max - this.min)
+        return this.minMaxDiff === 0 ? 0 : (this.model.max - this.min) / this.minMaxDiff
       },
 
       trackStyle: function trackStyle () {
@@ -23547,8 +23574,7 @@
             : (this.vertical === true
               ? this.$refs.minThumb.offsetHeight / (2 * height)
               : this.$refs.minThumb.offsetWidth / (2 * width)
-            ),
-          diff = this.max - this.min;
+            );
 
         var dragging = {
           left: left,
@@ -23557,8 +23583,8 @@
           height: height,
           valueMin: this.model.min,
           valueMax: this.model.max,
-          ratioMin: (this.model.min - this.min) / diff,
-          ratioMax: (this.model.max - this.min) / diff
+          ratioMin: this.modelMinRatio,
+          ratioMax: this.modelMaxRatio
         };
 
         var ratio = getRatio(event, dragging, this.isReversed, this.vertical);
@@ -23676,9 +23702,8 @@
           this.curMaxRatio = pos.maxR;
         }
         else {
-          var diff = this.max - this.min;
-          this.curMinRatio = (this.model.min - this.min) / diff;
-          this.curMaxRatio = (this.model.max - this.min) / diff;
+          this.curMinRatio = this.minMaxDiff === 0 ? 0 : (this.model.min - this.min) / this.minMaxDiff;
+          this.curMaxRatio = this.minMaxDiff === 0 ? 0 : (this.model.max - this.min) / this.minMaxDiff;
         }
       },
 
@@ -24773,31 +24798,15 @@
         );
       },
 
-      __calcAlignRange: function __calcAlignRange (alignEnd, toIndex) {
-        if (alignEnd !== void 0) {
-          return alignEnd
-        }
-
-        if (toIndex > this.prevToIndex) {
-          return 'start'
-        }
-
-        return toIndex === this.prevToIndex && this.prevAlignRange !== void 0
-          ? this.prevAlignRange
-          : 'end'
-      },
-
       __setVirtualScrollSliceRange: function __setVirtualScrollSliceRange (scrollEl, scrollDetails, toIndex, offset, align) {
         var this$1 = this;
 
         var alignForce = typeof align === 'string' && align.indexOf('-force') > -1;
         var alignEnd = alignForce === true ? align.replace('-force', '') : align;
-        var alignRange = this.__calcAlignRange(alignEnd, toIndex);
-
-        this.prevAlignRange = alignRange;
+        var alignRange = alignEnd !== void 0 ? alignEnd : 'start';
 
         var
-          from = Math.max(0, Math.ceil(toIndex - this.virtualScrollSliceSizeComputed[alignRange])),
+          from = Math.max(0, toIndex - this.virtualScrollSliceSizeComputed[alignRange]),
           to = from + this.virtualScrollSliceSizeComputed.total;
 
         if (to > this.virtualScrollLength) {
@@ -24807,10 +24816,6 @@
 
         this.prevScrollStart = scrollDetails.scrollStart;
 
-        if (this.$refs.content !== void 0 && this.$refs.content.contains(document.activeElement)) {
-          this.$refs.content.focus();
-        }
-
         var rangeChanged = from !== this.virtualScrollSliceRange.from || to !== this.virtualScrollSliceRange.to;
 
         if (rangeChanged === false && alignEnd === void 0) {
@@ -24819,14 +24824,46 @@
           return
         }
 
+        var activeElement = document.activeElement;
+        if (
+          rangeChanged === true &&
+          this.$refs.content !== void 0 &&
+          this.$refs.content !== activeElement &&
+          this.$refs.content.contains(activeElement) === true
+        ) {
+          var onBlurFn = function () {
+            this$1.$refs.content.focus();
+          };
+
+          activeElement.addEventListener('blur', onBlurFn, true);
+
+          requestAnimationFrame(function () {
+            activeElement.removeEventListener('blur', onBlurFn, true);
+          });
+        }
+
         setOverflowAnchor(this.id, toIndex - from + 1);
 
         var sizeBefore = alignEnd !== void 0 ? this.virtualScrollSizes.slice(from, toIndex).reduce(sumFn, 0) : 0;
 
         if (rangeChanged === true) {
-          this.virtualScrollSliceRange = { from: from, to: to };
+          // vue key matching algorithm works only if
+          // the array of VNodes changes on only one of the ends
+          // so we first change one end and then the other
+
+          var tempTo = to >= this.virtualScrollSliceRange.from && from <= this.virtualScrollSliceRange.to
+            ? this.virtualScrollSliceRange.to
+            : to;
+          this.virtualScrollSliceRange = { from: from, to: tempTo };
           this.virtualScrollPaddingBefore = sumSize(this.virtualScrollSizesAgg, this.virtualScrollSizes, 0, from);
-          this.virtualScrollPaddingAfter = sumSize(this.virtualScrollSizesAgg, this.virtualScrollSizes, to, this.virtualScrollLength);
+          this.virtualScrollPaddingAfter = sumSize(this.virtualScrollSizesAgg, this.virtualScrollSizes, this.virtualScrollSliceRange.to, this.virtualScrollLength);
+
+          requestAnimationFrame(function () {
+            if (this$1.virtualScrollSliceRange.to !== to && this$1.prevScrollStart === scrollDetails.scrollStart) {
+              this$1.virtualScrollSliceRange = { from: this$1.virtualScrollSliceRange.from, to: to };
+              this$1.virtualScrollPaddingAfter = sumSize(this$1.virtualScrollSizesAgg, this$1.virtualScrollSizes, to, this$1.virtualScrollLength);
+            }
+          });
         }
 
         requestAnimationFrame(function () {
@@ -24912,7 +24949,7 @@
       __resetVirtualScroll: function __resetVirtualScroll (toIndex, fullReset) {
         var this$1 = this;
 
-        var defaultSize = this.virtualScrollItemSizeComputed;
+        var defaultSize = 1 * this.virtualScrollItemSizeComputed;
 
         if (fullReset === true || Array.isArray(this.virtualScrollSizes) === false) {
           this.virtualScrollSizes = [];
@@ -24976,21 +25013,21 @@
         this.__scrollViewSize = scrollViewSize;
 
         var multiplier = 1 + this.virtualScrollSliceRatioBefore + this.virtualScrollSliceRatioAfter;
-        var onView = Math.ceil(Math.max(
-          scrollViewSize === void 0 || scrollViewSize <= 0
-            ? 10
-            : scrollViewSize / this.virtualScrollItemSizeComputed,
-          this.virtualScrollSliceSize / multiplier
-        ));
+        var view = scrollViewSize === void 0 || scrollViewSize <= 0
+          ? 1
+          : Math.ceil(scrollViewSize / this.virtualScrollItemSizeComputed);
+        var baseSize = Math.max(
+          10,
+          view,
+          Math.ceil(this.virtualScrollSliceSize / multiplier)
+        );
 
         this.virtualScrollSliceSizeComputed = {
-          total: Math.ceil(onView * multiplier),
-          start: Math.ceil(onView * this.virtualScrollSliceRatioBefore),
-          center: Math.ceil(onView * (0.5 + this.virtualScrollSliceRatioBefore)),
-          end: Math.ceil(onView * (1 + this.virtualScrollSliceRatioBefore)),
-          view: scrollViewSize === void 0 || scrollViewSize <= 0
-            ? 1
-            : Math.ceil(scrollViewSize / this.virtualScrollItemSizeComputed)
+          total: Math.ceil(baseSize * multiplier),
+          start: Math.ceil(baseSize * this.virtualScrollSliceRatioBefore),
+          center: Math.ceil(baseSize * (0.5 + this.virtualScrollSliceRatioBefore)),
+          end: Math.ceil(baseSize * (1 + this.virtualScrollSliceRatioBefore)),
+          view: view
         };
       },
 
@@ -24998,6 +25035,8 @@
         var obj, obj$1, obj$2, obj$3;
 
         var paddingSize = this.virtualScrollHorizontal === true ? 'width' : 'height';
+        var style = {};
+        style['--q-virtual-scroll-item-' + paddingSize] = this.virtualScrollItemSizeComputed + 'px';
 
         return [
           tag === 'tbody'
@@ -25008,7 +25047,7 @@
             }, [
               h('tr', [
                 h('td', {
-                  style: ( obj = {}, obj[paddingSize] = ((this.virtualScrollPaddingBefore) + "px"), obj ),
+                  style: Object.assign(( obj = {}, obj[paddingSize] = ((this.virtualScrollPaddingBefore) + "px"), obj ), style),
                   attrs: this.colspanAttr
                 })
               ])
@@ -25017,7 +25056,7 @@
               staticClass: 'q-virtual-scroll__padding',
               key: 'before',
               ref: 'before',
-              style: ( obj$1 = {}, obj$1[paddingSize] = ((this.virtualScrollPaddingBefore) + "px"), obj$1 )
+              style: Object.assign(( obj$1 = {}, obj$1[paddingSize] = ((this.virtualScrollPaddingBefore) + "px"), obj$1 ), style)
             }),
 
           h(tag, {
@@ -25035,7 +25074,7 @@
             }, [
               h('tr', [
                 h('td', {
-                  style: ( obj$2 = {}, obj$2[paddingSize] = ((this.virtualScrollPaddingAfter) + "px"), obj$2 ),
+                  style: Object.assign(( obj$2 = {}, obj$2[paddingSize] = ((this.virtualScrollPaddingAfter) + "px"), obj$2 ), style),
                   attrs: this.colspanAttr
                 })
               ])
@@ -25044,7 +25083,7 @@
               staticClass: 'q-virtual-scroll__padding',
               key: 'after',
               ref: 'after',
-              style: ( obj$3 = {}, obj$3[paddingSize] = ((this.virtualScrollPaddingAfter) + "px"), obj$3 )
+              style: Object.assign(( obj$3 = {}, obj$3[paddingSize] = ((this.virtualScrollPaddingAfter) + "px"), obj$3 ), style)
             })
         ]
       },
@@ -26681,7 +26720,12 @@
 
     methods: {
       reset: function reset () {
-        this.$refs.content.style.transform = "translate(0,0)";
+        this.$refs.content.style.transform = 'translate(0,0)';
+        this.__emitSlide(this.__showing, 0, true);
+      },
+
+      __emitSlide: function __emitSlide (side, ratio, isReset) {
+        this.qListeners.slide !== void 0 && this.$emit('slide', { side: side, ratio: ratio, isReset: isReset });
       },
 
       __pan: function __pan (evt) {
@@ -26699,7 +26743,7 @@
           slotsDef.forEach(function (slot) {
             if (this$1.$scopedSlots[slot[0]] !== void 0) {
               var node = this$1.$refs[slot[0] + 'Content'];
-              node.style.transform = "scale(1)";
+              node.style.transform = 'scale(1)';
               this$1.__size[slot[0]] = node.getBoundingClientRect()[slot[3]];
             }
           });
@@ -26720,7 +26764,8 @@
             }, 230);
           }
           else {
-            node.style.transform = "translate(0,0)";
+            node.style.transform = 'translate(0,0)';
+            this.__emitSlide(this.__showing, 0, true);
           }
 
           return
@@ -26737,7 +26782,7 @@
           (this.$scopedSlots.top === void 0 && evt.direction === 'down') ||
           (this.$scopedSlots.bottom === void 0 && evt.direction === 'up')
         ) {
-          node.style.transform = "translate(0,0)";
+          node.style.transform = 'translate(0,0)';
           return
         }
 
@@ -26774,6 +26819,8 @@
 
         node.style.transform = "translate" + (this.__axis) + "(" + (dist * dir / Math.abs(dir)) + "px)";
         this.$refs[(showing + "Content")].style.transform = "scale(" + (this.__scale) + ")";
+
+        this.__emitSlide(showing, this.__scale, false);
       }
     },
 
@@ -26835,7 +26882,7 @@
 
       return h('div', {
         staticClass: 'q-slide-item q-item-type overflow-hidden',
-        class: this.isDark === true ? "q-slide-item--dark q-dark" : '',
+        class: this.isDark === true ? 'q-slide-item--dark q-dark' : '',
         on: Object.assign({}, this.qListeners)
       }, content)
     },
@@ -30168,6 +30215,13 @@
           };
         }
 
+        if (this.qListeners['row-contextmenu'] !== void 0) {
+          data.class['cursor-pointer'] = true;
+          data.on.contextmenu = function (evt) {
+            this$1.$emit('row-contextmenu', evt, row, pageIndex);
+          };
+        }
+
         return h('tr', data, child)
       },
 
@@ -31347,7 +31401,7 @@
       needsReset: function needsReset () {
         var this$1 = this;
 
-        return ['tableStyle', 'tableClass', 'tableHeaderStyle', 'tableHeaderClass', 'containerClass']
+        return ['tableStyle', 'tableClass', 'tableHeaderStyle', 'tableHeaderClass', '__containerClass']
           .map(function (p) { return this$1[p]; }).join(';')
       },
 
@@ -31427,14 +31481,19 @@
           (this.bordered === true ? " q-table--bordered" : '')
       },
 
-      containerClass: function containerClass () {
+      __containerClass: function __containerClass () {
         return "q-table__container q-table--" + (this.separator) + "-separator column no-wrap" +
-          (this.loading === true ? ' q-table--loading' : '') +
           (this.grid === true ? ' q-table--grid' : this.cardDefaultClass) +
           (this.isDark === true ? " q-table--dark" : '') +
           (this.dense === true ? " q-table--dense" : '') +
           (this.wrapCells === false ? " q-table--no-wrap" : '') +
           (this.inFullscreen === true ? " fullscreen scroll" : '')
+      },
+
+      containerClass: function containerClass () {
+        // do not trigger a refresh of the table when the loading status is changed
+        return this.__containerClass +
+          (this.loading === true ? ' q-table--loading' : '')
       },
 
       virtProps: function virtProps () {
@@ -36975,7 +37034,16 @@
         },
 
         mounted: function mounted () {
-          this.$refs.dialog.show();
+          var this$1 = this;
+
+          if (this.$refs.dialog !== void 0) {
+            this.$refs.dialog.show();
+          }
+          else {
+            on['hook:mounted'] = function () {
+              this$1.$refs.dialog !== void 0 && this$1.$refs.dialog.show();
+            };
+          }
         }
       });
 
@@ -38173,12 +38241,16 @@
         notif.actions = actions.map(function (ref) {
           var handler = ref.handler;
           var noDismiss = ref.noDismiss;
+          var style = ref.style;
+          var klass = ref.class;
           var attrs = ref.attrs;
-          var rest = objectWithoutProperties$2( ref, ["handler", "noDismiss", "attrs"] );
-          var item = rest;
+          var rest = objectWithoutProperties$2( ref, ["handler", "noDismiss", "style", "class", "attrs"] );
+          var props = rest;
 
           return ({
-          props: Object.assign({}, {flat: true}, item),
+          staticClass: klass,
+          style: style,
+          props: Object.assign({}, {flat: true}, props),
           attrs: attrs,
           on: {
             click: typeof handler === 'function'
@@ -38471,7 +38543,7 @@
           notif.actions !== void 0 && child.push(
             h('div', {
               staticClass: meta.actionsClass
-            }, notif.actions.map(function (a) { return h(QBtn, { props: a.props, attrs: a.attrs, on: a.on }); }))
+            }, notif.actions.map(function (action) { return h(QBtn, Object.assign({}, action)); }))
           );
 
           meta.badge > 1 && child.push(
