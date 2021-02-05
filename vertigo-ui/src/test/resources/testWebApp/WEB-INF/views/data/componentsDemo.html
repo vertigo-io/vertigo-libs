@@ -10,7 +10,10 @@
     <script type="text/javascript" th:src="@{/vertigo-ui/static/js/vertigo-ui-extensions.js}"></script>
     <script th:nonce="${nonce}">
        VUiExtensions.dataX.selectedTimeZoneListArray = '[[${model[selectedTimeZoneList]}]]'.split(';');
-    </script>                       
+        VUiExtensions.methods.closePopup = function(a,b,c,d,e,f) {
+                    console.log(a,b,c,d,e,f);
+           }
+    </script>                     
 </head>
 
 <body>

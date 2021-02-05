@@ -1,6 +1,6 @@
 <th:block th:fragment="date-edit(object, field, label, format, date_attrs, input_attrs)" vu:alias="date" vu:selector="${viewMode=='edit'}"
 		th:with="myLabel=${label?:model.util.label(object + '.' + field)}, myFormat=${format?:'DD/MM/YYYY'},
-      required=${model.util.required(object + '.' + field)}"
+      required=${model.util.required(object + '.' + field)},myRef='date_'+${object} + '_' + ${field}"
 	  th:assert="${object} != null and ${field} != null">
 	<vu:include-data object="${object}" field="${field}"/>
 	<q-input 
@@ -14,17 +14,19 @@
 		th:attr="__${input_attrs}__" >
 		<template v-slot:prepend>
 			<q-icon name="event" class="cursor-pointer">
-				<q-popup-proxy :breakpoint="600" transition-show="scale" transition-hide="scale" >
+				<q-popup-proxy :breakpoint="600" transition-show="scale" transition-hide="scale" th:attr="ref=__${myRef}__" >
 		             <q-date 
 		             	th:v-model="|vueData.${object}.${field}|"
 		             	:landscape="$q.screen.gt.xs"
 		             	mask="DD/MM/YYYY"
+		             	th:@input="|() => $refs.${myRef}.hide()|"
 		             	th:attr="__${date_attrs}__"></q-date> 
 	       		</q-popup-proxy>
 	       	</q-icon>
        	</template>
     </q-input>
 	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
+   
 </th:block> 
 
 <th:block th:fragment="date-read(object, field, label, format, date_attrs, input_attrs)" vu:alias="date" vu:selector="${viewMode=='read'}" >
