@@ -32,6 +32,8 @@ Release 3.1.0 - 2021/02/05
 * [All] Code cleaning, refactoring and documenting 
 * [All] Updated libs
   - Quasar 1.14.3 -> v1.15.2
+  - Axios -> 0.21.1
+  - animate.css -> 4.1.1
   - vue-cookies.js -> 1.7.4
   - log4j 2.13.3 -> 2.14.0
   - elastic search 7.9.3 -> 7.10.2
