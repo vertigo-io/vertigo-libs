@@ -8251,9 +8251,10 @@ function isString (v) {
     }.bind(this));
     this.uploader_forceComputeUploadedSize(componentId);
   },
-  httpPostAjax: function httpPostAjax(url, params, options) {
+  httpPostAjax: function httpPostAjax(url, paramsIn, options) {
     var vueData = this.$data.vueData;
     var uiMessageStack = this.$data.uiMessageStack;
+    var params = this.isFormData(paramsIn) ? paramsIn : this.objectToFormData(paramsIn);
     params.append('CTX', vueData.CTX);
     this.$http.post(url, params).then(function (response) {
       if (response.data.model.CTX) {
@@ -8341,6 +8342,9 @@ function isString (v) {
       return formData.append(key, object[key]);
     });
     return formData;
+  },
+  isFormData: function isFormData(val) {
+    return typeof FormData !== 'undefined' && val instanceof FormData;
   }
 });
 // CONCATENATED MODULE: ./src/lang/vertigo-ui-lang-en-us.js
