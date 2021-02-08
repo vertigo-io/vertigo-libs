@@ -7,7 +7,7 @@ Running 3.2.0
 more to come :)
 
 Release 3.1.0 - 2021/02/05
-----------------------
+
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-300-to-210)
 * [Core] Fix the log4j2 configuration, the socketAppender was lost and nothing was sent to analytics server (thanks @skerdudou)
 * [Ui] Accept CTX in POST PUT and DELETE request (not only POST)
@@ -52,7 +52,8 @@ Release 3.1.0 - 2021/02/05
   - thymeleaf-spring5 3.0.11.RELEASE -> 3.0.12.RELEASE
   - thymeleaf-layout-dialect 2.5.1 -> 2.5.2
   - htmlunit-driver 2.45.0 -> 2.46.0
-  
+
+
 Release 3.0.0 - 2020/11/20
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-210-to-300)
