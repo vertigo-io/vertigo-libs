@@ -34,10 +34,16 @@ modules:
     features:
       - cache:
       - entitystore:
+      - filestore:
       - kvStore:
     featuresConfig:
       - cache.memory:
       - entitystore.sql:
+      - filestore.fullFilesystem:
+          name: temp
+          path: ${java.io.tmpdir}/uiTempFiles/
+          purgeDelayMinutes: 30
+          fileInfoClass: io.vertigo.ui.data.domain.fileinfo.FileInfoTmp
       - kvStore.berkeley:
           collections: VViewContext;TTL=43200
           dbFilePath: ${java.io.tmpdir}/vertigo/TestVViewContext

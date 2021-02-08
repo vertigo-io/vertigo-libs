@@ -1,10 +1,57 @@
 Version history
 ===============
 
-Running 3.1.0
+Running 3.2.0
 ----------------------
 
 more to come :)
+
+Release 3.1.0 - 2021/02/05
+
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-300-to-210)
+* [Core] Fix the log4j2 configuration, the socketAppender was lost and nothing was sent to analytics server (thanks @skerdudou)
+* [Ui] Accept CTX in POST PUT and DELETE request (not only POST)
+* [Ui] Lanscape property for Date and DateTime is now responsive (landscape for >xs screen)
+* [Ui] Fix xxx_attrs : default to label_attrs (outter component)
+* [Ui] Fix select component if value==null
+* [Ui] Fix required class on components : autocomplete, date, geoloc, select, textarea
+* [Ui] Fix grid-cell col override : add a col-md-xx class (instead of col-xx which mean col-xs-xx)
+* [Ui] Refactor fileupload component : change uploader icons, add fileupload-custom with full slots (can be use to override and change rendering)
+* [Ui] Fix miscomputed uploaded files size 
+* [Ui] Add a dropzone-area for uploader (extended to this dropzone content). Need to ref the same key than its uploader
+* [Ui] Add a fileupload-simple (no header and no thumbnail). Can be initialized serverside and support page rfesh (like VUser error)
+* [Ui] Made date and datetime field stack-label like other field by coherence
+* [Ui] Simpler way to override vertigo's thymeleaf components : CheckCustomComponent resolver at 1st
+* [Ui] Add server side rendering to comply with standard CSP : Servlet Filter (two modes : inline code or standalone script) + NodeJs service (default to inactive)
+* [Ui] Rename head attribute vuejsDevMode to activate the vuejs dev mode (previously vuiDevMode)
+* [Ui] Add confirm to submit button (3 apis : by attribute, content or slot)
+* [Ui] Fix FileInfoURI converter in pathVariable (FileInfoURI are protected by default in Vertigo)
+* [Ui] Fix passing attributes to NamedComponent, when name contains special char
+* [Vega] Add a filter to easily control header
+* [Vega] Add CSP servlet filter (Content Security Policy) : add CSP directive in header and can generate a nonce uuid per request for specific usage
+* [All] Code cleaning, refactoring and documenting 
+* [All] Updated libs
+  - Quasar 1.14.3 -> v1.15.2
+  - Axios -> 0.21.1
+  - animate.css -> 4.1.1
+  - vue-cookies.js -> 1.7.4
+  - log4j 2.13.3 -> 2.14.0
+  - elastic search 7.9.3 -> 7.10.2
+  - lucene 8.6.2 -> 8.7.0
+  - jersey client 2.32 -> 2.33
+  - influxdb-java 2.20 -> 2.21
+  - javalin 3.12.0 -> 3.13.3
+  - jetty 9.4.31.v20200723 -> 9.4.35.v20201120
+  - keycloak-servlet-filter-adapter 11.0.3 -> 12.0.2
+  - neo4j 4.1.3 -> 4.2.3
+  - jedis 3.3.0 -> 3.5.1
+  - spring 5.3.0 -> 5.3.3
+  - janino 3.1.2 -> 3.1.3
+  - restassured 4.3.2 -> 4.3.3
+  - liquibase-core 4.1.1 -> 4.2.2
+  - thymeleaf-spring5 3.0.11.RELEASE -> 3.0.12.RELEASE
+  - thymeleaf-layout-dialect 2.5.1 -> 2.5.2
+  - htmlunit-driver 2.45.0 -> 2.46.0
 
 
 Release 3.0.0 - 2020/11/20

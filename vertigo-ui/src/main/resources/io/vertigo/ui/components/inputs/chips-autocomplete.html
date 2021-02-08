@@ -1,12 +1,18 @@
 <th:block th:fragment="chips-autocomplete-edit(object, field, label, list, valueField, componentId, staticData,label_attrs, input_attrs)" vu:alias="chips-autocomplete" vu:selector="${viewMode=='edit'}"
 	  th:assert="${object} != null and ${field} != null and ${list} != null"
-	  th:with="myValueField=${valueField != null ? valueField : model.util.getDisplayField(list)}, value=${model.vContext[__${object}__][__${field}__]}, myStaticData=${staticData?:true},myComponentId=${componentId != null ? componentId : list + '_' + object + '_' + field}, myLabel=${label?:model.util.label(object + '.' + field)}"
+	  th:with="myValueField=${valueField != null ? valueField : model.util.getDisplayField(list)}, 
+	  value=${model.vContext[__${object}__][__${field}__]}, 
+	  myStaticData=${staticData?:true},
+	  myComponentId=${componentId != null ? componentId : list + '_' + object + '_' + field}, 
+	  myLabel=${label?:model.util.label(object + '.' + field)},
+      required=${model.util.required(object + '.' + field)}"
 	  th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addList('options')}" >
 	<vu:include-data object="${object}" field="${field}"/>
 	<vu:include-data th:if="${staticData}" object="${list}" field="${myValueField}"/>
 	<q-select th:if="${!myStaticData}"
        	th:v-model="|vueData.${object}.${field}|"
 		th:label="${myLabel}"
+		th:class="${required}?'v-field__required'"
 		th::error="|hasFieldsError('${object}', '${field}')|"
 		th::error-message="|getErrorMessage('${object}', '${field}')|"
 		orientation="vertical"
@@ -25,6 +31,7 @@
      <q-select th:if="${myStaticData}"
        	th:v-model="|vueData.${object}.${field}|"
 		th:label="${myLabel}"
+		th:class="${required}?'v-field__required'"
 		th::error="|hasFieldsError('${object}', '${field}')|"
 		th::error-message="|getErrorMessage('${object}', '${field}')|"
 		orientation="vertical"

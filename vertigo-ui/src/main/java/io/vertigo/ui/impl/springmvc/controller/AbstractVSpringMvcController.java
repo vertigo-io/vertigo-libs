@@ -92,7 +92,8 @@ public abstract class AbstractVSpringMvcController {
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
 		ViewContext viewContext = null;
 		final String ctxId = request.getParameter(ViewContext.CTX.get());
-		if ("POST".equals(request.getMethod()) || ctxId != null && acceptCtxQueryParam()) {
+		if ("POST".equals(request.getMethod()) || "PUT".equals(request.getMethod()) || "DELETE".equals(request.getMethod())
+				|| ctxId != null && acceptCtxQueryParam()) {
 			if (ctxId == null) {
 				contextMiss(null);
 			} else {

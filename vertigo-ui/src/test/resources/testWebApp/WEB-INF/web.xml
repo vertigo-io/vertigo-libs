@@ -23,6 +23,7 @@
 		<param-value>/testWebApp/META-INF/test-vui.yaml</param-value>
 	</context-param>
 
+
 	<filter>
 		<filter-name>Character Encoding Filter</filter-name>
 		<filter-class>io.vertigo.vega.impl.servlet.filter.SetCharsetEncodingFilter
@@ -37,7 +38,49 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-
+    <filter>
+        <description>
+            Filter CSP
+        </description>
+        <filter-name>CSP</filter-name>
+        <filter-class>io.vertigo.vega.impl.servlet.filter.ContentSecurityPolicyFilter</filter-class>
+        <init-param>
+            <param-name>cspPattern</param-name>
+            <param-value>default-src 'self' ; script-src-elem 'self' http://localhost:3000 'nonce-${nonce}'; frame-ancestors 'none'</param-value>  
+        </init-param>
+        <init-param>
+            <param-name>url-exclude-pattern</param-name>
+            <param-value>/index.html;/static/*;/vertigo-ui/static/*</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>CSP</filter-name>
+        <url-pattern>/test2/*</url-pattern>
+    </filter-mapping>
+    <filter>
+        <description>
+            Filter VueJs - SSR
+        </description>
+        <filter-name>vueJsSSR</filter-name>
+        <filter-class>io.vertigo.ui.impl.vuejs.filter.VuejsSsrFilter</filter-class>
+        <init-param>
+            <param-name>ssrServerUrl</param-name>
+            <param-value>http://localhost:8083/compile</param-value>  
+        </init-param>
+        <init-param>
+            <param-name>url-exclude-pattern</param-name>
+            <param-value>/index.html;/static/*;/vertigo-ui/static/*</param-value>
+        </init-param>
+        <init-param>
+            <param-name>doublePassRender</param-name>
+            <param-value>true</param-value>  
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>vueJsSSR</filter-name>
+        <url-pattern>/test2/*</url-pattern>
+    </filter-mapping>
+   
 	<!-- prevent Locking of static files on windows -->
 	<context-param>
 		<param-name>org.eclipse.jetty.servlet.Default.useFileMappedBuffer</param-name>

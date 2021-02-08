@@ -46,6 +46,7 @@ import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
@@ -393,6 +394,34 @@ public final class ViewContext implements Serializable {
 	public <E extends Entity> void publishMdl(final ViewContextKey<E> contextKey, final Class<E> entityClass, final String code) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
 		put(contextKey, new UiMdList<E>(new DtListURIForMasterData(dtDefinition, code)));
+	}
+
+	/* ================================ FileInfo ==================================*/
+
+	/**
+	 * Get UI file info list.
+	 * @param contextKey Context key
+	 */
+	public <F extends FileInfo> UiFileInfoList<F> getUiFileInfoList(final ViewContextKey<F> contextKey) {
+		return UiFileInfoList.class.cast(get(contextKey));
+	}
+
+	/**
+	 * Publish file's info.
+	 * @param contextKey Context key
+	 * @param fileInfo file's info
+	 */
+	public <F extends FileInfo> void publishFileInfo(final ViewContextKey<F> contextKey, final F fileInfo) {
+		put(contextKey, new UiFileInfo<>(fileInfo));
+	}
+
+	/**
+	 * Publish list of file's info.
+	 * @param contextKey Context key
+	 * @param fileInfos list of file's info.
+	 */
+	public <F extends FileInfo> void publishFileInfo(final ViewContextKey<F> contextKey, final List<F> fileInfos) {
+		put(contextKey, new UiFileInfoList<>(fileInfos));
 	}
 
 	/* ================================ FacetedQueryResult ==================================*/

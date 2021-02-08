@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.thymeleaf.context.IEngineContext;
@@ -60,6 +61,15 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 
 public class NamedComponentElementProcessor extends AbstractElementModelProcessor {
+	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^[^$#@|].+";
+	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^[^$#@|][^$#@]+";
+	private static final String NUMBER_PATTERN_STR = "^[0-9\\.]+";
+	private static final String SIMPLE_TEXT_PATTERN_STR = "^[a-zA-Z]*$";
+	private static final Pattern NO_RESERVED_FIRST_CHAR_PATTERN = Pattern.compile(NO_RESERVED_FIRST_CHAR_PATTERN_STR);
+	private static final Pattern NO_RESERVED_TEXT_PATTERN = Pattern.compile(NO_RESERVED_TEXT_PATTERN_STR);
+	private static final Pattern NUMBER_PATTERN = Pattern.compile(NUMBER_PATTERN_STR);
+	private static final Pattern SIMPLE_TEXT_PATTERN = Pattern.compile(SIMPLE_TEXT_PATTERN_STR);
+
 	private static final String VARIABLE_PLACEHOLDER_SEPARATOR = "_";
 	private static final String SLOTS_SUFFIX = "slot";
 	private static final String ATTRS_SUFFIX = "attrs";
@@ -131,7 +141,6 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			final IModel fragmentModel = FragmentUtil.getFragmentModel(context, fragmentToUse + (param == null ? "" : "(" + param + ")"), structureHandler);
 			final IModel clonedFragmentModel = fragmentModel.cloneModel(); //le clone change l'index des éléments
 
-			//final IModel replacedContentSlotModel = replaceContentSlotTags(clonedFragmentModel, slotContents);
 			final IModel replacedContentFragmentModel = replaceContentTag(clonedFragmentModel, tag instanceof IStandaloneElementTag ? Optional.empty() : Optional.ofNullable(contentModel));
 
 			//We replace the whole model
@@ -194,13 +203,15 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 	}
 
 	private static IModel replaceContentTag(final IModel fragmentModel, final Optional<IModel> contentModel) {
-		final int index = findTagIndex("vu:content", 0, fragmentModel, IProcessableElementTag.class);//Open or standalone
-		if (index > -1) {
+		int index = findTagIndex("vu:content", 0, fragmentModel, IProcessableElementTag.class);//Open or standalone
+		while (index > -1) {
+			final int size;
 			final int indexEnd = findTagIndex("vu:content", index, fragmentModel, ICloseElementTag.class);
 			if (indexEnd > -1) {
 				fragmentModel.remove(indexEnd);
 			}
 			if (contentModel.isPresent()) {
+				size = contentModel.get().size();
 				//We remove old body
 				if (indexEnd > -1) {
 					for (int i = indexEnd - 1; i > index; i--) {
@@ -210,9 +221,10 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				//We insert new body after content tag (index+1)
 				fragmentModel.insertModel(index + 1, contentModel.get());
 			} else {
-				//
+				size = 0;
 			}
 			fragmentModel.remove(index);
+			index = findTagIndex("vu:content", index + size, fragmentModel, IProcessableElementTag.class);//Open or standalone
 		}
 		return fragmentModel;
 	}
@@ -334,16 +346,22 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		setLocalPlaceholderVariables(structureHandler, placeholders);
 	}
 
-	private static Object encodeAttributeValue(final Object attributeValue) {
+	private static Object encodeAttributeValue(final Object attributeValue, final boolean isPlaceholder) {
 		if (attributeValue == null) {
 			return "${true}";
-		} else if ("".equals(attributeValue)) {
+		} else if ("".equals(((String) attributeValue).trim())) {
 			return "''";
 		} else if (attributeValue instanceof String
-				&& !((String) attributeValue).equalsIgnoreCase("true") //not boolean
-				&& !((String) attributeValue).equalsIgnoreCase("false")
-				&& (((String) attributeValue).matches("^[a-zA-Z\\s]+[^$#|]*") //almost text
-						|| "".equals(((String) attributeValue).trim()))) { //or empty
+				&& !"true".equalsIgnoreCase((String) attributeValue) //not boolean
+				&& !"false".equalsIgnoreCase((String) attributeValue)
+				&& !NUMBER_PATTERN.matcher((String) attributeValue).matches() //not number
+				&& (isPlaceholder //is a placeholder => escape for thymeleaf
+						|| NO_RESERVED_TEXT_PATTERN.matcher((String) attributeValue).matches()) //no reserved char
+				&& NO_RESERVED_FIRST_CHAR_PATTERN.matcher((String) attributeValue).matches()) { //don't start with reserved char
+			//We escape :
+			//IF placehodler or no thymeleaf's reserved char ($ @ # | )  (but autorized || )
+			//AND dont start with reserved char (for case like ${value} )
+			//BUT IF true, false or number (it become string instead)
 			return "'" + ((String) attributeValue).replaceAll("'", "\\'") + "'"; //escape as text
 		}
 		return attributeValue;
@@ -353,10 +371,11 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		if (!attributeName.startsWith(":") && !attributeName.startsWith("'")
 				&& (attributeValue == null
 						|| attributeValue instanceof String
-								&& ((String) attributeValue).equalsIgnoreCase("true") //boolean
-								&& ((String) attributeValue).equalsIgnoreCase("false"))) {
+								&& "true".equalsIgnoreCase((String) attributeValue) //boolean
+								&& "false".equalsIgnoreCase((String) attributeValue))) {
 			return "':" + attributeName + "'";
-		} else if (attributeName.matches("^[^'a-zA-Z].*")) {
+		} else if (!attributeName.startsWith("'") //if not only char and don't already start by ' add them
+				&& !SIMPLE_TEXT_PATTERN.matcher(attributeName).matches()) {
 			return "'" + attributeName + "'";
 		}
 		return attributeName;
@@ -413,7 +432,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		for (final String placeholderPrefix : placeholderPrefixes) {
 			if (prefixedVariableName.startsWith(placeholderPrefix)) {
 				final String attributeName = prefixedVariableName.substring(placeholderPrefix.length());
-				addPlaceholderVariable(placeholders, placeholderPrefix, encodeAttributeName(attributeName, value), encodeAttributeValue(value));
+				addPlaceholderVariable(placeholders, placeholderPrefix, attributeName, value);
 			}
 		}
 	}
@@ -424,7 +443,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			previousPlaceholderValues = new HashMap<>();
 			placeholders.put(placeholderPrefix + ATTRS_SUFFIX, previousPlaceholderValues);
 		}
-		previousPlaceholderValues.put(encodeAttributeName(attributeName, value), encodeAttributeValue(value));
+		previousPlaceholderValues.put(encodeAttributeName(attributeName, value), encodeAttributeValue(value, true));
 	}
 
 	private boolean isPlaceholder(final String prefixedVariableName) {
@@ -470,17 +489,13 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				engineContext = (IEngineContext) context;
 			}
 
-			final Object encodedAttributeValue = encodeAttributeValue(attributeValue);
+			final Object encodedAttributeValue = encodeAttributeValue(attributeValue, false);
 			final AssignationSequence assignations = AssignationUtils.parseAssignationSequence(context, attributeKey + "=" + encodedAttributeValue, false /* no parameters without value */);
 			if (assignations == null) {
 				throw new TemplateProcessingException("Could not parse value as attribute assignations: \"" + attributeKey + "=" + encodedAttributeValue + "\"");
 			}
-			final List<Assignation> assignationValues = assignations.getAssignations();
-			final int assignationValuesLen = assignationValues.size();
 
-			for (int i = 0; i < assignationValuesLen; i++) {
-
-				final Assignation assignation = assignationValues.get(i);
+			for (final Assignation assignation : assignations.getAssignations()) {
 
 				final IStandardExpression leftExpr = assignation.getLeft();
 				final Object leftValue = leftExpr.execute(context);

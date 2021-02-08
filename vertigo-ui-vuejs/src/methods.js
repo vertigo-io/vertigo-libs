@@ -319,42 +319,76 @@ export default {
         componentStates[componentId].pagination.rowsPerPage = componentStates[componentId].pagination.rowsPerPage / showMoreCount * (showMoreCount + 1);
     },
 
-    uploader_addedFile: function (isMultiple, componentId) {
+    uploader_changeIcon () {
+        this.$q.iconSet.uploader.removeUploaded = 'delete_sweep'
+        this.$q.iconSet.uploader.done = 'delete'
+    },
+    uploader_dragenter(componentId) {
         let componentStates = this.$data.componentStates;
+        componentStates[componentId].dragover = true;
+    },
+    uploader_dragleave(componentId) {
+        let componentStates = this.$data.componentStates;
+        componentStates[componentId].dragover = false;
+    },
+    uploader_drop(event, componentId) {
+        var component = this.$refs[componentId];
+        component.addFiles(event.dataTransfer.files);
+    },
+    uploader_forceComputeUploadedSize: function (componentId) {
+        var component = this.$refs[componentId];
+        //recompute totalSize
+        component.uploadedSize = 0;
+        component.uploadedFiles.forEach(function (file) { component.uploadedSize += file.size;});
+        component.uploadSize = component.uploadedSize;
+        component.queuedFiles.forEach(function (file) { component.uploadSize += file.size;}); 
+    },
+    uploader_addedFile: function (isMultiple, componentId, key) {
         if (!isMultiple) {
             this.$refs[componentId].removeUploadedFiles();
-            componentStates[componentId].fileUris = [];
+            this.$data.vueData[key]= [];
         }
     },
-
-    uploader_uploadedFiles: function (uploadInfo, componentId) {
-        let componentStates = this.$data.componentStates;
-        uploadInfo.files.forEach(function (file) {
-            componentStates[componentId].fileUris.push(file.xhr.response);
-            file.fileUri = file.xhr.response;
-        });
+    uploader_uploadedFiles: function (uploadInfo) {
+        uploadInfo.files.forEach(function (file, index, array) {
+            let response = JSON.parse(file.xhr.response);
+            this.$data.vueData.CTX = response.model.CTX;
+            Object.keys(response.model).forEach(function (key) {
+                if ('CTX' != key) {
+                    this.$data.vueData[key] = response.model[key];
+                }
+            }.bind(this));
+            Object.keys(response.uiMessageStack).forEach(function (key) {
+                this.$data.uiMessageStack[key] = response.uiMessageStack[key];
+            }.bind(this));
+            array.splice(index, 1);
+        }.bind(this));
     },
-
-    uploader_removeFiles: function (removedFiles, componentId) {
-        let componentStates = this.$data.componentStates;
+    uploader_removeFiles: function (removedFiles, componentId/*, key*/) {
+        var component = this.$refs[componentId];
         removedFiles.forEach(function (removedFile) {
-            var component = this.$refs[componentId];
-            var componentFileUris = componentStates[componentId].fileUris;
-            var indexOfFileUri = componentFileUris.indexOf(removedFile.fileUri);
             var xhrParams = {};
             xhrParams[component.fieldName] = removedFile.fileUri;
+            xhrParams['CTX'] = this.$data.vueData.CTX;
             this.$http.delete(component.url, { params: xhrParams, credentials: component.withCredentials })
-                .then(function (/*response*/) { //Ok
-                    if (component.multiple) {
-                        componentFileUris.splice(indexOfFileUri, 1);
-                    } else {
-                        componentFileUris.splice(0);
+                .then(function (response) { //Ok
+                    if (response.data.model.CTX) {
+                        this.$data.vueData.CTX = response.data.model.CTX;
                     }
+                    Object.keys(response.data.model).forEach(function (key) {
+                        if ('CTX' != key) {
+                            this.$data.vueData[key] = response.data.model[key];
+                        }
+                    }.bind(this));
+                    Object.keys(response.data.uiMessageStack).forEach(function (key) {
+                        this.$data.uiMessageStack[key] = response.data.uiMessageStack[key];
+                    }.bind(this));
                 }.bind(this))
                 .catch(function (error) { //Ko
                     this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't remove temporary file");
-                }.bind);
+                }.bind(this));
         }.bind(this));
+        this.uploader_forceComputeUploadedSize(componentId);
     },
 
     httpPostAjax: function (url, params, options) {
@@ -380,8 +414,7 @@ export default {
             if (options && options.onError) {
                 options.onError.bind(this).apply(error.response);
             }
-        })
-            ;
+        });
     },
 
     hasFieldsError: function (object, field) {

@@ -28,6 +28,14 @@ export default {
             executeCommand : "Appuyer sur entrée pour executer la commande",
             linkLabel : "Voir les détails"
         },
+		"uploader" : {
+			"clear_all" : "Annuler tous",
+			"removeUploaded" : "Supprimer tous",
+			"remove" : "Supprimer",
+			"add" : "Ajouter un fichier",
+			"upload" : "Envoyer",
+			"clear" : "Annuler"
+		},
         handles : {
             placeholder : "Entrer un handle de la forme type/code"
         }

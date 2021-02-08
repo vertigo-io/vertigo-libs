@@ -30,6 +30,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.http.CacheControl;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
@@ -48,6 +49,7 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import io.vertigo.connectors.spring.EnableVertigoSpringBridge;
 import io.vertigo.ui.controllers.ListAutocompleteController;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.DtListStateMethodArgumentResolver;
+import io.vertigo.ui.impl.springmvc.argumentresolvers.FileInfoURIConverter;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.FileInfoURIConverterValueHandler;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.UiMessageStackMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.VFileMethodArgumentResolver;
@@ -99,21 +101,10 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		return templateResolver;
 	}
 
-	private VuiResourceTemplateResolver componentsResolver() {
+	private VuiResourceTemplateResolver componentsResolver(final String componentPath) {
 		final VuiResourceTemplateResolver templateResolver = new VuiResourceTemplateResolver();
 		templateResolver.setApplicationContext(applicationContext);
-		templateResolver.setPrefix("classpath://" + COMPONENT_PATH_PREFIX);
-		templateResolver.setSuffix(".html");
-		templateResolver.setResolvablePatterns(Collections.singleton("components/*"));
-		// for dev purpose
-		templateResolver.setCacheable(!isDevMode());
-		return templateResolver;
-	}
-
-	private VuiResourceTemplateResolver customComponentsResolver() {
-		final VuiResourceTemplateResolver templateResolver = new VuiResourceTemplateResolver();
-		templateResolver.setApplicationContext(applicationContext);
-		templateResolver.setPrefix("classpath://" + getCustomComponentsPathPrefix());
+		templateResolver.setPrefix("classpath://" + componentPath);
 		templateResolver.setSuffix(".html");
 		templateResolver.setResolvablePatterns(Collections.singleton("components/*"));
 		// for dev purpose
@@ -132,14 +123,17 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		templateEngine.setTemplateResolver(viewsResolvers);
 		templateEngine.setEnableSpringELCompiler(true);
 		//---
-		// add components
-		final VuiResourceTemplateResolver componentResolvers = componentsResolver();
-		componentResolvers.setOrder(1);
-		templateEngine.addTemplateResolver(componentResolvers);
 		// add custom components
-		final VuiResourceTemplateResolver customComponentResolvers = customComponentsResolver();
-		customComponentResolvers.setOrder(2);
+		final VuiResourceTemplateResolver customComponentResolvers = componentsResolver(getCustomComponentsPathPrefix());
+		customComponentResolvers.setOrder(1); //custom first
+		customComponentResolvers.setCheckExistence(true); //some components may missing
 		templateEngine.addTemplateResolver(customComponentResolvers);
+
+		// add components
+		final VuiResourceTemplateResolver componentResolvers = componentsResolver(COMPONENT_PATH_PREFIX);
+		componentResolvers.setOrder(2);
+		templateEngine.addTemplateResolver(componentResolvers);
+
 		//---
 		final VUiStandardDialect dialect = new VUiStandardDialect(getUiComponents(componentResolvers));
 		templateEngine.addDialect("vu", dialect);
@@ -191,6 +185,11 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		resolver.setCharacterEncoding("UTF-8");
 		resolver.setTemplateEngine(templateEngine());
 		registry.viewResolver(resolver);
+	}
+
+	@Override
+	public void addFormatters(final FormatterRegistry registry) {
+		registry.addConverter(new FileInfoURIConverter());
 	}
 
 	@Override

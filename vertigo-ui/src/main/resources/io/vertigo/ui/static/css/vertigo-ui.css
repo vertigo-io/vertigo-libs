@@ -191,6 +191,18 @@ img.avatar {
   opacity: 0;
   transition: .5s;
 }
+
+.dropzone-area {
+	position: relative;
+}
+
+.q-uploader .q-field__label {
+	top: 10px;
+}
+.q-uploader  .q-field--auto-height.q-field--labeled .q-field__control-container {
+	padding-top: 18px;
+}
+
 /*
 .q-table .q-btn {
 	text-align:right;

@@ -379,23 +379,25 @@ public abstract class AbstractStoreManagerTest {
 			for (final Car car : cars) {
 				carUriList.add(car.getUID());
 			}
-			entityStoreManager.getBrokerNN().updateNN(createdFamille.getVoituresLocationDtListURI(), carUriList);
+			entityStoreManager.getBrokerNN().updateNN(createdFamille.voituresLocation().getDtListURI(), carUriList);
 
 			//On garde le résultat de l'association NN
-			final DtList<Car> firstResult = createdFamille.getVoituresLocationList();
+			createdFamille.voituresLocation().load();
+			final DtList<Car> firstResult = createdFamille.voituresLocation().get();
 			Assertions.assertEquals(cars.size(), firstResult.size(), "Test tailles du nombre de voiture dans une NN");
 
 			//On met à jour l'association en retirant le premier élément
 			carUriList.remove(0);
-			entityStoreManager.getBrokerNN().updateNN(createdFamille.getVoituresLocationDtListURI(), carUriList);
+			entityStoreManager.getBrokerNN().updateNN(createdFamille.voituresLocation().getDtListURI(), carUriList);
 
 			//on garde le résultat en lazy : il doit avoir le meme nombre de voiture qu'au début
-			final DtList<Car> lazyResult = createdFamille.getVoituresLocationList();
+			final DtList<Car> lazyResult = createdFamille.voituresLocation().get();
 			Assertions.assertEquals(firstResult.size(), lazyResult.size(), "Test tailles du nombre de voiture pour une NN");
 
 			//on recharge la famille et on recharge la liste issus de l'association NN : il doit avoir une voiture de moins qu'au début
 			final Famille famille2 = entityStoreManager.readOne(UID.of(Famille.class, createdFamille.getFamId()));
-			final DtList<Car> secondResult = famille2.getVoituresLocationList();
+			famille2.voituresLocation().load();
+			final DtList<Car> secondResult = famille2.voituresLocation().get();
 			Assertions.assertEquals(firstResult.size() - 1, secondResult.size(), "Test tailles du nombre de voiture dans une NN");
 			transaction.commit();
 		}

@@ -17,12 +17,29 @@
  */
 package io.vertigo.ui.impl.springmvc.util;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 import io.vertigo.basics.formatter.FormatterDefault;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
@@ -254,6 +271,62 @@ public final class UiUtil implements Serializable {
 	 */
 	public static String getCurrentLocaleForQuasar() {
 		return StringUtil.constToLowerCamelCase(getCurrentLocalePrefixForQuasar().toUpperCase().replace('-', '_'));
+	}
+
+	public static String compileVueJsTemplate(final String template) {
+		final JsonObject requestParameter = new JsonObject();
+		requestParameter.add("template", new JsonPrimitive(template));
+		final JsonObject compiledTemplate = callRestWS("http://localhost:8083/", GSON.toJson(requestParameter), JsonObject.class);
+		final String render = compiledTemplate.get("render").getAsString();
+		final List<String> staticRenderFns = StreamSupport.stream(compiledTemplate.get("staticRenderFns").getAsJsonArray().spliterator(), false)
+				.map(JsonElement::getAsString)
+				.collect(Collectors.toList());
+
+		final StringBuilder renderJsFunctions = new StringBuilder(",\r\n");
+		renderJsFunctions.append("render (h) {\r\n")
+				.append(render).append(" \r\n")
+				.append("},\r\n")
+				.append("  staticRenderFns : [\r\n");
+		staticRenderFns.forEach(staticFn -> renderJsFunctions
+				.append("		  function () {\r\n")
+				.append(staticFn).append(" \r\n")
+				.append("		  }\r\n"));
+		renderJsFunctions.append("]\r\n");
+		return renderJsFunctions.toString();
+	}
+
+	private static final Gson GSON = new GsonBuilder().create();
+
+	private static <R> R callRestWS(final String wsUrl, final String jsonPayload, final Type returnType) {
+		Assertion.check().isNotBlank(wsUrl);
+		// ---
+		try {
+			final URL url = new URL(wsUrl);
+			final HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+			httpURLConnection.setConnectTimeout(500);
+			httpURLConnection.setRequestMethod("POST");
+			httpURLConnection.setRequestProperty("Content-Type", "application/json");
+			httpURLConnection.setRequestProperty("Accept", "application/json");
+			httpURLConnection.setDoOutput(true);
+
+			try (OutputStream os = httpURLConnection.getOutputStream()) {
+				final byte[] input = jsonPayload.getBytes(StandardCharsets.UTF_8);
+				os.write(input, 0, input.length);
+			}
+
+			final ByteArrayOutputStream result = new ByteArrayOutputStream();
+			final byte[] buffer = new byte[1024];
+			try (InputStream inputStream = httpURLConnection.getInputStream()) {
+				int length;
+				while ((length = inputStream.read(buffer)) != -1) {
+					result.write(buffer, 0, length);
+				}
+			}
+			return GSON.fromJson(result.toString(StandardCharsets.UTF_8), returnType);
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
+		}
+
 	}
 
 	private static UiList getUiList(final String uiListKey) {

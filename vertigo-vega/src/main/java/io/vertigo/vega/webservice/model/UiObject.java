@@ -105,14 +105,14 @@ public interface UiObject<D extends DtObject> extends Serializable {
 	/**
 	 * Get the value in the buffer.
 	 * @param fieldName name of the field (camelCase)
-	 * @return the value in the buffer
+	 * @return the value in the buffer (can be null, if no data and not multiple)
 	 */
 	String[] getInputValue(String fieldName);
 
 	/**
 	 * Get the value in the buffer for a know monovalued field.
 	 * @param fieldName name of the field (camelCase)
-	 * @return the value in the buffer
+	 * @return the value in the buffer (can be null, if no data and not multiple)
 	 */
 	String getSingleInputValue(String fieldName);
 
