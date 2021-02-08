@@ -1,6 +1,6 @@
 {
   "name": "@vertigo-io/vertigo-ui-vuejs",
-  "version": "3.0.0",
+  "version": "3.1.0-release",
   "scripts": {
     "serve": "vue-cli-service serve --port 3000",
     "build": "vue-cli-service build",
