@@ -7979,9 +7979,9 @@ function isString (v) {
       return collator.compare(A, B) * dir;
     });
   },
-  selectedFunction: function selectedFunction(object, field, item)
-  /*keyboard*/
-  {
+  selectedFunction: function selectedFunction(object, field, item
+  /*, keyboard*/
+  ) {
     this.$data.vueData[object][field] = item.value;
   },
   searchAutocomplete: function searchAutocomplete(list, valueField, labelField, componentId, url, terms, update, abort) {
@@ -8204,12 +8204,22 @@ function isString (v) {
       this.$data.vueData[key] = [];
     }
   },
-  uploader_uploadedFiles: function uploader_uploadedFiles(uploadInfo) {
+  uploader_uploadedFiles: function uploader_uploadedFiles(uploadInfo, myComponentId, fileInfoKey) {
     uploadInfo.files.forEach(function (file, index, array) {
       var response = JSON.parse(file.xhr.response);
       this.$data.vueData.CTX = response.model.CTX;
       Object.keys(response.model).forEach(function (key) {
-        if ('CTX' != key) {
+        if (fileInfoKey === key) {
+          this.$data.vueData[key] = response.model[key]; //last key is the added one
+
+          if (!file.fileUri) {
+            var lastFileUploaded = response.model[key][response.model[key].length - 1];
+
+            if (lastFileUploaded.name === file.name) {
+              file.fileUri = lastFileUploaded.fileUri;
+            }
+          }
+        } else if ('CTX' != key) {
           this.$data.vueData[key] = response.model[key];
         }
       }.bind(this));
@@ -8251,9 +8261,10 @@ function isString (v) {
     }.bind(this));
     this.uploader_forceComputeUploadedSize(componentId);
   },
-  httpPostAjax: function httpPostAjax(url, params, options) {
+  httpPostAjax: function httpPostAjax(url, paramsIn, options) {
     var vueData = this.$data.vueData;
     var uiMessageStack = this.$data.uiMessageStack;
+    var params = this.isFormData(paramsIn) ? paramsIn : this.objectToFormData(paramsIn);
     params.append('CTX', vueData.CTX);
     this.$http.post(url, params).then(function (response) {
       if (response.data.model.CTX) {
@@ -8341,6 +8352,9 @@ function isString (v) {
       return formData.append(key, object[key]);
     });
     return formData;
+  },
+  isFormData: function isFormData(val) {
+    return typeof FormData !== 'undefined' && val instanceof FormData;
   }
 });
 // CONCATENATED MODULE: ./src/lang/vertigo-ui-lang-en-us.js

@@ -146,7 +146,7 @@ export default {
         })
     },
 
-    selectedFunction: function (object, field, item, /*keyboard*/) {
+    selectedFunction: function (object, field, item /*, keyboard*/) {
         this.$data.vueData[object][field] = item.value;
     },
 
@@ -349,12 +349,21 @@ export default {
             this.$data.vueData[key]= [];
         }
     },
-    uploader_uploadedFiles: function (uploadInfo) {
+    uploader_uploadedFiles: function (uploadInfo, myComponentId, fileInfoKey) {
         uploadInfo.files.forEach(function (file, index, array) {
             let response = JSON.parse(file.xhr.response);
             this.$data.vueData.CTX = response.model.CTX;
             Object.keys(response.model).forEach(function (key) {
-                if ('CTX' != key) {
+                if (fileInfoKey === key) {
+                    this.$data.vueData[key] = response.model[key];
+                    //last key is the added one
+                    if(!file.fileUri) {
+                        var lastFileUploaded = response.model[key][response.model[key].length - 1];
+                        if(lastFileUploaded.name === file.name) {
+                            file.fileUri = lastFileUploaded.fileUri
+                        }
+                    }
+                } else if ('CTX' != key) {
                     this.$data.vueData[key] = response.model[key];
                 }
             }.bind(this));
