@@ -61,8 +61,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 
 public class NamedComponentElementProcessor extends AbstractElementModelProcessor {
-	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^[^$#@|].+";
-	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^[^$#@|][^$#@]+";
+	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^[^$#@|'].*$";
+	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^[^$#@|'][^$#@]*$";
 	private static final String NUMBER_PATTERN_STR = "^[0-9\\.]+";
 	private static final String SIMPLE_TEXT_PATTERN_STR = "^[a-zA-Z]*$";
 	private static final Pattern NO_RESERVED_FIRST_CHAR_PATTERN = Pattern.compile(NO_RESERVED_FIRST_CHAR_PATTERN_STR);
