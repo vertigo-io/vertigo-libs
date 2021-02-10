@@ -8198,6 +8198,9 @@ function isString (v) {
       component.uploadSize += file.size;
     });
   },
+  uploader_humanStorageSize: function uploader_humanStorageSize(size) {
+    return external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.format.humanStorageSize(size);
+  },
   uploader_addedFile: function uploader_addedFile(isMultiple, componentId, key) {
     if (!isMultiple) {
       this.$refs[componentId].removeUploadedFiles();
@@ -8230,7 +8233,7 @@ function isString (v) {
     }.bind(this));
   },
   uploader_removeFiles: function uploader_removeFiles(removedFiles, componentId
-  /*, key*/
+  /*, fileInfoKey*/
   ) {
     var component = this.$refs[componentId];
     removedFiles.forEach(function (removedFile) {

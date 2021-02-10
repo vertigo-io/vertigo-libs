@@ -343,6 +343,9 @@ export default {
         component.uploadSize = component.uploadedSize;
         component.queuedFiles.forEach(function (file) { component.uploadSize += file.size;}); 
     },
+    uploader_humanStorageSize: function (size) {
+        return Quasar.utils.format.humanStorageSize(size);
+	},
     uploader_addedFile: function (isMultiple, componentId, key) {
         if (!isMultiple) {
             this.$refs[componentId].removeUploadedFiles();
@@ -373,7 +376,7 @@ export default {
             array.splice(index, 1);
         }.bind(this));
     },
-    uploader_removeFiles: function (removedFiles, componentId/*, key*/) {
+    uploader_removeFiles: function (removedFiles, componentId/*, fileInfoKey*/) {
         var component = this.$refs[componentId];
         removedFiles.forEach(function (removedFile) {
             var xhrParams = {};

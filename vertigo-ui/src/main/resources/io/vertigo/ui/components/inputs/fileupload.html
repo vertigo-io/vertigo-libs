@@ -1,11 +1,8 @@
-<th:block th:fragment="fileupload(url, key, fileInfoKey, multiple, uploader_attrs)" 
+<th:block th:fragment="fileupload(url, key, multiple, uploader_attrs)" 
 	th:assert="${key} != null and ${url} != null"
 	th:with="myComponentId='uploader'+${key}"
-	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addList('fileUris')},
-    objectKey=${fileInfoKey!=null?model.vContext['componentStates'].get(myComponentId)['fileUris'].addAll(model.vContext.get(fileInfoKey).toURIList()):null}
-    ">
-		<vu:include-data-primitive th:if="${fileInfoKey} != null" th:key="${fileInfoKey}"/>
-        <input type="hidden" th:name="|${key}|" th:v-bind:value="|vueData.${fileInfoKey}.map(x => x.fileUri)|" />
+	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addList('fileUris')}">
+		<input type="hidden" th:name="|${key}|" th:v-bind:value="|componentStates.${myComponentId}.fileUris|" />
         <q-uploader th:url="${url}"
 			field-name="file"
             auto-upload
@@ -35,12 +32,9 @@
         </div>
 </th:block>
 <th:block th:fragment="fileupload-simple(url, key, fileInfoKey, multiple, uploader_attrs)" 
-    th:assert="${key} != null and ${url} != null"
-    th:with="myComponentId='uploaderSimple'+${key}"
-    th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addList('fileUris')},
-    objectKey=${fileInfoKey!=null?model.vContext['componentStates'].get(myComponentId)['fileUris'].addAll(model.vContext.get(fileInfoKey).toURIList()):null}
-    " >
-        <vu:include-data-primitive th:if="${fileInfoKey} != null" th:key="${fileInfoKey}"/>
+    th:assert="${key} != null and ${url} != null and ${fileInfoKey} != null"
+    th:with="myComponentId='uploaderSimple'+${key}" >
+        <vu:include-data-primitive th:key="${fileInfoKey}"/>
         <input type="hidden" th:name="|${key}|" th:v-bind:value="|vueData.${fileInfoKey}.map(x => x.fileUri)|" />
         <q-uploader th:url="${url}"
             auto-upload
@@ -64,7 +58,7 @@
 				        borderless>				        
 			        <template v-slot:control>
                       <div class="col column justify-center">
-                        <div th:v-for="'file in '+${fileInfoKey!=null?'vueData.'+fileInfoKey+'.concat(slotProps.files)':'slotProps.files'}"
+                        <div th:v-for="'file in vueData.'+${fileInfoKey}+'.concat(slotProps.files)'"
                               v-if="file.__status != 'uploaded' || file.fileUri!=null"
                               :key="file.name"
                               class="q-uploader__file relative-position" 
@@ -105,11 +99,12 @@
             </template>   
         </q-uploader>
 </th:block>
-<th:block th:fragment="fileupload-custom(url, key, multiple, uploader_attrs)" 
-    th:assert="${key} != null and ${url} != null"
+<th:block th:fragment="fileupload-custom(url, key, fileInfoKey, multiple, uploader_attrs)" 
+    th:assert="${key} != null and ${url} != null and ${fileInfoKey} != null"
     th:with="myComponentId='uploaderCustom'+${key}"
-    th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addList('fileUris')}" >
-        <input type="hidden" th:name="|${key}|" th:v-bind:value="|componentStates.${myComponentId}.fileUris|" />
+    >
+        <vu:include-data-primitive th:key="${fileInfoKey}"/>
+        <input type="hidden" th:name="|${key}|" th:v-bind:value="|vueData.${fileInfoKey}.map(x => x.fileUri)|" />
         <q-uploader th:url="${url}"
             field-name="file"
             auto-upload
@@ -147,7 +142,8 @@
 		            </div>
             </template> 
             <template v-slot:list="slotProps">
-	             <div v-for="file in slotProps.files"
+	             <div th:v-for="'file in vueData.'+${fileInfoKey}+'.concat(slotProps.files)'"
+                             v-if="file.__status != 'uploaded' || file.fileUri!=null"
 	            :key="file.name"
 	            class="q-uploader__file relative-position" 
 	            :class="{ 'q-uploader__file' : true,  'relative-position' : true, 
@@ -159,8 +155,10 @@
 	                    <q-icon v-if="file.__status === 'failed'" class="q-uploader__file-status" :name="$q.iconSet.type.negative" color="negative"></q-icon>
 	                    <div class="q-uploader__file-header-content col">
 	                      <div class="q-uploader__title">{{file.name}}</div>
-	                      <div class="q-uploader__subtitle row items-center no-wrap"> {{file.__sizeLabel}} / {{file.__progressLabel}}</div>
-	                    </div>
+	                      <div class="q-uploader__subtitle row items-center no-wrap" v-if="file.__status != 'uploaded'"> {{file.__sizeLabel}} / {{file.__progressLabel}}</div>
+	                      <div class="q-uploader__subtitle row items-center no-wrap" v-if="file.__status === 'uploaded'"> {{uploader_humanStorageSize(file.size)}}</div>
+                           
+                        </div>
 	                    <q-circular-progress v-if="file.__status === 'uploading'" :value="file.__progress" :min="0" :max="1" :indeterminate="file.__progress === 0"></q-circular-progress>
 	                    <q-btn v-if="file.__status != 'uploading'" round dense flat :icon="$q.iconSet.uploader[file.__status === 'uploaded' ? 'done' : 'clear']" 
 	                    @click="slotProps.removeFile(file)">
