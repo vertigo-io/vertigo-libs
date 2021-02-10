@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import io.vertigo.account.security.VSecurityManager;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
@@ -155,6 +156,14 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	@PostMapping("/_save")
 	public void doSaveAutoValidation(final ViewContext viewContext, @ViewAttribute("movie") final Movie movie, @QueryParam("myFilesUris") final List<FileInfoURI> pictures) {
 		viewContext.publishDto(movieKey, movie);
+		//we may save files on a more persistent space
+		nop(pictures);
+	}
+
+	@PostMapping("/_saveFilesOnly")
+	public void doSaveAutoValidation(@QueryParam("myFilesUris") final List<FileInfoURI> pictures) {
+		Assertion.check().isTrue(pictures.size() > 0, "No files send");
+		Assertion.check().isNotNull(pictures.get(0), "FileUri can't be read");
 		//we may save files on a more persistent space
 		nop(pictures);
 	}
