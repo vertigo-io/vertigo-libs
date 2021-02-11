@@ -12,11 +12,11 @@
 			fill-input
 	        map-options
 	        emit-value
-            th:class="${required}?'v-field__required'"
-			th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}')|"
+            th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}')|"
 			th::label-width="${overridedLabelWidth?:3}"
 			th:label="${myLabel}"
-			th::error="|hasFieldsError('${object}', '${field}')|"
+			th:classappend="${required}?'v-field__required'"
+            th::error="|hasFieldsError('${object}', '${field}')|"
 			th::error-message="|getErrorMessage('${object}', '${field}')|"
 			orientation="vertical"
 			stack-label
