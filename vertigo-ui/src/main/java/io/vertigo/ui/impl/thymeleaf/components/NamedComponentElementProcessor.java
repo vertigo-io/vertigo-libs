@@ -362,7 +362,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			//IF placehodler or no thymeleaf's reserved char ($ @ # | )  (but autorized || )
 			//AND dont start with reserved char (for case like ${value} )
 			//BUT IF true, false or number (it become string instead)
-			return "'" + ((String) attributeValue).replaceAll("'", "\\'") + "'"; //escape as text
+			return "'" + ((String) attributeValue).replace("'", "\\'") + "'"; //escape as text
 		}
 		return attributeValue;
 	}
