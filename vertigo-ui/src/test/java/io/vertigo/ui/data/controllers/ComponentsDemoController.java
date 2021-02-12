@@ -18,6 +18,9 @@
 package io.vertigo.ui.data.controllers;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -87,7 +90,7 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	private final ViewContextKey<String> zoneId = ViewContextKey.of("zoneId");
 
 	public static final ViewContextKey<FileInfo> storedFileInfo = ViewContextKey.of("storedFiles");
-	public static final ViewContextKey<ArrayList<String>> protectedFileUris = ViewContextKey.of("myFilesUris");
+	public static final ViewContextKey<ArrayList<FileInfoURI>> fileUrisKey = ViewContextKey.of("myFilesUris");
 
 	@Inject
 	private VSecurityManager securityManager;
@@ -131,13 +134,41 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		storeFiles.add(fileInfoTmp2);
 		viewContext.publishFileInfo(storedFileInfo, storeFiles);
 
-		final ArrayList<String> fileUris = new ArrayList<>();
-		/*final UiFileInfoList<FileInfo> uiFileInfoList = viewContext.getUiFileInfoList(storedFileInfo);
-		fileUris.add(uiFileInfoList.get(0).getFileUri());
-		fileUris.add(uiFileInfoList.get(1).getFileUri());*/
-		viewContext.publishRef(protectedFileUris, fileUris);
+		final ArrayList<FileInfoURI> fileUris = new ArrayList<>();
+		fileUris.add(fileInfoTmp1.getURI());
+		fileUris.add(fileInfoTmp2.getURI());
+		viewContext.publishJsonRef(fileUrisKey, fileUris, new CustomParameterizedType(ArrayList.class, FileInfoURI.class));
+		//myMovie.setPictures(fileUris);
 
 		toModeCreate();
+	}
+
+	private static final class CustomParameterizedType implements ParameterizedType, Serializable {
+		private final Type fieldType;
+		private final Type[] typeArguments;
+
+		CustomParameterizedType(final Type fieldType, final Type paramType) {
+			this.fieldType = fieldType;
+			typeArguments = new Type[] { paramType };
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public Type[] getActualTypeArguments() {
+			return typeArguments;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public Type getOwnerType() {
+			return fieldType instanceof ParameterizedType ? ((ParameterizedType) fieldType).getOwnerType() : null;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public Type getRawType() {
+			return fieldType instanceof ParameterizedType ? ((ParameterizedType) fieldType).getRawType() : fieldType;
+		}
 	}
 
 	@PostMapping("/movies/{movieId}")
@@ -161,7 +192,7 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/_saveFilesOnly")
-	public void doSaveAutoValidation(@QueryParam("myFilesUris") final List<FileInfoURI> pictures) {
+	public void doSaveAutoValidation(final ViewContext viewContext, @ViewAttribute("myFilesUris") final List<FileInfoURI> pictures) {
 		Assertion.check().isTrue(pictures.size() > 0, "No files send");
 		Assertion.check().isNotNull(pictures.get(0), "FileUri can't be read");
 		//we may save files on a more persistent space
@@ -229,11 +260,9 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		final UiFileInfoList<FileInfo> storeFiles = viewContext.getUiFileInfoList(storedFileInfo);
 		storeFiles.add(storeFile);
 		viewContext.markModifiedKeys(storedFileInfo);
-
-		/*final ArrayList<String> protectedUris = (ArrayList<String>) viewContext.get(protectedFileUris);
-		protectedUris.add(storeFiles.get(storeFiles.size() - 1).getFileUri());
-		viewContext.publishRef(protectedFileUris, protectedUris);*/
-
+		final List<FileInfoURI> myFileURI = (List<FileInfoURI>) viewContext.get(fileUrisKey);
+		myFileURI.add(storeFile.getURI());
+		viewContext.markModifiedKeys(fileUrisKey);
 		return viewContext;
 	}
 
@@ -243,6 +272,10 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		final UiFileInfoList<FileInfo> storeFiles = viewContext.getUiFileInfoList(storedFileInfo);
 		storeFiles.remove(fileInfoUri);
 		viewContext.markModifiedKeys(storedFileInfo);
+
+		final List<FileInfoURI> myFileURI = (List<FileInfoURI>) viewContext.get(fileUrisKey);
+		myFileURI.remove(fileInfoUri);
+		viewContext.markModifiedKeys(fileUrisKey);
 		return viewContext; //if no return, you must get the response. Prefer to return old uri.
 	}
 

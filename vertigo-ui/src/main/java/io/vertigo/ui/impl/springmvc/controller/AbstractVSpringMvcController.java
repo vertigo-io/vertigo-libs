@@ -105,6 +105,7 @@ public abstract class AbstractVSpringMvcController {
 				if (viewContextMap == null) {
 					contextMiss(ctxId);
 				}
+				viewContextMap.setJsonEngine(jsonEngine);
 				viewContext = new ViewContext(viewContextMap, jsonEngine);
 				viewContext.makeModifiable();
 				viewContext.setInputCtxId(ctxId);

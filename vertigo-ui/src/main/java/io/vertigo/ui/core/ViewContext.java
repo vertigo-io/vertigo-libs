@@ -18,6 +18,7 @@
 package io.vertigo.ui.core;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -67,6 +68,7 @@ public final class ViewContext implements Serializable {
 	public static final ViewContextKey<String> CTX = ViewContextKey.of("CTX");
 
 	private final Set<String> modifiedKeys = new HashSet<>();
+
 	private final ViewContextMap viewContextMap;
 
 	private final JsonEngine jsonEngine;
@@ -151,10 +153,12 @@ public final class ViewContext implements Serializable {
 	/* ================================== Map =====================================*/
 
 	public Serializable get(final Object key) {
+		Object sKey = key;
 		if (key instanceof ViewContextKey) {
-			return viewContextMap.get(((ViewContextKey<?>) key).get());
+			sKey = ((ViewContextKey<?>) key).get();
 		}
-		return viewContextMap.get(key);
+		return viewContextMap.get(sKey);
+
 	}
 
 	/** {@inheritDoc} */
@@ -194,6 +198,15 @@ public final class ViewContext implements Serializable {
 	 */
 	public <O extends Serializable> void publishRef(final ViewContextKey<O> key, final O value) {
 		put(key, value);
+	}
+
+	/**
+	 * @param key Clé de context
+	 * @return UiObject du context
+	 */
+	public <O extends Serializable> void publishJsonRef(final ViewContextKey<O> key, final O value, final Type paramType) {
+		put(key, value);
+		viewContextMap.addTypeForKey(key.get(), paramType);
 	}
 
 	/**

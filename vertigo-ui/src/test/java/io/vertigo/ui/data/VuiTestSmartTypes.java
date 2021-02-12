@@ -29,10 +29,14 @@ import io.vertigo.basics.formatter.FormatterDate;
 import io.vertigo.basics.formatter.FormatterDefault;
 import io.vertigo.basics.formatter.FormatterNumber;
 import io.vertigo.basics.formatter.FormatterString;
+import io.vertigo.core.lang.BasicType;
+import io.vertigo.datamodel.smarttype.annotations.Adapter;
 import io.vertigo.datamodel.smarttype.annotations.Constraint;
 import io.vertigo.datamodel.smarttype.annotations.Formatter;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
+import io.vertigo.datastore.filestore.model.FileInfoURI;
+import io.vertigo.ui.core.FileInfoURIAdapter;
 
 public enum VuiTestSmartTypes {
 
@@ -156,5 +160,10 @@ public enum VuiTestSmartTypes {
 	@SmartTypeDefinition(String.class)
 	@Formatter(clazz = FormatterDefault.class)
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(250)")
-	MultipleIds;
+	MultipleIds,
+
+	@SmartTypeDefinition(FileInfoURI.class)
+	@Formatter(clazz = FormatterDefault.class)
+	@Adapter(clazz = FileInfoURIAdapter.class, targetBasicType = BasicType.String)
+	FileInfoURI;
 }

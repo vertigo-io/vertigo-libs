@@ -29,8 +29,7 @@ import io.vertigo.datastore.filestore.model.FileInfoURI;
  */
 public final class UiFileInfo<F extends FileInfo> implements Serializable {
 
-	private transient FileInfoURI uri;
-	private final String fileUri; //match quasar file api
+	private final FileInfoURI fileUri;//match quasar file api
 	private final String name;
 	private final String type;
 	private final Long size;
@@ -44,8 +43,7 @@ public final class UiFileInfo<F extends FileInfo> implements Serializable {
 		Assertion.check().isNotNull(fileInfo);
 		Assertion.check().isNotNull(fileInfo.getURI(), "Only already stored FileInfo could be put in context : the file data wasn't kept in context. You may use a temp storage.");
 		//-----
-		this.uri = fileInfo.getURI();
-		this.fileUri = ProtectedValueUtil.generateProtectedValue(uri);
+		this.fileUri = fileInfo.getURI();
 		this.name = fileInfo.getVFile().getFileName();
 		this.type = fileInfo.getVFile().getMimeType();
 		this.size = fileInfo.getVFile().getLength();
@@ -53,14 +51,7 @@ public final class UiFileInfo<F extends FileInfo> implements Serializable {
 
 	// ==========================================================================
 
-	public FileInfoURI getURI() {
-		if (uri == null) {
-			uri = ProtectedValueUtil.readProtectedValue(fileUri, FileInfoURI.class);
-		}
-		return uri;
-	}
-
-	public String getFileUri() {
+	public FileInfoURI getFileUri() {
 		return fileUri;
 	}
 

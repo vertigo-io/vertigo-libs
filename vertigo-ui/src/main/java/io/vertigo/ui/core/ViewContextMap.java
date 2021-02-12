@@ -18,6 +18,7 @@
 package io.vertigo.ui.core;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,6 +37,7 @@ import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
@@ -63,6 +65,8 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	private boolean unmodifiable; //initialisé à false
 	private boolean dirty = false;
 
+	private transient JsonEngine jsonEngine;
+	private final Map<String, Type> typesByKey = new HashMap<>();
 	private final Map<String, Set<String>> keysForClient = new HashMap<>();
 	private final Map<String, Map<String, List<String>>> valueTransformers = new HashMap<>();
 
@@ -71,8 +75,11 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	public Serializable get(final Object key) {
 		Assertion.check().isNotNull(key);
 		//-----
-		final Serializable o = super.get(key);
+		Serializable o = super.get(key);
 		Assertion.check().isNotNull(o, "Objet :{0} non trouvé! Vérifier que l objet est bien enregistré avec la clé. Clés disponibles {1}", key, keySet());
+		if (o instanceof String && typesByKey.containsKey(key)) {
+			o = jsonEngine.fromJson((String) o, typesByKey.get(key));
+		}
 		return o;
 	}
 
@@ -376,6 +383,9 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 						result.add(cluster);
 					}
 					viewContextMapForClient.put(entry.getKey(), result);
+				} else if (value instanceof String && typesByKey.containsKey(entry.getKey())) {
+					// it was json
+					viewContextMapForClient.put(entry.getKey(), get(entry.getKey()));
 				} else {
 					// just copy it
 					viewContextMapForClient.put(entry.getKey(), value);
@@ -412,6 +422,14 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 			return value -> value != null ? ((AbstractUiListUnmodifiable) getUiList(listKey)).getById(listKeyFieldName, value).getString(listDisplayFieldName) : null;
 		}
 		throw new IllegalStateException(StringUtil.format("Unsupported ValueTransformer type {0}", transformerType));
+	}
+
+	public void addTypeForKey(final String key, final Type paramType) {
+		typesByKey.put(key, paramType);
+	}
+
+	public void setJsonEngine(final JsonEngine jsonEngine) {
+		this.jsonEngine = jsonEngine;
 	}
 
 }
