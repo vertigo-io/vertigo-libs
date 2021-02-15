@@ -7,9 +7,7 @@
 
 <head>
     <title>Movie Detail</title>
-    <script type="text/javascript" th:src="@{/vertigo-ui/static/js/vertigo-ui-extensions.js}"></script>
     <script th:nonce="${nonce}">
-       VUiExtensions.dataX.selectedTimeZoneListArray = '[[${model[selectedTimeZoneList]}]]'.split(';');
         VUiExtensions.methods.closePopup = function(a,b,c,d,e,f) {
                     console.log(a,b,c,d,e,f);
            }
@@ -58,7 +56,7 @@
                         <vu:grid-cell>
                             Server side file list
                             <div th:each="file, iStat: ${model.vContext['storedFiles']}" 
-                                th:style="${iStat.odd}? 'font-weight: bold;'" 
+                                th:class="${iStat.odd}? 'even' : 'odd'" 
                                 th:alt-title="${iStat.even}? 'even' : 'odd'">
                                 <a th:href="@{/componentsDemo/myFiles/}+${file.fileUri}" th:text="${file.name}"></a>                                
                             </div>
@@ -109,7 +107,9 @@
                 </vu:block>
             </vu:form>
             
-            <vu:cards list="movies" componentId="movieCards" cardClass="col-lg-3 col-md-6 col-xs-12" sortUrl="@{/movies/_sort}" rowsPerPage="8" showMore="true" showMoreLabel="Show more" >
+            <vu:cards list="movies" componentId="movieCards" 
+            cardClass="col-lg-3 col-md-6 col-xs-12" 
+            sortUrl="@{/movies/_sort}" rowsPerPage="8" showMore="true" showMoreLabel="Show more" >
                 <div class="nav" th:@click="|goTo('@{/basemanagement/base/information/}'+item.baseId)|">
                     <a th::href="|'@{/movie/}'+item.movId|" >{{item.movId}}</a>
                 </div>
