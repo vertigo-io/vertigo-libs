@@ -28,7 +28,7 @@
 
 <th:block th:fragment="select-read(object,field,label,list,valueField, labelField, input_attrs, label_attrs)" vu:alias="select" vu:selector="${viewMode=='read'}" 
 	th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, value=${model.vContext[__${object}__].getTypedValue('__${field}__')}">
-	<vu:label-read object="${object}" field="${field}" label="${label}" th:attr="__${label_attrs}__" >
+	<vu:label-read object="${object}" field="${field}" label="${label}" other_attrs="${label_attrs}" >
 		<span th:if="${value!=null}"
 		th:attr="__${input_attrs}__"
 		th:text="${value!=null?model.vContext[__${list}__].getById('__${myValueField}__', value)['__${myLabelField}__']:'is null'}"></span>		

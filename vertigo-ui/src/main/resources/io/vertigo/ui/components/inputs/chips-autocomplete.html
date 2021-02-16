@@ -52,7 +52,7 @@
 <th:block th:fragment="chips-autocomplete-read(object, field, label, list, valueField, staticData, label_attrs, input_attrs)" vu:alias="chips-autocomplete" vu:selector="${viewMode=='read'}"
 	th:with="myLabel=${label?:model.util.label(object + '.' + field)}" >
 	<vu:include-data object="${object}" field="${field}"/>
-	<vu:label-read label=${label} th:attr="__${label_attrs}__" >
+	<vu:label-read label=${label} other_attrs="${label_attrs}" >
 		<q-chip th:v-for="|value in vueData.${object}.${field}|" dense>{{value}}</q-chip>
 	</vu:label-read>
 </th:block>

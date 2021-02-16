@@ -4,7 +4,7 @@
 	<vu:include-data object="${object}" field="${field}"/>
 	<vu:include-data object="${list}" field="${myValueField}"/>
 	<vu:include-data object="${list}" field="${myLabelField}"/>
-	<vu:label-edit object="${object}" field="${field}" label="${label}" th:attr="__${label_attrs}__">
+	<vu:label-edit object="${object}" field="${field}" label="${label}" other_attrs="${label_attrs}">
 		<q-option-group
 			th::inline="${inline}"
 		    type="radio"
@@ -18,5 +18,5 @@
 </th:block> 
 
 <th:block th:fragment="radio-read(object, field, label, list, valueField, labelField, layout, input_attrs, label_attrs)" vu:alias="radio" vu:selector="${viewMode=='read'}" >
-	<vu:select-read object="${object}" field="${field}" label="${label}" list="${list}" valueField="${valueField}" labelField="${labelField}" th:attr="__${label_attrs}__,__${input_attrs}__"/>
+	<vu:select-read object="${object}" field="${field}" label="${label}" list="${list}" valueField="${valueField}" labelField="${labelField}" label_attrs="${label_attrs}" input_attrs="${input_attrs}"/>
 </th:block>
