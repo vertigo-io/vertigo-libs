@@ -31,6 +31,7 @@ import io.vertigo.ui.impl.thymeleaf.components.NamedComponentElementProcessor;
 import io.vertigo.ui.impl.thymeleaf.components.OnceAttributeTagProcessor;
 import io.vertigo.ui.impl.thymeleaf.components.SlotAttributeTagProcessor;
 import io.vertigo.ui.impl.thymeleaf.components.SlotComponentProcessor;
+import io.vertigo.ui.impl.thymeleaf.components.VuiTextTagProcessor;
 
 public final class VUiStandardDialect extends AbstractProcessorDialect {
 
@@ -60,6 +61,7 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 		processors.add(new SlotAttributeTagProcessor(dialectPrefix));
 		processors.add(new SlotComponentProcessor(dialectPrefix));
 		processors.add(new ContentSlotComponentProcessor(dialectPrefix));
+		processors.add(new VuiTextTagProcessor(dialectPrefix));
 
 		//standard components
 		for (final NamedComponentDefinition comp : components) {

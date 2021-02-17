@@ -31,6 +31,6 @@
 	<vu:label-read object="${object}" field="${field}" label="${label}" other_attrs="${label_attrs}" >
 		<span th:if="${value!=null}"
 		th:attr="__${input_attrs}__"
-		th:text="${value!=null?model.vContext[__${list}__].getById('__${myValueField}__', value)['__${myLabelField}__']:'is null'}"></span>		
+		vu:text="${value!=null?model.vContext[__${list}__].getById('__${myValueField}__', value)['__${myLabelField}__']:'is null'}"></span>		
 	</vu:label-read>
 </th:block>
