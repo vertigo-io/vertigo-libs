@@ -377,12 +377,17 @@ export default {
     },
     uploader_failedFiles: function (uploadInfo) {
         uploadInfo.files.forEach(function (file) {
-            let response = JSON.parse(file.xhr.response);
+            this.onAjaxError({
+                status : file.xhr.status,
+                statusText : file.xhr.statusText,
+                data : JSON.parse(file.xhr.response)
+                }
+            );
             //server can return : a response with a uiMessageStack object or directly the uiMessageStack
-            let uiMessageStack = response.globalErrors?response:response.uiMessageStack;
+            /*let uiMessageStack = response.globalErrors?response:response.uiMessageStack;
             Object.keys(uiMessageStack).forEach(function (key) {
                 this.$data.uiMessageStack[key] = uiMessageStack[key];
-            }.bind(this));
+            }.bind(this));*/
         }.bind(this));
     },
     uploader_removeFiles: function (removedFiles, componentId/*, fileInfoKey*/) {

@@ -8,7 +8,8 @@
             auto-upload
 			th::multiple="${multiple}"
 			th::ref="|'${myComponentId}'|"
-			:form-fields="[{name:'CTX', value:vueData.CTX}]"
+			:headers="[{name: 'Accept', value: 'application/json'}]"
+            :form-fields="[{name:'CTX', value:vueData.CTX}]"
 			@hook:mounted="uploader_changeIcon();"
             th:@added="|uploader_addedFile(${multiple}, '${myComponentId}', '${fileInfoKey}')|"
 			th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}', '${fileInfoKey}')|"
@@ -36,7 +37,7 @@
     th:with="myComponentId='uploaderSimple'+${key}" >
         <vu:include-data-primitive th:key="${fileInfoKey}"/>
         <vu:include-data-primitive th:key="${key}"/>
-        <input type="hidden" th:name="|vContext[${key}]|" th:v-bind:value="|JSON.stringify(vueData.${key})|" />
+        <input type="hidden" th:v-for="|fileUri in vueData.${key}|" th:name="|vContext[${key}]|" v-bind:value="fileUri" />
         <q-uploader th:url="${url}"
             auto-upload
             field-name="file"
@@ -68,6 +69,7 @@
                               :class="{'q-uploader__file--failed': file.__status === 'failed',
                                      'q-uploader__file--uploaded': file.__status === 'uploaded'}">
                              <div class="q-uploader__file-header row flex-center no-wrap">
+                                 <q-icon v-if="file.__status === 'failed'" class="q-uploader__file-status" :name="$q.iconSet.type.negative" color="negative"></q-icon>
                                  <q-icon class="q-uploader__file-status" 
                                      :name="file.type.indexOf('video/') === 0 ? 'movie': 
                                      (file.type.indexOf('image/') === 0 ? 'photo' :
@@ -107,16 +109,18 @@
     th:with="myComponentId='uploaderSimple'+${object}+'_'+${field}" >
         <vu:include-data-primitive th:key="${fileInfoKey}"/>
         <vu:include-data th:object="${object}" th:field="${field}"/>
-        <input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|JSON.stringify(vueData.${object}.${field})|" />
+        <input type="hidden" th:v-for="|fileUri in vueData.${object}.${field}|" th:name="|vContext[${object}][${field}]|" th:v-bind:value="fileUri" />
         <q-uploader th:url="${url}"
             auto-upload
             field-name="file"
             th::multiple="${multiple}"
             th::ref="|'${myComponentId}'|"
+            :headers="[{name: 'Accept', value: 'application/json'}]"
             :form-fields="[{name:'CTX', value:vueData.CTX}]"
             @hook:mounted="uploader_changeIcon();"
             th:@added="|uploader_addedFile(${multiple}, '${myComponentId}', '${fileInfoKey}')|"
             th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}','${fileInfoKey}')|"
+            th:@failed="|uploader_failedFiles($event, '${myComponentId}','${fileInfoKey}')|"
             th:@removed="|uploader_removeFiles($event, '${myComponentId}','${fileInfoKey}')|"
             th:attr="__${uploader_attrs}__">
             <template v-slot:header="slotProps"></template> 
@@ -131,12 +135,13 @@
                     <template v-slot:control>
                       <div class="col column justify-center">
                         <div th:v-for="'file in vueData.'+${fileInfoKey}+'.concat(slotProps.files)'"
-                              th:v-if="'file.__status != \'uploaded\' || vueData.'+${object}+'.'+${field}+'.includes(file.fileUri)'"
+                              th:v-if="'file.\_\_status != \'uploaded\' || '+'(!file.\_\_sizeLabel && vueData.'+${object}.${field}+'.includes(file.fileUri))'"
                               :key="file.name"
                               class="q-uploader__file relative-position" 
                               :class="{'q-uploader__file--failed': file.__status === 'failed',
                                      'q-uploader__file--uploaded': file.__status === 'uploaded'}">
                              <div class="q-uploader__file-header row flex-center no-wrap">
+                                 <q-icon v-if="file.__status === 'failed'" class="q-uploader__file-status" :name="$q.iconSet.type.negative" color="negative"></q-icon>
                                  <q-icon class="q-uploader__file-status" 
                                      :name="file.type.indexOf('video/') === 0 ? 'movie': 
                                      (file.type.indexOf('image/') === 0 ? 'photo' :
@@ -176,7 +181,7 @@
     th:with="myComponentId='uploaderCustom'+${key}"
     >
         <vu:include-data-primitive th:key="${fileInfoKey}"/>
-        <input type="hidden" th:name="|${key}|" th:v-bind:value="|vueData.${fileInfoKey}.map(x => x.fileUri)|" />
+        <input type="hidden" th:v-for="|fileUri in vueData.${key}|" th:name="|vContext[${key}]|" v-bind:value="fileUri" />
         <q-uploader th:url="${url}"
             field-name="file"
             auto-upload
@@ -229,7 +234,6 @@
 	                      <div class="q-uploader__title">{{file.name}}</div>
 	                      <div class="q-uploader__subtitle row items-center no-wrap" v-if="file.__status != 'uploaded'"> {{file.__sizeLabel}} / {{file.__progressLabel}}</div>
 	                      <div class="q-uploader__subtitle row items-center no-wrap" v-if="file.__status === 'uploaded'"> {{uploader_humanStorageSize(file.size)}}</div>
-                           
                         </div>
 	                    <q-circular-progress v-if="file.__status === 'uploading'" :value="file.__progress" :min="0" :max="1" :indeterminate="file.__progress === 0"></q-circular-progress>
 	                    <q-btn v-if="file.__status != 'uploading'" round dense flat :icon="$q.iconSet.uploader[file.__status === 'uploaded' ? 'done' : 'clear']" 
