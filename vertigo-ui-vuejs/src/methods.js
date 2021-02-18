@@ -345,7 +345,7 @@ export default {
     },
     uploader_humanStorageSize: function (size) {
         return Quasar.utils.format.humanStorageSize(size);
-	},
+    },
     uploader_addedFile: function (isMultiple, componentId, key) {
         if (!isMultiple) {
             this.$refs[componentId].removeUploadedFiles();
@@ -353,7 +353,7 @@ export default {
         }
     },
     uploader_uploadedFiles: function (uploadInfo, myComponentId, fileInfoKey) {
-        uploadInfo.files.forEach(function (file, index, array) {
+        uploadInfo.files.forEach(function (file) {
             let response = JSON.parse(file.xhr.response);
             this.$data.vueData.CTX = response.model.CTX;
             Object.keys(response.model).forEach(function (key) {
@@ -373,35 +373,47 @@ export default {
             Object.keys(response.uiMessageStack).forEach(function (key) {
                 this.$data.uiMessageStack[key] = response.uiMessageStack[key];
             }.bind(this));
-            array.splice(index, 1);
+        }.bind(this));
+    },
+    uploader_failedFiles: function (uploadInfo) {
+        uploadInfo.files.forEach(function (file) {
+            let response = JSON.parse(file.xhr.response);
+            //server can return : a response with a uiMessageStack object or directly the uiMessageStack
+            let uiMessageStack = response.globalErrors?response:response.uiMessageStack;
+            Object.keys(uiMessageStack).forEach(function (key) {
+                this.$data.uiMessageStack[key] = uiMessageStack[key];
+            }.bind(this));
         }.bind(this));
     },
     uploader_removeFiles: function (removedFiles, componentId/*, fileInfoKey*/) {
         var component = this.$refs[componentId];
         removedFiles.forEach(function (removedFile) {
             var xhrParams = {};
-            xhrParams[component.fieldName] = removedFile.fileUri;
-            xhrParams['CTX'] = this.$data.vueData.CTX;
-            this.$http.delete(component.url, { params: xhrParams, credentials: component.withCredentials })
-                .then(function (response) { //Ok
-                    if (response.data.model.CTX) {
-                        this.$data.vueData.CTX = response.data.model.CTX;
-                    }
-                    Object.keys(response.data.model).forEach(function (key) {
-                        if ('CTX' != key) {
-                            this.$data.vueData[key] = response.data.model[key];
+            if(removedFile.fileUri) { //if file is serverside
+                xhrParams[component.fieldName] = removedFile.fileUri;
+                xhrParams['CTX'] = this.$data.vueData.CTX;
+                this.$http.delete(component.url, { params: xhrParams, credentials: component.withCredentials })
+                    .then(function (response) { //Ok
+                        if (response.data.model.CTX) {
+                            this.$data.vueData.CTX = response.data.model.CTX;
                         }
+                        Object.keys(response.data.model).forEach(function (key) {
+                            if ('CTX' != key) {
+                                this.$data.vueData[key] = response.data.model[key];
+                            }
+                        }.bind(this));
+                        Object.keys(response.data.uiMessageStack).forEach(function (key) {
+                            this.$data.uiMessageStack[key] = response.data.uiMessageStack[key];
+                        }.bind(this));
+                    }.bind(this))
+                    .catch(function (error) { //Ko
+                        this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't remove temporary file");
                     }.bind(this));
-                    Object.keys(response.data.uiMessageStack).forEach(function (key) {
-                        this.$data.uiMessageStack[key] = response.data.uiMessageStack[key];
-                    }.bind(this));
-                }.bind(this))
-                .catch(function (error) { //Ko
-                    this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't remove temporary file");
-                }.bind(this));
-        }.bind(this));
+            }
+        }.bind(this));        
         this.uploader_forceComputeUploadedSize(componentId);
     },
+    
 
     httpPostAjax: function (url, paramsIn, options) {
         let vueData = this.$data.vueData;

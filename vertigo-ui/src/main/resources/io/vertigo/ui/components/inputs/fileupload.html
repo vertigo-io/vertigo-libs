@@ -42,10 +42,12 @@
             field-name="file"
             th::multiple="${multiple}"
             th::ref="|'${myComponentId}'|"
+            :headers="[{name: 'Accept', value: 'application/json'}]"
             :form-fields="[{name:'CTX', value:vueData.CTX}]"
             @hook:mounted="uploader_changeIcon();"
             th:@added="|uploader_addedFile(${multiple}, '${myComponentId}', '${fileInfoKey}')|"
             th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}','${fileInfoKey}')|"
+            th:@failed="|uploader_failedFiles($event, '${myComponentId}','${fileInfoKey}')|"
             th:@removed="|uploader_removeFiles($event, '${myComponentId}','${fileInfoKey}')|"
             th:attr="__${uploader_attrs}__">
             <template v-slot:header="slotProps"></template> 
