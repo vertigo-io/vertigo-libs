@@ -19,7 +19,6 @@
         <vu:messages />
             <vu:form id="myFormId">
                 <vu:block id="movie" title="#{movie.title.information}">
-                       <vu:select object="movie" field="year" list="movies" :class="{'v-field__required':true}" />
                        <vu:include-data object="movies" field="*" />
                        <vu:include-data-primitive key='timeZoneList'/>
                        <vu:include-data-primitive key='selectedTimeZoneList'/>
