@@ -4,7 +4,7 @@
 	<vu:include-data object="${object}" field="${field}"/>
 	<vu:include-data object="${list}" field="${myValueField}"/>
 	<vu:include-data object="${list}" field="${myLabelField}"/>
-	<vu:label-edit object="${object}" field="${field}" label="${label}" other_attrs="${label_attrs}">
+	<vu:label-edit object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}">
 		<q-option-group
 			th:@hook:created="|function() { if (!vueData.${object}.${field}) { vueData.${object}.${field} = []}}|"
 			th:name="|vContext[${object}][${field}]|"
@@ -24,7 +24,7 @@
 	<vu:include-data object="${object}" field="${field}"/>
 	<vu:include-data object="${list}" field="${myValueField}"/>
 	<vu:include-data object="${list}" field="${myLabelField}"/>
-	<vu:label-read object="${object}" field="${field}" label="${label}" other_attrs="${label_attrs}">
+	<vu:label-read object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}">
 		<q-option-group
 			th:@hook:created="|function() { if (!vueData.${object}.${field}) { vueData.${object}.${field} = []}}|"
 			th:name="|vContext[${object}][${field}]|"

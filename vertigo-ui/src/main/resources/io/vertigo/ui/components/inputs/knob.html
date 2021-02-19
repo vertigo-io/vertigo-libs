@@ -3,7 +3,7 @@
 	th:assert="${object} != null and ${field} != null"
 	th:with="fieldPath=|${object}.${field}|, myMin=${min?:model.util.getMinValue(fieldPath)?:'0' }, myMax=${max?:model.util.getMaxValue(fieldPath)?:'2000'}, myStep=${step?:model.util.getStep(myMin, myMax)}" >
 	<vu:include-data object="${object}" field="${field}"/>
-	<vu:label-edit label="${label}" other_attrs="${label_attrs}">
+	<vu:label-edit label="${label}" label_attrs="${label_attrs}">
 		<q-knob
 			th:v-model="${'vueData.' + object + '.' + field}" 
 			show-value

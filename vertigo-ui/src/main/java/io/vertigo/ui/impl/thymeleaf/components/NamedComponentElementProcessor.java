@@ -359,7 +359,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 						|| NO_RESERVED_TEXT_PATTERN.matcher((String) attributeValue).matches()) //no reserved char
 				&& NO_RESERVED_FIRST_CHAR_PATTERN.matcher((String) attributeValue).matches()) { //don't start with reserved char
 			//We escape :
-			//IF placehodler or no thymeleaf's reserved char ($ @ # | )  (but autorized || )
+			//IF placehodler or no thymeleaf's reserved char ($ @ # | )  (but authorized || )
 			//AND dont start with reserved char (for case like ${value} )
 			//BUT IF true, false or number (it become string instead)
 			return "'" + ((String) attributeValue).replace("'", "\\'") + "'"; //escape as text

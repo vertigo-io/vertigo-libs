@@ -1,4 +1,4 @@
-<th:block th:fragment="label-edit(object,field, label, other_attrs)" vu:alias="label" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="label-edit(object,field, label, label_attrs)" vu:alias="label" vu:selector="${viewMode=='edit'}"
 		th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
 		th:assert="${object} != null and ${field} != null">
 	<q-field
@@ -9,13 +9,13 @@
 		orientation="vertical"
 		stack-label
 		borderless
-		th:attr="__${other_attrs}__"
+		th:attr="__${label_attrs}__"
 		>
 		 <vu:content/>
 	</q-field>
 </th:block> 
 
-<th:block th:fragment="label-read(object, field, label, other_attrs)" vu:alias="label" vu:selector="${viewMode=='read'}" 
+<th:block th:fragment="label-read(object, field, label, label_attrs)" vu:alias="label" vu:selector="${viewMode=='read'}" 
 	 th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
  	 th:assert="${object} != null and ${field} != null">
 	<q-field
@@ -25,7 +25,7 @@
 		stack-label
 		readonly
 		borderless 
-		th:attr="__${other_attrs}__"
+		th:attr="__${label_attrs}__"
 		>
 		<vu:content/>
 	</q-field>
