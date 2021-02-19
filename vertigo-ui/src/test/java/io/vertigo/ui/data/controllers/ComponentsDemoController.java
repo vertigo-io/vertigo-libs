@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
@@ -256,6 +257,9 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		getUiMessageStack().addGlobalMessage(Level.INFO, "Fichier recu : " + vFile.getFileName() + " (" + vFile.getMimeType() + ")");
 		//No need to protectPath, FileInfoURI are always protected
 		//final String protectedPath = ProtectedValueUtil.generateProtectedValue(VFileUtil.obtainReadOnlyPath(vFile).toFile().getAbsolutePath());
+		if (vFile.getFileName().toLowerCase().contains("virus")) {
+			throw new VUserException("Il y a un virus dans votre PJ " + vFile.getFileName());
+		}
 		final FileInfo storeFile = supportServices.saveFile(vFile);
 		final UiFileInfoList<FileInfo> storeFiles = viewContext.getUiFileInfoList(storedFileInfo);
 		storeFiles.add(storeFile);
