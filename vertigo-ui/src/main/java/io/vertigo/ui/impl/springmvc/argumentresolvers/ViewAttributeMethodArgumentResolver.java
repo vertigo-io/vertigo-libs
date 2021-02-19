@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,8 +39,6 @@ import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datastore.filestore.model.FileInfoURI;
-import io.vertigo.ui.core.ProtectedValueUtil;
 import io.vertigo.ui.core.UiSelectedFacetValues;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
@@ -57,15 +54,6 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 
 	private final List<DtObjectValidator<DtObject>> defaultDtObjectValidators = Collections.singletonList(new DefaultDtObjectValidator<>());
 	private final Gson gson = new GsonBuilder().registerTypeAdapter(SelectedFacetValues.class, new SelectedFacetValuesDeserializer()).create();
-
-	//Used to support ParameterizedType parameters (not used for return value)
-	private final ParameterizedTypeValueHandlerHelper<FileInfoURI> parameterizedTypeValueHandlerHelper;
-
-	public ViewAttributeMethodArgumentResolver() {
-		parameterizedTypeValueHandlerHelper = new ParameterizedTypeValueHandlerHelper<>(FileInfoURI.class, ViewAttributeMethodArgumentResolver::toFileInfoURI);
-		parameterizedTypeValueHandlerHelper.addSupportedParameterizedType(Optional.class);
-		parameterizedTypeValueHandlerHelper.addSupportedParameterizedType(List.class);
-	}
 
 	@Override
 	public boolean supportsParameter(final MethodParameter parameter) {
@@ -122,15 +110,6 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 				throw new ValidationUserException();
 			}
 			return value;
-		} else if (parameterizedTypeValueHandlerHelper.supportsType(parameter)) {
-			final Object contextValue = viewContext.get(contextKey);
-			final Object value;
-			if (contextValue instanceof String[]) {
-				value = parameterizedTypeValueHandlerHelper.convertArray((String[]) contextValue);
-			} else {
-				value = parameterizedTypeValueHandlerHelper.convert((String) contextValue, parameter);
-			}
-			return value;
 		}
 		return viewContext.get(contextKey);// for primitive or other objects
 	}
@@ -153,9 +132,4 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 				.skip(parameter.getParameterIndex() + 1L)
 				.anyMatch(remainingParam -> DtObject.class.isAssignableFrom(remainingParam.getType()) || DtList.class.isAssignableFrom(remainingParam.getType()));
 	}
-
-	private static FileInfoURI toFileInfoURI(final String requestValue) {
-		return ProtectedValueUtil.readProtectedValue(requestValue, FileInfoURI.class);
-	}
-
 }
