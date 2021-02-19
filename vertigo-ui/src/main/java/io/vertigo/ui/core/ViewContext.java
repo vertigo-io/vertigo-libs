@@ -32,6 +32,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.google.gson.reflect.TypeToken;
+
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.model.Facet;
@@ -47,7 +49,7 @@ import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
-import io.vertigo.datastore.filestore.model.FileInfo;
+import io.vertigo.datastore.filestore.model.FileInfoURI;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
@@ -204,9 +206,9 @@ public final class ViewContext implements Serializable {
 	 * @param key Clé de context
 	 * @return UiObject du context
 	 */
-	public <O extends Serializable> void publishJsonRef(final ViewContextKey<O> key, final O value, final Type paramType) {
-		put(key, value);
+	public <O extends Serializable> void publishTypedRef(final ViewContextKey<O> key, final O value, final Type paramType) {
 		viewContextMap.addTypeForKey(key.get(), paramType);
+		put(key, value);
 	}
 
 	/**
@@ -415,8 +417,8 @@ public final class ViewContext implements Serializable {
 	 * Get UI file info list.
 	 * @param contextKey Context key
 	 */
-	public <F extends FileInfo> UiFileInfoList<F> getUiFileInfoList(final ViewContextKey<F> contextKey) {
-		return UiFileInfoList.class.cast(get(contextKey));
+	public ArrayList<FileInfoURI> getFileInfoURIs(final ViewContextKey<ArrayList<FileInfoURI>> contextKey) {
+		return (ArrayList<FileInfoURI>) get(contextKey);
 	}
 
 	/**
@@ -424,8 +426,8 @@ public final class ViewContext implements Serializable {
 	 * @param contextKey Context key
 	 * @param fileInfo file's info
 	 */
-	public <F extends FileInfo> void publishFileInfo(final ViewContextKey<F> contextKey, final F fileInfo) {
-		put(contextKey, new UiFileInfo<>(fileInfo));
+	public void publishFileInfoURI(final ViewContextKey<FileInfoURI> contextKey, final FileInfoURI fileInfoURI) {
+		put(contextKey, fileInfoURI);
 	}
 
 	/**
@@ -433,8 +435,8 @@ public final class ViewContext implements Serializable {
 	 * @param contextKey Context key
 	 * @param fileInfos list of file's info.
 	 */
-	public <F extends FileInfo> void publishFileInfo(final ViewContextKey<F> contextKey, final List<F> fileInfos) {
-		put(contextKey, new UiFileInfoList<>(fileInfos));
+	public void publishFileInfoURIs(final ViewContextKey<ArrayList<FileInfoURI>> contextKey, final ArrayList<FileInfoURI> fileInfoURIs) {
+		publishTypedRef(contextKey, fileInfoURIs, TypeToken.getParameterized(ArrayList.class, FileInfoURI.class).getType());
 	}
 
 	/* ================================ FacetedQueryResult ==================================*/

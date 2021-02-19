@@ -18,6 +18,8 @@
 package io.vertigo.ui.core;
 
 import java.io.Serializable;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
@@ -77,8 +80,15 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		//-----
 		Serializable o = super.get(key);
 		Assertion.check().isNotNull(o, "Objet :{0} non trouvé! Vérifier que l objet est bien enregistré avec la clé. Clés disponibles {1}", key, keySet());
-		if (o instanceof String && typesByKey.containsKey(key)) {
-			o = jsonEngine.fromJson((String) o, typesByKey.get(key));
+		if (typesByKey.containsKey(key)) {
+			if (o instanceof String) {
+				o = jsonEngine.fromJson((String) o, typesByKey.get(key));
+			} else if (o instanceof String[]) {
+				final String concat = Arrays.stream((String[]) o)
+						.filter(v -> !v.isEmpty()) //empty html input means : no value; there are use to send removed value
+						.collect(Collectors.joining(",", "[", "]"));
+				o = jsonEngine.fromJson(concat, typesByKey.get(key));
+			}
 		}
 		return o;
 	}
@@ -209,8 +219,59 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		} else if (value instanceof UiList) {
 			reverseUiListIndex.put((UiList<?>) value, key);
 		}
-
+		if ((value instanceof String || value instanceof String[]) && isMultiple(key)) {
+			if (value instanceof String) {
+				return super.put(key, convertMultipleValue((String) value));
+			}
+			return super.put(key, convertMultipleValue((String[]) value));
+		}
 		return super.put(key, value);
+
+	}
+
+	private boolean isMultiple(final String key) {
+		if (typesByKey.containsKey(key)) {
+			final Type type = typesByKey.get(key);
+			if (type instanceof Class<?>) {
+				return Iterable.class.isAssignableFrom((Class<?>) type);
+			} else if (type instanceof ParameterizedType) {
+				return Iterable.class.isAssignableFrom((Class<?>) ((ParameterizedType) type).getRawType());
+			} else if (type instanceof GenericArrayType) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private Serializable convertMultipleValue(final String strValue) {
+		if (!(strValue.startsWith("[") && strValue.endsWith("]"))) {
+			String[] values;
+			if (strValue.isEmpty()) {
+				values = new String[0];
+			} else {
+				values = new String[] { strValue };
+			}
+			return values;
+		}
+		return strValue;
+	}
+
+	private Serializable convertMultipleValue(final String[] strValues) {
+		//we removed empty values, they mean "no value" and was use to send removed state to server
+		boolean hasEmpty = false;
+		for (final String value : strValues) {
+			if (value.isEmpty()) {
+				hasEmpty = true;
+				break;
+			}
+		}
+		if (hasEmpty) {
+			final List<String> values = Arrays.stream(strValues)
+					.filter(v -> !v.isEmpty())
+					.collect(Collectors.toList());
+			return values.toArray(new String[values.size()]);
+		}
+		return strValues;
 	}
 
 	/** {@inheritDoc} */
