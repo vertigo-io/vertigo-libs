@@ -60,4 +60,9 @@ public final class UiFileInfoList<F extends FileInfo> extends ArrayList<UiFileIn
 		return removeIf(f -> uri.equals(f.getFileUri()));
 	}
 
+	public UiFileInfo<F> get(final FileInfoURI uri) {
+		final int index = indexOf(uri);
+		return index == -1 ? null : get(index);
+	}
+
 }

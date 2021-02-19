@@ -8,6 +8,7 @@ export default {
         let notif = {
             type: 'negative',
             message: 'Network Error.',
+            multiLine: true,
             icon: 'warning',
             timeout: 2500,
         }
@@ -323,6 +324,26 @@ export default {
         this.$q.iconSet.uploader.removeUploaded = 'delete_sweep'
         this.$q.iconSet.uploader.done = 'delete'
     },
+    uploader_mounted(componentId, key) {
+        this.uploader_changeIcon();
+        var component = this.$refs[componentId];
+        this.$data.vueData[key].forEach(function (uri) {
+        var xhrParams = {};
+        xhrParams[component.fieldName] = uri;
+            this.$http.get(component.url, { params: xhrParams, credentials: component.withCredentials })
+            .then(function (response) { //Ok
+                var fileData = response.data;
+                fileData.__sizeLabel = Quasar.utils.format.humanStorageSize(fileData.size);
+                fileData.__progressLabel = '100%';
+                component.files.push(fileData);
+                component.uploadedFiles.push(fileData);
+                this.uploader_forceComputeUploadedSize(componentId);
+            }.bind(this))
+            .catch(function (error) { //Ko
+                this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file "+uri);
+            }.bind(this));
+        }.bind(this));
+    },
     uploader_dragenter(componentId) {
         let componentStates = this.$data.componentStates;
         componentStates[componentId].dragover = true;
@@ -341,7 +362,8 @@ export default {
         component.uploadedSize = 0;
         component.uploadedFiles.forEach(function (file) { component.uploadedSize += file.size;});
         component.uploadSize = component.uploadedSize;
-        component.queuedFiles.forEach(function (file) { component.uploadSize += file.size;}); 
+        component.queuedFiles.forEach(function (file) { component.uploadSize += file.size;});
+        
     },
     uploader_humanStorageSize: function (size) {
         return Quasar.utils.format.humanStorageSize(size);
@@ -352,27 +374,10 @@ export default {
             this.$data.vueData[key]= [];
         }
     },
-    uploader_uploadedFiles: function (uploadInfo, myComponentId, fileInfoKey) {
+    uploader_uploadedFiles: function (uploadInfo, key) {
         uploadInfo.files.forEach(function (file) {
-            let response = JSON.parse(file.xhr.response);
-            this.$data.vueData.CTX = response.model.CTX;
-            Object.keys(response.model).forEach(function (key) {
-                if (fileInfoKey === key) {
-                    this.$data.vueData[key] = response.model[key];
-                    //last key is the added one
-                    if(!file.fileUri) {
-                        var lastFileUploaded = response.model[key][response.model[key].length - 1];
-                        if(lastFileUploaded.name === file.name) {
-                            file.fileUri = lastFileUploaded.fileUri
-                        }
-                    }
-                } else if ('CTX' != key) {
-                    this.$data.vueData[key] = response.model[key];
-                }
-            }.bind(this));
-            Object.keys(response.uiMessageStack).forEach(function (key) {
-                this.$data.uiMessageStack[key] = response.uiMessageStack[key];
-            }.bind(this));
+            file.fileUri = file.xhr.response;
+            this.$data.vueData[key].push(file.fileUri);
         }.bind(this));
     },
     uploader_failedFiles: function (uploadInfo) {
@@ -390,26 +395,21 @@ export default {
             }.bind(this));*/
         }.bind(this));
     },
-    uploader_removeFiles: function (removedFiles, componentId/*, fileInfoKey*/) {
+    uploader_removeFiles: function (removedFiles, componentId, key) {
         var component = this.$refs[componentId];
+        var dataFileUris = this.$data.vueData[key];
         removedFiles.forEach(function (removedFile) {
-            var xhrParams = {};
             if(removedFile.fileUri) { //if file is serverside
-                xhrParams[component.fieldName] = removedFile.fileUri;
-                xhrParams['CTX'] = this.$data.vueData.CTX;
+            var indexOfFileUri = dataFileUris.indexOf(removedFile.fileUri);
+            var xhrParams = {};
+            xhrParams[component.fieldName] = removedFile.fileUri;
                 this.$http.delete(component.url, { params: xhrParams, credentials: component.withCredentials })
-                    .then(function (response) { //Ok
-                        if (response.data.model.CTX) {
-                            this.$data.vueData.CTX = response.data.model.CTX;
+                    .then(function (/*response*/) { //Ok
+                        if (component.multiple) {
+                            dataFileUris.splice(indexOfFileUri, 1);
+                        } else {
+                            dataFileUris.splice(0);
                         }
-                        Object.keys(response.data.model).forEach(function (key) {
-                            if ('CTX' != key) {
-                                this.$data.vueData[key] = response.data.model[key];
-                            }
-                        }.bind(this));
-                        Object.keys(response.data.uiMessageStack).forEach(function (key) {
-                            this.$data.uiMessageStack[key] = response.data.uiMessageStack[key];
-                        }.bind(this));
                     }.bind(this))
                     .catch(function (error) { //Ko
                         this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't remove temporary file");

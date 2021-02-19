@@ -18,9 +18,6 @@
 package io.vertigo.ui.data.controllers;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -33,15 +30,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
@@ -49,7 +43,6 @@ import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
-import io.vertigo.ui.core.UiFileInfoList;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
 import io.vertigo.ui.data.domain.DtDefinitions.MovieDisplayFields;
@@ -90,7 +83,6 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	private final ViewContextKey<String> selectedTimeZoneList = ViewContextKey.of("selectedTimeZoneList");
 	private final ViewContextKey<String> zoneId = ViewContextKey.of("zoneId");
 
-	public static final ViewContextKey<FileInfo> storedFileInfo = ViewContextKey.of("storedFiles");
 	public static final ViewContextKey<ArrayList<FileInfoURI>> fileUrisKey = ViewContextKey.of("myFilesUris");
 
 	@Inject
@@ -123,53 +115,21 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		viewContext.publishRef(timeZoneList, timeZoneListStatic);
 		viewContext.publishRef(selectedTimeZoneList, "");
 
-		final List<FileInfo> storeFiles = new ArrayList<>();
 		final URI fullPath = getClass().getResource("/data/insee.csv").toURI();
 		final VFile dummyFile1 = new FSFile("my1stFile.csv", "text/csv", Paths.get(fullPath));
 		final VFile dummyFile2 = new FSFile("my2ndFile.csv", "text/csv", Paths.get(fullPath));
 
 		//in common case, files are just load from FileStore and uris were already in place
 		final FileInfo fileInfoTmp1 = supportServices.saveFile(dummyFile1);
-		storeFiles.add(fileInfoTmp1);
 		final FileInfo fileInfoTmp2 = supportServices.saveFile(dummyFile2);
-		storeFiles.add(fileInfoTmp2);
-		viewContext.publishFileInfo(storedFileInfo, storeFiles);
 
 		final ArrayList<FileInfoURI> fileUris = new ArrayList<>();
 		fileUris.add(fileInfoTmp1.getURI());
 		fileUris.add(fileInfoTmp2.getURI());
-		viewContext.publishJsonRef(fileUrisKey, fileUris, new CustomParameterizedType(ArrayList.class, FileInfoURI.class));
-		//myMovie.setPictures(fileUris);
+		viewContext.publishFileInfoURIs(fileUrisKey, fileUris);
+		//myMovie.setPictures(fileUris); //TODO
 
 		toModeCreate();
-	}
-
-	private static final class CustomParameterizedType implements ParameterizedType, Serializable {
-		private final Type fieldType;
-		private final Type[] typeArguments;
-
-		CustomParameterizedType(final Type fieldType, final Type paramType) {
-			this.fieldType = fieldType;
-			typeArguments = new Type[] { paramType };
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public Type[] getActualTypeArguments() {
-			return typeArguments;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public Type getOwnerType() {
-			return fieldType instanceof ParameterizedType ? ((ParameterizedType) fieldType).getOwnerType() : null;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public Type getRawType() {
-			return fieldType instanceof ParameterizedType ? ((ParameterizedType) fieldType).getRawType() : fieldType;
-		}
 	}
 
 	@PostMapping("/movies/{movieId}")
@@ -194,8 +154,11 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 
 	@PostMapping("/_saveFilesOnly")
 	public void doSaveAutoValidation(final ViewContext viewContext, @ViewAttribute("myFilesUris") final List<FileInfoURI> pictures) {
-		Assertion.check().isTrue(pictures.size() > 0, "No files send");
-		Assertion.check().isNotNull(pictures.get(0), "FileUri can't be read");
+		//Assertion.check().isTrue(pictures.size() > 0, "No files send");
+		//Assertion.check().isNotNull(pictures.get(0), "FileUri can't be read");
+		if (pictures.size() == 0) {
+			getUiMessageStack().warning("No files send");
+		}
 		//we may save files on a more persistent space
 		nop(pictures);
 	}
@@ -250,37 +213,6 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	public VFile loadFile(@PathVariable("protectedUri") final FileInfoURI fileInfoURI) {
 		//final FileInfoURI fileInfoURI = ProtectedValueUtil.readProtectedValue(protectedUri, FileInfoURI.class);
 		return supportServices.getFile(fileInfoURI).getVFile();
-	}
-
-	@PostMapping("/upload")
-	public ViewContext uploadFile(final ViewContext viewContext, @QueryParam("file") final VFile vFile) {
-		getUiMessageStack().addGlobalMessage(Level.INFO, "Fichier recu : " + vFile.getFileName() + " (" + vFile.getMimeType() + ")");
-		//No need to protectPath, FileInfoURI are always protected
-		//final String protectedPath = ProtectedValueUtil.generateProtectedValue(VFileUtil.obtainReadOnlyPath(vFile).toFile().getAbsolutePath());
-		if (vFile.getFileName().toLowerCase().contains("virus")) {
-			throw new VUserException("Il y a un virus dans votre PJ " + vFile.getFileName());
-		}
-		final FileInfo storeFile = supportServices.saveFile(vFile);
-		final UiFileInfoList<FileInfo> storeFiles = viewContext.getUiFileInfoList(storedFileInfo);
-		storeFiles.add(storeFile);
-		viewContext.markModifiedKeys(storedFileInfo);
-		final List<FileInfoURI> myFileURI = (List<FileInfoURI>) viewContext.get(fileUrisKey);
-		myFileURI.add(storeFile.getURI());
-		viewContext.markModifiedKeys(fileUrisKey);
-		return viewContext;
-	}
-
-	@DeleteMapping("/upload")
-	public ViewContext removeFile(final ViewContext viewContext, @QueryParam("file") final FileInfoURI fileInfoUri) {
-		supportServices.removeFile(fileInfoUri);
-		final UiFileInfoList<FileInfo> storeFiles = viewContext.getUiFileInfoList(storedFileInfo);
-		storeFiles.remove(fileInfoUri);
-		viewContext.markModifiedKeys(storedFileInfo);
-
-		final List<FileInfoURI> myFileURI = (List<FileInfoURI>) viewContext.get(fileUrisKey);
-		myFileURI.remove(fileInfoUri);
-		viewContext.markModifiedKeys(fileUrisKey);
-		return viewContext; //if no return, you must get the response. Prefer to return old uri.
 	}
 
 	@PostMapping("/_ajaxArray")

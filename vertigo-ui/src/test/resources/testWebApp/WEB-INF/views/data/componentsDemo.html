@@ -52,28 +52,15 @@
                         <vu:grid-cell>
                             <a th:href="@{/componentsDemo/myFiles}">insee.csv</a>
                         </vu:grid-cell>
-                        <vu:grid-cell>
-                            Server side file list
-                            <div th:each="file, iStat: ${model.vContext['storedFiles']}" 
-                                th:class="${iStat.odd}? 'even' : 'odd'" 
-                                th:alt-title="${iStat.even}? 'even' : 'odd'">
-                                <a th:href="@{/componentsDemo/myFiles/}+${file.fileUri}" th:text="${file.name}"></a>                                
-                            </div>
-                        </vu:grid-cell>
-                        <vu:grid-cell>
-                            Client side file list
-                            <div v-for="file in vueData.storedFiles" >
-                                <a th::href="|'__@{/componentsDemo/myFiles/}__'+file.fileUri|">{{file.name}}</a>                                
-                            </div>
-                        </vu:grid-cell>
+                        
                         <vu:grid-cell>
                             <vu:fileupload-dropzone key="myFilesUris">
-                                <vu:fileupload label="Upload file" th:url="'@{/componentsDemo/upload}'" key="myFilesUris"  fileInfoKey="storedFiles" multiple />           
+                                <vu:fileupload label="Upload file" th:url="'@{/commons/upload}'" key="myFilesUris" multiple />           
                             </vu:fileupload-dropzone>
                         </vu:grid-cell>                
-                        <vu:fileupload-custom label="Custom upload file" th:url="'@{/componentsDemo/upload}'" key="myFilesUris" fileInfoKey="storedFiles"  multiple/>                            
-                        <vu:fileupload-simple label="Simple upload file" th:url="'@{/componentsDemo/upload}'" key="myFilesUris" fileInfoKey="storedFiles" multiple/>                            
-                       
+                        <vu:fileupload-custom label="Custom upload file" th:url="'@{/commons/upload}'" key="myFilesUris" multiple/>                            
+                        <vu:fileupload-simple label="Simple upload file" th:url="'@{/commons/upload}'" key="myFilesUris" multiple/>                            
+                        
                         <vu:modal componentId="myModal" closeLabel="Close"/>
                         <vu:grid-cell>
                             <vu:button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}" color="primary"/>
