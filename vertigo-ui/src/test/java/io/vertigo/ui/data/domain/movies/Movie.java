@@ -17,6 +17,9 @@
  */
 package io.vertigo.ui.data.domain.movies;
 
+import java.util.List;
+
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
@@ -24,6 +27,7 @@ import io.vertigo.datamodel.structure.stereotype.DisplayField;
 import io.vertigo.datamodel.structure.stereotype.Field;
 import io.vertigo.datamodel.structure.stereotype.SortField;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datastore.filestore.model.FileInfoURI;
 
 /**
  * This class is automatically generated.
@@ -43,6 +47,7 @@ public final class Movie implements KeyConcept {
 	private String rated;
 	private java.time.Instant lastModified;
 	private String tags;
+	private List<FileInfoURI> pictures;
 
 	/** {@inheritDoc} */
 	@Override
@@ -240,6 +245,25 @@ public final class Movie implements KeyConcept {
 	 */
 	public void setLastModified(final java.time.Instant lastModified) {
 		this.lastModified = lastModified;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'Pictures'.
+	 * @return List<FileInfoURI> pictures
+	 */
+	@Field(smartType = "STyFileInfoURI", cardinality = Cardinality.MANY, persistent = false, label = "Pictures")
+	public List<FileInfoURI> getPictures() {
+		return pictures;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'Pictures'.
+	 * @param pictures List<FileInfoURI>
+	 */
+	public void setPictures(final List<FileInfoURI> pictures) {
+		this.pictures = pictures;
 	}
 
 	/** {@inheritDoc} */

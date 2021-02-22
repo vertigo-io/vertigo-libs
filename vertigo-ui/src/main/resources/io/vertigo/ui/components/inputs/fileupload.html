@@ -1,6 +1,6 @@
 <th:block th:fragment="fileupload(url, key, multiple, uploader_attrs)" 
 	th:assert="${key} != null and ${url} != null"
-	th:with="myComponentId='uploader'+${key}"	>
+	th:with="myComponentId='uploader_'+${key}"	>
 		<vu:include-data-primitive th:key="${key}"/>
         <input type="hidden" th:v-if="|vueData.${key}.length == 0|" th:name="|vContext[${key}]|" value="" />
         <input type="hidden" th:v-for="|fileUri in vueData.${key}|" th:name="|vContext[${key}]|" v-bind:value="fileUri" />
@@ -20,7 +20,7 @@
 </th:block>
 <th:block th:fragment="fileupload-dropzone(key, dropzone_attrs)" 
     th:assert="${key} != null"
-    th:with="myComponentId='uploader'+${key}+'drop',fileComponentId='uploader'+${key}"
+    th:with="myComponentId='uploader_'+${key}+'_drop',fileComponentId='uploader_'+${key}"
     th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('dragover',false)}" >
         <div class="dropzone-area" 
             th:@dragenter.prevent="|uploader_dragenter('${myComponentId}')|"
@@ -35,7 +35,7 @@
 </th:block>
 <th:block th:fragment="fileupload-simple(url, key, multiple, uploader_attrs)" 
     th:assert="${key} != null and ${url} != null"
-    th:with="myComponentId='uploaderSimple'+${key}" >
+    th:with="myComponentId='uploader_'+${key}" >
         <vu:include-data-primitive th:key="${key}"/>
         <input type="hidden" th:v-if="|vueData.${key}.length == 0|" th:name="|vContext[${key}]|" value="" />
         <input type="hidden" th:v-for="|fileUri in vueData.${key}|" th:name="|vContext[${key}]|" v-bind:value="fileUri" />
@@ -103,24 +103,23 @@
             </template>   
         </q-uploader>
 </th:block>
-<th:block th:fragment="fileupload-simple-object(url, object, field, fileInfoKey, multiple, uploader_attrs)" 
-    th:assert="${object} != null and ${field} != null and ${url} != null and ${fileInfoKey} != null"
-    th:with="myComponentId='uploaderSimple'+${object}+'_'+${field}" >
-        <vu:include-data-primitive th:key="${fileInfoKey}"/>
+<th:block th:fragment="fileupload-simple-object(url, object, field, multiple, uploader_attrs)" 
+    th:assert="${object} != null and ${field} != null and ${url} != null"
+    th:with="myComponentId='uploader_'+${object}+'_'+${field}" >
         <vu:include-data th:object="${object}" th:field="${field}"/>
-        <input type="hidden" th:v-for="|fileUri in vueData.${object}.${field}|" th:name="|vContext[${object}][${field}]|" th:v-bind:value="fileUri" />
+        <input type="hidden" th:v-if="|vueData.${object}.${field}.length == 0|" th:name="|vContext[${object}][${field}]|" value="" />
+        <input type="hidden" th:v-for="|fileUri in vueData.${object}.${field}|" th:name="|vContext[${object}][${field}]|" v-bind:value="fileUri" />
         <q-uploader th:url="${url}"
             auto-upload
             field-name="file"
             th::multiple="${multiple}"
             th::ref="|'${myComponentId}'|"
             :headers="[{name: 'Accept', value: 'application/json'}]"
-            :form-fields="[{name:'CTX', value:vueData.CTX}]"
-            @hook:mounted="uploader_changeIcon();"
-            th:@added="|uploader_addedFile(${multiple}, '${myComponentId}', '${fileInfoKey}')|"
-            th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}','${fileInfoKey}')|"
-            th:@failed="|uploader_failedFiles($event, '${myComponentId}','${fileInfoKey}')|"
-            th:@removed="|uploader_removeFiles($event, '${myComponentId}','${fileInfoKey}')|"
+            th:@hook:mounted="|uploader_mounted('${myComponentId}', '${object}', '${field}')|"
+            th:@added="|uploader_addedFile(${multiple}, '${myComponentId}', '${object}', '${field}')|"
+            th:@uploaded="|uploader_uploadedFiles($event, '${object}', '${field}')|"
+            th:@failed="|uploader_failedFiles($event)|"
+            th:@removed="|uploader_removeFiles($event, '${myComponentId}', '${object}', '${field}')|"
             th:attr="__${uploader_attrs}__">
             <template v-slot:header="slotProps"></template> 
             <template v-slot:list="slotProps">
@@ -133,8 +132,7 @@
                         borderless>                     
                     <template v-slot:control>
                       <div class="col column justify-center">
-                        <div th:v-for="'file in vueData.'+${fileInfoKey}+'.concat(slotProps.files)'"
-                              th:v-if="'file.\_\_status != \'uploaded\' || '+'(!file.\_\_sizeLabel && vueData.'+${object}.${field}+'.includes(file.fileUri))'"
+                        <div th:v-for="'file in slotProps.files'"
                               :key="file.name"
                               class="q-uploader__file relative-position" 
                               :class="{'q-uploader__file--failed': file.__status === 'failed',
@@ -177,7 +175,7 @@
 </th:block>
 <th:block th:fragment="fileupload-custom(url, key, multiple, uploader_attrs)" 
     th:assert="${key} != null and ${url} != null"
-    th:with="myComponentId='uploaderCustom'+${key}" >
+    th:with="myComponentId='uploader_'+${key}" >
         <vu:include-data-primitive th:key="${key}"/>
         <input type="hidden" th:v-if="|vueData.${key}.length == 0|" th:name="|vContext[${key}]|" value="" />
         <input type="hidden" th:v-for="|fileUri in vueData.${key}|" th:name="|vContext[${key}]|" v-bind:value="fileUri" />

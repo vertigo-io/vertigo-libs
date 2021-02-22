@@ -319,19 +319,40 @@ export default {
         }
         componentStates[componentId].pagination.rowsPerPage = componentStates[componentId].pagination.rowsPerPage / showMoreCount * (showMoreCount + 1);
     },
-
+    obtainVueDataAccessor(referer, object, field) {
+        if(field) {
+            return {
+                get : function() {
+                    return referer.$data.vueData[object][field];
+                }, 
+                set : function(newData) {
+                referer.$data.vueData[object][field] = newData;
+                }
+            }
+        } else {
+            return {
+                get : function() {
+                    return referer.$data.vueData[object];
+                }, 
+                set : function(newData) {
+                referer.$data.vueData[object] = newData;
+                }
+            }
+        }
+    },
     uploader_changeIcon () {
         this.$q.iconSet.uploader.removeUploaded = 'delete_sweep'
         this.$q.iconSet.uploader.done = 'delete'
     },
-    uploader_mounted(componentId, key) {
+    uploader_mounted(componentId, object, field) {
         this.uploader_changeIcon();
         var component = this.$refs[componentId];
         //must removed duplicate
-        this.$data.vueData[key] = this.$data.vueData[key].filter(function(item, pos, self) {
+        var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
+        vueDataAccessor.set(vueDataAccessor.get().filter(function(item, pos, self) {
             return self.indexOf(item) == pos;
-        })
-        this.$data.vueData[key].forEach(function (uri) {
+        }));
+        vueDataAccessor.get().forEach(function (uri) {
         var xhrParams = {};
         xhrParams[component.fieldName] = uri;
             this.$http.get(component.url, { params: xhrParams, credentials: component.withCredentials })
@@ -376,16 +397,18 @@ export default {
     uploader_humanStorageSize: function (size) {
         return Quasar.utils.format.humanStorageSize(size);
     },
-    uploader_addedFile: function (isMultiple, componentId, key) {
+    uploader_addedFile: function (isMultiple, componentId, object, field) {
         if (!isMultiple) {
             this.$refs[componentId].removeUploadedFiles();
-            this.$data.vueData[key]= [];
+            var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
+            vueDataAccessor.set([]);
         }
     },
-    uploader_uploadedFiles: function (uploadInfo, key) {
+    uploader_uploadedFiles: function (uploadInfo, object, field) {
+    var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
         uploadInfo.files.forEach(function (file) {
             file.fileUri = file.xhr.response;
-            this.$data.vueData[key].push(file.fileUri);
+            vueDataAccessor.get().push(file.fileUri);
         }.bind(this));
     },
     uploader_failedFiles: function (uploadInfo) {
@@ -403,9 +426,10 @@ export default {
             }.bind(this));*/
         }.bind(this));
     },
-    uploader_removeFiles: function (removedFiles, componentId, key) {
+    uploader_removeFiles: function (removedFiles, componentId, object, field) {
         var component = this.$refs[componentId];
-        var dataFileUris = this.$data.vueData[key];
+        var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
+        var dataFileUris = vueDataAccessor.get();
         removedFiles.forEach(function (removedFile) {
             if(removedFile.fileUri) { //if file is serverside
             var indexOfFileUri = dataFileUris.indexOf(removedFile.fileUri);

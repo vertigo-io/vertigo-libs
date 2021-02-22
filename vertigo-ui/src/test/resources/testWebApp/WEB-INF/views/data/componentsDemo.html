@@ -55,11 +55,12 @@
                         
                         <vu:grid-cell>
                             <vu:fileupload-dropzone key="myFilesUris">
-                                <vu:fileupload label="Upload file" th:url="'@{/commons/upload}'" key="myFilesUris" multiple />           
+                                <vu:fileupload label="Upload file" th:url="'@{/commons/upload}'" key="myFilesUris1" multiple />           
                             </vu:fileupload-dropzone>
                         </vu:grid-cell>                
-                        <vu:fileupload-custom label="Custom upload file" th:url="'@{/commons/upload}'" key="myFilesUris" multiple/>                            
-                        <vu:fileupload-simple label="Simple upload file" th:url="'@{/commons/upload}'" key="myFilesUris" multiple/>                            
+                        <vu:fileupload-custom label="Custom upload file" th:url="'@{/commons/upload}'" key="myFilesUris2" multiple/>                            
+                        <vu:fileupload-simple label="Simple upload file" th:url="'@{/commons/upload}'" key="myFilesUris3" multiple/>                            
+                        <vu:fileupload-simple-object label="Simple upload file" th:url="'@{/commons/upload}'" object="movie" field="pictures" multiple/>                            
                         
                         <vu:modal componentId="myModal" closeLabel="Close"/>
                         <vu:grid-cell>
