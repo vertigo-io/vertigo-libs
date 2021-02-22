@@ -86,6 +86,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 			} else if (o instanceof String[]) {
 				final String concat = Arrays.stream((String[]) o)
 						.filter(v -> !v.isEmpty()) //empty html input means : no value; there are use to send removed value
+						.map(v -> "\"" + v + "\"")
 						.collect(Collectors.joining(",", "[", "]"));
 				o = jsonEngine.fromJson(concat, typesByKey.get(key));
 			}

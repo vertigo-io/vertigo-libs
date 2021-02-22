@@ -55,7 +55,6 @@ import io.vertigo.ui.data.services.support.SupportServices;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttribute;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
 import io.vertigo.vega.webservice.model.UiObject;
-import io.vertigo.vega.webservice.stereotype.QueryParam;
 import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.UiMessageStack.Level;
@@ -146,7 +145,7 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/_save")
-	public void doSaveAutoValidation(final ViewContext viewContext, @ViewAttribute("movie") final Movie movie, @QueryParam("myFilesUris") final List<FileInfoURI> pictures) {
+	public void doSaveAutoValidation(final ViewContext viewContext, @ViewAttribute("movie") final Movie movie, @ViewAttribute("myFilesUris") final List<FileInfoURI> pictures) {
 		viewContext.publishDto(movieKey, movie);
 		//we may save files on a more persistent space
 		nop(pictures);

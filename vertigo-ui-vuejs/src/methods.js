@@ -327,17 +327,25 @@ export default {
     uploader_mounted(componentId, key) {
         this.uploader_changeIcon();
         var component = this.$refs[componentId];
+        //must removed duplicate
+        this.$data.vueData[key] = this.$data.vueData[key].filter(function(item, pos, self) {
+            return self.indexOf(item) == pos;
+        })
         this.$data.vueData[key].forEach(function (uri) {
         var xhrParams = {};
         xhrParams[component.fieldName] = uri;
             this.$http.get(component.url, { params: xhrParams, credentials: component.withCredentials })
             .then(function (response) { //Ok
                 var fileData = response.data;
-                fileData.__sizeLabel = Quasar.utils.format.humanStorageSize(fileData.size);
-                fileData.__progressLabel = '100%';
-                component.files.push(fileData);
-                component.uploadedFiles.push(fileData);
-                this.uploader_forceComputeUploadedSize(componentId);
+                if(component.files.some(file => file.name === fileData.name)){
+                    console.warn("Component doesn't support duplicate file ", fileData);
+                } else {  
+                    fileData.__sizeLabel = Quasar.utils.format.humanStorageSize(fileData.size);
+                    fileData.__progressLabel = '100%';
+                    component.files.push(fileData);
+                    component.uploadedFiles.push(fileData);
+                    this.uploader_forceComputeUploadedSize(componentId);
+                }
             }.bind(this))
             .catch(function (error) { //Ko
                 this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file "+uri);
@@ -410,13 +418,13 @@ export default {
                         } else {
                             dataFileUris.splice(0);
                         }
+                        this.uploader_forceComputeUploadedSize(componentId);
                     }.bind(this))
                     .catch(function (error) { //Ko
                         this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't remove temporary file");
                     }.bind(this));
             }
-        }.bind(this));        
-        this.uploader_forceComputeUploadedSize(componentId);
+        }.bind(this));
     },
     
 
