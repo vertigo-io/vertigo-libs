@@ -30,7 +30,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,7 +43,6 @@ import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
-import io.vertigo.ui.core.UiFileInfoList;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
 import io.vertigo.ui.data.domain.DtDefinitions.MovieDisplayFields;
@@ -57,7 +55,6 @@ import io.vertigo.ui.data.services.support.SupportServices;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttribute;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
 import io.vertigo.vega.webservice.model.UiObject;
-import io.vertigo.vega.webservice.stereotype.QueryParam;
 import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.UiMessageStack.Level;
@@ -85,8 +82,9 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	private final ViewContextKey<String> selectedTimeZoneList = ViewContextKey.of("selectedTimeZoneList");
 	private final ViewContextKey<String> zoneId = ViewContextKey.of("zoneId");
 
-	public static final ViewContextKey<FileInfo> storedFileInfo = ViewContextKey.of("storedFiles");
-	public static final ViewContextKey<ArrayList<String>> protectedFileUris = ViewContextKey.of("myFilesUris");
+	public static final ViewContextKey<ArrayList<FileInfoURI>> fileUrisKey1 = ViewContextKey.of("myFilesUris1");
+	public static final ViewContextKey<ArrayList<FileInfoURI>> fileUrisKey2 = ViewContextKey.of("myFilesUris2");
+	public static final ViewContextKey<ArrayList<FileInfoURI>> fileUrisKey3 = ViewContextKey.of("myFilesUris3");
 
 	@Inject
 	private VSecurityManager securityManager;
@@ -118,23 +116,28 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		viewContext.publishRef(timeZoneList, timeZoneListStatic);
 		viewContext.publishRef(selectedTimeZoneList, "");
 
-		final List<FileInfo> storeFiles = new ArrayList<>();
 		final URI fullPath = getClass().getResource("/data/insee.csv").toURI();
 		final VFile dummyFile1 = new FSFile("my1stFile.csv", "text/csv", Paths.get(fullPath));
 		final VFile dummyFile2 = new FSFile("my2ndFile.csv", "text/csv", Paths.get(fullPath));
+		final VFile dummyFile3 = new FSFile("my3ndFile.csv", "text/csv", Paths.get(fullPath));
 
 		//in common case, files are just load from FileStore and uris were already in place
 		final FileInfo fileInfoTmp1 = supportServices.saveFile(dummyFile1);
-		storeFiles.add(fileInfoTmp1);
 		final FileInfo fileInfoTmp2 = supportServices.saveFile(dummyFile2);
-		storeFiles.add(fileInfoTmp2);
-		viewContext.publishFileInfo(storedFileInfo, storeFiles);
+		final FileInfo fileInfoTmp3 = supportServices.saveFile(dummyFile3);
 
-		final ArrayList<String> fileUris = new ArrayList<>();
-		/*final UiFileInfoList<FileInfo> uiFileInfoList = viewContext.getUiFileInfoList(storedFileInfo);
-		fileUris.add(uiFileInfoList.get(0).getFileUri());
-		fileUris.add(uiFileInfoList.get(1).getFileUri());*/
-		viewContext.publishRef(protectedFileUris, fileUris);
+		final ArrayList<FileInfoURI> fileUris = new ArrayList<>();
+		fileUris.add(fileInfoTmp1.getURI());
+		fileUris.add(fileInfoTmp2.getURI());
+		viewContext.publishFileInfoURIs(fileUrisKey1, fileUris);
+		viewContext.publishFileInfoURIs(fileUrisKey2, fileUris);
+		viewContext.publishFileInfoURIs(fileUrisKey3, fileUris);
+
+		final ArrayList<FileInfoURI> fileUris2 = new ArrayList<>();
+		fileUris2.add(fileInfoTmp1.getURI());
+		fileUris2.add(fileInfoTmp2.getURI());
+		fileUris2.add(fileInfoTmp3.getURI());
+		myMovie.setPictures(fileUris2); //TODO
 
 		toModeCreate();
 	}
@@ -153,10 +156,28 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/_save")
-	public void doSaveAutoValidation(final ViewContext viewContext, @ViewAttribute("movie") final Movie movie, @QueryParam("myFilesUris") final List<FileInfoURI> pictures) {
+	public void doSaveAutoValidation(final ViewContext viewContext, @ViewAttribute("movie") final Movie movie, @ViewAttribute("myFilesUris1") final List<FileInfoURI> pictures) {
 		viewContext.publishDto(movieKey, movie);
 		//we may save files on a more persistent space
 		nop(pictures);
+	}
+
+	@PostMapping("/_saveFilesOnly")
+	public void doSaveAutoValidation(@ViewAttribute("myFilesUris1") final List<FileInfoURI> pictures1,
+			@ViewAttribute("myFilesUris2") final List<FileInfoURI> pictures2,
+			@ViewAttribute("myFilesUris3") final List<FileInfoURI> pictures3) {
+		//Assertion.check().isTrue(pictures.size() > 0, "No files send");
+		//Assertion.check().isNotNull(pictures.get(0), "FileUri can't be read");
+		if (pictures1.size() == 0) {
+			getUiMessageStack().warning("FileUploader1 No files send");
+		}
+		if (pictures2.size() == 0) {
+			getUiMessageStack().warning("FileUploader2 No files send");
+		}
+		if (pictures3.size() == 0) {
+			getUiMessageStack().warning("FileUploader3 No files send");
+		}
+		//we may save files on a more persistent space
 	}
 
 	@PostMapping("/movies/_add")
@@ -209,32 +230,6 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	public VFile loadFile(@PathVariable("protectedUri") final FileInfoURI fileInfoURI) {
 		//final FileInfoURI fileInfoURI = ProtectedValueUtil.readProtectedValue(protectedUri, FileInfoURI.class);
 		return supportServices.getFile(fileInfoURI).getVFile();
-	}
-
-	@PostMapping("/upload")
-	public ViewContext uploadFile(final ViewContext viewContext, @QueryParam("file") final VFile vFile) {
-		getUiMessageStack().addGlobalMessage(Level.INFO, "Fichier recu : " + vFile.getFileName() + " (" + vFile.getMimeType() + ")");
-		//No need to protectPath, FileInfoURI are always protected
-		//final String protectedPath = ProtectedValueUtil.generateProtectedValue(VFileUtil.obtainReadOnlyPath(vFile).toFile().getAbsolutePath());
-		final FileInfo storeFile = supportServices.saveFile(vFile);
-		final UiFileInfoList<FileInfo> storeFiles = viewContext.getUiFileInfoList(storedFileInfo);
-		storeFiles.add(storeFile);
-		viewContext.markModifiedKeys(storedFileInfo);
-
-		/*final ArrayList<String> protectedUris = (ArrayList<String>) viewContext.get(protectedFileUris);
-		protectedUris.add(storeFiles.get(storeFiles.size() - 1).getFileUri());
-		viewContext.publishRef(protectedFileUris, protectedUris);*/
-
-		return viewContext;
-	}
-
-	@DeleteMapping("/upload")
-	public ViewContext removeFile(final ViewContext viewContext, @QueryParam("file") final FileInfoURI fileInfoUri) {
-		supportServices.removeFile(fileInfoUri);
-		final UiFileInfoList<FileInfo> storeFiles = viewContext.getUiFileInfoList(storedFileInfo);
-		storeFiles.remove(fileInfoUri);
-		viewContext.markModifiedKeys(storedFileInfo);
-		return viewContext; //if no return, you must get the response. Prefer to return old uri.
 	}
 
 	@PostMapping("/_ajaxArray")

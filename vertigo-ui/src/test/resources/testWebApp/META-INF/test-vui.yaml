@@ -62,7 +62,7 @@ modules:
   io.vertigo.account.AccountFeatures:
     features:
       - security:
-          userSessionClassName: io.vertigo.ui.data.controller.TestUserSession
+          userSessionClassName: io.vertigo.ui.data.controllers.TestUserSession
   io.vertigo.ui.data.TestVUiFeatures:
 initializers:
   - io.vertigo.ui.data.boot.initializer.LocaleManagerInitializer:

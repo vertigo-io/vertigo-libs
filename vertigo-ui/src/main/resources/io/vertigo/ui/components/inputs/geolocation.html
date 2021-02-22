@@ -3,7 +3,7 @@
 	th:with="myLabel=${label?:model.util.label(object + '.' + field)}, required=${model.util.required(object + '.' + field)}"
 	th:assert="${object} != null and ${field} != null">
 	<vu:include-data object="${object}" field="${field}"/>
-	<vu:label-edit label=${label} th:attr="__${label_attrs}__" >
+	<vu:label-edit label=${label} label_attrs="${label_attrs}" >
 		<v-geopoint-input th:v-model="|vueData.${object}.${field}|" th:class="${required}?'v-field__required'" th:attr="__${input_attrs}__"></v-geopoint-input>
 		<input type="hidden" th:name="|vContext[${object}][${field}]|"  th:v-if="|vueData.${object}.${field}!=null|" th:v-bind:value="|vueData.${object}.${field}._v_inputValue|" />
 	</vu:label-edit>
@@ -12,7 +12,7 @@
 	vu:alias="geolocation" vu:selector="${viewMode=='read'}"
 	th:assert="${object} != null and ${field} != null" 
 	th:with="mySuffix=${model.util.smartTypeUnit(object, field, suffix)}, useSuffix=${model.vContext[__${object}__][__${field}__]!='' && mySuffix!=''}">
-	<vu:label-read label=${label} th:attr="__${label_attrs}__" >
+	<vu:label-read label=${label} label_attrs="${label_attrs}" >
 		<v-map  tabindex="1" style="width:100%;" th:id="|map_${object}_${field}|" :initial-zoom-level="11" th:attr="__${input_attrs}__" >
 			<v-map-layer th::object="|{'geoLocation' : '${model.vContext[__${object}__][__${field}__]}' }|" field="geoLocation" marker-color="#027BE3"></v-map-layer>
 		</v-map>

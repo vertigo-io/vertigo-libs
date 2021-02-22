@@ -51,6 +51,7 @@ import io.vertigo.ui.controllers.ListAutocompleteController;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.DtListStateMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.FileInfoURIConverter;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.FileInfoURIConverterValueHandler;
+import io.vertigo.ui.impl.springmvc.argumentresolvers.UiFileInfoReturnValueHandler;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.UiMessageStackMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.VFileMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.VFileReturnValueHandler;
@@ -207,6 +208,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		handlers.add(new ViewContextReturnValueAndArgumentResolver());
 		handlers.add(new VFileReturnValueHandler());
 		handlers.add(new FileInfoURIConverterValueHandler());
+		handlers.add(new UiFileInfoReturnValueHandler());
 	}
 
 	@Override

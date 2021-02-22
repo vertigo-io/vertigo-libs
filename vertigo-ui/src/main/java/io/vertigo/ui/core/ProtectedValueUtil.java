@@ -19,6 +19,7 @@ package io.vertigo.ui.core;
 
 import java.io.Serializable;
 import java.util.UUID;
+import java.util.WeakHashMap;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -30,6 +31,12 @@ import io.vertigo.datastore.kvstore.KVStoreManager;
  */
 public final class ProtectedValueUtil {
 	public static final String PROTECTED_VALUE_COLLECTION_NAME = "protected-value";
+
+	//we keep a cache of already protected value.
+	//weak ref are kept as long as the instance are kept : so no clean during request
+	//- Dev MUST use the same instance for the same value
+	//- Might be kept too long (multiple requests)
+	private static WeakHashMap<Serializable, String> PREVIOUSLY_GENERATED_PROTECTED_VALUE = new WeakHashMap<>();
 
 	/**
 	 * Genere et conserve une URL protégée.
@@ -51,7 +58,7 @@ public final class ProtectedValueUtil {
 	 * @param unprotectedValue value to protect (may or may not used)
 	 */
 	private static String protectValue(final Serializable unprotectedValue) {
-		return UUID.randomUUID().toString();
+		return PREVIOUSLY_GENERATED_PROTECTED_VALUE.computeIfAbsent(unprotectedValue, k -> UUID.randomUUID().toString());
 	}
 
 	/**

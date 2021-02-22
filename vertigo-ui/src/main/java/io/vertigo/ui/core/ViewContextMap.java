@@ -18,6 +18,9 @@
 package io.vertigo.ui.core;
 
 import java.io.Serializable;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,6 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
@@ -36,6 +40,7 @@ import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
@@ -63,6 +68,8 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	private boolean unmodifiable; //initialisé à false
 	private boolean dirty = false;
 
+	private transient JsonEngine jsonEngine;
+	private final Map<String, Type> typesByKey = new HashMap<>();
 	private final Map<String, Set<String>> keysForClient = new HashMap<>();
 	private final Map<String, Map<String, List<String>>> valueTransformers = new HashMap<>();
 
@@ -71,8 +78,19 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	public Serializable get(final Object key) {
 		Assertion.check().isNotNull(key);
 		//-----
-		final Serializable o = super.get(key);
+		Serializable o = super.get(key);
 		Assertion.check().isNotNull(o, "Objet :{0} non trouvé! Vérifier que l objet est bien enregistré avec la clé. Clés disponibles {1}", key, keySet());
+		if (typesByKey.containsKey(key)) {
+			if (o instanceof String) {
+				o = jsonEngine.fromJson((String) o, typesByKey.get(key));
+			} else if (o instanceof String[]) {
+				final String concat = Arrays.stream((String[]) o)
+						.filter(v -> !v.isEmpty()) //empty html input means : no value; there are use to send removed value
+						.map(v -> "\"" + v + "\"")
+						.collect(Collectors.joining(",", "[", "]"));
+				o = jsonEngine.fromJson(concat, typesByKey.get(key));
+			}
+		}
 		return o;
 	}
 
@@ -202,8 +220,59 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		} else if (value instanceof UiList) {
 			reverseUiListIndex.put((UiList<?>) value, key);
 		}
-
+		if ((value instanceof String || value instanceof String[]) && isMultiple(key)) {
+			if (value instanceof String) {
+				return super.put(key, convertMultipleValue((String) value));
+			}
+			return super.put(key, convertMultipleValue((String[]) value));
+		}
 		return super.put(key, value);
+
+	}
+
+	private boolean isMultiple(final String key) {
+		if (typesByKey.containsKey(key)) {
+			final Type type = typesByKey.get(key);
+			if (type instanceof Class<?>) {
+				return Iterable.class.isAssignableFrom((Class<?>) type);
+			} else if (type instanceof ParameterizedType) {
+				return Iterable.class.isAssignableFrom((Class<?>) ((ParameterizedType) type).getRawType());
+			} else if (type instanceof GenericArrayType) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private Serializable convertMultipleValue(final String strValue) {
+		if (!(strValue.startsWith("[") && strValue.endsWith("]"))) {
+			String[] values;
+			if (strValue.isEmpty()) {
+				values = new String[0];
+			} else {
+				values = new String[] { strValue };
+			}
+			return values;
+		}
+		return strValue;
+	}
+
+	private Serializable convertMultipleValue(final String[] strValues) {
+		//we removed empty values, they mean "no value" and was use to send removed state to server
+		boolean hasEmpty = false;
+		for (final String value : strValues) {
+			if (value.isEmpty()) {
+				hasEmpty = true;
+				break;
+			}
+		}
+		if (hasEmpty) {
+			final List<String> values = Arrays.stream(strValues)
+					.filter(v -> !v.isEmpty())
+					.collect(Collectors.toList());
+			return values.toArray(new String[values.size()]);
+		}
+		return strValues;
 	}
 
 	/** {@inheritDoc} */
@@ -376,6 +445,9 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 						result.add(cluster);
 					}
 					viewContextMapForClient.put(entry.getKey(), result);
+				} else if (value instanceof String && typesByKey.containsKey(entry.getKey())) {
+					// it was json
+					viewContextMapForClient.put(entry.getKey(), get(entry.getKey()));
 				} else {
 					// just copy it
 					viewContextMapForClient.put(entry.getKey(), value);
@@ -412,6 +484,14 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 			return value -> value != null ? ((AbstractUiListUnmodifiable) getUiList(listKey)).getById(listKeyFieldName, value).getString(listDisplayFieldName) : null;
 		}
 		throw new IllegalStateException(StringUtil.format("Unsupported ValueTransformer type {0}", transformerType));
+	}
+
+	public void addTypeForKey(final String key, final Type paramType) {
+		typesByKey.put(key, paramType);
+	}
+
+	public void setJsonEngine(final JsonEngine jsonEngine) {
+		this.jsonEngine = jsonEngine;
 	}
 
 }

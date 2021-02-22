@@ -15,7 +15,7 @@ a.q-item {
 
 /* --------------------------- PAGE LOGIN ------------------------------ */
 
-/*  Cadre à taille fixe et centré contenant les éléments du login */
+/*  Cadre ï¿½ taille fixe et centrï¿½ contenant les ï¿½lï¿½ments du login */
 .pageLogin .cadre-login{
           background-image: url('../img/gestim/login/bg_login_gestim.jpg');
           background-repeat: no-repeat;
@@ -41,7 +41,7 @@ a.q-item {
         top: 134px;
     color: #FAFAFA;
 }
-/* Formulaire avec le cadre placé en bas à droite */
+/* Formulaire avec le cadre placï¿½ en bas ï¿½ droite */
 .pageLogin form {
         width: 100%;
         max-width: 500px;
@@ -52,12 +52,12 @@ a.q-item {
     padding : 8px;
     background : linear-gradient(to bottom, #fdfdfd,#dff0fa);
 }
-/* Réduction du padding de base des colonnes pour que tout rentre dans le cadre*/
+/* Rï¿½duction du padding de base des colonnes pour que tout rentre dans le cadre*/
 .pageLogin form .form-group {
         padding-right: 10px;
         padding-left : 10px;
 }
-/* Ajout de l'image à droite de "identifiant" et "mot de passe" */
+/* Ajout de l'image ï¿½ droite de "identifiant" et "mot de passe" */
 .pageLogin form .login-field label {
         background-image: url('../img/gestim/login/login_col_entete.png');
         background-repeat: no-repeat;
@@ -76,7 +76,7 @@ a.q-item {
 .pageLogin form .login-btn {
         padding-left : 0px;
 }
-/* Message de blocage, positionné en bas a droite du cadre de login */
+/* Message de blocage, positionnï¿½ en bas a droite du cadre de login */
 .pageLogin .message-blocage {
         position: absolute;
         bottom: 84px;
@@ -84,7 +84,7 @@ a.q-item {
         width: 480px;
         color: #003584;
 }
-/* Message de déconnexion ou d'erreur de saisie, positionné au dessus de la mire de la login */
+/* Message de dï¿½connexion ou d'erreur de saisie, positionnï¿½ au dessus de la mire de la login */
 .pageLogin .messages {
         position: absolute;
         right: 10px;
@@ -130,4 +130,9 @@ div#div-cocher-decocher {
 .accueil .message-esn-csn {
         border: 1px solid #094791;
         background-color: rgba(144, 238, 144, 0.4);
+}
+
+
+.v-nalList {
+    height:100%
 }

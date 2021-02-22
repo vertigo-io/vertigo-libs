@@ -42,8 +42,8 @@
 		
 		  
 		  <template slot="top-left" slot-scope="props" th:if="${title!=null}">
-		  	<div class="text-h6" th:text="${title?:''}" />
-			<div class="text-subtitle2" th:text="${subtitle?:''}" />
+		  	<div class="text-h6" vu:text="${title?:''}" />
+			<div class="text-subtitle2" vu:text="${subtitle?:''}" />
 		  </template>
 		  <template slot="top-left" slot-scope="props" vu:slot="top_left_slot"/>
 		  <template slot="top-right" slot-scope="props" vu:slot="top_right_slot"/>

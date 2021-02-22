@@ -57,11 +57,12 @@ public final class UiFileInfoList<F extends FileInfo> extends ArrayList<UiFileIn
 	}
 
 	public boolean remove(final FileInfoURI uri) {
-		return removeIf(f -> uri.equals(f.getURI()));
+		return removeIf(f -> uri.equals(f.getFileUri()));
 	}
 
-	public List<String> toURIList() {
-		return stream().map(UiFileInfo::getFileUri)
-				.collect(Collectors.toList());
+	public UiFileInfo<F> get(final FileInfoURI uri) {
+		final int index = indexOf(uri);
+		return index == -1 ? null : get(index);
 	}
+
 }

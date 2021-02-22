@@ -68,6 +68,10 @@ final class ParameterizedTypeValueHandlerHelper<V> {
 		return (O) defaultConverter.apply(requestValue);
 	}
 
+	public List<V> convertArray(final String[] requestValue) {
+		return toListArray(requestValue);
+	}
+
 	private Class<?> getParameterType(final MethodParameter parameterType) {
 		final Class<?> returnTypeClazz = parameterType.getParameterType();
 		for (final Class<?> supportedTypeClazz : supportedParameterizedType.keySet()) {
@@ -87,7 +91,13 @@ final class ParameterizedTypeValueHandlerHelper<V> {
 
 	private List<V> toList(final String strValue) {
 		if (!StringUtils.isEmpty(strValue)) {
-			final String[] strValues = strValue.split(",");
+			return toListArray(strValue.split(","));
+		}
+		return Collections.emptyList();
+	}
+
+	private List<V> toListArray(final String[] strValues) {
+		if (strValues != null && strValues.length > 0) {
 			final List<V> result = new ArrayList<>(strValues.length);
 			for (final String oneStrValue : strValues) {
 				result.add(defaultConverter.apply(oneStrValue.trim()));

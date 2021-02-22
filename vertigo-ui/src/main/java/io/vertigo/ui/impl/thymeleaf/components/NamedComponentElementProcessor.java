@@ -61,8 +61,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 
 public class NamedComponentElementProcessor extends AbstractElementModelProcessor {
-	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^[^$#@|].+";
-	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^[^$#@|][^$#@]+";
+	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^[^$#@|'].*$";
+	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^[^$#@|'][^$#@]*$";
 	private static final String NUMBER_PATTERN_STR = "^[0-9\\.]+";
 	private static final String SIMPLE_TEXT_PATTERN_STR = "^[a-zA-Z]*$";
 	private static final Pattern NO_RESERVED_FIRST_CHAR_PATTERN = Pattern.compile(NO_RESERVED_FIRST_CHAR_PATTERN_STR);
@@ -343,7 +343,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			processWith(context, entry.getKey(), entry.getValue(), structureHandler, placeholders);
 		}
 		//we set placeholders as localvariables (inner components shouldn't affect these in case of name conflict)
-		setLocalPlaceholderVariables(structureHandler, placeholders);
+		setLocalPlaceholderVariables(context, structureHandler, placeholders);
 	}
 
 	private static Object encodeAttributeValue(final Object attributeValue, final boolean isPlaceholder) {
@@ -359,10 +359,10 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 						|| NO_RESERVED_TEXT_PATTERN.matcher((String) attributeValue).matches()) //no reserved char
 				&& NO_RESERVED_FIRST_CHAR_PATTERN.matcher((String) attributeValue).matches()) { //don't start with reserved char
 			//We escape :
-			//IF placehodler or no thymeleaf's reserved char ($ @ # | )  (but autorized || )
+			//IF placehodler or no thymeleaf's reserved char ($ @ # | )  (but authorized || )
 			//AND dont start with reserved char (for case like ${value} )
 			//BUT IF true, false or number (it become string instead)
-			return "'" + ((String) attributeValue).replaceAll("'", "\\'") + "'"; //escape as text
+			return "'" + ((String) attributeValue).replace("'", "\\'") + "'"; //escape as text
 		}
 		return attributeValue;
 	}
@@ -381,19 +381,29 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		return attributeName;
 	}
 
-	private void setLocalPlaceholderVariables(final IElementModelStructureHandler structureHandler, final Map<String, Map<String, Object>> placeholders) {
+	private void setLocalPlaceholderVariables(final ITemplateContext context, final IElementModelStructureHandler structureHandler, final Map<String, Map<String, Object>> placeholders) {
 		for (final String placeholderPrefix : placeholderPrefixes) {
 			final String placeholder = placeholderPrefix + ATTRS_SUFFIX;
 			final String affectationString;
+			String preAffectationString = "";
+			if (context.containsVariable(placeholder)) {
+				preAffectationString = context.getVariable(placeholder) + ", ";
+			}
 			if (placeholders.containsKey(placeholder)) {
-				affectationString = placeholders.get(placeholder)
+				final Map<String, Object> placeholderValues = placeholders.get(placeholder);
+				affectationString = placeholderValues
 						.entrySet().stream()
-						.map(entry1 -> entry1.getKey() + "=" + entry1.getValue())
+						.map((entry1) -> {
+							if (entry1.getKey().isEmpty()) {
+								return (String) entry1.getValue();
+							}
+							return entry1.getKey() + "=" + entry1.getValue();
+						})
 						.collect(Collectors.joining(", "));
 			} else {
 				affectationString = "noOp=_";
 			}
-			structureHandler.setLocalVariable(placeholder, affectationString);
+			structureHandler.setLocalVariable(placeholder, preAffectationString + affectationString);
 		}
 	}
 
@@ -446,9 +456,18 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		previousPlaceholderValues.put(encodeAttributeName(attributeName, value), encodeAttributeValue(value, true));
 	}
 
-	private boolean isPlaceholder(final String prefixedVariableName) {
+	private boolean isPlaceholderable(final String prefixedVariableName) {
 		for (final String placeholderPrefix : placeholderPrefixes) {
 			if (prefixedVariableName.startsWith(placeholderPrefix)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isPlaceholder(final String prefixedVariableName) {
+		for (final String placeholderPrefix : placeholderPrefixes) {
+			if (prefixedVariableName.equals(placeholderPrefix + ATTRS_SUFFIX)) {
 				return true;
 			}
 		}
@@ -467,7 +486,8 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			final Map<String, Map<String, Object>> placeholders) {
 		Assertion.check().isNotBlank(attributeKey, "Variable name can't be null or empty");
 		//-----
-		if (isPlaceholder(attributeKey)) {
+
+		if (!isPlaceholder(attributeKey) && isPlaceholderable(attributeKey)) {
 			//We prepared prefixed placeholders variables.
 			addPlaceholderVariable(placeholders, attributeKey, attributeValue);
 		} else if (!parameterNames.contains(attributeKey)) {

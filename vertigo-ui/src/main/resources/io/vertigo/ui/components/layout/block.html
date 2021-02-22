@@ -5,8 +5,8 @@
 			<div class="q-card__section" th:attr="__${header_attrs}__">
 				<q-item>
 					<q-item-section>
-						<div class="text-h6" th:text="${title?:''}" />
-						<div class="text-subtitle2" th:text="${subtitle?:''}" />
+						<div class="text-h6" vu:text="${title?:''}" />
+						<div class="text-subtitle2" vu:text="${subtitle?:''}" />
 					</q-item-section>
 					<q-item-section side vu:slot="actions_slot"><q-icon th-if="${icon != null}" th:name="${icon}"></q-icon></q-item-section>
 				</q-item>

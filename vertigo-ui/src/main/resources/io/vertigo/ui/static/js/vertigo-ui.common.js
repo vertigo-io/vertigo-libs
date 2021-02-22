@@ -5571,7 +5571,7 @@ function normalizeComponent (
 
 /* normalize component */
 
-var component = normalizeComponent(
+var VChatbot_component = normalizeComponent(
   components_VChatbotvue_type_script_lang_js_,
   render,
   staticRenderFns,
@@ -5582,7 +5582,7 @@ var component = normalizeComponent(
   
 )
 
-/* harmony default export */ var VChatbot = (component.exports);
+/* harmony default export */ var VChatbot = (VChatbot_component.exports);
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"2de16638-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/VCommands.vue?vue&type=template&id=8b078d18&
 var VCommandsvue_type_template_id_8b078d18_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(!_vm.isCommandCommited)?_c('q-select',{ref:"commandInput",attrs:{"placeholder":_vm.$q.lang.vui.commands.globalPlaceholder,"outlined":"","bg-color":"white","dense":"","autofocus":"","dropdown-icon":"search","use-input":"","input-debounce":"300","hide-selected":"","options":_vm.commandAutocompleteOptions},on:{"blur":_vm.reset,"filter":_vm.searchCommands,"input":_vm.selectCommand},nativeOn:{"keydown":function($event){return _vm.commitCommand($event)}}},[(_vm.text !== '' && _vm.selectedCommand.commandName && _vm.selectedCommand.commandName.startsWith(_vm.text))?_c('span',{staticStyle:{"line-height":"40px","opacity":"0.5","position":"fixed"}},[_vm._v(_vm._s(_vm.selectedCommand.commandName))]):_vm._e()]):_c('div',{staticClass:"row col-12 justify-between bg-white round-borders overflow-hidden shadow-2 text-black",nativeOn:{"keyup":function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"enter",13,$event.key,"Enter")){ return null; }return _vm.executeCommand($event)}}},[_c('div',{staticClass:"bg-grey-4 text-center vertical-middle text-bold q-px-md",staticStyle:{"line-height":"40px"}},[_vm._v(_vm._s(_vm.selectedCommand.commandName))]),(!_vm.isExecuted)?_c('div',{staticClass:"row col items-center q-py-xs"},[(_vm.selectedCommand.commandParams && _vm.selectedCommand.commandParams.length > 0)?[_vm._l((_vm.selectedCommand.commandParams),function(param,index){return [(param.paramType.rawType === 'io.vertigo.commons.command.GenericUID')?[_c('q-select',{key:param,staticClass:"col q-px-xs",staticStyle:{"height":"32px"},attrs:{"use-chips":"","bg-color":"white","dense":"","borderless":"","use-input":"","input-debounce":"300","value":_vm.getParamValue(index),"options":_vm.paramsAutocompleteOptions[index],"autofocus":index === 0,"dropdown-icon":"search"},on:{"filter":function(val, update, abort) { _vm.autocompleteParam(param, index, val, update, abort);},"input":function (newValue) { _vm.selectParam(newValue, index)}},nativeOn:{"keydown":function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"delete",[8,46],$event.key,["Backspace","Delete","Del"])){ return null; }return (function(event) {_vm.backIfNeeded(event, index === 0)})($event)},"keyup":function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"esc",27,$event.key,["Esc","Escape"])){ return null; }return (function(event) {_vm.backIfNeeded(event, index === 0)})($event)}}})]:[_c('q-input',{key:param,staticClass:"col q-px-xs",staticStyle:{"height":"32px"},attrs:{"color":"secondary","borderless":"","autofocus":index === 0,"dense":""},on:{"keydown":function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"delete",[8,46],$event.key,["Backspace","Delete","Del"])){ return null; }return (function(event) {_vm.backIfNeeded(event, index === 0)})($event)},"keyup":[function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"esc",27,$event.key,["Esc","Escape"])){ return null; }return (function(event) {_vm.backIfNeeded(event, index === 0)})($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"enter",13,$event.key,"Enter")){ return null; }return _vm.handleEnter(index)}]},model:{value:(_vm.commandParamsValues[index].value),callback:function ($$v) {_vm.$set(_vm.commandParamsValues[index], "value", $$v)},expression:"commandParamsValues[index].value"}})],_c('q-separator',{key:param,attrs:{"vertical":""}})]})]:_c('div',{staticClass:"col"},[_vm._v(_vm._s(_vm.$q.lang.vui.commands.executeCommand))]),_c('q-btn',{attrs:{"flat":"","icon":"play_arrow","size":"sm","round":""},on:{"click":_vm.executeCommand}})],2):_c('div',{staticClass:"row col items-center"},[_c('div',{staticClass:"col shadow-2 bg-secondary text-white q-px-md",staticStyle:{"line-height":"40px"}},[_vm._v(_vm._s(_vm.commandResult.display))]),(_vm.commandResult.targetUrl)?_c('q-btn',{attrs:{"type":"a","href":_vm.baseUrl + _vm.commandResult.targetUrl,"flat":""}},[_vm._v(_vm._s(_vm.$q.lang.vui.commands.linkLabel))]):_vm._e(),_c('q-btn',{attrs:{"flat":"","icon":"cancel","size":"sm","round":""},on:{"click":_vm.reset}})],1)])],1)}
 var VCommandsvue_type_template_id_8b078d18_staticRenderFns = []
@@ -7811,12 +7811,14 @@ function isString (v) {
 
 
 
+
 /* harmony default export */ var methods = ({
   onAjaxError: function onAjaxError(response) {
     //Quasar Notif Schema
     var notif = {
       type: 'negative',
       message: 'Network Error.',
+      multiLine: true,
       icon: 'warning',
       timeout: 2500
     }; //Setup Error Message //if response was an error
@@ -7979,9 +7981,9 @@ function isString (v) {
       return collator.compare(A, B) * dir;
     });
   },
-  selectedFunction: function selectedFunction(object, field, item)
-  /*keyboard*/
-  {
+  selectedFunction: function selectedFunction(object, field, item
+  /*, keyboard*/
+  ) {
     this.$data.vueData[object][field] = item.value;
   },
   searchAutocomplete: function searchAutocomplete(list, valueField, labelField, componentId, url, terms, update, abort) {
@@ -8170,9 +8172,65 @@ function isString (v) {
 
     componentStates[componentId].pagination.rowsPerPage = componentStates[componentId].pagination.rowsPerPage / showMoreCount * (showMoreCount + 1);
   },
+  obtainVueDataAccessor: function obtainVueDataAccessor(referer, object, field) {
+    if (field) {
+      return {
+        get: function get() {
+          return referer.$data.vueData[object][field];
+        },
+        set: function set(newData) {
+          referer.$data.vueData[object][field] = newData;
+        }
+      };
+    } else {
+      return {
+        get: function get() {
+          return referer.$data.vueData[object];
+        },
+        set: function set(newData) {
+          referer.$data.vueData[object] = newData;
+        }
+      };
+    }
+  },
   uploader_changeIcon: function uploader_changeIcon() {
     this.$q.iconSet.uploader.removeUploaded = 'delete_sweep';
     this.$q.iconSet.uploader.done = 'delete';
+  },
+  uploader_mounted: function uploader_mounted(componentId, object, field) {
+    this.uploader_changeIcon();
+    var component = this.$refs[componentId]; //must removed duplicate
+
+    var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
+    vueDataAccessor.set(vueDataAccessor.get().filter(function (item, pos, self) {
+      return self.indexOf(item) == pos;
+    }));
+    vueDataAccessor.get().forEach(function (uri) {
+      var xhrParams = {};
+      xhrParams[component.fieldName] = uri;
+      this.$http.get(component.url, {
+        params: xhrParams,
+        credentials: component.withCredentials
+      }).then(function (response) {
+        //Ok
+        var fileData = response.data;
+
+        if (component.files.some(function (file) {
+          return file.name === fileData.name;
+        })) {
+          console.warn("Component doesn't support duplicate file ", fileData);
+        } else {
+          fileData.__sizeLabel = external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.format.humanStorageSize(fileData.size);
+          fileData.__progressLabel = '100%';
+          component.files.push(fileData);
+          component.uploadedFiles.push(fileData);
+          this.uploader_forceComputeUploadedSize(componentId);
+        }
+      }.bind(this)).catch(function (error) {
+        //Ko
+        this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file " + uri);
+      }.bind(this));
+    }.bind(this));
   },
   uploader_dragenter: function uploader_dragenter(componentId) {
     var componentStates = this.$data.componentStates;
@@ -8198,58 +8256,67 @@ function isString (v) {
       component.uploadSize += file.size;
     });
   },
-  uploader_addedFile: function uploader_addedFile(isMultiple, componentId, key) {
+  uploader_humanStorageSize: function uploader_humanStorageSize(size) {
+    return external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.format.humanStorageSize(size);
+  },
+  uploader_addedFile: function uploader_addedFile(isMultiple, componentId, object, field) {
     if (!isMultiple) {
       this.$refs[componentId].removeUploadedFiles();
-      this.$data.vueData[key] = [];
+      var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
+      vueDataAccessor.set([]);
     }
   },
-  uploader_uploadedFiles: function uploader_uploadedFiles(uploadInfo) {
-    uploadInfo.files.forEach(function (file, index, array) {
-      var response = JSON.parse(file.xhr.response);
-      this.$data.vueData.CTX = response.model.CTX;
-      Object.keys(response.model).forEach(function (key) {
-        if ('CTX' != key) {
-          this.$data.vueData[key] = response.model[key];
-        }
-      }.bind(this));
-      Object.keys(response.uiMessageStack).forEach(function (key) {
-        this.$data.uiMessageStack[key] = response.uiMessageStack[key];
-      }.bind(this));
-      array.splice(index, 1);
+  uploader_uploadedFiles: function uploader_uploadedFiles(uploadInfo, object, field) {
+    var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
+    uploadInfo.files.forEach(function (file) {
+      file.fileUri = file.xhr.response;
+      vueDataAccessor.get().push(file.fileUri);
     }.bind(this));
   },
-  uploader_removeFiles: function uploader_removeFiles(removedFiles, componentId
-  /*, key*/
-  ) {
-    var component = this.$refs[componentId];
-    removedFiles.forEach(function (removedFile) {
-      var xhrParams = {};
-      xhrParams[component.fieldName] = removedFile.fileUri;
-      xhrParams['CTX'] = this.$data.vueData.CTX;
-      this.$http.delete(component.url, {
-        params: xhrParams,
-        credentials: component.withCredentials
-      }).then(function (response) {
-        //Ok
-        if (response.data.model.CTX) {
-          this.$data.vueData.CTX = response.data.model.CTX;
-        }
+  uploader_failedFiles: function uploader_failedFiles(uploadInfo) {
+    uploadInfo.files.forEach(function (file) {
+      this.onAjaxError({
+        status: file.xhr.status,
+        statusText: file.xhr.statusText,
+        data: JSON.parse(file.xhr.response)
+      }); //server can return : a response with a uiMessageStack object or directly the uiMessageStack
 
-        Object.keys(response.data.model).forEach(function (key) {
-          if ('CTX' != key) {
-            this.$data.vueData[key] = response.data.model[key];
-          }
-        }.bind(this));
-        Object.keys(response.data.uiMessageStack).forEach(function (key) {
-          this.$data.uiMessageStack[key] = response.data.uiMessageStack[key];
-        }.bind(this));
-      }.bind(this)).catch(function (error) {
-        //Ko
-        this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't remove temporary file");
-      }.bind(this));
+      /*let uiMessageStack = response.globalErrors?response:response.uiMessageStack;
+      Object.keys(uiMessageStack).forEach(function (key) {
+          this.$data.uiMessageStack[key] = uiMessageStack[key];
+      }.bind(this));*/
     }.bind(this));
-    this.uploader_forceComputeUploadedSize(componentId);
+  },
+  uploader_removeFiles: function uploader_removeFiles(removedFiles, componentId, object, field) {
+    var component = this.$refs[componentId];
+    var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
+    var dataFileUris = vueDataAccessor.get();
+    removedFiles.forEach(function (removedFile) {
+      if (removedFile.fileUri) {
+        //if file is serverside
+        var indexOfFileUri = dataFileUris.indexOf(removedFile.fileUri);
+        var xhrParams = {};
+        xhrParams[component.fieldName] = removedFile.fileUri;
+        this.$http.delete(component.url, {
+          params: xhrParams,
+          credentials: component.withCredentials
+        }).then(function ()
+        /*response*/
+        {
+          //Ok
+          if (component.multiple) {
+            dataFileUris.splice(indexOfFileUri, 1);
+          } else {
+            dataFileUris.splice(0);
+          }
+
+          this.uploader_forceComputeUploadedSize(componentId);
+        }.bind(this)).catch(function (error) {
+          //Ko
+          this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't remove temporary file");
+        }.bind(this));
+      }
+    }.bind(this));
   },
   httpPostAjax: function httpPostAjax(url, paramsIn, options) {
     var vueData = this.$data.vueData;

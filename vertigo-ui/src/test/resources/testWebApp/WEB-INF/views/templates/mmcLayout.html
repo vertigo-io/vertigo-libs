@@ -12,7 +12,9 @@
     
   	<link rel="stylesheet" th:href="@{/static/css/mars.css}"/>
 	<link rel="icon" th:href="@{/static/img/favicon.ico}"/>
-   	<script th:src="@{/static/js/demo.js}"></script>
+	
+    <script type="text/javascript" th:src="@{/vertigo-ui/static/js/vertigo-ui-extensions.js}"></script>
+   	<script type="text/javascript" th:src="@{/static/js/demo.js}"></script>
 </head>
 
 <body class="mat desktop no-touch platform-mat">
@@ -45,7 +47,7 @@
 		      :mini="function() {var miniMenu = this.$cookies.get('miniMenu', true) === 'true';componentStates.navDrawer.mini = miniMenu;return miniMenu;}()"
 		      v-model="componentStates.navDrawer.showLeft">
 		      
-		      <q-list :class="{'dense-list-header':!componentStates.navDrawer.mini}" style="height:100%">
+		      <q-list :class="{'v-navList':true, 'dense-list-header':!componentStates.navDrawer.mini}" >
 		      <nav class="text-no-wrap">
 		      	<q-item-label header>Home</q-item-label>
 		        <q-item tag="a" th:href="@{/movies/}">

@@ -19,7 +19,8 @@ Release 3.1.0 - 2021/02/05
 * [Ui] Refactor fileupload component : change uploader icons, add fileupload-custom with full slots (can be use to override and change rendering)
 * [Ui] Fix miscomputed uploaded files size 
 * [Ui] Add a dropzone-area for uploader (extended to this dropzone content). Need to ref the same key than its uploader
-* [Ui] Add a fileupload-simple (no header and no thumbnail). Can be initialized serverside and support page rfesh (like VUser error)
+* [Ui] Add a fileupload-simple (no header and no thumbnail). Can be initialized serverside and support page refresh (like VUser error)
+* __[Ui] Refactor fileupload : upload and remove WS must return ViewContext now__
 * [Ui] Made date and datetime field stack-label like other field by coherence
 * [Ui] Simpler way to override vertigo's thymeleaf components : CheckCustomComponent resolver at 1st
 * [Ui] Add server side rendering to comply with standard CSP : Servlet Filter (two modes : inline code or standalone script) + NodeJs service (default to inactive)

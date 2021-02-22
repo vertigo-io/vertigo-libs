@@ -132,5 +132,4 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 				.skip(parameter.getParameterIndex() + 1L)
 				.anyMatch(remainingParam -> DtObject.class.isAssignableFrom(remainingParam.getType()) || DtList.class.isAssignableFrom(remainingParam.getType()));
 	}
-
 }

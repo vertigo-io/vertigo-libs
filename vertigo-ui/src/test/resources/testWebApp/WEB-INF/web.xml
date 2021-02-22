@@ -80,7 +80,27 @@
         <filter-name>vueJsSSR</filter-name>
         <url-pattern>/test2/*</url-pattern>
     </filter-mapping>
-   
+   <filter> 
+        <description>
+            Filtre de sécurisation des URLs et de conservation des sessions.
+            Limite l'accés aux URLs (sauf celles de url-exclude-pattern) aux utilisateurs authentifiés.
+            Authentifié = isAuthentified true dans la UserSession.
+        </description>
+        <filter-name>Security Filter</filter-name>
+        <filter-class>io.vertigo.vega.impl.servlet.filter.SecurityFilter</filter-class>
+        <init-param>
+            <param-name>url-no-authentification</param-name>
+            <param-value>/*</param-value>
+        </init-param>
+        <init-param>
+            <param-name>url-exclude-pattern</param-name>
+            <param-value>/;/index.html;/api/*;/vertigo-ui/static/*;/static/*</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>Security Filter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 	<!-- prevent Locking of static files on windows -->
 	<context-param>
 		<param-name>org.eclipse.jetty.servlet.Default.useFileMappedBuffer</param-name>

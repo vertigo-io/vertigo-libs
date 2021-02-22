@@ -28,3 +28,5 @@ function patchDatePicker(){
                 });
         });
 }
+
+VUiExtensions.dataX.selectedTimeZoneListArray = '[[${model[selectedTimeZoneList]}]]'.split(';');

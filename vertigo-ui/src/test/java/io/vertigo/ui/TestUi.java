@@ -155,6 +155,13 @@ public class TestUi {
 	}
 
 	@Test
+	public void testPassingAttributes() throws InterruptedException {
+		driver.get(baseUrl + "/test/passingAttributes/");
+		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+	}
+
+	@Test
 	public void testPostSimpleForm() throws InterruptedException {
 		driver.get(baseUrl + "/test/componentsDemo/");
 

@@ -23,15 +23,15 @@
 	vu:alias="text-field" vu:selector="${viewMode=='read'}"
 	th:assert="${object} != null and ${field} != null" 
 	th:with="mySuffix=${model.util.smartTypeUnit(object, field, suffix)}, useSuffix=${model.vContext[__${object}__][__${field}__]!='' && mySuffix!=''}">
-	<vu:label-read label=${label} th:attr="__${label_attrs}__" >
-		<span th:text="${model.vContext[__${object}__][__${field}__]}" th:attr="__${input_attrs}__"></span><span th:if="${useSuffix}" th:text="${mySuffix}"></span>
+	<vu:label-read label=${label} label_attrs="${label_attrs}" >
+		<span vu:text="${model.vContext[__${object}__][__${field}__]}" th:attr="__${input_attrs}__"></span><span th:if="${useSuffix}" vu:text="${mySuffix}"></span>
 	</vu:label-read>
 </th:block>
 <th:block th:fragment="text-field-read-reactive(object, field, label, suffix, input_attrs, label_attrs)" 
 		th:assert="${object} != null and ${field} != null" 
 		th:with="mySuffix=${model.util.smartTypeUnit(object, field, suffix)}, useSuffix=${model.vContext[__${object}__][__${field}__]!='' && mySuffix!=''}">
 	<vu:include-data object="${object}" field="${field}"/>
-	<vu:label-read label=${label} th:attr="__${label_attrs}__" >
-		<span th:attr="__${input_attrs}__" >{{vueData.[[${object}]].[[${field}]]}}</span><span th:if="${useSuffix}" th:text="${mySuffix}"></span>
+	<vu:label-read label=${label} label_attrs="${label_attrs}" >
+		<span th:attr="__${input_attrs}__" >{{vueData.[[${object}]].[[${field}]]}}</span><span th:if="${useSuffix}" vu:text="${mySuffix}"></span>
 	</vu:label-read>
 </th:block>

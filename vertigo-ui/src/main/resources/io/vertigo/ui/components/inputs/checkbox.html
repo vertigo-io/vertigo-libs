@@ -1,7 +1,7 @@
 <th:block th:fragment="checkbox-edit(object, field, label, label_attrs, input_attrs)" vu:alias="checkbox" vu:selector="${viewMode=='edit'}" 
 	  th:assert="${object} != null and ${field} != null">
 	<vu:include-data object="${object}" field="${field}"/>
-	<vu:label-edit object="${object}" field="${field}" label="${label}" th:attr="__${label_attrs}__">
+	<vu:label-edit object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}">
 		<q-checkbox 
 			th:v-model="|vueData.${object}.${field}|" 
 			dense
@@ -14,7 +14,7 @@
 
 <th:block th:fragment="checkbox-read(object, field, label, label_attrs, input_attrs)" vu:alias="checkbox" vu:selector="${viewMode=='read'}" >
 	<vu:include-data object="${object}" field="${field}"/>
-	<vu:label-read object="${object}" field="${field}" label="${label}" th:attr="__${label_attrs}__">
+	<vu:label-read object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}">
 		<q-checkbox 
 			disable
 			th:v-model="|vueData.${object}.${field}|"
