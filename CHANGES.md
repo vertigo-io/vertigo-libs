@@ -6,9 +6,25 @@ Running 3.2.0
 
 more to come :)
 
-Release 3.1.0 - 2021/02/05
+Release 3.1.1 - 2021/02/22
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-310-to-311)
+* [UI] Fix named component attributs with myAttr="*" and myAttr="'escaped text'"
+* [Ui] Fix select component required class, and use classappend
+* [Ui] Remove all inline code to be CSP-compliant (in modal)
+* [Ui] Changed thymeleaf named components to pass other_attrs throught components without double escaping
+* [Ui] Add Vertigo Ui Text (`vu:text`) attribute processor to add v-pre directive (fix SSR)
+* [Ui] fileupload : support error message on upload
+* [Ui] Change last attr of label to label_attrs (from other_attrs)
+* [Ui] Refactor FileUpload component : UiFileInfo must be kept out of context, only fileInfoUri are in context
+* [Ui] Update ViewContext to store typedRef and handle multiple values better. UI could send nothing, String or String[], when value is multiple we want to have a String[] anytime
+* [Ui] Simpler ViewAttributeResolver : FileInfoUri are better managed by ViewContext when publishTypedRef is used
+* [Ui] Fix to remove duplicate files in upload component (duplicate are not supported)
+* [Ui] Add FileUploadSimple bind to object field : use SmartType FileInfoURI
 
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-300-to-210)
+Release 3.1.0 - 2021/02/05
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-300-to-310)
 * [Core] Fix the log4j2 configuration, the socketAppender was lost and nothing was sent to analytics server (thanks @skerdudou)
 * [Ui] Accept CTX in POST PUT and DELETE request (not only POST)
 * [Ui] Lanscape property for Date and DateTime is now responsive (landscape for >xs screen)
