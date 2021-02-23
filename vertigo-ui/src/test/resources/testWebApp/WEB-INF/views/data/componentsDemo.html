@@ -60,7 +60,8 @@
                         </vu:grid-cell>                
                         <vu:fileupload-custom label="Custom upload file" th:url="'@{/commons/upload}'" key="myFilesUris2" multiple/>                            
                         <vu:fileupload-simple label="Simple upload file" th:url="'@{/commons/upload}'" key="myFilesUris3" multiple/>                            
-                        <vu:fileupload-simple-object label="Simple upload file" th:url="'@{/commons/upload}'" object="movie" field="pictures" multiple/>                            
+                        <vu:fileupload-simple-object label="Movie pictures" th:url="'@{/commons/upload}'" object="movie" field="pictures" multiple/>                            
+                        <vu:fileupload-simple-object label="Movie main picture" th:url="'@{/commons/upload}'" object="movie" field="mainPicture"/>                            
                         
                         <vu:modal componentId="myModal" closeLabel="Close"/>
                         <vu:grid-cell>

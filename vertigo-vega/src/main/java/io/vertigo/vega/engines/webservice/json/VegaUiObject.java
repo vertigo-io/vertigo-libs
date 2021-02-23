@@ -303,7 +303,10 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		final BasicTypeAdapter basicTypeAdapter = smartTypeManager.getTypeAdapters("ui").get(smartType.getJavaClass());
 		if (basicTypeAdapter != null) {
 			if (!dtField.getCardinality().hasMany()) {
-				inputValues.add(basicTypeAdapter.toBasic(value).toString());
+				final Object basicValue = basicTypeAdapter.toBasic(value);
+				if (basicValue != null) { //adapter return null, if value was null
+					inputValues.add(basicValue.toString());
+				}
 				return inputValues.isEmpty() ? null : inputValues.toArray(String[]::new);
 			}
 			if (value != null) {

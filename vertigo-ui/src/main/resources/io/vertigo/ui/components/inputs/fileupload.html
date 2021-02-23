@@ -107,8 +107,9 @@
     th:assert="${object} != null and ${field} != null and ${url} != null"
     th:with="myComponentId='uploader_'+${object}+'_'+${field}" >
         <vu:include-data th:object="${object}" th:field="${field}"/>
-        <input type="hidden" th:v-if="|vueData.${object}.${field}.length == 0|" th:name="|vContext[${object}][${field}]|" value="" />
-        <input type="hidden" th:v-for="|fileUri in vueData.${object}.${field}|" th:name="|vContext[${object}][${field}]|" v-bind:value="fileUri" />
+        <input type="hidden"  th:v-if="|Array.isArray(vueData.${object}.${field}) && vueData.${object}.${field}.length == 0|" th:name="|vContext[${object}][${field}]|" value="" />
+        <input type="hidden" th:v-if="|Array.isArray(vueData.${object}.${field})|" th:v-for="|fileUri in vueData.${object}.${field}|" th:name="|vContext[${object}][${field}]|" v-bind:value="fileUri" />
+        <input type="hidden"  th:v-if="|!Array.isArray(vueData.${object}.${field})|" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
         <q-uploader th:url="${url}"
             auto-upload
             field-name="file"

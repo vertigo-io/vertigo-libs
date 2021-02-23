@@ -48,6 +48,7 @@ public final class Movie implements KeyConcept {
 	private java.time.Instant lastModified;
 	private String tags;
 	private List<FileInfoURI> pictures;
+	private FileInfoURI mainPicture;
 
 	/** {@inheritDoc} */
 	@Override
@@ -264,6 +265,25 @@ public final class Movie implements KeyConcept {
 	 */
 	public void setPictures(final List<FileInfoURI> pictures) {
 		this.pictures = pictures;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'Pictures'.
+	 * @return List<FileInfoURI> pictures
+	 */
+	@Field(smartType = "STyFileInfoURI", persistent = false, label = "Main Picture")
+	public FileInfoURI getMainPicture() {
+		return mainPicture;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'Main Picture'.
+	 * @param mainPicture FileInfoURI
+	 */
+	public void setMainPicture(final FileInfoURI mainPicture) {
+		this.mainPicture = mainPicture;
 	}
 
 	/** {@inheritDoc} */
