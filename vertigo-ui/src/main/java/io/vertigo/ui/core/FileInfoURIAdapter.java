@@ -25,7 +25,7 @@ public class FileInfoURIAdapter implements BasicTypeAdapter<FileInfoURI, String>
 
 	@Override
 	public FileInfoURI toJava(final String protectedURI, final Class<FileInfoURI> type) {
-		if (protectedURI != null) {
+		if (protectedURI != null && !protectedURI.isBlank()) {
 			return ProtectedValueUtil.readProtectedValue(protectedURI, FileInfoURI.class);
 		}
 		return null;

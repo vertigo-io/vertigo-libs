@@ -8172,6 +8172,15 @@ function isString (v) {
 
     componentStates[componentId].pagination.rowsPerPage = componentStates[componentId].pagination.rowsPerPage / showMoreCount * (showMoreCount + 1);
   },
+  vueDataToArray: function vueDataToArray(value) {
+    if (Array.isArray(value)) {
+      return value;
+    } else if (value) {
+      return [value];
+    }
+
+    return [];
+  },
   obtainVueDataAccessor: function obtainVueDataAccessor(referer, object, field) {
     if (field) {
       return {
@@ -8203,14 +8212,9 @@ function isString (v) {
 
     var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
     var curValue = vueDataAccessor.get();
-    var isArray = Array.isArray(curValue);
 
-    if (!isArray) {
-      if (curValue) {
-        vueDataAccessor.set([curValue]);
-      } else {
-        vueDataAccessor.set([]);
-      }
+    if (!Array.isArray(curValue)) {
+      vueDataAccessor.set(this.vueDataToArray(curValue));
     }
 
     vueDataAccessor.set(vueDataAccessor.get().filter(function (item, pos, self) {
