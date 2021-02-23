@@ -52,6 +52,7 @@ import io.vertigo.datastore.impl.kvstore.KVStorePlugin;
 public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDefinitionProvider {
 
 	private static final Logger LOGGER = LogManager.getLogger(DelayedMemoryKVStorePlugin.class);
+	private final String dmnUniqueName;
 	private final List<String> collections;
 
 	private final int timeToLiveSeconds;
@@ -78,12 +79,13 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 				.collect(Collectors.toList());
 		//-----
 		this.timeToLiveSeconds = timeToLiveSeconds;
+		dmnUniqueName = "DmnKvDataStore$t" + timeToLiveSeconds + "c" + collections.hashCode();
 	}
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final int purgePeriod = Math.min(1 * 60, timeToLiveSeconds);
-		return Collections.singletonList(new DaemonDefinition("DmnKvDataStoreCache", () -> new RemoveTooOldElementsDaemon(this), purgePeriod));
+		return Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> new RemoveTooOldElementsDaemon(this), purgePeriod));
 	}
 
 	/** {@inheritDoc} */
