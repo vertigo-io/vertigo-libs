@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Node;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
@@ -104,7 +105,16 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		//-----
 		final DtField dtField = getDtField(fieldName);
 		if (dtField.getCardinality().hasMany()) {
-			setInputValue(fieldName, value instanceof String[] ? (String[]) value : new String[] { (String) value });
+			if (value instanceof String[]) {
+				setInputValue(fieldName, (String[]) value);
+			} else {
+				if (StringUtil.isBlank((String) value)) {
+					// single empty value means a reset of the field. An array is never null so we put an empty array.
+					setInputValue(fieldName, new String[0]);
+				} else {
+					setInputValue(fieldName, new String[] { (String) value });
+				}
+			}
 		} else {
 			String strValue;
 			if (isMultiple(dtField)) {
