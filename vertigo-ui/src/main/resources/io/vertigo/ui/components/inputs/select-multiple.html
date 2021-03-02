@@ -27,8 +27,6 @@
 	</q-select>
 	<input th:v-for="|id in vueData.${object}.${field}|" type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="id" />
 	<input th:v-if="|vueData.${object}.${field}.length == 0|" type="hidden" th:name="|vContext[${object}][${field}]|" value="" />
-	
-	
 </th:block> 
 
 <th:block th:fragment="select-multiple-read(object,field,label,list,valueField, labelField, input_attrs, label_attrs)" vu:alias="select-multiple" vu:selector="${viewMode=='read'}" 
