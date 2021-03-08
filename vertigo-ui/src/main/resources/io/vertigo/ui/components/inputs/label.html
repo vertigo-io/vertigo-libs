@@ -3,9 +3,9 @@
 		th:assert="${object} != null and ${field} != null">
 	<q-field
 		th::label-width="${overridedLabelWidth?:3}"
-		th:label="${myLabel}"
-		th::error="|hasFieldsError('${object}', '${field}')|"
-		th::error-message="|getErrorMessage('${object}', '${field}')|"
+		th:label="${modifiableTable!=null?null:myLabel}"
+		th::error="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
+		th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
 		orientation="vertical"
 		stack-label
 		borderless
@@ -20,7 +20,7 @@
  	 th:assert="${object} != null and ${field} != null">
 	<q-field
 		th::label-width="${overridedLabelWidth?:3}"
-		th:label="${myLabel}"
+		th:label="${modifiableTable!=null?null:myLabel}"
 		orientation="vertical"
 		stack-label
 		readonly

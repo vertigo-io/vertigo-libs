@@ -49,6 +49,7 @@ public final class Movie implements KeyConcept {
 	private String tags;
 	private List<FileInfoURI> pictures;
 	private FileInfoURI mainPicture;
+	private Boolean testBoolean;
 
 	/** {@inheritDoc} */
 	@Override
@@ -269,8 +270,8 @@ public final class Movie implements KeyConcept {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Pictures'.
-	 * @return List<FileInfoURI> pictures
+	 * Récupère la valeur de la propriété 'Main Picture'.
+	 * @return FileInfoURI mainPicture
 	 */
 	@Field(smartType = "STyFileInfoURI", persistent = false, label = "Main Picture")
 	public FileInfoURI getMainPicture() {
@@ -284,6 +285,25 @@ public final class Movie implements KeyConcept {
 	 */
 	public void setMainPicture(final FileInfoURI mainPicture) {
 		this.mainPicture = mainPicture;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'testBoolean'.
+	 * @return Boolean testBoolean
+	 */
+	@Field(smartType = "STyOuiNon", persistent = false, label = "Test boolean")
+	public Boolean getTestBoolean() {
+		return testBoolean;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'testBoolean'.
+	 * @param testBoolean Boolean
+	 */
+	public void setTestBoolean(final Boolean testBoolean) {
+		this.testBoolean = testBoolean;
 	}
 
 	/** {@inheritDoc} */

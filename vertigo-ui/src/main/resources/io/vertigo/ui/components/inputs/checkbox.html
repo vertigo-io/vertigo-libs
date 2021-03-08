@@ -3,7 +3,7 @@
 	<vu:include-data object="${object}" field="${field}"/>
 	<vu:label-edit object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}">
 		<q-checkbox 
-			th:v-model="|vueData.${object}.${field}|" 
+			th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
 			dense
 			th:attr="__${input_attrs}__"
 			 >
@@ -17,7 +17,7 @@
 	<vu:label-read object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}">
 		<q-checkbox 
 			disable
-			th:v-model="|vueData.${object}.${field}|"
+			th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
 			dense
 			th:attr="__${input_attrs}__"  
 			>

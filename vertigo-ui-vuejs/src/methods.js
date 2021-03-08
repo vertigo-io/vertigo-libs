@@ -213,8 +213,7 @@ export default {
         }
     },
 
-    decodeDatetime: function (object, field, format) {
-        var value = this.$data.vueData[object][field];
+    decodeDatetime: function (value, format) {
         if (value === Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(value, 'DD/MM/YYYY HH:mm'), 'DD/MM/YYYY HH:mm')) {
             return Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(value, 'DD/MM/YYYY HH:mm'), format);
         } else {
@@ -222,11 +221,11 @@ export default {
         }
     },
 
-    encodeDatetime: function (object, field, newValue, format) {
+    encodeDatetime: function (newValue, format) {
         if (newValue === Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(newValue, format), format)) {
-            this.$data.vueData[object][field] = Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(newValue, format), 'DD/MM/YYYY HH:mm');
+            return Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(newValue, format), 'DD/MM/YYYY HH:mm');
         } else {
-            this.$data.vueData[object][field] = newValue;
+           return newValue;
         }
     },
 

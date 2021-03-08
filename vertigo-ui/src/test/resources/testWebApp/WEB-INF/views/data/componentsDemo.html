@@ -27,7 +27,14 @@
                 </vu:column>
                 <vu:column field="released">
                     <vu:date object="moviesModifiable" field="released"/>
-                </vu:column>                       
+                </vu:column>
+                <vu:column field="lastModified">
+                    <vu:datetime object="moviesModifiable" field="lastModified"/>   
+                </vu:column>
+                <vu:column field="testBoolean">
+                    <vu:checkbox object="moviesModifiable" field="testBoolean"/>   
+                </vu:column>
+                          
             </vu:table-modifiable>
             
             <table class="full-width q-table">
@@ -37,11 +44,13 @@
                 <th id="p1" class="text-left">movId</th>
                 <th id="p2" class="text-left">Text</th>
                 <th id="p2" class="text-left">Date</th>
+                <th id="p2" class="text-left">DateTime</th>
+                <th id="p2" class="text-left">DateBoolean</th>
                 <th id="p3" class="text-left">File</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="item, itemStat : ${model.moviesModifiable}" th:with="rowIndex=${itemStat.index}">
+            <tr th:each="item, itemStat : ${model.moviesModifiable}" th:with="modifiableTable=true, rowIndex=${itemStat.index}">
                 <td>
                     <a th:href="'@{/movie/}'+item.movId" vu:text="${item.movId}" ></a>
                 </td>
@@ -50,6 +59,12 @@
                 </td>
                 <td>
                     <vu:date object="moviesModifiable" field="released"/>
+                </td>
+                <td>
+                    <vu:datetime object="moviesModifiable" field="lastModified"/>
+                </td>
+                <td>
+                    <vu:checkbox object="moviesModifiable" field="testBoolean"/>
                 </td>
                 <td>
                     TODO

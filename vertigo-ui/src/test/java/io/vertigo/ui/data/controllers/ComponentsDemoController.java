@@ -106,6 +106,7 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		viewContext.publishDtList(movieList, movieServices.getMovies(DtListState.defaultOf(Movie.class)));
 		final DtList<Movie> myList = movieServices.getMovies(DtListState.defaultOf(Movie.class));
 		final DtList<Movie> mySubList = DtList.of(myList.get(0), myList.get(1));
+		mySubList.get(0).setTestBoolean(true);
 		viewContext.publishDtListModifiable(movieListModifiables, mySubList);
 		viewContext.publishMdl(moviesListMdl, Movie.class, null);
 		viewContext.publishDtList(movieDisplayList, MovieDisplayFields.movId, movieServices.getMoviesDisplay(DtListState.defaultOf(Movie.class)));
