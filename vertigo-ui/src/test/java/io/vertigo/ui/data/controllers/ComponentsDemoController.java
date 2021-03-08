@@ -104,7 +104,9 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		viewContext.publishDto(movieKey, myMovie);
 		viewContext.publishDto(castingKey, new Casting());
 		viewContext.publishDtList(movieList, movieServices.getMovies(DtListState.defaultOf(Movie.class)));
-		viewContext.publishDtListModifiable(movieListModifiables, movieServices.getMovies(DtListState.defaultOf(Movie.class)));
+		final DtList<Movie> myList = movieServices.getMovies(DtListState.defaultOf(Movie.class));
+		final DtList<Movie> mySubList = DtList.of(myList.get(0), myList.get(1));
+		viewContext.publishDtListModifiable(movieListModifiables, mySubList);
 		viewContext.publishMdl(moviesListMdl, Movie.class, null);
 		viewContext.publishDtList(movieDisplayList, MovieDisplayFields.movId, movieServices.getMoviesDisplay(DtListState.defaultOf(Movie.class)));
 
@@ -160,6 +162,21 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		viewContext.publishDto(movieKey, movie);
 		//we may save files on a more persistent space
 		nop(pictures);
+	}
+
+	@PostMapping("/_saveList")
+	public void doSaveListAutoValidation(final ViewContext viewContext, @ViewAttribute("moviesModifiable") final DtList<Movie> movies) {
+		for (final Movie movie : movies) {
+			if (movie.getTitle().contains("error")) {
+				getUiMessageStack().error("There is an error", movie, "title");
+
+			}
+		}
+		if (getUiMessageStack().hasErrors()) {
+			throw new ValidationUserException();
+		}
+		//we may save files on a more persistent space
+		nop(movies);
 	}
 
 	@PostMapping("/_saveFilesOnly")

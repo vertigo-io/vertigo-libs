@@ -197,8 +197,7 @@ export default {
             }.bind(this));
     },
 
-    decodeDate: function (object, field, format) {
-        var value = this.$data.vueData[object][field];
+    decodeDate: function (value, format) {
         if (value === Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(value, 'DD/MM/YYYY'), 'DD/MM/YYYY')) {
             return Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(value, 'DD/MM/YYYY'), format);
         } else {
@@ -206,11 +205,11 @@ export default {
         }
     },
 
-    encodeDate: function (object, field, newValue, format) {
+    encodeDate: function (newValue, format) {
         if (newValue === Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(newValue, format), format)) {
-            this.$data.vueData[object][field] = Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(newValue, format), 'DD/MM/YYYY');
+            return Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(newValue, format), 'DD/MM/YYYY');
         } else {
-            this.$data.vueData[object][field] = newValue;
+            return newValue;
         }
     },
 
@@ -491,21 +490,23 @@ export default {
         });
     },
 
-    hasFieldsError: function (object, field) {
+    hasFieldsError: function (object, field, rowIndex) {
         const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
         if (fieldsErrors) {
-            return Object.prototype.hasOwnProperty.call(fieldsErrors, object) &&
-            fieldsErrors[object] && Object.prototype.hasOwnProperty.call(fieldsErrors[object], field) && fieldsErrors[object][field].length > 0
+        var objectName = rowIndex!=null?object+'['+rowIndex+']':object;
+            return Object.prototype.hasOwnProperty.call(fieldsErrors, objectName) &&
+            fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], field) && fieldsErrors[objectName][field].length > 0
         }
         return false;
     },
 
-    getErrorMessage: function (object, field) {
+    getErrorMessage: function (object, field, rowIndex) {
         const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
         if (fieldsErrors) {
-            if (Object.prototype.hasOwnProperty.call(fieldsErrors, object) &&
-                fieldsErrors[object] && Object.prototype.hasOwnProperty.call(fieldsErrors[object], field)) {
-                return fieldsErrors[object][field].join(', ');
+            var objectName = rowIndex!=null?object+'['+rowIndex+']':object;
+            if (Object.prototype.hasOwnProperty.call(fieldsErrors, objectName) &&
+            fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], field)) {
+                return fieldsErrors[objectName][field].join(', ');
             }
         } else {
             return '';

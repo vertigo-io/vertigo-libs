@@ -121,6 +121,10 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		final int index = indexOfUiObject(uiObject);
 		Assertion.check().isTrue(index >= 0, "UiObjet {0} not found in UiList with key {1}", uiObject, inputKey);
 		// ---
+		return toContextKey(inputKey, index);
+	}
+
+	protected String toContextKey(final String inputKey, final int index) {
 		return inputKey + ".get(" + index + ")";
 	}
 
@@ -194,15 +198,15 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	public UiObject<D> get(final int row) {
 		//id>=0 : par index dans la UiList (pour boucle, uniquement dans la même request)
 		Assertion.check()
-		.isTrue(row >= 0, "Le getteur utilisé n'est pas le bon: utiliser getByRowId")
-		.isTrue(row < 200, "UiListModifiable is limited to 200 elements");
-		
+				.isTrue(row >= 0, "Le getteur utilisé n'est pas le bon: utiliser getByRowId")
+				.isTrue(row < 200, "UiListModifiable is limited to 200 elements");
+
 		//SKE MLA : lazy initialisation of buffer uiObjects for size changing uiListModifiable
 		final DtDefinition dtDefinition = dtDefinitionRef.get();
 		for (int i = bufferUiObjects.size(); i < row + 1; i++) {
 			add((D) DtObjectUtil.createDtObject(dtDefinition));
 		}
-		
+
 		final UiObject<D> uiObject = bufferUiObjects.get(row);
 		Assertion.check().isNotNull(uiObject);
 		return uiObject;

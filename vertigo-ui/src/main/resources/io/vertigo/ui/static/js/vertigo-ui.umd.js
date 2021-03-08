@@ -8050,20 +8050,18 @@ function isString (v) {
       this.$data.componentStates[componentId].loading = false;
     }.bind(this));
   },
-  decodeDate: function decodeDate(object, field, format) {
-    var value = this.$data.vueData[object][field];
-
+  decodeDate: function decodeDate(value, format) {
     if (value === external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.formatDate(external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.extractDate(value, 'DD/MM/YYYY'), 'DD/MM/YYYY')) {
       return external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.formatDate(external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.extractDate(value, 'DD/MM/YYYY'), format);
     } else {
       return value;
     }
   },
-  encodeDate: function encodeDate(object, field, newValue, format) {
+  encodeDate: function encodeDate(newValue, format) {
     if (newValue === external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.formatDate(external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.extractDate(newValue, format), format)) {
-      this.$data.vueData[object][field] = external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.formatDate(external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.extractDate(newValue, format), 'DD/MM/YYYY');
+      return external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.formatDate(external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.extractDate(newValue, format), 'DD/MM/YYYY');
     } else {
-      this.$data.vueData[object][field] = newValue;
+      return newValue;
     }
   },
   decodeDatetime: function decodeDatetime(object, field, format) {
@@ -8361,21 +8359,24 @@ function isString (v) {
       }
     });
   },
-  hasFieldsError: function hasFieldsError(object, field) {
+  hasFieldsError: function hasFieldsError(object, field, rowIndex) {
     var fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
 
     if (fieldsErrors) {
-      return Object.prototype.hasOwnProperty.call(fieldsErrors, object) && fieldsErrors[object] && Object.prototype.hasOwnProperty.call(fieldsErrors[object], field) && fieldsErrors[object][field].length > 0;
+      var objectName = rowIndex != null ? object + '[' + rowIndex + ']' : object;
+      return Object.prototype.hasOwnProperty.call(fieldsErrors, objectName) && fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], field) && fieldsErrors[objectName][field].length > 0;
     }
 
     return false;
   },
-  getErrorMessage: function getErrorMessage(object, field) {
+  getErrorMessage: function getErrorMessage(object, field, rowIndex) {
     var fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
 
     if (fieldsErrors) {
-      if (Object.prototype.hasOwnProperty.call(fieldsErrors, object) && fieldsErrors[object] && Object.prototype.hasOwnProperty.call(fieldsErrors[object], field)) {
-        return fieldsErrors[object][field].join(', ');
+      var objectName = rowIndex != null ? object + '[' + rowIndex + ']' : object;
+
+      if (Object.prototype.hasOwnProperty.call(fieldsErrors, objectName) && fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], field)) {
+        return fieldsErrors[objectName][field].join(', ');
       }
     } else {
       return '';

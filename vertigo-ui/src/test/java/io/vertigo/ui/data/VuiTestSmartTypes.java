@@ -121,6 +121,7 @@ public enum VuiTestSmartTypes {
 	@SmartTypeDefinition(String.class)
 	@Formatter(clazz = FormatterDefault.class)
 	@Constraint(clazz = ConstraintStringLength.class, arg = "250", msg = "")
+	@Constraint(clazz = ConstraintRegex.class, arg = "^((?!error).)*$", msg = "This field have an error")
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(250)")
 	LabelLong,
 

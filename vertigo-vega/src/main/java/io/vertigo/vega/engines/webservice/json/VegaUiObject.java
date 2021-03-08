@@ -310,12 +310,16 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 				return inputValues.isEmpty() ? null : inputValues.toArray(String[]::new);
 			}
 			if (value != null) {
-				((List) value).forEach(val -> inputValues.add(basicTypeAdapter.toBasic(val).toString()));
+				((List) value).forEach(val -> {
+					final Object basicValue = basicTypeAdapter.toBasic(val);
+					if (basicValue != null) { //adapter return null, if value was null
+						inputValues.add(basicValue.toString());
+					}
+				});
 			}
 			return inputValues.toArray(String[]::new);
 		}
 		return null;
-
 	}
 
 	/** {@inheritDoc} */

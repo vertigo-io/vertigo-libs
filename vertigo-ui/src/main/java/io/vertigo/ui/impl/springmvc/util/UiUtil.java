@@ -81,6 +81,64 @@ public final class UiUtil implements Serializable {
 	}
 
 	/**
+	 * @param object Object in context
+	 * @param field field of object
+	 * @param row index in list (nullable)
+	 * @return Name in context (use for input name)
+	 */
+	public static String contextKey(final String object, final String field, final String row) {
+		return contextGet("", object, field, row, true); //use quote because it's evaluated by vueJs
+	}
+
+	/**
+	 * @param object Object in context
+	 * @param field field of object
+	 * @param row index in list (nullable)
+	 * @return Name in context (use for input name)
+	 */
+	public static String contextGet(final String object, final String field, final String row) {
+		final boolean useQuotes = row != null && !row.matches("[0-9]+"); //row is not number
+		return contextGet("model.", object, field, row, useQuotes); //no quotes, when it's evaluated server side
+	}
+
+	/**
+	 * @param object Object in context
+	 * @param field field of object
+	 * @param row index in list (nullable)
+	 * @return Name in vueData
+	 */
+	public static String vueDataKey(final String object, final String field, final String row) {
+		return "vueData." + object + (row != null ? "[" + row + "]" : "") + "." + field;
+	}
+
+	private static String contextGet(final String prefix, final String object, final String field, final String row, final boolean useQuotes) {
+		final StringBuilder output = new StringBuilder();
+		if (useQuotes) {
+			output.append("'");
+		}
+		output.append(prefix)
+				.append("vContext[")
+				.append(object)
+				.append("]");
+		if (row != null) {
+			output.append("[");
+			if (!useQuotes) {//row is number
+				output.append(row);
+			} else {//row is expression
+				output.append("'+").append(row).append("+'");
+			}
+			output.append("]");
+		}
+		output.append("[")
+				.append(field)
+				.append("]");
+		if (useQuotes) {
+			output.append("'");
+		}
+		return output.toString();
+	}
+
+	/**
 	 * @param uiList List du context
 	 * @param uiObject Objet de la liste
 	 * @return index de l'objet dans sa liste

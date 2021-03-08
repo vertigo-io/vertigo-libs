@@ -173,12 +173,12 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		//-----
 		final String contextKey = reverseUiObjectIndex.get(uiObject);
 		if (contextKey != null) {
-			return contextKey;
+			return "vContext[" + contextKey + "]";
 		}
 		for (final Map.Entry<UiList<?>, String> entry : reverseUiListIndex.entrySet()) {
 			final int index = entry.getKey().indexOf(uiObject);
 			if (index >= 0) {
-				return entry.getValue() + ".get(" + index + ")";
+				return "vContext[" + entry.getValue() + "][" + index + "]";
 			}
 		}
 		return null;
@@ -193,12 +193,12 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		//-----
 		final String contextKey = reverseUiObjectIndex.get(dtObject);
 		if (contextKey != null) {
-			return contextKey;
+			return "vContext[" + contextKey + "]";
 		}
 		for (final Map.Entry<UiList<?>, String> entry : reverseUiListIndex.entrySet()) {
 			final int index = entry.getKey().indexOf(dtObject);
 			if (index >= 0) {
-				return entry.getValue() + ".get(" + index + ")";
+				return "vContext[" + entry.getValue() + "][" + index + "]";
 			}
 		}
 		return null;

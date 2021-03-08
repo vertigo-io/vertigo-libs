@@ -51,4 +51,9 @@ public class BasicUiListModifiable<D extends DtObject> extends AbstractUiListMod
 		return listForClient;
 	}
 
+	@Override
+	protected String toContextKey(final String inputKey, final int index) {
+		return inputKey + "[" + index + "]";
+	}
+
 }

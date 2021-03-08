@@ -18,6 +18,48 @@
     <div layout:fragment="content">
         <vu:messages />
             <vu:form id="myFormId">
+            <vu:table-modifiable list="moviesModifiable" componentId="movieModifiableTable" sortUrl="@{/movies/_sort}" >
+                <vu:column field="movId" >
+                    <a th::href="|'@{/movie/}'+props.row.movId|" >{{props.row.movId}}</a>
+                </vu:column>
+                <vu:column field="title">
+                    <vu:text-field object="moviesModifiable" field="title"/>
+                </vu:column>
+                <vu:column field="released">
+                    <vu:date object="moviesModifiable" field="released"/>
+                </vu:column>                       
+            </vu:table-modifiable>
+            
+            <table class="full-width q-table">
+            <caption></caption>
+            <thead>
+            <tr>
+                <th id="p1" class="text-left">movId</th>
+                <th id="p2" class="text-left">Text</th>
+                <th id="p2" class="text-left">Date</th>
+                <th id="p3" class="text-left">File</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item, itemStat : ${model.moviesModifiable}" th:with="rowIndex=${itemStat.index}">
+                <td>
+                    <a th:href="'@{/movie/}'+item.movId" vu:text="${item.movId}" ></a>
+                </td>
+                <td>
+                    <vu:text-field object="moviesModifiable"  field="title"/>
+                </td>
+                <td>
+                    <vu:date object="moviesModifiable" field="released"/>
+                </td>
+                <td>
+                    TODO
+                </td>
+            </tr>
+            </tbody>
+        </table>
+         <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionList" label="Save (List)" action="@{_saveList}" color="primary" />
+                           
+            
                 <vu:block id="movie" title="#{movie.title.information}">
                        <vu:include-data object="movies" field="*" />
                        <vu:include-data-primitive key='timeZoneList'/>
@@ -93,6 +135,10 @@
                     <div class="col-grow"></div>
                  </div>
                 </vu:block>
+                
+                
+           
+            
             </vu:form>
             
             <vu:cards list="movies" componentId="movieCards" 
@@ -113,8 +159,9 @@
                 <vu:column field="title" sortable="true" />
                 <vu:column name="tata" label="Tata">
                     another column  : {{props.row.movId}} : {{props.row.title}}
-                </vu:column>
+                </vu:column>                       
             </vu:table>
+            
     </div>
     
 </body>
