@@ -325,14 +325,25 @@ export default {
         }
         return [];
     },
-    obtainVueDataAccessor(referer, object, field) {
+    obtainVueDataAccessor(referer, object, field, rowIndex) {
         if(field) {
-            return {
-                get : function() {
-                    return referer.$data.vueData[object][field];
-                }, 
-                set : function(newData) {
-                referer.$data.vueData[object][field] = newData;
+            if(rowIndex!=null) {
+                return {
+                    get : function() {
+                        return referer.$data.vueData[object][rowIndex][field];
+                    }, 
+                    set : function(newData) {
+                        referer.$data.vueData[object][rowIndex][field] = newData;
+                    }
+                }
+            } else {
+                return {           
+                    get : function() {
+                        return referer.$data.vueData[object][field];
+                    }, 
+                    set : function(newData) {
+                        referer.$data.vueData[object][field] = newData;
+                    }
                 }
             }
         } else {
@@ -341,7 +352,7 @@ export default {
                     return referer.$data.vueData[object];
                 }, 
                 set : function(newData) {
-                referer.$data.vueData[object] = newData;
+                    referer.$data.vueData[object] = newData;
                 }
             }
         }
@@ -350,11 +361,12 @@ export default {
         this.$q.iconSet.uploader.removeUploaded = 'delete_sweep'
         this.$q.iconSet.uploader.done = 'delete'
     },
-    uploader_mounted(componentId, object, field) {
+    uploader_mounted(componentId, object, field, rowIndex) {
         this.uploader_changeIcon();
         var component = this.$refs[componentId];
         //must removed duplicate
-        var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
+        component.vueDataAccessor = this.obtainVueDataAccessor(this, object, field, rowIndex);
+        var vueDataAccessor = component.vueDataAccessor;
         var curValue = vueDataAccessor.get();
         if(!Array.isArray(curValue)) {
             vueDataAccessor.set(this.vueDataToArray(curValue));
@@ -407,15 +419,17 @@ export default {
     uploader_humanStorageSize: function (size) {
         return Quasar.utils.format.humanStorageSize(size);
     },
-    uploader_addedFile: function (isMultiple, componentId, object, field) {
+    uploader_addedFile: function (isMultiple, componentId) {
         if (!isMultiple) {
-            this.$refs[componentId].removeUploadedFiles();
-            var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
-            vueDataAccessor.set([]);
+             var component = this.$refs[componentId];
+             var vueDataAccessor = component.vueDataAccessor;
+             component.removeUploadedFiles();
+             vueDataAccessor.set([]);
         }
     },
-    uploader_uploadedFiles: function (uploadInfo, object, field) {
-    var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
+    uploader_uploadedFiles: function (uploadInfo, componentId) {
+        var component = this.$refs[componentId];
+        var vueDataAccessor = component.vueDataAccessor;
         uploadInfo.files.forEach(function (file) {
             file.fileUri = file.xhr.response;
             vueDataAccessor.get().push(file.fileUri);
@@ -436,9 +450,9 @@ export default {
             }.bind(this));*/
         }.bind(this));
     },
-    uploader_removeFiles: function (removedFiles, componentId, object, field) {
+    uploader_removeFiles: function (removedFiles, componentId) {
         var component = this.$refs[componentId];
-        var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
+        var vueDataAccessor = component.vueDataAccessor;
         var dataFileUris = vueDataAccessor.get();
         removedFiles.forEach(function (removedFile) {
             if(removedFile.fileUri) { //if file is serverside

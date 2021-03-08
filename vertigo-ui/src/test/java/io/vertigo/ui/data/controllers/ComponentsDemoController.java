@@ -107,6 +107,7 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		final DtList<Movie> myList = movieServices.getMovies(DtListState.defaultOf(Movie.class));
 		final DtList<Movie> mySubList = DtList.of(myList.get(0), myList.get(1));
 		mySubList.get(0).setTestBoolean(true);
+
 		viewContext.publishDtListModifiable(movieListModifiables, mySubList);
 		viewContext.publishMdl(moviesListMdl, Movie.class, null);
 		viewContext.publishDtList(movieDisplayList, MovieDisplayFields.movId, movieServices.getMoviesDisplay(DtListState.defaultOf(Movie.class)));
@@ -141,7 +142,7 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		fileUris2.add(fileInfoTmp2.getURI());
 		fileUris2.add(fileInfoTmp3.getURI());
 		myMovie.setPictures(fileUris2); //TODO
-
+		mySubList.get(0).setMainPicture(fileInfoTmp1.getURI());
 		toModeCreate();
 	}
 

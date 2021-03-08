@@ -27,6 +27,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -86,8 +87,21 @@ public final class UiUtil implements Serializable {
 	 * @param row index in list (nullable)
 	 * @return Name in context (use for input name)
 	 */
+	public static String generateComponentUID(final String component, final String object, final String field, final String row) {
+		final StringBuilder prefix = new StringBuilder(component)
+				.append(Long.toHexString(UUID.randomUUID().getLeastSignificantBits()))
+				.append("_");
+		return contextGet(prefix.toString(), object, field, row, true);
+	}
+
+	/**
+	 * @param object Object in context
+	 * @param field field of object
+	 * @param row index in list (nullable)
+	 * @return Name in context (use for input name)
+	 */
 	public static String contextKey(final String object, final String field, final String row) {
-		return contextGet("", object, field, row, true); //use quote because it's evaluated by vueJs
+		return contextGet("vContext", object, field, row, true); //use quote because it's evaluated by vueJs
 	}
 
 	/**
@@ -98,7 +112,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public static String contextGet(final String object, final String field, final String row) {
 		final boolean useQuotes = row != null && !row.matches("[0-9]+"); //row is not number
-		return contextGet("model.", object, field, row, useQuotes); //no quotes, when it's evaluated server side
+		return contextGet("model.vContext", object, field, row, useQuotes); //no quotes, when it's evaluated server side
 	}
 
 	/**
@@ -108,7 +122,7 @@ public final class UiUtil implements Serializable {
 	 * @return Name in vueData
 	 */
 	public static String vueDataKey(final String object, final String field, final String row) {
-		return "vueData." + object + (row != null ? "[" + row + "]" : "") + "." + field;
+		return "vueData." + object + (row != null ? "[" + row + "]" : "") + (field != null ? "." + field : "");
 	}
 
 	private static String contextGet(final String prefix, final String object, final String field, final String row, final boolean useQuotes) {
@@ -117,7 +131,7 @@ public final class UiUtil implements Serializable {
 			output.append("'");
 		}
 		output.append(prefix)
-				.append("vContext[")
+				.append("[")
 				.append(object)
 				.append("]");
 		if (row != null) {
@@ -129,9 +143,11 @@ public final class UiUtil implements Serializable {
 			}
 			output.append("]");
 		}
-		output.append("[")
-				.append(field)
-				.append("]");
+		if (field != null) {
+			output.append("[")
+					.append(field)
+					.append("]");
+		}
 		if (useQuotes) {
 			output.append("'");
 		}

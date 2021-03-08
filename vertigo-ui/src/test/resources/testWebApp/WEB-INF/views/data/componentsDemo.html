@@ -34,7 +34,12 @@
                 <vu:column field="testBoolean">
                     <vu:checkbox object="moviesModifiable" field="testBoolean"/>   
                 </vu:column>
-                          
+                <vu:column field="mainPicture">
+                    <vu:fileupload-simple-object th:url="'@{/commons/upload}'" object="moviesModifiable" field="mainPicture"/>
+                </vu:column>
+                <vu:column field="pictures">
+                    <vu:fileupload-simple-object th:url="'@{/commons/upload}'" object="moviesModifiable" field="pictures" multiple/>
+                </vu:column>
             </vu:table-modifiable>
             
             <table class="full-width q-table">
@@ -47,6 +52,7 @@
                 <th id="p2" class="text-left">DateTime</th>
                 <th id="p2" class="text-left">DateBoolean</th>
                 <th id="p3" class="text-left">File</th>
+                <th id="p3" class="text-left">Files</th>
             </tr>
             </thead>
             <tbody>
@@ -67,13 +73,16 @@
                     <vu:checkbox object="moviesModifiable" field="testBoolean"/>
                 </td>
                 <td>
-                    TODO
+                    <vu:fileupload-simple-object th:url="'@{/commons/upload}'" object="moviesModifiable" field="mainPicture"/>                                                    
+                </td>
+                <td>
+                    <vu:fileupload-simple-object th:url="'@{/commons/upload}'" object="moviesModifiable" field="pictures" multiple/>                                                    
                 </td>
             </tr>
             </tbody>
         </table>
          <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionList" label="Save (List)" action="@{_saveList}" color="primary" />
-                           
+        <br/>
             
                 <vu:block id="movie" title="#{movie.title.information}">
                        <vu:include-data object="movies" field="*" />
