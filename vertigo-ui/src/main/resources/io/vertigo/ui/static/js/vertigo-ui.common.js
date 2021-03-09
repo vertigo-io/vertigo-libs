@@ -8064,20 +8064,18 @@ function isString (v) {
       return newValue;
     }
   },
-  decodeDatetime: function decodeDatetime(object, field, format) {
-    var value = this.$data.vueData[object][field];
-
+  decodeDatetime: function decodeDatetime(value, format) {
     if (value === external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.formatDate(external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.extractDate(value, 'DD/MM/YYYY HH:mm'), 'DD/MM/YYYY HH:mm')) {
       return external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.formatDate(external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.extractDate(value, 'DD/MM/YYYY HH:mm'), format);
     } else {
       return value;
     }
   },
-  encodeDatetime: function encodeDatetime(object, field, newValue, format) {
+  encodeDatetime: function encodeDatetime(newValue, format) {
     if (newValue === external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.formatDate(external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.extractDate(newValue, format), format)) {
-      this.$data.vueData[object][field] = external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.formatDate(external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.extractDate(newValue, format), 'DD/MM/YYYY HH:mm');
+      return external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.formatDate(external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.date.extractDate(newValue, format), 'DD/MM/YYYY HH:mm');
     } else {
-      this.$data.vueData[object][field] = newValue;
+      return newValue;
     }
   },
   sortDatesAsString: function sortDatesAsString(format) {
@@ -8179,16 +8177,27 @@ function isString (v) {
 
     return [];
   },
-  obtainVueDataAccessor: function obtainVueDataAccessor(referer, object, field) {
-    if (field) {
-      return {
-        get: function get() {
-          return referer.$data.vueData[object][field];
-        },
-        set: function set(newData) {
-          referer.$data.vueData[object][field] = newData;
-        }
-      };
+  obtainVueDataAccessor: function obtainVueDataAccessor(referer, object, field, rowIndex) {
+    if (field != null && field != 'null') {
+      if (rowIndex != null) {
+        return {
+          get: function get() {
+            return referer.$data.vueData[object][rowIndex][field];
+          },
+          set: function set(newData) {
+            referer.$data.vueData[object][rowIndex][field] = newData;
+          }
+        };
+      } else {
+        return {
+          get: function get() {
+            return referer.$data.vueData[object][field];
+          },
+          set: function set(newData) {
+            referer.$data.vueData[object][field] = newData;
+          }
+        };
+      }
     } else {
       return {
         get: function get() {
@@ -8204,11 +8213,12 @@ function isString (v) {
     this.$q.iconSet.uploader.removeUploaded = 'delete_sweep';
     this.$q.iconSet.uploader.done = 'delete';
   },
-  uploader_mounted: function uploader_mounted(componentId, object, field) {
+  uploader_mounted: function uploader_mounted(componentId, object, field, rowIndex) {
     this.uploader_changeIcon();
     var component = this.$refs[componentId]; //must removed duplicate
 
-    var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
+    component.vueDataAccessor = this.obtainVueDataAccessor(this, object, field, rowIndex);
+    var vueDataAccessor = component.vueDataAccessor;
     var curValue = vueDataAccessor.get();
 
     if (!Array.isArray(curValue)) {
@@ -8272,15 +8282,17 @@ function isString (v) {
   uploader_humanStorageSize: function uploader_humanStorageSize(size) {
     return external_commonjs_quasar_commonjs2_quasar_root_Quasar_default.a.utils.format.humanStorageSize(size);
   },
-  uploader_addedFile: function uploader_addedFile(isMultiple, componentId, object, field) {
+  uploader_addedFile: function uploader_addedFile(isMultiple, componentId) {
     if (!isMultiple) {
-      this.$refs[componentId].removeUploadedFiles();
-      var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
+      var component = this.$refs[componentId];
+      var vueDataAccessor = component.vueDataAccessor;
+      component.removeUploadedFiles();
       vueDataAccessor.set([]);
     }
   },
-  uploader_uploadedFiles: function uploader_uploadedFiles(uploadInfo, object, field) {
-    var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
+  uploader_uploadedFiles: function uploader_uploadedFiles(uploadInfo, componentId) {
+    var component = this.$refs[componentId];
+    var vueDataAccessor = component.vueDataAccessor;
     uploadInfo.files.forEach(function (file) {
       file.fileUri = file.xhr.response;
       vueDataAccessor.get().push(file.fileUri);
@@ -8300,9 +8312,9 @@ function isString (v) {
       }.bind(this));*/
     }.bind(this));
   },
-  uploader_removeFiles: function uploader_removeFiles(removedFiles, componentId, object, field) {
+  uploader_removeFiles: function uploader_removeFiles(removedFiles, componentId) {
     var component = this.$refs[componentId];
-    var vueDataAccessor = this.obtainVueDataAccessor(this, object, field);
+    var vueDataAccessor = component.vueDataAccessor;
     var dataFileUris = vueDataAccessor.get();
     removedFiles.forEach(function (removedFile) {
       if (removedFile.fileUri) {
