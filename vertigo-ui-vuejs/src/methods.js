@@ -326,7 +326,7 @@ export default {
         return [];
     },
     obtainVueDataAccessor(referer, object, field, rowIndex) {
-        if(field) {
+        if(field!=null && field!='null') {
             if(rowIndex!=null) {
                 return {
                     get : function() {

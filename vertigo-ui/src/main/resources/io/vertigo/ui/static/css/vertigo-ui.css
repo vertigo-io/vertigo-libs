@@ -130,19 +130,19 @@ img.avatar {
 	color: rgba(60, 60, 60, 1);
 }
 
-.table-primary .q-btn {
+.table-primary  .q-btn {
 	background: var(--q-color-primary);
 	color:var(--q-color-primary-invert);
 }
-
-.table-secondary .q-btn {
+.table-secondary  .q-btn {
 	background: var(--q-color-secondary);
 	color:var(--q-color-secondary-invert);
 }
-.table-tertiary .q-btn {
+.table-tertiary  .q-btn {
 	background: var(--q-color-tertiary);
 	color:var(--q-color-tertiary-invert);
 }
+
 
 
 /**
@@ -202,6 +202,12 @@ img.avatar {
 .q-uploader  .q-field--auto-height.q-field--labeled .q-field__control-container {
 	padding-top: 18px;
 }
+
+table .q-uploader .q-btn {
+    background: none;
+    color:rgba(0,0,0,0.54);
+}
+
 
 /*
 .q-table .q-btn {
