@@ -80,15 +80,16 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		//-----
 		Serializable o = super.get(key);
 		Assertion.check().isNotNull(o, "Objet :{0} non trouvé! Vérifier que l objet est bien enregistré avec la clé. Clés disponibles {1}", key, keySet());
-		if (typesByKey.containsKey(key)) {
+		final Type typeOfKey = typesByKey.get(key);
+		if (typeOfKey != null) {
 			if (o instanceof String) {
-				o = jsonEngine.fromJson((String) o, typesByKey.get(key));
+				o = jsonEngine.fromJson((String) o, typeOfKey);
 			} else if (o instanceof String[]) {
 				final String concat = Arrays.stream((String[]) o)
 						.filter(v -> !v.isEmpty()) //empty html input means : no value; there are use to send removed value
 						.map(v -> "\"" + v + "\"")
 						.collect(Collectors.joining(",", "[", "]"));
-				o = jsonEngine.fromJson(concat, typesByKey.get(key));
+				o = jsonEngine.fromJson(concat, typeOfKey);
 			}
 		}
 		return o;
@@ -231,8 +232,8 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	}
 
 	private boolean isMultiple(final String key) {
-		if (typesByKey.containsKey(key)) {
-			final Type type = typesByKey.get(key);
+		final Type type = typesByKey.get(key);
+		if (type != null) {
 			if (type instanceof Class<?>) {
 				return Iterable.class.isAssignableFrom((Class<?>) type);
 			} else if (type instanceof ParameterizedType) {

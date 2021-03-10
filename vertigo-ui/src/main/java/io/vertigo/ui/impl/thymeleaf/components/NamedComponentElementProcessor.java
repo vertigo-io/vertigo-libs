@@ -389,8 +389,9 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			if (context.containsVariable(placeholder)) {
 				preAffectationString = context.getVariable(placeholder) + ", ";
 			}
-			if (placeholders.containsKey(placeholder)) {
-				final Map<String, Object> placeholderValues = placeholders.get(placeholder);
+
+			final Map<String, Object> placeholderValues = placeholders.get(placeholder);
+			if (placeholders != null) {
 				affectationString = placeholderValues
 						.entrySet().stream()
 						.map((entry1) -> {

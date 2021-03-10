@@ -128,28 +128,28 @@ public final class UiUtil implements Serializable {
 	private static String contextGet(final String prefix, final String object, final String field, final String row, final boolean useQuotes) {
 		final StringBuilder output = new StringBuilder();
 		if (useQuotes) {
-			output.append("'");
+			output.append('\'');
 		}
 		output.append(prefix)
-				.append("[")
+				.append('[')
 				.append(object)
-				.append("]");
+				.append(']');
 		if (row != null) {
-			output.append("[");
+			output.append('[');
 			if (!useQuotes) {//row is number
 				output.append(row);
 			} else {//row is expression
 				output.append("'+").append(row).append("+'");
 			}
-			output.append("]");
+			output.append(']');
 		}
 		if (field != null) {
-			output.append("[")
+			output.append('[')
 					.append(field)
-					.append("]");
+					.append(']');
 		}
 		if (useQuotes) {
-			output.append("'");
+			output.append('\'');
 		}
 		return output.toString();
 	}
@@ -179,7 +179,7 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			return getDtField(object + "." + fieldName).getSmartTypeDefinition().getProperties().getValue(DtProperty.UNIT);
+			return getDtField(object + '.' + fieldName).getSmartTypeDefinition().getProperties().getValue(DtProperty.UNIT);
 		}
 		return "";
 	}
@@ -190,7 +190,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public static Integer smartTypeMaxLength(final String object, final String fieldName) {
 		if (fieldName != null) {
-			return getDtField(object + "." + fieldName).getSmartTypeDefinition().getProperties().getValue(DtProperty.MAX_LENGTH);
+			return getDtField(object + '.' + fieldName).getSmartTypeDefinition().getProperties().getValue(DtProperty.MAX_LENGTH);
 		}
 		return null;
 	}
@@ -203,7 +203,7 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			return "col_" + getDtField(object + "." + fieldName).getSmartTypeDefinition().getName();
+			return "col_" + getDtField(object + '.' + fieldName).getSmartTypeDefinition().getName();
 		}
 		return defaultValue;
 	}
@@ -216,7 +216,7 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			final SmartTypeDefinition smartTypeDefinition = getDtField(object + "." + fieldName).getSmartTypeDefinition();
+			final SmartTypeDefinition smartTypeDefinition = getDtField(object + '.' + fieldName).getSmartTypeDefinition();
 			if (smartTypeDefinition.getScope().isPrimitive()) {
 				final BasicType dataType = smartTypeDefinition.getBasicType();
 				switch (dataType) {

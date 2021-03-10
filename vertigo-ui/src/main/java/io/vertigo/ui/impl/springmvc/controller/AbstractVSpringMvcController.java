@@ -103,8 +103,9 @@ public abstract class AbstractVSpringMvcController {
 					UiRequestUtil.setRequestScopedAttribute("createdContext", false);
 				}
 				if (viewContextMap == null) {
-					contextMiss(ctxId);
+					contextMiss(ctxId); //this throw an exception
 				}
+				//viewContextMap can't be null here
 				viewContextMap.setJsonEngine(jsonEngine);
 				viewContext = new ViewContext(viewContextMap, jsonEngine);
 				viewContext.makeModifiable();
