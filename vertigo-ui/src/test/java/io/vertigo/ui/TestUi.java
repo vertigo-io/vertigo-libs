@@ -148,6 +148,66 @@ public class TestUi {
 	}
 
 	@Test
+	public void testModifiableTableDemo() throws InterruptedException {
+		driver.get(baseUrl + "/test/modifiableTableDemo/");
+		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+	}
+
+	@Test
+	public void testModifiableTableSaveDemo() throws InterruptedException {
+		driver.get(baseUrl + "/test/modifiableTableDemo/");
+		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		findElement(By.id("saveActionList")).click();
+		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+	}
+
+	@Test
+	public void testModifiableTableReadDemo() throws InterruptedException {
+		driver.get(baseUrl + "/test/modifiableTableDemo/");
+		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		findElement(By.id("readActionList")).click();
+		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		findElement(By.id("editActionList")).click();
+		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+	}
+
+	@Test
+	public void testFileUploadDemo() throws InterruptedException {
+		driver.get(baseUrl + "/test/fileUploadDemo/");
+		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+	}
+
+	@Test
+	public void testFileUploadSaveDemo() throws InterruptedException {
+		driver.get(baseUrl + "/test/fileUploadDemo/");
+		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		findElement(By.id("saveFilesAction")).click();
+		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+	}
+
+	@Test
+	public void testFileUploadReadDemo() throws InterruptedException {
+		driver.get(baseUrl + "/test/fileUploadDemo/");
+		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		findElement(By.id("readActionList")).click();
+		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		findElement(By.id("editActionList")).click();
+		Thread.sleep(5000);
+		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+	}
+
+	@Test
 	public void testSomeTags() throws InterruptedException {
 		driver.get(baseUrl + "/test/someTags/");
 		Thread.sleep(5000);
