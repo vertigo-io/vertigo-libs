@@ -40,7 +40,7 @@ import io.vertigo.core.node.Node;
 public final class PasswordHelper {
 
 	private static final int MAX_POWER_ITERATION = 256;
-	private static final int PBKDF2_POWER_ITERATIONS = 12; //4096 iterations
+	private static final int PBKDF2_POWER_ITERATIONS = 14; //16384 iterations
 	private static final int PBKDF2_KEY_LENGTH = 256; // bits
 	private static final int SALT_LENGTH = 8; //must be  ceil(saltSizeInBytes / 3) * 4 = 6*4/3
 	private static final int POWER_ITERATION_LENGTH = 2;
