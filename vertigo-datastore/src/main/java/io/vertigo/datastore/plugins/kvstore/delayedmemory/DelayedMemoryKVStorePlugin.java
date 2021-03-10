@@ -79,7 +79,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 				.collect(Collectors.toList());
 		//-----
 		this.timeToLiveSeconds = timeToLiveSeconds;
-		dmnUniqueName = "DmnKvDataStore$t" + timeToLiveSeconds + "c" + collections.hashCode();
+		dmnUniqueName = "DmnKvDataStore$t" + timeToLiveSeconds + "c" + Long.toHexString(collections.hashCode());
 	}
 
 	@Override
