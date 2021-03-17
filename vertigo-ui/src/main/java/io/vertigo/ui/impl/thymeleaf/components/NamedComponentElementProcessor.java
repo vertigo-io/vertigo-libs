@@ -391,7 +391,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			}
 
 			final Map<String, Object> placeholderValues = placeholders.get(placeholder);
-			if (placeholders != null) {
+			if (placeholderValues != null) {
 				affectationString = placeholderValues
 						.entrySet().stream()
 						.map((entry1) -> {

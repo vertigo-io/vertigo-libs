@@ -339,7 +339,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		final Serializable typedValue;
 		if (smartTypeDefinition.getScope().isPrimitive()) {
 			if (!dtField.getCardinality().hasMany()) {
-				Assertion.check().isTrue(stringValue.length <= 1, "dqqdsqd");
+				Assertion.check().isTrue(stringValue.length <= 1, "Can't support multiple input values");
 				//------
 				final Tuple<String, Serializable> tuple = tryFormat(smartTypeManager, dtField, stringValue[0]);
 				formattedValue.add(tuple.getVal1());
@@ -357,7 +357,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		} else {
 			final BasicTypeAdapter basicTypeAdapter = smartTypeManager.getTypeAdapters("ui").get(smartTypeDefinition.getJavaClass());
 			if (!dtField.getCardinality().hasMany()) {
-				Assertion.check().isTrue(stringValue.length <= 1, "dqqdsqd");
+				Assertion.check().isTrue(stringValue.length <= 1, "Can't support multiple input values");
 				//------
 				final Tuple<String, Serializable> tuple = tryFormatWithAdapter(basicTypeAdapter, dtField, stringValue[0]);
 				formattedValue.add(tuple.getVal1());

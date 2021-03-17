@@ -29,7 +29,6 @@ public class FileInfoURIAdapter implements BasicTypeAdapter<FileInfoURI, String>
 			return ProtectedValueUtil.readProtectedValue(protectedURI, FileInfoURI.class);
 		}
 		return null;
-
 	}
 
 	@Override

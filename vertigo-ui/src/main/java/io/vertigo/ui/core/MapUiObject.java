@@ -52,6 +52,7 @@ import io.vertigo.vega.engines.webservice.json.VegaUiObject;
 public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> implements Map<String, Serializable> {
 	private static final long serialVersionUID = -4639050257543017072L;
 	private static final String SMART_TYPE_MULTIPLE_IDS = "STyMultipleIds";
+	private static final String[] EMPTY_INPUT = new String[0];
 
 	/**
 	 * Constructor.
@@ -110,9 +111,9 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 			} else {
 				if (StringUtil.isBlank((String) value)) {
 					// single empty value means a reset of the field. An array is never null so we put an empty array.
-					setInputValue(fieldName, new String[0]);
+					setInputValue(fieldName, EMPTY_INPUT);
 				} else {
-					setInputValue(fieldName, new String[] { (String) value });
+					setInputValue(fieldName, (String) value);
 				}
 			}
 		} else {
@@ -131,7 +132,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 			} else {
 				strValue = requestParameterToString(value);
 			}
-			setInputValue(fieldName, new String[] { strValue });
+			setInputValue(fieldName, strValue);
 		}
 		return null;
 	}
