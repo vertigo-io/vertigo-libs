@@ -188,7 +188,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 
 	/** Implémentation : TODO : see if it's ok */
 	@Override
-	public Set<java.util.Map.Entry<String, Serializable>> entrySet() {
+	public Set<Map.Entry<String, Serializable>> entrySet() {
 		return fieldIndex
 				.stream()
 				.map(key -> new AbstractMap.SimpleEntry<>(key, get(key)))
