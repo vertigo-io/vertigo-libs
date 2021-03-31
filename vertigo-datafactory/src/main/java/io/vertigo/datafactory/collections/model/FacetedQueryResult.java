@@ -41,7 +41,7 @@ import io.vertigo.datamodel.structure.model.DtObject;
 public final class FacetedQueryResult<R extends DtObject, S> implements Serializable {
 	private static final long serialVersionUID = 1248453191954177054L;
 
-	private final DtList<R> dtc;
+	private final DtList<R> list;
 	private final List<Facet> facets;
 	private final Map<R, Map<DtField, String>> highlights;
 	private final DefinitionReference<FacetDefinition> clusterFacetDefinitionRef; //nullable
@@ -54,7 +54,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 * Constructor.
 	 * @param query Facettage de la requète
 	 * @param count  Nombre total de résultats
-	 * @param dtc DTC résultat, éventuellement tronquée à n (ex 500) si trop d'éléments.
+	 * @param list DTC résultat, éventuellement tronquée à n (ex 500) si trop d'éléments.
 	 * @param facets Liste des facettes. (Peut être vide jamais null)
 	 * @param clusterFacetDefinition FacetDefinition du Cluster
 	 * @param clusteredDtc Cluster des documents. (Peut être vide jamais null)
@@ -64,7 +64,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	public FacetedQueryResult(
 			final Optional<FacetedQuery> query,
 			final long count,
-			final DtList<R> dtc,
+			final DtList<R> list,
 			final List<Facet> facets,
 			final Optional<FacetDefinition> clusterFacetDefinition,
 			final Map<FacetValue, DtList<R>> clusteredDtc,
@@ -72,7 +72,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 			final S source) {
 		Assertion.check()
 				.isNotNull(query)
-				.isNotNull(dtc)
+				.isNotNull(list)
 				.isNotNull(facets)
 				.isNotNull(source)
 				.isNotNull(clusterFacetDefinition)
@@ -81,7 +81,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 		//-----
 		this.facetedQueryOpt = query.orElse(null);
 		this.count = count;
-		this.dtc = dtc;
+		this.list = list;
 		this.facets = facets;
 		this.clusterFacetDefinitionRef = clusterFacetDefinition.map(DefinitionReference::new).orElse(null);
 		this.clusteredDtc = clusteredDtc;
@@ -108,7 +108,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 * @return DTC résultat, éventuellement tronquée à n (ex 500) si trop d'éléments.
 	 */
 	public DtList<R> getDtList() {
-		return dtc;
+		return list;
 	}
 
 	/**
