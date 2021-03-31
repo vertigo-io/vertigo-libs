@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
@@ -180,32 +182,32 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 
 		final Type returnType = webServiceDefinition.getMethod().getGenericReturnType();
 		if (void.class.isAssignableFrom(webServiceDefinition.getMethod().getReturnType())) {
-			responses.put("204", createResponseObject("No content", returnType, headers));
+			responses.put("204", createResponseObject("No content", returnType, Collections.emptySet(), Collections.emptySet(), headers));
 		} else if (webServiceDefinition.getMethod().getName().startsWith("create")) {
-			responses.put("201", createResponseObject("Created", returnType, headers));
+			responses.put("201", createResponseObject("Created", returnType, webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields(), headers));
 		} else {
-			responses.put("200", createResponseObject("Success", returnType, headers));
+			responses.put("200", createResponseObject("Success", returnType, webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields(), headers));
 		}
 		if (!webServiceDefinition.getWebServiceParams().isEmpty()) {
-			responses.put("400", createResponseObject("Bad request : parsing error (json, number, date, ...)", ErrorMessage.class, headers));
+			responses.put("400", createResponseObject("Bad request : parsing error (json, number, date, ...)", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
 		}
 		if (webServiceDefinition.isNeedAuthentification()) {
 			//webServiceDefinition.isNeedSession() don't mean that session is mandatory, it just say to create a session
-			responses.put("401", createResponseObject("Unauthorized : no valid session", ErrorMessage.class, headers));
-			responses.put("403", createResponseObject("Forbidden : not enought rights", ErrorMessage.class, headers));
+			responses.put("401", createResponseObject("Unauthorized : no valid session", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
+			responses.put("403", createResponseObject("Forbidden : not enought rights", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
 		}
 		if (!webServiceDefinition.getWebServiceParams().isEmpty()) {
-			responses.put("422", createResponseObject("Unprocessable entity : validations or business error", UiMessageStack.class, headers));
+			responses.put("422", createResponseObject("Unprocessable entity : validations or business error", UiMessageStack.class, Collections.emptySet(), Collections.emptySet(), headers));
 		}
-		responses.put("429", createResponseObject("Too many request : anti spam security (must wait for next time window)", ErrorMessage.class, headers));
-		responses.put("500", createResponseObject("Internal server error", ErrorMessage.class, headers));
+		responses.put("429", createResponseObject("Too many request : anti spam security (must wait for next time window)", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
+		responses.put("500", createResponseObject("Internal server error", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
 		return responses;
 	}
 
 	private Map<String, Object> createResponsesHeaders(final WebServiceDefinition webServiceDefinition) {
 		final Map<String, Object> headers = new LinkedHashMap<>();
 		if (webServiceDefinition.isAccessTokenPublish()) {
-			headers.put("x-access-token", createSchemaObject(String.class)); //not nullable
+			headers.put("x-access-token", createSchemaObject(String.class, Collections.emptySet(), Collections.emptySet())); //not nullable
 		}
 		return headers;
 	}
@@ -225,22 +227,22 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		}
 	}
 
-	private Map<String, Object> createResponseObject(final String description, final Type returnType, final Map<String, Object> headers) {
+	private Map<String, Object> createResponseObject(final String description, final Type returnType, final Set<String> includedFields, final Set<String> excludedFields, final Map<String, Object> headers) {
 		final Map<String, Object> response = new LinkedHashMap<>();
 		response.put(DESCRIPTION, description);
-		putIfNotEmpty(response, SCHEMA, createOptionalSchemaObject(returnType).orElse(null)); //return type could be void
+		putIfNotEmpty(response, SCHEMA, createOptionalSchemaObject(returnType, includedFields, excludedFields).orElse(null)); //return type could be void
 		putIfNotEmpty(response, "headers", headers);
 		return response;
 	}
 
-	private Optional<Map<String, Object>> createOptionalSchemaObject(final Type type) {
+	private Optional<Map<String, Object>> createOptionalSchemaObject(final Type type, final Set<String> includedFields, final Set<String> excludedFields) {
 		if (WebServiceTypeUtil.isAssignableFrom(void.class, type)) {
 			return Optional.empty();
 		}
-		return Optional.of(createSchemaObject(type));
+		return Optional.of(createSchemaObject(type, includedFields, excludedFields));
 	}
 
-	private Map<String, Object> createSchemaObject(final Type type) {
+	private Map<String, Object> createSchemaObject(final Type type, final Set<String> includedFields, final Set<String> excludedFields) {
 		if (type == null) { //Si le type est null, on a pas réussi à récupérer la class : souvant dans le cas des generics
 			return unknownObjectRef;
 		}
@@ -255,7 +257,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		if (WebServiceTypeUtil.isAssignableFrom(Collection.class, type)) {
 			final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0]; //we known that List has one parameterized type
 			//Si le itemsType est null, on prend le unknownObject
-			schema.put("items", createSchemaObject(itemsType)); //type argument can't be void
+			schema.put("items", createSchemaObject(itemsType, includedFields, excludedFields)); //type argument can't be void
 		} else if ("object".equals(typeAndFormat[0])) {
 			final String objectName;
 			final Class<?> parameterClass;
@@ -265,9 +267,9 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 				//We have checked there is one parameter or we known that FacetedQueryResult has two parameterized type
 				final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0];
 				parameterClass = WebServiceTypeUtil.castAsClass(itemsType);
-				objectName = objectClass.getSimpleName() + "<" + parameterClass.getSimpleName() + ">";
+				objectName = objectClass.getSimpleName() + "<" + parameterClass.getSimpleName() + ">" + filterHash(includedFields, excludedFields);
 			} else {
-				objectName = objectClass.getSimpleName();
+				objectName = objectClass.getSimpleName() + filterHash(includedFields, excludedFields);
 				parameterClass = null;
 			}
 			schema.put("$ref", "#/definitions/" + objectName);
@@ -277,24 +279,38 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 				builderDefinitions.put(objectName, definition); //we put definitions first to avoid infinite resolution loop
 				if (DtObject.class.isAssignableFrom(objectClass)) {
 					final Class<? extends DtObject> dtClass = (Class<? extends DtObject>) objectClass;
-					appendPropertiesDtObject(definition, dtClass);
+					appendPropertiesDtObject(definition, dtClass, includedFields, excludedFields);
 				} else {
-					appendPropertiesObject(definition, objectClass, parameterClass);
+					appendPropertiesObject(definition, objectClass, parameterClass, includedFields, excludedFields);
 				}
 			}
 		}
 		return schema;
 	}
 
-	private void appendPropertiesDtObject(final Map<String, Object> entity, final Class<? extends DtObject> objectClass) {
+	private String filterHash(final Set<String> includedFields, final Set<String> excludedFields) {
+		if (includedFields.isEmpty() && excludedFields.isEmpty()) {
+			return "";
+		}
+		final String sb = new StringBuilder()
+				.append("+(").append(includedFields.toString()).append(")")
+				.append("-(").append(excludedFields.toString()).append(")")
+				.toString();
+		return "$" + sb.hashCode();
+	}
+
+	private void appendPropertiesDtObject(final Map<String, Object> entity, final Class<? extends DtObject> objectClass, final Set<String> includedFields, final Set<String> excludedFields) {
 		//can't be a primitive nor array nor DtListDelta
 		final Map<String, Object> properties = new LinkedHashMap<>();
 		final List<String> required = new ArrayList<>(); //mandatory fields
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(objectClass);
 		for (final DtField dtField : dtDefinition.getFields()) {
 			final String fieldName = dtField.getName();
+			if (isExcludedField(fieldName, includedFields, excludedFields)) {
+				continue;
+			}
 			final Type fieldType = getFieldType(dtField);
-			final Map<String, Object> fieldSchema = createSchemaObject(fieldType); //not Nullable
+			final Map<String, Object> fieldSchema = createSchemaObject(fieldType, subFilter(fieldName, includedFields), subFilter(fieldName, excludedFields)); //not Nullable
 			fieldSchema.put("title", dtField.getLabel().getDisplay());
 			if (dtField.getCardinality().hasOne()) {
 				required.add(fieldName);
@@ -306,6 +322,24 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		putIfNotEmpty(entity, "properties", properties);
 	}
 
+	private Set<String> subFilter(final String prefix, final Set<String> filterFields) {
+		//for apply sub filter, we just look for sub prefix field
+		return filterFields.stream()
+				.filter((field) -> field.startsWith(prefix + "."))
+				.map((field) -> field.substring(prefix.length() + 1))
+				.collect(Collectors.toSet());
+	}
+
+	private boolean isExcludedField(final String fieldName, final Set<String> includedFields, final Set<String> excludedFields) {
+		if (includedFields.isEmpty() && excludedFields.isEmpty()) {
+			return false;
+		}
+		if (!includedFields.isEmpty()) {
+			return !includedFields.contains(fieldName);
+		}
+		return excludedFields.contains(fieldName);
+	}
+
 	private static Type getFieldType(final DtField dtField) {
 		final Class<?> dtClass = dtField.getSmartTypeDefinition().getJavaClass();
 		if (dtField.getCardinality().hasMany()) {
@@ -314,14 +348,15 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		return dtClass;
 	}
 
-	private void appendPropertiesObject(final Map<String, Object> entity, final Type type, final Class<?> parameterClass) {
+	private void appendPropertiesObject(final Map<String, Object> entity, final Type type, final Class<?> parameterClass, final Set<String> includedFields, final Set<String> excludedFields) {
 		final Class<?> objectClass = WebServiceTypeUtil.castAsClass(type);
 		//can't be a primitive nor array nor DtListDelta
 		final Map<String, Object> properties = new LinkedHashMap<>();
 		final List<String> requireds = new ArrayList<>(); //mandatory fields
 		for (final Field field : objectClass.getDeclaredFields()) {
 			if ((field.getModifiers() & (Modifier.STATIC | Modifier.TRANSIENT | 0x1000)) == 0) { //0x1000 is for synthetic field (excludes)
-				final Map<String, Object> fieldSchema = obtainFieldSchema(field, parameterClass, requireds);
+				final String fieldName = field.getName();
+				final Map<String, Object> fieldSchema = obtainFieldSchema(field, parameterClass, subFilter(fieldName, includedFields), subFilter(fieldName, excludedFields), requireds);
 				properties.put(field.getName(), fieldSchema);
 			}
 		}
@@ -329,7 +364,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		putIfNotEmpty(entity, "properties", properties);
 	}
 
-	private Map<String, Object> obtainFieldSchema(final Field field, final Class<?> parameterClass, final List<String> requireds) {
+	private Map<String, Object> obtainFieldSchema(final Field field, final Class<?> parameterClass, final Set<String> includedFields, final Set<String> excludedFields, final List<String> requireds) {
 		final Type fieldType = field.getGenericType();
 		Type usedFieldType = fieldType;
 		if (fieldType instanceof ParameterizedType) {
@@ -340,7 +375,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		} else if (fieldType instanceof TypeVariable) {
 			usedFieldType = parameterClass;
 		}
-		final Map<String, Object> fieldSchema = createSchemaObject(usedFieldType); //field type can't be void
+		final Map<String, Object> fieldSchema = createSchemaObject(usedFieldType, includedFields, excludedFields); //field type can't be void
 		if ((field.getModifiers() & Modifier.FINAL) != 0
 				&& !Optional.class.isAssignableFrom(field.getType())) {
 			requireds.add(field.getName());
@@ -496,10 +531,10 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		putIfNotEmpty(parameter, DESCRIPTION, description);
 		parameter.put(REQUIRED, !webServiceParam.isOptional());
 		if (webServiceParam.getParamType() == WebServiceParamType.Body) {
-			parameter.put(SCHEMA, createSchemaObject(webServiceParam.getGenericType())); //params are not void
+			parameter.put(SCHEMA, createSchemaObject(webServiceParam.getGenericType(), webServiceParam.getIncludedFields(), webServiceParam.getExcludedFields())); //params are not void
 		} else if (webServiceParam.getParamType() == WebServiceParamType.InnerBody) {
 			final Map<String, Object> bodyParameter = new LinkedHashMap<>();
-			bodyParameter.put(webServiceParam.getName(), createSchemaObject(webServiceParam.getGenericType()));
+			bodyParameter.put(webServiceParam.getName(), createSchemaObject(webServiceParam.getGenericType(), webServiceParam.getIncludedFields(), webServiceParam.getExcludedFields()));
 			parameter.put(SCHEMA, bodyParameter);
 		} else {
 			final String[] typeAndFormat = toSwaggerType(webServiceParam.getType());
