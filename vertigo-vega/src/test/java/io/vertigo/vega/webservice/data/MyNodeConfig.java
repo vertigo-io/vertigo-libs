@@ -24,10 +24,12 @@ import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.plugins.authorization.loaders.JsonSecurityDefinitionProvider;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.app.infos.http.HttpAppNodeInfosPlugin;
+import io.vertigo.connectors.httpclient.HttpClientFeatures;
 import io.vertigo.connectors.javalin.JavalinFeatures;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
+import io.vertigo.core.node.config.ModuleConfigBuilder;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -54,6 +56,7 @@ import io.vertigo.vega.webservice.data.ws.LoginSecuredWebServices;
 import io.vertigo.vega.webservice.data.ws.SearchTestWebServices;
 import io.vertigo.vega.webservice.data.ws.SimplerTestWebServices;
 import io.vertigo.vega.webservice.data.ws.ValidationsTestWebServices;
+import io.vertigo.vega.webservice.data.ws.client.SimplerClientTestWebServices;
 
 public final class MyNodeConfig {
 	public static final int WS_PORT = 8088;
@@ -69,6 +72,10 @@ public final class MyNodeConfig {
 	}
 
 	public static NodeConfig config(final boolean isEmbedded) {
+		return config(isEmbedded, false);
+	}
+
+	public static NodeConfig config(final boolean isEmbedded, final boolean isClient) {
 		final JavalinFeatures javalinFeatures = new JavalinFeatures();
 		if (isEmbedded) {
 			javalinFeatures.withEmbeddedServer(Param.of("port", WS_PORT));
@@ -84,6 +91,26 @@ public final class MyNodeConfig {
 				.withWebServicesRateLimiting()
 				.withWebServicesSwagger()
 				.withWebServicesCatalog();
+
+		final ModuleConfigBuilder webserviceApp = ModuleConfig.builder("webservices-app")
+				.addComponent(ComponentCmdWebServices.class)
+				.addComponent(CommonWebServices.class)
+				.addComponent(ContactsWebServices.class)
+				.addComponent(ContactsSecuredWebServices.class)
+				.addComponent(LoginSecuredWebServices.class)
+				.addComponent(SimplerTestWebServices.class)
+				.addComponent(ValidationsTestWebServices.class)
+				.addComponent(AdvancedTestWebServices.class)
+				.addComponent(AnonymousTestWebServices.class)
+				.addComponent(FileDownloadWebServices.class)
+				.addComponent(SearchTestWebServices.class);
+
+		final HttpClientFeatures httpClientFeatures = new HttpClientFeatures();
+		if (isClient) {
+			vegaFeatures.withWebServicesProxyClient();
+			webserviceApp.addAmplifier(SimplerClientTestWebServices.class);
+			httpClientFeatures.withHttpClient(Param.of("urlPrefix", "http://localhost:" + MyNodeConfig.WS_PORT + ""));
+		}
 
 		return NodeConfig.builder()
 				.withEndPoint("http://localhost:" + WS_PORT)
@@ -116,19 +143,8 @@ public final class MyNodeConfig {
 						.addComponent(ContactDao.class)
 						.addComponent(ContactSearchClient.class)
 						.build())
-				.addModule(ModuleConfig.builder("webservices-app")
-						.addComponent(ComponentCmdWebServices.class)
-						.addComponent(CommonWebServices.class)
-						.addComponent(ContactsWebServices.class)
-						.addComponent(ContactsSecuredWebServices.class)
-						.addComponent(LoginSecuredWebServices.class)
-						.addComponent(SimplerTestWebServices.class)
-						.addComponent(ValidationsTestWebServices.class)
-						.addComponent(AdvancedTestWebServices.class)
-						.addComponent(AnonymousTestWebServices.class)
-						.addComponent(FileDownloadWebServices.class)
-						.addComponent(SearchTestWebServices.class)
-						.build())
+				.addModule(httpClientFeatures.build())
+				.addModule(webserviceApp.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("smarttypes", VegaTestSmartTypes.class.getName())

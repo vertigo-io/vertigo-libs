@@ -27,6 +27,7 @@ import io.vertigo.vega.impl.token.TokenManagerImpl;
 import io.vertigo.vega.impl.webservice.WebServiceManagerImpl;
 import io.vertigo.vega.impl.webservice.catalog.CatalogWebServices;
 import io.vertigo.vega.impl.webservice.catalog.SwaggerWebServices;
+import io.vertigo.vega.impl.webservice.client.WebServiceClientProxyMethod;
 import io.vertigo.vega.plugins.webservice.handler.AccessTokenWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.AnalyticsWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.CorsAllowerWebServiceHandlerPlugin;
@@ -137,6 +138,13 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	public VegaFeatures withWebServicesCatalog() {
 		getModuleConfigBuilder()
 				.addComponent(CatalogWebServices.class);
+		return this;
+	}
+
+	@Feature("webservices.proxyclient")
+	public VegaFeatures withWebServicesProxyClient() {
+		getModuleConfigBuilder()
+				.addProxyMethod(WebServiceClientProxyMethod.class);
 		return this;
 	}
 

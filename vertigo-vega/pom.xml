@@ -52,6 +52,12 @@
 			<optional>true</optional>
 		</dependency>
 		
+        <dependency>
+            <groupId>io.vertigo</groupId>
+            <artifactId>vertigo-httpclient-connector</artifactId>
+            <version>${vertigo.version}</version>
+            <optional>true</optional> <!-- For WebService Client proxy -->
+        </dependency>
 
 		<!-- libs -->
 

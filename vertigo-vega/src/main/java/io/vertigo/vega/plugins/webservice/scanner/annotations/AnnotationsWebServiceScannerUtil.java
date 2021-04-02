@@ -66,7 +66,7 @@ import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
 /**
  * @author npiedeloup
  */
-final class AnnotationsWebServiceScannerUtil {
+public final class AnnotationsWebServiceScannerUtil {
 
 	/**
 	 * Constructor.
@@ -90,7 +90,7 @@ final class AnnotationsWebServiceScannerUtil {
 				.collect(Collectors.toList());
 	}
 
-	private static Optional<WebServiceDefinition> buildWebServiceDefinition(final Method method) {
+	public static Optional<WebServiceDefinition> buildWebServiceDefinition(final Method method) {
 		final WebServiceDefinitionBuilder builder = WebServiceDefinition.builder(method);
 		final PathPrefix pathPrefix = method.getDeclaringClass().getAnnotation(PathPrefix.class);
 		if (pathPrefix != null) {
