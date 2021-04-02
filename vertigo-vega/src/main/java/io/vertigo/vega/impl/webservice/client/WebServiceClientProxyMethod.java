@@ -11,11 +11,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.JsonSyntaxException;
+
+import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.connectors.httpclient.HttpClientConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.amplifier.ProxyMethod;
 import io.vertigo.core.util.StringUtil;
@@ -23,6 +29,7 @@ import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.plugins.webservice.scanner.annotations.AnnotationsWebServiceScannerUtil;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 import io.vertigo.vega.webservice.definitions.WebServiceParam;
+import io.vertigo.vega.webservice.exception.SessionException;
 
 public final class WebServiceClientProxyMethod implements ProxyMethod {
 
@@ -74,6 +81,17 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 			return jsonEngine.fromJson((String) response.body(), returnType);
 		} else if (responseStatus / 100 == 3) {
 			throw WrappedException.wrap(new VUserException((String) response.body()));
+		} else if (responseStatus / 100 == 4) {
+			if (responseStatus == HttpServletResponse.SC_UNAUTHORIZED) {
+				throw WrappedException.wrap(new SessionException((String) response.body()));
+			} else if (responseStatus == HttpServletResponse.SC_FORBIDDEN) {
+				throw new VSecurityException(MessageText.of((String) response.body()));
+			} else if (responseStatus == HttpServletResponse.SC_BAD_REQUEST) {
+				throw new JsonSyntaxException((String) response.body());
+			} else {
+				//UiMessageStack uiMessageStack = jsonEngine.fromJson((String) response.body(), UiMessageStack.class);
+				throw WrappedException.wrap(new VUserException((String) response.body()));
+			}
 		} else {
 			throw WrappedException.wrap(new VSystemException((String) response.body()));
 		}

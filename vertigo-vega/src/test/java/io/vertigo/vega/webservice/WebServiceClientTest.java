@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.vertigo.connectors.httpclient.HttpClientCookie;
-import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
 import io.vertigo.vega.webservice.data.domain.Contact;
@@ -89,7 +89,7 @@ public final class WebServiceClientTest {
 
 	@Test
 	public void testUnauthentifiedTest() {
-		Assertions.assertThrows(VSystemException.class, () -> {
+		Assertions.assertThrows(WrappedException.class, () -> { //Wrapped<SessionException>
 			service.authentifiedTest();
 		});
 	}
