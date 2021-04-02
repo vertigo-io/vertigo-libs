@@ -81,7 +81,7 @@ public final class TaskProxyMethod implements ProxyMethod {
 		if (taskDefinition.getOutAttributeOption().isPresent()) {
 			return taskResult.getResult();
 		}
-		return Void.TYPE;
+		return null;
 	}
 
 	private static TaskDefinition createTaskDefinition(final Method method) {
