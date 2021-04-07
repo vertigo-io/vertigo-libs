@@ -10,7 +10,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonSyntaxException;
@@ -22,9 +24,7 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.amplifier.ProxyMethod;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.plugins.webservice.scanner.annotations.AnnotationsWebServiceScannerUtil;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
@@ -33,37 +33,40 @@ import io.vertigo.vega.webservice.exception.SessionException;
 
 public final class WebServiceClientProxyMethod implements ProxyMethod {
 
+	private final Map<String, HttpClientConnector> httpClientConnectorByName = new HashMap<>();
+	private final JsonEngine jsonEngine;
+
+	@Inject
+	public WebServiceClientProxyMethod(
+			final JsonEngine jsonEngine,
+			final List<HttpClientConnector> httpClientConnectors) {
+		Assertion.check()
+				.isNotNull(jsonEngine)
+				.isNotNull(httpClientConnectors);
+		//---
+		this.jsonEngine = jsonEngine;
+		httpClientConnectors.forEach(
+				connector -> {
+					final var connectorName = connector.getName();
+					Assertion.check()
+							.isNotBlank(connectorName)
+							.isFalse(httpClientConnectorByName.containsKey(connectorName), "A HttpClientConnector with name '{0}' is already registered ", connectorName);
+					//---
+					httpClientConnectorByName.put(connectorName, connector);
+				});
+	}
+
 	@Override
 	public Class<io.vertigo.vega.impl.webservice.client.WebServiceProxyAnnotation> getAnnotationType() {
 		return io.vertigo.vega.impl.webservice.client.WebServiceProxyAnnotation.class;
 	}
 
-	private static JsonEngine resolveJsonEngine() {
-		return Node.getNode().getComponentSpace().resolve(JsonEngine.class);
-	}
-
-	private static HttpClientConnector resolveHttpClientConnector(final String connectorName) {
-		final String httpClientConnectorName = StringUtil.first2LowerCase(HttpClientConnector.class.getSimpleName());
-		for (final String id : Node.getNode().getComponentSpace().keySet()) {
-			//On prend tous les objets ayant l'identifiant requis
-			final boolean match = id.equals(httpClientConnectorName) || id.startsWith(httpClientConnectorName + '#');
-			if (match) {
-				final HttpClientConnector connector = Node.getNode().getComponentSpace().resolve(id, HttpClientConnector.class);
-				Assertion.check().isTrue(connector instanceof HttpClientConnector, "type of {0} is incorrect ; expected : {1}", id, HttpClientConnector.class.getName());
-				if (connectorName.equals(connector.getName())) {
-					return connector;
-				}
-			}
-		}
-		throw new VSystemException("Can't found HttpClientConnector with name {0}", connectorName);
-	}
-
 	@Override
 	public Object invoke(final Method method, final Object[] args) {
 		final WebServiceProxyAnnotation webServiceProxyAnnotation = method.getAnnotation(WebServiceProxyAnnotation.class);
-		final JsonEngine jsonEngine = resolveJsonEngine();
 		final WebServiceDefinition webServiceDefinition = createWebServiceDefinition(method);
-		final HttpClientConnector httpClientConnector = resolveHttpClientConnector(webServiceProxyAnnotation.connectorName());
+		final HttpClientConnector httpClientConnector = Optional.ofNullable(httpClientConnectorByName.get(webServiceProxyAnnotation.connectorName()))
+				.orElseThrow(() -> new VSystemException("Can't found HttpClientConnector with name {0}", webServiceProxyAnnotation.connectorName()));
 		final HttpRequest httpRequest = createHttpRequest(webServiceDefinition, namedArgs(webServiceDefinition.getWebServiceParams(), args), httpClientConnector, jsonEngine);
 
 		final HttpResponse response;
