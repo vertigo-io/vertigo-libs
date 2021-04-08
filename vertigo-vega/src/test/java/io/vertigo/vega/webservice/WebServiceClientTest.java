@@ -18,8 +18,11 @@
 package io.vertigo.vega.webservice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -29,12 +32,16 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
+import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.connectors.httpclient.HttpClientCookie;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.AutoCloseableNode;
+import io.vertigo.vega.impl.webservice.client.WebServiceUserException;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
+import io.vertigo.vega.webservice.data.domain.Address;
 import io.vertigo.vega.webservice.data.domain.Contact;
 import io.vertigo.vega.webservice.data.ws.client.SimplerClientTestWebServices;
+import io.vertigo.vega.webservice.exception.SessionException;
 
 public final class WebServiceClientTest {
 
@@ -89,8 +96,12 @@ public final class WebServiceClientTest {
 
 	@Test
 	public void testUnauthentifiedTest() {
-		Assertions.assertThrows(WrappedException.class, () -> { //Wrapped<SessionException>
-			service.authentifiedTest();
+		Assertions.assertThrows(SessionException.class, () -> { //Wrapped<SessionException>
+			try {
+				service.authentifiedTest();
+			} catch (final WrappedException e) {
+				throw e.unwrap();
+			}
 		});
 	}
 
@@ -112,345 +123,117 @@ public final class WebServiceClientTest {
 			assertEquals(1.0, contact.get("conId"));
 		}
 	}
+
+	@Test
+	public void docTest1() {
+		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+			service.login();
+			final List<Contact> result = service.docTest("RtFM");
+			assertEquals(11, result.size());
+		}
+	}
+
+	@Test
+	public void docTest2() {
+		Assertions.assertThrows(VSecurityException.class, () -> { //Wrapped<SessionException>
+			try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+				service.login();
+				service.docTest("myPass");
+			}
+		});
+	}
+
+	@Test
+	public void docTest3TrailingSlashes() {
+		Assertions.assertThrows(VSecurityException.class, () -> { //Wrapped<SessionException>
+			try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+				service.login();
+				service.docTestEmpty();
+			}
+		});
+	}
+
+	@Test
+	public void testRead1() {
+		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+			service.login();
+			final Contact result = service.testRead(2);
+			assertNotNull(result);
+			assertEquals(2, result.getConId());
+		}
+	}
+
+	@Test
+	public void testRead2() {
+		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+			service.login();
+			service.testRead(30);
+			assertFalse(true, "throw WebServiceUserException expected");
+		} catch (final WebServiceUserException e) {
+			final Map<String, List<Object>> uiMessageStack = e.getPayload();
+			assertEquals("Contact #30 unknown", uiMessageStack.get("globalErrors").get(0));
+		}
+	}
+
+	@Test
+	public void testPostContact() {
+		doCreateContact();
+	}
+
+	private Contact doCreateContact() {
+		final Contact newContact = createDefaultContact(null);
+
+		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+			service.login();
+			final Contact result = service.createContact(newContact);
+			assertNotNull(result);
+			assertEquals(2, result.getConId());
+			return result;
+		}
+	}
+
+	@Test
+	public void testPostContactValidatorError() {
+		final Contact newContact = createDefaultContact(100L);
+		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+			service.login();
+			service.testUpdate(newContact);
+			assertFalse(true, "throw WebServiceUserException expected");
+		} catch (final WebServiceUserException e) {
+			final Map<String, List<Object>> uiMessageStack = e.getPayload();
+			assertEquals("Id must not be set", uiMessageStack.get("fieldErrors").get(0));
+		}
+		final Contact new2Contact = createDefaultContact(null);
+		new2Contact.setBirthday(LocalDate.parse("2014-10-24"));
+		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+			service.login();
+			service.createContact(new2Contact);
+			assertFalse(true, "throw WebServiceUserException expected");
+		} catch (final WebServiceUserException e) {
+			final Map<String, List<Object>> uiMessageStack = e.getPayload();
+			assertEquals("You can't add contact younger than 16", uiMessageStack.get("fieldErrors").get(0));
+		}
+	}
 	/*
-		@Test
-		public void docTest1() {
-			loggedAndExpect()
-					.statusCode(HttpStatus.SC_OK)
-					.body("size()", Matchers.greaterThanOrEqualTo(10))
-					.when()
-					.get("/test/docTest/RtFM");
-		}
-	
-		@Test
-		public void docTest2() {
-			loggedAndExpect()
-					.statusCode(HttpStatus.SC_FORBIDDEN)
-					.when()
-					.get("/test/docTest/myPass");
-		}
-	
-		@Test
-		public void docTest3TrailingSlashes() {
-			//Javalin don't match path which per / exactly, if there is a route without the final / it will matched
-			loggedAndExpect()
-					.statusCode(HttpStatus.SC_FORBIDDEN)
-					.when()
-					.get("/test/docTest/");
-		}
-	
-		@Test
-		public void testRead1() {
-			loggedAndExpect()
-					.body("conId", Matchers.equalTo(2))
-					.statusCode(HttpStatus.SC_OK)
-					.when()
-					.get("/test/2");
-		}
-	
-		@Test
-		public void testRead2() {
-			loggedAndExpect()
-					.body("globalErrors", Matchers.contains("Contact #30 unknown"))
-					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
-					.when()
-					.get("/test/30");
-		}
-	
-		@Test
-		public void testExportContacts() {
-			loggedAndExpect()
-					.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=\"contacts.pdf\";filename*=UTF-8''contacts.pdf"))
-					// greaterThanOrEqualTo because it depends of previously inserted elements
-					.header("Content-Length", Matchers.greaterThanOrEqualTo("2572"))
-					.statusCode(HttpStatus.SC_OK)
-					.when()
-					.get("/test/export/pdf/");
-		}
-	
-		@Test
-		public void testExportOneContact() {
-			loggedAndExpect()
-					.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=\"contact2.pdf\";filename*=UTF-8''contact2.pdf"))
-					.header("Content-Length", Matchers.anyOf(Matchers.equalTo("1157"), Matchers.equalTo("1703")))
-					.statusCode(HttpStatus.SC_OK)
-					.when()
-					.get("/test/export/pdf/2");
-		}
-	
-		@Test
-		public void testGrantAccessToken() {
-			loggedAndExpect()
-					.statusCode(HttpStatus.SC_NO_CONTENT)
-					.header(HEADER_ACCESS_TOKEN, Matchers.notNullValue())
-					.when()
-					.get("/test/grantAccess");
-		}
-	
-		@Test
-		public void testNoAccessToken() {
-			loggedAndExpect()
-					.statusCode(HttpStatus.SC_FORBIDDEN)
-					.when()
-					.get("/test/limitedAccess/3");
-		}
-	
-		@Test
-		public void testBadAccessToken() {
-			loggedAndExpect(given().header(HEADER_ACCESS_TOKEN, "badToken"))
-					.statusCode(HttpStatus.SC_FORBIDDEN)
-					.when()
-					.get("/test/limitedAccess/3");
-		}
-	
-		@Test
-		public void testLimitedAccessToken() {
-			final String headerAccessToken = given()
-					.filter(loggedSessionFilter)
-					.get("/test/grantAccess")
-					.header(HEADER_ACCESS_TOKEN);
-	
-			loggedAndExpect(given().header(HEADER_ACCESS_TOKEN, headerAccessToken))
-					.body("conId", Matchers.equalTo(3))
-					.statusCode(HttpStatus.SC_OK)
-					.when()
-					.get("/test/limitedAccess/3");
-		}
-	
-		@Test
-		public void testLimitedAccessToken2() {
-			final String headerAccessToken = given()
-					.filter(loggedSessionFilter)
-					.get("/test/grantAccess")
-					.header(HEADER_ACCESS_TOKEN);
-	
-			loggedAndExpect(given().header(HEADER_ACCESS_TOKEN, headerAccessToken))
-					.body("conId", Matchers.equalTo(3))
-					.statusCode(HttpStatus.SC_OK)
-					.when()
-					.get("/test/limitedAccess/3");
-	
-			loggedAndExpect(given().header(HEADER_ACCESS_TOKEN, headerAccessToken))
-					.body("conId", Matchers.equalTo(3))
-					.statusCode(HttpStatus.SC_OK)
-					.when()
-					.get("/test/limitedAccess/3");
-		}
-	
-		@Test
-		public void testAccessTokenConsume() {
-			final String headerAccessToken = given()
-					.filter(loggedSessionFilter)
-					.get("/test/grantAccess")
-					.header(HEADER_ACCESS_TOKEN);
-	
-			loggedAndExpect(given().header(HEADER_ACCESS_TOKEN, headerAccessToken))
-					.body("conId", Matchers.equalTo(1))
-					.statusCode(HttpStatus.SC_OK)
-					.when()
-					.get("/test/oneTimeAccess/1");
-		}
-	
-		@Test
-		public void testAccessTokenConsume2() {
-			final String headerAccessToken = given()
-					.filter(loggedSessionFilter)
-					.get("/test/grantAccess")
-					.header(HEADER_ACCESS_TOKEN);
-	
-			loggedAndExpect(given().header(HEADER_ACCESS_TOKEN, headerAccessToken))
-					.body("conId", Matchers.equalTo(1))
-					.statusCode(HttpStatus.SC_OK)
-					.when()
-					.get("/test/oneTimeAccess/1");
-	
-			loggedAndExpect(given().header(HEADER_ACCESS_TOKEN, headerAccessToken))
-					.statusCode(HttpStatus.SC_FORBIDDEN)
-					.when()
-					.get("/test/oneTimeAccess/1");
-		}
-	
-		@Test
-		public void testFilteredRead() {
-			loggedAndExpect()
-					.body("conId", Matchers.equalTo(1))
-					.body("honorificCode", Matchers.notNullValue())
-					.body("name", Matchers.notNullValue())
-					.body("firstName", Matchers.notNullValue())
-					.body("birthday", Matchers.nullValue()) //excluded field
-					.body("email", Matchers.nullValue()) //excluded field
-					.statusCode(HttpStatus.SC_OK)
-					.when()
-					.get("/test/filtered/1");
-		}
-	
-		@Test
-		public void testAnonymousGrantAccessToken() {
-			RestAssured.given()
-					.filter(anonymousSessionFilter)
-					.expect().log().ifValidationFails()
-					.statusCode(HttpStatus.SC_NO_CONTENT)
-					.header(HEADER_ACCESS_TOKEN, Matchers.notNullValue())
-					.when()
-					.get("/anonymous/test/grantAccess");
-		}
-	
-		@Test
-		public void testAnonymousNoAccessToken() {
-			RestAssured.given()
-					.filter(anonymousSessionFilter)
-					.expect().log().ifValidationFails()
-					.statusCode(HttpStatus.SC_UNAUTHORIZED)
-					.when()
-					.get("/anonymous/test/limitedAccess/3");
-		}
-	
-		@Test
-		public void testAnonymousBadAccessToken() {
-			given().header(HEADER_ACCESS_TOKEN, "badToken")
-					.filter(anonymousSessionFilter)
-					.expect().log().ifValidationFails()
-					.statusCode(HttpStatus.SC_UNAUTHORIZED)
-					.when()
-					.get("/anonymous/test/limitedAccess/3");
-		}
-	
-		@Test
-		public void testAnonymousLimitedAccessToken() {
-			final String headerAccessToken = given()
-					.filter(anonymousSessionFilter)
-					.get("/anonymous/test/grantAccess")
-					.header(HEADER_ACCESS_TOKEN);
-	
-			given().header(HEADER_ACCESS_TOKEN, headerAccessToken)
-					.filter(anonymousSessionFilter)
-					.expect().log().ifValidationFails()
-					.body("conId", Matchers.equalTo(3))
-					.statusCode(HttpStatus.SC_OK)
-					.when()
-					.get("/anonymous/test/limitedAccess/3");
-		}
-	
-		@Test
-		public void testAnonymousLimitedAccessToken2() {
-			final String headerAccessToken = given()
-					.filter(anonymousSessionFilter)
-					.get("/anonymous/test/grantAccess")
-					.header(HEADER_ACCESS_TOKEN);
-	
-			given().header(HEADER_ACCESS_TOKEN, headerAccessToken)
-					.filter(anonymousSessionFilter)
-					.expect().log().ifValidationFails()
-					.body("conId", Matchers.equalTo(3))
-					.statusCode(HttpStatus.SC_OK)
-					.when()
-					.get("/anonymous/test/limitedAccess/3");
-	
-			given().header(HEADER_ACCESS_TOKEN, headerAccessToken)
-					.filter(anonymousSessionFilter)
-					.expect().log().ifValidationFails()
-					.body("conId", Matchers.equalTo(3))
-					.statusCode(HttpStatus.SC_OK)
-					.when()
-					.get("/anonymous/test/limitedAccess/3");
-		}
-	
-		@Test
-		public void testAnonymousAccessTokenConsume() {
-			final String headerAccessToken = given()
-					.filter(anonymousSessionFilter)
-					.get("/anonymous/test/grantAccess")
-					.header(HEADER_ACCESS_TOKEN);
-	
-			given().header(HEADER_ACCESS_TOKEN, headerAccessToken)
-					.filter(anonymousSessionFilter)
-					.expect().log().ifValidationFails()
-					.body("conId", Matchers.equalTo(1))
-					.statusCode(HttpStatus.SC_OK)
-					.when()
-					.get("/anonymous/test/oneTimeAccess/1");
-		}
-	
-		@Test
-		public void testAnonymousAccessTokenConsume2() {
-			final String headerAccessToken = given()
-					.filter(anonymousSessionFilter)
-					.get("/anonymous/test/grantAccess")
-					.header(HEADER_ACCESS_TOKEN);
-	
-			given().header(HEADER_ACCESS_TOKEN, headerAccessToken)
-					.filter(anonymousSessionFilter)
-					.expect().log().ifValidationFails()
-					.body("conId", Matchers.equalTo(1))
-					.statusCode(HttpStatus.SC_OK)
-					.when()
-					.get("/anonymous/test/oneTimeAccess/1");
-	
-			given().header(HEADER_ACCESS_TOKEN, headerAccessToken)
-					.filter(anonymousSessionFilter)
-					.expect().log().ifValidationFails()
-					.statusCode(HttpStatus.SC_UNAUTHORIZED) //401 : Unauthorized means unauthenticated
-					.when()
-					.get("/anonymous/test/oneTimeAccess/1");
-		}
-	
-		@Test
-		public void testPostContact() {
-			doCreateContact();
-		}
-	
-		private Map<String, Object> doCreateContact() {
-			final Map<String, Object> newContact = createDefaultContact(null);
-	
-			final Long conId = loggedAndExpect(given().body(newContact))
-					.body("conId", Matchers.notNullValue())
-					.statusCode(HttpStatus.SC_CREATED)
-					.when()
-					.post("/test/contact")
-					.body().path("conId");
-			newContact.put("conId", conId);
-			return newContact;
-		}
-	
-		@Test
-		public void testPostContactValidatorError() {
-			final Map<String, Object> newContact = createDefaultContact(100L);
-	
-			loggedAndExpect(given().body(newContact))
-					.body("fieldErrors.conId", Matchers.contains("Id must not be set"))
-					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
-					.when()
-					.post("/test/contact");
-	
-			final Map<String, Object> new2Contact = createDefaultContact(null);
-			new2Contact.put("birthday", "2012-10-24");
-	
-			loggedAndExpect(given().body(new2Contact))
-					.body("fieldErrors.birthday", Matchers.contains("You can't add contact younger than 16"))
-					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
-					.when()
-					.post("/test/contact");
-		}
-	
 		@Test
 		public void testPostContactUserException() {
 			final Map<String, Object> newContact = createDefaultContact(null);
 			newContact.put("name", null);
-	
+
 			loggedAndExpect(given().body(newContact))
 					.body("globalErrors", Matchers.contains("Name is mandatory"))
 					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 					.when()
 					.post("/test/contact");
 		}
-	
+
 		@Test
 		public void testJsonSyntaxError() {
 			final String[] testOkJson = { "{ \"firstName\" : \"test\" }", "{ firstName : \"test\" }", "{ 'firstName' : \"test\" }", "{\n\t\"firstName\" : \"test\"\n}" };
 			final String[] testBadInterpretedJson = { "{ \"firstName\" : test\" }" };
 			final String[] testBadSyntaxJson = { " \"firstName\" : \"test\" }", "{ \"firstName : \"test\" }", "{ firstName\" : \"test\" }",
 					"{ \"firstName\"  \"test\" }", "{ \"firstName\" : \"test }", "{ \"firstName\" : \"test\" " };
-	
+
 			for (final String testJson : testOkJson) {
 				loggedAndExpect(given().body(testJson))
 						.body("firstName", Matchers.equalTo("test"))
@@ -458,7 +241,7 @@ public final class WebServiceClientTest {
 						.when()
 						.put("/test/contactSyntax");
 			}
-	
+
 			for (final String testJson : testBadInterpretedJson) {
 				loggedAndExpect(given().body(testJson))
 						.body("firstName", Matchers.equalTo("test\""))
@@ -466,7 +249,7 @@ public final class WebServiceClientTest {
 						.when()
 						.put("/test/contactSyntax");
 			}
-	
+
 			for (final String testJson : testBadSyntaxJson) {
 				loggedAndExpect(given().body(testJson))
 						.body("globalErrors", Matchers.contains("Error parsing param :Body:[1] on service Put /test/contactSyntax"))
@@ -475,7 +258,7 @@ public final class WebServiceClientTest {
 						.put("/test/contactSyntax");
 			}
 		}
-	
+
 		@Test
 		public void testWsUrlError() {
 			final String[] testOkJson = { "{ \"firstName\" : \"test\" }", "{ firstName : \"test\" }", "{ 'firstName' : \"test\" }", "{\n\t\"firstName\" : \"test\"\n}" };
@@ -487,11 +270,11 @@ public final class WebServiceClientTest {
 						.put("/test/contactUrl99");
 			}
 		}
-	
+
 		@Test
 		public void testPutContact() {
 			final Map<String, Object> newContact = createDefaultContact(100L);
-	
+
 			loggedAndExpect(given().body(newContact))
 					.body("conId", Matchers.equalTo(100))
 					.body("honorificCode", Matchers.notNullValue())
@@ -503,7 +286,7 @@ public final class WebServiceClientTest {
 					.when()
 					.put("/test/contact");
 		}
-	
+
 		@Test
 		public void testPostContactValidations() {
 			final Map<String, Object> newContact = createDefaultContact(null);
@@ -515,7 +298,7 @@ public final class WebServiceClientTest {
 					.post("/test/contactValidations")
 					.body().path("conId");
 		}
-	
+
 		@Test
 		public void testPostContactAutoValidations() {
 			final Map<String, Object> newContact = createDefaultContact(null);
@@ -529,12 +312,12 @@ public final class WebServiceClientTest {
 					.post("/test/contactValidations")
 					.body().path("conId");
 		}
-	
+
 		@Test
 		public void testPutContactVAccessor() {
 			final Map<String, Object> newContact = createDefaultContact(100L);
 			newContact.put("adrId", 200);
-	
+
 			loggedAndExpect(given().body(newContact))
 					.body("conId", Matchers.equalTo(100))
 					.body("honorificCode", Matchers.notNullValue())
@@ -547,41 +330,41 @@ public final class WebServiceClientTest {
 					.when()
 					.put("/test/contact");
 		}
-	
+
 		@Test
 		public void testPutContactEmptyField() {
 			final Map<String, Object> newContact = createDefaultContact(100L);
 			newContact.put("name", "");
-	
+
 			loggedAndExpect(given().body(newContact))
 					.body("fieldErrors.name", Matchers.contains("Le champ doit être renseigné")) //autovalidation by Vega
 					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 					.when()
 					.put("/test/contact");
-	
+
 			//----
-	
+
 			final Map<String, Object> newContact2 = createDefaultContact(100L);
 			newContact2.put("name", null);
-	
+
 			loggedAndExpect(given().body(newContact2))
 					.body("globalErrors", Matchers.contains("Name is mandatory")) //WS manual validation
 					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 					.when()
 					.put("/test/contact");
-	
+
 			//----
-	
+
 			final Map<String, Object> newContact3 = createDefaultContact(100L);
 			newContact3.remove("name");
-	
+
 			loggedAndExpect(given().body(newContact3))
 					.body("globalErrors", Matchers.contains("Name is mandatory")) //WS manual validation
 					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 					.when()
 					.put("/test/contact");
 		}
-	
+
 		@Test
 		public void testGetContactView() {
 			loggedAndExpect()
@@ -593,19 +376,19 @@ public final class WebServiceClientTest {
 					.when()
 					.get("/contacts/contactView/1");
 		}
-	
+
 		@Test
 		public void testPutContactView() {
 			final Map<String, Object> newContactView = createDefaultContact(100L);
-	
+
 			final List<Map<String, Object>> addresses = List.of(
 					createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
 					createAddress(24L, "24, avenue General De Gaulle", "", "Paris", "75001", "France"),
 					createAddress(38L, "38, impasse des puits", "", "Versaille", "78000", "France"));
-	
+
 			newContactView.remove("address");
 			newContactView.put("addresses", addresses);
-	
+
 			loggedAndExpect(given().body(newContactView))
 					.body("honorificCode", Matchers.notNullValue())
 					.body("name", Matchers.notNullValue())
@@ -617,7 +400,7 @@ public final class WebServiceClientTest {
 					.when()
 					.put("/contacts/contactView");
 		}
-	
+
 		@Disabled("Not supported yet")
 		@Test
 		public void testPutContactViewError() {
@@ -626,10 +409,10 @@ public final class WebServiceClientTest {
 					createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
 					createAddress(24L, "24, avenue General De Gaulle", "", "Paris", "75001", "France"),
 					createAddress(38L, "38, impasse des puits -- too long -- overrided DO_TEXT_50 length constraint -- too long -- too long", "", "Versaille", "78000", "France"));
-	
+
 			newContactView.remove("address");
 			newContactView.put("addresses", addresses);
-	
+
 			loggedAndExpect(given().body(newContactView))
 					.body("fieldErrors", Matchers.notNullValue())
 					//.body("fieldErrors.addresses[2]", Matchers.notNullValue())
@@ -637,11 +420,11 @@ public final class WebServiceClientTest {
 					.when()
 					.put("/contacts/contactView");
 		}
-	
+
 		@Test
 		public void testPutContactByPath() {
 			final Map<String, Object> newContact = createDefaultContact(null);
-	
+
 			loggedAndExpect(given().body(newContact))
 					.body("conId", Matchers.equalTo(101))
 					.body("honorificCode", Matchers.notNullValue())
@@ -653,63 +436,63 @@ public final class WebServiceClientTest {
 					.when()
 					.put("/test/contact/101");
 		}
-	
+
 		@Test
 		public void testPutContactValidatorError() {
 			final Map<String, Object> newContact = createDefaultContact(null);
-	
+
 			loggedAndExpect(given().body(newContact))
 					.body("fieldErrors.conId", Matchers.contains("Id is mandatory"))
 					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 					.when()
 					.put("/test/contact");
-	
+
 			final Map<String, Object> new2Contact = createDefaultContact(100L);
 			new2Contact.put("birthday", "2012-10-24");
-	
+
 			loggedAndExpect(given().body(new2Contact))
 					.body("fieldErrors.birthday", Matchers.contains("You can't add contact younger than 16"))
 					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 					.when()
 					.put("/test/contact");
 		}
-	
+
 		@Test
 		public void testPutContactByPathValidatorError() {
 			final Map<String, Object> new2Contact = createDefaultContact(null);
 			new2Contact.put("birthday", "2012-10-24");
-	
+
 			loggedAndExpect(given().body(new2Contact))
 					.body("fieldErrors.birthday", Matchers.contains("You can't add contact younger than 16"))
 					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 					.when()
 					.put("/test/contact/101");
 		}
-	
+
 		@Test
 		public void testPutContactUserException() {
 			final Map<String, Object> newContact = createDefaultContact(100L);
 			newContact.remove("name");
-	
+
 			loggedAndExpect(given().body(newContact))
 					.body("globalErrors", Matchers.contains("Name is mandatory"))
 					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 					.when()
 					.put("/test/contact");
 		}
-	
+
 		@Test
 		public void testPutContactByPathUserException() {
 			final Map<String, Object> newContact = createDefaultContact(null);
 			newContact.remove("name");
-	
+
 			loggedAndExpect(given().body(newContact))
 					.body("globalErrors", Matchers.contains("Name is mandatory"))
 					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 					.when()
 					.put("/test/contact/101");
 		}
-	
+
 		@Test
 		public void testDeleteContact() {
 			final Map<String, Object> newContact = createDefaultContact(null);
@@ -717,13 +500,13 @@ public final class WebServiceClientTest {
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.put("/test/contact/105");
-	
+
 			loggedAndExpect(given().body(newContact))
 					.statusCode(HttpStatus.SC_NO_CONTENT)
 					.when()
 					.delete("/test/contact/105");
 		}
-	
+
 		@Test
 		public void testDeleteContactErrors() {
 			final Map<String, Object> newContact = createDefaultContact(null);
@@ -731,40 +514,40 @@ public final class WebServiceClientTest {
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.put("/test/contact/106");
-	
+
 			loggedAndExpect(given().body(newContact))
 					.statusCode(HttpStatus.SC_NO_CONTENT)
 					.when()
 					.delete("/test/contact/106");
-	
+
 			loggedAndExpect(given().body(newContact))
 					.body("globalErrors", Matchers.contains("Contact #106 unknown"))
 					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 					.when()
 					.delete("/test/contact/106");
-	
+
 			loggedAndExpect(given().body(newContact))
 					.body("globalErrors", Matchers.contains("You don't have enought rights"))
 					.statusCode(HttpStatus.SC_FORBIDDEN)
 					.when()
 					.delete("/test/contact/2");
 		}
-	
+
 		@Test
 		public void testPostInnerBodyObject() {
 			final Map<String, String> contactFrom = given().filter(loggedSessionFilter)
 					.when().get("/test/5")
 					.body().as(Map.class);
-	
+
 			final Map<String, String> contactTo = given().filter(loggedSessionFilter)
 					.when().get("/test/6")
 					.body().as(Map.class);
-	
+
 			final Map<String, Object> fullBody = new MapBuilder<String, Object>()
 					.put("contactFrom", contactFrom)
 					.put("contactTo", contactTo)
 					.build();
-	
+
 			loggedAndExpect(given().body(fullBody))
 					.body("size()", Matchers.equalTo(2))
 					.body("get(0).conId", Matchers.equalTo(5))
@@ -775,24 +558,24 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/test/innerbody");
 		}
-	
+
 		@Test
 		public void testPostInnerBodyObjectFieldErrors() {
 			final Map<String, String> contactFrom = given().filter(loggedSessionFilter)
 					.when().get("/test/5")
 					.body().as(Map.class);
 			contactFrom.put("email", "notAnEmail");
-	
+
 			final Map<String, String> contactTo = given().filter(loggedSessionFilter)
 					.when().get("/test/6")
 					.body().as(Map.class);
 			contactTo.put("firstName", "MoreThan50CharactersIsTooLongForAFirstNameInThisTestApi");
-	
+
 			final Map<String, Object> fullBody = new MapBuilder<String, Object>()
 					.put("contactFrom", contactFrom)
 					.put("contactTo", contactTo)
 					.build();
-	
+
 			loggedAndExpect(given().body(fullBody))
 					.body("objectFieldErrors.contactFrom.email", Matchers.contains("Le courriel n'est pas valide"))
 					.body("objectFieldErrors.contactTo.firstName", Matchers.contains("<<fr:DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED[50]>>"))
@@ -800,22 +583,22 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/test/innerbody");
 		}
-	
+
 		@Test
 		public void testPostInnerBodyOptionalPresentObject() {
 			final Map<String, String> contactFrom = given().filter(loggedSessionFilter)
 					.when().get("/test/5")
 					.body().as(Map.class);
-	
+
 			final Map<String, String> contactTo = given().filter(loggedSessionFilter)
 					.when().get("/test/6")
 					.body().as(Map.class);
-	
+
 			final Map<String, Object> fullBody = new MapBuilder<String, Object>()
 					.put("contactFrom", contactFrom)
 					.put("contactTo", contactTo)
 					.build();
-	
+
 			loggedAndExpect(given().body(fullBody))
 					.body("size()", Matchers.equalTo(2))
 					.body("get(0).conId", Matchers.equalTo(5))
@@ -826,17 +609,17 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/test/innerbodyOptional");
 		}
-	
+
 		@Test
 		public void testPostInnerBodyOptionalEmptyObject() {
 			final Map<String, String> contactFrom = given().filter(loggedSessionFilter)
 					.when().get("/test/5")
 					.body().as(Map.class);
-	
+
 			final Map<String, Object> fullBody = new MapBuilder<String, Object>()
 					.put("contactFrom", contactFrom)
 					.build();
-	
+
 			loggedAndExpect(given().body(fullBody))
 					.body("size()", Matchers.equalTo(1))
 					.body("get(0).conId", Matchers.equalTo(5))
@@ -845,31 +628,31 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/test/innerbodyOptional");
 		}
-	
+
 		@Test
 		public void testPostInnerBodyValidationErrors() {
 			final Map<String, Object> contactFrom = createDefaultContact(140L);
 			final Map<String, Object> contactTo = createDefaultContact(141L);
-	
+
 			final Map<String, Object> fullBody = new MapBuilder<String, Object>()
 					.put("contactFrom", contactFrom)
 					.put("contactTo", contactTo)
 					.build();
-	
+
 			loggedAndExpect(given().body(fullBody))
 					.body("objectFieldErrors.contactFrom.firstName", Matchers.contains("Process validation error"))
 					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 					.when()
 					.post("/test/innerBodyValidationErrors");
 		}
-	
+
 		@Test
 		public void testPostInnerBodyLong() {
 			final Map<String, Object> fullBody = new MapBuilder<String, Object>()
 					.put("contactId1", 6)
 					.put("contactId2", 7)
 					.build();
-	
+
 			loggedAndExpect(given().body(fullBody))
 					.body("size()", Matchers.equalTo(2))
 					.body("get(0).conId", Matchers.equalTo(6))
@@ -880,14 +663,14 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/test/innerLong");
 		}
-	
+
 		@Test
 		public void testInnerBodyLongToDtList() {
 			final Map<String, Object> fullBody = new MapBuilder<String, Object>()
 					.put("contactId1", 6)
 					.put("contactId2", 7)
 					.build();
-	
+
 			loggedAndExpect(given().body(fullBody))
 					.body("serverToken", Matchers.notNullValue())
 					.body("value.size()", Matchers.equalTo(2))
@@ -899,14 +682,14 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/test/innerLongToDtList");
 		}
-	
+
 		@Test
 		public void testUiContext() {
 			final Map<String, Object> fullBody = new MapBuilder<String, Object>()
 					.put("contactId1", 6)
 					.put("contactId2", 7)
 					.build();
-	
+
 			loggedAndExpect(given().body(fullBody))
 					.body("contactFrom.name", Matchers.equalTo("Leroy"))
 					.body("contactFrom.serverToken", Matchers.notNullValue())
@@ -920,25 +703,25 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/test/uiContext");
 		}
-	
+
 		@Test
 		public void testFilteredUpdateByExclude() {
 			final Map<String, Object> contact = doGetServerSideObject();
-	
+
 			final Long oldConId = (Long) contact.get("conId");
 			final String oldName = (String) contact.get("name");
 			final String oldFirstName = (String) contact.get("firstName");
 			final String oldEmail = (String) contact.get("email");
 			final String newFirstName = oldFirstName + "FNTest";
 			final String newEmail = "ETest." + oldEmail;
-	
+
 			contact.remove("conId"); //can't modify conId
 			contact.remove("name"); //can't modify name
 			//contact.put("conId", 1000L);
 			//contact.put("name", newName);
 			contact.put("firstName", newFirstName);
 			contact.put("email", newEmail);
-	
+
 			loggedAndExpect(given().body(contact))
 					.body("conId", Matchers.equalTo(oldConId))//not changed
 					.body("honorificCode", Matchers.equalTo(contact.get("honorificCode")))
@@ -950,33 +733,33 @@ public final class WebServiceClientTest {
 					.when()
 					.put("/test/filtered/" + oldConId);
 		}
-	
+
 		@Test
 		public void testFilteredUpdateByExcludeErrors() {
 			final Map<String, Object> contact = doGetServerSideObject();
 			final Long oldConId = (Long) contact.get("conId");
-	
+
 			contact.put("conId", 1000L);//can't modify conId
 			contact.put("name", "test"); //can't modify name
 			loggedAndExpect(given().body(contact))
 					.statusCode(HttpStatus.SC_FORBIDDEN)
 					.when()
 					.put("/test/filtered/" + oldConId);
-	
+
 			contact.put("conId", 1000L);//can't modify conId
 			contact.remove("name"); //can't modify name
 			loggedAndExpect(given().body(contact))
 					.statusCode(HttpStatus.SC_FORBIDDEN)
 					.when()
 					.put("/test/filtered/" + oldConId);
-	
+
 			contact.remove("conId");//can't modify conId
 			contact.put("name", "test"); //can't modify name
 			loggedAndExpect(given().body(contact))
 					.statusCode(HttpStatus.SC_FORBIDDEN)
 					.when()
 					.put("/test/filtered/" + oldConId);
-	
+
 			contact.remove("conId");//can't modify conId
 			contact.remove("name"); //can't modify name
 			loggedAndExpect(given().body(contact))
@@ -984,11 +767,11 @@ public final class WebServiceClientTest {
 					.when()
 					.put("/test/filtered/" + oldConId);
 		}
-	
+
 		@Test
 		public void testFilteredUpdateByInclude() {
 			final Map<String, Object> contact = doGetServerSideObject();
-	
+
 			final Long oldConId = (Long) contact.get("conId");
 			final String oldName = (String) contact.get("name");
 			final String oldFirstName = (String) contact.get("firstName");
@@ -997,14 +780,14 @@ public final class WebServiceClientTest {
 			final String oldBirthday = (String) contact.get("birthday");
 			final String newFirstName = oldFirstName + "FNTest";
 			final String newEmail = "ETest." + oldEmail;
-	
+
 			contact.remove("conId"); //can't modify conId
 			contact.remove("name"); //can't modify name
 			contact.put("firstName", newFirstName);
 			contact.put("email", newEmail);
 			contact.remove("honorificCode"); //can't modify conId
 			contact.remove("birthday"); //can't modify name
-	
+
 			loggedAndExpect(given().body(contact))
 					.body("conId", Matchers.equalTo(oldConId))//not changed
 					.body("honorificCode", Matchers.equalTo(oldHonorificCode)) //not changed
@@ -1015,19 +798,19 @@ public final class WebServiceClientTest {
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.put("/test/filteredInclude/" + oldConId);
-	
+
 		}
-	
+
 		@Test
 		public void testFilteredUpdateByIncludeErrors() {
 			final Map<String, Object> contact = doGetServerSideObject();
 			final Long oldConId = (Long) contact.get("conId");
-	
+
 			loggedAndExpect(given().body(contact))
 					.statusCode(HttpStatus.SC_FORBIDDEN)
 					.when()
 					.put("/test/filteredInclude/" + oldConId);
-	
+
 			contact.put("conId", 1000L); //can't modify conId
 			contact.remove("name"); //can't modify name
 			contact.remove("firstName");
@@ -1038,75 +821,75 @@ public final class WebServiceClientTest {
 					.statusCode(HttpStatus.SC_FORBIDDEN)
 					.when()
 					.put("/test/filteredInclude/" + oldConId);
-	
+
 			contact.remove("conId");//can't modify conId
 			contact.put("firstName", "test"); //can't modify name
 			loggedAndExpect(given().body(contact))
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.put("/test/filteredInclude/" + oldConId);
-	
+
 			contact.remove("firstName");
 			contact.put("name", "test"); //can't modify name
 			loggedAndExpect(given().body(contact))
 					.statusCode(HttpStatus.SC_FORBIDDEN)
 					.when()
 					.put("/test/filteredInclude/" + oldConId);
-	
+
 			contact.remove("name"); //can't modify name
 			contact.put("email", "test@test.com");
 			loggedAndExpect(given().body(contact))
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.put("/test/filteredInclude/" + oldConId);
-	
+
 			contact.put("honorificCode", "test"); //can't modify honorificCode
 			loggedAndExpect(given().body(contact))
 					.statusCode(HttpStatus.SC_FORBIDDEN)
 					.when()
 					.put("/test/filteredInclude/" + oldConId);
-	
+
 			contact.remove("honorificCode"); //can't modify honorificCode
 			contact.put("birthday", "1985-10-24"); //can't modify birthday
 			loggedAndExpect(given().body(contact))
 					.statusCode(HttpStatus.SC_FORBIDDEN)
 					.when()
 					.put("/test/filteredInclude/" + oldConId);
-	
+
 			contact.remove("birthday"); //can't modify honorificCode
 			loggedAndExpect(given().body(contact))
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.put("/test/filteredInclude/" + oldConId);
 		}
-	
+
 		@Test
 		public void testFilteredUpdateServerTokenErrors() {
 			final Map<String, Object> contact = doGetServerSideObject();
 			final Long oldConId = (Long) contact.get("conId");
-	
+
 			contact.remove("conId");//can't modify conId
 			contact.remove("name"); //can't modify name
-	
+
 			contact.put("serverToken", "badToken");
 			loggedAndExpect(given().body(contact))
 					.statusCode(HttpStatus.SC_FORBIDDEN)
 					.when()
 					.put("/test/filtered/" + oldConId);
-	
+
 			contact.remove("serverToken");
 			loggedAndExpect(given().body(contact))
 					.statusCode(HttpStatus.SC_FORBIDDEN)
 					.when()
 					.put("/test/filtered/" + oldConId);
 		}
-	
+
 		@Test
 		public void testPutContactTooLongField() {
 			final Map<String, Object> newContact = createDefaultContact(null);
 			final String newNameValue = "Here i am !!";
 			newContact.put("itsatoolongaliasforfieldcontactname", newNameValue);
-	
+
 			loggedAndExpect(given().body(newContact))
 					.body("conId", Matchers.equalTo(101))
 					.body("name", Matchers.equalTo(newNameValue))
@@ -1114,7 +897,7 @@ public final class WebServiceClientTest {
 					.when()
 					.put("/test/contactAliasName/101");
 		}
-	
+
 		@Test
 		public void testGetContactExtended() {
 			loggedAndExpect()
@@ -1126,13 +909,13 @@ public final class WebServiceClientTest {
 					.when()
 					.get("/test/contactExtended/1");
 		}
-	
+
 		@Test
 		public void testPutContactExtended() {
 			final Map<String, Object> newContact = createDefaultContact(103L);
 			newContact.remove("conId");
 			newContact.put("vanillaUnsupportedMultipleIds", new int[] { 3, 4, 5 });
-	
+
 			loggedAndExpect(given().body(newContact))
 					.body("conId", Matchers.equalTo(103))
 					.body("vanillaUnsupportedMultipleIds", Matchers.iterableWithSize(3))
@@ -1141,18 +924,18 @@ public final class WebServiceClientTest {
 					.when()
 					.put("/test/contactExtended/103");
 		}
-	
+
 		@Test
 		public void testPutContactExtendedValidator() {
 			final Map<String, Object> newContact = createDefaultContact(104L);
 			newContact.put("vanillaUnsupportedMultipleIds", new int[] { 3, 4, 5 });
-	
+
 			loggedAndExpect(given().body(newContact))
 					.body("fieldErrors.conId", Matchers.contains("Id must not be set"))
 					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 					.when()
 					.put("/test/contactExtended/104");
-	
+
 			newContact.remove("conId");
 			newContact.put("birthday", "2012-10-24");
 			loggedAndExpect(given().body(newContact))
@@ -1161,7 +944,7 @@ public final class WebServiceClientTest {
 					.when()
 					.put("/test/contactExtended/104");
 		}
-	
+
 		@Test
 		public void testPostCharset() throws UnsupportedEncodingException {
 			final String testFirstName = "Gérard";
@@ -1174,7 +957,7 @@ public final class WebServiceClientTest {
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.post("/test/charset");
-	
+
 			given().filter(loggedSessionFilter) //logged
 					.contentType("application/json;charset=UTF-8")
 					.body(testJson.getBytes("UTF-8")) //We force the encode charset
@@ -1183,7 +966,7 @@ public final class WebServiceClientTest {
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.post("/test/charset");
-	
+
 			given().filter(loggedSessionFilter) //logged
 					.contentType("application/json;charset=ISO-8859-1")
 					.body(Collections.singletonMap("firstName", testFirstName)) //RestAssured read encodetype and encode as ISO-8859-1
@@ -1192,7 +975,7 @@ public final class WebServiceClientTest {
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.post("/test/charset");
-	
+
 			given().filter(loggedSessionFilter) //logged
 					.contentType("application/json;charset=ISO-8859-1")
 					.body(testJson.getBytes("ISO-8859-1")) //We force the encode charset
@@ -1202,7 +985,7 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/test/charset");
 		}
-	
+
 		@Test
 		public void testPostCharsetUtf8() throws UnsupportedEncodingException {
 			final String testFirstName = UTF8_TEST_STRING;
@@ -1215,7 +998,7 @@ public final class WebServiceClientTest {
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.post("/test/charset");
-	
+
 			given().filter(loggedSessionFilter) //logged
 					.contentType("application/json;charset=UTF-8")
 					.body(testJson.getBytes("UTF-8")) //We force the encode charset
@@ -1225,12 +1008,12 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/test/charset");
 		}
-	
+
 		@Test
 		public void testPostCharsetDefaultUtf8() throws UnsupportedEncodingException {
 			final String testFirstName = UTF8_TEST_STRING;
 			final String testJson = "{ \"firstName\" : \"" + testFirstName + "\" }";
-	
+
 			given().filter(loggedSessionFilter) //logged
 					.contentType("application/json") //We precise an incomplete charset otherwise Restassured add a default charset=ISO-8859-1 to contentType
 					.body(testJson.getBytes("UTF-8")) //We force the encode charset
@@ -1240,14 +1023,14 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/test/charset");
 		}
-	
+
 		@Test
 		public void testPutContactCharsetIso8859() throws UnsupportedEncodingException {
 			final String testedCharset = "ISO-8859-1";
 			final String testFirstName = UTF8_TEST_STRING;
 			final String testFirstNameIso = new String(UTF8_TEST_STRING.getBytes(testedCharset), testedCharset);
 			final String testJson = "{ \"firstName\" : \"" + testFirstName + "\" }";
-	
+
 			given().filter(loggedSessionFilter) //logged
 					.contentType("application/json;charset=" + testedCharset)
 					.body(Collections.singletonMap("firstName", testFirstName))
@@ -1256,7 +1039,7 @@ public final class WebServiceClientTest {
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.post("/test/charset");
-	
+
 			given().filter(loggedSessionFilter) //logged
 					.contentType("application/json;charset=" + testedCharset)
 					.body(testJson.getBytes(testedCharset))
@@ -1266,21 +1049,21 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/test/charset");
 		}
-	
+
 		@Test
 		public void testSearchQueryPagined() {
 			final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
 					.put("birthdayMin", "1978-05-19")
 					.put("birthdayMax", "1985-05-19")
 					.build();
-	
+
 			final String serverSideToken;
 			serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia"); //if Fournier : dateCriteria not applied
 			doPaginedSearch(criteriaContact, 3, 2, "name", false, serverSideToken, 3, "Garcia", "Moreau");
 			doPaginedSearch(criteriaContact, 3, 5, "name", false, serverSideToken, 1, "Petit", "Petit");
 			doPaginedSearch(criteriaContact, 10, 10, "name", false, serverSideToken, 0, "Petit", "Petit");
 		}
-	
+
 		@Test
 		public void testSearchQueryPaginedSortName() {
 			final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
@@ -1288,7 +1071,7 @@ public final class WebServiceClientTest {
 					.put("birthdayMax", "1985-05-19")
 					.build();
 			//gets : "Dubois","Durant","Garcia","Martin","Moreau","Petit"
-	
+
 			final String serverSideToken;
 			serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia");
 			doPaginedSearch(criteriaContact, 10, 0, "name", false, serverSideToken, 6, "Dubois", "Petit");
@@ -1297,35 +1080,35 @@ public final class WebServiceClientTest {
 			doPaginedSearch(criteriaContact, 4, 1, "name", true, serverSideToken, 4, "Moreau", "Durant");
 			doPaginedSearch(criteriaContact, 4, 1, "name", false, serverSideToken, 4, "Durant", "Moreau");
 		}
-	
+
 		@Test
 		public void testSearchQueryPaginedSortDate() {
 			final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
 					.put("birthdayMin", "1978-05-19")
 					.put("birthdayMax", "1985-05-19")
 					.build();
-	
+
 			final String serverSideToken;
 			serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia");
 			doPaginedSearch(criteriaContact, 10, 0, "birthday", false, serverSideToken, 6, "Petit", "Garcia");
 			doPaginedSearch(criteriaContact, 3, 1, "birthday", false, serverSideToken, 3, "Martin", "Durant");
 			doPaginedSearch(criteriaContact, 3, 1, "birthday", true, serverSideToken, 3, "Moreau", "Dubois");
 		}
-	
+
 		@Test
 		public void testSearchQueryPaginedMissing() {
 			final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
 					.put("birthdayMin", "1978-05-19")
 					.put("birthdayMax", "1985-05-19")
 					.build();
-	
+
 			String serverSideToken;
 			serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia");
 			doPaginedSearch(criteriaContact, null, null, null, null, serverSideToken, 6, "Martin", "Garcia");
 			doPaginedSearch(criteriaContact, 5, null, null, null, serverSideToken, 5, "Martin", "Moreau");
 			doPaginedSearch(criteriaContact, 5, 5, null, null, serverSideToken, 1, "Garcia", "Garcia");
 		}
-	
+
 		private String doPaginedSearch(
 				final Map<String, Object> criteriaContact,
 				final Integer top,
@@ -1366,7 +1149,7 @@ public final class WebServiceClientTest {
 					.header("listServerToken");
 			return newListServerToken;
 		}
-	
+
 		@Test
 		public void testLoadListMeta() {
 			loggedAndExpect()
@@ -1380,7 +1163,7 @@ public final class WebServiceClientTest {
 					.when()
 					.get("/test/dtListMeta");
 		}
-	
+
 		@Test
 		public void testLoadListMetaAsList() {
 			loggedAndExpect()
@@ -1394,7 +1177,7 @@ public final class WebServiceClientTest {
 					.when()
 					.get("/test/dtListMetaAsList");
 		}
-	
+
 		@Test
 		public void testLoadListComplexMeta() {
 			loggedAndExpect()
@@ -1411,7 +1194,7 @@ public final class WebServiceClientTest {
 					.when()
 					.get("/test/listComplexMeta");
 		}
-	
+
 		@Test
 		public void testSaveListDelta() {
 			final Map<String, Object> dtListDelta = new LinkedHashMap<>();
@@ -1427,25 +1210,25 @@ public final class WebServiceClientTest {
 			collUpdates.put("c101", createDefaultContact(101L));
 			collUpdates.put("c102", createDefaultContact(102L));
 			collDeletes.put("c90", createDefaultContact(90L));
-	
+
 			loggedAndExpect(given().body(dtListDelta))
 					.body(Matchers.equalTo("OK : add 2 contacts, update 3 contacts, removed 1"))
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.post("/test/saveListDelta");
 		}
-	
+
 		@Test
 		public void testSaveListDeltaValdationError() {
 			final Map<String, Object> dtListDelta = new LinkedHashMap<>();
 			final Map<String, Map<String, Object>> collCreates = new LinkedHashMap<>();
 			final Map<String, Map<String, Object>> collUpdates = new LinkedHashMap<>();
 			final Map<String, Map<String, Object>> collDeletes = new LinkedHashMap<>();
-	
+
 			dtListDelta.put("collCreates", collCreates);
 			dtListDelta.put("collUpdates", collUpdates);
 			dtListDelta.put("collDeletes", collDeletes);
-	
+
 			collCreates.put("c110", createDefaultContact(110L));
 			collCreates.put("c111", createDefaultContact(111L));
 			final Map<String, Object> newContact = createDefaultContact(100L);
@@ -1454,14 +1237,14 @@ public final class WebServiceClientTest {
 			collUpdates.put("c101", createDefaultContact(101L));
 			collUpdates.put("c102", createDefaultContact(102L));
 			collDeletes.put("c90", createDefaultContact(90L));
-	
+
 			loggedAndExpect(given().body(dtListDelta))
 					.body("objectFieldErrors.c100.birthday", Matchers.contains("You can't add contact younger than 16"))
 					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 					.when()
 					.post("/test/saveListDelta");
 		}
-	
+
 		@Test
 		public void testSaveDtListContact() {
 			final List<Map<String, Object>> dtList = List.of(
@@ -1471,19 +1254,19 @@ public final class WebServiceClientTest {
 					createDefaultContact(124L),
 					createDefaultContact(125L),
 					createDefaultContact(126L));
-	
+
 			loggedAndExpect(given().body(dtList))
 					.body(Matchers.equalTo("OK : received 6 contacts"))
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.post("/test/saveDtListContact");
 		}
-	
+
 		@Test
 		public void testSaveDtListContactValidationError() {
 			final Map<String, Object> newContact = createDefaultContact(123L);
 			newContact.remove("name");
-	
+
 			final List<Map<String, Object>> dtList = Stream.of(
 					createDefaultContact(120L),
 					createDefaultContact(121L),
@@ -1492,13 +1275,13 @@ public final class WebServiceClientTest {
 					createDefaultContact(125L),
 					createDefaultContact(126L))
 					.collect(Collectors.toList());
-	
+
 			loggedAndExpect(given().body(dtList))
 					.body("globalErrors", Matchers.contains("Name is mandatory"))
 					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 					.when()
 					.post("/test/saveDtListContact");
-	
+
 			final Map<String, Object> new2Contact = createDefaultContact(127L);
 			new2Contact.put("birthday", "2012-10-24");
 			dtList.add(new2Contact);
@@ -1508,7 +1291,7 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/test/saveDtListContact");
 		}
-	
+
 		@Test
 		public void testSaveUiListContact() {
 			final List<Map<String, Object>> dtList = List.of(
@@ -1517,19 +1300,19 @@ public final class WebServiceClientTest {
 					createDefaultContact(133L),
 					createDefaultContact(134L),
 					createDefaultContact(135L));
-	
+
 			loggedAndExpect(given().body(dtList))
 					.body(Matchers.equalTo("OK : received 5 contacts"))
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.post("/test/saveUiListContact");
 		}
-	
+
 		@Test
 		public void testSaveUiListContactValidationError() {
 			final Map<String, Object> newContact = createDefaultContact(123L);
 			newContact.remove("name");
-	
+
 			final List<Map<String, Object>> dtList = Stream.of(
 					createDefaultContact(120L),
 					createDefaultContact(121L),
@@ -1538,13 +1321,13 @@ public final class WebServiceClientTest {
 					createDefaultContact(125L),
 					createDefaultContact(126L))
 					.collect(Collectors.toList());
-	
+
 			loggedAndExpect(given().body(dtList))
 					.body("globalErrors", Matchers.contains("Name is mandatory"))
 					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 					.when()
 					.post("/test/saveUiListContact");
-	
+
 			final Map<String, Object> new2Contact = createDefaultContact(127L);
 			new2Contact.put("birthday", "2012-10-24");
 			dtList.add(new2Contact);
@@ -1554,7 +1337,7 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/test/saveUiListContact");
 		}
-	
+
 		@Test
 		public void testSaveListContact() {
 			final List<Map<String, Object>> dtList = List.of(
@@ -1563,19 +1346,19 @@ public final class WebServiceClientTest {
 					createDefaultContact(133L),
 					createDefaultContact(134L),
 					createDefaultContact(135L));
-	
+
 			loggedAndExpect(given().body(dtList))
 					.body(Matchers.equalTo("OK : received 5 contacts"))
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.post("/test/saveListContact");
 		}
-	
+
 		@Test
 		public void testSaveDtListContactValidationError2() {
 			final Map<String, Object> newContact = createDefaultContact(123L);
 			newContact.put("birthday", "2012-10-24");
-	
+
 			final List<Map<String, Object>> dtList = List.of(
 					createDefaultContact(120L),
 					createDefaultContact(121L),
@@ -1583,19 +1366,19 @@ public final class WebServiceClientTest {
 					createDefaultContact(124L),
 					createDefaultContact(125L),
 					createDefaultContact(126L));
-	
+
 			loggedAndExpect(given().body(dtList))
 					.body("objectFieldErrors.idx2.birthday", Matchers.contains("You can't add contact younger than 16"))
 					.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 					.when()
 					.post("/test/saveDtListContact");
 		}
-	
+
 		@Test
 		public void testUploadFile() throws UnsupportedEncodingException {
 			final URL imageUrl = Thread.currentThread().getContextClassLoader().getResource("npi2loup.png");
 			final File imageFile = new File(URLDecoder.decode(imageUrl.getFile(), "UTF-8"));
-	
+
 			loggedAndExpect(given().multiPart("upfile", imageFile, "image/png")
 					.formParam("id", 12)
 					.formParam("note", "Some very important notes about this file."))
@@ -1606,7 +1389,7 @@ public final class WebServiceClientTest {
 							.statusCode(HttpStatus.SC_OK)
 							.when()//.log().headers()
 							.post("/test/uploadFile");
-	
+
 			loggedAndExpect(given()
 					.formParam("id", 12)
 					.formParam("note", "Some very important notes about this file.")
@@ -1619,12 +1402,12 @@ public final class WebServiceClientTest {
 							.when()//.log().headers()
 							.post("/test/uploadFile");
 		}
-	
+
 		@Test
 		public void testUploadFileError() throws UnsupportedEncodingException {
 			final URL imageUrl = Thread.currentThread().getContextClassLoader().getResource("npi2loup.png");
 			final File imageFile = new File(URLDecoder.decode(imageUrl.getFile(), "UTF-8"));
-	
+
 			RestAssured.given()
 					.filter(loggedSessionFilter)
 					.given()
@@ -1638,7 +1421,7 @@ public final class WebServiceClientTest {
 					.statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
 					.when()
 					.post("/test/uploadFile");
-	
+
 			RestAssured.given()
 					.filter(loggedSessionFilter)
 					.given()
@@ -1651,18 +1434,18 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/test/uploadFile");
 		}
-	
+
 		@Test
 		public void testDownloadFileContentType() throws UnsupportedEncodingException {
 			final String[] expectedSimpleNames = { "image0.png", "image1ÔÙæóñ.png", "image2µ°«_.png", "image3ÔÙæ%20óñµ°«_.png", "image4 __~.png",
 					"image5  abcABCæøåÆØÅäöüïëêîâéíáóúýñ½§!#¤%&()=`@£$ {[]}+´¨^~'-_,_.png" };
 			final String[] expectedEncodedNames = { "image0.png", "image1ÔÙæóñ.png", "image2µ°«_.png", "image3ÔÙæ óñµ°«_.png", "image4€__~.png",
 					"image5你好abcABCæøåÆØÅäöüïëêîâéíáóúýñ½§!#¤%&()=`@£$€{[]}+´¨^~'-_,_.png" };
-	
+
 			for (int id = 0; id < expectedSimpleNames.length; id++) {
 				final String expectedSimpleName = expectedSimpleNames[id];
 				final String expectedEncodedName = URLEncoder.encode(expectedEncodedNames[id], "utf8").replace("+", "%20");
-	
+
 				loggedAndExpect(given().queryParam("id", id))
 						.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
 						.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=\"" + expectedSimpleName + "\";filename*=UTF-8''" + expectedEncodedName))
@@ -1672,7 +1455,7 @@ public final class WebServiceClientTest {
 						.get("/test/downloadFileContentType");
 			}
 		}
-	
+
 		@Test
 		public void testDownloadFile() {
 			loggedAndExpect(given().queryParam("id", 10))
@@ -1683,7 +1466,7 @@ public final class WebServiceClientTest {
 					.when()
 					.get("/test/downloadFile");
 		}
-	
+
 		@Test
 		public void testDownloadNotAttachmentFile() {
 			loggedAndExpect(given().queryParam("id", 10))
@@ -1694,7 +1477,7 @@ public final class WebServiceClientTest {
 					.when()
 					.get("/test/downloadEmbeddedFile");
 		}
-	
+
 		@Test
 		public void testDownloadNotModifiedFile() {
 			final DateTimeFormatter httpDateFormat = DateTimeFormatter
@@ -1708,17 +1491,17 @@ public final class WebServiceClientTest {
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.get("/test/downloadNotModifiedFile");
-	
+
 			final String lastModified = response.getHeader("Last-Modified");
 			final ZonedDateTime lastModifiedDate = ZonedDateTime.from(httpDateFormat.parse(lastModified));
 			final String now = httpDateFormat.format(ZonedDateTime.now());
-	
+
 			//On test avec le if-Modified-Since now : le server test mais ne retourne pas le fichier
 			loggedAndExpect(given().queryParam("id", 10).header("if-Modified-Since", now))
 					.statusCode(HttpStatus.SC_NOT_MODIFIED)
 					.when()
 					.get("/test/downloadNotModifiedFile");
-	
+
 			//On test avec le if-Modified-Since 10 min avant le lastModified : le server test et retourne le fichier
 			final String beforeLastModified = httpDateFormat.format(lastModifiedDate.minusMinutes(10));
 			loggedAndExpect(given().queryParam("id", 10).header("if-Modified-Since", beforeLastModified))
@@ -1729,7 +1512,7 @@ public final class WebServiceClientTest {
 					.when()
 					.get("/test/downloadNotModifiedFile");
 		}
-	
+
 		@Test
 		public void testDatesUTC() {
 			final String inputUtc = "2016-01-18T17:21:42.026Z";
@@ -1740,7 +1523,7 @@ public final class WebServiceClientTest {
 					.when()
 					.get("/test/dates?date=" + inputUtc);
 		}
-	
+
 		@Test
 		public void testLocalDate() {
 			loggedAndExpect(given())
@@ -1748,7 +1531,7 @@ public final class WebServiceClientTest {
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.get("/test/localDate");
-	
+
 			final String inputLocalDate = "2016-01-18";
 			loggedAndExpect(given())
 					.body("input", Matchers.equalTo(inputLocalDate))
@@ -1757,7 +1540,7 @@ public final class WebServiceClientTest {
 					.when()
 					.put("/test/localDate?date=" + inputLocalDate);
 		}
-	
+
 		@Test
 		public void testZonedDateTime() {
 			loggedAndExpect(given())
@@ -1765,7 +1548,7 @@ public final class WebServiceClientTest {
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.get("/test/zonedDateTime");
-	
+
 			final String inputZonedDateTime = "2016-01-18T17:21:42Z";
 			loggedAndExpect(given())
 					.body("input", Matchers.equalTo(inputZonedDateTime))
@@ -1774,7 +1557,7 @@ public final class WebServiceClientTest {
 					.when()
 					.put("/test/zonedDateTime?date=" + inputZonedDateTime);
 		}
-	
+
 		@Test
 		public void testZonedDateTimeUTC() {
 			loggedAndExpect(given())
@@ -1782,7 +1565,7 @@ public final class WebServiceClientTest {
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.get("/test/zonedDateTimeUTC");
-	
+
 			final String inputZonedDateTime = "2016-04-25T00:00:00Z";
 			loggedAndExpect(given())
 					.body("input", Matchers.equalTo(inputZonedDateTime))
@@ -1791,7 +1574,7 @@ public final class WebServiceClientTest {
 					.when()
 					.put("/test/zonedDateTime?date=" + inputZonedDateTime);
 		}
-	
+
 		@Test
 		public void testInstant() {
 			loggedAndExpect(given())
@@ -1799,7 +1582,7 @@ public final class WebServiceClientTest {
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.get("/test/instant");
-	
+
 			final String inputInstant = "2016-01-18T17:21:42Z";
 			loggedAndExpect(given())
 					.body("input", Matchers.equalTo("2016-01-18T17:21:42.000Z"))
@@ -1807,7 +1590,7 @@ public final class WebServiceClientTest {
 					.statusCode(HttpStatus.SC_OK)
 					.when()
 					.put("/test/instant?date=" + inputInstant);
-	
+
 			final String inputInstant2 = "2016-01-18T17:21:42.125Z";
 			loggedAndExpect(given())
 					.body("input", Matchers.equalTo("2016-01-18T17:21:42.125Z"))
@@ -1816,7 +1599,7 @@ public final class WebServiceClientTest {
 					.when()
 					.put("/test/instant?date=" + inputInstant2);
 		}
-	
+
 		@Test
 		public void testString() {
 			loggedAndExpect(given().body(UTF8_TEST_STRING))
@@ -1824,7 +1607,7 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/test/string");
 		}
-	
+
 		@Test
 		public void testOptionalQueryParam() {
 			final Map<String, Object> newContact = createDefaultContact(null);
@@ -1834,15 +1617,15 @@ public final class WebServiceClientTest {
 							.body(Matchers.equalTo("TestedToken"))
 							.when()
 							.post("/test/string/optionalQueryParam");
-	
+
 			loggedAndExpect(given().body(newContact))
 					.statusCode(HttpStatus.SC_OK)
 					.body(Matchers.equalTo("empty"))
 					.when()
 					.post("/test/string/optionalQueryParam");
-	
+
 		}
-	
+
 		@Test
 		public void testOptionalInnerBodyParam() {
 			final Map<String, Object> newContact = createDefaultContact(null);
@@ -1851,30 +1634,30 @@ public final class WebServiceClientTest {
 					.body(Matchers.equalTo("empty"))
 					.when()
 					.post("/test/string/optionalInnerBodyParam");
-	
+
 			newContact.put("token", null);
 			loggedAndExpect(given().body(newContact))
 					.statusCode(HttpStatus.SC_OK)
 					.body(Matchers.equalTo("empty"))
 					.when()
 					.post("/test/string/optionalInnerBodyParam");
-	
+
 			newContact.put("token", "");
 			loggedAndExpect(given().body(newContact))
 					.statusCode(HttpStatus.SC_OK)
 					.body(Matchers.equalTo("empty"))
 					.when()
 					.post("/test/string/optionalInnerBodyParam");
-	
+
 			newContact.put("token", "TestedToken");
 			loggedAndExpect(given().body(newContact))
 					.statusCode(HttpStatus.SC_OK)
 					.body(Matchers.equalTo("TestedToken"))
 					.when()
 					.post("/test/string/optionalInnerBodyParam");
-	
+
 		}
-	
+
 		@Test
 		public void testSelectedFacetValues() {
 			final Map<String, Object> emptySelectedFacets = new MapBuilder<String, Object>()
@@ -1884,7 +1667,7 @@ public final class WebServiceClientTest {
 					.body(Matchers.equalTo("{}"))
 					.when()
 					.post("/search/selectedFacetValues");
-	
+
 			final Map<String, Object> selectedFacetsMono = new MapBuilder<String, Object>()
 					.put("FctHonorificCode", "Mr")
 					.build();
@@ -1893,7 +1676,7 @@ public final class WebServiceClientTest {
 					.body(Matchers.equalTo("{\"FctHonorificCode\":\"Mr\"}"))
 					.when()
 					.post("/search/selectedFacetValues");
-	
+
 			final Map<String, Object> selectedFacetsByCode = new MapBuilder<String, Object>()
 					.put("FctBirthday", "r1")
 					.build();
@@ -1902,7 +1685,7 @@ public final class WebServiceClientTest {
 					.body(Matchers.equalTo("{\"FctBirthday\":\"r1\"}"))
 					.when()
 					.post("/search/selectedFacetValues");
-	
+
 			final Map<String, Object> selectedFacetsByLabel = new MapBuilder<String, Object>()
 					.put("FctBirthday", "1980-1990")
 					.build();
@@ -1911,7 +1694,7 @@ public final class WebServiceClientTest {
 					.body(Matchers.equalTo("{\"FctBirthday\":\"r2\"}"))
 					.when()
 					.post("/search/selectedFacetValues");
-	
+
 			final Map<String, Object> selectedFacetsBoth = new MapBuilder<String, Object>()
 					.put("FctHonorificCode", "Mr")
 					.put("FctBirthday", "r1")
@@ -1921,7 +1704,7 @@ public final class WebServiceClientTest {
 					.body(Matchers.equalTo("{\"FctHonorificCode\":\"Mr\", \"FctBirthday\":\"r1\"}"))
 					.when()
 					.post("/search/selectedFacetValues");
-	
+
 			final Map<String, Object> selectedFacetsMultiple = new MapBuilder<String, Object>()
 					.put("FctHonorificCode", "Mr")
 					.put("FctBirthday", new String[] { "r1", "r3" })
@@ -1931,9 +1714,9 @@ public final class WebServiceClientTest {
 					.body(Matchers.equalTo("{\"FctHonorificCode\":\"Mr\", \"FctBirthday\":\"r1,r3\"}"))
 					.when()
 					.post("/search/selectedFacetValues");
-	
+
 		}
-	
+
 		@Test
 		public void testFacetedSearchResult() {
 			final Map<String, Object> emptySelectedFacets = new MapBuilder<String, Object>()
@@ -1953,7 +1736,7 @@ public final class WebServiceClientTest {
 					.post("/search/facetedResult");
 			final int fctBirthDayR1 = getResponse.body().path("facets.get(1).values.get(0).count");
 			final int fctBirthDayR2 = getResponse.body().path("facets.get(1).values.get(1).count");
-	
+
 			final Map<String, Object> selectedFacetsMono = new MapBuilder<String, Object>()
 					.put("FctHonorificCode", "MR_")
 					.build();
@@ -1964,7 +1747,7 @@ public final class WebServiceClientTest {
 					.body("facets.get(0).values", Matchers.hasSize(1))
 					.when()
 					.post("/search/facetedResult");
-	
+
 			final Map<String, Object> selectedFacetsByCode = new MapBuilder<String, Object>()
 					.put("FctBirthday", "r1")
 					.build();
@@ -1975,7 +1758,7 @@ public final class WebServiceClientTest {
 					.body("facets.get(0).values", Matchers.hasSize(fctBirthDayR1))
 					.when()
 					.post("/search/facetedResult");
-	
+
 			final Map<String, Object> selectedFacetsByLabel = new MapBuilder<String, Object>()
 					.put("FctBirthday", "1980-1990")
 					.build();
@@ -1986,7 +1769,7 @@ public final class WebServiceClientTest {
 					.body("facets.get(0).values", Matchers.hasSize(6))
 					.when()
 					.post("/search/facetedResult");
-	
+
 			final Map<String, Object> selectedFacetsBoth = new MapBuilder<String, Object>()
 					.put("FctHonorificCode", "MR_")
 					.put("FctBirthday", "r2")
@@ -1998,7 +1781,7 @@ public final class WebServiceClientTest {
 					.body("facets.get(0).values", Matchers.hasSize(1))
 					.when()
 					.post("/search/facetedResult");
-	
+
 			final Map<String, Object> selectedFacetsMultiple = new MapBuilder<String, Object>()
 					.put("FctHonorificCode", new String[] { "MR_", "MS_" })
 					.put("FctBirthday", "r2")
@@ -2011,7 +1794,7 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/search/facetedResult");
 		}
-	
+
 		@Test
 		public void testFacetedClusteredSearchResult() {
 			final Map<String, Object> emptySelectedFacets = new MapBuilder<String, Object>()
@@ -2033,7 +1816,7 @@ public final class WebServiceClientTest {
 					.post("/search/facetedClusteredResult");
 			final int fctBirthDayR1 = getResponse.body().path("facets.get(1).values.get(0).count");
 			final int fctBirthDayR2 = getResponse.body().path("facets.get(1).values.get(1).count");
-	
+
 			final Map<String, Object> selectedFacetsMono = new MapBuilder<String, Object>()
 					.put("FctHonorificCode", "MR_")
 					.build();
@@ -2044,7 +1827,7 @@ public final class WebServiceClientTest {
 					.body("groups.get(0).list", Matchers.hasSize(2))
 					.when()
 					.post("/search/facetedClusteredResult");
-	
+
 			final Map<String, Object> selectedFacetsByCode = new MapBuilder<String, Object>()
 					.put("FctBirthday", "r1")
 					.build();
@@ -2055,7 +1838,7 @@ public final class WebServiceClientTest {
 					.body("facets.get(0).values", Matchers.hasSize(fctBirthDayR1))
 					.when()
 					.post("/search/facetedClusteredResult");
-	
+
 			final Map<String, Object> selectedFacetsByLabel = new MapBuilder<String, Object>()
 					.put("FctBirthday", "1980-1990")
 					.build();
@@ -2066,7 +1849,7 @@ public final class WebServiceClientTest {
 					.body("facets.get(0).values", Matchers.hasSize(6))
 					.when()
 					.post("/search/facetedClusteredResult");
-	
+
 			final Map<String, Object> selectedFacetsMultiple = new MapBuilder<String, Object>()
 					.put("FctHonorificCode", new String[] { "MR_", "MS_" })
 					.put("FctBirthday", "r2")
@@ -2079,74 +1862,47 @@ public final class WebServiceClientTest {
 					.when()
 					.post("/search/facetedClusteredResult");
 		}
-	
+
 		//=========================================================================
-	
-		protected static RequestSpecification given() {
-			return RestAssured.given();
-		}
-	
-		protected ResponseSpecification loggedAndExpect() {
-			return RestAssured.given()
-					.filter(loggedSessionFilter)
-					.expect().log().ifValidationFails();
-		}
-	
-		protected ResponseSpecification loggedAndExpect(final RequestSpecification given) {
-			return given
-					.filter(loggedSessionFilter)
-					.expect().log().ifValidationFails();
-		}
-	
-		private Map<String, Object> doGetServerSideObject() {
-			final Map<String, Object> contact = doCreateContact();
-			final Long oldConId = (Long) contact.get("conId");
-	
-			final Response getResponse = loggedAndExpect()
-					.statusCode(HttpStatus.SC_OK)
-					.when()
-					.get("/test/filtered/" + oldConId);
-			final String serverToken = getResponse.body().path("serverToken");
-			contact.put("serverToken", serverToken);
-			return contact;
-		}
-	
-		protected static Map<String, Object> createDefaultContact(final Long conId) {
-			final Map<String, Object> newContact = createContact2(conId, "MRS", "Fournier", "Catherine", "1985-10-24",
-					createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
-					"catherine.fournier@gmail.com", "01 91 92 93 94");
-			return newContact;
-		}
-	
-		private static Map<String, Object> createContact2(
-				final Long conId,
-				final String honorific,
-				final String name,
-				final String firstName,
-				final String birthday,
-				final Map<String, Object> address,
-				final String email,
-				final String... tels) {
-			return new MapBuilder<String, Object>()
-					.putNullable("conId", conId)
-					.put("honorificCode", honorific)
-					.put("name", name)
-					.put("firstName", firstName)
-					.put("birthday", birthday)
-					.put("address", address)
-					.put("email", email)
-					.put("tels", Arrays.asList(tels))
-					.build();
-		}
-	
-		private static Map<String, Object> createAddress(final Long adrId, final String street1, final String street2, final String city, final String postalCode, final String country) {
-			return new MapBuilder<String, Object>()
-					.put("adrId", adrId)
-					.put("street1", street1)
-					.put("street2", street2)
-					.put("city", city)
-					.put("postalCode", postalCode)
-					.put("country", country)
-					.build();
-		}*/
+
+		*/
+
+	protected static Contact createDefaultContact(final Long conId) {
+		final Contact newContact = createContact2(conId, "MRS", "Fournier", "Catherine", "1985-10-24",
+				createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
+				"catherine.fournier@gmail.com", "01 91 92 93 94");
+		return newContact;
+	}
+
+	private static Contact createContact2(
+			final Long conId,
+			final String honorific,
+			final String name,
+			final String firstName,
+			final String birthday,
+			final Address address,
+			final String email,
+			final String tel) {
+		final Contact contact = new Contact();
+		contact.setConId(conId);
+		contact.setHonorificCode(honorific);
+		contact.setName(name);
+		contact.setFirstName(firstName);
+		contact.setBirthday(LocalDate.parse(birthday));
+		contact.setAdrId(address.getAdrId());
+		contact.setEmail(email);
+		contact.setTels(Arrays.asList(tel));
+		return contact;
+	}
+
+	private static Address createAddress(final Long adrId, final String street1, final String street2, final String city, final String postalCode, final String country) {
+		final Address address = new Address();
+		address.setAdrId(adrId);
+		address.setStreet1(street1);
+		address.setStreet1(street2);
+		address.setCity(city);
+		address.setPostalCode(postalCode);
+		address.setCountry(country);
+		return address;
+	}
 }

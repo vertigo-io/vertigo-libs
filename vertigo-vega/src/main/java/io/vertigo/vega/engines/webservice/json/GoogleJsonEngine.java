@@ -85,6 +85,7 @@ import io.vertigo.datamodel.structure.model.VAccessor;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
+import io.vertigo.vega.webservice.model.ExtendedObject;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 
@@ -280,6 +281,19 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 				return context.serialize(src.get());
 			}
 			return null; //rien
+		}
+	}
+
+	private final class ExtendedObjectSerializer implements JsonSerializer<ExtendedObject<?>> {
+
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final ExtendedObject<?> src, final Type typeOfSrc, final JsonSerializationContext context) {
+			final JsonObject jsonObject = (JsonObject) context.serialize(src.getInnerObject());
+			for (final Map.Entry<String, Serializable> entry : src.entrySet()) {
+				jsonObject.add(entry.getKey(), context.serialize(entry.getValue()));
+			}
+			return jsonObject;
 		}
 	}
 
@@ -542,6 +556,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			gsonBuilder
 					.setPrettyPrinting()
 					//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+					.registerTypeAdapter(ExtendedObject.class, new ExtendedObjectSerializer())
 					.registerTypeHierarchyAdapter(DtObject.class, new DtObjectJsonAdapter())
 					.registerTypeAdapter(Date.class, new UTCDateAdapter())
 					.registerTypeAdapter(LocalDate.class, new LocalDateAdapter())

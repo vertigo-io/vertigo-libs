@@ -86,7 +86,7 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 			}
 			return jsonEngine.fromJson((String) response.body(), returnType);
 		} else if (responseStatus / 100 == 3) {
-			throw WrappedException.wrap(new VUserException((String) response.body()));
+			throw new VUserException((String) response.body());
 		} else if (responseStatus / 100 == 4) {
 			if (responseStatus == HttpServletResponse.SC_UNAUTHORIZED) {
 				throw WrappedException.wrap(new SessionException((String) response.body()));
@@ -95,8 +95,8 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 			} else if (responseStatus == HttpServletResponse.SC_BAD_REQUEST) {
 				throw new JsonSyntaxException((String) response.body());
 			} else {
-				//UiMessageStack uiMessageStack = jsonEngine.fromJson((String) response.body(), UiMessageStack.class);
-				throw WrappedException.wrap(new VUserException((String) response.body()));
+				final Map errorMessages = jsonEngine.fromJson((String) response.body(), Map.class);
+				throw new WebServiceUserException(responseStatus, errorMessages);
 			}
 		} else {
 			throw WrappedException.wrap(new VSystemException((String) response.body()));

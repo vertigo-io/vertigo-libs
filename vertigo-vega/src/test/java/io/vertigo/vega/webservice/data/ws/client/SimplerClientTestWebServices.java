@@ -26,10 +26,13 @@ import java.util.Map;
 import java.util.Optional;
 
 import io.vertigo.core.node.component.Amplifier;
+import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.impl.webservice.client.WebServiceProxyAnnotation;
 import io.vertigo.vega.webservice.data.domain.Contact;
+import io.vertigo.vega.webservice.data.domain.ContactCriteria;
 import io.vertigo.vega.webservice.data.domain.ContactValidator;
 import io.vertigo.vega.webservice.data.domain.EmptyPkValidator;
 import io.vertigo.vega.webservice.data.domain.MandatoryPkValidator;
@@ -60,207 +63,165 @@ public interface SimplerClientTestWebServices extends Amplifier {
 
 	@AnonymousAccessAllowed
 	@GET("/login")
-
 	void login();
 
 	@SessionInvalidate
 	@GET("/logout")
-
 	void logout();
 
 	@SessionLess
 	@AnonymousAccessAllowed
 	@GET("/anonymousTest")
-
 	List<Contact> anonymousTest();
 
 	@GET("/authentifiedTest")
-
 	List<Contact> authentifiedTest();
 
 	@Doc("send param type='Confirm' or type = 'Contact' \n Return 'OK' or 'Contact'")
 	@GET("/twoResult")
-	@WebServiceProxyAnnotation
 	Map<String, Object> testTwoResult(@QueryParam("type") final String type);
 
 	@Doc("Use passPhrase : RtFM")
 	@GET("/docTest/{passPhrase}")
-	@WebServiceProxyAnnotation
 	List<Contact> docTest(@PathParam("passPhrase") final String passPhrase);
 
 	@Doc("Use passPhrase : RtFM")
 	@GET("/docTest/")
-	@WebServiceProxyAnnotation
 	List<Contact> docTestEmpty();
 
 	@Doc("Not the same than /docTest/")
 	@GET("/docTest")
-	@WebServiceProxyAnnotation
 	String docTest();
 
 	@GET("/{conId}")
-	@WebServiceProxyAnnotation
 	Contact testRead(@PathParam("conId") final long conId);
 
 	//PUT is indempotent : ID obligatoire
 	@PUT("/contactSyntax")
-	@WebServiceProxyAnnotation
 	Contact testJsonSyntax(final Contact contact);
 
 	//PUT is indempotent : ID obligatoire
 	@PUT("/contactUrl99")
-	@WebServiceProxyAnnotation
 	Contact testWsUrl99(final Contact contact);
 
 	//@POST is non-indempotent
 	@POST("/contact")
-	@WebServiceProxyAnnotation
 	Contact createContact( //create POST method -> 201 instead of 200 by convention
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact);
 
 	//PUT is indempotent : ID mandatory
 	@PUT("/contact")
-	@WebServiceProxyAnnotation
 	Contact testUpdate(
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) Contact contact);
 
 	//PUT is indempotent : ID mandatory
 	@PUT("/contact/{conId}")
-	@WebServiceProxyAnnotation
 	Contact testUpdateByPath(
 			@PathParam("conId") final long conId,
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact);
 
 	@DELETE("/contact/{conId}")
-	@WebServiceProxyAnnotation
 	void delete(@PathParam("conId") final long conId);
 
 	@Doc("Test ws multipart body with objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an json of Contact.")
 	@POST("/innerbody")
-	@WebServiceProxyAnnotation
 	List<Contact> testInnerBodyObject(@InnerBodyParam("contactFrom") final Contact contactFrom, @InnerBodyParam("contactTo") final Contact contactTo);
 
 	@Doc("Test ws multipart body with optional objects. Send a body with an object of to field : contactFrom, Optional<contactTo>. Each one should be an json of Contact.")
 	@POST("/innerbodyOptional")
-	@WebServiceProxyAnnotation
 	List<Contact> testInnerBodyOptionalObject(@InnerBodyParam("contactFrom") final Contact contactFrom, @InnerBodyParam("contactTo") final Optional<Contact> contactToOpt);
 
 	@Doc("Test ws multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.")
 	@ExcludedFields({ "address", "tels" })
 	@POST("/innerLong")
-	@WebServiceProxyAnnotation
 	List<Contact> testInnerBodyLong(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo);
 
 	@Doc("Test ws multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.")
 	@ServerSideSave
 	@ExcludedFields({ "address", "tels" })
 	@POST("/innerLongToDtList")
-	@WebServiceProxyAnnotation
 	DtList<Contact> testInnerBodyLongToDtList(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo);
 
 	@POST("/uiMessage")
-	@WebServiceProxyAnnotation
 	UiMessageStack testUiMessage(final Contact contact, final UiMessageStack uiMessageStack);
 
 	@POST("/innerBodyValidationErrors")
-	@WebServiceProxyAnnotation
 	List<Contact> testInnerBodyValidationErrors(//
 			@InnerBodyParam("contactFrom") final Contact contactFrom, //
 			@InnerBodyParam("contactTo") final Contact contactTo);
 
 	@POST("/saveListDelta")
-	@WebServiceProxyAnnotation
 	String saveListDelta(final @Validate({ ContactValidator.class }) DtListDelta<Contact> myList);
 
 	@POST("/saveDtListContact")
-	@WebServiceProxyAnnotation
 	String saveDtListContact(final @Validate({ ContactValidator.class }) DtList<Contact> myList);
 
 	@POST("/saveUiListContact")
-	@WebServiceProxyAnnotation
 	String saveUiListContact(final UiList<Contact> myList, final UiMessageStack uiMessageStack);
 
 	@POST("/saveListContact")
-	@WebServiceProxyAnnotation
 	String saveListContact(final List<Contact> myList);
 
 	@GET("/dtListMeta")
-	@WebServiceProxyAnnotation
 	DtList<Contact> loadListMeta();
 
 	@GET("/dtList10/{id}")
-	@WebServiceProxyAnnotation
 	DtList<Contact> loadListDigitInRoute(@PathParam("id") final long conId);
 
 	@GET("/dtList10elts/{id}")
-	@WebServiceProxyAnnotation
 	DtList<Contact> loadListDigitInRoute2(@PathParam("id") final long conId);
 
 	@GET("/dtListMetaAsList")
-	@WebServiceProxyAnnotation
 	List<Contact> loadListMetaAsList();
 
 	@GET("/listComplexMeta")
-	@WebServiceProxyAnnotation
 	DtList<Contact> loadListComplexMeta();
 
 	//PUT is indempotent : ID obligatoire
 	@PUT("/contactAliasName/{conId}")
-	@WebServiceProxyAnnotation
 	Contact testUpdateByPath(
 			@PathParam("conId") final long conId,
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact,
 			@InnerBodyParam("itsatoolongaliasforfieldcontactname") final String aliasName);
 
 	@POST("/charset")
-	@WebServiceProxyAnnotation
 	Contact testCharset(
 			final Contact text);
 
 	@GET("/dates")
-	@WebServiceProxyAnnotation
 	UiContext testDate(@QueryParam("date") final Date date);
 
 	@GET("/localDate")
-	@WebServiceProxyAnnotation
 	LocalDate getLocalDate();
 
 	@PUT("/localDate")
-	@WebServiceProxyAnnotation
 	UiContext putLocalDate(@QueryParam("date") final LocalDate localDate);
 
 	@GET("/zonedDateTime")
-	@WebServiceProxyAnnotation
 	ZonedDateTime getZonedDateTime();
 
 	@GET("/zonedDateTimeUTC")
-	@WebServiceProxyAnnotation
 	ZonedDateTime getZonedDateTimeUTC();
 
 	@PUT("/zonedDateTime")
-	@WebServiceProxyAnnotation
 	UiContext putZonedDateTime(@QueryParam("date") final ZonedDateTime zonedDateTime);
 
 	@GET("/instant")
-	@WebServiceProxyAnnotation
 	Instant getInstant();
 
 	@PUT("/instant")
-	@WebServiceProxyAnnotation
 	UiContext putInstant(@QueryParam("date") final Instant instant);
 
 	@POST("/string")
-	@WebServiceProxyAnnotation
 	String testString(final String bodyString);
 
 	@POST("/string/optionalInnerBodyParam")
-	@WebServiceProxyAnnotation
 	String testOptionalInnerBodyParam(final Contact contact, @InnerBodyParam("token") final Optional<String> token);
 
 	@POST("/string/optionalQueryParam")
 	String testOptionalQueryParam(final Contact contact, @QueryParam("token") final Optional<String> token);
 
-	/*@GET("/searchFacet")
-	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact);*/
+	@GET("/searchFacet")
+	FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact);
 
 }
