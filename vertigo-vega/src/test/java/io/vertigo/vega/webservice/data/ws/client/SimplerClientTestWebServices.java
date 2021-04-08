@@ -54,27 +54,28 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
+@WebServiceProxyAnnotation
 @PathPrefix("/test")
 public interface SimplerClientTestWebServices extends Amplifier {
 
 	@AnonymousAccessAllowed
 	@GET("/login")
-	@WebServiceProxyAnnotation
+
 	void login();
 
 	@SessionInvalidate
 	@GET("/logout")
-	@WebServiceProxyAnnotation
+
 	void logout();
 
 	@SessionLess
 	@AnonymousAccessAllowed
 	@GET("/anonymousTest")
-	@WebServiceProxyAnnotation
+
 	List<Contact> anonymousTest();
 
 	@GET("/authentifiedTest")
-	@WebServiceProxyAnnotation
+
 	List<Contact> authentifiedTest();
 
 	@Doc("send param type='Confirm' or type = 'Contact' \n Return 'OK' or 'Contact'")
@@ -257,7 +258,6 @@ public interface SimplerClientTestWebServices extends Amplifier {
 	String testOptionalInnerBodyParam(final Contact contact, @InnerBodyParam("token") final Optional<String> token);
 
 	@POST("/string/optionalQueryParam")
-	@WebServiceProxyAnnotation
 	String testOptionalQueryParam(final Contact contact, @QueryParam("token") final Optional<String> token);
 
 	/*@GET("/searchFacet")

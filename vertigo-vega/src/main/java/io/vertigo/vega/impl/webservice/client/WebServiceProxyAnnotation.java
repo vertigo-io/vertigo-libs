@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 
 import io.vertigo.core.node.component.amplifier.ProxyMethodAnnotation;
 
-@Target({ ElementType.METHOD })
+@Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @ProxyMethodAnnotation
 public @interface WebServiceProxyAnnotation {

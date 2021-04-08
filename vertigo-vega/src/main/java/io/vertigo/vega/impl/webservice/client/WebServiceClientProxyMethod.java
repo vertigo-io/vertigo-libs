@@ -63,10 +63,10 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 
 	@Override
 	public Object invoke(final Method method, final Object[] args) {
-		final WebServiceProxyAnnotation webServiceProxyAnnotation = method.getAnnotation(WebServiceProxyAnnotation.class);
+		final String connectorName = obtainConnectorName(method);
 		final WebServiceDefinition webServiceDefinition = createWebServiceDefinition(method);
-		final HttpClientConnector httpClientConnector = Optional.ofNullable(httpClientConnectorByName.get(webServiceProxyAnnotation.connectorName()))
-				.orElseThrow(() -> new VSystemException("Can't found HttpClientConnector with name {0}", webServiceProxyAnnotation.connectorName()));
+		final HttpClientConnector httpClientConnector = Optional.ofNullable(httpClientConnectorByName.get(connectorName))
+				.orElseThrow(() -> new VSystemException("Can't found HttpClientConnector with name {0}", connectorName));
 		final HttpRequest httpRequest = createHttpRequest(webServiceDefinition, namedArgs(webServiceDefinition.getWebServiceParams(), args), httpClientConnector, jsonEngine);
 
 		final HttpResponse response;
@@ -101,6 +101,14 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 		} else {
 			throw WrappedException.wrap(new VSystemException((String) response.body()));
 		}
+	}
+
+	private String obtainConnectorName(final Method method) {
+		WebServiceProxyAnnotation webServiceProxyAnnotation = method.getAnnotation(WebServiceProxyAnnotation.class);
+		if (webServiceProxyAnnotation == null) {
+			webServiceProxyAnnotation = method.getDeclaringClass().getAnnotation(WebServiceProxyAnnotation.class);
+		}
+		return webServiceProxyAnnotation.connectorName();
 	}
 
 	private Map<String, Object> namedArgs(final List<WebServiceParam> params, final Object[] args) {
