@@ -79,13 +79,13 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 			resourcePathMerged = resourcePathMerged.replace("{" + param.getKey() + "}", encodeURL(param.getValue()));
 		}
 		resourceQuery.append(resourcePathMerged);
-		String sep = "?";
+		char sep = '?';
 		for (final Entry<String, String> param : queryParams.entrySet()) {
 			resourceQuery.append(sep)
 					.append(encodeURL(param.getKey()))
-					.append("=")
+					.append('=')
 					.append(encodeURL(param.getValue()));
-			sep = "&";
+			sep = '&';
 		}
 		return URI.create(resourceQuery.toString());
 	}

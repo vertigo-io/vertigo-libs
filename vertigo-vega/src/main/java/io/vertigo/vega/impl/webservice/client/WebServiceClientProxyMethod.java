@@ -72,7 +72,10 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 		final HttpResponse response;
 		try {
 			response = httpClientConnector.getClient().send(httpRequest, BodyHandlers.ofString());
-		} catch (IOException | InterruptedException e) {
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
+		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt();
 			throw WrappedException.wrap(e);
 		}
 		final int responseStatus = response.statusCode();

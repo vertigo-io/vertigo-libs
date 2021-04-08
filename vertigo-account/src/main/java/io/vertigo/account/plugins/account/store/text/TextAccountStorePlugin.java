@@ -100,16 +100,22 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 				.isNotNull(resourceManager)
 				.isNotBlank(accountFilePatternStr)
 				.isTrue(accountFilePatternStr.contains("(?<"),
-						"accountFilePattern should be a regexp of named group for each Account's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<email>)(?<authToken>[^\\s;]+);(?<photoUrl>[^\\s;]+)' )");
+						"accountFilePattern should be a regexp of named group for each Account's fields "
+								+ "(like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<email>)(?<authToken>[^\\s;]+);(?<photoUrl>[^\\s;]+)' )");
 		Assertion.check().isTrue(groupFilePatternStr.contains("(?<"),
-				"groupFilePattern should be a regexp of named group for each group's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )");
+				"groupFilePattern should be a regexp of named group for each group's fields "
+						+ "(like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )");
 		for (final AccountProperty accountProperty : AccountProperty.values()) {
 			Assertion.check().isTrue(accountFilePatternStr.contains("(?<" + accountProperty.name() + ">"),
-					"filePattern should be a regexp of named group for each Account fields (missing {0} field) (like : '(?<id>\\S+);(?<displayName>\\S+);(?<email>)(?<authToken>\\S+);(?<photoUrl>\\S+)' )", accountProperty.name());
+					"filePattern should be a regexp of named group for each Account fields (missing {0} field) "
+							+ "(like : '(?<id>\\S+);(?<displayName>\\S+);(?<email>)(?<authToken>\\S+);(?<photoUrl>\\S+)' )",
+					accountProperty.name());
 		}
 		for (final GroupProperty groupProperty : GroupProperty.values()) {
 			Assertion.check().isTrue(groupFilePatternStr.contains("(?<" + groupProperty.name() + ">"),
-					"filePattern should be a regexp of named group for each Group fields (missing {0} field) (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )", groupProperty.name());
+					"filePattern should be a regexp of named group for each Group fields (missing {0} field) "
+							+ "(like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )",
+					groupProperty.name());
 		}
 		// -----
 		this.resourceManager = resourceManager;

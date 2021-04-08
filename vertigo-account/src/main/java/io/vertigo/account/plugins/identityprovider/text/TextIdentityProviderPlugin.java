@@ -100,9 +100,13 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 				.isNotNull(smartTypeManager)
 				.isNotBlank(filePatternStr)
 				.isTrue(filePatternStr.contains("(?<"),
-						"filePattern should be a regexp of named group for each User's entity fields plus reserved field '{0}' (like : '(?<id>\\S+);(?<name>\\S+);(?<email>\\S+);;(?<{0}>\\S+)' )", PHOTO_URL_RESERVED_FIELD)
+						"filePattern should be a regexp of named group for each User's entity fields plus reserved field '{0}' "
+								+ "(like : '(?<id>\\S+);(?<name>\\S+);(?<email>\\S+);;(?<{0}>\\S+)' )",
+						PHOTO_URL_RESERVED_FIELD)
 				.isTrue(filePatternStr.contains("(?<" + PHOTO_URL_RESERVED_FIELD + ">"),
-						"filePattern should be a regexp of named group for each User's entity fields plus reserved field '{0}' (like : '(?<id>\\S+);(?<name>\\S+);(?<email>\\S+);;(?<{0}>\\S+)' )", PHOTO_URL_RESERVED_FIELD)
+						"filePattern should be a regexp of named group for each User's entity fields plus reserved field '{0}' "
+								+ "(like : '(?<id>\\S+);(?<name>\\S+);(?<email>\\S+);;(?<{0}>\\S+)' )",
+						PHOTO_URL_RESERVED_FIELD)
 				.isTrue(filePatternStr.contains("(?<" + userAuthField + ">"),
 						"filePattern should contains the userAuthField : {0}", userAuthField)
 				.isNotBlank(userIdentityEntity)
