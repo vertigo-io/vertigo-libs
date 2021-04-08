@@ -66,7 +66,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	//Index UiList et DtList vers clé de context. //identity HashMap because two empty list aren't the same
 	private final Map<UiList<?>, String> reverseUiListIndex = new IdentityHashMap<>();
 	private boolean unmodifiable; //initialisé à false
-	private boolean dirty = false;
+	private boolean dirty;
 
 	private transient JsonEngine jsonEngine;
 	private final Map<String, Type> typesByKey = new HashMap<>();
@@ -245,7 +245,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		return false;
 	}
 
-	private Serializable convertMultipleValue(final String strValue) {
+	private static Serializable convertMultipleValue(final String strValue) {
 		if (!(strValue.startsWith("[") && strValue.endsWith("]"))) {
 			String[] values;
 			if (strValue.isEmpty()) {
@@ -258,7 +258,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		return strValue;
 	}
 
-	private Serializable convertMultipleValue(final String[] strValues) {
+	private static Serializable convertMultipleValue(final String[] strValues) {
 		//we removed empty values, they mean "no value" and was use to send removed state to server
 		boolean hasEmpty = false;
 		for (final String value : strValues) {
@@ -469,7 +469,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	}
 
 	private Function<Serializable, String> createValueTransformer(final List<String> params) {
-		Assertion.check().isTrue(params.size() > 0, "ValueTransformer should be typed in first param, provided params {0}", params);
+		Assertion.check().isFalse(params.isEmpty(), "ValueTransformer should be typed in first param, provided params {0}", params);
 		final String transformerType = params.get(0);
 
 		if (PROTECTED_VALUE_TRANSFORMER.equals(transformerType)) {

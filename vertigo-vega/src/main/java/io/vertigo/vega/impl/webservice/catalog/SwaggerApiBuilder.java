@@ -293,8 +293,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			return "";
 		}
 		final String sb = new StringBuilder()
-				.append("+(").append(includedFields.toString()).append(")")
-				.append("-(").append(excludedFields.toString()).append(")")
+				.append("+(").append(includedFields).append(")")
+				.append("-(").append(excludedFields).append(")")
 				.toString();
 		return "$" + sb.hashCode();
 	}
