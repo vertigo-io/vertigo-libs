@@ -29,20 +29,20 @@ import io.vertigo.core.util.DateUtil;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
-final class Criterion<E extends Entity> extends Criteria<E> {
+final class Criterion<D extends DtObject> extends Criteria<D> {
 	private static final long serialVersionUID = -7797854063455062775L;
 
 	private static final String DATE_PATTERN = "dd/MM/yyyy";
 	private static final String INSTANT_PATTERN = "dd/MM/yyyy HH:mm:ss";
 
-	private final DtFieldName<E> dtFieldName;
+	private final DtFieldName<D> dtFieldName;
 	private final CriterionOperator criterionOperator;
 	private final Serializable[] values;
 
-	Criterion(final DtFieldName<E> dtFieldName, final CriterionOperator criterionOperator, final Serializable... values) {
+	Criterion(final DtFieldName<D> dtFieldName, final CriterionOperator criterionOperator, final Serializable... values) {
 		Assertion.check()
 				.isNotNull(dtFieldName)
 				.isNotNull(criterionOperator)
@@ -63,11 +63,11 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 	}
 
 	@Override
-	public Predicate<E> toPredicate() {
+	public Predicate<D> toPredicate() {
 		return this::test;
 	}
 
-	private boolean test(final E entity) {
+	private boolean test(final D entity) {
 		final DtDefinition entitytDefinition = DtObjectUtil.findDtDefinition(entity.getClass());
 		final DtField dtField = entitytDefinition.getField(dtFieldName);
 

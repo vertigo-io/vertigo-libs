@@ -17,7 +17,7 @@
  */
 package io.vertigo.datamodel.criteria;
 
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.model.DtObject;
 
 final class CriteriaUtil {
 
@@ -26,20 +26,20 @@ final class CriteriaUtil {
 	}
 
 	//Comment gérer la prorité des opérations ?
-	static <E extends Entity> Criteria<E> and(final Criteria<E> leftOperand, final Criteria<E> rightOperand) {
+	static <D extends DtObject> Criteria<D> and(final Criteria<D> leftOperand, final Criteria<D> rightOperand) {
 		//if exp*c
 		//	when a*b*c
 		//		then *(exp.operands, c)
 		//	when a+b*c
 		//		then +(exp.operands.left, *(exp.operands.left, c))
 		if (leftOperand instanceof CriteriaExpression && rightOperand instanceof Criterion) {
-			final CriteriaExpression<E> criteria = CriteriaExpression.class.cast(leftOperand);
+			final CriteriaExpression<D> criteria = CriteriaExpression.class.cast(leftOperand);
 			switch (criteria.getOperator()) {
 				case AND:
 					return new CriteriaExpression<>(CriteriaLogicalOperator.AND, criteria.getOperands(), rightOperand);
 				case OR:
 					//the most complex case !  a+b*c => a + (b*c)
-					final Criteria<E>[] leftOperands = new Criteria[criteria.getOperands().length - 1];
+					final Criteria<D>[] leftOperands = new Criteria[criteria.getOperands().length - 1];
 					for (int i = 0; i < (criteria.getOperands().length - 1); i++) {
 						leftOperands[i] = criteria.getOperands()[i];
 					}
@@ -51,14 +51,14 @@ final class CriteriaUtil {
 		return new CriteriaExpression<>(CriteriaLogicalOperator.AND, leftOperand, rightOperand);
 	}
 
-	static <E extends Entity> Criteria<E> or(final Criteria<E> leftOperand, final Criteria<E> rightOperand) {
+	static <D extends DtObject> Criteria<D> or(final Criteria<D> leftOperand, final Criteria<D> rightOperand) {
 		//if exp+c
 		//	when a*b+c
 		//		then +(exp, c)
 		//	when a+b+c
 		//		then +(exp.operands, c)
 		if (leftOperand instanceof CriteriaExpression && rightOperand instanceof Criterion) {
-			final CriteriaExpression<E> criteria = CriteriaExpression.class.cast(leftOperand);
+			final CriteriaExpression<D> criteria = CriteriaExpression.class.cast(leftOperand);
 			if (criteria.getOperator() == CriteriaLogicalOperator.OR) {
 				return new CriteriaExpression<>(CriteriaLogicalOperator.OR, criteria.getOperands(), rightOperand);
 			}

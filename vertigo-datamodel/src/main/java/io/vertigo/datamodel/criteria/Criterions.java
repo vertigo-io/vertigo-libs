@@ -22,7 +22,7 @@ import java.util.function.Predicate;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.model.DtObject;
 
 /**
  *
@@ -40,7 +40,7 @@ public final class Criterions {
 	 * @param dtFieldName the field
 	 * @return is null
 	 */
-	public static <E extends Entity> Criteria<E> isNull(final DtFieldName<E> dtFieldName) {
+	public static <D extends DtObject> Criteria<D> isNull(final DtFieldName<D> dtFieldName) {
 		return new Criterion<>(dtFieldName, CriterionOperator.IS_NULL);
 	}
 
@@ -48,7 +48,7 @@ public final class Criterions {
 	 * @param dtFieldName the field
 	 * @return is not null
 	 */
-	public static <E extends Entity> Criteria<E> isNotNull(final DtFieldName<E> dtFieldName) {
+	public static <D extends DtObject> Criteria<D> isNotNull(final DtFieldName<D> dtFieldName) {
 		return new Criterion<>(dtFieldName, CriterionOperator.IS_NOT_NULL);
 	}
 
@@ -57,7 +57,7 @@ public final class Criterions {
 	 * @return is equal to the value
 	 * @param value the value
 	 */
-	public static <E extends Entity> Criteria<E> isEqualTo(final DtFieldName<E> dtFieldName, final Serializable value) {
+	public static <D extends DtObject> Criteria<D> isEqualTo(final DtFieldName<D> dtFieldName, final Serializable value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.EQ, value);
 	}
 
@@ -66,7 +66,7 @@ public final class Criterions {
 	 * @return is not equal to the value
 	 * @param value the value
 	 */
-	public static <E extends Entity> Criteria<E> isNotEqualTo(final DtFieldName<E> dtFieldName, final Serializable value) {
+	public static <D extends DtObject> Criteria<D> isNotEqualTo(final DtFieldName<D> dtFieldName, final Serializable value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.NEQ, value);
 	}
 
@@ -75,7 +75,7 @@ public final class Criterions {
 	 * @return is greater than the value
 	 * @param value the value
 	 */
-	public static <E extends Entity> Criteria<E> isGreaterThan(final DtFieldName<E> dtFieldName, final Serializable value) {
+	public static <D extends DtObject> Criteria<D> isGreaterThan(final DtFieldName<D> dtFieldName, final Serializable value) {
 		Assertion.check().isTrue(value == null || value instanceof Comparable, "value must be comparable");
 		//---
 		return new Criterion<>(dtFieldName, CriterionOperator.GT, value);
@@ -86,7 +86,7 @@ public final class Criterions {
 	 * @return is greater than or equal to the value
 	 * @param value the value
 	 */
-	public static <E extends Entity> Criteria<E> isGreaterThanOrEqualTo(final DtFieldName<E> dtFieldName, final Serializable value) {
+	public static <D extends DtObject> Criteria<D> isGreaterThanOrEqualTo(final DtFieldName<D> dtFieldName, final Serializable value) {
 		Assertion.check().isTrue(value == null || value instanceof Comparable, "value must be comparable");
 		//---
 		return new Criterion<>(dtFieldName, CriterionOperator.GTE, value);
@@ -97,7 +97,7 @@ public final class Criterions {
 	 * @return is less than the value
 	 * @param value the value
 	 */
-	public static <E extends Entity> Criteria<E> isLessThan(final DtFieldName<E> dtFieldName, final Serializable value) {
+	public static <D extends DtObject> Criteria<D> isLessThan(final DtFieldName<D> dtFieldName, final Serializable value) {
 		Assertion.check().isTrue(value == null || value instanceof Comparable, "value must be comparable");
 		//---
 		return new Criterion<>(dtFieldName, CriterionOperator.LT, value);
@@ -108,7 +108,7 @@ public final class Criterions {
 	 * @return is less than or equal to the value
 	 * @param value the value
 	 */
-	public static <E extends Entity> Criteria<E> isLessThanOrEqualTo(final DtFieldName<E> dtFieldName, final Serializable value) {
+	public static <D extends DtObject> Criteria<D> isLessThanOrEqualTo(final DtFieldName<D> dtFieldName, final Serializable value) {
 		Assertion.check().isTrue(value == null || value instanceof Comparable, "value must be comparable");
 		//---
 		return new Criterion<>(dtFieldName, CriterionOperator.LTE, value);
@@ -119,7 +119,7 @@ public final class Criterions {
 	 * @return starts with the value
 	 * @param value the value
 	 */
-	public static <E extends Entity> Criteria<E> startsWith(final DtFieldName<E> dtFieldName, final String value) {
+	public static <D extends DtObject> Criteria<D> startsWith(final DtFieldName<D> dtFieldName, final String value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.STARTS_WITH, value);
 	}
 
@@ -129,7 +129,7 @@ public final class Criterions {
 	 * @param min the min value
 	 * @param max the max value
 	 */
-	public static <E extends Entity> Criteria<E> isBetween(final DtFieldName<E> dtFieldName, final CriterionLimit<E> min, final CriterionLimit<E> max) {
+	public static <D extends DtObject> Criteria<D> isBetween(final DtFieldName<D> dtFieldName, final CriterionLimit<D> min, final CriterionLimit<D> max) {
 		Assertion.check()
 				.isNotNull(min)
 				.isNotNull(max);
@@ -141,7 +141,7 @@ public final class Criterions {
 	 * @return is in a list of values
 	 * @param values list of allowed values
 	 */
-	public static <E extends Entity> Criteria<E> in(final DtFieldName<E> dtFieldName, final Serializable... values) {
+	public static <D extends DtObject> Criteria<D> in(final DtFieldName<D> dtFieldName, final Serializable... values) {
 		return new Criterion<>(dtFieldName, CriterionOperator.IN, values);
 	}
 
@@ -149,7 +149,7 @@ public final class Criterions {
 	 * An always true criteria.
 	 * @return true
 	 */
-	public static <E extends Entity> Criteria<E> alwaysTrue() {
+	public static <D extends DtObject> Criteria<D> alwaysTrue() {
 		return AlwaysCriteria.ALWAYS_TRUE;
 	}
 
@@ -157,11 +157,11 @@ public final class Criterions {
 	 * An always false criteria.
 	 * @return true
 	 */
-	public static <E extends Entity> Criteria<E> alwaysFalse() {
+	public static <D extends DtObject> Criteria<D> alwaysFalse() {
 		return AlwaysCriteria.ALWAYS_FALSE;
 	}
 
-	private static class AlwaysCriteria<E extends Entity> extends Criteria<E> {
+	private static class AlwaysCriteria<D extends DtObject> extends Criteria<D> {
 		private static final long serialVersionUID = 2967018427662007659L;
 		private static final Criteria ALWAYS_TRUE = new AlwaysCriteria<>(true);
 		private static final Criteria ALWAYS_FALSE = new AlwaysCriteria<>(false);
@@ -172,7 +172,7 @@ public final class Criterions {
 		}
 
 		@Override
-		public Predicate<E> toPredicate() {
+		public Predicate<D> toPredicate() {
 			return entity -> result;
 		}
 

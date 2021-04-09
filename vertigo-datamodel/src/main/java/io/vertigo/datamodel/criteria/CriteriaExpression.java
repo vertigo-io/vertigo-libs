@@ -23,15 +23,15 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.model.DtObject;
 
-final class CriteriaExpression<E extends Entity> extends Criteria<E> {
+final class CriteriaExpression<D extends DtObject> extends Criteria<D> {
 	private static final long serialVersionUID = 8301054336845536973L;
 
 	private final CriteriaLogicalOperator operator;
-	private final Criteria<E>[] operands;
+	private final Criteria<D>[] operands;
 
-	CriteriaExpression(final CriteriaLogicalOperator operator, final Criteria<E>[] leftOperands, final Criteria<E> rightOperand) {
+	CriteriaExpression(final CriteriaLogicalOperator operator, final Criteria<D>[] leftOperands, final Criteria<D> rightOperand) {
 		Assertion.check()
 				.isNotNull(operator)
 				.isNotNull(leftOperands);
@@ -45,7 +45,7 @@ final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 		this.operands[size - 1] = rightOperand;
 	}
 
-	CriteriaExpression(final CriteriaLogicalOperator operator, final Criteria<E> leftOperand, final Criteria<E> rightOperand) {
+	CriteriaExpression(final CriteriaLogicalOperator operator, final Criteria<D> leftOperand, final Criteria<D> rightOperand) {
 		Assertion.check()
 				.isNotNull(operator)
 				.isNotNull(leftOperand);
@@ -58,13 +58,13 @@ final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 		return operator;
 	}
 
-	Criteria<E>[] getOperands() {
+	Criteria<D>[] getOperands() {
 		return operands;
 	}
 
 	@Override
-	public Predicate<E> toPredicate() {
-		final BinaryOperator<Predicate<E>> accumulator;
+	public Predicate<D> toPredicate() {
+		final BinaryOperator<Predicate<D>> accumulator;
 		if (operator == CriteriaLogicalOperator.OR) {
 			accumulator = Predicate::or;
 		} else if (operator == CriteriaLogicalOperator.AND) {

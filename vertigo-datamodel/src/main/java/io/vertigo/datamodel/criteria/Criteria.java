@@ -25,16 +25,16 @@ import java.util.stream.Stream;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.model.DtObject;
 
 /**
  * A criteria to filter a list.
  * A criteria can be translated to an SQL query and a Predicate for Java filtering
  * To create a Criteria use the class {@link Criterions}
- * @param <E> the type of entity filtered with this criteria
+ * @param <D> the type of dtObject filtered with this criteria
  * @author mlaroche
  */
-public abstract class Criteria<E extends Entity> implements Serializable {
+public abstract class Criteria<D extends DtObject> implements Serializable {
 	private static final long serialVersionUID = -990254492823334724L;
 
 	/**
@@ -42,7 +42,7 @@ public abstract class Criteria<E extends Entity> implements Serializable {
 	 * @param criteria the criteria to add
 	 * @return the composed criteria
 	 */
-	public final Criteria<E> and(final Criteria<E> criteria) {
+	public final Criteria<D> and(final Criteria<D> criteria) {
 		return CriteriaUtil.and(this, criteria);
 	}
 
@@ -51,7 +51,7 @@ public abstract class Criteria<E extends Entity> implements Serializable {
 	 * @param criteria the criteria to add
 	 * @return the composed criteria
 	 */
-	public final Criteria<E> or(final Criteria<E> criteria) {
+	public final Criteria<D> or(final Criteria<D> criteria) {
 		return CriteriaUtil.or(this, criteria);
 	}
 
@@ -59,7 +59,7 @@ public abstract class Criteria<E extends Entity> implements Serializable {
 	 * Translate the criteria to a Java predicate
 	 * @return the predicate
 	 */
-	public abstract Predicate<E> toPredicate();
+	public abstract Predicate<D> toPredicate();
 
 	abstract String toString(final CriteriaCtx ctx, final CriteriaEncoder criteriaEncoder);
 
