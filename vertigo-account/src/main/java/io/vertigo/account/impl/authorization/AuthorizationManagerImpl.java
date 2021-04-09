@@ -42,7 +42,7 @@ import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.model.KeyConcept;
+import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
 /**
@@ -101,17 +101,17 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <K extends KeyConcept> boolean isAuthorized(final K keyConcept, final OperationName<K> operationName) {
-		Assertion.check().isNotNull(keyConcept)
+	public <E extends Entity> boolean isAuthorized(final E entity, final OperationName<E> operationName) {
+		Assertion.check().isNotNull(entity)
 				.isNotNull(operationName);
 		//---
-		return getAuthorizedOperations(keyConcept).contains(operationName.name());
+		return getAuthorizedOperations(entity).contains(operationName.name());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <K extends KeyConcept> Criteria<K> getCriteriaSecurity(final Class<K> keyConceptClass, final OperationName<K> operation) {
-		Assertion.check().isNotNull(keyConceptClass)
+	public <E extends Entity> Criteria<E> getCriteriaSecurity(final Class<E> entityClass, final OperationName<E> operation) {
+		Assertion.check().isNotNull(entityClass)
 				.isNotNull(operation);
 		//---
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
@@ -121,14 +121,14 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		}
 
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
 		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
 
-		final List<Criteria<K>> criterions = userPermissions.getEntityAuthorizations(dtDefinition).stream()
+		final List<Criteria<E>> criterions = userPermissions.getEntityAuthorizations(dtDefinition).stream()
 				.filter(permission -> permission.getOperation().get().equals(operation.name())
 						|| permission.getOverrides().contains(operation.name()))
 				.flatMap(permission -> permission.getRules().stream())
-				.map(rule -> new CriteriaSecurityRuleTranslator<K>()
+				.map(rule -> new CriteriaSecurityRuleTranslator<E>()
 						.on(securedEntity)
 						.withRule(rule)
 						.withCriteria(userPermissions.getSecurityKeys())
@@ -140,8 +140,8 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 			return Criterions.alwaysFalse();
 		}
 
-		Criteria<K> securityCriteria = null;
-		for (final Criteria<K> ruleCriteria : criterions) {
+		Criteria<E> securityCriteria = null;
+		for (final Criteria<E> ruleCriteria : criterions) {
 			if (securityCriteria == null) {
 				securityCriteria = ruleCriteria;
 			} else {
@@ -153,9 +153,9 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <K extends KeyConcept> String getSearchSecurity(final Class<K> keyConceptClass, final OperationName<K> operationName) {
+	public <E extends Entity> String getSearchSecurity(final Class<E> entityClass, final OperationName<E> operationName) {
 		Assertion.check()
-				.isNotNull(keyConceptClass)
+				.isNotNull(entityClass)
 				.isNotNull(operationName);
 		//---
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
@@ -164,7 +164,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 			return ""; //Attention : pas de *:*
 		}
 
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
 		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
 
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
@@ -193,8 +193,8 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <K extends KeyConcept> List<String> getAuthorizedOperations(final K keyConcept) {
-		Assertion.check().isNotNull(keyConcept);
+	public <E extends Entity> List<String> getAuthorizedOperations(final E entity) {
+		Assertion.check().isNotNull(entity);
 		//---
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
 		if (userPermissionsOpt.isEmpty()) {
@@ -202,17 +202,17 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 			return Collections.emptyList();
 		}
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
 
 		return userPermissions.getEntityAuthorizations(dtDefinition).stream()
 				.filter(permission -> permission.getRules().stream()
-						.anyMatch(rule -> new CriteriaSecurityRuleTranslator<K>()
+						.anyMatch(rule -> new CriteriaSecurityRuleTranslator<E>()
 								.on(securedEntity)
 								.withRule(rule)
 								.withCriteria(userPermissions.getSecurityKeys())
 								.toCriteria()
-								.toPredicate().test(keyConcept)))
+								.toPredicate().test(entity)))
 				.flatMap(authorization -> Stream.concat(Stream.of(authorization.getOperation().get()), authorization.getOverrides().stream()))
 				.collect(Collectors.toList());
 	}

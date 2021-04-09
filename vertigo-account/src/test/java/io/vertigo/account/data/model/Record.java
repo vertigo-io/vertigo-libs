@@ -18,7 +18,7 @@
 package io.vertigo.account.data.model;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.datamodel.structure.model.KeyConcept;
+import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
@@ -26,7 +26,7 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
 /**
  * Dossier.
  */
-public final class Record implements KeyConcept {
+public final class Record implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -43,90 +43,90 @@ public final class Record implements KeyConcept {
 
 	private String etaCd;
 
-	/** {@inheritDoc} */
+	/** {@inheritDoc}*/
 	@Override
 	public UID<Record> getUID() {
 		return UID.of(this);
 	}
 
 	@Field(smartType = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "Id")
-	public final Long getDosId() {
+	public Long getDosId() {
 		return dosId;
 	}
 
-	public final void setDosId(final Long dosId) {
+	public void setDosId(final Long dosId) {
 		this.dosId = dosId;
 	}
 
 	@Field(smartType = "STyId", label = "Region")
-	public final Long getRegId() {
+	public Long getRegId() {
 		return regId;
 	}
 
-	public final void setRegId(final Long regId) {
+	public void setRegId(final Long regId) {
 		this.regId = regId;
 	}
 
 	@Field(smartType = "STyId", label = "Département")
-	public final Long getDepId() {
+	public Long getDepId() {
 		return depId;
 	}
 
-	public final void setDepId(final Long depId) {
+	public void setDepId(final Long depId) {
 		this.depId = depId;
 	}
 
 	@Field(smartType = "STyId", label = "Commune")
-	public final Long getComId() {
+	public Long getComId() {
 		return comId;
 	}
 
-	public final void setComId(final Long comId) {
+	public void setComId(final Long comId) {
 		this.comId = comId;
 	}
 
 	@Field(smartType = "STyId", cardinality = Cardinality.ONE, label = "Type dossier")
-	public final Long getTypId() {
+	public Long getTypId() {
 		return typId;
 	}
 
-	public final void setTypId(final Long typId) {
+	public void setTypId(final Long typId) {
 		this.typId = typId;
 	}
 
 	@Field(smartType = "STyLabel", cardinality = Cardinality.ONE, label = "Title")
-	public final String getTitle() {
+	public String getTitle() {
 		return title;
 	}
 
-	public final void setTitle(final String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
 	@Field(smartType = "STyMontant", cardinality = Cardinality.ONE, label = "Amount")
-	public final Double getAmount() {
+	public Double getAmount() {
 		return amount;
 	}
 
-	public final void setAmount(final Double amount) {
+	public void setAmount(final Double amount) {
 		this.amount = amount;
 	}
 
 	@Field(smartType = "STyId", cardinality = Cardinality.ONE, label = "Créateur")
-	public final Long getUtiIdOwner() {
+	public Long getUtiIdOwner() {
 		return utiIdOwner;
 	}
 
-	public final void setUtiIdOwner(final Long utiIdOwner) {
+	public void setUtiIdOwner(final Long utiIdOwner) {
 		this.utiIdOwner = utiIdOwner;
 	}
 
 	@Field(smartType = "STyCode", cardinality = Cardinality.ONE, label = "Etat dossier")
-	public final String getEtaCd() {
+	public String getEtaCd() {
 		return etaCd;
 	}
 
-	public final void setEtaCd(final String etaCd) {
+	public void setEtaCd(final String etaCd) {
 		this.etaCd = etaCd;
 	}
 

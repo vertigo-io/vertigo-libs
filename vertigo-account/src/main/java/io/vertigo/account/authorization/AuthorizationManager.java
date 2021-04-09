@@ -24,7 +24,7 @@ import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.account.authorization.definitions.OperationName;
 import io.vertigo.core.node.component.Manager;
 import io.vertigo.datamodel.criteria.Criteria;
-import io.vertigo.datamodel.structure.model.KeyConcept;
+import io.vertigo.datamodel.structure.model.Entity;
 
 /**
  * Authorizations manager.
@@ -53,34 +53,34 @@ public interface AuthorizationManager extends Manager {
 	boolean hasAuthorization(AuthorizationName... authorizationName);
 
 	/**
-	 * Check if current user can do this operation on this keyConcept.
+	 * Check if current user can do this operation on this entity.
 	 *
-	 * @param keyConcept secured data to check
+	 * @param entity secured data to check
 	 * @param operation operation name
-	 * @return true if current user can do this operation on this keyConcept.
-	 * @param <K> keyConcept type
+	 * @return true if current user can do this operation on this entity.
+	 * @param <E> entity type
 	 */
-	<K extends KeyConcept> boolean isAuthorized(final K keyConcept, OperationName<K> operation);
+	<E extends Entity> boolean isAuthorized(final E entity, OperationName<E> operation);
 
 	/**
-	 * Return Criteria of security rules for this current user on this keyConceptClass.
+	 * Return Criteria of security rules for this current user on this entityClass.
 	 *
-	 * @param keyConceptClass secured data to check
+	 * @param entityClass secured data to check
 	 * @param operation operation name
-	 * @return Criteria of security rule for this current user on this keyConcept
-	 * @param <K> keyConcept type
+	 * @return Criteria of security rule for this current user on this entity
+	 * @param <E> entity type
 	 */
-	<K extends KeyConcept> Criteria<K> getCriteriaSecurity(Class<K> keyConceptClass, OperationName<K> operation);
+	<E extends Entity> Criteria<E> getCriteriaSecurity(Class<E> entityClass, OperationName<E> operation);
 
 	/**
-	 * Return Search query filter of security rules for this current user on this keyConceptClass.
+	 * Return Search query filter of security rules for this current user on this dtObjectClass.
 	 *
-	 * @param keyConceptClass secured data to check
+	 * @param entityClass secured data to check
 	 * @param operation operation name
-	 * @return Search query filter of security rules for this current user on this keyConcept.
-	 * @param <K> keyConcept type
+	 * @return Search query filter of security rules for this current user on this entity.
+	 * @param <O> entity type
 	 */
-	<K extends KeyConcept> String getSearchSecurity(final Class<K> keyConceptClass, OperationName<K> operation);
+	<E extends Entity> String getSearchSecurity(final Class<E> entityClass, OperationName<E> operation);
 
 	/**
 	 * Get all prior authorizations of current user.
@@ -94,10 +94,10 @@ public interface AuthorizationManager extends Manager {
 	 * Get all operation doable on this object by current user.
 	 * This can be use by UI to show or not some features.
 	 *
-	 * @param keyConcept secured data to check
+	 * @param entity secured data to check
 	 * @return operations list
-	 * @param <K> keyConcept type
+	 * @param <E> entity type
 	 */
-	<K extends KeyConcept> List<String> getAuthorizedOperations(final K keyConcept);
+	<E extends Entity> List<String> getAuthorizedOperations(final E entity);
 
 }
