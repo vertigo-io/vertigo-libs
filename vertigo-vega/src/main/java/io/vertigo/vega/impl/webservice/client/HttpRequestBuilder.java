@@ -7,20 +7,25 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition.Verb;
+import io.vertigo.vega.webservice.definitions.WebServiceParam;
 import io.vertigo.vega.webservice.model.ExtendedObject;
 
 public final class HttpRequestBuilder implements Builder<HttpRequest> {
 
-	private final JsonEngine jsonEngine;
+	private final JsonEngine jsonWriterEngine;
 
 	private final String urlPrefix;
 	private final String resourcePath;
@@ -31,13 +36,18 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 	private Verb verb = null;
 	private Object body = null;
 
-	public HttpRequestBuilder(final String urlPrefix, final String resourcePath, final JsonEngine jsonEngine) {
-		Assertion.check().isTrue(resourcePath.startsWith("/"), "resourcePath ({0}) must starts with /", resourcePath);
-		Assertion.check().isNotNull(jsonEngine);
+	private final Set<String> includedFields = new HashSet<>();
+	private final Set<String> excludedFields = new HashSet<>();
+
+	public HttpRequestBuilder(final String urlPrefix, final String resourcePath, final JsonEngine jsonWriterEngine) {
+		Assertion.check()
+				.isTrue(resourcePath.startsWith("/"), "resourcePath ({0}) must starts with /", resourcePath)
+				.isNotNull(jsonWriterEngine);
 		//---
 		this.urlPrefix = urlPrefix;
 		this.resourcePath = resourcePath;
-		this.jsonEngine = jsonEngine;
+		this.jsonWriterEngine = jsonWriterEngine;
+
 	}
 
 	@Override
@@ -46,7 +56,14 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 
 		BodyPublisher bodyPublisher = BodyPublishers.noBody();
 		if (body != null) {
-			bodyPublisher = BodyPublishers.ofString(jsonEngine.toJson(body));
+			final String jsonBody;
+			if (body instanceof ExtendedObject) {
+				final ExtendedObject extendedObject = (ExtendedObject) body;
+				jsonBody = jsonWriterEngine.toJsonWithMeta(extendedObject.getInnerObject(), extendedObject, includedFields, excludedFields);
+			} else {
+				jsonBody = jsonWriterEngine.toJsonWithMeta(body, Collections.emptyMap(), includedFields, excludedFields);
+			}
+			bodyPublisher = BodyPublishers.ofString(jsonBody);
 		}
 
 		switch (verb) {
@@ -110,19 +127,29 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 		}
 	}
 
-	public void innerBodyParam(final String name, final Object object) {
-		if (body == null) {
+	public void innerBodyParam(final String name, final Object object, final WebServiceParam webServiceParam) {
+		if(body == null) {
 			body = new HashMap<>();
 		}
 		Assertion.check().isTrue(body instanceof Map, "Can't merge body content");
 		//---
-		final Map<String, Object> bodyContent = (Map<String, Object>) body;
-		bodyContent.put(name, object);
+		final Map<String, Object> innerBody = (Map<String, Object>) body;
+
+		includedFields.addAll(webServiceParam.getIncludedFields().stream()
+				.map(n -> name + "." + n)
+				.collect(Collectors.toSet()));
+		excludedFields.addAll(webServiceParam.getExcludedFields().stream()
+				.map(n -> name + "." + n)
+				.collect(Collectors.toSet()));
+		innerBody.put(name, object);
 	}
 
-	public void bodyParam(final Object object) {
+	public void bodyParam(final Object object, final WebServiceParam webServiceParam) {
 		final ExtendedObject extendedObject = new ExtendedObject(object);
+		includedFields.addAll(webServiceParam.getIncludedFields());
+		excludedFields.addAll(webServiceParam.getExcludedFields());
 		if (body != null) {
+			Assertion.check().isTrue(body instanceof Map, "Can't merge two bodies {0}", webServiceParam.getName());
 			extendedObject.putAll((Map<String, Object>) body);
 		}
 		body = extendedObject;

@@ -107,7 +107,7 @@ public interface SimplerClientTestWebServices extends Amplifier {
 	//@POST is non-indempotent
 	@POST("/contact")
 	Contact createContact( //create POST method -> 201 instead of 200 by convention
-			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact);
+			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) @ExcludedFields("conId") Contact contact);
 
 	//PUT is indempotent : ID mandatory
 	@PUT("/contact")

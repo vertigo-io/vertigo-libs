@@ -19,11 +19,14 @@ package io.vertigo.vega.engines.webservice.json;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Map.Entry;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -39,12 +42,36 @@ final class DtListDeserializer<D extends DtObject> implements JsonDeserializer<D
 	public DtList<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 		final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
 		final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
-		final JsonArray jsonArray = json.getAsJsonArray();
+
+		final JsonArray jsonArray;
+		final JsonObject metaData;
+		if (json.isJsonObject()) {
+			//may contains metaData
+			metaData = json.getAsJsonObject();
+			jsonArray = metaData.getAsJsonArray(JsonEngine.EXTENDED_VALUE_FIELDNAME);
+			metaData.remove(JsonEngine.EXTENDED_VALUE_FIELDNAME);
+
+		} else {
+			metaData = new JsonObject();
+			jsonArray = json.getAsJsonArray();
+		}
 
 		final DtList<D> dtList = new DtList<>(dtoClass);
 		for (final JsonElement element : jsonArray) {
 			final D inputDto = context.deserialize(element, dtoClass);
 			dtList.add(inputDto);
+		}
+		for (final Entry<String, JsonElement> entry : metaData.entrySet()) {
+			final JsonPrimitive jsonPrimitive = entry.getValue().getAsJsonPrimitive(); //only primitives are supported
+			if (jsonPrimitive.isString()) {
+				dtList.setMetaData(entry.getKey(), jsonPrimitive.getAsString());
+			} else if (jsonPrimitive.isNumber()) {
+				dtList.setMetaData(entry.getKey(), jsonPrimitive.getAsNumber());
+			} else if (jsonPrimitive.isBoolean()) {
+				dtList.setMetaData(entry.getKey(), jsonPrimitive.getAsBoolean());
+			} else {
+				throw new IllegalArgumentException("Unsupported metadata type for " + entry.getKey());
+			}
 		}
 		return dtList;
 	}

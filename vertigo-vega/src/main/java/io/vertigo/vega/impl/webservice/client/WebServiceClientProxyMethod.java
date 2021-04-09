@@ -34,17 +34,19 @@ import io.vertigo.vega.webservice.exception.SessionException;
 public final class WebServiceClientProxyMethod implements ProxyMethod {
 
 	private final Map<String, HttpClientConnector> httpClientConnectorByName = new HashMap<>();
-	private final JsonEngine jsonEngine;
+	private final JsonEngine jsonReaderEngine;
 
+	/**
+	* @param jsonReaderEngine jsonReaderEngine
+	*/
 	@Inject
-	public WebServiceClientProxyMethod(
-			final JsonEngine jsonEngine,
+	public WebServiceClientProxyMethod(final JsonEngine jsonReaderEngine,
 			final List<HttpClientConnector> httpClientConnectors) {
-		Assertion.check()
-				.isNotNull(jsonEngine)
+		Assertion.check().isNotNull(jsonReaderEngine)
 				.isNotNull(httpClientConnectors);
-		//---
-		this.jsonEngine = jsonEngine;
+		//-----
+		this.jsonReaderEngine = jsonReaderEngine;
+
 		httpClientConnectors.forEach(
 				connector -> {
 					final var connectorName = connector.getName();
@@ -54,6 +56,7 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 					//---
 					httpClientConnectorByName.put(connectorName, connector);
 				});
+
 	}
 
 	@Override
@@ -67,7 +70,8 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 		final WebServiceDefinition webServiceDefinition = createWebServiceDefinition(method);
 		final HttpClientConnector httpClientConnector = Optional.ofNullable(httpClientConnectorByName.get(connectorName))
 				.orElseThrow(() -> new VSystemException("Can't found HttpClientConnector with name {0}", connectorName));
-		final HttpRequest httpRequest = createHttpRequest(webServiceDefinition, namedArgs(webServiceDefinition.getWebServiceParams(), args), httpClientConnector, jsonEngine);
+
+		final HttpRequest httpRequest = createHttpRequest(webServiceDefinition, namedArgs(webServiceDefinition.getWebServiceParams(), args), httpClientConnector);
 
 		final HttpResponse response;
 		try {
@@ -84,7 +88,7 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 			if (Void.TYPE.equals(returnType)) {
 				return null;
 			}
-			return jsonEngine.fromJson((String) response.body(), returnType);
+			return convertResultFromJson((String) response.body(), returnType);
 		} else if (responseStatus / 100 == 3) {
 			throw new VUserException((String) response.body());
 		} else if (responseStatus / 100 == 4) {
@@ -95,12 +99,20 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 			} else if (responseStatus == HttpServletResponse.SC_BAD_REQUEST) {
 				throw new JsonSyntaxException((String) response.body());
 			} else {
-				final Map errorMessages = jsonEngine.fromJson((String) response.body(), Map.class);
+				final Map errorMessages = convertErrorFromJson((String) response.body(), Map.class);
 				throw new WebServiceUserException(responseStatus, errorMessages);
 			}
 		} else {
 			throw WrappedException.wrap(new VSystemException((String) response.body()));
 		}
+	}
+
+	private Map convertErrorFromJson(final String json, final Type type) {
+		return jsonReaderEngine.fromJson(json, type);
+	}
+
+	private Object convertResultFromJson(final String json, final Type returnType) {
+		return jsonReaderEngine.fromJson(json, returnType);
 	}
 
 	private String obtainConnectorName(final Method method) {
@@ -122,15 +134,14 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 		return namedArgs;
 	}
 
-	private HttpRequest createHttpRequest(final WebServiceDefinition webServiceDefinition, final Map<String, Object> namedArgs, final HttpClientConnector httpClientConnector, final JsonEngine jsonEngine) {
-
-		final HttpRequestBuilder httpRequestBuilder = new HttpRequestBuilder(httpClientConnector.getUrlPrefix(), webServiceDefinition.getPath(), jsonEngine);
-		httpRequestBuilder.header("Content-Type", "application/json");
+	private HttpRequest createHttpRequest(final WebServiceDefinition webServiceDefinition, final Map<String, Object> namedArgs, final HttpClientConnector httpClientConnector) {
+		final HttpRequestBuilder httpRequestBuilder = new HttpRequestBuilder(httpClientConnector.getUrlPrefix(), webServiceDefinition.getPath(), jsonReaderEngine);
+		httpRequestBuilder.header("Content-Type", "application/json;charset=UTF-8");
 		httpRequestBuilder.verb(webServiceDefinition.getVerb());
 		for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {
 			switch (webServiceParam.getParamType()) {
 				case Body:
-					httpRequestBuilder.bodyParam(namedArgs.get(webServiceParam.getName()));
+					httpRequestBuilder.bodyParam(namedArgs.get(webServiceParam.getName()), webServiceParam);
 					break;
 				case Header:
 					httpRequestBuilder.header(webServiceParam.getName(), String.valueOf(namedArgs.get(webServiceParam.getName())));
@@ -139,7 +150,7 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 					//nothing
 					break;
 				case InnerBody:
-					httpRequestBuilder.innerBodyParam(webServiceParam.getName(), namedArgs.get(webServiceParam.getName()));
+					httpRequestBuilder.innerBodyParam(webServiceParam.getName(), namedArgs.get(webServiceParam.getName()), webServiceParam);
 					break;
 				case Path:
 					httpRequestBuilder.pathParam(webServiceParam.getName(), String.valueOf(namedArgs.get(webServiceParam.getName())));
