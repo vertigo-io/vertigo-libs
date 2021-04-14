@@ -32,7 +32,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.component.aop.Aspect;
 import io.vertigo.core.node.component.aop.AspectMethodInvocation;
-import io.vertigo.datamodel.structure.model.KeyConcept;
+import io.vertigo.datamodel.structure.model.Entity;
 
 /**
  * Aspect pour la gestion des Secured au niveau de la couche service.
@@ -70,8 +70,8 @@ public final class AuthorizationAspect implements Aspect {
 			//On repère les paramètres qui ont le @SecuredOperation
 			if (securedOperation != null) {
 				//Ils doivent être de type KeyConcept (et même securedEntity mais il y aura une exception dans le isAuthorized)
-				Assertion.check().isTrue(args[i] instanceof KeyConcept, "Can't check authorization on arg{0} ({1})", i, args[i]);
-				if (!authorizationManager.isAuthorized((KeyConcept) args[i], securedOperation::value)) {
+				Assertion.check().isTrue(args[i] instanceof Entity, "Can't check authorization on arg{0} ({1})", i, args[i]);
+				if (!authorizationManager.isAuthorized((Entity) args[i], securedOperation::value)) {
 					throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log
 				}
 			}
