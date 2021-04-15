@@ -18,10 +18,12 @@
 package io.vertigo.ui.impl.springmvc.argumentresolvers;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -111,7 +113,25 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 			}
 			return value;
 		}
-		return viewContext.get(contextKey);// for primitive or other objects
+		final Object result = viewContext.get(contextKey);// for primitive or other objects
+		if (Optional.class.isAssignableFrom(parameter.getParameterType())) {
+			if (result == null) {
+				return Optional.empty();
+			} else if (result instanceof Optional) {
+				return result;
+			} else if (result instanceof Collection) {
+				final Collection resultList = (Collection) result;
+				Assertion.check().isTrue(resultList.size() <= 1, "Can't map a list of {0} elements to Option", resultList.size());
+				return resultList.isEmpty() ? Optional.empty() : Optional.of(resultList.iterator().next());
+			} else if (result.getClass().isArray()) {
+				final int length = Array.getLength(result);
+				Assertion.check().isTrue(length <= 1, "Can't map an array of {0} elements to Option", length);
+				return length == 0 ? Optional.empty() : Optional.of(Array.get(result, 0));
+			}
+			return Optional.of(result);
+		}
+		return result;
+
 	}
 
 	private List<DtObjectValidator<DtObject>> getDtObjectValidators(final MethodParameter parameter) {

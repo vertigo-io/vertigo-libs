@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -57,9 +58,10 @@ public class FileUploadDemoController extends AbstractVSpringMvcController {
 
 	private final ViewContextKey<Movie> movieKey = ViewContextKey.of("movie");
 
-	public static final ViewContextKey<ArrayList<FileInfoURI>> fileUrisKey1 = ViewContextKey.of("myFilesUris1");
-	public static final ViewContextKey<ArrayList<FileInfoURI>> fileUrisKey2 = ViewContextKey.of("myFilesUris2");
-	public static final ViewContextKey<ArrayList<FileInfoURI>> fileUrisKey3 = ViewContextKey.of("myFilesUris3");
+	public static final ViewContextKey<FileInfoURI> fileUriKeyMono = ViewContextKey.of("myFilesUriMono");
+	public static final ViewContextKey<FileInfoURI> fileUrisKey1 = ViewContextKey.of("myFilesUris1");
+	public static final ViewContextKey<FileInfoURI> fileUrisKey2 = ViewContextKey.of("myFilesUris2");
+	public static final ViewContextKey<FileInfoURI> fileUrisKey3 = ViewContextKey.of("myFilesUris3");
 
 	@Inject
 	private MovieServices movieServices;
@@ -88,6 +90,7 @@ public class FileUploadDemoController extends AbstractVSpringMvcController {
 		final ArrayList<FileInfoURI> fileUris = new ArrayList<>();
 		fileUris.add(fileInfoTmp1.getURI());
 		fileUris.add(fileInfoTmp2.getURI());
+		viewContext.publishFileInfoURI(fileUriKeyMono, null);
 		viewContext.publishFileInfoURIs(fileUrisKey1, fileUris);
 		viewContext.publishFileInfoURIs(fileUrisKey2, fileUris);
 		viewContext.publishFileInfoURIs(fileUrisKey3, fileUris);
@@ -120,11 +123,16 @@ public class FileUploadDemoController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/_saveFilesOnly")
-	public void doSaveAutoValidation(@ViewAttribute("myFilesUris1") final List<FileInfoURI> pictures1,
+	public void doSaveAutoValidation(
+			@ViewAttribute("myFilesUriMono") final Optional<FileInfoURI> picture,
+			@ViewAttribute("myFilesUris1") final List<FileInfoURI> pictures1,
 			@ViewAttribute("myFilesUris2") final List<FileInfoURI> pictures2,
 			@ViewAttribute("myFilesUris3") final List<FileInfoURI> pictures3) {
 		//Assertion.check().isTrue(pictures.size() > 0, "No files send");
 		//Assertion.check().isNotNull(pictures.get(0), "FileUri can't be read");
+		if (picture.isEmpty()) {
+			getUiMessageStack().warning("FileUploaderMono No files send");
+		}
 		if (pictures1.size() == 0) {
 			getUiMessageStack().warning("FileUploader1 No files send");
 		}

@@ -18,7 +18,9 @@
                        <vu:grid-cell>
                             <a th:href="@{/componentsDemo/myFiles}">insee.csv</a>
                         </vu:grid-cell>
-                        
+                        <vu:grid-cell>
+                            <vu:fileupload label="Upload file Mono" th:url="'@{/commons/upload}'" key="myFilesUriMono"  />  
+                        </vu:grid-cell>
                         <vu:grid-cell>
                             <vu:fileupload-dropzone key="myFilesUris">
                                 <vu:fileupload label="Upload file" th:url="'@{/commons/upload}'" key="myFilesUris1" multiple />           

@@ -82,9 +82,9 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	private final ViewContextKey<String> selectedTimeZoneList = ViewContextKey.of("selectedTimeZoneList");
 	private final ViewContextKey<String> zoneId = ViewContextKey.of("zoneId");
 
-	public static final ViewContextKey<ArrayList<FileInfoURI>> fileUrisKey1 = ViewContextKey.of("myFilesUris1");
-	public static final ViewContextKey<ArrayList<FileInfoURI>> fileUrisKey2 = ViewContextKey.of("myFilesUris2");
-	public static final ViewContextKey<ArrayList<FileInfoURI>> fileUrisKey3 = ViewContextKey.of("myFilesUris3");
+	public static final ViewContextKey<FileInfoURI> fileUrisKey1 = ViewContextKey.of("myFilesUris1");
+	public static final ViewContextKey<FileInfoURI> fileUrisKey2 = ViewContextKey.of("myFilesUris2");
+	public static final ViewContextKey<FileInfoURI> fileUrisKey3 = ViewContextKey.of("myFilesUris3");
 
 	@Inject
 	private VSecurityManager securityManager;

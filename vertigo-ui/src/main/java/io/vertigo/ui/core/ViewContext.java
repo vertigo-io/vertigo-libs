@@ -414,10 +414,20 @@ public final class ViewContext implements Serializable {
 	/* ================================ FileInfo ==================================*/
 
 	/**
-	 * Get UI file info list.
+	 * Get UI file uri.
 	 * @param contextKey Context key
 	 */
-	public ArrayList<FileInfoURI> getFileInfoURIs(final ViewContextKey<ArrayList<FileInfoURI>> contextKey) {
+	public Optional<FileInfoURI> getFileInfoURI(final ViewContextKey<FileInfoURI> contextKey) {
+		final ArrayList<FileInfoURI> list = getFileInfoURIs(contextKey);
+		Assertion.check().isTrue(list.size() <= 1, "Can't list a list of {0} elements to Option", list.size());
+		return list.isEmpty() ? Optional.empty() : Optional.of(list.iterator().next());
+	}
+
+	/**
+	 * Get UI file info uri list.
+	 * @param contextKey Context key
+	 */
+	public ArrayList<FileInfoURI> getFileInfoURIs(final ViewContextKey<FileInfoURI> contextKey) {
 		return (ArrayList<FileInfoURI>) get(contextKey);
 	}
 
@@ -427,7 +437,11 @@ public final class ViewContext implements Serializable {
 	 * @param fileInfo file's info
 	 */
 	public void publishFileInfoURI(final ViewContextKey<FileInfoURI> contextKey, final FileInfoURI fileInfoURI) {
-		put(contextKey, fileInfoURI);
+		final ArrayList<FileInfoURI> list = new ArrayList<>();
+		if (fileInfoURI != null) {
+			list.add(fileInfoURI);
+		}
+		publishFileInfoURIs(contextKey, list);
 	}
 
 	/**
@@ -435,8 +449,9 @@ public final class ViewContext implements Serializable {
 	 * @param contextKey Context key
 	 * @param fileInfos list of file's info.
 	 */
-	public void publishFileInfoURIs(final ViewContextKey<ArrayList<FileInfoURI>> contextKey, final ArrayList<FileInfoURI> fileInfoURIs) {
-		publishTypedRef(contextKey, fileInfoURIs, TypeToken.getParameterized(ArrayList.class, FileInfoURI.class).getType());
+	public void publishFileInfoURIs(final ViewContextKey<FileInfoURI> contextKey, final ArrayList<FileInfoURI> fileInfoURIs) {
+		viewContextMap.addTypeForKey(contextKey.get(), TypeToken.getParameterized(ArrayList.class, FileInfoURI.class).getType());
+		put(contextKey, fileInfoURIs);
 	}
 
 	/* ================================ FacetedQueryResult ==================================*/
