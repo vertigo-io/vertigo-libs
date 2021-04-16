@@ -77,61 +77,57 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 		if (UiObject.class.isAssignableFrom(parameter.getParameterType())) {
 			return viewContext.getUiObject(() -> contextKey);
 		} else if (SelectedFacetValues.class.isAssignableFrom(parameter.getParameterType())) {
-			final String jsonSelectedFacets = webRequest.getParameter("selectedFacets");
-			if (jsonSelectedFacets != null) {// param present
-				final SelectedFacetValues selectedFacetValues = gson.fromJson(jsonSelectedFacets, SelectedFacetValues.class);
-				final Collection<String> facetNames = ((List<Map<String, Serializable>>) viewContext.asMap().get(contextKey + "_facets"))
-						.stream()
-						.map(map -> (String) map.get("code"))
-						.collect(Collectors.toSet());
-				viewContext.asMap().put(contextKey + "_selectedFacets", new UiSelectedFacetValues(selectedFacetValues, facetNames));
-				return selectedFacetValues;
-			}
-			return viewContext.getSelectedFacetValues(() -> contextKey);
+			return convertToSelectedFacetValues(webRequest, viewContext, contextKey);
 		} else if (DtObject.class.isAssignableFrom(parameter.getParameterType()) || DtList.class.isAssignableFrom(parameter.getParameterType())) {
-			Assertion.check().isNotNull(uiMessageStack);
-			//---
-			final Object value;
-			if (DtObject.class.isAssignableFrom(parameter.getParameterType())) {
-				//object
-				if (viewContext.getUiObject(() -> contextKey).checkFormat(uiMessageStack)) {
-					value = viewContext.getUiObject(() -> contextKey).mergeAndCheckInput(getDtObjectValidators(parameter), uiMessageStack);
-				} else {
-					value = null;
-				}
-			} else {
-				//list
-				if (viewContext.getUiList(() -> contextKey).checkFormat(uiMessageStack)) {
-					value = viewContext.getUiList(() -> contextKey).mergeAndCheckInput(getDtObjectValidators(parameter), uiMessageStack);
-				} else {
-					value = null;
-				}
-			}
-			if (!isNotLastDt(parameter) && uiMessageStack.hasErrors()) {
-				// if we are the last one
-				throw new ValidationUserException();
-			}
-			return value;
+			return mergeAndCheckInput(contextKey, viewContext, parameter, uiMessageStack);
 		}
 		final Object result = viewContext.get(contextKey);// for primitive or other objects
-		if (Optional.class.isAssignableFrom(parameter.getParameterType())) {
-			if (result == null) {
-				return Optional.empty();
-			} else if (result instanceof Optional) {
-				return result;
-			} else if (result instanceof Collection) {
-				final Collection resultList = (Collection) result;
-				Assertion.check().isTrue(resultList.size() <= 1, "Can't map a list of {0} elements to Option", resultList.size());
-				return resultList.isEmpty() ? Optional.empty() : Optional.of(resultList.iterator().next());
-			} else if (result.getClass().isArray()) {
-				final int length = Array.getLength(result);
-				Assertion.check().isTrue(length <= 1, "Can't map an array of {0} elements to Option", length);
-				return length == 0 ? Optional.empty() : Optional.of(Array.get(result, 0));
-			}
-			return Optional.of(result);
+		if (!Collection.class.isAssignableFrom(parameter.getParameterType())
+				&& !parameter.getParameterType().isArray()) {
+			return convertMultipleToSingleParameter(result, parameter);
 		}
 		return result;
 
+	}
+
+	private Object convertToSelectedFacetValues(final NativeWebRequest webRequest, final ViewContext viewContext, final String contextKey) {
+		final String jsonSelectedFacets = webRequest.getParameter("selectedFacets");
+		if (jsonSelectedFacets != null) {// param present
+			final SelectedFacetValues selectedFacetValues = gson.fromJson(jsonSelectedFacets, SelectedFacetValues.class);
+			final Collection<String> facetNames = ((List<Map<String, Serializable>>) viewContext.asMap().get(contextKey + "_facets"))
+					.stream()
+					.map(map -> (String) map.get("code"))
+					.collect(Collectors.toSet());
+			viewContext.asMap().put(contextKey + "_selectedFacets", new UiSelectedFacetValues(selectedFacetValues, facetNames));
+			return selectedFacetValues;
+		}
+		return viewContext.getSelectedFacetValues(() -> contextKey);
+	}
+
+	private Object mergeAndCheckInput(final String contextKey, final ViewContext viewContext, final MethodParameter parameter, final UiMessageStack uiMessageStack) {
+		Assertion.check().isNotNull(uiMessageStack);
+		//---
+		final Object value;
+		if (DtObject.class.isAssignableFrom(parameter.getParameterType())) {
+			//object
+			if (viewContext.getUiObject(() -> contextKey).checkFormat(uiMessageStack)) {
+				value = viewContext.getUiObject(() -> contextKey).mergeAndCheckInput(getDtObjectValidators(parameter), uiMessageStack);
+			} else {
+				value = null;
+			}
+		} else {
+			//list
+			if (viewContext.getUiList(() -> contextKey).checkFormat(uiMessageStack)) {
+				value = viewContext.getUiList(() -> contextKey).mergeAndCheckInput(getDtObjectValidators(parameter), uiMessageStack);
+			} else {
+				value = null;
+			}
+		}
+		if (!isNotLastDt(parameter) && uiMessageStack.hasErrors()) {
+			// if we are the last one
+			throw new ValidationUserException();
+		}
+		return value;
 	}
 
 	private List<DtObjectValidator<DtObject>> getDtObjectValidators(final MethodParameter parameter) {
@@ -151,5 +147,29 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 		return Stream.of(parameter.getMethod().getParameters())
 				.skip(parameter.getParameterIndex() + 1L)
 				.anyMatch(remainingParam -> DtObject.class.isAssignableFrom(remainingParam.getType()) || DtList.class.isAssignableFrom(remainingParam.getType()));
+	}
+
+	private Object convertMultipleToSingleParameter(final Object result, final MethodParameter parameter) {
+		final Object nullableResult;
+		if (result == null) {
+			nullableResult = null;
+		} else if (result instanceof Collection) {
+			final Collection resultList = (Collection) result;
+			Assertion.check().isTrue(resultList.size() <= 1, "Can't map a list of {0} elements to single object", resultList.size());
+			nullableResult = resultList.isEmpty() ? null : resultList.iterator().next();
+		} else if (result.getClass().isArray()) {
+			final int length = Array.getLength(result);
+			Assertion.check().isTrue(length <= 1, "Can't map an array of {0} elements to single object", length);
+			nullableResult = length == 0 ? null : Array.get(result, 0);
+		} else {
+			//case of single object, return as is
+			nullableResult = result;
+		}
+		//rewrap as optional if asked for
+		if (Optional.class.isAssignableFrom(parameter.getParameterType())
+				&& !(nullableResult instanceof Optional)) {
+			return Optional.ofNullable(nullableResult);
+		}
+		return nullableResult;
 	}
 }

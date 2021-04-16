@@ -124,13 +124,17 @@ public class FileUploadDemoController extends AbstractVSpringMvcController {
 
 	@PostMapping("/_saveFilesOnly")
 	public void doSaveAutoValidation(
-			@ViewAttribute("myFilesUriMono") final Optional<FileInfoURI> picture,
+			@ViewAttribute("myFilesUriMono") final Optional<FileInfoURI> pictureOpt,
+			@ViewAttribute("myFilesUriMono") final FileInfoURI picture,
 			@ViewAttribute("myFilesUris1") final List<FileInfoURI> pictures1,
 			@ViewAttribute("myFilesUris2") final List<FileInfoURI> pictures2,
 			@ViewAttribute("myFilesUris3") final List<FileInfoURI> pictures3) {
 		//Assertion.check().isTrue(pictures.size() > 0, "No files send");
 		//Assertion.check().isNotNull(pictures.get(0), "FileUri can't be read");
-		if (picture.isEmpty()) {
+		if (picture == null) {
+			getUiMessageStack().warning("FileUploaderMono No files send");
+		}
+		if (pictureOpt.isEmpty()) {
 			getUiMessageStack().warning("FileUploaderMono No files send");
 		}
 		if (pictures1.size() == 0) {
