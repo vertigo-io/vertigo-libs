@@ -102,12 +102,14 @@ public final class UserAuthorizations implements Serializable {
 	}
 
 	/**
-	 * Clear all roles on this user. (but only roles : authorizations aren't cleared)
+	 * Clear all roles on this user. (authorizations are cleared too)
 	 * Warning : no more rights after that.
+	 * @return this UserAuthorizations
 	 */
-	public void clearRoles() {
+	public UserAuthorizations clearRoles() {
 		roleRefs.clear();
 		clearAuthorizations();
+		return this;
 	}
 
 	/**
@@ -172,10 +174,12 @@ public final class UserAuthorizations implements Serializable {
 	/**
 	 * Clear all authorization on this user. (but only authorization : roles aren't cleared)
 	 * Warning : no more rights after that.
+	 * @return this UserAuthorizations
 	 */
-	public void clearAuthorizations() {
+	public UserAuthorizations clearAuthorizations() {
 		authorizationRefs.clear();
 		authorizationMapRefs.clear();
+		return this;
 	}
 
 	/**
