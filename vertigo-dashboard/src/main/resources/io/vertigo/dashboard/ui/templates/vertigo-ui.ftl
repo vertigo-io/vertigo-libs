@@ -19,7 +19,7 @@
 					    data-url="${contextName}/api/dashboard/data/series" 
 					    data-query-measures='["sql_duration:mean", "search_duration:mean", "inner_duration:mean"]'
 					     data-query-data-filter='{ "measurement": "page", "filters": {"location": "*", "name": "*", "module": "*", "feature": "*" }}'
-					    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1h"}'
+					    data-query-time-filter='{ "from": "-3d", "to": "now()", "dim": "1h"}'
 						data-labels='{"sql_duration:mean":"SQL duration", "search_duration:mean":"Search duration", "inner_duration:mean":"Internal duration" }' 
 					    data-colors='GREEN2BLUE'></div> 
 				</@module.card>  
@@ -96,7 +96,7 @@
 					    data-url="${contextName}/api/dashboard/data/series" 
 					    data-query-measures='["duration:median", "duration:percentile_70", "duration:percentile_90"]'
 					     data-query-data-filter='{ "measurement": "page", "filters": {"location": "*", "name": "*", "module": "*", "feature": "*" }}'
-					    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1h"}'
+					    data-query-time-filter='{ "from": "-3d", "to": "now()", "dim": "1h"}'
 						data-labels='{"duration:median":"Médiane", "duration:percentile_70":"Per70", "duration:percentile_90":"Per90" }' 
 					    data-colors='iRED2GREEN'></div>   
 				</@module.card>

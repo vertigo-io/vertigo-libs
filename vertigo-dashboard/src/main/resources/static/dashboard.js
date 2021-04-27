@@ -71,16 +71,16 @@ function updateTimeFilterFromSelection(queryTimeFilter) {
 		var timeSelection = $.cookie("timeFilter");
 	
 		var to = 'now()';
-		var from = 'now() - 1d';
+		var from = '-1d';
 		var dim = '6m';
 		if(timeSelection === 'last_day') {
-			from = 'now() - 1d'; 
+			from = '-1d'; 
 			dim = '6m';
 		} else if(timeSelection === 'last_3_days') {
-			from = 'now() - 3d';
+			from = '-3d';
 			dim = '1h';
 		} else if(timeSelection === 'last_week') {
-			from = 'now() - 1w';
+			from = '-1w';
 			dim = '2h';
 		} 
 		if(from){

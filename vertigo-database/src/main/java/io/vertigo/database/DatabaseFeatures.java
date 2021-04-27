@@ -28,7 +28,7 @@ import io.vertigo.database.plugins.migration.liquibase.LiquibaseMigrationPlugin;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.database.plugins.sql.connection.datasource.DataSourceConnectionProviderPlugin;
 import io.vertigo.database.plugins.timeseries.fake.FakeTimeSeriesPlugin;
-import io.vertigo.database.plugins.timeseries.influxdb.InfluxDbTimeSeriesPlugin;
+import io.vertigo.database.plugins.timeseries.influxdb.FluxInfluxDbTimeSeriesPlugin;
 import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.timeseries.TimeSeriesManager;
 
@@ -86,7 +86,7 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	@Feature("timeseries.influxdb")
 	public DatabaseFeatures withInfluxDb(final Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(InfluxDbTimeSeriesPlugin.class, params);
+				.addPlugin(FluxInfluxDbTimeSeriesPlugin.class, params);
 		return this;
 	}
 
@@ -135,7 +135,7 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	}
 
 	/**
-
+	
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
