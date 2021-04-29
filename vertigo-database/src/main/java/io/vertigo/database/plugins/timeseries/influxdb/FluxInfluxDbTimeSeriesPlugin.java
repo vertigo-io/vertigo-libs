@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -48,6 +49,7 @@ import io.vertigo.database.impl.timeseries.TimeSeriesPlugin;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
 import io.vertigo.database.timeseries.Measure;
+import io.vertigo.database.timeseries.TabularDataSerie;
 import io.vertigo.database.timeseries.TabularDatas;
 import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.database.timeseries.TimedDataSerie;
@@ -152,33 +154,21 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
 	}
 
-	private TabularDatas executeTabularQuery(final String queryString) {
-		//		final Query query = new Query(queryString, appName);
-		//		final QueryResult queryResult = influxDBClient.query(query);
-		//
-		//		final List<Series> series = queryResult.getResults().get(0).getSeries();
-		//
-		//		if (series != null && !series.isEmpty()) {
-		//			//all columns are the measures
-		//			final List<String> seriesName = new ArrayList<>();
-		//			seriesName.addAll(series.get(0).getColumns().subList(1, series.get(0).getColumns().size()));//we remove the first one
-		//			if (series.get(0).getTags() != null) {
-		//				seriesName.addAll(series.get(0).getTags().keySet());// + all the tags names (the group by)
-		//			}
-		//
-		//			final List<TabularDataSerie> dataSeries = series
-		//					.stream()
-		//					.map(mySeries -> {
-		//						final Map<String, Object> mapValues = buildMapValue(mySeries.getColumns(), mySeries.getValues().get(0));
-		//						if (mySeries.getTags() != null) {
-		//							mapValues.putAll(mySeries.getTags());
-		//						}
-		//						return new TabularDataSerie(mapValues);
-		//					})
-		//					.collect(Collectors.toList());
-		//
-		//			return new TabularDatas(dataSeries, seriesName);
-		//		}
+	private TabularDatas executeTabularQuery(final String q) {
+		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(q);
+		final FluxTable table = queryResult.get(0);
+		if (table.getRecords() != null && !table.getRecords().isEmpty()) {
+
+			final List<TabularDataSerie> dataSeries = table.getRecords()
+					.stream()
+					.map(record -> new TabularDataSerie(
+							buildMapValue(record)))
+					.collect(Collectors.toList());
+			return new TabularDatas(dataSeries, table.getColumns().stream()
+					.filter(column -> !"table".equals(column.getLabel()))
+					.filter(column -> !"result".equals(column.getLabel()))
+					.map(FluxColumn::getLabel).collect(Collectors.toList()));//we remove the time
+		}
 		return new TabularDatas(Collections.emptyList(), Collections.emptyList());
 	}
 
@@ -193,7 +183,11 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 							record.getTime(),
 							buildMapValue(record)))
 					.collect(Collectors.toList());
-			return new TimedDatas(dataSeries, table.getColumns().stream().filter(column -> !"_time".equals(column.getLabel())).map(FluxColumn::getLabel).collect(Collectors.toList()));//we remove the time
+			return new TimedDatas(dataSeries, table.getColumns().stream()
+					.filter(column -> !"_time".equals(column.getLabel()))
+					.filter(column -> !"table".equals(column.getLabel()))
+					.filter(column -> !"result".equals(column.getLabel()))
+					.map(FluxColumn::getLabel).collect(Collectors.toList()));//we remove the time
 		}
 		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
 	}
@@ -266,7 +260,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		// -----
 		final Long resolvedLimit = limit.map(l -> Math.min(l, 5000L)).orElse(500L);
 
-		final StringBuilder queryBuilder = buildQuery(appName, measures, dataFilter, timeFilter, false);
+		final StringBuilder queryBuilder = buildTimedQuery(appName, measures, dataFilter, timeFilter);
 		queryBuilder.append(" ORDER BY time DESC");
 		queryBuilder.append(" LIMIT ").append(resolvedLimit);
 
@@ -276,25 +270,14 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	@Override
 	public TimedDatas getTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		final StringBuilder queryBuilder = buildQuery(appName, measures, dataFilter, timeFilter, true);
-
-		final String groupByClause = Stream.of(groupBy)
-				.collect(Collectors.joining("\", \"", "\"", "\""));
-
-		queryBuilder.append(" group by ").append(groupByClause);
-		final String queryString = queryBuilder.toString();
-
-		return executeTimedTabularQuery(queryString);
+		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
 	}
 
 	@Override
 	public TabularDatas getTabularData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		final StringBuilder queryBuilder = buildQuery(appName, measures, dataFilter, timeFilter, true);
+		final StringBuilder queryBuilder = buildTabularQuery(appName, measures, dataFilter, timeFilter, groupBy);
 
-		final String groupByClause = Stream.of(groupBy)
-				.collect(Collectors.joining("\", \"", "\"", "\""));
-
-		queryBuilder.append(" group by ").append(groupByClause);
+		//queryBuilder.append(" group by ").append(groupByClause);
 		final String queryString = queryBuilder.toString();
 
 		return executeTabularQuery(queryString);
@@ -330,7 +313,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 				.isNotNull(dataFilter)
 				.isNotNull(timeFilter.getDim());// we check dim is not null because we need it
 		//---
-		final String q = buildQuery(appName, measures, dataFilter, timeFilter, true)
+		final String q = buildTimedQuery(appName, measures, dataFilter, timeFilter)
 				//.append(" group by time(").append(timeFilter.getDim()).append(')')
 				.toString();
 
@@ -340,16 +323,18 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	@Override
 	public TabularDatas getTops(final String appName, final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
-		final String queryString = new StringBuilder()
-				.append("select top(").append("\"top_").append(measure).append("\", \"").append(groupBy).append("\", ").append(maxRows).append(") as \"").append(measure).append('"')
-				//.append(" from ( select ").append(buildMeasureQuery(measure, "top_" + measure))
-				.append(" from ").append(dataFilter.getMeasurement())
-				.append(buildWhereClause(dataFilter, timeFilter))
-				.append(" group by \"").append(groupBy).append('"')
-				.append(')')
-				.toString();
+		//		final String queryString = new StringBuilder()
+		//				.append("select top(").append("\"top_").append(measure).append("\", \"").append(groupBy).append("\", ").append(maxRows).append(") as \"").append(measure).append('"')
+		//				//.append(" from ( select ").append(buildMeasureQuery(measure, "top_" + measure))
+		//				.append(" from ").append(dataFilter.getMeasurement())
+		//				.append(buildWhereClause(dataFilter, timeFilter))
+		//				.append(" group by \"").append(groupBy).append('"')
+		//				.append(')')
+		//				.toString();
+		//
+		//		return executeTabularQuery(queryString);
 
-		return executeTabularQuery(queryString);
+		return new TabularDatas(Collections.emptyList(), Collections.emptyList());
 	}
 
 	@Override
@@ -409,25 +394,25 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 	private static Map<String, Object> buildMapValue(final FluxRecord record) {
 		final Map<String, Object> values = new HashMap<>(record.getValues());
 		values.remove("_time");
+		values.remove("table");
+		values.remove("result");
 		return values;
 	}
 
-	private static String buildMeasureFunction(final String measure) {
-		Assertion.check()
-				.isNotBlank(measure);
-		//----
-		final String[] measureDetails = measure.split(":");
-		final Tuple<String, List<String>> aggregateFunction = parseAggregateFunction(measureDetails[1]);
+	private static String buildMeasureFunction(final String function) {
+		final Tuple<String, List<String>> aggregateFunction = parseAggregateFunction(function);
 		// append function name
-		final StringBuilder measureQueryBuilder = new java.lang.StringBuilder(aggregateFunction.getVal1()).append("(column:\"").append(measureDetails[0]).append("\"");
+		final StringBuilder measureQueryBuilder = new java.lang.StringBuilder(aggregateFunction.getVal1()).append("(");
 		// append parameters
 		if (!aggregateFunction.getVal2().isEmpty()) {
 
 			measureQueryBuilder.append(aggregateFunction.getVal2()
 					.stream()
-					.map(param -> param.split("$"))
-					.map(paramAsArray -> paramAsArray[0] + ": " + paramAsArray[1])
-					.collect(Collectors.joining(",", ", ", "")));
+					.map(param -> param.split("_"))
+					.map(paramAsArray -> {
+						return paramAsArray[0] + ": " + paramAsArray[1];
+					})
+					.collect(Collectors.joining(", ")));
 		}
 		// end measure and add alias
 		//measureQueryBuilder.append(") as \"").append(alias).append('"');
@@ -435,7 +420,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		return measureQueryBuilder.toString();
 	}
 
-	private static StringBuilder buildQuery(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean needAggregatedMeasures) {
+	private static StringBuilder buildTabularQuery(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String[] groupBy) {
 		Assertion.check().isNotNull(measures);
 
 		final StringBuilder queryBuilder = new StringBuilder("data = from(bucket:\"" + appName + "\") \n")
@@ -443,18 +428,89 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 				.append("|> filter(fn: (r) => \n")
 				.append("r._measurement == \"" + dataFilter.getMeasurement() + "\" \n");
 
-		final Set<String> fields = new HashSet<>();
-		final Map<String, List<String>> fieldsByFunction = new HashMap<>();
-		if (needAggregatedMeasures) {
-			for (final String measure : measures) {
-				final String[] measureDetails = measure.split(":");
-				fieldsByFunction.computeIfAbsent(measureDetails[1], k -> new ArrayList<>()).add(measureDetails[0]);
-				fields.add(measureDetails[0]);
+		final Set<String> fields = getMeasureFields(measures);
+		// add the global data with all the fields we need
+		if (!fields.isEmpty()) {
+			queryBuilder.append("and (");
+		}
+		queryBuilder.append(fields.stream()
+				.map(field -> "(r._field ==\"" + field + "\" " + buildDataFilterCondition(dataFilter, field) + ")")
+				.collect(Collectors.joining(" or ")));
+
+		if (!fields.isEmpty()) {
+			queryBuilder.append(") \n");
+		}
+
+		for (final Map.Entry<String, String> filter : dataFilter.getFilters().entrySet()) {
+			if (filter.getValue() != null && !"*".equals(filter.getValue())) {
+				queryBuilder.append(" and r._").append(filter.getKey()).append("=\"").append(filter.getValue()).append("\"\n");
 			}
+		}
+
+		final String groupByFields = Stream.of(groupBy).collect(Collectors.joining("\", \"", "\"", "\""));
+
+		queryBuilder
+				.append(")\n")// end filter
+				.append("|> keep(columns: [\"_time\",\"_field\", \"_value\", " + groupByFields + "]) \n");
+
+		//queryBuilder.append("|> toFloat() \n"); // add a conversion toFloat for the union
+
+		queryBuilder.append("\n"); // end data variable declaration
+
+		final Map<String, List<String>> fieldsByFunction = getFieldsByFunction(measures);
+		if (fieldsByFunction.size() == 1) { // union works with 2 tables minimum
+			final String function = fieldsByFunction.keySet().iterator().next();// get the first
+			queryBuilder
+					.append("data \n")
+					.append("|> filter(fn: (r) => " + fieldsByFunction.get(function).stream().map(field -> "r._field==\"" + field + "\"").collect(Collectors.joining(" or ")) + ") \n")
+					.append("|> " + buildMeasureFunction(function) + " \n")
+					.append("|> toFloat() \n")
+					.append("|> group() \n")
+					.append("|> pivot(rowKey:[" + groupByFields + "], columnKey: [\"_field\"], valueColumn: \"_value\") \n")
+					.append("|> map(fn: (r) => ({ r with " + fieldsByFunction.get(function).stream()
+							.map(field -> field + ": if exists r." + field + " then r." + field + " else 0.0").collect(Collectors.joining(", "))
+							+ "}))\n")
+					.append("|> rename(columns: {" + fieldsByFunction.get(function).stream().map(field -> field + ":\"" + field + ":" + function + "\"").collect(Collectors.joining(", ")) + "}) \n")
+					.append("|> yield()");
 
 		} else {
-			measures.forEach(fields::add);
+
+			for (final Map.Entry<String, List<String>> entry : fieldsByFunction.entrySet()) {
+				// declare a new variable
+				queryBuilder
+						.append(entry.getKey().replaceAll("\\.", "_") + "Data = data \n")
+						.append("|> filter(fn: (r) => " + entry.getValue().stream().map(field -> "r._field==\"" + field + "\"").collect(Collectors.joining(" or ")) + ") \n")
+						.append("|> " + buildMeasureFunction(entry.getKey()) + " \n")
+						.append("|> toFloat() \n") // add a conversion toFloat for the union
+						.append("|> set(key: \"alias\", value:\"" + entry.getKey().replaceAll("\\.", "_") + "\" ) \n")
+						.append("\n"); // window by time
+			}
+
+			final Map<String, String> properedMeasures = measures.stream().collect(Collectors.toMap(Function.identity(), measure -> measure.replaceFirst(":", "_").replaceAll("\\.", "_")));
+
+			queryBuilder
+					.append("union(tables:[" + fieldsByFunction.keySet().stream().map(function -> function.replaceAll("\\.", "_") + "Data").collect(Collectors.joining(", ")) + "]) \n")
+					.append("|> pivot(rowKey:[" + groupByFields + "], columnKey: [\"_field\", \"alias\"], valueColumn: \"_value\") \n")
+					.append("|> group() \n")
+					.append("|> map(fn: (r) => ({ r with " + measures.stream().map(properedMeasures::get)
+							.map(properedMeasure -> properedMeasure + ": if exists r." + properedMeasure + " then r." + properedMeasure + " else 0.0").collect(Collectors.joining(", "))
+							+ "}))\n")
+					.append("|> rename(columns: {" + measures.stream().map(measure -> properedMeasures.get(measure) + ": \"" + measure + "\"").collect(Collectors.joining(", ")) + "}) \n")
+					.append("|> yield()");
 		}
+
+		return queryBuilder;
+	}
+
+	private static StringBuilder buildTimedQuery(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
+		Assertion.check().isNotNull(measures);
+
+		final StringBuilder queryBuilder = new StringBuilder("data = from(bucket:\"" + appName + "\") \n")
+				.append("|> range(start: " + timeFilter.getFrom() + ", stop: " + timeFilter.getTo() + ") \n")
+				.append("|> filter(fn: (r) => \n")
+				.append("r._measurement == \"" + dataFilter.getMeasurement() + "\" \n");
+
+		final Set<String> fields = getMeasureFields(measures);
 		// add the global data with all the fields we need
 		if (!fields.isEmpty()) {
 			queryBuilder.append("and (");
@@ -476,43 +532,75 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 				.append(")\n")// end filter
 				.append("|> keep(columns: [\"_time\",\"_field\", \"_value\"]) \n");
 
-		if (needAggregatedMeasures) {
-			queryBuilder.append("|> toFloat() \n"); // add a conversion toFloat for the union
-
-		}
+		queryBuilder.append("|> toFloat() \n");
 		queryBuilder.append("\n"); // end data variable declaration
 
-		if (needAggregatedMeasures) {
-			if (fieldsByFunction.size() == 1) {
-				final String function = fieldsByFunction.keySet().iterator().next();// get the first
+		final Map<String, List<String>> fieldsByFunction = getFieldsByFunction(measures);
+		if (fieldsByFunction.size() == 1) { // union works with 2 tables minimum
+			final String function = fieldsByFunction.keySet().iterator().next();// get the first
+			queryBuilder
+					.append("data \n")
+					.append("|> window(every: " + timeFilter.getDim() + ", createEmpty:true ) \n")
+					.append("|> " + buildMeasureFunction(function) + " \n")
+					.append("|> toFloat() \n")
+					.append("|> duplicate(column: \"_stop\", as: \"_time\") \n")
+					.append("|> window(every: inf) \n")
+					.append("|> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") \n")
+					.append("|> map(fn: (r) => ({ r with " + fieldsByFunction.get(function).stream()
+							.map(field -> field + ": if exists r." + field + " then r." + field + " else 0.0").collect(Collectors.joining(", "))
+							+ "}))\n")
+					.append("|> rename(columns: {" + fieldsByFunction.get(function).stream().map(field -> field + ":\"" + field + ":" + function + "\"").collect(Collectors.joining(", ")) + "}) \n")
+					.append("|> drop(columns: [\"_start\", \"_stop\"]) \n")
+					.append("|> yield()");
+
+		} else {
+
+			for (final Map.Entry<String, List<String>> entry : fieldsByFunction.entrySet()) {
+				// declare a new variable
 				queryBuilder
-						.append("data \n")
-						.append("|> aggregateWindow(every: " + timeFilter.getDim() + ", fn : " + function + ") \n")
-						.append("|> yield()");
-
-			} else {
-
-				for (final Map.Entry<String, List<String>> entry : fieldsByFunction.entrySet()) {
-					// declare a new variable
-					queryBuilder
-							.append(entry.getKey() + "Data = data \n")
-							.append("|> aggregateWindow(every: " + timeFilter.getDim() + ", fn : " + entry.getKey() + ") \n")
-							.append("|> set(key: \"alias\", value:\"" + entry.getKey() + "\" ) \n")
-							.append("\n"); // window by time
-				}
-
-				queryBuilder
-						.append("union(tables:[" + fieldsByFunction.keySet().stream().map(function -> function + "Data").collect(Collectors.joining(", ")) + "]) \n")
-						.append("|> group(columns: [\"_field\", \"alias\"]) \n")
-						.append("|> yield()");
+						.append(entry.getKey().replaceAll("\\.", "_") + "Data = data \n")
+						.append("|> filter(fn: (r) => " + entry.getValue().stream().map(field -> "r._field==\"" + field + "\"").collect(Collectors.joining(" or ")) + ") \n")
+						.append("|> window(every: " + timeFilter.getDim() + ", createEmpty:true ) \n")
+						.append("|> " + buildMeasureFunction(entry.getKey()) + " \n")
+						.append("|> toFloat() \n") // add a conversion toFloat for the union
+						.append("|> duplicate(column: \"_stop\", as: \"_time\") \n")
+						.append("|> window(every: inf) \n")
+						.append("|> set(key: \"alias\", value:\"" + entry.getKey().replaceAll("\\.", "_") + "\" ) \n")
+						.append("\n"); // window by time
 			}
 
-		}
-		//}
+			final Map<String, String> properedMeasures = measures.stream().collect(Collectors.toMap(Function.identity(), measure -> measure.replaceFirst(":", "_").replaceAll("\\.", "_")));
 
-		//queryBuilder.append(" from ").append(dataFilter.getMeasurement());
-		//queryBuilder.append(buildWhereClause(dataFilter, timeFilter));
+			queryBuilder
+					.append("union(tables:[" + fieldsByFunction.keySet().stream().map(function -> function.replaceAll("\\.", "_") + "Data").collect(Collectors.joining(", ")) + "]) \n")
+					.append("|> pivot(rowKey:[\"_time\"], columnKey: [\"_field\", \"alias\"], valueColumn: \"_value\") \n")
+					.append("|> drop(columns: [\"_start\", \"_stop\"]) \n")
+					.append("|> map(fn: (r) => ({ r with " + measures.stream().map(properedMeasures::get)
+							.map(properedMeasure -> properedMeasure + ": if exists r." + properedMeasure + " then r." + properedMeasure + " else 0.0").collect(Collectors.joining(", "))
+							+ "}))\n")
+					.append("|> rename(columns: {" + measures.stream().map(measure -> properedMeasures.get(measure) + ": \"" + measure + "\"").collect(Collectors.joining(", ")) + "}) \n")
+					.append("|> yield()");
+		}
+
 		return queryBuilder;
+	}
+
+	private static Set<String> getMeasureFields(final List<String> measures) {
+		final Set<String> fields = new HashSet<>();
+		for (final String measure : measures) {
+			final String[] measureDetails = measure.split(":");
+			fields.add(measureDetails[0]);
+		}
+		return fields;
+	}
+
+	private static Map<String, List<String>> getFieldsByFunction(final List<String> measures) {
+		final Map<String, List<String>> fieldsByFunction = new HashMap<>();
+		for (final String measure : measures) {
+			final String[] measureDetails = measure.split(":");
+			fieldsByFunction.computeIfAbsent(measureDetails[1], k -> new ArrayList<>()).add(measureDetails[0]);
+		}
+		return fieldsByFunction;
 	}
 
 	private static String buildDataFilterCondition(final DataFilter dataFilter, final String field) {
@@ -552,11 +640,11 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 	}
 
 	private static Tuple<String, List<String>> parseAggregateFunction(final String aggregateFunction) {
-		final int firstSeparatorIndex = aggregateFunction.indexOf('_');
+		final int firstSeparatorIndex = aggregateFunction.indexOf("__");
 		if (firstSeparatorIndex > -1) {
 			return Tuple.of(
 					aggregateFunction.substring(0, firstSeparatorIndex),
-					Arrays.asList(aggregateFunction.substring(firstSeparatorIndex + 1).split("_")));
+					Arrays.asList(aggregateFunction.substring(firstSeparatorIndex + 2).split("__")));
 		}
 		return Tuple.of(aggregateFunction, Collections.emptyList());
 	}
