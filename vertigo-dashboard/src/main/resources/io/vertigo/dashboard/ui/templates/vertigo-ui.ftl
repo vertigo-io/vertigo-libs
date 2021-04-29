@@ -56,9 +56,9 @@
 						    data-url="${contextName}/api/dashboard/data/tabular" 
 						    data-query-measures='["duration:count"]'
 						     data-query-data-filter='{ "measurement": "page", "filters": {"location": "*", "name": "*", "module": "*", "feature": "*" }}'
-						    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1w"}'
+						    data-query-time-filter='{ "from": "-3d", "to": "now()", "dim": "1w"}'
 						    data-query-group-by='exception'
-							data-labels='{"":"OK"}' 
+							data-labels='{"null":"OK"}' 
 						    data-colors='iRED2GREEN'></div>   
 				</@module.card> 
 		</div>
@@ -94,10 +94,10 @@
 				<@module.card title="Pages' usage" >
 					<div class="chart chartjs linechart" 
 					    data-url="${contextName}/api/dashboard/data/series" 
-					    data-query-measures='["duration:median", "duration:percentile_70", "duration:percentile_90"]'
+					    data-query-measures='["duration:median", "duration:quantile__q_0.7", "duration:quantile__q_0.9"]'
 					     data-query-data-filter='{ "measurement": "page", "filters": {"location": "*", "name": "*", "module": "*", "feature": "*" }}'
 					    data-query-time-filter='{ "from": "-3d", "to": "now()", "dim": "1h"}'
-						data-labels='{"duration:median":"Médiane", "duration:percentile_70":"Per70", "duration:percentile_90":"Per90" }' 
+						data-labels='{"duration:median":"Médiane", "duration:quantile__q_0.7":"Per70", "duration:quantile__q_0.9":"Per90" }' 
 					    data-colors='iRED2GREEN'></div>   
 				</@module.card>
 			</div>

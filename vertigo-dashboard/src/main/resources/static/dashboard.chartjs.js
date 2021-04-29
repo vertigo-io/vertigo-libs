@@ -31,7 +31,9 @@ function showChartJsChart(elem, datas, dataMetrics, dataQuery, dataLabels, dataC
 		setChartJsPieColorOptions(chartJsDataSets, dataColors);
 	} else if (elem.hasClass("doughnut")) {
 		type = 'doughnut';
-		chartJsDataSets = toChartJsData(datas, dataMetrics, dataLabels, timedSeries, dataQuery.groupBy);
+		
+		realMetrics = dataMetrics.filter(metric => metric !== dataQuery.groupBy);
+		chartJsDataSets = toChartJsData(datas, realMetrics, dataLabels, timedSeries, dataQuery.groupBy);
 		var pieData  = toChartJsPieData(chartJsDataSets, dataLabels);
 		chartJsDataSets = pieData.datasets;
 		labels = pieData.labels;

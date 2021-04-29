@@ -40,7 +40,7 @@ public final class VegaDashboardControler extends AbstractDashboardModuleControl
 		final DataFilter dataFilterExceptions = DataFilter.builder("webservices")
 				.withAdditionalWhereClause("\"exception\" != '' and \"exception\" != '" + VUserException.class.getCanonicalName() + "'")
 				.build();
-		final TimeFilter timeFilter = TimeFilter.builder("now() - 1w", "now()").withTimeDim("3w").build();
+		final TimeFilter timeFilter = TimeFilter.builder("-1w", "now()").withTimeDim("3w").build();
 		//---
 		final TimedDatas countAndMeanDuration = getDataProvider().getTimeSeries(List.of("duration:count", "duration:mean"), dataFilter, timeFilter);
 		final TimedDatas numOfTechnicalExceptions = getDataProvider().getTimeSeries(List.of("duration:count"), dataFilterExceptions, timeFilter);
