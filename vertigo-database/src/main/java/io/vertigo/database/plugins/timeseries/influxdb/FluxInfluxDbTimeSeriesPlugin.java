@@ -102,58 +102,6 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	}
 
-	private TimedDatas executeFlatTimedTabularQuery(final String queryString) {
-		//		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(query);
-		//
-		//		final List<Series> series = queryResult.getResults().get(0).getSeries();
-		//
-		//		if (series != null && !series.isEmpty()) {
-		//			final Series serie = series.get(0);
-		//			final List<String> columns = serie.getColumns();
-		//
-		//			// all columns are the measures
-		//			final List<String> seriesName = new ArrayList<>();
-		//			seriesName.addAll(columns.subList(1, columns.size()));
-		//
-		//			final List<TimedDataSerie> dataSeries = serie.getValues()
-		//					.stream()
-		//					.map(value -> {
-		//						final Map<String, Object> mapValues = buildMapValue(columns, value);
-		//						return new TimedDataSerie(LocalDateTime.parse(value.get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant(ZoneOffset.UTC), mapValues);
-		//					})
-		//					.collect(Collectors.toList());
-		//
-		//			return new TimedDatas(dataSeries, seriesName);
-		//		}
-		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
-	}
-
-	private TimedDatas executeTimedTabularQuery(final String queryString) {
-		//		final Query query = new Query(queryString, appName);
-		//		final QueryResult queryResult = influxDBClient.query(query);
-		//
-		//		final List<Series> series = queryResult.getResults().get(0).getSeries();
-		//
-		//		if (series != null && !series.isEmpty()) {
-		//			//all columns are the measures
-		//			final List<String> seriesName = new ArrayList<>();
-		//			seriesName.addAll(series.get(0).getColumns().subList(1, series.get(0).getColumns().size()));//we remove the first one
-		//			seriesName.addAll(series.get(0).getTags().keySet());// + all the tags names (the group by)
-		//
-		//			final List<TimedDataSerie> dataSeries = series
-		//					.stream()
-		//					.map(mySeries -> {
-		//						final Map<String, Object> mapValues = buildMapValue(mySeries.getColumns(), mySeries.getValues().get(0));
-		//						mapValues.putAll(mySeries.getTags());
-		//						return new TimedDataSerie(LocalDateTime.parse(mySeries.getValues().get(0).get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant(ZoneOffset.UTC), mapValues);
-		//					})
-		//					.collect(Collectors.toList());
-		//
-		//			return new TimedDatas(dataSeries, seriesName);
-		//		}
-		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
-	}
-
 	private TabularDatas executeTabularQuery(final String q) {
 		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(q);
 		final FluxTable table = queryResult.get(0);
@@ -252,20 +200,6 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		//		return executeTimedQuery(request);
 		//
 		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
-	}
-
-	@Override
-	public TimedDatas getFlatTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final Optional<Long> limit) {
-		Assertion.check().isNotNull(limit);
-		// -----
-		final Long resolvedLimit = limit.map(l -> Math.min(l, 5000L)).orElse(500L);
-
-		final StringBuilder queryBuilder = buildTimedQuery(appName, measures, dataFilter, timeFilter);
-		queryBuilder.append(" ORDER BY time DESC");
-		queryBuilder.append(" LIMIT ").append(resolvedLimit);
-
-		final String queryString = queryBuilder.toString();
-		return executeFlatTimedTabularQuery(queryString);
 	}
 
 	@Override

@@ -18,7 +18,6 @@
 package io.vertigo.database.impl.timeseries;
 
 import java.util.List;
-import java.util.Optional;
 
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.database.timeseries.ClusteredMeasure;
@@ -53,13 +52,6 @@ public interface TimeSeriesPlugin extends Plugin {
 			final ClusteredMeasure clusteredMeasure,
 			final DataFilter dataFilter,
 			final TimeFilter timeFilter);
-
-	TimedDatas getFlatTabularTimedData(
-			final String dbName,
-			final List<String> measures,
-			final DataFilter dataFilter,
-			final TimeFilter timeFilter,
-			final Optional<Long> limit);
 
 	TimedDatas getTabularTimedData(
 			final String dbName,
