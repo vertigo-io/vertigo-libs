@@ -270,13 +270,16 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	@Override
 	public TimedDatas getTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
+		return executeTimedQuery(buildTabularQuery(appName, measures, dataFilter, timeFilter, groupBy, true)
+				.append("|> yield()")
+				.toString());
+
 	}
 
 	@Override
 	public TabularDatas getTabularData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
 
-		return executeTabularQuery(buildTabularQuery(appName, measures, dataFilter, timeFilter, groupBy)
+		return executeTabularQuery(buildTabularQuery(appName, measures, dataFilter, timeFilter, groupBy, false)
 				.append("|> yield()")
 				.toString());
 	}
@@ -321,7 +324,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	@Override
 	public TabularDatas getTops(final String appName, final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
-		return executeTabularQuery(buildTabularQuery(appName, Collections.singletonList(measure), dataFilter, timeFilter, new String[] { groupBy })
+		return executeTabularQuery(buildTabularQuery(appName, Collections.singletonList(measure), dataFilter, timeFilter, new String[] { groupBy }, false)
 				.append("|> top(n:" + maxRows + ", columns:[\"" + measure + "\"]) \n")
 				.append("|> yield()")
 				.toString());
@@ -410,7 +413,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		return measureQueryBuilder.toString();
 	}
 
-	private static StringBuilder buildTabularQuery(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String[] groupBy) {
+	private static StringBuilder buildTabularQuery(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String[] groupBy, final boolean withTime) {
 		Assertion.check().isNotNull(measures);
 
 		final StringBuilder queryBuilder = new StringBuilder("data = from(bucket:\"" + appName + "\") \n")
@@ -453,24 +456,31 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 			queryBuilder
 					.append("data \n")
 					.append("|> filter(fn: (r) => " + fieldsByFunction.get(function).stream().map(field -> "r._field==\"" + field + "\"").collect(Collectors.joining(" or ")) + ") \n")
+					.append("|> " + (isTextFunction(function) ? "toString()" : "toFloat()") + "\n")
 					.append("|> " + buildMeasureFunction(function) + " \n")
-					.append("|> toFloat() \n")
+					.append("|> " + (isTextFunction(function) ? "toString()" : "toFloat()") + "\n")
 					.append("|> group() \n")
-					.append("|> pivot(rowKey:[" + groupByFields + "], columnKey: [\"_field\"], valueColumn: \"_value\") \n")
-					.append("|> map(fn: (r) => ({ r with " + fieldsByFunction.get(function).stream()
-							.map(field -> field + ": if exists r." + field + " then r." + field + " else 0.0").collect(Collectors.joining(", "))
-							+ "}))\n")
+					.append("|> pivot(rowKey:[" + (withTime ? "\"_time\"" : groupByFields) + "], columnKey: [\"_field\"], valueColumn: \"_value\") \n");
+			if (!withTime) {
+				queryBuilder
+						.append("|> map(fn: (r) => ({ r with " + fieldsByFunction.get(function).stream()
+								.map(field -> field + ": if exists r." + field + " then r." + field + " else " + getDefaultValueByFunction(function)).collect(Collectors.joining(", "))
+								+ "}))\n");
+			}
+			queryBuilder
 					.append("|> rename(columns: {" + fieldsByFunction.get(function).stream().map(field -> field + ":\"" + field + ":" + function + "\"").collect(Collectors.joining(", ")) + "}) \n");
 
 		} else {
 
 			for (final Map.Entry<String, List<String>> entry : fieldsByFunction.entrySet()) {
+
 				// declare a new variable
 				queryBuilder
 						.append(entry.getKey().replaceAll("\\.", "_") + "Data = data \n")
 						.append("|> filter(fn: (r) => " + entry.getValue().stream().map(field -> "r._field==\"" + field + "\"").collect(Collectors.joining(" or ")) + ") \n")
+						.append("|> " + (isTextFunction(entry.getKey()) ? "toString()" : "toFloat()") + "\n") // add a conversion toFloat for the union
 						.append("|> " + buildMeasureFunction(entry.getKey()) + " \n")
-						.append("|> toFloat() \n") // add a conversion toFloat for the union
+						.append("|> " + (isTextFunction(entry.getKey()) ? "toString()" : "toFloat()") + "\n") // add a conversion toFloat for the union
 						.append("|> set(key: \"alias\", value:\"" + entry.getKey().replaceAll("\\.", "_") + "\" ) \n")
 						.append("\n"); // window by time
 			}
@@ -479,15 +489,30 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 			queryBuilder
 					.append("union(tables:[" + fieldsByFunction.keySet().stream().map(function -> function.replaceAll("\\.", "_") + "Data").collect(Collectors.joining(", ")) + "]) \n")
-					.append("|> pivot(rowKey:[" + groupByFields + "], columnKey: [\"_field\", \"alias\"], valueColumn: \"_value\") \n")
-					.append("|> group() \n")
-					.append("|> map(fn: (r) => ({ r with " + measures.stream().map(properedMeasures::get)
-							.map(properedMeasure -> properedMeasure + ": if exists r." + properedMeasure + " then r." + properedMeasure + " else 0.0").collect(Collectors.joining(", "))
-							+ "}))\n")
-					.append("|> rename(columns: {" + measures.stream().map(measure -> properedMeasures.get(measure) + ": \"" + measure + "\"").collect(Collectors.joining(", ")) + "}) \n");
+					.append("|> pivot(rowKey:[" + (withTime ? "\"_time\"" : groupByFields) + "], columnKey: [\"_field\", \"alias\"], valueColumn: \"_value\") \n")
+					.append("|> group() \n");
+			if (!withTime) {
+				queryBuilder.append("|> map(fn: (r) => ({ r with " + measures.stream().map(measure -> Tuple.of(measure, properedMeasures.get(measure)))
+						.map(tuple -> tuple.getVal2() + ": if exists r." + tuple.getVal2() + " then r." + tuple.getVal2() + " else " + getDefaultValueByMeasure(tuple.getVal1())).collect(Collectors.joining(", "))
+						+ "}))\n");
+			}
+			queryBuilder.append("|> rename(columns: {" + measures.stream().map(measure -> properedMeasures.get(measure) + ": \"" + measure + "\"").collect(Collectors.joining(", ")) + "}) \n");
 		}
 
 		return queryBuilder;
+	}
+
+	private static String getDefaultValueByMeasure(final String measure) {
+		return getDefaultValueByFunction(measure.split(":")[1]);
+
+	}
+
+	private static final String getDefaultValueByFunction(final String function) {
+		return isTextFunction(function) ? "\"\"" : "0.0";
+	}
+
+	private static boolean isTextFunction(final String function) {
+		return function.startsWith("last");
 	}
 
 	private static StringBuilder buildTimedQuery(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
