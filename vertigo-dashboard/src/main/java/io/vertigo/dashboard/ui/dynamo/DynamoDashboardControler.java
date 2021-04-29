@@ -52,7 +52,7 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 
 	private void buildTaskModel(final Map<String, Object> model) {
 		final DataFilter dataFilter = DataFilter.builder("tasks").build();
-		final TimeFilter timeFilter = TimeFilter.builder("now() - 1d", "now()").build();
+		final TimeFilter timeFilter = TimeFilter.builder("- 1d", "now()").build();
 		final TabularDatas tabularDatas = getDataProvider().getTabularData(Arrays.asList("duration:median", "duration:count"), dataFilter, timeFilter, "name");
 
 		final List<TaskModel> tasks = Node.getNode().getDefinitionSpace().getAll(TaskDefinition.class)
@@ -70,13 +70,18 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 	private static Double getValue(final TabularDatas tabularDatas, final String serieName, final String measureName) {
 		final Optional<TabularDataSerie> tabularDataSerieOpt = tabularDatas.getTabularDataSeries()
 				.stream()
-				.filter(timedDataSerie -> timedDataSerie.getValues().containsKey("name") && measureName.equals(timedDataSerie.getValues().get("name")))
+				.filter(timedDataSerie -> timedDataSerie.getValues().containsKey("name") && serieName.equals(timedDataSerie.getValues().get("name")))
 				.findAny();
 
 		if (tabularDataSerieOpt.isPresent()) {
 			final TabularDataSerie tabularDataSerie = tabularDataSerieOpt.get();
-			if (tabularDataSerie.getValues().containsKey(serieName)) {
-				return (Double) tabularDataSerie.getValues().get(serieName);
+			if (tabularDataSerie.getValues().containsKey(measureName)) {
+				final Object value = tabularDataSerie.getValues().get(measureName);
+				if (value instanceof Double) {
+					return (Double) value;
+				}
+				// might be a string
+				return Double.valueOf((String) tabularDataSerie.getValues().get(measureName));
 			}
 		}
 		return null;

@@ -109,7 +109,7 @@ public final class DataProviderImpl implements DataProvider {
 
 		final List<String> measures = List.of("status:last", "message:last", "name:last", "module:last", "feature:last", "checker:last");
 		final DataFilter dataFilter = DataFilter.builder("healthcheck").build();
-		final TimeFilter timeFilter = TimeFilter.builder("now() - 5w", "now()").build();// before 5 weeks we consider that we don't have data
+		final TimeFilter timeFilter = TimeFilter.builder("-5w", "now()").build();// before 5 weeks we consider that we don't have data
 
 		return getTabularTimedData(measures, dataFilter, timeFilter, "name", "feature")
 				.getTimedDataSeries()
@@ -121,7 +121,7 @@ public final class DataProviderImpl implements DataProvider {
 						(String) timedDataSerie.getValues().get("feature:last"),
 						timedDataSerie.getTime(),
 						buildHealthMeasure(
-								(Double) timedDataSerie.getValues().get("status:last"),
+								Double.valueOf((String) timedDataSerie.getValues().get("status:last")),
 								(String) timedDataSerie.getValues().get("message:last"))))
 				.collect(Collectors.toList());
 
@@ -152,7 +152,7 @@ public final class DataProviderImpl implements DataProvider {
 	public List<Metric> getMetrics() {
 		final List<String> measures = List.of("value:last", "name:last", "feature:last");
 		final DataFilter dataFilter = DataFilter.builder("metric").build();
-		final TimeFilter timeFilter = TimeFilter.builder("now() - 5w", "now()").build();// before 5 weeks we consider that we don't have data
+		final TimeFilter timeFilter = TimeFilter.builder("- 5w", "now()").build();// before 5 weeks we consider that we don't have data
 
 		return getTabularTimedData(measures, dataFilter, timeFilter, "name", "feature")
 				.getTimedDataSeries()
@@ -162,7 +162,7 @@ public final class DataProviderImpl implements DataProvider {
 						.withName((String) timedDataSerie.getValues().get("name:last"))
 						.withFeature((String) timedDataSerie.getValues().get("feature:last"))
 						.withMeasureInstant(timedDataSerie.getTime())
-						.withValue((Double) timedDataSerie.getValues().get("value:last"))
+						.withValue(Double.valueOf((String) timedDataSerie.getValues().get("value:last")))
 						.withSuccess()
 						.build())
 				.collect(Collectors.toList());
