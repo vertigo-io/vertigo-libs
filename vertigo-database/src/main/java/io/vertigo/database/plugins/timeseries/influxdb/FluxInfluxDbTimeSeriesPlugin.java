@@ -275,12 +275,10 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	@Override
 	public TabularDatas getTabularData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		final StringBuilder queryBuilder = buildTabularQuery(appName, measures, dataFilter, timeFilter, groupBy);
 
-		//queryBuilder.append(" group by ").append(groupByClause);
-		final String queryString = queryBuilder.toString();
-
-		return executeTabularQuery(queryString);
+		return executeTabularQuery(buildTabularQuery(appName, measures, dataFilter, timeFilter, groupBy)
+				.append("|> yield()")
+				.toString());
 	}
 
 	@Override
@@ -323,18 +321,10 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	@Override
 	public TabularDatas getTops(final String appName, final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
-		//		final String queryString = new StringBuilder()
-		//				.append("select top(").append("\"top_").append(measure).append("\", \"").append(groupBy).append("\", ").append(maxRows).append(") as \"").append(measure).append('"')
-		//				//.append(" from ( select ").append(buildMeasureQuery(measure, "top_" + measure))
-		//				.append(" from ").append(dataFilter.getMeasurement())
-		//				.append(buildWhereClause(dataFilter, timeFilter))
-		//				.append(" group by \"").append(groupBy).append('"')
-		//				.append(')')
-		//				.toString();
-		//
-		//		return executeTabularQuery(queryString);
-
-		return new TabularDatas(Collections.emptyList(), Collections.emptyList());
+		return executeTabularQuery(buildTabularQuery(appName, Collections.singletonList(measure), dataFilter, timeFilter, new String[] { groupBy })
+				.append("|> top(n:" + maxRows + ", columns:[\"" + measure + "\"]) \n")
+				.append("|> yield()")
+				.toString());
 	}
 
 	@Override
@@ -470,8 +460,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 					.append("|> map(fn: (r) => ({ r with " + fieldsByFunction.get(function).stream()
 							.map(field -> field + ": if exists r." + field + " then r." + field + " else 0.0").collect(Collectors.joining(", "))
 							+ "}))\n")
-					.append("|> rename(columns: {" + fieldsByFunction.get(function).stream().map(field -> field + ":\"" + field + ":" + function + "\"").collect(Collectors.joining(", ")) + "}) \n")
-					.append("|> yield()");
+					.append("|> rename(columns: {" + fieldsByFunction.get(function).stream().map(field -> field + ":\"" + field + ":" + function + "\"").collect(Collectors.joining(", ")) + "}) \n");
 
 		} else {
 
@@ -495,8 +484,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 					.append("|> map(fn: (r) => ({ r with " + measures.stream().map(properedMeasures::get)
 							.map(properedMeasure -> properedMeasure + ": if exists r." + properedMeasure + " then r." + properedMeasure + " else 0.0").collect(Collectors.joining(", "))
 							+ "}))\n")
-					.append("|> rename(columns: {" + measures.stream().map(measure -> properedMeasures.get(measure) + ": \"" + measure + "\"").collect(Collectors.joining(", ")) + "}) \n")
-					.append("|> yield()");
+					.append("|> rename(columns: {" + measures.stream().map(measure -> properedMeasures.get(measure) + ": \"" + measure + "\"").collect(Collectors.joining(", ")) + "}) \n");
 		}
 
 		return queryBuilder;
