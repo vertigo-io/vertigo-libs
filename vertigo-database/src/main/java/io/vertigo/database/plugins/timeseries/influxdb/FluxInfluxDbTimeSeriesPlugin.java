@@ -336,7 +336,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 				.isNotBlank(dbName)
 				.isNotNull(measure);
 		//---
-		influxDBClient.getWriteApi().writePoint(
+		influxDBClient.getWriteApiBlocking().writePoint(
 				dbName,
 				orgId,
 				measureToMeasurement(measure));
@@ -352,7 +352,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	@Override
 	public void insertMeasures(final String dbName, final List<Measure> measures) {
-		influxDBClient.getWriteApi().writePoints(
+		influxDBClient.getWriteApiBlocking().writePoints(
 				dbName,
 				orgId,
 				measures.stream()
