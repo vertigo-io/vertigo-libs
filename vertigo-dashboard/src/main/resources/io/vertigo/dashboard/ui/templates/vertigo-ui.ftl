@@ -68,7 +68,7 @@
 					    data-url="${contextName}/api/dashboard/data/tabular" 
 					    data-query-measures='["duration:count", "duration:mean", "sql_count:mean"]'
 					    data-query-data-filter='{ "measurement": "page", "filters": {"location": "*", "name": "*", "module": "*", "feature": "*" }}'
-					    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1w"}'
+					    data-query-time-filter='{ "from": "-3d", "to": "now()", "dim": "1w"}'
 					    data-query-group-by='name'
 						data-labels='{"duration:count":"Hits", "duration:mean":"Mean duration", "sql_count:mean":"SQL hits" }' 
 						data-options='{"xAxisType":"auto", "yAxisType":"linear"}'
