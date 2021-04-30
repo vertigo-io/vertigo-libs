@@ -53,7 +53,7 @@ public interface TimeSeriesPlugin extends Plugin {
 			final DataFilter dataFilter,
 			final TimeFilter timeFilter);
 
-	TimedDatas getTabularTimedData(
+	TimedDatas getLastTabularDatas(
 			final String dbName,
 			final List<String> measures,
 			final DataFilter dataFilter,

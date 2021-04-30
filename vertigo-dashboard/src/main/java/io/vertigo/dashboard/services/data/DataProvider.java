@@ -40,7 +40,7 @@ public interface DataProvider extends Component {
 
 	TabularDatas getTabularData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy);
 
-	TimedDatas getTabularTimedData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy);
+	TimedDatas getLastTabulardDatas(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy);
 
 	TabularDatas getTops(final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows);
 

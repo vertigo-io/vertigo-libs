@@ -41,7 +41,7 @@ public final class FakeTimeSeriesPlugin implements TimeSeriesPlugin {
 	}
 
 	@Override
-	public TimedDatas getTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
+	public TimedDatas getLastTabularDatas(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
 		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
 	}
 

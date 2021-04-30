@@ -132,11 +132,11 @@ public class TimeSeriesManagerImpl implements TimeSeriesManager {
 	}
 
 	@Override
-	public TimedDatas getTabularTimedData(final String dbName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
+	public TimedDatas getLastTabularDatas(final String dbName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
 		return analyticsManager.traceWithReturn(
 				TIMESERIES_CATEGORY,
 				"/tabularTimed/" + dbName + "/" + dataFilter.getMeasurement(),
-				tracer -> getPluginByDb(dbName).getTabularTimedData(dbName, measures, dataFilter, timeFilter, groupBy));
+				tracer -> getPluginByDb(dbName).getLastTabularDatas(dbName, measures, dataFilter, timeFilter, groupBy));
 	}
 
 	@Override

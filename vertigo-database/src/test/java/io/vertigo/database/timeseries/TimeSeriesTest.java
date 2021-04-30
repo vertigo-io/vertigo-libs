@@ -67,6 +67,7 @@ public final class TimeSeriesTest {
 		final Measure measure = Measure.builder("test")
 				.time(Instant.now())
 				.addField("temp", 12)
+				.tag("location", "home")
 				.build();
 		timeSeriesManager.insertMeasure("vertigo-test", measure);
 	}
@@ -90,7 +91,7 @@ public final class TimeSeriesTest {
 				"vertigo-test",
 				Collections.singletonList("temp:mean"),
 				DataFilter.builder("test").build(),
-				TimeFilter.builder("now() - 1h", "now()").withTimeDim("1m").build());
+				TimeFilter.builder("-1h", "now()").withTimeDim("1m").build());
 	}
 
 	@Test
@@ -103,13 +104,13 @@ public final class TimeSeriesTest {
 	}
 
 	@Test
-	public void testReadMeasuresTimedTabular() {
+	public void testReadLastTabularData() {
 
-		timeSeriesManager.getTabularTimedData(
+		timeSeriesManager.getLastTabularDatas(
 				"vertigo-test",
-				Collections.singletonList("temp:mean"),
+				Collections.singletonList("temp"),
 				DataFilter.builder("test").build(),
-				TimeFilter.builder("now() - 1h", "now()").withTimeDim("1m").build());
+				TimeFilter.builder("- 1h", "now()").withTimeDim("1m").build());
 	}
 
 	@Test
@@ -118,7 +119,8 @@ public final class TimeSeriesTest {
 				"vertigo-test",
 				Collections.singletonList("temp:mean"),
 				DataFilter.builder("test").build(),
-				TimeFilter.builder("now() - 1h", "now()").withTimeDim("1m").build());
+				TimeFilter.builder("- 1h", "now()").withTimeDim("1m").build(),
+				"home");
 	}
 
 	@Test
@@ -135,7 +137,7 @@ public final class TimeSeriesTest {
 				"vertigo-test",
 				"temp:mean",
 				DataFilter.builder("test").build(),
-				TimeFilter.builder("now() - 1h", "now()").withTimeDim("1m").build(),
+				TimeFilter.builder("-1h", "now()").withTimeDim("1m").build(),
 				"temp",
 				10);
 	}

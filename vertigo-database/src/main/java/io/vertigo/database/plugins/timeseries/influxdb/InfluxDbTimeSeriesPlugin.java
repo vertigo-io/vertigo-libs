@@ -292,7 +292,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	}
 
 	@Override
-	public TimedDatas getTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
+	public TimedDatas getLastTabularDatas(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
 		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter, true);
 
 		final String groupByClause = Stream.of(groupBy)

@@ -85,8 +85,8 @@ public final class DataProviderImpl implements DataProvider {
 	}
 
 	@Override
-	public TimedDatas getTabularTimedData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		return timeSeriesManager.getTabularTimedData(appName, measures, dataFilter, timeFilter, groupBy);
+	public TimedDatas getLastTabulardDatas(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
+		return timeSeriesManager.getLastTabularDatas(appName, measures, dataFilter, timeFilter, groupBy);
 	}
 
 	@Override
@@ -107,22 +107,22 @@ public final class DataProviderImpl implements DataProvider {
 	@Override
 	public List<HealthCheck> getHealthChecks() {
 
-		final List<String> measures = List.of("status:last", "message:last", "name:last", "module:last", "feature:last", "checker:last");
+		final List<String> measures = List.of("status", "message", "name:last", "module", "feature", "checker");
 		final DataFilter dataFilter = DataFilter.builder("healthcheck").build();
 		final TimeFilter timeFilter = TimeFilter.builder("-5w", "now()").build();// before 5 weeks we consider that we don't have data
 
-		return getTabularTimedData(measures, dataFilter, timeFilter, "name", "feature")
+		return getLastTabulardDatas(measures, dataFilter, timeFilter, "name", "feature")
 				.getTimedDataSeries()
 				.stream()
 				.map(timedDataSerie -> new HealthCheck(
-						(String) timedDataSerie.getValues().get("name:last"),
-						(String) timedDataSerie.getValues().get("checker:last"),
-						(String) timedDataSerie.getValues().get("module:last"),
-						(String) timedDataSerie.getValues().get("feature:last"),
+						(String) timedDataSerie.getValues().get("name"),
+						(String) timedDataSerie.getValues().get("checker"),
+						(String) timedDataSerie.getValues().get("module"),
+						(String) timedDataSerie.getValues().get("feature"),
 						timedDataSerie.getTime(),
 						buildHealthMeasure(
-								Double.valueOf((String) timedDataSerie.getValues().get("status:last")),
-								(String) timedDataSerie.getValues().get("message:last"))))
+								Double.valueOf((String) timedDataSerie.getValues().get("status")),
+								(String) timedDataSerie.getValues().get("message"))))
 				.collect(Collectors.toList());
 
 	}
@@ -150,19 +150,19 @@ public final class DataProviderImpl implements DataProvider {
 
 	@Override
 	public List<Metric> getMetrics() {
-		final List<String> measures = List.of("value:last", "name:last", "feature:last");
+		final List<String> measures = List.of("value", "name", "feature");
 		final DataFilter dataFilter = DataFilter.builder("metric").build();
 		final TimeFilter timeFilter = TimeFilter.builder("- 5w", "now()").build();// before 5 weeks we consider that we don't have data
 
-		return getTabularTimedData(measures, dataFilter, timeFilter, "name", "feature")
+		return getLastTabulardDatas(measures, dataFilter, timeFilter, "name", "feature")
 				.getTimedDataSeries()
 				.stream()
-				.filter(timedDataSerie -> timedDataSerie.getValues().get("value:last") != null)
+				.filter(timedDataSerie -> timedDataSerie.getValues().get("value") != null)
 				.map(timedDataSerie -> Metric.builder()
-						.withName((String) timedDataSerie.getValues().get("name:last"))
-						.withFeature((String) timedDataSerie.getValues().get("feature:last"))
+						.withName((String) timedDataSerie.getValues().get("name"))
+						.withFeature((String) timedDataSerie.getValues().get("feature"))
 						.withMeasureInstant(timedDataSerie.getTime())
-						.withValue(Double.valueOf((String) timedDataSerie.getValues().get("value:last")))
+						.withValue(Double.valueOf((String) timedDataSerie.getValues().get("value")))
 						.withSuccess()
 						.build())
 				.collect(Collectors.toList());
