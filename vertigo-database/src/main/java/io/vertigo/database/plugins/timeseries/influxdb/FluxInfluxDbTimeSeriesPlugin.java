@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -142,64 +143,107 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	@Override
 	public TimedDatas getClusteredTimeSeries(final String appName, final ClusteredMeasure clusteredMeasure, final DataFilter dataFilter, final TimeFilter timeFilter) {
-		//		Assertion.check()
-		//				.isNotNull(dataFilter)
-		//				.isNotNull(timeFilter)
-		//				.isNotNull(timeFilter.getDim()) // we check dim is not null because we need it
-		//				.isNotNull(clusteredMeasure)
-		//				//---
-		//				.isNotBlank(clusteredMeasure.getMeasure())
-		//				.isNotNull(clusteredMeasure.getThresholds())
-		//				.isFalse(clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
-		//		//we use the natural order
-		//		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
-		//		//---
-		//		final String fieldName = clusteredMeasure.getMeasure().split(":")[0];
-		//		final String standardwhereClause = buildWhereClause(dataFilter, timeFilter);// the where clause is almost the same for each cluster
-		//		final StringBuilder selectClause = new StringBuilder();
-		//		final StringBuilder fromClause = new StringBuilder();
-		//		Integer minThreshold = null;
-		//
-		//		// for each cluster defined by the thresholds we add a subquery (after benchmark it's the fastest solution)
-		//		for (int i = 0; i <= clusteredMeasure.getThresholds().size(); i++) {
-		//			Integer maxThreshold = null;
-		//			if (i < clusteredMeasure.getThresholds().size()) {
-		//				maxThreshold = clusteredMeasure.getThresholds().get(i);
-		//			}
-		//			// we add the where clause of the cluster value > threshold_1 and value <= threshold_2
-		//			appendMeasureThreshold(
-		//					minThreshold,
-		//					maxThreshold,
-		//					fieldName,
-		//					clusteredMeasure.getMeasure(),
-		//					dataFilter.getMeasurement(),
-		//					standardwhereClause,
-		//					timeFilter.getDim(),
-		//					fromClause,
-		//					i);
-		//
-		//			// we construct the top select clause. we use the max as the aggregate function. No conflict possible
-		//			selectClause.append(" max(\"").append(fieldName).append('_').append(i)
-		//					.append("\") as \"").append(clusterName(minThreshold, maxThreshold, clusteredMeasure.getMeasure())).append('"');
-		//			if (i < clusteredMeasure.getThresholds().size()) {
-		//				selectClause.append(',');
-		//				fromClause.append(", ");
-		//			}
-		//
-		//			minThreshold = maxThreshold;
-		//		}
-		//
-		//		// the global query
-		//		final String request = new StringBuilder()
-		//				.append("select ").append(selectClause)
-		//				.append(" from ").append(fromClause)
-		//				.append(" where time > ").append(timeFilter.getFrom()).append(" and time <").append(timeFilter.getTo())
-		//				.append(" group by time(").append(timeFilter.getDim()).append(')')
-		//				.toString();
-		//
-		//		return executeTimedQuery(request);
-		//
+		final String globalDataVariable = buildGlobalDataVariable(appName, Collections.singletonList(clusteredMeasure.getMeasure()), dataFilter, timeFilter, new String[] {});
+
+		final StringBuilder queryBuilder = new StringBuilder(globalDataVariable);
+		final String[] splitedMeasure = clusteredMeasure.getMeasure().split(":");
+		final String fieldName = splitedMeasure[0];
+		final String function = splitedMeasure[1];
+		final String properedMeasure = clusteredMeasure.getMeasure().replaceAll(":", "_").replaceAll("\\.", "_");
+
+		// for each cluster defined by the thresholds we add a subquery (after benchmark it's the fastest solution)
+		for (int i = 0; i <= clusteredMeasure.getThresholds().size(); i++) {
+			// we add the where clause of the cluster value > threshold_1 and value <= threshold_2
+			queryBuilder
+					.append(fieldName + "_" + function + "_" + (i == clusteredMeasure.getThresholds().size() ? "last" : i) + "= data \n")
+					.append("|> toFloat() \n");
+			if (i == 0) {
+				queryBuilder.append("|> filter(fn: (r) => (r._value < " + clusteredMeasure.getThresholds().get(i) + ")) \n");
+			} else if (i == clusteredMeasure.getThresholds().size()) {
+				queryBuilder.append("|> filter(fn: (r) => (r._value > " + clusteredMeasure.getThresholds().get(i - 1) + ")) \n");
+			} else {
+				queryBuilder.append("|> filter(fn: (r) => (r._value > " + clusteredMeasure.getThresholds().get(i - 1) + " and r._value <= " + clusteredMeasure.getThresholds().get(i) + ")) \n");
+			}
+			queryBuilder
+					.append("|> window(every: " + timeFilter.getDim() + ", createEmpty:true ) \n")
+					.append("|> " + buildMeasureFunction(function) + " \n")
+					.append("|> toFloat() \n")
+					.append("|> duplicate(column: \"_stop\", as: \"_time\") \n")
+					.append("|> keep(columns: [\"_time\" , \"_value\"]) \n")
+					.append("|> rename(columns: {_value : \"" + properedMeasure + "_" + (i == clusteredMeasure.getThresholds().size() ? "last" : i) + "\"}) \n");
+			//			if (i == 0) {
+			//				queryBuilder.append("|> rename(columns: {_value : \"" + clusteredMeasure.getMeasure() + "<" + clusteredMeasure.getThresholds().get(i) + "\"}) \n");
+			//			} else if (i == clusteredMeasure.getThresholds().size()) {
+			//				queryBuilder.append("|> rename(columns: {_value : \"" + clusteredMeasure.getMeasure() + ">" + clusteredMeasure.getThresholds().get(i - 1) + "\"}) \n");
+			//			} else {
+			//				queryBuilder.append("|> rename(columns: {_value : \"" + clusteredMeasure.getMeasure() + "_" + clusteredMeasure.getThresholds().get(i) + "\"}) \n");
+			//			}
+			queryBuilder.append("\n");// end cluster
+			//			if (i == 0) {
+			//				// do nothing
+			//			} else if (i == 1) {
+			//				queryBuilder.append("result" + i + "= join(tables: {"
+			//						+ fieldName + "_" + function + "_" + (i - 1) + ":" + fieldName + "_" + function + "_" + (i - 1) + ", "
+			//						+ fieldName + "_" + function + "_" + (i) + ":" + fieldName + "_" + function + "_" + i
+			//						+ "}, on: [\"_time\"] ) ");
+			//
+			//			} else {
+			//				queryBuilder.append("result" + i + "= join(tables: { result" + (i - 1) + ": result" + (i - 1) + ", "
+			//						+ fieldName + "_" + function + "_" + (i) + ":" + fieldName + "_" + function + "_" + i
+			//						+ "}, on: [\"_time\"] ) ");
+			//			}
+			//
+			//			queryBuilder.append("\n\n");// end join
+
+		}
+
+		final List<String> clusteredOrderedMeasures = getOrderedClusterMeasures(clusteredMeasure);
+
+		final String fillEmptyMeasureInstructions = IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
+				.boxed()
+				.map(idx -> properedMeasure + "_" + (idx == clusteredMeasure.getThresholds().size() ? "last" : idx) + ": if exists r." + properedMeasure + "_" + (idx == clusteredMeasure.getThresholds().size() ? "last" : idx) + " then r." + properedMeasure + "_" + (idx == clusteredMeasure.getThresholds().size() ? "last" : idx) + " else 0.0")
+				.collect(Collectors.joining(", "));
+
+		queryBuilder.append("union(tables:[" + IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
+				.boxed()
+				.map(idx -> fieldName + "_" + function + "_" + (idx == clusteredMeasure.getThresholds().size() ? "last" : idx))
+				.collect(Collectors.joining(", ")) + "]) \n")
+				.append("|> map(fn: (r) => ({ r with " + fillEmptyMeasureInstructions + "}))\n")
+				.append("|> rename( columns : {" +
+						IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
+								.boxed()
+								.map(idx -> fieldName + "_" + function + "_" + (idx == clusteredMeasure.getThresholds().size() ? "last" : idx) + ": \"" + clusteredOrderedMeasures.get(idx) + "\"")
+								.collect(Collectors.joining(", "))
+						+ "}) \n")
+				.append("|> yield()");
+
+		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(queryBuilder.toString());
+		final FluxTable table = queryResult.get(0);
+		if (table.getRecords() != null && !table.getRecords().isEmpty()) {
+
+			final List<TimedDataSerie> dataSeries = table.getRecords()
+					.stream()
+					.map(record -> new TimedDataSerie(
+							record.getTime(),
+							buildMapValue(record)))
+					.collect(Collectors.toList());
+			return new TimedDatas(dataSeries, getOrderedClusterMeasures(clusteredMeasure));//we remove the time
+		}
 		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
+	}
+
+	private static List<String> getOrderedClusterMeasures(final ClusteredMeasure clusteredMeasure) {
+		final List<String> result = new ArrayList<>();
+		for (int i = 0; i <= clusteredMeasure.getThresholds().size(); i++) {
+			if (i == 0) {
+				result.add(clusteredMeasure.getMeasure() + "<" + clusteredMeasure.getThresholds().get(i));
+			} else if (i == clusteredMeasure.getThresholds().size()) {
+				result.add(clusteredMeasure.getMeasure() + ">" + clusteredMeasure.getThresholds().get(i - 1));
+			} else {
+				result.add(clusteredMeasure.getMeasure() + "_" + clusteredMeasure.getThresholds().get(i));
+			}
+		}
+		return result;
 	}
 
 	@Override
@@ -343,30 +387,6 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 						.collect(Collectors.toList()));
 	}
 
-	private static void appendMeasureThreshold(
-			final Integer previousThreshold,
-			final Integer currentThreshold,
-			final String clusteredField,
-			final String clusteredMeasure,
-			final String measurement,
-			final String standardwhereClause,
-			final String timeDimension,
-			final StringBuilder fromClauseBuilder,
-			final int i) {
-		fromClauseBuilder.append("(select ")
-				//.append(buildMeasureQuery(clusteredMeasure, clusteredField + "_" + i))
-				.append(" from ").append(measurement)
-				.append(standardwhereClause);
-		if (previousThreshold != null) {
-			fromClauseBuilder.append(" and \"").append(clusteredField).append('"').append(" > ").append(previousThreshold);
-		}
-		if (currentThreshold != null) {
-			fromClauseBuilder.append(" and \"").append(clusteredField).append('"').append(" <= ").append(currentThreshold);
-		}
-		fromClauseBuilder.append(" group by time(").append(timeDimension).append(')');
-		fromClauseBuilder.append(')');
-	}
-
 	private static Map<String, Object> buildMapValue(final FluxRecord record) {
 		final Map<String, Object> values = new HashMap<>(record.getValues());
 		values.remove("_time");
@@ -456,19 +476,6 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		return queryBuilder;
 	}
 
-	private static String getDefaultValueByMeasure(final String measure) {
-		return getDefaultValueByFunction(measure.split(":")[1]);
-
-	}
-
-	private static final String getDefaultValueByFunction(final String function) {
-		return isTextFunction(function) ? "\"\"" : "0.0";
-	}
-
-	private static boolean isTextFunction(final String function) {
-		return function.startsWith("last");
-	}
-
 	private static StringBuilder buildTimedQuery(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
 		final String globalDataVariable = buildGlobalDataVariable(appName, measures, dataFilter, timeFilter, new String[] {});
 		final StringBuilder queryBuilder = new StringBuilder(globalDataVariable);
@@ -543,40 +550,25 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		return fieldsByFunction;
 	}
 
+	private static String getDefaultValueByMeasure(final String measure) {
+		return getDefaultValueByFunction(measure.split(":")[1]);
+
+	}
+
+	private static final String getDefaultValueByFunction(final String function) {
+		return isTextFunction(function) ? "\"\"" : "0.0";
+	}
+
+	private static boolean isTextFunction(final String function) {
+		return function.startsWith("last");
+	}
+
 	private static String buildDataFilterCondition(final DataFilter dataFilter, final String field) {
 		final String filterOnField = dataFilter.getFilters().get(field);
 		if (filterOnField == null || "*".equals(filterOnField)) {
 			return "";
 		}
 		return "and r._value =\"" + filterOnField + "\"";
-	}
-
-	private static String buildWhereClause(final DataFilter dataFilter, final TimeFilter timeFilter) {
-		final StringBuilder queryBuilder = new StringBuilder()
-				.append(" where time > ").append(timeFilter.getFrom()).append(" and time <").append(timeFilter.getTo());
-
-		for (final Map.Entry<String, String> filter : dataFilter.getFilters().entrySet()) {
-			if (filter.getValue() != null && !"*".equals(filter.getValue())) {
-				queryBuilder.append(" and \"").append(filter.getKey()).append("\"='").append(filter.getValue()).append('\'');
-			}
-		}
-		if (dataFilter.getAdditionalWhereClause() != null) {
-			queryBuilder.append(" and ").append(dataFilter.getAdditionalWhereClause());
-		}
-		return queryBuilder.toString();
-	}
-
-	private static String clusterName(
-			final Integer minThreshold,
-			final Integer maxThreshold,
-			final String measure) {
-		if (minThreshold == null) {
-			return measure + '<' + maxThreshold;
-		} else if (maxThreshold == null) {
-			return measure + '>' + minThreshold;
-		} else {
-			return measure + '_' + maxThreshold;
-		}
 	}
 
 	private static Tuple<String, List<String>> parseAggregateFunction(final String aggregateFunction) {
