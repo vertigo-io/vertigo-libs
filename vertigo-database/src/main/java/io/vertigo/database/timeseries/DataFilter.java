@@ -33,27 +33,19 @@ public final class DataFilter implements Serializable {
 	private final String measurement;
 	private final Map<String, String> filters;
 
-	private final String additionalWhereClause;// may be null
-
 	DataFilter(
 			final String measurement,
-			final Map<String, String> filters,
-			final String additionalWhereClause) {
+			final Map<String, String> filters) {
 		Assertion.check()
 				.isNotNull(measurement)
 				.isNotNull(filters);
 		//---
 		this.measurement = measurement;
 		this.filters = filters;
-		this.additionalWhereClause = additionalWhereClause;
 	}
 
 	public static DataFilterBuilder builder(final String measurement) {
 		return new DataFilterBuilder(measurement);
-	}
-
-	public String getAdditionalWhereClause() {
-		return additionalWhereClause;
 	}
 
 	public Map<String, String> getFilters() {

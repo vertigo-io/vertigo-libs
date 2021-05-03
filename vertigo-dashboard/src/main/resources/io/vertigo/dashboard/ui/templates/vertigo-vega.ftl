@@ -6,7 +6,6 @@
 	<div class="card-deck px-3 pb-3 justify-content-around"">
 		<@module.indicator title="WebServices Hits" icon="schedule" status='GREEN' metric=webservicesCount???then(webservicesCount?string[",##0"], '0') legend="" />
 		<@module.indicator title="WebServices Mean Duration" icon="vertical_align_center" status=(webservicesMeanDuration<300)?then('GREEN', 'RED')  metric=webservicesMeanDuration?string["### 0"] legend="ms" />
-		<@module.indicator title="WebServices Exception Rate" icon="vertical_align_center" status=(webservicesExceptionRate<0.5)?then('GREEN', 'RED') metric=webservicesExceptionRate?string["0.##"] legend="%" />
 	</div>
 	
 	<div class="mx-3">

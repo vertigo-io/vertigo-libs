@@ -31,7 +31,6 @@ public final class DataFilterBuilder implements Builder<DataFilter> {
 
 	private final String myMeasurement;
 	private final Map<String, String> myFilters = new HashMap<>();
-	private String myAdditionalWhereClause;
 
 	DataFilterBuilder(
 			final String measurement) {
@@ -49,19 +48,11 @@ public final class DataFilterBuilder implements Builder<DataFilter> {
 		return this;
 	}
 
-	public DataFilterBuilder withAdditionalWhereClause(final String additionalWhereClause) {
-		Assertion.check().isNotBlank(additionalWhereClause);
-		//---
-		myAdditionalWhereClause = additionalWhereClause;
-		return this;
-	}
-
 	@Override
 	public DataFilter build() {
 		return new DataFilter(
 				myMeasurement,
-				myFilters,
-				myAdditionalWhereClause);
+				myFilters);
 	}
 
 }
