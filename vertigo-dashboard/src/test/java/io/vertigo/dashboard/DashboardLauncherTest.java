@@ -89,8 +89,8 @@ public class DashboardLauncherTest {
 						.build())
 				.addModule(new InfluxDbFeatures()
 						.withInfluxDb(
-								Param.of("host", "http://localhost:8086"),
-								Param.of("token", "zFIqyT88dgJvy2bC_xPf6SuyP8OcaA6UysSd_rxikiEnwzsyFj5bjeiAdKH7B_y-vaVLjs1hFGTZukESzk_1-g=="),
+								Param.of("host", "http://analytica.part.klee.lan.net:8086"),
+								Param.of("token", "is4DQpHF8XkvNJRm5KNJOtjlKIpfVc2G"),
 								Param.of("org", "vertigo"))
 						.build())
 				.addModule(new JavalinFeatures()
@@ -158,7 +158,7 @@ public class DashboardLauncherTest {
 
 		params.put("measures", List.of("duration:mean"));
 		params.put("dataFilter", DataFilter.builder("webservices").addFilter("location", "*").build());
-		params.put("timeFilter", TimeFilter.builder("now() - 1w", "now() + 1w").withTimeDim("1h").build());
+		params.put("timeFilter", TimeFilter.builder("-1w", "1w").withTimeDim("1h").build());
 
 		RestAssured
 				.given()
@@ -173,9 +173,9 @@ public class DashboardLauncherTest {
 	public void testClusteredSeries() {
 		final Map<String, Object> params = new HashMap<>();
 
-		params.put("clusteredMeasure", new ClusteredMeasure("duration:mean", Arrays.asList(500, 200, 100, 50)));
+		params.put("clusteredMeasure", new ClusteredMeasure("duration:count", Arrays.asList(500, 200, 100, 50)));
 		params.put("dataFilter", DataFilter.builder("webservices").addFilter("location", "*").build());
-		params.put("timeFilter", TimeFilter.builder("now() - 1w", "now() + 1w").withTimeDim("1h").build());
+		params.put("timeFilter", TimeFilter.builder("-1w", "1w").withTimeDim("1h").build());
 
 		RestAssured
 				.given()
@@ -192,7 +192,7 @@ public class DashboardLauncherTest {
 
 		params.put("measures", List.of("duration:mean"));
 		params.put("dataFilter", DataFilter.builder("webservices").addFilter("location", "*").build());
-		params.put("timeFilter", TimeFilter.builder("now() - 1w", "now() + 1w").withTimeDim("1h").build());
+		params.put("timeFilter", TimeFilter.builder("-1w", "1w").withTimeDim("1h").build());
 		params.put("groupBy", "name");
 
 		RestAssured
@@ -210,7 +210,7 @@ public class DashboardLauncherTest {
 
 		params.put("measures", Arrays.asList("duration:mean"));
 		params.put("dataFilter", DataFilter.builder("webservices").addFilter("location", "*").build());
-		params.put("timeFilter", TimeFilter.builder("now() - 1w", "now() + 1w").withTimeDim("1h").build());
+		params.put("timeFilter", TimeFilter.builder("-1w", "1w").withTimeDim("1h").build());
 		params.put("groupBy", "name");
 		params.put("maxRows", 10);
 
