@@ -44,6 +44,7 @@ import com.influxdb.query.FluxTable;
 import io.vertigo.connectors.influxdb.InfluxDbConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
+import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.database.impl.timeseries.TimeSeriesManagerImpl;
 import io.vertigo.database.impl.timeseries.TimeSeriesPlugin;
@@ -105,38 +106,43 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	private TabularDatas executeTabularQuery(final String q) {
 		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(q);
-		final FluxTable table = queryResult.get(0);
-		if (table.getRecords() != null && !table.getRecords().isEmpty()) {
+		if (!queryResult.isEmpty()) {
+			final FluxTable table = queryResult.get(0);
+			if (table.getRecords() != null && !table.getRecords().isEmpty()) {
 
-			final List<TabularDataSerie> dataSeries = table.getRecords()
-					.stream()
-					.map(record -> new TabularDataSerie(
-							buildMapValue(record)))
-					.collect(Collectors.toList());
-			return new TabularDatas(dataSeries, table.getColumns().stream()
-					.filter(column -> !"table".equals(column.getLabel()))
-					.filter(column -> !"result".equals(column.getLabel()))
-					.map(FluxColumn::getLabel).collect(Collectors.toList()));//we remove the time
+				final List<TabularDataSerie> dataSeries = table.getRecords()
+						.stream()
+						.map(record -> new TabularDataSerie(
+								buildMapValue(record)))
+						.collect(Collectors.toList());
+				return new TabularDatas(dataSeries, table.getColumns().stream()
+						.filter(column -> !"table".equals(column.getLabel()))
+						.filter(column -> !"result".equals(column.getLabel()))
+						.map(FluxColumn::getLabel).collect(Collectors.toList()));//we remove the time
+			}
 		}
 		return new TabularDatas(Collections.emptyList(), Collections.emptyList());
+
 	}
 
 	private TimedDatas executeTimedQuery(final String q) {
 		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(q);
-		final FluxTable table = queryResult.get(0);
-		if (table.getRecords() != null && !table.getRecords().isEmpty()) {
+		if (!queryResult.isEmpty()) {
+			final FluxTable table = queryResult.get(0);
+			if (table.getRecords() != null && !table.getRecords().isEmpty()) {
 
-			final List<TimedDataSerie> dataSeries = table.getRecords()
-					.stream()
-					.map(record -> new TimedDataSerie(
-							record.getTime(),
-							buildMapValue(record)))
-					.collect(Collectors.toList());
-			return new TimedDatas(dataSeries, table.getColumns().stream()
-					.filter(column -> !"_time".equals(column.getLabel()))
-					.filter(column -> !"table".equals(column.getLabel()))
-					.filter(column -> !"result".equals(column.getLabel()))
-					.map(FluxColumn::getLabel).collect(Collectors.toList()));//we remove the time
+				final List<TimedDataSerie> dataSeries = table.getRecords()
+						.stream()
+						.map(record -> new TimedDataSerie(
+								record.getTime(),
+								buildMapValue(record)))
+						.collect(Collectors.toList());
+				return new TimedDatas(dataSeries, table.getColumns().stream()
+						.filter(column -> !"_time".equals(column.getLabel()))
+						.filter(column -> !"table".equals(column.getLabel()))
+						.filter(column -> !"result".equals(column.getLabel()))
+						.map(FluxColumn::getLabel).collect(Collectors.toList()));//we remove the time
+			}
 		}
 		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
 	}
@@ -149,87 +155,89 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		final String[] splitedMeasure = clusteredMeasure.getMeasure().split(":");
 		final String fieldName = splitedMeasure[0];
 		final String function = splitedMeasure[1];
-		final String properedMeasure = clusteredMeasure.getMeasure().replaceAll(":", "_").replaceAll("\\.", "_");
 
-		// for each cluster defined by the thresholds we add a subquery (after benchmark it's the fastest solution)
-		for (int i = 0; i <= clusteredMeasure.getThresholds().size(); i++) {
-			// we add the where clause of the cluster value > threshold_1 and value <= threshold_2
-			queryBuilder
-					.append(fieldName + "_" + function + "_" + (i == clusteredMeasure.getThresholds().size() ? "last" : i) + "= data \n")
-					.append("|> toFloat() \n");
-			if (i == 0) {
-				queryBuilder.append("|> filter(fn: (r) => (r._value < " + clusteredMeasure.getThresholds().get(i) + ")) \n");
-			} else if (i == clusteredMeasure.getThresholds().size()) {
-				queryBuilder.append("|> filter(fn: (r) => (r._value > " + clusteredMeasure.getThresholds().get(i - 1) + ")) \n");
-			} else {
-				queryBuilder.append("|> filter(fn: (r) => (r._value > " + clusteredMeasure.getThresholds().get(i - 1) + " and r._value <= " + clusteredMeasure.getThresholds().get(i) + ")) \n");
-			}
-			queryBuilder
-					.append("|> window(every: " + timeFilter.getDim() + ", createEmpty:true ) \n")
-					.append("|> " + buildMeasureFunction(function) + " \n")
-					.append("|> toFloat() \n")
-					.append("|> duplicate(column: \"_stop\", as: \"_time\") \n")
-					.append("|> keep(columns: [\"_time\" , \"_value\"]) \n")
-					.append("|> rename(columns: {_value : \"" + properedMeasure + "_" + (i == clusteredMeasure.getThresholds().size() ? "last" : i) + "\"}) \n");
-			//			if (i == 0) {
-			//				queryBuilder.append("|> rename(columns: {_value : \"" + clusteredMeasure.getMeasure() + "<" + clusteredMeasure.getThresholds().get(i) + "\"}) \n");
-			//			} else if (i == clusteredMeasure.getThresholds().size()) {
-			//				queryBuilder.append("|> rename(columns: {_value : \"" + clusteredMeasure.getMeasure() + ">" + clusteredMeasure.getThresholds().get(i - 1) + "\"}) \n");
-			//			} else {
-			//				queryBuilder.append("|> rename(columns: {_value : \"" + clusteredMeasure.getMeasure() + "_" + clusteredMeasure.getThresholds().get(i) + "\"}) \n");
-			//			}
-			queryBuilder.append("\n");// end cluster
-			//			if (i == 0) {
-			//				// do nothing
-			//			} else if (i == 1) {
-			//				queryBuilder.append("result" + i + "= join(tables: {"
-			//						+ fieldName + "_" + function + "_" + (i - 1) + ":" + fieldName + "_" + function + "_" + (i - 1) + ", "
-			//						+ fieldName + "_" + function + "_" + (i) + ":" + fieldName + "_" + function + "_" + i
-			//						+ "}, on: [\"_time\"] ) ");
-			//
-			//			} else {
-			//				queryBuilder.append("result" + i + "= join(tables: { result" + (i - 1) + ": result" + (i - 1) + ", "
-			//						+ fieldName + "_" + function + "_" + (i) + ":" + fieldName + "_" + function + "_" + i
-			//						+ "}, on: [\"_time\"] ) ");
-			//			}
-			//
-			//			queryBuilder.append("\n\n");// end join
+		Assertion
+				.check()
+				.isTrue("count".equals(function) || "sum".equals(function), "Function {0} is not supported with clusteredMeasure, only sum and count is supported", function);
 
-		}
+		queryBuilder
+				.append("data \n")
+				.append("|> keep(columns: [\"_time\" , \"_value\"]) \n")
+				.append("|> toFloat() \n")
+				.append("|> window(every: " + timeFilter.getDim() + ", createEmpty:true ) \n")
+				.append("|> duplicate(column: \"_stop\", as: \"_time\") \n")
+				.append("|> reduce(")
+				.append("fn: (r, accumulator) => ({ \n");
+
+		final String accumlultatorFunction = IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
+				.boxed()
+				.map(idx -> {
+					return generateAccumelator(fieldName, function, idx, clusteredMeasure.getThresholds());
+				})
+				.collect(Collectors.joining(", \n"));
+		queryBuilder
+				.append(accumlultatorFunction)
+				.append("}), \n");
+
+		final String identity = IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
+				.boxed()
+				.map(idx -> {
+					return fieldName + "_" + function + "_" + idx + ": 0.0";
+				})
+				.collect(Collectors.joining(", "));
 
 		final List<String> clusteredOrderedMeasures = getOrderedClusterMeasures(clusteredMeasure);
 
-		final String fillEmptyMeasureInstructions = IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
-				.boxed()
-				.map(idx -> properedMeasure + "_" + (idx == clusteredMeasure.getThresholds().size() ? "last" : idx) + ": if exists r." + properedMeasure + "_" + (idx == clusteredMeasure.getThresholds().size() ? "last" : idx) + " then r." + properedMeasure + "_" + (idx == clusteredMeasure.getThresholds().size() ? "last" : idx) + " else 0.0")
-				.collect(Collectors.joining(", "));
-
-		queryBuilder.append("union(tables:[" + IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
-				.boxed()
-				.map(idx -> fieldName + "_" + function + "_" + (idx == clusteredMeasure.getThresholds().size() ? "last" : idx))
-				.collect(Collectors.joining(", ")) + "]) \n")
-				.append("|> map(fn: (r) => ({ r with " + fillEmptyMeasureInstructions + "}))\n")
+		queryBuilder
+				.append("identity: { \n")
+				.append(identity)
+				.append("\n")
+				.append("}) \n")
+				.append("|> duplicate(column: \"_stop\", as:\"_time\") \n")
+				.append("|> drop(columns: [\"_start\", \"_stop\"]) \n")
 				.append("|> rename( columns : {" +
 						IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
 								.boxed()
-								.map(idx -> fieldName + "_" + function + "_" + (idx == clusteredMeasure.getThresholds().size() ? "last" : idx) + ": \"" + clusteredOrderedMeasures.get(idx) + "\"")
-								.collect(Collectors.joining(", "))
+								.map(idx -> fieldName + "_" + function + "_" + idx + ": \"" + clusteredOrderedMeasures.get(idx) + "\"")
+								.collect(Collectors.joining(", \n"))
 						+ "}) \n")
 				.append("|> yield()");
 
 		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(queryBuilder.toString());
-		final FluxTable table = queryResult.get(0);
-		if (table.getRecords() != null && !table.getRecords().isEmpty()) {
+		if (!queryResult.isEmpty()) {
+			final FluxTable table = queryResult.get(0);
+			if (table.getRecords() != null && !table.getRecords().isEmpty()) {
 
-			final List<TimedDataSerie> dataSeries = table.getRecords()
-					.stream()
-					.map(record -> new TimedDataSerie(
-							record.getTime(),
-							buildMapValue(record)))
-					.collect(Collectors.toList());
-			return new TimedDatas(dataSeries, getOrderedClusterMeasures(clusteredMeasure));//we remove the time
+				final List<TimedDataSerie> dataSeries = table.getRecords()
+						.stream()
+						.map(record -> new TimedDataSerie(
+								record.getTime(),
+								buildMapValue(record)))
+						.collect(Collectors.toList());
+				return new TimedDatas(dataSeries, getOrderedClusterMeasures(clusteredMeasure));//we remove the time
+			}
 		}
 		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
+	}
+
+	private String generateAccumelator(final String fieldName, final String function, final Integer idx, final List<Integer> thresholds) {
+		final String condition;
+		if (idx == 0) {
+			condition = "(r._value < " + thresholds.get(idx) + ")";
+		} else if (idx == thresholds.size()) {
+			condition = "(r._value > " + thresholds.get(idx - 1) + ") ";
+		} else {
+			condition = "(r._value > " + thresholds.get(idx - 1) + " and r._value <= " + thresholds.get(idx) + ")";
+		}
+
+		switch (function) {
+			case "count":
+				return fieldName + "_" + function + "_" + idx + " : if " + condition + " then accumulator.duration_count_" + idx + " + 1.0 else accumulator.duration_count_" + idx;
+			case "sum":
+				return fieldName + "_sum_" + idx + " : if " + condition + " then accumulator.duration_sum_" + idx + " + r._value else accumulator.duration_sum_" + idx;
+			default:
+				throw new VSystemException("Function {0} is not supported with clusteredMeasure", function);
+		}
 	}
 
 	private static List<String> getOrderedClusterMeasures(final ClusteredMeasure clusteredMeasure) {
@@ -298,8 +306,6 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 				.append(")\n")// end filter
 				.append("|> keep(columns: [\"_time\",\"_field\", \"_value\"" + (groupBy.length > 0 ? ", " + groupByFields : "") + "]) \n");
 
-		//queryBuilder.append("|> toFloat() \n"); // add a conversion toFloat for the union
-
 		dataVariableBuilder.append("\n"); // end data variable declaration
 		return dataVariableBuilder.toString();
 	}
@@ -323,13 +329,15 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 				.append(") \n");
 
 		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(queryBuilder.toString());
-		final FluxTable table = queryResult.get(0);
-		if (table.getRecords() != null && !table.getRecords().isEmpty()) {
-			return table.getRecords()
-					.stream()
-					.map(FluxRecord::getValue)
-					.map(String.class::cast)
-					.collect(Collectors.toList());
+		if (!queryResult.isEmpty()) {
+			final FluxTable table = queryResult.get(0);
+			if (table.getRecords() != null && !table.getRecords().isEmpty()) {
+				return table.getRecords()
+						.stream()
+						.map(FluxRecord::getValue)
+						.map(String.class::cast)
+						.collect(Collectors.toList());
+			}
 		}
 		return Collections.emptyList();
 

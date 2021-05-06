@@ -98,9 +98,9 @@ public final class TimeSeriesTest {
 	public void testReadMeasuresClusteredTimeSeries() {
 		timeSeriesManager.getClusteredTimeSeries(
 				"vertigo-test",
-				new ClusteredMeasure("test:mean", Collections.singletonList(10)),
+				new ClusteredMeasure("temp:mean", Collections.singletonList(10)),
 				DataFilter.builder("test").build(),
-				TimeFilter.builder("now() - 1h", "now()").withTimeDim("1m").build());
+				TimeFilter.builder("-1h", "now()").withTimeDim("1m").build());
 	}
 
 	@Test
@@ -150,14 +150,14 @@ public final class TimeSeriesTest {
 						.addPlugin(URLResourceResolverPlugin.class)
 						.build())
 				.addModule(new InfluxDbFeatures().withInfluxDb(
-						Param.of("host", "http://analytica.part.klee.lan.net:8086"),
-						Param.of("user", "analytica"),
-						Param.of("password", "kleeklee")).build())
+						Param.of("host", "http://localhost:8086"),
+						Param.of("token", "*"),
+						Param.of("org", "vertigo")).build())
 				.addModule(new CommonsFeatures()
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withTimeSeriesDataBase()
-						.withInfluxDb(Param.of("dbNames", "vertigo-test"))
+						.withInfluxDb(Param.of("dbNames", "*"))
 						.build())
 				.build();
 	}
