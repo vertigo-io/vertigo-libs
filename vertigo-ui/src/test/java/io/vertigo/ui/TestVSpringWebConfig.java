@@ -17,11 +17,19 @@
  */
 package io.vertigo.ui;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.web.servlet.LocaleResolver;
 
 import io.vertigo.ui.impl.springmvc.config.VSpringWebConfig;
+import io.vertigo.ui.impl.springmvc.config.VertigoLocaleResolver;
 
 @ComponentScan("io.vertigo.ui.data.controllers")
 public class TestVSpringWebConfig extends VSpringWebConfig {
 	// nothing basic config is enough
+
+	@Bean
+	public LocaleResolver localeResolver() {
+		return new VertigoLocaleResolver();
+	}
 }
