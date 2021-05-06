@@ -89,9 +89,9 @@ public class DashboardLauncherTest {
 						.build())
 				.addModule(new InfluxDbFeatures()
 						.withInfluxDb(
-								Param.of("host", "http://analytica.part.klee.lan.net:8086"),
-								Param.of("user", "analytica"),
-								Param.of("password", "kleeklee"))
+								Param.of("host", "http://localhost:8086"),
+								Param.of("token", "zFIqyT88dgJvy2bC_xPf6SuyP8OcaA6UysSd_rxikiEnwzsyFj5bjeiAdKH7B_y-vaVLjs1hFGTZukESzk_1-g=="),
+								Param.of("org", "vertigo"))
 						.build())
 				.addModule(new JavalinFeatures()
 						.withEmbeddedServer(Param.of("port", 8082))

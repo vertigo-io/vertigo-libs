@@ -232,9 +232,9 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 		switch (function) {
 			case "count":
-				return fieldName + "_" + function + "_" + idx + " : if " + condition + " then accumulator.duration_count_" + idx + " + 1.0 else accumulator.duration_count_" + idx;
+				return fieldName + "_" + function + "_" + idx + " : if " + condition + " then accumulator." + fieldName + "_count_" + idx + " + 1.0 else accumulator." + fieldName + "_count_" + idx;
 			case "sum":
-				return fieldName + "_sum_" + idx + " : if " + condition + " then accumulator.duration_sum_" + idx + " + r._value else accumulator.duration_sum_" + idx;
+				return fieldName + "_sum_" + idx + " : if " + condition + " then accumulator." + fieldName + "_sum_" + idx + " + r._value else accumulator." + fieldName + "_sum_" + idx;
 			default:
 				throw new VSystemException("Function {0} is not supported with clusteredMeasure", function);
 		}
