@@ -191,7 +191,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		queryBuilder
 				.append("identity: { \n")
 				.append(identity)
-				.append("\n")
+				.append('\n')
 				.append("}) \n")
 				.append("|> duplicate(column: \"_stop\", as:\"_time\") \n")
 				.append("|> drop(columns: [\"_start\", \"_stop\"]) \n")
@@ -306,7 +306,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 				.append(")\n")// end filter
 				.append("|> keep(columns: [\"_time\",\"_field\", \"_value\"" + (groupBy.length > 0 ? ", " + groupByFields : "") + "]) \n");
 
-		dataVariableBuilder.append("\n"); // end data variable declaration
+		dataVariableBuilder.append('\n'); // end data variable declaration
 		return dataVariableBuilder.toString();
 	}
 
@@ -321,7 +321,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 	@Override
 	public List<String> getTagValues(final String appName, final String measurement, final String tag) {
 		final StringBuilder queryBuilder = new StringBuilder("import \"influxdata/influxdb/schema\" \n")
-				.append("\n")
+				.append('\n')
 				.append("schema.tagValues( \n")
 				.append(" bucket: \"" + appName + "\",\n")
 				.append(" predicate: (r) => r._measurement == \"" + measurement + "\",\n")
@@ -420,7 +420,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		}
 		// end measure and add alias
 		//measureQueryBuilder.append(") as \"").append(alias).append('"');
-		measureQueryBuilder.append(")");
+		measureQueryBuilder.append(')');
 		return measureQueryBuilder.toString();
 	}
 
@@ -464,7 +464,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 						.append("|> " + buildMeasureFunction(entry.getKey()) + " \n")
 						.append("|> " + (isTextFunction(entry.getKey()) ? "toString()" : "toFloat()") + "\n") // add a conversion toFloat for the union
 						.append("|> set(key: \"alias\", value:\"" + entry.getKey().replaceAll("\\.", "_") + "\" ) \n")
-						.append("\n"); // window by time
+						.append('\n'); // window by time
 			}
 
 			queryBuilder
@@ -521,7 +521,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 						.append("|> duplicate(column: \"_stop\", as: \"_time\") \n")
 						.append("|> window(every: inf) \n")
 						.append("|> set(key: \"alias\", value:\"" + entry.getKey().replaceAll("\\.", "_") + "\" ) \n")
-						.append("\n"); // window by time
+						.append('\n'); // window by time
 			}
 
 			final Map<String, String> properedMeasures = measures.stream().collect(Collectors.toMap(Function.identity(), measure -> measure.replaceFirst(":", "_").replaceAll("\\.", "_")));
