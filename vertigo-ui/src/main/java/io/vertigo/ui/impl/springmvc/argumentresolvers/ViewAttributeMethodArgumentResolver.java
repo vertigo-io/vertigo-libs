@@ -67,7 +67,7 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 			final MethodParameter parameter,
 			final ModelAndViewContainer mavContainer,
 			final NativeWebRequest webRequest,
-			final WebDataBinderFactory binderFactory) throws Exception {
+			final WebDataBinderFactory binderFactory) {
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
 		final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 		Assertion.check().isNotNull(viewContext);
