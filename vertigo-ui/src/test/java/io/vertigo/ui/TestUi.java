@@ -225,7 +225,7 @@ public class TestUi {
 	public void testPostSimpleForm() throws InterruptedException {
 		driver.get(baseUrl + "/test/componentsDemo/");
 
-		assertEquals("Movie Informations", waitElement(By.className("text-h6")).getText());
+		assertEquals("Details du film", waitElement(By.className("text-h6")).getText());
 		findElement(By.name("vContext[movie][title]")).clear();
 		sendKeysJs(By.name("vContext[movie][title]"), "Test 1");
 

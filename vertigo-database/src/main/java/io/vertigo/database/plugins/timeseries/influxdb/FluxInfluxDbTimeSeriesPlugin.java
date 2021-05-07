@@ -418,8 +418,6 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 					})
 					.collect(Collectors.joining(", ")));
 		}
-		// end measure and add alias
-		//measureQueryBuilder.append(") as \"").append(alias).append('"');
 		measureQueryBuilder.append(')');
 		return measureQueryBuilder.toString();
 	}
@@ -446,9 +444,6 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 							.map(field -> field + ": if exists r." + field + " then r." + field + " else \"\"").collect(Collectors.joining(", "))
 							+ "}))\n")
 					.append("|> pivot(rowKey:[" + groupByFields + "], columnKey: [\"_field\", \"alias\"], valueColumn: \"_value\") \n")
-					//					.append("|> map(fn: (r) => ({ r with " + fieldsByFunction.get(function).stream()
-					//							.map(field -> field + ": if exists r." + field + " then r." + field + " else " + getDefaultValueByFunction(function)).collect(Collectors.joining(", "))
-					//							+ "}))\n")
 
 					.append("|> rename(columns: {" + measures.stream().map(measure -> properedMeasures.get(measure) + ": \"" + measure + "\"").collect(Collectors.joining(", ")) + "}) \n");
 
