@@ -1,5 +1,5 @@
 /*!
- * Quasar Framework v1.15.2
+ * Quasar Framework v1.15.19
  * (c) 2015-present Razvan Stoenescu
  * Released under the MIT License.
  */
@@ -12,7 +12,7 @@
 
   Vue = Vue && Object.prototype.hasOwnProperty.call(Vue, 'default') ? Vue['default'] : Vue;
 
-  var version = "1.15.2";
+  var version = "1.15.19";
 
   /* eslint-disable no-useless-escape */
 
@@ -916,6 +916,17 @@
       var qConf = cfg[cordova === true ? 'cordova' : 'capacitor'];
 
       if (qConf !== void 0 && qConf.backButton === false) {
+        return
+      }
+
+      // if the '@capacitor/app' plugin is not installed
+      // then we got nothing to do
+      if (
+        // if we're on Capacitor mode
+        capacitor === true
+        // and it's also not in Capacitor's main instance
+        && (window.Capacitor === void 0 || window.Capacitor.Plugins.App === void 0)
+      ) {
         return
       }
 
@@ -2450,6 +2461,9 @@
         else if (icon.startsWith('ti-') === true) {
           cls = "themify-icon " + icon;
         }
+        else if (icon.startsWith('bi-') === true) {
+          cls = "bootstrap-icons " + icon;
+        }
         else {
           cls = 'material-icons';
 
@@ -3549,7 +3563,8 @@
             keyup: this.__onLoadingEvt
           }
         }
-        else if (this.isActionable === true) {
+
+        if (this.isActionable === true) {
           var on = Object.assign({}, this.qListeners,
             {click: this.click,
             keydown: this.__onKeydown,
@@ -3562,7 +3577,10 @@
           return on
         }
 
-        return {}
+        return {
+          // needed; especially for disabled <a> tags
+          click: stopAndPrevent
+        }
       },
 
       directives: function directives () {
@@ -4282,6 +4300,43 @@
     }
   };
 
+  var queue = [];
+  var waitFlags = [];
+
+  function addFocusWaitFlag (flag) {
+    waitFlags.push(flag);
+  }
+
+  function removeFocusWaitFlag (flag) {
+    var index = waitFlags.indexOf(flag);
+    if (index !== -1) {
+      waitFlags.splice(index, 1);
+    }
+
+    if (waitFlags.length === 0 && queue.length > 0) {
+      // only call last focus handler (can't focus multiple things at once)
+      queue[ queue.length - 1 ]();
+      queue = [];
+    }
+  }
+
+  function addFocusFn (fn) {
+    if (waitFlags.length === 0) {
+      fn();
+    }
+    else {
+      queue.push(fn);
+      return fn
+    }
+  }
+
+  function removeFocusFn (fn) {
+    var index = queue.indexOf(fn);
+    if (index !== -1) {
+      queue.splice(index, 1);
+    }
+  }
+
   function closePortalMenus (vm, evt) {
     do {
       if (vm.$options.name === 'QMenu') {
@@ -4353,8 +4408,19 @@
     },
 
     methods: {
-      __showPortal: function __showPortal () {
+      __showPortal: function __showPortal (isReady) {
         var this$1 = this;
+
+        if (isReady === true) {
+          removeFocusWaitFlag(this.focusObj);
+          return
+        }
+
+        if (this.focusObj === void 0) {
+          this.focusObj = {};
+        }
+
+        addFocusWaitFlag(this.focusObj);
 
         if (this.$q.fullscreen !== void 0 && this.$q.fullscreen.isCapable === true) {
           var append = function (isFullscreen) {
@@ -4389,6 +4455,8 @@
       },
 
       __hidePortal: function __hidePortal () {
+        removeFocusWaitFlag(this.focusObj);
+
         if (this.__portal !== void 0) {
           if (this.unwatchFullscreen !== void 0) {
             this.unwatchFullscreen();
@@ -4570,7 +4638,7 @@
 
           if (
             evt.qClickOutside !== true &&
-            target !== void 0 &&
+            document.body.contains(target) === true &&
             target.nodeType !== 8 &&
             // directives that prevent click by using pointer-events none generate click on html element
             target !== document.documentElement &&
@@ -5258,14 +5326,18 @@
 
     methods: {
       focus: function focus () {
-        var node = this.__portal !== void 0 && this.__portal.$refs !== void 0
-          ? this.__portal.$refs.inner
-          : void 0;
+        var this$1 = this;
 
-        if (node !== void 0 && node.contains(document.activeElement) !== true) {
-          node = node.querySelector('[autofocus], [data-autofocus]') || node;
-          node.focus();
-        }
+        addFocusFn(function () {
+          var node = this$1.__portal !== void 0 && this$1.__portal.$refs !== void 0
+            ? this$1.__portal.$refs.inner
+            : void 0;
+
+          if (node !== void 0 && node.contains(document.activeElement) !== true) {
+            node = node.querySelector('[autofocus], [data-autofocus]') || node;
+            node.focus();
+          }
+        });
       },
 
       __show: function __show (evt) {
@@ -5328,6 +5400,7 @@
           }
 
           this$1.updatePosition();
+          this$1.__showPortal(true);
           this$1.$emit('show', evt);
         }, 300);
       },
@@ -6232,18 +6305,18 @@
     }
   };
 
-  var PanelWrapper = Vue.extend({
-    name: 'QTabPanelWrapper',
+  function getPanelWrapper (h) {
+    return h('div', {
+      staticClass: 'q-panel scroll',
+      attrs: { role: 'tabpanel' },
+      // stop propagation of content emitted @input
+      // which would tamper with Panel's model
+      on: cache(this, 'stop', { input: stop })
+    }, slot(this, 'default'))
+  }
 
-    render: function render (h) {
-      return h('div', {
-        staticClass: 'q-panel scroll',
-        attrs: { role: 'tabpanel' },
-        // stop propagation of content emitted @input
-        // which would tamper with Panel's model
-        on: cache(this, 'stop', { input: stop })
-      }, slot(this, 'default'))
-    }
+  var PanelWrapper = Vue.extend({
+    render: getPanelWrapper
   });
 
   var PanelParentMixin = {
@@ -6309,11 +6382,16 @@
       },
 
       keepAliveProps: function keepAliveProps () {
-        var props = {};
-        this.keepAliveInclude !== void 0 && (props.include = this.keepAliveInclude);
-        this.keepAliveExclude !== void 0 && (props.exclude = this.keepAliveExclude);
-        this.keepAliveMax !== void 0 && (props.max = this.keepAliveMax);
-        return props
+        return {
+          include: this.keepAliveInclude,
+          exclude: this.keepAliveExclude,
+          max: this.keepAliveMax
+        }
+      },
+
+      needsUniqueWrapper: function needsUniqueWrapper () {
+        return this.keepAliveInclude !== void 0 ||
+          this.keepAliveExclude !== void 0
       }
     },
 
@@ -6432,6 +6510,8 @@
       },
 
       __getPanelContent: function __getPanelContent (h) {
+        var this$1 = this;
+
         if (this.panels.length === 0) {
           return
         }
@@ -6442,11 +6522,17 @@
 
         var content = this.keepAlive === true
           ? [
-            h('keep-alive', [
-              h(PanelWrapper, {
-                key: this.contentKey,
-                props: this.keepAliveProps
-              }, [ panel ])
+            h('keep-alive', { props: this.keepAliveProps }, [
+              h(
+                this.needsUniqueWrapper === true
+                  ? cacheWithFn(this, this.contentKey, function () { return Vue.extend({
+                    name: this$1.contentKey,
+                    render: getPanelWrapper
+                  }); })
+                  : PanelWrapper,
+                { key: this.contentKey },
+                [ panel ]
+              )
             ])
           ]
           : [
@@ -7082,51 +7168,58 @@
     },
 
     methods: {
-      __getText: function __getText (h) {
+      __wrapStamp: function __wrapStamp (h, node) {
+        var obj;
+
+        if (this.$scopedSlots.stamp !== void 0) {
+          return [ node, h('div', { staticClass: 'q-message-stamp' }, this.$scopedSlots.stamp()) ]
+        }
+
+        if (this.stamp) {
+          var domPropStamp = this.stampSanitize === true ? 'textContent' : 'innerHTML';
+
+          return [
+            node,
+            h('div', {
+              staticClass: 'q-message-stamp',
+              domProps: ( obj = {}, obj[domPropStamp] = this.stamp, obj )
+            })
+          ]
+        }
+
+        return [ node ]
+      },
+
+      __getText: function __getText (h, contentList, withSlots) {
         var this$1 = this;
 
-        var
-          domPropText = this.textSanitize === true ? 'textContent' : 'innerHTML',
-          domPropStamp = this.stampSanitize === true ? 'textContent' : 'innerHTML';
+        var domPropText = this.textSanitize === true ? 'textContent' : 'innerHTML';
 
-        return this.text.map(function (msg, index) {
-          var obj, obj$1;
+        if (
+          withSlots === true &&
+          contentList.some(function (entry) { return entry.tag === void 0 && entry.text !== void 0; }) === true
+        ) {
+          return [
+            h('div', { class: this.messageClass }, [
+              h('div', { class: this.textClass }, this.__wrapStamp(h, h('div', contentList)))
+            ])
+          ]
+        }
 
-          return h('div', {
+        var content = withSlots === true
+          ? (contentList.length > 1 ? function (text) { return text; } : function (text) { return h('div', [ text ]); })
+          : function (text) {
+            var obj;
+
+            return h('div', { domProps: ( obj = {}, obj[domPropText] = text, obj ) });
+        };
+
+        return contentList.map(function (msg, index) { return h('div', {
           key: index,
           class: this$1.messageClass
         }, [
-          h('div', { class: this$1.textClass }, [
-            h('div', { domProps: ( obj = {}, obj[domPropText] = msg, obj ) }),
-            this$1.stamp
-              ? h('div', {
-                staticClass: 'q-message-stamp',
-                domProps: ( obj$1 = {}, obj$1[domPropStamp] = this$1.stamp, obj$1 )
-              })
-              : null
-          ])
-        ]);
-        })
-      },
-
-      __getMessage: function __getMessage (h) {
-        var obj;
-
-        var content = uniqueSlot(this, 'default', []);
-
-        this.stamp !== void 0 && content.push(
-          h('div', {
-            staticClass: 'q-message-stamp',
-            domProps: ( obj = {}, obj[this.stampSanitize === true ? 'textContent' : 'innerHTML'] = this.stamp, obj )
-          })
-        );
-
-        return h('div', { class: this.messageClass }, [
-          h('div', {
-            staticClass: 'q-message-text-content',
-            class: this.textClass
-          }, content)
-        ])
+          h('div', { class: this$1.textClass }, this$1.__wrapStamp(h, content(msg)))
+        ]); })
       }
     },
 
@@ -7149,19 +7242,28 @@
 
       var msg = [];
 
-      this.name !== void 0 && msg.push(
-        h('div', {
-          class: ("q-message-name q-message-name--" + (this.op)),
-          domProps: ( obj = {}, obj[this.nameSanitize === true ? 'textContent' : 'innerHTML'] = this.name, obj )
-        })
-      );
+      if (this.$scopedSlots.name !== void 0) {
+        msg.push(
+          h('div', {
+            class: ("q-message-name q-message-name--" + (this.op))
+          }, this.$scopedSlots.name())
+        );
+      }
+      else if (this.name !== void 0) {
+        msg.push(
+          h('div', {
+            class: ("q-message-name q-message-name--" + (this.op)),
+            domProps: ( obj = {}, obj[this.nameSanitize === true ? 'textContent' : 'innerHTML'] = this.name, obj )
+          })
+        );
+      }
 
       this.text !== void 0 && msg.push(
-        this.__getText(h)
+        this.__getText(h, this.text)
       );
 
       this.$scopedSlots.default !== void 0 && msg.push(
-        this.__getMessage(h)
+        this.__getText(h, this.$scopedSlots.default(), true)
       );
 
       container.push(
@@ -7170,12 +7272,19 @@
 
       var child = [];
 
-      this.label && child.push(
-        h('div', {
-          staticClass: 'q-message-label text-center',
-          domProps: ( obj$1 = {}, obj$1[this.labelSanitize === true ? 'textContent' : 'innerHTML'] = this.label, obj$1 )
-        })
-      );
+      if (this.$scopedSlots.label !== void 0) {
+        child.push(
+          h('div', { staticClass: 'q-message-label' }, this.$scopedSlots.label())
+        );
+      }
+      else if (this.label !== void 0) {
+        child.push(
+          h('div', {
+            staticClass: 'q-message-label',
+            domProps: ( obj$1 = {}, obj$1[this.labelSanitize === true ? 'textContent' : 'innerHTML'] = this.label, obj$1 )
+          })
+        );
+      }
 
       child.push(
         h('div', { class: this.containerClass }, container)
@@ -9368,6 +9477,10 @@
       }
     },
 
+    activated: function activated () {
+      this.__recalculateScroll();
+    },
+
     created: function created () {
       this.buffer = [];
       this.__updateArrows = this.arrowsEnabled === true
@@ -10080,6 +10193,12 @@
       __getTuneTab: function __getTuneTab (h) {
         var this$1 = this;
 
+        var attrs = {
+          inputmode: 'numeric',
+          maxlength: 3,
+          readonly: this.editable !== true
+        };
+
         return [
           h('div', { staticClass: 'row items-center no-wrap' }, [
             h('div', ['R']),
@@ -10098,13 +10217,8 @@
               })
             }),
             h('input', {
-              domProps: {
-                value: this.model.r
-              },
-              attrs: {
-                maxlength: 3,
-                readonly: this.editable !== true
-              },
+              domProps: { value: this.model.r },
+              attrs: attrs,
               on: cache(this, 'rIn', {
                 input: function (evt) { return this$1.__onNumericChange(evt.target.value, 'r', 255, evt); },
                 change: stop,
@@ -10130,13 +10244,8 @@
               })
             }),
             h('input', {
-              domProps: {
-                value: this.model.g
-              },
-              attrs: {
-                maxlength: 3,
-                readonly: this.editable !== true
-              },
+              domProps: { value: this.model.g },
+              attrs: attrs,
               on: cache(this, 'gIn', {
                 input: function (evt) { return this$1.__onNumericChange(evt.target.value, 'g', 255, evt); },
                 change: stop,
@@ -10162,13 +10271,8 @@
               })
             }),
             h('input', {
-              domProps: {
-                value: this.model.b
-              },
-              attrs: {
-                maxlength: 3,
-                readonly: this.editable !== true
-              },
+              domProps: { value: this.model.b },
+              attrs: attrs,
               on: cache(this, 'bIn', {
                 input: function (evt) { return this$1.__onNumericChange(evt.target.value, 'b', 255, evt); },
                 change: stop,
@@ -10192,13 +10296,8 @@
               })
             }),
             h('input', {
-              domProps: {
-                value: this.model.a
-              },
-              attrs: {
-                maxlength: 3,
-                readonly: this.editable !== true
-              },
+              domProps: { value: this.model.a },
+              attrs: attrs,
               on: cache(this, 'aIn', {
                 input: function (evt) { return this$1.__onNumericChange(evt.target.value, 'a', 100, evt); },
                 change: stop,
@@ -10278,7 +10377,7 @@
         evt !== void 0 && stop(evt);
 
         if (!/^[0-9]+$/.test(value)) {
-          change && this.$forceUpdate();
+          change === true && this.$forceUpdate();
           return
         }
 
@@ -13596,7 +13695,8 @@
 
     data: function data () {
       return {
-        transitionState: this.showing
+        transitionState: this.showing,
+        animating: false
       }
     },
 
@@ -13625,6 +13725,7 @@
       classes: function classes () {
         return "q-dialog__inner--" + (this.maximized === true ? 'maximized' : 'minimized') + " " +
           "q-dialog__inner--" + (this.position) + " " + (positionClass[this.position]) +
+          (this.animating === true ? ' q-dialog__inner--animating' : '') +
           (this.fullWidth === true ? ' q-dialog__inner--fullwidth' : '') +
           (this.fullHeight === true ? ' q-dialog__inner--fullheight' : '') +
           (this.square === true ? ' q-dialog__inner--square' : '')
@@ -13671,14 +13772,18 @@
 
     methods: {
       focus: function focus () {
-        var node = this.__getInnerNode();
+        var this$1 = this;
 
-        if (node === void 0 || node.contains(document.activeElement) === true) {
-          return
-        }
+        addFocusFn(function () {
+          var node = this$1.__getInnerNode();
 
-        node = node.querySelector('[autofocus], [data-autofocus]') || node;
-        node.focus();
+          if (node === void 0 || node.contains(document.activeElement) === true) {
+            return
+          }
+
+          node = node.querySelector('[autofocus], [data-autofocus]') || node;
+          node.focus();
+        });
       },
 
       shake: function shake () {
@@ -13729,6 +13834,7 @@
         });
 
         this.__showPortal();
+        this.animating = true;
 
         if (this.noFocus !== true) {
           // IE can have null document.activeElement
@@ -13763,6 +13869,8 @@
             this$1.__portal.$el.click();
           }
 
+          this$1.animating = false;
+          this$1.__showPortal(true);
           this$1.$emit('show', evt);
         }, 300);
       },
@@ -13772,6 +13880,7 @@
 
         this.__removeHistory();
         this.__cleanup(true);
+        this.animating = true;
 
         // check null for IE
         if (this.__refocusTarget !== void 0 && this.__refocusTarget !== null) {
@@ -13782,6 +13891,7 @@
 
         this.__setTimeout(function () {
           this$1.__hidePortal();
+          this$1.animating = false;
           this$1.$emit('hide', evt);
         }, 300);
       },
@@ -14692,6 +14802,7 @@
         }
 
         this.__setTimeout(function () {
+          this$1.__showPortal(true);
           this$1.$emit('show', evt);
         }, 300);
       },
@@ -16233,7 +16344,11 @@
       },
 
       focus: function focus () {
-        this.$refs.content !== void 0 && this.$refs.content.focus();
+        var this$1 = this;
+
+        addFocusFn(function () {
+          this$1.$refs.content !== void 0 && this$1.$refs.content.focus();
+        });
       },
 
       getContentEl: function getContentEl () {
@@ -17202,6 +17317,10 @@
         this.__validateIfNeeded();
       },
 
+      disable: function disable (val) {
+        val === true && this.resetValidation();
+      },
+
       reactiveRules: {
         handler: function handler (val) {
           var this$1 = this;
@@ -17581,7 +17700,7 @@
       classes: function classes () {
         var obj;
 
-        return ( obj = {}, obj[this.fieldClass] = this.fieldClass !== void 0, obj[("q-field--" + (this.styleType))] = true, obj['q-field--rounded'] = this.rounded, obj['q-field--square'] = this.square, obj['q-field--focused'] = this.focused === true, obj['q-field--highlighted'] = this.focused === true || this.hasError === true, obj['q-field--float'] = this.floatingLabel, obj['q-field--labeled'] = this.hasLabel, obj['q-field--dense'] = this.dense, obj['q-field--item-aligned q-item-type'] = this.itemAligned, obj['q-field--dark'] = this.isDark, obj['q-field--auto-height'] = this.__getControl === void 0, obj['q-field--with-bottom'] = this.hideBottomSpace !== true && this.shouldRenderBottom === true, obj['q-field--error'] = this.hasError, obj['q-field--readonly'] = this.readonly === true && this.disable !== true, obj['q-field--disabled'] = this.disable, obj )
+        return ( obj = {}, obj[this.fieldClass] = this.fieldClass !== void 0, obj[("q-field--" + (this.styleType))] = true, obj['q-field--rounded'] = this.rounded, obj['q-field--square'] = this.square, obj['q-field--focused'] = this.focused === true, obj['q-field--highlighted'] = this.focused === true || this.hasError === true, obj['q-field--float'] = this.floatingLabel, obj['q-field--labeled'] = this.hasLabel, obj['q-field--dense'] = this.dense, obj['q-field--item-aligned q-item-type'] = this.itemAligned, obj['q-field--dark'] = this.isDark, obj['q-field--auto-height'] = this.__getControl === void 0, obj['q-field--with-bottom'] = this.hideBottomSpace !== true && this.shouldRenderBottom === true, obj['q-field--error'] = this.hasError, obj['q-field--readonly'] = this.readonly === true && this.disable !== true, obj[this.disable === true ? 'q-field--disabled' : 'q-validation-component'] = true, obj )
       },
 
       styleType: function styleType () {
@@ -17655,15 +17774,21 @@
 
     methods: {
       focus: function focus () {
-        if (this.showPopup !== void 0) {
-          this.showPopup();
-          return
-        }
+        var this$1 = this;
 
-        this.__focus();
+        this.focusFn !== void 0 && removeFocusFn(this.focusFn);
+        this.focusFn = addFocusFn(function () {
+          if (this$1.showPopup !== void 0) {
+            this$1.showPopup();
+            return
+          }
+
+          this$1.__focus();
+        });
       },
 
       blur: function blur () {
+        this.focusFn !== void 0 && removeFocusFn(this.focusFn);
         var el = document.activeElement;
         // IE can have null document.activeElement
         if (el !== null && this.$el.contains(el)) {
@@ -17949,7 +18074,7 @@
       this.__onPostRender !== void 0 && this.$nextTick(this.__onPostRender);
 
       return h('label', {
-        staticClass: 'q-field q-validation-component row no-wrap items-start',
+        staticClass: 'q-field row no-wrap items-start',
         class: this.classes,
         attrs: this.attrs
       }, [
@@ -17959,7 +18084,7 @@
         }, this.$scopedSlots.before()) : null,
 
         h('div', {
-          staticClass: 'q-field__inner relative-position col self-stretch column justify-center'
+          staticClass: 'q-field__inner relative-position col self-stretch'
         }, [
           h('div', {
             ref: 'control',
@@ -18790,7 +18915,7 @@
         this.validateIndex++;
 
         this.getValidationComponents().forEach(function (comp) {
-          comp.resetValidation();
+          typeof comp.resetValidation === 'function' && comp.resetValidation();
         });
       },
 
@@ -18827,10 +18952,16 @@
       },
 
       focus: function focus () {
-        var target = this.$el.querySelector('[autofocus], [data-autofocus]') ||
-          Array.prototype.find.call(this.$el.querySelectorAll('[tabindex]'), function (el) { return el.tabIndex > -1; });
+        var this$1 = this;
 
-        target !== null && target !== void 0 && target.focus();
+        addFocusFn(function () {
+          if (!this$1.$el) { return }
+
+          var target = this$1.$el.querySelector('[autofocus], [data-autofocus]') ||
+            Array.prototype.find.call(this$1.$el.querySelectorAll('[tabindex]'), function (el) { return el.tabIndex > -1; });
+
+          target !== null && target !== void 0 && target.focus();
+        });
       },
 
       getValidationComponents: function getValidationComponents () {
@@ -19888,7 +20019,11 @@
 
           if (['deleteContentBackward', 'deleteContentForward'].indexOf(inputType) > -1) {
             var cursor$2 = this$1.reverseFillMask === true
-              ? Math.max(0, masked.length - (masked === this$1.maskReplaced ? 0 : Math.min(preMasked.length, endReverse) + 1)) + 1
+              ? (
+                end === 0
+                  ? (masked.length > preMasked.length ? 1 : 0)
+                  : Math.max(0, masked.length - (masked === this$1.maskReplaced ? 0 : Math.min(preMasked.length, endReverse) + 1)) + 1
+              )
               : end;
             inp.setSelectionRange(cursor$2, cursor$2, 'forward');
 
@@ -19898,7 +20033,13 @@
           if (this$1.reverseFillMask === true) {
             if (changed === true) {
               var cursor$3 = Math.max(0, masked.length - (masked === this$1.maskReplaced ? 0 : Math.min(preMasked.length, endReverse + 1)));
-              this$1.__moveCursorRightReverse(inp, cursor$3, cursor$3);
+
+              if (cursor$3 === 1 && end === 1) {
+                inp.setSelectionRange(cursor$3, cursor$3, 'forward');
+              }
+              else {
+                this$1.__moveCursorRightReverse(inp, cursor$3, cursor$3);
+              }
             }
             else {
               var cursor$4 = masked.length - endReverse;
@@ -20116,7 +20257,7 @@
 
         var valIndex = val.length - 1, output = '';
 
-        for (var maskIndex = mask.length - 1; maskIndex >= 0; maskIndex--) {
+        for (var maskIndex = mask.length - 1; maskIndex >= 0 && valIndex > -1; maskIndex--) {
           var maskDef = mask[maskIndex];
 
           var valChar = val[valIndex];
@@ -20333,19 +20474,27 @@
 
     methods: {
       focus: function focus () {
-        var el = document.activeElement;
-        if (
-          this.$refs.input !== void 0 &&
-          this.$refs.input !== el &&
-          // IE can have null document.activeElement
-          (el === null || el.id !== this.targetUid)
-        ) {
-          this.$refs.input.focus();
-        }
+        var this$1 = this;
+
+        addFocusFn(function () {
+          var el = document.activeElement;
+          if (
+            this$1.$refs.input !== void 0 &&
+            this$1.$refs.input !== el &&
+            // IE can have null document.activeElement
+            (el === null || el.id !== this$1.targetUid)
+          ) {
+            this$1.$refs.input.focus();
+          }
+        });
       },
 
       select: function select () {
         this.$refs.input !== void 0 && this.$refs.input.select();
+      },
+
+      getNativeElement: function getNativeElement () {
+        return this.$refs.input
       },
 
       __onPaste: function __onPaste (e) {
@@ -20358,7 +20507,7 @@
       },
 
       __onInput: function __onInput (e) {
-        if (e && e.target && e.target.composing === true) {
+        if (!e || !e.target || e.target.composing === true) {
           return
         }
 
@@ -20374,6 +20523,20 @@
         }
         else {
           this.__emitValue(val);
+
+          if (['text', 'search', 'url', 'tel', 'password'].includes(this.type) && e.target === document.activeElement) {
+            var ref = e.target;
+            var selectionStart = ref.selectionStart;
+            var selectionEnd = ref.selectionEnd;
+
+            if (selectionStart !== void 0 && selectionEnd !== void 0) {
+              this.$nextTick(function () {
+                if (e.target === document.activeElement && val.indexOf(e.target.value) === 0) {
+                  e.target.setSelectionRange(selectionStart, selectionEnd);
+                }
+              });
+            }
+          }
         }
 
         // we need to trigger it immediately too,
@@ -21994,10 +22157,12 @@
     },
 
     computed: {
-      height: function height () {
-        return this.layout.container === true
-          ? this.layout.containerHeight
-          : this.layout.height
+      scrollHeight: function scrollHeight () {
+        return this.layout.height - (
+          this.layout.container === true
+            ? this.layout.containerHeight
+            : this.$q.screen.height
+        )
       },
 
       onEvents: function onEvents () {
@@ -22015,7 +22180,7 @@
         handler: function handler (val) {
           if (val === true) {
             if (this.heightWatcher === void 0) {
-              this.heightWatcher = this.$watch('height', this.__updateVisibility);
+              this.heightWatcher = this.$watch('scrollHeight', this.__updateVisibility);
             }
           }
           else if (this.heightWatcher !== void 0) {
@@ -22029,15 +22194,12 @@
     methods: {
       __isVisible: function __isVisible () {
         return this.reverse === true
-          ? this.height - this.layout.scroll.position > this.scrollOffset
+          ? this.scrollHeight - this.layout.scroll.position > this.scrollOffset
           : this.layout.scroll.position > this.scrollOffset
       },
 
       __onClick: function __onClick (e) {
-        var target = this.layout.container === true
-          ? getScrollTarget(this.$el)
-          : getScrollTarget(this.layout.$el);
-
+        var target = getScrollTarget(this.layout.container === true ? this.$el : this.layout.$el);
         setScrollPosition(target, this.reverse === true ? this.layout.height : 0, this.duration);
         this.$emit('click', e);
       },
@@ -22102,6 +22264,9 @@
       },
       textColor: String,
 
+      activeColor: String,
+      activeTextColor: String,
+
       inputStyle: [Array, String, Object],
       inputClass: [Array, String, Object],
 
@@ -22148,6 +22313,7 @@
       round: Boolean,
       rounded: Boolean,
 
+      flat: Boolean,
       outline: Boolean,
       unelevated: Boolean,
       push: Boolean,
@@ -22156,7 +22322,7 @@
       dense: Boolean,
       padding: {
         type: String,
-        default: '6px 5px'
+        default: '3px 2px'
       }
     },
 
@@ -22183,7 +22349,7 @@
         },
         set: function set (val) {
           val = parseInt(val, 10);
-          if (this.disable || isNaN(val) || val === 0) {
+          if (this.disable || isNaN(val)) {
             return
           }
           var value = between(val, this.min, this.max);
@@ -22248,6 +22414,14 @@
           ripple: this.ripple !== null
             ? this.ripple
             : true
+        }
+      },
+
+      activeBtnProps: function activeBtnProps () {
+        return {
+          flat: this.flat,
+          color: this.activeColor || this.color,
+          textColor: this.activeTextColor || this.textColor
         }
       }
     },
@@ -22396,27 +22570,39 @@
         };
         if (boundaryStart) {
           var active = this.min === this.value;
+          var btn = {
+            disable: this.disable,
+            flat: !active,
+            label: this.min
+          };
+
+          if (active) {
+            btn.color = this.activeColor || this.color;
+            btn.textColor = this.activeTextColor || this.textColor;
+          }
+
           contentStart.push(this.__getBtn(h, {
             key: 'bns',
             style: style
-          }, {
-            disable: this.disable,
-            flat: !active,
-            textColor: active ? this.textColor : null,
-            label: this.min
-          }, this.min));
+          }, btn, this.min));
         }
         if (boundaryEnd) {
           var active$1 = this.max === this.value;
+          var btn$1 = {
+            disable: this.disable,
+            flat: !active$1,
+            label: this.max
+          };
+
+          if (active$1) {
+            btn$1.color = this.activeColor || this.color;
+            btn$1.textColor = this.activeTextColor || this.textColor;
+          }
+
           contentEnd.unshift(this.__getBtn(h, {
             key: 'bne',
             style: style
-          }, {
-            disable: this.disable,
-            flat: !active$1,
-            textColor: active$1 ? this.textColor : null,
-            label: this.max
-          }, this.max));
+          }, btn$1, this.max));
         }
         if (ellipsesStart) {
           contentStart.push(this.__getBtn(h, {
@@ -22439,16 +22625,20 @@
           }, pgTo + 1));
         }
         for (var i = pgFrom; i <= pgTo; i++) {
-          var active$2 = i === this.value;
+          var btn$2 = {
+            disable: this.disable,
+            flat: true,
+            label: i
+          };
+
+          if (i === this.value) {
+            Object.assign(btn$2, this.activeBtnProps);
+          }
+
           contentMiddle.push(this.__getBtn(h, {
             key: ("bpg" + i),
             style: style
-          }, {
-            disable: this.disable,
-            flat: !active$2,
-            textColor: active$2 ? this.textColor : null,
-            label: i
-          }, i));
+          }, btn$2, i));
         }
       }
 
@@ -22575,7 +22765,7 @@
 
       __setPos: function __setPos (offset) {
         // apply it immediately without any delay
-        this.media.style.transform = "translate3D(-50%," + (Math.round(offset)) + "px, 0)";
+        this.media.style.transform = "translate3d(-50%," + (Math.round(offset)) + "px,0)";
       },
 
       __onResize: function __onResize () {
@@ -22738,10 +22928,10 @@
 
     methods: {
       set: function set () {
+        if (this.validate(this.value) !== true) {
+          return
+        }
         if (this.__hasChanged() === true) {
-          if (this.validate(this.value) === false) {
-            return
-          }
           this.$emit('save', this.value, this.initialValue);
         }
         this.__close();
@@ -22986,11 +23176,12 @@
     }
   });
 
-  function width$1 (val, reverse) {
-    if (reverse === true) {
-      return { transform: ("translateX(100%) scale3d(" + (-val) + ",1,1)") }
+  function width$1 (val, reverse, $q) {
+    return {
+      transform: reverse === true
+        ? ("translateX(" + ($q.lang.rtl === true ? '-' : '') + "100%) scale3d(" + (-val) + ",1,1)")
+        : ("scale3d(" + val + ",1,1)")
     }
-    return { transform: ("scale3d(" + val + ",1,1)") }
   }
 
   var QLinearProgress = Vue.extend({
@@ -23040,7 +23231,7 @@
       },
 
       trackStyle: function trackStyle () {
-        return width$1(this.buffer !== void 0 ? this.buffer : 1, this.reverse)
+        return width$1(this.buffer !== void 0 ? this.buffer : 1, this.reverse, this.$q)
       },
 
       trackClass: function trackClass () {
@@ -23050,7 +23241,7 @@
       },
 
       modelStyle: function modelStyle () {
-        return width$1(this.motion === true ? 1 : this.value, this.reverse)
+        return width$1(this.motion === true ? 1 : this.value, this.reverse, this.$q)
       },
 
       modelClasses: function modelClasses () {
@@ -23060,6 +23251,10 @@
 
       stripeStyle: function stripeStyle () {
         return { width: (this.value * 100) + '%' }
+      },
+
+      stripeClass: function stripeClass () {
+        return this.reverse === true ? 'absolute-right' : 'absolute-left'
       },
 
       attrs: function attrs () {
@@ -23089,8 +23284,9 @@
 
       this.stripe === true && this.motion === false && child.push(
         h('div', {
-          staticClass: 'q-linear-progress__stripe absolute-full',
-          style: this.stripeStyle
+          staticClass: 'q-linear-progress__stripe',
+          style: this.stripeStyle,
+          class: this.stripeClass
         })
       );
 
@@ -23221,7 +23417,7 @@
         }
 
         if (event.isFirst === true) {
-          if (getScrollPosition(this.__scrollTarget) !== 0) {
+          if (getScrollPosition(this.__scrollTarget) !== 0 || event.direction !== 'down') {
             if (this.pulling === true) {
               this.pulling = false;
               this.state = 'pull';
@@ -24091,7 +24287,9 @@
         default: null
       },
 
-      horizontal: Boolean
+      horizontal: Boolean,
+
+      tabindex: [String, Number]
     },
 
     data: function data () {
@@ -24189,6 +24387,12 @@
           modifiers: ( obj = {}, obj[ this.horizontal === true ? 'horizontal' : 'vertical' ] = true, obj.prevent = true, obj.mouse = true, obj.mouseAllDir = true, obj ),
           value: this.__panThumb
         }]
+      },
+
+      scrollAttrs: function scrollAttrs () {
+        if (this.tabindex !== void 0) {
+          return { tabindex: this.tabindex }
+        }
       }
     },
 
@@ -24328,7 +24532,8 @@
       }, [
         h('div', {
           ref: 'target',
-          staticClass: 'scroll relative-position fit hide-scrollbar'
+          staticClass: 'scroll relative-position fit hide-scrollbar',
+          attrs: this.scrollAttrs
         }, [
           h('div', {
             staticClass: 'absolute',
@@ -30169,8 +30374,8 @@
             return slot !== void 0
               ? slot(this$1.__getBodyCellScope({ key: key, row: row, pageIndex: pageIndex, col: col }))
               : h('td', {
-                class: col.__tdClass,
-                style: col.style
+                class: col.__tdClass(row),
+                style: col.__tdStyle(row)
               }, this$1.getCellValue(col, row))
           });
 
@@ -30834,6 +31039,12 @@
               : (A === B ? 0 : dir)
           })
         }
+      },
+
+      columnSortOrder: {
+        type: String,
+        validator: function (v) { return v === 'ad' || v === 'da'; },
+        default: 'ad'
       }
     },
 
@@ -30850,8 +31061,20 @@
 
     methods: {
       sort: function sort (col /* String(col name) or Object(col definition) */) {
+        var sortOrder = this.columnSortOrder;
+
         if (col === Object(col)) {
+          if (col.sortOrder) {
+            sortOrder = col.sortOrder;
+          }
+
           col = col.name;
+        }
+        else {
+          var def = this.colList.find(function (def) { return def.name === col; });
+          if (def !== void 0 && def.sortOrder) {
+            sortOrder = def.sortOrder;
+          }
         }
 
         var ref = this.computedPagination;
@@ -30860,16 +31083,26 @@
 
         if (sortBy !== col) {
           sortBy = col;
-          descending = false;
+          descending = sortOrder === 'da';
         }
         else if (this.binaryStateSort === true) {
           descending = !descending;
         }
         else if (descending === true) {
-          sortBy = null;
+          if (sortOrder === 'ad') {
+            sortBy = null;
+          }
+          else {
+            descending = false;
+          }
         }
-        else {
-          descending = true;
+        else { // ascending
+          if (sortOrder === 'ad') {
+            descending = true;
+          }
+          else {
+            sortBy = null;
+          }
         }
 
         this.setPagination({ sortBy: sortBy, descending: descending, page: 1 });
@@ -31253,15 +31486,31 @@
 
         return cols.map(function (col) {
           var align = col.align || 'right';
+          var alignClass = "text-" + align;
 
           return Object.assign({}, col,
             {align: align,
             __iconClass: ("q-table__sort-icon q-table__sort-icon--" + align),
-            __thClass: "text-" + align +
+            __thClass: alignClass +
               (col.headerClasses !== void 0 ? ' ' + col.headerClasses : '') +
               (col.sortable === true ? ' sortable' : '') +
               (col.name === sortBy ? (" sorted " + (descending === true ? 'sort-desc' : '')) : ''),
-            __tdClass: ("text-" + align + (col.classes !== void 0 ? ' ' + col.classes : ''))})
+
+            __tdStyle: col.style !== void 0
+              ? (
+                typeof col.style !== 'function'
+                  ? function () { return col.style; }
+                  : col.style
+              )
+              : function () { return null; },
+
+            __tdClass: col.classes !== void 0
+              ? (
+                typeof col.classes !== 'function'
+                  ? function () { return alignClass + ' ' + col.classes; }
+                  : function (row) { return alignClass + ' ' + col.classes(row); }
+              )
+              : function () { return alignClass; }})
         })
       },
 
@@ -31699,7 +31948,7 @@
     computed: {
       classes: function classes () {
         return 'q-td' + (this.autoWidth === true ? ' q-table--col-auto-width' : '') +
-          (this.noHover === true ? ' q-td--no-hover' : '')
+          (this.noHover === true ? ' q-td--no-hover' : '') + ' '
       }
     },
 
@@ -31721,10 +31970,12 @@
 
       if (col === void 0) { return }
 
+      var row = this.props.row;
+
       return h('td', {
         on: on,
-        style: col.style,
-        class: this.classes + ' ' + col.__tdClass
+        style: col.__tdStyle(row),
+        class: this.classes + col.__tdClass(row)
       }, slot(this, 'default'))
     }
   });
@@ -33966,10 +34217,13 @@
 
         var files = processedFiles
           .filter(function (file) { return this$1.files.findIndex(function (f) { return file.name === f.name; }) === -1; });
-
-        this.__getFileInput().value = '';
-
+        
         if (files === void 0) { return }
+        
+        var fileInput = this.__getFileInput();
+        if (fileInput !== void 0) {
+          fileInput.value = '';
+        }
 
         files.forEach(function (file) {
           this$1.__updateFile(file, 'idle');
@@ -37663,16 +37917,18 @@
         : Object.assign({}, defaults, opts);
 
       props$1.customClass += " text-" + (props$1.backgroundColor);
-      props$1.uid = "l_" + (uid$3++);
 
       this.isActive = true;
 
       if (vm !== void 0) {
+        props$1.uid = uid$3;
         vm.$forceUpdate();
         return
       }
 
+      props$1.uid = ++uid$3;
       clearTimeout(timeout);
+
       timeout = setTimeout(function () {
         timeout = void 0;
 
@@ -37720,6 +37976,7 @@
                     size: props$1.spinnerSize
                   }
                 }),
+
                 (props$1.message && h('div', {
                   class: ("text-" + (props$1.messageColor)),
                   domProps: ( obj = {}, obj[props$1.sanitize === true ? 'textContent' : 'innerHTML'] = props$1.message, obj )
@@ -38699,16 +38956,20 @@
   }
 
   function getEmptyStorage () {
+    var getVal = function () { return null; };
+
     return {
-      has: noop,
-      getLength: noop,
-      getItem: noop,
-      getIndex: noop,
-      getAll: noop,
+      has: function () { return false; },
+      getLength: function () { return 0; },
+      getItem: getVal,
+      getIndex: getVal,
+      getKey: getVal,
+      getAll: function () {},
+      getAllKeys: function () { return []; },
       set: noop,
       remove: noop,
       clear: noop,
-      isEmpty: noop
+      isEmpty: function () { return true; }
     }
   }
 

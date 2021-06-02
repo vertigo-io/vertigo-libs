@@ -7,8 +7,8 @@
     <vertigo-ssr th:if="${isVuiSsr}">
 		<vu:content/>
 	</vertigo-ssr>
-	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.15.2/dist/quasar.umd.min.js}"></script>
-    <script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.15.2/dist/lang/__${model.util.getCurrentLocalePrefixForQuasar()}__.umd.min.js}"></script>
+	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.15.19/dist/quasar.umd.min.js}"></script>
+    <script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.15.19/dist/lang/__${model.util.getCurrentLocalePrefixForQuasar()}__.umd.min.js}"></script>
 	<script th:if="${!isVuiDevMode}" th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.min.js}"></script>
 	<script th:if="${isVuiDevMode}" src="http://localhost:3000/js/chunk-vendors.js"></script>
 	<script th:if="${isVuiDevMode}" src="http://localhost:3000/js/app.js"></script>
