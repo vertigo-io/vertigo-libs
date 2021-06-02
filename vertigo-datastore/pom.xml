@@ -76,7 +76,7 @@
 		<dependency>
 			<groupId>org.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
-			<version>3.9.0</version> 
+			<version>3.9.4</version> 
 			<optional>true</optional> <!-- pour EhCachePlugin -->
 		</dependency>
 	</dependencies>
