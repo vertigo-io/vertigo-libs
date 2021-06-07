@@ -1,10 +1,42 @@
 Version history
 ===============
 
-Running 3.2.0
+Running 4.0.0
 ----------------------
 
 more to come :)
+
+Release 3.2.0 - 2021/06/21
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-311-to-320)
+* [Ui] Fix FileUpload on single value in object.field
+* [Ui] FileUpload simpler support of cardinality.ONE FileInfoUri in object, and fix when no file selected
+* [Ui] add select-multiple ui component
+* [Ui] Add support of Modifiable list. text-field and date component, datetime, checkbox, fileupload (remove label but support errors)
+* [Ui] Add readonly mode to fileupload
+* [Ui] Dedicated tests for uploadFile and modifiableList
+* [Ui] Accept unmodifiable list without key
+* [Ui] Support context with Optional FileInfoUri
+* [Ui] Refactor map from context array to single/optional parameter
+* [Ui] Add a bridge for locale between Vertigo and Spring
+* [DataStore] Fix to support multiple DelayedMemoryKVStorePlugin
+* [DataStore] Fix unique daemon name (can't use - )
+* [DataModel] Fix ProxyMethod with void result should return null
+* [Datamodel] criteria is not limited to entities
+* [Database] influxdb switch to flux query language
+* [DataFactory] Renamed inner attribute to be closer to json form
+* [Account] Enforce pbkdf2 iterations from 2^12 to 2^14
+* [Account] Authorizations on Entity instead of KeyConcept
+* [Account] Fluent clear roles
+* [Vega] Update swaggerApi to use include and exclude fields
+* [Vega] Added httpClient amplifier, by method or class annotations => can be use to call other system REST WS
+* [Vega] Finer exceptions messages
+* [All] Code cleaning, refactoring and documenting 
+* [All] Updated libs
+  - log4j 2.14.0 -> 2.14.1
+  - gson 2.8.6 -> 2.8.7
+  - snakeyaml  1.27 -> 1.28
+  - javassist 3.27.0 -> 3.28.0  
 
 Release 3.1.1 - 2021/02/22
 ----------------------
@@ -47,28 +79,28 @@ Release 3.1.0 - 2021/02/05
 * [Vega] Add a filter to easily control header
 * [Vega] Add CSP servlet filter (Content Security Policy) : add CSP directive in header and can generate a nonce uuid per request for specific usage
 * [All] Code cleaning, refactoring and documenting 
+* [Ui] upgrade js depencies 
+  - quasar 1.15.2 -> 1.15.19
+  - vuejs 2.6.12 -> 2.6.13
 * [All] Updated libs
-  - Quasar 1.14.3 -> v1.15.2
-  - Axios -> 0.21.1
-  - animate.css -> 4.1.1
-  - vue-cookies.js -> 1.7.4
-  - log4j 2.13.3 -> 2.14.0
-  - elastic search 7.9.3 -> 7.10.2
-  - lucene 8.6.2 -> 8.7.0
-  - jersey client 2.32 -> 2.33
-  - influxdb-java 2.20 -> 2.21
-  - javalin 3.12.0 -> 3.13.3
-  - jetty 9.4.31.v20200723 -> 9.4.35.v20201120
-  - keycloak-servlet-filter-adapter 11.0.3 -> 12.0.2
-  - neo4j 4.1.3 -> 4.2.3
-  - jedis 3.3.0 -> 3.5.1
-  - spring 5.3.0 -> 5.3.3
-  - janino 3.1.2 -> 3.1.3
-  - restassured 4.3.2 -> 4.3.3
-  - liquibase-core 4.1.1 -> 4.2.2
-  - thymeleaf-spring5 3.0.11.RELEASE -> 3.0.12.RELEASE
-  - thymeleaf-layout-dialect 2.5.1 -> 2.5.2
-  - htmlunit-driver 2.45.0 -> 2.46.0
+  - gson 2.8.6 -> 2.8.7
+  - snakeyaml 1.27 -> 1.28
+  - javassist 3.27.0-GA -> 3.28.0-GA
+  - javalin 3.13.3 -> 3.13.7
+  - jetty 9.4.35.v20201120 -> 9.4.40.v20210413
+  - mongo 4.2.0 -> 4.2.3
+  - neo4j 4.1.3 -> 4.2.7
+  - jedis 3.5.1 -> 3.6.0
+  - janino 3.1.2 -> 3.1.4
+  - freemarker 2.3.30 -> 2.3.31
+  - liquibase 4.2.2 -> 4.3.5
+  - ehcache 3.9.0 -> 3.9.4
+  - ojdbc 19.8.0.0 -> 19.10.0.0
+  - postgresql jdbc 42.2.18 -> 42.2.20
+  - spring 5.3.3 -> 5.3.7
+  - thymeleaf-layout-dialect 2.5.2 -> 2.5.3
+  - selenium 2.46.0 -> 2.50.0
+  - jackson 2.11.3 -> 2.12.3
 
 
 Release 3.0.0 - 2020/11/20
