@@ -61,8 +61,8 @@ import io.vertigo.datafactory.impl.search.dsl.model.DslGeoDistanceQuery;
 import io.vertigo.datafactory.impl.search.dsl.model.DslGeoExpression;
 import io.vertigo.datafactory.impl.search.dsl.model.DslGeoRangeQuery;
 import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
-import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchQuery;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.model.DtListState;
@@ -85,7 +85,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	private static final Pattern SIMPLE_CRITERIA_PATTERN = Pattern.compile("#([a-z][a-zA-Z0-9]*)#");
 
 	private final Map<Class, BasicTypeAdapter> myTypeAdapters;
-	private SearchIndexDefinition myIndexDefinition;
+	private DtDefinition myIndexDtDefinition;
 	private SearchQuery mySearchQuery;
 	private DtListState myListState;
 	protected int myDefaultMaxRows = 10;
@@ -101,13 +101,13 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	}
 
 	/**
-	 * @param indexDefinition Index definition
+	 * @param indexDtDefinition Index dtDefinition
 	 * @return this builder
 	 */
-	public T withSearchIndexDefinition(final SearchIndexDefinition indexDefinition) {
-		Assertion.check().isNotNull(indexDefinition);
+	public T withIndexDtDefinition(final DtDefinition indexDtDefinition) {
+		Assertion.check().isNotNull(indexDtDefinition);
 		//-----
-		myIndexDefinition = indexDefinition;
+		myIndexDtDefinition = indexDtDefinition;
 		return (T) this;
 	}
 
@@ -147,16 +147,16 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	@Override
 	public R build() {
 		Assertion.check()
-				.isNotNull(myIndexDefinition, "You must set IndexDefinition")
+				.isNotNull(myIndexDtDefinition, "You must set Index DtDefinition")
 				.isNotNull(mySearchQuery, "You must set SearchQuery")
 				.isNotNull(myListState, "You must set ListState")
 				.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent(), () -> Assertion.check() //si il y a un cluster on vérifie le maxRows
 						.isTrue(myListState.getMaxRows().get() < TOPHITS_SUBAGGREGATION_MAXSIZE,
 								"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE));
 		//-----
-		appendListState(mySearchQuery, myListState, myDefaultMaxRows, myIndexDefinition);
+		appendListState(mySearchQuery, myListState, myDefaultMaxRows, myIndexDtDefinition);
 		appendSearchQuery(mySearchQuery, getSearchSourceBuilder(), myUseHighlight, myTypeAdapters);
-		appendFacetDefinition(mySearchQuery, getSearchSourceBuilder(), myIndexDefinition, myListState, myUseHighlight, myTypeAdapters);
+		appendFacetDefinition(mySearchQuery, getSearchSourceBuilder(), myIndexDtDefinition, myListState, myUseHighlight, myTypeAdapters);
 		return getSearchRequest();
 	}
 
@@ -164,7 +164,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	protected abstract R getSearchRequest();
 
-	protected abstract void appendListState(SearchQuery searchQuery, DtListState listState, int defaultMaxRows, SearchIndexDefinition indexDefinition);
+	protected abstract void appendListState(SearchQuery searchQuery, DtListState listState, int defaultMaxRows, DtDefinition indexDtDefinition);
 
 	protected abstract void setQueryAndPostFilter(QueryBuilder requestQueryBuilder, BoolQueryBuilder postFilterBoolQueryBuilder);
 
@@ -172,8 +172,8 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	protected abstract void addAggregation(S searchRequestBuilder, AggregationBuilder aggregationBuilder);
 
-	protected FieldSortBuilder getFieldSortBuilder(final SearchIndexDefinition indexDefinition, final DtListState listState) {
-		final DtField sortField = indexDefinition.getIndexDtDefinition().getField(listState.getSortFieldName().get());
+	protected FieldSortBuilder getFieldSortBuilder(final DtDefinition indexDefinition, final DtListState listState) {
+		final DtField sortField = indexDefinition.getField(listState.getSortFieldName().get());
 		String sortIndexFieldName = sortField.getName();
 		final IndexType indexType = IndexType.readIndexType(sortField.getSmartTypeDefinition());
 
@@ -283,7 +283,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	private void appendFacetDefinition(
 			final SearchQuery searchQuery,
 			final S searchRequestBuilder,
-			final SearchIndexDefinition indexDefinition,
+			final DtDefinition indexDefinition,
 			final DtListState listState,
 			final boolean useHighlight,
 			final Map<Class, BasicTypeAdapter> typeAdapters) {

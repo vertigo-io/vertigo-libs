@@ -47,9 +47,9 @@ import io.vertigo.datafactory.impl.search.SearchResource;
 import io.vertigo.datafactory.plugins.search.elasticsearch.AsbtractESSearchRequestBuilder;
 import io.vertigo.datafactory.plugins.search.elasticsearch.ESDocumentCodec;
 import io.vertigo.datafactory.plugins.search.elasticsearch.ESFacetedQueryResultBuilder;
-import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
@@ -182,18 +182,18 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 * @param defaultMaxRows Nombre de ligne max par defaut
 	 * @return Résultat de la recherche
 	 */
-	FacetedQueryResult<I, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
+	FacetedQueryResult<I, SearchQuery> loadList(final DtDefinition indexDtDefinition, final String[] indexNames, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
 		Assertion.check().isNotNull(searchQuery);
 		//-----
-		final SearchRequestBuilder searchRequestBuilder = new ESSearchRequestBuilder(indexName, esClient, typeAdapters)
-				.withSearchIndexDefinition(indexDefinition)
+		final SearchRequestBuilder searchRequestBuilder = new ESSearchRequestBuilder(indexNames, esClient, typeAdapters)
+				.withIndexDtDefinition(indexDtDefinition)
 				.withSearchQuery(searchQuery)
 				.withListState(listState, defaultMaxRows)
 				.build();
 		LOGGER.info("loadList {}", searchRequestBuilder);
 		try {
 			final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
-			return new ESFacetedQueryResultBuilder(esDocumentCodec, indexDefinition, queryResponse, searchQuery)
+			return new ESFacetedQueryResultBuilder(esDocumentCodec, indexDtDefinition, queryResponse, searchQuery)
 					.build();
 		} catch (final SearchPhaseExecutionException e) {
 			final VUserException vue = new VUserException(SearchResource.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR);

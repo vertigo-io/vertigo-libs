@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -283,12 +284,36 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 
 	/** {@inheritDoc} */
 	@Override
-	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
+	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState) {
 		Assertion.check().isNotNull(searchQuery);
 		//-----
-		final ESStatement<KeyConcept, R> statement = createElasticStatement(indexDefinition);
+		final ESStatement<KeyConcept, R> statement = createElasticStatement(indexDefinitions.get(0));
 		final DtListState usedListState = listState != null ? listState : defaultListState;
-		return statement.loadList(indexDefinition, searchQuery, usedListState, defaultMaxRows);
+		return statement.loadList(obtainIndexDtDefinition(indexDefinitions), obtainIndicesNames(indexDefinitions), searchQuery, usedListState, defaultMaxRows);
+	}
+
+	private DtDefinition obtainIndexDtDefinition(final List<SearchIndexDefinition> indexDefinitions) {
+		DtDefinition indexDtDefinition = null;
+		for (final SearchIndexDefinition indexDefinition : indexDefinitions) {
+			if (indexDtDefinition == null) {
+				indexDtDefinition = indexDefinition.getIndexDtDefinition();
+			} else {
+				Assertion.check().isTrue(indexDtDefinition.equals(indexDefinition.getIndexDtDefinition()),
+						"When searching multi-indices IndexDtDefinitions must be the same : {0} != {1} in {2}",
+						indexDtDefinition.getName(), indexDefinition.getIndexDtDefinition().getName(), indexDefinition.getName());
+			}
+		}
+		Assertion.check().isNotNull(indexDtDefinition);
+		return indexDtDefinition;
+	}
+
+	private String[] obtainIndicesNames(final List<SearchIndexDefinition> indexDefinitions) {
+		String[] indiceNames = new String[indexDefinitions.size()];
+		indiceNames = indexDefinitions.stream()
+				.map(d -> obtainIndexName(d))
+				.collect(Collectors.toList())
+				.toArray(indiceNames);
+		return indiceNames;
 	}
 
 	/** {@inheritDoc} */
@@ -314,7 +339,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		Assertion.check()
 				.isTrue(indexSettingsValid,
 						"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.")
-				.isNotNull(indexDefinition);
+				.isNotNull(indexDefinition, "SearchIndexDefinition is mandatory");
 		//-----
 		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), esClient, typeAdapters);
 	}
