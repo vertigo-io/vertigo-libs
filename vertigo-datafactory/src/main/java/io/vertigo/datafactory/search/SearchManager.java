@@ -100,6 +100,16 @@ public interface SearchManager extends Manager {
 	<I extends DtObject> FacetedQueryResult<I, SearchQuery> loadList(SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState);
 
 	/**
+	 * Récupération du résultat issu d'une requête.
+	 * @param searchQuery critères initiaux
+	 * @param indexDefinition Type de l'index
+	 * @param listState Etat de la liste (tri et pagination)
+	 * @return Résultat correspondant à la requête
+	 * @param <I> Type de l'objet resultant de la recherche
+	 */
+	<I extends DtObject> FacetedQueryResult<I, SearchQuery> loadList(List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState);
+
+	/**
 	 * @param indexDefinition  Type de l'index
 	 * @return Nombre de document indexés
 	 */

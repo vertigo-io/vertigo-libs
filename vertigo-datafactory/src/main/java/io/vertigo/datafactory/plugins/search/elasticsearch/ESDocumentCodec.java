@@ -30,7 +30,6 @@ import org.elasticsearch.search.SearchHit;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
-import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DataAccessor;
@@ -89,16 +88,15 @@ public final class ESDocumentCodec {
 	 * Les highlights sont ajoutés avant ou après (non determinable).
 	 * @param <S> Type du sujet représenté par ce document
 	 * @param <I> Type d'object indexé
-	 * @param indexDefinition Definition de l'index
+	 * @param indexDefinition DtDefinition de l'index
 	 * @param searchHit Resultat ElasticSearch
 	 * @return Objet logique de recherche
 	 */
-	public <S extends KeyConcept, I extends DtObject> SearchIndex<S, I> searchHit2Index(final SearchIndexDefinition indexDefinition, final SearchHit searchHit) {
+	public <I extends DtObject> I searchHit2DtIndex(final DtDefinition indexDtDefinition, final SearchHit searchHit) {
 		/* On lit du document les données persistantes. */
 		/* 1. UID */
 		final String urn = searchHit.getId();
 		final UID uid = io.vertigo.datamodel.structure.model.UID.of(urn);
-
 		/* 2 : Result stocké */
 		final I resultDtObjectdtObject;
 		if (searchHit.field(FULL_RESULT) == null) {
@@ -107,7 +105,16 @@ public final class ESDocumentCodec {
 			resultDtObjectdtObject = decode(searchHit.field(FULL_RESULT).getValue());
 		}
 		//-----
-		return SearchIndex.createIndex(indexDefinition, uid, resultDtObjectdtObject);
+		final DtDefinition resultDtDefinition = DtObjectUtil.findDtDefinition(resultDtObjectdtObject);
+		Assertion.check()
+				.isNotNull(uid)
+				.isNotNull(indexDtDefinition)
+				.isNotNull(resultDtObjectdtObject)
+				//On vérifie la consistance des données.
+				.isTrue(indexDtDefinition.equals(resultDtDefinition),
+						"Le type l'objet indexé ({1}) ne correspond pas à celui de l'index ({1})", resultDtDefinition.getName(), indexDtDefinition.getName());
+		//-----
+		return resultDtObjectdtObject;
 	}
 
 	/**

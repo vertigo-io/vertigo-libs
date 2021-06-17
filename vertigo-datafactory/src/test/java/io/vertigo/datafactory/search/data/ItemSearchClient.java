@@ -128,6 +128,12 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 				//---
 				// SearchIndexDefinition
 				//-----
+				new SearchIndexDefinitionSupplier("IdxItem2")
+						.withKeyConcept("DtItem")
+						.withIndexDtDefinition("DtItem")
+						.withLoaderId("ItemSearchLoader")
+						.withCopyToFields("allText", "manufacturer", "model", "description", "year", "kilo", "price", "motorType"),
+
 				new SearchIndexDefinitionSupplier("IdxItem")
 						.withKeyConcept("DtItem")
 						.withIndexDtDefinition("DtItem")

@@ -17,6 +17,9 @@
  */
 package io.vertigo.datafactory.search.multiindex;
 
+import java.sql.SQLException;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.AfterEach;
@@ -46,6 +49,7 @@ import io.vertigo.datamodel.structure.model.DtObject;
 public class SearchManagerMultiIndexTest {
 	//Index
 	private static final String IDX_ITEM = "IdxItem";
+	private static final String IDX_ITEM_2 = "IdxItem2";
 
 	/** Manager de recherche. */
 	@Inject
@@ -108,6 +112,36 @@ public class SearchManagerMultiIndexTest {
 
 		final long size = query("*:*", itemIndexDefinition);
 		Assertions.assertEquals(0, size);
+	}
+
+	protected SearchIndexDefinition itemIndex2Definition;
+
+	@BeforeEach
+	public final void setUpIndex2() throws SQLException {
+		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
+		itemIndex2Definition = definitionSpace.resolve(IDX_ITEM_2, SearchIndexDefinition.class);
+	}
+
+	@Test
+	public void testTwoIndexSearch() {
+		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
+		final SearchIndexDefinition itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
+		final SearchIndexDefinition itemIndex2Definition = definitionSpace.resolve(IDX_ITEM_2, SearchIndexDefinition.class);
+		int i = 0;
+		for (final Item item : itemDataBase.getAllItems()) {
+			final SearchIndexDefinition itemDataIndexDefinition = i++ % 2 == 0 ? itemIndexDefinition : itemIndex2Definition;
+			final SearchIndex<Item, Item> index = SearchIndex.createIndex(itemDataIndexDefinition, item.getUID(), item);
+			searchManager.put(itemDataIndexDefinition, index);
+		}
+		waitIndexation();
+
+		final SearchQuery searchQuery = SearchQuery.builder("*:*", DslListFilterBuilder.class)
+				.withCriteria("")
+				.build();
+		final FacetedQueryResult<DtObject, SearchQuery> result = searchManager.loadList(List.of(itemIndexDefinition, itemIndex2Definition), searchQuery, null);
+		final long size = result.getCount();
+
+		Assertions.assertEquals(itemDataBase.size(), size);
 	}
 
 	private long query(final String query, final SearchIndexDefinition indexDefinition) {

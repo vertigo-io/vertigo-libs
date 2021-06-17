@@ -47,8 +47,6 @@ import io.vertigo.datafactory.collections.definitions.FacetedQueryDefinition;
 import io.vertigo.datafactory.collections.model.Facet;
 import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
-import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
-import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
@@ -69,30 +67,30 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 	private static final String EMPTY_TERM = "_empty_";
 
 	private final ESDocumentCodec esDocumentCodec;
-	private final SearchIndexDefinition indexDefinition;
+	private final DtDefinition indexDtDefinition;
 	private final SearchResponse queryResponse;
 	private final SearchQuery searchQuery;
 
 	/**
 	 * Constructor.
 	 * @param esDocumentCodec Translation codec from Index Dto to document
-	 * @param indexDefinition Index definition
+	 * @param indexDtDefinition Index Dtdefinition
 	 * @param queryResponse ES Query response
 	 * @param searchQuery Search query
 	 */
 	public ESFacetedQueryResultBuilder(
 			final ESDocumentCodec esDocumentCodec,
-			final SearchIndexDefinition indexDefinition,
+			final DtDefinition indexDtDefinition,
 			final SearchResponse queryResponse,
 			final SearchQuery searchQuery) {
 		Assertion.check()
 				.isNotNull(esDocumentCodec)
-				.isNotNull(indexDefinition)
+				.isNotNull(indexDtDefinition)
 				.isNotNull(queryResponse)
 				.isNotNull(searchQuery);
 		//-----
 		this.esDocumentCodec = esDocumentCodec;
-		this.indexDefinition = indexDefinition;
+		this.indexDtDefinition = indexDtDefinition;
 		this.queryResponse = queryResponse;
 		this.searchQuery = searchQuery;
 	}
@@ -102,17 +100,16 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 	public FacetedQueryResult<I, SearchQuery> build() {
 		final Map<I, Map<DtField, String>> resultHighlights = new HashMap<>();
 		final Map<FacetValue, DtList<I>> resultCluster;
-		final DtList<I> dtc = new DtList<>(indexDefinition.getIndexDtDefinition());
+		final DtList<I> dtc = new DtList<>(indexDtDefinition);
 		if (searchQuery.isClusteringFacet()) {
 			final Map<String, I> dtcIndex = new LinkedHashMap<>();
 			resultCluster = createCluster(dtcIndex, resultHighlights);
 			dtc.addAll(dtcIndex.values());
 		} else {
 			for (final SearchHit searchHit : queryResponse.getHits()) {
-				final SearchIndex<?, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
-				final I result = index.getIndexDtObject();
+				final I result = esDocumentCodec.searchHit2DtIndex(indexDtDefinition, searchHit);
 				dtc.add(result);
-				final Map<DtField, String> highlights = createHighlight(searchHit, indexDefinition.getIndexDtDefinition());
+				final Map<DtField, String> highlights = createHighlight(searchHit, indexDtDefinition);
 				resultHighlights.put(result, highlights);
 			}
 			resultCluster = Collections.emptyMap();
@@ -172,14 +169,13 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 			final Map<String, I> dtcIndex,
 			final Map<I, Map<DtField, String>> resultHighlights) {
 		final SearchHits facetSearchHits = ((TopHits) bucket.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
-		final DtList<I> facetDtc = new DtList<>(indexDefinition.getIndexDtDefinition());
+		final DtList<I> facetDtc = new DtList<>(indexDtDefinition);
 		for (final SearchHit searchHit : facetSearchHits) {
 			I result = dtcIndex.get(searchHit.getId());
 			if (result == null) {
-				final SearchIndex<?, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
-				result = index.getIndexDtObject();
+				result = esDocumentCodec.searchHit2DtIndex(indexDtDefinition, searchHit);
 				dtcIndex.put(searchHit.getId(), result);
-				final Map<DtField, String> highlights = createHighlight(searchHit, indexDefinition.getIndexDtDefinition());
+				final Map<DtField, String> highlights = createHighlight(searchHit, indexDtDefinition);
 				resultHighlights.put(result, highlights);
 			}
 			facetDtc.add(result);
