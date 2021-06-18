@@ -88,9 +88,9 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 						getModelManager().getTypeAdapters("sql"),
 						connection);
 
-		final Object id = result.getVal2();
+		final Object id = result.val2();
 		idField.getDataAccessor().setValue(entity, id);
 		//---
-		return /*sqlRowcount*/ OptionalInt.of(result.getVal1());
+		return /*sqlRowcount*/ OptionalInt.of(result.val1());
 	}
 }

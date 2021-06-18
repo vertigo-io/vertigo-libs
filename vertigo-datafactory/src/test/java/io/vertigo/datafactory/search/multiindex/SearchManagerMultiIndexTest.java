@@ -17,7 +17,6 @@
  */
 package io.vertigo.datafactory.search.multiindex;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -117,7 +116,7 @@ public class SearchManagerMultiIndexTest {
 	protected SearchIndexDefinition itemIndex2Definition;
 
 	@BeforeEach
-	public final void setUpIndex2() throws SQLException {
+	public final void setUpIndex2() {
 		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		itemIndex2Definition = definitionSpace.resolve(IDX_ITEM_2, SearchIndexDefinition.class);
 	}

@@ -90,7 +90,7 @@ public final class TaskManagerImpl implements TaskManager, SimpleDefinitionProvi
 				.filterMethods(MethodConditions.annotatedWith(TaskAnnotation.class))
 				.findMethods()
 				.stream()
-				.map(Tuple::getVal2)
+				.map(Tuple::val2)
 				.map(TaskManagerImpl::createTaskDefinition)
 				.collect(Collectors.toList());
 	}

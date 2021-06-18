@@ -81,7 +81,7 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 					Assertion.check()
 							.when(registeredAdapaters.containsKey(tuple.val1()), () -> Assertion.check()
 									.isTrue(tuple.val2().getAdapterClass().equals(registeredAdapaters.get(tuple.val1()).getClass()),
-											"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered", tuple.getVal1().getName(), tuple.val1(), tuple.val2().getType()));
+											"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered", tuple.val1().getName(), tuple.val1(), tuple.val2().getType()));
 					registeredAdapaters.put(tuple.val1().getJavaClass(), createBasicTypeAdapter(tuple.val2()));
 				});
 
