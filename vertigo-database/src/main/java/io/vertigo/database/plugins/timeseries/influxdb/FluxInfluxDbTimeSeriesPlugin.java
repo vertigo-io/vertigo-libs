@@ -463,7 +463,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 							+ "}))\n")
 					.append("|> pivot(rowKey:[" + groupByFields + "], columnKey: [\"_field\", \"alias\"], valueColumn: \"_value\") \n")
 					.append("|> map(fn: (r) => ({ r with " + measures.stream().map(measure -> Tuple.of(measure, properedMeasures.get(measure)))
-							.map(tuple -> tuple.val2() + ": if exists r." + tuple.getVal2() + " then r." + tuple.val2() + " else " + getDefaultValueByMeasure(tuple.val1())).collect(Collectors.joining(", "))
+							.map(tuple -> tuple.val2() + ": if exists r." + tuple.val2() + " then r." + tuple.val2() + " else " + getDefaultValueByMeasure(tuple.val1())).collect(Collectors.joining(", "))
 							+ "}))\n")
 
 					.append("|> group() \n")
