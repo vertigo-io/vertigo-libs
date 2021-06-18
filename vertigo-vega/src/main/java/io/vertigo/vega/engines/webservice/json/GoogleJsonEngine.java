@@ -331,8 +331,8 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			Stream.of(((Class<D>) typeOfT).getDeclaredFields())
 					.filter(field -> VAccessor.class.isAssignableFrom(field.getType()))
 					.map(field -> Tuple.of(field, getAccessor(field, dtObject)))
-					.filter(tuple -> jsonObject.has(tuple.getVal2().getRole()))
-					.forEach(tuple -> tuple.getVal2().set(context.deserialize(jsonObject.get(tuple.getVal2().getRole()), ClassUtil.getGeneric(tuple.getVal1()))));
+					.filter(tuple -> jsonObject.has(tuple.val2().getRole()))
+					.forEach(tuple -> tuple.val2().set(context.deserialize(jsonObject.get(tuple.val2().getRole()), ClassUtil.getGeneric(tuple.val1()))));
 
 			// case of the fk we need to handle after because it's the primary information
 			dtDefinition.getFields()
@@ -594,8 +594,8 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		final Set<String> includedFields;
 		final Set<String> excludedFields;
 		if (firstLevel != null) { //Sonar préfère à contains
-			includedFields = filteredSubFields.get(FIRST_LEVEL_KEY).getVal1();
-			excludedFields = filteredSubFields.get(FIRST_LEVEL_KEY).getVal2();
+			includedFields = filteredSubFields.get(FIRST_LEVEL_KEY).val1();
+			excludedFields = filteredSubFields.get(FIRST_LEVEL_KEY).val2();
 		} else {
 			includedFields = Collections.emptySet();
 			excludedFields = Collections.emptySet();
@@ -620,7 +620,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 
 		for (final Map.Entry<String, Tuple<Set<String>, Set<String>>> filteredField : filteredSubFields.entrySet()) {
 			if (filteredField.getValue() != null) {
-				filterFields(jsonObject.get(filteredField.getKey()), filteredField.getValue().getVal1(), filteredField.getValue().getVal2());
+				filterFields(jsonObject.get(filteredField.getKey()), filteredField.getValue().val1(), filteredField.getValue().val2());
 			}
 		}
 	}
@@ -630,8 +630,8 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			return Collections.emptyMap();
 		}
 		final Map<String, Tuple<Set<String>, Set<String>>> subFields = new HashMap<>();
-		parseSubFieldName(includedFields, subFields, Tuple::getVal1);
-		parseSubFieldName(excludedFields, subFields, Tuple::getVal2);
+		parseSubFieldName(includedFields, subFields, Tuple::val1);
+		parseSubFieldName(excludedFields, subFields, Tuple::val2);
 		return subFields;
 	}
 

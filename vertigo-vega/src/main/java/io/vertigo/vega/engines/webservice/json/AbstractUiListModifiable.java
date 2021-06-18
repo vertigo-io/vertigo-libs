@@ -124,8 +124,8 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		return toContextKey(inputKey, index);
 	}
 
-	protected String toContextKey(final String inputKey, final int index) {
-		return inputKey + ".get(" + index + ")";
+	protected String toContextKey(final String locInputKey, final int index) {
+		return locInputKey + ".get(" + index + ")";
 	}
 
 	/**

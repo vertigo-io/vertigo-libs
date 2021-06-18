@@ -108,11 +108,11 @@ public final class SecurityFilter extends AbstractFilter {
 					final DelegateAuthenticationFilterHandler authenticationHandler = authenticationHandlerOpt.get();
 					try {
 						final Tuple<Boolean, HttpServletRequest> beforeOutcome = authenticationHandler.doBeforeChain(httpRequest, httpResponse);
-						if (beforeOutcome.getVal1()) {
+						if (beforeOutcome.val1()) {
 							return;
 						}
-						chain.doFilter(beforeOutcome.getVal2(), httpResponse);
-						authenticationHandler.doAfterChain(beforeOutcome.getVal2(), httpResponse);
+						chain.doFilter(beforeOutcome.val2(), httpResponse);
+						authenticationHandler.doAfterChain(beforeOutcome.val2(), httpResponse);
 					} finally {
 						authenticationHandler.doFinally(httpRequest, httpResponse);
 					}

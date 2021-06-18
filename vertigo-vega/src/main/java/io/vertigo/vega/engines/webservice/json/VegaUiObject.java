@@ -342,15 +342,15 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 				Assertion.check().isTrue(stringValue.length <= 1, "Can't support multiple input values");
 				//------
 				final Tuple<String, Serializable> tuple = tryFormat(smartTypeManager, dtField, stringValue[0]);
-				formattedValue.add(tuple.getVal1());
-				typedValue = tuple.getVal2();
+				formattedValue.add(tuple.val1());
+				typedValue = tuple.val2();
 			} else {
 				final ArrayList list = new ArrayList<>();
 				Stream.of(stringValue)
 						.map(val -> tryFormat(smartTypeManager, dtField, val))
 						.forEach(tuple -> {
-							formattedValue.add(tuple.getVal1());
-							list.add(tuple.getVal2());
+							formattedValue.add(tuple.val1());
+							list.add(tuple.val2());
 						});
 				typedValue = list;
 			}
@@ -360,15 +360,15 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 				Assertion.check().isTrue(stringValue.length <= 1, "Can't support multiple input values");
 				//------
 				final Tuple<String, Serializable> tuple = tryFormatWithAdapter(basicTypeAdapter, dtField, stringValue[0]);
-				formattedValue.add(tuple.getVal1());
-				typedValue = tuple.getVal2();
+				formattedValue.add(tuple.val1());
+				typedValue = tuple.val2();
 			} else {
 				final ArrayList list = new ArrayList<>();
 				Stream.of(stringValue)
 						.map(val -> tryFormatWithAdapter(basicTypeAdapter, dtField, val))
 						.forEach(tuple -> {
-							formattedValue.add(tuple.getVal1());
-							list.add(tuple.getVal2());
+							formattedValue.add(tuple.val1());
+							list.add(tuple.val2());
 						});
 				typedValue = list;
 			}
