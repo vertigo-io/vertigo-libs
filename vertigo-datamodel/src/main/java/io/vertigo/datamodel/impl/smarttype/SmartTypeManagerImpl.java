@@ -75,14 +75,14 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 		Node.getNode().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
 				.flatMap(smartTypeDefinition -> smartTypeDefinition.getAdapterConfigs().values().stream().map(adapterConfig -> Tuple.of(smartTypeDefinition, adapterConfig)))
-				.filter(tuple -> !"*".equals(tuple.getVal2().getType()))
+				.filter(tuple -> !"*".equals(tuple.val2().getType()))
 				.forEach(tuple -> {
-					final Map<Class, BasicTypeAdapter> registeredAdapaters = adaptersByType.computeIfAbsent(tuple.getVal2().getType(), k -> new HashMap<>());
+					final Map<Class, BasicTypeAdapter> registeredAdapaters = adaptersByType.computeIfAbsent(tuple.val2().getType(), k -> new HashMap<>());
 					Assertion.check()
-							.when(registeredAdapaters.containsKey(tuple.getVal1()), () -> Assertion.check()
-									.isTrue(tuple.getVal2().getAdapterClass().equals(registeredAdapaters.get(tuple.getVal1()).getClass()),
-											"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered", tuple.getVal1().getName(), tuple.getVal1(), tuple.getVal2().getType()));
-					registeredAdapaters.put(tuple.getVal1().getJavaClass(), createBasicTypeAdapter(tuple.getVal2()));
+							.when(registeredAdapaters.containsKey(tuple.val1()), () -> Assertion.check()
+									.isTrue(tuple.val2().getAdapterClass().equals(registeredAdapaters.get(tuple.val1()).getClass()),
+											"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered", tuple.getVal1().getName(), tuple.val1(), tuple.val2().getType()));
+					registeredAdapaters.put(tuple.val1().getJavaClass(), createBasicTypeAdapter(tuple.val2()));
 				});
 
 	}

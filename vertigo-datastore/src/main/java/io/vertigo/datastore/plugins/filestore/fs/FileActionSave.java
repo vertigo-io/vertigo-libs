@@ -113,8 +113,8 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 
 	private void doCommit() {
 		for (final Tuple<File, File> tuple : txSaveFiles) {
-			final File txNewFile = tuple.getVal1();
-			final File txFinalFile = tuple.getVal2();
+			final File txNewFile = tuple.val1();
+			final File txFinalFile = tuple.val2();
 
 			// Clean old file if exist
 			if (txFinalFile.exists() && !txFinalFile.delete()) {
@@ -132,7 +132,7 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 	private void doRollback() {
 		// cleaning temp file on error
 		for (final Tuple<File, File> tuple : txSaveFiles) {
-			final File txNewFile = tuple.getVal1();
+			final File txNewFile = tuple.val1();
 			if (txNewFile.exists() && !txNewFile.delete()) {
 				LOG.error("Can't delete file {} on rollback", txNewFile.getAbsolutePath());
 			}

@@ -284,14 +284,14 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		final String requestedCols = getRequestedCols(dtDefinition);
 		final String taskName = getListTaskName(entityName);
 		final Tuple<String, CriteriaCtx> tuple = criteria.toStringAnCtx(criteriaEncoder);
-		final String where = tuple.getVal1();
+		final String where = tuple.val1();
 		final String request = createLoadAllLikeQuery(tableName, requestedCols, where, dtListState);
 		final TaskDefinitionBuilder taskDefinitionBuilder = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request);
 
-		final CriteriaCtx ctx = tuple.getVal2();
+		final CriteriaCtx ctx = tuple.val2();
 		//IN, Optional
 		for (final String attributeName : ctx.getAttributeNames()) {
 			taskDefinitionBuilder.addInAttribute(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).getSmartTypeDefinition(), Cardinality.OPTIONAL_OR_NULLABLE);
