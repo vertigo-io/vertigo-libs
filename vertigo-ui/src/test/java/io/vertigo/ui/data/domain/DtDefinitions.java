@@ -54,6 +54,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		Profil(io.vertigo.ui.data.domain.users.Profil.class),
 		/** Objet de données SecurityRole. */
 		SecurityRole(io.vertigo.ui.data.domain.users.SecurityRole.class),
+		/** Objet de données StatData. */
+		StatData(io.vertigo.ui.data.domain.stats.StatData.class),
 		/** Objet de données UserAuthentification. */
 		UserAuthentification(io.vertigo.ui.data.domain.users.UserAuthentification.class);
 

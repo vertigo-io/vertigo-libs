@@ -20,7 +20,9 @@ package io.vertigo.ui.data.domain.users;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.structure.stereotype.DisplayField;
 import io.vertigo.datamodel.structure.stereotype.Field;
+import io.vertigo.datamodel.structure.stereotype.SortField;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datastore.impl.entitystore.StoreListVAccessor;
 
@@ -46,7 +48,7 @@ public final class Profil implements Entity {
 			roleB = "SecurityRole",
 			labelA = "Profil",
 			labelB = "Security role")
-	private final StoreListVAccessor<io.vertigo.ui.data.domain.users.SecurityRole> securityRoleAccessor = new StoreListVAccessor<>(this, "StAnnProSro", "SecurityRole");
+	private final StoreListVAccessor<io.vertigo.ui.data.domain.users.SecurityRole> securityRoleAccessor = new StoreListVAccessor<>(this, "AnnProSro", "SecurityRole");
 
 	/** {@inheritDoc} */
 	@Override
@@ -79,6 +81,8 @@ public final class Profil implements Entity {
 	 * @return String label
 	 */
 	@Field(smartType = "STyLabel", label = "Label")
+	@SortField
+	@DisplayField
 	public String getLabel() {
 		return label;
 	}
