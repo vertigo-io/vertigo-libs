@@ -8409,23 +8409,23 @@ function isString (v) {
             if (Array.isArray(vueDataValue[propertyKey])) {
               vueDataValue[propertyKey].forEach(function (value, index) {
                 if (vueDataValue[propertyKey][index] && _typeof(vueDataValue[propertyKey][index]) === 'object') {
-                  params.append('vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]['_v_inputValue']);
+                  this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]['_v_inputValue']);
                 } else {
-                  params.append('vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]);
+                  this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]);
                 }
-              });
+              }.bind(this));
             } else {
               if (vueDataValue[propertyKey] && _typeof(vueDataValue[propertyKey]) === 'object') {
-                params.append('vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]['_v_inputValue']);
+                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]['_v_inputValue']);
               } else {
-                params.append('vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]);
+                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]);
               }
             }
           }
-        });
+        }.bind(this));
       } else {
         //primitive
-        params.append('vContext[' + contextKey + ']', vueDataValue);
+        this.appendToFormData(params, 'vContext[' + contextKey + ']', vueDataValue);
       }
     }
 
@@ -8434,9 +8434,16 @@ function isString (v) {
   objectToFormData: function objectToFormData(object) {
     var formData = new FormData();
     Object.keys(object).forEach(function (key) {
-      return formData.append(key, object[key]);
-    });
+      this.appendToFormData(formData, key, object[key]);
+    }.bind(this));
     return formData;
+  },
+  appendToFormData: function appendToFormData(formData, name, value) {
+    if (value != null) {
+      formData.append(name, value);
+    } else {
+      formData.append(name, "");
+    }
   },
   isFormData: function isFormData(val) {
     return typeof FormData !== 'undefined' && val instanceof FormData;

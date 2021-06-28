@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+  xmlns:vu="https://vertigo.io/thymeleaf/vertigo-ui"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{templates/mmcLayout}"
+>
+
+<head>
+    <title>Modifiable Table Demo</title>
+    <script th:nonce="${nonce}">
+        VUiExtensions.methods.subtotal = function(field) {
+           return this.$data.vueData.stats.reduce(function (total, value) {
+                return total + Number(value[field]);
+            }, 0);
+        }
+        VUiExtensions.methods.isTotalEquals = function(field) {
+           return this.$data.vueData.statsTotalTarget[field] == this.subtotal(field);
+        }
+    </script>            
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <vu:messages />
+            <vu:form id="myFormId">
+                <vu:table-modifiable list="stats" componentId="statsModifiableTable"  >
+                    <vu:column field="staId" >
+                        <a th::href="|'@{/stats/}'+props.row.staId|" >{{props.row.staId}}</a>
+                    </vu:column>
+                     <vu:column field="nbHomme">
+                        <vu:text-field object="stats" field="nbHomme" dense/>
+                    </vu:column>
+                    <vu:column field="nbFemme">
+                        <vu:text-field object="stats" field="nbFemme" dense/>
+                    </vu:column>
+                    <vu:column field="nbEnfant">
+                        <vu:text-field object="stats" field="nbEnfant" dense/>
+                    </vu:column>
+                </vu:table-modifiable>
+                <br/>
+                <div class="q-table__card dense">
+                    <table class="full-width q-table table-primary q-table--cell-separator">
+                        <caption></caption>
+                        <thead>
+                      <tr>
+                        <th id="p1" class="text-left" rowspan="2">Activités</td>
+                        <th colspan="2" scope="colgroup">Adultes</th>
+                        <th id="p4" class="text-left" rowspan="2" scope="colgroup">Nb enfant</th>
+                      </tr>
+                        <tr>
+                            <th id="p2" scope="col" class="text-left" style="border-left: 1px;">Nb homme</th>
+                            <th id="p3" scope="col" class="text-left">Nb femme</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="bg-grey" th:with="modifiableTable=true">
+                            <td>
+                                Récapitulatif du Total
+                            </td>
+                            <td>
+                                <vu:text-field-read object="statsTotalTarget" field="nbHomme"/>
+                            </td>
+                            <td>
+                                <vu:text-field-read object="statsTotalTarget" field="nbFemme"/>
+                            </td>
+                            <td>
+                                <vu:text-field-read object="statsTotalTarget" field="nbEnfant"/>
+                            </td>
+                        </tr>
+                        <th:block th:each="item, itemStat : ${model.stats}" th:with="modifiableTable=true, rowIndex=${itemStat.index}">
+                            <th:block th:if="${itemStat.first || model.stats[itemStat.index-1].proId!=item.proId}" th:each="item2 : ${model.profilMdl}">
+                            <tr class="bg-grey-4" th:if="${item2.proId==item.proId}">
+                                <td colspan="4" vu:text="${item2.label}">
+                                </td>
+                            </tr>
+                            </th:block>
+                            <tr >
+                                <td>
+                                    <a th:href="'@{/stats/}'+item.staId" vu:text="${item.staId}" ></a>
+                                </td>
+                                <td>
+                                    <vu:text-field object="stats" field="nbHomme" type="number" filled dense borderless hide-bottom-space />
+                                </td>
+                                <td>
+                                    <vu:text-field object="stats" field="nbFemme" type="number" filled dense borderless hide-bottom-space/>
+                                </td>
+                                <td>
+                                    <vu:text-field object="stats" field="nbEnfant" type="number" filled dense borderless hide-bottom-space/>
+                                </td>
+                            </tr>
+                        </th:block>
+                        
+                        <tr class="bg-grey" th:with="modifiableTable=true">
+                            <td>
+                                Current total
+                            </td>
+                            <td>
+                                {{subtotal("nbHomme")}} 
+                                <q-icon :name="isTotalEquals('nbHomme') ? 'check_circle' : 'circle'" size="sm" :color="isTotalEquals('nbHomme') ? 'green' : 'grey'" style="background-color:white; border-radius: 60%;">
+                                </q-icon>                                
+                            </td>
+                            <td>
+                                {{subtotal("nbFemme")}}
+                                <q-icon :name="isTotalEquals('nbFemme') ? 'check_circle' : 'circle'" size="sm" :color="isTotalEquals('nbFemme') ? 'green' : 'grey'" style="background-color:white; border-radius: 60%;">
+                                </q-icon>     
+                            </td>
+                            <td>
+                                {{subtotal("nbEnfant")}}
+                                <q-icon :name="isTotalEquals('nbEnfant') ? 'check_circle' : 'circle'" size="sm" :color="isTotalEquals('nbEnfant') ? 'green' : 'grey'" style="background-color:white; border-radius: 60%;">
+                                </q-icon>     
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <br/>
+                <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionList" label="Save (List)" action="@{_saveList}" color="primary" />
+              
+                <vu:button-submit th:if="${!model.modeReadOnly}" id="readActionList" label="Read" action="@{_read}" color="primary"/>
+                <vu:button-submit th:if="${model.modeReadOnly}" id="editActionList" label="Edit" action="@{_edit}" color="primary"/>
+            </vu:form>
+    </div>
+</body>
+</html>

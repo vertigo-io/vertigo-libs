@@ -539,23 +539,23 @@ export default {
                         if (Array.isArray(vueDataValue[propertyKey])) {
                             vueDataValue[propertyKey].forEach(function (value, index) {
                                 if (vueDataValue[propertyKey][index] && typeof vueDataValue[propertyKey][index] === 'object') {
-                                    params.append('vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]['_v_inputValue']);
+                                    this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]['_v_inputValue']);
                                 } else {
-                                    params.append('vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]);
+                                    this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]);
                                 }
-                            });
+                            }.bind(this));
                         } else {
                             if (vueDataValue[propertyKey] && typeof vueDataValue[propertyKey] === 'object') {
-                                params.append('vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]['_v_inputValue']);
+                                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]['_v_inputValue']);
                             } else {
-                                params.append('vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]);
+                                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]);
                             }
                         }
                     }
-                });
+                }.bind(this));
             } else {
                 //primitive
-                params.append('vContext[' + contextKey + ']', vueDataValue);
+                this.appendToFormData(params, 'vContext[' + contextKey + ']', vueDataValue);
             }
         }
         return params;
@@ -564,8 +564,18 @@ export default {
 
     objectToFormData: function (object) {
         const formData = new FormData();
-        Object.keys(object).forEach(key => formData.append(key, object[key]));
+        Object.keys(object).forEach(function(key) { 
+            this.appendToFormData(formData, key, object[key])
+        }.bind(this));
         return formData;
+    },
+
+    appendToFormData: function (formData, name, value) {
+        if (value != null) {
+            formData.append(name, value)
+        } else {
+            formData.append(name, "")
+        }
     },
     
     isFormData: function(val) {
