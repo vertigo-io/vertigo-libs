@@ -50,6 +50,12 @@ public final class DataAccessor {
 	 * @param value Object
 	 */
 	public void setValue(final DtObject dto, final Object value) {
+		checkValue(dto, value);
+		//-----
+		BeanUtil.setValue(dto, dtField.getName(), value);
+	}
+
+	private void checkValue(final DtObject dto, final Object value) {
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		//On vérifie le type java de l'objet.
 		if (dtField.getCardinality().hasMany()) {
@@ -62,8 +68,6 @@ public final class DataAccessor {
 		} else {
 			smartTypeManager.checkValue(dtField.getSmartTypeDefinition(), value);
 		}
-		//-----
-		BeanUtil.setValue(dto, dtField.getName(), value);
 	}
 
 	/**
