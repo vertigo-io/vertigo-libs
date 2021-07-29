@@ -156,7 +156,7 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 	}
 
 	public void verb(final Verb verb) {
-		this.verb = verb;
+		this.myVerb = verb;
 	}
 
 }
