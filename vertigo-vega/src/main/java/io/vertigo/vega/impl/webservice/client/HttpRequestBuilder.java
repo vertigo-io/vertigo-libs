@@ -33,7 +33,7 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 	private final java.net.http.HttpRequest.Builder httpRequestBuilder = HttpRequest.newBuilder();
 	private final Map<String, String> pathParams = new HashMap<>();
 	private final Map<String, String> queryParams = new HashMap<>();
-	private Verb verb = null;
+	private Verb myVerb = null;
 	private Object body = null;
 
 	private final Set<String> includedFields = new HashSet<>();
@@ -66,7 +66,7 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 			bodyPublisher = BodyPublishers.ofString(jsonBody);
 		}
 
-		switch (verb) {
+		switch (myVerb) {
 			case Delete:
 				httpRequestBuilder.DELETE();
 				break;
@@ -128,7 +128,7 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 	}
 
 	public void innerBodyParam(final String name, final Object object, final WebServiceParam webServiceParam) {
-		if(body == null) {
+		if (body == null) {
 			body = new HashMap<>();
 		}
 		Assertion.check().isTrue(body instanceof Map, "Can't merge body content");

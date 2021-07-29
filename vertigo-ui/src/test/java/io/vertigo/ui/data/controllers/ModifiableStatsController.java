@@ -17,9 +17,6 @@
  */
 package io.vertigo.ui.data.controllers;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Controller;
@@ -48,7 +45,7 @@ public class ModifiableStatsController extends AbstractVSpringMvcController {
 	private StatsServices statsServices;
 
 	@GetMapping("/")
-	public void initContext(final ViewContext viewContext) throws URISyntaxException, IOException {
+	public void initContext(final ViewContext viewContext) {
 		viewContext.publishMdl(profilListMdl, Profil.class, null);
 
 		final DtList<StatData> myList = statsServices.getStats();

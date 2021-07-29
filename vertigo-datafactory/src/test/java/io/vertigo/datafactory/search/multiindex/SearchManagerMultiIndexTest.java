@@ -125,7 +125,6 @@ public class SearchManagerMultiIndexTest {
 	public void testTwoIndexSearch() {
 		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		final SearchIndexDefinition itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
-		final SearchIndexDefinition itemIndex2Definition = definitionSpace.resolve(IDX_ITEM_2, SearchIndexDefinition.class);
 		int i = 0;
 		for (final Item item : itemDataBase.getAllItems()) {
 			final SearchIndexDefinition itemDataIndexDefinition = i++ % 2 == 0 ? itemIndexDefinition : itemIndex2Definition;
