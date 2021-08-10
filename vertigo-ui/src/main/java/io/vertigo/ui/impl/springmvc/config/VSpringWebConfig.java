@@ -57,6 +57,7 @@ import io.vertigo.ui.impl.springmvc.argumentresolvers.VFileMethodArgumentResolve
 import io.vertigo.ui.impl.springmvc.argumentresolvers.VFileReturnValueHandler;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttributeMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewContextReturnValueAndArgumentResolver;
+import io.vertigo.ui.impl.springmvc.auth.VSpringMvcAuthorizationInterceptor;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
 import io.vertigo.ui.impl.thymeleaf.VUiStandardDialect;
 import io.vertigo.ui.impl.thymeleaf.components.NamedComponentDefinition;
@@ -227,6 +228,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 
 	@Override
 	public void addInterceptors(final InterceptorRegistry registry) {
+		registry.addInterceptor(new VSpringMvcAuthorizationInterceptor());
 		registry.addInterceptor(new VSpringMvcViewContextInterceptor());
 	}
 
