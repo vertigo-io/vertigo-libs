@@ -62,7 +62,7 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 				.isTrue(indexDefinition.getKeyConceptDtDefinition().equals(uid.getDefinition()),
 						"Le type de l'URI de l'objet indexé  ({0}) ne correspond pas au KeyConcept de l'index ({1})", uid.toString(), indexDefinition.getKeyConceptDtDefinition().getName())
 				.isTrue(indexDefinition.getIndexDtDefinition().equals(DtObjectUtil.findDtDefinition(indexDtObject)),
-						"Le type l'objet indexé ({1}) ne correspond pas à celui de l'index ({1})", DtObjectUtil.findDtDefinition(indexDtObject).getName(), indexDefinition.getIndexDtDefinition().getName());
+						"Le type l'objet indexé ({0}) ne correspond pas à celui de l'index ({1})", DtObjectUtil.findDtDefinition(indexDtObject).getName(), indexDefinition.getIndexDtDefinition().getName());
 		//-----
 		this.uid = uid;
 		this.indexDefinition = indexDefinition;
