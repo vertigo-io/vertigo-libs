@@ -60,8 +60,8 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 	}
 
 	@Override
-	public Class<io.vertigo.vega.impl.webservice.client.WebServiceProxyAnnotation> getAnnotationType() {
-		return io.vertigo.vega.impl.webservice.client.WebServiceProxyAnnotation.class;
+	public Class<WebServiceProxyAnnotation> getAnnotationType() {
+		return WebServiceProxyAnnotation.class;
 	}
 
 	@Override
