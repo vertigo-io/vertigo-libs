@@ -9,7 +9,7 @@
       th:assert="(${label} != null or ${icon} != null) and ${action} != null and ${formId} != null"
       th:with="myComponentId='button'+${action},myLabelOk=${labelOk?:'Oui'},myLabelCancel=${labelCancel?:'Non'}"
       th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('confirm',false)}">
-    <q-btn  th:label="${label?:''}" th:icon="${icon?:''}" th:@click="|componentStates.${myComponentId}.confirm = true|"
+    <q-btn th:label="${label?:''}" th:icon="${icon?:''}" th:@click="|componentStates.${myComponentId}.confirm = true|"
             th:aria-label="${ariaLabel?:label?:''}" th:title="${ariaLabel?:label?:''}" th:attr="__${other_attrs}__">
          <q-dialog th:v-model="|componentStates.${myComponentId}.confirm|" persistent>
           <q-card>
@@ -19,8 +19,8 @@
             </vu:content>
             </q-card-section>
             <q-card-actions align="right" vu:slot="actions_slot">
-              <q-btn flat th:label="${myLabelCancel}" color="primary" v-close-popup />
-              <q-btn type="submit" th:formaction="${action}" th:form="${formId}" th:label="${myLabelOk}" color="primary" th:attr="__${other_attrs}__" v-close-popup />
+              <q-btn flat th:label="${myLabelCancel}" color="primary" v-close-popup></q-btn>
+              <q-btn type="submit" th:formaction="${action}" th:form="${formId}" th:label="${myLabelOk}" color="primary" v-close-popup ></q-btn>
             </q-card-actions>
           </q-card>
         </q-dialog>

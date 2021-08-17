@@ -2,3 +2,24 @@
 	  th:assert="(${label} != null or ${icon} != null) and ${url} != null">
 	<q-btn type="a" th:label="${label?:''}" th:icon="${icon?:''}" th::disabled="${disabled}" th::ripple="|!${disabled}|" th::href="|${disabled}?null:'${url}'|" th:aria-label="${ariaLabel?:label?:''}" th:title="${ariaLabel?:label?:''}" th:attr="__${other_attrs}__"><vu:content/></q-btn>
 </th:block> 
+<th:block th:fragment="button-link-confirm(actions_slot, label, icon, url, ariaLabel, disabled, confirmMessage, labelOk, labelCancel, other_attrs)"
+          th:assert="(${label} != null or ${icon} != null) and ${url} != null"
+          th:with="myComponentId='button'+${url},myLabelOk=${labelOk?:'Oui'},myLabelCancel=${labelCancel?:'Non'}"
+          th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('confirm',false)}">
+    <q-btn  th:label="${label?:''}" th:icon="${icon?:''}" th:@click="|componentStates.${myComponentId}.confirm = true|"
+            th:aria-label="${ariaLabel?:label?:''}" th:title="${ariaLabel?:label?:''}" th:attr="__${other_attrs}__">
+        <q-dialog th:v-model="|componentStates.${myComponentId}.confirm|" persistent>
+            <q-card>
+                <q-card-section class="row items-center">
+                    <vu:content>
+                        <span class="q-ml-sm" vu:text="${confirmMessage}"></span>
+                    </vu:content>
+                </q-card-section>
+                <q-card-actions align="right" vu:slot="actions_slot">
+                    <q-btn flat th:label="${myLabelCancel}" color="primary" v-close-popup></q-btn>
+                    <q-btn type="a" th:label="${label?:''}" th:icon="${icon?:''}" th::disabled="${disabled}" th::ripple="|!${disabled}|" th::href="|${disabled}?null:'${url}'|" th:aria-label="${ariaLabel?:label?:''}" th:title="${ariaLabel?:label?:''}"></q-btn>
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
+    </q-btn>
+</th:block>
