@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
@@ -73,6 +74,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	private String builderContextPath = "/";
 	private Collection<WebServiceDefinition> builderWebServiceDefinitions;
 
+	private Map<Class, BasicTypeAdapter> jsonTypeAdapters;
+
 	/**
 	 * Constructor.
 	 */
@@ -94,6 +97,13 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		return this;
 	}
 
+	public SwaggerApiBuilder withTypesAdapterMap(final Map<Class, BasicTypeAdapter> typeAdapters) {
+		Assertion.check()
+				.isNotNull(typeAdapters, "typeAdapters can't be null");
+		jsonTypeAdapters = typeAdapters;
+		return this;
+	}
+
 	/**
 	 * @param webServiceDefinitions WebServiceDefinitions to use for swagger api
 	 * @return this builder
@@ -112,7 +122,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	@Override
 	public SwaggerApi build() {
 		Assertion.check()
-				.isNotNull(builderWebServiceDefinitions, "webServiceDefinitions must be set");
+				.isNotNull(builderWebServiceDefinitions, "webServiceDefinitions must be set")
+				.isNotNull(jsonTypeAdapters, "typeAdapters must be set");
 		//-----
 		final SwaggerApi swagger = new SwaggerApi();
 		swagger.put("swagger", "2.0");
@@ -536,6 +547,17 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			final Map<String, Object> bodyParameter = new LinkedHashMap<>();
 			bodyParameter.put(webServiceParam.getName(), createSchemaObject(webServiceParam.getGenericType(), webServiceParam.getIncludedFields(), webServiceParam.getExcludedFields()));
 			parameter.put(SCHEMA, bodyParameter);
+		} else if (webServiceParam.getParamType() == WebServiceParamType.Query) {
+			//if query is a BasicTypeAdapter we use basicType (can't split queryparam object here, should use pseudoWebServiceParam)
+			Class paramClass = webServiceParam.getType();
+			if (jsonTypeAdapters.containsKey(paramClass)) {
+				paramClass = jsonTypeAdapters.get(paramClass).getBasicType().getJavaClass();
+			}
+			final String[] typeAndFormat = toSwaggerType(paramClass);
+			parameter.put("type", typeAndFormat[0]);
+			if (typeAndFormat[1] != null) {
+				parameter.put("format", typeAndFormat[1]);
+			}
 		} else {
 			final String[] typeAndFormat = toSwaggerType(webServiceParam.getType());
 			parameter.put("type", typeAndFormat[0]);
