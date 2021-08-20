@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.FileUtil;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
@@ -61,9 +62,10 @@ public final class SwaggerWebServices implements WebServices {
 	@GET("/swaggerApi")
 	public Map<String, Object> getSwapperApi(final HttpServletRequest request) {
 		//compute contextPath + servletPath - current Ws url
-		final String prefixUrl = (request.getRequestURI().substring(0, request.getRequestURI().indexOf("/swaggerApi")));
+		final String prefixUrl = request.getRequestURI().substring(0, request.getRequestURI().indexOf("/swaggerApi"));
 		return new SwaggerApiBuilder()
 				.withContextPath(prefixUrl)
+				.withTypesAdapterMap(Node.getNode().getComponentSpace().resolve(SmartTypeManager.class).getTypeAdapters("json"))
 				.withWebServiceDefinitions(Node.getNode().getDefinitionSpace().getAll(WebServiceDefinition.class))
 				.build();
 	}
