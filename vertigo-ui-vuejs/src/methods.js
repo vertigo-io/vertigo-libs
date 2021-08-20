@@ -300,7 +300,7 @@ export default {
                 if (componentStates[collectionComponentId].pagination) {
                     var collectionPagination = componentStates[collectionComponentId].pagination;
                     collectionPagination.page = 1 // reset page
-                    collectionPagination.rowsNumber = response.body.model[contextKey + '_list'].length
+                    collectionPagination.rowsNumber = response.data.model[contextKey + '_list'].length
                 }
             }
         });
@@ -494,11 +494,11 @@ export default {
                 uiMessageStack[key] = response.data.uiMessageStack[key];
             });
             if (options && options.onSuccess) {
-                options.onSuccess.bind(this).apply(response);
+                options.onSuccess.call(this, response);
             }
         }.bind(this)).catch(function (error) {
             if (options && options.onError) {
-                options.onError.bind(this).apply(error.response);
+                options.onError.call(this, error.response);
             }
         });
     },

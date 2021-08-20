@@ -248,7 +248,8 @@
 	                    <q-spinner v-if="slotProps.isUploading" class="q-uploader__spinner"></q-spinner>
 	                    <div class="col column justify-center">
 	                      <div v-if="slotProps.label !== void 0" class="q-uploader__title">{{slotProps.label}}</div>
-			              <div class="q-uploader__subtitle">{{slotProps.uploadSizeLabel}} / {{slotProps.uploadProgressLabel}}</div>
+			              <div v-if="!slotProps.readonly" class="q-uploader__subtitle">{{slotProps.uploadSizeLabel}} / {{slotProps.uploadProgressLabel}}</div>
+						  <div v-if="slotProps.readonly" class="q-uploader__subtitle">{{slotProps.uploadSizeLabel}}</div>
 			            </div>
 			            <q-btn v-if="slotProps.canAddFiles && !slotProps.readonly" type="a" :icon="$q.iconSet.uploader.add" flat dense>
 				            <q-uploader-add-trigger></q-uploader-add-trigger>
@@ -282,7 +283,8 @@
 	                    <q-btn v-if="file.__status != 'uploading' && !slotProps.readonly" round dense flat :icon="$q.iconSet.uploader[file.__status === 'uploaded' ? 'done' : 'clear']" 
 	                    @click="slotProps.removeFile(file)">
 	                       <q-tooltip>{{$q.lang.vui.uploader[file.__status === 'uploaded' ? 'remove' : 'clear']}}</q-tooltip>
-	                    </q-btn>                      
+	                    </q-btn>
+						<q-btn v-if="slotProps.readonly" round dense flat icon="file_download"  th:@click="|goTo('${url}' + '/download/' + file.fileUri)|" ></q-btn>                     
 	                </div>
 	            </div>
             </template>   

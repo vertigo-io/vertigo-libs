@@ -105,7 +105,9 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		final Instant lastModified = getValue(fileInfoDto, DtoFields.lastModified, Instant.class);
 		final Long length = getValue(fileInfoDto, DtoFields.length, Long.class);
 		final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, inputStreamBuilder);
-		return new DatabaseFileInfo(uri.getDefinition(), vFile);
+		final DatabaseFileInfo dataFileInfo = new DatabaseFileInfo(uri.getDefinition(), vFile);
+		dataFileInfo.setURIStored(uri);
+		return dataFileInfo;
 	}
 
 	/** {@inheritDoc} */

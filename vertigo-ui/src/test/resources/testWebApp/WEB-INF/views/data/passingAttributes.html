@@ -25,6 +25,7 @@
                         <vu:text-field-read object="movie" field="movId" :anotherAttr="$q.screen.md"/>
                         <vu:text-field @myEvent="test();" object="movie" field="movId"/>
                         <vu:text-field input_@myEvent="test();" object="movie" field="movId"/>
+                        <vu:date object="movie" field="released" date_:options="function(date) {return date >= '2021/08/01' && date <= '2021/08/15'}"/>
                        
                     </vu:grid>
                 </vu:block>             
