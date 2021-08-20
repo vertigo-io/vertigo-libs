@@ -547,17 +547,6 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			final Map<String, Object> bodyParameter = new LinkedHashMap<>();
 			bodyParameter.put(webServiceParam.getName(), createSchemaObject(webServiceParam.getGenericType(), webServiceParam.getIncludedFields(), webServiceParam.getExcludedFields()));
 			parameter.put(SCHEMA, bodyParameter);
-		} else if (webServiceParam.getParamType() == WebServiceParamType.Query) {
-			//if query is a BasicTypeAdapter we use basicType (can't split queryparam object here, should use pseudoWebServiceParam)
-			Class paramClass = webServiceParam.getType();
-			if (jsonTypeAdapters.containsKey(paramClass)) {
-				paramClass = jsonTypeAdapters.get(paramClass).getBasicType().getJavaClass();
-			}
-			final String[] typeAndFormat = toSwaggerType(paramClass);
-			parameter.put("type", typeAndFormat[0]);
-			if (typeAndFormat[1] != null) {
-				parameter.put("format", typeAndFormat[1]);
-			}
 		} else {
 			final String[] typeAndFormat = toSwaggerType(webServiceParam.getType());
 			parameter.put("type", typeAndFormat[0]);
@@ -569,7 +558,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		return parameter;
 	}
 
-	private static String[] toSwaggerType(final Class paramClass) {
+	private String[] toSwaggerType(final Class paramClass) {
 		if (String.class.isAssignableFrom(paramClass)) {
 			return new String[] { "string", null };
 		} else if (boolean.class.isAssignableFrom(paramClass) || Boolean.class.isAssignableFrom(paramClass)) {
@@ -591,6 +580,10 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		} else if (Collection.class.isAssignableFrom(paramClass)) {
 			return new String[] { "array", null };
 		} else {
+			//if query is a BasicTypeAdapter we use basicType
+			if (jsonTypeAdapters.containsKey(paramClass)) {
+				return toSwaggerType(jsonTypeAdapters.get(paramClass).getBasicType().getJavaClass());
+			}
 			return new String[] { "object", null };
 		}
 	}
