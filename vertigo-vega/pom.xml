@@ -51,6 +51,12 @@
 			<version>${vertigo.version}</version>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-azure-connector</artifactId> <!-- For io.vertigo.vega.impl.servlet.filter.authentication.aad.AbstractAzureAdDelegateAuthenticationHandler -->
+			<version>${vertigo.version}</version>
+			<optional>true</optional>
+		</dependency>
 		
         <dependency>
             <groupId>io.vertigo</groupId>
