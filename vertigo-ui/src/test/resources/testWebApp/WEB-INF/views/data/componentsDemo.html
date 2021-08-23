@@ -95,7 +95,7 @@
                         <vu:slider object="movie" field="year"  />
                         <vu:knob object="movie" field="year"/>
                         <vu:select object="movie" field="year" list="movies" />
-                        <vu:grid-cell col="lg-6">
+                        <vu:grid-cell col="lg-8">
                             <vu:text-area object="movie" field="title"/>
                         </vu:grid-cell>
                         <vu:date object="movie" field="released"/>
@@ -107,7 +107,7 @@
                         <vu:text-field object="movie" field="title" />
                         <vu:chips-autocomplete object="movie" field="tags" list="movies" staticData="false"/>
                         <vu:grid-cell/>
-                        <vu:grid-cell col="md-4">
+                        <vu:grid-cell col="1">
                             <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" @input="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
                             <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" 
                             :disabled="true || false"
