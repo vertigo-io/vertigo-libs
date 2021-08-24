@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -72,6 +73,11 @@ public class FileUploadController {
 		//Don't remove file now : it may be needed it user go back before saving
 		//obtainUiFileInfoListSession().remove(fileInfoUri);
 		return fileInfoUri; //if no return, you must get the response. Prefer to return old uri.
+	}
+
+	@GetMapping("/upload/download/{fileUri}")
+	public VFile loadFile(@PathVariable("fileUri") final FileInfoURI fileInfoUri) {
+		return supportServices.getFile(fileInfoUri).getVFile();
 	}
 
 	private static UiFileInfoList<FileInfo> obtainUiFileInfoListSession() {
