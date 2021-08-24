@@ -1,7 +1,6 @@
 package io.vertigo.vega.impl.servlet.filter.authentication.aad;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.Collections;
@@ -54,13 +53,13 @@ public abstract class AbstractAzureAdDelegateAuthenticationHandler implements De
 	private AzureAdConnector azureAdConnector;
 	private String redirectUri;
 
-	public void init(final AzureAdConnector azureAdConnector, final String redirectUri) {
+	public void init(final AzureAdConnector lazureAdConnector, final String lredirectUri) {
 		Assertion.check()
-				.isNotNull(azureAdConnector)
-				.isNotBlank(redirectUri);
+				.isNotNull(lazureAdConnector)
+				.isNotBlank(lredirectUri);
 		//---
-		this.azureAdConnector = azureAdConnector;
-		this.redirectUri = redirectUri;
+		this.azureAdConnector = lazureAdConnector;
+		this.redirectUri = lredirectUri;
 	}
 
 	@Override
@@ -243,9 +242,7 @@ public abstract class AbstractAzureAdDelegateAuthenticationHandler implements De
 		httpResponse.sendRedirect(authorizationCodeUrl);
 	}
 
-	private String getAuthorizationCodeUrl(final String claims, final String scope, final String registeredRedirectURL, final String state, final String nonce)
-			throws MalformedURLException {
-
+	private String getAuthorizationCodeUrl(final String claims, final String scope, final String registeredRedirectURL, final String state, final String nonce) {
 		final String updatedScopes = scope == null ? "" : scope;
 
 		final AuthorizationRequestUrlParameters parameters = AuthorizationRequestUrlParameters

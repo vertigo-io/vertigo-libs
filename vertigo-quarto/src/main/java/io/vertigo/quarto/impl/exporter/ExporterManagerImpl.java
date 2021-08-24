@@ -63,7 +63,7 @@ public final class ExporterManagerImpl implements ExporterManager {
 	 */
 	private ExporterPlugin getExporterPlugin(final ExportFormat exportFormat) {
 		Assertion.check().isNotNull(exportFormat);
-		//-----
+		//---
 		return exporterPlugins
 				.stream()
 				.filter(exporterPlugin -> exporterPlugin.accept(exportFormat))

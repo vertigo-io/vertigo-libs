@@ -92,20 +92,20 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 
 		metrics
 				.stream()
-				.filter(metric -> "entityCount".equals(metric.getName()))
-				.forEach(metric -> entityCounts.put(metric.getFeature(), metric.getValue()));
+				.filter(metric -> "entityCount".equals(metric.name()))
+				.forEach(metric -> entityCounts.put(metric.feature(), metric.value()));
 
 		final Map<String, Double> taskCounts = new HashMap<>();
 		metrics
 				.stream()
-				.filter(metric -> "definitionUsageInDao".equals(metric.getName()))
-				.forEach(metric -> taskCounts.put(metric.getFeature(), metric.getValue()));
+				.filter(metric -> "definitionUsageInDao".equals(metric.name()))
+				.forEach(metric -> taskCounts.put(metric.feature(), metric.value()));
 
 		final Map<String, Double> fieldCount = new HashMap<>();
 		metrics
 				.stream()
-				.filter(metric -> "definitionFieldCount".equals(metric.getName()))
-				.forEach(metric -> fieldCount.put(metric.getFeature(), metric.getValue()));
+				.filter(metric -> "definitionFieldCount".equals(metric.name()))
+				.forEach(metric -> fieldCount.put(metric.feature(), metric.value()));
 
 		final Collection<DtDefinition> dtDefinitions = Node.getNode().getDefinitionSpace().getAll(DtDefinition.class);
 		final List<EntityModel> entities = dtDefinitions
@@ -129,14 +129,14 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 
 		metrics
 				.stream()
-				.filter(metric -> "domainUsageInTasks".equals(metric.getName()))
-				.forEach(metric -> taskCount.put(metric.getFeature(), metric.getValue()));
+				.filter(metric -> "domainUsageInTasks".equals(metric.name()))
+				.forEach(metric -> taskCount.put(metric.feature(), metric.value()));
 
 		final Map<String, Double> dtDefinitionCount = new HashMap<>();
 		metrics
 				.stream()
-				.filter(metric -> "domainUsageInDtDefinitions".equals(metric.getName()))
-				.forEach(metric -> dtDefinitionCount.put(metric.getFeature(), metric.getValue()));
+				.filter(metric -> "domainUsageInDtDefinitions".equals(metric.name()))
+				.forEach(metric -> dtDefinitionCount.put(metric.feature(), metric.value()));
 
 		final Collection<SmartTypeDefinition> smartTypes = Node.getNode().getDefinitionSpace().getAll(SmartTypeDefinition.class);
 		final List<SmartTypeModel> smartTypeModels = smartTypes

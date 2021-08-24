@@ -52,7 +52,7 @@ public final class DataProviderImpl implements DataProvider {
 				.isNotNull(appNameOpt)
 				.isNotNull(timeSeriesManager);
 		//---
-		appName = appNameOpt.orElseGet(() -> Node.getNode().getNodeConfig().getAppName());
+		appName = appNameOpt.orElseGet(() -> Node.getNode().getNodeConfig().appName());
 		this.timeSeriesManager = timeSeriesManager;
 	}
 

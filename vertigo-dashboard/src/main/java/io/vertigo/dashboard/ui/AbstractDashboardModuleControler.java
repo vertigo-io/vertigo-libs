@@ -49,20 +49,20 @@ public abstract class AbstractDashboardModuleControler implements DashboardModul
 	}
 
 	private void initModuleModel(final Node node, final Map<String, Object> model, final String moduleName) {
-		final Set<String> modules = node.getNodeConfig().getModuleConfigs().stream().map(ModuleConfig::getName).collect(Collectors.toSet());
+		final Set<String> modules = node.getNodeConfig().moduleConfigs().stream().map(ModuleConfig::name).collect(Collectors.toSet());
 		//---
 		model.put("modules", modules);
 		//---
 		final List<HealthCheck> healthChecks = dataProvider.getHealthChecks();
 		final Map<String, List<HealthCheck>> healthChecksByFeature = healthChecks
 				.stream()
-				.filter(healthCheck -> moduleName.equals(healthCheck.getModule()))
-				.collect(Collectors.groupingBy(HealthCheck::getFeature, Collectors.toList()));
+				.filter(healthCheck -> moduleName.equals(healthCheck.module()))
+				.collect(Collectors.groupingBy(HealthCheck::feature, Collectors.toList()));
 
 		final Set<String> features = healthChecks
 				.stream()
-				.filter(healthCheck -> moduleName.equals(healthCheck.getModule()))
-				.map(HealthCheck::getFeature)
+				.filter(healthCheck -> moduleName.equals(healthCheck.module()))
+				.map(HealthCheck::feature)
 				.collect(Collectors.toSet());
 
 		//---

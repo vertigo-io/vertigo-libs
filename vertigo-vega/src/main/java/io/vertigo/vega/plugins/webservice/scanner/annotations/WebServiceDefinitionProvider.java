@@ -47,7 +47,7 @@ public final class WebServiceDefinitionProvider implements SimpleDefinitionProvi
 		//-----
 		final List<Definition> webServiceDefinitions = new ArrayList<>();
 		for (final DefinitionResourceConfig definitionResourceConfig : definitionResourceConfigs) {
-			final String resourcePath = definitionResourceConfig.getPath();
+			final String resourcePath = definitionResourceConfig.path();
 			if (resourcePath.endsWith(".*")) {
 				scanAndAddPackage(resourcePath.substring(0, resourcePath.length() - ".*".length()), webServiceDefinitions);
 			} else {
@@ -79,7 +79,7 @@ public final class WebServiceDefinitionProvider implements SimpleDefinitionProvi
 	/** {@inheritDoc} */
 	@Override
 	public void addDefinitionResourceConfig(final DefinitionResourceConfig definitionResourceConfig) {
-		Assertion.check().isTrue("webservice".equals(definitionResourceConfig.getType()), "This DefinitionProvider Support only 'webservice' type (not {0})", definitionResourceConfig.getType());
+		Assertion.check().isTrue("webservice".equals(definitionResourceConfig.type()), "This DefinitionProvider Support only 'webservice' type (not {0})", definitionResourceConfig.type());
 		//-----
 		definitionResourceConfigs.add(definitionResourceConfig);
 	}
