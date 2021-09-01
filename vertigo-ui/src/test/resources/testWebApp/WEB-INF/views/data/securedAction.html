@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+  xmlns:vu="https://vertigo.io/thymeleaf/vertigo-ui"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{templates/mmcLayout}"
+>
+
+<head>
+    <title>Secured Action Movie Detail</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+            <vu:form>
+                <vu:grid cols="3">
+                    <vu:text-field object="movie" field="movId"/>
+                    <vu:text-field object="movie" field="title" />
+                    <vu:text-field object="movie" field="year" />
+                    <vu:grid-cell>
+                        <vu:button-submit id="saveAction" th:if="${model.modeEdit}"  label="Save" action="@{_save}" color="primary" />
+                    </vu:grid-cell>
+                </vu:grid>
+            </vu:form>
+    </div>
+</body>
+</html>

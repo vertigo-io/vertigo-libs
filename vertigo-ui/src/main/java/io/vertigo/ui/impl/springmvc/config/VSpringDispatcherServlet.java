@@ -51,16 +51,23 @@ public class VSpringDispatcherServlet extends DispatcherServlet {
 				final RequestMapping beanRequestMapping = AnnotatedElementUtils.findMergedAnnotation(handlerMethod.getBeanType(), RequestMapping.class);
 				final RequestMapping methodRequestMapping = AnnotatedElementUtils.findMergedAnnotation(handlerMethod.getMethod(), RequestMapping.class);
 				final String path = beanRequestMapping.path()[0] + methodRequestMapping.path()[0];
-				getAnalyticsManager().trace(
-						"page",
-						path,
-						tracer -> {
-							try {
-								super.doDispatch(request, response);
-							} catch (final Exception e) {
-								throw WrappedException.wrap(e);
-							}
-						});
+				try {
+					getAnalyticsManager().trace(
+							"page",
+							path,
+							tracer -> {
+								try {
+									super.doDispatch(request, response);
+								} catch (final Exception e) {
+									throw WrappedException.wrap(e);
+								}
+							});
+				} catch (final WrappedException e) {
+					if (e.getCause() instanceof Exception) {
+						throw (Exception) e.unwrap();
+					}
+					throw e;
+				}
 			} else {
 				super.doDispatch(request, response);
 			}

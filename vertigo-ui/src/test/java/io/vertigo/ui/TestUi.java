@@ -270,6 +270,28 @@ public class TestUi {
 		assertEquals("Previous file : insee.csv (application/octet-stream)", findElement(By.id("uploadFile")).getText());
 	}
 
+	@Test
+	public void testSecuredController() throws InterruptedException {
+		driver.get(baseUrl + "/test/securedMovie/");
+
+		assertTrue(waitElement(By.xpath("/html/body/table/tbody/tr[3]/td")).getText().contains("Not enought authorizations"));
+		assertTrue(waitElement(By.xpath("/html/body/table/tbody/tr[2]/td")).getText().contains("403"));
+
+	}
+
+	@Test
+	public void testSecuredActionController() throws InterruptedException {
+		driver.get(baseUrl + "/test/securedActionMovie/");
+
+		assertEquals("Secured Action Movie Detail", driver.getTitle());
+
+		findElement(By.id("saveAction")).click();
+		Thread.sleep(5000);
+		assertTrue(waitElement(By.xpath("/html/body/table/tbody/tr[3]/td")).getText().contains("Not enought authorizations"));
+		assertTrue(waitElement(By.xpath("/html/body/table/tbody/tr[2]/td")).getText().contains("403"));
+
+	}
+
 	private static final String JS_SEND_FILE = "var targetName = arguments[0],"
 			+ "myFile = arguments[1];" +
 			"    VUiPage.$refs[targetName].addFiles(myFile.files);";

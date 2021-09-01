@@ -64,34 +64,42 @@ public final class VSpringMvcControllerAdvice {
 	@ModelAttribute
 	public void mapRequestParams(@ModelAttribute("model") final ViewContextMap viewContextMap, final Model model) {
 		// just use springMVC value mapper
-
 	}
 
 	@ResponseBody
 	@ExceptionHandler(SessionException.class)
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	public static Object handleSessionException(final SessionException ex, final HttpServletRequest request) throws Throwable {
-		return handleThrowable(ex, request);
+		return handleThrowable(ex, request, false); //don't throw Ex here
 	}
 
 	@ResponseBody
 	@ExceptionHandler(VSecurityException.class)
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	public static Object handleSessionException(final VSecurityException ex, final HttpServletRequest request) throws Throwable {
-		return handleThrowable(ex, request);
+		return handleThrowable(ex, request, false); //don't throw Ex here
 	}
 
 	@ResponseBody
 	@ExceptionHandler(Throwable.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public static Object handleThrowable(final Throwable th, final HttpServletRequest request) throws Throwable {
+		return handleThrowable(th, request, true);
+	}
+
+	private static Object handleThrowable(final Throwable th, final HttpServletRequest request, final boolean throwException) throws Throwable {
 		if (UiRequestUtil.isJsonRequest(request)) {
 			final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 			final String exceptionMessage = th.getMessage() != null ? th.getMessage() : th.getClass().getSimpleName();
 			uiMessageStack.addGlobalMessage(Level.ERROR, exceptionMessage);
 			return uiMessageStack;
 		}
-		throw th;
+		if (throwException) {
+			throw th;
+		}
+		//final String exceptionMessage = th.getMessage() != null ? th.getMessage() : th.getClass().getSimpleName();
+
+		return null;//new ResponseEntity(th, HttpStatus.FORBIDDEN);
 	}
 
 	@ResponseBody

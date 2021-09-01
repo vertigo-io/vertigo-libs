@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -58,6 +59,9 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 
 				final AuthorizationName[] authorizationNames = Arrays.stream(secured.value()).map(value -> (AuthorizationName) () -> Authorization.PREFIX + value).toArray(AuthorizationName[]::new);
 				if (!getAuthorizationManager().hasAuthorization(authorizationNames)) {
+					//TODO exception should be enought
+					response.sendError(HttpStatus.FORBIDDEN.value(), "Not enought authorizations");
+					//throw new ServletException(new VSecurityException(MessageText.of("Not enought authorizations")));//no too sharp info here : may use log
 					throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log
 				}
 
