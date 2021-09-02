@@ -20,6 +20,7 @@ package io.vertigo.ui.impl.springmvc.controller;
 import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -69,14 +70,16 @@ public final class VSpringMvcControllerAdvice {
 	@ResponseBody
 	@ExceptionHandler(SessionException.class)
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
-	public static Object handleSessionException(final SessionException ex, final HttpServletRequest request) throws Throwable {
+	public static Object handleSessionException(final SessionException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
+		response.sendError(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
 		return handleThrowable(ex, request, false); //don't throw Ex here
 	}
 
 	@ResponseBody
 	@ExceptionHandler(VSecurityException.class)
 	@ResponseStatus(HttpStatus.FORBIDDEN)
-	public static Object handleSessionException(final VSecurityException ex, final HttpServletRequest request) throws Throwable {
+	public static Object handleSessionException(final VSecurityException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
+		response.sendError(HttpStatus.FORBIDDEN.value(), ex.getMessage());
 		return handleThrowable(ex, request, false); //don't throw Ex here
 	}
 
