@@ -103,7 +103,7 @@ public final class IndexType {
 				parsedIndexType.put(INDEX_SUB_KEYWORD_KEY, indexTypeParam.startsWith(INDEX_SORTABLE));
 				if (indexTypeParam.indexOf('(') > 0) {
 					Assertion.check().isTrue(indexTypeParam.indexOf('(') == INDEX_SORTABLE.length() && indexTypeParam.indexOf(')') == indexTypeParam.length() - 1, INDEX_TYPE_ERROR_MSG, indexType);
-					final String keywordNormalizer = indexTypeParam.substring(INDEX_SORTABLE.length() + 1, indexTypeParam.length() - 2);
+					final String keywordNormalizer = indexTypeParam.substring(INDEX_SORTABLE.length() + 1, indexTypeParam.length() - 1);
 					parsedIndexType.put(INDEX_SUB_KEYWORD_NORMALIZER_KEY, keywordNormalizer);
 				}
 			} else if (INDEX_FACETABLE.equals(indexTypeParam) || INDEX_NOT_FACETABLE.equals(indexTypeParam)) {
