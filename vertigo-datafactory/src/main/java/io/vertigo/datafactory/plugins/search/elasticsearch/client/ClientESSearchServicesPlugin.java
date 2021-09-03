@@ -405,7 +405,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 					typeMapping.startObject("keyword");
 					typeMapping.field("type", "keyword");
 					if (sortableNormalizer) {
-						typeMapping.field("normalizer", "sortable");
+						typeMapping.field("normalizer", indexType.getSortableNormalizer());
 					}
 					typeMapping.endObject();
 					typeMapping.endObject();

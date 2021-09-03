@@ -32,10 +32,13 @@ public final class IndexType {
 	private static final String INDEX_DATA_TYPE_KEY = "indexDataType";
 	private static final String INDEX_STORED_KEY = "indexStored";
 	private static final String INDEX_SUB_KEYWORD_KEY = "indexSubKeyword";
+	private static final String INDEX_SUB_KEYWORD_NORMALIZER_KEY = "indexSubKeywordNormalizer";
 	private static final String INDEX_FIELD_DATA_KEY = "indexFieldData";
 
+	private static final String DEFAULT_SUBKEYWORD_NORMALIZER = "sortable";
+
 	private static final String INDEX_TYPE_ERROR_MSG = "indexType ({0}) should respect this usage : indexType : "
-			+ "\"myAnalyzer\\{:myDataType\\}\\{:stored|notStored\\}\\{:sortable|notSortable\\}\\{:facetable|notFacetable\\}\"";
+			+ "\"myAnalyzer\\{:myDataType\\}\\{:stored|notStored\\}\\{:sortable\\{(mySortNormalizer)\\}|notSortable\\}\\{:facetable|notFacetable\\}\"";
 	private static final String INDEX_STORED = "stored";
 	private static final String INDEX_NOT_STORED = "notStored";
 	private static final String INDEX_SORTABLE = "sortable";
@@ -46,6 +49,7 @@ public final class IndexType {
 	private final String indexDataType;
 	private final boolean indexStored;
 	private final boolean indexSubKeyword;
+	private final String indexSubKeywordNormalizer;
 	private final boolean indexFieldData;
 
 	private IndexType(final String indexType, final SmartTypeDefinition smartTypeDefinition) {
@@ -58,6 +62,7 @@ public final class IndexType {
 			indexDataType = obtainDefaultIndexDataType(smartTypeDefinition);
 			indexStored = true;
 			indexSubKeyword = false;
+			indexSubKeywordNormalizer = DEFAULT_SUBKEYWORD_NORMALIZER;
 			indexFieldData = false;
 		} else {
 			// par convention l'indexType du smartType => l'analyzer de l'index
@@ -69,6 +74,7 @@ public final class IndexType {
 				indexDataType = obtainDefaultIndexDataType(smartTypeDefinition);
 				indexStored = true;
 				indexSubKeyword = false;
+				indexSubKeywordNormalizer = DEFAULT_SUBKEYWORD_NORMALIZER;
 				indexFieldData = false;
 			} else {
 				final Map<String, Object> parsedIndexType = parseIndexType(indexTypeArray, indexType);
@@ -76,6 +82,7 @@ public final class IndexType {
 				indexDataType = (String) parsedIndexType.getOrDefault(INDEX_DATA_TYPE_KEY, obtainDefaultIndexDataType(smartTypeDefinition));
 				indexStored = (boolean) parsedIndexType.getOrDefault(INDEX_STORED_KEY, true);
 				indexSubKeyword = (boolean) parsedIndexType.getOrDefault(INDEX_SUB_KEYWORD_KEY, false);
+				indexSubKeywordNormalizer = (String) parsedIndexType.getOrDefault(INDEX_SUB_KEYWORD_NORMALIZER_KEY, DEFAULT_SUBKEYWORD_NORMALIZER);
 				indexFieldData = (boolean) parsedIndexType.getOrDefault(INDEX_FIELD_DATA_KEY, false);
 
 			}
@@ -91,9 +98,14 @@ public final class IndexType {
 			if (INDEX_STORED.equals(indexTypeParam) || INDEX_NOT_STORED.equals(indexTypeParam)) {
 				Assertion.check().isFalse(parsedIndexType.containsKey(INDEX_STORED_KEY), INDEX_TYPE_ERROR_MSG, indexType);
 				parsedIndexType.put(INDEX_STORED_KEY, INDEX_STORED.equals(indexTypeParam));
-			} else if (INDEX_SORTABLE.equals(indexTypeParam) || INDEX_NOT_SORTABLE.equals(indexTypeParam)) {
+			} else if (indexTypeParam.startsWith(INDEX_SORTABLE) || INDEX_NOT_SORTABLE.equals(indexTypeParam)) {
 				Assertion.check().isFalse(parsedIndexType.containsKey(INDEX_SUB_KEYWORD_KEY), INDEX_TYPE_ERROR_MSG, indexType);
-				parsedIndexType.put(INDEX_SUB_KEYWORD_KEY, INDEX_SORTABLE.equals(indexTypeParam));
+				parsedIndexType.put(INDEX_SUB_KEYWORD_KEY, indexTypeParam.startsWith(INDEX_SORTABLE));
+				if (indexTypeParam.indexOf('(') > 0) {
+					Assertion.check().isTrue(indexTypeParam.indexOf('(') == INDEX_SORTABLE.length() && indexTypeParam.indexOf(')') == indexTypeParam.length() - 1, INDEX_TYPE_ERROR_MSG, indexType);
+					final String keywordNormalizer = indexTypeParam.substring(INDEX_SORTABLE.length() + 1, indexTypeParam.length() - 2);
+					parsedIndexType.put(INDEX_SUB_KEYWORD_NORMALIZER_KEY, keywordNormalizer);
+				}
 			} else if (INDEX_FACETABLE.equals(indexTypeParam) || INDEX_NOT_FACETABLE.equals(indexTypeParam)) {
 				Assertion.check().isFalse(parsedIndexType.containsKey(INDEX_FIELD_DATA_KEY), INDEX_TYPE_ERROR_MSG, indexType);
 				parsedIndexType.put(INDEX_FIELD_DATA_KEY, INDEX_FACETABLE.equals(indexTypeParam));
@@ -194,6 +206,10 @@ public final class IndexType {
 
 	public boolean isIndexSubKeyword() {
 		return indexSubKeyword;
+	}
+
+	public String getSortableNormalizer() {
+		return indexSubKeywordNormalizer;
 	}
 
 	public boolean isIndexFieldData() {
