@@ -42,11 +42,11 @@ public final class Car implements Entity {
 	private Long id;
 	@Field(smartType = "STyKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
 	private String manufacturer;
-	@Field(smartType = "STyFullText", cardinality = Cardinality.ONE, label = "ModÃ¨le")
+	@Field(smartType = "STyFullText", cardinality = Cardinality.ONE, label = "Modèle")
 	private String model;
 	@Field(smartType = "STyFullText", cardinality = Cardinality.ONE, label = "Descriptif")
 	private String description;
-	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "AnnÃ©e")
+	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Année")
 	private Integer year;
 	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Kilométrage")
 	private Integer kilo;
@@ -144,7 +144,7 @@ public final class Car implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'ModÃ¨le'.
+	 * Récupère la valeur de la propriété 'Modèle'.
 	 * @return String model <b>Obligatoire</b>
 	 */
 	public String getModel() {
@@ -153,7 +153,7 @@ public final class Car implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'ModÃ¨le'.
+	 * Définit la valeur de la propriété 'Modèle'.
 	 * @param model String <b>Obligatoire</b>
 	 */
 	public void setModel(final String model) {
@@ -180,7 +180,7 @@ public final class Car implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'AnnÃ©e'.
+	 * Récupère la valeur de la propriété 'Année'.
 	 * @return Integer year <b>Obligatoire</b>
 	 */
 	public Integer getYear() {
@@ -189,7 +189,7 @@ public final class Car implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'AnnÃ©e'.
+	 * Définit la valeur de la propriété 'Année'.
 	 * @param year Integer <b>Obligatoire</b>
 	 */
 	public void setYear(final Integer year) {
@@ -198,7 +198,7 @@ public final class Car implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'KilomÃ©trage'.
+	 * Récupère la valeur de la propriété 'Kilométrage'.
 	 * @return Integer kilo <b>Obligatoire</b>
 	 */
 	public Integer getKilo() {
@@ -207,7 +207,7 @@ public final class Car implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'KilomÃ©trage'.
+	 * Définit la valeur de la propriété 'Kilométrage'.
 	 * @param kilo Integer <b>Obligatoire</b>
 	 */
 	public void setKilo(final Integer kilo) {
