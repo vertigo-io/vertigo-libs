@@ -34,7 +34,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 @Controller
 @RequestMapping("/securedMovie")
-@Secured("AtzNoRights")
+@Secured("NoRights")
 public class SecuredController extends AbstractVSpringMvcController {
 
 	private static final ViewContextKey<Long> movIdKey = ViewContextKey.of("movId");

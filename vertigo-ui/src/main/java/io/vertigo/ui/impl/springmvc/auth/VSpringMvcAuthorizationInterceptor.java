@@ -56,7 +56,12 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 			if (secured != null) { //this method is secured
 				Assertion.check().isTrue(AbstractVSpringMvcController.class.isAssignableFrom(handlerMethod.getBeanType()), "Secured annotation must be used with VSpringMvcController or with Services. Can't secured {0}", handlerMethod.getBeanType().getSimpleName());
 
-				final AuthorizationName[] authorizationNames = Arrays.stream(secured.value()).map(value -> (AuthorizationName) () -> Authorization.PREFIX + value).toArray(AuthorizationName[]::new);
+				final AuthorizationName[] authorizationNames = Arrays.stream(secured.value())
+						.map(value -> {
+							Assertion.check().isFalse(value.startsWith(Authorization.PREFIX), "Secured annotations must use unprefixed AuthorizationName, can't use {0} (you should remove the '{1}' prefix) ", value, Authorization.PREFIX);
+							return (AuthorizationName) () -> Authorization.PREFIX + value;
+						})
+						.toArray(AuthorizationName[]::new);
 				if (!getAuthorizationManager().hasAuthorization(authorizationNames)) {
 					throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log
 				}

@@ -51,7 +51,7 @@ public class SecuredActionController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/_save")
-	@Secured("AtzNoRights")
+	@Secured("NoRights")
 	public void doSave(@ViewAttribute("movie") final Movie movieDtObject, final UiMessageStack uiMessageStack) {
 		System.out.println("Save done : " + movieDtObject.getMovId());
 		uiMessageStack.info("Save done : " + movieDtObject.getMovId());
