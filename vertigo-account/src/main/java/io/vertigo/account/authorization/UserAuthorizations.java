@@ -122,14 +122,21 @@ public final class UserAuthorizations implements Serializable {
 	public UserAuthorizations addAuthorization(final Authorization authorization) {
 		Assertion.check().isNotNull(authorization);
 		//-----
-		authorizationRefs.put(authorization.getName(), new DefinitionReference<>(authorization));
+		final DefinitionReference<Authorization> definitionReference = new DefinitionReference<>(authorization);
+		authorizationRefs.put(authorization.getName(), definitionReference);
+
 		if (authorization.getEntityDefinition().isPresent()) {
 			authorizationMapRefs.computeIfAbsent(new DefinitionReference<>(authorization.getEntityDefinition().get()), key -> new HashSet<>())
-					.add(new DefinitionReference<>(authorization));
+					.add(definitionReference);
 			for (final Authorization grantedAuthorization : authorization.getGrants()) {
 				if (!hasAuthorization(grantedAuthorization::getName)) { //On test pour ne pas créer de boucle
 					addAuthorization(grantedAuthorization);
 				}
+			}
+			//on ajoute pas vraiment les overrides, car on a juste ajouter un nom d'opération pour la rule de l'authorization actuelle
+			final String authorizationPrefix = Authorization.PREFIX + authorization.getEntityDefinition().get().getLocalName() + '$';
+			for (final String overridedAuthorization : authorization.getOverrides()) {
+				authorizationRefs.put(authorizationPrefix + overridedAuthorization, definitionReference);
 			}
 		}
 		return this;
