@@ -53,12 +53,17 @@ import io.vertigo.datamodel.structure.definitions.DtField;
  */
 public final class SecuredEntityDeserializer implements JsonDeserializer<SecuredEntity> {
 
+	private static final Set<String> SECURED_ENTITY_SUPPORTED_ATTRIBUTES = Set.of("entity", "securityFields", "securityDimensions", "operations", "__comment");
+	private static final Set<String> OPERATIONS_SUPPORTED_ATTRIBUTES = Set.of("name", "label", "grants", "overrides", "rules", "__comment");
+
 	/** {@inheritDoc} */
 	@Override
 	public SecuredEntity deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 		final JsonObject jsonSecuredEntity = json.getAsJsonObject();
 		final DtDefinition entityDefinition = findDtDefinition(jsonSecuredEntity.get("entity").getAsString());
-
+		//----
+		asserUnsupportedAttributes("SecuredEntity " + entityDefinition.getClassSimpleName(), jsonSecuredEntity, SECURED_ENTITY_SUPPORTED_ATTRIBUTES);
+		//----
 		final List<DtField> securityFields = new ArrayList<>();
 		for (final JsonElement securityField : jsonSecuredEntity.get("securityFields").getAsJsonArray()) {
 			securityFields.add(deserializeDtField(entityDefinition, securityField.getAsString()));
@@ -86,7 +91,11 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 			final JsonDeserializationContext context,
 			final Map<String, Authorization> permissionPerOperations) {
 		final String code = operation.get("name").getAsString();
+		//----
+		asserUnsupportedAttributes("Operation " + code, operation, OPERATIONS_SUPPORTED_ATTRIBUTES);
+		//----
 		final String label = operation.get("label").getAsString();
+
 		final Optional<String> comment = Optional.ofNullable(operation.get("__comment"))
 				.map(JsonElement::getAsString);
 
@@ -94,15 +103,8 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		if (overrides == null) {
 			overrides = Collections.emptySet();
 		}
-		final Set<Authorization> grants;
-		final Set<String> strGrants = context.deserialize(operation.get("grants"), createParameterizedType(Set.class, String.class));
-		if (strGrants == null) {
-			grants = Collections.emptySet();
-		} else {
-			grants = strGrants.stream()
-					.map((strGrant) -> resolvePermission(strGrant, permissionPerOperations, entityDefinition))
-					.collect(Collectors.toSet());
-		}
+		final Set<Authorization> grants = resolveAuthorizations(context.deserialize(operation.get("grants"), createParameterizedType(Set.class, String.class)),
+				permissionPerOperations, entityDefinition);
 
 		final List<RuleMultiExpression> rules;
 		final List<String> strRules = context.deserialize(operation.get("rules"), createParameterizedType(List.class, String.class));
@@ -114,6 +116,26 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 			rules = Collections.emptyList(); //if empty -> always true
 		}
 		return new Authorization(code, label, overrides, grants, entityDefinition, rules, comment);
+	}
+
+	private static void asserUnsupportedAttributes(final String objectName, final JsonObject jsonObject, final Set<String> supportedAttributes) {
+		final Set<String> unsupportedAttributes = jsonObject.entrySet().stream()
+				.map(e -> e.getKey())
+				.collect(Collectors.toSet());
+		unsupportedAttributes.removeAll(supportedAttributes);
+		Assertion.check().isTrue(unsupportedAttributes.isEmpty(), "Json declaration of {0} can't support some attribut(s) : {1}. You may use one of {2}", objectName, unsupportedAttributes, supportedAttributes);
+	}
+
+	private static Set<Authorization> resolveAuthorizations(final Set<String> authorizationNames, final Map<String, Authorization> permissionPerOperations, final DtDefinition entityDefinition) {
+		final Set<Authorization> authorizations;
+		if (authorizationNames == null) {
+			authorizations = Collections.emptySet();
+		} else {
+			authorizations = authorizationNames.stream()
+					.map((authorizationName) -> resolvePermission(authorizationName, permissionPerOperations, entityDefinition))
+					.collect(Collectors.toSet());
+		}
+		return authorizations;
 	}
 
 	private static Authorization resolvePermission(final String operationName, final Map<String, Authorization> permissionPerOperations, final DtDefinition entityDefinition) {
