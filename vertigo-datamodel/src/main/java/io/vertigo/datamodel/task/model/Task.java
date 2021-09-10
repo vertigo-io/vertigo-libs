@@ -116,6 +116,15 @@ public final class Task {
 	}
 
 	/**
+	 * Return the properties in the execution context of the task
+	 *
+	 * @return context properties
+	 */
+	public Map<String, String> getContextProperties() {
+		return context; //context already unmodifiable by builder
+	}
+
+	/**
 	 * @return Définition de la task.
 	 */
 	public TaskDefinition getDefinition() {

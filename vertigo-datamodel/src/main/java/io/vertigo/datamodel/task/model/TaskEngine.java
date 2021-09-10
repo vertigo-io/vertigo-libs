@@ -17,6 +17,8 @@
  */
 package io.vertigo.datamodel.task.model;
 
+import java.util.Map;
+
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
 
@@ -77,6 +79,15 @@ public abstract class TaskEngine {
 	 */
 	public String getContextProperty(final String contextParam) {
 		return input.getContextProperty(contextParam);
+	}
+
+	/**
+	 * Return the properties in the execution context of the task
+	 *
+	 * @return context properties
+	 */
+	public Map<String, String> getContextProperties() {
+		return input.getContextProperties();
 	}
 
 	/**
