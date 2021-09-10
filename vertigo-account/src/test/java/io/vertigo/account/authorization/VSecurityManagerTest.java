@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import javax.inject.Inject;
@@ -690,10 +691,11 @@ public final class VSecurityManagerTest {
 		return definitionSpace.resolve(authorizationName.name(), Authorization.class);
 	}
 
-	private void assertEqualsUnordered(final List<String> expected, final List<String> actual) {
+	private void assertEqualsUnordered(final List<String> expected, final Set<String> actualSet) {
+		final List<String> actualList = new ArrayList<>(actualSet);
 		final List<String> expectedList = new ArrayList<>(expected);
 		expectedList.sort(Comparator.naturalOrder());
-		actual.sort(Comparator.naturalOrder());
-		Assertions.assertLinesMatch(expectedList, actual);
+		actualList.sort(Comparator.naturalOrder());
+		Assertions.assertLinesMatch(expectedList, actualList);
 	}
 }
