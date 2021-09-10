@@ -91,6 +91,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 	@Override
 	public boolean hasAuthorization(final AuthorizationName... permissionNames) {
 		Assertion.check().isNotNull(permissionNames);
+		//may check authorizationNames exists to prevent badly names
 		//---
 		return getUserAuthorizationsOpt()
 				.map(userPermissions -> userPermissions.hasAuthorization(permissionNames))
@@ -105,7 +106,29 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		Assertion.check().isNotNull(entity)
 				.isNotNull(operationName);
 		//---
-		return getAuthorizedOperations(entity).contains(operationName.name());
+		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
+		if (userPermissionsOpt.isEmpty()) {
+			// Si il n'y a pas de session alors pas d'autorisation.
+			return false;
+		}
+		final UserAuthorizations userPermissions = userPermissionsOpt.get();
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
+		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
+		final Optional<Authorization> authorization = userPermissions.getEntityAuthorizations(dtDefinition).stream()
+				.filter(permission -> permission.getOperation().orElse("").equals(operationName.name())
+						|| permission.getOverrides().contains(operationName.name()))
+				.findFirst();
+		if (authorization.isEmpty()) {
+			// Si il n'y a pas d'authorization pour cette operation ou pour une authorization qui override
+			return false;
+		}
+		return authorization.get().getRules().stream()
+				.anyMatch(rule -> new CriteriaSecurityRuleTranslator<E>()
+						.on(securedEntity)
+						.withRule(rule)
+						.withSecurityKeys(userPermissions.getSecurityKeys())
+						.toCriteria()
+						.toPredicate().test(entity));
 	}
 
 	/** {@inheritDoc} */
@@ -114,6 +137,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		Assertion.check().isNotNull(entityClass)
 				.isNotNull(operation);
 		//---
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
 		if (userPermissionsOpt.isEmpty()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
@@ -121,7 +145,6 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		}
 
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
 		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
 
 		final List<Criteria<E>> criterions = userPermissions.getEntityAuthorizations(dtDefinition).stream()
@@ -131,7 +154,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 				.map(rule -> new CriteriaSecurityRuleTranslator<E>()
 						.on(securedEntity)
 						.withRule(rule)
-						.withCriteria(userPermissions.getSecurityKeys())
+						.withSecurityKeys(userPermissions.getSecurityKeys())
 						.toCriteria())
 				.collect(Collectors.toList());
 
@@ -170,7 +193,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
 		final SearchSecurityRuleTranslator securityRuleTranslator = new SearchSecurityRuleTranslator()
 				.on(securedEntity)
-				.withCriteria(userPermissions.getSecurityKeys());
+				.withSecurityKeys(userPermissions.getSecurityKeys());
 
 		final List<Authorization> permissions = userPermissions.getEntityAuthorizations(dtDefinition).stream()
 				.filter(permission -> permission.getOperation().get().equals(operationName.name()))
@@ -193,13 +216,13 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> List<String> getAuthorizedOperations(final E entity) {
+	public <E extends Entity> Set<String> getAuthorizedOperations(final E entity) {
 		Assertion.check().isNotNull(entity);
 		//---
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
 		if (userPermissionsOpt.isEmpty()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
-			return Collections.emptyList();
+			return Collections.emptySet();
 		}
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
@@ -210,11 +233,11 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 						.anyMatch(rule -> new CriteriaSecurityRuleTranslator<E>()
 								.on(securedEntity)
 								.withRule(rule)
-								.withCriteria(userPermissions.getSecurityKeys())
+								.withSecurityKeys(userPermissions.getSecurityKeys())
 								.toCriteria()
 								.toPredicate().test(entity)))
 				.flatMap(authorization -> Stream.concat(Stream.of(authorization.getOperation().get()), authorization.getOverrides().stream()))
-				.collect(Collectors.toList());
+				.collect(Collectors.toSet());
 	}
 
 	/**

@@ -17,7 +17,6 @@
  */
 package io.vertigo.account.authorization;
 
-import java.util.List;
 import java.util.Set;
 
 import io.vertigo.account.authorization.definitions.AuthorizationName;
@@ -98,6 +97,6 @@ public interface AuthorizationManager extends Manager {
 	 * @return operations list
 	 * @param <E> entity type
 	 */
-	<E extends Entity> List<String> getAuthorizedOperations(final E entity);
+	<E extends Entity> Set<String> getAuthorizedOperations(final E entity);
 
 }
