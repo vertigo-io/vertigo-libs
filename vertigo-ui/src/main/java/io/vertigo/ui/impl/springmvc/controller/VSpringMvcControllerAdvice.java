@@ -35,6 +35,7 @@ import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextMap;
+import io.vertigo.ui.impl.springmvc.util.UiAuthorizationUtil;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -57,6 +58,7 @@ public final class VSpringMvcControllerAdvice {
 			}
 		});
 		model.addAttribute("uiMessageStack", uiMessageStack);
+		model.addAttribute("authz", new UiAuthorizationUtil());
 		// here we can retrieve anything and put it into the model or in our context
 		// we can also use argument resolvers to retrieve attributes in our context for convenience (a DtObject or an UiObject can be retrieved as parameters
 		// easily from our vContext since we have access to the modelandviewContainer in a parameterResolver...)

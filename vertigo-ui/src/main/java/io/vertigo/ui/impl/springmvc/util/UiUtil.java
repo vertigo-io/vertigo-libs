@@ -26,7 +26,6 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -38,8 +37,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import io.vertigo.account.authorization.AuthorizationManager;
-import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.basics.formatter.FormatterDefault;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
@@ -434,15 +431,5 @@ public final class UiUtil implements Serializable {
 				.isNotNull(dtDefinition, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
 		return dtDefinition.getField(fieldName);
 
-	}
-
-	// ----------------- Security ---------------------------------
-
-	public static boolean hasAuthorization(final String... authorizationNames) {
-		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
-		return authorizationManager.hasAuthorization(
-				Arrays.stream(authorizationNames)
-						.map(authName -> (AuthorizationName) () -> "Atz" + authName)
-						.toArray(AuthorizationName[]::new));
 	}
 }
