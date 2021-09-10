@@ -199,7 +199,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 			inTaskAttributes.put(taskAttribute, getValue(taskAttribute.getName()));
 		}
 		//-----
-		final ScriptPreProcessor scriptPreProcessor = new ScriptPreProcessor(scriptManager, inTaskAttributes, SeparatorType.CLASSIC);
+		final ScriptPreProcessor scriptPreProcessor = new ScriptPreProcessor(scriptManager, inTaskAttributes, getContextProperties(), SeparatorType.CLASSIC);
 		final TrimPreProcessor trimPreProcessor = new TrimPreProcessor(SeparatorType.BEGIN_SEPARATOR_CLASSIC, SeparatorType.END_SEPARATOR_CLASSIC);
 		final WhereInPreProcessor whereInPreProcessor = new WhereInPreProcessor(inTaskAttributes);
 		//--
