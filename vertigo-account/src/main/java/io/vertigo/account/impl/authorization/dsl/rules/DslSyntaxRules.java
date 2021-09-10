@@ -57,7 +57,7 @@ final class DslSyntaxRules {
 	static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRule.Mode.REJECT, "WORD");
 
 	/** fixed word. */
-	static final PegRule<String> FIXED_WORD = PegRules.word(false, WHITE_SPACE + "]),", PegWordRule.Mode.REJECT, "!_");
+	static final PegRule<String> FIXED_WORD = PegRules.word(false, WHITE_SPACE + "]),=<>", PegWordRule.Mode.REJECT, "!_");
 
 	/** depth overflow. */
 	static final PegRule<?> DEPTH_OVERFLOW = new DepthOverflowRule();

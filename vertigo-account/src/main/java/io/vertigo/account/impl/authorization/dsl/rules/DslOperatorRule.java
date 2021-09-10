@@ -29,8 +29,10 @@ import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
 
 /**
- * Parsing rule for boolean operator.
+ * Parsing rule for operators
  * || or OR && and AND
+ * OR
+ * <= >= > < = !=
  * @author npiedeloup
  */
 final class DslOperatorRule<O extends RuleOperator> extends AbstractRule<O, List<Object>> {
