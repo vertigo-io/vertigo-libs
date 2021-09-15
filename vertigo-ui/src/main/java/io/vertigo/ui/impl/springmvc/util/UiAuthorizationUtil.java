@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import io.vertigo.account.authorization.AuthorizationManager;
 import io.vertigo.account.authorization.definitions.Authorization;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.vega.webservice.model.UiObject;
@@ -77,6 +78,8 @@ public final class UiAuthorizationUtil extends HashSet<String> {
 	}
 
 	public <E extends Entity> boolean hasOperation(final UiObject<E> uiObject, final String operationName) {
+		Assertion.check().isNotNull(uiObject, "UiObject not load in context (null), can't check operation {0}", operationName);
+		//----
 		final String operationKey = uiObject.getInputKey() + OPERATION_KEY_SEP + operationName;
 		if (cacheOperations.computeIfAbsent(operationKey, k -> computeHasOperation(uiObject, operationName, operationKey))) {
 			return true;
