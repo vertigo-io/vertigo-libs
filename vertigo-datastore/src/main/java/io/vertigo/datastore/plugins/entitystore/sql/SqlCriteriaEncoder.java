@@ -18,6 +18,7 @@
 package io.vertigo.datastore.plugins.entitystore.sql;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -140,7 +141,8 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 		Assertion.check().isTrue(
 				value instanceof String
 						|| value instanceof Integer
-						|| value instanceof Long,
+						|| value instanceof Long
+						|| value instanceof BigDecimal,
 				"Only String,Long and Integers are allowed in a where in clause.");
 		// we check to avoid sql injection without espacing and parametizing the statement
 		Assertion.check()
