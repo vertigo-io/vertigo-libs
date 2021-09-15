@@ -1,5 +1,6 @@
 package io.vertigo.account.authorization;
 
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -33,26 +34,27 @@ public class AuthorizationCriteria<E extends Entity> {
 		this.clazz = clazz;
 	}
 
-	public String asSqlWhere(final String alias, final String connectionName) {
+	public String asSqlWhere(final String alias, final Map<String, String> taskContext) {
 		Assertion.check()
-				.isNotBlank(connectionName, "You must pass 'connectionName', in your Task request, use implicit 'ctx_connectionName' parameter");
-		final SqlDialect sqlDialect = sqlManager.getConnectionProvider(connectionName).getDataBase().getSqlDialect();
+				.isNotNull(taskContext, "You must pass 'ctx', in your Task request, use implicit 'ctx' parameter");
+		final SqlDialect sqlDialect = sqlManager.getConnectionProvider(taskContext.getOrDefault("connectionName", SqlManager.MAIN_CONNECTION_PROVIDER_NAME))
+				.getDataBase().getSqlDialect();
 		final CriteriaEncoder criteriaEncoder = new SqlCriteriaEncoder(sqlDialect, Optional.ofNullable(alias), false);
 		final Tuple<String, CriteriaCtx> tuple = criteria.toStringAnCtx(criteriaEncoder);
 		return tuple.getVal1();
 	}
 
-	public String asSqlFrom(final String sqlEntityName, final String connectionName) {
+	public String asSqlFrom(final String sqlEntityName, final Map<String, String> taskContext) {
 		final String criteriaEntity = StringUtil.camelToConstCase(clazz.getSimpleName());
 		Assertion.check()
-				.isNotBlank(connectionName, "You must pass 'connectionName', in your Task request, use implicit 'ctx_connectionName' parameter")
+				.isNotNull(taskContext, "You must pass 'ctx', in your Task request, use implicit 'ctx' parameter")
 				.isNotBlank(sqlEntityName)
 				.isTrue(sqlEntityName.equalsIgnoreCase(criteriaEntity), "Sql Table ({0}) and the entity of the criteria ({1}) must be the same or compatible", sqlEntityName, criteriaEntity);
 
 		final StringBuilder securedFrom = new StringBuilder("select * from ")
 				.append(sqlEntityName)
 				.append(" where ")
-				.append(asSqlWhere(null, connectionName));
+				.append(asSqlWhere(null, taskContext));
 		return securedFrom.toString();
 	}
 

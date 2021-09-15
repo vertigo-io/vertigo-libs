@@ -38,7 +38,7 @@ import io.vertigo.datamodel.task.definitions.TaskAttribute;
  * @author  pchretien
  */
 final class ScriptPreProcessor {
-	private static final String CONTEXT_PROPERTY_PREFIX = "ctx_";
+	private static final String TASK_CONTEXT_NAME = "ctx";
 	private final ScriptManager scriptManager;
 	private final Map<TaskAttribute, Object> inTaskAttributes;
 	private final Map<String, String> contextProperties;
@@ -79,10 +79,8 @@ final class ScriptPreProcessor {
 			tmpParameters.add(scriptEvaluatorParameter);
 		}
 
-		//==========Initialisation des types et noms de paramètre==============
-		for (final Entry<String, String> entry : contextProperties.entrySet()) {
-			tmpParameters.add(ExpressionParameter.of(CONTEXT_PROPERTY_PREFIX + entry.getKey(), String.class, entry.getValue()));
-		}
+		//==========Initialisation du context==============
+		tmpParameters.add(ExpressionParameter.of(TASK_CONTEXT_NAME, Map.class, contextProperties));
 		return tmpParameters;
 
 	}
