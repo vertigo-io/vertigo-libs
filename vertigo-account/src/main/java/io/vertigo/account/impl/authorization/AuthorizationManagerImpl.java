@@ -180,6 +180,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		Assertion.check()
 				.isNotNull(entityClass)
 				.isNotNull(operationName);
+		//SearchSecurityFilter should check that index contains all security fields
 		//---
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
 		if (userPermissionsOpt.isEmpty()) {
@@ -196,7 +197,8 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 				.withSecurityKeys(userPermissions.getSecurityKeys());
 
 		final List<Authorization> permissions = userPermissions.getEntityAuthorizations(dtDefinition).stream()
-				.filter(permission -> permission.getOperation().get().equals(operationName.name()))
+				.filter(permission -> permission.getOperation().get().equals(operationName.name())
+						|| permission.getOverrides().contains(operationName.name()))
 				.collect(Collectors.toList());
 		for (final Authorization permission : permissions) {
 			for (final RuleMultiExpression ruleExpression : permission.getRules()) {

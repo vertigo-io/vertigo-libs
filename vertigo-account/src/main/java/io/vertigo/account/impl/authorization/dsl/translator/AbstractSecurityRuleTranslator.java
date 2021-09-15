@@ -37,7 +37,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	private static final Pattern BEGIN_LINE_TRIM_PATTERN = Pattern.compile("^\\s+");
 	private static final Pattern END_LINE_TRIM_PATTERN = Pattern.compile("\\s+$");
 	private static final Pattern MULTIPLE_WHITESPACE_PATTERN = Pattern.compile("\\s+");
-	protected static final Pattern EMPTY_QUERY_PATTERN = Pattern.compile("^\\(\\)$");
+	protected static final Pattern EMPTY_QUERY_PATTERN = Pattern.compile("^(\\(\\))?$");
 
 	private SecuredEntity mySecuredEntity;
 	private final List<RuleMultiExpression> myMultiExpressions = new ArrayList<>();
