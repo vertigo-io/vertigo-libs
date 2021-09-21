@@ -4,7 +4,7 @@
 	  myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, 
 	  myLabel=${label?:model.util.label(object + '.' + field)},
       required=${model.util.required(object + '.' + field)}">
-	<vu:include-data object="${object}" field="${field}"/>
+	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 	<vu:include-data object="${list}" field="${myValueField}"/>
 	<vu:include-data object="${list}" field="${myLabelField}"/>
 	<q-select

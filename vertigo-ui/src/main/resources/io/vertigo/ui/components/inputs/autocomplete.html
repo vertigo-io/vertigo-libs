@@ -8,7 +8,7 @@
       required=${model.util.required(object + '.' + field)}">
 	<th:block th:with="valueLabel=${value != null ? model.vContext[__${list}__].getById('__${myValueField}__', value)['__${myLabelField}__'] : ''}"
 		th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addList('options').add( { 'value' : value, 'label': valueLabel})}, objectKey1=${model.vContext['componentStates'].get(myComponentId).addPrimitive('loading', false)}" />
-	<vu:include-data object="${object}" field="${field}"/>
+	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 	<vu:include-data object="${list}" field="${myValueField}"/>
 	<vu:include-data object="${list}" field="${myLabelField}"/>
 	<q-select

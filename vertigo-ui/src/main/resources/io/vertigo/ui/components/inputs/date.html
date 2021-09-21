@@ -2,7 +2,7 @@
 		th:with="myLabel=${label?:model.util.label(object + '.' + field)}, myFormat=${format?:'DD/MM/YYYY'},
       required=${model.util.required(object + '.' + field)},myRef='date_'+${object} + '_' + ${field}"
 	  th:assert="${object} != null and ${field} != null">
-	<vu:include-data object="${object}" field="${field}"/>
+	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 	<q-input 
 		th:v-bind:value="|decodeDate(${model.util.vueDataKey(object, field, rowIndex)}, '${myFormat}')|" 
 		th:@change="|function (event) { ${model.util.vueDataKey(object, field, rowIndex)} = encodeDate(event.target.value, '${myFormat}') }|" 
