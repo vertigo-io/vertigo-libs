@@ -45,7 +45,7 @@ public final class DslSecurityRulesBuilderTest {
 				{ "(ALL=${query} || OTHER='VALID') && (ALL=${query} || OTHER='VALID')", "Test",
 						"(ALL=Test OR OTHER='VALID') AND (ALL=Test OR OTHER='VALID')",
 						"(+(ALL:Test OTHER:'VALID') +(ALL:Test OTHER:'VALID'))" }, //6
-				//{ "ALL>${query}", "'Test'", "ALL like 'Test' || '%'" }, //3
+				{ "ALL>${query}", "'Test'", "ALL>'Test'", "(+ALL:>'Test')" }, //7
 
 		};
 		testSearchAndSqlQuery(testQueries);
