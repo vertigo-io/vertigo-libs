@@ -11,6 +11,7 @@ import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 
 public final class AuthorizationUtil {
 	private static final MessageText DEFAULT_FORBIDDEN_MESSAGE = MessageText.ofDefaultMsg("Not enough authorizations", Resources.AUTHORIZATION_DEFAULT_FORBIDDEN_MESSAGE);
@@ -68,5 +69,16 @@ public final class AuthorizationUtil {
 		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
 		final Criteria<E> criteria = authorizationManager.getCriteriaSecurity(clazz, operation);
 		return new AuthorizationCriteria<>(criteria, clazz);
+	}
+
+	public static <E extends Entity> void assertOperationsWithLoadIfNeeded(final StoreVAccessor<E> entityAccessor, final OperationName<E> operation) {
+		assertOperationsWithLoadIfNeeded(entityAccessor, operation, DEFAULT_FORBIDDEN_MESSAGE);
+	}
+
+	public static <E extends Entity> void assertOperationsWithLoadIfNeeded(final StoreVAccessor<E> entityAccessor, final OperationName<E> operation, final MessageText message) {
+		if (!entityAccessor.isLoaded()) {
+			entityAccessor.load();
+		}
+		assertOperations(entityAccessor.get(), operation, message);
 	}
 }
