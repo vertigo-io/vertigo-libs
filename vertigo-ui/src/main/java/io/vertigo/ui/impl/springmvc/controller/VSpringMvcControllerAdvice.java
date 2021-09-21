@@ -50,6 +50,7 @@ public final class VSpringMvcControllerAdvice {
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
 		final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 		//---
+		viewContext.asMap().viewContextUpdateSecurity().setCheckUpdates(true);
 		model.addAttribute("model", viewContext.asMap());
 		model.addAttribute("viewContextAsJson", new Supplier<String>() {
 			@Override
@@ -67,6 +68,7 @@ public final class VSpringMvcControllerAdvice {
 	@ModelAttribute
 	public void mapRequestParams(@ModelAttribute("model") final ViewContextMap viewContextMap, final Model model) {
 		// just use springMVC value mapper
+		viewContextMap.viewContextUpdateSecurity().setCheckUpdates(false);
 	}
 
 	@ResponseBody

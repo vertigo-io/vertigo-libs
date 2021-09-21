@@ -142,7 +142,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	public final UiObject<O> get(final int index) {
 		return uiObjectByIndex.computeIfAbsent(index, i -> {
 			Assertion.check().isTrue(uiObjectByIndex.size() < 1000, "Trop d'élément dans le buffer uiObjectByIndex de la liste de {0}", getDtDefinition().getName());
-			return new MapUiObject<>(obtainDtList().get(i));
+			return new MapUiObject<>(obtainDtList().get(i), ViewContextUpdateSecurity.unmodifiable());
 		});
 	}
 
@@ -212,7 +212,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		Assertion.check().isTrue(dtField.getType().isId(), "La clé {0} de la liste doit être la PK", keyFieldName);
 
 		final O entity = (O) loadDto(keyValue);
-		uiObject = new MapUiObject<>(entity);
+		uiObject = new MapUiObject<>(entity, ViewContextUpdateSecurity.unmodifiable());
 		uiObjectById.put(keyValue, uiObject);
 		Assertion.check().isTrue(uiObjectById.size() < NB_MAX_ELEMENTS, "Trop d'élément dans le buffer uiObjectById de la liste de {0}", getDtDefinition().getName());
 		return uiObject;

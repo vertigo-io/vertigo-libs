@@ -32,15 +32,16 @@ import io.vertigo.vega.webservice.model.UiObject;
 public class BasicUiListModifiable<D extends DtObject> extends AbstractUiListModifiable<D> {
 
 	private static final long serialVersionUID = -6612061761970992295L;
+	private final ViewContextUpdateSecurity viewContextUpdateSecurity;
 
-	BasicUiListModifiable(final DtList<D> dtList, final String inputKey) {
+	BasicUiListModifiable(final DtList<D> dtList, final String inputKey, final ViewContextUpdateSecurity viewContextUpdateSecurity) {
 		super(dtList, inputKey);
-
+		this.viewContextUpdateSecurity = viewContextUpdateSecurity;
 	}
 
 	@Override
 	protected UiObject<D> createUiObject(final D dto) {
-		return new MapUiObject<>(dto);
+		return new MapUiObject<>(dto, viewContextUpdateSecurity);
 	}
 
 	public ArrayList<HashMap<String, Serializable>> listForClient(final Set<String> fieldsForClient, final Map<String, Function<Serializable, String>> valueTransformers) {

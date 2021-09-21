@@ -44,7 +44,7 @@ import io.vertigo.vega.engines.webservice.json.VegaUiObject;
 
 /**
  * Objet d'IHM, fournit les valeurs formatés des champs de l'objet métier sous-jacent.
- * Implements Map<String, Object> car struts poste des String[] que l'on reconverti en String (on prend le premier).
+ * Implements Map<String, Object> car Spring poste des String[] que l'on reconverti en String (on prend le premier).
  *
  * @author pchretien, npiedeloup
  * @param <D> Type de DtObject représenté par cet Input
@@ -54,12 +54,14 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	private static final String SMART_TYPE_MULTIPLE_IDS = "STyMultipleIds";
 	private static final String[] EMPTY_INPUT = new String[0];
 
+	private final ViewContextUpdateSecurity viewContextUpdateSecurity;
+
 	/**
 	 * Constructor.
 	 * @param serverSideDto DtObject
 	 */
-	public MapUiObject(final D serverSideDto) {
-		this(serverSideDto, (D) DtObjectUtil.createDtObject(DtObjectUtil.findDtDefinition(serverSideDto)), Collections.emptySet());
+	public MapUiObject(final D serverSideDto, final ViewContextUpdateSecurity viewContextUpdateSecurity) {
+		this(serverSideDto, (D) DtObjectUtil.createDtObject(DtObjectUtil.findDtDefinition(serverSideDto)), Collections.emptySet(), viewContextUpdateSecurity);
 	}
 
 	/**
@@ -68,8 +70,11 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	 * @param inputDto Input DtObject
 	 * @param modifiedFields List of modified fields
 	 */
-	public MapUiObject(final D serverSideDto, final D inputDto, final Set<String> modifiedFields) {
+	public MapUiObject(final D serverSideDto, final D inputDto, final Set<String> modifiedFields, final ViewContextUpdateSecurity viewContextUpdateSecurity) {
 		super(inputDto, modifiedFields);
+		Assertion.check().isNotNull(viewContextUpdateSecurity);
+		//----
+		this.viewContextUpdateSecurity = viewContextUpdateSecurity;
 		setServerSideObject(serverSideDto);
 	}
 
@@ -103,7 +108,9 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 				.isNotBlank(fieldName)
 				.isNotNull(value, "La valeur formatée ne doit pas être null mais vide ({0})", fieldName)
 				.isTrue(value instanceof String || value instanceof String[], "Les données saisies doivent être de type String ou String[] ({0} : {1})", fieldName, value.getClass());
-		//-----
+		//----
+		viewContextUpdateSecurity.assertIsUpdatable(getInputKey(), fieldName);
+		//----
 		final DtField dtField = getDtField(fieldName);
 		if (dtField.getCardinality().hasMany()) {
 			if (value instanceof String[]) {
