@@ -66,9 +66,10 @@ public final class VSpringMvcControllerAdvice {
 	}
 
 	@ModelAttribute
-	public void mapRequestParams(@ModelAttribute("model") final ViewContextMap viewContextMap, final Model model) {
+	public void mapRequestParams(@ModelAttribute("model") final ViewContextMap viewContextMap, final Model model, final HttpServletRequest request) {
 		// just use springMVC value mapper
 		viewContextMap.viewContextUpdateSecurity().setCheckUpdates(false);
+		viewContextMap.viewContextUpdateSecurity().assertAllowedFields(request.getParameterNames());
 	}
 
 	@ResponseBody

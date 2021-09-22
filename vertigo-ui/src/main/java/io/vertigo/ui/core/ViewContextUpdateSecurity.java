@@ -19,10 +19,12 @@ package io.vertigo.ui.core;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.locale.MessageText;
@@ -76,5 +78,29 @@ public final class ViewContextUpdateSecurity implements Serializable {
 
 	public void addUpdatableKey(final String object) {
 		updatablesKeys.computeIfAbsent(object, k -> Collections.emptySet());
+	}
+
+	public void assertAllowedFields(final Enumeration<String> parameterNames) {
+		final Set<String> allowedFields = getAllowedFieldsSet();
+		final boolean containsDisallowedField = Collections.list(parameterNames).stream()
+				.filter(n -> n.startsWith("vContext["))
+				.anyMatch(n -> !allowedFields.contains(n));
+		if (containsDisallowedField) {
+			throw new VSecurityException(FORBIDDEN_DATA_UPDATE_MESSAGE);
+		}
+	}
+
+	public String[] getAllowedFields() {
+		return getAllowedFieldsSet().toArray(s -> new String[s]);
+	}
+
+	private Set<String> getAllowedFieldsSet() {
+		final Set<String> allowedFields = new HashSet<>();
+		allowedFields.addAll(updatablesKeys.keySet());
+		allowedFields.addAll(updatablesKeys.entrySet().stream()
+				.filter(e -> !e.getValue().isEmpty())
+				.flatMap(e -> e.getValue().stream().map(v -> "vContext[" + e.getKey() + "][" + v + "]"))
+				.collect(Collectors.toSet()));
+		return allowedFields;
 	}
 }
