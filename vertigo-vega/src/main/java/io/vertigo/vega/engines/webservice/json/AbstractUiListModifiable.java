@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionReference;
@@ -70,6 +71,11 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	 * @param dtList Inner DtList
 	 */
 	protected AbstractUiListModifiable(final DtList<D> dtList, final String inputKey) {
+		this(dtList, inputKey, nop -> {
+		});
+	}
+
+	public <U extends AbstractUiListModifiable<D>> AbstractUiListModifiable(final DtList<D> dtList, final String inputKey, final Consumer<U> postInit) {
 		Assertion.check().isNotNull(dtList);
 		//-----
 		this.dtList = dtList;
@@ -81,6 +87,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		uiListDelta = new UiListDelta<>(objectType, new HashMap<>(), new HashMap<>(), new HashMap<>());
 		dtListDelta = new DtListDelta<>(new DtList<>(dtDefinition), new DtList<>(dtDefinition), new DtList<>(dtDefinition));
 		bufferUiObjects = new ArrayList<>(dtList.size());
+		postInit.accept((U) this);
 		rebuildBuffer();
 	}
 
