@@ -240,7 +240,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	@Override
 	public Optional<Account> getAccountByAuthToken(final String userAuthToken) {
 
-		Serializable userAuthTokenValue;
+		final Serializable userAuthTokenValue;
 		try {
 			userAuthTokenValue = Serializable.class.cast(smartTypeManager.stringToValue(getUserDtDefinition().getField(userAuthField).getSmartTypeDefinition(), userAuthToken));
 		} catch (final FormatterException e) {

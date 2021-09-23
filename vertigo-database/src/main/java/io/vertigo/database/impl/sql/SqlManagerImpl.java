@@ -30,7 +30,7 @@ import java.util.function.Function;
 import javax.inject.Inject;
 
 import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.core.analytics.process.ProcessAnalyticsTracer;
+import io.vertigo.core.analytics.trace.ProcessAnalyticsTracer;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Tuple;
@@ -260,7 +260,7 @@ public final class SqlManagerImpl implements SqlManager {
 				"/execute/" + sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACER, sql.length())),
 				tracer -> {
 					final O result = function.apply(tracer);
-					tracer.addTag("statement", sql.substring(0, Math.min(REQUEST_STATEMENT_FOR_TRACER, sql.length())));
+					tracer.setTag("statement", sql.substring(0, Math.min(REQUEST_STATEMENT_FOR_TRACER, sql.length())));
 					return result;
 				});
 	}

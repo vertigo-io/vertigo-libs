@@ -35,8 +35,8 @@ import org.apache.logging.log4j.ThreadContext;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.core.analytics.process.AProcess;
-import io.vertigo.core.analytics.process.AProcessBuilder;
+import io.vertigo.core.analytics.trace.AnalyticsSpan;
+import io.vertigo.core.analytics.trace.AnalyticsSpanBuilder;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
@@ -710,14 +710,14 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	}
 
 	private void traceProcessExecution(final OProcessExecution processExecution, final DtList<OActivityExecution> activityExecutions) {
-		final AProcessBuilder processBuilder = AProcess.builder("jobs", processExecution.process().get().getName(), processExecution.getBeginTime(), processExecution.getEndTime())
+		final AnalyticsSpanBuilder processBuilder = AnalyticsSpan.builder("jobs", processExecution.process().get().getName(), processExecution.getBeginTime(), processExecution.getEndTime())
 				.setMeasure("success", ExecutionState.DONE.name().equals(processExecution.getEstCd()) ? 100.0 : 0.0)
-				.addTag("nodeName", nodeName)
-				.addTag("status", processExecution.getEstCd());
-		activityExecutions.forEach(activityExecution -> processBuilder.addSubProcess(
-				AProcess.builder("activity", activityExecution.getEngine(), activityExecution.getBeginTime(), activityExecution.getEndTime())
+				.setTag("nodeName", nodeName)
+				.setTag("status", processExecution.getEstCd());
+		activityExecutions.forEach(activityExecution -> processBuilder.addChildSpan(
+				AnalyticsSpan.builder("activity", activityExecution.getEngine(), activityExecution.getBeginTime(), activityExecution.getEndTime())
 						.build()));
-		analyticsManager.addProcess(processBuilder.build());
+		analyticsManager.addSpan(processBuilder.build());
 	}
 
 }

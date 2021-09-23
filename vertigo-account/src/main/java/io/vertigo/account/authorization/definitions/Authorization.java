@@ -120,7 +120,7 @@ public final class Authorization extends AbstractDefinition {
 	 * @return Label de la authorization
 	 */
 	public String getLabel() {
-		return label;
+		return label; 
 	}
 
 	/**

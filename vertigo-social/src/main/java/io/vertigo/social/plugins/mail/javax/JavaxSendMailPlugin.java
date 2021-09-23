@@ -232,7 +232,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 		}
 	}
 
-	private BodyPart createBodyFile(final VFile vFile) throws MessagingException {
+	private static BodyPart createBodyFile(final VFile vFile) throws MessagingException {
 		try {
 			final File file = VFileUtil.obtainReadOnlyPath(vFile).toFile();
 			final MimeBodyPart bodyFile = new MimeBodyPart();
