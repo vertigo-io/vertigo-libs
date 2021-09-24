@@ -1,7 +1,7 @@
 <th:block th:fragment="fileupload(url, key, multiple, uploader_attrs)" 
 	th:assert="${key} != null and ${url} != null"
 	th:with="myComponentId='uploader_'+${key}"	>
-		<vu:include-data-primitive th:key="${key}"/>
+		<vu:include-data-primitive th:key="${key}" modifiable="true"/>
         <input type="hidden" th:v-if="|vueData.${key}.length == 0|" th:name="|vContext[${key}]|" value="" />
         <input type="hidden" th:v-for="|fileUri in vueData.${key}|" th:name="|vContext[${key}]|" v-bind:value="fileUri" />
         <q-uploader th:url="${url}" th:readonly="${viewMode=='read'}"
@@ -36,7 +36,7 @@
 <th:block th:fragment="fileupload-simple(url, downloadUrl, key, multiple, uploader_attrs)" 
     th:assert="${key} != null and ${url} != null"
     th:with="myComponentId='uploader_'+${key}, downloadUrl=${downloadUrl?:(url + '/download/')}" >
-        <vu:include-data-primitive th:key="${key}"/>
+        <vu:include-data-primitive th:key="${key}" modifiable="true"/>
         <input type="hidden" th:v-if="|vueData.${key}.length == 0|" th:name="|vContext[${key}]|" value="" />
         <input type="hidden" th:v-for="|fileUri in vueData.${key}|" th:name="|vContext[${key}]|" v-bind:value="fileUri" />
         <q-uploader th:url="${url}" th:readonly="${viewMode=='read'}"
@@ -108,8 +108,8 @@
     vu:alias="fileupload-simple-object" vu:selector="${viewMode=='edit'}"
     th:assert="${object} != null and ${url} != null"
     th:with="myComponentId=${model.util.generateComponentUID('uploader', object, field, rowIndex)}, downloadUrl=${downloadUrl?:(url + '/download/')}" >
-        <vu:include-data-primitive key="${object}" th:if="${field==null}" />
-        <vu:include-data object="${object}" field="${field}" th:if="${field!=null}" />
+        <vu:include-data-primitive key="${object}" th:if="${field==null}" modifiable="true" />
+        <vu:include-data object="${object}" field="${field}" th:if="${field!=null}" modifiable="true"/>
         
         <input type="hidden" th:v-if="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)}).length == 0|" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
         <input type="hidden" th:v-for="|fileUri in vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|" th::name="${model.util.contextKey(object, field, rowIndex)}" v-bind:value="fileUri" />
@@ -181,8 +181,8 @@
     vu:alias="fileupload-simple-object" vu:selector="${viewMode=='read'}"
     th:assert="${object} != null and ${url} != null"
     th:with="myComponentId=${model.util.generateComponentUID('uploader', object, field, rowIndex)}, downloadUrl=${downloadUrl?:(url + '/download/')}" >
-        <vu:include-data-primitive key="${object}" th:if="${field==null}" />
-        <vu:include-data object="${object}" field="${field}" th:if="${field!=null}" />
+        <vu:include-data-primitive key="${object}" th:if="${field==null}" modifiable="true"/>
+        <vu:include-data object="${object}" field="${field}" th:if="${field!=null}" modifiable="true"/>
         
        <q-uploader th:url="${url}" readonly
             field-name="file"
@@ -224,7 +224,7 @@
 <th:block th:fragment="fileupload-custom(url, downloadUrl, key, multiple, uploader_attrs)" 
     th:assert="${key} != null and ${url} != null"
     th:with="myComponentId='uploader_'+${key}, downloadUrl=${downloadUrl?:(url + '/download/')}" >
-        <vu:include-data-primitive th:key="${key}"/>
+        <vu:include-data-primitive th:key="${key}" modifiable="true"/>
         <input type="hidden" th:v-if="|vueData.${key}.length == 0|" th:name="|vContext[${key}]|" value="" />
         <input type="hidden" th:v-for="|fileUri in vueData.${key}|" th:name="|vContext[${key}]|" v-bind:value="fileUri" />
         <q-uploader th:url="${url}" th:readonly="${viewMode=='read'}"
