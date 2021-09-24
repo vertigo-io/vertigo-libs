@@ -108,10 +108,13 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		// ---
 		dtoByUiObject.clear();
 		bufferUiObjects.clear();
+		int index = 0;
 		for (final D dto : dtList) {
 			final UiObject<D> uiObjects = createUiObject(dto);
+			uiObjects.setInputKey(toContextKey(inputKey, index));
 			bufferUiObjects.add(uiObjects);
 			dtoByUiObject.put(uiObjects, dto);
+			index++;
 		}
 	}
 

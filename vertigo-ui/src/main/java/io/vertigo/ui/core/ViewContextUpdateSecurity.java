@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.locale.MessageText;
@@ -36,6 +35,11 @@ import io.vertigo.core.locale.MessageText;
  */
 public final class ViewContextUpdateSecurity implements Serializable {
 
+	private static final int SPLIT_OBJECT_INDEX = 0;
+	private static final int SPLIT_ROW_INDEX = 1;
+	private static final int SPLIT_FIELD_INDEX = 2;
+
+	private static final String ALL_LINES_PARAM_NAME = "[*]";
 	private static final long serialVersionUID = -4185584640736172927L;
 	private static final MessageText FORBIDDEN_DATA_UPDATE_MESSAGE = MessageText.of("These data can't be accepted"); //no too sharp info here : may use log //TODO externalized msg
 
@@ -49,12 +53,16 @@ public final class ViewContextUpdateSecurity implements Serializable {
 	}
 
 	private Boolean checkUpdates = Boolean.FALSE;
-	private final Map<String, Set<String>> updatablesKeys = new HashMap<>();;
+	private final Map<String, Set<String>> updatablesKeys = new HashMap<>();
+	private final Map<String, Set<String>> updatablesRows = new HashMap<>();
+	private final Set<String> allowedFields = new HashSet<>();
 
 	public void assertIsUpdatable(final String object, final String fieldName) {
-		if (checkUpdates
-				&& !updatablesKeys.containsKey(object)
-				&& !updatablesKeys.get(object).contains(fieldName)) {
+		final String[] splitObject = splitObjectName(object);
+		final String objectKey = splitObject[SPLIT_OBJECT_INDEX];
+		final String row = splitObject[SPLIT_ROW_INDEX];
+
+		if (checkUpdates && !isAllowedField(objectKey, row, fieldName)) {
 			throw new VSecurityException(FORBIDDEN_DATA_UPDATE_MESSAGE);
 		}
 	}
@@ -72,35 +80,109 @@ public final class ViewContextUpdateSecurity implements Serializable {
 		this.checkUpdates = checkUpdates;
 	}
 
-	public void addUpdatableKey(final String object, final String fieldName) {
-		updatablesKeys.computeIfAbsent(object, k -> new HashSet<>()).add(fieldName);
+	public void addUpdatableKey(final String object, final String fieldName, final String rowIndex) {
+		if (rowIndex == null) {
+			updatablesKeys.computeIfAbsent(object, k -> new HashSet<>()).add(fieldName);
+			allowedFields.add("vContext[" + object + "][" + fieldName + "]");
+		} else if (isNumeric(rowIndex)) {
+			//final String objectKey = object + "[" + rowIndex + "]";
+			updatablesKeys.computeIfAbsent(object, k -> new HashSet<>()).add(fieldName);
+			updatablesRows.computeIfAbsent(object, k -> new HashSet<>()).add(rowIndex);
+			allowedFields.add("vContext[" + object + "][" + rowIndex + "][" + fieldName + "]");
+		} else {
+			updatablesKeys.computeIfAbsent(object, k -> new HashSet<>()).add(fieldName);
+			updatablesRows.computeIfAbsent(object, k -> new HashSet<>()).add("*");
+			allowedFields.add("vContext[" + object + "]" + ALL_LINES_PARAM_NAME + "[" + fieldName + "]");
+		}
+	}
+
+	private static boolean isNumeric(final String cs) {
+		//more efficient than regexp; needed because it can't be hugely used (many request parameter)
+		if (cs == null || cs.isBlank()) {
+			return false;
+		}
+		final int sz = cs.length();
+		for (int i = 0; i < sz; i++) {
+			if (!Character.isDigit(cs.charAt(i))) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public void addUpdatableKey(final String object) {
 		updatablesKeys.computeIfAbsent(object, k -> Collections.emptySet());
+		allowedFields.add("vContext[" + object + "]");
 	}
 
 	public void assertAllowedFields(final Enumeration<String> parameterNames) {
-		final Set<String> allowedFields = getAllowedFieldsSet();
 		final boolean containsDisallowedField = Collections.list(parameterNames).stream()
 				.filter(n -> n.startsWith("vContext["))
-				.anyMatch(n -> !allowedFields.contains(n));
+				.anyMatch(n -> !isAllowedField(n));
 		if (containsDisallowedField) {
 			throw new VSecurityException(FORBIDDEN_DATA_UPDATE_MESSAGE);
 		}
 	}
 
-	public String[] getAllowedFields() {
-		return getAllowedFieldsSet().toArray(s -> new String[s]);
+	private boolean isAllowedField(final String paramName) {
+		if (allowedFields.contains(paramName)) {
+			return true;
+		}
+		final String[] splitParamName = splitParamName(paramName);
+		final String object = splitParamName[SPLIT_OBJECT_INDEX];
+		final String row = splitParamName[SPLIT_ROW_INDEX];
+		final String fieldName = splitParamName[SPLIT_FIELD_INDEX];
+		return isAllowedField(object, row, fieldName);
 	}
 
-	private Set<String> getAllowedFieldsSet() {
-		final Set<String> allowedFields = new HashSet<>();
-		allowedFields.addAll(updatablesKeys.keySet());
-		allowedFields.addAll(updatablesKeys.entrySet().stream()
-				.filter(e -> !e.getValue().isEmpty())
-				.flatMap(e -> e.getValue().stream().map(v -> "vContext[" + e.getKey() + "][" + v + "]"))
-				.collect(Collectors.toSet()));
-		return allowedFields;
+	private static String[] splitObjectName(final String objectName) {
+		final String[] result = new String[3];
+		final int rowIndex = objectName.indexOf('[');
+		final int rowEndIndex = objectName.indexOf(']', rowIndex);
+		if (rowIndex > 0) {
+			result[SPLIT_OBJECT_INDEX] = objectName.substring(0, rowIndex);
+			result[SPLIT_ROW_INDEX] = objectName.substring(rowIndex + 1, rowEndIndex);
+
+		} else {
+			result[SPLIT_OBJECT_INDEX] = objectName;
+		}
+
+		return result;
+	}
+
+	private static String[] splitParamName(final String paramName) {
+		final String[] result = new String[3];
+		final int objectIndex = paramName.indexOf('[');
+		final int objectEndIndex = paramName.indexOf(']', objectIndex);
+		result[SPLIT_OBJECT_INDEX] = paramName.substring(objectIndex + 1, objectEndIndex);
+
+		final int rowFieldIndex1 = paramName.indexOf('[', objectIndex + 1);
+		final int rowFieldEndIndex1 = paramName.indexOf(']', objectEndIndex + 1);
+		final int rowFieldIndex2 = paramName.indexOf('[', rowFieldIndex1 + 1);
+		final int rowFieldEndIndex2 = paramName.indexOf(']', rowFieldEndIndex1 + 1);
+		if (rowFieldIndex2 == -1) {
+			result[SPLIT_FIELD_INDEX] = paramName.substring(rowFieldIndex1 + 1, rowFieldEndIndex1);
+		} else {
+			result[SPLIT_ROW_INDEX] = paramName.substring(rowFieldIndex1 + 1, rowFieldEndIndex1);
+			result[SPLIT_FIELD_INDEX] = paramName.substring(rowFieldIndex2 + 1, rowFieldEndIndex2);
+		}
+		return result;
+	}
+
+	private boolean isAllowedField(final String object, final String row, final String fieldName) {
+		//le champ doit être modifiable
+		if (updatablesKeys.containsKey(object) && updatablesKeys.get(object).contains(fieldName)
+		//Et soit la ligne est null
+				&& (row == null ||
+				//soit elle est modifibable ou toute les lignes sont modifiables
+						updatablesRows.containsKey(object)
+								&& (updatablesRows.get(object).contains(row) || updatablesRows.get(object).contains("*")))) {
+			return true;
+		}
+		return false;
+	}
+
+	public String[] getAllowedFields() {
+		return allowedFields.toArray(s -> new String[s]);
 	}
 }

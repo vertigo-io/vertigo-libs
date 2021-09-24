@@ -386,12 +386,12 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		return validatedDto;
 	}
 
-	public void addKeyForClient(final String object, final String fieldName, final boolean modifiable) {
+	public void addKeyForClient(final String object, final String fieldName, final String rowIndex, final boolean modifiable) {
 		Assertion.check().isTrue(containsKey(object), "No {0} in context", object);
 		//----
 		keysForClient.computeIfAbsent(object, k -> new HashSet<>()).add(fieldName);
 		if (modifiable) {
-			viewContextUpdateSecurity.addUpdatableKey(object, fieldName);
+			viewContextUpdateSecurity.addUpdatableKey(object, fieldName, rowIndex);
 		}
 	}
 
