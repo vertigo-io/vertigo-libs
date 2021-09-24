@@ -50,7 +50,7 @@ public final class CommandManagerTest {
 		}
 	}
 
-	private NodeConfig buildNodeConfig() {
+	private static NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.addModule(new CommonsFeatures()
 						.withCommand()

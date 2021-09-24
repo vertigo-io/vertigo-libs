@@ -55,7 +55,7 @@ public class GoogleGeoCoderManagerTest {
 		}
 	}
 
-	private NodeConfig buildNodeConfig() {
+	private static NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.addModule(new GeoFeatures()
 						.withGeoCoder()

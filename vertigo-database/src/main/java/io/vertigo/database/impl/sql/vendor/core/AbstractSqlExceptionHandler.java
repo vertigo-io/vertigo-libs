@@ -60,7 +60,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	/**
 	 * @param sqle Exception base de données
 	 */
-	protected final VUserException handleTooLargeValueSqlException(final SQLException sqle) {
+	protected static final VUserException handleTooLargeValueSqlException(final SQLException sqle) {
 		final MessageKey key = Resources.DYNAMO_SQL_CONSTRAINT_TOO_BIG_VALUE;
 		LOGGER.warn(MessageText.of(key).getDisplay(), sqle);
 		//On se contente de logger l'exception cause mais on ne la lie pas à l'erreur utilisateur.
@@ -70,7 +70,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	/**
 	 * @param sqle SQLException launch by SQL (often PLSQL application specific exception with &lt;text&gt; tag)
 	 */
-	protected final VUserException handleUserSQLException(final SQLException sqle) {
+	protected static final VUserException handleUserSQLException(final SQLException sqle) {
 		String msg = sqle.getMessage();
 		final int i1 = msg.indexOf("<text>");
 		final int i2 = msg.indexOf("</text>", i1);
@@ -125,7 +125,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	 * @param sqle OtherSQLException
 	 * @param statementInfos the statement
 	 */
-	protected final RuntimeException handleOtherSQLException(final SQLException sqle, final String statementInfos) {
+	protected static final RuntimeException handleOtherSQLException(final SQLException sqle, final String statementInfos) {
 		final int errCode = sqle.getErrorCode();
 		return WrappedException.wrap(sqle, StringUtil.format("[SQL error] {0} : {1}", errCode, statementInfos));
 	}
