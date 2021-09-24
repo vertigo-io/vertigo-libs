@@ -33,7 +33,7 @@ import io.vertigo.account.authorization.annotations.SecuredOperation;
 import io.vertigo.account.authorization.definitions.Authorization;
 import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
 
@@ -58,7 +58,7 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 
 				final AuthorizationName[] authorizationNames = Arrays.stream(secured.value()).map(value -> (AuthorizationName) () -> Authorization.PREFIX + value).toArray(AuthorizationName[]::new);
 				if (!getAuthorizationManager().hasAuthorization(authorizationNames)) {
-					throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log
+					throw new VSecurityException(LocaleMessageText.of("Not enought authorizations"));//no too sharp info here : may use log
 				}
 
 				final MethodParameter[] parameters = handlerMethod.getMethodParameters();

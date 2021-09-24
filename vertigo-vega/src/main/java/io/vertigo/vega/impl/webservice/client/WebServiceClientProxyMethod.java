@@ -23,7 +23,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.component.amplifier.ProxyMethod;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.plugins.webservice.scanner.annotations.AnnotationsWebServiceScannerUtil;
@@ -95,7 +95,7 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 			if (responseStatus == HttpServletResponse.SC_UNAUTHORIZED) {
 				throw WrappedException.wrap(new SessionException((String) response.body()));
 			} else if (responseStatus == HttpServletResponse.SC_FORBIDDEN) {
-				throw new VSecurityException(MessageText.of((String) response.body()));
+				throw new VSecurityException(LocaleMessageText.of((String) response.body()));
 			} else if (responseStatus == HttpServletResponse.SC_BAD_REQUEST) {
 				throw new JsonSyntaxException((String) response.body());
 			} else {

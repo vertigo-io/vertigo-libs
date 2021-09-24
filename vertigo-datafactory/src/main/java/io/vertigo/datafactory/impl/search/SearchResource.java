@@ -17,14 +17,14 @@
  */
 package io.vertigo.datafactory.impl.search;
 
-import io.vertigo.core.locale.MessageKey;
+import io.vertigo.core.locale.LocaleMessageKey;
 
 /**
  * Dictionnaire des ressources.
  *
  * @author  npiedeloup
  */
-public enum SearchResource implements MessageKey {
+public enum SearchResource implements LocaleMessageKey {
 	/**
 	 * Search syntax error.\nDon't use ( ) [ ] or check you closed them. OR and AND are supported but must be between two keywords.
 	 */

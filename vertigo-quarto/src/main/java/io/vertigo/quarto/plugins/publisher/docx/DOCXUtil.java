@@ -53,9 +53,9 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import io.vertigo.core.lang.TempFile;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.FileUtil;
-import io.vertigo.core.util.TempFile;
 import io.vertigo.quarto.impl.publisher.merger.processor.ZipUtil;
 
 /**

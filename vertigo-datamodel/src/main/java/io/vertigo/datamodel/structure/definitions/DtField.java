@@ -22,7 +22,7 @@ import java.util.List;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.JsonExclude;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.StringUtil;
@@ -88,7 +88,7 @@ public final class DtField {
 	private final FieldType type;
 	private final Cardinality cardinality;
 	private final DefinitionReference<SmartTypeDefinition> smartTypeRef;
-	private final MessageText label;
+	private final LocaleMessageText label;
 	private final boolean persistent;
 
 	/** Cas des FK ; référence à une FK. */
@@ -119,7 +119,7 @@ public final class DtField {
 			final String fieldName,
 			final FieldType type,
 			final SmartTypeDefinition smartType,
-			final MessageText label,
+			final LocaleMessageText label,
 			final Cardinality cardinality,
 			final boolean persistent,
 			final String fkDtDefinitionName) {
@@ -195,7 +195,7 @@ public final class DtField {
 	/**
 	 * @return the label of the field
 	 */
-	public MessageText getLabel() {
+	public LocaleMessageText getLabel() {
 		return label;
 	}
 

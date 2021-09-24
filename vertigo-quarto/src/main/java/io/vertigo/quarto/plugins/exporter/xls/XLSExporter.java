@@ -49,7 +49,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
@@ -263,7 +263,7 @@ final class XLSExporter {
 			final HSSFRow row = sheet.createRow(rowIndex);
 
 			final HSSFCell cell = row.createCell(labelCellIndex);
-			final MessageText label = exportColumn.getLabel();
+			final LocaleMessageText label = exportColumn.getLabel();
 			cell.setCellValue(new HSSFRichTextString(label.getDisplay()));
 			cell.setCellStyle(createHeaderCellStyle(workbook));
 			updateMaxWidthPerColumn(label.getDisplay(), 1.2, labelCellIndex, maxWidthPerColumn); // +20% pour les majuscules

@@ -19,8 +19,8 @@ package io.vertigo.datamodel.structure.definitions;
 
 import java.io.Serializable;
 
-import io.vertigo.core.locale.MessageKey;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageKey;
+import io.vertigo.core.locale.LocaleMessageText;
 
 /**
  * Exception lancée en cas d'échec de formattage.
@@ -29,7 +29,7 @@ import io.vertigo.core.locale.MessageText;
  */
 public final class FormatterException extends Exception {
 	private static final long serialVersionUID = -7317938262923785123L;
-	private final MessageText messageText;
+	private final LocaleMessageText messageText;
 
 	/**
 	 * Constructor.
@@ -37,11 +37,11 @@ public final class FormatterException extends Exception {
 	 * @param key Clé du message externalisé explicitant la raison du non formattage.
 	 * @param params Paramètres de la ressource
 	 */
-	public FormatterException(final MessageKey key, final Serializable... params) {
-		messageText = MessageText.of(key, params);
+	public FormatterException(final LocaleMessageKey key, final Serializable... params) {
+		messageText = LocaleMessageText.of(key, params);
 	}
 
-	public MessageText getMessageText() {
+	public LocaleMessageText getMessageText() {
 		return messageText;
 	}
 }

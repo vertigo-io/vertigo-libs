@@ -17,14 +17,14 @@
  */
 package io.vertigo.basics.constraint;
 
-import io.vertigo.core.locale.MessageKey;
+import io.vertigo.core.locale.LocaleMessageKey;
 
 /**
  * Dictionnaire des ressources.
  *
  * @author  pchretien
 */
-public enum Resources implements MessageKey {
+public enum Resources implements LocaleMessageKey {
 	/**
 	 * Contrainte de longueur pour une String.
 	 */

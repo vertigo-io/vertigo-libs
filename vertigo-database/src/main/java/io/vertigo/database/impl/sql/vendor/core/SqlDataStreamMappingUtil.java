@@ -29,7 +29,7 @@ import java.sql.SQLException;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.DataStream;
-import io.vertigo.core.util.TempFile;
+import io.vertigo.core.lang.TempFile;
 
 /**
  * Gestion native des blobs.

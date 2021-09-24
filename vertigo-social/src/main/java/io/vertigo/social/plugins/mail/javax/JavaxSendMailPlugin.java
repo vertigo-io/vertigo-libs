@@ -47,7 +47,7 @@ import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.locale.MessageKey;
+import io.vertigo.core.locale.LocaleMessageKey;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.VFileUtil;
@@ -244,7 +244,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 		}
 	}
 
-	private static VUserException createMailException(final MessageKey messageKey, final MessagingException messagingException, final Serializable... params) {
+	private static VUserException createMailException(final LocaleMessageKey messageKey, final MessagingException messagingException, final Serializable... params) {
 		final VUserException mailException = new VUserException(messageKey, params);
 		mailException.initCause(messagingException);
 		return mailException;

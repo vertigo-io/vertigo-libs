@@ -25,7 +25,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
@@ -98,7 +98,7 @@ public final class SelectedFacetValuesDeserializer implements JsonDeserializer<S
 		} else {
 			query = "!_exists_:" + facetDefinition.getDtField().getName(); //only for null value, empty ones use FIELD:""
 		}
-		final FacetValue facetValue = new FacetValue(code, ListFilter.of(query), MessageText.of(code));
+		final FacetValue facetValue = new FacetValue(code, ListFilter.of(query), LocaleMessageText.of(code));
 		selectedFacetValuesBuilder.add(facetDefinition, facetValue);
 	}
 }

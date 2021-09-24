@@ -32,10 +32,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Selector;
+import io.vertigo.core.lang.Selector.ClassConditions;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.core.util.Selector;
-import io.vertigo.core.util.Selector.ClassConditions;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinition;
 import io.vertigo.datamodel.smarttype.annotations.Adapter;

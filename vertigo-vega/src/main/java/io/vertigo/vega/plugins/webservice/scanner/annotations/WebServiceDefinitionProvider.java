@@ -22,13 +22,13 @@ import java.util.Collection;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Selector;
+import io.vertigo.core.lang.Selector.ClassConditions;
 import io.vertigo.core.node.config.DefinitionResourceConfig;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.core.util.Selector;
-import io.vertigo.core.util.Selector.ClassConditions;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 

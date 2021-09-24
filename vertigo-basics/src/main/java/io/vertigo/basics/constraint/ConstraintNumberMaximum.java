@@ -20,7 +20,7 @@ package io.vertigo.basics.constraint;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.definitions.Constraint;
 import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.definitions.Property;
@@ -32,7 +32,7 @@ import io.vertigo.datamodel.structure.definitions.Property;
  */
 public final class ConstraintNumberMaximum implements Constraint<Number, Number> {
 	private final double maxValue;
-	private final MessageText errorMessage;
+	private final LocaleMessageText errorMessage;
 
 	/**
 	 * Constructor.
@@ -44,7 +44,7 @@ public final class ConstraintNumberMaximum implements Constraint<Number, Number>
 				.isNotNull(overrideMessageOpt);
 		//-----
 		maxValue = Double.parseDouble(args);
-		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MAXIMUM, maxValue);
+		errorMessage = overrideMessageOpt.isPresent() ? LocaleMessageText.of(overrideMessageOpt.get()) : LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MAXIMUM, maxValue);
 	}
 
 	/** {@inheritDoc} */
@@ -56,7 +56,7 @@ public final class ConstraintNumberMaximum implements Constraint<Number, Number>
 
 	/** {@inheritDoc} */
 	@Override
-	public MessageText getErrorMessage() {
+	public LocaleMessageText getErrorMessage() {
 		return errorMessage;
 	}
 

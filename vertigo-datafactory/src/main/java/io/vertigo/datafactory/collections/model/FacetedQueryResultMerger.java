@@ -27,8 +27,8 @@ import java.util.Map.Entry;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageKey;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageKey;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition.FacetOrder;
@@ -77,7 +77,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> {
 			final String resultcode,
 			final String resultFilter,
 			final String resultLabel,
-			final MessageKey resultLabelKey) {
+			final LocaleMessageKey resultLabelKey) {
 		Assertion.check()
 				.isNotBlank(resultcode)
 				.isNotNull(result)
@@ -88,7 +88,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> {
 		}
 		//---
 		final FacetValue otherFacetValue = facetValuePerFilter.computeIfAbsent(resultFilter,
-				rf -> new FacetValue(resultcode, ListFilter.of(rf), MessageText.ofDefaultMsg(resultLabel, resultLabelKey)));
+				rf -> new FacetValue(resultcode, ListFilter.of(rf), LocaleMessageText.ofDefaultMsg(resultLabel, resultLabelKey)));
 
 		otherResults.computeIfAbsent(otherFacetValue, k -> new ArrayList<>())
 				.add(result);
@@ -150,7 +150,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> {
 			final FacetDefinition clusterFacetDefinition = FacetDefinition.createFacetDefinitionByTerm(
 					facetDefinitionNameOpt.get(),
 					results.getDefinition().getFields().get(0),
-					MessageText.of("cluster"),
+					LocaleMessageText.of("cluster"),
 					false,
 					FacetOrder.definition);
 			final Facet clusterFacet = new Facet(clusterFacetDefinition, clustersCount);

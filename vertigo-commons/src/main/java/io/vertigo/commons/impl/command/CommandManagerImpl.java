@@ -33,7 +33,7 @@ import io.vertigo.commons.command.definitions.CommandParam;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.AspectPlugin;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
@@ -44,14 +44,14 @@ public final class CommandManagerImpl implements CommandManager, SimpleDefinitio
 	@Override
 	public List<CommandDefinition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		// we need to unwrap the component to scan the real class and not the enhanced version
-		final AopPlugin aopPlugin = Node.getNode().getNodeConfig().bootConfig().aopPlugin();
+		final AspectPlugin aopPlugin = Node.getNode().getNodeConfig().bootConfig().aopPlugin();
 		return Node.getNode().getComponentSpace().keySet()
 				.stream()
 				.flatMap(id -> createCommandDefinition(Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
 				.collect(Collectors.toList());
 	}
 
-	private static List<CommandDefinition> createCommandDefinition(final CoreComponent component, final AopPlugin aopPlugin) {
+	private static List<CommandDefinition> createCommandDefinition(final CoreComponent component, final AspectPlugin aopPlugin) {
 		return Stream.of(aopPlugin.unwrap(component).getClass().getMethods())
 				.filter(method -> method.isAnnotationPresent(Command.class))
 				.map(

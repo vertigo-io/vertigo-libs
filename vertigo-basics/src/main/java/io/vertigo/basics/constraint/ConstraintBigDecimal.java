@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.definitions.Constraint;
 import io.vertigo.datamodel.structure.definitions.Property;
 
@@ -39,7 +39,7 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 	private static final String SEPARATOR_ARGS = ",";
 	private final Integer maxPrecision;
 	private final Integer maxScale;
-	private final MessageText errorMessage;
+	private final LocaleMessageText errorMessage;
 
 	/**
 	 * Initialise les paramètres.
@@ -63,8 +63,8 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 				.isNotNull(maxPrecision, "Le nombre de chiffres ne peut pas être null")
 				.isNotNull(maxScale, "Le nombre de chiffres après la virgule ne peut pas être null")
 				.isTrue(maxScale <= maxPrecision, "Le nombre de chiffres après la virgule doit être inférieur au nombre total de chiffres");
-		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get())
-				: MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED,
+		errorMessage = overrideMessageOpt.isPresent() ? LocaleMessageText.of(overrideMessageOpt.get())
+				: LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED,
 						new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale),
 						maxScale,
 						maxPrecision - maxScale);
@@ -84,7 +84,7 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 
 	/** {@inheritDoc} */
 	@Override
-	public MessageText getErrorMessage() {
+	public LocaleMessageText getErrorMessage() {
 		return errorMessage;
 	}
 

@@ -23,7 +23,7 @@ import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VUserException;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -36,7 +36,7 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
 public final class ValidationUserException extends VUserException {
 	private static final long serialVersionUID = 7214302356640340103L;
 
-	private static final MessageText VALIDATE_ERROR_MESSAGE_TEXT = MessageText.of("Il y a des erreurs, vous devez corriger votre saisie :");
+	private static final LocaleMessageText VALIDATE_ERROR_MESSAGE_TEXT = LocaleMessageText.of("Il y a des erreurs, vous devez corriger votre saisie :");
 
 	private final List<UiError> uiErrors = new ArrayList<>();
 
@@ -62,7 +62,7 @@ public final class ValidationUserException extends VUserException {
 	 * @param dto object
 	 * @param fieldName field
 	 */
-	public ValidationUserException(final MessageText messageText, final DtObject dto, final DtFieldName fieldName) {
+	public ValidationUserException(final LocaleMessageText messageText, final DtObject dto, final DtFieldName fieldName) {
 		this(messageText, fieldName.name(), dto);
 	}
 
@@ -72,11 +72,11 @@ public final class ValidationUserException extends VUserException {
 	 * @param dto object
 	 * @param fieldName fieldName in CamelCase
 	 */
-	public ValidationUserException(final MessageText messageText, final DtObject dto, final String fieldName) {
+	public ValidationUserException(final LocaleMessageText messageText, final DtObject dto, final String fieldName) {
 		this(messageText, fieldName, dto);
 	}
 
-	private ValidationUserException(final MessageText messageText, final String constFieldName, final DtObject dto) {
+	private ValidationUserException(final LocaleMessageText messageText, final String constFieldName, final DtObject dto) {
 		super(messageText);
 		Assertion.check()
 				.isNotNull(dto, "L'objet est obligatoire")

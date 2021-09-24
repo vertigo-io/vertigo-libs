@@ -27,9 +27,9 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.TempFile;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.util.TempFile;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.quarto.exporter.ExporterManager;

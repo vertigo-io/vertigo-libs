@@ -20,7 +20,7 @@ package io.vertigo.datafactory.collections.model;
 import java.io.Serializable;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datafactory.collections.ListFilter;
 
 /**
@@ -41,7 +41,7 @@ import io.vertigo.datafactory.collections.ListFilter;
 public final class FacetValue implements Serializable {
 	private static final long serialVersionUID = -7077655936787603783L;
 	private final String code;
-	private final MessageText label;
+	private final LocaleMessageText label;
 	private final ListFilter listFilter;
 
 	/**
@@ -50,7 +50,7 @@ public final class FacetValue implements Serializable {
 	 * @param listFilter the list filter
 	 * @param label the label of the facet
 	 */
-	public FacetValue(final String code, final ListFilter listFilter, final MessageText label) {
+	public FacetValue(final String code, final ListFilter listFilter, final LocaleMessageText label) {
 		Assertion.check()
 				.isNotBlank(code)
 				.isNotNull(listFilter)
@@ -77,7 +77,7 @@ public final class FacetValue implements Serializable {
 	 *
 	 * @return the label of the facet
 	 */
-	public MessageText getLabel() {
+	public LocaleMessageText getLabel() {
 		return label;
 	}
 

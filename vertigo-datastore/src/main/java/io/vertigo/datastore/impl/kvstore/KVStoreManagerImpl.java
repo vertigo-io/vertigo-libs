@@ -24,7 +24,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.MapBuilder;
+import io.vertigo.core.lang.MapBuilder;
 import io.vertigo.datastore.kvstore.KVStoreManager;
 
 /**

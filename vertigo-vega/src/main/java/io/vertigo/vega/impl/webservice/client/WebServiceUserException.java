@@ -2,7 +2,7 @@ package io.vertigo.vega.impl.webservice.client;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VUserException;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 
 public final class WebServiceUserException extends VUserException {
 	private static final long serialVersionUID = 6677583554583854907L;
@@ -17,7 +17,7 @@ public final class WebServiceUserException extends VUserException {
 	 * @param uiMessageStack
 	 */
 	public WebServiceUserException(final int statusCode, final Object payload) {
-		super(MessageText.of(WEBSERVICE_ERROR_MESSAGE_TEXT, String.valueOf(payload)));
+		super(LocaleMessageText.of(WEBSERVICE_ERROR_MESSAGE_TEXT, String.valueOf(payload)));
 		Assertion.check().isNotNull(payload);
 		//---
 		this.statusCode = statusCode;

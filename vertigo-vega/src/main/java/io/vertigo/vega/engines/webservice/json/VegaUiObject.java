@@ -32,7 +32,7 @@ import java.util.stream.Stream;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Tuple;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
@@ -405,7 +405,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		} catch (final Exception e) { //We don't log nor rethrow this exception // it should be an encoding exception
 			/** Erreur de typage.	 */
 			//encoding error
-			getDtObjectErrors().addError(dtField.getName(), MessageText.of(e.getMessage()));
+			getDtObjectErrors().addError(dtField.getName(), LocaleMessageText.of(e.getMessage()));
 			formattedValue = inputValue;
 		}
 		return Tuple.of(formattedValue, typedValue);

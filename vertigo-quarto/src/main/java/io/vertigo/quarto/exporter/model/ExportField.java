@@ -18,7 +18,7 @@
 package io.vertigo.quarto.exporter.model;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.definitions.DtField;
 
 /**
@@ -28,13 +28,13 @@ import io.vertigo.datamodel.structure.definitions.DtField;
  */
 public class ExportField {
 	private final DtField dtField;
-	private final MessageText label;
+	private final LocaleMessageText label;
 
 	/**
 	 * Constructor.
 	 * @param dtField DtField
 	 */
-	public ExportField(final DtField dtField, final MessageText label) {
+	public ExportField(final DtField dtField, final LocaleMessageText label) {
 		Assertion.check().isNotNull(dtField);
 		//label may be null
 		//-----
@@ -52,7 +52,7 @@ public class ExportField {
 	/**
 	 * @return Label du dtField
 	 */
-	public final MessageText getLabel() {
+	public final LocaleMessageText getLabel() {
 		//Selon que le label est surchargé ou non
 		return label != null ? label : dtField.getLabel();
 	}

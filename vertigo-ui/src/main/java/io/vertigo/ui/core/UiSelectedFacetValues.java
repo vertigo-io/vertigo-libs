@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
@@ -94,7 +94,7 @@ public final class UiSelectedFacetValues extends HashMap<String, List<String>> {
 	}
 
 	private static void appendTermFacetValue(final String value, final FacetDefinition facetDefinition, final SelectedFacetValuesBuilder selectedFacetValuesBuilder) {
-		final MessageText label = MessageText.of(value);
+		final LocaleMessageText label = LocaleMessageText.of(value);
 		final String query = facetDefinition.getDtField().getName() + ":\"" + value + "\"";
 		final FacetValue facetValue = new FacetValue(value, ListFilter.of(query), label);
 		selectedFacetValuesBuilder.add(facetDefinition, facetValue);

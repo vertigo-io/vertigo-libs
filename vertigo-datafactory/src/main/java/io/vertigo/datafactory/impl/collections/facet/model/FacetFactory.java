@@ -27,7 +27,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datafactory.collections.CollectionsManager;
 import io.vertigo.datafactory.collections.ListFilter;
@@ -167,7 +167,7 @@ public final class FacetFactory {
 				} else {
 					label = valueAsString;
 				}
-				final MessageText labelMsg = MessageText.of(label);
+				final LocaleMessageText labelMsg = LocaleMessageText.of(label);
 				//on garde la syntaxe Solr pour l'instant
 				final ListFilter listFilter = ListFilter.of(dtField.getName() + ":\"" + valueAsString + "\"");
 				facetValue = new FacetValue(label, listFilter, labelMsg);

@@ -39,7 +39,7 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.VSystemException;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
@@ -259,7 +259,7 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 			query = "!_exists_:" + facetDefinition.getDtField().getName(); //only for null value, empty ones use FIELD:""
 		}
 
-		return new FacetValue(label, ListFilter.of(query), MessageText.of(label));
+		return new FacetValue(label, ListFilter.of(query), LocaleMessageText.of(label));
 
 	}
 

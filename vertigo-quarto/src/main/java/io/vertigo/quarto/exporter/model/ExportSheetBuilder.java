@@ -23,7 +23,7 @@ import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtFieldName;
@@ -118,7 +118,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @param overridedLabel nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
 	 * @return ExportSheetBuilder
 	 */
-	public ExportSheetBuilder addField(final DtFieldName fieldName, final MessageText overridedLabel) {
+	public ExportSheetBuilder addField(final DtFieldName fieldName, final LocaleMessageText overridedLabel) {
 		Assertion.check()
 				.isNotNull(fieldName)
 				// On vérifie que la colonne est bien dans la définition de la DTC
@@ -138,7 +138,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @param overridedLabel nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
 	 * @return ExportSheetBuilder
 	 */
-	public ExportSheetBuilder addField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield, final MessageText overridedLabel) {
+	public ExportSheetBuilder addField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield, final LocaleMessageText overridedLabel) {
 		Assertion.check()
 				.isNotNull(fieldName)
 				// On vérifie que la colonne est bien dans la définition de la DTC

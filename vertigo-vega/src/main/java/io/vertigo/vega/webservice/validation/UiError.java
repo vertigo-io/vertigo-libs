@@ -18,7 +18,7 @@
 package io.vertigo.vega.webservice.validation;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 
@@ -27,7 +27,7 @@ import io.vertigo.datamodel.structure.model.DtObject;
  * @author npiedeloup
  */
 public final class UiError {
-	private final MessageText messageText;
+	private final LocaleMessageText messageText;
 	private final DtObject dtObject;
 	private final DtField dtField;
 
@@ -37,7 +37,7 @@ public final class UiError {
 	 * @param dtField Object portant le message
 	 * @param messageText Champs portant le message
 	 */
-	UiError(final DtObject dtObject, final DtField dtField, final MessageText messageText) {
+	UiError(final DtObject dtObject, final DtField dtField, final LocaleMessageText messageText) {
 		Assertion.check()
 				.isNotNull(dtObject)
 				.isNotNull(dtField)
@@ -73,7 +73,7 @@ public final class UiError {
 	/**
 	 * @return Message d'erreur
 	 */
-	public MessageText getErrorMessage() {
+	public LocaleMessageText getErrorMessage() {
 		return messageText;
 	}
 

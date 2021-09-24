@@ -24,8 +24,8 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.locale.MessageKey;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageKey;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
@@ -39,7 +39,7 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
  */
 public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
-	private static class MessageKeyImpl implements MessageKey {
+	private static class MessageKeyImpl implements LocaleMessageKey {
 		private static final long serialVersionUID = 6959551752755175151L;
 
 		private final String name;
@@ -252,7 +252,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 		//2. Sinon Indication de longueur portée par le champ du DT.
 		//-----
-		final MessageText labelMsg = MessageText.ofDefaultMsg(strLabel, new MessageKeyImpl(id));
+		final LocaleMessageText labelMsg = LocaleMessageText.ofDefaultMsg(strLabel, new MessageKeyImpl(id));
 		// Champ CODE_COMMUNE >> getCodeCommune()
 		//Un champ est persisanty s'il est marqué comme tel et si la définition l'est aussi.
 		return new DtField(

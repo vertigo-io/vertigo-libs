@@ -19,7 +19,7 @@ package io.vertigo.vega.webservice.validation;
 
 import java.util.List;
 
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.definitions.ConstraintException;
@@ -41,7 +41,7 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 		final Object value = dtField.getDataAccessor().getValue(dtObject);
 		//pas d'assertion notNull, car le champs n'est pas forcément obligatoire
 		if (value == null && dtField.getCardinality().hasOne()) {
-			dtObjectErrors.addError(dtField.getName(), MessageText.of("Le champ doit être renseigné"));
+			dtObjectErrors.addError(dtField.getName(), LocaleMessageText.of("Le champ doit être renseigné"));
 		} else {
 			try {
 				// Le typage est OK

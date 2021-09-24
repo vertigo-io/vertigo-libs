@@ -17,8 +17,8 @@
  */
 package io.vertigo.commons.eventbus.data.aspects;
 
-import io.vertigo.core.node.component.aop.Aspect;
-import io.vertigo.core.node.component.aop.AspectMethodInvocation;
+import io.vertigo.core.node.component.aspect.Aspect;
+import io.vertigo.core.node.component.aspect.AspectMethodInvocation;
 
 /**
  * @author pchretien
