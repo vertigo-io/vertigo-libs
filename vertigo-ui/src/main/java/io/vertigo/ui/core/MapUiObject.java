@@ -114,7 +114,12 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		final DtField dtField = getDtField(fieldName);
 		if (dtField.getCardinality().hasMany()) {
 			if (value instanceof String[]) {
-				setInputValue(fieldName, (String[]) value);
+				if (isBlank((String[]) value)) {
+					// empty values means a reset of the field. An array is never null so we put an empty array.
+					setInputValue(fieldName, EMPTY_INPUT);
+				} else {
+					setInputValue(fieldName, (String[]) value);
+				}
 			} else {
 				if (StringUtil.isBlank((String) value)) {
 					// single empty value means a reset of the field. An array is never null so we put an empty array.
@@ -142,6 +147,15 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 			setInputValue(fieldName, strValue);
 		}
 		return null;
+	}
+
+	private boolean isBlank(final String[] values) {
+		for (final String value : values) {
+			if (!StringUtil.isBlank(value)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private static String requestParameterToString(final Serializable value) {
