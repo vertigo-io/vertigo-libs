@@ -285,7 +285,7 @@ export default {
         var selectedFacetsContextKey = contextKey + "_selectedFacets";
         var criteriaContextKey = vueData[contextKey + '_criteriaContextKey'];
         var params = this.vueDataParams([criteriaContextKey]);
-        params.append('selectedFacets', JSON.stringify(vueData[selectedFacetsContextKey]));
+        params.append(selectedFacetsContextKey, JSON.stringify(vueData[selectedFacetsContextKey]));
 
         var searchUrl = componentStates[contextKey + 'Search'].searchUrl;
         var collectionComponentId = componentStates[contextKey + 'Search'].collectionComponentId;
@@ -391,7 +391,11 @@ export default {
                 }
             }.bind(this))
             .catch(function (error) { //Ko
-                this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file "+uri);
+               if(error.response) {
+                  this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file "+uri);
+               } else {
+                  this.$q.notify(error + " Can't load file "+uri);
+               }
             }.bind(this));
         }.bind(this));
     },
