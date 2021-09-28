@@ -12,6 +12,14 @@
             <q-list  v-for="facet in facets" :key="facet.code" class="facetValues q-py-none" dense >
                 <template v-if="facet.multiple || !isFacetSelected(facet.code)">
                     <q-item-label header><big>{{facet.label}}</big></q-item-label>
+                    <q-item v-for="(value) in selectedInvisibleFacets(facet.code)" :key="value.code" class="facetValue q-ml-md" clickable @click.native="$emit('toogle-facet', facet.code, value.code, contextKey)">
+                        <q-item-section side v-if="facet.multiple" >
+                            <q-checkbox dense v-bind:value="true" @input="$emit('toogle-facet', facet.code, value.code, contextKey)" ></q-checkbox>
+                        </q-item-section>
+                        <q-item-section >{{value.label}}</q-item-section> 
+                        <q-item-section side>{{value.count}}</q-item-section>
+                    </q-item>
+                    
                     <q-item v-for="(value) in visibleFacets(facet.code, facet.values)" :key="value.code" class="facetValue q-ml-md" clickable @click.native="$emit('toogle-facet', facet.code, value.code, contextKey)">
                         <q-item-section side v-if="facet.multiple" >
                             <q-checkbox dense v-bind:value="isFacetValueSelected(facet.code, value.code)" @input="$emit('toogle-facet', facet.code, value.code, contextKey)" ></q-checkbox>
@@ -49,6 +57,11 @@ export default {
               return facet.code === facetCode;
           })[0];
       },
+      facetValueByCode : function (facetCode, facetValueCode) {
+          return this.facetByCode(facetCode).values.filter(function (facetValue) {
+              return facetValue.code === facetValueCode;
+          })[0];
+      },
       facetLabelByCode : function (facetCode) {
           return this.facetByCode(facetCode).label;
       },      
@@ -56,14 +69,8 @@ export default {
           return this.facetByCode(facetCode).multiple;
       },
       facetValueLabelByCode : function (facetCode, facetValueCode) {
-          return this.facetByCode(facetCode).values.filter(function (facetValue) {
-              return facetValue.code === facetValueCode;
-          })[0].label;
-      },
-      isAnyFacetValueSelected : function() {
-          return Object.keys(this.selectedFacets).some(function (facetCode) {
-              return this.selectedFacets[facetCode] && this.selectedFacets[facetCode].length > 0;
-          }.bind(this));
+          var facetValueByCode = this.facetValueByCode(facetCode,facetValueCode);
+          return facetValueByCode?facetValueByCode.label:facetValueCode; //might be not found
       },
       isFacetValueSelected : function (facetCode, facetValueCode){
           return this.selectedFacets[facetCode].includes(facetValueCode);
@@ -73,6 +80,11 @@ export default {
               return this.selectedFacets[facetCode].length > 0;
           }
           return false;
+      },
+      isAnyFacetValueSelected : function() {
+          return Object.keys(this.selectedFacets).some(function (facetCode) {
+              return !this.facetMultipleByCode(facetCode);
+          }.bind(this));
       },
       expandFacet : function (facetCode){
           if (!this.isFacetExpanded(facetCode)) {
@@ -86,6 +98,17 @@ export default {
       },
       isFacetExpanded : function (facetCode){
          return this.$data.expandedFacets.includes(facetCode);
+      },
+      selectedInvisibleFacets : function (facetCode) {
+          return this.selectedFacets[facetCode]
+             .filter( facetValueCode => !this.facetValueByCode(facetCode, facetValueCode) )
+             .map(facetValueCode => { 
+              var obj = {}; 
+              obj.code=facetValueCode; 
+              obj.label=facetValueCode; 
+              obj.count=0; 
+              return obj; 
+          });
       },
       visibleFacets : function (facetCode, facetValues){
           if (!this.isFacetExpanded(facetCode)) {
