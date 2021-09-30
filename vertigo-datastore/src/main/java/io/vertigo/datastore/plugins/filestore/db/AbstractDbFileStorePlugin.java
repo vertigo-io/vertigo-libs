@@ -175,12 +175,6 @@ abstract class AbstractDbFileStorePlugin {
 		public InputStream createInputStream() throws IOException {
 			return vFile.createInputStream();
 		}
-
-		/** {@inheritDoc} */
-		@Override
-		public long getLength() {
-			return vFile.getLength();
-		}
 	}
 
 	/**

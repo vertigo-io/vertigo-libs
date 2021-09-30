@@ -92,9 +92,9 @@ public final class SqlDataStreamMappingUtil {
 			copy(memoryIn, fileOut, FILE_MAX_LENGTH);
 			Assertion.check().isTrue(tmpFile.length() <= MEMORY_MAX_LENTH, "Le fichier n'a pas repris le debut de l'export (RAM)");
 			//2eme Etape : on copie la suite
-			final long length = copy(in, fileOut, FILE_MAX_LENGTH);
+			copy(in, fileOut, FILE_MAX_LENGTH);
 			//La longueur totale du fichier est la somme.
-			return new FileDataStream(tmpFile, length + bytes.length);
+			return new FileDataStream(tmpFile);
 		}
 	}
 
@@ -131,20 +131,13 @@ public final class SqlDataStreamMappingUtil {
 		public InputStream createInputStream() {
 			return new ByteArrayInputStream(bytes);
 		}
-
-		@Override
-		public long getLength() {
-			return bytes.length;
-		}
 	}
 
 	private static final class FileDataStream implements DataStream {
 		private final File tmpFile;
-		private final long length;
 
-		FileDataStream(final File tmpFile, final long length) {
+		FileDataStream(final File tmpFile) {
 			this.tmpFile = tmpFile;
-			this.length = length;
 		}
 
 		@Override
@@ -152,9 +145,5 @@ public final class SqlDataStreamMappingUtil {
 			return Files.newInputStream(tmpFile.toPath());
 		}
 
-		@Override
-		public long getLength() {
-			return length;
-		}
 	}
 }
