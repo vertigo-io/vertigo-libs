@@ -222,23 +222,11 @@ public final class UiUtil implements Serializable {
 			final SmartTypeDefinition smartTypeDefinition = getDtField(object + '.' + fieldName).getSmartTypeDefinition();
 			if (smartTypeDefinition.getScope().isPrimitive()) {
 				final BasicType dataType = smartTypeDefinition.getBasicType();
-				switch (dataType) {
-					case Long:
-					case Integer:
-					case Double:
-					case BigDecimal:
-						return "right";
-					case Boolean:
-					case Instant:
-					case LocalDate:
-					case String:
-					case DataStream:
-					default:
-						return "left";
-				}
+				return dataType.isNumber() ? "right" : "left";
 			}
 		}
 		return "left";
+
 	}
 
 	/**
