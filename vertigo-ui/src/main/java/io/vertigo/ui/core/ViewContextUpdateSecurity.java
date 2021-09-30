@@ -171,12 +171,15 @@ public final class ViewContextUpdateSecurity implements Serializable {
 
 	private boolean isAllowedField(final String object, final String row, final String fieldName) {
 		//le champ doit être modifiable
-		if (updatablesKeys.containsKey(object) && updatablesKeys.get(object).contains(fieldName)
+		final Set<String> updatablesObjectsKeys = updatablesKeys.get(object);
+		final Set<String> updatablesObjectsRows = updatablesRows.get(object);
+
+		if (updatablesObjectsKeys != null && updatablesObjectsKeys.contains(fieldName)
 		//Et soit la ligne est null
 				&& (row == null ||
 				//soit elle est modifibable ou toute les lignes sont modifiables
-						updatablesRows.containsKey(object)
-								&& (updatablesRows.get(object).contains(row) || updatablesRows.get(object).contains("*")))) {
+						updatablesObjectsRows != null
+								&& (updatablesObjectsRows.contains(row) || updatablesObjectsRows.contains("*")))) {
 			return true;
 		}
 		return false;
