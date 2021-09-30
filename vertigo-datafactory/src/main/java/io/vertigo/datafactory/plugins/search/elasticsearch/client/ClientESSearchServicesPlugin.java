@@ -364,7 +364,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 			case LocalDate:
 			case Instant:
 			case BigDecimal:
-			case Bytes:
+			case DataStream:
 			default:
 				throw new IllegalArgumentException();
 		}

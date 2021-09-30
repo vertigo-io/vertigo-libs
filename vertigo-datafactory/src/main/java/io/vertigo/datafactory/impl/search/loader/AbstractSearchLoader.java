@@ -80,7 +80,7 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 				pkValue = (P) "";
 				break;
 			case BigDecimal:
-			case Bytes:
+			case DataStream:
 			case Boolean:
 			case Double:
 			case LocalDate:

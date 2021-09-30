@@ -359,7 +359,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 			case LocalDate:
 			case Instant:
 			case BigDecimal:
-			case Bytes:
+			case DataStream:
 			default:
 				throw new IllegalArgumentException("Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartTypeDefinition + "].");
 		}
