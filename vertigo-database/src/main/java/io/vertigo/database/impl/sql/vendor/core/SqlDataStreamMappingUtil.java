@@ -74,7 +74,7 @@ public final class SqlDataStreamMappingUtil {
 		try (final ByteArrayOutputStream memoryOut = new ByteArrayOutputStream(MEMORY_MAX_LENTH / 4)) {
 			try {
 				copy(in, memoryOut, MEMORY_MAX_LENTH);
-				return new ByteArrayDataStream(memoryOut.toByteArray());
+				return () -> new ByteArrayInputStream(memoryOut.toByteArray());
 			} catch (final SqlOffLimitsException e) {
 				//We don't rethrow this dynamo specific exception, we just change the process
 				//Cas où le blob dépasse les limites imposées à la mémoire.
@@ -94,7 +94,7 @@ public final class SqlDataStreamMappingUtil {
 			//2eme Etape : on copie la suite
 			copy(in, fileOut, FILE_MAX_LENGTH);
 			//La longueur totale du fichier est la somme.
-			return new FileDataStream(tmpFile);
+			return () -> Files.newInputStream(tmpFile.toPath());
 		}
 	}
 
@@ -116,34 +116,5 @@ public final class SqlDataStreamMappingUtil {
 			read = in.read(bytes);//on ne relis, que si la taille est inférieur (Tous ce qui est lu, doit être écrit sinon c'est perdu)
 		}
 		return length;
-	}
-
-	private static final class ByteArrayDataStream implements DataStream {
-		private final byte[] bytes;
-
-		ByteArrayDataStream(final byte[] bytes) {
-			Assertion.check().isNotNull(bytes);
-			//-----
-			this.bytes = bytes;
-		}
-
-		@Override
-		public InputStream createInputStream() {
-			return new ByteArrayInputStream(bytes);
-		}
-	}
-
-	private static final class FileDataStream implements DataStream {
-		private final File tmpFile;
-
-		FileDataStream(final File tmpFile) {
-			this.tmpFile = tmpFile;
-		}
-
-		@Override
-		public InputStream createInputStream() throws IOException {
-			return Files.newInputStream(tmpFile.toPath());
-		}
-
 	}
 }
