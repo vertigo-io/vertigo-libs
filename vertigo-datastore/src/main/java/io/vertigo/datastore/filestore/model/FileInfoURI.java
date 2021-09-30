@@ -106,8 +106,8 @@ public final class FileInfoURI implements Serializable {
 		if (dataTypeOpt.isPresent()) {
 			switch (dataTypeOpt.get()) {
 				case Integer:
-					if (key instanceof Long) {
-						return ((Long) key).intValue();
+					if (key instanceof final Long l) {
+						return l.intValue();
 					} else if (key instanceof Integer) {
 						return key;
 					} else if (key instanceof String) {
@@ -117,8 +117,8 @@ public final class FileInfoURI implements Serializable {
 				case Long:
 					if (key instanceof Long) {
 						return key;
-					} else if (key instanceof Integer) {
-						return ((Integer) key).longValue();
+					} else if (key instanceof final Integer i) {
+						return i.longValue();
 					} else if (key instanceof String) {
 						return Long.valueOf((String) key);
 					}
