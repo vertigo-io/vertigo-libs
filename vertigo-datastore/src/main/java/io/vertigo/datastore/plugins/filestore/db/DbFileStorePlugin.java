@@ -36,7 +36,6 @@ import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
-import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.FileStorePlugin;
 import io.vertigo.datastore.impl.filestore.model.StreamFile;
@@ -99,7 +98,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		//-----
 		final UID<Entity> dtoUri = UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.getSmartTypeDefinition().getJavaClass()));
 		final Entity fileInfoDto = getEntityStoreManager().readOne(dtoUri);
-		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileInfoDto, DtoFields.fileData, DataStream.class));
+		final DataStream inputStreamBuilder = getValue(fileInfoDto, DtoFields.fileData, DataStream.class);
 		final String fileName = getValue(fileInfoDto, DtoFields.fileName, String.class);
 		final String mimeType = getValue(fileInfoDto, DtoFields.mimeType, String.class);
 		final Instant lastModified = getValue(fileInfoDto, DtoFields.lastModified, Instant.class);

@@ -34,7 +34,6 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
-import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.AbstractFileInfo;
 
@@ -174,27 +173,6 @@ abstract class AbstractDbFileStorePlugin {
 		@Override
 		public InputStream createInputStream() throws IOException {
 			return vFile.createInputStream();
-		}
-	}
-
-	/**
-	 * InputStreamBuilder from DataStream.
-	 */
-	protected static final class DataStreamInputStreamBuilder implements InputStreamBuilder {
-		private final DataStream dataStream;
-
-		/**
-		 * Constructor.
-		 * @param dataStream Data Stream
-		 */
-		DataStreamInputStreamBuilder(final DataStream dataStream) {
-			this.dataStream = dataStream;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public InputStream createInputStream() throws IOException {
-			return dataStream.createInputStream();
 		}
 	}
 

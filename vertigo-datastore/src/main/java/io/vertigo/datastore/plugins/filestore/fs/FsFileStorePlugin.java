@@ -32,6 +32,7 @@ import javax.inject.Inject;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataStream;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
@@ -49,7 +50,6 @@ import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
-import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.FileStorePlugin;
 import io.vertigo.datastore.impl.filestore.model.AbstractFileInfo;
@@ -159,7 +159,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		final Long length = getValue(fileInfoDto, DtoFields.length, Long.class);
 		final String filePath = getValue(fileInfoDto, DtoFields.filePath, String.class);
 
-		final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(documentRoot + filePath));
+		final DataStream inputStreamBuilder = new FileInputStreamBuilder(new File(documentRoot + filePath));
 		final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 		// retourne le fileinfo avec le fichier et son URI
@@ -331,7 +331,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		dtField.getDataAccessor().setValue(dto, uri.getKeyAs(dtField.getSmartTypeDefinition().getJavaClass()));
 	}
 
-	private static final class FileInputStreamBuilder implements InputStreamBuilder {
+	private static final class FileInputStreamBuilder implements DataStream {
 
 		private final File file;
 

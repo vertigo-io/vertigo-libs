@@ -37,7 +37,6 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
-import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.FileStorePlugin;
 import io.vertigo.datastore.impl.filestore.model.StreamFile;
@@ -94,12 +93,12 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 
 		final DtObject fileDataDto = getEntityStoreManager().readOne(dtoDataUri);
 		// Construction du vFile.
-		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileDataDto, DtoFields.fileData, DataStream.class));
+		final DataStream dataStream = getValue(fileDataDto, DtoFields.fileData, DataStream.class);
 		final String fileName = getValue(fileMetadataDto, DtoFields.fileName, String.class);
 		final String mimeType = getValue(fileMetadataDto, DtoFields.mimeType, String.class);
 		final Instant lastModified = getValue(fileMetadataDto, DtoFields.lastModified, Instant.class);
 		final Long length = getValue(fileMetadataDto, DtoFields.length, Long.class);
-		final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, inputStreamBuilder);
+		final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, dataStream);
 
 		//TODO passer par une factory de FileInfo à partir de la FileInfoDefinition (comme DomainFactory)
 		final FileInfo fileInfo = new DatabaseFileInfo(fileInfoUri.getDefinition(), vFile);

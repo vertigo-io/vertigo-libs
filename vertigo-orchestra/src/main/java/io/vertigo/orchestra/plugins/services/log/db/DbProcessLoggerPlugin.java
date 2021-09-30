@@ -28,8 +28,8 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataStream;
 import io.vertigo.core.param.ParamManager;
-import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.datastore.impl.filestore.model.StreamFile;
@@ -81,7 +81,7 @@ public class DbProcessLoggerPlugin implements ProcessLoggerPlugin {
 		return activityLogDAO.getActivityLogByAceId(actityExecutionId)
 				.map(activityLog -> {
 					final byte[] stringByteArray = activityLog.getLog().getBytes(StandardCharsets.UTF_8);
-					final InputStreamBuilder inputStreamBuilder = () -> new ByteArrayInputStream(stringByteArray);
+					final DataStream inputStreamBuilder = () -> new ByteArrayInputStream(stringByteArray);
 					final String fileName = TECHNICAL_LOG_PREFIX + actityExecutionId + TECHNICAL_LOG_EXTENSION;
 					return StreamFile.of(fileName, TECHNICAL_LOG_MIMETYPE, Instant.now(), stringByteArray.length, inputStreamBuilder);
 				});
