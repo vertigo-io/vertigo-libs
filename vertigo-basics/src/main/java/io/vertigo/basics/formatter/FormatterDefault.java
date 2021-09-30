@@ -80,7 +80,7 @@ public final class FormatterDefault implements Formatter {
 			case Double:
 			case BigDecimal:
 				return numberformatter;
-			case DataStream:
+			case Bytes:
 			default:
 				throw new IllegalArgumentException(dataType + " n'est pas géré par ce formatter");
 		}

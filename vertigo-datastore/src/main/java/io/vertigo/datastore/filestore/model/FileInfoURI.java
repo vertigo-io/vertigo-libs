@@ -127,7 +127,7 @@ public final class FileInfoURI implements Serializable {
 					return String.valueOf(key);
 				case BigDecimal:
 				case Boolean:
-				case DataStream:
+				case Bytes:
 				case Double:
 				case Instant:
 				case LocalDate:

@@ -141,7 +141,7 @@ public final class IndexType {
 				return "date";
 			case BigDecimal:
 				return "scaled_float";
-			case DataStream:
+			case Bytes:
 			default:
 				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + smartTypeDefinition + "].");
 		}
@@ -174,7 +174,7 @@ public final class IndexType {
 					throw new IllegalArgumentException("Précisez la valeur \"indexType\" dans le smart type [" + smartTypeDefinition + "].");
 				}
 				break;
-			case DataStream:
+			case Bytes:
 			default:
 				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + smartTypeDefinition + "].");
 		}

@@ -174,7 +174,7 @@ final class Criterion<D extends DtObject> extends Criteria<D> {
 				return Boolean.valueOf(stringValue);
 			case String:
 				return stringValue;
-			case DataStream:
+			case Bytes:
 			default:
 				throw new IllegalArgumentException("Type de données non comparable : " + dataType.name());
 		}
