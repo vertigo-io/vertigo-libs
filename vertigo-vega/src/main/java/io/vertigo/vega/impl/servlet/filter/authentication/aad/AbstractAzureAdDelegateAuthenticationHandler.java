@@ -48,8 +48,8 @@ import io.vertigo.vega.impl.servlet.filter.DelegateAuthenticationFilterHandler;
  */
 public abstract class AbstractAzureAdDelegateAuthenticationHandler implements DelegateAuthenticationFilterHandler {
 
-	static final String PRINCIPAL_SESSION_NAME = "principal";
-	static final String TOKEN_CACHE_SESSION_ATTRIBUTE = "token_cache";
+	protected static final String PRINCIPAL_SESSION_NAME = "principal";
+	protected static final String TOKEN_CACHE_SESSION_ATTRIBUTE = "token_cache";
 	private AzureAdConnector azureAdConnector;
 	private String redirectUri;
 
