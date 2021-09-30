@@ -1,8 +1,9 @@
 package io.vertigo.vega.impl.servlet.filter.authentication.aad;
 
+import java.io.Serializable;
 import java.util.Date;
 
-class StateData {
+class StateData implements Serializable {
 	private final String nonce;
 	private final Date expirationDate;
 

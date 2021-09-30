@@ -581,8 +581,9 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			return new String[] { "array", null };
 		} else {
 			//if query is a BasicTypeAdapter we use basicType
-			if (jsonTypeAdapters.containsKey(paramClass)) {
-				return toSwaggerType(jsonTypeAdapters.get(paramClass).getBasicType().getJavaClass());
+			final BasicTypeAdapter basicTypeAdapter = jsonTypeAdapters.get(paramClass);
+			if (basicTypeAdapter != null) {
+				return toSwaggerType(basicTypeAdapter.getBasicType().getJavaClass());
 			}
 			return new String[] { "object", null };
 		}

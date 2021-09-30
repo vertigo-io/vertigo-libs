@@ -41,6 +41,7 @@ class SessionManagementHelper {
 			final StateData stateData = states.get(state);
 			if (stateData != null) {
 				states.remove(state);
+				session.setAttribute(STATES, states); //needed for correct cluster sync (see fb-contrib:SCSS_SUSPICIOUS_CLUSTERED_SESSION_SUPPORT)
 				return stateData;
 			}
 		}
@@ -67,7 +68,9 @@ class SessionManagementHelper {
 		if (session.getAttribute(STATES) == null) {
 			session.setAttribute(STATES, new HashMap<String, StateData>());
 		}
-		((Map<String, StateData>) session.getAttribute(STATES)).put(state, new StateData(nonce, new Date()));
+		final Map<String, StateData> states = (Map<String, StateData>) session.getAttribute(STATES);
+		states.put(state, new StateData(nonce, new Date()));
+		session.setAttribute(STATES, states); //needed for correct cluster sync (see fb-contrib:SCSS_SUSPICIOUS_CLUSTERED_SESSION_SUPPORT)
 	}
 
 	static void storeTokenCacheInSession(final HttpServletRequest httpServletRequest, final String tokenCache) {
