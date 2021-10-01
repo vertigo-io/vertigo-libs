@@ -132,7 +132,7 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 	@Feature("taskProxyMethod")
 	public DataStoreFeatures withTaskProxyMethod() {
 		getModuleConfigBuilder()
-				.addProxyMethod(TaskProxyMethod.class);
+				.addAmplifierMethod(TaskProxyMethod.class);
 		return this;
 	}
 

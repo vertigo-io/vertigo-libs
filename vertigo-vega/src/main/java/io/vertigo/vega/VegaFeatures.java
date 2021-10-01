@@ -144,7 +144,7 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	@Feature("webservices.proxyclient")
 	public VegaFeatures withWebServicesProxyClient() {
 		getModuleConfigBuilder()
-				.addProxyMethod(WebServiceClientProxyMethod.class);
+				.addAmplifierMethod(WebServiceClientProxyMethod.class);
 		return this;
 	}
 
