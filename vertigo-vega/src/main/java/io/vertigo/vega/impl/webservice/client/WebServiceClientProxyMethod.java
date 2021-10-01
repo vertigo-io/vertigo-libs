@@ -24,14 +24,14 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.core.node.component.amplifier.ProxyMethod;
+import io.vertigo.core.node.component.amplifier.AmplifierMethod;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.plugins.webservice.scanner.annotations.AnnotationsWebServiceScannerUtil;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 import io.vertigo.vega.webservice.definitions.WebServiceParam;
 import io.vertigo.vega.webservice.exception.SessionException;
 
-public final class WebServiceClientProxyMethod implements ProxyMethod {
+public final class WebServiceClientProxyMethod implements AmplifierMethod {
 
 	private final Map<String, HttpClientConnector> httpClientConnectorByName = new HashMap<>();
 	private final JsonEngine jsonReaderEngine;

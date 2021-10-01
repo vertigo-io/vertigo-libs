@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.node.component.amplifier.ProxyMethod;
+import io.vertigo.core.node.component.amplifier.AmplifierMethod;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
@@ -38,7 +38,7 @@ import io.vertigo.datamodel.task.proxy.TaskContextProperty;
 import io.vertigo.datamodel.task.proxy.TaskInput;
 import io.vertigo.datamodel.task.proxy.TaskOutput;
 
-public final class TaskProxyMethod implements ProxyMethod {
+public final class TaskProxyMethod implements AmplifierMethod {
 
 	@Override
 	public Class<io.vertigo.datamodel.task.proxy.TaskProxyAnnotation> getAnnotationType() {
