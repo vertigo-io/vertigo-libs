@@ -17,12 +17,9 @@
  */
 package io.vertigo.datastore.plugins.filestore.db;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataStream;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
@@ -152,27 +149,6 @@ abstract class AbstractDbFileStorePlugin {
 		 */
 		protected DatabaseFileInfo(final FileInfoDefinition fileInfoDefinition, final VFile vFile) {
 			super(fileInfoDefinition, vFile);
-		}
-	}
-
-	/**
-	 * DataStream from VFile.
-	 */
-	protected static final class VFileDataStream implements DataStream {
-		private final VFile vFile;
-
-		/**
-		 * Constructor.
-		 * @param vFile File data
-		 */
-		VFileDataStream(final VFile vFile) {
-			this.vFile = vFile;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public InputStream createInputStream() throws IOException {
-			return vFile.createInputStream();
 		}
 	}
 

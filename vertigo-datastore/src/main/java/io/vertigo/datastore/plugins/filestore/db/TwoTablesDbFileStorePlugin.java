@@ -183,7 +183,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		final Entity fileDataDto = DtObjectUtil.createEntity(storeFileDtDefinition);
 		final VFile vFile = fileInfo.getVFile();
 		setValue(fileDataDto, DtoFields.fileName, vFile.getFileName());
-		setValue(fileDataDto, DtoFields.fileData, new VFileDataStream(vFile));
+		setValue(fileDataDto, DtoFields.fileData, vFile);
 		return fileDataDto;
 	}
 }

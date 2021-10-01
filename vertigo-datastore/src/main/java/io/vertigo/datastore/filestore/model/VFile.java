@@ -17,10 +17,10 @@
  */
 package io.vertigo.datastore.filestore.model;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.time.Instant;
+
+import io.vertigo.core.lang.DataStream;
 
 /**
  * Représentation d'un Fichier logique.
@@ -35,7 +35,7 @@ import java.time.Instant;
 
  * @author npiedeloup
  */
-public interface VFile extends Serializable {
+public interface VFile extends Serializable, DataStream {
 
 	/**
 	 * @return Nom d'origine du fichier
@@ -56,11 +56,4 @@ public interface VFile extends Serializable {
 	 * @return Type mime du fichier
 	 */
 	String getMimeType();
-
-	/**
-	 * Create a inputStream : It must be closed by caller !!
-	 * @return Stream représentant le document physique.
-	 * @throws IOException Erreur d'entrée/sortie
-	 */
-	InputStream createInputStream() throws IOException;
 }
