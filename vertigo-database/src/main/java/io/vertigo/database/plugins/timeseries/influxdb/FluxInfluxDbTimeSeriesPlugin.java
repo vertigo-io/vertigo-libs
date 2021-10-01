@@ -149,10 +149,10 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	@Override
 	public TimedDatas getClusteredTimeSeries(final String appName, final ClusteredMeasure clusteredMeasure, final DataFilter dataFilter, final TimeFilter timeFilter) {
-		final String globalDataVariable = buildGlobalDataVariable(appName, Collections.singletonList(clusteredMeasure.getMeasure()), dataFilter, timeFilter);
+		final String globalDataVariable = buildGlobalDataVariable(appName, Collections.singletonList(clusteredMeasure.measure()), dataFilter, timeFilter);
 
 		final StringBuilder queryBuilder = new StringBuilder(globalDataVariable);
-		final String[] splitedMeasure = clusteredMeasure.getMeasure().split(":");
+		final String[] splitedMeasure = clusteredMeasure.measure().split(":");
 		final String fieldName = splitedMeasure[0];
 		final String function = splitedMeasure[1];
 
@@ -169,15 +169,15 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 				.append("|> reduce(")
 				.append("fn: (r, accumulator) => ({ \n");
 
-		final String accumlultatorFunction = IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
+		final String accumlultatorFunction = IntStream.range(0, clusteredMeasure.thresholds().size() + 1)
 				.boxed()
-				.map(idx -> generateAccumelator(fieldName, function, idx, clusteredMeasure.getThresholds()))
+				.map(idx -> generateAccumelator(fieldName, function, idx, clusteredMeasure.thresholds()))
 				.collect(Collectors.joining(", \n"));
 		queryBuilder
 				.append(accumlultatorFunction)
 				.append("}), \n");
 
-		final String identity = IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
+		final String identity = IntStream.range(0, clusteredMeasure.thresholds().size() + 1)
 				.boxed()
 				.map(idx -> (fieldName + "_" + function + "_" + idx + ": 0.0"))
 				.collect(Collectors.joining(", "));
@@ -192,7 +192,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 				.append("|> duplicate(column: \"_stop\", as:\"_time\") \n")
 				.append("|> drop(columns: [\"_start\", \"_stop\"]) \n")
 				.append("|> rename( columns : {" +
-						IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
+						IntStream.range(0, clusteredMeasure.thresholds().size() + 1)
 								.boxed()
 								.map(idx -> fieldName + "_" + function + "_" + idx + ": \"" + clusteredOrderedMeasures.get(idx) + "\"")
 								.collect(Collectors.joining(", \n"))
@@ -238,13 +238,13 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	private static List<String> getOrderedClusterMeasures(final ClusteredMeasure clusteredMeasure) {
 		final List<String> result = new ArrayList<>();
-		for (int i = 0; i <= clusteredMeasure.getThresholds().size(); i++) {
+		for (int i = 0; i <= clusteredMeasure.thresholds().size(); i++) {
 			if (i == 0) {
-				result.add(clusteredMeasure.getMeasure() + "<" + clusteredMeasure.getThresholds().get(i));
-			} else if (i == clusteredMeasure.getThresholds().size()) {
-				result.add(clusteredMeasure.getMeasure() + ">" + clusteredMeasure.getThresholds().get(i - 1));
+				result.add(clusteredMeasure.measure() + "<" + clusteredMeasure.thresholds().get(i));
+			} else if (i == clusteredMeasure.thresholds().size()) {
+				result.add(clusteredMeasure.measure() + ">" + clusteredMeasure.thresholds().get(i - 1));
 			} else {
-				result.add(clusteredMeasure.getMeasure() + "_" + clusteredMeasure.getThresholds().get(i));
+				result.add(clusteredMeasure.measure() + "_" + clusteredMeasure.thresholds().get(i));
 			}
 		}
 		return result;
