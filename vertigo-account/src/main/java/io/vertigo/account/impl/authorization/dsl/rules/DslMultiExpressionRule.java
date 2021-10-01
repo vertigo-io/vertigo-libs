@@ -94,32 +94,27 @@ final class DslMultiExpressionRule extends AbstractRule<RuleMultiExpression, Peg
 	/** {@inheritDoc} */
 	@Override
 	protected RuleMultiExpression handle(final PegChoice parsing) {
-		final List<Object> innerBlock;
-		switch (parsing.getChoiceIndex()) {
-			case 0:
-				final List<?> blockExpression = (List<?>) parsing.getValue();
-				innerBlock = (List<Object>) blockExpression.get(2);
-				break;
-			case 1:
-				innerBlock = (List<Object>) parsing.getValue();
-				break;
-			default:
-				throw new IllegalArgumentException("case " + parsing.getChoiceIndex() + " not implemented");
-		}
-
+		final List<Object> innerBlock = switch (parsing.choiceIndex()) {
+			case 0 -> {
+				final List<?> blockExpression = (List<?>) parsing.value();
+				yield (List<Object>) blockExpression.get(2);
+			}
+			case 1 -> (List<Object>) parsing.value();
+			default -> throw new IllegalArgumentException("case " + parsing.choiceIndex() + " not implemented");
+		};
 		final List<RuleExpression> expressionDefinitions = new ArrayList<>();
 		final List<RuleMultiExpression> multiExpressionDefinitions = new ArrayList<>();
 
 		final PegChoice firstExpressionChoice = (PegChoice) innerBlock.get(1); //first (expression1|multiExpression1)
-		switch (firstExpressionChoice.getChoiceIndex()) {
+		switch (firstExpressionChoice.choiceIndex()) {
 			case 0:
-				expressionDefinitions.add((RuleExpression) firstExpressionChoice.getValue());
+				expressionDefinitions.add((RuleExpression) firstExpressionChoice.value());
 				break;
 			case 1:
-				multiExpressionDefinitions.add((RuleMultiExpression) firstExpressionChoice.getValue());
+				multiExpressionDefinitions.add((RuleMultiExpression) firstExpressionChoice.value());
 				break;
 			default:
-				throw new IllegalArgumentException("case " + parsing.getChoiceIndex() + " not implemented");
+				throw new IllegalArgumentException("case " + parsing.choiceIndex() + " not implemented");
 		}
 
 		final List<List<Object>> many = (List<List<Object>>) innerBlock.get(3); //manyNextExpressionsRule
@@ -131,18 +126,18 @@ final class DslMultiExpressionRule extends AbstractRule<RuleMultiExpression, Peg
 			}
 			operator = (BoolOperator) item.get(1);
 			final PegChoice nextExpressionChoice = (PegChoice) item.get(3); //next (expression2|multiExpression2)
-			switch (nextExpressionChoice.getChoiceIndex()) {
+			switch (nextExpressionChoice.choiceIndex()) {
 				case 0:
-					expressionDefinitions.add((RuleExpression) nextExpressionChoice.getValue());
+					expressionDefinitions.add((RuleExpression) nextExpressionChoice.value());
 					break;
 				case 1:
-					multiExpressionDefinitions.add((RuleMultiExpression) nextExpressionChoice.getValue());
+					multiExpressionDefinitions.add((RuleMultiExpression) nextExpressionChoice.value());
 					break;
 				default:
-					throw new IllegalArgumentException("case " + nextExpressionChoice.getChoiceIndex() + " not implemented");
+					throw new IllegalArgumentException("case " + nextExpressionChoice.choiceIndex() + " not implemented");
 			}
 		}
-		final boolean block = parsing.getChoiceIndex() == 0;
+		final boolean block = parsing.choiceIndex() == 0;
 		//---
 		return new RuleMultiExpression(block, operator != null ? operator : BoolOperator.AND, expressionDefinitions, multiExpressionDefinitions);
 	}
