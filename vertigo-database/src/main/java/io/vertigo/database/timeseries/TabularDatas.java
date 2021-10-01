@@ -26,30 +26,13 @@ import io.vertigo.core.lang.Assertion;
  * @author mlaroche
  *
  */
-public final class TabularDatas implements Serializable {
+public record TabularDatas(
+		List<TabularDataSerie> tabularDataSeries,
+		List<String> seriesNames) implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-
-	private final List<TabularDataSerie> tabularDataSeries;
-	private final List<String> seriesNames;
-
-	public TabularDatas(
-			final List<TabularDataSerie> tabularDataSeries,
-			final List<String> seriesNames) {
+	public TabularDatas {
 		Assertion.check()
 				.isNotNull(tabularDataSeries)
 				.isNotNull(seriesNames);
-		//---
-		this.tabularDataSeries = tabularDataSeries;
-		this.seriesNames = seriesNames;
 	}
-
-	public List<TabularDataSerie> getTabularDataSeries() {
-		return tabularDataSeries;
-	}
-
-	public List<String> getSeriesNames() {
-		return seriesNames;
-	}
-
 }

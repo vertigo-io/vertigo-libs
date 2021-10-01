@@ -164,7 +164,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 				.append("data \n")
 				.append("|> keep(columns: [\"_time\" , \"_value\"]) \n")
 				.append("|> toFloat() \n")
-				.append("|> window(every: " + timeFilter.getDim() + ", createEmpty:true ) \n")
+				.append("|> window(every: " + timeFilter.dim() + ", createEmpty:true ) \n")
 				.append("|> duplicate(column: \"_stop\", as: \"_time\") \n")
 				.append("|> reduce(")
 				.append("fn: (r, accumulator) => ({ \n");
@@ -273,9 +273,9 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	private static String buildGlobalDataVariable(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
 		final StringBuilder dataVariableBuilder = new StringBuilder("data = from(bucket:\"" + appName + "\") \n")
-				.append("|> range(start: " + timeFilter.getFrom() + ", stop: " + timeFilter.getTo() + ") \n")
+				.append("|> range(start: " + timeFilter.from() + ", stop: " + timeFilter.to() + ") \n")
 				.append("|> filter(fn: (r) => \n")
-				.append("r._measurement == \"" + dataFilter.getMeasurement() + "\" \n");
+				.append("r._measurement == \"" + dataFilter.measurement() + "\" \n");
 
 		final Set<String> fields = getMeasureFields(measures);
 		// add the global data with all the fields we need
@@ -290,7 +290,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 			dataVariableBuilder.append(") \n");
 		}
 
-		for (final Map.Entry<String, String> filter : dataFilter.getFilters().entrySet()) {
+		for (final Map.Entry<String, String> filter : dataFilter.filters().entrySet()) {
 			if (filter.getValue() != null && !"*".equals(filter.getValue())) {
 				dataVariableBuilder.append(" and r.").append(filter.getKey()).append("==\"").append(filter.getValue()).append("\"\n");
 			}
@@ -344,7 +344,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		Assertion.check()
 				.isNotNull(measures)
 				.isNotNull(dataFilter)
-				.isNotNull(timeFilter.getDim());// we check dim is not null because we need it
+				.isNotNull(timeFilter.dim());// we check dim is not null because we need it
 		//---
 		final String q = buildTimedQuery(appName, measures, dataFilter, timeFilter)
 				.toString();
@@ -375,10 +375,10 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 	}
 
 	private static Point measureToMeasurement(final Measure measure) {
-		return Point.measurement(measure.getMeasurement())
-				.time(measure.getInstant(), WritePrecision.MS)
-				.addFields(measure.getFields())
-				.addTags(measure.getTags());
+		return Point.measurement(measure.measurement())
+				.time(measure.instant(), WritePrecision.MS)
+				.addFields(measure.fields())
+				.addTags(measure.tags());
 	}
 
 	@Override
@@ -483,7 +483,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 			queryBuilder
 					.append("data \n")
 					.append("|> toFloat() \n")
-					.append("|> window(every: " + timeFilter.getDim() + ", createEmpty:true ) \n")
+					.append("|> window(every: " + timeFilter.dim() + ", createEmpty:true ) \n")
 					.append("|> " + buildMeasureFunction(function) + " \n")
 					.append("|> toFloat() \n")
 					.append("|> duplicate(column: \"_stop\", as: \"_time\") \n")
@@ -504,7 +504,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 						.append(entry.getKey().replaceAll("\\.", "_") + "Data = data \n")
 						.append("|> toFloat() \n")
 						.append("|> filter(fn: (r) => " + entry.getValue().stream().map(field -> "r._field==\"" + field + "\"").collect(Collectors.joining(" or ")) + ") \n")
-						.append("|> window(every: " + timeFilter.getDim() + ", createEmpty:true ) \n")
+						.append("|> window(every: " + timeFilter.dim() + ", createEmpty:true ) \n")
 						.append("|> " + buildMeasureFunction(entry.getKey()) + " \n")
 						.append("|> toFloat() \n") // add a conversion toFloat for the union
 						.append("|> duplicate(column: \"_stop\", as: \"_time\") \n")
@@ -561,7 +561,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 	}
 
 	private static String buildDataFilterCondition(final DataFilter dataFilter, final String field) {
-		final String filterOnField = dataFilter.getFilters().get(field);
+		final String filterOnField = dataFilter.filters().get(field);
 		if (filterOnField == null || "*".equals(filterOnField)) {
 			return "";
 		}

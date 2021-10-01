@@ -68,7 +68,7 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 	}
 
 	private static Double getValue(final TabularDatas tabularDatas, final String serieName, final String measureName) {
-		final Optional<TabularDataSerie> tabularDataSerieOpt = tabularDatas.getTabularDataSeries()
+		final Optional<TabularDataSerie> tabularDataSerieOpt = tabularDatas.tabularDataSeries()
 				.stream()
 				.filter(timedDataSerie -> timedDataSerie.getValues().containsKey("name") && serieName.equals(timedDataSerie.getValues().get("name")))
 				.findAny();
