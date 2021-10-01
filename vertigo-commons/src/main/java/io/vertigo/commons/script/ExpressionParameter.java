@@ -28,51 +28,18 @@ import io.vertigo.core.lang.Assertion;
  *
  * @author  pchretien
  */
-public final class ExpressionParameter {
-	private final String name;
-	private final Class<?> type;
-	private final Object value;
+public record ExpressionParameter(String name, Class<?> type, Object value) {
 
-	public static ExpressionParameter of(final String name, final Class<?> type, final Object value) {
-		return new ExpressionParameter(name, type, value);
-	}
-
-	/**
-	 * Constructeur definit un paramètre pour le ScriptEvaluator.
-	 * @param name Nom du paramètre
-	 * @param type Type du paramètre
-	 * @param value Valeur du paramètre
-	 */
-	private ExpressionParameter(final String name, final Class<?> type, final Object value) {
+	public ExpressionParameter {
 		Assertion.check()
 				.isNotBlank(name)
 				.isNotNull(type)
 				.when(value != null, () -> Assertion.check()
 						.isTrue(type.isInstance(value), "Valeur du paramètre '{0}' inconsistant avec son type '{1}'", name, type.getSimpleName()));
-		//---
-		this.name = name;
-		this.type = type;
-		this.value = value;
 	}
 
-	/**
-	 * @return Nom du paramètre
-	 */
-	public String getName() {
-		return name;
+	public static ExpressionParameter of(final String name, final Class<?> type, final Object value) {
+		return new ExpressionParameter(name, type, value);
 	}
 
-	/**
-	 * @return Type du paramètre
-	 */
-	public Class<?> getType() {
-		return type;
-	}
-
-	/**
-	 * @return Valeur du paramètre
-	 */
-	public Object getValue() {
-		return value;
-	}
 }
