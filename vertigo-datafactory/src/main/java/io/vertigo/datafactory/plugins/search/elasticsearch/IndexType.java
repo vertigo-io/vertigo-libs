@@ -125,7 +125,7 @@ public final class IndexType {
 		if (smartTypeDefinition.getScope().isBasicType()) {
 			basicType = smartTypeDefinition.getBasicType();
 		} else { // smartTypeDefinition.getScope().isValueObject()
-			basicType = smartTypeDefinition.getAdapterConfig("search").getTargetBasicType();
+			basicType = smartTypeDefinition.getAdapterConfig("search").targetBasicType();
 		}
 
 		switch (basicType) {
@@ -157,7 +157,7 @@ public final class IndexType {
 		if (smartTypeDefinition.getScope().isBasicType()) {
 			basicType = smartTypeDefinition.getBasicType();
 		} else { // smartTypeDefinition.getScope().isValueObject()
-			basicType = smartTypeDefinition.getAdapterConfig("search").getTargetBasicType();
+			basicType = smartTypeDefinition.getAdapterConfig("search").targetBasicType();
 		}
 		switch (basicType) {
 			case Boolean:

@@ -111,8 +111,8 @@ public final class SmartTypeDefinition extends AbstractDefinition {
 		basicTypeOpt = BasicType.of(getJavaClass());
 		this.adapterConfigs = adapterConfigs
 				.stream()
-				.collect(Collectors.toMap(AdapterConfig::getType, Function.identity(), (a, b) -> {
-					throw new IllegalArgumentException("Only one adapter per type is supported. Smarttype '" + name + "' declares multiple adapters for type '" + a.getType() + "'");
+				.collect(Collectors.toMap(AdapterConfig::type, Function.identity(), (a, b) -> {
+					throw new IllegalArgumentException("Only one adapter per type is supported. Smarttype '" + name + "' declares multiple adapters for type '" + a.type() + "'");
 				}));
 		wildCardAdapterConfig = this.adapterConfigs.get("*");
 		this.properties = properties;

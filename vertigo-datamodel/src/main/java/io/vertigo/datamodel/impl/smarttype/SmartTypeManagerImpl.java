@@ -66,8 +66,8 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 					final AdapterConfig wildcardAdapterConfig = smartTypeDefinition.getAdapterConfigs().get("*");
 					Assertion.check()
 							.when(wildcardAdapters.containsKey(smartTypeDefinition.getJavaClass()), () -> Assertion.check()
-									.isTrue(wildcardAdapterConfig.getAdapterClass().equals(wildcardAdapters.get(smartTypeDefinition.getJavaClass()).getClass()),
-											"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered", smartTypeDefinition.getName(), smartTypeDefinition.getJavaClass(), wildcardAdapterConfig.getType()));
+									.isTrue(wildcardAdapterConfig.adapterClass().equals(wildcardAdapters.get(smartTypeDefinition.getJavaClass()).getClass()),
+											"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered", smartTypeDefinition.getName(), smartTypeDefinition.getJavaClass(), wildcardAdapterConfig.type()));
 					//--
 					wildcardAdapters.put(smartTypeDefinition.getJavaClass(), createBasicTypeAdapter(wildcardAdapterConfig));
 				});
@@ -75,36 +75,36 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 		Node.getNode().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
 				.flatMap(smartTypeDefinition -> smartTypeDefinition.getAdapterConfigs().values().stream().map(adapterConfig -> Tuple.of(smartTypeDefinition, adapterConfig)))
-				.filter(tuple -> !"*".equals(tuple.val2().getType()))
+				.filter(tuple -> !"*".equals(tuple.val2().type()))
 				.forEach(tuple -> {
-					final Map<Class, BasicTypeAdapter> registeredAdapaters = adaptersByType.computeIfAbsent(tuple.val2().getType(), k -> new HashMap<>());
+					final Map<Class, BasicTypeAdapter> registeredAdapaters = adaptersByType.computeIfAbsent(tuple.val2().type(), k -> new HashMap<>());
 					Assertion.check()
 							.when(registeredAdapaters.containsKey(tuple.val1()), () -> Assertion.check()
-									.isTrue(tuple.val2().getAdapterClass().equals(registeredAdapaters.get(tuple.val1()).getClass()),
-											"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered", tuple.val1().getName(), tuple.val1(), tuple.val2().getType()));
+									.isTrue(tuple.val2().adapterClass().equals(registeredAdapaters.get(tuple.val1()).getClass()),
+											"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered", tuple.val1().getName(), tuple.val1(), tuple.val2().type()));
 					registeredAdapaters.put(tuple.val1().getJavaClass(), createBasicTypeAdapter(tuple.val2()));
 				});
 
 	}
 
 	private static Formatter createFormatter(final SmartTypeDefinition smartTypeDefinition) {
-		final Constructor<? extends Formatter> constructor = ClassUtil.findConstructor(smartTypeDefinition.getFormatterConfig().getFormatterClass(), new Class[] { String.class });
-		return ClassUtil.newInstance(constructor, new Object[] { smartTypeDefinition.getFormatterConfig().getArg() });
+		final Constructor<? extends Formatter> constructor = ClassUtil.findConstructor(smartTypeDefinition.getFormatterConfig().formatterClass(), new Class[] { String.class });
+		return ClassUtil.newInstance(constructor, new Object[] { smartTypeDefinition.getFormatterConfig().arg() });
 	}
 
 	private static List<Constraint> createConstraints(final SmartTypeDefinition smartTypeDefinition) {
 		return smartTypeDefinition.getConstraintConfigs()
 				.stream()
 				.map(constraintConfig -> {
-					final Optional<String> msgOpt = StringUtil.isBlank(constraintConfig.getMsg()) ? Optional.empty() : Optional.of(constraintConfig.getMsg());
-					final Constructor<? extends Constraint> constructor = ClassUtil.findConstructor(constraintConfig.getConstraintClass(), new Class[] { String.class, Optional.class });
-					return ClassUtil.newInstance(constructor, new Object[] { constraintConfig.getArg(), msgOpt });
+					final Optional<String> msgOpt = StringUtil.isBlank(constraintConfig.msg()) ? Optional.empty() : Optional.of(constraintConfig.msg());
+					final Constructor<? extends Constraint> constructor = ClassUtil.findConstructor(constraintConfig.constraintClass(), new Class[] { String.class, Optional.class });
+					return ClassUtil.newInstance(constructor, new Object[] { constraintConfig.arg(), msgOpt });
 				})
 				.collect(Collectors.toList());
 	}
 
 	private static BasicTypeAdapter createBasicTypeAdapter(final AdapterConfig adapterConfig) {
-		return ClassUtil.newInstance(adapterConfig.getAdapterClass());
+		return ClassUtil.newInstance(adapterConfig.adapterClass());
 	}
 
 	@Override
