@@ -56,15 +56,15 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	 * @param name the name of the smartType
 	 * @param dataType the dataType of the smartType
 	 */
-	SmartTypeDefinitionBuilder(final String name, final BasicType dataType) {
+	SmartTypeDefinitionBuilder(final String name, final BasicType basicType) {
 		Assertion.check()
 				.isNotBlank(name)
-				.isNotNull(dataType);
+				.isNotNull(basicType);
 		//---
 		myName = name;
-		myScope = SmartTypeDefinition.Scope.PRIMITIVE;
+		myScope = SmartTypeDefinition.Scope.BASIC_TYPE;
 
-		myValueObjectClass = dataType.getJavaClass();
+		myValueObjectClass = basicType.getJavaClass();
 	}
 
 	/**
@@ -78,7 +78,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 				.isNotNull(valueObjectClass);
 		//---
 		myName = name;
-		myScope = SmartTypeDefinition.Scope.VALUE_OBJECT;
+		myScope = SmartTypeDefinition.Scope.VALUE_TYPE;
 		myValueObjectClass = valueObjectClass;
 	}
 

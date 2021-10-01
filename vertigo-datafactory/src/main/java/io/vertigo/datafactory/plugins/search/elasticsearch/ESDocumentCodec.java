@@ -171,12 +171,12 @@ public final class ESDocumentCodec {
 		//-----
 		Object encodedValue = value;
 		switch (smartTypeDefinition.getScope()) {
-			case PRIMITIVE:
+			case BASIC_TYPE:
 				if (value instanceof String) {
 					encodedValue = escapeInvalidUTF8Char((String) value);
 				}
 				break;
-			case VALUE_OBJECT:
+			case VALUE_TYPE:
 				final BasicTypeAdapter basicTypeAdapter = typeAdapters.get(smartTypeDefinition.getJavaClass());
 				encodedValue = basicTypeAdapter.toBasic(value);
 				break;

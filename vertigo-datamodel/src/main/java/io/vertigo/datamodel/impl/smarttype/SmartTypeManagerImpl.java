@@ -114,7 +114,7 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 
 	@Override
 	public void checkValue(final SmartTypeDefinition smartTypeDefinition, final Object value) {
-		if (smartTypeDefinition.getScope().isPrimitive()) {
+		if (smartTypeDefinition.getScope().isBasicType()) {
 			smartTypeDefinition.getBasicType().checkValue(value);
 		}
 

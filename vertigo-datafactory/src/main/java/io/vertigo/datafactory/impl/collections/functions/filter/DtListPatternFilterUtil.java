@@ -76,7 +76,7 @@ public final class DtListPatternFilterUtil {
 		//Si on trouve un pattern, on passe sur du code spécifique
 		final String fieldName = parsedFilter[1]; //attention parsedFilter[0] = filtre entier
 		final DtField dtField = dtDefinition.getField(fieldName);
-		Assertion.check().isTrue(dtField.getSmartTypeDefinition().getScope().isPrimitive(), "Only primitive types can be used in pattern");
+		Assertion.check().isTrue(dtField.getSmartTypeDefinition().getScope().isBasicType(), "Only primitive types can be used in pattern");
 		final BasicType dataType = dtField.getSmartTypeDefinition().getBasicType();
 
 		switch (filterPattern) {

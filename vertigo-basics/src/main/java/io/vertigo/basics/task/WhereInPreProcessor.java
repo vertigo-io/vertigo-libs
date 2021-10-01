@@ -116,7 +116,7 @@ final class WhereInPreProcessor {
 						inputParamName,
 						isNotIn,
 						listObject,
-						attribute.getSmartTypeDefinition().getScope().isPrimitive(),
+						attribute.getSmartTypeDefinition().getScope().isBasicType(),
 						moreThanOneWhereIn);
 				if (moreThanOneWhereIn) {
 					buildQuery.append(')');

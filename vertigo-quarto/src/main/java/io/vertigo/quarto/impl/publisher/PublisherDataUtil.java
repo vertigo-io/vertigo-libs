@@ -189,21 +189,21 @@ public final class PublisherDataUtil {
 		for (final DtField dtField : dtDefinition.getFields()) {
 			final String fieldName = dtField.getName();
 			switch (dtField.getSmartTypeDefinition().getScope()) {
-				case PRIMITIVE:
+				case BASIC_TYPE:
 					if (BasicType.Boolean == dtField.getSmartTypeDefinition().getBasicType()) {
 						sb.append("\t\tbooleanField[").append(fieldName).append(")] = new DataField ();\n");
 					} else {
 						sb.append("\t\tstringField[").append(fieldName).append(")] = new DataField ();\n");
 					}
 					break;
-				case DATA_OBJECT:
+				case DATA_TYPE:
 					if (dtField.getCardinality().hasMany()) {
 						sb.append("\t\tlistField[").append(fieldName).append(")] = new NodeField (type = PN_").append(DtDefinition.PREFIX + dtField.getSmartTypeDefinition().getJavaClass().getSimpleName()).append(";);\n");
 					} else {
 						sb.append("\t\tdataField[").append(fieldName).append(")] = new NodeField (type = PN_").append(DtDefinition.PREFIX + dtField.getSmartTypeDefinition().getJavaClass().getSimpleName()).append(";);\n");
 					}
 					break;
-				case VALUE_OBJECT:
+				case VALUE_TYPE:
 				default:
 					throw new IllegalArgumentException("Value object smartTypes are not supported yet in publisher");
 

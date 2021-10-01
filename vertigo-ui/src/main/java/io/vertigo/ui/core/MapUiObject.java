@@ -161,11 +161,11 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	}
 
 	private static boolean isBoolean(final DtField dtField) {
-		return dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getBasicType() == BasicType.Boolean;
+		return dtField.getSmartTypeDefinition().getScope().isBasicType() && dtField.getSmartTypeDefinition().getBasicType() == BasicType.Boolean;
 	}
 
 	private static boolean isAboutDate(final DtField dtField) {
-		return dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getBasicType().isAboutDate();
+		return dtField.getSmartTypeDefinition().getScope().isBasicType() && dtField.getSmartTypeDefinition().getBasicType().isAboutDate();
 	}
 
 	/** {@inheritDoc} */
@@ -293,7 +293,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		//---
 		final DtField dtField = getDtField(keyFieldName);
 		final SmartTypeDefinition smartType = dtField.getSmartTypeDefinition();
-		if (smartType.getScope().isPrimitive()) {
+		if (smartType.getScope().isBasicType()) {
 			if (isAboutDate(dtField)) {
 				final Serializable value = getTypedValue(keyFieldName, Serializable.class);
 				return EncoderDate.valueToString(value, dtField.getSmartTypeDefinition().getBasicType());// encodeValue

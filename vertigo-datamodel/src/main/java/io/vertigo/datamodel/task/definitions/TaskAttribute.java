@@ -133,11 +133,11 @@ public final class TaskAttribute {
 	public Class getTargetJavaClass() {
 		if (cardinality.hasMany()) {
 			switch (smartTypeDefinition.getScope()) {
-				case PRIMITIVE:
+				case BASIC_TYPE:
 					return List.class;
-				case DATA_OBJECT:
+				case DATA_TYPE:
 					return DtList.class;
-				case VALUE_OBJECT:
+				case VALUE_TYPE:
 					return List.class;
 				default:
 					throw new IllegalStateException();

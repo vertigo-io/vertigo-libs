@@ -53,29 +53,29 @@ public final class SmartTypeDefinition extends AbstractDefinition {
 	public static final String PREFIX = "STy";
 
 	public enum Scope {
-		PRIMITIVE,
-		VALUE_OBJECT,
-		DATA_OBJECT;
+		BASIC_TYPE, //
+		VALUE_TYPE, //
+		DATA_TYPE;
 
 		/**
-		 * @return if the smartType is a primitive type
+		 * @return if the smartType is a basic-type
 		 */
-		public boolean isPrimitive() {
-			return this == Scope.PRIMITIVE;
+		public boolean isBasicType() {
+			return this == Scope.BASIC_TYPE;
 		}
 
 		/**
-		 * @return if the smartType is a value-object
+		 * @return if the smartType is a value-type
 		 */
-		public boolean isValueObject() {
-			return this == Scope.VALUE_OBJECT;
+		public boolean isValueType() {
+			return this == Scope.VALUE_TYPE;
 		}
 
 		/**
-		 * @return if the smartType is a data-object
+		 * @return if the smartType is a data-type
 		 */
-		public boolean isDataObject() {
-			return this == Scope.DATA_OBJECT;
+		public boolean isDataType() {
+			return this == Scope.DATA_TYPE;
 		}
 	}
 
@@ -166,8 +166,8 @@ public final class SmartTypeDefinition extends AbstractDefinition {
 		return constraintConfigs;
 	}
 
-	public static SmartTypeDefinitionBuilder builder(final String name, final BasicType dataType) {
-		return new SmartTypeDefinitionBuilder(name, dataType);
+	public static SmartTypeDefinitionBuilder builder(final String name, final BasicType basicType) {
+		return new SmartTypeDefinitionBuilder(name, basicType);
 	}
 
 	public static SmartTypeDefinitionBuilder builder(final String name, final Class clazz) {

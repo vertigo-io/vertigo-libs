@@ -289,7 +289,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		final List<String> inputValues = new ArrayList<>();
 
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-		if (dtField.getSmartTypeDefinition().getScope().isPrimitive()) {
+		if (dtField.getSmartTypeDefinition().getScope().isBasicType()) {
 			if (!dtField.getCardinality().hasMany()) {
 				inputValues.add(smartTypeManager.valueToString(smartType, value));// encodeValue
 				return inputValues.isEmpty() ? null : inputValues.toArray(String[]::new);
@@ -337,7 +337,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		final List<String> formattedValue = new ArrayList<>();
 		final SmartTypeDefinition smartTypeDefinition = dtField.getSmartTypeDefinition();
 		final Serializable typedValue;
-		if (smartTypeDefinition.getScope().isPrimitive()) {
+		if (smartTypeDefinition.getScope().isBasicType()) {
 			if (!dtField.getCardinality().hasMany()) {
 				Assertion.check().isTrue(stringValue.length <= 1, "Can't support multiple input values");
 				//------

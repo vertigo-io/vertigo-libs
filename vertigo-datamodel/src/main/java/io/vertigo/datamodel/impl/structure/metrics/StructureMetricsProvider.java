@@ -140,7 +140,7 @@ public final class StructureMetricsProvider implements Component {
 	}
 
 	private static double count(final DtDefinition dtDefinition, final TaskAttribute taskAttribute) {
-		if (taskAttribute.getSmartTypeDefinition().getScope().isDataObject()) {
+		if (taskAttribute.getSmartTypeDefinition().getScope().isDataType()) {
 			if (dtDefinition.equals(DtObjectUtil.findDtDefinition(taskAttribute.getSmartTypeDefinition().getJavaClass()))) {
 				return 1;
 			}

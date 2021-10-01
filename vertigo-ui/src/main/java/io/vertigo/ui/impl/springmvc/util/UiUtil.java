@@ -220,7 +220,7 @@ public final class UiUtil implements Serializable {
 			return overrideValue;
 		} else if (fieldName != null) {
 			final SmartTypeDefinition smartTypeDefinition = getDtField(object + '.' + fieldName).getSmartTypeDefinition();
-			if (smartTypeDefinition.getScope().isPrimitive()) {
+			if (smartTypeDefinition.getScope().isBasicType()) {
 				final BasicType dataType = smartTypeDefinition.getBasicType();
 				return dataType.isNumber() ? "right" : "left";
 			}

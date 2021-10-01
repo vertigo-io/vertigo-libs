@@ -247,7 +247,7 @@ public final class DtObjectsLoader implements Loader {
 						ds -> {
 							final SmartTypeDefinitionBuilder smartTypeDefinitionBuilder = SmartTypeDefinition.builder(smartTypeName, clazz);
 							smartTypeDefinitionBuilder
-									.withScope(Scope.DATA_OBJECT);
+									.withScope(Scope.DATA_TYPE);
 							for (final Adapter adapter : adapters) {
 								smartTypeDefinitionBuilder.addAdapter(adapter.type(), adapter.clazz(), adapter.targetBasicType());
 							}

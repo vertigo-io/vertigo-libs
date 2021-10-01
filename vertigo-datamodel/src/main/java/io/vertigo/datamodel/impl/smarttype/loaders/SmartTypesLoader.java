@@ -84,7 +84,7 @@ public class SmartTypesLoader implements Loader {
 		// DataType and Mapper
 		if (dataTypeOpt.isPresent()) {
 			//we are a primitive
-			scope = Scope.PRIMITIVE;
+			scope = Scope.BASIC_TYPE;
 		} else {
 			//we are not primitive, we need a mapper
 			final Adapter[] adapters = field.getAnnotationsByType(Adapter.class);
@@ -92,12 +92,12 @@ public class SmartTypesLoader implements Loader {
 				adapterConfigs.add(new AdapterConfig(adapter.type(), adapter.clazz(), adapter.targetBasicType()));
 			}
 			if (DtObject.class.isAssignableFrom(targetJavaClass)) {
-				scope = Scope.DATA_OBJECT;
+				scope = Scope.DATA_TYPE;
 				Assertion.check().isTrue(field.getName().equals(DtDefinition.PREFIX + targetJavaClass.getSimpleName()), "The name of the SmartType {0} is not consistent with the class {1}", field.getName(), targetJavaClass);
 			} else {
 				Assertion.check().isTrue(adapters.length > 0,
 						"Your smarttype '{0}' is associated with a value object, you need to specify a mapper to a targeted DataType with the @Adapter annotation", smartTypeName);
-				scope = Scope.VALUE_OBJECT;
+				scope = Scope.VALUE_TYPE;
 			}
 		}
 

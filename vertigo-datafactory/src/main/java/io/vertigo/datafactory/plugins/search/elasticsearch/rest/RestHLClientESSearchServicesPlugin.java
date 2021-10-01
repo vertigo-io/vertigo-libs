@@ -347,7 +347,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	private static String obtainPkIndexDataType(final SmartTypeDefinition smartTypeDefinition) {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
-		Assertion.check().isTrue(smartTypeDefinition.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartTypeDefinition + "].");
+		Assertion.check().isTrue(smartTypeDefinition.getScope().isBasicType(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartTypeDefinition + "].");
 		switch (smartTypeDefinition.getBasicType()) {
 			case Boolean:
 			case Double:

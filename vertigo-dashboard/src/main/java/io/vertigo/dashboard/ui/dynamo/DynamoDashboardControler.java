@@ -141,7 +141,7 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 		final Collection<SmartTypeDefinition> smartTypes = Node.getNode().getDefinitionSpace().getAll(SmartTypeDefinition.class);
 		final List<SmartTypeModel> smartTypeModels = smartTypes
 				.stream()
-				.filter(smartType -> smartType.getScope().isPrimitive()) // we display only primitives
+				.filter(smartType -> smartType.getScope().isBasicType()) // we display only primitives
 				.map(smartType -> new SmartTypeModel(
 						smartType,
 						taskCount.get(smartType.getName()),

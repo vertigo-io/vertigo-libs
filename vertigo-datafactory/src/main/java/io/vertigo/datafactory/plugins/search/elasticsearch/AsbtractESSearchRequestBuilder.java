@@ -402,7 +402,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	private static AggregationBuilder rangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		//facette par range
 		switch (dtField.getSmartTypeDefinition().getScope()) {
-			case PRIMITIVE:
+			case BASIC_TYPE:
 				final BasicType dataType = dtField.getSmartTypeDefinition().getBasicType();
 				if (dataType == BasicType.LocalDate) {
 					return dateRangeFacetToAggregationBuilder(facetDefinition, dtField);
@@ -410,9 +410,9 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 					return numberRangeFacetToAggregationBuilder(facetDefinition, dtField);
 				}
 				break;
-			case VALUE_OBJECT:
+			case VALUE_TYPE:
 				return geoRangeFacetToAggregationBuilder(facetDefinition, dtField, myCriteria, typeAdapters);
-			case DATA_OBJECT:
+			case DATA_TYPE:
 			default:
 				throw new IllegalArgumentException("Type de donnée non pris en charge comme Facet pour le keyconcept indexé [" + dtField.getSmartTypeDefinition() + "].");
 		}

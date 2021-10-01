@@ -208,7 +208,7 @@ public final class DtField {
 	}
 
 	public boolean isDtList() {
-		return getSmartTypeDefinition().getScope().isDataObject() && cardinality.hasMany();
+		return getSmartTypeDefinition().getScope().isDataType() && cardinality.hasMany();
 	}
 
 	/**
@@ -238,11 +238,11 @@ public final class DtField {
 		final SmartTypeDefinition domain = getSmartTypeDefinition();
 		if (cardinality.hasMany()) {
 			switch (domain.getScope()) {
-				case PRIMITIVE:
+				case BASIC_TYPE:
 					return List.class;
-				case DATA_OBJECT:
+				case DATA_TYPE:
 					return DtList.class;
-				case VALUE_OBJECT:
+				case VALUE_TYPE:
 					return List.class;
 				default:
 					throw new IllegalStateException();
