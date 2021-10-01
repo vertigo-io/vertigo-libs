@@ -55,7 +55,7 @@ final class DslBooleanOperatorRule extends AbstractRule<String, List<Object>> {
 	@Override
 	protected String handle(final List<Object> parsing) {
 		final String preSpaces = (String) parsing.get(0);
-		final String operator = (String) ((PegChoice) parsing.get(1)).getValue();
+		final String operator = (String) ((PegChoice) parsing.get(1)).value();
 		final String postSpaces = (String) parsing.get(2);
 		return DslUtil.concat(preSpaces, operator.toUpperCase(Locale.ENGLISH), postSpaces); //toUpperCase car ES n'interprete pas correctement en lowercase
 	}

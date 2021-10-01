@@ -67,25 +67,25 @@ final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<Object>> 
 
 		final PegChoice startTermQuery = (PegChoice) parsing.get(2);
 		final DslQuery startQueryDefinitions;
-		if (startTermQuery.getChoiceIndex() == 0) {
+		if (startTermQuery.choiceIndex() == 0) {
 			startQueryDefinitions = new DslFixedQuery("*");
 		} else {
-			startQueryDefinitions = (DslQuery) startTermQuery.getValue();
+			startQueryDefinitions = (DslQuery) startTermQuery.value();
 		}
 
 		final PegChoice endTermQuery = (PegChoice) parsing.get(6);
 		final DslQuery endQueryDefinitions;
-		if (endTermQuery.getChoiceIndex() == 0) {
+		if (endTermQuery.choiceIndex() == 0) {
 			endQueryDefinitions = new DslFixedQuery("*");
 		} else {
-			endQueryDefinitions = (DslQuery) endTermQuery.getValue();
+			endQueryDefinitions = (DslQuery) endTermQuery.value();
 		}
 
 		final PegChoice endChoice = (PegChoice) parsing.get(8);
 		final String postQuery = (String) parsing.get(9);
 
-		final String startRange = (String) startChoice.getValue();
-		final String endRange = (String) endChoice.getValue();
+		final String startRange = (String) startChoice.value();
+		final String endRange = (String) endChoice.value();
 		return new DslRangeQuery(preQuery, startRange, startQueryDefinitions, endQueryDefinitions, endRange, postQuery);
 	}
 }

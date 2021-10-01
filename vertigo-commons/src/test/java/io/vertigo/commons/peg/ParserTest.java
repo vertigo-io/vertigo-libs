@@ -139,14 +139,14 @@ public final class ParserTest {
 				.parse("world")
 				.getValue();
 		//On vérifie que l'on a trouvé la chaine "world" qui correspond au cas 0
-		assertEquals(0, choice.getChoiceIndex());
-		assertEquals("world", choice.getValue());
+		assertEquals(0, choice.choiceIndex());
+		assertEquals("world", choice.value());
 		//---
 		final PegChoice choice2 = WORLD_MUSIC
 				.parse("music").getValue();
 		//On vérifie que l'on a trouvé la chaine "music" qui correspond au cas 1
-		assertEquals(1, choice2.getChoiceIndex());
-		assertEquals("music", choice2.getValue());
+		assertEquals(1, choice2.choiceIndex());
+		assertEquals("music", choice2.value());
 	}
 
 	@Test
@@ -169,7 +169,7 @@ public final class ParserTest {
 		final PegChoice choice = PegRules.choice(HELLO)
 				.parse("hello")
 				.getValue();
-		assertEquals("hello", choice.getValue());
+		assertEquals("hello", choice.value());
 	}
 
 	@Test
@@ -178,15 +178,15 @@ public final class ParserTest {
 				.parse("hello world, my name");
 		//On vérifie que l'on a trouvé la chaine "world" qui correspond au cas 0
 		final PegChoice choice = (PegChoice) cursor.getValue().get(2);
-		assertEquals(0, choice.getChoiceIndex());
-		assertEquals("world", choice.getValue());
+		assertEquals(0, choice.choiceIndex());
+		assertEquals("world", choice.value());
 		//---
 		final PegResult<List<Object>> cursor2 = HELLO_WORLD_MUSIC
 				.parse("hello music, my name");
 		//On vérifie que l'on a trouvé la chaine "music" qui correspond au cas 1
 		final PegChoice choice2 = (PegChoice) cursor2.getValue().get(2);
-		assertEquals(1, choice2.getChoiceIndex());
-		assertEquals("music", choice2.getValue());
+		assertEquals(1, choice2.choiceIndex());
+		assertEquals("music", choice2.value());
 	}
 
 	@Test
