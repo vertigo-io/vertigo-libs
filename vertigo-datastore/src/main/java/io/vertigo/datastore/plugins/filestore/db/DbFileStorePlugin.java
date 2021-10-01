@@ -113,7 +113,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	@Override
 	public FileInfo create(final FileInfo fileInfo) {
 		checkReadonly();
-		Assertion.check().isNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
+		Assertion.check().isNotNull(fileInfo.getURI(), "Only file without any id can be created.");
 		checkDefinitionStoreBinding(fileInfo.getDefinition());
 		//-----
 		final Entity fileInfoDto = createFileInfoDto(fileInfo);
@@ -165,7 +165,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		setValue(fileInfoDto, DtoFields.mimeType, vFile.getMimeType());
 		setValue(fileInfoDto, DtoFields.lastModified, vFile.getLastModified());
 		setValue(fileInfoDto, DtoFields.length, vFile.getLength());
-		setValue(fileInfoDto, DtoFields.fileData, new VFileDataStream(vFile));
+		setValue(fileInfoDto, DtoFields.fileData, vFile);
 
 		if (fileInfo.getURI() != null) {
 			setIdValue(fileInfoDto, fileInfo.getURI());

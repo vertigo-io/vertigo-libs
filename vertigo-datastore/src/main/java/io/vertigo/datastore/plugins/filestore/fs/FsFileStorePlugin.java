@@ -213,7 +213,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	public FileInfo create(final FileInfo fileInfo) {
 		Assertion.check()
 				.isFalse(readOnly, STORE_READ_ONLY)
-				.isNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
+				.isNotNull(fileInfo.getURI(), "Only file without any id can be created.");
 		//-----
 		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
 		//-----
