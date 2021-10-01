@@ -58,7 +58,7 @@ public final class CommentManagerImpl implements CommentManager {
 				.withAuthor(accountURI)
 				.withCreationDate(creationDate)
 				.withLastModified(creationDate)
-				.withMsg(comment.getMsg())
+				.withMsg(comment.msg())
 				.build();
 		commentsPlugin.publish(savedComment, keyConceptUri);
 	}
@@ -76,15 +76,15 @@ public final class CommentManagerImpl implements CommentManager {
 	public void update(final UID<Account> accountURI, final Comment comment) {
 		Assertion.check().isNotNull(comment);
 		//-----
-		final Comment originalComment = commentsPlugin.get(comment.getUuid());
-		final boolean authorized = accountURI.equals(comment.getAuthor()) && originalComment.getAuthor().equals(comment.getAuthor());
+		final Comment originalComment = commentsPlugin.get(comment.uuid());
+		final boolean authorized = accountURI.equals(comment.author()) && originalComment.author().equals(comment.author());
 		Assertion.check().isTrue(authorized, "The comment editing is only available for the comment's author.");
 
 		final Comment savedComment = Comment.builder()
-				.withUuid(originalComment.getUuid())
+				.withUuid(originalComment.uuid())
 				.withAuthor(accountURI)
-				.withCreationDate(originalComment.getCreationDate())
-				.withMsg(comment.getMsg())
+				.withCreationDate(originalComment.creationDate())
+				.withMsg(comment.msg())
 				.withLastModified(Instant.now())
 				.build();
 		commentsPlugin.update(savedComment);

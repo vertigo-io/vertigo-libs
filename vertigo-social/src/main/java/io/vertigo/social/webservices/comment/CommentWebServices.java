@@ -99,7 +99,7 @@ public final class CommentWebServices implements WebServices {
 		Assertion.check()
 				.isNotNull(uuid)
 				.isNotNull(comment)
-				.isTrue(uuid.equals(comment.getUuid().toString()), "Comment uuid ({0}) must match WebService route ({1})", comment.getUuid(), uuid);
+				.isTrue(uuid.equals(comment.uuid().toString()), "Comment uuid ({0}) must match WebService route ({1})", comment.uuid(), uuid);
 		//-----
 		commentServices.update(getLoggedAccountURI(), comment);
 		return comment;
