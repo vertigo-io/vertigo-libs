@@ -129,7 +129,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 
 	@Override
 	public Account getAccount(final UID<Account> accountURI) {
-		return accounts.get(accountURI.getId()).getAccount();
+		return accounts.get(accountURI.getId()).account();
 	}
 
 	@Override
@@ -155,9 +155,9 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	@Override
 	public Optional<Account> getAccountByAuthToken(final String accountAuthToken) {
 		final Optional<AccountInfo> accountInfoOpt = accounts.values().stream()
-				.filter(accountInfo -> accountAuthToken.equals(accountInfo.getAccount().getAuthToken()))
+				.filter(accountInfo -> accountAuthToken.equals(accountInfo.account().getAuthToken()))
 				.findFirst();
-		return accountInfoOpt.map(AccountInfo::getAccount);
+		return accountInfoOpt.map(AccountInfo::account);
 	}
 
 	/** {@inheritDoc} */
@@ -165,18 +165,18 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	public Optional<VFile> getPhoto(final UID<Account> accountURI) {
 		final AccountInfo accountInfo = accounts.get(accountURI.getId());
 		Assertion.check().isNotNull(accountInfo, "No account found for {0}", accountURI);
-		if (accountInfo.getPhotoUrl() == null || accountInfo.getPhotoUrl().isEmpty()) {
+		if (accountInfo.photoUrl() == null || accountInfo.photoUrl().isEmpty()) {
 			return Optional.empty();
 		}
 		final URL fileURL;
-		if (accountInfo.getPhotoUrl().startsWith(".")) {//si on est en relatif, on repart du prefix du fichier des accounts
+		if (accountInfo.photoUrl().startsWith(".")) {//si on est en relatif, on repart du prefix du fichier des accounts
 			final String accountFilePrefix = accountFilePath.substring(0, accountFilePath.lastIndexOf('/')) + "/";
-			fileURL = resourceManager.resolve(accountFilePrefix + accountInfo.getPhotoUrl());
+			fileURL = resourceManager.resolve(accountFilePrefix + accountInfo.photoUrl());
 		} else {
-			fileURL = resourceManager.resolve(accountInfo.getPhotoUrl());
+			fileURL = resourceManager.resolve(accountInfo.photoUrl());
 		}
 
-		return createVFile(accountURI, fileURL, accountInfo.getPhotoUrl());
+		return createVFile(accountURI, fileURL, accountInfo.photoUrl());
 	}
 
 	private static Optional<VFile> createVFile(final UID<Account> accountURI, final URL fileURL, final String photoUrl) {
@@ -246,7 +246,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 		final List<Account> groupAccounts = new ArrayList<>();
 		for (final String accountId : accountIds.split(";")) {
 			groupsPerAccount.computeIfAbsent(accountId, k -> new ArrayList<>()).add(accountGroup);
-			final Account account = accounts.get(accountId).getAccount();
+			final Account account = accounts.get(accountId).account();
 			Assertion.check().isNotNull(account, "Group {0} reference an undeclared account {1}", groupId, accountId);
 			groupAccounts.add(account);
 		}

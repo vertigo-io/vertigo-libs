@@ -20,25 +20,10 @@ package io.vertigo.account.plugins.account.store.text;
 import io.vertigo.account.account.Account;
 import io.vertigo.core.lang.Assertion;
 
-final class AccountInfo {
-
-	private final Account account;
-	private final String photoUrl;
-
-	AccountInfo(final Account account, final String photoUrl) {
+public record AccountInfo(Account account, String photoUrl) {
+	public AccountInfo {
 		Assertion.check()
 				.isNotNull(account)
 				.isNotNull(photoUrl);
-		//-----
-		this.account = account;
-		this.photoUrl = photoUrl;
-	}
-
-	Account getAccount() {
-		return account;
-	}
-
-	String getPhotoUrl() {
-		return photoUrl;
 	}
 }
