@@ -24,7 +24,7 @@ import io.vertigo.social.mail.Mail;
  * Plugin d'envoi de mail.
  * @author npiedeloup
  */
-public interface SendMailPlugin extends Plugin {
+public interface MailPlugin extends Plugin {
 	/**
 	 * Envoyer un mail.
 	 * @param mail Mail à envoyer

@@ -52,7 +52,7 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.VFileUtil;
 import io.vertigo.social.impl.mail.Resources;
-import io.vertigo.social.impl.mail.SendMailPlugin;
+import io.vertigo.social.impl.mail.MailPlugin;
 import io.vertigo.social.mail.Mail;
 
 /**
@@ -60,7 +60,7 @@ import io.vertigo.social.mail.Mail;
  *
  * @author npiedeloup
  */
-public final class JavaxSendMailPlugin implements SendMailPlugin {
+public final class JavaxMailPlugin implements MailPlugin {
 
 	/** Nom du composant. */
 	public static final String HEALTH_COMPONENT_NAME = "Mailer";
@@ -80,7 +80,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	 * @param charsetOpt charset to use, default is ISO-8859-1
 	 */
 	@Inject
-	public JavaxSendMailPlugin(
+	public JavaxMailPlugin(
 			final List<MailSessionConnector> mailSessionConnectors,
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			@ParamValue("developmentMode") final boolean developmentMode,

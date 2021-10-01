@@ -31,7 +31,7 @@ import io.vertigo.social.mail.MailManager;
  * @author npiedeloup
  */
 public final class MailManagerImpl implements MailManager {
-	private final SendMailPlugin sendMailPlugin;
+	private final MailPlugin sendMailPlugin;
 
 	/**
 	 * Constructor.
@@ -39,7 +39,7 @@ public final class MailManagerImpl implements MailManager {
 	 * @param sendMailPlugin the plugin that sends mails
 	 */
 	@Inject
-	public MailManagerImpl(final LocaleManager localeManager, final SendMailPlugin sendMailPlugin) {
+	public MailManagerImpl(final LocaleManager localeManager, final MailPlugin sendMailPlugin) {
 		Assertion.check()
 				.isNotNull(localeManager)
 				.isNotNull(sendMailPlugin);
