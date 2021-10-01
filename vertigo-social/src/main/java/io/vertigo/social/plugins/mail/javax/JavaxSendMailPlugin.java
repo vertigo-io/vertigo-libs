@@ -118,24 +118,24 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 
 	private Message createMessage(final Mail mail, final Session session) throws MessagingException, UnsupportedEncodingException {
 		final Message message = new MimeMessage(session);
-		setFromAddress(mail.getFrom(), message);
-		if (mail.getReplyTo() != null) {
-			setReplyToAddress(mail.getReplyTo(), message);
+		setFromAddress(mail.fromAddress(), message);
+		if (mail.replyTo() != null) {
+			setReplyToAddress(mail.replyTo(), message);
 		}
-		setToAddress(mail.getToList(), message);
-		setCcAddress(mail.getCcList(), message);
-		if (mail.getSubject() != null) {
-			message.setSubject(MimeUtility.encodeWord(mail.getSubject(), charset, "Q"));
+		setToAddress(mail.toAddresses(), message);
+		setCcAddress(mail.ccAddresses(), message);
+		if (mail.subject() != null) {
+			message.setSubject(MimeUtility.encodeWord(mail.subject(), charset, "Q"));
 		}
 		message.setHeader("X-Mailer", "Java");
 		message.setSentDate(new Date());
-		final List<VFile> attachments = mail.getAttachments();
+		final List<VFile> attachments = mail.attachments();
 		if (attachments.isEmpty()) {
-			setBodyContent(mail.getTextContent(), mail.getHtmlContent(), message);
+			setBodyContent(mail.textContent(), mail.htmlContent(), message);
 		} else {
 			final Multipart multiPart = new MimeMultipart();
 			final BodyPart bodyPart = new MimeBodyPart();
-			setBodyContent(mail.getTextContent(), mail.getHtmlContent(), bodyPart);
+			setBodyContent(mail.textContent(), mail.htmlContent(), bodyPart);
 			multiPart.addBodyPart(bodyPart);
 			for (final VFile vFile : attachments) {
 				final BodyPart bodyFile = createBodyFile(vFile);
