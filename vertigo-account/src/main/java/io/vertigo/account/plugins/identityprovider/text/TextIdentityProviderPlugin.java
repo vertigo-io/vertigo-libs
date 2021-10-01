@@ -17,11 +17,9 @@
  */
 package io.vertigo.account.plugins.identityprovider.text;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -183,12 +181,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		Assertion.check()
 				.isTrue(photoFile.toFile().exists(), "Identity {0} photo {1} not found", accountURI, photoUrl)
 				.isTrue(photoFile.toFile().isFile(), "Identity {0} photo {1} must be a file", accountURI, photoUrl);
-		try {
-			final String contentType = Files.probeContentType(photoFile);
-			return Optional.of(new FSFile(photoFile.getFileName().toString(), contentType, photoFile));
-		} catch (final IOException e) {
-			throw WrappedException.wrap(e);
-		}
+		return Optional.of(FSFile.of(photoFile));
 	}
 
 	/** {@inheritDoc} */
