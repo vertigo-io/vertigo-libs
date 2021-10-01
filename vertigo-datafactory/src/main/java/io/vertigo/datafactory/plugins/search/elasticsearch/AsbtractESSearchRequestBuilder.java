@@ -250,11 +250,11 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	private static void appendSelectedFacetValuesFilter(final BoolQueryBuilder filterBoolQueryBuilder, final List<FacetValue> facetValues) {
 		if (facetValues.size() == 1) {
-			filterBoolQueryBuilder.filter(translateToQueryBuilder(facetValues.get(0).getListFilter()));
+			filterBoolQueryBuilder.filter(translateToQueryBuilder(facetValues.get(0).listFilter()));
 		} else if (facetValues.size() > 1) {
 			final BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			for (final FacetValue facetValue : facetValues) {
-				boolQueryBuilder.should(translateToQueryBuilder(facetValue.getListFilter()));//on ajoute les valeurs en OU
+				boolQueryBuilder.should(translateToQueryBuilder(facetValue.listFilter()));//on ajoute les valeurs en OU
 			}
 			filterBoolQueryBuilder.filter(boolQueryBuilder);
 		}
@@ -262,12 +262,12 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	private static void appendSelectedGeoFacetValuesFilter(final BoolQueryBuilder filterBoolQueryBuilder, final List<FacetValue> facetValues, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		if (facetValues.size() == 1) {
-			final DslGeoExpression geoExpression = DslParserUtil.parseGeoExpression(facetValues.get(0).getListFilter().getFilterValue());
+			final DslGeoExpression geoExpression = DslParserUtil.parseGeoExpression(facetValues.get(0).listFilter().getFilterValue());
 			filterBoolQueryBuilder.filter(DslGeoToQueryBuilderUtil.translateToQueryBuilder(geoExpression, myCriteria, typeAdapters));
 		} else if (facetValues.size() > 1) {
 			final BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			for (final FacetValue facetValue : facetValues) {
-				final DslGeoExpression geoExpression = DslParserUtil.parseGeoExpression(facetValue.getListFilter().getFilterValue());
+				final DslGeoExpression geoExpression = DslParserUtil.parseGeoExpression(facetValue.listFilter().getFilterValue());
 				boolQueryBuilder.should(DslGeoToQueryBuilderUtil.translateToQueryBuilder(geoExpression, myCriteria, typeAdapters));//on ajoute les valeurs en OU
 			}
 			filterBoolQueryBuilder.filter(boolQueryBuilder);
@@ -350,21 +350,12 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	private static AggregationBuilder termFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
 		//facette par field
-		final BucketOrder facetOrder;
-		switch (facetDefinition.getOrder()) {
-			case alpha:
-				facetOrder = BucketOrder.key(true);
-				break;
-			case count:
-				facetOrder = BucketOrder.count(false);
-				break;
-			case definition:
-				facetOrder = null; //ES accept null for no sorting
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown facetOrder :" + facetDefinition.getOrder());
-		}
-
+		final BucketOrder facetOrder = switch (facetDefinition.getOrder()) {
+			case alpha -> BucketOrder.key(true);
+			case count -> BucketOrder.count(false);
+			case definition -> null; //ES accept null for no sorting
+			default -> throw new IllegalArgumentException("Unknown facetOrder :" + facetDefinition.getOrder());
+		};
 		//Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
 		final IndexType indexType = IndexType.readIndexType(dtField.getSmartTypeDefinition());
 		String fieldName = dtField.getName();
@@ -419,9 +410,9 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 		final List<KeyedFilter> filters = new ArrayList<>();
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-			final String filterValue = facetRange.getListFilter().getFilterValue();
+			final String filterValue = facetRange.listFilter().getFilterValue();
 			Assertion.check().isTrue(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
-			filters.add(new KeyedFilter(facetRange.getCode(), QueryBuilders.queryStringQuery(filterValue)));
+			filters.add(new KeyedFilter(facetRange.code(), QueryBuilders.queryStringQuery(filterValue)));
 		}
 		return AggregationBuilders.filters(facetDefinition.getName(), filters.toArray(new KeyedFilter[filters.size()]));
 	}
@@ -430,17 +421,17 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 		final RangeAggregationBuilder rangeBuilder = AggregationBuilders.range(facetDefinition.getName())//
 				.field(dtField.getName());
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-			final String filterValue = facetRange.getListFilter().getFilterValue();
+			final String filterValue = facetRange.listFilter().getFilterValue();
 			Assertion.check().isTrue(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
 			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
 			final Optional<Double> minValue = convertToDouble(parsedFilter[3]);
 			final Optional<Double> maxValue = convertToDouble(parsedFilter[4]);
 			if (minValue.isEmpty()) {
-				rangeBuilder.addUnboundedTo(facetRange.getCode(), maxValue.get());
+				rangeBuilder.addUnboundedTo(facetRange.code(), maxValue.get());
 			} else if (maxValue.isEmpty()) {
-				rangeBuilder.addUnboundedFrom(facetRange.getCode(), minValue.get());
+				rangeBuilder.addUnboundedFrom(facetRange.code(), minValue.get());
 			} else {
-				rangeBuilder.addRange(facetRange.getCode(), minValue.get(), maxValue.get()); //always min include and max exclude in ElasticSearch
+				rangeBuilder.addRange(facetRange.code(), minValue.get(), maxValue.get()); //always min include and max exclude in ElasticSearch
 			}
 		}
 		return rangeBuilder;
@@ -451,17 +442,17 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 				.field(dtField.getName())
 				.format(DATE_PATTERN);
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-			final String filterValue = facetRange.getListFilter().getFilterValue();
+			final String filterValue = facetRange.listFilter().getFilterValue();
 			Assertion.check().isTrue(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
 			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
 			final String minValue = parsedFilter[3];
 			final String maxValue = parsedFilter[4];
 			if ("*".equals(minValue)) {
-				dateRangeBuilder.addUnboundedTo(facetRange.getCode(), maxValue);
+				dateRangeBuilder.addUnboundedTo(facetRange.code(), maxValue);
 			} else if ("*".equals(maxValue)) {
-				dateRangeBuilder.addUnboundedFrom(facetRange.getCode(), minValue);
+				dateRangeBuilder.addUnboundedFrom(facetRange.code(), minValue);
 			} else {
-				dateRangeBuilder.addRange(facetRange.getCode(), minValue, maxValue); //always min include and max exclude in ElasticSearch
+				dateRangeBuilder.addRange(facetRange.code(), minValue, maxValue); //always min include and max exclude in ElasticSearch
 			}
 		}
 		return dateRangeBuilder;
@@ -474,7 +465,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 		GeoDistanceAggregationBuilder rangeBuilder = null;//AggregationBuilders.geoDistance(name, origin)range(facetDefinition.getName())//
 		//.field(dtField.getName());
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-			final String filterValue = facetRange.getListFilter().getFilterValue();
+			final String filterValue = facetRange.listFilter().getFilterValue();
 			final DslGeoExpression dslGeoExpression = DslParserUtil.parseGeoExpression(filterValue);
 			final String geoFieldName = dslGeoExpression.getField().getFieldName();
 			Assertion.check().isTrue(geoFieldName.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
@@ -509,7 +500,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 			}
 			final DistanceUnit startDistanceUnit = DistanceUnit.fromString(geoStartDistanceQuery.getDistanceUnit());
 			final DistanceUnit endDistanceUnit = DistanceUnit.fromString(geoEndDistanceQuery.getDistanceUnit());
-			rangeBuilder.addRange(facetRange.getCode(), startDistanceUnit.toMeters(geoStartDistanceQuery.getDistance()), endDistanceUnit.toMeters(geoEndDistanceQuery.getDistance()));
+			rangeBuilder.addRange(facetRange.code(), startDistanceUnit.toMeters(geoStartDistanceQuery.getDistance()), endDistanceUnit.toMeters(geoEndDistanceQuery.getDistance()));
 		}
 		return rangeBuilder;
 	}

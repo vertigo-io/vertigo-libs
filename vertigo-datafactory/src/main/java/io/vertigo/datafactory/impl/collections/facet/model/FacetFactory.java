@@ -132,7 +132,7 @@ public final class FacetFactory {
 
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			//Pour chaque Valeur de facette on trouve les élements.
-			final DtList<D> facetFilteredList = apply(facetRange.getListFilter(), dtList);
+			final DtList<D> facetFilteredList = apply(facetRange.listFilter(), dtList);
 			clusterValues.put(facetRange, facetFilteredList);
 		}
 		return clusterValues;
@@ -195,7 +195,7 @@ public final class FacetFactory {
 		@Override
 		public int compare(final FacetValue o1, final FacetValue o2) {
 			final int compareNbDoc = clusterValues.get(o2).size() - clusterValues.get(o1).size();
-			return compareNbDoc != 0 ? compareNbDoc : o1.getLabel().getDisplay().compareToIgnoreCase(o2.getLabel().getDisplay());
+			return compareNbDoc != 0 ? compareNbDoc : o1.label().getDisplay().compareToIgnoreCase(o2.label().getDisplay());
 		}
 	}
 

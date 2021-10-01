@@ -37,54 +37,23 @@ import io.vertigo.datafactory.collections.ListFilter;
  * Fait partie du modèle lorsque les valeurs sont déduites.
  *
  * @author pchretien
+ *
+ * @param code the code of the facet
+ * @param listFilter the list filter
+ * @param label the label of the facet
+ * This label must be human readable.
+ * examples :
+ * - 'small files' can be preferred to an expression.
  */
-public final class FacetValue implements Serializable {
-	private static final long serialVersionUID = -7077655936787603783L;
-	private final String code;
-	private final LocaleMessageText label;
-	private final ListFilter listFilter;
+public record FacetValue(
+		String code,
+		ListFilter listFilter,
+		LocaleMessageText label) implements Serializable {
 
-	/**
-	 * Contructor.
-	 * @param code the code of the facet
-	 * @param listFilter the list filter
-	 * @param label the label of the facet
-	 */
-	public FacetValue(final String code, final ListFilter listFilter, final LocaleMessageText label) {
+	public FacetValue {
 		Assertion.check()
 				.isNotBlank(code)
 				.isNotNull(listFilter)
 				.isNotNull(label);
-		//-----
-		this.code = code;
-		this.listFilter = listFilter;
-		this.label = label;
-	}
-
-	/**
-	 * @return the code of the facet
-	 */
-	public String getCode() {
-		return code;
-	}
-
-	/**
-	 * Returns the label of the facet.
-	 * This label must be human readable.
-	 *
-	 * examples :
-	 * - 'small files' can be preferred to an expression.
-	 *
-	 * @return the label of the facet
-	 */
-	public LocaleMessageText getLabel() {
-		return label;
-	}
-
-	/**
-	 * @return the listFilter
-	 */
-	public ListFilter getListFilter() {
-		return listFilter;
 	}
 }

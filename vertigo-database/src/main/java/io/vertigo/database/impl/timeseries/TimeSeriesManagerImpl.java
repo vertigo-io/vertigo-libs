@@ -119,11 +119,11 @@ public class TimeSeriesManagerImpl implements TimeSeriesManager {
 				.isNotNull(clusteredMeasure);
 		//---
 		Assertion.check()
-				.isNotBlank(clusteredMeasure.getMeasure())
-				.isNotNull(clusteredMeasure.getThresholds())
-				.isFalse(clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
+				.isNotBlank(clusteredMeasure.measure())
+				.isNotNull(clusteredMeasure.thresholds())
+				.isFalse(clusteredMeasure.thresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.measure());
 		//we use the natural order
-		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
+		clusteredMeasure.thresholds().sort(Comparator.naturalOrder());
 		//---
 		return analyticsManager.traceWithReturn(
 				TIMESERIES_CATEGORY,
