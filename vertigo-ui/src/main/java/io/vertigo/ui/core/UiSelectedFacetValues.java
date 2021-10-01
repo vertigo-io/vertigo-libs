@@ -51,7 +51,7 @@ public final class UiSelectedFacetValues extends HashMap<String, List<String>> {
 				.forEach(facetName -> put(facetName, selectedFacetValues
 						.getFacetValues(facetName)
 						.stream()
-						.map(FacetValue::getCode)
+						.map(FacetValue::code)
 						.collect(Collectors.toList())));
 
 	}
@@ -79,8 +79,8 @@ public final class UiSelectedFacetValues extends HashMap<String, List<String>> {
 
 	private static void appendRangeFacetValue(final String label, final FacetDefinition facetDefinition, final SelectedFacetValuesBuilder selectedFacetValuesBuilder) {
 		for (final FacetValue facet : facetDefinition.getFacetRanges()) {
-			if (facet.getLabel().getDisplay().equals(label)
-					|| facet.getCode().equals(label)) {
+			if (facet.label().getDisplay().equals(label)
+					|| facet.code().equals(label)) {
 				selectedFacetValuesBuilder.add(facetDefinition, facet);
 				break;
 			}

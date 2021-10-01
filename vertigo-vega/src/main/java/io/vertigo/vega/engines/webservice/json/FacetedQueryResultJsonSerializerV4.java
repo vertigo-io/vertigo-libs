@@ -99,8 +99,8 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 				if (!dtList.isEmpty()) {
 					final JsonArray jsonList = (JsonArray) context.serialize(dtList);
 					final JsonObject jsonClusterElement = new JsonObject();
-					jsonClusterElement.addProperty("code", cluster.getKey().getCode());
-					jsonClusterElement.addProperty("label", cluster.getKey().getLabel().getDisplay());
+					jsonClusterElement.addProperty("code", cluster.getKey().code());
+					jsonClusterElement.addProperty("label", cluster.getKey().label().getDisplay());
 					jsonClusterElement.add("list", jsonList);
 					jsonClusterElement.addProperty("listType", dtList.getDefinition().getClassSimpleName());
 					jsonClusterElement.addProperty("totalCount", getFacetCount(cluster.getKey(), facetedQueryResult));
@@ -119,9 +119,9 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 			for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
 				if (entry.getValue() > 0) {
 					final JsonObject jsonFacetValuesElement = new JsonObject();
-					jsonFacetValuesElement.addProperty("code", entry.getKey().getCode());
+					jsonFacetValuesElement.addProperty("code", entry.getKey().code());
 					jsonFacetValuesElement.addProperty("count", entry.getValue());
-					jsonFacetValuesElement.addProperty("label", entry.getKey().getLabel().getDisplay());
+					jsonFacetValuesElement.addProperty("label", entry.getKey().label().getDisplay());
 					jsonFacetValues.add(jsonFacetValuesElement);
 				}
 			}
@@ -144,7 +144,7 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 				.stream()
 				.filter(facet -> clusterFacetDefinition.equals(facet.getDefinition()))
 				.flatMap(facet -> facet.getFacetValues().entrySet().stream())
-				.filter(facetEntry -> key.getCode().equals(facetEntry.getKey().getCode()))
+				.filter(facetEntry -> key.code().equals(facetEntry.getKey().code()))
 				.findFirst()
 				.orElseThrow(() -> new IllegalArgumentException("Can't found facet for search cluster"))
 				.getValue();

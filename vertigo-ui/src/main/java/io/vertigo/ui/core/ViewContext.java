@@ -494,8 +494,8 @@ public final class ViewContext implements Serializable {
 			if (!dtList.isEmpty()) {
 				final ClusterUiList clusterElement = new ClusterUiList(
 						dtList, keyFieldNameOpt,
-						cluster.getKey().getCode(),
-						cluster.getKey().getLabel().getDisplay(),
+						cluster.getKey().code(),
+						cluster.getKey().label().getDisplay(),
 						dtList.getDefinition().getClassSimpleName(),
 						getFacetCount(cluster.getKey(), facetedQueryResult));
 				jsonCluster.add(clusterElement);
@@ -521,7 +521,7 @@ public final class ViewContext implements Serializable {
 				.stream()
 				.filter(facet -> clusterFacetDefinition.equals(facet.getDefinition()))
 				.flatMap(facet -> facet.getFacetValues().entrySet().stream())
-				.filter(facetEntry -> key.getCode().equals(facetEntry.getKey().getCode()))
+				.filter(facetEntry -> key.code().equals(facetEntry.getKey().code()))
 				.findFirst()
 				.orElseThrow(() -> new IllegalArgumentException("Can't found facet for search cluster"))
 				.getValue();
@@ -534,9 +534,9 @@ public final class ViewContext implements Serializable {
 			for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
 				if (entry.getValue() > 0) {
 					final HashMap<String, Serializable> facetValue = new HashMap<>();
-					facetValue.put("code", entry.getKey().getCode());
+					facetValue.put("code", entry.getKey().code());
 					facetValue.put("count", entry.getValue());
-					facetValue.put("label", entry.getKey().getLabel().getDisplay());
+					facetValue.put("label", entry.getKey().label().getDisplay());
 					facetValues.add(facetValue);
 				}
 			}
