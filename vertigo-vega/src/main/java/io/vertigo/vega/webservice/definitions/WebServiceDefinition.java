@@ -37,7 +37,7 @@ import io.vertigo.vega.webservice.definitions.WebServiceParam.WebServiceParamTyp
  * @author npiedeloup
  */
 @DefinitionPrefix(WebServiceDefinition.PREFIX)
-public final class WebServiceDefinition extends AbstractDefinition {
+public final class WebServiceDefinition extends AbstractDefinition<WebServiceDefinition> {
 	public static final String PREFIX = "Ws";
 
 	/**

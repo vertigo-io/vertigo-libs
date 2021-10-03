@@ -35,7 +35,7 @@ import io.vertigo.datamodel.task.model.TaskEngine;
  * @author  fconstantin, pchretien
  */
 @DefinitionPrefix(TaskDefinition.PREFIX)
-public final class TaskDefinition extends AbstractDefinition {
+public final class TaskDefinition extends AbstractDefinition<TaskDefinition> {
 	public static final String PREFIX = "Tk";
 	/** the package name. */
 	private final String packageName;

@@ -33,7 +33,7 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.core.util.StringUtil;
 
 @DefinitionPrefix(CommandDefinition.PREFIX)
-public final class CommandDefinition extends AbstractDefinition {
+public final class CommandDefinition extends AbstractDefinition<CommandDefinition> {
 	public static final String PREFIX = "Cmd";
 	private static final Pattern COMMAND_PATTERN = Pattern.compile("(\\/[a-zA-Z0-9]+)+");
 
