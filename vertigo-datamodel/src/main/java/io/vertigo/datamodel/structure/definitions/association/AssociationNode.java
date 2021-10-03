@@ -18,7 +18,7 @@
 package io.vertigo.datamodel.structure.definitions.association;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 
 /**
@@ -27,7 +27,7 @@ import io.vertigo.datamodel.structure.definitions.DtDefinition;
  * @author  jcassignol, pchretien
  */
 public final class AssociationNode {
-	private final DefinitionReference<DtDefinition> dtDefinitionRef;
+	private final DefinitionId<DtDefinition> dtDefinitionId;
 	private final boolean navigable;
 	private final String role;
 	private final String label;
@@ -56,7 +56,7 @@ public final class AssociationNode {
 				.isNotNull(role)
 				.isTrue(role.indexOf(' ') == -1, "Le role ne doit pas être un label : {0}", role);
 		//-----
-		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
+		dtDefinitionId = dtDefinition.id();
 		this.role = role;
 		this.label = label;
 		navigable = isNavigable;
@@ -68,7 +68,7 @@ public final class AssociationNode {
 	 * @return DT (classe de l'objet métier) associé au noeud
 	 */
 	public DtDefinition getDtDefinition() {
-		return dtDefinitionRef.get();
+		return dtDefinitionId.get();
 	}
 
 	/**

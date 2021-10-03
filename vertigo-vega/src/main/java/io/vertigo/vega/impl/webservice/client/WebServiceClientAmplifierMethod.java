@@ -31,7 +31,7 @@ import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 import io.vertigo.vega.webservice.definitions.WebServiceParam;
 import io.vertigo.vega.webservice.exception.SessionException;
 
-public final class WebServiceClientProxyMethod implements AmplifierMethod {
+public final class WebServiceClientAmplifierMethod implements AmplifierMethod {
 
 	private final Map<String, HttpClientConnector> httpClientConnectorByName = new HashMap<>();
 	private final JsonEngine jsonReaderEngine;
@@ -40,7 +40,7 @@ public final class WebServiceClientProxyMethod implements AmplifierMethod {
 	* @param jsonReaderEngine jsonReaderEngine
 	*/
 	@Inject
-	public WebServiceClientProxyMethod(final JsonEngine jsonReaderEngine,
+	public WebServiceClientAmplifierMethod(final JsonEngine jsonReaderEngine,
 			final List<HttpClientConnector> httpClientConnectors) {
 		Assertion.check().isNotNull(jsonReaderEngine)
 				.isNotNull(httpClientConnectors);
@@ -92,15 +92,16 @@ public final class WebServiceClientProxyMethod implements AmplifierMethod {
 		} else if (responseStatus / 100 == 3) {
 			throw new VUserException((String) response.body());
 		} else if (responseStatus / 100 == 4) {
-			if (responseStatus == HttpServletResponse.SC_UNAUTHORIZED) {
-				throw WrappedException.wrap(new SessionException((String) response.body()));
-			} else if (responseStatus == HttpServletResponse.SC_FORBIDDEN) {
-				throw new VSecurityException(LocaleMessageText.of((String) response.body()));
-			} else if (responseStatus == HttpServletResponse.SC_BAD_REQUEST) {
-				throw new JsonSyntaxException((String) response.body());
-			} else {
-				final Map errorMessages = convertErrorFromJson((String) response.body(), Map.class);
-				throw new WebServiceUserException(responseStatus, errorMessages);
+			switch (responseStatus) {
+				case HttpServletResponse.SC_UNAUTHORIZED:
+					throw WrappedException.wrap(new SessionException((String) response.body()));
+				case HttpServletResponse.SC_FORBIDDEN:
+					throw new VSecurityException(LocaleMessageText.of((String) response.body()));
+				case HttpServletResponse.SC_BAD_REQUEST:
+					throw new JsonSyntaxException((String) response.body());
+				default:
+					final Map errorMessages = convertErrorFromJson((String) response.body(), Map.class);
+					throw new WebServiceUserException(responseStatus, errorMessages);
 			}
 		} else {
 			throw WrappedException.wrap(new VSystemException((String) response.body()));

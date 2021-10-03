@@ -49,7 +49,7 @@ import io.vertigo.datamodel.structure.definitions.Properties;
  * @author pchretien
  */
 @DefinitionPrefix(SmartTypeDefinition.PREFIX)
-public final class SmartTypeDefinition extends AbstractDefinition {
+public final class SmartTypeDefinition extends AbstractDefinition<SmartTypeDefinition> {
 	public static final String PREFIX = "STy";
 
 	public enum Scope {

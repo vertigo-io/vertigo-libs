@@ -65,7 +65,7 @@ import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
@@ -367,10 +367,10 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		}
 	}
 
-	private static final class DefinitionReferenceJsonSerializer implements JsonSerializer<DefinitionReference> {
+	private static final class DefinitionReferenceJsonSerializer implements JsonSerializer<DefinitionId> {
 		/** {@inheritDoc} */
 		@Override
-		public JsonElement serialize(final DefinitionReference src, final Type typeOfSrc, final JsonSerializationContext context) {
+		public JsonElement serialize(final DefinitionId src, final Type typeOfSrc, final JsonSerializationContext context) {
 			return context.serialize(src.get().getName());
 		}
 	}
@@ -563,7 +563,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			}
 
 			gsonBuilder
-					.registerTypeAdapter(DefinitionReference.class, new DefinitionReferenceJsonSerializer())
+					.registerTypeAdapter(DefinitionId.class, new DefinitionReferenceJsonSerializer())
 					.registerTypeAdapter(Optional.class, new OptionJsonSerializer())
 					.registerTypeAdapter(Class.class, new ClassJsonSerializer())
 					.registerTypeAdapter(UID.class, new URIJsonAdapter())

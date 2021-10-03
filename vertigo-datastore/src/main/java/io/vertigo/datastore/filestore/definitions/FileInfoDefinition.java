@@ -33,7 +33,7 @@ import io.vertigo.datastore.filestore.model.FileInfo;
  * @author  npiedeloup, pchretien
  */
 @DefinitionPrefix(FileInfoDefinition.PREFIX)
-public final class FileInfoDefinition extends AbstractDefinition {
+public final class FileInfoDefinition extends AbstractDefinition<FileInfoDefinition> {
 	public static final String PREFIX = "Fi";
 	/**
 	 * StoreName des fichiers de ce type.

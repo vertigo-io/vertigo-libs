@@ -139,7 +139,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	 * @return the name of the table
 	 */
 	private static String getEntityName(final DtDefinition dtDefinition) {
-		return dtDefinition.getFragment().orElse(dtDefinition).getLocalName();
+		return dtDefinition.getFragment().orElse(dtDefinition).id().shortName();
 	}
 
 	private static String getRequestedCols(final DtDefinition dtDefinition) {

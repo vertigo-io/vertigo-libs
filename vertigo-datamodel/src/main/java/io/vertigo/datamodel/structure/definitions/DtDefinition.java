@@ -27,8 +27,8 @@ import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.AbstractDefinition;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.core.node.definition.DefinitionReference;
 
 /**
  * The DtDefinition class defines the definition of data.
@@ -36,14 +36,14 @@ import io.vertigo.core.node.definition.DefinitionReference;
  * @author pchretien
  */
 @DefinitionPrefix(DtDefinition.PREFIX)
-public final class DtDefinition extends AbstractDefinition {
+public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 	public static final String PREFIX = "Dt";
 	/** the dataSpace must match this pattern. */
 	public static final Pattern REGEX_DATA_SPACE = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
 	public static final String DEFAULT_DATA_SPACE = "main";
 
 	/** if the definition is a fragment. */
-	private final Optional<DefinitionReference<DtDefinition>> fragmentOpt;
+	private final Optional<DefinitionId<DtDefinition>> fragmentOpt;
 
 	/** name of the package. */
 	private final String packageName;
@@ -70,7 +70,7 @@ public final class DtDefinition extends AbstractDefinition {
 	 */
 	DtDefinition(
 			final String name,
-			final Optional<DefinitionReference<DtDefinition>> fragment,
+			final Optional<DefinitionId<DtDefinition>> fragment,
 			final String packageName,
 			final DtStereotype stereotype,
 			final List<DtField> dtFields,
@@ -143,7 +143,7 @@ public final class DtDefinition extends AbstractDefinition {
 	}
 
 	public Optional<DtDefinition> getFragment() {
-		return fragmentOpt.map(DefinitionReference::get);
+		return fragmentOpt.map(DefinitionId::get);
 	}
 
 	/**
@@ -164,7 +164,7 @@ public final class DtDefinition extends AbstractDefinition {
 	 * @return Simple Nom (i.e. sans le package) de la classe d'implémentation du DtObject
 	 */
 	public String getClassSimpleName() {
-		return getLocalName();
+		return id().shortName();
 	}
 
 	/**

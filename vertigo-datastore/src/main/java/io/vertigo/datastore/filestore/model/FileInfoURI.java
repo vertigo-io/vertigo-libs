@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
 
@@ -48,7 +48,7 @@ public final class FileInfoURI implements Serializable {
 	 */
 	public static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
 
-	private final DefinitionReference<FileInfoDefinition> fileInfoDefinitionRef;
+	private final DefinitionId<FileInfoDefinition> fileInfoDefinitionId;
 	private final Serializable key;
 
 	/** URN de la ressource (Nom complet).*/
@@ -65,7 +65,7 @@ public final class FileInfoURI implements Serializable {
 				.isNotNull(fileInfoDefinition);
 		//-----
 		this.key = Serializable.class.cast(key);
-		fileInfoDefinitionRef = new DefinitionReference<>(fileInfoDefinition);
+		fileInfoDefinitionId = fileInfoDefinition.id();
 
 		//Calcul de l'urn
 		urn = toURN(this);
@@ -78,7 +78,7 @@ public final class FileInfoURI implements Serializable {
 	 * @return Définition de la ressource.
 	 */
 	public FileInfoDefinition getDefinition() {
-		return fileInfoDefinitionRef.get();
+		return fileInfoDefinitionId.get();
 	}
 
 	/**

@@ -162,7 +162,7 @@ public final class CommentWebServices implements WebServices {
 
 	private static Object stringToId(final String id, final DtDefinition dtDefinition) {
 		final Optional<DtField> idFieldOpt = dtDefinition.getIdField();
-		Assertion.check().isTrue(idFieldOpt.isPresent(), "KeyConcept {0} must have an id field, in order to support Comment extension", dtDefinition.getLocalName());
+		Assertion.check().isTrue(idFieldOpt.isPresent(), "KeyConcept {0} must have an id field, in order to support Comment extension", dtDefinition.id().shortName());
 
 		final Class dataType = idFieldOpt.get().getSmartTypeDefinition().getJavaClass();
 		if (String.class.isAssignableFrom(dataType)) {
@@ -172,7 +172,7 @@ public final class CommentWebServices implements WebServices {
 		} else if (Long.class.isAssignableFrom(dataType)) {
 			return Long.valueOf(id);
 		}
-		throw new IllegalArgumentException("the id of the keyConcept " + dtDefinition.getLocalName() + " must be String, Long or Integer");
+		throw new IllegalArgumentException("the id of the keyConcept " + dtDefinition.id().shortName() + " must be String, Long or Integer");
 	}
 
 	private UID<Account> getLoggedAccountURI() {

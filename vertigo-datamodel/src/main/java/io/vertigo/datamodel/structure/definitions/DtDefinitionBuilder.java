@@ -26,7 +26,7 @@ import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.locale.LocaleMessageKey;
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 
@@ -57,7 +57,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 	private DtDefinition dtDefinition;
 	private final String myName;
-	private DefinitionReference<DtDefinition> myFragmentRef;
+	private DefinitionId<DtDefinition> myFragmentId;
 	private String myPackageName;
 	private DtStereotype myStereotype;
 	private DtField myIdField;
@@ -98,7 +98,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		Assertion.check().isNotNull(fragment);
 		//---
 		myStereotype = DtStereotype.Fragment;
-		myFragmentRef = new DefinitionReference<>(fragment);
+		myFragmentId = fragment.id();
 		return this;
 	}
 
@@ -322,7 +322,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			sortField = findFieldByName(mySortFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Sort field '{0}' not found on '{1}'", mySortFieldName, dtDefinition.getName())));
 		} else if (myStereotype == DtStereotype.Fragment) {
-			sortField = myFragmentRef.get().getSortField().orElse(null);
+			sortField = myFragmentId.get().getSortField().orElse(null);
 		} else {
 			sortField = null;
 		}
@@ -332,7 +332,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			displayField = findFieldByName(myDisplayFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Display field '{0}' not found on '{1}'", myDisplayFieldName, dtDefinition.getName())));
 		} else if (myStereotype == DtStereotype.Fragment) {
-			displayField = myFragmentRef.get().getDisplayField().orElse(null);
+			displayField = myFragmentId.get().getDisplayField().orElse(null);
 		} else {
 			displayField = null;
 		}
@@ -342,14 +342,14 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			handleField = findFieldByName(myHandleFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Handle field '{0}' not found on '{1}'", myHandleFieldName, dtDefinition.getName())));
 		} else if (myStereotype == DtStereotype.Fragment) {
-			handleField = myFragmentRef.get().getHandleField().orElse(null);
+			handleField = myFragmentId.get().getHandleField().orElse(null);
 		} else {
 			handleField = null;
 		}
 
 		dtDefinition = new DtDefinition(
 				myName,
-				Optional.ofNullable(myFragmentRef),
+				Optional.ofNullable(myFragmentId),
 				myPackageName,
 				myStereotype,
 				myFields,

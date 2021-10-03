@@ -24,7 +24,7 @@ import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
@@ -87,7 +87,7 @@ public final class DtField {
 	private final String name;
 	private final FieldType type;
 	private final Cardinality cardinality;
-	private final DefinitionReference<SmartTypeDefinition> smartTypeRef;
+	private final DefinitionId<SmartTypeDefinition> smartTypeRef;
 	private final LocaleMessageText label;
 	private final boolean persistent;
 
@@ -131,7 +131,7 @@ public final class DtField {
 				.isNotNull(cardinality);
 		//-----
 		this.id = id;
-		smartTypeRef = new DefinitionReference<>(smartType);
+		smartTypeRef = smartType.id();
 		this.type = type;
 		this.cardinality = cardinality;
 		//-----

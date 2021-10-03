@@ -34,7 +34,7 @@ import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
@@ -60,7 +60,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	private static final long serialVersionUID = -4639050257543017072L;
 
 	/** Référence vers la définition. */
-	private final DefinitionReference<DtDefinition> dtDefinitionRef;
+	private final DefinitionId<DtDefinition> dtDefinitionId;
 	protected final Set<String> fieldIndex;
 
 	private String inputKey;
@@ -91,7 +91,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 				.isNotNull(modifiedFields, "modifiedFields can't be null");
 		//-----
 		this.inputDto = inputDto;
-		this.dtDefinitionRef = new DefinitionReference<>(DtObjectUtil.findDtDefinition(inputDto));
+		this.dtDefinitionId = DtObjectUtil.findDtDefinition(inputDto).id();
 		fieldIndex = Collections.unmodifiableSet(getDtDefinition().getFields().stream()
 				.map(DtField::getName)
 				.collect(Collectors.toSet()));
@@ -159,7 +159,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 */
 	@Override
 	public final DtDefinition getDtDefinition() {
-		return dtDefinitionRef.get();
+		return dtDefinitionId.get();
 	}
 
 	private DtObjectErrors getDtObjectErrors() {

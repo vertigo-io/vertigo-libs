@@ -185,7 +185,7 @@ public final class PublisherDataUtil {
 	}
 
 	private static void appendPublisherNodeDefinition(final StringBuilder sb, final DtDefinition dtDefinition) {
-		sb.append("PN_").append(dtDefinition.getLocalName()).append("  = new PublisherNode (\n");
+		sb.append("PN_").append(dtDefinition.id().shortName()).append("  = new PublisherNode (\n");
 		for (final DtField dtField : dtDefinition.getFields()) {
 			final String fieldName = dtField.getName();
 			switch (dtField.getSmartTypeDefinition().getScope()) {

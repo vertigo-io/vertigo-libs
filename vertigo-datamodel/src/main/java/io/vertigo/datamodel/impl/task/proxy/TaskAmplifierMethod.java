@@ -38,7 +38,7 @@ import io.vertigo.datamodel.task.proxy.TaskContextProperty;
 import io.vertigo.datamodel.task.proxy.TaskInput;
 import io.vertigo.datamodel.task.proxy.TaskOutput;
 
-public final class TaskProxyMethod implements AmplifierMethod {
+public final class TaskAmplifierMethod implements AmplifierMethod {
 
 	@Override
 	public Class<io.vertigo.datamodel.task.proxy.TaskProxyAnnotation> getAnnotationType() {

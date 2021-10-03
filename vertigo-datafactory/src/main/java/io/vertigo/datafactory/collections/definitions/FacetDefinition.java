@@ -51,7 +51,7 @@ import io.vertigo.datamodel.structure.definitions.DtField;
  * @author pchretien
  */
 @DefinitionPrefix(FacetDefinition.PREFIX)
-public final class FacetDefinition extends AbstractDefinition {
+public final class FacetDefinition extends AbstractDefinition<FacetDefinition> {
 	public static final String PREFIX = "Fct";
 	private final DtField dtField;
 	private final LocaleMessageText label;
