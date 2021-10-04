@@ -52,7 +52,7 @@ public final class UserAuthorizations implements Serializable {
 	/**
 	 * KeyConcept dependent authorizations list by keyConcept of this user.
 	 */
-	private final Map<DefinitionReference<DtDefinition>, Set<DefinitionReference<Authorization>>> authorizationMapRefs = new HashMap<>();
+	private final Map<DefinitionReference<DtDefinition>, Map<String, DefinitionReference<Authorization>>> authorizationMapRefs = new HashMap<>();
 
 	/**
 	 * Accepted roles for this user.
@@ -126,8 +126,8 @@ public final class UserAuthorizations implements Serializable {
 		authorizationRefs.put(authorization.getName(), definitionReference);
 
 		if (authorization.getEntityDefinition().isPresent()) {
-			authorizationMapRefs.computeIfAbsent(new DefinitionReference<>(authorization.getEntityDefinition().get()), key -> new HashSet<>())
-					.add(definitionReference);
+			final Map<String, DefinitionReference<Authorization>> entityAuthorizationRefs = authorizationMapRefs.computeIfAbsent(new DefinitionReference<>(authorization.getEntityDefinition().get()), key -> new HashMap<>());
+			entityAuthorizationRefs.put(authorization.getName(), definitionReference);
 			for (final Authorization grantedAuthorization : authorization.getGrants()) {
 				if (!hasAuthorization(grantedAuthorization::getName)) { //On test pour ne pas créer de boucle
 					addAuthorization(grantedAuthorization);
@@ -137,6 +137,7 @@ public final class UserAuthorizations implements Serializable {
 			final String authorizationPrefix = Authorization.PREFIX + authorization.getEntityDefinition().get().getLocalName() + '$';
 			for (final String overridedAuthorization : authorization.getOverrides()) {
 				authorizationRefs.put(authorizationPrefix + overridedAuthorization, definitionReference);
+				entityAuthorizationRefs.put(authorizationPrefix + overridedAuthorization, definitionReference);
 			}
 		}
 		return this;
@@ -158,9 +159,9 @@ public final class UserAuthorizations implements Serializable {
 	 * @return Authorizations set
 	 */
 	public Set<Authorization> getEntityAuthorizations(final DtDefinition entityDefinition) {
-		final Set<DefinitionReference<Authorization>> entityAuthorizationRefs = authorizationMapRefs.get(new DefinitionReference<>(entityDefinition));
+		final Map<String, DefinitionReference<Authorization>> entityAuthorizationRefs = authorizationMapRefs.get(new DefinitionReference<>(entityDefinition));
 		if (entityAuthorizationRefs != null) {
-			return entityAuthorizationRefs.stream()
+			return entityAuthorizationRefs.values().stream()
 					.map(DefinitionReference::get)
 					.collect(Collectors.toSet());
 		}

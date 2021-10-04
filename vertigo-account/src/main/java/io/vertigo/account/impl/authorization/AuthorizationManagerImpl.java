@@ -200,6 +200,12 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 				.filter(permission -> permission.getOperation().get().equals(operationName.name())
 						|| permission.getOverrides().contains(operationName.name()))
 				.collect(Collectors.toList());
+
+		if (permissions.isEmpty()) {
+			// Si il n'y a pas d'autorisation.
+			return ""; //Attention : pas de *:*
+		}
+
 		for (final Authorization permission : permissions) {
 			for (final RuleMultiExpression ruleExpression : permission.getRules()) {
 				securityRuleTranslator.withRule(ruleExpression);

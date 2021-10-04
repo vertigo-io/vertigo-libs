@@ -379,7 +379,6 @@ public final class VSecurityManagerTest {
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test))
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test2))
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test3))
-					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$readHp))
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$write))
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$create))
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$delete));
@@ -389,6 +388,61 @@ public final class VSecurityManagerTest {
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
 			Assertions.assertEquals("(+amount:<=100.0) (+utiIdOwner:1000)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.read));
+			Assertions.assertEquals("(amount:<=100.0 utiIdOwner:1000)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.read2));
+			Assertions.assertEquals("((+amount:<=100.0 -utiIdOwner:1000) (+amount:>100.0 +utiIdOwner:1000))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.read3));
+			Assertions.assertEquals("", authorizationManager.getSearchSecurity(Record.class, RecordOperations.readHp));
+			Assertions.assertEquals("(+utiIdOwner:1000 +etaCd:('CRE' 'VAL' 'PUB' 'NOT' 'REA')) (+typId:10 +amount:>0 +amount:<=100.0 +etaCd:('CRE' 'VAL' 'PUB' 'NOT' 'REA'))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.write));
+			Assertions.assertEquals("(+typId:10 +amount:<=100.0)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.create));
+			Assertions.assertEquals("(+typId:10) (+utiIdOwner:1000 +etaCd:('CRE' 'VAL'))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.delete));
+
+			Assertions.assertEquals("((-utiIdOwner:1000 +(amount:<100.0 amount:100.0 amount:<=100.0)) (+utiIdOwner:1000 +(amount:>100.0 amount:100.0 amount:>=100.0)))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.test));
+			Assertions.assertEquals("(etaCd:('CRE' 'VAL' 'PUB') etaCd:('CRE' 'VAL' 'PUB') etaCd:'PUB' -etaCd:'PUB' etaCd:('PUB' 'NOT' 'REA' 'ARC') etaCd:('PUB' 'NOT' 'REA' 'ARC'))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.test2));
+			//GEO<${geo} OR GEO<=${geo} OR GEO=${geo} OR GEO!=${geo} OR GEO>${geo} OR GEO>=${geo}
+			Assertions.assertEquals("((+regId:1 +depId:2 +_exists_:comId) (+regId:1 +depId:2) (+regId:1 +depId:2 -_exists_:comId) (-regId:1 -depId:2 _exists_:comId) (+regId:1 -_exists_:depId -_exists_:comId) (+regId:1 +(depId:2 -_exists_:depId) -_exists_:comId))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.test3));
+
+			final boolean canReadNotify = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$notify);
+			Assertions.assertFalse(canReadNotify);
+			Assertions.assertEquals("", authorizationManager.getSearchSecurity(Record.class, RecordOperations.notify));
+		} finally {
+			securityManager.stopCurrentUserSession();
+		}
+	}
+
+	@Test
+	public void testSecuritySearchOnEntityWithOverides() {
+
+		final Record recordTooExpensive = createRecord();
+		recordTooExpensive.setAmount(10000d);
+
+		final Record recordOtherUser = createRecord();
+		recordOtherUser.setUtiIdOwner(2000L);
+
+		final Record recordOtherUserAndTooExpensive = createRecord();
+		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
+		recordOtherUserAndTooExpensive.setAmount(10000d);
+
+		final Authorization recordRead = getAuthorization(RecordAuthorizations.AtzRecord$read);
+		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
+		try {
+			securityManager.startCurrentUserSession(userSession);
+			authorizationManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID)
+					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
+					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
+					.withSecurityKeys("geo", new Long[] { DEFAULT_REG_ID, DEFAULT_DEP_ID, null }) //droit sur tout un département
+					.addAuthorization(recordRead)
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test2))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test3))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$readHp)) //override read
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$write))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$create))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$delete));
+
+			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$read);
+			Assertions.assertTrue(canReadRecord);
+
+			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
+			Assertions.assertEquals("(*:*)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.read));
 			Assertions.assertEquals("(amount:<=100.0 utiIdOwner:1000)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.read2));
 			Assertions.assertEquals("((+amount:<=100.0 -utiIdOwner:1000) (+amount:>100.0 +utiIdOwner:1000))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.read3));
 			Assertions.assertEquals("(*:*)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.readHp));
