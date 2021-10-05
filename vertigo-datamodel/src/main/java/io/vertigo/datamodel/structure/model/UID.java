@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.StringUtil;
@@ -65,7 +66,7 @@ public final class UID<E extends Entity> implements Serializable {
 				.isNotNull(id)
 				.isNotNull(definition);
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-		smartTypeManager.checkType(definition.getIdField().get().getSmartTypeDefinition(), id);
+		smartTypeManager.checkType(definition.getIdField().get().getSmartTypeDefinition(), Cardinality.ONE, id);
 		//-----
 		this.id = Serializable.class.cast(id);
 		this.definitionId = definition.id();

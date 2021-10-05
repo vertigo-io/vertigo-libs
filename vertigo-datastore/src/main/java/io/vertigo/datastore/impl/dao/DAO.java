@@ -238,16 +238,7 @@ public class DAO<E extends Entity, P> {
 		// Verification de la valeur est du type du champ
 		final DtDefinition dtDefinition = getDtDefinition();
 		final DtField dtField = dtDefinition.getField(dtFieldName.name());
-		if (dtField.getCardinality().hasMany()) {
-			if (!(value instanceof List)) {
-				throw new ClassCastException("Value " + value + " must be a list");
-			}
-			for (final Object element : List.class.cast(value)) {
-				smartTypeManager.checkType(dtField.getSmartTypeDefinition(), element);
-			}
-		} else {
-			smartTypeManager.checkType(dtField.getSmartTypeDefinition(), value);
-		}
+		smartTypeManager.checkType(dtField.getSmartTypeDefinition(), dtField.getCardinality(), value);
 		return entityStoreManager.find(dtDefinition, criteria, dtListState);
 	}
 
