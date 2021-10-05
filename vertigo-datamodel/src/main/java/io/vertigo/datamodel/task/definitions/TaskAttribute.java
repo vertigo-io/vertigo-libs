@@ -118,18 +118,13 @@ public final class TaskAttribute {
 	 * @return the data accessor.
 	 */
 	public Class getTargetJavaClass() {
-		if (cardinality.hasMany()) {
-			switch (smartTypeDefinition.getScope()) {
-				case BASIC_TYPE:
-					return List.class;
-				case DATA_TYPE:
-					return DtList.class;
-				case VALUE_TYPE:
-					return List.class;
-				default:
-					throw new IllegalStateException();
-			}
-		}
-		return smartTypeDefinition.getJavaClass();
+		return cardinality.hasMany()
+				? switch (smartTypeDefinition.getScope()) {
+				case BASIC_TYPE -> List.class;
+				case DATA_TYPE -> DtList.class;
+				case VALUE_TYPE -> List.class;
+				default -> throw new IllegalStateException();
+				}
+				: smartTypeDefinition.getJavaClass();
 	}
 }

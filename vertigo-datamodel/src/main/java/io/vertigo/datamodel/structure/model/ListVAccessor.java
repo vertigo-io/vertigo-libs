@@ -84,10 +84,10 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 	 */
 	public final <A extends DtListURIForAssociation> A getDtListURI() {
 		final AssociationDefinition associationDefinition = associationDefinitionReference.get();
-		if (associationDefinition instanceof AssociationSimpleDefinition) {
-			return (A) new DtListURIForSimpleAssociation((AssociationSimpleDefinition) associationDefinition, entity.getUID(), roleName);
-		} else if (associationDefinition instanceof AssociationNNDefinition) {
-			return (A) new DtListURIForNNAssociation((AssociationNNDefinition) associationDefinition, entity.getUID(), roleName);
+		if (associationDefinition instanceof final AssociationSimpleDefinition associationSimpleDefinition) {
+			return (A) new DtListURIForSimpleAssociation(associationSimpleDefinition, entity.getUID(), roleName);
+		} else if (associationDefinition instanceof final AssociationNNDefinition associationNNDefinition) {
+			return (A) new DtListURIForNNAssociation(associationNNDefinition, entity.getUID(), roleName);
 		}
 		throw new VSystemException("Unhandled type of association. Only Simple and NN Associations are supported");
 	}
