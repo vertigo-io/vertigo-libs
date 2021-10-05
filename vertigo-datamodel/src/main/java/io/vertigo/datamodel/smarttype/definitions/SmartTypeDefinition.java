@@ -84,7 +84,7 @@ public final class SmartTypeDefinition extends AbstractDefinition<SmartTypeDefin
 	private final Optional<BasicType> basicTypeOpt; //nullable
 	private final AdapterConfig wildCardAdapterConfig; //nullable
 	private final Map<String, AdapterConfig> adapterConfigs;
-	private final FormatterConfig formatterConfig;
+	private final FormatterConfig formatterConfig;//nullable
 	private final List<ConstraintConfig> constraintConfigs;
 
 	private final Properties properties;
@@ -117,7 +117,7 @@ public final class SmartTypeDefinition extends AbstractDefinition<SmartTypeDefin
 		wildCardAdapterConfig = this.adapterConfigs.get("*");
 		this.properties = properties;
 		this.formatterConfig = formatterConfig;
-		this.constraintConfigs = constraintConfigs;
+		this.constraintConfigs = List.copyOf(constraintConfigs);
 
 	}
 

@@ -243,10 +243,10 @@ public class DAO<E extends Entity, P> {
 				throw new ClassCastException("Value " + value + " must be a list");
 			}
 			for (final Object element : List.class.cast(value)) {
-				smartTypeManager.checkValue(dtField.getSmartTypeDefinition(), element);
+				smartTypeManager.checkType(dtField.getSmartTypeDefinition(), element);
 			}
 		} else {
-			smartTypeManager.checkValue(dtField.getSmartTypeDefinition(), value);
+			smartTypeManager.checkType(dtField.getSmartTypeDefinition(), value);
 		}
 		return entityStoreManager.find(dtDefinition, criteria, dtListState);
 	}

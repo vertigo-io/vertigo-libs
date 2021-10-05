@@ -65,7 +65,7 @@ public final class UID<E extends Entity> implements Serializable {
 				.isNotNull(id)
 				.isNotNull(definition);
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-		smartTypeManager.checkValue(definition.getIdField().get().getSmartTypeDefinition(), id);
+		smartTypeManager.checkType(definition.getIdField().get().getSmartTypeDefinition(), id);
 		//-----
 		this.id = Serializable.class.cast(id);
 		this.definitionId = definition.id();

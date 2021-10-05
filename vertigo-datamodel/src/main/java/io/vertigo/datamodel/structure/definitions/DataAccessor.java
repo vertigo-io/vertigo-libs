@@ -63,10 +63,10 @@ public final class DataAccessor {
 				throw new ClassCastException("Value " + value + " must be a list");
 			}
 			for (final Object element : List.class.cast(value)) {
-				smartTypeManager.checkValue(dtField.getSmartTypeDefinition(), element);
+				smartTypeManager.checkType(dtField.getSmartTypeDefinition(), element);
 			}
 		} else {
-			smartTypeManager.checkValue(dtField.getSmartTypeDefinition(), value);
+			smartTypeManager.checkType(dtField.getSmartTypeDefinition(), value);
 		}
 	}
 

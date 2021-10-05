@@ -28,6 +28,7 @@ import io.vertigo.datamodel.structure.definitions.FormatterException;
 public interface SmartTypeManager extends Manager {
 
 	void checkValue(SmartTypeDefinition smartTypeDefinition, Object value);
+	void checkType(SmartTypeDefinition smartTypeDefinition, Object value);
 
 	void checkConstraints(SmartTypeDefinition smartTypeDefinition, Object value) throws ConstraintException;
 
