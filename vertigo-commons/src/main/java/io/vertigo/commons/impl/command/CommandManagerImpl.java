@@ -100,7 +100,7 @@ public final class CommandManagerImpl implements CommandManager, SimpleDefinitio
 				"Command '{0}' takes {1} arguments and {2} were passed", commandDefinition.getCommand(), commandDefinition.getParams().size(), commandParams.length);
 		final Object[] actualArguments = IntStream.range(0, commandParams.length)
 				.mapToObj(i -> {
-					if (commandDefinition.getParams().get(i).getType() instanceof ParameterizedType) {
+					if (commandDefinition.getParams().get(i).type() instanceof ParameterizedType) {
 						return GenericUID.of(commandParams[i]);
 					}
 					return commandParams[i];

@@ -59,7 +59,7 @@ public final class CommandDefinition extends AbstractDefinition<CommandDefinitio
 		//---
 		commandParams
 				.forEach(commandParam -> {
-					final Type type = commandParam.getType();
+					final Type type = commandParam.type();
 					if (type instanceof Class) {
 						Assertion.check().isTrue(String.class.isAssignableFrom((Class) type), "Only ParamUID and String params are allowed for command");
 					} else if (type instanceof ParameterizedType) {
