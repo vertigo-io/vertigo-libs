@@ -74,7 +74,7 @@ public class TaskEngineProc extends AbstractTaskEngineSQL {
 	protected OptionalInt doExecute(
 			final SqlStatement sqlStatement,
 			final SqlConnection connection) throws SQLException {
-		return OptionalInt.of(getDataBaseManager().executeUpdate(sqlStatement, getSmartTypeManager().getTypeAdapters("sql"), connection));
+		return OptionalInt.of(getSqlManager().executeUpdate(sqlStatement, getSmartTypeManager().getTypeAdapters("sql"), connection));
 	}
 
 }

@@ -248,7 +248,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	/**
 	 * @return Manager de base de données
 	 */
-	protected final SqlManager getDataBaseManager() {
+	protected final SqlManager getSqlManager() {
 		return sqlManager;
 	}
 
@@ -264,7 +264,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * @return Configuration SQL.
 	 */
 	protected SqlConnectionProvider getConnectionProvider() {
-		return getDataBaseManager().getConnectionProvider(Optional.ofNullable(getContextProperty("connectionName")).orElse(SqlManager.MAIN_CONNECTION_PROVIDER_NAME));
+		return getSqlManager().getConnectionProvider(Optional.ofNullable(getContextProperty("connectionName")).orElse(SqlManager.MAIN_CONNECTION_PROVIDER_NAME));
 	}
 
 	/**
