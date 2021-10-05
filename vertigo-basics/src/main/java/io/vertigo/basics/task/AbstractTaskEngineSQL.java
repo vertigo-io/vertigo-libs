@@ -239,10 +239,9 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 */
 	protected VTransactionResourceId<SqlConnection> getVTransactionResourceId() {
 		final String dataSpace = getTaskDefinition().getDataSpace();
-		if (MAIN_DATASPACE.equals(dataSpace)) {
-			return SQL_MAIN_RESOURCE_ID;
-		}
-		return new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-" + dataSpace);
+		return MAIN_DATASPACE.equals(dataSpace)
+				? SQL_MAIN_RESOURCE_ID
+				: new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-" + dataSpace);
 	}
 
 	/**
