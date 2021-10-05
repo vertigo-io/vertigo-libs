@@ -27,10 +27,13 @@ import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.MapBuilder;
 import io.vertigo.core.lang.Tuple;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.AdapterConfig;
@@ -40,11 +43,13 @@ import io.vertigo.datamodel.structure.definitions.Constraint;
 import io.vertigo.datamodel.structure.definitions.ConstraintException;
 import io.vertigo.datamodel.structure.definitions.Formatter;
 import io.vertigo.datamodel.structure.definitions.FormatterException;
+import io.vertigo.datamodel.structure.model.DtList;
 
 public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 
-	private Map<String, Formatter> formatterBySmartType;
-	private Map<String, List<Constraint>> constraintsBySmartType;
+	private Map<DefinitionId<SmartTypeDefinition>, Formatter> formatterBySmartType;
+	private Map<DefinitionId<SmartTypeDefinition>, List<Constraint>> constraintsBySmartType;
+	//--
 	private final Map<String, Map<Class, BasicTypeAdapter>> adaptersByType = new HashMap<>();
 	private final Map<Class, BasicTypeAdapter> wildcardAdapters = new HashMap<>();
 
@@ -53,11 +58,11 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 		formatterBySmartType = Node.getNode().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
 				.filter(smartTypeDefinition -> smartTypeDefinition.getFormatterConfig() != null)
-				.collect(Collectors.toMap(SmartTypeDefinition::getName, SmartTypeManagerImpl::createFormatter));
+				.collect(Collectors.toMap(SmartTypeDefinition::id, SmartTypeManagerImpl::createFormatter));
 
 		constraintsBySmartType = Node.getNode().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
-				.collect(Collectors.toMap(SmartTypeDefinition::getName, SmartTypeManagerImpl::createConstraints));
+				.collect(Collectors.toMap(SmartTypeDefinition::id, SmartTypeManagerImpl::createConstraints));
 
 		Node.getNode().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
@@ -112,37 +117,80 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 		// nothing
 	}
 
-	@Override
-	public void checkValue(final SmartTypeDefinition smartTypeDefinition, final Object value) {
-		if (smartTypeDefinition.getScope().isBasicType()) {
-			smartTypeDefinition.getBasicType().checkValue(value);
+	private static void checkType(final SmartTypeDefinition smartTypeDefinition, final Object value) {
+		if (value != null && !smartTypeDefinition.getJavaClass().isInstance(value)) {
+			throw new ClassCastException("Value " + value + " doesn't match :" + smartTypeDefinition);
 		}
-
 	}
 
 	@Override
-	public void checkConstraints(final SmartTypeDefinition smartTypeDefinition, final Object value) throws ConstraintException {
-		checkValue(smartTypeDefinition, value);
+	public void checkType(final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality, final Object value) {
+		Assertion.check()
+				.isNotNull(smartTypeDefinition)
+				.isNotNull(cardinality);
 		//---
-		if (constraintsBySmartType.containsKey(smartTypeDefinition.getName())) {
-			for (final Constraint constraint : constraintsBySmartType.get(smartTypeDefinition.getName())) {
-				//when a constraint fails, there is no validation
-				if (!constraint.checkConstraint(value)) {
-					throw new ConstraintException(constraint.getErrorMessage());
+		switch (cardinality) {
+			case MANY:
+				if (!(value instanceof DtList)) {
+					throw new ClassCastException("Value " + value + " must be a data-list");
 				}
+				for (final Object element : DtList.class.cast(value)) {
+					checkType(smartTypeDefinition, element);
+				}
+				break;
+			case ONE:
+			case OPTIONAL_OR_NULLABLE:
+				checkType(smartTypeDefinition, value);
+				break;
+		}
+	}
+
+	@Override
+	public void checkConstraints(final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality, final Object value) throws ConstraintException {
+		Assertion.check()
+				.isNotNull(smartTypeDefinition)
+				.isNotNull(cardinality);
+		//---
+		switch (cardinality) {
+			case MANY:
+				if (!(value instanceof List)) {
+					throw new ClassCastException("Value " + value + " must be a list");
+				}
+				for (final Object element : List.class.cast(value)) {
+					checkConstraints(smartTypeDefinition, element);
+				}
+				break;
+			case ONE:
+				if (value == null) {
+					throw new ConstraintException(LocaleMessageText.of("A non-null value is required"));
+				}
+			case OPTIONAL_OR_NULLABLE:
+				checkConstraints(smartTypeDefinition, value);
+				break;
+		}
+	}
+
+	private void checkConstraints(final SmartTypeDefinition smartTypeDefinition, final Object value) throws ConstraintException {
+		checkType(smartTypeDefinition, value);
+		//---
+		final List<Constraint> constraints = constraintsBySmartType.get(smartTypeDefinition.id());
+		//the list can't be null
+		for (final Constraint constraint : constraints) {
+			//when a constraint fails, there is no validation
+			if (!constraint.checkConstraint(value)) {
+				throw new ConstraintException(constraint.getErrorMessage());
 			}
 		}
-
 	}
 
 	@Override
 	public String valueToString(final SmartTypeDefinition smartTypeDefinition, final Object objValue) {
-		return formatterBySmartType.get(smartTypeDefinition.getName()).valueToString(objValue, smartTypeDefinition.getBasicType());
+		return formatterBySmartType.get(smartTypeDefinition.id()).valueToString(objValue, smartTypeDefinition.getBasicType());
 	}
 
 	@Override
 	public Object stringToValue(final SmartTypeDefinition smartTypeDefinition, final String strValue) throws FormatterException {
-		return formatterBySmartType.get(smartTypeDefinition.getName()).stringToValue(strValue, smartTypeDefinition.getBasicType());
+		return formatterBySmartType.get(smartTypeDefinition.id()).stringToValue(strValue, smartTypeDefinition.getBasicType());
 	}
 
 	@Override

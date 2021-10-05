@@ -105,22 +105,9 @@ public final class TaskAttribute {
 	 */
 	public void checkAttribute(final Object value) {
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-		if (cardinality.hasOne()) {
-			Assertion.check().isNotNull(value, "Attribut task {0} ne doit pas etre null (cf. paramétrage task)", getName());
-		}
 		try {
-			if (cardinality.hasMany()) {
-				if (!(value instanceof List)) {
-					throw new ClassCastException("Value " + value + " must be a list");
-				}
-				for (final Object element : List.class.cast(value)) {
-					smartTypeManager.checkConstraints(getSmartTypeDefinition(), element);
-				}
-			} else {
-				smartTypeManager.checkConstraints(getSmartTypeDefinition(), value);
-			}
+			smartTypeManager.checkConstraints(smartTypeDefinition, cardinality, value);
 		} catch (final ConstraintException e) {
-			//On retransforme en Runtime pour conserver une API sur les getters et setters.
 			throw WrappedException.wrap(e);
 		}
 	}
