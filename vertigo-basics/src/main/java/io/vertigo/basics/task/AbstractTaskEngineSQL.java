@@ -255,7 +255,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	/**
 	 * @return Manager du modèle
 	 */
-	protected final SmartTypeManager getModelManager() {
+	protected final SmartTypeManager getSmartTypeManager() {
 		return smartTypeManager;
 	}
 

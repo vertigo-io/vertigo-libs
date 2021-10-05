@@ -85,7 +85,7 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 						generationMode,
 						StringUtil.camelToConstCase(idField.getName()),
 						idField.getSmartTypeDefinition().getJavaClass(),
-						getModelManager().getTypeAdapters("sql"),
+						getSmartTypeManager().getTypeAdapters("sql"),
 						connection);
 
 		final Object id = result.val2();

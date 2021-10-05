@@ -90,7 +90,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 		final TaskAttribute outAttribute = getOutTaskAttribute();
 		final List<?> result;
 		final Integer limit = outAttribute.getCardinality().hasMany() ? null : 1;
-		result = getDataBaseManager().executeQuery(sqlStatement, outAttribute.getSmartTypeDefinition().getJavaClass(), getModelManager().getTypeAdapters("sql"), limit, connection);
+		result = getDataBaseManager().executeQuery(sqlStatement, outAttribute.getSmartTypeDefinition().getJavaClass(), getSmartTypeManager().getTypeAdapters("sql"), limit, connection);
 		switch (outAttribute.getSmartTypeDefinition().getScope()) {
 			case DATA_TYPE:
 				if (outAttribute.getCardinality().hasMany()) {
