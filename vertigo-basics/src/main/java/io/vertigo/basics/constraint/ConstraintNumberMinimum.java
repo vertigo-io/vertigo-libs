@@ -44,7 +44,9 @@ public final class ConstraintNumberMinimum implements Constraint<Number, Number>
 				.isNotNull(overrideMessageOpt);
 		//-----
 		minValue = Double.parseDouble(args);
-		errorMessage = overrideMessageOpt.isPresent() ? LocaleMessageText.of(overrideMessageOpt.get()) : LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue);
+		errorMessage = overrideMessageOpt.isPresent()
+				? LocaleMessageText.of(overrideMessageOpt.get())
+				: LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue);
 	}
 
 	/** {@inheritDoc} */

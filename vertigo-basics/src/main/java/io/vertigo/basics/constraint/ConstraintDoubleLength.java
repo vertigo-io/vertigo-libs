@@ -55,7 +55,9 @@ public final class ConstraintDoubleLength extends AbstractConstraintLength<Doubl
 		//-----
 		maxValue = BigDecimal.valueOf(1L).movePointRight(getMaxLength()).doubleValue();
 		minValue = BigDecimal.valueOf(1L).movePointRight(getMaxLength()).negate().doubleValue();
-		errorMessage = overrideMessageOpt.isPresent() ? LocaleMessageText.of(overrideMessageOpt.get()) : LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMALLENGTH_EXCEEDED, minValue, maxValue);
+		errorMessage = overrideMessageOpt.isPresent()
+				? LocaleMessageText.of(overrideMessageOpt.get())
+				: LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMALLENGTH_EXCEEDED, minValue, maxValue);
 	}
 
 	/** {@inheritDoc} */

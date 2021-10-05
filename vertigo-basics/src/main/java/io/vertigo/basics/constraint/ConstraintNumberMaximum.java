@@ -44,7 +44,9 @@ public final class ConstraintNumberMaximum implements Constraint<Number, Number>
 				.isNotNull(overrideMessageOpt);
 		//-----
 		maxValue = Double.parseDouble(args);
-		errorMessage = overrideMessageOpt.isPresent() ? LocaleMessageText.of(overrideMessageOpt.get()) : LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MAXIMUM, maxValue);
+		errorMessage = overrideMessageOpt.isPresent()
+				? LocaleMessageText.of(overrideMessageOpt.get())
+				: LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MAXIMUM, maxValue);
 	}
 
 	/** {@inheritDoc} */

@@ -44,7 +44,9 @@ public final class ConstraintRegex implements Constraint<String, String> {
 				.isNotNull(overrideMessageOpt);
 		//---
 		pattern = Pattern.compile(regex);
-		errorMessage = overrideMessageOpt.isPresent() ? LocaleMessageText.of(overrideMessageOpt.get()) : LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern());
+		errorMessage = overrideMessageOpt.isPresent()
+				? LocaleMessageText.of(overrideMessageOpt.get())
+				: LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern());
 	}
 
 	/** {@inheritDoc} */
