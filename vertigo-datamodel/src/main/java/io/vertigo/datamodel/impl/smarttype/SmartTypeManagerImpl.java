@@ -30,7 +30,6 @@ import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.MapBuilder;
 import io.vertigo.core.lang.Tuple;
-import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.definition.DefinitionId;
@@ -161,13 +160,12 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 				}
 				break;
 			case ONE:
-				if (value == null) {
-					throw new ConstraintException(LocaleMessageText.of("A non-null value is required"));
-				}
+				Assertion.check().isNotNull(value, "A non-null value is required for {0}", smartTypeDefinition.id());
 			case OPTIONAL_OR_NULLABLE:
 				checkConstraints(smartTypeDefinition, value);
 				break;
 		}
+
 	}
 
 	private void checkConstraints(final SmartTypeDefinition smartTypeDefinition, final Object value) throws ConstraintException {
