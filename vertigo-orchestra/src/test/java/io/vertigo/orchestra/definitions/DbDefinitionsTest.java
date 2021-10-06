@@ -72,11 +72,11 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCase {
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
 		// no initialParams
-		Assertions.assertTrue(orchestraDefinitionManager.getProcessDefinition("ProTestBasic").getTriggeringStrategy().getInitialParams().isEmpty());
+		Assertions.assertTrue(orchestraDefinitionManager.getProcessDefinition("ProTestBasic").getTriggeringStrategy().initialParams().isEmpty());
 
 		orchestraDefinitionManager.updateProcessDefinitionInitialParams("ProTestBasic", Map.of("filePath", "toto/titi"));
 		// with initialParams
-		Assertions.assertTrue(!orchestraDefinitionManager.getProcessDefinition("ProTestBasic").getTriggeringStrategy().getInitialParams().isEmpty());
+		Assertions.assertTrue(!orchestraDefinitionManager.getProcessDefinition("ProTestBasic").getTriggeringStrategy().initialParams().isEmpty());
 	}
 
 	@Test
@@ -88,12 +88,12 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCase {
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
 		// no initialParams
-		Assertions.assertTrue(orchestraDefinitionManager.getProcessDefinition("ProTestUpdateCron").getTriggeringStrategy().getCronExpression().isEmpty());
+		Assertions.assertTrue(orchestraDefinitionManager.getProcessDefinition("ProTestUpdateCron").getTriggeringStrategy().cronExpressionOpt().isEmpty());
 
 		orchestraDefinitionManager.updateProcessDefinitionProperties("ProTestUpdateCron", Optional.of("*/15 * * * * ?"), processDefinition.getTriggeringStrategy().isMultiExecution(),
-				processDefinition.getTriggeringStrategy().getRescuePeriod(),
+				processDefinition.getTriggeringStrategy().rescuePeriodInSeconds(),
 				processDefinition.isActive());
 		// with initialParams
-		Assertions.assertTrue(orchestraDefinitionManager.getProcessDefinition("ProTestUpdateCron").getTriggeringStrategy().getCronExpression().isPresent());
+		Assertions.assertTrue(orchestraDefinitionManager.getProcessDefinition("ProTestUpdateCron").getTriggeringStrategy().cronExpressionOpt().isPresent());
 	}
 }

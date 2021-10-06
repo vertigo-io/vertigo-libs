@@ -61,7 +61,7 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 		Node.getNode().registerPreActivateFunction(() -> {
 			orchestraDefinitionManager.getAllProcessDefinitionsByType(getHandledProcessType())
 					.stream()
-					.filter(processDefinition -> processDefinition.getTriggeringStrategy().getCronExpression().isPresent())
+					.filter(processDefinition -> processDefinition.getTriggeringStrategy().cronExpressionOpt().isPresent())
 					.forEach(this::scheduleWithCron);
 		});
 	}
@@ -124,7 +124,7 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 
 	private static Instant getNextExecutionDateFrom(final ProcessDefinition processDefinition, final Instant fromDate) {
 		try {
-			final CronExpression cronExpression = new CronExpression(processDefinition.getTriggeringStrategy().getCronExpression().get());
+			final CronExpression cronExpression = new CronExpression(processDefinition.getTriggeringStrategy().cronExpressionOpt().get());
 			return Optional.of(cronExpression.getNextValidTimeAfter(fromDate))
 					.orElseThrow(() -> new IllegalStateException("Cannot find a next execution date for process :" + processDefinition));
 		} catch (final ParseException e) {
