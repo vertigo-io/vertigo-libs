@@ -91,10 +91,10 @@ public final class ValidationUserException extends VUserException {
 	 */
 	public void flushToUiMessageStack(final UiMessageStack uiMessageStack) {
 		for (final UiError uiError : uiErrors) {
-			if (uiError.getDtObject() != null) {
-				uiMessageStack.error(uiError.getErrorMessage().getDisplay(), uiError.getDtObject(), uiError.getFieldName());
+			if (uiError.dtObject() != null) {
+				uiMessageStack.error(uiError.errorMessage().getDisplay(), uiError.dtObject(), uiError.dtField().getName());
 			} else {
-				uiMessageStack.error(uiError.getErrorMessage().getDisplay());
+				uiMessageStack.error(uiError.errorMessage().getDisplay());
 			}
 		}
 	}

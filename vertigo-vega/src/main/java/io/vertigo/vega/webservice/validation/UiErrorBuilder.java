@@ -78,7 +78,7 @@ public final class UiErrorBuilder {
 	 * @param dtObject Objet
 	 */
 	void clearErrors(final DtObject dtObject) {
-		uiObjectErrors.removeIf(uiError -> uiError.getDtObject().equals(dtObject));
+		uiObjectErrors.removeIf(uiError -> uiError.dtObject().equals(dtObject));
 		obtainUiErrorIndex(dtObject).clear();
 	}
 
@@ -90,7 +90,7 @@ public final class UiErrorBuilder {
 	void clearErrors(final DtObject dtObject, final DtField dtField) {
 		Assertion.check().isNotNull(dtField);
 		//-----
-		uiObjectErrors.removeIf(uiError -> uiError.getDtObject().equals(dtObject) && uiError.getDtField().equals(dtField));
+		uiObjectErrors.removeIf(uiError -> uiError.dtObject().equals(dtObject) && uiError.dtField().equals(dtField));
 		obtainUiErrorIndex(dtObject).remove(dtField);
 	}
 
@@ -204,7 +204,7 @@ public final class UiErrorBuilder {
 	 */
 	public void flushIntoMessageStack(final UiMessageStack uiMessageStack) {
 		for (final UiError uiError : uiObjectErrors) {
-			uiMessageStack.addFieldMessage(Level.ERROR, uiError.getErrorMessage().getDisplay(), uiError.getDtObject(), uiError.getFieldName());
+			uiMessageStack.addFieldMessage(Level.ERROR, uiError.errorMessage().getDisplay(), uiError.dtObject(), uiError.dtField().getName());
 		}
 	}
 
