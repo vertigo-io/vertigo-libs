@@ -349,6 +349,8 @@ public final class DslListFilterBuilderTest {
 				{ "ALL:+\"#query#\"", "Andrey Mariette", "ALL:(+\"Andrey Mariette\")" },
 				{ "ALL:(\"#query#\")", "Andrey Mariette", "ALL:(\"Andrey Mariette\")" },
 				{ "ALL:(#query# #query#)", "Andrey Mariette", "ALL:((Andrey Mariette) (Andrey Mariette))" },
+				{ "ALL:#query#", "Noisy\\ Le\\ Sec*", "ALL:(Noisy\\ Le\\ Sec*)" },
+
 		};
 		testStringFixedQuery(testQueries);
 	}

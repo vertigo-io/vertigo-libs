@@ -310,6 +310,45 @@ public abstract class AbstractSearchManagerTest {
 
 		size = query("description:l'avenir");
 		Assertions.assertEquals(itemDataBase.containsDescription("l'avenir"), size);
+
+		/*size = query("description:(Vds 307SW année)~0");
+		Assertions.assertEquals(1L, size);*/
+
+		size = query("optionalString:(Aaa Zzz)");//keyword
+		Assertions.assertEquals(1L, size);
+
+		size = query("optionalString:(Zzz)");//keyword
+		Assertions.assertEquals(0L, size); //no start with Zzz
+
+		size = query("optionalString:(Zzz Aaa)");//keyword
+		Assertions.assertEquals(0L, size);
+
+		size = query("optionalString:(Aaa*)");//keyword
+		Assertions.assertEquals(2L, size); //les deux qui commencent par Aa
+
+		size = query("optionalString:(Aaa\\ Zz*)");//keyword
+		Assertions.assertEquals(1L, size);
+
+		size = query("optionalString:(\"Aaa Zzz\")");//keyword
+		Assertions.assertEquals(1L, size);
+
+		size = query("optionalString:(\"Aaa Zz*\")");//keyword
+		Assertions.assertEquals(0L, size);
+
+		size = query("optionalString:(Aa* Zz*)");//keyword
+		Assertions.assertEquals(2L, size); //les deux qui commencent par Aa
+
+		size = query("optionalString:((Aa*) (Cc*))");//keyword
+		Assertions.assertEquals(3L, size); //les deux qui commencent par Aa et Celui par Cc
+
+		size = query("optionalString:(Aaa Zz)*");//keyword
+		Assertions.assertEquals(6L, size); //Don't work
+
+		size = query("optionalString:(Xxx*)");//keyword
+		Assertions.assertEquals(0L, size); //no start with Xxx
+
+		size = query("optionalString:(Aaa Zz*)");//keyword
+		Assertions.assertEquals(0L, size); //Don't work
 	}
 
 	/**
