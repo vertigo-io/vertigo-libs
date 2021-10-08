@@ -326,6 +326,8 @@ public abstract class AbstractSearchManagerTest {
 		size = query("optionalString:(Aaa*)");//keyword
 		Assertions.assertEquals(2L, size); //les deux qui commencent par Aa
 
+		size = query("optionalString:(Aaa Bb*)");//like optionalString:(Aaa) OR optionalString:(Bb*)
+		Assertions.assertEquals(1L, size); //No doc = Aaa But 1 starts with Bb
 		size = query("optionalString:(Aaa\\ Zz*)");//keyword
 		Assertions.assertEquals(1L, size);
 
