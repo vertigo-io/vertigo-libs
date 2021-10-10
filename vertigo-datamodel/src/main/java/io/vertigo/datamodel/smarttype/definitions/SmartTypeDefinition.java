@@ -27,7 +27,6 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.smarttype.AdapterConfig;
 import io.vertigo.datamodel.smarttype.ConstraintConfig;
 import io.vertigo.datamodel.smarttype.FormatterConfig;
@@ -80,7 +79,7 @@ public final class SmartTypeDefinition extends AbstractDefinition<SmartTypeDefin
 	}
 
 	private final Scope scope;
-	private final String valueObjectClassName;
+	private final Class javaClass;
 	private final Optional<BasicType> basicTypeOpt; //nullable
 	private final AdapterConfig wildCardAdapterConfig; //nullable
 	private final Map<String, AdapterConfig> adapterConfigs;
@@ -92,7 +91,7 @@ public final class SmartTypeDefinition extends AbstractDefinition<SmartTypeDefin
 	public SmartTypeDefinition(
 			final String name,
 			final Scope scope,
-			final String valueObjectClassName,
+			final Class javaClass,
 			final List<AdapterConfig> adapterConfigs,
 			final FormatterConfig formatterConfig,
 			final List<ConstraintConfig> constraintConfigs,
@@ -101,14 +100,14 @@ public final class SmartTypeDefinition extends AbstractDefinition<SmartTypeDefin
 		//---
 		Assertion.check()
 				.isNotNull(scope)
-				.isNotNull(valueObjectClassName)
+				.isNotNull(javaClass)
 				.isNotNull(adapterConfigs)
 				.isNotNull(constraintConfigs)
 				.isNotNull(properties);
 		//---
 		this.scope = scope;
-		this.valueObjectClassName = valueObjectClassName;
-		basicTypeOpt = BasicType.of(getJavaClass());
+		this.javaClass = javaClass;
+		basicTypeOpt = BasicType.of(javaClass);
 		this.adapterConfigs = adapterConfigs
 				.stream()
 				.collect(Collectors.toMap(AdapterConfig::type, Function.identity(), (a, b) -> {
@@ -128,12 +127,8 @@ public final class SmartTypeDefinition extends AbstractDefinition<SmartTypeDefin
 		return scope;
 	}
 
-	public String getValueObjectClassName() {
-		return valueObjectClassName;
-	}
-
 	public Class getJavaClass() {
-		return ClassUtil.classForName(valueObjectClassName);
+		return javaClass;
 	}
 
 	public BasicType getBasicType() {

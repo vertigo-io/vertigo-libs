@@ -39,7 +39,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	private final String myName;
 	private SmartTypeDefinition.Scope myScope;
 
-	private final Class myValueObjectClass;
+	private final Class myJavaClass;
 	private final List<AdapterConfig> myAdapterConfigs = new ArrayList<>();
 
 	/** Formatter. */
@@ -64,7 +64,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 		myName = name;
 		myScope = SmartTypeDefinition.Scope.BASIC_TYPE;
 
-		myValueObjectClass = basicType.getJavaClass();
+		myJavaClass = basicType.getJavaClass();
 	}
 
 	/**
@@ -79,7 +79,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 		//---
 		myName = name;
 		myScope = SmartTypeDefinition.Scope.VALUE_TYPE;
-		myValueObjectClass = valueObjectClass;
+		myJavaClass = valueObjectClass;
 	}
 
 	/**
@@ -144,7 +144,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 		return new SmartTypeDefinition(
 				myName,
 				myScope,
-				myValueObjectClass.getName(),
+				myJavaClass,
 				myAdapterConfigs,
 				myformatterConfig,
 				myConstraintConfigs == null ? Collections.emptyList() : myConstraintConfigs,

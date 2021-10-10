@@ -135,7 +135,7 @@ public class SmartTypesLoader implements Loader {
 		return new SmartTypeDefinition(
 				smartTypeName,
 				scope,
-				targetJavaClass.getName(),
+				targetJavaClass,
 				adapterConfigs,
 				formatterConfig,
 				constraintConfigs,
