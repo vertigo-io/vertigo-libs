@@ -80,7 +80,7 @@ public final class SmartTypeDefinition extends AbstractDefinition<SmartTypeDefin
 
 	private final Scope scope;
 	private final Class javaClass;
-	private final Optional<BasicType> basicTypeOpt; //nullable
+	private final Optional<BasicType> basicTypeOpt;
 	private final AdapterConfig wildCardAdapterConfig; //nullable
 	private final Map<String, AdapterConfig> adapterConfigs;
 	private final FormatterConfig formatterConfig;//nullable

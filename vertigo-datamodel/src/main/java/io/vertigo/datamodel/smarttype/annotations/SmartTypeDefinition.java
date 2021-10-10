@@ -29,5 +29,4 @@ import java.lang.annotation.Target;
 public @interface SmartTypeDefinition {
 
 	Class value();
-	// nothing
 }
