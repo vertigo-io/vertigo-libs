@@ -66,24 +66,14 @@ public final class FormatterDefault implements Formatter {
 	 * @return Formatter simple utilisé.
 	 */
 	public Formatter getFormatter(final BasicType dataType) {
-		switch (dataType) {
-			case String:
-				return stringFormatter;
-			case LocalDate:
-				return localDateFormater;
-			case Instant:
-				return instantFormater;
-			case Boolean:
-				return booleanFormatter;
-			case Integer:
-			case Long:
-			case Double:
-			case BigDecimal:
-				return numberformatter;
-			case DataStream:
-			default:
-				throw new IllegalArgumentException(dataType + " n'est pas géré par ce formatter");
-		}
+		return switch (dataType) {
+			case String -> stringFormatter;
+			case LocalDate -> localDateFormater;
+			case Instant -> instantFormater;
+			case Boolean -> booleanFormatter;
+			case Integer, Long, Double, BigDecimal -> numberformatter;
+			case DataStream -> throw new IllegalArgumentException(dataType + " n'est pas géré par ce formatter");
+		};
 	}
 
 	/** {@inheritDoc} */
