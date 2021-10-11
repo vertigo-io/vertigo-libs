@@ -22,7 +22,6 @@ import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 
@@ -84,7 +83,7 @@ public final class DtField {
 	private final String name;
 	private final FieldType type;
 	private final Cardinality cardinality;
-	private final DefinitionId<SmartTypeDefinition> smartTypeRef;
+	private final SmartTypeDefinition smartTypeDefinition;
 	private final LocaleMessageText label;
 	private final boolean persistent;
 
@@ -102,7 +101,7 @@ public final class DtField {
 	 * @param id the ID of the field
 	 * @param fieldName the name of the field
 	 * @param type the type of the field
-	 * @param smartType the smartType of the field
+	 * @param smartTypeDefinition the smartType of the field
 	 * @param cardinality cardinality of the field see {@code Cardinality}
 	 * @param label the label of the field
 	 * @param required if the field is required
@@ -115,7 +114,7 @@ public final class DtField {
 			final String id,
 			final String fieldName,
 			final FieldType type,
-			final SmartTypeDefinition smartType,
+			final SmartTypeDefinition smartTypeDefinition,
 			final LocaleMessageText label,
 			final Cardinality cardinality,
 			final boolean persistent,
@@ -123,12 +122,12 @@ public final class DtField {
 		Assertion.check()
 				.isNotBlank(id)
 				.isNotNull(type)
-				.isNotNull(smartType)
+				.isNotNull(smartTypeDefinition)
 				.isNotNull(type)
 				.isNotNull(cardinality);
 		//-----
 		this.id = id;
-		smartTypeRef = smartType.id();
+		this.smartTypeDefinition = smartTypeDefinition;
 		this.type = type;
 		this.cardinality = cardinality;
 		//-----
@@ -186,7 +185,7 @@ public final class DtField {
 	 * @return the smarttype of the field
 	 */
 	public SmartTypeDefinition getSmartTypeDefinition() {
-		return smartTypeRef.get();
+		return smartTypeDefinition;
 	}
 
 	/**
