@@ -42,14 +42,12 @@ public final class StructureMetricsProvider implements Component {
 	public List<Metric> getFieldMetrics() {
 		return Node.getNode().getDefinitionSpace().getAll(DtDefinition.class)
 				.stream()
-				.map(dtDefinition -> {
-					return Metric.builder()
-							.withSuccess()
-							.withName("definitionFieldCount")
-							.withFeature(dtDefinition.getName())
-							.withValue(Double.valueOf(dtDefinition.getFields().size()))
-							.build();
-				})
+				.map(dtDefinition -> Metric.builder()
+						.withSuccess()
+						.withName("definitionFieldCount")
+						.withFeature(dtDefinition.getName())
+						.withValue(Double.valueOf(dtDefinition.getFields().size()))
+						.build())
 				.collect(Collectors.toList());
 
 	}
@@ -102,12 +100,12 @@ public final class StructureMetricsProvider implements Component {
 		int count = 0;
 		for (final TaskDefinition taskDefinition : Node.getNode().getDefinitionSpace().getAll(TaskDefinition.class)) {
 			for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
-				if (smartTypeDefinition.equals(taskAttribute.getSmartTypeDefinition())) {
+				if (smartTypeDefinition.equals(taskAttribute.smartTypeDefinition())) {
 					count++;
 				}
 			}
 			if (taskDefinition.getOutAttributeOption().isPresent()) {
-				if (smartTypeDefinition.equals(taskDefinition.getOutAttributeOption().get().getSmartTypeDefinition())) {
+				if (smartTypeDefinition.equals(taskDefinition.getOutAttributeOption().get().smartTypeDefinition())) {
 					count++;
 				}
 			}
@@ -140,8 +138,8 @@ public final class StructureMetricsProvider implements Component {
 	}
 
 	private static double count(final DtDefinition dtDefinition, final TaskAttribute taskAttribute) {
-		if (taskAttribute.getSmartTypeDefinition().getScope().isDataType()) {
-			if (dtDefinition.equals(DtObjectUtil.findDtDefinition(taskAttribute.getSmartTypeDefinition().getJavaClass()))) {
+		if (taskAttribute.smartTypeDefinition().getScope().isDataType()) {
+			if (dtDefinition.equals(DtObjectUtil.findDtDefinition(taskAttribute.smartTypeDefinition().getJavaClass()))) {
 				return 1;
 			}
 		}

@@ -17,8 +17,6 @@
  */
 package io.vertigo.datamodel.task.definitions;
 
-import java.util.List;
-
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.WrappedException;
@@ -27,7 +25,6 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.ConstraintException;
-import io.vertigo.datamodel.structure.model.DtList;
 
 /**
  * Attribut d'une tache.
@@ -41,61 +38,22 @@ import io.vertigo.datamodel.structure.model.DtList;
  *  - obligatoire ou facultatif
  *
  * @author  fconstantin, pchretien
+ * @param name the name of the attribute
+ * @param smartTypeDefinition the smartType of the attribute
+ * @param cardinality the cardinality of the attribute see {@code Cardinality}
  */
-public final class TaskAttribute {
-	/** Name of the attribute. */
-	private final String name;
+public record TaskAttribute(
+		String name,
+		SmartTypeDefinition smartTypeDefinition,
+		Cardinality cardinality) {
 
-	private final SmartTypeDefinition smartTypeDefinition;
-
-	/** if the attribute cardinality. */
-	private final Cardinality cardinality;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param attributeName the name of the attribute
-	 * @param smartType the smartType of the attribute
-	 * @param cardinality cardinality of the attribute see {@code Cardinality}
-	 * @param required if the attribute is required
-	 */
-	TaskAttribute(final String attributeName, final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality) {
+	public TaskAttribute {
 		Assertion.check()
-				.isNotNull(attributeName)
+				.isNotNull(name)
 				.isNotNull(smartTypeDefinition)
 				.isNotNull(cardinality)
-				.isTrue(StringUtil.isLowerCamelCase(attributeName), "the name of the attribute {0} must be in lowerCamelCase", attributeName);
-		//-----
-		name = attributeName;
-		this.smartTypeDefinition = smartTypeDefinition;
-		this.cardinality = cardinality;
-	}
-
-	/**
-	 * @return the name of the attribute.
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @return Domain the domain
-	 */
-	public SmartTypeDefinition getSmartTypeDefinition() {
-		return smartTypeDefinition;
-	}
-
-	/**
-	 * @return if the attribute cardinality
-	 */
-	public Cardinality getCardinality() {
-		return cardinality;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return "{ name : " + name + ", smarttype :" + smartTypeDefinition + ", cardinality :" + cardinality + "]";
+				.isTrue(StringUtil.isLowerCamelCase(name),
+						"the name of the attribute {0} must be in lowerCamelCase", name);
 	}
 
 	/**
@@ -118,13 +76,6 @@ public final class TaskAttribute {
 	 * @return the data accessor.
 	 */
 	public Class getTargetJavaClass() {
-		return cardinality.hasMany()
-				? switch (smartTypeDefinition.getScope()) {
-				case BASIC_TYPE -> List.class;
-				case DATA_TYPE -> DtList.class;
-				case VALUE_TYPE -> List.class;
-				default -> throw new IllegalStateException();
-				}
-				: smartTypeDefinition.getJavaClass();
+		return smartTypeDefinition.getJavaClass(cardinality);
 	}
 }

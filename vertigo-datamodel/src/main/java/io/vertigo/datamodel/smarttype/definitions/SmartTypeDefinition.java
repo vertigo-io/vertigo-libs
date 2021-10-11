@@ -25,12 +25,14 @@ import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datamodel.smarttype.AdapterConfig;
 import io.vertigo.datamodel.smarttype.ConstraintConfig;
 import io.vertigo.datamodel.smarttype.FormatterConfig;
 import io.vertigo.datamodel.structure.definitions.Properties;
+import io.vertigo.datamodel.structure.model.DtList;
 
 /**
  * A smarttype exists to enrich the primitive datatypes, giving them super powers.
@@ -168,4 +170,17 @@ public final class SmartTypeDefinition extends AbstractDefinition<SmartTypeDefin
 	public static SmartTypeDefinitionBuilder builder(final String name, final Class clazz) {
 		return new SmartTypeDefinitionBuilder(name, clazz);
 	}
+
+	public Class getJavaClass(final Cardinality cardinality) {
+		Assertion.check().isNotNull(cardinality);
+		//---
+		return cardinality.hasMany()
+				? switch (scope) {
+				case DATA_TYPE -> DtList.class;
+				case BASIC_TYPE, VALUE_TYPE -> List.class;
+				default -> throw new IllegalStateException();
+				}
+				: javaClass;
+	}
+
 }

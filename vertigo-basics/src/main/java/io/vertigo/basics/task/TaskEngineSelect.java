@@ -89,15 +89,15 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 			final SqlConnection connection) throws SQLException {
 		final TaskAttribute outAttribute = getOutTaskAttribute();
 		final List<?> result;
-		final Integer limit = outAttribute.getCardinality().hasMany() ? null : 1;
-		result = getSqlManager().executeQuery(sqlStatement, outAttribute.getSmartTypeDefinition().getJavaClass(), getSmartTypeManager().getTypeAdapters("sql"), limit, connection);
-		switch (outAttribute.getSmartTypeDefinition().getScope()) {
+		final Integer limit = outAttribute.cardinality().hasMany() ? null : 1;
+		result = getSqlManager().executeQuery(sqlStatement, outAttribute.smartTypeDefinition().getJavaClass(), getSmartTypeManager().getTypeAdapters("sql"), limit, connection);
+		switch (outAttribute.smartTypeDefinition().getScope()) {
 			case DATA_TYPE:
-				if (outAttribute.getCardinality().hasMany()) {
+				if (outAttribute.cardinality().hasMany()) {
 					final DtList<?> dtList = (DtList<?>) result
 							.stream()
 							.map(DtObject.class::cast)
-							.collect(VCollectors.toDtList(outAttribute.getSmartTypeDefinition().getJavaClass()));
+							.collect(VCollectors.toDtList(outAttribute.smartTypeDefinition().getJavaClass()));
 					setResult(dtList);
 				} else {
 					Assertion.check().isTrue(result.size() <= 1, "Limit exceeded");
@@ -106,7 +106,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 				break;
 			case BASIC_TYPE:
 			case VALUE_TYPE:
-				if (outAttribute.getCardinality().hasMany()) {
+				if (outAttribute.cardinality().hasMany()) {
 					setResult(result);
 				} else {
 					Assertion.check().isTrue(result.size() <= 1, "Limit exceeded");

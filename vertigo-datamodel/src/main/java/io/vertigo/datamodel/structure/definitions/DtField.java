@@ -17,8 +17,6 @@
  */
 package io.vertigo.datamodel.structure.definitions;
 
-import java.util.List;
-
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.JsonExclude;
@@ -27,7 +25,6 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.model.DtList;
 
 /**
  * This class defines the structure of a field.
@@ -235,19 +232,6 @@ public final class DtField {
 	 * @return the data accessor.
 	 */
 	public Class getTargetJavaClass() {
-		final SmartTypeDefinition domain = getSmartTypeDefinition();
-		if (cardinality.hasMany()) {
-			switch (domain.getScope()) {
-				case BASIC_TYPE:
-					return List.class;
-				case DATA_TYPE:
-					return DtList.class;
-				case VALUE_TYPE:
-					return List.class;
-				default:
-					throw new IllegalStateException();
-			}
-		}
-		return domain.getJavaClass();
+		return getSmartTypeDefinition().getJavaClass(cardinality);
 	}
 }

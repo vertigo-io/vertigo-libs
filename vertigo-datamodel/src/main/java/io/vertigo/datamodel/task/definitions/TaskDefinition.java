@@ -104,9 +104,9 @@ public final class TaskDefinition extends AbstractDefinition<TaskDefinition> {
 		for (final TaskAttribute taskAttribute : taskAttributes) {
 			Assertion.check()
 					.isNotNull(taskAttribute)
-					.isFalse(map.containsKey(taskAttribute.getName()), "attribut {0} existe déjà", taskAttribute.getName());
+					.isFalse(map.containsKey(taskAttribute.name()), "attribut {0} existe déjà", taskAttribute.name());
 			//-----
-			map.put(taskAttribute.getName(), taskAttribute);
+			map.put(taskAttribute.name(), taskAttribute);
 		}
 		return java.util.Collections.unmodifiableMap(map);
 	}
