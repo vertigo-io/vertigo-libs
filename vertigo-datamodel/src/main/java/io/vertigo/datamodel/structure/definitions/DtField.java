@@ -31,13 +31,13 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
  * A field represents a named and typed data
  *
  * A field
- *   - has a name
- *   - has a domain
+ *   - is a dataDesciptor with
+ *   	- a name,
+ *   	- a smartType
+ *    	- a cardinality
  *   - has a fieldType
  *   - has a label
- *   - can be required
  *   - can be persistent
- *   - can be dynamic
  *
  * @author  fconstantin, pchretien , npiedeloup
  */
@@ -81,9 +81,10 @@ public final class DtField implements DataDescriptor {
 	}
 
 	private final String name;
-	private final FieldType type;
 	private final Cardinality cardinality;
 	private final SmartTypeDefinition smartTypeDefinition;
+	//---
+	private final FieldType type;
 	private final LocaleMessageText label;
 	private final boolean persistent;
 
