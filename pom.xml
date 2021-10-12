@@ -39,7 +39,9 @@
 		
 		<module>vertigo-audit</module>
 		<module>vertigo-quarto</module>
+		
 <!-- 		<module>vertigo-stella</module>
+:s;d:s;:s
  -->		<module>vertigo-geo</module>
 		<module>vertigo-ui</module>
 		<module>vertigo-dashboard</module>

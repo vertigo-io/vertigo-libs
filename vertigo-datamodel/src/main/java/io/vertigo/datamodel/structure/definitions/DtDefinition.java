@@ -17,15 +17,15 @@
  */
 package io.vertigo.datamodel.structure.definitions;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.ListBuilder;
+import io.vertigo.core.lang.MapBuilder;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.node.definition.DefinitionPrefix;
@@ -49,10 +49,10 @@ public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 	private final String packageName;
 
 	/** List of fields.  */
-	private final List<DtField> fields = new ArrayList<>();
+	private final List<DtField> fields;
 
 	/** Map. (fieldName, DtField). */
-	private final Map<String, DtField> mappedFields = new HashMap<>();
+	private final Map<String, DtField> mappedFields;
 
 	private final DtStereotype stereotype;
 
@@ -90,6 +90,9 @@ public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 				.isNotNull(displayField)
 				.isNotNull(handleField);
 		//-----
+		final var fieldsBuilder = new ListBuilder<DtField>();
+		final var mappedFieldsBuilder = new MapBuilder<String, DtField>();
+		//-----
 		fragmentOpt = fragment;
 		//
 		this.stereotype = stereotype;
@@ -109,8 +112,10 @@ public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 				Assertion.check().isNull(id, "Only one ID Field is allowed : {0}", name);
 				id = dtField;
 			}
-			registerDtField(dtField);
+			registerDtField(mappedFieldsBuilder, fieldsBuilder, dtField);
 		}
+		fields = fieldsBuilder.unmodifiable().build();
+		mappedFields = mappedFieldsBuilder.unmodifiable().build();
 		idFieldOpt = Optional.ofNullable(id);
 		this.dataSpace = dataSpace;
 		//-----
@@ -133,13 +138,12 @@ public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 		return new DtDefinitionBuilder(name);
 	}
 
-	private void registerDtField(final DtField dtField) {
+	private static void registerDtField(final MapBuilder<String, DtField> mappedFieldsBuilder, final ListBuilder<DtField> fieldsBuilder, final DtField dtField) {
 		Assertion.check()
-				.isNotNull(dtField)
-				.isFalse(mappedFields.containsKey(dtField.name()), "Field {0} déjà enregistré sur {1}", dtField.name(), this);
+				.isNotNull(dtField);
 		//-----
-		fields.add(dtField);
-		mappedFields.put(dtField.name(), dtField);
+		fieldsBuilder.add(dtField);
+		mappedFieldsBuilder.putCheckKeyNotExists(dtField.name(), dtField);
 	}
 
 	public Optional<DtDefinition> getFragment() {
