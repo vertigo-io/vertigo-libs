@@ -85,14 +85,14 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 			final String tableName = StringUtil.camelToConstCase(entityName);
 			final String taskName = "TkSelect" + entityName + "NextSearchChunk";
 			final DtField idField = dtDefinition.getIdField().get();
-			final String idFieldName = idField.getName();
+			final String idFieldName = idField.name();
 			final String request = getNextIdsSqlQuery(tableName, idFieldName);
 
 			final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 					.withEngine(TaskEngineSelect.class)
 					.withDataSpace(dtDefinition.getDataSpace())
 					.withRequest(request)
-					.addInAttribute(idFieldName, idField.getSmartTypeDefinition(), Cardinality.ONE)
+					.addInAttribute(idFieldName, idField.smartTypeDefinition(), Cardinality.ONE)
 					.withOutAttribute("dtc", Node.getNode().getDefinitionSpace().resolve(SmartTypeDefinition.PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
 					.build();
 

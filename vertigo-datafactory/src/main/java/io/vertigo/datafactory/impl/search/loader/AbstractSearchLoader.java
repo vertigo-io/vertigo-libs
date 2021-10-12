@@ -64,10 +64,10 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 	private P getLowestIdValue(final DtDefinition dtDefinition) {
 		final DtField idField = dtDefinition.getIdField().get();
 		Assertion.check().isTrue(
-				idField.getSmartTypeDefinition().getScope().isBasicType(),
-				"Ids must be primitives : idField '{0}' on dtDefinition '{1}' has the smartType '{2}'", dtDefinition, idField.getName(), idField.getSmartTypeDefinition());
+				idField.smartTypeDefinition().getScope().isBasicType(),
+				"Ids must be primitives : idField '{0}' on dtDefinition '{1}' has the smartType '{2}'", dtDefinition, idField.name(), idField.smartTypeDefinition());
 		//---
-		final BasicType idDataType = idField.getSmartTypeDefinition().getBasicType();
+		final BasicType idDataType = idField.smartTypeDefinition().getBasicType();
 		return switch (idDataType) {
 			case Integer -> (P) Integer.valueOf(-1);
 			case Long -> (P) Long.valueOf(-1);

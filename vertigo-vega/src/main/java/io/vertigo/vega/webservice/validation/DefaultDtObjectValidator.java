@@ -38,11 +38,11 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 		final Object value = dtField.getDataAccessor().getValue(dtObject);
 		//Validates the value
 		try {
-			smartTypeManager.checkConstraints(dtField.getSmartTypeDefinition(), dtField.getCardinality(), value);
+			smartTypeManager.checkConstraints(dtField.smartTypeDefinition(), dtField.cardinality(), value);
 		} catch (final ConstraintException e) {
 			// Erreur lors du check de la valeur,
 			// la valeur est toutefois correctement typée.
-			dtObjectErrors.addError(dtField.getName(), e.getMessageText());
+			dtObjectErrors.addError(dtField.name(), e.getMessageText());
 		}
 	}
 }

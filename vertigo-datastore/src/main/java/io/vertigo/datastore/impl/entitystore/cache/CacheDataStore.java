@@ -143,7 +143,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 				.isTrue(uri.getDtDefinition().getSortField().isPresent(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
 		//-----
 		//On cherche la liste complete
-		final DtList<E> unFilteredDtc = getPhysicalStore(uri.getDtDefinition()).findByCriteria(uri.getDtDefinition(), Criterions.alwaysTrue(), DtListState.of(null, 0, uri.getDtDefinition().getSortField().get().getName(), false));
+		final DtList<E> unFilteredDtc = getPhysicalStore(uri.getDtDefinition()).findByCriteria(uri.getDtDefinition(), Criterions.alwaysTrue(), DtListState.of(null, 0, uri.getDtDefinition().getSortField().get().name(), false));
 
 		return unFilteredDtc
 				.stream()

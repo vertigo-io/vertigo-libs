@@ -166,7 +166,7 @@ final class RamLuceneIndex<D extends DtObject> {
 			for (int i = skip; i < Math.min(skip + top, resultLength); i++) {
 				final ScoreDoc scoreDoc = topDocs.scoreDocs[i];
 				final Document document = searcher.doc(scoreDoc.doc);
-				dtcResult.add(getDtObjectIndexed(document.get(idField.getName())));
+				dtcResult.add(getDtObjectIndexed(document.get(idField.name())));
 			}
 		}
 		return dtcResult;
@@ -188,20 +188,20 @@ final class RamLuceneIndex<D extends DtObject> {
 			for (final D dto : fullDtc) {
 				final Document document = new Document();
 				final Object pkValue = idField.getDataAccessor().getValue(dto);
-				Assertion.check().isNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", fullDtc.getDefinition().getName(), idField.getName());
+				Assertion.check().isNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", fullDtc.getDefinition().getName(), idField.name());
 				final String indexedPkValue = String.valueOf(pkValue);
-				addKeyword(document, idField.getName(), indexedPkValue, true);
+				addKeyword(document, idField.name(), indexedPkValue, true);
 				for (final DtField dtField : dtFields) {
 					final Object value = dtField.getDataAccessor().getValue(dto);
 					if (value != null && !dtField.equals(idField)) {
 						if (value instanceof String) {
 							final String valueAsString = getStringValue(dto, dtField, smartTypeManager);
-							addIndexed(document, dtField.getName(), valueAsString, storeValue);
+							addIndexed(document, dtField.name(), valueAsString, storeValue);
 						} else if (value instanceof Date) {
 							final String valueAsString = DateTools.dateToString((Date) value, DateTools.Resolution.DAY);
-							addKeyword(document, dtField.getName(), valueAsString, storeValue);
+							addKeyword(document, dtField.name(), valueAsString, storeValue);
 						} else {
-							addKeyword(document, dtField.getName(), value.toString(), storeValue);
+							addKeyword(document, dtField.name(), value.toString(), storeValue);
 						}
 					}
 				}
@@ -226,7 +226,7 @@ final class RamLuceneIndex<D extends DtObject> {
 				final UID<Entity> uid = UID.of(field.getFkDtDefinition(), value);
 				final DtObject fkDto = getEntityStoreManager().readOne(uid);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
-				stringValue = smartTypeManager.valueToString(displayField.getSmartTypeDefinition(), displayValue);
+				stringValue = smartTypeManager.valueToString(displayField.smartTypeDefinition(), displayValue);
 			} else {
 				stringValue = String.valueOf(field.getDataAccessor().getValue(dto));
 			}

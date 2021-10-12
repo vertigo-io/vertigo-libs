@@ -82,7 +82,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 				.isTrue(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//-----
 		final DtField dtField = getDtField(keyFieldName);
-		if (dtField.getCardinality().hasMany()) {
+		if (dtField.cardinality().hasMany()) {
 			return getInputValue(keyFieldName);
 		}
 		if (isMultiple(dtField)) {
@@ -105,7 +105,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 				.isTrue(value instanceof String || value instanceof String[], "Les données saisies doivent être de type String ou String[] ({0} : {1})", fieldName, value.getClass());
 		//-----
 		final DtField dtField = getDtField(fieldName);
-		if (dtField.getCardinality().hasMany()) {
+		if (dtField.cardinality().hasMany()) {
 			if (value instanceof String[]) {
 				setInputValue(fieldName, (String[]) value);
 			} else {
@@ -124,8 +124,8 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 				strValue = requestParameterToString(value);
 				try {
 					final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-					final Object typedValue = EncoderDate.stringToValue(strValue, dtField.getSmartTypeDefinition().getBasicType());
-					strValue = smartTypeManager.valueToString(dtField.getSmartTypeDefinition(), typedValue);// we fall back in the normal case if everything is right -> go to formatter
+					final Object typedValue = EncoderDate.stringToValue(strValue, dtField.smartTypeDefinition().getBasicType());
+					strValue = smartTypeManager.valueToString(dtField.smartTypeDefinition(), typedValue);// we fall back in the normal case if everything is right -> go to formatter
 				} catch (final FormatterException e) {
 					// do nothing we keep the input value
 				}
@@ -157,15 +157,15 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	}
 
 	private static boolean isMultiple(final DtField dtField) {
-		return SMART_TYPE_MULTIPLE_IDS.equals(dtField.getSmartTypeDefinition().getName());
+		return SMART_TYPE_MULTIPLE_IDS.equals(dtField.smartTypeDefinition().getName());
 	}
 
 	private static boolean isBoolean(final DtField dtField) {
-		return dtField.getSmartTypeDefinition().getScope().isBasicType() && dtField.getSmartTypeDefinition().getBasicType() == BasicType.Boolean;
+		return dtField.smartTypeDefinition().getScope().isBasicType() && dtField.smartTypeDefinition().getBasicType() == BasicType.Boolean;
 	}
 
 	private static boolean isAboutDate(final DtField dtField) {
-		return dtField.getSmartTypeDefinition().getScope().isBasicType() && dtField.getSmartTypeDefinition().getBasicType().isAboutDate();
+		return dtField.smartTypeDefinition().getScope().isBasicType() && dtField.smartTypeDefinition().getBasicType().isAboutDate();
 	}
 
 	/** {@inheritDoc} */
@@ -292,11 +292,11 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 				.isTrue(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//---
 		final DtField dtField = getDtField(keyFieldName);
-		final SmartTypeDefinition smartType = dtField.getSmartTypeDefinition();
+		final SmartTypeDefinition smartType = dtField.smartTypeDefinition();
 		if (smartType.getScope().isBasicType()) {
 			if (isAboutDate(dtField)) {
 				final Serializable value = getTypedValue(keyFieldName, Serializable.class);
-				return EncoderDate.valueToString(value, dtField.getSmartTypeDefinition().getBasicType());// encodeValue
+				return EncoderDate.valueToString(value, dtField.smartTypeDefinition().getBasicType());// encodeValue
 			} else if (isMultiple(dtField)) {
 				final String value = getTypedValue(keyFieldName, String.class);
 				return value != null ? parseMultipleValue(value) : new String[0];
@@ -309,7 +309,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		final DtField dtField = getDtField(keyFieldName);
 		final Serializable typedValue = getEncodedValue(keyFieldName);
-		return typedValue != null ? smartTypeManager.valueToString(dtField.getSmartTypeDefinition(), typedValue) : null;
+		return typedValue != null ? smartTypeManager.valueToString(dtField.smartTypeDefinition(), typedValue) : null;
 	}
 
 }

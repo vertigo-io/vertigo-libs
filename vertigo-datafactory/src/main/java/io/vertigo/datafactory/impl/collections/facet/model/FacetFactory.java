@@ -160,7 +160,7 @@ public final class FacetFactory {
 			final Object value = dtField.getDataAccessor().getValue(dto);
 			facetValue = facetFilterIndex.get(value);
 			if (facetValue == null) {
-				final String valueAsString = smartTypeManager.valueToString(dtField.getSmartTypeDefinition(), value);
+				final String valueAsString = smartTypeManager.valueToString(dtField.smartTypeDefinition(), value);
 				final String label;
 				if (StringUtil.isBlank(valueAsString)) {
 					label = "_empty_";
@@ -169,7 +169,7 @@ public final class FacetFactory {
 				}
 				final LocaleMessageText labelMsg = LocaleMessageText.of(label);
 				//on garde la syntaxe Solr pour l'instant
-				final ListFilter listFilter = ListFilter.of(dtField.getName() + ":\"" + valueAsString + "\"");
+				final ListFilter listFilter = ListFilter.of(dtField.name() + ":\"" + valueAsString + "\"");
 				facetValue = new FacetValue(label, listFilter, labelMsg);
 				facetFilterIndex.put(value, facetValue);
 				clusterValues.put(facetValue, new DtList<D>(dtList.getDefinition()));

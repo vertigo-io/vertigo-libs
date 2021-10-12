@@ -295,7 +295,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 					.stream()
 					.filter(dtField -> dtField.getType() != FieldType.COMPUTED)// we don't serialize computed fields
 					.forEach(field -> {
-						jsonObject.add(field.getName(), context.serialize(field.getDataAccessor().getValue(src)));
+						jsonObject.add(field.name(), context.serialize(field.getDataAccessor().getValue(src)));
 					});
 
 			Stream.of(src.getClass().getDeclaredFields())
@@ -341,7 +341,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 					.forEach(field -> field.getDataAccessor()
 							.setValue(
 									dtObject,
-									context.deserialize(jsonObject.get(field.getName()), field.getSmartTypeDefinition().getJavaClass())));
+									context.deserialize(jsonObject.get(field.name()), field.smartTypeDefinition().getJavaClass())));
 
 			return dtObject;
 
@@ -420,7 +420,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 				final DtDefinition entityDefinition = DtObjectUtil.findDtDefinition(entityClass);
 				Object entityId;
 				try {
-					entityId = smartTypeManager.stringToValue(entityDefinition.getIdField().get().getSmartTypeDefinition(), uidJsonValue);
+					entityId = smartTypeManager.stringToValue(entityDefinition.getIdField().get().smartTypeDefinition(), uidJsonValue);
 				} catch (final FormatterException e) {
 					throw new JsonParseException("Unsupported UID format " + uidJsonValue, e);
 				}

@@ -156,7 +156,7 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 			final Map<DtField, String> highlights = facetedQueryResult.getHighlights(document);
 			final JsonObject jsonHighlight = new JsonObject();
 			for (final Map.Entry<DtField, String> entry : highlights.entrySet()) {
-				jsonHighlight.addProperty(entry.getKey().getName(), entry.getValue());
+				jsonHighlight.addProperty(entry.getKey().name(), entry.getValue());
 			}
 			jsonHighlightList.add(jsonHighlight);
 		}

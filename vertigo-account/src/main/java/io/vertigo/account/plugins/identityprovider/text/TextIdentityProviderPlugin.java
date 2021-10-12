@@ -231,7 +231,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		final DtField dtField = userDtDefinition.getField(fieldName);
 		final Serializable typedValue;
 		try {
-			typedValue = (Serializable) smartTypeManager.stringToValue(dtField.getSmartTypeDefinition(), valueStr);
+			typedValue = (Serializable) smartTypeManager.stringToValue(dtField.smartTypeDefinition(), valueStr);
 		} catch (final FormatterException e) {
 			throw WrappedException.wrap(e);
 		}

@@ -103,7 +103,7 @@ public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 		for (final DtField dtField : dtFields) {
 			Assertion.check()
 					.when(stereotype.isPersistent() && dtField.isPersistent(), () -> Assertion.check()
-							.isTrue(!dtField.getCardinality().hasMany(),
+							.isTrue(!dtField.cardinality().hasMany(),
 									"Only non multiple smarttype are allowed in entity '{0}'", name));
 			if (dtField.getType().isId()) {
 				Assertion.check().isNull(id, "Only one ID Field is allowed : {0}", name);
@@ -136,10 +136,10 @@ public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 	private void registerDtField(final DtField dtField) {
 		Assertion.check()
 				.isNotNull(dtField)
-				.isFalse(mappedFields.containsKey(dtField.getName()), "Field {0} déjà enregistré sur {1}", dtField.getName(), this);
+				.isFalse(mappedFields.containsKey(dtField.name()), "Field {0} déjà enregistré sur {1}", dtField.name(), this);
 		//-----
 		fields.add(dtField);
-		mappedFields.put(dtField.getName(), dtField);
+		mappedFields.put(dtField.name(), dtField);
 	}
 
 	public Optional<DtDefinition> getFragment() {

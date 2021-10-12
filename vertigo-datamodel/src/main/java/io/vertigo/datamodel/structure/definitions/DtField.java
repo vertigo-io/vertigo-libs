@@ -41,7 +41,7 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
  *
  * @author  fconstantin, pchretien , npiedeloup
  */
-public final class DtField {
+public final class DtField implements DataDescriptor {
 
 	private static final int FIELD_NAME_MAX_LENGTH = 30;
 	/** Field definition Prefix. */
@@ -163,14 +163,16 @@ public final class DtField {
 	/**
 	 * @return the name of the field
 	 */
-	public String getName() {
+	@Override
+	public String name() {
 		return name;
 	}
 
 	/**
 	 * @return the cardinality of the field (one, optional, many)
 	 */
-	public Cardinality getCardinality() {
+	@Override
+	public Cardinality cardinality() {
 		return cardinality;
 	}
 
@@ -184,7 +186,8 @@ public final class DtField {
 	/**
 	 * @return the smarttype of the field
 	 */
-	public SmartTypeDefinition getSmartTypeDefinition() {
+	@Override
+	public SmartTypeDefinition smartTypeDefinition() {
 		return smartTypeDefinition;
 	}
 
@@ -204,7 +207,7 @@ public final class DtField {
 	}
 
 	public boolean isDtList() {
-		return getSmartTypeDefinition().getScope().isDataType() && cardinality.hasMany();
+		return smartTypeDefinition().getScope().isDataType() && cardinality.hasMany();
 	}
 
 	/**
@@ -230,7 +233,8 @@ public final class DtField {
 	 * If cardinality is many it's either a list or a dtList, if not then it's the base type of the domain.
 	 * @return the data accessor.
 	 */
+	@Override
 	public Class getTargetJavaClass() {
-		return getSmartTypeDefinition().getJavaClass(cardinality);
+		return smartTypeDefinition().getJavaClass(cardinality);
 	}
 }

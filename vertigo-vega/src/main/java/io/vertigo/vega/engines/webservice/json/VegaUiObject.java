@@ -93,7 +93,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		this.inputDto = inputDto;
 		this.dtDefinitionId = DtObjectUtil.findDtDefinition(inputDto).id();
 		fieldIndex = Collections.unmodifiableSet(getDtDefinition().getFields().stream()
-				.map(DtField::getName)
+				.map(DtField::name)
 				.collect(Collectors.toSet()));
 
 		for (final String field : modifiedFields) {
@@ -177,7 +177,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 				.isNotNull(inputDto, "inputDto is mandatory");
 		//-----
 		for (final DtField dtField : getDtDefinition().getFields()) {
-			if (isModified(dtField.getName())) {
+			if (isModified(dtField.name())) {
 				dtField.getDataAccessor().setValue(serverSideDto, dtField.getDataAccessor().getValue(inputDto));
 			}
 		}
@@ -285,12 +285,12 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		}
 		final Object value = doGetTypedValue(fieldName);
 		final DtField dtField = getDtField(fieldName);
-		final SmartTypeDefinition smartType = dtField.getSmartTypeDefinition();
+		final SmartTypeDefinition smartType = dtField.smartTypeDefinition();
 		final List<String> inputValues = new ArrayList<>();
 
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-		if (dtField.getSmartTypeDefinition().getScope().isBasicType()) {
-			if (!dtField.getCardinality().hasMany()) {
+		if (dtField.smartTypeDefinition().getScope().isBasicType()) {
+			if (!dtField.cardinality().hasMany()) {
 				inputValues.add(smartTypeManager.valueToString(smartType, value));// encodeValue
 				return inputValues.isEmpty() ? null : inputValues.toArray(String[]::new);
 			}
@@ -302,7 +302,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		}
 		final BasicTypeAdapter basicTypeAdapter = smartTypeManager.getTypeAdapters("ui").get(smartType.getJavaClass());
 		if (basicTypeAdapter != null) {
-			if (!dtField.getCardinality().hasMany()) {
+			if (!dtField.cardinality().hasMany()) {
 				final Object basicValue = basicTypeAdapter.toBasic(value);
 				if (basicValue != null) { //adapter return null, if value was null
 					inputValues.add(basicValue.toString());
@@ -333,12 +333,12 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		final DtField dtField = getDtField(fieldName);
 		//---
 		isChecked = false;
-		getDtObjectErrors().clearErrors(dtField.getName());
+		getDtObjectErrors().clearErrors(dtField.name());
 		final List<String> formattedValue = new ArrayList<>();
-		final SmartTypeDefinition smartTypeDefinition = dtField.getSmartTypeDefinition();
+		final SmartTypeDefinition smartTypeDefinition = dtField.smartTypeDefinition();
 		final Serializable typedValue;
 		if (smartTypeDefinition.getScope().isBasicType()) {
-			if (!dtField.getCardinality().hasMany()) {
+			if (!dtField.cardinality().hasMany()) {
 				Assertion.check().isTrue(stringValue.length <= 1, "Can't support multiple input values");
 				//------
 				final Tuple<String, Serializable> tuple = tryFormat(smartTypeManager, dtField, stringValue[0]);
@@ -356,7 +356,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 			}
 		} else {
 			final BasicTypeAdapter basicTypeAdapter = smartTypeManager.getTypeAdapters("ui").get(smartTypeDefinition.getJavaClass());
-			if (!dtField.getCardinality().hasMany()) {
+			if (!dtField.cardinality().hasMany()) {
 				Assertion.check().isTrue(stringValue.length <= 1, "Can't support multiple input values");
 				//------
 				final Tuple<String, Serializable> tuple = tryFormatWithAdapter(basicTypeAdapter, dtField, stringValue[0]);
@@ -383,13 +383,13 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		String formattedValue;
 		Serializable typedValue = null;
 		try {
-			typedValue = (Serializable) smartTypeManager.stringToValue(dtField.getSmartTypeDefinition(), inputValue);// we should use an encoder instead
+			typedValue = (Serializable) smartTypeManager.stringToValue(dtField.smartTypeDefinition(), inputValue);// we should use an encoder instead
 			// succesful encoding we can format and put in the inputbuffer
-			formattedValue = smartTypeManager.valueToString(dtField.getSmartTypeDefinition(), typedValue);
+			formattedValue = smartTypeManager.valueToString(dtField.smartTypeDefinition(), typedValue);
 		} catch (final FormatterException e) { //We don't log nor rethrow this exception // it should be an encoding exception
 			/** Erreur de typage.	 */
 			//encoding error
-			getDtObjectErrors().addError(dtField.getName(), e.getMessageText());
+			getDtObjectErrors().addError(dtField.name(), e.getMessageText());
 			formattedValue = inputValue;
 		}
 		return Tuple.of(formattedValue, typedValue);
@@ -399,13 +399,13 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		String formattedValue;
 		Serializable typedValue = null;
 		try {
-			typedValue = (Serializable) basicTypeAdapter.toJava(inputValue, dtField.getSmartTypeDefinition().getJavaClass());
+			typedValue = (Serializable) basicTypeAdapter.toJava(inputValue, dtField.smartTypeDefinition().getJavaClass());
 			// succesful encoding we can format and put in the inputbuffer
 			formattedValue = inputValue;
 		} catch (final Exception e) { //We don't log nor rethrow this exception // it should be an encoding exception
 			/** Erreur de typage.	 */
 			//encoding error
-			getDtObjectErrors().addError(dtField.getName(), LocaleMessageText.of(e.getMessage()));
+			getDtObjectErrors().addError(dtField.name(), LocaleMessageText.of(e.getMessage()));
 			formattedValue = inputValue;
 		}
 		return Tuple.of(formattedValue, typedValue);

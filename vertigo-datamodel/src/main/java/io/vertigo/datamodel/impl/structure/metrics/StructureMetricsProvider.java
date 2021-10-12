@@ -119,7 +119,7 @@ public final class StructureMetricsProvider implements Component {
 		return Node.getNode().getDefinitionSpace().getAll(DtDefinition.class)
 				.stream()
 				.flatMap(dtDefinition -> dtDefinition.getFields().stream())
-				.filter(field -> smartTypeDefinition.equals(field.getSmartTypeDefinition()))
+				.filter(field -> smartTypeDefinition.equals(field.smartTypeDefinition()))
 				.count();
 	}
 

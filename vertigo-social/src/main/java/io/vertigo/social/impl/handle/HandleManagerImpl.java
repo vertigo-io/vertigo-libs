@@ -168,7 +168,7 @@ public final class HandleManagerImpl implements HandleManager, Activeable {
 	}
 
 	private void indexDefinition(final DtDefinition dtDefinition) {
-		final String idFieldName = dtDefinition.getIdField().get().getName();
+		final String idFieldName = dtDefinition.getIdField().get().name();
 		final DataAccessor idFieldAccessor = dtDefinition.getIdField().get().getDataAccessor();
 		int lastResultsSize;
 		Serializable lastId = null;

@@ -254,9 +254,9 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 			label = EMPTY_TERM;
 		}
 		if (valueAsString != null) {
-			query = facetDefinition.getDtField().getName() + ":\"" + valueAsString + "\"";
+			query = facetDefinition.getDtField().name() + ":\"" + valueAsString + "\"";
 		} else {
-			query = "!_exists_:" + facetDefinition.getDtField().getName(); //only for null value, empty ones use FIELD:""
+			query = "!_exists_:" + facetDefinition.getDtField().name(); //only for null value, empty ones use FIELD:""
 		}
 
 		return new FacetValue(label, ListFilter.of(query), LocaleMessageText.of(label));

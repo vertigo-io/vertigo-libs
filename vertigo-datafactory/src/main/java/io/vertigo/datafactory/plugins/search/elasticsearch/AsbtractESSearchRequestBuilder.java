@@ -174,8 +174,8 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	protected FieldSortBuilder getFieldSortBuilder(final DtDefinition indexDefinition, final DtListState listState) {
 		final DtField sortField = indexDefinition.getField(listState.getSortFieldName().get());
-		String sortIndexFieldName = sortField.getName();
-		final IndexType indexType = IndexType.readIndexType(sortField.getSmartTypeDefinition());
+		String sortIndexFieldName = sortField.name();
+		final IndexType indexType = IndexType.readIndexType(sortField.smartTypeDefinition());
 
 		if (indexType.isIndexSubKeyword()) { //s'il y a un subKeyword on tri dessus
 			sortIndexFieldName = sortIndexFieldName + ".keyword";
@@ -244,7 +244,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	}
 
 	private static boolean isGeoField(final DtField dtField) {
-		final String indexType = dtField.getSmartTypeDefinition().getProperties().getValue(DtProperty.INDEX_TYPE);
+		final String indexType = dtField.smartTypeDefinition().getProperties().getValue(DtProperty.INDEX_TYPE);
 		return indexType != null && indexType.indexOf("geo_point") != -1;
 	}
 
@@ -357,8 +357,8 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 			default -> throw new IllegalArgumentException("Unknown facetOrder :" + facetDefinition.getOrder());
 		};
 		//Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
-		final IndexType indexType = IndexType.readIndexType(dtField.getSmartTypeDefinition());
-		String fieldName = dtField.getName();
+		final IndexType indexType = IndexType.readIndexType(dtField.smartTypeDefinition());
+		String fieldName = dtField.name();
 		if (!indexType.isIndexFieldData() && indexType.isIndexSubKeyword()) { //si le champs n'est pas facetable mais qu'il y a un sub keyword on le prend
 			fieldName = fieldName + ".keyword";
 		}
@@ -392,9 +392,9 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	private static AggregationBuilder rangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		//facette par range
-		switch (dtField.getSmartTypeDefinition().getScope()) {
+		switch (dtField.smartTypeDefinition().getScope()) {
 			case BASIC_TYPE:
-				final BasicType dataType = dtField.getSmartTypeDefinition().getBasicType();
+				final BasicType dataType = dtField.smartTypeDefinition().getBasicType();
 				if (dataType == BasicType.LocalDate) {
 					return dateRangeFacetToAggregationBuilder(facetDefinition, dtField);
 				} else if (dataType.isNumber()) {
@@ -405,13 +405,13 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 				return geoRangeFacetToAggregationBuilder(facetDefinition, dtField, myCriteria, typeAdapters);
 			case DATA_TYPE:
 			default:
-				throw new IllegalArgumentException("Type de donnée non pris en charge comme Facet pour le keyconcept indexé [" + dtField.getSmartTypeDefinition() + "].");
+				throw new IllegalArgumentException("Type de donnée non pris en charge comme Facet pour le keyconcept indexé [" + dtField.smartTypeDefinition() + "].");
 		}
 
 		final List<KeyedFilter> filters = new ArrayList<>();
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.listFilter().getFilterValue();
-			Assertion.check().isTrue(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			Assertion.check().isTrue(filterValue.contains(dtField.name()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.name(), filterValue);
 			filters.add(new KeyedFilter(facetRange.code(), QueryBuilders.queryStringQuery(filterValue)));
 		}
 		return AggregationBuilders.filters(facetDefinition.getName(), filters.toArray(new KeyedFilter[filters.size()]));
@@ -419,10 +419,10 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	private static AggregationBuilder numberRangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
 		final RangeAggregationBuilder rangeBuilder = AggregationBuilders.range(facetDefinition.getName())//
-				.field(dtField.getName());
+				.field(dtField.name());
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.listFilter().getFilterValue();
-			Assertion.check().isTrue(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			Assertion.check().isTrue(filterValue.contains(dtField.name()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.name(), filterValue);
 			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
 			final Optional<Double> minValue = convertToDouble(parsedFilter[3]);
 			final Optional<Double> maxValue = convertToDouble(parsedFilter[4]);
@@ -439,11 +439,11 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	private static AggregationBuilder dateRangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
 		final DateRangeAggregationBuilder dateRangeBuilder = AggregationBuilders.dateRange(facetDefinition.getName())
-				.field(dtField.getName())
+				.field(dtField.name())
 				.format(DATE_PATTERN);
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.listFilter().getFilterValue();
-			Assertion.check().isTrue(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			Assertion.check().isTrue(filterValue.contains(dtField.name()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.name(), filterValue);
 			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
 			final String minValue = parsedFilter[3];
 			final String maxValue = parsedFilter[4];
@@ -468,7 +468,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 			final String filterValue = facetRange.listFilter().getFilterValue();
 			final DslGeoExpression dslGeoExpression = DslParserUtil.parseGeoExpression(filterValue);
 			final String geoFieldName = dslGeoExpression.getField().getFieldName();
-			Assertion.check().isTrue(geoFieldName.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			Assertion.check().isTrue(geoFieldName.contains(dtField.name()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.name(), filterValue);
 
 			final DslGeoDistanceQuery geoStartDistanceQuery;
 			final DslGeoDistanceQuery geoEndDistanceQuery;

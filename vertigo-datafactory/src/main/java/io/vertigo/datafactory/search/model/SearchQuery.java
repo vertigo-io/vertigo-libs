@@ -106,7 +106,7 @@ public final class SearchQuery implements Serializable {
 
 		this.securityListFilter = securityListFilter;
 		boostedDocumentDateFieldName = boostedDocumentDateField != null
-				? boostedDocumentDateField.getName()
+				? boostedDocumentDateField.name()
 				: null;
 		this.numDaysOfBoostRefDocument = numDaysOfBoostRefDocument;
 		this.mostRecentBoost = mostRecentBoost;

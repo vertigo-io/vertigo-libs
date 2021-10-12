@@ -245,7 +245,7 @@ final class XLSExporter {
 				final HSSFCell cell = row.createCell(cellIndex);
 
 				value = ExporterUtil.getValue(entityStoreManager, smartTypeManager, referenceCache, denormCache, dto, exportColumn);
-				putValueInCell(smartTypeManager, value, cell, rowIndex % 2 == 0 ? evenHssfStyleCache : oddHssfStyleCache, cellIndex, maxWidthPerColumn, exportColumn.getDtField().getSmartTypeDefinition());
+				putValueInCell(smartTypeManager, value, cell, rowIndex % 2 == 0 ? evenHssfStyleCache : oddHssfStyleCache, cellIndex, maxWidthPerColumn, exportColumn.getDtField().smartTypeDefinition());
 
 				cellIndex++;
 			}
@@ -270,7 +270,7 @@ final class XLSExporter {
 
 			final HSSFCell valueCell = row.createCell(valueCellIndex);
 			value = ExporterUtil.getValue(entityStoreManager, smartTypeManager, referenceCache, denormCache, dto, exportColumn);
-			putValueInCell(smartTypeManager, value, valueCell, oddHssfStyleCache, valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().getSmartTypeDefinition());
+			putValueInCell(smartTypeManager, value, valueCell, oddHssfStyleCache, valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().smartTypeDefinition());
 			rowIndex++;
 		}
 

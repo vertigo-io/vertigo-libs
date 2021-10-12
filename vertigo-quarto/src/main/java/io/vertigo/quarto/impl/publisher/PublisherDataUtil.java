@@ -151,17 +151,17 @@ public final class PublisherDataUtil {
 	 * @return la chaine de caractère correspondant au rendu du champs
 	 */
 	public static String renderStringField(final DtObject dto, final DtField dtField) {
-		final String unit = dtField.getSmartTypeDefinition().getProperties().getValue(DtProperty.UNIT);
+		final String unit = dtField.smartTypeDefinition().getProperties().getValue(DtProperty.UNIT);
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		final Object value = dtField.getDataAccessor().getValue(dto);
-		final String formattedValue = smartTypeManager.valueToString(dtField.getSmartTypeDefinition(), value);
+		final String formattedValue = smartTypeManager.valueToString(dtField.smartTypeDefinition(), value);
 		return formattedValue + (!StringUtil.isBlank(unit) ? " " + unit : "");
 	}
 
 	private static List<String> getDtFieldList(final DtDefinition dtDefinition) {
 		final List<String> dtFieldNames = new ArrayList<>();
 		for (final DtField dtField : dtDefinition.getFields()) {
-			dtFieldNames.add(dtField.getName());
+			dtFieldNames.add(dtField.name());
 		}
 		return dtFieldNames;
 	}
@@ -187,20 +187,20 @@ public final class PublisherDataUtil {
 	private static void appendPublisherNodeDefinition(final StringBuilder sb, final DtDefinition dtDefinition) {
 		sb.append("PN_").append(dtDefinition.id().shortName()).append("  = new PublisherNode (\n");
 		for (final DtField dtField : dtDefinition.getFields()) {
-			final String fieldName = dtField.getName();
-			switch (dtField.getSmartTypeDefinition().getScope()) {
+			final String fieldName = dtField.name();
+			switch (dtField.smartTypeDefinition().getScope()) {
 				case BASIC_TYPE:
-					if (BasicType.Boolean == dtField.getSmartTypeDefinition().getBasicType()) {
+					if (BasicType.Boolean == dtField.smartTypeDefinition().getBasicType()) {
 						sb.append("\t\tbooleanField[").append(fieldName).append(")] = new DataField ();\n");
 					} else {
 						sb.append("\t\tstringField[").append(fieldName).append(")] = new DataField ();\n");
 					}
 					break;
 				case DATA_TYPE:
-					if (dtField.getCardinality().hasMany()) {
-						sb.append("\t\tlistField[").append(fieldName).append(")] = new NodeField (type = PN_").append(DtDefinition.PREFIX + dtField.getSmartTypeDefinition().getJavaClass().getSimpleName()).append(";);\n");
+					if (dtField.cardinality().hasMany()) {
+						sb.append("\t\tlistField[").append(fieldName).append(")] = new NodeField (type = PN_").append(DtDefinition.PREFIX + dtField.smartTypeDefinition().getJavaClass().getSimpleName()).append(";);\n");
 					} else {
-						sb.append("\t\tdataField[").append(fieldName).append(")] = new NodeField (type = PN_").append(DtDefinition.PREFIX + dtField.getSmartTypeDefinition().getJavaClass().getSimpleName()).append(";);\n");
+						sb.append("\t\tdataField[").append(fieldName).append(")] = new NodeField (type = PN_").append(DtDefinition.PREFIX + dtField.smartTypeDefinition().getJavaClass().getSimpleName()).append(";);\n");
 					}
 					break;
 				case VALUE_TYPE:

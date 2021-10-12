@@ -25,6 +25,7 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.ConstraintException;
+import io.vertigo.datamodel.structure.definitions.DataDescriptor;
 
 /**
  * Attribut d'une tache.
@@ -45,7 +46,7 @@ import io.vertigo.datamodel.structure.definitions.ConstraintException;
 public record TaskAttribute(
 		String name,
 		SmartTypeDefinition smartTypeDefinition,
-		Cardinality cardinality) {
+		Cardinality cardinality) implements DataDescriptor {
 
 	public TaskAttribute {
 		Assertion.check()
@@ -68,14 +69,5 @@ public record TaskAttribute(
 		} catch (final ConstraintException e) {
 			throw WrappedException.wrap(e);
 		}
-	}
-
-	/**
-	 * Returns the class that holds the value of the field.
-	 * If cardinality is many it's either a list or a dtList, if not then it's the base type of the domain.
-	 * @return the data accessor.
-	 */
-	public Class getTargetJavaClass() {
-		return smartTypeDefinition.getJavaClass(cardinality);
 	}
 }

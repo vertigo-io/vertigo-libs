@@ -580,7 +580,7 @@ public abstract class AbstractSearchManagerTest {
 		firstItem = doQueryAllAndGetFirst("year", true);
 		Assertions.assertEquals(2010, firstItem.getYear().intValue());
 
-		final DtListState listState = DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField("model").getName(), true);
+		final DtListState listState = DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField("model").name(), true);
 		final DtList<Item> dtList = doQuery(SearchQuery
 				.builder("QryItemFacet")
 				.withCriteria("")
@@ -728,7 +728,7 @@ public abstract class AbstractSearchManagerTest {
 		//On recherche la facette constructeur
 		final Facet optionalStringFacet = getFacetByName(result, "FctOptionalStringItem");
 		//On vérifie que l'on est sur le champ Manufacturer
-		Assertions.assertEquals("optionalString", optionalStringFacet.getDefinition().getDtField().getName());
+		Assertions.assertEquals("optionalString", optionalStringFacet.getDefinition().getDtField().name());
 		Assertions.assertFalse(optionalStringFacet.getDefinition().isRangeFacet());
 
 		//On vérifie qu'il existe une valeur pour empty et que le nombre d'occurrences est correct
@@ -754,7 +754,7 @@ public abstract class AbstractSearchManagerTest {
 		//On recherche la facette constructeur
 		final Facet manufacturerFacet = getFacetByName(result, "FctManufacturerItem");
 		//On vérifie que l'on est sur le champ Manufacturer
-		Assertions.assertEquals("manufacturer", manufacturerFacet.getDefinition().getDtField().getName());
+		Assertions.assertEquals("manufacturer", manufacturerFacet.getDefinition().getDtField().name());
 		Assertions.assertFalse(manufacturerFacet.getDefinition().isRangeFacet());
 
 		//On vérifie qu'il existe une valeur pour peugeot et que le nombre d'occurrences est correct
@@ -782,7 +782,7 @@ public abstract class AbstractSearchManagerTest {
 		//On recherche la facette constructeur
 		final Facet localisationFacet = getFacetByName(result, "FctLocalisationItem");
 		//On vérifie que l'on est sur le champ Manufacturer
-		Assertions.assertEquals("localisation", localisationFacet.getDefinition().getDtField().getName());
+		Assertions.assertEquals("localisation", localisationFacet.getDefinition().getDtField().name());
 		Assertions.assertTrue(localisationFacet.getDefinition().isRangeFacet());
 
 		Assertions.assertEquals(5, localisationFacet.getFacetValues().size());
@@ -1371,7 +1371,7 @@ public abstract class AbstractSearchManagerTest {
 				.withFacetClustering(manufacturerFacetDefinition)
 				.build();
 
-		final DtListState listState = DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField("year").getName(), true);
+		final DtListState listState = DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField("year").name(), true);
 		final FacetedQueryResult<Item, SearchQuery> result = doQuery(searchQuery, listState);
 
 		//On vérifie qu'il existe une valeur pour chaque marques et que la première est bien la plus ancienne
@@ -1675,7 +1675,7 @@ public abstract class AbstractSearchManagerTest {
 				.builder("QryItemFacet")
 				.withCriteria("")
 				.build();
-		final DtListState listState = DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField(sortField).getName(), sortDesc);
+		final DtListState listState = DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField(sortField).name(), sortDesc);
 		final DtList<Item> dtList = doQuery(searchQuery, listState).getDtList();
 		Assertions.assertFalse(dtList.isEmpty(), "Result list was empty");
 		return dtList.get(0);

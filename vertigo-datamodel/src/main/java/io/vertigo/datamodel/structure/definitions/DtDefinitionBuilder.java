@@ -364,7 +364,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		Assertion.check().isNotBlank(fieldName);
 		return myFields
 				.stream()
-				.filter(dtField -> fieldName.equals(dtField.getName()))
+				.filter(dtField -> fieldName.equals(dtField.name()))
 				.findFirst();
 	}
 

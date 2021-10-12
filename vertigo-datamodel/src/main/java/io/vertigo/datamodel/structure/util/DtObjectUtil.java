@@ -180,7 +180,7 @@ public final class DtObjectUtil {
 		return findDtDefinition(dto).getFields()
 				.stream()
 				.filter(dtField -> dtField.getType() != DtField.FieldType.COMPUTED)
-				.map(dtField -> dtField.getName() + '=' + dtField.getDataAccessor().getValue(dto))
+				.map(dtField -> dtField.name() + '=' + dtField.getDataAccessor().getValue(dto))
 				.collect(Collectors.joining(", ", findDtDefinition(dto).getName() + '(', ")"));
 	}
 

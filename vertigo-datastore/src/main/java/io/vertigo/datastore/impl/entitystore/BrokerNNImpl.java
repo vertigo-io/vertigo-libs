@@ -134,7 +134,7 @@ final class BrokerNNImpl implements BrokerNN {
 	 */
 	private void removeNN(final DescriptionNN nn) {
 		//FieldName
-		final String sourceFieldName = nn.sourceField.getName();
+		final String sourceFieldName = nn.sourceField.name();
 		final String sourceColName = StringUtil.camelToConstCase(sourceFieldName);
 
 		final String taskName = "TkDelete" + StringUtil.constToUpperCamelCase(nn.tableName);
@@ -150,9 +150,9 @@ final class BrokerNNImpl implements BrokerNN {
 	 */
 	private void appendNN(final DescriptionNN nn, final Object targetValue) {
 		//FieldName
-		final String sourceFieldName = nn.sourceField.getName();
+		final String sourceFieldName = nn.sourceField.name();
 		final String sourceColName = StringUtil.camelToConstCase(sourceFieldName);
-		final String targetFieldName = nn.targetField.getName();
+		final String targetFieldName = nn.targetField.name();
 		final String targetColName = StringUtil.camelToConstCase(targetFieldName);
 		final String taskName = "TkInsert" + StringUtil.constToUpperCamelCase(nn.tableName);
 
@@ -172,9 +172,9 @@ final class BrokerNNImpl implements BrokerNN {
 	 */
 	private void removeNN(final DescriptionNN nn, final Object targetValue) {
 		//FieldName
-		final String sourceFieldName = nn.sourceField.getName();
+		final String sourceFieldName = nn.sourceField.name();
 		final String sourceColName = StringUtil.camelToConstCase(sourceFieldName);
-		final String targetFieldName = nn.targetField.getName();
+		final String targetFieldName = nn.targetField.name();
 		final String targetColName = StringUtil.camelToConstCase(targetFieldName);
 		final String taskName = "TkDelete" + StringUtil.constToUpperCamelCase(nn.tableName);
 
@@ -197,15 +197,15 @@ final class BrokerNNImpl implements BrokerNN {
 			final DtField targetField,
 			final Object targetValue) {
 		//FieldName
-		final String sourceFieldName = sourceField.getName();
+		final String sourceFieldName = sourceField.name();
 
 		final TaskDefinitionBuilder taskDefinitionBuilder = TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineProc.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute(sourceFieldName, sourceField.getSmartTypeDefinition(), Cardinality.ONE);
+				.addInAttribute(sourceFieldName, sourceField.smartTypeDefinition(), Cardinality.ONE);
 		if (targetField != null) {
-			taskDefinitionBuilder.addInAttribute(targetField.getName(), targetField.getSmartTypeDefinition(), Cardinality.ONE);
+			taskDefinitionBuilder.addInAttribute(targetField.name(), targetField.smartTypeDefinition(), Cardinality.ONE);
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerSmartType, Cardinality.ONE)
@@ -215,7 +215,7 @@ final class BrokerNNImpl implements BrokerNN {
 		final TaskBuilder taskBuilder = Task.builder(taskDefinition)
 				.addValue(sourceFieldName, sourceValue);
 		if (targetField != null) {
-			taskBuilder.addValue(targetField.getName(), targetValue);
+			taskBuilder.addValue(targetField.name(), targetValue);
 		}
 
 		return taskManager

@@ -94,11 +94,11 @@ public final class ExportXlsHelper<R extends DtObject> {
 
 		for (final DtField dtField : getExportColumnList(dtcToExport, collectionColumnNameList)) {
 			if (specificLabelMap == null) {
-				exportSheetBuilder.addField(dtField::getName);
+				exportSheetBuilder.addField(dtField::name);
 			} else {
 				// TODO final String label = specificLabelMap.get(field.getName());
 				// TODO exportListParameters.addExportField(field, label);
-				exportSheetBuilder.addField(dtField::getName, null);
+				exportSheetBuilder.addField(dtField::name, null);
 			}
 		}
 		exportSheetBuilder.endSheet();
@@ -121,7 +121,7 @@ public final class ExportXlsHelper<R extends DtObject> {
 
 		// TODO set tabname exportObjectParameters.setMetaData(PublisherMetaData.TITLE, tabName);
 		for (final DtField dtField : getExportCriterionFields(criterion, criterionExcludedColumnNames)) {
-			exportSheetBuilder.addField(dtField::getName);
+			exportSheetBuilder.addField(dtField::name);
 		}
 
 		exportSheetBuilder.endSheet();
@@ -156,7 +156,7 @@ public final class ExportXlsHelper<R extends DtObject> {
 		addFieldToExcludedExportColumnNameList(dtDefinition, criterionExcludedColumnNameList);
 
 		for (final DtField dtField : dtDefinition.getFields()) {
-			if (!criterionExcludedColumnNameList.contains(dtField.getName())) {
+			if (!criterionExcludedColumnNameList.contains(dtField.name())) {
 				exportColumns.add(dtField);
 			}
 		}
@@ -166,8 +166,8 @@ public final class ExportXlsHelper<R extends DtObject> {
 	private static void addFieldToExcludedExportColumnNameList(final DtDefinition definition, final List<String> criterionExcludedColumnNameList) {
 		if (definition.getIdField().isPresent()) {
 			final DtField keyField = definition.getIdField().get();
-			if ("DoIdentifier".equals(keyField.getSmartTypeDefinition().getName())) {
-				criterionExcludedColumnNameList.add(keyField.getName());
+			if ("DoIdentifier".equals(keyField.smartTypeDefinition().getName())) {
+				criterionExcludedColumnNameList.add(keyField.name());
 			}
 		}
 	}

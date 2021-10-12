@@ -95,7 +95,7 @@ public final class UiSelectedFacetValues extends HashMap<String, List<String>> {
 
 	private static void appendTermFacetValue(final String value, final FacetDefinition facetDefinition, final SelectedFacetValuesBuilder selectedFacetValuesBuilder) {
 		final LocaleMessageText label = LocaleMessageText.of(value);
-		final String query = facetDefinition.getDtField().getName() + ":\"" + value + "\"";
+		final String query = facetDefinition.getDtField().name() + ":\"" + value + "\"";
 		final FacetValue facetValue = new FacetValue(value, ListFilter.of(query), label);
 		selectedFacetValuesBuilder.add(facetDefinition, facetValue);
 	}

@@ -156,7 +156,7 @@ public final class ESDocumentCodec {
 				if (!copyToFields.contains(dtField)) {//On index pas les copyFields
 					final Object value = dtField.getDataAccessor().getValue(dtIndex);
 					if (value != null) { //les valeurs null ne sont pas indexées => conséquence : on ne peut pas les rechercher
-						xContentBuilder.field(dtField.getName(), encodeValue(value, dtField.getSmartTypeDefinition()));
+						xContentBuilder.field(dtField.name(), encodeValue(value, dtField.smartTypeDefinition()));
 					}
 				}
 			}
@@ -188,7 +188,7 @@ public final class ESDocumentCodec {
 
 	private static List<DtField> getNotStoredFields(final DtDefinition dtDefinition) {
 		return dtDefinition.getFields().stream()
-				.filter(dtField -> !isIndexStoredDomain(dtField.getSmartTypeDefinition()))
+				.filter(dtField -> !isIndexStoredDomain(dtField.smartTypeDefinition()))
 				.collect(Collectors.toList());
 	}
 

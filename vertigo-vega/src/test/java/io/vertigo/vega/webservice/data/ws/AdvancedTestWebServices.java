@@ -343,7 +343,7 @@ public final class AdvancedTestWebServices implements WebServices {
 		final DtDefinition resultDefinition = DtObjectUtil.findDtDefinition(resultClass);
 		final Set<String> alreadyAddedField = new HashSet<>();
 		for (final DtField field : criteriaDefinition.getFields()) {
-			final String fieldName = field.getName();
+			final String fieldName = field.name();
 			if (!alreadyAddedField.contains(fieldName)) { //when we consume two fields at once (min;max)
 				final Object value = field.getDataAccessor().getValue(criteria);
 				if (value != null) {
@@ -354,7 +354,7 @@ public final class AdvancedTestWebServices implements WebServices {
 						final DtField maxField = fieldName.endsWith("Max") ? field : criteriaDefinition.getField(filteredField + "Max");
 						final Serializable minValue = (Serializable) minField.getDataAccessor().getValue(criteria);
 						final Serializable maxValue = (Serializable) maxField.getDataAccessor().getValue(criteria);
-						filter = filter.and(Criterions.isBetween(() -> resultDtField.getName(),
+						filter = filter.and(Criterions.isBetween(() -> resultDtField.name(),
 								CriterionLimit.ofIncluded(minValue),
 								CriterionLimit.ofExcluded(maxValue))
 								.toPredicate());

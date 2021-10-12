@@ -242,7 +242,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 
 		final Serializable userAuthTokenValue;
 		try {
-			userAuthTokenValue = Serializable.class.cast(smartTypeManager.stringToValue(getUserDtDefinition().getField(userAuthField).getSmartTypeDefinition(), userAuthToken));
+			userAuthTokenValue = Serializable.class.cast(smartTypeManager.stringToValue(getUserDtDefinition().getField(userAuthField).smartTypeDefinition(), userAuthToken));
 		} catch (final FormatterException e) {
 			throw WrappedException.wrap(e);
 		}
@@ -271,7 +271,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	private Entity readUserEntity(final UID<Account> accountURI) {
 		return executeInTransaction(() -> {
 			try {
-				final Serializable typedId = (Serializable) smartTypeManager.stringToValue(userIdField.getSmartTypeDefinition(), (String) accountURI.getId()); //account id IS always a String
+				final Serializable typedId = (Serializable) smartTypeManager.stringToValue(userIdField.smartTypeDefinition(), (String) accountURI.getId()); //account id IS always a String
 				final UID<Entity> userURI = UID.of(getUserDtDefinition(), typedId);
 				return entityStoreManager.readOne(userURI);
 			} catch (final FormatterException e) {
@@ -283,7 +283,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	private Entity readGroupEntity(final UID<AccountGroup> accountGroupURI) {
 		return executeInTransaction(() -> {
 			try {
-				final Serializable typedId = (Serializable) smartTypeManager.stringToValue(groupIdField.getSmartTypeDefinition(), (String) accountGroupURI.getId()); //accountGroup id IS always a String
+				final Serializable typedId = (Serializable) smartTypeManager.stringToValue(groupIdField.smartTypeDefinition(), (String) accountGroupURI.getId()); //accountGroup id IS always a String
 				final UID<Entity> groupURI = UID.of(userGroupDtDefinition, typedId);
 				return entityStoreManager.readOne(groupURI);
 			} catch (final FormatterException e) {

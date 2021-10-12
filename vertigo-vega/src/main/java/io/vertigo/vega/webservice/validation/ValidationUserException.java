@@ -92,7 +92,7 @@ public final class ValidationUserException extends VUserException {
 	public void flushToUiMessageStack(final UiMessageStack uiMessageStack) {
 		for (final UiError uiError : uiErrors) {
 			if (uiError.dtObject() != null) {
-				uiMessageStack.error(uiError.errorMessage().getDisplay(), uiError.dtObject(), uiError.dtField().getName());
+				uiMessageStack.error(uiError.errorMessage().getDisplay(), uiError.dtObject(), uiError.dtField().name());
 			} else {
 				uiMessageStack.error(uiError.errorMessage().getDisplay());
 			}

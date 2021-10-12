@@ -226,7 +226,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 	private static <K extends Serializable> void appendTreeExpression(final StringBuilder query, final SecurityDimension securityDimension, final ValueOperator operator, final K[] treeKeys) {
 		//on vérifie qu'on a bien toutes les clées.
 		final List<String> strDimensionfields = securityDimension.getFields().stream()
-				.map(DtField::getName)
+				.map(DtField::name)
 				.collect(Collectors.toList());
 		Assertion.check().isTrue(strDimensionfields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strDimensionfields);
 		query.append('(');

@@ -50,12 +50,12 @@ public final class DataAccessor {
 	public void setValue(final DtObject dto, final Object value) {
 		checkType(dto, value);
 		//-----
-		BeanUtil.setValue(dto, dtField.getName(), value);
+		BeanUtil.setValue(dto, dtField.name(), value);
 	}
 
 	private void checkType(final DtObject dto, final Object value) {
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-		smartTypeManager.checkType(dtField.getSmartTypeDefinition(), dtField.getCardinality(), value);
+		smartTypeManager.checkType(dtField.smartTypeDefinition(), dtField.cardinality(), value);
 	}
 
 	/**
@@ -71,6 +71,6 @@ public final class DataAccessor {
 	 */
 	public Object getValue(final DtObject dto) {
 		//Dans le cas d'un champ statique
-		return BeanUtil.getValue(dto, dtField.getName());
+		return BeanUtil.getValue(dto, dtField.name());
 	}
 }

@@ -204,7 +204,7 @@ public final class UiErrorBuilder {
 	 */
 	public void flushIntoMessageStack(final UiMessageStack uiMessageStack) {
 		for (final UiError uiError : uiObjectErrors) {
-			uiMessageStack.addFieldMessage(Level.ERROR, uiError.errorMessage().getDisplay(), uiError.dtObject(), uiError.dtField().getName());
+			uiMessageStack.addFieldMessage(Level.ERROR, uiError.errorMessage().getDisplay(), uiError.dtObject(), uiError.dtField().name());
 		}
 	}
 
