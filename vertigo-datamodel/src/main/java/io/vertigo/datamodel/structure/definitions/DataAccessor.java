@@ -18,9 +18,7 @@
 package io.vertigo.datamodel.structure.definitions;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.Node;
 import io.vertigo.core.util.BeanUtil;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.model.DtObject;
 
 /**
@@ -48,14 +46,9 @@ public final class DataAccessor {
 	 * @param value Object
 	 */
 	public void setValue(final DtObject dto, final Object value) {
-		checkType(dto, value);
+		dtField.checkType(value);
 		//-----
 		BeanUtil.setValue(dto, dtField.name(), value);
-	}
-
-	private void checkType(final DtObject dto, final Object value) {
-		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-		smartTypeManager.checkType(dtField.smartTypeDefinition(), dtField.cardinality(), value);
 	}
 
 	/**

@@ -145,7 +145,7 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 	}
 
 	@Override
-	public void checkConstraints(final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality, final Object value) throws ConstraintException {
+	public void validate(final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality, final Object value) throws ConstraintException {
 		Assertion.check()
 				.isNotNull(smartTypeDefinition)
 				.isNotNull(cardinality);

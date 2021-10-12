@@ -227,14 +227,4 @@ public final class DtField implements DataDescriptor {
 	public DataAccessor getDataAccessor() {
 		return dataAccessor;
 	}
-
-	/**
-	 * Returns the class that holds the value of the field.
-	 * If cardinality is many it's either a list or a dtList, if not then it's the base type of the domain.
-	 * @return the data accessor.
-	 */
-	@Override
-	public Class getTargetJavaClass() {
-		return smartTypeDefinition().getJavaClass(cardinality);
-	}
 }

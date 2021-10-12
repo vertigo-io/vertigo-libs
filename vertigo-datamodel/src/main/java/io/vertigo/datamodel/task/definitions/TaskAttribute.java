@@ -19,12 +19,8 @@ package io.vertigo.datamodel.task.definitions;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.ConstraintException;
 import io.vertigo.datamodel.structure.definitions.DataDescriptor;
 
 /**
@@ -57,17 +53,4 @@ public record TaskAttribute(
 						"the name of the attribute {0} must be in lowerCamelCase", name);
 	}
 
-	/**
-	 * Vérifie la cohérence des arguments d'un Attribute
-	 * Vérifie que l'objet est cohérent avec le type défini sur l'attribut.
-	 * @param value Valeur (Object primitif ou DtObject ou bien DtList)
-	 */
-	public void checkAttribute(final Object value) {
-		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-		try {
-			smartTypeManager.checkConstraints(smartTypeDefinition, cardinality, value);
-		} catch (final ConstraintException e) {
-			throw WrappedException.wrap(e);
-		}
-	}
 }

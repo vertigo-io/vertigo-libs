@@ -33,9 +33,9 @@ public interface SmartTypeManager extends Manager {
 	void checkType(SmartTypeDefinition smartTypeDefinition, Cardinality cardinality, Object value);
 
 	/*
-	 * Checks the value
+	 * Validates the value (checks all the constraints)
 	 */
-	void checkConstraints(SmartTypeDefinition smartTypeDefinition, Cardinality cardinality, Object value) throws ConstraintException;
+	void validate(SmartTypeDefinition smartTypeDefinition, Cardinality cardinality, Object value) throws ConstraintException;
 
 	String valueToString(SmartTypeDefinition smartTypeDefinition, Object objValue);
 
