@@ -17,9 +17,7 @@
  */
 package io.vertigo.datamodel.task.definitions;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DataDescriptor;
 
@@ -39,18 +37,29 @@ import io.vertigo.datamodel.structure.definitions.DataDescriptor;
  * @param smartTypeDefinition the smartType of the attribute
  * @param cardinality the cardinality of the attribute see {@code Cardinality}
  */
-public record TaskAttribute(
-		String name,
-		SmartTypeDefinition smartTypeDefinition,
-		Cardinality cardinality) implements DataDescriptor {
+public final class TaskAttribute {
+	private final DataDescriptor dataDescriptor;
 
-	public TaskAttribute {
-		Assertion.check()
-				.isNotNull(name)
-				.isNotNull(smartTypeDefinition)
-				.isNotNull(cardinality)
-				.isTrue(StringUtil.isLowerCamelCase(name),
-						"the name of the attribute {0} must be in lowerCamelCase", name);
+	public TaskAttribute(final String name, final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality) {
+		this.dataDescriptor = new DataDescriptor(name, smartTypeDefinition, cardinality);
 	}
 
+	public DataDescriptor descriptor() {
+		return dataDescriptor;
+	}
+
+	@Deprecated
+	public String name() {
+		return dataDescriptor.name();
+	}
+
+	@Deprecated
+	public Cardinality cardinality() {
+		return dataDescriptor.cardinality();
+	}
+
+	@Deprecated
+	public SmartTypeDefinition smartTypeDefinition() {
+		return dataDescriptor.smartTypeDefinition();
+	}
 }

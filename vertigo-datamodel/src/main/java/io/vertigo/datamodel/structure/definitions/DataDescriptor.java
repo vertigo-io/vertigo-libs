@@ -17,9 +17,11 @@
  */
 package io.vertigo.datamodel.structure.definitions;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 
@@ -28,31 +30,30 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
  * This node can be a field, an attribute...
  *
  * @author pchretien
+ *
+ * @param name the name
+ * @param smartTypeDefinition the smartType
+ * @param cardinality the cardinality (one, optional, many)
  */
-public interface DataDescriptor {
+public record DataDescriptor(
+		String name,
+		SmartTypeDefinition smartTypeDefinition,
+		Cardinality cardinality) {
 
-	/**
-	 * @return the name
-	 */
-	String name();
+	private static final int NAME_MAX_LENGTH = 30;
 
-	/**
-	 * @return the cardinality (one, optional, many)
-	 */
-	Cardinality cardinality();
-
-	/**
-	 * @return the smartTypeDefinition
-	 */
-	SmartTypeDefinition smartTypeDefinition();
-
-	//	/**
-	//	 * Returns the way to access the data.
-	//	 * @return the data accessor.
-	//	 */
-	//	DataAccessor getDataAccessor() {
-	//		return dataAccessor;
-	//	}
+	public DataDescriptor {
+		Assertion.check()
+				.isNotNull(name)
+				.isNotNull(smartTypeDefinition)
+				.isNotNull(cardinality)
+				.isTrue(StringUtil.isLowerCamelCase(name),
+						"the name of the attribute {0} must be in lowerCamelCase", name);
+		Assertion.check()
+				.isNotBlank(name)
+				.isTrue(name.length() <= NAME_MAX_LENGTH, "the name of the descriptor {0} has a limit size of {1}", name, NAME_MAX_LENGTH)
+				.isTrue(StringUtil.isLowerCamelCase(name), "the name of the descriptor {0} must be in lowerCamelCase", name);
+	}
 
 	/**
 	 * Returns the class of the value defined by this node
@@ -60,7 +61,7 @@ public interface DataDescriptor {
 	 * if not then it's the base type of the smartType.
 	 * @return the java Class of the value defined by this node
 	 */
-	default Class getTargetJavaClass() {
+	public Class getTargetJavaClass() {
 		return smartTypeDefinition().getJavaClass(cardinality());
 	}
 
@@ -68,7 +69,7 @@ public interface DataDescriptor {
 	 * Checks the type of the value
 	 * @param value the value
 	 */
-	default void checkType(final Object value) {
+	public void checkType(final Object value) {
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		smartTypeManager.checkType(smartTypeDefinition(), cardinality(), value);
 	}
@@ -77,7 +78,7 @@ public interface DataDescriptor {
 	 * Validates the value (the value is also automatically checked before)
 	 * @param value the value
 	 */
-	default void validate(final Object value) {
+	public void validate(final Object value) {
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		try {
 			smartTypeManager.validate(smartTypeDefinition(), cardinality(), value);

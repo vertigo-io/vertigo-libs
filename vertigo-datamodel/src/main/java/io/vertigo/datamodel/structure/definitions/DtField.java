@@ -22,7 +22,6 @@ import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 
 /**
@@ -41,9 +40,8 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
  *
  * @author  fconstantin, pchretien , npiedeloup
  */
-public final class DtField implements DataDescriptor {
+public final class DtField {
 
-	private static final int FIELD_NAME_MAX_LENGTH = 30;
 	/** Field definition Prefix. */
 	public static final String PREFIX = "fld";
 
@@ -80,9 +78,7 @@ public final class DtField implements DataDescriptor {
 		}
 	}
 
-	private final String name;
-	private final Cardinality cardinality;
-	private final SmartTypeDefinition smartTypeDefinition;
+	private final DataDescriptor dataDescriptor;
 	//---
 	private final FieldType type;
 	private final LocaleMessageText label;
@@ -128,15 +124,8 @@ public final class DtField implements DataDescriptor {
 				.isNotNull(cardinality);
 		//-----
 		this.id = id;
-		this.smartTypeDefinition = smartTypeDefinition;
+		this.dataDescriptor = new DataDescriptor(fieldName, smartTypeDefinition, cardinality);
 		this.type = type;
-		this.cardinality = cardinality;
-		//-----
-		Assertion.check()
-				.isNotNull(fieldName)
-				.isTrue(fieldName.length() <= FIELD_NAME_MAX_LENGTH, "the name of the field {0} has a limit size of {1}", fieldName, FIELD_NAME_MAX_LENGTH)
-				.isTrue(StringUtil.isLowerCamelCase(fieldName), "the name of the field {0} must be in lowerCamelCase", fieldName);
-		name = fieldName;
 		//-----
 		Assertion.check().isNotNull(label);
 		this.label = label;
@@ -161,20 +150,19 @@ public final class DtField implements DataDescriptor {
 		return id;
 	}
 
-	/**
-	 * @return the name of the field
-	 */
-	@Override
+	@Deprecated
 	public String name() {
-		return name;
+		return dataDescriptor.name();
 	}
 
-	/**
-	 * @return the cardinality of the field (one, optional, many)
-	 */
-	@Override
+	@Deprecated
 	public Cardinality cardinality() {
-		return cardinality;
+		return dataDescriptor.cardinality();
+	}
+
+	@Deprecated
+	public SmartTypeDefinition smartTypeDefinition() {
+		return dataDescriptor.smartTypeDefinition();
 	}
 
 	/**
@@ -185,11 +173,10 @@ public final class DtField implements DataDescriptor {
 	}
 
 	/**
-	 * @return the smarttype of the field
+	 * @return the descriptor of the field
 	 */
-	@Override
-	public SmartTypeDefinition smartTypeDefinition() {
-		return smartTypeDefinition;
+	public DataDescriptor descriptor() {
+		return dataDescriptor;
 	}
 
 	/**
@@ -208,7 +195,8 @@ public final class DtField implements DataDescriptor {
 	}
 
 	public boolean isDtList() {
-		return smartTypeDefinition().getScope().isDataType() && cardinality.hasMany();
+		return descriptor().smartTypeDefinition().getScope().isDataType()
+				&& descriptor().cardinality().hasMany();
 	}
 
 	/**

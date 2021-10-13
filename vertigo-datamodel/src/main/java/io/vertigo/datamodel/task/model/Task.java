@@ -87,7 +87,7 @@ public final class Task {
 			//on ne prend que les attributes correspondant au mode.
 			//We check all attributes
 			final Object value = inTaskAttributes.get(taskAttribute);
-			taskAttribute.validate(value);
+			taskAttribute.descriptor().validate(value);
 		}
 	}
 

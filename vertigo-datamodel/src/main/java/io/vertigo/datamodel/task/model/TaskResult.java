@@ -43,7 +43,7 @@ public final class TaskResult {
 		Assertion.check().isNotNull(taskDefinition);
 		//-----
 		outTaskAttributeOptional = taskDefinition.getOutAttributeOption();
-		outTaskAttributeOptional.ifPresent(outTaskAttribute -> outTaskAttribute.validate(result));
+		outTaskAttributeOptional.ifPresent(outTaskAttribute -> outTaskAttribute.descriptor().validate(result));
 
 		this.result = result;
 	}

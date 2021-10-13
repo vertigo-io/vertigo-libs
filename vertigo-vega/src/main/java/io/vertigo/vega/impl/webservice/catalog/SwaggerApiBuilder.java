@@ -336,8 +336,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	private Set<String> subFilter(final String prefix, final Set<String> filterFields) {
 		//for apply sub filter, we just look for sub prefix field
 		return filterFields.stream()
-				.filter((field) -> field.startsWith(prefix + "."))
-				.map((field) -> field.substring(prefix.length() + 1))
+				.filter(field -> field.startsWith(prefix + "."))
+				.map(field -> field.substring(prefix.length() + 1))
 				.collect(Collectors.toSet());
 	}
 
@@ -354,7 +354,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	private static Type getFieldType(final DtField dtField) {
 		final Class<?> dtClass = dtField.smartTypeDefinition().getJavaClass();
 		if (dtField.cardinality().hasMany()) {
-			return new CustomParameterizedType(dtField.getTargetJavaClass(), dtClass);
+			return new CustomParameterizedType(dtField.descriptor().getTargetJavaClass(), dtClass);
 		}
 		return dtClass;
 	}

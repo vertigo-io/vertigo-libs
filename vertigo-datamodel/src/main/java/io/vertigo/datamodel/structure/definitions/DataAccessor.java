@@ -46,7 +46,7 @@ public final class DataAccessor {
 	 * @param value Object
 	 */
 	public void setValue(final DtObject dto, final Object value) {
-		dtField.checkType(value);
+		dtField.descriptor().checkType(value);
 		//-----
 		BeanUtil.setValue(dto, dtField.name(), value);
 	}
