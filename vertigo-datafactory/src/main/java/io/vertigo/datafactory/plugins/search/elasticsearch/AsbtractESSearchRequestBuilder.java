@@ -19,10 +19,12 @@ package io.vertigo.datafactory.plugins.search.elasticsearch;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -232,15 +234,22 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	private static void appendSelectedFacetValues(final Optional<FacetedQuery> facetedQuery, final BoolQueryBuilder filterBoolQueryBuilder, final BoolQueryBuilder postFilterBoolQueryBuilder, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		if (facetedQuery.isPresent()) {
 			for (final FacetDefinition facetDefinition : facetedQuery.get().getDefinition().getFacetDefinitions()) {
+				final boolean useSubKeywordField = useSubKeywordFieldForFacet(facetDefinition);
 				if (facetDefinition.isMultiSelectable()) {
-					appendSelectedFacetValuesFilter(postFilterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition.getName()));
+					appendSelectedFacetValuesFilter(postFilterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition.getName()), facetDefinition.getDtField(), useSubKeywordField);
 				} else if (isGeoField(facetDefinition.getDtField())) {
 					appendSelectedGeoFacetValuesFilter(filterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition.getName()), myCriteria, typeAdapters);
 				} else {
-					appendSelectedFacetValuesFilter(filterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition.getName()));
+					appendSelectedFacetValuesFilter(filterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition.getName()), facetDefinition.getDtField(), useSubKeywordField);
 				}
 			}
 		}
+	}
+
+	private static boolean useSubKeywordFieldForFacet(final FacetDefinition facetDefinition) {
+		final IndexType indexType = IndexType.readIndexType(facetDefinition.getDtField().getSmartTypeDefinition());
+		//si le champs n'est pas facetable mais qu'il y a un sub keyword on le prend
+		return !indexType.isIndexFieldData() && indexType.isIndexSubKeyword();
 	}
 
 	private static boolean isGeoField(final DtField dtField) {
@@ -248,13 +257,15 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 		return indexType != null && indexType.indexOf("geo_point") != -1;
 	}
 
-	private static void appendSelectedFacetValuesFilter(final BoolQueryBuilder filterBoolQueryBuilder, final List<FacetValue> facetValues) {
+	private static void appendSelectedFacetValuesFilter(final BoolQueryBuilder filterBoolQueryBuilder, final List<FacetValue> facetValues, final DtField facetField, final boolean useSubKeywordField) {
 		if (facetValues.size() == 1) {
-			filterBoolQueryBuilder.filter(translateToQueryBuilder(facetValues.get(0).getListFilter()));
+			filterBoolQueryBuilder.filter(translateToQueryBuilder(facetValues.get(0).getListFilter(),
+					useSubKeywordField ? Collections.singleton(facetField) : Collections.emptySet()));
 		} else if (facetValues.size() > 1) {
 			final BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			for (final FacetValue facetValue : facetValues) {
-				boolQueryBuilder.should(translateToQueryBuilder(facetValue.getListFilter()));//on ajoute les valeurs en OU
+				boolQueryBuilder.should(translateToQueryBuilder(facetValue.getListFilter(),
+						useSubKeywordField ? Collections.singleton(facetField) : Collections.emptySet()));//on ajoute les valeurs en OU
 			}
 			filterBoolQueryBuilder.filter(boolQueryBuilder);
 		}
@@ -323,8 +334,9 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 				final BoolQueryBuilder aggsFilterBoolQueryBuilder = QueryBuilders.boolQuery();
 				for (final FacetDefinition filterFacetDefinition : facetedQuery.getDefinition().getFacetDefinitions()) {
 					if (filterFacetDefinition.isMultiSelectable() && !facetDefinition.equals(filterFacetDefinition)) {
+						final boolean useSubKeywordField = useSubKeywordFieldForFacet(facetDefinition);
 						//on ne doit refiltrer que les multiSelectable (les autres sont dans le filter de la request), sauf la facet qu'on est entrain de traiter
-						appendSelectedFacetValuesFilter(aggsFilterBoolQueryBuilder, facetedQuery.getSelectedFacetValues().getFacetValues(filterFacetDefinition.getName()));
+						appendSelectedFacetValuesFilter(aggsFilterBoolQueryBuilder, facetedQuery.getSelectedFacetValues().getFacetValues(filterFacetDefinition.getName()), facetDefinition.getDtField(), useSubKeywordField);
 					}
 				}
 				if (aggsFilterBoolQueryBuilder.hasClauses()) {
@@ -366,9 +378,8 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 		}
 
 		//Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
-		final IndexType indexType = IndexType.readIndexType(dtField.getSmartTypeDefinition());
 		String fieldName = dtField.getName();
-		if (!indexType.isIndexFieldData() && indexType.isIndexSubKeyword()) { //si le champs n'est pas facetable mais qu'il y a un sub keyword on le prend
+		if (useSubKeywordFieldForFacet(facetDefinition)) {
 			fieldName = fieldName + ".keyword";
 		}
 		return AggregationBuilders.terms(facetDefinition.getName())
@@ -529,11 +540,24 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	 * @return QueryBuilder
 	 */
 	public static QueryBuilder translateToQueryBuilder(final ListFilter listFilter) {
+		return translateToQueryBuilder(listFilter, Collections.emptySet());
+	}
+
+	/**
+	 * @param listFilter ListFilter
+	 * @return QueryBuilder
+	 */
+	public static QueryBuilder translateToQueryBuilder(final ListFilter listFilter, final Set<DtField> keywordFields) {
 		Assertion.check().isNotNull(listFilter);
 		//-----
+		String listFilterValue = listFilter.getFilterValue();
+		for (final DtField keywordField : keywordFields) {
+			listFilterValue = listFilterValue.replace(keywordField.getName() + ":", keywordField.getName() + ".keyword:");
+		}
+
 		final String query = new StringBuilder()
 				.append(" +(")
-				.append(listFilter.getFilterValue())
+				.append(listFilterValue)
 				.append(')')
 				.toString();
 		return QueryBuilders.queryStringQuery(query)
