@@ -16,13 +16,13 @@ import io.vertigo.core.util.StringUtil;
 /**
  * Helpers for managing session
  */
-class SessionManagementHelper {
+final class SessionManagementHelper {
 
-	static final String STATE = "state";
+	protected static final String STATE = "state";
 	private static final String STATES = "states";
 	private static final Integer STATE_TTL = 3600;
 
-	static final String FAILED_TO_VALIDATE_MESSAGE = "Failed to validate data received from Authorization service - ";
+	protected static final String FAILED_TO_VALIDATE_MESSAGE = "Failed to validate data received from Authorization service - ";
 
 	static StateData validateState(final HttpSession session, final String state) throws Exception {
 		if (!StringUtil.isBlank(state)) {
