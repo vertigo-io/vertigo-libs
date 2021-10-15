@@ -106,7 +106,7 @@ public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 		for (final DtField dtField : dtFields) {
 			Assertion.check()
 					.when(stereotype.isPersistent() && dtField.isPersistent(), () -> Assertion.check()
-							.isTrue(!dtField.descriptor().cardinality().hasMany(),
+							.isTrue(!dtField.cardinality().hasMany(),
 									"Only non multiple smarttype are allowed in entity '{0}'", name));
 			if (dtField.getType().isId()) {
 				Assertion.check().isNull(id, "Only one ID Field is allowed : {0}", name);

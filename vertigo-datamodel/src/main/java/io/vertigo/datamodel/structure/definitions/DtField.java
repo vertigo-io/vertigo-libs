@@ -40,7 +40,7 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
  *
  * @author  fconstantin, pchretien , npiedeloup
  */
-public final class DtField {
+public final class DtField extends DataDescriptor {
 
 	/** Field definition Prefix. */
 	public static final String PREFIX = "fld";
@@ -78,8 +78,6 @@ public final class DtField {
 		}
 	}
 
-	private final DataDescriptor dataDescriptor;
-	//---
 	private final FieldType type;
 	private final LocaleMessageText label;
 	private final boolean persistent;
@@ -116,6 +114,7 @@ public final class DtField {
 			final Cardinality cardinality,
 			final boolean persistent,
 			final String fkDtDefinitionName) {
+		super(fieldName, smartTypeDefinition, cardinality);
 		Assertion.check()
 				.isNotBlank(id)
 				.isNotNull(type)
@@ -124,7 +123,6 @@ public final class DtField {
 				.isNotNull(cardinality);
 		//-----
 		this.id = id;
-		this.dataDescriptor = new DataDescriptor(fieldName, smartTypeDefinition, cardinality);
 		this.type = type;
 		//-----
 		Assertion.check().isNotNull(label);
@@ -150,33 +148,11 @@ public final class DtField {
 		return id;
 	}
 
-	@Deprecated
-	public String name() {
-		return dataDescriptor.name();
-	}
-
-	@Deprecated
-	public Cardinality cardinality() {
-		return dataDescriptor.cardinality();
-	}
-
-	@Deprecated
-	public SmartTypeDefinition smartTypeDefinition() {
-		return dataDescriptor.smartTypeDefinition();
-	}
-
 	/**
 	 * @return the type of the field
 	 */
 	public FieldType getType() {
 		return type;
-	}
-
-	/**
-	 * @return the descriptor of the field
-	 */
-	public DataDescriptor descriptor() {
-		return dataDescriptor;
 	}
 
 	/**
@@ -195,8 +171,8 @@ public final class DtField {
 	}
 
 	public boolean isDtList() {
-		return descriptor().smartTypeDefinition().getScope().isDataType()
-				&& descriptor().cardinality().hasMany();
+		return smartTypeDefinition().getScope().isDataType()
+				&& cardinality().hasMany();
 	}
 
 	/**

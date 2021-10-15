@@ -354,7 +354,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	private static Type getFieldType(final DtField dtField) {
 		final Class<?> dtClass = dtField.smartTypeDefinition().getJavaClass();
 		if (dtField.cardinality().hasMany()) {
-			return new CustomParameterizedType(dtField.descriptor().getTargetJavaClass(), dtClass);
+			return new CustomParameterizedType(dtField.getTargetJavaClass(), dtClass);
 		}
 		return dtClass;
 	}

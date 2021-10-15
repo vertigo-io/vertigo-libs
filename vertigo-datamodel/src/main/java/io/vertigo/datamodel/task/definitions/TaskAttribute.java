@@ -37,29 +37,8 @@ import io.vertigo.datamodel.structure.definitions.DataDescriptor;
  * @param smartTypeDefinition the smartType of the attribute
  * @param cardinality the cardinality of the attribute see {@code Cardinality}
  */
-public final class TaskAttribute {
-	private final DataDescriptor dataDescriptor;
-
+public final class TaskAttribute extends DataDescriptor {
 	public TaskAttribute(final String name, final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality) {
-		this.dataDescriptor = new DataDescriptor(name, smartTypeDefinition, cardinality);
-	}
-
-	public DataDescriptor descriptor() {
-		return dataDescriptor;
-	}
-
-	@Deprecated
-	public String name() {
-		return dataDescriptor.name();
-	}
-
-	@Deprecated
-	public Cardinality cardinality() {
-		return dataDescriptor.cardinality();
-	}
-
-	@Deprecated
-	public SmartTypeDefinition smartTypeDefinition() {
-		return dataDescriptor.smartTypeDefinition();
+		super(name, smartTypeDefinition, cardinality);
 	}
 }

@@ -35,14 +35,16 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
  * @param smartTypeDefinition the smartType
  * @param cardinality the cardinality (one, optional, many)
  */
-public record DataDescriptor(
-		String name,
-		SmartTypeDefinition smartTypeDefinition,
-		Cardinality cardinality) {
+public abstract class DataDescriptor {
+	private final String name;
+	private final SmartTypeDefinition smartTypeDefinition;
+	private final Cardinality cardinality;
 
 	private static final int NAME_MAX_LENGTH = 30;
 
-	public DataDescriptor {
+	protected DataDescriptor(final String name,
+			final SmartTypeDefinition smartTypeDefinition,
+			final Cardinality cardinality) {
 		Assertion.check()
 				.isNotNull(name)
 				.isNotNull(smartTypeDefinition)
@@ -53,6 +55,22 @@ public record DataDescriptor(
 				.isNotBlank(name)
 				.isTrue(name.length() <= NAME_MAX_LENGTH, "the name of the descriptor {0} has a limit size of {1}", name, NAME_MAX_LENGTH)
 				.isTrue(StringUtil.isLowerCamelCase(name), "the name of the descriptor {0} must be in lowerCamelCase", name);
+		//---
+		this.name = name;
+		this.cardinality = cardinality;
+		this.smartTypeDefinition = smartTypeDefinition;
+	}
+
+	public final String name() {
+		return name;
+	}
+
+	public final Cardinality cardinality() {
+		return cardinality;
+	}
+
+	public final SmartTypeDefinition smartTypeDefinition() {
+		return smartTypeDefinition;
 	}
 
 	/**
@@ -61,7 +79,7 @@ public record DataDescriptor(
 	 * if not then it's the base type of the smartType.
 	 * @return the java Class of the value defined by this node
 	 */
-	public Class getTargetJavaClass() {
+	public final Class getTargetJavaClass() {
 		return smartTypeDefinition().getJavaClass(cardinality());
 	}
 
@@ -69,7 +87,7 @@ public record DataDescriptor(
 	 * Checks the type of the value
 	 * @param value the value
 	 */
-	public void checkType(final Object value) {
+	public final void checkType(final Object value) {
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		smartTypeManager.checkType(smartTypeDefinition(), cardinality(), value);
 	}
@@ -78,7 +96,7 @@ public record DataDescriptor(
 	 * Validates the value (the value is also automatically checked before)
 	 * @param value the value
 	 */
-	public void validate(final Object value) {
+	public final void validate(final Object value) {
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		try {
 			smartTypeManager.validate(smartTypeDefinition(), cardinality(), value);
@@ -86,5 +104,4 @@ public record DataDescriptor(
 			throw WrappedException.wrap(e);
 		}
 	}
-
 }
