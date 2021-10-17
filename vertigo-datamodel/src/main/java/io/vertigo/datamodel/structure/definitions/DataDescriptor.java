@@ -42,19 +42,17 @@ public abstract class DataDescriptor {
 
 	private static final int NAME_MAX_LENGTH = 30;
 
-	protected DataDescriptor(final String name,
+	protected DataDescriptor(
+			final String name,
 			final SmartTypeDefinition smartTypeDefinition,
 			final Cardinality cardinality) {
 		Assertion.check()
-				.isNotNull(name)
+				.isNotBlank(name)
 				.isNotNull(smartTypeDefinition)
 				.isNotNull(cardinality)
-				.isTrue(StringUtil.isLowerCamelCase(name),
-						"the name of the attribute {0} must be in lowerCamelCase", name);
-		Assertion.check()
-				.isNotBlank(name)
 				.isTrue(name.length() <= NAME_MAX_LENGTH, "the name of the descriptor {0} has a limit size of {1}", name, NAME_MAX_LENGTH)
-				.isTrue(StringUtil.isLowerCamelCase(name), "the name of the descriptor {0} must be in lowerCamelCase", name);
+				.isTrue(StringUtil.isLowerCamelCase(name),
+						"the name of the descriptor {0} must be in lowerCamelCase", name);
 		//---
 		this.name = name;
 		this.cardinality = cardinality;
@@ -79,7 +77,7 @@ public abstract class DataDescriptor {
 	 * if not then it's the base type of the smartType.
 	 * @return the java Class of the value defined by this node
 	 */
-	public final Class getTargetJavaClass() {
+	public final Class<?> getTargetJavaClass() {
 		return smartTypeDefinition().getJavaClass(cardinality());
 	}
 
@@ -93,7 +91,7 @@ public abstract class DataDescriptor {
 	}
 
 	/**
-	 * Validates the value (the value is also automatically checked before)
+	 * Validates the value (the value type is also automatically checked before)
 	 * @param value the value
 	 */
 	public final void validate(final Object value) {
