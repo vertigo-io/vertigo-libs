@@ -172,11 +172,12 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 		checkType(smartTypeDefinition, value);
 		//---
 		final List<Constraint> constraints = constraintsBySmartType.get(smartTypeDefinition.id());
-		//the list can't be null
-		for (final Constraint constraint : constraints) {
-			//when a constraint fails, there is no validation
-			if (!constraint.checkConstraint(value)) {
-				throw new ConstraintException(constraint.getErrorMessage());
+		if (constraints != null) {
+			for (final Constraint constraint : constraints) {
+				//when a constraint fails, there is no validation
+				if (!constraint.checkConstraint(value)) {
+					throw new ConstraintException(constraint.getErrorMessage());
+				}
 			}
 		}
 	}
