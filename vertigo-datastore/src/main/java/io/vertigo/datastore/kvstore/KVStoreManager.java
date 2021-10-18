@@ -43,7 +43,7 @@ public interface KVStoreManager extends Manager {
 	 * @param collection the collection
 	 * @return count of elements into collection
 	 */
-	int count(String collection);
+	int count(KVCollection collection);
 
 	/**
 	 * Adds an element defined by an id in a collection.
@@ -52,7 +52,7 @@ public interface KVStoreManager extends Manager {
 	 * @param id the id
 	 * @param element the element
 	 */
-	void put(String collection, String id, Object element);
+	void put(KVCollection collection, String id, Object element);
 
 	/**
 	 * Removes an element defined by an id from a collection.
@@ -61,13 +61,13 @@ public interface KVStoreManager extends Manager {
 	 * @param collection the collection
 	 * @param id the id
 	 */
-	void remove(String collection, String id);
+	void remove(KVCollection collection, String id);
 
 	/**
 	 * Removes all elements from a collection.
 	 * @param collection the collection
 	 */
-	void clear(String collection);
+	void clear(KVCollection collection);
 
 	/**
 	 * Finds the optional element to which the id is mapped inside the specified collection.
@@ -78,7 +78,7 @@ public interface KVStoreManager extends Manager {
 	 * @param clazz the type of the searched element
 	 * @return the option
 	 */
-	<C> Optional<C> find(String collection, String id, Class<C> clazz);
+	<C> Optional<C> find(KVCollection collection, String id, Class<C> clazz);
 
 	/**
 	 * Finds all elements contained inside the specified collection.	 *
@@ -89,5 +89,5 @@ public interface KVStoreManager extends Manager {
 	 * @param clazz the type of the searched element
 	 * @return the list of elements.
 	 */
-	<C> List<C> findAll(String collection, int skip, Integer limit, Class<C> clazz);
+	<C> List<C> findAll(KVCollection collection, int skip, Integer limit, Class<C> clazz);
 }

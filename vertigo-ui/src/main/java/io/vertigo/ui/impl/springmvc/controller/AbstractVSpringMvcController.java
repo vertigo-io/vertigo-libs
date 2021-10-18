@@ -32,6 +32,7 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datastore.kvstore.KVCollection;
 import io.vertigo.datastore.kvstore.KVStoreManager;
 import io.vertigo.ui.core.ComponentStates;
 import io.vertigo.ui.core.FormMode;
@@ -54,7 +55,7 @@ public abstract class AbstractVSpringMvcController {
 	public static final String DEFAULT_VIEW_NAME_ATTRIBUTE = "defaultViewName";
 
 	/** Clé de la collection des contexts dans le KVStoreManager. */
-	public static final String CONTEXT_COLLECTION_NAME = "VViewContext";
+	public static final KVCollection CONTEXT_COLLECTION_NAME = new KVCollection("VViewContext");
 
 	/** Clé de context du UiUtil. */
 	public static final ViewContextKey<UiUtil> UTIL_CONTEXT_KEY = ViewContextKey.of("util");

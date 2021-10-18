@@ -24,13 +24,14 @@ import java.util.WeakHashMap;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.node.Node;
+import io.vertigo.datastore.kvstore.KVCollection;
 import io.vertigo.datastore.kvstore.KVStoreManager;
 
 /**
  * @author npiedeloup
  */
 public final class ProtectedValueUtil {
-	public static final String PROTECTED_VALUE_COLLECTION_NAME = "protected-value";
+	public static final KVCollection PROTECTED_VALUE_COLLECTION = new KVCollection("protected-value");
 
 	//we keep a cache of already protected value.
 	//weak ref are kept as long as the instance are kept : so no clean during request
@@ -48,7 +49,7 @@ public final class ProtectedValueUtil {
 		//unprotectedValue is not null here
 		final String protectedUrl = protectValue(unprotectedValue);
 		try (VTransactionWritable transactionWritable = getTransactionManager().createCurrentTransaction()) {
-			getKVStoreManager().put(PROTECTED_VALUE_COLLECTION_NAME, protectedUrl, unprotectedValue);
+			getKVStoreManager().put(PROTECTED_VALUE_COLLECTION, protectedUrl, unprotectedValue);
 			transactionWritable.commit();
 		}
 		return protectedUrl;
@@ -70,7 +71,7 @@ public final class ProtectedValueUtil {
 		}
 		try (VTransactionWritable transactionWritable = getTransactionManager().createCurrentTransaction()) {
 			final V unprotectedValue;
-			unprotectedValue = getKVStoreManager().find(PROTECTED_VALUE_COLLECTION_NAME, protectedValue, clazz).orElse(null);
+			unprotectedValue = getKVStoreManager().find(PROTECTED_VALUE_COLLECTION, protectedValue, clazz).orElse(null);
 			return unprotectedValue;
 		}
 	}
