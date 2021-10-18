@@ -25,8 +25,13 @@ import io.vertigo.core.node.component.Manager;
 /**
 * Key Value Store.
 *
-* A store is composed of multiple KVStorePlugins.
+* A store is composed of multiple collections (KVCollection).
+* A collection is managed by a plugin.
 *
+* Each plugin (KVStorePlugin) can manage several collections.
+* A plugin defines the strategy used to store the collections.
+*
+* Example :
 * +---store
 *     +---KVStorePlugin : {name:plants  type:BerkeleyDB}
 *         +---collection : flowers
