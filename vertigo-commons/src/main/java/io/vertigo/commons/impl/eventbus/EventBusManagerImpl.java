@@ -55,7 +55,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		// we need to unwrap the component to scan the real class and not the enhanced version
-		final AspectPlugin aopPlugin = Node.getNode().getNodeConfig().bootConfig().aopPlugin();
+		final AspectPlugin aopPlugin = Node.getNode().getNodeConfig().bootConfig().aspectPlugin();
 		return Node.getNode().getComponentSpace().keySet()
 				.stream()
 				.flatMap(id -> createEventSubscriptions(id, Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())

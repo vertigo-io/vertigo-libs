@@ -134,7 +134,7 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 	 * @return Scanned webServiceDefinitions
 	 */
 	List<WebServiceDefinition> scanComponents(final ComponentSpace componentSpace) {
-		final AspectPlugin aopPlugin = Node.getNode().getNodeConfig().bootConfig().aopPlugin();
+		final AspectPlugin aopPlugin = Node.getNode().getNodeConfig().bootConfig().aspectPlugin();
 
 		final ListBuilder<WebServiceDefinition> allWebServiceDefinitionListBuilder = new ListBuilder<>();
 		//1- We introspect all RestfulService class
