@@ -198,8 +198,9 @@ public final class ViewContext implements Serializable {
 	 * @param key Clé de context
 	 * @return UiObject du context
 	 */
-	public <O extends Serializable> void publishRef(final ViewContextKey<O> key, final O value) {
+	public <O extends Serializable> ViewContext publishRef(final ViewContextKey<O> key, final O value) {
 		put(key, value);
+		return this;
 	}
 
 	/**
@@ -278,10 +279,11 @@ public final class ViewContext implements Serializable {
 	 * Ajoute un objet de type form au context.
 	 * @param dto Objet à publier
 	 */
-	public <O extends DtObject> void publishDto(final ViewContextKey<O> contextKey, final O dto) {
+	public <O extends DtObject> ViewContext publishDto(final ViewContextKey<O> contextKey, final O dto) {
 		final UiObject<O> strutsUiObject = new MapUiObject<>(dto);
 		strutsUiObject.setInputKey(contextKey.get());
 		put(contextKey, strutsUiObject);
+		return this;
 	}
 
 	/**
@@ -340,8 +342,9 @@ public final class ViewContext implements Serializable {
 	 * Ajoute une liste au context.
 	 * @param dtList List à publier
 	 */
-	public <O extends DtObject> void publishDtList(final ViewContextKey<O> contextKey, final DtList<O> dtList) {
+	public <O extends DtObject> ViewContext publishDtList(final ViewContextKey<O> contextKey, final DtList<O> dtList) {
 		publishDtList(contextKey, Optional.empty(), dtList, false);
+		return this;
 	}
 
 	/**
@@ -406,9 +409,10 @@ public final class ViewContext implements Serializable {
 	 * @param entityClass Class associée
 	 * @param code Code
 	 */
-	public <E extends Entity> void publishMdl(final ViewContextKey<E> contextKey, final Class<E> entityClass, final String code) {
+	public <E extends Entity> ViewContext publishMdl(final ViewContextKey<E> contextKey, final Class<E> entityClass, final String code) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
 		put(contextKey, new UiMdList<E>(new DtListURIForMasterData(dtDefinition, code)));
+		return this;
 	}
 
 	/* ================================ FileInfo ==================================*/
