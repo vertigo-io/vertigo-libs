@@ -17,6 +17,7 @@
  */
 package io.vertigo.vega.engines.webservice.json;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -56,7 +57,11 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.TypeAdapter;
+import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
@@ -559,7 +564,27 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			if (!serializeNulls) {
 				gsonBuilder
 						.registerTypeAdapter(List.class, new ListJsonSerializer())
+						.registerTypeAdapterFactory(
+								new TypeAdapterFactory() {
+									@Override
+									public <Collections$EmptyMap> TypeAdapter<Collections$EmptyMap> create(final Gson locGson, final TypeToken<Collections$EmptyMap> type) {
+										return new TypeAdapter<>() {
+
+											@Override
+											public void write(final JsonWriter out, final Collections$EmptyMap value) throws IOException {
+												out.beginArray().endArray();
+											}
+
+											@Override
+											public Collections$EmptyMap read(final JsonReader in) throws IOException {
+												return (Collections$EmptyMap) Collections.emptyMap();
+											}
+										};
+									}
+
+								})
 						.registerTypeAdapter(Map.class, new MapJsonSerializer());
+
 			}
 
 			gsonBuilder
