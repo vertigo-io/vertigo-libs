@@ -101,24 +101,10 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	@GetMapping("/")
 	public void initContext(final ViewContext viewContext) throws URISyntaxException, IOException {
 		final Movie myMovie = new Movie();
-		viewContext.publishDto(movieKey, myMovie);
-		viewContext.publishDto(castingKey, new Casting());
-		viewContext.publishDtList(movieList, movieServices.getMovies(DtListState.defaultOf(Movie.class)));
+
 		final DtList<Movie> myList = movieServices.getMovies(DtListState.defaultOf(Movie.class));
 		final DtList<Movie> mySubList = DtList.of(myList.get(0), myList.get(1));
 		mySubList.get(0).setTestBoolean(true);
-
-		viewContext.publishDtListModifiable(movieListModifiables, mySubList);
-		viewContext.publishMdl(moviesListMdl, Movie.class, null);
-		viewContext.publishDtList(movieDisplayList, MovieDisplayFields.movId, movieServices.getMoviesDisplay(DtListState.defaultOf(Movie.class)));
-
-		viewContext.publishMdl(communeListMdl, Commune.class, null);
-
-		viewContext.publishRef(currentInstant, Instant.now());
-		viewContext.publishRef(currentZoneId, localeManager.getCurrentZoneId().getId());
-		viewContext.publishRef(zoneId, timeZoneListStatic[0]);
-		viewContext.publishRef(timeZoneList, timeZoneListStatic);
-		viewContext.publishRef(selectedTimeZoneList, "");
 
 		final URI fullPath = getClass().getResource("/data/insee.csv").toURI();
 		final VFile dummyFile1 = new FSFile("my1stFile.csv", "text/csv", Paths.get(fullPath));
@@ -133,9 +119,6 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		final ArrayList<FileInfoURI> fileUris = new ArrayList<>();
 		fileUris.add(fileInfoTmp1.getURI());
 		fileUris.add(fileInfoTmp2.getURI());
-		viewContext.publishFileInfoURIs(fileUrisKey1, fileUris);
-		viewContext.publishFileInfoURIs(fileUrisKey2, fileUris);
-		viewContext.publishFileInfoURIs(fileUrisKey3, fileUris);
 
 		final ArrayList<FileInfoURI> fileUris2 = new ArrayList<>();
 		fileUris2.add(fileInfoTmp1.getURI());
@@ -143,7 +126,28 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		fileUris2.add(fileInfoTmp3.getURI());
 		myMovie.setPictures(fileUris2); //TODO
 		mySubList.get(0).setMainPicture(fileInfoTmp1.getURI());
-		toModeCreate();
+
+		viewContext
+				.publishDto(movieKey, myMovie)
+				.publishDto(castingKey, new Casting())
+				.publishDtList(movieList, movieServices.getMovies(DtListState.defaultOf(Movie.class)))
+				.publishDtListModifiable(movieListModifiables, mySubList)
+				.publishMdl(moviesListMdl, Movie.class, null)
+				.publishDtList(movieDisplayList, MovieDisplayFields.movId, movieServices.getMoviesDisplay(DtListState.defaultOf(Movie.class)))
+
+				.publishMdl(communeListMdl, Commune.class, null)
+
+				.publishRef(currentInstant, Instant.now())
+				.publishRef(currentZoneId, localeManager.getCurrentZoneId().getId())
+				.publishRef(zoneId, timeZoneListStatic[0])
+				.publishRef(timeZoneList, timeZoneListStatic)
+				.publishRef(selectedTimeZoneList, "")
+
+				.publishFileInfoURIs(fileUrisKey1, fileUris)
+				.publishFileInfoURIs(fileUrisKey2, fileUris)
+				.publishFileInfoURIs(fileUrisKey3, fileUris)
+
+				.toModeCreate();
 	}
 
 	@PostMapping("/movies/{movieId}")
@@ -230,13 +234,13 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/_read")
-	public void toRead() {
-		toModeReadOnly();
+	public void toRead(final ViewContext viewContext) {
+		viewContext.toModeReadOnly();
 	}
 
 	@PostMapping("/_edit")
-	public void toEdit() {
-		toModeEdit();
+	public void toEdit(final ViewContext viewContext) {
+		viewContext.toModeEdit();
 	}
 
 	@GetMapping("/myFiles")

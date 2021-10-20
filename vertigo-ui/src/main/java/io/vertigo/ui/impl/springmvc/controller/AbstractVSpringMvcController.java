@@ -35,7 +35,6 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.datastore.kvstore.KVCollection;
 import io.vertigo.datastore.kvstore.KVStoreManager;
 import io.vertigo.ui.core.ComponentStates;
-import io.vertigo.ui.core.FormMode;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
 import io.vertigo.ui.core.ViewContextMap;
@@ -59,15 +58,6 @@ public abstract class AbstractVSpringMvcController {
 
 	/** Clé de context du UiUtil. */
 	public static final ViewContextKey<UiUtil> UTIL_CONTEXT_KEY = ViewContextKey.of("util");
-	/** Clé de context du mode. */
-	public static final ViewContextKey<FormMode> MODE_CONTEXT_KEY = ViewContextKey.of("mode");
-	//TODO voir pour déléguer cette gestion des modes
-	/** Clé de context du mode Edit. */
-	public static final ViewContextKey<Boolean> MODE_EDIT_CONTEXT_KEY = ViewContextKey.of("modeEdit");
-	/** Clé de context du mode ReadOnly. */
-	public static final ViewContextKey<Boolean> MODE_READ_ONLY_CONTEXT_KEY = ViewContextKey.of("modeReadOnly");
-	/** Clé de context du mode Create. */
-	public static final ViewContextKey<Boolean> MODE_CREATE_CONTEXT_KEY = ViewContextKey.of("modeCreate");
 	/** Préfix des clés des paramètres passés par l'url. */
 	public static final String URL_PARAM_PREFIX = "params.";
 
@@ -175,7 +165,7 @@ public abstract class AbstractVSpringMvcController {
 	protected void preInitContext(final ViewContext viewContext) {
 		viewContext.publishRef(UTIL_CONTEXT_KEY, new UiUtil());
 		viewContext.asMap().put("componentStates", new ComponentStates());
-		toModeReadOnly();
+		viewContext.toModeReadOnly();
 	}
 
 	/**
@@ -212,66 +202,6 @@ public abstract class AbstractVSpringMvcController {
 		Assertion.check().isNotNull(viewContext);
 		//---
 		return viewContext;
-	}
-
-	/**
-	 * Passe en mode edition.
-	 */
-	protected static final void toModeEdit() {
-		//TODO voir pour déléguer cette gestion des modes
-		final ViewContext viewContext = getViewContext();
-		viewContext.publishRef(MODE_CONTEXT_KEY, FormMode.edit);
-		viewContext.publishRef(MODE_READ_ONLY_CONTEXT_KEY, false);
-		viewContext.publishRef(MODE_EDIT_CONTEXT_KEY, true);
-		viewContext.publishRef(MODE_CREATE_CONTEXT_KEY, false);
-	}
-
-	/**
-	 * Passe en mode creation.
-	 */
-	protected static final void toModeCreate() {
-		//TODO voir pour déléguer cette gestion des modes
-		final ViewContext viewContext = getViewContext();
-		viewContext.publishRef(MODE_CONTEXT_KEY, FormMode.create);
-		viewContext.publishRef(MODE_READ_ONLY_CONTEXT_KEY, false);
-		viewContext.publishRef(MODE_EDIT_CONTEXT_KEY, false);
-		viewContext.publishRef(MODE_CREATE_CONTEXT_KEY, true);
-	}
-
-	/**
-	 * Passe en mode readonly.
-	 */
-	protected static final void toModeReadOnly() {
-		//TODO voir pour déléguer cette gestion des modes
-		final ViewContext viewContext = getViewContext();
-		viewContext.publishRef(MODE_CONTEXT_KEY, FormMode.readOnly);
-		viewContext.publishRef(MODE_READ_ONLY_CONTEXT_KEY, true);
-		viewContext.publishRef(MODE_EDIT_CONTEXT_KEY, false);
-		viewContext.publishRef(MODE_CREATE_CONTEXT_KEY, false);
-	}
-
-	/**
-	 * @return Si on est en mode edition
-	 */
-	protected static final boolean isModeEdit() {
-		final ViewContext viewContext = getViewContext();
-		return FormMode.edit.equals(viewContext.get(MODE_CONTEXT_KEY));
-	}
-
-	/**
-	 * @return Si on est en mode readOnly
-	 */
-	protected static final boolean isModeRead() {
-		final ViewContext viewContext = getViewContext();
-		return FormMode.readOnly.equals(viewContext.get(MODE_CONTEXT_KEY));
-	}
-
-	/**
-	 * @return Si on est en mode create
-	 */
-	protected static final boolean isModeCreate() {
-		final ViewContext viewContext = getViewContext();
-		return FormMode.create.equals(viewContext.get(MODE_CONTEXT_KEY));
 	}
 
 	/**

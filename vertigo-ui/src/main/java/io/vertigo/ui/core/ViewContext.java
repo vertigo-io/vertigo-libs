@@ -66,6 +66,16 @@ public final class ViewContext implements Serializable {
 
 	private static final long serialVersionUID = -8237448155016161135L;
 
+	/** Clé de context du mode. */
+	public static final ViewContextKey<FormMode> MODE_CONTEXT_KEY = ViewContextKey.of("mode");
+	//TODO voir pour déléguer cette gestion des modes
+	/** Clé de context du mode Edit. */
+	public static final ViewContextKey<Boolean> MODE_EDIT_CONTEXT_KEY = ViewContextKey.of("modeEdit");
+	/** Clé de context du mode ReadOnly. */
+	public static final ViewContextKey<Boolean> MODE_READ_ONLY_CONTEXT_KEY = ViewContextKey.of("modeReadOnly");
+	/** Clé de context du mode Create. */
+	public static final ViewContextKey<Boolean> MODE_CREATE_CONTEXT_KEY = ViewContextKey.of("modeCreate");
+
 	/** Clée de l'id de context dans le context. */
 	public static final ViewContextKey<String> CTX = ViewContextKey.of("CTX");
 
@@ -442,12 +452,13 @@ public final class ViewContext implements Serializable {
 	 * @param contextKey Context key
 	 * @param fileInfo file's info
 	 */
-	public void publishFileInfoURI(final ViewContextKey<FileInfoURI> contextKey, final FileInfoURI fileInfoURI) {
+	public ViewContext publishFileInfoURI(final ViewContextKey<FileInfoURI> contextKey, final FileInfoURI fileInfoURI) {
 		final ArrayList<FileInfoURI> list = new ArrayList<>();
 		if (fileInfoURI != null) {
 			list.add(fileInfoURI);
 		}
 		publishFileInfoURIs(contextKey, list);
+		return this;
 	}
 
 	/**
@@ -455,9 +466,10 @@ public final class ViewContext implements Serializable {
 	 * @param contextKey Context key
 	 * @param fileInfos list of file's info.
 	 */
-	public void publishFileInfoURIs(final ViewContextKey<FileInfoURI> contextKey, final ArrayList<FileInfoURI> fileInfoURIs) {
+	public ViewContext publishFileInfoURIs(final ViewContextKey<FileInfoURI> contextKey, final ArrayList<FileInfoURI> fileInfoURIs) {
 		viewContextMap.addTypeForKey(contextKey.get(), TypeToken.getParameterized(ArrayList.class, FileInfoURI.class).getType());
 		put(contextKey, fileInfoURIs);
+		return this;
 	}
 
 	/* ================================ FacetedQueryResult ==================================*/
@@ -563,6 +575,61 @@ public final class ViewContext implements Serializable {
 	 */
 	public <O extends DtObject> SelectedFacetValues getSelectedFacetValues(final ViewContextKey<FacetedQueryResult<O, FacetedQuery>> contextKey) {
 		return ((UiSelectedFacetValues) get(contextKey.get() + "_selectedFacets")).toSelectedFacetValues();
+	}
+
+	//////////////////////////////////
+	/**
+	 * Passe en mode edition.
+	 */
+	public void toModeEdit() {
+		this
+				.publishRef(MODE_CONTEXT_KEY, FormMode.edit)
+				.publishRef(MODE_READ_ONLY_CONTEXT_KEY, false)
+				.publishRef(MODE_EDIT_CONTEXT_KEY, true)
+				.publishRef(MODE_CREATE_CONTEXT_KEY, false);
+	}
+
+	/**
+	 * Passe en mode creation.
+	 */
+	public void toModeCreate() {
+		this
+				.publishRef(MODE_CONTEXT_KEY, FormMode.create)
+				.publishRef(MODE_READ_ONLY_CONTEXT_KEY, false)
+				.publishRef(MODE_EDIT_CONTEXT_KEY, false)
+				.publishRef(MODE_CREATE_CONTEXT_KEY, true);
+	}
+
+	/**
+	 * Passe en mode readonly.
+	 */
+	public void toModeReadOnly() {
+		this
+				.publishRef(MODE_CONTEXT_KEY, FormMode.readOnly)
+				.publishRef(MODE_READ_ONLY_CONTEXT_KEY, true)
+				.publishRef(MODE_EDIT_CONTEXT_KEY, false)
+				.publishRef(MODE_CREATE_CONTEXT_KEY, false);
+	}
+
+	/**
+	 * @return Si on est en mode edition
+	 */
+	public boolean isModeEdit() {
+		return FormMode.edit.equals(this.get(MODE_CONTEXT_KEY));
+	}
+
+	/**
+	 * @return Si on est en mode readOnly
+	 */
+	public boolean isModeRead() {
+		return FormMode.readOnly.equals(this.get(MODE_CONTEXT_KEY));
+	}
+
+	/**
+	 * @return Si on est en mode create
+	 */
+	public boolean isModeCreate() {
+		return FormMode.create.equals(this.get(MODE_CONTEXT_KEY));
 	}
 
 }

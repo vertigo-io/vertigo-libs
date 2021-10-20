@@ -46,13 +46,14 @@ public class ModifiableStatsController extends AbstractVSpringMvcController {
 
 	@GetMapping("/")
 	public void initContext(final ViewContext viewContext) {
-		viewContext.publishMdl(profilListMdl, Profil.class, null);
-
 		final DtList<StatData> myList = statsServices.getStats();
-		viewContext.publishDtListModifiable(statsListModifiables, myList);
 		final StatData statsTarget = statsServices.getStatTarget();
-		viewContext.publishDto(statsTargetKey, statsTarget);
-		toModeEdit();
+
+		viewContext
+				.publishMdl(profilListMdl, Profil.class, null)
+				.publishDtListModifiable(statsListModifiables, myList)
+				.publishDto(statsTargetKey, statsTarget)
+				.toModeEdit();
 	}
 
 	@PostMapping("/_saveList")
@@ -61,12 +62,12 @@ public class ModifiableStatsController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/_read")
-	public void toRead() {
-		toModeReadOnly();
+	public void toRead(final ViewContext viewContext) {
+		viewContext.toModeReadOnly();
 	}
 
 	@PostMapping("/_edit")
-	public void toEdit() {
-		toModeEdit();
+	public void toEdit(final ViewContext viewContext) {
+		viewContext.toModeEdit();
 	}
 }
