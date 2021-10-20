@@ -480,7 +480,7 @@ public final class ViewContext implements Serializable {
 	 * @param keyFieldName Id's fieldName
 	 * @param facetedQueryResult Result
 	 */
-	public <O extends DtObject> void publishFacetedQueryResult(final ViewContextKey<FacetedQueryResult<O, SearchQuery>> contextKey,
+	public <O extends DtObject> ViewContext publishFacetedQueryResult(final ViewContextKey<FacetedQueryResult<O, SearchQuery>> contextKey,
 			final DtFieldName<O> keyFieldName, final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final ViewContextKey<?> criteriaContextKey) {
 		if (facetedQueryResult.getClusterFacetDefinition().isPresent()) {
 			publishDtList(() -> contextKey.get() + "_list", Optional.of(keyFieldName), new DtList<O>(facetedQueryResult.getDtList().getDefinition()), false);
@@ -501,6 +501,7 @@ public final class ViewContext implements Serializable {
 						.collect(Collectors.toList())));
 		put(() -> contextKey.get() + "_totalcount", facetedQueryResult.getCount());
 		put(() -> contextKey.get() + "_criteriaContextKey", criteriaContextKey.get());
+		return this;
 	}
 
 	private <O extends DtObject> ArrayList<ClusterUiList> translateClusters(final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final Optional<DtFieldName<O>> keyFieldNameOpt) {
