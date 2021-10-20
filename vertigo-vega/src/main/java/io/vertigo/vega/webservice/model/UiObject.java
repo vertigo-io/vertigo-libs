@@ -19,7 +19,8 @@ package io.vertigo.vega.webservice.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -131,6 +132,13 @@ public interface UiObject<D extends DtObject> extends Serializable {
 	void setTypedValue(String fieldName, Serializable value);
 
 	/**
+	 * @param dtField Champs
+	 * @return Valeur typée du champs
+	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
+	 */
+	<T> T getTypedValue(final String fieldName, final Class<T> type);
+
+	/**
 	 * @param fieldName Nom du champs
 	 * @return Valeur typée
 	 */
@@ -158,7 +166,13 @@ public interface UiObject<D extends DtObject> extends Serializable {
 	 * @param fieldName Nom du champs
 	 * @return Valeur typée
 	 */
-	Date getDate(String fieldName);
+	LocalDate getLocalDate(String fieldName);
+
+	/**
+	 * @param fieldName Nom du champs
+	 * @return Valeur typée
+	 */
+	Instant getInstant(String fieldName);
 
 	/**
 	 * @param fieldName Nom du champs
