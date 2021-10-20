@@ -118,7 +118,7 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 
 	private static void checkType(final SmartTypeDefinition smartTypeDefinition, final Object value) {
 		if (value != null && !smartTypeDefinition.getJavaClass().isInstance(value)) {
-			throw new ClassCastException("Value " + value + " doesn't match :" + smartTypeDefinition);
+			throw new ClassCastException("Value " + value + " doesn't match :" + smartTypeDefinition.getJavaClass());
 		}
 	}
 
@@ -130,17 +130,31 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 		//---
 		switch (cardinality) {
 			case MANY:
-				if (!(value instanceof DtList)) {
-					throw new ClassCastException("Value " + value + " must be a data-list");
-				}
-				for (final Object element : DtList.class.cast(value)) {
-					checkType(smartTypeDefinition, element);
+				switch (smartTypeDefinition.getScope()) {
+					case DATA_TYPE:
+						if (!(value instanceof DtList)) {
+							throw new ClassCastException("Value " + value + " must be a data-list");
+						}
+						for (final Object element : DtList.class.cast(value)) {
+							checkType(smartTypeDefinition, element);
+						}
+						break;
+					case BASIC_TYPE:
+					case VALUE_TYPE:
+						if (!(value instanceof List)) {
+							throw new ClassCastException("Value " + value + " must be a list");
+						}
+						break;
+					default:
+						throw new IllegalStateException();
 				}
 				break;
 			case ONE:
 			case OPTIONAL_OR_NULLABLE:
 				checkType(smartTypeDefinition, value);
 				break;
+			default:
+				throw new IllegalStateException();
 		}
 	}
 
