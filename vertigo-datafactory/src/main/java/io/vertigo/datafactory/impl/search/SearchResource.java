@@ -28,6 +28,11 @@ public enum SearchResource implements MessageKey {
 	/**
 	 * Search syntax error.\nDon't use ( ) [ ] or check you closed them. OR and AND are supported but must be between two keywords.
 	 */
-	DYNAMO_SEARCH_QUERY_SYNTAX_ERROR,
+	DATAFACTORY_SEARCH_QUERY_SYNTAX_ERROR,
+
+	/**
+	 * Search index struct error.\nSorted or aggregated fields must be declared as keyword, sortable or facetable in your SmartType.
+	 */
+	DATAFACTORY_SEARCH_INDEX_FIELDDATA_ERROR,
 
 }

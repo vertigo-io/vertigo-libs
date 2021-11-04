@@ -44,6 +44,11 @@ public enum TestSearchSmartTypes {
 	@SmartTypeProperty(property = "indexType", value = "text_fr:sortable")
 	String,
 
+	@SmartTypeDefinition(String.class)
+	@Formatter(clazz = FormatterDefault.class)
+	@SmartTypeProperty(property = "indexType", value = "text_fr")
+	NotFacetableString,
+
 	@SmartTypeDefinition(Instant.class)
 	@Formatter(clazz = FormatterDefault.class)
 	DateTime,

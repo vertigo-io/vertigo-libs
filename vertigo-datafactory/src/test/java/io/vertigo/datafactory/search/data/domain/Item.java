@@ -43,6 +43,7 @@ public final class Item implements KeyConcept {
 	private Long famId;
 	private Long optionalNumber;
 	private String optionalString;
+	private String notFacetableString;
 	private Instant lastModified;
 	private GeoPoint localisation;
 	private Integer precision;
@@ -159,6 +160,15 @@ public final class Item implements KeyConcept {
 
 	public void setOptionalString(final String optionalString) {
 		this.optionalString = optionalString;
+	}
+
+	@Field(smartType = "STyNotFacetableString", label = "notFacetableString", persistent = false)
+	public String getNotFacetableString() {
+		return notFacetableString;
+	}
+
+	public void setNotFacetableString(final String notFacetableString) {
+		this.notFacetableString = notFacetableString;
 	}
 
 	@Field(smartType = "STyDateTime", label = "LastModified")

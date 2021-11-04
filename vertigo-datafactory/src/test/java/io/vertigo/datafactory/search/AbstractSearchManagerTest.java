@@ -477,6 +477,7 @@ public abstract class AbstractSearchManagerTest {
 			Assertions.fail("WrappedException expected");
 		} catch (final WrappedException e) {
 			//ok
+			Assertions.assertTrue(e.getMessage().contains("Can't parse listFilterPattern"));
 		}
 
 		try {
@@ -484,6 +485,7 @@ public abstract class AbstractSearchManagerTest {
 			Assertions.fail("VUserException expected");
 		} catch (final VUserException e) {
 			//ok
+			Assertions.assertTrue(e.getMessage().contains("OR and AND are supported but must be between two keywords"));
 		}
 
 		try {
@@ -491,6 +493,23 @@ public abstract class AbstractSearchManagerTest {
 			Assertions.fail("VUserException expected");
 		} catch (final VUserException e) {
 			//ok
+			Assertions.assertTrue(e.getMessage().contains("Don't use ( ) [ ]"));
+		}
+	}
+
+	@Test
+	public void testBadFacetQuery() {
+		index(true);
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemBadFacet")
+				.withCriteria("")
+				.withFacet(EMPTY_SELECTED_FACET_VALUES)
+				.build();
+		try {
+			doQuery(searchQuery, null);
+			Assertions.fail("VUserException expected");
+		} catch (final VUserException e) {
+			//ok
+			Assertions.assertTrue(e.getMessage().contains("fields must be declared as keyword, sortable or facetable"));
 		}
 	}
 
@@ -514,6 +533,7 @@ public abstract class AbstractSearchManagerTest {
 			Assertions.fail("VUserException expected");
 		} catch (final VUserException e) {
 			//ok
+			Assertions.assertTrue(e.getMessage().contains("Don't use ( ) [ ]"));
 		}
 
 		//common bad user input are escaped

@@ -142,6 +142,11 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 				//---
 				// FacetTermDefinition
 				//-----
+				new FacetTermDefinitionSupplier("FctBadItem")
+						.withDtDefinition("DtItem")
+						.withFieldName("notFacetableString")
+						.withLabel("bad facet")
+						.withOrder(FacetOrder.count),
 				new FacetTermDefinitionSupplier("FctDescriptionItem")
 						.withDtDefinition("DtItem")
 						.withFieldName("description")
@@ -208,6 +213,11 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 				//---
 				// FacetedQueryDefinition
 				//-----
+				new FacetedQueryDefinitionSupplier("QryItemBadFacet")
+						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
+						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
+						.withCriteriaSmartType("STyString")
+						.withFacet("FctBadItem"),
 				new FacetedQueryDefinitionSupplier("QryItemFacet")
 						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
