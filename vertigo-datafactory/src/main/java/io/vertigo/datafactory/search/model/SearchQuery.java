@@ -18,7 +18,6 @@
 package io.vertigo.datafactory.search.model;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
@@ -29,7 +28,6 @@ import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.definitions.ListFilterBuilder;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.impl.search.dsl.model.DslGeoExpression;
-import io.vertigo.datafactory.impl.search.dsl.model.DslMultiExpression;
 import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
 import io.vertigo.datamodel.structure.definitions.DtField;
 
@@ -93,10 +91,9 @@ public final class SearchQuery implements Serializable {
 		if (listFilterBuilderQuery.isEmpty() || "*:*".equals(listFilterBuilderQuery)) {
 			queryListFilter = ListFilter.of("*:*");
 		} else {
-			final List<DslMultiExpression> dslQuery = DslParserUtil.parseMultiExpression(listFilterBuilderQuery);
 			final ListFilterBuilder<Object> listFilterBuilder = InjectorUtil.newInstance(listFilterBuilderClass);
 			final ListFilter listFilter = listFilterBuilder
-					.withDslQuery(dslQuery)
+					.withListFilterQuery(listFilterBuilderQuery)
 					.withCriteria(queryCriteria)
 					.build();
 			queryListFilter = listFilter.getFilterValue().isEmpty() ? ListFilter.of("*:*") : listFilter;

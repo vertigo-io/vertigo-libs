@@ -17,11 +17,8 @@
  */
 package io.vertigo.datafactory.collections.definitions;
 
-import java.util.List;
-
 import io.vertigo.core.lang.Builder;
 import io.vertigo.datafactory.collections.ListFilter;
-import io.vertigo.datafactory.impl.search.dsl.model.DslMultiExpression;
 
 /**
  * Project specific builder from Criteria to ListFilter.
@@ -35,7 +32,7 @@ public interface ListFilterBuilder<C> extends Builder<ListFilter> {
 	 * @param buildQuery Query use by builder
 	 * @return this builder
 	 */
-	ListFilterBuilder<C> withDslQuery(final List<DslMultiExpression> dslQuery);
+	ListFilterBuilder<C> withListFilterQuery(String listFilterBuilderQuery);
 
 	/**
 	 * Process a criteria to produce a ListFilter.
@@ -43,4 +40,5 @@ public interface ListFilterBuilder<C> extends Builder<ListFilter> {
 	 * @return this builder
 	 */
 	ListFilterBuilder<C> withCriteria(C criteria);
+
 }

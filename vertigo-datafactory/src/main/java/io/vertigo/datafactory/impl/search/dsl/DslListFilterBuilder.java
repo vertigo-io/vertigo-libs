@@ -104,6 +104,19 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	 * @return this builder
 	 */
 	@Override
+	public ListFilterBuilder<C> withListFilterQuery(final String listFilterBuilderQuery) {
+		Assertion.check().isNotBlank(listFilterBuilderQuery);
+		//-----
+		//this ListFilterBuilder use a query parsed by DSL
+		withDslQuery(DslParserUtil.parseMultiExpression(listFilterBuilderQuery));
+		return this;
+	}
+
+	/**
+	 * Fix query pattern.
+	 * @param buildQuery Pattern (not null, could be empty)
+	 * @return this builder
+	 */
 	public ListFilterBuilder<C> withDslQuery(final List<DslMultiExpression> dslQuery) {
 		Assertion.check()
 				.isNotNull(dslQuery)
