@@ -866,6 +866,46 @@ public abstract class AbstractSearchManagerTest {
 		}
 	}
 
+	@Test
+	public void testCustomFacetQuery() {
+		index(true);
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemCustomAggFacet")
+				.withCriteria("")
+				.withFacet(EMPTY_SELECTED_FACET_VALUES)
+				.build();
+
+		final FacetedQueryResult<Item, SearchQuery> result = doQuery(searchQuery, null);
+		Assertions.assertEquals(itemDataBase.size(), result.getCount());
+
+		//On vérifie qu'il y a le bon nombre de facettes.
+		Assertions.assertEquals(3, result.getFacets().size());
+
+		//On recherche la facette
+		final Facet customSumPriceFacet = getFacetByName(result, "FctCustomSumPriceItem");
+		Assertions.assertTrue(customSumPriceFacet.getDefinition().isCustomFacet());
+		Assertions.assertEquals(1, customSumPriceFacet.getFacetValues().size());
+		for (final Entry<FacetValue, Long> entry : customSumPriceFacet.getFacetValues().entrySet()) {
+			Assertions.assertEquals("FctCustomSumPriceItem", entry.getKey().getCode());
+			Assertions.assertEquals(22032.22, entry.getValue() / 100d);
+		}
+
+		final Facet customSumKiloItem = getFacetByName(result, "FctCustomSumKiloItem");
+		Assertions.assertTrue(customSumKiloItem.getDefinition().isCustomFacet());
+		Assertions.assertEquals(1, customSumKiloItem.getFacetValues().size());
+		for (final Entry<FacetValue, Long> entry : customSumKiloItem.getFacetValues().entrySet()) {
+			Assertions.assertEquals("FctCustomSumKiloItem", entry.getKey().getCode());
+			Assertions.assertEquals(119321.11, entry.getValue() / 100d);
+		}
+
+		final Facet customAvgYearItem = getFacetByName(result, "FctCustomAvgYearItem");
+		Assertions.assertTrue(customAvgYearItem.getDefinition().isCustomFacet());
+		Assertions.assertEquals(1, customAvgYearItem.getFacetValues().size());
+		for (final Entry<FacetValue, Long> entry : customAvgYearItem.getFacetValues().entrySet()) {
+			Assertions.assertEquals("FctCustomAvgYearItem", entry.getKey().getCode());
+			Assertions.assertEquals(2004, entry.getValue());
+		}
+	}
+
 	private void checkOrderByCount(final Facet facet) {
 		//on vérifie l'ordre
 		int lastCount = Integer.MAX_VALUE;

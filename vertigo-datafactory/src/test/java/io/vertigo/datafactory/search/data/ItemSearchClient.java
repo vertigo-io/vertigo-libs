@@ -210,6 +210,34 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withParams("geohash_grid", "{\"field\" : \"localisation\",\"precision\" : #precision# }")
 						.withParams("innerWriteTo", "writeVInt(#precision#);writeVInt(1000);writeVInt(-1);writeGeoPoint();writeGeoPoint();") //same as GeoGridAggregationBuilder.innerWriteTo
 						.withOrder(FacetOrder.count),
+				new FacetCustomDefinitionSupplier("FctCustomSumPriceItem")
+						.withDtDefinition("DtItem")
+						.withLabel("Sum Price")
+						.withFieldName("price") //fieldname in index
+						.withParams("avg", "{\"field\" : \"price\" }")
+						.withParams("_decimalPrecision", "2")
+						.withOrder(FacetOrder.count),
+				new FacetCustomDefinitionSupplier("FctCustomSumKiloItem")
+						.withDtDefinition("DtItem")
+						.withLabel("Sum Kilo")
+						.withFieldName("kilo") //fieldname in index
+						.withParams("avg", "{\"field\" : \"kilo\" }")
+						.withParams("_decimalPrecision", "2")
+						.withOrder(FacetOrder.count),
+				new FacetCustomDefinitionSupplier("FctCustomAvgYearItem")
+						.withDtDefinition("DtItem")
+						.withLabel("Avg Year")
+						.withFieldName("year") //fieldname in index
+						.withParams("avg", "{\"field\" : \"year\" }")
+						.withParams("_decimalPrecision", "0")
+						.withOrder(FacetOrder.count),
+				//.withParams("avg", "{\"field\" : \"price\" }")
+				/*.withParams("aggs", "{\"sumPrice\" : {\"sum\": {\"field\" : \"price\" }},"
+						+ "\"sumKilo\" : {\"sum\": {\"field\" : \"kilo\" }},"
+						+ "\"avgYear\" : {\"avg\": {\"field\" : \"year\" }}}")*/
+				/*.withParams("sumPrice", "{\"sum\": {\"field\" : \"price\" }}")
+				.withParams("sumKilo", "{\"sum\": {\"field\" : \"kilo\" }}")
+				.withParams("avgYear", "{\"avg\": {\"field\" : \"year\" }}")*/
 				//---
 				// FacetedQueryDefinition
 				//-----
@@ -226,6 +254,13 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withFacet("FctManufacturerItem")
 						.withFacet("FctManufacturerItemAlpha")
 						.withFacet("FctYearItem"),
+				new FacetedQueryDefinitionSupplier("QryItemCustomAggFacet")
+						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
+						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
+						.withCriteriaSmartType("STyString")
+						.withFacet("FctCustomSumPriceItem")
+						.withFacet("FctCustomSumKiloItem")
+						.withFacet("FctCustomAvgYearItem"),
 				new FacetedQueryDefinitionSupplier("QryItemOptionalFacet")
 						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")

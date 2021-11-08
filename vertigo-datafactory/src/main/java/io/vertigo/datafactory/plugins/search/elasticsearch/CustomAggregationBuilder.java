@@ -36,6 +36,7 @@ import org.elasticsearch.search.aggregations.PipelineAggregationBuilder;
 
 public final class CustomAggregationBuilder extends AggregationBuilder {
 
+	public static final Object DECIMAL_PRECISION_TO_PARAM = "_decimalPrecision";
 	private static final Object INNER_WRITE_TO_PARAM = "innerWriteTo";
 	private Map<String, Object> metaData;
 	private final Map<String, String> customParams;
@@ -176,7 +177,7 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 			builder.field("meta", metaData);
 		}
 		for (final Map.Entry<String, String> entry : customParams.entrySet()) {
-			if (!INNER_WRITE_TO_PARAM.equals(entry.getKey())) {
+			if (!INNER_WRITE_TO_PARAM.equals(entry.getKey()) && !DECIMAL_PRECISION_TO_PARAM.equals(entry.getKey())) {
 				builder.rawField(entry.getKey(), new ByteArrayInputStream(entry.getValue().getBytes(StandardCharsets.UTF_8)), XContentType.JSON);
 			}
 		}
