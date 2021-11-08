@@ -30,6 +30,8 @@
                         <vu:text-field th:v-if="'vueData.movie.movid === '+${model.movie.movId}+' || '+${model.movie.movId eq '1000'} " object="movie" field="movId"/>
                         <vu:text-field th:v-if="${'vueData.movie.movid === '+model.movie.movId+' || '+(model.movie.movId eq '1000')}" object="movie" field="movId"/>
                         
+                        <vu:text-field th:@click="|alert('@{/movie/__${model.movie.movId}__}')|" object="movie" field="movId"/>
+                   
                     </vu:grid>
                 </vu:block>             
             </vu:form>
