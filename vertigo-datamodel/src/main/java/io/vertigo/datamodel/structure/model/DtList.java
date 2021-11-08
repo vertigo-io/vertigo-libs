@@ -167,6 +167,16 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 
 	/** {@inheritDoc} */
 	@Override
+	public void add(final int index, final D dto) {
+		Assertion.check().isNotNull(dto);
+		final DtDefinition foundDtDefinition = DtObjectUtil.findDtDefinition(dto);
+		Assertion.check().isTrue(getDefinition().equals(foundDtDefinition), "Ne peut pas inserer un dto '{0}' dans une collection '{1}'", foundDtDefinition, getDefinition());
+		//-----
+		dtObjects.add(index, dto);
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public D remove(final int row) {
 		return dtObjects.remove(row);
 	}
