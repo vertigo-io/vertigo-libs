@@ -513,6 +513,11 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	}
 
 	@Override
+	public Double getDouble(final String fieldName) {
+		return getTypedValue(fieldName, Double.class);
+	}
+
+	@Override
 	public BigDecimal getBigDecimal(final String fieldName) {
 		return getTypedValue(fieldName, BigDecimal.class);
 	}

@@ -178,6 +178,12 @@ public interface UiObject<D extends DtObject> extends Serializable {
 	 * @param fieldName Nom du champs
 	 * @return Valeur typée
 	 */
+	Double getDouble(String fieldName);
+
+	/**
+	 * @param fieldName Nom du champs
+	 * @return Valeur typée
+	 */
 	BigDecimal getBigDecimal(String fieldName);
 
 }
