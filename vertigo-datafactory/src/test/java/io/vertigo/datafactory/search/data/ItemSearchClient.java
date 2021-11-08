@@ -208,7 +208,7 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withLabel("Par geohash")
 						.withFieldName("localisation") //fieldname in index
 						.withParams("geohash_grid", "{\"field\" : \"localisation\",\"precision\" : #precision# }")
-						.withParams("innerWriteTo", "writeVInt(#precision#);writeVInt(1000);writeVInt(-1);writeGeoPoint();writeGeoPoint();") //same as GeoGridAggregationBuilder.innerWriteTo
+						.withParams("_innerWriteTo", "writeVInt(#precision#);writeVInt(1000);writeVInt(-1);writeGeoPoint();writeGeoPoint();") //same as GeoGridAggregationBuilder.innerWriteTo
 						.withOrder(FacetOrder.count),
 				new FacetCustomDefinitionSupplier("FctCustomSumPriceItem")
 						.withDtDefinition("DtItem")

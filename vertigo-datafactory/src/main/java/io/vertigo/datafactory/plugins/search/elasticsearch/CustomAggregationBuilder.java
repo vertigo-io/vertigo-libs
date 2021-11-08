@@ -37,7 +37,7 @@ import org.elasticsearch.search.aggregations.PipelineAggregationBuilder;
 public final class CustomAggregationBuilder extends AggregationBuilder {
 
 	public static final Object DECIMAL_PRECISION_TO_PARAM = "_decimalPrecision";
-	private static final Object INNER_WRITE_TO_PARAM = "innerWriteTo";
+	private static final Object INNER_WRITE_TO_PARAM = "_innerWriteTo";
 	private Map<String, Object> metaData;
 	private final Map<String, String> customParams;
 
