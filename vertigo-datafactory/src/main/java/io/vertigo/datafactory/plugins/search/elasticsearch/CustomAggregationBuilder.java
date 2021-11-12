@@ -45,6 +45,7 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 	private static final Object TYPE_PARAM = "_type";
 
 	private Map<String, Object> metaData;
+	private final String field;
 	private final Map<String, String> customParams;
 	private final Optional<String[]> innerWriteToOperations;
 	private final Optional<String> type;
@@ -54,8 +55,9 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 	 *
 	 * @param name  The aggregation name
 	 */
-	public CustomAggregationBuilder(final String name, final Map<String, String> customParams) {
+	public CustomAggregationBuilder(final String name, final String field, final Map<String, String> customParams) {
 		super(name);
+		this.field = field;
 		final String innerWriteToParam = customParams.get(INNER_WRITE_TO_PARAM);
 		if (innerWriteToParam != null) {
 			innerWriteToOperations = Optional.of(innerWriteToParam.split("\\s*;\\s*"));
@@ -85,7 +87,7 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 		out.writeString(name);
 		factoriesBuilder.writeTo(out);
 		out.writeMap(metaData);
-		out.writeOptionalString(getType());
+		out.writeOptionalString(field);
 		out.writeBoolean(false); //hasScript
 		out.writeBoolean(false); //hasValueType
 		out.writeOptionalString(null); //format

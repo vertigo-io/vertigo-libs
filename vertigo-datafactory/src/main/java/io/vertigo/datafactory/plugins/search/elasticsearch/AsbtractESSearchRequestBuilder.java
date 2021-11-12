@@ -69,7 +69,6 @@ import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.model.DtListState;
 
-//vérifier
 /**
  * ElasticSearch request builder from searchManager api.
  * @author pchretien, npiedeloup
@@ -390,7 +389,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	private static AggregationBuilder customFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		final Map<String, String> customParams = replaceCriteria(facetDefinition.getCustomParams(), myCriteria);
-		return new CustomAggregationBuilder(facetDefinition.getName(), customParams);
+		return new CustomAggregationBuilder(facetDefinition.getName(), facetDefinition.getDtField().getName(), customParams);
 	}
 
 	private static Map<String, String> replaceCriteria(final Map<String, String> customParams, final Object myCriteria) {
