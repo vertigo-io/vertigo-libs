@@ -886,14 +886,14 @@ public abstract class AbstractSearchManagerTest {
 		Assertions.assertEquals(1, customSumPriceFacet.getFacetValues().size());
 		for (final Entry<FacetValue, Long> entry : customSumPriceFacet.getFacetValues().entrySet()) {
 			Assertions.assertEquals("FctCustomSumPriceItem", entry.getKey().getCode());
-			Assertions.assertEquals(22032.22, entry.getValue() / 100d);
+			Assertions.assertEquals(198290, entry.getValue());
 		}
 
-		final Facet customSumKiloItem = getFacetByName(result, "FctCustomSumKiloItem");
-		Assertions.assertTrue(customSumKiloItem.getDefinition().isCustomFacet());
-		Assertions.assertEquals(1, customSumKiloItem.getFacetValues().size());
-		for (final Entry<FacetValue, Long> entry : customSumKiloItem.getFacetValues().entrySet()) {
-			Assertions.assertEquals("FctCustomSumKiloItem", entry.getKey().getCode());
+		final Facet customAvgKiloItem = getFacetByName(result, "FctCustomAvgKiloItem");
+		Assertions.assertTrue(customAvgKiloItem.getDefinition().isCustomFacet());
+		Assertions.assertEquals(1, customAvgKiloItem.getFacetValues().size());
+		for (final Entry<FacetValue, Long> entry : customAvgKiloItem.getFacetValues().entrySet()) {
+			Assertions.assertEquals("FctCustomAvgKiloItem", entry.getKey().getCode());
 			Assertions.assertEquals(119321.11, entry.getValue() / 100d);
 		}
 

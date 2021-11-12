@@ -21,8 +21,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.io.stream.StreamOutput;
@@ -34,12 +36,18 @@ import org.elasticsearch.search.aggregations.AggregatorFactories;
 import org.elasticsearch.search.aggregations.AggregatorFactory;
 import org.elasticsearch.search.aggregations.PipelineAggregationBuilder;
 
+import io.vertigo.core.lang.Assertion;
+
 public final class CustomAggregationBuilder extends AggregationBuilder {
 
 	public static final Object DECIMAL_PRECISION_TO_PARAM = "_decimalPrecision";
 	private static final Object INNER_WRITE_TO_PARAM = "_innerWriteTo";
+	private static final Object TYPE_PARAM = "_type";
+
 	private Map<String, Object> metaData;
 	private final Map<String, String> customParams;
+	private final Optional<String[]> innerWriteToOperations;
+	private final Optional<String> type;
 
 	/**
 	 * Constructs a new aggregation builder.
@@ -48,12 +56,28 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 	 */
 	public CustomAggregationBuilder(final String name, final Map<String, String> customParams) {
 		super(name);
-		this.customParams = customParams;
+		final String innerWriteToParam = customParams.get(INNER_WRITE_TO_PARAM);
+		if (innerWriteToParam != null) {
+			innerWriteToOperations = Optional.of(innerWriteToParam.split("\\s*;\\s*"));
+		} else {
+			innerWriteToOperations = Optional.empty();
+		}
+		String typeParam = customParams.get(TYPE_PARAM);
+		this.customParams = new HashMap<>(customParams);
+		this.customParams.remove(TYPE_PARAM);
+		this.customParams.remove(INNER_WRITE_TO_PARAM);
+		if (typeParam == null && this.customParams.size() > 0) {
+			//looking for default type : use the first param (type of Agg for ES)
+			typeParam = this.customParams.keySet().iterator().next();
+		}
+		type = Optional.ofNullable(typeParam);
+
 	}
 
 	@Override
 	public String getType() {
-		return customParams.keySet().iterator().next();
+		Assertion.check().isTrue(type.isPresent(), "Need to set an {0} param to declare the agg type (like : sum)", TYPE_PARAM);
+		return type.get(); //mandatory in this case
 	}
 
 	@Override
@@ -67,15 +91,15 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 		out.writeOptionalString(null); //format
 		out.writeGenericValue(null); //missing
 		out.writeOptionalZoneId(null); //timeZone
-		if (customParams.containsKey(INNER_WRITE_TO_PARAM)) {
+		if (innerWriteToOperations.isPresent()) {
 			innerWriteTo(out); //type dependent
 		}
 	}
 
 	private void innerWriteTo(final StreamOutput out) throws NumberFormatException, IOException {
-		final String innerWriteToParam = customParams.get(INNER_WRITE_TO_PARAM);
-		final String[] innerWriteToOperations = innerWriteToParam.split("\\s*;\\s*");
-		for (final String operation : innerWriteToOperations) {
+		Assertion.check().isTrue(innerWriteToOperations.isPresent(), "Need to set an {0} param to declare how to set agg in ES specific protocol (like : writeVInt(#queryParam#);writeVInt(1000);writeVInt(-1);)", INNER_WRITE_TO_PARAM);
+		//----
+		for (final String operation : innerWriteToOperations.get()) {
 			final String value = operation.substring(operation.indexOf('(') + 1, operation.indexOf(')'));
 			if (operation.startsWith("writeVInt(")) {
 				out.writeVInt(Integer.parseInt(value));
@@ -177,7 +201,7 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 			builder.field("meta", metaData);
 		}
 		for (final Map.Entry<String, String> entry : customParams.entrySet()) {
-			if (!INNER_WRITE_TO_PARAM.equals(entry.getKey()) && !DECIMAL_PRECISION_TO_PARAM.equals(entry.getKey())) {
+			if (!DECIMAL_PRECISION_TO_PARAM.equals(entry.getKey())) {
 				builder.rawField(entry.getKey(), new ByteArrayInputStream(entry.getValue().getBytes(StandardCharsets.UTF_8)), XContentType.JSON);
 			}
 		}

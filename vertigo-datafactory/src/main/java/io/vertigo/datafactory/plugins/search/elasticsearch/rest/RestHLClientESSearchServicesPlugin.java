@@ -33,9 +33,11 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.indices.forcemerge.ForceMergeRequest;
+import org.elasticsearch.action.admin.indices.forcemerge.ForceMergeResponse;
 import org.elasticsearch.action.admin.indices.settings.get.GetSettingsRequest;
 import org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
@@ -453,13 +455,28 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		final ForceMergeRequest request = new ForceMergeRequest(myIndexName)
 				.maxNumSegments(OPTIMIZE_MAX_NUM_SEGMENT)//32 files : empirique
 				.flush(true);
-		esClient.indices().forcemergeAsync(request, RequestOptions.DEFAULT, null);
+
+		esClient.indices().forcemergeAsync(request, RequestOptions.DEFAULT, new OptimizeActionListener());
 		/*try {
 			final ForceMergeResponse forceMergeResponse = esClient.indices().forcemerge(request, RequestOptions.DEFAULT);
 			Assertion.check().argument(forceMergeResponse.getStatus() == RestStatus.OK, "Can't forceMerge on {0}", myIndexName);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error on index {0}", myIndexName);
 		}*/
+	}
+
+	private static class OptimizeActionListener implements ActionListener<ForceMergeResponse> {
+
+		@Override
+		public void onResponse(final ForceMergeResponse response) {
+			LOGGER.debug("markToOptimize ok");
+		}
+
+		@Override
+		public void onFailure(final Exception e) {
+			LOGGER.error("Error on markToOptimize", e);
+		}
+
 	}
 
 	private void waitForYellowStatus() {
