@@ -457,12 +457,6 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 				.flush(true);
 
 		esClient.indices().forcemergeAsync(request, RequestOptions.DEFAULT, new OptimizeActionListener());
-		/*try {
-			final ForceMergeResponse forceMergeResponse = esClient.indices().forcemerge(request, RequestOptions.DEFAULT);
-			Assertion.check().argument(forceMergeResponse.getStatus() == RestStatus.OK, "Can't forceMerge on {0}", myIndexName);
-		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Error on index {0}", myIndexName);
-		}*/
 	}
 
 	private static class OptimizeActionListener implements ActionListener<ForceMergeResponse> {
