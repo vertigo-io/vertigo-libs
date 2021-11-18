@@ -53,6 +53,7 @@ final class ESSearchRequestBuilder extends AsbtractESSearchRequestBuilder<Search
 		super(typeAdapters);
 		//-----
 		searchSourceBuilder = new SearchSourceBuilder()
+				.trackTotalHitsUpTo(MAX_TOTAL_HIT)
 				.fetchSource(new String[] { ESDocumentCodec.FULL_RESULT }, null);
 
 		searchRequest = new SearchRequest(indexNames)

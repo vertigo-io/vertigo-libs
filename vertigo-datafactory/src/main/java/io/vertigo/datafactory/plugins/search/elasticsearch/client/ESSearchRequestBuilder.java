@@ -52,6 +52,7 @@ final class ESSearchRequestBuilder extends AsbtractESSearchRequestBuilder<Search
 		//-----
 		mySearchRequestBuilder = esClient.prepareSearch()
 				.setIndices(indexNames)
+				.setTrackTotalHitsUpTo(MAX_TOTAL_HIT)
 				.setSearchType(SearchType.QUERY_THEN_FETCH)
 				.setFetchSource(ESDocumentCodec.FULL_RESULT, null);
 	}

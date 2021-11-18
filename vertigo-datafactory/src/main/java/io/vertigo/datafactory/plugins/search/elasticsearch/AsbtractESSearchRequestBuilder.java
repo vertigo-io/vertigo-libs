@@ -77,6 +77,8 @@ import io.vertigo.datamodel.structure.model.DtListState;
  */
 public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESSearchRequestBuilder> implements Builder<R> {
 
+	protected static final int MAX_TOTAL_HIT = 1_000_000; //maximum total hit count (then just know > 1 000 000)
+
 	private static final int TERM_AGGREGATION_SIZE = 50; //max 50 facets values per facet
 	private static final int TOPHITS_SUBAGGREGATION_MAXSIZE = 100; //max 100 documents per cluster when clusterization is used
 	private static final int TOPHITS_SUBAGGREGATION_SIZE = 10; //max 10 documents per cluster when clusterization is used
