@@ -24,11 +24,13 @@ public class ConstraintConfig {
 	private final Class<? extends Constraint> clazz;
 	private final String arg;
 	private final String msg;
+	private final String resourceMsg;
 
-	public ConstraintConfig(final Class<? extends Constraint> clazz, final String arg, final String msg) {
+	public ConstraintConfig(final Class<? extends Constraint> clazz, final String arg, final String msg, final String resourceMsg) {
 		this.clazz = clazz;
 		this.arg = arg;
 		this.msg = msg;
+		this.resourceMsg = resourceMsg;
 	}
 
 	public Class<? extends Constraint> getConstraintClass() {
@@ -41,6 +43,10 @@ public class ConstraintConfig {
 
 	public String getMsg() {
 		return msg;
+	}
+
+	public String getResourceMsg() {
+		return resourceMsg;
 	}
 
 }

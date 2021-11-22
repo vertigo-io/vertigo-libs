@@ -57,14 +57,14 @@ public final class ConstraintTest {
 		//--
 		//		constraintNotNull = new ConstraintNotNull();
 		//		constraintNotNull.initParameters(null);
-		constraintBigDecimal = new ConstraintBigDecimal("5,2", Optional.empty());
-		constraintBigDecimalLength = new ConstraintBigDecimalLength("3", Optional.empty()); //10^3
-		constraintDoubleLength = new ConstraintDoubleLength("3", Optional.empty()); //10^3
-		constraintIntegerLength = new ConstraintIntegerLength("3", Optional.empty()); //10^3
-		constraintLongLength = new ConstraintLongLength("3", Optional.empty()); //10^3
-		constraintStringLength = new ConstraintStringLength("3", Optional.empty()); //10^3
+		constraintBigDecimal = new ConstraintBigDecimal("5,2", Optional.empty(), Optional.empty());
+		constraintBigDecimalLength = new ConstraintBigDecimalLength("3", Optional.empty(), Optional.empty()); //10^3
+		constraintDoubleLength = new ConstraintDoubleLength("3", Optional.empty(), Optional.empty()); //10^3
+		constraintIntegerLength = new ConstraintIntegerLength("3", Optional.empty(), Optional.empty()); //10^3
+		constraintLongLength = new ConstraintLongLength("3", Optional.empty(), Optional.empty()); //10^3
+		constraintStringLength = new ConstraintStringLength("3", Optional.empty(), Optional.empty()); //10^3
 		// \w signifie WORD [A-Za-z0-9_] et on ajoute le tiret -
-		constraintRegex = new ConstraintRegex("[\\w-]*", Optional.empty());
+		constraintRegex = new ConstraintRegex("[\\w-]*", Optional.empty(), Optional.empty());
 	}
 
 	@AfterEach

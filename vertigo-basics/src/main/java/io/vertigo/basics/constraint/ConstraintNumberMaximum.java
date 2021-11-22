@@ -21,30 +21,30 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.datamodel.structure.definitions.Constraint;
 import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.definitions.Property;
 
 /**
  * Contrainte sur la valeur maximale d'un nombre.
  * arguments = valeur maximale.
+ *
  * @author npiedeloup
  */
-public final class ConstraintNumberMaximum implements Constraint<Number, Number> {
+public final class ConstraintNumberMaximum extends AbstractBasicConstraint<Number, Number> {
 	private final double maxValue;
-	private final MessageText errorMessage;
 
 	/**
 	 * Constructor.
+	 *
 	 * @param args the maximum length
 	 */
-	public ConstraintNumberMaximum(final String args, final Optional<String> overrideMessageOpt) {
+	public ConstraintNumberMaximum(final String args, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
+		super(overrideMessageOpt, overrideResourceMessageOpt);
+
 		Assertion.check()
-				.isNotBlank(args, "Vous devez préciser la valeur maximum comme argument de ConstraintNumberMaximum")
-				.isNotNull(overrideMessageOpt);
+				.isNotBlank(args, "Vous devez préciser la valeur maximum comme argument de ConstraintNumberMaximum");
 		//-----
 		maxValue = Double.parseDouble(args);
-		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MAXIMUM, maxValue);
 	}
 
 	/** {@inheritDoc} */
@@ -54,10 +54,9 @@ public final class ConstraintNumberMaximum implements Constraint<Number, Number>
 				|| value.doubleValue() <= maxValue;
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	public MessageText getErrorMessage() {
-		return errorMessage;
+	protected MessageText getDefaultMessageText() {
+		return MessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MAXIMUM, maxValue);
 	}
 
 	/** {@inheritDoc} */

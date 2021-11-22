@@ -23,10 +23,12 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
 
 /**
- * Contrainte vérifiant que l'objet est : <ul>
+ * Contrainte vérifiant que l'objet est :
+ * <ul>
  * <li>soit un Integer comprenant au maximum le nombre de chiffres précisé à la construction (nombres de digits)</li>
  * <li>soit null</li>
- * </ul><br>
+ * </ul>
+ * <br>
  * On rappelle que le maximum d'un type Integer est compris entre 1O^9 et 10^10 <br>
  * On conseille donc d'utiliser 10^9 comme structure de stockage max en BDD : donc number(9) <br>
  * Si vous souhaitez flirter avec les 10^10 alors n'utilisez pas de contraintes.
@@ -44,15 +46,14 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 	 */
 	private final int minValue;
 
-	private final MessageText errorMessage;
-
 	/**
 	 * Constructeur nécessaire pour le ksp.
+	 *
 	 * @param args Liste des arguments réduite à un seul castable en integer.
 	 * Cet argument correspond au nombre de chifres maximum authorisé sur le Integer.
 	 */
-	public ConstraintIntegerLength(final String args, final Optional<String> overrideMessageOpt) {
-		super(args);
+	public ConstraintIntegerLength(final String args, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
+		super(args, overrideMessageOpt, overrideResourceMessageOpt);
 		//-----
 		Assertion.check().isTrue(getMaxLength() < 10, "Longueur max doit être strictement inférieure à 10");
 		//-----
@@ -64,7 +65,6 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 		maxValue = tmpMaxValue;
 		minValue = -tmpMaxValue;
 		//--
-		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_INTEGERLENGTH_EXCEEDED, minValue, maxValue);
 	}
 
 	/** {@inheritDoc} */
@@ -74,9 +74,9 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 				|| value > minValue && value < maxValue;
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	public MessageText getErrorMessage() {
-		return errorMessage;
+	protected MessageText getDefaultMessageText() {
+		return MessageText.of(Resources.DYNAMO_CONSTRAINT_INTEGERLENGTH_EXCEEDED, minValue, maxValue);
 	}
+
 }

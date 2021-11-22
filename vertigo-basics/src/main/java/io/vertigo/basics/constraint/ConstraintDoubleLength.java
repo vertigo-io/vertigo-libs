@@ -23,10 +23,12 @@ import java.util.Optional;
 import io.vertigo.core.locale.MessageText;
 
 /**
- * Contrainte vérifiant que l'objet est : <ul>
+ * Contrainte vérifiant que l'objet est :
+ * <ul>
  * <li>soit un Double comprit dans le segment ]-10^n, 10^n[</li>
- * <li>soit null </li>
- * </ul>.
+ * <li>soit null</li>
+ * </ul>
+ * .
  * <br>
  *
  * @author pchretien
@@ -42,20 +44,18 @@ public final class ConstraintDoubleLength extends AbstractConstraintLength<Doubl
 	 */
 	private final Double minValue;
 
-	private final MessageText errorMessage;
-
 	/**
 	 * Constructeur nécessaire pour le ksp.
+	 *
 	 * @param args Liste des arguments réduite à un seul castable en integer.
 	 * Cet argument correspond au nombre de chiffres maximum autorisé sur le Double.
 	 * maxLength Valeur n du segment ]-10^n, 10^n[ dans lequel est comprise la valeur.
 	 */
-	public ConstraintDoubleLength(final String args, final Optional<String> overrideMessageOpt) {
-		super(args);
+	public ConstraintDoubleLength(final String args, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
+		super(args, overrideMessageOpt, overrideResourceMessageOpt);
 		//-----
 		maxValue = BigDecimal.valueOf(1L).movePointRight(getMaxLength()).doubleValue();
 		minValue = BigDecimal.valueOf(1L).movePointRight(getMaxLength()).negate().doubleValue();
-		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMALLENGTH_EXCEEDED, minValue, maxValue);
 	}
 
 	/** {@inheritDoc} */
@@ -65,9 +65,8 @@ public final class ConstraintDoubleLength extends AbstractConstraintLength<Doubl
 				|| value.compareTo(maxValue) < 0 && value.compareTo(minValue) > 0;
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	public MessageText getErrorMessage() {
-		return errorMessage;
+	protected MessageText getDefaultMessageText() {
+		return MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMALLENGTH_EXCEEDED, minValue, maxValue);
 	}
 }

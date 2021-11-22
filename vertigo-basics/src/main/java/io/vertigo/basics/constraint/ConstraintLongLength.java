@@ -23,10 +23,12 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
 
 /**
- * Contrainte vérifiant que l'objet est : <ul>
+ * Contrainte vérifiant que l'objet est :
+ * <ul>
  * <li>soit un Long comprenant au maximum le nombre de chiffres précisé à la construction (nombres de digits)</li>
  * <li>soit null</li>
- * </ul><br>
+ * </ul>
+ * <br>
  * On rappelle que le maximum d'un type Long est compris entre 1O^18 et 10^19 <br>
  * On conseille donc d'utiliser 10^18 comme structure de stockage max en BDD : donc number(18) <br>
  * Si vous souhaitez flirter avec les 10^19 alors n'utilisez pas de contraintes.
@@ -46,14 +48,12 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 	 */
 	private final long minValue;
 
-	private final MessageText errorMessage;
-
 	/**
 	 * @param args Liste des arguments réduite à un seul castable en long.
 	 * Cet argument correspond au nombre de chifres maximum authorisé sur le Long.
 	 */
-	public ConstraintLongLength(final String args, final Optional<String> overrideMessageOpt) {
-		super(args);
+	public ConstraintLongLength(final String args, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
+		super(args, overrideMessageOpt, overrideResourceMessageOpt);
 		//-----
 		Assertion.check().isTrue(getMaxLength() < MAX_LENGHT, "Longueur max doit être strictement inférieure à " + MAX_LENGHT);
 		//-----
@@ -63,8 +63,6 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 		}
 		maxValue = tmpMaxValue;
 		minValue = -tmpMaxValue;
-		//---
-		errorMessage = overrideMessageOpt.map(MessageText::of).orElseGet(() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_LONGLENGTH_EXCEEDED, minValue, maxValue));
 	}
 
 	/** {@inheritDoc} */
@@ -74,9 +72,8 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 				|| value > minValue && value < maxValue;
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	public MessageText getErrorMessage() {
-		return errorMessage;
+	protected MessageText getDefaultMessageText() {
+		return MessageText.of(Resources.DYNAMO_CONSTRAINT_LONGLENGTH_EXCEEDED, minValue, maxValue);
 	}
 }

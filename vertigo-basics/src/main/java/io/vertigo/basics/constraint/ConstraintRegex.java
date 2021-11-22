@@ -22,29 +22,27 @@ import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.datamodel.structure.definitions.Constraint;
 import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.definitions.Property;
 
 /**
  * Exemple de contrainte utilisant une expression régulière.
  *
- * @author  pchretien
+ * @author pchretien
  */
-public final class ConstraintRegex implements Constraint<String, String> {
+public final class ConstraintRegex extends AbstractBasicConstraint<String, String> {
 	private final Pattern pattern;
-	private final MessageText errorMessage;
 
 	/**
 	 * @param regex Expression régulière
 	 */
-	public ConstraintRegex(final String regex, final Optional<String> overrideMessageOpt) {
+	public ConstraintRegex(final String regex, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
+		super(overrideMessageOpt, overrideResourceMessageOpt);
+
 		Assertion.check()
-				.isNotBlank(regex)
-				.isNotNull(overrideMessageOpt);
+				.isNotBlank(regex);
 		//---
 		pattern = Pattern.compile(regex);
-		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern());
 	}
 
 	/** {@inheritDoc} */
@@ -55,10 +53,9 @@ public final class ConstraintRegex implements Constraint<String, String> {
 						.matches();
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	public MessageText getErrorMessage() {
-		return errorMessage;
+	protected MessageText getDefaultMessageText() {
+		return MessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern());
 	}
 
 	/** {@inheritDoc} */

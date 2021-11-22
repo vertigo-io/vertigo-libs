@@ -21,30 +21,30 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.datamodel.structure.definitions.Constraint;
 import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.definitions.Property;
 
 /**
  * Contrainte sur la valeur minimale d'un nombre.
  * arguments = valeur minimale.
+ *
  * @author npiedeloup
  */
-public final class ConstraintNumberMinimum implements Constraint<Number, Number> {
+public final class ConstraintNumberMinimum extends AbstractBasicConstraint<Number, Number> {
 	private final double minValue;
-	private final MessageText errorMessage;
 
 	/**
 	 * Constructor.
+	 *
 	 * @param args the minimum value
 	 */
-	public ConstraintNumberMinimum(final String args, final Optional<String> overrideMessageOpt) {
+	public ConstraintNumberMinimum(final String args, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
+		super(overrideMessageOpt, overrideResourceMessageOpt);
+
 		Assertion.check()
-				.isNotBlank(args, "Vous devez préciser la valeur minimum comme argument de ConstraintNumberMinimum")
-				.isNotNull(overrideMessageOpt);
+				.isNotBlank(args, "Vous devez préciser la valeur minimum comme argument de ConstraintNumberMinimum");
 		//-----
 		minValue = Double.parseDouble(args);
-		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue);
 	}
 
 	/** {@inheritDoc} */
@@ -54,10 +54,9 @@ public final class ConstraintNumberMinimum implements Constraint<Number, Number>
 				|| value.doubleValue() >= minValue;
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	public MessageText getErrorMessage() {
-		return errorMessage;
+	protected MessageText getDefaultMessageText() {
+		return MessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue);
 	}
 
 	/** {@inheritDoc} */

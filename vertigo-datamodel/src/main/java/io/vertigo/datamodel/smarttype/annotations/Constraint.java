@@ -31,5 +31,7 @@ public @interface Constraint {
 
 	String arg() default "";
 
-	String msg();
+	String msg() default "";
+
+	String resourceMsg() default "";
 }
