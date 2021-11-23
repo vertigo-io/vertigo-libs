@@ -119,8 +119,7 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 			}
 
 			private SearchChunk<K> nextChunk(final SearchChunk<K> previousChunk) {
-				final List<UID<K>> previousUris = previousChunk.getAllUIDs();
-				final P lastId = (P) previousUris.get(previousUris.size() - 1).getId();
+				final P lastId = (P) previousChunk.getLastUID().getId();
 				// call loader service
 				final List<UID<K>> uris = doLoadNextURI(lastId, dtDefinition);
 				return new SearchChunk<>(uris);
