@@ -46,6 +46,8 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 	 */
 	private final int minValue;
 
+	private final MessageText errorMessage;
+
 	/**
 	 * Constructeur nécessaire pour le ksp.
 	 *
@@ -53,7 +55,7 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 	 * Cet argument correspond au nombre de chifres maximum authorisé sur le Integer.
 	 */
 	public ConstraintIntegerLength(final String args, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
-		super(args, overrideMessageOpt, overrideResourceMessageOpt);
+		super(args);
 		//-----
 		Assertion.check().isTrue(getMaxLength() < 10, "Longueur max doit être strictement inférieure à 10");
 		//-----
@@ -65,6 +67,8 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 		maxValue = tmpMaxValue;
 		minValue = -tmpMaxValue;
 		//--
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
+				() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_INTEGERLENGTH_EXCEEDED, minValue, maxValue));
 	}
 
 	/** {@inheritDoc} */
@@ -74,9 +78,9 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 				|| value > minValue && value < maxValue;
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	protected MessageText getDefaultMessageText() {
-		return MessageText.of(Resources.DYNAMO_CONSTRAINT_INTEGERLENGTH_EXCEEDED, minValue, maxValue);
+	public MessageText getErrorMessage() {
+		return errorMessage;
 	}
-
 }

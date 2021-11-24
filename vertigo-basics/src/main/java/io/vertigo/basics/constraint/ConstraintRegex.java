@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
+import io.vertigo.datamodel.structure.definitions.Constraint;
 import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.definitions.Property;
 
@@ -30,19 +31,20 @@ import io.vertigo.datamodel.structure.definitions.Property;
  *
  * @author pchretien
  */
-public final class ConstraintRegex extends AbstractBasicConstraint<String, String> {
+public final class ConstraintRegex implements Constraint<String, String> {
 	private final Pattern pattern;
+	private final MessageText errorMessage;
 
 	/**
 	 * @param regex Expression régulière
 	 */
 	public ConstraintRegex(final String regex, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
-		super(overrideMessageOpt, overrideResourceMessageOpt);
-
 		Assertion.check()
 				.isNotBlank(regex);
 		//---
 		pattern = Pattern.compile(regex);
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
+				() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern()));
 	}
 
 	/** {@inheritDoc} */
@@ -53,9 +55,10 @@ public final class ConstraintRegex extends AbstractBasicConstraint<String, Strin
 						.matches();
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	protected MessageText getDefaultMessageText() {
-		return MessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern());
+	public MessageText getErrorMessage() {
+		return errorMessage;
 	}
 
 	/** {@inheritDoc} */

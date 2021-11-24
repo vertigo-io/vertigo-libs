@@ -17,9 +17,8 @@
  */
 package io.vertigo.basics.constraint;
 
-import java.util.Optional;
-
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.datamodel.structure.definitions.Constraint;
 import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.definitions.Property;
 
@@ -31,18 +30,16 @@ import io.vertigo.datamodel.structure.definitions.Property;
  * @author pchretien
  * @param <D> Type java de la valeur à contréler
  */
-abstract class AbstractConstraintLength<D> extends AbstractBasicConstraint<Integer, D> {
+abstract class AbstractConstraintLength<D> implements Constraint<Integer, D> {
 	/**
 	 * Nombre maximum de caractères pour une chaine, de chiffres pour un entier...
 	 */
 	private final int maxLength;
 
 	/**
-	 * @param max Nombre maximum de caractères, de chiffres...
-	 */
-	protected AbstractConstraintLength(final String max, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
-		super(overrideMessageOpt, overrideResourceMessageOpt);
-
+	* @param max Nombre maximum de caractères, de chiffres...
+	*/
+	protected AbstractConstraintLength(final String max) {
 		maxLength = Integer.parseInt(max);
 		//-----
 		Assertion.check().isTrue(maxLength > 0, "Longueur max doit être strictement positive");

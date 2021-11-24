@@ -44,18 +44,22 @@ public final class ConstraintBigDecimalLength extends AbstractConstraintLength<B
 	 */
 	private final BigDecimal minValue;
 
+	private final MessageText errorMessage;
+
 	/**
 	 * Constructeur nécessaire pour le ksp.
-	 *
+	 * 
 	 * @param args Liste des arguments réduite à un seul castable en integer.
 	 * Cet argument correspond au nombre de chifres maximum authorisé sur le BigDecimal.
 	 * maxLength Valeur n du segment ]-10^n, 10^n[ dans lequel est comprise la valeur.
 	 */
 	public ConstraintBigDecimalLength(final String args, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
-		super(args, overrideMessageOpt, overrideResourceMessageOpt);
+		super(args);
 		//-----
 		maxValue = BigDecimal.valueOf(1L).movePointRight(getMaxLength());
 		minValue = maxValue.negate();
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
+				() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMALLENGTH_EXCEEDED, minValue, maxValue));
 	}
 
 	/** {@inheritDoc} */
@@ -65,8 +69,9 @@ public final class ConstraintBigDecimalLength extends AbstractConstraintLength<B
 				|| value.compareTo(maxValue) < 0 && value.compareTo(minValue) > 0;
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	protected MessageText getDefaultMessageText() {
-		return MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMALLENGTH_EXCEEDED, minValue, maxValue);
+	public MessageText getErrorMessage() {
+		return errorMessage;
 	}
 }

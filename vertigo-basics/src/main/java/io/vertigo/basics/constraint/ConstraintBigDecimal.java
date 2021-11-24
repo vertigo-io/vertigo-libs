@@ -24,6 +24,7 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.MessageText;
+import io.vertigo.datamodel.structure.definitions.Constraint;
 import io.vertigo.datamodel.structure.definitions.Property;
 
 /**
@@ -31,23 +32,22 @@ import io.vertigo.datamodel.structure.definitions.Property;
  * The configuration is like the configuration of Database's decimal (DECIMAL(M,D)).
  * Where M is the maximum of digits (the precision) and D is the number of digits to the right of the decimal point (the scale).
  * The maximum number of digits to the left of the decimal point is check too and must be less than M-D.
- *
+ * 
  * @author mlaroche
  */
-public final class ConstraintBigDecimal extends AbstractBasicConstraint<String, BigDecimal> {
+public final class ConstraintBigDecimal implements Constraint<String, BigDecimal> {
 
 	private static final String SEPARATOR_ARGS = ",";
 	private final Integer maxPrecision;
 	private final Integer maxScale;
+	private final MessageText errorMessage;
 
 	/**
 	 * Initialise les paramètres.
-	 *
+	 * 
 	 * @param args args but no args
 	 */
 	public ConstraintBigDecimal(final String args, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
-		super(overrideMessageOpt, overrideResourceMessageOpt);
-
 		final String[] beforeAfter = args.split(SEPARATOR_ARGS);
 		Assertion.check().isTrue(beforeAfter.length == 2, "L'argument doit être au format M,D. M le nombre de chiffre au total (precision) et D le nombre de chiffre à droite de la virgule (scale).");
 		try {
@@ -65,6 +65,11 @@ public final class ConstraintBigDecimal extends AbstractBasicConstraint<String, 
 				.isNotNull(maxPrecision, "Le nombre de chiffres ne peut pas être null")
 				.isNotNull(maxScale, "Le nombre de chiffres après la virgule ne peut pas être null")
 				.isTrue(maxScale <= maxPrecision, "Le nombre de chiffres après la virgule doit être inférieur au nombre total de chiffres");
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
+				() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED,
+						new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale),
+						maxScale,
+						maxPrecision - maxScale));
 	}
 
 	/** {@inheritDoc} */
@@ -79,12 +84,10 @@ public final class ConstraintBigDecimal extends AbstractBasicConstraint<String, 
 		return !(scale > maxScale || precision > maxPrecision || (precision - scale) > (maxPrecision - maxScale));
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	protected MessageText getDefaultMessageText() {
-		return MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED,
-				new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale),
-				maxScale,
-				maxPrecision - maxScale);
+	public MessageText getErrorMessage() {
+		return errorMessage;
 	}
 
 	/** {@inheritDoc} */

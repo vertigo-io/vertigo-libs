@@ -28,12 +28,17 @@ import io.vertigo.core.locale.MessageText;
  */
 public final class ConstraintStringLength extends AbstractConstraintLength<String> {
 
+	private final MessageText errorMessage;
+
 	/**
 	 * @param args Liste des arguments réduite à un seul castable en integer.
 	 * Cet argument correspond au nombre de caractères maximum authorisés sur la chaine de caractères.
 	 */
 	public ConstraintStringLength(final String args, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
-		super(args, overrideMessageOpt, overrideResourceMessageOpt);
+		super(args);
+		//---
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
+				() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED, Integer.toString(getMaxLength())));
 	}
 
 	/** {@inheritDoc} */
@@ -43,8 +48,9 @@ public final class ConstraintStringLength extends AbstractConstraintLength<Strin
 				|| value.length() <= getMaxLength();
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	protected MessageText getDefaultMessageText() {
-		return MessageText.of(Resources.DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED, Integer.toString(getMaxLength()));
+	public MessageText getErrorMessage() {
+		return errorMessage;
 	}
 }
