@@ -51,7 +51,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 
 	private final DtListURI uri;
 
-	/** Reéférence vers la Définition. */
+	/** Référence vers la Définition. */
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
 
 	/** List des dto contenus. */
@@ -69,7 +69,6 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 		this.uri = null; //new DtListURIForValueObject(dtDefinition);
 		this.dtObjects = new ArrayList<>(); //
 		this.metaDatas = new LinkedHashMap<>();
-
 	}
 
 	/**
@@ -103,16 +102,28 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 */
 	@SafeVarargs
 	public static <D extends DtObject> DtList<D> of(final D dto, final D... dtos) {
+		return DtList.of(dto, Arrays.asList(dtos));
+	}
+
+	/**
+	 * Static method factory for convenient creation of DtList using 'of' pattern.
+	 * @param dto the mandatory dto to add  which defines the type.
+	 * @param dtos Dtos to add.
+	 * @return the created DtList.
+	 * @param <D> Type of this list
+	 */
+	public static <D extends DtObject> DtList<D> of(final D dto, final List<D> dtos) {
 		Assertion.check()
 				.isNotNull(dto)
 				.isNotNull(dtos);
-		Arrays.stream(dtos)
+
+		dtos.stream()
 				.forEach(other -> Assertion.check().isTrue(dto.getClass().equals(other.getClass()), "all dtos must have the same type"));
 		//---
 		final DtList<D> dtList = new DtList<>(DtObjectUtil.findDtDefinition(dto));
 		//---
 		dtList.add(dto);
-		dtList.addAll(Arrays.asList(dtos));
+		dtList.addAll(dtos);
 		return dtList;
 	}
 
@@ -184,7 +195,10 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	/** {@inheritDoc} */
 	@Override
 	public List<D> subList(final int start, final int end) {
-		throw new UnsupportedOperationException();
+		if (start == end) {
+			return DtList.of(dtObjects.get(start), Collections.emptyList());
+		}
+		return DtList.of(dtObjects.get(start), dtObjects.subList(start + 1, end));
 	}
 
 	//==========================================================================
