@@ -29,6 +29,7 @@ import io.vertigo.quarto.plugins.converter.openoffice.OpenOfficeLocalConverterPl
 import io.vertigo.quarto.plugins.converter.openoffice.OpenOfficeRemoteConverterPlugin;
 import io.vertigo.quarto.plugins.converter.xdocreport.XDocReportConverterPlugin;
 import io.vertigo.quarto.plugins.exporter.csv.CSVExporterPlugin;
+import io.vertigo.quarto.plugins.exporter.ods.ODSExporterPlugin;
 import io.vertigo.quarto.plugins.exporter.pdf.PDFExporterPlugin;
 import io.vertigo.quarto.plugins.exporter.rtf.RTFExporterPlugin;
 import io.vertigo.quarto.plugins.exporter.xls.XLSExporterPlugin;
@@ -95,6 +96,12 @@ public class QuartoFeatures extends Features<QuartoFeatures> {
 	@Feature("exporter.xls")
 	public QuartoFeatures withXLSExporter() {
 		getModuleConfigBuilder().addPlugin(XLSExporterPlugin.class);
+		return this;
+	}
+
+	@Feature("exporter.ods")
+	public QuartoFeatures withODSExporter() {
+		getModuleConfigBuilder().addPlugin(ODSExporterPlugin.class);
 		return this;
 	}
 

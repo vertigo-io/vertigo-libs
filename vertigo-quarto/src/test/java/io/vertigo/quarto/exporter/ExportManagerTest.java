@@ -66,13 +66,13 @@ public final class ExportManagerTest {
 	private AutoCloseableNode node;
 
 	@BeforeEach
-	public final void setUp() {
+	public void setUp() {
 		node = new AutoCloseableNode(buildNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	@AfterEach
-	public final void tearDown() {
+	public void tearDown() {
 		if (node != null) {
 			node.close();
 		}
@@ -97,6 +97,7 @@ public final class ExportManagerTest {
 						.withPDFExporter()
 						.withRTFExporter()
 						.withXLSExporter()
+						.withODSExporter()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
@@ -264,6 +265,23 @@ public final class ExportManagerTest {
 		final DtList<Country> dtc = buildCountries();
 
 		final Export export = new ExportBuilder(ExportFormat.PDF, OUTPUT_PATH + "test.pdf")
+				.beginSheet(dtc, "famille")
+				.endSheet()
+				.withAuthor("test")
+				.build();
+
+		final VFile result = exportManager.createExportFile(export);
+		nop(result);
+	}
+
+	/**
+	 * Test l'export ODS.
+	 */
+	@Test
+	public void testExportHandlerODS() {
+		final DtList<Country> dtc = buildCountries();
+
+		final Export export = new ExportBuilder(ExportFormat.ODS, OUTPUT_PATH + "test.ods")
 				.beginSheet(dtc, "famille")
 				.endSheet()
 				.withAuthor("test")

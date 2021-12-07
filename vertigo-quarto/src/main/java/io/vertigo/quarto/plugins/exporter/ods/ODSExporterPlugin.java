@@ -1,0 +1,63 @@
+/**
+ * vertigo - simple java starter
+ *
+ * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.vertigo.quarto.plugins.exporter.ods;
+
+import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.inject.Inject;
+
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.quarto.exporter.model.Export;
+import io.vertigo.quarto.exporter.model.ExportFormat;
+import io.vertigo.quarto.impl.exporter.ExporterPlugin;
+
+/**
+ * Plugin d'export ODS.
+ *
+ * @author oboitel, npiedeloup
+ */
+public final class ODSExporterPlugin implements ExporterPlugin {
+	private final EntityStoreManager entityStoreManager;
+	private final SmartTypeManager smartTypeManager;
+
+	@Inject
+	public ODSExporterPlugin(
+			final EntityStoreManager entityStoreManager,
+			final SmartTypeManager smartTypeManager) {
+		this.entityStoreManager = entityStoreManager;
+		this.smartTypeManager = smartTypeManager;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void exportData(final Export export, final OutputStream out) throws IOException {
+		new ODSExporter(entityStoreManager, smartTypeManager).exportData(export, out);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean accept(final ExportFormat exportFormat) {
+		Assertion.check().isNotNull(exportFormat);
+		//---
+		return exportFormat == ExportFormat.ODS;
+	}
+}
