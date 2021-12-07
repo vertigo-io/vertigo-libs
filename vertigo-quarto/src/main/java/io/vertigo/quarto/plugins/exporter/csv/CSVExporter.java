@@ -64,16 +64,19 @@ final class CSVExporter {
 	private final Map<DtField, Map<Object, String>> denormCache = new HashMap<>();
 	private final EntityStoreManager entityStoreManager;
 	private final SmartTypeManager smartTypeManager;
+	private final Charset charset;
 
 	/**
 	 * Constructeur.
 	 *
 	 * @param codecManager Manager des codecs
 	 */
-	CSVExporter(final CodecManager codecManager,
+	CSVExporter(final Charset charset,
+			final CodecManager codecManager,
 			final EntityStoreManager entityStoreManager,
 			final SmartTypeManager smartTypeManager) {
 		Assertion.check()
+				.isNotNull(charset)
 				.isNotNull(codecManager)
 				.isNotNull(entityStoreManager)
 				.isNotNull(smartTypeManager);
@@ -81,6 +84,7 @@ final class CSVExporter {
 		csvEncoder = codecManager.getCsvEncoder();
 		this.entityStoreManager = entityStoreManager;
 		this.smartTypeManager = smartTypeManager;
+		this.charset = charset;
 	}
 
 	/**
@@ -93,11 +97,12 @@ final class CSVExporter {
 	 * @throws IOException Exception d'ecriture
 	 */
 	void exportData(final Export documentParameters, final OutputStream out) throws IOException {
-		final Charset charset = StandardCharsets.UTF_8;
 		try (final Writer writer = new OutputStreamWriter(out, charset.name())) {
-			// on met le BOM UTF-8 afin d'avoir des ouvertures correctes avec
-			// excel
-			writer.append('\uFEFF');
+			if (StandardCharsets.UTF_8.equals(charset)) {
+				// on met le BOM UTF-8 afin d'avoir des ouvertures correctes avec
+				// excel
+				writer.append('\uFEFF');
+			}
 			final boolean isMultiData = documentParameters.getSheets().size() > 1;
 			for (final ExportSheet exportSheet : documentParameters.getSheets()) {
 				exportHeader(exportSheet, writer);

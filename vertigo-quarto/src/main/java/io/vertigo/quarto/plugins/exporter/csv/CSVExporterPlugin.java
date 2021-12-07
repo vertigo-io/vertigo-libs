@@ -19,11 +19,15 @@ package io.vertigo.quarto.plugins.exporter.csv;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.quarto.exporter.model.Export;
@@ -40,6 +44,8 @@ public final class CSVExporterPlugin implements ExporterPlugin {
 	private final EntityStoreManager entityStoreManager;
 	private final SmartTypeManager smartTypeManager;
 
+	private final Charset charset;
+
 	/**
 	 * Constructor.
 	 *
@@ -48,9 +54,11 @@ public final class CSVExporterPlugin implements ExporterPlugin {
 	 */
 	@Inject
 	public CSVExporterPlugin(
+			@ParamValue("charset") final Optional<String> charsetOpt,
 			final EntityStoreManager entityStoreManager,
 			final CodecManager codecManager,
 			final SmartTypeManager smartTypeManager) {
+
 		Assertion.check()
 				.isNotNull(entityStoreManager)
 				.isNotNull(codecManager)
@@ -59,12 +67,13 @@ public final class CSVExporterPlugin implements ExporterPlugin {
 		this.codecManager = codecManager;
 		this.entityStoreManager = entityStoreManager;
 		this.smartTypeManager = smartTypeManager;
+		charset = charsetOpt.map(Charset::forName).orElse(StandardCharsets.UTF_8);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void exportData(final Export export, final OutputStream out) throws IOException {
-		new CSVExporter(codecManager, entityStoreManager, smartTypeManager).exportData(export, out);
+		new CSVExporter(charset, codecManager, entityStoreManager, smartTypeManager).exportData(export, out);
 	}
 
 	/** {@inheritDoc} */

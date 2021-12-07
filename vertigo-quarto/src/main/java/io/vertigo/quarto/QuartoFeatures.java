@@ -75,8 +75,8 @@ public class QuartoFeatures extends Features<QuartoFeatures> {
 	}
 
 	@Feature("exporter.csv")
-	public QuartoFeatures withCSVExporter() {
-		getModuleConfigBuilder().addPlugin(CSVExporterPlugin.class);
+	public QuartoFeatures withCSVExporter(final Param... params) {
+		getModuleConfigBuilder().addPlugin(CSVExporterPlugin.class, params);
 		return this;
 	}
 
