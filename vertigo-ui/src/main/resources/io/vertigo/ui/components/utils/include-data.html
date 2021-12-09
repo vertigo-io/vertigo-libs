@@ -1,7 +1,7 @@
 <th:block
-		th:fragment="include-data(object,field, modifiable)" 
-		th:assert="${object} != null and ${field} != null" 
-		th:attr="objectKey=${model.vContext.addKeyForClient('__${object}__', '__${field}__', rowIndex, modifiable?:false)}" 
+		th:fragment="include-data(object, field, modifiable, modifiableAllLines)" 
+		th:assert="${object} != null and ${field} != null and (${modifiable} == null or ${modifiableAllLines} == null)" 
+		th:attr="objectKey=${model.vContext.addKeyForClient('__${object}__', '__${field}__', rowIndex?:modifiableAllLines?'*':null, modifiableAllLines?:modifiable?:false)}" 
 		th:remove="all"></th:block>
 		
 <th:block
