@@ -28,6 +28,7 @@ import io.vertigo.datamodel.structure.definitions.Property;
 /**
  * Contrainte sur la valeur minimale d'un nombre.
  * arguments = valeur minimale.
+ *
  * @author npiedeloup
  */
 public final class ConstraintNumberMinimum implements Constraint<Number, Number> {
@@ -36,15 +37,16 @@ public final class ConstraintNumberMinimum implements Constraint<Number, Number>
 
 	/**
 	 * Constructor.
+	 *
 	 * @param args the minimum value
 	 */
-	public ConstraintNumberMinimum(final String args, final Optional<String> overrideMessageOpt) {
+	public ConstraintNumberMinimum(final String args, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
 		Assertion.check()
-				.isNotBlank(args, "Vous devez préciser la valeur minimum comme argument de ConstraintNumberMinimum")
-				.isNotNull(overrideMessageOpt);
+				.isNotBlank(args, "Vous devez préciser la valeur minimum comme argument de ConstraintNumberMinimum");
 		//-----
 		minValue = Double.parseDouble(args);
-		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue);
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
+				() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue));
 	}
 
 	/** {@inheritDoc} */

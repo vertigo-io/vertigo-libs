@@ -26,7 +26,7 @@ import io.vertigo.datamodel.structure.definitions.Property;
 /**
  * Contrainte pour gérer la longueur des chaines de caractères.
  *
- * @author  plepaisant
+ * @author plepaisant
  */
 public final class ConstraintTest implements Constraint<Boolean, String> {
 
@@ -34,7 +34,7 @@ public final class ConstraintTest implements Constraint<Boolean, String> {
 	 * @param args Liste des arguments réduite à un seul castable en integer.
 	 * Cet argument correspond au nombre de caractères maximum authorisés sur la chaine de caractères.
 	 */
-	public ConstraintTest(final String args, final Optional<String> overrideMessageOpt) {
+	public ConstraintTest(final String args, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
 		//---
 	}
 

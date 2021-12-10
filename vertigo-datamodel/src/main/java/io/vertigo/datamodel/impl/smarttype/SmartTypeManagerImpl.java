@@ -67,7 +67,8 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 					Assertion.check()
 							.when(wildcardAdapters.containsKey(smartTypeDefinition.getJavaClass()), () -> Assertion.check()
 									.isTrue(wildcardAdapterConfig.getAdapterClass().equals(wildcardAdapters.get(smartTypeDefinition.getJavaClass()).getClass()),
-											"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered", smartTypeDefinition.getName(), smartTypeDefinition.getJavaClass(), wildcardAdapterConfig.getType()));
+											"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered",
+											smartTypeDefinition.getName(), smartTypeDefinition.getJavaClass(), wildcardAdapterConfig.getType()));
 					//--
 					wildcardAdapters.put(smartTypeDefinition.getJavaClass(), createBasicTypeAdapter(wildcardAdapterConfig));
 				});
@@ -81,7 +82,8 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 					Assertion.check()
 							.when(registeredAdapaters.containsKey(tuple.getVal1()), () -> Assertion.check()
 									.isTrue(tuple.getVal2().getAdapterClass().equals(registeredAdapaters.get(tuple.getVal1()).getClass()),
-											"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered", tuple.getVal1().getName(), tuple.getVal1(), tuple.getVal2().getType()));
+											"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered",
+											tuple.getVal1().getName(), tuple.getVal1(), tuple.getVal2().getType()));
 					registeredAdapaters.put(tuple.getVal1().getJavaClass(), createBasicTypeAdapter(tuple.getVal2()));
 				});
 
@@ -97,8 +99,10 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 				.stream()
 				.map(constraintConfig -> {
 					final Optional<String> msgOpt = StringUtil.isBlank(constraintConfig.getMsg()) ? Optional.empty() : Optional.of(constraintConfig.getMsg());
-					final Constructor<? extends Constraint> constructor = ClassUtil.findConstructor(constraintConfig.getConstraintClass(), new Class[] { String.class, Optional.class });
-					return ClassUtil.newInstance(constructor, new Object[] { constraintConfig.getArg(), msgOpt });
+					final Optional<String> resourceMsgOpt = StringUtil.isBlank(constraintConfig.getResourceMsg()) ? Optional.empty() : Optional.of(constraintConfig.getResourceMsg());
+					final Constructor<? extends Constraint> constructor = ClassUtil.findConstructor(constraintConfig.getConstraintClass(),
+							new Class[] { String.class, Optional.class, Optional.class });
+					return ClassUtil.newInstance(constructor, new Object[] { constraintConfig.getArg(), msgOpt, resourceMsgOpt });
 				})
 				.collect(Collectors.toList());
 	}
