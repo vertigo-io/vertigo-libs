@@ -17,9 +17,14 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.locale.MessageText;
@@ -39,7 +44,10 @@ public final class ApiKeyWebServiceHandlerPlugin implements WebServiceHandlerPlu
 	/** Stack index of the handler for sorting at startup **/
 	public static final int STACK_INDEX = 45;
 
+	private static final Logger LOGGER = LogManager.getLogger(ApiKeyWebServiceHandlerPlugin.class);
+
 	private final String apiKey;
+	private final String headerName;
 
 	/**
 	 * Constructor.
@@ -47,8 +55,15 @@ public final class ApiKeyWebServiceHandlerPlugin implements WebServiceHandlerPlu
 	 * @param securityManager Security Manager
 	 */
 	@Inject
-	public ApiKeyWebServiceHandlerPlugin(@ParamValue("apiKey") final String apiKey) {
+	public ApiKeyWebServiceHandlerPlugin(
+			@ParamValue("apiKey") final String apiKey,
+			@ParamValue("headerName") final Optional<String> headerNameOpt) {
+
+		if (apiKey.length() < 16) {
+			LOGGER.warn("Your ApiKey is too short to be secure, consider using at least 16 characters.");
+		}
 		this.apiKey = apiKey;
+		headerName = headerNameOpt.orElse("X-Api-Key");
 	}
 
 	/** {@inheritDoc} */
@@ -60,10 +75,10 @@ public final class ApiKeyWebServiceHandlerPlugin implements WebServiceHandlerPlu
 	@Override
 	public Object handle(final HttpServletRequest request, final HttpServletResponse response,
 			final WebServiceCallContext webServiceCallContext, final HandlerChain chain) throws SessionException {
-		final String providedApiKey = request.getHeader("apiKey");
+		final String providedApiKey = request.getHeader(headerName);
 
 		if (!apiKey.equals(providedApiKey)) {
-			throw new VSecurityException(MessageText.of("Wrong apiKey"));
+			throw new VSecurityException(MessageText.of("Wrong api key"));
 		}
 		return chain.handle(request, response, webServiceCallContext);
 	}
