@@ -103,7 +103,7 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 		return this;
 	}
 
-	@Feature("webservices.apiKey")
+	@Feature("webservices.auth.apiKey")
 	public VegaFeatures withApiKey(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(ApiKeyWebServiceHandlerPlugin.class, params);

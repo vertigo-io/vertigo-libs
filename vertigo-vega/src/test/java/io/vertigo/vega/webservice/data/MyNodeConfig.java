@@ -48,6 +48,7 @@ import io.vertigo.vega.webservice.data.search.ContactSearchClient;
 import io.vertigo.vega.webservice.data.user.TestUserSession;
 import io.vertigo.vega.webservice.data.ws.AdvancedTestWebServices;
 import io.vertigo.vega.webservice.data.ws.AnonymousTestWebServices;
+import io.vertigo.vega.webservice.data.ws.ApiKeyWebServices;
 import io.vertigo.vega.webservice.data.ws.CommonWebServices;
 import io.vertigo.vega.webservice.data.ws.ContactsSecuredWebServices;
 import io.vertigo.vega.webservice.data.ws.ContactsWebServices;
@@ -90,7 +91,8 @@ public final class MyNodeConfig {
 				.withWebServicesSecurity()
 				.withWebServicesRateLimiting()
 				.withWebServicesSwagger()
-				.withWebServicesCatalog();
+				.withWebServicesCatalog()
+				.withApiKey(Param.of("apiKey", "MyTestApiKey"));
 
 		final ModuleConfigBuilder webserviceApp = ModuleConfig.builder("webservices-app")
 				.addComponent(ComponentCmdWebServices.class)
@@ -98,6 +100,7 @@ public final class MyNodeConfig {
 				.addComponent(ContactsWebServices.class)
 				.addComponent(ContactsSecuredWebServices.class)
 				.addComponent(LoginSecuredWebServices.class)
+				.addComponent(ApiKeyWebServices.class)
 				.addComponent(SimplerTestWebServices.class)
 				.addComponent(ValidationsTestWebServices.class)
 				.addComponent(AdvancedTestWebServices.class)
