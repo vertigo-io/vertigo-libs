@@ -243,7 +243,9 @@ public class TestUi {
 						+ "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ");
 		findElement(By.id("saveAction")).click();
 		Thread.sleep(5000);
-		assertEquals("la taille doit être inférieure à 250 caractères.", findElement(By.cssSelector(".fieldTitle .q-field__messages")).getText());
+		assertTrue(findElement(By.cssSelector(".fieldTitle")).getAttribute("class").contains("q-field--error"));
+		assertTrue(findElement(By.cssSelector(".fieldTitle .q-field__messages")).getText().contains("250"));
+
 	}
 
 	@Test
