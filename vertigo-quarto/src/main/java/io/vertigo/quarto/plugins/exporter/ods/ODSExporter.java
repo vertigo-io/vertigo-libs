@@ -146,7 +146,7 @@ final class ODSExporter {
 		for (final Map.Entry<Integer, Double> entry : maxWidthPerColumn.entrySet()) {
 			cellIndex = entry.getKey();
 			final Double maxLength = entry.getValue();
-			final int usesMaxLength = Double.valueOf(Math.min(maxLength.doubleValue(), MAX_COLUMN_WIDTH)).intValue();
+			final int usesMaxLength = (int) Math.min(maxLength.doubleValue(), MAX_COLUMN_WIDTH);
 			sheet.setColumnWidth(cellIndex, MM_SIZE_PER_CELL + usesMaxLength * MM_SIZE_PER_LETTER);
 		}
 	}
