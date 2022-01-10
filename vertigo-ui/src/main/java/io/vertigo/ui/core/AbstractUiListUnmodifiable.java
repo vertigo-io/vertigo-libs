@@ -116,7 +116,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * @param keyFieldName Nom du champs à indexer
 	 */
 	public final void initUiObjectByKeyIndex(final String keyFieldName) {
-		final Map<Serializable, UiObject<O>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
+		final Map<Serializable, UiObject<O>> uiObjectById = uiObjectByFieldValue.computeIfAbsent(keyFieldName, fieldName -> new HashMap<>());
 		for (final UiObject<O> uiObject : this) {
 			uiObjectById.put(((VegaUiObject<O>) uiObject).getTypedValue(keyFieldName, Serializable.class), uiObject);
 		}
@@ -205,7 +205,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	private UiObject<O> loadMissingEntity(final String keyFieldName, final Serializable keyValue, final Map<Serializable, UiObject<O>> uiObjectById) {
 		final DtDefinition dtDefinition = getDtDefinition();
 		// ---
-		Assertion.check().isTrue(dtDefinition.getIdField().isPresent(), "The definition : {0} must have an id to retrieve elements by Id", dtDefinition);
+		Assertion.check().isTrue(dtDefinition.getIdField().isPresent(), "The definition : {0} must have an id to retrieve missing elements by Id", dtDefinition);
 		// ---
 		UiObject<O> uiObject;
 		final DtField dtField = dtDefinition.getField(keyFieldName);
@@ -227,11 +227,15 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 
 	/**
 	 * Récupère l'index des UiObjects par Id.
+	 * Calcul l'index si besoin.
 	 * @param keyFieldName Nom du champ identifiant
 	 * @return Index des UiObjects par Id
 	 */
 	protected final Map<Serializable, UiObject<O>> obtainUiObjectByIdMap(final String keyFieldName) {
-		return uiObjectByFieldValue.computeIfAbsent(keyFieldName, fieldName -> new HashMap<>());
+		if (!uiObjectByFieldValue.containsKey(keyFieldName)) {
+			initUiObjectByKeyIndex(keyFieldName);
+		}
+		return uiObjectByFieldValue.get(keyFieldName);
 	}
 
 	/**
