@@ -15,18 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.identityprovider.model;
+package io.vertigo.account.data.model;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
+import io.vertigo.datamodel.structure.stereotype.ForeignKey;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 
 /**
  * User.
  */
-public final class User implements KeyConcept {
+public final class TestUser implements KeyConcept {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -34,37 +36,59 @@ public final class User implements KeyConcept {
 	private String fullName;
 	private String email;
 
+	@io.vertigo.datamodel.structure.stereotype.Association(name = "AGrpUsr", fkFieldName = "grpId", primaryDtDefinitionName = "DtUserGroup", primaryIsNavigable = true, primaryRole = "Group", primaryLabel = "Group", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DtTestUser", foreignIsNavigable = false, foreignRole = "User", foreignLabel = "User", foreignMultiplicity = "0..*")
+	private final StoreVAccessor<UserGroup> grpIdAccessor = new StoreVAccessor<>(UserGroup.class, "Group");
+
 	/** {@inheritDoc} */
 	@Override
-	public UID<User> getUID() {
+	public UID<TestUser> getUID() {
 		return UID.of(this);
 	}
 
 	@Field(smartType = "STyCode", type = "ID", cardinality = Cardinality.ONE, label = "Id")
-	public final String getUsrId() {
+	public String getUsrId() {
 		return usrId;
 	}
 
-	public final void setUsrId(final String usrId) {
+	public void setUsrId(final String usrId) {
 		this.usrId = usrId;
 	}
 
 	@Field(smartType = "STyLabel", cardinality = Cardinality.ONE, label = "FullName")
-	public final String getFullName() {
+	public String getFullName() {
 		return fullName;
 	}
 
-	public final void setFullName(final String fullName) {
+	public void setFullName(final String fullName) {
 		this.fullName = fullName;
 	}
 
 	@Field(smartType = "STyLabel", cardinality = Cardinality.ONE, label = "Email")
-	public final String getEmail() {
+	public String getEmail() {
 		return email;
 	}
 
-	public final void setEmail(final String email) {
+	public void setEmail(final String email) {
 		this.email = email;
+	}
+
+	/**
+	 * Champ : FOREIGN_KEY.
+	 * Récupère la valeur de la propriété 'Group'.
+	 * @return String grpId
+	 */
+	@ForeignKey(smartType = "STyCode", label = "Group", fkDefinition = "DtUserGroup")
+	public String getGrpId() {
+		return (String) grpIdAccessor.getId();
+	}
+
+	/**
+	 * Champ : FOREIGN_KEY.
+	 * Définit la valeur de la propriété 'Motor type'.
+	 * @param grpId Long
+	 */
+	public void setGrpId(final String grpId) {
+		grpIdAccessor.setId(grpId);
 	}
 
 	/** {@inheritDoc} */

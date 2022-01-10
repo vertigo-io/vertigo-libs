@@ -24,7 +24,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	@Override
 	public Iterator<Class<?>> iterator() {
 		return Arrays.asList(new Class<?>[] {
-				User.class
+				TestUser.class
 		}).iterator();
 	}
 }

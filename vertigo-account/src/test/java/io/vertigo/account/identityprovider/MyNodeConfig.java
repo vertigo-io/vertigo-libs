@@ -98,7 +98,7 @@ public final class MyNodeConfig {
 				accountFeatures.withLdapIdentityProvider(
 						Param.of("ldapAccountBaseDn", "dc=vertigo,dc=io"),
 						Param.of("ldapUserAuthAttribute", "cn"),
-						Param.of("userIdentityEntity", "DtUser"),
+						Param.of("userIdentityEntity", "DtTestUser"),
 						Param.of("ldapUserAttributeMapping", "usrId:cn, fullName:description, photo:jpegPhoto"));
 				break;
 			case text:
@@ -106,7 +106,7 @@ public final class MyNodeConfig {
 						Param.of("identityFilePath", "io/vertigo/account/data/identities.txt"),
 						Param.of("identityFilePattern", "^(?<usrId>[^;]+);(?<fullName>[^;]+);(?<email>(?<authToken>[^;@]+)@[^;]+);(?<photoUrl>.*)$"),
 						Param.of("userAuthField", "email"),
-						Param.of("userIdentityEntity", "DtUser"));
+						Param.of("userIdentityEntity", "DtTestUser"));
 				break;
 			case store:
 				databaseFeatures
@@ -119,7 +119,7 @@ public final class MyNodeConfig {
 						.withEntityStore()
 						.withSqlEntityStore();
 				accountFeatures.withStoreIdentityProvider(
-						Param.of("userIdentityEntity", "DtUser"),
+						Param.of("userIdentityEntity", "DtTestUser"),
 						Param.of("userAuthField", "email"));
 				break;
 			default:

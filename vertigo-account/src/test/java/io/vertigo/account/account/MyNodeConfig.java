@@ -77,7 +77,7 @@ public final class MyNodeConfig {
 					.withSqlEntityStore();
 
 			accountFeatures.withStoreAccount(
-					Param.of("userIdentityEntity", "DtUser"),
+					Param.of("userIdentityEntity", "DtTestUser"),
 					Param.of("groupIdentityEntity", "DtUserGroup"),
 					Param.of("userAuthField", "email"),
 					Param.of("userToAccountMapping", "id:usrId, displayName:fullName, email:email, authToken:email"),
