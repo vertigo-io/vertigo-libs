@@ -72,12 +72,23 @@ final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
 			try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
 				lazyDtList = entityStoreManager.get().<E> findAll(dtListURIForMasterData);
 			}
-			if (lazyDtList.size() < 1000) {
-				//load UiObjects
-				initUiObjectByIdIndex();
-			}
+
+			//load UiObjects
+			initUiObjectByIdIndex();
 		}
 		return lazyDtList;
+	}
+
+	/**
+	 * Initialize l'index des UiObjects par Clé.
+	 * Attention : nécessite la DtList (appel obtainDtList).
+	 * @param keyFieldName Nom du champs à indexer
+	 */
+	@Override
+	protected void initUiObjectByKeyIndex(final String keyFieldName) {
+		if (lazyDtList.size() < NB_MAX_ELEMENTS) {
+			super.initUiObjectByKeyIndex(keyFieldName);
+		}
 	}
 
 	/** {@inheritDoc} */

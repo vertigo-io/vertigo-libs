@@ -53,7 +53,7 @@ import io.vertigo.vega.webservice.model.UiObject;
 public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends AbstractList<UiObject<O>> implements UiList<O>, Serializable {
 	private static final long serialVersionUID = 5475819598230056558L;
 
-	private static final int NB_MAX_ELEMENTS = 1000; //Max nb elements in list. Must be kept under 1000 to ensure good performances.
+	protected static final int NB_MAX_ELEMENTS = 1000; //Max nb elements in list. Must be kept under 1000 to ensure good performances.
 
 	/**
 	 * Accès au storeManager.
@@ -115,7 +115,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * Attention : nécessite la DtList (appel obtainDtList).
 	 * @param keyFieldName Nom du champs à indexer
 	 */
-	public final void initUiObjectByKeyIndex(final String keyFieldName) {
+	protected void initUiObjectByKeyIndex(final String keyFieldName) {
 		final Map<Serializable, UiObject<O>> uiObjectById = uiObjectByFieldValue.computeIfAbsent(keyFieldName, fieldName -> new HashMap<>());
 		for (final UiObject<O> uiObject : this) {
 			uiObjectById.put(((VegaUiObject<O>) uiObject).getTypedValue(keyFieldName, Serializable.class), uiObject);
