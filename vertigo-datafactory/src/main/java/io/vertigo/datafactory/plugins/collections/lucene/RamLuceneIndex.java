@@ -76,6 +76,10 @@ final class RamLuceneIndex<D extends DtObject> {
 
 	//DtDefinition est non serializable
 	private final DtDefinition dtDefinition;
+
+	private final Optional<DtField> idFieldOpt;
+	private final String idFieldName;
+
 	private final Map<String, D> indexedObjectPerPk = new HashMap<>();
 	private final Directory directory;
 
@@ -99,7 +103,8 @@ final class RamLuceneIndex<D extends DtObject> {
 		this.dtDefinition = dtDefinition;
 		this.smartTypeManager = smartTypeManager;
 		directory = new RAMDirectory();
-
+		idFieldOpt = dtDefinition.getIdField();
+		idFieldName = idFieldOpt.isPresent() ? idFieldOpt.get().getName() : "_id";
 		//l'index est crée automatiquement la premiere fois.
 		buildIndex();
 	}
@@ -158,7 +163,6 @@ final class RamLuceneIndex<D extends DtObject> {
 			final TopDocs topDocs,
 			final int skip,
 			final int top) throws IOException {
-		final DtField idField = dtDefinition.getIdField().get();
 
 		final DtList<D> dtcResult = new DtList<>(dtDefinition);
 		final int resultLength = topDocs.scoreDocs.length;
@@ -166,7 +170,7 @@ final class RamLuceneIndex<D extends DtObject> {
 			for (int i = skip; i < Math.min(skip + top, resultLength); i++) {
 				final ScoreDoc scoreDoc = topDocs.scoreDocs[i];
 				final Document document = searcher.doc(scoreDoc.doc);
-				dtcResult.add(getDtObjectIndexed(document.get(idField.getName())));
+				dtcResult.add(getDtObjectIndexed(document.get(idFieldName)));
 			}
 		}
 		return dtcResult;
@@ -179,21 +183,21 @@ final class RamLuceneIndex<D extends DtObject> {
 	 * @throws IOException Indexation error
 	 */
 	public void addAll(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
-		Assertion.check().isNotNull(fullDtc);
+		Assertion.check().isNotNull(fullDtc)
+				.isTrue(dtDefinition.equals(fullDtc.getDefinition()), "Indexed DtList's definition ({0}) must equals the same definition than index ({1}", fullDtc.getDefinition().getName(), dtDefinition.getName());
+
 		//-----
 		try (final IndexWriter indexWriter = createIndexWriter()) {
-			final DtField idField = fullDtc.getDefinition().getIdField().get();
 			final Collection<DtField> dtFields = fullDtc.getDefinition().getFields();
 
 			for (final D dto : fullDtc) {
 				final Document document = new Document();
-				final Object pkValue = idField.getDataAccessor().getValue(dto);
-				Assertion.check().isNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", fullDtc.getDefinition().getName(), idField.getName());
-				final String indexedPkValue = String.valueOf(pkValue);
-				addKeyword(document, idField.getName(), indexedPkValue, true);
+				final String indexedPkValue = obtainIndexedIdValue(dto);
+
+				addKeyword(document, idFieldName, indexedPkValue, true);
 				for (final DtField dtField : dtFields) {
 					final Object value = dtField.getDataAccessor().getValue(dto);
-					if (value != null && !dtField.equals(idField)) {
+					if (value != null && (idFieldOpt.isEmpty() || !dtField.equals(idFieldOpt.get()))) {
 						if (value instanceof String) {
 							final String valueAsString = getStringValue(dto, dtField, smartTypeManager);
 							addIndexed(document, dtField.getName(), valueAsString, storeValue);
@@ -208,6 +212,16 @@ final class RamLuceneIndex<D extends DtObject> {
 				indexWriter.addDocument(document);
 				mapDocument(indexedPkValue, dto);
 			}
+		}
+	}
+
+	private String obtainIndexedIdValue(final D dto) {
+		if (idFieldOpt.isPresent()) {
+			final Object pkValue = idFieldOpt.get().getDataAccessor().getValue(dto);
+			Assertion.check().isNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", dtDefinition.getName(), idFieldOpt.get().getName());
+			return String.valueOf(pkValue);
+		} else {
+			return String.valueOf(dto.hashCode());
 		}
 	}
 

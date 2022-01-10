@@ -42,6 +42,7 @@ import io.vertigo.datafactory.DataFactoryFeatures;
 import io.vertigo.datafactory.collections.data.DtDefinitions;
 import io.vertigo.datafactory.collections.data.TestCollectionsSmartTypes;
 import io.vertigo.datafactory.collections.data.domain.SmartItem;
+import io.vertigo.datafactory.collections.data.domain.SmartItemIhm;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
@@ -135,6 +136,16 @@ public class CollectionsManagerTest {
 				.filter("aa", 1000, dtDefinitionItem.getFields())
 				.build()
 				.apply(createItems());
+		Assertions.assertEquals(3, result.size());
+
+	}
+
+	@Test
+	public void testFilterFullTextIhm() {
+		final DtList<SmartItemIhm> result = collectionsManager.<SmartItemIhm> createIndexDtListFunctionBuilder()
+				.filter("aa", 1000, dtDefinitionItem.getFields())
+				.build()
+				.apply(createItemsIhm());
 		Assertions.assertEquals(3, result.size());
 
 	}
@@ -475,6 +486,40 @@ public class CollectionsManagerTest {
 		// On crée et on supprimme un élément dans la liste pour vérifier
 		// l'intégrité de la liste (Par rapport aux null).
 		final SmartItem mockRemoved = new SmartItem();
+		mockRemoved.setId(seqId++);
+		mockRemoved.setLabel("mockRemoved");
+		dtc.add(mockRemoved);
+
+		dtc.remove(mockRemoved);
+		return dtc;
+	}
+
+	private static DtList<SmartItemIhm> createItemsIhm() {
+		final DtList<SmartItemIhm> dtc = new DtList<>(SmartItemIhm.class);
+		// les index sont données par ordre alpha > null à la fin >
+		final SmartItemIhm mockB = new SmartItemIhm();
+		mockB.setId(seqId++);
+		mockB.setLabel(Ba_aa);
+		dtc.add(mockB);
+
+		final SmartItemIhm mockNull = new SmartItemIhm();
+		mockNull.setId(seqId++);
+		// On ne renseigne pas le Label > null
+		dtc.add(mockNull);
+
+		final SmartItemIhm mocka = new SmartItemIhm();
+		mocka.setId(seqId++);
+		mocka.setLabel(aaa_ba);
+		dtc.add(mocka);
+
+		final SmartItemIhm mockb = new SmartItemIhm();
+		mockb.setId(seqId++);
+		mockb.setLabel(bb_aa);
+		dtc.add(mockb);
+
+		// On crée et on supprimme un élément dans la liste pour vérifier
+		// l'intégrité de la liste (Par rapport aux null).
+		final SmartItemIhm mockRemoved = new SmartItemIhm();
 		mockRemoved.setId(seqId++);
 		mockRemoved.setLabel("mockRemoved");
 		dtc.add(mockRemoved);
