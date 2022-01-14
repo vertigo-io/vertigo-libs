@@ -74,21 +74,11 @@ final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
 			}
 
 			//load UiObjects
-			initUiObjectByIdIndex();
+			if (lazyDtList.size() < NB_MAX_ELEMENTS) {
+				initUiObjectByIdIndex();
+			}
 		}
 		return lazyDtList;
-	}
-
-	/**
-	 * Initialize l'index des UiObjects par Clé.
-	 * Attention : nécessite la DtList (appel obtainDtList).
-	 * @param keyFieldName Nom du champs à indexer
-	 */
-	@Override
-	protected void initUiObjectByKeyIndex(final String keyFieldName) {
-		if (lazyDtList.size() < NB_MAX_ELEMENTS) {
-			super.initUiObjectByKeyIndex(keyFieldName);
-		}
 	}
 
 	/** {@inheritDoc} */
