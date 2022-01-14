@@ -79,6 +79,7 @@
                                  <q-circular-progress v-if="file.__status === 'uploading'" :value="file.__progress" :min="0" :max="1" :indeterminate="file.__progress === 0"></q-circular-progress>
                                  <q-btn v-if="file.__status != 'uploading' && !slotProps.readonly" round dense flat :icon="$q.iconSet.uploader[file.__status === 'uploaded' ? 'done' : 'clear']" 
                                  @click="slotProps.removeFile(file)"></q-btn>                      
+                                 <q-btn round dense flat icon="file_download"  th:@click="|goTo('${downloadUrl}' + file.fileUri)|" ></q-btn>
                              </div>
                          </div>
                       </div>
@@ -98,7 +99,6 @@
 		                          @click="slotProps.abort">
 		                         <q-tooltip>{{$q.lang.vui.uploader.clear}}</q-tooltip>
 		                     </q-btn>
-		                     <q-btn v-if="slotProps.readonly" round dense flat icon="file_download"  th:@click="|goTo('${downloadUrl}' + file.fileUri)|" ></q-btn>
 		                </div>
                  </div>
             </template>   
