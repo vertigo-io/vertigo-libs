@@ -10,6 +10,7 @@ import VJsonEditor from './components/VJsonEditor.vue'
 import VNotifications from './components/VNotifications.vue'
 import VMap from './components/VMap.vue'
 import VMapLayer from './components/VMapLayer.vue'
+import VTree from './components/VTree.vue'
 
 import VMinify from './directives/VMinify'
 import VScrollSpy from './directives/VScrollSpy'
@@ -40,6 +41,7 @@ export function install (Vue , options) {
     Vue.component("v-notifications", VNotifications);
     Vue.component("v-map", VMap);
     Vue.component("v-map-layer", VMapLayer);
+    Vue.component("v-tree", VTree)
     
     // directives
     Vue.directive("minify", VMinify);

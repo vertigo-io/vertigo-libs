@@ -1,5 +1,5 @@
 /*!
- * Quasar Framework v1.15.19
+ * Quasar Framework v1.17.4
  * (c) 2015-present Razvan Stoenescu
  * Released under the MIT License.
  */
@@ -12,7 +12,7 @@
 
   Vue = Vue && Object.prototype.hasOwnProperty.call(Vue, 'default') ? Vue['default'] : Vue;
 
-  var version = "1.15.19";
+  var version = "1.17.4";
 
   /* eslint-disable no-useless-escape */
 
@@ -923,9 +923,9 @@
       // then we got nothing to do
       if (
         // if we're on Capacitor mode
-        capacitor === true
+        capacitor === true &&
         // and it's also not in Capacitor's main instance
-        && (window.Capacitor === void 0 || window.Capacitor.Plugins.App === void 0)
+        (window.Capacitor === void 0 || window.Capacitor.Plugins.App === void 0)
       ) {
         return
       }
@@ -979,7 +979,7 @@
     }
   };
 
-  var langEn = {
+  var defaultLang = {
     isoName: 'en-us',
     nativeName: 'English (US)',
     label: {
@@ -1088,16 +1088,16 @@
     }
   }
 
-  var lang = {
+  var Plugin = {
     getLocale: getLocale,
 
     install: function install ($q, queues, lang) {
       var this$1 = this;
 
-      var initialLang = lang || langEn;
+      var initialLang = lang || defaultLang;
 
       this.set = function (langObject, ssrContext) {
-        if ( langObject === void 0 ) langObject = langEn;
+        if ( langObject === void 0 ) langObject = defaultLang;
 
         var lang = Object.assign({}, langObject,
           {rtl: langObject.rtl === true,
@@ -1847,7 +1847,7 @@
     Dark.install($q, queues, cfg);
     Screen.install($q, queues, cfg);
     History.install(cfg);
-    lang.install($q, queues, opts.lang);
+    Plugin.install($q, queues, opts.lang);
     iconSet.install($q, queues, opts.iconSet);
 
     if (isSSR === true) {
@@ -1870,7 +1870,7 @@
 
     opts.directives && Object.keys(opts.directives).forEach(function (key) {
       var d = opts.directives[key];
-      if (d.name !== undefined && d.unbind !== void 0) {
+      if (d.name !== void 0 && d.unbind !== void 0) {
         Vue.directive(d.name, d);
       }
     });
@@ -2005,14 +2005,16 @@
 
   var ariaHidden = { 'aria-hidden': 'true' };
 
+  var iconAsButton = { tabindex: 0, type: 'button', 'aria-hidden': false, role: null };
+
   var AttrsMixin = getPropCacheMixin('$attrs', 'qAttrs');
 
   var
     xhr = isSSR ? null : XMLHttpRequest,
-    send = isSSR ? null : xhr.prototype.send,
-    stackStart = [],
-    stackStop = [];
+    open = isSSR ? null : xhr.prototype.open,
+    positionValues = [ 'top', 'right', 'bottom', 'left' ];
 
+  var stack = [];
   var highjackCount = 0;
 
   function translate (ref) {
@@ -2025,13 +2027,13 @@
 
     var x = 1, y = 1;
 
-    if (horiz) {
-      if (reverse) { x = -1; }
+    if (horiz === true) {
+      if (reverse === true) { x = -1; }
       if (pos === 'bottom') { y = -1; }
       return { transform: ("translate3d(" + (x * (p - 100)) + "%," + (active ? 0 : y * -200) + "%,0)") }
     }
 
-    if (reverse) { y = -1; }
+    if (reverse === true) { y = -1; }
     if (pos === 'right') { x = -1; }
     return { transform: ("translate3d(" + (active ? 0 : dir * x * -200) + "%," + (y * (p - 100)) + "%,0)") }
   }
@@ -2057,32 +2059,46 @@
     return between(p + amount, 0, 100)
   }
 
-  function highjackAjax (start, stop) {
-    stackStart.push(start);
-    stackStop.push(stop);
-
+  function highjackAjax (stackEntry) {
     highjackCount++;
+
+    stack.push(stackEntry);
 
     if (highjackCount > 1) { return }
 
-    function endHandler () {
-      stackStop.forEach(function (fn) { fn(); });
-    }
+    xhr.prototype.open = function (_, url) {
+      var stopStack = [];
 
-    xhr.prototype.send = function (/* ...args */) {
-      stackStart.forEach(function (fn) { fn(); });
-      this.addEventListener('loadend', endHandler, false);
-      send.apply(this, arguments);
+      var loadStart = function () {
+        stack.forEach(function (entry) {
+          var hijackFilter = entry.getHijackFilter();
+          if (
+            hijackFilter === null ||
+            hijackFilter(url) === true
+          ) {
+            entry.start();
+            stopStack.push(entry.stop);
+          }
+        });
+      };
+
+      var loadEnd = function () {
+        stopStack.forEach(function (stop) { stop(); });
+      };
+
+      this.addEventListener('loadstart', loadStart, { once: true });
+      this.addEventListener('loadend', loadEnd, { once: true });
+
+      open.apply(this, arguments);
     };
   }
 
-  function restoreAjax (start, stop) {
-    stackStart.splice(stackStart.indexOf(start), 1);
-    stackStop.splice(stackStop.indexOf(stop), 1);
+  function restoreAjax (start) {
+    stack = stack.filter(function (entry) { return entry.start !== start; });
 
     highjackCount = Math.max(0, highjackCount - 1);
     if (!highjackCount) {
-      xhr.prototype.send = send;
+      xhr.prototype.open = open;
     }
   }
 
@@ -2093,15 +2109,19 @@
       position: {
         type: String,
         default: 'top',
-        validator: function (val) { return ['top', 'right', 'bottom', 'left'].includes(val); }
+        validator: function (val) { return positionValues.includes(val); }
       },
+
       size: {
         type: String,
         default: '2px'
       },
+
       color: String,
+      reverse: Boolean,
+
       skipHijack: Boolean,
-      reverse: Boolean
+      hijackFilter: Function
     },
 
     data: function data () {
@@ -2129,7 +2149,7 @@
           active: active,
           horiz: this.horizontal,
           reverse: this.$q.lang.rtl === true && ['top', 'bottom'].includes(this.position)
-            ? !this.reverse
+            ? this.reverse === false
             : this.reverse,
           dir: this.$q.lang.rtl === true ? -1 : 1
         });
@@ -2239,15 +2259,21 @@
     },
 
     mounted: function mounted () {
+      var this$1 = this;
+
       if (this.skipHijack !== true) {
         this.hijacked = true;
-        highjackAjax(this.start, this.stop);
+        highjackAjax({
+          start: this.start,
+          stop: this.stop,
+          getHijackFilter: function () { return this$1.hijackFilter || null; }
+        });
       }
     },
 
     beforeDestroy: function beforeDestroy () {
       clearTimeout(this.timer);
-      this.hijacked === true && restoreAjax(this.start, this.stop);
+      this.hijacked === true && restoreAjax(this.start);
     },
 
     render: function render (h) {
@@ -2304,7 +2330,7 @@
 
   function uniqueSlot (vm, slotName, otherwise) {
     return vm.$scopedSlots[slotName] !== void 0
-      ? vm.$scopedSlots[slotName]().slice()
+      ? [].concat(vm.$scopedSlots[slotName]())
       : otherwise
   }
 
@@ -2333,6 +2359,38 @@
       : slot
   }
 
+  var defaultViewBox = '0 0 24 24';
+
+  var sameFn = function (i) { return i; };
+  var ionFn = function (i) { return ("ionicons " + i); };
+
+  var libMap = {
+    'icon-': sameFn, // fontawesome equiv
+    'bt-': function (i) { return ("bt " + i); },
+    'eva-': function (i) { return ("eva " + i); },
+    'ion-md': ionFn,
+    'ion-ios': ionFn,
+    'ion-logo': ionFn,
+    'mdi-': function (i) { return ("mdi " + i); },
+    'iconfont ': sameFn,
+    'ti-': function (i) { return ("themify-icon " + i); },
+    'bi-': function (i) { return ("bootstrap-icons " + i); }
+  };
+
+  var matMap = {
+    o_: '-outlined',
+    r_: '-round',
+    s_: '-sharp'
+  };
+
+  var libRE = new RegExp('^(' + Object.keys(libMap).join('|') + ')');
+  var matRE = new RegExp('^(' + Object.keys(matMap).join('|') + ')');
+  var mRE = /^[Mm]\s?[-+]?\.?\d/;
+  var imgRE = /^img:/;
+  var svgUseRE = /^svguse:/;
+  var ionRE = /^ion-/;
+  var faLaRE = /^[lf]a[srlbdk]? /;
+
   var QIcon = Vue.extend({
     name: 'QIcon',
 
@@ -2340,6 +2398,7 @@
 
     props: {
       tag: {
+        type: String,
         default: 'i'
       },
 
@@ -2351,9 +2410,7 @@
 
     computed: {
       classes: function classes () {
-        // "notranslate" class is for Google Translate
-        // to avoid tampering with Material Icons ligature font
-        return 'q-icon notranslate' +
+        return 'q-icon' +
           (this.left === true ? ' on-left' : '') +
           (this.right === true ? ' on-right' : '') +
           (this.color !== void 0 ? (" text-" + (this.color)) : '')
@@ -2366,10 +2423,7 @@
         var icon = this.name;
 
         if (!icon) {
-          return {
-            none: true,
-            cls: this.classes
-          }
+          return { none: true }
         }
 
         if (this.$q.iconMapFn !== void 0) {
@@ -2380,7 +2434,7 @@
             }
             else {
               return {
-                cls: res.cls + ' ' + this.classes,
+                cls: res.cls,
                 content: res.content !== void 0
                   ? res.content
                   : ' '
@@ -2389,102 +2443,77 @@
           }
         }
 
-        if (icon.startsWith('M') === true) {
+        if (mRE.test(icon) === true) {
           var ref = icon.split('|');
           var def = ref[0];
-          var viewBox = ref[1];
+          var viewBox = ref[1]; if ( viewBox === void 0 ) viewBox = defaultViewBox;
 
           return {
             svg: true,
-            cls: this.classes,
+            viewBox: viewBox,
             nodes: def.split('&&').map(function (path) {
               var ref = path.split('@@');
               var d = ref[0];
               var style = ref[1];
               var transform = ref[2];
               return this$1.$createElement('path', {
-                attrs: {
-                  d: d,
-                  transform: transform
-                },
+                attrs: { d: d, transform: transform },
                 style: style
               })
-            }),
-            viewBox: viewBox !== void 0 ? viewBox : '0 0 24 24'
+            })
           }
         }
 
-        if (icon.startsWith('img:') === true) {
+        if (imgRE.test(icon) === true) {
           return {
             img: true,
-            cls: this.classes,
             src: icon.substring(4)
           }
         }
 
-        if (icon.startsWith('svguse:') === true) {
+        if (svgUseRE.test(icon) === true) {
           var ref$1 = icon.split('|');
           var def$1 = ref$1[0];
-          var viewBox$1 = ref$1[1];
+          var viewBox$1 = ref$1[1]; if ( viewBox$1 === void 0 ) viewBox$1 = defaultViewBox;
 
           return {
             svguse: true,
-            cls: this.classes,
             src: def$1.substring(7),
-            viewBox: viewBox$1 !== void 0 ? viewBox$1 : '0 0 24 24'
+            viewBox: viewBox$1
           }
         }
 
         var content = ' ';
+        var matches = icon.match(libRE);
 
-        if (/^[l|f]a[s|r|l|b|d]{0,1} /.test(icon) || icon.startsWith('icon-') === true) {
+        if (matches !== null) {
+          cls = libMap[ matches[ 1 ] ](icon);
+        }
+        else if (faLaRE.test(icon) === true) {
           cls = icon;
         }
-        else if (icon.startsWith('bt-') === true) {
-          cls = "bt " + icon;
-        }
-        else if (icon.startsWith('eva-') === true) {
-          cls = "eva " + icon;
-        }
-        else if (/^ion-(md|ios|logo)/.test(icon) === true) {
-          cls = "ionicons " + icon;
-        }
-        else if (icon.startsWith('ion-') === true) {
+        else if (ionRE.test(icon) === true) {
           cls = "ionicons ion-" + (this.$q.platform.is.ios === true ? 'ios' : 'md') + (icon.substr(3));
         }
-        else if (icon.startsWith('mdi-') === true) {
-          cls = "mdi " + icon;
-        }
-        else if (icon.startsWith('iconfont ') === true) {
-          cls = "" + icon;
-        }
-        else if (icon.startsWith('ti-') === true) {
-          cls = "themify-icon " + icon;
-        }
-        else if (icon.startsWith('bi-') === true) {
-          cls = "bootstrap-icons " + icon;
-        }
         else {
-          cls = 'material-icons';
+          // "notranslate" class is for Google Translate
+          // to avoid tampering with Material Icons ligature font
+          //
+          // Caution: To be able to add suffix to the class name,
+          // keep the 'material-icons' at the end of the string.
+          cls = 'notranslate material-icons';
 
-          if (icon.startsWith('o_') === true) {
+          var matches$1 = icon.match(matRE);
+          if (matches$1 !== null) {
             icon = icon.substring(2);
-            cls += '-outlined';
-          }
-          else if (icon.startsWith('r_') === true) {
-            icon = icon.substring(2);
-            cls += '-round';
-          }
-          else if (icon.startsWith('s_') === true) {
-            icon = icon.substring(2);
-            cls += '-sharp';
+            cls += matMap[ matches$1[ 1 ] ];
           }
 
           content = icon;
         }
 
         return {
-          cls: cls + ' ' + this.classes,
+          cls: cls,
           content: content
         }
       }
@@ -2492,7 +2521,7 @@
 
     render: function render (h) {
       var data = {
-        class: this.type.cls,
+        class: this.classes,
         style: this.sizeStyle,
         on: Object.assign({}, this.qListeners),
         attrs: {
@@ -2506,28 +2535,39 @@
       }
 
       if (this.type.img === true) {
-        data.attrs.src = this.type.src;
-        return h('img', data)
+        return h('span', data, mergeSlot([
+          h('img', {
+            attrs: { src: this.type.src }
+          })
+        ], this, 'default'))
       }
 
       if (this.type.svg === true) {
-        data.attrs.focusable = 'false'; /* needed for IE11 */
-        data.attrs.viewBox = this.type.viewBox;
-
-        return h('svg', data, mergeSlot(this.type.nodes, this, 'default'))
-      }
-      if (this.type.svguse === true) {
-        data.attrs.focusable = 'false'; /* needed for IE11 */
-        data.attrs.viewBox = this.type.viewBox;
-
-        return h('svg', data, [
-          h('use', {
+        return h('span', data, mergeSlot([
+          h('svg', {
             attrs: {
-              'xlink:href': this.type.src
+              viewBox: this.type.viewBox,
+              focusable: 'false' /* needed for IE11 */
             }
-          }),
-          mergeSlot(this.type.nodes, this, 'default')
-        ])
+          }, this.type.nodes)
+        ], this, 'default'))
+      }
+
+      if (this.type.svguse === true) {
+        return h('span', data, mergeSlot([
+          h('svg', {
+            attrs: {
+              viewBox: this.type.viewBox,
+              focusable: 'false' /* needed for IE11 */
+            }
+          }, [
+            h('use', { attrs: { 'xlink:href': this.type.src } })
+          ])
+        ], this, 'default'))
+      }
+
+      if (this.type.cls !== void 0) {
+        data.class += ' ' + this.type.cls;
       }
 
       return h(this.tag, data, mergeSlot([
@@ -2772,6 +2812,8 @@
     }
   };
 
+  var disabledValues = [ true, '' ];
+
   var QBreadcrumbs = Vue.extend({
     name: 'QBreadcrumbs',
 
@@ -2802,13 +2844,13 @@
       },
 
       sepClass: function sepClass () {
-        if (this.separatorColor) {
-          return ("text-" + (this.separatorColor))
-        }
+        return this.separatorColor
+          ? (" text-" + (this.separatorColor))
+          : ''
       },
 
       activeClass: function activeClass () {
-        return ("text-" + (this.activeColor))
+        return (" text-" + (this.activeColor))
       }
     },
 
@@ -2830,18 +2872,20 @@
       nodes.forEach(function (comp) {
         if (comp.tag !== void 0 && comp.tag.endsWith('-QBreadcrumbsEl')) {
           var middle = els < len;
+          var disabled = disabledValues.includes(comp.componentOptions.propsData.disable);
+          var cls = middle === true
+            ? (disabled !== true ? this$1.activeClass : '')
+            : ' q-breadcrumbs--last';
+
           els++;
 
           child.push(h('div', {
-            staticClass: 'flex items-center',
-            class: middle ? this$1.activeClass : 'q-breadcrumbs--last'
+            staticClass: 'flex items-center' + cls
           }, [ comp ]));
 
-          if (middle) {
-            child.push(h('div', {
-              staticClass: 'q-breadcrumbs__separator', class: this$1.sepClass
-            }, separator()));
-          }
+          middle === true && child.push(h('div', {
+            staticClass: 'q-breadcrumbs__separator' + this$1.sepClass
+          }, separator()));
         }
         else {
           child.push(comp);
@@ -2861,33 +2905,107 @@
   });
 
   var routerLinkProps = {
+    // router-link
     to: [String, Object],
     exact: Boolean,
     append: Boolean,
     replace: Boolean,
-    activeClass: String,
-    exactActiveClass: String,
+    activeClass: {
+      type: String,
+      default: 'q-router-link--active'
+    },
+    exactActiveClass: {
+      type: String,
+      default: 'q-router-link--exact-active'
+    },
+
+    // regular <a> link
+    href: String,
+    target: String,
+
+    // state
     disable: Boolean
   };
+
+  // external props: type, tag
+  // external: fallbackTag
 
   var RouterLinkMixin = {
     props: routerLinkProps,
 
     computed: {
-      hasRouterLink: function hasRouterLink () {
-        return this.disable !== true && this.to !== void 0 && this.to !== null && this.to !== ''
+      hasHrefLink: function hasHrefLink () {
+        return this.disable !== true && this.href !== void 0
       },
 
-      routerLinkProps: function routerLinkProps () {
-        return {
-          to: this.to,
-          exact: this.exact,
-          append: this.append,
-          replace: this.replace,
-          activeClass: this.activeClass || 'q-router-link--active',
-          exactActiveClass: this.exactActiveClass || 'q-router-link--exact-active',
-          event: this.disable === true ? [] : void 0
+      hasRouterLinkProps: function hasRouterLinkProps () {
+        return this.$router !== void 0 &&
+          this.disable !== true &&
+          this.hasHrefLink !== true &&
+          this.to !== void 0 && this.to !== null && this.to !== ''
+      },
+
+      linkRoute: function linkRoute () {
+        if (this.hasRouterLinkProps === true) {
+          // we protect from accessing this.$route without
+          // actually needing it so that we won't trigger
+          // unnecessary updates
+
+          try {
+            return this.append === true
+              ? this.$router.resolve(this.to, this.$route, true)
+              : this.$router.resolve(this.to)
+          }
+          catch (err) {}
         }
+
+        return null
+      },
+
+      hasRouterLink: function hasRouterLink () {
+        return this.linkRoute !== null
+      },
+
+      hasLink: function hasLink () {
+        return this.hasHrefLink === true || this.hasRouterLink === true
+      },
+
+      linkTag: function linkTag () {
+        if (this.hasRouterLink === true) {
+          return 'router-link'
+        }
+
+        return this.type === 'a' || this.hasLink === true
+          ? 'a'
+          : (this.tag || this.fallbackTag || 'div')
+      },
+
+      linkProps: function linkProps () {
+        return this.hasHrefLink === true
+          ? {
+            attrs: {
+              href: this.href,
+              target: this.target
+            }
+          }
+          : (
+            this.hasRouterLink === true
+              ? {
+                props: {
+                  to: this.to,
+                  exact: this.exact,
+                  append: this.append,
+                  replace: this.replace,
+                  activeClass: this.activeClass,
+                  exactActiveClass: this.exactActiveClass
+                },
+                attrs: {
+                  href: this.linkRoute.href,
+                  target: this.target
+                }
+              }
+              : {}
+          )
       }
     }
   };
@@ -2902,25 +3020,42 @@
       icon: String
     },
 
-    render: function render (h) {
-      var obj;
+    computed: {
+      iconClass: function iconClass () {
+        return 'q-breadcrumbs__el-icon' +
+          (this.label !== void 0 ? ' q-breadcrumbs__el-icon--with-label' : '')
+      },
 
+      renderData: function renderData () {
+        var obj;
+
+        return Object.assign({
+          staticClass: 'q-breadcrumbs__el q-link ' +
+            'flex inline items-center relative-position ' +
+            (this.disable !== true ? 'q-link--focusable' : 'q-breadcrumbs__el--disabled')
+        },
+          this.linkProps,
+          ( obj = {}, obj[this.hasRouterLink === true ? 'nativeOn' : 'on'] = Object.assign({}, this.qListeners), obj ))
+      }
+    },
+
+    beforeCreate: function beforeCreate () {
+      this.fallbackTag = 'span';
+    },
+
+    render: function render (h) {
       var child = [];
 
       this.icon !== void 0 && child.push(
         h(QIcon, {
-          staticClass: 'q-breadcrumbs__el-icon',
-          class: this.label !== void 0 ? 'q-breadcrumbs__el-icon--with-label' : null,
+          class: this.iconClass,
           props: { name: this.icon }
         })
       );
 
-      this.label && child.push(this.label);
+      this.label !== void 0 && child.push(this.label);
 
-      return h(this.hasRouterLink === true ? 'router-link' : 'span', ( obj = {
-        staticClass: 'q-breadcrumbs__el q-link flex inline items-center relative-position',
-        props: this.hasRouterLink === true ? this.routerLinkProps : null
-      }, obj[this.hasRouterLink === true ? 'nativeOn' : 'on'] = Object.assign({}, this.qListeners), obj ), mergeSlot(child, this, 'default'))
+      return h(this.linkTag, this.renderData, mergeSlot(child, this, 'default'))
     }
   });
 
@@ -3041,6 +3176,30 @@
   }
 
   // internal
+  function getElement (el) {
+    var type = typeof el;
+
+    if (type === 'function') {
+      el = el();
+    }
+
+    if (type === 'string') {
+      try {
+        el = document.querySelector(el);
+      }
+      catch (err) {}
+    }
+
+    if (el !== Object(el)) {
+      return null
+    }
+
+    return el._isVue === true && el.$el !== void 0
+      ? el.$el
+      : el
+  }
+
+  // internal
   function childHasFocus (el, focusedEl) {
     if (el === void 0 || el.contains(focusedEl) === true) {
       return true
@@ -3056,15 +3215,10 @@
   }
 
   // internal
-  function getBodyFullscreenElement (isFullscreen, activeEl) {
-    return isFullscreen === true
-      ? (
-        // when a video tag enters fullscreen activeEl is null
-        activeEl === document.documentElement || activeEl === null
-          ? document.body
-          : activeEl
-      )
-      : document.body
+  function getBodyFullscreenElement (activeEl) {
+    return activeEl === document.documentElement || activeEl === null
+      ? document.body
+      : activeEl
   }
 
   var dom = {
@@ -3275,10 +3429,14 @@
     xl: 32
   };
 
+  var formTypes = [ 'button', 'submit', 'reset' ];
+  var mediaTypeRe = /[^\s]\/[^\s]/;
+
   var BtnMixin = {
     mixins: [
       ListenersMixin,
       RippleMixin,
+      RouterLinkMixin,
       AlignMixin,
       getSizeMixin({
         xs: 8,
@@ -3290,7 +3448,10 @@
     ],
 
     props: {
-      type: String,
+      type: {
+        type: String,
+        default: 'button'
+      },
 
       to: [ Object, String ],
       replace: Boolean,
@@ -3350,14 +3511,6 @@
         return this.isActionable === true ? this.tabindex || 0 : -1
       },
 
-      hasRouterLink: function hasRouterLink () {
-        return this.disable !== true && this.to !== void 0 && this.to !== null && this.to !== ''
-      },
-
-      isLink: function isLink () {
-        return this.type === 'a' || this.hasRouterLink === true
-      },
-
       design: function design () {
         if (this.flat === true) { return 'flat' }
         if (this.outline === true) { return 'outline' }
@@ -3366,45 +3519,40 @@
         return 'standard'
       },
 
-      currentLocation: function currentLocation () {
-        if (this.hasRouterLink === true) {
-          // we protect from accessing this.$route without
-          // actually needing it so that we won't trigger
-          // unnecessary updates
-          return this.append === true
-            ? this.$router.resolve(this.to, this.$route, true)
-            : this.$router.resolve(this.to)
-        }
-      },
-
       attrs: function attrs () {
-        var attrs = { tabindex: this.computedTabIndex };
+        var acc = { tabindex: this.computedTabIndex };
 
-        if (this.type !== 'a') {
-          attrs.type = this.type || 'button';
+        if (this.hasLink === true) {
+          Object.assign(acc, this.linkProps.attrs);
+        }
+        else if (formTypes.includes(this.type) === true) {
+          acc.type = this.type;
         }
 
-        if (this.hasRouterLink === true) {
-          attrs.href = this.currentLocation.href;
-          attrs.role = 'link';
+        if (this.hasLink === true || this.type === 'a') {
+          if (this.disable === true) {
+            acc['aria-disabled'] = 'true';
+          }
+          else if (acc.href === void 0) {
+            acc.role = 'button';
+          }
+          if (mediaTypeRe.test(this.type) === true) {
+            acc.type = this.type;
+          }
         }
-        else {
-          attrs.role = this.type === 'a' ? 'link' : 'button';
+        else if (this.disable === true) {
+          acc.disabled = '';
+          acc['aria-disabled'] = 'true';
         }
 
         if (this.loading === true && this.percentage !== void 0) {
-          attrs.role = 'progressbar';
-          attrs['aria-valuemin'] = 0;
-          attrs['aria-valuemax'] = 100;
-          attrs['aria-valuenow'] = this.percentage;
+          acc.role = 'progressbar';
+          acc['aria-valuemin'] = 0;
+          acc['aria-valuemax'] = 100;
+          acc['aria-valuenow'] = this.percentage;
         }
 
-        if (this.disable === true) {
-          attrs.disabled = '';
-          attrs['aria-disabled'] = 'true';
-        }
-
-        return attrs
+        return acc
       },
 
       classes: function classes () {
@@ -3455,66 +3603,6 @@
     }
   };
 
-  var directions = [ 'left', 'right', 'up', 'down', 'horizontal', 'vertical' ];
-
-  var modifiersAll = {
-    left: true,
-    right: true,
-    up: true,
-    down: true,
-    horizontal: true,
-    vertical: true,
-    all: true
-  };
-
-  function getModifierDirections (mod) {
-    var dir = {};
-
-    directions.forEach(function (direction) {
-      if (mod[direction]) {
-        dir[direction] = true;
-      }
-    });
-
-    if (Object.keys(dir).length === 0) {
-      return modifiersAll
-    }
-
-    if (dir.horizontal === true) {
-      dir.left = dir.right = true;
-    }
-    if (dir.vertical === true) {
-      dir.up = dir.down = true;
-    }
-    if (dir.left === true && dir.right === true) {
-      dir.horizontal = true;
-    }
-    if (dir.up === true && dir.down === true) {
-      dir.vertical = true;
-    }
-    if (dir.horizontal === true && dir.vertical === true) {
-      dir.all = true;
-    }
-
-    return dir
-  }
-
-  var getTouchTarget = isSSR === false && iosEmulated !== true && (
-    client.is.ios === true ||
-    window.navigator.vendor.toLowerCase().indexOf('apple') > -1
-  )
-    ? function () { return document; }
-    : function (target) { return target; };
-
-  function shouldStart (evt, ctx) {
-    return ctx.event === void 0 &&
-      evt.target !== void 0 &&
-      evt.target.draggable !== true &&
-      typeof ctx.handler === 'function' &&
-      evt.target.nodeName.toUpperCase() !== 'INPUT' &&
-      (evt.qClonedBy === void 0 || evt.qClonedBy.indexOf(ctx.uid) === -1)
-  }
-
   var passiveCapture = listenOpts.passiveCapture;
 
   var
@@ -3542,7 +3630,7 @@
       computedRipple: function computedRipple () {
         return this.ripple === false
           ? false
-          : Object.assign({}, {keyCodes: this.isLink === true ? [ 13, 32 ] : [ 13 ]},
+          : Object.assign({}, {keyCodes: this.hasLink === true ? [ 13, 32 ] : [ 13 ]},
             (this.ripple === true ? {} : this.ripple))
       },
 
@@ -3651,7 +3739,7 @@
           // vue-router now throwing error if navigating
           // to the same route that the user is currently at
           // https://github.com/vuejs/vue-router/issues/2872
-          this$1.$router[this$1.replace === true ? 'replace' : 'push'](this$1.currentLocation.route, void 0, noop);
+          this$1.$router[this$1.replace === true ? 'replace' : 'push'](this$1.linkRoute.route, void 0, noop);
         };
 
         this.$emit('click', e, go);
@@ -3684,7 +3772,7 @@
         if (touchTarget !== this.$el) {
           touchTarget !== void 0 && this.__cleanup();
           touchTarget = this.$el;
-          var target = this.touchTargetEl = getTouchTarget(e.target);
+          var target = this.touchTargetEl = e.target;
           target.addEventListener('touchcancel', this.__onPressEnd, passiveCapture);
           target.addEventListener('touchend', this.__onPressEnd, passiveCapture);
         }
@@ -3852,7 +3940,7 @@
         ] : void 0)
       );
 
-      return h(this.isLink === true ? 'a' : 'button', {
+      return h(this.hasLink === true || this.type === 'a' ? 'a' : 'button', {
         staticClass: 'q-btn q-btn-item non-selectable no-outline',
         class: this.classes,
         style: this.style,
@@ -4001,7 +4089,7 @@
         this.hide(evt);
         this.anchorEl.classList.add('non-selectable');
 
-        var target = getTouchTarget(evt.target);
+        var target = evt.target;
         addEvt(this, 'anchor', [
           [ target, 'touchmove', '__mobileCleanup', 'passive' ],
           [ target, 'touchend', '__mobileCleanup', 'passive' ],
@@ -4064,23 +4152,12 @@
           this.__setAnchorEl(this.parentEl);
         }
         else {
-          var el = this.target;
+          this.anchorEl = getElement(this.target) || void 0;
 
-          if (typeof this.target === 'string') {
-            try {
-              el = document.querySelector(this.target);
-            }
-            catch (err) {
-              el = void 0;
-            }
-          }
-
-          if (el !== void 0 && el !== null) {
-            this.anchorEl = el._isVue === true && el.$el !== void 0 ? el.$el : el;
+          if (this.anchorEl !== void 0) {
             this.__configureAnchorEl();
           }
           else {
-            this.anchorEl = void 0;
             console.error(("Anchor: target \"" + (this.target) + "\" not found"), this);
           }
         }
@@ -4303,15 +4380,17 @@
   var queue = [];
   var waitFlags = [];
 
+  function clearFlag (flag) {
+    waitFlags = waitFlags.filter(function (entry) { return entry !== flag; });
+  }
+
   function addFocusWaitFlag (flag) {
+    clearFlag(flag);
     waitFlags.push(flag);
   }
 
   function removeFocusWaitFlag (flag) {
-    var index = waitFlags.indexOf(flag);
-    if (index !== -1) {
-      waitFlags.splice(index, 1);
-    }
+    clearFlag(flag);
 
     if (waitFlags.length === 0 && queue.length > 0) {
       // only call last focus handler (can't focus multiple things at once)
@@ -4326,15 +4405,11 @@
     }
     else {
       queue.push(fn);
-      return fn
     }
   }
 
   function removeFocusFn (fn) {
-    var index = queue.indexOf(fn);
-    if (index !== -1) {
-      queue.splice(index, 1);
-    }
+    queue = queue.filter(function (entry) { return entry !== fn; });
   }
 
   function closePortalMenus (vm, evt) {
@@ -4416,6 +4491,9 @@
           return
         }
 
+        if (this.__portalIsActive === true) { return }
+        this.__portalIsActive = true;
+
         if (this.focusObj === void 0) {
           this.focusObj = {};
         }
@@ -4423,15 +4501,12 @@
         addFocusWaitFlag(this.focusObj);
 
         if (this.$q.fullscreen !== void 0 && this.$q.fullscreen.isCapable === true) {
-          var append = function (isFullscreen) {
+          var append = function () {
             if (this$1.__portal === void 0) {
               return
             }
 
-            var newParent = getBodyFullscreenElement(
-              isFullscreen,
-              this$1.$q.fullscreen.activeEl
-            );
+            var newParent = getBodyFullscreenElement(this$1.$q.fullscreen.activeEl);
 
             if (
               this$1.__portal.$el.parentElement !== newParent &&
@@ -4441,12 +4516,10 @@
             }
           };
 
-          this.unwatchFullscreen = this.$watch('$q.fullscreen.isActive', append);
+          this.unwatchFullscreen = this.$watch('$q.fullscreen.activeEl', debounce(append, 50));
 
-          var isActive = this.$q.fullscreen.isActive;
-
-          if (this.__onGlobalDialog === false || isActive === true) {
-            append(isActive);
+          if (this.__onGlobalDialog === false || this.$q.fullscreen.isActive === true) {
+            append();
           }
         }
         else if (this.__portal !== void 0 && this.__onGlobalDialog === false) {
@@ -4455,6 +4528,7 @@
       },
 
       __hidePortal: function __hidePortal () {
+        this.__portalIsActive = false;
         removeFocusWaitFlag(this.focusObj);
 
         if (this.__portal !== void 0) {
@@ -4556,9 +4630,6 @@
   function getVmOfNode (el) {
     for (var node = el; node !== null; node = node.parentNode) {
       // node.__vue__ can be null if the instance was destroyed
-      if (node.__vue__ === null) {
-        return
-      }
       if (node.__vue__ !== void 0) {
         return node.__vue__
       }
@@ -4566,6 +4637,11 @@
   }
 
   function isVmChildOf (childVm, parentVm) {
+    // node.__vue__ can be null if the instance was destroyed
+    if (childVm === null || parentVm === null) {
+      return null
+    }
+
     for (var vm = childVm; vm !== void 0; vm = vm.$parent) {
       if (vm === parentVm) {
         return true
@@ -4720,25 +4796,53 @@
     }
   };
 
-  var scrollTargets = isSSR === false
-    ? [ null, document, document.body, document.scrollingElement, document.documentElement ]
-    : [];
+  var scrollTargets = isSSR === true
+    ? []
+    : [ null, document, document.body, document.scrollingElement, document.documentElement ];
 
-  function getScrollTarget (el, target) {
-    if (typeof target === 'string') {
-      try {
-        target = document.querySelector(target);
-      }
-      catch (err) {
-        target = void 0;
-      }
+  var rtlHasScrollBugStatus;
+  function rtlHasScrollBug () {
+    if (isSSR === true) {
+      return false
     }
 
-    if (target === void 0 || target === null) {
+    if (rtlHasScrollBugStatus === void 0) {
+      var scroller = document.createElement('div');
+      var spacer = document.createElement('div');
+
+      Object.assign(scroller.style, {
+        direction: 'rtl',
+        width: '1px',
+        height: '1px',
+        overflow: 'auto'
+      });
+
+      Object.assign(spacer.style, {
+        width: '1000px',
+        height: '1px'
+      });
+
+      scroller.appendChild(spacer);
+      document.body.appendChild(scroller);
+      scroller.scrollLeft = -1000;
+
+      rtlHasScrollBugStatus = scroller.scrollLeft >= 0;
+
+      scroller.remove();
+    }
+
+    return rtlHasScrollBugStatus
+  }
+
+  function getScrollTarget (el, targetEl) {
+    var target = getElement(targetEl);
+
+    if (target === null) {
+      if (el !== Object(el) || typeof el.closest !== 'function') {
+        return window
+      }
+
       target = el.closest('.scroll,.scroll-y,.overflow-auto');
-    }
-    else if (target._isVue === true && target.$el !== void 0) {
-      target = target.$el;
     }
 
     return scrollTargets.includes(target)
@@ -4754,25 +4858,25 @@
     return (el === window ? document.body : el).scrollWidth
   }
 
-  function getScrollPosition (scrollTarget) {
-    if (scrollTarget === window) {
-      return window.pageYOffset || window.scrollY || document.body.scrollTop || 0
-    }
-    return scrollTarget.scrollTop
+  function getVerticalScrollPosition (scrollTarget) {
+    return scrollTarget === window
+      ? window.pageYOffset || window.scrollY || document.body.scrollTop || 0
+      : scrollTarget.scrollTop
   }
+
+  var getScrollPosition = getVerticalScrollPosition;
 
   function getHorizontalScrollPosition (scrollTarget) {
-    if (scrollTarget === window) {
-      return window.pageXOffset || window.scrollX || document.body.scrollLeft || 0
-    }
-    return scrollTarget.scrollLeft
+    return scrollTarget === window
+      ? window.pageXOffset || window.scrollX || document.body.scrollLeft || 0
+      : scrollTarget.scrollLeft
   }
 
-  function animScrollTo (el, to, duration /* , prevTime */) {
+  function animVerticalScrollTo (el, to, duration /* , prevTime */) {
     if ( duration === void 0 ) duration = 0;
 
-    var prevTime = arguments[3] === void 0 ? performance.now() : arguments[3];
-    var pos = getScrollPosition(el);
+    var prevTime = arguments[ 3 ] === void 0 ? performance.now() : arguments[ 3 ];
+    var pos = getVerticalScrollPosition(el);
 
     if (duration <= 0) {
       if (pos !== to) {
@@ -4786,15 +4890,17 @@
       var newPos = pos + (to - pos) / Math.max(frameTime, duration) * frameTime;
       setScroll(el, newPos);
       if (newPos !== to) {
-        animScrollTo(el, to, duration - frameTime, nowTime);
+        animVerticalScrollTo(el, to, duration - frameTime, nowTime);
       }
     });
   }
 
+  var animScrollTo = animVerticalScrollTo;
+
   function animHorizontalScrollTo (el, to, duration /* , prevTime */) {
     if ( duration === void 0 ) duration = 0;
 
-    var prevTime = arguments[3] === void 0 ? performance.now() : arguments[3];
+    var prevTime = arguments[ 3 ] === void 0 ? performance.now() : arguments[ 3 ];
     var pos = getHorizontalScrollPosition(el);
 
     if (duration <= 0) {
@@ -4830,13 +4936,15 @@
     scrollTarget.scrollLeft = offset;
   }
 
-  function setScrollPosition (scrollTarget, offset, duration) {
+  function setVerticalScrollPosition (scrollTarget, offset, duration) {
     if (duration) {
-      animScrollTo(scrollTarget, offset, duration);
+      animVerticalScrollTo(scrollTarget, offset, duration);
       return
     }
     setScroll(scrollTarget, offset);
   }
+
+  var setScrollPosition = setVerticalScrollPosition;
 
   function setHorizontalScrollPosition (scrollTarget, offset, duration) {
     if (duration) {
@@ -4848,7 +4956,7 @@
 
   var size;
   function getScrollbarWidth () {
-    if (size !== undefined) {
+    if (size !== void 0) {
       return size
     }
 
@@ -4900,14 +5008,14 @@
         el.scrollHeight > el.clientHeight && (
           el.classList.contains('scroll') ||
           el.classList.contains('overflow-auto') ||
-          ['auto', 'scroll'].includes(window.getComputedStyle(el)['overflow-y'])
+          [ 'auto', 'scroll' ].includes(window.getComputedStyle(el)['overflow-y'])
         )
       )
       : (
         el.scrollWidth > el.clientWidth && (
           el.classList.contains('scroll') ||
           el.classList.contains('overflow-auto') ||
-          ['auto', 'scroll'].includes(window.getComputedStyle(el)['overflow-x'])
+          [ 'auto', 'scroll' ].includes(window.getComputedStyle(el)['overflow-x'])
         )
       )
   }
@@ -4919,12 +5027,16 @@
     getScrollWidth: getScrollWidth,
 
     getScrollPosition: getScrollPosition,
+    getVerticalScrollPosition: getVerticalScrollPosition,
     getHorizontalScrollPosition: getHorizontalScrollPosition,
+    rtlHasScrollBug: rtlHasScrollBug,
 
     animScrollTo: animScrollTo,
+    animVerticalScrollTo: animVerticalScrollTo,
     animHorizontalScrollTo: animHorizontalScrollTo,
 
     setScrollPosition: setScrollPosition,
+    setVerticalScrollPosition: setVerticalScrollPosition,
     setHorizontalScrollPosition: setHorizontalScrollPosition,
 
     getScrollbarWidth: getScrollbarWidth,
@@ -5344,7 +5456,7 @@
         var this$1 = this;
 
         // IE can have null document.activeElement
-        this.__refocusTarget = this.noRefocus === false && document.activeElement !== null
+        this.__refocusTarget = client.is.mobile !== true && this.noRefocus === false && document.activeElement !== null
           ? document.activeElement
           : void 0;
 
@@ -5422,6 +5534,7 @@
           )
         ) {
           this.__refocusTarget.focus();
+          this.__refocusTarget = void 0;
         }
 
         this.$el.dispatchEvent(create('popup-hide', { bubbles: true }));
@@ -5541,6 +5654,8 @@
     },
 
     beforeDestroy: function beforeDestroy () {
+      this.__refocusTarget = void 0;
+
       // When the menu is destroyed while open we can only emit the event on anchorEl
       if (this.showing === true && this.anchorEl !== void 0) {
         this.anchorEl.dispatchEvent(
@@ -5874,7 +5989,8 @@
             style: opt.style,
             on: Object.assign({}, this$1.qListeners,
               {click: function (e) { return this$1.__set(opt.value, opt, e); }}),
-            attrs: opt.attrs,
+            attrs: Object.assign({}, {'aria-pressed': opt.value === this$1.value ? 'true' : 'false'},
+              opt.attrs),
             props: Object.assign({}, opt,
               {slot: void 0,
               class: void 0,
@@ -6029,6 +6145,59 @@
     }
   });
 
+  var directions = [ 'left', 'right', 'up', 'down', 'horizontal', 'vertical' ];
+
+  var modifiersAll = {
+    left: true,
+    right: true,
+    up: true,
+    down: true,
+    horizontal: true,
+    vertical: true,
+    all: true
+  };
+
+  function getModifierDirections (mod) {
+    var dir = {};
+
+    directions.forEach(function (direction) {
+      if (mod[direction]) {
+        dir[direction] = true;
+      }
+    });
+
+    if (Object.keys(dir).length === 0) {
+      return modifiersAll
+    }
+
+    if (dir.horizontal === true) {
+      dir.left = dir.right = true;
+    }
+    if (dir.vertical === true) {
+      dir.up = dir.down = true;
+    }
+    if (dir.left === true && dir.right === true) {
+      dir.horizontal = true;
+    }
+    if (dir.up === true && dir.down === true) {
+      dir.vertical = true;
+    }
+    if (dir.horizontal === true && dir.vertical === true) {
+      dir.all = true;
+    }
+
+    return dir
+  }
+
+  function shouldStart (evt, ctx) {
+    return ctx.event === void 0 &&
+      evt.target !== void 0 &&
+      evt.target.draggable !== true &&
+      typeof ctx.handler === 'function' &&
+      evt.target.nodeName.toUpperCase() !== 'INPUT' &&
+      (evt.qClonedBy === void 0 || evt.qClonedBy.indexOf(ctx.uid) === -1)
+  }
+
   function parseArg (arg) {
     // delta (min velocity -- dist / time)
     // mobile min distance on first move
@@ -6100,7 +6269,7 @@
 
         touchStart: function touchStart (evt) {
           if (shouldStart(evt, ctx)) {
-            var target = getTouchTarget(evt.target);
+            var target = evt.target;
             addEvt(ctx, 'temp', [
               [ target, 'touchmove', 'move', 'notPassiveCapture' ],
               [ target, 'touchcancel', 'end', 'notPassiveCapture' ],
@@ -6583,6 +6752,8 @@
     }
   };
 
+  var fullscreenCounter = 0;
+
   var FullscreenMixin = {
     props: {
       fullscreen: Boolean,
@@ -6631,7 +6802,12 @@
         this.container = this.$el.parentNode;
         this.container.replaceChild(this.fullscreenFillerNode, this.$el);
         document.body.appendChild(this.$el);
-        document.body.classList.add('q-body--fullscreen-mixin');
+
+        fullscreenCounter++;
+
+        if (fullscreenCounter === 1) {
+          document.body.classList.add('q-body--fullscreen-mixin');
+        }
 
         this.__historyFullscreen = {
           handler: this.exitFullscreen
@@ -6651,11 +6827,16 @@
           this.__historyFullscreen = void 0;
         }
         this.container.replaceChild(this.$el, this.fullscreenFillerNode);
-        document.body.classList.remove('q-body--fullscreen-mixin');
         this.inFullscreen = false;
 
-        if (this.$el.scrollIntoView !== void 0) {
-          setTimeout(function () { this$1.$el.scrollIntoView(); });
+        fullscreenCounter = Math.max(0, fullscreenCounter - 1);
+
+        if (fullscreenCounter === 0) {
+          document.body.classList.remove('q-body--fullscreen-mixin');
+
+          if (this.$el.scrollIntoView !== void 0) {
+            setTimeout(function () { this$1.$el.scrollIntoView(); });
+          }
         }
       }
     },
@@ -6774,10 +6955,10 @@
         return a.toString() === b.toString()
       }
 
-      var keys = Object.keys(a);
+      var keys = Object.keys(a).filter(function (key) { return a[key] !== void 0; });
       length = keys.length;
 
-      if (length !== Object.keys(b).length) {
+      if (length !== Object.keys(b).filter(function (key) { return b[key] !== void 0; }).length) {
         return false
       }
 
@@ -6920,9 +7101,13 @@
 
     methods: {
       __startTimer: function __startTimer () {
+        var duration = isNumber(this.autoplay) === true
+          ? this.autoplay
+          : 5000;
+
         this.timer = setTimeout(
-          this.next,
-          isNumber(this.autoplay) ? this.autoplay : 5000
+          duration >= 0 ? this.next : this.previous,
+          Math.abs(duration)
         );
       },
 
@@ -7207,12 +7392,12 @@
         }
 
         var content = withSlots === true
-          ? (contentList.length > 1 ? function (text) { return text; } : function (text) { return h('div', [ text ]); })
-          : function (text) {
+          ? (contentList.length > 1 ? (function (text) { return text; }) : (function (text) { return h('div', [ text ]); }))
+          : (function (text) {
             var obj;
 
             return h('div', { domProps: ( obj = {}, obj[domPropText] = text, obj ) });
-        };
+        });
 
         return contentList.map(function (msg, index) { return h('div', {
           key: index,
@@ -8157,7 +8342,7 @@
 
         touchStart: function touchStart (evt) {
           if (shouldStart(evt, ctx)) {
-            var target = getTouchTarget(evt.target);
+            var target = evt.target;
 
             addEvt(ctx, 'temp', [
               [ target, 'touchmove', 'move', 'notPassiveCapture' ],
@@ -8398,33 +8583,11 @@
     }
   };
 
+  var markerPrefixClass = 'q-slider__marker-labels';
+  var defaultMarkerConvertFn = function (v) { return ({ value: v }); };
+
   // PGDOWN, LEFT, DOWN, PGUP, RIGHT, UP
   var keyCodes = [ 34, 37, 40, 33, 39, 38 ];
-
-  function getRatio (evt, dragging, reverse, vertical) {
-    var
-      pos = position(evt),
-      val = vertical === true
-        ? between((pos.top - dragging.top) / dragging.height, 0, 1)
-        : between((pos.left - dragging.left) / dragging.width, 0, 1);
-
-    return reverse === true ? 1.0 - val : val
-  }
-
-  function getModel (ratio, min, max, step, decimals) {
-    var model = min + ratio * (max - min);
-
-    if (step > 0) {
-      var modulo = (model - min) % step;
-      model += (Math.abs(modulo) >= step / 2 ? (modulo < 0 ? -1 : 1) * step : 0) - modulo;
-    }
-
-    if (decimals > 0) {
-      model = parseFloat(model.toFixed(decimals));
-    }
-
-    return between(model, min, max)
-  }
 
   var SliderMixin = {
     mixins: [ DarkMixin, FormMixin ],
@@ -8442,30 +8605,58 @@
         type: Number,
         default: 100
       },
+      innerMin: Number,
+      innerMax: Number,
+
       step: {
         type: Number,
         default: 1,
         validator: function (v) { return v >= 0; }
       },
 
-      color: String,
-
-      labelColor: String,
-      labelTextColor: String,
-      dense: Boolean,
-
-      label: Boolean,
-      labelAlways: Boolean,
-      markers: Boolean,
       snap: Boolean,
 
       vertical: Boolean,
       reverse: Boolean,
 
+      hideSelection: Boolean,
+
+      color: String,
+      markerLabelsClass: String,
+
+      label: Boolean,
+      labelColor: String,
+      labelTextColor: String,
+      labelAlways: Boolean,
+      switchLabelSide: Boolean,
+
+      markers: [ Boolean, Number ],
+      markerLabels: [ Boolean, Array, Object, Function ],
+      switchMarkerLabelsSide: Boolean,
+
+      trackImg: String,
+      trackColor: String,
+      innerTrackImg: String,
+      innerTrackColor: String,
+      selectionColor: String,
+      selectionImg: String,
+
+      thumbSize: {
+        type: String,
+        default: '20px'
+      },
+      trackSize: {
+        type: String,
+        default: '4px'
+      },
+
       disable: Boolean,
       readonly: Boolean,
+      dense: Boolean,
+
       tabindex: [ String, Number ],
 
+      thumbColor: String,
       thumbPath: {
         type: String,
         default: 'M 4, 10 a 6,6 0 1,0 12,0 a 6,6 0 1,0 -12,0'
@@ -8476,7 +8667,8 @@
       return {
         active: false,
         preventFocus: false,
-        focus: false
+        focus: false,
+        dragging: false
       }
     },
 
@@ -8485,48 +8677,8 @@
         return this.vertical === true ? '--v' : '--h'
       },
 
-      classes: function classes () {
-        return "q-slider q-slider" + (this.axis) + " q-slider--" + (this.active === true ? '' : 'in') + "active" +
-          (this.isReversed === true ? ' q-slider--reversed' : '') +
-          (this.color !== void 0 ? (" text-" + (this.color)) : '') +
-          (this.disable === true ? ' disabled' : ' q-slider--enabled' + (this.editable === true ? ' q-slider--editable' : '')) +
-          (this.focus === 'both' ? ' q-slider--focus' : '') +
-          (this.label || this.labelAlways === true ? ' q-slider--label' : '') +
-          (this.labelAlways === true ? ' q-slider--label-always' : '') +
-          (this.isDark === true ? ' q-slider--dark' : '') +
-          (this.dense === true ? ' q-slider--dense q-slider--dense' + this.axis : '')
-      },
-
-      editable: function editable () {
-        return this.disable !== true && this.readonly !== true && this.min < this.max
-      },
-
-      decimals: function decimals () {
-        return (String(this.step).trim('0').split('.')[1] || '').length
-      },
-
-      computedStep: function computedStep () {
-        return this.step === 0 ? 1 : this.step
-      },
-
-      minMaxDiff: function minMaxDiff () {
-        return this.max - this.min
-      },
-
-      markerStyle: function markerStyle () {
-        if (this.minMaxDiff !== 0) {
-          var size = 100 * this.computedStep / this.minMaxDiff;
-
-          return {
-            backgroundSize: this.vertical === true
-              ? '2px ' + size + '%'
-              : size + '% 2px'
-          }
-        }
-      },
-
-      computedTabindex: function computedTabindex () {
-        return this.editable === true ? this.tabindex || 0 : -1
+      labelSide: function labelSide () {
+        return '-' + (this.switchLabelSide === true ? 'switched' : 'standard')
       },
 
       isReversed: function isReversed () {
@@ -8535,38 +8687,220 @@
           : this.reverse !== (this.$q.lang.rtl === true)
       },
 
+      computedInnerMin: function computedInnerMin () {
+        return this.__getInnerMin(this.innerMin)
+      },
+
+      computedInnerMax: function computedInnerMax () {
+        return this.__getInnerMax(this.innerMax)
+      },
+
+      editable: function editable () {
+        return this.disable !== true && this.readonly !== true &&
+          this.computedInnerMin < this.computedInnerMax
+      },
+
+      computedDecimals: function computedDecimals () {
+        return (String(this.step).trim('0').split('.')[ 1 ] || '').length
+      },
+
+      computedStep: function computedStep () {
+        return this.step === 0 ? 1 : this.step
+      },
+
+      computedTabindex: function computedTabindex () {
+        return this.editable === true ? this.tabindex || 0 : -1
+      },
+
+      trackLen: function trackLen () {
+        return this.max - this.min
+      },
+
+      innerBarLen: function innerBarLen () {
+        return this.computedInnerMax - this.computedInnerMin
+      },
+
+      innerMinRatio: function innerMinRatio () {
+        return this.__convertModelToRatio(this.computedInnerMin)
+      },
+
+      innerMaxRatio: function innerMaxRatio () {
+        return this.__convertModelToRatio(this.computedInnerMax)
+      },
+
       positionProp: function positionProp () {
-        if (this.vertical === true) {
-          return this.isReversed === true ? 'bottom' : 'top'
-        }
-        return this.isReversed === true ? 'right' : 'left'
+        return this.vertical === true
+          ? (this.isReversed === true ? 'bottom' : 'top')
+          : (this.isReversed === true ? 'right' : 'left')
       },
 
       sizeProp: function sizeProp () {
         return this.vertical === true ? 'height' : 'width'
       },
 
+      thicknessProp: function thicknessProp () {
+        return this.vertical === true ? 'width' : 'height'
+      },
+
       orientation: function orientation () {
         return this.vertical === true ? 'vertical' : 'horizontal'
       },
 
-      attrs: function attrs () {
-        var attrs = {
+      attributes: function attributes () {
+        var acc = {
           role: 'slider',
-          'aria-valuemin': this.min,
-          'aria-valuemax': this.max,
+          'aria-valuemin': this.computedInnerMin,
+          'aria-valuemax': this.computedInnerMax,
           'aria-orientation': this.orientation,
           'data-step': this.step
         };
 
         if (this.disable === true) {
-          attrs['aria-disabled'] = 'true';
+          acc[ 'aria-disabled' ] = 'true';
         }
         else if (this.readonly === true) {
-          attrs['aria-readonly'] = 'true';
+          acc[ 'aria-readonly' ] = 'true';
         }
 
-        return attrs
+        return acc
+      },
+
+      classes: function classes () {
+        return "q-slider q-slider" + (this.axis) + " q-slider--" + (this.active === true ? '' : 'in') + "active inline no-wrap " +
+          (this.vertical === true ? 'row' : 'column') +
+          (this.disable === true ? ' disabled' : ' q-slider--enabled' + (this.editable === true ? ' q-slider--editable' : '')) +
+          (this.focus === 'both' ? ' q-slider--focus' : '') +
+          (this.label || this.labelAlways === true ? ' q-slider--label' : '') +
+          (this.labelAlways === true ? ' q-slider--label-always' : '') +
+          (this.isDark === true ? ' q-slider--dark' : '') +
+          (this.dense === true ? ' q-slider--dense q-slider--dense' + this.axis : '')
+      },
+
+      selectionBarClass: function selectionBarClass () {
+        var color = this.selectionColor || this.color;
+        return 'q-slider__selection absolute' +
+          (color !== void 0 ? (" text-" + color) : '')
+      },
+
+      markerClass: function markerClass () {
+        return this.__getAxisClass('markers') + ' absolute overflow-hidden'
+      },
+      trackContainerClass: function trackContainerClass () {
+        return this.__getAxisClass('track-container')
+      },
+      pinClass: function pinClass () {
+        return this.__getPositionClass('pin')
+      },
+      labelClass: function labelClass () {
+        return this.__getPositionClass('label')
+      },
+      textContainerClass: function textContainerClass () {
+        return this.__getPositionClass('text-container')
+      },
+      markerLabelsContainerClass: function markerLabelsContainerClass () {
+        return this.__getPositionClass('marker-labels-container') +
+          (this.markerLabelsClass !== void 0 ? (" " + (this.markerLabelsClass)) : '')
+      },
+
+      trackClass: function trackClass () {
+        return 'q-slider__track relative-position no-outline' +
+          (this.trackColor !== void 0 ? (" bg-" + (this.trackColor)) : '')
+      },
+      trackStyle: function trackStyle () {
+        var acc = {};
+        acc[ this.thicknessProp ] = this.trackSize;
+        if (this.trackImg !== void 0) {
+          acc.backgroundImage = "url(" + (this.trackImg) + ") !important";
+        }
+        return acc
+      },
+
+      innerBarClass: function innerBarClass () {
+        return 'q-slider__inner absolute' +
+          (this.innerTrackColor !== void 0 ? (" bg-" + (this.innerTrackColor)) : '')
+      },
+
+      innerBarStyle: function innerBarStyle () {
+        var acc = {};
+        acc[ this.positionProp ] = ((100 * this.innerMinRatio) + "%");
+        acc[ this.sizeProp ] = ((100 * (this.innerMaxRatio - this.innerMinRatio)) + "%");
+        if (this.innerTrackImg !== void 0) {
+          acc.backgroundImage = "url(" + (this.innerTrackImg) + ") !important";
+        }
+        return acc
+      },
+
+      markerStep: function markerStep () {
+        return isNumber(this.markers) === true ? this.markers : this.computedStep
+      },
+
+      markerTicks: function markerTicks () {
+        var acc = [];
+        var step = this.markerStep;
+
+        var value = this.min;
+        do {
+          acc.push(value);
+          value += step;
+        } while (value < this.max)
+
+        acc.push(this.max);
+        return acc
+      },
+
+      markerLabelClass: function markerLabelClass () {
+        var prefix = " " + markerPrefixClass + (this.axis) + "-";
+        return markerPrefixClass +
+          "" + prefix + (this.switchMarkerLabelsSide === true ? 'switched' : 'standard') +
+          "" + prefix + (this.isReversed === true ? 'rtl' : 'ltr')
+      },
+
+      markerLabelsList: function markerLabelsList () {
+        var this$1 = this;
+
+        if (this.markerLabels === false) { return null }
+
+        return this.__getMarkerList(this.markerLabels).map(function (entry, index) { return ({
+          index: index,
+          value: entry.value,
+          label: entry.label || entry.value,
+          classes: this$1.markerLabelClass +
+            (entry.classes !== void 0 ? ' ' + entry.classes : ''),
+          style: Object.assign({}, this$1.__getMarkerLabelStyle(entry.value),
+            (entry.style || {}))
+        }); })
+      },
+
+      markerScope: function markerScope () {
+        return {
+          markerList: this.markerLabelsList,
+          markerMap: this.markerLabelsMap,
+          classes: this.markerLabelClass,
+          getStyle: this.__getMarkerLabelStyle
+        }
+      },
+
+      markerStyle: function markerStyle () {
+        if (this.innerBarLen !== 0) {
+          var size = 100 * this.markerStep / this.innerBarLen;
+
+          return Object.assign({}, this.innerBarStyle,
+            {backgroundSize: this.vertical === true
+              ? ("2px " + size + "%")
+              : (size + "% 2px")})
+        }
+
+        return null
+      },
+
+      markerLabelsMap: function markerLabelsMap () {
+        if (this.markerLabels === false) { return null }
+
+        var acc = {};
+        this.markerLabelsList.forEach(function (entry) {
+          acc[ entry.value ] = entry;
+        });
+        return acc
       },
 
       panDirectives: function panDirectives () {
@@ -8575,7 +8909,7 @@
         return this.editable === true
           ? [{
             name: 'touch-pan',
-            value: this.__pan,
+            value: this.__onPan,
             modifiers: ( obj = {}, obj[ this.orientation ] = true, obj.prevent = true, obj.stop = true, obj.mouse = true, obj.mouseAllDir = true, obj )
           }]
           : null
@@ -8583,44 +8917,126 @@
     },
 
     methods: {
-      __getThumbSvg: function __getThumbSvg (h) {
-        return h('svg', {
-          staticClass: 'q-slider__thumb absolute',
-          attrs: {
-            focusable: 'false', /* needed for IE11 */
-            viewBox: '0 0 20 20',
-            width: '20',
-            height: '20',
-            'aria-hidden': 'true'
-          }
-        }, [
-          h('path', {
-            attrs: {
-              d: this.thumbPath
-            }
-          })
-        ])
+      __getInnerMin: function __getInnerMin (val) {
+        return isNaN(val) === true || this.innerMin < this.min
+          ? this.min
+          : this.innerMin
       },
 
-      __getPinStyle: function __getPinStyle (percent, ratio) {
+      __getInnerMax: function __getInnerMax (val) {
+        return isNaN(val) === true || val > this.max
+          ? this.max
+          : this.innerMax
+      },
+
+      __getPositionClass: function __getPositionClass (name) {
+        var cls = 'q-slider__' + name;
+        return (cls + " " + cls + (this.axis) + " " + cls + (this.axis) + (this.labelSide))
+      },
+
+      __getAxisClass: function __getAxisClass (name) {
+        var cls = 'q-slider__' + name;
+        return (cls + " " + cls + (this.axis))
+      },
+
+      __convertRatioToModel: function __convertRatioToModel (ratio) {
+        var model = this.min + ratio * (this.max - this.min);
+
+        if (this.step > 0) {
+          var modulo = (model - this.min) % this.step;
+          model += (Math.abs(modulo) >= this.step / 2 ? (modulo < 0 ? -1 : 1) * this.step : 0) - modulo;
+        }
+
+        if (this.computedDecimals > 0) {
+          model = parseFloat(model.toFixed(this.computedDecimals));
+        }
+
+        return between(model, this.computedInnerMin, this.computedInnerMax)
+      },
+
+      __convertModelToRatio: function __convertModelToRatio (model) {
+        return this.trackLen === 0
+          ? 0
+          : (model - this.min) / this.trackLen
+      },
+
+      __getDraggingRatio: function __getDraggingRatio (evt, dragging) {
+        var
+          pos = position(evt),
+          val = this.vertical === true
+            ? between((pos.top - dragging.top) / dragging.height, 0, 1)
+            : between((pos.left - dragging.left) / dragging.width, 0, 1);
+
+        return between(
+          this.isReversed === true ? 1.0 - val : val,
+          this.innerMinRatio,
+          this.innerMaxRatio
+        )
+      },
+
+      __getMarkerList: function __getMarkerList (def) {
+        var this$1 = this;
+
+        if (def === false) { return null }
+
+        if (def === true) {
+          return this.markerTicks.map(defaultMarkerConvertFn)
+        }
+
+        if (typeof def === 'function') {
+          return this.markerTicks.map(function (value) {
+            var item = def(value);
+            return Object(item) === item ? Object.assign({}, item, {value: value}) : { value: value, label: item }
+          })
+        }
+
+        var filterFn = function (ref) {
+          var value = ref.value;
+
+          return value >= this$1.min && value <= this$1.max;
+        };
+
+        if (Array.isArray(def) === true) {
+          return def
+            .map(function (item) { return (Object(item) === item ? item : { value: item }); })
+            .filter(filterFn)
+        }
+
+        return Object.keys(def).map(function (key) {
+          var item = def[ key ];
+          var value = Number(key);
+          return Object(item) === item ? Object.assign({}, item, {value: value}) : { value: value, label: item }
+        }).filter(filterFn)
+      },
+
+      __getMarkerLabelStyle: function __getMarkerLabelStyle (val) {
         var obj;
 
-        if (this.vertical === true) {
-          return {}
-        }
-
-        var offset = (Math.ceil(20 * Math.abs(0.5 - ratio))) + "px";
-        return {
-          pin: {
-            transformOrigin: ((this.$q.lang.rtl === true ? offset : (this.$q.platform.is.ie === true ? '100%' : ("calc(100% - " + offset + ")"))) + " 50%")
-          },
-
-          pinTextContainer: ( obj = {}, obj[this.$q.lang.rtl === true ? 'left' : 'right'] = ((percent * 100) + "%"), obj.transform = ("translateX(" + (Math.ceil((this.$q.lang.rtl === true ? -1 : 1) * 20 * percent)) + "px)"), obj )
-        }
+        return ( obj = {}, obj[ this.positionProp ] = ((100 * (val - this.min) / this.trackLen) + "%"), obj )
       },
 
-      __pan: function __pan (event) {
-        if (event.isFinal) {
+      __getMarkerLabelsContent: function __getMarkerLabelsContent (h) {
+        var this$1 = this;
+
+        if (this.$scopedSlots[ 'marker-label-group' ] !== void 0) {
+          return this.$scopedSlots[ 'marker-label-group' ](this.markerScope)
+        }
+
+        var fn = this.$scopedSlots[ 'marker-label' ];
+        if (fn !== void 0) {
+          return this.markerLabelsList.map(function (marker) { return fn(Object.assign({}, {marker: marker},
+            this$1.markerScope)); })
+        }
+
+        return this.markerLabelsList.map(function (marker) { return h('div', {
+          key: marker.value,
+          style: marker.style,
+          class: marker.classes
+        }, marker.label); })
+      },
+
+      __onPan: function __onPan (event) {
+        if (event.isFinal === true) {
           if (this.dragging !== void 0) {
             this.__updatePosition(event.evt);
             // only if touch, because we also have mousedown/up:
@@ -8629,8 +9045,9 @@
             this.$emit('pan', 'end');
           }
           this.active = false;
+          this.focus = false;
         }
-        else if (event.isFirst) {
+        else if (event.isFirst === true) {
           this.dragging = this.__getDragging(event.evt);
           this.__updatePosition(event.evt);
           this.__updateValue();
@@ -8643,47 +9060,163 @@
         }
       },
 
-      __blur: function __blur () {
+      __onBlur: function __onBlur () {
         this.focus = false;
       },
 
-      __activate: function __activate (evt) {
+      __onActivate: function __onActivate (evt) {
         this.__updatePosition(evt, this.__getDragging(evt));
         this.__updateValue();
 
         this.preventFocus = true;
         this.active = true;
 
-        document.addEventListener('mouseup', this.__deactivate, true);
+        document.addEventListener('mouseup', this.__onDeactivate, true);
       },
 
-      __deactivate: function __deactivate () {
+      __onDeactivate: function __onDeactivate () {
         this.preventFocus = false;
-
-        if (this.dragging === void 0) {
-          this.active = false;
-        }
+        this.active = false;
 
         this.__updateValue(true);
-        this.__blur();
+        this.__onBlur();
 
-        document.removeEventListener('mouseup', this.__deactivate, true);
+        document.removeEventListener('mouseup', this.__onDeactivate, true);
       },
 
-      __mobileClick: function __mobileClick (evt) {
+      __onMobileClick: function __onMobileClick (evt) {
         this.__updatePosition(evt, this.__getDragging(evt));
         this.__updateValue(true);
       },
 
-      __keyup: function __keyup (evt) {
+      __onKeyup: function __onKeyup (evt) {
         if (keyCodes.includes(evt.keyCode)) {
           this.__updateValue(true);
         }
+      },
+
+      __getTextContainerStyle: function __getTextContainerStyle (ratio) {
+        if (this.vertical === true) { return null }
+
+        var p = this.$q.lang.rtl !== this.reverse ? 1 - ratio : ratio;
+        return {
+          transform: ("translateX(calc(" + (2 * p - 1) + " * " + (this.thumbSize) + " / 2 + " + (50 - 100 * p) + "%))")
+        }
+      },
+
+      __getThumb: function __getThumb (h, thumb) {
+        var thumbContent = [
+          h('svg', {
+            class: 'q-slider__thumb-shape absolute-full',
+            attrs: {
+              viewBox: '0 0 20 20',
+              'aria-hidden': 'true'
+            }
+          }, [
+            h('path', {
+              attrs: { d: this.thumbPath }
+            })
+          ]),
+
+          h('div', { class: 'q-slider__focus-ring fit' })
+        ];
+
+        if (this.label === true || this.labelAlways === true) {
+          thumbContent.push(
+            h('div', {
+              class: this.pinClass + ' absolute fit no-pointer-events' + thumb.pinColor
+            }, [
+              h('div', {
+                class: this.labelClass,
+                style: { minWidth: this.thumbSize }
+              }, [
+                h('div', {
+                  class: this.textContainerClass,
+                  style: thumb.textContainerStyle
+                }, [
+                  h('span', { class: thumb.textClass }, thumb.label)
+                ])
+              ])
+            ])
+          );
+
+          if (this.name !== void 0 && this.disable !== true) {
+            this.__injectFormInput(thumbContent, 'push');
+          }
+        }
+
+        return h('div', Object.assign({}, {class: thumb.classes,
+          style: thumb.style},
+          thumb.nodeData), thumbContent)
+      },
+
+      __getContent: function __getContent (h, injectThumb) {
+        var trackContent = [];
+
+        this.innerTrackColor !== 'transparent' && trackContent.push(
+          h('div', {
+            key: 'inner',
+            class: this.innerBarClass,
+            style: this.innerBarStyle
+          })
+        );
+
+        this.selectionColor !== 'transparent' && trackContent.push(
+          h('div', {
+            key: 'selection',
+            class: this.selectionBarClass,
+            style: this.selectionBarStyle
+          })
+        );
+
+        this.markers !== false && trackContent.push(
+          h('div', {
+            key: 'marker',
+            class: this.markerClass,
+            style: this.markerStyle
+          })
+        );
+
+        injectThumb(trackContent);
+
+        var content = [
+          h(
+            'div',
+            {
+              key: 'trackC',
+              class: this.trackContainerClass,
+              attrs: this.trackContainerAttrs,
+              on: this.trackContainerEvents,
+              directives: this.panDirectives
+            },
+            [
+              h('div', {
+                class: this.trackClass,
+                style: this.trackStyle
+              }, trackContent)
+            ]
+          )
+        ];
+
+        if (this.markerLabels !== false) {
+          var action = this.switchMarkerLabelsSide === true
+            ? 'unshift'
+            : 'push';
+
+          content[ action ](
+            h('div', {
+              key: 'markerL',
+              class: this.markerLabelsContainerClass
+            }, this.__getMarkerLabelsContent(h))
+          );
+        }
+
+        return content
       }
     },
 
     beforeDestroy: function beforeDestroy () {
-      document.removeEventListener('mouseup', this.__deactivate, true);
+      document.removeEventListener('mouseup', this.__onDeactivate, true);
     }
   };
 
@@ -8703,89 +9236,108 @@
     },
 
     data: function data () {
+      var innerMin = this.__getInnerMin(this.innerMin);
+      var innerMax = this.__getInnerMax(this.innerMax);
       return {
-        model: this.value === null ? this.min : this.value,
+        model: this.value === null ? innerMin : between(this.value, innerMin, innerMax),
         curRatio: 0
       }
     },
 
-    watch: {
-      value: function value (v) {
-        this.model = v === null
-          ? 0
-          : between(v, this.min, this.max);
-      },
-
-      min: function min (v) {
-        this.model = between(this.model, v, this.max);
-      },
-
-      max: function max (v) {
-        this.model = between(this.model, this.min, v);
-      }
-    },
-
     computed: {
+      modelRatio: function modelRatio () {
+        return this.__convertModelToRatio(this.model)
+      },
+
       ratio: function ratio () {
         return this.active === true ? this.curRatio : this.modelRatio
       },
 
-      modelRatio: function modelRatio () {
-        return this.minMaxDiff === 0 ? 0 : (this.model - this.min) / this.minMaxDiff
-      },
-
-      trackStyle: function trackStyle () {
-        var obj;
-
-        return ( obj = {}, obj[ this.positionProp ] = 0, obj[ this.sizeProp ] = ((100 * this.ratio) + "%"), obj )
-      },
-
-      thumbStyle: function thumbStyle () {
-        var obj;
-
-        return ( obj = {}, obj[ this.positionProp ] = ((100 * this.ratio) + "%"), obj )
-      },
-
-      thumbClass: function thumbClass () {
-        if (this.preventFocus === false && this.focus === true) {
-          return 'q-slider--focus'
+      selectionBarStyle: function selectionBarStyle () {
+        var acc = {};
+        acc[ this.positionProp ] = ((100 * this.innerMinRatio) + "%");
+        acc[ this.sizeProp ] = ((100 * (this.ratio - this.innerMinRatio)) + "%");
+        if (this.selectionImg !== void 0) {
+          acc.backgroundImage = "url(" + (this.selectionImg) + ") !important";
         }
+        return acc
       },
 
-      pinClass: function pinClass () {
-        if (this.labelColor !== void 0) {
-          return ("text-" + (this.labelColor))
-        }
-      },
-
-      pinTextClass: function pinTextClass () {
-        return 'q-slider__pin-value-marker-text' +
-          (this.labelTextColor !== void 0 ? (" text-" + (this.labelTextColor)) : '')
-      },
-
-      events: function events () {
-        if (this.editable === true) {
-          return this.$q.platform.is.mobile === true
-            ? { click: this.__mobileClick }
-            : {
-              mousedown: this.__activate,
-              focus: this.__focus,
-              blur: this.__blur,
-              keydown: this.__keydown,
-              keyup: this.__keyup
-            }
-        }
-      },
-
-      computedLabel: function computedLabel () {
+      thumbLabel: function thumbLabel () {
         return this.labelValue !== void 0
           ? this.labelValue
           : this.model
       },
 
-      pinStyle: function pinStyle () {
-        var percent = (this.reverse === true ? -this.ratio : this.ratio - 1);
-        return this.__getPinStyle(percent, this.ratio)
+      thumbClasses: function thumbClasses () {
+        var color = this.thumbColor || this.color;
+        return "q-slider__thumb q-slider__thumb" + (this.axis) + " q-slider__thumb" + (this.axis) + "-" + (this.isReversed === true ? 'rtl' : 'ltr') + " absolute non-selectable" +
+          (
+            this.preventFocus === false && this.focus === true
+              ? ' q-slider--focus'
+              : ''
+          ) +
+          (color !== void 0 ? (" text-" + color) : '')
+      },
+
+      thumbStyle: function thumbStyle () {
+        var obj;
+
+        return ( obj = {
+          width: this.thumbSize,
+          height: this.thumbSize
+        }, obj[ this.positionProp ] = ((100 * this.ratio) + "%"), obj )
+      },
+
+      thumbPinColor: function thumbPinColor () {
+        return this.labelColor !== void 0
+          ? (" text-" + (this.labelColor))
+          : ''
+      },
+
+      thumbTextContainerStyle: function thumbTextContainerStyle () {
+        return this.__getTextContainerStyle(this.ratio)
+      },
+
+      thumbTextClass: function thumbTextClass () {
+        return 'q-slider__text' +
+          (this.labelTextColor !== void 0 ? (" text-" + (this.labelTextColor)) : '')
+      },
+
+      trackContainerEvents: function trackContainerEvents () {
+        if (this.editable !== true) {
+          return {}
+        }
+
+        return this.$q.platform.is.mobile === true
+          ? { click: this.__onMobileClick }
+          : {
+            mousedown: this.__onActivate,
+            focus: this.__onFocus,
+            blur: this.__onBlur,
+            keydown: this.__onKeydown,
+            keyup: this.__onKeyup
+          }
+      },
+
+      trackContainerAttrs: function trackContainerAttrs () {
+        return {
+          tabindex: this.$q.platform.is.mobile !== true
+            ? this.computedTabindex
+            : null
+        }
+      },
+
+      modelUpdate: function modelUpdate () {
+        return ((this.value) + "|" + (this.computedInnerMin) + "|" + (this.computedInnerMax))
+      }
+    },
+
+    watch: {
+      modelUpdate: function modelUpdate () {
+        this.model = this.value === null
+          ? this.computedInnerMin
+          : between(this.value, this.computedInnerMin, this.computedInnerMax);
       }
     },
 
@@ -8804,28 +9356,19 @@
       __updatePosition: function __updatePosition (event, dragging) {
         if ( dragging === void 0 ) dragging = this.dragging;
 
-        var ratio = getRatio(
-          event,
-          dragging,
-          this.isReversed,
-          this.vertical
-        );
+        var ratio = this.__getDraggingRatio(event, dragging);
 
-        this.model = getModel(ratio, this.min, this.max, this.step, this.decimals);
-        this.curRatio = this.snap !== true || this.step === 0
+        this.model = this.__convertRatioToModel(ratio);
+        this.curRatio = this.snap !== true || this.computedStep === 0
           ? ratio
-          : (
-            this.minMaxDiff === 0
-              ? 0
-              : (this.model - this.min) / this.minMaxDiff
-          );
+          : this.__convertModelToRatio(this.model);
       },
 
-      __focus: function __focus () {
+      __onFocus: function __onFocus () {
         this.focus = true;
       },
 
-      __keydown: function __keydown (evt) {
+      __onKeydown: function __onKeydown (evt) {
         if (!keyCodes.includes(evt.keyCode)) {
           return
         }
@@ -8834,12 +9377,12 @@
 
         var
           step = ([34, 33].includes(evt.keyCode) ? 10 : 1) * this.computedStep,
-          offset = [34, 37, 40].includes(evt.keyCode) ? -step : step;
+          offset = ([ 34, 37, 40 ].includes(evt.keyCode) ? -1 : 1) * (this.isReversed === true ? -1 : 1) * step;
 
         this.model = between(
-          parseFloat((this.model + offset).toFixed(this.decimals)),
-          this.min,
-          this.max
+          parseFloat((this.model + offset).toFixed(this.computedDecimals)),
+          this.computedInnerMin,
+          this.computedInnerMax
         );
 
         this.__updateValue();
@@ -8847,75 +9390,27 @@
     },
 
     render: function render (h) {
-      var child = [
-        this.__getThumbSvg(h),
-        h('div', { staticClass: 'q-slider__focus-ring' })
-      ];
+      var this$1 = this;
 
-      if (this.label === true || this.labelAlways === true) {
-        child.push(
-          h('div', {
-            staticClass: ("q-slider__pin q-slider__pin" + (this.axis) + " absolute"),
-            style: this.pinStyle.pin,
-            class: this.pinClass
-          }, [
-            h('div', {
-              staticClass: ("q-slider__pin-text-container q-slider__pin-text-container" + (this.axis)),
-              style: this.pinStyle.pinTextContainer
-            }, [
-              h('span', {
-                staticClass: 'q-slider__pin-text',
-                class: this.pinTextClass
-              }, [
-                this.computedLabel
-              ])
-            ])
-          ]),
-
-          h('div', {
-            staticClass: ("q-slider__arrow q-slider__arrow" + (this.axis)),
-            class: this.pinClass
+      var content = this.__getContent(h, function (node) {
+        node.push(
+          this$1.__getThumb(h, {
+            pinColor: this$1.thumbPinColor,
+            textContainerStyle: this$1.thumbTextContainerStyle,
+            textClass: this$1.thumbTextClass,
+            label: this$1.thumbLabel,
+            classes: this$1.thumbClasses,
+            style: this$1.thumbStyle,
+            nodeData: {}
           })
         );
-      }
-
-      if (this.name !== void 0 && this.disable !== true) {
-        this.__injectFormInput(child, 'push');
-      }
-
-      var track = [
-        h('div', {
-          staticClass: ("q-slider__track q-slider__track" + (this.axis) + " absolute"),
-          style: this.trackStyle
-        })
-      ];
-
-      this.markers === true && track.push(
-        h('div', {
-          staticClass: ("q-slider__track-markers q-slider__track-markers" + (this.axis) + " absolute-full fit"),
-          style: this.markerStyle
-        })
-      );
+      });
 
       return h('div', {
-        staticClass: this.value === null ? ' q-slider--no-value' : '',
-        attrs: Object.assign({}, this.attrs,
-          {'aria-valuenow': this.value,
-          tabindex: this.computedTabindex}),
-        class: this.classes,
-        on: this.events,
-        directives: this.panDirectives
-      }, [
-        h('div', {
-          staticClass: ("q-slider__track-container q-slider__track-container" + (this.axis) + " absolute")
-        }, track),
-
-        h('div', {
-          staticClass: ("q-slider__thumb-container q-slider__thumb-container" + (this.axis) + " absolute non-selectable"),
-          class: this.thumbClass,
-          style: this.thumbStyle
-        }, child)
-      ])
+        class: this.classes + (this.value === null ? ' q-slider--no-value' : ''),
+        attrs: Object.assign({}, this.attributes,
+          {'aria-valuenow': this.value})
+      }, content)
     }
   });
 
@@ -8952,17 +9447,20 @@
     },
 
     methods: {
-      trigger: function trigger (now) {
-        if (now === true || this.debounce === 0 || this.debounce === '0') {
-          this.__onResize();
+      trigger: function trigger (immediately) {
+        if (immediately === true || this.debounce === 0 || this.debounce === '0') {
+          this.__emit();
         }
-        else if (!this.timer) {
-          this.timer = setTimeout(this.__onResize, this.debounce);
+        else if (this.timer === null) {
+          this.timer = setTimeout(this.__emit, this.debounce);
         }
       },
 
-      __onResize: function __onResize () {
-        this.timer = null;
+      __emit: function __emit () {
+        if (this.timer !== null) {
+          clearTimeout(this.timer);
+          this.timer = null;
+        }
 
         if (!this.$el || !this.$el.parentNode) {
           return
@@ -9001,7 +9499,7 @@
           this.curDocView.addEventListener('resize', this.trigger, listenOpts.passive);
         }
 
-        this.__onResize();
+        this.__emit();
       }
     },
 
@@ -9036,16 +9534,18 @@
     },
 
     mounted: function mounted () {
+      this.timer = null;
+
       if (this.hasObserver === true) {
         this.observer = new ResizeObserver(this.trigger);
         this.observer.observe(this.$el.parentNode);
-        this.__onResize();
+        this.__emit();
         return
       }
 
       if (this.$q.platform.is.ie === true) {
         this.url = 'about:blank';
-        this.__onResize();
+        this.__emit();
       }
       else {
         this.__onObjLoad();
@@ -9109,7 +9609,8 @@
         tabs: this.tabs,
         __recalculateScroll: this.__recalculateScroll,
         __activateTab: this.__activateTab,
-        __activateRoute: this.__activateRoute
+        __activateRoute: this.__activateRoute,
+        __onKbdNavigate: this.__onKbdNavigate
       }
     },
 
@@ -9130,6 +9631,7 @@
       shrink: Boolean,
       stretch: Boolean,
 
+      activeClass: String,
       activeColor: String,
       activeBgColor: String,
       indicatorColor: String,
@@ -9154,6 +9656,8 @@
       return {
         tabs: {
           current: this.value,
+          hasFocus: false,
+          activeClass: this.activeClass,
           activeColor: this.activeColor,
           activeBgColor: this.activeBgColor,
           indicatorClass: getIndicatorClass(
@@ -9166,8 +9670,8 @@
           noCaps: this.noCaps
         },
         scrollable: false,
-        leftArrow: true,
-        rightArrow: false,
+        startArrow: true,
+        endArrow: false,
         justify: false
       }
     },
@@ -9175,6 +9679,10 @@
     watch: {
       value: function value (name) {
         this.__activateTab(name, true, true);
+      },
+
+      activeClass: function activeClass (v) {
+        this.tabs.activeClass = v;
       },
 
       activeColor: function activeColor (v) {
@@ -9210,7 +9718,7 @@
       },
 
       outsideArrows: function outsideArrows () {
-        this.$nextTick(this.__recalculateScroll());
+        this.__recalculateScroll();
       },
 
       arrowsEnabled: function arrowsEnabled (v) {
@@ -9218,13 +9726,27 @@
           ? this.__updateArrowsFn
           : noop;
 
-        this.$nextTick(this.__recalculateScroll());
+        this.__recalculateScroll();
+      },
+
+      isRTL: function isRTL () {
+        this.__updateArrows();
       }
     },
 
     computed: {
       arrowsEnabled: function arrowsEnabled () {
         return this.$q.platform.is.desktop === true || this.mobileArrows === true
+      },
+
+      arrowIcons: function arrowIcons () {
+        var obj;
+
+        var sides = this.isRTL === true
+          ? [ 'end', 'start' ]
+          : [ 'start', 'end' ];
+
+        return ( obj = {}, obj[sides[0]] = this.leftIcon || (this.vertical === true ? this.$q.iconSet.tabs.up : this.$q.iconSet.tabs.left), obj[sides[1]] = this.rightIcon || (this.vertical === true ? this.$q.iconSet.tabs.down : this.$q.iconSet.tabs.right), obj )
       },
 
       alignClass: function alignClass () {
@@ -9256,13 +9778,67 @@
           : { container: 'width', content: 'offsetWidth', scroll: 'scrollWidth' }
       },
 
+      isRTL: function isRTL () {
+        return this.vertical !== true && this.$q.lang.rtl === true
+      },
+
+      __getScrollPosition: function __getScrollPosition () {
+        return this.vertical === true
+          ? function (el) { return el.scrollTop; }
+          : (
+            this.$q.lang.rtl !== true
+              ? function (el) { return el.scrollLeft; }
+              : (
+                this.rtlHasScrollBug === true
+                  ? function (el) { return el.scrollWidth - el.clientWidth - el.scrollLeft; }
+                  : function (el) { return 1 - el.scrollLeft; }
+              )
+          )
+      },
+
+      __setScrollPosition: function __setScrollPosition () {
+        return this.vertical === true
+          ? function (el, value) { el.scrollTop = value; }
+          : (
+            this.$q.lang.rtl !== true
+              ? function (el, value) { el.scrollLeft = value; }
+              : (
+                this.rtlHasScrollBug === true
+                  ? function (el, value) { el.scrollLeft = el.scrollWidth - el.clientWidth - value; }
+                  : function (el, value) { el.scrollLeft = 1 - value; }
+              )
+          )
+      },
+
+      __getScrollOffset: function __getScrollOffset () {
+        return this.vertical === true
+          ? function (el) { return el.offsetTop; }
+          : (
+            this.$q.lang.rtl !== true || this.rtlHasScrollBug === true
+              ? function (el) { return el.offsetLeft; }
+              : function (el) { return el.offsetParent.offsetWidth - el.offsetLeft - el.clientWidth; }
+          )
+      },
+
       onEvents: function onEvents () {
         return Object.assign({}, {input: stop},
-          this.qListeners)
+          this.qListeners,
+          {focusin: this.__onFocusin,
+          focusout: this.__onFocusout})
       }
     },
 
     methods: {
+      __onFocusin: function __onFocusin (e) {
+        this.tabs.hasFocus = true;
+        this.qListeners.focusin !== void 0 && this.$emit('focusin', e);
+      },
+
+      __onFocusout: function __onFocusout (e) {
+        this.tabs.hasFocus = false;
+        this.qListeners.focusout !== void 0 && this.$emit('focusout', e);
+      },
+
       __activateTab: function __activateTab (name, setCurrent, skipEmit) {
         if (this.tabs.current !== name) {
           skipEmit !== true && this.$emit('input', name);
@@ -9330,7 +9906,7 @@
             this.$refs.content[this.domProps.scroll],
             Array.prototype.reduce.call(
               this.$refs.content.children,
-              function (acc, el) { return acc + el[this$1.domProps.content]; },
+              function (acc, el) { return acc + (el[this$1.domProps.content] || 0); },
               0
             )
           ),
@@ -9391,45 +9967,35 @@
         }
 
         if (newTab && this.scrollable === true) {
-          var ref = this.$refs.content.getBoundingClientRect();
-          var left = ref.left;
-          var width = ref.width;
-          var top = ref.top;
-          var height = ref.height;
-          var newPos$1 = newTab.$el.getBoundingClientRect();
-
-          var offset = this.vertical === true ? newPos$1.top - top : newPos$1.left - left;
-
-          if (offset < 0) {
-            this.$refs.content[this.vertical === true ? 'scrollTop' : 'scrollLeft'] += Math.floor(offset);
-            this.__updateArrows();
-            return
-          }
-
-          offset += this.vertical === true ? newPos$1.height - height : newPos$1.width - width;
-          if (offset > 0) {
-            this.$refs.content[this.vertical === true ? 'scrollTop' : 'scrollLeft'] += Math.ceil(offset);
-            this.__updateArrows();
-          }
+          this.__scrollToTab(newTab.$el, void 0, true);
+        }
+        else {
+          this.__updateArrows();
         }
       },
 
       __updateArrowsFn: function __updateArrowsFn () {
-        var
-          content = this.$refs.content,
-          rect = content.getBoundingClientRect(),
-          pos = this.vertical === true ? content.scrollTop : content.scrollLeft;
+        var ref = this.$refs;
+        var content = ref.content;
 
-        this.leftArrow = pos > 0;
-        this.rightArrow = this.vertical === true
-          ? Math.ceil(pos + rect.height) < content.scrollHeight
-          : Math.ceil(pos + rect.width) < content.scrollWidth;
+        if (content !== void 0) {
+          var
+            rect = content.getBoundingClientRect(),
+            pos = this.__getScrollPosition(content);
+
+          this.startArrow = pos > (this.isRTL === true ? 1 : 0);
+          this.endArrow = this.vertical === true
+            ? Math.ceil(pos + rect.height) < content.scrollHeight
+            : Math.ceil(pos + rect.width) < content.scrollWidth;
+        }
       },
 
-      __animScrollTo: function __animScrollTo (value) {
+      __animScrollTo: function __animScrollTo (value, onEnd) {
         var this$1 = this;
 
         this.__stopAnimScroll();
+
+        this.__onAnimScrollEnd = onEnd;
         this.__scrollTowards(value);
 
         this.scrollTimer = setInterval(function () {
@@ -9444,26 +10010,32 @@
       },
 
       __scrollToEnd: function __scrollToEnd () {
-        this.__animScrollTo(9999);
+        this.__animScrollTo(Number.MAX_SAFE_INTEGER);
       },
 
       __stopAnimScroll: function __stopAnimScroll () {
         clearInterval(this.scrollTimer);
+
+        if (this.__onAnimScrollEnd !== void 0) {
+          this.__onAnimScrollEnd();
+          this.__onAnimScrollEnd = void 0;
+        }
       },
 
       __scrollTowards: function __scrollTowards (value) {
         var content = this.$refs.content;
-        var
-          pos = this.vertical === true ? content.scrollTop : content.scrollLeft,
-          done = false;
+        var max = this.vertical === true ? content.scrollHeight - content.offsetHeight : content.scrollWidth - content.offsetWidth;
+
+        var pos = this.__getScrollPosition(content);
+        var done = false;
+
+        value = Math.max(0, Math.min(max, value));
+
         var direction = value < pos ? -1 : 1;
 
         pos += direction * 5;
-        if (pos < 0) {
-          done = true;
-          pos = 0;
-        }
-        else if (
+
+        if (
           (direction === -1 && pos <= value) ||
           (direction === 1 && pos >= value)
         ) {
@@ -9471,9 +10043,113 @@
           pos = value;
         }
 
-        content[this.vertical === true ? 'scrollTop' : 'scrollLeft'] = pos;
+        this.__setScrollPosition(content, pos);
         this.__updateArrows();
+
         return done
+      },
+
+      __scrollToTab: function __scrollToTab (tab, alignEnd, skipFocus) {
+        if (this.$refs.content === void 0) {
+          return
+        }
+
+        var content = this.$refs.content;
+        var startContent = this.__getScrollPosition(content);
+        var sizeContent = this.vertical === true ? content.offsetHeight : content.offsetWidth;
+        var sizeScroll = this.vertical === true ? content.scrollHeight : content.scrollWidth;
+
+        var startTab = this.__getScrollOffset(tab);
+        var endTab = startTab + (this.vertical === true ? tab.offsetHeight : tab.offsetWidth);
+
+        var startsBefore = startTab < startContent;
+        var endsAfter = endTab > startContent + sizeContent;
+
+        if (startsBefore !== true && endsAfter !== true) {
+          alignEnd = void 0;
+        }
+        else if (alignEnd === void 0) {
+          if (endTab >= sizeScroll - 1) {
+            alignEnd = true;
+          }
+          else if (startsBefore === true || (endsAfter === true && startTab < endTab - sizeContent)) {
+            alignEnd = false;
+          }
+          else if (startsBefore !== endsAfter) {
+            alignEnd = endsAfter;
+          }
+        }
+
+        if (alignEnd !== void 0) {
+          this.__animScrollTo(
+            alignEnd === true ? (endTab >= sizeScroll - 1 ? sizeScroll : endTab - sizeContent) : (startTab <= 1 ? 0 : startTab),
+            skipFocus !== true
+              ? function () {
+                setTimeout(function () {
+                  tab && tab.focus();
+                });
+              }
+              : void 0
+          );
+        }
+        else if (skipFocus !== true) {
+          tab.focus();
+        }
+      },
+
+      __onKbdNavigate: function __onKbdNavigate (keyCode, fromEl) {
+        var matchTab = function (el) { return el === fromEl || (el.matches && el.matches('.q-tab.q-focusable') === true); };
+        var tabs = Array.prototype.filter.call(this.$refs.content.children, matchTab);
+        var tabsLength = tabs.length;
+
+        if (tabsLength === 0) {
+          return
+        }
+
+        if (keyCode === 36) { // Home
+          if (tabs[0].contains(document.activeElement) === true) {
+            return false
+          }
+
+          this.__scrollToTab(tabs[0], false);
+          this.__recalculateScroll();
+
+          return true
+        }
+        if (keyCode === 35) { // End
+          if (tabs[tabsLength - 1].contains(document.activeElement) === true) {
+            return false
+          }
+
+          this.__scrollToTab(tabs[tabsLength - 1], true);
+          this.__recalculateScroll();
+
+          return true
+        }
+
+        var dirPrev = (this.vertical === true && keyCode === 38 /* ArrowUp */) ||
+          (this.vertical !== true && keyCode === 37 /* ArrowLeft */);
+        var dirNext = (this.vertical === true && keyCode === 40 /* ArrowDown */) ||
+          (this.vertical !== true && keyCode === 39 /* ArrowRight */);
+        var dir = dirPrev === true ? -1 : (dirNext === true ? 1 : void 0);
+
+        if (dir !== void 0) {
+          var rtlDir = this.isRTL === true ? -1 : 1;
+          var index = tabs.indexOf(fromEl) + dir * rtlDir;
+
+          if (
+            index < 0 ||
+            index >= tabsLength ||
+            tabs[index].contains(document.activeElement) === true
+          ) {
+            return false
+          }
+
+          this.__scrollToTab(tabs[index], dir === rtlDir);
+          this.__recalculateScroll();
+
+          return true
+        }
       }
     },
 
@@ -9483,9 +10159,14 @@
 
     created: function created () {
       this.buffer = [];
+
       this.__updateArrows = this.arrowsEnabled === true
         ? this.__updateArrowsFn
         : noop;
+    },
+
+    mounted: function mounted () {
+      this.rtlHasScrollBug = rtlHasScrollBug();
     },
 
     beforeDestroy: function beforeDestroy () {
@@ -9501,7 +10182,7 @@
 
         h('div', {
           ref: 'content',
-          staticClass: 'q-tabs__content row no-wrap items-center self-stretch hide-scrollbar',
+          staticClass: 'q-tabs__content row no-wrap items-center self-stretch hide-scrollbar relative-position',
           class: this.innerClass,
           on: this.arrowsEnabled === true ? cache(this, 'scroll', { scroll: this.__updateArrowsFn }) : void 0
         }, slot(this, 'default'))
@@ -9509,10 +10190,10 @@
 
       this.arrowsEnabled === true && child.push(
         h(QIcon, {
-          staticClass: 'q-tabs__arrow q-tabs__arrow--left absolute q-tab__icon',
-          class: this.leftArrow === true ? '' : 'q-tabs__arrow--faded',
-          props: { name: this.leftIcon || (this.vertical === true ? this.$q.iconSet.tabs.up : this.$q.iconSet.tabs.left) },
-          on: cache(this, 'onL', {
+          staticClass: 'q-tabs__arrow q-tabs__arrow--start absolute q-tab__icon',
+          class: this.startArrow === true ? '' : 'q-tabs__arrow--faded',
+          props: { name: this.arrowIcons.start },
+          on: cache(this, 'onS', {
             mousedown: this.__scrollToStart,
             touchstart: this.__scrollToStart,
             mouseup: this.__stopAnimScroll,
@@ -9522,10 +10203,10 @@
         }),
 
         h(QIcon, {
-          staticClass: 'q-tabs__arrow q-tabs__arrow--right absolute q-tab__icon',
-          class: this.rightArrow === true ? '' : 'q-tabs__arrow--faded',
-          props: { name: this.rightIcon || (this.vertical === true ? this.$q.iconSet.tabs.down : this.$q.iconSet.tabs.right) },
-          on: cache(this, 'onR', {
+          staticClass: 'q-tabs__arrow q-tabs__arrow--end absolute q-tab__icon',
+          class: this.endArrow === true ? '' : 'q-tabs__arrow--faded',
+          props: { name: this.arrowIcons.end },
+          on: cache(this, 'onE', {
             mousedown: this.__scrollToEnd,
             touchstart: this.__scrollToEnd,
             mouseup: this.__stopAnimScroll,
@@ -9558,7 +10239,8 @@
         }
       },
       __activateTab: {},
-      __recalculateScroll: {}
+      __recalculateScroll: {},
+      __onKbdNavigate: {}
     },
 
     props: {
@@ -9589,7 +10271,17 @@
       classes: function classes () {
         var obj;
 
-        return ( obj = {}, obj[("q-tab--" + (this.isActive ? '' : 'in') + "active")] = true, obj[("text-" + (this.tabs.activeColor))] = this.isActive && this.tabs.activeColor, obj[("bg-" + (this.tabs.activeBgColor))] = this.isActive && this.tabs.activeBgColor, obj['q-tab--full'] = this.icon && this.label && !this.tabs.inlineLabel, obj['q-tab--no-caps'] = this.noCaps === true || this.tabs.noCaps === true, obj['q-focusable q-hoverable cursor-pointer'] = !this.disable, obj.disabled = this.disable, obj )
+        return Object.assign({}, (
+            this.isActive === true
+              ? ( obj = {
+                'q-tab--active': true
+              }, obj[this.tabs.activeClass] = this.tabs.activeClass, obj[("text-" + (this.tabs.activeColor))] = this.tabs.activeColor, obj[("bg-" + (this.tabs.activeBgColor))] = this.tabs.activeBgColor, obj )
+              : { 'q-tab--inactive': true }
+          ),
+          {'q-tab--full': this.icon && this.label && !this.tabs.inlineLabel,
+          'q-tab--no-caps': this.noCaps === true || this.tabs.noCaps === true,
+          'q-focusable q-hoverable cursor-pointer': !this.disable,
+          disabled: this.disable})
       },
 
       innerClass: function innerClass () {
@@ -9598,21 +10290,32 @@
       },
 
       computedTabIndex: function computedTabIndex () {
-        return this.disable === true || this.isActive === true ? -1 : this.tabindex || 0
+        return this.disable === true || this.tabs.hasFocus === true
+          ? -1
+          : this.tabindex || 0
+      },
+
+      computedRipple: function computedRipple () {
+        return this.ripple === false
+          ? false
+          : Object.assign(
+            { keyCodes: [13, 32], early: true },
+            this.ripple === true ? {} : this.ripple
+          )
       },
 
       onEvents: function onEvents () {
         return Object.assign({}, {input: stop},
           this.qListeners,
           {click: this.__activate,
-          keyup: this.__onKeyup})
+          keydown: this.__onKeydown})
       },
 
       attrs: function attrs () {
         var attrs = {
           tabindex: this.computedTabIndex,
           role: 'tab',
-          'aria-selected': this.isActive
+          'aria-selected': this.isActive === true ? 'true' : 'false'
         };
 
         if (this.disable === true) {
@@ -9625,7 +10328,9 @@
 
     methods: {
       __activate: function __activate (e, keyboard) {
-        keyboard !== true && this.$refs.blurTarget !== void 0 && this.$refs.blurTarget.focus();
+        if (keyboard !== true && this.$refs.blurTarget !== void 0) {
+          this.$refs.blurTarget.focus({ preventScroll: true });
+        }
 
         if (this.disable !== true) {
           this.qListeners.click !== void 0 && this.$emit('click', e);
@@ -9633,8 +10338,18 @@
         }
       },
 
-      __onKeyup: function __onKeyup (e) {
-        isKeyCode(e, 13) === true && this.__activate(e, true);
+      __onKeydown: function __onKeydown (e) {
+        if (shouldIgnoreKey(e)) {
+          return
+        }
+
+        if ([ 13, 32 ].indexOf(e.keyCode) !== -1) {
+          this.__activate(e, true);
+          prevent(e);
+        }
+        else if (e.keyCode >= 35 && e.keyCode <= 40) {
+          this.__onKbdNavigate(e.keyCode, this.$el) === true && stopAndPrevent(e);
+        }
       },
 
       __getContent: function __getContent (h) {
@@ -9694,21 +10409,43 @@
         return node
       },
 
-      __renderTab: function __renderTab (h, tag, props) {
+      __renderTab: function __renderTab (h, tag) {
+        var this$1 = this;
+
         var data = {
-          staticClass: 'q-tab relative-position self-stretch flex flex-center text-center',
+          staticClass: 'q-tab relative-position self-stretch flex flex-center text-center no-outline',
           class: this.classes,
           attrs: this.attrs,
-          directives: this.ripple !== false && this.disable === true ? null : [
-            { name: 'ripple', value: this.ripple }
+          directives: this.ripple === false || this.disable === true ? null : [
+            { name: 'ripple', value: this.computedRipple }
           ]
         };
-        data[ tag === 'div' ? 'on' : 'nativeOn' ] = this.onEvents;
 
-        if (props !== void 0) {
-          data.props = props;
+        if (this.hasRouterLink === true) {
+          return h(tag, Object.assign({}, data,
+            {nativeOn: this.onEvents,
+            props: this.routerTabLinkProps,
+            scopedSlots: {
+              default: function (ref) {
+                var obj;
+
+                var href = ref.href;
+                var isActive = ref.isActive;
+                var isExactActive = ref.isExactActive;
+                return h('a', {
+                class: ( obj = {}, obj[this$1.activeClass] = isActive, obj[this$1.exactActiveClass] = isExactActive, obj ),
+                attrs: Object.assign({}, this$1.linkProps.attrs,
+                  {href: href})
+              }, this$1.__getContent(h));
+          }
+            }}))
         }
 
+        if (this.hasLink === true) {
+          Object.assign(data.attrs, this.linkProps.attrs);
+          data.props = this.linkProps.props;
+        }
+        data.on = this.onEvents;
         return h(tag, data, this.__getContent(h))
       }
     },
@@ -9775,6 +10512,9 @@
     'rgb(255,255,255)', 'rgb(205,205,205)', 'rgb(178,178,178)', 'rgb(153,153,153)', 'rgb(127,127,127)', 'rgb(102,102,102)', 'rgb(76,76,76)', 'rgb(51,51,51)', 'rgb(25,25,25)', 'rgb(0,0,0)'
   ];
 
+  var thumbPath = 'M5 5 h10 v10 h-10 v-10 z';
+  var alphaTrackImg = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAH0lEQVQoU2NkYGAwZkAFZ5G5jPRRgOYEVDeB3EBjBQBOZwTVugIGyAAAAABJRU5ErkJggg==';
+
   var QColor = Vue.extend({
     name: 'QColor',
 
@@ -9803,6 +10543,7 @@
       palette: Array,
 
       noHeader: Boolean,
+      noHeaderTabs: Boolean,
       noFooter: Boolean,
 
       square: Boolean,
@@ -9973,71 +10714,78 @@
       __getHeader: function __getHeader (h) {
         var this$1 = this;
 
+        var child = [];
+
+        this.noHeaderTabs !== true && child.push(
+          h(QTabs, {
+            class: 'q-color-picker__header-tabs',
+            props: {
+              value: this.topView,
+              dense: true,
+              align: 'justify'
+            },
+            on: cache(this, 'topVTab', {
+              input: function (val) { this$1.topView = val; }
+            })
+          }, [
+            h(QTab, {
+              props: {
+                label: 'HEX' + (this.hasAlpha === true ? 'A' : ''),
+                name: 'hex',
+                ripple: false
+              }
+            }),
+
+            h(QTab, {
+              props: {
+                label: 'RGB' + (this.hasAlpha === true ? 'A' : ''),
+                name: 'rgb',
+                ripple: false
+              }
+            })
+          ])
+        );
+
+        child.push(
+          h('div', {
+            staticClass: 'q-color-picker__header-banner row flex-center no-wrap'
+          }, [
+            h('input', {
+              staticClass: 'fit',
+              domProps: { value: this.model[this.topView] },
+              attrs: this.editable !== true ? {
+                readonly: true
+              } : null,
+              on: cache(this, 'topIn', {
+                input: function (evt) {
+                  this$1.__updateErrorIcon(this$1.__onEditorChange(evt) === true);
+                },
+                change: stop,
+                blur: function (evt) {
+                  this$1.__onEditorChange(evt, true) === true && this$1.$forceUpdate();
+                  this$1.__updateErrorIcon(false);
+                }
+              })
+            }),
+
+            h(QIcon, {
+              ref: 'errorIcon',
+              staticClass: 'q-color-picker__error-icon absolute no-pointer-events',
+              props: { name: this.$q.iconSet.type.negative }
+            })
+          ])
+        );
+
         return h('div', {
           staticClass: 'q-color-picker__header relative-position overflow-hidden'
         }, [
           h('div', { staticClass: 'q-color-picker__header-bg absolute-full' }),
 
           h('div', {
-            staticClass: 'q-color-picker__header-content absolute-full',
+            staticClass: 'q-color-picker__header-content',
             class: this.headerClass,
             style: this.currentBgColor
-          }, [
-            h(QTabs, {
-              props: {
-                value: this.topView,
-                dense: true,
-                align: 'justify'
-              },
-              on: cache(this, 'topVTab', {
-                input: function (val) { this$1.topView = val; }
-              })
-            }, [
-              h(QTab, {
-                props: {
-                  label: 'HEX' + (this.hasAlpha === true ? 'A' : ''),
-                  name: 'hex',
-                  ripple: false
-                }
-              }),
-
-              h(QTab, {
-                props: {
-                  label: 'RGB' + (this.hasAlpha === true ? 'A' : ''),
-                  name: 'rgb',
-                  ripple: false
-                }
-              })
-            ]),
-
-            h('div', {
-              staticClass: 'q-color-picker__header-banner row flex-center no-wrap'
-            }, [
-              h('input', {
-                staticClass: 'fit',
-                domProps: { value: this.model[this.topView] },
-                attrs: this.editable !== true ? {
-                  readonly: true
-                } : null,
-                on: cache(this, 'topIn', {
-                  input: function (evt) {
-                    this$1.__updateErrorIcon(this$1.__onEditorChange(evt) === true);
-                  },
-                  change: stop,
-                  blur: function (evt) {
-                    this$1.__onEditorChange(evt, true) === true && this$1.$forceUpdate();
-                    this$1.__updateErrorIcon(false);
-                  }
-                })
-              }),
-
-              h(QIcon, {
-                ref: 'errorIcon',
-                staticClass: 'q-color-picker__error-icon absolute no-pointer-events',
-                props: { name: this.$q.iconSet.type.negative }
-              })
-            ])
-          ])
+          }, child)
         ])
       },
 
@@ -10112,8 +10860,6 @@
       __getSpectrumTab: function __getSpectrumTab (h) {
         var this$1 = this;
 
-        var thumbPath = 'M5 5 h10 v10 h-10 v-10 z';
-
         return [
           h('div', {
             ref: 'spectrum',
@@ -10152,39 +10898,45 @@
           h('div', {
             staticClass: 'q-color-picker__sliders'
           }, [
-            h('div', { staticClass: 'q-color-picker__hue non-selectable' }, [
-              h(QSlider, {
+            h(QSlider, {
+              staticClass: 'q-color-picker__hue non-selectable',
+              props: {
+                value: this.model.h,
+                min: 0,
+                max: 360,
+                trackSize: '8px',
+                innerTrackColor: 'transparent',
+                selectionColor: 'transparent',
+                readonly: this.editable !== true,
+                thumbPath: thumbPath
+              },
+              on: cache(this, 'hueSlide', {
+                input: this.__onHueChange,
+                change: function (val) { return this$1.__onHueChange(val, true); }
+              })
+            }),
+
+            this.hasAlpha === true
+              ? h(QSlider, {
+                staticClass: 'q-color-picker__alpha non-selectable',
                 props: {
-                  value: this.model.h,
+                  value: this.model.a,
                   min: 0,
-                  max: 360,
-                  fillHandleAlways: true,
+                  max: 100,
+                  trackSize: '8px',
+                  trackColor: 'white',
+                  innerTrackColor: 'transparent',
+                  selectionColor: 'transparent',
+                  trackImg: alphaTrackImg,
                   readonly: this.editable !== true,
+                  hideSelection: true,
                   thumbPath: thumbPath
                 },
-                on: cache(this, 'hueSlide', {
-                  input: this.__onHueChange,
-                  change: function (val) { return this$1.__onHueChange(val, true); }
+                on: cache(this, 'alphaSlide', {
+                  input: function (value) { return this$1.__onNumericChange(value, 'a', 100); },
+                  change: function (value) { return this$1.__onNumericChange(value, 'a', 100, void 0, true); }
                 })
               })
-            ]),
-            this.hasAlpha === true
-              ? h('div', { staticClass: 'q-color-picker__alpha non-selectable' }, [
-                h(QSlider, {
-                  props: {
-                    value: this.model.a,
-                    min: 0,
-                    max: 100,
-                    fillHandleAlways: true,
-                    readonly: this.editable !== true,
-                    thumbPath: thumbPath
-                  },
-                  on: cache(this, 'alphaSlide', {
-                    input: function (value) { return this$1.__onNumericChange(value, 'a', 100); },
-                    change: function (value) { return this$1.__onNumericChange(value, 'a', 100, void 0, true); }
-                  })
-                })
-              ])
               : null
           ])
         ]
@@ -11151,6 +11903,130 @@
     return res
   }
 
+  function getDateLocale (paramDateLocale, langProps) {
+    return paramDateLocale !== void 0
+      ? paramDateLocale
+      : (
+        langProps !== void 0
+          ? langProps.date
+          : defaultLang.date
+      )
+  }
+
+  function formatTimezone (offset, delimeter) {
+    if ( delimeter === void 0 ) delimeter = '';
+
+    var
+      sign = offset > 0 ? '-' : '+',
+      absOffset = Math.abs(offset),
+      hours = Math.floor(absOffset / 60),
+      minutes = absOffset % 60;
+
+    return sign + pad(hours) + delimeter + pad(minutes)
+  }
+
+  function applyYearMonthDayChange (date, mod, sign) {
+    var
+      year = date.getFullYear(),
+      month = date.getMonth(),
+      day = date.getDate();
+
+    if (mod.years !== void 0) {
+      year += sign * mod.years;
+    }
+    else if (mod.year !== void 0) {
+      year += sign * mod.year;
+    }
+
+    if (mod.months !== void 0) {
+      month += sign * mod.months;
+    }
+    else if (mod.month !== void 0) {
+      month += sign * mod.month;
+    }
+
+    if (mod.days !== void 0) {
+      day += sign * mod.days;
+    }
+
+    date.setDate(1);
+    date.setMonth(2);
+
+    date.setFullYear(year);
+    date.setMonth(month);
+    date.setDate(day);
+
+    return date
+  }
+
+  var yearMonDay = [ 'years', 'year', 'months', 'month', 'days' ];
+
+  function getChange (date, mod, sign) {
+    var
+      d = new Date(date),
+      t = (
+        mod.years !== void 0 || mod.year !== void 0 ||
+        mod.months !== void 0 || mod.month !== void 0 ||
+        mod.days !== void 0
+      )
+        ? applyYearMonthDayChange(d, mod, sign)
+        : d;
+
+    for (var key in mod) {
+      if (yearMonDay.includes(key) === false) {
+        var op = capitalize(key);
+        t[("set" + op)](t[("get" + op)]() + sign * mod[key]);
+      }
+    }
+
+    return t
+  }
+
+  function applyYearMonthDay (date, mod, middle) {
+    var
+      year = mod.year !== void 0
+        ? mod.year
+        : (mod.years !== void 0 ? mod.years : date[("get" + middle + "FullYear")]()),
+      month = mod.month !== void 0
+        ? mod.month - 1
+        : (mod.months !== void 0 ? mod.months : date[("get" + middle + "Month")]()),
+      maxDay = (new Date(year, month + 1, 0)).getDate(),
+      day = Math.min(maxDay, mod.date !== void 0 ? mod.date : date[("get" + middle + "Date")]());
+
+    date[("set" + middle + "Date")](1);
+    date[("set" + middle + "Month")](2);
+
+    date[("set" + middle + "FullYear")](year);
+    date[("set" + middle + "Month")](month);
+    date[("set" + middle + "Date")](day);
+
+    return date
+  }
+
+  var yearMonDayAdj = [ 'years', 'year', 'months', 'month', 'days' ];
+
+  function adjustDate (date, mod, utc) {
+    var
+      middle = utc === true ? 'UTC' : '',
+      d = new Date(date),
+      t = (
+        mod.years !== void 0 || mod.year !== void 0 ||
+        mod.months !== void 0 || mod.month !== void 0 ||
+        mod.days !== void 0
+      )
+        ? applyYearMonthDay(d, mod, middle)
+        : d;
+
+    for (var key in mod) {
+      if (yearMonDayAdj.includes(key) === false) {
+        var op = key.charAt(0).toUpperCase() + key.slice(1);
+        t[("set" + middle + op)](mod[key]);
+      }
+    }
+
+    return t
+  }
+
   function extractDate (str, mask, dateLocale) {
     var d = __splitDate(str, mask, dateLocale);
 
@@ -11168,7 +12044,7 @@
 
     return d.timezoneOffset === null || d.timezoneOffset === tzOffset
       ? date
-      : getChange(date, { minutes: d.timezoneOffset - tzOffset }, true)
+      : getChange(date, { minutes: d.timezoneOffset - tzOffset }, 1)
   }
 
   function __splitDate (str, mask, dateLocale, calendar, defaultModel) {
@@ -11201,7 +12077,7 @@
     }
 
     var
-      langOpts = dateLocale !== void 0 ? dateLocale : lang.props.date,
+      langOpts = getDateLocale(dateLocale, Plugin.props),
       months = langOpts.months,
       monthsShort = langOpts.monthsShort;
 
@@ -11305,49 +12181,10 @@
       }
     }
 
-    date.dateHash = date.year + '/' + pad(date.month) + '/' + pad(date.day);
+    date.dateHash = pad(date.year, 6) + '/' + pad(date.month) + '/' + pad(date.day);
     date.timeHash = pad(date.hour) + ':' + pad(date.minute) + ':' + pad(date.second) + tzString;
 
     return date
-  }
-
-  function formatTimezone (offset, delimeter) {
-    if ( delimeter === void 0 ) delimeter = '';
-
-    var
-      sign = offset > 0 ? '-' : '+',
-      absOffset = Math.abs(offset),
-      hours = Math.floor(absOffset / 60),
-      minutes = absOffset % 60;
-
-    return sign + pad(hours) + delimeter + pad(minutes)
-  }
-
-  function setMonth (date, newMonth /* 1-based */) {
-    var
-      test = new Date(date.getFullYear(), newMonth, 0, 0, 0, 0, 0),
-      days = test.getDate();
-
-    date.setMonth(newMonth - 1, Math.min(days, date.getDate()));
-  }
-
-  function getChange (date, mod, add) {
-    var
-      t = new Date(date),
-      sign = (add ? 1 : -1);
-
-    Object.keys(mod).forEach(function (key) {
-      if (key === 'month') {
-        setMonth(t, t.getMonth() + 1 + sign * mod.month);
-        return
-      }
-
-      var op = key === 'year'
-        ? 'FullYear'
-        : capitalize(key === 'days' ? 'date' : key);
-      t[("set" + op)](t[("get" + op)]() + sign * mod[key]);
-    });
-    return t
   }
 
   function isValid (date) {
@@ -11409,30 +12246,10 @@
   }
 
   function addToDate (date, mod) {
-    return getChange(date, mod, true)
+    return getChange(date, mod, 1)
   }
   function subtractFromDate (date, mod) {
-    return getChange(date, mod, false)
-  }
-
-  function adjustDate (date, mod, utc) {
-    var
-      t = new Date(date),
-      prefix = "set" + (utc === true ? 'UTC' : '');
-
-    Object.keys(mod).forEach(function (key) {
-      if (key === 'month') {
-        setMonth(t, mod.month);
-        return
-      }
-
-      var op = key === 'year'
-        ? 'FullYear'
-        : key.charAt(0).toUpperCase() + key.slice(1);
-      t[("" + prefix + op)](mod[key]);
-    });
-
-    return t
+    return getChange(date, mod, -1)
   }
 
   function startOfDate (date, unit, utc) {
@@ -11851,15 +12668,15 @@
       mask = defaultMask;
     }
 
-    var locale = dateLocale !== void 0
-      ? dateLocale
-      : lang.props.date;
+    var locale = getDateLocale(dateLocale, Plugin.props);
 
     return mask.replace(
       token,
-      function (match, text) { return match in formatter
-        ? formatter[match](date, locale, __forcedYear, __forcedTimezoneOffset)
-        : (text === void 0 ? match : text.split('\\]').join(']')); }
+      function (match, text) { return (
+        match in formatter
+          ? formatter[match](date, locale, __forcedYear, __forcedTimezoneOffset)
+          : (text === void 0 ? match : text.split('\\]').join(']'))
+      ); }
     )
   }
 
@@ -12614,7 +13431,13 @@
 
     methods: {
       setToday: function setToday () {
-        this.__toggleDate(this.today, this.__getMonthHash(this.today));
+        var date = this.today;
+        var month = this.daysMap[this.__getMonthHash(date)];
+
+        if (month === void 0 || month.includes(date.day) === false) {
+          this.__addToModel(date);
+        }
+
         this.setCalendarTo(this.today.year, this.today.month);
       },
 
@@ -13242,7 +14065,7 @@
         var this$1 = this;
 
         var date = this.daysModel[0] !== void 0 && this.daysModel[0].dateHash !== null
-          ? this.daysModel[0]
+          ? Object.assign({}, this.daysModel[0])
           : Object.assign({}, this.viewModel); // inherit day, hours, minutes, milliseconds...
 
         // nextTick required because of animation delay in viewModel
@@ -13673,6 +14496,7 @@
       noRouteDismiss: Boolean,
       noRefocus: Boolean,
       noFocus: Boolean,
+      noShake: Boolean,
 
       seamless: Boolean,
 
@@ -13814,7 +14638,7 @@
         this.__addHistory();
 
         // IE can have null document.activeElement
-        this.__refocusTarget = this.noRefocus === false && document.activeElement !== null
+        this.__refocusTarget = client.is.mobile !== true && this.noRefocus === false && document.activeElement !== null
           ? document.activeElement
           : void 0;
 
@@ -13824,7 +14648,7 @@
         EscapeKey.register(this, function () {
           if (this$1.seamless !== true) {
             if (this$1.persistent === true || this$1.noEscDismiss === true) {
-              this$1.maximized !== true && this$1.shake();
+              this$1.maximized !== true && this$1.noShake !== true && this$1.shake();
             }
             else {
               this$1.$emit('escape-key');
@@ -13884,7 +14708,8 @@
 
         // check null for IE
         if (this.__refocusTarget !== void 0 && this.__refocusTarget !== null) {
-          this.__refocusTarget.focus();
+          this.__refocusTarget.focus(evt);
+          this.__refocusTarget = void 0;
         }
 
         this.$el.dispatchEvent(create('popup-hide', { bubbles: true }));
@@ -13945,7 +14770,7 @@
         if (this.persistent !== true && this.noBackdropDismiss !== true) {
           this.hide(e);
         }
-        else {
+        else if (this.noShake !== true) {
           this.shake();
         }
       },
@@ -14001,6 +14826,7 @@
 
     beforeDestroy: function beforeDestroy () {
       this.__cleanup();
+      this.__refocusTarget = void 0;
     }
   });
 
@@ -14106,11 +14932,10 @@
         }
       },
 
-      'layout.totalWidth': function layout_totalWidth (val) {
-        this.__updateLocal('belowBreakpoint', (
-          this.behavior === 'mobile' ||
-          (this.behavior !== 'desktop' && val <= this.breakpoint)
-        ));
+      'layout.totalWidth': function layout_totalWidth () {
+        if (this.layout.container === true || document.qScrollPrevented !== true) {
+          this.__updateBelowBreakpoint();
+        }
       },
 
       side: function side (newSide, oldSide) {
@@ -14126,22 +14951,17 @@
         this.layout[newSide].offset = this.offset;
       },
 
-      behavior: function behavior (val) {
-        this.__updateLocal('belowBreakpoint', (
-          val === 'mobile' ||
-          (val !== 'desktop' && this.layout.totalWidth <= this.breakpoint)
-        ));
+      behavior: function behavior () {
+        this.__updateBelowBreakpoint();
       },
 
-      breakpoint: function breakpoint (val) {
-        this.__updateLocal('belowBreakpoint', (
-          this.behavior === 'mobile' ||
-          (this.behavior !== 'desktop' && this.layout.totalWidth <= val)
-        ));
+      breakpoint: function breakpoint () {
+        this.__updateBelowBreakpoint();
       },
 
       'layout.container': function layout_container (val) {
         this.showing === true && this.__preventScroll(val !== true);
+        val === true && this.__updateBelowBreakpoint();
       },
 
       'layout.scrollbarWidth': function layout_scrollbarWidth () {
@@ -14583,6 +15403,13 @@
 
       __updateSizeOnLayout: function __updateSizeOnLayout (miniToOverlay, size) {
         this.__update('size', miniToOverlay === true ? this.miniWidth : size);
+      },
+
+      __updateBelowBreakpoint: function __updateBelowBreakpoint () {
+        this.__updateLocal('belowBreakpoint', (
+          this.behavior === 'mobile' ||
+          (this.behavior !== 'desktop' && this.layout.totalWidth <= this.breakpoint)
+        ));
       }
     },
 
@@ -14863,7 +15690,7 @@
           clearSelection();
           document.body.classList.add('non-selectable');
 
-          var target = getTouchTarget(this.anchorEl);
+          var target = this.anchorEl;
           var evts = ['touchmove', 'touchcancel', 'touchend', 'click']
             .map(function (e) { return ([ target, e, '__delayHide', 'passiveCapture' ]); });
 
@@ -15000,8 +15827,7 @@
     computed: {
       isActionable: function isActionable () {
         return this.clickable === true ||
-          this.hasRouterLink === true ||
-          this.tag === 'a' ||
+          this.hasLink === true ||
           this.tag === 'label'
       },
 
@@ -15086,30 +15912,25 @@
       var data = {
         staticClass: 'q-item q-item-type row no-wrap',
         class: this.classes,
-        style: this.style
+        style: this.style,
+        attrs: {}
       };
       data[ this.hasRouterLink === true ? 'nativeOn' : 'on' ] = this.onEvents;
 
       if (this.isClickable === true) {
-        data.attrs = {
-          tabindex: this.tabindex || '0'
-        };
+        data.attrs.tabindex = this.tabindex || '0';
       }
       else if (this.isActionable === true) {
-        data.attrs = {
-          'aria-disabled': 'true'
-        };
+        data.attrs['aria-disabled'] = 'true';
       }
 
-      if (this.hasRouterLink === true) {
-        data.tag = 'a';
-        data.props = this.routerLinkProps;
-
-        return h('router-link', data, this.__getContent(h))
+      if (this.hasLink === true) {
+        data.props = this.linkProps.props;
+        Object.assign(data.attrs, this.linkProps.attrs);
       }
 
       return h(
-        this.tag,
+        this.linkTag,
         data,
         this.__getContent(h)
       )
@@ -15855,7 +16676,7 @@
     var key;
     for (key in obj) {}
 
-    return key === undefined || hasOwn.call(obj, key)
+    return key === void 0 || hasOwn.call(obj, key)
   }
 
   function extend () {
@@ -15904,7 +16725,7 @@
 
             target[name] = extend(deep, clone, copy);
           }
-          else if (copy !== undefined) {
+          else if (copy !== void 0) {
             target[name] = copy;
           }
         }
@@ -16429,7 +17250,7 @@
 
       return h('div', {
         style: {
-          height: this.inFullscreen === true ? '100vh' : null
+          height: this.inFullscreen === true ? '100%' : null
         },
         class: this.classes,
         attrs: this.attrs,
@@ -16450,7 +17271,7 @@
             },
             domProps: isSSR
               ? { innerHTML: this.value }
-              : undefined,
+              : void 0,
             on: on
           }
         )
@@ -16688,7 +17509,6 @@
 
       attrs: function attrs () {
         return {
-          role: 'separator',
           'aria-orientation': this.orientation
         }
       }
@@ -16782,7 +17602,7 @@
       },
 
       isClickable: function isClickable () {
-        return this.hasRouterLink === true || this.expandIconToggle !== true
+        return this.hasLink === true || this.expandIconToggle !== true
       },
 
       expansionIcon: function expansionIcon () {
@@ -16792,13 +17612,13 @@
       },
 
       activeToggleIcon: function activeToggleIcon () {
-        return this.disable !== true && (this.hasRouterLink === true || this.expandIconToggle === true)
+        return this.disable !== true && (this.hasLink === true || this.expandIconToggle === true)
       }
     },
 
     methods: {
       __onHeaderClick: function __onHeaderClick (e) {
-        this.hasRouterLink !== true && this.toggle(e);
+        this.hasLink !== true && this.toggle(e);
         this.$emit('click', e);
       },
 
@@ -16861,7 +17681,7 @@
         var child;
 
         if (this.$scopedSlots.header !== void 0) {
-          child = this.$scopedSlots.header().slice();
+          child = [].concat(this.$scopedSlots.header());
         }
         else {
           child = [
@@ -16909,16 +17729,18 @@
         };
 
         if (this.isClickable === true) {
-          var evtProp = this.hasRouterLink === true ? 'nativeOn' : 'on';
-
           data.props.clickable = true;
-          data[evtProp] = Object.assign({}, this.qListeners,
+          data[this.hasRouterLink === true ? 'nativeOn' : 'on'] = Object.assign({}, this.qListeners,
             {click: this.__onHeaderClick});
 
-          this.hasRouterLink === true && Object.assign(
-            data.props,
-            this.routerLinkProps
-          );
+          if (this.hasLink === true) {
+            Object.assign(
+              data.props,
+              this.linkProps.props
+            );
+
+            data.attrs = this.linkProps.attrs;
+          }
         }
 
         return h(QItem, data, child)
@@ -17126,10 +17948,22 @@
           (this.showing === true ? ' q-fab--opened' : '')
       },
 
+      actionsClasses: function actionsClasses () {
+        return "q-fab__actions--" + (this.direction) + (this.showing === true ? ' q-fab__actions--opened' : '')
+      },
+
+      iconHolderClasses: function iconHolderClasses () {
+        return this.showing === true ? 'q-fab__icon-holder--opened' : ''
+      },
+
       attrs: function attrs () {
         return Object.assign({}, {'aria-expanded': this.showing === true ? 'true' : 'false',
           'aria-haspopup': 'true'},
           this.qAttrs)
+      },
+
+      slotScope: function slotScope () {
+        return { opened: this.showing }
       }
     },
 
@@ -17140,6 +17974,15 @@
         if (this.$refs.trigger && this.$refs.trigger.$el) {
           this.$refs.trigger.$el.focus();
         }
+      },
+
+      __getIcon: function __getIcon (h, kebab, camel) {
+        var slotFn = this.$scopedSlots[kebab];
+        var staticClass = "q-fab__" + kebab + " absolute-full";
+
+        return slotFn === void 0
+          ? h(QIcon, { staticClass: staticClass, props: { name: this[kebab] || this.$q.iconSet.fab[camel] } })
+          : h('div', { staticClass: staticClass }, slotFn(this.slotScope))
       }
     },
 
@@ -17147,21 +17990,17 @@
       var child = [];
 
       this.hideIcon !== true && child.push(
-        h('div', { staticClass: 'q-fab__icon-holder' }, [
-          h(QIcon, {
-            staticClass: 'q-fab__icon absolute-full',
-            props: { name: this.icon || this.$q.iconSet.fab.icon }
-          }),
-          h(QIcon, {
-            staticClass: 'q-fab__active-icon absolute-full',
-            props: { name: this.activeIcon || this.$q.iconSet.fab.activeIcon }
-          })
+        h('div', { staticClass: 'q-fab__icon-holder', class: this.iconHolderClasses }, [
+          this.__getIcon(h, 'icon', 'icon'),
+          this.__getIcon(h, 'active-icon', 'activeIcon')
         ])
       );
 
-      this.label !== '' && child[this.labelProps.action](
-        h('div', this.labelProps.data, [ this.label ])
-      );
+      if (this.label !== '' || this.$scopedSlots.label !== void 0) {
+        child[this.labelProps.action](
+          h('div', this.labelProps.data, this.$scopedSlots.label !== void 0 ? this.$scopedSlots.label(this.slotScope) : [ this.label ])
+        );
+      }
 
       return h('div', {
         staticClass: 'q-fab z-fab row inline justify-center',
@@ -17187,7 +18026,7 @@
 
         h('div', {
           staticClass: 'q-fab__actions flex no-wrap inline',
-          class: ("q-fab__actions--" + (this.direction))
+          class: this.actionsClasses
         }, slot(this, 'default'))
       ])
     }
@@ -17258,15 +18097,22 @@
     render: function render (h) {
       var child = [];
 
-      this.icon !== '' && child.push(
-        h(QIcon, {
-          props: { name: this.icon }
-        })
-      );
+      if (this.$scopedSlots.icon !== void 0) {
+        child.push(this.$scopedSlots.icon());
+      }
+      else if (this.icon !== '') {
+        child.push(
+          h(QIcon, {
+            props: { name: this.icon }
+          })
+        );
+      }
 
-      this.label !== '' && child[this.labelProps.action](
-        h('div', this.labelProps.data, [ this.label ])
-      );
+      if (this.label !== '' || this.$scopedSlots.label !== void 0) {
+        child[this.labelProps.action](
+          h('div', this.labelProps.data, this.$scopedSlots.label !== void 0 ? this.$scopedSlots.label() : [ this.label ])
+        );
+      }
 
       return h(QBtn, {
         class: this.classes,
@@ -17318,7 +18164,12 @@
       },
 
       disable: function disable (val) {
-        val === true && this.resetValidation();
+        if (val === true) {
+          this.__resetValidation();
+        }
+        else {
+          this.__validateIfNeeded(true);
+        }
       },
 
       reactiveRules: {
@@ -17341,23 +18192,30 @@
       },
 
       focused: function focused (focused$1) {
-        if (this.lazyRules !== 'ondemand') {
-          if (focused$1 === true) {
-            if (this.isDirty === null) {
-              this.isDirty = false;
-            }
-          }
-          else if (this.isDirty === false && this.hasRules === true) {
-            this.isDirty = true;
-            this.validate();
+        if (focused$1 === true) {
+          if (this.isDirty === null) {
+            this.isDirty = false;
           }
         }
+        else if (this.isDirty === false) {
+          this.isDirty = true;
+
+          if (this.hasRules === true && this.lazyRules !== 'ondemand') {
+            this.debouncedValidate();
+          }
+        }
+      },
+
+      hasError: function hasError (invalid) {
+        var targetEl = document.getElementById(this.targetUid);
+        targetEl !== null && targetEl.setAttribute('aria-invalid', invalid === true);
       }
     },
 
     computed: {
       hasRules: function hasRules () {
-        return this.rules !== void 0 &&
+        return this.disable !== true &&
+          this.rules !== void 0 &&
           this.rules !== null &&
           this.rules.length > 0
       },
@@ -17373,21 +18231,23 @@
       }
     },
 
+    created: function created () {
+      this.debouncedValidate = debounce(this.validate, 0);
+    },
+
     mounted: function mounted () {
       this.validateIndex = 0;
     },
 
     beforeDestroy: function beforeDestroy () {
       this.unwatchRules !== void 0 && this.unwatchRules();
+      this.debouncedValidate.cancel();
     },
 
     methods: {
       resetValidation: function resetValidation () {
-        this.validateIndex++;
-        this.innerLoading = false;
         this.isDirty = null;
-        this.innerError = false;
-        this.innerErrorMessage = void 0;
+        this.__resetValidation();
       },
 
       /*
@@ -17486,13 +18346,21 @@
         )
       },
 
+      __resetValidation: function __resetValidation () {
+        this.debouncedValidate.cancel();
+        this.validateIndex++;
+        this.innerLoading = false;
+        this.innerError = false;
+        this.innerErrorMessage = void 0;
+      },
+
       __validateIfNeeded: function __validateIfNeeded (changedRules) {
         if (
           this.hasRules === true &&
           this.lazyRules !== 'ondemand' &&
           (this.isDirty === true || (this.lazyRules !== true && changedRules !== true))
         ) {
-          this.validate();
+          this.debouncedValidate();
         }
       }
     }
@@ -17700,7 +18568,7 @@
       classes: function classes () {
         var obj;
 
-        return ( obj = {}, obj[this.fieldClass] = this.fieldClass !== void 0, obj[("q-field--" + (this.styleType))] = true, obj['q-field--rounded'] = this.rounded, obj['q-field--square'] = this.square, obj['q-field--focused'] = this.focused === true, obj['q-field--highlighted'] = this.focused === true || this.hasError === true, obj['q-field--float'] = this.floatingLabel, obj['q-field--labeled'] = this.hasLabel, obj['q-field--dense'] = this.dense, obj['q-field--item-aligned q-item-type'] = this.itemAligned, obj['q-field--dark'] = this.isDark, obj['q-field--auto-height'] = this.__getControl === void 0, obj['q-field--with-bottom'] = this.hideBottomSpace !== true && this.shouldRenderBottom === true, obj['q-field--error'] = this.hasError, obj['q-field--readonly'] = this.readonly === true && this.disable !== true, obj[this.disable === true ? 'q-field--disabled' : 'q-validation-component'] = true, obj )
+        return ( obj = {}, obj[this.fieldClass] = this.fieldClass !== void 0, obj[("q-field--" + (this.styleType))] = true, obj['q-field--rounded'] = this.rounded, obj['q-field--square'] = this.square, obj['q-field--focused'] = this.focused === true, obj['q-field--highlighted'] = this.focused === true || this.hasError === true, obj['q-field--float'] = this.floatingLabel, obj['q-field--labeled'] = this.hasLabel, obj['q-field--dense'] = this.dense, obj['q-field--item-aligned q-item-type'] = this.itemAligned, obj['q-field--dark'] = this.isDark, obj['q-field--auto-height'] = this.__getControl === void 0, obj['q-field--with-bottom'] = this.hideBottomSpace !== true && this.shouldRenderBottom === true, obj['q-field--error'] = this.hasError, obj['q-field--readonly'] = this.readonly === true && this.disable !== true, obj['q-field--disabled'] = this.disable === true, obj )
       },
 
       styleType: function styleType () {
@@ -17756,6 +18624,17 @@
         }
       },
 
+      bottomSlotScope: function bottomSlotScope () {
+        return {
+          id: this.targetUid,
+          field: this.$el,
+          editable: this.editable,
+          focused: this.focused,
+          value: this.value,
+          errorMessage: this.computedErrorMessage
+        }
+      },
+
       attrs: function attrs () {
         var attrs = {
           for: this.targetUid
@@ -17774,21 +18653,11 @@
 
     methods: {
       focus: function focus () {
-        var this$1 = this;
-
-        this.focusFn !== void 0 && removeFocusFn(this.focusFn);
-        this.focusFn = addFocusFn(function () {
-          if (this$1.showPopup !== void 0) {
-            this$1.showPopup();
-            return
-          }
-
-          this$1.__focus();
-        });
+        addFocusFn(this.__focus);
       },
 
       blur: function blur () {
-        this.focusFn !== void 0 && removeFocusFn(this.focusFn);
+        removeFocusFn(this.__focus);
         var el = document.activeElement;
         // IE can have null document.activeElement
         if (el !== null && this.$el.contains(el)) {
@@ -17854,7 +18723,7 @@
               h(QIcon, {
                 staticClass: 'q-field__focusable-action',
                 props: { tag: 'button', name: this.clearIcon || this.$q.iconSet.field.clear },
-                attrs: { tabindex: 0, type: 'button' },
+                attrs: iconAsButton,
                 on: this.clearableEvents
               })
             ])
@@ -17929,23 +18798,25 @@
         var msg, key;
 
         if (this.hasError === true) {
-          if (this.computedErrorMessage !== void 0) {
-            msg = [ h('div', [ this.computedErrorMessage ]) ];
-            key = this.computedErrorMessage;
+          key = 'q--slot-error';
+
+          if (this.$scopedSlots.error !== void 0) {
+            msg = this.$scopedSlots.error(this.bottomSlotScope);
           }
-          else {
-            msg = slot(this, 'error');
-            key = 'q--slot-error';
+          else if (this.computedErrorMessage !== void 0) {
+            msg = [ h('div', { attrs: { role: 'alert' } }, [ this.computedErrorMessage ]) ];
+            key = this.computedErrorMessage;
           }
         }
         else if (this.hideHint !== true || this.focused === true) {
-          if (this.hint !== void 0) {
+          key = 'q--slot-hint';
+
+          if (this.$scopedSlots.hint !== void 0) {
+            msg = this.$scopedSlots.hint(this.bottomSlotScope);
+          }
+          else if (this.hint !== void 0) {
             msg = [ h('div', [ this.hint ]) ];
             key = this.hint;
-          }
-          else {
-            msg = slot(this, 'hint');
-            key = 'q--slot-hint';
           }
         }
 
@@ -18058,7 +18929,7 @@
         this.$nextTick(function () {
           this$1.resetValidation();
 
-          if (this$1.lazyRules !== 'ondemand' && this$1.$q.platform.is.mobile !== true) {
+          if (this$1.$q.platform.is.mobile !== true) {
             this$1.isDirty = false;
           }
         });
@@ -18074,7 +18945,7 @@
       this.__onPostRender !== void 0 && this.$nextTick(this.__onPostRender);
 
       return h('label', {
-        staticClass: 'q-field row no-wrap items-start',
+        staticClass: 'q-field q-validation-component row no-wrap items-start',
         class: this.classes,
         attrs: this.attrs
       }, [
@@ -18193,10 +19064,20 @@
     },
 
     methods: {
-      pickFiles: function pickFiles (e) {
-        if (this.editable) {
-          var input = this.__getFileInput();
-          input && input.click(e);
+      pickFiles: function pickFiles (ev) {
+        if (this.editable === true) {
+          if (ev !== Object(ev)) {
+            ev = { target: null };
+          }
+
+          if (ev.target !== null && ev.target.matches('input[type="file"]') === true) {
+            // stop propagation if it's not a real pointer event
+            ev.clientX === 0 && ev.clientY === 0 && stop(ev);
+          }
+          else {
+            var input = this.__getFileInput();
+            input && input !== ev.target && input.click(ev);
+          }
         }
       },
 
@@ -18246,6 +19127,18 @@
         if (this.multiple !== true) {
           files = [ files[0] ];
         }
+
+        files.forEach(function (file) {
+          file.__key = file.webkitRelativePath + file.lastModified + file.name + file.size;
+        });
+
+        // Avoid duplicate files
+        var filenameMap = currentFileList.map(function (entry) { return entry.__key; });
+        files = filterFiles(files, rejectedFiles, 'duplicate', function (file) {
+          return filenameMap.includes(file.__key) === false
+        });
+
+        if (files.length === 0) { return done() }
 
         if (this.maxTotalSize !== void 0) {
           var size = append === true
@@ -18465,9 +19358,16 @@
         this.$emit('input', this.multiple === true ? files : files[0]);
       },
 
+      __onKeydown: function __onKeydown (e) {
+        // prevent form submit if ENTER is pressed
+        e.keyCode === 13 && prevent(e);
+      },
+
       __onKeyup: function __onKeyup (e) {
-        // only on ENTER
-        e.keyCode === 13 && this.pickFiles(e);
+        // only on ENTER and SPACE to match native input field
+        if (e.keyCode === 13 || e.keyCode === 32) {
+          this.pickFiles(e);
+        }
       },
 
       __getFileInput: function __getFileInput () {
@@ -18475,9 +19375,24 @@
       },
 
       __addFiles: function __addFiles (e, fileList) {
+        var this$1 = this;
+
         var files = this.__processFiles(e, fileList, this.innerValue, this.isAppending);
 
-        files !== void 0 && this.__emitValue(
+        // if nothing to do...
+        if (files === void 0) { return }
+
+        // protect against input @change being called in a loop
+        // like it happens on Safari, so don't emit same thing:
+        if (
+          this.multiple === true
+            ? this.value && files.every(function (f) { return this$1.innerValue.includes(f); })
+            : this.value === files[ 0 ]
+        ) {
+          return
+        }
+
+        this.__emitValue(
           this.isAppending === true
             ? this.innerValue.concat(files)
             : files
@@ -18496,6 +19411,7 @@
         if (this.editable === true) {
           data.on = cache(this, 'native', {
             dragover: this.__onDragOver,
+            keydown: this.__onKeydown,
             keyup: this.__onKeyup
           });
         }
@@ -18507,50 +19423,67 @@
         return this.__getDnd(h, 'file')
       },
 
+      __getFiller: function __getFiller (h) {
+        return [
+          h('input', {
+            class: [ this.inputClass, 'q-file__filler' ],
+            style: this.inputStyle
+          })
+        ]
+      },
+
       __getSelection: function __getSelection (h) {
         var this$1 = this;
 
         if (this.$scopedSlots.file !== void 0) {
-          return this.innerValue.map(function (file, index) { return this$1.$scopedSlots.file({ index: index, file: file, ref: this$1 }); })
+          return this.innerValue.length === 0
+            ? this.__getFiller(h)
+            : this.innerValue.map(function (file, index) { return this$1.$scopedSlots.file({ index: index, file: file, ref: this$1 }); })
         }
 
         if (this.$scopedSlots.selected !== void 0) {
-          return this.$scopedSlots.selected({ files: this.innerValue, ref: this })
+          return this.innerValue.length === 0
+            ? this.__getFiller(h)
+            : this.$scopedSlots.selected({ files: this.innerValue, ref: this })
         }
 
         if (this.useChips === true) {
-          return this.innerValue.map(function (file, i) { return h(QChip, {
-            key: 'file-' + i,
-            props: {
-              removable: this$1.editable,
-              dense: true,
-              textColor: this$1.color,
-              tabindex: this$1.tabindex
-            },
-            on: cache(this$1, 'rem#' + i, {
-              remove: function () { this$1.removeAtIndex(i); }
-            })
-          }, [
-            h('span', {
-              staticClass: 'ellipsis',
-              domProps: {
-                textContent: file.name
-              }
-            })
-          ]); })
+          return this.innerValue.length === 0
+            ? this.__getFiller(h)
+            : this.innerValue.map(function (file, i) { return h(QChip, {
+              key: 'file-' + i,
+              props: {
+                removable: this$1.editable,
+                dense: true,
+                textColor: this$1.color,
+                tabindex: this$1.tabindex
+              },
+              on: cache(this$1, 'rem#' + i, {
+                remove: function () { this$1.removeAtIndex(i); }
+              })
+            }, [
+              h('span', {
+                staticClass: 'ellipsis',
+                domProps: {
+                  textContent: file.name
+                }
+              })
+            ]); })
         }
 
-        return [
-          h('div', {
-            style: this.inputStyle,
-            class: this.inputClass,
-            domProps: {
-              textContent: this.displayValue !== void 0
-                ? this.displayValue
-                : this.selectedString
-            }
-          })
-        ]
+        var textContent = this.displayValue !== void 0
+          ? this.displayValue
+          : this.selectedString;
+
+        return textContent.length > 0
+          ? [
+            h('div', {
+              style: this.inputStyle,
+              class: this.inputClass,
+              domProps: { textContent: textContent }
+            })
+          ]
+          : this.__getFiller(h)
       },
 
       __getInput: function __getInput (h) {
@@ -18658,7 +19591,7 @@
       fixed: function fixed () {
         return this.reveal === true ||
           this.layout.view.indexOf('F') > -1 ||
-          this.layout.container === true
+          (this.$q.platform.is.ios && this.layout.container === true)
       },
 
       containerHeight: function containerHeight () {
@@ -18835,7 +19768,7 @@
 
         this.validateIndex++;
 
-        var components = this.getValidationComponents();
+        var components = this.getValidationComponents().filter(function (c) { return c.disable !== true; });
 
         var emit = function (res, ref) {
           this$1.$emit('validation-' + (res === true ? 'success' : 'error'), ref);
@@ -19052,7 +19985,7 @@
       fixed: function fixed () {
         return this.reveal === true ||
           this.layout.view.indexOf('H') > -1 ||
-          this.layout.container === true
+          (this.$q.platform.is.ios && this.layout.container === true)
       },
 
       offset: function offset () {
@@ -19505,6 +20438,8 @@
     }
   });
 
+  var passive$1 = listenOpts.passive;
+
   var QInfiniteScroll = Vue.extend({
     name: 'QInfiniteScroll',
 
@@ -19534,18 +20469,20 @@
     data: function data () {
       return {
         index: this.initialIndex || 0,
-        fetching: false,
-        working: true
+        isFetching: false,
+        isWorking: true
       }
     },
 
     watch: {
       disable: function disable (val) {
-        if (val === true) {
-          this.stop();
-        }
-        else {
-          this.resume();
+        if (val === true) { this.stop(); }
+        else { this.resume(); }
+      },
+
+      reverse: function reverse () {
+        if (this.isFetching === false && this.isWorking === true) {
+          this.immediatePoll();
         }
       },
 
@@ -19560,7 +20497,7 @@
 
     methods: {
       poll: function poll () {
-        if (this.disable === true || this.fetching === true || this.working === false) {
+        if (this.disable === true || this.isFetching === true || this.isWorking === false) {
           return
         }
 
@@ -19570,32 +20507,30 @@
           containerHeight = height(this.__scrollTarget);
 
         if (this.reverse === false) {
-          if (scrollPosition + containerHeight + this.offset >= scrollHeight) {
+          if (Math.round(scrollPosition + containerHeight + this.offset) >= Math.round(scrollHeight)) {
             this.trigger();
           }
         }
-        else {
-          if (scrollPosition < this.offset) {
-            this.trigger();
-          }
+        else if (Math.round(scrollPosition) < this.offset) {
+          this.trigger();
         }
       },
 
       trigger: function trigger () {
         var this$1 = this;
 
-        if (this.disable === true || this.fetching === true || this.working === false) {
+        if (this.disable === true || this.isFetching === true || this.isWorking === false) {
           return
         }
 
         this.index++;
-        this.fetching = true;
+        this.isFetching = true;
 
         var heightBefore = getScrollHeight(this.__scrollTarget);
 
         this.$emit('load', this.index, function (stop) {
-          if (this$1.working === true) {
-            this$1.fetching = false;
+          if (this$1.isWorking === true) {
+            this$1.isFetching = false;
             this$1.$nextTick(function () {
               if (this$1.reverse === true) {
                 var
@@ -19622,30 +20557,31 @@
       },
 
       resume: function resume () {
-        if (this.working === false) {
-          this.working = true;
-          this.__scrollTarget.addEventListener('scroll', this.poll, listenOpts.passive);
+        if (this.isWorking === false) {
+          this.isWorking = true;
+          this.__scrollTarget.addEventListener('scroll', this.poll, passive$1);
         }
         this.immediatePoll();
       },
 
       stop: function stop () {
-        if (this.working === true) {
-          this.working = false;
-          this.fetching = false;
-          this.__scrollTarget.removeEventListener('scroll', this.poll, listenOpts.passive);
+        if (this.isWorking === true) {
+          this.isWorking = false;
+          this.isFetching = false;
+          this.__scrollTarget.removeEventListener('scroll', this.poll, passive$1);
+          typeof this.poll.cancel === 'function' && this.poll.cancel();
         }
       },
 
       updateScrollTarget: function updateScrollTarget () {
-        if (this.__scrollTarget && this.working === true) {
-          this.__scrollTarget.removeEventListener('scroll', this.poll, listenOpts.passive);
+        if (this.__scrollTarget && this.isWorking === true) {
+          this.__scrollTarget.removeEventListener('scroll', this.poll, passive$1);
         }
 
         this.__scrollTarget = getScrollTarget(this.$el, this.scrollTarget);
 
-        if (this.working === true) {
-          this.__scrollTarget.addEventListener('scroll', this.poll, listenOpts.passive);
+        if (this.isWorking === true) {
+          this.__scrollTarget.addEventListener('scroll', this.poll, passive$1);
         }
       },
 
@@ -19662,12 +20598,12 @@
           ? this.immediatePoll
           : debounce(this.immediatePoll, isNaN(val) === true ? 100 : val);
 
-        if (this.__scrollTarget && this.working === true) {
+        if (this.__scrollTarget && this.isWorking === true) {
           if (oldPoll !== void 0) {
-            this.__scrollTarget.removeEventListener('scroll', oldPoll, listenOpts.passive);
+            this.__scrollTarget.removeEventListener('scroll', oldPoll, passive$1);
           }
 
-          this.__scrollTarget.addEventListener('scroll', this.poll, listenOpts.passive);
+          this.__scrollTarget.addEventListener('scroll', this.poll, passive$1);
         }
       }
     },
@@ -19689,20 +20625,30 @@
       this.immediatePoll();
     },
 
-    beforeDestroy: function beforeDestroy () {
-      if (this.working === true) {
-        this.__scrollTarget.removeEventListener('scroll', this.poll, listenOpts.passive);
+    activated: function activated () {
+      if (this.__scrollTarget && this.__scrollPosition !== void 0) {
+        setScrollPosition(this.__scrollTarget, this.__scrollPosition);
       }
+    },
+
+    deactivated: function deactivated () {
+      this.__scrollPosition = this.__scrollTarget
+        ? getScrollPosition(this.__scrollTarget)
+        : void 0;
+    },
+
+    beforeDestroy: function beforeDestroy () {
+      this.stop();
     },
 
     render: function render (h) {
       var child = uniqueSlot(this, 'default', []);
 
-      if (this.disable !== true && this.working === true) {
+      if (this.disable !== true && this.isWorking === true) {
         child[this.reverse === false ? 'push' : 'unshift'](
           h('div', {
             staticClass: 'q-infinite-scroll__loading',
-            class: this.fetching === true ? '' : 'invisible'
+            class: this.isFetching === true ? '' : 'invisible'
           }, slot(this, 'loading'))
         );
       }
@@ -19726,38 +20672,70 @@
       size: {
         type: [String, Number],
         default: 42
+      },
+
+      label: String,
+      labelClass: String,
+      labelStyle: [ String, Array, Object ]
+    },
+
+    computed: {
+      classes: function classes () {
+        return 'q-inner-loading absolute-full column flex-center' +
+          (this.isDark === true ? ' q-inner-loading--dark' : '')
+      },
+
+      labelClasses: function labelClasses () {
+        return 'q-inner-loading__label' +
+          (this.labelClass !== void 0 ? (" " + (this.labelClass)) : '')
+      }
+    },
+
+    methods: {
+      __getInner: function __getInner (h) {
+        var child = [
+          h(QSpinner, {
+            size: this.size,
+            color: this.color
+          })
+        ];
+
+        if (this.label !== void 0) {
+          child.push(
+            h('div', {
+              class: this.labelClasses,
+              style: this.labelStyle
+            }, [ this.label ])
+          );
+        }
+
+        return child
+      },
+
+      __getContent: function __getContent (h) {
+        return this.showing === true
+          ? [
+            h('div',
+              {
+                staticClass: this.classes,
+                on: Object.assign({}, this.qListeners)
+              },
+              this.$scopedSlots.default !== void 0
+                ? this.$scopedSlots.default()
+                : this.__getInner(h)
+            )
+          ]
+          : void 0
       }
     },
 
     render: function render (h) {
-      var child = this.showing === true
-        ? [
-          h('div',
-            {
-              staticClass: 'q-inner-loading absolute-full column flex-center',
-              class: this.isDark === true ? 'q-inner-loading--dark' : null,
-              on: Object.assign({}, this.qListeners)
-            },
-            this.$scopedSlots.default !== void 0
-              ? this.$scopedSlots.default()
-              : [
-                h(QSpinner, {
-                  props: {
-                    size: this.size,
-                    color: this.color
-                  }
-                })
-              ]
-          )
-        ]
-        : void 0;
-
       return h('transition', {
         props: {
           name: this.transition,
           appear: true
         }
-      }, child)
+      }, this.__getContent(h))
     }
   });
 
@@ -19805,6 +20783,10 @@
 
     watch: {
       type: function type () {
+        this.__updateMaskInternals();
+      },
+
+      autogrow: function autogrow () {
         this.__updateMaskInternals();
       },
 
@@ -19874,7 +20856,7 @@
 
         this.hasMask = this.mask !== void 0 &&
           this.mask.length > 0 &&
-          ['text', 'search', 'url', 'tel', 'password'].includes(this.type);
+          (this.autogrow === true || ['textarea', 'text', 'search', 'url', 'tel', 'password'].includes(this.type));
 
         if (this.hasMask === false) {
           this.computedUnmask = void 0;
@@ -20415,6 +21397,10 @@
         return this.type === 'textarea' || this.autogrow === true
       },
 
+      isTypeText: function isTypeText () {
+        return this.isTextarea === true || ['text', 'search', 'url', 'tel', 'password'].includes(this.type)
+      },
+
       fieldClass: function fieldClass () {
         return "q-" + (this.isTextarea === true ? 'textarea' : 'input') +
           (this.autogrow === true ? ' q-textarea--autogrow' : '')
@@ -20524,7 +21510,7 @@
         else {
           this.__emitValue(val);
 
-          if (['text', 'search', 'url', 'tel', 'password'].includes(this.type) && e.target === document.activeElement) {
+          if (this.isTypeText === true && e.target === document.activeElement) {
             var ref = e.target;
             var selectionStart = ref.selectionStart;
             var selectionEnd = ref.selectionEnd;
@@ -20810,7 +21796,7 @@
 
     computed: {
       value: function value () {
-        return this.margin !== void 0 || this.threshold !== void 0
+        return this.root !== void 0 || this.margin !== void 0 || this.threshold !== void 0
           ? {
             handler: this.__trigger,
             cfg: {
@@ -21140,7 +22126,7 @@
     }
   });
 
-  var passive$1 = listenOpts.passive;
+  var passive$2 = listenOpts.passive;
 
   var QScrollObserver = Vue.extend({
     name: 'QScrollObserver',
@@ -21183,17 +22169,28 @@
       },
 
       trigger: function trigger (immediately) {
+        var this$1 = this;
+
         if (immediately === true || this.debounce === 0 || this.debounce === '0') {
           this.__emit();
         }
-        else if (!this.timer) {
-          this.timer = this.debounce
-            ? setTimeout(this.__emit, this.debounce)
-            : requestAnimationFrame(this.__emit);
+        else if (this.clearTimer === void 0) {
+          var ref = this.debounce
+            ? [ setTimeout(this.__emit, this.debounce), clearTimeout ]
+            : [ requestAnimationFrame(this.__emit), cancelAnimationFrame ];
+          var timer = ref[0];
+          var fn = ref[1];
+
+          this.clearTimer = function () {
+            fn(timer);
+            this$1.clearTimer = void 0;
+          };
         }
       },
 
       __emit: function __emit () {
+        this.clearTimer !== void 0 && this.clearTimer();
+
         var fn = this.horizontal === true
           ? getHorizontalScrollPosition
           : getScrollPosition;
@@ -21212,20 +22209,19 @@
           this.dirChangePos = this.pos;
         }
 
-        this.timer = null;
         this.pos = pos;
         this.$emit('scroll', this.getPosition());
       },
 
       __configureScrollTarget: function __configureScrollTarget () {
         this.__scrollTarget = getScrollTarget(this.$el.parentNode, this.scrollTarget);
-        this.__scrollTarget.addEventListener('scroll', this.trigger, passive$1);
+        this.__scrollTarget.addEventListener('scroll', this.trigger, passive$2);
         this.trigger(true);
       },
 
       __unconfigureScrollTarget: function __unconfigureScrollTarget () {
         if (this.__scrollTarget !== void 0) {
-          this.__scrollTarget.removeEventListener('scroll', this.trigger, passive$1);
+          this.__scrollTarget.removeEventListener('scroll', this.trigger, passive$2);
           this.__scrollTarget = void 0;
         }
       }
@@ -21236,8 +22232,7 @@
     },
 
     beforeDestroy: function beforeDestroy () {
-      clearTimeout(this.timer);
-      cancelAnimationFrame(this.timer);
+      this.clearTimer !== void 0 && this.clearTimer();
       this.__unconfigureScrollTarget();
     }
   });
@@ -21340,11 +22335,28 @@
       classes: function classes () {
         return 'q-layout q-layout--' +
           (this.container === true ? 'containerized' : 'standard')
+      },
+
+      scrollbarEvtAction: function scrollbarEvtAction () {
+        return this.container !== true && this.scrollbarWidth > 0
+          ? 'add' : 'remove'
       }
+    },
+
+    watch: {
+      scrollbarEvtAction: '__updateScrollEvent'
     },
 
     created: function created () {
       this.instances = {};
+    },
+
+    mounted: function mounted () {
+      this.scrollbarEvtAction === 'add' && this.__updateScrollEvent('add');
+    },
+
+    beforeDestroy: function beforeDestroy () {
+      this.scrollbarEvtAction === 'add' && this.__updateScrollEvent('remove');
     },
 
     render: function render (h) {
@@ -21448,6 +22460,38 @@
             this.scrollbarWidth = width;
           }
         }
+      },
+
+      __updateScrollEvent: function __updateScrollEvent (action) {
+        if (this.timerScrollbar !== void 0 && action === 'remove') {
+          clearTimeout(this.timerScrollbar);
+          this.__restoreScrollbar();
+        }
+
+        window[(action + "EventListener")]('resize', this.__hideScrollbar);
+      },
+
+      __hideScrollbar: function __hideScrollbar () {
+        if (this.timerScrollbar === void 0) {
+          var el = document.body;
+
+          // if it has no scrollbar then there's nothing to do
+          if (el.scrollHeight > this.$q.screen.height) {
+            return
+          }
+
+          el.classList.add('hide-scrollbar');
+        }
+        else {
+          clearTimeout(this.timerScrollbar);
+        }
+
+        this.timerScrollbar = setTimeout(this.__restoreScrollbar, 200);
+      },
+
+      __restoreScrollbar: function __restoreScrollbar () {
+        this.timerScrollbar = void 0;
+        document.body.classList.remove('hide-scrollbar');
       }
     }
   });
@@ -21856,28 +22900,38 @@
         class: this.classes,
         attrs: this.attrs,
         on: Object.assign({}, this.qListeners)
-      }, this.options.map(function (opt) { return h('div', [
-        h(this$1.component, {
-          props: {
-            value: this$1.value,
-            val: opt.value,
-            name: opt.name === void 0 ? this$1.name : opt.name,
-            disable: this$1.disable || opt.disable,
-            label: opt.label,
-            leftLabel: opt.leftLabel === void 0 ? this$1.leftLabel : opt.leftLabel,
-            color: opt.color === void 0 ? this$1.color : opt.color,
-            checkedIcon: opt.checkedIcon,
-            uncheckedIcon: opt.uncheckedIcon,
-            dark: opt.dark || this$1.isDark,
-            size: opt.size === void 0 ? this$1.size : opt.size,
-            dense: this$1.dense,
-            keepColor: opt.keepColor === void 0 ? this$1.keepColor : opt.keepColor
-          },
-          on: cache(this$1, 'inp', {
-            input: this$1.__update
-          })
-        })
-      ]); }))
+      }, this.options.map(function (opt, i) {
+        var child = this$1.$scopedSlots[ 'label-' + i ] !== void 0
+          ? this$1.$scopedSlots[ 'label-' + i ](opt)
+          : (
+            this$1.$scopedSlots.label !== void 0
+              ? this$1.$scopedSlots.label(opt)
+              : void 0
+          );
+
+        return h('div', [
+          h(this$1.component, {
+            props: {
+              value: this$1.value,
+              val: opt.value,
+              name: opt.name === void 0 ? this$1.name : opt.name,
+              disable: this$1.disable || opt.disable,
+              label: child === void 0 ? opt.label : void 0,
+              leftLabel: opt.leftLabel === void 0 ? this$1.leftLabel : opt.leftLabel,
+              color: opt.color === void 0 ? this$1.color : opt.color,
+              checkedIcon: opt.checkedIcon,
+              uncheckedIcon: opt.uncheckedIcon,
+              dark: opt.dark || this$1.isDark,
+              size: opt.size === void 0 ? this$1.size : opt.size,
+              dense: this$1.dense,
+              keepColor: opt.keepColor === void 0 ? this$1.keepColor : opt.keepColor
+            },
+            on: cache(this$1, 'inp', {
+              input: this$1.__update
+            })
+          }, child)
+        ])
+      }))
     }
   });
 
@@ -22689,7 +23743,7 @@
     return debounced
   }
 
-  var passive$2 = listenOpts.passive;
+  var passive$3 = listenOpts.passive;
 
   var QParallax = Vue.extend({
     name: 'QParallax',
@@ -22776,16 +23830,19 @@
       __start: function __start () {
         this.working = true;
         this.__scrollTarget = getScrollTarget(this.$el, this.scrollTarget);
-        this.__scrollTarget.addEventListener('scroll', this.__updatePos, passive$2);
-        window.addEventListener('resize', this.__resizeHandler, passive$2);
+        this.__scrollTarget.addEventListener('scroll', this.__updatePos, passive$3);
+        window.addEventListener('resize', this.__resizeHandler, passive$3);
         this.__updatePos();
       },
 
       __stop: function __stop () {
         if (this.working === true) {
           this.working = false;
-          this.__scrollTarget.removeEventListener('scroll', this.__updatePos, passive$2);
-          window.removeEventListener('resize', this.__resizeHandler, passive$2);
+          this.__setPos.cancel();
+          this.__update.cancel();
+          this.__resizeHandler.cancel();
+          this.__scrollTarget.removeEventListener('scroll', this.__updatePos, passive$3);
+          window.removeEventListener('resize', this.__resizeHandler, passive$3);
           this.__scrollTarget = void 0;
         }
       }
@@ -22853,11 +23910,65 @@
     }
   });
 
-  function clone$1 (data) {
-    var s = JSON.stringify(data);
-    if (s) {
-      return JSON.parse(s)
+  // adapted from https://stackoverflow.com/a/40294058
+
+  function cloneDeep (data, hash) {
+    if ( hash === void 0 ) hash = new WeakMap();
+
+    if (Object(data) !== data) { return data }
+    if (hash.has(data)) { return hash.get(data) }
+
+    var result = data instanceof Date
+      ? new Date(data)
+      : (data instanceof RegExp
+        ? new RegExp(data.source, data.flags)
+        : (data instanceof Set
+          ? new Set()
+          : (data instanceof Map
+            ? new Map()
+            : (typeof data.constructor !== 'function'
+              ? Object.create(null)
+              : (data.prototype !== void 0 && typeof data.prototype.constructor === 'function'
+                ? data
+                : new data.constructor()
+              )
+            )
+          )
+        )
+      );
+
+    if (typeof data.constructor === 'function' && typeof data.valueOf === 'function') {
+      var val = data.valueOf();
+
+      if (Object(val) !== val) {
+        var result$1 = new data.constructor(val);
+
+        hash.set(data, result$1);
+
+        return result$1
+      }
     }
+
+    hash.set(data, result);
+
+    if (data instanceof Set) {
+      data.forEach(function (val) {
+        result.add(cloneDeep(val, hash));
+      });
+    }
+    else if (data instanceof Map) {
+      data.forEach(function (val, key) {
+        result.set(key, cloneDeep(val, hash));
+      });
+    }
+
+    return Object.assign.apply(
+      Object, [ result ].concat( Object.keys(data).map(function (key) {
+        var obj;
+
+        return (( obj = {}, obj[key] = cloneDeep(data[key], hash), obj ));
+    }) )
+    )
   }
 
   var QPopupEdit = Vue.extend({
@@ -22898,7 +24009,8 @@
 
     data: function data () {
       return {
-        initialValue: ''
+        modelChanged: false,
+        model: null
       }
     },
 
@@ -22908,15 +24020,32 @@
           (this.contentClass !== void 0 ? (" " + (this.contentClass)) : '')
       },
 
+      modelValue: function modelValue () {
+        return this.modelChanged === true ? this.model : this.value
+      },
+
+      initialValue: function initialValue () {
+        return this.modelChanged !== true ? this.model : this.value
+      },
+
       defaultSlotScope: function defaultSlotScope () {
-        return {
+        var this$1 = this;
+
+        var acc = {
           initialValue: this.initialValue,
-          value: this.value,
-          emitValue: this.__emitValue,
+          updatePosition: this.__reposition,
+          emitValue: this.__changeModel,
           validate: this.validate,
           set: this.set,
           cancel: this.cancel
-        }
+        };
+
+        Object.defineProperty(acc, 'value', {
+          get: function () { return this$1.modelValue; },
+          set: this.__changeModel
+        });
+
+        return acc
       },
 
       menuProps: function menuProps () {
@@ -22928,19 +24057,20 @@
 
     methods: {
       set: function set () {
-        if (this.validate(this.value) !== true) {
+        if (this.validate(this.modelValue) !== true) {
           return
         }
         if (this.__hasChanged() === true) {
-          this.$emit('save', this.value, this.initialValue);
+          this.$emit('save', this.modelValue, this.initialValue);
+          this.modelChanged === true && this.$emit('input', this.modelValue);
         }
         this.__close();
       },
 
       cancel: function cancel () {
         if (this.__hasChanged() === true) {
-          this.$emit('input', this.initialValue);
-          this.$emit('cancel', this.value, this.initialValue);
+          this.$emit('cancel', this.modelValue, this.initialValue);
+          this.modelChanged !== true && this.$emit('input', this.initialValue);
         }
         this.__close();
       },
@@ -22954,12 +24084,13 @@
       },
 
       __hasChanged: function __hasChanged () {
-        return isDeepEqual(this.value, this.initialValue) === false
+        return isDeepEqual(this.modelValue, this.initialValue) === false
       },
 
-      __emitValue: function __emitValue (val) {
+      __changeModel: function __changeModel (val) {
         if (this.disable !== true) {
-          this.$emit('input', val);
+          this.model = val;
+          this.modelChanged = true;
         }
       },
 
@@ -22981,7 +24112,7 @@
           title = slot(this, 'title', this.title),
           child = this.$scopedSlots.default === void 0
             ? []
-            : this.$scopedSlots.default(this.defaultSlotScope).slice();
+            : [].concat(this.$scopedSlots.default(this.defaultSlotScope));
 
         title && child.unshift(
           h('div', { staticClass: 'q-dialog__title q-mt-sm q-mb-sm' }, [ title ])
@@ -23023,32 +24154,39 @@
         on: cache(this, 'menu', {
           'before-show': function () {
             this$1.validated = false;
-            this$1.initialValue = clone$1(this$1.value);
+            this$1.modelChanged = false;
+            this$1.model = cloneDeep(this$1.value);
             this$1.watcher = this$1.$watch('value', this$1.__reposition);
             this$1.$emit('before-show');
           },
+
           show: function () {
             this$1.$emit('show');
           },
+
           'escape-key': this.cancel,
+
           'before-hide': function () {
             this$1.watcher();
 
             if (this$1.validated === false && this$1.__hasChanged() === true) {
-              if (this$1.autoSave === true && this$1.validate(this$1.value) === true) {
-                this$1.$emit('save', this$1.value, this$1.initialValue);
+              if (this$1.autoSave === true && this$1.validate(this$1.model) === true) {
+                this$1.$emit('save', this$1.modelValue, this$1.initialValue);
+                this$1.modelChanged === true && this$1.$emit('input', this$1.modelValue);
               }
               else {
-                this$1.$emit('cancel', this$1.value, this$1.initialValue);
-                this$1.$emit('input', this$1.initialValue);
+                this$1.$emit('cancel', this$1.modelValue, this$1.initialValue);
+                this$1.modelChanged !== true && this$1.$emit('input', this$1.initialValue);
               }
             }
 
             this$1.$emit('before-hide');
           },
+
           hide: function () {
             this$1.$emit('hide');
           },
+
           keyup: function (e) {
             isKeyCode(e, 13) === true && this$1.set();
           }
@@ -23223,6 +24361,10 @@
         return this.indeterminate === true || this.query === true
       },
 
+      widthReverse: function widthReverse () {
+        return this.reverse !== this.query
+      },
+
       classes: function classes () {
         return 'q-linear-progress' +
           (this.color !== void 0 ? (" text-" + (this.color)) : '') +
@@ -23231,7 +24373,7 @@
       },
 
       trackStyle: function trackStyle () {
-        return width$1(this.buffer !== void 0 ? this.buffer : 1, this.reverse, this.$q)
+        return width$1(this.buffer !== void 0 ? this.buffer : 1, this.widthReverse, this.$q)
       },
 
       trackClass: function trackClass () {
@@ -23241,7 +24383,7 @@
       },
 
       modelStyle: function modelStyle () {
-        return width$1(this.motion === true ? 1 : this.value, this.reverse, this.$q)
+        return width$1(this.motion === true ? 1 : this.value, this.widthReverse, this.$q)
       },
 
       modelClasses: function modelClasses () {
@@ -23532,16 +24674,9 @@
     props: {
       value: {
         type: Object,
-        default: function () { return ({
-          min: null,
-          max: null
-        }); },
-        validator: function validator (val) {
-          return 'min' in val && 'max' in val
-        }
+        default: function () { return ({ min: null, max: null }); },
+        validator: function (v) { return 'min' in v && 'max' in v; }
       },
-
-      name: String,
 
       dragRange: Boolean,
       dragOnlyRange: Boolean,
@@ -23552,194 +24687,174 @@
       rightLabelTextColor: String,
 
       leftLabelValue: [ String, Number ],
-      rightLabelValue: [ String, Number ]
+      rightLabelValue: [ String, Number ],
+
+      leftThumbColor: String,
+      rightThumbColor: String
     },
 
     data: function data () {
+      var innerMin = this.__getInnerMin(this.innerMin);
+      var innerMax = this.__getInnerMax(this.innerMax);
       return {
         model: {
-          min: this.value.min === null ? this.min : this.value.min,
-          max: this.value.max === null ? this.max : this.value.max
+          min: this.value.min === null ? innerMin : between(this.value.min, innerMin, innerMax),
+          max: this.value.max === null ? innerMax : between(this.value.max, innerMin, innerMax)
         },
         curMinRatio: 0,
         curMaxRatio: 0
       }
     },
 
-    watch: {
-      'value.min': function value_min (val) {
-        this.model.min = val === null
-          ? this.min
-          : val;
-      },
-
-      'value.max': function value_max (val) {
-        this.model.max = val === null
-          ? this.max
-          : val;
-      },
-
-      min: function min (value) {
-        if (this.model.min < value) {
-          this.model.min = value;
-        }
-        if (this.model.max < value) {
-          this.model.max = value;
-        }
-      },
-
-      max: function max (value) {
-        if (this.model.min > value) {
-          this.model.min = value;
-        }
-        if (this.model.max > value) {
-          this.model.max = value;
-        }
-      }
-    },
-
     computed: {
+      modelMinRatio: function modelMinRatio () {
+        return this.__convertModelToRatio(this.model.min)
+      },
+      modelMaxRatio: function modelMaxRatio () {
+        return this.__convertModelToRatio(this.model.max)
+      },
+
       ratioMin: function ratioMin () {
         return this.active === true ? this.curMinRatio : this.modelMinRatio
       },
-
       ratioMax: function ratioMax () {
         return this.active === true ? this.curMaxRatio : this.modelMaxRatio
       },
 
-      modelMinRatio: function modelMinRatio () {
-        return this.minMaxDiff === 0 ? 0 : (this.model.min - this.min) / this.minMaxDiff
-      },
-
-      modelMaxRatio: function modelMaxRatio () {
-        return this.minMaxDiff === 0 ? 0 : (this.model.max - this.min) / this.minMaxDiff
-      },
-
-      trackStyle: function trackStyle () {
-        var obj;
-
-        return ( obj = {}, obj[ this.positionProp ] = ((100 * this.ratioMin) + "%"), obj[ this.sizeProp ] = ((100 * (this.ratioMax - this.ratioMin)) + "%"), obj )
-      },
-
-      minThumbStyle: function minThumbStyle () {
-        var obj;
-
-        return ( obj = {}, obj[ this.positionProp ] = ((100 * this.ratioMin) + "%"), obj['z-index'] = this.__nextFocus === 'min' ? 2 : void 0, obj )
-      },
-
-      maxThumbStyle: function maxThumbStyle () {
-        var obj;
-
-        return ( obj = {}, obj[ this.positionProp ] = ((100 * this.ratioMax) + "%"), obj )
-      },
-
-      minThumbClass: function minThumbClass () {
-        if (this.preventFocus === false && this.focus === 'min') {
-          return 'q-slider--focus'
+      selectionBarStyle: function selectionBarStyle () {
+        var acc = {};
+        acc[ this.positionProp ] = ((100 * this.ratioMin) + "%");
+        acc[ this.sizeProp ] = ((100 * (this.ratioMax - this.ratioMin)) + "%");
+        if (this.selectionImg !== void 0) {
+          acc.backgroundImage = "url(" + (this.selectionImg) + ") !important";
         }
+        return acc
       },
 
-      maxThumbClass: function maxThumbClass () {
-        if (this.preventFocus === false && this.focus === 'max') {
-          return 'q-slider--focus'
-        }
-      },
-
-      events: function events () {
+      trackContainerEvents: function trackContainerEvents () {
         var this$1 = this;
 
-        if (this.editable === true) {
-          if (this.$q.platform.is.mobile === true) {
-            return { click: this.__mobileClick }
-          }
+        if (this.editable !== true) {
+          return {}
+        }
 
-          var evt = { mousedown: this.__activate };
+        if (this.$q.platform.is.mobile === true) {
+          return { click: this.__onMobileClick }
+        }
 
-          this.dragOnlyRange === true && Object.assign(evt, {
-            focus: function () { this$1.__focus('both'); },
-            blur: this.__blur,
-            keydown: this.__keydown,
-            keyup: this.__keyup
+        var evt = { mousedown: this.__onActivate };
+
+        if (this.dragRange === true || this.dragOnlyRange === true) {
+          Object.assign(evt, {
+            focus: function () { this$1.focus = 'both'; },
+            blur: this.__onBlur,
+            keydown: this.__onKeydown,
+            keyup: this.__onKeyup
           });
+        }
 
-          return evt
+        return evt
+      },
+
+      trackContainerAttrs: function trackContainerAttrs () {
+        return {
+          tabindex: this.$q.platform.is.mobile !== true && (this.dragRange || this.dragOnlyRange === true)
+            ? this.computedTabindex
+            : null
         }
       },
 
-      minEvents: function minEvents () {
-        var this$1 = this;
-
-        if (this.editable === true && this.$q.platform.is.mobile !== true && this.dragOnlyRange !== true) {
-          return {
-            focus: function () { this$1.__focus('min'); },
-            blur: this.__blur,
-            keydown: this.__keydown,
-            keyup: this.__keyup
-          }
+      thumbAttrs: function thumbAttrs () {
+        return {
+          tabindex: this.dragOnlyRange !== true ? this.computedTabindex : null
         }
       },
 
-      maxEvents: function maxEvents () {
-        var this$1 = this;
-
-        if (this.editable === true && this.$q.platform.is.mobile !== true && this.dragOnlyRange !== true) {
-          return {
-            focus: function () { this$1.__focus('max'); },
-            blur: this.__blur,
-            keydown: this.__keydown,
-            keyup: this.__keyup
-          }
-        }
+      thumbMinEvents: function thumbMinEvents () {
+        return this.__getEvents('min')
+      },
+      thumbMaxEvents: function thumbMaxEvents () {
+        return this.__getEvents('max')
       },
 
-      minPinClass: function minPinClass () {
-        var color = this.leftLabelColor || this.labelColor;
-        if (color) {
-          return ("text-" + color)
-        }
-      },
-
-      minPinTextClass: function minPinTextClass () {
-        var color = this.leftLabelTextColor || this.labelTextColor;
-        if (color) {
-          return ("text-" + color)
-        }
-      },
-
-      maxPinClass: function maxPinClass () {
-        var color = this.rightLabelColor || this.labelColor;
-        if (color) {
-          return ("text-" + color)
-        }
-      },
-
-      maxPinTextClass: function maxPinTextClass () {
-        var color = this.rightLabelTextColor || this.labelTextColor;
-        if (color) {
-          return ("text-" + color)
-        }
-      },
-
-      minLabel: function minLabel () {
+      thumbMinLabel: function thumbMinLabel () {
         return this.leftLabelValue !== void 0
           ? this.leftLabelValue
           : this.model.min
       },
-
-      maxLabel: function maxLabel () {
+      thumbMaxLabel: function thumbMaxLabel () {
         return this.rightLabelValue !== void 0
           ? this.rightLabelValue
           : this.model.max
       },
 
-      minPinStyle: function minPinStyle () {
-        var percent = (this.reverse === true ? -this.ratioMin : this.ratioMin - 1);
-        return this.__getPinStyle(percent, this.ratioMin)
+      thumbMinClasses: function thumbMinClasses () {
+        var color = this.leftThumbColor || this.thumbColor || this.color;
+        return "q-slider__thumb q-slider__thumb" + (this.axis) + " q-slider__thumb" + (this.axis) + "-" + (this.isReversed === true ? 'rtl' : 'ltr') + " absolute non-selectable" +
+          (
+            this.preventFocus === false && (this.focus === 'min' || this.focus === 'both')
+              ? ' q-slider--focus'
+              : ''
+          ) +
+          (color !== void 0 ? (" text-" + color) : '')
+      },
+      thumbMaxClasses: function thumbMaxClasses () {
+        var color = this.rightThumbColor || this.thumbColor || this.color;
+        return "q-slider__thumb q-slider__thumb" + (this.axis) + " q-slider__thumb" + (this.axis) + "-" + (this.isReversed === true ? 'rtl' : 'ltr') + " absolute non-selectable" +
+          (
+            this.preventFocus === false && (this.focus === 'max' || this.focus === 'both')
+              ? ' q-slider--focus'
+              : ''
+          ) +
+          (color !== void 0 ? (" text-" + color) : '')
       },
 
-      maxPinStyle: function maxPinStyle () {
-        var percent = (this.reverse === true ? -this.ratioMax : this.ratioMax - 1);
-        return this.__getPinStyle(percent, this.ratioMax)
+      thumbMinStyle: function thumbMinStyle () {
+        var obj;
+
+        return ( obj = {
+          width: this.thumbSize,
+          height: this.thumbSize
+        }, obj[ this.positionProp ] = ((100 * this.ratioMin) + "%"), obj.zIndex = this.focus === 'min' ? 2 : void 0, obj )
+      },
+      thumbMaxStyle: function thumbMaxStyle () {
+        var obj;
+
+        return ( obj = {
+          width: this.thumbSize,
+          height: this.thumbSize
+        }, obj[ this.positionProp ] = ((100 * this.ratioMax) + "%"), obj.zIndex = this.focus === 'max' ? 2 : void 0, obj )
+      },
+
+      thumbMinPinColor: function thumbMinPinColor () {
+        var color = this.leftLabelColor || this.labelColor;
+        return color !== void 0
+          ? (" text-" + color)
+          : ''
+      },
+      thumbMaxPinColor: function thumbMaxPinColor () {
+        var color = this.rightLabelColor || this.labelColor;
+        return color !== void 0
+          ? (" text-" + color)
+          : ''
+      },
+
+      thumbMinTextContainerStyle: function thumbMinTextContainerStyle () {
+        return this.__getTextContainerStyle(this.ratioMin)
+      },
+      thumbMaxTextContainerStyle: function thumbMaxTextContainerStyle () {
+        return this.__getTextContainerStyle(this.ratioMax)
+      },
+
+      thumbMinTextClass: function thumbMinTextClass () {
+        var color = this.leftLabelTextColor || this.labelTextColor;
+        return 'q-slider__text' +
+          (color !== void 0 ? (" text-" + color) : '')
+      },
+      thumbMaxTextClass: function thumbMaxTextClass () {
+        var color = this.rightLabelTextColor || this.labelTextColor;
+        return 'q-slider__text' +
+          (color !== void 0 ? (" text-" + color) : '')
       },
 
       formAttrs: function formAttrs () {
@@ -23748,15 +24863,31 @@
           name: this.name,
           value: ((this.value.min) + "|" + (this.value.max))
         }
+      },
+
+      modelUpdate: function modelUpdate () {
+        return ((this.value.min) + "|" + (this.value.max) + "|" + (this.computedInnerMin) + "|" + (this.computedInnerMax))
+      }
+    },
+
+    watch: {
+      modelUpdate: function modelUpdate () {
+        this.model.min = this.value.min === null
+          ? this.computedInnerMin
+          : between(this.value.min, this.computedInnerMin, this.computedInnerMax);
+
+        this.model.max = this.value.max === null
+          ? this.computedInnerMax
+          : between(this.value.max, this.computedInnerMin, this.computedInnerMax);
       }
     },
 
     methods: {
       __updateValue: function __updateValue (change) {
         if (this.model.min !== this.value.min || this.model.max !== this.value.max) {
-          this.$emit('input', this.model);
+          this.$emit('input', Object.assign({}, this.model));
         }
-        change === true && this.$emit('change', this.model);
+        change === true && this.$emit('change', Object.assign({}, this.model));
       },
 
       __getDragging: function __getDragging (event) {
@@ -23767,9 +24898,10 @@
         var height = ref.height;
         var sensitivity = this.dragOnlyRange === true
             ? 0
-            : (this.vertical === true
-              ? this.$refs.minThumb.offsetHeight / (2 * height)
-              : this.$refs.minThumb.offsetWidth / (2 * width)
+            : (
+              this.vertical === true
+                ? this.$refs.minThumb.offsetHeight / (2 * height)
+                : this.$refs.minThumb.offsetWidth / (2 * width)
             );
 
         var dragging = {
@@ -23783,34 +24915,30 @@
           ratioMax: this.modelMaxRatio
         };
 
-        var ratio = getRatio(event, dragging, this.isReversed, this.vertical);
-        var type;
+        var ratio = this.__getDraggingRatio(event, dragging);
 
         if (this.dragOnlyRange !== true && ratio < dragging.ratioMin + sensitivity) {
-          type = dragType.MIN;
+          dragging.type = dragType.MIN;
         }
         else if (this.dragOnlyRange === true || ratio < dragging.ratioMax - sensitivity) {
           if (this.dragRange === true || this.dragOnlyRange === true) {
-            type = dragType.RANGE;
+            dragging.type = dragType.RANGE;
             Object.assign(dragging, {
               offsetRatio: ratio,
-              offsetModel: getModel(ratio, this.min, this.max, this.step, this.decimals),
+              offsetModel: this.__convertRatioToModel(ratio),
               rangeValue: dragging.valueMax - dragging.valueMin,
               rangeRatio: dragging.ratioMax - dragging.ratioMin
             });
           }
           else {
-            type = dragging.ratioMax - ratio < ratio - dragging.ratioMin
+            dragging.type = dragging.ratioMax - ratio < ratio - dragging.ratioMin
               ? dragType.MAX
               : dragType.MIN;
           }
         }
         else {
-          type = dragType.MAX;
+          dragging.type = dragType.MAX;
         }
-
-        dragging.type = type;
-        this.__nextFocus = void 0;
 
         return dragging
       },
@@ -23818,10 +24946,9 @@
       __updatePosition: function __updatePosition (event, dragging) {
         if ( dragging === void 0 ) dragging = this.dragging;
 
-        var
-          ratio = getRatio(event, dragging, this.isReversed, this.vertical),
-          model = getModel(ratio, this.min, this.max, this.step, this.decimals);
         var pos;
+        var ratio = this.__getDraggingRatio(event, dragging);
+        var localModel = this.__convertRatioToModel(ratio);
 
         switch (dragging.type) {
           case dragType.MIN:
@@ -23829,19 +24956,19 @@
               pos = {
                 minR: ratio,
                 maxR: dragging.ratioMax,
-                min: model,
+                min: localModel,
                 max: dragging.valueMax
               };
-              this.__nextFocus = 'min';
+              this.focus = 'min';
             }
             else {
               pos = {
                 minR: dragging.ratioMax,
                 maxR: ratio,
                 min: dragging.valueMax,
-                max: model
+                max: localModel
               };
-              this.__nextFocus = 'max';
+              this.focus = 'max';
             }
             break
 
@@ -23851,18 +24978,18 @@
                 minR: dragging.ratioMin,
                 maxR: ratio,
                 min: dragging.valueMin,
-                max: model
+                max: localModel
               };
-              this.__nextFocus = 'max';
+              this.focus = 'max';
             }
             else {
               pos = {
                 minR: ratio,
                 maxR: dragging.ratioMin,
-                min: model,
+                min: localModel,
                 max: dragging.valueMin
               };
-              this.__nextFocus = 'min';
+              this.focus = 'min';
             }
             break
 
@@ -23870,44 +24997,49 @@
             var
               ratioDelta = ratio - dragging.offsetRatio,
               minR = between(dragging.ratioMin + ratioDelta, 0, 1 - dragging.rangeRatio),
-              modelDelta = model - dragging.offsetModel,
+              modelDelta = localModel - dragging.offsetModel,
               min = between(dragging.valueMin + modelDelta, this.min, this.max - dragging.rangeValue);
 
             pos = {
               minR: minR,
               maxR: minR + dragging.rangeRatio,
-              min: parseFloat(min.toFixed(this.decimals)),
-              max: parseFloat((min + dragging.rangeValue).toFixed(this.decimals))
+              min: parseFloat(min.toFixed(this.computedDecimals)),
+              max: parseFloat((min + dragging.rangeValue).toFixed(this.computedDecimals))
             };
+
+            this.focus = 'both';
             break
         }
 
-        this.model = {
-          min: pos.min,
-          max: pos.max
-        };
-
         // If either of the values to be emitted are null, set them to the defaults the user has entered.
-        if (this.model.min === null || this.model.max === null) {
-          this.model.min = pos.min || this.min;
-          this.model.max = pos.max || this.max;
-        }
+        this.model = this.model.min === null || this.model.max === null
+          ? { min: pos.min || this.min, max: pos.max || this.max }
+          : { min: pos.min, max: pos.max };
 
         if (this.snap !== true || this.step === 0) {
           this.curMinRatio = pos.minR;
           this.curMaxRatio = pos.maxR;
         }
         else {
-          this.curMinRatio = this.minMaxDiff === 0 ? 0 : (this.model.min - this.min) / this.minMaxDiff;
-          this.curMaxRatio = this.minMaxDiff === 0 ? 0 : (this.model.max - this.min) / this.minMaxDiff;
+          this.curMinRatio = this.__convertModelToRatio(this.model.min);
+          this.curMaxRatio = this.__convertModelToRatio(this.model.max);
         }
       },
 
-      __focus: function __focus (which) {
-        this.focus = which;
+      __getEvents: function __getEvents (side) {
+        var this$1 = this;
+
+        return this.$q.platform.is.mobile !== true && this.editable === true && this.dragOnlyRange !== true
+          ? {
+            focus: function () { this$1.focus = side; },
+            blur: this.__onBlur,
+            keydown: this.__onKeydown,
+            keyup: this.__onKeyup
+          }
+          : {}
       },
 
-      __keydown: function __keydown (evt) {
+      __onKeydown: function __onKeydown (evt) {
         var obj;
 
         if (!keyCodes.includes(evt.keyCode)) {
@@ -23917,23 +25049,20 @@
         stopAndPrevent(evt);
 
         var
-          step = ([34, 33].includes(evt.keyCode) ? 10 : 1) * this.computedStep,
-          offset = [34, 37, 40].includes(evt.keyCode) ? -step : step;
+          stepVal = ([ 34, 33 ].includes(evt.keyCode) ? 10 : 1) * this.computedStep,
+          offset = ([ 34, 37, 40 ].includes(evt.keyCode) ? -1 : 1) * (this.isReversed === true ? -1 : 1) * stepVal;
 
-        if (this.dragOnlyRange) {
-          var interval = this.dragOnlyRange
-            ? this.model.max - this.model.min
-            : 0;
-
+        if (this.focus === 'both') {
+          var interval = this.model.max - this.model.min;
           var min = between(
-            parseFloat((this.model.min + offset).toFixed(this.decimals)),
-            this.min,
-            this.max - interval
+            parseFloat((this.model.min + offset).toFixed(this.computedDecimals)),
+            this.computedInnerMin,
+            this.computedInnerMax - interval
           );
 
           this.model = {
             min: min,
-            max: parseFloat((min + interval).toFixed(this.decimals))
+            max: parseFloat((min + interval).toFixed(this.computedDecimals))
           };
         }
         else if (this.focus === false) {
@@ -23943,101 +25072,62 @@
           var which = this.focus;
 
           this.model = Object.assign({}, this.model,
-            ( obj = {}, obj[which] = between(
-              parseFloat((this.model[which] + offset).toFixed(this.decimals)),
-              which === 'min' ? this.min : this.model.min,
-              which === 'max' ? this.max : this.model.max
+            ( obj = {}, obj[ which ] = between(
+              parseFloat((this.model[ which ] + offset).toFixed(this.computedDecimals)),
+              which === 'min' ? this.computedInnerMin : this.model.min,
+              which === 'max' ? this.computedInnerMax : this.model.max
             ), obj ));
         }
 
         this.__updateValue();
-      },
-
-      __getThumb: function __getThumb (h, which) {
-        var child = [
-          this.__getThumbSvg(h),
-          h('div', { staticClass: 'q-slider__focus-ring' })
-        ];
-
-        if (this.label === true || this.labelAlways === true) {
-          child.push(
-            h('div', {
-              staticClass: ("q-slider__pin q-slider__pin" + (this.axis) + " absolute"),
-              style: this[which + 'PinStyle'].pin,
-              class: this[which + 'PinClass']
-            }, [
-              h('div', {
-                staticClass: ("q-slider__pin-text-container q-slider__pin-text-container" + (this.axis)),
-                style: this[which + 'PinStyle'].pinTextContainer
-              }, [
-                h('span', {
-                  staticClass: 'q-slider__pin-text',
-                  class: this[which + 'PinTextClass']
-                }, [
-                  this[which + 'Label']
-                ])
-              ])
-            ]),
-
-            h('div', {
-              staticClass: ("q-slider__arrow q-slider__arrow" + (this.axis)),
-              class: this[which + 'PinClass']
-            })
-          );
-        }
-
-        return h('div', {
-          ref: which + 'Thumb',
-          staticClass: ("q-slider__thumb-container q-slider__thumb-container" + (this.axis) + " absolute non-selectable"),
-          style: this[which + 'ThumbStyle'],
-          class: this[which + 'ThumbClass'],
-          on: this[which + 'Events'],
-          attrs: { tabindex: this.dragOnlyRange !== true ? this.computedTabindex : null }
-        }, child)
       }
     },
 
     render: function render (h) {
-      var track = [
-        h('div', {
-          staticClass: ("q-slider__track q-slider__track" + (this.axis) + " absolute"),
-          style: this.trackStyle
-        })
-      ];
+      var this$1 = this;
 
-      this.markers === true && track.push(
-        h('div', {
-          staticClass: ("q-slider__track-markers q-slider__track-markers" + (this.axis) + " absolute-full fit"),
-          style: this.markerStyle
-        })
-      );
+      var content = this.__getContent(h, function (node) {
+        node.push(
+          this$1.__getThumb(h, {
+            pinColor: this$1.thumbMinPinColor,
+            textContainerStyle: this$1.thumbMinTextContainerStyle,
+            textClass: this$1.thumbMinTextClass,
+            label: this$1.thumbMinLabel,
+            classes: this$1.thumbMinClasses,
+            style: this$1.thumbMinStyle,
+            nodeData: {
+              ref: 'minThumb',
+              key: 'tmin',
+              on: this$1.thumbMinEvents,
+              attrs: this$1.thumbAttrs
+            }
+          }),
 
-      var child = [
-        h('div', {
-          staticClass: ("q-slider__track-container q-slider__track-container" + (this.axis) + " absolute")
-        }, track),
-
-        this.__getThumb(h, 'min'),
-        this.__getThumb(h, 'max')
-      ];
-
-      if (this.name !== void 0 && this.disable !== true) {
-        this.__injectFormInput(child, 'push');
-      }
+          this$1.__getThumb(h, {
+            pinColor: this$1.thumbMaxPinColor,
+            textContainerStyle: this$1.thumbMaxTextContainerStyle,
+            textClass: this$1.thumbMaxTextClass,
+            label: this$1.thumbMaxLabel,
+            classes: this$1.thumbMaxClasses,
+            style: this$1.thumbMaxStyle,
+            nodeData: {
+              key: 'tmax',
+              on: this$1.thumbMaxEvents,
+              attrs: this$1.thumbAttrs
+            }
+          })
+        );
+      });
 
       return h('div', {
-        staticClass: this.value.min === null || this.value.max === null
-          ? 'q-slider--no-value'
-          : void 0,
-        attrs: Object.assign({}, this.attrs,
-          {'aria-valuenow': this.value.min + '|' + this.value.max,
-          tabindex: this.dragOnlyRange === true && this.$q.platform.is.mobile !== true
-            ? this.computedTabindex
-            : null}),
-        class: this.classes,
-        on: this.events,
-        directives: this.panDirectives
-      }, child)
+        class: 'q-range ' + this.classes + (
+          this.value.min === null || this.value.max === null
+            ? ' q-slider--no-value'
+            : ''
+        ),
+        attrs: Object.assign({}, this.attributes,
+          {'aria-valuenow': this.value.min + '|' + this.value.max})
+      }, content)
     }
   });
 
@@ -24115,6 +25205,51 @@
         }
       },
 
+      stars: function stars () {
+        var
+          acc = [],
+          icons = this.iconData,
+          ceil = Math.ceil(this.value);
+
+        var halfIndex = this.iconHalf === void 0 || ceil === this.value
+          ? -1
+          : ceil;
+
+        for (var i = 1; i <= this.max; i++) {
+          var
+            active = (this.mouseModel === 0 && this.value >= i) || (this.mouseModel > 0 && this.mouseModel >= i),
+            half = halfIndex === i && this.mouseModel < i,
+            exSelected = this.mouseModel > 0 && (half === true ? ceil : this.value) >= i && this.mouseModel < i,
+            color = half === true
+              ? (i <= icons.halfColorLen ? this.colorHalf[i - 1] : icons.halfColor)
+              : (
+                icons.selColor !== void 0 && active === true
+                  ? (i <= icons.selColorLen ? this.colorSelected[i - 1] : icons.selColor)
+                  : (i <= icons.colorLen ? this.color[i - 1] : icons.color)
+              );
+
+          acc.push({
+            name: (
+              half === true
+                ? (i <= icons.halfIconLen ? this.iconHalf[i - 1] : icons.halfIcon)
+                : (
+                  icons.selIcon !== void 0 && (active === true || exSelected === true)
+                    ? (i <= icons.selIconLen ? this.iconSelected[i - 1] : icons.selIcon)
+                    : (i <= icons.iconLen ? this.icon[i - 1] : icons.icon)
+                )
+            ) || this.$q.iconSet.rating.icon,
+
+            classes: 'q-rating__icon' +
+              (active === true || half === true ? ' q-rating__icon--active' : '') +
+              (exSelected === true ? ' q-rating__icon--exselected' : '') +
+              (this.mouseModel === i ? ' q-rating__icon--hovered' : '') +
+              (color !== void 0 ? (" text-" + color) : '')
+          });
+        }
+
+        return acc
+      },
+
       attrs: function attrs () {
         if (this.disable === true) {
           return { 'aria-disabled': 'true' }
@@ -24167,49 +25302,22 @@
 
     render: function render (h) {
       var this$1 = this;
-      var obj;
 
       var
         child = [],
-        tabindex = this.editable === true ? 0 : null,
-        icons = this.iconData,
-        ceil = Math.ceil(this.value);
+        tabindex = this.editable === true ? 0 : null;
 
-      var halfIndex = this.iconHalf === void 0 || ceil === this.value
-        ? -1
-        : ceil;
+      this.stars.forEach(function (ref, index) {
+        var classes = ref.classes;
+        var name = ref.name;
 
-      var loop = function ( i ) {
-        var
-          active = (this$1.mouseModel === 0 && this$1.value >= i) || (this$1.mouseModel > 0 && this$1.mouseModel >= i),
-          half = halfIndex === i && this$1.mouseModel < i,
-          exSelected = this$1.mouseModel > 0 && (half === true ? ceil : this$1.value) >= i && this$1.mouseModel < i,
-          name = half === true
-            ? (i <= icons.halfIconLen ? this$1.iconHalf[i - 1] : icons.halfIcon)
-            : (
-              icons.selIcon !== void 0 && (active === true || exSelected === true)
-                ? (i <= icons.selIconLen ? this$1.iconSelected[i - 1] : icons.selIcon)
-                : (i <= icons.iconLen ? this$1.icon[i - 1] : icons.icon)
-            ),
-          color = half === true
-            ? (i <= icons.halfColorLen ? this$1.colorHalf[i - 1] : icons.halfColor)
-            : (
-              icons.selColor !== void 0 && active === true
-                ? (i <= icons.selColorLen ? this$1.colorSelected[i - 1] : icons.selColor)
-                : (i <= icons.colorLen ? this$1.color[i - 1] : icons.color)
-            );
+        var i = index + 1;
 
         child.push(
-          h(QIcon, {
+          h('div', {
             key: i,
             ref: ("rt" + i),
-            staticClass: 'q-rating__icon',
-            class: ( obj = {
-              'q-rating__icon--active': active === true || half === true,
-              'q-rating__icon--exselected': exSelected,
-              'q-rating__icon--hovered': this$1.mouseModel === i
-            }, obj[("text-" + color)] = color !== void 0, obj ),
-            props: { name: name || this$1.$q.iconSet.rating.icon },
+            class: 'q-rating__icon-container flex flex-center',
             attrs: { tabindex: tabindex },
             on: cache(this$1, 'i#' + i, {
               click: function () { this$1.__set(i); },
@@ -24219,11 +25327,12 @@
               blur: function () { this$1.mouseModel = 0; },
               keyup: function (e) { this$1.__keyup(e, i); }
             })
-          }, slot(this$1, ("tip-" + i)))
+          }, mergeSlot(
+            [h(QIcon, { class: classes, props: { name: name } })],
+            this$1, ("tip-" + i)
+          ))
         );
-      };
-
-      for (var i = 1; i <= this$1.max; i++) loop( i );
+      });
 
       if (this.name !== void 0 && this.disable !== true) {
         this.__injectFormInput(child, 'push');
@@ -24262,6 +25371,12 @@
     }
   });
 
+  var axisList = [ 'vertical', 'horizontal' ];
+  var dirProps = {
+    vertical: { offset: 'offsetY', scroll: 'scrollTop', dir: 'down', dist: 'y' },
+    horizontal: { offset: 'offsetX', scroll: 'scrollLeft', dir: 'right', dist: 'x' }
+  };
+
   var QScrollArea = Vue.extend({
     name: 'QScrollArea',
 
@@ -24272,13 +25387,19 @@
     },
 
     props: {
-      barStyle: [ Array, String, Object ],
       thumbStyle: Object,
+      verticalThumbStyle: Object,
+      horizontalThumbStyle: Object,
+
+      barStyle: [ Array, String, Object ],
+      verticalBarStyle: [ Array, String, Object ],
+      horizontalBarStyle: [ Array, String, Object ],
+
       contentStyle: [ Array, String, Object ],
       contentActiveStyle: [ Array, String, Object ],
 
       delay: {
-        type: [String, Number],
+        type: [ String, Number ],
         default: 1000
       },
 
@@ -24289,7 +25410,7 @@
 
       horizontal: Boolean,
 
-      tabindex: [String, Number]
+      tabindex: [ String, Number ]
     },
 
     data: function data () {
@@ -24300,10 +25421,22 @@
         hover: false,
 
         // other...
-        containerWidth: 0,
-        containerHeight: 0,
-        scrollPosition: 0,
-        scrollSize: 0
+        container: {
+          vertical: 0,
+          horizontal: 0
+        },
+
+        scroll: {
+          vertical: {
+            position: 0,
+            size: 0
+          },
+
+          horizontal: {
+            position: 0,
+            size: 0
+          }
+        }
       }
     },
 
@@ -24313,79 +25446,152 @@
           (this.isDark === true ? ' q-scrollarea--dark' : '')
       },
 
-      thumbHidden: function thumbHidden () {
+      verticalScrollPercentage: function verticalScrollPercentage () {
+        var diff = this.scroll.vertical.size - this.container.vertical;
+        if (diff <= 0) { return 0 }
+        var p = between(this.scroll.vertical.position / diff, 0, 1);
+        return Math.round(p * 10000) / 10000
+      },
+
+      horizontalScrollPercentage: function horizontalScrollPercentage () {
+        var diff = this.scroll.horizontal.size - this.container.horizontal;
+        if (diff <= 0) { return 0 }
+        var p = between(this.scroll.horizontal.position / diff, 0, 1);
+        return Math.round(p * 10000) / 10000
+      },
+
+      verticalThumbHidden: function verticalThumbHidden () {
         return (
           (this.visible === null ? this.hover : this.visible) !== true &&
           this.tempShowing === false &&
           this.panning === false
-        ) || this.scrollSize <= this.containerSize
+        ) || this.scroll.vertical.size <= this.container.vertical + 1
       },
 
-      thumbSize: function thumbSize () {
+      horizontalThumbHidden: function horizontalThumbHidden () {
+        return (
+          (this.visible === null ? this.hover : this.visible) !== true &&
+          this.tempShowing === false &&
+          this.panning === false
+        ) || this.scroll.horizontal.size <= this.container.horizontal + 1
+      },
+
+      verticalThumbStart: function verticalThumbStart () {
+        return this.verticalScrollPercentage * (this.container.vertical - this.verticalThumbSize)
+      },
+
+      horizontalThumbStart: function horizontalThumbStart () {
+        return this.horizontalScrollPercentage * (this.container.horizontal - this.horizontalThumbSize)
+      },
+
+      verticalThumbSize: function verticalThumbSize () {
         return Math.round(
           between(
-            this.containerSize * this.containerSize / this.scrollSize,
+            this.container.vertical * this.container.vertical / this.scroll.vertical.size,
             50,
-            this.containerSize
+            this.container.vertical
           )
         )
       },
 
-      style: function style () {
-        var pos = this.scrollPercentage * (this.containerSize - this.thumbSize);
-        return Object.assign(
-          {},
-          this.thumbStyle,
-          this.horizontal === true
-            ? {
-              left: (pos + "px"),
-              width: ((this.thumbSize) + "px")
-            }
-            : {
-              top: (pos + "px"),
-              height: ((this.thumbSize) + "px")
-            }
+      horizontalThumbSize: function horizontalThumbSize () {
+        return Math.round(
+          between(
+            this.container.horizontal * this.container.horizontal / this.scroll.horizontal.size,
+            50,
+            this.container.horizontal
+          )
         )
       },
 
+      verticalStyle: function verticalStyle () {
+        return Object.assign({}, this.thumbStyle,
+          this.verticalThumbStyle,
+          {top: ((this.verticalThumbStart) + "px"),
+          height: ((this.verticalThumbSize) + "px")})
+      },
+
+      horizontalStyle: function horizontalStyle () {
+        return Object.assign({}, this.thumbStyle,
+          this.horizontalThumbStyle,
+          {left: ((this.horizontalThumbStart) + "px"),
+          width: ((this.horizontalThumbSize) + "px")})
+      },
+
+      verticalThumbClass: function verticalThumbClass () {
+        return 'q-scrollarea__thumb q-scrollarea__thumb--v absolute-right' +
+          (this.verticalThumbHidden === true ? ' q-scrollarea__thumb--invisible' : '')
+      },
+
+      horizontalThumbClass: function horizontalThumbClass () {
+        return 'q-scrollarea__thumb q-scrollarea__thumb--h absolute-bottom' +
+          (this.horizontalThumbHidden === true ? ' q-scrollarea__thumb--invisible' : '')
+      },
+
+      verticalBarClass: function verticalBarClass () {
+        return 'q-scrollarea__bar q-scrollarea__bar--v absolute-right' +
+          (this.verticalThumbHidden === true ? ' q-scrollarea__bar--invisible' : '')
+      },
+
+      horizontalBarClass: function horizontalBarClass () {
+        return 'q-scrollarea__bar q-scrollarea__bar--h absolute-bottom' +
+          (this.horizontalThumbHidden === true ? ' q-scrollarea__bar--invisible' : '')
+      },
+
+      scrollComputed: function scrollComputed () {
+        return {
+          vertical: Object.assign({}, this.scroll.vertical,
+            {percentage: this.verticalScrollPercentage,
+            thumbHidden: this.verticalThumbHidden,
+            thumbStart: this.verticalThumbStart,
+            thumbSize: this.verticalThumbSize,
+            style: this.verticalStyle,
+            thumbClass: this.verticalThumbClass,
+            barClass: this.verticalBarClass}),
+          horizontal: Object.assign({}, this.scroll.horizontal,
+            {percentage: this.horizontalScrollPercentage,
+            thumbHidden: this.horizontalThumbHidden,
+            thumbStart: this.horizontalThumbStart,
+            thumbSize: this.horizontalThumbSize,
+            style: this.horizontalStyle,
+            thumbClass: this.horizontalThumbClass,
+            barClass: this.horizontalBarClass})
+        }
+      },
+
       mainStyle: function mainStyle () {
-        return this.thumbHidden === true
+        return this.verticalThumbHidden === true && this.horizontalThumbHidden === true
           ? this.contentStyle
           : this.contentActiveStyle
       },
 
-      scrollPercentage: function scrollPercentage () {
-        var p = between(this.scrollPosition / (this.scrollSize - this.containerSize), 0, 1);
-        return Math.round(p * 10000) / 10000
-      },
-
-      containerSize: function containerSize () {
-        return this[("container" + (this.dirProps.suffix))]
-      },
-
-      dirProps: function dirProps () {
-        return this.horizontal === true
-          ? { prefix: 'horizontal', suffix: 'Width', scroll: 'scrollLeft', classSuffix: 'h absolute-bottom', dir: 'right', dist: 'x' }
-          : { prefix: 'vertical', suffix: 'Height', scroll: 'scrollTop', classSuffix: 'v absolute-right', dir: 'down', dist: 'y' }
-      },
-
-      thumbClass: function thumbClass () {
-        return "q-scrollarea__thumb--" + (this.dirProps.classSuffix) +
-          (this.thumbHidden === true ? ' q-scrollarea__thumb--invisible' : '')
-      },
-
-      barClass: function barClass () {
-        return "q-scrollarea__bar--" + (this.dirProps.classSuffix) +
-          (this.thumbHidden === true ? ' q-scrollarea__bar--invisible' : '')
-      },
-
-      thumbDirectives: function thumbDirectives () {
-        var obj;
+      verticalThumbDirectives: function verticalThumbDirectives () {
+        var this$1 = this;
 
         return [{
           name: 'touch-pan',
-          modifiers: ( obj = {}, obj[ this.horizontal === true ? 'horizontal' : 'vertical' ] = true, obj.prevent = true, obj.mouse = true, obj.mouseAllDir = true, obj ),
-          value: this.__panThumb
+          modifiers: {
+            vertical: true,
+            prevent: true,
+            mouse: true,
+            mouseAllDir: true
+          },
+          value: function (e) { this$1.__panThumb(e, 'vertical'); }
+        }]
+      },
+
+      horizontalThumbDirectives: function horizontalThumbDirectives () {
+        var this$1 = this;
+
+        return [{
+          name: 'touch-pan',
+          modifiers: {
+            horizontal: true,
+            prevent: true,
+            mouse: true,
+            mouseAllDir: true
+          },
+          value: function (e) { this$1.__panThumb(e, 'horizontal'); }
         }]
       },
 
@@ -24401,21 +25607,87 @@
         return this.$refs.target
       },
 
-      getScrollPosition: function getScrollPosition () {
-        return this.scrollPosition
+      getScroll: function getScroll () {
+        var this$1 = this;
+
+        var info = {};
+
+        axisList.forEach(function (axis) {
+          var data = this$1.scrollComputed[ axis ];
+
+          info[ axis + 'Position' ] = data.position;
+          info[ axis + 'Percentage' ] = data.percentage;
+          info[ axis + 'Size' ] = data.size;
+          info[ axis + 'ContainerSize' ] = this$1.container[ axis ];
+        });
+
+        return info
       },
 
-      setScrollPosition: function setScrollPosition$1 (offset, duration) {
-        var fn = this.horizontal === true
-          ? setHorizontalScrollPosition
-          : setScrollPosition;
+      getScrollPosition: function getScrollPosition (axis) {
+        if (axis === 'both') {
+          return {
+            top: this.scroll.vertical.position,
+            left: this.scroll.horizontal.position
+          }
+        }
+
+        if (axisList.includes(axis) !== true) {
+          axis = this.horizontal === true ? 'horizontal' : 'vertical';
+        }
+
+        return this.scroll[axis].position
+      },
+
+      getScrollPercentage: function getScrollPercentage (axis) {
+        if (axis === 'both') {
+          return {
+            top: this.verticalScrollPercentage,
+            left: this.horizontalScrollPercentage
+          }
+        }
+
+        if (axisList.includes(axis) !== true) {
+          axis = this.horizontal === true ? 'horizontal' : 'vertical';
+        }
+
+        return this[(axis + "ScrollPercentage")]
+      },
+
+      setScrollPosition: function setScrollPosition (axis, offset, duration) {
+        var assign;
+
+        if (axisList.includes(axis) === false) {
+          if (isNaN(axis) === true) {
+            console.error('[QScrollArea]: wrong first param of setScrollPosition (vertical/horizontal)');
+            return
+          }
+
+          (assign = [this.horizontal === true ? 'horizontal' : 'vertical', axis, offset], axis = assign[0], offset = assign[1], duration = assign[2]);
+        }
+
+        var fn = axis === 'vertical'
+          ? setVerticalScrollPosition
+          : setHorizontalScrollPosition;
 
         fn(this.$refs.target, offset, duration);
       },
 
-      setScrollPercentage: function setScrollPercentage (percentage, duration) {
+      setScrollPercentage: function setScrollPercentage (axis, percentage, duration) {
+        var assign;
+
+        if (axisList.includes(axis) === false) {
+          if (isNaN(axis) === true) {
+            console.error('[QScrollArea]: wrong first param of setScrollPercentage (vertical/horizontal)');
+            return
+          }
+
+          (assign = [this.horizontal === true ? 'horizontal' : 'vertical', axis, percentage], axis = assign[0], percentage = assign[1], duration = assign[2]);
+        }
+
         this.setScrollPosition(
-          percentage * (this.scrollSize - this.containerSize),
+          axis,
+          percentage * (this.scroll[axis].size - this.container[axis]),
           duration
         );
       },
@@ -24426,22 +25698,33 @@
 
         var change = false;
 
-        if (this.containerWidth !== width) {
-          this.containerWidth = width;
+        if (this.container.vertical !== height) {
+          this.container.vertical = height;
           change = true;
         }
 
-        if (this.containerHeight !== height) {
-          this.containerHeight = height;
+        if (this.container.horizontal !== width) {
+          this.container.horizontal = width;
           change = true;
         }
 
         change === true && this.__startTimer();
       },
 
-      __updateScroll: function __updateScroll (info) {
-        if (this.scrollPosition !== info.position) {
-          this.scrollPosition = info.position;
+      __updateVerticalScroll: function __updateVerticalScroll (ref) {
+        var position = ref.position;
+
+        if (this.scroll.vertical.position !== position) {
+          this.scroll.vertical.position = position;
+          this.__startTimer();
+        }
+      },
+
+      __updateHorizontalScroll: function __updateHorizontalScroll (ref) {
+        var position = ref.position;
+
+        if (this.scroll.horizontal.position !== position) {
+          this.scroll.horizontal.position = position;
           this.__startTimer();
         }
       },
@@ -24450,52 +25733,77 @@
         var height = ref.height;
         var width = ref.width;
 
-        if (this.horizontal === true) {
-          if (this.scrollSize !== width) {
-            this.scrollSize = width;
-            this.__startTimer();
-          }
+        var change = false;
+
+        if (this.scroll.horizontal.size !== width) {
+          this.scroll.horizontal.size = width;
+          change = true;
         }
-        else if (this.scrollSize !== height) {
-          this.scrollSize = height;
-          this.__startTimer();
+
+        if (this.scroll.vertical.size !== height) {
+          this.scroll.vertical.size = height;
+          change = true;
         }
+
+        change === true && this.__startTimer();
       },
 
-      __panThumb: function __panThumb (e) {
-        if (e.isFirst === true) {
-          if (this.thumbHidden === true) {
+      __panThumb: function __panThumb (e, axis) {
+        var data = this.scrollComputed[ axis ];
+
+        if (e.isFinal === true) {
+          if (this.panning !== true) {
             return
           }
 
-          this.refPos = this.scrollPosition;
+          this.panning = false;
+        }
+        else if (e.isFirst === true) {
+          if (data.thumbHidden === true) {
+            return
+          }
+
+          this.refPos = data.position;
           this.panning = true;
         }
         else if (this.panning !== true) {
           return
         }
 
-        if (e.isFinal === true) {
-          this.panning = false;
-        }
+        var dProp = dirProps[ axis ];
+        var containerSize = this.container[axis];
 
-        var multiplier = (this.scrollSize - this.containerSize) / (this.containerSize - this.thumbSize);
-        var distance = e.distance[this.dirProps.dist];
-        var pos = this.refPos + (e.direction === this.dirProps.dir ? 1 : -1) * distance * multiplier;
+        var multiplier = (data.size - containerSize) / (containerSize - data.thumbSize);
+        var distance = e.distance[dProp.dist];
+        var pos = this.refPos + (e.direction === dProp.dir ? 1 : -1) * distance * multiplier;
 
-        this.__setScroll(pos);
+        this.__setScroll(pos, axis);
       },
 
-      __mouseDown: function __mouseDown (evt) {
-        if (this.thumbHidden !== true) {
-          var pos = evt[("offset" + (this.horizontal === true ? 'X' : 'Y'))] - this.thumbSize / 2;
-          this.__setScroll(pos / this.containerSize * this.scrollSize);
+      __mouseDown: function __mouseDown (evt, axis) {
+        var data = this.scrollComputed[ axis ];
 
+        if (data.thumbHidden !== true) {
+          var offset = evt[ dirProps[ axis ].offset ];
+          if (offset < data.thumbStart || offset > data.thumbStart + data.thumbSize) {
+            var pos = offset - data.thumbSize / 2;
+            this.__setScroll(pos / this.container[ axis ] * data.size, axis);
+          }
+
+          var ref = axis === 'vertical' ? this.$refs.verticalThumb : this.$refs.horizontalThumb;
           // activate thumb pan
-          if (this.$refs.thumb !== void 0) {
-            this.$refs.thumb.dispatchEvent(new MouseEvent(evt.type, evt));
+          if (ref !== void 0) {
+            ref.dispatchEvent(new MouseEvent(evt.type, evt));
           }
         }
+      },
+
+      __verticalMouseDown: function __verticalMouseDown (evt) {
+        this.__mouseDown(evt, 'vertical');
+      },
+
+      __horizontalMouseDown: function __horizontalMouseDown (evt) {
+        this.__mouseDown(evt, 'horizontal');
       },
 
       __startTimer: function __startTimer () {
@@ -24508,70 +25816,93 @@
           this.tempShowing = true;
         }
 
-        this.timer = setTimeout(function () {
-          this$1.tempShowing = false;
-        }, this.delay);
-
-        this.__emitScroll();
+        this.timer = setTimeout(function () { this$1.tempShowing = false; }, this.delay);
+        this.$listeners.scroll !== void 0 && this.__emitScroll();
       },
 
-      __setScroll: function __setScroll (offset) {
-        this.$refs.target[this.dirProps.scroll] = offset;
+      __setScroll: function __setScroll (offset, axis) {
+        this.$refs.target[ dirProps[ axis ].scroll ] = offset;
+      },
+
+      __mouseEnter: function __mouseEnter () {
+        this.hover = true;
+      },
+
+      __mouseLeave: function __mouseLeave () {
+        this.hover = false;
       }
     },
 
     render: function render (h) {
-      var this$1 = this;
-
       return h('div', {
         class: this.classes,
         on: cache(this, 'desk', {
-          mouseenter: function () { this$1.hover = true; },
-          mouseleave: function () { this$1.hover = false; }
+          mouseenter: this.__mouseEnter,
+          mouseleave: this.__mouseLeave
         })
       }, [
         h('div', {
           ref: 'target',
-          staticClass: 'scroll relative-position fit hide-scrollbar',
+          staticClass: 'q-scrollarea__container scroll relative-position fit hide-scrollbar',
           attrs: this.scrollAttrs
         }, [
           h('div', {
-            staticClass: 'absolute',
-            style: this.mainStyle,
-            class: ("full-" + (this.horizontal === true ? 'height' : 'width'))
+            staticClass: 'q-scrollarea__content absolute',
+            style: this.mainStyle
           }, mergeSlot([
             h(QResizeObserver, {
+              props: { debounce: 0 },
               on: cache(this, 'resizeIn', { resize: this.__updateScrollSize })
             })
           ], this, 'default')),
 
           h(QScrollObserver, {
-            props: { horizontal: this.horizontal },
-            on: cache(this, 'scroll', { scroll: this.__updateScroll })
+            on: cache(this, 'scrollV', { scroll: this.__updateVerticalScroll })
+          }),
+
+          h(QScrollObserver, {
+            props: { horizontal: true },
+            on: cache(this, 'scrollH', { scroll: this.__updateHorizontalScroll })
           })
         ]),
 
         h(QResizeObserver, {
+          props: { debounce: 0 },
           on: cache(this, 'resizeOut', { resize: this.__updateContainer })
         }),
 
         h('div', {
-          staticClass: 'q-scrollarea__bar',
-          style: this.barStyle,
-          class: this.barClass,
+          class: this.verticalBarClass,
+          style: [ this.barStyle, this.verticalBarStyle ],
           attrs: ariaHidden,
-          on: cache(this, 'bar', {
-            mousedown: this.__mouseDown
+          on: cache(this, 'barV', {
+            mousedown: this.__verticalMouseDown
           })
         }),
 
         h('div', {
-          ref: 'thumb',
-          staticClass: 'q-scrollarea__thumb',
-          style: this.style,
-          class: this.thumbClass,
+          class: this.horizontalBarClass,
+          style: [ this.barStyle, this.horizontalBarStyle ],
           attrs: ariaHidden,
-          directives: this.thumbDirectives
+          on: cache(this, 'barH', {
+            mousedown: this.__horizontalMouseDown
+          })
+        }),
+
+        h('div', {
+          ref: 'verticalThumb',
+          class: this.verticalThumbClass,
+          style: this.verticalStyle,
+          attrs: ariaHidden,
+          directives: this.verticalThumbDirectives
+        }),
+
+        h('div', {
+          ref: 'horizontalThumb',
+          class: this.horizontalThumbClass,
+          style: this.horizontalStyle,
+          attrs: ariaHidden,
+          directives: this.horizontalThumbDirectives
         })
       ])
     },
@@ -24583,18 +25914,28 @@
       // ensure we're not emitting same info
       // multiple times
       this.__emitScroll = debounce(function () {
-        if (this$1.$listeners.scroll !== void 0) {
-          var info = { ref: this$1 };
-          var prefix = this$1.dirProps.prefix;
-
-          info[prefix + 'Position'] = this$1.scrollPosition;
-          info[prefix + 'Percentage'] = this$1.scrollPercentage;
-          info[prefix + 'Size'] = this$1.scrollSize;
-          info[prefix + 'ContainerSize'] = this$1.containerSize;
-
-          this$1.$emit('scroll', info);
-        }
+        var info = this$1.getScroll();
+        info.ref = this$1;
+        this$1.$emit('scroll', info);
       }, 0);
+    },
+
+    activated: function activated () {
+      var scrollTarget = this.getScrollTarget();
+
+      if (scrollTarget !== void 0 && this.__scrollPosition !== void 0) {
+        setHorizontalScrollPosition(scrollTarget, this.__scrollPosition.left);
+        setVerticalScrollPosition(scrollTarget, this.__scrollPosition.top);
+      }
+    },
+
+    deactivated: function deactivated () {
+      this.__scrollPosition = this.getScrollPosition('both');
+    },
+
+    beforeDestroy: function beforeDestroy () {
+      this.__emitScroll.cancel();
+      clearTimeout(this.timer);
     }
   });
 
@@ -24609,31 +25950,7 @@
     'end-force'
   ];
 
-  var slice = Array.prototype.slice;
-
-  var buggyRTL = void 0;
-
-  // mobile Chrome takes the crown for this
-  function detectBuggyRTL () {
-    var scroller = document.createElement('div');
-    var spacer = document.createElement('div');
-
-    scroller.setAttribute('dir', 'rtl');
-    scroller.style.width = '1px';
-    scroller.style.height = '1px';
-    scroller.style.overflow = 'auto';
-
-    spacer.style.width = '1000px';
-    spacer.style.height = '1px';
-
-    document.body.appendChild(scroller);
-    scroller.appendChild(spacer);
-    scroller.scrollLeft = -1000;
-
-    buggyRTL = scroller.scrollLeft >= 0;
-
-    scroller.remove();
-  }
+  var filterProto = Array.prototype.filter;
 
   function sumFn (acc, h) {
     return acc + h
@@ -24663,7 +25980,7 @@
     if (horizontal === true) {
       if (parent === window) {
         details.scrollStart = window.pageXOffset || window.scrollX || document.body.scrollLeft || 0;
-        details.scrollViewSize += window.innerWidth;
+        details.scrollViewSize += document.documentElement.clientWidth;
       }
       else {
         details.scrollStart = parentCalc.scrollLeft;
@@ -24672,13 +25989,13 @@
       details.scrollMaxSize = parentCalc.scrollWidth;
 
       if (rtl === true) {
-        details.scrollStart = (buggyRTL === true ? details.scrollMaxSize - details.scrollViewSize : 0) - details.scrollStart;
+        details.scrollStart = (rtlHasScrollBug() === true ? details.scrollMaxSize - details.scrollViewSize : 0) - details.scrollStart;
       }
     }
     else {
       if (parent === window) {
         details.scrollStart = window.pageYOffset || window.scrollY || document.body.scrollTop || 0;
-        details.scrollViewSize += window.innerHeight;
+        details.scrollViewSize += document.documentElement.clientHeight;
       }
       else {
         details.scrollStart = parentCalc.scrollTop;
@@ -24726,10 +26043,14 @@
   }
 
   function setScroll$1 (parent, scroll, horizontal, rtl) {
+    if (scroll === 'end') {
+      scroll = (parent === window ? document.body : parent)[horizontal === true ? 'scrollWidth' : 'scrollHeight'];
+    }
+
     if (parent === window) {
       if (horizontal === true) {
         if (rtl === true) {
-          scroll = (buggyRTL === true ? document.body.scrollWidth - window.innerWidth : 0) - scroll;
+          scroll = (rtlHasScrollBug() === true ? document.body.scrollWidth - document.documentElement.clientWidth : 0) - scroll;
         }
         window.scrollTo(scroll, window.pageYOffset || window.scrollY || document.body.scrollTop || 0);
       }
@@ -24739,7 +26060,7 @@
     }
     else if (horizontal === true) {
       if (rtl === true) {
-        scroll = (buggyRTL === true ? parent.scrollWidth - parent.offsetWidth : 0) - scroll;
+        scroll = (rtlHasScrollBug() === true ? parent.scrollWidth - parent.offsetWidth : 0) - scroll;
       }
       parent.scrollLeft = scroll;
     }
@@ -25030,20 +26351,17 @@
         }
 
         var activeElement = document.activeElement;
+        var contentEl = this.$refs.content;
         if (
           rangeChanged === true &&
-          this.$refs.content !== void 0 &&
-          this.$refs.content !== activeElement &&
-          this.$refs.content.contains(activeElement) === true
+          contentEl !== void 0 &&
+          contentEl !== activeElement &&
+          contentEl.contains(activeElement) === true
         ) {
-          var onBlurFn = function () {
-            this$1.$refs.content.focus();
-          };
+          contentEl.addEventListener('focusout', this.__onBlurRefocusFn);
 
-          activeElement.addEventListener('blur', onBlurFn, true);
-
-          requestAnimationFrame(function () {
-            activeElement.removeEventListener('blur', onBlurFn, true);
+          setTimeout(function () {
+            contentEl !== void 0 && contentEl.removeEventListener('focusout', this$1.__onBlurRefocusFn);
           });
         }
 
@@ -25120,7 +26438,7 @@
 
         if (contentEl !== void 0) {
           var
-            children = slice.call(contentEl.children).filter(function (el) { return el.classList.contains('q-virtual-scroll--skip') === false; }),
+            children = filterProto.call(contentEl.children || [], function (el) { return el.classList && el.classList.contains('q-virtual-scroll--skip') === false; }), // fallback [] for IE
             childrenLength = children.length,
             sizeFn = this.virtualScrollHorizontal === true
               ? function (el) { return el.getBoundingClientRect().width; }
@@ -25305,6 +26623,10 @@
 
           this.prevToIndex = index;
         }
+      },
+
+      __onBlurRefocusFn: function __onBlurRefocusFn () {
+        this.$refs.content !== void 0 && this.$refs.content.focus();
       }
     },
 
@@ -25312,13 +26634,29 @@
       this.__setVirtualScrollSize();
     },
 
+    activated: function activated () {
+      var scrollEl = this.__getVirtualScrollTarget();
+
+      if (this.prevScrollStart !== void 0 && scrollEl !== void 0 && scrollEl !== null && scrollEl.nodeType !== 8) {
+        setScroll$1(
+          scrollEl,
+          this.prevScrollStart,
+          this.virtualScrollHorizontal,
+          this.$q.lang.rtl
+        );
+      }
+      else {
+        this.scrollTo(this.prevToIndex);
+      }
+    },
+
     beforeMount: function beforeMount () {
-      buggyRTL === void 0 && detectBuggyRTL();
       this.__onVirtualScrollEvt = debounce(this.__onVirtualScrollEvt, this.$q.platform.is.ios === true ? 120 : 35);
       this.__setVirtualScrollSize();
     },
 
     beforeDestroy: function beforeDestroy () {
+      this.__onVirtualScrollEvt.cancel();
       var styleSheet = document.getElementById(this.id + '_ss');
       styleSheet !== null && styleSheet.remove();
     }
@@ -25597,8 +26935,15 @@
             dark: this$1.isOptionsDark
           };
 
+          var itemAttrs = {
+            role: 'option',
+            id: ((this$1.targetUid) + "_" + index)
+          };
+
           if (disable !== true) {
             this$1.isOptionSelected(opt) === true && (itemProps.active = true);
+            itemAttrs['aria-selected'] = itemProps.active === true ? 'true' : 'false';
+
             this$1.optionIndex === index && (itemProps.focused = true);
           }
 
@@ -25618,7 +26963,8 @@
             focused: itemProps.focused,
             toggleOption: this$1.toggleOption,
             setOptionIndex: this$1.setOptionIndex,
-            itemProps: itemProps
+            itemProps: itemProps,
+            itemAttrs: itemAttrs
           };
 
           if (options[i] === void 0 || isDeepEqual(option, options[i]) !== true) {
@@ -25703,6 +27049,23 @@
         return this.virtualScrollItemSize === void 0
           ? (this.dense === true ? 24 : 48)
           : this.virtualScrollItemSize
+      },
+
+      comboboxAttrs: function comboboxAttrs () {
+        return {
+          role: 'combobox',
+          'aria-multiselectable': this.multiple === true ? 'true' : 'false',
+          'aria-expanded': this.menu === true ? 'true' : 'false',
+          'aria-owns': ((this.targetUid) + "_lb"),
+          'aria-activedescendant': ((this.targetUid) + "_" + (this.optionIndex))
+        }
+      },
+
+      listboxAttrs: function listboxAttrs () {
+        return {
+          role: 'listbox',
+          id: ((this.targetUid) + "_lb")
+        }
       }
     },
 
@@ -25786,7 +27149,10 @@
 
           this.$refs.target !== void 0 && this.$refs.target.focus();
 
-          if (isDeepEqual(this.getOptionValue(this.innerValue[0]), optValue) !== true) {
+          if (
+            this.innerValue.length === 0 ||
+            isDeepEqual(this.getOptionValue(this.innerValue[0]), optValue) !== true
+          ) {
             this.$emit('input', this.emitValue === true ? optValue : opt);
           }
           return
@@ -26196,7 +27562,7 @@
         }
 
         if (this.$scopedSlots.selected !== void 0) {
-          return this.$scopedSlots.selected().slice()
+          return [].concat(this.$scopedSlots.selected())
         }
 
         if (this.useChips === true) {
@@ -26246,10 +27612,9 @@
               ref: 'target',
               key: 'd_t',
               staticClass: 'no-outline',
-              attrs: {
-                id: this.targetUid,
-                tabindex: this.tabindex
-              },
+              attrs: Object.assign({}, {id: this.targetUid,
+                tabindex: this.tabindex},
+                this.comboboxAttrs),
               on: cache(this, 'f-tget', {
                 keydown: this.__onTargetKeydown,
                 keyup: this.__onTargetKeyup,
@@ -26313,6 +27678,7 @@
             return h(QItem, {
             key: scope.index,
             props: scope.itemProps,
+            attrs: scope.itemAttrs,
             on: scope.itemEvents
           }, [
             h(QItemSection, [
@@ -26368,7 +27734,8 @@
             autocomplete: this.autocomplete,
             'data-autofocus': fromDialog === true ? false : this.autofocus,
             disabled: this.disable === true,
-            readonly: this.readonly === true}),
+            readonly: this.readonly === true},
+            this.comboboxAttrs),
           on: this.inputControlEvents
         };
 
@@ -26584,6 +27951,7 @@
             transitionHide: this.transitionHide,
             separateClosePopup: true
           },
+          attrs: this.listboxAttrs,
           on: cache(this, 'menu', {
             '&scroll': this.__onVirtualScrollEvt,
             'before-hide': this.__closeMenu,
@@ -26642,6 +28010,7 @@
             staticClass: 'scroll',
             class: this.menuContentClass,
             style: this.popupContentStyle,
+            attrs: this.listboxAttrs,
             on: cache(this, 'virtMenu', {
               click: prevent,
               '&scroll': this.__onVirtualScrollEvt
@@ -26681,7 +28050,9 @@
       },
 
       __onDialogBeforeHide: function __onDialogBeforeHide () {
-        this.$refs.dialog.__refocusTarget = this.$el.querySelector('.q-field__native > [tabindex]:last-child');
+        if (client.is.mobile !== true) {
+          this.$refs.dialog.__refocusTarget = this.$el.querySelector('.q-field__native > [tabindex]:last-child');
+        }
         this.focused = false;
       },
 
@@ -29993,7 +31364,6 @@
         return "q-stepper q-stepper--" + (this.vertical === true ? 'vertical' : 'horizontal') +
           (this.flat === true || this.isDark === true ? ' q-stepper--flat no-shadow' : '') +
           (this.bordered === true || (this.isDark === true && this.flat === false) ? ' q-stepper--bordered' : '') +
-          (this.contracted === true ? ' q-stepper--contracted' : '') +
           (this.isDark === true ? ' q-stepper--dark q-dark' : '')
       },
 
@@ -30001,6 +31371,7 @@
         return 'q-stepper__header row items-stretch justify-between' +
           " q-stepper__header--" + (this.alternativeLabels === true ? 'alternative' : 'standard') + "-labels" +
           (this.flat === false || this.bordered === true ? ' q-stepper__header--border' : '') +
+          (this.contracted === true ? ' q-stepper__header--contracted' : '') +
           (this.headerClass !== void 0 ? (" " + (this.headerClass)) : '')
       }
     },
@@ -32036,10 +33407,6 @@
 
     mixins: [ QTab, RouterLinkMixin ],
 
-    props: {
-      to: { required: true }
-    },
-
     inject: {
       __activateRoute: {},
       __recalculateScroll: {}
@@ -32053,8 +33420,8 @@
 
     computed: {
       routerTabLinkProps: function routerTabLinkProps () {
-        return Object.assign({}, this.routerLinkProps,
-          {event: []})
+        return Object.assign({}, this.linkProps.props,
+          {custom: true})
       }
     },
 
@@ -32075,7 +33442,7 @@
             // handle this by its own
             this.__checkActivation(true);
           }
-          else {
+          else if (this.hasRouterLink === true) {
             // we use programatic navigation instead of letting vue-router handle it
             // so we can check for activation when the navigation is complete
             e !== void 0 && stopAndPrevent(e);
@@ -32087,7 +33454,7 @@
 
               var ref = this$1.$router.resolve(to, this$1.$route, append);
               var route = ref.route;
-              var checkFn = to === this$1.to && append === this$1.append && replace === this$1.replace
+              var checkFn = to === this$1.to && append === this$1.append
                 ? this$1.__checkActivation
                 : noop;
 
@@ -32113,15 +33480,19 @@
         }
 
         if (keyboard === true) {
-          this.$el.focus(e);
+          this.$el.focus({ preventScroll: true });
         }
-        else {
-          this.$refs.blurTarget !== void 0 && this.$refs.blurTarget.focus(e);
+        else if (this.$refs.blurTarget !== void 0) {
+          this.$refs.blurTarget.focus({ preventScroll: true });
         }
       },
 
       __checkActivation: function __checkActivation (selected) {
         if ( selected === void 0 ) selected = false;
+
+        if (this.hasRouterLink !== true) {
+          return
+        }
 
         var
           current = this.$route;
@@ -32171,7 +33542,7 @@
     },
 
     render: function render (h) {
-      return this.__renderTab(h, 'router-link', this.routerTabLinkProps)
+      return this.__renderTab(h, this.linkTag)
     }
   });
 
@@ -32461,8 +33832,12 @@
 
     methods: {
       setNow: function setNow () {
-        this.__updateValue(Object.assign({}, this.__getCurrentDate(),
-          this.__getCurrentTime()));
+        var date = Object.assign({}, this.__getCurrentDate(),
+          this.__getCurrentTime());
+
+        this.__updateValue(date);
+        Object.assign(this.innerModel, date); // reset any pending changes to innerModel
+
         this.view = 'Hour';
       },
 
@@ -33282,6 +34657,8 @@
     }
   });
 
+  var tickStrategyOptions = [ 'none', 'strict', 'leaf', 'leaf-filtered' ];
+
   var QTree = Vue.extend({
     name: 'QTree',
 
@@ -33305,6 +34682,8 @@
         default: 'children'
       },
 
+      dense: Boolean,
+
       color: String,
       controlColor: String,
       textColor: String,
@@ -33315,7 +34694,7 @@
       tickStrategy: {
         type: String,
         default: 'none',
-        validator: function (v) { return ['none', 'strict', 'leaf', 'leaf-filtered'].includes(v); }
+        validator: function (v) { return tickStrategyOptions.includes(v); }
       },
       ticked: Array, // sync
       expanded: Array, // sync
@@ -33343,8 +34722,8 @@
 
     computed: {
       classes: function classes () {
-        return "q-tree" +
-          (this.noConnectors === true ? " q-tree--no-connectors" : '') +
+        return "q-tree q-tree--" + (this.dense === true ? 'dense' : 'standard') +
+          (this.noConnectors === true ? ' q-tree--no-connectors' : '') +
           (this.isDark === true ? " q-tree--dark" : '') +
           (this.color !== void 0 ? (" text-" + (this.color)) : '')
       },
@@ -33808,13 +35187,13 @@
 
             meta.lazy === 'loading'
               ? h(QSpinner, {
-                staticClass: 'q-tree__spinner q-mr-xs',
+                staticClass: 'q-tree__spinner',
                 props: { color: this.computedControlColor }
               })
               : (
                 isParent === true
                   ? h(QIcon, {
-                    staticClass: 'q-tree__arrow q-mr-xs',
+                    staticClass: 'q-tree__arrow',
                     class: { 'q-tree__arrow--rotate': meta.expanded },
                     props: { name: this.computedIcon },
                     on: {
@@ -33828,7 +35207,7 @@
 
             meta.hasTicking === true && meta.noTick !== true
               ? h(QCheckbox, {
-                staticClass: 'q-mr-xs',
+                staticClass: 'q-tree__tickbox',
                 props: {
                   value: meta.indeterminate === true ? null : meta.ticked,
                   color: this.computedControlColor,
@@ -34128,7 +35507,7 @@
           removed.size += f.size;
           removed.files.push(f);
 
-          f._img !== void 0 && window.URL.revokeObjectURL(f._img.src);
+          f.__img !== void 0 && window.URL.revokeObjectURL(f.__img.src);
 
           return false
         });
@@ -34144,7 +35523,7 @@
         if (this.disable) { return }
 
         if (file.__status === 'uploaded') {
-          this.uploadedFiles = this.uploadedFiles.filter(function (f) { return f.name !== file.name; });
+          this.uploadedFiles = this.uploadedFiles.filter(function (f) { return f.__key !== file.__key; });
         }
         else if (file.__status === 'uploading') {
           file.__abort();
@@ -34154,21 +35533,21 @@
         }
 
         this.files = this.files.filter(function (f) {
-          if (f.name !== file.name) {
+          if (f.__key !== file.__key) {
             return true
           }
 
-          f._img !== void 0 && window.URL.revokeObjectURL(f._img.src);
+          f.__img !== void 0 && window.URL.revokeObjectURL(f.__img.src);
 
           return false
         });
-        this.queuedFiles = this.queuedFiles.filter(function (f) { return f.name !== file.name; });
+        this.queuedFiles = this.queuedFiles.filter(function (f) { return f.__key !== file.__key; });
         this.$emit('removed', [ file ]);
       },
 
       __revokeImgURLs: function __revokeImgURLs () {
         this.files.forEach(function (f) {
-          f._img !== void 0 && window.URL.revokeObjectURL(f._img.src);
+          f.__img !== void 0 && window.URL.revokeObjectURL(f.__img.src);
         });
       },
 
@@ -34211,21 +35590,16 @@
       __addFiles: function __addFiles (e, fileList) {
         var this$1 = this;
 
-        var processedFiles = this.__processFiles(e, fileList, this.files, true);
+        var localFiles = this.__processFiles(e, fileList, this.files, true);
 
-        if (processedFiles === void 0) { return }
+        if (localFiles === void 0) { return }
 
-        var files = processedFiles
-          .filter(function (file) { return this$1.files.findIndex(function (f) { return file.name === f.name; }) === -1; });
-        
-        if (files === void 0) { return }
-        
         var fileInput = this.__getFileInput();
         if (fileInput !== void 0) {
           fileInput.value = '';
         }
 
-        files.forEach(function (file) {
+        localFiles.forEach(function (file) {
           this$1.__updateFile(file, 'idle');
           this$1.uploadSize += file.size;
 
@@ -34236,9 +35610,9 @@
           }
         });
 
-        this.files = this.files.concat(files);
-        this.queuedFiles = this.queuedFiles.concat(files);
-        this.$emit('added', files);
+        this.files = this.files.concat(localFiles);
+        this.queuedFiles = this.queuedFiles.concat(localFiles);
+        this.$emit('added', localFiles);
         this.autoUpload === true && this.upload();
       },
 
@@ -34251,7 +35625,7 @@
               flat: true,
               dense: true
             },
-            on: icon === 'add' ? null : { click: fn }
+            on: { click: icon === 'add' ? this.pickFiles : fn }
           }, icon === 'add' ? this.__getInputControl(h) : null)
         }
       },
@@ -34269,6 +35643,7 @@
               (this.multiple === true ? { multiple: true } : {})),
             on: cache(this, 'input', {
               mousedown: stop, // need to stop refocus from QBtn
+              click: this.pickFiles,
               change: this.__addFiles
             })
           })
@@ -34316,7 +35691,7 @@
         }
 
         return this.files.map(function (file) { return h('div', {
-          key: file.name,
+          key: file.__key,
           staticClass: 'q-uploader__file relative-position',
           class: {
             'q-uploader__file--img': this$1.noThumbnails !== true && file.__img !== void 0,
@@ -34706,7 +36081,9 @@
       src: {
         type: String,
         required: true
-      }
+      },
+
+      title: String
     },
 
     computed: {
@@ -34715,6 +36092,7 @@
           attrs: {
             src: this.src,
             frameborder: '0',
+            title: this.title,
             allowfullscreen: true
           }
         }
@@ -35185,18 +36563,6 @@
       tween: options.tween === true,
       tweenFromOpacity: isNaN(options.tweenFromOpacity) === true ? 0.6 : parseFloat(options.tweenFromOpacity),
       tweenToOpacity: isNaN(options.tweenToOpacity) === true ? 0.5 : parseFloat(options.tweenToOpacity)})
-  }
-
-  function getElement (element) {
-    var type = typeof element;
-
-    return type === 'function'
-      ? element()
-      : (
-        type === 'string'
-          ? document.querySelector(element)
-          : element
-      )
   }
 
   function isValidElement (element) {
@@ -36213,6 +37579,7 @@
     var ctx = el.__qscrollfire;
     if (ctx !== void 0) {
       ctx.scrollTarget.removeEventListener('scroll', ctx.scroll, listenOpts.passive);
+      ctx.scroll.cancel();
       delete el.__qscrollfire;
     }
   }
@@ -36304,7 +37671,7 @@
         scrollTarget: getScrollTarget(el),
         scroll: function scroll () {
           ctx.handler(
-            getScrollPosition(ctx.scrollTarget),
+            getVerticalScrollPosition(ctx.scrollTarget),
             getHorizontalScrollPosition(ctx.scrollTarget)
           );
         }
@@ -36378,7 +37745,7 @@
 
         touchStart: function touchStart (evt) {
           if (evt.target !== void 0 && typeof ctx.handler === 'function') {
-            var target = getTouchTarget(evt.target);
+            var target = evt.target;
             addEvt(ctx, 'temp', [
               [ target, 'touchmove', 'move', 'passiveCapture' ],
               [ target, 'touchcancel', 'end', 'notPassiveCapture' ],
@@ -36609,7 +37976,7 @@
 
         touchStart: function touchStart (evt) {
           if (evt.target !== void 0 && typeof ctx.handler === 'function') {
-            var target = getTouchTarget(evt.target);
+            var target = evt.target;
             addEvt(ctx, 'temp', [
               [ target, 'touchmove', 'move', 'passiveCapture' ],
               [ target, 'touchcancel', 'end', 'notPassiveCapture' ],
@@ -36860,6 +38227,16 @@
     }
   }
 
+  function checkActive (plugin) {
+    plugin.activeEl = document.fullscreenElement ||
+      document.mozFullScreenElement ||
+      document.webkitFullscreenElement ||
+      document.msFullscreenElement ||
+      null;
+
+    plugin.isActive = plugin.activeEl !== null;
+  }
+
   var AppFullscreen = {
     isCapable: false,
     isActive: false,
@@ -36868,11 +38245,26 @@
     request: function request (target) {
       var this$1 = this;
 
-      if (this.isCapable === true && this.isActive === false) {
+      if (this.isCapable === true) {
         var el = target || document.documentElement;
-        return promisify(el, prefixes.request).then(function () {
-          this$1.activeEl = el;
-        })
+
+        if (el !== this.activeEl) {
+          var q = client.is.ie === true && this.activeEl !== null && el.contains(this.activeEl)
+            ? this.exit()
+            : Promise.resolve();
+
+          return q
+            .then(function () { return promisify(el, prefixes.request); })
+            .catch(function (error) { return (
+              this$1.activeEl !== null
+                ? this$1.exit().then(function () { return promisify(el, prefixes.request); })
+                : Promise.reject(error)
+            ); })
+            .then(function (res) {
+              checkActive(this$1);
+              return res
+            })
+        }
       }
 
       return this.__getErr()
@@ -36882,16 +38274,19 @@
       var this$1 = this;
 
       return this.isCapable === true && this.isActive === true
-        ? promisify(document, prefixes.exit).then(function () {
-          this$1.activeEl = null;
+        ? promisify(document, prefixes.exit).then(function (res) {
+          checkActive(this$1);
+          return this$1.isActive ? this$1.exit() : res
         })
         : this.__getErr()
     },
 
     toggle: function toggle (target) {
-      return this.isActive === true
+      var el = target || document.documentElement;
+
+      return this.activeEl === el
         ? this.exit()
-        : this.request(target)
+        : this.request(el)
     },
 
     install: function install (ref) {
@@ -36899,6 +38294,8 @@
       var $q = ref.$q;
 
       $q.fullscreen = this;
+
+      this.__getErr = function () { return Promise.resolve(); };
 
       if (isSSR === true) { return }
 
@@ -36915,24 +38312,19 @@
         return
       }
 
-      this.__getErr = function () { return Promise.resolve(); };
-
       prefixes.exit = [
         'exitFullscreen',
         'msExitFullscreen', 'mozCancelFullScreen', 'webkitExitFullscreen'
       ].find(function (exit) { return document[exit]; });
 
-      this.isActive = !!(document.fullscreenElement ||
-        document.mozFullScreenElement ||
-        document.webkitFullscreenElement ||
-        document.msFullscreenElement)
+      checkActive(this)
 
       ;[
         'onfullscreenchange',
         'onmsfullscreenchange', 'onwebkitfullscreenchange'
       ].forEach(function (evt) {
         document[evt] = function () {
-          this$1.isActive = this$1.isActive === false;
+          checkActive(this$1);
         };
       });
 
@@ -37169,6 +38561,23 @@
     }
   }
 
+  var appRoot;
+
+  function getDialogParent (parent, root) {
+    if (parent !== void 0) { return parent }
+    if (root !== void 0) { return root }
+
+    if (appRoot === void 0) {
+      var elRoot = document.getElementById('q-app');
+
+      if (elRoot && elRoot.__vue__) {
+        appRoot = elRoot.__vue__.$root;
+      }
+    }
+
+    return appRoot
+  }
+
   function globalDialog (DefaultComponent) {
     return function (ref) {
       var className = ref.className;
@@ -37276,7 +38685,7 @@
         name: 'QGlobalDialog',
 
         el: node,
-        parent: parent === void 0 ? root : parent,
+        parent: getDialogParent(parent, root),
 
         render: function render (h) {
           return h(DialogComponent, {
@@ -37426,7 +38835,7 @@
 
       if (expire !== void 0 && expireValue < 0) {
         var val$1 = get(key, ssr);
-        if (val$1 !== undefined) {
+        if (val$1 !== void 0) {
           all = all
             .replace((key + "=" + val$1 + "; "), '')
             .replace(("; " + key + "=" + val$1), '')
@@ -37733,7 +39142,7 @@
       },
 
       onOk: function onOk () {
-        this.$emit('ok', clone$1(this.getData()));
+        this.$emit('ok', cloneDeep(this.getData()));
         this.hide();
       },
 
@@ -37856,6 +39265,15 @@
 
       var bar = $q.loadingBar = new Vue({
         name: 'LoadingBar',
+
+        // hide App from Vue devtools
+        devtools: { hide: true },
+
+        beforeCreate: function beforeCreate () {
+          // prevent error in Vue devtools
+          this._routerRoot === void 0 && (this._routerRoot = {});
+        },
+
         render: function (h) { return h(QAjaxBar, {
           ref: 'bar',
           props: props
@@ -37937,6 +39355,14 @@
 
         vm = new Vue({
           name: 'QLoading',
+
+          // hide App from Vue devtools
+          devtools: { hide: true },
+
+          beforeCreate: function beforeCreate () {
+            // prevent error in Vue devtools
+            this._routerRoot === void 0 && (this._routerRoot = {});
+          },
 
           el: node,
 
@@ -38334,8 +39760,13 @@
 
   function objectWithoutProperties$2 (obj, exclude) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
 
-  var uid$4 = 0;
+  var uid$4 = 0, vm$1;
+
   var defaults$1 = {};
+  var groups = {};
+  var notificationsList = {};
+  var positionClass$1 = {};
+  var emptyRE = /^\s*$/;
 
   var positionList = [
     'top-left', 'top-right',
@@ -38350,23 +39781,23 @@
 
   var notifTypes = {
     positive: {
-      icon: function icon () { return this.$q.iconSet.type.positive },
+      icon: function ($q) { return $q.iconSet.type.positive; },
       color: 'positive'
     },
 
     negative: {
-      icon: function icon () { return this.$q.iconSet.type.negative },
+      icon: function ($q) { return $q.iconSet.type.negative; },
       color: 'negative'
     },
 
     warning: {
-      icon: function icon () { return this.$q.iconSet.type.warning },
+      icon: function ($q) { return $q.iconSet.type.warning; },
       color: 'warning',
       textColor: 'dark'
     },
 
     info: {
-      icon: function icon () { return this.$q.iconSet.type.info },
+      icon: function ($q) { return $q.iconSet.type.info; },
       color: 'info'
     },
 
@@ -38378,8 +39809,333 @@
     }
   };
 
-  var groups = {};
-  var positionClass$1 = {};
+  function addNotification (config, vm, originalApi) {
+    if (!config) {
+      return logError('parameter required')
+    }
+
+    var Api;
+    var notif = { textColor: 'white' };
+
+    if (config.ignoreDefaults !== true) {
+      Object.assign(notif, defaults$1);
+    }
+
+    if (Object(config) !== config) {
+      if (notif.type) {
+        Object.assign(notif, notifTypes[notif.type]);
+      }
+
+      config = { message: config };
+    }
+
+    Object.assign(notif, notifTypes[config.type || notif.type], config);
+
+    if (typeof notif.icon === 'function') {
+      notif.icon = notif.icon(vm.$q);
+    }
+
+    if (!notif.spinner) {
+      notif.spinner = false;
+    }
+    else if (notif.spinner === true) {
+      notif.spinner = QSpinner;
+    }
+
+    notif.meta = {
+      hasMedia: Boolean(notif.spinner !== false || notif.icon || notif.avatar),
+      hasText: hasContent(notif.message) || hasContent(notif.caption)
+    };
+
+    if (notif.position) {
+      if (positionList.includes(notif.position) === false) {
+        return logError('wrong position', config)
+      }
+    }
+    else {
+      notif.position = 'bottom';
+    }
+
+    if (notif.timeout === void 0) {
+      notif.timeout = 5000;
+    }
+    else {
+      var t = parseInt(notif.timeout, 10);
+      if (isNaN(t) || t < 0) {
+        return logError('wrong timeout', config)
+      }
+      notif.timeout = t;
+    }
+
+    if (notif.timeout === 0) {
+      notif.progress = false;
+    }
+    else if (notif.progress === true) {
+      notif.meta.progressClass = 'q-notification__progress' + (
+        notif.progressClass
+          ? (" " + (notif.progressClass))
+          : ''
+      );
+
+      notif.meta.progressStyle = {
+        animationDuration: ((notif.timeout + 1000) + "ms")
+      };
+    }
+
+    var actions = (
+      Array.isArray(config.actions) === true
+        ? config.actions
+        : []
+    ).concat(
+      config.ignoreDefaults !== true && Array.isArray(defaults$1.actions) === true
+        ? defaults$1.actions
+        : []
+    ).concat(
+      notifTypes[config.type] !== void 0 && Array.isArray(notifTypes[config.type].actions) === true
+        ? notifTypes[config.type].actions
+        : []
+    );
+
+    var closeBtn = notif.closeBtn;
+    closeBtn && actions.push({
+      label: typeof closeBtn === 'string'
+        ? closeBtn
+        : this.$q.lang.label.close
+    });
+
+    notif.actions = actions.map(function (ref) {
+      var handler = ref.handler;
+      var noDismiss = ref.noDismiss;
+      var style = ref.style;
+      var klass = ref.class;
+      var attrs = ref.attrs;
+      var rest = objectWithoutProperties$2( ref, ["handler", "noDismiss", "style", "class", "attrs"] );
+      var props = rest;
+
+      return ({
+      staticClass: klass,
+      style: style,
+      props: Object.assign({}, {flat: true}, props),
+      attrs: attrs,
+      on: {
+        click: typeof handler === 'function'
+          ? function () {
+            handler();
+            noDismiss !== true && dismiss();
+          }
+          : function () { dismiss(); }
+      }
+    });
+    });
+
+    if (notif.multiLine === void 0) {
+      notif.multiLine = notif.actions.length > 1;
+    }
+
+    Object.assign(notif.meta, {
+      staticClass: 'q-notification row items-stretch' +
+        " q-notification--" + (notif.multiLine === true ? 'multi-line' : 'standard') +
+        (notif.color !== void 0 ? (" bg-" + (notif.color)) : '') +
+        (notif.textColor !== void 0 ? (" text-" + (notif.textColor)) : '') +
+        (notif.classes !== void 0 ? (" " + (notif.classes)) : ''),
+
+      wrapperClass: 'q-notification__wrapper col relative-position border-radius-inherit ' +
+        (notif.multiLine === true ? 'column no-wrap justify-center' : 'row items-center'),
+
+      contentClass: 'q-notification__content row items-center' +
+        (notif.multiLine === true ? '' : ' col'),
+
+      leftClass: notif.meta.hasText === true ? 'additional' : 'single',
+
+      attrs: Object.assign({}, {role: 'alert'},
+        notif.attrs)
+    });
+
+    if (notif.group === false) {
+      notif.group = void 0;
+      notif.meta.group = void 0;
+    }
+    else {
+      if (notif.group === void 0 || notif.group === true) {
+        // do not replace notifications with different buttons
+        notif.group = [
+          notif.message,
+          notif.caption,
+          notif.multiline
+        ].concat(
+          notif.actions.map(function (ref) {
+            var props = ref.props;
+
+            return ((props.label) + "*" + (props.icon));
+        })
+        ).join('|');
+      }
+
+      notif.meta.group = notif.group + '|' + notif.position;
+    }
+
+    if (notif.actions.length === 0) {
+      notif.actions = void 0;
+    }
+    else {
+      notif.meta.actionsClass = 'q-notification__actions row items-center ' +
+        (notif.multiLine === true ? 'justify-end' : 'col-auto') +
+        (notif.meta.hasMedia === true ? ' q-notification__actions--with-media' : '');
+    }
+
+    if (originalApi !== void 0) {
+      // reset timeout if any
+      clearTimeout(originalApi.notif.meta.timer);
+
+      // retain uid
+      notif.meta.uid = originalApi.notif.meta.uid;
+
+      // replace notif
+      var index = notificationsList[notif.position].indexOf(originalApi.notif);
+      notificationsList[notif.position][index] = notif;
+    }
+    else {
+      var original = groups[notif.meta.group];
+
+      // woohoo, it's a new notification
+      if (original === void 0) {
+        notif.meta.uid = uid$4++;
+        notif.meta.badge = 1;
+
+        if (['left', 'right', 'center'].indexOf(notif.position) !== -1) {
+          notificationsList[notif.position].splice(
+            Math.floor(notificationsList[notif.position].length / 2),
+            0,
+            notif
+          );
+        }
+        else {
+          var action = notif.position.indexOf('top') > -1 ? 'unshift' : 'push';
+          notificationsList[notif.position][action](notif);
+        }
+
+        if (notif.group !== void 0) {
+          groups[notif.meta.group] = notif;
+        }
+      }
+      // ok, so it's NOT a new one
+      else {
+        // reset timeout if any
+        clearTimeout(original.meta.timer);
+
+        if (notif.badgePosition !== void 0) {
+          if (badgePositions.includes(notif.badgePosition) === false) {
+            return logError('wrong badgePosition', config)
+          }
+        }
+        else {
+          notif.badgePosition = "top-" + (notif.position.indexOf('left') > -1 ? 'right' : 'left');
+        }
+
+        notif.meta.uid = original.meta.uid;
+        notif.meta.badge = original.meta.badge + 1;
+        notif.meta.badgeClass = "q-notification__badge q-notification__badge--" + (notif.badgePosition) +
+          (notif.badgeColor !== void 0 ? (" bg-" + (notif.badgeColor)) : '') +
+          (notif.badgeTextColor !== void 0 ? (" text-" + (notif.badgeTextColor)) : '') +
+          (notif.badgeClass ? (" " + (notif.badgeClass)) : '');
+
+        var index$1 = notificationsList[notif.position].indexOf(original);
+        notificationsList[notif.position][index$1] = groups[notif.meta.group] = notif;
+      }
+    }
+
+    var dismiss = function () {
+      removeNotification(notif, vm);
+      Api = void 0;
+    };
+
+    vm.$forceUpdate();
+
+    if (notif.timeout > 0) {
+      notif.meta.timer = setTimeout(function () {
+        dismiss();
+      }, notif.timeout + /* show duration */ 1000);
+    }
+
+    // only non-groupable can be updated
+    if (notif.group !== void 0) {
+      return function (props) {
+        if (props !== void 0) {
+          logError('trying to update a grouped one which is forbidden', config);
+        }
+        else {
+          dismiss();
+        }
+      }
+    }
+
+    Api = {
+      dismiss: dismiss,
+      config: config,
+      notif: notif
+    };
+
+    if (originalApi !== void 0) {
+      Object.assign(originalApi, Api);
+      return
+    }
+
+    return function (props) {
+      // if notification wasn't previously dismissed
+      if (Api !== void 0) {
+        // if no params, then we must dismiss the notification
+        if (props === void 0) {
+          Api.dismiss();
+        }
+        // otherwise we're updating it
+        else {
+          var newNotif = Object.assign({}, Api.config, props, {
+            group: false,
+            position: notif.position
+          });
+
+          addNotification(newNotif, vm, Api);
+        }
+      }
+    }
+  }
+
+  function removeNotification (notif, vm) {
+    clearTimeout(notif.meta.timer);
+
+    var index = notificationsList[notif.position].indexOf(notif);
+    if (index !== -1) {
+      if (notif.group !== void 0) {
+        delete groups[notif.meta.group];
+      }
+
+      var el = vm.$refs['' + notif.meta.uid];
+
+      if (el) {
+        var ref = getComputedStyle(el);
+        var width = ref.width;
+        var height = ref.height;
+
+        el.style.left = (el.offsetLeft) + "px";
+        el.style.width = width;
+        el.style.height = height;
+      }
+
+      notificationsList[notif.position].splice(index, 1);
+
+      vm.$forceUpdate();
+
+      if (typeof notif.onDismiss === 'function') {
+        notif.onDismiss();
+      }
+    }
+  }
+
+  function hasContent (str) {
+    return str !== void 0 &&
+      str !== null &&
+      emptyRE.test(str) !== true
+  }
 
   function logError (error, config) {
     console.error(("Notify: " + error), config);
@@ -38389,337 +40145,15 @@
   var Notifications = {
     name: 'QNotifications',
 
-    created: function created () {
-      var this$1 = this;
+    // hide App from Vue devtools
+    devtools: { hide: true },
 
-      this.notifs = {};
-
-      positionList.forEach(function (pos) {
-        this$1.notifs[pos] = [];
-
-        var
-          vert = ['left', 'center', 'right'].includes(pos) === true ? 'center' : (pos.indexOf('top') > -1 ? 'top' : 'bottom'),
-          align = pos.indexOf('left') > -1 ? 'start' : (pos.indexOf('right') > -1 ? 'end' : 'center'),
-          classes = ['left', 'right'].includes(pos) ? ("items-" + (pos === 'left' ? 'start' : 'end') + " justify-center") : (pos === 'center' ? 'flex-center' : ("items-" + align));
-
-        positionClass$1[pos] = "q-notifications__list q-notifications__list--" + vert + " fixed column no-wrap " + classes;
-      });
-    },
-
-    methods: {
-      add: function add (config, originalApi) {
-        var this$1 = this;
-
-        if (!config) {
-          return logError('parameter required')
-        }
-
-        var Api;
-        var notif = { textColor: 'white' };
-
-        if (config.ignoreDefaults !== true) {
-          Object.assign(notif, defaults$1);
-        }
-
-        if (Object(config) !== config) {
-          if (notif.type) {
-            Object.assign(notif, notifTypes[notif.type]);
-          }
-
-          config = { message: config };
-        }
-
-        Object.assign(notif, notifTypes[config.type || notif.type], config);
-
-        if (typeof notif.icon === 'function') {
-          notif.icon = notif.icon.call(this);
-        }
-
-        if (notif.spinner === void 0) {
-          notif.spinner = false;
-        }
-        else if (notif.spinner === true) {
-          notif.spinner = QSpinner;
-        }
-
-        notif.meta = {
-          hasMedia: Boolean(notif.spinner !== false || notif.icon || notif.avatar)
-        };
-
-        if (notif.position) {
-          if (positionList.includes(notif.position) === false) {
-            return logError('wrong position', config)
-          }
-        }
-        else {
-          notif.position = 'bottom';
-        }
-
-        if (notif.timeout === void 0) {
-          notif.timeout = 5000;
-        }
-        else {
-          var t = parseInt(notif.timeout, 10);
-          if (isNaN(t) || t < 0) {
-            return logError('wrong timeout', config)
-          }
-          notif.timeout = t;
-        }
-
-        if (notif.timeout === 0) {
-          notif.progress = false;
-        }
-        else if (notif.progress === true) {
-          notif.meta.progressStyle = {
-            animationDuration: ((notif.timeout + 1000) + "ms")
-          };
-        }
-
-        var actions = (
-          Array.isArray(config.actions) === true
-            ? config.actions
-            : []
-        ).concat(
-          config.ignoreDefaults !== true && Array.isArray(defaults$1.actions) === true
-            ? defaults$1.actions
-            : []
-        ).concat(
-          notifTypes[config.type] !== void 0 && Array.isArray(notifTypes[config.type].actions) === true
-            ? notifTypes[config.type].actions
-            : []
-        );
-
-        notif.closeBtn && actions.push({
-          label: typeof notif.closeBtn === 'string'
-            ? notif.closeBtn
-            : this.$q.lang.label.close
-        });
-
-        notif.actions = actions.map(function (ref) {
-          var handler = ref.handler;
-          var noDismiss = ref.noDismiss;
-          var style = ref.style;
-          var klass = ref.class;
-          var attrs = ref.attrs;
-          var rest = objectWithoutProperties$2( ref, ["handler", "noDismiss", "style", "class", "attrs"] );
-          var props = rest;
-
-          return ({
-          staticClass: klass,
-          style: style,
-          props: Object.assign({}, {flat: true}, props),
-          attrs: attrs,
-          on: {
-            click: typeof handler === 'function'
-              ? function () {
-                handler();
-                noDismiss !== true && dismiss();
-              }
-              : function () { dismiss(); }
-          }
-        });
-        });
-
-        if (notif.multiLine === void 0) {
-          notif.multiLine = notif.actions.length > 1;
-        }
-
-        Object.assign(notif.meta, {
-          staticClass: "q-notification row items-stretch" +
-            " q-notification--" + (notif.multiLine === true ? 'multi-line' : 'standard') +
-            (notif.color !== void 0 ? (" bg-" + (notif.color)) : '') +
-            (notif.textColor !== void 0 ? (" text-" + (notif.textColor)) : '') +
-            (notif.classes !== void 0 ? (" " + (notif.classes)) : ''),
-
-          wrapperClass: 'q-notification__wrapper col relative-position border-radius-inherit ' +
-            (notif.multiLine === true ? 'column no-wrap justify-center' : 'row items-center'),
-
-          contentClass: 'q-notification__content row items-center' +
-            (notif.multiLine === true ? '' : ' col'),
-
-          attrs: Object.assign({}, {role: 'alert'},
-            notif.attrs)
-        });
-
-        if (notif.group === false) {
-          notif.group = void 0;
-          notif.meta.group = void 0;
-        }
-        else {
-          if (notif.group === void 0 || notif.group === true) {
-            // do not replace notifications with different buttons
-            notif.group = [
-              notif.message,
-              notif.caption,
-              notif.multiline
-            ].concat(
-              notif.actions.map(function (a) { return ((a.props.label) + "*" + (a.props.icon)); })
-            ).join('|');
-          }
-
-          notif.meta.group = notif.group + '|' + notif.position;
-        }
-
-        if (notif.actions.length === 0) {
-          notif.actions = void 0;
-        }
-        else {
-          notif.meta.actionsClass = 'q-notification__actions row items-center ' +
-            (notif.multiLine === true ? 'justify-end' : 'col-auto') +
-            (notif.meta.hasMedia === true ? ' q-notification__actions--with-media' : '');
-        }
-
-        if (originalApi !== void 0) {
-          // reset timeout if any
-          clearTimeout(originalApi.notif.meta.timer);
-
-          // retain uid
-          notif.meta.uid = originalApi.notif.meta.uid;
-
-          // replace notif
-          var index = this.notifs[notif.position].indexOf(originalApi.notif);
-          this.notifs[notif.position][index] = notif;
-        }
-        else {
-          var original = groups[notif.meta.group];
-
-          // woohoo, it's a new notification
-          if (original === void 0) {
-            notif.meta.uid = uid$4++;
-            notif.meta.badge = 1;
-
-            if (['left', 'right', 'center'].indexOf(notif.position) !== -1) {
-              this.notifs[notif.position].splice(
-                Math.floor(this.notifs[notif.position].length / 2),
-                0,
-                notif
-              );
-            }
-            else {
-              var action = notif.position.indexOf('top') > -1 ? 'unshift' : 'push';
-              this.notifs[notif.position][action](notif);
-            }
-
-            if (notif.group !== void 0) {
-              groups[notif.meta.group] = notif;
-            }
-          }
-          // ok, so it's NOT a new one
-          else {
-            // reset timeout if any
-            clearTimeout(original.meta.timer);
-
-            if (notif.badgePosition !== void 0) {
-              if (badgePositions.includes(notif.badgePosition) === false) {
-                return logError('wrong badgePosition', config)
-              }
-            }
-            else {
-              notif.badgePosition = "top-" + (notif.position.indexOf('left') > -1 ? 'right' : 'left');
-            }
-
-            notif.meta.uid = original.meta.uid;
-            notif.meta.badge = original.meta.badge + 1;
-            notif.meta.badgeStaticClass = "q-notification__badge q-notification__badge--" + (notif.badgePosition) +
-              (notif.badgeColor !== void 0 ? (" bg-" + (notif.badgeColor)) : '') +
-              (notif.badgeTextColor !== void 0 ? (" text-" + (notif.badgeTextColor)) : '');
-
-            var index$1 = this.notifs[notif.position].indexOf(original);
-            this.notifs[notif.position][index$1] = groups[notif.meta.group] = notif;
-          }
-        }
-
-        var dismiss = function () {
-          this$1.remove(notif);
-          Api = void 0;
-        };
-
-        this.$forceUpdate();
-
-        if (notif.timeout > 0) {
-          notif.meta.timer = setTimeout(function () {
-            dismiss();
-          }, notif.timeout + /* show duration */ 1000);
-        }
-
-        // only non-groupable can be updated
-        if (notif.group !== void 0) {
-          return function (props) {
-            if (props !== void 0) {
-              logError('trying to update a grouped one which is forbidden', config);
-            }
-            else {
-              dismiss();
-            }
-          }
-        }
-
-        Api = {
-          dismiss: dismiss,
-          config: config,
-          notif: notif
-        };
-
-        if (originalApi !== void 0) {
-          Object.assign(originalApi, Api);
-          return
-        }
-
-        return function (props) {
-          // if notification wasn't previously dismissed
-          if (Api !== void 0) {
-            // if no params, then we must dismiss the notification
-            if (props === void 0) {
-              Api.dismiss();
-            }
-            // otherwise we're updating it
-            else {
-              var newNotif = Object.assign({}, Api.config, props, {
-                group: false,
-                position: notif.position
-              });
-
-              this$1.add(newNotif, Api);
-            }
-          }
-        }
-      },
-
-      remove: function remove (notif) {
-        clearTimeout(notif.meta.timer);
-
-        var index = this.notifs[notif.position].indexOf(notif);
-        if (index !== -1) {
-          if (notif.group !== void 0) {
-            delete groups[notif.meta.group];
-          }
-
-          var el = this.$refs[("notif_" + (notif.meta.uid))];
-
-          if (el) {
-            var ref = getComputedStyle(el);
-            var width = ref.width;
-            var height = ref.height;
-
-            el.style.left = (el.offsetLeft) + "px";
-            el.style.width = width;
-            el.style.height = height;
-          }
-
-          this.notifs[notif.position].splice(index, 1);
-
-          this.$forceUpdate();
-
-          if (typeof notif.onDismiss === 'function') {
-            notif.onDismiss();
-          }
-        }
-      }
+    beforeCreate: function beforeCreate () {
+      // prevent error in Vue devtools
+      this._routerRoot === void 0 && (this._routerRoot = {});
     },
 
     render: function render (h) {
-      var this$1 = this;
-
       return h('div', { staticClass: 'q-notifications' }, positionList.map(function (pos) {
         return h('transition-group', {
           key: pos,
@@ -38729,43 +40163,22 @@
             name: ("q-notification--" + pos),
             mode: 'out-in'
           }
-        }, this$1.notifs[pos].map(function (notif) {
-          var msgChild;
-
+        }, notificationsList[pos].map(function (notif) {
           var meta = notif.meta;
-          var msgData = { staticClass: 'q-notification__message col' };
-
-          if (notif.html === true) {
-            msgData.domProps = {
-              innerHTML: notif.caption
-                ? ("<div>" + (notif.message) + "</div><div class=\"q-notification__caption\">" + (notif.caption) + "</div>")
-                : notif.message
-            };
-          }
-          else {
-            var msgNode = [ notif.message ];
-            msgChild = notif.caption
-              ? [
-                h('div', msgNode),
-                h('div', { staticClass: 'q-notification__caption' }, [ notif.caption ])
-              ]
-              : msgNode;
-          }
-
           var mainChild = [];
 
           if (meta.hasMedia === true) {
             if (notif.spinner !== false) {
               mainChild.push(
                 h(notif.spinner, {
-                  staticClass: 'q-notification__spinner'
+                  staticClass: 'q-notification__spinner q-notification__spinner--' + meta.leftClass
                 })
               );
             }
             else if (notif.icon) {
               mainChild.push(
                 h(QIcon, {
-                  staticClass: 'q-notification__icon',
+                  staticClass: 'q-notification__icon q-notification__icon--' + meta.leftClass,
                   attrs: { role: 'img' },
                   props: { name: notif.icon }
                 })
@@ -38773,16 +40186,38 @@
             }
             else if (notif.avatar) {
               mainChild.push(
-                h(QAvatar, { staticClass: 'q-notification__avatar' }, [
+                h(QAvatar, { staticClass: 'q-notification__avatar q-notification__avatar--' + meta.leftClass }, [
                   h('img', { attrs: { src: notif.avatar, 'aria-hidden': 'true' } })
                 ])
               );
             }
           }
 
-          mainChild.push(
-            h('div', msgData, msgChild)
-          );
+          if (meta.hasText === true) {
+            var msgChild;
+            var msgData = { staticClass: 'q-notification__message col' };
+
+            if (notif.html === true) {
+              msgData.domProps = {
+                innerHTML: notif.caption
+                  ? ("<div>" + (notif.message) + "</div><div class=\"q-notification__caption\">" + (notif.caption) + "</div>")
+                  : notif.message
+              };
+            }
+            else {
+              var msgNode = [ notif.message ];
+              msgChild = notif.caption
+                ? [
+                  h('div', msgNode),
+                  h('div', { staticClass: 'q-notification__caption' }, [notif.caption])
+                ]
+                : msgNode;
+            }
+
+            mainChild.push(
+              h('div', msgData, msgChild)
+            );
+          }
 
           var child = [
             h('div', { staticClass: meta.contentClass }, mainChild)
@@ -38791,9 +40226,8 @@
           notif.progress === true && child.push(
             h('div', {
               key: ((meta.uid) + "|p|" + (meta.badge)),
-              staticClass: 'q-notification__progress',
-              style: meta.progressStyle,
-              class: notif.progressClass
+              staticClass: meta.progressClass,
+              style: meta.progressStyle
             })
           );
 
@@ -38806,14 +40240,13 @@
           meta.badge > 1 && child.push(
             h('div', {
               key: ((meta.uid) + "|" + (meta.badge)),
-              staticClass: meta.badgeStaticClass,
-              style: notif.badgeStyle,
-              class: notif.badgeClass
+              staticClass: meta.badgeClass,
+              style: notif.badgeStyle
             }, [ meta.badge ])
           );
 
           return h('div', {
-            ref: ("notif_" + (meta.uid)),
+            ref: '' + meta.uid,
             key: meta.uid,
             staticClass: meta.staticClass,
             attrs: meta.attrs
@@ -38828,21 +40261,18 @@
       var this$1 = this;
 
       if (this.$q.fullscreen !== void 0 && this.$q.fullscreen.isCapable === true) {
-        var append = function (isFullscreen) {
-          var newParent = getBodyFullscreenElement(
-            isFullscreen,
-            this$1.$q.fullscreen.activeEl
-          );
+        var append = function () {
+          var newParent = getBodyFullscreenElement(this$1.$q.fullscreen.activeEl);
 
           if (this$1.$el.parentElement !== newParent) {
             newParent.appendChild(this$1.$el);
           }
         };
 
-        this.unwatchFullscreen = this.$watch('$q.fullscreen.isActive', append);
+        this.unwatchFullscreen = this.$watch('$q.fullscreen.activeEl', debounce(append, 50));
 
         if (this.$q.fullscreen.isActive === true) {
-          append(true);
+          append();
         }
       }
     },
@@ -38853,13 +40283,12 @@
   };
 
   var Notify = {
-    create: function create (opts) {
-      if (isSSR === true) { return noop }
-      return this.__vm.add(opts)
-    },
     setDefaults: function setDefaults (opts) {
-      opts === Object(opts) && Object.assign(defaults$1, opts);
+      if (isSSR !== true && opts === Object(opts)) {
+        Object.assign(defaults$1, opts);
+      }
     },
+
     registerType: function registerType (typeName, typeOpts) {
       if (isSSR !== true && typeOpts === Object(typeOpts)) {
         notifTypes[typeName] = typeOpts;
@@ -38867,26 +40296,37 @@
     },
 
     install: function install (ref) {
-      var cfg = ref.cfg;
       var $q = ref.$q;
 
-      if (isSSR === true) {
-        $q.notify = noop;
-        $q.notify.setDefaults = noop;
-        return
-      }
+      $q.notify = this.create = isSSR === true
+        ? noop
+        : function (opts) { return addNotification(opts, vm$1); };
 
-      this.setDefaults(cfg.notify);
-
-      $q.notify = this.create.bind(this);
       $q.notify.setDefaults = this.setDefaults;
       $q.notify.registerType = this.registerType;
 
-      var node = document.createElement('div');
-      document.body.appendChild(node);
+      if ($q.config.notify !== void 0) {
+        this.setDefaults($q.config.notify);
+      }
 
-      this.__vm = new Vue(Notifications);
-      this.__vm.$mount(node);
+      if (isSSR !== true) {
+        positionList.forEach(function (pos) {
+          notificationsList[pos] = [];
+
+          var
+            vert = ['left', 'center', 'right'].includes(pos) === true ? 'center' : (pos.indexOf('top') > -1 ? 'top' : 'bottom'),
+            align = pos.indexOf('left') > -1 ? 'start' : (pos.indexOf('right') > -1 ? 'end' : 'center'),
+            classes = ['left', 'right'].includes(pos) ? ("items-" + (pos === 'left' ? 'start' : 'end') + " justify-center") : (pos === 'center' ? 'flex-center' : ("items-" + align));
+
+          positionClass$1[pos] = "q-notifications__list q-notifications__list--" + vert + " fixed column no-wrap " + classes;
+        });
+
+        var node = document.createElement('div');
+        document.body.appendChild(node);
+
+        vm$1 = new Vue(Notifications);
+        vm$1.$mount(node);
+      }
     }
   };
 
@@ -39203,7 +40643,7 @@
 
   var utils = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    clone: clone$1,
+    clone: cloneDeep,
     colors: colors,
     copyToClipboard: copyToClipboard,
     date: date,
@@ -39231,7 +40671,7 @@
   });
 
   var index_umd = Object.assign({}, {version: version,
-    lang: lang,
+    lang: Plugin,
     iconSet: iconSet,
     components: components$1,
     directives: directives,
