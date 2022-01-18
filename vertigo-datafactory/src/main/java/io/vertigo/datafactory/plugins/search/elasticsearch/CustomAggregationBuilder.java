@@ -28,13 +28,13 @@ import java.util.Optional;
 
 import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.io.stream.StreamOutput;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.query.QueryShardContext;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregatorFactories;
 import org.elasticsearch.search.aggregations.AggregatorFactory;
 import org.elasticsearch.search.aggregations.PipelineAggregationBuilder;
+import org.elasticsearch.search.aggregations.support.AggregationContext;
+import org.elasticsearch.xcontent.XContentBuilder;
+import org.elasticsearch.xcontent.XContentType;
 
 import io.vertigo.core.lang.Assertion;
 
@@ -191,11 +191,6 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 	}
 
 	@Override
-	public AggregatorFactory build(final QueryShardContext context, final AggregatorFactory parent) {
-		throw new UnsupportedOperationException("not yet");
-	}
-
-	@Override
 	public XContentBuilder toXContent(final XContentBuilder builder, final Params params) throws IOException {
 		builder.startObject(name);
 
@@ -218,6 +213,11 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 
 	@Override
 	protected AggregationBuilder shallowCopy(final org.elasticsearch.search.aggregations.AggregatorFactories.Builder originalFactoriesBuilder, final Map<String, Object> originalMetaData) {
+		throw new UnsupportedOperationException("not yet");
+	}
+
+	@Override
+	protected AggregatorFactory build(final AggregationContext context, final AggregatorFactory parent) throws IOException {
 		throw new UnsupportedOperationException("not yet");
 	}
 
@@ -245,4 +245,5 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 	public BucketCardinality bucketCardinality() {
 		return BucketCardinality.MANY;
 	}
+
 }
