@@ -100,7 +100,7 @@ public final class JavalinWebServerPlugin implements WebServerPlugin {
 
 	private static String convertJaxRsPathToJavalin(final String path) {
 		return path.replaceAll("\\(", "%28")
-				.replaceAll("\\)", "%29")
-				.replaceAll("\\{(.+?)\\}", ":$1"); //.+? : Reluctant regexp
+				.replaceAll("\\)", "%29");
+		//.replaceAll("\\{(.+?)\\}", ":$1"); //.+? : Reluctant regexp
 	}
 }

@@ -32,8 +32,8 @@ import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.handle.Handle;
 import io.vertigo.social.impl.handle.HandlePlugin;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.ScanResult;
+import redis.clients.jedis.params.ScanParams;
+import redis.clients.jedis.resps.ScanResult;
 
 public class RedisHandlePlugin implements HandlePlugin {
 

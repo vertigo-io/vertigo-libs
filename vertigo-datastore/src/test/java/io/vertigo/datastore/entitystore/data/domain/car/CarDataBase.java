@@ -67,7 +67,7 @@ public final class CarDataBase {
 		car.setPrice(price);
 		car.setManufacturer(manufacturer);
 		car.setModel(model);
-		car.setYear(year);
+		car.setCarYear(year);
 		car.setKilo(kilo);
 		final BigDecimal conso = new BigDecimal(consommation);
 		conso.setScale(2, RoundingMode.HALF_UP);

@@ -35,7 +35,7 @@ public final class Item implements KeyConcept {
 	private String manufacturer;
 	private String model;
 	private String description;
-	private Integer year;
+	private Integer itemYear;
 	private Integer kilo;
 	private Integer price;
 	private java.math.BigDecimal consommation;
@@ -91,12 +91,12 @@ public final class Item implements KeyConcept {
 	}
 
 	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Année")
-	public Integer getYear() {
-		return year;
+	public Integer getItemYear() {
+		return itemYear;
 	}
 
-	public void setYear(final Integer year) {
-		this.year = year;
+	public void setItemYear(final Integer itemYear) {
+		this.itemYear = itemYear;
 	}
 
 	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Kilométrage")

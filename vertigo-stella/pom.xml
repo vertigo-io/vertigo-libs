@@ -43,19 +43,19 @@
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
-			<version>2.33</version>
+			<version>3.0.3</version>
 			<optional>true</optional> <!-- REST DistributedWork impl -->
 		</dependency>
 		<dependency>
 		    <groupId>org.glassfish.jersey.inject</groupId>
 		    <artifactId>jersey-hk2</artifactId>
-		    <version>2.33</version>
+		    <version>3.0.3</version>
 			<optional>true</optional> <!-- REST DistributedWork impl -->
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
 			<artifactId>websocket-server</artifactId>
-			<version>9.4.40.v20210413</version>
+			<version>9.4.44.v20210927</version>
 			<scope>test</scope><!-- vega embedded -->
 		</dependency>
 		

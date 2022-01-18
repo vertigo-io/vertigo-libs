@@ -47,17 +47,17 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>5.3.7</version>
+			<version>5.3.15</version>
 		</dependency>
 		<dependency>
         	<groupId>org.thymeleaf</groupId>
 			<artifactId>thymeleaf-spring5</artifactId>
-			<version>3.0.12.RELEASE</version>
+			<version>3.0.14.RELEASE</version>
 		</dependency>
 		<dependency>
 		  <groupId>nz.net.ultraq.thymeleaf</groupId>
 		  <artifactId>thymeleaf-layout-dialect</artifactId>
-		  <version>2.5.3</version>
+		  <version>3.0.0</version>
 		</dependency>
 		<!-- for tests -->
 		<!-- for Embedded Jetty Server and tests -->
@@ -71,7 +71,7 @@
 		<dependency>
 		    <groupId>com.h2database</groupId>
 		    <artifactId>h2</artifactId>
-		    <version>2.0.206</version>
+		    <version>2.1.210</version>
 		    <scope>test</scope>
 		</dependency>
 		<dependency>
@@ -83,44 +83,44 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>apache-jsp</artifactId>
-			<version>9.4.40.v20210413</version>
+			<version>9.4.44.v20210927</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>apache-jstl</artifactId>
-			<version>9.4.40.v20210413</version>
+			<version>9.4.44.v20210927</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-plus</artifactId>
-			<version>9.4.40.v20210413</version>
+			<version>9.4.44.v20210927</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>9.4.40.v20210413</version>
+			<version>9.4.44.v20210927</version>
 			<scope>test</scope>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-support</artifactId>
-			<version>3.141.59</version>
+			<version>4.1.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-api</artifactId>
-			<version>3.141.59</version>
+			<version>4.1.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 		    <artifactId>htmlunit-driver</artifactId>
-		    <version>2.50.0</version>
+		    <version>3.56.0</version>
 			<scope>test</scope>
 		</dependency>
 		

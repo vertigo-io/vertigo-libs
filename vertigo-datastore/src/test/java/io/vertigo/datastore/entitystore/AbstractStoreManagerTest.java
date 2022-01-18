@@ -144,7 +144,7 @@ public abstract class AbstractStoreManagerTest {
 	protected List<String> getCreateFamilleRequests() {
 		return List.of(
 				" create table famille(FAM_ID BIGINT , LIBELLE varchar(255))",
-				" create sequence SEQ_FAMILLE start with 10001 increment by 1");
+				" create sequence SEQ_FAMILLE start with 10000 increment by 1");
 	}
 
 	protected List<String> getCreateCarRequests() {
@@ -153,14 +153,14 @@ public abstract class AbstractStoreManagerTest {
 				" create table motor_type(MTY_CD varchar(50) , LABEL varchar(255))",
 				"insert into motor_type(MTY_CD, LABEL) values ('ESSENCE', 'Essence')",
 				"insert into motor_type(MTY_CD, LABEL) values ('DIESEL', 'Diesel')",
-				" create table car(ID BIGINT, FAM_ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50), GEO_POINT TEXT )",
-				" create sequence SEQ_CAR start with 10001 increment by 1");
+				" create table car(ID BIGINT, FAM_ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), CAR_YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50), GEO_POINT TEXT )",
+				" create sequence SEQ_CAR start with 10000 increment by 1");
 	}
 
 	protected List<String> getCreateFileInfoRequests() {
 		return List.of(
 				" create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_PATH varchar(255), FILE_DATA BLOB)",
-				" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1");
+				" create sequence SEQ_VX_FILE_INFO start with 10000 increment by 1");
 	}
 
 	protected List<String> getDropRequests() {
@@ -266,8 +266,8 @@ public abstract class AbstractStoreManagerTest {
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkInsertCar")
 				.withEngine(TaskEngineProc.class)
-				.withRequest("insert into CAR (ID, FAM_ID,MANUFACTURER, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MTY_CD) values "
-						+ "(NEXT VALUE FOR SEQ_CAR, #dtoCar.famId#, #dtoCar.manufacturer#, #dtoCar.model#, #dtoCar.description#, #dtoCar.year#, #dtoCar.kilo#, #dtoCar.price#, #dtoCar.mtyCd#)")
+				.withRequest("insert into CAR (ID, FAM_ID,MANUFACTURER, MODEL, DESCRIPTION, CAR_YEAR, KILO, PRICE, MTY_CD) values "
+						+ "(NEXT VALUE FOR SEQ_CAR, #dtoCar.famId#, #dtoCar.manufacturer#, #dtoCar.model#, #dtoCar.description#, #dtoCar.carYear#, #dtoCar.kilo#, #dtoCar.price#, #dtoCar.mtyCd#)")
 				.addInAttribute("dtoCar", smartTypeCar, Cardinality.ONE)
 				.build();
 
@@ -470,7 +470,7 @@ public abstract class AbstractStoreManagerTest {
 	@Test
 	public void testSelectSmartType() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car peugeotCar = entityStoreManager.readOne(UID.of(Car.class, 10001L));
+			final Car peugeotCar = entityStoreManager.readOne(UID.of(Car.class, 10000L));
 			Assertions.assertEquals(1, peugeotCar.getGeoPoint().getX(), "Test geopoint smartType adapter");
 			Assertions.assertEquals(2, peugeotCar.getGeoPoint().getY(), "Test geopoint smartType adapter");
 		}
@@ -762,7 +762,7 @@ public abstract class AbstractStoreManagerTest {
 		car.setPrice(5600);
 		car.setManufacturer("Peugeot");
 		car.setModel("407");
-		car.setYear(2014);
+		car.setCarYear(2014);
 		car.setKilo(20000);
 		car.motorType().setEnumValue(MotorTypeEnum.essence);
 		car.setDescription("Vds 407 de test, 2014, 20000 kms, rouge, TBEG");

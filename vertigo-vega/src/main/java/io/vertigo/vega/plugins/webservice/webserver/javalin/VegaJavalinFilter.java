@@ -48,7 +48,7 @@ public final class VegaJavalinFilter implements Filter {
 	@Override
 	public void init(final FilterConfig filterConfig) throws ServletException {
 		final Javalin javalin = javalinConnector.getClient();
-		javalinServlet = javalin.servlet();
+		javalinServlet = javalin.javalinServlet();
 	}
 
 	/** {@inheritDoc} */

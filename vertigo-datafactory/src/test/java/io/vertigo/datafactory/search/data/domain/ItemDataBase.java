@@ -64,7 +64,7 @@ public final class ItemDataBase {
 
 	public static long before(final List<Item> items, final int year) {
 		return items.stream()
-				.filter(item -> item.getYear() <= year)
+				.filter(item -> item.getItemYear() <= year)
 				.count();
 	}
 
@@ -103,7 +103,7 @@ public final class ItemDataBase {
 		item.setPrice(price);
 		item.setManufacturer(manufacturer);
 		item.setModel(model);
-		item.setYear(year);
+		item.setItemYear(year);
 		item.setKilo(kilo);
 		final BigDecimal conso = new BigDecimal(consommation);
 		conso.setScale(2, RoundingMode.HALF_UP);

@@ -86,8 +86,8 @@ public final class DashboardRouter {
 	 */
 	public void route(final Javalin javalin) {
 
-		javalin.get("/dashboard/static/:fileName", (ctx) -> {
-			try (InputStream inputStream = DashboardRouter.class.getResource("/static/" + ctx.pathParam(":fileName")).openStream()) {
+		javalin.get("/dashboard/static/{fileName}", (ctx) -> {
+			try (InputStream inputStream = DashboardRouter.class.getResource("/static/" + ctx.pathParam("{fileName}")).openStream()) {
 				try (final OutputStream output = ctx.res.getOutputStream()) {
 					FileUtil.copy(inputStream, output);
 				}
@@ -104,8 +104,8 @@ public final class DashboardRouter {
 			render(ctx.res, "templates/home.ftl", model);
 		});
 
-		javalin.get("/dashboard/modules/:moduleName", (ctx) -> {
-			final String moduleName = ctx.pathParam(":moduleName");
+		javalin.get("/dashboard/modules/{moduleName}", (ctx) -> {
+			final String moduleName = ctx.pathParam("{moduleName}");
 			final DashboardModuleControler controler = InjectorUtil.newInstance(controlerMap.get(moduleName));
 			final Map<String, Object> model = controler.buildModel(node, moduleName);
 			model.put("contextName", ctx.contextPath());

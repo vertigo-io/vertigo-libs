@@ -160,7 +160,7 @@ public final class MultiStoreManagerTest {
 	protected List<String> getCreateFamilleRequests() {
 		return List.of(
 				" create table famille(FAM_ID BIGINT , LIBELLE varchar(255))",
-				" create sequence SEQ_FAMILLE start with 10001 increment by 1");
+				" create sequence SEQ_FAMILLE start with 10000 increment by 1");
 	}
 
 	protected List<String> getCreateCarRequests() {
@@ -169,8 +169,8 @@ public final class MultiStoreManagerTest {
 				" create table motor_type(MTY_CD varchar(50) , LABEL varchar(255))",
 				"insert into motor_type(MTY_CD, LABEL) values ('ESSENCE', 'Essence')",
 				"insert into motor_type(MTY_CD, LABEL) values ('DIESEL', 'Diesel')",
-				" create table car(ID BIGINT, FAM_ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50) )",
-				" create sequence SEQ_CAR start with 10001 increment by 1");
+				" create table car(ID BIGINT, FAM_ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), CAR_YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50) )",
+				" create sequence SEQ_CAR start with 10000 increment by 1");
 	}
 
 	protected List<String> getDropRequests() {

@@ -83,8 +83,8 @@ abstract class AbstractSearchManagerStoreTest {
 
 		//A chaque test on recrée la table famille
 		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
-			execCallableStatement(connectionCloseable.getConnection(), "create table item(ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), FAM_ID BIGINT, YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50), OPTIONAL_NUMBER BIGINT, OPTIONAL_STRING varchar(50), LOCALISATION varchar(50), LAST_MODIFIED timestamp, PRECISION INT );");
-			execCallableStatement(connectionCloseable.getConnection(), "create sequence SEQ_ITEM start with 10001 increment by 1");
+			execCallableStatement(connectionCloseable.getConnection(), "create table item(ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), FAM_ID BIGINT, ITEM_YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50), OPTIONAL_NUMBER BIGINT, OPTIONAL_STRING varchar(50), LOCALISATION varchar(50), LAST_MODIFIED timestamp, PRECISION INT );");
+			execCallableStatement(connectionCloseable.getConnection(), "create sequence SEQ_ITEM start with 10000 increment by 1");
 		}
 
 		//On supprime tout
@@ -302,7 +302,7 @@ abstract class AbstractSearchManagerStoreTest {
 		item.setPrice(12000);
 		item.setManufacturer("Acme");
 		item.setModel("Martin");
-		item.setYear(1978);
+		item.setItemYear(1978);
 		item.setKilo(1500);
 		final BigDecimal conso = new BigDecimal(7.6);
 		conso.setScale(2, RoundingMode.HALF_UP);

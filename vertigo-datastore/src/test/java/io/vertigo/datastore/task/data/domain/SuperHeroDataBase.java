@@ -44,7 +44,7 @@ public final class SuperHeroDataBase {
 		//A chaque test on recrée la table SUPER_HERO
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			execStatement("create table SUPER_HERO(id BIGINT , name varchar(255));");
-			execStatement("create sequence SEQ_SUPER_HERO start with 10001 increment by 1");
+			execStatement("create sequence SEQ_SUPER_HERO start with 10000 increment by 1");
 		}
 	}
 

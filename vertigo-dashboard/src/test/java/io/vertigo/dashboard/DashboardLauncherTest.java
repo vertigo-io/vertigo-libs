@@ -25,7 +25,6 @@ import java.util.Map;
 import org.h2.Driver;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
@@ -140,7 +139,6 @@ public class DashboardLauncherTest {
 	}
 
 	@Test
-	@Disabled /* use it for local debuging */
 	public void server() {
 		while (!Thread.interrupted()) {
 			try {

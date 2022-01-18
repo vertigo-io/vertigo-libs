@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.net.URI;
 
 import javax.inject.Inject;
-import javax.ws.rs.core.UriBuilder;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +39,7 @@ import io.vertigo.stella.work.MyWorkResultHanlder;
 import io.vertigo.stella.work.mock.SlowWork;
 import io.vertigo.stella.work.mock.SlowWorkEngine;
 import io.vertigo.vega.VegaFeatures;
+import jakarta.ws.rs.core.UriBuilder;
 
 /**
  * @author npiedeloup

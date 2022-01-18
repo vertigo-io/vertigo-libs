@@ -47,7 +47,7 @@ public final class Car implements Entity {
 	@Field(smartType = "STyFullText", cardinality = Cardinality.ONE, label = "Descriptif")
 	private String description;
 	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Année")
-	private Integer year;
+	private Integer carYear;
 	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Kilométrage")
 	private Integer kilo;
 	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Prix")
@@ -183,17 +183,17 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Année'.
 	 * @return Integer year <b>Obligatoire</b>
 	 */
-	public Integer getYear() {
-		return year;
+	public Integer getCarYear() {
+		return carYear;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Année'.
-	 * @param year Integer <b>Obligatoire</b>
+	 * @param carYear Integer <b>Obligatoire</b>
 	 */
-	public void setYear(final Integer year) {
-		this.year = year;
+	public void setCarYear(final Integer carYear) {
+		this.carYear = carYear;
 	}
 
 	/**

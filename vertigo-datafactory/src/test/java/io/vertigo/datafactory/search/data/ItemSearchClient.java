@@ -132,13 +132,13 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withKeyConcept("DtItem")
 						.withIndexDtDefinition("DtItem")
 						.withLoaderId("ItemSearchLoader")
-						.withCopyToFields("allText", "manufacturer", "model", "description", "year", "kilo", "price", "motorType"),
+						.withCopyToFields("allText", "manufacturer", "model", "description", "itemYear", "kilo", "price", "motorType"),
 
 				new SearchIndexDefinitionSupplier("IdxItem")
 						.withKeyConcept("DtItem")
 						.withIndexDtDefinition("DtItem")
 						.withLoaderId("ItemSearchLoader")
-						.withCopyToFields("allText", "manufacturer", "model", "description", "year", "kilo", "price", "motorType"),
+						.withCopyToFields("allText", "manufacturer", "model", "description", "itemYear", "kilo", "price", "motorType"),
 				//---
 				// FacetTermDefinition
 				//-----
@@ -175,11 +175,11 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withOrder(FacetOrder.alpha),
 				new FacetRangeDefinitionSupplier("FctYearItem")
 						.withDtDefinition("DtItem")
-						.withFieldName("year")
+						.withFieldName("itemYear")
 						.withLabel("Par date")
-						.withRange("R1", "year:[* TO 2000]", "avant 2000")
-						.withRange("R2", "year:[2000 TO 2005]", "2000-2005")
-						.withRange("R3", "year:[2005 TO *]", "apres 2005")
+						.withRange("R1", "itemYear:[* TO 2000]", "avant 2000")
+						.withRange("R2", "itemYear:[2000 TO 2005]", "2000-2005")
+						.withRange("R3", "itemYear:[2005 TO *]", "apres 2005")
 						.withOrder(FacetOrder.definition),
 				new FacetRangeDefinitionSupplier("FctLocalisationItem")
 						.withDtDefinition("DtItem")
@@ -229,9 +229,9 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 				new FacetCustomDefinitionSupplier("FctCustomAvgYearItem")
 						.withDtDefinition("DtItem")
 						.withLabel("Avg Year")
-						.withFieldName("year") //fieldname in index
+						.withFieldName("itemYear") //fieldname in index
 						.withParams("_type", "avg")
-						.withParams("avg", "{\"field\" : \"year\" }")
+						.withParams("avg", "{\"field\" : \"itemYear\" }")
 						.withParams("_decimalPrecision", "0")
 						.withOrder(FacetOrder.count),
 				//---
