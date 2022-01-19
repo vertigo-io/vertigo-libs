@@ -76,6 +76,7 @@ public class TestUi {
 				.headless(true) //use false for debug purpose
 				.build());*/
 		driver = new HtmlUnitDriver(BrowserVersion.FIREFOX, true);
+		Thread.sleep(5000);
 	}
 
 	private static void startServer() throws IOException, Exception {
@@ -246,6 +247,27 @@ public class TestUi {
 		assertTrue(findElement(By.cssSelector(".fieldTitle")).getAttribute("class").contains("q-field--error"));
 		assertTrue(findElement(By.cssSelector(".fieldTitle .q-field__messages")).getText().contains("250"));
 
+	}
+
+	@Test
+	public void testPostSimpleErrorForm() throws InterruptedException {
+		driver.get(baseUrl + "/test/componentsDemo/");
+
+		assertEquals("Details du film", waitElement(By.className("text-h6")).getText());
+
+		findElement(By.name("vContext[movie][movId]")).clear();
+		sendKeysJs(By.name("vContext[movie][movId]"), "1003");
+
+		findElement(By.name("vContext[movie][title]")).clear();
+		findElement(By.id("saveActionDtCheck")).click();
+		Thread.sleep(5000);
+		assertTrue(findElement(By.cssSelector(".fieldTitle")).getAttribute("class").contains("q-field--error"));
+		assertTrue(findElement(By.cssSelector(".fieldTitle .q-field__messages")).getText().contains("Test uiMessageStack error on Dt field"));
+
+		findElement(By.id("saveActionUiCheck")).click();
+		Thread.sleep(5000);
+		assertTrue(findElement(By.cssSelector(".fieldTitle")).getAttribute("class").contains("q-field--error"));
+		assertTrue(findElement(By.cssSelector(".fieldTitle .q-field__messages")).getText().contains("Test uiMessageStack error on Ui field"));
 	}
 
 	@Test

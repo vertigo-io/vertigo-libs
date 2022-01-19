@@ -59,4 +59,12 @@ public interface UiList<D extends DtObject> extends List<UiObject<D>> {
 	 */
 	boolean checkFormat(UiMessageStack uiMessageStack);
 
+	/**
+	 * Get indexOf element : support UiObject and DtObject.
+	 * UiObject is always build over a DtObject.
+	 * @return index of UiObject or sub-DtObject element.
+	 */
+	@Override
+	int indexOf(final Object o);
+
 }

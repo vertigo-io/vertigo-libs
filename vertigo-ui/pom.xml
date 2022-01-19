@@ -20,7 +20,21 @@
 	<artifactId>vertigo-ui</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-ui</name>
-
+	
+	<repositories>
+        <!-- add the codelibs.elasticsearch repo for embedded -->
+      <repository>
+         <id>codelibs.elasticsearch-releases</id>
+         <url>https://maven.codelibs.org/</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
+    </repositories>
+    
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
@@ -126,23 +140,23 @@
 		
 		<!-- CollectionsManager/LuceneIndexPlugin -->
 		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-core</artifactId>
-			<version>8.7.0</version><!-- 8.7.0 compatible with ElasticSearch 7.10.2 -->
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-analyzers-common</artifactId>
-			<version>8.7.0</version> <!-- 8.7.0 compatible with ElasticSearch 7.10.2 -->
-			<scope>test</scope>
-		</dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>8.10.1</version><!-- 8.10.1 compatible with ElasticSearch 7.16.3 -->
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-common</artifactId>
+            <version>8.10.1</version> <!-- 8.10.1 compatible with ElasticSearch 7.16.3 -->
+            <optional>true</optional>
+        </dependency>
 
 		<!-- Search -->
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>7.10.2</version>
+			<version>7.16.3</version>
 			<scope>test</scope> <!-- EsTransportSearchServicesPlugin -->
 			<exclusions>
 				<exclusion>
@@ -154,44 +168,45 @@
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
 		    <artifactId>transport</artifactId>
-		    <version>7.10.2</version>
+		    <version>7.16.3</version>
 		    <scope>test</scope> <!-- EsTransportSearchServicesPlugin -->
 		</dependency>
-		<dependency>
-	        <groupId>org.codelibs.elasticsearch.module</groupId>
-	        <artifactId>analysis-common</artifactId> 
-	        <version>7.10.2</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
-	        <scope>test</scope>
-	    </dependency>
-	   	<dependency>
-		    <groupId>org.codelibs.elasticsearch.module</groupId>
-		    <artifactId>mapper-extras</artifactId>
-		    <version>7.10.2</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
-	        <scope>test</scope>
-		</dependency>
+		
+        <dependency>
+            <groupId>org.codelibs.elasticsearch.module</groupId>
+            <artifactId>analysis-common</artifactId> 
+            <version>7.16.3</version> <!-- required by EmbeddedSearchServicesPlugin -->
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.codelibs.elasticsearch.module</groupId>
+            <artifactId>mapper-extras</artifactId>
+            <version>7.16.3</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
+            <optional>true</optional>
+        </dependency>   
 		
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.12.3</version> <!-- version for spring -->
+			<version>2.13.1</version> <!-- version for spring -->
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
     		<artifactId>jackson-dataformat-smile</artifactId>
-    		<version>2.12.3</version> <!-- version for spring -->
+    		<version>2.13.1</version> <!-- version for spring -->
     		<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
     		<artifactId>jackson-dataformat-yaml</artifactId>
-    		<version>2.12.3</version> <!-- version for spring -->
+    		<version>2.13.1</version> <!-- version for spring -->
     		<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
     		<artifactId>jackson-dataformat-cbor</artifactId>
-    		<version>2.12.3</version> <!-- version for spring -->
+    		<version>2.13.1</version> <!-- version for spring -->
     		<scope>test</scope>
 		</dependency>
 		

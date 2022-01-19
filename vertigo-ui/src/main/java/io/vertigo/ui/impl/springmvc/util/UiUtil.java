@@ -75,10 +75,20 @@ public final class UiUtil implements Serializable {
 	/**
 	 * @param uiObject Object du context
 	 * @return Nom de l'object dans le context
+	 * @deprecated not used : removed soon
 	 */
+	@Deprecated
 	public static String contextKey(final UiObject<?> uiObject) {
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
-		return viewContext.findKey(uiObject);
+		final String fieldKey = viewContext.findKey(uiObject); //key or key[row]
+		final int rowIndex = fieldKey.indexOf('[');
+		String contextKey;
+		if (rowIndex == -1) {
+			contextKey = "vContext[" + fieldKey + "]";
+		} else {
+			contextKey = "vContext[" + fieldKey.substring(0, rowIndex) + "]" + fieldKey.substring(rowIndex);
+		}
+		return contextKey;
 	}
 
 	/**
@@ -108,7 +118,7 @@ public final class UiUtil implements Serializable {
 	 * @param object Object in context
 	 * @param field field of object
 	 * @param row index in list (nullable)
-	 * @return Name in context (use for input name)
+	 * @return Name in context (use for getting key)
 	 */
 	public static String contextGet(final String object, final String field, final String row) {
 		final boolean useQuotes = row != null && !row.matches("[0-9]+"); //row is not number

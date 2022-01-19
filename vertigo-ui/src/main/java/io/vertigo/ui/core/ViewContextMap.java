@@ -175,12 +175,12 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		//-----
 		final String contextKey = reverseUiObjectIndex.get(uiObject);
 		if (contextKey != null) {
-			return "vContext[" + contextKey + "]";
+			return contextKey;
 		}
 		for (final Map.Entry<UiList<?>, String> entry : reverseUiListIndex.entrySet()) {
 			final int index = entry.getKey().indexOf(uiObject);
 			if (index >= 0) {
-				return "vContext[" + entry.getValue() + "][" + index + "]";
+				return entry.getValue() + "[" + index + "]";
 			}
 		}
 		return null;

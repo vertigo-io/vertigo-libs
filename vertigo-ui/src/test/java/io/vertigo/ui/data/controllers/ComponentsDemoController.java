@@ -46,6 +46,7 @@ import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
 import io.vertigo.ui.data.domain.DtDefinitions.MovieDisplayFields;
+import io.vertigo.ui.data.domain.DtDefinitions.MovieFields;
 import io.vertigo.ui.data.domain.movies.Movie;
 import io.vertigo.ui.data.domain.movies.MovieDisplay;
 import io.vertigo.ui.data.domain.people.Casting;
@@ -163,6 +164,27 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	public void doSaveAutoValidation(final ViewContext viewContext, @ViewAttribute("movie") final Movie movie, @ViewAttribute("myFilesUris1") final List<FileInfoURI> pictures) {
 		viewContext.publishDto(movieKey, movie);
 		//we may save files on a more persistent space
+		nop(pictures);
+	}
+
+	@PostMapping("/_saveDtCheck")
+	public void doSaveDtCheck(final ViewContext viewContext, @ViewAttribute("movie") final Movie movie, @ViewAttribute("myFilesUris1") final List<FileInfoURI> pictures, final UiMessageStack uiMessageStack) {
+		viewContext.publishDto(movieKey, movie);
+		//we may save files on a more persistent space
+		if (movie.getTitle() == null) {
+			uiMessageStack.error("Test uiMessageStack error on Dt field", movie, MovieFields.title.name());
+			throw new ValidationUserException();
+		}
+
+		nop(pictures);
+	}
+
+	@PostMapping("/_saveUiCheck")
+	public void doSaveUiCheck(final ViewContext viewContext, @ViewAttribute("movie") final UiObject<Movie> uiMovie, @ViewAttribute("myFilesUris1") final List<FileInfoURI> pictures, final UiMessageStack uiMessageStack) {
+		if (uiMovie.getString(MovieFields.title.name()) == null) {
+			uiMessageStack.addFieldMessage(Level.ERROR, "Test uiMessageStack error on Ui field", uiMovie.getInputKey(), MovieFields.title.name());
+			throw new ValidationUserException();
+		}
 		nop(pictures);
 	}
 
