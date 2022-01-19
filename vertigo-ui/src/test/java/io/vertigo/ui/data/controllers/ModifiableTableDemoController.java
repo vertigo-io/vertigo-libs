@@ -40,6 +40,7 @@ import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
 import io.vertigo.ui.data.domain.movies.Movie;
+import io.vertigo.ui.data.domain.movies.MovieDisplay;
 import io.vertigo.ui.data.services.movies.MovieServices;
 import io.vertigo.ui.data.services.support.SupportServices;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttribute;
@@ -51,6 +52,7 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
 public class ModifiableTableDemoController extends AbstractVSpringMvcController {
 
 	private final ViewContextKey<Movie> movieListModifiables = ViewContextKey.of("moviesModifiable");
+	private final ViewContextKey<MovieDisplay> movieDisplayList = ViewContextKey.of("movies");
 
 	public static final ViewContextKey<ArrayList<FileInfoURI>> fileUrisKey1 = ViewContextKey.of("myFilesUris1");
 	public static final ViewContextKey<ArrayList<FileInfoURI>> fileUrisKey2 = ViewContextKey.of("myFilesUris2");
@@ -64,7 +66,11 @@ public class ModifiableTableDemoController extends AbstractVSpringMvcController 
 
 	@GetMapping("/")
 	public void initContext(final ViewContext viewContext) throws URISyntaxException, IOException {
+
+		viewContext.publishDtList(movieDisplayList, movieServices.getMoviesDisplay(DtListState.defaultOf(Movie.class)));
+
 		final DtList<Movie> myList = movieServices.getMovies(DtListState.defaultOf(Movie.class));
+
 		final DtList<Movie> mySubList = DtList.of(myList.get(0), myList.get(1));
 		mySubList.get(0).setTestBoolean(true);
 
