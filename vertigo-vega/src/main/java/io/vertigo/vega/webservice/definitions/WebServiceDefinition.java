@@ -60,6 +60,7 @@ public final class WebServiceDefinition extends AbstractDefinition {
 	private final boolean needSession;
 	private final boolean sessionInvalidate;
 	private final boolean needAuthentification;
+	private final boolean needApiKey;
 
 	private final boolean accessTokenPublish;
 	private final boolean accessTokenMandatory;
@@ -87,6 +88,7 @@ public final class WebServiceDefinition extends AbstractDefinition {
 			final boolean needSession,
 			final boolean sessionInvalidate,
 			final boolean needAuthentification,
+			final boolean needApiKey,
 			final boolean accessTokenPublish,
 			final boolean accessTokenMandatory,
 			final boolean accessTokenConsume,
@@ -127,6 +129,7 @@ public final class WebServiceDefinition extends AbstractDefinition {
 		this.needSession = needSession;
 		this.sessionInvalidate = sessionInvalidate;
 		this.needAuthentification = needAuthentification;
+		this.needApiKey = needApiKey;
 
 		this.accessTokenPublish = accessTokenPublish;
 		this.accessTokenMandatory = accessTokenMandatory;
@@ -297,5 +300,12 @@ public final class WebServiceDefinition extends AbstractDefinition {
 	 */
 	public boolean isFileAttachment() {
 		return fileAttachment;
+	}
+
+	/**
+	 * @return the needApiKey
+	 */
+	public boolean isNeedApiKey() {
+		return needApiKey;
 	}
 }

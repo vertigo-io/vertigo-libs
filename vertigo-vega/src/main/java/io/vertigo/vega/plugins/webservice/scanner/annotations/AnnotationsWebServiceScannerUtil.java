@@ -55,6 +55,7 @@ import io.vertigo.vega.webservice.stereotype.PUT;
 import io.vertigo.vega.webservice.stereotype.PathParam;
 import io.vertigo.vega.webservice.stereotype.PathPrefix;
 import io.vertigo.vega.webservice.stereotype.QueryParam;
+import io.vertigo.vega.webservice.stereotype.RequireApiKey;
 import io.vertigo.vega.webservice.stereotype.ServerSideConsume;
 import io.vertigo.vega.webservice.stereotype.ServerSideRead;
 import io.vertigo.vega.webservice.stereotype.ServerSideSave;
@@ -96,6 +97,11 @@ public final class AnnotationsWebServiceScannerUtil {
 		if (pathPrefix != null) {
 			builder.withPathPrefix(pathPrefix.value());
 		}
+		final RequireApiKey requireApiKey = method.getDeclaringClass().getAnnotation(RequireApiKey.class);
+		if (requireApiKey != null) {
+			builder.withNeedApiKey(true);
+		}
+
 		for (final Annotation annotation : method.getAnnotations()) {
 			if (annotation instanceof GET) {
 				builder.with(Verb.Get, ((GET) annotation).value());
@@ -109,6 +115,8 @@ public final class AnnotationsWebServiceScannerUtil {
 				builder.with(Verb.Delete, ((DELETE) annotation).value());
 			} else if (annotation instanceof AnonymousAccessAllowed) {
 				builder.withNeedAuthentication(false);
+			} else if (annotation instanceof RequireApiKey) {
+				builder.withNeedApiKey(true);
 			} else if (annotation instanceof SessionLess) {
 				builder.withNeedSession(false);
 			} else if (annotation instanceof SessionInvalidate) {

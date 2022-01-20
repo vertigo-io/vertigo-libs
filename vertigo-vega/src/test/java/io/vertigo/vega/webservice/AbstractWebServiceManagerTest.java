@@ -52,6 +52,7 @@ import io.vertigo.core.util.MapBuilder;
 
 abstract class AbstractWebServiceManagerTest {
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
+	private static final String HEADER_API_KEY = "x-api-key";
 	private static final String UTF8_TEST_STRING = "? TM™ éè'`àöêõù Euro€ R®@©∆∏∑∞⅓۲²³œβ";
 
 	private final SessionFilter loggedSessionFilter = new SessionFilter();
@@ -319,6 +320,30 @@ abstract class AbstractWebServiceManagerTest {
 				.statusCode(HttpStatus.SC_FORBIDDEN)
 				.when()
 				.get("/test/oneTimeAccess/1");
+	}
+
+	@Test
+	public void testApiKeyOk() {
+		loggedAndExpect(given().header(HEADER_API_KEY, "MyTestApiKey"))
+				.statusCode(HttpStatus.SC_NO_CONTENT)
+				.when()
+				.get("/apiKeyAccess/");
+	}
+
+	@Test
+	public void testApiKeyNoHeader() {
+		loggedAndExpect()
+				.statusCode(HttpStatus.SC_FORBIDDEN)
+				.when()
+				.get("/apiKeyAccess/");
+	}
+
+	@Test
+	public void testApiKeyWrongKey() {
+		loggedAndExpect(given().header(HEADER_API_KEY, "WrongApiKey"))
+				.statusCode(HttpStatus.SC_FORBIDDEN)
+				.when()
+				.get("/apiKeyAccess/");
 	}
 
 	@Test
