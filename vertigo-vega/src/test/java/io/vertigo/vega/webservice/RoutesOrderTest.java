@@ -106,6 +106,7 @@ public final class RoutesOrderTest {
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /anonymous/test/grantAccess ()"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /anonymous/test/limitedAccess/{conId} (long :Path:conId) -> Contact"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /anonymous/test/oneTimeAccess/{conId} (long :Path:conId) -> Contact"))
+				.body("get(" + i++ + ")", Matchers.equalTo("Get /apiKeyAccess/ ()"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /catalog () -> interface java.util.List<String>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /contacts () -> interface java.util.List<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /contacts/contactView/{conId} (long :Path:conId) -> ContactView"))
