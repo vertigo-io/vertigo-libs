@@ -11,6 +11,20 @@
 	<packaging>jar</packaging>
 	<name>vertigo-datafactory</name>
 
+	<repositories>
+        <!-- add the codelibs.elasticsearch repo for embedded -->
+      <repository>
+         <id>codelibs.elasticsearch-releases</id>
+         <url>https://maven.codelibs.org/</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
+    </repositories>
+    
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
@@ -94,6 +108,18 @@
 		    <version>7.16.3</version>
 		    <optional>true</optional> <!-- RestHighLevelSearchServicesPlugin -->
 		</dependency>
+		<dependency>
+            <groupId>org.codelibs.elasticsearch.module</groupId>
+            <artifactId>analysis-common</artifactId> 
+            <version>7.16.3</version> <!-- required by EmbeddedSearchServicesPlugin -->
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.codelibs.elasticsearch.module</groupId>
+            <artifactId>mapper-extras</artifactId>
+            <version>7.16.3</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
+            <optional>true</optional>
+        </dependency> 
 
 	</dependencies>
 	<build>
