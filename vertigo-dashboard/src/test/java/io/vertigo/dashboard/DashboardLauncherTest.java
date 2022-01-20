@@ -138,16 +138,20 @@ public class DashboardLauncherTest {
 				.build();
 	}
 
-	@Test
-	public void server() {
+	/**
+	 * Start a server for debug purpose.
+	 * @param args
+	 * @throws Exception
+	 */
+	public static void main(final String[] args) throws Exception {
+		setUp();
 		while (!Thread.interrupted()) {
 			try {
-				Thread.sleep(10 * 1000);
+				Thread.sleep(1 * 1000);
 			} catch (final InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	@Test
