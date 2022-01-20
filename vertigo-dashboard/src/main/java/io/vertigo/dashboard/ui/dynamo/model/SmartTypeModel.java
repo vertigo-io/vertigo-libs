@@ -39,7 +39,7 @@ public class SmartTypeModel {
 
 	public boolean isOrphan() {
 		if (taskCount != null && dtDefinitionCount != null) {
-			return taskCount + dtDefinitionCount == 0;
+			return taskCount == 0 && dtDefinitionCount == 0;
 		} else if (taskCount != null) {// dtDefinitionCount null
 			return taskCount == 0;
 		}
