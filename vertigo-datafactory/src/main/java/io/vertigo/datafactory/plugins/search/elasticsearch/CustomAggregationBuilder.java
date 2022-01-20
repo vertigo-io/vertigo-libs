@@ -217,7 +217,7 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 	}
 
 	@Override
-	protected AggregatorFactory build(final AggregationContext context, final AggregatorFactory parent) throws IOException {
+	protected AggregatorFactory build(final AggregationContext context, final AggregatorFactory parent) {
 		throw new UnsupportedOperationException("not yet");
 	}
 
