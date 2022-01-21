@@ -21,6 +21,20 @@
 	<packaging>jar</packaging>
 	<name>vertigo-ui</name>
 	
+    <repositories>
+      <!-- Needed repo for tests embedded ElasticSearch -->
+      <repository>
+         <id>codelibs.elasticsearch-releases</id>
+         <url>https://maven.codelibs.org/</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
+    </repositories>
+	
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
