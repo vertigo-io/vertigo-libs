@@ -1,5 +1,5 @@
 /*!
- * Quasar Framework v1.17.4
+ * Quasar Framework v1.17.7
  * (c) 2015-present Razvan Stoenescu
  * Released under the MIT License.
  */
@@ -12,7 +12,7 @@
 
   Vue = Vue && Object.prototype.hasOwnProperty.call(Vue, 'default') ? Vue['default'] : Vue;
 
-  var version = "1.17.4";
+  var version = "1.17.7";
 
   /* eslint-disable no-useless-escape */
 
@@ -2186,18 +2186,19 @@
         if ( speed === void 0 ) speed = 300;
 
         var oldSpeed = this.speed;
-        this.speed = Math.max(0, speed) || 0;
+        var newSpeed = this.speed = Math.max(0, speed) || 0;
 
         this.calls++;
 
         if (this.calls > 1) {
-          if (oldSpeed === 0 && speed > 0) {
+          if (oldSpeed === 0 && newSpeed > 0) {
             this.__work();
           }
-          else if (oldSpeed > 0 && speed <= 0) {
+          else if (oldSpeed > 0 && newSpeed <= 0) {
             clearTimeout(this.timer);
           }
-          return
+
+          return this.calls
         }
 
         clearTimeout(this.timer);
@@ -2205,27 +2206,35 @@
 
         this.progress = 0;
 
-        if (this.onScreen === true) { return }
-
-        this.onScreen = true;
-        this.animate = false;
         this.timer = setTimeout(function () {
           this$1.animate = true;
-          speed > 0 && this$1.__work();
-        }, 100);
+          newSpeed > 0 && this$1.__work();
+        }, this.onScreen === true ? 500 : 1);
+
+        if (this.onScreen !== true) {
+          this.onScreen = true;
+          this.animate = false;
+        }
+
+        return this.calls
       },
 
       increment: function increment (amount) {
         if (this.calls > 0) {
           this.progress = inc(this.progress, amount);
         }
+
+        return this.calls
       },
 
       stop: function stop () {
         var this$1 = this;
 
         this.calls = Math.max(0, this.calls - 1);
-        if (this.calls > 0) { return }
+
+        if (this.calls > 0) {
+          return this.calls
+        }
 
         clearTimeout(this.timer);
         this.$emit('stop');
@@ -2244,6 +2253,8 @@
         else {
           end();
         }
+
+        return this.calls
       },
 
       __work: function __work () {
@@ -5447,7 +5458,7 @@
 
           if (node !== void 0 && node.contains(document.activeElement) !== true) {
             node = node.querySelector('[autofocus], [data-autofocus]') || node;
-            node.focus();
+            node.focus({ preventScroll: true });
           }
         });
       },
@@ -10153,10 +10164,6 @@
       }
     },
 
-    activated: function activated () {
-      this.__recalculateScroll();
-    },
-
     created: function created () {
       this.buffer = [];
 
@@ -10167,6 +10174,15 @@
 
     mounted: function mounted () {
       this.rtlHasScrollBug = rtlHasScrollBug();
+    },
+
+    activated: function activated () {
+      if (this.shouldActivate !== true) { return }
+      this.__recalculateScroll();
+    },
+
+    deactivated: function deactivated () {
+      this.shouldActivate = true;
     },
 
     beforeDestroy: function beforeDestroy () {
@@ -12855,7 +12871,11 @@
         return this.normalizedModel
           .filter(function (date) { return typeof date === 'string'; })
           .map(function (date) { return this$1.__decodeString(date, this$1.innerMask, this$1.innerLocale); })
-          .filter(function (date) { return date.dateHash !== null; })
+          .filter(function (date) { return date.dateHash !== null &&
+            date.day !== null &&
+            date.month !== null &&
+            date.year !== null; }
+          )
       },
 
       rangeModel: function rangeModel () {
@@ -14606,7 +14626,7 @@
           }
 
           node = node.querySelector('[autofocus], [data-autofocus]') || node;
-          node.focus();
+          node.focus({ preventScroll: true });
         });
       },
 
@@ -17168,7 +17188,7 @@
         var this$1 = this;
 
         addFocusFn(function () {
-          this$1.$refs.content !== void 0 && this$1.$refs.content.focus();
+          this$1.$refs.content !== void 0 && this$1.$refs.content.focus({ preventScroll: true });
         });
       },
 
@@ -18671,7 +18691,7 @@
         // IE can have null document.activeElement
         if (target !== void 0 && (el === null || el.id !== this.targetUid)) {
           target.hasAttribute('tabindex') === true || (target = target.querySelector('[tabindex]'));
-          target !== null && target !== el && target.focus();
+          target !== null && target !== el && target.focus({ preventScroll: true });
         }
       },
 
@@ -18871,6 +18891,7 @@
       },
 
       __onControlFocusin: function __onControlFocusin (e) {
+        clearTimeout(this.focusoutTimer);
         if (this.editable === true && this.focused === false) {
           this.focused = true;
           this.$emit('focus', e);
@@ -19000,6 +19021,15 @@
       }
 
       this.autofocus === true && this.focus();
+    },
+
+    activated: function activated () {
+      if (this.shouldActivate !== true) { return }
+      this.autofocus === true && this.focus();
+    },
+
+    deactivated: function deactivated () {
+      this.shouldActivate = true;
     },
 
     beforeDestroy: function beforeDestroy () {
@@ -19757,6 +19787,15 @@
       this.autofocus === true && this.focus();
     },
 
+    activated: function activated () {
+      if (this.shouldActivate !== true) { return }
+      this.autofocus === true && this.focus();
+    },
+
+    deactivated: function deactivated () {
+      this.shouldActivate = true;
+    },
+
     methods: {
       validate: function validate (shouldFocus) {
         var this$1 = this;
@@ -19893,7 +19932,7 @@
           var target = this$1.$el.querySelector('[autofocus], [data-autofocus]') ||
             Array.prototype.find.call(this$1.$el.querySelectorAll('[tabindex]'), function (el) { return el.tabIndex > -1; });
 
-          target !== null && target !== void 0 && target.focus();
+          target !== null && target !== void 0 && target.focus({ preventScroll: true });
         });
       },
 
@@ -20626,7 +20665,7 @@
     },
 
     activated: function activated () {
-      if (this.__scrollTarget && this.__scrollPosition !== void 0) {
+      if (this.__scrollPosition !== void 0 && this.__scrollTarget) {
         setScrollPosition(this.__scrollTarget, this.__scrollPosition);
       }
     },
@@ -20695,8 +20734,10 @@
       __getInner: function __getInner (h) {
         var child = [
           h(QSpinner, {
-            size: this.size,
-            color: this.color
+            props: {
+              size: this.size,
+              color: this.color
+            }
           })
         ];
 
@@ -21470,7 +21511,7 @@
             // IE can have null document.activeElement
             (el === null || el.id !== this$1.targetUid)
           ) {
-            this$1.$refs.input.focus();
+            this$1.$refs.input.focus({ preventScroll: true });
           }
         });
       },
@@ -25921,9 +25962,11 @@
     },
 
     activated: function activated () {
+      if (this.__scrollPosition === void 0) { return }
+
       var scrollTarget = this.getScrollTarget();
 
-      if (scrollTarget !== void 0 && this.__scrollPosition !== void 0) {
+      if (scrollTarget !== void 0) {
         setHorizontalScrollPosition(scrollTarget, this.__scrollPosition.left);
         setVerticalScrollPosition(scrollTarget, this.__scrollPosition.top);
       }
@@ -26500,6 +26543,9 @@
         this.prevToIndex = -1;
         this.prevScrollStart = void 0;
 
+        this.virtualScrollPaddingBefore = sumSize(this.virtualScrollSizesAgg, this.virtualScrollSizes, 0, this.virtualScrollSliceRange.from);
+        this.virtualScrollPaddingAfter = sumSize(this.virtualScrollSizesAgg, this.virtualScrollSizes, this.virtualScrollSliceRange.to, this.virtualScrollLength);
+
         if (toIndex >= 0) {
           this.__updateVirtualScrollSizes(this.virtualScrollSliceRange.from);
 
@@ -26508,9 +26554,6 @@
           });
         }
         else {
-          this.virtualScrollPaddingBefore = sumSize(this.virtualScrollSizesAgg, this.virtualScrollSizes, 0, this.virtualScrollSliceRange.from);
-          this.virtualScrollPaddingAfter = sumSize(this.virtualScrollSizesAgg, this.virtualScrollSizes, this.virtualScrollSliceRange.to, this.virtualScrollLength);
-
           this.__onVirtualScrollEvt();
         }
       },
@@ -26540,9 +26583,9 @@
           ? 1
           : Math.ceil(scrollViewSize / this.virtualScrollItemSizeComputed);
         var baseSize = Math.max(
-          10,
+          1,
           view,
-          Math.ceil(this.virtualScrollSliceSize / multiplier)
+          Math.ceil((this.virtualScrollSliceSize > 0 ? this.virtualScrollSliceSize : 10) / multiplier)
         );
 
         this.virtualScrollSliceSizeComputed = {
@@ -26635,6 +26678,8 @@
     },
 
     activated: function activated () {
+      if (this.shouldActivate !== true) { return }
+
       var scrollEl = this.__getVirtualScrollTarget();
 
       if (this.prevScrollStart !== void 0 && scrollEl !== void 0 && scrollEl !== null && scrollEl.nodeType !== 8) {
@@ -26648,6 +26693,10 @@
       else {
         this.scrollTo(this.prevToIndex);
       }
+    },
+
+    deactivated: function deactivated () {
+      this.shouldActivate = true;
     },
 
     beforeMount: function beforeMount () {
@@ -27254,8 +27303,12 @@
         return this.innerOptionsValue.find(function (v) { return isDeepEqual(v, val); }) !== void 0
       },
 
-      __selectInputText: function __selectInputText () {
-        if (this.useInput === true && this.$refs.target !== void 0) {
+      __selectInputText: function __selectInputText (e) {
+        if (
+          this.useInput === true &&
+          this.$refs.target !== void 0 &&
+          (e === void 0 || (this.$refs.target === e.target && e.target.value === this.selectedString))
+        ) {
           this.$refs.target.select();
         }
       },
@@ -27291,34 +27344,34 @@
 
         if (typeof value === 'string' && value.length > 0) {
           var needle = value.toLocaleLowerCase();
+          var findFn = function (extractFn) {
+            var option = this$1.options.find(function (opt) { return extractFn(opt).toLocaleLowerCase() === needle; });
 
-          var fn = function (opt) { return this$1.getOptionValue(opt).toLocaleLowerCase() === needle; };
-          var option = this.options.find(fn);
+            if (option === void 0) {
+              return false
+            }
 
-          if (option !== void 0) {
-            if (this.innerValue.indexOf(option) === -1) {
-              this.toggleOption(option);
+            if (this$1.innerValue.indexOf(option) === -1) {
+              this$1.toggleOption(option);
             }
             else {
-              this.hidePopup();
+              this$1.hidePopup();
             }
-          }
-          else {
-            fn = function (opt) { return this$1.getOptionLabel(opt).toLocaleLowerCase() === needle; };
-            option = this.options.find(fn);
 
-            if (option !== void 0) {
-              if (this.innerValue.indexOf(option) === -1) {
-                this.toggleOption(option);
-              }
-              else {
-                this.hidePopup();
-              }
+            return true
+          };
+          var fillFn = function (afterFilter) {
+            if (findFn(this$1.getOptionValue) === true) {
+              return
             }
-            else {
-              this.filter(value, true);
+            if (findFn(this$1.getOptionLabel) === true || afterFilter === true) {
+              return
             }
-          }
+
+            this$1.filter(value, true, function () { return fillFn(true); });
+          };
+
+          fillFn();
         }
         else {
           this.__clearValue(e);
@@ -27606,13 +27659,13 @@
           child.push(this.__getInput(h, fromDialog, isTarget));
         }
         // there can be only one (when dialog is opened the control in dialog should be target)
-        else if (this.editable === true && isTarget === true) {
+        else if (this.editable === true) {
           child.push(
             h('div', {
-              ref: 'target',
+              ref: isTarget === true ? 'target' : void 0,
               key: 'd_t',
-              staticClass: 'no-outline',
-              attrs: Object.assign({}, {id: this.targetUid,
+              staticClass: 'q-select__focus-target',
+              attrs: Object.assign({}, {id: isTarget === true ? this.targetUid : void 0,
                 tabindex: this.tabindex},
                 this.comboboxAttrs),
               on: cache(this, 'f-tget', {
@@ -27623,10 +27676,10 @@
             })
           );
 
-          if (typeof this.autocomplete === 'string' && this.autocomplete.length > 0) {
+          if (isTarget === true && typeof this.autocomplete === 'string' && this.autocomplete.length > 0) {
             child.push(
               h('input', {
-                staticClass: 'q-select__autocomplete-input no-outline',
+                staticClass: 'q-select__autocomplete-input',
                 attrs: { autocomplete: this.autocomplete },
                 on: cache(this, 'autoinp', {
                   keyup: this.__onTargetAutocomplete
@@ -27728,7 +27781,7 @@
           domProps: { value: this.inputValue !== void 0 ? this.inputValue : '' },
           attrs: Object.assign({}, {type: 'search'},
             this.qAttrs,
-            {id: this.targetUid,
+            {id: isTarget === true ? this.targetUid : void 0,
             maxlength: this.maxlength, // this is converted to prop by QField
             tabindex: this.tabindex,
             autocomplete: this.autocomplete,
@@ -27800,7 +27853,7 @@
         }
       },
 
-      filter: function filter (val, keepClosed) {
+      filter: function filter (val, keepClosed, afterUpdateFn) {
         var this$1 = this;
 
         if (this.qListeners.filter === void 0 || (keepClosed !== true && this.focused !== true)) {
@@ -27859,6 +27912,7 @@
                 }
 
                 typeof afterFn === 'function' && this$1.$nextTick(function () { afterFn(this$1); });
+                typeof afterUpdateFn === 'function' && this$1.$nextTick(function () { afterUpdateFn(this$1); });
               });
             }
           },
@@ -31271,23 +31325,24 @@
     computed: {
       isActive: function isActive () {
         return this.stepper.value === this.name
+      },
+
+      onEvents: function onEvents () {
+        return this.isActive !== true ||
+          this.stepper.vertical !== true ||
+          (this.$q.platform.is.ios !== true && this.$q.platform.is.safari !== true && this.$q.platform.is.ie !== true)
+          ? Object.assign({}, this.qListeners)
+          : Object.assign({}, this.qListeners, {scroll: this.__keepScroll})
       }
     },
 
-    watch: {
-      isActive: function isActive (active) {
-        var this$1 = this;
-
-        if (
-          active === true &&
-          this.stepper.vertical === true
-        ) {
-          this.$nextTick(function () {
-            if (this$1.$el !== void 0) {
-              this$1.$el.scrollTop = 0;
-            }
-          });
+    methods: {
+      __keepScroll: function __keepScroll (ev) {
+        var target = ev.target;
+        if (target.scrollTop > 0) {
+          target.scrollTop = 0;
         }
+        this.qListeners.scroll !== void 0 && this.qListeners.scroll(ev);
       }
     },
 
@@ -31310,7 +31365,7 @@
         'div',
         {
           staticClass: 'q-stepper__step',
-          on: Object.assign({}, this.qListeners)
+          on: this.onEvents
         },
         vertical === true
           ? [
@@ -34700,6 +34755,8 @@
       expanded: Array, // sync
       selected: {}, // sync
 
+      noSelectionUnset: Boolean,
+
       defaultExpandAll: Boolean,
       accordion: Boolean,
 
@@ -35273,7 +35330,12 @@
 
         if (this.hasSelection) {
           if (meta.selectable) {
-            this.$emit('update:selected', meta.key !== this.selected ? meta.key : null);
+            if (this.noSelectionUnset === false) {
+              this.$emit('update:selected', meta.key !== this.selected ? meta.key : null);
+            }
+            else if (meta.key !== this.selected) {
+              this.$emit('update:selected', meta.key || null);
+            }
           }
         }
         else {
@@ -39027,9 +39089,9 @@
       okProps: function okProps () {
         return Object.assign({}, {color: this.vmColor,
           label: this.okLabel,
-          ripple: false},
-          (Object(this.ok) === this.ok ? this.ok : { flat: true }),
-          {disable: this.okDisabled})
+          ripple: false,
+          disable: this.okDisabled},
+          (Object(this.ok) === this.ok ? this.ok : { flat: true }))
       },
 
       cancelProps: function cancelProps () {
@@ -39254,8 +39316,9 @@
       var $q = ref.$q;
       var cfg = ref.cfg;
 
+      $q.loadingBar = this;
+
       if (isSSR === true) {
-        $q.loadingBar = this;
         return
       }
 
@@ -39263,7 +39326,7 @@
         ? Object.assign({}, cfg.loadingBar)
         : {};
 
-      var bar = $q.loadingBar = new Vue({
+      var bar = new Vue({
         name: 'LoadingBar',
 
         // hide App from Vue devtools
@@ -39283,11 +39346,11 @@
       Object.assign(this, {
         start: function (speed) {
           bar.start(speed);
-          this$1.isActive = bar.isActive = bar.calls > 0;
+          this$1.isActive = bar.isActive = true;
         },
         stop: function () {
-          bar.stop();
-          this$1.isActive = bar.isActive = bar.calls > 0;
+          var sessions = bar.stop();
+          this$1.isActive = bar.isActive = sessions > 0;
         },
         increment: bar.increment,
         setDefaults: function (opts) {
@@ -39900,7 +39963,7 @@
     closeBtn && actions.push({
       label: typeof closeBtn === 'string'
         ? closeBtn
-        : this.$q.lang.label.close
+        : vm.$q.lang.label.close
     });
 
     notif.actions = actions.map(function (ref) {
