@@ -22,6 +22,8 @@ import java.util.function.Supplier;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -44,6 +46,7 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
 
 @ControllerAdvice(assignableTypes = { AbstractVSpringMvcController.class })
 public final class VSpringMvcControllerAdvice {
+	private static Logger LOGGER = LogManager.getLogger(VSpringMvcControllerAdvice.class);
 
 	@ModelAttribute
 	public static void storeContext(final Model model) {
@@ -77,6 +80,7 @@ public final class VSpringMvcControllerAdvice {
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	public static Object handleSessionException(final SessionException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
 		response.sendError(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
+		LOGGER.error("User try an unauthorized action", ex);
 		return handleThrowable(ex, request, false); //don't throw Ex here
 	}
 
@@ -85,6 +89,7 @@ public final class VSpringMvcControllerAdvice {
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	public static Object handleSessionException(final VSecurityException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
 		response.sendError(HttpStatus.FORBIDDEN.value(), ex.getMessage());
+		LOGGER.error("User try a forbidden action", ex);
 		return handleThrowable(ex, request, false); //don't throw Ex here
 	}
 
