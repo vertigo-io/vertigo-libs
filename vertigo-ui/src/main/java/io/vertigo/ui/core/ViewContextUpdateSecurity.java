@@ -41,7 +41,7 @@ public final class ViewContextUpdateSecurity implements Serializable {
 
 	private static final String ALL_LINES_PARAM_NAME = "[*]";
 	private static final long serialVersionUID = -4185584640736172927L;
-	private static final MessageText FORBIDDEN_DATA_UPDATE_MESSAGE = MessageText.of("These data can't be accepted"); //no too sharp info here : may use log //TODO externalized msg
+	private static final MessageText FORBIDDEN_DATA_UPDATE_MESSAGE = MessageText.of("These data/field can't be accepted"); //no too sharp info here : may use log //TODO externalized msg
 
 	private static final ViewContextUpdateSecurity UNMODIFIABLE_INSTANCE = new ViewContextUpdateSecurity();
 	static {
