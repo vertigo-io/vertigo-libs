@@ -6,7 +6,7 @@
 		<q-input 
 			autogrow
 			th:v-model="${model.util.vueDataKey(object, field, rowIndex)}" 
-			th:name="${model.util.contextKey(object, field, rowIndex)}"
+			th::name="${model.util.contextKey(object, field, rowIndex)}"
 			th::label-width="${overridedLabelWidth?:3}"
 			th:label="${modifiableTable!=null?null:myLabel}"
             th:classappend="${required}?'v-field__required'"
@@ -27,7 +27,7 @@
 	<q-input 
 			autogrow
 			th:v-model="${model.util.vueDataKey(object, field, rowIndex)}" 
-            th:name="${model.util.contextKey(object, field, rowIndex)}"
+            th::name="${model.util.contextKey(object, field, rowIndex)}"
 			th:label="${modifiableTable!=null?null:myLabel}"
             orientation="vertical"
 			stack-label
