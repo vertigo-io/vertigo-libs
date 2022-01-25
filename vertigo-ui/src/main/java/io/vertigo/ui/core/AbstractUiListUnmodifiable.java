@@ -115,8 +115,8 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * Attention : nécessite la DtList (appel obtainDtList).
 	 * @param keyFieldName Nom du champs à indexer
 	 */
-	protected void initUiObjectByKeyIndex(final String keyFieldName) {
-		final Map<Serializable, UiObject<O>> uiObjectById = uiObjectByFieldValue.computeIfAbsent(keyFieldName, fieldName -> new HashMap<>());
+	protected final void initUiObjectByKeyIndex(final String keyFieldName) {
+		final Map<Serializable, UiObject<O>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
 		for (final UiObject<O> uiObject : this) {
 			uiObjectById.put(((VegaUiObject<O>) uiObject).getTypedValue(keyFieldName, Serializable.class), uiObject);
 		}
@@ -232,10 +232,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * @return Index des UiObjects par Id
 	 */
 	protected final Map<Serializable, UiObject<O>> obtainUiObjectByIdMap(final String keyFieldName) {
-		if (!uiObjectByFieldValue.containsKey(keyFieldName)) {
-			initUiObjectByKeyIndex(keyFieldName);
-		}
-		return uiObjectByFieldValue.get(keyFieldName);
+		return uiObjectByFieldValue.computeIfAbsent(keyFieldName, fieldName -> new HashMap<>());
 	}
 
 	/**
