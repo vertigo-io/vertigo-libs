@@ -98,6 +98,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		templateResolver.setApplicationContext(applicationContext);
 		templateResolver.setPrefix("/WEB-INF/views/");
 		templateResolver.setSuffix(".html");
+		templateResolver.setCharacterEncoding("UTF-8");
 		// for dev purpose
 		templateResolver.setCacheable(!isDevMode());
 		return templateResolver;
