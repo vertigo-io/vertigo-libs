@@ -40,12 +40,12 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinition;
 import io.vertigo.datamodel.smarttype.annotations.Adapter;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinitionBuilder;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition.Scope;
+import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinitionBuilder;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.DtDefinitionBuilder;
-import io.vertigo.datamodel.structure.definitions.DtStereotype;
 import io.vertigo.datamodel.structure.definitions.DtField.FieldType;
+import io.vertigo.datamodel.structure.definitions.DtStereotype;
 import io.vertigo.datamodel.structure.definitions.association.AssociationNNDefinition;
 import io.vertigo.datamodel.structure.definitions.association.AssociationNode;
 import io.vertigo.datamodel.structure.definitions.association.AssociationSimpleDefinition;
@@ -213,6 +213,9 @@ public final class DtObjectsLoader implements Loader {
 			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.DisplayField.class)) {
 				dtDefinitionBuilder.withDisplayField(createFieldName(method));
 			}
+			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.KeyField.class)) {
+				dtDefinitionBuilder.withKeyField(createFieldName(method));
+			}
 			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.ForeignKey.class)) {
 				//Le nom est automatiquement déduit du nom du champ
 				final io.vertigo.datamodel.structure.stereotype.ForeignKey foreignKeyAnnotation = method.getAnnotation(io.vertigo.datamodel.structure.stereotype.ForeignKey.class);
@@ -233,6 +236,9 @@ public final class DtObjectsLoader implements Loader {
 			}
 			if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.DisplayField.class)) {
 				dtDefinitionBuilder.withDisplayField(createFieldName(field));
+			}
+			if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.KeyField.class)) {
+				dtDefinitionBuilder.withKeyField(createFieldName(field));
 			}
 
 		}
