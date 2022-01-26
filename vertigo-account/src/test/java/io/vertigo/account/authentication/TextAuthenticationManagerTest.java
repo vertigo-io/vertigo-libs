@@ -17,10 +17,12 @@
  */
 package io.vertigo.account.authentication;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.authentication.MyNodeConfig.AuthentPlugin;
+import io.vertigo.account.impl.authentication.PasswordHelper;
 import io.vertigo.core.node.config.NodeConfig;
 
 /**
@@ -40,6 +42,14 @@ public final class TextAuthenticationManagerTest extends AbstractAuthenticationM
 	@Test
 	public void testLoginUsername() {
 		//
+	}
+
+	@Test
+	public void testCreatePassword() {
+		final PasswordHelper passwordHelper = new PasswordHelper();
+		final String encodedPassword = passwordHelper.createPassword("MyTruePasswordTest");
+		Assertions.assertTrue(passwordHelper.checkPassword(encodedPassword, "MyTruePasswordTest"), "Good encoding");
+		Assertions.assertFalse(passwordHelper.checkPassword(encodedPassword, "MyFalsePasswordTest"), "Good encoding");
 	}
 
 }
