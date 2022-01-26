@@ -249,8 +249,8 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	private static boolean useSubKeywordFieldForFacet(final FacetDefinition facetDefinition) {
 		final IndexType indexType = IndexType.readIndexType(facetDefinition.getDtField().getSmartTypeDefinition());
-		//si le champs n'est pas facetable mais qu'il y a un sub keyword on le prend
-		return !indexType.isIndexFieldData() && indexType.isIndexSubKeyword();
+		//si il y a un sub keyword on le prend (sinon le facetable permet d'avoir un DataField, mais il peut etre tokenized)
+		return indexType.isIndexSubKeyword();
 	}
 
 	private static boolean isGeoField(final DtField dtField) {
