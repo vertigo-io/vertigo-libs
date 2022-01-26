@@ -45,7 +45,6 @@ import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
-import io.vertigo.ui.data.domain.DtDefinitions.MovieDisplayFields;
 import io.vertigo.ui.data.domain.DtDefinitions.MovieFields;
 import io.vertigo.ui.data.domain.movies.Movie;
 import io.vertigo.ui.data.domain.movies.MovieDisplay;
@@ -111,7 +110,7 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 
 		viewContext.publishDtListModifiable(movieListModifiables, mySubList);
 		viewContext.publishMdl(moviesListMdl, Movie.class, null);
-		viewContext.publishDtList(movieDisplayList, MovieDisplayFields.movId, movieServices.getMoviesDisplay(DtListState.defaultOf(Movie.class)));
+		viewContext.publishDtList(movieDisplayList, movieServices.getMoviesDisplay(DtListState.defaultOf(Movie.class)));
 
 		viewContext.publishMdl(communeListMdl, Commune.class, null);
 

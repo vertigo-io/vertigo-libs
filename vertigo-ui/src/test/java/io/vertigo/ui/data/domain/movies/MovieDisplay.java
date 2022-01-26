@@ -20,6 +20,7 @@ package io.vertigo.ui.data.domain.movies;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.stereotype.Field;
+import io.vertigo.datamodel.structure.stereotype.KeyField;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
 /**
@@ -39,6 +40,7 @@ public final class MovieDisplay implements DtObject {
 	 * @return Long movId
 	 */
 	@Field(smartType = "STyId", label = "id")
+	@KeyField
 	public Long getMovId() {
 		return movId;
 	}
