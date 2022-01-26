@@ -516,7 +516,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		@Override
 		public S deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
 			if (BasicType.String == basicTypeAdapter.getBasicType()) {//TODO should be json
-				return basicTypeAdapter.toJava(json.getAsString(), smartType);
+				return basicTypeAdapter.toJava(json.toString(), smartType); //We want a String even if its a JsonObject !! can't use getAsString
 			}
 			return basicTypeAdapter.toJava(context.deserialize(json, basicTypeAdapter.getBasicType().getJavaClass()), smartType);
 		}
