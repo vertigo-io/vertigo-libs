@@ -18,6 +18,7 @@
 package io.vertigo.vega.webservice;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Collections;
 
 import org.apache.http.HttpStatus;
@@ -25,7 +26,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
@@ -40,7 +40,7 @@ public final class WebServiceManagerSmartTypesTest {
 
 	private static final String GEO_POINT_TEXT = "-65.19704,65.19704";
 	private static final String GEO_POINT_QUOTED_TEXT = "\"-65.19704,65.19704\"";
-	private static final String GEO_POINT_JSON = "{\"lon\": -48.86667,\"lat\": 48.86667 }";
+	private static final String GEO_POINT_JSON = "{\"lon\":-48.86667,\"lat\":48.86667}";
 
 	private final SessionFilter loggedSessionFilter = new SessionFilter();
 	private static AutoCloseableNode node;
@@ -73,45 +73,42 @@ public final class WebServiceManagerSmartTypesTest {
 	}
 
 	@Test
-	public void testPathText() throws UnsupportedEncodingException {
-		loggedAndExpect()
+	public void testPathText() {
+		loggedAndExpect(given().pathParam("geo", GEO_POINT_QUOTED_TEXT))
 				.statusCode(HttpStatus.SC_OK)
 				.body(Matchers.is(Matchers.containsString(GEO_POINT_TEXT)))
 				.when()
-				//.get("/test/smartTypes/text/path/" + URLEncoder.encode(createGeoPointText(), "UTF8"));
-				.get("/test/smartTypes/text/path/" + GEO_POINT_QUOTED_TEXT);
+				.get("/test/smartTypes/text/path/{geo}");
 	}
 
-	@Disabled
 	@Test
-	public void testPathJson() {
-		loggedAndExpect()
+	public void testPathJson() throws UnsupportedEncodingException {
+
+		loggedAndExpect(given().urlEncodingEnabled(false).pathParam("geo", URLEncoder.encode(GEO_POINT_JSON, "UTF8")))
 				.statusCode(HttpStatus.SC_OK)
 				.body("lat", Matchers.is(Matchers.greaterThan(48.86666F)))
 				.body("lat", Matchers.is(Matchers.lessThan(48.86668F)))
 				.when()
-				.get("/test/smartTypes/json/path/\"" + GEO_POINT_JSON + "\"");
+				.get("/test/smartTypes/json/path/{geo}");
 	}
 
-	@Disabled
 	@Test
 	public void testQueryText() {
-		loggedAndExpect()
+		loggedAndExpect(given().queryParam("geoPoint", GEO_POINT_QUOTED_TEXT))
 				.statusCode(HttpStatus.SC_OK)
 				.body(Matchers.is(Matchers.containsString(GEO_POINT_TEXT)))
 				.when()
-				.get("/test/smartTypes/text/query?geoPoint=" + GEO_POINT_TEXT);
+				.get("/test/smartTypes/text/query");
 	}
 
-	@Disabled
 	@Test
-	public void testQueryJson() {
-		loggedAndExpect()
+	public void testQueryJsonMonofield() {
+		loggedAndExpect(given().queryParam("geoPoint", GEO_POINT_JSON))
 				.statusCode(HttpStatus.SC_OK)
 				.body("lat", Matchers.is(Matchers.greaterThan(48.86666F)))
 				.body("lat", Matchers.is(Matchers.lessThan(48.86668F)))
 				.when()
-				.get("/test/smartTypes/json/query?geoPoint.lon=-48.86667&geoPoint.lat=48.86667");
+				.get("/test/smartTypes/json/query");
 	}
 
 	@Test
@@ -140,7 +137,6 @@ public final class WebServiceManagerSmartTypesTest {
 				.statusCode(HttpStatus.SC_OK)
 				.body(Matchers.is(Matchers.containsString(GEO_POINT_TEXT)))
 				.when()
-
 				.post("/test/smartTypes/text/innerbody");
 	}
 
@@ -160,11 +156,11 @@ public final class WebServiceManagerSmartTypesTest {
 		return RestAssured.given();
 	}
 
-	private ResponseSpecification loggedAndExpect() {
+	/*private ResponseSpecification loggedAndExpect() {
 		return RestAssured.given()
 				.filter(loggedSessionFilter)
 				.expect().log().ifValidationFails();
-	}
+	}*/
 
 	private ResponseSpecification loggedAndExpect(final RequestSpecification given) {
 		return given
