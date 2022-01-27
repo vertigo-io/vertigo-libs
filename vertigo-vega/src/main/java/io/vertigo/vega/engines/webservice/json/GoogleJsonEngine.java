@@ -515,15 +515,15 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 
 		@Override
 		public S deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
-			if (BasicType.String == basicTypeAdapter.getBasicType()) {
-				return basicTypeAdapter.toJava(json.isJsonPrimitive() ? json.getAsString() : json.toString(), smartType); //We want a String even if its a JsonObject !! can only use getAsString with Primitive
+			if (BasicType.String == basicTypeAdapter.getBasicType()) {//TODO should be json
+				return basicTypeAdapter.toJava(json.isJsonPrimitive() ? json.getAsString() : json.toString(), smartType); //We want a String even if its a JsonObject !! can't use getAsString
 			}
 			return basicTypeAdapter.toJava(context.deserialize(json, basicTypeAdapter.getBasicType().getJavaClass()), smartType);
 		}
 
 		@Override
 		public JsonElement serialize(final S src, final Type typeOfSrc, final JsonSerializationContext context) {
-			if (BasicType.String == basicTypeAdapter.getBasicType()) {
+			if (BasicType.String == basicTypeAdapter.getBasicType()) { //TODO should be json
 				return JsonParser.parseString(basicTypeAdapter.toBasic(src));
 			}
 			return context.serialize(basicTypeAdapter.toBasic(src));
