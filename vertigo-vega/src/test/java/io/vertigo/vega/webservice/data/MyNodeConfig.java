@@ -56,6 +56,7 @@ import io.vertigo.vega.webservice.data.ws.FileDownloadWebServices;
 import io.vertigo.vega.webservice.data.ws.LoginSecuredWebServices;
 import io.vertigo.vega.webservice.data.ws.SearchTestWebServices;
 import io.vertigo.vega.webservice.data.ws.SimplerTestWebServices;
+import io.vertigo.vega.webservice.data.ws.SmartTypesTestWebServices;
 import io.vertigo.vega.webservice.data.ws.ValidationsTestWebServices;
 import io.vertigo.vega.webservice.data.ws.client.SimplerClientTestWebServices;
 
@@ -106,7 +107,8 @@ public final class MyNodeConfig {
 				.addComponent(AdvancedTestWebServices.class)
 				.addComponent(AnonymousTestWebServices.class)
 				.addComponent(FileDownloadWebServices.class)
-				.addComponent(SearchTestWebServices.class);
+				.addComponent(SearchTestWebServices.class)
+				.addComponent(SmartTypesTestWebServices.class);
 
 		final HttpClientFeatures httpClientFeatures = new HttpClientFeatures();
 		if (isClient) {

@@ -23,9 +23,15 @@ import java.time.LocalDate;
 import io.vertigo.basics.constraint.ConstraintRegex;
 import io.vertigo.basics.constraint.ConstraintStringLength;
 import io.vertigo.basics.formatter.FormatterDefault;
+import io.vertigo.core.lang.BasicType;
+import io.vertigo.datamodel.smarttype.annotations.Adapter;
 import io.vertigo.datamodel.smarttype.annotations.Constraint;
 import io.vertigo.datamodel.smarttype.annotations.Formatter;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition;
+import io.vertigo.vega.webservice.data.domain.GeoPoint;
+import io.vertigo.vega.webservice.data.domain.GeoPointAdapter;
+import io.vertigo.vega.webservice.data.domain.GeoPointJson;
+import io.vertigo.vega.webservice.data.domain.GeoPointJsonAdapter;
 
 public enum VegaTestSmartTypes {
 
@@ -57,6 +63,15 @@ public enum VegaTestSmartTypes {
 
 	@SmartTypeDefinition(String.class)
 	@Formatter(clazz = FormatterDefault.class)
-	Code;
+	Code,
 
+	@SmartTypeDefinition(GeoPoint.class)
+	@Adapter(targetBasicType = BasicType.String, clazz = GeoPointAdapter.class)
+	@Formatter(clazz = FormatterDefault.class)
+	GeoPoint,
+
+	@SmartTypeDefinition(GeoPointJson.class)
+	@Adapter(targetBasicType = BasicType.String, clazz = GeoPointJsonAdapter.class)
+	@Formatter(clazz = FormatterDefault.class)
+	GeoPointJson;
 }
