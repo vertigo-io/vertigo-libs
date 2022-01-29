@@ -1,10 +1,48 @@
 Version history
 ===============
 
-Running 3.2.0
+Running 4.0.0
 ----------------------
 
 more to come :)
+
+
+Release 3.3.0 - 2021/02/..
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-320-to-330)
+* [Datafactory] Upgraded loadList api to search into multiple indices
+* [Ui] Add demo of modifiable table, with custom header and columns (sum, groub bt, etc...)
+* [Ui-vuejs] Fix issue on FormData with null value converted to "null"
+* [ui-vuejs] Fix bug on ajax call
+* [ui-vuejs] Fix v-facet for multiple selected facet
+* [Ui] Support @Secured annotation on Controller or Controller's Action. No need to prefix authorisation name with `Atz`
+* [Ui] Fixed other attrs starting with $ or @ ( only evaluate `${` or `@{` )
+* [Ui] Add responsive table : switch to grid
+* [Search] Fix search log
+* [DataStore] Set Fileinfo URI when read DB FileInfo
+* [Ui] Add button-link confirm
+* [Ui] Fix button-submit apply other_attrs on main button only (no more confirm button)
+* [Ui] Add other_attrs support to grid's div row
+* [Database] Fix a bug in MSQL Server that reads the stream until it gets a -1
+* [Ui] Support any kind of modifier for transformers applied in ViewContextMap
+* [Vega] Add ability to authenticate easily with Azure Ad
+* [Vega] Update SwaggerApi to support smartTypes Adapter
+* [Ui]  Add a download link on fileupload readonly (use downloadUrl parameter)
+* [Vega] SwaggerApi use BasicTypeClass for all case, not only in QueryParam
+* [Ui] Fix grid-cell col param : number of grid's col (max grid's cols) OR quasar grid css (max 12, ex: lg-8)
+* [Ui] Fix how SecurityException was managed : send UNAUTHORIZED or FORBIDDEN hhtp code
+* [DataStore] Fix MasterDataList when sort by not persistent field
+* [DataFactory] Can specify search sortableNormalizer in indexType : `myAnalyzer{:myDataType}{:stored|notStored}{:sortable{(mySortNormalizer)}|notSortable}{:facetable|notFacetable}`
+* [Basics] Add contextProperties to Task script executor's context : use to passed context not declared as a `in attribute`
+* [DataStore] Add support of table alias in SqlCriteriaEncoder ; and a parameter for inlined parameters (instead of binded). Inlined parameters were used to compute execute plan. Inlined parameters must be secured : only simple chars.
+* [Account] Add resources for forbidden error message
+* [Account] Optimized isAutorized operation check; and change authorizedOperations api from List to Set
+* [Account] Add better error messages for auth json config
+* __[Account] Rename api withCriteria to withSecurityKeys__
+* [Account] Add `AuthorizationUtil` for easier security check in services (throw assertions instead of just returning boolean)
+* [Account] Add AuthorizationCriteria : can be declared as SmartTypes and used in Request Task for include security clause in sql requests
+
+
 
 Release 3.1.1 - 2021/02/22
 ----------------------
