@@ -63,7 +63,7 @@ public final class ExportXlsHelper<R extends DtObject> {
 	 * @param criterionExcludedColumnNames list of the criteria that must be excluded for the export
 	 * @param specificLabelMap map of the column names to be used instead of the default label associated with the field
 	 */
-	public final void prepareExport(final DtList<R> dtcToExport, final List<String> collectionColumnNames, final DtObject criterion, final List<String> criterionExcludedColumnNames,
+	public void prepareExport(final DtList<R> dtcToExport, final List<String> collectionColumnNames, final DtObject criterion, final List<String> criterionExcludedColumnNames,
 			final Map<String, String> specificLabelMap) {
 
 		addDtList(dtcToExport, collectionColumnNames, specificLabelMap);
@@ -81,7 +81,7 @@ public final class ExportXlsHelper<R extends DtObject> {
 	 * @param collectionColumnNameList names of the columns that must be exported
 	 * @param specificLabelMap map of the column names to be used instead of the default label associated with the field
 	 */
-	public final void addDtList(final DtList<R> dtcToExport, final List<String> collectionColumnNameList, final Map<String, String> specificLabelMap) {
+	public void addDtList(final DtList<R> dtcToExport, final List<String> collectionColumnNameList, final Map<String, String> specificLabelMap) {
 		Assertion.check()
 				.isNotNull(dtcToExport, "The list of the objects to be exported must exist and not be empty")
 				.isNotNull(collectionColumnNameList, "The list of the columns to be exported must exist and not be empty")
@@ -96,8 +96,6 @@ public final class ExportXlsHelper<R extends DtObject> {
 			if (specificLabelMap == null) {
 				exportSheetBuilder.addField(dtField::getName);
 			} else {
-				// TODO final String label = specificLabelMap.get(field.getName());
-				// TODO exportListParameters.addExportField(field, label);
 				exportSheetBuilder.addField(dtField::getName, null);
 			}
 		}
@@ -110,7 +108,7 @@ public final class ExportXlsHelper<R extends DtObject> {
 	 * @param criterion criterion object to be exported
 	 * @param criterionExcludedColumnNames names of the columns to be excluded
 	 */
-	public final void addDtObject(final DtObject criterion, final List<String> criterionExcludedColumnNames) {
+	public void addDtObject(final DtObject criterion, final List<String> criterionExcludedColumnNames) {
 		Assertion.check()
 				.isNotNull(criterion)
 				.isTrue(criterionExcludedColumnNames != null, "The list of the columns to be excluded must exist");
