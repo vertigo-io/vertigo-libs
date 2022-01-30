@@ -149,12 +149,6 @@
 			<version>9.4.44.v20210927</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.33</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 </project>
