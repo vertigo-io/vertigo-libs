@@ -78,23 +78,35 @@ Release 3.3.0 - 2021/02/..
 * [Ui] Support utf8 thymeleaf template file
 * [Datafactory] Use keyword field if present in FacetTerm
 * [Vega] Fix deserializing Json of SmartTypes (like geoPoint)
-* [Quarto] Secure XML read (docx)
-* 
+* [Quarto] Secure XML read (docx) 
 * [All] Updated libs
   - __h2 1.4.200 -> 2.1.210 (need to rebuild bdd)__
   - assertj-core 3.19.0 -> 3.22.0
   - log4j 2.14.1 -> 2.17.1 (log4shell)
   - janino 3.1.4 -> 3.1.6
   - jetty-server 9.4.40.v20210413 -> 9.4.44.v20210927
+  - jersey-client 2.33 -> 3.0.3
   - lucene 8.7.0 -> 8.10.1
   - elasticsearch 7.10.2 -> 7.16.3
   - codelibs embedded ES 7.10.2 -> 7.16.3
+  - restassured 4.3.3 -> 4.4.0
   - liquibase 4.3.5 -> 4.7.0
   - ehcache 3.9.4 -> 3.9.9
+  - Spring-webmvc 5.3.7 -> 5.3.15
+  - Thymeleaf 3.0.12 -> 3.0.14
+  - Thymeleaf-layout 2.5.3 -> 3.0.0
+  - selenium 3.141.59 -> 4.1.1
+  - htmlunit-driver 2.50.0 -> 3.56.0
+  - jackson 2.12.3 -> 2.13.1
+* [Ui] Update js libs 
+  - axios 0.21.1 -> 0.24.0
+  - core-js 3.8.3 -> 3.20.3
   - Quasar 1.15.2 -> v1.17.7
+  - vue 2.6.13 -> 2.6.14
   - MaterialIcons v50 -> v121
   - fontawesome icons 5.7.1 -> 5.15.4
   - materialDesignIcons 5.5.55 -> 6.5.95
+  - ionicons 5.4.0 -> 6.0.1
 
 Release 3.1.1 - 2021/02/22
 ----------------------
