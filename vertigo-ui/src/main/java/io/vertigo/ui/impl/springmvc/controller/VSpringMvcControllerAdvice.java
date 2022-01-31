@@ -153,6 +153,7 @@ public final class VSpringMvcControllerAdvice {
 			}
 		});
 		modelAndView.addObject("uiMessageStack", uiMessageStack);
+		modelAndView.addObject("authz", new UiAuthorizationUtil());
 		return modelAndView;
 	}
 
