@@ -23,6 +23,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.account.authorization.VSecurityException;
@@ -41,7 +42,7 @@ public final class ViewContextUpdateSecurity implements Serializable {
 
 	private static final String ALL_LINES_PARAM_NAME = "[*]";
 	private static final long serialVersionUID = -4185584640736172927L;
-	private static final MessageText FORBIDDEN_DATA_UPDATE_MESSAGE = MessageText.of("These data/field can't be accepted"); //no too sharp info here : may use log //TODO externalized msg
+	private static final String FORBIDDEN_DATA_UPDATE_MESSAGE = "These data/field can't be accepted ({0})"; //no too sharp info here : may use log //TODO externalized msg
 
 	private static final ViewContextUpdateSecurity UNMODIFIABLE_INSTANCE = new ViewContextUpdateSecurity();
 	static {
@@ -63,13 +64,13 @@ public final class ViewContextUpdateSecurity implements Serializable {
 		final String row = splitObject[SPLIT_ROW_INDEX];
 
 		if (checkUpdates && !isAllowedField(objectKey, row, fieldName)) {
-			throw new VSecurityException(FORBIDDEN_DATA_UPDATE_MESSAGE);
+			throw new VSecurityException(MessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, object + "." + fieldName));
 		}
 	}
 
 	public void assertIsUpdatable(final String object) {
 		if (checkUpdates && !updatablesKeys.containsKey(object)) {
-			throw new VSecurityException(FORBIDDEN_DATA_UPDATE_MESSAGE);
+			throw new VSecurityException(MessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, object));
 		}
 	}
 
@@ -116,11 +117,12 @@ public final class ViewContextUpdateSecurity implements Serializable {
 	}
 
 	public void assertAllowedFields(final Enumeration<String> parameterNames) {
-		final boolean containsDisallowedField = Collections.list(parameterNames).stream()
+		final Optional<String> firstDisallowedField = Collections.list(parameterNames).stream()
 				.filter(n -> n.startsWith("vContext["))
-				.anyMatch(n -> !isAllowedField(n));
-		if (containsDisallowedField) {
-			throw new VSecurityException(FORBIDDEN_DATA_UPDATE_MESSAGE);
+				.filter(n -> !isAllowedField(n))
+				.findFirst(); //faster than findFirst
+		if (firstDisallowedField.isPresent()) {
+			throw new VSecurityException(MessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, firstDisallowedField.orElse("<<not found>>")));
 		}
 	}
 
