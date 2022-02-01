@@ -63,8 +63,8 @@ public final class MyNodeConfig {
 								Param.of("name", "orchestra"),
 								Param.of("dataBaseClass", H2DataBase.class.getName()),
 								Param.of("jdbcDriver", org.h2.Driver.class.getName()),
-								Param.of("jdbcUrl", "jdbc:h2:~/vertigo/orchestra;AUTO_SERVER=TRUE"))
-						//Param.of("jdbcUrl", "jdbc:h2:mem:orchestra;MVCC=FALSE"))
+								//Param.of("jdbcUrl", "jdbc:h2:~/vertigo/orchestra;AUTO_SERVER=TRUE"))
+								Param.of("jdbcUrl", "jdbc:h2:mem:orchestra"))
 						.build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
