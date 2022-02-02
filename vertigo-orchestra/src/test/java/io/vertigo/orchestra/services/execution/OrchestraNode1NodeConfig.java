@@ -27,8 +27,10 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.orchestra.OrchestraFeatures;
+import io.vertigo.orchestra.boot.DataBaseInitializer;
 import io.vertigo.orchestra.util.monitoring.MonitoringServices;
 import io.vertigo.orchestra.util.monitoring.MonitoringServicesImpl;
 
@@ -52,8 +54,9 @@ public final class OrchestraNode1NodeConfig {
 								Param.of("name", "orchestra"),
 								Param.of("dataBaseClass", H2DataBase.class.getName()),
 								Param.of("jdbcDriver", org.h2.Driver.class.getName()),
-								Param.of("jdbcUrl", "jdbc:h2:~/vertigo/orchestra;MVCC=FALSE;AUTO_SERVER=TRUE"))
+								Param.of("jdbcUrl", "jdbc:h2:mem:orchestra"))
 						.build())
+				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
 						.withCache()
 						.withMemoryCache()
@@ -67,6 +70,8 @@ public final class OrchestraNode1NodeConfig {
 								Param.of("connectionName", "orchestra"),
 								Param.of("sequencePrefix", "SEQ_"))
 						.build())
+				// we build h2 mem
+				.addModule(ModuleConfig.builder("databaseInitializer").addComponent(DataBaseInitializer.class).build())
 				.addModule(new OrchestraFeatures()
 						.withDataBase(Param.of("nodeName", "NodeTest2"), Param.of("daemonPeriodSeconds", "1"), Param.of("workersCount", "3"), Param.of("forecastDurationSeconds", "60"))
 						.withMemory(Param.of("workersCount", "1"))
