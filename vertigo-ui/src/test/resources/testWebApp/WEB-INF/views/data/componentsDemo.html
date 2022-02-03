@@ -18,71 +18,7 @@
     <div layout:fragment="content">
         <vu:messages />
             <vu:form id="myFormId">
-            <vu:table-modifiable list="moviesModifiable" componentId="movieModifiableTable" sortUrl="@{/movies/_sort}" >
-                <vu:column field="movId" >
-                    <a th::href="|'@{/movie/}'+props.row.movId|" >{{props.row.movId}}</a>
-                </vu:column>
-                <vu:column field="title">
-                    <vu:text-field object="moviesModifiable" field="title"/>
-                </vu:column>
-                <vu:column field="released">
-                    <vu:date object="moviesModifiable" field="released"/>
-                </vu:column>
-                <vu:column field="lastModified">
-                    <vu:datetime object="moviesModifiable" field="lastModified"/>   
-                </vu:column>
-                <vu:column field="testBoolean">
-                    <vu:checkbox object="moviesModifiable" field="testBoolean"/>   
-                </vu:column>
-                <vu:column field="mainPicture">
-                    <vu:fileupload-simple-object th:url="'@{/commons/upload}'" object="moviesModifiable" field="mainPicture"/>
-                </vu:column>
-                <vu:column field="pictures">
-                    <vu:fileupload-simple-object th:url="'@{/commons/upload}'" object="moviesModifiable" field="pictures" multiple/>
-                </vu:column>
-            </vu:table-modifiable>
-            
-           <table class="full-width q-table">
-            <caption></caption>
-            <thead>
-            <tr>
-                <th id="p1" class="text-left">movId</th>
-                <th id="p2" class="text-left">Text</th>
-                <th id="p2" class="text-left">Date</th>
-                <th id="p2" class="text-left">DateTime</th>
-                <th id="p2" class="text-left">DateBoolean</th>
-                <th id="p3" class="text-left">File</th>
-                <th id="p3" class="text-left">Files</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="item, itemStat : ${model.moviesModifiable}" th:with="modifiableTable=true, rowIndex=${itemStat.index}">
-                <td>
-                    <a th:href="'@{/movie/}'+item.movId" vu:text="${item.movId}" ></a>
-                </td>
-                <td>
-                    <vu:text-field object="moviesModifiable"  field="title"/>
-                </td>
-                <td>
-                    <vu:date object="moviesModifiable" field="released"/>
-                </td>
-                <td>
-                    <vu:datetime object="moviesModifiable" field="lastModified"/>
-                </td>
-                <td>
-                    <vu:checkbox object="moviesModifiable" field="testBoolean"/>
-                </td>
-                <td>
-                    <vu:fileupload-simple-object th:url="'@{/commons/upload}'" object="moviesModifiable" field="mainPicture"/>                                                    
-                </td>
-                <td>
-                    <vu:fileupload-simple-object th:url="'@{/commons/upload}'" object="moviesModifiable" field="pictures" multiple/>                                                    
-                </td>
-            </tr>
-            </tbody>
-        </table>
-         <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionList" label="Save (List)" action="@{_saveList}" color="primary" />
-        <br/>
+           
             
                 <vu:block id="movie" title="#{movie.title.information}">
                        <vu:include-data object="movies" field="*" />
@@ -94,8 +30,9 @@
                         <vu:text-field object="movie" field="year"  debounce="500" hint="Debouncing 500ms"/>
                         <vu:slider object="movie" field="year"  />
                         <vu:knob object="movie" field="year"/>
-                        <vu:select object="movie" field="year" list="movies" />
-                        <vu:grid-cell col="lg-6">
+                        <vu:select object="movie" field="movId" list="movies" />
+                        <vu:select object="movie" field="movId" list="moviesDisplay" labelField="title" />
+                        <vu:grid-cell col="lg-8">
                             <vu:text-area object="movie" field="title"/>
                         </vu:grid-cell>
                         <vu:date object="movie" field="released"/>
@@ -107,7 +44,7 @@
                         <vu:text-field object="movie" field="title" />
                         <vu:chips-autocomplete object="movie" field="tags" list="movies" staticData="false"/>
                         <vu:grid-cell/>
-                        <vu:grid-cell col="md-4">
+                        <vu:grid-cell col="1">
                             <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" @input="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
                             <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" 
                             :disabled="true || false"
@@ -150,8 +87,15 @@
                             <vu:button-link th:if="${model.modeEdit}"  label="Movies" url="@{/movies/}" color="primary" />
                             <q-btn  th:label="OpenModal" th:@click="|openModal('myModal', '@{/movies/}')|"></q-btn>
                         </vu:grid-cell>
+                        <vu:grid-cell>
+                            <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionDtCheck" label="Save (with DtObj Check)" action="@{_saveDtCheck}" color="primary" />
+                            <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionUiCheck" label="Save (with UiObj Check)" action="@{_saveUiCheck}" color="primary" />
+                            
+                        </vu:grid-cell>
+                       
                     </vu:grid>
                 </vu:block>
+                <br/>
                 <vu:block id="movieManual" title="Test manual grid">
                  <div class="row">
                     <vu:text-field class="col-6" object="movie" field="title" />
@@ -160,11 +104,10 @@
                  </div>
                 </vu:block>
                 
-                
-           
-            
             </vu:form>
             
+            <br/>
+           <h6>Test Cards</h6>
             <vu:cards list="movies" componentId="movieCards" 
             cardClass="col-lg-3 col-md-6 col-xs-12" 
             sortUrl="@{/movies/_sort}" rowsPerPage="8" showMore="true" showMoreLabel="Show more" >
@@ -173,6 +116,8 @@
                 </div>
             </vu:cards>
             
+            <br/>
+           <h6>Test table</h6>
             <vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}"
                 tr_@click.native="|goTo('@{/movie/}'+props.row.movId)|" tr_class="nav">
                 <vu:slot name="actions_slot"><q-btn label="View detail" th:@click="|openModal('movieDetailModal', '@{/movie/}'+props.row.movId, {  })|"></q-btn></vu:slot>

@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,12 +57,13 @@ import io.vertigo.ui.impl.springmvc.argumentresolvers.VFileMethodArgumentResolve
 import io.vertigo.ui.impl.springmvc.argumentresolvers.VFileReturnValueHandler;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttributeMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewContextReturnValueAndArgumentResolver;
+import io.vertigo.ui.impl.springmvc.auth.VSpringMvcAuthorizationInterceptor;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
 import io.vertigo.ui.impl.thymeleaf.VUiStandardDialect;
 import io.vertigo.ui.impl.thymeleaf.components.NamedComponentDefinition;
 import io.vertigo.ui.impl.thymeleaf.components.NamedComponentParser;
 import io.vertigo.ui.impl.thymeleaf.components.VuiResourceTemplateResolver;
-import nz.net.ultraq.thymeleaf.LayoutDialect;
+import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 
 @Configuration
 @EnableVertigoSpringBridge
@@ -97,6 +98,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		templateResolver.setApplicationContext(applicationContext);
 		templateResolver.setPrefix("/WEB-INF/views/");
 		templateResolver.setSuffix(".html");
+		templateResolver.setCharacterEncoding("UTF-8");
 		// for dev purpose
 		templateResolver.setCacheable(!isDevMode());
 		return templateResolver;
@@ -227,6 +229,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 
 	@Override
 	public void addInterceptors(final InterceptorRegistry registry) {
+		registry.addInterceptor(new VSpringMvcAuthorizationInterceptor());
 		registry.addInterceptor(new VSpringMvcViewContextInterceptor());
 	}
 

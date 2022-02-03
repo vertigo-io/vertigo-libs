@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,14 +27,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.indices.forcemerge.ForceMergeRequest;
+import org.elasticsearch.action.admin.indices.forcemerge.ForceMergeResponse;
 import org.elasticsearch.action.admin.indices.settings.get.GetSettingsRequest;
 import org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
@@ -47,9 +50,9 @@ import org.elasticsearch.client.indices.GetMappingsResponse;
 import org.elasticsearch.client.indices.PutMappingRequest;
 import org.elasticsearch.cluster.metadata.MappingMetadata;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.core.TimeValue;
+import org.elasticsearch.xcontent.XContentBuilder;
+import org.elasticsearch.xcontent.XContentFactory;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.connectors.elasticsearch.RestHighLevelElasticSearchConnector;
@@ -283,12 +286,36 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 
 	/** {@inheritDoc} */
 	@Override
-	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
+	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState) {
 		Assertion.check().isNotNull(searchQuery);
 		//-----
-		final ESStatement<KeyConcept, R> statement = createElasticStatement(indexDefinition);
+		final ESStatement<KeyConcept, R> statement = createElasticStatement(indexDefinitions.get(0));
 		final DtListState usedListState = listState != null ? listState : defaultListState;
-		return statement.loadList(indexDefinition, searchQuery, usedListState, defaultMaxRows);
+		return statement.loadList(obtainIndexDtDefinition(indexDefinitions), obtainIndicesNames(indexDefinitions), searchQuery, usedListState, defaultMaxRows);
+	}
+
+	private DtDefinition obtainIndexDtDefinition(final List<SearchIndexDefinition> indexDefinitions) {
+		DtDefinition indexDtDefinition = null;
+		for (final SearchIndexDefinition indexDefinition : indexDefinitions) {
+			if (indexDtDefinition == null) {
+				indexDtDefinition = indexDefinition.getIndexDtDefinition();
+			} else {
+				Assertion.check().isTrue(indexDtDefinition.equals(indexDefinition.getIndexDtDefinition()),
+						"When searching multi-indices IndexDtDefinitions must be the same : {0} != {1} in {2}",
+						indexDtDefinition.getName(), indexDefinition.getIndexDtDefinition().getName(), indexDefinition.getName());
+			}
+		}
+		Assertion.check().isNotNull(indexDtDefinition);
+		return indexDtDefinition;
+	}
+
+	private String[] obtainIndicesNames(final List<SearchIndexDefinition> indexDefinitions) {
+		String[] indiceNames = new String[indexDefinitions.size()];
+		indiceNames = indexDefinitions.stream()
+				.map(d -> obtainIndexName(d))
+				.collect(Collectors.toList())
+				.toArray(indiceNames);
+		return indiceNames;
 	}
 
 	/** {@inheritDoc} */
@@ -314,7 +341,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		Assertion.check()
 				.isTrue(indexSettingsValid,
 						"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.")
-				.isNotNull(indexDefinition);
+				.isNotNull(indexDefinition, "SearchIndexDefinition is mandatory");
 		//-----
 		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), esClient, typeAdapters);
 	}
@@ -376,7 +403,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 					typeMapping.startObject("keyword");
 					typeMapping.field("type", "keyword");
 					if (sortableNormalizer) {
-						typeMapping.field("normalizer", "sortable");
+						typeMapping.field("normalizer", indexType.getSortableNormalizer());
 					}
 					typeMapping.endObject();
 					typeMapping.endObject();
@@ -428,13 +455,22 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		final ForceMergeRequest request = new ForceMergeRequest(myIndexName)
 				.maxNumSegments(OPTIMIZE_MAX_NUM_SEGMENT)//32 files : empirique
 				.flush(true);
-		esClient.indices().forcemergeAsync(request, RequestOptions.DEFAULT, null);
-		/*try {
-			final ForceMergeResponse forceMergeResponse = esClient.indices().forcemerge(request, RequestOptions.DEFAULT);
-			Assertion.check().argument(forceMergeResponse.getStatus() == RestStatus.OK, "Can't forceMerge on {0}", myIndexName);
-		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Error on index {0}", myIndexName);
-		}*/
+
+		esClient.indices().forcemergeAsync(request, RequestOptions.DEFAULT, new OptimizeActionListener());
+	}
+
+	private static class OptimizeActionListener implements ActionListener<ForceMergeResponse> {
+
+		@Override
+		public void onResponse(final ForceMergeResponse response) {
+			LOGGER.debug("markToOptimize ok");
+		}
+
+		@Override
+		public void onFailure(final Exception e) {
+			LOGGER.error("Error on markToOptimize", e);
+		}
+
 	}
 
 	private void waitForYellowStatus() {

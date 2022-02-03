@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ public final class Item implements KeyConcept {
 	private String manufacturer;
 	private String model;
 	private String description;
-	private Integer year;
+	private Integer itemYear;
 	private Integer kilo;
 	private Integer price;
 	private java.math.BigDecimal consommation;
@@ -43,6 +43,7 @@ public final class Item implements KeyConcept {
 	private Long famId;
 	private Long optionalNumber;
 	private String optionalString;
+	private String notFacetableString;
 	private Instant lastModified;
 	private GeoPoint localisation;
 	private Integer precision;
@@ -90,12 +91,12 @@ public final class Item implements KeyConcept {
 	}
 
 	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Année")
-	public Integer getYear() {
-		return year;
+	public Integer getItemYear() {
+		return itemYear;
 	}
 
-	public void setYear(final Integer year) {
-		this.year = year;
+	public void setItemYear(final Integer itemYear) {
+		this.itemYear = itemYear;
 	}
 
 	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Kilométrage")
@@ -159,6 +160,15 @@ public final class Item implements KeyConcept {
 
 	public void setOptionalString(final String optionalString) {
 		this.optionalString = optionalString;
+	}
+
+	@Field(smartType = "STyNotFacetableString", label = "notFacetableString", persistent = false)
+	public String getNotFacetableString() {
+		return notFacetableString;
+	}
+
+	public void setNotFacetableString(final String notFacetableString) {
+		this.notFacetableString = notFacetableString;
 	}
 
 	@Field(smartType = "STyDateTime", label = "LastModified")

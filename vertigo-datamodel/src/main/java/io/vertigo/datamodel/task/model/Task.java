@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,6 +113,15 @@ public final class Task {
 	 */
 	public String getContextProperty(final String contextParam) {
 		return context.get(contextParam);
+	}
+
+	/**
+	 * Return the properties in the execution context of the task
+	 *
+	 * @return context properties
+	 */
+	public Map<String, String> getContextProperties() {
+		return context; //context already unmodifiable by builder
 	}
 
 	/**

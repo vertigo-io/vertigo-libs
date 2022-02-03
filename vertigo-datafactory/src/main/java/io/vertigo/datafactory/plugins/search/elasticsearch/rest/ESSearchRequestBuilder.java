@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.datafactory.plugins.search.elasticsearch.AsbtractESSearchRequestBuilder;
 import io.vertigo.datafactory.plugins.search.elasticsearch.ESDocumentCodec;
-import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchQuery;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.model.DtListState;
 
 //vérifier
@@ -49,24 +49,25 @@ final class ESSearchRequestBuilder extends AsbtractESSearchRequestBuilder<Search
 	 * @param indexName Index name (env name)
 	 * @param esClient ElasticSearch client
 	 */
-	ESSearchRequestBuilder(final String indexName, final RestHighLevelClient esClient, final Map<Class, BasicTypeAdapter> typeAdapters) {
+	ESSearchRequestBuilder(final String[] indexNames, final RestHighLevelClient esClient, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		super(typeAdapters);
 		//-----
 		searchSourceBuilder = new SearchSourceBuilder()
+				.trackTotalHitsUpTo(MAX_TOTAL_HIT)
 				.fetchSource(new String[] { ESDocumentCodec.FULL_RESULT }, null);
 
-		searchRequest = new SearchRequest(indexName)
+		searchRequest = new SearchRequest(indexNames)
 				.searchType(SearchType.QUERY_THEN_FETCH)
 				.source(searchSourceBuilder);
 	}
 
 	@Override
-	protected void appendListState(final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows, final SearchIndexDefinition indexDefinition) {
+	protected void appendListState(final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows, final DtDefinition indexDtDefinition) {
 		searchSourceBuilder.from(listState.getSkipRows())
 				//If we send a clustering query, we don't retrieve result with hits response but with buckets
 				.size(searchQuery.isClusteringFacet() ? 0 : listState.getMaxRows().orElse(defaultMaxRows));
 		if (listState.getSortFieldName().isPresent()) {
-			searchSourceBuilder.sort(getFieldSortBuilder(indexDefinition, listState));
+			searchSourceBuilder.sort(getFieldSortBuilder(indexDtDefinition, listState));
 		}
 	}
 

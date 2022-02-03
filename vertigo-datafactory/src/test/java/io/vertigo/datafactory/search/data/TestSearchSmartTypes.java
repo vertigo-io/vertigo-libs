@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,11 @@ public enum TestSearchSmartTypes {
 	@Formatter(clazz = FormatterDefault.class)
 	@SmartTypeProperty(property = "indexType", value = "text_fr:sortable")
 	String,
+
+	@SmartTypeDefinition(String.class)
+	@Formatter(clazz = FormatterDefault.class)
+	@SmartTypeProperty(property = "indexType", value = "text_fr")
+	NotFacetableString,
 
 	@SmartTypeDefinition(Instant.class)
 	@Formatter(clazz = FormatterDefault.class)

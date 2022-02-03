@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,9 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		final Instant lastModified = getValue(fileInfoDto, DtoFields.lastModified, Instant.class);
 		final Long length = getValue(fileInfoDto, DtoFields.length, Long.class);
 		final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, inputStreamBuilder);
-		return new DatabaseFileInfo(uri.getDefinition(), vFile);
+		final DatabaseFileInfo dataFileInfo = new DatabaseFileInfo(uri.getDefinition(), vFile);
+		dataFileInfo.setURIStored(uri);
+		return dataFileInfo;
 	}
 
 	/** {@inheritDoc} */

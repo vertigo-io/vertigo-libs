@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,7 @@ import org.thymeleaf.standard.expression.IStandardExpressionParser;
 import org.thymeleaf.standard.expression.StandardExpressions;
 import org.thymeleaf.standard.expression.VariableExpression;
 import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.util.EscapedAttributeUtils;
 import org.thymeleaf.util.EvaluationUtils;
 import org.thymeleaf.util.StringUtils;
 
@@ -61,7 +62,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 
 public class NamedComponentElementProcessor extends AbstractElementModelProcessor {
-	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^[^$#@|'].*$";
+	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^(([^$@]\\{)|[^#|']).*$";
 	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^[^$#@|'][^$#@]*$";
 	private static final String NUMBER_PATTERN_STR = "^[0-9\\.]+";
 	private static final String SIMPLE_TEXT_PATTERN_STR = "^[a-zA-Z]*$";
@@ -359,7 +360,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 						|| NO_RESERVED_TEXT_PATTERN.matcher((String) attributeValue).matches()) //no reserved char
 				&& NO_RESERVED_FIRST_CHAR_PATTERN.matcher((String) attributeValue).matches()) { //don't start with reserved char
 			//We escape :
-			//IF placehodler or no thymeleaf's reserved char ($ @ # | )  (but authorized || )
+			//IF placeholder or no thymeleaf's reserved char ($ @ # | )  (but authorized || )
 			//AND dont start with reserved char (for case like ${value} )
 			//BUT IF true, false or number (it become string instead)
 			return "'" + ((String) attributeValue).replace("'", "\\'") + "'"; //escape as text
@@ -496,8 +497,14 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 					unnamedPlaceholderPrefix.isPresent(),
 					"Component '{0}' can't accept this parameter : '{1}' (accepted params : {2})", componentName, attributeKey, parameterNames);
 			//We prepared unnamed placeholder variable
-			addPlaceholderVariable(placeholders, unnamedPlaceholderPrefix.get(), attributeKey, attributeValue);
+			Object unescapedattributeValue = attributeValue;
+			if (attributeValue instanceof String) {
+				//We need to unescape placeholder : it will be escaped again when used in component (th:attr="__${other_attrs}__" => escape value)
+				unescapedattributeValue = EscapedAttributeUtils.unescapeAttribute(context.getTemplateMode(), (String) attributeValue);
+			}
+			addPlaceholderVariable(placeholders, unnamedPlaceholderPrefix.get(), attributeKey, unescapedattributeValue);
 		} else {
+			//See StandardWithTagProcessor
 
 			// Normally we would just allow the structure handler to be in charge of declaring the local variables
 			// by using structureHandler.setLocalVariable(...) but in this case we want each variable defined at an
@@ -515,7 +522,6 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			if (assignations == null) {
 				throw new TemplateProcessingException("Could not parse value as attribute assignations: \"" + attributeKey + "=" + encodedAttributeValue + "\"");
 			}
-
 			for (final Assignation assignation : assignations.getAssignations()) {
 
 				final IStandardExpression leftExpr = assignation.getLeft();

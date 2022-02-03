@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import io.vertigo.datamodel.structure.definitions.Property;
 /**
  * Exemple de contrainte utilisant une expression régulière.
  *
- * @author  pchretien
+ * @author pchretien
  */
 public final class ConstraintRegex implements Constraint<String, String> {
 	private final Pattern pattern;
@@ -38,13 +38,13 @@ public final class ConstraintRegex implements Constraint<String, String> {
 	/**
 	 * @param regex Expression régulière
 	 */
-	public ConstraintRegex(final String regex, final Optional<String> overrideMessageOpt) {
+	public ConstraintRegex(final String regex, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
 		Assertion.check()
-				.isNotBlank(regex)
-				.isNotNull(overrideMessageOpt);
+				.isNotBlank(regex);
 		//---
 		pattern = Pattern.compile(regex);
-		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern());
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
+				() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern()));
 	}
 
 	/** {@inheritDoc} */

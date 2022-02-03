@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@
 package io.vertigo.datastore.plugins.entitystore.sql;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -37,10 +39,17 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 	private static final Pattern ONLY_SIMPLE_CHAR_PATTERN = Pattern.compile("[A-Za-z0-9_]*");
 
 	private final SqlDialect sqlDialect;
+	private final boolean bindedParameters;
+	private final String sqlAlias;
 
 	public SqlCriteriaEncoder(final SqlDialect sqlDialect) {
-		this.sqlDialect = sqlDialect;
+		this(sqlDialect, Optional.empty(), true);
+	}
 
+	public SqlCriteriaEncoder(final SqlDialect sqlDialect, final Optional<String> alias, final boolean bindedParameters) {
+		this.sqlDialect = sqlDialect;
+		this.bindedParameters = bindedParameters;
+		sqlAlias = alias.map(v -> v + ".").orElse("");
 	}
 
 	@Override
@@ -60,7 +69,7 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 
 	@Override
 	public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DtFieldName dtFieldName, final Serializable[] values) {
-		final String sqlFieldName = StringUtil.camelToConstCase(dtFieldName.name());
+		final String sqlFieldName = sqlAlias + StringUtil.camelToConstCase(dtFieldName.name());
 		//---
 		switch (criterionOperator) {
 			case IS_NOT_NULL:
@@ -71,34 +80,42 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 				if (values[0] == null) {
 					return sqlFieldName + " is null ";
 				}
-				return sqlFieldName + " = #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+				return sqlFieldName + " = " + encodedAttribute(ctx, dtFieldName, values[0]);
 			case NEQ:
 				if (values[0] == null) {
 					return sqlFieldName + " is not null ";
 				}
-				return "(" + sqlFieldName + " is null or " + sqlFieldName + " != #" + ctx.attributeName(dtFieldName, values[0]) + "# )";
+				return "(" + sqlFieldName + " is null or " + sqlFieldName + " != " + encodedAttribute(ctx, dtFieldName, values[0]) + " )";
 			case GT:
-				return sqlFieldName + " > #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+				return sqlFieldName + " > " + encodedAttribute(ctx, dtFieldName, values[0]);
 			case GTE:
-				return sqlFieldName + " >= #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+				return sqlFieldName + " >= " + encodedAttribute(ctx, dtFieldName, values[0]);
 			case LT:
-				return sqlFieldName + " < #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+				return sqlFieldName + " < " + encodedAttribute(ctx, dtFieldName, values[0]);
 			case LTE:
-				return sqlFieldName + " <= #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+				return sqlFieldName + " <= " + encodedAttribute(ctx, dtFieldName, values[0]);
 			case BETWEEN:
 				return toSqlBetweenCase(ctx, dtFieldName, values);
 			case STARTS_WITH:
-				return sqlFieldName + " like  #" + ctx.attributeName(dtFieldName, values[0]) + "#" + sqlDialect.getConcatOperator() + "'%%'";
+				return sqlFieldName + " like  " + encodedAttribute(ctx, dtFieldName, values[0]) + sqlDialect.getConcatOperator() + "'%%'";
 			case IN:
 				return Stream.of(values)
-						.map(SqlCriteriaEncoder::prepareSqlInArgument)
+						.map(SqlCriteriaEncoder::prepareSqlInlineArgument)
 						.collect(Collectors.joining(", ", sqlFieldName + " in (", ")"));
 			default:
 				throw new IllegalAccessError();
 		}
 	}
 
-	private static String toSqlBetweenCase(final CriteriaCtx ctx, final DtFieldName dtFieldName, final Serializable[] values) {
+	private String encodedAttribute(final CriteriaCtx ctx, final DtFieldName dtFieldName, final Serializable value) {
+		if (bindedParameters) {
+			return "#" + ctx.attributeName(dtFieldName, value) + "#";
+		} else {
+			return prepareSqlInlineArgument(value);
+		}
+	}
+
+	private String toSqlBetweenCase(final CriteriaCtx ctx, final DtFieldName dtFieldName, final Serializable[] values) {
 		final String sqlFieldName = StringUtil.camelToConstCase(dtFieldName.name());
 
 		final CriterionLimit min = CriterionLimit.class.cast(values[0]);
@@ -107,7 +124,7 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 		if (min.isDefined()) {
 			sql.append(sqlFieldName)
 					.append(min.isIncluded() ? " >= " : " > ")
-					.append('#').append(ctx.attributeName(dtFieldName, min.getValue())).append('#');
+					.append(encodedAttribute(ctx, dtFieldName, (Serializable) min.getValue()));
 		}
 		if (max.isDefined()) {
 			if (sql.length() > 0) {
@@ -115,16 +132,17 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 			}
 			sql.append(sqlFieldName)
 					.append(max.isIncluded() ? " <= " : " < ")
-					.append('#').append(ctx.attributeName(dtFieldName, max.getValue())).append('#');
+					.append(encodedAttribute(ctx, dtFieldName, (Serializable) max.getValue()));
 		}
 		return "( " + sql.toString() + " )";
 	}
 
-	private static String prepareSqlInArgument(final Serializable value) {
+	private static String prepareSqlInlineArgument(final Serializable value) {
 		Assertion.check().isTrue(
 				value instanceof String
 						|| value instanceof Integer
-						|| value instanceof Long,
+						|| value instanceof Long
+						|| value instanceof BigDecimal,
 				"Only String,Long and Integers are allowed in a where in clause.");
 		// we check to avoid sql injection without espacing and parametizing the statement
 		Assertion.check()

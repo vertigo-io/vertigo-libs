@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -43,8 +44,8 @@ import org.elasticsearch.cluster.metadata.MappingMetadata;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.xcontent.XContentBuilder;
+import org.elasticsearch.xcontent.XContentFactory;
 
 import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 
@@ -287,12 +288,36 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 
 	/** {@inheritDoc} */
 	@Override
-	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
+	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState) {
 		Assertion.check().isNotNull(searchQuery);
 		//-----
-		final ESStatement<KeyConcept, R> statement = createElasticStatement(indexDefinition);
+		final ESStatement<KeyConcept, R> statement = createElasticStatement(indexDefinitions.get(0));
 		final DtListState usedListState = listState != null ? listState : defaultListState;
-		return statement.loadList(indexDefinition, searchQuery, usedListState, defaultMaxRows);
+		return statement.loadList(obtainIndexDtDefinition(indexDefinitions), obtainIndicesNames(indexDefinitions), searchQuery, usedListState, defaultMaxRows);
+	}
+
+	private DtDefinition obtainIndexDtDefinition(final List<SearchIndexDefinition> indexDefinitions) {
+		DtDefinition indexDtDefinition = null;
+		for (final SearchIndexDefinition indexDefinition : indexDefinitions) {
+			if (indexDtDefinition == null) {
+				indexDtDefinition = indexDefinition.getIndexDtDefinition();
+			} else {
+				Assertion.check().isTrue(indexDtDefinition.equals(indexDefinition.getIndexDtDefinition()),
+						"When searching multi-indices IndexDtDefinitions must be the same : {0} != {1} in {2}",
+						indexDtDefinition.getName(), indexDefinition.getIndexDtDefinition().getName(), indexDefinition.getName());
+			}
+		}
+		Assertion.check().isNotNull(indexDtDefinition);
+		return indexDtDefinition;
+	}
+
+	private String[] obtainIndicesNames(final List<SearchIndexDefinition> indexDefinitions) {
+		String[] indiceNames = new String[indexDefinitions.size()];
+		indiceNames = indexDefinitions.stream()
+				.map(d -> obtainIndexName(d))
+				.collect(Collectors.toList())
+				.toArray(indiceNames);
+		return indiceNames;
 	}
 
 	/** {@inheritDoc} */
@@ -380,7 +405,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 					typeMapping.startObject("keyword");
 					typeMapping.field("type", "keyword");
 					if (sortableNormalizer) {
-						typeMapping.field("normalizer", "sortable");
+						typeMapping.field("normalizer", indexType.getSortableNormalizer());
 					}
 					typeMapping.endObject();
 					typeMapping.endObject();

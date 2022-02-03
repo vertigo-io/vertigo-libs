@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 package io.vertigo.datafactory.impl.search;
 
 import java.util.Collection;
+import java.util.List;
 
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.datafactory.collections.ListFilter;
@@ -65,7 +66,7 @@ public interface SearchServicesPlugin extends Plugin {
 	 * @return Résultat correspondant à la requête
 	 * @param <R> Type de l'objet resultant de la recherche
 	 */
-	<R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState);
+	<R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState);
 
 	/**
 	 * @param indexDefinition  Type de l'index

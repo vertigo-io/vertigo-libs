@@ -14,13 +14,27 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-extensions</artifactId>
-		<version>4.0.0-SNAPSHOT</version>
+		<version>3.3.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>vertigo-ui</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-ui</name>
-
+	
+    <repositories>
+      <!-- Needed repo for tests embedded ElasticSearch -->
+      <repository>
+         <id>codelibs.elasticsearch-releases</id>
+         <url>https://maven.codelibs.org/</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
+    </repositories>
+	
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
@@ -47,17 +61,17 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>5.3.7</version>
+			<version>5.3.15</version>
 		</dependency>
 		<dependency>
         	<groupId>org.thymeleaf</groupId>
 			<artifactId>thymeleaf-spring5</artifactId>
-			<version>3.0.12.RELEASE</version>
+			<version>3.0.14.RELEASE</version>
 		</dependency>
 		<dependency>
 		  <groupId>nz.net.ultraq.thymeleaf</groupId>
 		  <artifactId>thymeleaf-layout-dialect</artifactId>
-		  <version>2.5.3</version>
+		  <version>3.0.0</version>
 		</dependency>
 		<!-- for tests -->
 		<!-- for Embedded Jetty Server and tests -->
@@ -69,10 +83,10 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>1.4.200</version>
-			<scope>test</scope>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <version>2.1.210</version>
+		    <scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.mchange</groupId>
@@ -83,66 +97,66 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>apache-jsp</artifactId>
-			<version>9.4.40.v20210413</version>
+			<version>9.4.44.v20210927</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>apache-jstl</artifactId>
-			<version>9.4.40.v20210413</version>
+			<version>9.4.44.v20210927</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-plus</artifactId>
-			<version>9.4.40.v20210413</version>
+			<version>9.4.44.v20210927</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>9.4.40.v20210413</version>
+			<version>9.4.44.v20210927</version>
 			<scope>test</scope>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-support</artifactId>
-			<version>3.141.59</version>
+			<version>4.1.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-api</artifactId>
-			<version>3.141.59</version>
+			<version>4.1.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 		    <artifactId>htmlunit-driver</artifactId>
-		    <version>2.50.0</version>
+		    <version>3.56.0</version>
 			<scope>test</scope>
 		</dependency>
 		
 		<!-- CollectionsManager/LuceneIndexPlugin -->
 		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-core</artifactId>
-			<version>8.7.0</version><!-- 8.7.0 compatible with ElasticSearch 7.10.2 -->
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-analyzers-common</artifactId>
-			<version>8.7.0</version> <!-- 8.7.0 compatible with ElasticSearch 7.10.2 -->
-			<scope>test</scope>
-		</dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>8.10.1</version><!-- 8.10.1 compatible with ElasticSearch 7.16.3 -->
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-common</artifactId>
+            <version>8.10.1</version> <!-- 8.10.1 compatible with ElasticSearch 7.16.3 -->
+            <optional>true</optional>
+        </dependency>
 
 		<!-- Search -->
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>7.10.2</version>
+			<version>7.16.3</version>
 			<scope>test</scope> <!-- EsTransportSearchServicesPlugin -->
 			<exclusions>
 				<exclusion>
@@ -154,44 +168,45 @@
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
 		    <artifactId>transport</artifactId>
-		    <version>7.10.2</version>
+		    <version>7.16.3</version>
 		    <scope>test</scope> <!-- EsTransportSearchServicesPlugin -->
 		</dependency>
-		<dependency>
-	        <groupId>org.codelibs.elasticsearch.module</groupId>
-	        <artifactId>analysis-common</artifactId> 
-	        <version>7.10.2</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
-	        <scope>test</scope>
-	    </dependency>
-	   	<dependency>
-		    <groupId>org.codelibs.elasticsearch.module</groupId>
-		    <artifactId>mapper-extras</artifactId>
-		    <version>7.10.2</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
-	        <scope>test</scope>
-		</dependency>
+		
+        <dependency>
+            <groupId>org.codelibs.elasticsearch.module</groupId>
+            <artifactId>analysis-common</artifactId> 
+            <version>7.16.3</version> <!-- required by EmbeddedSearchServicesPlugin -->
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.codelibs.elasticsearch.module</groupId>
+            <artifactId>mapper-extras</artifactId>
+            <version>7.16.3</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
+            <optional>true</optional>
+        </dependency>   
 		
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.12.3</version> <!-- version for spring -->
+			<version>2.13.1</version> <!-- version for spring -->
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
     		<artifactId>jackson-dataformat-smile</artifactId>
-    		<version>2.12.3</version> <!-- version for spring -->
+    		<version>2.13.1</version> <!-- version for spring -->
     		<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
     		<artifactId>jackson-dataformat-yaml</artifactId>
-    		<version>2.12.3</version> <!-- version for spring -->
+    		<version>2.13.1</version> <!-- version for spring -->
     		<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
     		<artifactId>jackson-dataformat-cbor</artifactId>
-    		<version>2.12.3</version> <!-- version for spring -->
+    		<version>2.13.1</version> <!-- version for spring -->
     		<scope>test</scope>
 		</dependency>
 		

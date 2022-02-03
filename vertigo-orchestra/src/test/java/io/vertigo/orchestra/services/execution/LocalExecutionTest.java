@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,8 +131,8 @@ public class LocalExecutionTest extends AbstractOrchestraTestCase {
 
 		// process "PRO_TEST_UNSUPERVISED_RECURRENT" is scheduled with cron expression
 
-		// The task takes 10 secondes to run we wait 10 secondes to check the final states
-		Thread.sleep(1000 * 10);
+		// The task takes 5 secondes to run we wait 8 secondes to check the final states
+		Thread.sleep(1000 * 8);
 		Assertions.assertEquals(2, TestJobScheduled.getCount());
 	}
 

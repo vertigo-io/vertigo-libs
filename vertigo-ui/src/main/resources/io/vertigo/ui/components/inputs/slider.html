@@ -2,7 +2,7 @@
 	vu:alias="slider" vu:selector="${viewMode=='edit'}"
 	th:assert="${object} != null and ${field} != null"
 	th:with="fieldPath=|${object}.${field}|, myMin=${min?:model.util.getMinValue(fieldPath)?:'0' }, myMax=${max?:model.util.getMaxValue(fieldPath)?:'2000'}, myStep=${step?:model.util.getStep(myMin, myMax)}" >
-	<vu:include-data object="${object}" field="${field}"/>
+	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 	<vu:label-edit label="${label}" label_attrs="${label_attrs}">
 		<q-slider
 			th:v-model="${'vueData.' + object + '.' + field}" 

@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,8 +86,8 @@ public final class DashboardRouter {
 	 */
 	public void route(final Javalin javalin) {
 
-		javalin.get("/dashboard/static/:fileName", (ctx) -> {
-			try (InputStream inputStream = DashboardRouter.class.getResource("/static/" + ctx.pathParam(":fileName")).openStream()) {
+		javalin.get("/dashboard/static/{fileName}", (ctx) -> {
+			try (InputStream inputStream = DashboardRouter.class.getResource("/static/" + ctx.pathParam("{fileName}")).openStream()) {
 				try (final OutputStream output = ctx.res.getOutputStream()) {
 					FileUtil.copy(inputStream, output);
 				}
@@ -104,8 +104,8 @@ public final class DashboardRouter {
 			render(ctx.res, "templates/home.ftl", model);
 		});
 
-		javalin.get("/dashboard/modules/:moduleName", (ctx) -> {
-			final String moduleName = ctx.pathParam(":moduleName");
+		javalin.get("/dashboard/modules/{moduleName}", (ctx) -> {
+			final String moduleName = ctx.pathParam("{moduleName}");
 			final DashboardModuleControler controler = InjectorUtil.newInstance(controlerMap.get(moduleName));
 			final Map<String, Object> model = controler.buildModel(node, moduleName);
 			model.put("contextName", ctx.contextPath());

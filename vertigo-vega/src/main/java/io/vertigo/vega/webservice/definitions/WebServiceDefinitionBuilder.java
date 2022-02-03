@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	private boolean myNeedSession = true;
 	private boolean mySessionInvalidate;
 	private boolean myNeedAuthentication = true;
+	private boolean myNeedApiKey = false;
 	private final Set<String> myIncludedFields = new LinkedHashSet<>();
 	private final Set<String> myExcludedFields = new LinkedHashSet<>();
 	private boolean myAccessTokenPublish;
@@ -81,6 +82,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 				myNeedSession,
 				mySessionInvalidate,
 				myNeedAuthentication,
+				myNeedApiKey,
 				myAccessTokenPublish,
 				myAccessTokenMandatory,
 				myAccessTokenConsume,
@@ -170,6 +172,15 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	 */
 	public WebServiceDefinitionBuilder withNeedAuthentication(final boolean needAuthentication) {
 		myNeedAuthentication = needAuthentication;
+		return this;
+	}
+
+	/**
+	 * @param needAuthentication needApiKey
+	 * @return this builder
+	 */
+	public WebServiceDefinitionBuilder withNeedApiKey(final boolean needApiKey) {
+		myNeedApiKey = needApiKey;
 		return this;
 	}
 

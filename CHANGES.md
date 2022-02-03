@@ -6,6 +6,108 @@ Running 4.0.0
 
 more to come :)
 
+Release 3.3.0 - 2021/02/03
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-320-to-330)
+* [Datafactory] Upgraded loadList api to search into multiple indices
+* [Ui] Add demo of modifiable table, with custom header and columns (sum, group by, etc...)
+* [Ui] Add support of select and textarea in table-modifiable
+* [Ui-vuejs] Fix issue on FormData with null value converted to "null"
+* [ui-vuejs] Fix bug on ajax call
+* [ui-vuejs] Fix v-facet for multiple selected facet
+* [Ui] Support @Secured annotation on Controller or Controller's Action. No need to prefix authorisation name with `Atz`
+* [Ui] Fixed other attrs starting with $ or @ ( only evaluate `${` or `@{` )
+* [Ui] Add responsive table : switch to grid
+* [Ui] Add a _dense_ mode to grid
+* [Search] Fix search log
+* [DataStore] Set Fileinfo URI when read DB FileInfo
+* [Ui] Add button-link confirm
+* [Ui] Fix button-submit apply other_attrs on main button only (no more confirm button)
+* [Ui] Add other_attrs support to grid's div row
+* [Database] Fix a bug in MSQL Server that reads the stream until it gets a -1
+* [Ui] Support any kind of modifier for transformers applied in ViewContextMap
+* [Vega] Add ability to authenticate easily with Azure Ad
+* [Vega] Update SwaggerApi to support smartTypes Adapter
+* [Ui]  Add a download link on fileupload readonly (use downloadUrl parameter)
+* [Vega] SwaggerApi use BasicTypeClass for all case, not only in QueryParam
+* [Ui] Fix grid-cell col param : number of grid's col (max grid's cols) OR quasar grid css (max 12, ex: lg-8)
+* [Ui] Fix how SecurityException was managed : send UNAUTHORIZED or FORBIDDEN hhtp code
+* [DataStore] Fix MasterDataList when sort by not persistent field
+* [DataFactory] Can specify search sortableNormalizer in indexType : `myAnalyzer{:myDataType}{:stored|notStored}{:sortable{(mySortNormalizer)}|notSortable}{:facetable|notFacetable}`
+* [Basics] Add contextProperties to Task script executor's context : use to passed context not declared as a `in attribute`
+* [DataStore] Add support of table alias in SqlCriteriaEncoder
+* [DataStore] Add support for inlined parameters (instead of binded). Inlined parameters were sometimes usefull to compute a good execute plan. Inlined parameters must be secured : only simple types, and simple chars for String.
+* [Account] Add resources for forbidden error message
+* [Account] Optimized isAutorized operation check; and change authorizedOperations api from List to Set
+* [Account] Add better error messages for auth json config
+* __[Account] Rename api withCriteria to withSecurityKeys__
+* [Account] Add `AuthorizationUtil` for easier security check in services (throw assertions instead of just returning boolean)
+* [Account] Add AuthorizationCriteria : can be declared as SmartTypes and used in Request Task for include security clause in sql requests
+* [Ui] Add UiAuthorizationUtil for ui rendering; This util keep a cache per page request
+* __[Ui] Add ViewContext update security : only allow data with a writeable input in UI__ : Vertigo Ui inputs components are updated, but you may check if you use direclty `vu:include-data`, add `modifiable` attribute if you send this data to server.
+* [Ui] Param name of selectedFacets is now defined by `@ViewAttribut("paramName")` (was 'selectedFacets' by default)
+* [Ui] Support form posting of empty value : reset value, even if there is multiple empty input
+* [Ui] Added selected facetValue even if there is 0 result for this facetValue
+* [Vega] Fix uiObject api for LocalDate, Instant and SmartType's valueObject
+* [DataFactory] Add userfriendly api for setting preselected facet value (with `SelectedFacetValuesBuilder `)
+* [DataFactory] Fix selected facet term filter : use sub keyword field if sortable
+* [DataFactory] Add check of ES error message for fields missing datatype=true (no more _can't parse_ error)
+* [Search] Move parsing of listFilterQuery to ListFilterBuilder : the api only took pattern, other impl may don't use DSL
+* [Vega] Add getDouble to uiObject
+* [DataModel] Add of (add(index, obj) on DtList
+* [Ui] Fix bad double html escaping with other_attr
+* [Datafactory] Add support of singleValued metric aggregation like sum or avg
+* [DataFactory] Rename `innerWriteTo` of customAggregation to `_innerWriteTo`
+* [DataFactory] Fix CustomAggregation for Geo and Sum/Avg of RestHLClient and Std Client
+* [DataFactory] Fix ES trackTotalHit up to 1 000 000 (was 10 000)
+* [Basics] Add i18n support for constraints
+* [All] Remove log4j2 conf by default in vertigo jar
+* [DataFactory] Fix indexing DT with computed fields (can't stored it in result)
+* [DataModel] Add DtList.subList
+* [Quarto] Add ODS exporter (use SODS lib)
+* [Quarto] Add optional 'charset' parameter for 'exporter.csv' feature
+* [UI] Correct readonly text-area (text-area-read) to be readonly
+* [DataFactory] Change to support DtObject without id in Indexed collection's operations (use hashcode => can't serialize list)
+* [Ui] Fix bug in context keys used to publish error in UiMessageStack
+* [Vega] Add @RequireApiKey on webservices (#73) __(Swagger ?)__
+* [Ui] Add log message for some security exceptions (not too much details)
+* [Ui] Fix UiListUnmodifiable : keyField mandatory in PublishDtList
+* [Datamodel] Add a keyField on dtDefinition (KeyField != Id field)
+* [Ui] Use keyField on DtDefinition when available for UiListUnmodifiable
+* [Ui] Support utf8 thymeleaf template file
+* [Datafactory] Use keyword field if present in FacetTerm
+* [Vega] Fix deserializing Json of SmartTypes (like geoPoint)
+* [Quarto] Secure XML read (docx) 
+* [All] Updated libs
+  - __h2 1.4.200 -> 2.1.210 (need to rebuild bdd)__
+  - assertj-core 3.19.0 -> 3.22.0
+  - log4j 2.14.1 -> 2.17.1 (log4shell)
+  - janino 3.1.4 -> 3.1.6
+  - jetty-server 9.4.40.v20210413 -> 9.4.44.v20210927
+  - jersey-client 2.33 -> 3.0.3
+  - lucene 8.7.0 -> 8.10.1
+  - elasticsearch 7.10.2 -> 7.16.3
+  - codelibs embedded ES 7.10.2 -> 7.16.3
+  - restassured 4.3.3 -> 4.4.0
+  - liquibase 4.3.5 -> 4.7.0
+  - ehcache 3.9.4 -> 3.9.9
+  - Spring-webmvc 5.3.7 -> 5.3.15
+  - Thymeleaf 3.0.12 -> 3.0.14
+  - Thymeleaf-layout 2.5.3 -> 3.0.0
+  - selenium 3.141.59 -> 4.1.1
+  - htmlunit-driver 2.50.0 -> 3.56.0
+  - jackson 2.12.3 -> 2.13.1
+* [Ui] Update js libs 
+  - axios 0.21.1 -> 0.24.0
+  - core-js 3.8.3 -> 3.20.3
+  - Quasar 1.15.2 -> v1.17.7
+  - vue 2.6.13 -> 2.6.14
+  - MaterialIcons v50 -> v121
+  - fontawesome icons 5.7.1 -> 5.15.4
+  - materialDesignIcons 5.5.55 -> 6.5.95
+  - ionicons 5.4.0 -> 6.0.1
+
+
 Release 3.2.0 - 2021/06/21
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-311-to-320)

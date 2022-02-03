@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
@@ -73,6 +74,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	private String builderContextPath = "/";
 	private Collection<WebServiceDefinition> builderWebServiceDefinitions;
 
+	private Map<Class, BasicTypeAdapter> jsonTypeAdapters;
+
 	/**
 	 * Constructor.
 	 */
@@ -94,6 +97,13 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		return this;
 	}
 
+	public SwaggerApiBuilder withTypesAdapterMap(final Map<Class, BasicTypeAdapter> typeAdapters) {
+		Assertion.check()
+				.isNotNull(typeAdapters, "typeAdapters can't be null");
+		jsonTypeAdapters = typeAdapters;
+		return this;
+	}
+
 	/**
 	 * @param webServiceDefinitions WebServiceDefinitions to use for swagger api
 	 * @return this builder
@@ -112,7 +122,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	@Override
 	public SwaggerApi build() {
 		Assertion.check()
-				.isNotNull(builderWebServiceDefinitions, "webServiceDefinitions must be set");
+				.isNotNull(builderWebServiceDefinitions, "webServiceDefinitions must be set")
+				.isNotNull(jsonTypeAdapters, "typeAdapters must be set");
 		//-----
 		final SwaggerApi swagger = new SwaggerApi();
 		swagger.put("swagger", "2.0");
@@ -547,7 +558,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		return parameter;
 	}
 
-	private static String[] toSwaggerType(final Class paramClass) {
+	private String[] toSwaggerType(final Class paramClass) {
 		if (String.class.isAssignableFrom(paramClass)) {
 			return new String[] { "string", null };
 		} else if (boolean.class.isAssignableFrom(paramClass) || Boolean.class.isAssignableFrom(paramClass)) {
@@ -569,6 +580,11 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		} else if (Collection.class.isAssignableFrom(paramClass)) {
 			return new String[] { "array", null };
 		} else {
+			//if query is a BasicTypeAdapter we use basicType
+			final BasicTypeAdapter basicTypeAdapter = jsonTypeAdapters.get(paramClass);
+			if (basicTypeAdapter != null) {
+				return toSwaggerType(basicTypeAdapter.getBasicType().getJavaClass());
+			}
 			return new String[] { "object", null };
 		}
 	}

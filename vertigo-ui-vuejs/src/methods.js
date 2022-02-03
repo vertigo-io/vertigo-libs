@@ -285,7 +285,7 @@ export default {
         var selectedFacetsContextKey = contextKey + "_selectedFacets";
         var criteriaContextKey = vueData[contextKey + '_criteriaContextKey'];
         var params = this.vueDataParams([criteriaContextKey]);
-        params.append('selectedFacets', JSON.stringify(vueData[selectedFacetsContextKey]));
+        params.append(selectedFacetsContextKey, JSON.stringify(vueData[selectedFacetsContextKey]));
 
         var searchUrl = componentStates[contextKey + 'Search'].searchUrl;
         var collectionComponentId = componentStates[contextKey + 'Search'].collectionComponentId;
@@ -300,7 +300,7 @@ export default {
                 if (componentStates[collectionComponentId].pagination) {
                     var collectionPagination = componentStates[collectionComponentId].pagination;
                     collectionPagination.page = 1 // reset page
-                    collectionPagination.rowsNumber = response.body.model[contextKey + '_list'].length
+                    collectionPagination.rowsNumber = response.data.model[contextKey + '_list'].length
                 }
             }
         });
@@ -391,7 +391,11 @@ export default {
                 }
             }.bind(this))
             .catch(function (error) { //Ko
-                this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file "+uri);
+               if(error.response) {
+                  this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file "+uri);
+               } else {
+                  this.$q.notify(error + " Can't load file "+uri);
+               }
             }.bind(this));
         }.bind(this));
     },
@@ -494,11 +498,11 @@ export default {
                 uiMessageStack[key] = response.data.uiMessageStack[key];
             });
             if (options && options.onSuccess) {
-                options.onSuccess.bind(this).apply(response);
+                options.onSuccess.call(this, response);
             }
         }.bind(this)).catch(function (error) {
             if (options && options.onError) {
-                options.onError.bind(this).apply(error.response);
+                options.onError.call(this, error.response);
             }
         });
     },
@@ -539,23 +543,23 @@ export default {
                         if (Array.isArray(vueDataValue[propertyKey])) {
                             vueDataValue[propertyKey].forEach(function (value, index) {
                                 if (vueDataValue[propertyKey][index] && typeof vueDataValue[propertyKey][index] === 'object') {
-                                    params.append('vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]['_v_inputValue']);
+                                    this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]['_v_inputValue']);
                                 } else {
-                                    params.append('vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]);
+                                    this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]);
                                 }
-                            });
+                            }.bind(this));
                         } else {
                             if (vueDataValue[propertyKey] && typeof vueDataValue[propertyKey] === 'object') {
-                                params.append('vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]['_v_inputValue']);
+                                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]['_v_inputValue']);
                             } else {
-                                params.append('vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]);
+                                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]);
                             }
                         }
                     }
-                });
+                }.bind(this));
             } else {
                 //primitive
-                params.append('vContext[' + contextKey + ']', vueDataValue);
+                this.appendToFormData(params, 'vContext[' + contextKey + ']', vueDataValue);
             }
         }
         return params;
@@ -564,8 +568,18 @@ export default {
 
     objectToFormData: function (object) {
         const formData = new FormData();
-        Object.keys(object).forEach(key => formData.append(key, object[key]));
+        Object.keys(object).forEach(function(key) { 
+            this.appendToFormData(formData, key, object[key])
+        }.bind(this));
         return formData;
+    },
+
+    appendToFormData: function (formData, name, value) {
+        if (value != null) {
+            formData.append(name, value)
+        } else {
+            formData.append(name, "")
+        }
     },
     
     isFormData: function(val) {

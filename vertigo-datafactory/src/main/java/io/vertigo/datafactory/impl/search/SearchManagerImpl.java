@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,11 +157,20 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
+		return loadList(List.of(indexDefinition), searchQuery, listState);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState) {
+		final String definitionNames = indexDefinitions.stream()
+				.map(SearchIndexDefinition::getName)
+				.collect(Collectors.joining(";"));
 		return analyticsManager.traceWithReturn(
 				CATEGORY,
-				"/loadList/" + indexDefinition.getName(),
+				"/loadList/" + definitionNames,
 				tracer -> {
-					final FacetedQueryResult<R, SearchQuery> result = searchServicesPlugin.loadList(indexDefinition, searchQuery, listState);
+					final FacetedQueryResult<R, SearchQuery> result = searchServicesPlugin.loadList(indexDefinitions, searchQuery, listState);
 					tracer.setMeasure("nbSelectedRow", result.getCount());
 					return result;
 				});

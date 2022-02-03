@@ -28,7 +28,7 @@ modules:
       - sql.c3p0:
           dataBaseClass: io.vertigo.database.impl.sql.vendor.h2.H2DataBase
           jdbcDriver: org.h2.Driver
-          jdbcUrl: jdbc:h2:mem:test
+          jdbcUrl: jdbc:h2:mem:test;NON_KEYWORDS=YEAR,KEY
   io.vertigo.datamodel.DataModelFeatures:
   io.vertigo.datastore.DataStoreFeatures:
     features:
@@ -61,6 +61,7 @@ modules:
           config.file: esconfig/elasticsearch.yml
   io.vertigo.account.AccountFeatures:
     features:
+      - authorization:
       - security:
           userSessionClassName: io.vertigo.ui.data.controllers.TestUserSession
   io.vertigo.ui.data.TestVUiFeatures:

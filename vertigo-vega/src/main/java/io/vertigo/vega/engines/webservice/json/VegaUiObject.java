@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,10 @@ package io.vertigo.vega.engines.webservice.json;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -416,6 +417,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @return Valeur typée du champs
 	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
 	 */
+	@Override
 	public <T> T getTypedValue(final String fieldName, final Class<T> type) {
 		Assertion.check()
 				.isNotBlank(fieldName)
@@ -501,8 +503,18 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	}
 
 	@Override
-	public Date getDate(final String fieldName) {
-		return getTypedValue(fieldName, Date.class);
+	public LocalDate getLocalDate(final String fieldName) {
+		return getTypedValue(fieldName, LocalDate.class);
+	}
+
+	@Override
+	public Instant getInstant(final String fieldName) {
+		return getTypedValue(fieldName, Instant.class);
+	}
+
+	@Override
+	public Double getDouble(final String fieldName) {
+		return getTypedValue(fieldName, Double.class);
 	}
 
 	@Override

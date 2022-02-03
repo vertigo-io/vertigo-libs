@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -56,6 +55,7 @@ import org.xml.sax.SAXException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.FileUtil;
 import io.vertigo.core.util.TempFile;
+import io.vertigo.core.util.XmlUtil;
 import io.vertigo.quarto.impl.publisher.merger.processor.ZipUtil;
 
 /**
@@ -267,7 +267,7 @@ final class DOCXUtil {
 		final StreamResult result = new StreamResult(writer);
 		try {
 			final TransformerFactory tf = TransformerFactory.newInstance();
-			tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			XmlUtil.secureXmlXXEByOwasp(tf);
 			final Transformer transformer = tf.newTransformer();
 			transformer.transform(domSource, result);
 		} catch (final TransformerException e) {
@@ -285,7 +285,7 @@ final class DOCXUtil {
 	public static Document loadDOM(final String xmlInput) {
 		try (final StringReader reader = new StringReader(xmlInput)) {
 			final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-			domFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			XmlUtil.secureXmlXXEByOwasp(domFactory);
 			domFactory.setNamespaceAware(true);
 			final DocumentBuilder builder = domFactory.newDocumentBuilder();
 			return builder.parse(new InputSource(reader));

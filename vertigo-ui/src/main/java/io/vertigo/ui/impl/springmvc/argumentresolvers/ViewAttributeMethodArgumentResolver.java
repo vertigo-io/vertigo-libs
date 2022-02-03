@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,14 +91,15 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 	}
 
 	private Object convertToSelectedFacetValues(final NativeWebRequest webRequest, final ViewContext viewContext, final String contextKey) {
-		final String jsonSelectedFacets = webRequest.getParameter("selectedFacets");
+		final String selectedFacetsContextKey = contextKey + "_selectedFacets";
+		final String jsonSelectedFacets = webRequest.getParameter(selectedFacetsContextKey);
 		if (jsonSelectedFacets != null) {// param present
 			final SelectedFacetValues selectedFacetValues = gson.fromJson(jsonSelectedFacets, SelectedFacetValues.class);
 			final Collection<String> facetNames = ((List<Map<String, Serializable>>) viewContext.asMap().get(contextKey + "_facets"))
 					.stream()
 					.map(map -> (String) map.get("code"))
 					.collect(Collectors.toSet());
-			viewContext.asMap().put(contextKey + "_selectedFacets", new UiSelectedFacetValues(selectedFacetValues, facetNames));
+			viewContext.asMap().put(selectedFacetsContextKey, new UiSelectedFacetValues(selectedFacetValues, facetNames));
 			return selectedFacetValues;
 		}
 		return viewContext.getSelectedFacetValues(() -> contextKey);

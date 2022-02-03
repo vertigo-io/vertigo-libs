@@ -7,7 +7,7 @@
 	  myLabel=${label?:model.util.label(object + '.' + field)},
       required=${model.util.required(object + '.' + field)}"
 	  th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addList('options')}" >
-	<vu:include-data object="${object}" field="${field}"/>
+	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 	<vu:include-data th:if="${staticData}" object="${list}" field="${myValueField}"/>
 	<q-select th:if="${!myStaticData}"
        	th:v-model="|vueData.${object}.${field}|"

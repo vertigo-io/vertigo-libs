@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ public final class CarDataBase {
 		car.setPrice(price);
 		car.setManufacturer(manufacturer);
 		car.setModel(model);
-		car.setYear(year);
+		car.setCarYear(year);
 		car.setKilo(kilo);
 		final BigDecimal conso = new BigDecimal(consommation);
 		conso.setScale(2, RoundingMode.HALF_UP);

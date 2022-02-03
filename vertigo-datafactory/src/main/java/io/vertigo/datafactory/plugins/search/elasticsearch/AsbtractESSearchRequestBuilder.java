@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,12 @@ package io.vertigo.datafactory.plugins.search.elasticsearch;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -61,13 +63,12 @@ import io.vertigo.datafactory.impl.search.dsl.model.DslGeoDistanceQuery;
 import io.vertigo.datafactory.impl.search.dsl.model.DslGeoExpression;
 import io.vertigo.datafactory.impl.search.dsl.model.DslGeoRangeQuery;
 import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
-import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchQuery;
+import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.model.DtListState;
 
-//vérifier
 /**
  * ElasticSearch request builder from searchManager api.
  * @author pchretien, npiedeloup
@@ -75,6 +76,8 @@ import io.vertigo.datamodel.structure.model.DtListState;
  * @param S Type of ES SearchSourceBuilder : SearchSourceBuilder for HLClent or SearchRequestBuilder for TransportClient
  */
 public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESSearchRequestBuilder> implements Builder<R> {
+
+	protected static final int MAX_TOTAL_HIT = 1_000_000; //maximum total hit count (then just know > 1 000 000)
 
 	private static final int TERM_AGGREGATION_SIZE = 50; //max 50 facets values per facet
 	private static final int TOPHITS_SUBAGGREGATION_MAXSIZE = 100; //max 100 documents per cluster when clusterization is used
@@ -85,7 +88,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	private static final Pattern SIMPLE_CRITERIA_PATTERN = Pattern.compile("#([a-z][a-zA-Z0-9]*)#");
 
 	private final Map<Class, BasicTypeAdapter> myTypeAdapters;
-	private SearchIndexDefinition myIndexDefinition;
+	private DtDefinition myIndexDtDefinition;
 	private SearchQuery mySearchQuery;
 	private DtListState myListState;
 	protected int myDefaultMaxRows = 10;
@@ -101,13 +104,13 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	}
 
 	/**
-	 * @param indexDefinition Index definition
+	 * @param indexDtDefinition Index dtDefinition
 	 * @return this builder
 	 */
-	public T withSearchIndexDefinition(final SearchIndexDefinition indexDefinition) {
-		Assertion.check().isNotNull(indexDefinition);
+	public T withIndexDtDefinition(final DtDefinition indexDtDefinition) {
+		Assertion.check().isNotNull(indexDtDefinition);
 		//-----
-		myIndexDefinition = indexDefinition;
+		myIndexDtDefinition = indexDtDefinition;
 		return (T) this;
 	}
 
@@ -147,16 +150,16 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	@Override
 	public R build() {
 		Assertion.check()
-				.isNotNull(myIndexDefinition, "You must set IndexDefinition")
+				.isNotNull(myIndexDtDefinition, "You must set Index DtDefinition")
 				.isNotNull(mySearchQuery, "You must set SearchQuery")
 				.isNotNull(myListState, "You must set ListState")
 				.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent(), () -> Assertion.check() //si il y a un cluster on vérifie le maxRows
 						.isTrue(myListState.getMaxRows().get() < TOPHITS_SUBAGGREGATION_MAXSIZE,
 								"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE));
 		//-----
-		appendListState(mySearchQuery, myListState, myDefaultMaxRows, myIndexDefinition);
+		appendListState(mySearchQuery, myListState, myDefaultMaxRows, myIndexDtDefinition);
 		appendSearchQuery(mySearchQuery, getSearchSourceBuilder(), myUseHighlight, myTypeAdapters);
-		appendFacetDefinition(mySearchQuery, getSearchSourceBuilder(), myIndexDefinition, myListState, myUseHighlight, myTypeAdapters);
+		appendFacetDefinition(mySearchQuery, getSearchSourceBuilder(), myIndexDtDefinition, myListState, myUseHighlight, myTypeAdapters);
 		return getSearchRequest();
 	}
 
@@ -164,7 +167,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	protected abstract R getSearchRequest();
 
-	protected abstract void appendListState(SearchQuery searchQuery, DtListState listState, int defaultMaxRows, SearchIndexDefinition indexDefinition);
+	protected abstract void appendListState(SearchQuery searchQuery, DtListState listState, int defaultMaxRows, DtDefinition indexDtDefinition);
 
 	protected abstract void setQueryAndPostFilter(QueryBuilder requestQueryBuilder, BoolQueryBuilder postFilterBoolQueryBuilder);
 
@@ -172,8 +175,8 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	protected abstract void addAggregation(S searchRequestBuilder, AggregationBuilder aggregationBuilder);
 
-	protected FieldSortBuilder getFieldSortBuilder(final SearchIndexDefinition indexDefinition, final DtListState listState) {
-		final DtField sortField = indexDefinition.getIndexDtDefinition().getField(listState.getSortFieldName().get());
+	protected FieldSortBuilder getFieldSortBuilder(final DtDefinition indexDefinition, final DtListState listState) {
+		final DtField sortField = indexDefinition.getField(listState.getSortFieldName().get());
 		String sortIndexFieldName = sortField.getName();
 		final IndexType indexType = IndexType.readIndexType(sortField.getSmartTypeDefinition());
 
@@ -232,15 +235,22 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	private static void appendSelectedFacetValues(final Optional<FacetedQuery> facetedQuery, final BoolQueryBuilder filterBoolQueryBuilder, final BoolQueryBuilder postFilterBoolQueryBuilder, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		if (facetedQuery.isPresent()) {
 			for (final FacetDefinition facetDefinition : facetedQuery.get().getDefinition().getFacetDefinitions()) {
+				final boolean useSubKeywordField = useSubKeywordFieldForFacet(facetDefinition);
 				if (facetDefinition.isMultiSelectable()) {
-					appendSelectedFacetValuesFilter(postFilterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition.getName()));
+					appendSelectedFacetValuesFilter(postFilterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition.getName()), facetDefinition.getDtField(), useSubKeywordField);
 				} else if (isGeoField(facetDefinition.getDtField())) {
 					appendSelectedGeoFacetValuesFilter(filterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition.getName()), myCriteria, typeAdapters);
 				} else {
-					appendSelectedFacetValuesFilter(filterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition.getName()));
+					appendSelectedFacetValuesFilter(filterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition.getName()), facetDefinition.getDtField(), useSubKeywordField);
 				}
 			}
 		}
+	}
+
+	private static boolean useSubKeywordFieldForFacet(final FacetDefinition facetDefinition) {
+		final IndexType indexType = IndexType.readIndexType(facetDefinition.getDtField().getSmartTypeDefinition());
+		//si il y a un sub keyword on le prend (sinon le facetable permet d'avoir un DataField, mais il peut etre tokenized)
+		return indexType.isIndexSubKeyword();
 	}
 
 	private static boolean isGeoField(final DtField dtField) {
@@ -248,13 +258,15 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 		return indexType != null && indexType.indexOf("geo_point") != -1;
 	}
 
-	private static void appendSelectedFacetValuesFilter(final BoolQueryBuilder filterBoolQueryBuilder, final List<FacetValue> facetValues) {
+	private static void appendSelectedFacetValuesFilter(final BoolQueryBuilder filterBoolQueryBuilder, final List<FacetValue> facetValues, final DtField facetField, final boolean useSubKeywordField) {
 		if (facetValues.size() == 1) {
-			filterBoolQueryBuilder.filter(translateToQueryBuilder(facetValues.get(0).getListFilter()));
+			filterBoolQueryBuilder.filter(translateToQueryBuilder(facetValues.get(0).getListFilter(),
+					useSubKeywordField ? Collections.singleton(facetField) : Collections.emptySet()));
 		} else if (facetValues.size() > 1) {
 			final BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			for (final FacetValue facetValue : facetValues) {
-				boolQueryBuilder.should(translateToQueryBuilder(facetValue.getListFilter()));//on ajoute les valeurs en OU
+				boolQueryBuilder.should(translateToQueryBuilder(facetValue.getListFilter(),
+						useSubKeywordField ? Collections.singleton(facetField) : Collections.emptySet()));//on ajoute les valeurs en OU
 			}
 			filterBoolQueryBuilder.filter(boolQueryBuilder);
 		}
@@ -283,7 +295,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	private void appendFacetDefinition(
 			final SearchQuery searchQuery,
 			final S searchRequestBuilder,
-			final SearchIndexDefinition indexDefinition,
+			final DtDefinition indexDefinition,
 			final DtListState listState,
 			final boolean useHighlight,
 			final Map<Class, BasicTypeAdapter> typeAdapters) {
@@ -323,8 +335,9 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 				final BoolQueryBuilder aggsFilterBoolQueryBuilder = QueryBuilders.boolQuery();
 				for (final FacetDefinition filterFacetDefinition : facetedQuery.getDefinition().getFacetDefinitions()) {
 					if (filterFacetDefinition.isMultiSelectable() && !facetDefinition.equals(filterFacetDefinition)) {
+						final boolean useSubKeywordField = useSubKeywordFieldForFacet(facetDefinition);
 						//on ne doit refiltrer que les multiSelectable (les autres sont dans le filter de la request), sauf la facet qu'on est entrain de traiter
-						appendSelectedFacetValuesFilter(aggsFilterBoolQueryBuilder, facetedQuery.getSelectedFacetValues().getFacetValues(filterFacetDefinition.getName()));
+						appendSelectedFacetValuesFilter(aggsFilterBoolQueryBuilder, facetedQuery.getSelectedFacetValues().getFacetValues(filterFacetDefinition.getName()), facetDefinition.getDtField(), useSubKeywordField);
 					}
 				}
 				if (aggsFilterBoolQueryBuilder.hasClauses()) {
@@ -366,9 +379,8 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 		}
 
 		//Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
-		final IndexType indexType = IndexType.readIndexType(dtField.getSmartTypeDefinition());
 		String fieldName = dtField.getName();
-		if (!indexType.isIndexFieldData() && indexType.isIndexSubKeyword()) { //si le champs n'est pas facetable mais qu'il y a un sub keyword on le prend
+		if (useSubKeywordFieldForFacet(facetDefinition)) {
 			fieldName = fieldName + ".keyword";
 		}
 		return AggregationBuilders.terms(facetDefinition.getName())
@@ -379,7 +391,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	private static AggregationBuilder customFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		final Map<String, String> customParams = replaceCriteria(facetDefinition.getCustomParams(), myCriteria);
-		return new CustomAggregationBuilder(facetDefinition.getName(), customParams);
+		return new CustomAggregationBuilder(facetDefinition.getName(), facetDefinition.getDtField().getName(), customParams);
 	}
 
 	private static Map<String, String> replaceCriteria(final Map<String, String> customParams, final Object myCriteria) {
@@ -529,11 +541,24 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	 * @return QueryBuilder
 	 */
 	public static QueryBuilder translateToQueryBuilder(final ListFilter listFilter) {
+		return translateToQueryBuilder(listFilter, Collections.emptySet());
+	}
+
+	/**
+	 * @param listFilter ListFilter
+	 * @return QueryBuilder
+	 */
+	public static QueryBuilder translateToQueryBuilder(final ListFilter listFilter, final Set<DtField> keywordFields) {
 		Assertion.check().isNotNull(listFilter);
 		//-----
+		String listFilterValue = listFilter.getFilterValue();
+		for (final DtField keywordField : keywordFields) {
+			listFilterValue = listFilterValue.replace(keywordField.getName() + ":", keywordField.getName() + ".keyword:");
+		}
+
 		final String query = new StringBuilder()
 				.append(" +(")
-				.append(listFilter.getFilterValue())
+				.append(listFilterValue)
 				.append(')')
 				.toString();
 		return QueryBuilders.queryStringQuery(query)

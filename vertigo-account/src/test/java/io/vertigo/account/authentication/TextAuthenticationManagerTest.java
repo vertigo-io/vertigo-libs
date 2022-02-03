@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,12 @@
  */
 package io.vertigo.account.authentication;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.authentication.MyNodeConfig.AuthentPlugin;
+import io.vertigo.account.impl.authentication.PasswordHelper;
 import io.vertigo.core.node.config.NodeConfig;
 
 /**
@@ -40,6 +42,14 @@ public final class TextAuthenticationManagerTest extends AbstractAuthenticationM
 	@Test
 	public void testLoginUsername() {
 		//
+	}
+
+	@Test
+	public void testCreatePassword() {
+		final PasswordHelper passwordHelper = new PasswordHelper();
+		final String encodedPassword = passwordHelper.createPassword("MyTruePasswordTest");
+		Assertions.assertTrue(passwordHelper.checkPassword(encodedPassword, "MyTruePasswordTest"), "Good encoding");
+		Assertions.assertFalse(passwordHelper.checkPassword(encodedPassword, "MyFalsePasswordTest"), "Good encoding");
 	}
 
 }

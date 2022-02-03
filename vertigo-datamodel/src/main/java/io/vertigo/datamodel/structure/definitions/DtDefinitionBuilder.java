@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,6 +66,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	private String mySortFieldName;
 	private String myDisplayFieldName;
 	private String myHandleFieldName;
+	private String myKeyFieldName;
 
 	/**
 	 * Constructor.
@@ -308,6 +309,16 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		return this;
 	}
 
+	/**
+	 * Specifies which field to be used to distinguish elements inside a collection
+	 * @param keyFieldName fieldName to use
+	 * @return this builder
+	 */
+	public DtDefinitionBuilder withKeyField(final String keyFieldName) {
+		myKeyFieldName = keyFieldName;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public DtDefinition build() {
@@ -347,6 +358,14 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			handleField = null;
 		}
 
+		final DtField keyField;
+		if (myKeyFieldName != null) {
+			keyField = findFieldByName(myKeyFieldName)
+					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Key field '{0}' not found on '{1}'", myKeyFieldName, dtDefinition.getName())));
+		} else {
+			keyField = null;
+		}
+
 		dtDefinition = new DtDefinition(
 				myName,
 				Optional.ofNullable(myFragmentRef),
@@ -356,7 +375,8 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 				myDataSpace == null ? DtDefinition.DEFAULT_DATA_SPACE : myDataSpace,
 				Optional.ofNullable(sortField),
 				Optional.ofNullable(displayField),
-				Optional.ofNullable(handleField));
+				Optional.ofNullable(handleField),
+				Optional.ofNullable(keyField));
 		return dtDefinition;
 	}
 

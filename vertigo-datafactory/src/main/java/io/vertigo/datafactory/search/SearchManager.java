@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,6 +98,16 @@ public interface SearchManager extends Manager {
 	 * @param <I> Type de l'objet resultant de la recherche
 	 */
 	<I extends DtObject> FacetedQueryResult<I, SearchQuery> loadList(SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState);
+
+	/**
+	 * Récupération du résultat issu d'une requête.
+	 * @param searchQuery critères initiaux
+	 * @param indexDefinition Type de l'index
+	 * @param listState Etat de la liste (tri et pagination)
+	 * @return Résultat correspondant à la requête
+	 * @param <I> Type de l'objet resultant de la recherche
+	 */
+	<I extends DtObject> FacetedQueryResult<I, SearchQuery> loadList(List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState);
 
 	/**
 	 * @param indexDefinition  Type de l'index

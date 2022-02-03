@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -199,7 +199,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 			inTaskAttributes.put(taskAttribute, getValue(taskAttribute.getName()));
 		}
 		//-----
-		final ScriptPreProcessor scriptPreProcessor = new ScriptPreProcessor(scriptManager, inTaskAttributes, SeparatorType.CLASSIC);
+		final ScriptPreProcessor scriptPreProcessor = new ScriptPreProcessor(scriptManager, inTaskAttributes, getContextProperties(), SeparatorType.CLASSIC);
 		final TrimPreProcessor trimPreProcessor = new TrimPreProcessor(SeparatorType.BEGIN_SEPARATOR_CLASSIC, SeparatorType.END_SEPARATOR_CLASSIC);
 		final WhereInPreProcessor whereInPreProcessor = new WhereInPreProcessor(inTaskAttributes);
 		//--

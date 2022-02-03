@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ public final class CloseAtEoFInputStream extends InputStream {
 	private final InputStream inputStream;
 	private final int totalLength;
 	private int position = 0;
+	private boolean isClosed;
 
 	public CloseAtEoFInputStream(final InputStream inputStream, final int totalLength) {
 		this.inputStream = inputStream;
@@ -33,10 +34,14 @@ public final class CloseAtEoFInputStream extends InputStream {
 
 	@Override
 	public int read() throws IOException {
+		if (isClosed) { // if already closed return -1 to comply with the spec
+			return -1;
+		}
 		final int read = inputStream.read();
 		position++;
 		if (read == -1 || position >= totalLength) { //close sub inputstream when EoF is reach
 			inputStream.close();
+			isClosed = true;
 		}
 		return read;
 	}

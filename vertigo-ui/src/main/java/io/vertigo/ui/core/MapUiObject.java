@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ import io.vertigo.vega.engines.webservice.json.VegaUiObject;
 
 /**
  * Objet d'IHM, fournit les valeurs formatés des champs de l'objet métier sous-jacent.
- * Implements Map<String, Object> car struts poste des String[] que l'on reconverti en String (on prend le premier).
+ * Implements Map<String, Object> car Spring poste des String[] que l'on reconverti en String (on prend le premier).
  *
  * @author pchretien, npiedeloup
  * @param <D> Type de DtObject représenté par cet Input
@@ -54,12 +54,14 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	private static final String SMART_TYPE_MULTIPLE_IDS = "STyMultipleIds";
 	private static final String[] EMPTY_INPUT = new String[0];
 
+	private final ViewContextUpdateSecurity viewContextUpdateSecurity;
+
 	/**
 	 * Constructor.
 	 * @param serverSideDto DtObject
 	 */
-	public MapUiObject(final D serverSideDto) {
-		this(serverSideDto, (D) DtObjectUtil.createDtObject(DtObjectUtil.findDtDefinition(serverSideDto)), Collections.emptySet());
+	public MapUiObject(final D serverSideDto, final ViewContextUpdateSecurity viewContextUpdateSecurity) {
+		this(serverSideDto, (D) DtObjectUtil.createDtObject(DtObjectUtil.findDtDefinition(serverSideDto)), Collections.emptySet(), viewContextUpdateSecurity);
 	}
 
 	/**
@@ -68,8 +70,11 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	 * @param inputDto Input DtObject
 	 * @param modifiedFields List of modified fields
 	 */
-	public MapUiObject(final D serverSideDto, final D inputDto, final Set<String> modifiedFields) {
+	public MapUiObject(final D serverSideDto, final D inputDto, final Set<String> modifiedFields, final ViewContextUpdateSecurity viewContextUpdateSecurity) {
 		super(inputDto, modifiedFields);
+		Assertion.check().isNotNull(viewContextUpdateSecurity);
+		//----
+		this.viewContextUpdateSecurity = viewContextUpdateSecurity;
 		setServerSideObject(serverSideDto);
 	}
 
@@ -103,11 +108,18 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 				.isNotBlank(fieldName)
 				.isNotNull(value, "La valeur formatée ne doit pas être null mais vide ({0})", fieldName)
 				.isTrue(value instanceof String || value instanceof String[], "Les données saisies doivent être de type String ou String[] ({0} : {1})", fieldName, value.getClass());
-		//-----
+		//----
+		viewContextUpdateSecurity.assertIsUpdatable(getInputKey(), fieldName);
+		//----
 		final DtField dtField = getDtField(fieldName);
 		if (dtField.getCardinality().hasMany()) {
 			if (value instanceof String[]) {
-				setInputValue(fieldName, (String[]) value);
+				if (isBlank((String[]) value)) {
+					// empty values means a reset of the field. An array is never null so we put an empty array.
+					setInputValue(fieldName, EMPTY_INPUT);
+				} else {
+					setInputValue(fieldName, (String[]) value);
+				}
 			} else {
 				if (StringUtil.isBlank((String) value)) {
 					// single empty value means a reset of the field. An array is never null so we put an empty array.
@@ -135,6 +147,15 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 			setInputValue(fieldName, strValue);
 		}
 		return null;
+	}
+
+	private boolean isBlank(final String[] values) {
+		for (final String value : values) {
+			if (!StringUtil.isBlank(value)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private static String requestParameterToString(final Serializable value) {
@@ -262,12 +283,13 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 
 	private Serializable getValueForClient(final String fieldKey, final Function<Serializable, String> valueTransformer) {
 		final boolean hasFormatModifier = fieldKey.endsWith("_fmt");
-		final boolean hasDisplayModifier = fieldKey.endsWith("_display");
 		final String fieldName;
-		if (hasFormatModifier) {
-			fieldName = fieldKey.substring(0, fieldKey.length() - "_fmt".length());
+		final int firstUnderscoreIndex = fieldKey.indexOf('_');
+		if (firstUnderscoreIndex > 0) {
+			//we have a modifier
+			fieldName = fieldKey.substring(0, firstUnderscoreIndex);
 		} else {
-			fieldName = hasDisplayModifier ? fieldKey.substring(0, fieldKey.length() - "_display".length()) : fieldKey;
+			fieldName = fieldKey;
 		}
 		//--- if error
 		if (hasFormatError(fieldName)) {

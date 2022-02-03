@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,7 +93,8 @@ public class SmartTypesLoader implements Loader {
 			}
 			if (DtObject.class.isAssignableFrom(targetJavaClass)) {
 				scope = Scope.DATA_OBJECT;
-				Assertion.check().isTrue(field.getName().equals(DtDefinition.PREFIX + targetJavaClass.getSimpleName()), "The name of the SmartType {0} is not consistent with the class {1}", field.getName(), targetJavaClass);
+				Assertion.check().isTrue(field.getName().equals(DtDefinition.PREFIX + targetJavaClass.getSimpleName()), "The name of the SmartType {0} is not consistent with the class {1}",
+						field.getName(), targetJavaClass);
 			} else {
 				Assertion.check().isTrue(adapters.length > 0,
 						"Your smarttype '{0}' is associated with a value object, you need to specify a mapper to a targeted DataType with the @Adapter annotation", smartTypeName);
@@ -112,14 +113,17 @@ public class SmartTypesLoader implements Loader {
 		if (field.isAnnotationPresent(Constraint.class) || field.isAnnotationPresent(Constraints.class)) {
 			final Constraint[] constraints = field.getAnnotationsByType(Constraint.class);
 			constraintConfigs = Arrays.stream(constraints)
-					.map(contraint -> new ConstraintConfig(contraint.clazz(), contraint.arg(), contraint.msg()))
+					.map(contraint -> new ConstraintConfig(contraint.clazz(), contraint.arg(), contraint.msg(), contraint.resourceMsg()))
 					.collect(Collectors.toList());
 
 			constraintConfigs
 					.forEach(constraintConfig -> {
 						final Optional<String> msgOpt = StringUtil.isBlank(constraintConfig.getMsg()) ? Optional.empty() : Optional.of(constraintConfig.getMsg());
-						final Constructor<? extends io.vertigo.datamodel.structure.definitions.Constraint> constructor = ClassUtil.findConstructor(constraintConfig.getConstraintClass(), new Class[] { String.class, Optional.class });
-						final io.vertigo.datamodel.structure.definitions.Constraint newConstraint = ClassUtil.newInstance(constructor, new Object[] { constraintConfig.getArg(), msgOpt });
+						final Optional<String> resourceMsgOpt = StringUtil.isBlank(constraintConfig.getResourceMsg()) ? Optional.empty() : Optional.of(constraintConfig.getResourceMsg());
+						final Constructor<? extends io.vertigo.datamodel.structure.definitions.Constraint> constructor = ClassUtil.findConstructor(constraintConfig.getConstraintClass(),
+								new Class[] { String.class, Optional.class, Optional.class });
+						final io.vertigo.datamodel.structure.definitions.Constraint newConstraint = ClassUtil.newInstance(constructor,
+								new Object[] { constraintConfig.getArg(), msgOpt, resourceMsgOpt });
 						propertiesBuilder.addValue(newConstraint.getProperty(), newConstraint.getPropertyValue());
 					});
 

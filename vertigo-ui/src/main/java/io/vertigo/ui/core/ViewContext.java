@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -279,7 +279,7 @@ public final class ViewContext implements Serializable {
 	 * @param dto Objet à publier
 	 */
 	public <O extends DtObject> void publishDto(final ViewContextKey<O> contextKey, final O dto) {
-		final UiObject<O> strutsUiObject = new MapUiObject<>(dto);
+		final UiObject<O> strutsUiObject = new MapUiObject<>(dto, viewContextMap.viewContextUpdateSecurity());
 		strutsUiObject.setInputKey(contextKey.get());
 		put(contextKey, strutsUiObject);
 	}
@@ -322,7 +322,7 @@ public final class ViewContext implements Serializable {
 	 */
 	private <O extends DtObject> void publishDtList(final ViewContextKey<O> contextKey, final Optional<DtFieldName<O>> keyFieldNameOpt, final DtList<O> dtList, final boolean modifiable) {
 		if (modifiable) {
-			put(contextKey, new BasicUiListModifiable<>(dtList, contextKey.get()));
+			put(contextKey, new BasicUiListModifiable<>(dtList, contextKey.get(), viewContextMap.viewContextUpdateSecurity()));
 		} else {
 			put(contextKey, new UiListUnmodifiable<>(dtList, keyFieldNameOpt));
 		}

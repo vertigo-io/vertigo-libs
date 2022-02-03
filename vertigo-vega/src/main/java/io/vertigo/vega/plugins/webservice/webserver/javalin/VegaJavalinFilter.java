@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public final class VegaJavalinFilter implements Filter {
 	@Override
 	public void init(final FilterConfig filterConfig) throws ServletException {
 		final Javalin javalin = javalinConnector.getClient();
-		javalinServlet = javalin.servlet();
+		javalinServlet = javalin.javalinServlet();
 	}
 
 	/** {@inheritDoc} */

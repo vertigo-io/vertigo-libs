@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,6 +62,7 @@ public final class DtDefinition extends AbstractDefinition {
 	private final Optional<DtField> sortFieldOpt;
 	private final Optional<DtField> displayFieldOpt;
 	private final Optional<DtField> handleFieldOpt;
+	private final Optional<DtField> keyFieldOpt;
 
 	private final String dataSpace;
 
@@ -77,7 +78,8 @@ public final class DtDefinition extends AbstractDefinition {
 			final String dataSpace,
 			final Optional<DtField> sortField,
 			final Optional<DtField> displayField,
-			final Optional<DtField> handleField) {
+			final Optional<DtField> handleField,
+			final Optional<DtField> keyField) {
 		super(name);
 		//---
 		Assertion.check()
@@ -88,7 +90,8 @@ public final class DtDefinition extends AbstractDefinition {
 				.isTrue(REGEX_DATA_SPACE.matcher(dataSpace).matches(), "dataSpace {0} must match pattern {1}", dataSpace, REGEX_DATA_SPACE)
 				.isNotNull(sortField)
 				.isNotNull(displayField)
-				.isNotNull(handleField);
+				.isNotNull(handleField)
+				.isNotNull(keyField);
 		//-----
 		fragmentOpt = fragment;
 		//
@@ -99,6 +102,7 @@ public final class DtDefinition extends AbstractDefinition {
 		sortFieldOpt = sortField;
 		displayFieldOpt = displayField;
 		handleFieldOpt = handleField;
+		keyFieldOpt = keyField;
 
 		for (final DtField dtField : dtFields) {
 			Assertion.check()
@@ -120,6 +124,8 @@ public final class DtDefinition extends AbstractDefinition {
 				//Persistent => ID
 				.when(stereotype.isPersistent(), () -> Assertion.check()
 						.isTrue(idFieldOpt.isPresent(), "Error on {0}, If an object is persistent then it must have an ID", name))
+				.when(stereotype.isPersistent(), () -> Assertion.check()
+						.isTrue(keyFieldOpt.isEmpty(), "Error on {0}, If an object is persistent then it must not have a keyField", name))
 				.when(!stereotype.isPersistent(), () -> Assertion.check()
 						.isTrue(idFieldOpt.isEmpty(), "Error on {0}, If an object is not persistent then it must have no ID", name));
 	}
@@ -250,6 +256,13 @@ public final class DtDefinition extends AbstractDefinition {
 	 */
 	public Optional<DtField> getHandleField() {
 		return handleFieldOpt;
+	}
+
+	/**
+	 * @return Champ représentant le champ servant de clé pour différencier localement les éléments d'une collection
+	 */
+	public Optional<DtField> getKeyField() {
+		return keyFieldOpt;
 	}
 
 	/**

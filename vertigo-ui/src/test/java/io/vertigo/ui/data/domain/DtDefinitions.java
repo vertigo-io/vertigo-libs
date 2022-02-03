@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		Profil(io.vertigo.ui.data.domain.users.Profil.class),
 		/** Objet de données SecurityRole. */
 		SecurityRole(io.vertigo.ui.data.domain.users.SecurityRole.class),
+		/** Objet de données StatData. */
+		StatData(io.vertigo.ui.data.domain.stats.StatData.class),
 		/** Objet de données UserAuthentification. */
 		UserAuthentification(io.vertigo.ui.data.domain.users.UserAuthentification.class);
 

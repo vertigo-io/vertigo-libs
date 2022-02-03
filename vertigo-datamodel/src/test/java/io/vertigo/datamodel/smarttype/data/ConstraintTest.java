@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import io.vertigo.datamodel.structure.definitions.Property;
 /**
  * Contrainte pour gérer la longueur des chaines de caractères.
  *
- * @author  plepaisant
+ * @author plepaisant
  */
 public final class ConstraintTest implements Constraint<Boolean, String> {
 
@@ -34,7 +34,7 @@ public final class ConstraintTest implements Constraint<Boolean, String> {
 	 * @param args Liste des arguments réduite à un seul castable en integer.
 	 * Cet argument correspond au nombre de caractères maximum authorisés sur la chaine de caractères.
 	 */
-	public ConstraintTest(final String args, final Optional<String> overrideMessageOpt) {
+	public ConstraintTest(final String args, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
 		//---
 	}
 

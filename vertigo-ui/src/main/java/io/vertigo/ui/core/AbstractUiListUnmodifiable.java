@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ import io.vertigo.vega.webservice.model.UiObject;
 public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends AbstractList<UiObject<O>> implements UiList<O>, Serializable {
 	private static final long serialVersionUID = 5475819598230056558L;
 
-	private static final int NB_MAX_ELEMENTS = 1000; //Max nb elements in list. Must be kept under 1000 to ensure good performances.
+	protected static final int NB_MAX_ELEMENTS = 1000; //Max nb elements in list. Must be kept under 1000 to ensure good performances.
 
 	/**
 	 * Accès au storeManager.
@@ -80,10 +80,13 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		//-----
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
 		final Optional<DtField> idFieldOpt = getDtDefinition().getIdField();
+		final Optional<DtField> keyFieldOpt = getDtDefinition().getKeyField();
 		if (idFieldOpt.isPresent()) {
 			camelIdFieldName = idFieldOpt.get().getName();
+		} else if (keyFieldOpt.isPresent()) {
+			camelIdFieldName = keyFieldOpt.get().getName();
 		} else if (keyFieldNameOpt.isPresent()) {
-			Assertion.check().isTrue(keyFieldNameOpt.isPresent(), "DtDefinition : {0} is not an entity, you must provide a keyFieldName", dtDefinition.getName());
+			Assertion.check().isTrue(keyFieldNameOpt.isPresent(), "DtDefinition : {0} is not an entity and does not have a keyField, you must provide a keyFieldName", dtDefinition.getName());
 			camelIdFieldName = keyFieldNameOpt.get().name();
 		} else {
 			camelIdFieldName = null;
@@ -115,7 +118,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * Attention : nécessite la DtList (appel obtainDtList).
 	 * @param keyFieldName Nom du champs à indexer
 	 */
-	public final void initUiObjectByKeyIndex(final String keyFieldName) {
+	protected final void initUiObjectByKeyIndex(final String keyFieldName) {
 		final Map<Serializable, UiObject<O>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
 		for (final UiObject<O> uiObject : this) {
 			uiObjectById.put(((VegaUiObject<O>) uiObject).getTypedValue(keyFieldName, Serializable.class), uiObject);
@@ -142,7 +145,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	public final UiObject<O> get(final int index) {
 		return uiObjectByIndex.computeIfAbsent(index, i -> {
 			Assertion.check().isTrue(uiObjectByIndex.size() < 1000, "Trop d'élément dans le buffer uiObjectByIndex de la liste de {0}", getDtDefinition().getName());
-			return new MapUiObject<>(obtainDtList().get(i));
+			return new MapUiObject<>(obtainDtList().get(i), ViewContextUpdateSecurity.unmodifiable());
 		});
 	}
 
@@ -205,14 +208,14 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	private UiObject<O> loadMissingEntity(final String keyFieldName, final Serializable keyValue, final Map<Serializable, UiObject<O>> uiObjectById) {
 		final DtDefinition dtDefinition = getDtDefinition();
 		// ---
-		Assertion.check().isTrue(dtDefinition.getIdField().isPresent(), "The definition : {0} must have an id to retrieve elements by Id", dtDefinition);
+		Assertion.check().isTrue(dtDefinition.getIdField().isPresent(), "The definition : {0} must have an id to retrieve missing elements by Id", dtDefinition);
 		// ---
 		UiObject<O> uiObject;
 		final DtField dtField = dtDefinition.getField(keyFieldName);
 		Assertion.check().isTrue(dtField.getType().isId(), "La clé {0} de la liste doit être la PK", keyFieldName);
 
 		final O entity = (O) loadDto(keyValue);
-		uiObject = new MapUiObject<>(entity);
+		uiObject = new MapUiObject<>(entity, ViewContextUpdateSecurity.unmodifiable());
 		uiObjectById.put(keyValue, uiObject);
 		Assertion.check().isTrue(uiObjectById.size() < NB_MAX_ELEMENTS, "Trop d'élément dans le buffer uiObjectById de la liste de {0}", getDtDefinition().getName());
 		return uiObject;
@@ -227,6 +230,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 
 	/**
 	 * Récupère l'index des UiObjects par Id.
+	 * Calcul l'index si besoin.
 	 * @param keyFieldName Nom du champ identifiant
 	 * @return Index des UiObjects par Id
 	 */

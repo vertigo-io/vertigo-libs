@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation.Bucket;
 import org.elasticsearch.search.aggregations.bucket.filter.Filter;
+import org.elasticsearch.search.aggregations.metrics.NumericMetricsAggregation;
 import org.elasticsearch.search.aggregations.metrics.TopHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 
@@ -47,15 +48,12 @@ import io.vertigo.datafactory.collections.definitions.FacetedQueryDefinition;
 import io.vertigo.datafactory.collections.model.Facet;
 import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
-import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
-import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 
-//vérifier
 /**
  * Requête physique d'accès à ElasticSearch.
  * Le driver exécute les requêtes de façon synchrone dans le contexte transactionnelle de la ressource.
@@ -69,30 +67,30 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 	private static final String EMPTY_TERM = "_empty_";
 
 	private final ESDocumentCodec esDocumentCodec;
-	private final SearchIndexDefinition indexDefinition;
+	private final DtDefinition indexDtDefinition;
 	private final SearchResponse queryResponse;
 	private final SearchQuery searchQuery;
 
 	/**
 	 * Constructor.
 	 * @param esDocumentCodec Translation codec from Index Dto to document
-	 * @param indexDefinition Index definition
+	 * @param indexDtDefinition Index Dtdefinition
 	 * @param queryResponse ES Query response
 	 * @param searchQuery Search query
 	 */
 	public ESFacetedQueryResultBuilder(
 			final ESDocumentCodec esDocumentCodec,
-			final SearchIndexDefinition indexDefinition,
+			final DtDefinition indexDtDefinition,
 			final SearchResponse queryResponse,
 			final SearchQuery searchQuery) {
 		Assertion.check()
 				.isNotNull(esDocumentCodec)
-				.isNotNull(indexDefinition)
+				.isNotNull(indexDtDefinition)
 				.isNotNull(queryResponse)
 				.isNotNull(searchQuery);
 		//-----
 		this.esDocumentCodec = esDocumentCodec;
-		this.indexDefinition = indexDefinition;
+		this.indexDtDefinition = indexDtDefinition;
 		this.queryResponse = queryResponse;
 		this.searchQuery = searchQuery;
 	}
@@ -102,17 +100,16 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 	public FacetedQueryResult<I, SearchQuery> build() {
 		final Map<I, Map<DtField, String>> resultHighlights = new HashMap<>();
 		final Map<FacetValue, DtList<I>> resultCluster;
-		final DtList<I> dtc = new DtList<>(indexDefinition.getIndexDtDefinition());
+		final DtList<I> dtc = new DtList<>(indexDtDefinition);
 		if (searchQuery.isClusteringFacet()) {
 			final Map<String, I> dtcIndex = new LinkedHashMap<>();
 			resultCluster = createCluster(dtcIndex, resultHighlights);
 			dtc.addAll(dtcIndex.values());
 		} else {
 			for (final SearchHit searchHit : queryResponse.getHits()) {
-				final SearchIndex<?, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
-				final I result = index.getIndexDtObject();
+				final I result = esDocumentCodec.searchHit2DtIndex(indexDtDefinition, searchHit);
 				dtc.add(result);
-				final Map<DtField, String> highlights = createHighlight(searchHit, indexDefinition.getIndexDtDefinition());
+				final Map<DtField, String> highlights = createHighlight(searchHit, indexDtDefinition);
 				resultHighlights.put(result, highlights);
 			}
 			resultCluster = Collections.emptyMap();
@@ -172,14 +169,13 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 			final Map<String, I> dtcIndex,
 			final Map<I, Map<DtField, String>> resultHighlights) {
 		final SearchHits facetSearchHits = ((TopHits) bucket.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
-		final DtList<I> facetDtc = new DtList<>(indexDefinition.getIndexDtDefinition());
+		final DtList<I> facetDtc = new DtList<>(indexDtDefinition);
 		for (final SearchHit searchHit : facetSearchHits) {
 			I result = dtcIndex.get(searchHit.getId());
 			if (result == null) {
-				final SearchIndex<?, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
-				result = index.getIndexDtObject();
+				result = esDocumentCodec.searchHit2DtIndex(indexDtDefinition, searchHit);
 				dtcIndex.put(searchHit.getId(), result);
-				final Map<DtField, String> highlights = createHighlight(searchHit, indexDefinition.getIndexDtDefinition());
+				final Map<DtField, String> highlights = createHighlight(searchHit, indexDtDefinition);
 				resultHighlights.put(result, highlights);
 			}
 			facetDtc.add(result);
@@ -212,7 +208,14 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 			for (final FacetDefinition facetDefinition : queryDefinition.getFacetDefinitions()) {
 				final Aggregation aggregation = obtainAggregation(queryResponse, facetDefinition.getName());
 				if (aggregation != null) {
-					final Facet facet = createFacet(facetDefinition, (MultiBucketsAggregation) aggregation);
+					final Facet facet;
+					if (aggregation instanceof MultiBucketsAggregation) {
+						facet = createFacet(facetDefinition, (MultiBucketsAggregation) aggregation);
+					} else if (aggregation instanceof NumericMetricsAggregation.SingleValue) {
+						facet = createFacet(facetDefinition, (NumericMetricsAggregation.SingleValue) aggregation);
+					} else {
+						throw new UnsupportedOperationException("Aggregation " + aggregation.getClass().getSimpleName() + " unsupported (" + aggregation.getName() + ")");
+					}
 					facets.add(facet);
 				}
 			}
@@ -226,6 +229,15 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 			return filterAggregation.getAggregations().get(name);
 		}
 		return queryResponse.getAggregations().get(name);
+	}
+
+	private static Facet createFacet(final FacetDefinition facetDefinition, final NumericMetricsAggregation.SingleValue aggregation) {
+		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
+		final FacetValue facetValue = new FacetValue(aggregation.getName(), ListFilter.of("_noOp:_"), MessageText.of(aggregation.getName()));
+		final int decimalPrecision = Integer.parseInt(facetDefinition.getCustomParams().getOrDefault(CustomAggregationBuilder.DECIMAL_PRECISION_TO_PARAM, "0"));
+		final long precisionMult = (long) Math.pow(10, decimalPrecision);
+		facetValues.put(facetValue, Math.round(aggregation.value() * precisionMult));
+		return new Facet(facetDefinition, facetValues);
 	}
 
 	private static Facet createFacet(final FacetDefinition facetDefinition, final MultiBucketsAggregation aggregation) {

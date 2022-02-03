@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -516,7 +516,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		@Override
 		public S deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
 			if (BasicType.String == basicTypeAdapter.getBasicType()) {//TODO should be json
-				return basicTypeAdapter.toJava(json.getAsString(), smartType);
+				return basicTypeAdapter.toJava(json.isJsonPrimitive() ? json.getAsString() : json.toString(), smartType); //We want a String even if its a JsonObject !! can't use getAsString
 			}
 			return basicTypeAdapter.toJava(context.deserialize(json, basicTypeAdapter.getBasicType().getJavaClass()), smartType);
 		}

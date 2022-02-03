@@ -4,13 +4,27 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-extensions</artifactId>
-		<version>4.0.0-SNAPSHOT</version>
+		<version>3.3.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>vertigo-datafactory</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-datafactory</name>
 
+    <repositories>
+      <!-- Needed repo for tests embedded ElasticSearch -->
+      <repository>
+         <id>codelibs.elasticsearch-releases</id>
+         <url>https://maven.codelibs.org/</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
+    </repositories>
+    
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
@@ -43,10 +57,10 @@
 
 		<!-- tests -->
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>1.4.200</version>
-			<scope>test</scope>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <version>2.1.210</version>
+		    <scope>test</scope>
 		</dependency>
 
 
@@ -57,19 +71,19 @@
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>8.7.0</version><!-- 8.7.0 compatible with ElasticSearch 7.10.2 -->
+			<version>8.10.1</version><!-- 8.10.1 compatible with ElasticSearch 7.16.3 -->
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-analyzers-common</artifactId>
-			<version>8.7.0</version> <!-- 8.7.0 compatible with ElasticSearch 7.10.2 -->
+			<version>8.10.1</version> <!-- 8.10.1 compatible with ElasticSearch 7.16.3 -->
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-queryparser</artifactId>
-			<version>8.7.0</version> <!-- 8.7.0 compatible with ElasticSearch 7.10.2 -->
+			<version>8.10.1</version> <!-- 8.10.1 compatible with ElasticSearch 7.16.3 -->
 			<optional>true</optional>
 		</dependency>
 
@@ -85,34 +99,34 @@
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
 		    <artifactId>transport</artifactId>
-		    <version>7.10.2</version>
+		    <version>7.16.3</version>
 		    <scope>test</scope> <!-- TransportSearchServicesPlugin -->
 		</dependency>
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
 		    <artifactId>elasticsearch-rest-high-level-client</artifactId>
-		    <version>7.10.2</version>
+		    <version>7.16.3</version>
 		    <optional>true</optional> <!-- RestHighLevelSearchServicesPlugin -->
 		</dependency>
 		<dependency>
-	        <groupId>org.codelibs.elasticsearch.module</groupId>
-	        <artifactId>analysis-common</artifactId> 
-	        <version>7.10.2</version> <!-- required by EmbeddedSearchServicesPlugin -->
-	        <scope>test</scope>
-	    </dependency>
-	   	<dependency>
-		    <groupId>org.codelibs.elasticsearch.module</groupId>
-		    <artifactId>mapper-extras</artifactId>
-		    <version>7.10.2</version> <!-- required by EmbeddedSearchServicesPlugin -->
-	        <scope>test</scope>
-		</dependency>
+            <groupId>org.codelibs.elasticsearch.module</groupId>
+            <artifactId>analysis-common</artifactId> 
+            <version>7.16.3</version> <!-- required by EmbeddedSearchServicesPlugin -->
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.codelibs.elasticsearch.module</groupId>
+            <artifactId>mapper-extras</artifactId>
+            <version>7.16.3</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
+            <optional>true</optional>
+        </dependency>
 
 	</dependencies>
 	<build>
 		<!-- To use the plugin goals in your POM or parent POM -->
 		<plugins>
 			<plugin>
-				<!-- We need a test jar too -->
+				<!-- We need a test jar too (for LTS plugins) -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.1.1</version>

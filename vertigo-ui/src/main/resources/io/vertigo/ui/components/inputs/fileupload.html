@@ -1,7 +1,7 @@
 <th:block th:fragment="fileupload(url, key, multiple, uploader_attrs)" 
 	th:assert="${key} != null and ${url} != null"
 	th:with="myComponentId='uploader_'+${key}"	>
-		<vu:include-data-primitive th:key="${key}"/>
+		<vu:include-data-primitive th:key="${key}" modifiable="true"/>
         <input type="hidden" th:v-if="|vueData.${key}.length == 0|" th:name="|vContext[${key}]|" value="" />
         <input type="hidden" th:v-for="|fileUri in vueData.${key}|" th:name="|vContext[${key}]|" v-bind:value="fileUri" />
         <q-uploader th:url="${url}" th:readonly="${viewMode=='read'}"
@@ -33,10 +33,10 @@
             ></div>
         </div>
 </th:block>
-<th:block th:fragment="fileupload-simple(url, key, multiple, uploader_attrs)" 
+<th:block th:fragment="fileupload-simple(url, downloadUrl, key, multiple, uploader_attrs)" 
     th:assert="${key} != null and ${url} != null"
-    th:with="myComponentId='uploader_'+${key}" >
-        <vu:include-data-primitive th:key="${key}"/>
+    th:with="myComponentId='uploader_'+${key}, downloadUrl=${downloadUrl?:(url + '/download/')}" >
+        <vu:include-data-primitive th:key="${key}" modifiable="true"/>
         <input type="hidden" th:v-if="|vueData.${key}.length == 0|" th:name="|vContext[${key}]|" value="" />
         <input type="hidden" th:v-for="|fileUri in vueData.${key}|" th:name="|vContext[${key}]|" v-bind:value="fileUri" />
         <q-uploader th:url="${url}" th:readonly="${viewMode=='read'}"
@@ -79,6 +79,7 @@
                                  <q-circular-progress v-if="file.__status === 'uploading'" :value="file.__progress" :min="0" :max="1" :indeterminate="file.__progress === 0"></q-circular-progress>
                                  <q-btn v-if="file.__status != 'uploading' && !slotProps.readonly" round dense flat :icon="$q.iconSet.uploader[file.__status === 'uploaded' ? 'done' : 'clear']" 
                                  @click="slotProps.removeFile(file)"></q-btn>                      
+                                 <q-btn round dense flat icon="file_download"  th:@click="|goTo('${downloadUrl}' + file.fileUri)|" ></q-btn>
                              </div>
                          </div>
                       </div>
@@ -103,12 +104,12 @@
             </template>   
         </q-uploader>
 </th:block>
-<th:block th:fragment="fileupload-simple-object-edit(url, object, field, multiple, uploader_attrs)" 
+<th:block th:fragment="fileupload-simple-object-edit(url, downloadUrl, object, field, multiple, uploader_attrs)" 
     vu:alias="fileupload-simple-object" vu:selector="${viewMode=='edit'}"
     th:assert="${object} != null and ${url} != null"
-    th:with="myComponentId=${model.util.generateComponentUID('uploader', object, field, rowIndex)}" >
-        <vu:include-data-primitive key="${object}" th:if="${field==null}" />
-        <vu:include-data object="${object}" field="${field}" th:if="${field!=null}" />
+    th:with="myComponentId=${model.util.generateComponentUID('uploader', object, field, rowIndex)}, downloadUrl=${downloadUrl?:(url + '/download/')}" >
+        <vu:include-data-primitive key="${object}" th:if="${field==null}" modifiable="true" />
+        <vu:include-data object="${object}" field="${field}" th:if="${field!=null}" modifiable="true"/>
         
         <input type="hidden" th:v-if="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)}).length == 0|" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
         <input type="hidden" th:v-for="|fileUri in vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|" th::name="${model.util.contextKey(object, field, rowIndex)}" v-bind:value="fileUri" />
@@ -176,12 +177,12 @@
             </template>   
         </q-uploader>
 </th:block>
-<th:block th:fragment="fileupload-simple-object-read(url, object, field, multiple, uploader_attrs)" 
+<th:block th:fragment="fileupload-simple-object-read(url, downloadUrl, object, field, multiple, uploader_attrs)" 
     vu:alias="fileupload-simple-object" vu:selector="${viewMode=='read'}"
     th:assert="${object} != null and ${url} != null"
-    th:with="myComponentId=${model.util.generateComponentUID('uploader', object, field, rowIndex)}" >
-        <vu:include-data-primitive key="${object}" th:if="${field==null}" />
-        <vu:include-data object="${object}" field="${field}" th:if="${field!=null}" />
+    th:with="myComponentId=${model.util.generateComponentUID('uploader', object, field, rowIndex)}, downloadUrl=${downloadUrl?:(url + '/download/')}" >
+        <vu:include-data-primitive key="${object}" th:if="${field==null}" modifiable="true"/>
+        <vu:include-data object="${object}" field="${field}" th:if="${field!=null}" modifiable="true"/>
         
        <q-uploader th:url="${url}" readonly
             field-name="file"
@@ -210,7 +211,8 @@
                                  (file.type.indexOf('audio/') === 0 ? 'audiotrack' : 'insert_drive_file'))" ></q-icon>
                              <div class="q-uploader__file-header-content col">
                                <div class="q-uploader__title">{{file.name}}</div>
-                             </div>            
+                             </div>
+                             <q-btn round dense flat icon="file_download"  th:@click="|goTo('${downloadUrl}' + file.fileUri)|" ></q-btn>            
                          </div>
                      </div>
                   </div>
@@ -219,10 +221,10 @@
             </template>   
         </q-uploader>
 </th:block>
-<th:block th:fragment="fileupload-custom(url, key, multiple, uploader_attrs)" 
+<th:block th:fragment="fileupload-custom(url, downloadUrl, key, multiple, uploader_attrs)" 
     th:assert="${key} != null and ${url} != null"
-    th:with="myComponentId='uploader_'+${key}" >
-        <vu:include-data-primitive th:key="${key}"/>
+    th:with="myComponentId='uploader_'+${key}, downloadUrl=${downloadUrl?:(url + '/download/')}" >
+        <vu:include-data-primitive th:key="${key}" modifiable="true"/>
         <input type="hidden" th:v-if="|vueData.${key}.length == 0|" th:name="|vContext[${key}]|" value="" />
         <input type="hidden" th:v-for="|fileUri in vueData.${key}|" th:name="|vContext[${key}]|" v-bind:value="fileUri" />
         <q-uploader th:url="${url}" th:readonly="${viewMode=='read'}"
@@ -248,7 +250,8 @@
 	                    <q-spinner v-if="slotProps.isUploading" class="q-uploader__spinner"></q-spinner>
 	                    <div class="col column justify-center">
 	                      <div v-if="slotProps.label !== void 0" class="q-uploader__title">{{slotProps.label}}</div>
-			              <div class="q-uploader__subtitle">{{slotProps.uploadSizeLabel}} / {{slotProps.uploadProgressLabel}}</div>
+			              <div v-if="!slotProps.readonly" class="q-uploader__subtitle">{{slotProps.uploadSizeLabel}} / {{slotProps.uploadProgressLabel}}</div>
+						  <div v-if="slotProps.readonly" class="q-uploader__subtitle">{{slotProps.uploadSizeLabel}}</div>
 			            </div>
 			            <q-btn v-if="slotProps.canAddFiles && !slotProps.readonly" type="a" :icon="$q.iconSet.uploader.add" flat dense>
 				            <q-uploader-add-trigger></q-uploader-add-trigger>
@@ -282,7 +285,8 @@
 	                    <q-btn v-if="file.__status != 'uploading' && !slotProps.readonly" round dense flat :icon="$q.iconSet.uploader[file.__status === 'uploaded' ? 'done' : 'clear']" 
 	                    @click="slotProps.removeFile(file)">
 	                       <q-tooltip>{{$q.lang.vui.uploader[file.__status === 'uploaded' ? 'remove' : 'clear']}}</q-tooltip>
-	                    </q-btn>                      
+	                    </q-btn>
+						<q-btn v-if="slotProps.readonly" round dense flat icon="file_download"  th:@click="|goTo('${downloadUrl}' + file.fileUri)|" ></q-btn>                     
 	                </div>
 	            </div>
             </template>   

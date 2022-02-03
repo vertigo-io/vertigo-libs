@@ -48,13 +48,13 @@ export default {
     },
     watch : {
         list : function(newVal) {
-        console.log('watch list');
+           //console.log('watch list');
            this.$data.items = newVal;
            this.$data.vectorSource.clear();
            this.$data.vectorSource.addFeatures(this.features);
         },
         cluster : function(newVal) {
-        console.log('watch cluster');
+           //console.log('watch cluster');
            this.$data.items = [];
            this.$data.clusters = [];
            for(var i =0 ; i< newVal.length; i++) {

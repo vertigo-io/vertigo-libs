@@ -22,7 +22,16 @@
                         <vu:text-field-read :class="{'v-field__required':true}" object="movie" field="movId"/>
                         <vu:text-field-read :class="{ disabled: true && false || false }" object="movie" field="movId"/>
                         <vu:text-field-read object="movie" field="movId" anotherAttr="() {dataX.join(';') || && __ } ${notEvaluate}"/>
+                        <vu:text-field-read object="movie" field="movId" :anotherAttr="$q.screen.md"/>
+                        <vu:text-field @myEvent="test();" object="movie" field="movId"/>
+                        <vu:text-field input_@myEvent="test();" object="movie" field="movId"/>
+                        <vu:date object="movie" field="released" date_:options="function(date) {return date >= '2021/08/01' && date <= '2021/08/15'}"/>
                         
+                        <vu:text-field th:v-if="'vueData.movie.movid === '+${model.movie.movId}+' || '+${model.movie.movId eq '1000'} " object="movie" field="movId"/>
+                        <vu:text-field th:v-if="${'vueData.movie.movid === '+model.movie.movId+' || '+(model.movie.movId eq '1000')}" object="movie" field="movId"/>
+                        
+                        <vu:text-field th:@click="|alert('@{/movie/__${model.movie.movId}__}')|" object="movie" field="movId"/>
+                   
                     </vu:grid>
                 </vu:block>             
             </vu:form>

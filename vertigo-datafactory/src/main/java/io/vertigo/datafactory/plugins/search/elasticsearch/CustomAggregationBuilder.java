@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,38 +21,65 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.io.stream.StreamOutput;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.query.QueryShardContext;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregatorFactories;
 import org.elasticsearch.search.aggregations.AggregatorFactory;
 import org.elasticsearch.search.aggregations.PipelineAggregationBuilder;
+import org.elasticsearch.search.aggregations.support.AggregationContext;
+import org.elasticsearch.xcontent.XContentBuilder;
+import org.elasticsearch.xcontent.XContentType;
+
+import io.vertigo.core.lang.Assertion;
 
 public final class CustomAggregationBuilder extends AggregationBuilder {
 
-	private static final Object INNER_WRITE_TO_PARAM = "innerWriteTo";
+	public static final Object DECIMAL_PRECISION_TO_PARAM = "_decimalPrecision";
+	private static final Object INNER_WRITE_TO_PARAM = "_innerWriteTo";
+	private static final Object TYPE_PARAM = "_type";
+
 	private Map<String, Object> metaData;
+	private final String field;
 	private final Map<String, String> customParams;
+	private final Optional<String[]> innerWriteToOperations;
+	private final Optional<String> type;
 
 	/**
 	 * Constructs a new aggregation builder.
 	 *
 	 * @param name  The aggregation name
 	 */
-	public CustomAggregationBuilder(final String name, final Map<String, String> customParams) {
+	public CustomAggregationBuilder(final String name, final String field, final Map<String, String> customParams) {
 		super(name);
-		this.customParams = customParams;
+		this.field = field;
+		final String innerWriteToParam = customParams.get(INNER_WRITE_TO_PARAM);
+		if (innerWriteToParam != null) {
+			innerWriteToOperations = Optional.of(innerWriteToParam.split("\\s*;\\s*"));
+		} else {
+			innerWriteToOperations = Optional.empty();
+		}
+		String typeParam = customParams.get(TYPE_PARAM);
+		this.customParams = new HashMap<>(customParams);
+		this.customParams.remove(TYPE_PARAM);
+		this.customParams.remove(INNER_WRITE_TO_PARAM);
+		if (typeParam == null && this.customParams.size() > 0) {
+			//looking for default type : use the first param (type of Agg for ES)
+			typeParam = this.customParams.keySet().iterator().next();
+		}
+		type = Optional.ofNullable(typeParam);
+
 	}
 
 	@Override
 	public String getType() {
-		return customParams.keySet().iterator().next();
+		Assertion.check().isTrue(type.isPresent(), "Need to set an {0} param to declare the agg type (like : sum)", TYPE_PARAM);
+		return type.get(); //mandatory in this case
 	}
 
 	@Override
@@ -60,21 +87,21 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 		out.writeString(name);
 		factoriesBuilder.writeTo(out);
 		out.writeMap(metaData);
-		out.writeOptionalString(getType());
+		out.writeOptionalString(field);
 		out.writeBoolean(false); //hasScript
 		out.writeBoolean(false); //hasValueType
 		out.writeOptionalString(null); //format
 		out.writeGenericValue(null); //missing
 		out.writeOptionalZoneId(null); //timeZone
-		if (customParams.containsKey(INNER_WRITE_TO_PARAM)) {
+		if (innerWriteToOperations.isPresent()) {
 			innerWriteTo(out); //type dependent
 		}
 	}
 
 	private void innerWriteTo(final StreamOutput out) throws NumberFormatException, IOException {
-		final String innerWriteToParam = customParams.get(INNER_WRITE_TO_PARAM);
-		final String[] innerWriteToOperations = innerWriteToParam.split("\\s*;\\s*");
-		for (final String operation : innerWriteToOperations) {
+		Assertion.check().isTrue(innerWriteToOperations.isPresent(), "Need to set an {0} param to declare how to set agg in ES specific protocol (like : writeVInt(#queryParam#);writeVInt(1000);writeVInt(-1);)", INNER_WRITE_TO_PARAM);
+		//----
+		for (final String operation : innerWriteToOperations.get()) {
 			final String value = operation.substring(operation.indexOf('(') + 1, operation.indexOf(')'));
 			if (operation.startsWith("writeVInt(")) {
 				out.writeVInt(Integer.parseInt(value));
@@ -164,11 +191,6 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 	}
 
 	@Override
-	public AggregatorFactory build(final QueryShardContext context, final AggregatorFactory parent) {
-		throw new UnsupportedOperationException("not yet");
-	}
-
-	@Override
 	public XContentBuilder toXContent(final XContentBuilder builder, final Params params) throws IOException {
 		builder.startObject(name);
 
@@ -176,7 +198,7 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 			builder.field("meta", metaData);
 		}
 		for (final Map.Entry<String, String> entry : customParams.entrySet()) {
-			if (!INNER_WRITE_TO_PARAM.equals(entry.getKey())) {
+			if (!DECIMAL_PRECISION_TO_PARAM.equals(entry.getKey())) {
 				builder.rawField(entry.getKey(), new ByteArrayInputStream(entry.getValue().getBytes(StandardCharsets.UTF_8)), XContentType.JSON);
 			}
 		}
@@ -191,6 +213,11 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 
 	@Override
 	protected AggregationBuilder shallowCopy(final org.elasticsearch.search.aggregations.AggregatorFactories.Builder originalFactoriesBuilder, final Map<String, Object> originalMetaData) {
+		throw new UnsupportedOperationException("not yet");
+	}
+
+	@Override
+	protected AggregatorFactory build(final AggregationContext context, final AggregatorFactory parent) {
 		throw new UnsupportedOperationException("not yet");
 	}
 
@@ -218,4 +245,5 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 	public BucketCardinality bucketCardinality() {
 		return BucketCardinality.MANY;
 	}
+
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	private final Map<UiList<?>, String> reverseUiListIndex = new IdentityHashMap<>();
 	private boolean unmodifiable; //initialisé à false
 	private boolean dirty;
+	private final ViewContextUpdateSecurity viewContextUpdateSecurity = new ViewContextUpdateSecurity();
 
 	private transient JsonEngine jsonEngine;
 	private final Map<String, Type> typesByKey = new HashMap<>();
@@ -126,7 +127,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	public String getString(final String key) {
 		final Object value = get(key);
 		if (value instanceof String[] && ((String[]) value).length > 0) {
-			//Struts set des String[] au lieu des String
+			//Spring set des String[] au lieu des String
 			//on prend le premier
 			return ((String[]) value)[0];
 		}
@@ -174,12 +175,12 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		//-----
 		final String contextKey = reverseUiObjectIndex.get(uiObject);
 		if (contextKey != null) {
-			return "vContext[" + contextKey + "]";
+			return contextKey;
 		}
 		for (final Map.Entry<UiList<?>, String> entry : reverseUiListIndex.entrySet()) {
 			final int index = entry.getKey().indexOf(uiObject);
 			if (index >= 0) {
-				return "vContext[" + entry.getValue() + "][" + index + "]";
+				return entry.getValue() + "[" + index + "]";
 			}
 		}
 		return null;
@@ -194,12 +195,12 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		//-----
 		final String contextKey = reverseUiObjectIndex.get(dtObject);
 		if (contextKey != null) {
-			return "vContext[" + contextKey + "]";
+			return contextKey;
 		}
 		for (final Map.Entry<UiList<?>, String> entry : reverseUiListIndex.entrySet()) {
 			final int index = entry.getKey().indexOf(dtObject);
 			if (index >= 0) {
-				return "vContext[" + entry.getValue() + "][" + index + "]";
+				return entry.getValue() + "[" + index + "]";
 			}
 		}
 		return null;
@@ -214,6 +215,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 				.isNotNull(value, "la valeur doit être renseignée pour {0}", key)
 				.isFalse(value instanceof DtObject, "Vous devez poser des uiObject dans le context pas des objets métiers ({0})", key)
 				.isFalse(value instanceof DtList, "Vous devez poser des uiList dans le context pas des listes d'objets métiers ({0})", key);
+		viewContextUpdateSecurity.assertIsUpdatable(key);
 		//-----
 		if (value instanceof UiObject) {
 			reverseUiObjectIndex.put(value, key);
@@ -301,6 +303,13 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	}
 
 	/**
+	 * Fixe le mode d'update : filtré ou non (par les champs éditables de l'ihm).
+	 */
+	public ViewContextUpdateSecurity viewContextUpdateSecurity() {
+		return viewContextUpdateSecurity;
+	}
+
+	/**
 	 * Génère un nouvel Id et passe le context en modifiable.
 	 */
 	public void makeModifiable() {
@@ -342,9 +351,9 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @param dto Objet à publier
 	 */
 	public <O extends DtObject> void publish(final String contextKey, final O dto) {
-		final UiObject<O> strutsUiObject = new MapUiObject<>(dto);
-		strutsUiObject.setInputKey(contextKey);
-		put(contextKey, strutsUiObject);
+		final UiObject<O> mapUiObject = new MapUiObject<>(dto, viewContextUpdateSecurity);
+		mapUiObject.setInputKey(contextKey);
+		put(contextKey, mapUiObject);
 	}
 
 	/**
@@ -358,14 +367,14 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	}
 
 	/**
-	 * @return objet métier valid�. Lance une exception si erreur.
+	 * @return objet métier validé. Lance une exception si erreur.
 	 */
 	public <O extends DtObject> O readDto(final String contextKey, final UiMessageStack uiMessageStack) {
 		return readDto(contextKey, new DefaultDtObjectValidator<>(), uiMessageStack);
 	}
 
 	/**
-	 * @return objet métier valid�. Lance une exception si erreur.
+	 * @return objet métier validé. Lance une exception si erreur.
 	 */
 	public <O extends DtObject> O readDto(final String contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
 		checkErrors(contextKey, uiMessageStack);
@@ -377,16 +386,22 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		return validatedDto;
 	}
 
-	public void addKeyForClient(final String object, final String fieldName) {
+	public void addKeyForClient(final String object, final String fieldName, final String rowIndex, final boolean modifiable) {
 		Assertion.check().isTrue(containsKey(object), "No {0} in context", object);
 		//----
 		keysForClient.computeIfAbsent(object, k -> new HashSet<>()).add(fieldName);
+		if (modifiable) {
+			viewContextUpdateSecurity.addUpdatableKey(object, fieldName, rowIndex);
+		}
 	}
 
-	public void addKeyForClient(final String object) {
+	public void addKeyForClient(final String object, final boolean modifiable) {
 		Assertion.check().isTrue(containsKey(object), "No {0} in context", object);
 		//----
 		keysForClient.put(object, Collections.emptySet());// notmodifiable because used only for primitives
+		if (modifiable) {
+			viewContextUpdateSecurity.addUpdatableKey(object);
+		}
 	}
 
 	public void addProtectedValueTransformer(final String objectKey, final String objectFieldName) {
@@ -482,7 +497,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 			final String listDisplayFieldName = params.get(3);
 
 			// if value is null the transformer return null
-			return value -> value != null ? ((AbstractUiListUnmodifiable) getUiList(listKey)).getById(listKeyFieldName, value).getString(listDisplayFieldName) : null;
+			return value -> value != null ? ((AbstractUiListUnmodifiable) getUiList(listKey)).getById(listKeyFieldName, value).getSingleInputValue(listDisplayFieldName) : null;
 		}
 		throw new IllegalStateException(StringUtil.format("Unsupported ValueTransformer type {0}", transformerType));
 	}

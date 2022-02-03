@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,19 +23,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.xcontent.XContentBuilder;
+import org.elasticsearch.xcontent.XContentFactory;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
-import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DataAccessor;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.structure.definitions.DtField.FieldType;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
@@ -89,16 +89,15 @@ public final class ESDocumentCodec {
 	 * Les highlights sont ajoutés avant ou après (non determinable).
 	 * @param <S> Type du sujet représenté par ce document
 	 * @param <I> Type d'object indexé
-	 * @param indexDefinition Definition de l'index
+	 * @param indexDefinition DtDefinition de l'index
 	 * @param searchHit Resultat ElasticSearch
 	 * @return Objet logique de recherche
 	 */
-	public <S extends KeyConcept, I extends DtObject> SearchIndex<S, I> searchHit2Index(final SearchIndexDefinition indexDefinition, final SearchHit searchHit) {
+	public <I extends DtObject> I searchHit2DtIndex(final DtDefinition indexDtDefinition, final SearchHit searchHit) {
 		/* On lit du document les données persistantes. */
 		/* 1. UID */
 		final String urn = searchHit.getId();
 		final UID uid = io.vertigo.datamodel.structure.model.UID.of(urn);
-
 		/* 2 : Result stocké */
 		final I resultDtObjectdtObject;
 		if (searchHit.field(FULL_RESULT) == null) {
@@ -107,7 +106,16 @@ public final class ESDocumentCodec {
 			resultDtObjectdtObject = decode(searchHit.field(FULL_RESULT).getValue());
 		}
 		//-----
-		return SearchIndex.createIndex(indexDefinition, uid, resultDtObjectdtObject);
+		final DtDefinition resultDtDefinition = DtObjectUtil.findDtDefinition(resultDtObjectdtObject);
+		Assertion.check()
+				.isNotNull(uid)
+				.isNotNull(indexDtDefinition)
+				.isNotNull(resultDtObjectdtObject)
+				//On vérifie la consistance des données.
+				.isTrue(indexDtDefinition.equals(resultDtDefinition),
+						"Le type l'objet indexé ({1}) ne correspond pas à celui de l'index ({1})", resultDtDefinition.getName(), indexDtDefinition.getName());
+		//-----
+		return resultDtObjectdtObject;
 	}
 
 	/**
@@ -181,7 +189,8 @@ public final class ESDocumentCodec {
 
 	private static List<DtField> getNotStoredFields(final DtDefinition dtDefinition) {
 		return dtDefinition.getFields().stream()
-				.filter(dtField -> !isIndexStoredDomain(dtField.getSmartTypeDefinition()))
+				//We don't store (in Result) computed fields and fields with a "notStored" domain
+				.filter(dtField -> !isIndexStoredDomain(dtField.getSmartTypeDefinition()) || dtField.getType() == FieldType.COMPUTED)
 				.collect(Collectors.toList());
 	}
 

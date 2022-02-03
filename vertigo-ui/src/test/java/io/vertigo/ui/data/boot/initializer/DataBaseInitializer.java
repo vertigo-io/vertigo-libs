@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,8 +60,8 @@ public class DataBaseInitializer implements ComponentInitializer {
 	@Override
 	public void init() {
 		createDataBase();
+		createInitialProfils();
 		createInitialMovies(movieDao, transactionManager);
-
 	}
 
 	private void createDataBase() {
@@ -90,6 +90,15 @@ public class DataBaseInitializer implements ComponentInitializer {
 
 	private static void execCallableStatement(final SqlConnection connection, final SqlManager sqlManager, final String sql) throws SQLException {
 		sqlManager.executeUpdate(SqlStatement.builder(sql).build(), Collections.emptyMap(), connection);
+	}
+
+	private void createInitialProfils() {
+		try (final SqlConnection connection = sqlManager.getConnectionProvider(SqlManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection()) {
+			execSqlScript(connection, "sqlgen/init_masterdata_profils.sql");
+			connection.commit();
+		} catch (final SQLException e) {
+			throw WrappedException.wrap(e, "Can't insert initial profils");
+		}
 	}
 
 	private static void createInitialMovies(final MovieDAO movieDao, final VTransactionManager transactionManager) {

@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 				.isTrue(indexDefinition.getKeyConceptDtDefinition().equals(uid.getDefinition()),
 						"Le type de l'URI de l'objet indexé  ({0}) ne correspond pas au KeyConcept de l'index ({1})", uid.toString(), indexDefinition.getKeyConceptDtDefinition().getName())
 				.isTrue(indexDefinition.getIndexDtDefinition().equals(DtObjectUtil.findDtDefinition(indexDtObject)),
-						"Le type l'objet indexé ({1}) ne correspond pas à celui de l'index ({1})", DtObjectUtil.findDtDefinition(indexDtObject).getName(), indexDefinition.getIndexDtDefinition().getName());
+						"Le type l'objet indexé ({0}) ne correspond pas à celui de l'index ({1})", DtObjectUtil.findDtDefinition(indexDtObject).getName(), indexDefinition.getIndexDtDefinition().getName());
 		//-----
 		this.uid = uid;
 		this.indexDefinition = indexDefinition;
