@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,9 @@ import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
+import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.node.Node;
+import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 
 /**
@@ -66,6 +69,26 @@ public final class SelectedFacetValues implements Serializable {
 		public SelectedFacetValuesBuilder add(final FacetDefinition definition, final FacetValue facetFilter) {
 			selectedFacetValuesByFacetName.computeIfAbsent(definition.getName(), k -> new ArrayList<>())
 					.add(facetFilter);
+			return this;
+		}
+
+		/**
+		 * @param facetDefinitionName Facet definition name
+		 * @param facetValueCode FacetValue code to add (search the facet range, or use this code as value for facet term)
+		 * @return this SelectedFacetValues
+		 */
+		public SelectedFacetValuesBuilder add(final String facetDefinitionName, final String facetValueCode) {
+			final FacetDefinition facetDefinition = Node.getNode().getDefinitionSpace().resolve(facetDefinitionName, FacetDefinition.class);
+			if (facetDefinition.isRangeFacet()) {
+				for (final FacetValue facet : facetDefinition.getFacetRanges()) {
+					if (facet.getLabel().getDisplay().equals(facetValueCode) || facet.getCode().equals(facetValueCode)) {
+						add(facetDefinition, facet);
+						break;
+					}
+				}
+			} else {
+				add(facetDefinition, new FacetValue(facetValueCode, ListFilter.of(facetDefinition.getDtField().getName() + ":" + facetValueCode), MessageText.of(facetValueCode)));
+			}
 			return this;
 		}
 

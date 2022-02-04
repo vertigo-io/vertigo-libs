@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,6 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 		this.uri = null; //new DtListURIForValueObject(dtDefinition);
 		this.dtObjects = new ArrayList<>(); //
 		this.metaDatas = new LinkedHashMap<>();
-
 	}
 
 	/**
@@ -103,16 +102,28 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 */
 	@SafeVarargs
 	public static <D extends DtObject> DtList<D> of(final D dto, final D... dtos) {
+		return DtList.of(dto, Arrays.asList(dtos));
+	}
+
+	/**
+	 * Static method factory for convenient creation of DtList using 'of' pattern.
+	 * @param dto the mandatory dto to add  which defines the type.
+	 * @param dtos Dtos to add.
+	 * @return the created DtList.
+	 * @param <D> Type of this list
+	 */
+	public static <D extends DtObject> DtList<D> of(final D dto, final List<D> dtos) {
 		Assertion.check()
 				.isNotNull(dto)
 				.isNotNull(dtos);
-		Arrays.stream(dtos)
+
+		dtos.stream()
 				.forEach(other -> Assertion.check().isTrue(dto.getClass().equals(other.getClass()), "all dtos must have the same type"));
 		//---
 		final DtList<D> dtList = new DtList<>(DtObjectUtil.findDtDefinition(dto));
 		//---
 		dtList.add(dto);
-		dtList.addAll(Arrays.asList(dtos));
+		dtList.addAll(dtos);
 		return dtList;
 	}
 
@@ -167,6 +178,16 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 
 	/** {@inheritDoc} */
 	@Override
+	public void add(final int index, final D dto) {
+		Assertion.check().isNotNull(dto);
+		final DtDefinition foundDtDefinition = DtObjectUtil.findDtDefinition(dto);
+		Assertion.check().isTrue(getDefinition().equals(foundDtDefinition), "Ne peut pas inserer un dto '{0}' dans une collection '{1}'", foundDtDefinition, getDefinition());
+		//-----
+		dtObjects.add(index, dto);
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public D remove(final int row) {
 		return dtObjects.remove(row);
 	}
@@ -174,7 +195,10 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	/** {@inheritDoc} */
 	@Override
 	public List<D> subList(final int start, final int end) {
-		throw new UnsupportedOperationException();
+		if (start == end) {
+			return DtList.of(dtObjects.get(start), Collections.emptyList());
+		}
+		return DtList.of(dtObjects.get(start), dtObjects.subList(start + 1, end));
 	}
 
 	//==========================================================================

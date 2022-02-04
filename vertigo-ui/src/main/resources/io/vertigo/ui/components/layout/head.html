@@ -9,17 +9,17 @@
 <th:block th:fragment="head-meta(vuejsDevMode)" 
         th:with="isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false}">
 		<link th:href="@{/vertigo-ui/static/3rdParty/roboto/v20/css/roboto.css}" rel="stylesheet" type="text/css"/>
-		<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v50/css/materialIcons.css}" rel="stylesheet" type="text/css"/>
-		<link th:href="@{/vertigo-ui/static/3rdParty/use.fontawesome.com/releases/v5.7.1/css/all.min.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v121/css/materialIcons.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/use.fontawesome.com/releases/v5.15.4/css/all.min.css}" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/ionicons@4.6.4-1/dist/css/ionicons.min.css}" rel="stylesheet" type="text/css"/>
-		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/@mdi/font@5.5.55/css/materialdesignicons.min.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css}" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css}" rel="stylesheet" type="text/css"/>
-		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.15.19/dist/quasar.min.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.17.7/dist/quasar.min.css}" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/css/vertigo-ui.css}" rel="stylesheet" type="text/css"/>
 		
-		<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.15.19/dist/quasar.ie.polyfills.umd.min.js}"></script>
-		<script th:if="${!isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@2.6.13/dist/vue.min.js}"></script>
-        <script th:if="${isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@2.6.13/dist/vue.js}"></script>
+		<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.17.7/dist/quasar.ie.polyfills.umd.min.js}"></script>
+		<script th:if="${!isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js}"></script>
+        <script th:if="${isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js}"></script>
         <script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue-cookies@1.7.4/vue-cookies.js}"></script>
-    	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js}" ></script>
+    	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/axios@0.24.0/dist/axios.min.js}" ></script>
 </th:block>

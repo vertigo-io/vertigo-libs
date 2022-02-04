@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,11 @@ public enum SearchResource implements LocaleMessageKey {
 	/**
 	 * Search syntax error.\nDon't use ( ) [ ] or check you closed them. OR and AND are supported but must be between two keywords.
 	 */
-	DYNAMO_SEARCH_QUERY_SYNTAX_ERROR,
+	DATAFACTORY_SEARCH_QUERY_SYNTAX_ERROR,
+
+	/**
+	 * Search index struct error.\nSorted or aggregated fields must be declared as keyword, sortable or facetable in your SmartType.
+	 */
+	DATAFACTORY_SEARCH_INDEX_FIELDDATA_ERROR,
 
 }

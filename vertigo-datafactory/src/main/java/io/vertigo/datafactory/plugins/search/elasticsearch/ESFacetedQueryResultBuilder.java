@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation.Bucket;
 import org.elasticsearch.search.aggregations.bucket.filter.Filter;
+import org.elasticsearch.search.aggregations.metrics.NumericMetricsAggregation;
 import org.elasticsearch.search.aggregations.metrics.TopHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 
@@ -53,7 +54,6 @@ import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 
-//vérifier
 /**
  * Requête physique d'accès à ElasticSearch.
  * Le driver exécute les requêtes de façon synchrone dans le contexte transactionnelle de la ressource.
@@ -208,7 +208,14 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 			for (final FacetDefinition facetDefinition : queryDefinition.getFacetDefinitions()) {
 				final Aggregation aggregation = obtainAggregation(queryResponse, facetDefinition.getName());
 				if (aggregation != null) {
-					final Facet facet = createFacet(facetDefinition, (MultiBucketsAggregation) aggregation);
+					final Facet facet;
+					if (aggregation instanceof MultiBucketsAggregation) {
+						facet = createFacet(facetDefinition, (MultiBucketsAggregation) aggregation);
+					} else if (aggregation instanceof NumericMetricsAggregation.SingleValue) {
+						facet = createFacet(facetDefinition, (NumericMetricsAggregation.SingleValue) aggregation);
+					} else {
+						throw new UnsupportedOperationException("Aggregation " + aggregation.getClass().getSimpleName() + " unsupported (" + aggregation.getName() + ")");
+					}
 					facets.add(facet);
 				}
 			}
@@ -222,6 +229,15 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 			return filterAggregation.getAggregations().get(name);
 		}
 		return queryResponse.getAggregations().get(name);
+	}
+
+	private static Facet createFacet(final FacetDefinition facetDefinition, final NumericMetricsAggregation.SingleValue aggregation) {
+		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
+		final FacetValue facetValue = new FacetValue(aggregation.getName(), ListFilter.of("_noOp:_"), MessageText.of(aggregation.getName()));
+		final int decimalPrecision = Integer.parseInt(facetDefinition.getCustomParams().getOrDefault(CustomAggregationBuilder.DECIMAL_PRECISION_TO_PARAM, "0"));
+		final long precisionMult = (long) Math.pow(10, decimalPrecision);
+		facetValues.put(facetValue, Math.round(aggregation.value() * precisionMult));
+		return new Facet(facetDefinition, facetValues);
 	}
 
 	private static Facet createFacet(final FacetDefinition facetDefinition, final MultiBucketsAggregation aggregation) {

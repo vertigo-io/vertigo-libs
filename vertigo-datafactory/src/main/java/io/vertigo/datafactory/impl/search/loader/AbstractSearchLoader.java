@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,8 +104,7 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 			}
 
 			private SearchChunk<K> nextChunk(final SearchChunk<K> previousChunk) {
-				final List<UID<K>> previousUris = previousChunk.getAllUIDs();
-				final P lastId = (P) previousUris.get(previousUris.size() - 1).getId();
+				final P lastId = (P) previousChunk.getLastUID().getId();
 				// call loader service
 				final List<UID<K>> uris = doLoadNextURI(lastId, dtDefinition);
 				return new SearchChunk<>(uris);

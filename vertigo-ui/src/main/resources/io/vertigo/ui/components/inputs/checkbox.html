@@ -1,6 +1,6 @@
 <th:block th:fragment="checkbox-edit(object, field, label, label_attrs, input_attrs)" vu:alias="checkbox" vu:selector="${viewMode=='edit'}" 
 	  th:assert="${object} != null and ${field} != null">
-	<vu:include-data object="${object}" field="${field}"/>
+	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 	<vu:label-edit object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}">
 		<q-checkbox 
 			th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"

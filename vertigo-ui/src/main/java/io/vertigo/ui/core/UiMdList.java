@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,8 +72,9 @@ final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
 			try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
 				lazyDtList = entityStoreManager.get().<E> findAll(dtListURIForMasterData);
 			}
-			if (lazyDtList.size() < 1000) {
-				//load UiObjects
+
+			//load UiObjects
+			if (lazyDtList.size() < NB_MAX_ELEMENTS) {
 				initUiObjectByIdIndex();
 			}
 		}

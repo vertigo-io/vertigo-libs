@@ -84,13 +84,13 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>9.4.40.v20210413</version>
+			<version>9.4.44.v20210927</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
 			<artifactId>websocket-server</artifactId>
-			<version>9.4.40.v20210413</version>
+			<version>9.4.44.v20210927</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -99,7 +99,7 @@
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
-			<version>4.3.3</version>
+			<version>4.4.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -134,25 +134,19 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>apache-jstl</artifactId>
-			<version>9.4.40.v20210413</version>
+			<version>9.4.44.v20210927</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-plus</artifactId>
-			<version>9.4.40.v20210413</version>
+			<version>9.4.44.v20210927</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>9.4.40.v20210413</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.30</version>
+			<version>9.4.44.v20210927</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

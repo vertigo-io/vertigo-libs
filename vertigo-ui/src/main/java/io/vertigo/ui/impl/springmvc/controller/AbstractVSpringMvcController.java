@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import java.lang.annotation.Target;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -126,6 +128,14 @@ public abstract class AbstractVSpringMvcController {
 	 */
 	protected boolean useDefaultViewName() {
 		return true;
+	}
+
+	@InitBinder()
+	public void initBinder(final WebDataBinder binder) {
+		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
+		final ViewContext viewContext = (ViewContext) attributes.getAttribute("viewContext", RequestAttributes.SCOPE_REQUEST);
+		final ViewContextMap viewContextMap = viewContext.asMap();
+		binder.setAllowedFields(viewContextMap.viewContextUpdateSecurity().getAllowedFields());
 	}
 
 	private static String getDefaultViewName(final AbstractVSpringMvcController controller) {

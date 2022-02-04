@@ -2,7 +2,7 @@
 	vu:alias="text-field" vu:selector="${viewMode=='edit'}"
 	th:with="myLabel=${label?:model.util.label(object + '.' + field)}, required=${model.util.required(object + '.' + field)}"
 	th:assert="${object} != null and ${field} != null">
-	<vu:include-data object="${object}" field="${field}"/>
+	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 	<q-input 
 		th:v-model="${model.util.vueDataKey(object, field, rowIndex)}" 
 		th::name="${model.util.contextKey(object, field, rowIndex)}"

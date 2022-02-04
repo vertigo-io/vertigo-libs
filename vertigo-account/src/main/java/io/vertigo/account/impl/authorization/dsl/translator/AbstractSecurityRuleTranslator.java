@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	private static final Pattern BEGIN_LINE_TRIM_PATTERN = Pattern.compile("^\\s+");
 	private static final Pattern END_LINE_TRIM_PATTERN = Pattern.compile("\\s+$");
 	private static final Pattern MULTIPLE_WHITESPACE_PATTERN = Pattern.compile("\\s+");
-	protected static final Pattern EMPTY_QUERY_PATTERN = Pattern.compile("^\\(\\)$");
+	protected static final Pattern EMPTY_QUERY_PATTERN = Pattern.compile("^(\\(\\))?$");
 
 	private SecuredEntity mySecuredEntity;
 	private final List<RuleMultiExpression> myMultiExpressions = new ArrayList<>();
@@ -93,7 +93,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	 * @param userCriteria Criteria
 	 * @return this builder
 	 */
-	public final S withCriteria(final Map<String, List<Serializable>> userCriteria) {
+	public final S withSecurityKeys(final Map<String, List<Serializable>> userCriteria) {
 		Assertion.check()
 				.isNotNull(userCriteria)
 				.isNull(myUserCriteria, "criteria was already set : {0}", myUserCriteria);

@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -38,8 +37,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import io.vertigo.account.authorization.AuthorizationManager;
-import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.basics.formatter.FormatterDefault;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
@@ -78,10 +75,20 @@ public final class UiUtil implements Serializable {
 	/**
 	 * @param uiObject Object du context
 	 * @return Nom de l'object dans le context
+	 * @deprecated not used : removed soon
 	 */
+	@Deprecated
 	public static String contextKey(final UiObject<?> uiObject) {
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
-		return viewContext.findKey(uiObject);
+		final String fieldKey = viewContext.findKey(uiObject); //key or key[row]
+		final int rowIndex = fieldKey.indexOf('[');
+		String contextKey;
+		if (rowIndex == -1) {
+			contextKey = "vContext[" + fieldKey + "]";
+		} else {
+			contextKey = "vContext[" + fieldKey.substring(0, rowIndex) + "]" + fieldKey.substring(rowIndex);
+		}
+		return contextKey;
 	}
 
 	/**
@@ -111,7 +118,7 @@ public final class UiUtil implements Serializable {
 	 * @param object Object in context
 	 * @param field field of object
 	 * @param row index in list (nullable)
-	 * @return Name in context (use for input name)
+	 * @return Name in context (use for getting key)
 	 */
 	public static String contextGet(final String object, final String field, final String row) {
 		final boolean useQuotes = row != null && !row.matches("[0-9]+"); //row is not number
@@ -422,15 +429,5 @@ public final class UiUtil implements Serializable {
 				.isNotNull(dtDefinition, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
 		return dtDefinition.getField(fieldName);
 
-	}
-
-	// ----------------- Security ---------------------------------
-
-	public static boolean hasAuthorization(final String... authorizationNames) {
-		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
-		return authorizationManager.hasAuthorization(
-				Arrays.stream(authorizationNames)
-						.map(authName -> (AuthorizationName) () -> "Atz" + authName)
-						.toArray(AuthorizationName[]::new));
 	}
 }

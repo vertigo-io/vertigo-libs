@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -132,16 +132,21 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withKeyConcept("DtItem")
 						.withIndexDtDefinition("DtItem")
 						.withLoaderId("ItemSearchLoader")
-						.withCopyToFields("allText", "manufacturer", "model", "description", "year", "kilo", "price", "motorType"),
+						.withCopyToFields("allText", "manufacturer", "model", "description", "itemYear", "kilo", "price", "motorType"),
 
 				new SearchIndexDefinitionSupplier("IdxItem")
 						.withKeyConcept("DtItem")
 						.withIndexDtDefinition("DtItem")
 						.withLoaderId("ItemSearchLoader")
-						.withCopyToFields("allText", "manufacturer", "model", "description", "year", "kilo", "price", "motorType"),
+						.withCopyToFields("allText", "manufacturer", "model", "description", "itemYear", "kilo", "price", "motorType"),
 				//---
 				// FacetTermDefinition
 				//-----
+				new FacetTermDefinitionSupplier("FctBadItem")
+						.withDtDefinition("DtItem")
+						.withFieldName("notFacetableString")
+						.withLabel("bad facet")
+						.withOrder(FacetOrder.count),
 				new FacetTermDefinitionSupplier("FctDescriptionItem")
 						.withDtDefinition("DtItem")
 						.withFieldName("description")
@@ -170,11 +175,11 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withOrder(FacetOrder.alpha),
 				new FacetRangeDefinitionSupplier("FctYearItem")
 						.withDtDefinition("DtItem")
-						.withFieldName("year")
+						.withFieldName("itemYear")
 						.withLabel("Par date")
-						.withRange("R1", "year:[* TO 2000]", "avant 2000")
-						.withRange("R2", "year:[2000 TO 2005]", "2000-2005")
-						.withRange("R3", "year:[2005 TO *]", "apres 2005")
+						.withRange("R1", "itemYear:[* TO 2000]", "avant 2000")
+						.withRange("R2", "itemYear:[2000 TO 2005]", "2000-2005")
+						.withRange("R3", "itemYear:[2005 TO *]", "apres 2005")
 						.withOrder(FacetOrder.definition),
 				new FacetRangeDefinitionSupplier("FctLocalisationItem")
 						.withDtDefinition("DtItem")
@@ -202,12 +207,41 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withDtDefinition("DtItem")
 						.withLabel("Par geohash")
 						.withFieldName("localisation") //fieldname in index
+						.withParams("_type", "geohash_grid")
 						.withParams("geohash_grid", "{\"field\" : \"localisation\",\"precision\" : #precision# }")
-						.withParams("innerWriteTo", "writeVInt(#precision#);writeVInt(1000);writeVInt(-1);writeGeoPoint();writeGeoPoint();") //same as GeoGridAggregationBuilder.innerWriteTo
+						.withParams("_innerWriteTo", "writeVInt(#precision#);writeVInt(1000);writeVInt(-1);writeGeoPoint();writeGeoPoint();") //same as GeoGridAggregationBuilder.innerWriteTo
+						.withOrder(FacetOrder.count),
+				new FacetCustomDefinitionSupplier("FctCustomSumPriceItem")
+						.withDtDefinition("DtItem")
+						.withLabel("Sum Price")
+						.withFieldName("price") //fieldname in index
+						.withParams("_type", "sum")
+						.withParams("sum", "{\"field\" : \"price\" }")
+						.withOrder(FacetOrder.count),
+				new FacetCustomDefinitionSupplier("FctCustomAvgKiloItem")
+						.withDtDefinition("DtItem")
+						.withLabel("Sum Kilo")
+						.withFieldName("kilo") //fieldname in index
+						.withParams("_type", "avg")
+						.withParams("avg", "{\"field\" : \"kilo\" }")
+						.withParams("_decimalPrecision", "2")
+						.withOrder(FacetOrder.count),
+				new FacetCustomDefinitionSupplier("FctCustomAvgYearItem")
+						.withDtDefinition("DtItem")
+						.withLabel("Avg Year")
+						.withFieldName("itemYear") //fieldname in index
+						.withParams("_type", "avg")
+						.withParams("avg", "{\"field\" : \"itemYear\" }")
+						.withParams("_decimalPrecision", "0")
 						.withOrder(FacetOrder.count),
 				//---
 				// FacetedQueryDefinition
 				//-----
+				new FacetedQueryDefinitionSupplier("QryItemBadFacet")
+						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
+						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
+						.withCriteriaSmartType("STyString")
+						.withFacet("FctBadItem"),
 				new FacetedQueryDefinitionSupplier("QryItemFacet")
 						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
@@ -216,6 +250,13 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withFacet("FctManufacturerItem")
 						.withFacet("FctManufacturerItemAlpha")
 						.withFacet("FctYearItem"),
+				new FacetedQueryDefinitionSupplier("QryItemCustomAggFacet")
+						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
+						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
+						.withCriteriaSmartType("STyString")
+						.withFacet("FctCustomSumPriceItem")
+						.withFacet("FctCustomAvgKiloItem")
+						.withFacet("FctCustomAvgYearItem"),
 				new FacetedQueryDefinitionSupplier("QryItemOptionalFacet")
 						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")

@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,8 +63,8 @@ public final class MyNodeConfig {
 								Param.of("name", "orchestra"),
 								Param.of("dataBaseClass", H2DataBase.class.getName()),
 								Param.of("jdbcDriver", org.h2.Driver.class.getName()),
-								Param.of("jdbcUrl", "jdbc:h2:~/vertigo/orchestra;AUTO_SERVER=TRUE"))
-						//Param.of("jdbcUrl", "jdbc:h2:mem:orchestra;MVCC=FALSE"))
+								//Param.of("jdbcUrl", "jdbc:h2:~/vertigo/orchestra;AUTO_SERVER=TRUE"))
+								Param.of("jdbcUrl", "jdbc:h2:mem:orchestra"))
 						.build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()

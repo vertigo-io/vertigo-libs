@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.data.TestSmartTypes;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.data.model.DtDefinitions;
-import io.vertigo.account.identityprovider.model.User;
+import io.vertigo.account.identityprovider.model.TestUser;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.node.AutoCloseableNode;
@@ -97,7 +97,7 @@ abstract class AbstractIdentityProviderManagerTest {
 								Param.of("ldapReaderLogin", "cn=admin,dc=vertigo,dc=io"),
 								Param.of("ldapReaderPassword", "v3rt1g0"),
 								Param.of("ldapUserAuthAttribute", "cn"),
-								Param.of("userDtDefinitionName", "DtUser"),
+								Param.of("userDtDefinitionName", "DtTUser"),
 								Param.of("ldapUserAttributeMapping", "usrId:cn, fullName:description"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
@@ -122,7 +122,7 @@ abstract class AbstractIdentityProviderManagerTest {
 
 	@Test
 	public void testPhoto() {
-		final List<User> users = identityProviderManager.getAllUsers();
+		final List<TestUser> users = identityProviderManager.getAllUsers();
 		//Before the photo is the default photo
 		final Optional<VFile> photo = identityProviderManager.getPhoto(users.get(1).getUID());
 		Assertions.assertTrue(photo.isPresent());
@@ -132,14 +132,14 @@ abstract class AbstractIdentityProviderManagerTest {
 
 	@Test
 	public void testNoPhoto() {
-		final List<User> users = identityProviderManager.getAllUsers();
+		final List<TestUser> users = identityProviderManager.getAllUsers();
 		//Before the photo is the default photo
 		Assertions.assertFalse(identityProviderManager.getPhoto(users.get(0).getUID()).isPresent());
 	}
 
 	@Test
 	public void testUserByAuthToken() {
-		final User user = identityProviderManager.getUserByAuthToken(adminAuthToken());
+		final TestUser user = identityProviderManager.getUserByAuthToken(adminAuthToken());
 		Assertions.assertNotNull(user, "Can't find user by login ");
 	}
 

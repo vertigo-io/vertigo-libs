@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public final class DslSecurityRulesBuilderTest {
 				{ "(ALL=${query} || OTHER='VALID') && (ALL=${query} || OTHER='VALID')", "Test",
 						"(ALL=Test OR OTHER='VALID') AND (ALL=Test OR OTHER='VALID')",
 						"(+(ALL:Test OTHER:'VALID') +(ALL:Test OTHER:'VALID'))" }, //6
-				//{ "ALL>${query}", "'Test'", "ALL like 'Test' || '%'" }, //3
+				{ "ALL>${query}", "'Test'", "ALL>'Test'", "(+ALL:>'Test')" }, //7
 
 		};
 		testSearchAndSqlQuery(testQueries);
@@ -71,7 +71,7 @@ public final class DslSecurityRulesBuilderTest {
 	private void testSqlQuery(final String[] testParam, final int i) {
 		final SqlSecurityRuleTranslator securityRuleTranslator = new SqlSecurityRuleTranslator()
 				.withRule(testParam[0])
-				.withCriteria(Collections.singletonMap("query", Collections.singletonList(testParam[1])));
+				.withSecurityKeys(Collections.singletonMap("query", Collections.singletonList(testParam[1])));
 		final String result = securityRuleTranslator.toSql();
 		final String expectedResult = testParam[Math.min(getSqlResult(), testParam.length - 1)];
 		Assertions.assertEquals(expectedResult, result, "Built sql query #" + i + " incorrect");
@@ -80,7 +80,7 @@ public final class DslSecurityRulesBuilderTest {
 	private void testSearchQuery(final String[] testParam, final int i) {
 		final SearchSecurityRuleTranslator securityRuleTranslator = new SearchSecurityRuleTranslator()
 				.withRule(testParam[0])
-				.withCriteria(Collections.singletonMap("query", Collections.singletonList(testParam[1])));
+				.withSecurityKeys(Collections.singletonMap("query", Collections.singletonList(testParam[1])));
 		final String result = securityRuleTranslator.toSearchQuery();
 		final String expectedResult = testParam[Math.min(getSearchResult(), testParam.length - 1)];
 		Assertions.assertEquals(expectedResult, result, "Built search query #" + i + " incorrect");

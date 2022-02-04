@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,15 @@ package io.vertigo.basics.constraint;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 
 /**
- * Contrainte vérifiant que l'objet est : <ul>
+ * Contrainte vérifiant que l'objet est :
+ * <ul>
  * <li>soit un Long comprenant au maximum le nombre de chiffres précisé à la construction (nombres de digits)</li>
  * <li>soit null</li>
- * </ul><br>
+ * </ul>
+ * <br>
  * On rappelle que le maximum d'un type Long est compris entre 1O^18 et 10^19 <br>
  * On conseille donc d'utiliser 10^18 comme structure de stockage max en BDD : donc number(18) <br>
  * Si vous souhaitez flirter avec les 10^19 alors n'utilisez pas de contraintes.
@@ -46,13 +48,13 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 	 */
 	private final long minValue;
 
-	private final LocaleMessageText errorMessage;
+	private final MessageText errorMessage;
 
 	/**
 	 * @param args Liste des arguments réduite à un seul castable en long.
 	 * Cet argument correspond au nombre de chifres maximum authorisé sur le Long.
 	 */
-	public ConstraintLongLength(final String args, final Optional<String> overrideMessageOpt) {
+	public ConstraintLongLength(final String args, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
 		super(args);
 		//-----
 		Assertion.check().isTrue(getMaxLength() < MAX_LENGHT, "Longueur max doit être strictement inférieure à " + MAX_LENGHT);
@@ -64,9 +66,8 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 		maxValue = tmpMaxValue;
 		minValue = -tmpMaxValue;
 		//---
-		errorMessage = overrideMessageOpt.isPresent()
-				? LocaleMessageText.of(overrideMessageOpt.get())
-				: LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_LONGLENGTH_EXCEEDED, minValue, maxValue);
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
+				() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_LONGLENGTH_EXCEEDED, minValue, maxValue));
 	}
 
 	/** {@inheritDoc} */
@@ -78,7 +79,7 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 
 	/** {@inheritDoc} */
 	@Override
-	public LocaleMessageText getErrorMessage() {
+	public MessageText getErrorMessage() {
 		return errorMessage;
 	}
 }

@@ -1,3 +1,20 @@
+/**
+ * vertigo - application development platform
+ *
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.vertigo.vega.impl.servlet.filter.authentication.aad;
 
 import java.util.Date;
@@ -16,13 +33,13 @@ import io.vertigo.core.util.StringUtil;
 /**
  * Helpers for managing session
  */
-class SessionManagementHelper {
+final class SessionManagementHelper {
 
-	static final String STATE = "state";
+	protected static final String STATE = "state";
 	private static final String STATES = "states";
 	private static final Integer STATE_TTL = 3600;
 
-	static final String FAILED_TO_VALIDATE_MESSAGE = "Failed to validate data received from Authorization service - ";
+	protected static final String FAILED_TO_VALIDATE_MESSAGE = "Failed to validate data received from Authorization service - ";
 
 	static StateData validateState(final HttpSession session, final String state) throws Exception {
 		if (!StringUtil.isBlank(state)) {
@@ -41,6 +58,7 @@ class SessionManagementHelper {
 			final StateData stateData = states.get(state);
 			if (stateData != null) {
 				states.remove(state);
+				session.setAttribute(STATES, states); //needed for correct cluster sync (see fb-contrib:SCSS_SUSPICIOUS_CLUSTERED_SESSION_SUPPORT)
 				return stateData;
 			}
 		}
@@ -67,7 +85,9 @@ class SessionManagementHelper {
 		if (session.getAttribute(STATES) == null) {
 			session.setAttribute(STATES, new HashMap<String, StateData>());
 		}
-		((Map<String, StateData>) session.getAttribute(STATES)).put(state, new StateData(nonce, new Date()));
+		final Map<String, StateData> states = (Map<String, StateData>) session.getAttribute(STATES);
+		states.put(state, new StateData(nonce, new Date()));
+		session.setAttribute(STATES, states); //needed for correct cluster sync (see fb-contrib:SCSS_SUSPICIOUS_CLUSTERED_SESSION_SUPPORT)
 	}
 
 	static void storeTokenCacheInSession(final HttpServletRequest httpServletRequest, final String tokenCache) {

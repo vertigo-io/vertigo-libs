@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,6 +60,7 @@ public final class WebServiceDefinition extends AbstractDefinition<WebServiceDef
 	private final boolean needSession;
 	private final boolean sessionInvalidate;
 	private final boolean needAuthentification;
+	private final boolean needApiKey;
 
 	private final boolean accessTokenPublish;
 	private final boolean accessTokenMandatory;
@@ -87,6 +88,7 @@ public final class WebServiceDefinition extends AbstractDefinition<WebServiceDef
 			final boolean needSession,
 			final boolean sessionInvalidate,
 			final boolean needAuthentification,
+			final boolean needApiKey,
 			final boolean accessTokenPublish,
 			final boolean accessTokenMandatory,
 			final boolean accessTokenConsume,
@@ -127,6 +129,7 @@ public final class WebServiceDefinition extends AbstractDefinition<WebServiceDef
 		this.needSession = needSession;
 		this.sessionInvalidate = sessionInvalidate;
 		this.needAuthentification = needAuthentification;
+		this.needApiKey = needApiKey;
 
 		this.accessTokenPublish = accessTokenPublish;
 		this.accessTokenMandatory = accessTokenMandatory;
@@ -297,5 +300,12 @@ public final class WebServiceDefinition extends AbstractDefinition<WebServiceDef
 	 */
 	public boolean isFileAttachment() {
 		return fileAttachment;
+	}
+
+	/**
+	 * @return the needApiKey
+	 */
+	public boolean isNeedApiKey() {
+		return needApiKey;
 	}
 }

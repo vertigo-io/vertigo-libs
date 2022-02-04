@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -34,8 +33,6 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.DateUtil;
 import io.vertigo.datafactory.collections.definitions.ListFilterBuilder;
 import io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder;
-import io.vertigo.datafactory.impl.search.dsl.model.DslMultiExpression;
-import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
 
 /**
  * @author  npiedeloup
@@ -349,6 +346,8 @@ public final class DslListFilterBuilderTest {
 				{ "ALL:+\"#query#\"", "Andrey Mariette", "ALL:(+\"Andrey Mariette\")" },
 				{ "ALL:(\"#query#\")", "Andrey Mariette", "ALL:(\"Andrey Mariette\")" },
 				{ "ALL:(#query# #query#)", "Andrey Mariette", "ALL:((Andrey Mariette) (Andrey Mariette))" },
+				{ "ALL:#query#", "Noisy\\ Le\\ Sec*", "ALL:(Noisy\\ Le\\ Sec*)" },
+
 		};
 		testStringFixedQuery(testQueries);
 	}
@@ -558,9 +557,8 @@ public final class DslListFilterBuilderTest {
 	private void testStringFixedQuery(final String[]... testData) {
 		int i = 0;
 		for (final String[] testParam : testData) {
-			final List<DslMultiExpression> dslMultiExpression = DslParserUtil.parseMultiExpression(testParam[0]);
 			final ListFilter listFilter = createListFilterBuilder(String.class)
-					.withDslQuery(dslMultiExpression)
+					.withListFilterQuery(testParam[0])
 					.withCriteria(testParam[1])
 					.build();
 			final String result = listFilter.getFilterValue();
@@ -573,9 +571,8 @@ public final class DslListFilterBuilderTest {
 	private void testObjectFixedQuery(final Object[]... testData) {
 		int i = 0;
 		for (final Object[] testParam : testData) {
-			final List<DslMultiExpression> dslMultiExpression = DslParserUtil.parseMultiExpression((String) testParam[0]);
 			final ListFilter listFilter = createListFilterBuilder(Object.class)
-					.withDslQuery(dslMultiExpression)
+					.withListFilterQuery((String) testParam[0])
 					.withCriteria(testParam[1])
 					.build();
 			final String result = listFilter.getFilterValue();
@@ -590,9 +587,8 @@ public final class DslListFilterBuilderTest {
 		for (final Object[] testParam : testData) {
 			final PegNoMatchFoundException e = rootCause(
 					Assertions.assertThrows(WrappedException.class, () -> {
-						final List<DslMultiExpression> dslMultiExpression = DslParserUtil.parseMultiExpression((String) testParam[0]);
 						final ListFilter listFilter = createListFilterBuilder(Object.class)
-								.withDslQuery(dslMultiExpression)
+								.withListFilterQuery((String) testParam[0])
 								.withCriteria(testParam[1])
 								.build();
 						listFilter.getFilterValue();

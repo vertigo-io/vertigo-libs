@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 				//retirer notifs:all qui ne sert plus à rien
 				//loop on type:$type;target:$target;uuid et on déduit les autres queues de là
 				if (notification.ttlInSeconds() > 0) {
-					tx.expire("notif:" + uuid, notification.ttlInSeconds() + 24 * 60 * 60); //expire in Redis in a security way (TTL + 1 day) purge is done by daemon
+					tx.expire("notif:" + uuid, notification.ttlInSeconds() + 24 * 60 * 60L); //expire in Redis in a security way (TTL + 1 day) purge is done by daemon
 				}
 				tx.lrem("notifs:all", 0, uuid);
 				tx.lpush("notifs:all", uuid);

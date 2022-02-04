@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,25 +19,26 @@ package io.vertigo.basics.constraint;
 
 import java.util.Optional;
 
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 
 /**
  * Contrainte pour gérer la longueur des chaines de caractères.
  *
- * @author  plepaisant
+ * @author plepaisant
  */
 public final class ConstraintStringLength extends AbstractConstraintLength<String> {
 
-	private final LocaleMessageText errorMessage;
+	private final MessageText errorMessage;
 
 	/**
 	 * @param args Liste des arguments réduite à un seul castable en integer.
 	 * Cet argument correspond au nombre de caractères maximum authorisés sur la chaine de caractères.
 	 */
-	public ConstraintStringLength(final String args, final Optional<String> overrideMessageOpt) {
+	public ConstraintStringLength(final String args, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
 		super(args);
 		//---
-		errorMessage = overrideMessageOpt.isPresent() ? LocaleMessageText.of(overrideMessageOpt.get()) : LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED, Integer.toString(getMaxLength()));
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
+				() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED, Integer.toString(getMaxLength())));
 	}
 
 	/** {@inheritDoc} */
@@ -49,7 +50,7 @@ public final class ConstraintStringLength extends AbstractConstraintLength<Strin
 
 	/** {@inheritDoc} */
 	@Override
-	public LocaleMessageText getErrorMessage() {
+	public MessageText getErrorMessage() {
 		return errorMessage;
 	}
 }

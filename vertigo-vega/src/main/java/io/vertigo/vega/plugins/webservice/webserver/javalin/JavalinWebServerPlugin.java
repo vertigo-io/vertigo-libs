@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,7 +100,7 @@ public final class JavalinWebServerPlugin implements WebServerPlugin {
 
 	private static String convertJaxRsPathToJavalin(final String path) {
 		return path.replaceAll("\\(", "%28")
-				.replaceAll("\\)", "%29")
-				.replaceAll("\\{(.+?)\\}", ":$1"); //.+? : Reluctant regexp
+				.replaceAll("\\)", "%29");
+		//.replaceAll("\\{(.+?)\\}", ":$1"); //.+? : Reluctant regexp
 	}
 }

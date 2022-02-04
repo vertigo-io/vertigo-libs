@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,8 +70,9 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 					final AdapterConfig wildcardAdapterConfig = smartTypeDefinition.getAdapterConfigs().get("*");
 					Assertion.check()
 							.when(wildcardAdapters.containsKey(smartTypeDefinition.getJavaClass()), () -> Assertion.check()
-									.isTrue(wildcardAdapterConfig.adapterClass().equals(wildcardAdapters.get(smartTypeDefinition.getJavaClass()).getClass()),
-											"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered", smartTypeDefinition.getName(), smartTypeDefinition.getJavaClass(), wildcardAdapterConfig.type()));
+									.isTrue(wildcardAdapterConfig.getAdapterClass().equals(wildcardAdapters.get(smartTypeDefinition.getJavaClass()).getClass()),
+											"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered",
+											smartTypeDefinition.getName(), smartTypeDefinition.getJavaClass(), wildcardAdapterConfig.getType()));
 					//--
 					wildcardAdapters.put(smartTypeDefinition.getJavaClass(), createBasicTypeAdapter(wildcardAdapterConfig));
 				});
@@ -83,10 +84,11 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 				.forEach(tuple -> {
 					final Map<Class, BasicTypeAdapter> registeredAdapaters = adaptersByType.computeIfAbsent(tuple.val2().type(), k -> new HashMap<>());
 					Assertion.check()
-							.when(registeredAdapaters.containsKey(tuple.val1()), () -> Assertion.check()
-									.isTrue(tuple.val2().adapterClass().equals(registeredAdapaters.get(tuple.val1()).getClass()),
-											"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered", tuple.val1().getName(), tuple.val1(), tuple.val2().type()));
-					registeredAdapaters.put(tuple.val1().getJavaClass(), createBasicTypeAdapter(tuple.val2()));
+							.when(registeredAdapaters.containsKey(tuple.getVal1()), () -> Assertion.check()
+									.isTrue(tuple.getVal2().getAdapterClass().equals(registeredAdapaters.get(tuple.getVal1()).getClass()),
+											"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered",
+											tuple.getVal1().getName(), tuple.getVal1(), tuple.getVal2().getType()));
+					registeredAdapaters.put(tuple.getVal1().getJavaClass(), createBasicTypeAdapter(tuple.getVal2()));
 				});
 
 	}
@@ -100,9 +102,11 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 		return smartTypeDefinition.getConstraintConfigs()
 				.stream()
 				.map(constraintConfig -> {
-					final Optional<String> msgOpt = StringUtil.isBlank(constraintConfig.msg()) ? Optional.empty() : Optional.of(constraintConfig.msg());
-					final Constructor<? extends Constraint> constructor = ClassUtil.findConstructor(constraintConfig.constraintClass(), new Class[] { String.class, Optional.class });
-					return ClassUtil.newInstance(constructor, new Object[] { constraintConfig.arg(), msgOpt });
+					final Optional<String> msgOpt = StringUtil.isBlank(constraintConfig.getMsg()) ? Optional.empty() : Optional.of(constraintConfig.getMsg());
+					final Optional<String> resourceMsgOpt = StringUtil.isBlank(constraintConfig.getResourceMsg()) ? Optional.empty() : Optional.of(constraintConfig.getResourceMsg());
+					final Constructor<? extends Constraint> constructor = ClassUtil.findConstructor(constraintConfig.getConstraintClass(),
+							new Class[] { String.class, Optional.class, Optional.class });
+					return ClassUtil.newInstance(constructor, new Object[] { constraintConfig.getArg(), msgOpt, resourceMsgOpt });
 				})
 				.collect(Collectors.toList());
 	}

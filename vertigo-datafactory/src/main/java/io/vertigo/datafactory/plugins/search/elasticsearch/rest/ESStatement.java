@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,10 +39,10 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.CountRequest;
 import org.elasticsearch.client.core.CountResponse;
-import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
+import org.elasticsearch.xcontent.XContentBuilder;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
@@ -165,7 +165,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			final long deleted = response.getDeleted();
 			LOGGER.debug("Removed {} elements", deleted);
 		} catch (final SearchPhaseExecutionException e) {
-			final VUserException vue = new VUserException(SearchResource.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR);
+			final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_QUERY_SYNTAX_ERROR);
 			vue.initCause(e);
 			throw vue;
 		} catch (final IOException e) {
@@ -213,8 +213,13 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			return new ESFacetedQueryResultBuilder(esDocumentCodec, indexDtDefinition, searchResponse, searchQuery)
 					.build();
 		} catch (final ElasticsearchStatusException e) {
-			if (e.getMessage().contains("type=search_phase_execution_exception")) {
-				final VUserException vue = new VUserException(SearchResource.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR);
+			final String errorMessage = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			if (errorMessage.contains("set fielddata=true")) {
+				final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_INDEX_FIELDDATA_ERROR);
+				vue.initCause(e);
+				throw vue;
+			} else if (errorMessage.contains("Failed to parse query") || errorMessage.contains("type=search_phase_execution_exception")) {
+				final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_QUERY_SYNTAX_ERROR);
 				vue.initCause(e);
 				throw vue;
 			}

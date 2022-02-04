@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
@@ -70,6 +71,11 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	 * @param dtList Inner DtList
 	 */
 	protected AbstractUiListModifiable(final DtList<D> dtList, final String inputKey) {
+		this(dtList, inputKey, nop -> {
+		});
+	}
+
+	public <U extends AbstractUiListModifiable<D>> AbstractUiListModifiable(final DtList<D> dtList, final String inputKey, final Consumer<U> postInit) {
 		Assertion.check().isNotNull(dtList);
 		//-----
 		this.dtList = dtList;
@@ -81,6 +87,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		uiListDelta = new UiListDelta<>(objectType, new HashMap<>(), new HashMap<>(), new HashMap<>());
 		dtListDelta = new DtListDelta<>(new DtList<>(dtDefinition), new DtList<>(dtDefinition), new DtList<>(dtDefinition));
 		bufferUiObjects = new ArrayList<>(dtList.size());
+		postInit.accept((U) this);
 		rebuildBuffer();
 	}
 
@@ -101,10 +108,13 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		// ---
 		dtoByUiObject.clear();
 		bufferUiObjects.clear();
+		int index = 0;
 		for (final D dto : dtList) {
 			final UiObject<D> uiObjects = createUiObject(dto);
+			uiObjects.setInputKey(toContextKey(inputKey, index));
 			bufferUiObjects.add(uiObjects);
 			dtoByUiObject.put(uiObjects, dto);
+			index++;
 		}
 	}
 

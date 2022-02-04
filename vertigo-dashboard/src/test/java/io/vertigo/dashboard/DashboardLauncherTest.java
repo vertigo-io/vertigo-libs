@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import java.util.Map;
 import org.h2.Driver;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
@@ -139,17 +138,20 @@ public class DashboardLauncherTest {
 				.build();
 	}
 
-	@Test
-	@Disabled /* use it for local debuging */
-	public void server() {
+	/**
+	 * Start a server for debug purpose.
+	 * @param args
+	 * @throws Exception
+	 */
+	public static void main(final String[] args) throws Exception {
+		setUp();
 		while (!Thread.interrupted()) {
 			try {
-				Thread.sleep(10 * 1000);
+				Thread.sleep(1 * 1000);
 			} catch (final InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	@Test

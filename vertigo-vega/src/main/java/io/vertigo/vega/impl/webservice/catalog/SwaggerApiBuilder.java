@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -581,8 +581,9 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			return new String[] { "array", null };
 		} else {
 			//if query is a BasicTypeAdapter we use basicType
-			if (jsonTypeAdapters.containsKey(paramClass)) {
-				return toSwaggerType(jsonTypeAdapters.get(paramClass).getBasicType().getJavaClass());
+			final BasicTypeAdapter basicTypeAdapter = jsonTypeAdapters.get(paramClass);
+			if (basicTypeAdapter != null) {
+				return toSwaggerType(basicTypeAdapter.getBasicType().getJavaClass());
 			}
 			return new String[] { "object", null };
 		}

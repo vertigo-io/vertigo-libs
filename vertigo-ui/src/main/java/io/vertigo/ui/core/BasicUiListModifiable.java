@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,15 +32,15 @@ import io.vertigo.vega.webservice.model.UiObject;
 public class BasicUiListModifiable<D extends DtObject> extends AbstractUiListModifiable<D> {
 
 	private static final long serialVersionUID = -6612061761970992295L;
+	private ViewContextUpdateSecurity viewContextUpdateSecurity;
 
-	BasicUiListModifiable(final DtList<D> dtList, final String inputKey) {
-		super(dtList, inputKey);
-
+	BasicUiListModifiable(final DtList<D> dtList, final String inputKey, final ViewContextUpdateSecurity viewContextUpdateSecurity) {
+		super(dtList, inputKey, t -> ((BasicUiListModifiable) t).viewContextUpdateSecurity = viewContextUpdateSecurity);
 	}
 
 	@Override
 	protected UiObject<D> createUiObject(final D dto) {
-		return new MapUiObject<>(dto);
+		return new MapUiObject<>(dto, viewContextUpdateSecurity);
 	}
 
 	public ArrayList<HashMap<String, Serializable>> listForClient(final Set<String> fieldsForClient, final Map<String, Function<Serializable, String>> valueTransformers) {

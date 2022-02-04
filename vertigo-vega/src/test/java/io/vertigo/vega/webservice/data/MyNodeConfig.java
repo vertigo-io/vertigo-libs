@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ import io.vertigo.vega.webservice.data.search.ContactSearchClient;
 import io.vertigo.vega.webservice.data.user.TestUserSession;
 import io.vertigo.vega.webservice.data.ws.AdvancedTestWebServices;
 import io.vertigo.vega.webservice.data.ws.AnonymousTestWebServices;
+import io.vertigo.vega.webservice.data.ws.ApiKeyWebServices;
 import io.vertigo.vega.webservice.data.ws.CommonWebServices;
 import io.vertigo.vega.webservice.data.ws.ContactsSecuredWebServices;
 import io.vertigo.vega.webservice.data.ws.ContactsWebServices;
@@ -55,6 +56,7 @@ import io.vertigo.vega.webservice.data.ws.FileDownloadWebServices;
 import io.vertigo.vega.webservice.data.ws.LoginSecuredWebServices;
 import io.vertigo.vega.webservice.data.ws.SearchTestWebServices;
 import io.vertigo.vega.webservice.data.ws.SimplerTestWebServices;
+import io.vertigo.vega.webservice.data.ws.SmartTypesTestWebServices;
 import io.vertigo.vega.webservice.data.ws.ValidationsTestWebServices;
 import io.vertigo.vega.webservice.data.ws.client.SimplerClientTestWebServices;
 
@@ -90,7 +92,8 @@ public final class MyNodeConfig {
 				.withWebServicesSecurity()
 				.withWebServicesRateLimiting()
 				.withWebServicesSwagger()
-				.withWebServicesCatalog();
+				.withWebServicesCatalog()
+				.withApiKey(Param.of("apiKey", "MyTestApiKey"));
 
 		final ModuleConfigBuilder webserviceApp = ModuleConfig.builder("webservices-app")
 				.addComponent(ComponentCmdWebServices.class)
@@ -98,12 +101,14 @@ public final class MyNodeConfig {
 				.addComponent(ContactsWebServices.class)
 				.addComponent(ContactsSecuredWebServices.class)
 				.addComponent(LoginSecuredWebServices.class)
+				.addComponent(ApiKeyWebServices.class)
 				.addComponent(SimplerTestWebServices.class)
 				.addComponent(ValidationsTestWebServices.class)
 				.addComponent(AdvancedTestWebServices.class)
 				.addComponent(AnonymousTestWebServices.class)
 				.addComponent(FileDownloadWebServices.class)
-				.addComponent(SearchTestWebServices.class);
+				.addComponent(SearchTestWebServices.class)
+				.addComponent(SmartTypesTestWebServices.class);
 
 		final HttpClientFeatures httpClientFeatures = new HttpClientFeatures();
 		if (isClient) {

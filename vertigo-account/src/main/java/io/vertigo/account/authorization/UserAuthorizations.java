@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public final class UserAuthorizations implements Serializable {
 	/**
 	 * KeyConcept dependent authorizations list by keyConcept of this user.
 	 */
-	private final Map<DefinitionId<DtDefinition>, Set<DefinitionId<Authorization>>> authorizationMapRefs = new HashMap<>();
+	private final Map<DefinitionId<DtDefinition>, Map<String, DefinitionId<Authorization>>> authorizationMapRefs = new HashMap<>();
 
 	/**
 	 * Accepted roles for this user.
@@ -122,14 +122,22 @@ public final class UserAuthorizations implements Serializable {
 	public UserAuthorizations addAuthorization(final Authorization authorization) {
 		Assertion.check().isNotNull(authorization);
 		//-----
-		authorizationRefs.put(authorization.getName(), authorization.id());
+		final DefinitionId<Authorization> definitionReference = authorization.id();
+		authorizationRefs.put(authorization.getName(), definitionReference);
+
 		if (authorization.getEntityDefinition().isPresent()) {
-			authorizationMapRefs.computeIfAbsent(authorization.getEntityDefinition().get().id(), key -> new HashSet<>())
-					.add(authorization.id());
+			final Map<String, DefinitionId<Authorization>> entityAuthorizationRefs = authorizationMapRefs.computeIfAbsent(authorization.getEntityDefinition().get().id(), key -> new HashMap<>());
+			entityAuthorizationRefs.put(authorization.getName(), definitionReference);
 			for (final Authorization grantedAuthorization : authorization.getGrants()) {
 				if (!hasAuthorization(grantedAuthorization::getName)) { //On test pour ne pas créer de boucle
 					addAuthorization(grantedAuthorization);
 				}
+			}
+			//on ajoute pas vraiment les overrides, car on a juste ajouter un nom d'opération pour la rule de l'authorization actuelle
+			final String authorizationPrefix = Authorization.PREFIX + authorization.getEntityDefinition().get().id().shortName() + '$';
+			for (final String overridedAuthorization : authorization.getOverrides()) {
+				authorizationRefs.put(authorizationPrefix + overridedAuthorization, definitionReference);
+				entityAuthorizationRefs.put(authorizationPrefix + overridedAuthorization, definitionReference);
 			}
 		}
 		return this;
@@ -151,9 +159,9 @@ public final class UserAuthorizations implements Serializable {
 	 * @return Authorizations set
 	 */
 	public Set<Authorization> getEntityAuthorizations(final DtDefinition entityDefinition) {
-		final Set<DefinitionId<Authorization>> entityAuthorizationRefs = authorizationMapRefs.get(entityDefinition.id());
+		final Map<String, DefinitionId<Authorization>> entityAuthorizationRefs = authorizationMapRefs.get(entityDefinition.id());
 		if (entityAuthorizationRefs != null) {
-			return entityAuthorizationRefs.stream()
+			return entityAuthorizationRefs.values().stream()
 					.map(DefinitionId::get)
 					.collect(Collectors.toSet());
 		}

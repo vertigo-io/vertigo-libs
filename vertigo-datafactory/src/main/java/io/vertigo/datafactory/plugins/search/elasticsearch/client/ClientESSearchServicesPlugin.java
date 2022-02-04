@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,8 @@ import org.elasticsearch.cluster.metadata.MappingMetadata;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.xcontent.XContentBuilder;
+import org.elasticsearch.xcontent.XContentFactory;
 
 import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 
@@ -405,7 +405,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 					typeMapping.startObject("keyword");
 					typeMapping.field("type", "keyword");
 					if (sortableNormalizer) {
-						typeMapping.field("normalizer", "sortable");
+						typeMapping.field("normalizer", indexType.getSortableNormalizer());
 					}
 					typeMapping.endObject();
 					typeMapping.endObject();

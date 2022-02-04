@@ -116,6 +116,14 @@
 		</dependency>
 		<!--/Open Office dependencies -->
 
+        <!-- ODSExporter -->
+		<dependency>
+		    <groupId>com.github.miachm.sods</groupId>
+		    <artifactId>SODS</artifactId>
+		    <version>1.4.0</version>
+            <optional>true</optional>
+		</dependency>
+
 		<dependency>
 			<groupId>fr.opensagres.xdocreport</groupId> <!-- pour le plugin XDocReportConverterPlugin -->
 			<artifactId>fr.opensagres.xdocreport.converter.odt.odfdom</artifactId>

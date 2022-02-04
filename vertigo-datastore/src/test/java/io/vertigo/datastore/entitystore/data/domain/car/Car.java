@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,12 +42,12 @@ public final class Car implements Entity {
 	private Long id;
 	@Field(smartType = "STyKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
 	private String manufacturer;
-	@Field(smartType = "STyFullText", cardinality = Cardinality.ONE, label = "ModÃ¨le")
+	@Field(smartType = "STyFullText", cardinality = Cardinality.ONE, label = "Modèle")
 	private String model;
 	@Field(smartType = "STyFullText", cardinality = Cardinality.ONE, label = "Descriptif")
 	private String description;
-	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "AnnÃ©e")
-	private Integer year;
+	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Année")
+	private Integer carYear;
 	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Kilométrage")
 	private Integer kilo;
 	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Prix")
@@ -144,7 +144,7 @@ public final class Car implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'ModÃ¨le'.
+	 * Récupère la valeur de la propriété 'Modèle'.
 	 * @return String model <b>Obligatoire</b>
 	 */
 	public String getModel() {
@@ -153,7 +153,7 @@ public final class Car implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'ModÃ¨le'.
+	 * Définit la valeur de la propriété 'Modèle'.
 	 * @param model String <b>Obligatoire</b>
 	 */
 	public void setModel(final String model) {
@@ -180,25 +180,25 @@ public final class Car implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'AnnÃ©e'.
+	 * Récupère la valeur de la propriété 'Année'.
 	 * @return Integer year <b>Obligatoire</b>
 	 */
-	public Integer getYear() {
-		return year;
+	public Integer getCarYear() {
+		return carYear;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'AnnÃ©e'.
-	 * @param year Integer <b>Obligatoire</b>
+	 * Définit la valeur de la propriété 'Année'.
+	 * @param carYear Integer <b>Obligatoire</b>
 	 */
-	public void setYear(final Integer year) {
-		this.year = year;
+	public void setCarYear(final Integer carYear) {
+		this.carYear = carYear;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'KilomÃ©trage'.
+	 * Récupère la valeur de la propriété 'Kilométrage'.
 	 * @return Integer kilo <b>Obligatoire</b>
 	 */
 	public Integer getKilo() {
@@ -207,7 +207,7 @@ public final class Car implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'KilomÃ©trage'.
+	 * Définit la valeur de la propriété 'Kilométrage'.
 	 * @param kilo Integer <b>Obligatoire</b>
 	 */
 	public void setKilo(final Integer kilo) {

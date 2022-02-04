@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,6 +76,7 @@ public class TestUi {
 				.headless(true) //use false for debug purpose
 				.build());*/
 		driver = new HtmlUnitDriver(BrowserVersion.FIREFOX, true);
+		Thread.sleep(5000);
 	}
 
 	private static void startServer() throws IOException, Exception {
@@ -243,7 +244,30 @@ public class TestUi {
 						+ "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ");
 		findElement(By.id("saveAction")).click();
 		Thread.sleep(5000);
-		assertEquals("la taille doit être inférieure à 250 caractères.", findElement(By.cssSelector(".fieldTitle .q-field__messages")).getText());
+		assertTrue(findElement(By.cssSelector(".fieldTitle")).getAttribute("class").contains("q-field--error"));
+		assertTrue(findElement(By.cssSelector(".fieldTitle .q-field__messages")).getText().contains("250"));
+
+	}
+
+	@Test
+	public void testPostSimpleErrorForm() throws InterruptedException {
+		driver.get(baseUrl + "/test/componentsDemo/");
+
+		assertEquals("Details du film", waitElement(By.className("text-h6")).getText());
+
+		findElement(By.name("vContext[movie][movId]")).clear();
+		sendKeysJs(By.name("vContext[movie][movId]"), "1003");
+
+		findElement(By.name("vContext[movie][title]")).clear();
+		findElement(By.id("saveActionDtCheck")).click();
+		Thread.sleep(5000);
+		assertTrue(findElement(By.cssSelector(".fieldTitle")).getAttribute("class").contains("q-field--error"));
+		assertTrue(findElement(By.cssSelector(".fieldTitle .q-field__messages")).getText().contains("Test uiMessageStack error on Dt field"));
+
+		findElement(By.id("saveActionUiCheck")).click();
+		Thread.sleep(5000);
+		assertTrue(findElement(By.cssSelector(".fieldTitle")).getAttribute("class").contains("q-field--error"));
+		assertTrue(findElement(By.cssSelector(".fieldTitle .q-field__messages")).getText().contains("Test uiMessageStack error on Ui field"));
 	}
 
 	@Test
@@ -268,6 +292,28 @@ public class TestUi {
 
 		assertEquals("Fichier recu : insee.csv (application/octet-stream)", findElement(By.cssSelector("span")).getText());
 		assertEquals("Previous file : insee.csv (application/octet-stream)", findElement(By.id("uploadFile")).getText());
+	}
+
+	@Test
+	public void testSecuredController() throws InterruptedException {
+		driver.get(baseUrl + "/test/securedMovie/");
+
+		assertTrue(waitElement(By.xpath("/html/body/table/tbody/tr[3]/td")).getText().contains("Not enought authorizations"));
+		assertTrue(waitElement(By.xpath("/html/body/table/tbody/tr[2]/td")).getText().contains("403"));
+
+	}
+
+	@Test
+	public void testSecuredActionController() throws InterruptedException {
+		driver.get(baseUrl + "/test/securedActionMovie/");
+
+		assertEquals("Secured Action Movie Detail", driver.getTitle());
+
+		findElement(By.id("saveAction")).click();
+		Thread.sleep(5000);
+		assertTrue(waitElement(By.xpath("/html/body/table/tbody/tr[3]/td")).getText().contains("Not enought authorizations"));
+		assertTrue(waitElement(By.xpath("/html/body/table/tbody/tr[2]/td")).getText().contains("403"));
+
 	}
 
 	private static final String JS_SEND_FILE = "var targetName = arguments[0],"
