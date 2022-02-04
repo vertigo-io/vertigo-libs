@@ -22,5 +22,6 @@ import io.vertigo.datamodel.structure.definitions.Constraint;
 public record ConstraintConfig(
 		Class<? extends Constraint> constraintClass,
 		String arg,
-		String msg) {
+		String msg,
+		String resourceMsg) {
 }

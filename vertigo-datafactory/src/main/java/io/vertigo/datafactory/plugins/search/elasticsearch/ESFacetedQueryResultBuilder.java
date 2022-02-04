@@ -233,7 +233,7 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 
 	private static Facet createFacet(final FacetDefinition facetDefinition, final NumericMetricsAggregation.SingleValue aggregation) {
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
-		final FacetValue facetValue = new FacetValue(aggregation.getName(), ListFilter.of("_noOp:_"), MessageText.of(aggregation.getName()));
+		final FacetValue facetValue = new FacetValue(aggregation.getName(), ListFilter.of("_noOp:_"), LocaleMessageText.of(aggregation.getName()));
 		final int decimalPrecision = Integer.parseInt(facetDefinition.getCustomParams().getOrDefault(CustomAggregationBuilder.DECIMAL_PRECISION_TO_PARAM, "0"));
 		final long precisionMult = (long) Math.pow(10, decimalPrecision);
 		facetValues.put(facetValue, Math.round(aggregation.value() * precisionMult));

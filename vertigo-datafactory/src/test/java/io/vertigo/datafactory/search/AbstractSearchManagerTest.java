@@ -885,7 +885,7 @@ public abstract class AbstractSearchManagerTest {
 		Assertions.assertTrue(customSumPriceFacet.getDefinition().isCustomFacet());
 		Assertions.assertEquals(1, customSumPriceFacet.getFacetValues().size());
 		for (final Entry<FacetValue, Long> entry : customSumPriceFacet.getFacetValues().entrySet()) {
-			Assertions.assertEquals("FctCustomSumPriceItem", entry.getKey().getCode());
+			Assertions.assertEquals("FctCustomSumPriceItem", entry.getKey().code());
 			Assertions.assertEquals(198290, entry.getValue());
 		}
 
@@ -893,7 +893,7 @@ public abstract class AbstractSearchManagerTest {
 		Assertions.assertTrue(customAvgKiloItem.getDefinition().isCustomFacet());
 		Assertions.assertEquals(1, customAvgKiloItem.getFacetValues().size());
 		for (final Entry<FacetValue, Long> entry : customAvgKiloItem.getFacetValues().entrySet()) {
-			Assertions.assertEquals("FctCustomAvgKiloItem", entry.getKey().getCode());
+			Assertions.assertEquals("FctCustomAvgKiloItem", entry.getKey().code());
 			Assertions.assertEquals(119321.11, entry.getValue() / 100d);
 		}
 
@@ -901,7 +901,7 @@ public abstract class AbstractSearchManagerTest {
 		Assertions.assertTrue(customAvgYearItem.getDefinition().isCustomFacet());
 		Assertions.assertEquals(1, customAvgYearItem.getFacetValues().size());
 		for (final Entry<FacetValue, Long> entry : customAvgYearItem.getFacetValues().entrySet()) {
-			Assertions.assertEquals("FctCustomAvgYearItem", entry.getKey().getCode());
+			Assertions.assertEquals("FctCustomAvgYearItem", entry.getKey().code());
 			Assertions.assertEquals(2004, entry.getValue());
 		}
 	}
@@ -1472,7 +1472,7 @@ public abstract class AbstractSearchManagerTest {
 				.withFacetClustering(manufacturerFacetDefinition)
 				.build();
 
-		final DtListState listState = DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField("itemYear").getName(), true);
+		final DtListState listState = DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField("itemYear").name(), true);
 		final FacetedQueryResult<Item, SearchQuery> result = doQuery(searchQuery, listState);
 
 		//On vérifie qu'il existe une valeur pour chaque marques et que la première est bien la plus ancienne

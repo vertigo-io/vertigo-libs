@@ -190,7 +190,7 @@ public final class ESDocumentCodec {
 	private static List<DtField> getNotStoredFields(final DtDefinition dtDefinition) {
 		return dtDefinition.getFields().stream()
 				//We don't store (in Result) computed fields and fields with a "notStored" domain
-				.filter(dtField -> !isIndexStoredDomain(dtField.getSmartTypeDefinition()) || dtField.getType() == FieldType.COMPUTED)
+				.filter(dtField -> !isIndexStoredDomain(dtField.smartTypeDefinition()) || dtField.getType() == FieldType.COMPUTED)
 				.collect(Collectors.toList());
 	}
 

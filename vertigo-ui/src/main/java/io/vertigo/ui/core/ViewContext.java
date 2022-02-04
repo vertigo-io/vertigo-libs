@@ -289,7 +289,7 @@ public final class ViewContext implements Serializable {
 	 * Ajoute un objet de type form au context.
 	 * @param dto Objet à publier
 	 */
-	public <O extends DtObject> void publishDto(final ViewContextKey<O> contextKey, final O dto) {
+	public <O extends DtObject> ViewContext publishDto(final ViewContextKey<O> contextKey, final O dto) {
 		final UiObject<O> strutsUiObject = new MapUiObject<>(dto, viewContextMap.viewContextUpdateSecurity());
 		strutsUiObject.setInputKey(contextKey.get());
 		put(contextKey, strutsUiObject);
@@ -616,21 +616,21 @@ public final class ViewContext implements Serializable {
 	 * @return Si on est en mode edition
 	 */
 	public boolean isModeEdit() {
-		return FormMode.edit.equals(this.get(MODE_CONTEXT_KEY));
+		return FormMode.edit.equals(get(MODE_CONTEXT_KEY));
 	}
 
 	/**
 	 * @return Si on est en mode readOnly
 	 */
 	public boolean isModeRead() {
-		return FormMode.readOnly.equals(this.get(MODE_CONTEXT_KEY));
+		return FormMode.readOnly.equals(get(MODE_CONTEXT_KEY));
 	}
 
 	/**
 	 * @return Si on est en mode create
 	 */
 	public boolean isModeCreate() {
-		return FormMode.create.equals(this.get(MODE_CONTEXT_KEY));
+		return FormMode.create.equals(get(MODE_CONTEXT_KEY));
 	}
 
 }

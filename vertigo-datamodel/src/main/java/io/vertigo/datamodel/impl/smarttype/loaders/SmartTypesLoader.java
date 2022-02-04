@@ -92,7 +92,7 @@ public class SmartTypesLoader implements Loader {
 				adapterConfigs.add(new AdapterConfig(adapter.type(), adapter.clazz(), adapter.targetBasicType()));
 			}
 			if (DtObject.class.isAssignableFrom(targetJavaClass)) {
-				scope = Scope.DATA_OBJECT;
+				scope = Scope.DATA_TYPE;
 				Assertion.check().isTrue(field.getName().equals(DtDefinition.PREFIX + targetJavaClass.getSimpleName()), "The name of the SmartType {0} is not consistent with the class {1}",
 						field.getName(), targetJavaClass);
 			} else {
@@ -118,12 +118,12 @@ public class SmartTypesLoader implements Loader {
 
 			constraintConfigs
 					.forEach(constraintConfig -> {
-						final Optional<String> msgOpt = StringUtil.isBlank(constraintConfig.getMsg()) ? Optional.empty() : Optional.of(constraintConfig.getMsg());
-						final Optional<String> resourceMsgOpt = StringUtil.isBlank(constraintConfig.getResourceMsg()) ? Optional.empty() : Optional.of(constraintConfig.getResourceMsg());
-						final Constructor<? extends io.vertigo.datamodel.structure.definitions.Constraint> constructor = ClassUtil.findConstructor(constraintConfig.getConstraintClass(),
+						final Optional<String> msgOpt = StringUtil.isBlank(constraintConfig.msg()) ? Optional.empty() : Optional.of(constraintConfig.msg());
+						final Optional<String> resourceMsgOpt = StringUtil.isBlank(constraintConfig.resourceMsg()) ? Optional.empty() : Optional.of(constraintConfig.resourceMsg());
+						final Constructor<? extends io.vertigo.datamodel.structure.definitions.Constraint> constructor = ClassUtil.findConstructor(constraintConfig.constraintClass(),
 								new Class[] { String.class, Optional.class, Optional.class });
 						final io.vertigo.datamodel.structure.definitions.Constraint newConstraint = ClassUtil.newInstance(constructor,
-								new Object[] { constraintConfig.getArg(), msgOpt, resourceMsgOpt });
+								new Object[] { constraintConfig.arg(), msgOpt, resourceMsgOpt });
 						propertiesBuilder.addValue(newConstraint.getProperty(), newConstraint.getPropertyValue());
 					});
 

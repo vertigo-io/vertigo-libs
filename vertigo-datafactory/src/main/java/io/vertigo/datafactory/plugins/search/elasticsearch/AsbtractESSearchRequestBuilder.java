@@ -248,7 +248,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	}
 
 	private static boolean useSubKeywordFieldForFacet(final FacetDefinition facetDefinition) {
-		final IndexType indexType = IndexType.readIndexType(facetDefinition.getDtField().getSmartTypeDefinition());
+		final IndexType indexType = IndexType.readIndexType(facetDefinition.getDtField().smartTypeDefinition());
 		//si il y a un sub keyword on le prend (sinon le facetable permet d'avoir un DataField, mais il peut etre tokenized)
 		return indexType.isIndexSubKeyword();
 	}
@@ -260,12 +260,12 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	private static void appendSelectedFacetValuesFilter(final BoolQueryBuilder filterBoolQueryBuilder, final List<FacetValue> facetValues, final DtField facetField, final boolean useSubKeywordField) {
 		if (facetValues.size() == 1) {
-			filterBoolQueryBuilder.filter(translateToQueryBuilder(facetValues.get(0).getListFilter(),
+			filterBoolQueryBuilder.filter(translateToQueryBuilder(facetValues.get(0).listFilter(),
 					useSubKeywordField ? Collections.singleton(facetField) : Collections.emptySet()));
 		} else if (facetValues.size() > 1) {
 			final BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			for (final FacetValue facetValue : facetValues) {
-				boolQueryBuilder.should(translateToQueryBuilder(facetValue.getListFilter(),
+				boolQueryBuilder.should(translateToQueryBuilder(facetValue.listFilter(),
 						useSubKeywordField ? Collections.singleton(facetField) : Collections.emptySet()));//on ajoute les valeurs en OU
 			}
 			filterBoolQueryBuilder.filter(boolQueryBuilder);
@@ -370,7 +370,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 			default -> throw new IllegalArgumentException("Unknown facetOrder :" + facetDefinition.getOrder());
 		};
 		//Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
-		String fieldName = dtField.getName();
+		String fieldName = dtField.name();
 		if (useSubKeywordFieldForFacet(facetDefinition)) {
 			fieldName = fieldName + ".keyword";
 		}
@@ -382,7 +382,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	private static AggregationBuilder customFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		final Map<String, String> customParams = replaceCriteria(facetDefinition.getCustomParams(), myCriteria);
-		return new CustomAggregationBuilder(facetDefinition.getName(), facetDefinition.getDtField().getName(), customParams);
+		return new CustomAggregationBuilder(facetDefinition.getName(), facetDefinition.getDtField().name(), customParams);
 	}
 
 	private static Map<String, String> replaceCriteria(final Map<String, String> customParams, final Object myCriteria) {
@@ -544,7 +544,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 		//-----
 		String listFilterValue = listFilter.getFilterValue();
 		for (final DtField keywordField : keywordFields) {
-			listFilterValue = listFilterValue.replace(keywordField.getName() + ":", keywordField.getName() + ".keyword:");
+			listFilterValue = listFilterValue.replace(keywordField.name() + ":", keywordField.name() + ".keyword:");
 		}
 
 		final String query = new StringBuilder()

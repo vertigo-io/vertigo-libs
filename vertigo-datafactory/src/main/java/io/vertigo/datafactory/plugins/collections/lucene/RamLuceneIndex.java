@@ -104,7 +104,7 @@ final class RamLuceneIndex<D extends DtObject> {
 		this.smartTypeManager = smartTypeManager;
 		directory = new RAMDirectory();
 		idFieldOpt = dtDefinition.getIdField();
-		idFieldName = idFieldOpt.isPresent() ? idFieldOpt.get().getName() : "_id";
+		idFieldName = idFieldOpt.isPresent() ? idFieldOpt.get().name() : "_id";
 		//l'index est crée automatiquement la premiere fois.
 		buildIndex();
 	}
@@ -218,7 +218,7 @@ final class RamLuceneIndex<D extends DtObject> {
 	private String obtainIndexedIdValue(final D dto) {
 		if (idFieldOpt.isPresent()) {
 			final Object pkValue = idFieldOpt.get().getDataAccessor().getValue(dto);
-			Assertion.check().isNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", dtDefinition.getName(), idFieldOpt.get().getName());
+			Assertion.check().isNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", dtDefinition.getName(), idFieldOpt.get().name());
 			return String.valueOf(pkValue);
 		} else {
 			return String.valueOf(dto.hashCode());
