@@ -58,7 +58,6 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.TypeAdapter;
-import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -372,7 +371,49 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		}
 	}
 
-	private static final class DefinitionReferenceJsonSerializer implements JsonSerializer<DefinitionId> {
+	private final class EmptyMapAdapter extends TypeAdapter<Map> {
+		@Override
+		public void write(final JsonWriter out, final Map value) throws IOException {
+			out.beginObject().endObject();
+		}
+
+		@Override
+		public Map read(final JsonReader in) throws IOException {
+			in.beginObject();
+			in.endObject();
+			return Collections.emptyMap();
+		}
+	}
+
+	private final class EmptySetAdapter extends TypeAdapter<Set> {
+		@Override
+		public void write(final JsonWriter out, final Set value) throws IOException {
+			out.beginArray().endArray();
+		}
+
+		@Override
+		public Set read(final JsonReader in) throws IOException {
+			in.beginArray();
+			in.endArray();
+			return Collections.emptySet();
+		}
+	}
+
+	private final class EmptyListAdapter extends TypeAdapter<List> {
+		@Override
+		public void write(final JsonWriter out, final List value) throws IOException {
+			out.beginArray().endArray();
+		}
+
+		@Override
+		public List read(final JsonReader in) throws IOException {
+			in.beginArray();
+			in.endArray();
+			return Collections.emptyList();
+		}
+	}
+
+	private static final class DefinitionIdJsonSerializer implements JsonSerializer<DefinitionId> {
 		/** {@inheritDoc} */
 		@Override
 		public JsonElement serialize(final DefinitionId src, final Type typeOfSrc, final JsonSerializationContext context) {
@@ -559,36 +600,19 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 					.registerTypeAdapter(DtList.class, new DtListDeserializer<>())
 					.registerTypeAdapter(DtListState.class, new DtListStateDeserializer())
 					.registerTypeAdapter(FacetedQueryResult.class, searchApiVersion.getJsonSerializerClass().newInstance())
-					.registerTypeAdapter(SelectedFacetValues.class, new SelectedFacetValuesDeserializer());
+					.registerTypeAdapter(SelectedFacetValues.class, new SelectedFacetValuesDeserializer())
+					.registerTypeAdapter(TypeToken.get(Collections.EMPTY_MAP.getClass()).getType(), new EmptyMapAdapter())
+					.registerTypeAdapter(TypeToken.get(Collections.EMPTY_LIST.getClass()).getType(), new EmptyListAdapter())
+					.registerTypeAdapter(TypeToken.get(Collections.EMPTY_SET.getClass()).getType(), new EmptySetAdapter());
 
 			if (!serializeNulls) {
 				gsonBuilder
 						.registerTypeAdapter(List.class, new ListJsonSerializer())
-						.registerTypeAdapterFactory(
-								new TypeAdapterFactory() {
-									@Override
-									public <Collections$EmptyMap> TypeAdapter<Collections$EmptyMap> create(final Gson locGson, final TypeToken<Collections$EmptyMap> type) {
-										return new TypeAdapter<>() {
-
-											@Override
-											public void write(final JsonWriter out, final Collections$EmptyMap value) throws IOException {
-												out.beginArray().endArray();
-											}
-
-											@Override
-											public Collections$EmptyMap read(final JsonReader in) throws IOException {
-												return (Collections$EmptyMap) Collections.emptyMap();
-											}
-										};
-									}
-
-								})
 						.registerTypeAdapter(Map.class, new MapJsonSerializer());
-
 			}
 
 			gsonBuilder
-					.registerTypeAdapter(DefinitionId.class, new DefinitionReferenceJsonSerializer())
+					.registerTypeAdapter(DefinitionId.class, new DefinitionIdJsonSerializer())
 					.registerTypeAdapter(Optional.class, new OptionJsonSerializer())
 					.registerTypeAdapter(Class.class, new ClassJsonSerializer())
 					.registerTypeAdapter(UID.class, new URIJsonAdapter())
