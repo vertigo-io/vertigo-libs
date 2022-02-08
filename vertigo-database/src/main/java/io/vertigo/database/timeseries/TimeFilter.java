@@ -25,40 +25,19 @@ import io.vertigo.core.lang.Assertion;
  * @author mlaroche
  *
  */
-public final class TimeFilter implements Serializable {
+public record TimeFilter(
+		String from,
+		String to,
+		String dim //maybe null
+) implements Serializable {
 
-	private static final long serialVersionUID = -5930123598073570659L;
-
-	private final String from;
-	private final String to;
-	private final String dim; // may be null
-
-	TimeFilter(
-			final String from,
-			final String to,
-			final String dim) {
+	public TimeFilter {
 		Assertion.check()
 				.isNotNull(from)
 				.isNotNull(to);
-		//---
-		this.from = from;
-		this.to = to;
-		this.dim = dim;
 	}
 
 	public static TimeFilterBuilder builder(final String from, final String to) {
 		return new TimeFilterBuilder(from, to);
-	}
-
-	public String getFrom() {
-		return from;
-	}
-
-	public String getTo() {
-		return to;
-	}
-
-	public String getDim() {
-		return dim;
 	}
 }

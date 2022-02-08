@@ -67,7 +67,7 @@ public final class VTransactionBeforeAfterCommitTest {
 		}
 	}
 
-	private NodeConfig buildNodeConfig() {
+	private static NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.addModule(new CommonsFeatures()
 						.build())

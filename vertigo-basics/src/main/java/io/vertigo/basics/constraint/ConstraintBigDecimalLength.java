@@ -20,7 +20,7 @@ package io.vertigo.basics.constraint;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 
 /**
  * Contrainte vérifiant que l'objet est :
@@ -44,11 +44,11 @@ public final class ConstraintBigDecimalLength extends AbstractConstraintLength<B
 	 */
 	private final BigDecimal minValue;
 
-	private final MessageText errorMessage;
+	private final LocaleMessageText errorMessage;
 
 	/**
 	 * Constructeur nécessaire pour le ksp.
-	 * 
+	 *
 	 * @param args Liste des arguments réduite à un seul castable en integer.
 	 * Cet argument correspond au nombre de chifres maximum authorisé sur le BigDecimal.
 	 * maxLength Valeur n du segment ]-10^n, 10^n[ dans lequel est comprise la valeur.
@@ -59,7 +59,7 @@ public final class ConstraintBigDecimalLength extends AbstractConstraintLength<B
 		maxValue = BigDecimal.valueOf(1L).movePointRight(getMaxLength());
 		minValue = maxValue.negate();
 		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
-				() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMALLENGTH_EXCEEDED, minValue, maxValue));
+				() -> LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMALLENGTH_EXCEEDED, minValue, maxValue));
 	}
 
 	/** {@inheritDoc} */
@@ -71,7 +71,7 @@ public final class ConstraintBigDecimalLength extends AbstractConstraintLength<B
 
 	/** {@inheritDoc} */
 	@Override
-	public MessageText getErrorMessage() {
+	public LocaleMessageText getErrorMessage() {
 		return errorMessage;
 	}
 }

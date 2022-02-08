@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
@@ -78,7 +78,7 @@ public final class UiErrorBuilder {
 	 * @param dtObject Objet
 	 */
 	void clearErrors(final DtObject dtObject) {
-		uiObjectErrors.removeIf(uiError -> uiError.getDtObject().equals(dtObject));
+		uiObjectErrors.removeIf(uiError -> uiError.dtObject().equals(dtObject));
 		obtainUiErrorIndex(dtObject).clear();
 	}
 
@@ -90,7 +90,7 @@ public final class UiErrorBuilder {
 	void clearErrors(final DtObject dtObject, final DtField dtField) {
 		Assertion.check().isNotNull(dtField);
 		//-----
-		uiObjectErrors.removeIf(uiError -> uiError.getDtObject().equals(dtObject) && uiError.getDtField().equals(dtField));
+		uiObjectErrors.removeIf(uiError -> uiError.dtObject().equals(dtObject) && uiError.dtField().equals(dtField));
 		obtainUiErrorIndex(dtObject).remove(dtField);
 	}
 
@@ -100,7 +100,7 @@ public final class UiErrorBuilder {
 	 * @param dtField Champ porteur de l'erreur
 	 * @param messageText Message d'erreur
 	 */
-	public void addError(final DtObject dtObject, final DtField dtField, final MessageText messageText) {
+	public void addError(final DtObject dtObject, final DtField dtField, final LocaleMessageText messageText) {
 		uiObjectErrors.add(new UiError(dtObject, dtField, messageText));
 		obtainUiErrorIndex(dtObject).add(dtField);
 	}
@@ -111,7 +111,7 @@ public final class UiErrorBuilder {
 	 * @param fieldName Champ porteur de l'erreur
 	 * @param messageText Message d'erreur
 	 */
-	public void addError(final DtObject dtObject, final String fieldName, final MessageText messageText) {
+	public void addError(final DtObject dtObject, final String fieldName, final LocaleMessageText messageText) {
 		addError(dtObject, getDtField(dtObject, fieldName), messageText);
 	}
 
@@ -122,7 +122,7 @@ public final class UiErrorBuilder {
 	 * @param fieldName2 Champs 2
 	 * @param messageText Message à appliquer si erreur
 	 */
-	public void checkFieldEquals(final DtObject dto, final String fieldName1, final String fieldName2, final MessageText messageText) {
+	public void checkFieldEquals(final DtObject dto, final String fieldName1, final String fieldName2, final LocaleMessageText messageText) {
 		final DtField dtField1 = getDtField(dto, fieldName1);
 		final DtField dtField2 = getDtField(dto, fieldName2);
 		final Object value1 = getValue(dto, dtField1);
@@ -140,7 +140,7 @@ public final class UiErrorBuilder {
 	 * @param fieldName2 Champs 2
 	 * @param messageText Message à appliquer si erreur
 	 */
-	public void checkFieldDateAfter(final DtObject dto, final String fieldName1, final String fieldName2, final MessageText messageText) {
+	public void checkFieldDateAfter(final DtObject dto, final String fieldName1, final String fieldName2, final LocaleMessageText messageText) {
 		final DtField dtField1 = getDtField(dto, fieldName1);
 		final DtField dtField2 = getDtField(dto, fieldName2);
 		final LocalDate value1 = (LocalDate) getValue(dto, dtField1); //la valeur typée peut être null
@@ -157,7 +157,7 @@ public final class UiErrorBuilder {
 	 * @param fieldName2 Champs 2
 	 * @param messageText Message à appliquer si erreur
 	 */
-	public void checkFieldLongAfter(final DtObject dto, final String fieldName1, final String fieldName2, final MessageText messageText) {
+	public void checkFieldLongAfter(final DtObject dto, final String fieldName1, final String fieldName2, final LocaleMessageText messageText) {
 		final DtField dtField1 = getDtField(dto, fieldName1);
 		final DtField dtField2 = getDtField(dto, fieldName2);
 		final Long value1 = (Long) getValue(dto, dtField1); //la valeur typée peut être null
@@ -173,7 +173,7 @@ public final class UiErrorBuilder {
 	 * @param fieldName Champs
 	 * @param messageText Message à appliquer si erreur
 	 */
-	public void checkFieldNotNull(final DtObject dto, final String fieldName, final MessageText messageText) {
+	public void checkFieldNotNull(final DtObject dto, final String fieldName, final LocaleMessageText messageText) {
 		final DtField dtField = getDtField(dto, fieldName);
 		final Object value = getValue(dto, dtField);
 		if (value == null || value.toString().isEmpty()) {
@@ -204,7 +204,7 @@ public final class UiErrorBuilder {
 	 */
 	public void flushIntoMessageStack(final UiMessageStack uiMessageStack) {
 		for (final UiError uiError : uiObjectErrors) {
-			uiMessageStack.addFieldMessage(Level.ERROR, uiError.getErrorMessage().getDisplay(), uiError.getDtObject(), uiError.getFieldName());
+			uiMessageStack.addFieldMessage(Level.ERROR, uiError.errorMessage().getDisplay(), uiError.dtObject(), uiError.dtField().name());
 		}
 	}
 

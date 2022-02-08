@@ -15,19 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.social.impl.mail;
+package io.vertigo.datastore.kvstore;
 
-import io.vertigo.core.node.component.Plugin;
-import io.vertigo.social.mail.Mail;
+import io.vertigo.core.lang.Assertion;
 
 /**
- * Plugin d'envoi de mail.
- * @author npiedeloup
- */
-public interface SendMailPlugin extends Plugin {
-	/**
-	 * Envoyer un mail.
-	 * @param mail Mail à envoyer
-	 */
-	void sendMail(Mail mail);
+* Key Value Collection.
+*
+* @author pchretien
+*/
+public record KVCollection(String name) {
+	private static final int NAME_MAX_LENGTH = 30;
+
+	public KVCollection {
+		Assertion.check()
+				.isNotBlank(name)
+				.isTrue(name.length() <= NAME_MAX_LENGTH, "the name of the collection {0} has a limit size of {1}", name, NAME_MAX_LENGTH);
+		//				.isTrue(StringUtil.isLowerCamelCase(name),
+		//						"the name of the descriptor {0} must be in lowerCamelCase", name);
+	}
 }

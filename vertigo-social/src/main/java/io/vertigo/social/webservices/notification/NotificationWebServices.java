@@ -27,8 +27,8 @@ import javax.inject.Inject;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.authorization.VSecurityException;
-import io.vertigo.core.locale.MessageText;
-import io.vertigo.core.util.MapBuilder;
+import io.vertigo.core.lang.MapBuilder;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.notification.Notification;
 import io.vertigo.social.notification.NotificationManager;
@@ -138,7 +138,7 @@ public final class NotificationWebServices implements WebServices {
 
 	private UID<Account> getLoggedAccountURI() {
 		return authenticationManager.getLoggedAccount()
-				.orElseThrow(() -> new VSecurityException(MessageText.of("No account logged in")))
+				.orElseThrow(() -> new VSecurityException(LocaleMessageText.of("No account logged in")))
 				.getUID();
 	}
 

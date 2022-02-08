@@ -189,7 +189,7 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			return getDtField(object + '.' + fieldName).getSmartTypeDefinition().getProperties().getValue(DtProperty.UNIT);
+			return getDtField(object + '.' + fieldName).smartTypeDefinition().getProperties().getValue(DtProperty.UNIT);
 		}
 		return "";
 	}
@@ -200,7 +200,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public static Integer smartTypeMaxLength(final String object, final String fieldName) {
 		if (fieldName != null) {
-			return getDtField(object + '.' + fieldName).getSmartTypeDefinition().getProperties().getValue(DtProperty.MAX_LENGTH);
+			return getDtField(object + '.' + fieldName).smartTypeDefinition().getProperties().getValue(DtProperty.MAX_LENGTH);
 		}
 		return null;
 	}
@@ -213,7 +213,7 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			return "col_" + getDtField(object + '.' + fieldName).getSmartTypeDefinition().getName();
+			return "col_" + getDtField(object + '.' + fieldName).smartTypeDefinition().getName();
 		}
 		return defaultValue;
 	}
@@ -226,26 +226,14 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			final SmartTypeDefinition smartTypeDefinition = getDtField(object + '.' + fieldName).getSmartTypeDefinition();
-			if (smartTypeDefinition.getScope().isPrimitive()) {
+			final SmartTypeDefinition smartTypeDefinition = getDtField(object + '.' + fieldName).smartTypeDefinition();
+			if (smartTypeDefinition.getScope().isBasicType()) {
 				final BasicType dataType = smartTypeDefinition.getBasicType();
-				switch (dataType) {
-					case Long:
-					case Integer:
-					case Double:
-					case BigDecimal:
-						return "right";
-					case Boolean:
-					case Instant:
-					case LocalDate:
-					case String:
-					case DataStream:
-					default:
-						return "left";
-				}
+				return dataType.isNumber() ? "right" : "left";
 			}
 		}
 		return "left";
+
 	}
 
 	/**
@@ -258,15 +246,15 @@ public final class UiUtil implements Serializable {
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
 			return DEFAULT_FORMATTER.valueToString(value, BasicType.Boolean);
 		}
-		return smartTypeManager.valueToString(getDtField(fieldPath).getSmartTypeDefinition(), value);
+		return smartTypeManager.valueToString(getDtField(fieldPath).smartTypeDefinition(), value);
 	}
 
 	public static Double getMinValue(final String fieldPath) {
-		return getDtField(fieldPath).getSmartTypeDefinition().getProperties().getValue(DtProperty.MIN_VALUE);
+		return getDtField(fieldPath).smartTypeDefinition().getProperties().getValue(DtProperty.MIN_VALUE);
 	}
 
 	public static Double getMaxValue(final String fieldPath) {
-		return getDtField(fieldPath).getSmartTypeDefinition().getProperties().getValue(DtProperty.MAX_VALUE);
+		return getDtField(fieldPath).smartTypeDefinition().getProperties().getValue(DtProperty.MAX_VALUE);
 	}
 
 	public static Double getStep(final Double minValue, final Double maxValue) {
@@ -299,7 +287,7 @@ public final class UiUtil implements Serializable {
 		Assertion.check().isTrue(fieldPath.indexOf('.') != 0, "FieldPath shouldn't starts with . ({0})", fieldPath);
 		//-----
 		if (fieldPath.indexOf('.') > 0) { //Le champs est porté par un Object
-			return getDtField(fieldPath).getCardinality().hasOne();
+			return getDtField(fieldPath).cardinality().hasOne();
 		}
 		return false; //on ne sait pas dire, mais on ne force pas à obligatoire
 	}
@@ -310,7 +298,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public static String getDisplayField(final String uiListKey) {
 		final DtDefinition dtDefinition = getUiList(uiListKey).getDtDefinition();
-		return dtDefinition.getDisplayField().get().getName();
+		return dtDefinition.getDisplayField().get().name();
 	}
 
 	/**
@@ -323,7 +311,7 @@ public final class UiUtil implements Serializable {
 			return ((AbstractUiListUnmodifiable) uiList).getIdFieldName();
 		}
 		final DtDefinition dtDefinition = getUiList(uiListKey).getDtDefinition();
-		return dtDefinition.getIdField().get().getName();
+		return dtDefinition.getIdField().get().name();
 	}
 
 	/**

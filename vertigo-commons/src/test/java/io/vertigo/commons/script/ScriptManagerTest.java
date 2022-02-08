@@ -69,7 +69,7 @@ public final class ScriptManagerTest {
 		}
 	}
 
-	private NodeConfig buildNodeConfig() {
+	private static NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.addModule(new CommonsFeatures()
 						.withScript()

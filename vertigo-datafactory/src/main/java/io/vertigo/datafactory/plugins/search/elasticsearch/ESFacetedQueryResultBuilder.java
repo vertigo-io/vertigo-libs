@@ -40,7 +40,7 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.VSystemException;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
@@ -139,7 +139,7 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 			//Cas des facettes par 'range'
 			final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) facetAggregation;
 			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-				final Bucket value = getBucketByKey(multiBuckets, facetRange.getCode());
+				final Bucket value = getBucketByKey(multiBuckets, facetRange.code());
 				populateCluster(value, facetRange, resultCluster, dtcIndex, resultHighlights);
 			}
 		} else {
@@ -233,7 +233,7 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 
 	private static Facet createFacet(final FacetDefinition facetDefinition, final NumericMetricsAggregation.SingleValue aggregation) {
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
-		final FacetValue facetValue = new FacetValue(aggregation.getName(), ListFilter.of("_noOp:_"), MessageText.of(aggregation.getName()));
+		final FacetValue facetValue = new FacetValue(aggregation.getName(), ListFilter.of("_noOp:_"), LocaleMessageText.of(aggregation.getName()));
 		final int decimalPrecision = Integer.parseInt(facetDefinition.getCustomParams().getOrDefault(CustomAggregationBuilder.DECIMAL_PRECISION_TO_PARAM, "0"));
 		final long precisionMult = (long) Math.pow(10, decimalPrecision);
 		facetValues.put(facetValue, Math.round(aggregation.value() * precisionMult));
@@ -270,12 +270,12 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 			label = EMPTY_TERM;
 		}
 		if (valueAsString != null) {
-			query = facetDefinition.getDtField().getName() + ":\"" + valueAsString + "\"";
+			query = facetDefinition.getDtField().name() + ":\"" + valueAsString + "\"";
 		} else {
-			query = "!_exists_:" + facetDefinition.getDtField().getName(); //only for null value, empty ones use FIELD:""
+			query = "!_exists_:" + facetDefinition.getDtField().name(); //only for null value, empty ones use FIELD:""
 		}
 
-		return new FacetValue(label, ListFilter.of(query), MessageText.of(label));
+		return new FacetValue(label, ListFilter.of(query), LocaleMessageText.of(label));
 
 	}
 
@@ -283,7 +283,7 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 		//Cas des facettes par range
 		final Map<FacetValue, Long> rangeValues = new LinkedHashMap<>();
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-			final Bucket value = getBucketByKey(rangeBuckets, facetRange.getCode());
+			final Bucket value = getBucketByKey(rangeBuckets, facetRange.code());
 			rangeValues.put(facetRange, value.getDocCount());
 		}
 		return new Facet(facetDefinition, rangeValues);

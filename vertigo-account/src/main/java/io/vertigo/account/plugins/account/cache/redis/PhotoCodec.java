@@ -26,8 +26,8 @@ import java.util.Map;
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.MapBuilder;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.util.MapBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 
 final class PhotoCodec {

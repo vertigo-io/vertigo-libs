@@ -190,7 +190,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 	private <K extends Serializable> Criteria<E> treeToCriteria(final SecurityDimension securityDimension, final ValueOperator operator, final K[] treeKeys) {
 		//on vérifie qu'on a bien toutes les clées.
 		final List<String> strDimensionfields = securityDimension.getFields().stream()
-				.map(DtField::getName)
+				.map(DtField::name)
 				.collect(Collectors.toList());
 		Assertion.check().isTrue(strDimensionfields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strDimensionfields);
 		Criteria<E> mainCriteria = null;

@@ -106,8 +106,7 @@ final class SessionManagementHelper {
 		final Object principalSession = request.getSession().getAttribute(AbstractAzureAdDelegateAuthenticationHandler.PRINCIPAL_SESSION_NAME);
 		if (principalSession instanceof IAuthenticationResult) {
 			return (IAuthenticationResult) principalSession;
-		} else {
-			throw new IllegalStateException("Session does not contain principal session name");
 		}
+		throw new IllegalStateException("Session does not contain principal session name");
 	}
 }

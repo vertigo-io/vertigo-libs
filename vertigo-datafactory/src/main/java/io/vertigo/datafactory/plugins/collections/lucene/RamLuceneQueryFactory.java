@@ -73,7 +73,7 @@ final class RamLuceneQueryFactory {
 		//-----
 		final Builder queryBuilder = new BooleanQuery.Builder();
 		for (final DtField dtField : searchedFieldList) {
-			Query queryWord = createParsedKeywordsQuery(queryAnalyser, dtField.getName(), keywords);
+			Query queryWord = createParsedKeywordsQuery(queryAnalyser, dtField.name(), keywords);
 			if (boostedField.isPresent() && dtField.equals(boostedField.get())) {
 				queryWord = new BoostQuery(queryWord, 4);
 			}

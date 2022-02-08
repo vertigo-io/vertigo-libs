@@ -19,7 +19,7 @@ package io.vertigo.datamodel.smarttype.data;
 
 import java.util.Optional;
 
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.definitions.Constraint;
 import io.vertigo.datamodel.structure.definitions.Property;
 
@@ -54,7 +54,7 @@ public final class ConstraintTest implements Constraint<Boolean, String> {
 	}
 
 	@Override
-	public MessageText getErrorMessage() {
-		return MessageText.of("no message");
+	public LocaleMessageText getErrorMessage() {
+		return LocaleMessageText.of("no message");
 	}
 }

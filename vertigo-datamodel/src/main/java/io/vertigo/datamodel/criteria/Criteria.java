@@ -137,6 +137,6 @@ public abstract class Criteria<D extends DtObject> implements Serializable {
 				return ")";
 			}
 
-		}).getVal1();
+		}).val1();
 	}
 }

@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.association.AssociationDefinition;
 import io.vertigo.datamodel.structure.definitions.association.AssociationNNDefinition;
@@ -49,10 +49,10 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 
 	private State status = State.NOT_LOADED;
 	private final Entity entity;
-	private final DefinitionReference<AssociationDefinition> associationDefinitionReference;
+	private final DefinitionId<AssociationDefinition> associationDefinitionReference;
 	private final String roleName;
 	private DtList<E> value;
-	private final DefinitionReference<DtDefinition> targetDefinitionReference;
+	private final DefinitionId<DtDefinition> targetDefinitionReference;
 
 	/**
 	 * Constructor.
@@ -69,14 +69,14 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 		this.roleName = roleName;
 		//---
 		final AssociationDefinition associationDefinition = Node.getNode().getDefinitionSpace().resolve(associationDefinitionName, AssociationDefinition.class);
-		this.associationDefinitionReference = new DefinitionReference<>(associationDefinition);
+		this.associationDefinitionReference = associationDefinition.id();
 		final DtDefinition targetDefinition = Stream.of(associationDefinition.getAssociationNodeA(), associationDefinition.getAssociationNodeB())
 				.filter(associationNode -> roleName.equals(associationNode.getRole()))
 				.findFirst()
 				.orElseThrow(() -> new VSystemException("Unable to find association node with role '{1}' on association '{0}'", associationDefinitionName, roleName))
 				.getDtDefinition();
 		//---
-		targetDefinitionReference = new DefinitionReference<>(targetDefinition);
+		targetDefinitionReference = targetDefinition.id();
 	}
 
 	/**
@@ -84,10 +84,10 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 	 */
 	public final <A extends DtListURIForAssociation> A getDtListURI() {
 		final AssociationDefinition associationDefinition = associationDefinitionReference.get();
-		if (associationDefinition instanceof AssociationSimpleDefinition) {
-			return (A) new DtListURIForSimpleAssociation((AssociationSimpleDefinition) associationDefinition, entity.getUID(), roleName);
-		} else if (associationDefinition instanceof AssociationNNDefinition) {
-			return (A) new DtListURIForNNAssociation((AssociationNNDefinition) associationDefinition, entity.getUID(), roleName);
+		if (associationDefinition instanceof final AssociationSimpleDefinition associationSimpleDefinition) {
+			return (A) new DtListURIForSimpleAssociation(associationSimpleDefinition, entity.getUID(), roleName);
+		} else if (associationDefinition instanceof final AssociationNNDefinition associationNNDefinition) {
+			return (A) new DtListURIForNNAssociation(associationNNDefinition, entity.getUID(), roleName);
 		}
 		throw new VSystemException("Unhandled type of association. Only Simple and NN Associations are supported");
 	}
@@ -135,7 +135,7 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 		return entity.getUID();
 	}
 
-	protected DefinitionReference<DtDefinition> getTargetDefinitionReference() {
+	protected DefinitionId<DtDefinition> getTargetDefinitionReference() {
 		return targetDefinitionReference;
 	}
 

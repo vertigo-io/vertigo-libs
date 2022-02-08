@@ -92,7 +92,7 @@ public class ModifiableTableDemoController extends AbstractVSpringMvcController 
 
 		mySubList.get(0).setMainPicture(fileInfoTmp3.getURI());
 		mySubList.get(1).setPictures(fileUris);
-		toModeCreate();
+		viewContext.toModeCreate();
 	}
 
 	@PostMapping("/_saveList")
@@ -110,13 +110,13 @@ public class ModifiableTableDemoController extends AbstractVSpringMvcController 
 	}
 
 	@PostMapping("/_read")
-	public void toRead() {
-		toModeReadOnly();
+	public void toRead(final ViewContext viewContext) {
+		viewContext.toModeReadOnly();
 	}
 
 	@PostMapping("/_edit")
-	public void toEdit() {
-		toModeEdit();
+	public void toEdit(final ViewContext viewContext) {
+		viewContext.toModeEdit();
 	}
 
 	@GetMapping("/myFiles")

@@ -64,7 +64,7 @@ final class FacetedQueryResultJsonSerializerV2 implements JsonSerializer<Faceted
 			for (final Entry<FacetValue, ?> cluster : facetedQueryResult.getClusters().entrySet()) {
 				final JsonArray jsonList = (JsonArray) context.serialize(cluster.getValue());
 				final JsonObject jsonClusterElement = new JsonObject();
-				jsonClusterElement.add(cluster.getKey().getLabel().getDisplay(), jsonList);
+				jsonClusterElement.add(cluster.getKey().label().getDisplay(), jsonList);
 				jsonCluster.add(jsonClusterElement);
 			}
 			jsonObject.add("groups", jsonCluster);
@@ -77,10 +77,10 @@ final class FacetedQueryResultJsonSerializerV2 implements JsonSerializer<Faceted
 			final JsonArray jsonFacetValues = new JsonArray();
 			for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
 				final JsonObject jsonFacetValuesElement = new JsonObject();
-				jsonFacetValuesElement.addProperty(entry.getKey().getLabel().getDisplay(), entry.getValue());
+				jsonFacetValuesElement.addProperty(entry.getKey().label().getDisplay(), entry.getValue());
 				jsonFacetValues.add(jsonFacetValuesElement);
 			}
-			final String facetName = facet.getDefinition().getName();
+			final String facetName = facet.getDefinition().id().fullName();
 			final JsonObject jsonFacetElement = new JsonObject();
 			jsonFacetElement.add(facetName, jsonFacetValues);
 			jsonFacet.add(jsonFacetElement);

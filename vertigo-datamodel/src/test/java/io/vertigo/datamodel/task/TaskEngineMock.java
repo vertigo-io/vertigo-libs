@@ -56,17 +56,11 @@ public final class TaskEngineMock extends TaskEngine {
 	/** {@inheritDoc} */
 	@Override
 	public void execute() {
-		final int outPut;
-		switch (getTaskDefinition().getRequest()) {
-			case "+":
-				outPut = getValue1() + getValue2() + getValue3();
-				break;
-			case "*":
-				outPut = getValue1() * getValue2() * getValue3();
-				break;
-			default:
-				throw new IllegalArgumentException("Operateur non reconnu.");
-		}
+		int outPut = switch (getTaskDefinition().getRequest()) {
+			case "+" -> getValue1() + getValue2() + getValue3();
+			case "*" -> getValue1() * getValue2() * getValue3();
+			default -> throw new IllegalArgumentException("unknown operator.");
+		};
 		setOutput(outPut);
 	}
 }

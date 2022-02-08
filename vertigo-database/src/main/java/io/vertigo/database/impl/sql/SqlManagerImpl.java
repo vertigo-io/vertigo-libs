@@ -30,7 +30,7 @@ import java.util.function.Function;
 import javax.inject.Inject;
 
 import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.core.analytics.process.ProcessAnalyticsTracer;
+import io.vertigo.core.analytics.trace.Tracer;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Tuple;
@@ -120,7 +120,7 @@ public final class SqlManagerImpl implements SqlManager {
 
 	private <O> List<O> doExecuteQuery(
 			final PreparedStatement statement,
-			final ProcessAnalyticsTracer tracer,
+			final Tracer tracer,
 			final Class<O> dataType,
 			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final Integer limit,
@@ -185,7 +185,7 @@ public final class SqlManagerImpl implements SqlManager {
 		}
 	}
 
-	private static int doExecute(final PreparedStatement statement, final ProcessAnalyticsTracer tracer) {
+	private static int doExecute(final PreparedStatement statement, final Tracer tracer) {
 		try {
 			final int res = statement.executeUpdate();
 			tracer.setMeasure("nbModifiedRow", res);
@@ -232,7 +232,7 @@ public final class SqlManagerImpl implements SqlManager {
 		}
 	}
 
-	private static OptionalInt doExecuteBatch(final PreparedStatement statement, final ProcessAnalyticsTracer tracer) {
+	private static OptionalInt doExecuteBatch(final PreparedStatement statement, final Tracer tracer) {
 		try {
 			final int[] res = statement.executeBatch();
 			//Calcul du nombre total de lignes affectées par le batch.
@@ -254,13 +254,13 @@ public final class SqlManagerImpl implements SqlManager {
 	/*
 	 * Enregistre le début d'exécution du PrepareStatement
 	 */
-	private <O> O traceWithReturn(final String sql, final Function<ProcessAnalyticsTracer, O> function) {
+	private <O> O traceWithReturn(final String sql, final Function<Tracer, O> function) {
 		return analyticsManager.traceWithReturn(
 				"sql",
 				"/execute/" + sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACER, sql.length())),
 				tracer -> {
 					final O result = function.apply(tracer);
-					tracer.addTag("statement", sql.substring(0, Math.min(REQUEST_STATEMENT_FOR_TRACER, sql.length())));
+					tracer.setTag("statement", sql.substring(0, Math.min(REQUEST_STATEMENT_FOR_TRACER, sql.length())));
 					return result;
 				});
 	}

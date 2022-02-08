@@ -122,7 +122,7 @@ public abstract class AbstractNotificationManagerTest {
 		Assertions.assertEquals(1, NotificationManager.getCurrentNotifications(accountUID1).size());
 		Assertions.assertEquals(1, NotificationManager.getCurrentNotifications(accountUID2).size());
 
-		NotificationManager.remove(accountUID1, NotificationManager.getCurrentNotifications(accountUID1).get(0).getUuid());
+		NotificationManager.remove(accountUID1, NotificationManager.getCurrentNotifications(accountUID1).get(0).uuid());
 
 		Assertions.assertEquals(0, NotificationManager.getCurrentNotifications(accountUID0).size());
 		Assertions.assertEquals(0, NotificationManager.getCurrentNotifications(accountUID1).size());
@@ -179,37 +179,37 @@ public abstract class AbstractNotificationManagerTest {
 		Assertions.assertEquals(1, NotificationManager.getCurrentNotifications(accountUID1).size());
 		Assertions.assertEquals(1, NotificationManager.getCurrentNotifications(accountUID2).size());
 
-		NotificationManager.updateUserContent(accountUID1, notification.getUuid(), "myUserContent1");
+		NotificationManager.updateUserContent(accountUID1, notification.uuid(), "myUserContent1");
 
 		Assertions.assertEquals(0, NotificationManager.getCurrentNotifications(accountUID0).size());
 		Assertions.assertEquals(1, NotificationManager.getCurrentNotifications(accountUID1).size());
-		Assertions.assertEquals("myUserContent1", NotificationManager.getCurrentNotifications(accountUID1).get(0).getUserContent().get());
+		Assertions.assertEquals("myUserContent1", NotificationManager.getCurrentNotifications(accountUID1).get(0).userContentOpt().get());
 		Assertions.assertEquals(1, NotificationManager.getCurrentNotifications(accountUID2).size());
-		Assertions.assertEquals("defaultUserContent", NotificationManager.getCurrentNotifications(accountUID2).get(0).getUserContent().get());
+		Assertions.assertEquals("defaultUserContent", NotificationManager.getCurrentNotifications(accountUID2).get(0).userContentOpt().get());
 
-		NotificationManager.updateUserContent(accountUID2, notification.getUuid(), "myUserContent2");
+		NotificationManager.updateUserContent(accountUID2, notification.uuid(), "myUserContent2");
 
 		Assertions.assertEquals(0, NotificationManager.getCurrentNotifications(accountUID0).size());
 		Assertions.assertEquals(1, NotificationManager.getCurrentNotifications(accountUID1).size());
-		Assertions.assertEquals("myUserContent1", NotificationManager.getCurrentNotifications(accountUID1).get(0).getUserContent().get());
+		Assertions.assertEquals("myUserContent1", NotificationManager.getCurrentNotifications(accountUID1).get(0).userContentOpt().get());
 		Assertions.assertEquals(1, NotificationManager.getCurrentNotifications(accountUID2).size());
-		Assertions.assertEquals("myUserContent2", NotificationManager.getCurrentNotifications(accountUID2).get(0).getUserContent().get());
+		Assertions.assertEquals("myUserContent2", NotificationManager.getCurrentNotifications(accountUID2).get(0).userContentOpt().get());
 
-		NotificationManager.updateUserContent(accountUID2, notification.getUuid(), ""); // means no userContent => Optional.empty
+		NotificationManager.updateUserContent(accountUID2, notification.uuid(), ""); // means no userContent => Optional.empty
 
 		Assertions.assertEquals(0, NotificationManager.getCurrentNotifications(accountUID0).size());
 		Assertions.assertEquals(1, NotificationManager.getCurrentNotifications(accountUID1).size());
-		Assertions.assertEquals("myUserContent1", NotificationManager.getCurrentNotifications(accountUID1).get(0).getUserContent().get());
+		Assertions.assertEquals("myUserContent1", NotificationManager.getCurrentNotifications(accountUID1).get(0).userContentOpt().get());
 		Assertions.assertEquals(1, NotificationManager.getCurrentNotifications(accountUID2).size());
-		Assertions.assertEquals(false, NotificationManager.getCurrentNotifications(accountUID2).get(0).getUserContent().isPresent());
+		Assertions.assertEquals(false, NotificationManager.getCurrentNotifications(accountUID2).get(0).userContentOpt().isPresent());
 
-		NotificationManager.updateUserContent(accountUID2, notification.getUuid(), null); // means no userContent => Optional.empty
+		NotificationManager.updateUserContent(accountUID2, notification.uuid(), null); // means no userContent => Optional.empty
 
 		Assertions.assertEquals(0, NotificationManager.getCurrentNotifications(accountUID0).size());
 		Assertions.assertEquals(1, NotificationManager.getCurrentNotifications(accountUID1).size());
-		Assertions.assertEquals("myUserContent1", NotificationManager.getCurrentNotifications(accountUID1).get(0).getUserContent().get());
+		Assertions.assertEquals("myUserContent1", NotificationManager.getCurrentNotifications(accountUID1).get(0).userContentOpt().get());
 		Assertions.assertEquals(1, NotificationManager.getCurrentNotifications(accountUID2).size());
-		Assertions.assertEquals(false, NotificationManager.getCurrentNotifications(accountUID2).get(0).getUserContent().isPresent());
+		Assertions.assertEquals(false, NotificationManager.getCurrentNotifications(accountUID2).get(0).userContentOpt().isPresent());
 	}
 
 	@Test

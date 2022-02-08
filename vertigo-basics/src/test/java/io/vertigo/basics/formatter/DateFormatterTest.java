@@ -58,7 +58,7 @@ public class DateFormatterTest {
 		}
 	}
 
-	private NodeConfig buildNodeConfig() {
+	private static NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.withBoot(BootConfig.builder()
 						.withLocalesAndDefaultZoneId("fr_FR", "UTC")

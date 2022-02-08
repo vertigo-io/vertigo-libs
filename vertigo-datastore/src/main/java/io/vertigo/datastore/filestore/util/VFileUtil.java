@@ -22,9 +22,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 
+import io.vertigo.core.lang.TempFile;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.FileUtil;
-import io.vertigo.core.util.TempFile;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
 

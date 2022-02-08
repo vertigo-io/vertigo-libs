@@ -17,7 +17,7 @@
  */
 package io.vertigo.datamodel.structure.definitions.association;
 
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datamodel.structure.model.UID;
 
 /**
@@ -26,7 +26,7 @@ import io.vertigo.datamodel.structure.model.UID;
  */
 public final class DtListURIForNNAssociation extends DtListURIForAssociation<AssociationNNDefinition> {
 	private static final long serialVersionUID = -6235569695625996356L;
-	private final DefinitionReference<AssociationNNDefinition> associationNNDefinitionRef;
+	private final DefinitionId<AssociationNNDefinition> associationNNDefinitionId;
 
 	/**
 	 * @param associationDefinition Association definition
@@ -35,14 +35,14 @@ public final class DtListURIForNNAssociation extends DtListURIForAssociation<Ass
 	 */
 	public DtListURIForNNAssociation(final AssociationNNDefinition associationDefinition, final UID source, final String roleName) {
 		super(associationDefinition, source, roleName);
-		associationNNDefinitionRef = new DefinitionReference<>(associationDefinition);
+		associationNNDefinitionId = associationDefinition.id();
 	}
 
 	/**
 	 * @return Association definition.
 	 */
 	public AssociationNNDefinition getAssociationDefinition() {
-		return associationNNDefinitionRef.get();
+		return associationNNDefinitionId.get();
 	}
 
 	/** {@inheritDoc} */

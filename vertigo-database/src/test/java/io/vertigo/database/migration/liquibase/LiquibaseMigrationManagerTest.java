@@ -64,7 +64,7 @@ public class LiquibaseMigrationManagerTest {
 		}
 	}
 
-	private NodeConfig buildNodeConfig() {
+	private static NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.withBoot(BootConfig.builder()
 						.withLocales("fr")
@@ -91,8 +91,8 @@ public class LiquibaseMigrationManagerTest {
 					SqlStatement.builder("insert into movie (id, title, category) values (1, 'vertigo', 'thriller')").build(),
 					Collections.emptyMap(), connection);
 			//---
-			Integer limit = null;
-			List<Movie> movies = sqlManager.executeQuery(SqlStatement.builder("select * from movie").build(), Movie.class, Collections.emptyMap(), limit, connection);
+			final Integer limit = null;
+			final List<Movie> movies = sqlManager.executeQuery(SqlStatement.builder("select * from movie").build(), Movie.class, Collections.emptyMap(), limit, connection);
 			Assertions.assertEquals(1, movies.size());
 		}
 	}

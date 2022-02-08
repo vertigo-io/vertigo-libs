@@ -88,14 +88,14 @@ public abstract class AbstractExporterIText {
 	 */
 	public final void exportData(final Export export, final OutputStream out) throws DocumentException {
 		// step 1: creation of a document-object
-		final boolean landscape = export.getOrientation() == Export.Orientation.Landscape;
+		final boolean landscape = export.orientation() == Export.Orientation.Landscape;
 		final Rectangle pageSize = landscape ? PageSize.A4.rotate() : PageSize.A4;
 		final Document document = new Document(pageSize, 20, 20, 50, 50); // left, right, top, bottom
 		// step 2: we create a writer that listens to the document and directs a PDF-stream to out
 		createWriter(document, out);
 
 		// we add some meta information to the document, and we open it
-		final String title = export.getTitle();
+		final String title = export.title();
 		if (title != null) {
 			final HeaderFooter header = new HeaderFooter(new Phrase(title), false);
 			header.setAlignment(Element.ALIGN_LEFT);
@@ -104,7 +104,7 @@ public abstract class AbstractExporterIText {
 			document.addTitle(title);
 		}
 
-		final String author = export.getAuthor();
+		final String author = export.author();
 		document.addAuthor(author);
 		document.addCreator(CREATOR);
 		document.open();
@@ -112,7 +112,7 @@ public abstract class AbstractExporterIText {
 			// pour ajouter l'ouverture automatique de la boîte de dialogue imprimer (print(false) pour imprimer directement)
 			// ((PdfWriter) writer).addJavaScript("this.print(true);", false);
 
-			for (final ExportSheet exportSheet : export.getSheets()) {
+			for (final ExportSheet exportSheet : export.sheets()) {
 				final Table datatable;
 				if (exportSheet.hasDtObject()) {
 					// table

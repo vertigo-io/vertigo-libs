@@ -67,14 +67,14 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 				.isNotNull(sqlStatement)
 				.isNotNull(connection);
 		//---
-		return getDataBaseManager().executeBatch(sqlStatement, getModelManager().getTypeAdapters("sql"), connection);
+		return getSqlManager().executeBatch(sqlStatement, getSmartTypeManager().getTypeAdapters("sql"), connection);
 	}
 
 	@Override
 	protected void setNamedParameters(final SqlStatementBuilder sqlStatementBuilder) {
 		final List<TaskAttribute> potentialBatchAttributes = getTaskDefinition().getInAttributes()
 				.stream()
-				.filter(inAttribute -> inAttribute.getCardinality().hasMany())// multiple
+				.filter(inAttribute -> inAttribute.cardinality().hasMany())// multiple
 				.collect(Collectors.toList());
 
 		Assertion.check().isTrue(potentialBatchAttributes.size() == 1, "For batch a single List param is required");
@@ -82,16 +82,16 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 
 		final List<TaskAttribute> otherAttributes = getTaskDefinition().getInAttributes()
 				.stream()
-				.filter(inAttribute -> !inAttribute.getCardinality().hasMany())// not multiple
+				.filter(inAttribute -> !inAttribute.cardinality().hasMany())// not multiple
 				.collect(Collectors.toList());
 		//---
-		final List<?> list = getValue(listAttribute.getName());
+		final List<?> list = getValue(listAttribute.name());
 		list.forEach(object -> {
 			// we bind the parameter of the batch
-			sqlStatementBuilder.bind(listAttribute.getName(), listAttribute.getSmartTypeDefinition().getJavaClass(), object);
+			sqlStatementBuilder.bind(listAttribute.name(), listAttribute.smartTypeDefinition().getJavaClass(), object);
 			// we add all the "constant" parameters
 			otherAttributes.forEach(
-					otherAttribute -> sqlStatementBuilder.bind(otherAttribute.getName(), otherAttribute.getSmartTypeDefinition().getJavaClass(), getValue(otherAttribute.getName())));
+					otherAttribute -> sqlStatementBuilder.bind(otherAttribute.name(), otherAttribute.smartTypeDefinition().getJavaClass(), getValue(otherAttribute.name())));
 			sqlStatementBuilder.nextLine();
 		});
 	}

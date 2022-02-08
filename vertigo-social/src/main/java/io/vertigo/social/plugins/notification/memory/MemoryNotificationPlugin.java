@@ -64,7 +64,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 		//on recopie la notification et on ajoute la modif
 		final List<Notification> newNotifications = getCurrentNotifications(accountURI)
 				.stream()
-				.map(notification -> (notification.getUuid().equals(notificationUUID)) ?
+				.map(notification -> notification.uuid().equals(notificationUUID) ?
 				//on remplace la notif
 						updateNotification(notification, userContent)
 						: notification)
@@ -74,15 +74,15 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	}
 
 	private static Notification updateNotification(final Notification notification, final String userContent) {
-		return Notification.builder(notification.getUuid())
-				.withSender(notification.getSender())
-				.withType(notification.getType())
-				.withTitle(notification.getTitle())
-				.withContent(notification.getContent())
-				.withCreationDate(notification.getCreationDate())
-				.withTTLInSeconds(notification.getTTLInSeconds())
-				.withTargetUrl(notification.getTargetUrl())
-				.withUserContent(userContent != null ? userContent : notification.getUserContent().orElse("")) //only used for default value
+		return Notification.builder(notification.uuid())
+				.withSender(notification.sender())
+				.withType(notification.type())
+				.withTitle(notification.title())
+				.withContent(notification.content())
+				.withCreationDate(notification.creationDate())
+				.withTTLInSeconds(notification.ttlInSeconds())
+				.withTargetUrl(notification.targetUrl())
+				.withUserContent(userContent != null ? userContent : notification.userContentOpt().orElse("")) //only used for default value
 				.build();
 	}
 
@@ -112,7 +112,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	public void remove(final UID<Account> accountURI, final UUID notificationUUID) {
 		final List<Notification> notifications = notificationsByAccountURI.get(accountURI);
 		if (notifications != null) {
-			notifications.removeIf(notification -> notification.getUuid().equals(notificationUUID));
+			notifications.removeIf(notification -> notification.uuid().equals(notificationUUID));
 		}
 	}
 
@@ -120,7 +120,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	@Override
 	public void removeAll(final String type, final String targetUrl) {
 		for (final List<Notification> notifications : notificationsByAccountURI.values()) {
-			notifications.removeIf(notification -> notification.getType().equals(type) && notification.getTargetUrl().equals(targetUrl));
+			notifications.removeIf(notification -> notification.type().equals(type) && notification.targetUrl().equals(targetUrl));
 		}
 	}
 
@@ -139,7 +139,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	}
 
 	private static boolean isTooOld(final Notification notification) {
-		return notification.getTTLInSeconds() >= 0 && notification.getCreationDate().toEpochMilli() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis();
+		return notification.ttlInSeconds() >= 0 && notification.creationDate().toEpochMilli() + notification.ttlInSeconds() * 1000 < System.currentTimeMillis();
 	}
 
 }

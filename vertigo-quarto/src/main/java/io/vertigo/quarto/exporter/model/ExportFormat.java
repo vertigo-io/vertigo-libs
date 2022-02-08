@@ -54,7 +54,7 @@ public enum ExportFormat {
 	 * Constructor.
 	 * @param typeMime Type mime associé
 	 */
-	private ExportFormat(final String typeMime) {
+	ExportFormat(final String typeMime) {
 		this.typeMime = typeMime;
 	}
 

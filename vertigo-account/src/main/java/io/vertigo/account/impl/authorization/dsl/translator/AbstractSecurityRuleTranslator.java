@@ -107,7 +107,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 			return true; //if no SecuredEntity (ie juste a translator in test), we use only simple field query
 		}
 		return mySecuredEntity.getSecurityFields().stream()
-				.anyMatch(field -> fieldName.equals(field.getName()));
+				.anyMatch(field -> fieldName.equals(field.name()));
 	}
 
 	protected final SecurityDimension getSecurityDimension(final String fieldName) {

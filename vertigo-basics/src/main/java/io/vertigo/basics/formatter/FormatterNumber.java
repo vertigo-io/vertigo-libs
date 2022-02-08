@@ -127,23 +127,23 @@ public class FormatterNumber implements Formatter {
 			 * Cela pour utiliser le Number.valueOf plutot que le parse de NumberFormat.
 			 */
 			sValue = cleanStringNumber(sValue, decimalFormatSymbols);
-
-			if (dataType == BasicType.BigDecimal) {
-				return new BigDecimal(sValue);
-			} else if (dataType == BasicType.Double) {
-				return Double.valueOf(sValue);
-			} else if (dataType == BasicType.Integer) {
-				return toInteger(sValue);
-			} else if (dataType == BasicType.Long) {
-				return Long.valueOf(sValue);
+			switch (dataType) {
+				case BigDecimal:
+					return new BigDecimal(sValue);
+				case Double:
+					return Double.valueOf(sValue);
+				case Integer:
+					return toInteger(sValue);
+				case Long:
+					return Long.valueOf(sValue);
+				default:
+					throw new IllegalArgumentException("Type unsupported : " + dataType);
 			}
-			throw new IllegalArgumentException("Type unsupported : " + dataType);
 		} catch (final NumberFormatException e) {
 			// cas des erreurs sur les formats de nombre
 			throw (FormatterException) new FormatterException(Resources.DYNAMOX_NUMBER_NOT_FORMATTED)
 					.initCause(e);
 		}
-
 	}
 
 	private static Integer toInteger(final String sValue) throws FormatterException {

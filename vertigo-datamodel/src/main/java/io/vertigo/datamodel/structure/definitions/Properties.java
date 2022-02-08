@@ -18,7 +18,6 @@
 package io.vertigo.datamodel.structure.definitions;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,11 +35,9 @@ public final class Properties {
 	Properties(final Map<Property<?>, Object> properties) {
 		Assertion.check().isNotNull(properties);
 		//-----
-		if (properties.isEmpty()) {
-			this.properties = Collections.emptyMap();
-		} else {
-			this.properties = Collections.unmodifiableMap(new HashMap<>(properties));
-		}
+		this.properties = properties.isEmpty()
+				? Collections.emptyMap()
+				: Map.copyOf(properties);
 	}
 
 	/**

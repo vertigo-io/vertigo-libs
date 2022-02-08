@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 
 /**
  * Utility functions for constraints handling.
@@ -46,16 +46,16 @@ public final class ConstraintUtil {
 	 * @param defaultMessageText Default message if other parameters are empty
 	 * @return The MessageKey that will display to the user
 	 */
-	public static MessageText resolveMessage(final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt, final Supplier<MessageText> defaultMessageText) {
+	public static LocaleMessageText resolveMessage(final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt, final Supplier<LocaleMessageText> defaultMessageText) {
 		Assertion.check()
 				.isNotNull(overrideMessageOpt)
 				.isNotNull(overrideResourceMessageOpt)
 				.isFalse(overrideMessageOpt.isPresent() && overrideResourceMessageOpt.isPresent(), "msg and resourceMsg must not be set together");
 		//-----
 		if (overrideMessageOpt.isPresent()) {
-			return MessageText.of(overrideMessageOpt.get());
+			return LocaleMessageText.of(overrideMessageOpt.get());
 		} else if (overrideResourceMessageOpt.isPresent()) {
-			return MessageText.of(() -> overrideResourceMessageOpt.get()); // lambda to MessageKey
+			return LocaleMessageText.of(() -> overrideResourceMessageOpt.get()); // lambda to MessageKey
 		}
 		return defaultMessageText.get();
 	}

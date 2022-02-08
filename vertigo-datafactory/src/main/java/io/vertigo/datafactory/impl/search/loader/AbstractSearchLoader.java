@@ -64,32 +64,17 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 	private P getLowestIdValue(final DtDefinition dtDefinition) {
 		final DtField idField = dtDefinition.getIdField().get();
 		Assertion.check().isTrue(
-				idField.getSmartTypeDefinition().getScope().isPrimitive(),
-				"Ids must be primitives : idField '{0}' on dtDefinition '{1}' has the smartType '{2}'", dtDefinition, idField.getName(), idField.getSmartTypeDefinition());
+				idField.smartTypeDefinition().getScope().isBasicType(),
+				"Ids must be primitives : idField '{0}' on dtDefinition '{1}' has the smartType '{2}'", dtDefinition, idField.name(), idField.smartTypeDefinition());
 		//---
-		final BasicType idDataType = idField.getSmartTypeDefinition().getBasicType();
-		P pkValue;
-		switch (idDataType) {
-			case Integer:
-				pkValue = (P) Integer.valueOf(-1);
-				break;
-			case Long:
-				pkValue = (P) Long.valueOf(-1);
-				break;
-			case String:
-				pkValue = (P) "";
-				break;
-			case BigDecimal:
-			case DataStream:
-			case Boolean:
-			case Double:
-			case LocalDate:
-			case Instant:
-			default:
-				throw new IllegalArgumentException("Type's PK " + idDataType.name() + " of "
-						+ dtDefinition.getClassSimpleName() + " is not supported, prefer int, long or String ID.");
-		}
-		return pkValue;
+		final BasicType idDataType = idField.smartTypeDefinition().getBasicType();
+		return switch (idDataType) {
+			case Integer -> (P) Integer.valueOf(-1);
+			case Long -> (P) Long.valueOf(-1);
+			case String -> (P) "";
+			case BigDecimal, DataStream, Boolean, Double, LocalDate, Instant -> throw new IllegalArgumentException("Type's PK " + idDataType.name() + " of "
+					+ dtDefinition.getClassSimpleName() + " is not supported, prefer int, long or String ID.");
+		};
 	}
 
 	private Iterator<SearchChunk<K>> createIterator(final Class<K> keyConceptClass) {

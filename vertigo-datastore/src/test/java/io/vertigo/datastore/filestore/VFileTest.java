@@ -29,6 +29,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.lang.DataStream;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
@@ -41,7 +42,6 @@ import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.TestUtil;
 import io.vertigo.datastore.filestore.data.TestSmartTypes;
-import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.VFileUtil;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
@@ -114,13 +114,8 @@ public final class VFileTest {
 		final String fileName = "monTestFile.txt";
 		final Instant lastModified = Instant.now();
 		final long length = 123;
-		final InputStreamBuilder inputStreamBuilder = new InputStreamBuilder() {
-			@Override
-			public InputStream createInputStream() {
-				return new StringBufferInputStream("Contenu test");
-			}
-		};
-		final VFile vFile = StreamFile.of(fileName, lastModified, length, inputStreamBuilder);
+		final DataStream dataStream = () -> new StringBufferInputStream("Contenu test");
+		final VFile vFile = StreamFile.of(fileName, lastModified, length, dataStream);
 		checkVFile(vFile, fileName, lastModified, "text/plain", length);
 	}
 
@@ -130,13 +125,8 @@ public final class VFileTest {
 		final String typeMime = "monTypeMime";
 		final Instant lastModified = Instant.now();
 		final long length = 123;
-		final InputStreamBuilder inputStreamBuilder = new InputStreamBuilder() {
-			@Override
-			public InputStream createInputStream() {
-				return new StringBufferInputStream("Contenu test");
-			}
-		};
-		final VFile vFile = StreamFile.of(fileName, typeMime, lastModified, length, inputStreamBuilder);
+		final DataStream dataStream = () -> new StringBufferInputStream("Contenu test");
+		final VFile vFile = StreamFile.of(fileName, typeMime, lastModified, length, dataStream);
 		checkVFile(vFile, fileName, lastModified, typeMime, length);
 	}
 

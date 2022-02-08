@@ -22,8 +22,8 @@ import java.util.Optional;
 
 import io.vertigo.account.SqlUtil;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.lang.ListBuilder;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datamodel.task.TaskManager;
 
 final class CreateTestDataBase {

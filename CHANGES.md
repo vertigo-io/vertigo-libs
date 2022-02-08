@@ -6,8 +6,7 @@ Running 4.0.0
 
 more to come :)
 
-
-Release 3.3.0 - 2021/02/..
+Release 3.3.0 - 2021/02/03
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-320-to-330)
 * [Datafactory] Upgraded loadList api to search into multiple indices
@@ -107,6 +106,56 @@ Release 3.3.0 - 2021/02/..
   - fontawesome icons 5.7.1 -> 5.15.4
   - materialDesignIcons 5.5.55 -> 6.5.95
   - ionicons 5.4.0 -> 6.0.1
+
+
+Release 3.2.0 - 2021/06/21
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-311-to-320)
+* [Ui] Fix FileUpload on single value in object.field
+* [Ui] FileUpload simpler support of cardinality.ONE FileInfoUri in object, and fix when no file selected
+* [Ui] add select-multiple ui component
+* [Ui] Add support of Modifiable list. text-field and date component, datetime, checkbox, fileupload (remove label but support errors)
+* [Ui] Add readonly mode to fileupload
+* [Ui] Dedicated tests for uploadFile and modifiableList
+* [Ui] Accept unmodifiable list without key
+* [Ui] Support context with Optional FileInfoUri
+* [Ui] Refactor map from context array to single/optional parameter
+* [Ui] Add a bridge for locale between Vertigo and Spring
+* [DataStore] Fix to support multiple DelayedMemoryKVStorePlugin
+* [DataStore] Fix unique daemon name (can't use - )
+* [DataModel] Fix ProxyMethod with void result should return null
+* [Datamodel] criteria is not limited to entities
+* [Database] influxdb switch to flux query language
+* [DataFactory] Renamed inner attribute to be closer to json form
+* [Account] Enforce pbkdf2 iterations from 2^12 to 2^14
+* [Account] Authorizations on Entity instead of KeyConcept
+* [Account] Fluent clear roles
+* [Vega] Update swaggerApi to use include and exclude fields
+* [Vega] Added httpClient amplifier, by method or class annotations => can be use to call other system REST WS
+* [Vega] Finer exceptions messages
+* [All] Code cleaning, refactoring and documenting 
+* [Ui] upgrade js depencies 
+  - quasar 1.15.2 -> 1.15.19
+  - vuejs 2.6.12 -> 2.6.13
+* [All] Updated libs
+  - gson 2.8.6 -> 2.8.7
+  - snakeyaml 1.27 -> 1.28
+  - javassist 3.27.0-GA -> 3.28.0-GA
+  - javalin 3.13.3 -> 3.13.7
+  - jetty 9.4.35.v20201120 -> 9.4.40.v20210413
+  - mongo 4.2.0 -> 4.2.3
+  - neo4j 4.1.3 -> 4.2.7
+  - jedis 3.5.1 -> 3.6.0
+  - janino 3.1.2 -> 3.1.4
+  - freemarker 2.3.30 -> 2.3.31
+  - liquibase 4.2.2 -> 4.3.5
+  - ehcache 3.9.0 -> 3.9.4
+  - ojdbc 19.8.0.0 -> 19.10.0.0
+  - postgresql jdbc 42.2.18 -> 42.2.20
+  - spring 5.3.3 -> 5.3.7
+  - thymeleaf-layout-dialect 2.5.2 -> 2.5.3
+  - selenium 2.46.0 -> 2.50.0
+  - jackson 2.11.3 -> 2.12.3
 
 Release 3.1.1 - 2021/02/22
 ----------------------

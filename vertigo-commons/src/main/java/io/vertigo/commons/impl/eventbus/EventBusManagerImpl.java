@@ -30,7 +30,7 @@ import io.vertigo.commons.eventbus.definitions.EventBusSubscriptionDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
-import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.AspectPlugin;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -55,7 +55,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		// we need to unwrap the component to scan the real class and not the enhanced version
-		final AopPlugin aopPlugin = Node.getNode().getNodeConfig().getBootConfig().getAopPlugin();
+		final AspectPlugin aopPlugin = Node.getNode().getNodeConfig().bootConfig().aspectPlugin();
 		return Node.getNode().getComponentSpace().keySet()
 				.stream()
 				.flatMap(id -> createEventSubscriptions(id, Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
@@ -66,7 +66,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 	 * Registers all methods annotated with @Suscriber on the object
 	 * @param suscriberInstance
 	 */
-	private static List<EventBusSubscriptionDefinition> createEventSubscriptions(final String componentId, final CoreComponent subscriberInstance, final AopPlugin aopPlugin) {
+	private static List<EventBusSubscriptionDefinition> createEventSubscriptions(final String componentId, final CoreComponent subscriberInstance, final AspectPlugin aopPlugin) {
 		Assertion.check().isNotNull(subscriberInstance);
 		//-----
 		//1. search all methods

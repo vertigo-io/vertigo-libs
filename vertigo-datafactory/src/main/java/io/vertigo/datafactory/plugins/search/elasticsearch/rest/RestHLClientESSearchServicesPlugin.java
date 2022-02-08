@@ -349,7 +349,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	private static String obtainPkIndexDataType(final SmartTypeDefinition smartTypeDefinition) {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
-		Assertion.check().isTrue(smartTypeDefinition.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartTypeDefinition + "].");
+		Assertion.check().isTrue(smartTypeDefinition.getScope().isBasicType(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartTypeDefinition + "].");
 		switch (smartTypeDefinition.getBasicType()) {
 			case Boolean:
 			case Double:
@@ -385,15 +385,15 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 					.endObject();
 
 			typeMapping.startObject(ESDocumentCodec.DOC_ID)
-					.field("type", obtainPkIndexDataType(indexDefinition.getKeyConceptDtDefinition().getIdField().get().getSmartTypeDefinition()))
+					.field("type", obtainPkIndexDataType(indexDefinition.getKeyConceptDtDefinition().getIdField().get().smartTypeDefinition()))
 					.endObject();
 
 			/* 3 : Les champs du dto index */
 			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
-				final IndexType indexType = IndexType.readIndexType(dtField.getSmartTypeDefinition());
-				typeMapping.startObject(dtField.getName());
+				final IndexType indexType = IndexType.readIndexType(dtField.smartTypeDefinition());
+				typeMapping.startObject(dtField.name());
 				appendIndexTypeMapping(typeMapping, indexType);
 				if (copyFromFields.contains(dtField)) {
 					appendIndexCopyToMapping(indexDefinition, typeMapping, dtField);
@@ -428,11 +428,11 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	private static void appendIndexCopyToMapping(final SearchIndexDefinition indexDefinition, final XContentBuilder typeMapping, final DtField dtField) throws IOException {
 		final List<DtField> copyToFields = indexDefinition.getIndexCopyToFields(dtField);
 		if (copyToFields.size() == 1) {
-			typeMapping.field("copy_to", copyToFields.get(0).getName());
+			typeMapping.field("copy_to", copyToFields.get(0).name());
 		} else {
 			final String[] copyToFieldNames = new String[copyToFields.size()];
 			for (int i = 0; i < copyToFieldNames.length; i++) {
-				copyToFieldNames[i] = copyToFields.get(i).getName();
+				copyToFieldNames[i] = copyToFields.get(i).name();
 			}
 			typeMapping.field("copy_to", copyToFieldNames);
 		}

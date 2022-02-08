@@ -36,7 +36,6 @@ import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
-import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.FileStorePlugin;
 import io.vertigo.datastore.impl.filestore.model.StreamFile;
@@ -97,9 +96,9 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.check().isNotNull(uri);
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
-		final UID<Entity> dtoUri = UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.getSmartTypeDefinition().getJavaClass()));
+		final UID<Entity> dtoUri = UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.smartTypeDefinition().getJavaClass()));
 		final Entity fileInfoDto = getEntityStoreManager().readOne(dtoUri);
-		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileInfoDto, DtoFields.fileData, DataStream.class));
+		final DataStream inputStreamBuilder = getValue(fileInfoDto, DtoFields.fileData, DataStream.class);
 		final String fileName = getValue(fileInfoDto, DtoFields.fileName, String.class);
 		final String mimeType = getValue(fileInfoDto, DtoFields.mimeType, String.class);
 		final Instant lastModified = getValue(fileInfoDto, DtoFields.lastModified, Instant.class);
@@ -114,7 +113,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	@Override
 	public FileInfo create(final FileInfo fileInfo) {
 		checkReadonly();
-		Assertion.check().isNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
+		Assertion.check().isNull(fileInfo.getURI(), "Only file without any id can be created.");
 		checkDefinitionStoreBinding(fileInfo.getDefinition());
 		//-----
 		final Entity fileInfoDto = createFileInfoDto(fileInfo);
@@ -132,7 +131,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	@Override
 	public void update(final FileInfo fileInfo) {
 		checkReadonly();
-		Assertion.check().isNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
+		Assertion.check().isNotNull(fileInfo.getURI(), "Only file with an id can be updated.");
 		checkDefinitionStoreBinding(fileInfo.getDefinition());
 		//-----
 		final Entity fileInfoDto = createFileInfoDto(fileInfo);
@@ -144,10 +143,10 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	@Override
 	public void delete(final FileInfoURI uri) {
 		checkReadonly();
-		Assertion.check().isNotNull(uri, "uri du fichier doit être renseignée.");
+		Assertion.check().isNotNull(uri, "Only file with an id can be delete");
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
-		final UID<Entity> dtoUri = UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.getSmartTypeDefinition().getJavaClass()));
+		final UID<Entity> dtoUri = UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.smartTypeDefinition().getJavaClass()));
 		getEntityStoreManager().delete(dtoUri);
 	}
 
@@ -166,7 +165,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		setValue(fileInfoDto, DtoFields.mimeType, vFile.getMimeType());
 		setValue(fileInfoDto, DtoFields.lastModified, vFile.getLastModified());
 		setValue(fileInfoDto, DtoFields.length, vFile.getLength());
-		setValue(fileInfoDto, DtoFields.fileData, new VFileDataStream(vFile));
+		setValue(fileInfoDto, DtoFields.fileData, vFile);
 
 		if (fileInfo.getURI() != null) {
 			setIdValue(fileInfoDto, fileInfo.getURI());
