@@ -9,6 +9,7 @@ more to come :)
 Release 3.3.0 - 2021/02/03
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-320-to-330)
+* **[Datafactory] Change FacetedQueryDefinition linked to DtIndex instead KeyConcept (support multiple indices)**
 * [Datafactory] Upgraded loadList api to search into multiple indices
 * [Ui] Add demo of modifiable table, with custom header and columns (sum, group by, etc...)
 * [Ui] Add support of select and textarea in table-modifiable
