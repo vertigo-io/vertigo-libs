@@ -1720,7 +1720,7 @@ abstract class AbstractWebServiceManagerTest {
 				.given()
 				.formParam("id", 12)
 				.formParam("note", "Some very important notes about this file.")
-				//.formParam("upfile", imageFile)
+				.formParam("upfile", imageFile.getAbsolutePath())
 				.expect()
 				.body("globalErrors", Matchers.contains("File upfile not found. Request contentType isn't \"multipart/form-data\""))
 				.statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
