@@ -37,18 +37,90 @@
 				"((amount<${montantMax} OR amount=${montantMax} OR amount<=${montantMax}) AND utiIdOwner!=${utiId}) or ((amount>${montantMax} OR amount=${montantMax} OR amount>=${montantMax}) AND utiIdOwner=${utiId})"
 			]
 		},{
+            "__comment": "Tests uniquement",
+            "name": "test2", "label" : "Test Enum",
+            "rules": [
+                "etaCd<PUB OR etaCd<=PUB OR etaCd=PUB OR etaCd!=PUB OR etaCd>PUB OR etaCd>=PUB"             
+            ]
+        },{
 			"__comment": "Tests uniquement",
-			"name": "test2", "label" : "Test Enum",
+			"name": "test2LT", "label" : "Test Enum",
 			"rules": [
-				"etaCd<NOT OR etaCd<=PUB OR etaCd=PUB OR etaCd!=PUB OR etaCd>VAL OR etaCd>=PUB"				
+				"etaCd<PUB"				
 			]
 		},{
+            "__comment": "Tests uniquement",
+            "name": "test2LTE", "label" : "Test Enum",
+            "rules": [
+                "etaCd<=PUB"             
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test2EQ", "label" : "Test Enum",
+            "rules": [
+                "etaCd=PUB"             
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test2NEQ", "label" : "Test Enum",
+            "rules": [
+                "etaCd!=PUB"             
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test2GT", "label" : "Test Enum",
+            "rules": [
+                "etaCd>PUB"             
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test2GTE", "label" : "Test Enum",
+            "rules": [
+                "etaCd>=PUB"             
+            ]
+        },{
 			"__comment": "Tests uniquement",
 			"name": "test3", "label" : "Test Tree",
 			"rules": [
 				"GEO<${geo} OR GEO<=${geo} OR GEO=${geo} OR GEO!=${geo} OR GEO>${geo} OR GEO>=${geo}"				
 			]
-		}, {
+		},{
+            "__comment": "Tests uniquement",
+            "name": "test3LT", "label" : "Test Tree",
+            "rules": [
+                "GEO<${geo}"               
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test3LTE", "label" : "Test Tree",
+            "rules": [
+                "GEO<=${geo}"               
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test3EQ", "label" : "Test Tree",
+            "rules": [
+                "GEO=${geo}"               
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test3NEQ", "label" : "Test Tree",
+            "rules": [
+                "GEO!=${geo}"               
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test3GT", "label" : "Test Tree",
+            "rules": [
+                "GEO>${geo}"               
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test3GTE", "label" : "Test Tree",
+            "rules": [
+                "GEO>=${geo}"               
+            ]
+        }, {
 			"__comment": "Visibilité attribuable avec un montant maximum, et visibilité pour l'utilisateur créateur.",
 			"name": "read",	 "grants": ["read2", "read3"] , "label" : "Lecture",
 			"rules": [
