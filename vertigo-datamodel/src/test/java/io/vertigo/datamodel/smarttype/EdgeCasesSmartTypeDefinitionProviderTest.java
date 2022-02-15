@@ -49,7 +49,7 @@ public class EdgeCasesSmartTypeDefinitionProviderTest {
 				.build();
 		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
 			final SmartTypeDefinition dtBaseSmartType = node.getDefinitionSpace().resolve("STyDtBase", SmartTypeDefinition.class);
-			Assertions.assertEquals(FormatterTest.class, dtBaseSmartType.getFormatterConfig().formatterClass());
+			Assertions.assertEquals(FormatterTest.class, dtBaseSmartType.getFormatterConfig().getFormatterClass());
 		}
 	}
 
@@ -71,7 +71,7 @@ public class EdgeCasesSmartTypeDefinitionProviderTest {
 		Assertions.assertThrows(IllegalStateException.class, () -> {
 			try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
 				final SmartTypeDefinition dtBaseSmartType = node.getDefinitionSpace().resolve("STyDtBase", SmartTypeDefinition.class);
-				Assertions.assertEquals(FormatterTest.class, dtBaseSmartType.getFormatterConfig().formatterClass());
+				Assertions.assertEquals(FormatterTest.class, dtBaseSmartType.getFormatterConfig().getFormatterClass());
 			}
 		});
 	}

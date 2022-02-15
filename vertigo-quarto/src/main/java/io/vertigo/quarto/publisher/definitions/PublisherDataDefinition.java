@@ -28,7 +28,7 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
  * @author npiedeloup, pchretien
  */
 @DefinitionPrefix(PublisherDataDefinition.PREFIX)
-public final class PublisherDataDefinition extends AbstractDefinition<PublisherDataDefinition> {
+public final class PublisherDataDefinition extends AbstractDefinition {
 	public static final String PREFIX = "Pu";
 	private final PublisherNodeDefinition rootNodeDefinition;
 

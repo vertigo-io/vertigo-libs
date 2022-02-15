@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.StreamFile;
 
@@ -56,7 +57,7 @@ public final class SpringVFileUtil {
 		if (mimeType == null) {
 			mimeType = "application/octet-stream";
 		}
-		return StreamFile.of(fileName, mimeType, Instant.now(), file.getSize(), () -> file.getInputStream());
+		return StreamFile.of(fileName, mimeType, Instant.now(), file.getSize(), new MultipartFileInputStreamBuilder(file));
 	}
 
 	/**
@@ -185,7 +186,7 @@ public final class SpringVFileUtil {
 		if (mimeType == null) {
 			mimeType = "application/octet-stream";
 		}
-		return StreamFile.of(fileName, mimeType, Instant.now(), file.getSize(), () -> file.getInputStream());
+		return StreamFile.of(fileName, mimeType, Instant.now(), file.getSize(), new FileInputStreamBuilder(file));
 	}
 
 	private static String getSubmittedFileName(final Part filePart) {
@@ -199,6 +200,34 @@ public final class SpringVFileUtil {
 			}
 		}
 		return null;
+	}
+
+	private static final class FileInputStreamBuilder implements InputStreamBuilder {
+		private final Part file;
+
+		FileInputStreamBuilder(final Part file) {
+			this.file = file;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public InputStream createInputStream() throws IOException {
+			return file.getInputStream();
+		}
+	}
+
+	private static final class MultipartFileInputStreamBuilder implements InputStreamBuilder {
+		private final MultipartFile file;
+
+		MultipartFileInputStreamBuilder(final MultipartFile file) {
+			this.file = file;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public InputStream createInputStream() throws IOException {
+			return file.getInputStream();
+		}
 	}
 
 }

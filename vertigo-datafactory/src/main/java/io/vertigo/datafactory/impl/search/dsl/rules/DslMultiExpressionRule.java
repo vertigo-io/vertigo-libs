@@ -82,44 +82,45 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 		final String postMultiExpression;
 		//---
 		final List<PegChoice> many;
-		postMultiExpression = switch (parsing.choiceIndex()) {
-			case 0 -> {
-				final List<?> blockExpression = (List<?>) parsing.value();
+		switch (parsing.getChoiceIndex()) {
+			case 0:
+				final List<?> blockExpression = (List<?>) parsing.getValue();
 				preMultiExpression = ((Optional<String>) blockExpression.get(0)).orElse("") + blockExpression.get(1);
 				many = (List<PegChoice>) blockExpression.get(3);
-				yield (String) blockExpression.get(6);
-			}
-			case 1 -> {
+				postMultiExpression = (String) blockExpression.get(6);
+				break;
+			case 1:
 				preMultiExpression = "";
-				many = (List<PegChoice>) parsing.value();
-				yield "";
-			}
-			case 2 -> {
+				many = (List<PegChoice>) parsing.getValue();
+				postMultiExpression = "";
+				break;
+			case 2:
 				//spaces
 				preMultiExpression = "";
 				many = Collections.emptyList();
-				yield (String) parsing.value();
-			}
-			default -> throw new IllegalArgumentException("case " + parsing.choiceIndex() + " not implemented");
-		};
+				postMultiExpression = (String) parsing.getValue();
+				break;
+			default:
+				throw new IllegalArgumentException("case " + parsing.getChoiceIndex() + " not implemented");
+		}
 
 		final List<DslExpression> expressionDefinitions = new ArrayList<>();
 		final List<DslMultiExpression> multiExpressionDefinitions = new ArrayList<>();
 
 		//On récupère le produit de la règle many (list de sequence)
 		for (final PegChoice item : many) {
-			switch (item.choiceIndex()) {
+			switch (item.getChoiceIndex()) {
 				case 0:
-					expressionDefinitions.add((DslExpression) item.value());
+					expressionDefinitions.add((DslExpression) item.getValue());
 					break;
 				case 1:
-					multiExpressionDefinitions.add((DslMultiExpression) item.value());
+					multiExpressionDefinitions.add((DslMultiExpression) item.getValue());
 					break;
 				default:
-					throw new IllegalArgumentException("case " + item.choiceIndex() + " not implemented");
+					throw new IllegalArgumentException("case " + item.getChoiceIndex() + " not implemented");
 			}
 		}
-		final boolean block = parsing.choiceIndex() == 0;
+		final boolean block = parsing.getChoiceIndex() == 0;
 		//---
 		return new DslMultiExpression(preMultiExpression, block, expressionDefinitions, multiExpressionDefinitions, postMultiExpression);
 	}

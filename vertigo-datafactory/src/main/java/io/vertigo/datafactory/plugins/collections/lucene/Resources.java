@@ -17,14 +17,14 @@
  */
 package io.vertigo.datafactory.plugins.collections.lucene;
 
-import io.vertigo.core.locale.LocaleMessageKey;
+import io.vertigo.core.locale.MessageKey;
 
 /**
  * Dictionnaire des ressources.
  *
  * @author  npiedeloup
 */
-public enum Resources implements LocaleMessageKey {
+public enum Resources implements MessageKey {
 	/**
 	 * "Votre recherche n'est pas assez sélective. Merci de préciser plus de lettres.".
 	 */

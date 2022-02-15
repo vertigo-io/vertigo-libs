@@ -51,7 +51,7 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
  * @author pchretien
  */
 @DefinitionPrefix(CacheDefinition.PREFIX)
-public final class CacheDefinition extends AbstractDefinition<CacheDefinition> {
+public final class CacheDefinition extends AbstractDefinition {
 	public static final String PREFIX = "Cache";
 
 	private final boolean serializeElements;

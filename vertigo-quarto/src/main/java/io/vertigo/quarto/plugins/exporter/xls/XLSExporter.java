@@ -49,7 +49,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
@@ -245,7 +245,7 @@ final class XLSExporter {
 				final HSSFCell cell = row.createCell(cellIndex);
 
 				value = ExporterUtil.getValue(entityStoreManager, smartTypeManager, referenceCache, denormCache, dto, exportColumn);
-				putValueInCell(smartTypeManager, value, cell, rowIndex % 2 == 0 ? evenHssfStyleCache : oddHssfStyleCache, cellIndex, maxWidthPerColumn, exportColumn.getDtField().smartTypeDefinition());
+				putValueInCell(smartTypeManager, value, cell, rowIndex % 2 == 0 ? evenHssfStyleCache : oddHssfStyleCache, cellIndex, maxWidthPerColumn, exportColumn.getDtField().getSmartTypeDefinition());
 
 				cellIndex++;
 			}
@@ -263,14 +263,14 @@ final class XLSExporter {
 			final HSSFRow row = sheet.createRow(rowIndex);
 
 			final HSSFCell cell = row.createCell(labelCellIndex);
-			final LocaleMessageText label = exportColumn.getLabel();
+			final MessageText label = exportColumn.getLabel();
 			cell.setCellValue(new HSSFRichTextString(label.getDisplay()));
 			cell.setCellStyle(createHeaderCellStyle(workbook));
 			updateMaxWidthPerColumn(label.getDisplay(), 1.2, labelCellIndex, maxWidthPerColumn); // +20% pour les majuscules
 
 			final HSSFCell valueCell = row.createCell(valueCellIndex);
 			value = ExporterUtil.getValue(entityStoreManager, smartTypeManager, referenceCache, denormCache, dto, exportColumn);
-			putValueInCell(smartTypeManager, value, valueCell, oddHssfStyleCache, valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().smartTypeDefinition());
+			putValueInCell(smartTypeManager, value, valueCell, oddHssfStyleCache, valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().getSmartTypeDefinition());
 			rowIndex++;
 		}
 
@@ -288,28 +288,36 @@ final class XLSExporter {
 		cell.setCellStyle(rowCellStyle.get(smartTypeDefinition.getBasicType()));
 		if (value != null) {
 			stringValueForColumnWidth = String.valueOf(value);
-			if (value instanceof final String stringValue) {
+			if (value instanceof String) {
+				final String stringValue = (String) value;
 				cell.setCellValue(new HSSFRichTextString(stringValue));
-			} else if (value instanceof final Integer integerValue) {
+			} else if (value instanceof Integer) {
+				final Integer integerValue = (Integer) value;
 				cell.setCellValue(integerValue.doubleValue());
-			} else if (value instanceof final Double dValue) {
+			} else if (value instanceof Double) {
+				final Double dValue = (Double) value;
 				cell.setCellValue(dValue.doubleValue());
 				stringValueForColumnWidth = String.valueOf(Math.round(dValue.doubleValue() * 100) / 100D);
-			} else if (value instanceof final Long lValue) {
+			} else if (value instanceof Long) {
+				final Long lValue = (Long) value;
 				cell.setCellValue(lValue.doubleValue());
-			} else if (value instanceof final BigDecimal bigDecimalValue) {
+			} else if (value instanceof BigDecimal) {
+				final BigDecimal bigDecimalValue = (BigDecimal) value;
 				cell.setCellValue(bigDecimalValue.doubleValue());
 				stringValueForColumnWidth = String.valueOf(Math.round(bigDecimalValue.doubleValue() * 100) / 100D);
-			} else if (value instanceof final Boolean bValue) {
+			} else if (value instanceof Boolean) {
+				final Boolean bValue = (Boolean) value;
 				//cell.setCellValue(bValue.booleanValue() ? "Oui" : "Non");
 				cell.setCellValue(smartTypeManager.valueToString(smartTypeDefinition, bValue));
-			} else if (value instanceof final LocalDate dateValue) {
+			} else if (value instanceof LocalDate) {
+				final LocalDate dateValue = (LocalDate) value;
 				// sans ce style "date" les dates apparaîtraient au format
 				// "nombre"
 				cell.setCellValue(dateValue);
 				stringValueForColumnWidth = "DD/MM/YYYY";
 				// ceci ne sert que pour déterminer la taille de la cellule, on a pas besoin de la vrai valeur
-			} else if (value instanceof final Instant instantValue) {
+			} else if (value instanceof Instant) {
+				final Instant instantValue = (Instant) value;
 				cell.setCellValue(LocalDateTime.ofInstant(instantValue, ZoneId.of("UTC")));
 				stringValueForColumnWidth = "DD/MM/YYYY HH:mm";
 				// ceci ne sert que pour déterminer la taille de la cellule, on a pas besoin de la vrai valeur
@@ -338,10 +346,10 @@ final class XLSExporter {
 	 */
 	void exportData(final Export documentParameters, final OutputStream out) throws IOException {
 		// Workbook
-		final boolean forceLandscape = Export.Orientation.Landscape == documentParameters.orientation();
+		final boolean forceLandscape = Export.Orientation.Landscape == documentParameters.getOrientation();
 		try (final HSSFWorkbook workbook = new HSSFWorkbook()) {
 			initHssfStyle(workbook);
-			for (final ExportSheet exportSheet : documentParameters.sheets()) {
+			for (final ExportSheet exportSheet : documentParameters.getSheets()) {
 				final String title = exportSheet.getTitle();
 				final HSSFSheet sheet = title == null ? workbook.createSheet() : workbook.createSheet(title);
 				exportData(exportSheet, workbook, sheet, forceLandscape);

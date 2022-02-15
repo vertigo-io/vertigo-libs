@@ -84,7 +84,7 @@ public class SmartTypesLoader implements Loader {
 		// DataType and Mapper
 		if (dataTypeOpt.isPresent()) {
 			//we are a primitive
-			scope = Scope.BASIC_TYPE;
+			scope = Scope.PRIMITIVE;
 		} else {
 			//we are not primitive, we need a mapper
 			final Adapter[] adapters = field.getAnnotationsByType(Adapter.class);
@@ -92,13 +92,13 @@ public class SmartTypesLoader implements Loader {
 				adapterConfigs.add(new AdapterConfig(adapter.type(), adapter.clazz(), adapter.targetBasicType()));
 			}
 			if (DtObject.class.isAssignableFrom(targetJavaClass)) {
-				scope = Scope.DATA_TYPE;
+				scope = Scope.DATA_OBJECT;
 				Assertion.check().isTrue(field.getName().equals(DtDefinition.PREFIX + targetJavaClass.getSimpleName()), "The name of the SmartType {0} is not consistent with the class {1}",
 						field.getName(), targetJavaClass);
 			} else {
 				Assertion.check().isTrue(adapters.length > 0,
 						"Your smarttype '{0}' is associated with a value object, you need to specify a mapper to a targeted DataType with the @Adapter annotation", smartTypeName);
-				scope = Scope.VALUE_TYPE;
+				scope = Scope.VALUE_OBJECT;
 			}
 		}
 
@@ -118,12 +118,12 @@ public class SmartTypesLoader implements Loader {
 
 			constraintConfigs
 					.forEach(constraintConfig -> {
-						final Optional<String> msgOpt = StringUtil.isBlank(constraintConfig.msg()) ? Optional.empty() : Optional.of(constraintConfig.msg());
-						final Optional<String> resourceMsgOpt = StringUtil.isBlank(constraintConfig.resourceMsg()) ? Optional.empty() : Optional.of(constraintConfig.resourceMsg());
-						final Constructor<? extends io.vertigo.datamodel.structure.definitions.Constraint> constructor = ClassUtil.findConstructor(constraintConfig.constraintClass(),
+						final Optional<String> msgOpt = StringUtil.isBlank(constraintConfig.getMsg()) ? Optional.empty() : Optional.of(constraintConfig.getMsg());
+						final Optional<String> resourceMsgOpt = StringUtil.isBlank(constraintConfig.getResourceMsg()) ? Optional.empty() : Optional.of(constraintConfig.getResourceMsg());
+						final Constructor<? extends io.vertigo.datamodel.structure.definitions.Constraint> constructor = ClassUtil.findConstructor(constraintConfig.getConstraintClass(),
 								new Class[] { String.class, Optional.class, Optional.class });
 						final io.vertigo.datamodel.structure.definitions.Constraint newConstraint = ClassUtil.newInstance(constructor,
-								new Object[] { constraintConfig.arg(), msgOpt, resourceMsgOpt });
+								new Object[] { constraintConfig.getArg(), msgOpt, resourceMsgOpt });
 						propertiesBuilder.addValue(newConstraint.getProperty(), newConstraint.getPropertyValue());
 					});
 
@@ -139,7 +139,7 @@ public class SmartTypesLoader implements Loader {
 		return new SmartTypeDefinition(
 				smartTypeName,
 				scope,
-				targetJavaClass,
+				targetJavaClass.getName(),
 				adapterConfigs,
 				formatterConfig,
 				constraintConfigs,

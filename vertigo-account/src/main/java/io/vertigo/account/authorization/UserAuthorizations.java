@@ -32,7 +32,7 @@ import io.vertigo.account.authorization.definitions.Authorization;
 import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.account.authorization.definitions.Role;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.DefinitionId;
+import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 
 /**
@@ -47,18 +47,18 @@ public final class UserAuthorizations implements Serializable {
 	/**
 	 * All authorizations list of this user (global and keyConcept)
 	 */
-	private final Map<String, DefinitionId<Authorization>> authorizationRefs = new HashMap<>();
+	private final Map<String, DefinitionReference<Authorization>> authorizationRefs = new HashMap<>();
 
 	/**
 	 * KeyConcept dependent authorizations list by keyConcept of this user.
 	 */
-	private final Map<DefinitionId<DtDefinition>, Map<String, DefinitionId<Authorization>>> authorizationMapRefs = new HashMap<>();
+	private final Map<DefinitionReference<DtDefinition>, Map<String, DefinitionReference<Authorization>>> authorizationMapRefs = new HashMap<>();
 
 	/**
 	 * Accepted roles for this user.
 	 * Use for asc-compatibility.
 	 */
-	private final Set<DefinitionId<Role>> roleRefs = new HashSet<>();
+	private final Set<DefinitionReference<Role>> roleRefs = new HashSet<>();
 
 	private final Map<String, List<Serializable>> mySecurityKeys = new HashMap<>();
 
@@ -75,7 +75,7 @@ public final class UserAuthorizations implements Serializable {
 	public UserAuthorizations addRole(final Role role) {
 		Assertion.check().isNotNull(role);
 		//-----
-		roleRefs.add(role.id());
+		roleRefs.add(new DefinitionReference<>(role));
 		role.getAuthorizations()
 				.forEach(this::addAuthorization);
 		return this;
@@ -87,7 +87,7 @@ public final class UserAuthorizations implements Serializable {
 	 */
 	public Set<Role> getRoles() {
 		return roleRefs.stream()
-				.map(DefinitionId::get)
+				.map(DefinitionReference::get)
 				.collect(Collectors.toSet());
 	}
 
@@ -98,7 +98,7 @@ public final class UserAuthorizations implements Serializable {
 	public boolean hasRole(final Role role) {
 		Assertion.check().isNotNull(role);
 		//-----
-		return roleRefs.contains(role.id());
+		return roleRefs.contains(new DefinitionReference<>(role));
 	}
 
 	/**
@@ -122,11 +122,11 @@ public final class UserAuthorizations implements Serializable {
 	public UserAuthorizations addAuthorization(final Authorization authorization) {
 		Assertion.check().isNotNull(authorization);
 		//-----
-		final DefinitionId<Authorization> definitionReference = authorization.id();
+		final DefinitionReference<Authorization> definitionReference = new DefinitionReference<>(authorization);
 		authorizationRefs.put(authorization.getName(), definitionReference);
 
 		if (authorization.getEntityDefinition().isPresent()) {
-			final Map<String, DefinitionId<Authorization>> entityAuthorizationRefs = authorizationMapRefs.computeIfAbsent(authorization.getEntityDefinition().get().id(), key -> new HashMap<>());
+			final Map<String, DefinitionReference<Authorization>> entityAuthorizationRefs = authorizationMapRefs.computeIfAbsent(new DefinitionReference<>(authorization.getEntityDefinition().get()), key -> new HashMap<>());
 			entityAuthorizationRefs.put(authorization.getName(), definitionReference);
 			for (final Authorization grantedAuthorization : authorization.getGrants()) {
 				if (!hasAuthorization(grantedAuthorization::getName)) { //On test pour ne pas créer de boucle
@@ -134,7 +134,7 @@ public final class UserAuthorizations implements Serializable {
 				}
 			}
 			//on ajoute pas vraiment les overrides, car on a juste ajouter un nom d'opération pour la rule de l'authorization actuelle
-			final String authorizationPrefix = Authorization.PREFIX + authorization.getEntityDefinition().get().id().shortName() + '$';
+			final String authorizationPrefix = Authorization.PREFIX + authorization.getEntityDefinition().get().getLocalName() + '$';
 			for (final String overridedAuthorization : authorization.getOverrides()) {
 				authorizationRefs.put(authorizationPrefix + overridedAuthorization, definitionReference);
 				entityAuthorizationRefs.put(authorizationPrefix + overridedAuthorization, definitionReference);
@@ -159,10 +159,10 @@ public final class UserAuthorizations implements Serializable {
 	 * @return Authorizations set
 	 */
 	public Set<Authorization> getEntityAuthorizations(final DtDefinition entityDefinition) {
-		final Map<String, DefinitionId<Authorization>> entityAuthorizationRefs = authorizationMapRefs.get(entityDefinition.id());
+		final Map<String, DefinitionReference<Authorization>> entityAuthorizationRefs = authorizationMapRefs.get(new DefinitionReference<>(entityDefinition));
 		if (entityAuthorizationRefs != null) {
 			return entityAuthorizationRefs.values().stream()
-					.map(DefinitionId::get)
+					.map(DefinitionReference::get)
 					.collect(Collectors.toSet());
 		}
 		return Collections.emptySet();

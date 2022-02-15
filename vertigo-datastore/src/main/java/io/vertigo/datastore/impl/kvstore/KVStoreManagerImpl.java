@@ -24,8 +24,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.MapBuilder;
-import io.vertigo.datastore.kvstore.KVCollection;
+import io.vertigo.core.util.MapBuilder;
 import io.vertigo.datastore.kvstore.KVStoreManager;
 
 /**
@@ -34,7 +33,7 @@ import io.vertigo.datastore.kvstore.KVStoreManager;
 * @author pchretien
 */
 public final class KVStoreManagerImpl implements KVStoreManager {
-	private final Map<KVCollection, KVStorePlugin> kvStoreByCollection;
+	private final Map<String, KVStorePlugin> kvStoreByCollection;
 
 	/**
 	 * Constructor.
@@ -44,17 +43,17 @@ public final class KVStoreManagerImpl implements KVStoreManager {
 	public KVStoreManagerImpl(final List<KVStorePlugin> kvStorePlugins) {
 		Assertion.check().isNotNull(kvStorePlugins);
 		//-----
-		final MapBuilder<KVCollection, KVStorePlugin> mapBuilder = new MapBuilder<>();
+		final MapBuilder<String, KVStorePlugin> mapBuilder = new MapBuilder<>();
 		for (final KVStorePlugin kvDataStorePlugin : kvStorePlugins) {
-			for (final KVCollection collection : kvDataStorePlugin.getCollections()) {
+			for (final String collection : kvDataStorePlugin.getCollections()) {
 				mapBuilder.putCheckKeyNotExists(collection, kvDataStorePlugin);
 			}
 		}
 		kvStoreByCollection = mapBuilder.unmodifiable().build();
 	}
 
-	private KVStorePlugin getKVStorePlugin(final KVCollection collection) {
-		Assertion.check().isNotNull(collection);
+	private KVStorePlugin getKVStorePlugin(final String collection) {
+		Assertion.check().isNotBlank(collection);
 		//-----
 		final KVStorePlugin kvStorePlugin = kvStoreByCollection.get(collection);
 		Assertion.check().isNotNull(kvStorePlugin, "no store found for collection '{0}'", collection);
@@ -63,37 +62,37 @@ public final class KVStoreManagerImpl implements KVStoreManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public int count(final KVCollection collection) {
+	public int count(final String collection) {
 		return getKVStorePlugin(collection).count(collection);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final KVCollection collection, final String id, final Object element) {
+	public void put(final String collection, final String id, final Object element) {
 		getKVStorePlugin(collection).put(collection, id, element);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final KVCollection collection, final String id) {
+	public void remove(final String collection, final String id) {
 		getKVStorePlugin(collection).remove(collection, id);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void clear(final KVCollection collection) {
+	public void clear(final String collection) {
 		getKVStorePlugin(collection).clear(collection);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <C> Optional<C> find(final KVCollection collection, final String id, final Class<C> clazz) {
+	public <C> Optional<C> find(final String collection, final String id, final Class<C> clazz) {
 		return getKVStorePlugin(collection).find(collection, id, clazz);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <C> List<C> findAll(final KVCollection collection, final int skip, final Integer limit, final Class<C> clazz) {
+	public <C> List<C> findAll(final String collection, final int skip, final Integer limit, final Class<C> clazz) {
 		return getKVStorePlugin(collection).findAll(collection, skip, limit, clazz);
 	}
 

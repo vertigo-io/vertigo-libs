@@ -17,7 +17,7 @@
  */
 package io.vertigo.datamodel.structure.definitions;
 
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 
 /**
  * Interface de base pour la définition de contrainte
@@ -71,5 +71,5 @@ public interface Constraint<J, D> {
 	 *
 	 * @return Message d'erreur
 	 */
-	LocaleMessageText getErrorMessage();
+	MessageText getErrorMessage();
 }

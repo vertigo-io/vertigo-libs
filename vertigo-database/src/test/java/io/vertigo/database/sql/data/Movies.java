@@ -17,9 +17,11 @@
  */
 package io.vertigo.database.sql.data;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -34,6 +36,7 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 
 import io.vertigo.core.lang.DataStream;
+import io.vertigo.core.lang.WrappedException;
 
 public final class Movies {
 	public static final String TITLE_MOVIE_1 = "citizen kane"; //1 May 1941, ?
@@ -73,6 +76,16 @@ public final class Movies {
 
 	public static DataStream buildIcon() {
 		return new DataStream() {
+
+			@Override
+			public long getLength() {
+				try {
+					return new File(Movie.class.getResource("icons.png").toURI()).length();
+				} catch (final URISyntaxException e) {
+					throw WrappedException.wrap(e);
+				}
+			}
+
 			@Override
 			public InputStream createInputStream() throws IOException {
 				return Movie.class.getResourceAsStream("icons.png");

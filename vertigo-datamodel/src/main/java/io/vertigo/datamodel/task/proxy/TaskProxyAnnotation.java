@@ -22,12 +22,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import io.vertigo.core.node.component.amplifier.AmplifierMethodAnnotation;
+import io.vertigo.core.node.component.amplifier.ProxyMethodAnnotation;
 import io.vertigo.datamodel.task.model.TaskEngine;
 
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-@AmplifierMethodAnnotation
+@ProxyMethodAnnotation
 public @interface TaskProxyAnnotation {
 	Class<? extends TaskEngine> taskEngineClass();
 

@@ -45,7 +45,7 @@ public final class DtListState {
 	 */
 	public static DtListState defaultOf(final Class<? extends Entity> entityClass) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
-		return new DtListState(DEFAULT_MAX_ROWS, 0, dtDefinition.getSortField().map(DtField::name).orElse(null), false);
+		return new DtListState(DEFAULT_MAX_ROWS, 0, dtDefinition.getSortField().map(DtField::getName).orElse(null), false);
 	}
 
 	/**

@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
 
 import io.vertigo.account.authorization.definitions.SecurityDimension;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression;
-import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression.ValueOperator;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleFixedValue;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression;
-import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression.BoolOperator;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleUserPropertyValue;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression.ValueOperator;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression.BoolOperator;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.structure.definitions.DtField;
@@ -223,10 +223,10 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		}
 	}
 
-	private static <K extends Serializable> void appendTreeExpression(final StringBuilder query, final SecurityDimension securityDimension, final ValueOperator operator, final K[] treeKeys) {
+	private <K extends Serializable> void appendTreeExpression(final StringBuilder query, final SecurityDimension securityDimension, final ValueOperator operator, final K[] treeKeys) {
 		//on vérifie qu'on a bien toutes les clées.
 		final List<String> strDimensionfields = securityDimension.getFields().stream()
-				.map(DtField::name)
+				.map(DtField::getName)
 				.collect(Collectors.toList());
 		Assertion.check().isTrue(strDimensionfields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strDimensionfields);
 		query.append('(');

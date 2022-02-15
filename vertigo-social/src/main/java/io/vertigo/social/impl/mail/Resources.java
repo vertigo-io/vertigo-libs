@@ -17,14 +17,14 @@
  */
 package io.vertigo.social.impl.mail;
 
-import io.vertigo.core.locale.LocaleMessageKey;
+import io.vertigo.core.locale.MessageKey;
 
 /**
  * Dictionnaire des ressources.
  *
  * @author  npiedeloup
  */
-public enum Resources implements LocaleMessageKey {
+public enum Resources implements MessageKey {
 	/**
 	 * L''adresse email {0} n''est pas correct.
 	 */

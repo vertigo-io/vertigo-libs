@@ -71,10 +71,10 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 	/** {@inheritDoc} */
 	@Override
 	public void addDefinitionResourceConfig(final DefinitionResourceConfig definitionResourceConfig) {
-		Assertion.check().isTrue("security".equals(definitionResourceConfig.type()), "Type {0} not supported",
-				definitionResourceConfig.type());
+		Assertion.check().isTrue("security".equals(definitionResourceConfig.getType()), "Type {0} not supported",
+				definitionResourceConfig.getType());
 		// -----
-		final URL authConfURL = resourceManager.resolve(definitionResourceConfig.path());
+		final URL authConfURL = resourceManager.resolve(definitionResourceConfig.getPath());
 		final Gson gson = createGson();
 		final String confJson = FileUtil.read(authConfURL);
 		final AdvancedSecurityConfiguration config = gson.fromJson(confJson, AdvancedSecurityConfiguration.class);

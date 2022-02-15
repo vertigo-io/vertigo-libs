@@ -30,8 +30,8 @@ import io.vertigo.account.account.Account;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.MapBuilder;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.util.MapBuilder;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.impl.notification.NotificationEvent;
 import io.vertigo.social.impl.notification.NotificationPlugin;
@@ -81,16 +81,16 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 
 		try (final Jedis jedis = redisConnector.getClient()) {
 			final Notification notification = notificationEvent.getNotification();
-			final String uuid = notification.uuid().toString();
-			final String typedTarget = "type:" + notification.type() + ";target:" + notification.targetUrl() + ";uuid";
+			final String uuid = notification.getUuid().toString();
+			final String typedTarget = "type:" + notification.getType() + ";target:" + notification.getTargetUrl() + ";uuid";
 			try (final Transaction tx = jedis.multi()) {
 				tx.hmset("notif:" + uuid, toMap(notification));
 
 				//TODO add expire on data
 				//retirer notifs:all qui ne sert plus à rien
 				//loop on type:$type;target:$target;uuid et on déduit les autres queues de là
-				if (notification.ttlInSeconds() > 0) {
-					tx.expire("notif:" + uuid, notification.ttlInSeconds() + 24 * 60 * 60L); //expire in Redis in a security way (TTL + 1 day) purge is done by daemon
+				if (notification.getTTLInSeconds() > 0) {
+					tx.expire("notif:" + uuid, notification.getTTLInSeconds() + 24 * 60 * 60L); //expire in Redis in a security way (TTL + 1 day) purge is done by daemon
 				}
 				tx.lrem("notifs:all", 0, uuid);
 				tx.lpush("notifs:all", uuid);
@@ -113,15 +113,15 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 
 	private static Map<String, String> toMap(final Notification notification) {
 		return new MapBuilder<String, String>()
-				.put("uuid", notification.uuid().toString())
-				.put("sender", notification.sender())
-				.putNullable("type", notification.type())
-				.put("title", notification.title())
-				.put("content", notification.content())
-				.put("creationDate", notification.creationDate().toString())
-				.put("ttlInSeconds", String.valueOf(notification.ttlInSeconds()))
-				.put("targetUrl", notification.targetUrl())
-				.put("userContent", notification.userContentOpt().orElse("")) //only used for default value
+				.put("uuid", notification.getUuid().toString())
+				.put("sender", notification.getSender())
+				.putNullable("type", notification.getType())
+				.put("title", notification.getTitle())
+				.put("content", notification.getContent())
+				.put("creationDate", notification.getCreationDate().toString())
+				.put("ttlInSeconds", String.valueOf(notification.getTTLInSeconds()))
+				.put("targetUrl", notification.getTargetUrl())
+				.put("userContent", notification.getUserContent().orElse("")) //only used for default value
 				.build();
 	}
 
@@ -211,7 +211,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 				final Map<String, String> notifMap = jedis.hgetAll("notif:" + uuid);
 				if (!notifMap.isEmpty()) {
 					final Notification notification = fromMap(notifMap, null);
-					jedis.lrem("type:" + notification.type() + ";target:" + notification.targetUrl() + ";uuid", -1, uuid);
+					jedis.lrem("type:" + notification.getType() + ";target:" + notification.getTargetUrl() + ";uuid", -1, uuid);
 				}
 
 				//we remove userContent of this notif
@@ -302,7 +302,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 		jedis.lrem("notifs:all", -1, uuid);
 		//we remove uuid from queue by type and targetUrl (looking from tail)
 		if (notification != null) {
-			jedis.lrem("type:" + notification.type() + ";target:" + notification.targetUrl() + ";uuid", -1, uuid);
+			jedis.lrem("type:" + notification.getType() + ";target:" + notification.getTargetUrl() + ";uuid", -1, uuid);
 		}
 	}
 
@@ -311,6 +311,6 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	}
 
 	private static boolean isTooOld(final Notification notification) {
-		return notification.ttlInSeconds() >= 0 && notification.creationDate().toEpochMilli() + notification.ttlInSeconds() * 1000 < System.currentTimeMillis();
+		return notification.getTTLInSeconds() >= 0 && notification.getCreationDate().toEpochMilli() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis();
 	}
 }

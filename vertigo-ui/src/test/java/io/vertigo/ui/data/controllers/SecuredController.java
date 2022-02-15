@@ -47,9 +47,8 @@ public class SecuredController extends AbstractVSpringMvcController {
 	public void initContext(final ViewContext viewContext) {
 		viewContext.publishRef(movIdKey, 1000L);
 		final Movie movie = movieServices.get(viewContext.getLong(movIdKey));
-		viewContext
-				.publishDto(movieKey, movie)
-				.toModeEdit();
+		viewContext.publishDto(movieKey, movie);
+		toModeEdit();
 	}
 
 	@PostMapping("/")

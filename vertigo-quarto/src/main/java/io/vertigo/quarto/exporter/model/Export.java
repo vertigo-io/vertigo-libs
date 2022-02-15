@@ -17,6 +17,7 @@
  */
 package io.vertigo.quarto.exporter.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
@@ -25,14 +26,7 @@ import io.vertigo.core.lang.Assertion;
  * Données à exporter.
  * @author pchretien
  */
-public record Export(
-		ExportFormat format,
-		String fileName,
-		String title,
-		String author,
-		Export.Orientation orientation,
-		List<ExportSheet> sheets) {
-
+public final class Export {
 	/**
 	 * Orientation des documents.
 	 */
@@ -41,15 +35,79 @@ public record Export(
 		Landscape,
 		/**Portait.*/
 		Portait
-	}
+    }
 
-	public Export {
+	private final List<ExportSheet> sheets;
+
+	private final ExportFormat format;
+	private final String fileName;
+	private final String title;
+	private final String author;
+	private final Export.Orientation orientation;
+
+	/**
+	 * Constructor.
+	 * @param format output file type. This determine the best handler to use.
+	 * @param fileName output file name.
+	 * @param title Title
+	 * @param author Author
+	 * @param orientation Orientation
+	 * @param sheets Sheets list
+	 */
+	Export(final ExportFormat format, final String fileName, final String title, final String author, final Export.Orientation orientation, final List<ExportSheet> sheets) {
 		Assertion.check()
 				.isNotNull(format)
 				.isNotBlank(fileName, "a fileName is required")
 				.isNotNull(orientation)
 				.isNotNull(sheets);
 		//-----
-		sheets = List.copyOf(sheets);
+		this.format = format;
+		this.fileName = fileName;
+		this.title = title;
+		this.orientation = orientation;
+		this.author = author;
+		this.sheets = new ArrayList<>(sheets);
+	}
+
+	/**
+	 * @return format de sortie du document
+	 */
+	public ExportFormat getFormat() {
+		return format;
+	}
+
+	/**
+	 * @return Nom du fichier
+	 */
+	public String getFileName() {
+		return fileName;
+	}
+
+	/**
+	 * @return Titre du document (Facultatif)
+	 */
+	public String getTitle() {
+		return title;
+	}
+
+	/**
+	 * @return Auteur du document (Facultatif)
+	 */
+	public String getAuthor() {
+		return author;
+	}
+
+	/**
+	 * @return Orientation du document (mode portrait si non renseigné)
+	 */
+	public Orientation getOrientation() {
+		return orientation;
+	}
+
+	/**
+	 * @return Liste des paramètres de données à exporter
+	 */
+	public List<ExportSheet> getSheets() {
+		return sheets;
 	}
 }

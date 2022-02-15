@@ -146,7 +146,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 		final DtListState dtListState;
 		if (uri.getDtDefinition().getSortField().get().isPersistent()) {
 			//On ne tri dans le PhysicalStore que si c'est un champ persistant
-			dtListState = DtListState.of(null, 0, uri.getDtDefinition().getSortField().get().name(), false);
+			dtListState = DtListState.of(null, 0, uri.getDtDefinition().getSortField().get().getName(), false);
 		} else {
 			dtListState = DtListState.of(null);
 		}

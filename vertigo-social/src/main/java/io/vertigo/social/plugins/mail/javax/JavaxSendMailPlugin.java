@@ -47,12 +47,12 @@ import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.locale.LocaleMessageKey;
+import io.vertigo.core.locale.MessageKey;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.VFileUtil;
 import io.vertigo.social.impl.mail.Resources;
-import io.vertigo.social.impl.mail.MailPlugin;
+import io.vertigo.social.impl.mail.SendMailPlugin;
 import io.vertigo.social.mail.Mail;
 
 /**
@@ -60,7 +60,7 @@ import io.vertigo.social.mail.Mail;
  *
  * @author npiedeloup
  */
-public final class JavaxMailPlugin implements MailPlugin {
+public final class JavaxSendMailPlugin implements SendMailPlugin {
 
 	/** Nom du composant. */
 	public static final String HEALTH_COMPONENT_NAME = "Mailer";
@@ -80,7 +80,7 @@ public final class JavaxMailPlugin implements MailPlugin {
 	 * @param charsetOpt charset to use, default is ISO-8859-1
 	 */
 	@Inject
-	public JavaxMailPlugin(
+	public JavaxSendMailPlugin(
 			final List<MailSessionConnector> mailSessionConnectors,
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			@ParamValue("developmentMode") final boolean developmentMode,
@@ -118,24 +118,24 @@ public final class JavaxMailPlugin implements MailPlugin {
 
 	private Message createMessage(final Mail mail, final Session session) throws MessagingException, UnsupportedEncodingException {
 		final Message message = new MimeMessage(session);
-		setFromAddress(mail.fromAddress(), message);
-		if (mail.replyTo() != null) {
-			setReplyToAddress(mail.replyTo(), message);
+		setFromAddress(mail.getFrom(), message);
+		if (mail.getReplyTo() != null) {
+			setReplyToAddress(mail.getReplyTo(), message);
 		}
-		setToAddress(mail.toAddresses(), message);
-		setCcAddress(mail.ccAddresses(), message);
-		if (mail.subject() != null) {
-			message.setSubject(MimeUtility.encodeWord(mail.subject(), charset, "Q"));
+		setToAddress(mail.getToList(), message);
+		setCcAddress(mail.getCcList(), message);
+		if (mail.getSubject() != null) {
+			message.setSubject(MimeUtility.encodeWord(mail.getSubject(), charset, "Q"));
 		}
 		message.setHeader("X-Mailer", "Java");
 		message.setSentDate(new Date());
-		final List<VFile> attachments = mail.attachments();
+		final List<VFile> attachments = mail.getAttachments();
 		if (attachments.isEmpty()) {
-			setBodyContent(mail.textContent(), mail.htmlContent(), message);
+			setBodyContent(mail.getTextContent(), mail.getHtmlContent(), message);
 		} else {
 			final Multipart multiPart = new MimeMultipart();
 			final BodyPart bodyPart = new MimeBodyPart();
-			setBodyContent(mail.textContent(), mail.htmlContent(), bodyPart);
+			setBodyContent(mail.getTextContent(), mail.getHtmlContent(), bodyPart);
 			multiPart.addBodyPart(bodyPart);
 			for (final VFile vFile : attachments) {
 				final BodyPart bodyFile = createBodyFile(vFile);
@@ -232,7 +232,7 @@ public final class JavaxMailPlugin implements MailPlugin {
 		}
 	}
 
-	private static BodyPart createBodyFile(final VFile vFile) throws MessagingException {
+	private BodyPart createBodyFile(final VFile vFile) throws MessagingException {
 		try {
 			final File file = VFileUtil.obtainReadOnlyPath(vFile).toFile();
 			final MimeBodyPart bodyFile = new MimeBodyPart();
@@ -244,7 +244,7 @@ public final class JavaxMailPlugin implements MailPlugin {
 		}
 	}
 
-	private static VUserException createMailException(final LocaleMessageKey messageKey, final MessagingException messagingException, final Serializable... params) {
+	private static VUserException createMailException(final MessageKey messageKey, final MessagingException messagingException, final Serializable... params) {
 		final VUserException mailException = new VUserException(messageKey, params);
 		mailException.initCause(messagingException);
 		return mailException;

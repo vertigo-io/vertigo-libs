@@ -74,7 +74,7 @@ public final class ConstraintTest {
 		}
 	}
 
-	private static NodeConfig buildNodeConfig() {
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.withBoot(BootConfig.builder()
 						.withLocales("fr_FR")

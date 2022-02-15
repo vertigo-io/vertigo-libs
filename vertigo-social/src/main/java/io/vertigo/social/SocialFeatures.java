@@ -32,7 +32,7 @@ import io.vertigo.social.plugins.comment.memory.MemoryCommentPlugin;
 import io.vertigo.social.plugins.comment.redis.RedisCommentPlugin;
 import io.vertigo.social.plugins.handle.memory.MemoryHandlePlugin;
 import io.vertigo.social.plugins.handle.redis.RedisHandlePlugin;
-import io.vertigo.social.plugins.mail.javax.JavaxMailPlugin;
+import io.vertigo.social.plugins.mail.javax.JavaxSendMailPlugin;
 import io.vertigo.social.plugins.notification.memory.MemoryNotificationPlugin;
 import io.vertigo.social.plugins.notification.redis.RedisNotificationPlugin;
 import io.vertigo.social.webservices.account.AccountWebServices;
@@ -116,7 +116,7 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 	@Feature("mail.javax")
 	public SocialFeatures withJavaxMail(final Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(JavaxMailPlugin.class, params);
+				.addPlugin(JavaxSendMailPlugin.class, params);
 
 		return this;
 

@@ -70,13 +70,13 @@ public abstract class AbstractAzureAdDelegateAuthenticationHandler implements De
 	private AzureAdConnector azureAdConnector;
 	private String redirectUri;
 
-	public void init(final AzureAdConnector lazureAdConnector, final String lredirectUri) {
+	public void init(final AzureAdConnector azureAdConnector, final String redirectUri) {
 		Assertion.check()
-				.isNotNull(lazureAdConnector)
-				.isNotBlank(lredirectUri);
+				.isNotNull(azureAdConnector)
+				.isNotBlank(redirectUri);
 		//---
-		this.azureAdConnector = lazureAdConnector;
-		this.redirectUri = lredirectUri;
+		this.azureAdConnector = azureAdConnector;
+		this.redirectUri = redirectUri;
 	}
 
 	@Override

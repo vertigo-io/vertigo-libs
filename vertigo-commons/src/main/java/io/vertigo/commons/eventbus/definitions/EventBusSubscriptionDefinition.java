@@ -34,7 +34,7 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
  * @param <E> type of event
  */
 @DefinitionPrefix(EventBusSubscriptionDefinition.PREFIX)
-public final class EventBusSubscriptionDefinition<E extends Event> extends AbstractDefinition<EventBusSubscriptionDefinition> {
+public final class EventBusSubscriptionDefinition<E extends Event> extends AbstractDefinition {
 	public static final String PREFIX = "Evt";
 	private final Class<E> eventType;
 	private final Consumer<E> eventListener;

@@ -25,7 +25,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
@@ -66,8 +66,8 @@ public final class SelectedFacetValuesDeserializer implements JsonDeserializer<S
 
 	private static void appendRangeFacetValue(final JsonElement label, final FacetDefinition facetDefinition, final SelectedFacetValuesBuilder selectedFacetValuesBuilder) {
 		for (final FacetValue facet : facetDefinition.getFacetRanges()) {
-			if (facet.label().getDisplay().equals(label.getAsString())
-					|| facet.code().equals(label.getAsString())) {
+			if (facet.getLabel().getDisplay().equals(label.getAsString())
+					|| facet.getCode().equals(label.getAsString())) {
 				selectedFacetValuesBuilder.add(facetDefinition, facet);
 				break;
 			}
@@ -94,11 +94,11 @@ public final class SelectedFacetValuesDeserializer implements JsonDeserializer<S
 			valueAsString = code;
 		}
 		if (valueAsString != null) {
-			query = facetDefinition.getDtField().name() + ":\"" + valueAsString + "\"";
+			query = facetDefinition.getDtField().getName() + ":\"" + valueAsString + "\"";
 		} else {
-			query = "!_exists_:" + facetDefinition.getDtField().name(); //only for null value, empty ones use FIELD:""
+			query = "!_exists_:" + facetDefinition.getDtField().getName(); //only for null value, empty ones use FIELD:""
 		}
-		final FacetValue facetValue = new FacetValue(code, ListFilter.of(query), LocaleMessageText.of(code));
+		final FacetValue facetValue = new FacetValue(code, ListFilter.of(query), MessageText.of(code));
 		selectedFacetValuesBuilder.add(facetDefinition, facetValue);
 	}
 }

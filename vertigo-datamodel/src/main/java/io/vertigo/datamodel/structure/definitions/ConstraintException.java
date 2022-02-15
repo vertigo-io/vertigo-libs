@@ -17,7 +17,7 @@
  */
 package io.vertigo.datamodel.structure.definitions;
 
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 
 /**
  * Exception lancée en cas d'échec de vérification des contraintes.
@@ -26,13 +26,13 @@ import io.vertigo.core.locale.LocaleMessageText;
  */
 public final class ConstraintException extends Exception {
 	private static final long serialVersionUID = -7317938262923785124L;
-	private final LocaleMessageText messageText;
+	private final MessageText messageText;
 
 	/**
 	 * Constructor.
 	 * @param messageText MessageText de l'erreur.
 	 */
-	public ConstraintException(final LocaleMessageText messageText) {
+	public ConstraintException(final MessageText messageText) {
 		super(messageText.getDisplay());
 		this.messageText = messageText;
 	}
@@ -41,7 +41,7 @@ public final class ConstraintException extends Exception {
 	 * Gestion des messages d'erreur externalisés.
 	 * @return messageText.
 	 */
-	public LocaleMessageText getMessageText() {
+	public MessageText getMessageText() {
 		return messageText;
 	}
 }

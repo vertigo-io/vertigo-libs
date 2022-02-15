@@ -26,13 +26,30 @@ import io.vertigo.core.lang.Assertion;
  * @author mlaroche
  *
  */
-public record ClusteredMeasure(
-		String measure,
-		List<Integer> thresholds) implements Serializable {
+public class ClusteredMeasure implements Serializable {
 
-	public ClusteredMeasure {
+	private static final long serialVersionUID = 1L;
+
+	private final String measure;
+	private final List<Integer> thresholds;
+
+	public ClusteredMeasure(
+			final String measure,
+			final List<Integer> thresholds) {
 		Assertion.check()
 				.isNotBlank(measure)
 				.isNotNull(thresholds);
+		//---
+		this.measure = measure;
+		this.thresholds = thresholds;
 	}
+
+	public String getMeasure() {
+		return measure;
+	}
+
+	public List<Integer> getThresholds() {
+		return thresholds;
+	}
+
 }

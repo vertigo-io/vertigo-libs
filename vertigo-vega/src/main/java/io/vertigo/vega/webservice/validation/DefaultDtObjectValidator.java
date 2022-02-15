@@ -17,6 +17,9 @@
  */
 package io.vertigo.vega.webservice.validation;
 
+import java.util.List;
+
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.definitions.ConstraintException;
@@ -36,13 +39,28 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		//---
 		final Object value = dtField.getDataAccessor().getValue(dtObject);
-		//Validates the value
-		try {
-			smartTypeManager.validate(dtField.smartTypeDefinition(), dtField.cardinality(), value);
-		} catch (final ConstraintException e) {
-			// Erreur lors du check de la valeur,
-			// la valeur est toutefois correctement typée.
-			dtObjectErrors.addError(dtField.name(), e.getMessageText());
+		//pas d'assertion notNull, car le champs n'est pas forcément obligatoire
+		if (value == null && dtField.getCardinality().hasOne()) {
+			dtObjectErrors.addError(dtField.getName(), MessageText.of("Le champ doit être renseigné"));
+		} else {
+			try {
+				// Le typage est OK
+				// Si non null, on vérifie la validité de la valeur par rapport au champ/domaine.
+				if (dtField.getCardinality().hasMany()) {
+					if (!(value instanceof List)) {
+						throw new ClassCastException("Value " + value + " must be a list");
+					}
+					for (final Object element : List.class.cast(value)) {
+						smartTypeManager.checkConstraints(dtField.getSmartTypeDefinition(), element);
+					}
+				} else {
+					smartTypeManager.checkConstraints(dtField.getSmartTypeDefinition(), value);
+				}
+			} catch (final ConstraintException e) {
+				// Erreur lors du check de la valeur,
+				// la valeur est toutefois correctement typée.
+				dtObjectErrors.addError(dtField.getName(), e.getMessageText());
+			}
 		}
 	}
 }

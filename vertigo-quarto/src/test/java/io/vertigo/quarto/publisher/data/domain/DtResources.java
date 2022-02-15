@@ -17,13 +17,13 @@
  */
 package io.vertigo.quarto.publisher.data.domain;
 
-import io.vertigo.core.locale.LocaleMessageKey;
+import io.vertigo.core.locale.MessageKey;
 
 /**
  * Attention cette classe est générée automatiquement !
  * Resources du module io.vertigo.publisher.mock
  */
-public enum DtResources implements LocaleMessageKey {
+public enum DtResources implements MessageKey {
 
 	/***********************************************************
 	/** ADDRESS.

@@ -34,18 +34,19 @@ final class CriteriaUtil {
 		//		then +(exp.operands.left, *(exp.operands.left, c))
 		if (leftOperand instanceof CriteriaExpression && rightOperand instanceof Criterion) {
 			final CriteriaExpression<D> criteria = CriteriaExpression.class.cast(leftOperand);
-			return switch (criteria.getOperator()) {
-				case AND -> new CriteriaExpression<>(CriteriaLogicalOperator.AND, criteria.getOperands(), rightOperand);
-				case OR -> {
+			switch (criteria.getOperator()) {
+				case AND:
+					return new CriteriaExpression<>(CriteriaLogicalOperator.AND, criteria.getOperands(), rightOperand);
+				case OR:
 					//the most complex case !  a+b*c => a + (b*c)
 					final Criteria<D>[] leftOperands = new Criteria[criteria.getOperands().length - 1];
-					for (int i = 0; i < criteria.getOperands().length - 1; i++) {
+					for (int i = 0; i < (criteria.getOperands().length - 1); i++) {
 						leftOperands[i] = criteria.getOperands()[i];
 					}
-					yield new CriteriaExpression<>(CriteriaLogicalOperator.OR, leftOperands, and(criteria.getOperands()[criteria.getOperands().length - 1], rightOperand));
-				}
-				default -> throw new IllegalStateException();
-			};
+					return new CriteriaExpression<>(CriteriaLogicalOperator.OR, leftOperands, and(criteria.getOperands()[criteria.getOperands().length - 1], rightOperand));
+				default:
+					throw new IllegalStateException();
+			}
 		}
 		return new CriteriaExpression<>(CriteriaLogicalOperator.AND, leftOperand, rightOperand);
 	}

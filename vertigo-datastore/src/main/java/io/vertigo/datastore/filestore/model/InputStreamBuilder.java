@@ -15,19 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.social.impl.mail;
+package io.vertigo.datastore.filestore.model;
 
-import io.vertigo.core.node.component.Plugin;
-import io.vertigo.social.mail.Mail;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * Plugin d'envoi de mail.
+ * Builder d'inputStream pour les données d'un FileInfo.
  * @author npiedeloup
  */
-public interface MailPlugin extends Plugin {
+public interface InputStreamBuilder {
 	/**
-	 * Envoyer un mail.
-	 * @param mail Mail à envoyer
+	 * @return Stream fournissant les données du document.
+	 * @throws IOException Erreur d'entrée/sortie
 	 */
-	void sendMail(Mail mail);
+	InputStream createInputStream() throws IOException;
 }

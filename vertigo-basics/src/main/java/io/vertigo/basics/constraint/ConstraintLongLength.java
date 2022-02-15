@@ -20,7 +20,7 @@ package io.vertigo.basics.constraint;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 
 /**
  * Contrainte vérifiant que l'objet est :
@@ -48,7 +48,7 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 	 */
 	private final long minValue;
 
-	private final LocaleMessageText errorMessage;
+	private final MessageText errorMessage;
 
 	/**
 	 * @param args Liste des arguments réduite à un seul castable en long.
@@ -67,7 +67,7 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 		minValue = -tmpMaxValue;
 		//---
 		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
-				() -> LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_LONGLENGTH_EXCEEDED, minValue, maxValue));
+				() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_LONGLENGTH_EXCEEDED, minValue, maxValue));
 	}
 
 	/** {@inheritDoc} */
@@ -79,7 +79,7 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 
 	/** {@inheritDoc} */
 	@Override
-	public LocaleMessageText getErrorMessage() {
+	public MessageText getErrorMessage() {
 		return errorMessage;
 	}
 }

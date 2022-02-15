@@ -33,14 +33,12 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.kvstore.AbstractKVStoreManagerTest;
-import io.vertigo.datastore.kvstore.KVCollection;
 import io.vertigo.datastore.kvstore.data.Flower;
 
 /**
  * @author pchretien
  */
 public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest {
-	private static final KVCollection FLOWERS = new KVCollection("flowers");
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
@@ -65,7 +63,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 	@Override
 	protected void doSetUp() throws Exception {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			kvStoreManager.clear(FLOWERS);
+			kvStoreManager.clear("flowers");
 		}
 	}
 
@@ -75,7 +73,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 		for (int j = 0; j < 10; j++) {
 			try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 				for (int i = 0; i < 10; i++) {
-					kvStoreManager.put(FLOWERS, String.valueOf(j * 1000 + i), buildFlower("Test", 60));
+					kvStoreManager.put("flowers", String.valueOf(j * 1000 + i), buildFlower("Test", 60));
 				}
 				transaction.commit();
 			}
@@ -92,16 +90,16 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 				buildFlower("orchid", 200));
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final List<Flower> foundFlowers = kvStoreManager.findAll(FLOWERS, 0, null, Flower.class);
+			final List<Flower> foundFlowers = kvStoreManager.findAll("flowers", 0, null, Flower.class);
 			Assertions.assertTrue(foundFlowers.isEmpty());
 
 			int i = 0;
 			for (final Flower flower : flowers) {
 				final String id = "" + i++;
-				kvStoreManager.put(FLOWERS, id, flower);
+				kvStoreManager.put("flowers", id, flower);
 			}
 
-			final List<Flower> foundFlowers2 = kvStoreManager.findAll(FLOWERS, 0, 1000, Flower.class);
+			final List<Flower> foundFlowers2 = kvStoreManager.findAll("flowers", 0, 1000, Flower.class);
 			Assertions.assertEquals(flowers.size(), foundFlowers2.size());
 			transaction.commit();
 		}
@@ -111,7 +109,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 	public void testRemoveFail() {
 		Assertions.assertThrows(RuntimeException.class, () -> {
 			try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-				kvStoreManager.remove(FLOWERS, "1");
+				kvStoreManager.remove("flowers", "1");
 			}
 		});
 	}
@@ -121,25 +119,25 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 		Assertions.assertThrows(RuntimeException.class, () -> {
 			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 				final Flower tulip = buildFlower("tulip", 100);
-				kvStoreManager.put(FLOWERS, "1", tulip);
+				kvStoreManager.put("flowers", "1", tulip);
 				transaction.commit();
 			}
-			final Optional<Flower> flower1 = kvStoreManager.find(FLOWERS, "1", Flower.class);
+			final Optional<Flower> flower1 = kvStoreManager.find("flowers", "1", Flower.class);
 			Assertions.assertTrue(flower1.isPresent(), "Flower id 1 not found");
 
-			final Optional<Flower> flower2 = kvStoreManager.find(FLOWERS, "2", Flower.class);
+			final Optional<Flower> flower2 = kvStoreManager.find("flowers", "2", Flower.class);
 			Assertions.assertFalse(flower2.isPresent(), "There is already a flower id 2");
 			try {
 				try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 					final Flower tulip = buildFlower("rose", 100);
-					kvStoreManager.put(FLOWERS, "2", tulip);
+					kvStoreManager.put("flowers", "2", tulip);
 					throw new VSystemException("Error");
 				}
 			} catch (final RuntimeException e) {
 				//on doit passer par là
 			}
 
-			final Optional<Flower> flower2bis = kvStoreManager.find(FLOWERS, "2", Flower.class);
+			final Optional<Flower> flower2bis = kvStoreManager.find("flowers", "2", Flower.class);
 			Assertions.assertFalse(flower2bis.isPresent(), "Rollback flower id 2 failed");
 		});
 
@@ -151,22 +149,22 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 		int flowerId = 1;
 		for (int i = 0; i < 40; i++) {
 			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-				final int countFlowers = kvStoreManager.count(FLOWERS);
+				final int countFlowers = kvStoreManager.count("flowers");
 				System.out.println("flowers count " + countFlowers);
 				//Assertions.assertEquals(0, nbFlowers);
 				//put a flower a t+0s (expire a T+10s)
 				final Flower tulip1 = buildFlower("tulip", 100);
-				kvStoreManager.put(FLOWERS, String.valueOf(flowerId++), tulip1);
+				kvStoreManager.put("flowers", String.valueOf(flowerId++), tulip1);
 
 				//put a flower a t+2s (expire a T+12s)
 				final Flower tulip2 = buildFlower("tulip", 110);
-				kvStoreManager.put(FLOWERS, String.valueOf(flowerId++), tulip2);
+				kvStoreManager.put("flowers", String.valueOf(flowerId++), tulip2);
 
 				//put a flower a t+4s (expire a T+14s)
 				final Flower tulip3 = buildFlower("tulip", 120);
-				kvStoreManager.put(FLOWERS, String.valueOf(flowerId++), tulip3);
+				kvStoreManager.put("flowers", String.valueOf(flowerId++), tulip3);
 
-				final long searchFlowers = kvStoreManager.findAll(FLOWERS, 0, 1000, Flower.class).size(); //can't use count as it doesnt detect too old element (needs daemon)
+				final long searchFlowers = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size(); //can't use count as it doesnt detect too old element (needs daemon)
 				System.out.println("flowers search " + searchFlowers);
 				//
 				transaction.commit();
@@ -175,11 +173,11 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 		}
 		sleep(10);
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final int finalSearchFlowers = kvStoreManager.findAll(FLOWERS, 0, 1000, Flower.class).size();
+			final int finalSearchFlowers = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size();
 			//search always filter too old elements
 			Assertions.assertEquals(0, finalSearchFlowers);
 
-			final int finalCountFlowers = kvStoreManager.count(FLOWERS);
+			final int finalCountFlowers = kvStoreManager.count("flowers");
 			//count needs daemon
 			Assertions.assertNotEquals(3 * 50 - 3, finalCountFlowers);
 		}
@@ -189,55 +187,55 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 	@Test
 	public void testTimeToLive() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final int nbFlowers = kvStoreManager.count(FLOWERS);
+			final int nbFlowers = kvStoreManager.count("flowers");
 			Assertions.assertEquals(0, nbFlowers);
 			//put a flower a t+0s (expire a T+10s)
 			final Flower tulip1 = buildFlower("tulip", 100);
-			kvStoreManager.put(FLOWERS, "1", tulip1);
+			kvStoreManager.put("flowers", "1", tulip1);
 			sleep(2);
 
 			//put a flower a t+2s (expire a T+12s)
 			final Flower tulip2 = buildFlower("tulip", 110);
-			kvStoreManager.put(FLOWERS, "2", tulip2);
+			kvStoreManager.put("flowers", "2", tulip2);
 			sleep(2);
 
 			//put a flower a t+4s (expire a T+14s)
 			final Flower tulip3 = buildFlower("tulip", 120);
-			kvStoreManager.put(FLOWERS, "3", tulip3);
+			kvStoreManager.put("flowers", "3", tulip3);
 			sleep(2);
 
 			//count after 3 inserts and T+6s
-			final long nbFlowers2 = kvStoreManager.findAll(FLOWERS, 0, 1000, Flower.class).size(); //can't use count as it doesnt detect too old element (needs daemon)
+			final long nbFlowers2 = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size(); //can't use count as it doesnt detect too old element (needs daemon)
 			Assertions.assertEquals(3, nbFlowers2);
 
 			sleep(3);
 
 			//find unexpired element
-			final Optional<Flower> tulip1Load = kvStoreManager.find(FLOWERS, "1", Flower.class);
+			final Optional<Flower> tulip1Load = kvStoreManager.find("flowers", "1", Flower.class);
 			Assertions.assertTrue(tulip1Load.isPresent());
 
 			//count after 3 inserts and T+9s
-			final long nbFlowers3 = kvStoreManager.findAll(FLOWERS, 0, 1000, Flower.class).size();
+			final long nbFlowers3 = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size();
 			Assertions.assertEquals(3, nbFlowers3);
 
 			sleep(2);
 
 			//count after 3 inserts and T+11s
-			final long nbFlowers4 = kvStoreManager.findAll(FLOWERS, 0, 1000, Flower.class).size();
+			final long nbFlowers4 = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size();
 			Assertions.assertEquals(2, nbFlowers4);
 			sleep(2);
 
 			//count after 3 inserts and T+13s
-			final long nbFlowers5 = kvStoreManager.findAll(FLOWERS, 0, 1000, Flower.class).size();
+			final long nbFlowers5 = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size();
 			Assertions.assertEquals(1, nbFlowers5);
 			sleep(2);
 
 			//count after 3 inserts and 15s
-			final long nbFlowers6 = kvStoreManager.findAll(FLOWERS, 0, 1000, Flower.class).size();
+			final long nbFlowers6 = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size();
 			Assertions.assertEquals(0, nbFlowers6);
 
 			//find expired element
-			final Optional<Flower> tulip1Reload = kvStoreManager.find(FLOWERS, "1", Flower.class);
+			final Optional<Flower> tulip1Reload = kvStoreManager.find("flowers", "1", Flower.class);
 			Assertions.assertFalse(tulip1Reload.isPresent());
 		}
 	}

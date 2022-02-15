@@ -92,7 +92,7 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 
 		Criteria<E> criteria = Criterions.alwaysTrue();
 		for (final DtField field : dtDefinition.getFields()) {
-			final String fieldName = field.name();
+			final String fieldName = field.getName();
 			if (field.getType() != DtField.FieldType.COMPUTED) {
 				final Object value = field.getDataAccessor().getValue(dtoCriteria);
 				if (value instanceof String && field.getType() != DtField.FieldType.FOREIGN_KEY) {

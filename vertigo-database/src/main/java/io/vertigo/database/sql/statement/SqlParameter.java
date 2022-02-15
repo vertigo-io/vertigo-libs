@@ -24,16 +24,10 @@ import io.vertigo.core.lang.Assertion;
  *
  * @author pchretien
  * @param <O> the type param
- * @param dataType the param type
- * @param value the param value
  */
-public record SqlParameter<O> (
-		Class<O> dataType,
-		O value) {
-
-	public SqlParameter {
-		Assertion.check().isNotNull(dataType);
-	}
+public final class SqlParameter<O> {
+	private final Class<O> dataType;
+	private final O value;
 
 	/**
 	 * Static builder.
@@ -44,6 +38,32 @@ public record SqlParameter<O> (
 	public static <O> SqlParameter of(final Class<O> dataType, final O value) {
 		return new SqlParameter<>(dataType, value);
 
+	}
+
+	/**
+	 * Constructor.
+	 * @param dataType the param type
+	 * @param value the param value
+	 */
+	private SqlParameter(final Class<O> dataType, final O value) {
+		Assertion.check().isNotNull(dataType);
+		//---
+		this.dataType = dataType;
+		this.value = value;
+	}
+
+	/**
+	 * @return the param type
+	 */
+	public Class getDataType() {
+		return dataType;
+	}
+
+	/**
+	 * @return the param value
+	 */
+	public O getValue() {
+		return value;
 	}
 
 	@Override

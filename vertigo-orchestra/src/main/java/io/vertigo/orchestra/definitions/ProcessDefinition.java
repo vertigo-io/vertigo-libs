@@ -31,7 +31,7 @@ import io.vertigo.orchestra.services.execution.RunnableActivityEngine;
  * @author mlaroche.
  */
 @DefinitionPrefix(ProcessDefinition.PREFIX)
-public final class ProcessDefinition extends AbstractDefinition<ProcessDefinition> {
+public final class ProcessDefinition extends AbstractDefinition {
 	public static final String PREFIX = "Pro";
 
 	//TODO : ID doit être immutable!!

@@ -17,14 +17,14 @@
  */
 package io.vertigo.ui.data.services.users;
 
-import io.vertigo.core.locale.LocaleMessageKey;
+import io.vertigo.core.locale.MessageKey;
 
 /**
  * Dictionnaire des ressources.
  *
  * @author  npiedeloup
  */
-public enum UserResources implements LocaleMessageKey {
+public enum UserResources implements MessageKey {
 	/**
 	 * Échec de la connexion : nom d'utilisateur inconnu ou mot de passe incorrect.
 	 */

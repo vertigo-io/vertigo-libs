@@ -27,7 +27,6 @@ import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.datastore.kvstore.KVCollection;
 import io.vertigo.datastore.kvstore.KVStoreManager;
 import io.vertigo.vega.token.TokenManager;
 
@@ -39,7 +38,7 @@ import io.vertigo.vega.token.TokenManager;
  */
 public final class TokenManagerImpl implements TokenManager {
 	private static final int UUID_LENGTH = 36;
-	private final KVCollection collection;
+	private final String collection;
 	private final VSecurityManager securityManager;
 	/** Object token, by */
 	private final KVStoreManager kvStoreManager;
@@ -60,7 +59,7 @@ public final class TokenManagerImpl implements TokenManager {
 				.isNotNull(securityManager)
 				.isNotNull(kvStoreManager);
 		//-----
-		this.collection = new KVCollection(collection);
+		this.collection = collection;
 		this.securityManager = securityManager;
 		this.kvStoreManager = kvStoreManager;
 	}

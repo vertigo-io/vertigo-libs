@@ -26,17 +26,34 @@ import io.vertigo.core.lang.Assertion;
  * @author mlaroche
  *
  */
-public record DataFilter(
-		String measurement,
-		Map<String, String> filters) implements Serializable {
+public final class DataFilter implements Serializable {
 
-	public DataFilter {
+	private static final long serialVersionUID = -5464636083784385506L;
+
+	private final String measurement;
+	private final Map<String, String> filters;
+
+	DataFilter(
+			final String measurement,
+			final Map<String, String> filters) {
 		Assertion.check()
 				.isNotNull(measurement)
 				.isNotNull(filters);
+		//---
+		this.measurement = measurement;
+		this.filters = filters;
 	}
 
 	public static DataFilterBuilder builder(final String measurement) {
 		return new DataFilterBuilder(measurement);
 	}
+
+	public Map<String, String> getFilters() {
+		return filters;
+	}
+
+	public String getMeasurement() {
+		return measurement;
+	}
+
 }

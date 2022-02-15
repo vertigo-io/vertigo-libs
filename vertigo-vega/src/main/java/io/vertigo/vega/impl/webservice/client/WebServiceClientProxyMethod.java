@@ -40,15 +40,15 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.core.node.component.amplifier.AmplifierMethod;
+import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.node.component.amplifier.ProxyMethod;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.plugins.webservice.scanner.annotations.AnnotationsWebServiceScannerUtil;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 import io.vertigo.vega.webservice.definitions.WebServiceParam;
 import io.vertigo.vega.webservice.exception.SessionException;
 
-public final class WebServiceClientAmplifierMethod implements AmplifierMethod {
+public final class WebServiceClientProxyMethod implements ProxyMethod {
 
 	private final Map<String, HttpClientConnector> httpClientConnectorByName = new HashMap<>();
 	private final JsonEngine jsonReaderEngine;
@@ -57,7 +57,7 @@ public final class WebServiceClientAmplifierMethod implements AmplifierMethod {
 	* @param jsonReaderEngine jsonReaderEngine
 	*/
 	@Inject
-	public WebServiceClientAmplifierMethod(final JsonEngine jsonReaderEngine,
+	public WebServiceClientProxyMethod(final JsonEngine jsonReaderEngine,
 			final List<HttpClientConnector> httpClientConnectors) {
 		Assertion.check().isNotNull(jsonReaderEngine)
 				.isNotNull(httpClientConnectors);
@@ -109,16 +109,15 @@ public final class WebServiceClientAmplifierMethod implements AmplifierMethod {
 		} else if (responseStatus / 100 == 3) {
 			throw new VUserException((String) response.body());
 		} else if (responseStatus / 100 == 4) {
-			switch (responseStatus) {
-				case HttpServletResponse.SC_UNAUTHORIZED:
-					throw WrappedException.wrap(new SessionException((String) response.body()));
-				case HttpServletResponse.SC_FORBIDDEN:
-					throw new VSecurityException(LocaleMessageText.of((String) response.body()));
-				case HttpServletResponse.SC_BAD_REQUEST:
-					throw new JsonSyntaxException((String) response.body());
-				default:
-					final Map errorMessages = convertErrorFromJson((String) response.body(), Map.class);
-					throw new WebServiceUserException(responseStatus, errorMessages);
+			if (responseStatus == HttpServletResponse.SC_UNAUTHORIZED) {
+				throw WrappedException.wrap(new SessionException((String) response.body()));
+			} else if (responseStatus == HttpServletResponse.SC_FORBIDDEN) {
+				throw new VSecurityException(MessageText.of((String) response.body()));
+			} else if (responseStatus == HttpServletResponse.SC_BAD_REQUEST) {
+				throw new JsonSyntaxException((String) response.body());
+			} else {
+				final Map errorMessages = convertErrorFromJson((String) response.body(), Map.class);
+				throw new WebServiceUserException(responseStatus, errorMessages);
 			}
 		} else {
 			throw WrappedException.wrap(new VSystemException((String) response.body()));

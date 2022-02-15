@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition.FacetOrder;
@@ -76,7 +76,7 @@ public final class FacetCustomDefinitionSupplier implements DefinitionSupplier {
 		return FacetDefinition.createCustomFacetDefinition(
 				myName,
 				indexDtDefinition.getField(myFieldName),
-				LocaleMessageText.of(myLabel),
+				MessageText.of(myLabel),
 				myParams,
 				myOrder);
 	}

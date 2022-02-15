@@ -157,7 +157,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	private void setRowCount(final int sqlRowcount) {
 		getTaskDefinition().getOutAttributeOption().ifPresent(
 				outTaskAttribute -> {
-					if (SQL_ROWCOUNT.equals(outTaskAttribute.name())) {
+					if (SQL_ROWCOUNT.equals(outTaskAttribute.getName())) {
 						setResult(sqlRowcount);
 					}
 				});
@@ -196,7 +196,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 		final Collection<TaskAttribute> inAttributes = getTaskDefinition().getInAttributes();
 		final Map<TaskAttribute, Object> inTaskAttributes = new HashMap<>();
 		for (final TaskAttribute taskAttribute : inAttributes) {
-			inTaskAttributes.put(taskAttribute, getValue(taskAttribute.name()));
+			inTaskAttributes.put(taskAttribute, getValue(taskAttribute.getName()));
 		}
 		//-----
 		final ScriptPreProcessor scriptPreProcessor = new ScriptPreProcessor(scriptManager, inTaskAttributes, getContextProperties(), SeparatorType.CLASSIC);
@@ -213,9 +213,9 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	protected void setNamedParameters(final SqlStatementBuilder sqlStatementBuilder) {
 		getTaskDefinition().getInAttributes()
 				.forEach(taskInAttribute -> sqlStatementBuilder.bind(
-						taskInAttribute.name(),
-						taskInAttribute.smartTypeDefinition().getJavaClass(),
-						getValue(taskInAttribute.name())));
+						taskInAttribute.getName(),
+						taskInAttribute.getSmartTypeDefinition().getJavaClass(),
+						getValue(taskInAttribute.getName())));
 	}
 
 	/**
@@ -239,22 +239,23 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 */
 	protected VTransactionResourceId<SqlConnection> getVTransactionResourceId() {
 		final String dataSpace = getTaskDefinition().getDataSpace();
-		return MAIN_DATASPACE.equals(dataSpace)
-				? SQL_MAIN_RESOURCE_ID
-				: new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-" + dataSpace);
+		if (MAIN_DATASPACE.equals(dataSpace)) {
+			return SQL_MAIN_RESOURCE_ID;
+		}
+		return new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-" + dataSpace);
 	}
 
 	/**
 	 * @return Manager de base de données
 	 */
-	protected final SqlManager getSqlManager() {
+	protected final SqlManager getDataBaseManager() {
 		return sqlManager;
 	}
 
 	/**
 	 * @return Manager du modèle
 	 */
-	protected final SmartTypeManager getSmartTypeManager() {
+	protected final SmartTypeManager getModelManager() {
 		return smartTypeManager;
 	}
 
@@ -263,7 +264,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * @return Configuration SQL.
 	 */
 	protected SqlConnectionProvider getConnectionProvider() {
-		return getSqlManager().getConnectionProvider(Optional.ofNullable(getContextProperty("connectionName")).orElse(SqlManager.MAIN_CONNECTION_PROVIDER_NAME));
+		return getDataBaseManager().getConnectionProvider(Optional.ofNullable(getContextProperty("connectionName")).orElse(SqlManager.MAIN_CONNECTION_PROVIDER_NAME));
 	}
 
 	/**

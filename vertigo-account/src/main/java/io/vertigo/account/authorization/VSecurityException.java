@@ -17,7 +17,7 @@
  */
 package io.vertigo.account.authorization;
 
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 
 /**
  * Security exception.
@@ -25,13 +25,13 @@ import io.vertigo.core.locale.LocaleMessageText;
  */
 public final class VSecurityException extends RuntimeException {
 	private static final long serialVersionUID = 3911465988816189879L;
-	private final LocaleMessageText messageText;
+	private final MessageText messageText;
 
 	/**
 	 * Constructor.
 	 * @param messageText Message de l'exception
 	 */
-	public VSecurityException(final LocaleMessageText messageText) {
+	public VSecurityException(final MessageText messageText) {
 		//Attention il convient d'utiliser une méthode qui ne remonte d'exception.
 		super(messageText.getDisplay());
 		// On rerentre sur l'API des Exception en passant le message.
@@ -42,7 +42,7 @@ public final class VSecurityException extends RuntimeException {
 	 * Gestion des messages d'erreur externalisés.
 	 * @return messageText.
 	 */
-	public LocaleMessageText getMessageText() {
+	public MessageText getMessageText() {
 		return messageText;
 	}
 }

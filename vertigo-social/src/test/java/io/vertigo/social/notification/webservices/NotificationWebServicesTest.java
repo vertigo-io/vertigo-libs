@@ -91,7 +91,7 @@ public final class NotificationWebServicesTest {
 		final UID<Account> accountUID = UID.of(Account.class, "1");
 		final List<Notification> notifications = NotificationManager.getCurrentNotifications(accountUID);
 		for (final Notification notification : notifications) {
-			NotificationManager.remove(accountUID, notification.uuid());
+			NotificationManager.remove(accountUID, notification.getUuid());
 		}
 	}
 
@@ -154,7 +154,7 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_NO_CONTENT)
 				.log().ifError()
 				.when()
-				.delete("/x/notifications/api/messages/" + notification.uuid().toString());
+				.delete("/x/notifications/api/messages/" + notification.getUuid().toString());
 
 		RestAssured.given().filter(sessionFilter)
 				.expect()
@@ -195,8 +195,8 @@ public final class NotificationWebServicesTest {
 				.get("/x/notifications/api/messages");
 
 		final List<String> notificationUuids = new ArrayList<>();
-		notificationUuids.add(notification1.uuid().toString());
-		notificationUuids.add(notification2.uuid().toString());
+		notificationUuids.add(notification1.getUuid().toString());
+		notificationUuids.add(notification2.getUuid().toString());
 
 		RestAssured.given().filter(sessionFilter)
 				.body(notificationUuids)

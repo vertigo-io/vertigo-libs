@@ -34,8 +34,8 @@ public class SomeTagsController extends AbstractVSpringMvcController {
 
 	@GetMapping("/")
 	public void initContext(final ViewContext viewContext) {
-		viewContext
-				.publishDto(movieKey, new Movie())
-				.toModeCreate();
+		viewContext.publishDto(movieKey, new Movie());
+
+		toModeCreate();
 	}
 }

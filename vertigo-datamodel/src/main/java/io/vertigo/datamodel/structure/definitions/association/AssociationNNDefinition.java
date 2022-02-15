@@ -25,7 +25,7 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
  * @author  jcassignol, pchretien
  */
 @DefinitionPrefix("Ann")
-public final class AssociationNNDefinition extends AssociationDefinition<AssociationNNDefinition> {
+public final class AssociationNNDefinition extends AssociationDefinition {
 	private final String tableName;
 
 	/**

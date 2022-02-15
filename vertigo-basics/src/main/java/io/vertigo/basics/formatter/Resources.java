@@ -17,14 +17,14 @@
  */
 package io.vertigo.basics.formatter;
 
-import io.vertigo.core.locale.LocaleMessageKey;
+import io.vertigo.core.locale.MessageKey;
 
 /**
  * Dictionnaire des ressources.
  *
  * @author  pchretien
 */
-public enum Resources implements LocaleMessageKey {
+public enum Resources implements MessageKey {
 	/**
 	 * Type de donnée erroné.
 	 */

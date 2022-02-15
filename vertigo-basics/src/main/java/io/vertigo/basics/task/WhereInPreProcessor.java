@@ -77,7 +77,7 @@ final class WhereInPreProcessor {
 	private TaskAttribute obtainInTaskAttribute(final String attributeName) {
 		return inTaskAttributes.keySet()
 				.stream()
-				.filter(attribute -> attribute.name().equals(attributeName))
+				.filter(attribute -> attribute.getName().equals(attributeName))
 				.findFirst()
 				.orElseThrow(() -> new IllegalStateException(StringUtil.format("Attribute {0} not found.", attributeName)));
 	}
@@ -95,7 +95,7 @@ final class WhereInPreProcessor {
 			final String inputParamName = matcher.group(DTC_INPUTNAME_GROUP);
 			final boolean isNotIn = matcher.group(OPTIONNAL_NOT_GROUP) != null; //null if not found
 			final TaskAttribute attribute = obtainInTaskAttribute(inputParamName);
-			Assertion.check().isTrue(attribute.cardinality().hasMany(), "Attribute {0} can't be use in WherInPreProcessor. Check it was declared as IN and is DtList type.", inputParamName);
+			Assertion.check().isTrue(attribute.getCardinality().hasMany(), "Attribute {0} can't be use in WherInPreProcessor. Check it was declared as IN and is DtList type.", inputParamName);
 
 			//-----
 			final List<?> listObject = (List<?>) inTaskAttributes.get(attribute);
@@ -116,7 +116,7 @@ final class WhereInPreProcessor {
 						inputParamName,
 						isNotIn,
 						listObject,
-						attribute.smartTypeDefinition().getScope().isBasicType(),
+						attribute.getSmartTypeDefinition().getScope().isPrimitive(),
 						moreThanOneWhereIn);
 				if (moreThanOneWhereIn) {
 					buildQuery.append(')');

@@ -26,13 +26,29 @@ import io.vertigo.core.lang.Assertion;
  * @author mlaroche
  *
  */
-public record TimedDatas(
-		List<TimedDataSerie> timedDataSeries,
-		List<String> seriesNames) implements Serializable {
+public final class TimedDatas implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-	public TimedDatas {
+	private final List<TimedDataSerie> timedDataSeries;
+	private final List<String> seriesNames;
+
+	public TimedDatas(
+			final List<TimedDataSerie> timedDataSeries,
+			final List<String> seriesNames) {
 		Assertion.check()
 				.isNotNull(timedDataSeries)
 				.isNotNull(seriesNames);
+		//---
+		this.timedDataSeries = timedDataSeries;
+		this.seriesNames = seriesNames;
 	}
+
+	public List<TimedDataSerie> getTimedDataSeries() {
+		return timedDataSeries;
+	}
+
+	public List<String> getSeriesNames() {
+		return seriesNames;
+	}
+
 }

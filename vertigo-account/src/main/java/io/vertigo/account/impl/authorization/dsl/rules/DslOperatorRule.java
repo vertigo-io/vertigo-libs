@@ -67,7 +67,7 @@ final class DslOperatorRule<O extends RuleOperator> extends AbstractRule<O, List
 	/** {@inheritDoc} */
 	@Override
 	protected O handle(final List<Object> parsing) {
-		final String operatorStr = (String) ((PegChoice) parsing.get(1)).value();
+		final String operatorStr = (String) ((PegChoice) parsing.get(1)).getValue();
 		return operatorIndex.get(operatorStr);
 	}
 }

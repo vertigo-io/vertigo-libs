@@ -121,7 +121,7 @@ public final class HandleManagerImpl implements HandleManager, Activeable {
 	@Override
 	public List<String> getHandlePrefixes() {
 		return dtDefinitionsWithHandle.stream()
-				.map(dtDefinition -> dtDefinition.id().shortName())
+				.map(DtDefinition::getLocalName)
 				.map(StringUtil::first2LowerCase)
 				.collect(Collectors.toList());
 	}
@@ -150,14 +150,14 @@ public final class HandleManagerImpl implements HandleManager, Activeable {
 	private Optional<DtDefinition> isStartingByDtDefinition(final String handlePrefix) {
 		return dtDefinitionsWithHandle
 				.stream()
-				.filter(dtDefinition -> handlePrefix.startsWith(StringUtil.first2LowerCase(dtDefinition.id().shortName()) + "/"))
+				.filter(dtDefinition -> handlePrefix.startsWith(StringUtil.first2LowerCase(dtDefinition.getLocalName()) + "/"))
 				.findAny();
 	}
 
 	private static Handle toHandle(final DtDefinition dtDefinition, final Entity entity) {
 		final DataAccessor dataAccessor = dtDefinition.getHandleField().get().getDataAccessor();
 		return new Handle(entity.getUID(),
-				StringUtil.first2LowerCase(dtDefinition.id().shortName()) + "/" +
+				StringUtil.first2LowerCase(dtDefinition.getLocalName()) + "/" +
 						dataAccessor.getValue(entity));
 	}
 
@@ -168,7 +168,7 @@ public final class HandleManagerImpl implements HandleManager, Activeable {
 	}
 
 	private void indexDefinition(final DtDefinition dtDefinition) {
-		final String idFieldName = dtDefinition.getIdField().get().name();
+		final String idFieldName = dtDefinition.getIdField().get().getName();
 		final DataAccessor idFieldAccessor = dtDefinition.getIdField().get().getDataAccessor();
 		int lastResultsSize;
 		Serializable lastId = null;

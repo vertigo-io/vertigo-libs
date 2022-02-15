@@ -42,9 +42,9 @@ public final class VegaDashboardControler extends AbstractDashboardModuleControl
 
 		double count = 0;
 		final double meanDuration = 0;
-		if (!countAndMeanDuration.timedDataSeries().isEmpty()) {
+		if (!countAndMeanDuration.getTimedDataSeries().isEmpty()) {
 			// we have one and only one result
-			final Map<String, Object> values = countAndMeanDuration.timedDataSeries().get(0).getValues();
+			final Map<String, Object> values = countAndMeanDuration.getTimedDataSeries().get(0).getValues();
 			final Object meanDurationValue = values.get("duration:count");
 			if (meanDurationValue != null) {
 				count = (Double) meanDurationValue;

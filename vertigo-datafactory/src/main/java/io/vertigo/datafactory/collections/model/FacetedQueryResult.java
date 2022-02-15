@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.DefinitionId;
+import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
@@ -44,7 +44,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	private final DtList<R> list;
 	private final List<Facet> facets;
 	private final Map<R, Map<DtField, String>> highlights;
-	private final DefinitionId<FacetDefinition> clusterFacetDefinitionId; //nullable
+	private final DefinitionReference<FacetDefinition> clusterFacetDefinitionRef; //nullable
 	private final Map<FacetValue, DtList<R>> clusteredDtc;
 	private final long count;
 	private final S source;
@@ -83,7 +83,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 		this.count = count;
 		this.list = list;
 		this.facets = facets;
-		this.clusterFacetDefinitionId = clusterFacetDefinition.map(FacetDefinition::id).orElse(null);
+		this.clusterFacetDefinitionRef = clusterFacetDefinition.map(DefinitionReference::new).orElse(null);
 		this.clusteredDtc = clusteredDtc;
 		this.highlights = highlights;
 		this.source = source;
@@ -122,9 +122,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 * @return FacetDefinition du cluster des documents par valeur de facette, si demandé lors de la requête.
 	 */
 	public Optional<FacetDefinition> getClusterFacetDefinition() {
-		return clusterFacetDefinitionId == null
-				? Optional.empty()
-				: Optional.ofNullable(clusterFacetDefinitionId.get());
+		return clusterFacetDefinitionRef == null ? Optional.empty() : Optional.ofNullable(clusterFacetDefinitionRef.get());
 	}
 
 	/**

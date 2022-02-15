@@ -75,7 +75,7 @@ final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer
 	private static Set<String> getFieldNames(final DtDefinition dtDefinition) {
 		final Set<String> dtFieldNames = new HashSet<>();
 		for (final DtField dtField : dtDefinition.getFields()) {
-			dtFieldNames.add(dtField.name());
+			dtFieldNames.add(dtField.getName());
 		}
 		return dtFieldNames;
 	}

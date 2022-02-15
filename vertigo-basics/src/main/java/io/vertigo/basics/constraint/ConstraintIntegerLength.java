@@ -20,7 +20,7 @@ package io.vertigo.basics.constraint;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 
 /**
  * Contrainte vérifiant que l'objet est :
@@ -46,7 +46,7 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 	 */
 	private final int minValue;
 
-	private final LocaleMessageText errorMessage;
+	private final MessageText errorMessage;
 
 	/**
 	 * Constructeur nécessaire pour le ksp.
@@ -68,7 +68,7 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 		minValue = -tmpMaxValue;
 		//--
 		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
-				() -> LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_INTEGERLENGTH_EXCEEDED, minValue, maxValue));
+				() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_INTEGERLENGTH_EXCEEDED, minValue, maxValue));
 	}
 
 	/** {@inheritDoc} */
@@ -80,7 +80,7 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 
 	/** {@inheritDoc} */
 	@Override
-	public LocaleMessageText getErrorMessage() {
+	public MessageText getErrorMessage() {
 		return errorMessage;
 	}
 }

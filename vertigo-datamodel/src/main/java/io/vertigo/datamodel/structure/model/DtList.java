@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.DefinitionId;
+import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
@@ -51,8 +51,8 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 
 	private final DtListURI uri;
 
-	/** Reéférence vers la Définition. */
-	private final DefinitionId<DtDefinition> dtDefinitionId;
+	/** Référence vers la Définition. */
+	private final DefinitionReference<DtDefinition> dtDefinitionRef;
 
 	/** List des dto contenus. */
 	private final List<D> dtObjects;
@@ -65,7 +65,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 * @param dtDefinition Définition de DT
 	 */
 	public DtList(final DtDefinition dtDefinition) {
-		this.dtDefinitionId = dtDefinition.id();
+		this.dtDefinitionRef = new DefinitionReference<>(dtDefinition);
 		this.uri = null; //new DtListURIForValueObject(dtDefinition);
 		this.dtObjects = new ArrayList<>(); //
 		this.metaDatas = new LinkedHashMap<>();
@@ -79,7 +79,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	public DtList(final DtList<D> dtList, final DtListURI uri) {
 		Assertion.check().isNotNull(uri);
 		//---
-		this.dtDefinitionId = dtList.dtDefinitionId; //The same DtDefinition
+		this.dtDefinitionRef = dtList.dtDefinitionRef; //The same DtDefinition
 		this.uri = uri;
 		this.dtObjects = new ArrayList<>(dtList.dtObjects); //Clone
 		this.metaDatas = new LinkedHashMap<>(dtList.metaDatas); //clone
@@ -209,7 +209,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 * @return Définition de la liste.
 	 */
 	public DtDefinition getDefinition() {
-		return dtDefinitionId.get();
+		return dtDefinitionRef.get();
 	}
 
 	/**

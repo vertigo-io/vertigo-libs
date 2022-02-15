@@ -66,7 +66,7 @@ public final class PredicateCriteriaTest {
 		}
 	}
 
-	private static NodeConfig buildNodeConfig() {
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.withBoot(BootConfig.builder()
 						.addPlugin(ClassPathResourceResolverPlugin.class)
