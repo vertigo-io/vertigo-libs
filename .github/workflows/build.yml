@@ -17,14 +17,14 @@ jobs:
               DOCKER_INFLUXDB_INIT_PASSWORD: vertigo-password
               DOCKER_INFLUXDB_INIT_ORG: vertigo
               DOCKER_INFLUXDB_INIT_BUCKET: myApp
-              DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: is4DQpHF8XkvNJRm5KNJOtjlKIpfVc2G
+              DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: rytuvFE1f5JR4CPD1cOfr-74W2rL7tu1by-6DnO6zbTxMQy6foj7qtBMYSkFGT15Y1vjJCr5OP01Uci_ZdIlIA==
             ports:
               - 8086:8086
         analytics:
             image: vertigoio/vertigo-analytics-server
             env:
               INFLUXDB_URL: http://influxdb:8086
-              INFLUXDB_TOKEN: is4DQpHF8XkvNJRm5KNJOtjlKIpfVc2G
+              INFLUXDB_TOKEN: rytuvFE1f5JR4CPD1cOfr-74W2rL7tu1by-6DnO6zbTxMQy6foj7qtBMYSkFGT15Y1vjJCr5OP01Uci_ZdIlIA==
             ports:
               - 4562:4562
         redis:
