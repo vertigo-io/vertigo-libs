@@ -66,6 +66,7 @@ jobs:
         run: |
           echo "127.0.0.1 analytica.part.klee.lan.net" | sudo tee -a /etc/hosts
           echo "127.0.0.1 docker-vertigo.part.klee.lan.net" | sudo tee -a /etc/hosts
+          echo "127.0.0.1 redis-pic.part.klee.lan.net" | sudo tee -a /etc/hosts
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
