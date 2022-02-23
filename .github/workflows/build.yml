@@ -4,6 +4,45 @@ on:
   push:
     branches:
       - develop
+services:
+        influxdb:
+            image: influxdb:2.0
+            env:
+              DOCKER_INFLUXDB_INIT_MODE: setup
+              DOCKER_INFLUXDB_INIT_USERNAME: vertigo
+              DOCKER_INFLUXDB_INIT_PASSWORD: vertigo-password
+              DOCKER_INFLUXDB_INIT_ORG: vertigo
+              DOCKER_INFLUXDB_INIT_BUCKET: myApp
+              DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: is4DQpHF8XkvNJRm5KNJOtjlKIpfVc2G
+            ports:
+              - 8086:8086
+        analytics:
+            image: vertigoio/vertigo-analytics-server
+            env:
+              INFLUXDB_URL: http://influxdb:8086
+              INFLUXDB_TOKEN: is4DQpHF8XkvNJRm5KNJOtjlKIpfVc2G
+            ports:
+              - 4562:4562
+        redis:
+            image: redis
+            options: >-
+              redis-server
+              --appendonly yes
+            ports:
+              - 6379:6379
+        postgresql:
+            image: postgres:9.6-alpine
+            env:
+              POSTGRES_PASSWORD: postgres
+            options: >-
+              -c shared_buffers=256MB 
+              -c max_connections=200
+            ports: 
+              - 5432:5432
+        libreoffice:
+            image: xcgd/libreoffice
+            ports: 
+              - 8997:8997
 jobs:
   build:
     name: Build
@@ -29,6 +68,10 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+      - name: Update hosts
+        run: |
+          echo "127.0.0.1 analytica.part.klee.lan.net" | sudo tee -a /etc/hosts
+          echo "127.0.0.1 docker-vertigo.part.klee.lan.net" | sudo tee -a /etc/hosts
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
