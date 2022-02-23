@@ -35,9 +35,6 @@ jobs:
             image: postgres:9.6-alpine
             env:
               POSTGRES_PASSWORD: postgres
-            options: >-
-              -c shared_buffers=256MB 
-              -c max_connections=200
             ports: 
               - 5432:5432
         libreoffice:
