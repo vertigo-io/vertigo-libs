@@ -30,7 +30,6 @@ jobs:
         redis:
             image: redis
             options: >-
-              redis-server
               --appendonly yes
             ports:
               - 6379:6379
