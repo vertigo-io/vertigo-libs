@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression.ValueOperator;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleFixedValue;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleUserPropertyValue;
@@ -82,9 +83,24 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
 			if (userValues.size() > 0) {
 				if (userValues.size() == 1) {
-					query
-							.append(expressionDefinition.getOperator())
-							.append(userValues.get(0));
+					final Serializable userValue = userValues.get(0);
+					final ValueOperator operator = expressionDefinition.getOperator();
+					if (userValue == null) {
+						if (operator == ValueOperator.NEQ) {
+							query.append(" is not null");
+						} else if (operator == ValueOperator.EQ) {
+							query.append(" is null");
+						} else {
+							//always false
+							query.append(operator)
+									.append(userValue);
+						}
+					} else {
+						//may translate > and >= to 'like' expressions
+						query
+								.append(expressionDefinition.getOperator())
+								.append(userValue);
+					}
 				} else {
 					query.append(" IN (");
 					String inSep = "";

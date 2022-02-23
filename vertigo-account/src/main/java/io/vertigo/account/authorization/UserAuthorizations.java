@@ -203,13 +203,18 @@ public final class UserAuthorizations implements Serializable {
 	 * Add a security key part of his security perimeter.
 	 * A security key can be multi-valued (then withSecurityKeys is call multiple times).
 	 * Value should be an array if this securityKey is a tree (hierarchical) key.
+	 * Value can be null : but this don't give any authorizations : if it should be authorized it must be explicitly declared in auth config
 	 *
 	 * @param securityKey Name
 	 * @param value Value
 	 * @return this UserAuthorizations
 	 */
 	public UserAuthorizations withSecurityKeys(final String securityKey, final Serializable value) {
-		mySecurityKeys.computeIfAbsent(securityKey, v -> new ArrayList<>()).add(value);
+		Assertion.check()
+				.isNotBlank(securityKey);
+		if (value != null) {
+			mySecurityKeys.computeIfAbsent(securityKey, v -> new ArrayList<>()).add(value);
+		}
 		return this;
 	}
 

@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
 
 import io.vertigo.account.authorization.definitions.SecurityDimension;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression.ValueOperator;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleFixedValue;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression;
-import io.vertigo.account.authorization.definitions.rulemodel.RuleUserPropertyValue;
-import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression.ValueOperator;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression.BoolOperator;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleUserPropertyValue;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
@@ -88,14 +88,15 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			if (!userValues.isEmpty()) {
 				Criteria<E> mainCriteria = null; //comment collecter en stream ?
 				for (final Serializable userValue : userValues) {
+					//userValue can be null : a user may don't have a key needed for some modules
 					Assertion.check()
-							.isNotNull(userValue)
-							.when(!userValue.getClass().isArray(), () -> Assertion.check()
-									.isTrue(userValue instanceof Comparable,
-											"Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName()))
-							.when(userValue.getClass().isArray(), () -> Assertion.check()
-									.isTrue(Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
-											"Security keys must be serializable AND comparable (here : {0})", userValue.getClass().getComponentType()));
+							.when(userValue != null, () -> Assertion.check()
+									.when(!userValue.getClass().isArray(), () -> Assertion.check()
+											.isTrue(userValue instanceof Comparable,
+													"Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName()))
+									.when(userValue.getClass().isArray(), () -> Assertion.check()
+											.isTrue(Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
+													"Security keys must be serializable AND comparable (here : {0})", userValue.getClass().getComponentType())));
 					//----
 					mainCriteria = orCriteria(mainCriteria, toCriteria(expression.getFieldName(), expression.getOperator(), userValue));
 				}
