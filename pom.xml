@@ -21,12 +21,6 @@
 	<name>vertigo-extensions</name>
 	<packaging>pom</packaging>
 
-	<properties>
-		<!-- For global junit test coverage -->
-		<jacoco.destFile>${project.basedir}/../target/jacoco-it.exec</jacoco.destFile>
-		<sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.reportPaths>
-	</properties>
-
 	<modules>
 		<module>vertigo-commons</module>
 		<module>vertigo-database</module>
@@ -40,12 +34,12 @@
 		<module>vertigo-audit</module>
 		<module>vertigo-quarto</module>
 		
-<!-- 		<module>vertigo-stella</module>
- -->		<module>vertigo-geo</module>
+ 		<module>vertigo-stella</module>
+		<module>vertigo-geo</module>
 		<module>vertigo-ui</module>
 		<module>vertigo-dashboard</module>
-<!-- 		<module>vertigo-orchestra</module>
- -->		<module>vertigo-social</module>
+		<module>vertigo-orchestra</module>
+		<module>vertigo-social</module>
 	</modules>
 
 	<scm>
@@ -54,4 +48,31 @@
 		<url>scm:git:https://github.com/vertigo-io/vertigo-extensions.git</url>
 		<tag>vertigo-3.2.0</tag>
 	</scm>
+	
+	<profiles>
+		<profile>
+			<id>Github</id>
+			<repositories>
+				<repository>
+					<id>github</id>
+					<name>GitHub Vertigo-io Apache Maven Packages</name>
+					<url>https://maven.pkg.github.com/vertigo-io/vertigo</url>
+					<snapshots><enabled>true</enabled></snapshots>
+				</repository>
+				<repository>
+					<id>github-connectors</id>
+					<name>GitHub Vertigo-io Apache Maven Packages</name>
+					<url>https://maven.pkg.github.com/vertigo-io/vertigo-connectors</url>
+					<snapshots><enabled>true</enabled></snapshots>
+				</repository>
+			</repositories>
+			<distributionManagement>
+				<snapshotRepository>
+					<id>github</id>
+					<name>GitHub Vertigo-io Apache Maven Packages</name>
+					<url>https://maven.pkg.github.com/vertigo-io/vertigo-extensions</url>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+	</profiles>
 </project>
