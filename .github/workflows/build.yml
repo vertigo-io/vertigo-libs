@@ -4,7 +4,11 @@ on:
   push:
     branches:
       - develop
-services:
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    services:
         influxdb:
             image: influxdb:2.0
             env:
@@ -43,10 +47,6 @@ services:
             image: xcgd/libreoffice
             ports: 
               - 8997:8997
-jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
