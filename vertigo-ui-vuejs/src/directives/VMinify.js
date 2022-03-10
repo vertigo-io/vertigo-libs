@@ -1,5 +1,5 @@
-import Vue from "vue"
-import Quasar from "quasar"
+import * as Vue from "vue"
+import * as Quasar from "quasar"
 
 export default {
     bind: function(elMaxi, args) {
@@ -49,7 +49,7 @@ export default {
                 return currentOffset;
             }
             window.addEventListener('scroll', Vue.minifyHandler)
-            window.addEventListener('resize', Quasar.utils.throttle(Vue.minifyHandler,50))
+            window.addEventListener('resize', Quasar.throttle(Vue.minifyHandler,50))
         },
         componentUpdated : function() {
             const interval = 50;

@@ -11,14 +11,14 @@
 		<th:block th:if="${sortUrl == null}">
 			<q-table
 			    th::ref="|'${componentId}'|"
-			    th::data="|vueData.${list}|"
+			    th::rows="|vueData.${list}|"
 			    th::columns="|componentStates.${componentId}.columns|"
 			    th:row-key="${myRowKey}"
 			    th:selection="${mySelectable ? 'multiple' : ''}"
 			    th::selected.sync="|componentStates.${componentId}.selected|"
 			    th::loading="|componentStates.${componentId}.loading|"
 			    th::pagination.sync="|componentStates.${componentId}.pagination|"
-			    :sort-method="VertigoUi.methods.sortCiAi"
+			    :sort-method="$vui.sortCiAi"
 			    th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
 				th::grid="${isGrid?('$q.screen.lt.'+gridBreak):'false'}"
 			    th:attr="__${other_attrs}__"
@@ -28,7 +28,7 @@
 		<th:block th:if="${sortUrl != null}">
 			<q-table
 			    th::ref="|'${componentId}'|"
-			    th::data="|paginatedData('${list}', '${componentId}' )|"
+			    th::rows="|paginatedData('${list}', '${componentId}' )|"
 			    th::columns="|componentStates.${componentId}.columns|"
 			    th:row-key="${myRowKey}"
 			    th:selection="${mySelectable ? 'multiple' : ''}"
@@ -93,7 +93,7 @@
         <th:block>
             <q-table
                 th::ref="|'${componentId}'|"
-                th::data="|vueData.${list}|"
+                th::rows="|vueData.${list}|"
                 th::columns="|componentStates.${componentId}.columns|"
                 th:row-key="${myRowKey}"
                 th:selection="${mySelectable ? 'multiple' : ''}"

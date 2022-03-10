@@ -1,26 +1,26 @@
 <template>
     <div>
         <q-select v-if="!isCommandCommited" :placeholder="$q.lang.vui.commands.globalPlaceholder" outlined bg-color="white" dense ref="commandInput" autofocus dropdown-icon="search" @blur="reset"
-                use-input input-debounce="300" hide-selected  v-on:keydown.native="commitCommand"
+                use-input input-debounce="300" hide-selected  v-on:keydown="commitCommand"
                 :options="commandAutocompleteOptions" @filter="searchCommands" @input="selectCommand">
             <span v-if="text !== '' && selectedCommand.commandName && selectedCommand.commandName.startsWith(text)" style="z-index= -1; line-height: 40px; opacity:0.5; position:fixed;">{{selectedCommand.commandName}}</span>
         </q-select>
-        <div v-else class="row col-12 justify-between bg-white round-borders overflow-hidden shadow-2 text-black" v-on:keyup.enter.native="executeCommand">
+        <div v-else class="row col-12 justify-between bg-white round-borders overflow-hidden shadow-2 text-black" v-on:keyup.enter="executeCommand">
             <div class="bg-grey-4 text-center vertical-middle text-bold q-px-md" style="line-height: 40px;">{{selectedCommand.commandName}}</div>
             <div v-if="!isExecuted" class="row col items-center q-py-xs">
                 <template v-if="selectedCommand.commandParams && selectedCommand.commandParams.length > 0" >
-                    <template v-for="(param, index) in selectedCommand.commandParams" >
+                    <template v-for="(param, index) in selectedCommand.commandParams" :key="param" >
                         <template v-if="param.paramType.rawType === 'io.vertigo.commons.command.GenericUID'">
-                            <q-select :key="param" class="col q-px-xs" use-chips bg-color="white" dense borderless use-input input-debounce="300" :value="getParamValue(index)" :options="paramsAutocompleteOptions[index]" :autofocus="index === 0" dropdown-icon="search" 
-                                  v-on:keydown.delete.native="function(event) {backIfNeeded(event, index === 0)}" v-on:keyup.esc.native="function(event) {backIfNeeded(event, index === 0)}"   
-                                  @filter="function(val, update, abort) { autocompleteParam(param, index, val, update, abort);}" v-on:input="function (newValue) { selectParam(newValue, index)}" style="height:32px;">
+                            <q-select class="col q-px-xs" use-chips bg-color="white" dense borderless use-input input-debounce="300" :value="getParamValue(index)" :options="paramsAutocompleteOptions[index]" :autofocus="index === 0" dropdown-icon="search" 
+                                  v-on:keydown.delete="function(event) {backIfNeeded(event, index === 0)}" v-on:keyup.esc="function(event) {backIfNeeded(event, index === 0)}"   
+                                  @filter="autocompleteParam(param, index, val, update, abort)" v-on:input="selectParam(newValue, index)" style="height:32px;">
                             </q-select>
                         </template>
                         <template v-else>
-                            <q-input :key="param" class="col q-px-xs" color="secondary" borderless v-model="commandParamsValues[index].value" @keydown.delete="function(event) {backIfNeeded(event, index === 0)}" @keyup.esc="function(event) {backIfNeeded(event, index === 0)}" :autofocus="index === 0" @keyup.enter="handleEnter(index)" dense style="height:32px;">
+                            <q-input class="col q-px-xs" color="secondary" borderless v-model="commandParamsValues[index].value" @keydown.delete="backIfNeeded(event, index === 0)" @keyup.esc="backIfNeeded(event, index === 0)" :autofocus="index === 0" @keyup.enter="handleEnter(index)" dense style="height:32px;">
                             </q-input>
                         </template>
-                        <q-separator :key="param" vertical></q-separator>
+                        <q-separator vertical></q-separator>
                     </template>
                 </template>
                 <div class="col" v-else>{{$q.lang.vui.commands.executeCommand}}</div>

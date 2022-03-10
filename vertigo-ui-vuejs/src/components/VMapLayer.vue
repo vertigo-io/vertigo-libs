@@ -10,7 +10,7 @@
     </div>
 </template>
 <script>
-import Quasar from "quasar"
+import * as Quasar from "quasar"
 import * as ol from "ol"
 
 
@@ -304,9 +304,9 @@ export default {
                 var topLeft = ol.extent.getTopLeft(wgs84Extent);
                 var bottomRight = ol.extent.getBottomRight(wgs84Extent);
                 if (this.baseUrl) {
-                   Quasar.utils.debounce(this.fetchList({lat:topLeft[0] , lon:topLeft[1]},{lat:bottomRight[0] , lon:bottomRight[1]}),300);
+                   Quasar.debounce(this.fetchList({lat:topLeft[0] , lon:topLeft[1]},{lat:bottomRight[0] , lon:bottomRight[1]}),300);
                 }
-                Quasar.utils.debounce(this.$emit('moveend',topLeft, bottomRight) , 300);		
+                Quasar.debounce(this.$emit('moveend',topLeft, bottomRight) , 300);		
             }
             .bind(this));        
             
@@ -330,7 +330,7 @@ export default {
                     this.$data.popupDisplayed = true;
                     this.$data.objectDisplayed = feature.get('features')[0].get('innerObject');
                     evt.stopPropagation();
-                    Quasar.utils.debounce(this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
+                    Quasar.debounce(this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
                   } else {
                       this.$data.popupDisplayed = false;
                   }
@@ -355,7 +355,7 @@ export default {
                   if (feature && feature.get('features').length == 1) {
                     var coordinates = feature.getGeometry().getCoordinates();
                     evt.stopPropagation();
-                    Quasar.utils.debounce(this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
+                    Quasar.debounce(this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
                   }
                 }.bind(this));
             }

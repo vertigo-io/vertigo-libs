@@ -32,7 +32,7 @@
     </span>
 </template>
 <script>
-import Quasar from "quasar"
+import * as Quasar from "quasar"
 
 export default {
     props : {
@@ -85,13 +85,13 @@ export default {
             }.bind(this));
         },
         toDelay : function(creationDate) {
-            let diff = Quasar.utils.date.getDateDiff(Date.now(),creationDate, 'days');
+            let diff = Quasar.date.getDateDiff(Date.now(),creationDate, 'days');
             if(diff>0)
                 return diff+' days';
-            diff = Quasar.utils.date.getDateDiff(Date.now(),creationDate, 'hours');
+            diff = Quasar.date.getDateDiff(Date.now(),creationDate, 'hours');
             if(diff>0)
                 return diff+' hours';
-            diff = Quasar.utils.date.getDateDiff(Date.now(),creationDate, 'minutes');
+            diff = Quasar.date.getDateDiff(Date.now(),creationDate, 'minutes');
             if(diff>0)
                 return diff+' min';
             return 'Now';	    	

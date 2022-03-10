@@ -1,6 +1,6 @@
-import Quasar from "quasar"
-import { sortDate } from "quasar/src/utils/sort.js"
-import { isNumber, isDate } from "quasar/src/utils/is.js"
+import * as Quasar from "quasar"
+import { sortDate } from "quasar/src/utils/private/sort.js"
+import { isNumber, isDate } from "quasar/src/utils/private/is.js"
 
 export default {
     onAjaxError: function (response) {
@@ -198,32 +198,32 @@ export default {
     },
 
     decodeDate: function (value, format) {
-        if (value === Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(value, 'DD/MM/YYYY'), 'DD/MM/YYYY')) {
-            return Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(value, 'DD/MM/YYYY'), format);
+        if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY'), 'DD/MM/YYYY')) {
+            return Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY'), format);
         } else {
             return value;
         }
     },
 
     encodeDate: function (newValue, format) {
-        if (newValue === Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(newValue, format), format)) {
-            return Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(newValue, format), 'DD/MM/YYYY');
+        if (newValue === Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), format)) {
+            return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), 'DD/MM/YYYY');
         } else {
             return newValue;
         }
     },
 
     decodeDatetime: function (value, format) {
-        if (value === Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(value, 'DD/MM/YYYY HH:mm'), 'DD/MM/YYYY HH:mm')) {
-            return Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(value, 'DD/MM/YYYY HH:mm'), format);
+        if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY HH:mm'), 'DD/MM/YYYY HH:mm')) {
+            return Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY HH:mm'), format);
         } else {
             return value;
         }
     },
 
     encodeDatetime: function (newValue, format) {
-        if (newValue === Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(newValue, format), format)) {
-            return Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(newValue, format), 'DD/MM/YYYY HH:mm');
+        if (newValue === Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), format)) {
+            return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), 'DD/MM/YYYY HH:mm');
         } else {
            return newValue;
         }
@@ -231,7 +231,7 @@ export default {
 
     sortDatesAsString: function (format) {
         return function (date1, date2) {
-            return (Quasar.utils.date.extractDate(date1, format).getTime() > Quasar.utils.date.extractDate(date2, format).getTime()) ? 1 : -1;
+            return (Quasar.date.extractDate(date1, format).getTime() > Quasar.date.extractDate(date2, format).getTime()) ? 1 : -1;
         }
     },
 
@@ -279,7 +279,7 @@ export default {
         this.search(contextKey);
     },
 
-    search: Quasar.utils.debounce(function (contextKey) {
+    search: Quasar.debounce(function (contextKey) {
         let componentStates = this.$data.componentStates;
         let vueData = this.$data.vueData;
         var selectedFacetsContextKey = contextKey + "_selectedFacets";
@@ -383,7 +383,7 @@ export default {
                 if(component.files.some(file => file.name === fileData.name)){
                     console.warn("Component doesn't support duplicate file ", fileData);
                 } else {  
-                    fileData.__sizeLabel = Quasar.utils.format.humanStorageSize(fileData.size);
+                    fileData.__sizeLabel = Quasar.format.humanStorageSize(fileData.size);
                     fileData.__progressLabel = '100%';
                     component.files.push(fileData);
                     component.uploadedFiles.push(fileData);
@@ -421,7 +421,7 @@ export default {
         
     },
     uploader_humanStorageSize: function (size) {
-        return Quasar.utils.format.humanStorageSize(size);
+        return Quasar.format.humanStorageSize(size);
     },
     uploader_addedFile: function (isMultiple, componentId) {
         if (!isMultiple) {

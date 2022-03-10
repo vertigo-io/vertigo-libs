@@ -4,7 +4,7 @@
     </div>
 </template>
 <script>
-import Quasar from "quasar"
+import * as Quasar from "quasar"
 import * as ol from "ol"
 
 
@@ -61,13 +61,13 @@ export default {
             var wgs84Extent = ol.proj.transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
             var topLeft = ol.extent.getTopLeft(wgs84Extent);
             var bottomRight = ol.extent.getBottomRight(wgs84Extent);
-            Quasar.utils.debounce(this.$emit('moveend',topLeft, bottomRight) , 300);        
+            Quasar.debounce(this.$emit('moveend',topLeft, bottomRight) , 300);        
         }.bind(this));
         
         setTimeout(function () {
             this.olMap.on('click', function(evt) {
                 evt.stopPropagation();
-                Quasar.utils.debounce(this.$emit('click',ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) , 300);
+                Quasar.debounce(this.$emit('click',ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) , 300);
             }.bind(this)); 
         }.bind(this), 300); 
     }

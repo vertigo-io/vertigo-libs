@@ -18,7 +18,7 @@
     </q-field>
 </template>
 <script>
-import Quasar from "quasar"
+import * as Quasar from "quasar"
 
 export default {
 	props : {
@@ -48,7 +48,7 @@ export default {
 			}
 		},
 		handleExpanded: function() {
-			Quasar.utils.debounce(this.$refs.menu.updatePosition, 500)();
+			Quasar.debounce(this.$refs.menu.updatePosition, 500)();
 		},
 		getSelectedLabel: function() {
 			if (this.$data.selectedNode) {

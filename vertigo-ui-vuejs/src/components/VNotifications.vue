@@ -15,7 +15,7 @@
     </q-btn>
 </template>
 <script>
-import Quasar from "quasar"
+import * as Quasar from "quasar"
 
 export default {
     props : {
@@ -104,16 +104,16 @@ export default {
             return typeIcon?typeIcon:'mail';
         },
         toDelay : function(creationDate) {
-            let diff = Quasar.utils.date.getDateDiff(Date.now(),creationDate, 'days');
+            let diff = Quasar.date.getDateDiff(Date.now(),creationDate, 'days');
             if(diff>0)
                 return diff+' '+ this.$q.lang.vui.notifications.days;
-            diff = Quasar.utils.date.getDateDiff(Date.now(),creationDate, 'hours');
+            diff = Quasar.date.getDateDiff(Date.now(),creationDate, 'hours');
             if(diff>0)
                 return diff+' '+ this.$q.lang.vui.notifications.hours;
-            diff = Quasar.utils.date.getDateDiff(Date.now(),creationDate, 'minutes');
+            diff = Quasar.date.getDateDiff(Date.now(),creationDate, 'minutes');
             if(diff>0)
                 return diff+' ' +this.$q.lang.vui.notifications.minutes;
-            diff = Quasar.utils.date.getDateDiff(Date.now(),creationDate, 'seconds');
+            diff = Quasar.date.getDateDiff(Date.now(),creationDate, 'seconds');
             return diff+' '+this.$q.lang.vui.notifications.seconds;	    	
         }
         

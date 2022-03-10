@@ -1,5 +1,5 @@
-import Vue from "vue"
-import Quasar from "quasar"
+import * as Vue from "vue"
+import * as Quasar from "quasar"
 
 export default {
     bind: function(elNav, args) {
@@ -10,7 +10,7 @@ export default {
         const scanner = args.value.scanner?args.value.scanner:offset+30; //scanner is 30px bottom of offset, must be smaller than the smallest first element
         const elAs = elNav.querySelectorAll('a')
         elAs[0].classList.add("active") //first active
-        const scrollContainer = Quasar.utils.scroll.getScrollTarget(document.querySelector(elAs[0].hash))
+        const scrollContainer = Quasar.scroll.getScrollTarget(document.querySelector(elAs[0].hash))
         
         let scannerLine1
         if(debugMode) {
@@ -38,7 +38,7 @@ export default {
             }
             
             //We compute breakpoints
-            var scrollPosition = Quasar.utils.scroll.getScrollPosition(scrollContainer)
+            var scrollPosition = Quasar.scroll.getVerticalScrollPosition(scrollContainer)
             var scrollBreakpoints = Vue.computeBreakPoints(scrollPosition);
             //We looks between which breakpoints we are
             for(var i = 0 ; i < elAs.length; i++) {
@@ -54,9 +54,9 @@ export default {
             event.preventDefault();
             const elScrollId = event.target.hash;
             const elScroll = document.querySelector(elScrollId)
-            var toScroll = Quasar.utils.scroll.getScrollPosition(scrollContainer)+elScroll.getBoundingClientRect().top-scanner
+            var toScroll = Quasar.scroll.getVerticalScrollPosition(scrollContainer)+elScroll.getBoundingClientRect().top-scanner
             
-            var scrollPosition = Quasar.utils.scroll.getScrollPosition(scrollContainer)
+            var scrollPosition = Quasar.scroll.getVerticalScrollPosition(scrollContainer)
             var scrollBreakpoints = Vue.computeBreakPoints(scrollPosition);
             for(var i = 0 ; i < elAs.length; i++) {
                 if(elAs[i].hash == elScrollId) {
@@ -65,7 +65,7 @@ export default {
                 }
             }
             var duration = 200
-            Quasar.utils.scroll.setScrollPosition(scrollContainer,toScroll, duration)
+            Quasar.scroll.setVerticalScrollPosition(scrollContainer,toScroll, duration)
         };
         
         Vue.computeBreakPoints = function(scrollPosition){
@@ -82,7 +82,7 @@ export default {
             }
             
             const windowHeight = (window.innerHeight || document.documentElement.clientHeight); /** visible height */
-            const scrollHeight = Quasar.utils.scroll.getScrollHeight(scrollContainer) /** height of scrollable element */ 
+            const scrollHeight = Quasar.scroll.getScrollHeight(scrollContainer) /** height of scrollable element */ 
             const scrollMax = scrollHeight - windowHeight /** Maximum possible scroll */  
             const scrollStart = scrollMax - windowHeight + scanner; /** Start linear move at this scroll position */
             const blockHeightDelta = blockHeight[blockHeight.length-1] - scanner - scrollStart //block position linear regression "from" length
@@ -111,7 +111,7 @@ export default {
             elAs[i].addEventListener('click', Vue.scrollTo);
         }		    
         window.addEventListener('scroll', Vue.scrollSpyHandler)
-        window.addEventListener('resize', Quasar.utils.throttle(Vue.scrollSpyHandler,50))
+        window.addEventListener('resize', Quasar.throttle(Vue.scrollSpyHandler,50))
     },
     unbind: function(elNav) {
         elNav.classList.remove("scroll-spy-nav");

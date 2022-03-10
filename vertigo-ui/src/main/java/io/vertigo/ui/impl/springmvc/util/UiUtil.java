@@ -43,7 +43,6 @@ import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
@@ -330,9 +329,9 @@ public final class UiUtil implements Serializable {
 		} else if (currentLocaleTag.startsWith("it")) {
 			return "it";
 		} else if ("en".equals(currentLocaleTag)) {
-			return "en-us"; //we need to make a choice...
+			return "en-US"; //we need to make a choice...
 		} else {
-			return currentLocaleTag.toLowerCase();
+			return currentLocaleTag;
 		}
 	}
 
@@ -342,7 +341,7 @@ public final class UiUtil implements Serializable {
 	 * @return the locale (in the quasar's style) to select the right language in quasar
 	 */
 	public static String getCurrentLocaleForQuasar() {
-		return StringUtil.constToLowerCamelCase(getCurrentLocalePrefixForQuasar().toUpperCase().replace('-', '_'));
+		return getCurrentLocalePrefixForQuasar().replaceAll("-", "");
 	}
 
 	public static String compileVueJsTemplate(final String template) {
