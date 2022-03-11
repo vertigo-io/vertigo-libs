@@ -5,21 +5,21 @@
 }
 		
 :root {
-	--q-color-primary-invert: rgba(255, 255, 255, 0.9);
-	--q-color-secondary-invert: rgba(255, 255, 255, 0.9);
-	--q-color-accent-invert:	rgba(255, 255, 255, 0.9);
+	--q-primary-invert: rgba(255, 255, 255, 0.9);
+	--q-secondary-invert: rgba(255, 255, 255, 0.9);
+	--q-accent-invert:	rgba(255, 255, 255, 0.9);
 }
 
 .text-primary-inverted  {
-	color:var(--q-color-primary-invert) !important; 
+	color:var(--q-color-invert) !important; 
 }
 
 .text-secondary-inverted  {
-	color:var(--q-color-secondary-invert) !important; 
+	color:var(--q-color-invert) !important; 
 }
 
 .text-accent-inverted  {
-	color:var(--q-color-accent-invert) !important; 
+	color:var(--q-color-invert) !important; 
 }
 
 .v-field__required .q-field__label::after {
@@ -94,13 +94,13 @@ img.avatar {
 }
 */
 .table-primary thead {
-	background:var(--q-color-primary) !important;
+	background:var(--q-primary) !important;
 }
 .table-secondary thead {
-	background:var(--q-color-secondary) !important;
+	background:var(--q-secondary) !important;
 }
 .table-accent thead {
-	background:var(--q-color-accent) !important;
+	background:var(--q-accent) !important;
 }
 
 .q-table__container th {
@@ -111,13 +111,13 @@ img.avatar {
 }
 
 .table-primary th {
-	color:var(--q-color-primary-invert) !important;
+	color:var(--q-primary-invert) !important;
 }
 .table-secondary th {
-	color:var(--q-color-secondary-invert) !important;
+	color:var(--q-secondary-invert) !important;
 }
 .table-accent th {
-	color:var(--q-color-accent-invert) !important;
+	color:var(--q-accent-invert) !important;
 }
 
 
@@ -131,16 +131,16 @@ img.avatar {
 }
 
 .table-primary  .q-btn {
-	background: var(--q-color-primary);
-	color:var(--q-color-primary-invert);
+	background: var(--q-primary);
+	color:var(--q-primary-invert);
 }
 .table-secondary  .q-btn {
-	background: var(--q-color-secondary);
-	color:var(--q-color-secondary-invert);
+	background: var(--q-secondary);
+	color:var(--q-secondary-invert);
 }
 .table-tertiary  .q-btn {
-	background: var(--q-color-tertiary);
-	color:var(--q-color-tertiary-invert);
+	background: var(--q-tertiary);
+	color:var(--q-tertiary-invert);
 }
 
 
