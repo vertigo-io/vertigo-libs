@@ -2,7 +2,7 @@ import * as Vue from "vue"
 import * as Quasar from "quasar"
 
 export default {
-    bind: function(elNav, args) {
+    created: function(elNav, args) {
         const debugMode = args.value.debug?args.value.debug:false;
         
         const offset = args.value.offset?args.value.offset:0;
@@ -113,7 +113,7 @@ export default {
         window.addEventListener('scroll', Vue.scrollSpyHandler)
         window.addEventListener('resize', Quasar.throttle(Vue.scrollSpyHandler,50))
     },
-    unbind: function(elNav) {
+    unmounted: function(elNav) {
         elNav.classList.remove("scroll-spy-nav");
         window.removeEventListener('scroll')
         window.removeEventListener('resize')

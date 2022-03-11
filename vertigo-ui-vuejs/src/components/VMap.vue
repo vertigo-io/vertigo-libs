@@ -1,6 +1,6 @@
 <template>
     <div :id="id" >
-        <slot v-on="$listeners"></slot>
+        <slot v-bind="$attrs"></slot>
     </div>
 </template>
 <script>
@@ -14,6 +14,7 @@ export default {
         initialZoomLevel : { type: Number},
         initialCenter : { type: Object },
     },
+    emits:["moveend", "click"],
     methods: {
           onMapLoad: function(found) {
             var vm = this;

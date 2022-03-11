@@ -9,9 +9,9 @@
         <q-menu :breakpoint="600" fit ref="menu">
             <q-tree :nodes="convertListToTree($props.list, $props.subTreeKey)" 
                     :node-key="$props.keyField" :label-key="$props.labelField" 
-                    :expanded.sync="expandedNodes"
+                    v-model:expanded="expandedNodes"
                     @update:expanded="handleExpanded" 
-                    :selected.sync="selectedNode" 
+                    v-model:selected="selectedNode" 
                     @update:selected="handleSelected" >
             </q-tree>
         </q-menu>
@@ -22,27 +22,28 @@ import * as Quasar from "quasar"
 
 export default {
 	props : {
-		value:			{ type: String, required: true},
+		modelValue:			{ type: String, required: true},
 		list:          	{ type: Array,  required: true },
 		keyField:     	{ type: String,  required: true },
 		labelField:  	{ type: String,  required: true },
 		parentKeyField: { type: String,  required: true },
 		subTreeKey: 	{ type: String,  required: false },
 	},
+	emits: ["update:modelValue"],
 	data: function () {
 		return {
-			selectedNode: this.$props.value,
-			expandedNodes: [this.$props.value]
+			selectedNode: this.$props.modelValue,
+			expandedNodes: [this.$props.modelValue]
 		}
 	},
 	watch: { 
-          value: function(newVal) {
+          modelValue: function(newVal) {
               this.$data.selectedNode = newVal;
           }
     },
 	methods: {
 		handleSelected: function(target) {
-			this.$emit('input', this.$data.selectedNode);
+			this.$emit('update:modelValue', this.$data.selectedNode);
 			if (target) {
 				this.$refs.menu.hide()
 			}

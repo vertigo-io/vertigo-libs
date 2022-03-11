@@ -14,7 +14,7 @@
                     <q-item-label header><big>{{facet.label}}</big></q-item-label>
                     <q-item v-for="(value) in selectedInvisibleFacets(facet.code)" :key="value.code" class="facetValue q-ml-md" clickable @click="$emit('toogle-facet', facet.code, value.code, contextKey)">
                         <q-item-section side v-if="facet.multiple" >
-                            <q-checkbox dense v-bind:value="true" @input="$emit('toogle-facet', facet.code, value.code, contextKey)" ></q-checkbox>
+                            <q-checkbox dense v-bind:modelValue="true" @update:modelValue="$emit('toogle-facet', facet.code, value.code, contextKey)" ></q-checkbox>
                         </q-item-section>
                         <q-item-section >{{value.label}}</q-item-section> 
                         <q-item-section side>{{value.count}}</q-item-section>
@@ -22,7 +22,7 @@
                     
                     <q-item v-for="(value) in visibleFacets(facet.code, facet.values)" :key="value.code" class="facetValue q-ml-md" clickable @click="$emit('toogle-facet', facet.code, value.code, contextKey)">
                         <q-item-section side v-if="facet.multiple" >
-                            <q-checkbox dense v-bind:value="isFacetValueSelected(facet.code, value.code)" @input="$emit('toogle-facet', facet.code, value.code, contextKey)" ></q-checkbox>
+                            <q-checkbox dense v-bind:modelValue="isFacetValueSelected(facet.code, value.code)" @update:modelValue="$emit('toogle-facet', facet.code, value.code, contextKey)" ></q-checkbox>
                         </q-item-section>
                         <q-item-section >{{value.label}}</q-item-section> 
                         <q-item-section side>{{value.count}}</q-item-section>
@@ -44,6 +44,7 @@ export default {
             default : 5
         }
   },
+  emits: ["toogle-facet"],
   computed: {
   },
   data : function() {

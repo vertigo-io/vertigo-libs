@@ -34,6 +34,7 @@ export default {
         clusterTextSize: { type: Number, 'default': 12 },
         clusterTextFont: { type: String, 'default' : 'sans-serif' },
     },
+    emits : ["moveend", "click"],
     data : function () {
         return {
             popupDisplayed : false,

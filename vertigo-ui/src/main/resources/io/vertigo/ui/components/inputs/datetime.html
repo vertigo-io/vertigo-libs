@@ -4,8 +4,8 @@
       th:assert="${object} != null and ${field} != null">
     <vu:include-data object="${object}" field="${field}" modifiable="true"/>
     <q-input 
-        th:v-bind:value="|decodeDatetime(${model.util.vueDataKey(object, field, rowIndex)}, '${myFormat}')|" 
-        th:@change="|function (event) { ${model.util.vueDataKey(object, field, rowIndex)} = encodeDateTime(event.target.value, '${myFormat}') }|" 
+        th:v-bind:model-value="|decodeDatetime(${model.util.vueDataKey(object, field, rowIndex)}, '${myFormat}')|" 
+        th:@update:model-value="|function (event) { ${model.util.vueDataKey(object, field, rowIndex)} = encodeDateTime(event.target.value, '${myFormat}') }|" 
         th:label="${modifiableTable!=null?null:myLabel}"
         stack-label
         th:classappend="${required}?'v-field__required'"
@@ -19,7 +19,7 @@
                         th:v-model="|${model.util.vueDataKey(object, field, rowIndex)}|" 
                         :landscape="$q.screen.gt.xs"
                         mask="DD/MM/YYYY HH:mm"
-                        th:@input="|() => $refs.datetime_D${myRef}.hide()|"
+                        th:@update:model-value="|() => $refs.datetime_D${myRef}.hide()|"
                         th:attr="__${date_attrs}__"></q-date> 
                 </q-popup-proxy>
              </q-icon>
@@ -31,7 +31,7 @@
                             th:v-model="|${model.util.vueDataKey(object, field, rowIndex)}|"
                             :landscape="$q.screen.gt.xs"
                             mask="DD/MM/YYYY HH:mm"
-                            th:@input="|() => $refs.datetime_T${myRef}.hide()|"
+                            th:@update:model-value="|() => $refs.datetime_T${myRef}.hide()|"
                             format24h
                             th:attr="__${time_attrs}__" ></q-time>
                 </q-popup-proxy>

@@ -4,8 +4,8 @@
 	  th:assert="${object} != null and ${field} != null">
 	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 	<q-input 
-		th:v-bind:value="|decodeDate(${model.util.vueDataKey(object, field, rowIndex)}, '${myFormat}')|" 
-		th:@change="|function (event) { ${model.util.vueDataKey(object, field, rowIndex)} = encodeDate(event.target.value, '${myFormat}') }|" 
+		th:v-bind:model-value="|decodeDate(${model.util.vueDataKey(object, field, rowIndex)}, '${myFormat}')|" 
+		th:@update:model-value="|function (event) { ${model.util.vueDataKey(object, field, rowIndex)} = encodeDate(event.target.value, '${myFormat}') }|" 
 		th:label="${modifiableTable!=null?null:myLabel}"
 		stack-label
 		th:classappend="${required}?'v-field__required'"
@@ -19,7 +19,7 @@
 		             	th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
 		             	:landscape="$q.screen.gt.xs"
 		             	mask="DD/MM/YYYY"
-		             	th:@input="|() => $refs.${myRef}.hide()|"
+		             	th:@update:model-value="|() => $refs.${myRef}.hide()|"
 		             	th:attr="__${date_attrs}__"></q-date> 
 	       		</q-popup-proxy>
 	       	</q-icon>

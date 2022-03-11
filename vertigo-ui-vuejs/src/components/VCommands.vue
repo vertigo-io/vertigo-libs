@@ -2,7 +2,7 @@
     <div>
         <q-select v-if="!isCommandCommited" :placeholder="$q.lang.vui.commands.globalPlaceholder" outlined bg-color="white" dense ref="commandInput" autofocus dropdown-icon="search" @blur="reset"
                 use-input input-debounce="300" hide-selected  v-on:keydown="commitCommand"
-                :options="commandAutocompleteOptions" @filter="searchCommands" @input="selectCommand">
+                :options="commandAutocompleteOptions" @filter="searchCommands" @update:model-value="selectCommand">
             <span v-if="text !== '' && selectedCommand.commandName && selectedCommand.commandName.startsWith(text)" style="z-index= -1; line-height: 40px; opacity:0.5; position:fixed;">{{selectedCommand.commandName}}</span>
         </q-select>
         <div v-else class="row col-12 justify-between bg-white round-borders overflow-hidden shadow-2 text-black" v-on:keyup.enter="executeCommand">
@@ -13,7 +13,7 @@
                         <template v-if="param.paramType.rawType === 'io.vertigo.commons.command.GenericUID'">
                             <q-select class="col q-px-xs" use-chips bg-color="white" dense borderless use-input input-debounce="300" :value="getParamValue(index)" :options="paramsAutocompleteOptions[index]" :autofocus="index === 0" dropdown-icon="search" 
                                   v-on:keydown.delete="function(event) {backIfNeeded(event, index === 0)}" v-on:keyup.esc="function(event) {backIfNeeded(event, index === 0)}"   
-                                  @filter="autocompleteParam(param, index, val, update, abort)" v-on:input="selectParam(newValue, index)" style="height:32px;">
+                                  @filter="autocompleteParam(param, index, val, update, abort)" @update:model-value="selectParam(newValue, index)" style="height:32px;">
                             </q-select>
                         </template>
                         <template v-else>

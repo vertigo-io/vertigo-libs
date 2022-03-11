@@ -10,7 +10,7 @@
 			th::multiple="${multiple}"
 			th::ref="|'${myComponentId}'|"
 			:headers="[{name: 'Accept', value: 'application/json'}]"
-			th:@hook:mounted="|uploader_mounted('${myComponentId}', '${key}')|"
+			th:@vue:mounted="|uploader_mounted('${myComponentId}', '${key}')|"
             th:@added="|uploader_addedFile(${multiple}, '${myComponentId}')|"
             th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}')|"
             th:@failed="|uploader_failedFiles($event)|"
@@ -45,7 +45,7 @@
             th::multiple="${multiple}"
             th::ref="|'${myComponentId}'|"
             :headers="[{name: 'Accept', value: 'application/json'}]"
-            th:@hook:mounted="|uploader_mounted('${myComponentId}', '${key}')|"
+            th:@vue:mounted="|uploader_mounted('${myComponentId}', '${key}')|"
             th:@added="|uploader_addedFile(${multiple}, '${myComponentId}')|"
             th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}')|"
             th:@failed="|uploader_failedFiles($event)|"
@@ -119,7 +119,7 @@
             th::multiple="${multiple}"
             th::ref="|${myComponentId}|"
             :headers="[{name: 'Accept', value: 'application/json'}]"
-            th:@hook:mounted="|uploader_mounted(${myComponentId}, '${object}', '${field}', ${rowIndex})|"
+            th:@vue:mounted="|uploader_mounted(${myComponentId}, '${object}', '${field}', ${rowIndex})|"
             th:@added="|uploader_addedFile(${multiple}, ${myComponentId})|"
             th:@uploaded="|uploader_uploadedFiles($event, ${myComponentId})|"
             th:@failed="|uploader_failedFiles($event)|"
@@ -187,7 +187,7 @@
        <q-uploader th:url="${url}" readonly
             field-name="file"
             th::ref="|${myComponentId}|"
-            th:@hook:mounted="|uploader_mounted(${myComponentId}, '${object}', '${field}', ${rowIndex})|"
+            th:@vue:mounted="|uploader_mounted(${myComponentId}, '${object}', '${field}', ${rowIndex})|"
             th:attr="__${uploader_attrs}__">
             <template v-slot:header="slotProps"></template> 
             <template v-slot:list="slotProps">
@@ -233,7 +233,7 @@
             th::multiple="${multiple}"
             th::ref="|'${myComponentId}'|"
             :headers="[{name: 'Accept', value: 'application/json'}]"
-            th:@hook:mounted="|uploader_mounted('${myComponentId}', '${key}')|"
+            th:@vue:mounted="|uploader_mounted('${myComponentId}', '${key}')|"
             th:@added="|uploader_addedFile(${multiple}, '${myComponentId}')|"
             th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}')|"
             th:@failed="|uploader_failedFiles($event)|"

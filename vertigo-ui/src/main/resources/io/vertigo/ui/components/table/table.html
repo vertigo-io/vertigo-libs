@@ -15,9 +15,9 @@
 			    th::columns="|componentStates.${componentId}.columns|"
 			    th:row-key="${myRowKey}"
 			    th:selection="${mySelectable ? 'multiple' : ''}"
-			    th::selected.sync="|componentStates.${componentId}.selected|"
+			    th:v-model:selected="|componentStates.${componentId}.selected|"
 			    th::loading="|componentStates.${componentId}.loading|"
-			    th::pagination.sync="|componentStates.${componentId}.pagination|"
+			    th:v-model:pagination="|componentStates.${componentId}.pagination|"
 			    :sort-method="$vui.sortCiAi"
 			    th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
 				th::grid="${isGrid?('$q.screen.lt.'+gridBreak):'false'}"
@@ -32,9 +32,9 @@
 			    th::columns="|componentStates.${componentId}.columns|"
 			    th:row-key="${myRowKey}"
 			    th:selection="${mySelectable ? 'multiple' : ''}"
-			    th::selected.sync="|componentStates.${componentId}.selected|"
+			    th:v-model:selected="|componentStates.${componentId}.selected|"
 			    th::loading="|componentStates.${componentId}.loading|"
-			    th::pagination.sync="|componentStates.${componentId}.pagination|"
+			    th:v-model:pagination="|componentStates.${componentId}.pagination|"
 			    th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
 			    th:@request="paginationAndSortHandler"
 				th::grid="${isGrid?('$q.screen.lt.'+gridBreak):'false'}"
@@ -43,13 +43,13 @@
 		</th:block>
 		
 		  
-		  <template slot="top-left" slot-scope="props" th:if="${title!=null}">
+		  <template #top-left="props" th:if="${title!=null}">
 		  	<div class="text-h6" vu:text="${title?:''}" />
 			<div class="text-subtitle2" vu:text="${subtitle?:''}" />
 		  </template>
-		  <template slot="top-left" slot-scope="props" vu:slot="top_left_slot"/>
-		  <template slot="top-right" slot-scope="props" vu:slot="top_right_slot"/>
-		  <q-tr slot="body" slot-scope="props" :props="props" th:attr="__${tr_attrs}__" >
+		  <template #top-left="props" vu:slot="top_left_slot"/>
+		  <template #top-right="props" vu:slot="top_right_slot"/>
+		  <q-tr #body="props" :props="props" th:attr="__${tr_attrs}__" >
 		  	<q-td th:if="${mySelectable}" auto-width>
 				<q-checkbox th:color="${color?:'primary'}" v-model="props.selected" ></q-checkbox>
 			</q-td>
@@ -61,7 +61,7 @@
 			</vu:column>
 		  </q-tr>
 
-		<template th:if="${isGrid}" slot="item" slot-scope="props" vu:slot="griditem_slot" th:with="renderTableAsGrid=true">
+		<template th:if="${isGrid}" #item="props" vu:slot="griditem_slot" th:with="renderTableAsGrid=true">
 			<div class="q-pa-xs col-xs-12 col-sm-6 col-md-4">
 		       <q-card th:attr="__${item_attrs}__" :class="{'q-table__grid-item--selected' : props.selected}">
 					<q-checkbox th:if="${mySelectable}" th:color="${color?:'primary'}" v-model="props.selected" ></q-checkbox>
@@ -97,7 +97,7 @@
                 th::columns="|componentStates.${componentId}.columns|"
                 th:row-key="${myRowKey}"
                 th:selection="${mySelectable ? 'multiple' : ''}"
-                th::selected.sync="|componentStates.${componentId}.selected|"
+                th:v-model:selected="|componentStates.${componentId}.selected|"
                 th::loading="|componentStates.${componentId}.loading|"
                 th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
                 hide-bottom 
