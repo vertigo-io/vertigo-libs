@@ -27,6 +27,7 @@ if (Quasar.lang.fr) {
   Quasar.lang.fr.vui = VertigoUi.lang.fr;
 }
 VUiPage.use(Quasar, {
+	config: quasarConfig,
 	lang : Quasar.lang[VertigoUi.vuiLang]
 })
 VUiPage.use(VertigoUi, {axios : axios});
