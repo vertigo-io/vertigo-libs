@@ -542,13 +542,13 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
       onKeydown: $options.commitCommand,
       options: _ctx.commandAutocompleteOptions,
       onFilter: $options.searchCommands,
-      onInput: $options.selectCommand
+      "onUpdate:modelValue": $options.selectCommand
     }, {
       default: _withCtx$8(() => [
         _ctx.text !== "" && _ctx.selectedCommand.commandName && _ctx.selectedCommand.commandName.startsWith(_ctx.text) ? (_openBlock$a(), _createElementBlock$9("span", _hoisted_1$8, _toDisplayString$8(_ctx.selectedCommand.commandName), 1)) : _createCommentVNode$4("", true)
       ]),
       _: 1
-    }, 8, ["placeholder", "onBlur", "onKeydown", "options", "onFilter", "onInput"])) : (_openBlock$a(), _createElementBlock$9("div", {
+    }, 8, ["placeholder", "onBlur", "onKeydown", "options", "onFilter", "onUpdate:modelValue"])) : (_openBlock$a(), _createElementBlock$9("div", {
       key: 1,
       class: "row col-12 justify-between bg-white round-borders overflow-hidden shadow-2 text-black",
       onKeyup: _cache[0] || (_cache[0] = _withKeys((...args) => $options.executeCommand && $options.executeCommand(...args), ["enter"]))
@@ -577,9 +577,9 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
                 $options.backIfNeeded(event, index === 0);
               }, ["esc"]),
               onFilter: ($event) => $options.autocompleteParam(param, index, _ctx.val, _ctx.update, _ctx.abort),
-              onInput: ($event) => $options.selectParam(_ctx.newValue, index),
+              "onUpdate:modelValue": ($event) => $options.selectParam(_ctx.newValue, index),
               style: { "height": "32px" }
-            }, null, 8, ["value", "options", "autofocus", "onKeydown", "onKeyup", "onFilter", "onInput"])) : (_openBlock$a(), _createBlock$7(_component_q_input, {
+            }, null, 8, ["value", "options", "autofocus", "onKeydown", "onKeyup", "onFilter", "onUpdate:modelValue"])) : (_openBlock$a(), _createBlock$7(_component_q_input, {
               key: 1,
               class: "col q-px-xs",
               color: "secondary",
@@ -993,6 +993,7 @@ const _sfc_main$7 = {
       default: 5
     }
   },
+  emits: ["toogle-facet"],
   computed: {},
   data: function() {
     return {
@@ -1144,9 +1145,9 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
                     default: _withCtx$5(() => [
                       _createVNode$4(_component_q_checkbox, {
                         dense: "",
-                        value: true,
-                        onInput: ($event) => _ctx.$emit("toogle-facet", facet.code, value.code, $props.contextKey)
-                      }, null, 8, ["onInput"])
+                        modelValue: true,
+                        "onUpdate:modelValue": ($event) => _ctx.$emit("toogle-facet", facet.code, value.code, $props.contextKey)
+                      }, null, 8, ["onUpdate:modelValue"])
                     ]),
                     _: 2
                   }, 1024)) : _createCommentVNode$2("", true),
@@ -1181,9 +1182,9 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
                     default: _withCtx$5(() => [
                       _createVNode$4(_component_q_checkbox, {
                         dense: "",
-                        value: $options.isFacetValueSelected(facet.code, value.code),
-                        onInput: ($event) => _ctx.$emit("toogle-facet", facet.code, value.code, $props.contextKey)
-                      }, null, 8, ["value", "onInput"])
+                        modelValue: $options.isFacetValueSelected(facet.code, value.code),
+                        "onUpdate:modelValue": ($event) => _ctx.$emit("toogle-facet", facet.code, value.code, $props.contextKey)
+                      }, null, 8, ["modelValue", "onUpdate:modelValue"])
                     ]),
                     _: 2
                   }, 1024)) : _createCommentVNode$2("", true),
@@ -1233,15 +1234,16 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
 var VFacets = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$7]]);
 const _sfc_main$6 = {
   props: {
-    value: { type: Object }
+    modelValue: { type: Object }
   },
+  emits: ["update:modelValue"],
   data: function() {
     return {
-      inputObject: this.$props.value ? this.$props.value : {}
+      inputObject: this.$props.modelValue ? this.$props.modelValue : {}
     };
   },
   watch: {
-    value: function(newVal) {
+    modelValue: function(newVal) {
       this.$data.inputObject = newVal ? newVal : {};
       this.updateJson();
     }
@@ -1252,11 +1254,11 @@ const _sfc_main$6 = {
   methods: {
     updateJson() {
       var newInputValue;
-      if (this.$props.value) {
+      if (this.$props.modelValue) {
         newInputValue = JSON.stringify({ lon: this.$data.inputObject.lon, lat: this.$data.inputObject.lat });
-        this.$set(this.$props.value, "_v_inputValue", newInputValue);
+        this.$props.modelValue["_v_inputValue"] = newInputValue;
       }
-      this.$emit("input", this.$data.inputObject);
+      this.$emit("update:modelValue", this.$data.inputObject);
     }
   }
 };
@@ -1272,18 +1274,22 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
       label: "Longitude",
       "stack-label": "",
       modelValue: _ctx.inputObject.lon,
-      "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => _ctx.inputObject.lon = $event),
-      modelModifiers: { number: true },
-      onInput: $options.updateJson
-    }, null, 8, ["modelValue", "onInput"]),
+      "onUpdate:modelValue": [
+        _cache[0] || (_cache[0] = ($event) => _ctx.inputObject.lon = $event),
+        $options.updateJson
+      ],
+      modelModifiers: { number: true }
+    }, null, 8, ["modelValue", "onUpdate:modelValue"]),
     _createVNode$3(_component_q_input, {
       label: "Latitude",
       "stack-label": "",
       modelValue: _ctx.inputObject.lat,
-      "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => _ctx.inputObject.lat = $event),
-      modelModifiers: { number: true },
-      onInput: $options.updateJson
-    }, null, 8, ["modelValue", "onInput"])
+      "onUpdate:modelValue": [
+        _cache[1] || (_cache[1] = ($event) => _ctx.inputObject.lat = $event),
+        $options.updateJson
+      ],
+      modelModifiers: { number: true }
+    }, null, 8, ["modelValue", "onUpdate:modelValue"])
   ]);
 }
 var VGeopointInput = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6]]);
@@ -1376,23 +1382,24 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
 var VHandles = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5]]);
 const _sfc_main$4 = {
   props: {
-    value: { type: String, required: true },
+    modelValue: { type: String, required: true },
     readonly: { type: Boolean, required: true },
     cols: { type: Number, "default": 2 }
   },
+  emits: ["update:modelValue"],
   data: function() {
     return {
-      jsonAsObject: JSON.parse(this.$props.value)
+      jsonAsObject: JSON.parse(this.$props.modelValue)
     };
   },
   watch: {
-    value: function(newVal) {
+    modelValue: function(newVal) {
       this.$data.jsonAsObject = JSON.parse(newVal);
     }
   },
   methods: {
     updateJson() {
-      this.$emit("input", JSON.stringify(this.$data.jsonAsObject));
+      this.$emit("update:modelValue", JSON.stringify(this.$data.jsonAsObject));
     }
   }
 };
@@ -1423,9 +1430,8 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
           orientation: "vertical",
           "stack-label": "",
           modelValue: _ctx.jsonAsObject[key],
-          "onUpdate:modelValue": ($event) => _ctx.jsonAsObject[key] = $event,
-          onInput: $options.updateJson
-        }, null, 8, ["label", "modelValue", "onUpdate:modelValue", "onInput"])) : (_openBlock$4(), _createBlock$3(_component_q_field, {
+          "onUpdate:modelValue": [($event) => _ctx.jsonAsObject[key] = $event, $options.updateJson]
+        }, null, 8, ["label", "modelValue", "onUpdate:modelValue"])) : (_openBlock$4(), _createBlock$3(_component_q_field, {
           key: 1,
           label: key,
           orientation: "vertical",
@@ -1662,6 +1668,7 @@ const _sfc_main$2 = {
     initialZoomLevel: { type: Number },
     initialCenter: { type: Object }
   },
+  emits: ["moveend", "click"],
   methods: {
     onMapLoad: function(found) {
       var vm = this;
@@ -1714,14 +1721,15 @@ const _sfc_main$2 = {
     }.bind(this), 300);
   }
 };
-const _toHandlers = window["Vue"].toHandlers;
+const _normalizeProps$1 = window["Vue"].normalizeProps;
+const _guardReactiveProps$1 = window["Vue"].guardReactiveProps;
 const _renderSlot$1 = window["Vue"].renderSlot;
 const _openBlock$2 = window["Vue"].openBlock;
 const _createElementBlock$1 = window["Vue"].createElementBlock;
 const _hoisted_1$2 = ["id"];
 function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   return _openBlock$2(), _createElementBlock$1("div", { id: $props.id }, [
-    _renderSlot$1(_ctx.$slots, "default", _toHandlers(_ctx.$listeners))
+    _renderSlot$1(_ctx.$slots, "default", _normalizeProps$1(_guardReactiveProps$1(_ctx.$attrs)))
   ], 8, _hoisted_1$2);
 }
 var VMap = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2]]);
@@ -1747,6 +1755,7 @@ const _sfc_main$1 = {
     clusterTextSize: { type: Number, "default": 12 },
     clusterTextFont: { type: String, "default": "sans-serif" }
   },
+  emits: ["moveend", "click"],
   data: function() {
     return {
       popupDisplayed: false,
@@ -2066,27 +2075,28 @@ var VMapLayer = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render
 const Quasar$3 = window["Quasar"];
 const _sfc_main = {
   props: {
-    value: { type: String, required: true },
+    modelValue: { type: String, required: true },
     list: { type: Array, required: true },
     keyField: { type: String, required: true },
     labelField: { type: String, required: true },
     parentKeyField: { type: String, required: true },
     subTreeKey: { type: String, required: false }
   },
+  emits: ["update:modelValue"],
   data: function() {
     return {
-      selectedNode: this.$props.value,
-      expandedNodes: [this.$props.value]
+      selectedNode: this.$props.modelValue,
+      expandedNodes: [this.$props.modelValue]
     };
   },
   watch: {
-    value: function(newVal) {
+    modelValue: function(newVal) {
       this.$data.selectedNode = newVal;
     }
   },
   methods: {
     handleSelected: function(target) {
-      this.$emit("input", this.$data.selectedNode);
+      this.$emit("update:modelValue", this.$data.selectedNode);
       if (target) {
         this.$refs.menu.hide();
       }
@@ -2161,9 +2171,15 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             "node-key": _ctx.$props.keyField,
             "label-key": _ctx.$props.labelField,
             expanded: _ctx.expandedNodes,
-            "onUpdate:expanded": $options.handleExpanded,
+            "onUpdate:expanded": [
+              _cache[0] || (_cache[0] = ($event) => _ctx.expandedNodes = $event),
+              $options.handleExpanded
+            ],
             selected: _ctx.selectedNode,
-            "onUpdate:selected": $options.handleSelected
+            "onUpdate:selected": [
+              _cache[1] || (_cache[1] = ($event) => _ctx.selectedNode = $event),
+              $options.handleSelected
+            ]
           }, null, 8, ["nodes", "node-key", "label-key", "expanded", "onUpdate:expanded", "selected", "onUpdate:selected"])
         ]),
         _: 1
@@ -2176,11 +2192,11 @@ var VTree = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
 const Vue$1 = window["Vue"];
 const Quasar$2 = window["Quasar"];
 var VMinify = {
-  bind: function(elMaxi, args) {
-    const topOffset = args.value.topOffset;
-    const topOffsetElSelector = args.value.topOffsetEl;
-    const leftOffset = args.value.leftOffset;
-    const leftOffsetElSelector = args.value.leftOffsetEl;
+  created: function(elMaxi, binding) {
+    const topOffset = binding.value.topOffset;
+    const topOffsetElSelector = binding.value.topOffsetEl;
+    const leftOffset = binding.value.leftOffset;
+    const leftOffsetElSelector = binding.value.leftOffsetEl;
     const elMini = elMaxi.querySelector(".mini");
     for (var i = 0; i < elMaxi.childNodes.length; i++) {
       var elChild = elMaxi.childNodes[i];
@@ -2220,14 +2236,14 @@ var VMinify = {
     window.addEventListener("scroll", Vue$1.minifyHandler);
     window.addEventListener("resize", Quasar$2.throttle(Vue$1.minifyHandler, 50));
   },
-  componentUpdated: function() {
+  updated: function() {
     const interval = 50;
     const maxDelay = 1e3;
     for (var delay = interval; delay < maxDelay; delay += delay) {
       setTimeout(Vue$1.minifyHandler, delay);
     }
   },
-  unbind: function(elMaxi) {
+  unmounted: function(elMaxi) {
     window.removeEventListener("scroll");
     window.removeEventListener("resize");
     for (var i = 0; i < elMaxi.childNodes.length; i++) {
@@ -2241,7 +2257,7 @@ var VMinify = {
 const Vue = window["Vue"];
 const Quasar$1 = window["Quasar"];
 var VScrollSpy = {
-  bind: function(elNav, args) {
+  created: function(elNav, args) {
     const debugMode = args.value.debug ? args.value.debug : false;
     const offset = args.value.offset ? args.value.offset : 0;
     const padding = args.value.padding ? args.value.padding : 24;
@@ -2334,7 +2350,7 @@ var VScrollSpy = {
     window.addEventListener("scroll", Vue.scrollSpyHandler);
     window.addEventListener("resize", Quasar$1.throttle(Vue.scrollSpyHandler, 50));
   },
-  unbind: function(elNav) {
+  unmounted: function(elNav) {
     elNav.classList.remove("scroll-spy-nav");
     window.removeEventListener("scroll");
     window.removeEventListener("resize");
@@ -2954,28 +2970,28 @@ var VertigoUi = {
     Object.keys(methods).forEach((methodName) => boundMethods[methodName] = methods[methodName].bind(obj));
     return boundMethods;
   },
-  install: function(Vue2, options) {
-    Vue2.component("v-chatbot", VChatbot);
-    Vue2.component("v-commands", VCommands);
-    Vue2.component("v-comments", VComments);
-    Vue2.component("v-extensions-store", VExtensionsStore);
-    Vue2.component("v-facets", VFacets);
-    Vue2.component("v-geopoint-input", VGeopointInput);
-    Vue2.component("v-handles", VHandles);
-    Vue2.component("v-json-editor", VJsonEditor);
-    Vue2.component("v-notifications", VNotifications);
-    Vue2.component("v-map", VMap);
-    Vue2.component("v-map-layer", VMapLayer);
-    Vue2.component("v-tree", VTree);
-    Vue2.directive("minify", VMinify);
-    Vue2.directive("scroll-spy", VScrollSpy);
+  install: function(vueApp, options) {
+    vueApp.component("v-chatbot", VChatbot);
+    vueApp.component("v-commands", VCommands);
+    vueApp.component("v-comments", VComments);
+    vueApp.component("v-extensions-store", VExtensionsStore);
+    vueApp.component("v-facets", VFacets);
+    vueApp.component("v-geopoint-input", VGeopointInput);
+    vueApp.component("v-handles", VHandles);
+    vueApp.component("v-json-editor", VJsonEditor);
+    vueApp.component("v-notifications", VNotifications);
+    vueApp.component("v-map", VMap);
+    vueApp.component("v-map-layer", VMapLayer);
+    vueApp.component("v-tree", VTree);
+    vueApp.directive("minify", VMinify);
+    vueApp.directive("scroll-spy", VScrollSpy);
     if (!options.axios) {
       console.error("You have to install axios");
       return;
     }
-    Vue2.axios = options.axios;
-    Vue2.$http = options.axios;
-    Object.defineProperties(Vue2.config.globalProperties, {
+    vueApp.axios = options.axios;
+    vueApp.$http = options.axios;
+    Object.defineProperties(vueApp.config.globalProperties, {
       axios: {
         get() {
           return options.axios;
