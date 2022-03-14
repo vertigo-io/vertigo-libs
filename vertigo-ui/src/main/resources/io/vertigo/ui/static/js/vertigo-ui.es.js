@@ -2455,11 +2455,7 @@ var VMethods = {
     return this.$data.vueData[list];
   },
   sortCiAi: function(data, sortBy, descending) {
-    const col = this.colList.find((def) => def.name === sortBy);
-    if (col === void 0 || col.field === void 0) {
-      return data;
-    }
-    const dir = descending === true ? -1 : 1, val = typeof col.field === "function" ? (v) => col.field(v) : (v) => v[col.field];
+    const dir = descending === true ? -1 : 1, val = (v) => v[sortBy];
     const collator = new Intl.Collator();
     return data.sort((a, b) => {
       let A = val(a), B = val(b);
@@ -2468,9 +2464,6 @@ var VMethods = {
       }
       if (B === null || B === void 0) {
         return 1 * dir;
-      }
-      if (col.sort !== void 0) {
-        return col.sort(A, B, a, b) * dir;
       }
       if (isNumber(A) === true && isNumber(B) === true) {
         return (A - B) * dir;
@@ -2695,15 +2688,9 @@ var VMethods = {
       xhrParams[component.fieldName] = uri;
       this.$http.get(component.url, { params: xhrParams, credentials: component.withCredentials }).then(function(response) {
         var fileData = response.data;
-        if (component.files.some((file) => file.name === fileData.name)) {
-          console.warn("Component doesn't support duplicate file ", fileData);
-        } else {
-          fileData.__sizeLabel = Quasar.format.humanStorageSize(fileData.size);
-          fileData.__progressLabel = "100%";
-          component.files.push(fileData);
-          component.uploadedFiles.push(fileData);
-          this.uploader_forceComputeUploadedSize(componentId);
-        }
+        fileData.__sizeLabel = Quasar.format.humanStorageSize(fileData.size);
+        fileData.__progressLabel = "100%";
+        component.addFiles([fileData]);
       }.bind(this)).catch(function(error) {
         if (error.response) {
           this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file " + uri);

@@ -49,7 +49,8 @@
 		  </template>
 		  <template #top-left="props" vu:slot="top_left_slot"/>
 		  <template #top-right="props" vu:slot="top_right_slot"/>
-		  <q-tr #body="props" :props="props" th:attr="__${tr_attrs}__" >
+		  <template v-slot:body="props">
+		  <q-tr :props="props" th:attr="__${tr_attrs}__" >
 		  	<q-td th:if="${mySelectable}" auto-width>
 				<q-checkbox th:color="${color?:'primary'}" v-model="props.selected" ></q-checkbox>
 			</q-td>
@@ -60,6 +61,7 @@
 				</div>
 			</vu:column>
 		  </q-tr>
+		  </template>
 
 		<template th:if="${isGrid}" #item="props" vu:slot="griditem_slot" th:with="renderTableAsGrid=true">
 			<div class="q-pa-xs col-xs-12 col-sm-6 col-md-4">
@@ -72,7 +74,7 @@
 							</th:block>
 						</th:block>
 		       		</q-card-section>
-					<q-card-separator></q-card-separator>
+					<q-separator></q-separator>
 					<q-card-section>
 						<vu:content-slot name="actions_slot" />
 					</q-card-section>

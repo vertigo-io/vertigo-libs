@@ -1,7 +1,7 @@
 VertigoUi.initData(VertigoUi, JSON.parse(window.document.getElementById('vui-init-data').innerHTML));
 
 var VUiExtensions = VUiExtensions || {};
-const VUiPage = Vue.createApp({
+const VUiApp = Vue.createApp({
   data() {
 	return {
 		  vueData : VertigoUi.vueData,
@@ -26,16 +26,20 @@ if (Quasar.lang.enUS) {
 if (Quasar.lang.fr) {
   Quasar.lang.fr.vui = VertigoUi.lang.fr;
 }
-VUiPage.use(Quasar, {
-	config: quasarConfig,
+
+
+VUiApp.use(Quasar, {
+	config: window?.quasarConfig || {},
 	lang : Quasar.lang[VertigoUi.vuiLang]
 })
-VUiPage.use(VertigoUi, {axios : axios});
+VUiApp.use(VertigoUi, {axios : axios});
 
-VUiPage.mount('#page');
+const VUiPage = VUiApp.mount('#page');
+window.VUiApp = VUiApp;
+window.VUiPage = VUiPage;
 
 // fixes wrong components states due to firefox bfcache (back-forward cache)
 //https://developer.mozilla.org/en-US/docs/Archive/Misc_top_level/Working_with_BFCache
 window.addEventListener('pageshow', function(event) {
-	//VUiPage.$forceUpdate();
+	VUiPage.$forceUpdate();
 });

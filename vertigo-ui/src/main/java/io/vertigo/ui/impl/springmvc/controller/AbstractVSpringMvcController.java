@@ -215,6 +215,48 @@ public abstract class AbstractVSpringMvcController {
 	}
 
 	/**
+	 * Passe en mode edition.
+	 */
+	protected static final void toModeEdit() {
+		getViewContext().toModeEdit();
+	}
+
+	/**
+	 * Passe en mode creation.
+	 */
+	protected static final void toModeCreate() {
+		getViewContext().toModeCreate();
+	}
+
+	/**
+	 * Passe en mode readonly.
+	 */
+	protected static final void toModeReadOnly() {
+		getViewContext().toModeReadOnly();
+	}
+
+	/**
+	 * @return Si on est en mode edition
+	 */
+	protected static final boolean isModeEdit() {
+		return getViewContext().isModeEdit();
+	}
+
+	/**
+	 * @return Si on est en mode readOnly
+	 */
+	protected static final boolean isModeRead() {
+		return getViewContext().isModeRead();
+	}
+
+	/**
+	 * @return Si on est en mode create
+	 */
+	protected static final boolean isModeCreate() {
+		return getViewContext().isModeCreate();
+	}
+
+	/**
 	 * @return Pile des messages utilisateur.
 	 */
 	public static final UiMessageStack getUiMessageStack() {

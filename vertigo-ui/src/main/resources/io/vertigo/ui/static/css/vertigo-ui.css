@@ -5,21 +5,21 @@
 }
 		
 :root {
-	--q-primary-invert: rgba(255, 255, 255, 0.9);
-	--q-secondary-invert: rgba(255, 255, 255, 0.9);
-	--q-accent-invert:	rgba(255, 255, 255, 0.9);
+	--v-primary-invert: rgba(255, 255, 255, 0.9);
+	--v-secondary-invert: rgba(255, 255, 255, 0.9);
+	--v-accent-invert:	rgba(255, 255, 255, 0.9);
 }
 
 .text-primary-inverted  {
-	color:var(--q-color-invert) !important; 
+	color:var(--q-primary-invert) !important; 
 }
 
 .text-secondary-inverted  {
-	color:var(--q-color-invert) !important; 
+	color:var(--v-secondary-invert) !important; 
 }
 
 .text-accent-inverted  {
-	color:var(--q-color-invert) !important; 
+	color:var(--v-accent-invert) !important; 
 }
 
 .v-field__required .q-field__label::after {
