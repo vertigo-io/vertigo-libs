@@ -348,10 +348,6 @@ export default {
             }
         }
     },
-    uploader_changeIcon () {
-        this.$q.iconSet.uploader.removeUploaded = 'delete_sweep'
-        this.$q.iconSet.uploader.done = 'delete'
-    },
     uploader_mounted(componentId, object, field, rowIndex) {
         this.uploader_changeIcon();
         var component = this.$refs[componentId];

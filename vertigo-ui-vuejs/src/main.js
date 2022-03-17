@@ -12,6 +12,7 @@ import VNotifications from './components/VNotifications.vue'
 import VMap from './components/VMap.vue'
 import VMapLayer from './components/VMapLayer.vue'
 import VTree from './components/VTree.vue'
+import VFileUpload from './components/VFileUpload.vue'
 
 import VMinify from './directives/VMinify'
 import VScrollSpy from './directives/VScrollSpy'
@@ -45,7 +46,8 @@ var VertigoUi = {
     vueApp.component("v-map", VMap);
     vueApp.component("v-map-layer", VMapLayer);
     vueApp.component("v-tree", VTree)
-    
+    vueApp.component("v-file-upload", VFileUpload);
+
     // directives
     vueApp.directive("minify", VMinify);
     vueApp.directive("scroll-spy", VScrollSpy);

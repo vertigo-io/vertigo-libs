@@ -35,74 +35,19 @@
 </th:block>
 <th:block th:fragment="fileupload-simple(url, downloadUrl, key, multiple, uploader_attrs)" 
     th:assert="${key} != null and ${url} != null"
-    th:with="myComponentId='uploader_'+${key}, downloadUrl=${downloadUrl?:(url + '/download/')}" >
+    th:with="downloadUrl=${downloadUrl?:(url + '/download/')}" >
         <vu:include-data-primitive th:key="${key}" modifiable="true"/>
         <input type="hidden" th:v-if="|vueData.${key}.length == 0|" th:name="|vContext[${key}]|" value="" />
         <input type="hidden" th:v-for="|fileUri in vueData.${key}|" th:name="|vContext[${key}]|" v-bind:value="fileUri" />
-        <q-uploader th:url="${url}" th:readonly="${viewMode=='read'}"
-            auto-upload
+        <v-file-upload 
+			th:readonly="${viewMode=='read'}"
+			th:url="${url}" 
             field-name="file"
             th::multiple="${multiple}"
-            th::ref="|'${myComponentId}'|"
-            :headers="[{name: 'Accept', value: 'application/json'}]"
-            th:@vue:mounted="|uploader_mounted('${myComponentId}', '${key}')|"
-            th:@added="|uploader_addedFile(${multiple}, '${myComponentId}')|"
-            th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}')|"
-            th:@failed="|uploader_failedFiles($event)|"
-            th:@removed="|uploader_removeFiles($event, '${myComponentId}')|"
-            th:attr="__${uploader_attrs}__">
-            <template v-slot:header="slotProps"></template> 
-            <template v-slot:list="slotProps">
-               <div class="row">
-               <q-field :label-width="3"
-				        :label="slotProps.label"
-				        class="col"
-				        orientation="vertical"
-				        stack-label
-				        borderless>				        
-			        <template v-slot:control>
-                      <div class="col column justify-center">
-                        <div th:v-for="'file in slotProps.files'"
-                              :key="file.name"
-                              class="q-uploader__file relative-position" 
-                              :class="{'q-uploader__file--failed': file.__status === 'failed',
-                                     'q-uploader__file--uploaded': file.__status === 'uploaded'}">
-                             <div class="q-uploader__file-header row flex-center no-wrap">
-                                 <q-icon v-if="file.__status === 'failed'" class="q-uploader__file-status" :name="$q.iconSet.type.negative" color="negative"></q-icon>
-                                 <q-icon class="q-uploader__file-status" 
-                                     :name="file.type.indexOf('video/') === 0 ? 'movie': 
-                                     (file.type.indexOf('image/') === 0 ? 'photo' :
-                                     (file.type.indexOf('audio/') === 0 ? 'audiotrack' : 'insert_drive_file'))" ></q-icon>
-                                 <div class="q-uploader__file-header-content col">
-                                   <div class="q-uploader__title">{{file.name}}</div>
-                                 </div>
-                                 <q-circular-progress v-if="file.__status === 'uploading'" :value="file.__progress" :min="0" :max="1" :indeterminate="file.__progress === 0"></q-circular-progress>
-                                 <q-btn v-if="file.__status != 'uploading' && !slotProps.readonly" round dense flat :icon="$q.iconSet.uploader[file.__status === 'uploaded' ? 'done' : 'clear']" 
-                                 @click="slotProps.removeFile(file)"></q-btn>                      
-                                 <q-btn round dense flat icon="file_download"  th:@click="|goTo('${downloadUrl}' + file.fileUri)|" ></q-btn>
-                             </div>
-                         </div>
-                      </div>
-			        </template> 
-                 </q-field>
-			          <div class="q-field__after q-field__marginal row no-wrap items-center">
-		                     <q-spinner v-if="slotProps.isUploading" class="q-uploader__spinner"></q-spinner> 
-		                     <q-btn v-if="slotProps.canAddFiles" type="a" :icon="$q.iconSet.uploader.add" flat dense>
-		                         <q-uploader-add-trigger></q-uploader-add-trigger>
-		                         <q-tooltip>{{$q.lang.vui.uploader.add}}</q-tooltip>
-		                     </q-btn>
-		                     <q-btn v-if="slotProps.hideUploadBtn === false && slotProps.canUpload === true" type="a" :icon="$q.iconSet.uploader.upload" flat dense 
-		                          @click="slotProps.upload">
-		                         <q-tooltip>{{$q.lang.vui.uploader.upload}}</q-tooltip>
-		                     </q-btn>
-		                     <q-btn v-if="slotProps.isUploading" type="a" :icon="$q.iconSet.uploader.clear" flat dense 
-		                          @click="slotProps.abort">
-		                         <q-tooltip>{{$q.lang.vui.uploader.clear}}</q-tooltip>
-		                     </q-btn>
-		                </div>
-                 </div>
-            </template>   
-        </q-uploader>
+			th:v-bind:file-info-uris="|vueData.${key}|"
+			th:@update:file-info-uris="|(newFileInfoUris) => vueData.${key} = newFileInfoUris|"
+			th:@download-file="|(fileUri) => goTo('${downloadUrl}' + fileUri)|"
+            th:attr="__${uploader_attrs}__"></v-file-upload>
 </th:block>
 <th:block th:fragment="fileupload-simple-object-edit(url, downloadUrl, object, field, multiple, uploader_attrs)" 
     vu:alias="fileupload-simple-object" vu:selector="${viewMode=='edit'}"
