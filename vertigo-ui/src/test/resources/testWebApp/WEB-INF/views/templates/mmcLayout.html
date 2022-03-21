@@ -44,7 +44,7 @@
   			<q-drawer
   			  content-class="bg-white text-primary"
 		      side="left"
-		      :mini="function() {var miniMenu = this.$cookies.get('miniMenu', true) === 'true';componentStates.navDrawer.mini = miniMenu;return miniMenu;}()"
+		      :mini="function() {var miniMenu = /*this.$cookies.get('miniMenu', true) === 'true'*/ false ;componentStates.navDrawer.mini = miniMenu;return miniMenu;}()"
 		      v-model="componentStates.navDrawer.showLeft">
 		      
 		      <q-list :class="{'v-navList':true, 'dense-list-header':!componentStates.navDrawer.mini}" >
@@ -73,13 +73,13 @@
 		        </q-item>
 		       	<q-separator></q-separator>
 		        <q-item v-if="componentStates.navDrawer.mini"
-						@click.native="componentStates.navDrawer.mini = false; $cookies.set('miniMenu', false)" title="Expand menu">
+						@click.native="componentStates.navDrawer.mini = false; /*$cookies.set('miniMenu', false)*/" title="Expand menu">
 						<q-item-section avatar>
 		          			<q-icon name="arrow_right"></q-icon>
 		          		</q-item-section>
 				</q-item>
 				 <q-item v-if="!componentStates.navDrawer.mini"
-						@click.native="componentStates.navDrawer.mini = true; $cookies.set('miniMenu', true)" title="Minify menu">
+						@click.native="componentStates.navDrawer.mini = true; /*$cookies.set('miniMenu', true)*/" title="Minify menu">
 					<q-item-section side>
 		          		<q-icon name="arrow_left"></q-icon>
 		          	</q-item-section>

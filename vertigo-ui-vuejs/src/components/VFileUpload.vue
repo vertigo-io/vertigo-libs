@@ -3,15 +3,37 @@
             auto-upload
             :field-name="$props.fieldName"
             :multiple="$props.multiple"
+            :max-files="$props.multiple ? undefined : 1"
             :headers="[{name: 'Accept', value: 'application/json'}]"
             @uploaded="uploadedFiles"
-            @failed="failedFiles"
-            v-bind="$attrs">
-            <template v-slot:header ></template> 
+            :readonly="$props.readonly || !globalCanAddFiles([])"
+            v-bind="$attrs"
+            ref="quasarUploader">
+            <template v-if="$props.simple" v-slot:header ></template> 
+            <template v-else v-slot:header="slotProps">
+		            <div class="q-uploader__header-content flex flex-center no-wrap q-gutter-xs">
+			            <q-btn v-if="slotProps.queuedFiles.length > 0 && !slotProps.readonly" type="a" :icon="$q.iconSet.uploader.clear_all" flat dense @click="slotProps.removeQueuedFiles">
+			               <q-tooltip>{{$q.lang.vui.uploader.clear_all}}</q-tooltip>
+			            </q-btn>
+	                    <div class="col column justify-center">
+	                      <div v-if="$props.label !== void 0" class="q-uploader__title">{{$props.label}}</div>
+			              <div v-if="!slotProps.readonly" class="q-uploader__subtitle">{{getGlobalSize(slotProps.files)}} / {{slotProps.uploadProgressLabel}}</div>
+						  <div v-if="slotProps.readonly" class="q-uploader__subtitle">{{getGlobalSize(slotProps.files)}}</div>
+			            </div>
+	                    <q-spinner v-if="slotProps.isUploading" class="q-uploader__spinner"></q-spinner>
+			            <q-btn v-if="globalCanAddFiles(slotProps.files) && !slotProps.readonly" type="a" :icon="$q.iconSet.uploader.add" flat dense>
+				            <q-uploader-add-trigger></q-uploader-add-trigger>
+                            <q-tooltip>{{$q.lang.vui.uploader.add}}</q-tooltip>
+	                    </q-btn>
+	                    <q-btn v-if="slotProps.isUploading  && !slotProps.readonly" type="a" :icon="$q.iconSet.uploader.clear" flat dense @click="slotProps.abort">
+	                        <q-tooltip>{{$q.lang.vui.uploader.clear}}</q-tooltip>
+	                    </q-btn>                    
+		            </div>
+            </template> 
             <template v-slot:list="slotProps">
                <div class="row">
                 <q-field :label-width="3"
-                            :label="slotProps.label"
+                            :label="$props.simple ? $props.label : undefined"
                             class="col"
                             orientation="vertical"
                             stack-label
@@ -20,7 +42,7 @@
                         <div class="col column justify-center">
                             <template v-if="!$props.readonly" >
                                 <template v-for="file in slotProps.files" :key="file.name">
-                                    <div v-if="file.__status === 'failed' || file.__status === 'uploading' "
+                                    <div v-if="file.__status !== 'uploaded'"
                                         class="q-uploader__file relative-position" 
                                         :class="{'q-uploader__file--failed': file.__status === 'failed',
                                                 'q-uploader__file--uploaded': file.__status === 'uploaded'}">
@@ -55,15 +77,10 @@
                         </div>
                         </template> 
                     </q-field>
-                    <div class="q-field__after q-field__marginal row no-wrap items-center" v-if="!$props.readonly">
+                    <div class="q-field__after q-field__marginal row no-wrap items-center" v-if="$props.simple && !$props.readonly">
                             <q-spinner v-if="slotProps.isUploading" class="q-uploader__spinner"></q-spinner> 
-                            <q-btn v-if="slotProps.canAddFiles" type="a" :icon="$q.iconSet.uploader.add" flat dense>
+                            <q-btn v-if="globalCanAddFiles(slotProps.files)" type="a" :icon="$q.iconSet.uploader.add" flat dense>
                                 <q-uploader-add-trigger></q-uploader-add-trigger>
-                                <q-tooltip>{{$q.lang.vui.uploader.add}}</q-tooltip>
-                            </q-btn>
-                            <q-btn v-if="slotProps.hideUploadBtn === false && slotProps.canUpload === true" type="a" :icon="$q.iconSet.uploader.upload" flat dense 
-                                @click="slotProps.upload">
-                                <q-tooltip>{{$q.lang.vui.uploader.upload}}</q-tooltip>
                             </q-btn>
                             <q-btn v-if="slotProps.isUploading" type="a" :icon="$q.iconSet.uploader.clear" flat dense 
                                 @click="slotProps.abort">
@@ -75,17 +92,25 @@
         </q-uploader>
 </template>
 <script>
+// we import all of `format`
+import { format } from 'quasar'
+// destructuring to keep only what is needed
+const { humanStorageSize } = format
+
 export default {
   props: {
         readonly: Boolean,
+        label: String,
+        simple : {type: Boolean, default: false},
         fileInfoUris: Array,
         fieldName: String,
         url : String,
         downloadUrl : { type : String, default : (props) => props.baseUrl + '/download'},
         multiple: { type : Boolean, default : true  }
   },
-  emits: ["toogle-facet"],
+  emits: ["update:file-info-uris", "download-file"],
   computed: {
+      
   },
   mounted() {
       this.changeIcon();
@@ -124,23 +149,12 @@ export default {
             this.files.push(file);
             file.fileUri = file.xhr.response;
             newFileInforUris.push(file.fileUri)
+            this.$refs.quasarUploader.removeFile(file)
             this.$emit('update:file-info-uris', newFileInforUris);
         }.bind(this));
     },
-    failedFiles(uploadInfo) {
-        uploadInfo.files.forEach(function (file) {
-           /*  this.onAjaxError({
-                status : file.xhr.status,
-                statusText : file.xhr.statusText,
-                data : JSON.parse(file.xhr.response)
-                }
-            ); */
-            //server can return : a response with a uiMessageStack object or directly the uiMessageStack
-            /*let uiMessageStack = response.globalErrors?response:response.uiMessageStack;
-            Object.keys(uiMessageStack).forEach(function (key) {
-                this.$data.uiMessageStack[key] = uiMessageStack[key];
-            }.bind(this));*/
-        }.bind(this));
+    start(a,b,c){
+        this.$refs.quasarUploader;
     },
     removeRemoteFile(removedFile) {
             var indexOfFile = this.files.indexOf(removedFile);
@@ -164,9 +178,38 @@ export default {
                     }.bind(this));
             
     },
+    globalCanAddFiles(quasarFiles) {
+        if (this.multiple) {
+            return !this.$props.readonly
+        } else {
+            return !this.$props.readonly && 
+            (quasarFiles.filter( file => file.__status != "uploaded").length //client-side
+            + this.fileInfoUris.length) // server-side
+            < 1
+        }
+    }, 
     changeIcon () {
         this.$q.iconSet.uploader.removeUploaded = 'delete_sweep'
         this.$q.iconSet.uploader.done = 'delete'
+    },
+    addFiles(files) {
+        var quasarUploader = this.$refs.quasarUploader;
+        if(this.globalCanAddFiles(quasarUploader.files)) {
+         this.$refs.quasarUploader.addFiles(files);
+        }
+    },
+    getGlobalSize(quasarFiles) {
+        var quasarFileSize = quasarFiles
+        .filter( file => file.__status != "uploaded")
+        .reduce( (totalSize, file) => {
+            return totalSize + file.size;
+        },0 )
+
+        var remoteFilesSize = this.files.reduce( (totalSize, file) => {
+            return totalSize + file.size;
+        },0 )
+        return humanStorageSize(quasarFileSize + remoteFilesSize);
+
     }
   }
 }

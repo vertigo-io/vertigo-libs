@@ -316,6 +316,19 @@ export default {
         }
         return [];
     },
+    vueDataToObject(value) {
+        if(Array.isArray(value)) {
+            if (value.length == 0 ) {
+                return null
+            } else if (value.length == 1) {
+                return value[0]
+            }
+            return value;
+        } else if(value) {
+            return value;
+        }
+        return null;
+    },
     obtainVueDataAccessor(referer, object, field, rowIndex) {
         if(field!=null && field!='null') {
             if(rowIndex!=null) {
@@ -348,41 +361,6 @@ export default {
             }
         }
     },
-    uploader_mounted(componentId, object, field, rowIndex) {
-        this.uploader_changeIcon();
-        var component = this.$refs[componentId];
-        //must removed duplicate
-        component.vueDataAccessor = this.obtainVueDataAccessor(this, object, field, rowIndex);
-        var vueDataAccessor = component.vueDataAccessor;
-        var curValue = vueDataAccessor.get();
-        if(!Array.isArray(curValue)) {
-            vueDataAccessor.set(this.vueDataToArray(curValue));
-        }        
-        vueDataAccessor.set(vueDataAccessor.get().filter(function(item, pos, self) {
-            return self.indexOf(item) == pos;
-        }));
-        vueDataAccessor.get().forEach(function (uri) {
-        var xhrParams = {};
-        xhrParams[component.fieldName] = uri;
-            this.$http.get(component.url, { params: xhrParams, credentials: component.withCredentials })
-            .then(function (response) { //Ok
-                var fileData = response.data;
-                  
-                    fileData.__sizeLabel = Quasar.format.humanStorageSize(fileData.size);
-                    fileData.__progressLabel = '100%';
-                    component.addFiles([fileData]);
-                    //this.uploader_forceComputeUploadedSize(componentId);
-                
-            }.bind(this))
-            .catch(function (error) { //Ko
-               if(error.response) {
-                  this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file "+uri);
-               } else {
-                  this.$q.notify(error + " Can't load file "+uri);
-               }
-            }.bind(this));
-        }.bind(this));
-    },
     uploader_dragenter(componentId) {
         let componentStates = this.$data.componentStates;
         componentStates[componentId].dragover = true;
@@ -395,75 +373,6 @@ export default {
         var component = this.$refs[componentId];
         component.addFiles(event.dataTransfer.files);
     },
-    uploader_forceComputeUploadedSize: function (componentId) {
-        var component = this.$refs[componentId];
-        //recompute totalSize
-        component.uploadedSize = 0;
-        component.uploadedFiles.forEach(function (file) { component.uploadedSize += file.size;});
-        component.uploadSize = component.uploadedSize;
-        component.queuedFiles.forEach(function (file) { component.uploadSize += file.size;});
-        
-    },
-    uploader_humanStorageSize: function (size) {
-        return Quasar.format.humanStorageSize(size);
-    },
-    uploader_addedFile: function (isMultiple, componentId) {
-        if (!isMultiple) {
-             var component = this.$refs[componentId];
-             var vueDataAccessor = component.vueDataAccessor;
-             component.removeUploadedFiles();
-             vueDataAccessor.set([]);
-        }
-    },
-    uploader_uploadedFiles: function (uploadInfo, componentId) {
-        var component = this.$refs[componentId];
-        var vueDataAccessor = component.vueDataAccessor;
-        uploadInfo.files.forEach(function (file) {
-            file.fileUri = file.xhr.response;
-            vueDataAccessor.get().push(file.fileUri);
-        }.bind(this));
-    },
-    uploader_failedFiles: function (uploadInfo) {
-        uploadInfo.files.forEach(function (file) {
-            this.onAjaxError({
-                status : file.xhr.status,
-                statusText : file.xhr.statusText,
-                data : JSON.parse(file.xhr.response)
-                }
-            );
-            //server can return : a response with a uiMessageStack object or directly the uiMessageStack
-            /*let uiMessageStack = response.globalErrors?response:response.uiMessageStack;
-            Object.keys(uiMessageStack).forEach(function (key) {
-                this.$data.uiMessageStack[key] = uiMessageStack[key];
-            }.bind(this));*/
-        }.bind(this));
-    },
-    uploader_removeFiles: function (removedFiles, componentId) {
-        var component = this.$refs[componentId];
-        var vueDataAccessor = component.vueDataAccessor;
-        var dataFileUris = vueDataAccessor.get();
-        removedFiles.forEach(function (removedFile) {
-            if(removedFile.fileUri) { //if file is serverside
-            var indexOfFileUri = dataFileUris.indexOf(removedFile.fileUri);
-            var xhrParams = {};
-            xhrParams[component.fieldName] = removedFile.fileUri;
-                this.$http.delete(component.url, { params: xhrParams, credentials: component.withCredentials })
-                    .then(function (/*response*/) { //Ok
-                        if (component.multiple) {
-                            dataFileUris.splice(indexOfFileUri, 1);
-                        } else {
-                            dataFileUris.splice(0);
-                        }
-                        this.uploader_forceComputeUploadedSize(componentId);
-                    }.bind(this))
-                    .catch(function (error) { //Ko
-                        this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't remove temporary file");
-                    }.bind(this));
-            }
-        }.bind(this));
-    },
-    
-
     httpPostAjax: function (url, paramsIn, options) {
         let vueData = this.$data.vueData;
         let uiMessageStack = this.$data.uiMessageStack;

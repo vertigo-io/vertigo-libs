@@ -5,7 +5,7 @@ var _export_sfc = (sfc, props) => {
   }
   return target;
 };
-const _sfc_main$b = {
+const _sfc_main$c = {
   props: {
     botUrl: { type: String, required: true },
     devMode: { type: Boolean, "default": false },
@@ -162,53 +162,53 @@ const _sfc_main$b = {
     }
   }
 };
-const _renderList$7 = window["Vue"].renderList;
-const _Fragment$7 = window["Vue"].Fragment;
-const _openBlock$b = window["Vue"].openBlock;
-const _createElementBlock$a = window["Vue"].createElementBlock;
-const _resolveComponent$a = window["Vue"].resolveComponent;
-const _createVNode$8 = window["Vue"].createVNode;
-const _withCtx$9 = window["Vue"].withCtx;
-const _createBlock$8 = window["Vue"].createBlock;
-const _createCommentVNode$5 = window["Vue"].createCommentVNode;
-const _toDisplayString$9 = window["Vue"].toDisplayString;
-const _createElementVNode$6 = window["Vue"].createElementVNode;
+const _renderList$8 = window["Vue"].renderList;
+const _Fragment$8 = window["Vue"].Fragment;
+const _openBlock$c = window["Vue"].openBlock;
+const _createElementBlock$b = window["Vue"].createElementBlock;
+const _resolveComponent$b = window["Vue"].resolveComponent;
+const _createVNode$9 = window["Vue"].createVNode;
+const _withCtx$a = window["Vue"].withCtx;
+const _createBlock$9 = window["Vue"].createBlock;
+const _createCommentVNode$6 = window["Vue"].createCommentVNode;
+const _toDisplayString$a = window["Vue"].toDisplayString;
+const _createElementVNode$7 = window["Vue"].createElementVNode;
 const _withKeys$1 = window["Vue"].withKeys;
-const _hoisted_1$9 = { class: "bot" };
-const _hoisted_2$4 = { class: "q-pr-md" };
-const _hoisted_3$3 = { class: "sys-chat" };
-const _hoisted_4$2 = { class: "q-pb-sm" };
-const _hoisted_5$2 = { class: "sys-chat non-selectable" };
-const _hoisted_6$1 = { class: "text-blue-2 q-caption" };
-const _hoisted_7 = { class: "row docs-btn" };
-const _hoisted_8 = { class: "message-processing sys-chat non-selectable" };
-const _hoisted_9 = { class: "non-selectable" };
+const _hoisted_1$a = { class: "bot" };
+const _hoisted_2$5 = { class: "q-pr-md" };
+const _hoisted_3$4 = { class: "sys-chat" };
+const _hoisted_4$3 = { class: "q-pb-sm" };
+const _hoisted_5$3 = { class: "sys-chat non-selectable" };
+const _hoisted_6$2 = { class: "text-blue-2 q-caption" };
+const _hoisted_7$1 = { class: "row docs-btn" };
+const _hoisted_8$1 = { class: "message-processing sys-chat non-selectable" };
+const _hoisted_9$1 = { class: "non-selectable" };
 const _hoisted_10 = { class: "message-response row docs-btn q-pl-sm non-selectable" };
-function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_q_rating = _resolveComponent$a("q-rating");
-  const _component_q_chat_message = _resolveComponent$a("q-chat-message");
-  const _component_q_btn = _resolveComponent$a("q-btn");
-  const _component_q_spinner_dots = _resolveComponent$a("q-spinner-dots");
-  const _component_q_scroll_area = _resolveComponent$a("q-scroll-area");
-  const _component_q_input = _resolveComponent$a("q-input");
-  return _openBlock$b(), _createElementBlock$a("div", _hoisted_1$9, [
-    _createVNode$8(_component_q_scroll_area, {
+function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_q_rating = _resolveComponent$b("q-rating");
+  const _component_q_chat_message = _resolveComponent$b("q-chat-message");
+  const _component_q_btn = _resolveComponent$b("q-btn");
+  const _component_q_spinner_dots = _resolveComponent$b("q-spinner-dots");
+  const _component_q_scroll_area = _resolveComponent$b("q-scroll-area");
+  const _component_q_input = _resolveComponent$b("q-input");
+  return _openBlock$c(), _createElementBlock$b("div", _hoisted_1$a, [
+    _createVNode$9(_component_q_scroll_area, {
       class: "bg-grey-2 col-grow row q-pa-sm",
       ref: "scroller"
     }, {
-      default: _withCtx$9(() => [
-        _createElementVNode$6("div", _hoisted_2$4, [
-          (_openBlock$b(true), _createElementBlock$a(_Fragment$7, null, _renderList$7(_ctx.messages, (msg, index) => {
-            return _openBlock$b(), _createElementBlock$a("div", { key: index }, [
-              msg.rating ? (_openBlock$b(), _createBlock$8(_component_q_chat_message, {
+      default: _withCtx$a(() => [
+        _createElementVNode$7("div", _hoisted_2$5, [
+          (_openBlock$c(true), _createElementBlock$b(_Fragment$8, null, _renderList$8(_ctx.messages, (msg, index) => {
+            return _openBlock$c(), _createElementBlock$b("div", { key: index }, [
+              msg.rating ? (_openBlock$c(), _createBlock$9(_component_q_chat_message, {
                 class: "animate-fade",
                 key: "msgRating-" + index,
                 sent: msg.sent,
                 "bg-color": msg.bgColor,
                 avatar: msg.avatar
               }, {
-                default: _withCtx$9(() => [
-                  _createVNode$8(_component_q_rating, {
+                default: _withCtx$a(() => [
+                  _createVNode$9(_component_q_rating, {
                     modelValue: msg.rating,
                     "onUpdate:modelValue": ($event) => msg.rating = $event,
                     max: 5,
@@ -217,8 +217,8 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
                   }, null, 8, ["modelValue", "onUpdate:modelValue"])
                 ]),
                 _: 2
-              }, 1032, ["sent", "bg-color", "avatar"])) : _createCommentVNode$5("", true),
-              msg.text ? (_openBlock$b(), _createBlock$8(_component_q_chat_message, {
+              }, 1032, ["sent", "bg-color", "avatar"])) : _createCommentVNode$6("", true),
+              msg.text ? (_openBlock$c(), _createBlock$9(_component_q_chat_message, {
                 class: "animate-fade",
                 key: "msg-" + index,
                 label: msg.label,
@@ -229,20 +229,20 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
                 avatar: msg.avatar,
                 text: msg.text,
                 stamp: msg.stamp
-              }, null, 8, ["label", "sent", "text-color", "bg-color", "name", "avatar", "text", "stamp"])) : _createCommentVNode$5("", true)
+              }, null, 8, ["label", "sent", "text-color", "bg-color", "name", "avatar", "text", "stamp"])) : _createCommentVNode$6("", true)
             ]);
           }), 128)),
-          _createElementVNode$6("div", _hoisted_3$3, [
-            _ctx.error ? (_openBlock$b(), _createBlock$8(_component_q_chat_message, {
+          _createElementVNode$7("div", _hoisted_3$4, [
+            _ctx.error ? (_openBlock$c(), _createBlock$9(_component_q_chat_message, {
               key: 0,
               class: "animate-fade",
               "bg-color": "orange-4",
               "text-color": "black",
               size: "12"
             }, {
-              default: _withCtx$9(() => [
-                _createElementVNode$6("div", _hoisted_4$2, _toDisplayString$9(_ctx.$q.lang.vui.chatbot.errorMessage), 1),
-                _createVNode$8(_component_q_btn, {
+              default: _withCtx$a(() => [
+                _createElementVNode$7("div", _hoisted_4$3, _toDisplayString$a(_ctx.$q.lang.vui.chatbot.errorMessage), 1),
+                _createVNode$9(_component_q_btn, {
                   class: "full-width",
                   onClick: _cache[0] || (_cache[0] = ($event) => $options.askBot(_ctx.lastPayload)),
                   label: _ctx.$q.lang.vui.chatbot.tryAgain,
@@ -251,20 +251,20 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
                 }, null, 8, ["label"])
               ]),
               _: 1
-            })) : _createCommentVNode$5("", true)
+            })) : _createCommentVNode$6("", true)
           ]),
-          _createElementVNode$6("div", _hoisted_5$2, [
-            _ctx.inputConfig.buttons.length > 0 ? (_openBlock$b(), _createBlock$8(_component_q_chat_message, {
+          _createElementVNode$7("div", _hoisted_5$3, [
+            _ctx.inputConfig.buttons.length > 0 ? (_openBlock$c(), _createBlock$9(_component_q_chat_message, {
               key: 0,
               class: "animate-fade",
               "bg-color": "primary",
               size: "12"
             }, {
-              default: _withCtx$9(() => [
-                _createElementVNode$6("div", _hoisted_6$1, _toDisplayString$9(_ctx.$q.lang.vui.suggestedAnswers), 1),
-                _createElementVNode$6("div", _hoisted_7, [
-                  (_openBlock$b(true), _createElementBlock$a(_Fragment$7, null, _renderList$7(_ctx.inputConfig.buttons, (btn, index) => {
-                    return _openBlock$b(), _createBlock$8(_component_q_btn, {
+              default: _withCtx$a(() => [
+                _createElementVNode$7("div", _hoisted_6$2, _toDisplayString$a(_ctx.$q.lang.vui.suggestedAnswers), 1),
+                _createElementVNode$7("div", _hoisted_7$1, [
+                  (_openBlock$c(true), _createElementBlock$b(_Fragment$8, null, _renderList$8(_ctx.inputConfig.buttons, (btn, index) => {
+                    return _openBlock$c(), _createBlock$9(_component_q_btn, {
                       class: "full-width",
                       key: "repChatBtn-" + index,
                       onClick: ($event) => $options.postAnswerBtn(btn),
@@ -276,29 +276,29 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
                 ])
               ]),
               _: 1
-            })) : _createCommentVNode$5("", true)
+            })) : _createCommentVNode$6("", true)
           ]),
-          _createElementVNode$6("div", _hoisted_8, [
-            _ctx.processing ? (_openBlock$b(), _createBlock$8(_component_q_chat_message, {
+          _createElementVNode$7("div", _hoisted_8$1, [
+            _ctx.processing ? (_openBlock$c(), _createBlock$9(_component_q_chat_message, {
               key: 0,
               class: "animate-fade",
               "bg-color": "grey-4"
             }, {
-              default: _withCtx$9(() => [
-                _createVNode$8(_component_q_spinner_dots, { size: "2em" })
+              default: _withCtx$a(() => [
+                _createVNode$9(_component_q_spinner_dots, { size: "2em" })
               ]),
               _: 1
-            })) : _createCommentVNode$5("", true)
+            })) : _createCommentVNode$6("", true)
           ]),
-          _createElementVNode$6("div", _hoisted_9, [
-            _ctx.inputConfig.showRating ? (_openBlock$b(), _createBlock$8(_component_q_chat_message, {
+          _createElementVNode$7("div", _hoisted_9$1, [
+            _ctx.inputConfig.showRating ? (_openBlock$c(), _createBlock$9(_component_q_chat_message, {
               key: 0,
               class: "animate-fade",
               "bg-color": "primary",
               sent: ""
             }, {
-              default: _withCtx$9(() => [
-                _createVNode$8(_component_q_rating, {
+              default: _withCtx$a(() => [
+                _createVNode$9(_component_q_rating, {
                   modelValue: _ctx.rating,
                   "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => _ctx.rating = $event),
                   max: 4,
@@ -306,14 +306,14 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
                 }, null, 8, ["modelValue"])
               ]),
               _: 1
-            })) : _createCommentVNode$5("", true)
+            })) : _createCommentVNode$6("", true)
           ])
         ])
       ]),
       _: 1
     }, 512),
-    _createElementVNode$6("div", _hoisted_10, [
-      _createVNode$8(_component_q_input, {
+    _createElementVNode$7("div", _hoisted_10, [
+      _createVNode$9(_component_q_input, {
         type: _ctx.inputConfig.modeTextarea ? "textarea" : "text",
         ref: "input",
         onKeyup: _cache[2] || (_cache[2] = _withKeys$1(($event) => _ctx.inputConfig.modeTextarea ? false : _ctx.inputConfig.responseText.trim() === "" && _ctx.inputConfig.rating === 0 ? false : $options.postAnswerText(), ["enter"])),
@@ -325,25 +325,25 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
         disable: _ctx.processing || _ctx.error,
         loading: _ctx.processing
       }, null, 8, ["type", "modelValue", "placeholder", "disable", "loading"]),
-      _createVNode$8(_component_q_btn, {
+      _createVNode$9(_component_q_btn, {
         round: "",
         color: "primary",
         icon: "send",
         onClick: _cache[4] || (_cache[4] = ($event) => $options.postAnswerText()),
         disable: _ctx.processing || _ctx.inputConfig.responseText.trim() === "" && _ctx.inputConfig.rating === 0
       }, null, 8, ["disable"]),
-      $props.devMode === true ? (_openBlock$b(), _createBlock$8(_component_q_btn, {
+      $props.devMode === true ? (_openBlock$c(), _createBlock$9(_component_q_btn, {
         key: 0,
         round: "",
         color: "red",
         icon: "refresh",
         onClick: $options.restart
-      }, null, 8, ["onClick"])) : _createCommentVNode$5("", true)
+      }, null, 8, ["onClick"])) : _createCommentVNode$6("", true)
     ])
   ]);
 }
-var VChatbot = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$b]]);
-const _sfc_main$a = {
+var VChatbot = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$c]]);
+const _sfc_main$b = {
   data: function() {
     return {
       text: "",
@@ -483,50 +483,50 @@ const _sfc_main$a = {
     }
   }
 };
-const _toDisplayString$8 = window["Vue"].toDisplayString;
-const _openBlock$a = window["Vue"].openBlock;
-const _createElementBlock$9 = window["Vue"].createElementBlock;
-const _createCommentVNode$4 = window["Vue"].createCommentVNode;
-const _resolveComponent$9 = window["Vue"].resolveComponent;
-const _withCtx$8 = window["Vue"].withCtx;
-const _createBlock$7 = window["Vue"].createBlock;
-const _createElementVNode$5 = window["Vue"].createElementVNode;
-const _renderList$6 = window["Vue"].renderList;
-const _Fragment$6 = window["Vue"].Fragment;
+const _toDisplayString$9 = window["Vue"].toDisplayString;
+const _openBlock$b = window["Vue"].openBlock;
+const _createElementBlock$a = window["Vue"].createElementBlock;
+const _createCommentVNode$5 = window["Vue"].createCommentVNode;
+const _resolveComponent$a = window["Vue"].resolveComponent;
+const _withCtx$9 = window["Vue"].withCtx;
+const _createBlock$8 = window["Vue"].createBlock;
+const _createElementVNode$6 = window["Vue"].createElementVNode;
+const _renderList$7 = window["Vue"].renderList;
+const _Fragment$7 = window["Vue"].Fragment;
 const _withKeys = window["Vue"].withKeys;
-const _createVNode$7 = window["Vue"].createVNode;
-const _createTextVNode$4 = window["Vue"].createTextVNode;
-const _hoisted_1$8 = {
+const _createVNode$8 = window["Vue"].createVNode;
+const _createTextVNode$5 = window["Vue"].createTextVNode;
+const _hoisted_1$9 = {
   key: 0,
   style: { "line-height": "40px", "opacity": "0.5", "position": "fixed" }
 };
-const _hoisted_2$3 = {
+const _hoisted_2$4 = {
   class: "bg-grey-4 text-center vertical-middle text-bold q-px-md",
   style: { "line-height": "40px" }
 };
-const _hoisted_3$2 = {
+const _hoisted_3$3 = {
   key: 0,
   class: "row col items-center q-py-xs"
 };
-const _hoisted_4$1 = {
+const _hoisted_4$2 = {
   key: 1,
   class: "col"
 };
-const _hoisted_5$1 = {
+const _hoisted_5$2 = {
   key: 1,
   class: "row col items-center"
 };
-const _hoisted_6 = {
+const _hoisted_6$1 = {
   class: "col shadow-2 bg-secondary text-white q-px-md",
   style: { "line-height": "40px" }
 };
-function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_q_select = _resolveComponent$9("q-select");
-  const _component_q_input = _resolveComponent$9("q-input");
-  const _component_q_separator = _resolveComponent$9("q-separator");
-  const _component_q_btn = _resolveComponent$9("q-btn");
-  return _openBlock$a(), _createElementBlock$9("div", null, [
-    !_ctx.isCommandCommited ? (_openBlock$a(), _createBlock$7(_component_q_select, {
+function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_q_select = _resolveComponent$a("q-select");
+  const _component_q_input = _resolveComponent$a("q-input");
+  const _component_q_separator = _resolveComponent$a("q-separator");
+  const _component_q_btn = _resolveComponent$a("q-btn");
+  return _openBlock$b(), _createElementBlock$a("div", null, [
+    !_ctx.isCommandCommited ? (_openBlock$b(), _createBlock$8(_component_q_select, {
       key: 0,
       placeholder: _ctx.$q.lang.vui.commands.globalPlaceholder,
       outlined: "",
@@ -544,20 +544,20 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
       onFilter: $options.searchCommands,
       "onUpdate:modelValue": $options.selectCommand
     }, {
-      default: _withCtx$8(() => [
-        _ctx.text !== "" && _ctx.selectedCommand.commandName && _ctx.selectedCommand.commandName.startsWith(_ctx.text) ? (_openBlock$a(), _createElementBlock$9("span", _hoisted_1$8, _toDisplayString$8(_ctx.selectedCommand.commandName), 1)) : _createCommentVNode$4("", true)
+      default: _withCtx$9(() => [
+        _ctx.text !== "" && _ctx.selectedCommand.commandName && _ctx.selectedCommand.commandName.startsWith(_ctx.text) ? (_openBlock$b(), _createElementBlock$a("span", _hoisted_1$9, _toDisplayString$9(_ctx.selectedCommand.commandName), 1)) : _createCommentVNode$5("", true)
       ]),
       _: 1
-    }, 8, ["placeholder", "onBlur", "onKeydown", "options", "onFilter", "onUpdate:modelValue"])) : (_openBlock$a(), _createElementBlock$9("div", {
+    }, 8, ["placeholder", "onBlur", "onKeydown", "options", "onFilter", "onUpdate:modelValue"])) : (_openBlock$b(), _createElementBlock$a("div", {
       key: 1,
       class: "row col-12 justify-between bg-white round-borders overflow-hidden shadow-2 text-black",
       onKeyup: _cache[0] || (_cache[0] = _withKeys((...args) => $options.executeCommand && $options.executeCommand(...args), ["enter"]))
     }, [
-      _createElementVNode$5("div", _hoisted_2$3, _toDisplayString$8(_ctx.selectedCommand.commandName), 1),
-      !_ctx.isExecuted ? (_openBlock$a(), _createElementBlock$9("div", _hoisted_3$2, [
-        _ctx.selectedCommand.commandParams && _ctx.selectedCommand.commandParams.length > 0 ? (_openBlock$a(true), _createElementBlock$9(_Fragment$6, { key: 0 }, _renderList$6(_ctx.selectedCommand.commandParams, (param, index) => {
-          return _openBlock$a(), _createElementBlock$9(_Fragment$6, { key: param }, [
-            param.paramType.rawType === "io.vertigo.commons.command.GenericUID" ? (_openBlock$a(), _createBlock$7(_component_q_select, {
+      _createElementVNode$6("div", _hoisted_2$4, _toDisplayString$9(_ctx.selectedCommand.commandName), 1),
+      !_ctx.isExecuted ? (_openBlock$b(), _createElementBlock$a("div", _hoisted_3$3, [
+        _ctx.selectedCommand.commandParams && _ctx.selectedCommand.commandParams.length > 0 ? (_openBlock$b(true), _createElementBlock$a(_Fragment$7, { key: 0 }, _renderList$7(_ctx.selectedCommand.commandParams, (param, index) => {
+          return _openBlock$b(), _createElementBlock$a(_Fragment$7, { key: param }, [
+            param.paramType.rawType === "io.vertigo.commons.command.GenericUID" ? (_openBlock$b(), _createBlock$8(_component_q_select, {
               key: 0,
               class: "col q-px-xs",
               "use-chips": "",
@@ -579,7 +579,7 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
               onFilter: ($event) => $options.autocompleteParam(param, index, _ctx.val, _ctx.update, _ctx.abort),
               "onUpdate:modelValue": ($event) => $options.selectParam(_ctx.newValue, index),
               style: { "height": "32px" }
-            }, null, 8, ["value", "options", "autofocus", "onKeydown", "onKeyup", "onFilter", "onUpdate:modelValue"])) : (_openBlock$a(), _createBlock$7(_component_q_input, {
+            }, null, 8, ["value", "options", "autofocus", "onKeydown", "onKeyup", "onFilter", "onUpdate:modelValue"])) : (_openBlock$b(), _createBlock$8(_component_q_input, {
               key: 1,
               class: "col q-px-xs",
               color: "secondary",
@@ -595,30 +595,30 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
               dense: "",
               style: { "height": "32px" }
             }, null, 8, ["modelValue", "onUpdate:modelValue", "onKeydown", "onKeyup", "autofocus"])),
-            _createVNode$7(_component_q_separator, { vertical: "" })
+            _createVNode$8(_component_q_separator, { vertical: "" })
           ], 64);
-        }), 128)) : (_openBlock$a(), _createElementBlock$9("div", _hoisted_4$1, _toDisplayString$8(_ctx.$q.lang.vui.commands.executeCommand), 1)),
-        _createVNode$7(_component_q_btn, {
+        }), 128)) : (_openBlock$b(), _createElementBlock$a("div", _hoisted_4$2, _toDisplayString$9(_ctx.$q.lang.vui.commands.executeCommand), 1)),
+        _createVNode$8(_component_q_btn, {
           onClick: $options.executeCommand,
           flat: "",
           icon: "play_arrow",
           size: "sm",
           round: ""
         }, null, 8, ["onClick"])
-      ])) : (_openBlock$a(), _createElementBlock$9("div", _hoisted_5$1, [
-        _createElementVNode$5("div", _hoisted_6, _toDisplayString$8(_ctx.commandResult.display), 1),
-        _ctx.commandResult.targetUrl ? (_openBlock$a(), _createBlock$7(_component_q_btn, {
+      ])) : (_openBlock$b(), _createElementBlock$a("div", _hoisted_5$2, [
+        _createElementVNode$6("div", _hoisted_6$1, _toDisplayString$9(_ctx.commandResult.display), 1),
+        _ctx.commandResult.targetUrl ? (_openBlock$b(), _createBlock$8(_component_q_btn, {
           key: 0,
           type: "a",
           href: $props.baseUrl + _ctx.commandResult.targetUrl,
           flat: ""
         }, {
-          default: _withCtx$8(() => [
-            _createTextVNode$4(_toDisplayString$8(_ctx.$q.lang.vui.commands.linkLabel), 1)
+          default: _withCtx$9(() => [
+            _createTextVNode$5(_toDisplayString$9(_ctx.$q.lang.vui.commands.linkLabel), 1)
           ]),
           _: 1
-        }, 8, ["href"])) : _createCommentVNode$4("", true),
-        _createVNode$7(_component_q_btn, {
+        }, 8, ["href"])) : _createCommentVNode$5("", true),
+        _createVNode$8(_component_q_btn, {
           onClick: $options.reset,
           flat: "",
           icon: "cancel",
@@ -629,9 +629,9 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
     ], 32))
   ]);
 }
-var VCommands = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$a]]);
+var VCommands = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$b]]);
 const Quasar$7 = window["Quasar"];
-const _sfc_main$9 = {
+const _sfc_main$a = {
   props: {
     concept: { type: String },
     id: { type: String },
@@ -691,36 +691,36 @@ const _sfc_main$9 = {
     }
   }
 };
-const _toDisplayString$7 = window["Vue"].toDisplayString;
-const _createTextVNode$3 = window["Vue"].createTextVNode;
-const _resolveComponent$8 = window["Vue"].resolveComponent;
-const _withCtx$7 = window["Vue"].withCtx;
-const _openBlock$9 = window["Vue"].openBlock;
-const _createBlock$6 = window["Vue"].createBlock;
-const _createCommentVNode$3 = window["Vue"].createCommentVNode;
-const _createVNode$6 = window["Vue"].createVNode;
-const _renderList$5 = window["Vue"].renderList;
-const _Fragment$5 = window["Vue"].Fragment;
-const _createElementBlock$8 = window["Vue"].createElementBlock;
-const _createElementVNode$4 = window["Vue"].createElementVNode;
-const _normalizeClass$1 = window["Vue"].normalizeClass;
-const _hoisted_1$7 = ["src"];
-function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_q_badge = _resolveComponent$8("q-badge");
-  const _component_q_btn = _resolveComponent$8("q-btn");
-  const _component_big = _resolveComponent$8("big");
-  const _component_q_item_label = _resolveComponent$8("q-item-label");
-  const _component_q_input = _resolveComponent$8("q-input");
-  const _component_q_item_section = _resolveComponent$8("q-item-section");
-  const _component_q_item = _resolveComponent$8("q-item");
-  const _component_q_separator = _resolveComponent$8("q-separator");
-  const _component_q_avatar = _resolveComponent$8("q-avatar");
-  const _component_q_icon = _resolveComponent$8("q-icon");
-  const _component_q_popup_edit = _resolveComponent$8("q-popup-edit");
-  const _component_q_list = _resolveComponent$8("q-list");
-  const _component_q_drawer = _resolveComponent$8("q-drawer");
-  return _openBlock$9(), _createElementBlock$8("span", null, [
-    _createVNode$6(_component_q_btn, {
+const _toDisplayString$8 = window["Vue"].toDisplayString;
+const _createTextVNode$4 = window["Vue"].createTextVNode;
+const _resolveComponent$9 = window["Vue"].resolveComponent;
+const _withCtx$8 = window["Vue"].withCtx;
+const _openBlock$a = window["Vue"].openBlock;
+const _createBlock$7 = window["Vue"].createBlock;
+const _createCommentVNode$4 = window["Vue"].createCommentVNode;
+const _createVNode$7 = window["Vue"].createVNode;
+const _renderList$6 = window["Vue"].renderList;
+const _Fragment$6 = window["Vue"].Fragment;
+const _createElementBlock$9 = window["Vue"].createElementBlock;
+const _createElementVNode$5 = window["Vue"].createElementVNode;
+const _normalizeClass$2 = window["Vue"].normalizeClass;
+const _hoisted_1$8 = ["src"];
+function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_q_badge = _resolveComponent$9("q-badge");
+  const _component_q_btn = _resolveComponent$9("q-btn");
+  const _component_big = _resolveComponent$9("big");
+  const _component_q_item_label = _resolveComponent$9("q-item-label");
+  const _component_q_input = _resolveComponent$9("q-input");
+  const _component_q_item_section = _resolveComponent$9("q-item-section");
+  const _component_q_item = _resolveComponent$9("q-item");
+  const _component_q_separator = _resolveComponent$9("q-separator");
+  const _component_q_avatar = _resolveComponent$9("q-avatar");
+  const _component_q_icon = _resolveComponent$9("q-icon");
+  const _component_q_popup_edit = _resolveComponent$9("q-popup-edit");
+  const _component_q_list = _resolveComponent$9("q-list");
+  const _component_q_drawer = _resolveComponent$9("q-drawer");
+  return _openBlock$a(), _createElementBlock$9("span", null, [
+    _createVNode$7(_component_q_btn, {
       round: "",
       size: "lg",
       color: "primary",
@@ -729,23 +729,23 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
       onClick: _cache[0] || (_cache[0] = ($event) => _ctx.commentDrawer = !_ctx.commentDrawer),
       class: "on-left"
     }, {
-      default: _withCtx$7(() => [
-        _ctx.count > 0 ? (_openBlock$9(), _createBlock$6(_component_q_badge, {
+      default: _withCtx$8(() => [
+        _ctx.count > 0 ? (_openBlock$a(), _createBlock$7(_component_q_badge, {
           key: 0,
           floating: "",
           small: "",
           color: "red",
           style: { "right": "-.4em", "top": "-.4em" }
         }, {
-          default: _withCtx$7(() => [
-            _createTextVNode$3(_toDisplayString$7(_ctx.count), 1)
+          default: _withCtx$8(() => [
+            _createTextVNode$4(_toDisplayString$8(_ctx.count), 1)
           ]),
           _: 1
-        })) : _createCommentVNode$3("", true)
+        })) : _createCommentVNode$4("", true)
       ]),
       _: 1
     }, 8, ["icon"]),
-    _createVNode$6(_component_q_drawer, {
+    _createVNode$7(_component_q_drawer, {
       overlay: "",
       behavior: "mobile",
       width: 600,
@@ -754,25 +754,25 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
       side: "right",
       style: { "top": "58px" }
     }, {
-      default: _withCtx$7(() => [
-        _createVNode$6(_component_q_list, null, {
-          default: _withCtx$7(() => [
-            _createVNode$6(_component_q_item_label, { header: "" }, {
-              default: _withCtx$7(() => [
-                _createVNode$6(_component_big, null, {
-                  default: _withCtx$7(() => [
-                    _createTextVNode$3(_toDisplayString$7(_ctx.$q.lang.vui.comments.title), 1)
+      default: _withCtx$8(() => [
+        _createVNode$7(_component_q_list, null, {
+          default: _withCtx$8(() => [
+            _createVNode$7(_component_q_item_label, { header: "" }, {
+              default: _withCtx$8(() => [
+                _createVNode$7(_component_big, null, {
+                  default: _withCtx$8(() => [
+                    _createTextVNode$4(_toDisplayString$8(_ctx.$q.lang.vui.comments.title), 1)
                   ]),
                   _: 1
                 })
               ]),
               _: 1
             }),
-            _createVNode$6(_component_q_item, null, {
-              default: _withCtx$7(() => [
-                _createVNode$6(_component_q_item_section, null, {
-                  default: _withCtx$7(() => [
-                    _createVNode$6(_component_q_input, {
+            _createVNode$7(_component_q_item, null, {
+              default: _withCtx$8(() => [
+                _createVNode$7(_component_q_item_section, null, {
+                  default: _withCtx$8(() => [
+                    _createVNode$7(_component_q_input, {
                       class: "col",
                       type: "textarea",
                       autogrow: "",
@@ -784,9 +784,9 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
                   ]),
                   _: 1
                 }),
-                _createVNode$6(_component_q_item_section, { side: "" }, {
-                  default: _withCtx$7(() => [
-                    _createVNode$6(_component_q_btn, {
+                _createVNode$7(_component_q_item_section, { side: "" }, {
+                  default: _withCtx$8(() => [
+                    _createVNode$7(_component_q_btn, {
                       color: "primary",
                       round: "",
                       icon: "send",
@@ -800,62 +800,62 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
               ]),
               _: 1
             }),
-            _createVNode$6(_component_q_separator),
-            (_openBlock$9(true), _createElementBlock$8(_Fragment$5, null, _renderList$5(_ctx.list, (comment) => {
-              return _openBlock$9(), _createBlock$6(_component_q_item, {
+            _createVNode$7(_component_q_separator),
+            (_openBlock$a(true), _createElementBlock$9(_Fragment$6, null, _renderList$6(_ctx.list, (comment) => {
+              return _openBlock$a(), _createBlock$7(_component_q_item, {
                 key: comment.uuid,
-                class: _normalizeClass$1(["items-start", { "cursor-pointer": comment.author == $props.connectedAccount }])
+                class: _normalizeClass$2(["items-start", { "cursor-pointer": comment.author == $props.connectedAccount }])
               }, {
-                default: _withCtx$7(() => [
-                  _createVNode$6(_component_q_item_section, { avatar: "" }, {
-                    default: _withCtx$7(() => [
-                      _createVNode$6(_component_q_avatar, null, {
-                        default: _withCtx$7(() => [
-                          _createElementVNode$4("img", {
+                default: _withCtx$8(() => [
+                  _createVNode$7(_component_q_item_section, { avatar: "" }, {
+                    default: _withCtx$8(() => [
+                      _createVNode$7(_component_q_avatar, null, {
+                        default: _withCtx$8(() => [
+                          _createElementVNode$5("img", {
                             src: $props.baseUrl + "x/accounts/api/" + comment.author + "/photo"
-                          }, null, 8, _hoisted_1$7)
+                          }, null, 8, _hoisted_1$8)
                         ]),
                         _: 2
                       }, 1024)
                     ]),
                     _: 2
                   }, 1024),
-                  _createVNode$6(_component_q_item_section, null, {
-                    default: _withCtx$7(() => [
-                      _createVNode$6(_component_q_item_label, null, {
-                        default: _withCtx$7(() => [
-                          _createTextVNode$3(_toDisplayString$7(comment.authorDisplayName), 1)
+                  _createVNode$7(_component_q_item_section, null, {
+                    default: _withCtx$8(() => [
+                      _createVNode$7(_component_q_item_label, null, {
+                        default: _withCtx$8(() => [
+                          _createTextVNode$4(_toDisplayString$8(comment.authorDisplayName), 1)
                         ]),
                         _: 2
                       }, 1024),
-                      _createElementVNode$4("div", null, _toDisplayString$7(comment.msg), 1)
+                      _createElementVNode$5("div", null, _toDisplayString$8(comment.msg), 1)
                     ]),
                     _: 2
                   }, 1024),
-                  _createVNode$6(_component_q_item_section, { side: "" }, {
-                    default: _withCtx$7(() => [
-                      _createVNode$6(_component_q_item_label, { stamp: "" }, {
-                        default: _withCtx$7(() => [
-                          _createTextVNode$3(_toDisplayString$7($options.toDelay(new Date(comment.creationDate))), 1)
+                  _createVNode$7(_component_q_item_section, { side: "" }, {
+                    default: _withCtx$8(() => [
+                      _createVNode$7(_component_q_item_label, { stamp: "" }, {
+                        default: _withCtx$8(() => [
+                          _createTextVNode$4(_toDisplayString$8($options.toDelay(new Date(comment.creationDate))), 1)
                         ]),
                         _: 2
                       }, 1024),
-                      comment.author == $props.connectedAccount ? (_openBlock$9(), _createBlock$6(_component_q_icon, {
+                      comment.author == $props.connectedAccount ? (_openBlock$a(), _createBlock$7(_component_q_icon, {
                         key: 0,
                         name: "edit"
-                      })) : _createCommentVNode$3("", true)
+                      })) : _createCommentVNode$4("", true)
                     ]),
                     _: 2
                   }, 1024),
-                  comment.author == $props.connectedAccount ? (_openBlock$9(), _createBlock$6(_component_q_popup_edit, {
+                  comment.author == $props.connectedAccount ? (_openBlock$a(), _createBlock$7(_component_q_popup_edit, {
                     key: 0,
                     buttons: true,
                     onSave: ($event) => $options.updateComment(comment),
                     "label-cancel": _ctx.$q.lang.vui.comments.cancel,
                     "label-set": _ctx.$q.lang.vui.comments.save
                   }, {
-                    default: _withCtx$7(() => [
-                      _createVNode$6(_component_q_input, {
+                    default: _withCtx$8(() => [
+                      _createVNode$7(_component_q_input, {
                         type: "textarea",
                         autogrow: "",
                         modelValue: comment.msg,
@@ -864,7 +864,7 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
                       }, null, 8, ["modelValue", "onUpdate:modelValue"])
                     ]),
                     _: 2
-                  }, 1032, ["onSave", "label-cancel", "label-set"])) : _createCommentVNode$3("", true)
+                  }, 1032, ["onSave", "label-cancel", "label-set"])) : _createCommentVNode$4("", true)
                 ]),
                 _: 2
               }, 1032, ["class"]);
@@ -877,8 +877,8 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
     }, 8, ["modelValue"])
   ]);
 }
-var VComments = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$9]]);
-const _sfc_main$8 = {
+var VComments = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$a]]);
+const _sfc_main$9 = {
   props: {
     activeSkills: { type: Array, required: true }
   },
@@ -909,43 +909,43 @@ const _sfc_main$8 = {
     }
   }
 };
-const _renderList$4 = window["Vue"].renderList;
-const _Fragment$4 = window["Vue"].Fragment;
-const _openBlock$8 = window["Vue"].openBlock;
-const _createElementBlock$7 = window["Vue"].createElementBlock;
-const _resolveComponent$7 = window["Vue"].resolveComponent;
+const _renderList$5 = window["Vue"].renderList;
+const _Fragment$5 = window["Vue"].Fragment;
+const _openBlock$9 = window["Vue"].openBlock;
+const _createElementBlock$8 = window["Vue"].createElementBlock;
+const _resolveComponent$8 = window["Vue"].resolveComponent;
 const _normalizeStyle = window["Vue"].normalizeStyle;
-const _createVNode$5 = window["Vue"].createVNode;
-const _withCtx$6 = window["Vue"].withCtx;
-const _toDisplayString$6 = window["Vue"].toDisplayString;
-const _createElementVNode$3 = window["Vue"].createElementVNode;
-const _hoisted_1$6 = { class: "row q-col-gutter-md" };
-const _hoisted_2$2 = { class: "row col items-center" };
-const _hoisted_3$1 = { class: "q-subheading text-bold" };
-const _hoisted_4 = /* @__PURE__ */ _createElementVNode$3("div", { class: "col" }, null, -1);
-const _hoisted_5 = { class: "row col q-body-2 text-justify" };
-function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_q_icon = _resolveComponent$7("q-icon");
-  const _component_q_item_section = _resolveComponent$7("q-item-section");
-  const _component_q_toggle = _resolveComponent$7("q-toggle");
-  const _component_q_item = _resolveComponent$7("q-item");
-  const _component_q_card = _resolveComponent$7("q-card");
-  return _openBlock$8(), _createElementBlock$7("div", _hoisted_1$6, [
-    (_openBlock$8(true), _createElementBlock$7(_Fragment$4, null, _renderList$4(_ctx.extensions, (extension) => {
-      return _openBlock$8(), _createElementBlock$7("div", {
+const _createVNode$6 = window["Vue"].createVNode;
+const _withCtx$7 = window["Vue"].withCtx;
+const _toDisplayString$7 = window["Vue"].toDisplayString;
+const _createElementVNode$4 = window["Vue"].createElementVNode;
+const _hoisted_1$7 = { class: "row q-col-gutter-md" };
+const _hoisted_2$3 = { class: "row col items-center" };
+const _hoisted_3$2 = { class: "q-subheading text-bold" };
+const _hoisted_4$1 = /* @__PURE__ */ _createElementVNode$4("div", { class: "col" }, null, -1);
+const _hoisted_5$1 = { class: "row col q-body-2 text-justify" };
+function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_q_icon = _resolveComponent$8("q-icon");
+  const _component_q_item_section = _resolveComponent$8("q-item-section");
+  const _component_q_toggle = _resolveComponent$8("q-toggle");
+  const _component_q_item = _resolveComponent$8("q-item");
+  const _component_q_card = _resolveComponent$8("q-card");
+  return _openBlock$9(), _createElementBlock$8("div", _hoisted_1$7, [
+    (_openBlock$9(true), _createElementBlock$8(_Fragment$5, null, _renderList$5(_ctx.extensions, (extension) => {
+      return _openBlock$9(), _createElementBlock$8("div", {
         class: "col-xs-12 col-lg-6 col-xl-4",
         key: extension.name
       }, [
-        _createVNode$5(_component_q_card, null, {
-          default: _withCtx$6(() => [
-            _createVNode$5(_component_q_item, {
+        _createVNode$6(_component_q_card, null, {
+          default: _withCtx$7(() => [
+            _createVNode$6(_component_q_item, {
               class: "bg-white",
               style: { "height": "100px" }
             }, {
-              default: _withCtx$6(() => [
-                _createVNode$5(_component_q_item_section, { avatar: "" }, {
-                  default: _withCtx$6(() => [
-                    _createVNode$5(_component_q_icon, {
+              default: _withCtx$7(() => [
+                _createVNode$6(_component_q_item_section, { avatar: "" }, {
+                  default: _withCtx$7(() => [
+                    _createVNode$6(_component_q_icon, {
                       name: extension.icon,
                       size: "40px",
                       style: _normalizeStyle($options.getIconStyle(extension.color))
@@ -953,13 +953,13 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
                   ]),
                   _: 2
                 }, 1024),
-                _createVNode$5(_component_q_item_section, null, {
-                  default: _withCtx$6(() => [
-                    _createElementVNode$3("div", _hoisted_2$2, [
-                      _createElementVNode$3("div", _hoisted_3$1, _toDisplayString$6(extension.label), 1),
-                      _hoisted_4,
-                      _createElementVNode$3("div", null, [
-                        _createVNode$5(_component_q_toggle, {
+                _createVNode$6(_component_q_item_section, null, {
+                  default: _withCtx$7(() => [
+                    _createElementVNode$4("div", _hoisted_2$3, [
+                      _createElementVNode$4("div", _hoisted_3$2, _toDisplayString$7(extension.label), 1),
+                      _hoisted_4$1,
+                      _createElementVNode$4("div", null, [
+                        _createVNode$6(_component_q_toggle, {
                           disable: "",
                           readonly: "",
                           color: "positive",
@@ -968,7 +968,7 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
                         }, null, 8, ["modelValue", "onUpdate:modelValue"])
                       ])
                     ]),
-                    _createElementVNode$3("div", _hoisted_5, _toDisplayString$6(extension.description), 1)
+                    _createElementVNode$4("div", _hoisted_5$1, _toDisplayString$7(extension.description), 1)
                   ]),
                   _: 2
                 }, 1024)
@@ -982,8 +982,8 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     }), 128))
   ]);
 }
-var VExtensionsStore = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$8]]);
-const _sfc_main$7 = {
+var VExtensionsStore = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$9]]);
+const _sfc_main$8 = {
   props: {
     facets: Array,
     selectedFacets: Object,
@@ -1065,101 +1065,101 @@ const _sfc_main$7 = {
     }
   }
 };
-const _renderList$3 = window["Vue"].renderList;
-const _Fragment$3 = window["Vue"].Fragment;
-const _openBlock$7 = window["Vue"].openBlock;
-const _createElementBlock$6 = window["Vue"].createElementBlock;
-const _toDisplayString$5 = window["Vue"].toDisplayString;
-const _createTextVNode$2 = window["Vue"].createTextVNode;
-const _resolveComponent$6 = window["Vue"].resolveComponent;
-const _withCtx$5 = window["Vue"].withCtx;
-const _createBlock$5 = window["Vue"].createBlock;
-const _createCommentVNode$2 = window["Vue"].createCommentVNode;
-const _createVNode$4 = window["Vue"].createVNode;
-const _hoisted_1$5 = { class: "facets" };
-const _hoisted_2$1 = {
+const _renderList$4 = window["Vue"].renderList;
+const _Fragment$4 = window["Vue"].Fragment;
+const _openBlock$8 = window["Vue"].openBlock;
+const _createElementBlock$7 = window["Vue"].createElementBlock;
+const _toDisplayString$6 = window["Vue"].toDisplayString;
+const _createTextVNode$3 = window["Vue"].createTextVNode;
+const _resolveComponent$7 = window["Vue"].resolveComponent;
+const _withCtx$6 = window["Vue"].withCtx;
+const _createBlock$6 = window["Vue"].createBlock;
+const _createCommentVNode$3 = window["Vue"].createCommentVNode;
+const _createVNode$5 = window["Vue"].createVNode;
+const _hoisted_1$6 = { class: "facets" };
+const _hoisted_2$2 = {
   key: 0,
   class: "selectedFacets q-pb-md"
 };
-function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_q_chip = _resolveComponent$6("q-chip");
-  const _component_big = _resolveComponent$6("big");
-  const _component_q_item_label = _resolveComponent$6("q-item-label");
-  const _component_q_checkbox = _resolveComponent$6("q-checkbox");
-  const _component_q_item_section = _resolveComponent$6("q-item-section");
-  const _component_q_item = _resolveComponent$6("q-item");
-  const _component_q_btn = _resolveComponent$6("q-btn");
-  const _component_q_list = _resolveComponent$6("q-list");
-  return _openBlock$7(), _createElementBlock$6("div", _hoisted_1$5, [
-    $options.isAnyFacetValueSelected() ? (_openBlock$7(), _createElementBlock$6("div", _hoisted_2$1, [
-      (_openBlock$7(true), _createElementBlock$6(_Fragment$3, null, _renderList$3($props.selectedFacets, (selectedFacetValues, selectedFacet) => {
-        return _openBlock$7(), _createElementBlock$6("div", { key: selectedFacet }, [
-          !$options.facetMultipleByCode(selectedFacet) ? (_openBlock$7(true), _createElementBlock$6(_Fragment$3, { key: 0 }, _renderList$3(selectedFacetValues, (selectedFacetValue) => {
-            return _openBlock$7(), _createBlock$5(_component_q_chip, {
+function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_q_chip = _resolveComponent$7("q-chip");
+  const _component_big = _resolveComponent$7("big");
+  const _component_q_item_label = _resolveComponent$7("q-item-label");
+  const _component_q_checkbox = _resolveComponent$7("q-checkbox");
+  const _component_q_item_section = _resolveComponent$7("q-item-section");
+  const _component_q_item = _resolveComponent$7("q-item");
+  const _component_q_btn = _resolveComponent$7("q-btn");
+  const _component_q_list = _resolveComponent$7("q-list");
+  return _openBlock$8(), _createElementBlock$7("div", _hoisted_1$6, [
+    $options.isAnyFacetValueSelected() ? (_openBlock$8(), _createElementBlock$7("div", _hoisted_2$2, [
+      (_openBlock$8(true), _createElementBlock$7(_Fragment$4, null, _renderList$4($props.selectedFacets, (selectedFacetValues, selectedFacet) => {
+        return _openBlock$8(), _createElementBlock$7("div", { key: selectedFacet }, [
+          !$options.facetMultipleByCode(selectedFacet) ? (_openBlock$8(true), _createElementBlock$7(_Fragment$4, { key: 0 }, _renderList$4(selectedFacetValues, (selectedFacetValue) => {
+            return _openBlock$8(), _createBlock$6(_component_q_chip, {
               clickable: "",
               class: "q-mb-sm",
               key: selectedFacetValue.code,
               onClick: ($event) => _ctx.$emit("toogle-facet", selectedFacet, selectedFacetValue, $props.contextKey),
               "icon-right": "cancel"
             }, {
-              default: _withCtx$5(() => [
-                _createTextVNode$2(_toDisplayString$5($options.facetLabelByCode(selectedFacet)) + ": " + _toDisplayString$5($options.facetValueLabelByCode(selectedFacet, selectedFacetValue)), 1)
+              default: _withCtx$6(() => [
+                _createTextVNode$3(_toDisplayString$6($options.facetLabelByCode(selectedFacet)) + ": " + _toDisplayString$6($options.facetValueLabelByCode(selectedFacet, selectedFacetValue)), 1)
               ]),
               _: 2
             }, 1032, ["onClick"]);
-          }), 128)) : _createCommentVNode$2("", true)
+          }), 128)) : _createCommentVNode$3("", true)
         ]);
       }), 128))
-    ])) : _createCommentVNode$2("", true),
-    (_openBlock$7(true), _createElementBlock$6(_Fragment$3, null, _renderList$3($props.facets, (facet) => {
-      return _openBlock$7(), _createBlock$5(_component_q_list, {
+    ])) : _createCommentVNode$3("", true),
+    (_openBlock$8(true), _createElementBlock$7(_Fragment$4, null, _renderList$4($props.facets, (facet) => {
+      return _openBlock$8(), _createBlock$6(_component_q_list, {
         key: facet.code,
         class: "facetValues q-py-none",
         dense: ""
       }, {
-        default: _withCtx$5(() => [
-          facet.multiple || !$options.isFacetSelected(facet.code) ? (_openBlock$7(), _createElementBlock$6(_Fragment$3, { key: 0 }, [
-            _createVNode$4(_component_q_item_label, { header: "" }, {
-              default: _withCtx$5(() => [
-                _createVNode$4(_component_big, null, {
-                  default: _withCtx$5(() => [
-                    _createTextVNode$2(_toDisplayString$5(facet.label), 1)
+        default: _withCtx$6(() => [
+          facet.multiple || !$options.isFacetSelected(facet.code) ? (_openBlock$8(), _createElementBlock$7(_Fragment$4, { key: 0 }, [
+            _createVNode$5(_component_q_item_label, { header: "" }, {
+              default: _withCtx$6(() => [
+                _createVNode$5(_component_big, null, {
+                  default: _withCtx$6(() => [
+                    _createTextVNode$3(_toDisplayString$6(facet.label), 1)
                   ]),
                   _: 2
                 }, 1024)
               ]),
               _: 2
             }, 1024),
-            (_openBlock$7(true), _createElementBlock$6(_Fragment$3, null, _renderList$3($options.selectedInvisibleFacets(facet.code), (value) => {
-              return _openBlock$7(), _createBlock$5(_component_q_item, {
+            (_openBlock$8(true), _createElementBlock$7(_Fragment$4, null, _renderList$4($options.selectedInvisibleFacets(facet.code), (value) => {
+              return _openBlock$8(), _createBlock$6(_component_q_item, {
                 key: value.code,
                 class: "facetValue q-ml-md",
                 clickable: "",
                 onClick: ($event) => _ctx.$emit("toogle-facet", facet.code, value.code, $props.contextKey)
               }, {
-                default: _withCtx$5(() => [
-                  facet.multiple ? (_openBlock$7(), _createBlock$5(_component_q_item_section, {
+                default: _withCtx$6(() => [
+                  facet.multiple ? (_openBlock$8(), _createBlock$6(_component_q_item_section, {
                     key: 0,
                     side: ""
                   }, {
-                    default: _withCtx$5(() => [
-                      _createVNode$4(_component_q_checkbox, {
+                    default: _withCtx$6(() => [
+                      _createVNode$5(_component_q_checkbox, {
                         dense: "",
                         modelValue: true,
                         "onUpdate:modelValue": ($event) => _ctx.$emit("toogle-facet", facet.code, value.code, $props.contextKey)
                       }, null, 8, ["onUpdate:modelValue"])
                     ]),
                     _: 2
-                  }, 1024)) : _createCommentVNode$2("", true),
-                  _createVNode$4(_component_q_item_section, null, {
-                    default: _withCtx$5(() => [
-                      _createTextVNode$2(_toDisplayString$5(value.label), 1)
+                  }, 1024)) : _createCommentVNode$3("", true),
+                  _createVNode$5(_component_q_item_section, null, {
+                    default: _withCtx$6(() => [
+                      _createTextVNode$3(_toDisplayString$6(value.label), 1)
                     ]),
                     _: 2
                   }, 1024),
-                  _createVNode$4(_component_q_item_section, { side: "" }, {
-                    default: _withCtx$5(() => [
-                      _createTextVNode$2(_toDisplayString$5(value.count), 1)
+                  _createVNode$5(_component_q_item_section, { side: "" }, {
+                    default: _withCtx$6(() => [
+                      _createTextVNode$3(_toDisplayString$6(value.count), 1)
                     ]),
                     _: 2
                   }, 1024)
@@ -1167,36 +1167,36 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
                 _: 2
               }, 1032, ["onClick"]);
             }), 128)),
-            (_openBlock$7(true), _createElementBlock$6(_Fragment$3, null, _renderList$3($options.visibleFacets(facet.code, facet.values), (value) => {
-              return _openBlock$7(), _createBlock$5(_component_q_item, {
+            (_openBlock$8(true), _createElementBlock$7(_Fragment$4, null, _renderList$4($options.visibleFacets(facet.code, facet.values), (value) => {
+              return _openBlock$8(), _createBlock$6(_component_q_item, {
                 key: value.code,
                 class: "facetValue q-ml-md",
                 clickable: "",
                 onClick: ($event) => _ctx.$emit("toogle-facet", facet.code, value.code, $props.contextKey)
               }, {
-                default: _withCtx$5(() => [
-                  facet.multiple ? (_openBlock$7(), _createBlock$5(_component_q_item_section, {
+                default: _withCtx$6(() => [
+                  facet.multiple ? (_openBlock$8(), _createBlock$6(_component_q_item_section, {
                     key: 0,
                     side: ""
                   }, {
-                    default: _withCtx$5(() => [
-                      _createVNode$4(_component_q_checkbox, {
+                    default: _withCtx$6(() => [
+                      _createVNode$5(_component_q_checkbox, {
                         dense: "",
                         modelValue: $options.isFacetValueSelected(facet.code, value.code),
                         "onUpdate:modelValue": ($event) => _ctx.$emit("toogle-facet", facet.code, value.code, $props.contextKey)
                       }, null, 8, ["modelValue", "onUpdate:modelValue"])
                     ]),
                     _: 2
-                  }, 1024)) : _createCommentVNode$2("", true),
-                  _createVNode$4(_component_q_item_section, null, {
-                    default: _withCtx$5(() => [
-                      _createTextVNode$2(_toDisplayString$5(value.label), 1)
+                  }, 1024)) : _createCommentVNode$3("", true),
+                  _createVNode$5(_component_q_item_section, null, {
+                    default: _withCtx$6(() => [
+                      _createTextVNode$3(_toDisplayString$6(value.label), 1)
                     ]),
                     _: 2
                   }, 1024),
-                  _createVNode$4(_component_q_item_section, { side: "" }, {
-                    default: _withCtx$5(() => [
-                      _createTextVNode$2(_toDisplayString$5(value.count), 1)
+                  _createVNode$5(_component_q_item_section, { side: "" }, {
+                    default: _withCtx$6(() => [
+                      _createTextVNode$3(_toDisplayString$6(value.count), 1)
                     ]),
                     _: 2
                   }, 1024)
@@ -1204,35 +1204,35 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
                 _: 2
               }, 1032, ["onClick"]);
             }), 128)),
-            facet.values.length > $props.maxValues && !$options.isFacetExpanded(facet.code) ? (_openBlock$7(), _createBlock$5(_component_q_btn, {
+            facet.values.length > $props.maxValues && !$options.isFacetExpanded(facet.code) ? (_openBlock$8(), _createBlock$6(_component_q_btn, {
               key: 0,
               flat: "",
               onClick: ($event) => $options.expandFacet(facet.code)
             }, {
-              default: _withCtx$5(() => [
-                _createTextVNode$2(_toDisplayString$5(_ctx.$q.lang.vui.facets.showAll), 1)
+              default: _withCtx$6(() => [
+                _createTextVNode$3(_toDisplayString$6(_ctx.$q.lang.vui.facets.showAll), 1)
               ]),
               _: 2
-            }, 1032, ["onClick"])) : _createCommentVNode$2("", true),
-            facet.values.length > $props.maxValues && $options.isFacetExpanded(facet.code) ? (_openBlock$7(), _createBlock$5(_component_q_btn, {
+            }, 1032, ["onClick"])) : _createCommentVNode$3("", true),
+            facet.values.length > $props.maxValues && $options.isFacetExpanded(facet.code) ? (_openBlock$8(), _createBlock$6(_component_q_btn, {
               key: 1,
               flat: "",
               onClick: ($event) => $options.reduceFacet(facet.code)
             }, {
-              default: _withCtx$5(() => [
-                _createTextVNode$2(_toDisplayString$5(_ctx.$q.lang.vui.facets.showLess), 1)
+              default: _withCtx$6(() => [
+                _createTextVNode$3(_toDisplayString$6(_ctx.$q.lang.vui.facets.showLess), 1)
               ]),
               _: 2
-            }, 1032, ["onClick"])) : _createCommentVNode$2("", true)
-          ], 64)) : _createCommentVNode$2("", true)
+            }, 1032, ["onClick"])) : _createCommentVNode$3("", true)
+          ], 64)) : _createCommentVNode$3("", true)
         ]),
         _: 2
       }, 1024);
     }), 128))
   ]);
 }
-var VFacets = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$7]]);
-const _sfc_main$6 = {
+var VFacets = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$8]]);
+const _sfc_main$7 = {
   props: {
     modelValue: { type: Object }
   },
@@ -1262,15 +1262,15 @@ const _sfc_main$6 = {
     }
   }
 };
-const _resolveComponent$5 = window["Vue"].resolveComponent;
-const _createVNode$3 = window["Vue"].createVNode;
-const _openBlock$6 = window["Vue"].openBlock;
-const _createElementBlock$5 = window["Vue"].createElementBlock;
-const _hoisted_1$4 = { class: "row" };
-function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_q_input = _resolveComponent$5("q-input");
-  return _openBlock$6(), _createElementBlock$5("div", _hoisted_1$4, [
-    _createVNode$3(_component_q_input, {
+const _resolveComponent$6 = window["Vue"].resolveComponent;
+const _createVNode$4 = window["Vue"].createVNode;
+const _openBlock$7 = window["Vue"].openBlock;
+const _createElementBlock$6 = window["Vue"].createElementBlock;
+const _hoisted_1$5 = { class: "row" };
+function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_q_input = _resolveComponent$6("q-input");
+  return _openBlock$7(), _createElementBlock$6("div", _hoisted_1$5, [
+    _createVNode$4(_component_q_input, {
       label: "Longitude",
       "stack-label": "",
       modelValue: _ctx.inputObject.lon,
@@ -1280,7 +1280,7 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
       ],
       modelModifiers: { number: true }
     }, null, 8, ["modelValue", "onUpdate:modelValue"]),
-    _createVNode$3(_component_q_input, {
+    _createVNode$4(_component_q_input, {
       label: "Latitude",
       "stack-label": "",
       modelValue: _ctx.inputObject.lat,
@@ -1292,8 +1292,8 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["modelValue", "onUpdate:modelValue"])
   ]);
 }
-var VGeopointInput = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6]]);
-const _sfc_main$5 = {
+var VGeopointInput = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$7]]);
+const _sfc_main$6 = {
   props: {
     baseUrl: { type: String, "default": "/" }
   },
@@ -1313,27 +1313,27 @@ const _sfc_main$5 = {
     }
   }
 };
-const _resolveComponent$4 = window["Vue"].resolveComponent;
-const _createVNode$2 = window["Vue"].createVNode;
-const _withCtx$4 = window["Vue"].withCtx;
-const _renderList$2 = window["Vue"].renderList;
-const _Fragment$2 = window["Vue"].Fragment;
-const _openBlock$5 = window["Vue"].openBlock;
-const _createElementBlock$4 = window["Vue"].createElementBlock;
-const _toDisplayString$4 = window["Vue"].toDisplayString;
-const _createTextVNode$1 = window["Vue"].createTextVNode;
+const _resolveComponent$5 = window["Vue"].resolveComponent;
+const _createVNode$3 = window["Vue"].createVNode;
+const _withCtx$5 = window["Vue"].withCtx;
+const _renderList$3 = window["Vue"].renderList;
+const _Fragment$3 = window["Vue"].Fragment;
+const _openBlock$6 = window["Vue"].openBlock;
+const _createElementBlock$5 = window["Vue"].createElementBlock;
+const _toDisplayString$5 = window["Vue"].toDisplayString;
+const _createTextVNode$2 = window["Vue"].createTextVNode;
 const _resolveDirective = window["Vue"].resolveDirective;
-const _createBlock$4 = window["Vue"].createBlock;
+const _createBlock$5 = window["Vue"].createBlock;
 const _withDirectives = window["Vue"].withDirectives;
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_q_icon = _resolveComponent$4("q-icon");
-  const _component_q_input = _resolveComponent$4("q-input");
-  const _component_q_item_section = _resolveComponent$4("q-item-section");
-  const _component_q_item = _resolveComponent$4("q-item");
-  const _component_q_list = _resolveComponent$4("q-list");
+function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_q_icon = _resolveComponent$5("q-icon");
+  const _component_q_input = _resolveComponent$5("q-input");
+  const _component_q_item_section = _resolveComponent$5("q-item-section");
+  const _component_q_item = _resolveComponent$5("q-item");
+  const _component_q_list = _resolveComponent$5("q-list");
   const _directive_ripple = _resolveDirective("ripple");
-  return _openBlock$5(), _createElementBlock$4("div", null, [
-    _createVNode$2(_component_q_input, {
+  return _openBlock$6(), _createElementBlock$5("div", null, [
+    _createVNode$3(_component_q_input, {
       placeholder: _ctx.$q.lang.vui.handles.placeholder,
       modelValue: _ctx.text,
       "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => _ctx.text = $event),
@@ -1344,27 +1344,27 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
       "bg-color": "white",
       dense: ""
     }, {
-      prepend: _withCtx$4(() => [
-        _createVNode$2(_component_q_icon, { name: "search" })
+      prepend: _withCtx$5(() => [
+        _createVNode$3(_component_q_icon, { name: "search" })
       ]),
       _: 1
     }, 8, ["placeholder", "modelValue", "onInput"]),
-    _createVNode$2(_component_q_list, {
+    _createVNode$3(_component_q_list, {
       bordered: "",
       dense: "",
       separator: ""
     }, {
-      default: _withCtx$4(() => [
-        (_openBlock$5(true), _createElementBlock$4(_Fragment$2, null, _renderList$2(_ctx.handles, (handle) => {
-          return _withDirectives((_openBlock$5(), _createBlock$4(_component_q_item, {
+      default: _withCtx$5(() => [
+        (_openBlock$6(true), _createElementBlock$5(_Fragment$3, null, _renderList$3(_ctx.handles, (handle) => {
+          return _withDirectives((_openBlock$6(), _createBlock$5(_component_q_item, {
             clickable: "",
             onClick: ($event) => _ctx.VUi.methods.goTo($props.baseUrl + "hw/" + handle.code),
             key: handle.code
           }, {
-            default: _withCtx$4(() => [
-              _createVNode$2(_component_q_item_section, null, {
-                default: _withCtx$4(() => [
-                  _createTextVNode$1(_toDisplayString$4(handle.code), 1)
+            default: _withCtx$5(() => [
+              _createVNode$3(_component_q_item_section, null, {
+                default: _withCtx$5(() => [
+                  _createTextVNode$2(_toDisplayString$5(handle.code), 1)
                 ]),
                 _: 2
               }, 1024)
@@ -1379,8 +1379,8 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     })
   ]);
 }
-var VHandles = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5]]);
-const _sfc_main$4 = {
+var VHandles = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6]]);
+const _sfc_main$5 = {
   props: {
     modelValue: { type: String, required: true },
     readonly: { type: Boolean, required: true },
@@ -1403,35 +1403,35 @@ const _sfc_main$4 = {
     }
   }
 };
-const _renderList$1 = window["Vue"].renderList;
-const _Fragment$1 = window["Vue"].Fragment;
-const _openBlock$4 = window["Vue"].openBlock;
-const _createElementBlock$3 = window["Vue"].createElementBlock;
-const _resolveComponent$3 = window["Vue"].resolveComponent;
-const _createBlock$3 = window["Vue"].createBlock;
+const _renderList$2 = window["Vue"].renderList;
+const _Fragment$2 = window["Vue"].Fragment;
+const _openBlock$5 = window["Vue"].openBlock;
+const _createElementBlock$4 = window["Vue"].createElementBlock;
+const _resolveComponent$4 = window["Vue"].resolveComponent;
+const _createBlock$4 = window["Vue"].createBlock;
 window["Vue"].createCommentVNode;
-const _toDisplayString$3 = window["Vue"].toDisplayString;
-const _createElementVNode$2 = window["Vue"].createElementVNode;
-const _withCtx$3 = window["Vue"].withCtx;
-const _normalizeClass = window["Vue"].normalizeClass;
-const _hoisted_1$3 = { class: "row" };
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_q_input = _resolveComponent$3("q-input");
-  const _component_q_field = _resolveComponent$3("q-field");
-  return _openBlock$4(), _createElementBlock$3("div", _hoisted_1$3, [
-    (_openBlock$4(true), _createElementBlock$3(_Fragment$1, null, _renderList$1(_ctx.jsonAsObject, (value, key) => {
-      return _openBlock$4(), _createElementBlock$3("div", {
+const _toDisplayString$4 = window["Vue"].toDisplayString;
+const _createElementVNode$3 = window["Vue"].createElementVNode;
+const _withCtx$4 = window["Vue"].withCtx;
+const _normalizeClass$1 = window["Vue"].normalizeClass;
+const _hoisted_1$4 = { class: "row" };
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_q_input = _resolveComponent$4("q-input");
+  const _component_q_field = _resolveComponent$4("q-field");
+  return _openBlock$5(), _createElementBlock$4("div", _hoisted_1$4, [
+    (_openBlock$5(true), _createElementBlock$4(_Fragment$2, null, _renderList$2(_ctx.jsonAsObject, (value, key) => {
+      return _openBlock$5(), _createElementBlock$4("div", {
         key,
-        class: _normalizeClass("col-" + 12 / $props.cols)
+        class: _normalizeClass$1("col-" + 12 / $props.cols)
       }, [
-        !$props.readonly ? (_openBlock$4(), _createBlock$3(_component_q_input, {
+        !$props.readonly ? (_openBlock$5(), _createBlock$4(_component_q_input, {
           key: 0,
           label: key,
           orientation: "vertical",
           "stack-label": "",
           modelValue: _ctx.jsonAsObject[key],
           "onUpdate:modelValue": [($event) => _ctx.jsonAsObject[key] = $event, $options.updateJson]
-        }, null, 8, ["label", "modelValue", "onUpdate:modelValue"])) : (_openBlock$4(), _createBlock$3(_component_q_field, {
+        }, null, 8, ["label", "modelValue", "onUpdate:modelValue"])) : (_openBlock$5(), _createBlock$4(_component_q_field, {
           key: 1,
           label: key,
           orientation: "vertical",
@@ -1439,8 +1439,8 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
           borderless: "",
           readonly: ""
         }, {
-          default: _withCtx$3(() => [
-            _createElementVNode$2("span", null, _toDisplayString$3(value), 1)
+          default: _withCtx$4(() => [
+            _createElementVNode$3("span", null, _toDisplayString$4(value), 1)
           ]),
           _: 2
         }, 1032, ["label"]))
@@ -1448,9 +1448,9 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     }), 128))
   ]);
 }
-var VJsonEditor = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4]]);
+var VJsonEditor = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5]]);
 const Quasar$6 = window["Quasar"];
-const _sfc_main$3 = {
+const _sfc_main$4 = {
   props: {
     icon: { type: String, "default": "notifications" },
     iconNone: { type: String, "default": "notifications_none" },
@@ -1551,27 +1551,27 @@ const _sfc_main$3 = {
     clearInterval(this.timer);
   }
 };
-const _toDisplayString$2 = window["Vue"].toDisplayString;
-const _createTextVNode = window["Vue"].createTextVNode;
-const _resolveComponent$2 = window["Vue"].resolveComponent;
-const _withCtx$2 = window["Vue"].withCtx;
-const _openBlock$3 = window["Vue"].openBlock;
-const _createBlock$2 = window["Vue"].createBlock;
-const _createCommentVNode$1 = window["Vue"].createCommentVNode;
-const _renderList = window["Vue"].renderList;
-const _Fragment = window["Vue"].Fragment;
-const _createElementBlock$2 = window["Vue"].createElementBlock;
-const _createVNode$1 = window["Vue"].createVNode;
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_q_badge = _resolveComponent$2("q-badge");
-  const _component_q_icon = _resolveComponent$2("q-icon");
-  const _component_q_item_section = _resolveComponent$2("q-item-section");
-  const _component_q_item_label = _resolveComponent$2("q-item-label");
-  const _component_q_item = _resolveComponent$2("q-item");
-  const _component_q_list = _resolveComponent$2("q-list");
-  const _component_q_menu = _resolveComponent$2("q-menu");
-  const _component_q_btn = _resolveComponent$2("q-btn");
-  return _openBlock$3(), _createBlock$2(_component_q_btn, {
+const _toDisplayString$3 = window["Vue"].toDisplayString;
+const _createTextVNode$1 = window["Vue"].createTextVNode;
+const _resolveComponent$3 = window["Vue"].resolveComponent;
+const _withCtx$3 = window["Vue"].withCtx;
+const _openBlock$4 = window["Vue"].openBlock;
+const _createBlock$3 = window["Vue"].createBlock;
+const _createCommentVNode$2 = window["Vue"].createCommentVNode;
+const _renderList$1 = window["Vue"].renderList;
+const _Fragment$1 = window["Vue"].Fragment;
+const _createElementBlock$3 = window["Vue"].createElementBlock;
+const _createVNode$2 = window["Vue"].createVNode;
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_q_badge = _resolveComponent$3("q-badge");
+  const _component_q_icon = _resolveComponent$3("q-icon");
+  const _component_q_item_section = _resolveComponent$3("q-item-section");
+  const _component_q_item_label = _resolveComponent$3("q-item-label");
+  const _component_q_item = _resolveComponent$3("q-item");
+  const _component_q_list = _resolveComponent$3("q-list");
+  const _component_q_menu = _resolveComponent$3("q-menu");
+  const _component_q_btn = _resolveComponent$3("q-btn");
+  return _openBlock$4(), _createBlock$3(_component_q_btn, {
     round: "",
     dense: "",
     color: _ctx.hasNew ? "primary" : "white",
@@ -1579,66 +1579,66 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     icon: _ctx.count > 0 ? $props.icon : $props.iconNone,
     class: "on-left"
   }, {
-    default: _withCtx$2(() => [
-      _ctx.count > 0 ? (_openBlock$3(), _createBlock$2(_component_q_badge, {
+    default: _withCtx$3(() => [
+      _ctx.count > 0 ? (_openBlock$4(), _createBlock$3(_component_q_badge, {
         key: 0,
         color: "red",
         "text-color": "white",
         floating: ""
       }, {
-        default: _withCtx$2(() => [
-          _createTextVNode(_toDisplayString$2(_ctx.count), 1)
+        default: _withCtx$3(() => [
+          _createTextVNode$1(_toDisplayString$3(_ctx.count), 1)
         ]),
         _: 1
-      })) : _createCommentVNode$1("", true),
-      _createVNode$1(_component_q_menu, { class: "notifications" }, {
-        default: _withCtx$2(() => [
-          _createVNode$1(_component_q_list, { style: { "width": "300px" } }, {
-            default: _withCtx$2(() => [
-              (_openBlock$3(true), _createElementBlock$2(_Fragment, null, _renderList(_ctx.list, (notif) => {
-                return _openBlock$3(), _createBlock$2(_component_q_item, {
+      })) : _createCommentVNode$2("", true),
+      _createVNode$2(_component_q_menu, { class: "notifications" }, {
+        default: _withCtx$3(() => [
+          _createVNode$2(_component_q_list, { style: { "width": "300px" } }, {
+            default: _withCtx$3(() => [
+              (_openBlock$4(true), _createElementBlock$3(_Fragment$1, null, _renderList$1(_ctx.list, (notif) => {
+                return _openBlock$4(), _createBlock$3(_component_q_item, {
                   key: notif.uuid,
                   tag: "a",
                   href: notif.targetUrl
                 }, {
-                  default: _withCtx$2(() => [
-                    _createVNode$1(_component_q_item_section, { avatar: "" }, {
-                      default: _withCtx$2(() => [
-                        _createVNode$1(_component_q_icon, {
+                  default: _withCtx$3(() => [
+                    _createVNode$2(_component_q_item_section, { avatar: "" }, {
+                      default: _withCtx$3(() => [
+                        _createVNode$2(_component_q_icon, {
                           name: $options.toIcon(notif.type),
                           size: "2rem"
                         }, null, 8, ["name"])
                       ]),
                       _: 2
                     }, 1024),
-                    _createVNode$1(_component_q_item_section, null, {
-                      default: _withCtx$2(() => [
-                        _createVNode$1(_component_q_item_label, null, {
-                          default: _withCtx$2(() => [
-                            _createTextVNode(_toDisplayString$2(notif.title), 1)
+                    _createVNode$2(_component_q_item_section, null, {
+                      default: _withCtx$3(() => [
+                        _createVNode$2(_component_q_item_label, null, {
+                          default: _withCtx$3(() => [
+                            _createTextVNode$1(_toDisplayString$3(notif.title), 1)
                           ]),
                           _: 2
                         }, 1024),
-                        _createVNode$1(_component_q_item_label, {
+                        _createVNode$2(_component_q_item_label, {
                           caption: "",
                           lines: "3"
                         }, {
-                          default: _withCtx$2(() => [
-                            _createTextVNode(_toDisplayString$2(notif.content), 1)
+                          default: _withCtx$3(() => [
+                            _createTextVNode$1(_toDisplayString$3(notif.content), 1)
                           ]),
                           _: 2
                         }, 1024)
                       ]),
                       _: 2
                     }, 1024),
-                    _createVNode$1(_component_q_item_section, {
+                    _createVNode$2(_component_q_item_section, {
                       side: "",
                       top: ""
                     }, {
-                      default: _withCtx$2(() => [
-                        _createVNode$1(_component_q_item_label, { caption: "" }, {
-                          default: _withCtx$2(() => [
-                            _createTextVNode(_toDisplayString$2($options.toDelay(new Date(notif.creationDate))), 1)
+                      default: _withCtx$3(() => [
+                        _createVNode$2(_component_q_item_label, { caption: "" }, {
+                          default: _withCtx$3(() => [
+                            _createTextVNode$1(_toDisplayString$3($options.toDelay(new Date(notif.creationDate))), 1)
                           ]),
                           _: 2
                         }, 1024)
@@ -1659,10 +1659,10 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1
   }, 8, ["color", "textColor", "icon"]);
 }
-var VNotifications = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3]]);
+var VNotifications = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4]]);
 const Quasar$5 = window["Quasar"];
 const ol$1 = window["ol"];
-const _sfc_main$2 = {
+const _sfc_main$3 = {
   props: {
     id: { type: String, required: true },
     initialZoomLevel: { type: Number },
@@ -1724,18 +1724,18 @@ const _sfc_main$2 = {
 const _normalizeProps$1 = window["Vue"].normalizeProps;
 const _guardReactiveProps$1 = window["Vue"].guardReactiveProps;
 const _renderSlot$1 = window["Vue"].renderSlot;
-const _openBlock$2 = window["Vue"].openBlock;
-const _createElementBlock$1 = window["Vue"].createElementBlock;
-const _hoisted_1$2 = ["id"];
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
-  return _openBlock$2(), _createElementBlock$1("div", { id: $props.id }, [
+const _openBlock$3 = window["Vue"].openBlock;
+const _createElementBlock$2 = window["Vue"].createElementBlock;
+const _hoisted_1$3 = ["id"];
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+  return _openBlock$3(), _createElementBlock$2("div", { id: $props.id }, [
     _renderSlot$1(_ctx.$slots, "default", _normalizeProps$1(_guardReactiveProps$1(_ctx.$attrs)))
-  ], 8, _hoisted_1$2);
+  ], 8, _hoisted_1$3);
 }
-var VMap = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2]]);
+var VMap = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3]]);
 const Quasar$4 = window["Quasar"];
 const ol = window["ol"];
-const _sfc_main$1 = {
+const _sfc_main$2 = {
   props: {
     id: { type: String, required: true },
     list: { type: Array },
@@ -2040,40 +2040,40 @@ const _sfc_main$1 = {
   }
 };
 const _renderSlot = window["Vue"].renderSlot;
-const _toDisplayString$1 = window["Vue"].toDisplayString;
-const _createElementVNode$1 = window["Vue"].createElementVNode;
-const _resolveComponent$1 = window["Vue"].resolveComponent;
-const _withCtx$1 = window["Vue"].withCtx;
-const _openBlock$1 = window["Vue"].openBlock;
-const _createBlock$1 = window["Vue"].createBlock;
-const _createCommentVNode = window["Vue"].createCommentVNode;
-const _createElementBlock = window["Vue"].createElementBlock;
-const _hoisted_1$1 = ["id"];
-const _hoisted_2 = ["id"];
-const _hoisted_3 = { class: "text-subtitle2" };
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_q_card = _resolveComponent$1("q-card");
-  return _openBlock$1(), _createElementBlock("div", { id: $props.id }, [
-    _createElementVNode$1("div", {
+const _toDisplayString$2 = window["Vue"].toDisplayString;
+const _createElementVNode$2 = window["Vue"].createElementVNode;
+const _resolveComponent$2 = window["Vue"].resolveComponent;
+const _withCtx$2 = window["Vue"].withCtx;
+const _openBlock$2 = window["Vue"].openBlock;
+const _createBlock$2 = window["Vue"].createBlock;
+const _createCommentVNode$1 = window["Vue"].createCommentVNode;
+const _createElementBlock$1 = window["Vue"].createElementBlock;
+const _hoisted_1$2 = ["id"];
+const _hoisted_2$1 = ["id"];
+const _hoisted_3$1 = { class: "text-subtitle2" };
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_q_card = _resolveComponent$2("q-card");
+  return _openBlock$2(), _createElementBlock$1("div", { id: $props.id }, [
+    _createElementVNode$2("div", {
       id: $props.id + "Popup"
     }, [
-      _ctx.popupDisplayed ? (_openBlock$1(), _createBlock$1(_component_q_card, {
+      _ctx.popupDisplayed ? (_openBlock$2(), _createBlock$2(_component_q_card, {
         key: 0,
         class: "q-px-md"
       }, {
-        default: _withCtx$1(() => [
+        default: _withCtx$2(() => [
           _renderSlot(_ctx.$slots, "card", { objectDisplayed: _ctx.objectDisplayed }, () => [
-            _createElementVNode$1("div", _hoisted_3, _toDisplayString$1(_ctx.objectDisplayed[$props.nameField]), 1)
+            _createElementVNode$2("div", _hoisted_3$1, _toDisplayString$2(_ctx.objectDisplayed[$props.nameField]), 1)
           ])
         ]),
         _: 3
-      })) : _createCommentVNode("", true)
-    ], 8, _hoisted_2)
-  ], 8, _hoisted_1$1);
+      })) : _createCommentVNode$1("", true)
+    ], 8, _hoisted_2$1)
+  ], 8, _hoisted_1$2);
 }
-var VMapLayer = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1]]);
+var VMapLayer = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2]]);
 const Quasar$3 = window["Quasar"];
-const _sfc_main = {
+const _sfc_main$1 = {
   props: {
     modelValue: { type: String, required: true },
     list: { type: Array, required: true },
@@ -2134,39 +2134,39 @@ const _sfc_main = {
     }
   }
 };
-const _resolveComponent = window["Vue"].resolveComponent;
-const _createVNode = window["Vue"].createVNode;
-const _toDisplayString = window["Vue"].toDisplayString;
-const _createElementVNode = window["Vue"].createElementVNode;
-const _withCtx = window["Vue"].withCtx;
+const _resolveComponent$1 = window["Vue"].resolveComponent;
+const _createVNode$1 = window["Vue"].createVNode;
+const _toDisplayString$1 = window["Vue"].toDisplayString;
+const _createElementVNode$1 = window["Vue"].createElementVNode;
+const _withCtx$1 = window["Vue"].withCtx;
 const _normalizeProps = window["Vue"].normalizeProps;
 const _guardReactiveProps = window["Vue"].guardReactiveProps;
-const _openBlock = window["Vue"].openBlock;
-const _createBlock = window["Vue"].createBlock;
-const _hoisted_1 = {
+const _openBlock$1 = window["Vue"].openBlock;
+const _createBlock$1 = window["Vue"].createBlock;
+const _hoisted_1$1 = {
   class: "self-center full-width no-outline",
   tabindex: "0"
 };
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_q_icon = _resolveComponent("q-icon");
-  const _component_q_tree = _resolveComponent("q-tree");
-  const _component_q_menu = _resolveComponent("q-menu");
-  const _component_q_field = _resolveComponent("q-field");
-  return _openBlock(), _createBlock(_component_q_field, _normalizeProps(_guardReactiveProps(_ctx.$attrs)), {
-    append: _withCtx(() => [
-      _createVNode(_component_q_icon, { name: "arrow_drop_down" })
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_q_icon = _resolveComponent$1("q-icon");
+  const _component_q_tree = _resolveComponent$1("q-tree");
+  const _component_q_menu = _resolveComponent$1("q-menu");
+  const _component_q_field = _resolveComponent$1("q-field");
+  return _openBlock$1(), _createBlock$1(_component_q_field, _normalizeProps(_guardReactiveProps(_ctx.$attrs)), {
+    append: _withCtx$1(() => [
+      _createVNode$1(_component_q_icon, { name: "arrow_drop_down" })
     ]),
-    control: _withCtx(() => [
-      _createElementVNode("div", _hoisted_1, _toDisplayString($options.getSelectedLabel()), 1)
+    control: _withCtx$1(() => [
+      _createElementVNode$1("div", _hoisted_1$1, _toDisplayString$1($options.getSelectedLabel()), 1)
     ]),
-    default: _withCtx(() => [
-      _createVNode(_component_q_menu, {
+    default: _withCtx$1(() => [
+      _createVNode$1(_component_q_menu, {
         breakpoint: 600,
         fit: "",
         ref: "menu"
       }, {
-        default: _withCtx(() => [
-          _createVNode(_component_q_tree, {
+        default: _withCtx$1(() => [
+          _createVNode$1(_component_q_tree, {
             nodes: $options.convertListToTree(_ctx.$props.list, _ctx.$props.subTreeKey),
             "node-key": _ctx.$props.keyField,
             "label-key": _ctx.$props.labelField,
@@ -2188,7 +2188,368 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1
   }, 16);
 }
-var VTree = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+var VTree = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1]]);
+const format = window["Quasar"].format;
+const { humanStorageSize } = format;
+const _sfc_main = {
+  props: {
+    readonly: Boolean,
+    label: String,
+    simple: { type: Boolean, default: false },
+    fileInfoUris: Array,
+    fieldName: String,
+    url: String,
+    downloadUrl: { type: String, default: (props) => props.baseUrl + "/download" },
+    multiple: { type: Boolean, default: true }
+  },
+  emits: ["update:file-info-uris", "download-file"],
+  computed: {},
+  mounted() {
+    this.changeIcon();
+    var xhrParams = new URLSearchParams();
+    this.fileInfoUris.forEach((fileInfoUri) => {
+      xhrParams.append(this.fieldName, fileInfoUri);
+    });
+    this.$http.get(this.url + "/fileInfos", { params: xhrParams, credentials: false }).then(function(response) {
+      var uiFileInfos = response.data;
+      this.files = uiFileInfos.map((uiFileInfo) => {
+        return uiFileInfo;
+      });
+    }.bind(this)).catch(function(error) {
+      if (error.response) {
+        this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file " + uri);
+      } else {
+        this.$q.notify(error + " Can't load file " + uri);
+      }
+    }.bind(this));
+  },
+  data: function() {
+    return {
+      files: []
+    };
+  },
+  methods: {
+    uploadedFiles(uploadInfo) {
+      var newFileInforUris = [...this.fileInfoUris];
+      uploadInfo.files.forEach(function(file) {
+        this.files.push(file);
+        file.fileUri = file.xhr.response;
+        newFileInforUris.push(file.fileUri);
+        this.$refs.quasarUploader.removeFile(file);
+        this.$emit("update:file-info-uris", newFileInforUris);
+      }.bind(this));
+    },
+    start(a, b, c) {
+      this.$refs.quasarUploader;
+    },
+    removeRemoteFile(removedFile) {
+      var indexOfFile = this.files.indexOf(removedFile);
+      var newFileInforUris = [...this.fileInfoUris];
+      var xhrParams = {};
+      xhrParams[this.fieldName] = removedFile.fileUri;
+      this.$http.delete(this.url, { params: xhrParams, credentials: false }).then(function() {
+        if (this.multiple) {
+          this.files.splice(indexOfFile, 1);
+          newFileInforUris.splice(indexOfFile, 1);
+        } else {
+          this.files.splice(0);
+          newFileInforUris.splice(0);
+        }
+        this.$emit("update:file-info-uris", newFileInforUris);
+      }.bind(this)).catch(function(error) {
+        this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't remove temporary file");
+      }.bind(this));
+    },
+    globalCanAddFiles(quasarFiles) {
+      if (this.multiple) {
+        return !this.$props.readonly;
+      } else {
+        return !this.$props.readonly && quasarFiles.filter((file) => file.__status != "uploaded").length + this.fileInfoUris.length < 1;
+      }
+    },
+    changeIcon() {
+      this.$q.iconSet.uploader.removeUploaded = "delete_sweep";
+      this.$q.iconSet.uploader.done = "delete";
+    },
+    addFiles(files) {
+      var quasarUploader = this.$refs.quasarUploader;
+      if (this.globalCanAddFiles(quasarUploader.files)) {
+        this.$refs.quasarUploader.addFiles(files);
+      }
+    },
+    getGlobalSize(quasarFiles) {
+      var quasarFileSize = quasarFiles.filter((file) => file.__status != "uploaded").reduce((totalSize, file) => {
+        return totalSize + file.size;
+      }, 0);
+      var remoteFilesSize = this.files.reduce((totalSize, file) => {
+        return totalSize + file.size;
+      }, 0);
+      return humanStorageSize(quasarFileSize + remoteFilesSize);
+    }
+  }
+};
+const _toDisplayString = window["Vue"].toDisplayString;
+const _createTextVNode = window["Vue"].createTextVNode;
+const _resolveComponent = window["Vue"].resolveComponent;
+const _withCtx = window["Vue"].withCtx;
+const _createVNode = window["Vue"].createVNode;
+const _openBlock = window["Vue"].openBlock;
+const _createBlock = window["Vue"].createBlock;
+const _createCommentVNode = window["Vue"].createCommentVNode;
+const _createElementBlock = window["Vue"].createElementBlock;
+const _createElementVNode = window["Vue"].createElementVNode;
+const _renderList = window["Vue"].renderList;
+const _Fragment = window["Vue"].Fragment;
+const _normalizeClass = window["Vue"].normalizeClass;
+const _mergeProps = window["Vue"].mergeProps;
+const _createSlots = window["Vue"].createSlots;
+const _hoisted_1 = { class: "row" };
+const _hoisted_2 = { class: "col column justify-center" };
+const _hoisted_3 = { class: "q-uploader__file-header row flex-center no-wrap" };
+const _hoisted_4 = { class: "q-uploader__file-header-content col" };
+const _hoisted_5 = { class: "q-uploader__title" };
+const _hoisted_6 = { class: "q-uploader__file-header row flex-center no-wrap" };
+const _hoisted_7 = { class: "q-uploader__file-header-content col" };
+const _hoisted_8 = { class: "q-uploader__title" };
+const _hoisted_9 = {
+  key: 0,
+  class: "q-field__after q-field__marginal row no-wrap items-center"
+};
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_q_tooltip = _resolveComponent("q-tooltip");
+  const _component_q_btn = _resolveComponent("q-btn");
+  const _component_q_spinner = _resolveComponent("q-spinner");
+  const _component_q_uploader_add_trigger = _resolveComponent("q-uploader-add-trigger");
+  const _component_q_icon = _resolveComponent("q-icon");
+  const _component_q_circular_progress = _resolveComponent("q-circular-progress");
+  const _component_q_field = _resolveComponent("q-field");
+  const _component_q_uploader = _resolveComponent("q-uploader");
+  return _openBlock(), _createBlock(_component_q_uploader, _mergeProps({
+    url: _ctx.$props.url,
+    "auto-upload": "",
+    "field-name": _ctx.$props.fieldName,
+    multiple: _ctx.$props.multiple,
+    "max-files": _ctx.$props.multiple ? void 0 : 1,
+    headers: [{ name: "Accept", value: "application/json" }],
+    onUploaded: $options.uploadedFiles,
+    readonly: _ctx.$props.readonly || !$options.globalCanAddFiles([])
+  }, _ctx.$attrs, { ref: "quasarUploader" }), _createSlots({
+    list: _withCtx((slotProps) => [
+      _createElementVNode("div", _hoisted_1, [
+        _createVNode(_component_q_field, {
+          "label-width": 3,
+          label: _ctx.$props.simple ? _ctx.$props.label : void 0,
+          class: "col",
+          orientation: "vertical",
+          "stack-label": "",
+          borderless: ""
+        }, {
+          control: _withCtx(() => [
+            _createElementVNode("div", _hoisted_2, [
+              !_ctx.$props.readonly ? (_openBlock(true), _createElementBlock(_Fragment, { key: 0 }, _renderList(slotProps.files, (file) => {
+                return _openBlock(), _createElementBlock(_Fragment, {
+                  key: file.name
+                }, [
+                  file.__status !== "uploaded" ? (_openBlock(), _createElementBlock("div", {
+                    key: 0,
+                    class: _normalizeClass(["q-uploader__file relative-position", {
+                      "q-uploader__file--failed": file.__status === "failed",
+                      "q-uploader__file--uploaded": file.__status === "uploaded"
+                    }])
+                  }, [
+                    _createElementVNode("div", _hoisted_3, [
+                      file.__status === "failed" ? (_openBlock(), _createBlock(_component_q_icon, {
+                        key: 0,
+                        class: "q-uploader__file-status",
+                        name: _ctx.$q.iconSet.type.negative,
+                        color: "negative"
+                      }, null, 8, ["name"])) : _createCommentVNode("", true),
+                      _createVNode(_component_q_icon, {
+                        class: "q-uploader__file-status",
+                        name: file.type.indexOf("video/") === 0 ? "movie" : file.type.indexOf("image/") === 0 ? "photo" : file.type.indexOf("audio/") === 0 ? "audiotrack" : "insert_drive_file"
+                      }, null, 8, ["name"]),
+                      _createElementVNode("div", _hoisted_4, [
+                        _createElementVNode("div", _hoisted_5, _toDisplayString(file.name), 1)
+                      ]),
+                      file.__status === "uploading" ? (_openBlock(), _createBlock(_component_q_circular_progress, {
+                        key: 1,
+                        value: file.__progress,
+                        min: 0,
+                        max: 1,
+                        indeterminate: file.__progress === 0
+                      }, null, 8, ["value", "indeterminate"])) : _createCommentVNode("", true),
+                      file.__status === "failed" ? (_openBlock(), _createBlock(_component_q_btn, {
+                        key: 2,
+                        round: "",
+                        dense: "",
+                        flat: "",
+                        icon: _ctx.$q.iconSet.uploader["clear"],
+                        onClick: ($event) => slotProps.removeFile(file)
+                      }, null, 8, ["icon", "onClick"])) : _createCommentVNode("", true)
+                    ])
+                  ], 2)) : _createCommentVNode("", true)
+                ], 64);
+              }), 128)) : _createCommentVNode("", true),
+              (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(_ctx.files, (file) => {
+                return _openBlock(), _createElementBlock("div", {
+                  key: file.name,
+                  class: "q-uploader__file relative-position q-uploader__file--uploaded"
+                }, [
+                  _createElementVNode("div", _hoisted_6, [
+                    _createVNode(_component_q_icon, {
+                      class: "q-uploader__file-status",
+                      name: file.type.indexOf("video/") === 0 ? "movie" : file.type.indexOf("image/") === 0 ? "photo" : file.type.indexOf("audio/") === 0 ? "audiotrack" : "insert_drive_file"
+                    }, null, 8, ["name"]),
+                    _createElementVNode("div", _hoisted_7, [
+                      _createElementVNode("div", _hoisted_8, _toDisplayString(file.name), 1)
+                    ]),
+                    !_ctx.$props.readonly ? (_openBlock(), _createBlock(_component_q_btn, {
+                      key: 0,
+                      round: "",
+                      dense: "",
+                      flat: "",
+                      icon: "delete",
+                      onClick: ($event) => $options.removeRemoteFile(file)
+                    }, null, 8, ["onClick"])) : _createCommentVNode("", true),
+                    _createVNode(_component_q_btn, {
+                      round: "",
+                      dense: "",
+                      flat: "",
+                      icon: "file_download",
+                      onClick: ($event) => _ctx.$emit("download-file", file.fileUri)
+                    }, null, 8, ["onClick"])
+                  ])
+                ]);
+              }), 128))
+            ])
+          ]),
+          _: 2
+        }, 1032, ["label"]),
+        _ctx.$props.simple && !_ctx.$props.readonly ? (_openBlock(), _createElementBlock("div", _hoisted_9, [
+          slotProps.isUploading ? (_openBlock(), _createBlock(_component_q_spinner, {
+            key: 0,
+            class: "q-uploader__spinner"
+          })) : _createCommentVNode("", true),
+          $options.globalCanAddFiles(slotProps.files) ? (_openBlock(), _createBlock(_component_q_btn, {
+            key: 1,
+            type: "a",
+            icon: _ctx.$q.iconSet.uploader.add,
+            flat: "",
+            dense: ""
+          }, {
+            default: _withCtx(() => [
+              _createVNode(_component_q_uploader_add_trigger)
+            ]),
+            _: 1
+          }, 8, ["icon"])) : _createCommentVNode("", true),
+          slotProps.isUploading ? (_openBlock(), _createBlock(_component_q_btn, {
+            key: 2,
+            type: "a",
+            icon: _ctx.$q.iconSet.uploader.clear,
+            flat: "",
+            dense: "",
+            onClick: slotProps.abort
+          }, {
+            default: _withCtx(() => [
+              _createVNode(_component_q_tooltip, null, {
+                default: _withCtx(() => [
+                  _createTextVNode(_toDisplayString(_ctx.$q.lang.vui.uploader.clear), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 2
+          }, 1032, ["icon", "onClick"])) : _createCommentVNode("", true)
+        ])) : _createCommentVNode("", true)
+      ])
+    ]),
+    _: 2
+  }, [
+    _ctx.$props.simple ? {
+      name: "header",
+      fn: _withCtx(() => [])
+    } : {
+      name: "header",
+      fn: _withCtx((slotProps) => [
+        _createElementVNode("div", { class: "q-uploader__header-content flex flex-center no-wrap q-gutter-xs" }, [
+          slotProps.queuedFiles.length > 0 && !slotProps.readonly ? (_openBlock(), _createBlock(_component_q_btn, {
+            key: 0,
+            type: "a",
+            icon: _ctx.$q.iconSet.uploader.clear_all,
+            flat: "",
+            dense: "",
+            onClick: slotProps.removeQueuedFiles
+          }, {
+            default: _withCtx(() => [
+              _createVNode(_component_q_tooltip, null, {
+                default: _withCtx(() => [
+                  _createTextVNode(_toDisplayString(_ctx.$q.lang.vui.uploader.clear_all), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 2
+          }, 1032, ["icon", "onClick"])) : _createCommentVNode("", true),
+          _createElementVNode("div", { class: "col column justify-center" }, [
+            _ctx.$props.label !== void 0 ? (_openBlock(), _createElementBlock("div", {
+              key: 0,
+              class: "q-uploader__title"
+            }, _toDisplayString(_ctx.$props.label), 1)) : _createCommentVNode("", true),
+            !slotProps.readonly ? (_openBlock(), _createElementBlock("div", {
+              key: 1,
+              class: "q-uploader__subtitle"
+            }, _toDisplayString($options.getGlobalSize(slotProps.files)) + " / " + _toDisplayString(slotProps.uploadProgressLabel), 1)) : _createCommentVNode("", true),
+            slotProps.readonly ? (_openBlock(), _createElementBlock("div", {
+              key: 2,
+              class: "q-uploader__subtitle"
+            }, _toDisplayString($options.getGlobalSize(slotProps.files)), 1)) : _createCommentVNode("", true)
+          ]),
+          slotProps.isUploading ? (_openBlock(), _createBlock(_component_q_spinner, {
+            key: 1,
+            class: "q-uploader__spinner"
+          })) : _createCommentVNode("", true),
+          $options.globalCanAddFiles(slotProps.files) && !slotProps.readonly ? (_openBlock(), _createBlock(_component_q_btn, {
+            key: 2,
+            type: "a",
+            icon: _ctx.$q.iconSet.uploader.add,
+            flat: "",
+            dense: ""
+          }, {
+            default: _withCtx(() => [
+              _createVNode(_component_q_uploader_add_trigger),
+              _createVNode(_component_q_tooltip, null, {
+                default: _withCtx(() => [
+                  _createTextVNode(_toDisplayString(_ctx.$q.lang.vui.uploader.add), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 1
+          }, 8, ["icon"])) : _createCommentVNode("", true),
+          slotProps.isUploading && !slotProps.readonly ? (_openBlock(), _createBlock(_component_q_btn, {
+            key: 3,
+            type: "a",
+            icon: _ctx.$q.iconSet.uploader.clear,
+            flat: "",
+            dense: "",
+            onClick: slotProps.abort
+          }, {
+            default: _withCtx(() => [
+              _createVNode(_component_q_tooltip, null, {
+                default: _withCtx(() => [
+                  _createTextVNode(_toDisplayString(_ctx.$q.lang.vui.uploader.clear), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 2
+          }, 1032, ["icon", "onClick"])) : _createCommentVNode("", true)
+        ])
+      ])
+    }
+  ]), 1040, ["url", "field-name", "multiple", "max-files", "onUploaded", "readonly"]);
+}
+var VFileUpload = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
 const Vue$1 = window["Vue"];
 const Quasar$2 = window["Quasar"];
 var VMinify = {
@@ -2519,37 +2880,37 @@ var VMethods = {
       this.$data.componentStates[componentId].loading = false;
     }.bind(this));
   },
-  decodeDate: function(value, format) {
+  decodeDate: function(value, format2) {
     if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, "DD/MM/YYYY"), "DD/MM/YYYY")) {
-      return Quasar.date.formatDate(Quasar.date.extractDate(value, "DD/MM/YYYY"), format);
+      return Quasar.date.formatDate(Quasar.date.extractDate(value, "DD/MM/YYYY"), format2);
     } else {
       return value;
     }
   },
-  encodeDate: function(newValue, format) {
-    if (newValue === Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), format)) {
-      return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), "DD/MM/YYYY");
+  encodeDate: function(newValue, format2) {
+    if (newValue === Quasar.date.formatDate(Quasar.date.extractDate(newValue, format2), format2)) {
+      return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format2), "DD/MM/YYYY");
     } else {
       return newValue;
     }
   },
-  decodeDatetime: function(value, format) {
+  decodeDatetime: function(value, format2) {
     if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, "DD/MM/YYYY HH:mm"), "DD/MM/YYYY HH:mm")) {
-      return Quasar.date.formatDate(Quasar.date.extractDate(value, "DD/MM/YYYY HH:mm"), format);
+      return Quasar.date.formatDate(Quasar.date.extractDate(value, "DD/MM/YYYY HH:mm"), format2);
     } else {
       return value;
     }
   },
-  encodeDatetime: function(newValue, format) {
-    if (newValue === Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), format)) {
-      return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), "DD/MM/YYYY HH:mm");
+  encodeDatetime: function(newValue, format2) {
+    if (newValue === Quasar.date.formatDate(Quasar.date.extractDate(newValue, format2), format2)) {
+      return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format2), "DD/MM/YYYY HH:mm");
     } else {
       return newValue;
     }
   },
-  sortDatesAsString: function(format) {
+  sortDatesAsString: function(format2) {
     return function(date1, date2) {
-      return Quasar.date.extractDate(date1, format).getTime() > Quasar.date.extractDate(date2, format).getTime() ? 1 : -1;
+      return Quasar.date.extractDate(date1, format2).getTime() > Quasar.date.extractDate(date2, format2).getTime() ? 1 : -1;
     };
   },
   goTo: function(url) {
@@ -2635,6 +2996,19 @@ var VMethods = {
     }
     return [];
   },
+  vueDataToObject(value) {
+    if (Array.isArray(value)) {
+      if (value.length == 0) {
+        return null;
+      } else if (value.length == 1) {
+        return value[0];
+      }
+      return value;
+    } else if (value) {
+      return value;
+    }
+    return null;
+  },
   obtainVueDataAccessor(referer, object, field, rowIndex) {
     if (field != null && field != "null") {
       if (rowIndex != null) {
@@ -2667,39 +3041,6 @@ var VMethods = {
       };
     }
   },
-  uploader_changeIcon() {
-    this.$q.iconSet.uploader.removeUploaded = "delete_sweep";
-    this.$q.iconSet.uploader.done = "delete";
-  },
-  uploader_mounted(componentId, object, field, rowIndex) {
-    this.uploader_changeIcon();
-    var component = this.$refs[componentId];
-    component.vueDataAccessor = this.obtainVueDataAccessor(this, object, field, rowIndex);
-    var vueDataAccessor = component.vueDataAccessor;
-    var curValue = vueDataAccessor.get();
-    if (!Array.isArray(curValue)) {
-      vueDataAccessor.set(this.vueDataToArray(curValue));
-    }
-    vueDataAccessor.set(vueDataAccessor.get().filter(function(item, pos, self) {
-      return self.indexOf(item) == pos;
-    }));
-    vueDataAccessor.get().forEach(function(uri) {
-      var xhrParams = {};
-      xhrParams[component.fieldName] = uri;
-      this.$http.get(component.url, { params: xhrParams, credentials: component.withCredentials }).then(function(response) {
-        var fileData = response.data;
-        fileData.__sizeLabel = Quasar.format.humanStorageSize(fileData.size);
-        fileData.__progressLabel = "100%";
-        component.addFiles([fileData]);
-      }.bind(this)).catch(function(error) {
-        if (error.response) {
-          this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file " + uri);
-        } else {
-          this.$q.notify(error + " Can't load file " + uri);
-        }
-      }.bind(this));
-    }.bind(this));
-  },
   uploader_dragenter(componentId) {
     let componentStates = this.$data.componentStates;
     componentStates[componentId].dragover = true;
@@ -2711,67 +3052,6 @@ var VMethods = {
   uploader_drop(event, componentId) {
     var component = this.$refs[componentId];
     component.addFiles(event.dataTransfer.files);
-  },
-  uploader_forceComputeUploadedSize: function(componentId) {
-    var component = this.$refs[componentId];
-    component.uploadedSize = 0;
-    component.uploadedFiles.forEach(function(file) {
-      component.uploadedSize += file.size;
-    });
-    component.uploadSize = component.uploadedSize;
-    component.queuedFiles.forEach(function(file) {
-      component.uploadSize += file.size;
-    });
-  },
-  uploader_humanStorageSize: function(size) {
-    return Quasar.format.humanStorageSize(size);
-  },
-  uploader_addedFile: function(isMultiple, componentId) {
-    if (!isMultiple) {
-      var component = this.$refs[componentId];
-      var vueDataAccessor = component.vueDataAccessor;
-      component.removeUploadedFiles();
-      vueDataAccessor.set([]);
-    }
-  },
-  uploader_uploadedFiles: function(uploadInfo, componentId) {
-    var component = this.$refs[componentId];
-    var vueDataAccessor = component.vueDataAccessor;
-    uploadInfo.files.forEach(function(file) {
-      file.fileUri = file.xhr.response;
-      vueDataAccessor.get().push(file.fileUri);
-    }.bind(this));
-  },
-  uploader_failedFiles: function(uploadInfo) {
-    uploadInfo.files.forEach(function(file) {
-      this.onAjaxError({
-        status: file.xhr.status,
-        statusText: file.xhr.statusText,
-        data: JSON.parse(file.xhr.response)
-      });
-    }.bind(this));
-  },
-  uploader_removeFiles: function(removedFiles, componentId) {
-    var component = this.$refs[componentId];
-    var vueDataAccessor = component.vueDataAccessor;
-    var dataFileUris = vueDataAccessor.get();
-    removedFiles.forEach(function(removedFile) {
-      if (removedFile.fileUri) {
-        var indexOfFileUri = dataFileUris.indexOf(removedFile.fileUri);
-        var xhrParams = {};
-        xhrParams[component.fieldName] = removedFile.fileUri;
-        this.$http.delete(component.url, { params: xhrParams, credentials: component.withCredentials }).then(function() {
-          if (component.multiple) {
-            dataFileUris.splice(indexOfFileUri, 1);
-          } else {
-            dataFileUris.splice(0);
-          }
-          this.uploader_forceComputeUploadedSize(componentId);
-        }.bind(this)).catch(function(error) {
-          this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't remove temporary file");
-        }.bind(this));
-      }
-    }.bind(this));
   },
   httpPostAjax: function(url, paramsIn, options) {
     let vueData = this.$data.vueData;
@@ -2970,6 +3250,7 @@ var VertigoUi = {
     vueApp.component("v-map", VMap);
     vueApp.component("v-map-layer", VMapLayer);
     vueApp.component("v-tree", VTree);
+    vueApp.component("v-file-upload", VFileUpload);
     vueApp.directive("minify", VMinify);
     vueApp.directive("scroll-spy", VScrollSpy);
     if (!options.axios) {

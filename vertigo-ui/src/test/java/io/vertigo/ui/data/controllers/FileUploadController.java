@@ -18,6 +18,8 @@
 package io.vertigo.ui.data.controllers;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -72,6 +74,22 @@ public class FileUploadController {
 			uiFileInfoList.add(uiFileInfo);
 		}
 		return uiFileInfo;
+	}
+
+	@GetMapping("/upload/fileInfos")
+	public List<UiFileInfo> loadUiFileInfos(@QueryParam("file") final List<FileInfoURI> fileInfoUris) {
+		final UiFileInfoList<FileInfo> uiFileInfoList = obtainUiFileInfoListSession();
+		return fileInfoUris
+				.stream()
+				.map(fileInfoUri -> {
+					UiFileInfo uiFileInfo = uiFileInfoList.get(fileInfoUri);
+					if (uiFileInfo == null) {
+						uiFileInfo = new UiFileInfo<>(supportServices.getFile(fileInfoUri));
+						uiFileInfoList.add(uiFileInfo);
+					}
+					return uiFileInfo;
+				})
+				.collect(Collectors.toList());
 	}
 
 	@PostMapping("/upload")
