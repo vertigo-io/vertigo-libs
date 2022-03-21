@@ -17,17 +17,17 @@
 			            </q-btn>
 	                    <div class="col column justify-center">
 	                      <div v-if="$props.label !== void 0" class="q-uploader__title">{{$props.label}}</div>
-			              <div v-if="!slotProps.readonly" class="q-uploader__subtitle">{{getGlobalSize(slotProps.files)}} / {{slotProps.uploadProgressLabel}}</div>
-						  <div v-if="slotProps.readonly" class="q-uploader__subtitle">{{getGlobalSize(slotProps.files)}}</div>
+			              <div v-if="slotProps.isUploading" class="q-uploader__subtitle">{{getGlobalSize(slotProps.files)}} / {{slotProps.uploadProgressLabel}}</div>
+						  <div v-else class="q-uploader__subtitle">{{getGlobalSize(slotProps.files)}}</div>
 			            </div>
 	                    <q-spinner v-if="slotProps.isUploading" class="q-uploader__spinner"></q-spinner>
+	                    <q-btn v-if="slotProps.isUploading  && !slotProps.readonly" type="a" :icon="$q.iconSet.uploader.clear" flat dense @click="slotProps.abort">
+	                        <q-tooltip>{{$q.lang.vui.uploader.clear}}</q-tooltip>
+	                    </q-btn>                    
 			            <q-btn v-if="globalCanAddFiles(slotProps.files) && !slotProps.readonly" type="a" :icon="$q.iconSet.uploader.add" flat dense>
 				            <q-uploader-add-trigger></q-uploader-add-trigger>
                             <q-tooltip>{{$q.lang.vui.uploader.add}}</q-tooltip>
 	                    </q-btn>
-	                    <q-btn v-if="slotProps.isUploading  && !slotProps.readonly" type="a" :icon="$q.iconSet.uploader.clear" flat dense @click="slotProps.abort">
-	                        <q-tooltip>{{$q.lang.vui.uploader.clear}}</q-tooltip>
-	                    </q-btn>                    
 		            </div>
             </template> 
             <template v-slot:list="slotProps">

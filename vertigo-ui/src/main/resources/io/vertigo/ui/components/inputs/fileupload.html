@@ -6,7 +6,7 @@
         <input type="hidden" th:v-for="|fileUri in vueDataToArray(${model.util.vueDataKey(key, null, null)})|" th::name="${model.util.contextKey(key, null, null)}" v-bind:value="fileUri" />
         <v-file-upload 
 			th::ref="${myComponentId}"
-			th:readonly="${viewMode=='read'}"
+			th::readonly="${viewMode=='read'}"
 			th:url="${url}" 
             field-name="file"
             th::multiple="${myMultiple}"
@@ -37,7 +37,7 @@
         <input type="hidden" th:v-if="|vueData.${key}.length == 0|" th:name="|vContext[${key}]|" value="" />
         <input type="hidden" th:v-for="|fileUri in vueData.${key}|" th:name="|vContext[${key}]|" v-bind:value="fileUri" />
         <v-file-upload 
-			th:readonly="${viewMode=='read'}"
+			th::readonly="${viewMode=='read'}"
 			th:url="${url}" 
             field-name="file"
 			:simple="true"
@@ -58,7 +58,7 @@
         <input type="hidden" th:v-for="|fileUri in vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|" th::name="${model.util.contextKey(object, field, rowIndex)}" v-bind:value="fileUri" />
         <v-file-upload 
 			th::ref="${myComponentId}"
-			th:readonly="false"
+			:readonly="false"
 			th:url="${url}" 
             field-name="file"
 			:simple="true"
@@ -77,7 +77,7 @@
         
        <v-file-upload 
 			th::ref="${myComponentId}"
-			th:readonly="true"
+			:readonly="true"
 			th:url="${url}" 
             field-name="file"
 			:simple="true"
