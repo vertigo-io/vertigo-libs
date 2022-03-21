@@ -2495,39 +2495,20 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
               key: 0,
               class: "q-uploader__title"
             }, _toDisplayString(_ctx.$props.label), 1)) : _createCommentVNode("", true),
-            !slotProps.readonly ? (_openBlock(), _createElementBlock("div", {
+            slotProps.isUploading ? (_openBlock(), _createElementBlock("div", {
               key: 1,
               class: "q-uploader__subtitle"
-            }, _toDisplayString($options.getGlobalSize(slotProps.files)) + " / " + _toDisplayString(slotProps.uploadProgressLabel), 1)) : _createCommentVNode("", true),
-            slotProps.readonly ? (_openBlock(), _createElementBlock("div", {
+            }, _toDisplayString($options.getGlobalSize(slotProps.files)) + " / " + _toDisplayString(slotProps.uploadProgressLabel), 1)) : (_openBlock(), _createElementBlock("div", {
               key: 2,
               class: "q-uploader__subtitle"
-            }, _toDisplayString($options.getGlobalSize(slotProps.files)), 1)) : _createCommentVNode("", true)
+            }, _toDisplayString($options.getGlobalSize(slotProps.files)), 1))
           ]),
           slotProps.isUploading ? (_openBlock(), _createBlock(_component_q_spinner, {
             key: 1,
             class: "q-uploader__spinner"
           })) : _createCommentVNode("", true),
-          $options.globalCanAddFiles(slotProps.files) && !slotProps.readonly ? (_openBlock(), _createBlock(_component_q_btn, {
-            key: 2,
-            type: "a",
-            icon: _ctx.$q.iconSet.uploader.add,
-            flat: "",
-            dense: ""
-          }, {
-            default: _withCtx(() => [
-              _createVNode(_component_q_uploader_add_trigger),
-              _createVNode(_component_q_tooltip, null, {
-                default: _withCtx(() => [
-                  _createTextVNode(_toDisplayString(_ctx.$q.lang.vui.uploader.add), 1)
-                ]),
-                _: 1
-              })
-            ]),
-            _: 1
-          }, 8, ["icon"])) : _createCommentVNode("", true),
           slotProps.isUploading && !slotProps.readonly ? (_openBlock(), _createBlock(_component_q_btn, {
-            key: 3,
+            key: 2,
             type: "a",
             icon: _ctx.$q.iconSet.uploader.clear,
             flat: "",
@@ -2543,7 +2524,25 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
               })
             ]),
             _: 2
-          }, 1032, ["icon", "onClick"])) : _createCommentVNode("", true)
+          }, 1032, ["icon", "onClick"])) : _createCommentVNode("", true),
+          $options.globalCanAddFiles(slotProps.files) && !slotProps.readonly ? (_openBlock(), _createBlock(_component_q_btn, {
+            key: 3,
+            type: "a",
+            icon: _ctx.$q.iconSet.uploader.add,
+            flat: "",
+            dense: ""
+          }, {
+            default: _withCtx(() => [
+              _createVNode(_component_q_uploader_add_trigger),
+              _createVNode(_component_q_tooltip, null, {
+                default: _withCtx(() => [
+                  _createTextVNode(_toDisplayString(_ctx.$q.lang.vui.uploader.add), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 1
+          }, 8, ["icon"])) : _createCommentVNode("", true)
         ])
       ])
     }
