@@ -46,6 +46,7 @@
 		      side="left"
 		      @vue:mounted="function() { componentStates.navDrawer.mini = (this.localStorage.miniMenu === 'true')}"
 		      :mini="componentStates.navDrawer.mini"
+			  v-model="componentStates.navDrawer.showLeft"
 			>
 		      
 		      <q-list :class="{'v-navList':true, 'dense-list-header':!componentStates.navDrawer.mini}" >
