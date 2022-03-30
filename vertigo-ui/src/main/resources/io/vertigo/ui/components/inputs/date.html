@@ -1,11 +1,11 @@
-<th:block th:fragment="date-edit(object, field, label, format, date_attrs, input_attrs)" vu:alias="date" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="date-edit(object, field, label, format, change, date_attrs, input_attrs)" vu:alias="date" vu:selector="${viewMode=='edit'}"
 		th:with="myLabel=${label?:model.util.label(object + '.' + field)}, myFormat=${format?:'DD/MM/YYYY'},
       required=${model.util.required(object + '.' + field)},myRef='date_'+${object} + '_' + ${field}"
 	  th:assert="${object} != null and ${field} != null">
 	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 	<q-input 
 		th:v-bind:value="|decodeDate(${model.util.vueDataKey(object, field, rowIndex)}, '${myFormat}')|" 
-		th:@change="|function (event) { ${model.util.vueDataKey(object, field, rowIndex)} = encodeDate(event.target.value, '${myFormat}') }|" 
+		th:@change="|function (event) { ${model.util.vueDataKey(object, field, rowIndex)} = encodeDate(event.target.value, '${myFormat}'); ${change!=null ? change:''} }|" 
 		th:label="${modifiableTable!=null?null:myLabel}"
 		stack-label
 		th:classappend="${required}?'v-field__required'"
@@ -19,7 +19,7 @@
 		             	th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
 		             	:landscape="$q.screen.gt.xs"
 		             	mask="DD/MM/YYYY"
-		             	th:@input="|() => $refs.${myRef}.hide()|"
+		             	th:@input="|() => {$refs.${myRef}.hide(); ${change!=null ? change:''} }|"
 		             	th:attr="__${date_attrs}__"></q-date> 
 	       		</q-popup-proxy>
 	       	</q-icon>
