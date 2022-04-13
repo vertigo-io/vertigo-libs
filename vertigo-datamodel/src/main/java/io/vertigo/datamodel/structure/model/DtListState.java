@@ -32,7 +32,7 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
  */
 public final class DtListState {
 	private static final int ABSOLUTE_MAX_ROWS = 5000;
-	private static final int DEFAULT_MAX_ROWS = 250;
+	public static final int DEFAULT_MAX_ROWS = 250;
 
 	private final Optional<String> sortFieldName;
 	private final Optional<Boolean> sortDesc;

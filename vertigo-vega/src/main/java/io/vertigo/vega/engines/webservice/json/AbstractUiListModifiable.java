@@ -33,6 +33,7 @@ import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
@@ -209,7 +210,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		//id>=0 : par index dans la UiList (pour boucle, uniquement dans la même request)
 		Assertion.check()
 				.isTrue(row >= 0, "Le getteur utilisé n'est pas le bon: utiliser getByRowId")
-				.isTrue(row < 200, "UiListModifiable is limited to 200 elements");
+				.isTrue(row <= DtListState.DEFAULT_MAX_ROWS, "UiListModifiable is limited to " + DtListState.DEFAULT_MAX_ROWS + " elements");
 
 		//SKE MLA : lazy initialisation of buffer uiObjects for size changing uiListModifiable
 		final DtDefinition dtDefinition = dtDefinitionId.get();
