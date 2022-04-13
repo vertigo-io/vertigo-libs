@@ -491,7 +491,12 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 		if (!isPlaceholder(attributeKey) && isPlaceholderable(attributeKey)) {
 			//We prepared prefixed placeholders variables.
-			addPlaceholderVariable(placeholders, attributeKey, attributeValue);
+			Object unescapedattributeValue = attributeValue;
+			if (attributeValue instanceof String) {
+				//We need to unescape placeholder : it will be escaped again when used in component (th:attr="__${other_attrs}__" => escape value)
+				unescapedattributeValue = EscapedAttributeUtils.unescapeAttribute(context.getTemplateMode(), (String) attributeValue);
+			}
+			addPlaceholderVariable(placeholders, attributeKey, unescapedattributeValue);
 		} else if (!parameterNames.contains(attributeKey)) {
 			Assertion.check().isTrue(
 					unnamedPlaceholderPrefix.isPresent(),
