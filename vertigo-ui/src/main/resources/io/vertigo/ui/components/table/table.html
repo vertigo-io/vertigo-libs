@@ -92,7 +92,6 @@
     <th:block th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')}, objectKey=${model.vContext['componentStates'][__${componentId}__].addList('selected')}, objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false }, objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {page: 1 , rowsPerPage : __${myRowsPerPage}__, componentId : '__${componentId}__', listKey : '__${list}__'})}" th:remove="all" />
     
     <div class="col-12">
-        <th:block>
             <q-table
                 th::ref="|'${componentId}'|"
                 th::rows="|vueData.${list}|"
@@ -105,8 +104,6 @@
                 hide-bottom 
                 th:attr="__${other_attrs}__"
               >
-        </th:block>
-          
           <template slot="top-left" slot-scope="props" th:if="${title!=null}">
             <div class="text-h6" vu:text="${title?:''}" />
             <div class="text-subtitle2" vu:text="${subtitle?:''}" />
