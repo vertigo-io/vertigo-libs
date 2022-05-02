@@ -102,14 +102,27 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 								.append(userValue);
 					}
 				} else {
-					query.append(" IN (");
-					String inSep = "";
-					for (final Serializable userValue : userValues) {
-						query.append(inSep);
-						query.append(userValue);
-						inSep = ",";
+					final ValueOperator operator = expressionDefinition.getOperator();
+					if (operator == ValueOperator.EQ || operator == ValueOperator.NEQ) {
+						if (operator == ValueOperator.NEQ) {
+							query.append(" NOT");
+						}
+						query.append(" IN (");
+						String inSep = "";
+						for (final Serializable userValue : userValues) {
+							query.append(inSep);
+							query.append(userValue);
+							inSep = ",";
+						}
+						query.append(')');
+					} else {
+						String inSep = "";
+						for (final Serializable userValue : userValues) {
+							query.append(inSep);
+							query.append(operator).append(userValue);
+							inSep = " OR " + expressionDefinition.getFieldName();
+						}
 					}
-					query.append(')');
 				}
 			}
 		} else if (expressionDefinition.getValue() instanceof RuleFixedValue) {

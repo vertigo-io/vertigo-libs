@@ -91,6 +91,10 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 			if (!userValues.isEmpty()) {
 				final boolean useParenthesisAroundValue = userValues.size() > 1;
 				String sep = "";
+				if (useParenthesisAroundValue && mandatory) {
+					query.append('+');
+				}
+				query.append(useParenthesisAroundValue ? "(" : "");
 				for (final Serializable userValue : userValues) {
 					//userValue can be null : a user may don't have a key needed for some modules
 					Assertion.check()
@@ -103,7 +107,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 													"Security keys must be serializable AND comparable (here : {0})", userValue.getClass().getComponentType())));
 					//----
 					query.append(sep);
-					appendExpression(query, expressionDefinition.getFieldName(), expressionDefinition.getOperator(), userValue, mandatory);
+					appendExpression(query, expressionDefinition.getFieldName(), expressionDefinition.getOperator(), userValue, mandatory && !useParenthesisAroundValue);
 					sep = " ";
 				}
 				query.append(useParenthesisAroundValue ? ")" : "");

@@ -17,6 +17,7 @@
  */
 package io.vertigo.account.authorization.dsl;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Assertions;
@@ -46,7 +47,33 @@ public final class DslSecurityRulesBuilderTest {
 						"(ALL=Test OR OTHER='VALID') AND (ALL=Test OR OTHER='VALID')",
 						"(+(ALL:Test OTHER:'VALID') +(ALL:Test OTHER:'VALID'))" }, //6
 				{ "ALL>${query}", "'Test'", "ALL>'Test'", "(+ALL:>'Test')" }, //7
-				{ "ALL=${query}", null, "ALL is null", "(-_exists_:ALL)" }, //8
+				{ "ALL=${query}", null, "ALL is null", "(-_exists_:ALL)" }, //8*/
+				{ "ALL=${query}", "100;102", "ALL IN (100,102)", "(+(ALL:100 ALL:102))" }, //9
+
+				//{ "ALL>${query}", "'Test'", "ALL like 'Test' || '%'" }, //3
+		};
+		testSearchAndSqlQuery(testQueries);
+	}
+
+	@Test
+	public void testStringMultipleQuery() {
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult, OtherAcceptedResult ...
+				{ "ALL=${query}", "Test;Test2", "ALL IN (Test,Test2)", "(+(ALL:Test ALL:Test2))" }, //0
+				{ "ALL=${query}", "'Test test2';'Test3 test4'", "ALL IN ('Test test2','Test3 test4')", "(+(ALL:'Test test2' ALL:'Test3 test4'))" }, //1
+				{ "ALL=${query} && OTHER='VALID'", "Test;Test2", "ALL IN (Test,Test2) AND OTHER='VALID'", "(+(ALL:Test ALL:Test2) +OTHER:'VALID')" }, //2
+				{ "ALL=${query} || OTHER='VALID'", "Test;Test2", "ALL IN (Test,Test2) OR OTHER='VALID'", "((ALL:Test ALL:Test2) OTHER:'VALID')" }, //3
+				{ "(ALL=${query} || OTHER='VALID')", "Test;Test2", "(ALL IN (Test,Test2) OR OTHER='VALID')", "((ALL:Test ALL:Test2) OTHER:'VALID')" }, //4
+				{ "((ALL=${query} || OTHER='VALID') && (ALL=${query} || OTHER='VALID'))", "Test;Test2",
+						"((ALL IN (Test,Test2) OR OTHER='VALID') AND (ALL IN (Test,Test2) OR OTHER='VALID'))",
+						"(+((ALL:Test ALL:Test2) OTHER:'VALID') +((ALL:Test ALL:Test2) OTHER:'VALID'))" }, //5
+				{ "(ALL=${query} || OTHER='VALID') && (ALL=${query} || OTHER='VALID')", "Test;Test2",
+						"(ALL IN (Test,Test2) OR OTHER='VALID') AND (ALL IN (Test,Test2) OR OTHER='VALID')",
+						"(+((ALL:Test ALL:Test2) OTHER:'VALID') +((ALL:Test ALL:Test2) OTHER:'VALID'))" }, //6
+				{ "ALL>${query}", "'Test';'Test2'", "ALL>'Test' OR ALL>'Test2'", "(+(ALL:>'Test' ALL:>'Test2'))" }, //7
+				{ "ALL=${query}", null, "ALL is null", "(-_exists_:ALL)" }, //8*/
+				{ "ALL=${query}", "100;102", "ALL IN (100,102)", "(+(ALL:100 ALL:102))" }, //9
+
 				//{ "ALL>${query}", "'Test'", "ALL like 'Test' || '%'" }, //3
 		};
 		testSearchAndSqlQuery(testQueries);
@@ -73,7 +100,8 @@ public final class DslSecurityRulesBuilderTest {
 	private void testSqlQuery(final String[] testParam, final int i) {
 		final SqlSecurityRuleTranslator securityRuleTranslator = new SqlSecurityRuleTranslator()
 				.withRule(testParam[0])
-				.withSecurityKeys(Collections.singletonMap("query", Collections.singletonList(testParam[1])));
+				//.withSecurityKeys(Collections.singletonMap("query", Collections.singletonList(testParam[1])));
+				.withSecurityKeys(Collections.singletonMap("query", testParam[1] != null ? Arrays.asList(testParam[1].split(";")) : Collections.singletonList(testParam[1])));
 		final String result = securityRuleTranslator.toSql();
 		final String expectedResult = testParam[Math.min(getSqlResult(), testParam.length - 1)];
 		Assertions.assertEquals(expectedResult, result, "Built sql query #" + i + " incorrect");
@@ -82,7 +110,8 @@ public final class DslSecurityRulesBuilderTest {
 	private void testSearchQuery(final String[] testParam, final int i) {
 		final SearchSecurityRuleTranslator securityRuleTranslator = new SearchSecurityRuleTranslator()
 				.withRule(testParam[0])
-				.withSecurityKeys(Collections.singletonMap("query", Collections.singletonList(testParam[1])));
+				//		.withSecurityKeys(Collections.singletonMap("query", Collections.singletonList(testParam[1])));
+				.withSecurityKeys(Collections.singletonMap("query", testParam[1] != null ? Arrays.asList(testParam[1].split(";")) : Collections.singletonList(testParam[1])));
 		final String result = securityRuleTranslator.toSearchQuery();
 		final String expectedResult = testParam[Math.min(getSearchResult(), testParam.length - 1)];
 		Assertions.assertEquals(expectedResult, result, "Built search query #" + i + " incorrect");
