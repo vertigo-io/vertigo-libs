@@ -138,7 +138,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		templateEngine.addTemplateResolver(componentResolvers);
 
 		//---
-		final VUiStandardDialect dialect = new VUiStandardDialect(getUiComponents(componentResolvers));
+		final VUiStandardDialect dialect = new VUiStandardDialect(getUiComponents(componentResolvers, customComponentResolvers));
 		templateEngine.addDialect("vu", dialect);
 
 		templateEngine.addDialect(new LayoutDialect());
@@ -146,25 +146,32 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		return templateEngine;
 	}
 
-	private Set<NamedComponentDefinition> getUiComponents(final VuiResourceTemplateResolver componentResolvers) {
+	private Set<NamedComponentDefinition> getUiComponents(final VuiResourceTemplateResolver componentResolvers, final VuiResourceTemplateResolver customComponentResolvers) {
 		final NamedComponentParser parser = new NamedComponentParser("vu", componentResolvers);
 
-		final Set<NamedComponentDefinition> standardUiComponents = new HashSet<>();
+		final Set<NamedComponentDefinition> uiComponents = new HashSet<>();
 		//standard components
 		for (final String componentName : STANDARD_UI_COMPONENTS_NAME) {
-			standardUiComponents.addAll(parser.parseComponent(componentName));
+			uiComponents.addAll(parser.parseComponent(componentName));
 		}
 		// custom compenents
+		final NamedComponentParser customParser = new NamedComponentParser("vu", customComponentResolvers);
 		for (final String componentName : getCustomComponentNames()) {
-			standardUiComponents.addAll(parser.parseComponent(componentName));
+			uiComponents.addAll(customParser.parseComponent(componentName));
 		}
-		return standardUiComponents;
+		return uiComponents;
 	}
 
 	protected Set<String> getCustomComponentNames() {
 		return Collections.emptySet();
 	}
 
+	/**
+	 * Define prefix for custom components.
+	 * Should be the module name : don't starts with /, ends with /
+	 * Components must be put in : prefix+"/components/"+componentName
+	 * @return path prefix for custom components
+	 */
 	protected String getCustomComponentsPathPrefix() {
 		return COMPONENT_PATH_PREFIX;
 	}
