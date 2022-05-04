@@ -9,6 +9,7 @@
 		th:label="${modifiableTable!=null?null:myLabel}"
 		stack-label
 		th:classappend="${required}?'v-field__required'"
+        th:aria-required="${required}"
 		th::error="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
 		th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
 		th:attr="__${input_attrs}__" >

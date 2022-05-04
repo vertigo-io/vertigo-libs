@@ -16,6 +16,7 @@
 			th::label-width="${overridedLabelWidth?:3}"
 			th:label="${myLabel}"
 			th:classappend="${required}?'v-field__required'"
+            th:aria-required="${required}"
             th::error="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
 			th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
 			orientation="vertical"
