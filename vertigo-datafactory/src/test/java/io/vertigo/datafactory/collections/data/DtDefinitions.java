@@ -22,6 +22,7 @@ import java.util.Iterator;
 
 import io.vertigo.datafactory.collections.data.domain.SmartCar;
 import io.vertigo.datafactory.collections.data.domain.SmartItem;
+import io.vertigo.datafactory.collections.data.domain.SmartItemCd;
 import io.vertigo.datafactory.collections.data.domain.SmartItemIhm;
 import io.vertigo.datamodel.structure.definitions.DtFieldName;
 
@@ -30,6 +31,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	public Iterator<Class<?>> iterator() {
 		return Arrays.asList(new Class<?>[] {
 				SmartItem.class,
+				SmartItemCd.class,
 				SmartItemIhm.class,
 				SmartCar.class
 		}).iterator();

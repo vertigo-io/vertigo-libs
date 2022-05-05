@@ -42,6 +42,7 @@ import io.vertigo.datafactory.DataFactoryFeatures;
 import io.vertigo.datafactory.collections.data.DtDefinitions;
 import io.vertigo.datafactory.collections.data.TestCollectionsSmartTypes;
 import io.vertigo.datafactory.collections.data.domain.SmartItem;
+import io.vertigo.datafactory.collections.data.domain.SmartItemCd;
 import io.vertigo.datafactory.collections.data.domain.SmartItemIhm;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.criteria.Criterions;
@@ -63,6 +64,7 @@ public class CollectionsManagerTest {
 	private static final String aaa_ba = "aaa ba";
 	private static final String bb_aa = "bb aa";
 	private DtDefinition dtDefinitionItem;
+	private DtDefinition dtDefinitionItemCd;
 	@Inject
 	private CollectionsManager collectionsManager;
 	private AutoCloseableNode node;
@@ -73,6 +75,7 @@ public class CollectionsManagerTest {
 		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		dtDefinitionItem = DtObjectUtil.findDtDefinition(SmartItem.class);
+		dtDefinitionItemCd = DtObjectUtil.findDtDefinition(SmartItemCd.class);
 	}
 
 	@AfterEach
@@ -141,6 +144,22 @@ public class CollectionsManagerTest {
 	}
 
 	@Test
+	public void testFilterFullTextCd() {
+		/*final DtList<SmartItemCd> result = collectionsManager.<SmartItemCd> createIndexDtListFunctionBuilder()
+				.filter("aa", 1000, dtDefinitionItemCd.getFields())
+				.build()
+				.apply(createItemsCd());
+		Assertions.assertEquals(3, result.size());*/
+		//final List<DtField> fields = Collections.singletonList(dtDefinitionItemCd.getFields().get(1));
+		final List<DtField> fields = dtDefinitionItemCd.getFields();
+		final DtList<SmartItemCd> result2 = collectionsManager.<SmartItemCd> createIndexDtListFunctionBuilder()
+				.filter("B", 1000, fields)
+				.build()
+				.apply(createItemsCd());
+		Assertions.assertEquals(3, result2.size());
+	}
+
+	@Test
 	public void testFilterFullTextIhm() {
 		final DtList<SmartItemIhm> result = collectionsManager.<SmartItemIhm> createIndexDtListFunctionBuilder()
 				.filter("aa", 1000, dtDefinitionItem.getFields())
@@ -172,8 +191,37 @@ public class CollectionsManagerTest {
 		Assertions.assertTrue(filter(dtc, "apie", 1000, searchedDtFields).size() == 1, "La recherche ne supporte pas la recherche par préfix");//prefix
 	}
 
+	@Test
+	public void testFilterFullTextTokenizerCd() {
+		final DtList<SmartItemCd> dtc = createItemsCd();
+		final Collection<DtField> searchedDtFields = dtDefinitionItemCd.getFields();
+		final SmartItemCd mock1 = new SmartItemCd();
+		mock1.setCd(String.valueOf(seqId++));
+		mock1.setLabel("Agence de l'Ouest");
+		dtc.add(mock1);
+
+		final SmartItemCd mock2 = new SmartItemCd();
+		mock2.setCd(String.valueOf(seqId++));
+		mock2.setLabel("Hôpital et autres accents çava où ãpied");
+		dtc.add(mock2);
+
+		Assertions.assertTrue(filterCd(dtc, "agence", 1000, searchedDtFields).size() == 1, "La recherche n'est pas case insensitive");//majuscule/minuscule
+		Assertions.assertTrue(filterCd(dtc, "l'ouest", 1000, searchedDtFields).size() == 1, "La recherche n'est pas plain text");//tokenizer
+		Assertions.assertTrue(filterCd(dtc, "hopital", 1000, searchedDtFields).size() == 1, "La recherche ne supporte pas les accents");//accents
+		Assertions.assertTrue(filterCd(dtc, "cava", 1000, searchedDtFields).size() == 1, "La recherche ne supporte pas les caractères spéciaux fr (ç)"); //accents fr (ç)
+		Assertions.assertTrue(filterCd(dtc, "apied", 1000, searchedDtFields).size() == 1, "La recherche ne supporte pas les caractères spéciaux latin1 (ã)"); //accents autre (ã)
+		Assertions.assertTrue(filterCd(dtc, "apie", 1000, searchedDtFields).size() == 1, "La recherche ne supporte pas la recherche par préfix");//prefix
+	}
+
 	private List<SmartItem> filter(final DtList<SmartItem> dtc, final String query, final int nbRows, final Collection<DtField> searchedDtFields) {
 		return collectionsManager.<SmartItem> createIndexDtListFunctionBuilder()
+				.filter(query, nbRows, searchedDtFields)
+				.build()
+				.apply(dtc);
+	}
+
+	private List<SmartItemCd> filterCd(final DtList<SmartItemCd> dtc, final String query, final int nbRows, final Collection<DtField> searchedDtFields) {
+		return collectionsManager.<SmartItemCd> createIndexDtListFunctionBuilder()
 				.filter(query, nbRows, searchedDtFields)
 				.build()
 				.apply(dtc);
@@ -487,6 +535,40 @@ public class CollectionsManagerTest {
 		// l'intégrité de la liste (Par rapport aux null).
 		final SmartItem mockRemoved = new SmartItem();
 		mockRemoved.setId(seqId++);
+		mockRemoved.setLabel("mockRemoved");
+		dtc.add(mockRemoved);
+
+		dtc.remove(mockRemoved);
+		return dtc;
+	}
+
+	private static DtList<SmartItemCd> createItemsCd() {
+		final DtList<SmartItemCd> dtc = new DtList<>(SmartItemCd.class);
+		// les index sont données par ordre alpha > null à la fin >
+		final SmartItemCd mockB = new SmartItemCd();
+		mockB.setCd("Ba_aa");
+		mockB.setLabel(Ba_aa);
+		dtc.add(mockB);
+
+		final SmartItemCd mockNull = new SmartItemCd();
+		mockNull.setCd("mockNull");
+		// On ne renseigne pas le Label > null
+		dtc.add(mockNull);
+
+		final SmartItemCd mocka = new SmartItemCd();
+		mocka.setCd("aaa_ba");
+		mocka.setLabel(aaa_ba);
+		dtc.add(mocka);
+
+		final SmartItemCd mockb = new SmartItemCd();
+		mockb.setCd("bb_aa");
+		mockb.setLabel(bb_aa);
+		dtc.add(mockb);
+
+		// On crée et on supprimme un élément dans la liste pour vérifier
+		// l'intégrité de la liste (Par rapport aux null).
+		final SmartItemCd mockRemoved = new SmartItemCd();
+		mockRemoved.setCd("mockRemoved");
 		mockRemoved.setLabel("mockRemoved");
 		dtc.add(mockRemoved);
 

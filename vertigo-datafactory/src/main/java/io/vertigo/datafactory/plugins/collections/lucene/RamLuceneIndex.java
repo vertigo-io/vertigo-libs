@@ -270,7 +270,8 @@ final class RamLuceneIndex<D extends DtObject> {
 				.isNotNull(dtListState)
 				.isTrue(dtListState.getMaxRows().isPresent(), "MaxRows is mandatory, can't get all data :(");
 		//-----
-		final Query filterQuery = luceneQueryFactory.createFilterQuery(keywords, searchedFields, listFilters, boostedField);
+
+		final Query filterQuery = luceneQueryFactory.createFilterQuery(keywords, searchedFields, listFilters, dtDefinition.getIdField(), boostedField);
 		final Optional<Sort> sortOpt = createSort(dtListState);
 		return executeQuery(filterQuery, dtListState.getSkipRows(), dtListState.getMaxRows().get(), sortOpt);
 	}
@@ -281,6 +282,7 @@ final class RamLuceneIndex<D extends DtObject> {
 			final String fieldValue,
 			final boolean storeValue) {
 		final IndexableField keywordField = new StringField(fieldName, fieldValue, storeValue ? Field.Store.YES : Field.Store.NO);
+		keywordField.fieldType().storeTermVectorPositions();
 		final IndexableField sortedDocValuesField = new SortedDocValuesField(fieldName, new BytesRef(fieldValue));
 		document.add(keywordField);
 		document.add(sortedDocValuesField);
