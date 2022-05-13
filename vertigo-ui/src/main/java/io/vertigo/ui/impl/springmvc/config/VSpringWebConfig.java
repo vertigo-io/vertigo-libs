@@ -154,7 +154,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		for (final String componentName : STANDARD_UI_COMPONENTS_NAME) {
 			uiComponents.addAll(parser.parseComponent(componentName));
 		}
-		// custom compenents
+		// custom components
 		final NamedComponentParser customParser = new NamedComponentParser("vu", customComponentResolvers);
 		for (final String componentName : getCustomComponentNames()) {
 			uiComponents.addAll(customParser.parseComponent(componentName));
