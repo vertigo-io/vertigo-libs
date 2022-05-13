@@ -53,6 +53,7 @@ import io.vertigo.ui.impl.springmvc.argumentresolvers.FileInfoURIConverter;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.FileInfoURIConverterValueHandler;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.UiFileInfoReturnValueHandler;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.UiMessageStackMethodArgumentResolver;
+import io.vertigo.ui.impl.springmvc.argumentresolvers.UserSessionMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.VFileMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.VFileReturnValueHandler;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttributeMethodArgumentResolver;
@@ -207,6 +208,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		resolvers.add(new ViewAttributeMethodArgumentResolver());
 		resolvers.add(new ViewContextReturnValueAndArgumentResolver());
 		resolvers.add(new UiMessageStackMethodArgumentResolver());
+		resolvers.add(new UserSessionMethodArgumentResolver());
 		resolvers.add(new DtListStateMethodArgumentResolver());
 		resolvers.add(new VFileMethodArgumentResolver());
 		resolvers.add(new FileInfoURIConverterValueHandler());

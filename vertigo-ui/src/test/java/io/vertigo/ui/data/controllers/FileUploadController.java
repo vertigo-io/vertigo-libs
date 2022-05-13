@@ -36,9 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import io.vertigo.account.security.UserSession;
-import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.lang.VUserException;
-import io.vertigo.core.node.Node;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
 import io.vertigo.datastore.filestore.model.VFile;
@@ -60,14 +58,14 @@ public class FileUploadController {
 	@Inject
 	private SupportServices supportServices;
 
-	public static void publishFileInfo(final FileInfo fileInfo) {
-		final UiFileInfoList<FileInfo> uiFileInfoList = obtainUiFileInfoListSession();
+	public static void publishFileInfo(final FileInfo fileInfo, final UserSession session) {
+		final UiFileInfoList<FileInfo> uiFileInfoList = obtainUiFileInfoListSession(session);
 		uiFileInfoList.add(fileInfo);
 	}
 
 	@GetMapping("/upload")
-	public UiFileInfo loadUiFileInfo(@QueryParam("file") final FileInfoURI fileInfoUri) {
-		final UiFileInfoList<FileInfo> uiFileInfoList = obtainUiFileInfoListSession();
+	public UiFileInfo loadUiFileInfo(@QueryParam("file") final FileInfoURI fileInfoUri, final UserSession session) {
+		final UiFileInfoList<FileInfo> uiFileInfoList = obtainUiFileInfoListSession(session);
 		UiFileInfo uiFileInfo = uiFileInfoList.get(fileInfoUri);
 		if (uiFileInfo == null) {
 			uiFileInfo = new UiFileInfo<>(supportServices.getFile(fileInfoUri));
@@ -77,8 +75,8 @@ public class FileUploadController {
 	}
 
 	@GetMapping("/upload/fileInfos")
-	public List<UiFileInfo> loadUiFileInfos(@QueryParam("file") final List<FileInfoURI> fileInfoUris) {
-		final UiFileInfoList<FileInfo> uiFileInfoList = obtainUiFileInfoListSession();
+	public List<UiFileInfo> loadUiFileInfos(@QueryParam("file") final List<FileInfoURI> fileInfoUris, final UserSession session) {
+		final UiFileInfoList<FileInfo> uiFileInfoList = obtainUiFileInfoListSession(session);
 		return fileInfoUris
 				.stream()
 				.map(fileInfoUri -> {
@@ -93,12 +91,12 @@ public class FileUploadController {
 	}
 
 	@PostMapping("/upload")
-	public FileInfoURI uploadFile(@QueryParam("file") final VFile vFile, final UiMessageStack uiMessageStack) {
+	public FileInfoURI uploadFile(@QueryParam("file") final VFile vFile, final UiMessageStack uiMessageStack, final UserSession session) {
 		if (vFile.getFileName().toLowerCase().contains("virus")) {
 			throw new VUserException("Il y a un virus dans votre PJ " + vFile.getFileName());
 		}
 		final FileInfo storeFile = supportServices.saveFile(vFile);
-		obtainUiFileInfoListSession().add(storeFile);
+		obtainUiFileInfoListSession(session).add(storeFile);
 		return storeFile.getURI();
 	}
 
@@ -115,8 +113,7 @@ public class FileUploadController {
 		return supportServices.getFile(fileInfoUri).getVFile();
 	}
 
-	private static UiFileInfoList<FileInfo> obtainUiFileInfoListSession() {
-		final UserSession session = obtainSecurityManager().getCurrentUserSession().get();
+	private static UiFileInfoList<FileInfo> obtainUiFileInfoListSession(final UserSession session) {
 		synchronized (session) {
 			UiFileInfoList<FileInfo> uiFileInfoList = session.getAttribute(FILE_INFOS_SESSION_KEY);
 			final Long lastAccess = session.getAttribute(FILE_INFOS_LAST_ACCESS_SESSION_KEY);
@@ -128,10 +125,6 @@ public class FileUploadController {
 			session.putAttribute(FILE_INFOS_LAST_ACCESS_SESSION_KEY, System.currentTimeMillis());
 			return uiFileInfoList;
 		}
-	}
-
-	private static VSecurityManager obtainSecurityManager() {
-		return Node.getNode().getComponentSpace().resolve(VSecurityManager.class);
 	}
 
 	@ResponseBody

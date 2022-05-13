@@ -66,7 +66,7 @@
                         <vu:fileupload-simple-object label="Movie main picture" th:url="'@{/commons/upload}'" object="movie" field="mainPicture"/>                            
                         
                         <vu:modal componentId="myModal" closeLabel="Close"/>
-                        <vu:grid-cell>
+                        <vu:grid-cell class="q-gutter-md">
                             <vu:button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}" color="primary"/>
                             <vu:button-submit th:if="${model.modeReadOnly}" label="Edit" action="@{_edit}" color="primary"/>
                             <vu:button-submit th:if="${!model.modeReadOnly}" id="saveAction" label="Save (Default)" action="@{_save}" color="primary" />
@@ -86,7 +86,7 @@
                             <vu:button-link th:if="${model.modeEdit}"  label="Movies" url="@{/movies/}" color="primary" />
                             <q-btn  th:label="OpenModal" th:@click="|openModal('myModal', '@{/movies/}')|"></q-btn>
                         </vu:grid-cell>
-                        <vu:grid-cell>
+                        <vu:grid-cell class="q-gutter-md">
                             <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionDtCheck" label="Save (with DtObj Check)" action="@{_saveDtCheck}" color="primary" />
                             <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionUiCheck" label="Save (with UiObj Check)" action="@{_saveUiCheck}" color="primary" />
                             
