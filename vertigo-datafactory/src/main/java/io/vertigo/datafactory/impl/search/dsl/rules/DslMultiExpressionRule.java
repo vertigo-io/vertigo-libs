@@ -78,6 +78,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 	/** {@inheritDoc} */
 	@Override
 	protected DslMultiExpression handle(final PegChoice parsing) {
+		final String operator;
 		final String preMultiExpression;
 		final String postMultiExpression;
 		//---
@@ -85,17 +86,20 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 		postMultiExpression = switch (parsing.choiceIndex()) {
 			case 0 -> {
 				final List<?> blockExpression = (List<?>) parsing.value();
-				preMultiExpression = ((Optional<String>) blockExpression.get(0)).orElse("") + blockExpression.get(1);
+				operator = ((Optional<String>) blockExpression.get(0)).orElse("");
+				preMultiExpression = (String) blockExpression.get(1);
 				many = (List<PegChoice>) blockExpression.get(3);
 				yield (String) blockExpression.get(6);
 			}
 			case 1 -> {
+				operator = "";
 				preMultiExpression = "";
 				many = (List<PegChoice>) parsing.value();
 				yield "";
 			}
 			case 2 -> {
 				//spaces
+				operator = "";
 				preMultiExpression = "";
 				many = Collections.emptyList();
 				yield (String) parsing.value();
@@ -121,6 +125,6 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 		}
 		final boolean block = parsing.choiceIndex() == 0;
 		//---
-		return new DslMultiExpression(preMultiExpression, block, expressionDefinitions, multiExpressionDefinitions, postMultiExpression);
+		return new DslMultiExpression(operator, preMultiExpression, block, expressionDefinitions, multiExpressionDefinitions, postMultiExpression);
 	}
 }

@@ -28,6 +28,7 @@ import io.vertigo.core.lang.Assertion;
  */
 public final class DslMultiExpression {
 
+	private final String operator; //Spaces like
 	private final String preBody; //Spaces like
 	private final boolean block;
 	private final List<DslExpression> expressions;
@@ -35,6 +36,7 @@ public final class DslMultiExpression {
 	private final String postBody; //Spaces like
 
 	/**
+	 * @param operator String operator before body
 	 * @param preBody String before body
 	 * @param block Is mode block
 	 * @param expressions List of simple expression
@@ -42,22 +44,32 @@ public final class DslMultiExpression {
 	 * @param postBody String after body
 	 */
 	public DslMultiExpression(
+			final String operator,
 			final String preBody,
 			final boolean block,
 			final List<DslExpression> expressions,
 			final List<DslMultiExpression> multiExpressions,
 			final String postBody) {
 		Assertion.check()
+				.isNotNull(operator)
 				.isNotNull(preBody)
 				.isNotNull(expressions)
 				.isNotNull(multiExpressions)
 				.isNotNull(postBody);
 		//-----
+		this.operator = operator;
 		this.preBody = preBody;
 		this.block = block;
 		this.expressions = expressions;
 		this.multiExpressions = multiExpressions;
 		this.postBody = postBody;
+	}
+
+	/**
+	 * @return operator
+	 */
+	public String getOperator() {
+		return operator;
 	}
 
 	/**
@@ -99,7 +111,7 @@ public final class DslMultiExpression {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder()
-				.append(preBody).append(block ? "(" : "");
+				.append(operator).append(preBody).append(block ? "(" : "");
 		for (final DslExpression expression : expressions) {
 			sb.append(expression);
 		}

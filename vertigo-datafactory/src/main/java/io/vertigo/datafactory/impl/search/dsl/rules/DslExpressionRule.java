@@ -68,7 +68,8 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<Object>> 
 	/** {@inheritDoc} */
 	@Override
 	protected DslExpression handle(final List<Object> parsing) {
-		String preExpression = ((Optional<String>) parsing.get(0)).orElse("") + parsing.get(1);
+		final String operator = ((Optional<String>) parsing.get(0)).orElse("");
+		String preExpression = (String) parsing.get(1);
 		final String postExpression;
 		final Optional<DslField> field;
 		final Optional<DslMultiField> multiField;
@@ -93,6 +94,6 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<Object>> 
 		final PegChoice queries = (PegChoice) parsing.get(4);
 		final DslQuery query = (DslQuery) queries.value();
 
-		return new DslExpression(preExpression, field, multiField, query, postExpression);
+		return new DslExpression(operator, preExpression, field, multiField, query, postExpression);
 	}
 }

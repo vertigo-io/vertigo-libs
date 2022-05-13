@@ -23,10 +23,11 @@ import io.vertigo.core.lang.Assertion;
 
 /**
  * Single Expression Definition.
- * (preBody)(field|multiField):(query)(postBody)
+ * (operator)(preBody)(field|multiField):(query)(postBody)
  * @author npiedeloup
  */
 public final class DslExpression {
+	private final String operator; //OR AND like
 	private final String preBody; //Spaces like
 	private final Optional<DslField> fieldOptional;
 	private final Optional<DslMultiField> multiFieldOptional;
@@ -35,6 +36,7 @@ public final class DslExpression {
 	private final String postBody; //Spaces like
 
 	/**
+	 * @param operator String operator before body
 	 * @param preBody String before body
 	 * @param field Optional fieldDefinition
 	 * @param multiField Optional multiFieldDefinition
@@ -42,18 +44,21 @@ public final class DslExpression {
 	 * @param postBody String after body
 	 */
 	public DslExpression(
+			final String operator,
 			final String preBody,
 			final Optional<DslField> field,
 			final Optional<DslMultiField> multiField,
 			final DslQuery query,
 			final String postBody) {
 		Assertion.check()
+				.isNotNull(operator)
 				.isNotNull(preBody)
 				.isNotNull(field)
 				.isNotNull(multiField)
 				.isNotNull(query)
 				.isNotNull(postBody);
 		//-----
+		this.operator = operator;
 		this.preBody = preBody;
 		fieldOptional = field;
 		multiFieldOptional = multiField;
@@ -64,11 +69,18 @@ public final class DslExpression {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder(preBody);
+		final StringBuilder sb = new StringBuilder(operator).append(preBody);
 		fieldOptional.ifPresent(field -> sb.append(field).append(':'));
 		multiFieldOptional.ifPresent(multiField -> sb.append(multiField).append(':'));
 		sb.append(query).append(postBody);
 		return sb.toString();
+	}
+
+	/**
+	 * @return operator
+	 */
+	public String getOperator() {
+		return operator;
 	}
 
 	/**
