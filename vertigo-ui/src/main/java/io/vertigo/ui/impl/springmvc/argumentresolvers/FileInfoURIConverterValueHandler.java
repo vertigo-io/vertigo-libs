@@ -86,9 +86,13 @@ public final class FileInfoURIConverterValueHandler extends AbstractMessageConve
 		final HttpServletRequest request = getRequest(webRequest);
 		final QueryParam requestParam = parameter.getParameterAnnotation(QueryParam.class);
 		Assertion.check().isNotNull(requestParam, "Parameter name wasnt't found. Use @QueryParam('myFileParam') in your controller.");
-		final String fileUriProtected = request.getParameter(requestParam.value());
-
-		return parameterizedTypeValueHandlerHelper.convert(fileUriProtected, parameter);
+		if (parameterizedTypeValueHandlerHelper.isMultiple(parameter)) {
+			final String[] fileUriProtected = request.getParameterValues(requestParam.value());
+			return parameterizedTypeValueHandlerHelper.convertArray(fileUriProtected);
+		} else {
+			final String fileUriProtected = request.getParameter(requestParam.value());
+			return parameterizedTypeValueHandlerHelper.convert(fileUriProtected, parameter);
+		}
 	}
 
 	private static FileInfoURI toFileInfoURI(final String requestValue) {
