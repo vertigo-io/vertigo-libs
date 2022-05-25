@@ -196,13 +196,24 @@ img.avatar {
 	position: relative;
 }
 
+.q-uploader.q-uploader-readonly {
+    box-shadow: none;
+}
+.q-uploader .q-uploader__list.scroll {
+    overflow:visible; 
+}
+.q-uploader__list.scroll .q-field__native.row {
+    overflow:auto; 
+}
+.q-uploader__list.scroll .q-field--auto-height .q-field__control {
+	max-height: 300px;
+}
 .q-uploader .q-field__label {
 	top: 10px;
 }
 .q-uploader  .q-field--auto-height.q-field--labeled .q-field__control-container {
 	padding-top: 18px;
 }
-
 table .q-uploader .q-btn {
     background: none;
     color:rgba(0,0,0,0.54);

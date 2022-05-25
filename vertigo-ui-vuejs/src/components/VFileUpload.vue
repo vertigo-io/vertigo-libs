@@ -119,7 +119,6 @@ export default {
           xhrParams.append(this.fieldName, fileInfoUri);
       });
 
-
       this.$http.get(this.url + '/fileInfos', { params: xhrParams, credentials: false })
             .then(function (response) { //Ok
                     var uiFileInfos = response.data;
@@ -130,9 +129,9 @@ export default {
                 }.bind(this))
             .catch(function (error) { //Ko
                     if(error.response) {
-                        this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file "+uri);
+                        this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file "+xhrParams);
                     } else {
-                        this.$q.notify(error + " Can't load file "+uri);
+                        this.$q.notify(error + " Can't load file "+xhrParams);
                     }
                 }.bind(this)
         );

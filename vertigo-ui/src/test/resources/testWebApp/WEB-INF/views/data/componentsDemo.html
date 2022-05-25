@@ -41,7 +41,7 @@
                         <vu:radio object="movie" field="movId" list="movies" layout="horizontal" labelField="movId"/>
                         <vu:radio object="movie" field="movId" list="movies" />
                         <vu:text-field object="movie" field="movId"/>
-                        <vu:text-field object="movie" field="title" />
+                        <vu:text-area object="movie" field="title" />
                         <vu:chips-autocomplete object="movie" field="tags" list="movies" staticData="false"/>
                         <vu:grid-cell/>
                         <vu:grid-cell col="1">
@@ -61,7 +61,7 @@
                                 <vu:fileupload label="Upload file" th:url="'@{/commons/upload}'" key="myFilesUris1" multiple />           
                             </vu:fileupload-dropzone>
                         </vu:grid-cell>                
-                        <vu:fileupload-simple-object label="Simple upload file" th:url="'@{/commons/upload}'" object="myFilesUris3" multiple/>                            
+                        <vu:fileupload-simple label="Simple upload file" th:url="'@{/commons/upload}'" key="myFilesUris3" multiple/>                            
                         <vu:fileupload-simple-object label="Movie pictures" th:url="'@{/commons/upload}'" object="movie" field="pictures" multiple/>                            
                         <vu:fileupload-simple-object label="Movie main picture" th:url="'@{/commons/upload}'" object="movie" field="mainPicture"/>                            
                         
