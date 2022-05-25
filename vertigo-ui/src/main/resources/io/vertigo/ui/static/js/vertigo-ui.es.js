@@ -2217,9 +2217,9 @@ const _sfc_main = {
       });
     }.bind(this)).catch(function(error) {
       if (error.response) {
-        this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file " + uri);
+        this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file " + xhrParams);
       } else {
-        this.$q.notify(error + " Can't load file " + uri);
+        this.$q.notify(error + " Can't load file " + xhrParams);
       }
     }.bind(this));
   },
