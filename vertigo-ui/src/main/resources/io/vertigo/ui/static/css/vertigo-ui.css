@@ -110,6 +110,19 @@ img.avatar {
   line-height: 2rem;
 }
 
+/* check if usefull by default
+.q-table tr:hover td {
+    overflow: visible; 
+    white-space: normal;    
+}
+
+.q-table td, .q-table th {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}*/
+
 .table-primary th {
 	color:var(--q-primary-invert) !important;
 }
@@ -196,6 +209,20 @@ img.avatar {
 	position: relative;
 }
 
+.q-uploader {
+	max-width:320px; /*choosed by quasar*/
+	width:auto !important;
+}
+.q-uploader__title {
+    min-width:25px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.q-uploader__title:hover {
+    overflow: visible; 
+    white-space: normal;
+}
 .q-uploader.q-uploader-readonly {
     box-shadow: none;
 }
@@ -218,9 +245,13 @@ img.avatar {
 .q-uploader  .q-field--auto-height.q-field--labeled .q-field__control-container {
 	padding-top: 18px;
 }
+
 table .q-uploader .q-btn {
     background: none;
     color:rgba(0,0,0,0.54);
+}
+.q-table .q-uploader__file {
+    max-width: inherit; /* for ellipsis */
 }
 
 
