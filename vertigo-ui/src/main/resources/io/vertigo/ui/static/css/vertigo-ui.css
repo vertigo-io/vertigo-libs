@@ -199,6 +199,10 @@ img.avatar {
 .q-uploader.q-uploader-readonly {
     box-shadow: none;
 }
+.q-uploader.q-uploader-readonly .q-uploader__list {
+    padding:0px;
+    min-height:56px;
+}
 .q-uploader .q-uploader__list.scroll {
     overflow:visible; 
 }
