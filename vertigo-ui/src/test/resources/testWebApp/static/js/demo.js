@@ -29,4 +29,4 @@ function patchDatePicker(){
         });
 }
 
-VUiExtensions.dataX.selectedTimeZoneListArray = '[[${model[selectedTimeZoneList]}]]'.split(';');
+VUiExtensions.dataX.selectedTimeZoneListArray = [];

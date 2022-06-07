@@ -9,8 +9,10 @@ export default {
         const padding = args.value.padding?args.value.padding:24;
         const scanner = args.value.scanner?args.value.scanner:offset+30; //scanner is 30px bottom of offset, must be smaller than the smallest first element
         const elAs = elNav.querySelectorAll('a')
-        elAs[0].classList.add("active") //first active
-        const scrollContainer = Quasar.scroll.getScrollTarget(document.querySelector(elAs[0].hash))
+        if (elAs.length > 0) {
+            elAs[0].classList.add("active") //first active
+            const scrollContainer = Quasar.scroll.getScrollTarget(document.querySelector(elAs[0].hash))
+        }
         
         let scannerLine1
         if(debugMode) {

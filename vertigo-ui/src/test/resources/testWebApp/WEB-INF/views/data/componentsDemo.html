@@ -45,10 +45,10 @@
                         <vu:chips-autocomplete object="movie" field="tags" list="movies" staticData="false"/>
                         <vu:grid-cell/>
                         <vu:grid-cell col="1">
-                            <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" @input="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
+                            <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" @update:model-value="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
                             <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" 
                             :disabled="true || false"
-                            @input="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
+                            @update:model-value="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
                         </vu:grid-cell>
                         <q-btn th:@click="|httpPostAjax('@{_ajaxArray}', vueDataParams(['selectedTimeZoneList']))|" color="primary" label="Ajax save" ></q-btn>
                         

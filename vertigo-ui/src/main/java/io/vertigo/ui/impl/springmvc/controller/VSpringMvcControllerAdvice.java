@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -45,6 +47,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack.Level;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
 
 @ControllerAdvice(assignableTypes = { AbstractVSpringMvcController.class })
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public final class VSpringMvcControllerAdvice {
 	private static Logger LOGGER = LogManager.getLogger(VSpringMvcControllerAdvice.class);
 
