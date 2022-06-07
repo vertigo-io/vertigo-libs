@@ -1,4 +1,4 @@
-<th:block th:fragment="select-edit(object,list,field, rowIndex, label, valueField, labelField, input_attrs, label_attrs)" vu:alias="select" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="select-edit(object,list,field, rowIndex, label, valueField, labelField, filterFunction, input_attrs, label_attrs)" vu:alias="select" vu:selector="${viewMode=='edit'}"
 	  th:assert="${object} != null and ${field} != null and ${list} != null"
 	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, 
 	  myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, 
@@ -12,7 +12,7 @@
 			fill-input
 	        map-options
 	        emit-value
-            th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}')|"
+            th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}', ${filterFunction?:null})|"
 			th::label-width="${overridedLabelWidth?:3}"
 			th:label="${modifiableTable!=null?null:myLabel}"
 			th:classappend="${required}?'v-field__required'"
@@ -27,7 +27,7 @@
 	<input type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" th:v-bind:value="${model.util.vueDataKey(object, field, rowIndex)}" />
 </th:block>
 
-<th:block th:fragment="select-read(object,field, rowIndex,label,list,valueField, labelField, input_attrs, label_attrs)" 
+<th:block th:fragment="select-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, input_attrs, label_attrs)" 
 th:if="${modifiableTable==null}"
 vu:alias="select" vu:selector="${viewMode=='read'}" 
 	th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')}">

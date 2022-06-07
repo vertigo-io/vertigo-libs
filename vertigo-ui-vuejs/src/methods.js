@@ -60,8 +60,12 @@ export default {
         return null;
     },
 
-    transformListForSelection: function (list, valueField, labelField) {
-        return this.$data.vueData[list].map(function (object) {
+    transformListForSelection: function (list, valueField, labelField, filterFunction) {
+        var rawList = this.$data.vueData[list];
+        if (filterFunction) {
+            rawList = rawList.filter(filterFunction);
+        }
+        return rawList.map(function (object) {
             return { value: object[valueField], label: object[labelField].toString() } // a label is always a string
         });
     },

@@ -1,4 +1,4 @@
-<th:block th:fragment="chips-autocomplete-edit(object, field, label, list, valueField, componentId, staticData,label_attrs, input_attrs)" vu:alias="chips-autocomplete" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="chips-autocomplete-edit(object, field, label, list, valueField, componentId, staticData, filterFunction, label_attrs, input_attrs)" vu:alias="chips-autocomplete" vu:selector="${viewMode=='edit'}"
 	  th:assert="${object} != null and ${field} != null and ${list} != null"
 	  th:with="myValueField=${valueField != null ? valueField : model.util.getDisplayField(list)}, 
 	  value=${model.vContext[__${object}__][__${field}__]}, 
@@ -44,14 +44,14 @@
         use-chips
         new-value-mode="add-unique"
         input-debounce="0"
-        th::options="|transformListForSelection('${list}', '${myValueField}', '${myValueField}')|"
+        th::options="|transformListForSelection('${list}', '${myValueField}', '${myValueField}', ${filterFunction?:null})|"
         th:attr="__${input_attrs}__"
      ></q-select>
 	<input th:v-for="|id in vueData.${object}.${field}|" type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="id" />
 	<input th::v-if="|vueData.${object}.${field}.length == 0|" type="hidden" th:name="|vContext[${object}][${field}]|" value="" />
 </th:block> 
 
-<th:block th:fragment="chips-autocomplete-read(object, field, label, list, valueField, staticData, label_attrs, input_attrs)" vu:alias="chips-autocomplete" vu:selector="${viewMode=='read'}"
+<th:block th:fragment="chips-autocomplete-read(object, field, label, list, valueField, staticData, filterFunction, label_attrs, input_attrs)" vu:alias="chips-autocomplete" vu:selector="${viewMode=='read'}"
 	th:with="myLabel=${label?:model.util.label(object + '.' + field)}" >
 	<vu:include-data object="${object}" field="${field}"/>
 	<vu:label-read label=${label} label_attrs="${label_attrs}" >

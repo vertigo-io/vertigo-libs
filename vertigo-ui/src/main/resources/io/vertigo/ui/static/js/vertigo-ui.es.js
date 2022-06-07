@@ -2623,8 +2623,10 @@ var VScrollSpy = {
     const padding = args.value.padding ? args.value.padding : 24;
     const scanner = args.value.scanner ? args.value.scanner : offset + 30;
     const elAs = elNav.querySelectorAll("a");
-    elAs[0].classList.add("active");
-    const scrollContainer = Quasar$1.scroll.getScrollTarget(document.querySelector(elAs[0].hash));
+    if (elAs.length > 0) {
+      elAs[0].classList.add("active");
+      Quasar$1.scroll.getScrollTarget(document.querySelector(elAs[0].hash));
+    }
     let scannerLine1;
     if (debugMode) {
       scannerLine1 = document.createElement("HR");
@@ -2779,8 +2781,12 @@ var VMethods = {
     }
     return null;
   },
-  transformListForSelection: function(list, valueField, labelField) {
-    return this.$data.vueData[list].map(function(object) {
+  transformListForSelection: function(list, valueField, labelField, filterFunction) {
+    var rawList = this.$data.vueData[list];
+    if (filterFunction) {
+      rawList = rawList.filter(filterFunction);
+    }
+    return rawList.map(function(object) {
       return { value: object[valueField], label: object[labelField].toString() };
     });
   },

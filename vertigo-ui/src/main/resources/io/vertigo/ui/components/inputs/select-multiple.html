@@ -1,4 +1,4 @@
-<th:block th:fragment="select-multiple-edit(object,list,field, label, valueField, labelField, input_attrs, label_attrs)" vu:alias="select-multiple" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="select-multiple-edit(object,list,field, label, valueField, labelField, filterFunction, input_attrs, label_attrs)" vu:alias="select-multiple" vu:selector="${viewMode=='edit'}"
 	  th:assert="${object} != null and ${field} != null and ${list} != null"
 	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, 
 	  myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, 
@@ -12,7 +12,7 @@
 			fill-input
 	        map-options
 	        emit-value
-            th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}')|"
+            th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}', ${filterFunction?:null})|"
 			th::label-width="${overridedLabelWidth?:3}"
 			th:label="${myLabel}"
 			th:classappend="${required}?'v-field__required'"
@@ -30,7 +30,7 @@
 	<input th:v-if="|vueData.${object}.${field}.length == 0|" type="hidden" th:name="|vContext[${object}][${field}]|" value="" />
 </th:block> 
 
-<th:block th:fragment="select-multiple-read(object,field,label,list,valueField, labelField, input_attrs, label_attrs)" vu:alias="select-multiple" vu:selector="${viewMode=='read'}" 
+<th:block th:fragment="select-multiple-read(object,field,label,list,valueField, labelField, filterFunction, input_attrs, label_attrs)" vu:alias="select-multiple" vu:selector="${viewMode=='read'}" 
 	th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, value=${model.vContext[__${object}__].getTypedValue('__${field}__')}">
 	<vu:label-read object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}" >
 		<th:block th:if="${value!=null}" th:each="singleValue, iterStat : ${value} " >
