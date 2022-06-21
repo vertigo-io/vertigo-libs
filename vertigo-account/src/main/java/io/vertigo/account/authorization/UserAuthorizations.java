@@ -123,17 +123,23 @@ public final class UserAuthorizations implements Serializable {
 		Assertion.check().isNotNull(authorization);
 		//-----
 		final DefinitionId<Authorization> definitionReference = authorization.id();
-		authorizationRefs.put(authorization.getName(), definitionReference);
+		if (!authorizationRefs.containsKey(authorization.getName())) {
+			authorizationRefs.put(authorization.getName(), definitionReference);
+			//On ne prend la définition de l'autorisation que si elle est nouvelle, sinon elle a déjà été donnée ou overridée
+		} // else assert authorizationRefs.get(authorization.getName()).get().getOverrides().contains(authorization.getName())
 
 		if (authorization.getEntityDefinition().isPresent()) {
 			final Map<String, DefinitionId<Authorization>> entityAuthorizationRefs = authorizationMapRefs.computeIfAbsent(authorization.getEntityDefinition().get().id(), key -> new HashMap<>());
-			entityAuthorizationRefs.put(authorization.getName(), definitionReference);
+			if (!entityAuthorizationRefs.containsKey(authorization.getName())) {
+				entityAuthorizationRefs.put(authorization.getName(), definitionReference);
+				//On ne prend la définition de l'autorisation que si elle est nouvelle, sinon elle a déjà été donnée ou overridée
+			}
 			for (final Authorization grantedAuthorization : authorization.getGrants()) {
 				if (!hasAuthorization(grantedAuthorization::getName)) { //On test pour ne pas créer de boucle
 					addAuthorization(grantedAuthorization);
 				}
 			}
-			//on ajoute pas vraiment les overrides, car on a juste ajouter un nom d'opération pour la rule de l'authorization actuelle
+			//on ajoute pas vraiment les overrides, car on a juste ajouté un nom d'opération pour la rule de l'authorization actuelle
 			final String authorizationPrefix = Authorization.PREFIX + authorization.getEntityDefinition().get().id().shortName() + '$';
 			for (final String overridedAuthorization : authorization.getOverrides()) {
 				authorizationRefs.put(authorizationPrefix + overridedAuthorization, definitionReference);

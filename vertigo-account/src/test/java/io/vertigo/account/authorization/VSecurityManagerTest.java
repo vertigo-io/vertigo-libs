@@ -631,6 +631,28 @@ public final class VSecurityManagerTest {
 	}
 
 	@Test
+	public void testSecuritySearchOverrideOrderMissingKeys() {
+
+		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
+		try {
+			securityManager.startCurrentUserSession(userSession);
+			authorizationManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID + 1)
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$readHp))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$read));
+
+			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$read);
+			Assertions.assertTrue(canReadRecord);
+
+			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
+			Assertions.assertEquals("(*:*)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.read));
+			Assertions.assertEquals("(*:*)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.readHp));
+
+		} finally {
+			securityManager.stopCurrentUserSession();
+		}
+	}
+
+	@Test
 	public void testSecuritySearchMissingKeys() {
 
 		final Record recordTooExpensive = createRecord();
