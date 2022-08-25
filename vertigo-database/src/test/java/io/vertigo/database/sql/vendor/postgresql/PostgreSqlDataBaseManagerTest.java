@@ -60,7 +60,7 @@ public final class PostgreSqlDataBaseManagerTest extends AbstractSqlManagerTest 
 	@Override
 	protected String createTableMovie() {
 		final String myString = "CREATE TABLE movie ( "
-				+ "id 						NUMERIC(6), "
+				+ "mov_id 						NUMERIC(6), "
 				+ "title 					VARCHAR(255), "
 				+ "mail 					VARCHAR(255), "
 				+ "fps 						NUMERIC(6,3), "
@@ -81,7 +81,7 @@ public final class PostgreSqlDataBaseManagerTest extends AbstractSqlManagerTest 
 
 	@Override
 	protected GenerationMode getExpectedGenerationMode() {
-		return GenerationMode.GENERATED_KEYS;
+		return GenerationMode.GENERATED_COLUMNS;
 	}
 
 	@Override

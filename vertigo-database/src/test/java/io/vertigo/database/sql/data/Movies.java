@@ -56,7 +56,7 @@ public final class Movies {
 			final LocalDate localDate,
 			final Instant releaseInstant) {
 		final Movie movie = new Movie();
-		movie.setId(id);
+		movie.setMovId(id);
 		movie.setTitle(title);
 		movie.setMail(mail);
 		movie.setReleaseDate(date);
@@ -82,7 +82,7 @@ public final class Movies {
 
 	public static void checkMovie(final Movie movie) {
 		final LocalDateTime ldt = movie.getReleaseInstant() == null ? null : LocalDateTime.ofInstant(movie.getReleaseInstant(), ZoneId.of("UTC"));
-		switch (movie.getId().intValue()) {
+		switch (movie.getMovId().intValue()) {
 			case 1:
 				Assertions.assertEquals(TITLE_MOVIE_1, movie.getTitle());
 				//java.util.Date

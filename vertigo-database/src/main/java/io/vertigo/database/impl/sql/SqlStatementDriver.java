@@ -281,7 +281,8 @@ final class SqlStatementDriver {
 				throw new SQLException("GeneratedKeys empty", "02000", NO_GENERATED_KEY_ERROR_VENDOR_CODE);
 			}
 			//ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
-			final int pkRsCol = GENERATED_KEYS_INDEX;//attention le pkRsCol correspond au n° de column dans le RETURNING
+			int pkRsCol = GENERATED_KEYS_INDEX;//attention le pkRsCol correspond au n° de column dans le RETURNING
+			pkRsCol = rs.findColumn(columnName); //on cherche le bon index de la pk
 			final O id = sqlMapping.getValueForResultSet(rs, pkRsCol, dataType);
 			if (rs.wasNull()) {
 				throw new SQLException("GeneratedKeys wasNull", "23502", NULL_GENERATED_KEY_ERROR_VENDOR_CODE);
