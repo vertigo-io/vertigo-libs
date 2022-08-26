@@ -106,12 +106,33 @@ public class DAO<E extends Entity, P> {
 	}
 
 	/**
+	 * Creates a list of objects (performance optimized).
+	 * You should take care of supplying a reasonable chunk size (max 5 000)
+	 *
+	 * @param entities the list of objets to create
+	 * @return the created entity
+	 */
+	public final DtList<E> createList(final DtList<E> entities) {
+		return entityStoreManager.createList(entities);
+	}
+
+	/**
 	 * Update an object.
 	 *
 	 * @param entity Object to update
 	 */
 	public final void update(final E entity) {
 		entityStoreManager.update(entity);
+	}
+
+	/**
+	 * Updates a list of objects (performance optimized).
+	 * You should take care of supplying a reasonable chunk size (max 5 000)
+	 *
+	 * @param entities the list of objets to update
+	 */
+	public final void updateList(final DtList<E> entities) {
+		entityStoreManager.updateList(entities);
 	}
 
 	/**

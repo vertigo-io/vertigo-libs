@@ -19,6 +19,7 @@ package io.vertigo.datastore.impl.entitystore.cache;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.commons.eventbus.definitions.EventBusSubscriptionDefinition;
 import io.vertigo.core.lang.Assertion;
@@ -214,7 +215,12 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 		final EventBusSubscriptionDefinition<StoreEvent> eventBusSubscription = new EventBusSubscriptionDefinition<>(
 				"EvtClearCache",
 				StoreEvent.class,
-				event -> clearCache(event.getUID().getDefinition()));
+				event -> {
+					event.getUIDs().stream()
+							.map(UID::getDefinition)
+							.collect(Collectors.toSet())
+							.forEach(this::clearCache);
+				});
 		return Collections.singletonList(eventBusSubscription);
 	}
 }

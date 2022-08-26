@@ -189,6 +189,42 @@ public abstract class AbstractStoreManagerTest {
 	}
 
 	@Test
+	public void testCreateListCar() {
+		SqlUtil.execRequests(
+				transactionManager,
+				taskManager,
+				List.of("delete from car"),
+				"TkDeleteCars",
+				Optional.empty());
+		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+			final DtList<Car> carWithoutId = carDataBase.getAllCars();
+			carWithoutId.forEach(car -> car.setId(null));
+			final DtList<Car> cars = entityStoreManager.createList(carWithoutId);
+			Assertions.assertEquals(carWithoutId.size(), cars.size());
+			cars.forEach(car -> Assertions.assertNotNull(car.getId()));
+		}
+	}
+
+	@Test
+	public void testUpdateListCar() {
+		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+
+			final DtList<Famille> dtc1 = new DtList<>(Famille.class);
+			for (int i = 0; i < 500; i++) {
+				final Famille famille = new Famille();
+				famille.setLibelle("famille" + i);
+				dtc1.add(famille);
+			}
+			entityStoreManager.createList(dtc1);
+			dtc1.forEach(famille -> famille.setLibelle("updated"));
+			entityStoreManager.updateList(dtc1);
+			final DtList<Famille> dtc2 = entityStoreManager.find(dtDefinitionFamille, Criterions.alwaysTrue(), DtListState.of(null));
+			Assertions.assertEquals(dtc1.size(), dtc2.size());
+			dtc2.forEach(famille -> Assertions.assertEquals("updated", famille.getLibelle()));
+		}
+	}
+
+	@Test
 	public void testSelectCarCachedRowMax() {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			final DtList<Car> dtc1 = entityStoreManager.find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3));

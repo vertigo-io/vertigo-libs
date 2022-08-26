@@ -39,7 +39,19 @@ public abstract class AbstractStaticEntityStorePlugin implements EntityStorePlug
 
 	/** {@inheritDoc} */
 	@Override
+	public <E extends Entity> DtList<E> createList(final DtList<E> entities) {
+		throw new UnsupportedOperationException();
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public void update(final DtDefinition dtDefinition, final Entity entity) {
+		throw new UnsupportedOperationException();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <E extends Entity> void updateList(final DtList<E> entities) {
 		throw new UnsupportedOperationException();
 	}
 

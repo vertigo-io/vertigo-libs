@@ -15,14 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.basics.task.sqlserver;
+package io.vertigo.basics.task;
 
 import java.sql.SQLException;
 import java.util.OptionalInt;
 
 import javax.inject.Inject;
 
-import io.vertigo.basics.task.AbstractTaskEngineSQL;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.lang.Assertion;
@@ -44,7 +43,7 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
  * <br>
  * @author  jmainaud, evernat
  */
-public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
+public class TaskEngineInsert extends AbstractTaskEngineSQL {
 
 	/**
 	 * Constructor.
@@ -54,7 +53,7 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 	 * @param sqlManager sqlDataBaseManager
 	 */
 	@Inject
-	public TaskEngineInsertWithGeneratedKeys(
+	public TaskEngineInsert(
 			final ScriptManager scriptManager,
 			final VTransactionManager transactionManager,
 			final SqlManager sqlManager,

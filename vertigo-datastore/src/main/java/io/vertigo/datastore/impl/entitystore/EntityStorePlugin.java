@@ -104,6 +104,8 @@ public interface EntityStorePlugin extends Plugin {
 	 */
 	<E extends Entity> E create(DtDefinition dtDefinition, E entity);
 
+	<E extends Entity> DtList<E> createList(DtList<E> entities);
+
 	/**
 	 * Updates an object.
 	 * This object must have an id.
@@ -111,6 +113,8 @@ public interface EntityStorePlugin extends Plugin {
 	 * @param entity Object to update
 	 */
 	void update(DtDefinition dtDefinition, Entity entity);
+
+	<E extends Entity> void updateList(DtList<E> entities);
 
 	/**
 	 * Deletes an object identified by an uri.

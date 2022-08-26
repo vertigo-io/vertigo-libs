@@ -59,10 +59,6 @@ import io.vertigo.database.sql.vendor.SqlMapping;
  */
 final class SqlStatementDriver {
 
-	private static final int NO_GENERATED_KEY_ERROR_VENDOR_CODE = 100;
-
-	private static final int TOO_MANY_GENERATED_KEY_ERROR_VENDOR_CODE = 464;
-
 	private static final int NULL_GENERATED_KEY_ERROR_VENDOR_CODE = -407;
 
 	private static final int FETCH_SIZE = 150;
@@ -262,7 +258,7 @@ final class SqlStatementDriver {
 				.anyMatch(primitiveClazz -> primitiveClazz.isAssignableFrom(dataType));
 	}
 
-	<O> O getGeneratedKey(
+	<O> List<O> getGeneratedKeys(
 			final PreparedStatement statement,
 			final String columnName,
 			final Class<O> dataType,
@@ -275,23 +271,20 @@ final class SqlStatementDriver {
 		// serveur d'application et la base de données pour un insert et la récupération de la
 		// valeur de la clé primaire en respectant les standards jdbc et sql ansi.
 		final SqlMapping sqlMapping = connection.getDataBase().getSqlMapping();
+		final List<O> generatedKeys = new ArrayList<>();
 		try (final ResultSet rs = statement.getGeneratedKeys()) {
-			final boolean next = rs.next();
-			if (!next) {
-				throw new SQLException("GeneratedKeys empty", "02000", NO_GENERATED_KEY_ERROR_VENDOR_CODE);
-			}
-			//ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
-			int pkRsCol = GENERATED_KEYS_INDEX;//attention le pkRsCol correspond au n° de column dans le RETURNING
-			pkRsCol = rs.findColumn(columnName); //on cherche le bon index de la pk
-			final O id = sqlMapping.getValueForResultSet(rs, pkRsCol, dataType);
-			if (rs.wasNull()) {
-				throw new SQLException("GeneratedKeys wasNull", "23502", NULL_GENERATED_KEY_ERROR_VENDOR_CODE);
+			while (rs.next()) {
+				//ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
+				int pkRsCol = GENERATED_KEYS_INDEX;//attention le pkRsCol correspond au n° de column dans le RETURNING
+				pkRsCol = rs.findColumn(columnName); //on cherche le bon index de la pk
+				final O id = sqlMapping.getValueForResultSet(rs, pkRsCol, dataType);
+				if (rs.wasNull()) {
+					throw new SQLException("GeneratedKeys wasNull", "23502", NULL_GENERATED_KEY_ERROR_VENDOR_CODE);
+				}
+				generatedKeys.add(id);
 			}
 
-			if (rs.next()) {
-				throw new SQLException("GeneratedKeys.size >1 ", "0100E", TOO_MANY_GENERATED_KEY_ERROR_VENDOR_CODE);
-			}
-			return id;
+			return generatedKeys;
 		}
 	}
 

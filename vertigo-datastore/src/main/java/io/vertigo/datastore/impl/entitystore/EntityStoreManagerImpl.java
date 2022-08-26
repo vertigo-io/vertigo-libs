@@ -134,15 +134,15 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 		//-----
 		Assertion.check().isNotNull(entity, "no entity found for : '{0}'", uri);
 		//-----
-		fireAfterCommit(StoreEvent.Type.UPDATE, uri);
+		fireAfterCommit(StoreEvent.Type.UPDATE, List.of(uri));
 		return entity;
 	}
 
-	private void fireAfterCommit(final StoreEvent.Type evenType, final UID<?> uri) {
+	private void fireAfterCommit(final StoreEvent.Type evenType, final List<UID> uids) {
 		transactionManager.getCurrentTransaction().addAfterCompletion(
 				(final boolean txCommitted) -> {
 					if (txCommitted) {//send event only is tx successful
-						eventBusManager.post(new StoreEvent(evenType, uri));
+						eventBusManager.post(new StoreEvent(evenType, uids));
 					}
 				});
 	}
@@ -157,9 +157,21 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final E createdEntity = getPhysicalStore(dtDefinition).create(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.CREATE, UID.of(dtDefinition, DtObjectUtil.getId(createdEntity)));
+		fireAfterCommit(StoreEvent.Type.CREATE, List.of(UID.of(dtDefinition, DtObjectUtil.getId(createdEntity))));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 		return createdEntity;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <E extends Entity> DtList<E> createList(final DtList<E> entities) {
+		Assertion.check().isNotNull(entities);
+		//-----
+		final DtDefinition dtDefinition = entities.getDefinition();
+		final DtList<E> createdEntities = getPhysicalStore(dtDefinition).createList(entities);
+		//-----
+		fireAfterCommit(StoreEvent.Type.CREATE, createdEntities.stream().map(Entity::getUID).toList());
+		return createdEntities;
 	}
 
 	/** {@inheritDoc} */
@@ -170,8 +182,18 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		getPhysicalStore(dtDefinition).update(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.UPDATE, UID.of(dtDefinition, DtObjectUtil.getId(entity)));
+		fireAfterCommit(StoreEvent.Type.UPDATE, List.of(UID.of(dtDefinition, DtObjectUtil.getId(entity))));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
+	}
+
+	@Override
+	public <E extends Entity> void updateList(final DtList<E> entities) {
+		Assertion.check().isNotNull(entities);
+		//-----
+		final DtDefinition dtDefinition = entities.getDefinition();
+		getPhysicalStore(dtDefinition).updateList(entities);
+		//-----
+		fireAfterCommit(StoreEvent.Type.UPDATE, entities.stream().map(Entity::getUID).toList());
 	}
 
 	/** {@inheritDoc} */
@@ -182,7 +204,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 		final DtDefinition dtDefinition = uri.getDefinition();
 		getPhysicalStore(dtDefinition).delete(dtDefinition, uri);
 		//-----
-		fireAfterCommit(StoreEvent.Type.DELETE, uri);
+		fireAfterCommit(StoreEvent.Type.DELETE, List.of(uri));
 	}
 
 	/** {@inheritDoc} */

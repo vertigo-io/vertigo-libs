@@ -25,9 +25,11 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import io.vertigo.basics.task.AbstractTaskEngineSQL;
+import io.vertigo.basics.task.TaskEngineInsertBatch;
+import io.vertigo.basics.task.TaskEngineInsert;
 import io.vertigo.basics.task.TaskEngineProc;
+import io.vertigo.basics.task.TaskEngineProcBatch;
 import io.vertigo.basics.task.TaskEngineSelect;
-import io.vertigo.basics.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.Cardinality;
@@ -87,8 +89,12 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		TkSelect,
 		/** Prefix of the INSERT.*/
 		TkInsert,
+		/** Prefix of the INSERT BATCH.*/
+		TkInsertBatch,
 		/** Prefix of the UPDATE.*/
 		TkUpdate,
+		/** Prefix of the UPDATE BATCH.*/
+		TkUpdateBatch,
 		/** Prefix of the DELETE.*/
 		TkDelete,
 		/** Prefix of the COUNT.*/
@@ -338,6 +344,34 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		return entity;
 	}
 
+	@Override
+	public <E extends Entity> DtList<E> createList(final DtList<E> entities) {
+		final DtDefinition dtDefinition = entities.getDefinition();
+		final String entityName = getEntityName(dtDefinition);
+		final String tableName = StringUtil.camelToConstCase(entityName);
+		//---
+		final String request = sqlDialect.createInsertQuery(dtDefinition.getIdField().get().name(), getDataFields(dtDefinition), sequencePrefix, tableName, "dtos");
+
+		final TaskDefinition taskDefinition = TaskDefinition.builder(TASK.TkInsertBatch.name() + entityName)
+				.withEngine(TaskEngineInsertBatch.class)
+				.withDataSpace(dataSpace)
+				.withRequest(request)
+				.addInAttribute("dtos", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerSmartType, Cardinality.ONE)
+				.build();
+
+		final Task task = Task.builder(taskDefinition)
+				.addValue("dtos", entities)
+				.addContextProperty("connectionName", getConnectionName())
+				.build();
+
+		final int sqlRowCount = taskManager
+				.execute(task)
+				.getResult();
+
+		return entities;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public void update(final DtDefinition dtDefinition, final Entity entity) {
@@ -347,13 +381,43 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		put(entity, insert);
 	}
 
+	@Override
+	public <E extends Entity> void updateList(final DtList<E> entities) {
+		final DtDefinition dtDefinition = entities.getDefinition();
+		final String entityName = getEntityName(dtDefinition);
+		//---
+		final String request = createUpdateQuery(dtDefinition, "dtos");
+
+		final TaskDefinition taskDefinition = TaskDefinition.builder(TASK.TkUpdateBatch.name() + entityName)
+				.withEngine(TaskEngineProcBatch.class)
+				.withDataSpace(dataSpace)
+				.withRequest(request)
+				.addInAttribute("dtos", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerSmartType, Cardinality.ONE)
+				.build();
+
+		final Task task = Task.builder(taskDefinition)
+				.addValue("dtos", entities)
+				.addContextProperty("connectionName", getConnectionName())
+				.build();
+
+		final int sqlRowCount = taskManager
+				.execute(task)
+				.getResult();
+
+		if (sqlRowCount == 0) {
+			throw new VSystemException("no data updated");
+		}
+
+	}
+
 	/**
 	 * Creates the update request.
 	 *
 	 * @param dtDefinition the dtDefinition
 	 * @return the sql request
 	 */
-	private static String createUpdateQuery(final DtDefinition dtDefinition) {
+	private static String createUpdateQuery(final DtDefinition dtDefinition, final String parameterName) {
 		final String entityName = getEntityName(dtDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final DtField idField = getIdField(dtDefinition);
@@ -364,10 +428,10 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 				.append(dtDefinition.getFields()
 						.stream()
 						.filter(dtField -> dtField.isPersistent() && !dtField.getType().isId())
-						.map(dtField -> StringUtil.camelToConstCase(dtField.name()) + " =#dto." + dtField.name() + '#')
+						.map(dtField -> StringUtil.camelToConstCase(dtField.name()) + " =#" + parameterName + '.' + dtField.name() + '#')
 						.collect(Collectors.joining(", ")))
 				.append(" where ")
-				.append(StringUtil.camelToConstCase(idField.name())).append(" = #dto.").append(idField.name()).append('#')
+				.append(StringUtil.camelToConstCase(idField.name())).append(" = #" + parameterName + '.').append(idField.name()).append('#')
 				.toString();
 	}
 
@@ -377,7 +441,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	 */
 	private static Class<? extends TaskEngine> getTaskEngineClass(final boolean insert) {
 		if (insert) {
-			return TaskEngineInsertWithGeneratedKeys.class;
+			return TaskEngineInsert.class;
 		}
 		return TaskEngineProc.class;
 	}
@@ -392,7 +456,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final String taskName = (insert ? TASK.TkInsert : TASK.TkUpdate) + entityName;
 
-		final String request = insert ? sqlDialect.createInsertQuery(dtDefinition.getIdField().get().name(), getDataFields(dtDefinition), sequencePrefix, tableName) : createUpdateQuery(dtDefinition);
+		final String request = insert ? sqlDialect.createInsertQuery(dtDefinition.getIdField().get().name(), getDataFields(dtDefinition), sequencePrefix, tableName, "dto") : createUpdateQuery(dtDefinition, "dto");
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(getTaskEngineClass(insert))

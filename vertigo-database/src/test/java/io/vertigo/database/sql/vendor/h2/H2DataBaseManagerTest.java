@@ -60,7 +60,7 @@ public final class H2DataBaseManagerTest extends AbstractSqlManagerTest {
 	@Override
 	protected String createTableMovie() {
 		return "CREATE TABLE movie ( "
-				+ "id 						NUMBER(6), "
+				+ "mov_id					NUMBER(6), "
 				+ "title 					VARCHAR(255), "
 				+ "mail 					VARCHAR(255), "
 				+ "fps 						NUMBER(6,3), "

@@ -34,7 +34,7 @@ public abstract class AbstractSqlDialectTest {
 	@Test
 	public void testInsertQuery() {
 		final SqlDialect sqlDialect = getDialect();
-		final String insertQuery = sqlDialect.createInsertQuery("id", Collections.singletonList("title"), "SEQ_", "MOVIE");
+		final String insertQuery = sqlDialect.createInsertQuery("id", Collections.singletonList("title"), "SEQ_", "MOVIE", "dto");
 		Assertions.assertEquals(getExpectedInsertQuery(), insertQuery);
 	}
 

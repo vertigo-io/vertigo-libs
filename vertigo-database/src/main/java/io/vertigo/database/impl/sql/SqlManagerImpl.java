@@ -50,6 +50,10 @@ import io.vertigo.database.sql.vendor.SqlMapping;
 */
 public final class SqlManagerImpl implements SqlManager {
 
+	private static final int NO_GENERATED_KEY_ERROR_VENDOR_CODE = 100;
+
+	private static final int TOO_MANY_GENERATED_KEY_ERROR_VENDOR_CODE = 464;
+
 	private static final int REQUEST_HEADER_FOR_TRACER = 50;
 
 	private static final int REQUEST_STATEMENT_FOR_TRACER = 4000;
@@ -159,8 +163,14 @@ public final class SqlManagerImpl implements SqlManager {
 			//---
 			//execution de la Requête
 			final int result = traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecute(statement, tracer));
-			final O generatedId = sqlStatementDriver.getGeneratedKey(statement, columnName, dataType, connection);
-			return Tuple.of(result, generatedId);
+			final List<O> generatedIds = sqlStatementDriver.getGeneratedKeys(statement, columnName, dataType, connection);
+			if (generatedIds.isEmpty()) {
+				throw new SQLException("GeneratedKeys empty", "02000", NO_GENERATED_KEY_ERROR_VENDOR_CODE);
+			}
+			if (generatedIds.size() > 1) {
+				throw new SQLException("GeneratedKeys.size > 1 ", "0100E", TOO_MANY_GENERATED_KEY_ERROR_VENDOR_CODE);
+			}
+			return Tuple.of(result, generatedIds.get(0));
 		} catch (final WrappedSqlException e) {
 			throw e.getSqlException();
 		}
@@ -248,6 +258,40 @@ public final class SqlManagerImpl implements SqlManager {
 			return OptionalInt.of(count);
 		} catch (final SQLException e) {
 			throw new WrappedSqlException(e);
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <O> Tuple<Integer, List<O>> executeBatchWithGeneratedKeys(
+			final SqlStatement sqlStatement,
+			final GenerationMode generationMode,
+			final String columnName,
+			final Class<O> dataType,
+			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
+			final SqlConnection connection) throws SQLException {
+		Assertion.check()
+				.isNotNull(sqlStatement)
+				.isNotNull(generationMode)
+				.isNotNull(columnName)
+				.isNotNull(dataType)
+				.isNotNull(connection);
+		//---
+		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), generationMode, new String[] { columnName }, connection)) {
+			for (final List<SqlParameter> parameters : sqlStatement.getSqlParametersForBatch()) {
+				sqlStatementDriver.setParameters(statement, parameters, basicTypeAdapters, connection);
+				statement.addBatch();
+			}
+			final OptionalInt result = traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecuteBatch(statement, tracer));
+			final List<O> generatedIds = sqlStatementDriver.getGeneratedKeys(statement, columnName, dataType, connection);
+			if (generatedIds.isEmpty()) {
+				throw new SQLException("GeneratedKeys wasNull", "23502");
+			}
+			Assertion.check()
+					.isTrue(result.getAsInt() == generatedIds.size(), "updated rows {0} != generatedKeys {1}", result.getAsInt(), generatedIds.size());
+			return Tuple.of(result.getAsInt(), generatedIds);
+		} catch (final WrappedSqlException e) {
+			throw e.getSqlException();
 		}
 	}
 
