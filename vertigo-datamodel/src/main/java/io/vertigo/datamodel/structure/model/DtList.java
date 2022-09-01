@@ -196,7 +196,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	@Override
 	public List<D> subList(final int start, final int end) {
 		if (start == end) {
-			return DtList.of(dtObjects.get(start), Collections.emptyList());
+			return new DtList<>(getDefinition());
 		}
 		return DtList.of(dtObjects.get(start), dtObjects.subList(start + 1, end));
 	}
