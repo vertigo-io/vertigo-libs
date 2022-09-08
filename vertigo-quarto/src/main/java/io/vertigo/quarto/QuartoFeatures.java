@@ -68,7 +68,7 @@ public class QuartoFeatures extends Features<QuartoFeatures> {
 		return this;
 	}
 
-	@Feature("export")
+	@Feature("exporter")
 	public QuartoFeatures withExporter(final Param... params) {
 		getModuleConfigBuilder()
 				.addComponent(ExporterManager.class, ExporterManagerImpl.class);
