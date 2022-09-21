@@ -157,10 +157,11 @@ public final class UID<E extends Entity> implements Serializable {
 	}
 
 	/**
+	 * @param <K> the type of key
 	 * @return the entity id
 	 */
-	public Serializable getId() {
-		return id;
+	public <K extends Serializable> K getId() {
+		return (K) id;
 	}
 
 	/** {@inheritDoc} */
