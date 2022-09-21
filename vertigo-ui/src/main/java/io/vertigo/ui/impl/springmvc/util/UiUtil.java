@@ -19,8 +19,6 @@ package io.vertigo.ui.impl.springmvc.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
@@ -45,13 +43,11 @@ import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.definitions.Formatter;
 import io.vertigo.ui.core.AbstractUiListUnmodifiable;
-import io.vertigo.ui.core.ViewContext;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 
@@ -61,7 +57,7 @@ import io.vertigo.vega.webservice.model.UiObject;
  */
 public final class UiUtil implements Serializable {
 
-	private static final long serialVersionUID = -5677843485950859547L;
+	private static final long serialVersionUID = -4808630902774452961L;
 	private static final Formatter DEFAULT_FORMATTER = new FormatterDefault(null);//by convention : no args
 
 	/**
@@ -79,9 +75,9 @@ public final class UiUtil implements Serializable {
 	 */
 	@Deprecated
 	public static String contextKey(final UiObject<?> uiObject) {
-		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
-		final String fieldKey = viewContext.findKey(uiObject); //key or key[row]
-		final int rowIndex = fieldKey.indexOf('[');
+		final var viewContext = UiRequestUtil.getCurrentViewContext();
+		final var fieldKey = viewContext.findKey(uiObject); //key or key[row]
+		final var rowIndex = fieldKey.indexOf('[');
 		String contextKey;
 		if (rowIndex == -1) {
 			contextKey = "vContext[" + fieldKey + "]";
@@ -98,7 +94,7 @@ public final class UiUtil implements Serializable {
 	 * @return Name in context (use for input name)
 	 */
 	public static String generateComponentUID(final String component, final String object, final String field, final String row) {
-		final StringBuilder prefix = new StringBuilder(component)
+		final var prefix = new StringBuilder(component)
 				.append(Long.toHexString(UUID.randomUUID().getLeastSignificantBits()))
 				.append("_");
 		return contextGet(prefix.toString(), object, field, row, true);
@@ -121,7 +117,7 @@ public final class UiUtil implements Serializable {
 	 * @return Name in context (use for getting key)
 	 */
 	public static String contextGet(final String object, final String field, final String row) {
-		final boolean useQuotes = row != null && !row.matches("[0-9]+"); //row is not number
+		final var useQuotes = row != null && !row.matches("[0-9]+"); //row is not number
 		return contextGet("model.vContext", object, field, row, useQuotes); //no quotes, when it's evaluated server side
 	}
 
@@ -136,7 +132,7 @@ public final class UiUtil implements Serializable {
 	}
 
 	private static String contextGet(final String prefix, final String object, final String field, final String row, final boolean useQuotes) {
-		final StringBuilder output = new StringBuilder();
+		final var output = new StringBuilder();
 		if (useQuotes) {
 			output.append('\'');
 		}
@@ -155,7 +151,7 @@ public final class UiUtil implements Serializable {
 		}
 		if (field != null) {
 			output.append('[')
-					.append(field)
+					.append(removeUiModifier(field))
 					.append(']');
 		}
 		if (useQuotes) {
@@ -194,6 +190,20 @@ public final class UiUtil implements Serializable {
 		return "";
 	}
 
+	private static String removeUiModifier(final String fieldKey) {
+		Assertion.check().isNotBlank(fieldKey, "fieldName can't be blanck");
+		//---
+		final String fieldName;
+		final var firstUnderscoreIndex = fieldKey.indexOf('_');
+		if (firstUnderscoreIndex > 0) {
+			//we have a modifier : should be coherent with MapUiObject
+			fieldName = fieldKey.substring(0, firstUnderscoreIndex);
+		} else {
+			fieldName = fieldKey;
+		}
+		return fieldName;
+	}
+
 	/**
 	 * @param fieldPath Chemin du champ
 	 * @return maxLength of the field
@@ -226,9 +236,9 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			final SmartTypeDefinition smartTypeDefinition = getDtField(object + '.' + fieldName).getSmartTypeDefinition();
+			final var smartTypeDefinition = getDtField(object + '.' + fieldName).getSmartTypeDefinition();
 			if (smartTypeDefinition.getScope().isPrimitive()) {
-				final BasicType dataType = smartTypeDefinition.getBasicType();
+				final var dataType = smartTypeDefinition.getBasicType();
 				switch (dataType) {
 					case Long:
 					case Integer:
@@ -254,7 +264,7 @@ public final class UiUtil implements Serializable {
 	 * @return rendu du champs boolean
 	 */
 	public static String formatBoolean(final String fieldPath, final Boolean value) {
-		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
+		final var smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
 			return DEFAULT_FORMATTER.valueToString(value, BasicType.Boolean);
 		}
@@ -275,10 +285,10 @@ public final class UiUtil implements Serializable {
 				.isNotNull(maxValue)
 				.isTrue(maxValue > minValue, "Unable to calculate step : maxValue '{0}' must be superior to minValue '{1}'", maxValue, minValue);
 		//---
-		final double rawStep = (maxValue - minValue) / 200; // we allow at max 200 possible values
+		final var rawStep = (maxValue - minValue) / 200; // we allow at max 200 possible values
 
-		final double index = Math.floor(Math.log10(rawStep));
-		final double step = Math.pow(10, index);
+		final var index = Math.floor(Math.log10(rawStep));
+		final var step = Math.pow(10, index);
 		if (rawStep <= step) {
 			return step;
 		} else if (rawStep <= 2 * step) {
@@ -309,7 +319,7 @@ public final class UiUtil implements Serializable {
 	 * @return Nom du champ display de cette liste
 	 */
 	public static String getDisplayField(final String uiListKey) {
-		final DtDefinition dtDefinition = getUiList(uiListKey).getDtDefinition();
+		final var dtDefinition = getUiList(uiListKey).getDtDefinition();
 		return dtDefinition.getDisplayField().get().getName();
 	}
 
@@ -318,11 +328,11 @@ public final class UiUtil implements Serializable {
 	 * @return Nom du champ de l'id de cette liste
 	 */
 	public static String getIdField(final String uiListKey) {
-		final UiList uiList = getUiList(uiListKey);
+		final var uiList = getUiList(uiListKey);
 		if (uiList instanceof AbstractUiListUnmodifiable) {
 			return ((AbstractUiListUnmodifiable) uiList).getIdFieldName();
 		}
-		final DtDefinition dtDefinition = getUiList(uiListKey).getDtDefinition();
+		final var dtDefinition = getUiList(uiListKey).getDtDefinition();
 		return dtDefinition.getIdField().get().getName();
 	}
 
@@ -332,8 +342,8 @@ public final class UiUtil implements Serializable {
 	 * @return the locale (in the quasar's style) to download the right js file
 	 */
 	public static String getCurrentLocalePrefixForQuasar() {
-		final LocaleManager localeManager = Node.getNode().getComponentSpace().resolve(LocaleManager.class);
-		final String currentLocaleTag = localeManager.getCurrentLocale().toLanguageTag();
+		final var localeManager = Node.getNode().getComponentSpace().resolve(LocaleManager.class);
+		final var currentLocaleTag = localeManager.getCurrentLocale().toLanguageTag();
 		// not so great but not other solutions (quasar's doesn't respect the standard...)
 		if (currentLocaleTag.startsWith("fr")) {
 			return "fr";
@@ -358,15 +368,15 @@ public final class UiUtil implements Serializable {
 	}
 
 	public static String compileVueJsTemplate(final String template) {
-		final JsonObject requestParameter = new JsonObject();
+		final var requestParameter = new JsonObject();
 		requestParameter.add("template", new JsonPrimitive(template));
 		final JsonObject compiledTemplate = callRestWS("http://localhost:8083/", GSON.toJson(requestParameter), JsonObject.class);
-		final String render = compiledTemplate.get("render").getAsString();
+		final var render = compiledTemplate.get("render").getAsString();
 		final List<String> staticRenderFns = StreamSupport.stream(compiledTemplate.get("staticRenderFns").getAsJsonArray().spliterator(), false)
 				.map(JsonElement::getAsString)
 				.collect(Collectors.toList());
 
-		final StringBuilder renderJsFunctions = new StringBuilder(",\r\n");
+		final var renderJsFunctions = new StringBuilder(",\r\n");
 		renderJsFunctions.append("render (h) {\r\n")
 				.append(render).append(" \r\n")
 				.append("},\r\n")
@@ -385,22 +395,22 @@ public final class UiUtil implements Serializable {
 		Assertion.check().isNotBlank(wsUrl);
 		// ---
 		try {
-			final URL url = new URL(wsUrl);
-			final HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+			final var url = new URL(wsUrl);
+			final var httpURLConnection = (HttpURLConnection) url.openConnection();
 			httpURLConnection.setConnectTimeout(500);
 			httpURLConnection.setRequestMethod("POST");
 			httpURLConnection.setRequestProperty("Content-Type", "application/json");
 			httpURLConnection.setRequestProperty("Accept", "application/json");
 			httpURLConnection.setDoOutput(true);
 
-			try (OutputStream os = httpURLConnection.getOutputStream()) {
-				final byte[] input = jsonPayload.getBytes(StandardCharsets.UTF_8);
+			try (var os = httpURLConnection.getOutputStream()) {
+				final var input = jsonPayload.getBytes(StandardCharsets.UTF_8);
 				os.write(input, 0, input.length);
 			}
 
-			final ByteArrayOutputStream result = new ByteArrayOutputStream();
-			final byte[] buffer = new byte[1024];
-			try (InputStream inputStream = httpURLConnection.getInputStream()) {
+			final var result = new ByteArrayOutputStream();
+			final var buffer = new byte[1024];
+			try (var inputStream = httpURLConnection.getInputStream()) {
 				int length;
 				while ((length = inputStream.read(buffer)) != -1) {
 					result.write(buffer, 0, length);
@@ -414,16 +424,16 @@ public final class UiUtil implements Serializable {
 	}
 
 	private static UiList getUiList(final String uiListKey) {
-		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
+		final var viewContext = UiRequestUtil.getCurrentViewContext();
 		return (UiList) viewContext.get(uiListKey);
 	}
 
 	private static DtField getDtField(final String fieldPath) {
 		Assertion.check().isTrue(fieldPath.indexOf('.') > 0, "Le champs n'est pas porté par un Object ({0})", fieldPath);
 		//Assertion.check().argument(fieldPath.indexOf('.') == fieldPath.lastIndexOf('.'), "Seul un point est autorisé ({0})", fieldPath);
-		final String contextKey = fieldPath.substring(0, fieldPath.lastIndexOf('.'));
-		final String fieldName = fieldPath.substring(fieldPath.lastIndexOf('.') + 1);
-		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
+		final var contextKey = fieldPath.substring(0, fieldPath.lastIndexOf('.'));
+		final var fieldName = removeUiModifier(fieldPath.substring(fieldPath.lastIndexOf('.') + 1));
+		final var viewContext = UiRequestUtil.getCurrentViewContext();
 		final Object contextObject = viewContext.get(contextKey);
 		Assertion.check()
 				.isNotNull(contextObject, "{0} n''est pas dans le context", contextKey)
