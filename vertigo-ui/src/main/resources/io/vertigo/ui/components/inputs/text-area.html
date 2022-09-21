@@ -27,7 +27,6 @@
 	<q-input 
 			autogrow
 			th:v-model="${model.util.vueDataKey(object, field, rowIndex)}" 
-            th::name="${model.util.contextKey(object, field, rowIndex)}"
 			th:label="${modifiableTable!=null?null:myLabel}"
             orientation="vertical"
 			stack-label
