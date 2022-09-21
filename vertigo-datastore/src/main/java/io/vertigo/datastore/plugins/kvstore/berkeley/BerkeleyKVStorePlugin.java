@@ -18,6 +18,7 @@
 package io.vertigo.datastore.plugins.kvstore.berkeley;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +37,12 @@ import com.sleepycat.je.EnvironmentConfig;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.core.daemon.DaemonScheduled;
+import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.FileUtil;
 import io.vertigo.core.util.ListBuilder;
@@ -49,7 +53,7 @@ import io.vertigo.datastore.impl.kvstore.KVStorePlugin;
  *
  * @author  pchretien, npiedeloup
  */
-public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
+public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, SimpleDefinitionProvider {
 	private static final boolean READONLY = false;
 	//cleaner : 1000 elements every minutes -> 500 simultaneous users (took about 100ms)
 	private static final Logger LOGGER = LogManager.getLogger(BerkeleyKVStorePlugin.class);
@@ -103,6 +107,11 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 		minFreeDisk = "100000000"; //Minimum free disk space to maintain, in bytes. If the limit is exceeded, write operations will be prohibited. Default to 100M.
 		this.transactionManager = transactionManager;
 		this.codecManager = codecManager;
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return Collections.singletonList(new DaemonDefinition("DmnPurgeBerkeleyKvStore$a" + hashCode(), () -> this::removeTooOldElements, REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS));
 	}
 
 	private static List<BerkeleyCollectionConfig> parseCollectionConfigs(final String collections) {
@@ -202,8 +211,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	/**
 	 * Remove too old elements.
 	 */
-	@DaemonScheduled(name = "DmnPurgeBerkeleyKvStore", periodInSeconds = REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS)
-	public void removeTooOldElements() {
+	private void removeTooOldElements() {
 		Assertion.check().isTrue(MAX_REMOVED_TOO_OLD_ELEMENTS > 0 && MAX_REMOVED_TOO_OLD_ELEMENTS < 100000, "maxRemovedTooOldElements must stay between 1 and 100000");
 		//---
 		for (final String collection : collectionNames) {
