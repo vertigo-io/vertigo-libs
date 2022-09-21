@@ -35,14 +35,14 @@ public final class ValidationsTestWebServices implements WebServices {
 	@POST("/contactValidations")
 	public Contact updateContact(final Contact contact) {
 		final UiErrorBuilder uiErrorBuilder = new UiErrorBuilder();
-		uiErrorBuilder.checkFieldNotNull(contact, "name", MessageText.of("Test name not null"));
-		uiErrorBuilder.checkFieldDateAfter(contact, "birthday", "birthday", MessageText.of("Test birthday after birthday"));
-		uiErrorBuilder.checkFieldEquals(contact, "name", "name", MessageText.of("Test name equals name"));
-		uiErrorBuilder.checkFieldLongAfter(contact, "conId", "conId", MessageText.of("Test conId after conId"));
+		uiErrorBuilder.checkFieldNotNull(contact, () -> "name", MessageText.of("Test name not null"));
+		uiErrorBuilder.checkFieldDateAfter(contact, () -> "birthday", () -> "birthday", MessageText.of("Test birthday after birthday"));
+		uiErrorBuilder.checkFieldEquals(contact, () -> "name", () -> "name", MessageText.of("Test name equals name"));
+		uiErrorBuilder.checkFieldLongAfter(contact, () -> "conId", () -> "conId", MessageText.of("Test conId after conId"));
 		if (Duration.between(contact.getBirthday().atStartOfDay(), LocalDate.now().atStartOfDay()).toDays() < 16 * 365) { //if less than 16
-			uiErrorBuilder.addError(contact, "birthday", MessageText.of("You can't add contact younger than 16"));
+			uiErrorBuilder.addError(contact, () -> "birthday", MessageText.of("You can't add contact younger than 16"));
 		}
-		uiErrorBuilder.addError(contact, "email", MessageText.of("Test error : email"));
+		uiErrorBuilder.addError(contact, () -> "email", MessageText.of("Test error : email"));
 		uiErrorBuilder.throwUserExceptionIfErrors();
 		return contact;
 	}
