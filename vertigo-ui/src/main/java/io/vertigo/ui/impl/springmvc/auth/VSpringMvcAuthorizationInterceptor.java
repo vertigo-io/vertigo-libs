@@ -18,10 +18,13 @@
 package io.vertigo.ui.impl.springmvc.auth;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -42,6 +45,9 @@ import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
  * @author npiedeloup
  */
 public final class VSpringMvcAuthorizationInterceptor implements HandlerInterceptor {
+	public static final boolean SECURED_DEV_MODE = false;
+	private static final Logger LOG = LogManager.getLogger(VSpringMvcAuthorizationInterceptor.class);
+
 	private AuthorizationManager authorizationManager;
 
 	@Override
@@ -63,7 +69,14 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 						})
 						.toArray(AuthorizationName[]::new);
 				if (!getAuthorizationManager().hasAuthorization(authorizationNames)) {
-					throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log
+					if (SECURED_DEV_MODE) {
+						final String authNames = Arrays.stream(authorizationNames)
+								.map(a -> a.name())
+								.collect(Collectors.joining(", "));
+						LOG.error("SECURED_DEV_MODE: Not enought authorizations '" + authNames + "' => keep going, don't throw VSecurityException");
+					} else {
+						throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log
+					}
 				}
 
 				final MethodParameter[] parameters = handlerMethod.getMethodParameters();
