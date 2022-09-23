@@ -21,13 +21,17 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
+import io.vertigo.vega.auth.WebAuthenticationManager;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
+import io.vertigo.vega.impl.auth.WebAuthenticationManagerImpl;
 import io.vertigo.vega.impl.token.TokenManagerImpl;
 import io.vertigo.vega.impl.webservice.WebServiceManagerImpl;
 import io.vertigo.vega.impl.webservice.catalog.CatalogWebServices;
 import io.vertigo.vega.impl.webservice.catalog.SwaggerWebServices;
 import io.vertigo.vega.impl.webservice.client.WebServiceClientProxyMethod;
+import io.vertigo.vega.plugins.auth.oidc.OIDCWebAuthenticationPlugin;
+import io.vertigo.vega.plugins.auth.saml2.SAML2WebAuthenticationPlugin;
 import io.vertigo.vega.plugins.webservice.handler.AccessTokenWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.AnalyticsWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.ApiKeyWebServiceHandlerPlugin;
@@ -153,6 +157,27 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	public VegaFeatures withWebServicesProxyClient() {
 		getModuleConfigBuilder()
 				.addProxyMethod(WebServiceClientProxyMethod.class);
+		return this;
+	}
+
+	@Feature("auth")
+	public VegaFeatures withWebAuthentication(final Param... params) {
+		getModuleConfigBuilder()
+				.addComponent(WebAuthenticationManager.class, WebAuthenticationManagerImpl.class, params);
+		return this;
+	}
+
+	@Feature("auth.saml2")
+	public VegaFeatures withSAML2WebAuthentication(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(SAML2WebAuthenticationPlugin.class, params);
+		return this;
+	}
+
+	@Feature("auth.oidc")
+	public VegaFeatures withOIDCWebAuthentication(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(OIDCWebAuthenticationPlugin.class, params);
 		return this;
 	}
 

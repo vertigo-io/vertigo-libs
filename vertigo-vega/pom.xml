@@ -64,6 +64,21 @@
             <version>${vertigo.version}</version>
             <optional>true</optional> <!-- For WebService Client proxy -->
         </dependency>
+        
+        <dependency>
+            <groupId>io.vertigo</groupId>
+            <artifactId>vertigo-oidc-connector</artifactId>
+            <version>${vertigo.version}</version>
+            <optional>true</optional> <!-- For WebService Client proxy -->
+        </dependency>
+        
+         
+        <dependency>
+            <groupId>io.vertigo</groupId>
+            <artifactId>vertigo-saml2-connector</artifactId>
+            <version>${vertigo.version}</version>
+            <optional>true</optional> <!-- For WebService Client proxy -->
+        </dependency>
 
 		<!-- libs -->
 

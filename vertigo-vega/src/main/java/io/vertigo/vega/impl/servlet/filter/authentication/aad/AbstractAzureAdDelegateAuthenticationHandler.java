@@ -63,6 +63,7 @@ import io.vertigo.vega.impl.servlet.filter.DelegateAuthenticationFilterHandler;
  * @author mlaroche
  *
  */
+@Deprecated
 public abstract class AbstractAzureAdDelegateAuthenticationHandler implements DelegateAuthenticationFilterHandler {
 
 	protected static final String PRINCIPAL_SESSION_NAME = "principal";
