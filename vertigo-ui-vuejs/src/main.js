@@ -52,7 +52,7 @@ export function install (Vue , options) {
     Vue.directive("if-unsaved-updates", VIfUnsavedUpdates);
     Vue.directive("minify", VMinify);
     Vue.directive("scroll-spy", VScrollSpy);
-
+    
     if (!options.axios) {
         console.error('You have to install axios')
         return
