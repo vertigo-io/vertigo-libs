@@ -1,4 +1,4 @@
-package io.vertigo.vega.plugins.auth.oidc;
+package io.vertigo.vega.plugins.authentication.oidc;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -62,9 +62,9 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.vega.impl.auth.CallbackResult;
-import io.vertigo.vega.impl.auth.WebAuthenticationPlugin;
-import io.vertigo.vega.impl.auth.WebAuthenticationUtil;
+import io.vertigo.vega.impl.authentication.CallbackResult;
+import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
+import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
 
 /**
  * Base authentication handler for OpenId Connect.

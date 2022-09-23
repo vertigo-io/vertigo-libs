@@ -1,4 +1,4 @@
-package io.vertigo.vega.plugins.auth.saml2;
+package io.vertigo.vega.plugins.authentication.saml2;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -60,9 +60,9 @@ import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.vega.impl.auth.CallbackResult;
-import io.vertigo.vega.impl.auth.WebAuthenticationPlugin;
-import io.vertigo.vega.impl.auth.WebAuthenticationUtil;
+import io.vertigo.vega.impl.authentication.CallbackResult;
+import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
+import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 
 /**

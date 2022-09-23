@@ -1,4 +1,4 @@
-package io.vertigo.vega.auth;
+package io.vertigo.vega.authentication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

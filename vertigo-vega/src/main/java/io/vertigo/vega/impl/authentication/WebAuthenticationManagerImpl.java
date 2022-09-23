@@ -1,4 +1,4 @@
-package io.vertigo.vega.impl.auth;
+package io.vertigo.vega.impl.authentication;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.vega.auth.WebAuthenticationManager;
+import io.vertigo.vega.authentication.WebAuthenticationManager;
 
 /**
  * Standard pattern for SSO authentication handlers.

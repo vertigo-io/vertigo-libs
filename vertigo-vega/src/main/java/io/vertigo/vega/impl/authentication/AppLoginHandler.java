@@ -1,4 +1,4 @@
-package io.vertigo.vega.impl.auth;
+package io.vertigo.vega.impl.authentication;
 
 import java.util.Map;
 
