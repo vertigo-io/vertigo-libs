@@ -12,6 +12,8 @@ import VMap from './components/VMap.vue'
 import VMapLayer from './components/VMapLayer.vue'
 import VTree from './components/VTree.vue'
 
+import VAlertUnsavedUpdates from './directives/VAlertUnsavedUpdates'
+import VIfUnsavedUpdates from './directives/VIfUnsavedUpdates'
 import VMinify from './directives/VMinify'
 import VScrollSpy from './directives/VScrollSpy'
 
@@ -44,6 +46,8 @@ export function install (Vue , options) {
     Vue.component("v-tree", VTree)
     
     // directives
+    Vue.directive("alert-unsaved-updates", VAlertUnsavedUpdates);
+    Vue.directive("if-unsaved-updates", VIfUnsavedUpdates);
     Vue.directive("minify", VMinify);
     Vue.directive("scroll-spy", VScrollSpy);
 
