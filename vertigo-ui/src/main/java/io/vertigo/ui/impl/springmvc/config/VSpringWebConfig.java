@@ -57,7 +57,10 @@ import io.vertigo.ui.impl.springmvc.argumentresolvers.VFileMethodArgumentResolve
 import io.vertigo.ui.impl.springmvc.argumentresolvers.VFileReturnValueHandler;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttributeMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewContextReturnValueAndArgumentResolver;
-import io.vertigo.ui.impl.springmvc.auth.VSpringMvcAuthorizationInterceptor;
+import io.vertigo.ui.impl.springmvc.authorization.VSpringMvcAuthorizationInterceptor;
+import io.vertigo.ui.impl.springmvc.config.interceptors.VAnnotationHandlerInterceptorImpl;
+import io.vertigo.ui.impl.springmvc.config.interceptors.VControllerInterceptorEngine;
+import io.vertigo.ui.impl.springmvc.config.interceptors.VSpringMvcViewContextInterceptor;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
 import io.vertigo.ui.impl.thymeleaf.VUiStandardDialect;
 import io.vertigo.ui.impl.thymeleaf.components.NamedComponentDefinition;
@@ -232,6 +235,11 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	public void addInterceptors(final InterceptorRegistry registry) {
 		registry.addInterceptor(new VSpringMvcAuthorizationInterceptor());
 		registry.addInterceptor(new VSpringMvcViewContextInterceptor());
+		registry.addInterceptor(new VAnnotationHandlerInterceptorImpl(getVControllerInterceptorEngines()));
+	}
+
+	protected List<Class<? extends VControllerInterceptorEngine>> getVControllerInterceptorEngines() {
+		return Collections.emptyList();
 	}
 
 	@Override

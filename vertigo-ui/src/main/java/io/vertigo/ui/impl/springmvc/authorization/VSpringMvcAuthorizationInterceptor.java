@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui.impl.springmvc.auth;
+package io.vertigo.ui.impl.springmvc.authorization;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
