@@ -126,7 +126,7 @@ public final class DtObjectsLoader implements Loader {
 		Arrays.sort(methods, Comparator.comparing(Method::getName));
 
 		//DefinitionLinks
-		final List<String> definitionLinks = extractDefinitionLinks(fields, methods);
+		final List<String> definitionLinks = extractDefinitionLinks(clazz, fields, methods);
 
 		dynamicModelRepository.put(dtDefinitionName,
 				extractDynamicDefinition(clazz, packageName, dtDefinitionName, fields, methods, definitionLinks));
@@ -144,8 +144,14 @@ public final class DtObjectsLoader implements Loader {
 
 	}
 
-	private static List<String> extractDefinitionLinks(final List<Field> fields, final Method[] methods) {
+	private static List<String> extractDefinitionLinks(final Class clazz, final List<Field> fields, final Method[] methods) {
 		final List<String> definitionLinks = new ArrayList<>();
+
+		for (final Annotation annotation : clazz.getAnnotations()) {
+			if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Fragment) {
+				definitionLinks.add(io.vertigo.datamodel.structure.stereotype.Fragment.class.cast(annotation).fragmentOf());
+			}
+		}
 
 		for (final Field field : fields) {
 			for (final Annotation annotation : field.getAnnotations()) {
