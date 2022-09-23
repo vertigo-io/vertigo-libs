@@ -18,6 +18,9 @@
 package io.vertigo.vega.impl.servlet.filter;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.FilterChain;
@@ -29,6 +32,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Node;
+import io.vertigo.core.param.ParamManager;
 
 /**
  * Filter to add CSP directives; compute a nonce if necessary and put it in request attribute.
@@ -37,8 +42,13 @@ import io.vertigo.core.lang.Assertion;
 public final class ContentSecurityPolicyFilter extends AbstractFilter {
 	public static final String NONCE_ATTRIBUTE_NAME = "nonce";
 	private static final String NONCE_PATTERN = "${nonce}";
+	private static final String COMPATIBILITY_HEADERS_ATTRIBUTE_NAME = "compatibilityHeaders";
+	private static final String EXTERNAL_URL_PATTERN = "${externalUrl}";
+	private static final String EXTERNAL_URL_PARAM_NAME = "APP_EXTERNAL_URL";
+
 	private String cspPattern;
 	private boolean useNonce = false;
+	private Map<String, String> compatibilityHeaders;
 
 	/** {@inheritDoc} */
 	@Override
@@ -47,6 +57,23 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 		cspPattern = filterConfig.getInitParameter("cspPattern");
 		Assertion.check().isNotBlank(cspPattern);
 		useNonce = cspPattern.contains(NONCE_PATTERN);
+
+		final ParamManager paramManager = Node.getNode().getComponentSpace().resolve(ParamManager.class);
+		//String.replace : => est équivalent à replaceAll sans regexp (et remplace bien toutes les occurences)
+		cspPattern = cspPattern.replace(EXTERNAL_URL_PATTERN, paramManager.getParam(EXTERNAL_URL_PARAM_NAME).getValue());
+
+		//minify de la csp car il semble que les \n soient mal interprétés
+		cspPattern = cspPattern.replaceAll("[\n\r\\s]+", " ");
+
+		final String compatibilityHeadersParam = filterConfig.getInitParameter(COMPATIBILITY_HEADERS_ATTRIBUTE_NAME);
+		final Map<String, String> tmp = new HashMap<>();
+		if (compatibilityHeadersParam != null) {
+			for (final String compatibilityHeaders : compatibilityHeadersParam.split(";")) {
+				final String[] compatibilityHeader = compatibilityHeaders.split(":");
+				tmp.put(compatibilityHeader[0].trim(), compatibilityHeader[1].trim());
+			}
+		}
+		compatibilityHeaders = Collections.unmodifiableMap(tmp);
 	}
 
 	@Override
@@ -67,6 +94,8 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 		}
 		request.setAttribute("nonce", nonce);
 		response.setHeader("Content-Security-Policy", cspToApply);
+		compatibilityHeaders.forEach(response::setHeader);
+
 		chain.doFilter(request, response);
 	}
 }
