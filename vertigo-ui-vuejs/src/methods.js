@@ -542,13 +542,18 @@ export default {
                     if (!propertyKey.startsWith("_")) {
                         // _ properties are private and don't belong to the serialized entity
                         if (Array.isArray(vueDataValue[propertyKey])) {
-                            vueDataValue[propertyKey].forEach(function (value, index) {
-                                if (vueDataValue[propertyKey][index] && typeof vueDataValue[propertyKey][index] === 'object') {
-                                    this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]['_v_inputValue']);
-                                } else {
-                                    this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]);
-                                }
-                            }.bind(this));
+                            let vueDataFieldValue = vueDataValue[propertyKey];
+                            if (!vueDataFieldValue || vueDataFieldValue.length == 0) {
+                                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', ""); // reset array with an empty string
+                            } else {
+                                vueDataFieldValue.forEach(function (value, index) {
+                                    if (vueDataFieldValue[index] && typeof vueDataFieldValue[index] === 'object') {
+                                        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]['_v_inputValue']);
+                                    } else {
+                                        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]);
+                                    }
+                                }.bind(this));
+                            }
                         } else {
                             if (vueDataValue[propertyKey] && typeof vueDataValue[propertyKey] === 'object') {
                                 this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]['_v_inputValue']);

@@ -10180,13 +10180,19 @@ function isString (v) {
           if (!propertyKey.startsWith("_")) {
             // _ properties are private and don't belong to the serialized entity
             if (Array.isArray(vueDataValue[propertyKey])) {
-              vueDataValue[propertyKey].forEach(function (value, index) {
-                if (vueDataValue[propertyKey][index] && _typeof(vueDataValue[propertyKey][index]) === 'object') {
-                  this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]['_v_inputValue']);
-                } else {
-                  this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]);
-                }
-              }.bind(this));
+              var vueDataFieldValue = vueDataValue[propertyKey];
+
+              if (!vueDataFieldValue || vueDataFieldValue.length == 0) {
+                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', ""); // reset array with an empty string
+              } else {
+                vueDataFieldValue.forEach(function (value, index) {
+                  if (vueDataFieldValue[index] && _typeof(vueDataFieldValue[index]) === 'object') {
+                    this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]['_v_inputValue']);
+                  } else {
+                    this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]);
+                  }
+                }.bind(this));
+              }
             } else {
               if (vueDataValue[propertyKey] && _typeof(vueDataValue[propertyKey]) === 'object') {
                 this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]['_v_inputValue']);
