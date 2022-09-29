@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
+import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
 
 /**
@@ -60,7 +61,7 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 
 		final ParamManager paramManager = Node.getNode().getComponentSpace().resolve(ParamManager.class);
 		//String.replace : => est équivalent à replaceAll sans regexp (et remplace bien toutes les occurences)
-		cspPattern = cspPattern.replace(EXTERNAL_URL_PATTERN, paramManager.getParam(EXTERNAL_URL_PARAM_NAME).getValue());
+		cspPattern = cspPattern.replace(EXTERNAL_URL_PATTERN, paramManager.getOptionalParam(EXTERNAL_URL_PARAM_NAME).map(Param::getValue).orElse(""));
 
 		//minify de la csp car il semble que les \n soient mal interprétés
 		cspPattern = cspPattern.replaceAll("[\n\r\\s]+", " ");

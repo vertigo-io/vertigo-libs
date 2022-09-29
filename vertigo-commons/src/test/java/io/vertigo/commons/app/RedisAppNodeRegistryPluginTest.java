@@ -37,6 +37,7 @@ public class RedisAppNodeRegistryPluginTest extends AbstractAppManagerTest {
 						.withJedis(
 								Param.of("host", redisHost),
 								Param.of("port", redisPort),
+								Param.of("ssl", "false"),
 								Param.of("database", redisDatabase))
 						.build())
 				.addModule(new CommonsFeatures()

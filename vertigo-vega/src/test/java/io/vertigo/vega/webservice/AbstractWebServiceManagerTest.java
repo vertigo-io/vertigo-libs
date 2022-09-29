@@ -1709,6 +1709,7 @@ abstract class AbstractWebServiceManagerTest {
 				.formParam("note", "Some very important notes about this file.")
 				.expect()
 				.body("globalErrors", Matchers.anyOf(
+						Matchers.contains("File upfile not found. Parts sent : upFile, id, note"),
 						Matchers.contains("File upfile not found. Parts sent : id, upFile, note"),
 						Matchers.contains("File upfile not found. Parts sent : note, upFile, id")))
 				.statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)

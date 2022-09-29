@@ -49,17 +49,19 @@ public final class VAnnotationHandlerInterceptorImpl implements HandlerIntercept
 
 	@Override
 	public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView modelAndView) throws Exception {
-		final HandlerMethod handlerMethod = (HandlerMethod) handler;
-		final VControllerInterceptor controllerInterceptor = handlerMethod.getMethodAnnotation(VControllerInterceptor.class) == null
-				? handlerMethod.getMethod().getDeclaringClass().getAnnotation(VControllerInterceptor.class)
-				: handlerMethod.getMethodAnnotation(VControllerInterceptor.class);
+		if (handler instanceof HandlerMethod) {
+			final HandlerMethod handlerMethod = (HandlerMethod) handler;
+			final VControllerInterceptor controllerInterceptor = handlerMethod.getMethodAnnotation(VControllerInterceptor.class) == null
+					? handlerMethod.getMethod().getDeclaringClass().getAnnotation(VControllerInterceptor.class)
+					: handlerMethod.getMethodAnnotation(VControllerInterceptor.class);
 
-		if (controllerInterceptor != null) { //there is custom interceptors
-			for (final var customHandlerInterceptor : controllerInterceptor.value()) {
-				final VControllerInterceptorEngine controllerHandlerPlugin = pluginsRepository.get(customHandlerInterceptor);
-				Assertion.check().isNotNull(controllerHandlerPlugin, "ControllerHandlerPlugin not initialized ({0}), you must add in VSpringWebConfig overriding the method getVControllerInterceptorEngines()", customHandlerInterceptor);
-				//---
-				controllerHandlerPlugin.postHandle(request, response, handlerMethod, modelAndView);
+			if (controllerInterceptor != null) { //there is custom interceptors
+				for (final var customHandlerInterceptor : controllerInterceptor.value()) {
+					final VControllerInterceptorEngine controllerHandlerPlugin = pluginsRepository.get(customHandlerInterceptor);
+					Assertion.check().isNotNull(controllerHandlerPlugin, "ControllerHandlerPlugin not initialized ({0}), you must add in VSpringWebConfig overriding the method getVControllerInterceptorEngines()", customHandlerInterceptor);
+					//---
+					controllerHandlerPlugin.postHandle(request, response, handlerMethod, modelAndView);
+				}
 			}
 		}
 	}

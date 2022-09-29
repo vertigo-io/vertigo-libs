@@ -84,7 +84,7 @@
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
+    		<artifactId>javax.servlet-api</artifactId>
 			<version>4.0.1</version>
 			<scope>provided</scope>
 		</dependency>
@@ -99,13 +99,13 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>9.4.44.v20210927</version>
+			<version>9.4.49.v20220914</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
 			<artifactId>websocket-server</artifactId>
-			<version>9.4.44.v20210927</version>
+			<version>9.4.49.v20220914</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -114,7 +114,7 @@
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
-			<version>4.4.0</version>
+			<version>5.2.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -149,19 +149,19 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>apache-jstl</artifactId>
-			<version>9.4.44.v20210927</version>
+			<version>9.4.49.v20220914</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-plus</artifactId>
-			<version>9.4.44.v20210927</version>
+			<version>9.4.49.v20220914</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>9.4.44.v20210927</version>
+			<version>9.4.49.v20220914</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

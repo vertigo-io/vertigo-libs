@@ -23,7 +23,7 @@
 		<dependency>
 		   <groupId>org.apache.logging.log4j</groupId>
 		   <artifactId>log4j-slf4j-impl</artifactId>
-		   <version>2.17.1</version> <!-- pour lien vers log4j de vertigo-core -->
+		   <version>2.19.0</version> <!-- pour lien vers log4j de vertigo-core -->
 		</dependency>
 
 		<dependency>
@@ -37,7 +37,7 @@
 		<dependency>
 			<groupId>org.codehaus.janino</groupId>
 			<artifactId>janino</artifactId>
-			<version>3.1.6</version>
+			<version>3.1.8</version>
 			<optional>false</optional><!-- pour JaninoExpressionEvaluatorPlugin -->
 		</dependency>
 
@@ -53,7 +53,7 @@
 		<dependency>
 		    <groupId>com.h2database</groupId>
 		    <artifactId>h2</artifactId>
-		    <version>2.1.210</version>
+		    <version>2.1.214</version>
 		    <scope>test</scope>
 		</dependency>
 

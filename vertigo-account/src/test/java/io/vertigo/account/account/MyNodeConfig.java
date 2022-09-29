@@ -53,6 +53,7 @@ public final class MyNodeConfig {
 					.withJedis(
 							Param.of("host", REDIS_HOST),
 							Param.of("port", REDIS_PORT),
+							Param.of("ssl", "false"),
 							Param.of("database", REDIS_DATABASE))
 					.build());
 		}
