@@ -26,21 +26,19 @@ import com.sleepycat.bind.tuple.TupleOutput;
 import io.vertigo.core.lang.Assertion;
 
 /**
- * @author npiedeloup
+ * Time checker, entryToObject return true if data is still valid against ttl.
+ *
+ * @author skerdudou
  */
-final class BerkeleyTimedDataBinding extends BerkeleyTimeCheckDataBinding {
-	private final TupleBinding<Serializable> serializableBinding;
+class BerkeleyTimeCheckDataBinding extends TupleBinding<Serializable> {
+	public static final String PREFIX = "TimedValue:";
+	private final long timeToLiveSeconds;
 
 	/**
-	 * @param timeToLiveSeconds Time to live, is data too old return a null data
-	 * @param serializableBinding TupleBinding for serializable value
+	 * @param timeToLiveSeconds Time to live, is data too old return false
 	 */
-	BerkeleyTimedDataBinding(final long timeToLiveSeconds, final TupleBinding<Serializable> serializableBinding) {
-		super(timeToLiveSeconds);
-		//-----
-		Assertion.check().isNotNull(serializableBinding);
-		//-----
-		this.serializableBinding = serializableBinding;
+	BerkeleyTimeCheckDataBinding(final long timeToLiveSeconds) {
+		this.timeToLiveSeconds = timeToLiveSeconds;
 	}
 
 	/** {@inheritDoc} */
@@ -49,19 +47,17 @@ final class BerkeleyTimedDataBinding extends BerkeleyTimeCheckDataBinding {
 		final String prefix = ti.readString();
 		Assertion.check().isTrue(PREFIX.equals(prefix), "Can't read this entry {0}", prefix);
 		final long createTime = ti.readLong();
-		if (isValueTooOld(createTime)) {
-			//si donnée trop vieille on fait l'économie de la déserialization
-			return null;
-		}
-		return serializableBinding.entryToObject(ti);
+		return !isValueTooOld(createTime);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void objectToEntry(final Serializable value, final TupleOutput to) {
-		to.writeString(PREFIX);
-		to.writeLong(System.currentTimeMillis());
-		serializableBinding.objectToEntry(value, to);
+		throw new UnsupportedOperationException("This data binding is for read-only.");
+	}
+
+	protected boolean isValueTooOld(final long createTime) {
+		return timeToLiveSeconds > 0 && (System.currentTimeMillis() - createTime) >= timeToLiveSeconds * 1000;
 	}
 
 }

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -37,6 +38,8 @@ import com.sleepycat.je.EnvironmentConfig;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Activeable;
@@ -51,13 +54,11 @@ import io.vertigo.datastore.impl.kvstore.KVStorePlugin;
 /**
  * Implémentation d'un store BerkeleyDB.
  *
- * @author  pchretien, npiedeloup
+ * @author pchretien, npiedeloup
  */
 public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, SimpleDefinitionProvider {
 	private static final boolean READONLY = false;
-	//cleaner : 1000 elements every minutes -> 500 simultaneous users (took about 100ms)
 	private static final Logger LOGGER = LogManager.getLogger(BerkeleyKVStorePlugin.class);
-	private static final int MAX_REMOVED_TOO_OLD_ELEMENTS = 1000;
 	private static final int REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS = 60;
 
 	private final List<BerkeleyCollectionConfig> collectionConfigs;
@@ -65,6 +66,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 
 	private final CodecManager codecManager;
 	private final VTransactionManager transactionManager;
+	private final AnalyticsManager analyticsManager;
 	private final String dbFilePathTranslated;
 	private final String minFreeDisk;
 
@@ -75,12 +77,12 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 	/**
 	 * Constructor.
 	 * Collections syntax :
-	 *  - collections are comma separated
+	 * - collections are comma separated
+	 * a revoir (param étendus
+	 * - collections may defined TimeToLive and Memory configs with a json like syntax : collName;TTL=10;inMemory
+	 * - TTL default to -1 meaning eternal
+	 * - inMemory default to false meaning store on file system
 	 *
-	 *  a revoir (param étendus
-	 *  - collections may defined TimeToLive and Memory configs with a json like syntax : collName;TTL=10;inMemory
-	 *  - TTL default to -1 meaning eternal
-	 *  - inMemory default to false meaning store on file system
 	 * @param collections List of collections managed by this plugin (comma separated)
 	 * @param dbFilePath Base Berkeley DB file system path (Could use java env param like user.home user.dir or java.io.tmpdir)
 	 * @param transactionManager Transaction manager
@@ -91,11 +93,13 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 			@ParamValue("collections") final String collections,
 			@ParamValue("dbFilePath") final String dbFilePath,
 			final VTransactionManager transactionManager,
-			final CodecManager codecManager) {
+			final CodecManager codecManager,
+			final AnalyticsManager analyticsManager) {
 		Assertion.check()
 				.isNotBlank(collections)
 				.isNotBlank(dbFilePath)
-				.isNotNull(transactionManager);
+				.isNotNull(transactionManager)
+				.isNotNull(analyticsManager);
 		//-----
 		collectionConfigs = parseCollectionConfigs(collections);
 		collectionNames = collectionConfigs
@@ -107,11 +111,14 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 		minFreeDisk = "100000000"; //Minimum free disk space to maintain, in bytes. If the limit is exceeded, write operations will be prohibited. Default to 100M.
 		this.transactionManager = transactionManager;
 		this.codecManager = codecManager;
+		this.analyticsManager = analyticsManager;
 	}
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new DaemonDefinition("DmnPurgeBerkeleyKvStore$a" + hashCode(), () -> this::removeTooOldElements, REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS));
+		final var name = "DmnPurgeBerkeleyKvStore$a" + hashCode();
+		final Supplier<Daemon> daemonSupplier = () -> () -> analyticsManager.trace("daemon", name, tracer -> removeTooOldElements());
+		return Collections.singletonList(new DaemonDefinition(name, daemonSupplier, REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS));
 	}
 
 	private static List<BerkeleyCollectionConfig> parseCollectionConfigs(final String collections) {
@@ -212,11 +219,9 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 	 * Remove too old elements.
 	 */
 	private void removeTooOldElements() {
-		Assertion.check().isTrue(MAX_REMOVED_TOO_OLD_ELEMENTS > 0 && MAX_REMOVED_TOO_OLD_ELEMENTS < 100000, "maxRemovedTooOldElements must stay between 1 and 100000");
-		//---
 		for (final String collection : collectionNames) {
 			try {
-				getDatabase(collection).removeTooOldElements(MAX_REMOVED_TOO_OLD_ELEMENTS);
+				getDatabase(collection).removeTooOldElements();
 			} catch (final DatabaseException dbe) {
 				LOGGER.error("Error closing BerkeleyContextCachePlugin (database:" + collection + ") " + dbe, dbe);
 			}
