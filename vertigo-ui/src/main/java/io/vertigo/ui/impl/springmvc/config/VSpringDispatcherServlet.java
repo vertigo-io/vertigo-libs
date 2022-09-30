@@ -28,6 +28,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerExecutionChain;
 
 import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 
@@ -49,7 +50,9 @@ public class VSpringDispatcherServlet extends DispatcherServlet {
 			if (handler instanceof HandlerMethod) {
 				final HandlerMethod handlerMethod = (HandlerMethod) handler;
 				final RequestMapping beanRequestMapping = AnnotatedElementUtils.findMergedAnnotation(handlerMethod.getBeanType(), RequestMapping.class);
+				Assertion.check().isNotNull(beanRequestMapping, "@RequestMapping is mandatory on Controller classes ({0})", handlerMethod.getBeanType().getName());
 				final RequestMapping methodRequestMapping = AnnotatedElementUtils.findMergedAnnotation(handlerMethod.getMethod(), RequestMapping.class);
+				Assertion.check().isNotNull(methodRequestMapping, "@RequestMapping is mandatory on Controller's methods ({0})", handlerMethod.getMethod().getName());
 				final String path = beanRequestMapping.path()[0] + methodRequestMapping.path()[0];
 				try {
 					getAnalyticsManager().trace(
