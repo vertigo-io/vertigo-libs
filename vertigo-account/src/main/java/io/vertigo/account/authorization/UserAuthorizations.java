@@ -216,6 +216,14 @@ public final class UserAuthorizations implements Serializable {
 	 * @return this UserAuthorizations
 	 */
 	public UserAuthorizations withSecurityKeys(final String securityKey, final Serializable value) {
+		Assertion.check()
+				.isNotBlank(securityKey)
+				.isNotNull(value, "securityKey value of {0} can't be null, it's ambigious.\n"
+						+ "If it means 'no rights' you shouldn't set this securityKey for this user. \n"
+						+ "If it means 'any value' you should use an other securityKey (like 'couldAccessXx'),\n"
+						+ "or you may check if this security field shouldn't be a securityDimensions TREE.",
+						securityKey);
+		//-----
 		mySecurityKeys.computeIfAbsent(securityKey, v -> new ArrayList<>()).add(value);
 		return this;
 	}

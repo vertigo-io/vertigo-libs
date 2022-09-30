@@ -90,18 +90,16 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 				Criteria<E> mainCriteria = null; //comment collecter en stream ?
 				for (final Serializable userValue : userValues) {
 					Assertion.check()
-							.isNotNull(userValue)
+							.isNotNull(userValue, "Null security key : {0}={1}", userPropertyValue.getUserProperty(), userValues)
 							.when(!userValue.getClass().isArray(), () -> Assertion.check()
 									.isTrue(userValue instanceof Comparable,
-											"Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName()))
+											"Security keys must be serializable AND comparable (key : {0})", userValues.getClass().getSimpleName()))
 							.when(userValue.getClass().isArray(), () -> Assertion.check()
 									.isTrue(Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
-											"Security keys must be serializable AND comparable (here : {0})", userValue.getClass().getComponentType()));
+											"Security keys must be serializable AND comparable (key : {0})", userValue.getClass().getComponentType()));
 					//----
 					mainCriteria = orCriteria(mainCriteria, toCriteria(expression.getFieldName(), expression.getOperator(), userValue));
 				}
-				//Assertion.check()
-				//		.isNotNull(mainCriteria);//can't be null
 				return mainCriteria;
 			}
 			return Criterions.alwaysFalse();
