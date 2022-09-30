@@ -18,6 +18,7 @@
 package io.vertigo.account.authorization;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import io.vertigo.account.authorization.definitions.AuthorizationName;
@@ -88,6 +89,11 @@ public final class AuthorizationUtil {
 		return new AuthorizationCriteria<>(criteria, clazz);
 	}
 
+	public static <E extends Entity> Criteria<E> getCriteriaSecurity(final Class<E> clazz, final OperationName<E> operation) {
+		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
+		return authorizationManager.getCriteriaSecurity(clazz, operation);
+	}
+
 	public static <E extends Entity> void assertOperationsWithLoadIfNeeded(final StoreVAccessor<E> entityAccessor, final OperationName<E> operation) {
 		assertOperationsWithLoadIfNeeded(entityAccessor, operation, DEFAULT_FORBIDDEN_MESSAGE);
 	}
@@ -97,5 +103,15 @@ public final class AuthorizationUtil {
 			entityAccessor.load();
 		}
 		assertOperations(entityAccessor.get(), operation, message);
+	}
+
+	public static <E extends Entity> E assertOperationsAndReturn(final Supplier<E> entityLoader, final OperationName<E> operation) {
+		return assertOperationsAndReturn(entityLoader, operation, DEFAULT_FORBIDDEN_MESSAGE);
+	}
+
+	public static <E extends Entity> E assertOperationsAndReturn(final Supplier<E> entityLoader, final OperationName<E> operation, final MessageText message) {
+		final E entity = entityLoader.get();
+		assertOperations(entity, operation, message);
+		return entity;
 	}
 }
