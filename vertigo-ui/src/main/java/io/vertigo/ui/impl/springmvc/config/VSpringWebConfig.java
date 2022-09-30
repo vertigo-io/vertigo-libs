@@ -220,10 +220,6 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	@Override
 	public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
 		if (applicationContext instanceof ConfigurableApplicationContext) {
-			//App.getApp().getComponentSpace().keySet()
-			//		.stream()
-			//		.forEach(key -> ((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton(key, App.getApp().getComponentSpace().resolve(key, Component.class)));
-
 			final VSpringMvcControllerAdvice controllerAdvice = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(VSpringMvcControllerAdvice.class);
 			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("viewContextControllerAdvice", controllerAdvice);
 			final ListAutocompleteController listAutocompleteController = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(ListAutocompleteController.class);

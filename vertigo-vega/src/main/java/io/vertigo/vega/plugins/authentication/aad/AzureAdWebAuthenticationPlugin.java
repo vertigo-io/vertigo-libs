@@ -336,8 +336,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 
 	@Override
 	public Map<String, BiFunction<HttpServletRequest, HttpServletResponse, Tuple<Boolean, HttpServletRequest>>> getUrlHandlers() {
-		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyMap();
 	}
 
 	@Override
@@ -352,7 +351,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 
 	@Override
 	public boolean doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
-		// TODO Auto-generated method stub
+		// nothing for now WIP
 		return false;
 	}
 
