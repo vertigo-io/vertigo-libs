@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -93,12 +94,17 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 	public OIDCWebAuthenticationPlugin(
 			@ParamValue("urlPrefix") final Optional<String> urlPrefixOpt,
 			@ParamValue("urlHandlerPrefix") final Optional<String> urlHandlerPrefixOpt,
-			final OIDCDeploymentConnector oidcDeploymentConnector) {
+			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
+			final List<OIDCDeploymentConnector> oidcDeploymentConnectors) {
 		urlPrefix = urlPrefixOpt.orElse("/");
 		urlHandlerPrefix = urlHandlerPrefixOpt.orElse("/OIDC/");
 		callbackUrl = urlHandlerPrefix + "callback";
 		logoutUrl = urlHandlerPrefix + "logout";
 
+		final var connectorName = connectorNameOpt.orElse("main");
+		final var oidcDeploymentConnector = oidcDeploymentConnectors.stream()
+				.filter(connector -> connectorName.equals(connector.getName()))
+				.findFirst().orElseThrow(() -> new IllegalArgumentException("Can't found OIDCDeploymentConnector named '" + connectorName + "' in " + oidcDeploymentConnectors));
 		oidcParameters = oidcDeploymentConnector.getClient();
 		clientID = new ClientID(oidcParameters.getOidcClientName());
 

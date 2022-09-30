@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -87,9 +88,14 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 	public SAML2WebAuthenticationPlugin(
 			@ParamValue("urlPrefix") final Optional<String> urlPrefixOpt,
 			@ParamValue("urlHandlerPrefix") final Optional<String> urlHandlerPrefixOpt,
-			final SAML2DeploymentConnector saml2DeploymentConnector) {
-		io.vertigo.core.lang.Assertion.check().isNotNull(saml2DeploymentConnector);
+			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
+			final List<SAML2DeploymentConnector> saml2DeploymentConnectors) {
+		io.vertigo.core.lang.Assertion.check().isNotNull(saml2DeploymentConnectors);
 		//---
+		final var connectorName = connectorNameOpt.orElse("main");
+		final var saml2DeploymentConnector = saml2DeploymentConnectors.stream()
+				.filter(connector -> connectorName.equals(connector.getName()))
+				.findFirst().orElseThrow(() -> new IllegalArgumentException("Can't found Saml2DeploymentConnector named '" + connectorName + "' in " + saml2DeploymentConnectors));
 		saml2Parameters = saml2DeploymentConnector.getClient();
 		urlPrefix = urlPrefixOpt.orElse("/");
 		urlHandlerPrefix = urlHandlerPrefixOpt.orElse("/saml/");
