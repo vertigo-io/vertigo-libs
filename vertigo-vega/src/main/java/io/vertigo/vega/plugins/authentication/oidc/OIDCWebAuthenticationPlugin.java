@@ -172,12 +172,6 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 		return oidcParameters.getExternalUrlOpt();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public String getSsoLogoutUrl() {
-		return ssoMetadata.getEndSessionEndpointURI().toString();
-	}
-
 	private void doLoadMetadata() {
 		final var issuer = new Issuer(oidcParameters.getOidcURL());
 
@@ -383,6 +377,16 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 			httpResponse.sendRedirect(authRequest.toURI().toString()); // send 302 redirect to OIDC auth endpoint
 		} catch (final IOException e) {
 			throw new VSystemException(e, "Unable to redirect user to OIDC auth endpoint.");
+		}
+	}
+
+	@Override
+	public boolean doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+		try {
+			httpResponse.sendRedirect(ssoMetadata.getEndSessionEndpointURI().toString());
+			return true;
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
 		}
 	}
 

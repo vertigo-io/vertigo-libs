@@ -25,12 +25,6 @@ public interface WebAuthenticationPlugin<T> extends Plugin {
 	String getLogoutUrl();
 
 	/**
-	 * Returns the url for logout on the sso
-	 * @return url for logout on sso
-	 */
-	String getSsoLogoutUrl();
-
-	/**
 	 * Handle the redirect to the sso login page
 	 * @param request the request
 	 * @param response the response to consume
@@ -75,5 +69,11 @@ public interface WebAuthenticationPlugin<T> extends Plugin {
 	 * @return the external url of the app : as seen by the end user
 	 */
 	Optional<String> getExternalUrlOptional();
+
+	default boolean doInterceptRequest(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+		return false;
+	}
+
+	boolean doLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse);
 
 }

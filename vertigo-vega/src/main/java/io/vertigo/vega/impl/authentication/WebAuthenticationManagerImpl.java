@@ -78,11 +78,20 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 			doRedirectToSso(request, response);
 			return Tuple.of(true, request);
 		}
+
+		if (doInterceptRequest(request, response)) {
+			return Tuple.of(true, request);
+		}
 		return Tuple.of(false, request);
 	}
 
 	private boolean isAuthenticated() {
 		return securityManager.getCurrentUserSession().map(UserSession::isAuthenticated).orElse(false);
+	}
+
+	private boolean doInterceptRequest(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+		final var plugin = getPluginForRequest(httpRequest);
+		return plugin.doInterceptRequest(httpRequest, httpResponse);
 	}
 
 	private void doRedirectToSso(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
@@ -139,12 +148,14 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		securityManager.getCurrentUserSession().ifPresent(UserSession::logout);
 		Optional.ofNullable(httpRequest.getSession(false)).ifPresent(HttpSession::invalidate);
 
-		try {
-			httpResponse.sendRedirect(plugin.getSsoLogoutUrl());
-		} catch (final IOException e) {
-			throw WrappedException.wrap(e);
+		final var isConsumed = plugin.doLogout(httpRequest, httpResponse);
+		if (!isConsumed) {
+			try {
+				httpResponse.sendRedirect(WebAuthenticationUtil.resolveExternalUrl(httpRequest, plugin.getExternalUrlOptional()) + defaultRedirectUrl);
+			} catch (final IOException e) {
+				throw WrappedException.wrap(e);
+			}
 		}
-
 		return Tuple.of(true, httpRequest);
 	}
 

@@ -31,9 +31,8 @@ import javax.servlet.http.HttpSession;
 
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.Node;
-import io.vertigo.vega.webservice.exception.SessionException;
+import io.vertigo.vega.authentication.WebAuthenticationManager;
 
 /**
  * Filtre de gestion des sessions utilisateurs bindées sur HTTP.
@@ -49,12 +48,12 @@ public final class SecurityFilter extends AbstractFilter {
 
 	private static final String NO_AUTHENTIFICATION_PATTERN_PARAM_NAME = "url-no-authentification";
 	private static final String DELEGATE_AUTHENTICATION_HANDLER_PARAM_NAME = "delegate-authentication-handler-component";
-	private Optional<DelegateAuthenticationFilterHandler> authenticationHandlerOpt;
 
 	/**
 	 * Le gestionnaire de sécurité
 	 */
 	private VSecurityManager securityManager;
+	private WebAuthenticationManager webAuthenticationManager;
 
 	private Optional<Pattern> noAuthentificationPattern;
 
@@ -62,9 +61,8 @@ public final class SecurityFilter extends AbstractFilter {
 	@Override
 	public void doInit() {
 		securityManager = Node.getNode().getComponentSpace().resolve(VSecurityManager.class);
+		webAuthenticationManager = Node.getNode().getComponentSpace().resolve(WebAuthenticationManager.class);
 		noAuthentificationPattern = parsePattern(getFilterConfig().getInitParameter(NO_AUTHENTIFICATION_PATTERN_PARAM_NAME));
-		authenticationHandlerOpt = Optional.ofNullable(getFilterConfig().getInitParameter(DELEGATE_AUTHENTICATION_HANDLER_PARAM_NAME))
-				.map(authenticationHandlerName -> Node.getNode().getComponentSpace().resolve(authenticationHandlerName, DelegateAuthenticationFilterHandler.class));
 	}
 
 	/** {@inheritDoc} */
@@ -75,52 +73,34 @@ public final class SecurityFilter extends AbstractFilter {
 
 	private void doSecurityFilter(final boolean needsAuthentification, final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final FilterChain chain)
 			throws IOException, ServletException {
-		final boolean hasSession = httpRequest.getSession(false) != null;
 
 		// On récupère la session de l'utilisateur
-		final UserSession user = obtainUserSession(httpRequest);
+		final var user = obtainUserSession(httpRequest);
 
 		try {
 			// on place la session en ThreadLocal
 			securityManager.startCurrentUserSession(user);
 
-			// 1. Persistance de UserSession dans la session HTTP.
+			// Persistance de UserSession dans la session HTTP.
 			bindUser(httpRequest, user);
 
-			// 2. Vérification que l'utilisateur est authentifié si l'adresse demandée l'exige
-			if (needsAuthentification && !user.isAuthenticated()) {
-				/*
-				 * il ne faut pas continuer
-				 * - si la session a expiré
-				 * - ou si aucune session utilisateur n'existe.
-				 */
-				if (!hasSession) {
-					httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Session Expired"); //No session found
-					httpRequest.setAttribute("SessionExpired", true);
-					throw new ServletException(new SessionException("Session Expired"));//will override the 401 error code and send a 500
-				}
-				httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED); //User not authenticated
-				//} else if (checkRequestAccess && needsAuthentification && false) { //TODO
-				//	httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
-			} else {
-				if (authenticationHandlerOpt.isPresent()) {
-					// authent workflow
-					final DelegateAuthenticationFilterHandler authenticationHandler = authenticationHandlerOpt.get();
-					try {
-						final Tuple<Boolean, HttpServletRequest> beforeOutcome = authenticationHandler.doBeforeChain(httpRequest, httpResponse);
-						if (beforeOutcome.getVal1()) {
-							return;
-						}
-						chain.doFilter(beforeOutcome.getVal2(), httpResponse);
-						authenticationHandler.doAfterChain(beforeOutcome.getVal2(), httpResponse);
-					} finally {
-						authenticationHandler.doFinally(httpRequest, httpResponse);
-					}
-				} else {
-					// nothing particular to do
-					chain.doFilter(httpRequest, httpResponse);
-				}
+			// Rien de plus à faire si la page ne nécessite pas d'authentification
+			if (!needsAuthentification) {
+				chain.doFilter(httpRequest, httpResponse);
+				return;
 			}
+
+			// authent workflow
+			try {
+				final var beforeOutcome = webAuthenticationManager.doBeforeChain(httpRequest, httpResponse);
+				if (Boolean.TRUE.equals(beforeOutcome.getVal1())) {
+					return;
+				}
+				chain.doFilter(beforeOutcome.getVal2(), httpResponse);
+			} finally {
+				// nothing
+			}
+
 		} finally {
 			// On retire le user du ThreadLocal (il est déjà en session)
 			securityManager.stopCurrentUserSession();
@@ -137,8 +117,8 @@ public final class SecurityFilter extends AbstractFilter {
 	 * @param user User
 	 */
 	private static void bindUser(final HttpServletRequest request, final UserSession user) {
-		final HttpSession session = request.getSession(true);
-		final Object o = session.getAttribute(USER_SESSION);
+		final var session = request.getSession(true);
+		final var o = session.getAttribute(USER_SESSION);
 		if (o == null || !o.equals(user)) {
 			session.setAttribute(USER_SESSION, user);
 		}
@@ -151,8 +131,8 @@ public final class SecurityFilter extends AbstractFilter {
 	 * @param request HTTPRequest
 	 */
 	private UserSession obtainUserSession(final HttpServletRequest request) {
-		final HttpSession session = request.getSession(false);
-		UserSession user = getUserSession(session);
+		final var session = request.getSession(false);
+		var user = getUserSession(session);
 		// Si la session user n'est pas créée on la crée
 		if (user == null) {
 			user = securityManager.createUserSession();

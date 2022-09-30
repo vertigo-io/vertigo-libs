@@ -144,12 +144,6 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		return saml2Parameters.getExternalUrlOpt();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public String getSsoLogoutUrl() {
-		return saml2Parameters.getLogoutUrl();
-	}
-
 	private Tuple<Boolean, HttpServletRequest> sendMetadataResponse(final HttpServletRequest request, final HttpServletResponse response) {
 		response.setContentType("text/xml");
 		try {
@@ -241,6 +235,16 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 			encoder.initialize();
 			encoder.encode(); // send redirect in httpServletResponse
 		} catch (final ComponentInitializationException | MessageEncodingException e) {
+			throw WrappedException.wrap(e);
+		}
+	}
+
+	@Override
+	public boolean doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+		try {
+			httpResponse.sendRedirect(saml2Parameters.getLogoutUrl());
+			return true;
+		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}
 	}
