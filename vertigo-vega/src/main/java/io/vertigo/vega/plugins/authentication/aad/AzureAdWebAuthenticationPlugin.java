@@ -70,7 +70,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 				.filter(connector -> connectorName.equals(connector.getName()))
 				.findFirst().orElseThrow(() -> new IllegalArgumentException("Can't found AzureAdConnector named '" + connectorName + "' in " + azureAdConnectors));
 		urlPrefix = urlPrefixOpt.orElse("/");
-		urlHandlerPrefix = urlHandlerPrefixOpt.orElse("/keycloak/");
+		urlHandlerPrefix = urlHandlerPrefixOpt.orElse("/aad/");
 		callbackUrl = urlHandlerPrefix + "callback";
 		logoutUrl = urlHandlerPrefix + "logout";
 	}

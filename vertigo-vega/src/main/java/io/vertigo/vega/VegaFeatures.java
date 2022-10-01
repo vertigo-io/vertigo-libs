@@ -32,6 +32,7 @@ import io.vertigo.vega.impl.webservice.catalog.SwaggerWebServices;
 import io.vertigo.vega.impl.webservice.client.WebServiceClientProxyMethod;
 import io.vertigo.vega.plugins.authentication.aad.AzureAdWebAuthenticationPlugin;
 import io.vertigo.vega.plugins.authentication.keycloak.KeycloakWebAuthenticationPlugin;
+import io.vertigo.vega.plugins.authentication.local.LocalWebAuthenticationPlugin;
 import io.vertigo.vega.plugins.authentication.oidc.OIDCWebAuthenticationPlugin;
 import io.vertigo.vega.plugins.authentication.saml2.SAML2WebAuthenticationPlugin;
 import io.vertigo.vega.plugins.webservice.handler.AccessTokenWebServiceHandlerPlugin;
@@ -194,6 +195,13 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	public VegaFeatures withAzureAdWebAuthentication(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(AzureAdWebAuthenticationPlugin.class, params);
+		return this;
+	}
+
+	@Feature("authentication.local")
+	public VegaFeatures withLocalWebAuthentication(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(LocalWebAuthenticationPlugin.class, params);
 		return this;
 	}
 
