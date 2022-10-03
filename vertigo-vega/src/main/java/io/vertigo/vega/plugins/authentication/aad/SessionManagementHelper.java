@@ -19,11 +19,11 @@ import io.vertigo.core.util.StringUtil;
  */
 class SessionManagementHelper {
 
-	static final String STATE = "state";
+	protected static final String STATE = "state";
+	protected static final String FAILED_TO_VALIDATE_MESSAGE = "Failed to validate data received from Authorization service - ";
+
 	private static final String STATES = "states";
 	private static final Integer STATE_TTL = 3600;
-
-	static final String FAILED_TO_VALIDATE_MESSAGE = "Failed to validate data received from Authorization service - ";
 
 	static StateData validateState(final HttpSession session, final String state) throws Exception {
 		if (!StringUtil.isBlank(state)) {
@@ -57,6 +57,7 @@ class SessionManagementHelper {
 				states.remove(state);
 				return stateData;
 			}
+			session.setAttribute(STATES, states);
 		}
 		return null;
 	}
@@ -81,7 +82,9 @@ class SessionManagementHelper {
 		if (session.getAttribute(STATES) == null) {
 			session.setAttribute(STATES, new HashMap<String, StateData>());
 		}
-		((Map<String, StateData>) session.getAttribute(STATES)).put(state, new StateData(nonce, new Date(), requestedUri));
+		final var states = ((Map<String, StateData>) session.getAttribute(STATES));
+		states.put(state, new StateData(nonce, new Date(), requestedUri));
+		session.setAttribute(STATES, states);
 	}
 
 	static void storeTokenCacheInSession(final HttpServletRequest httpServletRequest, final String tokenCache) {

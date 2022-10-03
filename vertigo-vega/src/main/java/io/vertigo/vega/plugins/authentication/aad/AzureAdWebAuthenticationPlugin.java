@@ -48,8 +48,8 @@ import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
 
 public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<IAuthenticationResult> {
 
-	static final String PRINCIPAL_SESSION_NAME = "principal";
-	static final String TOKEN_CACHE_SESSION_ATTRIBUTE = "token_cache";
+	protected static final String PRINCIPAL_SESSION_NAME = "principal";
+	protected static final String TOKEN_CACHE_SESSION_ATTRIBUTE = "token_cache";
 	private final AzureAdConnector azureAdConnector;
 
 	private final String urlPrefix;
@@ -311,7 +311,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 
 			result = future.get();
 		} catch (final ExecutionException e) {
-			throw e.getCause();
+			throw WrappedException.wrap(e);
 		}
 
 		if (result == null) {

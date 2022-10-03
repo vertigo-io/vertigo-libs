@@ -13,6 +13,7 @@ import java.util.function.BiFunction;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -187,6 +188,9 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		final Document document;
 		try {
 			final var factory = DocumentBuilderFactory.newInstance();
+			factory.setFeature("http://xml.org/sax/features/external-general-entities", Boolean.FALSE);
+			factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
 			final var builder = factory.newDocumentBuilder();
 			document = builder.newDocument();
 			final var out = XMLObjectProviderRegistrySupport.getMarshallerFactory().getMarshaller(spEntityDescriptor);

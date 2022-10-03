@@ -1,8 +1,11 @@
 package io.vertigo.vega.plugins.authentication.aad;
 
+import java.io.Serializable;
 import java.util.Date;
 
-class StateData {
+class StateData implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private final String nonce;
 	private final String requestedUri;
 	private final Date expirationDate;
