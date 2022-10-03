@@ -61,7 +61,7 @@ import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.vega.impl.authentication.CallbackResult;
+import io.vertigo.vega.impl.authentication.AuthenticationResult;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
@@ -268,7 +268,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 	}
 
 	@Override
-	public CallbackResult<Assertion> doHandleCallback(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+	public AuthenticationResult<Assertion> doHandleCallback(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
 		final var rawSamlResponse = httpRequest.getParameter("SAMLResponse");
 		final var base64DecodedResponse = Base64.getDecoder().decode(rawSamlResponse);
 
@@ -292,7 +292,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		final var assertion = getAssertion(response);
 
 		final var claims = OpenSAMLHelper.extractAttributes(assertion);
-		return CallbackResult.of(claims, assertion);
+		return AuthenticationResult.of(claims, assertion);
 	}
 
 	private boolean checkSignature(final Signature sig) {

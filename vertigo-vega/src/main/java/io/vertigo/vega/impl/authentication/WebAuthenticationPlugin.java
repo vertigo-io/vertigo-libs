@@ -37,7 +37,7 @@ public interface WebAuthenticationPlugin<T> extends Plugin {
 	 * @param httpResponse the response to consume
 	 * @return result of login challenge, providing info of the logged in user
 	 */
-	CallbackResult<T> doHandleCallback(HttpServletRequest httpRequest, HttpServletResponse httpResponse);
+	AuthenticationResult<T> doHandleCallback(HttpServletRequest httpRequest, HttpServletResponse httpResponse);
 
 	/**
 	 * Register additionnal handler for specific request necessary for the plugin
@@ -70,8 +70,8 @@ public interface WebAuthenticationPlugin<T> extends Plugin {
 	 */
 	Optional<String> getExternalUrlOptional();
 
-	default boolean doInterceptRequest(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
-		return false;
+	default AuthenticationResult<T> doInterceptRequest(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+		return AuthenticationResult.ofNotConsumed();
 	}
 
 	boolean doLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse);

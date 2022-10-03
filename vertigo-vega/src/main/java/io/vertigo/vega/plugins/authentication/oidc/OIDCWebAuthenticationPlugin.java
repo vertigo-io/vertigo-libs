@@ -63,7 +63,7 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.vega.impl.authentication.CallbackResult;
+import io.vertigo.vega.impl.authentication.AuthenticationResult;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
 
@@ -238,7 +238,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 
 	/** {@inheritDoc} */
 	@Override
-	public CallbackResult<AuthorizationSuccessResponse> doHandleCallback(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+	public AuthenticationResult<AuthorizationSuccessResponse> doHandleCallback(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
 		final var successResponse = parseResponseRequest(httpRequest);
 		final var state = successResponse.getState();
 		final var stateData = SessionManagementHelper.retrieveStateDataFromSession(httpRequest.getSession(), state.getValue());
@@ -252,7 +252,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 
 		final var userInfos = doGetUserInfos(oidcTokens.getAccessToken());
 
-		return CallbackResult.of(userInfos.toJSONObject(), successResponse);
+		return AuthenticationResult.of(userInfos.toJSONObject(), successResponse);
 	}
 
 	private URI resolveCallbackUri(final HttpServletRequest httpRequest) {

@@ -42,7 +42,7 @@ import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.vega.impl.authentication.CallbackResult;
+import io.vertigo.vega.impl.authentication.AuthenticationResult;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
 
@@ -107,8 +107,9 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 	}
 
 	@Override
-	public boolean doInterceptRequest(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
-		if (isAccessTokenExpired(httpRequest)) {
+	public AuthenticationResult<IAuthenticationResult> doInterceptRequest(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+		if (httpRequest.getSession().getAttribute(AzureAdWebAuthenticationPlugin.PRINCIPAL_SESSION_NAME) != null
+				&& isAccessTokenExpired(httpRequest)) {
 			try {
 				final var authResult = getAuthResultBySilentFlow(httpRequest);
 				SessionManagementHelper.setSessionPrincipal(httpRequest, authResult);
@@ -116,11 +117,11 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 				WrappedException.wrap(e);
 			}
 		}
-		return false;
+		return AuthenticationResult.ofNotConsumed();
 	}
 
 	@Override
-	public CallbackResult<IAuthenticationResult> doHandleCallback(final HttpServletRequest request, final HttpServletResponse response) {
+	public AuthenticationResult<IAuthenticationResult> doHandleCallback(final HttpServletRequest request, final HttpServletResponse response) {
 
 		try {
 			final String currentUri = request.getRequestURL().toString();
@@ -134,14 +135,14 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 			// response should have authentication code, which will be used to acquire access token
 			// we also retrieve the orignal uri requested before the OIDC flow
 			processAuthenticationCodeRedirect(request, currentUriWithScheme, fullUrl);
-			return CallbackResult.of(Map.of(), SessionManagementHelper.getAuthSessionObject(request));
+			return AuthenticationResult.of(Map.of(), SessionManagementHelper.getAuthSessionObject(request));
 
 		} catch (final MsalException authException) {
 			// something went wrong (like expiration or revocation of token)
 			// we should invalidate AuthData stored in session and redirect to Authorization server
 			SessionManagementHelper.removePrincipalFromSession(request);
 			doRedirectToSso(request, response);
-			return CallbackResult.ofConsumed();
+			return AuthenticationResult.ofConsumed();
 		} catch (final Throwable e) {
 			throw WrappedException.wrap(e);
 		}
@@ -152,19 +153,15 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 	public void doRedirectToSso(final HttpServletRequest request, final HttpServletResponse response) {
 		// check if user has a AuthData in the session
 		if (request.getSession().getAttribute(PRINCIPAL_SESSION_NAME) == null) {
-			final String currentUri = request.getRequestURL().toString();
-			final String currentUriWithoutScheme = currentUri.substring(currentUri.indexOf("://"));
-			final String scheme = Optional.ofNullable(request.getHeader("x-forwarded-proto")).orElseGet(request::getScheme);
-			final String currentUriWithScheme = scheme + currentUriWithoutScheme;
 			final String queryStr = request.getQueryString();
-			final String fullUrl = currentUriWithScheme + (queryStr != null ? "?" + queryStr : "");
+			final String redirectUri = request.getRequestURI().substring(request.getContextPath().length()) + (queryStr != null ? "?" + queryStr : "");
 			// not authenticated, redirecting to login.microsoft.com so user can authenticate
 			sendAuthRedirect(
 					request,
 					response,
 					null,
 					WebAuthenticationUtil.resolveExternalUrl(request, getExternalUrlOptional()) + getCallbackUrl(),
-					fullUrl);
+					redirectUri);
 		}
 
 	}

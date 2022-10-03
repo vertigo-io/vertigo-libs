@@ -13,14 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.vega.impl.authentication.CallbackResult;
+import io.vertigo.vega.impl.authentication.AuthenticationResult;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
-import io.vertigo.vega.plugins.authentication.local.LocalWebAuthenticationPlugin.NoOpCallbackResult;
 
-public class LocalWebAuthenticationPlugin implements WebAuthenticationPlugin<NoOpCallbackResult> {
-
-	private static final NoOpCallbackResult NO_OP_CALLBACK_RESULT = new NoOpCallbackResult();
+public class LocalWebAuthenticationPlugin implements WebAuthenticationPlugin<AuthenticationResult> {
 
 	private final String loginUrl;
 	private final Optional<String> appExternalUrlOpt;
@@ -75,15 +72,8 @@ public class LocalWebAuthenticationPlugin implements WebAuthenticationPlugin<NoO
 	}
 
 	@Override
-	public CallbackResult<NoOpCallbackResult> doHandleCallback(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
-		return CallbackResult.of(Collections.emptyMap(), NO_OP_CALLBACK_RESULT);
-	}
-
-	public static class NoOpCallbackResult {
-		// nothing
-		private NoOpCallbackResult() {
-			// private
-		}
+	public AuthenticationResult doHandleCallback(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+		return AuthenticationResult.ofNoOp();
 	}
 
 	@Override

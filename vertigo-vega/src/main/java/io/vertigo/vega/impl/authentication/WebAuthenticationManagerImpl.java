@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.lang.Assertion;
@@ -33,6 +34,7 @@ import io.vertigo.vega.authentication.WebAuthenticationManager;
 public final class WebAuthenticationManagerImpl implements WebAuthenticationManager {
 
 	private final VSecurityManager securityManager;
+	private final Optional<AuthenticationManager> authenticationManagerOpt;
 	private final String appLoginHandler;
 	private final String defaultRedirectUrl;
 	private final Map<String, WebAuthenticationPlugin> webAuthenticationPluginsByUrlPrefix;
@@ -45,6 +47,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 			@ParamValue("appLoginHandler") final String appLoginHandler,
 			@ParamValue("defaultRedirectUrl") final String defaultRedirectUrl,
 			final VSecurityManager securityManager,
+			final Optional<AuthenticationManager> authenticationManagerOpt,
 			final List<WebAuthenticationPlugin> webAuthenticationPlugins) {
 		Assertion.check()
 				.isNotBlank(defaultRedirectUrl)
@@ -52,6 +55,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 				.isNotNull(webAuthenticationPlugins);
 		//---
 		this.securityManager = securityManager;
+		this.authenticationManagerOpt = authenticationManagerOpt;
 		this.appLoginHandler = appLoginHandler;
 		this.defaultRedirectUrl = defaultRedirectUrl;
 		// on ajoute les urlHandlerParDefaut : login et logout
@@ -69,29 +73,24 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 	/** {@inheritDoc} */
 	@Override
 	public Tuple<Boolean, HttpServletRequest> doBeforeChain(final HttpServletRequest request, final HttpServletResponse response) {
+		final var plugin = getPluginForRequest(request);
+		final var interceptResult = plugin.doInterceptRequest(request, response);
+		if (interceptResult.isRequestConsumed()) {
+			return Tuple.of(true, request);
+		} else if (interceptResult.getRawCallbackResult() != null && !isAuthenticated()) {
+			return appLogin(request, response, interceptResult, plugin.getRequestedUri(request));
+		}
+
 		final var urlhandler = urlHandlerMap.get(request.getServletPath());
 		if (urlhandler != null) {
 			return urlhandler.apply(request, response);
 		}
-
 		if (!isAuthenticated()) {
 			doRedirectToSso(request, response);
 			return Tuple.of(true, request);
 		}
 
-		if (doInterceptRequest(request, response)) {
-			return Tuple.of(true, request);
-		}
 		return Tuple.of(false, request);
-	}
-
-	private boolean isAuthenticated() {
-		return securityManager.getCurrentUserSession().map(UserSession::isAuthenticated).orElse(false);
-	}
-
-	private boolean doInterceptRequest(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
-		final var plugin = getPluginForRequest(httpRequest);
-		return plugin.doInterceptRequest(httpRequest, httpResponse);
 	}
 
 	private void doRedirectToSso(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
@@ -112,11 +111,53 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 			return Tuple.of(true, httpRequest);
 		}
 
-		final var appLoginHandlerInstance = Node.getNode().getComponentSpace().resolve(appLoginHandler, AppLoginHandler.class);
-		appLoginHandlerInstance.doLogin(httpRequest, restult.getClaims(), restult.getRawCallbackResult());
-		doHandleRedirect(httpRequest, httpResponse, requestedUri);
+		return appLogin(httpRequest, httpResponse, restult, requestedUri);
 
+	}
+
+	/**
+	 * Handle user redirect after login.
+	 *
+	 * @param httpRequest HttpRequest
+	 * @param httpResponse HttpResponse
+	 * @param requestedUrl Original user requested URL (relative, with context path and query params).
+	 */
+	private void doHandleRedirect(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final String requestedUrL) {
+		final var plugin = getPluginForRequest(httpRequest);
+		final var resolvedRedirect = StringUtil.isBlank(requestedUrL) ? defaultRedirectUrl : requestedUrL;
+		try {
+			httpResponse.sendRedirect(WebAuthenticationUtil.resolveExternalUrl(httpRequest, plugin.getExternalUrlOptional()) + resolvedRedirect);
+		} catch (final IOException e) {
+			throw new VSystemException(e, "Unable to redirect user request after login.");
+		}
+	}
+
+	private Tuple<Boolean, HttpServletRequest> handleLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+		final var plugin = getPluginForUrlCallBackRequest(httpRequest);
+		securityManager.getCurrentUserSession().ifPresent(UserSession::logout);
+		Optional.ofNullable(httpRequest.getSession(false)).ifPresent(HttpSession::invalidate);
+		authenticationManagerOpt.ifPresent(AuthenticationManager::logout);
+
+		final var isConsumed = plugin.doLogout(httpRequest, httpResponse);
+		if (!isConsumed) {
+			try {
+				httpResponse.sendRedirect(WebAuthenticationUtil.resolveExternalUrl(httpRequest, plugin.getExternalUrlOptional()) + defaultRedirectUrl);
+			} catch (final IOException e) {
+				throw WrappedException.wrap(e);
+			}
+		}
 		return Tuple.of(true, httpRequest);
+	}
+
+	private Tuple<Boolean, HttpServletRequest> appLogin(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationResult interceptResult, final String redirectUri) {
+		final var appLoginHandlerInstance = Node.getNode().getComponentSpace().resolve(appLoginHandler, AppLoginHandler.class);
+		appLoginHandlerInstance.doLogin(request, interceptResult.getClaims(), interceptResult.getRawCallbackResult());
+		if (isAuthenticated()) {
+			doHandleRedirect(request, response, redirectUri);
+		} else {
+			appLoginHandlerInstance.loginFailed(request, response);
+		}
+		return Tuple.of(true, request);
 	}
 
 	private final WebAuthenticationPlugin getPluginForUrlCallBackRequest(final HttpServletRequest httpRequest) {
@@ -143,37 +184,8 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 				.getValue();
 	}
 
-	private Tuple<Boolean, HttpServletRequest> handleLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
-		final var plugin = getPluginForUrlCallBackRequest(httpRequest);
-		securityManager.getCurrentUserSession().ifPresent(UserSession::logout);
-		Optional.ofNullable(httpRequest.getSession(false)).ifPresent(HttpSession::invalidate);
-
-		final var isConsumed = plugin.doLogout(httpRequest, httpResponse);
-		if (!isConsumed) {
-			try {
-				httpResponse.sendRedirect(WebAuthenticationUtil.resolveExternalUrl(httpRequest, plugin.getExternalUrlOptional()) + defaultRedirectUrl);
-			} catch (final IOException e) {
-				throw WrappedException.wrap(e);
-			}
-		}
-		return Tuple.of(true, httpRequest);
-	}
-
-	/**
-	 * Handle user redirect after login.
-	 *
-	 * @param httpRequest HttpRequest
-	 * @param httpResponse HttpResponse
-	 * @param requestedUrl Original user requested URL (relative, with context path and query params).
-	 */
-	private void doHandleRedirect(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final String requestedUrL) {
-		final var plugin = getPluginForRequest(httpRequest);
-		final var resolvedRedirect = StringUtil.isBlank(requestedUrL) ? defaultRedirectUrl : requestedUrL;
-		try {
-			httpResponse.sendRedirect(WebAuthenticationUtil.resolveExternalUrl(httpRequest, plugin.getExternalUrlOptional()) + resolvedRedirect);
-		} catch (final IOException e) {
-			throw new VSystemException(e, "Unable to redirect user request after login.");
-		}
+	private boolean isAuthenticated() {
+		return securityManager.getCurrentUserSession().map(UserSession::isAuthenticated).orElse(false);
 	}
 
 }
