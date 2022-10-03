@@ -37,6 +37,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 	private final Optional<AuthenticationManager> authenticationManagerOpt;
 	private final String appLoginHandler;
 	private final String defaultRedirectUrl;
+	private final String disconnectedUrl;
 	private final Map<String, WebAuthenticationPlugin> webAuthenticationPluginsByUrlPrefix;
 	private final Map<String, WebAuthenticationPlugin> webAuthenticationPluginsByUrlHandlerPrefix;
 
@@ -46,11 +47,13 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 	public WebAuthenticationManagerImpl(
 			@ParamValue("appLoginHandler") final String appLoginHandler,
 			@ParamValue("defaultRedirectUrl") final String defaultRedirectUrl,
+			@ParamValue("disconnectedUrl") final Optional<String> disconnectedUrlOpt,
 			final VSecurityManager securityManager,
 			final Optional<AuthenticationManager> authenticationManagerOpt,
 			final List<WebAuthenticationPlugin> webAuthenticationPlugins) {
 		Assertion.check()
 				.isNotBlank(defaultRedirectUrl)
+				.isNotNull(disconnectedUrlOpt)
 				.isNotNull(securityManager)
 				.isNotNull(webAuthenticationPlugins);
 		//---
@@ -58,6 +61,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		this.authenticationManagerOpt = authenticationManagerOpt;
 		this.appLoginHandler = appLoginHandler;
 		this.defaultRedirectUrl = defaultRedirectUrl;
+		disconnectedUrl = disconnectedUrlOpt.orElse(defaultRedirectUrl);
 		// on ajoute les urlHandlerParDefaut : login et logout
 		webAuthenticationPlugins.forEach(plugin -> {
 			urlHandlerMap.put(plugin.getCallbackUrl(), this::handleCallback);
@@ -135,13 +139,13 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 	private Tuple<Boolean, HttpServletRequest> handleLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
 		final var plugin = getPluginForUrlCallBackRequest(httpRequest);
 		securityManager.getCurrentUserSession().ifPresent(UserSession::logout);
-		Optional.ofNullable(httpRequest.getSession(false)).ifPresent(HttpSession::invalidate);
 		authenticationManagerOpt.ifPresent(AuthenticationManager::logout);
 
 		final var isConsumed = plugin.doLogout(httpRequest, httpResponse);
+		Optional.ofNullable(httpRequest.getSession(false)).ifPresent(HttpSession::invalidate);
 		if (!isConsumed) {
 			try {
-				httpResponse.sendRedirect(WebAuthenticationUtil.resolveExternalUrl(httpRequest, plugin.getExternalUrlOptional()) + defaultRedirectUrl);
+				httpResponse.sendRedirect(WebAuthenticationUtil.resolveExternalUrl(httpRequest, plugin.getExternalUrlOptional()) + disconnectedUrl);
 			} catch (final IOException e) {
 				throw WrappedException.wrap(e);
 			}

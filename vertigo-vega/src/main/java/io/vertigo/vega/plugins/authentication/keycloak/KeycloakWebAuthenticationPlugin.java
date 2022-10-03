@@ -157,8 +157,7 @@ public class KeycloakWebAuthenticationPlugin implements WebAuthenticationPlugin<
 		final OIDCFilterSessionStore tokenStore = new OIDCFilterSessionStore(httpRequest, facade, 100000, deployment, idMapper);
 		try {
 			tokenStore.buildWrapper().logout();
-			httpResponse.sendRedirect(deployment.getLogoutUrl().build().toURL().toString());
-			return true;
+			return false;
 		} catch (final Exception e) {
 			throw WrappedException.wrap(e);
 		}
