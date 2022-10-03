@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -31,7 +32,7 @@ import javax.servlet.http.HttpSession;
 
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.core.node.Node;
+import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.vega.authentication.WebAuthenticationManager;
 
 /**
@@ -51,16 +52,18 @@ public final class SecurityFilter extends AbstractFilter {
 	/**
 	 * Le gestionnaire de sécurité
 	 */
+	@Inject
 	private VSecurityManager securityManager;
-	private WebAuthenticationManager webAuthenticationManager;
+
+	@Inject
+	private Optional<WebAuthenticationManager> webAuthenticationManagerOpt;
 
 	private Optional<Pattern> noAuthentificationPattern;
 
 	/** {@inheritDoc} */
 	@Override
 	public void doInit() {
-		securityManager = Node.getNode().getComponentSpace().resolve(VSecurityManager.class);
-		webAuthenticationManager = Node.getNode().getComponentSpace().resolve(WebAuthenticationManager.class);
+		InjectorUtil.injectMembers(this);
 		noAuthentificationPattern = parsePattern(getFilterConfig().getInitParameter(NO_AUTHENTIFICATION_PATTERN_PARAM_NAME));
 	}
 
@@ -89,15 +92,17 @@ public final class SecurityFilter extends AbstractFilter {
 				return;
 			}
 
-			// authent workflow
-			try {
-				final var beforeOutcome = webAuthenticationManager.doBeforeChain(httpRequest, httpResponse);
-				if (Boolean.TRUE.equals(beforeOutcome.getVal1())) {
-					return;
+			if (webAuthenticationManagerOpt.isPresent()) {
+				// authent workflow
+				try {
+					final var beforeOutcome = webAuthenticationManagerOpt.get().doBeforeChain(httpRequest, httpResponse);
+					if (Boolean.TRUE.equals(beforeOutcome.getVal1())) {
+						return;
+					}
+					chain.doFilter(beforeOutcome.getVal2(), httpResponse);
+				} finally {
+					// nothing
 				}
-				chain.doFilter(beforeOutcome.getVal2(), httpResponse);
-			} finally {
-				// nothing
 			}
 
 		} finally {
