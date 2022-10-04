@@ -34,6 +34,7 @@ import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.vega.authentication.WebAuthenticationManager;
+import io.vertigo.vega.webservice.exception.SessionException;
 
 /**
  * Filtre de gestion des sessions utilisateurs bindées sur HTTP.
@@ -75,7 +76,7 @@ public final class SecurityFilter extends AbstractFilter {
 
 	private void doSecurityFilter(final boolean needsAuthentification, final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final FilterChain chain)
 			throws IOException, ServletException {
-
+		final boolean hasSession = httpRequest.getSession(false) != null;
 		// On récupère la session de l'utilisateur
 		final var user = obtainUserSession(httpRequest);
 
@@ -102,6 +103,20 @@ public final class SecurityFilter extends AbstractFilter {
 					chain.doFilter(beforeOutcome.getVal2(), httpResponse);
 				} finally {
 					// nothing
+				}
+			} else {
+				if (!user.isAuthenticated()) {
+					/*
+					 * We need to stop if no session exist or it has expired
+					 */
+					if (!hasSession) {
+						httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Session Expired"); //No session found
+						httpRequest.setAttribute("SessionExpired", true);
+						throw new ServletException(new SessionException("Session Expired"));//will override the 401 error code and send a 500
+					}
+					httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED); //User not authenticated
+				} else {
+					chain.doFilter(httpRequest, httpResponse);
 				}
 			}
 
