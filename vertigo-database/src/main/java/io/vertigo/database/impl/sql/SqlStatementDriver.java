@@ -67,8 +67,6 @@ final class SqlStatementDriver {
 
 	private static final int FETCH_SIZE = 150;
 
-	private static final int GENERATED_KEYS_INDEX = 1;
-
 	SqlStatementDriver() {
 	}
 
@@ -287,7 +285,7 @@ final class SqlStatementDriver {
 				throw new SQLException("GeneratedKeys empty", "02000", NO_GENERATED_KEY_ERROR_VENDOR_CODE);
 			}
 			//ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
-			final int pkRsCol = GENERATED_KEYS_INDEX;//attention le pkRsCol correspond au n° de column dans le RETURNING
+			final int pkRsCol = rs.findColumn(columnName); //on cherche le bon index de la pk (certaines bdd retournent toutes les colonnes : la pk n'est pas forcément la 1ere)
 			final O id = sqlMapping.getValueForResultSet(rs, pkRsCol, dataType);
 			if (rs.wasNull()) {
 				throw new SQLException("GeneratedKeys wasNull", "23502", NULL_GENERATED_KEY_ERROR_VENDOR_CODE);

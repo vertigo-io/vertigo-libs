@@ -81,7 +81,7 @@ public final class PostgreSqlDataBaseManagerTest extends AbstractSqlManagerTest 
 
 	@Override
 	protected GenerationMode getExpectedGenerationMode() {
-		return GenerationMode.GENERATED_KEYS;
+		return GenerationMode.GENERATED_COLUMNS;
 	}
 
 	@Override
