@@ -35,6 +35,7 @@ import com.github.miachm.sods.SpreadSheet;
 import com.github.miachm.sods.Style;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
@@ -66,6 +67,7 @@ final class ODSExporter {
 
 	private final EntityStoreManager entityStoreManager;
 	private final SmartTypeManager smartTypeManager;
+	private final Map<Class, BasicTypeAdapter> exportAdapters;
 
 	/**
 	 * Constructor.
@@ -78,6 +80,7 @@ final class ODSExporter {
 		//-----
 		this.entityStoreManager = entityStoreManager;
 		this.smartTypeManager = smartTypeManager;
+		exportAdapters = smartTypeManager.getTypeAdapters("export");
 	}
 
 	/**
@@ -172,7 +175,7 @@ final class ODSExporter {
 			Object value;
 			for (final ExportField exportColumn : parameters.getExportFields()) {
 				final Range cell = sheet.getRange(rowIndex, cellIndex);
-				value = ExporterUtil.getValue(entityStoreManager, smartTypeManager, referenceCache, denormCache, dto, exportColumn);
+				value = ExporterUtil.getValue(entityStoreManager, smartTypeManager, exportAdapters, referenceCache, denormCache, dto, exportColumn);
 				putValueInCell(smartTypeManager, value, cell, getRowCellStyle(rowIndex % 2 == 0), cellIndex, maxWidthPerColumn, exportColumn.getDtField().getSmartTypeDefinition());
 
 				cellIndex++;
@@ -197,7 +200,7 @@ final class ODSExporter {
 			updateMaxWidthPerColumn(label.getDisplay(), 1.2, labelCellIndex, maxWidthPerColumn); // +20% pour les majuscules
 
 			final Range valueCell = sheet.getRange(rowIndex, valueCellIndex);
-			value = ExporterUtil.getValue(entityStoreManager, smartTypeManager, referenceCache, denormCache, dto, exportColumn);
+			value = ExporterUtil.getValue(entityStoreManager, smartTypeManager, exportAdapters, referenceCache, denormCache, dto, exportColumn);
 			putValueInCell(smartTypeManager, value, valueCell, getRowCellStyle(false), valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().getSmartTypeDefinition());
 			rowIndex++;
 		}

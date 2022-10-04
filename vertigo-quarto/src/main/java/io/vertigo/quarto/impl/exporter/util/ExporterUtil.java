@@ -23,6 +23,10 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.BasicTypeAdapter;
+import io.vertigo.core.lang.VSystemException;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
@@ -62,11 +66,12 @@ public final class ExporterUtil {
 	public static String getText(
 			final EntityStoreManager entityStoreManager,
 			final SmartTypeManager smartTypeManager,
+			final Map<Class, BasicTypeAdapter> exportAdapters,
 			final Map<DtField, Map<Object, String>> referenceCache,
 			final Map<DtField, Map<Object, String>> denormCache,
 			final DtObject dto,
 			final ExportField exportColumn) {
-		return (String) getValue(entityStoreManager, smartTypeManager, true, referenceCache, denormCache, dto, exportColumn);
+		return (String) getValue(entityStoreManager, smartTypeManager, exportAdapters, true, referenceCache, denormCache, dto, exportColumn);
 	}
 
 	/**
@@ -84,16 +89,18 @@ public final class ExporterUtil {
 	public static Object getValue(
 			final EntityStoreManager entityStoreManager,
 			final SmartTypeManager smartTypeManager,
+			final Map<Class, BasicTypeAdapter> exportAdapters,
 			final Map<DtField, Map<Object, String>> referenceCache,
 			final Map<DtField, Map<Object, String>> denormCache,
 			final DtObject dto,
 			final ExportField exportColumn) {
-		return getValue(entityStoreManager, smartTypeManager, false, referenceCache, denormCache, dto, exportColumn);
+		return getValue(entityStoreManager, smartTypeManager, exportAdapters, false, referenceCache, denormCache, dto, exportColumn);
 	}
 
 	private static Object getValue(
 			final EntityStoreManager entityStoreManager,
 			final SmartTypeManager smartTypeManager,
+			final Map<Class, BasicTypeAdapter> exportAdapters,
 			final boolean forceStringValue,
 			final Map<DtField, Map<Object, String>> referenceCache,
 			final Map<DtField, Map<Object, String>> denormCache,
@@ -120,7 +127,21 @@ public final class ExporterUtil {
 			} else {
 				value = exportColumn.getDtField().getDataAccessor().getValue(dto);
 				if (forceStringValue) {
-					value = smartTypeManager.valueToString(exportColumn.getDtField().getSmartTypeDefinition(), value);
+					final var smartTypeDefinition = exportColumn.getDtField().getSmartTypeDefinition();
+					if (!dtField.getCardinality().hasMany()) {
+						if (smartTypeDefinition.getScope().isPrimitive()) {
+							value = smartTypeManager.valueToString(smartTypeDefinition, value);
+						} else {
+							final var adapter = exportAdapters.get(smartTypeDefinition.getJavaClass());
+							Assertion.check()
+									.isTrue(adapter.getBasicType() == BasicType.String,
+											"An export adapter must convert a value to a String, it's not the case for the adapter from the smarttype '{0}'", smartTypeDefinition.getName());
+							//---
+							value = adapter.toBasic(value);
+						}
+					} else {
+						throw new VSystemException("List are not supported");
+					}
 				}
 			}
 		} catch (final Exception e) {
