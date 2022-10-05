@@ -1,5 +1,5 @@
 /*!
- * Quasar Framework v1.17.7
+ * Quasar Framework v1.21.1
  * (c) 2015-present Razvan Stoenescu
  * Released under the MIT License.
  */
@@ -12,7 +12,7 @@
 
   Vue = Vue && Object.prototype.hasOwnProperty.call(Vue, 'default') ? Vue['default'] : Vue;
 
-  var version = "1.17.7";
+  var version = "1.21.1";
 
   /* eslint-disable no-useless-escape */
 
@@ -644,12 +644,25 @@
         return
       }
 
+      var visualViewport = window.visualViewport;
+      var target = visualViewport || window;
+      var scrollingElement = document.scrollingElement || document.documentElement;
+      var getSize = visualViewport === void 0 || client.is.mobile === true
+        ? function () { return [
+          Math.max(window.innerWidth, scrollingElement.clientWidth),
+          Math.max(window.innerHeight, scrollingElement.clientHeight)
+        ]; }
+        : function () { return [
+          visualViewport.width * visualViewport.scale + window.innerWidth - scrollingElement.clientWidth,
+          visualViewport.height * visualViewport.scale + window.innerHeight - scrollingElement.clientHeight
+        ]; };
+
       var classes = cfg.screen !== void 0 && cfg.screen.bodyClasses === true;
 
       var update = function (force) {
-        var
-          w = window.innerWidth,
-          h = window.innerHeight;
+        var ref = getSize();
+        var w = ref[0];
+        var h = ref[1];
 
         if (h !== this$1.height) {
           this$1.height = h;
@@ -707,11 +720,7 @@
       };
 
       var start = function () {
-        var
-          style = getComputedStyle(document.body),
-          target = window.visualViewport !== void 0
-            ? window.visualViewport
-            : window;
+        var style = getComputedStyle(document.body);
 
         // if css props available
         if (style.getPropertyValue('--q-size-sm')) {
@@ -749,7 +758,7 @@
 
         // due to optimizations, this would be left out otherwise
         classes === true && this$1.name === 'xs' &&
-          document.body.classList.add("screen--xs");
+          document.body.classList.add('screen--xs');
       };
 
       if (fromSSR === true) {
@@ -995,7 +1004,9 @@
       create: 'Create',
       search: 'Search',
       filter: 'Filter',
-      refresh: 'Refresh'
+      refresh: 'Refresh',
+      expand: function (label) { return label ? ("Expand \"" + label + "\"") : 'Expand' },
+      collapse: function (label) { return label ? ("Collapse \"" + label + "\"") : 'Collapse' }
     },
     date: {
       days: 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_'),
@@ -2376,13 +2387,13 @@
   var ionFn = function (i) { return ("ionicons " + i); };
 
   var libMap = {
+    'mdi-': function (i) { return ("mdi " + i); },
     'icon-': sameFn, // fontawesome equiv
     'bt-': function (i) { return ("bt " + i); },
     'eva-': function (i) { return ("eva " + i); },
     'ion-md': ionFn,
     'ion-ios': ionFn,
     'ion-logo': ionFn,
-    'mdi-': function (i) { return ("mdi " + i); },
     'iconfont ': sameFn,
     'ti-': function (i) { return ("themify-icon " + i); },
     'bi-': function (i) { return ("bootstrap-icons " + i); }
@@ -2394,13 +2405,20 @@
     s_: '-sharp'
   };
 
+  var symMap = {
+    sym_o_: '-outlined',
+    sym_r_: '-rounded',
+    sym_s_: '-sharp'
+  };
+
   var libRE = new RegExp('^(' + Object.keys(libMap).join('|') + ')');
   var matRE = new RegExp('^(' + Object.keys(matMap).join('|') + ')');
+  var symRE = new RegExp('^(' + Object.keys(symMap).join('|') + ')');
   var mRE = /^[Mm]\s?[-+]?\.?\d/;
   var imgRE = /^img:/;
   var svgUseRE = /^svguse:/;
   var ionRE = /^ion-/;
-  var faLaRE = /^[lf]a[srlbdk]? /;
+  var faRE = /^(fa-(solid|regular|light|brands|duotone|thin)|[lf]a[srlbdk]?) /;
 
   var QIcon = Vue.extend({
     name: 'QIcon',
@@ -2433,7 +2451,7 @@
         var cls;
         var icon = this.name;
 
-        if (!icon) {
+        if (icon === 'none' || !icon) {
           return { none: true }
         }
 
@@ -2442,6 +2460,9 @@
           if (res !== void 0) {
             if (res.icon !== void 0) {
               icon = res.icon;
+              if (icon === 'none' || !icon) {
+                return { none: true }
+              }
             }
             else {
               return {
@@ -2500,11 +2521,27 @@
         if (matches !== null) {
           cls = libMap[ matches[ 1 ] ](icon);
         }
-        else if (faLaRE.test(icon) === true) {
+        else if (faRE.test(icon) === true) {
           cls = icon;
         }
         else if (ionRE.test(icon) === true) {
           cls = "ionicons ion-" + (this.$q.platform.is.ios === true ? 'ios' : 'md') + (icon.substr(3));
+        }
+        else if (symRE.test(icon) === true) {
+          // "notranslate" class is for Google Translate
+          // to avoid tampering with Material Symbols ligature font
+          //
+          // Caution: To be able to add suffix to the class name,
+          // keep the 'material-symbols' at the end of the string.
+          cls = 'notranslate material-symbols';
+
+          var matches$1 = icon.match(symRE);
+          if (matches$1 !== null) {
+            icon = icon.substring(6);
+            cls += symMap[ matches$1[ 1 ] ];
+          }
+
+          content = icon;
         }
         else {
           // "notranslate" class is for Google Translate
@@ -2514,10 +2551,10 @@
           // keep the 'material-icons' at the end of the string.
           cls = 'notranslate material-icons';
 
-          var matches$1 = icon.match(matRE);
-          if (matches$1 !== null) {
+          var matches$2 = icon.match(matRE);
+          if (matches$2 !== null) {
             icon = icon.substring(2);
-            cls += matMap[ matches$1[ 1 ] ];
+            cls += matMap[ matches$2[ 1 ] ];
           }
 
           content = icon;
@@ -2557,7 +2594,7 @@
         return h('span', data, mergeSlot([
           h('svg', {
             attrs: {
-              viewBox: this.type.viewBox,
+              viewBox: this.type.viewBox || '0 0 24 24',
               focusable: 'false' /* needed for IE11 */
             }
           }, this.type.nodes)
@@ -2915,6 +2952,57 @@
     }
   });
 
+  var trailingSlashRE = /\/?$/;
+
+  function equals (current, target) {
+    if (Object.keys(current).length !== Object.keys(target).length) {
+      return false
+    }
+
+    // route query and params are strings when read from URL
+    for (var key in target) {
+      if (!(key in current) || String(current[key]) !== String(target[key])) {
+        return false
+      }
+    }
+    return true
+  }
+
+  function includes (current, target) {
+    for (var key in target) {
+      if (!(key in current)) {
+        return false
+      }
+    }
+    return true
+  }
+
+  function isSameRoute (current, target) {
+    if (!target) {
+      return false
+    }
+
+    if (current.path && target.path) {
+      return (
+        current.path.replace(trailingSlashRE, '') === target.path.replace(trailingSlashRE, '') &&
+        current.hash === target.hash &&
+        equals(current.query, target.query)
+      )
+    }
+
+    return typeof current.name === 'string' &&
+      current.name === target.name &&
+      current.hash === target.hash &&
+      equals(current.query, target.query) === true &&
+      equals(current.params, target.params) === true
+  }
+
+  function isIncludedRoute (current, target) {
+    return current.path.replace(trailingSlashRE, '/').indexOf(target.path.replace(trailingSlashRE, '/')) === 0 &&
+      (typeof target.hash !== 'string' || target.hash.length < 2 || current.hash === target.hash) &&
+      includes(current.query, target.query) === true
+  }
+
   var routerLinkProps = {
     // router-link
     to: [String, Object],
@@ -2949,6 +3037,7 @@
         return this.disable !== true && this.href !== void 0
       },
 
+      // beware, it gets overwritten in QRouteTab
       hasRouterLinkProps: function hasRouterLinkProps () {
         return this.$router !== void 0 &&
           this.disable !== true &&
@@ -2956,25 +3045,14 @@
           this.to !== void 0 && this.to !== null && this.to !== ''
       },
 
-      linkRoute: function linkRoute () {
-        if (this.hasRouterLinkProps === true) {
-          // we protect from accessing this.$route without
-          // actually needing it so that we won't trigger
-          // unnecessary updates
-
-          try {
-            return this.append === true
-              ? this.$router.resolve(this.to, this.$route, true)
-              : this.$router.resolve(this.to)
-          }
-          catch (err) {}
-        }
-
-        return null
+      resolvedLink: function resolvedLink () {
+        return this.hasRouterLinkProps === true
+          ? this.__getLink(this.to, this.append)
+          : null
       },
 
       hasRouterLink: function hasRouterLink () {
-        return this.linkRoute !== null
+        return this.resolvedLink !== null
       },
 
       hasLink: function hasLink () {
@@ -2982,41 +3060,134 @@
       },
 
       linkTag: function linkTag () {
-        if (this.hasRouterLink === true) {
-          return 'router-link'
-        }
-
         return this.type === 'a' || this.hasLink === true
           ? 'a'
           : (this.tag || this.fallbackTag || 'div')
       },
 
-      linkProps: function linkProps () {
+      linkAttrs: function linkAttrs () {
         return this.hasHrefLink === true
           ? {
-            attrs: {
-              href: this.href,
-              target: this.target
-            }
+            href: this.href,
+            target: this.target
           }
           : (
             this.hasRouterLink === true
               ? {
-                props: {
-                  to: this.to,
-                  exact: this.exact,
-                  append: this.append,
-                  replace: this.replace,
-                  activeClass: this.activeClass,
-                  exactActiveClass: this.exactActiveClass
-                },
-                attrs: {
-                  href: this.linkRoute.href,
-                  target: this.target
-                }
+                href: this.resolvedLink.href,
+                target: this.target
               }
               : {}
           )
+      },
+
+      linkIsActive: function linkIsActive () {
+        return this.hasRouterLink === true &&
+          isIncludedRoute(this.$route, this.resolvedLink.route)
+      },
+
+      linkIsExactActive: function linkIsExactActive () {
+        return this.hasRouterLink === true &&
+          isSameRoute(this.$route, this.resolvedLink.route)
+      },
+
+      linkClass: function linkClass () {
+        return this.hasRouterLink === true
+          ? (
+            this.linkIsExactActive === true
+              ? (" " + (this.exactActiveClass) + " " + (this.activeClass))
+              : (
+                this.exact === true
+                  ? ''
+                  : (this.linkIsActive === true ? (" " + (this.activeClass)) : '')
+              )
+          )
+          : ''
+      }
+    },
+
+    methods: {
+      __getLink: function __getLink (to, append) {
+        // we protect from accessing this.$route without
+        // actually needing it so that we won't trigger
+        // unnecessary updates in computed props using this method
+        try {
+          return append === true
+            ? this.$router.resolve(to, this.$route, true)
+            : this.$router.resolve(to)
+        }
+        catch (_) {}
+
+        return null
+      },
+
+      /**
+       * @returns Promise<RouterLocation|RouterError|false> | Promise<RouterLocation|false|void>
+       */
+      __navigateToRouterLink: function __navigateToRouterLink (
+        e,
+        ref
+      ) {
+        if ( ref === void 0 ) ref = {};
+        var returnRouterError = ref.returnRouterError;
+        var to = ref.to;
+        var replace = ref.replace; if ( replace === void 0 ) replace = this.replace;
+        var append = ref.append;
+
+        if (this.disable === true) {
+          // ensure native navigation is prevented in all cases,
+          // like in QRouteTab where hasRouterLinkProps does not care about disable state
+          e.preventDefault();
+          return Promise.resolve(false)
+        }
+
+        if (
+          // don't redirect with control keys;
+          // should match RouterLink from Vue Router
+          e.metaKey || e.altKey || e.ctrlKey || e.shiftKey ||
+
+          // don't redirect on right click
+          (e.button !== void 0 && e.button !== 0) ||
+
+          // don't redirect if it should open in a new window
+          this.target === '_blank'
+        ) {
+          return Promise.resolve(false)
+        }
+
+        e.preventDefault();
+
+        var resolvedLink = to === void 0
+          ? this.resolvedLink
+          : this.__getLink(to, append);
+
+        if (resolvedLink === null) {
+          return Promise[returnRouterError === true ? 'reject' : 'resolve'](false)
+        }
+
+        var promise = this.$router[replace === true ? 'replace' : 'push'](resolvedLink.location);
+
+        return returnRouterError === true
+          ? promise
+          : promise.catch(function () {})
+      },
+
+      __navigateOnClick: function __navigateOnClick (e) {
+        var this$1 = this;
+
+        if (this.hasRouterLink === true) {
+          var go = function (opts) { return this$1.__navigateToRouterLink(e, opts); };
+
+          this.$emit('click', e, go);
+
+          // for backward compatibility
+          e.navigate === false && e.preventDefault();
+
+          e.defaultPrevented !== true && go();
+        }
+        else {
+          this.$emit('click', e);
+        }
       }
     }
   };
@@ -3038,15 +3209,14 @@
       },
 
       renderData: function renderData () {
-        var obj;
-
-        return Object.assign({
+        return {
           staticClass: 'q-breadcrumbs__el q-link ' +
             'flex inline items-center relative-position ' +
-            (this.disable !== true ? 'q-link--focusable' : 'q-breadcrumbs__el--disabled')
-        },
-          this.linkProps,
-          ( obj = {}, obj[this.hasRouterLink === true ? 'nativeOn' : 'on'] = Object.assign({}, this.qListeners), obj ))
+            (this.disable !== true ? 'q-link--focusable' + this.linkClass : 'q-breadcrumbs__el--disabled'),
+          attrs: this.linkAttrs,
+          on: Object.assign({}, this.qListeners,
+            {click: this.__navigateOnClick})
+        }
       }
     },
 
@@ -3362,11 +3532,7 @@
             evt.qSkipRipple !== true &&
             // on ENTER in form IE emits a PointerEvent with negative client cordinates
             (client.is.ie !== true || evt.clientX >= 0) &&
-            (
-              ctx.modifiers.early === true
-                ? ['mousedown', 'touchstart'].includes(evt.type) === true
-                : evt.type === 'click'
-            )
+            evt.type === (ctx.modifiers.early === true ? 'pointerdown' : 'click')
           ) {
             showRipple(evt, el, ctx, evt.qKeyEvent === true);
           }
@@ -3389,8 +3555,7 @@
       el.__qripple = ctx;
 
       addEvt(ctx, 'main', [
-        [ el, 'mousedown', 'start', 'passive' ],
-        [ el, 'touchstart', 'start', 'passive' ],
+        [ el, 'pointerdown', 'start', 'passive' ],
         [ el, 'click', 'start', 'passive' ],
         [ el, 'keydown', 'keystart', 'passive' ],
         [ el, 'keyup', 'keystart', 'passive' ]
@@ -3534,20 +3699,21 @@
         var acc = { tabindex: this.computedTabIndex };
 
         if (this.hasLink === true) {
-          Object.assign(acc, this.linkProps.attrs);
+          Object.assign(acc, this.linkAttrs);
         }
         else if (formTypes.includes(this.type) === true) {
           acc.type = this.type;
         }
 
-        if (this.hasLink === true || this.type === 'a') {
+        if (this.linkTag === 'a') {
           if (this.disable === true) {
             acc['aria-disabled'] = 'true';
           }
           else if (acc.href === void 0) {
             acc.role = 'button';
           }
-          if (mediaTypeRe.test(this.type) === true) {
+
+          if (this.hasRouterLink !== true && mediaTypeRe.test(this.type) === true) {
             acc.type = this.type;
           }
         }
@@ -3670,7 +3836,7 @@
             mousedown: this.__onMousedown});
 
           if (this.$q.platform.has.touch === true) {
-            on.touchstart = this.__onTouchstart;
+            on[ ((on.touchstart === void 0 ? '&' : '') + "touchstart") ] = this.__onTouchstart;
           }
 
           return on
@@ -3729,63 +3895,47 @@
             document.addEventListener('keyup', onClickCleanup, passiveCapture);
             this.$el.addEventListener('blur', onClickCleanup, passiveCapture);
           }
-
-          if (this.hasRouterLink === true) {
-            if (
-              e.ctrlKey === true ||
-              e.shiftKey === true ||
-              e.altKey === true ||
-              e.metaKey === true
-            ) {
-              // if it has meta keys, let vue-router link
-              // handle this by its own
-              return
-            }
-
-            stopAndPrevent(e);
-          }
         }
 
-        var go = function () {
-          // vue-router now throwing error if navigating
-          // to the same route that the user is currently at
-          // https://github.com/vuejs/vue-router/issues/2872
-          this$1.$router[this$1.replace === true ? 'replace' : 'push'](this$1.linkRoute.route, void 0, noop);
-        };
-
-        this.$emit('click', e, go);
-        this.hasRouterLink === true && e.navigate !== false && go();
+        this.__navigateOnClick(e);
       },
 
       __onKeydown: function __onKeydown (e) {
-        if (isKeyCode(e, [ 13, 32 ]) === true) {
-          stopAndPrevent(e);
+        this.$emit('keydown', e);
 
+        if (isKeyCode(e, [ 13, 32 ]) === true) {
           if (keyboardTarget !== this.$el) {
             keyboardTarget !== void 0 && this.__cleanup();
 
-            // focus external button if the focus helper was focused before
-            this.$el.focus();
+            if (e.defaultPrevented !== true) {
+              // focus external button if the focus helper was focused before
+              this.$el.focus();
 
-            keyboardTarget = this.$el;
-            this.$el.classList.add('q-btn--active');
-            document.addEventListener('keyup', this.__onPressEnd, true);
-            this.$el.addEventListener('blur', this.__onPressEnd, passiveCapture);
+              keyboardTarget = this.$el;
+              this.$el.classList.add('q-btn--active');
+              document.addEventListener('keyup', this.__onPressEnd, true);
+              this.$el.addEventListener('blur', this.__onPressEnd, passiveCapture);
+            }
           }
-        }
 
-        this.$emit('keydown', e);
+          stopAndPrevent(e);
+        }
       },
 
       __onTouchstart: function __onTouchstart (e) {
         var this$1 = this;
 
+        this.$emit('touchstart', e);
+
         if (touchTarget !== this.$el) {
           touchTarget !== void 0 && this.__cleanup();
-          touchTarget = this.$el;
-          var target = this.touchTargetEl = e.target;
-          target.addEventListener('touchcancel', this.__onPressEnd, passiveCapture);
-          target.addEventListener('touchend', this.__onPressEnd, passiveCapture);
+
+          if (e.defaultPrevented !== true) {
+            touchTarget = this.$el;
+            var target = this.touchTargetEl = e.target;
+            target.addEventListener('touchcancel', this.__onPressEnd, passiveCapture);
+            target.addEventListener('touchend', this.__onPressEnd, passiveCapture);
+          }
         }
 
         // avoid duplicated mousedown event
@@ -3795,20 +3945,21 @@
         this.mouseTimer = setTimeout(function () {
           this$1.avoidMouseRipple = false;
         }, 200);
-
-        this.$emit('touchstart', e);
       },
 
       __onMousedown: function __onMousedown (e) {
-        if (mouseTarget !== this.$el) {
-          mouseTarget !== void 0 && this.__cleanup();
-          mouseTarget = this.$el;
-          this.$el.classList.add('q-btn--active');
-          document.addEventListener('mouseup', this.__onPressEnd, passiveCapture);
-        }
-
         e.qSkipRipple = this.avoidMouseRipple === true;
         this.$emit('mousedown', e);
+
+        if (mouseTarget !== this.$el) {
+          mouseTarget !== void 0 && this.__cleanup();
+
+          if (e.defaultPrevented !== true) {
+            mouseTarget = this.$el;
+            this.$el.classList.add('q-btn--active');
+            document.addEventListener('mouseup', this.__onPressEnd, passiveCapture);
+          }
+        }
       },
 
       __onPressEnd: function __onPressEnd (e) {
@@ -3845,7 +3996,8 @@
           destroying !== true &&
           (touchTarget === this.$el || mouseTarget === this.$el) &&
           blurTarget !== void 0 &&
-          blurTarget !== document.activeElement
+          blurTarget !== document.activeElement &&
+          this.$el.contains(document.activeElement) === true
         ) {
           blurTarget.setAttribute('tabindex', -1);
           blurTarget.focus();
@@ -3917,11 +4069,11 @@
       if (this.loading === true && this.percentage !== void 0) {
         child.push(
           h('span', {
-            staticClass: 'q-btn__progress absolute-full overflow-hidden'
+            staticClass: 'q-btn__progress absolute-full overflow-hidden',
+            class: this.darkPercentage === true ? 'q-btn__progress--dark' : ''
           }, [
             h('span', {
               staticClass: 'q-btn__progress-indicator fit block',
-              class: this.darkPercentage === true ? 'q-btn__progress--dark' : '',
               style: this.percentageStyle
             })
           ])
@@ -4156,7 +4308,7 @@
       },
 
       __pickAnchorEl: function __pickAnchorEl () {
-        if (this.target === false || this.target === '') {
+        if (this.target === false || this.target === '' || this.parentEl === null) {
           this.anchorEl = void 0;
         }
         else if (this.target === true) {
@@ -4222,47 +4374,80 @@
   };
 
   var TimeoutMixin = {
-    methods: {
-      __nextTick: function __nextTick (fn) {
-        this.__tickFn = fn;
-      },
+    created: function created () {
+      this.__tickFnList = [];
+      this.__timeoutFnList = [];
+    },
 
-      __prepareTick: function __prepareTick () {
-        var this$1 = this;
-
-        if (this.__tickFn !== void 0) {
-          var fn = this.__tickFn;
-          this.$nextTick(function () {
-            if (this$1.__tickFn === fn) {
-              this$1.__tickFn();
-              this$1.__tickFn = void 0;
-            }
-          });
-        }
-      },
-
-      __clearTick: function __clearTick () {
-        this.__tickFn = void 0;
-      },
-
-      __setTimeout: function __setTimeout (fn, delay) {
-        clearTimeout(this.__timer);
-        this.__timer = setTimeout(fn, delay);
-      },
-
-      __clearTimeout: function __clearTimeout () {
-        clearTimeout(this.__timer);
-      }
+    deactivated: function deactivated () {
+      this.__tickFnList.forEach(function (tick) { tick.removeTick(); });
+      this.__timeoutFnList.forEach(function (tick) { tick.removeTimeout(); });
     },
 
     beforeDestroy: function beforeDestroy () {
-      this.__tickFn = void 0;
-      clearTimeout(this.__timer);
+      this.__tickFnList.forEach(function (tick) { tick.removeTick(); });
+      this.__tickFnList = void 0;
+
+      this.__timeoutFnList.forEach(function (tick) { tick.removeTimeout(); });
+      this.__timeoutFnList = void 0;
+    },
+
+    methods: {
+      __useTick: function __useTick (registerFnName, removeFnName) {
+        var this$1 = this;
+
+        var tick = {
+          removeTick: function removeTick () {
+            tick.fn = void 0;
+          },
+
+          registerTick: function (fn) {
+            tick.fn = fn;
+
+            this$1.$nextTick(function () {
+              if (tick.fn === fn) {
+                // we also check if VM is destroyed, since if it
+                // got to trigger one nextTick() we cannot stop it
+                this$1._isDestroyed === false && tick.fn();
+                tick.fn = void 0;
+              }
+            });
+          }
+        };
+
+        this.__tickFnList.push(tick);
+
+        this[registerFnName] = tick.registerTick;
+        removeFnName !== void 0 && (this[removeFnName] = tick.removeTick);
+      },
+
+      __useTimeout: function __useTimeout (registerFnName, removeFnName) {
+        var this$1 = this;
+
+        var timeout = {
+          removeTimeout: function removeTimeout () {
+            clearTimeout(timeout.timer);
+          },
+
+          registerTimeout: function (fn, delay) {
+            clearTimeout(timeout.timer);
+
+            if (this$1._isDestroyed === false) {
+              timeout.timer = setTimeout(fn, delay);
+            }
+          }
+        };
+
+        this.__timeoutFnList.push(timeout);
+
+        this[registerFnName] = timeout.registerTimeout;
+        removeFnName !== void 0 && (this[removeFnName] = timeout.removeTimeout);
+      }
     }
   };
 
   var ModelToggleMixin = {
-    mixins: [ TimeoutMixin, ListenersMixin ],
+    mixins: [ ListenersMixin ],
 
     props: {
       value: {
@@ -4295,7 +4480,10 @@
       show: function show (evt) {
         var this$1 = this;
 
-        if (this.disable === true || (this.__showCondition !== void 0 && this.__showCondition(evt) !== true)) {
+        if (
+          this.disable === true ||
+          (this.__showCondition !== void 0 && this.__showCondition(evt) !== true)
+        ) {
           return
         }
 
@@ -4328,9 +4516,7 @@
         this.$emit('before-show', evt);
 
         if (this.__show !== void 0) {
-          this.__clearTick();
           this.__show(evt);
-          this.__prepareTick();
         }
         else {
           this.$emit('show', evt);
@@ -4368,9 +4554,7 @@
         this.$emit('before-hide', evt);
 
         if (this.__hide !== void 0) {
-          this.__clearTick();
           this.__hide(evt);
-          this.__prepareTick();
         }
         else {
           this.$emit('hide', evt);
@@ -4499,8 +4683,11 @@
 
         if (isReady === true) {
           removeFocusWaitFlag(this.focusObj);
+          this.__portalIsAccessible = true;
           return
         }
+
+        this.__portalIsAccessible = false;
 
         if (this.__portalIsActive === true) { return }
         this.__portalIsActive = true;
@@ -4538,7 +4725,11 @@
         }
       },
 
-      __hidePortal: function __hidePortal () {
+      __hidePortal: function __hidePortal (isReady) {
+        this.__portalIsAccessible = false;
+
+        if (isReady !== true) { return }
+
         this.__portalIsActive = false;
         removeFocusWaitFlag(this.focusObj);
 
@@ -4592,7 +4783,7 @@
     },
 
     beforeDestroy: function beforeDestroy () {
-      this.__hidePortal();
+      this.__hidePortal(true);
     }
   };
 
@@ -5349,6 +5540,7 @@
       AttrsMixin,
       DarkMixin,
       AnchorMixin,
+      TimeoutMixin,
       ModelToggleMixin,
       Portal,
       TransitionMixin
@@ -5442,7 +5634,8 @@
       },
 
       attrs: function attrs () {
-        return Object.assign({}, {tabindex: -1},
+        return Object.assign({}, {tabindex: -1,
+          role: 'menu'},
           this.qAttrs)
       }
     },
@@ -5508,12 +5701,12 @@
           document.activeElement.blur();
         }
 
-        this.__nextTick(function () {
+        this.__registerTick(function () {
           this$1.updatePosition();
           this$1.noFocus !== true && this$1.focus();
         });
 
-        this.__setTimeout(function () {
+        this.__registerTimeout(function () {
           // required in order to avoid the "double-tap needed" issue
           if (this$1.$q.platform.is.ios === true) {
             // if auto-close, then this click should
@@ -5523,7 +5716,7 @@
           }
 
           this$1.updatePosition();
-          this$1.__showPortal(true);
+          this$1.__showPortal(true); // done showing
           this$1.$emit('show', evt);
         }, 300);
       },
@@ -5531,7 +5724,9 @@
       __hide: function __hide (evt) {
         var this$1 = this;
 
+        this.__removeTick();
         this.__anchorCleanup(true);
+        this.__hidePortal();
 
         // check null for IE
         if (
@@ -5550,8 +5745,9 @@
 
         this.$el.dispatchEvent(create('popup-hide', { bubbles: true }));
 
-        this.__setTimeout(function () {
-          this$1.__hidePortal();
+        // should __removeTimeout() if this gets removed
+        this.__registerTimeout(function () {
+          this$1.__hidePortal(true); // done hiding, now destroy
           this$1.$emit('hide', evt);
         }, 300);
       },
@@ -5660,6 +5856,11 @@
       }
     },
 
+    created: function created () {
+      this.__useTick('__registerTick', '__removeTick');
+      this.__useTimeout('__registerTimeout');
+    },
+
     mounted: function mounted () {
       this.__processModelChange(this.value);
     },
@@ -5675,6 +5876,79 @@
       }
     }
   });
+
+  /**
+   * Based on the work of https://github.com/jchook/uuid-random
+   */
+
+  var
+    buf,
+    bufIdx = 0;
+  var hexBytes = new Array(256);
+
+  // Pre-calculate toString(16) for speed
+  for (var i = 0; i < 256; i++) {
+    hexBytes[i] = (i + 0x100).toString(16).substr(1);
+  }
+
+  // Use best available PRNG
+  var randomBytes = (function () {
+    // Node & Browser support
+    var lib = typeof crypto !== 'undefined'
+      ? crypto
+      : (
+        typeof window !== 'undefined'
+          ? window.msCrypto // IE11
+          : void 0
+      );
+
+    if (lib !== void 0) {
+      if (lib.randomBytes !== void 0) {
+        return lib.randomBytes
+      }
+      if (lib.getRandomValues !== void 0) {
+        return function (n) {
+          var bytes = new Uint8Array(n);
+          lib.getRandomValues(bytes);
+          return bytes
+        }
+      }
+    }
+
+    return function (n) {
+      var r = [];
+      for (var i = n; i > 0; i--) {
+        r.push(Math.floor(Math.random() * 256));
+      }
+      return r
+    }
+  })();
+
+  // Buffer random numbers for speed
+  // Reduce memory usage by decreasing this number (min 16)
+  // or improve speed by increasing this number (try 16384)
+  var BUFFER_SIZE = 4096;
+
+  function uid () {
+    // Buffer some random bytes for speed
+    if (buf === void 0 || (bufIdx + 16 > BUFFER_SIZE)) {
+      bufIdx = 0;
+      buf = randomBytes(BUFFER_SIZE);
+    }
+
+    var b = Array.prototype.slice.call(buf, bufIdx, (bufIdx += 16));
+    b[6] = (b[6] & 0x0f) | 0x40;
+    b[8] = (b[8] & 0x3f) | 0x80;
+
+    return hexBytes[b[0]] + hexBytes[b[1]] +
+      hexBytes[b[2]] + hexBytes[b[3]] + '-' +
+      hexBytes[b[4]] + hexBytes[b[5]] + '-' +
+      hexBytes[b[6]] + hexBytes[b[7]] + '-' +
+      hexBytes[b[8]] + hexBytes[b[9]] + '-' +
+      hexBytes[b[10]] + hexBytes[b[11]] +
+      hexBytes[b[12]] + hexBytes[b[13]] +
+      hexBytes[b[14]] + hexBytes[b[15]]
+  }
 
   var QBtnDropdown = Vue.extend({
     name: 'QBtnDropdown',
@@ -5709,7 +5983,9 @@
       disableMainBtn: Boolean,
       disableDropdown: Boolean,
 
-      noIconAnimation: Boolean
+      noIconAnimation: Boolean,
+
+      toggleAriaLabel: String
     },
 
     data: function data () {
@@ -5734,7 +6010,10 @@
       var label = slot(this, 'label', []);
       var attrs = {
         'aria-expanded': this.showing === true ? 'true' : 'false',
-        'aria-haspopup': 'true'
+        'aria-haspopup': 'true',
+        'aria-controls': this.targetUid,
+        'aria-owns': this.targetUid,
+        'aria-label': this.toggleAriaLabel || this.$q.lang.label[ this.showing === true ? 'collapse' : 'expand' ](this.label)
       };
 
       if (
@@ -5759,6 +6038,9 @@
       this.disableDropdown !== true && Arrow.push(
         h(QMenu, {
           ref: 'menu',
+          attrs: {
+            id: this.targetUid
+          },
           props: {
             cover: this.cover,
             fit: true,
@@ -5800,13 +6082,16 @@
             {disable: this.disable === true || this.disableMainBtn === true,
             noWrap: true,
             round: false}),
-          attrs: Object.assign({}, this.qAttrs,
-            attrs),
+          attrs: Object.assign({}, attrs,
+            this.qAttrs),
           on: cache(this, 'nonSpl', {
             click: function (e) {
               this$1.$emit('click', e);
             }
-          })
+          }),
+          scopedSlots: {
+            loading: this.$scopedSlots.loading
+          }
         }, label.concat(Arrow))
       }
 
@@ -5824,7 +6109,10 @@
             this$1.hide();
             this$1.$emit('click', e);
           }
-        })
+        }),
+        scopedSlots: {
+          loading: this.$scopedSlots.loading
+        }
       }, label);
 
       return h(QBtnGroup, {
@@ -5872,6 +6160,10 @@
       hide: function hide (evt) {
         this.$refs.menu && this.$refs.menu.hide(evt);
       }
+    },
+
+    created: function created () {
+      this.targetUid = "d_" + (uid());
     },
 
     mounted: function mounted () {
@@ -6257,7 +6549,7 @@
         return
       }
 
-      var mouseCapture = modifiers.mouseCapture === true ? 'Capture' : '';
+      var mouseCapture = modifiers.mouseCapture === true || modifiers.mousecapture === true ? 'Capture' : '';
 
       var ctx = {
         handler: value,
@@ -6460,7 +6752,7 @@
 
       client.has.touch === true && addEvt(ctx, 'main', [
         [ el, 'touchstart', 'touchStart', ("passive" + (modifiers.capture === true ? 'Capture' : '')) ],
-        [ el, 'touchmove', 'noop', "notPassiveCapture" ]
+        [ el, 'touchmove', 'noop', 'notPassiveCapture' ] // cannot be passive (ex: iOS scroll)
       ]);
     },
 
@@ -6987,13 +7279,32 @@
     return a !== a && b !== b // eslint-disable-line no-self-compare
   }
 
+  // not perfect, but what we ARE interested is for Arrays not to slip in
+  // as spread operator will mess things up in various areas
+  // see https://jsbench.me/tbl0iliyax/1
+  function isObject (v) {
+    return v !== null && typeof v === 'object' && Array.isArray(v) !== true
+  }
+
   function isDate (v) {
     return Object.prototype.toString.call(v) === '[object Date]'
+  }
+
+  function isRegexp (v) {
+    return Object.prototype.toString.call(v) === '[object RegExp]'
   }
 
   function isNumber (v) {
     return typeof v === 'number' && isFinite(v)
   }
+
+  var is = {
+    deepEqual: isDeepEqual,
+    object: isObject,
+    date: isDate,
+    regexp: isRegexp,
+    number: isNumber
+  };
 
   var QCarousel = Vue.extend({
     name: 'QCarousel',
@@ -7084,11 +7395,11 @@
       },
 
       transitionPrevComputed: function transitionPrevComputed () {
-        return this.transitionPrev || "fade"
+        return this.transitionPrev || 'fade'
       },
 
       transitionNextComputed: function transitionNextComputed () {
-        return this.transitionNext || "fade"
+        return this.transitionNext || 'fade'
       }
     },
 
@@ -7348,7 +7659,7 @@
       },
 
       containerClass: function containerClass () {
-        return "q-message-container row items-end no-wrap" +
+        return 'q-message-container row items-end no-wrap' +
           (this.sent === true ? ' reverse' : '')
       },
 
@@ -7402,13 +7713,13 @@
           ]
         }
 
-        var content = withSlots === true
-          ? (contentList.length > 1 ? (function (text) { return text; }) : (function (text) { return h('div', [ text ]); }))
-          : (function (text) {
+        var content = withSlots !== true
+          ? function (text) {
             var obj;
 
             return h('div', { domProps: ( obj = {}, obj[domPropText] = text, obj ) });
-        });
+        }
+          : (contentList.length > 1 ? function (text) { return text; } : function (text) { return h('div', [text]); });
 
         return contentList.map(function (msg, index) { return h('div', {
           key: index,
@@ -7541,6 +7852,10 @@
       trueValue: { default: true },
       falseValue: { default: false },
       indeterminateValue: { default: null },
+
+      checkedIcon: String,
+      uncheckedIcon: String,
+      indeterminateIcon: String,
 
       toggleOrder: {
         type: String,
@@ -7710,7 +8025,8 @@
         h('div', {
           staticClass: ("q-" + (this.type) + "__inner relative-position non-selectable"),
           class: this.innerClass,
-          style: this.sizeStyle
+          style: this.sizeStyle,
+          attrs: { 'aria-hidden': 'true' }
         }, inner)
       ];
 
@@ -7745,33 +8061,57 @@
 
     mixins: [ CheckboxMixin ],
 
+    computed: {
+      computedIcon: function computedIcon () {
+        return this.isTrue === true
+          ? this.checkedIcon
+          : (this.isIndeterminate === true
+            ? this.indeterminateIcon
+            : this.uncheckedIcon
+          )
+      }
+    },
+
     methods: {
       __getInner: function __getInner (h) {
-        return [
-          h('div', {
-            staticClass: 'q-checkbox__bg absolute'
-          }, [
-            h('svg', {
-              staticClass: 'q-checkbox__svg fit absolute-full',
-              attrs: { focusable: 'false' /* needed for IE11 */, viewBox: '0 0 24 24', 'aria-hidden': 'true' }
+        return this.computedIcon !== void 0
+          ? [
+            h('div', {
+              key: 'icon',
+              staticClass: 'q-checkbox__icon-container absolute-full flex flex-center no-wrap'
             }, [
-              h('path', {
-                staticClass: 'q-checkbox__truthy',
-                attrs: {
-                  fill: 'none',
-                  d: 'M1.73,12.91 8.1,19.28 22.79,4.59'
-                }
-              }),
-
-              h('path', {
-                staticClass: 'q-checkbox__indet',
-                attrs: {
-                  d: 'M4,14H20V10H4'
-                }
+              h(QIcon, {
+                staticClass: 'q-checkbox__icon',
+                props: { name: this.computedIcon }
               })
             ])
-          ])
-        ]
+          ]
+          : [
+            h('div', {
+              key: 'svg',
+              staticClass: 'q-checkbox__bg absolute'
+            }, [
+              h('svg', {
+                staticClass: 'q-checkbox__svg fit absolute-full',
+                attrs: { focusable: 'false' /* needed for IE11 */, viewBox: '0 0 24 24' }
+              }, [
+                h('path', {
+                  staticClass: 'q-checkbox__truthy',
+                  attrs: {
+                    fill: 'none',
+                    d: 'M1.73,12.91 8.1,19.28 22.79,4.59'
+                  }
+                }),
+
+                h('path', {
+                  staticClass: 'q-checkbox__indet',
+                  attrs: {
+                    d: 'M4,14H20V10H4'
+                  }
+                })
+              ])
+            ])
+          ]
       }
     },
 
@@ -7825,6 +8165,8 @@
       clickable: Boolean,
       removable: Boolean,
 
+      removeAriaLabel: String,
+
       tabindex: [String, Number],
       disable: Boolean
     },
@@ -7861,7 +8203,12 @@
       attrs: function attrs () {
         return this.disable === true
           ? { tabindex: -1, 'aria-disabled': 'true' }
-          : { tabindex: this.tabindex || 0 }
+          : {
+            tabindex: this.tabindex || 0,
+            role: 'button',
+            'aria-hidden': 'false',
+            'aria-label': this.removeAriaLabel || this.$q.lang.label.remove
+          }
       }
     },
 
@@ -7986,6 +8333,7 @@
       trackColor: String,
 
       fontSize: String,
+      rounded: Boolean,
 
       // ratio
       thickness: {
@@ -8060,6 +8408,7 @@
         var offset = ref.offset;
         var color = ref.color;
         var cls = ref.cls;
+        var rounded = ref.rounded;
 
         return h('circle', {
           staticClass: 'q-circular-progress__' + cls,
@@ -8071,6 +8420,7 @@
             'stroke-width': thickness,
             'stroke-dasharray': strokeDashArray,
             'stroke-dashoffset': offset,
+            'stroke-linecap': rounded,
             cx: this.viewBox,
             cy: this.viewBox,
             r: radius
@@ -8109,7 +8459,8 @@
           cls: 'circle',
           thickness: this.strokeWidth,
           offset: this.strokeDashOffset,
-          color: this.color
+          color: this.color,
+          rounded: this.rounded === true ? 'round' : void 0
         })
       );
 
@@ -8156,6 +8507,13 @@
     time: function (v) { return /^([0-1]?\d|2[0-3]):[0-5]\d$/.test(v); },
     fulltime: function (v) { return /^([0-1]?\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(v); },
     timeOrFulltime: function (v) { return /^([0-1]?\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/.test(v); },
+
+    // -- RFC 5322 --
+    // -- Added in v1.18.10 --
+    // This is a basic helper validation.
+    // For something more complex (like RFC 822) you should write and use your own rule.
+    // We won't be accepting PRs to enhance the one below because of the reason above.
+    email: function (v) { return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v); },
 
     hexColor: function (v) { return hex.test(v); },
     hexaColor: function (v) { return hexa.test(v); },
@@ -8303,7 +8661,7 @@
     }
   }
 
-  var uid = 0;
+  var uid$1 = 0;
 
   var TouchPan = {
     name: 'touch-pan',
@@ -8333,7 +8691,7 @@
       }
 
       var ctx = {
-        uid: 'qvtp_' + (uid++),
+        uid: 'qvtp_' + (uid$1++),
         handler: value,
         modifiers: modifiers,
         direction: getModifierDirections(modifiers),
@@ -8382,7 +8740,7 @@
              */
             if (
               ctx.direction.all !== true &&
-              (mouseEvent !== true || ctx.direction.mouseAllDir !== true)
+              (mouseEvent !== true || (ctx.modifiers.mouseAllDir !== true && ctx.modifiers.mousealldir !== true))
             ) {
               var clone = evt.type.indexOf('mouse') > -1
                 ? new MouseEvent(evt.type, evt)
@@ -8430,7 +8788,9 @@
           var start = function () {
             handleEvent(evt, isMouseEvt);
 
-            if (modifiers.preserveCursor !== true) {
+            var cursor;
+            if (ctx.modifiers.preserveCursor !== true && ctx.modifiers.preservecursor !== true) {
+              cursor = document.documentElement.style.cursor || '';
               document.documentElement.style.cursor = 'grabbing';
             }
             isMouseEvt === true && document.body.classList.add('no-pointer-events--children');
@@ -8440,8 +8800,8 @@
             ctx.styleCleanup = function (withDelayedFn) {
               ctx.styleCleanup = void 0;
 
-              if (modifiers.preserveCursor !== true) {
-                document.documentElement.style.cursor = '';
+              if (cursor !== void 0) {
+                document.documentElement.style.cursor = cursor;
               }
               document.body.classList.remove('non-selectable');
 
@@ -8492,7 +8852,7 @@
 
           if (
             ctx.direction.all === true ||
-            (isMouseEvt === true && ctx.modifiers.mouseAllDir === true)
+            (isMouseEvt === true && (ctx.modifiers.mouseAllDir === true || ctx.modifiers.mousealldir === true))
           ) {
             start();
             ctx.event.detected = true;
@@ -8564,12 +8924,12 @@
       el.__qtouchpan = ctx;
 
       modifiers.mouse === true && addEvt(ctx, 'main', [
-        [ el, 'mousedown', 'mouseStart', ("passive" + (modifiers.mouseCapture === true ? 'Capture' : '')) ]
+        [ el, 'mousedown', 'mouseStart', ("passive" + (modifiers.mouseCapture === true || modifiers.mousecapture === true ? 'Capture' : '')) ]
       ]);
 
       client.has.touch === true && addEvt(ctx, 'main', [
         [ el, 'touchstart', 'touchStart', ("passive" + (modifiers.capture === true ? 'Capture' : '')) ],
-        [ el, 'touchmove', 'noop', 'notPassiveCapture' ]
+        [ el, 'touchmove', 'noop', 'notPassiveCapture' ] // cannot be passive (ex: iOS scroll)
       ]);
     },
 
@@ -8997,7 +9357,7 @@
         if (typeof def === 'function') {
           return this.markerTicks.map(function (value) {
             var item = def(value);
-            return Object(item) === item ? Object.assign({}, item, {value: value}) : { value: value, label: item }
+            return isObject(item) === true ? Object.assign({}, item, {value: value}) : { value: value, label: item }
           })
         }
 
@@ -9009,14 +9369,14 @@
 
         if (Array.isArray(def) === true) {
           return def
-            .map(function (item) { return (Object(item) === item ? item : { value: item }); })
+            .map(function (item) { return (isObject(item) === true ? item : { value: item }); })
             .filter(filterFn)
         }
 
         return Object.keys(def).map(function (key) {
           var item = def[ key ];
           var value = Number(key);
-          return Object(item) === item ? Object.assign({}, item, {value: value}) : { value: value, label: item }
+          return isObject(item) === true ? Object.assign({}, item, {value: value}) : { value: value, label: item }
         }).filter(filterFn)
       },
 
@@ -9387,8 +9747,12 @@
         stopAndPrevent(evt);
 
         var
-          step = ([34, 33].includes(evt.keyCode) ? 10 : 1) * this.computedStep,
-          offset = ([ 34, 37, 40 ].includes(evt.keyCode) ? -1 : 1) * (this.isReversed === true ? -1 : 1) * step;
+          stepVal = ([34, 33].includes(evt.keyCode) ? 10 : 1) * this.computedStep,
+          offset = (
+            ([ 34, 37, 40 ].includes(evt.keyCode) ? -1 : 1) *
+            (this.isReversed === true ? -1 : 1) *
+            (this.vertical === true ? -1 : 1) * stepVal
+          );
 
         this.model = between(
           parseFloat((this.model + offset).toFixed(this.computedDecimals)),
@@ -9577,6 +9941,15 @@
     }
   });
 
+  function injectProp (target, propName, get, set) {
+    Object.defineProperty(target, propName, {
+      get: get,
+      set: set,
+      enumerable: true
+    });
+    return target
+  }
+
   function getIndicatorClass (color, top, vertical) {
     var pos = vertical === true
       ? ['left', 'right']
@@ -9585,30 +9958,18 @@
     return ("absolute-" + (top === true ? pos[0] : pos[1]) + (color ? (" text-" + color) : ''))
   }
 
-  function bufferPrioritySort (t1, t2) {
-    if (t1.priorityMatched === t2.priorityMatched) {
-      return t2.priorityHref - t1.priorityHref
+  var alignValues$1 = [ 'left', 'center', 'right', 'justify' ];
+  var getDefaultBestScore = function () { return ({ matchedLen: 0, queryDiff: 9999, hrefLen: 0, exact: false, redirected: true }); };
+
+  function hasQueryIncluded (targetQuery, matchingQuery) {
+    for (var key in targetQuery) {
+      if (targetQuery[ key ] !== matchingQuery[ key ]) {
+        return false
+      }
     }
-    return t2.priorityMatched - t1.priorityMatched
-  }
 
-  function bufferCleanSelected (t) {
-    t.selected = false;
-    return t
+    return true
   }
-
-  var
-    bufferFilters = [
-      function (t) { return t.selected === true && t.exact === true && t.redirected !== true; },
-      function (t) { return t.selected === true && t.exact === true; },
-      function (t) { return t.selected === true && t.redirected !== true; },
-      function (t) { return t.selected === true; },
-      function (t) { return t.exact === true && t.redirected !== true; },
-      function (t) { return t.redirected !== true; },
-      function (t) { return t.exact === true; },
-      function (t) { return true; }
-    ],
-    bufferFiltersLen = bufferFilters.length;
 
   var QTabs = Vue.extend({
     name: 'QTabs',
@@ -9616,13 +9977,7 @@
     mixins: [ TimeoutMixin, ListenersMixin ],
 
     provide: function provide () {
-      return {
-        tabs: this.tabs,
-        __recalculateScroll: this.__recalculateScroll,
-        __activateTab: this.__activateTab,
-        __activateRoute: this.__activateRoute,
-        __onKbdNavigate: this.__onKbdNavigate
-      }
+      return { $tabs: this }
     },
 
     props: {
@@ -9631,7 +9986,7 @@
       align: {
         type: String,
         default: 'center',
-        validator: function (v) { return ['left', 'center', 'right', 'justify'].includes(v); }
+        validator: function (v) { return alignValues$1.includes(v); }
       },
       breakpoint: {
         type: [String, Number],
@@ -9665,9 +10020,46 @@
 
     data: function data () {
       return {
-        tabs: {
-          current: this.value,
-          hasFocus: false,
+        scrollable: false,
+        leftArrow: true,
+        rightArrow: false,
+        justify: false,
+
+        tabNameList: [],
+
+        // used by children
+        currentModel: this.value,
+        hasFocus: false,
+        avoidRouteWatcher: false // false | string (uid)
+      }
+    },
+
+    watch: {
+      isRTL: function isRTL () {
+        this.__localUpdateArrows();
+      },
+
+      value: function value (name) {
+        this.__updateModel({ name: name, setCurrent: true, skipEmit: true });
+      },
+
+      outsideArrows: function outsideArrows () {
+        this.__recalculateScroll();
+      },
+
+      arrowsEnabled: function arrowsEnabled (v) {
+        this.__localUpdateArrows = v === true
+          ? this.__updateArrowsFn
+          : noop;
+
+        this.__recalculateScroll();
+      }
+    },
+
+    computed: {
+      // used by children
+      tabProps: function tabProps () {
+        return {
           activeClass: this.activeClass,
           activeColor: this.activeColor,
           activeBgColor: this.activeBgColor,
@@ -9679,85 +10071,18 @@
           narrowIndicator: this.narrowIndicator,
           inlineLabel: this.inlineLabel,
           noCaps: this.noCaps
-        },
-        scrollable: false,
-        startArrow: true,
-        endArrow: false,
-        justify: false
-      }
-    },
-
-    watch: {
-      value: function value (name) {
-        this.__activateTab(name, true, true);
+        }
       },
 
-      activeClass: function activeClass (v) {
-        this.tabs.activeClass = v;
+      // used by children
+      hasActiveTab: function hasActiveTab () {
+        var this$1 = this;
+
+        return this.tabNameList.some(function (entry) { return entry.name === this$1.currentModel; })
       },
 
-      activeColor: function activeColor (v) {
-        this.tabs.activeColor = v;
-      },
-
-      activeBgColor: function activeBgColor (v) {
-        this.tabs.activeBgColor = v;
-      },
-
-      vertical: function vertical (v) {
-        this.tabs.indicatorClass = getIndicatorClass(this.indicatorColor, this.switchIndicator, v);
-      },
-
-      indicatorColor: function indicatorColor (v) {
-        this.tabs.indicatorClass = getIndicatorClass(v, this.switchIndicator, this.vertical);
-      },
-
-      switchIndicator: function switchIndicator (v) {
-        this.tabs.indicatorClass = getIndicatorClass(this.indicatorColor, v, this.vertical);
-      },
-
-      narrowIndicator: function narrowIndicator (v) {
-        this.tabs.narrowIndicator = v;
-      },
-
-      inlineLabel: function inlineLabel (v) {
-        this.tabs.inlineLabel = v;
-      },
-
-      noCaps: function noCaps (v) {
-        this.tabs.noCaps = v;
-      },
-
-      outsideArrows: function outsideArrows () {
-        this.__recalculateScroll();
-      },
-
-      arrowsEnabled: function arrowsEnabled (v) {
-        this.__updateArrows = v === true
-          ? this.__updateArrowsFn
-          : noop;
-
-        this.__recalculateScroll();
-      },
-
-      isRTL: function isRTL () {
-        this.__updateArrows();
-      }
-    },
-
-    computed: {
       arrowsEnabled: function arrowsEnabled () {
         return this.$q.platform.is.desktop === true || this.mobileArrows === true
-      },
-
-      arrowIcons: function arrowIcons () {
-        var obj;
-
-        var sides = this.isRTL === true
-          ? [ 'end', 'start' ]
-          : [ 'start', 'end' ];
-
-        return ( obj = {}, obj[sides[0]] = this.leftIcon || (this.vertical === true ? this.$q.iconSet.tabs.up : this.$q.iconSet.tabs.left), obj[sides[1]] = this.rightIcon || (this.vertical === true ? this.$q.iconSet.tabs.down : this.$q.iconSet.tabs.right), obj )
       },
 
       alignClass: function alignClass () {
@@ -9769,7 +10094,8 @@
       },
 
       classes: function classes () {
-        return "q-tabs--" + (this.scrollable === true ? '' : 'not-') + "scrollable" +
+        return 'q-tabs row no-wrap items-center' +
+          " q-tabs--" + (this.scrollable === true ? '' : 'not-') + "scrollable" +
           " q-tabs--" + (this.vertical === true ? 'vertical' : 'horizontal') +
           " q-tabs__arrows--" + (this.arrowsEnabled === true && this.outsideArrows === true ? 'outside' : 'inside') +
           (this.dense === true ? ' q-tabs--dense' : '') +
@@ -9778,7 +10104,8 @@
       },
 
       innerClass: function innerClass () {
-        return this.alignClass +
+        return 'q-tabs__content row no-wrap items-center self-stretch hide-scrollbar relative-position ' +
+          this.alignClass +
           (this.contentClass !== void 0 ? (" " + (this.contentClass)) : '') +
           (this.$q.platform.is.mobile === true ? ' scroll' : '')
       },
@@ -9793,41 +10120,20 @@
         return this.vertical !== true && this.$q.lang.rtl === true
       },
 
-      __getScrollPosition: function __getScrollPosition () {
-        return this.vertical === true
-          ? function (el) { return el.scrollTop; }
-          : (
-            this.$q.lang.rtl !== true
-              ? function (el) { return el.scrollLeft; }
-              : (
-                this.rtlHasScrollBug === true
-                  ? function (el) { return el.scrollWidth - el.clientWidth - el.scrollLeft; }
-                  : function (el) { return 1 - el.scrollLeft; }
-              )
-          )
+      rtlPosCorrection: function rtlPosCorrection () {
+        return rtlHasScrollBug() === false && this.isRTL === true
       },
 
-      __setScrollPosition: function __setScrollPosition () {
-        return this.vertical === true
-          ? function (el, value) { el.scrollTop = value; }
+      // let's speed up execution of time-sensitive scrollTowards()
+      // with a computed variable by directly applying the minimal
+      // number of instructions on get/set functions
+      posFn: function posFn () {
+        return this.rtlPosCorrection === true
+          ? { get: function (content) { return Math.abs(content.scrollLeft); }, set: function (content, pos) { content.scrollLeft = -pos; } }
           : (
-            this.$q.lang.rtl !== true
-              ? function (el, value) { el.scrollLeft = value; }
-              : (
-                this.rtlHasScrollBug === true
-                  ? function (el, value) { el.scrollLeft = el.scrollWidth - el.clientWidth - value; }
-                  : function (el, value) { el.scrollLeft = 1 - value; }
-              )
-          )
-      },
-
-      __getScrollOffset: function __getScrollOffset () {
-        return this.vertical === true
-          ? function (el) { return el.offsetTop; }
-          : (
-            this.$q.lang.rtl !== true || this.rtlHasScrollBug === true
-              ? function (el) { return el.offsetLeft; }
-              : function (el) { return el.offsetParent.offsetWidth - el.offsetLeft - el.clientWidth; }
+            this.vertical === true
+              ? { get: function (content) { return content.scrollTop; }, set: function (content, pos) { content.scrollTop = pos; } }
+              : { get: function (content) { return content.scrollLeft; }, set: function (content, pos) { content.scrollLeft = pos; } }
           )
       },
 
@@ -9840,84 +10146,50 @@
     },
 
     methods: {
-      __onFocusin: function __onFocusin (e) {
-        this.tabs.hasFocus = true;
-        this.qListeners.focusin !== void 0 && this.$emit('focusin', e);
-      },
+      // used by children too
+      __updateModel: function __updateModel (ref) {
+        var name = ref.name;
+        var setCurrent = ref.setCurrent;
+        var skipEmit = ref.skipEmit;
 
-      __onFocusout: function __onFocusout (e) {
-        this.tabs.hasFocus = false;
-        this.qListeners.focusout !== void 0 && this.$emit('focusout', e);
-      },
+        if (this.currentModel !== name) {
+          if (skipEmit !== true && this.qListeners.input !== void 0) {
+            this.$emit('input', name);
+          }
 
-      __activateTab: function __activateTab (name, setCurrent, skipEmit) {
-        if (this.tabs.current !== name) {
-          skipEmit !== true && this.$emit('input', name);
           if (setCurrent === true || this.qListeners.input === void 0) {
-            this.__animate(this.tabs.current, name);
-            this.tabs.current = name;
+            this.__animate(this.currentModel, name);
+            this.currentModel = name;
           }
-        }
-      },
-
-      __activateRoute: function __activateRoute (params) {
-        var this$1 = this;
-
-        if (this.bufferRoute !== this.$route && this.buffer.length > 0) {
-          clearTimeout(this.bufferTimer);
-          this.bufferTimer = void 0;
-          this.buffer.length = 0;
-        }
-        this.bufferRoute = this.$route;
-
-        if (params !== void 0) {
-          if (params.remove === true) {
-            this.buffer = this.buffer.filter(function (t) { return t.name !== params.name; });
-          }
-          else {
-            this.buffer.push(params);
-          }
-        }
-
-        if (this.bufferTimer === void 0) {
-          this.bufferTimer = setTimeout(function () {
-            var tabs = [];
-
-            for (var i = 0; i < bufferFiltersLen && tabs.length === 0; i++) {
-              tabs = this$1.buffer.filter(bufferFilters[i]);
-            }
-
-            tabs.sort(bufferPrioritySort);
-            this$1.__activateTab(tabs.length === 0 ? null : tabs[0].name, true);
-            this$1.buffer = this$1.buffer.map(bufferCleanSelected);
-            this$1.bufferTimer = void 0;
-          }, 1);
         }
       },
 
       __recalculateScroll: function __recalculateScroll () {
         var this$1 = this;
 
-        this.__nextTick(function () {
-          this$1._isDestroyed !== true && this$1.__updateContainer({
+        this.__registerScrollTick(function () {
+          this$1.__updateContainer({
             width: this$1.$el.offsetWidth,
             height: this$1.$el.offsetHeight
           });
         });
-
-        this.__prepareTick();
       },
 
       __updateContainer: function __updateContainer (domSize) {
         var this$1 = this;
 
+        // it can be called faster than component being initialized
+        // so we need to protect against that case
+        // (one example of such case is the docs release notes page)
+        if (this.domProps === void 0 || !this.$refs.content) { return }
+
         var
-          size = domSize[this.domProps.container],
+          size = domSize[ this.domProps.container ],
           scrollSize = Math.min(
             this.$refs.content[this.domProps.scroll],
             Array.prototype.reduce.call(
               this.$refs.content.children,
-              function (acc, el) { return acc + (el[this$1.domProps.content] || 0); },
+              function (acc, el) { return acc + (el[ this$1.domProps.content ] || 0); },
               0
             )
           ),
@@ -9928,12 +10200,12 @@
         }
 
         // Arrows need to be updated even if the scroll status was already true
-        scroll === true && this.$nextTick(function () { return this$1.__updateArrows(); });
+        scroll === true && this.__registerUpdateArrowsTick(this.__localUpdateArrows);
 
-        var justify = size < parseInt(this.breakpoint, 10);
+        var localJustify = size < parseInt(this.breakpoint, 10);
 
-        if (this.justify !== justify) {
-          this.justify = justify;
+        if (this.justify !== localJustify) {
+          this.justify = localJustify;
         }
       },
 
@@ -9942,16 +10214,16 @@
 
         var
           oldTab = oldName !== void 0 && oldName !== null && oldName !== ''
-            ? this.$children.find(function (tab) { return tab.name === oldName; })
+            ? this.tabVmList.find(function (tab) { return tab.name === oldName; })
             : null,
           newTab = newName !== void 0 && newName !== null && newName !== ''
-            ? this.$children.find(function (tab) { return tab.name === newName; })
+            ? this.tabVmList.find(function (tab) { return tab.name === newName; })
             : null;
 
         if (oldTab && newTab) {
           var
-            oldEl = oldTab.$el.getElementsByClassName('q-tab__indicator')[0],
-            newEl = newTab.$el.getElementsByClassName('q-tab__indicator')[0];
+            oldEl = oldTab.$refs.tabIndicator,
+            newEl = newTab.$refs.tabIndicator;
 
           clearTimeout(this.animateTimer);
 
@@ -9969,7 +10241,7 @@
             : ("translate3d(" + (oldPos.left - newPos.left) + "px,0,0) scale3d(" + (newPos.width ? oldPos.width / newPos.width : 1) + ",1,1)");
 
           // allow scope updates to kick in (QRouteTab needs more time)
-          this.$nextTick(function () {
+          this.__registerAnimateTick(function () {
             this$1.animateTimer = setTimeout(function () {
               newEl.style.transition = 'transform .25s cubic-bezier(.4, 0, .2, 1)';
               newEl.style.transform = 'none';
@@ -9978,75 +10250,137 @@
         }
 
         if (newTab && this.scrollable === true) {
-          this.__scrollToTab(newTab.$el, void 0, true);
+          this.__scrollToTabEl(newTab.$el);
         }
-        else {
-          this.__updateArrows();
+      },
+
+      __scrollToTabEl: function __scrollToTabEl (el) {
+        var
+          contentRef = this.$refs.content;
+        var ref = contentRef.getBoundingClientRect();
+        var left = ref.left;
+        var width = ref.width;
+        var top = ref.top;
+        var height = ref.height;
+        var newPos = el.getBoundingClientRect();
+
+        var offset = this.vertical === true ? newPos.top - top : newPos.left - left;
+
+        if (offset < 0) {
+          contentRef[ this.vertical === true ? 'scrollTop' : 'scrollLeft' ] += Math.floor(offset);
+          this.__localUpdateArrows();
+          return
+        }
+
+        offset += this.vertical === true ? newPos.height - height : newPos.width - width;
+        if (offset > 0) {
+          contentRef[ this.vertical === true ? 'scrollTop' : 'scrollLeft' ] += Math.ceil(offset);
+          this.__localUpdateArrows();
         }
       },
 
       __updateArrowsFn: function __updateArrowsFn () {
-        var ref = this.$refs;
-        var content = ref.content;
-
-        if (content !== void 0) {
+        var content = this.$refs.content;
+        if (content !== null) {
           var
             rect = content.getBoundingClientRect(),
-            pos = this.__getScrollPosition(content);
+            pos = this.vertical === true ? content.scrollTop : Math.abs(content.scrollLeft);
 
-          this.startArrow = pos > (this.isRTL === true ? 1 : 0);
-          this.endArrow = this.vertical === true
-            ? Math.ceil(pos + rect.height) < content.scrollHeight
-            : Math.ceil(pos + rect.width) < content.scrollWidth;
+          if (this.isRTL === true) {
+            this.leftArrow = Math.ceil(pos + rect.width) < content.scrollWidth - 1;
+            this.rightArrow = pos > 0;
+          }
+          else {
+            this.leftArrow = pos > 0;
+            this.rightArrow = this.vertical === true
+              ? Math.ceil(pos + rect.height) < content.scrollHeight
+              : Math.ceil(pos + rect.width) < content.scrollWidth;
+          }
         }
       },
 
-      __animScrollTo: function __animScrollTo (value, onEnd) {
+      __animScrollTo: function __animScrollTo (value) {
         var this$1 = this;
 
         this.__stopAnimScroll();
-
-        this.__onAnimScrollEnd = onEnd;
-        this.__scrollTowards(value);
-
         this.scrollTimer = setInterval(function () {
-          if (this$1.__scrollTowards(value)) {
+          if (this$1.__scrollTowards(value) === true) {
             this$1.__stopAnimScroll();
           }
         }, 5);
       },
 
       __scrollToStart: function __scrollToStart () {
-        this.__animScrollTo(0);
+        this.__animScrollTo(this.rtlPosCorrection === true ? Number.MAX_SAFE_INTEGER : 0);
       },
 
       __scrollToEnd: function __scrollToEnd () {
-        this.__animScrollTo(Number.MAX_SAFE_INTEGER);
+        this.__animScrollTo(this.rtlPosCorrection === true ? 0 : Number.MAX_SAFE_INTEGER);
       },
 
       __stopAnimScroll: function __stopAnimScroll () {
         clearInterval(this.scrollTimer);
+      },
 
-        if (this.__onAnimScrollEnd !== void 0) {
-          this.__onAnimScrollEnd();
-          this.__onAnimScrollEnd = void 0;
+      // used by children
+      __onKbdNavigate: function __onKbdNavigate (keyCode, fromEl) {
+        var tabs = Array.prototype.filter.call(
+          this.$refs.content.children,
+          function (el) { return el === fromEl || (el.matches && el.matches('.q-tab.q-focusable') === true); }
+        );
+
+        var len = tabs.length;
+        if (len === 0) { return }
+
+        if (keyCode === 36) { // Home
+          this.__scrollToTabEl(tabs[ 0 ]);
+          tabs[ 0 ].focus();
+          return true
+        }
+        if (keyCode === 35) { // End
+          this.__scrollToTabEl(tabs[ len - 1 ]);
+          tabs[ len - 1 ].focus();
+          return true
+        }
+
+        var dirPrev = keyCode === (this.vertical === true ? 38 /* ArrowUp */ : 37 /* ArrowLeft */);
+        var dirNext = keyCode === (this.vertical === true ? 40 /* ArrowDown */ : 39 /* ArrowRight */);
+
+        var dir = dirPrev === true ? -1 : (dirNext === true ? 1 : void 0);
+
+        if (dir !== void 0) {
+          var rtlDir = this.isRTL === true ? -1 : 1;
+          var index = tabs.indexOf(fromEl) + dir * rtlDir;
+
+          if (index >= 0 && index < len) {
+            this.__scrollToTabEl(tabs[ index ]);
+            tabs[ index ].focus({ preventScroll: true });
+          }
+
+          return true
         }
       },
 
       __scrollTowards: function __scrollTowards (value) {
-        var content = this.$refs.content;
-        var max = this.vertical === true ? content.scrollHeight - content.offsetHeight : content.scrollWidth - content.offsetWidth;
+        var
+          content = this.$refs.content;
+        var ref = this.posFn;
+        var get = ref.get;
+        var set = ref.set;
 
-        var pos = this.__getScrollPosition(content);
-        var done = false;
-
-        value = Math.max(0, Math.min(max, value));
+        var
+          done = false,
+          pos = get(content);
 
         var direction = value < pos ? -1 : 1;
 
         pos += direction * 5;
 
-        if (
+        if (pos < 0) {
+          done = true;
+          pos = 0;
+        }
+        else if (
           (direction === -1 && pos <= value) ||
           (direction === 1 && pos >= value)
         ) {
@@ -10054,140 +10388,285 @@
           pos = value;
         }
 
-        this.__setScrollPosition(content, pos);
-        this.__updateArrows();
+        set(content, pos);
+        this.__localUpdateArrows();
 
         return done
       },
 
-      __scrollToTab: function __scrollToTab (tab, alignEnd, skipFocus) {
-        if (this.$refs.content === void 0) {
+      // do not use directly; use __verifyRouteModel() instead
+      __updateActiveRoute: function __updateActiveRoute () {
+        var this$1 = this;
+
+        var name = null, bestScore = getDefaultBestScore();
+
+        var vmList = this.tabVmList.filter(function (tab) { return tab.hasRouterLink === true; });
+        var vmLen = vmList.length;
+
+        var ref = this.$route;
+        var currentQuery = ref.query;
+        var currentQueryLen = Object.keys(currentQuery).length;
+
+        for (var tabIndex = 0; tabIndex < vmLen; tabIndex++) {
+          var tab = vmList[tabIndex];
+          var exact = tab.exact === true;
+
+          // if a) it doesn't respect the active/exact active status
+          // or b) we already found an exact match and this one isn't set as exact
+          // then we don't deal with it
+          if (
+            tab[ exact === true ? 'linkIsExactActive' : 'linkIsActive' ] !== true ||
+            (bestScore.exact === true && exact !== true)
+          ) {
+            continue
+          }
+
+          var ref$1 = tab.resolvedLink;
+          var route = ref$1.route;
+          var href = ref$1.href;
+          var matched = route.matched;
+          var query = route.query;
+          var hash = route.hash;
+          var redirected = route.redirectedFrom !== void 0;
+
+          if (exact === true) {
+            // hey, we found the perfect match; no more searching!
+            if (redirected === false) {
+              name = tab.name;
+              break
+            }
+
+            if (bestScore.exact === false) {
+              // we reset values so we can discard previous non-exact matches
+              // and so we can register this exact one below
+              bestScore = getDefaultBestScore();
+            }
+          }
+
+          // if best is non-redirected and this one is redirected
+          // then this one is inferior so we don't care about it
+          if (bestScore.redirected === false && redirected === true) {
+            continue
+          }
+
+          var queryLen = Object.keys(query).length;
+
+          if (
+            // if it's exact it already perfectly includes current query
+            // so no point in computing it
+            exact === false &&
+            queryLen !== 0 &&
+            hasQueryIncluded(query, currentQuery) === false
+          ) {
+            // it has query and it doesn't includes the current one
+            continue
+          }
+
+          var newScore = {
+            exact: exact,
+            redirected: redirected,
+            matchedLen: matched.length,
+            queryDiff: exact === true
+              ? 0 // avoid computing as it's 0 anyway
+              : currentQueryLen - queryLen,
+            hrefLen: href.length - hash.length
+          };
+
+          if (newScore.matchedLen > bestScore.matchedLen) {
+            // it matches more routes so it's more specific so we set it as current champion
+            name = tab.name;
+            bestScore = newScore;
+            continue
+          }
+          else if (newScore.matchedLen !== bestScore.matchedLen) {
+            // it matches less routes than the current champion so we discard it
+            continue
+          }
+
+          if (newScore.queryDiff < bestScore.queryDiff) {
+            // query is closer to the current one so we set it as current champion
+            name = tab.name;
+            bestScore = newScore;
+            continue
+          }
+          else if (newScore.queryDiff !== bestScore.queryDiff) {
+            continue
+          }
+
+          if (newScore.hrefLen > bestScore.hrefLen) {
+            // href is lengthier so it's more specific so we set it as current champion
+            name = tab.name;
+            bestScore = newScore;
+          }
+        }
+
+        if (
+          name === null &&
+          this.tabVmList.some(function (tab) { return tab.hasRouterLink === void 0 && tab.name === this$1.currentModel; }) === true
+        ) {
+          // we shouldn't interfere if non-route tab is active
           return
         }
 
-        var content = this.$refs.content;
-        var startContent = this.__getScrollPosition(content);
-        var sizeContent = this.vertical === true ? content.offsetHeight : content.offsetWidth;
-        var sizeScroll = this.vertical === true ? content.scrollHeight : content.scrollWidth;
+        this.__updateModel({ name: name, setCurrent: true });
+      },
 
-        var startTab = this.__getScrollOffset(tab);
-        var endTab = startTab + (this.vertical === true ? tab.offsetHeight : tab.offsetWidth);
+      __onFocusin: function __onFocusin (e) {
+        this.__removeFocusTimeout();
 
-        var startsBefore = startTab < startContent;
-        var endsAfter = endTab > startContent + sizeContent;
+        if (
+          this.hasFocus !== true &&
+          this.$el &&
+          e.target &&
+          typeof e.target.closest === 'function'
+        ) {
+          var tab = e.target.closest('.q-tab');
 
-        if (startsBefore !== true && endsAfter !== true) {
-          alignEnd = void 0;
-        }
-        else if (alignEnd === void 0) {
-          if (endTab >= sizeScroll - 1) {
-            alignEnd = true;
+          // if the target is contained by a QTab/QRouteTab
+          // (it might be other elements focused, like additional QBtn)
+          if (tab && this.$el.contains(tab) === true) {
+            this.hasFocus = true;
+
+            if (this.scrollable === true) {
+              this.__scrollToTabEl(tab);
+            }
           }
-          else if (startsBefore === true || (endsAfter === true && startTab < endTab - sizeContent)) {
-            alignEnd = false;
-          }
-          else if (startsBefore !== endsAfter) {
-            alignEnd = endsAfter;
-          }
         }
 
-        if (alignEnd !== void 0) {
-          this.__animScrollTo(
-            alignEnd === true ? (endTab >= sizeScroll - 1 ? sizeScroll : endTab - sizeContent) : (startTab <= 1 ? 0 : startTab),
-            skipFocus !== true
-              ? function () {
-                setTimeout(function () {
-                  tab && tab.focus();
-                });
-              }
-              : void 0
-          );
+        this.qListeners.focusin !== void 0 && this.$emit('focusin', e);
+      },
+
+      __onFocusout: function __onFocusout (e) {
+        var this$1 = this;
+
+        this.__registerFocusTimeout(function () { this$1.hasFocus = false; }, 30);
+        this.qListeners.focusout !== void 0 && this.$emit('focusout', e);
+      },
+
+      // used by children
+      __verifyRouteModel: function __verifyRouteModel () {
+        if (this.avoidRouteWatcher === false) {
+          this.__registerScrollToTabTimeout(this.__updateActiveRoute);
         }
-        else if (skipFocus !== true) {
-          tab.focus();
+        else {
+          this.__removeScrollToTabTimeout();
         }
       },
 
-      __onKbdNavigate: function __onKbdNavigate (keyCode, fromEl) {
-        var matchTab = function (el) { return el === fromEl || (el.matches && el.matches('.q-tab.q-focusable') === true); };
-        var tabs = Array.prototype.filter.call(this.$refs.content.children, matchTab);
-        var tabsLength = tabs.length;
+      __watchRoute: function __watchRoute () {
+        var this$1 = this;
 
-        if (tabsLength === 0) {
-          return
+        if (this.unwatchRoute === void 0) {
+          var unwatch = this.$watch(function () { return this$1.$route.fullPath; }, this.__verifyRouteModel);
+          this.unwatchRoute = function () {
+            unwatch();
+            this$1.unwatchRoute = void 0;
+          };
         }
+      },
 
-        if (keyCode === 36) { // Home
-          if (tabs[0].contains(document.activeElement) === true) {
-            return false
+      // used by children
+      __registerTab: function __registerTab (tabVm) {
+        var this$1 = this;
+
+        // we avoid setting tabVmList in data() as this would
+        // make the whole vm reactive
+        this.tabVmList.push(tabVm);
+        // ...so we extract only the needed stuff out of it
+        // into data() defined tabNameList
+        this.tabNameList.push(
+          injectProp({}, 'name', function () { return tabVm.name; })
+        );
+
+        this.__recalculateScroll();
+
+        // if it's a QTab
+        if (tabVm.hasRouterLink === void 0 || this.$route === void 0) {
+          // we should position to the currently active tab (if any)
+          this.__registerScrollToTabTimeout(function () {
+            if (this$1.scrollable === true) {
+              var value = this$1.currentModel;
+              var newTab = value !== void 0 && value !== null && value !== ''
+                ? this$1.tabVmList.find(function (tab) { return tab.name === value; })
+                : null;
+
+              newTab && this$1.__scrollToTabEl(newTab.$el);
+            }
+          });
+        }
+        // else if it's a QRouteTab with a valid link
+        else {
+          this.__watchRoute();
+
+          if (tabVm.hasRouterLink === true) {
+            this.__verifyRouteModel();
+          }
+        }
+      },
+
+      /*
+       * Vue has an aggressive diff (in-place replacement) so we cannot
+       * ensure that the instance getting destroyed is the actual tab
+       * reported here. As a result, we cannot use its name or check
+       * if it's a route one to make the necessary updates. We need to
+       * always check the existing list again and infer the changes.
+       */
+      // used by children
+      __unregisterTab: function __unregisterTab (tabVm) {
+        var index = this.tabVmList.indexOf(tabVm);
+
+        this.tabVmList.splice(index, 1);
+        this.tabNameList.splice(index, 1);
+
+        this.__recalculateScroll();
+
+        // if we're watching route and this tab is a QRouteTab
+        if (this.unwatchRoute !== void 0 && tabVm.hasRouterLink !== void 0) {
+          // unwatch route if we don't have any QRouteTabs left
+          if (this.tabVmList.every(function (tab) { return tab.hasRouterLink === void 0; }) === true) {
+            this.unwatchRoute();
           }
 
-          this.__scrollToTab(tabs[0], false);
-          this.__recalculateScroll();
-
-          return true
+          // then update model
+          this.__verifyRouteModel();
         }
-        if (keyCode === 35) { // End
-          if (tabs[tabsLength - 1].contains(document.activeElement) === true) {
-            return false
-          }
+      },
 
-          this.__scrollToTab(tabs[tabsLength - 1], true);
-          this.__recalculateScroll();
-
-          return true
-        }
-
-        var dirPrev = (this.vertical === true && keyCode === 38 /* ArrowUp */) ||
-          (this.vertical !== true && keyCode === 37 /* ArrowLeft */);
-        var dirNext = (this.vertical === true && keyCode === 40 /* ArrowDown */) ||
-          (this.vertical !== true && keyCode === 39 /* ArrowRight */);
-        var dir = dirPrev === true ? -1 : (dirNext === true ? 1 : void 0);
-
-        if (dir !== void 0) {
-          var rtlDir = this.isRTL === true ? -1 : 1;
-          var index = tabs.indexOf(fromEl) + dir * rtlDir;
-
-          if (
-            index < 0 ||
-            index >= tabsLength ||
-            tabs[index].contains(document.activeElement) === true
-          ) {
-            return false
-          }
-
-          this.__scrollToTab(tabs[index], dir === rtlDir);
-          this.__recalculateScroll();
-
-          return true
-        }
+      __cleanup: function __cleanup () {
+        clearTimeout(this.animateTimer);
+        this.__stopAnimScroll();
+        this.unwatchRoute !== void 0 && this.unwatchRoute();
       }
     },
 
     created: function created () {
-      this.buffer = [];
+      this.__useTick('__registerScrollTick');
+      this.__useTick('__registerUpdateArrowsTick');
+      this.__useTick('__registerAnimateTick');
 
-      this.__updateArrows = this.arrowsEnabled === true
-        ? this.__updateArrowsFn
-        : noop;
-    },
+      this.__useTimeout('__registerFocusTimeout', '__removeFocusTimeout');
+      this.__useTimeout('__registerScrollToTabTimeout', '__removeScrollToTabTimeout');
 
-    mounted: function mounted () {
-      this.rtlHasScrollBug = rtlHasScrollBug();
+      Object.assign(this, {
+        tabVmList: [],
+        __localUpdateArrows: this.arrowsEnabled === true
+          ? this.__updateArrowsFn
+          : noop
+      });
     },
 
     activated: function activated () {
-      if (this.shouldActivate !== true) { return }
+      this.hadRouteWatcher === true && this.__watchRoute();
       this.__recalculateScroll();
     },
 
     deactivated: function deactivated () {
-      this.shouldActivate = true;
+      this.hadRouteWatcher = this.unwatchRoute !== void 0;
+      this.__cleanup();
     },
 
     beforeDestroy: function beforeDestroy () {
-      clearTimeout(this.bufferTimer);
-      clearTimeout(this.animateTimer);
+      this.__cleanup();
     },
 
     render: function render (h) {
@@ -10198,7 +10677,6 @@
 
         h('div', {
           ref: 'content',
-          staticClass: 'q-tabs__content row no-wrap items-center self-stretch hide-scrollbar relative-position',
           class: this.innerClass,
           on: this.arrowsEnabled === true ? cache(this, 'scroll', { scroll: this.__updateArrowsFn }) : void 0
         }, slot(this, 'default'))
@@ -10206,34 +10684,33 @@
 
       this.arrowsEnabled === true && child.push(
         h(QIcon, {
-          staticClass: 'q-tabs__arrow q-tabs__arrow--start absolute q-tab__icon',
-          class: this.startArrow === true ? '' : 'q-tabs__arrow--faded',
-          props: { name: this.arrowIcons.start },
+          class: 'q-tabs__arrow q-tabs__arrow--start absolute q-tab__icon' +
+              (this.leftArrow === true ? '' : ' q-tabs__arrow--faded'),
+          props: { name: this.leftIcon || this.$q.iconSet.tabs[ this.vertical === true ? 'up' : 'left' ] },
           on: cache(this, 'onS', {
-            mousedown: this.__scrollToStart,
-            touchstart: this.__scrollToStart,
-            mouseup: this.__stopAnimScroll,
-            mouseleave: this.__stopAnimScroll,
-            touchend: this.__stopAnimScroll
+            '&mousedown': this.__scrollToStart,
+            '&touchstart': this.__scrollToStart,
+            '&mouseup': this.__stopAnimScroll,
+            '&mouseleave': this.__stopAnimScroll,
+            '&touchend': this.__stopAnimScroll
           })
         }),
 
         h(QIcon, {
-          staticClass: 'q-tabs__arrow q-tabs__arrow--end absolute q-tab__icon',
-          class: this.endArrow === true ? '' : 'q-tabs__arrow--faded',
-          props: { name: this.arrowIcons.end },
+          class: 'q-tabs__arrow q-tabs__arrow--end absolute q-tab__icon' +
+              (this.rightArrow === true ? '' : ' q-tabs__arrow--faded'),
+          props: { name: this.rightIcon || this.$q.iconSet.tabs[ this.vertical === true ? 'down' : 'right' ] },
           on: cache(this, 'onE', {
-            mousedown: this.__scrollToEnd,
-            touchstart: this.__scrollToEnd,
-            mouseup: this.__stopAnimScroll,
-            mouseleave: this.__stopAnimScroll,
-            touchend: this.__stopAnimScroll
+            '&mousedown': this.__scrollToEnd,
+            '&touchstart': this.__scrollToEnd,
+            '&mouseup': this.__stopAnimScroll,
+            '&mouseleave': this.__stopAnimScroll,
+            '&touchend': this.__stopAnimScroll
           })
         })
       );
 
       return h('div', {
-        staticClass: 'q-tabs row no-wrap items-center',
         class: this.classes,
         on: this.onEvents,
         attrs: { role: 'tablist' }
@@ -10241,7 +10718,7 @@
     }
   });
 
-  var uid$1 = 0;
+  var id = 0;
 
   var QTab = Vue.extend({
     name: 'QTab',
@@ -10249,14 +10726,11 @@
     mixins: [ RippleMixin, ListenersMixin ],
 
     inject: {
-      tabs: {
+      $tabs: {
         default: function default$1 () {
           console.error('QTab/QRouteTab components need to be child of QTabs');
         }
-      },
-      __activateTab: {},
-      __recalculateScroll: {},
-      __onKbdNavigate: {}
+      }
     },
 
     props: {
@@ -10268,7 +10742,7 @@
 
       name: {
         type: [Number, String],
-        default: function () { return ("t_" + (uid$1++)); }
+        default: function () { return ("t_" + (id++)); }
       },
 
       noCaps: Boolean,
@@ -10281,32 +10755,39 @@
 
     computed: {
       isActive: function isActive () {
-        return this.tabs.current === this.name
+        return this.$tabs.currentModel === this.name
       },
 
       classes: function classes () {
-        var obj;
-
-        return Object.assign({}, (
+        return 'q-tab relative-position self-stretch flex flex-center text-center' +
+          (
             this.isActive === true
-              ? ( obj = {
-                'q-tab--active': true
-              }, obj[this.tabs.activeClass] = this.tabs.activeClass, obj[("text-" + (this.tabs.activeColor))] = this.tabs.activeColor, obj[("bg-" + (this.tabs.activeBgColor))] = this.tabs.activeBgColor, obj )
-              : { 'q-tab--inactive': true }
-          ),
-          {'q-tab--full': this.icon && this.label && !this.tabs.inlineLabel,
-          'q-tab--no-caps': this.noCaps === true || this.tabs.noCaps === true,
-          'q-focusable q-hoverable cursor-pointer': !this.disable,
-          disabled: this.disable})
+              ? (
+                ' q-tab--active' +
+                  (this.$tabs.tabProps.activeClass ? ' ' + this.$tabs.tabProps.activeClass : '') +
+                  (this.$tabs.tabProps.activeColor ? (" text-" + (this.$tabs.tabProps.activeColor)) : '') +
+                  (this.$tabs.tabProps.activeBgColor ? (" bg-" + (this.$tabs.tabProps.activeBgColor)) : '')
+              )
+              : ' q-tab--inactive'
+          ) +
+          (this.icon && this.label && this.$tabs.tabProps.inlineLabel === false ? ' q-tab--full' : '') +
+          (this.noCaps === true || this.$tabs.tabProps.noCaps === true ? ' q-tab--no-caps' : '') +
+          (this.disable === true ? ' disabled' : ' q-focusable q-hoverable cursor-pointer') +
+          (this.hasRouterLinkProps !== void 0 ? this.linkClass : '')
       },
 
       innerClass: function innerClass () {
-        return (this.tabs.inlineLabel === true ? 'row no-wrap q-tab__content--inline' : 'column') +
+        return 'q-tab__content self-stretch flex-center relative-position q-anchor--skip non-selectable ' +
+          (this.$tabs.tabProps.inlineLabel === true ? 'row no-wrap q-tab__content--inline' : 'column') +
           (this.contentClass !== void 0 ? (" " + (this.contentClass)) : '')
       },
 
       computedTabIndex: function computedTabIndex () {
-        return this.disable === true || this.tabs.hasFocus === true
+        return (
+          this.disable === true ||
+          this.$tabs.hasFocus === true ||
+          (this.isActive === false && this.$tabs.hasActiveTab === true)
+        )
           ? -1
           : this.tabindex || 0
       },
@@ -10323,16 +10804,15 @@
       onEvents: function onEvents () {
         return Object.assign({}, {input: stop},
           this.qListeners,
-          {click: this.__activate,
+          {click: this.__onClick,
           keydown: this.__onKeydown})
       },
 
       attrs: function attrs () {
-        var attrs = {
-          tabindex: this.computedTabIndex,
+        var attrs = Object.assign({}, this.linkAttrs,
+          {tabindex: this.computedTabIndex,
           role: 'tab',
-          'aria-selected': this.isActive === true ? 'true' : 'false'
-        };
+          'aria-selected': this.isActive === true ? 'true' : 'false'});
 
         if (this.disable === true) {
           attrs['aria-disabled'] = 'true';
@@ -10343,38 +10823,106 @@
     },
 
     methods: {
-      __activate: function __activate (e, keyboard) {
+      __onClick: function __onClick (e, keyboard) {
+        var this$1 = this;
+
         if (keyboard !== true && this.$refs.blurTarget !== void 0) {
           this.$refs.blurTarget.focus({ preventScroll: true });
         }
 
-        if (this.disable !== true) {
-          this.qListeners.click !== void 0 && this.$emit('click', e);
-          this.__activateTab(this.name);
-        }
-      },
-
-      __onKeydown: function __onKeydown (e) {
-        if (shouldIgnoreKey(e)) {
+        if (this.disable === true) {
+          // we should hinder native navigation though
+          this.hasRouterLink === true && stopAndPrevent(e);
           return
         }
 
-        if ([ 13, 32 ].indexOf(e.keyCode) !== -1) {
-          this.__activate(e, true);
-          prevent(e);
+        // do we have a QTab?
+        if (this.hasRouterLinkProps === void 0) {
+          this.$tabs.__updateModel({ name: this.name });
+          this.qListeners.click !== void 0 && this.$emit('click', e);
+          return
         }
-        else if (e.keyCode >= 35 && e.keyCode <= 40) {
-          this.__onKbdNavigate(e.keyCode, this.$el) === true && stopAndPrevent(e);
+
+        if (this.hasRouterLink === true) {
+          var go = function (first, second, third) {
+            // for backwards compatibility
+            var ref = e.navigate === false
+              ? { to: first, replace: second, append: third }
+              : (first || {});
+            var to = ref.to;
+            var replace = ref.replace;
+            var append = ref.append;
+            var returnRouterError = ref.returnRouterError;
+
+            // if requiring to go to another route, then we
+            // let the QTabs route watcher do its job,
+            // otherwise directly select this
+            var hardError;
+            var reqId = to === void 0 || (append === this$1.append && isDeepEqual(to, this$1.to) === true)
+              ? (this$1.$tabs.avoidRouteWatcher = uid())
+              : null;
+
+            return this$1.__navigateToRouterLink(e, { to: to, replace: replace, append: append, returnRouterError: true })
+              .catch(function (err) { hardError = err; })
+              .then(function (result) {
+                if (reqId === this$1.$tabs.avoidRouteWatcher) {
+                  this$1.$tabs.avoidRouteWatcher = false;
+
+                  // if we don't have any hard errors, except for
+                  // when navigating to the same route (on all other errors,
+                  // like when navigation was aborted in a nav guard, we don't activate this tab)
+                  if (
+                    hardError === void 0 ||
+                    hardError.message.startsWith('Avoided redundant navigation') === true
+                  ) {
+                    this$1.$tabs.__updateModel({ name: this$1.name });
+                  }
+                }
+
+                return hardError !== void 0 && returnRouterError === true
+                  ? Promise.reject(hardError)
+                  : result
+              })
+          };
+
+          this.qListeners.click !== void 0 && this.$emit('click', e, go);
+
+          // for backwards compatibility
+          e.navigate === false && e.preventDefault();
+
+          e.defaultPrevented !== true && go();
+
+          return
         }
+
+        this.qListeners.click !== void 0 && this.$emit('click', e);
+      },
+
+      __onKeydown: function __onKeydown (e) {
+        if (isKeyCode(e, [ 13, 32 ])) {
+          this.__onClick(e, true);
+        }
+        else if (
+          shouldIgnoreKey(e) !== true &&
+          e.keyCode >= 35 &&
+          e.keyCode <= 40 &&
+          e.altKey !== true &&
+          e.metaKey !== true
+        ) {
+          this.$tabs.__onKbdNavigate(e.keyCode, this.$el) === true && stopAndPrevent(e);
+        }
+
+        this.qListeners.keydown !== void 0 && this.$emit('keydown', e);
       },
 
       __getContent: function __getContent (h) {
         var
-          narrow = this.tabs.narrowIndicator,
+          narrow = this.$tabs.tabProps.narrowIndicator,
           content = [],
           indicator = h('div', {
+            ref: 'tabIndicator',
             staticClass: 'q-tab__indicator',
-            class: this.tabs.indicatorClass
+            class: this.$tabs.tabProps.indicatorClass
           });
 
         this.icon !== void 0 && content.push(
@@ -10413,11 +10961,7 @@
 
         var node = [
           h('div', { staticClass: 'q-focus-helper', attrs: { tabindex: -1 }, ref: 'blurTarget' }),
-
-          h('div', {
-            staticClass: 'q-tab__content self-stretch flex-center relative-position q-anchor--skip non-selectable',
-            class: this.innerClass
-          }, mergeSlot(content, this, 'default'))
+          h('div', { class: this.innerClass }, mergeSlot(content, this, 'default'))
         ];
 
         narrow === false && node.push(indicator);
@@ -10426,52 +10970,25 @@
       },
 
       __renderTab: function __renderTab (h, tag) {
-        var this$1 = this;
-
         var data = {
-          staticClass: 'q-tab relative-position self-stretch flex flex-center text-center no-outline',
           class: this.classes,
           attrs: this.attrs,
+          on: this.onEvents,
           directives: this.ripple === false || this.disable === true ? null : [
             { name: 'ripple', value: this.computedRipple }
           ]
         };
 
-        if (this.hasRouterLink === true) {
-          return h(tag, Object.assign({}, data,
-            {nativeOn: this.onEvents,
-            props: this.routerTabLinkProps,
-            scopedSlots: {
-              default: function (ref) {
-                var obj;
-
-                var href = ref.href;
-                var isActive = ref.isActive;
-                var isExactActive = ref.isExactActive;
-                return h('a', {
-                class: ( obj = {}, obj[this$1.activeClass] = isActive, obj[this$1.exactActiveClass] = isExactActive, obj ),
-                attrs: Object.assign({}, this$1.linkProps.attrs,
-                  {href: href})
-              }, this$1.__getContent(h));
-          }
-            }}))
-        }
-
-        if (this.hasLink === true) {
-          Object.assign(data.attrs, this.linkProps.attrs);
-          data.props = this.linkProps.props;
-        }
-        data.on = this.onEvents;
         return h(tag, data, this.__getContent(h))
       }
     },
 
     mounted: function mounted () {
-      this.__recalculateScroll();
+      this.$tabs.__registerTab(this);
     },
 
     beforeDestroy: function beforeDestroy () {
-      this.__recalculateScroll();
+      this.$tabs.__unregisterTab(this);
     },
 
     render: function render (h) {
@@ -11727,7 +12244,9 @@
 
     methods: {
       __getLocale: function __getLocale () {
-        return this.locale || this.$q.lang.date
+        return this.locale !== void 0
+          ? Object.assign({}, this.$q.lang.date, this.locale)
+          : this.$q.lang.date
       },
 
       __getCurrentDate: function __getCurrentDate (dateOnly) {
@@ -11787,8 +12306,8 @@
       days = '(' + dateLocale.days.join('|') + ')',
       key = mask + days;
 
-    if (regexStore[key] !== void 0) {
-      return regexStore[key]
+    if (regexStore[ key ] !== void 0) {
+      return regexStore[ key ]
     }
 
     var
@@ -11906,7 +12425,7 @@
 
         default:
           index--;
-          if (match[0] === '[') {
+          if (match[ 0 ] === '[') {
             match = match.substring(1, match.length - 1);
           }
           return match.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -11914,7 +12433,7 @@
     });
 
     var res = { map: map, regex: new RegExp('^' + regexText) };
-    regexStore[key] = res;
+    regexStore[ key ] = res;
 
     return res
   }
@@ -11944,25 +12463,18 @@
   function applyYearMonthDayChange (date, mod, sign) {
     var
       year = date.getFullYear(),
-      month = date.getMonth(),
-      day = date.getDate();
+      month = date.getMonth();
 
-    if (mod.years !== void 0) {
-      year += sign * mod.years;
-    }
-    else if (mod.year !== void 0) {
+    var day = date.getDate();
+
+    if (mod.year !== void 0) {
       year += sign * mod.year;
+      delete mod.year;
     }
 
-    if (mod.months !== void 0) {
-      month += sign * mod.months;
-    }
-    else if (mod.month !== void 0) {
+    if (mod.month !== void 0) {
       month += sign * mod.month;
-    }
-
-    if (mod.days !== void 0) {
-      day += sign * mod.days;
+      delete mod.month;
     }
 
     date.setDate(1);
@@ -11970,74 +12482,110 @@
 
     date.setFullYear(year);
     date.setMonth(month);
-    date.setDate(day);
+    date.setDate(Math.min(day, daysInMonth(date)));
+
+    if (mod.date !== void 0) {
+      date.setDate(date.getDate() + sign * mod.date);
+      delete mod.date;
+    }
 
     return date
   }
 
-  var yearMonDay = [ 'years', 'year', 'months', 'month', 'days' ];
-
-  function getChange (date, mod, sign) {
+  function applyYearMonthDay (date, mod, middle) {
     var
+      year = mod.year !== void 0 ? mod.year : date[ ("get" + middle + "FullYear") ](),
+      month = mod.month !== void 0 ? mod.month - 1 : date[ ("get" + middle + "Month") ](),
+      maxDay = (new Date(year, month + 1, 0)).getDate(),
+      day = Math.min(maxDay, mod.date !== void 0 ? mod.date : date[ ("get" + middle + "Date") ]());
+
+    date[ ("set" + middle + "Date") ](1);
+    date[ ("set" + middle + "Month") ](2);
+
+    date[ ("set" + middle + "FullYear") ](year);
+    date[ ("set" + middle + "Month") ](month);
+    date[ ("set" + middle + "Date") ](day);
+
+    delete mod.year;
+    delete mod.month;
+    delete mod.date;
+
+    return date
+  }
+
+  function getChange (date, rawMod, sign) {
+    var
+      mod = normalizeMod(rawMod),
       d = new Date(date),
-      t = (
-        mod.years !== void 0 || mod.year !== void 0 ||
-        mod.months !== void 0 || mod.month !== void 0 ||
-        mod.days !== void 0
-      )
-        ? applyYearMonthDayChange(d, mod, sign)
+      t = mod.year !== void 0 || mod.month !== void 0 || mod.date !== void 0
+        ? applyYearMonthDayChange(d, mod, sign) // removes year/month/day
         : d;
 
     for (var key in mod) {
-      if (yearMonDay.includes(key) === false) {
-        var op = capitalize(key);
-        t[("set" + op)](t[("get" + op)]() + sign * mod[key]);
-      }
+      var op = capitalize(key);
+      t[ ("set" + op) ](t[ ("get" + op) ]() + sign * mod[ key ]);
     }
 
     return t
   }
 
-  function applyYearMonthDay (date, mod, middle) {
-    var
-      year = mod.year !== void 0
-        ? mod.year
-        : (mod.years !== void 0 ? mod.years : date[("get" + middle + "FullYear")]()),
-      month = mod.month !== void 0
-        ? mod.month - 1
-        : (mod.months !== void 0 ? mod.months : date[("get" + middle + "Month")]()),
-      maxDay = (new Date(year, month + 1, 0)).getDate(),
-      day = Math.min(maxDay, mod.date !== void 0 ? mod.date : date[("get" + middle + "Date")]());
+  function normalizeMod (mod) {
+    var acc = Object.assign({}, mod);
 
-    date[("set" + middle + "Date")](1);
-    date[("set" + middle + "Month")](2);
+    if (mod.years !== void 0) {
+      acc.year = mod.years;
+      delete acc.years;
+    }
 
-    date[("set" + middle + "FullYear")](year);
-    date[("set" + middle + "Month")](month);
-    date[("set" + middle + "Date")](day);
+    if (mod.months !== void 0) {
+      acc.month = mod.months;
+      delete acc.months;
+    }
 
-    return date
+    if (mod.days !== void 0) {
+      acc.date = mod.days;
+      delete acc.days;
+    }
+    if (mod.day !== void 0) {
+      acc.date = mod.day;
+      delete acc.day;
+    }
+
+    if (mod.hour !== void 0) {
+      acc.hours = mod.hour;
+      delete acc.hour;
+    }
+
+    if (mod.minute !== void 0) {
+      acc.minutes = mod.minute;
+      delete acc.minute;
+    }
+
+    if (mod.second !== void 0) {
+      acc.seconds = mod.second;
+      delete acc.second;
+    }
+
+    if (mod.millisecond !== void 0) {
+      acc.milliseconds = mod.millisecond;
+      delete acc.millisecond;
+    }
+
+    return acc
   }
 
-  var yearMonDayAdj = [ 'years', 'year', 'months', 'month', 'days' ];
-
-  function adjustDate (date, mod, utc) {
+  function adjustDate (date, rawMod, utc) {
     var
+      mod = normalizeMod(rawMod),
       middle = utc === true ? 'UTC' : '',
       d = new Date(date),
-      t = (
-        mod.years !== void 0 || mod.year !== void 0 ||
-        mod.months !== void 0 || mod.month !== void 0 ||
-        mod.days !== void 0
-      )
-        ? applyYearMonthDay(d, mod, middle)
+      t = mod.year !== void 0 || mod.month !== void 0 || mod.date !== void 0
+        ? applyYearMonthDay(d, mod, middle) // removes year/month/day
         : d;
 
     for (var key in mod) {
-      if (yearMonDayAdj.includes(key) === false) {
-        var op = key.charAt(0).toUpperCase() + key.slice(1);
-        t[("set" + middle + op)](mod[key]);
-      }
+      var op = key.charAt(0).toUpperCase() + key.slice(1);
+      t[ ("set" + middle + op) ](mod[ key ]);
     }
 
     return t
@@ -12049,7 +12597,7 @@
     var date = new Date(
       d.year,
       d.month === null ? null : d.month - 1,
-      d.day,
+      d.day === null ? 1 : d.day,
       d.hour,
       d.minute,
       d.second,
@@ -12110,7 +12658,7 @@
     var tzString = '';
 
     if (map.X !== void 0 || map.x !== void 0) {
-      var stamp = parseInt(match[map.X !== void 0 ? map.X : map.x], 10);
+      var stamp = parseInt(match[ map.X !== void 0 ? map.X : map.x ], 10);
 
       if (isNaN(stamp) === true || stamp < 0) {
         return date
@@ -12128,28 +12676,28 @@
     }
     else {
       if (map.YYYY !== void 0) {
-        date.year = parseInt(match[map.YYYY], 10);
+        date.year = parseInt(match[ map.YYYY ], 10);
       }
       else if (map.YY !== void 0) {
-        var y = parseInt(match[map.YY], 10);
+        var y = parseInt(match[ map.YY ], 10);
         date.year = y < 0 ? y : 2000 + y;
       }
 
       if (map.M !== void 0) {
-        date.month = parseInt(match[map.M], 10);
+        date.month = parseInt(match[ map.M ], 10);
         if (date.month < 1 || date.month > 12) {
           return date
         }
       }
       else if (map.MMM !== void 0) {
-        date.month = monthsShort.indexOf(match[map.MMM]) + 1;
+        date.month = monthsShort.indexOf(match[ map.MMM ]) + 1;
       }
       else if (map.MMMM !== void 0) {
-        date.month = months.indexOf(match[map.MMMM]) + 1;
+        date.month = months.indexOf(match[ map.MMMM ]) + 1;
       }
 
       if (map.D !== void 0) {
-        date.day = parseInt(match[map.D], 10);
+        date.day = parseInt(match[ map.D ], 10);
 
         if (date.year === null || date.month === null || date.day < 1) {
           return date
@@ -12165,14 +12713,14 @@
       }
 
       if (map.H !== void 0) {
-        date.hour = parseInt(match[map.H], 10) % 24;
+        date.hour = parseInt(match[ map.H ], 10) % 24;
       }
       else if (map.h !== void 0) {
-        date.hour = parseInt(match[map.h], 10) % 12;
+        date.hour = parseInt(match[ map.h ], 10) % 12;
         if (
-          (map.A && match[map.A] === 'PM') ||
-          (map.a && match[map.a] === 'pm') ||
-          (map.aa && match[map.aa] === 'p.m.')
+          (map.A && match[ map.A ] === 'PM') ||
+          (map.a && match[ map.a ] === 'pm') ||
+          (map.aa && match[ map.aa ] === 'p.m.')
         ) {
           date.hour += 12;
         }
@@ -12180,20 +12728,20 @@
       }
 
       if (map.m !== void 0) {
-        date.minute = parseInt(match[map.m], 10) % 60;
+        date.minute = parseInt(match[ map.m ], 10) % 60;
       }
 
       if (map.s !== void 0) {
-        date.second = parseInt(match[map.s], 10) % 60;
+        date.second = parseInt(match[ map.s ], 10) % 60;
       }
 
       if (map.S !== void 0) {
-        date.millisecond = parseInt(match[map.S], 10) * Math.pow( 10, (3 - match[map.S].length) );
+        date.millisecond = parseInt(match[ map.S ], 10) * Math.pow( 10, (3 - match[ map.S ].length) );
       }
 
       if (map.Z !== void 0 || map.ZZ !== void 0) {
-        tzString = (map.Z !== void 0 ? match[map.Z].replace(':', '') : match[map.ZZ]);
-        date.timezoneOffset = (tzString[0] === '+' ? -1 : 1) * (60 * tzString.slice(1, 3) + 1 * tzString.slice(3, 5));
+        tzString = (map.Z !== void 0 ? match[ map.Z ].replace(':', '') : match[ map.ZZ ]);
+        date.timezoneOffset = (tzString[ 0 ] === '+' ? -1 : 1) * (60 * tzString.slice(1, 3) + 1 * tzString.slice(3, 5));
       }
     }
 
@@ -12275,17 +12823,24 @@
 
     switch (unit) {
       case 'year':
-        t[(prefix + "Month")](0);
+      case 'years':
+        t[ (prefix + "Month") ](0);
       case 'month':
-        t[(prefix + "Date")](1);
+      case 'months':
+        t[ (prefix + "Date") ](1);
       case 'day':
-        t[(prefix + "Hours")](0);
+      case 'days':
+      case 'date':
+        t[ (prefix + "Hours") ](0);
       case 'hour':
-        t[(prefix + "Minutes")](0);
+      case 'hours':
+        t[ (prefix + "Minutes") ](0);
       case 'minute':
-        t[(prefix + "Seconds")](0);
+      case 'minutes':
+        t[ (prefix + "Seconds") ](0);
       case 'second':
-        t[(prefix + "Milliseconds")](0);
+      case 'seconds':
+        t[ (prefix + "Milliseconds") ](0);
     }
     return t
   }
@@ -12297,17 +12852,24 @@
 
     switch (unit) {
       case 'year':
-        t[(prefix + "Month")](11);
+      case 'years':
+        t[ (prefix + "Month") ](11);
       case 'month':
-        t[(prefix + "Date")](daysInMonth(t));
+      case 'months':
+        t[ (prefix + "Date") ](daysInMonth(t));
       case 'day':
-        t[(prefix + "Hours")](23);
+      case 'days':
+      case 'date':
+        t[ (prefix + "Hours") ](23);
       case 'hour':
-        t[(prefix + "Minutes")](59);
+      case 'hours':
+        t[ (prefix + "Minutes") ](59);
       case 'minute':
-        t[(prefix + "Seconds")](59);
+      case 'minutes':
+        t[ (prefix + "Seconds") ](59);
       case 'second':
-        t[(prefix + "Milliseconds")](999);
+      case 'seconds':
+        t[ (prefix + "Milliseconds") ](999);
     }
     return t
   }
@@ -12344,21 +12906,28 @@
 
     switch (unit) {
       case 'years':
+      case 'year':
         return (t.getFullYear() - sub.getFullYear())
 
       case 'months':
+      case 'month':
         return (t.getFullYear() - sub.getFullYear()) * 12 + t.getMonth() - sub.getMonth()
 
       case 'days':
+      case 'day':
+      case 'date':
         return getDiff(startOfDate(t, 'day'), startOfDate(sub, 'day'), MILLISECONDS_IN_DAY)
 
       case 'hours':
+      case 'hour':
         return getDiff(startOfDate(t, 'hour'), startOfDate(sub, 'hour'), MILLISECONDS_IN_HOUR)
 
       case 'minutes':
+      case 'minute':
         return getDiff(startOfDate(t, 'minute'), startOfDate(sub, 'minute'), MILLISECONDS_IN_MINUTE)
 
       case 'seconds':
+      case 'second':
         return getDiff(startOfDate(t, 'second'), startOfDate(sub, 'second'), 1000)
     }
   }
@@ -12404,26 +12973,33 @@
 
     switch (unit) {
       case 'second':
+      case 'seconds':
         if (t.getSeconds() !== d.getSeconds()) {
           return false
         }
       case 'minute': // intentional fall-through
+      case 'minutes':
         if (t.getMinutes() !== d.getMinutes()) {
           return false
         }
       case 'hour': // intentional fall-through
+      case 'hours':
         if (t.getHours() !== d.getHours()) {
           return false
         }
       case 'day': // intentional fall-through
+      case 'days':
+      case 'date':
         if (t.getDate() !== d.getDate()) {
           return false
         }
       case 'month': // intentional fall-through
+      case 'months':
         if (t.getMonth() !== d.getMonth()) {
           return false
         }
       case 'year': // intentional fall-through
+      case 'years':
         if (t.getFullYear() !== d.getFullYear()) {
           return false
         }
@@ -12456,7 +13032,7 @@
     YY: function YY (date, _, forcedYear) {
       // workaround for < 1900 with new Date()
       var y = this.YYYY(date, _, forcedYear) % 100;
-      return y > 0
+      return y >= 0
         ? pad(y)
         : '-' + pad(Math.abs(y))
     },
@@ -12481,12 +13057,12 @@
 
     // Month Short Name: Jan, Feb, ...
     MMM: function MMM (date, dateLocale) {
-      return dateLocale.monthsShort[date.getMonth()]
+      return dateLocale.monthsShort[ date.getMonth() ]
     },
 
     // Month Name: January, February, ...
     MMMM: function MMMM (date, dateLocale) {
-      return dateLocale.months[date.getMonth()]
+      return dateLocale.months[ date.getMonth() ]
     },
 
     // Quarter: 1, 2, 3, 4
@@ -12536,12 +13112,12 @@
 
     // Day of week: Sun, Mon, ...
     ddd: function ddd (date, dateLocale) {
-      return dateLocale.daysShort[date.getDay()]
+      return dateLocale.daysShort[ date.getDay() ]
     },
 
     // Day of week: Sunday, Monday, ...
     dddd: function dddd (date, dateLocale) {
-      return dateLocale.days[date.getDay()]
+      return dateLocale.days[ date.getDay() ]
     },
 
     // Day of ISO week: 1, 2, ..., 7
@@ -12690,7 +13266,7 @@
       token,
       function (match, text) { return (
         match in formatter
-          ? formatter[match](date, locale, __forcedYear, __forcedTimezoneOffset)
+          ? formatter[ match ](date, locale, __forcedYear, __forcedTimezoneOffset)
           : (text === void 0 ? match : text.split('\\]').join(']'))
       ); }
     )
@@ -12847,9 +13423,9 @@
         var type = this.landscape === true ? 'landscape' : 'portrait';
         return "q-date q-date--" + type + " q-date--" + type + "-" + (this.minimal === true ? 'minimal' : 'standard') +
           (this.isDark === true ? ' q-date--dark q-dark' : '') +
-          (this.bordered === true ? " q-date--bordered" : '') +
-          (this.square === true ? " q-date--square no-border-radius" : '') +
-          (this.flat === true ? " q-date--flat no-shadow" : '') +
+          (this.bordered === true ? ' q-date--bordered' : '') +
+          (this.square === true ? ' q-date--square no-border-radius' : '') +
+          (this.flat === true ? ' q-date--flat no-shadow' : '') +
           (this.disable === true ? ' disabled' : (this.readonly === true ? ' q-date--readonly' : ''))
       },
 
@@ -12883,7 +13459,7 @@
 
         var fn = function (date) { return this$1.__decodeString(date, this$1.innerMask, this$1.innerLocale); };
         return this.normalizedModel
-          .filter(function (date) { return Object(date) === date && date.from !== void 0 && date.to !== void 0; })
+          .filter(function (date) { return isObject(date) === true && date.from !== void 0 && date.to !== void 0; })
           .map(function (range) { return ({ from: fn(range.from), to: fn(range.to) }); })
           .filter(function (range) { return range.from.dateHash !== null && range.to.dateHash !== null && range.from.dateHash < range.to.dateHash; })
       },
@@ -13412,7 +13988,7 @@
         }
 
         res.forEach(function (day) {
-          var cls = "q-date__calendar-item ";
+          var cls = 'q-date__calendar-item ';
 
           if (day.fill === true) {
             cls += 'q-date__calendar-item--fill';
@@ -14502,6 +15078,7 @@
     mixins: [
       AttrsMixin,
       HistoryMixin,
+      TimeoutMixin,
       ModelToggleMixin,
       Portal,
       PreventScrollMixin
@@ -14510,6 +15087,7 @@
     props: {
       persistent: Boolean,
       autoClose: Boolean,
+      allowFocusOutside: Boolean,
 
       noEscDismiss: Boolean,
       noBackdropDismiss: Boolean,
@@ -14611,11 +15189,17 @@
         }
 
         return on
+      },
+
+      attrs: function attrs () {
+        return this.useBackdrop === true
+          ? Object.assign({}, {'aria-modal': 'true'}, this.qAttrs)
+          : this.qAttrs
       }
     },
 
     methods: {
-      focus: function focus () {
+      focus: function focus (selector) {
         var this$1 = this;
 
         addFocusFn(function () {
@@ -14625,7 +15209,7 @@
             return
           }
 
-          node = node.querySelector('[autofocus], [data-autofocus]') || node;
+          node = node.querySelector(selector || '[autofocus], [data-autofocus]') || node;
           node.focus({ preventScroll: true });
         });
       },
@@ -14683,10 +15267,14 @@
         if (this.noFocus !== true) {
           // IE can have null document.activeElement
           document.activeElement !== null && document.activeElement.blur();
-          this.__nextTick(this.focus);
+          this.__registerTick(this.focus);
+        }
+        else {
+          this.__removeTick();
         }
 
-        this.__setTimeout(function () {
+        // should __removeTimeout() if this gets removed
+        this.__registerTimeout(function () {
           if (this$1.$q.platform.is.ios === true) {
             if (this$1.seamless !== true && document.activeElement) {
               var ref = document.activeElement.getBoundingClientRect();
@@ -14714,7 +15302,7 @@
           }
 
           this$1.animating = false;
-          this$1.__showPortal(true);
+          this$1.__showPortal(true); // done showing
           this$1.$emit('show', evt);
         }, 300);
       },
@@ -14722,8 +15310,10 @@
       __hide: function __hide (evt) {
         var this$1 = this;
 
+        this.__removeTick();
         this.__removeHistory();
         this.__cleanup(true);
+        this.__hidePortal();
         this.animating = true;
 
         // check null for IE
@@ -14734,8 +15324,9 @@
 
         this.$el.dispatchEvent(create('popup-hide', { bubbles: true }));
 
-        this.__setTimeout(function () {
-          this$1.__hidePortal();
+        // should __removeTimeout() if this gets removed
+        this.__registerTimeout(function () {
+          this$1.__hidePortal(true); // done hiding, now destroy
           this$1.animating = false;
           this$1.$emit('hide', evt);
         }, 300);
@@ -14798,11 +15389,11 @@
       __onFocusChange: function __onFocusChange (e) {
         // the focus is not in a vue child component
         if (
-          this.showing === true &&
-          this.__portal !== void 0 &&
+          this.allowFocusOutside !== true &&
+          this.__portalIsAccessible === true &&
           childHasFocus(this.__portal.$el, e.target) !== true
         ) {
-          this.focus();
+          this.focus('[tabindex]:not([tabindex="-1"])');
         }
       },
 
@@ -14811,7 +15402,7 @@
           staticClass: ("q-dialog fullscreen no-pointer-events q-dialog--" + (this.useBackdrop === true ? 'modal' : 'seamless')),
           class: this.contentClass,
           style: this.contentStyle,
-          attrs: this.qAttrs
+          attrs: this.attrs
         }, [
           h('transition', {
             props: { name: 'q-transition--fade' }
@@ -14838,6 +15429,11 @@
           ])
         ])
       }
+    },
+
+    created: function created () {
+      this.__useTick('__registerTick', '__removeTick');
+      this.__useTimeout('__registerTimeout');
     },
 
     mounted: function mounted () {
@@ -14867,7 +15463,7 @@
       }
     },
 
-    mixins: [ DarkMixin, HistoryMixin, ModelToggleMixin, PreventScrollMixin ],
+    mixins: [ DarkMixin, HistoryMixin, TimeoutMixin, ModelToggleMixin, PreventScrollMixin ],
 
     directives: {
       TouchPan: TouchPan
@@ -15380,7 +15976,7 @@
           evt !== false && this.__setScrollable(false);
         }
 
-        this.__setTimeout(function () {
+        this.__registerTimeout(function () {
           evt !== false && this$1.__setScrollable(true);
           noEvent !== true && this$1.$emit('show', evt);
         }, duration);
@@ -15399,9 +15995,12 @@
 
         this.__cleanup();
 
-        noEvent !== true && this.__setTimeout(function () {
-          this$1.$emit('hide', evt);
-        }, duration);
+        if (noEvent !== true) {
+          this.__registerTimeout(function () { this$1.$emit('hide', evt); }, duration);
+        }
+        else {
+          this.__removeTimeout();
+        }
       },
 
       __cleanup: function __cleanup () {
@@ -15434,6 +16033,8 @@
     },
 
     created: function created () {
+      this.__useTimeout('__registerTimeout', '__removeTimeout');
+
       this.layout.instances[this.side] = this;
       this.__updateSizeOnLayout(this.miniToOverlay, this.size);
       this.__update('space', this.onLayout);
@@ -15547,7 +16148,7 @@
       child.push(
         h('aside', {
           ref: 'content',
-          staticClass: "q-drawer",
+          staticClass: 'q-drawer',
           class: this.classes,
           style: this.style,
           on: this.onNativeEvents,
@@ -15564,7 +16165,7 @@
   var QTooltip = Vue.extend({
     name: 'QTooltip',
 
-    mixins: [ AnchorMixin, ModelToggleMixin, Portal, TransitionMixin ],
+    mixins: [ AnchorMixin, TimeoutMixin, ModelToggleMixin, Portal, TransitionMixin ],
 
     props: {
       maxHeight: {
@@ -15634,7 +16235,7 @@
 
         this.__showPortal();
 
-        this.__nextTick(function () {
+        this.__registerTick(function () {
           this$1.observer = new MutationObserver(function () { return this$1.updatePosition(); });
           this$1.observer.observe(this$1.__portal.$el, { attributes: false, childList: true, characterData: true, subtree: true });
           this$1.updatePosition();
@@ -15648,7 +16249,8 @@
           );
         }
 
-        this.__setTimeout(function () {
+        // should __removeTimeout() if this gets removed
+        this.__registerTimeout(function () {
           this$1.__showPortal(true);
           this$1.$emit('show', evt);
         }, 300);
@@ -15657,10 +16259,13 @@
       __hide: function __hide (evt) {
         var this$1 = this;
 
+        this.__removeTick();
         this.__anchorCleanup();
+        this.__hidePortal();
 
-        this.__setTimeout(function () {
-          this$1.__hidePortal();
+        // should __removeTimeout() if this gets removed
+        this.__registerTimeout(function () {
+          this$1.__hidePortal(true); // done hiding, now destroy
           this$1.$emit('hide', evt);
         }, 300);
       },
@@ -15717,15 +16322,11 @@
           addEvt(this, 'tooltipTemp', evts);
         }
 
-        this.__setTimeout(function () {
-          this$1.show(evt);
-        }, this.delay);
+        this.__registerTimeout(function () { this$1.show(evt); }, this.delay);
       },
 
       __delayHide: function __delayHide (evt) {
         var this$1 = this;
-
-        this.__clearTimeout();
 
         if (this.$q.platform.is.mobile === true) {
           cleanEvt(this, 'tooltipTemp');
@@ -15736,9 +16337,8 @@
           }, 10);
         }
 
-        this.__setTimeout(function () {
-          this$1.hide(evt);
-        }, this.hideDelay);
+        // should __removeTimeout() if this gets removed
+        this.__registerTimeout(function () { this$1.hide(evt); }, this.hideDelay);
       },
 
       __configureAnchorEl: function __configureAnchorEl () {
@@ -15790,6 +16390,11 @@
       }
     },
 
+    created: function created () {
+      this.__useTick('__registerTick', '__removeTick');
+      this.__useTimeout('__registerTimeout');
+    },
+
     mounted: function mounted () {
       this.__processModelChange(this.value);
     }
@@ -15832,7 +16437,10 @@
     mixins: [ DarkMixin, RouterLinkMixin, TagMixin, ListenersMixin ],
 
     props: {
-      active: Boolean,
+      active: {
+        type: Boolean,
+        default: null
+      },
 
       clickable: Boolean,
       dense: Boolean,
@@ -15856,19 +16464,26 @@
       },
 
       classes: function classes () {
-        var obj;
-
-        return ( obj = {
-          'q-item--clickable q-link cursor-pointer': this.isClickable,
-          'q-focusable q-hoverable': this.isClickable === true && this.manualFocus === false,
-
-          'q-manual-focusable': this.isClickable === true && this.manualFocus === true,
-          'q-manual-focusable--focused': this.isClickable === true && this.focused === true,
-
-          'q-item--dense': this.dense,
-          'q-item--dark': this.isDark,
-          'q-item--active': this.active
-        }, obj[this.activeClass] = this.active === true && this.hasRouterLink !== true && this.activeClass !== void 0, obj['disabled'] = this.disable, obj )
+        return 'q-item q-item-type row no-wrap' +
+          (this.dense === true ? ' q-item--dense' : '') +
+          (this.isDark === true ? ' q-item--dark' : '') +
+          (
+            this.hasLink === true && this.active === null
+              ? this.linkClass
+              : (
+                this.active === true
+                  ? (" q-item--active" + (this.activeClass !== void 0 ? (" " + (this.activeClass)) : '') + " ")
+                  : ''
+              )
+          ) +
+          (this.disable === true ? ' disabled' : '') +
+          (
+            this.isClickable === true
+              ? ' q-item--clickable q-link cursor-pointer ' +
+                (this.manualFocus === true ? 'q-manual-focusable' : 'q-focusable q-hoverable') +
+                (this.focused === true ? ' q-manual-focusable--focused' : '')
+              : ''
+          )
       },
 
       style: function style () {
@@ -15888,14 +16503,6 @@
     },
 
     methods: {
-      __getContent: function __getContent (h) {
-        var child = uniqueSlot(this, 'default', []);
-        this.isClickable === true && child.unshift(
-          h('div', { staticClass: 'q-focus-helper', attrs: { tabindex: -1 }, ref: 'blurTarget' })
-        );
-        return child
-      },
-
       __onClick: function __onClick (e) {
         if (this.isClickable === true) {
           if (this.$refs.blurTarget !== void 0) {
@@ -15907,7 +16514,7 @@
             }
           }
 
-          this.$emit('click', e);
+          this.__navigateOnClick(e);
         }
       },
 
@@ -15925,28 +16532,33 @@
         }
 
         this.$emit('keyup', e);
+      },
+
+      __getContent: function __getContent (h) {
+        var child = uniqueSlot(this, 'default', []);
+
+        this.isClickable === true && child.unshift(
+          h('div', { staticClass: 'q-focus-helper', attrs: { tabindex: -1 }, ref: 'blurTarget' })
+        );
+
+        return child
       }
     },
 
     render: function render (h) {
       var data = {
-        staticClass: 'q-item q-item-type row no-wrap',
         class: this.classes,
         style: this.style,
-        attrs: {}
+        attrs: {},
+        on: this.onEvents
       };
-      data[ this.hasRouterLink === true ? 'nativeOn' : 'on' ] = this.onEvents;
 
       if (this.isClickable === true) {
         data.attrs.tabindex = this.tabindex || '0';
+        Object.assign(data.attrs, this.linkAttrs);
       }
       else if (this.isActionable === true) {
         data.attrs['aria-disabled'] = 'true';
-      }
-
-      if (this.hasLink === true) {
-        data.props = this.linkProps.props;
-        Object.assign(data.attrs, this.linkProps.attrs);
       }
 
       return h(
@@ -16510,7 +17122,7 @@
       return false
     }
 
-    if (el !== null && list.includes(el.nodeName.toLowerCase()) === true) {
+    if (list.includes(el.nodeName.toLowerCase()) === true) {
       return true
     }
 
@@ -16672,24 +17284,21 @@
   var
     toString = Object.prototype.toString,
     hasOwn = Object.prototype.hasOwnProperty,
-    class2type = {};
-
-  'Boolean Number String Function Array Date RegExp Object'.split(' ').forEach(function (name) {
-    class2type['[object ' + name + ']'] = name.toLowerCase();
-  });
-
-  function type (obj) {
-    return obj === null ? String(obj) : class2type[toString.call(obj)] || 'object'
-  }
+    notPlainObject = new Set(
+      ['Boolean', 'Number', 'String', 'Function', 'Array', 'Date', 'RegExp']
+        .map(function (name) { return '[object ' + name + ']'; })
+    );
 
   function isPlainObject (obj) {
-    if (!obj || type(obj) !== 'object') {
+    if (obj !== Object(obj) || notPlainObject.has(toString.call(obj)) === true) {
       return false
     }
 
-    if (obj.constructor &&
-      !hasOwn.call(obj, 'constructor') &&
-      !hasOwn.call(obj.constructor.prototype, 'isPrototypeOf')) {
+    if (
+      obj.constructor &&
+      hasOwn.call(obj, 'constructor') === false &&
+      hasOwn.call(obj.constructor.prototype, 'isPrototypeOf') === false
+    ) {
       return false
     }
 
@@ -16715,7 +17324,7 @@
       i = 2;
     }
 
-    if (Object(target) !== target && type(target) !== 'function') {
+    if (Object(target) !== target && typeof target !== 'function') {
       target = {};
     }
 
@@ -16734,13 +17343,12 @@
             continue
           }
 
-          if (deep && copy && (isPlainObject(copy) || (copyIsArray = type(copy) === 'array'))) {
-            if (copyIsArray) {
-              copyIsArray = false;
-              clone = src && type(src) === 'array' ? src : [];
+          if (deep === true && copy && ((copyIsArray = Array.isArray(copy)) || isPlainObject(copy) === true)) {
+            if (copyIsArray === true) {
+              clone = Array.isArray(src) === true ? src : [];
             }
             else {
-              clone = src && isPlainObject(src) ? src : {};
+              clone = isPlainObject(src) === true ? src : {};
             }
 
             target[name] = extend(deep, clone, copy);
@@ -17128,33 +17736,14 @@
         }
       },
 
-      __onMousedown: function __onMousedown () {
+      // mousedown, touchstart
+      __onPointerStart: function __onPointerStart (e) {
         this.__offsetBottom = void 0;
+        this.qListeners[e.type] !== void 0 && this.$emit(e.type, e);
       },
 
-      __onMouseup: function __onMouseup (e) {
+      __onSelectionchange: function __onSelectionchange () {
         this.caret.save();
-        if (this.qListeners.mouseup !== void 0) {
-          this.$emit('mouseup', e);
-        }
-      },
-
-      __onKeyup: function __onKeyup (e) {
-        this.caret.save();
-        if (this.qListeners.keyup !== void 0) {
-          this.$emit('keyup', e);
-        }
-      },
-
-      __onTouchstart: function __onTouchstart () {
-        this.__offsetBottom = void 0;
-      },
-
-      __onTouchend: function __onTouchend (e) {
-        this.caret.save();
-        if (this.qListeners.touchend !== void 0) {
-          this.$emit('touchend', e);
-        }
       },
 
       runCmd: function runCmd (cmd, param, update) {
@@ -17224,6 +17813,12 @@
       this.caret = new Caret(this.$refs.content, this);
       this.__setContent(this.value);
       this.refreshToolbar();
+
+      document.addEventListener('selectionchange', this.__onSelectionchange);
+    },
+
+    beforeDestroy: function beforeDestroy () {
+      document.removeEventListener('selectionchange', this.__onSelectionchange);
     },
 
     render: function render (h) {
@@ -17260,13 +17855,8 @@
         focus: this.__onFocus,
 
         // clean saved scroll position
-        mousedown: this.__onMousedown,
-        touchstart: this.__onTouchstart,
-
-        // save caret
-        mouseup: this.__onMouseup,
-        keyup: this.__onKeyup,
-        touchend: this.__onTouchend});
+        mousedown: this.__onPointerStart,
+        touchstart: this.__onPointerStart});
 
       return h('div', {
         style: {
@@ -17282,7 +17872,7 @@
           'div',
           {
             ref: 'content',
-            staticClass: "q-editor__content",
+            staticClass: 'q-editor__content',
             style: this.innerStyle,
             class: this.innerClass,
             attrs: {
@@ -17415,8 +18005,8 @@
 
             this$1.timer = setTimeout(function () {
               el.style.height = (el.scrollHeight) + "px";
-              this$1.animListener = function (ev) {
-                if (Object(ev) !== ev || ev.target === el) {
+              this$1.animListener = function (evt) {
+                if (Object(evt) !== evt || evt.target === el) {
                   this$1.__end(el, 'show');
                 }
               };
@@ -17441,8 +18031,8 @@
 
             this$1.timer = setTimeout(function () {
               el.style.height = 0;
-              this$1.animListener = function (ev) {
-                if (Object(ev) !== ev || ev.target === el) {
+              this$1.animListener = function (evt) {
+                if (Object(evt) !== evt || evt.target === el) {
                   this$1.__end(el, 'hide');
                 }
               };
@@ -17546,14 +18136,16 @@
   });
 
   var eventName = 'q:expansion-item:close';
+  var LINK_PROPS = Object.keys(routerLinkProps);
 
   var QExpansionItem = Vue.extend({
     name: 'QExpansionItem',
 
-    mixins: [ DarkMixin, RouterLinkMixin, ModelToggleMixin ],
+    mixins: [ DarkMixin, TimeoutMixin, ModelToggleMixin ],
 
-    props: {
-      icon: String,
+    props: Object.assign({}, routerLinkProps,
+
+      {icon: String,
 
       label: String,
       labelLines: [ Number, String ],
@@ -17563,6 +18155,7 @@
 
       dense: Boolean,
 
+      toggleAriaLabel: String,
       expandIcon: String,
       expandedIcon: String,
       expandIconClass: [ Array, String, Object ],
@@ -17573,6 +18166,7 @@
 
       expandSeparator: Boolean,
       defaultOpened: Boolean,
+      hideExpandIcon: Boolean,
       expandIconToggle: Boolean,
       switchToggleSide: Boolean,
       denseToggle: Boolean,
@@ -17580,8 +18174,7 @@
       popup: Boolean,
 
       headerStyle: [Array, String, Object],
-      headerClass: [Array, String, Object]
-    },
+      headerClass: [Array, String, Object]}),
 
     data: function data () {
       return {
@@ -17621,6 +18214,23 @@
         }
       },
 
+      hasLink: function hasLink () {
+        return this.disable !== true && (
+          this.href !== void 0 ||
+          (this.to !== void 0 && this.to !== null && this.to !== '')
+        )
+      },
+
+      linkProps: function linkProps () {
+        var this$1 = this;
+
+        var acc = {};
+        LINK_PROPS.forEach(function (key) {
+          acc[ key ] = this$1[ key ];
+        });
+        return acc
+      },
+
       isClickable: function isClickable () {
         return this.hasLink === true || this.expandIconToggle !== true
       },
@@ -17633,6 +18243,30 @@
 
       activeToggleIcon: function activeToggleIcon () {
         return this.disable !== true && (this.hasLink === true || this.expandIconToggle === true)
+      },
+
+      headerSlotScope: function headerSlotScope () {
+        return {
+          expanded: this.showing === true,
+          detailsId: this.targetUid,
+          toggle: this.toggle,
+          show: this.show,
+          hide: this.hide
+        }
+      },
+
+      toggleAriaAttrs: function toggleAriaAttrs () {
+        var toggleAriaLabel = this.toggleAriaLabel !== void 0
+          ? this.toggleAriaLabel
+          : this.$q.lang.label[ this.showing === true ? 'collapse' : 'expand' ](this.label);
+
+        return {
+          role: 'button',
+          'aria-expanded': this.showing === true ? 'true' : 'false',
+          'aria-owns': this.targetUid,
+          'aria-controls': this.targetUid,
+          'aria-label': toggleAriaLabel
+        }
       }
     },
 
@@ -17678,7 +18312,8 @@
 
         if (this.activeToggleIcon === true) {
           Object.assign(data, {
-            attrs: { tabindex: 0 },
+            attrs: Object.assign({}, {tabindex: 0},
+              this.toggleAriaAttrs),
             on: cache(this, 'inpExt', {
               click: this.__toggleIcon,
               keyup: this.__toggleIconKeyboard
@@ -17701,7 +18336,7 @@
         var child;
 
         if (this.$scopedSlots.header !== void 0) {
-          child = [].concat(this.$scopedSlots.header());
+          child = [].concat(this.$scopedSlots.header(this.headerSlotScope));
         }
         else {
           child = [
@@ -17732,7 +18367,7 @@
           );
         }
 
-        this.disable !== true && child[this.switchToggleSide === true ? 'unshift' : 'push'](
+        this.disable !== true && this.hideExpandIcon !== true && child[this.switchToggleSide === true ? 'unshift' : 'push'](
           this.__getToggleIcon(h)
         );
 
@@ -17750,17 +18385,16 @@
 
         if (this.isClickable === true) {
           data.props.clickable = true;
-          data[this.hasRouterLink === true ? 'nativeOn' : 'on'] = Object.assign({}, this.qListeners,
-            {click: this.__onHeaderClick});
 
           if (this.hasLink === true) {
-            Object.assign(
-              data.props,
-              this.linkProps.props
-            );
-
-            data.attrs = this.linkProps.attrs;
+            Object.assign(data.props, this.linkProps);
           }
+          else {
+            data.attrs = this.toggleAriaAttrs;
+          }
+
+          data.on = Object.assign({}, this.qListeners,
+            {click: this.__onHeaderClick});
         }
 
         return h(QItem, data, child)
@@ -17782,6 +18416,7 @@
             h('div', {
               staticClass: 'q-expansion-item__content relative-position',
               style: this.contentStyle,
+              attrs: { id: this.targetUid },
               directives: [{ name: 'show', value: this.showing }]
             }, slot(this, 'default'))
           ])
@@ -17819,6 +18454,7 @@
 
     created: function created () {
       this.group !== void 0 && this.$root.$on(eventName, this.__eventHandler);
+      this.targetUid = "e_" + (uid());
     },
 
     beforeDestroy: function beforeDestroy () {
@@ -17888,7 +18524,7 @@
           return {
             action: 'push',
             data: {
-              staticClass: "q-fab__label q-tooltip--style q-fab__label--external" +
+              staticClass: 'q-fab__label q-tooltip--style q-fab__label--external' +
                 " q-fab__label--external-" + (this.labelPosition) +
                 (hideLabel === true ? ' q-fab__label--external-hidden' : ''),
               style: this.labelStyle,
@@ -17913,7 +18549,7 @@
   };
 
   var directions$1 = ['up', 'right', 'down', 'left'];
-  var alignValues$1 = [ 'left', 'center', 'right' ];
+  var alignValues$2 = [ 'left', 'center', 'right' ];
 
   var QFab = Vue.extend({
     name: 'QFab',
@@ -17948,7 +18584,7 @@
       verticalActionsAlign: {
         type: String,
         default: 'center',
-        validator: function (v) { return alignValues$1.includes(v); }
+        validator: function (v) { return alignValues$2.includes(v); }
       }
     },
 
@@ -17972,13 +18608,30 @@
         return "q-fab__actions--" + (this.direction) + (this.showing === true ? ' q-fab__actions--opened' : '')
       },
 
+      actionsAttrs: function actionsAttrs () {
+        var attrs = {
+          id: this.targetUid
+        };
+
+        if (this.showing === true) {
+          attrs.role = 'menu';
+        }
+        else {
+          attrs['aria-hidden'] = 'true';
+        }
+
+        return attrs
+      },
+
       iconHolderClasses: function iconHolderClasses () {
         return this.showing === true ? 'q-fab__icon-holder--opened' : ''
       },
 
       attrs: function attrs () {
         return Object.assign({}, {'aria-expanded': this.showing === true ? 'true' : 'false',
-          'aria-haspopup': 'true'},
+          'aria-haspopup': 'true',
+          'aria-controls': this.targetUid,
+          'aria-owns': this.targetUid},
           this.qAttrs)
       },
 
@@ -18001,7 +18654,7 @@
         var staticClass = "q-fab__" + kebab + " absolute-full";
 
         return slotFn === void 0
-          ? h(QIcon, { staticClass: staticClass, props: { name: this[kebab] || this.$q.iconSet.fab[camel] } })
+          ? h(QIcon, { staticClass: staticClass, props: { name: this[camel] || this.$q.iconSet.fab[camel] } })
           : h('div', { staticClass: staticClass }, slotFn(this.slotScope))
       }
     },
@@ -18046,9 +18699,14 @@
 
         h('div', {
           staticClass: 'q-fab__actions flex no-wrap inline',
-          class: this.actionsClasses
+          class: this.actionsClasses,
+          attrs: this.actionsAttrs
         }, slot(this, 'default'))
       ])
+    },
+
+    created: function created () {
+      this.targetUid = "fb_" + (uid());
     }
   });
 
@@ -18220,7 +18878,14 @@
         else if (this.isDirty === false) {
           this.isDirty = true;
 
-          if (this.hasRules === true && this.lazyRules !== 'ondemand') {
+          if (
+            this.hasActiveRules === true &&
+            this.lazyRules !== 'ondemand' &&
+            // Don't re-trigger if it's already in progress;
+            // It might mean that focus switched to submit btn and
+            // QForm's submit() has been called already (ENTER key)
+            this.innerLoading === false
+          ) {
             this.debouncedValidate();
           }
         }
@@ -18234,10 +18899,13 @@
 
     computed: {
       hasRules: function hasRules () {
-        return this.disable !== true &&
-          this.rules !== void 0 &&
+        return this.rules !== void 0 &&
           this.rules !== null &&
           this.rules.length > 0
+      },
+
+      hasActiveRules: function hasActiveRules () {
+        return this.disable !== true && this.hasRules === true
       },
 
       hasError: function hasError () {
@@ -18280,17 +18948,19 @@
         var this$1 = this;
         if ( val === void 0 ) val = this.value;
 
-        if (this.hasRules !== true) {
+        if (this.hasActiveRules !== true) {
           return true
         }
 
-        this.validateIndex++;
+        var index = ++this.validateIndex;
 
-        if (this.innerLoading !== true && this.lazyRules !== true) {
-          this.isDirty = true;
-        }
+        var setDirty = this.innerLoading !== true
+          ? function () { return this$1.isDirty !== true && (this$1.isDirty = true); }
+          : function () {};
 
         var update = function (err, msg) {
+          err === true && setDirty();
+
           if (this$1.innerError !== err) {
             this$1.innerError = err;
           }
@@ -18313,7 +18983,7 @@
           var res = (void 0);
 
           if (typeof rule === 'function') {
-            res = rule(val);
+            res = rule(val, testPattern);
           }
           else if (typeof rule === 'string' && testPattern[rule] !== void 0) {
             res = testPattern[rule](val);
@@ -18337,31 +19007,24 @@
           this.innerLoading = true;
         }
 
-        var index = this.validateIndex;
-
         return Promise.all(promises).then(
           function (res) {
-            if (index !== this$1.validateIndex) {
-              return true
-            }
-
             if (res === void 0 || Array.isArray(res) === false || res.length === 0) {
-              update(false);
+              index === this$1.validateIndex && update(false);
               return true
             }
 
             var msg = res.find(function (r) { return r === false || typeof r === 'string'; });
-            update(msg !== void 0, msg);
+            index === this$1.validateIndex && update(msg !== void 0, msg);
             return msg === void 0
           },
           function (e) {
             if (index === this$1.validateIndex) {
               console.error(e);
               update(true);
-              return false
             }
 
-            return true
+            return false
           }
         )
       },
@@ -18376,7 +19039,7 @@
 
       __validateIfNeeded: function __validateIfNeeded (changedRules) {
         if (
-          this.hasRules === true &&
+          this.hasActiveRules === true &&
           this.lazyRules !== 'ondemand' &&
           (this.isDirty === true || (this.lazyRules !== true && changedRules !== true))
         ) {
@@ -18386,81 +19049,8 @@
     }
   };
 
-  /**
-   * Based on the work of https://github.com/jchook/uuid-random
-   */
-
-  var
-    buf,
-    bufIdx = 0;
-  var hexBytes = new Array(256);
-
-  // Pre-calculate toString(16) for speed
-  for (var i = 0; i < 256; i++) {
-    hexBytes[i] = (i + 0x100).toString(16).substr(1);
-  }
-
-  // Use best available PRNG
-  var randomBytes = (function () {
-    // Node & Browser support
-    var lib = typeof crypto !== 'undefined'
-      ? crypto
-      : (
-        typeof window !== 'undefined'
-          ? window.msCrypto // IE11
-          : void 0
-      );
-
-    if (lib !== void 0) {
-      if (lib.randomBytes !== void 0) {
-        return lib.randomBytes
-      }
-      if (lib.getRandomValues !== void 0) {
-        return function (n) {
-          var bytes = new Uint8Array(n);
-          lib.getRandomValues(bytes);
-          return bytes
-        }
-      }
-    }
-
-    return function (n) {
-      var r = [];
-      for (var i = n; i > 0; i--) {
-        r.push(Math.floor(Math.random() * 256));
-      }
-      return r
-    }
-  })();
-
-  // Buffer random numbers for speed
-  // Reduce memory usage by decreasing this number (min 16)
-  // or improve speed by increasing this number (try 16384)
-  var BUFFER_SIZE = 4096;
-
-  function uid$2 () {
-    // Buffer some random bytes for speed
-    if (buf === void 0 || (bufIdx + 16 > BUFFER_SIZE)) {
-      bufIdx = 0;
-      buf = randomBytes(BUFFER_SIZE);
-    }
-
-    var b = Array.prototype.slice.call(buf, bufIdx, (bufIdx += 16));
-    b[6] = (b[6] & 0x0f) | 0x40;
-    b[8] = (b[8] & 0x3f) | 0x80;
-
-    return hexBytes[b[0]] + hexBytes[b[1]] +
-      hexBytes[b[2]] + hexBytes[b[3]] + '-' +
-      hexBytes[b[4]] + hexBytes[b[5]] + '-' +
-      hexBytes[b[6]] + hexBytes[b[7]] + '-' +
-      hexBytes[b[8]] + hexBytes[b[9]] + '-' +
-      hexBytes[b[10]] + hexBytes[b[11]] +
-      hexBytes[b[12]] + hexBytes[b[13]] +
-      hexBytes[b[14]] + hexBytes[b[15]]
-  }
-
   function getTargetUid (val) {
-    return val === void 0 ? ("f_" + (uid$2())) : val
+    return val === void 0 ? ("f_" + (uid())) : val
   }
 
   var QField = Vue.extend({
@@ -18565,11 +19155,9 @@
       floatingLabel: function floatingLabel () {
         return this.stackLabel === true ||
           this.focused === true ||
-          (
-            this.inputValue !== void 0 && this.hideSelected === true
-              ? this.inputValue.length > 0
-              : this.hasValue === true
-          ) ||
+          typeof this.inputValue === 'number' ||
+          (typeof this.inputValue === 'string' && this.inputValue.length > 0) ||
+          (this.hideSelected !== true && this.hasValue === true) ||
           (
             this.displayValue !== void 0 &&
             this.displayValue !== null &&
@@ -18712,14 +19300,6 @@
           }, this.__getControlContainer(h))
         );
 
-        this.$scopedSlots.append !== void 0 && node.push(
-          h('div', {
-            staticClass: 'q-field__append q-field__marginal row no-wrap items-center',
-            key: 'append',
-            on: this.slotsEvents
-          }, this.$scopedSlots.append())
-        );
-
         this.hasError === true && this.noErrorIcon === false && node.push(
           this.__getInnerAppendNode(h, 'error', [
             h(QIcon, { props: { name: this.$q.iconSet.field.error, color: 'negative' } })
@@ -18749,6 +19329,14 @@
             ])
           );
         }
+
+        this.$scopedSlots.append !== void 0 && node.push(
+          h('div', {
+            staticClass: 'q-field__append q-field__marginal row no-wrap items-center',
+            key: 'append',
+            on: this.slotsEvents
+          }, this.$scopedSlots.append())
+        );
 
         this.__getInnerAppend !== void 0 && node.push(
           this.__getInnerAppendNode(h, 'inner-append', this.__getInnerAppend(h))
@@ -18788,8 +19376,9 @@
             h('div', {
               ref: 'target',
               staticClass: 'q-field__native row',
-              attrs: Object.assign({}, this.qAttrs,
-                {'data-autofocus': this.autofocus})
+              attrs: Object.assign({}, {tabindex: -1},
+                this.qAttrs,
+                {'data-autofocus': this.autofocus || void 0})
             }, this.$scopedSlots.control(this.controlSlotScope))
           );
         }
@@ -18853,7 +19442,8 @@
 
         return h('div', {
           staticClass: 'q-field__bottom row items-start q-field__bottom--' +
-            (this.hideBottomSpace !== true ? 'animated' : 'stale')
+            (this.hideBottomSpace !== true ? 'animated' : 'stale'),
+          on: { click: prevent }
         }, [
           this.hideBottomSpace === true
             ? main
@@ -18965,10 +19555,16 @@
       this.__onPreRender !== void 0 && this.__onPreRender();
       this.__onPostRender !== void 0 && this.$nextTick(this.__onPostRender);
 
+      var attrs = this.__getControl === void 0 && this.$scopedSlots.control === void 0
+        ? Object.assign({}, this.qAttrs,
+          {'data-autofocus': this.autofocus || void 0},
+          this.attrs)
+        : this.attrs;
+
       return h('label', {
         staticClass: 'q-field q-validation-component row no-wrap items-start',
         class: this.classes,
-        attrs: this.attrs
+        attrs: attrs
       }, [
         this.$scopedSlots.before !== void 0 ? h('div', {
           staticClass: 'q-field__before q-field__marginal row no-wrap items-center',
@@ -19154,7 +19750,7 @@
         // Cordova/iOS allows selecting multiple files even when the
         // multiple attribute is not specified. We also normalize drag'n'dropped
         // files here:
-        if (this.multiple !== true) {
+        if (this.multiple !== true && files.length > 0) {
           files = [ files[0] ];
         }
 
@@ -19162,11 +19758,13 @@
           file.__key = file.webkitRelativePath + file.lastModified + file.name + file.size;
         });
 
-        // Avoid duplicate files
-        var filenameMap = currentFileList.map(function (entry) { return entry.__key; });
-        files = filterFiles(files, rejectedFiles, 'duplicate', function (file) {
-          return filenameMap.includes(file.__key) === false
-        });
+        if (append === true) {
+          // Avoid duplicate files
+          var filenameMap = currentFileList.map(function (entry) { return entry.__key; });
+          files = filterFiles(files, rejectedFiles, 'duplicate', function (file) {
+            return filenameMap.includes(file.__key) === false
+          });
+        }
 
         if (files.length === 0) { return done() }
 
@@ -19218,7 +19816,7 @@
 
       __onDragLeave: function __onDragLeave (e) {
         stopAndPrevent(e);
-        this.dnd = false;
+        e.relatedTarget !== this.$refs.dnd && (this.dnd = false);
       },
 
       __onDrop: function __onDrop (e) {
@@ -19236,6 +19834,7 @@
         if (this.dnd === true) {
           return h('div', {
             staticClass: ("q-" + type + "__dnd absolute-full"),
+            ref: 'dnd',
             on: cache(this, 'dnd', {
               dragenter: stopAndPreventDrag,
               dragover: stopAndPreventDrag,
@@ -19367,6 +19966,10 @@
 
       isAppending: function isAppending () {
         return this.multiple === true && this.append === true
+      },
+
+      fieldClass: function fieldClass () {
+        return 'q-file q-field--auto-height' + (this.dnd === true ? ' q-file--dnd' : '')
       }
     },
 
@@ -19408,6 +20011,11 @@
         var this$1 = this;
 
         var files = this.__processFiles(e, fileList, this.innerValue, this.isAppending);
+        var fileInput = this.__getFileInput();
+
+        if (fileInput !== void 0) {
+          fileInput.value = '';
+        }
 
         // if nothing to do...
         if (files === void 0) { return }
@@ -19441,6 +20049,7 @@
         if (this.editable === true) {
           data.on = cache(this, 'native', {
             dragover: this.__onDragOver,
+            dragleave: this.__onDragLeave,
             keydown: this.__onKeydown,
             keyup: this.__onKeyup
           });
@@ -19536,8 +20145,6 @@
     },
 
     created: function created () {
-      this.fieldClass = 'q-file q-field--auto-height';
-
       // necessary for QField's clearable
       // and FileValueMixin
       this.type = 'file';
@@ -19800,87 +20407,79 @@
       validate: function validate (shouldFocus) {
         var this$1 = this;
 
-        var promises = [];
         var focus = typeof shouldFocus === 'boolean'
           ? shouldFocus
           : this.noErrorFocus !== true;
 
-        this.validateIndex++;
+        var index = ++this.validateIndex;
 
-        var components = this.getValidationComponents().filter(function (c) { return c.disable !== true; });
+        var registeredComponents = this.getValidationComponents().filter(function (c) { return c.disable !== true; });
 
         var emit = function (res, ref) {
           this$1.$emit('validation-' + (res === true ? 'success' : 'error'), ref);
         };
 
-        var loop = function ( i ) {
-          var comp = components[i];
+        var validateComponent = function (comp) {
           var valid = comp.validate();
 
-          if (typeof valid.then === 'function') {
-            promises.push(
-              valid.then(
-                function (valid) { return ({ valid: valid, comp: comp }); },
-                function (error) { return ({ valid: false, comp: comp, error: error }); }
-              )
-            );
-          }
-          else if (valid !== true) {
-            if (this$1.greedy === false) {
-              emit(false, comp);
-
-              if (focus === true && typeof comp.focus === 'function') {
-                comp.focus();
-              }
-
-              return { v: Promise.resolve(false) }
-            }
-
-            promises.push({ valid: false, comp: comp });
-          }
+          return typeof valid.then === 'function'
+            ? valid.then(
+              function (valid) { return ({ valid: valid, comp: comp }); },
+              function (err) { return ({ valid: false, comp: comp, err: err }); }
+            )
+            : Promise.resolve({ valid: valid, comp: comp })
         };
 
-        for (var i = 0; i < components.length; i++) {
-          var returned = loop( i );
+        var errorsPromise = this.greedy === true
+          ? Promise
+            .all(registeredComponents.map(validateComponent))
+            .then(function (res) { return res.filter(function (r) { return r.valid !== true; }); })
+          : registeredComponents
+            .reduce(
+              function (acc, comp) { return acc.then(function () {
+                return validateComponent(comp).then(function (r) {
+                  if (r.valid === false) { return Promise.reject(r) }
+                })
+              }); },
+              Promise.resolve()
+            )
+            .catch(function (error) { return [ error ]; });
 
-          if ( returned ) return returned.v;
-        }
+        return errorsPromise.then(function (errors) {
+          if (errors === void 0 || errors.length === 0) {
+            index === this$1.validateIndex && emit(true);
+            return true
+          }
 
-        if (promises.length === 0) {
-          emit(true);
-          return Promise.resolve(true)
-        }
+          if (index === this$1.validateIndex) {
+            var ref = errors[0];
+            var comp = ref.comp;
+            var err = ref.err;
 
-        var index = this.validateIndex;
+            err !== void 0 && console.error(err);
+            emit(false, comp);
 
-        return Promise.all(promises).then(
-          function (res) {
-            if (index === this$1.validateIndex) {
-              var errors = res.filter(function (r) { return r.valid !== true; });
+            if (focus === true) {
+              // Try to focus first mounted and active component
+              var activeError = errors.find(function (ref) {
+                var comp = ref.comp;
 
-              if (errors.length === 0) {
-                emit(true);
-                return true
+                return (
+                typeof comp.focus === 'function' &&
+                comp._isBeingDestroyed !== true &&
+                comp._isDestroyed !== true &&
+                comp._inactive !== true
+              );
+              });
+
+              if (activeError !== void 0) {
+                activeError.comp.focus();
               }
-
-              var ref = errors[0];
-              var valid = ref.valid;
-              var comp = ref.comp;
-
-              emit(false, comp);
-
-              if (
-                focus === true &&
-                valid !== true &&
-                typeof comp.focus === 'function'
-              ) {
-                comp.focus();
-              }
-
-              return false
             }
           }
-        )
+
+          return false
+        })
       },
 
       resetValidation: function resetValidation () {
@@ -19896,8 +20495,11 @@
 
         evt !== void 0 && stopAndPrevent(evt);
 
+        var index = this.validateIndex + 1;
+
         this.validate().then(function (val) {
-          if (val === true) {
+          // if not outdated && validation succeeded
+          if (index === this$1.validateIndex && val === true) {
             if (this$1.qListeners.submit !== void 0) {
               this$1.$emit('submit', evt);
             }
@@ -20621,6 +21223,16 @@
 
         if (this.isWorking === true) {
           this.__scrollTarget.addEventListener('scroll', this.poll, passive$1);
+
+          if (this.reverse === true) {
+            var
+              scrollHeight = getScrollHeight(this.__scrollTarget),
+              containerHeight = height(this.__scrollTarget);
+
+            setScrollPosition(this.__scrollTarget, scrollHeight - containerHeight);
+          }
+
+          this.immediatePoll();
         }
       },
 
@@ -20652,16 +21264,6 @@
       this.__setDebounce(this.debounce);
 
       this.updateScrollTarget();
-
-      if (this.reverse === true) {
-        var
-          scrollHeight = getScrollHeight(this.__scrollTarget),
-          containerHeight = height(this.__scrollTarget);
-
-        setScrollPosition(this.__scrollTarget, scrollHeight - containerHeight);
-      }
-
-      this.immediatePoll();
     },
 
     activated: function activated () {
@@ -20952,7 +21554,7 @@
             '^' +
             unmask.join('') +
             '(' + (unmaskChar === '' ? '.' : '[^' + unmaskChar + ']') + '+)?' +
-            '$'
+            '[' + unmaskChar + ']*$'
           ),
           extractLast = extract.length - 1,
           extractMatcher = extract.map(function (re, index) {
@@ -21085,7 +21687,7 @@
           ? this.__unmask(masked)
           : masked;
 
-        this.value !== val && this.__emitValue(val, true);
+        String(this.value) !== val && this.__emitValue(val, true);
       },
 
       __moveCursorForPaste: function __moveCursorForPaste (inp, start, end) {
@@ -21326,27 +21928,28 @@
   var isJapanese = /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/;
   var isChinese = /(?:[\u3300-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\uFE30-\uFE4F]|[\uD840-\uD868\uD86A-\uD872][\uDC00-\uDFFF]|\uD869[\uDC00-\uDEDF\uDF00-\uDFFF]|\uD873[\uDC00-\uDEAF]|\uD87E[\uDC00-\uDE1F])/;
   var isKorean = /[\u3131-\u314e\u314f-\u3163\uac00-\ud7a3]/;
+  var isPlainText = /[a-z0-9_ -]$/i;
 
   var CompositionMixin = {
     methods: {
       __onComposition: function __onComposition (e) {
         if (e.type === 'compositionend' || e.type === 'change') {
-          if (e.target.composing !== true) { return }
-          e.target.composing = false;
+          if (e.target.qComposing !== true) { return }
+          e.target.qComposing = false;
           this.__onInput(e);
         }
-        else if (e.type === 'compositionupdate') {
-          if (
-            typeof e.data === 'string' &&
-            isJapanese.test(e.data) === false &&
-            isChinese.test(e.data) === false &&
-            isKorean.test(e.data) === false
-          ) {
-            e.target.composing = false;
+        else if (
+          e.type === 'compositionupdate' &&
+          e.target.qComposing !== true &&
+          typeof e.data === 'string'
+        ) {
+          var isComposing = client.is.firefox === true
+            ? isPlainText.test(e.data) === false
+            : isJapanese.test(e.data) === true || isChinese.test(e.data) === true || isKorean.test(e.data) === true;
+
+          if (isComposing === true) {
+            e.target.qComposing = true;
           }
-        }
-        else {
-          e.target.composing = true;
         }
       }
     }
@@ -21387,7 +21990,10 @@
         if (this.hasMask === true) {
           if (this.stopValueWatcher === true) {
             this.stopValueWatcher = false;
-            return
+
+            if (String(v) === this.emitCachedValue) {
+              return
+            }
           }
 
           this.__updateMaskValue(v);
@@ -21410,6 +22016,15 @@
 
         // textarea only
         this.autogrow === true && this.$nextTick(this.__adjustHeight);
+      },
+
+      // some browsers lose the native input value
+      // so we need to reattach it dynamically
+      // (like type="password" <-> type="text"; see #12078)
+      type: function type () {
+        if (this.$refs.input) {
+          this.$refs.input.value = this.value;
+        }
       },
 
       autogrow: function autogrow (autogrow$1) {
@@ -21480,7 +22095,7 @@
 
       inputAttrs: function inputAttrs () {
         var attrs = Object.assign({}, {tabindex: 0,
-          'data-autofocus': this.autofocus,
+          'data-autofocus': this.autofocus || void 0,
           rows: this.type === 'textarea' ? 6 : void 0,
           'aria-label': this.label,
           name: this.nameProp},
@@ -21534,7 +22149,7 @@
       },
 
       __onInput: function __onInput (e) {
-        if (!e || !e.target || e.target.composing === true) {
+        if (!e || !e.target || e.target.qComposing === true) {
           return
         }
 
@@ -21613,18 +22228,27 @@
 
       // textarea only
       __adjustHeight: function __adjustHeight () {
-        var inp = this.$refs.input;
-        if (inp !== void 0) {
-          var parentStyle = inp.parentNode.style;
+        var this$1 = this;
 
-          // reset height of textarea to a small size to detect the real height
-          // but keep the total control size the same
-          parentStyle.marginBottom = (inp.scrollHeight - 1) + 'px';
-          inp.style.height = '1px';
+        requestAnimationFrame(function () {
+          var inp = this$1.$refs.input;
+          if (inp !== void 0) {
+            var parentStyle = inp.parentNode.style;
+            var ref = inp.style;
+            var overflow = ref.overflow;
 
-          inp.style.height = inp.scrollHeight + 'px';
-          parentStyle.marginBottom = '';
-        }
+            // reset height of textarea to a small size to detect the real height
+            // but keep the total control size the same
+            // Firefox rulez #14263, #14344
+            this$1.$q.platform.is.firefox !== true && (inp.style.overflow = 'hidden');
+            inp.style.height = '1px';
+            parentStyle.marginBottom = (inp.scrollHeight - 1) + 'px';
+
+            inp.style.height = inp.scrollHeight + 'px';
+            inp.style.overflow = overflow;
+            parentStyle.marginBottom = '';
+          }
+        });
       },
 
       __onChange: function __onChange (e) {
@@ -21910,6 +22534,9 @@
     },
 
     props: {
+      innerMin: Number,
+      innerMax: Number,
+
       step: {
         type: Number,
         default: 1,
@@ -21926,31 +22553,22 @@
     },
 
     data: function data () {
+      var innerMin = this.__getInnerMin(this.innerMin);
+      var innerMax = this.__getInnerMax(this.innerMax);
+
       return {
-        model: this.value,
+        model: this.value === null ? innerMin : between(this.value, innerMin, innerMax),
         dragging: false
       }
     },
 
     watch: {
-      value: function value (value$1) {
-        if (value$1 < this.min) {
-          this.model = this.min;
-        }
-        else if (value$1 > this.max) {
-          this.model = this.max;
-        }
-        else {
-          if (value$1 !== this.model) {
-            this.model = value$1;
-          }
-          return
-        }
+      modelUpdate: function modelUpdate () {
+        this.model = this.value === null
+          ? this.computedInnerMin
+          : between(this.value, this.computedInnerMin, this.computedInnerMax);
 
-        if (this.model !== this.value) {
-          this.$emit('input', this.model);
-          this.$emit('change', this.model);
-        }
+        this.__updateValue(true);
       }
     },
 
@@ -21961,6 +22579,18 @@
             ? ' q-knob--editable'
             : (this.disable === true ? ' disabled' : '')
         )
+      },
+
+      computedInnerMin: function computedInnerMin () {
+        return this.__getInnerMin(this.innerMin)
+      },
+
+      computedInnerMax: function computedInnerMax () {
+        return this.__getInnerMax(this.innerMax)
+      },
+
+      modelUpdate: function modelUpdate () {
+        return ((this.value) + "|" + (this.computedInnerMin) + "|" + (this.computedInnerMax))
       },
 
       editable: function editable () {
@@ -21994,8 +22624,8 @@
       attrs: function attrs () {
         var attrs = {
           role: 'slider',
-          'aria-valuemin': this.min,
-          'aria-valuemax': this.max,
+          'aria-valuemin': this.computedInnerMin,
+          'aria-valuemax': this.computedInnerMax,
           'aria-valuenow': this.value
         };
 
@@ -22011,6 +22641,18 @@
     },
 
     methods: {
+      __getInnerMin: function __getInnerMin (val) {
+        return isNaN(val) === true || this.innerMin < this.min
+          ? this.min
+          : this.innerMin
+      },
+
+      __getInnerMax: function __getInnerMax (val) {
+        return isNaN(val) === true || val > this.max
+          ? this.max
+          : this.innerMax
+      },
+
       __updateCenterPosition: function __updateCenterPosition () {
         var ref = this.$el.getBoundingClientRect();
         var top = ref.top;
@@ -22056,8 +22698,8 @@
 
         this.model = between(
           parseFloat((this.model + offset).toFixed(this.decimals)),
-          this.min,
-          this.max
+          this.computedInnerMin,
+          this.computedInnerMax
         );
 
         this.__updateValue();
@@ -22093,11 +22735,14 @@
           angle = center.left < pos.left ? angle + 90 : 270 - angle;
         }
 
-        if (this.angle) {
+        if (this.$q.lang.rtl === true) {
+          angle = normalizeToInterval(-angle - this.angle, 0, 360);
+        }
+        else if (this.angle) {
           angle = normalizeToInterval(angle - this.angle, 0, 360);
         }
 
-        if (this.$q.lang.rtl === true) {
+        if (this.reverse === true) {
           angle = 360 - angle;
         }
 
@@ -22114,7 +22759,7 @@
           model = parseFloat(model.toFixed(this.decimals));
         }
 
-        model = between(model, this.min, this.max);
+        model = between(model, this.computedInnerMin, this.computedInnerMax);
 
         this.$emit('drag-value', model);
 
@@ -22404,6 +23049,7 @@
       var layout = h('div', {
         class: this.classes,
         style: this.style,
+        attrs: { tabindex: -1 },
         on: Object.assign({}, this.qListeners)
       }, mergeSlot([
         h(QScrollObserver, {
@@ -22558,12 +23204,12 @@
     computed: {
       classes: function classes () {
         return "q-table--" + (this.separator) + "-separator" +
-          (this.isDark === true ? " q-table--dark q-table__card--dark q-dark" : '') +
-          (this.dense === true ? " q-table--dense" : '') +
-          (this.flat === true ? " q-table--flat" : '') +
-          (this.bordered === true ? " q-table--bordered" : '') +
-          (this.square === true ? " q-table--square" : '') +
-          (this.wrapCells === false ? " q-table--no-wrap" : '')
+          (this.isDark === true ? ' q-table--dark q-table__card--dark q-dark' : '') +
+          (this.dense === true ? ' q-table--dense' : '') +
+          (this.flat === true ? ' q-table--flat' : '') +
+          (this.bordered === true ? ' q-table--bordered' : '') +
+          (this.square === true ? ' q-table--square' : '') +
+          (this.wrapCells === false ? ' q-table--no-wrap' : '')
       }
     },
 
@@ -22632,6 +23278,9 @@
       label: String,
       leftLabel: Boolean,
 
+      checkedIcon: String,
+      uncheckedIcon: String,
+
       color: String,
       keepColor: Boolean,
       dense: Boolean,
@@ -22662,6 +23311,12 @@
           : '';
 
         return ("q-radio__inner--" + (this.isTrue === true ? 'truthy' : 'falsy') + color)
+      },
+
+      computedIcon: function computedIcon () {
+        return this.isTrue === true
+          ? this.checkedIcon
+          : this.uncheckedIcon
       },
 
       computedTabindex: function computedTabindex () {
@@ -22717,25 +23372,38 @@
     render: function render (h) {
       var this$1 = this;
 
-      var content = [
-        h('svg', {
-          staticClass: 'q-radio__bg absolute non-selectable',
-          attrs: { focusable: 'false' /* needed for IE11 */, viewBox: '0 0 24 24', 'aria-hidden': 'true' }
-        }, [
-          h('path', {
-            attrs: {
-              d: 'M12,22a10,10 0 0 1 -10,-10a10,10 0 0 1 10,-10a10,10 0 0 1 10,10a10,10 0 0 1 -10,10m0,-22a12,12 0 0 0 -12,12a12,12 0 0 0 12,12a12,12 0 0 0 12,-12a12,12 0 0 0 -12,-12'
-            }
-          }),
+      var content = this.computedIcon !== void 0
+        ? [
+          h('div', {
+            key: 'icon',
+            staticClass: 'q-radio__icon-container absolute-full flex flex-center no-wrap'
+          }, [
+            h(QIcon, {
+              staticClass: 'q-radio__icon',
+              props: { name: this.computedIcon }
+            })
+          ])
+        ]
+        : [
+          h('svg', {
+            key: 'svg',
+            staticClass: 'q-radio__bg absolute non-selectable',
+            attrs: { focusable: 'false' /* needed for IE11 */, viewBox: '0 0 24 24' }
+          }, [
+            h('path', {
+              attrs: {
+                d: 'M12,22a10,10 0 0 1 -10,-10a10,10 0 0 1 10,-10a10,10 0 0 1 10,10a10,10 0 0 1 -10,10m0,-22a12,12 0 0 0 -12,12a12,12 0 0 0 12,12a12,12 0 0 0 12,-12a12,12 0 0 0 -12,-12'
+              }
+            }),
 
-          h('path', {
-            staticClass: 'q-radio__check',
-            attrs: {
-              d: 'M12,6a6,6 0 0 0 -6,6a6,6 0 0 0 6,6a6,6 0 0 0 6,-6a6,6 0 0 0 -6,-6'
-            }
-          })
-        ])
-      ];
+            h('path', {
+              staticClass: 'q-radio__check',
+              attrs: {
+                d: 'M12,6a6,6 0 0 0 -6,6a6,6 0 0 0 6,6a6,6 0 0 0 6,-6a6,6 0 0 0 -6,-6'
+              }
+            })
+          ])
+        ];
 
       this.disable !== true && this.__injectFormInput(
         content,
@@ -22747,7 +23415,8 @@
         h('div', {
           staticClass: 'q-radio__inner relative-position',
           class: this.innerClass,
-          style: this.sizeStyle
+          style: this.sizeStyle,
+          attrs: { 'aria-hidden': 'true' }
         }, content)
       ];
 
@@ -22792,9 +23461,6 @@
 
     props: {
       icon: String,
-      checkedIcon: String,
-      uncheckedIcon: String,
-      indeterminateIcon: String,
 
       iconColor: String
     },
@@ -24072,21 +24738,14 @@
       defaultSlotScope: function defaultSlotScope () {
         var this$1 = this;
 
-        var acc = {
+        return injectProp({
           initialValue: this.initialValue,
           updatePosition: this.__reposition,
           emitValue: this.__changeModel,
           validate: this.validate,
           set: this.set,
           cancel: this.cancel
-        };
-
-        Object.defineProperty(acc, 'value', {
-          get: function () { return this$1.modelValue; },
-          set: this.__changeModel
-        });
-
-        return acc
+        }, 'value', function () { return this$1.modelValue; }, this.__changeModel)
       },
 
       menuProps: function menuProps () {
@@ -24535,8 +25194,7 @@
       directives: function directives () {
         if (this.disable !== true) {
           var modifiers = {
-            down: true,
-            mightPrevent: true
+            down: true
           };
 
           if (this.noMouse !== true) {
@@ -25091,7 +25749,11 @@
 
         var
           stepVal = ([ 34, 33 ].includes(evt.keyCode) ? 10 : 1) * this.computedStep,
-          offset = ([ 34, 37, 40 ].includes(evt.keyCode) ? -1 : 1) * (this.isReversed === true ? -1 : 1) * stepVal;
+          offset = (
+            ([ 34, 37, 40 ].includes(evt.keyCode) ? -1 : 1) *
+            (this.isReversed === true ? -1 : 1) *
+            (this.vertical === true ? -1 : 1) * stepVal
+          );
 
         if (this.focus === 'both') {
           var interval = this.model.max - this.model.min;
@@ -25192,6 +25854,8 @@
       iconHalf: [String, Array],
       iconSelected: [String, Array],
 
+      iconAriaLabel: [String, Array],
+
       color: [String, Array],
       colorHalf: [String, Array],
       colorSelected: [String, Array],
@@ -25246,11 +25910,32 @@
         }
       },
 
+      iconLabel: function iconLabel () {
+        var this$1 = this;
+
+        if (typeof this.iconAriaLabel === 'string') {
+          var label = this.iconAriaLabel.length > 0 ? ((this.iconAriaLabel) + " ") : '';
+
+          return function (i) { return ("" + label + i); }
+        }
+
+        if (Array.isArray(this.iconAriaLabel) === true) {
+          var iMax = this.iconAriaLabel.length;
+
+          if (iMax > 0) {
+            return function (i) { return this$1.iconAriaLabel[Math.min(i, iMax) - 1]; }
+          }
+        }
+
+        return function (i, label) { return (label + " " + i); }
+      },
+
       stars: function stars () {
         var
           acc = [],
           icons = this.iconData,
-          ceil = Math.ceil(this.value);
+          ceil = Math.ceil(this.value),
+          tabindex = this.editable === true ? 0 : null;
 
         var halfIndex = this.iconHalf === void 0 || ceil === this.value
           ? -1
@@ -25267,10 +25952,8 @@
                 icons.selColor !== void 0 && active === true
                   ? (i <= icons.selColorLen ? this.colorSelected[i - 1] : icons.selColor)
                   : (i <= icons.colorLen ? this.color[i - 1] : icons.color)
-              );
-
-          acc.push({
-            name: (
+              ),
+            name = (
               half === true
                 ? (i <= icons.halfIconLen ? this.iconHalf[i - 1] : icons.halfIcon)
                 : (
@@ -25278,7 +25961,17 @@
                     ? (i <= icons.selIconLen ? this.iconSelected[i - 1] : icons.selIcon)
                     : (i <= icons.iconLen ? this.icon[i - 1] : icons.icon)
                 )
-            ) || this.$q.iconSet.rating.icon,
+            ) || this.$q.iconSet.rating.icon;
+
+          acc.push({
+            name: name,
+
+            attrs: {
+              tabindex: tabindex,
+              role: 'radio',
+              'aria-checked': this.value === i ? 'true' : 'false',
+              'aria-label': this.iconLabel(i, name)
+            },
 
             classes: 'q-rating__icon' +
               (active === true || half === true ? ' q-rating__icon--active' : '') +
@@ -25292,12 +25985,16 @@
       },
 
       attrs: function attrs () {
+        var attrs = {
+          role: 'radiogroup'
+        };
         if (this.disable === true) {
-          return { 'aria-disabled': 'true' }
+          attrs[ 'aria-disabled' ] = 'true';
         }
         if (this.readonly === true) {
-          return { 'aria-readonly': 'true' }
+          attrs[ 'aria-readonly' ] = 'true';
         }
+        return attrs
       }
     },
 
@@ -25344,13 +26041,12 @@
     render: function render (h) {
       var this$1 = this;
 
-      var
-        child = [],
-        tabindex = this.editable === true ? 0 : null;
+      var child = [];
 
       this.stars.forEach(function (ref, index) {
         var classes = ref.classes;
         var name = ref.name;
+        var attrs = ref.attrs;
 
         var i = index + 1;
 
@@ -25359,7 +26055,7 @@
             key: i,
             ref: ("rt" + i),
             class: 'q-rating__icon-container flex flex-center',
-            attrs: { tabindex: tabindex },
+            attrs: attrs,
             on: cache(this$1, 'i#' + i, {
               click: function () { this$1.__set(i); },
               mouseover: function () { this$1.__setHoverValue(i); },
@@ -25411,6 +26107,8 @@
       ])
     }
   });
+
+  var getMinThumbSize = function (size) { return (size >= 250 ? 50 : Math.ceil(size / 5)); };
 
   var axisList = [ 'vertical', 'horizontal' ];
   var dirProps = {
@@ -25529,7 +26227,7 @@
         return Math.round(
           between(
             this.container.vertical * this.container.vertical / this.scroll.vertical.size,
-            50,
+            getMinThumbSize(this.container.vertical),
             this.container.vertical
           )
         )
@@ -25539,7 +26237,7 @@
         return Math.round(
           between(
             this.container.horizontal * this.container.horizontal / this.scroll.horizontal.size,
-            50,
+            getMinThumbSize(this.container.horizontal),
             this.container.horizontal
           )
         )
@@ -26166,32 +26864,35 @@
     tableColspan: [ Number, String ]
   };
 
-  var id = 1;
-
-  function setOverflowAnchor (id, index) {
+  function setOverflowAnchor (contentEl, index) {
     if (setOverflowAnchor.isSupported === void 0) {
       setOverflowAnchor.isSupported = window.getComputedStyle(document.body).overflowAnchor !== void 0;
     }
 
-    if (setOverflowAnchor.isSupported === false) {
+    if (setOverflowAnchor.isSupported === false || contentEl === void 0) {
       return
     }
 
-    var ssId = id + '_ss';
+    cancelAnimationFrame(contentEl._qOverflowAnimationFrame);
+    contentEl._qOverflowAnimationFrame = requestAnimationFrame(function () {
+      if (contentEl === void 0) {
+        return
+      }
 
-    var styleSheet = document.getElementById(ssId);
+      var children = contentEl.children || [];
 
-    if (styleSheet === null) {
-      styleSheet = document.createElement('style');
-      styleSheet.type = 'text/css';
-      styleSheet.id = ssId;
-      document.head.appendChild(styleSheet);
-    }
+      filterProto
+        .call(children, function (el) { return el.dataset && el.dataset.qVsAnchor !== void 0; })
+        .forEach(function (el) {
+          delete el.dataset.qVsAnchor;
+        });
 
-    if (styleSheet.qChildIndex !== index) {
-      styleSheet.qChildIndex = index;
-      styleSheet.innerHTML = "#" + id + " > *:nth-child(" + index + ") { overflow-anchor: auto }";
-    }
+      var el = children[index];
+
+      if (el && el.dataset) {
+        el.dataset.qVsAnchor = '';
+      }
+    });
   }
 
   var commonVirtPropsList = Object.keys(commonVirtScrollProps);
@@ -26202,8 +26903,7 @@
 
     data: function data () {
       return {
-        virtualScrollSliceRange: { from: 0, to: 0 },
-        id: 'qvs_' + id++
+        virtualScrollSliceRange: { from: 0, to: 0 }
       }
     },
 
@@ -26408,7 +27108,7 @@
           });
         }
 
-        setOverflowAnchor(this.id, toIndex - from + 1);
+        setOverflowAnchor(contentEl, toIndex - from);
 
         var sizeBefore = alignEnd !== void 0 ? this.virtualScrollSizes.slice(from, toIndex).reduce(sumFn, 0) : 0;
 
@@ -26578,7 +27278,9 @@
 
         this.__scrollViewSize = scrollViewSize;
 
-        var multiplier = 1 + this.virtualScrollSliceRatioBefore + this.virtualScrollSliceRatioAfter;
+        var virtualScrollSliceRatioBefore = parseFloat(this.virtualScrollSliceRatioBefore) || 0;
+        var virtualScrollSliceRatioAfter = parseFloat(this.virtualScrollSliceRatioAfter) || 0;
+        var multiplier = 1 + virtualScrollSliceRatioBefore + virtualScrollSliceRatioAfter;
         var view = scrollViewSize === void 0 || scrollViewSize <= 0
           ? 1
           : Math.ceil(scrollViewSize / this.virtualScrollItemSizeComputed);
@@ -26590,9 +27292,9 @@
 
         this.virtualScrollSliceSizeComputed = {
           total: Math.ceil(baseSize * multiplier),
-          start: Math.ceil(baseSize * this.virtualScrollSliceRatioBefore),
-          center: Math.ceil(baseSize * (0.5 + this.virtualScrollSliceRatioBefore)),
-          end: Math.ceil(baseSize * (1 + this.virtualScrollSliceRatioBefore)),
+          start: Math.ceil(baseSize * virtualScrollSliceRatioBefore),
+          center: Math.ceil(baseSize * (0.5 + virtualScrollSliceRatioBefore)),
+          end: Math.ceil(baseSize * (1 + virtualScrollSliceRatioBefore)),
           view: view
         };
       },
@@ -26629,7 +27331,7 @@
             staticClass: 'q-virtual-scroll__content',
             key: 'content',
             ref: 'content',
-            attrs: { id: this.id, tabindex: -1 }
+            attrs: { tabindex: -1 }
           }, content),
 
           tag === 'tbody'
@@ -26706,8 +27408,6 @@
 
     beforeDestroy: function beforeDestroy () {
       this.__onVirtualScrollEvt.cancel();
-      var styleSheet = document.getElementById(this.id + '_ss');
-      styleSheet !== null && styleSheet.remove();
     }
   };
 
@@ -26849,6 +27549,25 @@
 
       menu: function menu (show) {
         this.__updateMenu(show);
+      },
+
+      virtualScrollLength: function virtualScrollLength (newLength, oldLength) {
+        var this$1 = this;
+
+        if (this.menu === true && this.innerLoading === false) {
+          this.__resetVirtualScroll(-1, true);
+
+          this.$nextTick(function () {
+            if (this$1.menu === true && this$1.innerLoading === false) {
+              if (newLength > oldLength) {
+                this$1.__resetVirtualScroll();
+              }
+              else {
+                this$1.__updateMenu(true);
+              }
+            }
+          });
+        }
       }
     },
 
@@ -26969,7 +27688,7 @@
         var optionEls = ref$1.optionEls;
 
         return this.options.slice(from, to).map(function (opt, i) {
-          var disable = this$1.isOptionDisabled(opt) === true;
+          var disable = this$1.isOptionDisabled(opt);
           var index = from + i;
 
           var itemProps = {
@@ -27001,7 +27720,7 @@
           };
 
           if (this$1.$q.platform.is.desktop === true) {
-            itemEvents.mousemove = function () { this$1.setOptionIndex(index); };
+            itemEvents.mousemove = function () { this$1.menu === true && this$1.setOptionIndex(index); };
           }
 
           var option = {
@@ -27067,7 +27786,13 @@
       // returns method to tell if an option is disabled;
       // takes into account 'option-disable' prop
       isOptionDisabled: function isOptionDisabled () {
-        return this.__getPropValueFn('optionDisable', 'disable')
+        var fn = this.__getPropValueFn('optionDisable', 'disable');
+        return function () {
+          var args = [], len = arguments.length;
+          while ( len-- ) args[ len ] = arguments[ len ];
+
+          return fn.apply(null, args) === true;
+        }
       },
 
       inputControlEvents: function inputControlEvents () {
@@ -27096,25 +27821,37 @@
 
       virtualScrollItemSizeComputed: function virtualScrollItemSizeComputed () {
         return this.virtualScrollItemSize === void 0
-          ? (this.dense === true ? 24 : 48)
+          ? (this.optionsDense === true ? 24 : 48)
           : this.virtualScrollItemSize
       },
 
       comboboxAttrs: function comboboxAttrs () {
-        return {
+        var attrs = {
+          tabindex: this.tabindex,
           role: 'combobox',
-          'aria-multiselectable': this.multiple === true ? 'true' : 'false',
+          'aria-label': this.label,
+          'aria-readonly': this.readonly === true ? 'true' : 'false',
+          'aria-autocomplete': this.useInput === true ? 'list' : 'none',
           'aria-expanded': this.menu === true ? 'true' : 'false',
           'aria-owns': ((this.targetUid) + "_lb"),
-          'aria-activedescendant': ((this.targetUid) + "_" + (this.optionIndex))
+          'aria-controls': ((this.targetUid) + "_lb")
+        };
+
+        if (this.optionIndex >= 0) {
+          attrs['aria-activedescendant'] = (this.targetUid) + "_" + (this.optionIndex);
         }
+
+        return attrs
       },
 
       listboxAttrs: function listboxAttrs () {
-        return {
+        var attrs = {
+          id: ((this.targetUid) + "_lb"),
           role: 'listbox',
-          id: ((this.targetUid) + "_lb")
-        }
+          'aria-multiselectable': this.multiple === true ? 'true' : 'false'
+        };
+
+        return attrs
       }
     },
 
@@ -27193,6 +27930,9 @@
               true
             );
 
+            this.dialogFieldFocused = false;
+            document.activeElement.blur();
+
             this.hidePopup();
           }
 
@@ -27252,6 +27992,7 @@
       },
 
       moveOptionSelection: function moveOptionSelection (offset, skipInputValue) {
+        var this$1 = this;
         if ( offset === void 0 ) offset = 1;
 
         if (this.menu === true) {
@@ -27266,15 +28007,18 @@
           while (index !== -1 && index !== this.optionIndex && this.isOptionDisabled(this.options[index]) === true)
 
           if (this.optionIndex !== index) {
-            this.setOptionIndex(index);
-            this.scrollTo(index);
+            cancelAnimationFrame(this.moveAnimationFrame);
+            this.moveAnimationFrame = requestAnimationFrame(function () {
+              this$1.setOptionIndex(index);
+              this$1.scrollTo(index);
 
-            if (skipInputValue !== true && this.useInput === true && this.fillInput === true) {
-              this.__setInputValue(index >= 0
-                ? this.getOptionLabel(this.options[index])
-                : this.defaultInputValue
-              );
-            }
+              if (skipInputValue !== true && this$1.useInput === true && this$1.fillInput === true) {
+                this$1.__setInputValue(index >= 0
+                  ? this$1.getOptionLabel(this$1.options[index])
+                  : this$1.defaultInputValue
+                );
+              }
+            });
           }
         }
       },
@@ -27293,9 +28037,7 @@
 
         return typeof val === 'function'
           ? val
-          : function (opt) { return Object(opt) === opt && val in opt
-            ? opt[val]
-            : opt; }
+          : function (opt) { return (opt !== null && typeof opt === 'object' && val in opt ? opt[ val ] : opt); }
       },
 
       isOptionSelected: function isOptionSelected (opt) {
@@ -27623,7 +28365,7 @@
             var obj;
 
             return h(QChip, {
-            key: 'option-' + i,
+            key: 'rem#' + i,
             props: {
               removable: this$1.editable === true && this$1.isOptionDisabled(scope.opt) !== true,
               dense: true,
@@ -27660,14 +28402,17 @@
         }
         // there can be only one (when dialog is opened the control in dialog should be target)
         else if (this.editable === true) {
+          var attrs$1 = isTarget === true ? this.comboboxAttrs : void 0;
+
           child.push(
-            h('div', {
+            h('input', {
               ref: isTarget === true ? 'target' : void 0,
               key: 'd_t',
               staticClass: 'q-select__focus-target',
               attrs: Object.assign({}, {id: isTarget === true ? this.targetUid : void 0,
-                tabindex: this.tabindex},
-                this.comboboxAttrs),
+                readonly: true,
+                'data-autofocus': (fromDialog === true ? isTarget === true : this.autofocus) || void 0},
+                attrs$1),
               on: cache(this, 'f-tget', {
                 keydown: this.__onTargetKeydown,
                 keyup: this.__onTargetKeyup,
@@ -27679,8 +28424,9 @@
           if (isTarget === true && typeof this.autocomplete === 'string' && this.autocomplete.length > 0) {
             child.push(
               h('input', {
+                key: 'autoinp',
                 staticClass: 'q-select__autocomplete-input',
-                attrs: { autocomplete: this.autocomplete },
+                attrs: { autocomplete: this.autocomplete, tabindex: -1 },
                 on: cache(this, 'autoinp', {
                   keyup: this.__onTargetAutocomplete
                 })
@@ -27705,7 +28451,9 @@
           );
         }
 
-        return h('div', { staticClass: 'q-field__native row items-center', attrs: this.qAttrs }, child)
+        var attrs = this.useInput === true || isTarget !== true ? void 0 : this.qAttrs;
+
+        return h('div', { staticClass: 'q-field__native row items-center', attrs: attrs }, child)
       },
 
       __getOptions: function __getOptions (h) {
@@ -27713,6 +28461,12 @@
 
         if (this.menu !== true) {
           return void 0
+        }
+
+        if (this.noOptions === true) {
+          return this.$scopedSlots['no-option'] !== void 0
+            ? this.$scopedSlots['no-option']({ inputValue: this.inputValue })
+            : void 0
         }
 
         if (
@@ -27772,6 +28526,8 @@
       },
 
       __getInput: function __getInput (h, fromDialog, isTarget) {
+        var attrs = isTarget === true ? Object.assign({}, this.comboboxAttrs, this.qAttrs) : void 0;
+
         var options = {
           ref: isTarget === true ? 'target' : void 0,
           key: 'i_t',
@@ -27780,15 +28536,13 @@
           class: this.computedInputClass,
           domProps: { value: this.inputValue !== void 0 ? this.inputValue : '' },
           attrs: Object.assign({}, {type: 'search'},
-            this.qAttrs,
+            attrs,
             {id: isTarget === true ? this.targetUid : void 0,
             maxlength: this.maxlength, // this is converted to prop by QField
-            tabindex: this.tabindex,
             autocomplete: this.autocomplete,
-            'data-autofocus': fromDialog === true ? false : this.autofocus,
+            'data-autofocus': (fromDialog === true ? isTarget === true : this.autofocus) || void 0,
             disabled: this.disable === true,
-            readonly: this.readonly === true},
-            this.comboboxAttrs),
+            readonly: this.readonly === true}),
           on: this.inputControlEvents
         };
 
@@ -27808,7 +28562,7 @@
 
         clearTimeout(this.inputTimer);
 
-        if (e && e.target && e.target.composing === true) {
+        if (e && e.target && e.target.qComposing === true) {
           return
         }
 
@@ -27908,6 +28662,7 @@
                   }
                   else {
                     this$1.menu = true;
+                    this$1.hasDialog === true && (this$1.dialog = true);
                   }
                 }
 
@@ -27948,15 +28703,13 @@
             focusout(e);
           },
           click: function (e) {
-            if (this$1.hasDialog !== true) {
-              // label from QField will propagate click on the input (except IE)
-              prevent(e);
+            // label from QField will propagate click on the input (except IE)
+            prevent(e);
 
-              if (this$1.menu === true) {
-                this$1.__closeMenu();
-                this$1.$refs.target !== void 0 && this$1.$refs.target.focus();
-                return
-              }
+            if (this$1.hasDialog !== true && this$1.menu === true) {
+              this$1.__closeMenu();
+              this$1.$refs.target !== void 0 && this$1.$refs.target.focus();
+              return
             }
 
             this$1.showPopup(e);
@@ -27977,15 +28730,8 @@
       },
 
       __getMenu: function __getMenu (h) {
-        var child = this.noOptions === true
-          ? (
-            this.$scopedSlots['no-option'] !== void 0
-              ? this.$scopedSlots['no-option']({ inputValue: this.inputValue })
-              : null
-          )
-          : this.__getOptions(h);
-
         return h(QMenu, {
+          key: 'menu',
           ref: 'menu',
           props: {
             value: this.menu,
@@ -28011,7 +28757,7 @@
             'before-hide': this.__closeMenu,
             show: this.__onMenuShow
           })
-        }, child)
+        }, this.__getOptions(h))
       },
 
       __onMenuShow: function __onMenuShow () {
@@ -28060,8 +28806,9 @@
 
         this.menu === true && content.push(
           h('div', {
+            key: 'virtMenu',
             ref: 'menuContent',
-            staticClass: 'scroll',
+            staticClass: 'col scroll',
             class: this.menuContentClass,
             style: this.popupContentStyle,
             attrs: this.listboxAttrs,
@@ -28069,18 +28816,11 @@
               click: prevent,
               '&scroll': this.__onVirtualScrollEvt
             })
-          }, (
-            this.noOptions === true
-              ? (
-                this.$scopedSlots['no-option'] !== void 0
-                  ? this.$scopedSlots['no-option']({ inputValue: this.inputValue })
-                  : null
-              )
-              : this.__getOptions(h)
-          ))
+          }, this.__getOptions(h))
         );
 
         return h(QDialog, {
+          key: 'dialog',
           ref: 'dialog',
           props: {
             value: this.dialog,
@@ -28104,13 +28844,17 @@
       },
 
       __onDialogBeforeHide: function __onDialogBeforeHide () {
-        if (client.is.mobile !== true) {
+        if (this.useInput !== true || this.$q.platform.is.desktop === true) {
           this.$refs.dialog.__refocusTarget = this.$el.querySelector('.q-field__native > [tabindex]:last-child');
         }
         this.focused = false;
+        this.dialogFieldFocused = false;
       },
 
       __onDialogHide: function __onDialogHide (e) {
+        if (this.$q.platform.is.desktop !== true) {
+          document.activeElement.blur();
+        }
         this.hidePopup();
         this.focused === false && this.$emit('blur', e);
         this.__resetInputValue();
@@ -31152,23 +31896,36 @@
 
       hasPrefix: function hasPrefix () {
         return this.step.prefix &&
-          this.isActive === false &&
-          this.isError === false &&
-          this.isDone === false
+          (this.isActive === false || this.stepper.activeIcon === 'none') &&
+          (this.isError === false || this.stepper.errorIcon === 'none') &&
+          (this.isDone === false || this.stepper.doneIcon === 'none')
       },
 
       icon: function icon () {
+        var defaultIcon = this.step.icon || this.stepper.inactiveIcon;
+
         if (this.isActive === true) {
-          return this.step.activeIcon || this.stepper.activeIcon || this.$q.iconSet.stepper.active
-        }
-        if (this.isError === true) {
-          return this.step.errorIcon || this.stepper.errorIcon || this.$q.iconSet.stepper.error
-        }
-        if (this.isDisable === false && this.isDone === true) {
-          return this.step.doneIcon || this.stepper.doneIcon || this.$q.iconSet.stepper.done
+          var icon = this.step.activeIcon || this.stepper.activeIcon;
+          return icon === 'none'
+            ? defaultIcon
+            : icon || this.$q.iconSet.stepper.active
         }
 
-        return this.step.icon || this.stepper.inactiveIcon
+        if (this.isError === true) {
+          var icon$1 = this.step.errorIcon || this.stepper.errorIcon;
+          return icon$1 === 'none'
+            ? defaultIcon
+            : icon$1 || this.$q.iconSet.stepper.error
+        }
+
+        if (this.isDisable === false && this.isDone === true) {
+          var icon$2 = this.step.doneIcon || this.stepper.doneIcon;
+          return icon$2 === 'none'
+            ? defaultIcon
+            : icon$2 || this.$q.iconSet.stepper.done
+        }
+
+        return defaultIcon
       },
 
       color: function color () {
@@ -31193,9 +31950,11 @@
       },
 
       classes: function classes () {
-        return "q-stepper__tab col-grow flex items-center no-wrap relative-position" +
+        return 'q-stepper__tab col-grow flex items-center no-wrap relative-position' +
           (this.color !== void 0 ? (" text-" + (this.color)) : '') +
-          (this.isError === true ? ' q-stepper__tab--error' : '') +
+          (this.isError === true
+            ? ' q-stepper__tab--error q-stepper__tab--error-with-' + (this.hasPrefix === true ? 'prefix' : 'icon')
+            : '') +
           (this.isActive === true ? ' q-stepper__tab--active' : '') +
           (this.isDone === true ? ' q-stepper__tab--done' : '') +
           (this.headerNav === true ? ' q-stepper__tab--navigation q-focusable q-hoverable' : '') +
@@ -31330,7 +32089,7 @@
       onEvents: function onEvents () {
         return this.isActive !== true ||
           this.stepper.vertical !== true ||
-          (this.$q.platform.is.ios !== true && this.$q.platform.is.safari !== true && this.$q.platform.is.ie !== true)
+          (this.$q.platform.is.ios !== true && this.$q.platform.is.chrome === true)
           ? Object.assign({}, this.qListeners)
           : Object.assign({}, this.qListeners, {scroll: this.__keepScroll})
       }
@@ -31342,7 +32101,7 @@
         if (target.scrollTop > 0) {
           target.scrollTop = 0;
         }
-        this.qListeners.scroll !== void 0 && this.qListeners.scroll(ev);
+        this.qListeners.scroll !== void 0 && this.$emit('scroll', ev);
       }
     },
 
@@ -31742,14 +32501,13 @@
         });
 
         if (this.multipleSelection === true) {
-          Object.defineProperty(data, 'selected', {
-            get: function () { return this$1.headerSelectedValue; },
-            set: this.__onMultipleSelectionSet,
-            configurable: true,
-            enumerable: true
-          });
+          injectProp(
+            data,
+            'selected',
+            function () { return this$1.headerSelectedValue; },
+            this.__onMultipleSelectionSet
+          );
 
-          // TODO: remove in v2
           data.partialSelected = this.someRowsSelected;
           data.multipleSelect = true;
         }
@@ -31890,15 +32648,11 @@
 
         this.__injectBodyCommonScope(data);
 
-        data.cols = data.cols.map(function (col) {
-          var c = Object.assign({}, col);
-          Object.defineProperty(c, 'value', {
-            get: function () { return this$1.getCellValue(col, data.row); },
-            configurable: true,
-            enumerable: true
-          });
-          return c
-        });
+        data.cols = data.cols.map(function (col) { return injectProp(
+          Object.assign({}, col),
+          'value',
+          function () { return this$1.getCellValue(col, data.row); }
+        ); });
 
         return data
       },
@@ -31907,14 +32661,7 @@
         var this$1 = this;
 
         this.__injectBodyCommonScope(data);
-
-        Object.defineProperty(data, 'value', {
-          get: function () { return this$1.getCellValue(data.col, data.row); },
-          configurable: true,
-          enumerable: true
-        });
-
-        return data
+        return injectProp(data, 'value', function () { return this$1.getCellValue(data.col, data.row); })
       },
 
       __getBodySelectionScope: function __getBodySelectionScope (data) {
@@ -31935,23 +32682,21 @@
           dense: this.dense
         });
 
-        this.hasSelectionMode === true && Object.defineProperty(data, 'selected', {
-          get: function () { return this$1.isRowSelected(data.key); },
-          set: function (adding, evt) {
+        this.hasSelectionMode === true && injectProp(
+          data,
+          'selected',
+          function () { return this$1.isRowSelected(data.key); },
+          function (adding, evt) {
             this$1.__updateSelection([ data.key ], [ data.row ], adding, evt);
-          },
-          configurable: true,
-          enumerable: true
-        });
+          }
+        );
 
-        Object.defineProperty(data, 'expand', {
-          get: function () { return this$1.isRowExpanded(data.key); },
-          set: function (adding) {
-            this$1.__updateExpanded(data.key, adding);
-          },
-          configurable: true,
-          enumerable: true
-        });
+        injectProp(
+          data,
+          'expand',
+          function () { return this$1.isRowExpanded(data.key); },
+          function (adding) { this$1.__updateExpanded(data.key, adding); }
+        );
       },
 
       getCellValue: function getCellValue (col, row) {
@@ -32379,13 +33124,21 @@
       this.__configureScrollTarget();
     },
 
+    activated: function activated () {
+      this.__configureScrollTarget();
+    },
+
+    deactivated: function deactivated () {
+      this.__unconfigureScrollTarget();
+    },
+
     beforeDestroy: function beforeDestroy () {
       this.__unconfigureScrollTarget();
     },
 
     render: function render (h) {
       if (this.$scopedSlots.default === void 0) {
-        console.error("QVirtualScroll: default scoped slot is required for rendering", this);
+        console.error('QVirtualScroll: default scoped slot is required for rendering', this);
         return
       }
 
@@ -32489,7 +33242,7 @@
       sort: function sort (col /* String(col name) or Object(col definition) */) {
         var sortOrder = this.columnSortOrder;
 
-        if (col === Object(col)) {
+        if (isObject(col) === true) {
           if (col.sortOrder) {
             sortOrder = col.sortOrder;
           }
@@ -33149,20 +33902,20 @@
       },
 
       cardDefaultClass: function cardDefaultClass () {
-        return " q-table__card" +
+        return ' q-table__card' +
           (this.isDark === true ? ' q-table__card--dark q-dark' : '') +
-          (this.square === true ? " q-table--square" : '') +
-          (this.flat === true ? " q-table--flat" : '') +
-          (this.bordered === true ? " q-table--bordered" : '')
+          (this.square === true ? ' q-table--square' : '') +
+          (this.flat === true ? ' q-table--flat' : '') +
+          (this.bordered === true ? ' q-table--bordered' : '')
       },
 
       __containerClass: function __containerClass () {
         return "q-table__container q-table--" + (this.separator) + "-separator column no-wrap" +
           (this.grid === true ? ' q-table--grid' : this.cardDefaultClass) +
-          (this.isDark === true ? " q-table--dark" : '') +
-          (this.dense === true ? " q-table--dense" : '') +
-          (this.wrapCells === false ? " q-table--no-wrap" : '') +
-          (this.inFullscreen === true ? " fullscreen scroll" : '')
+          (this.isDark === true ? ' q-table--dark' : '') +
+          (this.dense === true ? ' q-table--dense' : '') +
+          (this.wrapCells === false ? ' q-table--no-wrap' : '') +
+          (this.inFullscreen === true ? ' fullscreen scroll' : '')
       },
 
       containerClass: function containerClass () {
@@ -33301,7 +34054,7 @@
 
         if (rowEl !== null) {
           var scrollTarget = this.$el.querySelector('.q-table__middle.scroll');
-          var offsetTop = rowEl.offsetTop;
+          var offsetTop = rowEl.offsetTop - this.virtualScrollStickySizeStart;
           var direction = offsetTop < scrollTarget.scrollTop ? 'decrease' : 'increase';
 
           scrollTarget.scrollTop = offsetTop;
@@ -33406,194 +34159,29 @@
     }
   });
 
-  var trailingSlashRE = /\/?$/;
-
-  function equals (current, target) {
-    if (Object.keys(current).length !== Object.keys(target).length) {
-      return false
-    }
-
-    // route query and params are strings when read from URL
-    for (var key in target) {
-      if (!(key in current) || String(current[key]) !== String(target[key])) {
-        return false
-      }
-    }
-    return true
-  }
-
-  function includes (current, target) {
-    for (var key in target) {
-      if (!(key in current)) {
-        return false
-      }
-    }
-    return true
-  }
-
-  function isSameRoute (current, target) {
-    if (!target) {
-      return false
-    }
-
-    if (current.path && target.path) {
-      return (
-        current.path.replace(trailingSlashRE, '') === target.path.replace(trailingSlashRE, '') &&
-        current.hash === target.hash &&
-        equals(current.query, target.query)
-      )
-    }
-
-    return typeof current.name === 'string' &&
-      current.name === target.name &&
-      current.hash === target.hash &&
-      equals(current.query, target.query) === true &&
-      equals(current.params, target.params) === true
-  }
-
-  function isIncludedRoute (current, target) {
-    return current.path.replace(trailingSlashRE, '/').indexOf(target.path.replace(trailingSlashRE, '/')) === 0 &&
-      (typeof target.hash !== 'string' || target.hash.length < 2 || current.hash === target.hash) &&
-      includes(current.query, target.query) === true
-  }
-
   var QRouteTab = Vue.extend({
     name: 'QRouteTab',
 
     mixins: [ QTab, RouterLinkMixin ],
 
-    inject: {
-      __activateRoute: {},
-      __recalculateScroll: {}
-    },
-
     watch: {
-      $route: function $route () {
-        this.__checkActivation();
+      routeModel: function routeModel () {
+        this.$tabs.__verifyRouteModel();
       }
     },
 
     computed: {
-      routerTabLinkProps: function routerTabLinkProps () {
-        return Object.assign({}, this.linkProps.props,
-          {custom: true})
-      }
-    },
-
-    methods: {
-      __activate: function __activate (e, keyboard) {
-        var this$1 = this;
-
-        if (this.disable !== true) {
-          if (
-            e !== void 0 && (
-              e.ctrlKey === true ||
-              e.shiftKey === true ||
-              e.altKey === true ||
-              e.metaKey === true
-            )
-          ) {
-            // if it has meta keys, let vue-router link
-            // handle this by its own
-            this.__checkActivation(true);
-          }
-          else if (this.hasRouterLink === true) {
-            // we use programatic navigation instead of letting vue-router handle it
-            // so we can check for activation when the navigation is complete
-            e !== void 0 && stopAndPrevent(e);
-
-            var go = function (to, append, replace) {
-              if ( to === void 0 ) to = this$1.to;
-              if ( append === void 0 ) append = this$1.append;
-              if ( replace === void 0 ) replace = this$1.replace;
-
-              var ref = this$1.$router.resolve(to, this$1.$route, append);
-              var route = ref.route;
-              var checkFn = to === this$1.to && append === this$1.append
-                ? this$1.__checkActivation
-                : noop;
-
-              // vue-router now throwing error if navigating
-              // to the same route that the user is currently at
-              // https://github.com/vuejs/vue-router/issues/2872
-              this$1.$router[replace === true ? 'replace' : 'push'](
-                route,
-                function () { checkFn(true); },
-                function (err) {
-                  if (err && err.name === 'NavigationDuplicated') {
-                    checkFn(true);
-                  }
-                }
-              );
-            };
-
-            this.qListeners.click !== void 0 && this.$emit('click', e, go);
-            if (e === void 0 || e.navigate !== false) {
-              go();
-            }
-          }
-        }
-
-        if (keyboard === true) {
-          this.$el.focus({ preventScroll: true });
-        }
-        else if (this.$refs.blurTarget !== void 0) {
-          this.$refs.blurTarget.focus({ preventScroll: true });
-        }
+      routeModel: function routeModel () {
+        return ((this.name) + " | " + (this.exact) + " | " + ((this.resolvedLink || {}).href))
       },
 
-      __checkActivation: function __checkActivation (selected) {
-        if ( selected === void 0 ) selected = false;
-
-        if (this.hasRouterLink !== true) {
-          return
-        }
-
-        var
-          current = this.$route;
-        var ref = this.$router.resolve(this.to, current, this.append);
-        var href = ref.href;
-        var location = ref.location;
-        var route = ref.route;
-        var redirected = route.redirectedFrom !== void 0,
-          isSameRouteCheck = isSameRoute(current, route),
-          checkFunction = this.exact === true ? isSameRoute : isIncludedRoute,
-          params = {
-            name: this.name,
-            selected: selected,
-            exact: this.exact,
-            priorityMatched: route.matched.length,
-            priorityHref: href.length
-          };
-
-        if (isSameRouteCheck === true || (this.exact !== true && isIncludedRoute(current, route) === true)) {
-          this.__activateRoute(Object.assign({}, params,
-            {redirected: redirected,
-            // if it's an exact match give higher priority
-            // even if the tab is not marked as exact
-            exact: this.exact === true || isSameRouteCheck === true}));
-        }
-
-        if (
-          redirected === true &&
-          checkFunction(current, Object.assign({}, {path: route.redirectedFrom},
-            location)) === true
-        ) {
-          this.__activateRoute(params);
-        }
-
-        this.isActive === true && this.__activateRoute();
+      // overwritten from RouterLinkMixin
+      // because we want to discard the "disable" state
+      hasRouterLinkProps: function hasRouterLinkProps () {
+        return this.$router !== void 0 &&
+          this.hasHrefLink !== true &&
+          this.to !== void 0 && this.to !== null && this.to !== ''
       }
-    },
-
-    mounted: function mounted () {
-      this.__recalculateScroll();
-      this.$router !== void 0 && this.__checkActivation();
-    },
-
-    beforeDestroy: function beforeDestroy () {
-      this.__recalculateScroll();
-      this.__activateRoute({ remove: true, name: this.name });
     },
 
     render: function render (h) {
@@ -33708,9 +34296,9 @@
         return "q-time q-time--" + (this.landscape === true ? 'landscape' : 'portrait') +
           (this.isDark === true ? ' q-time--dark q-dark' : '') +
           (this.disable === true ? ' disabled' : (this.readonly === true ? ' q-time--readonly' : '')) +
-          (this.bordered === true ? " q-time--bordered" : '') +
-          (this.square === true ? " q-time--square no-border-radius" : '') +
-          (this.flat === true ? " q-time--flat no-shadow" : '')
+          (this.bordered === true ? ' q-time--bordered' : '') +
+          (this.square === true ? ' q-time--square no-border-radius' : '') +
+          (this.flat === true ? ' q-time--flat no-shadow' : '')
       },
 
       stringModel: function stringModel () {
@@ -34772,6 +35360,7 @@
 
       duration: Number,
       noConnectors: Boolean,
+      noTransition: Boolean,
 
       noNodesLabel: String,
       noResultsLabel: String
@@ -34781,7 +35370,7 @@
       classes: function classes () {
         return "q-tree q-tree--" + (this.dense === true ? 'dense' : 'standard') +
           (this.noConnectors === true ? ' q-tree--no-connectors' : '') +
-          (this.isDark === true ? " q-tree--dark" : '') +
+          (this.isDark === true ? ' q-tree--dark' : '') +
           (this.color !== void 0 ? (" text-" + (this.color)) : '')
       },
 
@@ -34820,7 +35409,6 @@
           var
             key = node[this$1.nodeKey],
             isParent = node[this$1.childrenKey] && node[this$1.childrenKey].length > 0,
-            isLeaf = isParent !== true,
             selectable = node.disabled !== true && this$1.hasSelection === true && node.selectable !== false,
             expandable = node.disabled !== true && node.expandable !== false,
             hasTicking = tickStrategy !== 'none',
@@ -34846,7 +35434,6 @@
             key: key,
             parent: parent,
             isParent: isParent,
-            isLeaf: isLeaf,
             lazy: lazy,
             disabled: node.disabled,
             link: node.disabled !== true && (selectable === true || (expandable === true && (isParent === true || lazy === true))),
@@ -34866,7 +35453,7 @@
             leafTicking: leafTicking,
             ticked: strictTicking === true
               ? this$1.innerTicked.includes(key)
-              : (isLeaf === true ? this$1.innerTicked.includes(key) : false)
+              : (isParent === true ? false : this$1.innerTicked.includes(key))
           };
 
           meta[key] = m;
@@ -35103,7 +35690,7 @@
         }
 
         if (emit === true) {
-          this.$emit("update:expanded", target);
+          this.$emit('update:expanded', target);
         }
         else {
           this.innerExpanded = target;
@@ -35133,7 +35720,7 @@
         }
 
         if (emit === true) {
-          this.$emit("update:ticked", target);
+          this.$emit('update:ticked', target);
         }
       },
 
@@ -35142,18 +35729,19 @@
 
         var scope = { tree: this, node: node, key: key, color: this.color, dark: this.isDark };
 
-        Object.defineProperty(scope, 'expanded', {
-          get: function () { return meta.expanded },
-          set: function (val) { val !== meta.expanded && this$1.setExpanded(key, val); },
-          configurable: true,
-          enumerable: true
-        });
-        Object.defineProperty(scope, 'ticked', {
-          get: function () { return meta.ticked },
-          set: function (val) { val !== meta.ticked && this$1.setTicked([ key ], val); },
-          configurable: true,
-          enumerable: true
-        });
+        injectProp(
+          scope,
+          'expanded',
+          function () { return meta.expanded },
+          function (val) { val !== meta.expanded && this$1.setExpanded(key, val); }
+        );
+
+        injectProp(
+          scope,
+          'ticked',
+          function () { return meta.ticked },
+          function (val) { val !== meta.ticked && this$1.setTicked([ key ], val); }
+        );
 
         return scope
       },
@@ -35171,7 +35759,7 @@
       __getNodeMedia: function __getNodeMedia (h, node) {
         if (node.icon !== void 0) {
           return h(QIcon, {
-            staticClass: "q-tree__icon q-mr-sm",
+            staticClass: 'q-tree__icon q-mr-sm',
             props: { name: node.icon, color: node.iconColor }
           })
         }
@@ -35296,26 +35884,42 @@
           ]),
 
           isParent === true
-            ? h(QSlideTransition, {
-              props: { duration: this.duration },
-              on: cache(this, 'slide', {
-                show: function () { this$1.$emit('after-show'); },
-                hide: function () { this$1.$emit('after-hide'); }
-              })
-            }, [
-              h('div', {
-                staticClass: 'q-tree__node-collapsible',
-                class: this.textColorClass,
-                directives: [{ name: 'show', value: meta.expanded }]
-              }, [
-                body,
+            ? (
+              this.noTransition === true
+                ? h('div', {
+                  staticClass: 'q-tree__node-collapsible',
+                  class: this.textColorClass,
+                  directives: [{ name: 'show', value: meta.expanded }]
+                }, [
+                  body,
 
-                h('div', {
-                  staticClass: 'q-tree__children',
-                  class: { 'q-tree__node--disabled': meta.disabled }
-                }, children)
-              ])
-            ])
+                  h('div', {
+                    staticClass: 'q-tree__children',
+                    class: { 'q-tree__node--disabled': meta.disabled }
+                  }, children)
+                ])
+
+                : h(QSlideTransition, {
+                  props: { duration: this.duration },
+                  on: cache(this, 'slide', {
+                    show: function () { this$1.$emit('after-show'); },
+                    hide: function () { this$1.$emit('after-hide'); }
+                  })
+                }, [
+                  h('div', {
+                    staticClass: 'q-tree__node-collapsible',
+                    class: this.textColorClass,
+                    directives: [{ name: 'show', value: meta.expanded }]
+                  }, [
+                    body,
+
+                    h('div', {
+                      staticClass: 'q-tree__children',
+                      class: { 'q-tree__node--disabled': meta.disabled }
+                    }, children)
+                  ])
+                ])
+            )
             : body
         ])
       },
@@ -35328,14 +35932,12 @@
       __onClick: function __onClick (node, meta, e, keyboard) {
         keyboard !== true && this.__blur(meta.key);
 
-        if (this.hasSelection) {
-          if (meta.selectable) {
-            if (this.noSelectionUnset === false) {
-              this.$emit('update:selected', meta.key !== this.selected ? meta.key : null);
-            }
-            else if (meta.key !== this.selected) {
-              this.$emit('update:selected', meta.key || null);
-            }
+        if (this.hasSelection && meta.selectable) {
+          if (this.noSelectionUnset === false) {
+            this.$emit('update:selected', meta.key !== this.selected ? meta.key : null);
+          }
+          else if (meta.key !== this.selected) {
+            this.$emit('update:selected', meta.key === void 0 ? null : meta.key);
           }
         }
         else {
@@ -35653,13 +36255,13 @@
         var this$1 = this;
 
         var localFiles = this.__processFiles(e, fileList, this.files, true);
-
-        if (localFiles === void 0) { return }
-
         var fileInput = this.__getFileInput();
+
         if (fileInput !== void 0) {
           fileInput.value = '';
         }
+
+        if (localFiles === void 0) { return }
 
         localFiles.forEach(function (file) {
           this$1.__updateFile(file, 'idle');
@@ -35719,28 +36321,32 @@
 
         return [
           h('div', {
-            staticClass: 'q-uploader__header-content flex flex-center no-wrap q-gutter-xs'
+            staticClass: 'q-uploader__header-content column'
           }, [
-            this.__getBtn(h, this.queuedFiles.length > 0, 'removeQueue', this.removeQueuedFiles),
-            this.__getBtn(h, this.uploadedFiles.length > 0, 'removeUploaded', this.removeUploadedFiles),
+            h('div', {
+              staticClass: 'flex flex-center no-wrap q-gutter-xs'
+            }, [
+              this.__getBtn(h, this.queuedFiles.length > 0, 'removeQueue', this.removeQueuedFiles),
+              this.__getBtn(h, this.uploadedFiles.length > 0, 'removeUploaded', this.removeUploadedFiles),
 
-            this.isUploading === true
-              ? h(QSpinner, { staticClass: 'q-uploader__spinner' })
-              : null,
-
-            h('div', { staticClass: 'col column justify-center' }, [
-              this.label !== void 0
-                ? h('div', { staticClass: 'q-uploader__title' }, [ this.label ])
+              this.isUploading === true
+                ? h(QSpinner, { staticClass: 'q-uploader__spinner' })
                 : null,
 
-              h('div', { staticClass: 'q-uploader__subtitle' }, [
-                this.uploadSizeLabel + ' / ' + this.uploadProgressLabel
-              ])
-            ]),
+              h('div', { staticClass: 'col column justify-center' }, [
+                this.label !== void 0
+                  ? h('div', { staticClass: 'q-uploader__title' }, [ this.label ])
+                  : null,
 
-            this.__getBtn(h, this.canAddFiles, 'add', this.pickFiles),
-            this.__getBtn(h, this.hideUploadBtn === false && this.canUpload === true, 'upload', this.upload),
-            this.__getBtn(h, this.isUploading, 'clear', this.abort)
+                h('div', { staticClass: 'q-uploader__subtitle' }, [
+                  this.uploadSizeLabel + ' / ' + this.uploadProgressLabel
+                ])
+              ]),
+
+              this.__getBtn(h, this.canAddFiles, 'add', this.pickFiles),
+              this.__getBtn(h, this.hideUploadBtn === false && this.canUpload === true, 'upload', this.upload),
+              this.__getBtn(h, this.isUploading, 'clear', this.abort)
+            ])
           ])
         ]
       },
@@ -35843,10 +36449,14 @@
           'q-uploader--bordered': this.bordered,
           'q-uploader--square no-border-radius': this.square,
           'q-uploader--flat no-shadow': this.flat,
-          'disabled q-uploader--disable': this.disable
+          'disabled q-uploader--disable': this.disable,
+          'q-uploader--dnd': this.dnd
         },
         on: this.canAddFiles === true
-          ? cache(this, 'drag', { dragover: this.__onDragOver })
+          ? cache(this, 'drag', {
+            dragover: this.__onDragOver,
+            dragleave: this.__onDragLeave
+          })
           : null
       }, children)
     }
@@ -36145,7 +36755,20 @@
         required: true
       },
 
-      title: String
+      title: String,
+
+      fetchpriority: {
+        type: String,
+        default: 'auto'
+      },
+      loading: {
+        type: String,
+        default: 'eager'
+      },
+      referrerpolicy: {
+        type: String,
+        default: 'strict-origin-when-cross-origin'
+      }
     },
 
     computed: {
@@ -36155,7 +36778,10 @@
             src: this.src,
             frameborder: '0',
             title: this.title,
-            allowfullscreen: true
+            allowfullscreen: true,
+            fetchpriority: this.fetchpriority,
+            loading: this.loading,
+            referrerpolicy: this.referrerpolicy
           }
         }
       },
@@ -36618,9 +37244,9 @@
       fill: typeof options.fill === 'string' && options.fill.length > 0 ? options.fill : 'none',
 
       resize: options.resize === true,
-      useCSS: options.useCSS === true,
-      hideFromClone: options.hideFromClone === true,
-      keepToClone: options.keepToClone === true,
+      useCSS: options.useCSS === true || options.usecss === true,
+      hideFromClone: options.hideFromClone === true || options.hidefromclone === true,
+      keepToClone: options.keepToClone === true || options.keeptoclone === true,
 
       tween: options.tween === true,
       tweenFromOpacity: isNaN(options.tweenFromOpacity) === true ? 0.6 : parseFloat(options.tweenFromOpacity),
@@ -36890,7 +37516,7 @@
         if (typeof options.style === 'string') {
           elTo.style.cssText += ' ' + options.style;
         }
-        else if (options.style === Object(options.style)) {
+        else if (isObject(options.style) === true) {
           for (var prop in options.style) {
             elTo.style[prop] = options.style[prop];
           }
@@ -37209,8 +37835,8 @@
           elToClone.style.animation = (options.duration) + "ms " + (options.easing) + " " + (options.delay) + "ms " + animationDirection + " " + (options.fill) + " " + qAnimId + "-to";
           elTo.style.animation = (options.duration) + "ms " + (options.easing) + " " + (options.delay) + "ms " + animationDirection + " " + (options.fill) + " " + qAnimId;
 
-          var cleanup$1 = function (ev) {
-            if (ev === Object(ev) && ev.animationName !== qAnimId) {
+          var cleanup$1 = function (evt) {
+            if (evt === Object(evt) && evt.animationName !== qAnimId) {
               return
             }
 
@@ -37902,12 +38528,12 @@
       el.__qtouchhold = ctx;
 
       modifiers.mouse === true && addEvt(ctx, 'main', [
-        [ el, 'mousedown', 'mouseStart', ("passive" + (modifiers.mouseCapture === true ? 'Capture' : '')) ]
+        [ el, 'mousedown', 'mouseStart', ("passive" + (modifiers.mouseCapture === true || modifiers.mousecapture === true ? 'Capture' : '')) ]
       ]);
 
       client.has.touch === true && addEvt(ctx, 'main', [
         [ el, 'touchstart', 'touchStart', ("passive" + (modifiers.capture === true ? 'Capture' : '')) ],
-        [ el, 'touchend', 'noop', 'notPassiveCapture' ]
+        [ el, 'touchend', 'noop', 'passiveCapture' ]
       ]);
     },
 
@@ -38150,16 +38776,16 @@
       el.__qtouchrepeat = ctx;
 
       modifiers.mouse === true && addEvt(ctx, 'main', [
-        [ el, 'mousedown', 'mouseStart', ("passive" + (modifiers.mouseCapture === true ? 'Capture' : '')) ]
+        [ el, 'mousedown', 'mouseStart', ("passive" + (modifiers.mouseCapture === true || modifiers.mousecapture === true ? 'Capture' : '')) ]
       ]);
 
       client.has.touch === true && addEvt(ctx, 'main', [
         [ el, 'touchstart', 'touchStart', ("passive" + (modifiers.capture === true ? 'Capture' : '')) ],
-        [ el, 'touchend', 'noop', 'notPassiveCapture' ]
+        [ el, 'touchend', 'noop', 'passiveCapture' ]
       ]);
 
       keyboard.length > 0 && addEvt(ctx, 'main', [
-        [ el, 'keydown', 'keyboardStart', ("notPassive" + (modifiers.keyCapture === true ? 'Capture' : '')) ]
+        [ el, 'keydown', 'keyboardStart', ("notPassive" + (modifiers.keyCapture === true || modifiers.keycapture === true ? 'Capture' : '')) ]
       ]);
     },
 
@@ -39035,7 +39661,7 @@
 
       spinner: function spinner () {
         if (this.progress !== false) {
-          return Object(this.progress) === this.progress
+          return isObject(this.progress) === true
             ? {
               component: this.progress.spinner || QSpinner,
               props: { color: this.progress.color || this.vmColor }
@@ -39052,7 +39678,7 @@
       },
 
       okLabel: function okLabel () {
-        return Object(this.ok) === this.ok
+        return isObject(this.ok) === true
           ? this.$q.lang.label.ok
           : (
             this.ok === true
@@ -39062,7 +39688,7 @@
       },
 
       cancelLabel: function cancelLabel () {
-        return Object(this.cancel) === this.cancel
+        return isObject(this.cancel) === true
           ? this.$q.lang.label.cancel
           : (
             this.cancel === true
@@ -39091,14 +39717,14 @@
           label: this.okLabel,
           ripple: false,
           disable: this.okDisabled},
-          (Object(this.ok) === this.ok ? this.ok : { flat: true }))
+          (isObject(this.ok) === true ? this.ok : { flat: true }))
       },
 
       cancelProps: function cancelProps () {
         return Object.assign({}, {color: this.vmColor,
           label: this.cancelLabel,
           ripple: false},
-          (Object(this.cancel) === this.cancel ? this.cancel : { flat: true }))
+          (isObject(this.cancel) === true ? this.cancel : { flat: true }))
       }
     },
 
@@ -39325,6 +39951,15 @@
       var props = cfg.loadingBar !== void 0
         ? Object.assign({}, cfg.loadingBar)
         : {};
+      var on = {
+        start: function () {
+          this$1.isActive = true;
+        },
+
+        stop: function () {
+          this$1.isActive = false;
+        }
+      };
 
       var bar = new Vue({
         name: 'LoadingBar',
@@ -39339,22 +39974,17 @@
 
         render: function (h) { return h(QAjaxBar, {
           ref: 'bar',
-          props: props
+          props: props,
+          on: on
         }); }
       }).$mount().$refs.bar;
 
       Object.assign(this, {
-        start: function (speed) {
-          bar.start(speed);
-          this$1.isActive = bar.isActive = true;
-        },
-        stop: function () {
-          var sessions = bar.stop();
-          this$1.isActive = bar.isActive = sessions > 0;
-        },
+        start: bar.start,
+        stop: bar.stop,
         increment: bar.increment,
         setDefaults: function (opts) {
-          opts === Object(opts) && Object.assign(props, opts);
+          isObject(opts) === true && Object.assign(props, opts);
           bar.$parent.$forceUpdate();
         }
       });
@@ -39369,21 +39999,37 @@
 
   var
     vm,
-    uid$3 = 0,
+    uid$2 = 0,
     timeout,
-    props$1 = {};
-  var
-    originalDefaults = {
-      delay: 0,
-      message: false,
-      spinnerSize: 80,
-      spinnerColor: 'white',
-      messageColor: 'white',
-      backgroundColor: 'black',
-      spinner: QSpinner,
-      customClass: ''
-    },
-    defaults = Object.assign({}, originalDefaults);
+    props$1 = {},
+    activeGroups = {};
+
+  var originalDefaults = {
+    group: '__default_quasar_group__',
+    delay: 0,
+    message: false,
+    spinnerSize: 80,
+    spinnerColor: 'white',
+    messageColor: 'white',
+    backgroundColor: 'black',
+    spinner: QSpinner,
+    customClass: ''
+  };
+
+  var defaults = Object.assign({}, originalDefaults);
+
+  function registerProps (opts) {
+    if (opts && opts.group !== void 0 && activeGroups[ opts.group ] !== void 0) {
+      return Object.assign(activeGroups[ opts.group ], opts)
+    }
+
+    var newProps = isObject(opts) === true && opts.ignoreDefaults === true
+      ? Object.assign({}, originalDefaults, opts)
+      : Object.assign({}, defaults, opts);
+
+    activeGroups[ newProps.group ] = newProps;
+    return newProps
+  }
 
   var Loading = {
     isActive: false,
@@ -39393,92 +40039,126 @@
 
       if (isSSR === true) { return }
 
-      props$1 = opts === Object(opts) && opts.ignoreDefaults === true
-        ? Object.assign({}, originalDefaults, opts)
-        : Object.assign({}, defaults, opts);
+      props$1 = registerProps(opts);
+      var group = props$1.group;
 
       props$1.customClass += " text-" + (props$1.backgroundColor);
 
       this.isActive = true;
 
       if (vm !== void 0) {
-        props$1.uid = uid$3;
+        props$1.uid = uid$2;
         vm.$forceUpdate();
-        return
+      }
+      else {
+        props$1.uid = ++uid$2;
+        clearTimeout(timeout);
+
+        timeout = setTimeout(function () {
+          timeout = void 0;
+
+          var node = document.createElement('div');
+          document.body.appendChild(node);
+
+          vm = new Vue({
+            name: 'QLoading',
+
+            // hide App from Vue devtools
+            devtools: { hide: true },
+
+            beforeCreate: function beforeCreate () {
+              // prevent error in Vue devtools
+              this._routerRoot === void 0 && (this._routerRoot = {});
+            },
+
+            el: node,
+
+            mounted: function mounted () {
+              preventScroll(true);
+            },
+
+            render: function (h) {
+              var obj;
+
+              return h('transition', {
+                props: {
+                  name: 'q-transition--fade',
+                  appear: true
+                },
+                on: cache(this$1, 'tr', {
+                  'after-leave': function () {
+                    // might be called to finalize
+                    // previous leave, even if it was cancelled
+                    if (this$1.isActive !== true && vm !== void 0) {
+                      preventScroll(false);
+                      vm.$destroy();
+                      vm.$el.remove();
+                      vm = void 0;
+                    }
+                  }
+                })
+              }, [
+                this$1.isActive === true ? h('div', {
+                  staticClass: 'q-loading fullscreen column flex-center z-max',
+                  key: props$1.uid,
+                  class: props$1.customClass.trim()
+                }, [
+                  h(props$1.spinner, {
+                    props: {
+                      color: props$1.spinnerColor,
+                      size: props$1.spinnerSize
+                    }
+                  }),
+
+                  (props$1.message && h('div', {
+                    class: ("text-" + (props$1.messageColor)),
+                    domProps: ( obj = {}, obj[props$1.sanitize === true ? 'textContent' : 'innerHTML'] = props$1.message, obj )
+                  })) || void 0
+                ]) : null
+              ])
+            }
+          });
+        }, props$1.delay);
       }
 
-      props$1.uid = ++uid$3;
-      clearTimeout(timeout);
+      return function (paramProps) {
+        // if we don't have params (or not an Object param) then we need to hide this group
+        if (paramProps === void 0 || Object(paramProps) !== paramProps) {
+          this$1.hide(group);
+          return
+        }
 
-      timeout = setTimeout(function () {
-        timeout = void 0;
-
-        var node = document.createElement('div');
-        document.body.appendChild(node);
-
-        vm = new Vue({
-          name: 'QLoading',
-
-          // hide App from Vue devtools
-          devtools: { hide: true },
-
-          beforeCreate: function beforeCreate () {
-            // prevent error in Vue devtools
-            this._routerRoot === void 0 && (this._routerRoot = {});
-          },
-
-          el: node,
-
-          mounted: function mounted () {
-            preventScroll(true);
-          },
-
-          render: function (h) {
-            var obj;
-
-            return h('transition', {
-              props: {
-                name: 'q-transition--fade',
-                appear: true
-              },
-              on: cache(this$1, 'tr', {
-                'after-leave': function () {
-                  // might be called to finalize
-                  // previous leave, even if it was cancelled
-                  if (this$1.isActive !== true && vm !== void 0) {
-                    preventScroll(false);
-                    vm.$destroy();
-                    vm.$el.remove();
-                    vm = void 0;
-                  }
-                }
-              })
-            }, [
-              this$1.isActive === true ? h('div', {
-                staticClass: 'q-loading fullscreen column flex-center z-max',
-                key: props$1.uid,
-                class: props$1.customClass.trim()
-              }, [
-                h(props$1.spinner, {
-                  props: {
-                    color: props$1.spinnerColor,
-                    size: props$1.spinnerSize
-                  }
-                }),
-
-                (props$1.message && h('div', {
-                  class: ("text-" + (props$1.messageColor)),
-                  domProps: ( obj = {}, obj[props$1.sanitize === true ? 'textContent' : 'innerHTML'] = props$1.message, obj )
-                })) || void 0
-              ]) : null
-            ])
-          }
-        });
-      }, props$1.delay);
+        // else we have params so we need to update this group
+        this$1.show(Object.assign({}, paramProps, {group: group}));
+      }
     },
 
-    hide: function hide () {
+    hide: function hide (group) {
       if (this.isActive === true) {
+        if (group === void 0) {
+          // clear out any active groups
+          activeGroups = {};
+        }
+        else if (activeGroups[ group ] === void 0) {
+          // we've already hidden it so nothing to do
+          return
+        }
+        else {
+          // remove active group
+          delete activeGroups[ group ];
+
+          var keys = Object.keys(activeGroups);
+
+          // if there are other groups registered then
+          // show last registered one since that one is still active
+          if (keys.length !== 0) {
+            // get last registered group
+            var lastGroup = keys[ keys.length - 1 ];
+            this.show({ group: lastGroup });
+            return
+          }
+        }
+
         if (timeout !== void 0) {
           clearTimeout(timeout);
           timeout = void 0;
@@ -39489,7 +40169,7 @@
     },
 
     setDefaults: function setDefaults (opts) {
-      opts === Object(opts) && Object.assign(defaults, opts);
+      isObject(opts) === true && Object.assign(defaults, opts);
     },
 
     install: function install (ref) {
@@ -39682,7 +40362,7 @@
   function getAttr (seed) {
     return function (att) {
       var val = seed[att];
-      return att + (val !== void 0 ? ("=\"" + val + "\"") : '')
+      return att + (val !== true && val !== void 0 ? ("=\"" + val + "\"") : '')
     }
   }
 
@@ -39823,7 +40503,7 @@
 
   function objectWithoutProperties$2 (obj, exclude) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
 
-  var uid$4 = 0, vm$1;
+  var uid$3 = 0, vm$1;
 
   var defaults$1 = {};
   var groups = {};
@@ -39884,7 +40564,7 @@
       Object.assign(notif, defaults$1);
     }
 
-    if (Object(config) !== config) {
+    if (isObject(config) === false) {
       if (notif.type) {
         Object.assign(notif, notifTypes[notif.type]);
       }
@@ -40062,7 +40742,7 @@
 
       // woohoo, it's a new notification
       if (original === void 0) {
-        notif.meta.uid = uid$4++;
+        notif.meta.uid = uid$3++;
         notif.meta.badge = 1;
 
         if (['left', 'right', 'center'].indexOf(notif.position) !== -1) {
@@ -40234,7 +40914,8 @@
             if (notif.spinner !== false) {
               mainChild.push(
                 h(notif.spinner, {
-                  staticClass: 'q-notification__spinner q-notification__spinner--' + meta.leftClass
+                  staticClass: 'q-notification__spinner q-notification__spinner--' + meta.leftClass,
+                  props: { color: notif.spinnerColor, size: notif.spinnerSize }
                 })
               );
             }
@@ -40243,7 +40924,7 @@
                 h(QIcon, {
                   staticClass: 'q-notification__icon q-notification__icon--' + meta.leftClass,
                   attrs: { role: 'img' },
-                  props: { name: notif.icon }
+                  props: { name: notif.icon, color: notif.iconColor, size: notif.iconSize }
                 })
               );
             }
@@ -40347,13 +41028,13 @@
 
   var Notify = {
     setDefaults: function setDefaults (opts) {
-      if (isSSR !== true && opts === Object(opts)) {
+      if (isSSR !== true && isObject(opts) === true) {
         Object.assign(defaults$1, opts);
       }
     },
 
     registerType: function registerType (typeName, typeOpts) {
-      if (isSSR !== true && typeOpts === Object(typeOpts)) {
+      if (isSSR !== true && isObject(typeOpts) === true) {
         notifTypes[typeName] = typeOpts;
       }
     },
@@ -40394,10 +41075,10 @@
   };
 
   function encode$1 (value) {
-    if (Object.prototype.toString.call(value) === '[object Date]') {
+    if (isDate(value) === true) {
       return '__q_date|' + value.toUTCString()
     }
-    if (Object.prototype.toString.call(value) === '[object RegExp]') {
+    if (isRegexp(value) === true) {
       return '__q_expr|' + value.source
     }
     if (typeof value === 'number') {
@@ -40702,6 +41383,129 @@
     return openWindow(url, reject, windowFeatures)
   }
 
+  function parsePromises (sequentialPromises) {
+    var isList = Array.isArray(sequentialPromises);
+
+    if (isList === true) {
+      var totalJobs = sequentialPromises.length;
+      return {
+        isList: isList,
+        totalJobs: totalJobs,
+        resultAggregator: Array(totalJobs).fill(null)
+      }
+    }
+
+    var resultKeys = Object.keys(sequentialPromises);
+    var resultAggregator = {};
+    resultKeys.forEach(function (keyName) { resultAggregator[ keyName ] = null; });
+
+    return {
+      isList: isList,
+      totalJobs: resultKeys.length,
+      resultAggregator: resultAggregator,
+      resultKeys: resultKeys
+    }
+  }
+
+  /**
+   * Run a list of Promises sequentially, optionally on multiple threads.
+   *
+   * @param {*} sequentialPromises - Array of Functions or Object with Functions as values
+   *                          Array of Function form: [ (resultAggregator: Array) => Promise<any>, ... ]
+   *                          Object form: { [key: string]: (resultAggregator: object) => Promise<any>, ... }
+   * @param {*} opts - Optional options Object
+   *                   Object form: { threadsNumber?: number, abortOnFail?: boolean }
+   *                   Default: { threadsNumber: 1, abortOnFail: true }
+   *                   When configuring threadsNumber AND using http requests, be
+   *                       aware of the maximum threads that the hosting browser
+   *                       supports (usually 5); any number of threads above that
+   *                       won't add any real benefits
+   * @returns Promise<Array<Object> | Object>
+   *    With opts.abortOnFail set to true (which is default):
+   *        When sequentialPromises param is Array:
+   *          The Promise resolves with an Array of Objects of the following form:
+   *             [ { key: number, status: 'fulfilled', value: any }, ... ]
+   *          The Promise rejects with an Object of the following form:
+   *             { key: number, status: 'rejected', reason: Error, resultAggregator: array }
+   *        When sequentialPromises param is Object:
+   *          The Promise resolves with an Object of the following form:
+   *             { [key: string]: { key: string, status: 'fulfilled', value: any }, ... }
+   *          The Promise rejects with an Object of the following form:
+   *             { key: string, status: 'rejected', reason: Error, resultAggregator: object }
+   *    With opts.abortOnFail set to false:
+   *       The Promise is never rejected (no catch() needed)
+   *       The Promise resolves with:
+   *          An Array of Objects (when sequentialPromises param is also an Array) of the following form:
+   *             [ { key: number, status: 'fulfilled', value: any } | { status: 'rejected', reason: Error }, ... ]
+   *          An Object (when sequentialPromises param is also an Object) of the following form:
+   *             { [key: string]: { key: string, status: 'fulfilled', value: any } | { key: string, status: 'rejected', reason: Error }, ... }
+   */
+  function runSequentialPromises (
+    sequentialPromises,
+    ref
+  ) {
+    if ( ref === void 0 ) ref = {};
+    var threadsNumber = ref.threadsNumber; if ( threadsNumber === void 0 ) threadsNumber = 1;
+    var abortOnFail = ref.abortOnFail; if ( abortOnFail === void 0 ) abortOnFail = true;
+
+    var jobIndex = -1, hasAborted = false;
+
+    var ref$1 = parsePromises(sequentialPromises);
+    var isList = ref$1.isList;
+    var totalJobs = ref$1.totalJobs;
+    var resultAggregator = ref$1.resultAggregator;
+    var resultKeys = ref$1.resultKeys;
+
+    var getPromiseThread = function () { return new Promise(function (resolve, reject) {
+      function runNextPromise () {
+        var currentJobIndex = ++jobIndex;
+
+        if (hasAborted === true || currentJobIndex >= totalJobs) {
+          resolve();
+          return
+        }
+
+        var key = isList === true ? currentJobIndex : resultKeys[ currentJobIndex ];
+
+        sequentialPromises[ key ](resultAggregator)
+          .then(function (value) {
+            if (hasAborted === true) {
+              resolve();
+              return // early exit
+            }
+
+            resultAggregator[ key ] = { key: key, status: 'fulfilled', value: value };
+
+            // timeout so it doesn't interfere with the .catch() below
+            setTimeout(runNextPromise);
+          })
+          .catch(function (reason) {
+            if (hasAborted === true) {
+              resolve();
+              return // early exit
+            }
+
+            var result = { key: key, status: 'rejected', reason: reason };
+            resultAggregator[ key ] = result;
+
+            if (abortOnFail === true) {
+              hasAborted = true;
+              reject(Object.assign({}, result, {resultAggregator: resultAggregator}));
+              return // early exit
+            }
+
+            // timeout so no interference
+            setTimeout(runNextPromise);
+          });
+      }
+
+      runNextPromise();
+    }); };
+
+    var threads = Array(threadsNumber).fill(getPromiseThread());
+    return Promise.all(threads).then(function () { return resultAggregator; })
+  }
+
 
 
   var utils = /*#__PURE__*/Object.freeze({
@@ -40713,17 +41517,19 @@
     debounce: debounce,
     dom: dom,
     event: event,
+    noop: noop,
     exportFile: exportFile,
     extend: extend,
     format: format,
     frameDebounce: frameDebounce,
-    noop: noop,
-    openURL: openUrl,
+    is: is,
     morph: morph,
+    openURL: openUrl,
     patterns: patterns,
+    runSequentialPromises: runSequentialPromises,
     scroll: scroll,
     throttle: throttle,
-    uid: uid$2
+    uid: uid
   });
 
   Vue.use({ install: install }, {
