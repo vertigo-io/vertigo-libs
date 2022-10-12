@@ -219,3 +219,25 @@ table .q-uploader .q-btn {
     max-width:unset;
 }
 
+/******** dev mode of authorizations *******/
+
+.authz--locked-overlay::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: 72px;
+    background-image: url("../images/authz-locked.png");
+    opacity: .7;
+    background-position: center;
+}
+
+.authz--locked {
+	background-size: 72px;
+    background-image: url("../images/authz-locked.png")!important;
+    opacity: .7;
+    background-position: center;
+}
+

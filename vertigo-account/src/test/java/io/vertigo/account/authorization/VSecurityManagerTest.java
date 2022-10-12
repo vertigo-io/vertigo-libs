@@ -355,6 +355,42 @@ public final class VSecurityManagerTest {
 	}
 
 	@Test
+	public void testSecuritySearchOverrideOrderOnEntity() {
+
+		UserSession userSession = securityManager.<TestUserSession> createUserSession();
+		try {
+			securityManager.startCurrentUserSession(userSession);
+			authorizationManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID)
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$readHp))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$read));
+
+			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$read);
+			Assertions.assertTrue(canReadRecord);
+
+			Assertions.assertEquals("(*:*)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.read));
+			Assertions.assertEquals("(*:*)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.readHp));
+		} finally {
+			securityManager.stopCurrentUserSession();
+		}
+
+		userSession = securityManager.<TestUserSession> createUserSession();
+		try {
+			securityManager.startCurrentUserSession(userSession);
+			authorizationManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID)
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$read))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$readHp));
+
+			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$read);
+			Assertions.assertTrue(canReadRecord);
+
+			Assertions.assertEquals("(*:*)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.readHp));
+			Assertions.assertEquals("(*:*)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.readHp));
+		} finally {
+			securityManager.stopCurrentUserSession();
+		}
+	}
+
+	@Test
 	public void testSecuritySearchOnEntity() {
 
 		final Record recordTooExpensive = createRecord();

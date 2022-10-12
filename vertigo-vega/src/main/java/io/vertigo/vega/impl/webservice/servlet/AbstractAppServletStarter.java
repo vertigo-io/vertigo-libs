@@ -18,10 +18,8 @@
 package io.vertigo.vega.impl.webservice.servlet;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -60,16 +58,16 @@ abstract class AbstractAppServletStarter {
 	 * @param servletContext ServletContext
 	 */
 	public void contextInitialized(final ServletContext servletContext) {
-		final long start = System.currentTimeMillis();
+		final var start = System.currentTimeMillis();
 		try {
 			// Initialisation du web context de l'application (porteur des singletons applicatifs)
 			ServletResourceResolverPlugin.setServletContext(servletContext);
 			// Création de l'état de l'application
 			// Lecture des paramètres de configuration
-			final Map<String, Param> webAppConf = createWebParams(servletContext);
+			final var webAppConf = createWebParams(servletContext);
 			WebAppContextParamPlugin.setParams(webAppConf);
 			//-----
-			final Properties bootConf = createBootProperties(servletContext);
+			final var bootConf = createBootProperties(servletContext);
 			Assertion.check().isTrue(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
 
 			// Initialisation de l'état de l'application
@@ -102,7 +100,7 @@ abstract class AbstractAppServletStarter {
 		 * On récupère les paramètres du context (web.xml ou fichier tomcat par exemple) Ces paramètres peuvent
 		 * surcharger les paramètres de la servlet de façon à créer un paramétrage adhoc de développement par exemple.
 		 */
-		for (final Enumeration<String> enumeration = servletContext.getInitParameterNames(); enumeration.hasMoreElements();) {
+		for (final var enumeration = servletContext.getInitParameterNames(); enumeration.hasMoreElements();) {
 			name = enumeration.nextElement();
 			webParams.put(name, Param.of(name, servletContext.getInitParameter(name)));
 		}
@@ -119,14 +117,14 @@ abstract class AbstractAppServletStarter {
 		// ======================================================================
 		// ===Conversion en Properties du fichier de paramétrage de la servlet===
 		// ======================================================================
-		final Properties servletParams = new Properties();
+		final var servletParams = new Properties();
 		String name;
 
 		/*
 		 * On récupère les paramètres du context (web.xml ou fichier tomcat par exemple) Ces paramètres peuvent
 		 * surcharger les paramètres de la servlet de façon à créer un paramétrage adhoc de développement par exemple.
 		 */
-		for (final Enumeration<String> enumeration = servletContext.getInitParameterNames(); enumeration.hasMoreElements();) {
+		for (final var enumeration = servletContext.getInitParameterNames(); enumeration.hasMoreElements();) {
 			name = enumeration.nextElement();
 			if (name.startsWith(BOOT_PROPERTIES_PREFIX)) {
 				servletParams.put(name, servletContext.getInitParameter(name));
@@ -141,33 +139,62 @@ abstract class AbstractAppServletStarter {
 		 * Ce paramètre peut pointer sur un fichier de la webnode ou du FS.
 		 * Il peut aussi être dans le web.xml ou le EXTERNAL_PROPERTIES_PARAM_NAME
 		 */
-		String log4jConfigurationFileName = System.getProperty(LOG4J_CONFIGURATION_PARAM_NAME);
+		var log4jConfigurationFileName = System.getProperty(LOG4J_CONFIGURATION_PARAM_NAME);
 		if (log4jConfigurationFileName == null) {
 			log4jConfigurationFileName = servletContext.getInitParameter(LOG4J_CONFIGURATION_PARAM_NAME);
 		}
 		if (log4jConfigurationFileName != null) {
 			servletParams.put(LOG4J_CONFIGURATION_PARAM_NAME, log4jConfigurationFileName);
 		}
+
+		readFromEnv(servletParams, "boot.applicationConfigurations", "VERTIGO_BOOT_APPLICATION_CONFIGURATIONS");
+		readFromEnv(servletParams, "boot.activeFlags", "VERTIGO_BOOT_ACTIVE_FLAGS");
+
 		/*
 		 * On récupère les paramètres du fichier de configuration externe (-Dexternal-properties). Ces paramètres
 		 * peuvent surcharger les paramètres de la servlet de façon à créer un paramétrage adhoc de développement par
 		 * exemple.
 		 */
-		final String externalPropertiesFileName = System.getProperty(EXTERNAL_PROPERTIES_PARAM_NAME);
+		final var externalPropertiesFileName = System.getProperty(EXTERNAL_PROPERTIES_PARAM_NAME);
 		try {
 			readFile(servletParams, externalPropertiesFileName);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Erreur lors de la lecture du fichier");
 		}
 
+		readFromSystemProperties(servletParams, "boot.applicationConfigurations", "boot.application-configurations");
+		readFromSystemProperties(servletParams, "boot.activeFlags", "boot.active-flags");
+
 		return servletParams;
 	}
 
 	private static void readFile(final Properties servletParams, final String externalPropertiesFileName) throws IOException {
 		if (externalPropertiesFileName != null) {
-			try (final InputStream inputStream = Files.newInputStream(Paths.get(externalPropertiesFileName))) {
+			try (final var inputStream = Files.newInputStream(Paths.get(externalPropertiesFileName))) {
 				servletParams.load(inputStream);
 			}
+		}
+	}
+
+	private static void readFromEnv(final Properties servletParams, final String paramName, final String variableName) {
+		Assertion.check()
+				.isNotBlank(paramName)
+				.isNotBlank(variableName);
+		//---
+		final var envVariableValue = System.getenv(variableName);
+		if (envVariableValue != null) {
+			servletParams.put(paramName, envVariableValue);
+		}
+	}
+
+	private static void readFromSystemProperties(final Properties servletParams, final String paramName, final String variableName) {
+		Assertion.check()
+				.isNotBlank(paramName)
+				.isNotBlank(variableName);
+		//---
+		final var systemVariableValue = System.getProperty(variableName);
+		if (systemVariableValue != null) {
+			servletParams.put(paramName, systemVariableValue);
 		}
 	}
 

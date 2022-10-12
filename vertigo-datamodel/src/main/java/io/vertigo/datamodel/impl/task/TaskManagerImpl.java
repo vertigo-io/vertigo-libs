@@ -104,9 +104,9 @@ public final class TaskManagerImpl implements TaskManager, SimpleDefinitionProvi
 				.withDataSpace(taskAnnotation.dataSpace().isEmpty() ? null : taskAnnotation.dataSpace());
 
 		if (hasOut(method)) {
-			final SmartTypeDefinition outSmartType = findOutSmartType(method);
+			final Tuple<String, SmartTypeDefinition> outSmartTypeAndName = findOutSmartType(method);
 			final Cardinality outCardinality = getCardinality(method.getReturnType());
-			taskDefinitionBuilder.withOutAttribute("out", outSmartType, outCardinality);
+			taskDefinitionBuilder.withOutAttribute(outSmartTypeAndName.getVal1(), outSmartTypeAndName.getVal2(), outCardinality);
 		}
 		for (final Parameter parameter : method.getParameters()) {
 			final TaskInput taskAttributeAnnotation = parameter.getAnnotation(TaskInput.class);
@@ -140,9 +140,9 @@ public final class TaskManagerImpl implements TaskManager, SimpleDefinitionProvi
 		}
 	}
 
-	private static SmartTypeDefinition findOutSmartType(final Method method) {
+	private static Tuple<String, SmartTypeDefinition> findOutSmartType(final Method method) {
 		final TaskOutput taskOutput = method.getAnnotation(TaskOutput.class);
 		Assertion.check().isNotNull(taskOutput, "The return method '{0}' must be annotated with '{1}'", method, TaskOutput.class);
-		return resolveSmartTypeDefinition(taskOutput.smartType());
+		return Tuple.of(taskOutput.name(), resolveSmartTypeDefinition(taskOutput.smartType()));
 	}
 }

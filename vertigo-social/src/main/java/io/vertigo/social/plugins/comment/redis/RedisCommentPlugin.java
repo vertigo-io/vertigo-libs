@@ -125,7 +125,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 		final String lastModified = comment.getLastModified() != null ? comment.getLastModified().toString() : null;
 		return new MapBuilder<String, String>()
 				.put("uuid", comment.getUuid().toString())
-				.put("author", String.valueOf(comment.getAuthor().getId()))
+				.put("author", comment.getAuthor().getId())
 				.put("msg", comment.getMsg())
 				.put("creationDate", comment.getCreationDate().toString())
 				.putNullable("lastModified", lastModified)

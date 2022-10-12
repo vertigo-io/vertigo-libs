@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-extensions</artifactId>
-		<version>4.0.0-SNAPSHOT</version>
+		<version>3.3.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>vertigo-stella</artifactId>
@@ -43,19 +43,19 @@
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
-			<version>3.0.3</version>
+			<version>3.0.8</version>
 			<optional>true</optional> <!-- REST DistributedWork impl -->
 		</dependency>
 		<dependency>
 		    <groupId>org.glassfish.jersey.inject</groupId>
 		    <artifactId>jersey-hk2</artifactId>
-		    <version>3.0.3</version>
+		    <version>3.0.8</version>
 			<optional>true</optional> <!-- REST DistributedWork impl -->
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
 			<artifactId>websocket-server</artifactId>
-			<version>9.4.44.v20210927</version>
+			<version>9.4.49.v20220914</version>
 			<scope>test</scope><!-- vega embedded -->
 		</dependency>
 		

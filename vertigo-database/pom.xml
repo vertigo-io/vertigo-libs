@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-extensions</artifactId>
-		<version>4.0.0-SNAPSHOT</version>
+		<version>3.3.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>vertigo-database</artifactId>
@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
-			<version>4.7.0</version>
+			<version>4.16.1</version>
 			<optional>true</optional>
 		</dependency>
 
@@ -40,21 +40,21 @@
 		<dependency>
 		    <groupId>com.h2database</groupId>
 		    <artifactId>h2</artifactId>
-		    <version>2.1.210</version>
+		    <version>2.1.214</version>
 		    <scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.oracle.database.jdbc</groupId>
 		    <artifactId>ojdbc10</artifactId>
-		    <version>19.13.0.0.1</version>
+		    <version>19.16.0.0</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
 		    <artifactId>postgresql</artifactId>
-		    <version>42.3.1</version>
+		    <version>42.5.0</version>
 			<scope>test</scope>
 		</dependency>
 

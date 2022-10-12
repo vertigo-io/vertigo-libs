@@ -37,6 +37,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.Table;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -56,6 +57,7 @@ public abstract class AbstractExporterIText {
 
 	private final EntityStoreManager entityStoreManager;
 	private final SmartTypeManager smartTypeManager;
+	private final Map<Class, BasicTypeAdapter> exportAdapters;
 
 	/**
 	 * Constructor.
@@ -68,6 +70,7 @@ public abstract class AbstractExporterIText {
 		//-----
 		this.entityStoreManager = entityStoreManager;
 		this.smartTypeManager = smartTypeManager;
+		exportAdapters = smartTypeManager.getTypeAdapters("export");
 	}
 
 	/**
@@ -167,7 +170,7 @@ public abstract class AbstractExporterIText {
 			}
 			datatable.getDefaultCell().setHorizontalAlignment(horizontalAlignement);
 
-			String text = ExporterUtil.getText(entityStoreManager, smartTypeManager, referenceCache, denormCache, exportSheet.getDtObject(), exportColumn);
+			String text = ExporterUtil.getText(entityStoreManager, smartTypeManager, exportAdapters, referenceCache, denormCache, exportSheet.getDtObject(), exportColumn);
 			if (text == null) {
 				text = "";
 			}
@@ -223,7 +226,7 @@ public abstract class AbstractExporterIText {
 				}
 				datatable.getDefaultCell().setHorizontalAlignment(horizontalAlignement);
 
-				String text = ExporterUtil.getText(entityStoreManager, smartTypeManager, referenceCache, denormCache, dto, exportColumn);
+				String text = ExporterUtil.getText(entityStoreManager, smartTypeManager, exportAdapters, referenceCache, denormCache, dto, exportColumn);
 				if (text == null) {
 					text = "";
 				}

@@ -57,7 +57,10 @@ import io.vertigo.ui.impl.springmvc.argumentresolvers.VFileMethodArgumentResolve
 import io.vertigo.ui.impl.springmvc.argumentresolvers.VFileReturnValueHandler;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttributeMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewContextReturnValueAndArgumentResolver;
-import io.vertigo.ui.impl.springmvc.auth.VSpringMvcAuthorizationInterceptor;
+import io.vertigo.ui.impl.springmvc.authorization.VSpringMvcAuthorizationInterceptor;
+import io.vertigo.ui.impl.springmvc.config.interceptors.VAnnotationHandlerInterceptorImpl;
+import io.vertigo.ui.impl.springmvc.config.interceptors.VControllerInterceptorEngine;
+import io.vertigo.ui.impl.springmvc.config.interceptors.VSpringMvcViewContextInterceptor;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
 import io.vertigo.ui.impl.thymeleaf.VUiStandardDialect;
 import io.vertigo.ui.impl.thymeleaf.components.NamedComponentDefinition;
@@ -83,6 +86,9 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 			"inputs/select", "inputs/select-multiple", "inputs/radio", //select controls components
 			"inputs/autocomplete", "inputs/date", "inputs/datetime", "inputs/chips-autocomplete", //with client-worflow controls components
 			"inputs/geolocation", // geoLocation
+			"inputs/tree", // tree
+			"inputs/text-editor", //text-editor (richtext)
+			"inputs/input", // basic input
 			"table/table", "table/column", //table
 			"collections/collection", "collections/list", "collections/cards", "collections/field-read", // collections
 			"collections/search", "collections/facets", //search
@@ -216,10 +222,6 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	@Override
 	public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
 		if (applicationContext instanceof ConfigurableApplicationContext) {
-			//App.getApp().getComponentSpace().keySet()
-			//		.stream()
-			//		.forEach(key -> ((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton(key, App.getApp().getComponentSpace().resolve(key, Component.class)));
-
 			final VSpringMvcControllerAdvice controllerAdvice = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(VSpringMvcControllerAdvice.class);
 			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("viewContextControllerAdvice", controllerAdvice);
 			final ListAutocompleteController listAutocompleteController = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(ListAutocompleteController.class);
@@ -231,6 +233,11 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	public void addInterceptors(final InterceptorRegistry registry) {
 		registry.addInterceptor(new VSpringMvcAuthorizationInterceptor());
 		registry.addInterceptor(new VSpringMvcViewContextInterceptor());
+		registry.addInterceptor(new VAnnotationHandlerInterceptorImpl(getVControllerInterceptorEngines()));
+	}
+
+	protected List<Class<? extends VControllerInterceptorEngine>> getVControllerInterceptorEngines() {
+		return Collections.emptyList();
 	}
 
 	@Override

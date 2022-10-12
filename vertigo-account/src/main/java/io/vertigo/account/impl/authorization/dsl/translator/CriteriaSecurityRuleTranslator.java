@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
 
 import io.vertigo.account.authorization.definitions.SecurityDimension;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression.ValueOperator;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleFixedValue;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression;
-import io.vertigo.account.authorization.definitions.rulemodel.RuleUserPropertyValue;
-import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression.ValueOperator;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression.BoolOperator;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleUserPropertyValue;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
@@ -51,8 +51,10 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		for (final RuleMultiExpression expression : getMultiExpressions()) {
 			mainCriteria = orCriteria(mainCriteria, toCriteria(expression));
 		}
-		Assertion.check()
-				.isNotNull(mainCriteria);//can't be null
+		//null if always true
+		if (mainCriteria == null) {
+			return Criterions.alwaysTrue();
+		}
 		return mainCriteria;
 	}
 
@@ -76,8 +78,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 				mainCriteria = orCriteria(mainCriteria, toCriteria(expression));
 			}
 		}
-		Assertion.check()
-				.isNotNull(mainCriteria);//can be null ?
+		//null if always true
 		return mainCriteria;
 	}
 
@@ -89,18 +90,16 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 				Criteria<E> mainCriteria = null; //comment collecter en stream ?
 				for (final Serializable userValue : userValues) {
 					Assertion.check()
-							.isNotNull(userValue)
+							.isNotNull(userValue, "Null security key : {0}={1}", userPropertyValue.getUserProperty(), userValues)
 							.when(!userValue.getClass().isArray(), () -> Assertion.check()
 									.isTrue(userValue instanceof Comparable,
-											"Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName()))
+											"Security keys must be serializable AND comparable (key : {0})", userValues.getClass().getSimpleName()))
 							.when(userValue.getClass().isArray(), () -> Assertion.check()
 									.isTrue(Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
-											"Security keys must be serializable AND comparable (here : {0})", userValue.getClass().getComponentType()));
+											"Security keys must be serializable AND comparable (key : {0})", userValue.getClass().getComponentType()));
 					//----
 					mainCriteria = orCriteria(mainCriteria, toCriteria(expression.getFieldName(), expression.getOperator(), userValue));
 				}
-				Assertion.check()
-						.isNotNull(mainCriteria);//can't be null
 				return mainCriteria;
 			}
 			return Criterions.alwaysFalse();
@@ -192,7 +191,11 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		final List<String> strDimensionfields = securityDimension.getFields().stream()
 				.map(DtField::getName)
 				.collect(Collectors.toList());
-		Assertion.check().isTrue(strDimensionfields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strDimensionfields);
+		Assertion.check()
+				.isTrue(strDimensionfields.size() <= treeKeys.length, "Entity security tree must have the same or at least the {0} firsts fields ({1}) of User securityKey {2}", strDimensionfields.size(), strDimensionfields, securityDimension.getName());
+		//		.when(strDimensionfields.size() < treeKeys.length,
+		//				() -> Assertion.check() //TODO a tester
+		//				.isTrue(true,"When entity security tree have only the first field of user securityField, only operators '=', ' are accepted (can't use {0})", operator));
 		Criteria<E> mainCriteria = null;
 
 		//cas particuliers du == et du !=
@@ -210,7 +213,8 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			//le < signifie au-dessus dans la hierachie et > en-dessous
 
 			//on détermine le dernier field non null du user, les règles pivotent sur ce point là
-			final int lastIndexNotNull = lastIndexNotNull(treeKeys);
+			//au max le dernier index de clé dans l'entity
+			final int lastIndexNotNull = Math.min(strDimensionfields.size() - 1, lastIndexNotNull(treeKeys));
 
 			//1- règles avant le point de pivot : 'Eq' pout tous les opérateurs
 			for (int i = 0; i < lastIndexNotNull; i++) {
@@ -270,8 +274,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 				}
 			}
 		}
-		Assertion.check()
-				.isNotNull(mainCriteria);//can be null ?
+		//can be null if <= et
 		return mainCriteria;
 	}
 

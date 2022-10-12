@@ -18,16 +18,19 @@
 package io.vertigo.vega.webservice.validation;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiPredicate;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.vega.webservice.validation.UiMessageStack.Level;
@@ -56,7 +59,7 @@ public final class UiErrorBuilder {
 	}
 
 	private Set<DtField> obtainUiErrorIndex(final DtObject dtObject) {
-		Set<DtField> dtFieldError = uiErrorIndex.get(dtObject);
+		var dtFieldError = uiErrorIndex.get(dtObject);
 		if (dtFieldError == null) {
 			dtFieldError = new HashSet<>();
 			uiErrorIndex.put(dtObject, dtFieldError);
@@ -111,7 +114,7 @@ public final class UiErrorBuilder {
 	 * @param fieldName Champ porteur de l'erreur
 	 * @param messageText Message d'erreur
 	 */
-	public void addError(final DtObject dtObject, final String fieldName, final MessageText messageText) {
+	public void addError(final DtObject dtObject, final DtFieldName fieldName, final MessageText messageText) {
 		addError(dtObject, getDtField(dtObject, fieldName), messageText);
 	}
 
@@ -122,15 +125,26 @@ public final class UiErrorBuilder {
 	 * @param fieldName2 Champs 2
 	 * @param messageText Message à appliquer si erreur
 	 */
-	public void checkFieldEquals(final DtObject dto, final String fieldName1, final String fieldName2, final MessageText messageText) {
-		final DtField dtField1 = getDtField(dto, fieldName1);
-		final DtField dtField2 = getDtField(dto, fieldName2);
-		final Object value1 = getValue(dto, dtField1);
-		final Object value2 = getValue(dto, dtField2);
+	public void checkFieldEquals(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final MessageText messageText) {
+		final var dtField1 = getDtField(dto, fieldName1);
+		final var dtField2 = getDtField(dto, fieldName2);
+		final var value1 = getValue(dto, dtField1);
+		final var value2 = getValue(dto, dtField2);
 		//value1 et value2 == null ou value1 equals value2, sinon error
 		if (value1 != null && !value1.equals(value2) || value1 == null && value2 != null) {
 			addError(dto, dtField2, messageText);
 		}
+	}
+
+	/**
+	 * Vérifie que la date du champ 2 est après ou egale la date du champ 1.
+	 * @param dto Object a tester
+	 * @param fieldName1 Champs 1
+	 * @param fieldName2 Champs 2
+	 * @param messageText Message à appliquer si erreur
+	 */
+	public void checkFieldDateAfterOrEquals(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final MessageText messageText) {
+		checkFieldCompare(dto, fieldName1, fieldName2, messageText, (date1, date2) -> !date2.isBefore(date1), LocalDate.class);
 	}
 
 	/**
@@ -140,12 +154,30 @@ public final class UiErrorBuilder {
 	 * @param fieldName2 Champs 2
 	 * @param messageText Message à appliquer si erreur
 	 */
-	public void checkFieldDateAfter(final DtObject dto, final String fieldName1, final String fieldName2, final MessageText messageText) {
-		final DtField dtField1 = getDtField(dto, fieldName1);
-		final DtField dtField2 = getDtField(dto, fieldName2);
-		final LocalDate value1 = (LocalDate) getValue(dto, dtField1); //la valeur typée peut être null
-		final LocalDate value2 = (LocalDate) getValue(dto, dtField2);
-		if (value1 != null && value2 != null && !value2.isAfter(value1)) {
+	public void checkFieldDateAfter(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final MessageText messageText) {
+		checkFieldCompare(dto, fieldName1, fieldName2, messageText, (date1, date2) -> date2.isAfter(date1), LocalDate.class);
+	}
+
+	public void checkFieldDateBetweenMin(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final int minDays, final MessageText messageText) {
+		checkFieldCompare(dto, fieldName1, fieldName2, messageText, (date1, date2) -> {
+			final var decalageJours = ChronoUnit.DAYS.between(date1, date2);
+			return decalageJours >= minDays;
+		}, LocalDate.class);
+	}
+
+	public void checkFieldDateBetweenMax(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final int maxDays, final MessageText messageText) {
+		checkFieldCompare(dto, fieldName1, fieldName2, messageText, (date1, date2) -> {
+			final var decalageJours = ChronoUnit.DAYS.between(date1, date2);
+			return decalageJours <= maxDays;
+		}, LocalDate.class);
+	}
+
+	public <T> void checkFieldCompare(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final MessageText messageText, final BiPredicate<T, T> predicate, final Class<T> fieldClass) {
+		final var dtField1 = getDtField(dto, fieldName1);
+		final var dtField2 = getDtField(dto, fieldName2);
+		final var value1 = fieldClass.cast(getValue(dto, dtField1)); //la valeur typée peut être null
+		final var value2 = fieldClass.cast(getValue(dto, dtField2));
+		if (value1 != null && value2 != null && !predicate.test(value1, value2)) {
 			addError(dto, dtField2, messageText);
 		}
 	}
@@ -157,12 +189,29 @@ public final class UiErrorBuilder {
 	 * @param fieldName2 Champs 2
 	 * @param messageText Message à appliquer si erreur
 	 */
-	public void checkFieldLongAfter(final DtObject dto, final String fieldName1, final String fieldName2, final MessageText messageText) {
-		final DtField dtField1 = getDtField(dto, fieldName1);
-		final DtField dtField2 = getDtField(dto, fieldName2);
-		final Long value1 = (Long) getValue(dto, dtField1); //la valeur typée peut être null
-		final Long value2 = (Long) getValue(dto, dtField2);
+	public void checkFieldLongAfter(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final MessageText messageText) {
+		final var dtField1 = getDtField(dto, fieldName1);
+		final var dtField2 = getDtField(dto, fieldName2);
+		final var value1 = (Long) getValue(dto, dtField1); //la valeur typée peut être null
+		final var value2 = (Long) getValue(dto, dtField2);
 		if (value1 != null && value2 != null && !(value2.compareTo(value1) > 0)) {
+			addError(dto, dtField2, messageText);
+		}
+	}
+
+	/**
+	 * Vérifie que le Long du champ 2 est après ou egale le Long du champ 1.
+	 * @param dto Object a tester
+	 * @param fieldName1 Champs 1
+	 * @param fieldName2 Champs 2
+	 * @param messageText Message à appliquer si erreur
+	 */
+	public void checkFieldLongAfterOrEquals(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final MessageText messageText) {
+		final var dtField1 = getDtField(dto, fieldName1);
+		final var dtField2 = getDtField(dto, fieldName2);
+		final var value1 = (Long) getValue(dto, dtField1); //la valeur typée peut être null
+		final var value2 = (Long) getValue(dto, dtField2);
+		if (value1 != null && value2 != null && !(value2.compareTo(value1) >= 0)) {
 			addError(dto, dtField2, messageText);
 		}
 	}
@@ -173,19 +222,19 @@ public final class UiErrorBuilder {
 	 * @param fieldName Champs
 	 * @param messageText Message à appliquer si erreur
 	 */
-	public void checkFieldNotNull(final DtObject dto, final String fieldName, final MessageText messageText) {
-		final DtField dtField = getDtField(dto, fieldName);
-		final Object value = getValue(dto, dtField);
+	public void checkFieldNotNull(final DtObject dto, final DtFieldName fieldName, final MessageText messageText) {
+		final var dtField = getDtField(dto, fieldName);
+		final var value = getValue(dto, dtField);
 		if (value == null || value.toString().isEmpty()) {
 			addError(dto, dtField, messageText);
 		}
 	}
 
-	private static Object getValue(final DtObject dto, final DtField dtField) {
-		return dtField.getDataAccessor().getValue(dto);
+	private static <T> T getValue(final DtObject dto, final DtField dtField) {
+		return (T) dtField.getDataAccessor().getValue(dto);
 	}
 
-	private static DtField getDtField(final DtObject dto, final String fieldName) {
+	private static DtField getDtField(final DtObject dto, final DtFieldName fieldName) {
 		return DtObjectUtil.findDtDefinition(dto).getField(fieldName);
 	}
 

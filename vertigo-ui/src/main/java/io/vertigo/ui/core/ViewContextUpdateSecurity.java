@@ -130,11 +130,20 @@ public final class ViewContextUpdateSecurity implements Serializable {
 		if (allowedFields.contains(paramName)) {
 			return true;
 		}
+		if (isPrimitiveParam(paramName)) {
+			// primitive data must be in allowedFields
+			return false;
+		}
 		final String[] splitParamName = splitParamName(paramName);
 		final String object = splitParamName[SPLIT_OBJECT_INDEX];
 		final String row = splitParamName[SPLIT_ROW_INDEX];
 		final String fieldName = splitParamName[SPLIT_FIELD_INDEX];
 		return isAllowedField(object, row, fieldName);
+	}
+
+	private static boolean isPrimitiveParam(final String paramName) {
+		final int firstParam = paramName.indexOf('[');
+		return paramName.indexOf('[', firstParam + 1) == -1;
 	}
 
 	private static String[] splitObjectName(final String objectName) {

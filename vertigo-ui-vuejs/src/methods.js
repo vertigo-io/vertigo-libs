@@ -1,5 +1,5 @@
 import Quasar from "quasar"
-import { sortDate } from "quasar/src/utils/sort.js"
+import { sortDate } from "quasar/src/utils/private/sort.js"
 import { isNumber, isDate } from "quasar/src/utils/is.js"
 
 export default {
@@ -13,14 +13,19 @@ export default {
             timeout: 2500,
         }
 
-        //Setup Error Message //if response was an error
-        if (Object.prototype.hasOwnProperty.call(response, 'message')) {
-            notif.message = response.message
-        }
-        //Setup Generic Response Messages
-        if (response.status === 401) {
-            notif.message = 'UnAuthorized, you may login with an authorized account'
-            this.$root.$emit('logout') //Emit Logout Event
+       //Setup Error Message
+		if (Object.prototype.hasOwnProperty.call(response.data, 'redirect')) { //if response was an redirect
+			window.location = response.data.redirect;
+			return;
+		} else if (Object.prototype.hasOwnProperty.call(response.data, 'message')) { //if response was an error
+			notif.message = response.data.message
+		}
+
+		//Setup Generic Response Messages
+		if (response.status === 401) {
+			notif.message = 'UnAuthorized, you may login with an authorized account'
+			this.$root.$emit('unauthorized', response) //Emit Logout Event // surcharge ajout de la response en parametre
+			return 
         } else if (response.status === 403) {
             notif.message = 'Forbidden, your havn&quote;t enought rights'
         } else if (response.status === 404) {
@@ -36,7 +41,7 @@ export default {
         } else if (response.status >= 500) {
             notif.message = 'Server Error'
         }
-        if (response.statusText) {
+        if (response.statusText && response.status !== 422) {
             notif.message = response.statusText
         }
         //Try to Use the Response Message
@@ -225,7 +230,7 @@ export default {
         if (newValue === Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(newValue, format), format)) {
             return Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(newValue, format), 'DD/MM/YYYY HH:mm');
         } else {
-           return newValue;
+            return newValue;
         }
     },
 
@@ -318,46 +323,46 @@ export default {
         componentStates[componentId].pagination.rowsPerPage = componentStates[componentId].pagination.rowsPerPage / showMoreCount * (showMoreCount + 1);
     },
     vueDataToArray(value) {
-        if(Array.isArray(value)) {
+        if (Array.isArray(value)) {
             return value;
-        } else if(value) {
+        } else if (value) {
             return [value];
         }
         return [];
     },
     obtainVueDataAccessor(referer, object, field, rowIndex) {
-        if(field!=null && field!='null') {
-            if(rowIndex!=null) {
+        if (field != null && field != 'null') {
+            if (rowIndex != null) {
                 return {
-                    get : function() {
+                    get: function () {
                         return referer.$data.vueData[object][rowIndex][field];
-                    }, 
-                    set : function(newData) {
+                    },
+                    set: function (newData) {
                         referer.$data.vueData[object][rowIndex][field] = newData;
                     }
                 }
             } else {
-                return {           
-                    get : function() {
+                return {
+                    get: function () {
                         return referer.$data.vueData[object][field];
-                    }, 
-                    set : function(newData) {
+                    },
+                    set: function (newData) {
                         referer.$data.vueData[object][field] = newData;
                     }
                 }
             }
         } else {
             return {
-                get : function() {
+                get: function () {
                     return referer.$data.vueData[object];
-                }, 
-                set : function(newData) {
+                },
+                set: function (newData) {
                     referer.$data.vueData[object] = newData;
                 }
             }
         }
     },
-    uploader_changeIcon () {
+    uploader_changeIcon() {
         this.$q.iconSet.uploader.removeUploaded = 'delete_sweep'
         this.$q.iconSet.uploader.done = 'delete'
     },
@@ -368,35 +373,35 @@ export default {
         component.vueDataAccessor = this.obtainVueDataAccessor(this, object, field, rowIndex);
         var vueDataAccessor = component.vueDataAccessor;
         var curValue = vueDataAccessor.get();
-        if(!Array.isArray(curValue)) {
+        if (!Array.isArray(curValue)) {
             vueDataAccessor.set(this.vueDataToArray(curValue));
-        }        
-        vueDataAccessor.set(vueDataAccessor.get().filter(function(item, pos, self) {
+        }
+        vueDataAccessor.set(vueDataAccessor.get().filter(function (item, pos, self) {
             return self.indexOf(item) == pos;
         }));
         vueDataAccessor.get().forEach(function (uri) {
-        var xhrParams = {};
-        xhrParams[component.fieldName] = uri;
+            var xhrParams = {};
+            xhrParams[component.fieldName] = uri;
             this.$http.get(component.url, { params: xhrParams, credentials: component.withCredentials })
-            .then(function (response) { //Ok
-                var fileData = response.data;
-                if(component.files.some(file => file.name === fileData.name)){
-                    console.warn("Component doesn't support duplicate file ", fileData);
-                } else {  
-                    fileData.__sizeLabel = Quasar.utils.format.humanStorageSize(fileData.size);
-                    fileData.__progressLabel = '100%';
-                    component.files.push(fileData);
-                    component.uploadedFiles.push(fileData);
-                    this.uploader_forceComputeUploadedSize(componentId);
-                }
-            }.bind(this))
-            .catch(function (error) { //Ko
-               if(error.response) {
-                  this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file "+uri);
-               } else {
-                  this.$q.notify(error + " Can't load file "+uri);
-               }
-            }.bind(this));
+                .then(function (response) { //Ok
+                    var fileData = response.data;
+                    if (component.files.some(file => file.name === fileData.name)) {
+                        console.warn("Component doesn't support duplicate file ", fileData);
+                    } else {
+                        fileData.__sizeLabel = Quasar.utils.format.humanStorageSize(fileData.size);
+                        fileData.__progressLabel = '100%';
+                        component.files.push(fileData);
+                        component.uploadedFiles.push(fileData);
+                        this.uploader_forceComputeUploadedSize(componentId);
+                    }
+                }.bind(this))
+                .catch(function (error) { //Ko
+                    if (error.response) {
+                        this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file " + uri);
+                    } else {
+                        this.$q.notify(error + " Can't load file " + uri);
+                    }
+                }.bind(this));
         }.bind(this));
     },
     uploader_dragenter(componentId) {
@@ -415,20 +420,20 @@ export default {
         var component = this.$refs[componentId];
         //recompute totalSize
         component.uploadedSize = 0;
-        component.uploadedFiles.forEach(function (file) { component.uploadedSize += file.size;});
+        component.uploadedFiles.forEach(function (file) { component.uploadedSize += file.size; });
         component.uploadSize = component.uploadedSize;
-        component.queuedFiles.forEach(function (file) { component.uploadSize += file.size;});
-        
+        component.queuedFiles.forEach(function (file) { component.uploadSize += file.size; });
+
     },
     uploader_humanStorageSize: function (size) {
         return Quasar.utils.format.humanStorageSize(size);
     },
     uploader_addedFile: function (isMultiple, componentId) {
         if (!isMultiple) {
-             var component = this.$refs[componentId];
-             var vueDataAccessor = component.vueDataAccessor;
-             component.removeUploadedFiles();
-             vueDataAccessor.set([]);
+            var component = this.$refs[componentId];
+            var vueDataAccessor = component.vueDataAccessor;
+            component.removeUploadedFiles();
+            vueDataAccessor.set([]);
         }
     },
     uploader_uploadedFiles: function (uploadInfo, componentId) {
@@ -442,10 +447,10 @@ export default {
     uploader_failedFiles: function (uploadInfo) {
         uploadInfo.files.forEach(function (file) {
             this.onAjaxError({
-                status : file.xhr.status,
-                statusText : file.xhr.statusText,
-                data : JSON.parse(file.xhr.response)
-                }
+                status: file.xhr.status,
+                statusText: file.xhr.statusText,
+                data: JSON.parse(file.xhr.response)
+            }
             );
             //server can return : a response with a uiMessageStack object or directly the uiMessageStack
             /*let uiMessageStack = response.globalErrors?response:response.uiMessageStack;
@@ -459,10 +464,10 @@ export default {
         var vueDataAccessor = component.vueDataAccessor;
         var dataFileUris = vueDataAccessor.get();
         removedFiles.forEach(function (removedFile) {
-            if(removedFile.fileUri) { //if file is serverside
-            var indexOfFileUri = dataFileUris.indexOf(removedFile.fileUri);
-            var xhrParams = {};
-            xhrParams[component.fieldName] = removedFile.fileUri;
+            if (removedFile.fileUri) { //if file is serverside
+                var indexOfFileUri = dataFileUris.indexOf(removedFile.fileUri);
+                var xhrParams = {};
+                xhrParams[component.fieldName] = removedFile.fileUri;
                 this.$http.delete(component.url, { params: xhrParams, credentials: component.withCredentials })
                     .then(function (/*response*/) { //Ok
                         if (component.multiple) {
@@ -478,7 +483,7 @@ export default {
             }
         }.bind(this));
     },
-    
+
 
     httpPostAjax: function (url, paramsIn, options) {
         let vueData = this.$data.vueData;
@@ -510,9 +515,9 @@ export default {
     hasFieldsError: function (object, field, rowIndex) {
         const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
         if (fieldsErrors) {
-        var objectName = rowIndex!=null?object+'['+rowIndex+']':object;
+            var objectName = rowIndex != null ? object + '[' + rowIndex + ']' : object;
             return Object.prototype.hasOwnProperty.call(fieldsErrors, objectName) &&
-            fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], field) && fieldsErrors[objectName][field].length > 0
+                fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], field) && fieldsErrors[objectName][field].length > 0
         }
         return false;
     },
@@ -520,9 +525,9 @@ export default {
     getErrorMessage: function (object, field, rowIndex) {
         const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
         if (fieldsErrors) {
-            var objectName = rowIndex!=null?object+'['+rowIndex+']':object;
+            var objectName = rowIndex != null ? object + '[' + rowIndex + ']' : object;
             if (Object.prototype.hasOwnProperty.call(fieldsErrors, objectName) &&
-            fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], field)) {
+                fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], field)) {
                 return fieldsErrors[objectName][field].join(', ');
             }
         } else {
@@ -541,13 +546,18 @@ export default {
                     if (!propertyKey.startsWith("_")) {
                         // _ properties are private and don't belong to the serialized entity
                         if (Array.isArray(vueDataValue[propertyKey])) {
-                            vueDataValue[propertyKey].forEach(function (value, index) {
-                                if (vueDataValue[propertyKey][index] && typeof vueDataValue[propertyKey][index] === 'object') {
-                                    this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]['_v_inputValue']);
-                                } else {
-                                    this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]);
-                                }
-                            }.bind(this));
+                            let vueDataFieldValue = vueDataValue[propertyKey];
+                            if (!vueDataFieldValue || vueDataFieldValue.length == 0) {
+                                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', ""); // reset array with an empty string
+                            } else {
+                                vueDataFieldValue.forEach(function (value, index) {
+                                    if (vueDataFieldValue[index] && typeof vueDataFieldValue[index] === 'object') {
+                                        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]['_v_inputValue']);
+                                    } else {
+                                        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]);
+                                    }
+                                }.bind(this));
+                            }
                         } else {
                             if (vueDataValue[propertyKey] && typeof vueDataValue[propertyKey] === 'object') {
                                 this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]['_v_inputValue']);
@@ -568,7 +578,7 @@ export default {
 
     objectToFormData: function (object) {
         const formData = new FormData();
-        Object.keys(object).forEach(function(key) { 
+        Object.keys(object).forEach(function (key) {
             this.appendToFormData(formData, key, object[key])
         }.bind(this));
         return formData;
@@ -581,8 +591,8 @@ export default {
             formData.append(name, "")
         }
     },
-    
-    isFormData: function(val) {
+
+    isFormData: function (val) {
         return (typeof FormData !== 'undefined') && (val instanceof FormData);
     }
 

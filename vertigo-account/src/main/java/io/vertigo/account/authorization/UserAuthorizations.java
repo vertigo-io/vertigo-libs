@@ -123,11 +123,18 @@ public final class UserAuthorizations implements Serializable {
 		Assertion.check().isNotNull(authorization);
 		//-----
 		final DefinitionReference<Authorization> definitionReference = new DefinitionReference<>(authorization);
-		authorizationRefs.put(authorization.getName(), definitionReference);
+		if (!authorizationRefs.containsKey(authorization.getName())) {
+			authorizationRefs.put(authorization.getName(), definitionReference);
+			//On ne prend la définition de l'autorisation que si elle est nouvelle, sinon elle a déjà été donnée ou overridée
+		} // else assert authorizationRefs.get(authorization.getName()).get().getOverrides().contains(authorization.getName())
 
 		if (authorization.getEntityDefinition().isPresent()) {
 			final Map<String, DefinitionReference<Authorization>> entityAuthorizationRefs = authorizationMapRefs.computeIfAbsent(new DefinitionReference<>(authorization.getEntityDefinition().get()), key -> new HashMap<>());
-			entityAuthorizationRefs.put(authorization.getName(), definitionReference);
+
+			if (!entityAuthorizationRefs.containsKey(authorization.getName())) {
+				entityAuthorizationRefs.put(authorization.getName(), definitionReference);
+				//On ne prend la définition de l'autorisation que si elle est nouvelle, sinon elle a déjà été donnée ou overridée
+			}
 			for (final Authorization grantedAuthorization : authorization.getGrants()) {
 				if (!hasAuthorization(grantedAuthorization::getName)) { //On test pour ne pas créer de boucle
 					addAuthorization(grantedAuthorization);
@@ -209,6 +216,14 @@ public final class UserAuthorizations implements Serializable {
 	 * @return this UserAuthorizations
 	 */
 	public UserAuthorizations withSecurityKeys(final String securityKey, final Serializable value) {
+		Assertion.check()
+				.isNotBlank(securityKey)
+				.isNotNull(value, "securityKey value of {0} can't be null, it's ambigious.\n"
+						+ "If it means 'no rights' you shouldn't set this securityKey for this user. \n"
+						+ "If it means 'any value' you should use an other securityKey (like 'couldAccessXx'),\n"
+						+ "or you may check if this security field shouldn't be a securityDimensions TREE.",
+						securityKey);
+		//-----
 		mySecurityKeys.computeIfAbsent(securityKey, v -> new ArrayList<>()).add(value);
 		return this;
 	}
