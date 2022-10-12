@@ -13,15 +13,19 @@ export default {
             timeout: 2500,
         }
 
-        //Setup Error Message //if response was an error
-        if (Object.prototype.hasOwnProperty.call(response, 'message')) {
-            notif.message = response.message
-        }
-        //Setup Generic Response Messages
-        if (response.status === 401) {
-            notif.message = 'UnAuthorized, you may login with an authorized account'
-            this.$root.$emit('unauthorized', response) //Emit Logout Event
-            return
+       //Setup Error Message
+		if (Object.prototype.hasOwnProperty.call(response.data, 'redirect')) { //if response was an redirect
+			window.location = response.data.redirect;
+			return;
+		} else if (Object.prototype.hasOwnProperty.call(response.data, 'message')) { //if response was an error
+			notif.message = response.data.message
+		}
+
+		//Setup Generic Response Messages
+		if (response.status === 401) {
+			notif.message = 'UnAuthorized, you may login with an authorized account'
+			this.$root.$emit('unauthorized', response) //Emit Logout Event // surcharge ajout de la response en parametre
+			return 
         } else if (response.status === 403) {
             notif.message = 'Forbidden, your havn&quote;t enought rights'
         } else if (response.status === 404) {
