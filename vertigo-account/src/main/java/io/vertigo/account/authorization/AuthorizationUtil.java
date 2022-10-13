@@ -109,7 +109,7 @@ public final class AuthorizationUtil {
 		return assertOperationsAndReturn(entityLoader, operation, DEFAULT_FORBIDDEN_MESSAGE);
 	}
 
-	public static <E extends Entity> E assertOperationsAndReturn(final Supplier<E> entityLoader, final OperationName<E> operation, final MessageText message) {
+	public static <E extends Entity> E assertOperationsAndReturn(final Supplier<E> entityLoader, final OperationName<E> operation, final LocaleMessageText message) {
 		final E entity = entityLoader.get();
 		assertOperations(entity, operation, message);
 		return entity;

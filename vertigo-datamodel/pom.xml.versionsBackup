@@ -4,24 +4,23 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-extensions</artifactId>
-		<version>4.0.0-SNAPSHOT</version>
+		<version>3.3.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>vertigo-basics</artifactId>
+	<artifactId>vertigo-datamodel</artifactId>
 	<packaging>jar</packaging>
-	<name>vertigo-basics</name>
+	<name>vertigo-datamodel</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-datamodel</artifactId>
-			<version>${project.version}</version>
+			<artifactId>vertigo-core</artifactId>
+			<version>${vertigo.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-database</artifactId>
+			<artifactId>vertigo-commons</artifactId>
 			<version>${project.version}</version>
-			<optional>true</optional>
 		</dependency>
 	</dependencies>
 </project>

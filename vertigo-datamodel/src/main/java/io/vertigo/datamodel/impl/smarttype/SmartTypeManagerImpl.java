@@ -179,63 +179,6 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 				}
 				break;
 			case ONE:
-				Assertion.check().isNotNull(value, "A non-null value is required for {0}", smartTypeDefinition.id());
-			case OPTIONAL_OR_NULLABLE:
-				checkConstraints(smartTypeDefinition, value);
-				break;
-		}
-
-	}
-
-	private void checkConstraints(final SmartTypeDefinition smartTypeDefinition, final Object value) throws ConstraintException {
-		checkType(smartTypeDefinition, value);
-		//---
-		switch (cardinality) {
-			case MANY:
-				switch (smartTypeDefinition.getScope()) {
-					case DATA_TYPE:
-						if (!(value instanceof DtList)) {
-							throw new ClassCastException("Value " + value + " must be a data-list");
-						}
-						for (final Object element : DtList.class.cast(value)) {
-							checkType(smartTypeDefinition, element);
-						}
-						break;
-					case BASIC_TYPE:
-					case VALUE_TYPE:
-						if (!(value instanceof List)) {
-							throw new ClassCastException("Value " + value + " must be a list");
-						}
-						break;
-					default:
-						throw new IllegalStateException();
-				}
-				break;
-			case ONE:
-			case OPTIONAL_OR_NULLABLE:
-				checkType(smartTypeDefinition, value);
-				break;
-			default:
-				throw new IllegalStateException();
-		}
-	}
-
-	@Override
-	public void validate(final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality, final Object value) throws ConstraintException {
-		Assertion.check()
-				.isNotNull(smartTypeDefinition)
-				.isNotNull(cardinality);
-		//---
-		switch (cardinality) {
-			case MANY:
-				if (!(value instanceof List)) {
-					throw new ClassCastException("Value " + value + " must be a list");
-				}
-				for (final Object element : List.class.cast(value)) {
-					checkConstraints(smartTypeDefinition, element);
-				}
-				break;
-			case ONE:
 				if (value == null) {
 					throw new ConstraintException(LocaleMessageText.of("A non-null value is required for {0}", smartTypeDefinition.id()));
 				}

@@ -236,7 +236,7 @@ public final class UiUtil implements Serializable {
 			return overrideValue;
 		} else if (fieldName != null) {
 			final var smartTypeDefinition = getDtField(object + '.' + fieldName).smartTypeDefinition();
-			if (smartTypeDefinition.getScope().isPrimitive()) {
+			if (smartTypeDefinition.getScope().isBasicType()) {
 				final var dataType = smartTypeDefinition.getBasicType();
 				switch (dataType) {
 					case Long:
@@ -320,7 +320,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public static String getDisplayField(final String uiListKey) {
 		final var dtDefinition = getUiList(uiListKey).getDtDefinition();
-		return dtDefinition.getDisplayField().get().getName();
+		return dtDefinition.getDisplayField().get().name();
 	}
 
 	/**
@@ -333,7 +333,7 @@ public final class UiUtil implements Serializable {
 			return ((AbstractUiListUnmodifiable) uiList).getIdFieldName();
 		}
 		final var dtDefinition = getUiList(uiListKey).getDtDefinition();
-		return dtDefinition.getIdField().get().getName();
+		return dtDefinition.getIdField().get().name();
 	}
 
 	/**

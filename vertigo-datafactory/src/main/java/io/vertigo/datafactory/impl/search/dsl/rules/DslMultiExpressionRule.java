@@ -86,11 +86,13 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 		postMultiExpression = switch (parsing.choiceIndex()) {
 			case 0 -> {
 				final List<?> blockExpression = (List<?>) parsing.value();
-				preMultiExpression = ((Optional<String>) blockExpression.get(0)).orElse("") + blockExpression.get(1);
+				operator = ((Optional<String>) blockExpression.get(0)).orElse("");
+				preMultiExpression = (String) blockExpression.get(1);
 				many = (List<PegChoice>) blockExpression.get(3);
 				yield (String) blockExpression.get(6);
 			}
 			case 1 -> {
+				operator = "";
 				preMultiExpression = "";
 				many = (List<PegChoice>) parsing.value();
 				yield "";

@@ -141,6 +141,6 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 			public String getExpressionEndDelimiter() {
 				return ")";
 			}
-		}).getVal1().hashCode();
+		}).val1().hashCode();
 	}
 }

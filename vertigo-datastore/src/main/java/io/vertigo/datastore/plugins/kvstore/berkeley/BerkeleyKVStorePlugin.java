@@ -221,7 +221,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 	 * Remove too old elements.
 	 */
 	private void removeTooOldElements() {
-		for (final String collection : collectionNames) {
+		for (final KVCollection collection : collections) {
 			try {
 				getDatabase(collection).removeTooOldElements();
 			} catch (final DatabaseException dbe) {

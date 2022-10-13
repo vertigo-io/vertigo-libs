@@ -36,7 +36,7 @@ import com.github.miachm.sods.Style;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
@@ -176,7 +176,7 @@ final class ODSExporter {
 			for (final ExportField exportColumn : parameters.getExportFields()) {
 				final Range cell = sheet.getRange(rowIndex, cellIndex);
 				value = ExporterUtil.getValue(entityStoreManager, smartTypeManager, exportAdapters, referenceCache, denormCache, dto, exportColumn);
-				putValueInCell(smartTypeManager, value, cell, getRowCellStyle(rowIndex % 2 == 0), cellIndex, maxWidthPerColumn, exportColumn.getDtField().getSmartTypeDefinition());
+				putValueInCell(smartTypeManager, value, cell, getRowCellStyle(rowIndex % 2 == 0), cellIndex, maxWidthPerColumn, exportColumn.getDtField().smartTypeDefinition());
 
 				cellIndex++;
 			}
@@ -201,7 +201,7 @@ final class ODSExporter {
 
 			final Range valueCell = sheet.getRange(rowIndex, valueCellIndex);
 			value = ExporterUtil.getValue(entityStoreManager, smartTypeManager, exportAdapters, referenceCache, denormCache, dto, exportColumn);
-			putValueInCell(smartTypeManager, value, valueCell, getRowCellStyle(false), valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().getSmartTypeDefinition());
+			putValueInCell(smartTypeManager, value, valueCell, getRowCellStyle(false), valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().smartTypeDefinition());
 			rowIndex++;
 		}
 

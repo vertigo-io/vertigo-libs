@@ -1,15 +1,20 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-extensions</artifactId>
-		<version>4.0.0-SNAPSHOT</version>
+		<version>3.3.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>vertigo-social</artifactId>
+	<artifactId>vertigo-orchestra</artifactId>
 	<packaging>jar</packaging>
-	<name>vertigo-social</name>
+	<name>vertigo-orchestra</name>
+
+	<properties>
+		<sonar.sources>src/main/java</sonar.sources>
+		<sonar.exclusions>src/main/java/io/vertigo/orchestra/impl/services/schedule/CronExpression*</sonar.exclusions>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -24,36 +29,28 @@
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-redis-connector</artifactId>
-			<version>${vertigo.version}</version>
-			<optional>true</optional> <!-- For Redis Notifications, Comments and Handles -->
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-datamodel</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-account</artifactId>
+			<artifactId>vertigo-datastore</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-vega</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		
-		<!-- Mail -->
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-mail-connector</artifactId>
-			<version>${vertigo.version}</version>
-		</dependency>
-		<!-- /Mail -->
+		</dependency> 
 
-		<!-- Tests -->
-		<!-- For Rest Webservice testing -->
+		<!-- Dependencies for tests -->
+		<dependency>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <version>2.1.214</version>
+		    <scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.5.5</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
@@ -73,13 +70,27 @@
 			<version>9.4.49.v20220914</version>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.1</version>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
-
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src/main/javagen</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

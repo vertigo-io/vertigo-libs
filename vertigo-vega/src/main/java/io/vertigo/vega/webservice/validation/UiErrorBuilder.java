@@ -114,7 +114,7 @@ public final class UiErrorBuilder {
 	 * @param fieldName Champ porteur de l'erreur
 	 * @param messageText Message d'erreur
 	 */
-	public void addError(final DtObject dtObject, final DtFieldName fieldName, final MessageText messageText) {
+	public void addError(final DtObject dtObject, final DtFieldName fieldName, final LocaleMessageText messageText) {
 		addError(dtObject, getDtField(dtObject, fieldName), messageText);
 	}
 
@@ -125,7 +125,7 @@ public final class UiErrorBuilder {
 	 * @param fieldName2 Champs 2
 	 * @param messageText Message à appliquer si erreur
 	 */
-	public void checkFieldEquals(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final MessageText messageText) {
+	public void checkFieldEquals(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final LocaleMessageText messageText) {
 		final var dtField1 = getDtField(dto, fieldName1);
 		final var dtField2 = getDtField(dto, fieldName2);
 		final var value1 = getValue(dto, dtField1);
@@ -143,7 +143,7 @@ public final class UiErrorBuilder {
 	 * @param fieldName2 Champs 2
 	 * @param messageText Message à appliquer si erreur
 	 */
-	public void checkFieldDateAfterOrEquals(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final MessageText messageText) {
+	public void checkFieldDateAfterOrEquals(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final LocaleMessageText messageText) {
 		checkFieldCompare(dto, fieldName1, fieldName2, messageText, (date1, date2) -> !date2.isBefore(date1), LocalDate.class);
 	}
 
@@ -154,25 +154,25 @@ public final class UiErrorBuilder {
 	 * @param fieldName2 Champs 2
 	 * @param messageText Message à appliquer si erreur
 	 */
-	public void checkFieldDateAfter(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final MessageText messageText) {
+	public void checkFieldDateAfter(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final LocaleMessageText messageText) {
 		checkFieldCompare(dto, fieldName1, fieldName2, messageText, (date1, date2) -> date2.isAfter(date1), LocalDate.class);
 	}
 
-	public void checkFieldDateBetweenMin(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final int minDays, final MessageText messageText) {
+	public void checkFieldDateBetweenMin(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final int minDays, final LocaleMessageText messageText) {
 		checkFieldCompare(dto, fieldName1, fieldName2, messageText, (date1, date2) -> {
 			final var decalageJours = ChronoUnit.DAYS.between(date1, date2);
 			return decalageJours >= minDays;
 		}, LocalDate.class);
 	}
 
-	public void checkFieldDateBetweenMax(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final int maxDays, final MessageText messageText) {
+	public void checkFieldDateBetweenMax(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final int maxDays, final LocaleMessageText messageText) {
 		checkFieldCompare(dto, fieldName1, fieldName2, messageText, (date1, date2) -> {
 			final var decalageJours = ChronoUnit.DAYS.between(date1, date2);
 			return decalageJours <= maxDays;
 		}, LocalDate.class);
 	}
 
-	public <T> void checkFieldCompare(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final MessageText messageText, final BiPredicate<T, T> predicate, final Class<T> fieldClass) {
+	public <T> void checkFieldCompare(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final LocaleMessageText messageText, final BiPredicate<T, T> predicate, final Class<T> fieldClass) {
 		final var dtField1 = getDtField(dto, fieldName1);
 		final var dtField2 = getDtField(dto, fieldName2);
 		final var value1 = fieldClass.cast(getValue(dto, dtField1)); //la valeur typée peut être null
@@ -189,7 +189,7 @@ public final class UiErrorBuilder {
 	 * @param fieldName2 Champs 2
 	 * @param messageText Message à appliquer si erreur
 	 */
-	public void checkFieldLongAfter(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final MessageText messageText) {
+	public void checkFieldLongAfter(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final LocaleMessageText messageText) {
 		final var dtField1 = getDtField(dto, fieldName1);
 		final var dtField2 = getDtField(dto, fieldName2);
 		final var value1 = (Long) getValue(dto, dtField1); //la valeur typée peut être null
@@ -206,7 +206,7 @@ public final class UiErrorBuilder {
 	 * @param fieldName2 Champs 2
 	 * @param messageText Message à appliquer si erreur
 	 */
-	public void checkFieldLongAfterOrEquals(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final MessageText messageText) {
+	public void checkFieldLongAfterOrEquals(final DtObject dto, final DtFieldName fieldName1, final DtFieldName fieldName2, final LocaleMessageText messageText) {
 		final var dtField1 = getDtField(dto, fieldName1);
 		final var dtField2 = getDtField(dto, fieldName2);
 		final var value1 = (Long) getValue(dto, dtField1); //la valeur typée peut être null
@@ -222,7 +222,7 @@ public final class UiErrorBuilder {
 	 * @param fieldName Champs
 	 * @param messageText Message à appliquer si erreur
 	 */
-	public void checkFieldNotNull(final DtObject dto, final DtFieldName fieldName, final MessageText messageText) {
+	public void checkFieldNotNull(final DtObject dto, final DtFieldName fieldName, final LocaleMessageText messageText) {
 		final var dtField = getDtField(dto, fieldName);
 		final var value = getValue(dto, dtField);
 		if (value == null || value.toString().isEmpty()) {

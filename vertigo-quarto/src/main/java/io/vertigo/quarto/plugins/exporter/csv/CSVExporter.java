@@ -166,7 +166,7 @@ final class CSVExporter {
 			final DtField dtField = exportColumn.getDtField();
 			out.write(sep);
 			sValue = ExporterUtil.getText(entityStoreManager, smartTypeManager, exportAdapters, referenceCache, denormCache, dto, exportColumn);
-			if (dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getBasicType() == BasicType.BigDecimal) {
+			if (dtField.smartTypeDefinition().getScope().isBasicType() && dtField.smartTypeDefinition().getBasicType() == BasicType.BigDecimal) {
 				out.write(encodeNumber(sValue));
 			} else {
 				out.write(encodeString(sValue));

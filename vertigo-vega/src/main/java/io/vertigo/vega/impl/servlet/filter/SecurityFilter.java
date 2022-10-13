@@ -97,10 +97,10 @@ public final class SecurityFilter extends AbstractFilter {
 				// authent workflow
 				try {
 					final var beforeOutcome = webAuthenticationManagerOpt.get().doBeforeChain(httpRequest, httpResponse);
-					if (Boolean.TRUE.equals(beforeOutcome.getVal1())) {
+					if (Boolean.TRUE.equals(beforeOutcome.val1())) {
 						return;
 					}
-					chain.doFilter(beforeOutcome.getVal2(), httpResponse);
+					chain.doFilter(beforeOutcome.val2(), httpResponse);
 				} finally {
 					// nothing
 				}

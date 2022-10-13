@@ -75,7 +75,7 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 								.collect(Collectors.joining(", "));
 						LOG.error("SECURED_DEV_MODE: Not enought authorizations '" + authNames + "' => keep going, don't throw VSecurityException");
 					} else {
-						throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log
+						throw new VSecurityException(LocaleMessageText.of("Not enought authorizations"));//no too sharp info here : may use log
 					}
 				}
 

@@ -127,9 +127,9 @@ public final class ExporterUtil {
 			} else {
 				value = exportColumn.getDtField().getDataAccessor().getValue(dto);
 				if (forceStringValue) {
-					final var smartTypeDefinition = exportColumn.getDtField().getSmartTypeDefinition();
-					if (!dtField.getCardinality().hasMany()) {
-						if (smartTypeDefinition.getScope().isPrimitive()) {
+					final var smartTypeDefinition = exportColumn.getDtField().smartTypeDefinition();
+					if (!dtField.cardinality().hasMany()) {
+						if (smartTypeDefinition.getScope().isBasicType()) {
 							value = smartTypeManager.valueToString(smartTypeDefinition, value);
 						} else {
 							final var adapter = exportAdapters.get(smartTypeDefinition.getJavaClass());
