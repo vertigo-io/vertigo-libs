@@ -20,7 +20,7 @@ package io.vertigo.vega.webservice.validation;
 import java.util.Date;
 import java.util.Set;
 
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
@@ -86,7 +86,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	 * @param dtObjectErrors Pile des erreurs
 	 * @param messageText Message à appliquer si erreur
 	 */
-	protected final void checkFieldEquals(final O dto, final String fieldName1, final String fieldName2, final DtObjectErrors dtObjectErrors, final LocaleMessageText messageText) {
+	protected final void checkFieldEquals(final O dto, final String fieldName1, final String fieldName2, final DtObjectErrors dtObjectErrors, final MessageText messageText) {
 		final Object value1 = getValue(fieldName1, dto);
 		final Object value2 = getValue(fieldName2, dto);
 		if (!(value1 == null ? value2 == null : value1.equals(value2))) { //not (equals or both null)
@@ -102,7 +102,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	 * @param dtObjectErrors Pile des erreurs
 	 * @param messageText Message à appliquer si erreur
 	 */
-	protected final void checkFieldDateAfter(final O dto, final String fieldName1, final String fieldName2, final DtObjectErrors dtObjectErrors, final LocaleMessageText messageText) {
+	protected final void checkFieldDateAfter(final O dto, final String fieldName1, final String fieldName2, final DtObjectErrors dtObjectErrors, final MessageText messageText) {
 		final Date value1 = (Date) getValue(fieldName1, dto); //la valeur typée peut être null
 		final Date value2 = (Date) getValue(fieldName2, dto);
 		if (value1 != null && value2 != null && !value2.after(value1)) {
@@ -118,7 +118,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	 * @param dtObjectErrors Pile des erreurs
 	 * @param messageText Message à appliquer si erreur
 	 */
-	protected final void checkFieldLongAfter(final O dto, final String fieldName1, final String fieldName2, final DtObjectErrors dtObjectErrors, final LocaleMessageText messageText) {
+	protected final void checkFieldLongAfter(final O dto, final String fieldName1, final String fieldName2, final DtObjectErrors dtObjectErrors, final MessageText messageText) {
 		final Long value1 = (Long) getValue(fieldName1, dto); //la valeur typée peut être null
 		final Long value2 = (Long) getValue(fieldName2, dto);
 		if (value1 != null && value2 != null && value2.compareTo(value1) <= 0) {
@@ -133,7 +133,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	 * @param dtObjectErrors Pile des erreurs
 	 * @param messageText Message à appliquer si erreur
 	 */
-	protected final void checkFieldNotNull(final O dto, final String fieldName, final DtObjectErrors dtObjectErrors, final LocaleMessageText messageText) {
+	protected final void checkFieldNotNull(final O dto, final String fieldName, final DtObjectErrors dtObjectErrors, final MessageText messageText) {
 		final Object value = getValue(fieldName, dto);
 		if (value == null) {
 			dtObjectErrors.addError(fieldName, messageText);
@@ -147,7 +147,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	 * @param messageText Message à appliquer si erreur
 	 * @param fieldNames Champs...
 	 */
-	protected final void checkOneOrMoreFieldNotNull(final O dto, final DtObjectErrors dtObjectErrors, final LocaleMessageText messageText, final String... fieldNames) {
+	protected final void checkOneOrMoreFieldNotNull(final O dto, final DtObjectErrors dtObjectErrors, final MessageText messageText, final String... fieldNames) {
 		boolean oneNotEmpty = false;
 		for (final String fieldName : fieldNames) {
 			final Object value = getValue(fieldName, dto);
@@ -168,7 +168,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	 * @param messageText Message à appliquer si erreur
 	 * @param fieldNames Champs...
 	 */
-	protected final void checkOneAndOnlyOneFieldNotNull(final O dto, final DtObjectErrors dtObjectErrors, final LocaleMessageText messageText, final String... fieldNames) {
+	protected final void checkOneAndOnlyOneFieldNotNull(final O dto, final DtObjectErrors dtObjectErrors, final MessageText messageText, final String... fieldNames) {
 		boolean oneNotEmpty = false;
 		for (final String fieldName : fieldNames) {
 			final Object value = getValue(fieldName, dto);

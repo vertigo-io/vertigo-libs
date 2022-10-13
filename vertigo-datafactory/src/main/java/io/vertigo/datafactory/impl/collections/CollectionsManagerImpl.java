@@ -119,7 +119,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 			if (!selectedFacetValues.getFacetValues(facetDefinition.getName()).isEmpty()) {
 				Predicate<D> predicateValue = list -> false;
 				for (final FacetValue facetValue : selectedFacetValues.getFacetValues(facetDefinition.getName())) {
-					predicateValue = predicateValue.or(this.filter(facetValue.listFilter()));
+					predicateValue = predicateValue.or(this.filter(facetValue.getListFilter()));
 				}
 				predicate = predicate.and(predicateValue);
 			}

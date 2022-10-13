@@ -29,9 +29,9 @@ import io.vertigo.account.authorization.annotations.SecuredOperation;
 import io.vertigo.account.authorization.definitions.Authorization;
 import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.core.node.component.aspect.Aspect;
-import io.vertigo.core.node.component.aspect.AspectMethodInvocation;
+import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.node.component.aop.Aspect;
+import io.vertigo.core.node.component.aop.AspectMethodInvocation;
 import io.vertigo.datamodel.structure.model.Entity;
 
 /**
@@ -61,7 +61,7 @@ public final class AuthorizationAspect implements Aspect {
 		Assertion.check().isNotNull(secured, "No Aspect if not @Secured (on {0})", methodInvocation.getMethod());
 		final AuthorizationName[] authorizationNames = Arrays.stream(secured.value()).map(value -> (AuthorizationName) () -> Authorization.PREFIX + value).toArray(AuthorizationName[]::new);
 		if (!authorizationManager.hasAuthorization(authorizationNames)) {
-			throw new VSecurityException(LocaleMessageText.of("Not enought authorizations"));//no too sharp info here : may use log
+			throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log
 		}
 		final Parameter[] parameters = methodInvocation.getMethod().getParameters();
 		for (int i = 0; i < args.length; i++) {
@@ -72,7 +72,7 @@ public final class AuthorizationAspect implements Aspect {
 				//Ils doivent être de type KeyConcept (et même securedEntity mais il y aura une exception dans le isAuthorized)
 				Assertion.check().isTrue(args[i] instanceof Entity, "Can't check authorization on arg{0} ({1})", i, args[i]);
 				if (!authorizationManager.isAuthorized((Entity) args[i], securedOperation::value)) {
-					throw new VSecurityException(LocaleMessageText.of("Not enought authorizations"));//no too sharp info here : may use log
+					throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log
 				}
 			}
 		}

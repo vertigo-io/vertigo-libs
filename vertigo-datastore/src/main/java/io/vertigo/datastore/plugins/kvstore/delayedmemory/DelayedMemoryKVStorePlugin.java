@@ -41,7 +41,6 @@ import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datastore.impl.kvstore.KVStorePlugin;
-import io.vertigo.datastore.kvstore.KVCollection;
 
 /**
  * Memory implementation of UiSecurityTokenCachePlugin.
@@ -54,12 +53,12 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 
 	private static final Logger LOGGER = LogManager.getLogger(DelayedMemoryKVStorePlugin.class);
 	private final String dmnUniqueName;
-	private final List<KVCollection> collections;
+	private final List<String> collections;
 
 	private final int timeToLiveSeconds;
 	private final DelayQueue<DelayedMemoryKey> timeoutQueue = new DelayQueue<>();
 
-	private final Map<KVCollection, Map<String, DelayedMemoryCacheValue>> collectionsData = new HashMap<>();
+	private final Map<String, Map<String, DelayedMemoryCacheValue>> collectionsData = new HashMap<>();
 
 	/**
 	 * Constructor.
@@ -76,8 +75,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 		//-----
 		this.collections = Arrays.stream(collections.split(", "))
 				.map(String::trim)
-				.map(KVCollection::new)
-				.peek(kvc -> collectionsData.put(kvc, new ConcurrentHashMap<String, DelayedMemoryCacheValue>()))
+				.peek(collection -> collectionsData.put(collection, new ConcurrentHashMap<String, DelayedMemoryCacheValue>()))
 				.collect(Collectors.toList());
 		//-----
 		this.timeToLiveSeconds = timeToLiveSeconds;
@@ -92,11 +90,11 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 
 	/** {@inheritDoc} */
 	@Override
-	public List<KVCollection> getCollections() {
+	public List<String> getCollections() {
 		return collections;
 	}
 
-	private Map<String, DelayedMemoryCacheValue> getCollectionData(final KVCollection collection) {
+	private Map<String, DelayedMemoryCacheValue> getCollectionData(final String collection) {
 		final Map<String, DelayedMemoryCacheValue> collectionData = collectionsData.get(collection);
 		Assertion.check().isNotNull(collectionData, "collection {0} is null", collection);
 		return collectionData;
@@ -104,15 +102,15 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 
 	/** {@inheritDoc} */
 	@Override
-	public int count(final KVCollection collection) {
+	public int count(final String collection) {
 		return getCollectionData(collection).size();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final KVCollection collection, final String key, final Object element) {
+	public void put(final String collection, final String key, final Object element) {
 		Assertion.check()
-				.isNotNull(collection)
+				.isNotBlank(collection)
 				.isNotBlank(key)
 				.isNotNull(element);
 		//-----
@@ -123,9 +121,9 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final KVCollection collection, final String key) {
+	public void remove(final String collection, final String key) {
 		Assertion.check()
-				.isNotNull(collection)
+				.isNotBlank(collection)
 				.isNotBlank(key);
 		//-----
 		getCollectionData(collection).remove(key);
@@ -133,17 +131,17 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 
 	/** {@inheritDoc} */
 	@Override
-	public void clear(final KVCollection collection) {
-		Assertion.check().isNotNull(collection);
+	public void clear(final String collection) {
+		Assertion.check().isNotBlank(collection);
 		//-----
 		getCollectionData(collection).clear();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <C> Optional<C> find(final KVCollection collection, final String key, final Class<C> clazz) {
+	public <C> Optional<C> find(final String collection, final String key, final Class<C> clazz) {
 		Assertion.check()
-				.isNotNull(collection)
+				.isNotBlank(collection)
 				.isNotBlank(key)
 				.isNotNull(clazz);
 		//-----
@@ -157,7 +155,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 
 	/** {@inheritDoc} */
 	@Override
-	public <C> List<C> findAll(final KVCollection collection, final int skip, final Integer limit, final Class<C> clazz) {
+	public <C> List<C> findAll(final String collection, final int skip, final Integer limit, final Class<C> clazz) {
 		throw new UnsupportedOperationException("This implementation doesn't use ordered datas. Method findAll can't be called.");
 	}
 

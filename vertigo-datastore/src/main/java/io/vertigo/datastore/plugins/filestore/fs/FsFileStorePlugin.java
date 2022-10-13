@@ -32,7 +32,6 @@ import javax.inject.Inject;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataStream;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
@@ -50,6 +49,7 @@ import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
+import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.FileStorePlugin;
 import io.vertigo.datastore.impl.filestore.model.AbstractFileInfo;
@@ -159,7 +159,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		final Long length = getValue(fileInfoDto, DtoFields.length, Long.class);
 		final String filePath = getValue(fileInfoDto, DtoFields.filePath, String.class);
 
-		final DataStream inputStreamBuilder = new FileInputStreamBuilder(new File(documentRoot + filePath));
+		final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(documentRoot + filePath));
 		final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 		// retourne le fileinfo avec le fichier et son URI
@@ -213,7 +213,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	public FileInfo create(final FileInfo fileInfo) {
 		Assertion.check()
 				.isFalse(readOnly, STORE_READ_ONLY)
-				.isNotNull(fileInfo.getURI(), "Only file without any id can be created.");
+				.isNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
 		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
 		//-----
@@ -285,7 +285,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		Assertion.check().isNotNull(uri, "file uri must be provided.");
 		//-----
 		// Il doit exister un DtObjet associé, avec la structure attendue.
-		return UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.smartTypeDefinition().getJavaClass()));
+		return UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.getSmartTypeDefinition().getJavaClass()));
 	}
 
 	/**
@@ -328,10 +328,10 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 
 	private static void setIdValue(final DtObject dto, final FileInfoURI uri) {
 		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getIdField().get();
-		dtField.getDataAccessor().setValue(dto, uri.getKeyAs(dtField.smartTypeDefinition().getJavaClass()));
+		dtField.getDataAccessor().setValue(dto, uri.getKeyAs(dtField.getSmartTypeDefinition().getJavaClass()));
 	}
 
-	private static final class FileInputStreamBuilder implements DataStream {
+	private static final class FileInputStreamBuilder implements InputStreamBuilder {
 
 		private final File file;
 

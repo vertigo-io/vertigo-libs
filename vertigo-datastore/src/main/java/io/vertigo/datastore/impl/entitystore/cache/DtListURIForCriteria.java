@@ -18,12 +18,18 @@
 package io.vertigo.datastore.impl.entitystore.cache;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.criteria.Criteria;
+import io.vertigo.datamodel.criteria.CriteriaCtx;
+import io.vertigo.datamodel.criteria.CriteriaEncoder;
+import io.vertigo.datamodel.criteria.CriteriaLogicalOperator;
+import io.vertigo.datamodel.criteria.CriterionOperator;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtListURI;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -92,7 +98,7 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 
 		Criteria<E> criteria = Criterions.alwaysTrue();
 		for (final DtField field : dtDefinition.getFields()) {
-			final String fieldName = field.name();
+			final String fieldName = field.getName();
 			if (field.getType() != DtField.FieldType.COMPUTED) {
 				final Object value = field.getDataAccessor().getValue(dtoCriteria);
 				if (value instanceof String && field.getType() != DtField.FieldType.FOREIGN_KEY) {
@@ -111,7 +117,30 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	public String buildUrn() {
 		final String sizeUrn = D2A_SEPARATOR + (skipRows != 0 ? skipRows + "-" : "") + (maxRows != null ? String.valueOf(maxRows) : "ALL");
 		final String sortUrn = sortFieldName != null ? D2A_SEPARATOR + sortFieldName + (sortDesc != null ? sortDesc ? "-Desc" : "-Asc" : "") : "";
-		return CRITERIA_PREFIX + sizeUrn + sortUrn + D2A_SEPARATOR + getCriteria().hashCode();
+		return CRITERIA_PREFIX + sizeUrn + sortUrn + D2A_SEPARATOR + getCriteriaHashCode();
 	}
 
+	private int getCriteriaHashCode() {
+		return getCriteria().toStringAnCtx(new CriteriaEncoder() {
+			@Override
+			public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DtFieldName dtFieldName, final Serializable[] values) {
+				return criterionOperator + "-" + dtFieldName.name() + "@" + Arrays.hashCode(values);
+			}
+
+			@Override
+			public String encodeLogicalOperator(final CriteriaLogicalOperator logicalOperator) {
+				return logicalOperator.name();
+			}
+
+			@Override
+			public String getExpressionStartDelimiter() {
+				return "(";
+			}
+
+			@Override
+			public String getExpressionEndDelimiter() {
+				return ")";
+			}
+		}).getVal1().hashCode();
+	}
 }

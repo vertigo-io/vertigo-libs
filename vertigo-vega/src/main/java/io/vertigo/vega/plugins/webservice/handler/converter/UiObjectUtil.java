@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import io.vertigo.account.authorization.VSecurityException;
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
 import io.vertigo.vega.engines.webservice.json.UiListModifiable;
@@ -72,14 +72,14 @@ final class UiObjectUtil {
 	private static void checkUnauthorizedFieldModifications(final UiObject<DtObject> uiObject, final WebServiceParam webServiceParam) {
 		for (final String excludedField : webServiceParam.getExcludedFields()) {
 			if (uiObject.isModified(excludedField)) {
-				throw new VSecurityException(LocaleMessageText.of(FORBIDDEN_OPERATION_FIELD_MODIFICATION, excludedField));
+				throw new VSecurityException(MessageText.of(FORBIDDEN_OPERATION_FIELD_MODIFICATION, excludedField));
 			}
 		}
 		final Set<String> includedFields = webServiceParam.getIncludedFields();
 		if (!includedFields.isEmpty()) {
 			for (final String modifiedField : uiObject.getModifiedFields()) {
 				if (!includedFields.contains(modifiedField)) {
-					throw new VSecurityException(LocaleMessageText.of(FORBIDDEN_OPERATION_FIELD_MODIFICATION, modifiedField));
+					throw new VSecurityException(MessageText.of(FORBIDDEN_OPERATION_FIELD_MODIFICATION, modifiedField));
 				}
 			}
 		}

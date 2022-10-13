@@ -65,7 +65,7 @@ public class BanGeoCoderManagerTest {
 		});
 	}
 
-	private static NodeConfig buildNodeConfig() {
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.addModule(new GeoFeatures()
 						.withGeoCoder()

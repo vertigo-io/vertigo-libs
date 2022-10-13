@@ -13,14 +13,19 @@ export default {
             timeout: 2500,
         }
 
-        //Setup Error Message //if response was an error
-        if (Object.prototype.hasOwnProperty.call(response, 'message')) {
-            notif.message = response.message
-        }
-        //Setup Generic Response Messages
-        if (response.status === 401) {
-            notif.message = 'UnAuthorized, you may login with an authorized account'
-            this.$root.$emit('logout') //Emit Logout Event
+       //Setup Error Message
+		if (Object.prototype.hasOwnProperty.call(response.data, 'redirect')) { //if response was an redirect
+			window.location = response.data.redirect;
+			return;
+		} else if (Object.prototype.hasOwnProperty.call(response.data, 'message')) { //if response was an error
+			notif.message = response.data.message
+		}
+
+		//Setup Generic Response Messages
+		if (response.status === 401) {
+			notif.message = 'UnAuthorized, you may login with an authorized account'
+			this.$root.$emit('unauthorized', response) //Emit Logout Event // surcharge ajout de la response en parametre
+			return 
         } else if (response.status === 403) {
             notif.message = 'Forbidden, your havn&quote;t enought rights'
         } else if (response.status === 404) {
@@ -36,7 +41,7 @@ export default {
         } else if (response.status >= 500) {
             notif.message = 'Server Error'
         }
-        if (response.statusText) {
+        if (response.statusText && response.status !== 422) {
             notif.message = response.statusText
         }
         //Try to Use the Response Message
@@ -220,7 +225,7 @@ export default {
         if (newValue === Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), format)) {
             return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), 'DD/MM/YYYY HH:mm');
         } else {
-           return newValue;
+            return newValue;
         }
     },
 
@@ -313,9 +318,9 @@ export default {
         componentStates[componentId].pagination.rowsPerPage = componentStates[componentId].pagination.rowsPerPage / showMoreCount * (showMoreCount + 1);
     },
     vueDataToArray(value) {
-        if(Array.isArray(value)) {
+        if (Array.isArray(value)) {
             return value;
-        } else if(value) {
+        } else if (value) {
             return [value];
         }
         return [];
@@ -334,32 +339,32 @@ export default {
         return null;
     },
     obtainVueDataAccessor(referer, object, field, rowIndex) {
-        if(field!=null && field!='null') {
-            if(rowIndex!=null) {
+        if (field != null && field != 'null') {
+            if (rowIndex != null) {
                 return {
-                    get : function() {
+                    get: function () {
                         return referer.$data.vueData[object][rowIndex][field];
-                    }, 
-                    set : function(newData) {
+                    },
+                    set: function (newData) {
                         referer.$data.vueData[object][rowIndex][field] = newData;
                     }
                 }
             } else {
-                return {           
-                    get : function() {
+                return {
+                    get: function () {
                         return referer.$data.vueData[object][field];
-                    }, 
-                    set : function(newData) {
+                    },
+                    set: function (newData) {
                         referer.$data.vueData[object][field] = newData;
                     }
                 }
             }
         } else {
             return {
-                get : function() {
+                get: function () {
                     return referer.$data.vueData[object];
-                }, 
-                set : function(newData) {
+                },
+                set: function (newData) {
                     referer.$data.vueData[object] = newData;
                 }
             }
@@ -407,9 +412,9 @@ export default {
     hasFieldsError: function (object, field, rowIndex) {
         const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
         if (fieldsErrors) {
-        var objectName = rowIndex!=null?object+'['+rowIndex+']':object;
+            var objectName = rowIndex != null ? object + '[' + rowIndex + ']' : object;
             return Object.prototype.hasOwnProperty.call(fieldsErrors, objectName) &&
-            fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], field) && fieldsErrors[objectName][field].length > 0
+                fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], field) && fieldsErrors[objectName][field].length > 0
         }
         return false;
     },
@@ -417,9 +422,9 @@ export default {
     getErrorMessage: function (object, field, rowIndex) {
         const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
         if (fieldsErrors) {
-            var objectName = rowIndex!=null?object+'['+rowIndex+']':object;
+            var objectName = rowIndex != null ? object + '[' + rowIndex + ']' : object;
             if (Object.prototype.hasOwnProperty.call(fieldsErrors, objectName) &&
-            fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], field)) {
+                fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], field)) {
                 return fieldsErrors[objectName][field].join(', ');
             }
         } else {
@@ -438,13 +443,18 @@ export default {
                     if (!propertyKey.startsWith("_")) {
                         // _ properties are private and don't belong to the serialized entity
                         if (Array.isArray(vueDataValue[propertyKey])) {
-                            vueDataValue[propertyKey].forEach(function (value, index) {
-                                if (vueDataValue[propertyKey][index] && typeof vueDataValue[propertyKey][index] === 'object') {
-                                    this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]['_v_inputValue']);
-                                } else {
-                                    this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey][index]);
-                                }
-                            }.bind(this));
+                            let vueDataFieldValue = vueDataValue[propertyKey];
+                            if (!vueDataFieldValue || vueDataFieldValue.length == 0) {
+                                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', ""); // reset array with an empty string
+                            } else {
+                                vueDataFieldValue.forEach(function (value, index) {
+                                    if (vueDataFieldValue[index] && typeof vueDataFieldValue[index] === 'object') {
+                                        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]['_v_inputValue']);
+                                    } else {
+                                        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]);
+                                    }
+                                }.bind(this));
+                            }
                         } else {
                             if (vueDataValue[propertyKey] && typeof vueDataValue[propertyKey] === 'object') {
                                 this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]['_v_inputValue']);
@@ -465,7 +475,7 @@ export default {
 
     objectToFormData: function (object) {
         const formData = new FormData();
-        Object.keys(object).forEach(function(key) { 
+        Object.keys(object).forEach(function (key) {
             this.appendToFormData(formData, key, object[key])
         }.bind(this));
         return formData;
@@ -478,8 +488,8 @@ export default {
             formData.append(name, "")
         }
     },
-    
-    isFormData: function(val) {
+
+    isFormData: function (val) {
         return (typeof FormData !== 'undefined') && (val instanceof FormData);
     }
 

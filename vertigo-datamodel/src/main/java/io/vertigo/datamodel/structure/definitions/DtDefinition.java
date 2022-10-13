@@ -17,18 +17,18 @@
  */
 package io.vertigo.datamodel.structure.definitions;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.ListBuilder;
-import io.vertigo.core.lang.MapBuilder;
 import io.vertigo.core.node.definition.AbstractDefinition;
-import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.node.definition.DefinitionPrefix;
+import io.vertigo.core.node.definition.DefinitionReference;
 
 /**
  * The DtDefinition class defines the definition of data.
@@ -36,23 +36,23 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
  * @author pchretien
  */
 @DefinitionPrefix(DtDefinition.PREFIX)
-public final class DtDefinition extends AbstractDefinition<DtDefinition> {
+public final class DtDefinition extends AbstractDefinition {
 	public static final String PREFIX = "Dt";
 	/** the dataSpace must match this pattern. */
 	public static final Pattern REGEX_DATA_SPACE = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
 	public static final String DEFAULT_DATA_SPACE = "main";
 
 	/** if the definition is a fragment. */
-	private final Optional<DefinitionId<DtDefinition>> fragmentOpt;
+	private final Optional<DefinitionReference<DtDefinition>> fragmentOpt;
 
 	/** name of the package. */
 	private final String packageName;
 
 	/** List of fields.  */
-	private final List<DtField> fields;
+	private final List<DtField> fields = new ArrayList<>();
 
 	/** Map. (fieldName, DtField). */
-	private final Map<String, DtField> mappedFields;
+	private final Map<String, DtField> mappedFields = new HashMap<>();
 
 	private final DtStereotype stereotype;
 
@@ -71,7 +71,7 @@ public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 	 */
 	DtDefinition(
 			final String name,
-			final Optional<DefinitionId<DtDefinition>> fragment,
+			final Optional<DefinitionReference<DtDefinition>> fragment,
 			final String packageName,
 			final DtStereotype stereotype,
 			final List<DtField> dtFields,
@@ -93,9 +93,6 @@ public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 				.isNotNull(handleField)
 				.isNotNull(keyField);
 		//-----
-		final var fieldsBuilder = new ListBuilder<DtField>();
-		final var mappedFieldsBuilder = new MapBuilder<String, DtField>();
-		//-----
 		fragmentOpt = fragment;
 		//
 		this.stereotype = stereotype;
@@ -110,16 +107,14 @@ public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 		for (final DtField dtField : dtFields) {
 			Assertion.check()
 					.when(stereotype.isPersistent() && dtField.isPersistent(), () -> Assertion.check()
-							.isTrue(!dtField.cardinality().hasMany(),
+							.isTrue(!dtField.getCardinality().hasMany(),
 									"Only non multiple smarttype are allowed in entity '{0}'", name));
 			if (dtField.getType().isId()) {
 				Assertion.check().isNull(id, "Only one ID Field is allowed : {0}", name);
 				id = dtField;
 			}
-			registerDtField(mappedFieldsBuilder, fieldsBuilder, dtField);
+			registerDtField(dtField);
 		}
-		fields = fieldsBuilder.unmodifiable().build();
-		mappedFields = mappedFieldsBuilder.unmodifiable().build();
 		idFieldOpt = Optional.ofNullable(id);
 		this.dataSpace = dataSpace;
 		//-----
@@ -144,16 +139,17 @@ public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 		return new DtDefinitionBuilder(name);
 	}
 
-	private static void registerDtField(final MapBuilder<String, DtField> mappedFieldsBuilder, final ListBuilder<DtField> fieldsBuilder, final DtField dtField) {
+	private void registerDtField(final DtField dtField) {
 		Assertion.check()
-				.isNotNull(dtField);
+				.isNotNull(dtField)
+				.isFalse(mappedFields.containsKey(dtField.getName()), "Field {0} déjà enregistré sur {1}", dtField.getName(), this);
 		//-----
-		fieldsBuilder.add(dtField);
-		mappedFieldsBuilder.putCheckKeyNotExists(dtField.name(), dtField);
+		fields.add(dtField);
+		mappedFields.put(dtField.getName(), dtField);
 	}
 
 	public Optional<DtDefinition> getFragment() {
-		return fragmentOpt.map(DefinitionId::get);
+		return fragmentOpt.map(DefinitionReference::get);
 	}
 
 	/**
@@ -174,7 +170,7 @@ public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 	 * @return Simple Nom (i.e. sans le package) de la classe d'implémentation du DtObject
 	 */
 	public String getClassSimpleName() {
-		return id().shortName();
+		return getLocalName();
 	}
 
 	/**

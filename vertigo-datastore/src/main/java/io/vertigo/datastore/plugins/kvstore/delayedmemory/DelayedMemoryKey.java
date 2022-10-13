@@ -21,7 +21,6 @@ import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datastore.kvstore.KVCollection;
 
 /**
  * Delayed key of SecurityToken.
@@ -29,7 +28,7 @@ import io.vertigo.datastore.kvstore.KVCollection;
  */
 final class DelayedMemoryKey implements Delayed {
 	private final long timeoutTime;
-	private final KVCollection collection;
+	private final String collection;
 	private final String key;
 
 	/**
@@ -38,7 +37,7 @@ final class DelayedMemoryKey implements Delayed {
 	 * @param key Security Token key
 	 * @param timeoutTime When key expired
 	 */
-	public DelayedMemoryKey(final KVCollection collection, final String key, final long timeoutTime) {
+	public DelayedMemoryKey(final String collection, final String key, final long timeoutTime) {
 		this.collection = collection;
 		this.key = key;
 		this.timeoutTime = timeoutTime;
@@ -61,7 +60,7 @@ final class DelayedMemoryKey implements Delayed {
 	/**
 	 * @return Collection
 	 */
-	public KVCollection getCollection() {
+	public String getCollection() {
 		return collection;
 	}
 

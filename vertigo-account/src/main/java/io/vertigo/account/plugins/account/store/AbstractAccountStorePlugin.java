@@ -88,8 +88,8 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 		final String accountId = parseAttribute(AccountProperty.id, userEntity);
 		final String authToken = parseAttribute(AccountProperty.authToken, userEntity);
 		final String displayName = parseAttribute(AccountProperty.displayName, userEntity);
-		final String email = parseAttribute(AccountProperty.email, userEntity);
-		final String photo = parseAttribute(AccountProperty.photo, userEntity);
+		final String email = parseOptionalAttribute(AccountProperty.email, userEntity);
+		final String photo = parseOptionalAttribute(AccountProperty.photo, userEntity);
 		return Account.builder(accountId)
 				.withAuthToken(authToken)
 				.withDisplayName(displayName)
@@ -99,6 +99,12 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 	}
 
 	private String parseAttribute(final AccountProperty accountProperty, final Entity userEntity) {
+		final DtField attributeField = mapperHelper.getSourceAttribute(accountProperty);
+		final Object value = attributeField.getDataAccessor().getValue(userEntity);
+		return value != null ? String.valueOf(value) : null;
+	}
+
+	private String parseOptionalAttribute(final AccountProperty accountProperty, final Entity userEntity) {
 		final DtField attributeField = mapperHelper.getSourceAttribute(accountProperty);
 		if (attributeField != null) {
 			final Object value = attributeField.getDataAccessor().getValue(userEntity);

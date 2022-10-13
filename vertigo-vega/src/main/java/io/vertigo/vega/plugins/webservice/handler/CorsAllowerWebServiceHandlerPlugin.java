@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.account.authorization.VSecurityException;
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
@@ -100,7 +100,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 			if (!isAllowed(origin, originCORSFiltersSet) || !isAllowed(method, methodCORSFiltersSet)) {
 				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 				response.resetBuffer();
-				throw new VSecurityException(LocaleMessageText.of("Invalid CORS Access (Origin:{0}, Method:{1})", origin, method));
+				throw new VSecurityException(MessageText.of("Invalid CORS Access (Origin:{0}, Method:{1})", origin, method));
 			}
 		}
 		response.addHeader("Access-Control-Allow-Origin", originCORSFilter);

@@ -37,6 +37,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.Table;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -56,6 +57,7 @@ public abstract class AbstractExporterIText {
 
 	private final EntityStoreManager entityStoreManager;
 	private final SmartTypeManager smartTypeManager;
+	private final Map<Class, BasicTypeAdapter> exportAdapters;
 
 	/**
 	 * Constructor.
@@ -68,6 +70,7 @@ public abstract class AbstractExporterIText {
 		//-----
 		this.entityStoreManager = entityStoreManager;
 		this.smartTypeManager = smartTypeManager;
+		exportAdapters = smartTypeManager.getTypeAdapters("export");
 	}
 
 	/**
@@ -88,14 +91,14 @@ public abstract class AbstractExporterIText {
 	 */
 	public final void exportData(final Export export, final OutputStream out) throws DocumentException {
 		// step 1: creation of a document-object
-		final boolean landscape = export.orientation() == Export.Orientation.Landscape;
+		final boolean landscape = export.getOrientation() == Export.Orientation.Landscape;
 		final Rectangle pageSize = landscape ? PageSize.A4.rotate() : PageSize.A4;
 		final Document document = new Document(pageSize, 20, 20, 50, 50); // left, right, top, bottom
 		// step 2: we create a writer that listens to the document and directs a PDF-stream to out
 		createWriter(document, out);
 
 		// we add some meta information to the document, and we open it
-		final String title = export.title();
+		final String title = export.getTitle();
 		if (title != null) {
 			final HeaderFooter header = new HeaderFooter(new Phrase(title), false);
 			header.setAlignment(Element.ALIGN_LEFT);
@@ -104,7 +107,7 @@ public abstract class AbstractExporterIText {
 			document.addTitle(title);
 		}
 
-		final String author = export.author();
+		final String author = export.getAuthor();
 		document.addAuthor(author);
 		document.addCreator(CREATOR);
 		document.open();
@@ -112,7 +115,7 @@ public abstract class AbstractExporterIText {
 			// pour ajouter l'ouverture automatique de la boîte de dialogue imprimer (print(false) pour imprimer directement)
 			// ((PdfWriter) writer).addJavaScript("this.print(true);", false);
 
-			for (final ExportSheet exportSheet : export.sheets()) {
+			for (final ExportSheet exportSheet : export.getSheets()) {
 				final Table datatable;
 				if (exportSheet.hasDtObject()) {
 					// table
@@ -167,7 +170,7 @@ public abstract class AbstractExporterIText {
 			}
 			datatable.getDefaultCell().setHorizontalAlignment(horizontalAlignement);
 
-			String text = ExporterUtil.getText(entityStoreManager, smartTypeManager, referenceCache, denormCache, exportSheet.getDtObject(), exportColumn);
+			String text = ExporterUtil.getText(entityStoreManager, smartTypeManager, exportAdapters, referenceCache, denormCache, exportSheet.getDtObject(), exportColumn);
 			if (text == null) {
 				text = "";
 			}
@@ -223,7 +226,7 @@ public abstract class AbstractExporterIText {
 				}
 				datatable.getDefaultCell().setHorizontalAlignment(horizontalAlignement);
 
-				String text = ExporterUtil.getText(entityStoreManager, smartTypeManager, referenceCache, denormCache, dto, exportColumn);
+				String text = ExporterUtil.getText(entityStoreManager, smartTypeManager, exportAdapters, referenceCache, denormCache, dto, exportColumn);
 				if (text == null) {
 					text = "";
 				}

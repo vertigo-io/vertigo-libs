@@ -1,4 +1,4 @@
-<th:block th:fragment="select-multiple-edit(object,list,field, label, valueField, labelField, filterFunction, input_attrs, label_attrs)" vu:alias="select-multiple" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="select-multiple-edit(object,list,field, rowIndex, label, valueField, labelField, filterFunction, input_attrs, label_attrs)" vu:alias="select-multiple" vu:selector="${viewMode=='edit'}"
 	  th:assert="${object} != null and ${field} != null and ${list} != null"
 	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, 
 	  myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, 
@@ -8,7 +8,7 @@
 	<vu:include-data object="${list}" field="${myValueField}"/>
 	<vu:include-data object="${list}" field="${myLabelField}"/>
 	<q-select
-			th:v-model="|vueData.${object}.${field}|"
+			th:v-model="|${model.util.vueDataKey(object, field, rowIndex)}|"
 			fill-input
 	        map-options
 	        emit-value
@@ -17,27 +17,45 @@
 			th:label="${myLabel}"
 			th:classappend="${required}?'v-field__required'"
             th:aria-required="${required}"
-            th::error="|hasFieldsError('${object}', '${field}')|"
-			th::error-message="|getErrorMessage('${object}', '${field}')|"
+            th::error="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
+            th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
 			orientation="vertical"
 			stack-label
 			use-chips
 			multiple
 			th:attr="__${label_attrs}__,__${input_attrs}__"
 			>
+			<vu:content/>
 	</q-select>
-	<input th:v-for="|id in vueData.${object}.${field}|" type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="id" />
-	<input th:v-if="|vueData.${object}.${field}.length == 0|" type="hidden" th:name="|vContext[${object}][${field}]|" value="" />
+	<input th:v-for="|id in ${model.util.vueDataKey(object, field, rowIndex)}|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" th:v-bind:value="id" />
+	<input th:v-if="|vueData.${object}.${field}.length == 0|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
 </th:block> 
 
-<th:block th:fragment="select-multiple-read(object,field,label,list,valueField, labelField, filterFunction, input_attrs, label_attrs)" vu:alias="select-multiple" vu:selector="${viewMode=='read'}" 
-	th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, value=${model.vContext[__${object}__].getTypedValue('__${field}__')}">
+<th:block th:fragment="select-multiple-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, input_attrs, label_attrs)" 
+th:if="${modifiableTable==null}"
+vu:alias="select-multiple" vu:selector="${viewMode=='read'}" 
+	th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')}">
 	<vu:label-read object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}" >
 		<th:block th:if="${value!=null}" th:each="singleValue, iterStat : ${value} " >
 			<span  
 				th:attr="__${input_attrs}__"
 				vu:text="${singleValue!=null?model.vContext[__${list}__].getById('__${myValueField}__', singleValue)['__${myLabelField}__']:'is null'}"></span>
-			<span th:if="${!iterStat.last}">,</span>
+			<span th:if="${!iterStat.last}">, </span>
 		</th:block>
 	</vu:label-read>
 </th:block>
+
+<th:block th:fragment="select-multiple-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, input_attrs, label_attrs)"
+th:if="${modifiableTable!=null}"
+vu:alias="select-multiple" vu:selector="${viewMode=='read'}" 
+    th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}">
+    <vu:include-data object="${object}" field="${field}"/>
+    <vu:include-data object="${list}" field="${myValueField}"/>
+    <vu:include-data object="${list}" field="${myLabelField}"/>
+        <span th:remove="${label_attrs=='noOp=_'}?'tag':'none'" th:attr="__${label_attrs}__">
+	        <q-chip th:attr="__${input_attrs}__" th:v-for="|(entry, idx) in ${model.util.vueDataKey(object, field, rowIndex)}|"
+		        th:text="|{{vueData.${list}.filter(o => o.${myValueField} === entry).map(o => o.${myLabelField}).join()}}|">
+		    </q-chip>
+	    </span>
+</th:block>
+

@@ -150,9 +150,9 @@ public class DAO<E extends Entity, P> {
 		final E dto = get(entityId);
 		for (final DtField fragmentField : fragmentDefinition.getFields()) {
 			//On vérifie la présence du champ dans l'Entity (il peut s'agir d'un champ non persistent d'UI
-			if (entityFields.containsKey(fragmentField.name())) {
+			if (entityFields.containsKey(fragmentField.getName())) {
 				final DataAccessor fragmentDataAccessor = fragmentField.getDataAccessor();
-				final DataAccessor entityDataAccessor = entityFields.get(fragmentField.name()).getDataAccessor();
+				final DataAccessor entityDataAccessor = entityFields.get(fragmentField.getName()).getDataAccessor();
 				entityDataAccessor.setValue(dto, fragmentDataAccessor.getValue(fragment));
 			}
 		}
@@ -162,7 +162,7 @@ public class DAO<E extends Entity, P> {
 	private static Map<String, DtField> indexFields(final List<DtField> fields) {
 		return fields
 				.stream()
-				.collect(Collectors.toMap(DtField::name, Function.identity()));
+				.collect(Collectors.toMap(DtField::getName, Function.identity()));
 	}
 
 	/**
@@ -259,7 +259,16 @@ public class DAO<E extends Entity, P> {
 		// Verification de la valeur est du type du champ
 		final DtDefinition dtDefinition = getDtDefinition();
 		final DtField dtField = dtDefinition.getField(dtFieldName.name());
-		smartTypeManager.checkType(dtField.smartTypeDefinition(), dtField.cardinality(), value);
+		if (dtField.getCardinality().hasMany()) {
+			if (!(value instanceof List)) {
+				throw new ClassCastException("Value " + value + " must be a list");
+			}
+			for (final Object element : List.class.cast(value)) {
+				smartTypeManager.checkValue(dtField.getSmartTypeDefinition(), element);
+			}
+		} else {
+			smartTypeManager.checkValue(dtField.getSmartTypeDefinition(), value);
+		}
 		return entityStoreManager.find(dtDefinition, criteria, dtListState);
 	}
 

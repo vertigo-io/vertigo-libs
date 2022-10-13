@@ -20,7 +20,7 @@ package io.vertigo.datafactory.collections.model;
 import java.io.Serializable;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.datafactory.collections.ListFilter;
 
 /**
@@ -37,23 +37,54 @@ import io.vertigo.datafactory.collections.ListFilter;
  * Fait partie du modèle lorsque les valeurs sont déduites.
  *
  * @author pchretien
- *
- * @param code the code of the facet
- * @param listFilter the list filter
- * @param label the label of the facet
- * This label must be human readable.
- * examples :
- * - 'small files' can be preferred to an expression.
  */
-public record FacetValue(
-		String code,
-		ListFilter listFilter,
-		LocaleMessageText label) implements Serializable {
+public final class FacetValue implements Serializable {
+	private static final long serialVersionUID = -7077655936787603783L;
+	private final String code;
+	private final MessageText label;
+	private final ListFilter listFilter;
 
-	public FacetValue {
+	/**
+	 * Contructor.
+	 * @param code the code of the facet
+	 * @param listFilter the list filter
+	 * @param label the label of the facet
+	 */
+	public FacetValue(final String code, final ListFilter listFilter, final MessageText label) {
 		Assertion.check()
 				.isNotBlank(code)
 				.isNotNull(listFilter)
 				.isNotNull(label);
+		//-----
+		this.code = code;
+		this.listFilter = listFilter;
+		this.label = label;
+	}
+
+	/**
+	 * @return the code of the facet
+	 */
+	public String getCode() {
+		return code;
+	}
+
+	/**
+	 * Returns the label of the facet.
+	 * This label must be human readable.
+	 *
+	 * examples :
+	 * - 'small files' can be preferred to an expression.
+	 *
+	 * @return the label of the facet
+	 */
+	public MessageText getLabel() {
+		return label;
+	}
+
+	/**
+	 * @return the listFilter
+	 */
+	public ListFilter getListFilter() {
+		return listFilter;
 	}
 }

@@ -53,7 +53,7 @@ public class NumberFormatterTest {
 		}
 	}
 
-	private static NodeConfig buildNodeConfig() {
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.withBoot(BootConfig.builder()
 						.withLocalesAndDefaultZoneId("fr_FR", "UTC")
@@ -135,7 +135,7 @@ public class NumberFormatterTest {
 	@Test
 	public void testFormatterNumberMLNoDecimal() throws FormatterException {
 		//séparateur décimal . et accepte ,
-		//séparateur milliers NO précisé => par défaut sep \u00A0
+		//séparateur milliers NO précisé => par défaut sep \u00A0 but \u202F on jdk16+
 		final FormatterNumber formatterNumberLocalized = new FormatterNumberLocalized("#,##0.##|.,|");
 
 		//séparateur milliers ' '
@@ -148,19 +148,19 @@ public class NumberFormatterTest {
 		Assertions.assertEquals(new BigDecimal("0.14"), formatterNumberLocalized.stringToValue("0.14", BasicType.BigDecimal));
 
 		Assertions.assertEquals("3.14", formatterNumberLocalized.valueToString(pi, BasicType.BigDecimal));
-		Assertions.assertEquals("1\u00A0495", formatterNumberLocalized.valueToString(1495, BasicType.BigDecimal));
+		Assertions.assertEquals("1 495", formatterNumberLocalized.valueToString(1495, BasicType.BigDecimal));
 		Assertions.assertEquals("1 495.52", formatterNumberLocalizedSpace.valueToString(1495.52, BasicType.BigDecimal));
 
 		//Integer
 		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1492", BasicType.Integer));
-		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1\u00A0492", BasicType.Integer));
+		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1 492", BasicType.Integer));
 		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1492  ", BasicType.Integer));
 		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("01492  ", BasicType.Integer));
-		Assertions.assertEquals("1\u00A0492", formatterNumberLocalized.valueToString(1492, BasicType.Integer));
+		Assertions.assertEquals("1 492", formatterNumberLocalized.valueToString(1492, BasicType.Integer));
 
 		//Long
 		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("1492", BasicType.Long));
-		Assertions.assertEquals(1492L, formatterNumberLocalizedSpace.stringToValue("1\u00A0492", BasicType.Long));
+		Assertions.assertEquals(1492L, formatterNumberLocalizedSpace.stringToValue("1 492", BasicType.Long));
 		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("1492  ", BasicType.Long));
 		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("01492  ", BasicType.Long));
 		Assertions.assertEquals("1 492", formatterNumberLocalizedSpace.valueToString(1492L, BasicType.Long));

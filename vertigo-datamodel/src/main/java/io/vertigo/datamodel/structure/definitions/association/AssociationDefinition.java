@@ -43,7 +43,7 @@ import io.vertigo.core.node.definition.AbstractDefinition;
  *
  * @author  jcassignol, pchretien
  */
-public abstract class AssociationDefinition<A extends AssociationDefinition<A>> extends AbstractDefinition<A> {
+public abstract class AssociationDefinition extends AbstractDefinition {
 	private final AssociationNode associationNodeA;
 	private final AssociationNode associationNodeB;
 

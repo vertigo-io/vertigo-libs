@@ -34,6 +34,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.StreamFile;
 import io.vertigo.vega.webservice.definitions.WebServiceParam;
@@ -221,7 +222,7 @@ final class VFileUtil {
 		if (mimeType == null) {
 			mimeType = "application/octet-stream";
 		}
-		return StreamFile.of(fileName, mimeType, Instant.now(), file.getSize(), () -> file.getInputStream());
+		return StreamFile.of(fileName, mimeType, Instant.now(), file.getSize(), new FileInputStreamBuilder(file));
 	}
 
 	private static String getSubmittedFileName(final Part filePart) {
@@ -235,6 +236,20 @@ final class VFileUtil {
 			}
 		}
 		return null;
+	}
+
+	private static final class FileInputStreamBuilder implements InputStreamBuilder {
+		private final Part file;
+
+		FileInputStreamBuilder(final Part file) {
+			this.file = file;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public InputStream createInputStream() throws IOException {
+			return file.getInputStream();
+		}
 	}
 
 }

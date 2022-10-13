@@ -34,6 +34,7 @@
         th:@filter="|function (val, update, abort) { searchAutocomplete('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '@{/autocomplete/_searchFullText}', val, update, abort)}|"
         th:attr="__${label_attrs}__,__${input_attrs}__"
      >
+     <vu:content/>
      </q-select>
 	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
 </th:block> 

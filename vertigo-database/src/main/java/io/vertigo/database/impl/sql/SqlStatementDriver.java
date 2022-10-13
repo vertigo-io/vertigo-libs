@@ -63,8 +63,6 @@ final class SqlStatementDriver {
 
 	private static final int FETCH_SIZE = 150;
 
-	private static final int GENERATED_KEYS_INDEX = 1;
-
 	SqlStatementDriver() {
 	}
 
@@ -85,13 +83,19 @@ final class SqlStatementDriver {
 			final String[] generatedColumns,
 			final SqlConnection connection) throws SQLException {
 		//created PrepareStatement must be use into a try-with-resource in caller
-		final PreparedStatement preparedStatement = switch (generationMode) {
-			case GENERATED_KEYS -> connection.getJdbcConnection()
-					.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			case GENERATED_COLUMNS -> connection.getJdbcConnection()
-					.prepareStatement(sql, generatedColumns);
-			default -> throw new IllegalStateException();
-		};
+		final PreparedStatement preparedStatement;
+		switch (generationMode) {
+			case GENERATED_KEYS:
+				preparedStatement = connection.getJdbcConnection()
+						.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+				break;
+			case GENERATED_COLUMNS:
+				preparedStatement = connection.getJdbcConnection()
+						.prepareStatement(sql, generatedColumns);
+				break;
+			default:
+				throw new IllegalStateException();
+		}
 		//by experience 150 is a right value (Oracle is set by default at 10 : that's not sufficient)
 		preparedStatement.setFetchSize(FETCH_SIZE);
 		return preparedStatement;
@@ -107,15 +111,15 @@ final class SqlStatementDriver {
 		//-----
 		for (int index = 0; index < parameters.size(); index++) {
 			final SqlParameter parameter = parameters.get(index);
-			final Class javaDataType = parameter.dataType();
-			if (isPrimitive(parameter.dataType())) {
+			final Class javaDataType = parameter.getDataType();
+			if (isPrimitive(parameter.getDataType())) {
 				connection.getDataBase().getSqlMapping().setValueOnStatement(
-						statement, index + 1, javaDataType, parameter.value());
+						statement, index + 1, javaDataType, parameter.getValue());
 			} else {
 				// complex we find the adapter
-				final BasicTypeAdapter adapter = basicTypeAdapters.get(parameter.dataType());
+				final BasicTypeAdapter adapter = basicTypeAdapters.get(parameter.getDataType());
 				connection.getDataBase().getSqlMapping().setValueOnStatement(
-						statement, index + 1, adapter.getBasicType().getJavaClass(), adapter.toBasic(parameter.value()));
+						statement, index + 1, adapter.getBasicType().getJavaClass(), adapter.toBasic(parameter.getValue()));
 			}
 		}
 	}
@@ -275,8 +279,7 @@ final class SqlStatementDriver {
 		try (final ResultSet rs = statement.getGeneratedKeys()) {
 			while (rs.next()) {
 				//ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
-				int pkRsCol = GENERATED_KEYS_INDEX;//attention le pkRsCol correspond au n° de column dans le RETURNING
-				pkRsCol = rs.findColumn(columnName); //on cherche le bon index de la pk
+				int pkRsCol = rs.findColumn(columnName); //on cherche le bon index de la pk
 				final O id = sqlMapping.getValueForResultSet(rs, pkRsCol, dataType);
 				if (rs.wasNull()) {
 					throw new SQLException("GeneratedKeys wasNull", "23502", NULL_GENERATED_KEY_ERROR_VENDOR_CODE);

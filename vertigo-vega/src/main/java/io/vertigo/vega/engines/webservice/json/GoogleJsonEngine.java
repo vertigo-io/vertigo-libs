@@ -17,7 +17,6 @@
  */
 package io.vertigo.vega.engines.webservice.json;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -57,10 +56,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
@@ -69,7 +65,7 @@ import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
-import io.vertigo.core.node.definition.DefinitionId;
+import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
@@ -300,7 +296,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 					.stream()
 					.filter(dtField -> dtField.getType() != FieldType.COMPUTED)// we don't serialize computed fields
 					.forEach(field -> {
-						jsonObject.add(field.name(), context.serialize(field.getDataAccessor().getValue(src)));
+						jsonObject.add(field.getName(), context.serialize(field.getDataAccessor().getValue(src)));
 					});
 
 			Stream.of(src.getClass().getDeclaredFields())
@@ -336,8 +332,8 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			Stream.of(((Class<D>) typeOfT).getDeclaredFields())
 					.filter(field -> VAccessor.class.isAssignableFrom(field.getType()))
 					.map(field -> Tuple.of(field, getAccessor(field, dtObject)))
-					.filter(tuple -> jsonObject.has(tuple.val2().getRole()))
-					.forEach(tuple -> tuple.val2().set(context.deserialize(jsonObject.get(tuple.val2().getRole()), ClassUtil.getGeneric(tuple.val1()))));
+					.filter(tuple -> jsonObject.has(tuple.getVal2().getRole()))
+					.forEach(tuple -> tuple.getVal2().set(context.deserialize(jsonObject.get(tuple.getVal2().getRole()), ClassUtil.getGeneric(tuple.getVal1()))));
 
 			// case of the fk we need to handle after because it's the primary information
 			dtDefinition.getFields()
@@ -346,7 +342,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 					.forEach(field -> field.getDataAccessor()
 							.setValue(
 									dtObject,
-									context.deserialize(jsonObject.get(field.name()), field.smartTypeDefinition().getJavaClass())));
+									context.deserialize(jsonObject.get(field.getName()), field.getSmartTypeDefinition().getJavaClass())));
 
 			return dtObject;
 
@@ -372,52 +368,10 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		}
 	}
 
-	private final class EmptyMapAdapter extends TypeAdapter<Map> {
-		@Override
-		public void write(final JsonWriter out, final Map value) throws IOException {
-			out.beginObject().endObject();
-		}
-
-		@Override
-		public Map read(final JsonReader in) throws IOException {
-			in.beginObject();
-			in.endObject();
-			return Collections.emptyMap();
-		}
-	}
-
-	private final class EmptySetAdapter extends TypeAdapter<Set> {
-		@Override
-		public void write(final JsonWriter out, final Set value) throws IOException {
-			out.beginArray().endArray();
-		}
-
-		@Override
-		public Set read(final JsonReader in) throws IOException {
-			in.beginArray();
-			in.endArray();
-			return Collections.emptySet();
-		}
-	}
-
-	private final class EmptyListAdapter extends TypeAdapter<List> {
-		@Override
-		public void write(final JsonWriter out, final List value) throws IOException {
-			out.beginArray().endArray();
-		}
-
-		@Override
-		public List read(final JsonReader in) throws IOException {
-			in.beginArray();
-			in.endArray();
-			return Collections.emptyList();
-		}
-	}
-
-	private static final class DefinitionIdJsonSerializer implements JsonSerializer<DefinitionId> {
+	private static final class DefinitionReferenceJsonSerializer implements JsonSerializer<DefinitionReference> {
 		/** {@inheritDoc} */
 		@Override
-		public JsonElement serialize(final DefinitionId src, final Type typeOfSrc, final JsonSerializationContext context) {
+		public JsonElement serialize(final DefinitionReference src, final Type typeOfSrc, final JsonSerializationContext context) {
 			return context.serialize(src.get().getName());
 		}
 	}
@@ -467,7 +421,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 				final DtDefinition entityDefinition = DtObjectUtil.findDtDefinition(entityClass);
 				Object entityId;
 				try {
-					entityId = smartTypeManager.stringToValue(entityDefinition.getIdField().get().smartTypeDefinition(), uidJsonValue);
+					entityId = smartTypeManager.stringToValue(entityDefinition.getIdField().get().getSmartTypeDefinition(), uidJsonValue);
 				} catch (final FormatterException e) {
 					throw new JsonParseException("Unsupported UID format " + uidJsonValue, e);
 				}
@@ -603,10 +557,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 					.registerTypeAdapter(DtList.class, new DtListDeserializer<>())
 					.registerTypeAdapter(DtListState.class, new DtListStateDeserializer())
 					.registerTypeAdapter(FacetedQueryResult.class, searchApiVersion.getJsonSerializerClass().newInstance())
-					.registerTypeAdapter(SelectedFacetValues.class, new SelectedFacetValuesDeserializer())
-					.registerTypeAdapter(TypeToken.get(Collections.EMPTY_MAP.getClass()).getType(), new EmptyMapAdapter())
-					.registerTypeAdapter(TypeToken.get(Collections.EMPTY_LIST.getClass()).getType(), new EmptyListAdapter())
-					.registerTypeAdapter(TypeToken.get(Collections.EMPTY_SET.getClass()).getType(), new EmptySetAdapter());
+					.registerTypeAdapter(SelectedFacetValues.class, new SelectedFacetValuesDeserializer());
 
 			if (!serializeNulls) {
 				gsonBuilder
@@ -615,7 +566,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			}
 
 			gsonBuilder
-					.registerTypeAdapter(DefinitionId.class, new DefinitionIdJsonSerializer())
+					.registerTypeAdapter(DefinitionReference.class, new DefinitionReferenceJsonSerializer())
 					.registerTypeAdapter(Optional.class, new OptionJsonSerializer())
 					.registerTypeAdapter(Class.class, new ClassJsonSerializer())
 					.registerTypeAdapter(UID.class, new URIJsonAdapter())
@@ -646,8 +597,8 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		final Set<String> includedFields;
 		final Set<String> excludedFields;
 		if (firstLevel != null) { //Sonar préfère à contains
-			includedFields = filteredSubFields.get(FIRST_LEVEL_KEY).val1();
-			excludedFields = filteredSubFields.get(FIRST_LEVEL_KEY).val2();
+			includedFields = filteredSubFields.get(FIRST_LEVEL_KEY).getVal1();
+			excludedFields = filteredSubFields.get(FIRST_LEVEL_KEY).getVal2();
 		} else {
 			includedFields = Collections.emptySet();
 			excludedFields = Collections.emptySet();
@@ -672,7 +623,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 
 		for (final Map.Entry<String, Tuple<Set<String>, Set<String>>> filteredField : filteredSubFields.entrySet()) {
 			if (filteredField.getValue() != null) {
-				filterFields(jsonObject.get(filteredField.getKey()), filteredField.getValue().val1(), filteredField.getValue().val2());
+				filterFields(jsonObject.get(filteredField.getKey()), filteredField.getValue().getVal1(), filteredField.getValue().getVal2());
 			}
 		}
 	}
@@ -682,8 +633,8 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			return Collections.emptyMap();
 		}
 		final Map<String, Tuple<Set<String>, Set<String>>> subFields = new HashMap<>();
-		parseSubFieldName(includedFields, subFields, Tuple::val1);
-		parseSubFieldName(excludedFields, subFields, Tuple::val2);
+		parseSubFieldName(includedFields, subFields, Tuple::getVal1);
+		parseSubFieldName(excludedFields, subFields, Tuple::getVal2);
 		return subFields;
 	}
 

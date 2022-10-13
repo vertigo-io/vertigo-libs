@@ -37,9 +37,9 @@ public class PegRulesTest {
 
 	@Test
 	public void choice() throws PegNoMatchFoundException {
-		Assertions.assertEquals(0, choice.parse("hi").getValue().choiceIndex());
-		Assertions.assertEquals(1, choice.parse("ho").getValue().choiceIndex());
-		Assertions.assertEquals(2, choice.parse("ha").getValue().choiceIndex());
+		Assertions.assertEquals(0, choice.parse("hi").getValue().getChoiceIndex());
+		Assertions.assertEquals(1, choice.parse("ho").getValue().getChoiceIndex());
+		Assertions.assertEquals(2, choice.parse("ha").getValue().getChoiceIndex());
 	}
 
 	@Test

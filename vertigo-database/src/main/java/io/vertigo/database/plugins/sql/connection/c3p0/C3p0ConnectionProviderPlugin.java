@@ -55,17 +55,26 @@ public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionPro
 			@ParamValue("name") final Optional<String> name,
 			@ParamValue("dataBaseClass") final String dataBaseClass,
 			@ParamValue("jdbcDriver") final String jdbcDriver,
-			@ParamValue("jdbcUrl") final String jdbcUrl) {
+			@ParamValue("jdbcUrl") final String jdbcUrl,
+			@ParamValue("minPoolSize") final Optional<Integer> minPoolSize,
+			@ParamValue("maxPoolSize") final Optional<Integer> maxPoolSize,
+			@ParamValue("acquireIncrement") final Optional<Integer> acquireIncrement,
+			@ParamValue("configName") final Optional<String> configName) {
 		super(name.orElse(SqlManager.MAIN_CONNECTION_PROVIDER_NAME), ClassUtil.newInstance(dataBaseClass, SqlDataBase.class));
 		Assertion.check()
 				.isNotNull(jdbcUrl)
 				.isNotNull(jdbcDriver);
 		//-----
-		pooledDataSource = createPooledDataSource(jdbcDriver, jdbcUrl);
+		pooledDataSource = createPooledDataSource(jdbcDriver, jdbcUrl, minPoolSize, maxPoolSize, acquireIncrement, configName);
 	}
 
-	private static ComboPooledDataSource createPooledDataSource(final String jdbcDriver, final String jdbcUrl) {
-		final ComboPooledDataSource comboPooledDataSource = new ComboPooledDataSource();
+	private static ComboPooledDataSource createPooledDataSource(final String jdbcDriver, final String jdbcUrl, final Optional<Integer> minPoolSize, final Optional<Integer> maxPoolSize, final Optional<Integer> acquireIncrement, final Optional<String> configName) {
+		final ComboPooledDataSource comboPooledDataSource;
+		if (configName.isEmpty()) {
+			comboPooledDataSource = new ComboPooledDataSource();
+		} else {
+			comboPooledDataSource = new ComboPooledDataSource(configName.get());
+		}
 		try {
 			//loads the jdbc driver
 			comboPooledDataSource.setDriverClass(jdbcDriver);
@@ -74,6 +83,10 @@ public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionPro
 		}
 		comboPooledDataSource.setJdbcUrl(jdbcUrl);
 		comboPooledDataSource.setCheckoutTimeout(10000);
+		minPoolSize.ifPresent(comboPooledDataSource::setMinPoolSize);
+		maxPoolSize.ifPresent(comboPooledDataSource::setMaxPoolSize);
+		acquireIncrement.ifPresent(comboPooledDataSource::setAcquireIncrement);
+
 		//c3p0 can work with defaults
 		return comboPooledDataSource;
 	}

@@ -17,6 +17,7 @@
  */
 package io.vertigo.social.mail;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
@@ -30,30 +31,41 @@ import io.vertigo.datastore.filestore.model.VFile;
  *  ou
  *  - "Personal Name <user@host.domain>"
  * @author npiedeloup
- *
- * @param subject Sujet du mail;
- * @param replyTo Addresse de retour (maybe null)
- * @param fromAddress Addresse de l'emetteur
- * @param toAddresses Addresses de destination
- * @param ccAddresses Addresses en copie
- * @param textContent Contenu text
- * @param htmlContent Contenu html
- * @param attachments Liste des pièces jointes
  */
-public record Mail(
-		String subject,
-		/**
-		 * on autorise le null, car le protocol SMTP assure déjà la stratégie de choix d'email de retour.
-		 */
-		String replyTo,
-		String fromAddress,
-		List<String> toAddresses,
-		List<String> ccAddresses,
-		String textContent,
-		String htmlContent,
-		List<VFile> attachments) {
+public final class Mail {
+	private final String subject;
+	private final String fromAddress;
+	/**
+	 * on autorise le null, car le protocol SMTP assure déjà la stratégie de choix d'email de retour.
+	 */
+	private final String replyTo;
+	private final String textContent;
+	private final String htmlContent;
 
-	public Mail {
+	private final List<String> toAddresses;
+	private final List<String> ccAddresses;
+	private final List<VFile> attachments;
+
+	/**
+	 * Constructeur utilisé par le Builder.
+	 * @param subject Sujet du mail;
+	 * @param replyTo Addresse de retour
+	 * @param fromAddress Addresse de l'emetteur
+	 * @param toAddresses Addresses de destination
+	 * @param ccAddresses Addresses en copie
+	 * @param textContent Contenu text
+	 * @param htmlContent Contenu html
+	 * @param attachments Liste des pièces jointes
+	 */
+	Mail(
+			final String subject,
+			final String replyTo,
+			final String fromAddress,
+			final List<String> toAddresses,
+			final List<String> ccAddresses,
+			final String textContent,
+			final String htmlContent,
+			final List<VFile> attachments) {
 		Assertion.check()
 				.isNotBlank(subject, "Sujet du mail obligatoire")
 				.isNotBlank(fromAddress, "Adresse email de l'émetteur obligatoire")
@@ -63,9 +75,14 @@ public record Mail(
 				.isTrue(textContent != null || htmlContent != null, "Le mail doit avoir un contenu, soit en text, soit en html")
 				.isNotNull(attachments);
 		//-----
-		toAddresses = List.copyOf(toAddresses);
-		ccAddresses = List.copyOf(ccAddresses);
-		attachments = List.copyOf(attachments);
+		this.subject = subject;
+		this.replyTo = replyTo;
+		this.fromAddress = fromAddress;
+		this.textContent = textContent;
+		this.htmlContent = htmlContent;
+		this.toAddresses = Collections.unmodifiableList(toAddresses);
+		this.ccAddresses = Collections.unmodifiableList(ccAddresses);
+		this.attachments = Collections.unmodifiableList(attachments);
 	}
 
 	/**
@@ -74,5 +91,61 @@ public record Mail(
 	 */
 	public static MailBuilder builder() {
 		return new MailBuilder();
+	}
+
+	/**
+	 * @return Adresse mail de l'émetteur
+	 */
+	public String getFrom() {
+		return fromAddress;
+	}
+
+	/**
+	 * @return Adresse mail de retour de mail (null, si non fixée)
+	 */
+	public String getReplyTo() {
+		return replyTo;
+	}
+
+	/**
+	 * @return Liste des adresses mail destinataires
+	 */
+	public List<String> getToList() {
+		return toAddresses;
+	}
+
+	/**
+	 * @return Liste des adresses mail en copie
+	 */
+	public List<String> getCcList() {
+		return ccAddresses;
+	}
+
+	/**
+	 * @return Sujet du mail
+	 */
+	public String getSubject() {
+		return subject;
+	}
+
+	/**
+	 * @return Contenu texte du mail
+	 */
+	public String getTextContent() {
+		return textContent;
+	}
+
+	/**
+	 * @return Contenu HTML du mail
+	 */
+	public String getHtmlContent() {
+		return htmlContent;
+	}
+
+	/**
+	 * @return Liste des pièces jointes
+	 */
+	public List<VFile> getAttachments() {
+		return attachments;
 	}
 }

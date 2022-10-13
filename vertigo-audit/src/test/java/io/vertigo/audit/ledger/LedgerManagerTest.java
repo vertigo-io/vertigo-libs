@@ -52,7 +52,7 @@ public class LedgerManagerTest {
 		}
 	}
 
-	private static NodeConfig buildNodeConfig() {
+	private NodeConfig buildNodeConfig() {
 		return MyNodeConfig.config();
 	}
 

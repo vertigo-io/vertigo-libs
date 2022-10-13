@@ -26,7 +26,7 @@ import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
@@ -81,13 +81,13 @@ public final class SelectedFacetValues implements Serializable {
 			final FacetDefinition facetDefinition = Node.getNode().getDefinitionSpace().resolve(facetDefinitionName, FacetDefinition.class);
 			if (facetDefinition.isRangeFacet()) {
 				for (final FacetValue facet : facetDefinition.getFacetRanges()) {
-					if (facet.label().getDisplay().equals(facetValueCode) || facet.code().equals(facetValueCode)) {
+					if (facet.getLabel().getDisplay().equals(facetValueCode) || facet.getCode().equals(facetValueCode)) {
 						add(facetDefinition, facet);
 						break;
 					}
 				}
 			} else {
-				add(facetDefinition, new FacetValue(facetValueCode, ListFilter.of(facetDefinition.getDtField().name() + ":" + facetValueCode), LocaleMessageText.of(facetValueCode)));
+				add(facetDefinition, new FacetValue(facetValueCode, ListFilter.of(facetDefinition.getDtField().getName() + ":" + facetValueCode), MessageText.of(facetValueCode)));
 			}
 			return this;
 		}

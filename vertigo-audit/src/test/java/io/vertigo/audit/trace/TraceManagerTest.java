@@ -57,7 +57,7 @@ public class TraceManagerTest {
 		}
 	}
 
-	private static NodeConfig buildNodeConfig() {
+	private NodeConfig buildNodeConfig() {
 		return MyNodeConfig.config();
 	}
 

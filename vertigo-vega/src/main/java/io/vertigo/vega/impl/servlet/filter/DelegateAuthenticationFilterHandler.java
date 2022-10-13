@@ -31,6 +31,7 @@ import io.vertigo.core.lang.Tuple;
  * @author mlaroche
  *
  */
+@Deprecated
 public interface DelegateAuthenticationFilterHandler {
 
 	/**

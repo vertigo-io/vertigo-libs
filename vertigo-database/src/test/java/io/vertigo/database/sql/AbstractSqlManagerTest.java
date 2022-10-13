@@ -523,7 +523,7 @@ public abstract class AbstractSqlManagerTest {
 							Long.class,
 							MAIL_ADAPTER,
 							connection)
-					.val2();
+					.getVal2();
 			connection.commit();
 		}
 		final List<Integer> result = executeQuery(Integer.class, "select count(*) from movie", null);

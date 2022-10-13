@@ -67,9 +67,7 @@ public final class FormatterString implements Formatter {
 	 */
 	public FormatterString(final String args) {
 		//Si args non renseigné on prend le mode par défaut
-		mode = args == null
-				? Mode.BASIC
-				: Mode.valueOf(args);
+		mode = args == null ? Mode.BASIC : Mode.valueOf(args);
 	}
 
 	/** {@inheritDoc} */
@@ -93,16 +91,30 @@ public final class FormatterString implements Formatter {
 	}
 
 	private String apply(final String strValue) {
+		final String result;
 		final String sValue = StringUtil.isBlank(strValue) ? null : strValue.trim();
-		return sValue == null
-				? null
-				: switch (mode) {
-				case BASIC -> sValue;
-				case UPPER -> sValue.toUpperCase(TO_UPPER_CASE_LOCALE);
-				case LOWER -> sValue.toLowerCase(TO_UPPER_CASE_LOCALE);
-				case UPPER_FIRST -> firstLetterUpper(sValue);
-				default -> throw new IllegalAccessError("cas non implémenté");
-				};
+
+		if (sValue == null) {
+			result = null;
+		} else {
+			switch (mode) {
+				case BASIC:
+					result = sValue;
+					break;
+				case UPPER:
+					result = sValue.toUpperCase(TO_UPPER_CASE_LOCALE);
+					break;
+				case LOWER:
+					result = sValue.toLowerCase(TO_UPPER_CASE_LOCALE);
+					break;
+				case UPPER_FIRST:
+					result = firstLetterUpper(sValue);
+					break;
+				default:
+					throw new IllegalAccessError("cas non implémenté");
+			}
+		}
+		return result;
 	}
 
 	private static String firstLetterUpper(final String str) {

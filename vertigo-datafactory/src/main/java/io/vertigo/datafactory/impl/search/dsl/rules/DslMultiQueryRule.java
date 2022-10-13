@@ -78,7 +78,7 @@ final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<Object>> 
 		//On récupère le produit de la règle many (list de sequence)
 		final List<PegChoice> manyQueries = (List<PegChoice>) parsing.get(2);
 		for (final PegChoice item : manyQueries) {
-			queryDefinitions.add((DslQuery) item.value());
+			queryDefinitions.add((DslQuery) item.getValue());
 		}
 		return new DslBlockQuery(preQuery, queryDefinitions, postQuery);
 	}

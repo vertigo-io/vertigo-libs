@@ -30,6 +30,7 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.codec.Encoder;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -61,6 +62,7 @@ final class CSVExporter {
 	private final Encoder<String, String> csvEncoder;
 
 	private final Map<DtField, Map<Object, String>> referenceCache = new HashMap<>();
+	private final Map<Class, BasicTypeAdapter> exportAdapters;
 	private final Map<DtField, Map<Object, String>> denormCache = new HashMap<>();
 	private final EntityStoreManager entityStoreManager;
 	private final SmartTypeManager smartTypeManager;
@@ -84,6 +86,7 @@ final class CSVExporter {
 		csvEncoder = codecManager.getCsvEncoder();
 		this.entityStoreManager = entityStoreManager;
 		this.smartTypeManager = smartTypeManager;
+		exportAdapters = smartTypeManager.getTypeAdapters("export");
 		this.charset = charset;
 	}
 
@@ -103,8 +106,8 @@ final class CSVExporter {
 				// excel
 				writer.append('\uFEFF');
 			}
-			final boolean isMultiData = documentParameters.sheets().size() > 1;
-			for (final ExportSheet exportSheet : documentParameters.sheets()) {
+			final boolean isMultiData = documentParameters.getSheets().size() > 1;
+			for (final ExportSheet exportSheet : documentParameters.getSheets()) {
 				exportHeader(exportSheet, writer);
 				exportData(exportSheet, writer);
 				if (isMultiData) {
@@ -162,8 +165,8 @@ final class CSVExporter {
 		for (final ExportField exportColumn : parameters.getExportFields()) {
 			final DtField dtField = exportColumn.getDtField();
 			out.write(sep);
-			sValue = ExporterUtil.getText(entityStoreManager, smartTypeManager, referenceCache, denormCache, dto, exportColumn);
-			if (dtField.smartTypeDefinition().getScope().isBasicType() && dtField.smartTypeDefinition().getBasicType() == BasicType.BigDecimal) {
+			sValue = ExporterUtil.getText(entityStoreManager, smartTypeManager, exportAdapters, referenceCache, denormCache, dto, exportColumn);
+			if (dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getBasicType() == BasicType.BigDecimal) {
 				out.write(encodeNumber(sValue));
 			} else {
 				out.write(encodeString(sValue));

@@ -56,7 +56,7 @@ final class BasicTimerTask extends TimerTask {
 	/** {@inheritDoc} */
 	@Override
 	public void run() {
-		final Optional<String> initialParamsOpt = getActualParams(processDefinition.getTriggeringStrategy().initialParams(), params, mapCodec);
+		final Optional<String> initialParamsOpt = getActualParams(processDefinition.getTriggeringStrategy().getInitialParams(), params, mapCodec);
 		processExecutor.execute(processDefinition, initialParamsOpt);
 	}
 

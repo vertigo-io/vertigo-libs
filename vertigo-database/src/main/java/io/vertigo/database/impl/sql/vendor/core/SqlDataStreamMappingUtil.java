@@ -29,7 +29,7 @@ import java.sql.SQLException;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.DataStream;
-import io.vertigo.core.lang.TempFile;
+import io.vertigo.core.util.TempFile;
 
 /**
  * Gestion native des blobs.
@@ -74,7 +74,7 @@ public final class SqlDataStreamMappingUtil {
 		try (final ByteArrayOutputStream memoryOut = new ByteArrayOutputStream(MEMORY_MAX_LENTH / 4)) {
 			try {
 				copy(in, memoryOut, MEMORY_MAX_LENTH);
-				return () -> new ByteArrayInputStream(memoryOut.toByteArray());
+				return new ByteArrayDataStream(memoryOut.toByteArray());
 			} catch (final SqlOffLimitsException e) {
 				//We don't rethrow this dynamo specific exception, we just change the process
 				//Cas où le blob dépasse les limites imposées à la mémoire.
@@ -92,9 +92,9 @@ public final class SqlDataStreamMappingUtil {
 			copy(memoryIn, fileOut, FILE_MAX_LENGTH);
 			Assertion.check().isTrue(tmpFile.length() <= MEMORY_MAX_LENTH, "Le fichier n'a pas repris le debut de l'export (RAM)");
 			//2eme Etape : on copie la suite
-			copy(in, fileOut, FILE_MAX_LENGTH);
+			final long length = copy(in, fileOut, FILE_MAX_LENGTH);
 			//La longueur totale du fichier est la somme.
-			return () -> Files.newInputStream(tmpFile.toPath());
+			return new FileDataStream(tmpFile, length + bytes.length);
 		}
 	}
 
@@ -116,5 +116,45 @@ public final class SqlDataStreamMappingUtil {
 			read = in.read(bytes);//on ne relis, que si la taille est inférieur (Tous ce qui est lu, doit être écrit sinon c'est perdu)
 		}
 		return length;
+	}
+
+	private static final class ByteArrayDataStream implements DataStream {
+		private final byte[] bytes;
+
+		ByteArrayDataStream(final byte[] bytes) {
+			Assertion.check().isNotNull(bytes);
+			//-----
+			this.bytes = bytes;
+		}
+
+		@Override
+		public InputStream createInputStream() {
+			return new ByteArrayInputStream(bytes);
+		}
+
+		@Override
+		public long getLength() {
+			return bytes.length;
+		}
+	}
+
+	private static final class FileDataStream implements DataStream {
+		private final File tmpFile;
+		private final long length;
+
+		FileDataStream(final File tmpFile, final long length) {
+			this.tmpFile = tmpFile;
+			this.length = length;
+		}
+
+		@Override
+		public InputStream createInputStream() throws IOException {
+			return Files.newInputStream(tmpFile.toPath());
+		}
+
+		@Override
+		public long getLength() {
+			return length;
+		}
 	}
 }

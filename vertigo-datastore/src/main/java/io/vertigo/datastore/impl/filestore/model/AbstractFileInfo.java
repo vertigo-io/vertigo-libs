@@ -18,7 +18,7 @@
 package io.vertigo.datastore.impl.filestore.model;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.DefinitionId;
+import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
@@ -31,7 +31,7 @@ import io.vertigo.datastore.filestore.model.VFile;
 public abstract class AbstractFileInfo implements FileInfo {
 	private static final long serialVersionUID = 1L;
 	private final VFile vFile;
-	private final DefinitionId<FileInfoDefinition> fileInfoDefinitionId;
+	private final DefinitionReference<FileInfoDefinition> fileInfoDefinitionRef;
 	private FileInfoURI uri;
 
 	/**
@@ -45,7 +45,7 @@ public abstract class AbstractFileInfo implements FileInfo {
 				.isNotNull(fileInfoDefinition)
 				.isNotNull(vFile);
 		//-----
-		fileInfoDefinitionId = fileInfoDefinition.id();
+		fileInfoDefinitionRef = new DefinitionReference<>(fileInfoDefinition);
 		this.vFile = vFile;
 	}
 
@@ -62,7 +62,7 @@ public abstract class AbstractFileInfo implements FileInfo {
 				.isNotNull(storedUri)
 				.isNull(uri, "Impossible de setter deux fois l'uri de stockage")
 				.isTrue(getDefinition().getName().equals(storedUri.<FileInfoDefinition> getDefinition().getName()),
-						"L''URI ({0}) n''est pas compatible avec ce FileInfo ({1})", storedUri, fileInfoDefinitionId);
+						"L''URI ({0}) n''est pas compatible avec ce FileInfo ({1})", storedUri, fileInfoDefinitionRef);
 		//-----
 		uri = storedUri;
 	}
@@ -70,7 +70,7 @@ public abstract class AbstractFileInfo implements FileInfo {
 	/** {@inheritDoc} */
 	@Override
 	public final FileInfoDefinition getDefinition() {
-		return fileInfoDefinitionId.get();
+		return fileInfoDefinitionRef.get();
 	}
 
 	/** {@inheritDoc} */

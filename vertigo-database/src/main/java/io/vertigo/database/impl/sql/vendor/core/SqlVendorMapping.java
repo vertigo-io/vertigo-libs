@@ -17,6 +17,7 @@
  */
 package io.vertigo.database.impl.sql.vendor.core;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Clob;
 import java.sql.ResultSet;
@@ -103,40 +104,47 @@ public final class SqlVendorMapping implements SqlMapping {
 		if (value == null) {
 			final int typeSQL = getSqlType(dataType);
 			statement.setNull(index, typeSQL);
-		} else if (Integer.class.isAssignableFrom(dataType)) {
-			statement.setInt(index, (Integer) value);
-		} else if (Long.class.isAssignableFrom(dataType)) {
-			statement.setLong(index, (Long) value);
-		} else if (Boolean.class.isAssignableFrom(dataType)) {
-			if (booleanAsBit) {
-				final int intValue = Boolean.TRUE.equals(value) ? 1 : 0;
-				statement.setInt(index, intValue);
-			} else {
-				//Boolean as Boolean
-				statement.setBoolean(index, Boolean.TRUE.equals(value));
-			}
-		} else if (Double.class.isAssignableFrom(dataType)) {
-			statement.setDouble(index, (Double) value);
-		} else if (BigDecimal.class.isAssignableFrom(dataType)) {
-			statement.setBigDecimal(index, (BigDecimal) value);
-		} else if (String.class.isAssignableFrom(dataType)) {
-			statement.setString(index, (String) value);
-		} else if (LocalDate.class.isAssignableFrom(dataType)) {
-			final LocalDate localDate = (LocalDate) value;
-			statement.setDate(index, java.sql.Date.valueOf(localDate));
-		} else if (Date.class.isAssignableFrom(dataType)) {
-			final Date date = (Date) value;
-			final Timestamp ts = new Timestamp(date.getTime());
-			statement.setTimestamp(index, ts);
-		} else if (Instant.class.isAssignableFrom(dataType)) {
-			final Instant instant = (Instant) value;
-			final Timestamp ts = Timestamp.from(instant);
-			statement.setTimestamp(index, ts);
-		} else if (DataStream.class.isAssignableFrom(dataType)) {
-			final DataStream dataStream = (DataStream) value;
-			statement.setBytes(index, dataStream.getBytes());
 		} else {
-			throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
+			if (Integer.class.isAssignableFrom(dataType)) {
+				statement.setInt(index, (Integer) value);
+			} else if (Long.class.isAssignableFrom(dataType)) {
+				statement.setLong(index, (Long) value);
+			} else if (Boolean.class.isAssignableFrom(dataType)) {
+				if (booleanAsBit) {
+					final int intValue = Boolean.TRUE.equals(value) ? 1 : 0;
+					statement.setInt(index, intValue);
+				} else {
+					//Boolean as Boolean
+					statement.setBoolean(index, Boolean.TRUE.equals(value));
+				}
+			} else if (Double.class.isAssignableFrom(dataType)) {
+				statement.setDouble(index, (Double) value);
+			} else if (BigDecimal.class.isAssignableFrom(dataType)) {
+				statement.setBigDecimal(index, (BigDecimal) value);
+			} else if (String.class.isAssignableFrom(dataType)) {
+				statement.setString(index, (String) value);
+			} else if (LocalDate.class.isAssignableFrom(dataType)) {
+				final LocalDate localDate = (LocalDate) value;
+				statement.setDate(index, java.sql.Date.valueOf(localDate));
+			} else if (Date.class.isAssignableFrom(dataType)) {
+				final Date date = (Date) value;
+				final Timestamp ts = new Timestamp(date.getTime());
+				statement.setTimestamp(index, ts);
+			} else if (Instant.class.isAssignableFrom(dataType)) {
+				final Instant instant = (Instant) value;
+				final Timestamp ts = Timestamp.from(instant);
+				statement.setTimestamp(index, ts);
+			} else if (DataStream.class.isAssignableFrom(dataType)) {
+				final DataStream dataStream = (DataStream) value;
+				try {
+					//Notice : setBinaryStream() without length is NOT implemented by all the database drivers.
+					statement.setBinaryStream(index, new CloseAtEoFInputStream(dataStream.createInputStream(), (int) dataStream.getLength()), (int) dataStream.getLength());
+				} catch (final IOException e) {
+					throw new SQLException("writing error", e);
+				}
+			} else {
+				throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
+			}
 		}
 	}
 

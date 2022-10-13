@@ -18,6 +18,7 @@
 package io.vertigo.datafactory.plugins.search.elasticsearch;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -147,7 +148,7 @@ public final class ESDocumentCodec {
 		try (final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder()) {
 			xContentBuilder.startObject()
 					.field(FULL_RESULT, result)
-					.field(DOC_ID, index.getUID().getId());
+					.field(DOC_ID, Serializable.class.cast(index.getUID().getId()));
 
 			/* 3 : Les champs du dto index */
 			final DtObject dtIndex = index.getIndexDtObject();
@@ -157,7 +158,7 @@ public final class ESDocumentCodec {
 				if (!copyToFields.contains(dtField)) {//On index pas les copyFields
 					final Object value = dtField.getDataAccessor().getValue(dtIndex);
 					if (value != null) { //les valeurs null ne sont pas indexées => conséquence : on ne peut pas les rechercher
-						xContentBuilder.field(dtField.name(), encodeValue(value, dtField.smartTypeDefinition()));
+						xContentBuilder.field(dtField.getName(), encodeValue(value, dtField.getSmartTypeDefinition()));
 					}
 				}
 			}
@@ -172,12 +173,12 @@ public final class ESDocumentCodec {
 		//-----
 		Object encodedValue = value;
 		switch (smartTypeDefinition.getScope()) {
-			case BASIC_TYPE:
+			case PRIMITIVE:
 				if (value instanceof String) {
 					encodedValue = escapeInvalidUTF8Char((String) value);
 				}
 				break;
-			case VALUE_TYPE:
+			case VALUE_OBJECT:
 				final BasicTypeAdapter basicTypeAdapter = typeAdapters.get(smartTypeDefinition.getJavaClass());
 				encodedValue = basicTypeAdapter.toBasic(value);
 				break;
@@ -190,7 +191,7 @@ public final class ESDocumentCodec {
 	private static List<DtField> getNotStoredFields(final DtDefinition dtDefinition) {
 		return dtDefinition.getFields().stream()
 				//We don't store (in Result) computed fields and fields with a "notStored" domain
-				.filter(dtField -> !isIndexStoredDomain(dtField.smartTypeDefinition()) || dtField.getType() == FieldType.COMPUTED)
+				.filter(dtField -> !isIndexStoredDomain(dtField.getSmartTypeDefinition()) || dtField.getType() == FieldType.COMPUTED)
 				.collect(Collectors.toList());
 	}
 

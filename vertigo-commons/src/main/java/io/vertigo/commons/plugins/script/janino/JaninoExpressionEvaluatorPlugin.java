@@ -51,9 +51,9 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 
 		int i = 0;
 		for (final ExpressionParameter parameter : parameters) {
-			parameterNames[i] = parameter.name();
-			parameterTypes[i] = parameter.type();
-			parameterValues[i] = parameter.value();
+			parameterNames[i] = parameter.getName();
+			parameterTypes[i] = parameter.getType();
+			parameterValues[i] = parameter.getValue();
 			i++;
 		}
 

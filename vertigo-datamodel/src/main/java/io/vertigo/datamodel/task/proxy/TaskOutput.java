@@ -26,4 +26,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TaskOutput {
 	String smartType();
+
+	String name() default "out";
 }

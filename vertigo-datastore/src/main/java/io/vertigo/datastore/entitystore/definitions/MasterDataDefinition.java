@@ -25,7 +25,7 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 
 @DefinitionPrefix(MasterDataDefinition.PREFIX)
-public final class MasterDataDefinition extends AbstractDefinition<MasterDataDefinition> {
+public final class MasterDataDefinition extends AbstractDefinition {
 	public static final String PREFIX = "Md";
 
 	private final DtListURIForMasterData uri;

@@ -53,8 +53,8 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 		Assertion.check().isNotBlank(sqlQuery);
 		//-----
 		final Tuple<String, List<SqlNamedParam>> parsedQuery = parseQuery(sqlQuery);
-		rawSqlQuery = parsedQuery.val1();
-		sqlNamedParameters = parsedQuery.val2();
+		rawSqlQuery = parsedQuery.getVal1();
+		sqlNamedParameters = parsedQuery.getVal2();
 	}
 
 	/**
@@ -86,8 +86,8 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 	private SqlParameter buildSqlParameter(final SqlNamedParam namedParam, final Map<String, Tuple<Class, Object>> params) {
 		final Tuple<Class, Object> tuple = params.get(namedParam.getAttributeName());
 		Assertion.check().isNotNull(tuple, "no data found for param {0} in sql {1}", namedParam, rawSqlQuery);
-		final Object rootHolder = tuple.val2();
-		final Class rootType = tuple.val1();
+		final Object rootHolder = tuple.getVal2();
+		final Class rootType = tuple.getVal1();
 		//---
 		if (rootHolder != null) {
 			if (namedParam.isObject() || namedParam.isList()) {

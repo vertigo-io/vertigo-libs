@@ -36,7 +36,7 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
  * @author pchretien
  */
 @DefinitionPrefix(FacetedQueryDefinition.PREFIX)
-public final class FacetedQueryDefinition extends AbstractDefinition<FacetedQueryDefinition> {
+public final class FacetedQueryDefinition extends AbstractDefinition {
 	public static final String PREFIX = "Qry";
 
 	/** Liste indexée des facettes.*/

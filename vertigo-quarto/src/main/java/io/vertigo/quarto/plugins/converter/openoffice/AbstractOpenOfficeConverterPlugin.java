@@ -40,9 +40,9 @@ import com.sun.star.uno.UnoRuntime;
 import com.sun.star.util.XRefreshable;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.TempFile;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.util.TempFile;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.VFileUtil;
 import io.vertigo.datastore.impl.filestore.model.FSFile;

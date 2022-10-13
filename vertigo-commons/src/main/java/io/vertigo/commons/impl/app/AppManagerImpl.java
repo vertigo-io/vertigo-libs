@@ -104,7 +104,7 @@ public final class AppManagerImpl implements AppManager, Activeable {
 
 	@Override
 	public AppNode getCurrentNode() {
-		final String currentNodeId = Node.getNode().getNodeConfig().nodeId();
+		final String currentNodeId = Node.getNode().getNodeConfig().getNodeId();
 		return find(currentNodeId)
 				.orElseThrow(() -> new VSystemException("Current node with '{0}' cannot be found in the registry", currentNodeId));
 	}
@@ -151,23 +151,24 @@ public final class AppManagerImpl implements AppManager, Activeable {
 
 	private static AppNode toAppNode(final Node node) {
 		return new AppNode(
-				node.getNodeConfig().nodeId(),
-				node.getNodeConfig().appName(),
+				node.getNodeConfig().getNodeId(),
+				node.getNodeConfig().getAppName(),
 				NodeStatus.UP.name(),
 				Instant.now(),
 				node.getStart(),
-				node.getNodeConfig().endPointOpt(),
+				node.getNodeConfig().getEndPoint(),
 				getSkills(node));
 	}
 
 	private static List<String> getSkills(final Node node) {
-		return node.getNodeConfig().moduleConfigs().stream()
-				.map(ModuleConfig::name)
+		return node.getNodeConfig().getModuleConfigs().stream()
+				.map(ModuleConfig::getName)
 				.collect(Collectors.toList());
 	}
 
 	public enum NodeStatus {
 		UP, DOWN
+
 	}
 
 }

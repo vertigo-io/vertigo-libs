@@ -27,15 +27,15 @@ import io.vertigo.datamodel.structure.model.UID;
 /**
  * @author pchretien
  */
-public record Comment(
-		UUID uuid,
-		UID<Account> author,
-		String authorDisplayName,
-		String msg,
-		Instant creationDate,
-		Instant lastModified) {
+public final class Comment {
+	private final UUID uuid;
+	private final UID<Account> author;
+	private final String authorDisplayName;
+	private final String msg;
+	private final Instant creationDate;
+	private final Instant lastModified;
 
-	public Comment {
+	Comment(final UUID uuid, final UID<Account> author, final String authorDisplayName, final String msg, final Instant creationDate, final Instant lastModified) {
 		Assertion.check()
 				.isNotNull(uuid)
 				.isNotNull(author)
@@ -43,6 +43,13 @@ public record Comment(
 				.isNotBlank(msg)
 				.isNotNull(creationDate);
 		//lastModified is nullable
+		//-----
+		this.uuid = uuid;
+		this.author = author;
+		this.authorDisplayName = authorDisplayName;
+		this.msg = msg;
+		this.creationDate = creationDate;
+		this.lastModified = lastModified;
 	}
 
 	/**
@@ -52,4 +59,29 @@ public record Comment(
 	public static CommentBuilder builder() {
 		return new CommentBuilder();
 	}
+
+	public UUID getUuid() {
+		return uuid;
+	}
+
+	public UID<Account> getAuthor() {
+		return author;
+	}
+
+	public String getAuthorDisplayName() {
+		return authorDisplayName;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public Instant getCreationDate() {
+		return creationDate;
+	}
+
+	public Instant getLastModified() {
+		return lastModified;
+	}
+
 }

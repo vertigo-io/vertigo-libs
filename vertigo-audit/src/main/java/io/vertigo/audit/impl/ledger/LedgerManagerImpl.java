@@ -74,10 +74,10 @@ public final class LedgerManagerImpl implements LedgerManager {
 	public void pollQueue() {
 		while (!messageQueue.isEmpty()) {
 			final Tuple<String, Runnable> messageAndCallBack = messageQueue.poll();
-			final String message = messageAndCallBack.val1();
+			final String message = messageAndCallBack.getVal1();
 			if (message != null) {
 				sendData(message);
-				messageAndCallBack.val2().run();
+				messageAndCallBack.getVal2().run();
 			}
 		}
 	}

@@ -22,11 +22,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import io.vertigo.core.node.component.amplifier.AmplifierMethodAnnotation;
+import io.vertigo.core.node.component.amplifier.ProxyMethodAnnotation;
 
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@AmplifierMethodAnnotation
+@ProxyMethodAnnotation
 public @interface WebServiceProxyAnnotation {
 	String connectorName() default "main";
 }

@@ -37,6 +37,7 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
+import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.FileStorePlugin;
 import io.vertigo.datastore.impl.filestore.model.StreamFile;
@@ -84,7 +85,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	public FileInfo read(final FileInfoURI fileInfoUri) {
 		checkDefinitionStoreBinding(fileInfoUri.getDefinition());
 		// Ramène FileMetada
-		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfoUri.getKeyAs(storeMetaDataIdField.smartTypeDefinition().getJavaClass()));
+		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfoUri.getKeyAs(storeMetaDataIdField.getSmartTypeDefinition().getJavaClass()));
 		final DtObject fileMetadataDto = getEntityStoreManager().readOne(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDto, DtoFields.fdtId, Object.class);
 
@@ -93,12 +94,12 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 
 		final DtObject fileDataDto = getEntityStoreManager().readOne(dtoDataUri);
 		// Construction du vFile.
-		final DataStream dataStream = getValue(fileDataDto, DtoFields.fileData, DataStream.class);
+		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileDataDto, DtoFields.fileData, DataStream.class));
 		final String fileName = getValue(fileMetadataDto, DtoFields.fileName, String.class);
 		final String mimeType = getValue(fileMetadataDto, DtoFields.mimeType, String.class);
 		final Instant lastModified = getValue(fileMetadataDto, DtoFields.lastModified, Instant.class);
 		final Long length = getValue(fileMetadataDto, DtoFields.length, Long.class);
-		final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, dataStream);
+		final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 		//TODO passer par une factory de FileInfo à partir de la FileInfoDefinition (comme DomainFactory)
 		final FileInfo fileInfo = new DatabaseFileInfo(fileInfoUri.getDefinition(), vFile);
@@ -136,7 +137,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		//-----
 		setIdValue(fileMetadataDto, fileInfo.getURI());
 		// Chargement du FDT_ID
-		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfo.getURI().getKeyAs(storeMetaDataIdField.smartTypeDefinition().getJavaClass()));
+		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfo.getURI().getKeyAs(storeMetaDataIdField.getSmartTypeDefinition().getJavaClass()));
 		final DtObject fileMetadataDtoOld = getEntityStoreManager().readOne(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDtoOld, DtoFields.fdtId, Object.class);
 		setValue(fileMetadataDto, DtoFields.fdtId, fdtId);
@@ -155,7 +156,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		checkReadonly();
 		checkDefinitionStoreBinding(fileInfoUri.getDefinition());
 		//-----
-		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfoUri.getKeyAs(storeMetaDataIdField.smartTypeDefinition().getJavaClass()));
+		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfoUri.getKeyAs(storeMetaDataIdField.getSmartTypeDefinition().getJavaClass()));
 		final DtObject fileMetadataDtoOld = getEntityStoreManager().readOne(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDtoOld, DtoFields.fdtId, Object.class);
 		final UID<Entity> dtoDataUri = UID.of(storeFileDtDefinition, fdtId);
@@ -183,7 +184,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		final Entity fileDataDto = DtObjectUtil.createEntity(storeFileDtDefinition);
 		final VFile vFile = fileInfo.getVFile();
 		setValue(fileDataDto, DtoFields.fileName, vFile.getFileName());
-		setValue(fileDataDto, DtoFields.fileData, vFile);
+		setValue(fileDataDto, DtoFields.fileData, new VFileDataStream(vFile));
 		return fileDataDto;
 	}
 }

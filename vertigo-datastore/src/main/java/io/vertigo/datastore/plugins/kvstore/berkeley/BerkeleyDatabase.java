@@ -46,18 +46,21 @@ import io.vertigo.core.lang.WrappedException;
 
 /**
  * Objet d'accès en lecture/écriture à la base Berkeley.
+ *
  * @author pchretien
  */
 final class BerkeleyDatabase {
 	private static final Logger LOGGER = LogManager.getLogger(BerkeleyDatabase.class);
 	private final VTransactionResourceId<BerkeleyResource> berkeleyResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "berkeley-db");
 	private final TupleBinding<Serializable> dataBinding;
+	private final TupleBinding<Serializable> dataTimeCheckBinding;
 	private static final EntryBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 	private final VTransactionManager transactionManager;
 	private Database database;
 
 	/**
 	 * Constructor.
+	 *
 	 * @param database Berkeley DataBase
 	 * @param timeToLiveSeconds Time to live seconds
 	 * @param transactionManager Transaction manager
@@ -71,6 +74,7 @@ final class BerkeleyDatabase {
 		this.transactionManager = transactionManager;
 		this.database = database;
 		dataBinding = new BerkeleyTimedDataBinding(timeToLiveSeconds, new BerkeleySerializableBinding(codecManager.getCompressedSerializationCodec()));
+		dataTimeCheckBinding = new BerkeleyTimeCheckDataBinding(timeToLiveSeconds);
 	}
 
 	/**
@@ -93,6 +97,7 @@ final class BerkeleyDatabase {
 
 	/**
 	 * Récupération d'un Objet par sa clé.
+	 *
 	 * @param <C> D Type des objets à récupérer
 	 * @param id Id de l'objet à récupérer
 	 * @param clazz Type des objets à récupérer
@@ -226,40 +231,38 @@ final class BerkeleyDatabase {
 
 	/**
 	 * Remove too old elements.
+	 *
 	 * @param maxRemovedTooOldElements max elements too removed
 	 */
-	public void removeTooOldElements(final int maxRemovedTooOldElements) {
+	public void removeTooOldElements() {
 		final DatabaseEntry foundKey = new DatabaseEntry();
 		final DatabaseEntry foundData = new DatabaseEntry();
-		int checked = 0;
+		int removed = 0;
 		final Transaction transaction = database.getEnvironment().beginTransaction(null, null);
 		try {
 			try (Cursor cursor = database.openCursor(transaction, null)) {
-				//Les elements sont parcouru dans l'ordre d'insertion (sans lock) (donc globalement les plus vieux en premier)
-				//dès qu'on en trouve un trop récent, on stop
-				while (checked < maxRemovedTooOldElements && cursor.getNext(foundKey, foundData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
-					final Serializable value = readTimedDataSafely(foundKey, foundData);
-					if (value == null) {//null si erreur de lecture, ou si trop vieux
+				while (cursor.getNext(foundKey, foundData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
+					if (doNeedToRemove(foundKey, foundData)) {
 						cursor.delete();
-						checked++;
+						removed++;
 					}
 				}
 			}
 		} finally {
 			transaction.commit();
-			LOGGER.info("Berkeley database ({}) purge {} elements", database.getDatabaseName(), checked);
+			LOGGER.info("Berkeley database ({}) purge {} elements", database.getDatabaseName(), removed);
 		}
 	}
 
-	private Serializable readTimedDataSafely(final DatabaseEntry theKey, final DatabaseEntry theData) {
+	private boolean doNeedToRemove(final DatabaseEntry theKey, final DatabaseEntry theData) {
 		String key = "IdError";
 		try {
-			key = keyBinding.entryToObject(theKey);
-			return dataBinding.entryToObject(theData);
+			key = keyBinding.entryToObject(theKey); // test if key is readable
+			return !(boolean) dataTimeCheckBinding.entryToObject(theData); // return true if data is too old
 		} catch (final RuntimeException e) {
 			LOGGER.warn("Berkeley database (" + database.getDatabaseName() + ") read error, remove tokenKey : " + key, e);
+			return true;
 		}
-		return null;
 	}
 
 }

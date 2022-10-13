@@ -19,7 +19,7 @@ package io.vertigo.datamodel.criteria.data;
 
 import java.util.Iterator;
 
-import io.vertigo.core.lang.ListBuilder;
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datamodel.criteria.data.movies.Movie2;
 
 public final class DtDefinitions implements Iterable<Class<?>> {

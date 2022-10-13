@@ -28,4 +28,5 @@ public @interface Formatter {
 	Class<? extends io.vertigo.datamodel.structure.definitions.Formatter> clazz();
 
 	String arg() default "";
+
 }

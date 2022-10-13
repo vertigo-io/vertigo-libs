@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 
 /**
  * Liste des erreurs d'un objet métier.
@@ -31,8 +31,8 @@ import io.vertigo.core.locale.LocaleMessageText;
  */
 public final class DtObjectErrors {
 
-	private final List<LocaleMessageText> objectErrors = new ArrayList<>();
-	private final Map<String, List<LocaleMessageText>> fieldsErrors = new LinkedHashMap<>();
+	private final List<MessageText> objectErrors = new ArrayList<>();
+	private final Map<String, List<MessageText>> fieldsErrors = new LinkedHashMap<>();
 
 	/**
 	 * Returns if the object has any error
@@ -73,7 +73,7 @@ public final class DtObjectErrors {
 	 * Add a global error on the object (for example two fields values that a not compatibles)
 	 * @param messageText the error message
 	 */
-	public void addError(final LocaleMessageText messageText) {
+	public void addError(final MessageText messageText) {
 		objectErrors.add(messageText);
 	}
 
@@ -82,8 +82,8 @@ public final class DtObjectErrors {
 	 * @param fieldName the fieldName (camelCase) concerned by the error
 	 * @param messageText the error message
 	 */
-	public void addError(final String fieldName, final LocaleMessageText messageText) {
-		List<LocaleMessageText> errors = fieldsErrors.get(fieldName);
+	public void addError(final String fieldName, final MessageText messageText) {
+		List<MessageText> errors = fieldsErrors.get(fieldName);
 		if (errors == null) {
 			errors = new ArrayList<>();
 			fieldsErrors.put(fieldName, errors);
@@ -97,11 +97,11 @@ public final class DtObjectErrors {
 	 * @param uiMessageStack the stack in which messages must be stored
 	 */
 	public void flushIntoMessageStack(final String contextKey, final UiMessageStack uiMessageStack) {
-		for (final LocaleMessageText errorMessage : objectErrors) {
+		for (final MessageText errorMessage : objectErrors) {
 			uiMessageStack.addGlobalMessage(UiMessageStack.Level.ERROR, errorMessage.getDisplay());
 		}
-		for (final Map.Entry<String, List<LocaleMessageText>> entry : fieldsErrors.entrySet()) {
-			for (final LocaleMessageText errorMessage : entry.getValue()) {
+		for (final Map.Entry<String, List<MessageText>> entry : fieldsErrors.entrySet()) {
+			for (final MessageText errorMessage : entry.getValue()) {
 				uiMessageStack.addFieldMessage(UiMessageStack.Level.ERROR, errorMessage.getDisplay(), contextKey, entry.getKey());
 			}
 		}

@@ -14,6 +14,9 @@ import VMapLayer from './components/VMapLayer.vue'
 import VTree from './components/VTree.vue'
 import VFileUpload from './components/VFileUpload.vue'
 
+import VAlertUnsavedUpdates from './directives/VAlertUnsavedUpdates'
+import VAutofocus from './directives/VAutofocus'
+import VIfUnsavedUpdates from './directives/VIfUnsavedUpdates'
 import VMinify from './directives/VMinify'
 import VScrollSpy from './directives/VScrollSpy'
 
@@ -49,9 +52,12 @@ var VertigoUi = {
     vueApp.component("v-file-upload", VFileUpload);
 
     // directives
+    vueApp.directive("alert-unsaved-updates", VAlertUnsavedUpdates);
+    vueApp.directive("autofocus", VAutofocus);
+    vueApp.directive("if-unsaved-updates", VIfUnsavedUpdates);
     vueApp.directive("minify", VMinify);
     vueApp.directive("scroll-spy", VScrollSpy);
-
+    
     if (!options.axios) {
         console.error('You have to install axios')
         return

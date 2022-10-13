@@ -28,7 +28,9 @@
         th::options="|componentStates.${myComponentId}.options|"
         th:@filter="|function (val, update, abort) { searchAutocomplete('${list}', '${myValueField}', '${myValueField}', '${myComponentId}', '@{/autocomplete/_searchFullText}', val, update, abort)}|"
         th:attr="__${input_attrs}__"
-     ></q-select>
+     >
+     <vu:content/>
+     </q-select>
      <q-select th:if="${myStaticData}"
        	th:v-model="|vueData.${object}.${field}|"
 		th:label="${myLabel}"
@@ -46,7 +48,9 @@
         input-debounce="0"
         th::options="|transformListForSelection('${list}', '${myValueField}', '${myValueField}', ${filterFunction?:null})|"
         th:attr="__${input_attrs}__"
-     ></q-select>
+     >
+     <vu:content/>
+     </q-select>
 	<input th:v-for="|id in vueData.${object}.${field}|" type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="id" />
 	<input th::v-if="|vueData.${object}.${field}.length == 0|" type="hidden" th:name="|vContext[${object}][${field}]|" value="" />
 </th:block> 

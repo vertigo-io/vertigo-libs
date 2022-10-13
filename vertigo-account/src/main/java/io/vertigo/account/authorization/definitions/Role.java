@@ -31,7 +31,7 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
  * @author prahmoune, npiedeloup
  */
 @DefinitionPrefix(Role.PREFIX)
-public final class Role extends AbstractDefinition<Role> {
+public final class Role extends AbstractDefinition {
 	public static final String PREFIX = "R";
 	private final String description;
 	private final List<Authorization> authorizations;

@@ -20,7 +20,7 @@ package io.vertigo.orchestra.webservices;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.vertigo.core.lang.MapBuilder;
+import io.vertigo.core.util.MapBuilder;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.GET;

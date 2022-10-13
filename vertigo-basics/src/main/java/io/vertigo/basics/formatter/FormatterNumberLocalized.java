@@ -26,7 +26,7 @@ import java.util.StringTokenizer;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.Node;
 
 /**
@@ -49,8 +49,8 @@ public class FormatterNumberLocalized extends FormatterNumber {
 	//Pour chaque locale on conserve les symboles utilisés
 	private Map<Locale, DecimalFormatSymbols> decimalFormatSymbolsMap;
 
-	private LocaleMessageText decimalSep;
-	private LocaleMessageText groupSep;
+	private MessageText decimalSep;
+	private MessageText groupSep;
 
 	/**
 	 * Constructeur.
@@ -74,13 +74,13 @@ public class FormatterNumberLocalized extends FormatterNumber {
 
 			//séparateur de décimal
 			if (st.hasMoreTokens()) {
-				decimalSep = LocaleMessageText.of(st.nextToken().trim());//trim => l'espace ne peut être un séparateur de décimal
+				decimalSep = MessageText.of(st.nextToken().trim());//trim => l'espace ne peut être un séparateur de décimal
 				Assertion.check().isNotBlank(decimalSep.getDisplay(), "Il faut au moins un séparateur de décimal");
 			}
 
 			//séparateur de millier
 			if (st.hasMoreTokens()) {
-				groupSep = LocaleMessageText.of(st.nextToken());//pas de trim car il est probable que l'espace soit utilisé
+				groupSep = MessageText.of(st.nextToken());//pas de trim car il est probable que l'espace soit utilisé
 			}
 		}
 	}

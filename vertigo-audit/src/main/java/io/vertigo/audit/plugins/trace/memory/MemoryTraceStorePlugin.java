@@ -26,7 +26,7 @@ import io.vertigo.audit.impl.trace.TraceStorePlugin;
 import io.vertigo.audit.trace.Trace;
 import io.vertigo.audit.trace.TraceCriteria;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.ListBuilder;
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.core.util.StringUtil;
 
 /**

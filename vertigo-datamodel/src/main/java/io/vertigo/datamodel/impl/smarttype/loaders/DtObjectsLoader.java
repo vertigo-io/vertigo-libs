@@ -32,10 +32,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Selector;
-import io.vertigo.core.lang.Selector.ClassConditions;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.util.ClassUtil;
+import io.vertigo.core.util.Selector;
+import io.vertigo.core.util.Selector.ClassConditions;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinition;
 import io.vertigo.datamodel.smarttype.annotations.Adapter;
@@ -126,7 +126,7 @@ public final class DtObjectsLoader implements Loader {
 		Arrays.sort(methods, Comparator.comparing(Method::getName));
 
 		//DefinitionLinks
-		final List<String> definitionLinks = extractDefinitionLinks(fields, methods);
+		final List<String> definitionLinks = extractDefinitionLinks(clazz, fields, methods);
 
 		dynamicModelRepository.put(dtDefinitionName,
 				extractDynamicDefinition(clazz, packageName, dtDefinitionName, fields, methods, definitionLinks));
@@ -144,8 +144,14 @@ public final class DtObjectsLoader implements Loader {
 
 	}
 
-	private static List<String> extractDefinitionLinks(final List<Field> fields, final Method[] methods) {
+	private static List<String> extractDefinitionLinks(final Class clazz, final List<Field> fields, final Method[] methods) {
 		final List<String> definitionLinks = new ArrayList<>();
+
+		for (final Annotation annotation : clazz.getAnnotations()) {
+			if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Fragment) {
+				definitionLinks.add(io.vertigo.datamodel.structure.stereotype.Fragment.class.cast(annotation).fragmentOf());
+			}
+		}
 
 		for (final Field field : fields) {
 			for (final Annotation annotation : field.getAnnotations()) {
@@ -253,7 +259,7 @@ public final class DtObjectsLoader implements Loader {
 						ds -> {
 							final SmartTypeDefinitionBuilder smartTypeDefinitionBuilder = SmartTypeDefinition.builder(smartTypeName, clazz);
 							smartTypeDefinitionBuilder
-									.withScope(Scope.DATA_TYPE);
+									.withScope(Scope.DATA_OBJECT);
 							for (final Adapter adapter : adapters) {
 								smartTypeDefinitionBuilder.addAdapter(adapter.type(), adapter.clazz(), adapter.targetBasicType());
 							}
@@ -297,13 +303,18 @@ public final class DtObjectsLoader implements Loader {
 	}
 
 	private static void parseAssociationDefinition(final Map<String, DynamicDefinition> dynamicModelRepository, final Annotation annotation) {
-		if (annotation instanceof final io.vertigo.datamodel.structure.stereotype.Association association) {
+		if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Association) {
+			final io.vertigo.datamodel.structure.stereotype.Association association = (io.vertigo.datamodel.structure.stereotype.Association) annotation;
+			//============================================================
+			//Attention pamc inverse dans oom les déclarations des objets !!
+
 			if (!dynamicModelRepository.containsKey(association.name())) {
 				//Les associations peuvent être déclarées sur les deux noeuds de l'association.
 				dynamicModelRepository.put(association.name(),
 						createAssociationSimpleDefinition(association));
 			}
-		} else if (annotation instanceof final io.vertigo.datamodel.structure.stereotype.AssociationNN association) {
+		} else if (annotation instanceof io.vertigo.datamodel.structure.stereotype.AssociationNN) {
+			final io.vertigo.datamodel.structure.stereotype.AssociationNN association = (io.vertigo.datamodel.structure.stereotype.AssociationNN) annotation;
 			if (!dynamicModelRepository.containsKey(association.name())) {
 				//Les associations peuvent être déclarées sur les deux noeuds de l'association.
 				dynamicModelRepository.put(association.name(),
@@ -342,13 +353,13 @@ public final class DtObjectsLoader implements Loader {
 
 					final DtDefinition dtDefinitionA = definitionSpace.resolve(association.primaryDtDefinitionName(), DtDefinition.class);
 					final String roleAOpt = association.primaryRole();
-					final String roleA = roleAOpt != null ? roleAOpt : dtDefinitionA.id().shortName();
+					final String roleA = roleAOpt != null ? roleAOpt : dtDefinitionA.getLocalName();
 					final String labelAOpt = association.primaryLabel();
-					final String labelA = labelAOpt != null ? labelAOpt : dtDefinitionA.id().shortName();
+					final String labelA = labelAOpt != null ? labelAOpt : dtDefinitionA.getLocalName();
 
 					final DtDefinition dtDefinitionB = definitionSpace.resolve(association.foreignDtDefinitionName(), DtDefinition.class);
 					final String roleBOpt = association.foreignRole();
-					final String roleB = roleBOpt != null ? roleBOpt : dtDefinitionB.id().shortName();
+					final String roleB = roleBOpt != null ? roleBOpt : dtDefinitionB.getLocalName();
 					final String labelB = association.foreignLabel();
 
 					final AssociationNode associationNodeA = new AssociationNode(dtDefinitionA, navigabilityA, roleA, labelA, AssociationUtil.isMultiple(multiplicityA), AssociationUtil.isNotNull(multiplicityA));

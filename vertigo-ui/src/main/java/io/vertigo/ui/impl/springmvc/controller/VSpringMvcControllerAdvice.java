@@ -83,7 +83,7 @@ public final class VSpringMvcControllerAdvice {
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	public static Object handleSessionException(final SessionException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
 		response.sendError(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
-		LOGGER.error("User try an unauthorized action", ex);
+		LOGGER.error("User try an unauthorized action " + request.getMethod() + " " + request.getRequestURL(), LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
 		return handleThrowable(ex, request, false); //don't throw Ex here
 	}
 
@@ -92,7 +92,7 @@ public final class VSpringMvcControllerAdvice {
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	public static Object handleSessionException(final VSecurityException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
 		response.sendError(HttpStatus.FORBIDDEN.value(), ex.getMessage());
-		LOGGER.error("User try a forbidden action", ex);
+		LOGGER.error("User try a forbidden action " + request.getMethod() + " " + request.getRequestURL(), LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
 		return handleThrowable(ex, request, false); //don't throw Ex here
 	}
 
@@ -100,6 +100,7 @@ public final class VSpringMvcControllerAdvice {
 	@ExceptionHandler(Throwable.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public static Object handleThrowable(final Throwable th, final HttpServletRequest request) throws Throwable {
+		LOGGER.error("Server error " + request.getMethod() + " " + request.getRequestURL(), th);
 		return handleThrowable(th, request, true);
 	}
 

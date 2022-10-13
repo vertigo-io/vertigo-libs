@@ -1,8 +1,8 @@
 {
   "name": "@vertigo-io/vertigo-ui-server-ssr",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "dependencies": {
-    "vue-template-compiler": "^2.6.14",
+    "vue-template-compiler": "^2.7.10",
     "express": "^4.17.2"
   },
   "eslintConfig": {

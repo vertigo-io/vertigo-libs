@@ -48,7 +48,7 @@ import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.definition.DefinitionId;
+import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.param.ParamValue;
 
 /**
@@ -187,18 +187,18 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 	private static Gson createGson() {
 		return new GsonBuilder()
 				.setPrettyPrinting()
-				.registerTypeAdapter(DefinitionId.class, new DefinitionReferenceJsonSerializer())
+				.registerTypeAdapter(DefinitionReference.class, new DefinitionReferenceJsonSerializer())
 				.registerTypeAdapter(Optional.class, new OptionJsonSerializer())
 				.registerTypeAdapter(Instant.class, new InstantJsonAdapter())
 				.addSerializationExclusionStrategy(new JsonExclusionStrategy())
 				.create();
 	}
 
-	private static final class DefinitionReferenceJsonSerializer implements JsonSerializer<DefinitionId> {
+	private static final class DefinitionReferenceJsonSerializer implements JsonSerializer<DefinitionReference> {
 		/** {@inheritDoc} */
 		@Override
-		public JsonElement serialize(final DefinitionId src, final Type typeOfSrc, final JsonSerializationContext context) {
-			return context.serialize(src.fullName());
+		public JsonElement serialize(final DefinitionReference src, final Type typeOfSrc, final JsonSerializationContext context) {
+			return context.serialize(src.get().getName());
 		}
 	}
 

@@ -28,20 +28,19 @@ import io.vertigo.core.lang.Assertion;
 /**
  * @author npiedeloup
  */
-final class BerkeleyTimedDataBinding extends TupleBinding<Serializable> {
-	private static final String PREFIX = "TimedValue:";
+final class BerkeleyTimedDataBinding extends BerkeleyTimeCheckDataBinding {
 	private final TupleBinding<Serializable> serializableBinding;
-	private final long timeToLiveSeconds;
 
 	/**
 	 * @param timeToLiveSeconds Time to live, is data too old return a null data
 	 * @param serializableBinding TupleBinding for serializable value
 	 */
 	BerkeleyTimedDataBinding(final long timeToLiveSeconds, final TupleBinding<Serializable> serializableBinding) {
+		super(timeToLiveSeconds);
+		//-----
 		Assertion.check().isNotNull(serializableBinding);
 		//-----
 		this.serializableBinding = serializableBinding;
-		this.timeToLiveSeconds = timeToLiveSeconds;
 	}
 
 	/** {@inheritDoc} */
@@ -65,7 +64,4 @@ final class BerkeleyTimedDataBinding extends TupleBinding<Serializable> {
 		serializableBinding.objectToEntry(value, to);
 	}
 
-	private boolean isValueTooOld(final long createTime) {
-		return timeToLiveSeconds > 0 && (System.currentTimeMillis() - createTime) >= timeToLiveSeconds * 1000;
-	}
 }

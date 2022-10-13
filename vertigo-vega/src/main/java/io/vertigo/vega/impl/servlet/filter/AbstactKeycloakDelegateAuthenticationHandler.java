@@ -54,6 +54,7 @@ import io.vertigo.core.lang.WrappedException;
  * @version $Revision: 1 $
  *
  */
+@Deprecated
 public abstract class AbstactKeycloakDelegateAuthenticationHandler implements DelegateAuthenticationFilterHandler {
 
 	protected final static Logger log = LogManager.getLogger("" + KeycloakOIDCFilter.class);

@@ -24,8 +24,8 @@ import java.net.URLConnection;
 import java.time.Instant;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataStream;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 
 /**
  * VFile implementation from a provided InputStreamBuilder.
@@ -34,7 +34,7 @@ import io.vertigo.core.lang.WrappedException;
 public final class StreamFile extends AbstractVFile {
 	private static final long serialVersionUID = -4565434303879706815L;
 
-	private final DataStream dataStream;
+	private final InputStreamBuilder inputStreamBuilder;
 
 	/**
 	 * Constructor.
@@ -42,21 +42,21 @@ public final class StreamFile extends AbstractVFile {
 	 * @param mimeType Mime type
 	 * @param lastModified Last modified date
 	 * @param length file size
-	 * @param dataStream Data stream builder
+	 * @param inputStreamBuilder Data stream builder
 	 */
-	public StreamFile(final String fileName, final String mimeType, final Instant lastModified, final long length, final DataStream dataStream) {
+	public StreamFile(final String fileName, final String mimeType, final Instant lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
 		super(fileName, mimeType, lastModified, length);
-		this.dataStream = dataStream;
+		this.inputStreamBuilder = inputStreamBuilder;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public InputStream createInputStream() throws IOException {
-		return dataStream.createInputStream();
+		return inputStreamBuilder.createInputStream();
 	}
 
-	public static StreamFile of(final String fileName, final Instant lastModified, final long length, final DataStream dataStream) {
-		return of(fileName, URLConnection.guessContentTypeFromName(fileName), lastModified, length, dataStream);
+	public static StreamFile of(final String fileName, final Instant lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
+		return of(fileName, URLConnection.guessContentTypeFromName(fileName), lastModified, length, inputStreamBuilder);
 	}
 
 	public static StreamFile of(final String fileName, final String typeMime, final URL resourceUrl) {
@@ -74,11 +74,11 @@ public final class StreamFile extends AbstractVFile {
 			throw WrappedException.wrap(e, "Can't get file meta from url");
 		}
 		Assertion.check().isTrue(length >= 0, "Can't get file meta from url");
-		final DataStream inputStreamBuilder = resourceUrl::openStream;
+		final InputStreamBuilder inputStreamBuilder = resourceUrl::openStream;
 		return of(fileName, typeMime, lastModified, length, inputStreamBuilder);
 	}
 
-	public static StreamFile of(final String fileName, final String typeMime, final Instant lastModified, final long length, final DataStream dataStream) {
-		return new StreamFile(fileName, typeMime, lastModified, length, dataStream);
+	public static StreamFile of(final String fileName, final String typeMime, final Instant lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
+		return new StreamFile(fileName, typeMime, lastModified, length, inputStreamBuilder);
 	}
 }

@@ -52,7 +52,7 @@ public final class DataProviderImpl implements DataProvider {
 				.isNotNull(appNameOpt)
 				.isNotNull(timeSeriesManager);
 		//---
-		appName = appNameOpt.orElseGet(() -> Node.getNode().getNodeConfig().appName());
+		appName = appNameOpt.orElseGet(() -> Node.getNode().getNodeConfig().getAppName());
 		this.timeSeriesManager = timeSeriesManager;
 	}
 
@@ -61,7 +61,7 @@ public final class DataProviderImpl implements DataProvider {
 		Assertion.check()
 				.isNotNull(measures)
 				.isNotNull(dataFilter)
-				.isNotNull(timeFilter.dim());// we check dim is not null because we need it
+				.isNotNull(timeFilter.getDim());// we check dim is not null because we need it
 		//---
 		return timeSeriesManager.getTimeSeries(appName, measures, dataFilter, timeFilter);
 
@@ -72,14 +72,14 @@ public final class DataProviderImpl implements DataProvider {
 		Assertion.check()
 				.isNotNull(dataFilter)
 				.isNotNull(timeFilter)
-				.isNotNull(timeFilter.dim()) // we check dim is not null because we need it
+				.isNotNull(timeFilter.getDim()) // we check dim is not null because we need it
 				.isNotNull(clusteredMeasure)
 				//---
-				.isNotBlank(clusteredMeasure.measure())
-				.isNotNull(clusteredMeasure.thresholds())
-				.isFalse(clusteredMeasure.thresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.measure());
+				.isNotBlank(clusteredMeasure.getMeasure())
+				.isNotNull(clusteredMeasure.getThresholds())
+				.isFalse(clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
 		//we use the natural order
-		clusteredMeasure.thresholds().sort(Comparator.naturalOrder());
+		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
 		//---
 		return timeSeriesManager.getClusteredTimeSeries(appName, clusteredMeasure, dataFilter, timeFilter);
 	}
@@ -112,7 +112,7 @@ public final class DataProviderImpl implements DataProvider {
 		final TimeFilter timeFilter = TimeFilter.builder("-5w", "now()").build();// before 5 weeks we consider that we don't have data
 
 		return getLastTabulardDatas(measures, dataFilter, timeFilter, "name", "feature")
-				.timedDataSeries()
+				.getTimedDataSeries()
 				.stream()
 				.map(timedDataSerie -> new HealthCheck(
 						(String) timedDataSerie.getValues().get("name"),
@@ -155,7 +155,7 @@ public final class DataProviderImpl implements DataProvider {
 		final TimeFilter timeFilter = TimeFilter.builder("- 5w", "now()").build();// before 5 weeks we consider that we don't have data
 
 		return getLastTabulardDatas(measures, dataFilter, timeFilter, "name", "feature")
-				.timedDataSeries()
+				.getTimedDataSeries()
 				.stream()
 				.filter(timedDataSerie -> timedDataSerie.getValues().get("value") != null)
 				.map(timedDataSerie -> Metric.builder()

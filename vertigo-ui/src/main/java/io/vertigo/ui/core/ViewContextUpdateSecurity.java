@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.account.authorization.VSecurityException;
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 
 /**
  * Keep the viewContext updatable data allowed.
@@ -64,13 +64,13 @@ public final class ViewContextUpdateSecurity implements Serializable {
 		final String row = splitObject[SPLIT_ROW_INDEX];
 
 		if (checkUpdates && !isAllowedField(objectKey, row, fieldName)) {
-			throw new VSecurityException(LocaleMessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, object + "." + fieldName));
+			throw new VSecurityException(MessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, object + "." + fieldName));
 		}
 	}
 
 	public void assertIsUpdatable(final String object) {
 		if (checkUpdates && !updatablesKeys.containsKey(object)) {
-			throw new VSecurityException(LocaleMessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, object));
+			throw new VSecurityException(MessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, object));
 		}
 	}
 
@@ -122,7 +122,7 @@ public final class ViewContextUpdateSecurity implements Serializable {
 				.filter(n -> !isAllowedField(n))
 				.findFirst(); //faster than findFirst
 		if (firstDisallowedField.isPresent()) {
-			throw new VSecurityException(LocaleMessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, firstDisallowedField.orElse("<<not found>>")));
+			throw new VSecurityException(MessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, firstDisallowedField.orElse("<<not found>>")));
 		}
 	}
 
@@ -130,11 +130,20 @@ public final class ViewContextUpdateSecurity implements Serializable {
 		if (allowedFields.contains(paramName)) {
 			return true;
 		}
+		if (isPrimitiveParam(paramName)) {
+			// primitive data must be in allowedFields
+			return false;
+		}
 		final String[] splitParamName = splitParamName(paramName);
 		final String object = splitParamName[SPLIT_OBJECT_INDEX];
 		final String row = splitParamName[SPLIT_ROW_INDEX];
 		final String fieldName = splitParamName[SPLIT_FIELD_INDEX];
 		return isAllowedField(object, row, fieldName);
+	}
+
+	private static boolean isPrimitiveParam(final String paramName) {
+		final int firstParam = paramName.indexOf('[');
+		return paramName.indexOf('[', firstParam + 1) == -1;
 	}
 
 	private static String[] splitObjectName(final String objectName) {

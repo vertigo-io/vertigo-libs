@@ -27,9 +27,9 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.TempFile;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.util.TempFile;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.quarto.exporter.ExporterManager;
@@ -63,7 +63,7 @@ public final class ExporterManagerImpl implements ExporterManager {
 	 */
 	private ExporterPlugin getExporterPlugin(final ExportFormat exportFormat) {
 		Assertion.check().isNotNull(exportFormat);
-		//---
+		//-----
 		return exporterPlugins
 				.stream()
 				.filter(exporterPlugin -> exporterPlugin.accept(exportFormat))
@@ -81,7 +81,7 @@ public final class ExporterManagerImpl implements ExporterManager {
 		} catch (final Exception e) {
 			// Quelle que soit l'exception on l'encapsule pour préciser le nom
 			// du fichier.
-			final String msg = "La génération du fichier a échoué.<!-- " + e.getMessage() + "--> pour le fichier " + export.fileName();
+			final String msg = "La génération du fichier a échoué.<!-- " + e.getMessage() + "--> pour le fichier " + export.getFileName();
 			throw WrappedException.wrap(e, msg);
 		}
 	}
@@ -94,9 +94,9 @@ public final class ExporterManagerImpl implements ExporterManager {
 	 * @throws Exception Exception lors de la création du fichier
 	 */
 	private VFile generateFile(final Export export) throws Exception {
-		final ExporterPlugin exporterPlugin = getExporterPlugin(export.format());
+		final ExporterPlugin exporterPlugin = getExporterPlugin(export.getFormat());
 
-		final File file = new TempFile("csvGenerated", "." + export.format().name().toLowerCase(Locale.ENGLISH));
+		final File file = new TempFile("csvGenerated", "." + export.getFormat().name().toLowerCase(Locale.ENGLISH));
 		try (final OutputStream fileOutputStream = Files.newOutputStream(file.toPath())) {
 			exporterPlugin.exportData(export, fileOutputStream);
 		} catch (final Exception e) {
@@ -105,7 +105,7 @@ public final class ExporterManagerImpl implements ExporterManager {
 			}
 			throw e;
 		}
-		return FSFile.of(export.fileName() + "." + export.format().name().toLowerCase(Locale.ENGLISH), export.format().getTypeMime(), file.toPath());
+		return FSFile.of(export.getFileName() + "." + export.getFormat().name().toLowerCase(Locale.ENGLISH), export.getFormat().getTypeMime(), file.toPath());
 	}
 
 }

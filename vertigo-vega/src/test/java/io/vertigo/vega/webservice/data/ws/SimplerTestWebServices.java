@@ -35,7 +35,7 @@ import javax.inject.Inject;
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.lang.VUserException;
-import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.webservice.WebServices;
@@ -122,7 +122,7 @@ public final class SimplerTestWebServices implements WebServices {
 	@GET("/docTest/{passPhrase}")
 	public List<Contact> docTest(@PathParam("passPhrase") final String passPhrase) {
 		if (!"RtFM".equals(passPhrase)) {
-			throw new VSecurityException(LocaleMessageText.of("Bad passPhrase, check the doc in /catalog"));
+			throw new VSecurityException(MessageText.of("Bad passPhrase, check the doc in /catalog"));
 		}
 		return contactDao.getList();
 	}
@@ -213,7 +213,7 @@ public final class SimplerTestWebServices implements WebServices {
 		}
 		if (conId < 5) {
 			//401
-			throw new VSecurityException(LocaleMessageText.of("You don't have enought rights"));
+			throw new VSecurityException(MessageText.of("You don't have enought rights"));
 		}
 		//200
 		contactDao.remove(conId);
@@ -277,7 +277,7 @@ public final class SimplerTestWebServices implements WebServices {
 		//offset + range ?
 		//code 200
 		if (contactFrom != null) {
-			throw new ValidationUserException(LocaleMessageText.of("Process validation error"), contactFrom, "firstName");
+			throw new ValidationUserException(MessageText.of("Process validation error"), contactFrom, "firstName");
 		}
 		return Collections.emptyList();
 	}
