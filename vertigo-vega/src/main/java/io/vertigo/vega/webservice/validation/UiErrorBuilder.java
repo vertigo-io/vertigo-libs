@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -81,7 +81,7 @@ public final class UiErrorBuilder {
 	 * @param dtObject Objet
 	 */
 	void clearErrors(final DtObject dtObject) {
-		uiObjectErrors.removeIf(uiError -> uiError.getDtObject().equals(dtObject));
+		uiObjectErrors.removeIf(uiError -> uiError.dtObject().equals(dtObject));
 		obtainUiErrorIndex(dtObject).clear();
 	}
 
@@ -93,7 +93,7 @@ public final class UiErrorBuilder {
 	void clearErrors(final DtObject dtObject, final DtField dtField) {
 		Assertion.check().isNotNull(dtField);
 		//-----
-		uiObjectErrors.removeIf(uiError -> uiError.getDtObject().equals(dtObject) && uiError.getDtField().equals(dtField));
+		uiObjectErrors.removeIf(uiError -> uiError.dtObject().equals(dtObject) && uiError.dtField().equals(dtField));
 		obtainUiErrorIndex(dtObject).remove(dtField);
 	}
 
@@ -103,7 +103,7 @@ public final class UiErrorBuilder {
 	 * @param dtField Champ porteur de l'erreur
 	 * @param messageText Message d'erreur
 	 */
-	public void addError(final DtObject dtObject, final DtField dtField, final MessageText messageText) {
+	public void addError(final DtObject dtObject, final DtField dtField, final LocaleMessageText messageText) {
 		uiObjectErrors.add(new UiError(dtObject, dtField, messageText));
 		obtainUiErrorIndex(dtObject).add(dtField);
 	}
@@ -253,7 +253,7 @@ public final class UiErrorBuilder {
 	 */
 	public void flushIntoMessageStack(final UiMessageStack uiMessageStack) {
 		for (final UiError uiError : uiObjectErrors) {
-			uiMessageStack.addFieldMessage(Level.ERROR, uiError.getErrorMessage().getDisplay(), uiError.getDtObject(), uiError.getFieldName());
+			uiMessageStack.addFieldMessage(Level.ERROR, uiError.errorMessage().getDisplay(), uiError.dtObject(), uiError.dtField().name());
 		}
 	}
 

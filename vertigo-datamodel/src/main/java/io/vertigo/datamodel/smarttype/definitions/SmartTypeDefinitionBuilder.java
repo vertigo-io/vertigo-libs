@@ -39,7 +39,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	private final String myName;
 	private SmartTypeDefinition.Scope myScope;
 
-	private final Class myValueObjectClass;
+	private final Class myJavaClass;
 	private final List<AdapterConfig> myAdapterConfigs = new ArrayList<>();
 
 	/** Formatter. */
@@ -56,15 +56,15 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	 * @param name the name of the smartType
 	 * @param dataType the dataType of the smartType
 	 */
-	SmartTypeDefinitionBuilder(final String name, final BasicType dataType) {
+	SmartTypeDefinitionBuilder(final String name, final BasicType basicType) {
 		Assertion.check()
 				.isNotBlank(name)
-				.isNotNull(dataType);
+				.isNotNull(basicType);
 		//---
 		myName = name;
-		myScope = SmartTypeDefinition.Scope.PRIMITIVE;
+		myScope = SmartTypeDefinition.Scope.BASIC_TYPE;
 
-		myValueObjectClass = dataType.getJavaClass();
+		myJavaClass = basicType.getJavaClass();
 	}
 
 	/**
@@ -78,8 +78,8 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 				.isNotNull(valueObjectClass);
 		//---
 		myName = name;
-		myScope = SmartTypeDefinition.Scope.VALUE_OBJECT;
-		myValueObjectClass = valueObjectClass;
+		myScope = SmartTypeDefinition.Scope.VALUE_TYPE;
+		myJavaClass = valueObjectClass;
 	}
 
 	/**
@@ -144,7 +144,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 		return new SmartTypeDefinition(
 				myName,
 				myScope,
-				myValueObjectClass.getName(),
+				myJavaClass,
 				myAdapterConfigs,
 				myformatterConfig,
 				myConstraintConfigs == null ? Collections.emptyList() : myConstraintConfigs,

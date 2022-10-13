@@ -18,34 +18,27 @@
 package io.vertigo.vega.webservice.validation;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 
 /**
  * Message d'IHM.
  * @author npiedeloup
+ * @param dtObject Message
+ * @param dtField Object portant le message
+ * @param errorMessage Champs portant le message
  */
-public final class UiError {
-	private final MessageText messageText;
-	private final DtObject dtObject;
-	private final DtField dtField;
+public record UiError(
+		DtObject dtObject,
+		DtField dtField,
+		LocaleMessageText errorMessage) {
 
-	/**
-	 * Constructeur.
-	 * @param dtObject Message
-	 * @param dtField Object portant le message
-	 * @param messageText Champs portant le message
-	 */
-	UiError(final DtObject dtObject, final DtField dtField, final MessageText messageText) {
+	public UiError {
 		Assertion.check()
 				.isNotNull(dtObject)
 				.isNotNull(dtField)
-				.isNotNull(messageText);
-		//-----
-		this.dtObject = dtObject;
-		this.dtField = dtField;
-		this.messageText = messageText;
+				.isNotNull(errorMessage);
 	}
 
 	/**
@@ -54,33 +47,5 @@ public final class UiError {
 	 */
 	public static UiErrorBuilder builder() {
 		return new UiErrorBuilder();
-	}
-
-	/**
-	 * @return Objet porteur de l'erreur
-	 */
-	public DtObject getDtObject() {
-		return dtObject;
-	}
-
-	/**
-	 * @return Champ porteur de l'erreur
-	 */
-	public DtField getDtField() {
-		return dtField;
-	}
-
-	/**
-	 * @return Message d'erreur
-	 */
-	public MessageText getErrorMessage() {
-		return messageText;
-	}
-
-	/**
-	 * @return Nom du champ
-	 */
-	public String getFieldName() {
-		return dtField.getName();
 	}
 }

@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 
 import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.account.authorization.definitions.OperationName;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.structure.model.Entity;
@@ -32,13 +32,13 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 
 public final class AuthorizationUtil {
-	private static final MessageText DEFAULT_FORBIDDEN_MESSAGE = MessageText.ofDefaultMsg("Not enough authorizations", Resources.AUTHORIZATION_DEFAULT_FORBIDDEN_MESSAGE);
+	private static final LocaleMessageText DEFAULT_FORBIDDEN_MESSAGE = LocaleMessageText.ofDefaultMsg("Not enough authorizations", Resources.AUTHORIZATION_DEFAULT_FORBIDDEN_MESSAGE);
 
 	public static void assertAuthorizations(final AuthorizationName... authorizationName) {
 		assertAuthorizations(DEFAULT_FORBIDDEN_MESSAGE, authorizationName); //no too sharp info here : may use log
 	}
 
-	public static void assertAuthorizations(final MessageText message, final AuthorizationName... authorizationName) {
+	public static void assertAuthorizations(final LocaleMessageText message, final AuthorizationName... authorizationName) {
 		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
 		if (!authorizationManager.hasAuthorization(authorizationName)) {
 			throw new VSecurityException(message);
@@ -49,7 +49,7 @@ public final class AuthorizationUtil {
 		assertOperations(entity, operation, DEFAULT_FORBIDDEN_MESSAGE); //no too sharp info here : may use log
 	}
 
-	public static <E extends Entity> void assertOperations(final E entity, final OperationName<E> operation, final MessageText message) {
+	public static <E extends Entity> void assertOperations(final E entity, final OperationName<E> operation, final LocaleMessageText message) {
 		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
 		if (!authorizationManager.isAuthorized(entity, operation)) {
 			throw new VSecurityException(message);
@@ -60,7 +60,7 @@ public final class AuthorizationUtil {
 		return assertOperationsOnOriginalEntity(entity, operation, DEFAULT_FORBIDDEN_MESSAGE); //no too sharp info here : may use log
 	}
 
-	public static <E extends Entity> E assertOperationsOnOriginalEntity(final E entity, final OperationName<E> operation, final MessageText message) {
+	public static <E extends Entity> E assertOperationsOnOriginalEntity(final E entity, final OperationName<E> operation, final LocaleMessageText message) {
 		E originalEntity;
 		if (DtObjectUtil.getId(entity) != null) {
 			final EntityStoreManager entityStoreManager = Node.getNode().getComponentSpace().resolve(EntityStoreManager.class);
@@ -98,7 +98,7 @@ public final class AuthorizationUtil {
 		assertOperationsWithLoadIfNeeded(entityAccessor, operation, DEFAULT_FORBIDDEN_MESSAGE);
 	}
 
-	public static <E extends Entity> void assertOperationsWithLoadIfNeeded(final StoreVAccessor<E> entityAccessor, final OperationName<E> operation, final MessageText message) {
+	public static <E extends Entity> void assertOperationsWithLoadIfNeeded(final StoreVAccessor<E> entityAccessor, final OperationName<E> operation, final LocaleMessageText message) {
 		if (!entityAccessor.isLoaded()) {
 			entityAccessor.load();
 		}

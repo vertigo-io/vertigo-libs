@@ -48,6 +48,7 @@ import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataStream;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
@@ -55,7 +56,6 @@ import io.vertigo.core.util.FileUtil;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
-import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.FileStorePlugin;
 import io.vertigo.datastore.impl.filestore.model.AbstractFileInfo;
@@ -150,7 +150,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			final Instant lastModified = Instant.from(DateTimeFormatter.ofPattern(INFOS_DATE_PATTERN).withZone(ZoneOffset.UTC).parse(infos.get(2)));
 			final long length = Long.parseLong(infos.get(3));
 
-			final InputStreamBuilder inputStreamBuilder = new PathInputStreamBuilder(obtainFullFilePath(uri));
+			final DataStream inputStreamBuilder = new PathInputStreamBuilder(obtainFullFilePath(uri));
 			final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 			// retourne le fileinfo avec le fichier et son URI
@@ -260,7 +260,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		return ClassUtil.classForName(fileInfoClassName, FileInfo.class);
 	}
 
-	private static final class PathInputStreamBuilder implements InputStreamBuilder {
+	private static final class PathInputStreamBuilder implements DataStream {
 		private final Path path;
 
 		PathInputStreamBuilder(final Path path) {

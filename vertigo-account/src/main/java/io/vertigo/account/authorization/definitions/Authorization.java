@@ -39,7 +39,7 @@ import io.vertigo.datamodel.structure.definitions.DtDefinition;
  * @author prahmoune, npiedeloup
  */
 @DefinitionPrefix(Authorization.PREFIX)
-public final class Authorization extends AbstractDefinition {
+public final class Authorization extends AbstractDefinition<Authorization> {
 	public static final String PREFIX = "Atz";
 	//soit authorization globale (sans règle)
 	//soit authorization = une opération sur une entity
@@ -96,7 +96,7 @@ public final class Authorization extends AbstractDefinition {
 			final DtDefinition entityDefinition,
 			final List<RuleMultiExpression> rules,
 			final Optional<String> comment) {
-		super(PREFIX + entityDefinition.getLocalName() + '$' + operation);
+		super(PREFIX + entityDefinition.id().shortName() + '$' + operation);
 		//---
 		Assertion.check()
 				.isNotBlank(operation)

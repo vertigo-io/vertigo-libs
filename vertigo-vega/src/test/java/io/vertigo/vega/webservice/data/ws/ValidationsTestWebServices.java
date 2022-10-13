@@ -20,7 +20,7 @@ package io.vertigo.vega.webservice.data.ws;
 import java.time.Duration;
 import java.time.LocalDate;
 
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.data.domain.Contact;
 import io.vertigo.vega.webservice.stereotype.POST;

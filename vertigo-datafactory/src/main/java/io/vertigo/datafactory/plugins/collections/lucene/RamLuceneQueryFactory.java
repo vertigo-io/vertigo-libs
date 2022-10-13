@@ -73,7 +73,11 @@ final class RamLuceneQueryFactory {
 		//-----
 		final Builder queryBuilder = new BooleanQuery.Builder();
 		for (final DtField dtField : searchedFieldList) {
+<<<<<<< HEAD
 			Query queryWord = createParsedKeywordsQuery(queryAnalyser, dtField.name(), keywords, pkField.isEmpty() || !dtField.equals(pkField.get()));
+=======
+			Query queryWord = createParsedKeywordsQuery(queryAnalyser, dtField.name(), keywords);
+>>>>>>> parent of cc6296d1a (Revert "Merge branch 'develop' into develop-v3-lts")
 			if (boostedField.isPresent() && dtField.equals(boostedField.get())) {
 				queryWord = new BoostQuery(queryWord, 4);
 			}

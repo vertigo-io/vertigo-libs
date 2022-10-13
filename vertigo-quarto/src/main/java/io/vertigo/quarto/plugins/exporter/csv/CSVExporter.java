@@ -106,8 +106,8 @@ final class CSVExporter {
 				// excel
 				writer.append('\uFEFF');
 			}
-			final boolean isMultiData = documentParameters.getSheets().size() > 1;
-			for (final ExportSheet exportSheet : documentParameters.getSheets()) {
+			final boolean isMultiData = documentParameters.sheets().size() > 1;
+			for (final ExportSheet exportSheet : documentParameters.sheets()) {
 				exportHeader(exportSheet, writer);
 				exportData(exportSheet, writer);
 				if (isMultiData) {

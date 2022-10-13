@@ -54,7 +54,7 @@ public class SmartTypeDefinitionProviderTest {
 		}
 	}
 
-	private NodeConfig buildNodeConfig() {
+	private static NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.addModule(new DataModelFeatures().build())
 				.addModule(ModuleConfig.builder("myModule")

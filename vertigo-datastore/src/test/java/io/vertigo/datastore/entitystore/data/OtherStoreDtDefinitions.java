@@ -19,7 +19,7 @@ package io.vertigo.datastore.entitystore.data;
 
 import java.util.Iterator;
 
-import io.vertigo.core.util.ListBuilder;
+import io.vertigo.core.lang.ListBuilder;
 import io.vertigo.datastore.entitystore.data.domain.SmartItem;
 import io.vertigo.datastore.entitystore.data.domain.car.Car;
 import io.vertigo.datastore.entitystore.data.domain.car.MotorType;

@@ -28,9 +28,9 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.lang.MapBuilder;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.util.MapBuilder;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.KeyConcept;
@@ -99,7 +99,7 @@ public final class CommentWebServices implements WebServices {
 		Assertion.check()
 				.isNotNull(uuid)
 				.isNotNull(comment)
-				.isTrue(uuid.equals(comment.getUuid().toString()), "Comment uuid ({0}) must match WebService route ({1})", comment.getUuid(), uuid);
+				.isTrue(uuid.equals(comment.uuid().toString()), "Comment uuid ({0}) must match WebService route ({1})", comment.uuid(), uuid);
 		//-----
 		commentServices.update(getLoggedAccountURI(), comment);
 		return comment;
@@ -162,9 +162,9 @@ public final class CommentWebServices implements WebServices {
 
 	private static Object stringToId(final String id, final DtDefinition dtDefinition) {
 		final Optional<DtField> idFieldOpt = dtDefinition.getIdField();
-		Assertion.check().isTrue(idFieldOpt.isPresent(), "KeyConcept {0} must have an id field, in order to support Comment extension", dtDefinition.getLocalName());
+		Assertion.check().isTrue(idFieldOpt.isPresent(), "KeyConcept {0} must have an id field, in order to support Comment extension", dtDefinition.id().shortName());
 
-		final Class dataType = idFieldOpt.get().getSmartTypeDefinition().getJavaClass();
+		final Class dataType = idFieldOpt.get().smartTypeDefinition().getJavaClass();
 		if (String.class.isAssignableFrom(dataType)) {
 			return id;
 		} else if (Integer.class.isAssignableFrom(dataType)) {
@@ -172,12 +172,12 @@ public final class CommentWebServices implements WebServices {
 		} else if (Long.class.isAssignableFrom(dataType)) {
 			return Long.valueOf(id);
 		}
-		throw new IllegalArgumentException("the id of the keyConcept " + dtDefinition.getLocalName() + " must be String, Long or Integer");
+		throw new IllegalArgumentException("the id of the keyConcept " + dtDefinition.id().shortName() + " must be String, Long or Integer");
 	}
 
 	private UID<Account> getLoggedAccountURI() {
 		return authenticationManager.getLoggedAccount()
-				.orElseThrow(() -> new VSecurityException(MessageText.of("No account logged in")))
+				.orElseThrow(() -> new VSecurityException(LocaleMessageText.of("No account logged in")))
 				.getUID();
 	}
 

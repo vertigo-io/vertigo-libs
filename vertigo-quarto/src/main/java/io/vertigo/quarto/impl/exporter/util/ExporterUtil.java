@@ -147,7 +147,7 @@ public final class ExporterUtil {
 		} catch (final Exception e) {
 			// TODO : solution ? => ouvrir pour surcharge de cette gestion
 			value = "Non Exportable";
-			LOGGER.warn("Field " + dtField.getName() + " non exportable", e);
+			LOGGER.warn("Field " + dtField.name() + " non exportable", e);
 		}
 		return value;
 	}
@@ -172,7 +172,7 @@ public final class ExporterUtil {
 			final DtField displayField) {
 		final Map<Object, String> denormIndex = new HashMap<>(valueList.size());
 		for (final DtObject dto : valueList) {
-			final String svalue = smartTypeManager.valueToString(displayField.getSmartTypeDefinition(), displayField.getDataAccessor().getValue(dto));
+			final String svalue = smartTypeManager.valueToString(displayField.smartTypeDefinition(), displayField.getDataAccessor().getValue(dto));
 			denormIndex.put(keyField.getDataAccessor().getValue(dto), svalue);
 		}
 		return denormIndex;

@@ -32,10 +32,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Selector;
+import io.vertigo.core.lang.Selector.ClassConditions;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.core.util.Selector;
-import io.vertigo.core.util.Selector.ClassConditions;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinition;
 import io.vertigo.datamodel.smarttype.annotations.Adapter;
@@ -259,7 +259,7 @@ public final class DtObjectsLoader implements Loader {
 						ds -> {
 							final SmartTypeDefinitionBuilder smartTypeDefinitionBuilder = SmartTypeDefinition.builder(smartTypeName, clazz);
 							smartTypeDefinitionBuilder
-									.withScope(Scope.DATA_OBJECT);
+									.withScope(Scope.DATA_TYPE);
 							for (final Adapter adapter : adapters) {
 								smartTypeDefinitionBuilder.addAdapter(adapter.type(), adapter.clazz(), adapter.targetBasicType());
 							}
@@ -303,18 +303,13 @@ public final class DtObjectsLoader implements Loader {
 	}
 
 	private static void parseAssociationDefinition(final Map<String, DynamicDefinition> dynamicModelRepository, final Annotation annotation) {
-		if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Association) {
-			final io.vertigo.datamodel.structure.stereotype.Association association = (io.vertigo.datamodel.structure.stereotype.Association) annotation;
-			//============================================================
-			//Attention pamc inverse dans oom les déclarations des objets !!
-
+		if (annotation instanceof final io.vertigo.datamodel.structure.stereotype.Association association) {
 			if (!dynamicModelRepository.containsKey(association.name())) {
 				//Les associations peuvent être déclarées sur les deux noeuds de l'association.
 				dynamicModelRepository.put(association.name(),
 						createAssociationSimpleDefinition(association));
 			}
-		} else if (annotation instanceof io.vertigo.datamodel.structure.stereotype.AssociationNN) {
-			final io.vertigo.datamodel.structure.stereotype.AssociationNN association = (io.vertigo.datamodel.structure.stereotype.AssociationNN) annotation;
+		} else if (annotation instanceof final io.vertigo.datamodel.structure.stereotype.AssociationNN association) {
 			if (!dynamicModelRepository.containsKey(association.name())) {
 				//Les associations peuvent être déclarées sur les deux noeuds de l'association.
 				dynamicModelRepository.put(association.name(),
@@ -353,13 +348,13 @@ public final class DtObjectsLoader implements Loader {
 
 					final DtDefinition dtDefinitionA = definitionSpace.resolve(association.primaryDtDefinitionName(), DtDefinition.class);
 					final String roleAOpt = association.primaryRole();
-					final String roleA = roleAOpt != null ? roleAOpt : dtDefinitionA.getLocalName();
+					final String roleA = roleAOpt != null ? roleAOpt : dtDefinitionA.id().shortName();
 					final String labelAOpt = association.primaryLabel();
-					final String labelA = labelAOpt != null ? labelAOpt : dtDefinitionA.getLocalName();
+					final String labelA = labelAOpt != null ? labelAOpt : dtDefinitionA.id().shortName();
 
 					final DtDefinition dtDefinitionB = definitionSpace.resolve(association.foreignDtDefinitionName(), DtDefinition.class);
 					final String roleBOpt = association.foreignRole();
-					final String roleB = roleBOpt != null ? roleBOpt : dtDefinitionB.getLocalName();
+					final String roleB = roleBOpt != null ? roleBOpt : dtDefinitionB.id().shortName();
 					final String labelB = association.foreignLabel();
 
 					final AssociationNode associationNodeA = new AssociationNode(dtDefinitionA, navigabilityA, roleA, labelA, AssociationUtil.isMultiple(multiplicityA), AssociationUtil.isNotNull(multiplicityA));

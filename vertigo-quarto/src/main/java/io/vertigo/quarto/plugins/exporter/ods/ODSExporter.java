@@ -92,11 +92,11 @@ final class ODSExporter {
 	 */
 	void exportData(final Export documentParameters, final OutputStream out) throws IOException {
 		// Workbook
-		final boolean forceLandscape = Export.Orientation.Landscape == documentParameters.getOrientation();
+		final boolean forceLandscape = Export.Orientation.Landscape == documentParameters.orientation();
 		final SpreadSheet spreadSheet = new SpreadSheet();
 		//initHssfStyle(spreadSheet);
 		int sheetNum = 0;
-		for (final ExportSheet exportSheet : documentParameters.getSheets()) {
+		for (final ExportSheet exportSheet : documentParameters.sheets()) {
 			final String title = exportSheet.getTitle();
 			final Sheet sheet = title == null ? new Sheet("" + (char) ('A' + sheetNum)) : new Sheet(title);
 			spreadSheet.addSheet(sheet, sheetNum);
@@ -194,7 +194,7 @@ final class ODSExporter {
 			sheet.appendRow();
 
 			final Range cell = sheet.getRange(rowIndex, labelCellIndex);
-			final MessageText label = exportColumn.getLabel();
+			final LocaleMessageText label = exportColumn.getLabel();
 			cell.setValue(label.getDisplay());
 			cell.setStyle(getHeaderCellStyle());
 			updateMaxWidthPerColumn(label.getDisplay(), 1.2, labelCellIndex, maxWidthPerColumn); // +20% pour les majuscules

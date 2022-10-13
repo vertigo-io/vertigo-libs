@@ -20,7 +20,7 @@ package io.vertigo.datastore;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
-import io.vertigo.datamodel.impl.task.proxy.TaskProxyMethod;
+import io.vertigo.datamodel.impl.task.proxy.TaskAmplifierMethod;
 import io.vertigo.datastore.cache.CacheManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.entitystore.metrics.EntityMetricsProvider;
@@ -132,7 +132,7 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 	@Feature("taskProxyMethod")
 	public DataStoreFeatures withTaskProxyMethod() {
 		getModuleConfigBuilder()
-				.addProxyMethod(TaskProxyMethod.class);
+				.addAmplifierMethod(TaskAmplifierMethod.class);
 		return this;
 	}
 

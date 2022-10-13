@@ -70,7 +70,7 @@ public final class Task {
 		this.taskDefinition = taskDefinition;
 		this.inTaskAttributes = inTaskAttributes;
 		this.context = context;
-		checkValues();
+		validate();
 	}
 
 	/**
@@ -82,12 +82,12 @@ public final class Task {
 		return new TaskBuilder(taskDefinition);
 	}
 
-	private void checkValues() {
+	private void validate() {
 		for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
 			//on ne prend que les attributes correspondant au mode.
 			//We check all attributes
 			final Object value = inTaskAttributes.get(taskAttribute);
-			taskAttribute.checkAttribute(value);
+			taskAttribute.validate(value);
 		}
 	}
 

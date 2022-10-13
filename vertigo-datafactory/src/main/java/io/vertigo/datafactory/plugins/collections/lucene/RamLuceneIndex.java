@@ -104,7 +104,7 @@ final class RamLuceneIndex<D extends DtObject> {
 		this.smartTypeManager = smartTypeManager;
 		directory = new RAMDirectory();
 		idFieldOpt = dtDefinition.getIdField();
-		idFieldName = idFieldOpt.isPresent() ? idFieldOpt.get().getName() : "_id";
+		idFieldName = idFieldOpt.isPresent() ? idFieldOpt.get().name() : "_id";
 		//l'index est crée automatiquement la premiere fois.
 		buildIndex();
 	}
@@ -200,12 +200,12 @@ final class RamLuceneIndex<D extends DtObject> {
 					if (value != null && (idFieldOpt.isEmpty() || !dtField.equals(idFieldOpt.get()))) {
 						if (value instanceof String) {
 							final String valueAsString = getStringValue(dto, dtField, smartTypeManager);
-							addIndexed(document, dtField.getName(), valueAsString, storeValue);
+							addIndexed(document, dtField.name(), valueAsString, storeValue);
 						} else if (value instanceof Date) {
 							final String valueAsString = DateTools.dateToString((Date) value, DateTools.Resolution.DAY);
-							addKeyword(document, dtField.getName(), valueAsString, storeValue);
+							addKeyword(document, dtField.name(), valueAsString, storeValue);
 						} else {
-							addKeyword(document, dtField.getName(), value.toString(), storeValue);
+							addKeyword(document, dtField.name(), value.toString(), storeValue);
 						}
 					}
 				}
@@ -218,7 +218,7 @@ final class RamLuceneIndex<D extends DtObject> {
 	private String obtainIndexedIdValue(final D dto) {
 		if (idFieldOpt.isPresent()) {
 			final Object pkValue = idFieldOpt.get().getDataAccessor().getValue(dto);
-			Assertion.check().isNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", dtDefinition.getName(), idFieldOpt.get().getName());
+			Assertion.check().isNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", dtDefinition.getName(), idFieldOpt.get().name());
 			return String.valueOf(pkValue);
 		} else {
 			return String.valueOf(dto.hashCode());
@@ -240,7 +240,7 @@ final class RamLuceneIndex<D extends DtObject> {
 				final UID<Entity> uid = UID.of(field.getFkDtDefinition(), value);
 				final DtObject fkDto = getEntityStoreManager().readOne(uid);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
-				stringValue = smartTypeManager.valueToString(displayField.getSmartTypeDefinition(), displayValue);
+				stringValue = smartTypeManager.valueToString(displayField.smartTypeDefinition(), displayValue);
 			} else {
 				stringValue = String.valueOf(field.getDataAccessor().getValue(dto));
 			}

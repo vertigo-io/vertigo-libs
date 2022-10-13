@@ -17,9 +17,6 @@
  */
 package io.vertigo.ui.data.controllers;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Controller;
@@ -48,14 +45,15 @@ public class ModifiableStatsController extends AbstractVSpringMvcController {
 	private StatsServices statsServices;
 
 	@GetMapping("/")
-	public void initContext(final ViewContext viewContext) throws URISyntaxException, IOException {
-		viewContext.publishMdl(profilListMdl, Profil.class, null);
-
+	public void initContext(final ViewContext viewContext) {
 		final DtList<StatData> myList = statsServices.getStats();
-		viewContext.publishDtListModifiable(statsListModifiables, myList);
 		final StatData statsTarget = statsServices.getStatTarget();
-		viewContext.publishDto(statsTargetKey, statsTarget);
-		toModeEdit();
+
+		viewContext
+				.publishMdl(profilListMdl, Profil.class, null)
+				.publishDtListModifiable(statsListModifiables, myList)
+				.publishDto(statsTargetKey, statsTarget)
+				.toModeEdit();
 	}
 
 	@PostMapping("/_saveList")
@@ -64,12 +62,12 @@ public class ModifiableStatsController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/_read")
-	public void toRead() {
-		toModeReadOnly();
+	public void toRead(final ViewContext viewContext) {
+		viewContext.toModeReadOnly();
 	}
 
 	@PostMapping("/_edit")
-	public void toEdit() {
-		toModeEdit();
+	public void toEdit(final ViewContext viewContext) {
+		viewContext.toModeEdit();
 	}
 }

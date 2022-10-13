@@ -33,12 +33,13 @@
 		
 		<module>vertigo-audit</module>
 		<module>vertigo-quarto</module>
-		<module>vertigo-stella</module>
-		<module>vertigo-geo</module>
+		
+<!-- 		<module>vertigo-stella</module>
+ -->		<module>vertigo-geo</module>
 		<module>vertigo-ui</module>
 		<module>vertigo-dashboard</module>
-		<module>vertigo-orchestra</module>
-		<module>vertigo-social</module>
+<!-- 		<module>vertigo-orchestra</module>
+ -->		<module>vertigo-social</module>
 	</modules>
 
 	<scm>

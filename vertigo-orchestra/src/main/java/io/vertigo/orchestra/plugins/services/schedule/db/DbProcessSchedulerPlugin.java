@@ -179,7 +179,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	private void doScheduleWithCron(final ProcessDefinition processDefinition) {
 		final Optional<Instant> nextPlanification = findNextPlanificationTime(processDefinition);
 		if (nextPlanification.isPresent()) {
-			scheduleAt(processDefinition, nextPlanification.get(), processDefinition.getTriggeringStrategy().getInitialParams());
+			scheduleAt(processDefinition, nextPlanification.get(), processDefinition.getTriggeringStrategy().initialParams());
 		}
 	}
 
@@ -283,7 +283,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 		final Optional<OProcessPlanification> lastPlanificationOption = getLastPlanificationsByProcess(processDefinition.getId());
 
 		try {
-			final CronExpression cronExpression = new CronExpression(processDefinition.getTriggeringStrategy().getCronExpression().get());
+			final CronExpression cronExpression = new CronExpression(processDefinition.getTriggeringStrategy().cronExpressionOpt().get());
 
 			if (lastPlanificationOption.isEmpty()) {
 				final Instant compatibleNow = Instant.now().plusMillis(planningPeriodSeconds / 2L * 1000);// Normalement ca doit être bon quelque soit la synchronisation entre les deux timers (même fréquence)
@@ -305,7 +305,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	private List<ProcessDefinition> getAllScheduledProcesses() {
 		return definitionManager.getAllProcessDefinitionsByType(getHandledProcessType()).stream()
 				.filter(ProcessDefinition::isActive)// We only want actives
-				.filter(processDefinition -> processDefinition.getTriggeringStrategy().getCronExpression().isPresent())// We only want the processes to schedule
+				.filter(processDefinition -> processDefinition.getTriggeringStrategy().cronExpressionOpt().isPresent())// We only want the processes to schedule
 				.collect(Collectors.toList());
 	}
 

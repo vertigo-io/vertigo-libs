@@ -58,7 +58,7 @@ public class AuthorizationCriteria<E extends Entity> {
 				.getDataBase().getSqlDialect();
 		final CriteriaEncoder criteriaEncoder = new SqlCriteriaEncoder(sqlDialect, Optional.ofNullable(alias), false);
 		final Tuple<String, CriteriaCtx> tuple = criteria.toStringAnCtx(criteriaEncoder);
-		return tuple.getVal1();
+		return tuple.val1();
 	}
 
 	public String asSqlFrom(final String sqlEntityName, final Map<String, String> taskContext) {

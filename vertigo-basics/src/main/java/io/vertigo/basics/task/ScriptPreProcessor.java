@@ -75,7 +75,7 @@ final class ScriptPreProcessor {
 		for (final Entry<TaskAttribute, Object> entry : inTaskAttributes.entrySet()) {
 			final TaskAttribute taskAttribute = entry.getKey();
 			final Class<?> clazz = taskAttribute.getTargetJavaClass();
-			scriptEvaluatorParameter = ExpressionParameter.of(taskAttribute.getName(), clazz, entry.getValue());
+			scriptEvaluatorParameter = ExpressionParameter.of(taskAttribute.name(), clazz, entry.getValue());
 			tmpParameters.add(scriptEvaluatorParameter);
 		}
 

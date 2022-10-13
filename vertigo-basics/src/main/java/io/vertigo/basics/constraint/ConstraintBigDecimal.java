@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.definitions.Constraint;
 import io.vertigo.datamodel.structure.definitions.Property;
 
@@ -32,7 +32,7 @@ import io.vertigo.datamodel.structure.definitions.Property;
  * The configuration is like the configuration of Database's decimal (DECIMAL(M,D)).
  * Where M is the maximum of digits (the precision) and D is the number of digits to the right of the decimal point (the scale).
  * The maximum number of digits to the left of the decimal point is check too and must be less than M-D.
- * 
+ *
  * @author mlaroche
  */
 public final class ConstraintBigDecimal implements Constraint<String, BigDecimal> {
@@ -40,11 +40,11 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 	private static final String SEPARATOR_ARGS = ",";
 	private final Integer maxPrecision;
 	private final Integer maxScale;
-	private final MessageText errorMessage;
+	private final LocaleMessageText errorMessage;
 
 	/**
 	 * Initialise les paramètres.
-	 * 
+	 *
 	 * @param args args but no args
 	 */
 	public ConstraintBigDecimal(final String args, final Optional<String> overrideMessageOpt, final Optional<String> overrideResourceMessageOpt) {
@@ -66,7 +66,7 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 				.isNotNull(maxScale, "Le nombre de chiffres après la virgule ne peut pas être null")
 				.isTrue(maxScale <= maxPrecision, "Le nombre de chiffres après la virgule doit être inférieur au nombre total de chiffres");
 		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
-				() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED,
+				() -> LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED,
 						new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale),
 						maxScale,
 						maxPrecision - maxScale));
@@ -86,7 +86,7 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 
 	/** {@inheritDoc} */
 	@Override
-	public MessageText getErrorMessage() {
+	public LocaleMessageText getErrorMessage() {
 		return errorMessage;
 	}
 

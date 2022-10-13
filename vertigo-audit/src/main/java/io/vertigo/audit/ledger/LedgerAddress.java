@@ -17,29 +17,9 @@
  */
 package io.vertigo.audit.ledger;
 
-public final class LedgerAddress {
-
-	private final String accountName;
-	private final String publicAddress;
-
-	public LedgerAddress(final String accountName, final String publicAddress) {
-		this.publicAddress = publicAddress;
-		this.accountName = accountName;
-	}
-
-	/**
-	 * @return the accountName
-	 */
-	public String getAccountName() {
-		return accountName;
-	}
-
-	/**
-	 * @return the publicAddress
-	 */
-	public String getPublicAddress() {
-		return publicAddress;
-	}
+public record LedgerAddress(
+		String accountName,
+		String publicAddress) {
 
 	@Override
 	public String toString() {

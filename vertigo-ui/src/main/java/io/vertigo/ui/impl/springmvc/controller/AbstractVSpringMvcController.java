@@ -34,9 +34,9 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datastore.kvstore.KVCollection;
 import io.vertigo.datastore.kvstore.KVStoreManager;
 import io.vertigo.ui.core.ComponentStates;
-import io.vertigo.ui.core.FormMode;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
 import io.vertigo.ui.core.ViewContextMap;
@@ -56,19 +56,10 @@ public abstract class AbstractVSpringMvcController {
 	public static final String DEFAULT_VIEW_NAME_ATTRIBUTE = "defaultViewName";
 
 	/** Clé de la collection des contexts dans le KVStoreManager. */
-	public static final String CONTEXT_COLLECTION_NAME = "VViewContext";
+	public static final KVCollection CONTEXT_COLLECTION_NAME = new KVCollection("VViewContext");
 
 	/** Clé de context du UiUtil. */
 	public static final ViewContextKey<UiUtil> UTIL_CONTEXT_KEY = ViewContextKey.of("util");
-	/** Clé de context du mode. */
-	public static final ViewContextKey<FormMode> MODE_CONTEXT_KEY = ViewContextKey.of("mode");
-	//TODO voir pour déléguer cette gestion des modes
-	/** Clé de context du mode Edit. */
-	public static final ViewContextKey<Boolean> MODE_EDIT_CONTEXT_KEY = ViewContextKey.of("modeEdit");
-	/** Clé de context du mode ReadOnly. */
-	public static final ViewContextKey<Boolean> MODE_READ_ONLY_CONTEXT_KEY = ViewContextKey.of("modeReadOnly");
-	/** Clé de context du mode Create. */
-	public static final ViewContextKey<Boolean> MODE_CREATE_CONTEXT_KEY = ViewContextKey.of("modeCreate");
 	/** Préfix des clés des paramètres passés par l'url. */
 	public static final String URL_PARAM_PREFIX = "params.";
 
@@ -184,7 +175,7 @@ public abstract class AbstractVSpringMvcController {
 	protected void preInitContext(final ViewContext viewContext) {
 		viewContext.publishRef(UTIL_CONTEXT_KEY, new UiUtil());
 		viewContext.asMap().put("componentStates", new ComponentStates());
-		toModeReadOnly();
+		viewContext.toModeReadOnly();
 	}
 
 	/**

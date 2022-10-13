@@ -67,14 +67,14 @@ public class ModelDefinitionProvider implements DefinitionProvider {
 		final Loader smartTypesLoader = loadersByType.get("smarttypes");
 		definitionResourceConfigs
 				.stream()
-				.filter(resourceConfig -> "smarttypes".equals(resourceConfig.getType()))
-				.forEach(resourceConfig -> smartTypesLoader.load(resourceConfig.getPath(), dynamicDefinitions));
+				.filter(resourceConfig -> "smarttypes".equals(resourceConfig.type()))
+				.forEach(resourceConfig -> smartTypesLoader.load(resourceConfig.path(), dynamicDefinitions));
 
 		final Loader dtobjectsLoader = loadersByType.get("dtobjects");
 		definitionResourceConfigs
 				.stream()
-				.filter(resourceConfig -> "dtobjects".equals(resourceConfig.getType()))
-				.forEach(resourceConfig -> dtobjectsLoader.load(resourceConfig.getPath(), dynamicDefinitions));
+				.filter(resourceConfig -> "dtobjects".equals(resourceConfig.type()))
+				.forEach(resourceConfig -> dtobjectsLoader.load(resourceConfig.path(), dynamicDefinitions));
 
 		return DynamicDefinitionSolver.solve(definitionSpace, dynamicDefinitions)
 				.stream()

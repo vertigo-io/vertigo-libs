@@ -78,18 +78,18 @@ public class TaskEngineInsert extends AbstractTaskEngineSQL {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final DtField idField = dtDefinition.getIdField().get();
 
-		final Tuple<Integer, ?> result = getDataBaseManager()
+		final Tuple<Integer, ?> result = getSqlManager()
 				.executeUpdateWithGeneratedKey(
 						sqlStatement,
 						generationMode,
-						StringUtil.camelToConstCase(idField.getName()),
-						idField.getSmartTypeDefinition().getJavaClass(),
-						getModelManager().getTypeAdapters("sql"),
+						StringUtil.camelToConstCase(idField.name()),
+						idField.smartTypeDefinition().getJavaClass(),
+						getSmartTypeManager().getTypeAdapters("sql"),
 						connection);
 
-		final Object id = result.getVal2();
+		final Object id = result.val2();
 		idField.getDataAccessor().setValue(entity, id);
 		//---
-		return /*sqlRowcount*/ OptionalInt.of(result.getVal1());
+		return /*sqlRowcount*/ OptionalInt.of(result.val1());
 	}
 }

@@ -23,8 +23,8 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
-import io.vertigo.core.util.ListBuilder;
-import io.vertigo.core.util.MapBuilder;
+import io.vertigo.core.lang.ListBuilder;
+import io.vertigo.core.lang.MapBuilder;
 import io.vertigo.orchestra.services.execution.ActivityEngine;
 
 /**

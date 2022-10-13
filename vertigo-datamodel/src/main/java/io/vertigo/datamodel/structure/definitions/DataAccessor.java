@@ -17,12 +17,8 @@
  */
 package io.vertigo.datamodel.structure.definitions;
 
-import java.util.List;
-
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.Node;
 import io.vertigo.core.util.BeanUtil;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.model.DtObject;
 
 /**
@@ -50,20 +46,9 @@ public final class DataAccessor {
 	 * @param value Object
 	 */
 	public void setValue(final DtObject dto, final Object value) {
-		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-		//On vérifie le type java de l'objet.
-		if (dtField.getCardinality().hasMany()) {
-			if (!(value instanceof List)) {
-				throw new ClassCastException("Value " + value + " must be a list");
-			}
-			for (final Object element : List.class.cast(value)) {
-				smartTypeManager.checkValue(dtField.getSmartTypeDefinition(), element);
-			}
-		} else {
-			smartTypeManager.checkValue(dtField.getSmartTypeDefinition(), value);
-		}
+		dtField.checkType(value);
 		//-----
-		BeanUtil.setValue(dto, dtField.getName(), value);
+		BeanUtil.setValue(dto, dtField.name(), value);
 	}
 
 	/**
@@ -79,6 +64,6 @@ public final class DataAccessor {
 	 */
 	public Object getValue(final DtObject dto) {
 		//Dans le cas d'un champ statique
-		return BeanUtil.getValue(dto, dtField.getName());
+		return BeanUtil.getValue(dto, dtField.name());
 	}
 }

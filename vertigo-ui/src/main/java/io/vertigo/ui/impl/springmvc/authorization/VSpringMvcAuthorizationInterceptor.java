@@ -36,7 +36,7 @@ import io.vertigo.account.authorization.annotations.SecuredOperation;
 import io.vertigo.account.authorization.definitions.Authorization;
 import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
 

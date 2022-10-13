@@ -74,25 +74,25 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<Object>> 
 		final Optional<DslField> field;
 		final Optional<DslMultiField> multiField;
 		final PegChoice fields = (PegChoice) parsing.get(2);
-		switch (fields.getChoiceIndex()) {
+		switch (fields.choiceIndex()) {
 			case 0:
-				field = Optional.of((DslField) fields.getValue());
+				field = Optional.of((DslField) fields.value());
 				multiField = Optional.empty();
 				postExpression = "";
 				break;
 			case 1:
-				final List<Object> multiFieldParsing = (List<Object>) fields.getValue();
+				final List<Object> multiFieldParsing = (List<Object>) fields.value();
 				preExpression = DslUtil.concat(preExpression, (String) multiFieldParsing.get(0));
 				multiField = Optional.of((DslMultiField) multiFieldParsing.get(1));
 				postExpression = (String) multiFieldParsing.get(2);
 				field = Optional.empty();
 				break;
 			default:
-				throw new IllegalArgumentException("case " + fields.getChoiceIndex() + " not implemented");
+				throw new IllegalArgumentException("case " + fields.choiceIndex() + " not implemented");
 		}
 
 		final PegChoice queries = (PegChoice) parsing.get(4);
-		final DslQuery query = (DslQuery) queries.getValue();
+		final DslQuery query = (DslQuery) queries.value();
 
 		return new DslExpression(operator, preExpression, field, multiField, query, postExpression);
 	}

@@ -25,8 +25,8 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.locale.MessageKey;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageKey;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.database.impl.sql.Resources;
 import io.vertigo.database.sql.vendor.SqlExceptionHandler;
@@ -47,7 +47,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	/**
 	 * Crée une nouvelle instance de AbstractSqlExceptionHandler.
 	 */
-	public AbstractSqlExceptionHandler() {
+	protected AbstractSqlExceptionHandler() {
 		LOGGER.info("Use {} as SqlExceptionHandler", this.getClass().getName());
 	}
 
@@ -60,9 +60,9 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	/**
 	 * @param sqle Exception base de données
 	 */
-	protected final VUserException handleTooLargeValueSqlException(final SQLException sqle) {
-		final MessageKey key = Resources.DYNAMO_SQL_CONSTRAINT_TOO_BIG_VALUE;
-		LOGGER.warn(MessageText.of(key).getDisplay(), sqle);
+	protected static final VUserException handleTooLargeValueSqlException(final SQLException sqle) {
+		final LocaleMessageKey key = Resources.DYNAMO_SQL_CONSTRAINT_TOO_BIG_VALUE;
+		LOGGER.warn(LocaleMessageText.of(key).getDisplay(), sqle);
 		//On se contente de logger l'exception cause mais on ne la lie pas à l'erreur utilisateur.
 		return new VUserException(key);
 	}
@@ -70,7 +70,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	/**
 	 * @param sqle SQLException launch by SQL (often PLSQL application specific exception with &lt;text&gt; tag)
 	 */
-	protected final VUserException handleUserSQLException(final SQLException sqle) {
+	protected static final VUserException handleUserSQLException(final SQLException sqle) {
 		String msg = sqle.getMessage();
 		final int i1 = msg.indexOf("<text>");
 		final int i2 = msg.indexOf("</text>", i1);
@@ -88,7 +88,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	 * @param sqle Exception SQL
 	 * @param defaultMsg Message par defaut
 	 */
-	protected final VUserException handleConstraintSQLException(final SQLException sqle, final MessageKey defaultMsg) {
+	protected final VUserException handleConstraintSQLException(final SQLException sqle, final LocaleMessageKey defaultMsg) {
 		final String msg = sqle.getMessage();
 		// recherche le nom de la contrainte d'intégrité
 		final String constraintName = extractConstraintName(msg);
@@ -97,11 +97,11 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 		// recherche le message pour l'utilisateur
 		//On crée une clé de MessageText dynamiquement sur le nom de la contrainte d'intégrité
 		//Ex: CK_PERSON_FULL_NAME_UNIQUE
-		final MessageKey constraintKey = new SQLConstraintMessageKey(constraintName);
+		final LocaleMessageKey constraintKey = new SQLConstraintMessageKey(constraintName);
 
 		//On récupère ici le message externalisé par défaut : Resources.DYNAMO_SQL_CONSTRAINT_IMPOSSIBLE_TO_DELETE ou Resources.DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTRED)
-		final String defaultConstraintMsg = MessageText.of(defaultMsg).getDisplay();
-		final MessageText userContraintMessageText = MessageText.ofDefaultMsg(defaultConstraintMsg, constraintKey);
+		final String defaultConstraintMsg = LocaleMessageText.of(defaultMsg).getDisplay();
+		final LocaleMessageText userContraintMessageText = LocaleMessageText.ofDefaultMsg(defaultConstraintMsg, constraintKey);
 		final VUserException constraintException = new VUserException(userContraintMessageText);
 		constraintException.initCause(sqle);
 		return constraintException;
@@ -125,12 +125,12 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	 * @param sqle OtherSQLException
 	 * @param statementInfos the statement
 	 */
-	protected final RuntimeException handleOtherSQLException(final SQLException sqle, final String statementInfos) {
+	protected static final RuntimeException handleOtherSQLException(final SQLException sqle, final String statementInfos) {
 		final int errCode = sqle.getErrorCode();
 		return WrappedException.wrap(sqle, StringUtil.format("[SQL error] {0} : {1}", errCode, statementInfos));
 	}
 
-	private static final class SQLConstraintMessageKey implements MessageKey {
+	private static final class SQLConstraintMessageKey implements LocaleMessageKey {
 		private final String constraintName;
 		private static final long serialVersionUID = -3457399434625437700L;
 

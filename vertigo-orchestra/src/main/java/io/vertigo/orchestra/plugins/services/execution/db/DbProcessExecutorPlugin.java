@@ -35,8 +35,8 @@ import org.apache.logging.log4j.ThreadContext;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.core.analytics.process.AProcess;
-import io.vertigo.core.analytics.process.AProcessBuilder;
+import io.vertigo.core.analytics.trace.TraceSpan;
+import io.vertigo.core.analytics.trace.TraceSpanBuilder;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
@@ -238,21 +238,12 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 				ClassUtil.classForName(activityExecution.getEngine(), ActivityEngine.class));
 
 		try {
-			switch (executionState) {
-				case DONE:
-					workspace = activityEngine.successfulPostTreatment(workspace);
-					break;
-				case ERROR:
-					workspace = activityEngine.errorPostTreatment(workspace, new RuntimeException(errorMessageOpt.orElse("ThirdPartyException")));
-					break;
-				case PENDING:
-				case RUNNING:
-				case SUBMITTED:
-				case WAITING:
-				case ABORTED:
-				default:
-					throw new UnsupportedOperationException();
-			}
+			workspace = switch (executionState) {
+				case DONE -> activityEngine.successfulPostTreatment(workspace);
+				case ERROR -> activityEngine.errorPostTreatment(workspace, new RuntimeException(errorMessageOpt.orElse("ThirdPartyException")));
+				case PENDING, RUNNING, SUBMITTED, WAITING, ABORTED -> throw new UnsupportedOperationException();
+				default -> throw new IllegalArgumentException("Unexpected value: " + executionState);
+			};
 
 		} catch (final Exception e) {
 			LOGGER.info("Unknow error ending a pending activity", e);
@@ -676,8 +667,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private int getUnusedWorkersCount() {
 		Assertion.check().isNotNull(workers);
 		// ---
-		if (workers instanceof ThreadPoolExecutor) {
-			final ThreadPoolExecutor workersPool = (ThreadPoolExecutor) workers;
+		if (workers instanceof final ThreadPoolExecutor workersPool) {
 			return workersCount - workersPool.getActiveCount();
 		}
 		return workersCount;
@@ -710,14 +700,14 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	}
 
 	private void traceProcessExecution(final OProcessExecution processExecution, final DtList<OActivityExecution> activityExecutions) {
-		final AProcessBuilder processBuilder = AProcess.builder("jobs", processExecution.process().get().getName(), processExecution.getBeginTime(), processExecution.getEndTime())
-				.setMeasure("success", ExecutionState.DONE.name().equals(processExecution.getEstCd()) ? 100.0 : 0.0)
-				.addTag("nodeName", nodeName)
-				.addTag("status", processExecution.getEstCd());
-		activityExecutions.forEach(activityExecution -> processBuilder.addSubProcess(
-				AProcess.builder("activity", activityExecution.getEngine(), activityExecution.getBeginTime(), activityExecution.getEndTime())
+		final TraceSpanBuilder processBuilder = TraceSpan.builder("jobs", processExecution.process().get().getName(), processExecution.getBeginTime(), processExecution.getEndTime())
+				.withMeasure("success", ExecutionState.DONE.name().equals(processExecution.getEstCd()) ? 100.0 : 0.0)
+				.withTag("nodeName", nodeName)
+				.withTag("status", processExecution.getEstCd());
+		activityExecutions.forEach(activityExecution -> processBuilder.addChildSpan(
+				TraceSpan.builder("activity", activityExecution.getEngine(), activityExecution.getBeginTime(), activityExecution.getEndTime())
 						.build()));
-		analyticsManager.addProcess(processBuilder.build());
+		analyticsManager.addSpan(processBuilder.build());
 	}
 
 }

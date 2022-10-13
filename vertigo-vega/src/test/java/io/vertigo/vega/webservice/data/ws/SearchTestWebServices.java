@@ -60,7 +60,7 @@ public final class SearchTestWebServices implements WebServices {
 				uiContext.put(facetDefinition.getName(),
 						selectedFacetValues.getFacetValues(facetDefinition.getName())
 								.stream()
-								.map(FacetValue::getCode)
+								.map(FacetValue::code)
 								.collect(Collectors.joining(",")));
 			}
 		}
@@ -93,9 +93,7 @@ public final class SearchTestWebServices implements WebServices {
 
 	private static <D extends DtObject> DtList<D> asDtList(final Collection<D> values, final Class<D> dtObjectClass) {
 		final DtList<D> result = new DtList<>(dtObjectClass);
-		for (final D element : values) {
-			result.add(element);
-		}
+		result.addAll(values);
 		return result;
 	}
 
