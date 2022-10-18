@@ -1,3 +1,4 @@
+@@ -1,109 +0,0 @@
 /**
  * vertigo - application development platform
  *
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.FilterChain;
@@ -44,8 +46,9 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 	public static final String NONCE_ATTRIBUTE_NAME = "nonce";
 	private static final String NONCE_PATTERN = "${nonce}";
 	private static final String COMPATIBILITY_HEADERS_ATTRIBUTE_NAME = "compatibilityHeaders";
-	private static final String EXTERNAL_URL_PATTERN = "${externalUrl}";
-	private static final String EXTERNAL_URL_PARAM_NAME = "APP_EXTERNAL_URL";
+	private static final String FRAME_ANCESTOR_PATTERN = "${cspFrameAncestor}";
+	private static final String FRAME_ANCESTOR_PARAM_NAME = "CSP_FRAME_ANCESTOR";
+	private static final String REPORT_WS_PARAM_NAME = "CSP_REPORT_WS_URI";
 
 	private String cspPattern;
 	private boolean useNonce = false;
@@ -61,7 +64,12 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 
 		final ParamManager paramManager = Node.getNode().getComponentSpace().resolve(ParamManager.class);
 		//String.replace : => est équivalent à replaceAll sans regexp (et remplace bien toutes les occurences)
-		cspPattern = cspPattern.replace(EXTERNAL_URL_PATTERN, paramManager.getOptionalParam(EXTERNAL_URL_PARAM_NAME).map(Param::getValue).orElse(""));
+		cspPattern = cspPattern.replace(FRAME_ANCESTOR_PATTERN, paramManager.getOptionalParam(FRAME_ANCESTOR_PARAM_NAME).map(Param::getValue).orElse(""));
+
+		final Optional<Param> reportUri = paramManager.getOptionalParam(REPORT_WS_PARAM_NAME);
+		if (reportUri.isPresent() && !reportUri.get().getValue().isBlank()) {
+			cspPattern += " report-uri " + reportUri.get().getValue();
+		}
 
 		//minify de la csp car il semble que les \n soient mal interprétés
 		cspPattern = cspPattern.replaceAll("[\n\r\\s]+", " ");
