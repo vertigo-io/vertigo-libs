@@ -1,4 +1,3 @@
-@@ -1,109 +0,0 @@
 /**
  * vertigo - application development platform
  *
