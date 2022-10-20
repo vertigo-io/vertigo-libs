@@ -124,7 +124,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 	}
 
 	@Override
-	public AuthenticationResult<IAuthenticationResult> doInterceptRequest(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+	public Tuple<AuthenticationResult<IAuthenticationResult>, HttpServletRequest> doInterceptRequest(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
 		if (httpRequest.getSession().getAttribute(AzureAdWebAuthenticationPlugin.PRINCIPAL_SESSION_NAME) != null
 				&& isAccessTokenExpired(httpRequest)) {
 			try {
@@ -134,7 +134,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 				WrappedException.wrap(e);
 			}
 		}
-		return AuthenticationResult.ofNotConsumed();
+		return Tuple.of(AuthenticationResult.ofNotConsumed(), httpRequest);
 	}
 
 	@Override

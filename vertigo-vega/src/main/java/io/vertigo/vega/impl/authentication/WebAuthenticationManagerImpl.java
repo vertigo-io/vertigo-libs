@@ -46,6 +46,7 @@ import io.vertigo.vega.authentication.WebAuthenticationManager;
 
 /**
  * Standard pattern for SSO authentication handlers.
+ *
  * @author skerdudou
  */
 public final class WebAuthenticationManagerImpl implements WebAuthenticationManager {
@@ -95,19 +96,22 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 	@Override
 	public Tuple<Boolean, HttpServletRequest> doBeforeChain(final HttpServletRequest request, final HttpServletResponse response) {
 		final var plugin = getPluginForRequest(request);
-		final var interceptResult = plugin.doInterceptRequest(request, response);
-		if (interceptResult.isRequestConsumed()) {
+		final Tuple<AuthenticationResult, HttpServletRequest> interceptResult = plugin.doInterceptRequest(request, response);
+		final var authenticationResult = interceptResult.getVal1();
+		final HttpServletRequest requestResolved = interceptResult.getVal2() != null ? interceptResult.getVal2() : request;
+
+		if (authenticationResult.isRequestConsumed()) {
 			return Tuple.of(true, request);
-		} else if (interceptResult.getRawCallbackResult() != null && !isAuthenticated()) {
-			return appLogin(request, response, interceptResult, plugin.getRequestedUri(request));
+		} else if (authenticationResult.getRawCallbackResult() != null && !isAuthenticated()) {
+			return appLogin(requestResolved, response, authenticationResult, plugin.getRequestedUri(request));
 		}
 
 		final var urlhandler = urlHandlerMap.get(request.getServletPath());
 		if (urlhandler != null) {
-			return urlhandler.apply(request, response);
+			return urlhandler.apply(requestResolved, response);
 		}
 		if (!isAuthenticated()) {
-			doRedirectToSso(request, response);
+			doRedirectToSso(requestResolved, response);
 			return Tuple.of(true, request);
 		}
 
@@ -174,6 +178,9 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		final var appLoginHandlerInstance = Node.getNode().getComponentSpace().resolve(appLoginHandler, AppLoginHandler.class);
 		appLoginHandlerInstance.doLogin(request, interceptResult.getClaims(), interceptResult.getRawCallbackResult());
 		if (isAuthenticated()) {
+			// change session ID for security purpose (session fixation attack)
+			request.changeSessionId();
+
 			doHandleRedirect(request, response, redirectUri);
 		} else {
 			appLoginHandlerInstance.loginFailed(request, response);
