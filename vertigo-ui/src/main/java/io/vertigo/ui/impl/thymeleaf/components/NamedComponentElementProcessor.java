@@ -63,7 +63,7 @@ import io.vertigo.core.util.StringUtil;
 
 public class NamedComponentElementProcessor extends AbstractElementModelProcessor {
 	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^(([^$@]\\{)|[^#|']).*$";
-	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^[^$#@|'][^$#@]*$";
+	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^[^$#@|']([^$#@]|(&#[0-9]{1,4};))*$"; //don't start with $#@|' and no $#@ after (excepted html encoded chars : &#[0-9]+;)
 	private static final String NUMBER_PATTERN_STR = "^[0-9\\.]+";
 	private static final String SIMPLE_TEXT_PATTERN_STR = "^[a-zA-Z]*$";
 	private static final Pattern NO_RESERVED_FIRST_CHAR_PATTERN = Pattern.compile(NO_RESERVED_FIRST_CHAR_PATTERN_STR);
@@ -360,7 +360,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 						|| NO_RESERVED_TEXT_PATTERN.matcher((String) attributeValue).matches()) //no reserved char
 				&& NO_RESERVED_FIRST_CHAR_PATTERN.matcher((String) attributeValue).matches()) { //don't start with reserved char
 			//We escape :
-			//IF placeholder or no thymeleaf's reserved char ($ @ # | )  (but authorized || )
+			//IF placeholder or no thymeleaf's reserved char ($ @ # | )  (but authorized || and &#xx; )
 			//AND dont start with reserved char (for case like ${value} )
 			//BUT IF true, false or number (it become string instead)
 			return "'" + ((String) attributeValue).replace("'", "\\'") + "'"; //escape as text
