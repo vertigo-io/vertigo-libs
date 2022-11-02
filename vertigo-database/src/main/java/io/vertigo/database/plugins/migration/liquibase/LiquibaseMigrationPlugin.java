@@ -79,7 +79,11 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 		//---
 		this.masterFile = masterFile;
 		connectionName = connectionNameOpt.orElse(SqlManager.MAIN_CONNECTION_PROVIDER_NAME);
-		contexts = contextsOpt.orElse(null);
+		// Liquibase need at least 1 context to perform context filter on changesets
+		// cf : https://docs.liquibase.com/concepts/changelogs/attributes/contexts.html
+		// "If you add a contextFilter to a changeset, it only runs when you specify that context, but unmarked changesets still run.
+		//  If you do not specify any contexts at runtime, every changeset in your changelog runs, even if they have contextFilters attached"
+		contexts = "vertigo," + contextsOpt.orElse("");
 		this.sqlManager = sqlManager;
 	}
 
