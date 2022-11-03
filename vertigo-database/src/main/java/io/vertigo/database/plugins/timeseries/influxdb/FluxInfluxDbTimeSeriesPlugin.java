@@ -128,6 +128,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 	private TimedDatas executeTimedQuery(final String q) {
 		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(q);
 		if (!queryResult.isEmpty()) {
+			Assertion.check().isFalse(queryResult.size() > 1, "Influx must not return multiple Tables.");
 			final FluxTable table = queryResult.get(0);
 			if (table.getRecords() != null && !table.getRecords().isEmpty()) {
 
@@ -487,36 +488,44 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		if (fieldsByFunction.size() == 1) { // union works with 2 tables minimum
 			final String function = fieldsByFunction.keySet().iterator().next();// get the first
 			queryBuilder
-					.append("data \n")
-					.append("|> toFloat() \n")
+					.append("data \n");
+			if (!"count".equals(function)) {
+				queryBuilder.append("|> toFloat() \n");
+			}
+			queryBuilder
 					.append("|> window(every: " + timeFilter.getDim() + ", createEmpty:true ) \n")
 					.append("|> " + buildMeasureFunction(function) + " \n")
 					.append("|> toFloat() \n")
-					.append("|> duplicate(column: \"_stop\", as: \"_time\") \n")
-					.append("|> window(every: inf) \n")
+					.append("|> group()") // ungroup
+					.append("|> rename(columns: {_start: \"_time\"}) \n")
+					.append("|> drop(columns: [ \"_stop\"]) \n")
 					.append("|> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") \n")
 					.append("|> map(fn: (r) => ({ r with " + fieldsByFunction.get(function).stream()
 							.map(field -> field + ": if exists r." + field + " then r." + field + " else 0.0").collect(Collectors.joining(", "))
 							+ "}))\n")
 					.append("|> rename(columns: {" + fieldsByFunction.get(function).stream().map(field -> field + ":\"" + field + ":" + function + "\"").collect(Collectors.joining(", ")) + "}) \n")
-					.append("|> drop(columns: [\"_start\", \"_stop\"]) \n")
 					.append("|> yield()");
 
 		} else {
 
 			for (final Map.Entry<String, List<String>> entry : fieldsByFunction.entrySet()) {
 				// declare a new variable
+				final var function = entry.getKey();
 				queryBuilder
-						.append(entry.getKey().replaceAll("\\.", "_") + "Data = data \n")
-						.append("|> toFloat() \n")
-						.append("|> filter(fn: (r) => " + entry.getValue().stream().map(field -> "r._field==\"" + field + "\"").collect(Collectors.joining(" or ")) + ") \n")
+						.append(function.replaceAll("\\.", "_") + "Data = data \n")
+						.append("|> filter(fn: (r) => " + entry.getValue().stream().map(field -> "r._field==\"" + field + "\"").collect(Collectors.joining(" or ")) + ") \n");
+				if (!"count".equals(function)) {
+					queryBuilder.append("|> toFloat() \n");
+				}
+				queryBuilder
 						.append("|> window(every: " + timeFilter.getDim() + ", createEmpty:true ) \n")
-						.append("|> " + buildMeasureFunction(entry.getKey()) + " \n")
+						.append("|> " + buildMeasureFunction(function) + " \n")
 						.append("|> toFloat() \n") // add a conversion toFloat for the union
-						.append("|> duplicate(column: \"_stop\", as: \"_time\") \n")
-						.append("|> window(every: inf) \n")
-						.append("|> set(key: \"alias\", value:\"" + entry.getKey().replaceAll("\\.", "_") + "\" ) \n")
-						.append('\n'); // window by time
+						.append("|> group() \n") // ungroup
+						.append("|> rename(columns: {_start: \"_time\"}) \n")
+						.append("|> drop(columns: [ \"_stop\"]) \n")
+						.append("|> set(key: \"alias\", value:\"" + function.replaceAll("\\.", "_") + "\" ) \n")
+						.append('\n');
 			}
 
 			final Map<String, String> properedMeasures = measures.stream().collect(Collectors.toMap(Function.identity(), measure -> measure.replaceFirst(":", "_").replaceAll("\\.", "_")));
@@ -524,7 +533,6 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 			queryBuilder
 					.append("union(tables:[" + fieldsByFunction.keySet().stream().map(function -> function.replaceAll("\\.", "_") + "Data").collect(Collectors.joining(", ")) + "]) \n")
 					.append("|> pivot(rowKey:[\"_time\"], columnKey: [\"_field\", \"alias\"], valueColumn: \"_value\") \n")
-					.append("|> drop(columns: [\"_start\", \"_stop\"]) \n")
 					.append("|> map(fn: (r) => ({ r with " + measures.stream().map(properedMeasures::get)
 							.map(properedMeasure -> properedMeasure + ": if exists r." + properedMeasure + " then r." + properedMeasure + " else 0.0").collect(Collectors.joining(", "))
 							+ "}))\n")
