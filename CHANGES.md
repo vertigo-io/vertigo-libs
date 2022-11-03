@@ -6,7 +6,75 @@ Running 4.0.0
 
 more to come :)
 
-Release 3.3.0 - 2021/02/03
+Release 3.4.0 - 2022/10/12
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-330-to-340)
+- [database] Add pool parameters to c3p0 plugin (minPoolSize, maxPoolSize,acquireIncrement,configName)
+- [ui] Add select-multiple in read-only
+- [ui] add <vu:content> in input compoments for deep customization
+- [ui] table auto-width and no-wrap
+- [ui] add input and text-editor
+- [datamodel] taskoutput attribute has a name
+- [quarto] use adapters in exports
+- [database] Switch postgre to GENERATED_COLUMNS (previously : generated_keys don't work if PK isn't the first column)
+- [vega] authentication optional in SecurityFilter
+- [Account] Better error msg if securityKey was null
+- [DataStore] Build urn : use criteria hashcode => fix cache of some list 
+- [Account] Add some utils methods to AuthorizationUtil: getCriteria for operation, and assert with supplier
+- [Ui] Add assert if @RequestMapping is missing on controllers
+- [Datastore] Fix berkeley purge daemon (great perfs optimisation)
+- [Ui] other attrs on grid
+- [datamodel] fix loading order for fragment (missing link)
+- [ui] add VControllerInterceptors (can alter response by annotations)
+- [vega] CSP Filter can use app external url parameter
+- [vega] Rename package auth -> authentication
+- [ui-vuejs] fix reset of array when ajaxcall
+- [ui-vuejs] Fix onAjaxError  (emit unauthorized event, don't notif 422 error message)
+- [ui-vuejs] Fix VScrollSpy.js
+- [ui-vuejs] add autofocus directive
+- [ui-vuejs] add directives to watch usaved updates
+- [vega] Add local, azureAD & keycloak WebAuthenticationPlugins
+- [vega] Add webauthentication manager with support of multiple connectors (for saml or openid connect)
+- [ui] fix uiErrorBuilder use DtFieldName
+- [vega] add comparison methods for building uiErrors more easily
+- [vega] docker compatibility -> appservletStarter retrieve configuration and flags from env variable or system property
+- [ui] UiUtil -> support presence of modifier when querying field
+- [ui] add a securedDevMode for checking authorizations
+- [quarto] keep \r inside docx
+- [account] support securityDimensions with variable depth in security keys
+- [account] Allow only one field in tree securityDimension (then null mean all instead of none)
+- [Ui] Add component input tree
+- [Ui] Remove name from text-area input in readonly
+- [Datastore] fix daemondefinition when multiple BerkeleyKVStorePlugin
+- [Datamodel] UID, id type is infered by caller
+- [Datamodel] Fix dtList.subList
+- [Account] Fixed override authorizations when unordered registration
+- [Ui] Update ViewContextUpdateSecurity to protect update of primitive param
+- [Vega] Add adapters for EmptyMap, EmptySet and EmptyList
+- [All] Updated libs
+  - h2 2.1.210 -> 2.1.214
+  - assertj-core 3.22.0 -> 3.23.1
+  - janino 3.1.6 -> 3.1.8
+  - jetty-server 9.4.44.v20210927 -> 9.4.49.v20220914
+  - lucene-core 8.10.1 -> 8.11.1
+  - liquibase-core 4.7.0 -> 4.16.1
+  - ojdbc10 19.13.0.0.1 -> 19.16.0.0
+  - postgresql 42.3.1 -> 42.5.0
+  - poi-ooxml 4.1.2 -> 52.2.3
+  - SODS 1.4.0 -> 1.5.1
+  - xdocreport 2.0.2 -> 2.0.4
+  - rest-assured 4.4.0 -> 5.2.0
+  - spring-webmvc 5.3.15 -> 5.3.23
+  - thymeleaf-spring5 3.0.14.RELEASE -> 3.0.15.RELEASE
+  - selenium-support 4.1.1 -> 4.4.0
+  - htmlunit-driver 3.56.0 -> 3.64.0
+- [Ui] update js dependencies
+  - mdi 6.5.95 -> 7.0.96
+  - axios 0.24.0 -> 1.0.0
+  - vuejs 2.6.14 -> 2.7.10
+  - quasar 1.17.7 -> 1.21.1
+
+Release 3.3.0 - 2022/02/03
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-320-to-330)
 * **[Datafactory] Change FacetedQueryDefinition linked to DtIndex instead KeyConcept (support multiple indices)**
