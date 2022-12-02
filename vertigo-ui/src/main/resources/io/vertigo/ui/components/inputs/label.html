@@ -1,32 +1,34 @@
 <th:block th:fragment="label-edit(object,field, label, label_attrs)" vu:alias="label" vu:selector="${viewMode=='edit'}"
-		th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
-		th:assert="${object} != null and ${field} != null">
-	<q-field
-		th::label-width="${overridedLabelWidth?:3}"
-		th:label="${modifiableTable!=null?null:myLabel}"
-		th::error="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
-		th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
-		orientation="vertical"
-		stack-label
-		borderless
-		th:attr="__${label_attrs}__"
-		>
-		 <vu:content/>
-	</q-field>
+        th:with="myLabel=${label?:model.util.label(object + '.' + field)}, required=${model.util.required(object + '.' + field)}"
+        th:assert="${object} != null and ${field} != null">
+    <q-field
+        th::label-width="${overridedLabelWidth?:3}"
+        th:label="${modifiableTable!=null?null:myLabel}"
+        th:classappend="${required}?'v-field__required'"
+        th:aria-required="${required}"
+        th::error="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
+        th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+        orientation="vertical"
+        stack-label
+        borderless
+        th:attr="__${label_attrs}__"
+        >
+         <vu:content/>
+    </q-field>
 </th:block> 
 
 <th:block th:fragment="label-read(object, field, label, label_attrs)" vu:alias="label" vu:selector="${viewMode=='read'}" 
-	 th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
- 	 th:assert="${object} != null and ${field} != null">
-	<q-field
-		th::label-width="${overridedLabelWidth?:3}"
-		th:label="${modifiableTable!=null?null:myLabel}"
-		orientation="vertical"
-		stack-label
-		readonly
-		borderless 
-		th:attr="__${label_attrs}__"
-		>
-		<vu:content/>
-	</q-field>
+     th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
+     th:assert="${object} != null and ${field} != null">
+    <q-field
+        th::label-width="${overridedLabelWidth?:3}"
+        th:label="${modifiableTable!=null?null:myLabel}"
+        orientation="vertical"
+        stack-label
+        readonly
+        borderless 
+        th:attr="__${label_attrs}__"
+        >
+        <vu:content/>
+    </q-field>
 </th:block> 
