@@ -131,7 +131,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 				final var authResult = getAuthResultBySilentFlow(httpRequest);
 				SessionManagementHelper.setSessionPrincipal(httpRequest, authResult);
 			} catch (final Throwable e) {
-				WrappedException.wrap(e);
+				throw WrappedException.wrap(e);
 			}
 		}
 		return Tuple.of(AuthenticationResult.ofNotConsumed(), httpRequest);

@@ -129,7 +129,7 @@ public class KeycloakWebAuthenticationPlugin implements WebAuthenticationPlugin<
 		try {
 			keycloakOIDCFilter.doFilter(request, response, (req, res) -> filterResult.put("request", (HttpServletRequest) req));
 		} catch (IOException | ServletException e) {
-			WrappedException.wrap(e);
+			throw WrappedException.wrap(e);
 		}
 
 		final var wrappedRequest = filterResult.get("request"); // value present if keycloak filter call chain.doFilter
