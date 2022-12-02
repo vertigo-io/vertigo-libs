@@ -30,6 +30,7 @@
 <th:block th:fragment="select-read(object,field, rowIndex,label,list,valueField, labelField, input_attrs, label_attrs)" 
 th:if="${modifiableTable==null}"
 vu:alias="select" vu:selector="${viewMode=='read'}" 
+    th:assert="${object} != null and ${field} != null and ${list} != null"
 	th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')}">
 	<vu:label-read object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}" >
 		<span th:if="${value!=null}"
@@ -40,7 +41,8 @@ vu:alias="select" vu:selector="${viewMode=='read'}"
 
 <th:block th:fragment="select-read(object,field, rowIndex,label,list,valueField, labelField, input_attrs, label_attrs)" 
 th:if="${modifiableTable!=null}"
-vu:alias="select" vu:selector="${viewMode=='read'}" 
+vu:alias="select" vu:selector="${viewMode=='read'}"
+    th:assert="${object} != null and ${field} != null and ${list} != null" 
     th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}">
         <vu:field-read field="${field}" list="${list}" listKey="${valueField}" listDisplay="${labelField}"/>        
 </th:block>
