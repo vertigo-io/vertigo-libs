@@ -159,10 +159,12 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private void executeProcesses() {
 		ThreadContext.put("module", "orchestra");
 		try {
+			randomSleep();
 			Assertion.check().isNotNull(nodId, "Node not already registered");
 			executeToDo();
 			nodeManager.updateHeartbeat(nodId);
 			handleDeadNodeProcesses();
+			randomSleep();
 		} catch (final Throwable t) {
 			LOGGER.error("Exception launching activities to executes", t);
 			// if it's an interrupted we rethrow it because we are asked to stop by the jvm
@@ -171,6 +173,15 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 			}
 		} finally {
 			ThreadContext.remove("module");
+		}
+	}
+
+	private void randomSleep() {
+		try {
+			//sleep random 100-500ms to desynchronized executions
+			Thread.sleep(Math.round(Math.random() * Math.min(executionPeriodSeconds * 100, 500)));
+		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt();
 		}
 	}
 
@@ -499,38 +510,45 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void endActivityExecutionAndInitNext(final OActivityExecution activityExecution) {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			endActivity(activityExecution);
 
-			final Optional<OActivity> nextActivity = activityDAO.getNextActivityByActId(activityExecution.getActId());
-			if (nextActivity.isPresent()) {
-				final OActivityExecution nextActivityExecution;
-				final ActivityExecutionWorkspace nextWorkspace;
-				nextActivityExecution = initActivityExecutionWithActivity(nextActivity.get(), activityExecution.getPreId());
-				// We keep the previous worker (Not the same but the slot) for the next Activity Execution
-				reserveActivityExecution(nextActivityExecution);
-				activityExecutionDAO.save(nextActivityExecution);
-
-				// We keep the old workspace for the nextTask
-				final ActivityExecutionWorkspace previousWorkspace = getWorkspaceForActivityExecution(activityExecution.getAceId(), false);
-				// We remove the status and update the activityExecutionId and token
-				previousWorkspace.resetStatus();
-				previousWorkspace.resetAttachment();
-				previousWorkspace.setActivityExecutionId(nextActivityExecution.getAceId());
-				previousWorkspace.setToken(nextActivityExecution.getToken());
-				// ---
-				saveActivityExecutionWorkspace(nextActivityExecution.getAceId(), previousWorkspace, true);
-				nextActivityExecution.setBeginTime(Instant.now());
-				nextWorkspace = previousWorkspace;
-				//we close the transaction now
-				transaction.addAfterCompletion(
-						succeeded -> {
-							if (succeeded) {
-								workers.submit(() -> doRunActivity(nextActivityExecution, nextWorkspace));
-							}
-						});
-
+			//we check state in bdd
+			final OActivityExecution bddActivityExecution = activityExecutionDAO.get(activityExecution.getAceId());
+			if (!ExecutionState.RUNNING.name().equals(bddActivityExecution.getEstCd())) {
+				//we check activityExecution already executed (should not occur)
+				LOGGER.error("Error in activity state, activity excution " + activityExecution.getActId() + " is already terminated, current node " + nodId + " stop process");
 			} else {
-				endProcessExecution(activityExecution.getPreId(), ExecutionState.DONE);
+				endActivity(activityExecution);
+				final Optional<OActivity> nextActivity = activityDAO.getNextActivityByActId(activityExecution.getActId());
+				if (nextActivity.isPresent()) {
+					final OActivityExecution nextActivityExecution;
+					final ActivityExecutionWorkspace nextWorkspace;
+					nextActivityExecution = initActivityExecutionWithActivity(nextActivity.get(), activityExecution.getPreId());
+					// We keep the previous worker (Not the same but the slot) for the next Activity Execution
+					reserveActivityExecution(nextActivityExecution);
+					activityExecutionDAO.save(nextActivityExecution);
+
+					// We keep the old workspace for the nextTask
+					final ActivityExecutionWorkspace previousWorkspace = getWorkspaceForActivityExecution(activityExecution.getAceId(), false);
+					// We remove the status and update the activityExecutionId and token
+					previousWorkspace.resetStatus();
+					previousWorkspace.resetAttachment();
+					previousWorkspace.setActivityExecutionId(nextActivityExecution.getAceId());
+					previousWorkspace.setToken(nextActivityExecution.getToken());
+					// ---
+					saveActivityExecutionWorkspace(nextActivityExecution.getAceId(), previousWorkspace, true);
+					nextActivityExecution.setBeginTime(Instant.now());
+					nextWorkspace = previousWorkspace;
+					//we close the transaction now
+					transaction.addAfterCompletion(
+							succeeded -> {
+								if (succeeded) {
+									workers.submit(() -> doRunActivity(nextActivityExecution, nextWorkspace));
+								}
+							});
+
+				} else {
+					endProcessExecution(activityExecution.getPreId(), ExecutionState.DONE);
+				}
 			}
 			transaction.commit();
 		}
