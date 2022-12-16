@@ -60,7 +60,7 @@ public final class VSpringMvcViewContextInterceptor implements HandlerIntercepto
 			if (AbstractVSpringMvcController.class.isAssignableFrom(handlerMethod.getBeanType())) {
 				final AbstractVSpringMvcController controller = (AbstractVSpringMvcController) handlerMethod.getBean();
 				if (!controller.isViewContextDirty()) {
-					controller.storeContext();
+					controller.storeContext(request);
 				}
 			}
 			if (response.getStatus() / 100 == 2 || UiRequestUtil.isJsonRequest(request) || response.getStatus() / 100 == 4) {
