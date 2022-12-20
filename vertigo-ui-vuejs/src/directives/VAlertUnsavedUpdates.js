@@ -25,7 +25,7 @@ export default {
             if (vnode.context.$root.uiMessageStack) {
                 var uiMessageStack = vnode.context.$root.uiMessageStack;
                 var hasError = uiMessageStack.globalErrors.length > 0;
-                for (var watchKey of watchKeys.split(",")) {
+                for (let watchKey of watchKeys.split(",")) {
                     hasError = hasError || uiMessageStack.objectFieldErrors[watchKey];
                     if (hasError) {
                         break;
@@ -40,7 +40,7 @@ export default {
         el.addEventListener('click', window.watcherUpdates.acceptedUpdates);
 
         //each button watch data (watchKey may differ)
-        for (var watchKey of watchKeys.split(",")) {
+        for (let watchKey of watchKeys.split(",")) {
             vnode.context.$root.$watch('vueData.' + watchKey, function () {
                 window.watcherUpdates.updates_detected = true;
                 document.title = '*' + window.watcherUpdates.originalDocumentTitle;
