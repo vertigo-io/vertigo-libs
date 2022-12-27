@@ -47,6 +47,12 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 	private static final String COMPATIBILITY_HEADERS_ATTRIBUTE_NAME = "compatibilityHeaders";
 	private static final String FRAME_ANCESTOR_PATTERN = "${cspFrameAncestor}";
 	private static final String FRAME_ANCESTOR_PARAM_NAME = "CSP_FRAME_ANCESTOR";
+	private static final String CSP_PARAM1_PATTERN = "${cspParam1}";
+	private static final String CSP_PARAM1_PARAM_NAME = "CSP_PARAM1";
+	private static final String CSP_PARAM2_PATTERN = "${cspParam2}";
+	private static final String CSP_PARAM2_PARAM_NAME = "CSP_PARAM2";
+	private static final String CSP_PARAM3_PATTERN = "${cspParam3}";
+	private static final String CSP_PARAM3_PARAM_NAME = "CSP_PARAM3";
 	private static final String REPORT_WS_PARAM_NAME = "CSP_REPORT_WS_URI";
 
 	private String cspPattern;
@@ -64,6 +70,10 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 		final ParamManager paramManager = Node.getNode().getComponentSpace().resolve(ParamManager.class);
 		//String.replace : => est équivalent à replaceAll sans regexp (et remplace bien toutes les occurences)
 		cspPattern = cspPattern.replace(FRAME_ANCESTOR_PATTERN, paramManager.getOptionalParam(FRAME_ANCESTOR_PARAM_NAME).map(Param::getValue).orElse(""));
+
+		cspPattern = cspPattern.replace(CSP_PARAM1_PATTERN, paramManager.getOptionalParam(CSP_PARAM1_PARAM_NAME).map(Param::getValue).orElse(""));
+		cspPattern = cspPattern.replace(CSP_PARAM2_PATTERN, paramManager.getOptionalParam(CSP_PARAM2_PARAM_NAME).map(Param::getValue).orElse(""));
+		cspPattern = cspPattern.replace(CSP_PARAM3_PATTERN, paramManager.getOptionalParam(CSP_PARAM3_PARAM_NAME).map(Param::getValue).orElse(""));
 
 		final Optional<Param> reportUri = paramManager.getOptionalParam(REPORT_WS_PARAM_NAME);
 		if (reportUri.isPresent() && !reportUri.get().getValue().isBlank()) {
