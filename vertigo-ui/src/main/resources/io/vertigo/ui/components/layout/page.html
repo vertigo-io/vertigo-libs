@@ -1,4 +1,4 @@
-<th:block th:fragment="page(content, vuiDevMode, vuiSsr)"
+<th:block th:fragment="page(content, vuiDevMode, vuiSsr, libraries_slot)"
 	th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, isVuiSsr=${vuiSsr != null ? vuiSsr : false}">
 	<div th:if="${!isVuiSsr}" id="page">
 		<vu:content/>
@@ -12,6 +12,7 @@
 	<script th:if="${!isVuiDevMode}" th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.min.js}"></script>
 	<script th:if="${isVuiDevMode}" src="http://localhost:3000/js/chunk-vendors.js"></script>
 	<script th:if="${isVuiDevMode}" src="http://localhost:3000/js/app.js"></script>
+	<div vu:slot="libraries_slot" ></div>
 	<vu:vue-data/>
 	<script th:if="${isVuiSsr}" th:src="@{/vertigo-ui/static/js/vertigo-ui-mpa-ssr.js}"></script>
 	<script th:if="${!isVuiSsr}" th:src="@{/vertigo-ui/static/js/vertigo-ui-mpa.js}"></script>
