@@ -594,6 +594,79 @@ export default {
 
     isFormData: function (val) {
         return (typeof FormData !== 'undefined') && (val instanceof FormData);
+    },
+    /**
+     * Capture the <CTL-V> paste event, only allow plain-text, no images.         *
+     * see: https://stackoverflow.com/a/28213320         *
+     * @param {object} evt - array of files
+     * @author Daniel Thompson-Yvetot
+     * @license MIT
+     */
+    pastePlainTextCapture (evt, editorRef) {
+      // Let inputs do their thing, so we don't break pasting of links.
+      if (evt.target.nodeName === 'INPUT') return
+      let text, onPasteStripFormattingIEPaste
+      evt.preventDefault()
+      if (evt.originalEvent && evt.originalEvent.clipboardData.getData) {
+        text = evt.originalEvent.clipboardData.getData('text/plain')
+        this.$refs[editorRef].runCmd('insertText', text)
+      }
+      else if (evt.clipboardData && evt.clipboardData.getData) {
+        text = evt.clipboardData.getData('text/plain')
+        this.$refs[editorRef].runCmd('insertText', text)
+      }
+      else if (window.clipboardData && window.clipboardData.getData) {
+        if (!onPasteStripFormattingIEPaste) {
+          onPasteStripFormattingIEPaste = true
+          this.$refs[editorRef].runCmd('ms-pasteTextOnly', text)
+        }
+        onPasteStripFormattingIEPaste = false
+      }
+    },
+    editorHandlerFixHelper(tags, regexp, doBlockName, undoBlockName, eVm, caret) {
+        if(caret.hasParents(tags, true)) { 
+            eVm.runCmd('formatBlock', undoBlockName);
+            
+            if(!caret.range.commonAncestorContainer.hasChildNodes()) {
+                 var currentNode = caret.selection.focusNode.parentNode;
+                while(currentNode && currentNode !== caret.el) {
+                    if(tags.includes(currentNode.nodeName.toLowerCase())) {
+                        currentNode.outerHTML = currentNode.outerHTML.replace(regexp,"");
+                    }
+                    currentNode = currentNode.parentNode;
+                }                    
+            } else {
+               var inSelection = false;
+                var startNode = caret.range.startContainer;
+                while(startNode && startNode !== caret.el && startNode.parentNode !== caret.range.commonAncestorContainer) {
+                    startNode = startNode.parentNode;
+                }                
+                var endNode = caret.range.endContainer;
+                while(endNode && endNode !== caret.el && endNode.parentNode !== caret.range.commonAncestorContainer) {
+                    endNode = endNode.parentNode;
+                }
+                caret.range.commonAncestorContainer.childNodes.forEach(
+                    function (currentNode, currentIndex, listObj) {
+                        if(currentNode === startNode) {
+                            inSelection = true;
+                        }
+                        if(inSelection) {
+                            currentNode.outerHTML = currentNode.outerHTML.replace(regexp,"");
+                        }
+                        if(currentNode === endNode) {
+                            inSelection = false;                            
+                        }
+                    }
+                )
+            }
+        } else {
+            eVm.runCmd('formatBlock', doBlockName);
+        }
+    },
+    editorHandlerBlockquoteFix(e,eVm,caret) {
+        this.editorHandlerFixHelper(['blockquote'], /<\/?blockquote[^>]*\/?>/g, 'blockquote', 'div', eVm, caret);
+    },
+    editorHandlerParagrapheFix(e,eVm,caret) {
+        this.editorHandlerFixHelper(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9'], /<\/?h[1-9][^>]*\/?>/g, 'div', 'div', eVm, caret);            
     }
-
 }
