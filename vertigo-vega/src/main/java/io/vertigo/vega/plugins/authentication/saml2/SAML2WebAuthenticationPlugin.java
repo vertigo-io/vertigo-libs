@@ -20,6 +20,7 @@ package io.vertigo.vega.plugins.authentication.saml2;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.List;
@@ -69,8 +70,6 @@ import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureException;
 import org.opensaml.xmlsec.signature.support.SignatureValidator;
 import org.w3c.dom.Document;
-
-import com.nimbusds.jose.util.StandardCharset;
 
 import io.vertigo.connectors.saml2.OpenSAMLHelper;
 import io.vertigo.connectors.saml2.SAML2DeploymentConnector;
@@ -294,7 +293,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		final var base64DecodedResponse = Base64.getDecoder().decode(rawSamlResponse);
 
 		if (LOG.isTraceEnabled()) {
-			LOG.trace(new String(base64DecodedResponse, StandardCharset.UTF_8));
+			LOG.trace(new String(base64DecodedResponse, StandardCharsets.UTF_8));
 		}
 		final Response response;
 		try (final var is = new ByteArrayInputStream(base64DecodedResponse);) {
@@ -311,9 +310,13 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 
 		// read or decrypt assertion
 		final var assertion = getAssertion(response);
-
-		final var claims = OpenSAMLHelper.extractAttributes(assertion);
-		return AuthenticationResult.of(claims, assertion);
+		try {
+			final var claims = OpenSAMLHelper.extractAttributes(assertion);
+			return AuthenticationResult.of(claims, assertion);
+		} catch (final Exception e) {
+			LOG.error("Error parsing SAMLResponse assertion {}", base64DecodedResponse);
+			throw WrappedException.wrap(e);
+		}
 	}
 
 	private boolean checkSignature(final Signature sig) {
@@ -325,12 +328,18 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 				signatureValid = true;
 				break;
 			} catch (final SignatureException e) {
-				LOG.info("SAML signature check fail for cert n°{}/{}.", checkCount, saml2Parameters.getIpPublicCredentials().size());
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("SAML signature check fail for cert n°{}/{}.", checkCount, saml2Parameters.getIpPublicCredentials().size(), e);
+				} else {
+					LOG.info("SAML signature check fail for cert n°{}/{}.", checkCount, saml2Parameters.getIpPublicCredentials().size());
+				}
 			}
 			++checkCount;
 		}
 		if (checkCount > 1) {
 			LOG.warn("SAML signature validation do not use primary defined certificate, consider deleting old certificates from configuration.");
+		} else if (checkCount == 0) {
+			LOG.warn("SAML signature validation can't found any certificate");
 		}
 		return signatureValid;
 	}
