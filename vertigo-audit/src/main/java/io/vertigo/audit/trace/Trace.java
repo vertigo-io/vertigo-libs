@@ -20,7 +20,8 @@ package io.vertigo.audit.trace;
 import java.time.Instant;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
@@ -29,64 +30,70 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
  *
  * @author xdurand
  */
-public final class Trace implements DtObject {
+public final class Trace implements Entity {
 	private static final long serialVersionUID = 2280022920606418634L;
 
-	@Field(type = "ID", smartType = "STyXAuditId", cardinality = Cardinality.ONE, label = "id")
-	private Long id;
+	@Field(type = "ID", smartType = "STyXAuditId", cardinality = Cardinality.ONE, label = "traId")
+	private Long traId;
 
-	@Field(smartType = "STyXAuditCategory", label = "category")
+	@Field(smartType = "STyXAuditCategory", label = "category", cardinality = Cardinality.ONE)
 	private final String category;
 
-	@Field(smartType = "STyXAuditUsername", label = "username")
+	@Field(smartType = "STyXAuditUsername", label = "username", cardinality = Cardinality.ONE)
 	private final String username;
 
 	@Field(smartType = "STyXAuditInstant", label = "businessDate")
 	private final Instant businessDate;
 
-	@Field(smartType = "STyXAuditInstant", label = "executionDate")
+	@Field(smartType = "STyXAuditInstant", label = "executionDate", cardinality = Cardinality.ONE)
 	private final Instant executionDate;
 
-	@Field(smartType = "STyXAuditItem", label = "item")
-	private final Long item;
+	@Field(smartType = "STyXAuditItem", label = "itemUrn", cardinality = Cardinality.ONE)
+	private final String itemUrn;
 
-	@Field(smartType = "STyXAuditMessage", label = "message")
+	@Field(smartType = "STyXAuditMessage", label = "message", cardinality = Cardinality.ONE)
 	private final String message;
 
 	@Field(smartType = "STyXAuditContext", label = "context")
 	private final String context;
 
 	Trace(
-			final Long id,
+			final Long traId,
 			final String category,
 			final String username,
 			final Instant businessDate,
 			final Instant executionDate,
-			final Long item,
+			final String itemUrn,
 			final String message,
 			final String context) {
-		this.id = id;
+		this.traId = traId;
 		this.category = category;
 		this.username = username;
 		this.businessDate = businessDate;
 		this.executionDate = executionDate;
-		this.item = item;
+		this.itemUrn = itemUrn;
 		this.message = message;
 		this.context = context;
 	}
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
+	/** {@inheritDoc} */
+	@Override
+	public UID<Trace> getUID() {
+		return UID.of(this);
 	}
 
 	/**
-	 * @param id the id to set
+	 * @return the traId
 	 */
-	public void setId(final Long id) {
-		this.id = id;
+	public Long getTraId() {
+		return traId;
+	}
+
+	/**
+	 * @param traId the id to set
+	 */
+	public void setTraId(final Long traId) {
+		this.traId = traId;
 	}
 
 	/**
@@ -118,10 +125,10 @@ public final class Trace implements DtObject {
 	}
 
 	/**
-	 * @return the item
+	 * @return the itemUrn
 	 */
-	public Long getItem() {
-		return item;
+	public String getItemUrn() {
+		return itemUrn;
 	}
 
 	/**
@@ -142,4 +149,5 @@ public final class Trace implements DtObject {
 	public String toString() {
 		return DtObjectUtil.toString(this);
 	}
+
 }

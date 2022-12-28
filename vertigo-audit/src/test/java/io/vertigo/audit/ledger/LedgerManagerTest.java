@@ -53,7 +53,7 @@ public class LedgerManagerTest {
 	}
 
 	private NodeConfig buildNodeConfig() {
-		return MyNodeConfig.config();
+		return MyNodeConfig.configMemory();
 	}
 
 	@Test

@@ -39,21 +39,22 @@ public final class TraceDefinitionProvider implements SimpleDefinitionProvider {
 		final SmartTypeDefinition smartTypeAuditCategory = SmartTypeDefinition.builder("STyXAuditCategory", BasicType.String).build();
 		final SmartTypeDefinition smartTypeAuditUser = SmartTypeDefinition.builder("STyXAuditUser", BasicType.String).build();
 		final SmartTypeDefinition smartTypeAuditInstant = SmartTypeDefinition.builder("STyXAuditInstant", BasicType.Instant).build();
-		final SmartTypeDefinition smartTypeAuditItem = SmartTypeDefinition.builder("STyXAuditItem", BasicType.Long).build();
+		final SmartTypeDefinition smartTypeAuditItem = SmartTypeDefinition.builder("STyXAuditItem", BasicType.String).build();
 		final SmartTypeDefinition smartTypeAuditMessage = SmartTypeDefinition.builder("STyXAuditMessage", BasicType.String).build();
 		final SmartTypeDefinition smartTypeAuditContext = SmartTypeDefinition.builder("STyXAuditContext", BasicType.String).build();
 
-		final DtDefinition auditTraceDtDefinition = DtDefinition.builder("DtAuditTrace")
-				.addIdField("id", "id", smartTypeAuditId)
+		final DtDefinition auditTraceDtDefinition = DtDefinition.builder("DtTrace")
+				.addIdField("traId", "traId", smartTypeAuditId)
 				.withSortField("category")
 				.withDisplayField("category")
 				.addDataField("category", "category", smartTypeAuditCategory, Cardinality.ONE, true)
-				.addDataField("user", "user", smartTypeAuditUser, Cardinality.ONE, true)
-				.addDataField("dateBusiness", "dateBusiness", smartTypeAuditInstant, Cardinality.OPTIONAL_OR_NULLABLE, true)
-				.addDataField("dateExecution", "dateExecution", smartTypeAuditInstant, Cardinality.ONE, true)
-				.addDataField("item", "item", smartTypeAuditItem, Cardinality.ONE, true)
+				.addDataField("username", "username", smartTypeAuditUser, Cardinality.ONE, true)
+				.addDataField("businessDate", "businessDate", smartTypeAuditInstant, Cardinality.OPTIONAL_OR_NULLABLE, true)
+				.addDataField("executionDate", "executionDate", smartTypeAuditInstant, Cardinality.ONE, true)
+				.addDataField("itemUrn", "itemUrn", smartTypeAuditItem, Cardinality.ONE, true)
 				.addDataField("message", "message", smartTypeAuditMessage, Cardinality.ONE, true)
 				.addDataField("context", "context", smartTypeAuditContext, Cardinality.OPTIONAL_OR_NULLABLE, true)
+				.withDataSpace("audit")
 				.build();
 
 		return List.of(

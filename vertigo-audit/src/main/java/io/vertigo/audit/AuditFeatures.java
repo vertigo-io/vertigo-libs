@@ -23,6 +23,8 @@ import io.vertigo.audit.impl.trace.TraceManagerImpl;
 import io.vertigo.audit.ledger.LedgerManager;
 import io.vertigo.audit.plugins.ledger.ethereum.EthereumLedgerPlugin;
 import io.vertigo.audit.plugins.ledger.fake.FakeLedgerPlugin;
+import io.vertigo.audit.plugins.trace.datastore.StoreTraceStorePlugin;
+import io.vertigo.audit.plugins.trace.log4j.LogTraceStorePlugin;
 import io.vertigo.audit.plugins.trace.memory.MemoryTraceStorePlugin;
 import io.vertigo.audit.trace.TraceManager;
 import io.vertigo.core.node.config.Feature;
@@ -46,6 +48,23 @@ public class AuditFeatures extends Features<AuditFeatures> {
 	@Feature("trace.memory")
 	public AuditFeatures withMemoryTrace() {
 		getModuleConfigBuilder().addPlugin(MemoryTraceStorePlugin.class);
+		return this;
+	}
+
+	/**
+	 * Activate Trace with Store.
+	 * @return these features
+	 */
+	@Feature("trace.store")
+	public AuditFeatures withStoreTrace() {
+		getModuleConfigBuilder()
+				.addPlugin(StoreTraceStorePlugin.class);
+		return this;
+	}
+
+	@Feature("trace.log")
+	public AuditFeatures withLogTrace() {
+		getModuleConfigBuilder().addPlugin(LogTraceStorePlugin.class);
 		return this;
 	}
 

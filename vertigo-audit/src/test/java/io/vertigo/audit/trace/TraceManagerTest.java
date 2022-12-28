@@ -58,7 +58,8 @@ public class TraceManagerTest {
 	}
 
 	private NodeConfig buildNodeConfig() {
-		return MyNodeConfig.config();
+		//return MyNodeConfig.configWithStore();
+		return MyNodeConfig.configMemory();
 	}
 
 	/**
@@ -66,10 +67,10 @@ public class TraceManagerTest {
 	 */
 	@Test
 	public void testAddAuditTrace() {
-		final Trace auditTrace = new TraceBuilder("CAT1", "USER1", 1L, "My message 1").build();
+		final Trace auditTrace = new TraceBuilder("CAT1", "USER1", "MyPet@1L", "My message 1").build();
 
 		auditManager.addTrace(auditTrace);
-		final Trace auditFetch = auditManager.getTrace(auditTrace.getId());
+		final Trace auditFetch = auditManager.getTrace(auditTrace.getTraId());
 
 		assertThat(auditFetch).isEqualToIgnoringGivenFields(auditTrace, "id");
 	}
@@ -79,10 +80,10 @@ public class TraceManagerTest {
 	 */
 	@Test
 	public void testFindAuditTrace() {
-		final Trace auditTrace1 = new TraceBuilder("CAT2", "USER2", 2L, "My message 2").build();
+		final Trace auditTrace1 = new TraceBuilder("CAT2", "USER2", "MyPet@2L", "My message 2").build();
 		auditManager.addTrace(auditTrace1);
 
-		final Trace auditTrace2 = new TraceBuilder("CAT3", "USER3", 3L, "My message 3")
+		final Trace auditTrace2 = new TraceBuilder("CAT3", "USER3", "MyPet@3L", "My message 3")
 				.withDateBusiness(Instant.now())
 				.withContext(List.of("Context 3"))
 				.build();
@@ -121,7 +122,7 @@ public class TraceManagerTest {
 		assertThat(auditTraceFetch3).usingFieldByFieldElementComparator().contains(auditTrace1, auditTrace2);
 
 		//Criteria Item
-		final TraceCriteria auditTraceCriteria4 = TraceCriteria.builder().withItem(2L).build();
+		final TraceCriteria auditTraceCriteria4 = TraceCriteria.builder().withItemUrn("MyPet@2L").build();
 		final List<Trace> auditTraceFetch4 = auditManager.findTrace(auditTraceCriteria4);
 
 		assertThat(auditTraceFetch4).hasSize(1);

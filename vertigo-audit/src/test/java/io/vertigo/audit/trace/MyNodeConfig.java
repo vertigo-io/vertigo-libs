@@ -19,7 +19,16 @@ package io.vertigo.audit.trace;
 
 import io.vertigo.audit.AuditFeatures;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.node.config.BootConfig;
+import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
+import io.vertigo.database.DatabaseFeatures;
+import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.datamodel.DataModelFeatures;
+import io.vertigo.datastore.DataStoreFeatures;
 
 /**
  * Config for test
@@ -32,12 +41,54 @@ public class MyNodeConfig {
 	 * Configure the node for testing
 	 * @return the application config for testing
 	 */
-	public static NodeConfig config() {
+	public static NodeConfig configMemory() {
 		return NodeConfig.builder()
 				.addModule(new CommonsFeatures().build())
 				.addModule(new AuditFeatures()
 						.withTrace()
 						.withMemoryTrace()
+						.withLedger()
+						.withFakeBlockChain()
+						.build())
+				.build();
+	}
+
+	public static NodeConfig configWithStore() {
+		return NodeConfig.builder()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.addPlugin(URLResourceResolverPlugin.class)
+						.build())
+				.addModule(new CommonsFeatures()
+						//.withScript()
+						//.withJaninoScript()
+						.build())
+				.addModule(new DatabaseFeatures()
+						.withSqlDataBase()
+						.withC3p0(
+								Param.of("name", "audit"),
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", org.h2.Driver.class.getName()),
+								//Param.of("jdbcUrl", "jdbc:h2:~/vertigo/orchestra;AUTO_SERVER=TRUE"))
+								Param.of("jdbcUrl", "jdbc:h2:mem:audit"))
+						.build())
+				.addModule(new DataModelFeatures().build())
+				.addModule(new DataStoreFeatures()
+						.withCache()
+						.withMemoryCache()
+						.withEntityStore()
+						.withSqlEntityStore(
+								Param.of("dataSpace", "audit"),
+								Param.of("connectionName", "audit"),
+								Param.of("sequencePrefix", "SEQ_"))
+						.build())
+				// we build h2 mem
+				.addModule(ModuleConfig.builder("databaseInitializer").addComponent(DataBaseInitializer.class).build())
+				//
+				.addModule(new AuditFeatures()
+						.withTrace()
+						.withStoreTrace()
 						.withLedger()
 						.withFakeBlockChain()
 						.build())
