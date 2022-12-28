@@ -646,7 +646,7 @@ export default {
                     endNode = endNode.parentNode;
                 }
                 caret.range.commonAncestorContainer.childNodes.forEach(
-                    function (currentNode, currentIndex, listObj) {
+                    function (currentNode) {
                         if(currentNode === startNode) {
                             inSelection = true;
                         }
