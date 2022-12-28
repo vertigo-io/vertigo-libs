@@ -295,6 +295,8 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 				} else {
 					dtListDelta.getCreated().add(validatedDto);
 				}
+			} else if (uiListDelta.getCreatesMap().containsKey(uiObject.getInputKey())) {
+				dtListDelta.getCreated().add(uiObject.getServerSideObject()); //on ne force pas la validation
 			}
 		}
 
