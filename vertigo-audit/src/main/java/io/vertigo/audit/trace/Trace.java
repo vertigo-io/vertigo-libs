@@ -30,32 +30,37 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
  *
  * @author xdurand
  */
+@io.vertigo.datamodel.structure.stereotype.DataSpace("audit")
 public final class Trace implements Entity {
 	private static final long serialVersionUID = 2280022920606418634L;
 
-	@Field(type = "ID", smartType = "STyXAuditId", cardinality = Cardinality.ONE, label = "traId")
+	@Field(type = "ID", smartType = "STyATraceId", cardinality = Cardinality.ONE, label = "traId")
 	private Long traId;
 
-	@Field(smartType = "STyXAuditCategory", label = "category", cardinality = Cardinality.ONE)
-	private final String category;
+	@Field(smartType = "STyATraceCategory", label = "category", cardinality = Cardinality.ONE)
+	private String category;
 
-	@Field(smartType = "STyXAuditUsername", label = "username", cardinality = Cardinality.ONE)
-	private final String username;
+	@Field(smartType = "STyATraceUsername", label = "username", cardinality = Cardinality.ONE)
+	private String username;
 
-	@Field(smartType = "STyXAuditInstant", label = "businessDate")
-	private final Instant businessDate;
+	@Field(smartType = "STyATraceInstant", label = "businessDate")
+	private Instant businessDate;
 
-	@Field(smartType = "STyXAuditInstant", label = "executionDate", cardinality = Cardinality.ONE)
-	private final Instant executionDate;
+	@Field(smartType = "STyATraceInstant", label = "executionDate", cardinality = Cardinality.ONE)
+	private Instant executionDate;
 
-	@Field(smartType = "STyXAuditItem", label = "itemUrn", cardinality = Cardinality.ONE)
-	private final String itemUrn;
+	@Field(smartType = "STyATraceItem", label = "itemUrn", cardinality = Cardinality.ONE)
+	private String itemUrn;
 
-	@Field(smartType = "STyXAuditMessage", label = "message", cardinality = Cardinality.ONE)
-	private final String message;
+	@Field(smartType = "STyATraceMessage", label = "message", cardinality = Cardinality.ONE)
+	private String message;
 
-	@Field(smartType = "STyXAuditContext", label = "context")
-	private final String context;
+	@Field(smartType = "STyATraceContext", label = "context")
+	private String context;
+
+	public Trace() {
+		//empty constructor for entityManager
+	}
 
 	Trace(
 			final Long traId,
@@ -104,10 +109,28 @@ public final class Trace implements Entity {
 	}
 
 	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'category'.
+	 * @param name String
+	 */
+	public void setCategory(final String category) {
+		this.category = category;
+	}
+
+	/**
 	 * @return the user
 	 */
 	public String getUsername() {
 		return username;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'username'.
+	 * @param name String
+	 */
+	public void setUsername(final String username) {
+		this.username = username;
 	}
 
 	/**
@@ -118,10 +141,28 @@ public final class Trace implements Entity {
 	}
 
 	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'businessDate'.
+	 * @param name Instant
+	 */
+	public void setBusinessDate(final Instant businessDate) {
+		this.businessDate = businessDate;
+	}
+
+	/**
 	 * @return the executionDate
 	 */
 	public Instant getExecutionDate() {
 		return executionDate;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'executionDate'.
+	 * @param name Instant
+	 */
+	public void setExecutionDate(final Instant executionDate) {
+		this.executionDate = executionDate;
 	}
 
 	/**
@@ -132,6 +173,15 @@ public final class Trace implements Entity {
 	}
 
 	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'itemUrn'.
+	 * @param name String
+	 */
+	public void setItemUrn(final String itemUrn) {
+		this.itemUrn = itemUrn;
+	}
+
+	/**
 	 * @return the message
 	 */
 	public String getMessage() {
@@ -139,10 +189,28 @@ public final class Trace implements Entity {
 	}
 
 	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'message'.
+	 * @param name String
+	 */
+	public void setMessage(final String message) {
+		this.message = message;
+	}
+
+	/**
 	 * @return the context
 	 */
 	public String getContext() {
 		return context;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'context'.
+	 * @param name String
+	 */
+	public void setContext(final String context) {
+		this.context = context;
 	}
 
 	@Override

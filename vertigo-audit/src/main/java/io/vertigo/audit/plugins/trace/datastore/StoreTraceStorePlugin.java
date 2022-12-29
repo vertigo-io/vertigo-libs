@@ -95,7 +95,7 @@ public final class StoreTraceStorePlugin implements TraceStorePlugin, Activeable
 				.isNotNull(auditTrace)
 				.isNull(auditTrace.getTraId(), "A new audit trail must not have an id");
 		//---
-		executeInTransaction(() -> {
+		executeInTransactionAndCommit(() -> {
 			return entityStoreManager.create(auditTrace);
 		});
 	}
@@ -115,17 +115,17 @@ public final class StoreTraceStorePlugin implements TraceStorePlugin, Activeable
 			}
 
 			if (auditTraceCriteria.getStartExecutionDate() != null) {
-				criteria = criteria.and(Criterions.isLessThanOrEqualTo(() -> "executionDate", auditTraceCriteria.getStartExecutionDate()));
+				criteria = criteria.and(Criterions.isGreaterThanOrEqualTo(() -> "executionDate", auditTraceCriteria.getStartExecutionDate()));
 			}
 			if (auditTraceCriteria.getEndExecutionDate() != null) {
-				criteria = criteria.and(Criterions.isGreaterThanOrEqualTo(() -> "executionDate", auditTraceCriteria.getEndExecutionDate()));
+				criteria = criteria.and(Criterions.isLessThanOrEqualTo(() -> "executionDate", auditTraceCriteria.getEndExecutionDate()));
 			}
 
 			if (auditTraceCriteria.getStartBusinessDate() != null) {
-				criteria = criteria.and(Criterions.isLessThanOrEqualTo(() -> "businessDate", auditTraceCriteria.getStartBusinessDate()));
+				criteria = criteria.and(Criterions.isGreaterThanOrEqualTo(() -> "businessDate", auditTraceCriteria.getStartBusinessDate()));
 			}
 			if (auditTraceCriteria.getEndBusinessDate() != null) {
-				criteria = criteria.and(Criterions.isGreaterThanOrEqualTo(() -> "businessDate", auditTraceCriteria.getEndBusinessDate()));
+				criteria = criteria.and(Criterions.isLessThanOrEqualTo(() -> "businessDate", auditTraceCriteria.getEndBusinessDate()));
 			}
 			return entityStoreManager.find(traceDtDefinition, criteria, DtListState.defaultOf(Trace.class));
 		});
@@ -138,6 +138,18 @@ public final class StoreTraceStorePlugin implements TraceStorePlugin, Activeable
 		//Dans le cas ou il n'existe pas de transaction on en crée une.
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			return supplier.get();
+		}
+	}
+
+	private <O> O executeInTransactionAndCommit(final Supplier<O> supplier) {
+		if (transactionManager.hasCurrentTransaction()) {
+			return supplier.get();
+		}
+		//Dans le cas ou il n'existe pas de transaction on en crée une.
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final O result = supplier.get();
+			transaction.commit();
+			return result;
 		}
 	}
 }

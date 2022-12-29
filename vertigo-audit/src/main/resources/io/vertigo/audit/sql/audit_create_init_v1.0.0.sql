@@ -22,8 +22,8 @@ create table TRACE
     BUSINESS_DATE   TIMESTAMP     	,
     EXECUTION_DATE  TIMESTAMP       not null,
     ITEM_URN      	VARCHAR(250)	not null,
-    MESSAGE      	VARCHAR(1000)   not null,
-    CONTEXT         VARCHAR(4000)   ,
+    MESSAGE      	TEXT            not null,
+    CONTEXT         TEXT,
     constraint PK_AUDIT_TRACE primary key (TRA_ID)
 );
 

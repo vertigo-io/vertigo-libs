@@ -18,7 +18,8 @@
 package io.vertigo.audit;
 
 import io.vertigo.audit.impl.ledger.LedgerManagerImpl;
-import io.vertigo.audit.impl.trace.TraceDefinitionProvider;
+import io.vertigo.audit.impl.trace.AuditTraceDtDefinitions;
+import io.vertigo.audit.impl.trace.AuditTraceSmartTypes;
 import io.vertigo.audit.impl.trace.TraceManagerImpl;
 import io.vertigo.audit.ledger.LedgerManager;
 import io.vertigo.audit.plugins.ledger.ethereum.EthereumLedgerPlugin;
@@ -27,9 +28,11 @@ import io.vertigo.audit.plugins.trace.datastore.StoreTraceStorePlugin;
 import io.vertigo.audit.plugins.trace.log4j.LogTraceStorePlugin;
 import io.vertigo.audit.plugins.trace.memory.MemoryTraceStorePlugin;
 import io.vertigo.audit.trace.TraceManager;
+import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
+import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 
 public class AuditFeatures extends Features<AuditFeatures> {
 
@@ -40,8 +43,10 @@ public class AuditFeatures extends Features<AuditFeatures> {
 	@Feature("trace")
 	public AuditFeatures withTrace() {
 		getModuleConfigBuilder()
-				.addDefinitionProvider(TraceDefinitionProvider.class)
-				.addComponent(TraceManager.class, TraceManagerImpl.class);
+				.addComponent(TraceManager.class, TraceManagerImpl.class)
+				.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
+						.addDefinitionResource("smarttypes", AuditTraceSmartTypes.class.getName())
+						.addDefinitionResource("dtobjects", AuditTraceDtDefinitions.class.getName()).build());
 		return this;
 	}
 
