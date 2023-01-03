@@ -218,9 +218,15 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		viewContextUpdateSecurity.assertIsUpdatable(key);
 		//-----
 		if (value instanceof UiObject) {
+			// keep track of indexes
+			reverseUiObjectIndex.values().removeIf(key::equals);
+			// ---
 			reverseUiObjectIndex.put(value, key);
 			reverseUiObjectIndex.put(((UiObject<?>) value).getServerSideObject(), key);
 		} else if (value instanceof UiList) {
+			// keep track of indexes
+			reverseUiListIndex.values().removeIf(key::equals);
+			//---
 			reverseUiListIndex.put((UiList<?>) value, key);
 		}
 		if ((value instanceof String || value instanceof String[]) && isMultiple(key)) {
@@ -288,10 +294,10 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		final String keyString = (String) key;
 		Assertion.check().isNotBlank(keyString);
 		//---
-		// on garde les index en cohérence après un remove
+		// keep track of indexes
 		reverseUiObjectIndex.values().removeIf(keyString::equals);
 		reverseUiListIndex.values().removeIf(keyString::equals);
-		// on fait le remove
+		// we actually remove
 		return super.remove(key);
 	}
 
