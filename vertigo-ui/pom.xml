@@ -73,6 +73,17 @@
 		  <artifactId>thymeleaf-layout-dialect</artifactId>
 		  <version>3.1.0</version>
 		</dependency>
+		
+		<!-- Optionals -->
+		
+		
+		<!-- for VuejsSsrFilter -->
+		<dependency>
+			<groupId>org.openjdk.nashorn</groupId>
+			<artifactId>nashorn-core</artifactId>
+			<version>15.4</version>
+			<optional>true</optional>  <!-- for VuejsSsrFilter -->
+		</dependency>
 		<!-- for tests -->
 		<!-- for Embedded Jetty Server and tests -->
 		<!-- Connections Pool -->
@@ -144,20 +155,6 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<!-- CollectionsManager/LuceneIndexPlugin -->
-		<dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-            <version>8.11.1</version><!-- 8.11.1 compatible with ElasticSearch 7.17.6 -->
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-analyzers-common</artifactId>
-            <version>8.11.1</version><!-- 8.11.1 compatible with ElasticSearch 7.17.6 -->
-            <optional>true</optional>
-        </dependency>
-
 		<!-- Search -->
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
@@ -177,20 +174,33 @@
 		    <version>7.17.6</version>
 		    <scope>test</scope> <!-- EsTransportSearchServicesPlugin -->
 		</dependency>
-		
-        <dependency>
+		<dependency>
             <groupId>org.codelibs.elasticsearch.module</groupId>
             <artifactId>analysis-common</artifactId> 
             <version>7.17.6</version> <!-- required by EmbeddedSearchServicesPlugin -->
-            <optional>true</optional>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.codelibs.elasticsearch.module</groupId>
             <artifactId>mapper-extras</artifactId>
             <version>7.17.6</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
-            <optional>true</optional>
+            <scope>test</scope>
         </dependency>   
 		
+		<!-- CollectionsManager/LuceneIndexPlugin -->
+		<dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>8.11.1</version><!-- 8.11.1 compatible with ElasticSearch 7.17.6 -->
+             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-common</artifactId>
+            <version>8.11.1</version><!-- 8.11.1 compatible with ElasticSearch 7.17.6 -->
+             <scope>test</scope>
+        </dependency>
+        
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
