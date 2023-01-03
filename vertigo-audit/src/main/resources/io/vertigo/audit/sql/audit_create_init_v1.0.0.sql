@@ -27,7 +27,13 @@ create table TRACE
     constraint PK_AUDIT_TRACE primary key (TRA_ID)
 );
 
-        
+drop index IF EXISTS IDX_TRA_USERNAME_DATE;
+create index IDX_TRA_USERNAME_DATE on TRACE (USERNAME asc, EXECUTION_DATE asc);
+
+drop index IF EXISTS IDX_TRA_ITEM_URN_DATE;
+create index IDX_TRA_ITEM_URN_DATE on TRACE (ITEM_URN asc, EXECUTION_DATE asc);
+
+
 comment on column TRACE.TRA_ID is
 'Id Trace';
 
