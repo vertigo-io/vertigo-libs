@@ -28,13 +28,11 @@ import org.apache.logging.log4j.LogManager;
 
 /**
  * Implémentation de HttpServletResponseWrapper pour éviter warnings à la compilation.
- * @author Emeric Vernat
+ * @author Matthieu Laroche, Nicolas Piedeloup
  */
 public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.http.HttpServletResponseWrapper implements AutoCloseable {
 	private ServletOutputStream stream;
 	private PrintWriter writer;
-	private final HttpServletResponse response;
-	private int status;
 
 	/**
 	 * Constructeur.
@@ -42,7 +40,6 @@ public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.h
 	 */
 	protected AbstractHttpServletResponseWrapper(final HttpServletResponse response) {
 		super(response);
-		this.response = response;
 	}
 
 	protected final ServletOutputStream getStream() {
@@ -76,7 +73,7 @@ public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.h
 			setContentLength(Integer.parseInt(value));
 			return;
 		}
-		response.addHeader(name, value);
+		super.addHeader(name, value);
 	}
 
 	/**
@@ -90,37 +87,7 @@ public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.h
 			setContentLength(Integer.parseInt(value));
 			return;
 		}
-		response.setHeader(name, value);
-	}
-
-	/**
-	 * Retourne le status définit par setStatus ou sendError.
-	 * @return int
-	 */
-	@Override
-	public final int getStatus() {
-		return status;
-	}
-
-	/**
-	 * Définit le status de la réponse http (SC_OK, SC_NOT_FOUND, SC_INTERNAL_SERVER_ERROR ...).
-	 * @param status int
-	 */
-	@Override
-	public final void setStatus(final int status) {
-		super.setStatus(status);
-		this.status = status;
-	}
-
-	/**
-	 * Envoie une erreur comme réponse http (SC_OK, SC_NOT_FOUND, SC_INTERNAL_SERVER_ERROR ...).
-	 * @param error int
-	 * @throws IOException   Exception d'entrée/sortie
-	 */
-	@Override
-	public final void sendError(final int error) throws IOException {
-		super.sendError(error);
-		status = error;
+		super.setHeader(name, value);
 	}
 
 	/**
@@ -189,23 +156,4 @@ public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.h
 		}
 	}
 
-	/**
-	 * Définit la longueur du corps du contenu dans la réponse.
-	 * Dans les servlets http, cette méthode définit le Content-Length dans les headers HTTP.
-	 * @param length int
-	 */
-	@Override
-	public void setContentLength(final int length) {
-		response.setContentLength(length);
-	}
-
-	/**
-	 * Définit le type du contenu dans la réponse.
-	 * Dans les servlets http, cette méthode définit le Content-Type dans les headers HTTP.
-	 * @param type String
-	 */
-	@Override
-	public final void setContentType(final String type) {
-		response.setContentType(type);
-	}
 }
