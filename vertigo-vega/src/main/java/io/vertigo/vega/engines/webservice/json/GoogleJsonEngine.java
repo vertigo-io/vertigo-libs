@@ -404,7 +404,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		@Override
 		public JsonElement serialize(final UID uri, final Type typeOfSrc, final JsonSerializationContext context) {
 			if (typeOfSrc instanceof ParameterizedType) {
-				return new JsonPrimitive(String.valueOf(uri.getId()));
+				return new JsonPrimitive(String.valueOf(Serializable.class.cast(uri.getId())));
 			}
 			return new JsonPrimitive(uri.urn());
 
