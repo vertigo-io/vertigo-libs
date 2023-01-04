@@ -1,20 +1,3 @@
-/**
- * vertigo - application development platform
- *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.orchestra.dao.definition;
 
 import javax.inject.Inject;
@@ -69,13 +52,13 @@ public final class OProcessDAO extends DAO<OProcess, java.lang.Long> implements 
 	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkGetActiveProcessByName",
-			request = "select " + 
- "        		pro.*" + 
- "        	from o_process pro" + 
- "        	where pro.NAME = #name#" + 
- "	        	and pro.ACTIVE_VERSION is true",
+			request = "select \n" + 
+ "         		pro.*\n" + 
+ "         	from o_process pro\n" + 
+ "         	where pro.NAME = #name#\n" + 
+ " 	        	and pro.ACTIVE_VERSION is true",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcess")
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcess", name = "dtProcess")
 	public Optional<io.vertigo.orchestra.domain.definition.OProcess> getActiveProcessByName(@io.vertigo.datamodel.task.proxy.TaskInput(name = "name", smartType = "STyOLibelle") final String name) {
 		final Task task = createTaskBuilder("TkGetActiveProcessByName")
 				.addValue("name", name)
@@ -93,12 +76,12 @@ public final class OProcessDAO extends DAO<OProcess, java.lang.Long> implements 
 	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkGetAllActiveProcesses",
-			request = "select " + 
- "        		pro.*" + 
- "        	from o_process pro" + 
- "        	where pro.ACTIVE_VERSION is true",
+			request = "select \n" + 
+ "         		pro.*\n" + 
+ "         	from o_process pro\n" + 
+ "         	where pro.ACTIVE_VERSION is true",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcess")
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcess", name = "dtcProcesses")
 	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.orchestra.domain.definition.OProcess> getAllActiveProcesses() {
 		final Task task = createTaskBuilder("TkGetAllActiveProcesses")
 				.addContextProperty("connectionName", io.vertigo.datastore.impl.dao.StoreUtil.getConnectionName("orchestra"))

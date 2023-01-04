@@ -39,7 +39,7 @@ create Task TkGetExecutionsByProcessName {
         	from o_process pro
         	join o_process_execution pre on pro.PRO_ID = pre.PRO_ID
         	where pro.NAME = #name#
-        	<%if (status != \"\") {%>
+        	<%if (!\"\".equals(status)) {%>
         		and pre.EST_CD = #status#
         	<%}%>
         	order by pre.begin_time desc

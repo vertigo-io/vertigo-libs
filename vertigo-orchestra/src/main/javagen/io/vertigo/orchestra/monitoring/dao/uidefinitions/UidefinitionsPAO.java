@@ -1,20 +1,3 @@
-/**
- * vertigo - application development platform
- *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.orchestra.monitoring.dao.uidefinitions;
 
 import javax.inject.Inject;
@@ -65,19 +48,19 @@ public final class UidefinitionsPAO implements StoreServices {
 	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkGetProcessByName",
-			request = "select  pro.PRO_ID as PRO_ID," + 
- "        			pro.NAME as NAME," + 
- "        			pro.LABEL as LABEL," + 
- "        			pro.CRON_EXPRESSION as CRON_EXPRESSION," + 
- "        			pro.INITIAL_PARAMS as INITIAL_PARAMS," + 
- "        			pro.MULTIEXECUTION as MULTIEXECUTION," + 
- "        			pro.ACTIVE as ACTIVE," + 
- "        			pro.RESCUE_PERIOD as RESCUE_PERIOD," + 
- "        			pro.METADATAS as METADATAS" + 
- "        	from o_process pro   " + 
- "        	where pro.NAME = #name# and pro.ACTIVE_VERSION is true",
+			request = "select  pro.PRO_ID as PRO_ID,\n" + 
+ "         			pro.NAME as NAME,\n" + 
+ "         			pro.LABEL as LABEL,\n" + 
+ "         			pro.CRON_EXPRESSION as CRON_EXPRESSION,\n" + 
+ "         			pro.INITIAL_PARAMS as INITIAL_PARAMS,\n" + 
+ "         			pro.MULTIEXECUTION as MULTIEXECUTION,\n" + 
+ "         			pro.ACTIVE as ACTIVE,\n" + 
+ "         			pro.RESCUE_PERIOD as RESCUE_PERIOD,\n" + 
+ "         			pro.METADATAS as METADATAS\n" + 
+ "         	from o_process pro   \n" + 
+ "         	where pro.NAME = #name# and pro.ACTIVE_VERSION is true",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcessUi")
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcessUi", name = "dtOProcessUi")
 	public io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi getProcessByName(@io.vertigo.datamodel.task.proxy.TaskInput(name = "name", smartType = "STyOLibelle") final String name) {
 		final Task task = createTaskBuilder("TkGetProcessByName")
 				.addValue("name", name)
@@ -96,19 +79,19 @@ public final class UidefinitionsPAO implements StoreServices {
 	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkSearchProcessByLabel",
-			request = "select  pro.PRO_ID as PRO_ID," + 
- "        			pro.NAME as NAME," + 
- "        			pro.LABEL as LABEL," + 
- "        			pro.CRON_EXPRESSION as CRON_EXPRESSION," + 
- "        			pro.INITIAL_PARAMS as INITIAL_PARAMS," + 
- "        			pro.MULTIEXECUTION as MULTIEXECUTION," + 
- "        			pro.ACTIVE as ACTIVE," + 
- "        			pro.RESCUE_PERIOD as RESCUE_PERIOD," + 
- "        			pro.METADATAS as METADATAS" + 
- "        	from o_process pro   " + 
- "        	where lower(pro.LABEL) like lower(#search#)  and pro.ACTIVE_VERSION is true",
+			request = "select  pro.PRO_ID as PRO_ID,\n" + 
+ "         			pro.NAME as NAME,\n" + 
+ "         			pro.LABEL as LABEL,\n" + 
+ "         			pro.CRON_EXPRESSION as CRON_EXPRESSION,\n" + 
+ "         			pro.INITIAL_PARAMS as INITIAL_PARAMS,\n" + 
+ "         			pro.MULTIEXECUTION as MULTIEXECUTION,\n" + 
+ "         			pro.ACTIVE as ACTIVE,\n" + 
+ "         			pro.RESCUE_PERIOD as RESCUE_PERIOD,\n" + 
+ "         			pro.METADATAS as METADATAS\n" + 
+ "         	from o_process pro   \n" + 
+ "         	where lower(pro.LABEL) like lower(#search#)  and pro.ACTIVE_VERSION is true",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcessUi")
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcessUi", name = "dtcOProcessUi")
 	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi> searchProcessByLabel(@io.vertigo.datamodel.task.proxy.TaskInput(name = "search", smartType = "STyOLibelle") final String search) {
 		final Task task = createTaskBuilder("TkSearchProcessByLabel")
 				.addValue("search", search)
