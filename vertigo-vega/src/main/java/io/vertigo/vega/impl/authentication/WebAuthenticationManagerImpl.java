@@ -59,6 +59,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 	private final Map<String, WebAuthenticationPlugin> webAuthenticationPluginsByUrlPrefix;
 	private final Map<String, WebAuthenticationPlugin> webAuthenticationPluginsByUrlHandlerPrefix;
 
+	private final Map<String, BiFunction<HttpServletRequest, HttpServletResponse, Tuple<Boolean, HttpServletRequest>>> urlPreHandlerMap = new HashMap<>();
 	private final Map<String, BiFunction<HttpServletRequest, HttpServletResponse, Tuple<Boolean, HttpServletRequest>>> urlHandlerMap = new HashMap<>();
 
 	@Inject
@@ -83,7 +84,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		// on ajoute les urlHandlerParDefaut : login et logout
 		webAuthenticationPlugins.forEach(plugin -> {
 			urlHandlerMap.put(plugin.getCallbackUrl(), this::handleCallback);
-			urlHandlerMap.put(plugin.getLogoutUrl(), this::handleLogout);
+			urlPreHandlerMap.put(plugin.getLogoutUrl(), this::handleLogout);
 		});
 		// s'il y a plus d'handlers on les ajoute
 		webAuthenticationPlugins.forEach(plugin -> urlHandlerMap.putAll(plugin.getUrlHandlers()));
@@ -95,23 +96,34 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 	/** {@inheritDoc} */
 	@Override
 	public Tuple<Boolean, HttpServletRequest> doBeforeChain(final HttpServletRequest request, final HttpServletResponse response) {
+		// pre handle
+		final var urlPreHandler = urlPreHandlerMap.get(request.getServletPath());
+		if (urlPreHandler != null) {
+			final var handlerResult = urlPreHandler.apply(request, response);
+			if (Boolean.TRUE.equals(handlerResult.getVal1())) {
+				return handlerResult;
+			}
+		}
+
+		// intercept request
 		final var plugin = getPluginForRequest(request);
 		final Tuple<AuthenticationResult, HttpServletRequest> interceptResult = plugin.doInterceptRequest(request, response);
 		final var authenticationResult = interceptResult.getVal1();
-		final HttpServletRequest requestResolved = interceptResult.getVal2() != null ? interceptResult.getVal2() : request;
-
 		if (authenticationResult.isRequestConsumed()) {
 			return Tuple.of(true, request);
 		} else if (authenticationResult.getRawCallbackResult() != null && !isAuthenticated()) {
-			return appLogin(requestResolved, response, authenticationResult, plugin.getRequestedUri(request));
+			return appLogin(request, response, authenticationResult, plugin.getRequestedUri(request));
 		}
 
-		final var urlhandler = urlHandlerMap.get(request.getServletPath());
-		if (urlhandler != null) {
-			return urlhandler.apply(requestResolved, response);
+		// handler
+		final var urlHandler = urlHandlerMap.get(request.getServletPath());
+		if (urlHandler != null) {
+			return urlHandler.apply(request, response);
 		}
+
+		// redirect to sso
 		if (!isAuthenticated()) {
-			doRedirectToSso(requestResolved, response);
+			doRedirectToSso(request, response);
 			return Tuple.of(true, request);
 		}
 
@@ -178,9 +190,6 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		final var appLoginHandlerInstance = Node.getNode().getComponentSpace().resolve(appLoginHandler, AppLoginHandler.class);
 		appLoginHandlerInstance.doLogin(request, interceptResult.getClaims(), interceptResult.getRawCallbackResult());
 		if (isAuthenticated()) {
-			// change session ID for security purpose (session fixation attack)
-			request.changeSessionId();
-
 			doHandleRedirect(request, response, redirectUri);
 		} else {
 			appLoginHandlerInstance.loginFailed(request, response);
@@ -188,7 +197,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		return Tuple.of(true, request);
 	}
 
-	private final WebAuthenticationPlugin getPluginForUrlCallBackRequest(final HttpServletRequest httpRequest) {
+	private WebAuthenticationPlugin getPluginForUrlCallBackRequest(final HttpServletRequest httpRequest) {
 		return webAuthenticationPluginsByUrlHandlerPrefix.entrySet()
 				.stream()
 				.filter(entry -> {
@@ -199,7 +208,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 				.getValue();
 	}
 
-	private final WebAuthenticationPlugin getPluginForRequest(final HttpServletRequest httpRequest) {
+	private WebAuthenticationPlugin getPluginForRequest(final HttpServletRequest httpRequest) {
 		return Stream.concat(
 				webAuthenticationPluginsByUrlHandlerPrefix.entrySet().stream(),
 				webAuthenticationPluginsByUrlPrefix.entrySet().stream())
