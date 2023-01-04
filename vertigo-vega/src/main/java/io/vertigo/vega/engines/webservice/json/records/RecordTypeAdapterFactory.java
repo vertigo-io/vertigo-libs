@@ -126,12 +126,12 @@ public class RecordTypeAdapterFactory implements TypeAdapterFactory {
 		private boolean allowUnknownProperties = DEFAULT_ALLOW_UNKNOWN_PROPERTIES;
 		private boolean allowDuplicateComponentValues = DEFAULT_ALLOW_DUPLICATE_COMPONENT_VALUES;
 		private boolean allowJsonNullForPrimitives = DEFAULT_ALLOW_JSON_NULL_FOR_PRIMITIVES;
-		private RecordComponentNamingStrategy namingStrategy = DEFAULT_NAMING_STRATEGY;
-		private final List<JsonAdapterCreator> jsonAdapterCreators;
+		private RecordComponentNamingStrategy myNamingStrategy = DEFAULT_NAMING_STRATEGY;
+		private final List<JsonAdapterCreator> myJsonAdapterCreators;
 
 		private Builder() {
-			jsonAdapterCreators = new ArrayList<>();
-			jsonAdapterCreators.add(DEFAULT_JSON_ADAPTER_CREATOR);
+			myJsonAdapterCreators = new ArrayList<>();
+			myJsonAdapterCreators.add(DEFAULT_JSON_ADAPTER_CREATOR);
 		}
 
 		/**
@@ -255,12 +255,12 @@ public class RecordTypeAdapterFactory implements TypeAdapterFactory {
 		 * <p>By default {@link RecordComponentNamingStrategy#IDENTITY} is used, that means the JSON
 		 * property names will be the same as the Record component names.
 		 *
-		 * @param namingStrategy
+		 * @param myNamingStrategy
 		 *      the naming strategy to use for component names
 		 * @return <i>this</i>
 		 */
 		public Builder withComponentNamingStrategy(final RecordComponentNamingStrategy namingStrategy) {
-			this.namingStrategy = Objects.requireNonNull(namingStrategy);
+			this.myNamingStrategy = Objects.requireNonNull(namingStrategy);
 			return this;
 		}
 
@@ -284,7 +284,7 @@ public class RecordTypeAdapterFactory implements TypeAdapterFactory {
 		 * @return <i>this</i>
 		 */
 		public Builder registerJsonAdapterCreator(final JsonAdapterCreator jsonAdapterCreator) {
-			jsonAdapterCreators.add(Objects.requireNonNull(jsonAdapterCreator));
+			myJsonAdapterCreators.add(Objects.requireNonNull(jsonAdapterCreator));
 			return this;
 		}
 
@@ -297,7 +297,7 @@ public class RecordTypeAdapterFactory implements TypeAdapterFactory {
 		 */
 		public RecordTypeAdapterFactory create() {
 			// Copy to not be affected by subsequent modifications
-			final List<JsonAdapterCreator> jsonAdapterCreators = new ArrayList<>(this.jsonAdapterCreators);
+			final List<JsonAdapterCreator> jsonAdapterCreators = new ArrayList<>(this.myJsonAdapterCreators);
 			// Reverse so last registered creator is used first
 			Collections.reverse(jsonAdapterCreators);
 			return new RecordTypeAdapterFactory(
@@ -306,7 +306,7 @@ public class RecordTypeAdapterFactory implements TypeAdapterFactory {
 					allowUnknownProperties,
 					allowDuplicateComponentValues,
 					allowJsonNullForPrimitives,
-					namingStrategy,
+					myNamingStrategy,
 					jsonAdapterCreators);
 		}
 	}

@@ -37,12 +37,12 @@ class TreeTypeAdapter<T> extends TypeAdapter<T> {
 	}
 
 	private TypeAdapter<T> delegate() {
-		TypeAdapter<T> delegate = this.delegate;
+		TypeAdapter<T> localDelegate = this.delegate;
 		// Allow racy initialization by multiple threads
-		if (delegate == null) {
-			this.delegate = delegate = gson.getAdapter(type);
+		if (localDelegate == null) {
+			this.delegate = localDelegate = gson.getAdapter(type);
 		}
-		return delegate;
+		return localDelegate;
 	}
 
 	@Override

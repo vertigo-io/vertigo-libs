@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import io.vertigo.basics.task.AbstractTaskEngineSQL;
-import io.vertigo.basics.task.TaskEngineInsertBatch;
 import io.vertigo.basics.task.TaskEngineInsert;
+import io.vertigo.basics.task.TaskEngineInsertBatch;
 import io.vertigo.basics.task.TaskEngineProc;
 import io.vertigo.basics.task.TaskEngineProcBatch;
 import io.vertigo.basics.task.TaskEngineSelect;
@@ -365,7 +365,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 				.addContextProperty("connectionName", getConnectionName())
 				.build();
 
-		final int sqlRowCount = taskManager
+		/*final int sqlRowCount =*/ taskManager
 				.execute(task)
 				.getResult();
 

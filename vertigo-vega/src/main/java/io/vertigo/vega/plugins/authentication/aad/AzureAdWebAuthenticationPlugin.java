@@ -17,7 +17,6 @@
  */
 package io.vertigo.vega.plugins.authentication.aad;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.Collections;
@@ -291,9 +290,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 		}
 	}
 
-	private String getAuthorizationCodeUrl(final String claims, final String scope, final String registeredRedirectURL, final String state, final String nonce)
-			throws MalformedURLException {
-
+	private String getAuthorizationCodeUrl(final String claims, final String scope, final String registeredRedirectURL, final String state, final String nonce) {
 		final String updatedScopes = scope == null ? "" : scope;
 
 		final AuthorizationRequestUrlParameters parameters = AuthorizationRequestUrlParameters

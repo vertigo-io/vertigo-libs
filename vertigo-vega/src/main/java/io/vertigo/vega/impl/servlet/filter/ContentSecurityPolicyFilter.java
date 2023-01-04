@@ -69,8 +69,8 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 		final String compatibilityHeadersParam = filterConfig.getInitParameter(COMPATIBILITY_HEADERS_ATTRIBUTE_NAME);
 		final Map<String, String> tmp = new HashMap<>();
 		if (compatibilityHeadersParam != null) {
-			for (final String compatibilityHeaders : compatibilityHeadersParam.split(";")) {
-				final String[] compatibilityHeader = compatibilityHeaders.split(":");
+			for (final String localCompatibilityHeaders : compatibilityHeadersParam.split(";")) {
+				final String[] compatibilityHeader = localCompatibilityHeaders.split(":");
 				tmp.put(compatibilityHeader[0].trim(), compatibilityHeader[1].trim());
 			}
 		}

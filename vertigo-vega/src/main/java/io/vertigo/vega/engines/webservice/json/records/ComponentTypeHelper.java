@@ -114,9 +114,9 @@ class ComponentTypeHelper {
 			private final Set<TypeVariable<?>> visited = new HashSet<>();
 
 			@Override
-			public Type apply(final TypeVariable<?> toResolve) {
-				final Type bound = getUltimateTypeVariableBound(toResolve);
-				if (visited.add(toResolve)) {
+			public Type apply(final TypeVariable<?> paramToResolve) {
+				final Type bound = getUltimateTypeVariableBound(paramToResolve);
+				if (visited.add(paramToResolve)) {
 					return resolveTypeVariables(bound, this);
 				} else {
 					// In case of cyclic recursion use erasure of bound

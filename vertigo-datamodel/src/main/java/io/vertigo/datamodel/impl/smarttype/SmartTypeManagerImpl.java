@@ -185,6 +185,8 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 			case OPTIONAL_OR_NULLABLE:
 				checkConstraints(smartTypeDefinition, value);
 				break;
+			default:
+				throw new UnsupportedOperationException();
 		}
 
 	}

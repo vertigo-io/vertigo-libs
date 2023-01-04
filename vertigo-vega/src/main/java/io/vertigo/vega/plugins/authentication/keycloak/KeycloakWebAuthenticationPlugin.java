@@ -30,8 +30,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.AdapterDeploymentContext;
 import org.keycloak.adapters.KeycloakDeployment;
@@ -59,7 +57,7 @@ import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
  */
 public class KeycloakWebAuthenticationPlugin implements WebAuthenticationPlugin<KeycloakPrincipal> {
 
-	private final static Logger log = LogManager.getLogger("" + KeycloakOIDCFilter.class);
+	//private final static Logger LOGGER = LogManager.getLogger("" + KeycloakOIDCFilter.class);
 	private final AdapterDeploymentContext deploymentContext;
 	private final SessionIdMapper idMapper = new InMemorySessionIdMapper();
 
