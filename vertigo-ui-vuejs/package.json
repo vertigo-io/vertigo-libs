@@ -9,11 +9,10 @@
   },
   "dependencies": {
     "animate.css": "^4.1.1",
-    "axios": "^1.0.0",
-    "core-js": "^3.20.3",
-    "ionicons": "^6.0.1",
-    "ol": "^5.3.3",
-    "vue": "^2.7.10"
+    "axios": "^1.2.1",
+    "core-js": "^3.27.0",
+    "ionicons": "^6.0.4",
+    "vue": "^2.7.14"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^5.0.8",
@@ -22,8 +21,9 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^7.5.0",
     "eslint-plugin-vue": "^7.5.0",
-    "quasar": "^1.21.1",
-    "vue-template-compiler": "^2.7.10"
+    "quasar": "^1.22.3",
+    "vue-template-compiler": "^2.7.14",
+    "ol": "^7.2.2"
   },
   "eslintConfig": {
     "root": true,
