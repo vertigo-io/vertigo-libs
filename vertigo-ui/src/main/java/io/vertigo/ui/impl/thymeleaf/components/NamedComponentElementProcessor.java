@@ -184,7 +184,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			buildingModel.add(templateEvent); //add first
 			contentModel.remove(0); //remove first : in fact we move slot's tags from content model to building model
 
-			if (tapDepth == 0) {
+			if (tapDepth == 0 && templateEvent instanceof IElementTag) {
 				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
 					Assertion.check().isNotNull(slotName);
 					//Si on est à la base, on ajout que le model qu'on a préparé, on le close et on reset pour la boucle suivante
