@@ -191,9 +191,6 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		queryBuilder
 				.append("union(tables :[" + allDataJoined + "]) \n")
 				.append("|> pivot(columnKey: [\"_field\", \"alias\"], rowKey: [\"_time\"], valueColumn: \"_value\") \n")
-				.append("|> rename(columns: {" + IntStream.range(0, clusteredMeasure.getThresholds().size() + 1).boxed().map(idx -> {
-					return "\"" + fieldName + "_" + orderedClusteredMeasures.get(idx) + "\" : \"" + orderedClusteredMeasures.get(idx) + "\"";
-				}).collect(Collectors.joining(", ")) + "}) \n")
 				.append("|> yield() \n");
 
 		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(queryBuilder.toString());
