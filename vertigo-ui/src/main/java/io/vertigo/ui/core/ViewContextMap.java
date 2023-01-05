@@ -53,10 +53,16 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
  * @author npiedeloup
  */
 public final class ViewContextMap extends HashMap<String, Serializable> {
+	private static final long serialVersionUID = 2850788652438173312L;
+
 	/** Clée de l'id de context dans le context. */
 	public static final String CTX = "CTX";
-	private static final long serialVersionUID = 2850788652438173312L;
 	public static final String INPUT_CTX = "INPUT_CTX";
+
+	/** Clée de la creation de context dans le context. */
+	public static final String CTX_CREATION_INSTANT = "CTX_CREATION_INSTANT"; //instant of initContext
+	public static final String CTX_REUSE_INSTANT = "CTX_REUSE_INSTANT"; //instant of currentCtx reuse
+	public static final String INPUT_CTX_REUSE_INSTANT = "INPUT_CTX_REUSE_INSTANT"; //instant of inputCtx reuse
 
 	private static final String PROTECTED_VALUE_TRANSFORMER = "protected";
 	private static final String MAP_VALUE_TRANSFORMER = "map";
