@@ -8,18 +8,18 @@
 
 <th:block th:fragment="head-meta(vuejsDevMode)" 
         th:with="isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false}">
-		<link th:href="@{/vertigo-ui/static/3rdParty/roboto/v20/css/roboto.css}" rel="stylesheet" type="text/css"/>
-		<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v121/css/materialIcons.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/roboto/v20/css/roboto.css}" integrity="sha256-gSDFH2imozJXOO51aSbA6X3rhtEfJX0oH6twqWtYcNA=" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v121/css/materialIcons.css}" integrity="sha256-ILKwxSh6+ygXh9M2qSGqfk14VvPNV8/De7891v1v80A=" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/3rdParty/use.fontawesome.com/releases/v5.15.4/css/all.min.css}" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/ionicons@4.6.4-1/dist/css/ionicons.min.css}" rel="stylesheet" type="text/css"/>
-		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/@mdi/font@7.0.96/css/materialdesignicons.min.css}" rel="stylesheet" type="text/css"/>
-		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css}" rel="stylesheet" type="text/css"/>
-		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.21.1/dist/quasar.min.css}" rel="stylesheet" type="text/css"/>
-		<link th:href="@{/vertigo-ui/static/css/vertigo-ui.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/@mdi/font@7.1.96/css/materialdesignicons.min.css}" integrity="sha256-RGYRMnrbATkOsZN6QE6b9s4FVBr2iKXGCc7cmr855y0=" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css}" integrity="sha256-ph4SMxQYi9BFMyAAjgG0u7ZlvuCQOfTL2b70TeQQzmc=" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.22.3/dist/quasar.min.css}" integrity="sha256-9h+KuQLgXUDYar+rUfmsrlxWUPinOEXLno3kEdbqwt0=" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/css/vertigo-ui.css}" integrity="sha256-F96vTLjR12HX+lvMwDnya/ck2/JATIAVpXJ0iIV+kBs=" rel="stylesheet" type="text/css"/>
 		
-		<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.21.1/dist/quasar.ie.polyfills.umd.min.js}"></script>
-		<script th:if="${!isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@2.7.10/dist/vue.min.js}"></script>
-        <script th:if="${isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@2.7.10/dist/vue.js}"></script>
-        <script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue-cookies@1.7.4/vue-cookies.js}"></script>
-    	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/axios@1.0.0/dist/axios.min.js}" ></script>
+		<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.22.3/dist/quasar.ie.polyfills.umd.min.js}" integrity="sha256-TdAowGALaFBkCQcV3EDF8wmMUFS53Ba8Km/EIEyO2eE="></script>
+		<script th:if="${!isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.min.js}" integrity="sha256-1gHyKSR7Jh0YGBmI9zN7P2UhZRh/PCKhCYIaUOqWoPk="></script>
+        <script th:if="${isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js}"></script>
+        <script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue-cookies@1.8.2/vue-cookies.js}" integrity="sha256-4aZ9ULMSuC04WHEKe1bbslynSQqsfUU3XSztx3mL6xk="></script>
+    	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/axios@1.2.2/dist/axios.min.js}" integrity="sha256-eIET7hisvt1N1cTLix0TTFDQX7fmx0SXQfX5AvDdp0E="></script>
 </th:block>
