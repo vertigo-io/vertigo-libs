@@ -44,7 +44,6 @@ import com.influxdb.query.FluxTable;
 import io.vertigo.connectors.influxdb.InfluxDbConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
-import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.database.impl.timeseries.TimeSeriesManagerImpl;
 import io.vertigo.database.impl.timeseries.TimeSeriesPlugin;
@@ -156,52 +155,46 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		final String fieldName = splitedMeasure[0];
 		final String function = splitedMeasure[1];
 
+		final var orderedClusteredMeasures = getOrderedClusterMeasures(clusteredMeasure);
+
 		Assertion
 				.check()
 				.isTrue("count".equals(function) || "sum".equals(function), "Function {0} is not supported with clusteredMeasure, only sum and count is supported", function);
 
-		queryBuilder
-				.append("data \n")
-				.append("|> keep(columns: [\"_time\" , \"_value\"]) \n")
-				.append("|> toFloat() \n")
-				.append("|> window(every: " + timeFilter.getDim() + ", createEmpty:true ) \n")
-				.append("|> duplicate(column: \"_stop\", as: \"_time\") \n")
-				.append("|> reduce(")
-				.append("fn: (r, accumulator) => ({ \n");
+		final var thresholds = clusteredMeasure.getThresholds();
+		for (int idx = 0; idx < thresholds.size() + 1; idx++) {
+			final String condition;
+			if (idx == 0) {
+				condition = "(r._value < " + thresholds.get(idx) + ")";
+			} else if (idx == thresholds.size()) {
+				condition = "(r._value > " + thresholds.get(idx - 1) + ") ";
+			} else {
+				condition = "(r._value > " + thresholds.get(idx - 1) + " and r._value <= " + thresholds.get(idx) + ")";
+			}
+			queryBuilder
+					.append("\n")
+					.append("data" + idx + " = data \n")
+					.append("|> filter(fn: (r) => " + condition + ") \n")
+					.append("|> window(every: 1h, createEmpty:true ) \n")
+					.append("|> duplicate(column: \"_stop\", as:\"_time\") \n")
+					.append("|> " + function + "() \n")
+					.append("|> duplicate(column: \"_stop\", as:\"_time\") \n")
+					.append("|> drop(columns: [\"_start\", \"_stop\"]) \n")
+					.append("|> set(key: \"alias\", value:\"" + orderedClusteredMeasures.get(idx) + "\" ) \n");
 
-		final String accumlultatorFunction = IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
-				.boxed()
-				.map(idx -> {
-					return generateAccumelator(fieldName, function, idx, clusteredMeasure.getThresholds());
-				})
-				.collect(Collectors.joining(", \n"));
-		queryBuilder
-				.append(accumlultatorFunction)
-				.append("}), \n");
+		}
 
-		final String identity = IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
+		final String allDataJoined = IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
 				.boxed()
-				.map(idx -> {
-					return fieldName + "_" + function + "_" + idx + ": 0.0";
-				})
+				.map(idx -> "data" + idx)
 				.collect(Collectors.joining(", "));
-
-		final List<String> clusteredOrderedMeasures = getOrderedClusterMeasures(clusteredMeasure);
-
 		queryBuilder
-				.append("identity: { \n")
-				.append(identity)
-				.append('\n')
-				.append("}) \n")
-				.append("|> duplicate(column: \"_stop\", as:\"_time\") \n")
-				.append("|> drop(columns: [\"_start\", \"_stop\"]) \n")
-				.append("|> rename( columns : {" +
-						IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
-								.boxed()
-								.map(idx -> fieldName + "_" + function + "_" + idx + ": \"" + clusteredOrderedMeasures.get(idx) + "\"")
-								.collect(Collectors.joining(", \n"))
-						+ "}) \n")
-				.append("|> yield()");
+				.append("union(tables :[" + allDataJoined + "]) \n")
+				.append("|> pivot(columnKey: [\"_field\", \"alias\"], rowKey: [\"_time\"], valueColumn: \"_value\") \n")
+				.append("|> rename(columns: {" + IntStream.range(0, clusteredMeasure.getThresholds().size() + 1).boxed().map(idx -> {
+					return "\"" + fieldName + "_" + orderedClusteredMeasures.get(idx) + "\" : \"" + orderedClusteredMeasures.get(idx) + "\"";
+				}).collect(Collectors.joining(", ")) + "}) \n")
+				.append("|> yield() \n");
 
 		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(queryBuilder.toString());
 		if (!queryResult.isEmpty()) {
@@ -218,26 +211,6 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 			}
 		}
 		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
-	}
-
-	private String generateAccumelator(final String fieldName, final String function, final Integer idx, final List<Integer> thresholds) {
-		final String condition;
-		if (idx == 0) {
-			condition = "(r._value < " + thresholds.get(idx) + ")";
-		} else if (idx == thresholds.size()) {
-			condition = "(r._value > " + thresholds.get(idx - 1) + ") ";
-		} else {
-			condition = "(r._value > " + thresholds.get(idx - 1) + " and r._value <= " + thresholds.get(idx) + ")";
-		}
-
-		switch (function) {
-			case "count":
-				return fieldName + "_" + function + "_" + idx + " : if " + condition + " then accumulator." + fieldName + "_count_" + idx + " + 1.0 else accumulator." + fieldName + "_count_" + idx;
-			case "sum":
-				return fieldName + "_sum_" + idx + " : if " + condition + " then accumulator." + fieldName + "_sum_" + idx + " + r._value else accumulator." + fieldName + "_sum_" + idx;
-			default:
-				throw new VSystemException("Function {0} is not supported with clusteredMeasure", function);
-		}
 	}
 
 	private static List<String> getOrderedClusterMeasures(final ClusteredMeasure clusteredMeasure) {
@@ -262,13 +235,14 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 		final StringBuilder queryBuilder = new StringBuilder(globalDataVariable)
 				.append("data \n")
+				.append("|> filter(fn: (r) => (r._field ==\"value\" ) ) \n")
 				.append("|> toString() \n")
-				.append("|> group() \n")
-				.append("|> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") \n")
 				.append("|> group(columns: [" + Stream.of(groupBy).collect(Collectors.joining("\", \"", "\"", "\"")) + "]) \n")
 				.append("|> sort(columns: [\"_time\"]) \n")
 				.append("|> limit(n: 1) \n")
 				.append("|> group() \n")
+				.append("|> rename(columns: {\"_value\" : \"value\"}) \n")
+				.append("|> keep(columns: [ \"_time\", " + measures.stream().collect(Collectors.joining("\" , \"", "\"", "\"")) + "]) \n")
 				.append("|> yield()");
 
 		return executeTimedQuery(queryBuilder.toString());
@@ -424,6 +398,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	private static StringBuilder buildTabularQuery(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String[] groupBy) {
 		final String globalDataVariable = buildGlobalDataVariable(appName, measures, dataFilter, timeFilter, groupBy);
+		final Set<String> fields = getMeasureFields(measures);
 		final StringBuilder queryBuilder = new StringBuilder(globalDataVariable);
 
 		final String groupByFields = Stream.of(groupBy).collect(Collectors.joining("\", \"", "\"", "\""));
@@ -433,11 +408,13 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		if (fieldsByFunction.size() == 1) { // union works with 2 tables minimum
 			final String function = fieldsByFunction.keySet().iterator().next();// get the first
 			queryBuilder
-					.append("data \n")
-					.append("|> filter(fn: (r) => " + fieldsByFunction.get(function).stream().map(field -> "r._field==\"" + field + "\"").collect(Collectors.joining(" or ")) + ") \n")
-					.append("|> " + (isTextFunction(function) ? "toString()" : "toFloat()") + "\n")
+					.append("data \n");
+			if (fields.size() > 1) {
+				queryBuilder
+						.append("|> filter(fn: (r) => " + fieldsByFunction.get(function).stream().map(field -> "r._field==\"" + field + "\"").collect(Collectors.joining(" or ")) + ") \n");
+			}
+			queryBuilder
 					.append("|> " + buildMeasureFunction(function) + " \n")
-					.append("|> " + (isTextFunction(function) ? "toString()" : "toFloat()") + "\n")
 					.append("|> set(key: \"alias\", value:\"" + function.replaceAll("\\.", "_") + "\" ) \n")
 					.append("|> group() \n")
 					.append("|> map(fn: (r) => ({ r with " + Stream.of(groupBy)
@@ -453,9 +430,12 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 				// declare a new variable
 				queryBuilder
-						.append(entry.getKey().replaceAll("\\.", "_") + "Data = data \n")
-						.append("|> filter(fn: (r) => " + entry.getValue().stream().map(field -> "r._field==\"" + field + "\"").collect(Collectors.joining(" or ")) + ") \n")
-						.append("|> " + (isTextFunction(entry.getKey()) ? "toString()" : "toFloat()") + "\n") // add a conversion toFloat for the union
+						.append(entry.getKey().replaceAll("\\.", "_") + "Data = data \n");
+				if (fields.size() > 1) {
+					queryBuilder
+							.append("|> filter(fn: (r) => " + entry.getValue().stream().map(field -> "r._field==\"" + field + "\"").collect(Collectors.joining(" or ")) + ") \n");
+				}
+				queryBuilder
 						.append("|> " + buildMeasureFunction(entry.getKey()) + " \n")
 						.append("|> " + (isTextFunction(entry.getKey()) ? "toString()" : "toFloat()") + "\n") // add a conversion toFloat for the union
 						.append("|> set(key: \"alias\", value:\"" + entry.getKey().replaceAll("\\.", "_") + "\" ) \n")
@@ -481,19 +461,19 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	private static StringBuilder buildTimedQuery(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
 		final String globalDataVariable = buildGlobalDataVariable(appName, measures, dataFilter, timeFilter, new String[] {});
+		final Set<String> fields = getMeasureFields(measures);
 		final StringBuilder queryBuilder = new StringBuilder(globalDataVariable);
+		queryBuilder
+				.append("|> window(every: " + timeFilter.getDim() + ", createEmpty:true ) \n");
 
 		final Map<String, List<String>> fieldsByFunction = getFieldsByFunction(measures);
 		if (fieldsByFunction.size() == 1) { // union works with 2 tables minimum
 			final String function = fieldsByFunction.keySet().iterator().next();// get the first
 			queryBuilder
 					.append("data \n")
-					.append("|> toFloat() \n")
-					.append("|> window(every: " + timeFilter.getDim() + ", createEmpty:true ) \n")
 					.append("|> " + buildMeasureFunction(function) + " \n")
-					.append("|> toFloat() \n")
 					.append("|> duplicate(column: \"_stop\", as: \"_time\") \n")
-					.append("|> window(every: inf) \n")
+					.append("|> group() \n")
 					.append("|> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") \n")
 					.append("|> map(fn: (r) => ({ r with " + fieldsByFunction.get(function).stream()
 							.map(field -> field + ": if exists r." + field + " then r." + field + " else 0.0").collect(Collectors.joining(", "))
@@ -507,14 +487,15 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 			for (final Map.Entry<String, List<String>> entry : fieldsByFunction.entrySet()) {
 				// declare a new variable
 				queryBuilder
-						.append(entry.getKey().replaceAll("\\.", "_") + "Data = data \n")
-						.append("|> toFloat() \n")
-						.append("|> filter(fn: (r) => " + entry.getValue().stream().map(field -> "r._field==\"" + field + "\"").collect(Collectors.joining(" or ")) + ") \n")
-						.append("|> window(every: " + timeFilter.getDim() + ", createEmpty:true ) \n")
+						.append(entry.getKey().replaceAll("\\.", "_") + "Data = data \n");
+				if (fields.size() > 1) {
+					queryBuilder
+							.append("|> filter(fn: (r) => " + entry.getValue().stream().map(field -> "r._field==\"" + field + "\"").collect(Collectors.joining(" or ")) + ") \n");
+				}
+				queryBuilder
 						.append("|> " + buildMeasureFunction(entry.getKey()) + " \n")
-						.append("|> toFloat() \n") // add a conversion toFloat for the union
 						.append("|> duplicate(column: \"_stop\", as: \"_time\") \n")
-						.append("|> window(every: inf) \n")
+						.append("|> group() \n")
 						.append("|> set(key: \"alias\", value:\"" + entry.getKey().replaceAll("\\.", "_") + "\" ) \n")
 						.append('\n'); // window by time
 			}
