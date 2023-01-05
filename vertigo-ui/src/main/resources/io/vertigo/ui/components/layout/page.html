@@ -7,7 +7,7 @@
     <vertigo-ssr th:if="${isVuiSsr}">
 		<vu:content/>
 	</vertigo-ssr>
-	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.22.3/dist/quasar.umd.min.js}" integrity="sha256-4YKgwB3PF27vFOqEJbS/EclBecG7GrOGk2Q93wG2Zpw="></script>
+	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.22.3/dist/quasar.umd.min.js}"></script>
     <script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.22.3/dist/lang/__${model.util.getCurrentLocalePrefixForQuasar()}__.umd.min.js}"></script>
 	
 	<script th:if="${!isVuiDevMode && !isVuejsDevMode}" th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.min.js}"></script>
@@ -16,6 +16,6 @@
 	<script th:if="${isVuiDevMode}" src="http://localhost:3000/js/app.js"></script>
 	<div vu:slot="libraries_slot" ></div>
 	<vu:vue-data/>
-	<script th:if="${isVuiSsr}" th:src="@{/vertigo-ui/static/js/vertigo-ui-mpa-ssr.js}" integrity="sha256-+yBrVGio6wkYBMNU9jT6FalYVlXaAmWMiyocXy8Fyko="></script>
-	<script th:if="${!isVuiSsr}" th:src="@{/vertigo-ui/static/js/vertigo-ui-mpa.js}" integrity="sha256-2gbv/fzeB3eGe76fi8LiG11cGT5pZXOXDzXyyXZaVPc="></script>
+	<script th:if="${isVuiSsr}" th:src="@{/vertigo-ui/static/js/vertigo-ui-mpa-ssr.js}"></script>
+	<script th:if="${!isVuiSsr}" th:src="@{/vertigo-ui/static/js/vertigo-ui-mpa.js}"></script>
 </th:block>
