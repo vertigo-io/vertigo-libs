@@ -99,7 +99,7 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 		final FilterConfig filterConfig = getFilterConfig();
 		ssrServerUrl = filterConfig.getInitParameter("ssrServerUrl");
 		if (ssrServerUrl == null) {
-			final var script = FileUtil.read(this.getClass().getClassLoader().getResource("io/vertigo/ui/static/3rdParty/cdn.jsdelivr.net/npm/vue-template-compiler@2.7.14/browser.js"))
+			final var script = FileUtil.read(Thread.currentThread().getContextClassLoader().getResource("io/vertigo/ui/static/3rdParty/cdn.jsdelivr.net/npm/vue-template-compiler@2.7.14/browser.js"))
 					+ "\r\ncompileFunction = function(template) { return VueTemplateCompiler.compile(template); }";
 			nashornEngine = createNashornEngine(script);
 		}

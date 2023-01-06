@@ -172,7 +172,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 				condition = "(r._value > " + thresholds.get(idx - 1) + " and r._value <= " + thresholds.get(idx) + ")";
 			}
 			queryBuilder
-					.append("\n")
+					.append('\n')
 					.append("data" + idx + " = data \n")
 					.append("|> filter(fn: (r) => " + condition + ") \n")
 					.append("|> window(every: 1h, createEmpty:true ) \n")

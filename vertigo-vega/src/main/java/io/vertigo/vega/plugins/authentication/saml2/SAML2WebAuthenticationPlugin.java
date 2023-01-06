@@ -31,7 +31,6 @@ import java.util.function.BiFunction;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -78,6 +77,7 @@ import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.util.XmlUtil;
 import io.vertigo.vega.impl.authentication.AuthenticationResult;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
@@ -204,15 +204,17 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		final Document document;
 		try {
 			final var factory = DocumentBuilderFactory.newInstance();
-			factory.setFeature("http://xml.org/sax/features/external-general-entities", Boolean.FALSE);
-			factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-			factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+			// secure it
+			XmlUtil.secureXmlXXEByOwasp(factory);
 			final var builder = factory.newDocumentBuilder();
 			document = builder.newDocument();
 			final var out = XMLObjectProviderRegistrySupport.getMarshallerFactory().getMarshaller(spEntityDescriptor);
 			out.marshall(spEntityDescriptor, document);
 
-			final var transformer = TransformerFactory.newDefaultInstance().newTransformer();
+			final var transformerFactory = TransformerFactory.newDefaultInstance();
+			// secure it
+			XmlUtil.secureXmlXXEByOwasp(transformerFactory);
+			final var transformer = transformerFactory.newTransformer();
 
 			final var stringWriter = new StringWriter();
 			final var streamResult = new StreamResult(stringWriter);

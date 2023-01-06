@@ -53,10 +53,10 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 
 		final List<TaskModel> tasks = metrics.stream().map(Metric::getFeature)
 				.filter(feature -> {
-					final var firstSlash = feature.indexOf("/");
+					final var firstSlash = feature.indexOf('/');
 					return firstSlash > 0 && "Tk".equals(feature.substring(firstSlash + 1, firstSlash + 3));
 				})
-				.map(feature -> feature.substring(feature.indexOf("/") + 1))
+				.map(feature -> feature.substring(feature.indexOf('/') + 1))
 				.collect(Collectors.toSet())
 				.stream()
 				.map(taskDefinition -> new TaskModel(
