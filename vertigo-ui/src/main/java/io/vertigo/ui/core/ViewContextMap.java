@@ -34,6 +34,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
@@ -66,6 +69,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 
 	private static final String PROTECTED_VALUE_TRANSFORMER = "protected";
 	private static final String MAP_VALUE_TRANSFORMER = "map";
+	private static final Logger LOGGER = LogManager.getLogger(ViewContextMap.class);
 
 	//Index UiObject et DtObject vers clé de context.
 	private final Map<Serializable, String> reverseUiObjectIndex = new HashMap<>();
@@ -86,7 +90,10 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		Assertion.check().isNotNull(key);
 		//-----
 		Serializable o = super.get(key);
-		Assertion.check().isNotNull(o, "Objet :{0} non trouvé! Vérifier que l objet est bien enregistré avec la clé. Clés disponibles {1}", key, keySet());
+		if (o == null) {
+			LOGGER.error("Objet :{} non trouvé! Vérifier que l objet est bien enregistré avec la clé. Clés disponibles {}", key, keySet());
+		}
+		Assertion.check().isNotNull(o, "Objet :{0} non trouvé", key);
 		final Type typeOfKey = typesByKey.get(key);
 		if (typeOfKey != null) {
 			if (o instanceof String) {
