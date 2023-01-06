@@ -70,7 +70,7 @@ import org.opensaml.xmlsec.signature.support.SignatureException;
 import org.opensaml.xmlsec.signature.support.SignatureValidator;
 import org.w3c.dom.Document;
 
-import io.vertigo.connectors.saml2.OpenSAMLHelper;
+import io.vertigo.connectors.saml2.OpenSAMLUtil;
 import io.vertigo.connectors.saml2.SAML2DeploymentConnector;
 import io.vertigo.connectors.saml2.SAML2Parameters;
 import io.vertigo.core.lang.Tuple;
@@ -119,9 +119,9 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		callbackUrl = urlHandlerPrefix + "callback";
 		logoutUrl = urlHandlerPrefix + "logout";
 
-		signatureType = OpenSAMLHelper.resolveSignatureType(saml2Parameters.getSignatureType());
+		signatureType = OpenSAMLUtil.resolveSignatureType(saml2Parameters.getSignatureType());
 
-		OpenSAMLHelper.initOpenSamlIfNeeded();
+		OpenSAMLUtil.initOpenSamlIfNeeded();
 
 	}
 
@@ -182,9 +182,9 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 
 		// set keys
 		for (final Credential cred : saml2Parameters.getSpCredentials()) {
-			OpenSAMLHelper.addKeyDescriptor(spSSODescriptor, cred,
+			OpenSAMLUtil.addKeyDescriptor(spSSODescriptor, cred,
 					UsageType.SIGNING, saml2Parameters.isExtractPublicKeyFromCertificate());
-			OpenSAMLHelper.addKeyDescriptor(spSSODescriptor, cred,
+			OpenSAMLUtil.addKeyDescriptor(spSSODescriptor, cred,
 					UsageType.ENCRYPTION, saml2Parameters.isExtractPublicKeyFromCertificate());
 		}
 
@@ -240,7 +240,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 
 		final var peerEntityContext = context.getSubcontext(SAMLPeerEntityContext.class, true);
 		final var endpointContext = peerEntityContext.getSubcontext(SAMLEndpointContext.class, true);
-		endpointContext.setEndpoint(OpenSAMLHelper.urlToEndpoint(saml2Parameters.getLoginUrl()));
+		endpointContext.setEndpoint(OpenSAMLUtil.urlToEndpoint(saml2Parameters.getLoginUrl()));
 
 		final var signatureSigningParameters = new SignatureSigningParameters();
 		signatureSigningParameters.setSigningCredential(saml2Parameters.getSpCredential());
@@ -277,8 +277,8 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		authnRequest.setDestination(saml2Parameters.getLoginUrl());
 		authnRequest.setProtocolBinding(BINDING_TYPE);
 		authnRequest.setAssertionConsumerServiceURL(WebAuthenticationUtil.resolveExternalUrl(request, getExternalUrlOptional()) + getCallbackUrl());
-		authnRequest.setID(OpenSAMLHelper.generateSecureRandomId());
-		authnRequest.setIssuer(OpenSAMLHelper.buildIssuer(saml2Parameters.getSamlClientName()));
+		authnRequest.setID(OpenSAMLUtil.generateSecureRandomId());
+		authnRequest.setIssuer(OpenSAMLUtil.buildIssuer(saml2Parameters.getSamlClientName()));
 
 		return authnRequest;
 	}
@@ -299,7 +299,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		}
 		final Response response;
 		try (final var is = new ByteArrayInputStream(base64DecodedResponse);) {
-			response = OpenSAMLHelper.extractSamlResponse(is);
+			response = OpenSAMLUtil.extractSamlResponse(is);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}
@@ -313,7 +313,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		// read or decrypt assertion
 		final var assertion = getAssertion(response);
 		try {
-			final var claims = OpenSAMLHelper.extractAttributes(assertion);
+			final var claims = OpenSAMLUtil.extractAttributes(assertion);
 			return AuthenticationResult.of(claims, assertion);
 		} catch (final Exception e) {
 			LOG.error("Error parsing SAMLResponse assertion {}", base64DecodedResponse);
