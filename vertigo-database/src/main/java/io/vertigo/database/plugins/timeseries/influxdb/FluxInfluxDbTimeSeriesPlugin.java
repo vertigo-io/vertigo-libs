@@ -152,7 +152,6 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 		final StringBuilder queryBuilder = new StringBuilder(globalDataVariable);
 		final String[] splitedMeasure = clusteredMeasure.getMeasure().split(":");
-		final String fieldName = splitedMeasure[0];
 		final String function = splitedMeasure[1];
 
 		final var orderedClusteredMeasures = getOrderedClusterMeasures(clusteredMeasure);
@@ -536,7 +535,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	}
 
-	private static final String getDefaultValueByFunction(final String function) {
+	private static String getDefaultValueByFunction(final String function) {
 		return isTextFunction(function) ? "\"\"" : "0.0";
 	}
 
