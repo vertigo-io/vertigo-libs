@@ -1,20 +1,3 @@
-/**
- * vertigo - application development platform
- *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.orchestra.dao.planification;
 
 import javax.inject.Inject;
@@ -64,8 +47,8 @@ public final class PlanificationPAO implements StoreServices {
 	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkCleanFuturePlanifications",
-			request = "delete from o_process_planification prp" + 
- "        	where prp.PRO_ID in (select pro.PRO_ID from o_process pro where pro.NAME = #processName#) and prp.SST_CD = 'WAITING' and prp.expected_time > current_timestamp",
+			request = "delete from o_process_planification prp\n" + 
+ "         	where prp.PRO_ID in (select pro.PRO_ID from o_process pro where pro.NAME = #processName#) and prp.SST_CD = 'WAITING' and prp.expected_time > current_timestamp",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineProc.class)
 	public void cleanFuturePlanifications(@io.vertigo.datamodel.task.proxy.TaskInput(name = "processName", smartType = "STyOLibelle") final String processName) {
 		final Task task = createTaskBuilder("TkCleanFuturePlanifications")
@@ -82,14 +65,14 @@ public final class PlanificationPAO implements StoreServices {
 	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkCleanPlanificationsOnBoot",
-			request = "update o_process_planification set " + 
- "			SST_CD = 'MISFIRED'" + 
- "			where SST_CD = 'WAITING' and expected_time < #currentDate# and prp_id not in (select prp.PRP_ID from  o_process_planification prp" + 
- "        	inner join (" + 
- "				    select pro_id, max(expected_time) as MaxDate" + 
- "				    from o_process_planification" + 
- "				    group by pro_id" + 
- "				) pp on pp.pro_id = prp.pro_id and pp.MaxDate = prp.expected_time)",
+			request = "update o_process_planification set \n" + 
+ " 			SST_CD = 'MISFIRED'\n" + 
+ " 			where SST_CD = 'WAITING' and expected_time < #currentDate# and prp_id not in (select prp.PRP_ID from  o_process_planification prp\n" + 
+ "         	inner join (\n" + 
+ " 				    select pro_id, max(expected_time) as MaxDate\n" + 
+ " 				    from o_process_planification\n" + 
+ " 				    group by pro_id\n" + 
+ " 				) pp on pp.pro_id = prp.pro_id and pp.MaxDate = prp.expected_time)",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineProc.class)
 	public void cleanPlanificationsOnBoot(@io.vertigo.datamodel.task.proxy.TaskInput(name = "currentDate", smartType = "STyOTimestamp") final java.time.Instant currentDate) {
 		final Task task = createTaskBuilder("TkCleanPlanificationsOnBoot")
@@ -108,10 +91,10 @@ public final class PlanificationPAO implements StoreServices {
 	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkReserveProcessToExecute",
-			request = "update o_process_planification" + 
- "        	set SST_CD = 'RESERVED', NOD_ID = #nodId#" + 
- "        	where (SST_CD = 'WAITING' and expected_time >= #lowerLimit# and expected_time <= #upperLimit#) " + 
- "        			or (SST_CD = 'RESCUED')",
+			request = "update o_process_planification\n" + 
+ "         	set SST_CD = 'RESERVED', NOD_ID = #nodId#\n" + 
+ "         	where (SST_CD = 'WAITING' and expected_time >= #lowerLimit# and expected_time <= #upperLimit#) \n" + 
+ "         			or (SST_CD = 'RESCUED')",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineProc.class)
 	public void reserveProcessToExecute(@io.vertigo.datamodel.task.proxy.TaskInput(name = "lowerLimit", smartType = "STyOTimestamp") final java.time.Instant lowerLimit, @io.vertigo.datamodel.task.proxy.TaskInput(name = "upperLimit", smartType = "STyOTimestamp") final java.time.Instant upperLimit, @io.vertigo.datamodel.task.proxy.TaskInput(name = "nodId", smartType = "STyOIdentifiant") final Long nodId) {
 		final Task task = createTaskBuilder("TkReserveProcessToExecute")

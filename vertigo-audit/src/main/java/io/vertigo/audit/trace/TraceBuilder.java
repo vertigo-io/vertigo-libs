@@ -34,7 +34,7 @@ public final class TraceBuilder implements Builder<Trace> {
 	private final String myUser;
 	private Instant myBusinessDate;
 	private final Instant myExecutionDate;
-	private final Long myItem;
+	private final String myItemUrn;
 	private final String myMessage;
 	private String myContext;
 
@@ -44,16 +44,16 @@ public final class TraceBuilder implements Builder<Trace> {
 	 * @param user
 	 * @param item
 	 */
-	public TraceBuilder(final String category, final String user, final Long item, final String message) {
+	public TraceBuilder(final String category, final String user, final String itemUrn, final String message) {
 		Assertion.check()
 				.isNotBlank(category)
 				.isNotBlank(user)
-				.isNotNull(item);
+				.isNotBlank(itemUrn);
 		//---
 		myCategory = category;
 		myUser = user;
 		myMessage = message;
-		myItem = item;
+		myItemUrn = itemUrn;
 		myExecutionDate = Instant.now();
 	}
 
@@ -87,7 +87,7 @@ public final class TraceBuilder implements Builder<Trace> {
 
 	@Override
 	public Trace build() {
-		return new Trace(null, myCategory, myUser, myBusinessDate, myExecutionDate, myItem, myMessage, myContext);
+		return new Trace(null, myCategory, myUser, myBusinessDate, myExecutionDate, myItemUrn, myMessage, myContext);
 	}
 
 }

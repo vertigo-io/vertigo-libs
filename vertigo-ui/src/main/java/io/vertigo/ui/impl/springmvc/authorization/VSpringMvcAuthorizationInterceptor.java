@@ -86,7 +86,7 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 					final SecuredOperation securedOperation = parameter.getParameterAnnotation(SecuredOperation.class);
 					//On repère les paramètres qui ont le @SecuredOperation
 					if (securedOperation != null) {
-						//le handler de request ne permet pas d'avoir accès aux args, il arrive trop tôt. Avoir si le besoin apparait
+						//le handler de request ne permet pas d'avoir accès aux args, il arrive trop tôt. A voir si le besoin apparait
 						Assertion.check().isTrue(false, "Can't check authorization on arg{0} ({1})", i, parameter.getParameterType().getSimpleName());
 						//if (!authorizationManager.isAuthorized((Entity) args[i], securedOperation::value)) {
 						//	throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log

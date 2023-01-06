@@ -18,15 +18,14 @@
 package io.vertigo.dashboard.ui.dynamo.model;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.task.definitions.TaskDefinition;
 
 public final class TaskModel {
-	private final TaskDefinition taskDefinition;
+	private final String taskDefinition;
 	private final Double executionCount; // may be null for UI (displayed as N/A
 	private final Double medianDuration; // may be null for UI (displayed as N/A
 
 	public TaskModel(
-			final TaskDefinition taskDefinition,
+			final String taskDefinition,
 			final Double executionCount,
 			final Double medianDuration) {
 		Assertion.check().isNotNull(taskDefinition);
@@ -37,7 +36,7 @@ public final class TaskModel {
 	}
 
 	public String getName() {
-		return taskDefinition.getName();
+		return taskDefinition;
 	}
 
 	public Double getExecutionCount() {

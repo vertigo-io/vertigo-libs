@@ -1,20 +1,3 @@
-/**
- * vertigo - application development platform
- *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.orchestra.domain.execution;
 
 import io.vertigo.core.lang.Generated;
@@ -225,7 +208,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Activity'.
 	 * @return Long actId <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOIdentifiant", label = "Activity", fkDefinition = "DtOActivity" )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOIdentifiant", label = "Activity", fkDefinition = "DtOActivity", cardinality = io.vertigo.core.lang.Cardinality.ONE )
 	public Long getActId() {
 		return (Long) actIdAccessor.getId();
 	}
@@ -244,7 +227,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Processus'.
 	 * @return Long preId <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOIdentifiant", label = "Processus", fkDefinition = "DtOProcessExecution" )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOIdentifiant", label = "Processus", fkDefinition = "DtOProcessExecution", cardinality = io.vertigo.core.lang.Cardinality.ONE )
 	public Long getPreId() {
 		return (Long) preIdAccessor.getId();
 	}
@@ -263,7 +246,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Node'.
 	 * @return Long nodId <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOIdentifiant", label = "Node", fkDefinition = "DtONode" )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOIdentifiant", label = "Node", fkDefinition = "DtONode", cardinality = io.vertigo.core.lang.Cardinality.ONE )
 	public Long getNodId() {
 		return (Long) nodIdAccessor.getId();
 	}
@@ -282,7 +265,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'ExecutionState'.
 	 * @return String estCd <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOCodeIdentifiant", label = "ExecutionState", fkDefinition = "DtOExecutionState" )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOCodeIdentifiant", label = "ExecutionState", fkDefinition = "DtOExecutionState", cardinality = io.vertigo.core.lang.Cardinality.ONE )
 	public String getEstCd() {
 		return (String) estCdAccessor.getId();
 	}

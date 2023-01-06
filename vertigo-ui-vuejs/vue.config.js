@@ -8,20 +8,25 @@ module.exports = {
 	      headers: { 'Access-Control-Allow-Origin': '*' }
 	    },
         externals: {
+            vue: {
+                commonjs: 'vue',
+                commonjs2: 'vue',
+                root: 'Vue'
+            },
             quasar: {
                 commonjs: 'quasar',
                 commonjs2: 'quasar',
                 root: 'Quasar'
             },
+            axios: {
+                commonjs: 'axios',
+                commonjs2: 'axios',
+                root: 'axios'
+            },            
             ol: {
                 commonjs: 'ol',
                 commonjs2: 'ol',
                 root: 'ol'
-            },
-            vue: {
-                commonjs: 'vue',
-                commonjs2: 'vue',
-                root: 'Vue'
             }
         }
     }

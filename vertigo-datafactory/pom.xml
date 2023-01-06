@@ -71,19 +71,19 @@
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>8.11.1</version><!-- 8.11.1 compatible with ElasticSearch 7.17.6 -->
+			<version>8.11.1</version><!-- 8.11.1 compatible with ElasticSearch 7.17.7 -->
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-analyzers-common</artifactId>
-			<version>8.11.1</version><!-- 8.11.1 compatible with ElasticSearch 7.17.6 -->
+			<version>8.11.1</version><!-- 8.11.1 compatible with ElasticSearch 7.17.8 -->
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-queryparser</artifactId>
-			<version>8.11.1</version><!-- 8.11.1 compatible with ElasticSearch 7.17.6 -->
+			<version>8.11.1</version><!-- 8.11.1 compatible with ElasticSearch 7.17.8 -->
 			<optional>true</optional>
 		</dependency>
 
@@ -99,25 +99,25 @@
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
 		    <artifactId>transport</artifactId>
-		    <version>7.17.6</version>
+		    <version>7.17.8</version>
 		    <scope>test</scope> <!-- TransportSearchServicesPlugin -->
 		</dependency>
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
 		    <artifactId>elasticsearch-rest-high-level-client</artifactId>
-		    <version>7.17.6</version>
+		    <version>7.17.8</version>
 		    <optional>true</optional> <!-- RestHighLevelSearchServicesPlugin -->
 		</dependency>
 		<dependency>
             <groupId>org.codelibs.elasticsearch.module</groupId>
             <artifactId>analysis-common</artifactId> 
-            <version>7.17.6</version> <!-- required by EmbeddedSearchServicesPlugin -->
+            <version>7.17.7</version> <!-- required by EmbeddedSearchServicesPlugin -->
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.codelibs.elasticsearch.module</groupId>
             <artifactId>mapper-extras</artifactId>
-            <version>7.17.6</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
+            <version>7.17.7</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
             <optional>true</optional>
         </dependency>
 

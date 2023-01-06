@@ -1,5 +1,5 @@
-<th:block th:fragment="page(content, vuiDevMode, vuiSsr)"
-	th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, isVuiSsr=${vuiSsr != null ? vuiSsr : false}">
+<th:block th:fragment="page(content, vuiDevMode, vuejsDevMode, vuiSsr, libraries_slot)"
+	th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false}, isVuiSsr=${vuiSsr != null ? vuiSsr : false}">
 	<div th:if="${!isVuiSsr}" id="page">
 		<vu:content/>
 	</div>
@@ -7,11 +7,14 @@
     <vertigo-ssr th:if="${isVuiSsr}">
 		<vu:content/>
 	</vertigo-ssr>
-	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.21.1/dist/quasar.umd.min.js}"></script>
-    <script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.21.1/dist/lang/__${model.util.getCurrentLocalePrefixForQuasar()}__.umd.min.js}"></script>
-	<script th:if="${!isVuiDevMode}" th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.min.js}"></script>
+	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.22.3/dist/quasar.umd.min.js}"></script>
+    <script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.22.3/dist/lang/__${model.util.getCurrentLocalePrefixForQuasar()}__.umd.min.js}"></script>
+	
+	<script th:if="${!isVuiDevMode && !isVuejsDevMode}" th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.min.js}"></script>
+    <script th:if="${!isVuiDevMode && isVuejsDevMode}" th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.js}"></script>
 	<script th:if="${isVuiDevMode}" src="http://localhost:3000/js/chunk-vendors.js"></script>
 	<script th:if="${isVuiDevMode}" src="http://localhost:3000/js/app.js"></script>
+	<div vu:slot="libraries_slot" ></div>
 	<vu:vue-data/>
 	<script th:if="${isVuiSsr}" th:src="@{/vertigo-ui/static/js/vertigo-ui-mpa-ssr.js}"></script>
 	<script th:if="${!isVuiSsr}" th:src="@{/vertigo-ui/static/js/vertigo-ui-mpa.js}"></script>

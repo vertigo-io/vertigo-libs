@@ -17,6 +17,7 @@
  */
 package io.vertigo.datafactory.search.withstore;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -94,7 +95,7 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 		final SmartTypeDefinition smartTypeItem = definitionSpace.resolve("STyDtItem", SmartTypeDefinition.class);
 		final String sql = searchChunk.getAllUIDs()
 				.stream()
-				.map(uri -> uri.getId().toString())
+				.map(uri -> String.valueOf(Serializable.class.cast(uri.getId())))
 				.collect(Collectors.joining(", ", "select * from ITEM where ID in (", ")"));
 
 		return TaskDefinition.builder("TkLoadAllItems")

@@ -3,11 +3,6 @@
 
 <@page.header/>
 
-	<div class="card-deck px-3 pb-3 justify-content-around"">
-		<@module.indicator title="WebServices Hits" icon="schedule" status='GREEN' metric=webservicesCount???then(webservicesCount?string[",##0"], '0') legend="" />
-		<@module.indicator title="WebServices Mean Duration" icon="vertical_align_center" status=(webservicesMeanDuration<300)?then('GREEN', 'RED')  metric=webservicesMeanDuration?string["### 0"] legend="ms" />
-	</div>
-	
 	<div class="mx-3">
 		<div class="card-deck my-3">
 				<@module.card title="WebServices' hits clustered by response time" >   

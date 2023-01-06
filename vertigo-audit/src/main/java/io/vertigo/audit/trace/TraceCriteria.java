@@ -36,7 +36,7 @@ public final class TraceCriteria implements DtObject {
 	private final Instant endBusinessDate;
 	private final Instant startExecutionDate;
 	private final Instant endExecutionDate;
-	private final Long item;
+	private final String itemUrn;
 
 	TraceCriteria(
 			final String category,
@@ -45,14 +45,14 @@ public final class TraceCriteria implements DtObject {
 			final Instant endBusinessDate,
 			final Instant startExecutionDate,
 			final Instant endExecutionDate,
-			final Long item) {
+			final String itemUrn) {
 		this.category = category;
 		this.username = username;
 		this.startBusinessDate = startBusinessDate;
 		this.endBusinessDate = endBusinessDate;
 		this.startExecutionDate = startExecutionDate;
 		this.endExecutionDate = endExecutionDate;
-		this.item = item;
+		this.itemUrn = itemUrn;
 	}
 
 	/**
@@ -106,10 +106,10 @@ public final class TraceCriteria implements DtObject {
 	}
 
 	/**
-	 * @return the item
+	 * @return the item Urn
 	 */
-	public Long getItem() {
-		return item;
+	public String getItemUrn() {
+		return itemUrn;
 	}
 
 	@Override

@@ -122,7 +122,9 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 	protected boolean isVisible(final ITemplateContext context,
 			final IProcessableElementTag tag, final AttributeName attributeName,
 			final String attributeValue) {
-
+		Assertion.check().isFalse(attributeValue.startsWith("."), attributeValue,
+				"Authz can't startsWith . ({0})", attributeValue);
+		//----
 		if (attributeValue.startsWith("${")) {
 			//same code as th:if
 			final IStandardExpressionParser expressionParser = StandardExpressions.getExpressionParser(context.getConfiguration());

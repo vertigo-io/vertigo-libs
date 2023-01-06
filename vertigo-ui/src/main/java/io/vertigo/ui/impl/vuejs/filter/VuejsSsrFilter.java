@@ -34,6 +34,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.script.Compilable;
+import javax.script.CompiledScript;
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
@@ -44,6 +50,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openjdk.nashorn.api.scripting.JSObject;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -57,6 +64,7 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.core.util.FileUtil;
 import io.vertigo.datastore.cache.CacheManager;
 import io.vertigo.datastore.cache.definitions.CacheDefinition;
 import io.vertigo.vega.impl.servlet.filter.AbstractFilter;
@@ -81,6 +89,7 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 
 	/** Object token, by */
 	private CacheManager cacheManager;
+	private ScriptEngine nashornEngine;
 
 	/** {@inheritDoc} */
 	@Override
@@ -89,9 +98,24 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 
 		final FilterConfig filterConfig = getFilterConfig();
 		ssrServerUrl = filterConfig.getInitParameter("ssrServerUrl");
-		Assertion.check().isNotNull(ssrServerUrl);
+		if (ssrServerUrl == null) {
+			final var script = FileUtil.read(Thread.currentThread().getContextClassLoader().getResource("io/vertigo/ui/static/3rdParty/cdn.jsdelivr.net/npm/vue-template-compiler@2.7.14/browser.js"))
+					+ "\r\ncompileFunction = function(template) { return VueTemplateCompiler.compile(template); }";
+			nashornEngine = createNashornEngine(script);
+		}
 
 		doublePassRender = Boolean.parseBoolean(filterConfig.getInitParameter("doublePassRender"));
+	}
+
+	private ScriptEngine createNashornEngine(final String script) {
+		final ScriptEngine nashornEngine = new ScriptEngineManager().getEngineByName("nashorn");
+		try {
+			final CompiledScript compiledScript = ((Compilable) nashornEngine).compile(script);
+			compiledScript.eval();
+			return nashornEngine;
+		} catch (final ScriptException e) {
+			throw WrappedException.wrap(e);
+		}
 	}
 
 	@Override
@@ -130,18 +154,28 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 				chain.doFilter(request, wrappedResponse);
 				hasError = false;
 				try {
-					final VueJsPageSplit vueJsPageSplit = vuejsContentSplit(wrappedResponse.getAsString());
-					final String compiledTemplate = compileVueJsTemplate(vueJsPageSplit.getTemplateToCompile(), ssrServerUrl);
-
-					final String replacedTemplate;
-					if (!doublePassRender) {
-						replacedTemplate = vuejsSsrNonce(compiledTemplate, nonce);
+					final var wrappedResponseAsString = wrappedResponse.getAsString();
+					final Optional<VueJsPageSplit> vueJsPageSplitOpt = vuejsContentSplit(wrappedResponseAsString);
+					if (vueJsPageSplitOpt.isPresent()) {
+						final var vueJsPageSplit = vueJsPageSplitOpt.get();
+						final String compiledTemplate;
+						if (ssrServerUrl == null) {
+							compiledTemplate = compileVueJsTemplateNashorn(vueJsPageSplit.getTemplateToCompile(), nashornEngine);
+						} else {
+							compiledTemplate = compileVueJsTemplate(vueJsPageSplit.getTemplateToCompile(), ssrServerUrl);
+						}
+						final String replacedTemplate;
+						if (!doublePassRender) {
+							replacedTemplate = vuejsSsrNonce(compiledTemplate, nonce);
+						} else {
+							replacedTemplate = vuejsSsrDoublePass(compiledTemplate, request.getRequestURL(), cacheManager);
+						}
+						response.getWriter().print(vueJsPageSplit.getBefore());
+						response.getWriter().print(replacedTemplate);
+						response.getWriter().print(vueJsPageSplit.getAfter());
 					} else {
-						replacedTemplate = vuejsSsrDoublePass(compiledTemplate, request.getRequestURL(), cacheManager);
+						response.getWriter().print(wrappedResponseAsString);
 					}
-					response.getWriter().print(vueJsPageSplit.getBefore());
-					response.getWriter().print(replacedTemplate);
-					response.getWriter().print(vueJsPageSplit.getAfter());
 				} catch (final Exception e) {
 					LOGGER.error("Can't process VueJsSSR replacement", e);
 					response.getWriter().print(wrappedResponse.getAsString());
@@ -155,7 +189,7 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 		}
 	}
 
-	private static VueJsPageSplit vuejsContentSplit(final String fullContent) {
+	private static Optional<VueJsPageSplit> vuejsContentSplit(final String fullContent) {
 		final Matcher matcher = VERTIGO_SSR_TAG_PATTERN.matcher(fullContent);
 		final String before;
 		final String templateToCompile;
@@ -169,9 +203,10 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 			templateToCompile = fullContent.substring(startTagEnd, end); //crop container tag
 			after = fullContent.substring(end + 3 + tag.length());
 		} else {
-			throw new IllegalArgumentException("Can't find tag " + "page" + " in result");
+			return Optional.empty();
+			//throw new IllegalArgumentException("Can't find tag " + "page" + " in result");
 		}
-		return new VueJsPageSplit(before, templateToCompile, after);
+		return Optional.of(new VueJsPageSplit(before, templateToCompile, after));
 	}
 
 	private static String vuejsSsrNonce(final String compiledTemplate, final Optional<String> nonce) {
@@ -214,7 +249,7 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 		return end;
 	}
 
-	public static String compileVueJsTemplate(final String template, final String serverUrl) {
+	private static String compileVueJsTemplate(final String template, final String serverUrl) {
 		final JsonObject requestParameter = new JsonObject();
 		requestParameter.add("template", new JsonPrimitive(template));
 		final JsonObject compiledTemplate = callRestWS(serverUrl, GSON.toJson(requestParameter), JsonObject.class);
@@ -223,16 +258,32 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 				.map(JsonElement::getAsString)
 				.collect(Collectors.toList());
 
+		return createRenderScript(render, staticRenderFns);
+	}
+
+	private static String compileVueJsTemplateNashorn(final String template, final ScriptEngine engine) {
+		try {
+			final var compilationResult = (JSObject) ((Invocable) engine).invokeFunction("compileFunction", template);
+			final String render = ((String) compilationResult.getMember("render")).replace("&#39;", "'");
+			final List<String> staticRenderFns = ((JSObject) compilationResult.getMember("staticRenderFns")).values()
+					.stream()
+					.map(String.class::cast)
+					.collect(Collectors.toList());
+			return createRenderScript(render, staticRenderFns);
+
+		} catch (ScriptException | NoSuchMethodException e) {
+			throw WrappedException.wrap(e);
+		}
+	}
+
+	private static String createRenderScript(final String render, final List<String> staticRenderFns) {
 		final StringBuilder renderJsFunctions = new StringBuilder("var VertigoSsr = {}\r\n");
-		renderJsFunctions.append("VertigoSsr.render = function(h) {\r\n")
-				.append(render).append(" \r\n")
-				.append("};\r\n")
-				.append("  VertigoSsr.staticRenderFns = [\r\n");
-		staticRenderFns.forEach(staticFn -> renderJsFunctions
-				.append("		  function () {\r\n")
-				.append(staticFn).append(" \r\n")
-				.append("		  }\r\n"));
-		renderJsFunctions.append("]\r\n");
+		renderJsFunctions
+				.append("VertigoSsr.render = function(h) {").append(render).append("};\r\n")
+				.append("VertigoSsr.staticRenderFns = ");
+		renderJsFunctions.append(staticRenderFns.stream()
+				.map(staticFn -> "function(){" + staticFn + "} ")
+				.collect(Collectors.joining(",\r\n", "[\r\n", "\r\n]\r\n")));
 		return renderJsFunctions.toString();
 	}
 

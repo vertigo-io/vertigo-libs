@@ -31,8 +31,7 @@ import io.vertigo.core.util.StringUtil;
 
 /**
  *
- * @author xdurand
- *
+ * @author xdurand *
  */
 public final class MemoryTraceStorePlugin implements TraceStorePlugin {
 	private final Map<Long, Trace> inMemoryStore = new ConcurrentHashMap<>();
@@ -47,10 +46,10 @@ public final class MemoryTraceStorePlugin implements TraceStorePlugin {
 	public void create(final Trace auditTrace) {
 		Assertion.check()
 				.isNotNull(auditTrace)
-				.isNull(auditTrace.getId(), "A new audit trail must not have an id");
+				.isNull(auditTrace.getTraId(), "A new audit trail must not have an id");
 		//---
 		final long generatedId = memorySequenceGenerator.addAndGet(1);
-		auditTrace.setId(generatedId);
+		auditTrace.setTraId(generatedId);
 		inMemoryStore.put(generatedId, auditTrace);
 	}
 
@@ -64,7 +63,7 @@ public final class MemoryTraceStorePlugin implements TraceStorePlugin {
 			final boolean businessDateMatched = matchBusinessDate(auditTraceCriteria, auditTrace);
 			final boolean executionDateMatched = matchExecutionDate(auditTraceCriteria, auditTrace);
 			final boolean itemMatched = matchItem(auditTraceCriteria, auditTrace);
-			if (categoryMatched || userMatched || businessDateMatched || executionDateMatched || itemMatched) {
+			if (categoryMatched && userMatched && businessDateMatched && executionDateMatched && itemMatched) {
 				auditTracesBuilder.add(auditTrace);
 			}
 		}
@@ -75,31 +74,31 @@ public final class MemoryTraceStorePlugin implements TraceStorePlugin {
 	}
 
 	private static boolean matchItem(final TraceCriteria auditTraceCriteria, final Trace auditTrace) {
-		return auditTraceCriteria.getItem() != null
-				&& auditTraceCriteria.getItem().equals(auditTrace.getItem());
+		return auditTraceCriteria.getItemUrn() == null
+				|| auditTraceCriteria.getItemUrn().equals(auditTrace.getItemUrn());
 	}
 
 	private static boolean matchExecutionDate(final TraceCriteria auditTraceCriteria, final Trace auditTrace) {
-		return auditTrace.getExecutionDate() != null
-				&& auditTraceCriteria.getStartExecutionDate() != null
-				&& auditTraceCriteria.getStartExecutionDate().isBefore(auditTrace.getExecutionDate())
-				&& (auditTraceCriteria.getEndExecutionDate() == null || auditTraceCriteria.getEndExecutionDate().isAfter(auditTrace.getExecutionDate()));
+		return auditTraceCriteria.getStartExecutionDate() == null && auditTraceCriteria.getEndExecutionDate() == null
+				|| auditTrace.getExecutionDate() != null
+						&& (auditTraceCriteria.getStartExecutionDate() == null || auditTraceCriteria.getStartExecutionDate().isBefore(auditTrace.getExecutionDate()))
+						&& (auditTraceCriteria.getEndExecutionDate() == null || auditTraceCriteria.getEndExecutionDate().isAfter(auditTrace.getExecutionDate()));
 	}
 
 	private static boolean matchBusinessDate(final TraceCriteria auditTraceCriteria, final Trace auditTrace) {
-		return auditTrace.getBusinessDate() != null
-				&& auditTraceCriteria.getStartBusinessDate() != null
-				&& auditTraceCriteria.getStartBusinessDate().isBefore(auditTrace.getBusinessDate())
-				&& (auditTraceCriteria.getEndBusinessDate() == null || auditTraceCriteria.getEndBusinessDate().isAfter(auditTrace.getBusinessDate()));
+		return auditTraceCriteria.getStartBusinessDate() == null && auditTraceCriteria.getEndBusinessDate() == null
+				|| auditTrace.getBusinessDate() != null
+						&& (auditTraceCriteria.getStartBusinessDate() == null || auditTraceCriteria.getStartBusinessDate().isBefore(auditTrace.getBusinessDate()))
+						&& (auditTraceCriteria.getEndBusinessDate() == null || auditTraceCriteria.getEndBusinessDate().isAfter(auditTrace.getBusinessDate()));
 	}
 
 	private static boolean matchUser(final TraceCriteria auditTraceCriteria, final Trace auditTrace) {
-		return !StringUtil.isBlank(auditTraceCriteria.getUsername())
-				&& auditTraceCriteria.getUsername().equals(auditTrace.getUsername());
+		return StringUtil.isBlank(auditTraceCriteria.getUsername())
+				|| auditTraceCriteria.getUsername().equals(auditTrace.getUsername());
 	}
 
 	private static boolean matchCategory(final TraceCriteria auditTraceCriteria, final Trace auditTrace) {
-		return !StringUtil.isBlank(auditTraceCriteria.getCategory())
-				&& auditTraceCriteria.getCategory().equals(auditTrace.getCategory());
+		return StringUtil.isBlank(auditTraceCriteria.getCategory())
+				|| auditTraceCriteria.getCategory().equals(auditTrace.getCategory());
 	}
 }

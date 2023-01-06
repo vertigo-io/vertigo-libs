@@ -131,7 +131,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 		loadMetadataIfNeeded(oidcParameters.isDontFailAtStartup());
 	}
 
-	private synchronized void loadMetadataIfNeeded(final boolean silentFail) {
+	private final synchronized void loadMetadataIfNeeded(final boolean silentFail) {
 		if (ssoMetadata != null) {
 			return;
 		}

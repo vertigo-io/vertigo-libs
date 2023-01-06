@@ -134,8 +134,10 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	private void scheduleAndInit() {
 		ThreadContext.put("module", "orchestra");
 		try {
+			randomSleep();
 			plannRecurrentProcesses();
 			initToDo(myProcessExecutor);
+			randomSleep();
 		} catch (final Throwable t) {
 			LOGGER.error("Exception planning recurrent processes", t);
 			// if it's an interrupted we rethrow it because we are asked to stop by the jvm
@@ -145,7 +147,15 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 		} finally {
 			ThreadContext.remove("module");
 		}
+	}
 
+	private void randomSleep() {
+		try {
+			//sleep random 100-500ms to desynchronized executions
+			Thread.sleep(Math.round(Math.random() * Math.min(planningPeriodSeconds * 100, 500)));
+		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
 	}
 
 	@Override
