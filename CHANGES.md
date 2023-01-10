@@ -6,6 +6,64 @@ Running 4.0.0
 
 more to come :)
 
+Release 3.5.0 - 2023/01/06
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-340-to-330)
+- [Datafactory] fix uri.getId to string String.valueOf(Serializable.class.cast(uri.getId())))
+- [Datafactory] fix add boostMostRecent on filteredQuery
+- [vega] CSP : Rename parameter externalUrl to cspFrameAncestor
+- [vega] CSP : add param CSP_REPORT_WS_URI for report URI
+- [Vega] CSP : Add 3 more custom params for CSP (to set env parameters) (cspParam1, cspParam2, cspParam3)
+- [Vega] Change session ID on login (prevent session fixation attack)
+- [Vega] fix missfired exception
+- [Vega] Add warn logs for SAML2 authent plugin
+- [Vega] Fix missing unmodified added objects in UiListModifiable
+- [Ui] fix namedComponent for paramValue with &#xx; (don't double encoding)
+- [Liquibase] Add contexts handling
+- [Ui] fix css for text-editor
+- [Ui] assert attributs vu:select in readonly too
+- [Ui] add aria-required on textfield
+- [Ui] Add class and aria if field is required
+**- [UI] Link CTX to session ID (break old context storage compatibility)**
+- [Ui] Update textEditor : add param plainTextOnly and showErrors (and add js method helper for fix FireFox Blockquote and H1-9 don't toggle correctly)
+- [Ui] Add libraries_slot in component <vu:page>
+- [ui] Add header_slot in component <vu:table>
+- [Ui] Add missing q-card around messages, in vu:messages (for better gutter support)
+- [Ui] Support slot of an component into slot of another
+- [Ui] Send Exception even in case of VUserException (need to rollback)
+- [Ui] Add support to link activation of SpringMvcConfig to Vertigo Modules
+- [Ui] Add pathPrefix as tag to Analytics
+- [Ui] Fix growing context when reused
+- [Ui] Add local vuejs ssrRendering in java filter (using nashorn) : could remove unsafe_eval in csp (but with a performance hit)
+- [Ui] Add requestMethod in analytics tracer
+- [Ui] Fix logout on keycloak
+- [Ui] Store main instants of context : creation, and input reuse, "CTX_CREATION_INSTANT"; //instant of initContext; "CTX_REUSE_INSTANT"; //instant of currentCtx reuse; "INPUT_CTX_REUSE_INSTANT"; //instant of inputCtx reuse
+- [Ui] Fix error if there is comment in slot
+**- [Audit] Refactoring api**
+- [Audit] Add Database store plugin
+- [Orchestra] Force desynchronization of execution in node (prevent double excecutions, if DB isolation level doesn't garantee lock as same ms) 
+- [Orchestra] Fix equals test in request
+- [Basics] Sometimes needed i18n FR
+- [VueJs-UI] update devDependencies
+- [VueJs-UI] update dependencies
+  - axios : 1.0.0 => 1.2.1,
+  - core-js: 3.20.3 => 3.27.1
+  - ionicons: 6.0.1 => 6.0.4
+  - ol: 5.3.3 => 7.2.2
+  - vue: 2.7.10 => 2.7.14
+  - quasar: 1.21.1 => 1.22.3
+  - vue-template-compiler: 2.7.10 => 2.7.14
+- [All] update libs 
+  - janino 3.1.18 -> 3.1.9
+  - jetty 9.4.49 -> 9.4.50
+  - elasticsearch 7.17.6 -> 7.17.8
+  - rest-assured 5.2.0 -> 5.3.0
+  - liquibase 4.16.1 -> 4.18.0
+  - ehcache 3.9.9 -> 3.9.10
+  - com.github.miachm.sods 1.5.1 -> 1.5.2
+  - jersey 3.0.8 -> 3.1.0
+  - rest-assured 5.2.0 -> 5.3.0
+
 Release 3.4.0 - 2022/10/12
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-330-to-340)
