@@ -17,6 +17,7 @@
  */
 package io.vertigo.social.plugins.comment.redis;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -125,7 +126,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 		final String lastModified = comment.lastModified() != null ? comment.lastModified().toString() : null;
 		return new MapBuilder<String, String>()
 				.put("uuid", comment.uuid().toString())
-				.put("author", String.valueOf(comment.author().getId()))
+				.put("author", String.valueOf(Serializable.class.cast(comment.author().getId())))
 				.put("msg", comment.msg())
 				.put("creationDate", comment.creationDate().toString())
 				.putNullable("lastModified", lastModified)

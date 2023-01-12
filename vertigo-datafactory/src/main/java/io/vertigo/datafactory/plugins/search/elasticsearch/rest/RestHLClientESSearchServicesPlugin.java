@@ -499,16 +499,16 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 					healthMeasureBuilder.withGreenStatus();
 					break;
 				case YELLOW:
-					healthMeasureBuilder.withYellowStatus(null, null);
+					healthMeasureBuilder.withYellowStatus(null);
 					break;
 				case RED:
-					healthMeasureBuilder.withRedStatus(null, null);
+					healthMeasureBuilder.withRedStatus(null);
 					break;
 				default:
 					break;
 			}
 		} catch (final Exception e) {
-			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
+			healthMeasureBuilder.withRedStatus(e.getMessage());
 		}
 		return healthMeasureBuilder.build();
 	}

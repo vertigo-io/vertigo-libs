@@ -51,7 +51,7 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 		final TimeFilter timeFilter = TimeFilter.builder("- 1d", "now()").build();
 		final TabularDatas tabularDatas = getDataProvider().getTabularData(Arrays.asList("duration:median", "duration:count"), dataFilter, timeFilter, "name");
 
-		final List<TaskModel> tasks = metrics.stream().map(Metric::getFeature)
+		final List<TaskModel> tasks = metrics.stream().map(Metric::feature)
 				.filter(feature -> {
 					final var firstSlash = feature.indexOf('/');
 					return firstSlash > 0 && "Tk".equals(feature.substring(firstSlash + 1, firstSlash + 3));
@@ -106,12 +106,12 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 		final Map<String, Double> fieldCount = new HashMap<>();
 		metrics
 				.stream()
-				.filter(metric -> "definitionFieldCount".equals(metric.getName()))
+				.filter(metric -> "definitionFieldCount".equals(metric.name()))
 				.forEach(metric -> {
-					fieldCount.put(metric.getFeature(), metric.getValue());
+					fieldCount.put(metric.feature(), metric.value());
 				});
 
-		final Collection<String> dtDefinitions = metrics.stream().map(Metric::getFeature).filter(feature -> feature.startsWith("Dt")).collect(Collectors.toSet());
+		final Collection<String> dtDefinitions = metrics.stream().map(Metric::feature).filter(feature -> feature.startsWith("Dt")).collect(Collectors.toSet());
 		final List<EntityModel> entities = dtDefinitions
 				.stream()
 				.map(dtDefinition -> new EntityModel(
@@ -133,16 +133,16 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 
 		metrics
 				.stream()
-				.filter(metric -> "smartTypeUsageInTasks".equals(metric.getName()))
-				.forEach(metric -> taskCount.put(metric.getFeature(), metric.getValue()));
+				.filter(metric -> "smartTypeUsageInTasks".equals(metric.name()))
+				.forEach(metric -> taskCount.put(metric.feature(), metric.value()));
 
 		final Map<String, Double> dtDefinitionCount = new HashMap<>();
 		metrics
 				.stream()
-				.filter(metric -> "smartTypeUsageInDtDefinitions".equals(metric.getName()))
-				.forEach(metric -> dtDefinitionCount.put(metric.getFeature(), metric.getValue()));
+				.filter(metric -> "smartTypeUsageInDtDefinitions".equals(metric.name()))
+				.forEach(metric -> dtDefinitionCount.put(metric.feature(), metric.value()));
 
-		final Collection<String> smartTypes = metrics.stream().map(Metric::getFeature)
+		final Collection<String> smartTypes = metrics.stream().map(Metric::feature)
 				.filter(feature -> feature.startsWith("STy"))
 				.filter(feature -> !feature.startsWith("STyDt"))// we display only primitives
 				.collect(Collectors.toSet());

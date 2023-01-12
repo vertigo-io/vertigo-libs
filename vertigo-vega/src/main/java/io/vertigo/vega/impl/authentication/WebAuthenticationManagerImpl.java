@@ -100,7 +100,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		final var urlPreHandler = urlPreHandlerMap.get(request.getServletPath());
 		if (urlPreHandler != null) {
 			final var handlerResult = urlPreHandler.apply(request, response);
-			if (Boolean.TRUE.equals(handlerResult.getVal1())) {
+			if (Boolean.TRUE.equals(handlerResult.val1())) {
 				return handlerResult;
 			}
 		}
@@ -108,7 +108,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		// intercept request
 		final var plugin = getPluginForRequest(request);
 		final Tuple<AuthenticationResult, HttpServletRequest> interceptResult = plugin.doInterceptRequest(request, response);
-		final var authenticationResult = interceptResult.getVal1();
+		final var authenticationResult = interceptResult.val1();
 		if (authenticationResult.isRequestConsumed()) {
 			return Tuple.of(true, request);
 		} else if (authenticationResult.getRawCallbackResult() != null && !isAuthenticated()) {

@@ -586,7 +586,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			jsonBasicTypeAdapters.entrySet()
 					.forEach(entry -> gsonBuilder.registerTypeAdapter(entry.getKey(), new SmartTypeAdapter(entry.getKey(), entry.getValue())));
 
-			gsonBuilder.registerTypeAdapterFactory(RecordTypeAdapterFactory.DEFAULT);
+			gsonBuilder.registerTypeAdapterFactory(RecordTypeAdapterFactory.builder().allowMissingComponentValues().create());
 
 			gsonBuilder
 					.setPrettyPrinting()

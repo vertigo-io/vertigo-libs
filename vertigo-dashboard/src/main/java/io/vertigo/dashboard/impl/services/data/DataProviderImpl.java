@@ -132,11 +132,11 @@ public final class DataProviderImpl implements DataProvider {
 		switch (status.intValue()) {
 			case 0:
 				healthMeasureBuilder
-						.withRedStatus(message, null);
+						.withRedStatus(message);
 				break;
 			case 1:
 				healthMeasureBuilder
-						.withYellowStatus(message, null);
+						.withYellowStatus(message);
 				break;
 			case 2:
 				healthMeasureBuilder

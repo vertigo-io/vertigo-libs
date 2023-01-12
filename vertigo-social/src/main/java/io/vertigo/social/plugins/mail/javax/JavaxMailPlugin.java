@@ -51,8 +51,8 @@ import io.vertigo.core.locale.LocaleMessageKey;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.VFileUtil;
-import io.vertigo.social.impl.mail.Resources;
 import io.vertigo.social.impl.mail.MailPlugin;
+import io.vertigo.social.impl.mail.Resources;
 import io.vertigo.social.mail.Mail;
 
 /**
@@ -267,7 +267,7 @@ public final class JavaxMailPlugin implements MailPlugin {
 				// si on est ici, c'est que tout va bien
 			return HealthMeasure.builder().withGreenStatus("Connection OK to Mail Server " + session.getProperty("mail.host")).build();
 		} catch (final Exception e) {
-			return HealthMeasure.builder().withRedStatus("Can't connect Mail Server", e).build();
+			return HealthMeasure.builder().withRedStatus("Can't connect Mail Server").build();
 		}
 	}
 }

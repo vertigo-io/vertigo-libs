@@ -277,6 +277,7 @@ public final class CommentWebServicesTest {
 		return new MapBuilder<String, Object>()
 				.put("uuid", comment.uuid())
 				.put("author", comment.author().getId())
+				.put("authorDisplayName", comment.authorDisplayName())
 				.put("msg", comment.msg())
 				.put("creationDate", convertDate(comment.creationDate()))
 				.putNullable("lastModified", convertDate(comment.lastModified()))

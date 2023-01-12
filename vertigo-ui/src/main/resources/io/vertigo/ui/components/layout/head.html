@@ -17,7 +17,7 @@
 		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@2.5.5/dist/quasar.prod.css}" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/css/vertigo-ui.css}" rel="stylesheet" type="text/css"/>
 		
-		<script th:if="${!isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.js}"></script>
+		<script th:if="${!isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js}"></script>
         <script th:if="${isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.js}"></script>
-    	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/axios@0.24.0/dist/axios.min.js}" ></script>
+    	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/axios@1.2.2/dist/axios.min.js}" ></script>
 </th:block>

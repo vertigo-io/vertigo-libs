@@ -161,7 +161,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 				.check()
 				.isTrue("count".equals(function) || "sum".equals(function), "Function {0} is not supported with clusteredMeasure, only sum and count is supported", function);
 
-		final var thresholds = clusteredMeasure.getThresholds();
+		final var thresholds = clusteredMeasure.thresholds();
 		for (int idx = 0; idx < thresholds.size() + 1; idx++) {
 			final String condition;
 			if (idx == 0) {
@@ -184,7 +184,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 		}
 
-		final String allDataJoined = IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
+		final String allDataJoined = IntStream.range(0, clusteredMeasure.thresholds().size() + 1)
 				.boxed()
 				.map(idx -> "data" + idx)
 				.collect(Collectors.joining(", "));
@@ -459,7 +459,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		final Set<String> fields = getMeasureFields(measures);
 		final StringBuilder queryBuilder = new StringBuilder(globalDataVariable);
 		queryBuilder
-				.append("|> window(every: " + timeFilter.getDim() + ", createEmpty:true ) \n");
+				.append("|> window(every: " + timeFilter.dim() + ", createEmpty:true ) \n");
 
 		final Map<String, List<String>> fieldsByFunction = getFieldsByFunction(measures);
 		if (fieldsByFunction.size() == 1) { // union works with 2 tables minimum

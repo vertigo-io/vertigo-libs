@@ -66,8 +66,8 @@ public class VSpringDispatcherServlet extends DispatcherServlet {
 							"page",
 							path,
 							tracer -> {
-								tracer.addTag("pathPrefix", pathPrefix)
-										.addTag("requestMethod", request.getMethod());
+								tracer.setTag("pathPrefix", pathPrefix)
+										.setTag("requestMethod", request.getMethod());
 								try {
 									super.doDispatch(request, response);
 								} catch (final Exception e) {

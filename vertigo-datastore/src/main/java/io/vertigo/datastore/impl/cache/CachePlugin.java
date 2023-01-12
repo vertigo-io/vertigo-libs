@@ -86,7 +86,7 @@ public interface CachePlugin extends Plugin {
 			remove("CacheHealthVertigo", "healthcheckkey");
 			healthMeasureBuilder.withGreenStatus();
 		} catch (final Exception e) {
-			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
+			healthMeasureBuilder.withRedStatus(e.getMessage());
 		}
 		return healthMeasureBuilder.build();
 

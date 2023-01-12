@@ -32,6 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.BootConfig;
@@ -142,7 +143,7 @@ public final class TaskManagerTest {
 	 */
 	@Test
 	public void testExecuteNull() {
-		Assertions.assertThrows(NullPointerException.class, () -> {
+		Assertions.assertThrows(WrappedException.class, () -> {
 			final TaskDefinition taskDefinition = getTaskDefinition(TaskDefinitionProvider.TK_MULTIPLICATION);
 			//on vérifie que le passage d'un paramètre null déclenche une assertion
 			executeTask(taskDefinition, null, 2, 3);

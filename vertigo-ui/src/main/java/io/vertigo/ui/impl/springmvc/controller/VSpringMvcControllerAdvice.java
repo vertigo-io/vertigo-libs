@@ -140,7 +140,7 @@ public final class VSpringMvcControllerAdvice {
 		//---
 		final AnalyticsManager analyticsManager = Node.getNode().getComponentSpace().resolve(AnalyticsManager.class);
 		analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer
-				.addTag("exception", "userException"));
+				.setTag("exception", "userException"));
 		//---
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
 		//---
