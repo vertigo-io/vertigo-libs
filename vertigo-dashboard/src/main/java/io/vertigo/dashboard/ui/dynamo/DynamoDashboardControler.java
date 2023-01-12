@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,6 @@ import io.vertigo.database.timeseries.DataFilter;
 import io.vertigo.database.timeseries.TabularDataSerie;
 import io.vertigo.database.timeseries.TabularDatas;
 import io.vertigo.database.timeseries.TimeFilter;
-import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtStereotype;
-import io.vertigo.datamodel.task.definitions.TaskDefinition;
 
 public final class DynamoDashboardControler extends AbstractDashboardModuleControler {
 
@@ -47,20 +43,26 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 		final List<Metric> metrics = getDataProvider().getMetrics();
 		buildEntityModel(model, metrics);
 		buildDomainModel(model, metrics);
-		buildTaskModel(model);
+		buildTaskModel(model, metrics);
 	}
 
-	private void buildTaskModel(final Map<String, Object> model) {
+	private void buildTaskModel(final Map<String, Object> model, final List<Metric> metrics) {
 		final DataFilter dataFilter = DataFilter.builder("tasks").build();
 		final TimeFilter timeFilter = TimeFilter.builder("- 1d", "now()").build();
 		final TabularDatas tabularDatas = getDataProvider().getTabularData(Arrays.asList("duration:median", "duration:count"), dataFilter, timeFilter, "name");
 
-		final List<TaskModel> tasks = Node.getNode().getDefinitionSpace().getAll(TaskDefinition.class)
+		final List<TaskModel> tasks = metrics.stream().map(Metric::getFeature)
+				.filter(feature -> {
+					final var firstSlash = feature.indexOf('/');
+					return firstSlash > 0 && "Tk".equals(feature.substring(firstSlash + 1, firstSlash + 3));
+				})
+				.map(feature -> feature.substring(feature.indexOf('/') + 1))
+				.collect(Collectors.toSet())
 				.stream()
 				.map(taskDefinition -> new TaskModel(
 						taskDefinition,
-						getValue(tabularDatas, "/execute/" + taskDefinition.getName(), "duration:count"),
-						getValue(tabularDatas, "/execute/" + taskDefinition.getName(), "duration:median")))
+						getValue(tabularDatas, "/execute/" + taskDefinition, "duration:count"),
+						getValue(tabularDatas, "/execute/" + taskDefinition, "duration:median")))
 				.collect(Collectors.toList());
 
 		model.put("tasks", tasks);
@@ -104,23 +106,25 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 		final Map<String, Double> fieldCount = new HashMap<>();
 		metrics
 				.stream()
-				.filter(metric -> "definitionFieldCount".equals(metric.name()))
-				.forEach(metric -> fieldCount.put(metric.feature(), metric.value()));
+				.filter(metric -> "definitionFieldCount".equals(metric.getName()))
+				.forEach(metric -> {
+					fieldCount.put(metric.getFeature(), metric.getValue());
+				});
 
-		final Collection<DtDefinition> dtDefinitions = Node.getNode().getDefinitionSpace().getAll(DtDefinition.class);
+		final Collection<String> dtDefinitions = metrics.stream().map(Metric::getFeature).filter(feature -> feature.startsWith("Dt")).collect(Collectors.toSet());
 		final List<EntityModel> entities = dtDefinitions
 				.stream()
-				.filter(DtDefinition::isPersistent)
 				.map(dtDefinition -> new EntityModel(
 						dtDefinition,
-						entityCounts.get(dtDefinition.getName()),
-						taskCounts.get(dtDefinition.getName()),
-						fieldCount.get(dtDefinition.getName())))
+						entityCounts.get(dtDefinition),
+						taskCounts.get(dtDefinition),
+						fieldCount.get(dtDefinition)))
 				.collect(Collectors.toList());
 		model.put("entities", entities);
 		//---
 		model.put("entityCount", entities.size());
-		final long keyConceptCount = dtDefinitions.stream().filter(dtDefinition -> dtDefinition.getStereotype() == DtStereotype.KeyConcept).count();
+		//final long keyConceptCount = dtDefinitions.stream().filter(dtDefinition -> dtDefinition.getStereotype() == DtStereotype.KeyConcept).count();
+		final long keyConceptCount = 0;
 		model.put("keyConceptCount", keyConceptCount);
 	}
 
@@ -129,23 +133,25 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 
 		metrics
 				.stream()
-				.filter(metric -> "domainUsageInTasks".equals(metric.name()))
-				.forEach(metric -> taskCount.put(metric.feature(), metric.value()));
+				.filter(metric -> "smartTypeUsageInTasks".equals(metric.getName()))
+				.forEach(metric -> taskCount.put(metric.getFeature(), metric.getValue()));
 
 		final Map<String, Double> dtDefinitionCount = new HashMap<>();
 		metrics
 				.stream()
-				.filter(metric -> "domainUsageInDtDefinitions".equals(metric.name()))
-				.forEach(metric -> dtDefinitionCount.put(metric.feature(), metric.value()));
+				.filter(metric -> "smartTypeUsageInDtDefinitions".equals(metric.getName()))
+				.forEach(metric -> dtDefinitionCount.put(metric.getFeature(), metric.getValue()));
 
-		final Collection<SmartTypeDefinition> smartTypes = Node.getNode().getDefinitionSpace().getAll(SmartTypeDefinition.class);
+		final Collection<String> smartTypes = metrics.stream().map(Metric::getFeature)
+				.filter(feature -> feature.startsWith("STy"))
+				.filter(feature -> !feature.startsWith("STyDt"))// we display only primitives
+				.collect(Collectors.toSet());
 		final List<SmartTypeModel> smartTypeModels = smartTypes
 				.stream()
-				.filter(smartType -> smartType.getScope().isBasicType()) // we display only primitives
 				.map(smartType -> new SmartTypeModel(
 						smartType,
-						taskCount.get(smartType.getName()),
-						dtDefinitionCount.get(smartType.getName())))
+						taskCount.get(smartType),
+						dtDefinitionCount.get(smartType)))
 				.collect(Collectors.toList());
 
 		model.put("smartTypes", smartTypeModels);

@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,15 @@
 package io.vertigo.dashboard.ui.dynamo.model;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtStereotype;
 
 public final class EntityModel {
-	private final DtDefinition dtDefinition;
+	private final String dtDefinition;
 	private final Double count; // may be null for UI (displayed as N/A)
 	private final Double taskCount; // may be null for UI (displayed as N/A)
 	private final Double fieldCount; // may be null for UI (displayed as N/A)
 
 	public EntityModel(
-			final DtDefinition dtDefinition,
+			final String dtDefinition,
 			final Double count,
 			final Double taskCount,
 			final Double fieldCount) {
@@ -41,11 +39,11 @@ public final class EntityModel {
 	}
 
 	public String getName() {
-		return dtDefinition.getName();
+		return dtDefinition;
 	}
 
 	public boolean isKeyConcept() {
-		return dtDefinition.getStereotype() == DtStereotype.KeyConcept;
+		return false;
 	}
 
 	public Double getCount() {

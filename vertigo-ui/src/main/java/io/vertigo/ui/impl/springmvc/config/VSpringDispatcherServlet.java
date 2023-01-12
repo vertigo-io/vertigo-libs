@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,12 +53,21 @@ public class VSpringDispatcherServlet extends DispatcherServlet {
 				Assertion.check().isNotNull(beanRequestMapping, "@RequestMapping is mandatory on Controller classes ({0})", handlerMethod.getBeanType().getName());
 				final RequestMapping methodRequestMapping = AnnotatedElementUtils.findMergedAnnotation(handlerMethod.getMethod(), RequestMapping.class);
 				Assertion.check().isNotNull(methodRequestMapping, "@RequestMapping is mandatory on Controller's methods ({0})", handlerMethod.getMethod().getName());
-				final String path = beanRequestMapping.path()[0] + methodRequestMapping.path()[0];
+				String prefixPath = beanRequestMapping.path()[0];
+				if (beanRequestMapping.path()[0].endsWith("/") && methodRequestMapping.path()[0].startsWith("/")) {
+					prefixPath = prefixPath.substring(0, prefixPath.length() - 1);
+				}
+				final String path = prefixPath + methodRequestMapping.path()[0];
+				final int firstSlashIndex = path.indexOf('/', 0);
+				final int nextSlashIndex = path.indexOf('/', firstSlashIndex + 1);
+				final String pathPrefix = path.substring(firstSlashIndex >= 0 ? firstSlashIndex + 1 : 0, nextSlashIndex > 0 ? nextSlashIndex : path.length());
 				try {
 					getAnalyticsManager().trace(
 							"page",
 							path,
 							tracer -> {
+								tracer.addTag("pathPrefix", pathPrefix)
+										.addTag("requestMethod", request.getMethod());
 								try {
 									super.doDispatch(request, response);
 								} catch (final Exception e) {

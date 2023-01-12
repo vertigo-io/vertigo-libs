@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package io.vertigo.ui.core;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -79,6 +80,9 @@ public final class ViewContext implements Serializable {
 	/** Clée de l'id de context dans le context. */
 	public static final ViewContextKey<String> CTX = ViewContextKey.of("CTX");
 
+	/** Clée de l'instant de creation de context dans le context. */
+	public static final ViewContextKey<String> CTX_CREATION_INSTANT = ViewContextKey.of("CTX_CREATION_INSTANT");
+
 	private final Set<String> modifiedKeys = new HashSet<>();
 
 	private final ViewContextMap viewContextMap;
@@ -92,6 +96,9 @@ public final class ViewContext implements Serializable {
 		//---
 		this.viewContextMap = viewContextMap;
 		this.jsonEngine = jsonEngine;
+
+		//if viewContextMap is new we set creation instant, else we set CTX_REUSE_INSTANT and keep previous in INPUT_CTX_REUSE_INSTANT
+		viewContextMap.putIfAbsent(ViewContextMap.CTX_CREATION_INSTANT, Instant.now());
 	}
 
 	/* ================================== Life cycle =====================================*/
@@ -109,6 +116,12 @@ public final class ViewContext implements Serializable {
 
 	public void setCtxId() {
 		viewContextMap.put(CTX.get(), UUID.randomUUID().toString());
+
+		//we set CTX_REUSE_INSTANT and keep previous in INPUT_CTX_REUSE_INSTANT
+		final Instant previousInstant = (Instant) viewContextMap.put(ViewContextMap.CTX_REUSE_INSTANT, Instant.now());
+		if (previousInstant != null) {
+			viewContextMap.put(ViewContextMap.INPUT_CTX_REUSE_INSTANT, previousInstant);
+		}
 	}
 
 	/**

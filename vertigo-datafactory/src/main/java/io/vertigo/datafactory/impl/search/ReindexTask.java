@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
  */
 package io.vertigo.datafactory.impl.search;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -137,7 +138,7 @@ final class ReindexTask implements Runnable {
 		final String indexIdFieldName = searchIndexDefinition.getKeyConceptDtDefinition().getIdField().get().name();
 		final String filterValue = removedUris
 				.stream()
-				.map(uri -> String.valueOf(uri.getId()))
+				.map(uri -> String.valueOf(Serializable.class.cast(uri.getId())))
 				.collect(Collectors.joining(" OR ", indexIdFieldName + ":(", ")"));
 		return ListFilter.of(filterValue);
 	}

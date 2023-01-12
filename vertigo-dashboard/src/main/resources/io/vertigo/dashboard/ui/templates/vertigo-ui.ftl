@@ -17,10 +17,10 @@
 				<@module.card title="Pages' time repartition" >
 					<div class="chart chartjs stakedbarchart" 
 					    data-url="${contextName}/api/dashboard/data/series" 
-					    data-query-measures='["sql_duration:mean", "search_duration:mean", "inner_duration:mean"]'
+					    data-query-measures='["sql_duration:mean", "search_duration:mean","redis_duration:mean", "inner_duration:mean"]'
 					     data-query-data-filter='{ "measurement": "page", "filters": {"location": "*", "name": "*", "module": "*", "feature": "*" }}'
 					    data-query-time-filter='{ "from": "-3d", "to": "now()", "dim": "1h"}'
-						data-labels='{"sql_duration:mean":"SQL duration", "search_duration:mean":"Search duration", "inner_duration:mean":"Internal duration" }' 
+						data-labels='{"sql_duration:mean":"SQL duration", "search_duration:mean":"Search duration","redis_duration:mean":"Redis duration", "inner_duration:mean":"Internal duration" }' 
 					    data-colors='GREEN2BLUE'></div> 
 				</@module.card>  
 		</div>

@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,11 +69,11 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkGetAllLastPastPlanifications",
-			request = "select prp.* from  o_process_planification prp" + 
- "			where prp.expected_time < #currentDate# and prp.SST_CD = 'WAITING'" + 
- "			for update",
+			request = "select prp.* from  o_process_planification prp\n" + 
+ " 			where prp.expected_time < #currentDate# and prp.SST_CD = 'WAITING'\n" + 
+ " 			for update",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcessPlanification")
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcessPlanification", name = "processPlanifications")
 	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getAllLastPastPlanifications(@io.vertigo.datamodel.task.proxy.TaskInput(name = "currentDate", smartType = "STyOTimestamp") final java.time.Instant currentDate) {
 		final Task task = createTaskBuilder("TkGetAllLastPastPlanifications")
 				.addValue("currentDate", currentDate)
@@ -92,12 +92,12 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkGetLastPlanificationByProId",
-			request = "select prp.* from  o_process_planification prp" + 
- "        	where prp.PRO_ID = (select pro.PRO_ID from o_process pro where pro.PRO_ID = #proId# for update) and prp.SST_CD = 'WAITING'" + 
- "        	order by prp.expected_time desc" + 
- "        	limit 1",
+			request = "select prp.* from  o_process_planification prp\n" + 
+ "         	where prp.PRO_ID = (select pro.PRO_ID from o_process pro where pro.PRO_ID = #proId# for update) and prp.SST_CD = 'WAITING'\n" + 
+ "         	order by prp.expected_time desc\n" + 
+ "         	limit 1",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcessPlanification")
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcessPlanification", name = "dtOProcessPlanification")
 	public Optional<io.vertigo.orchestra.domain.planification.OProcessPlanification> getLastPlanificationByProId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "proId", smartType = "STyOIdentifiant") final Long proId) {
 		final Task task = createTaskBuilder("TkGetLastPlanificationByProId")
 				.addValue("proId", proId)
@@ -116,11 +116,11 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkGetPlanificationsByProId",
-			request = "select prp.*" + 
- "        	from o_process_planification prp" + 
- "        	where prp.PRO_ID = #proId#",
+			request = "select prp.*\n" + 
+ "         	from o_process_planification prp\n" + 
+ "         	where prp.PRO_ID = #proId#",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcessPlanification")
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcessPlanification", name = "dtcOProcessPlanification")
 	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getPlanificationsByProId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "proId", smartType = "STyOIdentifiant") final Long proId) {
 		final Task task = createTaskBuilder("TkGetPlanificationsByProId")
 				.addValue("proId", proId)
@@ -139,12 +139,12 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkGetProcessToExecute",
-			request = "select prp.*" + 
- "        	from o_process_planification prp" + 
- "        	where prp.SST_CD = 'RESERVED'" + 
- "        	and prp.NOD_ID = #nodId#",
+			request = "select prp.*\n" + 
+ "         	from o_process_planification prp\n" + 
+ "         	where prp.SST_CD = 'RESERVED'\n" + 
+ "         	and prp.NOD_ID = #nodId#",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcessPlanification")
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcessPlanification", name = "dtcOProcessPlanification")
 	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getProcessToExecute(@io.vertigo.datamodel.task.proxy.TaskInput(name = "nodId", smartType = "STyOIdentifiant") final Long nodId) {
 		final Task task = createTaskBuilder("TkGetProcessToExecute")
 				.addValue("nodId", nodId)

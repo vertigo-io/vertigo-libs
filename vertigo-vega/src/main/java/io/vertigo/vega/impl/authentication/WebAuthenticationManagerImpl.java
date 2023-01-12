@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ import io.vertigo.vega.authentication.WebAuthenticationManager;
 
 /**
  * Standard pattern for SSO authentication handlers.
+ *
  * @author skerdudou
  */
 public final class WebAuthenticationManagerImpl implements WebAuthenticationManager {
@@ -58,6 +59,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 	private final Map<String, WebAuthenticationPlugin> webAuthenticationPluginsByUrlPrefix;
 	private final Map<String, WebAuthenticationPlugin> webAuthenticationPluginsByUrlHandlerPrefix;
 
+	private final Map<String, BiFunction<HttpServletRequest, HttpServletResponse, Tuple<Boolean, HttpServletRequest>>> urlPreHandlerMap = new HashMap<>();
 	private final Map<String, BiFunction<HttpServletRequest, HttpServletResponse, Tuple<Boolean, HttpServletRequest>>> urlHandlerMap = new HashMap<>();
 
 	@Inject
@@ -82,7 +84,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		// on ajoute les urlHandlerParDefaut : login et logout
 		webAuthenticationPlugins.forEach(plugin -> {
 			urlHandlerMap.put(plugin.getCallbackUrl(), this::handleCallback);
-			urlHandlerMap.put(plugin.getLogoutUrl(), this::handleLogout);
+			urlPreHandlerMap.put(plugin.getLogoutUrl(), this::handleLogout);
 		});
 		// s'il y a plus d'handlers on les ajoute
 		webAuthenticationPlugins.forEach(plugin -> urlHandlerMap.putAll(plugin.getUrlHandlers()));
@@ -94,18 +96,32 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 	/** {@inheritDoc} */
 	@Override
 	public Tuple<Boolean, HttpServletRequest> doBeforeChain(final HttpServletRequest request, final HttpServletResponse response) {
-		final var plugin = getPluginForRequest(request);
-		final var interceptResult = plugin.doInterceptRequest(request, response);
-		if (interceptResult.isRequestConsumed()) {
-			return Tuple.of(true, request);
-		} else if (interceptResult.getRawCallbackResult() != null && !isAuthenticated()) {
-			return appLogin(request, response, interceptResult, plugin.getRequestedUri(request));
+		// pre handle
+		final var urlPreHandler = urlPreHandlerMap.get(request.getServletPath());
+		if (urlPreHandler != null) {
+			final var handlerResult = urlPreHandler.apply(request, response);
+			if (Boolean.TRUE.equals(handlerResult.getVal1())) {
+				return handlerResult;
+			}
 		}
 
-		final var urlhandler = urlHandlerMap.get(request.getServletPath());
-		if (urlhandler != null) {
-			return urlhandler.apply(request, response);
+		// intercept request
+		final var plugin = getPluginForRequest(request);
+		final Tuple<AuthenticationResult, HttpServletRequest> interceptResult = plugin.doInterceptRequest(request, response);
+		final var authenticationResult = interceptResult.getVal1();
+		if (authenticationResult.isRequestConsumed()) {
+			return Tuple.of(true, request);
+		} else if (authenticationResult.getRawCallbackResult() != null && !isAuthenticated()) {
+			return appLogin(request, response, authenticationResult, plugin.getRequestedUri(request));
 		}
+
+		// handler
+		final var urlHandler = urlHandlerMap.get(request.getServletPath());
+		if (urlHandler != null) {
+			return urlHandler.apply(request, response);
+		}
+
+		// redirect to sso
 		if (!isAuthenticated()) {
 			doRedirectToSso(request, response);
 			return Tuple.of(true, request);
@@ -181,7 +197,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		return Tuple.of(true, request);
 	}
 
-	private final WebAuthenticationPlugin getPluginForUrlCallBackRequest(final HttpServletRequest httpRequest) {
+	private WebAuthenticationPlugin getPluginForUrlCallBackRequest(final HttpServletRequest httpRequest) {
 		return webAuthenticationPluginsByUrlHandlerPrefix.entrySet()
 				.stream()
 				.filter(entry -> {
@@ -192,7 +208,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 				.getValue();
 	}
 
-	private final WebAuthenticationPlugin getPluginForRequest(final HttpServletRequest httpRequest) {
+	private WebAuthenticationPlugin getPluginForRequest(final HttpServletRequest httpRequest) {
 		return Stream.concat(
 				webAuthenticationPluginsByUrlHandlerPrefix.entrySet().stream(),
 				webAuthenticationPluginsByUrlPrefix.entrySet().stream())

@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,10 +64,10 @@ public final class DefinitionPAO implements StoreServices {
 	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkDisableOldProcessDefinitions",
-			request = "update o_process " + 
- "        	set ACTIVE_VERSION = false," + 
- "        		NEED_UPDATE = false" + 
- "        	where NAME = #name#",
+			request = "update o_process \n" + 
+ "         	set ACTIVE_VERSION = false,\n" + 
+ "         		NEED_UPDATE = false\n" + 
+ "         	where NAME = #name#",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineProc.class)
 	public void disableOldProcessDefinitions(@io.vertigo.datamodel.task.proxy.TaskInput(name = "name", smartType = "STyOLibelle") final String name) {
 		final Task task = createTaskBuilder("TkDisableOldProcessDefinitions")
@@ -85,12 +85,12 @@ public final class DefinitionPAO implements StoreServices {
 	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkGetProcessesByName",
-			request = "select " + 
- "        		count(*)" + 
- "        	from o_process pro" + 
- "        	where pro.NAME = #name#",
+			request = "select \n" + 
+ "         		count(*)\n" + 
+ "         	from o_process pro\n" + 
+ "         	where pro.NAME = #name#",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyONombre")
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyONombre", name = "nombre")
 	public Integer getProcessesByName(@io.vertigo.datamodel.task.proxy.TaskInput(name = "name", smartType = "STyOLibelle") final String name) {
 		final Task task = createTaskBuilder("TkGetProcessesByName")
 				.addValue("name", name)

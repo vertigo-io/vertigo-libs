@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import javax.inject.Inject;
 
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.dashboard.services.data.DataProvider;
 
 public abstract class AbstractDashboardModuleControler implements DashboardModuleControler {
@@ -49,9 +48,11 @@ public abstract class AbstractDashboardModuleControler implements DashboardModul
 	}
 
 	private void initModuleModel(final Node node, final Map<String, Object> model, final String moduleName) {
-		final Set<String> modules = node.getNodeConfig().moduleConfigs().stream().map(ModuleConfig::name).collect(Collectors.toSet());
+		final Set<String> modules = dataProvider.getTagValues("metric", "module").stream().collect(Collectors.toSet());
 		//---
 		model.put("modules", modules);
+		//--- locations
+		model.put("locations", getDataProvider().getTagValues("page", "location"));
 		//---
 		final List<HealthCheck> healthChecks = dataProvider.getHealthChecks();
 		final Map<String, List<HealthCheck>> healthChecksByFeature = healthChecks

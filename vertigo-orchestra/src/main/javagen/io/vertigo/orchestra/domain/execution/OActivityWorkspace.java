@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -120,7 +120,7 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'ActivityExecution'.
 	 * @return Long aceId <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOIdentifiant", label = "ActivityExecution", fkDefinition = "DtOActivityExecution" )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOIdentifiant", label = "ActivityExecution", fkDefinition = "DtOActivityExecution", cardinality = io.vertigo.core.lang.Cardinality.ONE )
 	public Long getAceId() {
 		return (Long) aceIdAccessor.getId();
 	}

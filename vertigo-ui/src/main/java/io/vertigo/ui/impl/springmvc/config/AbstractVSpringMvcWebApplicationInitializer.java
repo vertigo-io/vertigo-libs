@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,49 @@
  */
 package io.vertigo.ui.impl.springmvc.config;
 
+import java.util.stream.Stream;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.ServletException;
+
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.FrameworkServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import io.vertigo.core.node.Node;
+
 public abstract class AbstractVSpringMvcWebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+
+	private WebApplicationContext applicationContext;
+
+	@Override
+	protected WebApplicationContext createServletApplicationContext() {
+		applicationContext = super.createServletApplicationContext();
+		return applicationContext;
+	}
+
+	@Override
+	public void onStartup(final ServletContext servletContext) throws ServletException {
+		super.onStartup(servletContext);
+		//---
+		servletContext.addListener(new ServletContextListener() {
+			@Override
+			public void contextInitialized(final ServletContextEvent sce) {
+				if (applicationContext instanceof AnnotationConfigWebApplicationContext) {
+					final var annotationConfigWebApplicationContext = ((AnnotationConfigWebApplicationContext) applicationContext);
+					final var vSpringMvcConfigDefinitions = Node.getNode().getDefinitionSpace().getAll(VSpringMvcConfigDefinition.class);
+					vSpringMvcConfigDefinitions.forEach(mvcConfigDefinition -> {
+						mvcConfigDefinition.getPackagesToScan().forEach(annotationConfigWebApplicationContext::scan);
+						Stream.concat(mvcConfigDefinition.getConfigClasses().stream(), mvcConfigDefinition.getBeanClasses().stream())
+								.forEach(annotationConfigWebApplicationContext::register);
+					});
+				}
+			}
+		});
+	}
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {

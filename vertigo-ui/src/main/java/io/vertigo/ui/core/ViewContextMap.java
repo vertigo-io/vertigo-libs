@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
@@ -53,13 +56,20 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
  * @author npiedeloup
  */
 public final class ViewContextMap extends HashMap<String, Serializable> {
+	private static final long serialVersionUID = 2850788652438173312L;
+
 	/** Clée de l'id de context dans le context. */
 	public static final String CTX = "CTX";
-	private static final long serialVersionUID = 2850788652438173312L;
 	public static final String INPUT_CTX = "INPUT_CTX";
+
+	/** Clée de la creation de context dans le context. */
+	public static final String CTX_CREATION_INSTANT = "CTX_CREATION_INSTANT"; //instant of initContext
+	public static final String CTX_REUSE_INSTANT = "CTX_REUSE_INSTANT"; //instant of currentCtx reuse
+	public static final String INPUT_CTX_REUSE_INSTANT = "INPUT_CTX_REUSE_INSTANT"; //instant of inputCtx reuse
 
 	private static final String PROTECTED_VALUE_TRANSFORMER = "protected";
 	private static final String MAP_VALUE_TRANSFORMER = "map";
+	private static final Logger LOGGER = LogManager.getLogger(ViewContextMap.class);
 
 	//Index UiObject et DtObject vers clé de context.
 	private final Map<Serializable, String> reverseUiObjectIndex = new HashMap<>();
@@ -80,7 +90,10 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		Assertion.check().isNotNull(key);
 		//-----
 		Serializable o = super.get(key);
-		Assertion.check().isNotNull(o, "Objet :{0} non trouvé! Vérifier que l objet est bien enregistré avec la clé. Clés disponibles {1}", key, keySet());
+		if (o == null) {
+			LOGGER.error("Objet :{} non trouvé! Vérifier que l objet est bien enregistré avec la clé. Clés disponibles {}", key, keySet());
+		}
+		Assertion.check().isNotNull(o, "Objet :{0} non trouvé", key);
 		final Type typeOfKey = typesByKey.get(key);
 		if (typeOfKey != null) {
 			if (o instanceof String) {
@@ -218,9 +231,15 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		viewContextUpdateSecurity.assertIsUpdatable(key);
 		//-----
 		if (value instanceof UiObject) {
+			// keep track of indexes
+			reverseUiObjectIndex.values().removeIf(key::equals);
+			// ---
 			reverseUiObjectIndex.put(value, key);
 			reverseUiObjectIndex.put(((UiObject<?>) value).getServerSideObject(), key);
 		} else if (value instanceof UiList) {
+			// keep track of indexes
+			reverseUiListIndex.values().removeIf(key::equals);
+			//---
 			reverseUiListIndex.put((UiList<?>) value, key);
 		}
 		if ((value instanceof String || value instanceof String[]) && isMultiple(key)) {
@@ -288,10 +307,10 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		final String keyString = (String) key;
 		Assertion.check().isNotBlank(keyString);
 		//---
-		// on garde les index en cohérence après un remove
+		// keep track of indexes
 		reverseUiObjectIndex.values().removeIf(keyString::equals);
 		reverseUiListIndex.values().removeIf(keyString::equals);
-		// on fait le remove
+		// we actually remove
 		return super.remove(key);
 	}
 

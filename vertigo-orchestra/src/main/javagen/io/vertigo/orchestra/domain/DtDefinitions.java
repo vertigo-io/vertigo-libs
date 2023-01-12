@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -395,7 +395,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	@Override
 	public Iterator<Class<?>> iterator() {
 		return new Iterator<>() {
-			private final Iterator<Definitions> it = Arrays.asList(Definitions.values()).iterator();
+			private Iterator<Definitions> it = Arrays.asList(Definitions.values()).iterator();
 
 			/** {@inheritDoc} */
 			@Override

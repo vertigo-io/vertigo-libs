@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import io.vertigo.account.authorization.VSecurityException;
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.VUserException;
+import io.vertigo.core.node.Node;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextMap;
 import io.vertigo.ui.impl.springmvc.util.UiAuthorizationUtil;
@@ -84,7 +86,7 @@ public final class VSpringMvcControllerAdvice {
 	public static Object handleSessionException(final SessionException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
 		response.sendError(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
 		LOGGER.error("User try an unauthorized action " + request.getMethod() + " " + request.getRequestURL(), LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
-		return handleThrowable(ex, request, false); //don't throw Ex here
+		return doHandleThrowable(ex, request); //no stacktrace but throws Ex too
 	}
 
 	@ResponseBody
@@ -93,7 +95,7 @@ public final class VSpringMvcControllerAdvice {
 	public static Object handleSessionException(final VSecurityException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
 		response.sendError(HttpStatus.FORBIDDEN.value(), ex.getMessage());
 		LOGGER.error("User try a forbidden action " + request.getMethod() + " " + request.getRequestURL(), LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
-		return handleThrowable(ex, request, false); //don't throw Ex here
+		return doHandleThrowable(ex, request); //no stacktrace but throws Ex too
 	}
 
 	@ResponseBody
@@ -101,22 +103,17 @@ public final class VSpringMvcControllerAdvice {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public static Object handleThrowable(final Throwable th, final HttpServletRequest request) throws Throwable {
 		LOGGER.error("Server error " + request.getMethod() + " " + request.getRequestURL(), th);
-		return handleThrowable(th, request, true);
+		return doHandleThrowable(th, request);
 	}
 
-	private static Object handleThrowable(final Throwable th, final HttpServletRequest request, final boolean throwException) throws Throwable {
+	private static Object doHandleThrowable(final Throwable th, final HttpServletRequest request) throws Throwable {
 		if (UiRequestUtil.isJsonRequest(request)) {
 			final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 			final String exceptionMessage = th.getMessage() != null ? th.getMessage() : th.getClass().getSimpleName();
 			uiMessageStack.addGlobalMessage(Level.ERROR, exceptionMessage);
 			return uiMessageStack;
 		}
-		if (throwException) {
-			throw th;
-		}
-		//final String exceptionMessage = th.getMessage() != null ? th.getMessage() : th.getClass().getSimpleName();
-
-		return null;//new ResponseEntity(th, HttpStatus.FORBIDDEN);
+		throw th;
 	}
 
 	@ResponseBody
@@ -140,6 +137,10 @@ public final class VSpringMvcControllerAdvice {
 	}
 
 	private static Object handleVUserException(final UiMessageStack uiMessageStack, final HttpServletRequest request) {
+		//---
+		final AnalyticsManager analyticsManager = Node.getNode().getComponentSpace().resolve(AnalyticsManager.class);
+		analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer
+				.addTag("exception", "userException"));
 		//---
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
 		//---

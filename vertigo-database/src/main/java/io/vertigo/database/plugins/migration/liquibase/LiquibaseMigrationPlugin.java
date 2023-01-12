@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,8 +47,8 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 
 /**
  * Liquibase Plugin to perform migration tasks on SQL Databases
- * @author mlaroche
  *
+ * @author mlaroche
  */
 public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 
@@ -58,16 +58,19 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 
 	private final String connectionName;
 	private final String masterFile;
+	private final String contexts;
 
 	/**
 	 * @param masterFile configPath of liquibase
 	 * @param connectionNameOpt connectionName to use to performs the tasks (by default {@link SqlManager}.MAIN_CONNECTION_PROVIDER_NAME
+	 * @param contexts contexts to launch liquibase with. Multiple contexts can be provided with ','.
 	 * @param sqlManager sqlManager
 	 */
 	@Inject
 	public LiquibaseMigrationPlugin(
 			@ParamValue("masterFile") final String masterFile,
 			@ParamValue("connectionName") final Optional<String> connectionNameOpt,
+			@ParamValue("contexts") final Optional<String> contextsOpt,
 			final SqlManager sqlManager) {
 		Assertion.check()
 				.isNotNull(masterFile)
@@ -76,6 +79,11 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 		//---
 		this.masterFile = masterFile;
 		connectionName = connectionNameOpt.orElse(SqlManager.MAIN_CONNECTION_PROVIDER_NAME);
+		// Liquibase need at least 1 context to perform context filter on changesets
+		// cf : https://docs.liquibase.com/concepts/changelogs/attributes/contexts.html
+		// "If you add a contextFilter to a changeset, it only runs when you specify that context, but unmarked changesets still run.
+		//  If you do not specify any contexts at runtime, every changeset in your changelog runs, even if they have contextFilters attached"
+		contexts = "vertigo," + contextsOpt.orElse("");
 		this.sqlManager = sqlManager;
 	}
 
@@ -86,9 +94,9 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 
 		try (final SqlConnection sqlConnection = sqlManager.getConnectionProvider(connectionName).obtainConnection()) {
 			final Liquibase lb = createLiquibase();
-			final Collection<RanChangeSet> unexpectedChangeSets = lb.listUnexpectedChangeSets(new Contexts(), new LabelExpression());
+			final Collection<RanChangeSet> unexpectedChangeSets = lb.listUnexpectedChangeSets(getContexts(), new LabelExpression());
 			Assertion.check().isTrue(unexpectedChangeSets.isEmpty(), "Database is to recent. Please make sure you run the correct version of the node.");
-			lb.update(new Contexts());
+			lb.update(getContexts());
 		} catch (final LiquibaseException | SQLException e) {
 			throw WrappedException.wrap(e);
 		}
@@ -108,9 +116,9 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 		LOGGER.info("Liquibase  : updating  on connection {}", connectionName);
 		try {
 			final Liquibase lb = createLiquibase();
-			final List<ChangeSet> changeSetList = lb.listUnrunChangeSets(new Contexts(), new LabelExpression());
+			final List<ChangeSet> changeSetList = lb.listUnrunChangeSets(getContexts(), new LabelExpression());
 			Assertion.check().isTrue(changeSetList.isEmpty(), "Database is not up to date. Please update it before launching the node.");
-			final Collection<RanChangeSet> unexpectedChangeSets = lb.listUnexpectedChangeSets(new Contexts(), new LabelExpression());
+			final Collection<RanChangeSet> unexpectedChangeSets = lb.listUnexpectedChangeSets(getContexts(), new LabelExpression());
 			Assertion.check().isTrue(unexpectedChangeSets.isEmpty(), "Database is to recent. Please make sure you run the correct version of the node.");
 		} catch (final LiquibaseException e) {
 			throw WrappedException.wrap(e);
@@ -122,6 +130,10 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 	@Override
 	public String getConnectionName() {
 		return connectionName;
+	}
+
+	private Contexts getContexts() {
+		return new Contexts(contexts);
 	}
 
 }

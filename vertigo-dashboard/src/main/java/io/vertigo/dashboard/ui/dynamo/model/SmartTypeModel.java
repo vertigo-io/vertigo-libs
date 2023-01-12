@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,13 @@
 package io.vertigo.dashboard.ui.dynamo.model;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 
 public class SmartTypeModel {
-	private final SmartTypeDefinition smartTypeDefinition;
+	private final String smartTypeDefinition;
 	private final Double taskCount; // may be null for UI (displayed as N/A)
 	private final Double dtDefinitionCount; // may be null for UI (displayed as N/A)
 
-	public SmartTypeModel(final SmartTypeDefinition smartTypeDefinition, final Double taskCount, final Double dtDefinitionCount) {
+	public SmartTypeModel(final String smartTypeDefinition, final Double taskCount, final Double dtDefinitionCount) {
 		Assertion.check().isNotNull(smartTypeDefinition);
 		//---
 		this.smartTypeDefinition = smartTypeDefinition;
@@ -34,7 +33,7 @@ public class SmartTypeModel {
 	}
 
 	public String getName() {
-		return smartTypeDefinition.getName();
+		return smartTypeDefinition;
 	}
 
 	public boolean isOrphan() {

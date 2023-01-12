@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,7 +131,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 		loadMetadataIfNeeded(oidcParameters.isDontFailAtStartup());
 	}
 
-	private synchronized void loadMetadataIfNeeded(final boolean silentFail) {
+	private final synchronized void loadMetadataIfNeeded(final boolean silentFail) {
 		if (ssoMetadata != null) {
 			return;
 		}

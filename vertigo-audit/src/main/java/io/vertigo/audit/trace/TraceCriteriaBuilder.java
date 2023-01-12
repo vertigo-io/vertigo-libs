@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public final class TraceCriteriaBuilder implements Builder<TraceCriteria> {
 	private Instant myEndBusinessDate;
 	private Instant myStartExecutionDate;
 	private Instant myEndExecutionDate;
-	private Long myItem;
+	private String myItemUrn;
 
 	/**
 	 * Optionnal category
@@ -109,21 +109,21 @@ public final class TraceCriteriaBuilder implements Builder<TraceCriteria> {
 	}
 
 	/**
-	 * Optionnal item id
-	 * @param item
+	 * Optionnal item Urn
+	 * @param itemUrn
 	 * @return the builder (for fluent style)
 	 */
-	public TraceCriteriaBuilder withItem(final Long item) {
-		Assertion.check().isNotNull(item);
+	public TraceCriteriaBuilder withItemUrn(final String itemUrn) {
+		Assertion.check().isNotNull(itemUrn);
 		//---
-		myItem = item;
+		myItemUrn = itemUrn;
 		return this;
 	}
 
 	@Override
 	public TraceCriteria build() {
 		return new TraceCriteria(myCategory, myUsername, myStartBusinessDate,
-				myEndBusinessDate, myStartExecutionDate, myEndExecutionDate, myItem);
+				myEndBusinessDate, myStartExecutionDate, myEndExecutionDate, myItemUrn);
 	}
 
 }

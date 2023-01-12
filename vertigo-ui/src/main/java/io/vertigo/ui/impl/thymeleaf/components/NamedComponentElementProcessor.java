@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,11 +62,11 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 
 public class NamedComponentElementProcessor extends AbstractElementModelProcessor {
-	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^(([^$@]\\{)|[^#|']).*$";
-	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^[^$#@|'][^$#@]*$";
+	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^(([^$@]\\{)|[^#|'](?!\\{)).*$";
+	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^[^$#@|']([^$#@]|(&#[0-9]{1,4};))*$"; //don't start with $#@|' and no $#@ after (excepted html encoded chars : &#[0-9]+;)
 	private static final String NUMBER_PATTERN_STR = "^[0-9\\.]+";
 	private static final String SIMPLE_TEXT_PATTERN_STR = "^[a-zA-Z]*$";
-	private static final Pattern NO_RESERVED_FIRST_CHAR_PATTERN = Pattern.compile(NO_RESERVED_FIRST_CHAR_PATTERN_STR);
+	private static final Pattern NO_RESERVED_FIRST_CHAR_PATTERN = Pattern.compile(NO_RESERVED_FIRST_CHAR_PATTERN_STR, Pattern.DOTALL);
 	private static final Pattern NO_RESERVED_TEXT_PATTERN = Pattern.compile(NO_RESERVED_TEXT_PATTERN_STR);
 	private static final Pattern NUMBER_PATTERN = Pattern.compile(NUMBER_PATTERN_STR);
 	private static final Pattern SIMPLE_TEXT_PATTERN = Pattern.compile(SIMPLE_TEXT_PATTERN_STR);
@@ -164,7 +164,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			final ITemplateEvent templateEvent = contentModel.get(0); //get always first (because we remove it)
 			if (templateEvent instanceof IOpenElementTag) {
 				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
-					Assertion.check().isTrue(tapDepth == 0, "Can't parse slot {0} it contains another slot", slotName);
+					//support slot of an component into slot of another //Assertion.check().isTrue(tapDepth == 0, "Can't parse slot {0} it contains another slot", slotName);
 					slotName = ((IProcessableElementTag) templateEvent).getAttributeValue("name");
 				} else if (tapDepth == 0) {
 					break; //slots must be set at first
@@ -184,7 +184,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			buildingModel.add(templateEvent); //add first
 			contentModel.remove(0); //remove first : in fact we move slot's tags from content model to building model
 
-			if (tapDepth == 0) {
+			if (tapDepth == 0 && templateEvent instanceof IElementTag) {
 				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
 					Assertion.check().isNotNull(slotName);
 					//Si on est à la base, on ajout que le model qu'on a préparé, on le close et on reset pour la boucle suivante
@@ -360,7 +360,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 						|| NO_RESERVED_TEXT_PATTERN.matcher((String) attributeValue).matches()) //no reserved char
 				&& NO_RESERVED_FIRST_CHAR_PATTERN.matcher((String) attributeValue).matches()) { //don't start with reserved char
 			//We escape :
-			//IF placeholder or no thymeleaf's reserved char ($ @ # | )  (but authorized || )
+			//IF placeholder or no thymeleaf's reserved char ($ @ # | )  (but authorized || and &#xx; )
 			//AND dont start with reserved char (for case like ${value} )
 			//BUT IF true, false or number (it become string instead)
 			return "'" + ((String) attributeValue).replace("'", "\\'") + "'"; //escape as text

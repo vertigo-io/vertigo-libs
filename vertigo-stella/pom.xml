@@ -43,13 +43,13 @@
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
-			<version>3.0.8</version>
+			<version>3.1.0</version>
 			<optional>true</optional> <!-- REST DistributedWork impl -->
 		</dependency>
 		<dependency>
 		    <groupId>org.glassfish.jersey.inject</groupId>
 		    <artifactId>jersey-hk2</artifactId>
-		    <version>3.0.8</version>
+		    <version>3.1.0</version>
 			<optional>true</optional> <!-- REST DistributedWork impl -->
 		</dependency>
 		<dependency>

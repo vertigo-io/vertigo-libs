@@ -254,6 +254,14 @@ table .q-uploader .q-btn {
     max-width: inherit; /* for ellipsis */
 }
 
+.q-editor__content {
+    color: rgba(0,0,0,0.87); /** same color as q-field-input or textarea */
+}
+
+.q-editor--error {
+    border-color: var(--q-color-negative)!important
+}
+
 
 /*
 .q-table .q-btn {

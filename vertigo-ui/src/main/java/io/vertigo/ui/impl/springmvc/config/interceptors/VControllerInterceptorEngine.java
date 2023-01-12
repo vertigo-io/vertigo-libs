@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
  */
 package io.vertigo.ui.impl.springmvc.config.interceptors;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,4 +30,6 @@ public interface VControllerInterceptorEngine {
 	boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final HandlerMethod handler) throws Exception;
 
 	void postHandle(final HttpServletRequest request, final HttpServletResponse response, final HandlerMethod handler, final ModelAndView modelAndView) throws Exception;
+
+	void afterCompletion(HttpServletRequest request, HttpServletResponse response, HandlerMethod handler, Optional<Exception> exception) throws Exception;
 }

@@ -42,7 +42,7 @@
 			  >
 		</th:block>
 		
-		  
+		  <vu:content-slot name="header_slot"/>
 		  <template #top-left="props" th:if="${title!=null}">
 		  	<div class="text-h6" vu:text="${title?:''}" />
 			<div class="text-subtitle2" vu:text="${subtitle?:''}" />
@@ -86,7 +86,7 @@
 </th:block>
 
 
-<th:block th:fragment="table-modifiable(list, componentId, selectable, rowKey, navOnRow, color, tableClass, autoColClass, title, subtitle, top_right_slot, top_left_slot, actions_slot, tr_attrs, other_attrs)"
+<th:block th:fragment="table-modifiable(list, componentId, selectable, rowKey, navOnRow, color, tableClass, autoColClass, title, subtitle, top_right_slot, top_left_slot, header_slot, actions_slot, tr_attrs, other_attrs)"
     th:assert="${componentId} != null" 
     th:with="modifiableTable=true, rowIndex='props.rowIndex', tableKey=${list}, listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}, myRowKey=${rowKey?:model.util.getIdField('__${list}__')}, myRowsPerPage=0, myAutoColClass=${autoColClass?:false}">
     <th:block th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')}, objectKey=${model.vContext['componentStates'][__${componentId}__].addList('selected')}, objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false }, objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {page: 1 , rowsPerPage : __${myRowsPerPage}__, componentId : '__${componentId}__', listKey : '__${list}__'})}" th:remove="all" />
@@ -104,6 +104,8 @@
                 hide-bottom 
                 th:attr="__${other_attrs}__"
               >
+
+		  <vu:content-slot name="header_slot"/>
               
           <template #top-left="props" th:if="${title!=null}">
             <div class="text-h6" vu:text="${title?:''}" />

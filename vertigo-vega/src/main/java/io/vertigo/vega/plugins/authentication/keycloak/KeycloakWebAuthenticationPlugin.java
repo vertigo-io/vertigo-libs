@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,18 +46,16 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.impl.authentication.AuthenticationResult;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
+import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
 
 /**
- * This class provides predinied workflow for authenticating Vertigo users with a keycloak server using OpenIdConnect protocol.
- * It is mainly insipired by the {@link org.keycloak.adapters.servlet.KeycloakOIDCFilter} provided by Keycloak
- * @author mlaroche
- * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
- * @version $Revision: 1 $
+ * This class provides workflow for authenticating Vertigo users with a keycloak server using OpenIdConnect protocol.
+ * It wraps official keycloack servlet filter {@link org.keycloak.adapters.servlet.KeycloakOIDCFilter} for compatibility with Vertigo
  *
+ * @author mlaroche, skerdudou
  */
 public class KeycloakWebAuthenticationPlugin implements WebAuthenticationPlugin<KeycloakPrincipal> {
 
-	//private final static Logger LOGGER = LogManager.getLogger("" + KeycloakOIDCFilter.class);
 	private final AdapterDeploymentContext deploymentContext;
 	private final SessionIdMapper idMapper = new InMemorySessionIdMapper();
 
@@ -126,21 +124,24 @@ public class KeycloakWebAuthenticationPlugin implements WebAuthenticationPlugin<
 	}
 
 	@Override
-	public AuthenticationResult<KeycloakPrincipal> doInterceptRequest(final HttpServletRequest request, final HttpServletResponse response) {
-
+	public Tuple<AuthenticationResult<KeycloakPrincipal>, HttpServletRequest> doInterceptRequest(final HttpServletRequest request, final HttpServletResponse response) {
 		final Map<String, HttpServletRequest> filterResult = new HashMap<>();
 		try {
-			keycloakOIDCFilter.doFilter(request, response, (req, res) -> {
-				filterResult.put("request", (HttpServletRequest) req);
-			});
+			keycloakOIDCFilter.doFilter(request, response, (req, res) -> filterResult.put("request", (HttpServletRequest) req));
 		} catch (IOException | ServletException e) {
-			WrappedException.wrap(e);
+			throw WrappedException.wrap(e);
 		}
 
-		final var wrappedRequest = filterResult.get("request");
+		final var wrappedRequest = filterResult.get("request"); // value present if keycloak filter call chain.doFilter
 
-		return wrappedRequest != null ? AuthenticationResult.of(Map.of(), (KeycloakPrincipal) wrappedRequest.getUserPrincipal()) : AuthenticationResult.ofConsumed();
+		if (wrappedRequest == null) {
+			// request consumed by filter, chain not called
+			return Tuple.of(AuthenticationResult.ofConsumed(), request);
+		}
+		final KeycloakPrincipal principal = (KeycloakPrincipal) wrappedRequest.getUserPrincipal();
+		final Map<String, Object> otherClaims = principal.getKeycloakSecurityContext().getIdToken().getOtherClaims();
 
+		return Tuple.of(AuthenticationResult.of(otherClaims, principal), wrappedRequest);
 	}
 
 	@Override
@@ -168,7 +169,7 @@ public class KeycloakWebAuthenticationPlugin implements WebAuthenticationPlugin<
 
 	@Override
 	public String getRequestedUri(final HttpServletRequest httpRequest) {
-		return null;
+		return WebAuthenticationUtil.resolveUrlRedirect(httpRequest);
 	}
 
 }

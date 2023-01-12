@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 package io.vertigo.database.timeseries;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -98,7 +99,7 @@ public final class TimeSeriesTest {
 	public void testReadMeasuresClusteredTimeSeries() {
 		timeSeriesManager.getClusteredTimeSeries(
 				"vertigo-test",
-				new ClusteredMeasure("temp:count", Collections.singletonList(10)),
+				new ClusteredMeasure("temp:count", Arrays.asList(10, 20)),
 				DataFilter.builder("test").build(),
 				TimeFilter.builder("-1h", "now()").withTimeDim("1m").build());
 	}

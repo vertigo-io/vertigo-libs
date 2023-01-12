@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.FilterChain;
@@ -44,8 +45,15 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 	public static final String NONCE_ATTRIBUTE_NAME = "nonce";
 	private static final String NONCE_PATTERN = "${nonce}";
 	private static final String COMPATIBILITY_HEADERS_ATTRIBUTE_NAME = "compatibilityHeaders";
-	private static final String EXTERNAL_URL_PATTERN = "${externalUrl}";
-	private static final String EXTERNAL_URL_PARAM_NAME = "APP_EXTERNAL_URL";
+	private static final String FRAME_ANCESTOR_PATTERN = "${cspFrameAncestor}";
+	private static final String FRAME_ANCESTOR_PARAM_NAME = "CSP_FRAME_ANCESTOR";
+	private static final String CSP_PARAM1_PATTERN = "${cspParam1}";
+	private static final String CSP_PARAM1_PARAM_NAME = "CSP_PARAM1";
+	private static final String CSP_PARAM2_PATTERN = "${cspParam2}";
+	private static final String CSP_PARAM2_PARAM_NAME = "CSP_PARAM2";
+	private static final String CSP_PARAM3_PATTERN = "${cspParam3}";
+	private static final String CSP_PARAM3_PARAM_NAME = "CSP_PARAM3";
+	private static final String REPORT_WS_PARAM_NAME = "CSP_REPORT_WS_URI";
 
 	private String cspPattern;
 	private boolean useNonce = false;
@@ -61,7 +69,16 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 
 		final ParamManager paramManager = Node.getNode().getComponentSpace().resolve(ParamManager.class);
 		//String.replace : => est équivalent à replaceAll sans regexp (et remplace bien toutes les occurences)
-		cspPattern = cspPattern.replace(EXTERNAL_URL_PATTERN, paramManager.getOptionalParam(EXTERNAL_URL_PARAM_NAME).map(Param::getValue).orElse(""));
+		cspPattern = cspPattern.replace(FRAME_ANCESTOR_PATTERN, paramManager.getOptionalParam(FRAME_ANCESTOR_PARAM_NAME).map(Param::getValue).orElse(""));
+
+		cspPattern = cspPattern.replace(CSP_PARAM1_PATTERN, paramManager.getOptionalParam(CSP_PARAM1_PARAM_NAME).map(Param::getValue).orElse(""));
+		cspPattern = cspPattern.replace(CSP_PARAM2_PATTERN, paramManager.getOptionalParam(CSP_PARAM2_PARAM_NAME).map(Param::getValue).orElse(""));
+		cspPattern = cspPattern.replace(CSP_PARAM3_PATTERN, paramManager.getOptionalParam(CSP_PARAM3_PARAM_NAME).map(Param::getValue).orElse(""));
+
+		final Optional<Param> reportUri = paramManager.getOptionalParam(REPORT_WS_PARAM_NAME);
+		if (reportUri.isPresent() && !reportUri.get().getValue().isBlank()) {
+			cspPattern += " report-uri " + reportUri.get().getValue();
+		}
 
 		//minify de la csp car il semble que les \n soient mal interprétés
 		cspPattern = cspPattern.replaceAll("[\n\r\\s]+", " ");

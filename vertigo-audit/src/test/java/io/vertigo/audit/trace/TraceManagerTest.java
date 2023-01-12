@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,8 +57,9 @@ public class TraceManagerTest {
 		}
 	}
 
-	private static NodeConfig buildNodeConfig() {
-		return MyNodeConfig.config();
+	private NodeConfig buildNodeConfig() {
+		return MyNodeConfig.configWithStore();
+		//return MyNodeConfig.configMemory();
 	}
 
 	/**
@@ -66,12 +67,16 @@ public class TraceManagerTest {
 	 */
 	@Test
 	public void testAddAuditTrace() {
-		final Trace auditTrace = new TraceBuilder("CAT1", "USER1", 1L, "My message 1").build();
+		final Trace auditTrace = new TraceBuilder("CAT1", "USER1", "MyPet@1L", "My message 1").build();
 
 		auditManager.addTrace(auditTrace);
-		final Trace auditFetch = auditManager.getTrace(auditTrace.getId());
+		final Trace auditFetch = auditManager.getTrace(auditTrace.getTraId());
 
-		assertThat(auditFetch).isEqualToIgnoringGivenFields(auditTrace, "id");
+		assertThat(auditFetch)
+				.usingComparatorForType(
+						(a, b) -> a.truncatedTo(ChronoUnit.MILLIS).compareTo(b.truncatedTo(ChronoUnit.MILLIS)),
+						Instant.class)
+				.isEqualToIgnoringGivenFields(auditTrace, "id");
 	}
 
 	/**
@@ -79,10 +84,10 @@ public class TraceManagerTest {
 	 */
 	@Test
 	public void testFindAuditTrace() {
-		final Trace auditTrace1 = new TraceBuilder("CAT2", "USER2", 2L, "My message 2").build();
+		final Trace auditTrace1 = new TraceBuilder("CAT2", "USER2", "MyPet@2L", "My message 2").build();
 		auditManager.addTrace(auditTrace1);
 
-		final Trace auditTrace2 = new TraceBuilder("CAT3", "USER3", 3L, "My message 3")
+		final Trace auditTrace2 = new TraceBuilder("CAT3", "USER3", "MyPet@3L", "My message 3")
 				.withDateBusiness(Instant.now())
 				.withContext(List.of("Context 3"))
 				.build();
@@ -94,7 +99,11 @@ public class TraceManagerTest {
 		final List<Trace> auditTraceFetch1 = auditManager.findTrace(atc1);
 
 		assertThat(auditTraceFetch1).hasSize(1);
-		assertThat(auditTraceFetch1).usingFieldByFieldElementComparator().contains(auditTrace1);
+		assertThat(auditTraceFetch1)
+				.usingComparatorForType(
+						(a, b) -> a.truncatedTo(ChronoUnit.MILLIS).compareTo(b.truncatedTo(ChronoUnit.MILLIS)),
+						Instant.class)
+				.usingFieldByFieldElementComparator().contains(auditTrace1);
 
 		final Instant dateJMinus1 = Instant.now().minus(1, ChronoUnit.DAYS);
 		final Instant dateJPlus1 = Instant.now().plus(1, ChronoUnit.DAYS);
@@ -108,7 +117,11 @@ public class TraceManagerTest {
 		final List<Trace> auditTraceFetch2 = auditManager.findTrace(auditTraceCriteria2);
 
 		assertThat(auditTraceFetch2).hasSize(1);
-		assertThat(auditTraceFetch2).usingFieldByFieldElementComparator().contains(auditTrace2);
+		assertThat(auditTraceFetch2)
+				.usingComparatorForType(
+						(a, b) -> a.truncatedTo(ChronoUnit.MILLIS).compareTo(b.truncatedTo(ChronoUnit.MILLIS)),
+						Instant.class)
+				.usingFieldByFieldElementComparator().contains(auditTrace2);
 
 		//Criteria Exec Date
 		final TraceCriteria auditTraceCriteria3 = TraceCriteria.builder()
@@ -118,21 +131,33 @@ public class TraceManagerTest {
 		final List<Trace> auditTraceFetch3 = auditManager.findTrace(auditTraceCriteria3);
 
 		assertThat(auditTraceFetch3).hasSize(2);
-		assertThat(auditTraceFetch3).usingFieldByFieldElementComparator().contains(auditTrace1, auditTrace2);
+		assertThat(auditTraceFetch3)
+				.usingComparatorForType(
+						(a, b) -> (a == b ? 0 : a == null ? -1 : a.truncatedTo(ChronoUnit.MILLIS).compareTo(b.truncatedTo(ChronoUnit.MILLIS))),
+						Instant.class)
+				.usingFieldByFieldElementComparator().contains(auditTrace1, auditTrace2);
 
 		//Criteria Item
-		final TraceCriteria auditTraceCriteria4 = TraceCriteria.builder().withItem(2L).build();
+		final TraceCriteria auditTraceCriteria4 = TraceCriteria.builder().withItemUrn("MyPet@2L").build();
 		final List<Trace> auditTraceFetch4 = auditManager.findTrace(auditTraceCriteria4);
 
 		assertThat(auditTraceFetch4).hasSize(1);
-		assertThat(auditTraceFetch4).usingFieldByFieldElementComparator().contains(auditTrace1);
+		assertThat(auditTraceFetch4)
+				.usingComparatorForType(
+						(a, b) -> a.truncatedTo(ChronoUnit.MILLIS).compareTo(b.truncatedTo(ChronoUnit.MILLIS)),
+						Instant.class)
+				.usingFieldByFieldElementComparator().contains(auditTrace1);
 
 		//Criteria User
 		final TraceCriteria auditTraceCriteria5 = TraceCriteria.builder().withUsername("USER3").build();
 		final List<Trace> auditTraceFetch5 = auditManager.findTrace(auditTraceCriteria5);
 
 		assertThat(auditTraceFetch5).hasSize(1);
-		assertThat(auditTraceFetch5).usingFieldByFieldElementComparator().contains(auditTrace2);
+		assertThat(auditTraceFetch5)
+				.usingComparatorForType(
+						(a, b) -> a.truncatedTo(ChronoUnit.MILLIS).compareTo(b.truncatedTo(ChronoUnit.MILLIS)),
+						Instant.class)
+				.usingFieldByFieldElementComparator().contains(auditTrace2);
 	}
 
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,10 @@
  */
 package io.vertigo.dashboard.ui.vega;
 
-import java.util.List;
 import java.util.Map;
 
 import io.vertigo.core.node.Node;
 import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
-import io.vertigo.database.timeseries.DataFilter;
-import io.vertigo.database.timeseries.TimeFilter;
-import io.vertigo.database.timeseries.TimedDatas;
 
 public final class VegaDashboardControler extends AbstractDashboardModuleControler {
 
@@ -35,24 +31,6 @@ public final class VegaDashboardControler extends AbstractDashboardModuleControl
 	}
 
 	private void addGlobalIndicators(final Map<String, Object> model) {
-		final DataFilter dataFilter = DataFilter.builder("webservices").build();
-		final TimeFilter timeFilter = TimeFilter.builder("-1w", "now()").withTimeDim("3w").build();
-		//---
-		final TimedDatas countAndMeanDuration = getDataProvider().getTimeSeries(List.of("duration:count", "duration:mean"), dataFilter, timeFilter);
-
-		double count = 0;
-		final double meanDuration = 0;
-		if (!countAndMeanDuration.timedDataSeries().isEmpty()) {
-			// we have one and only one result
-			final Map<String, Object> values = countAndMeanDuration.timedDataSeries().get(0).getValues();
-			final Object meanDurationValue = values.get("duration:count");
-			if (meanDurationValue != null) {
-				count = (Double) meanDurationValue;
-			}
-		}
-		model.put("webservicesCount", count);
-		model.put("webservicesMeanDuration", meanDuration);
-
 		//--- locations
 		model.put("locations", getDataProvider().getTagValues("webservices", "location"));
 	}

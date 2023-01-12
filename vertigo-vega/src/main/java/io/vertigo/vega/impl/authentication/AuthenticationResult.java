@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,18 +20,19 @@ package io.vertigo.vega.impl.authentication;
 import java.util.Map;
 
 public final class AuthenticationResult<T> {
+	private static final AuthenticationResult CONSUMED_CALLBACK_RESULT = new AuthenticationResult<>(true, null, null);
+	private static final AuthenticationResult NO_OP_CALLBACK_RESULT = new AuthenticationResult<>(false, Map.of(), null);
+
 	private boolean isRequestConsumed;
 	private final Map<String, Object> claims;
 	private final T rawAuthenticationResult;
 
-	private static final AuthenticationResult NO_OP_CALLBACK_RESULT = new AuthenticationResult<>(false, Map.of(), null);
-
 	public static <T> AuthenticationResult<T> ofConsumed() {
-		return new AuthenticationResult<>(true, null, null);
+		return CONSUMED_CALLBACK_RESULT;
 	}
 
 	public static <T> AuthenticationResult<T> ofNotConsumed() {
-		return new AuthenticationResult<>(false, null, null);
+		return NO_OP_CALLBACK_RESULT;
 	}
 
 	public static <T> AuthenticationResult<T> ofNoOp() {

@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -122,7 +122,9 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 	protected boolean isVisible(final ITemplateContext context,
 			final IProcessableElementTag tag, final AttributeName attributeName,
 			final String attributeValue) {
-
+		Assertion.check().isFalse(attributeValue.startsWith("."), attributeValue,
+				"Authz can't startsWith . ({0})", attributeValue);
+		//----
 		if (attributeValue.startsWith("${")) {
 			//same code as th:if
 			final IStandardExpressionParser expressionParser = StandardExpressions.getExpressionParser(context.getConfiguration());

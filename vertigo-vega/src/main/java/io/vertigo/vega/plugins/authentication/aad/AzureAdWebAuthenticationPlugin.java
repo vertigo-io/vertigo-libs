@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,17 +123,17 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 	}
 
 	@Override
-	public AuthenticationResult<IAuthenticationResult> doInterceptRequest(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+	public Tuple<AuthenticationResult<IAuthenticationResult>, HttpServletRequest> doInterceptRequest(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
 		if (httpRequest.getSession().getAttribute(AzureAdWebAuthenticationPlugin.PRINCIPAL_SESSION_NAME) != null
 				&& isAccessTokenExpired(httpRequest)) {
 			try {
 				final var authResult = getAuthResultBySilentFlow(httpRequest);
 				SessionManagementHelper.setSessionPrincipal(httpRequest, authResult);
 			} catch (final Throwable e) {
-				WrappedException.wrap(e);
+				throw WrappedException.wrap(e);
 			}
 		}
-		return AuthenticationResult.ofNotConsumed();
+		return Tuple.of(AuthenticationResult.ofNotConsumed(), httpRequest);
 	}
 
 	@Override

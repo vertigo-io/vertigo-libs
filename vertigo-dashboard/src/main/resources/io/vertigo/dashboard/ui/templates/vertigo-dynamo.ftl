@@ -22,7 +22,7 @@
 			<div class="chart chartjs linechart"
 				    data-url="${contextName}/api/dashboard/data/series" 
 				    data-query-measures='["value:sum"]'
-				    data-query-data-filter='{ "measurement": "metric", "filters": {"location": "*", "name": "entityCount", "module": "*", "feature": "DT_PERSON" }}'
+				    data-query-data-filter='{ "measurement": "metric", "filters": {"location": "*", "name": "entityCount", "module": "*", "feature": "*" }}'
 				    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "6h"}'
 				    data-colors='GREEN2BLUE'></div> 
 		</@module.card>  

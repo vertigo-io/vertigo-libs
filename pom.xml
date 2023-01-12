@@ -46,7 +46,7 @@
 		<connection>scm:git:https://github.com/vertigo-io/vertigo-extensions.git</connection>
 		<developerConnection>scm:git:https://github.com/vertigo-io/vertigo-extensions.git</developerConnection>
 		<url>scm:git:https://github.com/vertigo-io/vertigo-extensions.git</url>
-		<tag>vertigo-3.2.0</tag>
+		<tag>vertigo-extensions</tag>
 	</scm>
 	
 	<profiles>

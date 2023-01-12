@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ public final class VSpringMvcViewContextInterceptor implements HandlerIntercepto
 			if (AbstractVSpringMvcController.class.isAssignableFrom(handlerMethod.getBeanType())) {
 				final AbstractVSpringMvcController controller = (AbstractVSpringMvcController) handlerMethod.getBean();
 				if (!controller.isViewContextDirty()) {
-					controller.storeContext();
+					controller.storeContext(request);
 				}
 			}
 			if (response.getStatus() / 100 == 2 || UiRequestUtil.isJsonRequest(request) || response.getStatus() / 100 == 4) {

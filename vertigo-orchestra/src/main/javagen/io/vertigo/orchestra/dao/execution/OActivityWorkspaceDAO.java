@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,12 +70,12 @@ public final class OActivityWorkspaceDAO extends DAO<OActivityWorkspace, java.la
 	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkGetActivityWorkspace",
-			request = "select acw.*" + 
- "        	 from o_activity_workspace acw" + 
- "        	 where acw.ACE_ID = #aceId#" + 
- "        	 and   acw.IS_IN = #workspaceIn#",
+			request = "select acw.*\n" + 
+ "         	 from o_activity_workspace acw\n" + 
+ "         	 where acw.ACE_ID = #aceId#\n" + 
+ "         	 and   acw.IS_IN = #workspaceIn#",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOActivityWorkspace")
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOActivityWorkspace", name = "dtOActivityWorkspace")
 	public Optional<io.vertigo.orchestra.domain.execution.OActivityWorkspace> getActivityWorkspace(@io.vertigo.datamodel.task.proxy.TaskInput(name = "aceId", smartType = "STyOIdentifiant") final Long aceId, @io.vertigo.datamodel.task.proxy.TaskInput(name = "workspaceIn", smartType = "STyOBooleen") final Boolean workspaceIn) {
 		final Task task = createTaskBuilder("TkGetActivityWorkspace")
 				.addValue("aceId", aceId)

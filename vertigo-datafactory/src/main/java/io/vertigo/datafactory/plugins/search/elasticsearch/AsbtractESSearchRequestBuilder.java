@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -192,7 +192,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 		final BoolQueryBuilder postFilterBoolQueryBuilder = QueryBuilders.boolQuery();
 
 		//on ajoute les critères de la recherche AVEC impact sur le score
-		final QueryBuilder queryBuilder = appendSearchQuery(searchQuery, filterBoolQueryBuilder, typeAdapters);
+		appendSearchQuery(searchQuery, filterBoolQueryBuilder, typeAdapters);
 
 		//on ajoute les filtres de sécurité SANS impact sur le score
 		appendSecurityFilter(searchQuery.getSecurityListFilter(), filterBoolQueryBuilder);
@@ -202,7 +202,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 		final QueryBuilder requestQueryBuilder;
 		if (searchQuery.isBoostMostRecent()) {
-			requestQueryBuilder = appendBoostMostRecent(searchQuery, queryBuilder);
+			requestQueryBuilder = appendBoostMostRecent(searchQuery, filterBoolQueryBuilder);
 		} else {
 			requestQueryBuilder = filterBoolQueryBuilder;
 		}

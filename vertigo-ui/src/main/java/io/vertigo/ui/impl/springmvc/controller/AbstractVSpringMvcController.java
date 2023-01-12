@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +21,20 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.nio.charset.StandardCharsets;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import io.vertigo.commons.codec.Codec;
+import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.codec.Encoder;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
@@ -77,6 +82,8 @@ public abstract class AbstractVSpringMvcController {
 	@Inject
 	private KVStoreManager kvStoreManager;
 	@Inject
+	private CodecManager codecManager;
+	@Inject
 	private VTransactionManager transactionManager;
 	@Inject
 	private JsonEngine jsonEngine;
@@ -92,7 +99,7 @@ public abstract class AbstractVSpringMvcController {
 			} else {
 				ViewContextMap viewContextMap;
 				try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
-					viewContextMap = kvStoreManager.find(CONTEXT_COLLECTION_NAME, ctxId, ViewContextMap.class).orElse(null);
+					viewContextMap = kvStoreManager.find(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(ctxId, request), ViewContextMap.class).orElse(null);
 					UiRequestUtil.setRequestScopedAttribute("createdContext", false);
 				}
 				if (viewContextMap == null) {
@@ -122,8 +129,36 @@ public abstract class AbstractVSpringMvcController {
 		}
 	}
 
+	private String obtainStoredCtxId(final String ctxId, final HttpServletRequest request) {
+		if (bindCtxToSession()) {
+			final HttpSession session = request.getSession(false);
+			if (session != null) {
+				final Codec<byte[], String> base64Codec = codecManager.getBase64Codec();
+				final Encoder<byte[], byte[]> sha256Encoder = codecManager.getSha256Encoder();
+				final String sessionIdHash = base64Codec.encode(sha256Encoder.encode(session.getId().getBytes(StandardCharsets.UTF_8)));
+
+				return new StringBuilder(ctxId)
+						.append("-")
+						.append(sessionIdHash)
+						.toString();
+			}
+		}
+		return ctxId;
+	}
+
+	/**
+	 * Lock context to sessionId.
+	 * Should be desactivated by devs for sessionLess actions.
+	 *
+	 * @return if ctx is bind to session
+	 */
+	protected boolean bindCtxToSession() {
+		return true;
+	}
+
 	/**
 	 * Definition if whe should use the vertigo conventions to determine the default viewname
+	 *
 	 * @return if we should use it
 	 */
 	protected boolean useDefaultViewName() {
@@ -161,6 +196,7 @@ public abstract class AbstractVSpringMvcController {
 	 * Appeler lorsque que le context est manquant.
 	 * Par défaut lance une ExpiredContextException.
 	 * Mais une action spécifique pourrait reconstruire le context si c'est pertinent.
+	 *
 	 * @param ctxId Id du context manquant (seule info disponible)
 	 * @throws ExpiredViewContextException Context expiré (comportement standard)
 	 */
@@ -181,11 +217,13 @@ public abstract class AbstractVSpringMvcController {
 	/**
 	 * Conserve et fige le context.
 	 * Utilisé par le KActionContextStoreInterceptor.
+	 *
+	 * @param request HttpServletRequest
 	 */
-	public final void storeContext() {
+	public final void storeContext(final HttpServletRequest request) {
 		final ViewContext viewContext = getViewContext();
 		try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
-			kvStoreManager.put(CONTEXT_COLLECTION_NAME, viewContext.getId(), viewContext.asMap());// we only store the underlying map
+			kvStoreManager.put(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(viewContext.getId(), request), viewContext.asMap());// we only store the underlying map
 			transactionWritable.commit();
 		}
 	}
