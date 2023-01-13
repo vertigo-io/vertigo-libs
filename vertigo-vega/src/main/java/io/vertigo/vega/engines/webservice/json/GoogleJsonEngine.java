@@ -87,7 +87,6 @@ import io.vertigo.datamodel.structure.model.ListVAccessor;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.model.VAccessor;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
-import io.vertigo.vega.engines.webservice.json.records.RecordTypeAdapterFactory;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
 import io.vertigo.vega.webservice.model.UiList;
@@ -585,8 +584,6 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			}
 			jsonBasicTypeAdapters.entrySet()
 					.forEach(entry -> gsonBuilder.registerTypeAdapter(entry.getKey(), new SmartTypeAdapter(entry.getKey(), entry.getValue())));
-
-			gsonBuilder.registerTypeAdapterFactory(RecordTypeAdapterFactory.builder().allowMissingComponentValues().create());
 
 			gsonBuilder
 					.setPrettyPrinting()
