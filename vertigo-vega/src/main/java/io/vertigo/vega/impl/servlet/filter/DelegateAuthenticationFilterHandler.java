@@ -17,8 +17,8 @@
  */
 package io.vertigo.vega.impl.servlet.filter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.lang.Tuple;
 

@@ -17,7 +17,7 @@
  */
 package io.vertigo.vega.plugins.webservice.handler.reader;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.definitions.WebServiceParam;

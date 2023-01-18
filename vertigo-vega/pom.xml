@@ -47,12 +47,6 @@
 		
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-keycloak-connector</artifactId> <!-- For io.vertigo.vega.impl.servlet.filter.AbstactKeycloakDelegateAuthenticationHandler -->
-			<version>${vertigo.version}</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-azure-connector</artifactId> <!-- For io.vertigo.vega.impl.servlet.filter.authentication.aad.AbstractAzureAdDelegateAuthenticationHandler -->
 			<version>${vertigo.version}</version>
 			<optional>true</optional>
@@ -77,15 +71,15 @@
             <groupId>io.vertigo</groupId>
             <artifactId>vertigo-saml2-connector</artifactId>
             <version>${vertigo.version}</version>
-            <optional>true</optional> <!-- For WebService Client proxy -->
+            <optional>true</optional>  <!-- For WebService Client proxy -->
         </dependency>
 
 		<!-- libs -->
 
 		<dependency>
-			<groupId>javax.servlet</groupId>
-    		<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.1</version>
+			<groupId>jakarta.servlet</groupId>
+    		<artifactId>jakarta.servlet-api</artifactId>
+			<version>5.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -99,13 +93,13 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>9.4.50.v20221201</version>
+			<version>11.0.11</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.jetty.websocket</groupId>
-			<artifactId>websocket-server</artifactId>
-			<version>9.4.50.v20221201</version>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-annotations</artifactId>
+			<version>11.0.11</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -146,24 +140,7 @@
 			contient la 1.0.b2 qui est incompatible avec le jdk 7 (sur Node) <scope>test</scope> </dependency> -->
 
 		<!--/exporter -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>apache-jstl</artifactId>
-			<version>9.4.50.v20221201</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-plus</artifactId>
-			<version>9.4.50.v20221201</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-annotations</artifactId>
-			<version>9.4.50.v20221201</version>
-			<scope>test</scope>
-		</dependency>
+		
 	</dependencies>
 
 </project>

@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;

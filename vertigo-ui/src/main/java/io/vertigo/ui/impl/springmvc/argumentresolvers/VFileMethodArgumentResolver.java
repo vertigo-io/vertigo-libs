@@ -17,7 +17,7 @@
  */
 package io.vertigo.ui.impl.springmvc.argumentresolvers;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;

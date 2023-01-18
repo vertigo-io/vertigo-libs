@@ -25,11 +25,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
-import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
-import org.eclipse.jetty.plus.annotation.ContainerInitializer;
+import org.eclipse.jetty.annotations.AnnotationConfiguration;
+import org.eclipse.jetty.annotations.AnnotationConfiguration.ClassInheritanceMap;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -44,20 +43,11 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.springframework.web.SpringServletContainerInitializer;
+import org.springframework.web.WebApplicationInitializer;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 public class TestUi {
-
-	private static List<ContainerInitializer> springInitializers() {
-		final SpringServletContainerInitializer sci = new SpringServletContainerInitializer();
-		final ContainerInitializer initializer = new ContainerInitializer(sci, null);
-		initializer.addApplicableTypeName(TestVSpringWebApplicationInitializer.class.getCanonicalName());
-		final List<ContainerInitializer> initializers = new ArrayList<>();
-		initializers.add(initializer);
-		return initializers;
-	}
 
 	private static ClassLoader getUrlClassLoader() {
 		return new URLClassLoader(new URL[0], TestUi.class.getClassLoader());
@@ -86,8 +76,7 @@ public class TestUi {
 		context.setAttribute("jacoco.exclClassLoaders", "*");
 
 		context.setAttribute("javax.servlet.context.tempdir", getScratchDir());
-		context.setAttribute("org.eclipse.jetty.containerInitializers", springInitializers());
-		context.addBean(new ServletContainerInitializersStarter(context), true);
+		context.setAttribute(AnnotationConfiguration.CLASS_INHERITANCE_MAP, createClassInheritanceMap(TestVSpringWebApplicationInitializer.class));
 		context.setClassLoader(getUrlClassLoader());
 		context.setClassLoader(new WebAppClassLoader(TestUi.class.getClassLoader(), context));
 
@@ -95,6 +84,12 @@ public class TestUi {
 		multipartConfigInjectionHandler.setHandler(context);
 		server.setHandler(multipartConfigInjectionHandler);
 		server.start();
+	}
+
+	private static ClassInheritanceMap createClassInheritanceMap(final Class clazz) {
+		final var map = new ClassInheritanceMap();
+		map.put(WebApplicationInitializer.class.getName(), Set.of(clazz.getName()));
+		return map;
 	}
 
 	private static File getScratchDir() throws IOException {

@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonSyntaxException;
 

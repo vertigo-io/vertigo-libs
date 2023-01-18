@@ -21,16 +21,16 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.logging.log4j.LogManager;
+
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Implémentation de HttpServletResponseWrapper pour éviter warnings à la compilation.
  * @author Matthieu Laroche, Nicolas Piedeloup
  */
-public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.http.HttpServletResponseWrapper implements AutoCloseable {
+public abstract class AbstractHttpServletResponseWrapper extends jakarta.servlet.http.HttpServletResponseWrapper implements AutoCloseable {
 	private ServletOutputStream stream;
 	private PrintWriter writer;
 

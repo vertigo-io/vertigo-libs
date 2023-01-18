@@ -19,19 +19,18 @@ package io.vertigo.ui;
 
 import java.io.IOException;
 
-import javax.servlet.MultipartConfigElement;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.http.HttpMethod;
-import org.eclipse.jetty.server.MultiParts;
+import org.eclipse.jetty.server.MultiPartFormInputStream;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.HandlerWrapper;
-import org.eclipse.jetty.util.MultiPartInputStreamParser;
+
+import jakarta.servlet.MultipartConfigElement;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Handler that adds the multipart config to the request that passes through if
@@ -90,7 +89,7 @@ public class MultipartConfigInjectionHandler extends HandlerWrapper {
 	 *      users mailing list post.</a>
 	 */
 	public static void enableMultipartSupport(final HttpServletRequest request) {
-		request.setAttribute(Request.MULTIPART_CONFIG_ELEMENT, MULTI_PART_CONFIG);
+		request.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, MULTI_PART_CONFIG);
 	}
 
 	@Override
@@ -106,8 +105,8 @@ public class MultipartConfigInjectionHandler extends HandlerWrapper {
 			super.handle(target, baseRequest, request, response);
 		} finally {
 			if (multipartRequest) {
-				final MultiParts multipartInputStream = (MultiParts) request
-						.getAttribute(Request.MULTIPARTS);
+				final MultiPartFormInputStream multipartInputStream = (MultiPartFormInputStream) request
+						.getAttribute(Request.__MULTIPART_CONFIG_ELEMENT);
 				if (multipartInputStream != null) {
 					// a multipart request to a servlet will have the parts cleaned up correctly, but
 					// the repeated call to deleteParts() here will safely do nothing.

@@ -17,8 +17,8 @@
  */
 package io.vertigo.ui.impl.vuejs.filter;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 
 import io.vertigo.vega.impl.servlet.filter.AbstractHttpServletResponseWrapper;
 

@@ -19,7 +19,7 @@ package io.vertigo.vega.impl.authentication;
 
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public final class WebAuthenticationUtil {
 

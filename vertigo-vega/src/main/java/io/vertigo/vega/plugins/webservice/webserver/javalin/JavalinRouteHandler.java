@@ -50,7 +50,7 @@ final class JavalinRouteHandler implements Handler {
 	@Override
 	public void handle(final Context ctx) {
 		try {
-			final Object result = handlerChain.handle(ctx.req, ctx.res, new WebServiceCallContext(new JavalinWebServiceContext(ctx), webServiceDefinition));
+			final Object result = handlerChain.handle(ctx.req(), ctx.res(), new WebServiceCallContext(new JavalinWebServiceContext(ctx), webServiceDefinition));
 
 			if (result instanceof String) {
 				ctx.result((String) result);

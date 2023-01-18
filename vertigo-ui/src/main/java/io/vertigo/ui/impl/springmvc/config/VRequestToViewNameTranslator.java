@@ -17,7 +17,7 @@
  */
 package io.vertigo.ui.impl.springmvc.config;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.web.servlet.RequestToViewNameTranslator;
 

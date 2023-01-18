@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.datastore.filestore.model.VFile;

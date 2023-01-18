@@ -17,8 +17,8 @@
  */
 package io.vertigo.vega.impl.webservice.servlet;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
 /**
  * Classe d'initialisation.

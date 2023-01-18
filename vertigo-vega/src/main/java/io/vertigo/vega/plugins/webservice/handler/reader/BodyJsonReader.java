@@ -19,7 +19,7 @@ package io.vertigo.vega.plugins.webservice.handler.reader;
 
 import java.util.Arrays;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;

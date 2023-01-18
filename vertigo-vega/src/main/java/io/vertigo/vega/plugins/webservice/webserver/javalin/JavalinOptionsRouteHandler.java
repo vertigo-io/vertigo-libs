@@ -59,9 +59,9 @@ public final class JavalinOptionsRouteHandler implements Handler {
 
 	/** {@inheritDoc} */
 	@Override
-	public void handle(final Context ctx) {
+	public void handle(final Context ctx) { 
 		try {
-			final Object result = handlerChain.handle(ctx.req, ctx.res, new WebServiceCallContext(new JavalinWebServiceContext(ctx), webServiceCors)); //no WebService
+			final Object result = handlerChain.handle(ctx.req(), ctx.res(), new WebServiceCallContext(new JavalinWebServiceContext(ctx), webServiceCors)); //no WebService
 			if (result instanceof String) {
 				ctx.result((String) result);
 			} else {

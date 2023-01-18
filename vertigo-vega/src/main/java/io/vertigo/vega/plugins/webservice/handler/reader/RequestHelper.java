@@ -27,7 +27,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public final class RequestHelper {
 	private static final String DEFAULT_CONTENT_CHARSET = "UTF-8";

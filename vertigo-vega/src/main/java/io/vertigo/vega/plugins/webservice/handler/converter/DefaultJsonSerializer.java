@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;

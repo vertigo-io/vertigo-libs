@@ -29,8 +29,6 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -48,7 +46,6 @@ import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.opensaml.saml.common.messaging.context.SAMLEndpointContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.saml.saml2.binding.encoding.impl.HTTPRedirectDeflateEncoder;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.EncryptedAssertion;
@@ -81,6 +78,8 @@ import io.vertigo.core.util.XmlUtil;
 import io.vertigo.vega.impl.authentication.AuthenticationResult;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 
 /**
@@ -249,7 +248,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		context.getSubcontext(SecurityParametersContext.class, true)
 				.setSignatureSigningParameters(signatureSigningParameters);
 
-		final var encoder = new HTTPRedirectDeflateEncoder();
+		final var encoder = new VHTTPRedirectDeflateEncoder();
 		encoder.setMessageContext(context);
 		encoder.setHttpServletResponse(response);
 
