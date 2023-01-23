@@ -109,21 +109,23 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		final var plugin = getPluginForRequest(request);
 		final Tuple<AuthenticationResult, HttpServletRequest> interceptResult = plugin.doInterceptRequest(request, response);
 		final var authenticationResult = interceptResult.val1();
+		final HttpServletRequest requestResolved = interceptResult.val2() != null ? interceptResult.val2() : request;
+
 		if (authenticationResult.isRequestConsumed()) {
 			return Tuple.of(true, request);
 		} else if (authenticationResult.getRawCallbackResult() != null && !isAuthenticated()) {
-			return appLogin(request, response, authenticationResult, plugin.getRequestedUri(request));
+			return appLogin(requestResolved, response, authenticationResult, plugin.getRequestedUri(request));
 		}
 
 		// handler
 		final var urlHandler = urlHandlerMap.get(request.getServletPath());
 		if (urlHandler != null) {
-			return urlHandler.apply(request, response);
+			return urlHandler.apply(requestResolved, response);
 		}
 
 		// redirect to sso
 		if (!isAuthenticated()) {
-			doRedirectToSso(request, response);
+			doRedirectToSso(requestResolved, response);
 			return Tuple.of(true, request);
 		}
 
@@ -190,6 +192,9 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		final var appLoginHandlerInstance = Node.getNode().getComponentSpace().resolve(appLoginHandler, AppLoginHandler.class);
 		appLoginHandlerInstance.doLogin(request, interceptResult.getClaims(), interceptResult.getRawCallbackResult());
 		if (isAuthenticated()) {
+			// change session ID for security purpose (session fixation attack)
+			request.changeSessionId();
+
 			doHandleRedirect(request, response, redirectUri);
 		} else {
 			appLoginHandlerInstance.loginFailed(request, response);

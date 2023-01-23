@@ -151,8 +151,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		final String globalDataVariable = buildGlobalDataVariable(appName, Collections.singletonList(clusteredMeasure.measure()), dataFilter, timeFilter);
 
 		final StringBuilder queryBuilder = new StringBuilder(globalDataVariable);
-		final String[] splitedMeasure = clusteredMeasure.measure().split(":");
-		final String fieldName = splitedMeasure[0];
+		final String[] splitedMeasure = clusteredMeasure.getMeasure().split(":");
 		final String function = splitedMeasure[1];
 
 		final var orderedClusteredMeasures = getOrderedClusterMeasures(clusteredMeasure);
