@@ -17,7 +17,8 @@ var VUiPage = new Vue({
 	  this.$http.interceptors.response.use(function(response) {
 	        return response;
 	     }, function(error) {
-	          this.onAjaxError(error.response);
+	          this.onAjaxError(error.response);	          
+            return Promise.reject(error);
 	    }.bind(this))
   }
   
