@@ -20,7 +20,9 @@
 		             	:landscape="$q.screen.gt.xs"
 		             	mask="DD/MM/YYYY"
 		             	th:@input="|() => $refs.${myRef}.hide()|"
-		             	th:attr="__${date_attrs}__"></q-date> 
+		             	th:attr="__${date_attrs}__">
+		             	<vu:content/>
+		             </q-date> 
 	       		</q-popup-proxy>
 	       	</q-icon>
        	</template>
