@@ -3,7 +3,7 @@
 	<div th:class="|row q-col-gutter-${denseMode?'xs':'md'}|" th:attr="__${other_attrs}__" >
 		<th:block th:each="contentItem:${contentTags}">
 			<th:block th:if="${contentItem.isTag('grid-cell')}"><vu:content-item/></th:block>
-			<div th:if="${!contentItem.isTag('grid-cell')}" th:class="${'col-xs-12 col-md-'+(12/tableCols)}"><vu:content-item/></div>
+			<div th:if="${!contentItem.isTag('grid-cell') && !contentItem.isTag('include-data')}" th:class="${'col-xs-12 col-md-'+(12/tableCols)}"><vu:content-item/></div>
 		</th:block>
 	</div>
 </th:block>
