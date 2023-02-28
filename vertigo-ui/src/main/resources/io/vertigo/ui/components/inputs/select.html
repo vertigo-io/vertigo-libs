@@ -20,8 +20,7 @@
 			th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
 			orientation="vertical"
 			stack-label
-			th:attr="__${label_attrs}__,__${input_attrs}__"
-			>
+			th:attr="__${label_attrs}__,__${input_attrs}__">
 			<vu:content/>
 	</q-select>
 	<input type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" th:v-bind:value="${model.util.vueDataKey(object, field, rowIndex)}" />
