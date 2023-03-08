@@ -130,6 +130,10 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				structureHandler.setLocalVariable(CONTENT_TAGS, tag instanceof IStandaloneElementTag ? Collections.emptyList() : asList(contentModel, context));
 			}
 			if (!slotNames.isEmpty()) {
+				/** we stop slots propagation */
+				for (final String slotName : slotNames) {
+					structureHandler.setLocalVariable(slotName, null);
+				}
 				final Map<String, IModel> slotContents = removeAndExtractSlots(contentModel, context);
 				for (final Map.Entry<String, IModel> entry : slotContents.entrySet()) {
 					Assertion.check().isTrue(slotNames.contains(entry.getKey()), "Component {0} have no slot {1} (accepted slots : {3})", componentName, entry.getKey(), slotNames);
