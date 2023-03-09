@@ -95,7 +95,7 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 		try (final SqlConnection sqlConnection = sqlManager.getConnectionProvider(connectionName).obtainConnection()) {
 			final Liquibase lb = createLiquibase();
 			final Collection<RanChangeSet> unexpectedChangeSets = lb.listUnexpectedChangeSets(getContexts(), new LabelExpression());
-			Assertion.check().isTrue(unexpectedChangeSets.isEmpty(), "Database is to recent. Please make sure you run the correct version of the node.");
+			Assertion.check().isTrue(unexpectedChangeSets.isEmpty(), "Database is too recent. Please make sure you run the correct version of the node.");
 			lb.update(getContexts());
 		} catch (final LiquibaseException | SQLException e) {
 			throw WrappedException.wrap(e);
@@ -119,7 +119,7 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 			final List<ChangeSet> changeSetList = lb.listUnrunChangeSets(getContexts(), new LabelExpression());
 			Assertion.check().isTrue(changeSetList.isEmpty(), "Database is not up to date. Please update it before launching the node.");
 			final Collection<RanChangeSet> unexpectedChangeSets = lb.listUnexpectedChangeSets(getContexts(), new LabelExpression());
-			Assertion.check().isTrue(unexpectedChangeSets.isEmpty(), "Database is to recent. Please make sure you run the correct version of the node.");
+			Assertion.check().isTrue(unexpectedChangeSets.isEmpty(), "Database is too recent. Please make sure you run the correct version of the node.");
 		} catch (final LiquibaseException e) {
 			throw WrappedException.wrap(e);
 		}
