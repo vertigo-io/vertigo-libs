@@ -17,33 +17,34 @@
  */
 package io.vertigo.datamodel.criteria;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.vertigo.datamodel.structure.model.DtObject;
 
 final class CriteriaUtil {
+	private static final Logger LOG = LogManager.getLogger(CriteriaUtil.class);
 
 	private CriteriaUtil() {
 		//
 	}
 
-	//Comment gérer la prorité des opérations ?
 	static <D extends DtObject> Criteria<D> and(final Criteria<D> leftOperand, final Criteria<D> rightOperand) {
 		//if exp*c
 		//	when a*b*c
 		//		then *(exp.operands, c)
 		//	when a+b*c
-		//		then +(exp.operands.left, *(exp.operands.left, c))
+		//		then *(exp, c))
 		if (leftOperand instanceof CriteriaExpression && rightOperand instanceof Criterion) {
 			final CriteriaExpression<D> criteria = CriteriaExpression.class.cast(leftOperand);
 			switch (criteria.getOperator()) {
 				case AND:
 					return new CriteriaExpression<>(CriteriaLogicalOperator.AND, criteria.getOperands(), rightOperand);
 				case OR:
-					//the most complex case !  a+b*c => a + (b*c)
-					final Criteria<D>[] leftOperands = new Criteria[criteria.getOperands().length - 1];
-					for (int i = 0; i < (criteria.getOperands().length - 1); i++) {
-						leftOperands[i] = criteria.getOperands()[i];
-					}
-					return new CriteriaExpression<>(CriteriaLogicalOperator.OR, leftOperands, and(criteria.getOperands()[criteria.getOperands().length - 1], rightOperand));
+					// ! before 3.5.1, there was a bad precedence changing  a+b*c => a + (b * c), now it's (a + b) * c
+					//We log a warning for regressions
+					LOG.warn("Criteria `({}) AND {}` You may check regressions : `a or b and c` is now `(a or b) and c`, before 3.5.1 it was `a or (b and c)` => ({}) AND {}", leftOperand.toString(), rightOperand.toString());
+					return new CriteriaExpression<>(CriteriaLogicalOperator.AND, leftOperand, rightOperand);
 				default:
 					throw new IllegalStateException();
 			}
