@@ -16,7 +16,9 @@
 				"name": "etaCd", "type": "ENUM", "values": ["CRE", "VAL", "PUB", "NOT", "REA", "ARC", "EXP"]
 			},{
 				"name": "GEO", "type": "TREE", "fields": [ "regId", "depId", "comId" ]
-			}
+			},{
+                "name": "GEO2", "type": "TREE", "fields": [ "regId", "depId" ]
+            }
 		],
 		"operations": [  {
 			"__comment": "Visibilité attribuable avec un montant maximum, et visibilité pour l'utilisateur créateur.",
@@ -48,7 +50,13 @@
 			"rules": [
 				"GEO<${geo} OR GEO<=${geo} OR GEO=${geo} OR GEO!=${geo} OR GEO>${geo} OR GEO>=${geo}"				
 			]
-		}, {
+		},{
+            "__comment": "Tests uniquement",
+            "name": "test4", "label" : "Test Tree",
+            "rules": [
+                "GEO2<${geo2} OR GEO2<=${geo2} OR GEO2=${geo2} OR GEO2!=${geo2} OR GEO2>${geo2} OR GEO2>=${geo2}"               
+            ]
+        }, {
 			"__comment": "Visibilité attribuable avec un montant maximum, et visibilité pour l'utilisateur créateur.",
 			"name": "read",	 "grants": ["read2", "read3"] , "label" : "Lecture",
 			"rules": [

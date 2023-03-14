@@ -254,10 +254,12 @@ public final class VSecurityManagerTest {
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
 					.withSecurityKeys("geo", new Long[] { DEFAULT_REG_ID, DEFAULT_DEP_ID, null }) //droit sur tout un département
+					.withSecurityKeys("geo2", new Long[] { DEFAULT_REG_ID, DEFAULT_DEP_ID }) //droit sur tout un département
 					.addAuthorization(recordRead).addAuthorization(recordRead)
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test))
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test2))
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test3))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test4))
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$write))
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$create))
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$delete));
@@ -282,7 +284,24 @@ public final class VSecurityManagerTest {
 
 			Assertions.assertEquals("(((utiIdOwner is null or utiIdOwner != #utiIdOwner0# ) AND (amount < #amount1# OR amount = #amount1# OR amount <= #amount1#)) OR (utiIdOwner = #utiIdOwner0# AND (amount > #amount1# OR amount = #amount1# OR amount >= #amount1#)))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.test).toString());
 			Assertions.assertEquals("(etaCd in (CRE, VAL, PUB) OR etaCd in (CRE, VAL, PUB) OR etaCd = #etaCd0# OR (etaCd is null or etaCd != #etaCd0# ) OR etaCd in (PUB, NOT, REA, ARC) OR etaCd in (PUB, NOT, REA, ARC))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.test2).toString());
-			Assertions.assertEquals("((((((regId = #regId0# AND depId = #depId1# AND comId is not null) OR (regId = #regId0# AND depId = #depId1#)) OR (regId = #regId0# AND depId = #depId1# AND comId is null )) OR ((regId is null or regId != #regId0# ) AND (depId is null or depId != #depId1# ) AND comId is not null )) OR (regId = #regId0# AND depId is null AND comId is null)) OR (regId = #regId0# AND (depId is null OR depId = #depId1#) AND comId is null))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.test3).toString());
+
+			//L'utilisateur est positionné sur un département
+			Assertions.assertEquals("((((((regId = #regId0# AND depId = #depId1# AND comId is not null) " // GEO<${geo}
+					+ "OR (regId = #regId0# AND depId = #depId1#)) " // GEO<=${geo}
+					+ "OR (regId = #regId0# AND depId = #depId1# AND comId is null )) " // GEO=${geo}
+					+ "OR ((regId is null or regId != #regId0# ) AND (depId is null or depId != #depId1# ) AND comId is not null )) " //GEO!=${geo}
+					+ "OR (regId = #regId0# AND depId is null AND comId is null)) " //GEO>${geo}
+					+ "OR (regId = #regId0# AND (depId is null OR depId = #depId1#) AND comId is null))", // GEO>=${geo}
+					authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.test3).toString());
+
+			//L'utilisateur est positionné sur un département
+			Assertions.assertEquals("((((((regId = #regId0# AND depId = #depId1#) " // GEO2<${geo}
+					+ "OR (regId = #regId0# AND depId = #depId1#)) " // GEO2<=${geo}
+					+ "OR (regId = #regId0# AND depId = #depId1#)) " // GEO2=${geo}
+					+ "OR ((regId is null or regId != #regId0# ) AND (depId is null or depId != #depId1# ))) " //GEO2!=${geo}
+					+ "OR (regId = #regId0# AND depId is null)) " //GEO2>${geo}
+					+ "OR (regId = #regId0# AND (depId is null OR depId = #depId1#)))", // GEO2>=${geo}
+					authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.test4).toString());
 
 			final boolean canReadNotify = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$notify);
 			Assertions.assertFalse(canReadNotify);
