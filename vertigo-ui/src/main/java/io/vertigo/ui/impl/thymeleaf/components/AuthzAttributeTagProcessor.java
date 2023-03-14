@@ -47,6 +47,7 @@ import io.vertigo.vega.webservice.model.UiObject;
  * 1- With a simple string
  *    vu:authz="myGlobalAuthz" or vu:authz="mySecuredEntityAuthz$read"
  *    => use like authz.hasAuthorization('myGlobalAuthz')
+ *    Support multiple list OR separator ',' and '!' for NOT
  *
  * 2- With a contextPath to a UiObject<Entity>
  *    vu:authz="model.myEntity$read" or vu:authz="model.list[0]$read"
