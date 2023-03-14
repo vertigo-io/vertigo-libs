@@ -219,7 +219,24 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			//1- règles avant le point de pivot : 'Eq' pout tous les opérateurs
 			for (int i = 0; i < lastIndexNotNull; i++) {
 				final DtFieldName<E> fieldName = strDimensionfields.get(i)::toString;
-				mainCriteria = andCriteria(mainCriteria, Criterions.isEqualTo(fieldName, treeKeys[i]));
+				switch (operator) {
+					case GT:
+					case GTE:
+						//pour > et >= : doit être égale à la clé du user ou null (supérieur)
+						final Criteria<E> equalsCriteria = Criterions.isEqualTo(fieldName, treeKeys[i]);
+						final Criteria<E> greaterCriteria = Criterions.isNull(fieldName);
+						final Criteria<E> gteCriteria = greaterCriteria.or(equalsCriteria);
+						mainCriteria = andCriteria(mainCriteria, gteCriteria);
+						break;
+					case LT:
+					case LTE:
+					case EQ:
+					case NEQ:
+						mainCriteria = andCriteria(mainCriteria, Criterions.isEqualTo(fieldName, treeKeys[i]));
+						break;
+					default:
+						throw new IllegalArgumentException("Operator not supported " + operator.name());
+				}
 			}
 
 			//2- règles pour le point de pivot
