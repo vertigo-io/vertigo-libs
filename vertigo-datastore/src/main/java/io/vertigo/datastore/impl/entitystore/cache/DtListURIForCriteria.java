@@ -124,7 +124,7 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 		return getCriteria().toStringAnCtx(new CriteriaEncoder() {
 			@Override
 			public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DtFieldName dtFieldName, final Serializable[] values) {
-				return criterionOperator + "-" + dtFieldName.name() + "@" + Arrays.hashCode(values);
+				return criterionOperator.name() + "-" + dtFieldName.name() + "@" + Arrays.hashCode(values);
 			}
 
 			@Override

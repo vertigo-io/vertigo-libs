@@ -85,7 +85,7 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 				if (values[0] == null) {
 					return sqlFieldName + " is not null ";
 				}
-				return "(" + sqlFieldName + " is null or " + sqlFieldName + " != " + encodedAttribute(ctx, dtFieldName, values[0]) + " )";
+				return "(" + sqlFieldName + " is null OR " + sqlFieldName + " != " + encodedAttribute(ctx, dtFieldName, values[0]) + " )";
 			case GT:
 				return sqlFieldName + " > " + encodedAttribute(ctx, dtFieldName, values[0]);
 			case GTE:
