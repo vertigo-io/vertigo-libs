@@ -19,6 +19,7 @@ package io.vertigo.ui.impl.thymeleaf.components;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IAttribute;
@@ -27,22 +28,24 @@ import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.model.ITemplateEvent;
 import org.thymeleaf.processor.element.AbstractElementModelProcessor;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
-import org.thymeleaf.standard.expression.Fragment;
 import org.thymeleaf.templatemode.TemplateMode;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
 
-public class ContentSlotComponentProcessor extends AbstractElementModelProcessor {
+public class ContentComponentProcessor extends AbstractElementModelProcessor {
 
-	private static final String CONTENT_TAG_NAME = "content-slot";
-	private static final int PRECEDENCE = 450;
+	public static final String CONTENT_ID_ATTR_NAME = "contentId";
+	public static final String CONTENT_ATTRS_NAME = "contentAttrs";
+	private static final String CONTENT_TAG_NAME = "content";
+	private static final int PRECEDENCE = 400;
 
 	/**
 	 * Constructor
 	 *
 	 * @param dialectPrefix Dialect prefix (tc)
 	 */
-	public ContentSlotComponentProcessor(final String dialectPrefix) {
+	public ContentComponentProcessor(final String dialectPrefix) {
 		super(TemplateMode.HTML, dialectPrefix, CONTENT_TAG_NAME, true, null, false, PRECEDENCE);
 	}
 
@@ -56,34 +59,33 @@ public class ContentSlotComponentProcessor extends AbstractElementModelProcessor
 	@Override
 	protected void doProcess(final ITemplateContext context, final IModel model, final IElementModelStructureHandler structureHandler) {
 		final Map<String, String> attributes = processAttribute(model);
-		final String attributeValue = attributes.get("name");
-		Assertion.check().isTrue(
-				attributeValue.endsWith(SlotAttributeTagProcessor.VARIABLE_PLACEHOLDER_SEPARATOR + SlotAttributeTagProcessor.SLOTS_SUFFIX),
-				"{0} isn't a slot. Tag vu:content-slot supports only slots, names must ends with '_slot'", attributeValue);
+		final var contentId = attributes.get(CONTENT_ID_ATTR_NAME);
+		attributes.remove(CONTENT_ID_ATTR_NAME);
+		final Object content = context.getVariable("contentStack");
+
+		Assertion.check().isNotNull(content, "'" + contentId + "' variable missing.");
 		//-----
 		removeCurrentTag(model);
-		final Object slotModelObject = context.getVariable(attributeValue);
-		structureHandler.setLocalVariable(attributeValue, null);
-		
-		final IModel slotModel;
-		if (slotModelObject instanceof Fragment) {
-			slotModel = ((Fragment) slotModelObject).getTemplateModel();
-		} else {
-			slotModel = (IModel) slotModelObject;
-		}
-		if (slotModel != null) {
-			if (slotModel.size() == 0) {
-				//if empty slot we remove all tag (open tag, body and close tag)
-				model.reset();
+		final IModel defaultModel = model.cloneModel(); //default is the body of the content tag
+		final IModel mergedModel;
+		if (content instanceof Stack) {
+			final Stack<IModel> contentStack = (Stack<IModel>) content;
+			if (!contentStack.isEmpty()) {
+				//We merge models : ie replace vu:content tag in component fragment by the body of tag in call page
+				mergedModel = contentStack.pop();
+				structureHandler.setLocalVariable("contentStack", contentStack);
 			} else {
-				//Else we replace the body by user defined slot
-				model.reset();
-				model.addModel(slotModel);
+				mergedModel = defaultModel; //We use default value (in vu:content tag)
 			}
+		} else if (content instanceof NamedComponentContentComponent) {
+			//We merge models : ie replace vu:content tag in component fragment by the body of tag in call page
+			mergedModel = ((NamedComponentContentComponent) content).getModel();
 		} else {
-			//if empty slot we remove all tag (open tag, body and close tag)
+			throw new VSystemException("Content variable type not supported ({0})", content.getClass().getName());
 		}
-		//else we keep slot in component as is => use component default
+		model.reset();//we prepared the model to be set
+		model.addModel(mergedModel);
+		structureHandler.setLocalVariable(CONTENT_ATTRS_NAME, attributes);
 	}
 
 	private static Map<String, String> processAttribute(final IModel model) {

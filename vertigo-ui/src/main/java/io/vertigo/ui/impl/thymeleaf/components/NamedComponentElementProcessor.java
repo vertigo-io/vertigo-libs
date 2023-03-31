@@ -22,12 +22,14 @@ import static java.util.Collections.singleton;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Stack;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -62,6 +64,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 
 public class NamedComponentElementProcessor extends AbstractElementModelProcessor {
+	private static final String COMPONENT_PARAMS = "params";
 	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^(([^$@]\\{)|[^#|'](?!\\{)).*$";
 	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^[^$#@|']([^$#@]|(&#[0-9]{1,4};))*$"; //don't start with $#@|' and no $#@ after (excepted html encoded chars : &#[0-9]+;)
 	private static final String NUMBER_PATTERN_STR = "^[0-9\\.]+";
@@ -78,14 +81,16 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 	private static final int PRECEDENCE = 350;
 
-	private final Set<String> excludeAttributes = singleton("params");
+	private final Set<String> excludeAttributes = singleton(COMPONENT_PARAMS);
 	private final String componentName;
 	private final Optional<VariableExpression> selectionExpressionOpt;
-	private final List<String> parameterNames;
+	private final Set<String> parameterNames;
 	private final Set<String> slotNames;
 	private final List<String> placeholderPrefixes;
 	private final Optional<String> unnamedPlaceholderPrefix;
 	private final String frag;
+
+	private final Stack<IModel> emptyStack = new Stack();
 
 	/**
 	 * Constructor
@@ -100,13 +105,13 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		frag = thymeleafComponent.getFrag();
 
 		selectionExpressionOpt = thymeleafComponent.getSelectionExpression();
-		parameterNames = thymeleafComponent.getParameters();
+		parameterNames = new HashSet<>(thymeleafComponent.getParameters());
 
 		slotNames = parameterNames.stream()
 				.filter(key -> key.endsWith(VARIABLE_PLACEHOLDER_SEPARATOR + SLOTS_SUFFIX))
 				.collect(Collectors.toSet());
 
-		placeholderPrefixes = parameterNames.stream()
+		placeholderPrefixes = thymeleafComponent.getParameters().stream() //we read from thymeleafComponent.getParameters() to keep order of placeholders
 				.filter(parameterName -> parameterName.endsWith(VARIABLE_PLACEHOLDER_SEPARATOR + ATTRS_SUFFIX))
 				.map(parameterName -> parameterName.substring(0, parameterName.length() - ATTRS_SUFFIX.length()))
 				.collect(Collectors.toList());
@@ -121,20 +126,41 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			final IProcessableElementTag tag = processElementTag(context, model);
 			final Map<String, String> attributes = processAttribute(model, context, structureHandler);
 
-			final String param = attributes.get("params");
+			final String param = attributes.get(COMPONENT_PARAMS);
+			final String fragmentToUse = "~{" + componentName + " :: " + frag + "}";
+			final IModel fragmentModel = FragmentUtil.getFragmentModel(context, fragmentToUse + (param == null ? "" : "(" + param + ")"), structureHandler);
+			final IModel clonedFragmentModel = fragmentModel.cloneModel(); //le clone change l'index des éléments
 
-			final IModel contentModel = cloneAndCleanModel(model);
-			removeContainerTag(contentModel);
-
+			//by default we stop content and slots propagation
+			structureHandler.setLocalVariable("contentStack", emptyStack);
 			if (parameterNames.contains(CONTENT_TAGS)) {
-				structureHandler.setLocalVariable(CONTENT_TAGS, tag instanceof IStandaloneElementTag ? Collections.emptyList() : asList(contentModel, context));
+				structureHandler.setLocalVariable(CONTENT_TAGS, Collections.emptyList());
 			}
-			if (!slotNames.isEmpty()) {
-				/** we stop slots propagation */
-				for (final String slotName : slotNames) {
-					structureHandler.setLocalVariable(slotName, null);
+			for (final String slotName : slotNames) {
+				structureHandler.setLocalVariable(slotName, null);
+			}
+
+			if (!(tag instanceof IStandaloneElementTag)) { //this tag has got a body : we get and stack content
+				Stack<IModel> contentStack = (Stack<IModel>) context.getVariable("contentStack");
+				if (contentStack == null || contentStack.isEmpty()) {
+					contentStack = new Stack<>();
+				} else {
+					contentStack = clone(contentStack);
 				}
-				final Map<String, IModel> slotContents = removeAndExtractSlots(contentModel, context);
+
+				//Manage content
+				final IModel contentModel = cleanAndExtractContent(model);
+				contentStack.push(contentModel);
+				structureHandler.setLocalVariable("contentStack", contentStack);
+				//set content as list
+				if (parameterNames.contains(CONTENT_TAGS)) {
+					structureHandler.setLocalVariable(CONTENT_TAGS, asList(contentModel, context));
+				}
+
+				//Manage slots
+				//there is slots only if tag isn't IStandaloneElementTag
+				final Map<String, IModel> slotContents = slotNames.isEmpty() ? Collections.emptyMap() : removeAndExtractSlots(contentModel, context);
+
 				for (final Map.Entry<String, IModel> entry : slotContents.entrySet()) {
 					Assertion.check().isTrue(slotNames.contains(entry.getKey()), "Component {0} have no slot {1} (accepted slots : {3})", componentName, entry.getKey(), slotNames);
 					//-----
@@ -142,19 +168,21 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				}
 			}
 
-			final String fragmentToUse = "~{" + componentName + " :: " + frag + "}";
-			final IModel fragmentModel = FragmentUtil.getFragmentModel(context, fragmentToUse + (param == null ? "" : "(" + param + ")"), structureHandler);
-			final IModel clonedFragmentModel = fragmentModel.cloneModel(); //le clone change l'index des éléments
-
-			final IModel replacedContentFragmentModel = replaceContentTag(clonedFragmentModel, tag instanceof IStandaloneElementTag ? Optional.empty() : Optional.ofNullable(contentModel));
-
 			//We replace the whole model
 			model.reset();
-			model.addModel(replacedContentFragmentModel);
+			model.addModel(clonedFragmentModel);
 
 			processVariables(attributes, context, structureHandler, excludeAttributes);
 		} // else nothing
 
+	}
+
+	private Stack<IModel> clone(Stack<IModel> contentStack) {
+		Stack<IModel> clone = new Stack<>();
+		for(IModel model : contentStack) {
+			clone.push(model);
+		}		
+		return clone;
 	}
 
 	private static Map<String, IModel> removeAndExtractSlots(final IModel contentModel, final ITemplateContext context) {
@@ -168,7 +196,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			final ITemplateEvent templateEvent = contentModel.get(0); //get always first (because we remove it)
 			if (templateEvent instanceof IOpenElementTag) {
 				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
-					//support slot of an component into slot of another //Assertion.check().isTrue(tapDepth == 0, "Can't parse slot {0} it contains another slot", slotName);
+					//support slot of an component into slot of another
 					slotName = ((IProcessableElementTag) templateEvent).getAttributeValue("name");
 				} else if (tapDepth == 0) {
 					break; //slots must be set at first
@@ -182,8 +210,10 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 					Assertion.check().isTrue(tapDepth == 0, "Can't parse slot {0} it contains another slot", slotName);
 					slotName = ((IProcessableElementTag) templateEvent).getAttributeValue("name");
 				} else if (tapDepth == 0) {
-					break;
+					break; //slots must be set at first
 				}
+			} else if (tapDepth == 0) {
+				break; //slots must be set at first
 			}
 			buildingModel.add(templateEvent); //add first
 			contentModel.remove(0); //remove first : in fact we move slot's tags from content model to building model
@@ -207,47 +237,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		return slotContents;
 	}
 
-	private static IModel replaceContentTag(final IModel fragmentModel, final Optional<IModel> contentModel) {
-		int index = findTagIndex("vu:content", 0, fragmentModel, IProcessableElementTag.class);//Open or standalone
-		while (index > -1) {
-			final int size;
-			final int indexEnd = findTagIndex("vu:content", index, fragmentModel, ICloseElementTag.class);
-			if (indexEnd > -1) {
-				fragmentModel.remove(indexEnd);
-			}
-			if (contentModel.isPresent()) {
-				size = contentModel.get().size();
-				//We remove old body
-				if (indexEnd > -1) {
-					for (int i = indexEnd - 1; i > index; i--) {
-						fragmentModel.remove(i);
-					}
-				}
-				//We insert new body after content tag (index+1)
-				fragmentModel.insertModel(index + 1, contentModel.get());
-			} else {
-				size = 0;
-			}
-			fragmentModel.remove(index);
-			index = findTagIndex("vu:content", index + size, fragmentModel, IProcessableElementTag.class);//Open or standalone
-		}
-		return fragmentModel;
-	}
-
-	private static int findTagIndex(final String tagName, final int from, final IModel model, final Class<? extends IElementTag> tagClass) {
-		ITemplateEvent event = null;
-		final int size = model.size();
-		for (int i = from; i < size; i++) {
-			event = model.get(i);
-			if (tagClass.isInstance(event)
-					&& ((IElementTag) event).getElementCompleteName().equals(tagName)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	private static IModel cloneAndCleanModel(final IModel model) {
+	private static IModel cleanAndExtractContent(final IModel model) {
 		final IModel cleanerModel = model.cloneModel();
 		final int size = cleanerModel.size();
 		for (int i = size - 1; i > 0; i--) { //We loop decreasly for remove by index
@@ -258,6 +248,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				}
 			}
 		}
+		removeContainerTag(cleanerModel);
 		return cleanerModel;
 	}
 
@@ -341,12 +332,14 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 		final Map<String, Map<String, Object>> placeholders = new HashMap<>();
 
+		//set attributs and read placeholders
 		for (final Map.Entry<String, String> entry : attributes.entrySet()) {
 			if (excludeAttr.contains(entry.getKey()) || isDynamicAttribute(entry.getKey(), getDialectPrefix())) {
 				continue;
 			}
 			processWith(context, entry.getKey(), entry.getValue(), structureHandler, placeholders);
 		}
+
 		//we set placeholders as localvariables (inner components shouldn't affect these in case of name conflict)
 		setLocalPlaceholderVariables(context, structureHandler, placeholders);
 	}
@@ -426,11 +419,14 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				}
 			}
 		}
-		final Map<String, String> contentAttrs = (Map<String, String>) context.getVariable("contentAttrs");
+		//We keep attributs put on <vu:content> tag (except contentId attribute)
+		final Map<String, String> contentAttrs = (Map<String, String>) context.getVariable(ContentComponentProcessor.CONTENT_ATTRS_NAME);
 		if (contentAttrs != null && !contentAttrs.isEmpty()) {
-			structureHandler.removeLocalVariable("contentAttrs");
+			structureHandler.removeLocalVariable(ContentComponentProcessor.CONTENT_ATTRS_NAME);
 			for (final Entry<String, String> attribute : contentAttrs.entrySet()) {
-				if (shouldConcat(attribute.getKey())) {
+				if (ContentComponentProcessor.CONTENT_ID_ATTR_NAME.equals(attribute.getKey())) {
+					//don't copy contentId on inner tags
+				} else if (shouldConcat(attribute.getKey())) {
 					attributes.compute(attribute.getKey(), (k, v) -> (v == null ? "" : v + " ") + attribute.getValue());
 				} else {
 					attributes.put(attribute.getKey(), attribute.getValue());
