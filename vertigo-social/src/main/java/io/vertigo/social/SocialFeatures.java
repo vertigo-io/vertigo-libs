@@ -26,6 +26,7 @@ import io.vertigo.social.impl.comment.CommentManagerImpl;
 import io.vertigo.social.impl.handle.HandleManagerImpl;
 import io.vertigo.social.impl.mail.MailManagerImpl;
 import io.vertigo.social.impl.notification.NotificationManagerImpl;
+import io.vertigo.social.impl.sms.SmsManagerImpl;
 import io.vertigo.social.mail.MailManager;
 import io.vertigo.social.notification.NotificationManager;
 import io.vertigo.social.plugins.comment.memory.MemoryCommentPlugin;
@@ -35,6 +36,10 @@ import io.vertigo.social.plugins.handle.redis.RedisHandlePlugin;
 import io.vertigo.social.plugins.mail.javax.JavaxSendMailPlugin;
 import io.vertigo.social.plugins.notification.memory.MemoryNotificationPlugin;
 import io.vertigo.social.plugins.notification.redis.RedisNotificationPlugin;
+import io.vertigo.social.plugins.sms.ovh.OvhRequestSpecializer;
+import io.vertigo.social.plugins.sms.ovh.OvhSmsSendPlugin;
+import io.vertigo.social.plugins.sms.ovh.OvhSmsWebServiceClient;
+import io.vertigo.social.sms.SmsManager;
 import io.vertigo.social.webservices.account.AccountWebServices;
 import io.vertigo.social.webservices.comment.CommentWebServices;
 import io.vertigo.social.webservices.handle.HandleWebServices;
@@ -141,6 +146,28 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 	@Feature("handles.memory")
 	public SocialFeatures withMemoryHandles() {
 		getModuleConfigBuilder().addPlugin(MemoryHandlePlugin.class);
+		return this;
+	}
+
+	@Feature("sms")
+	public SocialFeatures withSms() {
+		getModuleConfigBuilder()
+				.addComponent(SmsManager.class, SmsManagerImpl.class);
+		return this;
+	}
+
+	@Feature("sms.ovh")
+	public SocialFeatures withOvhSmsPlugin(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(OvhSmsSendPlugin.class, params)
+				.addAmplifier(OvhSmsWebServiceClient.class);
+		return this;
+	}
+
+	@Feature("sms.ovh.ovhRequestSpecializer")
+	public SocialFeatures withOvhRequestSpecializer(final Param... params) {
+		getModuleConfigBuilder()
+				.addComponent(OvhRequestSpecializer.class, params);
 		return this;
 	}
 

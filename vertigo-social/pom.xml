@@ -51,7 +51,14 @@
 			<version>${vertigo.version}</version>
 		</dependency>
 		<!-- /Mail -->
-
+		<!-- SMS/OVH -->
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-httpclient-connector</artifactId>
+			<version>${vertigo.version}</version>
+		</dependency>
+		<!-- /SMS/OVH -->
+		
 		<!-- Tests -->
 		<!-- For Rest Webservice testing -->
 		<dependency>
