@@ -249,3 +249,27 @@ table .q-uploader .q-btn {
     background-position: center;
 }
 
+
+/********* spinner on pending actions *********************/
+@keyframes spinner-waitShow {
+    0% { opacity: 1; }
+    100% { opacity: 1; }
+}
+
+@keyframes spinner-waitHidden {
+    0% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+.q-btn__content--hidden {
+    opacity: 0.5; 
+   -webkit-animation: spinner-waitShow 500ms;
+   -moz-animation: spinner-waitShow 500ms;
+   animation: spinner-waitShow 500ms;
+} 
+
+.q-btn .q-spinner {
+   -webkit-animation: spinner-waitHidden 500ms;
+   -moz-animation: spinner-waitHidden 500ms;
+   animation: spinner-waitHidden 500ms;
+} 
