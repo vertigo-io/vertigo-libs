@@ -22,8 +22,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.model.DtListState;
@@ -93,16 +95,36 @@ public final class AnnotationsWebServiceScannerUtil {
 
 	public static Optional<WebServiceDefinition> buildWebServiceDefinition(final Method method) {
 		final WebServiceDefinitionBuilder builder = WebServiceDefinition.builder(method);
-		final PathPrefix pathPrefix = method.getDeclaringClass().getAnnotation(PathPrefix.class);
+
+		// is the method is the one
+		final Method annotatedMethod;
+		if (isWebServiceMethod(method)) {
+			annotatedMethod = method;
+		} else {
+			// find on hierarchy
+			annotatedMethod = Stream.of(method.getDeclaringClass().getInterfaces())
+					.map(parentInterface -> {
+						try {
+							return parentInterface.getMethod(method.getName(), method.getParameterTypes());
+						} catch (NoSuchMethodException | SecurityException e) {
+							return null;
+						}
+					})
+					.filter(Objects::nonNull)
+					.filter(AnnotationsWebServiceScannerUtil::isWebServiceMethod)
+					.findFirst()
+					.orElse(method);
+		}
+
+		final PathPrefix pathPrefix = annotatedMethod.getDeclaringClass().getAnnotation(PathPrefix.class);
 		if (pathPrefix != null) {
 			builder.withPathPrefix(pathPrefix.value());
 		}
-		final RequireApiKey requireApiKey = method.getDeclaringClass().getAnnotation(RequireApiKey.class);
+		final RequireApiKey requireApiKey = annotatedMethod.getDeclaringClass().getAnnotation(RequireApiKey.class);
 		if (requireApiKey != null) {
 			builder.withNeedApiKey(true);
 		}
-
-		for (final Annotation annotation : method.getAnnotations()) {
+		for (final Annotation annotation : annotatedMethod.getAnnotations()) {
 			if (annotation instanceof GET) {
 				builder.with(Verb.Get, ((GET) annotation).value());
 			} else if (annotation instanceof POST) {
@@ -143,8 +165,8 @@ public final class AnnotationsWebServiceScannerUtil {
 			}
 		}
 		if (builder.hasVerb()) {
-			final Type[] paramType = method.getGenericParameterTypes();
-			final Annotation[][] parameterAnnotation = method.getParameterAnnotations();
+			final Type[] paramType = annotatedMethod.getGenericParameterTypes();
+			final Annotation[][] parameterAnnotation = annotatedMethod.getParameterAnnotations();
 
 			for (int i = 0; i < paramType.length; i++) {
 				final WebServiceParam webServiceParam = buildWebServiceParam(parameterAnnotation[i], paramType[i]);
@@ -154,6 +176,16 @@ public final class AnnotationsWebServiceScannerUtil {
 			return Optional.of(builder.build());
 		}
 		return Optional.empty();
+	}
+
+	private static boolean isWebServiceMethod(final Method method) {
+		return Stream.of(method.getAnnotations())
+				.anyMatch(annotation -> annotation instanceof GET
+						|| annotation instanceof POST
+						|| annotation instanceof PUT
+						|| annotation instanceof PATCH
+						|| annotation instanceof DELETE);
+
 	}
 
 	private static WebServiceParam buildWebServiceParam(final Annotation[] annotations, final Type paramType) {
