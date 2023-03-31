@@ -85,7 +85,7 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 				if (values[0] == null) {
 					return sqlFieldName + " is not null ";
 				}
-				return "(" + sqlFieldName + " is null OR " + sqlFieldName + " != " + encodedAttribute(ctx, dtFieldName, values[0]) + " )";
+				return "(" + sqlFieldName + " is null or " + sqlFieldName + " != " + encodedAttribute(ctx, dtFieldName, values[0]) + " )";
 			case GT:
 				return sqlFieldName + " > " + encodedAttribute(ctx, dtFieldName, values[0]);
 			case GTE:
@@ -140,10 +140,11 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 	private static String prepareSqlInlineArgument(final Serializable value) {
 		Assertion.check().isTrue(
 				value instanceof String
+						|| value instanceof Boolean
 						|| value instanceof Integer
 						|| value instanceof Long
 						|| value instanceof BigDecimal,
-				"Only String,Long and Integers are allowed in a where in clause.");
+				"Only String,Long, Integers and booleans are allowed in a where in clause.");
 		// we check to avoid sql injection without espacing and parametizing the statement
 		Assertion.check()
 				.when(value instanceof String, () -> Assertion.check()
