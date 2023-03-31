@@ -485,32 +485,48 @@ export default {
     },
 
 
-    httpPostAjax: function (url, paramsIn, options) {
+    httpPostAjax: function (url, paramsIn, options) { 
         let vueData = this.$data.vueData;
         let uiMessageStack = this.$data.uiMessageStack;
         let params = this.isFormData(paramsIn) ? paramsIn : this.objectToFormData(paramsIn);
         params.append('CTX', vueData.CTX);
+        this.pushPendingAction(url);
         this.$http.post(url, params).then(function (response) {
-            if (response.data.model.CTX) {
-                vueData.CTX = response.data.model.CTX;
+          if (response.data.model.CTX) {
+            vueData.CTX = response.data.model.CTX;
+          }
+          Object.keys(response.data.model).forEach(function (key) {
+            if ('CTX' != key) {
+              vueData[key] = response.data.model[key];
             }
-            Object.keys(response.data.model).forEach(function (key) {
-                if ('CTX' != key) {
-                    vueData[key] = response.data.model[key];
-                }
-            });
-            Object.keys(response.data.uiMessageStack).forEach(function (key) {
-                uiMessageStack[key] = response.data.uiMessageStack[key];
-            });
-            if (options && options.onSuccess) {
-                options.onSuccess.call(this, response);
-            }
+          });
+          Object.keys(response.data.uiMessageStack).forEach(function (key) {
+            uiMessageStack[key] = response.data.uiMessageStack[key];
+          });
+          if (options && options.onSuccess) {
+            options.onSuccess.call(this, response);
+          }
         }.bind(this)).catch(function (error) {
-            if (options && options.onError) {
-                options.onError.call(this, error.response);
-            }
-        });
+          if (options && options.onError) {
+            options.onError.call(this, error.response);
+          }              
+        }).finally(function () {
+          this.removePendingAction(url);
+        }.bind(this));
     },
+    isPendingAction: function(actionName) {
+        if(actionName) {
+            return this.$data.componentStates.pendingAction.actionNames.includes(actionName);
+        } else {
+            return this.$data.componentStates.pendingAction.actionNames.length > 0;
+        }
+    },
+    pushPendingAction: function(actionName) {
+         this.$data.componentStates.pendingAction.actionNames.push(actionName);
+    },
+    removePendingAction: function(actionName) {
+        this.$data.componentStates.pendingAction.actionNames = this.$data.componentStates.pendingAction.actionNames.filter(e => e !== actionName);
+    },        
 
     hasFieldsError: function (object, field, rowIndex) {
         const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
