@@ -13,49 +13,84 @@ export default {
             timeout: 2500,
         }
 
-       //Setup Error Message
-		if (Object.prototype.hasOwnProperty.call(response.data, 'redirect')) { //if response was an redirect
-			window.location = response.data.redirect;
-			return;
-		} else if (Object.prototype.hasOwnProperty.call(response.data, 'message')) { //if response was an error
-			notif.message = response.data.message
-		}
-
-		//Setup Generic Response Messages
-		if (response.status === 401) {
-			notif.message = 'UnAuthorized, you may login with an authorized account'
-			this.$root.$emit('unauthorized', response) //Emit Logout Event // surcharge ajout de la response en parametre
-			return 
-        } else if (response.status === 403) {
-            notif.message = 'Forbidden, your havn&quote;t enought rights'
-        } else if (response.status === 404) {
-            notif.message = 'API Route is Missing or Undefined'
-        } else if (response.status === 405) {
-            notif.message = 'API Route Method Not Allowed'
-        } else if (response.status === 422) {
-            //Validation Message
-            notif.message = '';
-            Object.keys(response.data).forEach(function (key) {
-                this.$data.uiMessageStack[key] = response.data[key];
-            }.bind(this));
-        } else if (response.status >= 500) {
-            notif.message = 'Server Error'
-        }
-        if (response.statusText && response.status !== 422) {
-            notif.message = response.statusText
-        }
-        //Try to Use the Response Message
-        if (Object.prototype.hasOwnProperty.call(response, 'data')) {
-            if (Object.prototype.hasOwnProperty.call(response.data, 'message') && response.data.message && response.data.message.length > 0) {
+        //Setup Error Message
+        if(response) {
+            if (Object.prototype.hasOwnProperty.call(response.data, 'redirect')) { //if response was a redirect
+                 window.location = response.data.redirect;
+                 return;
+            } else if (Object.prototype.hasOwnProperty.call(response.data, 'message')) { //if response was an error
                 notif.message = response.data.message
-            } else if (Object.prototype.hasOwnProperty.call(response.data, 'globalErrors') && response.data.globalErrors && response.data.globalErrors.length > 0) {
-                notif.message = response.data.globalErrors.join('<br/>\n ');
+            }
+            //Setup Generic Response Messages
+            if (response.status === 401) {
+                notif.message = 'UnAuthorized, you may login with an authorized account'	            
+                this.$root.$emit('unauthorized', response) //Emit Logout Event
+                return;
+            } else if (response.status === 403) {
+                notif.message = 'Forbidden, your havn&quote;t enought rights'
+            } else if (response.status === 404) {
+                notif.message = 'API Route is Missing or Undefined'
+            } else if (response.status === 405) {
+                notif.message = 'API Route Method Not Allowed'
+            } else if (response.status === 422) {
+                //Validation Message
+                notif.message = '';
+                Object.keys(response.data).forEach(function (key) {
+                    this.$data.uiMessageStack[key] = response.data[key];
+                }.bind(this));
+            } else if (response.status >= 500) {
+                notif.message = 'Server Error'
+            }
+            if (response.statusText && response.status !== 422) {
+                notif.message = response.statusText
+            }
+            //Try to Use the Response Message
+            if (Object.prototype.hasOwnProperty.call(response, 'data')) {
+                if (Object.prototype.hasOwnProperty.call(response.data, 'message') && response.data.message && response.data.message.length > 0) {
+                    notif.message = response.data.message
+                } else if (Object.prototype.hasOwnProperty.call(response.data, 'globalErrors') && response.data.globalErrors && response.data.globalErrors.length > 0) {
+                    var notifyMessages = this.uiMessageStackToNotify(response.data);
+                    notifyMessages.forEach(function(notifyMessage) { this.$q.notify(notifyMessage)}.bind(this));
+                    notif.message = ''; //déja envoyé
+                }
             }
         }
         //Send the notif
         if (notif.message.length > 0) {
             this.$q.notify(notif);
         }
+    },
+    uiMessageStackToNotify : function(uiMessageStack) {
+      if(uiMessageStack) {
+        var notifyMessages = [];
+        if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalErrors') && uiMessageStack.globalErrors && uiMessageStack.globalErrors.length > 0) {
+           uiMessageStack.globalErrors.forEach(function(uiMessage) { notifyMessages.push( {
+            type: 'negative', message: uiMessage,
+            multiLine: true, timeout: 2500,
+           })});
+        }
+        if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalWarnings') && uiMessageStack.globalWarnings && uiMessageStack.globalWarnings.length > 0) {
+           uiMessageStack.globalWarnings.forEach(function(uiMessage) { notifyMessages.push( {
+            type: 'warning', message: uiMessage,
+            multiLine: true, timeout: 2500,
+           })});
+        }
+        if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalInfos') && uiMessageStack.globalInfos && uiMessageStack.globalInfos.length > 0) {
+           uiMessageStack.globalInfos.forEach(function(uiMessage) { notifyMessages.push( {
+            type: 'info', message: uiMessage,
+            multiLine: true, timeout: 2500,
+           })});
+        }
+        if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalSuccess') && uiMessageStack.globalSuccess && uiMessageStack.globalSuccess.length > 0) {
+           uiMessageStack.globalSuccess.forEach(function(uiMessage) { notifyMessages.push( {
+            type: 'positive', message: uiMessage,
+            multiLine: true, timeout: 2500,
+           })});
+        }
+        //Pour le moment, rien avec : objectFieldErrors, objectFieldWarnings, objectFieldInfos
+        
+        return notifyMessages;
+      }
     },
 
     getSafeValue: function (objectkey, fieldKey, subFieldKey) {
