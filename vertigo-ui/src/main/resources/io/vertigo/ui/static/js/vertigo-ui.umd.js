@@ -305,11 +305,9 @@ module.exports = function (it) {
 /***/ }),
 
 /***/ 8113:
-/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
+/***/ (function(module) {
 
-var getBuiltIn = __webpack_require__(5005);
-
-module.exports = getBuiltIn('navigator', 'userAgent') || '';
+module.exports = typeof navigator != 'undefined' && String(navigator.userAgent) || '';
 
 
 /***/ }),
@@ -865,6 +863,7 @@ module.exports = function (obj) {
 /***/ 6339:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
+var uncurryThis = __webpack_require__(1702);
 var fails = __webpack_require__(7293);
 var isCallable = __webpack_require__(614);
 var hasOwn = __webpack_require__(2597);
@@ -875,8 +874,12 @@ var InternalStateModule = __webpack_require__(9909);
 
 var enforceInternalState = InternalStateModule.enforce;
 var getInternalState = InternalStateModule.get;
+var $String = String;
 // eslint-disable-next-line es/no-object-defineproperty -- safe
 var defineProperty = Object.defineProperty;
+var stringSlice = uncurryThis(''.slice);
+var replace = uncurryThis(''.replace);
+var join = uncurryThis([].join);
 
 var CONFIGURABLE_LENGTH = DESCRIPTORS && !fails(function () {
   return defineProperty(function () { /* empty */ }, 'length', { value: 8 }).length !== 8;
@@ -885,8 +888,8 @@ var CONFIGURABLE_LENGTH = DESCRIPTORS && !fails(function () {
 var TEMPLATE = String(String).split('String');
 
 var makeBuiltIn = module.exports = function (value, name, options) {
-  if (String(name).slice(0, 7) === 'Symbol(') {
-    name = '[' + String(name).replace(/^Symbol\(([^)]*)\)/, '$1') + ']';
+  if (stringSlice($String(name), 0, 7) === 'Symbol(') {
+    name = '[' + replace($String(name), /^Symbol\(([^)]*)\)/, '$1') + ']';
   }
   if (options && options.getter) name = 'get ' + name;
   if (options && options.setter) name = 'set ' + name;
@@ -905,7 +908,7 @@ var makeBuiltIn = module.exports = function (value, name, options) {
   } catch (error) { /* empty */ }
   var state = enforceInternalState(value);
   if (!hasOwn(state, 'source')) {
-    state.source = TEMPLATE.join(typeof name == 'string' ? name : '');
+    state.source = join(TEMPLATE, typeof name == 'string' ? name : '');
   } return value;
 };
 
@@ -1198,10 +1201,10 @@ var store = __webpack_require__(5465);
 (module.exports = function (key, value) {
   return store[key] || (store[key] = value !== undefined ? value : {});
 })('versions', []).push({
-  version: '3.27.1',
+  version: '3.29.1',
   mode: IS_PURE ? 'pure' : 'global',
-  copyright: '© 2014-2022 Denis Pushkarev (zloirock.ru)',
-  license: 'https://github.com/zloirock/core-js/blob/v3.27.1/LICENSE',
+  copyright: '© 2014-2023 Denis Pushkarev (zloirock.ru)',
+  license: 'https://github.com/zloirock/core-js/blob/v3.29.1/LICENSE',
   source: 'https://github.com/zloirock/core-js'
 });
 
@@ -1444,21 +1447,15 @@ var uid = __webpack_require__(9711);
 var NATIVE_SYMBOL = __webpack_require__(6293);
 var USE_SYMBOL_AS_UID = __webpack_require__(3307);
 
-var WellKnownSymbolsStore = shared('wks');
 var Symbol = global.Symbol;
-var symbolFor = Symbol && Symbol['for'];
-var createWellKnownSymbol = USE_SYMBOL_AS_UID ? Symbol : Symbol && Symbol.withoutSetter || uid;
+var WellKnownSymbolsStore = shared('wks');
+var createWellKnownSymbol = USE_SYMBOL_AS_UID ? Symbol['for'] || Symbol : Symbol && Symbol.withoutSetter || uid;
 
 module.exports = function (name) {
-  if (!hasOwn(WellKnownSymbolsStore, name) || !(NATIVE_SYMBOL || typeof WellKnownSymbolsStore[name] == 'string')) {
-    var description = 'Symbol.' + name;
-    if (NATIVE_SYMBOL && hasOwn(Symbol, name)) {
-      WellKnownSymbolsStore[name] = Symbol[name];
-    } else if (USE_SYMBOL_AS_UID && symbolFor) {
-      WellKnownSymbolsStore[name] = symbolFor(description);
-    } else {
-      WellKnownSymbolsStore[name] = createWellKnownSymbol(description);
-    }
+  if (!hasOwn(WellKnownSymbolsStore, name)) {
+    WellKnownSymbolsStore[name] = NATIVE_SYMBOL && hasOwn(Symbol, name)
+      ? Symbol[name]
+      : createWellKnownSymbol('Symbol.' + name);
   } return WellKnownSymbolsStore[name];
 };
 
@@ -1483,18 +1480,20 @@ var INCORRECT_TO_LENGTH = fails(function () {
 
 // V8 and Safari <= 15.4, FF < 23 throws InternalError
 // https://bugs.chromium.org/p/v8/issues/detail?id=12681
-var SILENT_ON_NON_WRITABLE_LENGTH = !function () {
+var properErrorOnNonWritableLength = function () {
   try {
     // eslint-disable-next-line es/no-object-defineproperty -- safe
     Object.defineProperty([], 'length', { writable: false }).push();
   } catch (error) {
     return error instanceof TypeError;
   }
-}();
+};
+
+var FORCED = INCORRECT_TO_LENGTH || !properErrorOnNonWritableLength();
 
 // `Array.prototype.push` method
 // https://tc39.es/ecma262/#sec-array.prototype.push
-$({ target: 'Array', proto: true, arity: 1, forced: INCORRECT_TO_LENGTH || SILENT_ON_NON_WRITABLE_LENGTH }, {
+$({ target: 'Array', proto: true, arity: 1, forced: FORCED }, {
   // eslint-disable-next-line no-unused-vars -- required for `.length`
   push: function push(item) {
     var O = toObject(this);
@@ -4862,49 +4861,102 @@ function isNumber (v) {
     };
 
     //Setup Error Message
-    if (Object.prototype.hasOwnProperty.call(response.data, 'redirect')) {
-      //if response was an redirect
-      window.location = response.data.redirect;
-      return;
-    } else if (Object.prototype.hasOwnProperty.call(response.data, 'message')) {
-      //if response was an error
-      notif.message = response.data.message;
-    }
-
-    //Setup Generic Response Messages
-    if (response.status === 401) {
-      notif.message = 'UnAuthorized, you may login with an authorized account';
-      this.$root.$emit('unauthorized', response); //Emit Logout Event // surcharge ajout de la response en parametre
-      return;
-    } else if (response.status === 403) {
-      notif.message = 'Forbidden, your havn&quote;t enought rights';
-    } else if (response.status === 404) {
-      notif.message = 'API Route is Missing or Undefined';
-    } else if (response.status === 405) {
-      notif.message = 'API Route Method Not Allowed';
-    } else if (response.status === 422) {
-      //Validation Message
-      notif.message = '';
-      Object.keys(response.data).forEach(function (key) {
-        this.$data.uiMessageStack[key] = response.data[key];
-      }.bind(this));
-    } else if (response.status >= 500) {
-      notif.message = 'Server Error';
-    }
-    if (response.statusText && response.status !== 422) {
-      notif.message = response.statusText;
-    }
-    //Try to Use the Response Message
-    if (Object.prototype.hasOwnProperty.call(response, 'data')) {
-      if (Object.prototype.hasOwnProperty.call(response.data, 'message') && response.data.message && response.data.message.length > 0) {
+    if (response) {
+      if (Object.prototype.hasOwnProperty.call(response.data, 'redirect')) {
+        //if response was a redirect
+        window.location = response.data.redirect;
+        return;
+      } else if (Object.prototype.hasOwnProperty.call(response.data, 'message')) {
+        //if response was an error
         notif.message = response.data.message;
-      } else if (Object.prototype.hasOwnProperty.call(response.data, 'globalErrors') && response.data.globalErrors && response.data.globalErrors.length > 0) {
-        notif.message = response.data.globalErrors.join('<br/>\n ');
+      }
+      //Setup Generic Response Messages
+      if (response.status === 401) {
+        notif.message = 'UnAuthorized, you may login with an authorized account';
+        this.$root.$emit('unauthorized', response); //Emit Logout Event
+        return;
+      } else if (response.status === 403) {
+        notif.message = 'Forbidden, your havn&quote;t enought rights';
+      } else if (response.status === 404) {
+        notif.message = 'API Route is Missing or Undefined';
+      } else if (response.status === 405) {
+        notif.message = 'API Route Method Not Allowed';
+      } else if (response.status === 422) {
+        //Validation Message
+        notif.message = '';
+        Object.keys(response.data).forEach(function (key) {
+          this.$data.uiMessageStack[key] = response.data[key];
+        }.bind(this));
+      } else if (response.status >= 500) {
+        notif.message = 'Server Error';
+      }
+      if (response.statusText && response.status !== 422) {
+        notif.message = response.statusText;
+      }
+      //Try to Use the Response Message
+      if (Object.prototype.hasOwnProperty.call(response, 'data')) {
+        if (Object.prototype.hasOwnProperty.call(response.data, 'message') && response.data.message && response.data.message.length > 0) {
+          notif.message = response.data.message;
+        } else if (Object.prototype.hasOwnProperty.call(response.data, 'globalErrors') && response.data.globalErrors && response.data.globalErrors.length > 0) {
+          var notifyMessages = this.uiMessageStackToNotify(response.data);
+          notifyMessages.forEach(function (notifyMessage) {
+            this.$q.notify(notifyMessage);
+          }.bind(this));
+          notif.message = ''; //déja envoyé
+        }
       }
     }
     //Send the notif
     if (notif.message.length > 0) {
       this.$q.notify(notif);
+    }
+  },
+  uiMessageStackToNotify: function (uiMessageStack) {
+    if (uiMessageStack) {
+      var notifyMessages = [];
+      if (Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalErrors') && uiMessageStack.globalErrors && uiMessageStack.globalErrors.length > 0) {
+        uiMessageStack.globalErrors.forEach(function (uiMessage) {
+          notifyMessages.push({
+            type: 'negative',
+            message: uiMessage,
+            multiLine: true,
+            timeout: 2500
+          });
+        });
+      }
+      if (Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalWarnings') && uiMessageStack.globalWarnings && uiMessageStack.globalWarnings.length > 0) {
+        uiMessageStack.globalWarnings.forEach(function (uiMessage) {
+          notifyMessages.push({
+            type: 'warning',
+            message: uiMessage,
+            multiLine: true,
+            timeout: 2500
+          });
+        });
+      }
+      if (Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalInfos') && uiMessageStack.globalInfos && uiMessageStack.globalInfos.length > 0) {
+        uiMessageStack.globalInfos.forEach(function (uiMessage) {
+          notifyMessages.push({
+            type: 'info',
+            message: uiMessage,
+            multiLine: true,
+            timeout: 2500
+          });
+        });
+      }
+      if (Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalSuccess') && uiMessageStack.globalSuccess && uiMessageStack.globalSuccess.length > 0) {
+        uiMessageStack.globalSuccess.forEach(function (uiMessage) {
+          notifyMessages.push({
+            type: 'positive',
+            message: uiMessage,
+            multiLine: true,
+            timeout: 2500
+          });
+        });
+      }
+      //Pour le moment, rien avec : objectFieldErrors, objectFieldWarnings, objectFieldInfos
+
+      return notifyMessages;
     }
   },
   getSafeValue: function (objectkey, fieldKey, subFieldKey) {
@@ -5347,6 +5399,7 @@ function isNumber (v) {
     let uiMessageStack = this.$data.uiMessageStack;
     let params = this.isFormData(paramsIn) ? paramsIn : this.objectToFormData(paramsIn);
     params.append('CTX', vueData.CTX);
+    this.pushPendingAction(url);
     this.$http.post(url, params).then(function (response) {
       if (response.data.model.CTX) {
         vueData.CTX = response.data.model.CTX;
@@ -5366,7 +5419,22 @@ function isNumber (v) {
       if (options && options.onError) {
         options.onError.call(this, error.response);
       }
-    });
+    }).finally(function () {
+      this.removePendingAction(url);
+    }.bind(this));
+  },
+  isPendingAction: function (actionName) {
+    if (actionName) {
+      return this.$data.componentStates.pendingAction.actionNames.includes(actionName);
+    } else {
+      return this.$data.componentStates.pendingAction.actionNames.length > 0;
+    }
+  },
+  pushPendingAction: function (actionName) {
+    this.$data.componentStates.pendingAction.actionNames.push(actionName);
+  },
+  removePendingAction: function (actionName) {
+    this.$data.componentStates.pendingAction.actionNames = this.$data.componentStates.pendingAction.actionNames.filter(e => e !== actionName);
   },
   hasFieldsError: function (object, field, rowIndex) {
     const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
