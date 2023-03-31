@@ -41,7 +41,9 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.amplifier.ProxyMethod;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.plugins.webservice.scanner.annotations.AnnotationsWebServiceScannerUtil;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
@@ -83,12 +85,14 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 
 	@Override
 	public Object invoke(final Method method, final Object[] args) {
-		final String connectorName = obtainConnectorName(method);
+		final WebServiceProxyAnnotation webServiceProxyAnnotation = obtainWebServiceProxyAnnotation(method);
+		final String connectorName = webServiceProxyAnnotation.connectorName();
+		final Optional<RequestSpecializer> requestSpecializerOpt = obtainRequestSpecializer(webServiceProxyAnnotation.requestSpecializer());
 		final WebServiceDefinition webServiceDefinition = createWebServiceDefinition(method);
 		final HttpClientConnector httpClientConnector = Optional.ofNullable(httpClientConnectorByName.get(connectorName))
 				.orElseThrow(() -> new VSystemException("Can't found HttpClientConnector with name {0}", connectorName));
 
-		final HttpRequest httpRequest = createHttpRequest(webServiceDefinition, namedArgs(webServiceDefinition.getWebServiceParams(), args), httpClientConnector);
+		final HttpRequest httpRequest = createHttpRequest(webServiceDefinition, namedArgs(webServiceDefinition.getWebServiceParams(), args), httpClientConnector, requestSpecializerOpt);
 
 		final HttpResponse response;
 		try {
@@ -132,12 +136,19 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 		return jsonReaderEngine.fromJson(json, returnType);
 	}
 
-	private String obtainConnectorName(final Method method) {
+	private WebServiceProxyAnnotation obtainWebServiceProxyAnnotation(final Method method) {
 		WebServiceProxyAnnotation webServiceProxyAnnotation = method.getAnnotation(WebServiceProxyAnnotation.class);
 		if (webServiceProxyAnnotation == null) {
 			webServiceProxyAnnotation = method.getDeclaringClass().getAnnotation(WebServiceProxyAnnotation.class);
 		}
-		return webServiceProxyAnnotation.connectorName();
+		return webServiceProxyAnnotation;
+	}
+
+	private Optional<RequestSpecializer> obtainRequestSpecializer(final String requestSpecializer) {
+		if (StringUtil.isBlank(requestSpecializer)) {
+			return Optional.empty();
+		}
+		return Optional.of(Node.getNode().getComponentSpace().resolve(requestSpecializer, RequestSpecializer.class));
 	}
 
 	private Map<String, Object> namedArgs(final List<WebServiceParam> params, final Object[] args) {
@@ -151,7 +162,7 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 		return namedArgs;
 	}
 
-	private HttpRequest createHttpRequest(final WebServiceDefinition webServiceDefinition, final Map<String, Object> namedArgs, final HttpClientConnector httpClientConnector) {
+	private HttpRequest createHttpRequest(final WebServiceDefinition webServiceDefinition, final Map<String, Object> namedArgs, final HttpClientConnector httpClientConnector, final Optional<RequestSpecializer> requestSpecializerOpt) {
 		final HttpRequestBuilder httpRequestBuilder = new HttpRequestBuilder(httpClientConnector.getUrlPrefix(), webServiceDefinition.getPath(), jsonReaderEngine);
 		httpRequestBuilder.header("Content-Type", "application/json;charset=UTF-8");
 		httpRequestBuilder.verb(webServiceDefinition.getVerb());
@@ -179,6 +190,8 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 					break;
 			}
 		}
+		requestSpecializerOpt.ifPresent(
+				requestSpecializer -> requestSpecializer.specialize(httpRequestBuilder, webServiceDefinition, namedArgs, httpClientConnector));
 		return httpRequestBuilder.build();
 	}
 
