@@ -1,10 +1,11 @@
-<th:block th:fragment="radio-edit(object,list,field, label, valueField, labelField, layout, input_attrs, label_attrs)" vu:alias="radio" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="radio-edit(object,list,field, label, valueField, labelField, layout, required, input_attrs, label_attrs)" vu:alias="radio" vu:selector="${viewMode=='edit'}"
 	  th:assert="${object} != null and ${field} != null and ${list} != null"
-	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, inline=${(layout != null && layout == 'horizontal') ? true : false }">
+	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, inline=${(layout != null && layout == 'horizontal') ? true : false },
+	  myRequired=${required != null ? required : model.util.required(object + '.' + field)}">
 	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 	<vu:include-data object="${list}" field="${myValueField}"/>
 	<vu:include-data object="${list}" field="${myLabelField}"/>
-	<vu:label-edit object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}">
+	<vu:label-edit object="${object}" field="${field}" label="${label}" required="${myRequired}" label_attrs="${label_attrs}">
 		<q-option-group
 			th::inline="${inline}"
 		    type="radio"
@@ -17,6 +18,6 @@
 	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
 </th:block> 
 
-<th:block th:fragment="radio-read(object, field, label, list, valueField, labelField, layout, input_attrs, label_attrs)" vu:alias="radio" vu:selector="${viewMode=='read'}" >
+<th:block th:fragment="radio-read(object, field, label, list, valueField, labelField, layout, required, input_attrs, label_attrs)" vu:alias="radio" vu:selector="${viewMode=='read'}" >
 	<vu:select-read object="${object}" field="${field}" label="${label}" list="${list}" valueField="${valueField}" labelField="${labelField}" label_attrs="${label_attrs}" input_attrs="${input_attrs}"/>
 </th:block>

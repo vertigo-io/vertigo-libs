@@ -1,9 +1,10 @@
-<th:block th:fragment="knob-edit(object, field, label, min, max, step, input_attrs, label_attrs)" 
+<th:block th:fragment="knob-edit(object, field, label, min, max, step, required, input_attrs, label_attrs)" 
 	vu:alias="knob" vu:selector="${viewMode=='edit'}"
 	th:assert="${object} != null and ${field} != null"
-	th:with="fieldPath=|${object}.${field}|, myMin=${min?:model.util.getMinValue(fieldPath)?:'0' }, myMax=${max?:model.util.getMaxValue(fieldPath)?:'2000'}, myStep=${step?:model.util.getStep(myMin, myMax)}" >
+	th:with="fieldPath=|${object}.${field}|, myMin=${min?:model.util.getMinValue(fieldPath)?:'0' }, myMax=${max?:model.util.getMaxValue(fieldPath)?:'2000'}, myStep=${step?:model.util.getStep(myMin, myMax)},
+	myRequired=${required != null ? required : model.util.required(object + '.' + field)}" >
 	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
-	<vu:label-edit label="${label}" label_attrs="${label_attrs}">
+	<vu:label-edit label="${label}" required="${myRequired}" label_attrs="${label_attrs}">
 		<q-knob
 			th:v-model="${'vueData.' + object + '.' + field}" 
 			show-value
@@ -17,7 +18,7 @@
 	</vu:label-edit>
 	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
 </th:block>
-<th:block th:fragment="knob-read(object, field, label, min, max, step, label_attrs, input_attrs)" 
+<th:block th:fragment="knob-read(object, field, label, min, max, step, required, label_attrs, input_attrs)" 
 	vu:alias="knob" vu:selector="${viewMode=='read'}"
 	th:assert="${object} != null and ${field} != null" >
 	<vu:text-field-read object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}" input_attrs="${input_attrs}" />
