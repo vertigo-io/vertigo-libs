@@ -100,7 +100,7 @@ public abstract class Criteria<D extends DtObject> implements Serializable {
 						if (values[0] == null) {
 							return fieldName + " is not null ";
 						}
-						return "(" + fieldName + " is null or " + fieldName + " != #" + ctx.attributeName(dtFieldName, values[0]) + "# )";
+						return "(" + fieldName + " is null " + encodeLogicalOperator(CriteriaLogicalOperator.OR) + " " + fieldName + " != #" + ctx.attributeName(dtFieldName, values[0]) + "# )";
 					case GT:
 						return fieldName + " > #" + ctx.attributeName(dtFieldName, values[0]) + "#";
 					case GTE:

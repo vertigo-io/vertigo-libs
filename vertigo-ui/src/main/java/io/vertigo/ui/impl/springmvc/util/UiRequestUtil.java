@@ -73,8 +73,10 @@ public final class UiRequestUtil {
 	}
 
 	public static void removeCurrentUiMessageStack() {
-		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-		attributes.removeAttribute("uiMessageStack", RequestAttributes.SCOPE_SESSION);
+		if (!isDelayUiMessageStack()) {
+			final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
+			attributes.removeAttribute("uiMessageStack", RequestAttributes.SCOPE_SESSION);
+		}
 	}
 
 	public static void setRequestScopedAttribute(final String name, final Object value) {
@@ -92,6 +94,14 @@ public final class UiRequestUtil {
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
 		final O value = valueClass.cast(attributes.getAttribute(name, RequestAttributes.SCOPE_REQUEST));
 		return Optional.ofNullable(value);
+	}
+
+	public static void delayUiMessageStack() {
+		setRequestScopedAttribute("delayUiMessageStack", true);
+	}
+
+	public static boolean isDelayUiMessageStack() {
+		return getRequestScopedAttribute("delayUiMessageStack", Boolean.class).orElse(Boolean.FALSE);
 	}
 
 	public static boolean isJsonRequest(final HttpServletRequest request) {

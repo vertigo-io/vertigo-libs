@@ -18,6 +18,7 @@
 package io.vertigo.account.impl.authorization.dsl.translator;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,13 +32,17 @@ import io.vertigo.account.impl.authorization.dsl.rules.DslParserUtil;
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.util.DateUtil;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datamodel.structure.definitions.DtField;
 
 abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTranslator<S>> {
 	private static final Pattern BEGIN_LINE_TRIM_PATTERN = Pattern.compile("^\\s+");
 	private static final Pattern END_LINE_TRIM_PATTERN = Pattern.compile("\\s+$");
 	private static final Pattern MULTIPLE_WHITESPACE_PATTERN = Pattern.compile("\\s+");
 	protected static final Pattern EMPTY_QUERY_PATTERN = Pattern.compile("^(\\(\\))?$");
+	private static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd";
+	private static final String DEFAULT_INSTANT_PATTERN = "yyyy-MM-dd hh:mm:ss";
 
 	private SecuredEntity mySecuredEntity;
 	private final List<RuleMultiExpression> myMultiExpressions = new ArrayList<>();
@@ -147,6 +152,45 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 			}
 		}
 		return -1;
+	}
+
+	protected final Serializable parseFixedValue(final String fieldName, final String stringValue) {
+		if (mySecuredEntity != null) {
+			final DtField field = mySecuredEntity.getEntity().getField(fieldName);
+			Serializable typedValue;
+			switch (field.getSmartTypeDefinition().getBasicType()) {
+				case BigDecimal:
+					typedValue = new BigDecimal(stringValue);
+					break;
+				case Boolean:
+					Assertion.check().isTrue("true".equalsIgnoreCase(stringValue) || "false".equalsIgnoreCase(stringValue), "Fixed boolean value rule only support true or false value ({0})", stringValue);
+					typedValue = Boolean.valueOf(stringValue);
+					break;
+				case Double:
+					typedValue = Double.valueOf(stringValue);
+					break;
+				case Instant:
+					typedValue = DateUtil.parseToInstant(stringValue, DEFAULT_INSTANT_PATTERN);
+					break;
+				case Integer:
+					typedValue = Integer.valueOf(stringValue);
+					break;
+				case LocalDate:
+					typedValue = DateUtil.parseToLocalDate(stringValue, DEFAULT_DATE_PATTERN);
+					break;
+				case Long:
+					typedValue = Long.valueOf(stringValue);
+					break;
+				case String:
+					typedValue = stringValue;
+					break;
+				case DataStream:
+				default:
+					throw new IllegalArgumentException("basic type of field '" + fieldName + "' not supported for fixed value: " + stringValue);
+			}
+			return typedValue;
+		}
+		return stringValue;
 	}
 
 	protected static String cleanQuery(final String query) {

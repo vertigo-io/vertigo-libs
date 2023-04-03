@@ -160,10 +160,15 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 	@Override
 	public void start() {
-		// We register the node
-		nodId = nodeManager.registerNode(nodeName);
-		// We clean the planification
-		cleanPastPlanification();
+		ThreadContext.put("module", "orchestra"); // to filter logs
+		try {
+			// We register the node
+			nodId = nodeManager.registerNode(nodeName);
+			// We clean the planification
+			cleanPastPlanification();
+		} finally {
+			ThreadContext.remove("module");
+		}
 	}
 
 	@Override

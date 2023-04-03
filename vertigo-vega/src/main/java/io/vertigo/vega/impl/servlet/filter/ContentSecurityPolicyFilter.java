@@ -39,6 +39,7 @@ import io.vertigo.core.param.ParamManager;
 
 /**
  * Filter to add CSP directives; compute a nonce if necessary and put it in request attribute.
+ *
  * @author npiedeloup
  */
 public final class ContentSecurityPolicyFilter extends AbstractFilter {
@@ -88,7 +89,7 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 		if (compatibilityHeadersParam != null) {
 			for (final String localCompatibilityHeaders : compatibilityHeadersParam.split(";")) {
 				final String[] compatibilityHeader = localCompatibilityHeaders.split(":");
-				tmp.put(compatibilityHeader[0].trim(), compatibilityHeader[1].trim());
+				tmp.put(compatibilityHeader[0].trim(), compatibilityHeader[1].replace("\\;", ";").trim());
 			}
 		}
 		compatibilityHeaders = Collections.unmodifiableMap(tmp);

@@ -1,5 +1,8 @@
 <th:block th:fragment="page(content, vuiDevMode, vuejsDevMode, vuiSsr, libraries_slot)"
-	th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false}, isVuiSsr=${vuiSsr != null ? vuiSsr : false}">
+	th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, 
+	isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false}, 
+	isVuiSsr=${vuiSsr != null ? vuiSsr : false},
+	pendingAction=${model.vContext['componentStates'].addComponentState('pendingAction').addList('actionNames')}">
 	<div th:if="${!isVuiSsr}" id="page">
 		<vu:content/>
 	</div>

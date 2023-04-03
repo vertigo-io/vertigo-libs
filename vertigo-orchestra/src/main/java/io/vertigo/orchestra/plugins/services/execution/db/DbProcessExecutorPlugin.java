@@ -151,9 +151,14 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		handleDeadNodeProcesses();
-		nodId = nodeManager.registerNode(nodeName);
-		handleNodeDeadProcesses(nodId);
+		ThreadContext.put("module", "orchestra"); // to filter logs
+		try {
+			handleDeadNodeProcesses();
+			nodId = nodeManager.registerNode(nodeName);
+			handleNodeDeadProcesses(nodId);
+		} finally {
+			ThreadContext.remove("module");
+		}
 	}
 
 	private void executeProcesses() {

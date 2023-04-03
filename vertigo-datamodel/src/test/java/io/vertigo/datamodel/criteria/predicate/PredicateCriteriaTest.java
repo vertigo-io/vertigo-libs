@@ -54,13 +54,13 @@ public final class PredicateCriteriaTest {
 	private AutoCloseableNode node;
 
 	@BeforeEach
-	public final void setUp() {
+	public void setUp() {
 		node = new AutoCloseableNode(buildNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	@AfterEach
-	public final void tearDown() {
+	public void tearDown() {
 		if (node != null) {
 			node.close();
 		}
@@ -81,33 +81,33 @@ public final class PredicateCriteriaTest {
 	}
 
 	@Test
-	public final void testIsEqualTo() {
+	public void testIsEqualTo() {
 		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(year, 1984);
 		assertCriteria(3, criteriaBool);
 	}
 
 	@Test
-	public final void testIsEqualToNull() {
+	public void testIsEqualToNull() {
 		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(year, null);
 		assertCriteria(1, criteriaBool);
 	}
 
 	@Test
-	public final void testAnd() {
+	public void testAnd() {
 		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(year, 1984)
 				.and(Criterions.isEqualTo(title, "1984"));
 		assertCriteria(1, criteriaBool);
 	}
 
 	@Test
-	public final void testOr() {
+	public void testOr() {
 		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(year, 1984)
 				.or(Criterions.isEqualTo(year, 2014));
 		assertCriteria(5, criteriaBool);
 	}
 
 	@Test
-	public final void testAndOr() {
+	public void testAndOr() {
 		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(year, 1984)
 				.and(Criterions.startsWith(title, "a"))
 				.or(Criterions.isEqualTo(year, 2014));
@@ -115,15 +115,23 @@ public final class PredicateCriteriaTest {
 	}
 
 	@Test
-	public final void testOrAnd() {
+	public void testOrThenAnd() {
 		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(year, 1984)
 				.or(Criterions.isGreaterThanOrEqualTo(year, 2000))
 				.and(Criterions.startsWith(title, "m"));
+		assertCriteria(3 + 3 - 3 - 2, criteriaBool);
+	}
+
+	@Test
+	public void testOrOfAnd() {
+		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(year, 1984)
+				.or(Criterions.isGreaterThanOrEqualTo(year, 2000)
+						.and(Criterions.startsWith(title, "m")));
 		assertCriteria(3 + 3 - 2, criteriaBool);
 	}
 
 	@Test
-	public final void testAndOrAnd() {
+	public void testAndOrAnd() {
 		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(year, 1984)
 				.and(Criterions.startsWith(title, "a"))
 				.or(
@@ -133,7 +141,7 @@ public final class PredicateCriteriaTest {
 	}
 
 	@Test
-	public final void testOrAndOr() {
+	public void testOrAndOr() {
 		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(year, 1984)
 				.or(Criterions.isGreaterThan(year, 2000)
 						.and(Criterions.isEqualTo(year, 2014)));
@@ -141,121 +149,121 @@ public final class PredicateCriteriaTest {
 	}
 
 	@Test
-	public final void testIsNotEqualTo() {
+	public void testIsNotEqualTo() {
 		final Criteria<Movie2> criteriaBool = Criterions.isNotEqualTo(year, 1984);
 		assertCriteria(13 - 3, criteriaBool);
 	}
 
 	@Test
-	public final void testIsNull() {
+	public void testIsNull() {
 		final Criteria<Movie2> criteriaBool = Criterions.isNull(year);
 		assertCriteria(1, criteriaBool);
 	}
 
 	@Test
-	public final void testIsNotNull() {
+	public void testIsNotNull() {
 		final Criteria<Movie2> criteriaBool = Criterions.isNotNull(year);
 		assertCriteria(12, criteriaBool);
 	}
 
 	@Test
-	public final void testIsGreaterThan() {
+	public void testIsGreaterThan() {
 		final Criteria<Movie2> criteriaBool = Criterions.isGreaterThan(year, 2000);
 		assertCriteria(2, criteriaBool);
 	}
 
 	@Test
-	public final void testIsGreaterThanNull() {
+	public void testIsGreaterThanNull() {
 		final Criteria<Movie2> criteriaBool = Criterions.isGreaterThan(year, null);
 		assertCriteria(0, criteriaBool);
 	}
 
 	@Test
-	public final void testIsGreaterThanOrEqualTo() {
+	public void testIsGreaterThanOrEqualTo() {
 		final Criteria<Movie2> criteriaBool = Criterions.isGreaterThanOrEqualTo(year, 2000);
 		assertCriteria(3, criteriaBool);
 	}
 
 	@Test
-	public final void testIsGreaterThanOrEqualToNull() {
+	public void testIsGreaterThanOrEqualToNull() {
 		final Criteria<Movie2> criteriaBool = Criterions.isGreaterThanOrEqualTo(year, null);
 		assertCriteria(0, criteriaBool);
 	}
 
 	@Test
-	public final void testIsLessThan() {
+	public void testIsLessThan() {
 		final Criteria<Movie2> criteriaBool = Criterions.isLessThan(year, 2000);
 		assertCriteria(9, criteriaBool);
 	}
 
 	@Test
-	public final void testIsLessThanNull() {
+	public void testIsLessThanNull() {
 		final Criteria<Movie2> criteriaBool = Criterions.isLessThan(year, null);
 		assertCriteria(0, criteriaBool);
 	}
 
 	@Test
-	public final void testIsLessThanOrEqualTo() {
+	public void testIsLessThanOrEqualTo() {
 		final Criteria<Movie2> criteriaBool = Criterions.isLessThanOrEqualTo(year, 2000);
 		assertCriteria(10, criteriaBool);
 	}
 
 	@Test
-	public final void testIsLessThanOrEqualToNull() {
+	public void testIsLessThanOrEqualToNull() {
 		final Criteria<Movie2> criteriaBool = Criterions.isLessThanOrEqualTo(year, null);
 		assertCriteria(0, criteriaBool);
 	}
 
 	@Test
-	public final void testIsBetween() {
+	public void testIsBetween() {
 		final Criteria<Movie2> criteriaBool = Criterions.isBetween(year, ofIncluded(1980), ofExcluded(2000));
 		assertCriteria(5, criteriaBool);
 	}
 
 	@Test
-	public final void testIsBetweenWithNull1() {
+	public void testIsBetweenWithNull1() {
 		final Criteria<Movie2> criteriaBool = Criterions.isBetween(year, ofIncluded(null), ofExcluded(2000));
 		assertCriteria(9, criteriaBool);
 	}
 
 	@Test
-	public final void testIsBetweenWithNull2() {
+	public void testIsBetweenWithNull2() {
 		final Criteria<Movie2> criteriaBool = Criterions.isBetween(year, ofIncluded(1980), ofExcluded(null));
 		assertCriteria(8, criteriaBool);
 	}
 
 	@Test
-	public final void testStartsWith() {
+	public void testStartsWith() {
 		final Criteria<Movie2> criteriaBool = Criterions.startsWith(title, "a");
 		assertCriteria(2, criteriaBool);
 	}
 
 	@Test
-	public final void testStartsWithNull() {
+	public void testStartsWithNull() {
 		final Criteria<Movie2> criteriaBool = Criterions.startsWith(title, null);
 		assertCriteria(0, criteriaBool);
 	}
 
 	@Test
-	public final void testInNumber() {
+	public void testInNumber() {
 		final Criteria<Movie2> criteriaBool = Criterions.in(year, 1984, 1933);
 		assertCriteria(3 + 1, criteriaBool);
 	}
 
 	@Test
-	public final void testInNumberEmpty() {
+	public void testInNumberEmpty() {
 		final Criteria<Movie2> criteriaBool = Criterions.in(year);
 		assertCriteria(0, criteriaBool);
 	}
 
 	@Test
-	public final void testInString() {
+	public void testInString() {
 		final Criteria<Movie2> criteriaBool = Criterions.in(title, "terminator", "amadeus");
 		assertCriteria(2, criteriaBool);
 	}
 
 	@Test
-	public final void testInStringEmpty() {
+	public void testInStringEmpty() {
 		final Criteria<Movie2> criteriaBool = Criterions.in(title);
 		assertCriteria(0, criteriaBool);
 

@@ -52,6 +52,7 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 	private final Map<String, String> queryParams = new HashMap<>();
 	private Verb myVerb = null;
 	private Object body = null;
+	private String jsonBody = null;
 
 	private final Set<String> includedFields = new HashSet<>();
 	private final Set<String> excludedFields = new HashSet<>();
@@ -67,18 +68,26 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 
 	}
 
+	public String prepareBody() {
+		if (body != null) {
+			if (body instanceof ExtendedObject) {
+				final ExtendedObject extendedObject = (ExtendedObject) body;
+				return jsonWriterEngine.toJsonWithMeta(extendedObject.getInnerObject(), extendedObject, includedFields, excludedFields);
+			} else {
+				return jsonWriterEngine.toJsonWithMeta(body, Collections.emptyMap(), includedFields, excludedFields);
+			}
+		}
+		return "";
+	}
+
 	@Override
 	public HttpRequest build() {
 		httpRequestBuilder.uri(buildURI());
 
 		BodyPublisher bodyPublisher = BodyPublishers.noBody();
 		if (body != null) {
-			final String jsonBody;
-			if (body instanceof ExtendedObject) {
-				final ExtendedObject extendedObject = (ExtendedObject) body;
-				jsonBody = jsonWriterEngine.toJsonWithMeta(extendedObject.getInnerObject(), extendedObject, includedFields, excludedFields);
-			} else {
-				jsonBody = jsonWriterEngine.toJsonWithMeta(body, Collections.emptyMap(), includedFields, excludedFields);
+			if (jsonBody == null) {
+				jsonBody = prepareBody();
 			}
 			bodyPublisher = BodyPublishers.ofString(jsonBody);
 		}
@@ -145,6 +154,9 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 	}
 
 	public void innerBodyParam(final String name, final Object object, final WebServiceParam webServiceParam) {
+		// reset prepared JsonBody
+		jsonBody = null;
+		//---
 		if (body == null) {
 			body = new HashMap<>();
 		}
@@ -162,6 +174,9 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 	}
 
 	public void bodyParam(final Object object, final WebServiceParam webServiceParam) {
+		// reset prepared JsonBody
+		jsonBody = null;
+		//---
 		final ExtendedObject extendedObject = new ExtendedObject(object);
 		includedFields.addAll(webServiceParam.getIncludedFields());
 		excludedFields.addAll(webServiceParam.getExcludedFields());

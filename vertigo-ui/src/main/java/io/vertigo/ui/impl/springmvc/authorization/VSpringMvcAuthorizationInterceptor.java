@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,8 @@ import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.param.ParamManager;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
 
 /**
@@ -45,9 +47,10 @@ import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
  * @author npiedeloup
  */
 public final class VSpringMvcAuthorizationInterceptor implements HandlerInterceptor {
-	public static final boolean SECURED_DEV_MODE = false;
+	private static final String SECURED_DEV_MODE_PARAM_NAME = "devMode.authzLogOnly";
 	private static final Logger LOG = LogManager.getLogger(VSpringMvcAuthorizationInterceptor.class);
 
+	public Boolean securedDevMode;
 	private AuthorizationManager authorizationManager;
 
 	@Override
@@ -69,13 +72,14 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 						})
 						.toArray(AuthorizationName[]::new);
 				if (!getAuthorizationManager().hasAuthorization(authorizationNames)) {
-					if (SECURED_DEV_MODE) {
-						final String authNames = Arrays.stream(authorizationNames)
-								.map(a -> a.name())
-								.collect(Collectors.joining(", "));
-						LOG.error("SECURED_DEV_MODE: Not enought authorizations '" + authNames + "' => keep going, don't throw VSecurityException");
+					final String authNames = Arrays.stream(authorizationNames)
+							.map(a -> a.name())
+							.collect(Collectors.joining(", "));
+					if (getSecuredDevMode()) {
+						LOG.error("securedDevMode: Not enought authorizations '" + authNames + "' => keep going, don't throw VSecurityException");
 					} else {
-						throw new VSecurityException(LocaleMessageText.of("Not enought authorizations"));//no too sharp info here : may use log
+						LOG.warn("Not enought authorizations '" + authNames + "'");
+						throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log
 					}
 				}
 
@@ -103,5 +107,13 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 			authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
 		}
 		return authorizationManager;
+	}
+
+	private boolean getSecuredDevMode() {
+		if (securedDevMode == null) {
+			final ParamManager paramManager = Node.getNode().getComponentSpace().resolve(ParamManager.class);
+			securedDevMode = paramManager.getOptionalParam(SECURED_DEV_MODE_PARAM_NAME).map(Param::getValueAsBoolean).orElse(Boolean.FALSE);
+		}
+		return securedDevMode.booleanValue();
 	}
 }

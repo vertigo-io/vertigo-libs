@@ -23,7 +23,7 @@
                 <vu:block id="movie" title="#{movie.title.information}" >
                        <vu:include-data object="movies" field="*" />
                        <vu:include-data-primitive key='timeZoneList'/>
-                       <vu:include-data-primitive key='selectedTimeZoneList'/>
+                       <vu:include-data-primitive key='selectedTimeZoneList' modifiable/>
                        <vu:grid cols="3">
                         <vu:text-field :class="{ disabled: true && false || false }" object="movie" field="movId"/>
                         <vu:text-field object="movie" field="title" class="fieldTitle v-field__required"/>

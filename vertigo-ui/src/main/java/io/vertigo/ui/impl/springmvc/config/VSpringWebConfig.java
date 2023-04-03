@@ -155,6 +155,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 
 	private Set<NamedComponentDefinition> getUiComponents(final VuiResourceTemplateResolver componentResolvers, final VuiResourceTemplateResolver customComponentResolvers) {
 		final NamedComponentParser parser = new NamedComponentParser("vu", componentResolvers);
+		final NamedComponentParser parserCustom = new NamedComponentParser("vu", customComponentResolvers);
 
 		final Set<NamedComponentDefinition> uiComponents = new HashSet<>();
 		//standard components
