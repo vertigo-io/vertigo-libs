@@ -12,17 +12,15 @@ var VUiPage = new Vue({
         dataX: VUiExtensions.dataX,
         vuiLang: VertigoUi.vuiLang
     },
-    methods: Vue.util.extend(VertigoUi.methods, VUiExtensions.methods || {}),
-    created: function() {
-        this.$http.interceptors.response.use(function(response) {
-            return response;
-        }, function(error) {
-            this.onAjaxError(error.response);
-            return Promise.reject(error);
-        }.bind(this))
-    }
-
+    methods: Vue.util.extend(VertigoUi.methods, VUiExtensions.methods || {})
 });
+
+axios.interceptors.response.use(function(response) {
+    return response;
+}, function(error) {
+    VUiPage.onAjaxError(error.response);
+    return Promise.reject(error);
+})
 
 // fixes wrong components states due to firefox bfcache (back-forward cache)
 //https://developer.mozilla.org/en-US/docs/Archive/Misc_top_level/Working_with_BFCache
