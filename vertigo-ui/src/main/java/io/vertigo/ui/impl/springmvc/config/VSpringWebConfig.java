@@ -144,7 +144,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		templateEngine.addTemplateResolver(componentResolvers);
 
 		//---
-		final VUiStandardDialect dialect = new VUiStandardDialect(getUiComponents(componentResolvers));
+		final VUiStandardDialect dialect = new VUiStandardDialect(getUiComponents(componentResolvers, customComponentResolvers));
 		templateEngine.addDialect("vu", dialect);
 
 		templateEngine.addDialect(new LayoutDialect());
@@ -152,8 +152,9 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		return templateEngine;
 	}
 
-	private Set<NamedComponentDefinition> getUiComponents(final VuiResourceTemplateResolver componentResolvers) {
+	private Set<NamedComponentDefinition> getUiComponents(final VuiResourceTemplateResolver componentResolvers, final VuiResourceTemplateResolver customComponentResolvers) {
 		final NamedComponentParser parser = new NamedComponentParser("vu", componentResolvers);
+		final NamedComponentParser parserCustom = new NamedComponentParser("vu", customComponentResolvers);
 
 		final Set<NamedComponentDefinition> standardUiComponents = new HashSet<>();
 		//standard components
@@ -162,7 +163,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		}
 		// custom compenents
 		for (final String componentName : getCustomComponentNames()) {
-			standardUiComponents.addAll(parser.parseComponent(componentName));
+			standardUiComponents.addAll(parserCustom.parseComponent(componentName));
 		}
 		return standardUiComponents;
 	}
