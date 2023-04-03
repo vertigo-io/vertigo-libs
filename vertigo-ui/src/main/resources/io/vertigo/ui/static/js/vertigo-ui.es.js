@@ -2549,6 +2549,71 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]), 1040, ["url", "field-name", "multiple", "max-files", "onUploaded", "readonly"]);
 }
 var VFileUpload = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+var VAlertUnsavedUpdates = {
+  inserted: function(el, binding, vnode) {
+    var watchKeys = binding.expression;
+    if (!window.watcherUpdates) {
+      window.watcherUpdates = {
+        originalDocumentTitle: document.title,
+        updates_detected: false,
+        acceptedUpdates: function() {
+          window.watcherUpdates.updates_detected = false;
+          document.title = window.watcherUpdates.originalDocumentTitle;
+        },
+        beforeWindowUnload: function(e) {
+          if (window.watcherUpdates.updates_detected) {
+            e.preventDefault();
+            e.returnValue = "Voulez-vous quitter cette page ? \n Les modifications que vous avez apport\xE9es ne seront peut-\xEAtre pas enregistr\xE9es";
+          }
+        }
+      };
+      window.addEventListener("beforeunload", window.watcherUpdates.beforeWindowUnload);
+      if (vnode.context.$root.uiMessageStack) {
+        var uiMessageStack = vnode.context.$root.uiMessageStack;
+        var hasError = uiMessageStack.globalErrors.length > 0;
+        for (let watchKey of watchKeys.split(",")) {
+          hasError = hasError || uiMessageStack.objectFieldErrors[watchKey];
+          if (hasError) {
+            break;
+          }
+        }
+        if (hasError) {
+          window.watcherUpdates.updates_detected = true;
+        }
+      }
+    }
+    el.addEventListener("click", window.watcherUpdates.acceptedUpdates);
+    for (let watchKey of watchKeys.split(",")) {
+      vnode.context.$root.$watch("vueData." + watchKey, function() {
+        window.watcherUpdates.updates_detected = true;
+        document.title = "*" + window.watcherUpdates.originalDocumentTitle;
+      }, { deep: true });
+    }
+  },
+  unbind: function() {
+    window.removeEventListener("beforeunload", window.watcherUpdates.beforeWindowUnload);
+  }
+};
+var VAutofocus = {
+  bind: function(el, binding, vnode) {
+    var doFocus = binding.value;
+    if (doFocus && !window.autofocus) {
+      window.autofocus = true;
+      vnode.context.$nextTick(() => el.focus());
+    }
+  }
+};
+var VIfUnsavedUpdates = {
+  update: function(el, binding, vnode) {
+    vnode.context.$nextTick(() => {
+      if (!window.watcherUpdates || !window.watcherUpdates.updates_detected) {
+        el.classList.add("hidden");
+      } else {
+        el.classList.remove("hidden");
+      }
+    });
+  }
+};
 const Vue$1 = window["Vue"];
 const Quasar$2 = window["Quasar"];
 var VMinify = {
@@ -2619,34 +2684,47 @@ const Quasar$1 = window["Quasar"];
 var VScrollSpy = {
   created: function(elNav, args) {
     const debugMode = args.value.debug ? args.value.debug : false;
-    const offset = args.value.offset ? args.value.offset : 0;
-    const padding = args.value.padding ? args.value.padding : 24;
-    const scanner = args.value.scanner ? args.value.scanner : offset + 30;
+    const startingOffset = args.value.startingOffset ? args.value.startingOffset : 24;
+    const fixedPos = args.value.fixedPos ? args.value.fixedPos : 24;
+    const fixeTrigger = startingOffset - fixedPos;
+    const scanner = args.value.scanner ? args.value.scanner : fixedPos + 30;
     const elAs = elNav.querySelectorAll("a");
-    if (elAs.length > 0) {
-      elAs[0].classList.add("active");
-      Quasar$1.scroll.getScrollTarget(document.querySelector(elAs[0].hash));
-    }
-    let scannerLine1;
+    elAs[0].classList.add("active");
+    const scrollContainer = Quasar$1.scroll.getScrollTarget(document.querySelector(elAs[0].hash));
+    let scannerLines = [];
+    let startLinearLine;
+    let lastScrollLine;
     if (debugMode) {
-      scannerLine1 = document.createElement("HR");
-      scannerLine1.style.position = "absolute";
-      scannerLine1.style.top = scanner + "px";
-      scannerLine1.style.border = "none";
-      scannerLine1.style.borderTop = "red solid 1px";
-      scannerLine1.style.width = "100%";
-      scannerLine1.style.zIndex = "10000";
-      document.querySelector("body").appendChild(scannerLine1);
+      startLinearLine = Vue.createDebugLine("startLinear", "absolute", 0, "red");
+      lastScrollLine = Vue.createDebugLine("last", "absolute", 0, "red");
     }
     Vue.scrollSpyHandler = function() {
-      if (window.pageYOffset > offset) {
-        elNav.style.top = offset + padding + "px";
-        elNav.style.width = elNav.parentElement.getBoundingClientRect().width + "px";
-        elNav.classList.add("fixed");
+      if (debugMode) {
+        var el = elNav;
+        var _x = 0;
+        var _y = 0;
+        while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+          _x += el.offsetLeft - el.scrollLeft;
+          _y += el.offsetTop - el.scrollTop;
+          el = el.offsetParent;
+        }
+        console.log("x: " + _x);
+        console.log("y: " + _y + " (startingOffset)");
+      }
+      if (window.pageYOffset > fixeTrigger) {
+        if (!elNav.style.top) {
+          elNav.style.top = fixedPos + "px";
+          if (!elNav.style.width) {
+            elNav.style.width = elNav.getBoundingClientRect().width + "px";
+          }
+          elNav.classList.add("fixed");
+        }
       } else {
-        elNav.classList.remove("fixed");
-        elNav.style.top = null;
-        elNav.style.width = null;
+        if (elNav.style.top) {
+          elNav.classList.remove("fixed");
+          elNav.style.top = null;
+          elNav.style.width = elNav.getBoundingClientRect().width + "px";
+        }
       }
       var scrollPosition = Quasar$1.scroll.getVerticalScrollPosition(scrollContainer);
       var scrollBreakpoints = Vue.computeBreakPoints(scrollPosition);
@@ -2658,16 +2736,32 @@ var VScrollSpy = {
         }
       }
     };
+    Vue.computeBlockTop = function(scrollPosition) {
+      var blockTop = [];
+      for (let i2 = 0; i2 < elAs.length; i2++) {
+        const elScrollId = elAs[i2].hash;
+        const elScroll = document.querySelector(elScrollId);
+        if (elScroll) {
+          blockTop.push(scrollPosition + elScroll.getBoundingClientRect().top);
+        }
+      }
+      return blockTop;
+    };
     Vue.scrollTo = function(event) {
       event.preventDefault();
       const elScrollId = event.target.hash;
       const elScroll = document.querySelector(elScrollId);
       var toScroll = Quasar$1.scroll.getVerticalScrollPosition(scrollContainer) + elScroll.getBoundingClientRect().top - scanner;
       var scrollPosition = Quasar$1.scroll.getVerticalScrollPosition(scrollContainer);
+      var blockTop = Vue.computeBlockTop(scrollPosition);
       var scrollBreakpoints = Vue.computeBreakPoints(scrollPosition);
       for (var i2 = 0; i2 < elAs.length; i2++) {
         if (elAs[i2].hash == elScrollId) {
-          toScroll = scrollBreakpoints[i2];
+          if (blockTop[i2] - scanner < scrollBreakpoints[i2 + 1] || !scrollBreakpoints[i2 + 1]) {
+            toScroll = blockTop[i2] - scanner;
+          } else {
+            toScroll = scrollBreakpoints[i2 + 1] - 1;
+          }
           break;
         }
       }
@@ -2675,35 +2769,60 @@ var VScrollSpy = {
       Quasar$1.scroll.setVerticalScrollPosition(scrollContainer, toScroll, duration);
     };
     Vue.computeBreakPoints = function(scrollPosition) {
-      var blockHeight = [];
-      for (let i2 = 0; i2 < elAs.length; i2++) {
-        const elScrollId = elAs[i2].hash;
-        const elScroll = document.querySelector(elScrollId);
-        if (elScroll) {
-          blockHeight.push(scrollPosition + elScroll.getBoundingClientRect().top);
-        }
-      }
+      var blockTop = Vue.computeBlockTop(scrollPosition);
       const windowHeight = window.innerHeight || document.documentElement.clientHeight;
       const scrollHeight = Quasar$1.scroll.getScrollHeight(scrollContainer);
       const scrollMax = scrollHeight - windowHeight;
-      const scrollStart = scrollMax - windowHeight + scanner;
-      const blockHeightDelta = blockHeight[blockHeight.length - 1] - scanner - scrollStart;
-      const scrollDelta = windowHeight - scanner;
+      const scrollEnd = scrollMax;
+      let scrollStart = scrollEnd - windowHeight + scanner;
+      for (let i2 = 1; i2 < elAs.length; i2++) {
+        if (blockTop[i2] - scanner > scrollStart) {
+          scrollStart = blockTop[i2] - scanner;
+          break;
+        }
+      }
+      const scrollDelta = scrollEnd - scrollStart;
       var scrollBreakpoints = [];
       scrollBreakpoints.push(0);
       for (let i2 = 1; i2 < elAs.length; i2++) {
-        if (blockHeight[i2] > scrollStart) {
-          const blockScanFromStart = blockHeight[i2] - scrollStart - scanner;
-          scrollBreakpoints[i2] = scrollStart + blockScanFromStart / blockHeightDelta * scrollDelta;
+        if (blockTop[i2] - scanner > scrollStart) {
+          scrollBreakpoints[i2] = scrollStart + scrollDelta * (blockTop[i2] - scrollStart) / (scrollHeight - scrollStart);
         } else {
-          scrollBreakpoints[i2] = blockHeight[i2] - scanner;
+          scrollBreakpoints[i2] = blockTop[i2] - scanner;
         }
         scrollBreakpoints[i2] = Math.round(scrollBreakpoints[i2]);
       }
       if (debugMode) {
-        scannerLine1.style.top = scrollBreakpoints[scrollBreakpoints.length - 1] + "px";
+        for (let i2 = 1; i2 < elAs.length; i2++) {
+          var scannerLine;
+          if (scannerLines.length < i2) {
+            scannerLine = Vue.createDebugLine("navId#" + i2, "absolute", 0, "red");
+            scannerLines.push(scannerLine);
+          } else {
+            scannerLine = scannerLines[i2 - 1];
+          }
+          scannerLine.style.top = scrollBreakpoints[i2] + scanner + "px";
+        }
+        startLinearLine.style.top = scrollStart + scanner + "px";
+        lastScrollLine.style.top = scrollEnd + scanner + "px";
       }
       return scrollBreakpoints;
+    };
+    Vue.createDebugLine = function(name, position, top, color) {
+      let scannerLine1 = document.createElement("div");
+      scannerLine1.style.position = position;
+      scannerLine1.style.top = top + "px";
+      scannerLine1.style.border = "none";
+      scannerLine1.style.borderTop = color + " solid 1px";
+      scannerLine1.style.width = "100%";
+      scannerLine1.style.zIndex = "10000";
+      scannerLine1.style.padding = "0px";
+      scannerLine1.style.lineHeight = "0px";
+      scannerLine1.style.fontSize = "12px";
+      scannerLine1.style.color = color;
+      scannerLine1.innerHTML = name;
+      document.querySelector("body").appendChild(scannerLine1);
+      return scannerLine1;
     };
     elNav.classList.add("scroll-spy-nav");
     for (var i = 0; i < elAs.length; i++) {
@@ -2741,38 +2860,94 @@ var VMethods = {
       icon: "warning",
       timeout: 2500
     };
-    if (Object.prototype.hasOwnProperty.call(response, "message")) {
-      notif.message = response.message;
-    }
-    if (response.status === 401) {
-      notif.message = "UnAuthorized, you may login with an authorized account";
-      this.$root.$emit("logout");
-    } else if (response.status === 403) {
-      notif.message = "Forbidden, your havn&quote;t enought rights";
-    } else if (response.status === 404) {
-      notif.message = "API Route is Missing or Undefined";
-    } else if (response.status === 405) {
-      notif.message = "API Route Method Not Allowed";
-    } else if (response.status === 422) {
-      notif.message = "";
-      Object.keys(response.data).forEach(function(key) {
-        this.$data.uiMessageStack[key] = response.data[key];
-      }.bind(this));
-    } else if (response.status >= 500) {
-      notif.message = "Server Error";
-    }
-    if (response.statusText) {
-      notif.message = response.statusText;
-    }
-    if (Object.prototype.hasOwnProperty.call(response, "data")) {
-      if (Object.prototype.hasOwnProperty.call(response.data, "message") && response.data.message && response.data.message.length > 0) {
+    if (response) {
+      if (Object.prototype.hasOwnProperty.call(response.data, "redirect")) {
+        window.location = response.data.redirect;
+        return;
+      } else if (Object.prototype.hasOwnProperty.call(response.data, "message")) {
         notif.message = response.data.message;
-      } else if (Object.prototype.hasOwnProperty.call(response.data, "globalErrors") && response.data.globalErrors && response.data.globalErrors.length > 0) {
-        notif.message = response.data.globalErrors.join("<br/>\n ");
+      }
+      if (response.status === 401) {
+        notif.message = "UnAuthorized, you may login with an authorized account";
+        this.$root.$emit("unauthorized", response);
+        return;
+      } else if (response.status === 403) {
+        notif.message = "Forbidden, your havn&quote;t enought rights";
+      } else if (response.status === 404) {
+        notif.message = "API Route is Missing or Undefined";
+      } else if (response.status === 405) {
+        notif.message = "API Route Method Not Allowed";
+      } else if (response.status === 422) {
+        notif.message = "";
+        Object.keys(response.data).forEach(function(key) {
+          this.$data.uiMessageStack[key] = response.data[key];
+        }.bind(this));
+      } else if (response.status >= 500) {
+        notif.message = "Server Error";
+      }
+      if (response.statusText && response.status !== 422) {
+        notif.message = response.statusText;
+      }
+      if (Object.prototype.hasOwnProperty.call(response, "data")) {
+        if (Object.prototype.hasOwnProperty.call(response.data, "message") && response.data.message && response.data.message.length > 0) {
+          notif.message = response.data.message;
+        } else if (Object.prototype.hasOwnProperty.call(response.data, "globalErrors") && response.data.globalErrors && response.data.globalErrors.length > 0) {
+          var notifyMessages = this.uiMessageStackToNotify(response.data);
+          notifyMessages.forEach(function(notifyMessage) {
+            this.$q.notify(notifyMessage);
+          }.bind(this));
+          notif.message = "";
+        }
       }
     }
     if (notif.message.length > 0) {
       this.$q.notify(notif);
+    }
+  },
+  uiMessageStackToNotify: function(uiMessageStack) {
+    if (uiMessageStack) {
+      var notifyMessages = [];
+      if (Object.prototype.hasOwnProperty.call(uiMessageStack, "globalErrors") && uiMessageStack.globalErrors && uiMessageStack.globalErrors.length > 0) {
+        uiMessageStack.globalErrors.forEach(function(uiMessage) {
+          notifyMessages.push({
+            type: "negative",
+            message: uiMessage,
+            multiLine: true,
+            timeout: 2500
+          });
+        });
+      }
+      if (Object.prototype.hasOwnProperty.call(uiMessageStack, "globalWarnings") && uiMessageStack.globalWarnings && uiMessageStack.globalWarnings.length > 0) {
+        uiMessageStack.globalWarnings.forEach(function(uiMessage) {
+          notifyMessages.push({
+            type: "warning",
+            message: uiMessage,
+            multiLine: true,
+            timeout: 2500
+          });
+        });
+      }
+      if (Object.prototype.hasOwnProperty.call(uiMessageStack, "globalInfos") && uiMessageStack.globalInfos && uiMessageStack.globalInfos.length > 0) {
+        uiMessageStack.globalInfos.forEach(function(uiMessage) {
+          notifyMessages.push({
+            type: "info",
+            message: uiMessage,
+            multiLine: true,
+            timeout: 2500
+          });
+        });
+      }
+      if (Object.prototype.hasOwnProperty.call(uiMessageStack, "globalSuccess") && uiMessageStack.globalSuccess && uiMessageStack.globalSuccess.length > 0) {
+        uiMessageStack.globalSuccess.forEach(function(uiMessage) {
+          notifyMessages.push({
+            type: "positive",
+            message: uiMessage,
+            multiLine: true,
+            timeout: 2500
+          });
+        });
+      }
+      return notifyMessages;
     }
   },
   getSafeValue: function(objectkey, fieldKey, subFieldKey) {
@@ -3063,6 +3238,7 @@ var VMethods = {
     let uiMessageStack = this.$data.uiMessageStack;
     let params = this.isFormData(paramsIn) ? paramsIn : this.objectToFormData(paramsIn);
     params.append("CTX", vueData.CTX);
+    this.pushPendingAction(url);
     this.$http.post(url, params).then(function(response) {
       if (response.data.model.CTX) {
         vueData.CTX = response.data.model.CTX;
@@ -3082,7 +3258,22 @@ var VMethods = {
       if (options && options.onError) {
         options.onError.call(this, error.response);
       }
-    });
+    }).finally(function() {
+      this.removePendingAction(url);
+    }.bind(this));
+  },
+  isPendingAction: function(actionName) {
+    if (actionName) {
+      return this.$data.componentStates.pendingAction.actionNames.includes(actionName);
+    } else {
+      return this.$data.componentStates.pendingAction.actionNames.length > 0;
+    }
+  },
+  pushPendingAction: function(actionName) {
+    this.$data.componentStates.pendingAction.actionNames.push(actionName);
+  },
+  removePendingAction: function(actionName) {
+    this.$data.componentStates.pendingAction.actionNames = this.$data.componentStates.pendingAction.actionNames.filter((e) => e !== actionName);
   },
   hasFieldsError: function(object, field, rowIndex) {
     const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
@@ -3112,13 +3303,18 @@ var VMethods = {
         Object.keys(vueDataValue).forEach(function(propertyKey) {
           if (!propertyKey.startsWith("_")) {
             if (Array.isArray(vueDataValue[propertyKey])) {
-              vueDataValue[propertyKey].forEach(function(value, index) {
-                if (vueDataValue[propertyKey][index] && typeof vueDataValue[propertyKey][index] === "object") {
-                  this.appendToFormData(params, "vContext[" + contextKey + "][" + propertyKey + "]", vueDataValue[propertyKey][index]["_v_inputValue"]);
-                } else {
-                  this.appendToFormData(params, "vContext[" + contextKey + "][" + propertyKey + "]", vueDataValue[propertyKey][index]);
-                }
-              }.bind(this));
+              let vueDataFieldValue = vueDataValue[propertyKey];
+              if (!vueDataFieldValue || vueDataFieldValue.length == 0) {
+                this.appendToFormData(params, "vContext[" + contextKey + "][" + propertyKey + "]", "");
+              } else {
+                vueDataFieldValue.forEach(function(value, index) {
+                  if (vueDataFieldValue[index] && typeof vueDataFieldValue[index] === "object") {
+                    this.appendToFormData(params, "vContext[" + contextKey + "][" + propertyKey + "]", vueDataFieldValue[index]["_v_inputValue"]);
+                  } else {
+                    this.appendToFormData(params, "vContext[" + contextKey + "][" + propertyKey + "]", vueDataFieldValue[index]);
+                  }
+                }.bind(this));
+              }
             } else {
               if (vueDataValue[propertyKey] && typeof vueDataValue[propertyKey] === "object") {
                 this.appendToFormData(params, "vContext[" + contextKey + "][" + propertyKey + "]", vueDataValue[propertyKey]["_v_inputValue"]);
@@ -3150,6 +3346,68 @@ var VMethods = {
   },
   isFormData: function(val) {
     return typeof FormData !== "undefined" && val instanceof FormData;
+  },
+  pastePlainTextCapture(evt, editorRef) {
+    if (evt.target.nodeName === "INPUT")
+      return;
+    let text, onPasteStripFormattingIEPaste;
+    evt.preventDefault();
+    if (evt.originalEvent && evt.originalEvent.clipboardData.getData) {
+      text = evt.originalEvent.clipboardData.getData("text/plain");
+      this.$refs[editorRef].runCmd("insertText", text);
+    } else if (evt.clipboardData && evt.clipboardData.getData) {
+      text = evt.clipboardData.getData("text/plain");
+      this.$refs[editorRef].runCmd("insertText", text);
+    } else if (window.clipboardData && window.clipboardData.getData) {
+      if (!onPasteStripFormattingIEPaste) {
+        onPasteStripFormattingIEPaste = true;
+        this.$refs[editorRef].runCmd("ms-pasteTextOnly", text);
+      }
+      onPasteStripFormattingIEPaste = false;
+    }
+  },
+  editorHandlerFixHelper(tags, regexp, doBlockName, undoBlockName, eVm, caret) {
+    if (caret.hasParents(tags, true)) {
+      eVm.runCmd("formatBlock", undoBlockName);
+      if (!caret.range.commonAncestorContainer.hasChildNodes()) {
+        var currentNode = caret.selection.focusNode.parentNode;
+        while (currentNode && currentNode !== caret.el) {
+          if (tags.includes(currentNode.nodeName.toLowerCase())) {
+            currentNode.outerHTML = currentNode.outerHTML.replace(regexp, "");
+          }
+          currentNode = currentNode.parentNode;
+        }
+      } else {
+        var inSelection = false;
+        var startNode = caret.range.startContainer;
+        while (startNode && startNode !== caret.el && startNode.parentNode !== caret.range.commonAncestorContainer) {
+          startNode = startNode.parentNode;
+        }
+        var endNode = caret.range.endContainer;
+        while (endNode && endNode !== caret.el && endNode.parentNode !== caret.range.commonAncestorContainer) {
+          endNode = endNode.parentNode;
+        }
+        caret.range.commonAncestorContainer.childNodes.forEach(function(currentNode2) {
+          if (currentNode2 === startNode) {
+            inSelection = true;
+          }
+          if (inSelection) {
+            currentNode2.outerHTML = currentNode2.outerHTML.replace(regexp, "");
+          }
+          if (currentNode2 === endNode) {
+            inSelection = false;
+          }
+        });
+      }
+    } else {
+      eVm.runCmd("formatBlock", doBlockName);
+    }
+  },
+  editorHandlerBlockquoteFix(e, eVm, caret) {
+    this.editorHandlerFixHelper(["blockquote"], /<\/?blockquote[^>]*\/?>/g, "blockquote", "div", eVm, caret);
+  },
+  editorHandlerParagrapheFix(e, eVm, caret) {
+    this.editorHandlerFixHelper(["h1", "h2", "h3", "h4", "h5", "h6", "h7", "h8", "h9"], /<\/?h[1-9][^>]*\/?>/g, "div", "div", eVm, caret);
   }
 };
 var EnUs = {
@@ -3256,6 +3514,9 @@ var VertigoUi = {
     vueApp.component("v-map-layer", VMapLayer);
     vueApp.component("v-tree", VTree);
     vueApp.component("v-file-upload", VFileUpload);
+    vueApp.directive("alert-unsaved-updates", VAlertUnsavedUpdates);
+    vueApp.directive("autofocus", VAutofocus);
+    vueApp.directive("if-unsaved-updates", VIfUnsavedUpdates);
     vueApp.directive("minify", VMinify);
     vueApp.directive("scroll-spy", VScrollSpy);
     if (!options.axios) {
