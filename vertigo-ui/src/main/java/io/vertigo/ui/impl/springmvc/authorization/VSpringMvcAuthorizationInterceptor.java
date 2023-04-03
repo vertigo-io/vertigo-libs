@@ -20,9 +20,6 @@ package io.vertigo.ui.impl.springmvc.authorization;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.core.MethodParameter;
@@ -41,6 +38,8 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Aspect pour la gestion des Secured au niveau de la couche service.
@@ -79,7 +78,7 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 						LOG.error("securedDevMode: Not enought authorizations '" + authNames + "' => keep going, don't throw VSecurityException");
 					} else {
 						LOG.warn("Not enought authorizations '" + authNames + "'");
-						throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log
+						throw new VSecurityException(LocaleMessageText.of("Not enought authorizations"));//no too sharp info here : may use log
 					}
 				}
 

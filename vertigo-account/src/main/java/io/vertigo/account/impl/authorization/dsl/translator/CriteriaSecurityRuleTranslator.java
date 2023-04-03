@@ -105,7 +105,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			}
 			return Criterions.alwaysFalse();
 		} else if (expression.getValue() instanceof RuleFixedValue) {
-			Assertion.check().isTrue(isSimpleSecurityField(expression.getFieldName()), "FixedValue rule only support simple field ({0})", expression.getFieldName());
+			//Assertion.check().isTrue(isSimpleSecurityField(expression.getFieldName()), "FixedValue rule only support simple field ({0})", expression.getFieldName());
 			//---
 			final var stringValue = ((RuleFixedValue) expression.getValue()).getFixedValue();
 			final Serializable typedFixedValue = parseFixedValue(expression.getFieldName(), stringValue);

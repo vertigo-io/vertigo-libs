@@ -26,7 +26,7 @@ import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.datastore.kvstore.KVCollection;
 import io.vertigo.datastore.kvstore.KVStoreManager;
@@ -77,7 +77,7 @@ public final class ProtectedValueUtil {
 			final V unprotectedValue;
 			unprotectedValue = getKVStoreManager()
 					.find(PROTECTED_VALUE_COLLECTION_NAME, protectedValue + getSessionIdIfExists(), clazz)
-					.orElseThrow(() -> new VSecurityException(MessageText.of("Resources not found.")));
+					.orElseThrow(() -> new VSecurityException(LocaleMessageText.of("Resources not found.")));
 			return unprotectedValue;
 		}
 	}

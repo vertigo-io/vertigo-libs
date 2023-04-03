@@ -158,7 +158,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 		if (mySecuredEntity != null) {
 			final DtField field = mySecuredEntity.getEntity().getField(fieldName);
 			Serializable typedValue;
-			switch (field.getSmartTypeDefinition().getBasicType()) {
+			switch (field.smartTypeDefinition().getBasicType()) {
 				case BigDecimal:
 					typedValue = new BigDecimal(stringValue);
 					break;

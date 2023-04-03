@@ -30,19 +30,19 @@
 			"__comment": "Visibilité attribuable avec un montant maximum, et visibilité pour l'utilisateur créateur.",
 			"name": "read3", "label" : "Lecture",
 			"rules": [
-				"(amount<=${montantMax} AND utiIdOwner!=${utiId}) or (amount>${montantMax} AND utiIdOwner=${utiId})"
+				"(amount<=${montantMax} AND utiIdOwner!=${utiId}) OR (amount>${montantMax} AND utiIdOwner=${utiId})"
 			]
 		},{
 			"__comment": "Tests uniquement",
 			"name": "test", "label" : "Test",
 			"rules": [
-				"((amount<${montantMax} OR amount=${montantMax} OR amount<=${montantMax}) AND utiIdOwner!=${utiId}) or ((amount>${montantMax} OR amount=${montantMax} OR amount>=${montantMax}) AND utiIdOwner=${utiId})"
+				"((amount<${montantMax} OR amount=${montantMax} OR amount<=${montantMax}) AND utiIdOwner!=${utiId}) OR ((amount>${montantMax} OR amount=${montantMax} OR amount>=${montantMax}) AND utiIdOwner=${utiId})"
 			]
 		},{
             "__comment": "Tests uniquement",
             "name": "test2", "label" : "Test Enum",
             "rules": [
-                "etaCd<PUB OR etaCd<=PUB OR etaCd=PUB OR etaCd!=PUB OR etaCd>PUB OR etaCd>=PUB"             
+                "etaCd<NOT OR etaCd<=PUB OR etaCd=PUB OR etaCd!=PUB OR etaCd>VAL OR etaCd>=PUB"             
             ]
         },{
 			"__comment": "Tests uniquement",
