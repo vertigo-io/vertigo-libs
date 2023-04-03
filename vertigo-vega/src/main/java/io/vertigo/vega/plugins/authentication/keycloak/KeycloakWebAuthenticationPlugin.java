@@ -39,6 +39,8 @@ import org.keycloak.adapters.servlet.OIDCServletHttpFacade;
 import org.keycloak.adapters.spi.InMemorySessionIdMapper;
 import org.keycloak.adapters.spi.SessionIdMapper;
 
+import io.vertigo.account.security.UserSession;
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.connectors.keycloak.KeycloakDeploymentConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
@@ -63,14 +65,18 @@ public class KeycloakWebAuthenticationPlugin implements WebAuthenticationPlugin<
 	private final String urlHandlerPrefix;
 	private final String callbackUrl;
 	private final String logoutUrl;
+	private final String postUrlRedirect;
 	private final KeycloakOIDCFilter keycloakOIDCFilter;
+	private final VSecurityManager securityManager;
 
 	@Inject
 	public KeycloakWebAuthenticationPlugin(
 			@ParamValue("urlPrefix") final Optional<String> urlPrefixOpt,
 			@ParamValue("urlHandlerPrefix") final Optional<String> urlHandlerPrefixOpt,
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
-			final List<KeycloakDeploymentConnector> keycloakDeploymentConnectors) {
+			@ParamValue("postUrlRedirect") final Optional<String> postUrlRedirectOpt,
+			final List<KeycloakDeploymentConnector> keycloakDeploymentConnectors,
+			final VSecurityManager securityManager) {
 		Assertion.check().isNotNull(keycloakDeploymentConnectors);
 		//---
 		final var connectorName = connectorNameOpt.orElse("main");
@@ -83,8 +89,10 @@ public class KeycloakWebAuthenticationPlugin implements WebAuthenticationPlugin<
 		urlHandlerPrefix = urlHandlerPrefixOpt.orElse("/keycloak/");
 		callbackUrl = urlHandlerPrefix + "callback";
 		logoutUrl = urlHandlerPrefix + "logout";
+		postUrlRedirect = postUrlRedirectOpt.orElse("/");
 
 		keycloakOIDCFilter = new VKeycloakOIDCFilter(deploymentContext);
+		this.securityManager = securityManager;
 	}
 
 	/** {@inheritDoc} */
@@ -123,8 +131,21 @@ public class KeycloakWebAuthenticationPlugin implements WebAuthenticationPlugin<
 
 	}
 
+	private boolean isAuthenticated() {
+		return securityManager.getCurrentUserSession().map(UserSession::isAuthenticated).orElse(false);
+	}
+
 	@Override
 	public Tuple<AuthenticationResult<KeycloakPrincipal>, HttpServletRequest> doInterceptRequest(final HttpServletRequest request, final HttpServletResponse response) {
+		if (!"GET".equalsIgnoreCase(request.getMethod()) && !isAuthenticated()) {
+			try {
+				response.sendRedirect(WebAuthenticationUtil.resolveExternalUrl(request, getExternalUrlOptional()) + postUrlRedirect);
+			} catch (final IOException e) {
+				throw WrappedException.wrap(e);
+			}
+			return Tuple.of(AuthenticationResult.ofConsumed(), request);
+		}
+
 		final Map<String, HttpServletRequest> filterResult = new HashMap<>();
 		try {
 			keycloakOIDCFilter.doFilter(request, response, (req, res) -> filterResult.put("request", (HttpServletRequest) req));
