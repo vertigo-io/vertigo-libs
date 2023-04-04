@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(code = HttpStatus.UNAUTHORIZED, reason = "ViewContext Not Found")
 public final class ExpiredViewContextException extends Exception {
 
-	private static final long serialVersionUID = 4871828055854233637L;
+	private static final long serialVersionUID = 2220920272938129138L;
 
 	/**
 	 * Constructeur.
