@@ -2,7 +2,25 @@ import * as Vue from "vue"
 import * as Quasar from "quasar"
 
 export default {
+    
     created: function(elNav, args) {
+        Vue.createDebugLine = function (name, position, top, color) {
+            let scannerLine1 = document.createElement("div");
+            scannerLine1.style.position = position;
+            scannerLine1.style.top = top + 'px';
+            scannerLine1.style.border = 'none';
+            scannerLine1.style.borderTop = color + ' solid 1px';
+            scannerLine1.style.width = '100%';
+            scannerLine1.style.zIndex = '10000';
+            scannerLine1.style.padding = '0px';
+            scannerLine1.style.lineHeight = '0px';
+            scannerLine1.style.fontSize = '12px';
+            scannerLine1.style.color = color;
+            scannerLine1.innerHTML = name
+            document.querySelector('body').appendChild(scannerLine1);
+            return scannerLine1;
+        };
+        
         const debugMode = args.value.debug ? args.value.debug : false;
 
         const startingOffset = args.value.startingOffset ? args.value.startingOffset : 24;
@@ -159,22 +177,7 @@ export default {
             return scrollBreakpoints;
         };
 
-        Vue.createDebugLine = function (name, position, top, color) {
-            let scannerLine1 = document.createElement("div");
-            scannerLine1.style.position = position;
-            scannerLine1.style.top = top + 'px';
-            scannerLine1.style.border = 'none';
-            scannerLine1.style.borderTop = color + ' solid 1px';
-            scannerLine1.style.width = '100%';
-            scannerLine1.style.zIndex = '10000';
-            scannerLine1.style.padding = '0px';
-            scannerLine1.style.lineHeight = '0px';
-            scannerLine1.style.fontSize = '12px';
-            scannerLine1.style.color = color;
-            scannerLine1.innerHTML = name
-            document.querySelector('body').appendChild(scannerLine1);
-            return scannerLine1;
-        };
+        
 
         elNav.classList.add("scroll-spy-nav");
         for (var i = 0; i < elAs.length; i++) {

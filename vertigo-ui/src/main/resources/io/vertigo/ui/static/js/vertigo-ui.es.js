@@ -2683,6 +2683,22 @@ const Vue = window["Vue"];
 const Quasar$1 = window["Quasar"];
 var VScrollSpy = {
   created: function(elNav, args) {
+    Vue.createDebugLine = function(name, position, top, color) {
+      let scannerLine1 = document.createElement("div");
+      scannerLine1.style.position = position;
+      scannerLine1.style.top = top + "px";
+      scannerLine1.style.border = "none";
+      scannerLine1.style.borderTop = color + " solid 1px";
+      scannerLine1.style.width = "100%";
+      scannerLine1.style.zIndex = "10000";
+      scannerLine1.style.padding = "0px";
+      scannerLine1.style.lineHeight = "0px";
+      scannerLine1.style.fontSize = "12px";
+      scannerLine1.style.color = color;
+      scannerLine1.innerHTML = name;
+      document.querySelector("body").appendChild(scannerLine1);
+      return scannerLine1;
+    };
     const debugMode = args.value.debug ? args.value.debug : false;
     const startingOffset = args.value.startingOffset ? args.value.startingOffset : 24;
     const fixedPos = args.value.fixedPos ? args.value.fixedPos : 24;
@@ -2807,22 +2823,6 @@ var VScrollSpy = {
         lastScrollLine.style.top = scrollEnd + scanner + "px";
       }
       return scrollBreakpoints;
-    };
-    Vue.createDebugLine = function(name, position, top, color) {
-      let scannerLine1 = document.createElement("div");
-      scannerLine1.style.position = position;
-      scannerLine1.style.top = top + "px";
-      scannerLine1.style.border = "none";
-      scannerLine1.style.borderTop = color + " solid 1px";
-      scannerLine1.style.width = "100%";
-      scannerLine1.style.zIndex = "10000";
-      scannerLine1.style.padding = "0px";
-      scannerLine1.style.lineHeight = "0px";
-      scannerLine1.style.fontSize = "12px";
-      scannerLine1.style.color = color;
-      scannerLine1.innerHTML = name;
-      document.querySelector("body").appendChild(scannerLine1);
-      return scannerLine1;
     };
     elNav.classList.add("scroll-spy-nav");
     for (var i = 0; i < elAs.length; i++) {
