@@ -139,7 +139,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @return ExportSheetBuilder
 	 */
 	public ExportSheetBuilder addField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield, final LocaleMessageText overridedLabel) {
-		final DtFieldName keyFieldName = () -> list.getDefinition().getKeyField().orElseGet(() -> list.getDefinition().getIdField().get()).getName();
+		final DtFieldName keyFieldName = () -> list.getDefinition().getKeyField().orElseGet(() -> list.getDefinition().getIdField().get()).name();
 		return addField(fieldName, list, keyFieldName, displayfield, overridedLabel);
 	}
 
