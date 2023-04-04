@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.vertigo.account.authorization.definitions.SecurityDimension;
+import io.vertigo.account.authorization.definitions.SecurityDimensionType;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression.ValueOperator;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleFixedValue;
@@ -105,7 +106,10 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			}
 			return Criterions.alwaysFalse();
 		} else if (expression.getValue() instanceof RuleFixedValue) {
-			//Assertion.check().isTrue(isSimpleSecurityField(expression.getFieldName()), "FixedValue rule only support simple field ({0})", expression.getFieldName());
+			//FixedValue supported only for SIMPLE and ENUM
+			Assertion.check().isTrue(isSimpleSecurityField(expression.getFieldName())
+					|| getSecurityDimension(expression.getFieldName()).getType() == SecurityDimensionType.ENUM,
+					"FixedValue rule only support simple field ({0})", expression.getFieldName());
 			//---
 			final var stringValue = ((RuleFixedValue) expression.getValue()).getFixedValue();
 			final Serializable typedFixedValue = parseFixedValue(expression.getFieldName(), stringValue);

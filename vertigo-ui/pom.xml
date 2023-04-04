@@ -71,7 +71,7 @@
 		<dependency>
 		  <groupId>nz.net.ultraq.thymeleaf</groupId>
 		  <artifactId>thymeleaf-layout-dialect</artifactId>
-		  <version>3.1.0</version>
+		  <version>3.2.1</version>
 		</dependency>
 		
 		<!-- Optionals -->
@@ -148,7 +148,7 @@
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>7.17.8</version>
+			<version>7.17.9</version>
 			<scope>test</scope> <!-- EsTransportSearchServicesPlugin -->
 			<exclusions>
 				<exclusion>
@@ -160,19 +160,19 @@
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
 		    <artifactId>transport</artifactId>
-		    <version>7.17.8</version>
+		    <version>7.17.9</version>
 		    <scope>test</scope> <!-- EsTransportSearchServicesPlugin -->
 		</dependency>
 		<dependency>
             <groupId>org.codelibs.elasticsearch.module</groupId>
             <artifactId>analysis-common</artifactId> 
-            <version>7.17.7</version> <!-- required by EmbeddedSearchServicesPlugin -->
+            <version>7.17.9</version> <!-- required by EmbeddedSearchServicesPlugin -->
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.codelibs.elasticsearch.module</groupId>
             <artifactId>mapper-extras</artifactId>
-            <version>7.17.7</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
+            <version>7.17.9</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
             <scope>test</scope>
         </dependency>   
 		

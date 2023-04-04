@@ -17,17 +17,13 @@
  */
 package io.vertigo.ui.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 /**
  * Exception lancée dans le cas ou l'on recherche un context expiré.
  * @author npiedeloup
  */
-@ResponseStatus(code = HttpStatus.UNAUTHORIZED, reason = "ViewContext Not Found")
 public final class ExpiredViewContextException extends Exception {
 
-	private static final long serialVersionUID = 4871828055854233637L;
+	private static final long serialVersionUID = 2220920272938129138L;
 
 	/**
 	 * Constructeur.

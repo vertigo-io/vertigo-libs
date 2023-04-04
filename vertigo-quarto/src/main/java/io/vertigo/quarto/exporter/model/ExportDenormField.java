@@ -40,10 +40,10 @@ public final class ExportDenormField extends ExportField {
 	 * @param list Liste de éléments dénormés
 	 * @param displayField Champs dénormé
 	 */
-	ExportDenormField(final DtField dtField, final LocaleMessageText label, final DtList<?> list, final DtField displayField) {
+	ExportDenormField(final DtField dtField, final LocaleMessageText label, final DtList<?> list, final DtField keyField, final DtField displayField) {
 		super(dtField, label);
 		this.list = list;
-		keyField = list.getDefinition().getIdField().get();
+		this.keyField = keyField;
 		this.displayField = displayField;
 	}
 

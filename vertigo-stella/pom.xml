@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
 			<artifactId>websocket-server</artifactId>
-			<version>9.4.49.v20220914</version>
+			<version>9.4.51.v20230217</version>
 			<scope>test</scope><!-- vega embedded -->
 		</dependency>
 		
