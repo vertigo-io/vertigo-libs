@@ -99,13 +99,13 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>9.4.50.v20221201</version>
+			<version>9.4.51.v20230217</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
 			<artifactId>websocket-server</artifactId>
-			<version>9.4.50.v20221201</version>
+			<version>9.4.51.v20230217</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -149,19 +149,19 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>apache-jstl</artifactId>
-			<version>9.4.50.v20221201</version>
+			<version>9.4.51.v20230217</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-plus</artifactId>
-			<version>9.4.50.v20221201</version>
+			<version>9.4.51.v20230217</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>9.4.50.v20221201</version>
+			<version>9.4.51.v20230217</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
