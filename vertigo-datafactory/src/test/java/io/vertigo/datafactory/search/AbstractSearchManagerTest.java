@@ -363,11 +363,13 @@ public abstract class AbstractSearchManagerTest {
 		size = query("*:*");
 		Assertions.assertEquals(itemDataBase.size(), size);
 
+		final var listState = DtListState.of(null, 0, "localisation", false);
+
 		SearchQuery searchQuery = SearchQuery.builder("*:*", DslListFilterBuilder.class)
 				.withGeoSearchQuery("localisation:#query#~7km")
 				.withCriteria("48.80, 2.36")
 				.build();
-		int size10Km = (int) doQuery(searchQuery, null).getCount();
+		int size10Km = (int) doQuery(searchQuery, listState).getCount();
 		Assertions.assertEquals(3, size10Km);
 
 		searchQuery = SearchQuery.builder("*:*", DslListFilterBuilder.class)

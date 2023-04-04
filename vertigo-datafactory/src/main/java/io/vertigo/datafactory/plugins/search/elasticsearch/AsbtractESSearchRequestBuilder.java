@@ -157,7 +157,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 						.isTrue(myListState.getMaxRows().get() < TOPHITS_SUBAGGREGATION_MAXSIZE,
 								"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE));
 		//-----
-		appendListState(mySearchQuery, myListState, myDefaultMaxRows, myIndexDtDefinition);
+		appendListState(mySearchQuery, myListState, myDefaultMaxRows, myIndexDtDefinition, myTypeAdapters);
 		appendSearchQuery(mySearchQuery, getSearchSourceBuilder(), myUseHighlight, myTypeAdapters);
 		appendFacetDefinition(mySearchQuery, getSearchSourceBuilder(), myIndexDtDefinition, myListState, myUseHighlight, myTypeAdapters);
 		return getSearchRequest();
@@ -167,7 +167,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	protected abstract R getSearchRequest();
 
-	protected abstract void appendListState(SearchQuery searchQuery, DtListState listState, int defaultMaxRows, DtDefinition indexDtDefinition);
+	protected abstract void appendListState(SearchQuery searchQuery, DtListState listState, int defaultMaxRows, DtDefinition indexDtDefinition, Map<Class, BasicTypeAdapter> typeAdapters);
 
 	protected abstract void setQueryAndPostFilter(QueryBuilder requestQueryBuilder, BoolQueryBuilder postFilterBoolQueryBuilder);
 
