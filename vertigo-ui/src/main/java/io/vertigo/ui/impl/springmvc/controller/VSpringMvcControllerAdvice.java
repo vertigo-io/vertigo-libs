@@ -39,6 +39,7 @@ import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.node.Node;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextMap;
+import io.vertigo.ui.exception.ExpiredViewContextException;
 import io.vertigo.ui.impl.springmvc.util.UiAuthorizationUtil;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 import io.vertigo.vega.webservice.exception.SessionException;
@@ -83,6 +84,15 @@ public final class VSpringMvcControllerAdvice {
 	public static Object handleSessionException(final SessionException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
 		response.sendError(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
 		LOGGER.error("User try an unauthorized action " + request.getMethod() + " " + request.getRequestURL(), LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
+		return doHandleThrowable(ex, request); //no stacktrace but throws Ex too
+	}
+
+	@ResponseBody
+	@ExceptionHandler(ExpiredViewContextException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public static Object handleExpiredViewContextException(final ExpiredViewContextException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
+		response.sendError(HttpStatus.UNAUTHORIZED.value(), "ViewContext not found");
+		LOGGER.warn("Expired ViewContext " + request.getMethod() + " " + request.getRequestURL(), LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
 		return doHandleThrowable(ex, request); //no stacktrace but throws Ex too
 	}
 
