@@ -139,15 +139,29 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @return ExportSheetBuilder
 	 */
 	public ExportSheetBuilder addField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield, final MessageText overridedLabel) {
+		final DtFieldName keyFieldName = () -> list.getDefinition().getKeyField().orElseGet(() -> list.getDefinition().getIdField().get()).getName();
+		return addField(fieldName, list, keyFieldName, displayfield, overridedLabel);
+	}
+
+	/**
+	 * @param fieldName ajout d'un champs du Dt à exporter
+	 * @param list Liste des éléments dénormés
+	 * @param keyfield Field du libellé à utiliser.
+	 * @param displayfield Field du libellé à utiliser.
+	 * @param overridedLabel nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
+	 * @return ExportSheetBuilder
+	 */
+	public ExportSheetBuilder addField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName keyfield, final DtFieldName displayfield, final MessageText overridedLabel) {
 		Assertion.check()
 				.isNotNull(fieldName)
 				// On vérifie que la colonne est bien dans la définition de la DTC
 				.isTrue(dtDefinition.contains(fieldName.name()), "Le champ " + fieldName.name() + " n'est pas dans la liste à exporter")
+				.isTrue(list.getDefinition().contains(keyfield.name()), "Le champ " + keyfield.name() + " n'est pas dans la liste de dénorm")
 				.isTrue(list.getDefinition().contains(displayfield.name()), "Le champ " + displayfield.name() + " n'est pas dans la liste de dénorm");
 		// On ne vérifie pas que les champs ne sont placés qu'une fois
 		// car pour des raisons diverses ils peuvent l'être plusieurs fois.
 		//-----
-		final ExportField exportField = new ExportDenormField(resolveDtField(fieldName), overridedLabel, list, resolveDtField(displayfield, list.getDefinition()));
+		final ExportField exportField = new ExportDenormField(resolveDtField(fieldName), overridedLabel, list, resolveDtField(keyfield, list.getDefinition()), resolveDtField(displayfield, list.getDefinition()));
 		exportFields.add(exportField);
 		return this;
 	}
