@@ -10,8 +10,8 @@
     <vertigo-ssr th:if="${isVuiSsr}">
 		<vu:content/>
 	</vertigo-ssr>
-	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@2.5.5/dist/quasar.umd.prod.js}"></script>
-    <script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@2.5.5/dist/lang/__${model.util.getCurrentLocalePrefixForQuasar()}__.umd.prod.js}"></script>
+	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@2.11.10/dist/quasar.umd.prod.js}"></script>
+    <script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@2.11.10/dist/lang/__${model.util.getCurrentLocalePrefixForQuasar()}__.umd.prod.js}"></script>
 	<script th:if="${!isVuiDevMode && !isVuejsDevMode}" th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.js}"></script>
     <script th:if="${!isVuiDevMode && isVuejsDevMode}" th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.js}"></script>
 	<script th:if="${isVuiDevMode}" type="module" src="http://localhost:3000/@vite/client"></script>

@@ -2467,7 +2467,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, [
     _ctx.$props.simple ? {
       name: "header",
-      fn: _withCtx(() => [])
+      fn: _withCtx(() => []),
+      key: "0"
     } : {
       name: "header",
       fn: _withCtx((slotProps) => [
@@ -2544,7 +2545,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             _: 1
           }, 8, ["icon"])) : _createCommentVNode("", true)
         ])
-      ])
+      ]),
+      key: "1"
     }
   ]), 1040, ["url", "field-name", "multiple", "max-files", "onUploaded", "readonly"]);
 }
