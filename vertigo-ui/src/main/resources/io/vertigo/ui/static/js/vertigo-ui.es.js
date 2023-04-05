@@ -3234,9 +3234,10 @@ var VMethods = {
     component.addFiles(event.dataTransfer.files);
   },
   httpPostAjax: function(url, paramsIn, options) {
+    var paramsInResolved = Array.isArray(paramsIn) ? this.vueDataParams(paramsIn) : paramsIn;
     let vueData = this.$data.vueData;
     let uiMessageStack = this.$data.uiMessageStack;
-    let params = this.isFormData(paramsIn) ? paramsIn : this.objectToFormData(paramsIn);
+    let params = this.isFormData(paramsInResolved) ? paramsInResolved : this.objectToFormData(paramsInResolved);
     params.append("CTX", vueData.CTX);
     this.pushPendingAction(url);
     this.$http.post(url, params).then(function(response) {
@@ -3297,11 +3298,13 @@ var VMethods = {
   vueDataParams: function(keys) {
     var params = new FormData();
     for (var i = 0; i < keys.length; i++) {
-      var contextKey = keys[i];
+      var attribs = keys[i].split(".", 2);
+      var contextKey = attribs[0];
+      var attribute = attribs[1];
       var vueDataValue = this.$data.vueData[contextKey];
       if (vueDataValue && typeof vueDataValue === "object" && Array.isArray(vueDataValue) === false) {
         Object.keys(vueDataValue).forEach(function(propertyKey) {
-          if (!propertyKey.startsWith("_")) {
+          if (!propertyKey.startsWith("_") && (!attribute || attribute === propertyKey)) {
             if (Array.isArray(vueDataValue[propertyKey])) {
               let vueDataFieldValue = vueDataValue[propertyKey];
               if (!vueDataFieldValue || vueDataFieldValue.length == 0) {
