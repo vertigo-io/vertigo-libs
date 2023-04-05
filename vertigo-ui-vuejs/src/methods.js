@@ -521,9 +521,10 @@ export default {
 
 
     httpPostAjax: function (url, paramsIn, options) { 
+        var paramsInResolved = Array.isArray(paramsIn) ? this.vueDataParams(paramsIn) : paramsIn;
         let vueData = this.$data.vueData;
         let uiMessageStack = this.$data.uiMessageStack;
-        let params = this.isFormData(paramsIn) ? paramsIn : this.objectToFormData(paramsIn);
+        let params = this.isFormData(paramsInResolved) ? paramsInResolved : this.objectToFormData(paramsInResolved);
         params.append('CTX', vueData.CTX);
         this.pushPendingAction(url);
         this.$http.post(url, params).then(function (response) {
