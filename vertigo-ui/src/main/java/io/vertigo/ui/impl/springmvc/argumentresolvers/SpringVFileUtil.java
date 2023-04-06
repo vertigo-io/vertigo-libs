@@ -53,10 +53,7 @@ public final class SpringVFileUtil {
 
 	public static VFile createVFile(final MultipartFile file) {
 		final String fileName = file.getOriginalFilename();
-		String mimeType = file.getContentType();
-		if (mimeType == null) {
-			mimeType = "application/octet-stream";
-		}
+		final String mimeType = MimeTypeUtil.resolveMimetype(fileName, file);
 		return StreamFile.of(fileName, mimeType, Instant.now(), file.getSize(), new MultipartFileInputStreamBuilder(file));
 	}
 
@@ -119,6 +116,7 @@ public final class SpringVFileUtil {
 
 	/**
 	 * Encode fileName according to RFC 5987.
+	 *
 	 * @param fileName String
 	 * @param isAttachment boolean is Content an attachment
 	 * @return String
@@ -162,6 +160,7 @@ public final class SpringVFileUtil {
 
 	/**
 	 * Copie le contenu d'un flux d'entrée vers un flux de sortie.
+	 *
 	 * @param in flux d'entrée
 	 * @param out flux de sortie
 	 * @throws IOException Erreur d'entrée/sortie
@@ -182,10 +181,7 @@ public final class SpringVFileUtil {
 
 	private static VFile createVFile(final Part file) {
 		final String fileName = getSubmittedFileName(file);
-		String mimeType = file.getContentType();
-		if (mimeType == null) {
-			mimeType = "application/octet-stream";
-		}
+		final String mimeType = MimeTypeUtil.resolveMimetype(fileName, file);
 		return StreamFile.of(fileName, mimeType, Instant.now(), file.getSize(), new FileInputStreamBuilder(file));
 	}
 
