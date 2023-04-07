@@ -33,7 +33,7 @@
      <q-select th:if="${myStaticData}"
        	th:v-model="|vueData.${object}.${field}|"
 		th:label="${myLabel}"
-		th:class="${required}?'v-field__required'"
+		th:class="${myRequired}?'v-field__required'"
 		th::error="|hasFieldsError('${object}', '${field}')|"
 		th::error-message="|getErrorMessage('${object}', '${field}')|"
 		orientation="vertical"
