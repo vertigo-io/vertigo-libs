@@ -209,29 +209,34 @@ export default {
     loadAutocompleteById: function (list, valueField, labelField, componentId, url, objectName, fieldName) {
         //Method use when value(id) is set by another way : like Ajax Viewcontext update, other component, ...
         //if options already contains the value (id) : we won't reload.
-        if (!this.$data.vueData[objectName][fieldName] || (this.$data.componentStates[componentId].options
-            .filter(function (option) { return option.value === this.$data.vueData[objectName][fieldName] }.bind(this)).length > 0)) {
+         var value = this.$data.vueData[objectName][fieldName];
+         if (Array.isArray(value)) {
+              value.forEach(element => this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, element));
+         } else {
+              this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, value);
+         }
+        
+    },
+	loadMissingAutocompleteOption: function (list, valueField, labelField, componentId, url, value){
+        if (!value || (this.$data.componentStates[componentId].options
+            .filter(function (option) { return option.value === value }.bind(this)).length > 0)) {
             return
         }
         this.$data.componentStates[componentId].loading = true;
-        this.$data.componentStates[componentId].options.push({ 'value': this.$data.vueData[objectName][fieldName], 'label': '' })
-        this.$http.post(url, this.objectToFormData({ value: this.$data.vueData[objectName][fieldName], list: list, valueField: valueField, labelField: labelField, CTX: this.$data.vueData.CTX }))
+        this.$http.post(url, this.objectToFormData({ value: value, list: list, valueField: valueField, labelField: labelField, CTX: this.$data.vueData.CTX }))
             .then(function (response) {
                 var finalList = response.data.map(function (object) {
                     return { value: object[valueField], label: object[labelField].toString() } // a label is always a string
                 });
-                this.$data.componentStates[componentId].options.pop();
                 this.$data.componentStates[componentId].options = this.$data.componentStates[componentId].options.concat(finalList);
             }.bind(this))
             .catch(function (error) {
-                this.$data.componentStates[componentId].options.pop();
                 this.$q.notify(error.response.status + ":" + error.response.statusText);
             }.bind(this))
             .then(function () {// always executed
                 this.$data.componentStates[componentId].loading = false;
             }.bind(this));
-    },
-
+	},
     decodeDate: function (value, format) {
         if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY'), 'DD/MM/YYYY')) {
             return Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY'), format);

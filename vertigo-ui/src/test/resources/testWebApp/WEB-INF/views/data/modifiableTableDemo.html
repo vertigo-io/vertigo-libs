@@ -31,7 +31,7 @@
                         <vu:checkbox object="moviesModifiable" field="testBoolean"/>   
                     </vu:column>
                     <vu:column field="movId">
-                        <vu:select object="moviesModifiable" field="movId" list="movies" valueField="movId" labelField="title" />                        
+                        <vu:select componentId="null" object="moviesModifiable" field="movId" list="movies" valueField="movId" labelField="title"  />                        
                     </vu:column>
                     <vu:column field="mainPicture">
                         <vu:fileupload-simple-object th:url="'@{/commons/upload}'" object="moviesModifiable" field="mainPicture"/>
