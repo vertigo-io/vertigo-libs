@@ -3042,21 +3042,26 @@ var VMethods = {
     });
   },
   loadAutocompleteById: function(list, valueField, labelField, componentId, url, objectName, fieldName) {
-    if (!this.$data.vueData[objectName][fieldName] || this.$data.componentStates[componentId].options.filter(function(option) {
-      return option.value === this.$data.vueData[objectName][fieldName];
+    var value = this.$data.vueData[objectName][fieldName];
+    if (Array.isArray(value)) {
+      value.forEach((element) => this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, element));
+    } else {
+      this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, value);
+    }
+  },
+  loadMissingAutocompleteOption: function(list, valueField, labelField, componentId, url, value) {
+    if (!value || this.$data.componentStates[componentId].options.filter(function(option) {
+      return option.value === value;
     }.bind(this)).length > 0) {
       return;
     }
     this.$data.componentStates[componentId].loading = true;
-    this.$data.componentStates[componentId].options.push({ "value": this.$data.vueData[objectName][fieldName], "label": "" });
-    this.$http.post(url, this.objectToFormData({ value: this.$data.vueData[objectName][fieldName], list, valueField, labelField, CTX: this.$data.vueData.CTX })).then(function(response) {
+    this.$http.post(url, this.objectToFormData({ value, list, valueField, labelField, CTX: this.$data.vueData.CTX })).then(function(response) {
       var finalList = response.data.map(function(object) {
         return { value: object[valueField], label: object[labelField].toString() };
       });
-      this.$data.componentStates[componentId].options.pop();
       this.$data.componentStates[componentId].options = this.$data.componentStates[componentId].options.concat(finalList);
     }.bind(this)).catch(function(error) {
-      this.$data.componentStates[componentId].options.pop();
       this.$q.notify(error.response.status + ":" + error.response.statusText);
     }.bind(this)).then(function() {
       this.$data.componentStates[componentId].loading = false;
