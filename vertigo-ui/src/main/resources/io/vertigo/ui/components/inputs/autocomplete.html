@@ -40,7 +40,7 @@
 		th::use-chips="${myMultiple}"
 		th::loading="|componentStates.${myComponentId}.loading|"
         th::options="|componentStates.${myComponentId}.options|"
-        th:@hook:mounted="|() => {this.$watch('${model.util.vueDataKey(object, field, rowIndex)}', (newValue, oldValue) => { loadAutocompleteById('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myInputUrl}','${object}','${field}')} )}|"
+        th:@vue:mounted="|() => {this.$watch('${model.util.vueDataKey(object, field, rowIndex)}', (newValue, oldValue) => { loadAutocompleteById('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myInputUrl}','${object}','${field}')} )}|"
         th:@filter="|function (val, update, abort) { searchAutocomplete('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myFilterUrl}', val, update, abort)}|"
         th:attr="__${label_attrs}__,__${input_attrs}__"
      >
