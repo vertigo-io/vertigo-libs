@@ -24,11 +24,6 @@ import java.io.UnsupportedEncodingException;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,9 +32,12 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 import io.vertigo.datastore.filestore.FileStoreManager;
-import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.StreamFile;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 
 /**
  * @author npiedeloup
@@ -57,7 +55,7 @@ public final class SpringVFileUtil {
 		final String fileName = file.getOriginalFilename();
 		final FileStoreManager fileStoreManager = Node.getNode().getComponentSpace().resolve(FileStoreManager.class);
 		final String mimeType = fileStoreManager.resolveMimeType(StreamFile.of(fileName, file.getContentType(), Instant.now(), file.getSize(), file::getInputStream));
-		return StreamFile.of(fileName, mimeType, Instant.now(), file.getSize(), new MultipartFileInputStreamBuilder(file));
+		return StreamFile.of(fileName, mimeType, Instant.now(), file.getSize(), file::getInputStream);
 	}
 
 	/**
@@ -186,7 +184,7 @@ public final class SpringVFileUtil {
 		final String fileName = getSubmittedFileName(file);
 		final FileStoreManager fileStoreManager = Node.getNode().getComponentSpace().resolve(FileStoreManager.class);
 		final String mimeType = fileStoreManager.resolveMimeType(StreamFile.of(fileName, file.getContentType(), Instant.now(), file.getSize(), file::getInputStream));
-		return StreamFile.of(fileName, mimeType, Instant.now(), file.getSize(), new FileInputStreamBuilder(file));
+		return StreamFile.of(fileName, mimeType, Instant.now(), file.getSize(), file::getInputStream);
 	}
 
 	private static String getSubmittedFileName(final Part filePart) {
