@@ -12,7 +12,7 @@
 		th::label-width="${overridedLabelWidth?:3}"
 		th:label="${modifiableTable!=null?null:myLabel}"
 		th:classappend="${myRequired}?'v-field__required'"
-		th:aria-required="${required}"
+		th:aria-required="${myRequired}"
 		th::error="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
 		th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
 		orientation="vertical"

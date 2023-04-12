@@ -104,7 +104,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		if (authenticationResult.isRequestConsumed()) {
 			return Tuple.of(true, request);
 		} else if (authenticationResult.getRawCallbackResult() != null && !isAuthenticated()) {
-			return appLogin(requestResolved, response, authenticationResult);
+			return appLogin(requestResolved, response, authenticationResult, plugin.getRequestedUri(requestResolved));
 		}
 
 		// handler
@@ -129,10 +129,10 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 
 	private Tuple<Boolean, HttpServletRequest> handleCallback(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
 		final var plugin = getPluginForUrlCallBackRequest(httpRequest);
+		final Optional<String> requestedUrL = plugin.getRequestedUri(httpRequest);
 		if (isAuthenticated()) {
 			// authenticated on another request between first request and callback, just redirect according to original requested URL if possible
-			final String requestedUrL = plugin.getRequestedUri(httpRequest);
-			doHandleRedirect(httpRequest, httpResponse, requestedUrL);
+			doHandleRedirect(httpRequest, httpResponse, requestedUrL.orElse(""));
 			return Tuple.of(true, httpRequest);
 		}
 		final var restult = plugin.doHandleCallback(httpRequest, httpResponse);
@@ -140,7 +140,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 			return Tuple.of(true, httpRequest);
 		}
 
-		return appLogin(httpRequest, httpResponse, restult);
+		return appLogin(httpRequest, httpResponse, restult, requestedUrL);
 
 	}
 
@@ -180,9 +180,9 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		return Tuple.of(true, httpRequest);
 	}
 
-	private Tuple<Boolean, HttpServletRequest> appLogin(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationResult interceptResult) {
+	private Tuple<Boolean, HttpServletRequest> appLogin(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationResult interceptResult, final Optional<String> requestedUrl) {
 		final var appLoginHandlerInstance = Node.getNode().getComponentSpace().resolve(appLoginHandler, AppLoginHandler.class);
-		final var redirectUrlAfterLogin = appLoginHandlerInstance.doLogin(request, interceptResult.getClaims(), interceptResult.getRawCallbackResult());
+		final var redirectUrlAfterLogin = appLoginHandlerInstance.doLogin(request, interceptResult.getClaims(), interceptResult.getRawCallbackResult(), requestedUrl);
 		if (isAuthenticated()) {
 			// change session ID for security purpose (session fixation attack)
 			request.changeSessionId();

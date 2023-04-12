@@ -119,8 +119,8 @@ public class LocalWebAuthenticationPlugin implements WebAuthenticationPlugin<Aut
 	}
 
 	@Override
-	public String getRequestedUri(final HttpServletRequest httpRequest) {
-		return null; // not supported for now
+	public Optional<String> getRequestedUri(final HttpServletRequest httpRequest) {
+		return Optional.empty(); // not supported for now
 	}
 
 }

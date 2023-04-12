@@ -4,7 +4,7 @@
 	 myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
 	th:assert="${object} != null and ${field} != null">
 	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
-	<vu:label-edit label=${label} label_attrs="${label_attrs}" >
+	<vu:label-edit label=${label} required="${myRequired}" label_attrs="${label_attrs}" >
 		<v-geopoint-input 
 			th:v-model="|vueData.${object}.${field}|" 
 			th:class="${myRequired}?'v-field__required'"
