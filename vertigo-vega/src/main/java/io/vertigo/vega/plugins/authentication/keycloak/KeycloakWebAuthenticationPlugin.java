@@ -189,8 +189,8 @@ public class KeycloakWebAuthenticationPlugin implements WebAuthenticationPlugin<
 	}
 
 	@Override
-	public String getRequestedUri(final HttpServletRequest httpRequest) {
-		return WebAuthenticationUtil.resolveUrlRedirect(httpRequest);
+	public Optional<String> getRequestedUri(final HttpServletRequest httpRequest) {
+		return Optional.ofNullable(WebAuthenticationUtil.resolveUrlRedirect(httpRequest));
 	}
 
 }

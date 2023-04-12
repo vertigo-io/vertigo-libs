@@ -247,10 +247,10 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 
 	/** {@inheritDoc} */
 	@Override
-	public String getRequestedUri(final HttpServletRequest httpRequest) {
+	public Optional<String> getRequestedUri(final HttpServletRequest httpRequest) {
 		final var successResponse = parseResponseRequest(httpRequest);
 		final var state = successResponse.getState();
-		return SessionManagementHelper.getRequestedUri(httpRequest.getSession(), state.getValue());
+		return Optional.ofNullable(SessionManagementHelper.getRequestedUri(httpRequest.getSession(), state.getValue()));
 	}
 
 	/** {@inheritDoc} */
