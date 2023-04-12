@@ -84,12 +84,6 @@
 			<version>15.4</version>
 			<optional>true</optional>  <!-- for VuejsSsrFilter -->
 		</dependency>
-		<dependency>
-			<groupId>org.apache.tika</groupId>
-			<artifactId>tika-core</artifactId>
-			<version>2.7.0</version>
-			<optional>true</optional>  <!-- for mimetype detection with 'file.tikaMimeType' parameter -->
-		</dependency>
 		<!-- for tests -->
 		<!-- for Embedded Jetty Server and tests -->
 		<!-- Connections Pool -->
