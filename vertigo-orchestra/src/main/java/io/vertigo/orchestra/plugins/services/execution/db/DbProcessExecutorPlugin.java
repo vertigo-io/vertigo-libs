@@ -381,7 +381,9 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 					((AbstractActivityEngine) activityEngine).getLogger().info(workspaceInLog);
 				}
 				// We try the execution and we keep the result
+				ThreadContext.put("module", "orchestra-worker");
 				resultWorkspace = activityEngine.execute(workspace);
+				ThreadContext.put("module", "orchestra");
 				Assertion.check()
 						.isNotNull(resultWorkspace)
 						.isNotNull(resultWorkspace.getValue("status"), "Le status est obligatoire dans le résultat");
