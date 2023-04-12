@@ -5080,18 +5080,26 @@ function isNumber (v) {
   loadAutocompleteById: function (list, valueField, labelField, componentId, url, objectName, fieldName) {
     //Method use when value(id) is set by another way : like Ajax Viewcontext update, other component, ...
     //if options already contains the value (id) : we won't reload.
-    if (!this.$data.vueData[objectName][fieldName] || this.$data.componentStates[componentId].options.filter(function (option) {
-      return option.value === this.$data.vueData[objectName][fieldName];
+    var value = this.$data.vueData[objectName][fieldName];
+    if (Array.isArray(value)) {
+      value.forEach(element => this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, element));
+    } else {
+      this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, value);
+    }
+  },
+  loadMissingAutocompleteOption: function (list, valueField, labelField, componentId, url, value) {
+    if (!value || this.$data.componentStates[componentId].options.filter(function (option) {
+      return option.value === value;
     }.bind(this)).length > 0) {
       return;
     }
     this.$data.componentStates[componentId].loading = true;
     this.$data.componentStates[componentId].options.push({
-      'value': this.$data.vueData[objectName][fieldName],
+      'value': value,
       'label': ''
     });
     this.$http.post(url, this.objectToFormData({
-      value: this.$data.vueData[objectName][fieldName],
+      value: value,
       list: list,
       valueField: valueField,
       labelField: labelField,

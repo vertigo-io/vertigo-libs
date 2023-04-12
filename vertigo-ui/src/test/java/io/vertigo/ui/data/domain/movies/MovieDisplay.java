@@ -17,6 +17,10 @@
  */
 package io.vertigo.ui.data.domain.movies;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -33,6 +37,7 @@ public final class MovieDisplay implements DtObject {
 
 	private Long movId;
 	private String title;
+	private List<Long> movIds = new ArrayList<>();
 
 	/**
 	 * Champ : DATA.
@@ -71,6 +76,20 @@ public final class MovieDisplay implements DtObject {
 	 */
 	public void setTitle(final String title) {
 		this.title = title;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'movIds'.
+	 * @return Long movId
+	 */
+	@Field(smartType = "STyId", label = "movIds", cardinality = Cardinality.MANY)
+	public List<Long> getMovIds() {
+		return movIds;
+	}
+
+	public void setMovIds(final List<Long> movIds) {
+		this.movIds = movIds;
 	}
 
 	/** {@inheritDoc} */

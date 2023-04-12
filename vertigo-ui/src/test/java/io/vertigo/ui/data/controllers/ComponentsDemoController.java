@@ -73,6 +73,7 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 	private final ViewContextKey<String> communeId = ViewContextKey.of("communeId");
 	private final ViewContextKey<Commune> communeListMdl = ViewContextKey.of("communesMdl");
 	private final ViewContextKey<MovieDisplay> movieDisplayList = ViewContextKey.of("moviesDisplay");
+	private final ViewContextKey<MovieDisplay> movieDisplayInputKey = ViewContextKey.of("movieDisplayInput");
 
 	private final ViewContextKey<Instant> currentInstant = ViewContextKey.of("currentInstant");
 	private final ViewContextKey<String> currentZoneId = ViewContextKey.of("currentZoneId");
@@ -111,6 +112,7 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		viewContext.publishDtListModifiable(movieListModifiables, mySubList);
 		viewContext.publishMdl(moviesListMdl, Movie.class, null);
 		viewContext.publishDtList(movieDisplayList, movieServices.getMoviesDisplay(DtListState.defaultOf(Movie.class)));
+		viewContext.publishDto(movieDisplayInputKey, new MovieDisplay());
 
 		viewContext.publishMdl(communeListMdl, Commune.class, null);
 
