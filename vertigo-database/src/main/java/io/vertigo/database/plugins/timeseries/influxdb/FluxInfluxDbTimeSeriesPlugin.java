@@ -155,10 +155,14 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		final String function = splitedMeasure[1];
 
 		final var orderedClusteredMeasures = getOrderedClusterMeasures(clusteredMeasure);
+		queryBuilder
+				.append("|> window(every: " + timeFilter.dim() + ", createEmpty:true ) \n")
+				.append("\n")
+				.append("dataNil = data \n")
+				.append("|> count() \n")
+				.append("|> map(fn: (r) => ({ _time:r._start, _value:r._value, _field:\"total\" }))\n");
 
-		Assertion
-				.check()
-				.isTrue("count".equals(function) || "sum".equals(function), "Function {0} is not supported with clusteredMeasure, only sum and count is supported", function);
+		Assertion.check().isTrue("count".equals(function) || "sum".equals(function), "Function {0} is not supported with clusteredMeasure, only sum and count is supported", function);
 
 		final var thresholds = clusteredMeasure.thresholds();
 		for (int idx = 0; idx < thresholds.size() + 1; idx++) {
@@ -174,12 +178,8 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 					.append('\n')
 					.append("data" + idx + " = data \n")
 					.append("|> filter(fn: (r) => " + condition + ") \n")
-					.append("|> window(every: 1h, createEmpty:true ) \n")
-					.append("|> duplicate(column: \"_stop\", as:\"_time\") \n")
 					.append("|> " + function + "() \n")
-					.append("|> duplicate(column: \"_stop\", as:\"_time\") \n")
-					.append("|> drop(columns: [\"_start\", \"_stop\"]) \n")
-					.append("|> set(key: \"alias\", value:\"" + orderedClusteredMeasures.get(idx) + "\" ) \n");
+					.append("|> map(fn: (r) => ({ _time:r._start,  _value:r._value, _field:\"" + orderedClusteredMeasures.get(idx) + "\"})) \n");
 
 		}
 
@@ -187,9 +187,10 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 				.boxed()
 				.map(idx -> "data" + idx)
 				.collect(Collectors.joining(", "));
-		queryBuilder
-				.append("union(tables :[" + allDataJoined + "]) \n")
-				.append("|> pivot(columnKey: [\"_field\", \"alias\"], rowKey: [\"_time\"], valueColumn: \"_value\") \n")
+		queryBuilder.append("\n").append("union(tables :[ dataNil," + allDataJoined + "]) \n")
+				.append("|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") \n")
+				.append("|> drop(columns : [\"total\"] )\n")
+				.append("|> sort(columns: [\"_time\"]) \n")
 				.append("|> yield() \n");
 
 		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(queryBuilder.toString());
