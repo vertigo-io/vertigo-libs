@@ -3041,8 +3041,13 @@ var VMethods = {
       update([]);
     });
   },
-  loadAutocompleteById: function(list, valueField, labelField, componentId, url, objectName, fieldName) {
-    var value = this.$data.vueData[objectName][fieldName];
+  loadAutocompleteById: function(list, valueField, labelField, componentId, url, objectName, fieldName, rowIndex) {
+    var value;
+    if (rowIndex != null) {
+      value = this.$data.vueData[objectName][rowIndex][fieldName];
+    } else {
+      value = this.$data.vueData[objectName][fieldName];
+    }
     if (Array.isArray(value)) {
       value.forEach((element) => this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, element));
     } else {
