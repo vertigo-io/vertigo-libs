@@ -211,15 +211,21 @@ export default {
             });
 
     },
-    loadAutocompleteById: function (list, valueField, labelField, componentId, url, objectName, fieldName) {
+    loadAutocompleteById: function (list, valueField, labelField, componentId, url, objectName, fieldName, rowIndex) {
         //Method use when value(id) is set by another way : like Ajax Viewcontext update, other component, ...
         //if options already contains the value (id) : we won't reload.
-         var value = this.$data.vueData[objectName][fieldName];
-         if (Array.isArray(value)) {
-              value.forEach(element => this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, element));
-         } else {
-              this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, value);
-         }
+        var value
+        if (rowIndex != null) {
+            value = this.$data.vueData[objectName][rowIndex][fieldName];
+        } else {
+            value = this.$data.vueData[objectName][fieldName];
+        }
+         
+        if (Array.isArray(value)) {
+            value.forEach(element => this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, element));
+        } else {
+            this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, value);
+        }
         
     },
 	loadMissingAutocompleteOption: function (list, valueField, labelField, componentId, url, value){

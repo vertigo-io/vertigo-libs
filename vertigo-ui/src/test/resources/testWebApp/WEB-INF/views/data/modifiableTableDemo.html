@@ -31,13 +31,21 @@
                         <vu:checkbox object="moviesModifiable" field="testBoolean"/>   
                     </vu:column>
                     <vu:column field="movId">
-                        <vu:select componentId="null" object="moviesModifiable" field="movId" list="movies" valueField="movId" labelField="title"  />                        
+                        <vu:autocomplete object="moviesModifiable" field="movId" list="movies" valueField="movId" labelField="title"  />                        
                     </vu:column>
                     <vu:column field="mainPicture">
                         <vu:fileupload-simple-object th:url="'@{/commons/upload}'" object="moviesModifiable" field="mainPicture"/>
                     </vu:column>
                     <vu:column field="pictures">
                         <vu:fileupload-simple-object th:url="'@{/commons/upload}'" object="moviesModifiable" field="pictures" multiple/>
+                    </vu:column>
+                </vu:table-modifiable>
+                <vu:table-modifiable list="moviesDisplayModifiable" componentId="moviesDisplayModifiableTable" sortUrl="@{/movies/_sort}" rowKey="movId" >
+                    <vu:column field="movId" >
+                        <a th::href="|'@{/movie/}'+props.row.movId|" >{{props.row.movId}}</a>
+                    </vu:column>
+                    <vu:column field="movId">
+                        <vu:autocomplete-multiple object="moviesDisplayModifiable" field="movIds" list="movies" valueField="movId" labelField="title"  />                        
                     </vu:column>
                 </vu:table-modifiable>
                 

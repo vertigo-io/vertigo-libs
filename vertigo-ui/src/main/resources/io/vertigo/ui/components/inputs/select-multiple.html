@@ -36,10 +36,9 @@ vu:alias="select-multiple" vu:selector="${viewMode=='read'}"
 	th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')}">
 	<vu:label-read object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}" >
 		<th:block th:if="${value!=null}" th:each="singleValue, iterStat : ${value} " >
-			<span  
+			<q-chip  
 				th:attr="__${input_attrs}__"
-				vu:text="${singleValue!=null?model.vContext[__${list}__].getById('__${myValueField}__', singleValue)['__${myLabelField}__']:'is null'}"></span>
-			<span th:if="${!iterStat.last}">, </span>
+				th:text="${singleValue!=null?model.vContext[__${list}__].getById('__${myValueField}__', singleValue)['__${myLabelField}__']:'is null'}"></q-chip>
 		</th:block>
 	</vu:label-read>
 </th:block>

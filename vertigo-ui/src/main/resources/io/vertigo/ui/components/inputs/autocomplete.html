@@ -1,22 +1,24 @@
-<th:block th:fragment="autocomplete-edit(object, field, label, list, valueField, labelField, componentId, required, inputUrl, filterUrl, multiple, input_attrs, label_attrs)" vu:alias="autocomplete" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="autocomplete-edit(object, field, label, list, valueField, labelField, autocompleteId, required, inputUrl, filterUrl, input_attrs, label_attrs)" vu:alias="autocomplete" vu:selector="${viewMode=='edit'}"
 	  th:assert="${object} != null and ${field} != null and ${list} != null"
 	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, 
 	  myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, 
-	  value=${rowIndex != null ? null : model.vContext[__${object}__].getTypedValue('__${field}__')}, 
-	  myComponentId=${componentId != null ? componentId : list + '_' + object + '_' + field + '_' + rowIndex}, 
+	  myComponentId=${autocompleteId != null ? autocompleteId : 'autocomplete_' + list}, 
 	  myLabel=${label?:model.util.label(object + '.' + field)},
       myRequired=${required != null ? required : model.util.required(object + '.' + field)},
       myInputUrl=${inputUrl != null ? inputUrl : '__@{/autocomplete/_searchByValue}__'},
-      myFilterUrl=${filterUrl != null ? filterUrl : '__@{/autocomplete/_searchFullText}__'},
-      myMultiple=${multiple != null ? multiple : false}">
+      myFilterUrl=${filterUrl != null ? filterUrl : '__@{/autocomplete/_searchFullText}__'}">
 	<th:block th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addList('options')}, objectKey1=${model.vContext['componentStates'].get(myComponentId).addPrimitive('loading', false)}"  />
-	<th:block th:if="${myMultiple}" th:each="val : ${value}">
-		<th:block 
-		th:with="valueLabel=${val != null ? model.vContext[__${list}__].getById('__${myValueField}__', val)['__${myLabelField}__'] : ''}"
-		th:attr="objectKey=${model.vContext['componentStates']['__${myComponentId}__']['options'].add( { 'value' : val, 'label': valueLabel})}"  ></th:block>
+	<th:block th:if="${rowIndex == null}" 
+		th:with="value=${model.vContext[__${object}__].getTypedValue('__${field}__')},
+				valueLabel=${value != null ? model.vContext[__${list}__].getById('__${myValueField}__', value)['__${myLabelField}__'] : ''}"
+		th:attr="objectKey=${model.vContext['componentStates']['__${myComponentId}__']['options'].add( { 'value' : value, 'label': valueLabel})}"  >
 	</th:block>
-	<th:block th:if="${!myMultiple && value != null}" th:with="valueLabel=${value != null ? model.vContext[__${list}__].getById('__${myValueField}__', value)['__${myLabelField}__'] : ''}"
-		 th:attr="objectKey=${model.vContext['componentStates']['__${myComponentId}__']['options'].add( { 'value' : value, 'label': valueLabel})}"  >
+	<th:block th:if="${rowIndex != null}" th:each="obj : ${model.vContext[__${object}__]}">
+		<th:block 
+			th:with="value=${obj.getTypedValue('__${field}__')},
+				valueLabel=${value != null ? model.vContext[__${list}__].getById('__${myValueField}__', value)['__${myLabelField}__'] : ''}"
+			th:attr="objectKey=${model.vContext['componentStates']['__${myComponentId}__']['options'].add( { 'value' : value, 'label': valueLabel})}"  >
+		</th:block>
 	</th:block>
 	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 	<vu:include-data object="${list}" field="${myValueField}"/>
@@ -31,25 +33,23 @@
 		orientation="vertical"
 		dropdown-icon="search"
 		stack-label
-		th::multiple="${myMultiple}"
         use-input
         map-options
         input-debounce="300"
 		emit-value
-		th::use-chips="${myMultiple}"
 		th::loading="|componentStates.${myComponentId}.loading|"
         th::options="|componentStates.${myComponentId}.options|"
-        th:@hook:mounted="|() => {this.$watch('${model.util.vueDataKey(object, field, rowIndex)}', (newValue, oldValue) => { loadAutocompleteById('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myInputUrl}','${object}','${field}')} )}|"
+        th:@hook:mounted="|() => {
+			$watch(function() {return ${model.util.vueDataKey(object, field, rowIndex)} }, (newValue, oldValue) => { loadAutocompleteById('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myInputUrl}','${object}','${field}', ${rowIndex})} )
+			}|"
         th:@filter="|function (val, update, abort) { searchAutocomplete('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myFilterUrl}', val, update, abort)}|"
         th:attr="__${label_attrs}__,__${input_attrs}__"
      >
      <vu:content/>
      </q-select>
-	<input th:if="${!myMultiple}" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" th:v-bind:value="${model.util.vueDataKey(object, field, rowIndex)}" />
-	<input th:if="${myMultiple}" th:v-for="|id in ${model.util.vueDataKey(object, field, rowIndex)}|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" th:v-bind:value="id" />
-  	<input th:if="${myMultiple}" th:v-if="|vueData.${object}.${field}.length == 0|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
+	<input type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" th:v-bind:value="${model.util.vueDataKey(object, field, rowIndex)}" />
 </th:block> 
 
-<th:block th:fragment="autocomplete-read(object, field, label, list, valueField, labelField, required, input_attrs, label_attrs)" vu:alias="autocomplete" vu:selector="${viewMode=='read'}" >
+<th:block th:fragment="autocomplete-read(object, field, label, list, valueField, labelField, autocompleteId, required, inputUrl, filterUrl, multiple, input_attrs, label_attrs)" vu:alias="autocomplete" vu:selector="${viewMode=='read'}" >
 	<vu:select-read object="${object}" field="${field}" label="${label}" list="${list}" valueField="${valueField}" labelField="${labelField}" input_attrs="${input_attrs}" label_attrs="${label_attrs}" />
 </th:block>

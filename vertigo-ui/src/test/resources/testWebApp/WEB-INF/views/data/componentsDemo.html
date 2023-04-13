@@ -45,7 +45,7 @@
                         <vu:chips-autocomplete object="movie" field="tags" list="movies" staticData="false"/>
                         <vu:grid-cell/>
                         <vu:grid-cell col="1">
-							 <vu:autocomplete object="movieDisplayInput" field="movIds" list="moviesMdl" multiple />
+							 <vu:autocomplete-multiple object="movieDisplayInput" field="movIds" list="moviesMdl"  />
 						</vu:grid-cell>
                         <vu:grid-cell col="1">
                             <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" @input="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>

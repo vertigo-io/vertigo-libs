@@ -5077,10 +5077,15 @@ function isNumber (v) {
       update([]);
     });
   },
-  loadAutocompleteById: function (list, valueField, labelField, componentId, url, objectName, fieldName) {
+  loadAutocompleteById: function (list, valueField, labelField, componentId, url, objectName, fieldName, rowIndex) {
     //Method use when value(id) is set by another way : like Ajax Viewcontext update, other component, ...
     //if options already contains the value (id) : we won't reload.
-    var value = this.$data.vueData[objectName][fieldName];
+    var value;
+    if (rowIndex != null) {
+      value = this.$data.vueData[objectName][rowIndex][fieldName];
+    } else {
+      value = this.$data.vueData[objectName][fieldName];
+    }
     if (Array.isArray(value)) {
       value.forEach(element => this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, element));
     } else {
@@ -5094,10 +5099,6 @@ function isNumber (v) {
       return;
     }
     this.$data.componentStates[componentId].loading = true;
-    this.$data.componentStates[componentId].options.push({
-      'value': value,
-      'label': ''
-    });
     this.$http.post(url, this.objectToFormData({
       value: value,
       list: list,
@@ -5112,10 +5113,8 @@ function isNumber (v) {
         }; // a label is always a string
       });
 
-      this.$data.componentStates[componentId].options.pop();
       this.$data.componentStates[componentId].options = this.$data.componentStates[componentId].options.concat(finalList);
     }.bind(this)).catch(function (error) {
-      this.$data.componentStates[componentId].options.pop();
       this.$q.notify(error.response.status + ":" + error.response.statusText);
     }.bind(this)).then(function () {
       // always executed
