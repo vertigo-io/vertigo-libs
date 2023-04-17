@@ -133,13 +133,15 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 			final Object value = expression.execute(context);
 			return EvaluationUtils.evaluateAsBoolean(value);
 		}
+		Assertion.check().isFalse(attributeValue.contains("&&"), attributeValue,
+				"Authz don't support &&, use a complete expression like : vu:authz=\"${authz.hasAuthorization('myGlobalAuthz') && authz.hasAuthorization('mySecuredEntityAuthz$read')}\". ({0})", attributeValue);
 		//Sinon on récupère depuis le context d'exec de la page
 		final UiAuthorizationUtil authz = obtainUiAuthorizationUtil(context);
 		//Liste d'authorizations () avec deux modes :
 		// - simple chaine => hasAuthorization
 		// - référence à un objet du model (xxx.myEntityInstance$operation) => hasOperation
 		//
-		//Liste en OR, separateur ',' et '!' pour le NOT
+		//Liste en OR avec le separateur ',' et '!' pour le NOT
 		boolean isAuthorized;
 		boolean isNeg;
 		for (final String authzAttributInput : attributeValue.split(",")) {
