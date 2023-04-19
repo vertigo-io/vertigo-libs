@@ -18,7 +18,7 @@
 			    th:v-model:selected="|componentStates.${componentId}.selected|"
 			    th::loading="|componentStates.${componentId}.loading|"
 			    th:v-model:pagination="|componentStates.${componentId}.pagination|"
-			    :sort-method="$vui.sortCiAi"
+			    th::sort-method="|createDefaultTableSort('${componentId}')|"
 			    th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
 				th::grid="${isGrid?('$q.screen.lt.'+gridBreak):'false'}"
 			    th:attr="__${other_attrs}__"

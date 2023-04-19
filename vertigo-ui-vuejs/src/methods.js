@@ -146,8 +146,27 @@ export default {
         }
         return this.$data.vueData[list];
     },
+    createDefaultTableSort: function(componentId) {
+        if (this.$data.componentStates[componentId]) {
+            return function (data, sortBy, descending) {
+                let sortedColumn = this.$data.componentStates[componentId].columns.find(column => column.name === sortBy);
+                if (sortedColumn.datetimeFormat) {
+                        const
+                        dir = descending === true ? -1 : 1,
+                        val =  v => v[sortBy]
 
-
+                    return data.sort((a, b) => {
+                        let A = val(a),
+                            B = val(b);
+                        return ((Quasar.date.extractDate(A, sortedColumn.datetimeFormat).getTime() > Quasar.date.extractDate(B, sortedColumn.datetimeFormat).getTime()) ? 1 : -1) * dir;
+                    })
+                } else {
+                    return this.sortCiAi(data, sortBy, descending)
+                }
+            }.bind(this)
+        }
+        return this.sortCiAi
+    },
     sortCiAi: function (data, sortBy, descending) {
 
         const
@@ -276,7 +295,7 @@ export default {
     },
 
     sortDatesAsString: function (format) {
-        return function (date1, date2) {
+        return function (date1, date2, rowA, rowB) {
             return (Quasar.date.extractDate(date1, format).getTime() > Quasar.date.extractDate(date2, format).getTime()) ? 1 : -1;
         }
     },

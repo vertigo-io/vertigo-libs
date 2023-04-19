@@ -71,7 +71,7 @@ public final class DtProperty {
 	 */
 	public static final Property<String> STORE_TYPE = new Property<>("storeType", String.class);
 
-	public static final Property<Boolean> MULTIPLE = new Property<>("multiple", Boolean.class);
+	public static final Property<String> UI_DATETIME_FORMAT = new Property<>("uiDatetimeFormat", String.class);
 
 	private DtProperty() {
 		//private

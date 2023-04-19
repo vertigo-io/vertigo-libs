@@ -1,6 +1,6 @@
 VertigoUi.initData(VertigoUi, JSON.parse(window.document.getElementById('vui-init-data').innerHTML));
-
 var VUiExtensions = VUiExtensions || {};
+window.dispatchEvent(new CustomEvent('vui-before-app-create'));
 const VUiApp = Vue.createApp({
   data() {
 	return {
@@ -20,6 +20,7 @@ if (Quasar.lang.fr) {
   Quasar.lang.fr.vui = VertigoUi.lang.fr;
 }
 
+window.dispatchEvent(new CustomEvent('vui-before-plugins', { detail : {vuiAppInstance : VUiApp}}));
 
 VUiApp.use(Quasar, {
 	config: window?.quasarConfig || {},
@@ -27,9 +28,11 @@ VUiApp.use(Quasar, {
 })
 VUiApp.use(VertigoUi, {axios : axios});
 
+window.dispatchEvent(new CustomEvent('vui-before-page-mounted', { detail : {vuiAppInstance : VUiApp}}));
 const VUiPage = VUiApp.mount('#page');
 window.VUiApp = VUiApp;
 window.VUiPage = VUiPage;
+window.dispatchEvent(new CustomEvent('vui-after-page-mounted', { detail : {vuiAppInstance : VUiApp, vuiPageInstance : VUiPage}}));
 
 axios.interceptors.response.use(function(response) {
     return response;

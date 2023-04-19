@@ -279,6 +279,10 @@ public final class UiUtil implements Serializable {
 		return getDtField(fieldPath).smartTypeDefinition().getProperties().getValue(DtProperty.MAX_VALUE);
 	}
 
+	public static String getUiDatetimeFormat(final String fieldPath) {
+		return getDtField(fieldPath).smartTypeDefinition().getProperties().getValue(DtProperty.UI_DATETIME_FORMAT);
+	}
+
 	public static Double getStep(final Double minValue, final Double maxValue) {
 		Assertion.check()
 				.isNotNull(minValue)
