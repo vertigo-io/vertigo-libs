@@ -11,6 +11,8 @@
     "animate.css": "^4.1.1",
     "axios": "^0.24.0",
     "core-js": "^3.20.3",
+    "d3-color": "^3.1.0",
+    "d3-interpolate": "^3.0.1",
     "ionicons": "^6.0.1"
   },
   "devDependencies": {
@@ -18,10 +20,10 @@
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^6.2.2",
     "ol": "^5.3.3",
-    "vue": "^3.2.47",
     "quasar": "^2.11.10",
     "vite": "^2.8.4",
-    "vite-plugin-externals": "^0.4.0"
+    "vite-plugin-externals": "^0.4.0",
+    "vue": "^3.2.47"
   },
   "eslintConfig": {
     "root": true,

@@ -5,7 +5,7 @@ var _export_sfc = (sfc, props) => {
   }
   return target;
 };
-const _sfc_main$c = {
+const _sfc_main$d = {
   props: {
     botUrl: { type: String, required: true },
     devMode: { type: Boolean, "default": false },
@@ -79,11 +79,13 @@ const _sfc_main$c = {
           this.watingMessagesStack.push(value2);
         }, this);
         this._displayMessages();
-      }.bind(this)).catch(function() {
-        this.error = true;
-        this.processing = false;
-        this._scrollToBottom();
-      }.bind(this));
+      }.bind(this)).catch(
+        function() {
+          this.error = true;
+          this.processing = false;
+          this._scrollToBottom();
+        }.bind(this)
+      );
     },
     _displayMessages: function() {
       if (this.watingMessagesStack.length > 0) {
@@ -164,8 +166,8 @@ const _sfc_main$c = {
 };
 const _renderList$8 = window["Vue"].renderList;
 const _Fragment$8 = window["Vue"].Fragment;
-const _openBlock$c = window["Vue"].openBlock;
-const _createElementBlock$b = window["Vue"].createElementBlock;
+const _openBlock$d = window["Vue"].openBlock;
+const _createElementBlock$c = window["Vue"].createElementBlock;
 const _resolveComponent$b = window["Vue"].resolveComponent;
 const _createVNode$9 = window["Vue"].createVNode;
 const _withCtx$a = window["Vue"].withCtx;
@@ -174,7 +176,7 @@ const _createCommentVNode$6 = window["Vue"].createCommentVNode;
 const _toDisplayString$a = window["Vue"].toDisplayString;
 const _createElementVNode$7 = window["Vue"].createElementVNode;
 const _withKeys$1 = window["Vue"].withKeys;
-const _hoisted_1$a = { class: "bot" };
+const _hoisted_1$b = { class: "bot" };
 const _hoisted_2$5 = { class: "q-pr-md" };
 const _hoisted_3$4 = { class: "sys-chat" };
 const _hoisted_4$3 = { class: "q-pb-sm" };
@@ -184,23 +186,23 @@ const _hoisted_7$1 = { class: "row docs-btn" };
 const _hoisted_8$1 = { class: "message-processing sys-chat non-selectable" };
 const _hoisted_9$1 = { class: "non-selectable" };
 const _hoisted_10 = { class: "message-response row docs-btn q-pl-sm non-selectable" };
-function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_rating = _resolveComponent$b("q-rating");
   const _component_q_chat_message = _resolveComponent$b("q-chat-message");
   const _component_q_btn = _resolveComponent$b("q-btn");
   const _component_q_spinner_dots = _resolveComponent$b("q-spinner-dots");
   const _component_q_scroll_area = _resolveComponent$b("q-scroll-area");
   const _component_q_input = _resolveComponent$b("q-input");
-  return _openBlock$c(), _createElementBlock$b("div", _hoisted_1$a, [
+  return _openBlock$d(), _createElementBlock$c("div", _hoisted_1$b, [
     _createVNode$9(_component_q_scroll_area, {
       class: "bg-grey-2 col-grow row q-pa-sm",
       ref: "scroller"
     }, {
       default: _withCtx$a(() => [
         _createElementVNode$7("div", _hoisted_2$5, [
-          (_openBlock$c(true), _createElementBlock$b(_Fragment$8, null, _renderList$8(_ctx.messages, (msg, index) => {
-            return _openBlock$c(), _createElementBlock$b("div", { key: index }, [
-              msg.rating ? (_openBlock$c(), _createBlock$9(_component_q_chat_message, {
+          (_openBlock$d(true), _createElementBlock$c(_Fragment$8, null, _renderList$8(_ctx.messages, (msg, index) => {
+            return _openBlock$d(), _createElementBlock$c("div", { key: index }, [
+              msg.rating ? (_openBlock$d(), _createBlock$9(_component_q_chat_message, {
                 class: "animate-fade",
                 key: "msgRating-" + index,
                 sent: msg.sent,
@@ -218,7 +220,7 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
                 ]),
                 _: 2
               }, 1032, ["sent", "bg-color", "avatar"])) : _createCommentVNode$6("", true),
-              msg.text ? (_openBlock$c(), _createBlock$9(_component_q_chat_message, {
+              msg.text ? (_openBlock$d(), _createBlock$9(_component_q_chat_message, {
                 class: "animate-fade",
                 key: "msg-" + index,
                 label: msg.label,
@@ -233,7 +235,7 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
             ]);
           }), 128)),
           _createElementVNode$7("div", _hoisted_3$4, [
-            _ctx.error ? (_openBlock$c(), _createBlock$9(_component_q_chat_message, {
+            _ctx.error ? (_openBlock$d(), _createBlock$9(_component_q_chat_message, {
               key: 0,
               class: "animate-fade",
               "bg-color": "orange-4",
@@ -254,7 +256,7 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
             })) : _createCommentVNode$6("", true)
           ]),
           _createElementVNode$7("div", _hoisted_5$3, [
-            _ctx.inputConfig.buttons.length > 0 ? (_openBlock$c(), _createBlock$9(_component_q_chat_message, {
+            _ctx.inputConfig.buttons.length > 0 ? (_openBlock$d(), _createBlock$9(_component_q_chat_message, {
               key: 0,
               class: "animate-fade",
               "bg-color": "primary",
@@ -263,8 +265,8 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
               default: _withCtx$a(() => [
                 _createElementVNode$7("div", _hoisted_6$2, _toDisplayString$a(_ctx.$q.lang.vui.suggestedAnswers), 1),
                 _createElementVNode$7("div", _hoisted_7$1, [
-                  (_openBlock$c(true), _createElementBlock$b(_Fragment$8, null, _renderList$8(_ctx.inputConfig.buttons, (btn, index) => {
-                    return _openBlock$c(), _createBlock$9(_component_q_btn, {
+                  (_openBlock$d(true), _createElementBlock$c(_Fragment$8, null, _renderList$8(_ctx.inputConfig.buttons, (btn, index) => {
+                    return _openBlock$d(), _createBlock$9(_component_q_btn, {
                       class: "full-width",
                       key: "repChatBtn-" + index,
                       onClick: ($event) => $options.postAnswerBtn(btn),
@@ -279,7 +281,7 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
             })) : _createCommentVNode$6("", true)
           ]),
           _createElementVNode$7("div", _hoisted_8$1, [
-            _ctx.processing ? (_openBlock$c(), _createBlock$9(_component_q_chat_message, {
+            _ctx.processing ? (_openBlock$d(), _createBlock$9(_component_q_chat_message, {
               key: 0,
               class: "animate-fade",
               "bg-color": "grey-4"
@@ -291,7 +293,7 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
             })) : _createCommentVNode$6("", true)
           ]),
           _createElementVNode$7("div", _hoisted_9$1, [
-            _ctx.inputConfig.showRating ? (_openBlock$c(), _createBlock$9(_component_q_chat_message, {
+            _ctx.inputConfig.showRating ? (_openBlock$d(), _createBlock$9(_component_q_chat_message, {
               key: 0,
               class: "animate-fade",
               "bg-color": "primary",
@@ -332,7 +334,7 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
         onClick: _cache[4] || (_cache[4] = ($event) => $options.postAnswerText()),
         disable: _ctx.processing || _ctx.inputConfig.responseText.trim() === "" && _ctx.inputConfig.rating === 0
       }, null, 8, ["disable"]),
-      $props.devMode === true ? (_openBlock$c(), _createBlock$9(_component_q_btn, {
+      $props.devMode === true ? (_openBlock$d(), _createBlock$9(_component_q_btn, {
         key: 0,
         round: "",
         color: "red",
@@ -342,8 +344,8 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ]);
 }
-var VChatbot = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$c]]);
-const _sfc_main$b = {
+var VChatbot = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$d]]);
+const _sfc_main$c = {
   data: function() {
     return {
       text: "",
@@ -484,8 +486,8 @@ const _sfc_main$b = {
   }
 };
 const _toDisplayString$9 = window["Vue"].toDisplayString;
-const _openBlock$b = window["Vue"].openBlock;
-const _createElementBlock$a = window["Vue"].createElementBlock;
+const _openBlock$c = window["Vue"].openBlock;
+const _createElementBlock$b = window["Vue"].createElementBlock;
 const _createCommentVNode$5 = window["Vue"].createCommentVNode;
 const _resolveComponent$a = window["Vue"].resolveComponent;
 const _withCtx$9 = window["Vue"].withCtx;
@@ -496,7 +498,7 @@ const _Fragment$7 = window["Vue"].Fragment;
 const _withKeys = window["Vue"].withKeys;
 const _createVNode$8 = window["Vue"].createVNode;
 const _createTextVNode$5 = window["Vue"].createTextVNode;
-const _hoisted_1$9 = {
+const _hoisted_1$a = {
   key: 0,
   style: { "line-height": "40px", "opacity": "0.5", "position": "fixed" }
 };
@@ -520,13 +522,13 @@ const _hoisted_6$1 = {
   class: "col shadow-2 bg-secondary text-white q-px-md",
   style: { "line-height": "40px" }
 };
-function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_select = _resolveComponent$a("q-select");
   const _component_q_input = _resolveComponent$a("q-input");
   const _component_q_separator = _resolveComponent$a("q-separator");
   const _component_q_btn = _resolveComponent$a("q-btn");
-  return _openBlock$b(), _createElementBlock$a("div", null, [
-    !_ctx.isCommandCommited ? (_openBlock$b(), _createBlock$8(_component_q_select, {
+  return _openBlock$c(), _createElementBlock$b("div", null, [
+    !_ctx.isCommandCommited ? (_openBlock$c(), _createBlock$8(_component_q_select, {
       key: 0,
       placeholder: _ctx.$q.lang.vui.commands.globalPlaceholder,
       outlined: "",
@@ -545,19 +547,19 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
       "onUpdate:modelValue": $options.selectCommand
     }, {
       default: _withCtx$9(() => [
-        _ctx.text !== "" && _ctx.selectedCommand.commandName && _ctx.selectedCommand.commandName.startsWith(_ctx.text) ? (_openBlock$b(), _createElementBlock$a("span", _hoisted_1$9, _toDisplayString$9(_ctx.selectedCommand.commandName), 1)) : _createCommentVNode$5("", true)
+        _ctx.text !== "" && _ctx.selectedCommand.commandName && _ctx.selectedCommand.commandName.startsWith(_ctx.text) ? (_openBlock$c(), _createElementBlock$b("span", _hoisted_1$a, _toDisplayString$9(_ctx.selectedCommand.commandName), 1)) : _createCommentVNode$5("", true)
       ]),
       _: 1
-    }, 8, ["placeholder", "onBlur", "onKeydown", "options", "onFilter", "onUpdate:modelValue"])) : (_openBlock$b(), _createElementBlock$a("div", {
+    }, 8, ["placeholder", "onBlur", "onKeydown", "options", "onFilter", "onUpdate:modelValue"])) : (_openBlock$c(), _createElementBlock$b("div", {
       key: 1,
       class: "row col-12 justify-between bg-white round-borders overflow-hidden shadow-2 text-black",
       onKeyup: _cache[0] || (_cache[0] = _withKeys((...args) => $options.executeCommand && $options.executeCommand(...args), ["enter"]))
     }, [
       _createElementVNode$6("div", _hoisted_2$4, _toDisplayString$9(_ctx.selectedCommand.commandName), 1),
-      !_ctx.isExecuted ? (_openBlock$b(), _createElementBlock$a("div", _hoisted_3$3, [
-        _ctx.selectedCommand.commandParams && _ctx.selectedCommand.commandParams.length > 0 ? (_openBlock$b(true), _createElementBlock$a(_Fragment$7, { key: 0 }, _renderList$7(_ctx.selectedCommand.commandParams, (param, index) => {
-          return _openBlock$b(), _createElementBlock$a(_Fragment$7, { key: param }, [
-            param.paramType.rawType === "io.vertigo.commons.command.GenericUID" ? (_openBlock$b(), _createBlock$8(_component_q_select, {
+      !_ctx.isExecuted ? (_openBlock$c(), _createElementBlock$b("div", _hoisted_3$3, [
+        _ctx.selectedCommand.commandParams && _ctx.selectedCommand.commandParams.length > 0 ? (_openBlock$c(true), _createElementBlock$b(_Fragment$7, { key: 0 }, _renderList$7(_ctx.selectedCommand.commandParams, (param, index) => {
+          return _openBlock$c(), _createElementBlock$b(_Fragment$7, { key: param }, [
+            param.paramType.rawType === "io.vertigo.commons.command.GenericUID" ? (_openBlock$c(), _createBlock$8(_component_q_select, {
               key: 0,
               class: "col q-px-xs",
               "use-chips": "",
@@ -579,7 +581,7 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
               onFilter: ($event) => $options.autocompleteParam(param, index, _ctx.val, _ctx.update, _ctx.abort),
               "onUpdate:modelValue": ($event) => $options.selectParam(_ctx.newValue, index),
               style: { "height": "32px" }
-            }, null, 8, ["value", "options", "autofocus", "onKeydown", "onKeyup", "onFilter", "onUpdate:modelValue"])) : (_openBlock$b(), _createBlock$8(_component_q_input, {
+            }, null, 8, ["value", "options", "autofocus", "onKeydown", "onKeyup", "onFilter", "onUpdate:modelValue"])) : (_openBlock$c(), _createBlock$8(_component_q_input, {
               key: 1,
               class: "col q-px-xs",
               color: "secondary",
@@ -597,7 +599,7 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
             }, null, 8, ["modelValue", "onUpdate:modelValue", "onKeydown", "onKeyup", "autofocus"])),
             _createVNode$8(_component_q_separator, { vertical: "" })
           ], 64);
-        }), 128)) : (_openBlock$b(), _createElementBlock$a("div", _hoisted_4$2, _toDisplayString$9(_ctx.$q.lang.vui.commands.executeCommand), 1)),
+        }), 128)) : (_openBlock$c(), _createElementBlock$b("div", _hoisted_4$2, _toDisplayString$9(_ctx.$q.lang.vui.commands.executeCommand), 1)),
         _createVNode$8(_component_q_btn, {
           onClick: $options.executeCommand,
           flat: "",
@@ -605,9 +607,9 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
           size: "sm",
           round: ""
         }, null, 8, ["onClick"])
-      ])) : (_openBlock$b(), _createElementBlock$a("div", _hoisted_5$2, [
+      ])) : (_openBlock$c(), _createElementBlock$b("div", _hoisted_5$2, [
         _createElementVNode$6("div", _hoisted_6$1, _toDisplayString$9(_ctx.commandResult.display), 1),
-        _ctx.commandResult.targetUrl ? (_openBlock$b(), _createBlock$8(_component_q_btn, {
+        _ctx.commandResult.targetUrl ? (_openBlock$c(), _createBlock$8(_component_q_btn, {
           key: 0,
           type: "a",
           href: $props.baseUrl + _ctx.commandResult.targetUrl,
@@ -629,9 +631,9 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
     ], 32))
   ]);
 }
-var VCommands = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$b]]);
+var VCommands = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$c]]);
 const Quasar$7 = window["Quasar"];
-const _sfc_main$a = {
+const _sfc_main$b = {
   props: {
     concept: { type: String },
     id: { type: String },
@@ -695,17 +697,17 @@ const _toDisplayString$8 = window["Vue"].toDisplayString;
 const _createTextVNode$4 = window["Vue"].createTextVNode;
 const _resolveComponent$9 = window["Vue"].resolveComponent;
 const _withCtx$8 = window["Vue"].withCtx;
-const _openBlock$a = window["Vue"].openBlock;
+const _openBlock$b = window["Vue"].openBlock;
 const _createBlock$7 = window["Vue"].createBlock;
 const _createCommentVNode$4 = window["Vue"].createCommentVNode;
 const _createVNode$7 = window["Vue"].createVNode;
 const _renderList$6 = window["Vue"].renderList;
 const _Fragment$6 = window["Vue"].Fragment;
-const _createElementBlock$9 = window["Vue"].createElementBlock;
+const _createElementBlock$a = window["Vue"].createElementBlock;
 const _createElementVNode$5 = window["Vue"].createElementVNode;
 const _normalizeClass$2 = window["Vue"].normalizeClass;
-const _hoisted_1$8 = ["src"];
-function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$9 = ["src"];
+function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_badge = _resolveComponent$9("q-badge");
   const _component_q_btn = _resolveComponent$9("q-btn");
   const _component_big = _resolveComponent$9("big");
@@ -719,7 +721,7 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_popup_edit = _resolveComponent$9("q-popup-edit");
   const _component_q_list = _resolveComponent$9("q-list");
   const _component_q_drawer = _resolveComponent$9("q-drawer");
-  return _openBlock$a(), _createElementBlock$9("span", null, [
+  return _openBlock$b(), _createElementBlock$a("span", null, [
     _createVNode$7(_component_q_btn, {
       round: "",
       size: "lg",
@@ -730,7 +732,7 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
       class: "on-left"
     }, {
       default: _withCtx$8(() => [
-        _ctx.count > 0 ? (_openBlock$a(), _createBlock$7(_component_q_badge, {
+        _ctx.count > 0 ? (_openBlock$b(), _createBlock$7(_component_q_badge, {
           key: 0,
           floating: "",
           small: "",
@@ -801,8 +803,8 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
               _: 1
             }),
             _createVNode$7(_component_q_separator),
-            (_openBlock$a(true), _createElementBlock$9(_Fragment$6, null, _renderList$6(_ctx.list, (comment) => {
-              return _openBlock$a(), _createBlock$7(_component_q_item, {
+            (_openBlock$b(true), _createElementBlock$a(_Fragment$6, null, _renderList$6(_ctx.list, (comment) => {
+              return _openBlock$b(), _createBlock$7(_component_q_item, {
                 key: comment.uuid,
                 class: _normalizeClass$2(["items-start", { "cursor-pointer": comment.author == $props.connectedAccount }])
               }, {
@@ -813,7 +815,7 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
                         default: _withCtx$8(() => [
                           _createElementVNode$5("img", {
                             src: $props.baseUrl + "x/accounts/api/" + comment.author + "/photo"
-                          }, null, 8, _hoisted_1$8)
+                          }, null, 8, _hoisted_1$9)
                         ]),
                         _: 2
                       }, 1024)
@@ -840,14 +842,14 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
                         ]),
                         _: 2
                       }, 1024),
-                      comment.author == $props.connectedAccount ? (_openBlock$a(), _createBlock$7(_component_q_icon, {
+                      comment.author == $props.connectedAccount ? (_openBlock$b(), _createBlock$7(_component_q_icon, {
                         key: 0,
                         name: "edit"
                       })) : _createCommentVNode$4("", true)
                     ]),
                     _: 2
                   }, 1024),
-                  comment.author == $props.connectedAccount ? (_openBlock$a(), _createBlock$7(_component_q_popup_edit, {
+                  comment.author == $props.connectedAccount ? (_openBlock$b(), _createBlock$7(_component_q_popup_edit, {
                     key: 0,
                     buttons: true,
                     onSave: ($event) => $options.updateComment(comment),
@@ -877,8 +879,8 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
     }, 8, ["modelValue"])
   ]);
 }
-var VComments = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$a]]);
-const _sfc_main$9 = {
+var VComments = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$b]]);
+const _sfc_main$a = {
   props: {
     activeSkills: { type: Array, required: true }
   },
@@ -904,35 +906,35 @@ const _sfc_main$9 = {
     this.extensions = availableExtensions;
   },
   methods: {
-    getIconStyle: function(color) {
-      return "border: 3px solid " + color + "; background-color: " + color + "; color: white; padding: 5px; width: 70px; height: 70px;";
+    getIconStyle: function(color2) {
+      return "border: 3px solid " + color2 + "; background-color: " + color2 + "; color: white; padding: 5px; width: 70px; height: 70px;";
     }
   }
 };
 const _renderList$5 = window["Vue"].renderList;
 const _Fragment$5 = window["Vue"].Fragment;
-const _openBlock$9 = window["Vue"].openBlock;
-const _createElementBlock$8 = window["Vue"].createElementBlock;
+const _openBlock$a = window["Vue"].openBlock;
+const _createElementBlock$9 = window["Vue"].createElementBlock;
 const _resolveComponent$8 = window["Vue"].resolveComponent;
 const _normalizeStyle = window["Vue"].normalizeStyle;
 const _createVNode$6 = window["Vue"].createVNode;
 const _withCtx$7 = window["Vue"].withCtx;
 const _toDisplayString$7 = window["Vue"].toDisplayString;
 const _createElementVNode$4 = window["Vue"].createElementVNode;
-const _hoisted_1$7 = { class: "row q-col-gutter-md" };
+const _hoisted_1$8 = { class: "row q-col-gutter-md" };
 const _hoisted_2$3 = { class: "row col items-center" };
 const _hoisted_3$2 = { class: "q-subheading text-bold" };
 const _hoisted_4$1 = /* @__PURE__ */ _createElementVNode$4("div", { class: "col" }, null, -1);
 const _hoisted_5$1 = { class: "row col q-body-2 text-justify" };
-function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_icon = _resolveComponent$8("q-icon");
   const _component_q_item_section = _resolveComponent$8("q-item-section");
   const _component_q_toggle = _resolveComponent$8("q-toggle");
   const _component_q_item = _resolveComponent$8("q-item");
   const _component_q_card = _resolveComponent$8("q-card");
-  return _openBlock$9(), _createElementBlock$8("div", _hoisted_1$7, [
-    (_openBlock$9(true), _createElementBlock$8(_Fragment$5, null, _renderList$5(_ctx.extensions, (extension) => {
-      return _openBlock$9(), _createElementBlock$8("div", {
+  return _openBlock$a(), _createElementBlock$9("div", _hoisted_1$8, [
+    (_openBlock$a(true), _createElementBlock$9(_Fragment$5, null, _renderList$5(_ctx.extensions, (extension) => {
+      return _openBlock$a(), _createElementBlock$9("div", {
         class: "col-xs-12 col-lg-6 col-xl-4",
         key: extension.name
       }, [
@@ -982,8 +984,8 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
     }), 128))
   ]);
 }
-var VExtensionsStore = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$9]]);
-const _sfc_main$8 = {
+var VExtensionsStore = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$a]]);
+const _sfc_main$9 = {
   props: {
     facets: Array,
     selectedFacets: Object,
@@ -1067,8 +1069,8 @@ const _sfc_main$8 = {
 };
 const _renderList$4 = window["Vue"].renderList;
 const _Fragment$4 = window["Vue"].Fragment;
-const _openBlock$8 = window["Vue"].openBlock;
-const _createElementBlock$7 = window["Vue"].createElementBlock;
+const _openBlock$9 = window["Vue"].openBlock;
+const _createElementBlock$8 = window["Vue"].createElementBlock;
 const _toDisplayString$6 = window["Vue"].toDisplayString;
 const _createTextVNode$3 = window["Vue"].createTextVNode;
 const _resolveComponent$7 = window["Vue"].resolveComponent;
@@ -1076,12 +1078,12 @@ const _withCtx$6 = window["Vue"].withCtx;
 const _createBlock$6 = window["Vue"].createBlock;
 const _createCommentVNode$3 = window["Vue"].createCommentVNode;
 const _createVNode$5 = window["Vue"].createVNode;
-const _hoisted_1$6 = { class: "facets" };
+const _hoisted_1$7 = { class: "facets" };
 const _hoisted_2$2 = {
   key: 0,
   class: "selectedFacets q-pb-md"
 };
-function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_chip = _resolveComponent$7("q-chip");
   const _component_big = _resolveComponent$7("big");
   const _component_q_item_label = _resolveComponent$7("q-item-label");
@@ -1090,12 +1092,12 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_item = _resolveComponent$7("q-item");
   const _component_q_btn = _resolveComponent$7("q-btn");
   const _component_q_list = _resolveComponent$7("q-list");
-  return _openBlock$8(), _createElementBlock$7("div", _hoisted_1$6, [
-    $options.isAnyFacetValueSelected() ? (_openBlock$8(), _createElementBlock$7("div", _hoisted_2$2, [
-      (_openBlock$8(true), _createElementBlock$7(_Fragment$4, null, _renderList$4($props.selectedFacets, (selectedFacetValues, selectedFacet) => {
-        return _openBlock$8(), _createElementBlock$7("div", { key: selectedFacet }, [
-          !$options.facetMultipleByCode(selectedFacet) ? (_openBlock$8(true), _createElementBlock$7(_Fragment$4, { key: 0 }, _renderList$4(selectedFacetValues, (selectedFacetValue) => {
-            return _openBlock$8(), _createBlock$6(_component_q_chip, {
+  return _openBlock$9(), _createElementBlock$8("div", _hoisted_1$7, [
+    $options.isAnyFacetValueSelected() ? (_openBlock$9(), _createElementBlock$8("div", _hoisted_2$2, [
+      (_openBlock$9(true), _createElementBlock$8(_Fragment$4, null, _renderList$4($props.selectedFacets, (selectedFacetValues, selectedFacet) => {
+        return _openBlock$9(), _createElementBlock$8("div", { key: selectedFacet }, [
+          !$options.facetMultipleByCode(selectedFacet) ? (_openBlock$9(true), _createElementBlock$8(_Fragment$4, { key: 0 }, _renderList$4(selectedFacetValues, (selectedFacetValue) => {
+            return _openBlock$9(), _createBlock$6(_component_q_chip, {
               clickable: "",
               class: "q-mb-sm",
               key: selectedFacetValue.code,
@@ -1111,14 +1113,14 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
         ]);
       }), 128))
     ])) : _createCommentVNode$3("", true),
-    (_openBlock$8(true), _createElementBlock$7(_Fragment$4, null, _renderList$4($props.facets, (facet) => {
-      return _openBlock$8(), _createBlock$6(_component_q_list, {
+    (_openBlock$9(true), _createElementBlock$8(_Fragment$4, null, _renderList$4($props.facets, (facet) => {
+      return _openBlock$9(), _createBlock$6(_component_q_list, {
         key: facet.code,
         class: "facetValues q-py-none",
         dense: ""
       }, {
         default: _withCtx$6(() => [
-          facet.multiple || !$options.isFacetSelected(facet.code) ? (_openBlock$8(), _createElementBlock$7(_Fragment$4, { key: 0 }, [
+          facet.multiple || !$options.isFacetSelected(facet.code) ? (_openBlock$9(), _createElementBlock$8(_Fragment$4, { key: 0 }, [
             _createVNode$5(_component_q_item_label, { header: "" }, {
               default: _withCtx$6(() => [
                 _createVNode$5(_component_big, null, {
@@ -1130,15 +1132,15 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
               ]),
               _: 2
             }, 1024),
-            (_openBlock$8(true), _createElementBlock$7(_Fragment$4, null, _renderList$4($options.selectedInvisibleFacets(facet.code), (value) => {
-              return _openBlock$8(), _createBlock$6(_component_q_item, {
+            (_openBlock$9(true), _createElementBlock$8(_Fragment$4, null, _renderList$4($options.selectedInvisibleFacets(facet.code), (value) => {
+              return _openBlock$9(), _createBlock$6(_component_q_item, {
                 key: value.code,
                 class: "facetValue q-ml-md",
                 clickable: "",
                 onClick: ($event) => _ctx.$emit("toogle-facet", facet.code, value.code, $props.contextKey)
               }, {
                 default: _withCtx$6(() => [
-                  facet.multiple ? (_openBlock$8(), _createBlock$6(_component_q_item_section, {
+                  facet.multiple ? (_openBlock$9(), _createBlock$6(_component_q_item_section, {
                     key: 0,
                     side: ""
                   }, {
@@ -1167,15 +1169,15 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
                 _: 2
               }, 1032, ["onClick"]);
             }), 128)),
-            (_openBlock$8(true), _createElementBlock$7(_Fragment$4, null, _renderList$4($options.visibleFacets(facet.code, facet.values), (value) => {
-              return _openBlock$8(), _createBlock$6(_component_q_item, {
+            (_openBlock$9(true), _createElementBlock$8(_Fragment$4, null, _renderList$4($options.visibleFacets(facet.code, facet.values), (value) => {
+              return _openBlock$9(), _createBlock$6(_component_q_item, {
                 key: value.code,
                 class: "facetValue q-ml-md",
                 clickable: "",
                 onClick: ($event) => _ctx.$emit("toogle-facet", facet.code, value.code, $props.contextKey)
               }, {
                 default: _withCtx$6(() => [
-                  facet.multiple ? (_openBlock$8(), _createBlock$6(_component_q_item_section, {
+                  facet.multiple ? (_openBlock$9(), _createBlock$6(_component_q_item_section, {
                     key: 0,
                     side: ""
                   }, {
@@ -1204,7 +1206,7 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
                 _: 2
               }, 1032, ["onClick"]);
             }), 128)),
-            facet.values.length > $props.maxValues && !$options.isFacetExpanded(facet.code) ? (_openBlock$8(), _createBlock$6(_component_q_btn, {
+            facet.values.length > $props.maxValues && !$options.isFacetExpanded(facet.code) ? (_openBlock$9(), _createBlock$6(_component_q_btn, {
               key: 0,
               flat: "",
               onClick: ($event) => $options.expandFacet(facet.code)
@@ -1214,7 +1216,7 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
               ]),
               _: 2
             }, 1032, ["onClick"])) : _createCommentVNode$3("", true),
-            facet.values.length > $props.maxValues && $options.isFacetExpanded(facet.code) ? (_openBlock$8(), _createBlock$6(_component_q_btn, {
+            facet.values.length > $props.maxValues && $options.isFacetExpanded(facet.code) ? (_openBlock$9(), _createBlock$6(_component_q_btn, {
               key: 1,
               flat: "",
               onClick: ($event) => $options.reduceFacet(facet.code)
@@ -1231,8 +1233,8 @@ function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     }), 128))
   ]);
 }
-var VFacets = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$8]]);
-const _sfc_main$7 = {
+var VFacets = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$9]]);
+const _sfc_main$8 = {
   props: {
     modelValue: { type: Object }
   },
@@ -1264,12 +1266,12 @@ const _sfc_main$7 = {
 };
 const _resolveComponent$6 = window["Vue"].resolveComponent;
 const _createVNode$4 = window["Vue"].createVNode;
-const _openBlock$7 = window["Vue"].openBlock;
-const _createElementBlock$6 = window["Vue"].createElementBlock;
-const _hoisted_1$5 = { class: "row" };
-function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+const _openBlock$8 = window["Vue"].openBlock;
+const _createElementBlock$7 = window["Vue"].createElementBlock;
+const _hoisted_1$6 = { class: "row" };
+function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_input = _resolveComponent$6("q-input");
-  return _openBlock$7(), _createElementBlock$6("div", _hoisted_1$5, [
+  return _openBlock$8(), _createElementBlock$7("div", _hoisted_1$6, [
     _createVNode$4(_component_q_input, {
       label: "Longitude",
       "stack-label": "",
@@ -1292,8 +1294,8 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["modelValue", "onUpdate:modelValue"])
   ]);
 }
-var VGeopointInput = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$7]]);
-const _sfc_main$6 = {
+var VGeopointInput = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$8]]);
+const _sfc_main$7 = {
   props: {
     baseUrl: { type: String, "default": "/" }
   },
@@ -1318,21 +1320,21 @@ const _createVNode$3 = window["Vue"].createVNode;
 const _withCtx$5 = window["Vue"].withCtx;
 const _renderList$3 = window["Vue"].renderList;
 const _Fragment$3 = window["Vue"].Fragment;
-const _openBlock$6 = window["Vue"].openBlock;
-const _createElementBlock$5 = window["Vue"].createElementBlock;
+const _openBlock$7 = window["Vue"].openBlock;
+const _createElementBlock$6 = window["Vue"].createElementBlock;
 const _toDisplayString$5 = window["Vue"].toDisplayString;
 const _createTextVNode$2 = window["Vue"].createTextVNode;
 const _resolveDirective = window["Vue"].resolveDirective;
 const _createBlock$5 = window["Vue"].createBlock;
 const _withDirectives = window["Vue"].withDirectives;
-function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_icon = _resolveComponent$5("q-icon");
   const _component_q_input = _resolveComponent$5("q-input");
   const _component_q_item_section = _resolveComponent$5("q-item-section");
   const _component_q_item = _resolveComponent$5("q-item");
   const _component_q_list = _resolveComponent$5("q-list");
   const _directive_ripple = _resolveDirective("ripple");
-  return _openBlock$6(), _createElementBlock$5("div", null, [
+  return _openBlock$7(), _createElementBlock$6("div", null, [
     _createVNode$3(_component_q_input, {
       placeholder: _ctx.$q.lang.vui.handles.placeholder,
       modelValue: _ctx.text,
@@ -1355,8 +1357,8 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
       separator: ""
     }, {
       default: _withCtx$5(() => [
-        (_openBlock$6(true), _createElementBlock$5(_Fragment$3, null, _renderList$3(_ctx.handles, (handle) => {
-          return _withDirectives((_openBlock$6(), _createBlock$5(_component_q_item, {
+        (_openBlock$7(true), _createElementBlock$6(_Fragment$3, null, _renderList$3(_ctx.handles, (handle) => {
+          return _withDirectives((_openBlock$7(), _createBlock$5(_component_q_item, {
             clickable: "",
             onClick: ($event) => _ctx.VUi.methods.goTo($props.baseUrl + "hw/" + handle.code),
             key: handle.code
@@ -1379,8 +1381,8 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
     })
   ]);
 }
-var VHandles = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6]]);
-const _sfc_main$5 = {
+var VHandles = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$7]]);
+const _sfc_main$6 = {
   props: {
     modelValue: { type: String, required: true },
     readonly: { type: Boolean, required: true },
@@ -1405,8 +1407,8 @@ const _sfc_main$5 = {
 };
 const _renderList$2 = window["Vue"].renderList;
 const _Fragment$2 = window["Vue"].Fragment;
-const _openBlock$5 = window["Vue"].openBlock;
-const _createElementBlock$4 = window["Vue"].createElementBlock;
+const _openBlock$6 = window["Vue"].openBlock;
+const _createElementBlock$5 = window["Vue"].createElementBlock;
 const _resolveComponent$4 = window["Vue"].resolveComponent;
 const _createBlock$4 = window["Vue"].createBlock;
 window["Vue"].createCommentVNode;
@@ -1414,24 +1416,24 @@ const _toDisplayString$4 = window["Vue"].toDisplayString;
 const _createElementVNode$3 = window["Vue"].createElementVNode;
 const _withCtx$4 = window["Vue"].withCtx;
 const _normalizeClass$1 = window["Vue"].normalizeClass;
-const _hoisted_1$4 = { class: "row" };
-function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_1$5 = { class: "row" };
+function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_input = _resolveComponent$4("q-input");
   const _component_q_field = _resolveComponent$4("q-field");
-  return _openBlock$5(), _createElementBlock$4("div", _hoisted_1$4, [
-    (_openBlock$5(true), _createElementBlock$4(_Fragment$2, null, _renderList$2(_ctx.jsonAsObject, (value, key) => {
-      return _openBlock$5(), _createElementBlock$4("div", {
+  return _openBlock$6(), _createElementBlock$5("div", _hoisted_1$5, [
+    (_openBlock$6(true), _createElementBlock$5(_Fragment$2, null, _renderList$2(_ctx.jsonAsObject, (value, key) => {
+      return _openBlock$6(), _createElementBlock$5("div", {
         key,
         class: _normalizeClass$1("col-" + 12 / $props.cols)
       }, [
-        !$props.readonly ? (_openBlock$5(), _createBlock$4(_component_q_input, {
+        !$props.readonly ? (_openBlock$6(), _createBlock$4(_component_q_input, {
           key: 0,
           label: key,
           orientation: "vertical",
           "stack-label": "",
           modelValue: _ctx.jsonAsObject[key],
           "onUpdate:modelValue": [($event) => _ctx.jsonAsObject[key] = $event, $options.updateJson]
-        }, null, 8, ["label", "modelValue", "onUpdate:modelValue"])) : (_openBlock$5(), _createBlock$4(_component_q_field, {
+        }, null, 8, ["label", "modelValue", "onUpdate:modelValue"])) : (_openBlock$6(), _createBlock$4(_component_q_field, {
           key: 1,
           label: key,
           orientation: "vertical",
@@ -1448,9 +1450,9 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     }), 128))
   ]);
 }
-var VJsonEditor = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5]]);
+var VJsonEditor = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6]]);
 const Quasar$6 = window["Quasar"];
-const _sfc_main$4 = {
+const _sfc_main$5 = {
   props: {
     icon: { type: String, "default": "notifications" },
     iconNone: { type: String, "default": "notifications_none" },
@@ -1555,14 +1557,14 @@ const _toDisplayString$3 = window["Vue"].toDisplayString;
 const _createTextVNode$1 = window["Vue"].createTextVNode;
 const _resolveComponent$3 = window["Vue"].resolveComponent;
 const _withCtx$3 = window["Vue"].withCtx;
-const _openBlock$4 = window["Vue"].openBlock;
+const _openBlock$5 = window["Vue"].openBlock;
 const _createBlock$3 = window["Vue"].createBlock;
 const _createCommentVNode$2 = window["Vue"].createCommentVNode;
 const _renderList$1 = window["Vue"].renderList;
 const _Fragment$1 = window["Vue"].Fragment;
-const _createElementBlock$3 = window["Vue"].createElementBlock;
+const _createElementBlock$4 = window["Vue"].createElementBlock;
 const _createVNode$2 = window["Vue"].createVNode;
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_badge = _resolveComponent$3("q-badge");
   const _component_q_icon = _resolveComponent$3("q-icon");
   const _component_q_item_section = _resolveComponent$3("q-item-section");
@@ -1571,7 +1573,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_list = _resolveComponent$3("q-list");
   const _component_q_menu = _resolveComponent$3("q-menu");
   const _component_q_btn = _resolveComponent$3("q-btn");
-  return _openBlock$4(), _createBlock$3(_component_q_btn, {
+  return _openBlock$5(), _createBlock$3(_component_q_btn, {
     round: "",
     dense: "",
     color: _ctx.hasNew ? "primary" : "white",
@@ -1580,7 +1582,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     class: "on-left"
   }, {
     default: _withCtx$3(() => [
-      _ctx.count > 0 ? (_openBlock$4(), _createBlock$3(_component_q_badge, {
+      _ctx.count > 0 ? (_openBlock$5(), _createBlock$3(_component_q_badge, {
         key: 0,
         color: "red",
         "text-color": "white",
@@ -1595,8 +1597,8 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
         default: _withCtx$3(() => [
           _createVNode$2(_component_q_list, { style: { "width": "300px" } }, {
             default: _withCtx$3(() => [
-              (_openBlock$4(true), _createElementBlock$3(_Fragment$1, null, _renderList$1(_ctx.list, (notif) => {
-                return _openBlock$4(), _createBlock$3(_component_q_item, {
+              (_openBlock$5(true), _createElementBlock$4(_Fragment$1, null, _renderList$1(_ctx.list, (notif) => {
+                return _openBlock$5(), _createBlock$3(_component_q_item, {
                   key: notif.uuid,
                   tag: "a",
                   href: notif.targetUrl
@@ -1659,10 +1661,10 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1
   }, 8, ["color", "textColor", "icon"]);
 }
-var VNotifications = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4]]);
+var VNotifications = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5]]);
 const Quasar$5 = window["Quasar"];
 const ol$1 = window["ol"];
-const _sfc_main$3 = {
+const _sfc_main$4 = {
   props: {
     id: { type: String, required: true },
     initialZoomLevel: { type: Number },
@@ -1724,18 +1726,18 @@ const _sfc_main$3 = {
 const _normalizeProps$1 = window["Vue"].normalizeProps;
 const _guardReactiveProps$1 = window["Vue"].guardReactiveProps;
 const _renderSlot$1 = window["Vue"].renderSlot;
-const _openBlock$3 = window["Vue"].openBlock;
-const _createElementBlock$2 = window["Vue"].createElementBlock;
-const _hoisted_1$3 = ["id"];
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
-  return _openBlock$3(), _createElementBlock$2("div", { id: $props.id }, [
+const _openBlock$4 = window["Vue"].openBlock;
+const _createElementBlock$3 = window["Vue"].createElementBlock;
+const _hoisted_1$4 = ["id"];
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+  return _openBlock$4(), _createElementBlock$3("div", { id: $props.id }, [
     _renderSlot$1(_ctx.$slots, "default", _normalizeProps$1(_guardReactiveProps$1(_ctx.$attrs)))
-  ], 8, _hoisted_1$3);
+  ], 8, _hoisted_1$4);
 }
-var VMap = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3]]);
+var VMap = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4]]);
 const Quasar$4 = window["Quasar"];
 const ol = window["ol"];
-const _sfc_main$2 = {
+const _sfc_main$3 = {
   props: {
     id: { type: String, required: true },
     list: { type: Array },
@@ -2001,9 +2003,12 @@ const _sfc_main$2 = {
         });
         this.olMap.addOverlay(popup);
         this.olMap.on("click", function(evt) {
-          var feature = this.olMap.forEachFeatureAtPixel(evt.pixel, function(feature2) {
-            return feature2;
-          });
+          var feature = this.olMap.forEachFeatureAtPixel(
+            evt.pixel,
+            function(feature2) {
+              return feature2;
+            }
+          );
           if (feature && feature.get("features").length == 1) {
             var coordinates = feature.getGeometry().getCoordinates();
             popup.setPosition(coordinates);
@@ -2026,9 +2031,12 @@ const _sfc_main$2 = {
         }.bind(this));
       } else {
         this.olMap.on("click", function(evt) {
-          var feature = this.olMap.forEachFeatureAtPixel(evt.pixel, function(feature2) {
-            return feature2;
-          });
+          var feature = this.olMap.forEachFeatureAtPixel(
+            evt.pixel,
+            function(feature2) {
+              return feature2;
+            }
+          );
           if (feature && feature.get("features").length == 1) {
             var coordinates = feature.getGeometry().getCoordinates();
             evt.stopPropagation();
@@ -2044,20 +2052,20 @@ const _toDisplayString$2 = window["Vue"].toDisplayString;
 const _createElementVNode$2 = window["Vue"].createElementVNode;
 const _resolveComponent$2 = window["Vue"].resolveComponent;
 const _withCtx$2 = window["Vue"].withCtx;
-const _openBlock$2 = window["Vue"].openBlock;
+const _openBlock$3 = window["Vue"].openBlock;
 const _createBlock$2 = window["Vue"].createBlock;
 const _createCommentVNode$1 = window["Vue"].createCommentVNode;
-const _createElementBlock$1 = window["Vue"].createElementBlock;
-const _hoisted_1$2 = ["id"];
+const _createElementBlock$2 = window["Vue"].createElementBlock;
+const _hoisted_1$3 = ["id"];
 const _hoisted_2$1 = ["id"];
 const _hoisted_3$1 = { class: "text-subtitle2" };
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_card = _resolveComponent$2("q-card");
-  return _openBlock$2(), _createElementBlock$1("div", { id: $props.id }, [
+  return _openBlock$3(), _createElementBlock$2("div", { id: $props.id }, [
     _createElementVNode$2("div", {
       id: $props.id + "Popup"
     }, [
-      _ctx.popupDisplayed ? (_openBlock$2(), _createBlock$2(_component_q_card, {
+      _ctx.popupDisplayed ? (_openBlock$3(), _createBlock$2(_component_q_card, {
         key: 0,
         class: "q-px-md"
       }, {
@@ -2069,11 +2077,11 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
         _: 3
       })) : _createCommentVNode$1("", true)
     ], 8, _hoisted_2$1)
-  ], 8, _hoisted_1$2);
+  ], 8, _hoisted_1$3);
 }
-var VMapLayer = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2]]);
+var VMapLayer = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3]]);
 const Quasar$3 = window["Quasar"];
-const _sfc_main$1 = {
+const _sfc_main$2 = {
   props: {
     modelValue: { type: String, required: true },
     list: { type: Array, required: true },
@@ -2141,23 +2149,23 @@ const _createElementVNode$1 = window["Vue"].createElementVNode;
 const _withCtx$1 = window["Vue"].withCtx;
 const _normalizeProps = window["Vue"].normalizeProps;
 const _guardReactiveProps = window["Vue"].guardReactiveProps;
-const _openBlock$1 = window["Vue"].openBlock;
+const _openBlock$2 = window["Vue"].openBlock;
 const _createBlock$1 = window["Vue"].createBlock;
-const _hoisted_1$1 = {
+const _hoisted_1$2 = {
   class: "self-center full-width no-outline",
   tabindex: "0"
 };
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_icon = _resolveComponent$1("q-icon");
   const _component_q_tree = _resolveComponent$1("q-tree");
   const _component_q_menu = _resolveComponent$1("q-menu");
   const _component_q_field = _resolveComponent$1("q-field");
-  return _openBlock$1(), _createBlock$1(_component_q_field, _normalizeProps(_guardReactiveProps(_ctx.$attrs)), {
+  return _openBlock$2(), _createBlock$1(_component_q_field, _normalizeProps(_guardReactiveProps(_ctx.$attrs)), {
     append: _withCtx$1(() => [
       _createVNode$1(_component_q_icon, { name: "arrow_drop_down" })
     ]),
     control: _withCtx$1(() => [
-      _createElementVNode$1("div", _hoisted_1$1, _toDisplayString$1($options.getSelectedLabel()), 1)
+      _createElementVNode$1("div", _hoisted_1$2, _toDisplayString$1($options.getSelectedLabel()), 1)
     ]),
     default: _withCtx$1(() => [
       _createVNode$1(_component_q_menu, {
@@ -2188,10 +2196,10 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1
   }, 16);
 }
-var VTree = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1]]);
+var VTree = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2]]);
 const format = window["Quasar"].format;
 const { humanStorageSize } = format;
-const _sfc_main = {
+const _sfc_main$1 = {
   props: {
     readonly: Boolean,
     label: String,
@@ -2215,13 +2223,15 @@ const _sfc_main = {
       this.files = uiFileInfos.map((uiFileInfo) => {
         return uiFileInfo;
       });
-    }.bind(this)).catch(function(error) {
-      if (error.response) {
-        this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file " + xhrParams);
-      } else {
-        this.$q.notify(error + " Can't load file " + xhrParams);
-      }
-    }.bind(this));
+    }.bind(this)).catch(
+      function(error) {
+        if (error.response) {
+          this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file " + xhrParams);
+        } else {
+          this.$q.notify(error + " Can't load file " + xhrParams);
+        }
+      }.bind(this)
+    );
   },
   data: function() {
     return {
@@ -2293,17 +2303,17 @@ const _createTextVNode = window["Vue"].createTextVNode;
 const _resolveComponent = window["Vue"].resolveComponent;
 const _withCtx = window["Vue"].withCtx;
 const _createVNode = window["Vue"].createVNode;
-const _openBlock = window["Vue"].openBlock;
+const _openBlock$1 = window["Vue"].openBlock;
 const _createBlock = window["Vue"].createBlock;
 const _createCommentVNode = window["Vue"].createCommentVNode;
-const _createElementBlock = window["Vue"].createElementBlock;
+const _createElementBlock$1 = window["Vue"].createElementBlock;
 const _createElementVNode = window["Vue"].createElementVNode;
 const _renderList = window["Vue"].renderList;
 const _Fragment = window["Vue"].Fragment;
 const _normalizeClass = window["Vue"].normalizeClass;
 const _mergeProps = window["Vue"].mergeProps;
 const _createSlots = window["Vue"].createSlots;
-const _hoisted_1 = { class: "row" };
+const _hoisted_1$1 = { class: "row" };
 const _hoisted_2 = { class: "col column justify-center" };
 const _hoisted_3 = { class: "q-uploader__file-header row flex-center no-wrap" };
 const _hoisted_4 = { class: "q-uploader__file-header-content col" };
@@ -2315,7 +2325,7 @@ const _hoisted_9 = {
   key: 0,
   class: "q-field__after q-field__marginal row no-wrap items-center"
 };
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_tooltip = _resolveComponent("q-tooltip");
   const _component_q_btn = _resolveComponent("q-btn");
   const _component_q_spinner = _resolveComponent("q-spinner");
@@ -2324,7 +2334,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_circular_progress = _resolveComponent("q-circular-progress");
   const _component_q_field = _resolveComponent("q-field");
   const _component_q_uploader = _resolveComponent("q-uploader");
-  return _openBlock(), _createBlock(_component_q_uploader, _mergeProps({
+  return _openBlock$1(), _createBlock(_component_q_uploader, _mergeProps({
     url: _ctx.$props.url,
     "auto-upload": "",
     "field-name": _ctx.$props.fieldName,
@@ -2335,7 +2345,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     readonly: _ctx.$props.readonly || !$options.globalCanAddFiles([])
   }, _ctx.$attrs, { ref: "quasarUploader" }), _createSlots({
     list: _withCtx((slotProps) => [
-      _createElementVNode("div", _hoisted_1, [
+      _createElementVNode("div", _hoisted_1$1, [
         _createVNode(_component_q_field, {
           "label-width": 3,
           label: _ctx.$props.simple ? _ctx.$props.label : void 0,
@@ -2346,11 +2356,11 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         }, {
           control: _withCtx(() => [
             _createElementVNode("div", _hoisted_2, [
-              !_ctx.$props.readonly ? (_openBlock(true), _createElementBlock(_Fragment, { key: 0 }, _renderList(slotProps.files, (file) => {
-                return _openBlock(), _createElementBlock(_Fragment, {
+              !_ctx.$props.readonly ? (_openBlock$1(true), _createElementBlock$1(_Fragment, { key: 0 }, _renderList(slotProps.files, (file) => {
+                return _openBlock$1(), _createElementBlock$1(_Fragment, {
                   key: file.name
                 }, [
-                  file.__status !== "uploaded" ? (_openBlock(), _createElementBlock("div", {
+                  file.__status !== "uploaded" ? (_openBlock$1(), _createElementBlock$1("div", {
                     key: 0,
                     class: _normalizeClass(["q-uploader__file relative-position", {
                       "q-uploader__file--failed": file.__status === "failed",
@@ -2358,7 +2368,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                     }])
                   }, [
                     _createElementVNode("div", _hoisted_3, [
-                      file.__status === "failed" ? (_openBlock(), _createBlock(_component_q_icon, {
+                      file.__status === "failed" ? (_openBlock$1(), _createBlock(_component_q_icon, {
                         key: 0,
                         class: "q-uploader__file-status",
                         name: _ctx.$q.iconSet.type.negative,
@@ -2371,14 +2381,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                       _createElementVNode("div", _hoisted_4, [
                         _createElementVNode("div", _hoisted_5, _toDisplayString(file.name), 1)
                       ]),
-                      file.__status === "uploading" ? (_openBlock(), _createBlock(_component_q_circular_progress, {
+                      file.__status === "uploading" ? (_openBlock$1(), _createBlock(_component_q_circular_progress, {
                         key: 1,
                         value: file.__progress,
                         min: 0,
                         max: 1,
                         indeterminate: file.__progress === 0
                       }, null, 8, ["value", "indeterminate"])) : _createCommentVNode("", true),
-                      file.__status === "failed" ? (_openBlock(), _createBlock(_component_q_btn, {
+                      file.__status === "failed" ? (_openBlock$1(), _createBlock(_component_q_btn, {
                         key: 2,
                         round: "",
                         dense: "",
@@ -2390,8 +2400,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                   ], 2)) : _createCommentVNode("", true)
                 ], 64);
               }), 128)) : _createCommentVNode("", true),
-              (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(_ctx.files, (file) => {
-                return _openBlock(), _createElementBlock("div", {
+              (_openBlock$1(true), _createElementBlock$1(_Fragment, null, _renderList(_ctx.files, (file) => {
+                return _openBlock$1(), _createElementBlock$1("div", {
                   key: file.name,
                   class: "q-uploader__file relative-position q-uploader__file--uploaded"
                 }, [
@@ -2403,7 +2413,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                     _createElementVNode("div", _hoisted_7, [
                       _createElementVNode("div", _hoisted_8, _toDisplayString(file.name), 1)
                     ]),
-                    !_ctx.$props.readonly ? (_openBlock(), _createBlock(_component_q_btn, {
+                    !_ctx.$props.readonly ? (_openBlock$1(), _createBlock(_component_q_btn, {
                       key: 0,
                       round: "",
                       dense: "",
@@ -2425,12 +2435,12 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
           ]),
           _: 2
         }, 1032, ["label"]),
-        _ctx.$props.simple && !_ctx.$props.readonly ? (_openBlock(), _createElementBlock("div", _hoisted_9, [
-          slotProps.isUploading ? (_openBlock(), _createBlock(_component_q_spinner, {
+        _ctx.$props.simple && !_ctx.$props.readonly ? (_openBlock$1(), _createElementBlock$1("div", _hoisted_9, [
+          slotProps.isUploading ? (_openBlock$1(), _createBlock(_component_q_spinner, {
             key: 0,
             class: "q-uploader__spinner"
           })) : _createCommentVNode("", true),
-          $options.globalCanAddFiles(slotProps.files) ? (_openBlock(), _createBlock(_component_q_btn, {
+          $options.globalCanAddFiles(slotProps.files) ? (_openBlock$1(), _createBlock(_component_q_btn, {
             key: 1,
             type: "a",
             icon: _ctx.$q.iconSet.uploader.add,
@@ -2442,7 +2452,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             ]),
             _: 1
           }, 8, ["icon"])) : _createCommentVNode("", true),
-          slotProps.isUploading ? (_openBlock(), _createBlock(_component_q_btn, {
+          slotProps.isUploading ? (_openBlock$1(), _createBlock(_component_q_btn, {
             key: 2,
             type: "a",
             icon: _ctx.$q.iconSet.uploader.clear,
@@ -2473,7 +2483,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       name: "header",
       fn: _withCtx((slotProps) => [
         _createElementVNode("div", { class: "q-uploader__header-content flex flex-center no-wrap q-gutter-xs" }, [
-          slotProps.queuedFiles.length > 0 && !slotProps.readonly ? (_openBlock(), _createBlock(_component_q_btn, {
+          slotProps.queuedFiles.length > 0 && !slotProps.readonly ? (_openBlock$1(), _createBlock(_component_q_btn, {
             key: 0,
             type: "a",
             icon: _ctx.$q.iconSet.uploader.clear_all,
@@ -2492,23 +2502,23 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             _: 2
           }, 1032, ["icon", "onClick"])) : _createCommentVNode("", true),
           _createElementVNode("div", { class: "col column justify-center" }, [
-            _ctx.$props.label !== void 0 ? (_openBlock(), _createElementBlock("div", {
+            _ctx.$props.label !== void 0 ? (_openBlock$1(), _createElementBlock$1("div", {
               key: 0,
               class: "q-uploader__title"
             }, _toDisplayString(_ctx.$props.label), 1)) : _createCommentVNode("", true),
-            slotProps.isUploading ? (_openBlock(), _createElementBlock("div", {
+            slotProps.isUploading ? (_openBlock$1(), _createElementBlock$1("div", {
               key: 1,
               class: "q-uploader__subtitle"
-            }, _toDisplayString($options.getGlobalSize(slotProps.files)) + " / " + _toDisplayString(slotProps.uploadProgressLabel), 1)) : (_openBlock(), _createElementBlock("div", {
+            }, _toDisplayString($options.getGlobalSize(slotProps.files)) + " / " + _toDisplayString(slotProps.uploadProgressLabel), 1)) : (_openBlock$1(), _createElementBlock$1("div", {
               key: 2,
               class: "q-uploader__subtitle"
             }, _toDisplayString($options.getGlobalSize(slotProps.files)), 1))
           ]),
-          slotProps.isUploading ? (_openBlock(), _createBlock(_component_q_spinner, {
+          slotProps.isUploading ? (_openBlock$1(), _createBlock(_component_q_spinner, {
             key: 1,
             class: "q-uploader__spinner"
           })) : _createCommentVNode("", true),
-          slotProps.isUploading && !slotProps.readonly ? (_openBlock(), _createBlock(_component_q_btn, {
+          slotProps.isUploading && !slotProps.readonly ? (_openBlock$1(), _createBlock(_component_q_btn, {
             key: 2,
             type: "a",
             icon: _ctx.$q.iconSet.uploader.clear,
@@ -2526,7 +2536,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             ]),
             _: 2
           }, 1032, ["icon", "onClick"])) : _createCommentVNode("", true),
-          $options.globalCanAddFiles(slotProps.files) && !slotProps.readonly ? (_openBlock(), _createBlock(_component_q_btn, {
+          $options.globalCanAddFiles(slotProps.files) && !slotProps.readonly ? (_openBlock$1(), _createBlock(_component_q_btn, {
             key: 3,
             type: "a",
             icon: _ctx.$q.iconSet.uploader.add,
@@ -2550,7 +2560,864 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     }
   ]), 1040, ["url", "field-name", "multiple", "max-files", "onUploaded", "readonly"]);
 }
-var VFileUpload = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+var VFileUpload = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1]]);
+function define(constructor, factory, prototype) {
+  constructor.prototype = factory.prototype = prototype;
+  prototype.constructor = constructor;
+}
+function extend(parent, definition) {
+  var prototype = Object.create(parent.prototype);
+  for (var key in definition)
+    prototype[key] = definition[key];
+  return prototype;
+}
+function Color() {
+}
+var darker = 0.7;
+var brighter = 1 / darker;
+var reI = "\\s*([+-]?\\d+)\\s*", reN = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)\\s*", reP = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)%\\s*", reHex = /^#([0-9a-f]{3,8})$/, reRgbInteger = new RegExp(`^rgb\\(${reI},${reI},${reI}\\)$`), reRgbPercent = new RegExp(`^rgb\\(${reP},${reP},${reP}\\)$`), reRgbaInteger = new RegExp(`^rgba\\(${reI},${reI},${reI},${reN}\\)$`), reRgbaPercent = new RegExp(`^rgba\\(${reP},${reP},${reP},${reN}\\)$`), reHslPercent = new RegExp(`^hsl\\(${reN},${reP},${reP}\\)$`), reHslaPercent = new RegExp(`^hsla\\(${reN},${reP},${reP},${reN}\\)$`);
+var named = {
+  aliceblue: 15792383,
+  antiquewhite: 16444375,
+  aqua: 65535,
+  aquamarine: 8388564,
+  azure: 15794175,
+  beige: 16119260,
+  bisque: 16770244,
+  black: 0,
+  blanchedalmond: 16772045,
+  blue: 255,
+  blueviolet: 9055202,
+  brown: 10824234,
+  burlywood: 14596231,
+  cadetblue: 6266528,
+  chartreuse: 8388352,
+  chocolate: 13789470,
+  coral: 16744272,
+  cornflowerblue: 6591981,
+  cornsilk: 16775388,
+  crimson: 14423100,
+  cyan: 65535,
+  darkblue: 139,
+  darkcyan: 35723,
+  darkgoldenrod: 12092939,
+  darkgray: 11119017,
+  darkgreen: 25600,
+  darkgrey: 11119017,
+  darkkhaki: 12433259,
+  darkmagenta: 9109643,
+  darkolivegreen: 5597999,
+  darkorange: 16747520,
+  darkorchid: 10040012,
+  darkred: 9109504,
+  darksalmon: 15308410,
+  darkseagreen: 9419919,
+  darkslateblue: 4734347,
+  darkslategray: 3100495,
+  darkslategrey: 3100495,
+  darkturquoise: 52945,
+  darkviolet: 9699539,
+  deeppink: 16716947,
+  deepskyblue: 49151,
+  dimgray: 6908265,
+  dimgrey: 6908265,
+  dodgerblue: 2003199,
+  firebrick: 11674146,
+  floralwhite: 16775920,
+  forestgreen: 2263842,
+  fuchsia: 16711935,
+  gainsboro: 14474460,
+  ghostwhite: 16316671,
+  gold: 16766720,
+  goldenrod: 14329120,
+  gray: 8421504,
+  green: 32768,
+  greenyellow: 11403055,
+  grey: 8421504,
+  honeydew: 15794160,
+  hotpink: 16738740,
+  indianred: 13458524,
+  indigo: 4915330,
+  ivory: 16777200,
+  khaki: 15787660,
+  lavender: 15132410,
+  lavenderblush: 16773365,
+  lawngreen: 8190976,
+  lemonchiffon: 16775885,
+  lightblue: 11393254,
+  lightcoral: 15761536,
+  lightcyan: 14745599,
+  lightgoldenrodyellow: 16448210,
+  lightgray: 13882323,
+  lightgreen: 9498256,
+  lightgrey: 13882323,
+  lightpink: 16758465,
+  lightsalmon: 16752762,
+  lightseagreen: 2142890,
+  lightskyblue: 8900346,
+  lightslategray: 7833753,
+  lightslategrey: 7833753,
+  lightsteelblue: 11584734,
+  lightyellow: 16777184,
+  lime: 65280,
+  limegreen: 3329330,
+  linen: 16445670,
+  magenta: 16711935,
+  maroon: 8388608,
+  mediumaquamarine: 6737322,
+  mediumblue: 205,
+  mediumorchid: 12211667,
+  mediumpurple: 9662683,
+  mediumseagreen: 3978097,
+  mediumslateblue: 8087790,
+  mediumspringgreen: 64154,
+  mediumturquoise: 4772300,
+  mediumvioletred: 13047173,
+  midnightblue: 1644912,
+  mintcream: 16121850,
+  mistyrose: 16770273,
+  moccasin: 16770229,
+  navajowhite: 16768685,
+  navy: 128,
+  oldlace: 16643558,
+  olive: 8421376,
+  olivedrab: 7048739,
+  orange: 16753920,
+  orangered: 16729344,
+  orchid: 14315734,
+  palegoldenrod: 15657130,
+  palegreen: 10025880,
+  paleturquoise: 11529966,
+  palevioletred: 14381203,
+  papayawhip: 16773077,
+  peachpuff: 16767673,
+  peru: 13468991,
+  pink: 16761035,
+  plum: 14524637,
+  powderblue: 11591910,
+  purple: 8388736,
+  rebeccapurple: 6697881,
+  red: 16711680,
+  rosybrown: 12357519,
+  royalblue: 4286945,
+  saddlebrown: 9127187,
+  salmon: 16416882,
+  sandybrown: 16032864,
+  seagreen: 3050327,
+  seashell: 16774638,
+  sienna: 10506797,
+  silver: 12632256,
+  skyblue: 8900331,
+  slateblue: 6970061,
+  slategray: 7372944,
+  slategrey: 7372944,
+  snow: 16775930,
+  springgreen: 65407,
+  steelblue: 4620980,
+  tan: 13808780,
+  teal: 32896,
+  thistle: 14204888,
+  tomato: 16737095,
+  turquoise: 4251856,
+  violet: 15631086,
+  wheat: 16113331,
+  white: 16777215,
+  whitesmoke: 16119285,
+  yellow: 16776960,
+  yellowgreen: 10145074
+};
+define(Color, color, {
+  copy(channels) {
+    return Object.assign(new this.constructor(), this, channels);
+  },
+  displayable() {
+    return this.rgb().displayable();
+  },
+  hex: color_formatHex,
+  formatHex: color_formatHex,
+  formatHex8: color_formatHex8,
+  formatHsl: color_formatHsl,
+  formatRgb: color_formatRgb,
+  toString: color_formatRgb
+});
+function color_formatHex() {
+  return this.rgb().formatHex();
+}
+function color_formatHex8() {
+  return this.rgb().formatHex8();
+}
+function color_formatHsl() {
+  return hslConvert(this).formatHsl();
+}
+function color_formatRgb() {
+  return this.rgb().formatRgb();
+}
+function color(format2) {
+  var m, l;
+  format2 = (format2 + "").trim().toLowerCase();
+  return (m = reHex.exec(format2)) ? (l = m[1].length, m = parseInt(m[1], 16), l === 6 ? rgbn(m) : l === 3 ? new Rgb(m >> 8 & 15 | m >> 4 & 240, m >> 4 & 15 | m & 240, (m & 15) << 4 | m & 15, 1) : l === 8 ? rgba(m >> 24 & 255, m >> 16 & 255, m >> 8 & 255, (m & 255) / 255) : l === 4 ? rgba(m >> 12 & 15 | m >> 8 & 240, m >> 8 & 15 | m >> 4 & 240, m >> 4 & 15 | m & 240, ((m & 15) << 4 | m & 15) / 255) : null) : (m = reRgbInteger.exec(format2)) ? new Rgb(m[1], m[2], m[3], 1) : (m = reRgbPercent.exec(format2)) ? new Rgb(m[1] * 255 / 100, m[2] * 255 / 100, m[3] * 255 / 100, 1) : (m = reRgbaInteger.exec(format2)) ? rgba(m[1], m[2], m[3], m[4]) : (m = reRgbaPercent.exec(format2)) ? rgba(m[1] * 255 / 100, m[2] * 255 / 100, m[3] * 255 / 100, m[4]) : (m = reHslPercent.exec(format2)) ? hsla(m[1], m[2] / 100, m[3] / 100, 1) : (m = reHslaPercent.exec(format2)) ? hsla(m[1], m[2] / 100, m[3] / 100, m[4]) : named.hasOwnProperty(format2) ? rgbn(named[format2]) : format2 === "transparent" ? new Rgb(NaN, NaN, NaN, 0) : null;
+}
+function rgbn(n) {
+  return new Rgb(n >> 16 & 255, n >> 8 & 255, n & 255, 1);
+}
+function rgba(r, g, b, a) {
+  if (a <= 0)
+    r = g = b = NaN;
+  return new Rgb(r, g, b, a);
+}
+function rgbConvert(o) {
+  if (!(o instanceof Color))
+    o = color(o);
+  if (!o)
+    return new Rgb();
+  o = o.rgb();
+  return new Rgb(o.r, o.g, o.b, o.opacity);
+}
+function rgb(r, g, b, opacity) {
+  return arguments.length === 1 ? rgbConvert(r) : new Rgb(r, g, b, opacity == null ? 1 : opacity);
+}
+function Rgb(r, g, b, opacity) {
+  this.r = +r;
+  this.g = +g;
+  this.b = +b;
+  this.opacity = +opacity;
+}
+define(Rgb, rgb, extend(Color, {
+  brighter(k) {
+    k = k == null ? brighter : Math.pow(brighter, k);
+    return new Rgb(this.r * k, this.g * k, this.b * k, this.opacity);
+  },
+  darker(k) {
+    k = k == null ? darker : Math.pow(darker, k);
+    return new Rgb(this.r * k, this.g * k, this.b * k, this.opacity);
+  },
+  rgb() {
+    return this;
+  },
+  clamp() {
+    return new Rgb(clampi(this.r), clampi(this.g), clampi(this.b), clampa(this.opacity));
+  },
+  displayable() {
+    return -0.5 <= this.r && this.r < 255.5 && (-0.5 <= this.g && this.g < 255.5) && (-0.5 <= this.b && this.b < 255.5) && (0 <= this.opacity && this.opacity <= 1);
+  },
+  hex: rgb_formatHex,
+  formatHex: rgb_formatHex,
+  formatHex8: rgb_formatHex8,
+  formatRgb: rgb_formatRgb,
+  toString: rgb_formatRgb
+}));
+function rgb_formatHex() {
+  return `#${hex(this.r)}${hex(this.g)}${hex(this.b)}`;
+}
+function rgb_formatHex8() {
+  return `#${hex(this.r)}${hex(this.g)}${hex(this.b)}${hex((isNaN(this.opacity) ? 1 : this.opacity) * 255)}`;
+}
+function rgb_formatRgb() {
+  const a = clampa(this.opacity);
+  return `${a === 1 ? "rgb(" : "rgba("}${clampi(this.r)}, ${clampi(this.g)}, ${clampi(this.b)}${a === 1 ? ")" : `, ${a})`}`;
+}
+function clampa(opacity) {
+  return isNaN(opacity) ? 1 : Math.max(0, Math.min(1, opacity));
+}
+function clampi(value) {
+  return Math.max(0, Math.min(255, Math.round(value) || 0));
+}
+function hex(value) {
+  value = clampi(value);
+  return (value < 16 ? "0" : "") + value.toString(16);
+}
+function hsla(h, s, l, a) {
+  if (a <= 0)
+    h = s = l = NaN;
+  else if (l <= 0 || l >= 1)
+    h = s = NaN;
+  else if (s <= 0)
+    h = NaN;
+  return new Hsl(h, s, l, a);
+}
+function hslConvert(o) {
+  if (o instanceof Hsl)
+    return new Hsl(o.h, o.s, o.l, o.opacity);
+  if (!(o instanceof Color))
+    o = color(o);
+  if (!o)
+    return new Hsl();
+  if (o instanceof Hsl)
+    return o;
+  o = o.rgb();
+  var r = o.r / 255, g = o.g / 255, b = o.b / 255, min = Math.min(r, g, b), max = Math.max(r, g, b), h = NaN, s = max - min, l = (max + min) / 2;
+  if (s) {
+    if (r === max)
+      h = (g - b) / s + (g < b) * 6;
+    else if (g === max)
+      h = (b - r) / s + 2;
+    else
+      h = (r - g) / s + 4;
+    s /= l < 0.5 ? max + min : 2 - max - min;
+    h *= 60;
+  } else {
+    s = l > 0 && l < 1 ? 0 : h;
+  }
+  return new Hsl(h, s, l, o.opacity);
+}
+function hsl$1(h, s, l, opacity) {
+  return arguments.length === 1 ? hslConvert(h) : new Hsl(h, s, l, opacity == null ? 1 : opacity);
+}
+function Hsl(h, s, l, opacity) {
+  this.h = +h;
+  this.s = +s;
+  this.l = +l;
+  this.opacity = +opacity;
+}
+define(Hsl, hsl$1, extend(Color, {
+  brighter(k) {
+    k = k == null ? brighter : Math.pow(brighter, k);
+    return new Hsl(this.h, this.s, this.l * k, this.opacity);
+  },
+  darker(k) {
+    k = k == null ? darker : Math.pow(darker, k);
+    return new Hsl(this.h, this.s, this.l * k, this.opacity);
+  },
+  rgb() {
+    var h = this.h % 360 + (this.h < 0) * 360, s = isNaN(h) || isNaN(this.s) ? 0 : this.s, l = this.l, m2 = l + (l < 0.5 ? l : 1 - l) * s, m1 = 2 * l - m2;
+    return new Rgb(
+      hsl2rgb(h >= 240 ? h - 240 : h + 120, m1, m2),
+      hsl2rgb(h, m1, m2),
+      hsl2rgb(h < 120 ? h + 240 : h - 120, m1, m2),
+      this.opacity
+    );
+  },
+  clamp() {
+    return new Hsl(clamph(this.h), clampt(this.s), clampt(this.l), clampa(this.opacity));
+  },
+  displayable() {
+    return (0 <= this.s && this.s <= 1 || isNaN(this.s)) && (0 <= this.l && this.l <= 1) && (0 <= this.opacity && this.opacity <= 1);
+  },
+  formatHsl() {
+    const a = clampa(this.opacity);
+    return `${a === 1 ? "hsl(" : "hsla("}${clamph(this.h)}, ${clampt(this.s) * 100}%, ${clampt(this.l) * 100}%${a === 1 ? ")" : `, ${a})`}`;
+  }
+}));
+function clamph(value) {
+  value = (value || 0) % 360;
+  return value < 0 ? value + 360 : value;
+}
+function clampt(value) {
+  return Math.max(0, Math.min(1, value || 0));
+}
+function hsl2rgb(h, m1, m2) {
+  return (h < 60 ? m1 + (m2 - m1) * h / 60 : h < 180 ? m2 : h < 240 ? m1 + (m2 - m1) * (240 - h) / 60 : m1) * 255;
+}
+var constant = (x) => () => x;
+function linear(a, d) {
+  return function(t) {
+    return a + t * d;
+  };
+}
+function exponential(a, b, y) {
+  return a = Math.pow(a, y), b = Math.pow(b, y) - a, y = 1 / y, function(t) {
+    return Math.pow(a + t * b, y);
+  };
+}
+function hue(a, b) {
+  var d = b - a;
+  return d ? linear(a, d > 180 || d < -180 ? d - 360 * Math.round(d / 360) : d) : constant(isNaN(a) ? b : a);
+}
+function gamma(y) {
+  return (y = +y) === 1 ? nogamma : function(a, b) {
+    return b - a ? exponential(a, b, y) : constant(isNaN(a) ? b : a);
+  };
+}
+function nogamma(a, b) {
+  var d = b - a;
+  return d ? linear(a, d) : constant(isNaN(a) ? b : a);
+}
+var interpolateRgb = function rgbGamma(y) {
+  var color2 = gamma(y);
+  function rgb$1(start, end) {
+    var r = color2((start = rgb(start)).r, (end = rgb(end)).r), g = color2(start.g, end.g), b = color2(start.b, end.b), opacity = nogamma(start.opacity, end.opacity);
+    return function(t) {
+      start.r = r(t);
+      start.g = g(t);
+      start.b = b(t);
+      start.opacity = opacity(t);
+      return start + "";
+    };
+  }
+  rgb$1.gamma = rgbGamma;
+  return rgb$1;
+}(1);
+function hsl(hue2) {
+  return function(start, end) {
+    var h = hue2((start = hsl$1(start)).h, (end = hsl$1(end)).h), s = nogamma(start.s, end.s), l = nogamma(start.l, end.l), opacity = nogamma(start.opacity, end.opacity);
+    return function(t) {
+      start.h = h(t);
+      start.s = s(t);
+      start.l = l(t);
+      start.opacity = opacity(t);
+      return start + "";
+    };
+  };
+}
+var interpolateHsl = hsl(hue);
+let d3 = { color, interpolateHsl, interpolateRgb };
+function getColors(colorName, nbSeries, opacity) {
+  if ("DEFAULT" == colorName) {
+    return;
+  }
+  var mainColors;
+  var interpolation = _interpolateHsl;
+  if ("RAINBOW" == colorName || "iRAINBOW" == colorName) {
+    mainColors = ["#FF0000", "#FFA500", "#FFFF00", "#00FF00", "#00FF00", "rgb(75, 0, 130)", "rgb(238, 130, 238)"];
+  } else if ("SPECTRUM" == colorName || "iSPECTRUM" == colorName) {
+    mainColors = ["rgb(230, 30, 30)", "rgb(230, 230, 30)", "rgb(30, 230, 30)", "rgb(30, 230, 230)", "rgb(30, 30, 230)", "rgb(230, 30, 230)", "rgb(230, 30, 30)"];
+    interpolation = _interpolateCatmul;
+  } else if ("RED2GREEN" == colorName || "iRED2GREEN" == colorName) {
+    mainColors = ["rgb(255, 51, 51)", "rgb(250, 235, 0)", "rgb(51, 200, 51)"];
+  } else if ("GREEN2BLUE" == colorName || "iGREEN2BLUE" == colorName) {
+    mainColors = ["rgb(51, 153, 51)", "rgb(51, 153, 200)", "rgb(51, 51, 255)"];
+  } else if ("HEAT" == colorName || "iHEAT" == colorName) {
+    mainColors = ["rgb(255, 51, 51)", "rgb(255, 255, 51)", "rgb(51, 153, 51)", "rgb(51, 153, 255)"];
+  } else if ("GREEN:INTENSITY" == colorName || "iGREEN:INTENSITY" == colorName) {
+    mainColors = ["rgb(51, 153, 51)", "rgb(170, 250, 170)"];
+    interpolation = _interpolateLinear;
+  } else if ("ANDROID" == colorName || "iANDROID" == colorName) {
+    mainColors = ["#0099CC", "#9933CC", "#CC0000", "#FF8800", "#669900"];
+  } else if ("ANDROID:LIGHT" == colorName || "iANDROID:LIGHT" == colorName) {
+    mainColors = ["#33B5E5", "#AA66CC", "#ff4444", "#ffbb33", "#99cc00"];
+  }
+  if (colorName.charAt(0) == "i") {
+    mainColors = mainColors.reverse();
+  }
+  var resultColors;
+  var isCycle = mainColors[0] == mainColors[mainColors.length - 1];
+  var resultColors = interpolation(mainColors, nbSeries + (isCycle ? 1 : 0));
+  if (opacity) {
+    return resultColors.map(function(val, i) {
+      var d3Color = d3.color(val);
+      d3Color.opacity = opacity;
+      return d3Color.rgb();
+    });
+  }
+  return resultColors;
+}
+function _interpolateHsl(mainColors, nbColors) {
+  return _point2PointColors(mainColors, nbColors, function(t, c1, c2, c3, c4) {
+    return d3.interpolateHsl(c2, c3)(t);
+  });
+}
+function _interpolateLinear(mainColors, nbColors) {
+  return _point2PointColors(mainColors, nbColors, function(t, c1, c2, c3, c4) {
+    return d3.interpolateRgb(c2, c3)(t);
+  });
+}
+function _interpolateCatmul(mainColors, nbColors) {
+  return _point2PointColors(mainColors, nbColors, function(t, c1, c2, c3, c4) {
+    var empty = { r: null, g: null, b: null };
+    var nc1 = c1 ? d3.rgb(c1) : empty;
+    var nc2 = d3.rgb(c2);
+    var nc3 = d3.rgb(c3);
+    var nc4 = c4 ? d3.rgb(c4) : empty;
+    var red = Math.max(Math.min(Math.round(_catmull(t, nc1.r, nc2.r, nc3.r, nc4.r)), 255), 0);
+    var green = Math.max(Math.min(Math.round(_catmull(t, nc1.g, nc2.g, nc3.g, nc4.g)), 255), 0);
+    var blue = Math.max(Math.min(Math.round(_catmull(t, nc1.b, nc2.b, nc3.b, nc4.b)), 255), 0);
+    return d3.rgb(red, green, blue);
+  });
+}
+function _point2PointColors(mainColors, nbColors, colorInterpolation) {
+  if (nbColors == 1) {
+    return [mainColors[0]];
+  }
+  var startJ = 0;
+  var interpolatedColor = new Array();
+  var nbInterpolatedColor = mainColors.length;
+  var nbInterpolatedColorDegree = 0;
+  while ((nbInterpolatedColor - 1) % (nbColors - 1) != 0 && nbInterpolatedColorDegree < 20) {
+    nbInterpolatedColorDegree++;
+    nbInterpolatedColor = mainColors.length + nbInterpolatedColorDegree * (mainColors.length - 1);
+  }
+  nbInterpolatedColorDegree++;
+  for (var i = 0; i < mainColors.length - 1; i++) {
+    var c1 = i - 1 >= 0 ? mainColors[i - 1] : null;
+    var c2 = mainColors[i];
+    var c3 = mainColors[i + 1];
+    var c4 = i + 2 < mainColors.length ? mainColors[i + 2] : null;
+    for (var j = startJ; j < nbInterpolatedColorDegree + 1; j++) {
+      var color2 = colorInterpolation(j / nbInterpolatedColorDegree, c1, c2, c3, c4);
+      interpolatedColor.push(color2);
+    }
+    startJ = 1;
+  }
+  var result = new Array();
+  for (var i = 0; i < nbColors; i++) {
+    var index = (interpolatedColor.length - 1) / (nbColors - 1) * i;
+    result.push(interpolatedColor[index]);
+  }
+  return result;
+}
+function _catmull(t, inP0, p1, p2, inP3) {
+  var delta = p2 - p1;
+  var p0 = inP0 != null ? inP0 : p1 - delta;
+  var p3 = inP3 != null ? inP3 : p2 + delta;
+  return 0.5 * (2 * p1 + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t);
+}
+const _sfc_main = {
+  props: {
+    type: { type: String, required: true },
+    url: { type: String, required: true },
+    queryClusteredMeasure: { type: Object, required: false },
+    queryMeasures: { type: Array, required: false },
+    queryDataFilter: { type: Object, required: true },
+    queryTimeFilter: { type: Object, required: true },
+    colors: { type: String, required: true },
+    labels: { type: Object, required: true },
+    queryGroupBy: { type: String, required: true },
+    additionalOptions: { type: Object, required: false }
+  },
+  created: function() {
+    this.fetchData();
+  },
+  data: function() {
+    return {
+      graphDataSets: []
+    };
+  },
+  watch: {
+    modelValue: {
+      handler(newValue, oldValue) {
+      },
+      deep: true
+    }
+  },
+  methods: {
+    fetchData: function() {
+      var dataQuery = this.buildQuery();
+      this.$http.post(this.url, dataQuery).then(function(response) {
+        var datas = response.data;
+        var dataValues = datas.timedDataSeries ? datas.timedDataSeries : datas.tabularDataSeries;
+        var dataMetrics = datas.seriesNames;
+        this.showChartJsChart(dataValues, dataMetrics, dataQuery, this.labels, this.colors, this.additionalOptions);
+      }.bind(this));
+    },
+    buildQuery: function() {
+      var dataQuery = { dataFilter: this.queryDataFilter, timeFilter: this.queryTimeFilter };
+      if (this.queryMeasures) {
+        dataQuery["measures"] = this.queryMeasures;
+      }
+      if (this.queryClusteredMeasure) {
+        dataQuery["clusteredMeasure"] = this.queryClusteredMeasure;
+      }
+      if (this.queryGroupBy) {
+        dataQuery["groupBy"] = this.queryGroupBy;
+      }
+      return dataQuery;
+    },
+    showChartJsChart: function(datas, dataMetrics, dataQuery, dataLabels, dataColors, additionalOptions) {
+      var timedSeries = datas[0].time;
+      var labels = dataLabels;
+      var chartOptions;
+      var chartJsDataSets;
+      var chartJsType;
+      if (this.type === "bubbles") {
+        chartJsType = "bubble";
+        var realMetrics = dataMetrics.filter((metric) => metric !== dataQuery.groupBy);
+        var bubblesData = this.toChartJsBubblesData(datas, realMetrics, dataLabels, dataQuery.groupBy);
+        chartJsDataSets = [{ data: bubblesData }];
+        chartOptions = this.getChartJsBubblesOptions(datas, realMetrics, dataQuery, dataLabels, additionalOptions);
+        this.setChartJsColorOptions(chartJsDataSets, dataColors, 0.5);
+      } else if (this.type === "linechart") {
+        chartJsType = "line";
+        chartJsDataSets = this.toChartJsData(datas, dataMetrics, dataLabels, timedSeries, dataQuery.groupBy);
+        chartOptions = this.getChartJsLineOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions);
+        this.setChartJsColorOptions(chartJsDataSets, dataColors);
+      } else if (this.type === "stakedbarchart") {
+        chartJsType = "bar";
+        chartJsDataSets = this.toChartJsData(datas, dataMetrics, dataLabels, timedSeries, dataQuery.groupBy);
+        chartOptions = this.getStackedOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions);
+        this.setChartJsColorOptions(chartJsDataSets, dataColors);
+      } else if (this.type === "polararea") {
+        chartJsType = "polarArea";
+        chartJsDataSets = this.toChartJsData(datas, dataMetrics, dataLabels, timedSeries, dataQuery.groupBy);
+        var pieData = this.toChartJsPieData(chartJsDataSets, dataLabels);
+        chartJsDataSets = pieData.datasets;
+        labels = pieData.labels;
+        chartOptions = this.getPolarChartOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions);
+        this.setChartJsPieColorOptions(chartJsDataSets, dataColors);
+      } else if (this.type === "doughnut") {
+        chartJsType = "doughnut";
+        var realMetrics = dataMetrics.filter((metric) => metric !== dataQuery.groupBy);
+        chartJsDataSets = this.toChartJsData(datas, realMetrics, dataLabels, timedSeries, dataQuery.groupBy);
+        var pieData = this.toChartJsPieData(chartJsDataSets, dataLabels);
+        chartJsDataSets = pieData.datasets;
+        labels = pieData.labels;
+        this.setChartJsPieColorOptions(chartJsDataSets, dataColors);
+        chartOptions = {
+          legend: {
+            display: true,
+            position: "bottom"
+          }
+        };
+      }
+      var ctx = this.$.refs.graphCanvas;
+      var finalOptions = { ...chartOptions, ...additionalOptions };
+      new Chart(ctx, {
+        type: chartJsType,
+        data: {
+          labels,
+          datasets: chartJsDataSets
+        },
+        options: finalOptions
+      });
+    },
+    setChartJsColorOptions: function(datasets, dataColors, opacity) {
+      if (dataColors) {
+        var myColors = getColors(dataColors, datasets.length, opacity);
+        for (var i = 0; i < datasets.length; i++) {
+          datasets[i].backgroundColor = myColors[i];
+          datasets[i].fill = true;
+        }
+      }
+    },
+    setChartJsPieColorOptions: function(datasets, dataColors, opacity) {
+      if (dataColors) {
+        for (var i = 0; i < datasets.length; i++) {
+          datasets[i].backgroundColor = getColors(dataColors, datasets[i].data.length, opacity);
+        }
+      }
+    },
+    getChartJsBubblesOptions: function(datas, dataMetrics, dataQuery, dataLabels, additionalOptions) {
+      var maxRadius = this.getMaxRadius(datas, dataMetrics[2]);
+      var xAxisType = this.getAxisType(datas, additionalOptions, "xAxisType", dataMetrics[0]);
+      var yAxisType = this.getAxisType(datas, additionalOptions, "yAxisType", dataMetrics[1]);
+      return {
+        scales: {
+          x: {
+            type: xAxisType
+          },
+          y: {
+            type: yAxisType
+          }
+        },
+        elements: {
+          point: {
+            radius: function(context) {
+              var index = context.dataIndex;
+              var data = context.dataset.data[index];
+              var size = context.chart.width;
+              var base = data.r_measure / maxRadius;
+              return size / 24 * base;
+            }
+          }
+        },
+        legend: {
+          display: false
+        },
+        plugins: {
+          tooltip: {
+            displayColors: false,
+            callbacks: {
+              title: function(graphs) {
+                var graph = graphs[0];
+                return graph.dataset.data[graph.dataIndex].name;
+              },
+              label: function(graph) {
+                var point = graph.dataset.data[graph.dataIndex];
+                return [
+                  dataLabels[dataMetrics[0]] + " : " + Math.round(point.x),
+                  dataLabels[dataMetrics[1]] + " : " + Math.round(point.y),
+                  dataLabels[dataMetrics[2]] + " : " + Math.round(point.r_measure)
+                ];
+              }
+            }
+          }
+        }
+      };
+    },
+    getPolarChartOptions: function(datas, dataMetrics, dataQuery, dataLabels, additionalOptions) {
+      return {};
+    },
+    getAxisType: function(datas, additionalOptions, optionKey, metric) {
+      var axisType = "linear";
+      if (additionalOptions) {
+        if (additionalOptions[optionKey]) {
+          if (additionalOptions[optionKey] === "auto") {
+            var minMax = getMinMax(datas, metric);
+            if (minMax.max > 0 && minMax.min / minMax.max < 1e-3) {
+              axisType = "logarithmic";
+            }
+          } else {
+            axisType = additionalOptions[optionKey];
+          }
+        }
+      }
+      return axisType;
+    },
+    getChartJsLineOptions: function(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions) {
+      var options = {
+        scales: {
+          y: {
+            ticks: {
+              beginAtZero: true
+            }
+          }
+        },
+        plugins: {
+          tooltip: {
+            mode: "index",
+            callbacks: {
+              label: function(graph) {
+                var point = graph.dataset.data[graph.dataIndex];
+                return graph.dataset.label + " : " + Math.floor(point.y);
+              },
+              title: function(graphs) {
+                return "";
+              }
+            }
+          }
+        },
+        elements: {
+          point: {
+            radius: 0
+          },
+          line: {
+            tension: 0
+          }
+        }
+      };
+      if (timedSeries) {
+        options.scales.x = {
+          type: "time",
+          time: {
+            unit: "hour",
+            displayFormats: {
+              hour: "HH:mm"
+            }
+          }
+        };
+      } else {
+        options.scales.x = {
+          type: "category"
+        };
+      }
+      return options;
+    },
+    getStackedOptions: function(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions) {
+      var options = this.getChartJsLineOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions);
+      options.scales.x.stacked = true;
+      options.scales.y.stacked = true;
+      return options;
+    },
+    toChartJsBubblesData: function(data, dataMeasures, dataLabels, groupBy) {
+      var newSeries = new Array();
+      for (var i = 0; i < data.length; i++) {
+        var serie = new Object();
+        serie.x = data[i].values[dataMeasures[0]];
+        serie.y = data[i].values[dataMeasures[1]];
+        var r = data[i].values[dataMeasures[2]];
+        if (!this.isEmpty(data[i].values) && !r) {
+          r = 0;
+        }
+        serie.name = data[i].values[groupBy];
+        serie.r_measure = r;
+        newSeries.push(serie);
+      }
+      return newSeries;
+    },
+    getMaxRadius: function(datas, radiusField) {
+      var maxRadius = 0;
+      for (var i = 0; i < datas.length; i++) {
+        var r = datas[i].values[radiusField];
+        if (r > maxRadius) {
+          maxRadius = r;
+        }
+      }
+      return Math.max(maxRadius, 1);
+    },
+    getMinMax: function(datas, field) {
+      var min = 0;
+      var max = 0;
+      for (var i = 0; i < datas.length; i++) {
+        var value = datas[i].values[field];
+        if (value > max) {
+          max = value;
+        }
+        if (value < min) {
+          min = value;
+        }
+      }
+      return {
+        min,
+        max
+      };
+    },
+    toChartJsData: function(datas, metrics, dataLabels, timedSeries, xAxisMeasure) {
+      let _endsWith = function(string, suffix) {
+        return string.indexOf(suffix, string.length - suffix.length) !== -1;
+      };
+      new Array();
+      var newSeries = new Array();
+      for (var i = 0; i < metrics.length; i++) {
+        var metric = metrics[i];
+        var serie = new Object();
+        serie.parsing = false;
+        if (dataLabels && dataLabels[metric]) {
+          serie.label = dataLabels[metric];
+        }
+        serie.data = new Array();
+        for (var j = 0; j < datas.length; j++) {
+          var x = timedSeries ? Date.parse(datas[j].time) : datas[j].values[xAxisMeasure];
+          var y = datas[j].values[metric];
+          if (!this.isEmpty(datas[j].values) && !y) {
+            y = 0;
+          }
+          serie.data[j] = {
+            x,
+            y
+          };
+        }
+        if (!serie.label) {
+          if (_endsWith(metric, "count")) {
+            serie.label = "Quantit&eacute;";
+          } else if (_endsWith(metric, "mean")) {
+            serie.label = "Moyenne";
+          } else if (_endsWith(metric, "min")) {
+            serie.label = "Minimum";
+          } else if (_endsWith(metric, "max")) {
+            serie.label = "Maximum";
+          }
+        }
+        newSeries.push(serie);
+      }
+      return newSeries;
+    },
+    toChartJsPieData: function(chartJsDataSets, dataLabels) {
+      var newSeries = new Array();
+      var labels = new Array();
+      for (var i = 0; i < chartJsDataSets[0].data.length; i++) {
+        var label = chartJsDataSets[0].data[i].x;
+        if (dataLabels && dataLabels[chartJsDataSets[0].data[i].x]) {
+          label = dataLabels[chartJsDataSets[0].data[i].x];
+        }
+        labels.push(label);
+        newSeries.push(chartJsDataSets[0].data[i].y);
+      }
+      return {
+        datasets: [{ data: newSeries }],
+        labels
+      };
+    },
+    isEmpty: function(obj) {
+      return Object.keys(obj).length === 0;
+    }
+  }
+};
+const _openBlock = window["Vue"].openBlock;
+const _createElementBlock = window["Vue"].createElementBlock;
+const _hoisted_1 = { ref: "graphCanvas" };
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return _openBlock(), _createElementBlock("canvas", _hoisted_1, null, 512);
+}
+var VDashboardChart = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
 var VAlertUnsavedUpdates = {
   inserted: function(el, binding, vnode) {
     var watchKeys = binding.expression;
@@ -2685,18 +3552,18 @@ const Vue = window["Vue"];
 const Quasar$1 = window["Quasar"];
 var VScrollSpy = {
   created: function(elNav, args) {
-    Vue.createDebugLine = function(name, position, top, color) {
+    Vue.createDebugLine = function(name, position, top, color2) {
       let scannerLine1 = document.createElement("div");
       scannerLine1.style.position = position;
       scannerLine1.style.top = top + "px";
       scannerLine1.style.border = "none";
-      scannerLine1.style.borderTop = color + " solid 1px";
+      scannerLine1.style.borderTop = color2 + " solid 1px";
       scannerLine1.style.width = "100%";
       scannerLine1.style.zIndex = "10000";
       scannerLine1.style.padding = "0px";
       scannerLine1.style.lineHeight = "0px";
       scannerLine1.style.fontSize = "12px";
-      scannerLine1.style.color = color;
+      scannerLine1.style.color = color2;
       scannerLine1.innerHTML = name;
       document.querySelector("body").appendChild(scannerLine1);
       return scannerLine1;
@@ -3274,7 +4141,7 @@ var VMethods = {
         vueData.CTX = response.data.model.CTX;
       }
       Object.keys(response.data.model).forEach(function(key) {
-        if (key != "CTX") {
+        if ("CTX" != key) {
           vueData[key] = response.data.model[key];
         }
       });
@@ -3419,17 +4286,19 @@ var VMethods = {
         while (endNode && endNode !== caret.el && endNode.parentNode !== caret.range.commonAncestorContainer) {
           endNode = endNode.parentNode;
         }
-        caret.range.commonAncestorContainer.childNodes.forEach(function(currentNode2) {
-          if (currentNode2 === startNode) {
-            inSelection = true;
+        caret.range.commonAncestorContainer.childNodes.forEach(
+          function(currentNode2) {
+            if (currentNode2 === startNode) {
+              inSelection = true;
+            }
+            if (inSelection) {
+              currentNode2.outerHTML = currentNode2.outerHTML.replace(regexp, "");
+            }
+            if (currentNode2 === endNode) {
+              inSelection = false;
+            }
           }
-          if (inSelection) {
-            currentNode2.outerHTML = currentNode2.outerHTML.replace(regexp, "");
-          }
-          if (currentNode2 === endNode) {
-            inSelection = false;
-          }
-        });
+        );
       }
     } else {
       eVm.runCmd("formatBlock", doBlockName);
@@ -3546,6 +4415,7 @@ var VertigoUi = {
     vueApp.component("v-map-layer", VMapLayer);
     vueApp.component("v-tree", VTree);
     vueApp.component("v-file-upload", VFileUpload);
+    vueApp.component("v-dashboard-chart", VDashboardChart);
     vueApp.directive("alert-unsaved-updates", VAlertUnsavedUpdates);
     vueApp.directive("autofocus", VAutofocus);
     vueApp.directive("if-unsaved-updates", VIfUnsavedUpdates);

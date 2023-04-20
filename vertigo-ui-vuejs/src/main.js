@@ -14,6 +14,8 @@ import VMapLayer from './components/VMapLayer.vue'
 import VTree from './components/VTree.vue'
 import VFileUpload from './components/VFileUpload.vue'
 
+import VDashboardChart from './components/dashboard/VDashboardChart.vue'
+
 import VAlertUnsavedUpdates from './directives/VAlertUnsavedUpdates'
 import VAutofocus from './directives/VAutofocus'
 import VIfUnsavedUpdates from './directives/VIfUnsavedUpdates'
@@ -50,6 +52,7 @@ var VertigoUi = {
     vueApp.component("v-map-layer", VMapLayer);
     vueApp.component("v-tree", VTree)
     vueApp.component("v-file-upload", VFileUpload);
+    vueApp.component("v-dashboard-chart", VDashboardChart);
 
     // directives
     vueApp.directive("alert-unsaved-updates", VAlertUnsavedUpdates);
