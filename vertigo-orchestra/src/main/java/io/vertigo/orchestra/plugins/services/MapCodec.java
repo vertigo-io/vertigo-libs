@@ -22,10 +22,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 
 import io.vertigo.commons.codec.Codec;
+import io.vertigo.core.lang.json.CoreJsonAdapters;
 
 /**
  * Encodes a map to a simple json (as a string).
@@ -33,7 +33,7 @@ import io.vertigo.commons.codec.Codec;
  * @author pchretien
  */
 public final class MapCodec implements Codec<Map<String, String>, String> {
-	private static final Gson GSON = new GsonBuilder().create();
+	private static final Gson GSON = CoreJsonAdapters.V_CORE_GSON;
 
 	@Override
 	public Map<String, String> decode(final String toEncode) {

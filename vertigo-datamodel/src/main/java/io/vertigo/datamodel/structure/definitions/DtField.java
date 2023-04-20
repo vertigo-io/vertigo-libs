@@ -19,7 +19,7 @@ package io.vertigo.datamodel.structure.definitions;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.JsonExclude;
+import io.vertigo.core.lang.json.JsonExclude;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;

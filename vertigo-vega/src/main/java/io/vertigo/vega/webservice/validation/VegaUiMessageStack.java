@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.JsonExclude;
+import io.vertigo.core.lang.json.JsonExclude;
 import io.vertigo.datamodel.structure.model.DtObject;
 
 /**

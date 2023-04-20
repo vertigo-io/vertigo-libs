@@ -41,7 +41,7 @@ import io.vertigo.commons.app.AppNode;
 import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.JsonExclude;
+import io.vertigo.core.lang.json.JsonExclude;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.param.ParamValue;
 import redis.clients.jedis.Jedis;

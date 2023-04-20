@@ -25,8 +25,8 @@ import java.util.function.BiFunction;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
-import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.lang.ListBuilder;
+import io.vertigo.core.lang.json.JsonExclude;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
