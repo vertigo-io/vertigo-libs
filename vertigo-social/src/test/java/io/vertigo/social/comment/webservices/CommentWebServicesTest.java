@@ -37,6 +37,7 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.MapBuilder;
+import io.vertigo.core.lang.json.UTCDateUtil;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
@@ -47,7 +48,6 @@ import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.comment.Comment;
 import io.vertigo.social.comment.CommentManager;
 import io.vertigo.social.data.MockIdentities;
-import io.vertigo.vega.engines.webservice.json.UTCDateUtil;
 import redis.clients.jedis.Jedis;
 
 public final class CommentWebServicesTest {
