@@ -154,12 +154,14 @@ public class JettyBoot {
 			}
 			System.exit(1);
 		}
-		try {
-			server.join();
-		} catch (final InterruptedException e) {
-			LOG.debug("Thread interrupted", e);
-			Thread.currentThread().interrupt();
-			System.exit(1);
+		if (jettyBootParams.isJoin()) {
+			try {
+				server.join();
+			} catch (final InterruptedException e) {
+				LOG.debug("Thread interrupted", e);
+				Thread.currentThread().interrupt();
+				System.exit(1);
+			}
 		}
 	}
 

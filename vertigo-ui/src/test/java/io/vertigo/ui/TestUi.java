@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.eclipse.jetty.server.Server;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -46,12 +45,11 @@ public class TestUi {
 
 	private static final int port = 18080;
 	private final String baseUrl = "http://localhost:" + port;
-	private static Server server;
 	private static WebDriver driver;
 
 	@BeforeAll
 	public static void setUp() throws Exception {
-		startServer();
+		startServer(false);
 		/*driver = new JBrowserDriver(Settings.builder()
 				.timezone(Timezone.EUROPE_PARIS)
 				.headless(true) //use false for debug purpose
@@ -60,12 +58,15 @@ public class TestUi {
 		Thread.sleep(5000);
 	}
 
-	private static void startServer() throws IOException, Exception {
-		final var jettyBootParams = JettyBootParams.builder("testWebApp/", TestVSpringWebApplicationInitializer.class)
+	private static void startServer(final boolean join) throws IOException, Exception {
+		final var jettyBootParamsBuilder = JettyBootParams.builder("testWebApp/", TestVSpringWebApplicationInitializer.class)
 				.withContextPath("/test")
 				.noSsl()
-				.withPort(port)
-				.build();
+				.withPort(port);
+		if (!join) {
+			jettyBootParamsBuilder.noJoin();
+		}
+		final var jettyBootParams = jettyBootParamsBuilder.build();
 
 		JettyBoot.startServer(jettyBootParams, (context) -> {
 			final var multipartConfigInjectionHandler = new MultipartConfigInjectionHandler();
@@ -76,14 +77,11 @@ public class TestUi {
 
 	@AfterAll
 	public static void tearDown() throws Exception {
-		if (server != null) {
-			server.stop();
-		}
+		JettyBoot.stop();
 	}
 
 	public static void main(final String[] args) throws Exception {
-		startServer();
-		server.join();
+		startServer(true);
 	}
 
 	@Test
