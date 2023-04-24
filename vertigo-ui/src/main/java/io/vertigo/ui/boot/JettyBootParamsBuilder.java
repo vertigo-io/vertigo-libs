@@ -20,6 +20,7 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 	private String myKeystorePassword;
 	private String mySslKeystoreAlias;
 	private String myJettyNodeName;
+	private boolean myJoin = true;// true by default
 
 	public JettyBootParamsBuilder(final String contextRoot, final Class<? extends WebApplicationInitializer> webApplicationInitializerClass) {
 		myContextRoot = contextRoot;
@@ -54,6 +55,11 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 		return this;
 	}
 
+	public JettyBootParamsBuilder noJoin() {
+		myJoin = false;
+		return this;
+	}
+
 	@Override
 	public JettyBootParams build() {
 		return new JettyBootParams(
@@ -65,7 +71,8 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 				myKeystoreUrl,
 				myKeystorePassword,
 				mySslKeystoreAlias,
-				Optional.ofNullable(myJettyNodeName));
+				Optional.ofNullable(myJettyNodeName),
+				myJoin);
 	}
 
 }

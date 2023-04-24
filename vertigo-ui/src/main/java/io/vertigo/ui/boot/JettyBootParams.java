@@ -17,6 +17,7 @@ public class JettyBootParams {
 	private final String contextRoot;
 	private final Optional<String> contextPath;
 	private final Class<? extends WebApplicationInitializer> webApplicationInitializerClass;
+	private final boolean join;
 
 	JettyBootParams(
 			final int port,
@@ -27,7 +28,8 @@ public class JettyBootParams {
 			final String keystoreUrl,
 			final String keystorePassword,
 			final String sslKeystoreAlias,
-			final Optional<String> jettyNodeName) {
+			final Optional<String> jettyNodeName,
+			final boolean join) {
 		Assertion.check()
 				.isNotBlank(contextRoot)
 				.isNotNull(contextPath)
@@ -48,6 +50,7 @@ public class JettyBootParams {
 		this.contextRoot = contextRoot;
 		this.contextPath = contextPath;
 		this.webApplicationInitializerClass = webApplicationInitializerClass;
+		this.join = join;
 	}
 
 	public static JettyBootParamsBuilder builder(final String contextRoot, final Class<? extends WebApplicationInitializer> webApplicationInitializerClass) {
@@ -88,6 +91,10 @@ public class JettyBootParams {
 
 	public Class<? extends WebApplicationInitializer> getWebApplicationInitializerClass() {
 		return webApplicationInitializerClass;
+	}
+
+	public boolean isJoin() {
+		return join;
 	}
 
 }
