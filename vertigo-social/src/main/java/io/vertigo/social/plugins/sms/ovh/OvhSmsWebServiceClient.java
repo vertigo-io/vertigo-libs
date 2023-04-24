@@ -20,7 +20,7 @@ public interface OvhSmsWebServiceClient extends Amplifier {
 	@AnonymousAccessAllowed
 	@SessionLess
 	@POST("/sms/{serviceName}/jobs/")
-	void sendSms(
+	Map sendSms(
 			@PathParam("serviceName") final String serviceName,
 			@InnerBodyParam("sender") final String sender,
 			@InnerBodyParam("receivers") final List<String> receivers,

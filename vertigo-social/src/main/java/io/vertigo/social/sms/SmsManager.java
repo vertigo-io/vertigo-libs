@@ -6,6 +6,7 @@ public interface SmsManager extends Manager {
 	/**
 	 * Send a SMS.
 	 * @param sms sms to send
+	 * @return a sending report
 	 */
-	void sendSms(Sms sms);
+	SmsSendingReport sendSms(Sms sms);
 }

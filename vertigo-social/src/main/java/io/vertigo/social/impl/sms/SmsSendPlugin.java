@@ -19,6 +19,7 @@ package io.vertigo.social.impl.sms;
 
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.social.sms.Sms;
+import io.vertigo.social.sms.SmsSendingReport;
 
 /**
  * Plugin for sending sms
@@ -36,6 +37,7 @@ public interface SmsSendPlugin extends Plugin {
 	/**
 	 * Sends a sms.
 	 * @param sms sms to send
+	 * @return a sending report
 	 */
-	void sendSms(Sms sms);
+	SmsSendingReport sendSms(Sms sms);
 }
