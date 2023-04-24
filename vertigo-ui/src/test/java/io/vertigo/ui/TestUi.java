@@ -22,16 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.Paths;
-import java.util.Set;
+import java.util.List;
 
-import org.eclipse.jetty.annotations.AnnotationConfiguration;
-import org.eclipse.jetty.annotations.AnnotationConfiguration.ClassInheritanceMap;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.webapp.WebAppClassLoader;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -43,15 +36,13 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.springframework.web.WebApplicationInitializer;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 
-public class TestUi {
+import io.vertigo.ui.boot.JettyBoot;
+import io.vertigo.ui.boot.JettyBootParams;
 
-	private static ClassLoader getUrlClassLoader() {
-		return new URLClassLoader(new URL[0], TestUi.class.getClassLoader());
-	}
+public class TestUi {
 
 	private static final int port = 18080;
 	private final String baseUrl = "http://localhost:" + port;
@@ -70,38 +61,17 @@ public class TestUi {
 	}
 
 	private static void startServer() throws IOException, Exception {
-		server = new Server(port);
-		final WebAppContext context = new WebAppContext(Paths.get(TestUi.class.getClassLoader().getResource("testWebApp/").toURI()).toString(), "/test");
-		System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
-		context.setAttribute("jacoco.exclClassLoaders", "*");
+		final var jettyBootParams = JettyBootParams.builder("testWebApp/", TestVSpringWebApplicationInitializer.class)
+				.withContextPath("/test")
+				.noSsl()
+				.withPort(port)
+				.build();
 
-		context.setAttribute("javax.servlet.context.tempdir", getScratchDir());
-		context.setAttribute(AnnotationConfiguration.CLASS_INHERITANCE_MAP, createClassInheritanceMap(TestVSpringWebApplicationInitializer.class));
-		context.setClassLoader(getUrlClassLoader());
-		context.setClassLoader(new WebAppClassLoader(TestUi.class.getClassLoader(), context));
-
-		final MultipartConfigInjectionHandler multipartConfigInjectionHandler = new MultipartConfigInjectionHandler();
-		multipartConfigInjectionHandler.setHandler(context);
-		server.setHandler(multipartConfigInjectionHandler);
-		server.start();
-	}
-
-	private static ClassInheritanceMap createClassInheritanceMap(final Class clazz) {
-		final var map = new ClassInheritanceMap();
-		map.put(WebApplicationInitializer.class.getName(), Set.of(clazz.getName()));
-		return map;
-	}
-
-	private static File getScratchDir() throws IOException {
-		final File tempDir = new File(System.getProperty("java.io.tmpdir"));
-		final File scratchDir = new File(tempDir.toString(), "embedded-jetty-html");
-
-		if (!scratchDir.exists()) {
-			if (!scratchDir.mkdirs()) {
-				throw new IOException("Unable to create scratch directory: " + scratchDir);
-			}
-		}
-		return scratchDir;
+		JettyBoot.startServer(jettyBootParams, (context) -> {
+			final var multipartConfigInjectionHandler = new MultipartConfigInjectionHandler();
+			multipartConfigInjectionHandler.setHandler(context);
+			return List.of(multipartConfigInjectionHandler);
+		});
 	}
 
 	@AfterAll

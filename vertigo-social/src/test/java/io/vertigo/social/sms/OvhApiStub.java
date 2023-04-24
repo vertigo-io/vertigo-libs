@@ -11,9 +11,11 @@ import io.vertigo.vega.webservice.WebServices;
 public class OvhApiStub implements OvhSmsWebServiceClient, WebServices {
 
 	@Override
-	public void sendSms(final String serviceName, final String sender, final List<String> receivers, final String message, final boolean noStopClause) {
+	public Map sendSms(final String serviceName, final String sender, final List<String> receivers, final String message, final boolean noStopClause) {
 		System.out.println("envoi du sms : sender :" + sender + " message :" + message + "destinataires : " + receivers.stream().collect(Collectors.joining(", ")));
-
+		return Map.of(
+				"validReceivers", receivers,
+				"totalCreditsRemoved", 0.0);
 	}
 
 	@Override
