@@ -65,7 +65,7 @@ public final class SmsManagerImpl implements SmsManager {
 						smsSendingReport = NON_SENT_SMS_REPORT;
 					}
 					tracer
-							.addTag("senderName", sms.getSender())
+							.setTag("senderName", sms.getSender())
 							.incMeasure("cost", smsSendingReport.getCost())
 							.incMeasure("sent", smsSendingReport.isSent() ? 100.0 : 0.0);
 					return smsSendingReport;

@@ -68,7 +68,7 @@ public class OvhSmsSendPlugin implements SmsSendPlugin {
 				sms.getTextContent(),
 				sms.isNonCommercialMessage());
 
-		analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer.addTag("ovh-serviceName", serviceName));
+		analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer.setTag("ovh-serviceName", serviceName));
 
 		final List<String> validReceivers = (List<String>) ovhSendingReportMap.getOrDefault("validReceivers", Collections.emptyList());
 		final Double totalCreditsRemoved = (Double) ovhSendingReportMap.getOrDefault("totalCreditsRemoved", 0.0);
