@@ -55,12 +55,12 @@ public final class VSpringMvcConfigDefinitionProvider implements SimpleDefinitio
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		return List.of(new VSpringMvcConfigDefinition(
 				"Smc" + StringUtil.first2UpperCase(configName),
-				packages.map(packages -> Arrays.asList(packages.split(","))).orElseGet(Collections::emptyList),
-				configClasses.map(configClasses -> Arrays.stream(configClasses.split(","))
+				packages.map(locPackages -> Arrays.asList(locPackages.split(","))).orElseGet(Collections::emptyList),
+				configClasses.map(locConfigClasses -> Arrays.stream(locConfigClasses.split(","))
 						.map(ClassUtil::classForName)
 						.map(Class.class::cast)
 						.collect(Collectors.toList())).orElseGet(Collections::emptyList),
-				beanClasses.map(beanClasses -> Arrays.stream(beanClasses.split(","))
+				beanClasses.map(locBeanClasses -> Arrays.stream(locBeanClasses.split(","))
 						.map(ClassUtil::classForName)
 						.map(Class.class::cast)
 						.collect(Collectors.toList())).orElseGet(Collections::emptyList)));

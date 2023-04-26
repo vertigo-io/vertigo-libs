@@ -80,7 +80,6 @@ import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 
 /**
  * Base authentication handler for SAML2.
@@ -248,14 +247,11 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		context.getSubcontext(SecurityParametersContext.class, true)
 				.setSignatureSigningParameters(signatureSigningParameters);
 
-		final var encoder = new VHTTPRedirectDeflateEncoder();
-		encoder.setMessageContext(context);
-		encoder.setHttpServletResponse(response);
+		final var encoder = new VHTTPRedirectDeflateEncoder(response, context);
 
 		try {
-			encoder.initialize();
 			encoder.encode(); // send redirect in httpServletResponse
-		} catch (final ComponentInitializationException | MessageEncodingException e) {
+		} catch (final MessageEncodingException e) {
 			throw WrappedException.wrap(e);
 		}
 	}

@@ -40,13 +40,6 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,6 +62,13 @@ import io.vertigo.datastore.cache.CacheManager;
 import io.vertigo.datastore.cache.definitions.CacheDefinition;
 import io.vertigo.vega.impl.servlet.filter.AbstractFilter;
 import io.vertigo.vega.impl.servlet.filter.ContentSecurityPolicyFilter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Filter to pre-compile vuejs template on the server-side to comply with CSP directives.
@@ -107,7 +107,7 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 		doublePassRender = Boolean.parseBoolean(filterConfig.getInitParameter("doublePassRender"));
 	}
 
-	private ScriptEngine createNashornEngine(final String script) {
+	private static ScriptEngine createNashornEngine(final String script) {
 		final ScriptEngine nashornEngine = new ScriptEngineManager().getEngineByName("nashorn");
 		try {
 			final CompiledScript compiledScript = ((Compilable) nashornEngine).compile(script);

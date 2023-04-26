@@ -73,11 +73,11 @@ import org.w3c.dom.Element;
 
 import com.google.common.collect.Lists;
 
+import io.vertigo.core.lang.Assertion;
 import jakarta.servlet.http.HttpServletResponse;
 import net.shibboleth.utilities.java.support.codec.Base64Support;
 import net.shibboleth.utilities.java.support.codec.EncodingException;
 import net.shibboleth.utilities.java.support.collection.Pair;
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.net.URLBuilder;
 import net.shibboleth.utilities.java.support.primitive.StringSupport;
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
@@ -90,7 +90,7 @@ import net.shibboleth.utilities.java.support.xml.SerializeSupport;
  *
  * This encoder only supports DEFLATE compression.
  */
-public class VHTTPRedirectDeflateEncoder {
+public final class VHTTPRedirectDeflateEncoder {
 
 	/** Params which are disallowed from appearing in the input endpoint URL. */
 	private static final Set<String> DISALLOWED_ENDPOINT_QUERY_PARAMS = Set.of("SAMLEncoding", "SAMLRequest", "SAMLResponse", "RelayState", "SigAlg", "Signature");
@@ -98,43 +98,39 @@ public class VHTTPRedirectDeflateEncoder {
 	/** Class logger. */
 	private final Logger log = LoggerFactory.getLogger(VHTTPRedirectDeflateEncoder.class);
 
-	private MessageContext messageContext;
-	private HttpServletResponse httpServletResponse;
+	private final MessageContext messageContext;
+	private final HttpServletResponse httpServletResponse;
 
-	protected void setHttpServletResponse(final HttpServletResponse httpServletResponse) {
+	VHTTPRedirectDeflateEncoder(final HttpServletResponse httpServletResponse, final MessageContext messageContext) {
+		Assertion.check()
+				.isNotNull(httpServletResponse)
+				.isNotNull(messageContext);
+		//---
 		this.httpServletResponse = httpServletResponse;
+		this.messageContext = messageContext;
 	}
 
 	protected HttpServletResponse getHttpServletResponse() {
 		return httpServletResponse;
 	}
 
-	protected void setMessageContext(final MessageContext messageContext) {
-		this.messageContext = messageContext;
-	}
-
 	protected MessageContext getMessageContext() {
 		return messageContext;
 	}
 
-	public void initialize() throws ComponentInitializationException {
-		// rien
-	}
-
 	protected void encode() throws MessageEncodingException {
-		final MessageContext messageContext = getMessageContext();
 		final Object outboundMessage = messageContext.getMessage();
 		if (outboundMessage == null || !(outboundMessage instanceof SAMLObject)) {
 			throw new MessageEncodingException("No outbound SAML message contained in message context");
 		}
 
-		final String endpointURL = getEndpointURL(messageContext).toString();
+		final String endpointURL = getEndpointURL().toString();
 
 		removeSignature((SAMLObject) outboundMessage);
 
 		final String encodedMessage = deflateAndBase64Encode((SAMLObject) outboundMessage);
 
-		final String redirectURL = buildRedirectURL(messageContext, endpointURL, encodedMessage);
+		final String redirectURL = buildRedirectURL(endpointURL, encodedMessage);
 
 		final HttpServletResponse response = getHttpServletResponse();
 		response.setHeader("Cache-control", "no-cache, no-store");
@@ -201,7 +197,7 @@ public class VHTTPRedirectDeflateEncoder {
 	 *
 	 * @throws MessageEncodingException thrown if the SAML message is neither a RequestAbstractType or Response
 	 */
-	protected String buildRedirectURL(final MessageContext messageContext, final String endpoint, final String message)
+	protected String buildRedirectURL(final String endpoint, final String message)
 			throws MessageEncodingException {
 		log.debug("Building URL to redirect client to");
 
@@ -344,7 +340,7 @@ public class VHTTPRedirectDeflateEncoder {
 	*
 	* @throws MessageEncodingException throw if no relying party endpoint is available
 	*/
-	private URI getEndpointURL(final MessageContext messageContext) throws MessageEncodingException {
+	private URI getEndpointURL() throws MessageEncodingException {
 		try {
 			return SAMLBindingSupport.getEndpointURL(messageContext);
 		} catch (final BindingException e) {
