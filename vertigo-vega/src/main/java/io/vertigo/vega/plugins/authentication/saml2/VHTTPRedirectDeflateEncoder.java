@@ -96,7 +96,7 @@ public final class VHTTPRedirectDeflateEncoder {
 	private static final Set<String> DISALLOWED_ENDPOINT_QUERY_PARAMS = Set.of("SAMLEncoding", "SAMLRequest", "SAMLResponse", "RelayState", "SigAlg", "Signature");
 
 	/** Class logger. */
-	private final Logger log = LoggerFactory.getLogger(VHTTPRedirectDeflateEncoder.class);
+	private static final Logger LOG = LoggerFactory.getLogger(VHTTPRedirectDeflateEncoder.class);
 
 	private final MessageContext messageContext;
 	private final HttpServletResponse httpServletResponse;
@@ -110,15 +110,7 @@ public final class VHTTPRedirectDeflateEncoder {
 		this.messageContext = messageContext;
 	}
 
-	protected HttpServletResponse getHttpServletResponse() {
-		return httpServletResponse;
-	}
-
-	protected MessageContext getMessageContext() {
-		return messageContext;
-	}
-
-	protected void encode() throws MessageEncodingException {
+	void encode() throws MessageEncodingException {
 		final Object outboundMessage = messageContext.getMessage();
 		if (outboundMessage == null || !(outboundMessage instanceof SAMLObject)) {
 			throw new MessageEncodingException("No outbound SAML message contained in message context");
@@ -132,7 +124,7 @@ public final class VHTTPRedirectDeflateEncoder {
 
 		final String redirectURL = buildRedirectURL(endpointURL, encodedMessage);
 
-		final HttpServletResponse response = getHttpServletResponse();
+		final HttpServletResponse response = httpServletResponse;
 		response.setHeader("Cache-control", "no-cache, no-store");
 		response.setHeader("Pragma", "no-cache");
 		response.setCharacterEncoding("UTF-8");
@@ -149,11 +141,11 @@ public final class VHTTPRedirectDeflateEncoder {
 	 *
 	 * @param message current message context
 	 */
-	protected void removeSignature(final SAMLObject message) {
+	private void removeSignature(final SAMLObject message) {
 		if (message instanceof SignableSAMLObject) {
 			final SignableSAMLObject signableMessage = (SignableSAMLObject) message;
 			if (signableMessage.isSigned()) {
-				log.debug("Removing SAML protocol message signature");
+				LOG.debug("Removing SAML protocol message signature");
 				signableMessage.setSignature(null);
 			}
 		}
@@ -168,8 +160,8 @@ public final class VHTTPRedirectDeflateEncoder {
 	 *
 	 * @throws MessageEncodingException thrown if there is a problem compressing the message
 	 */
-	protected String deflateAndBase64Encode(final SAMLObject message) throws MessageEncodingException {
-		log.debug("Deflating and Base64 encoding SAML message");
+	private String deflateAndBase64Encode(final SAMLObject message) throws MessageEncodingException {
+		LOG.debug("Deflating and Base64 encoding SAML message");
 		try {
 			final String messageStr = SerializeSupport.nodeToString(marshallMessage(message));
 
@@ -197,9 +189,9 @@ public final class VHTTPRedirectDeflateEncoder {
 	 *
 	 * @throws MessageEncodingException thrown if the SAML message is neither a RequestAbstractType or Response
 	 */
-	protected String buildRedirectURL(final String endpoint, final String message)
+	private String buildRedirectURL(final String endpoint, final String message)
 			throws MessageEncodingException {
-		log.debug("Building URL to redirect client to");
+		LOG.debug("Building URL to redirect client to");
 
 		URLBuilder urlBuilder = null;
 		try {
@@ -252,7 +244,7 @@ public final class VHTTPRedirectDeflateEncoder {
 			}
 
 		} else {
-			log.debug("No signing credential was supplied, skipping HTTP-Redirect DEFLATE signing");
+			LOG.debug("No signing credential was supplied, skipping HTTP-Redirect DEFLATE signing");
 			queryParams.addAll(originalParams);
 		}
 
@@ -269,7 +261,7 @@ public final class VHTTPRedirectDeflateEncoder {
 		while (iter.hasNext()) {
 			final String paramName = StringSupport.trimOrNull(iter.next().getFirst());
 			if (DISALLOWED_ENDPOINT_QUERY_PARAMS.contains(paramName)) {
-				log.debug("Removing disallowed query param '{}' from endpoint URL", paramName);
+				LOG.debug("Removing disallowed query param '{}' from endpoint URL", paramName);
 				iter.remove();
 			}
 		}
@@ -310,21 +302,21 @@ public final class VHTTPRedirectDeflateEncoder {
 			final String queryString)
 			throws MessageEncodingException {
 
-		log.debug(String.format("Generating signature with key type '%s', algorithm URI '%s' over query string '%s'",
+		LOG.debug(String.format("Generating signature with key type '%s', algorithm URI '%s' over query string '%s'",
 				CredentialSupport.extractSigningKey(signingCredential).getAlgorithm(), algorithmURI, queryString));
 
 		String b64Signature = null;
 		try {
 			final byte[] rawSignature = XMLSigningUtil.signWithURI(signingCredential, algorithmURI, queryString.getBytes("UTF-8"));
 			b64Signature = Base64Support.encode(rawSignature, Base64Support.UNCHUNKED);
-			log.debug("Generated digital signature value (base64-encoded) {}", b64Signature);
+			LOG.debug("Generated digital signature value (base64-encoded) {}", b64Signature);
 		} catch (final SecurityException e) {
-			log.error("Error during URL signing process: {}", e.getMessage());
+			LOG.error("Error during URL signing process: {}", e.getMessage());
 			throw new MessageEncodingException("Unable to sign URL query string", e);
 		} catch (final UnsupportedEncodingException e) {
 			// UTF-8 encoding is required to be supported by all JVMs
 		} catch (final EncodingException e) {
-			log.error("Error during URL signing process: {}", e.getMessage());
+			LOG.error("Error during URL signing process: {}", e.getMessage());
 			throw new MessageEncodingException("Unable to base64 encode signature of URL query string", e);
 		}
 
@@ -358,12 +350,12 @@ public final class VHTTPRedirectDeflateEncoder {
 	* @throws MessageEncodingException thrown if the give message can not be marshalled into its DOM representation
 	*/
 	private Element marshallMessage(@Nonnull final XMLObject message) throws MessageEncodingException {
-		log.debug("Marshalling message");
+		LOG.debug("Marshalling message");
 
 		try {
 			return XMLObjectSupport.marshall(message);
 		} catch (final MarshallingException e) {
-			log.error("Error marshalling message: {}", e.getMessage());
+			LOG.error("Error marshalling message: {}", e.getMessage());
 			throw new MessageEncodingException("Error marshalling message", e);
 		}
 	}
