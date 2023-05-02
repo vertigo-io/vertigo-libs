@@ -1,4 +1,4 @@
-<th:block th:fragment="text-area-edit(object, field, rowIndex, label, required, input_attrs, label_attrs)" 
+<th:block th:fragment="text-area-edit(object, field, rowIndex, label, required, edit_content_slot, input_attrs, label_attrs)" 
 	vu:alias="text-area" vu:selector="${viewMode=='edit'}"
 	th:with="myLabel=${label?:model.util.label(object + '.' + field)},
 	myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
@@ -18,9 +18,10 @@
 			stack-label
 			th:attr="__${label_attrs}__,__${input_attrs}__"
 		>
+		<vu:content-slot name="edit_content_slot"/>
 		</q-input>
 </th:block>
-<th:block th:fragment="text-area-read(object, field, label, required, input_attrs, label_attrs)" 
+<th:block th:fragment="text-area-read(object, field, label, required, edit_content_slot, input_attrs, label_attrs)" 
 	vu:alias="text-area" vu:selector="${viewMode=='read'}"
 	th:assert="${object} != null and ${field} != null"
 	th:with="myLabel=${label?:model.util.label(object + '.' + field)}" >

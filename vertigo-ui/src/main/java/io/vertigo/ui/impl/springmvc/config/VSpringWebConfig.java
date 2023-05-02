@@ -89,7 +89,6 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 			"inputs/geolocation", // geoLocation
 			"inputs/tree", // tree
 			"inputs/text-editor", //text-editor (richtext)
-			"inputs/input", // basic input
 			"table/table", "table/column", //table
 			"collections/collection", "collections/list", "collections/cards", "collections/field-read", // collections
 			"collections/search", "collections/facets", //search

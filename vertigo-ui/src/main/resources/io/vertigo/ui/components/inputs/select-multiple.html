@@ -1,4 +1,4 @@
-<th:block th:fragment="select-multiple-edit(object,list,field, rowIndex, label, valueField, labelField, filterFunction, required, input_attrs, label_attrs)" vu:alias="select-multiple" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="select-multiple-edit(object,list,field, rowIndex, label, valueField, labelField, filterFunction, required, edit_content_slot, input_attrs, label_attrs)" vu:alias="select-multiple" vu:selector="${viewMode=='edit'}"
 	  th:assert="${object} != null and ${field} != null and ${list} != null"
 	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, 
 	  myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, 
@@ -24,13 +24,13 @@
 			multiple
 			th:attr="__${label_attrs}__,__${input_attrs}__"
 			>
-			<vu:content/>
+			<vu:content-slot name="edit_content_slot"/>
 	</q-select>
 	<input th:v-for="|id in ${model.util.vueDataKey(object, field, rowIndex)}|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" th:v-bind:value="id" />
 	<input th:v-if="|vueData.${object}.${field}.length == 0|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
 </th:block> 
 
-<th:block th:fragment="select-multiple-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, required, input_attrs, label_attrs)" 
+<th:block th:fragment="select-multiple-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, required, edit_content_slot, input_attrs, label_attrs)" 
 th:if="${modifiableTable==null}"
 vu:alias="select-multiple" vu:selector="${viewMode=='read'}" 
 	th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')}">
@@ -43,7 +43,7 @@ vu:alias="select-multiple" vu:selector="${viewMode=='read'}"
 	</vu:label-read>
 </th:block>
 
-<th:block th:fragment="select-multiple-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, required, input_attrs, label_attrs)"
+<th:block th:fragment="select-multiple-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, required, edit_content_slot, input_attrs, label_attrs)"
 th:if="${modifiableTable!=null}"
 vu:alias="select-multiple" vu:selector="${viewMode=='read'}" 
     th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}">
