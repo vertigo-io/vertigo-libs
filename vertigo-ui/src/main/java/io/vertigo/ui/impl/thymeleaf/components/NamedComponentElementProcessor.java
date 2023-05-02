@@ -137,7 +137,12 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				structureHandler.setLocalVariable(CONTENT_TAGS, Collections.emptyList());
 			}
 			for (final String slotName : slotNames) {
-				structureHandler.setLocalVariable(slotName, null);
+				if (attributes.containsKey(slotName)) {
+					final String slotNameValue = attributes.get(slotName);
+					structureHandler.setLocalVariable(slotName, context.getVariable(slotNameValue));
+				} else {
+					structureHandler.setLocalVariable(slotName, null);
+				}
 			}
 
 			if (!(tag instanceof IStandaloneElementTag)) { //this tag has got a body : we get and stack content
@@ -177,11 +182,11 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 	}
 
-	private Stack<IModel> clone(Stack<IModel> contentStack) {
-		Stack<IModel> clone = new Stack<>();
-		for(IModel model : contentStack) {
+	private Stack<IModel> clone(final Stack<IModel> contentStack) {
+		final Stack<IModel> clone = new Stack<>();
+		for (final IModel model : contentStack) {
 			clone.push(model);
-		}		
+		}
 		return clone;
 	}
 

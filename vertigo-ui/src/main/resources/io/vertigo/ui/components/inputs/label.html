@@ -1,4 +1,4 @@
-<th:block th:fragment="label-edit(object,field, label, required, label_attrs)" vu:alias="label" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="label-edit(object,field, label, required, after_label_slot, label_attrs)" vu:alias="label" vu:selector="${viewMode=='edit'}"
           th:with="myLabel=${label?:model.util.label(object + '.' + field)}, myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
           th:assert="${object} != null and ${field} != null">
     <q-field
@@ -13,11 +13,12 @@
             borderless
             th:attr="__${label_attrs}__"
     >
+    	<vu:quasar-label-slot label="${myLabel}" after_label_slot="after_label_slot"/>
         <vu:content/>
     </q-field>
 </th:block>
 
-<th:block th:fragment="label-read(object, field, label, label_attrs)" vu:alias="label" vu:selector="${viewMode=='read'}"
+<th:block th:fragment="label-read(object, field, label, after_label_slot, label_attrs)" vu:alias="label" vu:selector="${viewMode=='read'}"
           th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
           th:assert="${object} != null and ${field} != null">
     <q-field
@@ -29,6 +30,13 @@
             borderless
             th:attr="__${label_attrs}__"
     >
+    	<vu:quasar-label-slot label="${myLabel}" after_label_slot="after_label_slot"/>
         <vu:content/>
     </q-field>
+</th:block>
+<th:block th:fragment="quasar-label-slot(label, after_label_slot)" >
+   	<template th:if="${label != null && after_label_slot != null}" v-slot:label slot-scope="props">
+		{{'[[${label}]]'}}
+		<vu:content-slot name="after_label_slot"/>
+   	</template>
 </th:block>

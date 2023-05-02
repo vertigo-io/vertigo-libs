@@ -1,9 +1,9 @@
-<th:block th:fragment="autocomplete-edit(object, field, label, list, valueField, labelField, autocompleteId, required, inputUrl, filterUrl, edit_content_slot, input_attrs, label_attrs)" vu:alias="autocomplete" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="autocomplete-edit(object, field, label, list, valueField, labelField, autocompleteId, required, inputUrl, filterUrl, edit_content_slot, after_label_slot, input_attrs, label_attrs)" vu:alias="autocomplete" vu:selector="${viewMode=='edit'}"
 	  th:assert="${object} != null and ${field} != null and ${list} != null"
 	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, 
 	  myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, 
 	  myComponentId=${autocompleteId != null ? autocompleteId : 'autocomplete_' + list}, 
-	  myLabel=${label?:model.util.label(object + '.' + field)},
+	  myLabel=${modifiableTable!=null?null:label?:model.util.label(object + '.' + field)},
       myRequired=${required != null ? required : model.util.required(object + '.' + field)},
       myInputUrl=${inputUrl != null ? inputUrl : '__@{/autocomplete/_searchByValue}__'},
       myFilterUrl=${filterUrl != null ? filterUrl : '__@{/autocomplete/_searchFullText}__'}">
@@ -45,11 +45,12 @@
         th:@filter="|function (val, update, abort) { searchAutocomplete('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myFilterUrl}', val, update, abort)}|"
         th:attr="__${label_attrs}__,__${input_attrs}__"
      >
+     <vu:quasar-label-slot label="${myLabel}" after_label_slot="after_label_slot"/>
      <vu:content-slot name="edit_content_slot"/>
      </q-select>
 	<input type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" th:v-bind:value="${model.util.vueDataKey(object, field, rowIndex)}" />
 </th:block> 
 
-<th:block th:fragment="autocomplete-read(object, field, label, list, valueField, labelField, autocompleteId, required, inputUrl, filterUrl, multiple, edit_content_slot, input_attrs, label_attrs)" vu:alias="autocomplete" vu:selector="${viewMode=='read'}" >
-	<vu:select-read object="${object}" field="${field}" label="${label}" list="${list}" valueField="${valueField}" labelField="${labelField}" input_attrs="${input_attrs}" label_attrs="${label_attrs}" />
+<th:block th:fragment="autocomplete-read(object, field, label, list, valueField, labelField, autocompleteId, required, inputUrl, filterUrl, multiple, edit_content_slot, after_label_slot, input_attrs, label_attrs)" vu:alias="autocomplete" vu:selector="${viewMode=='read'}" >
+	<vu:select-read object="${object}" field="${field}" label="${label}" list="${list}" valueField="${valueField}" labelField="${labelField}" after_label_slot="after_label_slot" input_attrs="${input_attrs}" label_attrs="${label_attrs}" />
 </th:block>

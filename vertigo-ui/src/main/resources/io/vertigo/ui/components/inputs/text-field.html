@@ -1,4 +1,4 @@
-<th:block th:fragment="text-field-edit(object, field, rowIndex, label, suffix, required, edit_content_slot, input_attrs, label_attrs)" 
+<th:block th:fragment="text-field-edit(object, field, rowIndex, label, suffix, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)" 
 	vu:alias="text-field" vu:selector="${viewMode=='edit'}"
 	th:with="myLabel=${label?:model.util.label(object + '.' + field)},
 	myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
@@ -19,18 +19,19 @@
 		stack-label
 		th:attr="__${label_attrs}__,__${input_attrs}__"
 	>
+	<vu:quasar-label-slot label="${myLabel}" after_label_slot="after_label_slot"/>
 	<vu:content-slot name="edit_content_slot"/>
 	</q-input>
 </th:block>
-<th:block th:fragment="text-field-read(object, field, rowIndex, label, suffix, required, edit_content_slot, input_attrs, label_attrs)" 
+<th:block th:fragment="text-field-read(object, field, rowIndex, label, suffix, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)" 
     vu:alias="text-field" vu:selector="${viewMode=='read'}"  th:if="${modifiableTable==null}"
     th:assert="${object} != null and ${field} != null" 
     th:with="mySuffix=${model.util.smartTypeUnit(object, field, suffix)}, useSuffix=${__${model.util.contextGet(object, field, rowIndex)}__!='' && mySuffix!=''}">
-    <vu:label-read label=${label} label_attrs="${label_attrs}" >
+    <vu:label-read label=${label} label_attrs="${label_attrs}" after_label_slot="after_label_slot" >
         <span vu:text="${__${model.util.contextGet(object, field, rowIndex)}__}" th:attr="__${input_attrs}__"></span><span th:if="${useSuffix}" vu:text="${mySuffix}"></span>
     </vu:label-read>
 </th:block>
-<th:block th:fragment="text-field-read(object, field, rowIndex, label, suffix, required, edit_content_slot, input_attrs, label_attrs)" 
+<th:block th:fragment="text-field-read(object, field, rowIndex, label, suffix, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)" 
     vu:alias="text-field" vu:selector="${viewMode=='read'}" th:if="${modifiableTable!=null}"
     th:assert="${object} != null and ${field} != null" 
     th:with="mySuffix=${model.util.smartTypeUnit(object, field, suffix)}">
