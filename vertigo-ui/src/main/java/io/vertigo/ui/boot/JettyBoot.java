@@ -133,6 +133,7 @@ public class JettyBoot {
 		context.addBean(new ServletContainerInitializersStarter(context), true);
 		context.setClassLoader(new URLClassLoader(new URL[0], rootClassLoader));
 		context.setClassLoader(new WebAppClassLoader(rootClassLoader, context));
+		context.setThrowUnavailableOnStartupException(true);
 
 		// Create a HandlerList.
 		final HandlerList handlerList = new HandlerList();
