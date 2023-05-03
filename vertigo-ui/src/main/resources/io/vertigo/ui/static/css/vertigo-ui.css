@@ -22,10 +22,14 @@
 	color:var(--q-color-accent-invert) !important; 
 }
 
-.v-field__required .q-field__label::after {
+.v-field__required .q-field__label::after, .v-field__required .q-checkbox__label::after {
   content: " *";
   color: var(--q-color-negative);
 } 
+
+.q-field--error .q-checkbox__label {
+  color: var(--q-color-negative);
+}
 
 .notifications a.q-item {
 	text-decoration: none;
