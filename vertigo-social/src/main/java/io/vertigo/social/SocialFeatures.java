@@ -150,9 +150,9 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 	}
 
 	@Feature("sms")
-	public SocialFeatures withSms() {
+	public SocialFeatures withSms(final Param... params) {
 		getModuleConfigBuilder()
-				.addComponent(SmsManager.class, SmsManagerImpl.class);
+				.addComponent(SmsManager.class, SmsManagerImpl.class, params);
 		return this;
 	}
 

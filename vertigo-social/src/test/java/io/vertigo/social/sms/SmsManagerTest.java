@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,13 +35,13 @@ public final class SmsManagerTest {
 	private AutoCloseableNode node;
 
 	@BeforeEach
-	public final void setUp() {
+	public void setUp() {
 		node = new AutoCloseableNode(buildNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	@AfterEach
-	public final void tearDown() {
+	public void tearDown() {
 		if (node != null) {
 			node.close();
 		}
@@ -66,9 +67,11 @@ public final class SmsManagerTest {
 						.withWebServicesProxyClient()
 						.build())
 				.addModule(new SocialFeatures()
-						.withSms()
+						.withSms(
+								Param.of("silentFail", "false"))
 						.withOvhSmsPlugin(
-								Param.of("serviceName", "someService"))
+								Param.of("serviceName", "someService"),
+								Param.of("whitelistPrefixes", "+33;06;07"))
 						.withOvhRequestSpecializer(
 								Param.of("appKey", "titi"),
 								Param.of("appSecret", "toto"),
@@ -86,7 +89,15 @@ public final class SmsManagerTest {
 	@Test
 	public void testSendSms() {
 		final Sms sms = new Sms("A Sender", List.of("+33612345678"), "Hello!", false);
-		smsManager.sendSms(sms);
+		final var report = smsManager.sendSms(sms);
+		Assertions.assertTrue(report.isSent());
+	}
+
+	@Test
+	public void testSendUnsupportedReceiver() {
+		final Sms sms = new Sms("A Sender", List.of("0112345678"), "Hello!", false);
+		final var report = smsManager.sendSms(sms);
+		Assertions.assertFalse(report.isSent());
 	}
 
 }

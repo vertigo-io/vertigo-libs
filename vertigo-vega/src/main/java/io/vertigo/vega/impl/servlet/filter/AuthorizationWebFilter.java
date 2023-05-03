@@ -112,7 +112,7 @@ public final class AuthorizationWebFilter extends AbstractFilter {
 		final String authNames = Arrays.stream(permissionNames)
 				.map(AuthorizationName::name)
 				.collect(Collectors.joining(", "));
-		if (getSecuredDevMode()) {
+		if (isSecuredDevMode()) {
 			LOG.error("securedDevMode: Not enought authorizations '" + authNames + "' => keep going, don't throw VSecurityException");
 		} else {
 			((HttpServletResponse) res).sendError(errorCode);
@@ -142,7 +142,7 @@ public final class AuthorizationWebFilter extends AbstractFilter {
 
 	}
 
-	private boolean getSecuredDevMode() {
+	private boolean isSecuredDevMode() {
 		if (securedDevMode == null) {
 			final ParamManager paramManager = Node.getNode().getComponentSpace().resolve(ParamManager.class);
 			securedDevMode = paramManager.getOptionalParam(SECURED_DEV_MODE_PARAM_NAME).map(Param::getValueAsBoolean).orElse(Boolean.FALSE);

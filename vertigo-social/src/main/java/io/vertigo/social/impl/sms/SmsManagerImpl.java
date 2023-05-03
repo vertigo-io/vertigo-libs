@@ -21,7 +21,7 @@ public final class SmsManagerImpl implements SmsManager {
 	private final List<SmsSendPlugin> smsSendPlugins;
 	private final Boolean silentFail;
 	private final AnalyticsManager analyticsManager;
-	private static Logger LOGGER = LogManager.getLogger(SmsManagerImpl.class);
+	private static final Logger LOGGER = LogManager.getLogger(SmsManagerImpl.class);
 
 	private static final SmsSendingReport NON_SENT_SMS_REPORT = new SmsSendingReport(0.0, false);
 
@@ -54,15 +54,15 @@ public final class SmsManagerImpl implements SmsManager {
 					final SmsSendingReport smsSendingReport;
 					if (pluginToUseOpt.isPresent()) {
 						smsSendingReport = pluginToUseOpt.get().sendSms(sms);
-					} else if (!silentFail) {
-						LOGGER.warn("No plugin found to send mail with destinations : {}",
-								() -> sms.getReceivers() //param supplier
-										.stream()
-										.map(receiver -> receiver.substring(0, 5))
-										.collect(Collectors.joining(", ")));
-						smsSendingReport = NON_SENT_SMS_REPORT;
 					} else {
 						smsSendingReport = NON_SENT_SMS_REPORT;
+						if (!silentFail) {
+							LOGGER.warn("No plugin found to send mail with destinations : {}",
+									() -> sms.getReceivers() //param supplier
+											.stream()
+											.map(receiver -> receiver.substring(0, 5))
+											.collect(Collectors.joining(", ")));
+						}
 					}
 					tracer
 							.addTag("senderName", sms.getSender())

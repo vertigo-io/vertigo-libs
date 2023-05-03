@@ -161,7 +161,8 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 		// On ne vérifie pas que les champs ne sont placés qu'une fois
 		// car pour des raisons diverses ils peuvent l'être plusieurs fois.
 		//-----
-		final ExportField exportField = new ExportDenormField(resolveDtField(fieldName), overridedLabel, list, resolveDtField(keyfield, list.getDefinition()), resolveDtField(displayfield, list.getDefinition()));
+		final ExportField exportField = new ExportDenormField(resolveDtField(fieldName), overridedLabel, list,
+				resolveDtField(keyfield, list.getDefinition()), resolveDtField(displayfield, list.getDefinition()));
 		exportFields.add(exportField);
 		return this;
 	}

@@ -54,6 +54,10 @@ public class JettyBoot {
 	private static final Logger LOG = LogManager.getLogger(JettyBoot.class);
 	private static Server server;
 
+	private JettyBoot() {
+		//private
+	}
+
 	public static void startServer(
 			final JettyBootParams jettyBootParams,
 			final Function<WebAppContext, List<Handler>> additionalHandlersProvider) throws IOException, Exception {
@@ -125,8 +129,6 @@ public class JettyBoot {
 		System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
 		context.setAttribute("jacoco.exclClassLoaders", "*");
 
-		//context.setAttribute("javax.servlet.context.tempdir", getScratchDir());
-
 		final var springInitializer = new ContainerInitializer(new SpringServletContainerInitializer(), null);
 		springInitializer.addApplicableTypeName(jettyBootParams.getWebApplicationInitializerClass().getCanonicalName());
 		context.setAttribute("org.eclipse.jetty.containerInitializers", Collections.singletonList(springInitializer));
@@ -172,7 +174,7 @@ public class JettyBoot {
 		}
 	}
 
-	private static class NotFoundAllHandler extends AbstractHandler {
+	private static final class NotFoundAllHandler extends AbstractHandler {
 
 		@Override
 		public void handle(final String target, final Request baseRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
