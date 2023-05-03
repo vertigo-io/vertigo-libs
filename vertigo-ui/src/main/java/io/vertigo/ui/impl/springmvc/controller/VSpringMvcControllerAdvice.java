@@ -98,7 +98,7 @@ public final class VSpringMvcControllerAdvice {
 	@ResponseBody
 	@ExceptionHandler(VSecurityException.class)
 	@ResponseStatus(HttpStatus.FORBIDDEN)
-	public static Object handleSessionException(final VSecurityException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
+	public static Object handleSecurityException(final VSecurityException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
 		LOGGER.error("User try a forbidden action " + request.getMethod() + " " + request.getRequestURL(), LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
 		return doHandleThrowable(ex, request, response, HttpStatus.FORBIDDEN, "Forbidden action"); //no stacktrace but throws Ex too
 	}
