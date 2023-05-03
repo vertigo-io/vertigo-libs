@@ -36,7 +36,7 @@
 </th:block>
 <th:block th:fragment="quasar-label-slot(label, after_label_slot)" >
    	<template th:if="${label != null && after_label_slot != null}" v-slot:label slot-scope="props">
-		{{'[[${label}]]'}}
+   		<span vu:text="${label}"/>
 		<vu:content-slot name="after_label_slot"/>
    	</template>
 </th:block>
