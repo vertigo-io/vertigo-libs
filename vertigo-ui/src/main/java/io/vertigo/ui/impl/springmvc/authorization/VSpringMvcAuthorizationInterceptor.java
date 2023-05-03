@@ -50,7 +50,7 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 	private static final String SECURED_DEV_MODE_PARAM_NAME = "devMode.authzLogOnly";
 	private static final Logger LOG = LogManager.getLogger(VSpringMvcAuthorizationInterceptor.class);
 
-	public Boolean securedDevMode;
+	private Boolean securedDevMode;
 	private AuthorizationManager authorizationManager;
 
 	@Override
@@ -73,7 +73,7 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 						.toArray(AuthorizationName[]::new);
 				if (!getAuthorizationManager().hasAuthorization(authorizationNames)) {
 					final String authNames = Arrays.stream(authorizationNames)
-							.map(a -> a.name())
+							.map(AuthorizationName::name)
 							.collect(Collectors.joining(", "));
 					if (getSecuredDevMode()) {
 						LOG.error("securedDevMode: Not enought authorizations '" + authNames + "' => keep going, don't throw VSecurityException");

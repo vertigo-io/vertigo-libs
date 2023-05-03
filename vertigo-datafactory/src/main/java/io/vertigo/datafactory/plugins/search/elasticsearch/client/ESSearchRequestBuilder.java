@@ -63,7 +63,8 @@ final class ESSearchRequestBuilder extends AsbtractESSearchRequestBuilder<Search
 	}
 
 	@Override
-	protected void appendListState(final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows, final DtDefinition indexDtDefinition, final Map<Class, BasicTypeAdapter> typeAdapters) {
+	protected void appendListState(final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows,
+			final DtDefinition indexDtDefinition, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		mySearchRequestBuilder.setFrom(listState.getSkipRows())
 				//If we send a clustering query, we don't retrieve result with hits response but with buckets
 				.setSize(searchQuery.isClusteringFacet() ? 0 : listState.getMaxRows().orElse(defaultMaxRows));

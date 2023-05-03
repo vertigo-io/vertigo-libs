@@ -60,8 +60,7 @@ public class ContentComponentProcessor extends AbstractElementModelProcessor {
 	@Override
 	protected void doProcess(final ITemplateContext context, final IModel model, final IElementModelStructureHandler structureHandler) {
 		final Map<String, String> attributes = processAttribute(model);
-		final var contentId = attributes.get(CONTENT_ID_ATTR_NAME);
-		attributes.remove(CONTENT_ID_ATTR_NAME);
+		final var contentId = attributes.remove(CONTENT_ID_ATTR_NAME); //remove() return removed element
 		final Object content = context.getVariable("contentStack");
 
 		Assertion.check().isNotNull(content, "'" + contentId + "' variable missing.");

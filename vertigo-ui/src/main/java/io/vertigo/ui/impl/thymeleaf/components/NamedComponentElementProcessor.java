@@ -591,7 +591,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		}
 	}
 
-	private final class UnmodifiableDeque<E> extends ArrayDeque<E> {
+	private final static class UnmodifiableDeque<E> extends ArrayDeque<E> {
 		private static final long serialVersionUID = 1415497376066075497L;
 
 		/** {@inheritDoc} */

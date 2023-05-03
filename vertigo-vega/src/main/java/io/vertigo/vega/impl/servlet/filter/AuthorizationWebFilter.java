@@ -1,11 +1,10 @@
 package io.vertigo.vega.impl.servlet.filter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -28,6 +27,7 @@ import io.vertigo.account.authorization.definitions.Authorization;
 import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.param.Param;
@@ -46,8 +46,8 @@ public final class AuthorizationWebFilter extends AbstractFilter {
 	private static final String ATZ_SPLIT_PATTERN = "\\s;\\s";
 
 	private static final Logger LOG = LogManager.getLogger(AuthorizationWebFilter.class);
-	public Boolean securedDevMode;
-	private final Map<AuthorizationName[], Optional<Pattern>> filterRulesPerRoutes = new HashMap<>();
+	private Boolean securedDevMode;
+	private final List<Tuple<AuthorizationName[], Optional<Pattern>>> filterRulesPerRoutes = new ArrayList<>();
 	private int errorCode = 403; //403 "Unauthorized" par défaut
 
 	/**
@@ -80,7 +80,7 @@ public final class AuthorizationWebFilter extends AbstractFilter {
 							return (AuthorizationName) () -> value;
 						})
 						.toArray(AuthorizationName[]::new);
-				filterRulesPerRoutes.put(authorizationNames, matchPattern);
+				filterRulesPerRoutes.add(Tuple.of(authorizationNames, matchPattern));
 			}
 		}
 	}
@@ -93,14 +93,14 @@ public final class AuthorizationWebFilter extends AbstractFilter {
 		}
 		final UserSession userSession = getUserSession(req);
 		final UserAuthorizations userAuthorizations = getUserAuthorizations(userSession);
-		for (final Entry<AuthorizationName[], Optional<Pattern>> entry : filterRulesPerRoutes.entrySet()) {
-			if (isUrlMatch(req, entry.getValue())) {
+		for (final Tuple<AuthorizationName[], Optional<Pattern>> entry : filterRulesPerRoutes) {
+			if (isUrlMatch(req, entry.getVal2())) {
 				//il faut ajouter la session ici, sinon on ne peut pas controler les droits
 				if (userAuthorizations == null) {
 					//pas d'authorization
 					sendSecurityException(res, () -> "Authentified");
-				} else if (!hasAuthorization(userAuthorizations, entry.getKey())) {
-					sendSecurityException(res, entry.getKey());
+				} else if (!hasAuthorization(userAuthorizations, entry.getVal1())) {
+					sendSecurityException(res, entry.getVal1());
 				}
 			}
 		}
@@ -110,7 +110,7 @@ public final class AuthorizationWebFilter extends AbstractFilter {
 
 	private void sendSecurityException(final ServletResponse res, final AuthorizationName... permissionNames) throws IOException {
 		final String authNames = Arrays.stream(permissionNames)
-				.map(a -> a.name())
+				.map(AuthorizationName::name)
 				.collect(Collectors.joining(", "));
 		if (getSecuredDevMode()) {
 			LOG.error("securedDevMode: Not enought authorizations '" + authNames + "' => keep going, don't throw VSecurityException");

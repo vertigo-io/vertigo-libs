@@ -1,6 +1,6 @@
 package io.vertigo.social.plugins.sms.ovh;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -70,14 +70,14 @@ public class OvhRequestSpecializer implements RequestSpecializer, Component {
 			MessageDigest md;
 			md = MessageDigest.getInstance("SHA-1"); //SHA-1 : imposé par l'api OVH
 			byte[] sha1hash = new byte[40];
-			md.update(text.getBytes("iso-8859-1"), 0, text.length());//iso-8859-1 : imposé par l'api OVH
+			md.update(text.getBytes(StandardCharsets.ISO_8859_1), 0, text.length());//iso-8859-1 : imposé par l'api OVH
 			sha1hash = md.digest();
-			final StringBuffer sb = new StringBuffer();
+			final StringBuilder sb = new StringBuilder();
 			for (final byte element : sha1hash) {
 				sb.append(Integer.toString((element & 0xff) + 0x100, 16).substring(1));
 			}
 			return sb.toString();
-		} catch (final NoSuchAlgorithmException | UnsupportedEncodingException e) {
+		} catch (final NoSuchAlgorithmException e) {
 			throw WrappedException.wrap(e);
 		}
 

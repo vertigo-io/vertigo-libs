@@ -43,7 +43,7 @@ final class CriteriaUtil {
 				case OR:
 					// ! before 3.5.1, there was a bad precedence changing  a+b*c => a + (b * c), now it's (a + b) * c
 					//We log a warning for regressions
-					LOG.warn("Criteria `({}) AND {}` You may check regressions : `a or b and c` is now `(a or b) and c`, before 3.5.1 it was `a or (b and c)`", leftOperand.toString(), rightOperand.toString());
+					LOG.warn("Criteria `({}) AND {}` You may check regressions : `a or b and c` is now `(a or b) and c`, before 3.5.1 it was `a or (b and c)`", leftOperand, rightOperand);
 					return new CriteriaExpression<>(CriteriaLogicalOperator.AND, leftOperand, rightOperand);
 				default:
 					throw new IllegalStateException();
