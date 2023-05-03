@@ -68,9 +68,9 @@ public class OvhRequestSpecializer implements RequestSpecializer, Component {
 
 		try {
 			MessageDigest md;
-			md = MessageDigest.getInstance("SHA-1");
+			md = MessageDigest.getInstance("SHA-1"); //SHA-1 : imposé par l'api OVH
 			byte[] sha1hash = new byte[40];
-			md.update(text.getBytes("iso-8859-1"), 0, text.length());
+			md.update(text.getBytes("iso-8859-1"), 0, text.length());//iso-8859-1 : imposé par l'api OVH
 			sha1hash = md.digest();
 			final StringBuffer sb = new StringBuffer();
 			for (final byte element : sha1hash) {
