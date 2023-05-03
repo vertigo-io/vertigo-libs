@@ -26,6 +26,7 @@
         new-value-mode="add-unique"
         input-debounce="300"
         th::options="|componentStates.${myComponentId}.options|"
+        options-sanitize
         th:@filter="|function (val, update, abort) { searchAutocomplete('${list}', '${myValueField}', '${myValueField}', '${myComponentId}', '${myFilterUrl}', val, update, abort)}|"
         th:attr="__${input_attrs}__"
      >

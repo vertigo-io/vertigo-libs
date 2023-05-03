@@ -39,6 +39,7 @@
 		emit-value
 		th::loading="|componentStates.${myComponentId}.loading|"
         th::options="|componentStates.${myComponentId}.options|"
+        options-sanitize
         th:@hook:mounted="|() => {
 			$watch(function() {return ${model.util.vueDataKey(object, field, rowIndex)} }, (newValue, oldValue) => { loadAutocompleteById('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myInputUrl}','${object}','${field}', ${rowIndex})} )
 			}|"

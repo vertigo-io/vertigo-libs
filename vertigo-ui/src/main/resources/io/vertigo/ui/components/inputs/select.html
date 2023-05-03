@@ -13,6 +13,7 @@
 	        map-options
 	        emit-value
             th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}')|"
+            options-sanitize
 			th::label-width="${overridedLabelWidth?:3}"
 			th:label="${myLabel}"
 			th:classappend="${myRequired}?'v-field__required'"
