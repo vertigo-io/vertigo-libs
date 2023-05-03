@@ -36,6 +36,7 @@ import org.springframework.web.servlet.ModelAndView;
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.VUserException;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextMap;
@@ -82,44 +83,42 @@ public final class VSpringMvcControllerAdvice {
 	@ExceptionHandler(SessionException.class)
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	public static Object handleSessionException(final SessionException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
-		response.sendError(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
 		LOGGER.error("User try an unauthorized action " + request.getMethod() + " " + request.getRequestURL(), LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
-		return doHandleThrowable(ex, request); //no stacktrace but throws Ex too
+		return doHandleThrowable(ex, request, response, HttpStatus.UNAUTHORIZED, "Unauthorized action"); //no stacktrace but throws Ex too
 	}
 
 	@ResponseBody
 	@ExceptionHandler(ExpiredViewContextException.class)
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	public static Object handleExpiredViewContextException(final ExpiredViewContextException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
-		response.sendError(HttpStatus.UNAUTHORIZED.value(), "ViewContext not found");
 		LOGGER.warn("Expired ViewContext " + request.getMethod() + " " + request.getRequestURL(), LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
-		return doHandleThrowable(ex, request); //no stacktrace but throws Ex too
+		return doHandleThrowable(ex, request, response, HttpStatus.UNAUTHORIZED, "Missing context"); //no stacktrace but throws Ex too
 	}
 
 	@ResponseBody
 	@ExceptionHandler(VSecurityException.class)
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	public static Object handleSessionException(final VSecurityException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
-		response.sendError(HttpStatus.FORBIDDEN.value(), ex.getMessage());
 		LOGGER.error("User try a forbidden action " + request.getMethod() + " " + request.getRequestURL(), LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
-		return doHandleThrowable(ex, request); //no stacktrace but throws Ex too
+		return doHandleThrowable(ex, request, response, HttpStatus.FORBIDDEN, "Forbidden action"); //no stacktrace but throws Ex too
 	}
 
 	@ResponseBody
 	@ExceptionHandler(Throwable.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	public static Object handleThrowable(final Throwable th, final HttpServletRequest request) throws Throwable {
+	public static Object handleThrowable(final Throwable th, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
 		LOGGER.error("Server error " + request.getMethod() + " " + request.getRequestURL(), th);
-		return doHandleThrowable(th, request);
+		return doHandleThrowable(th, request, response, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
 	}
 
-	private static Object doHandleThrowable(final Throwable th, final HttpServletRequest request) throws Throwable {
+	private static Object doHandleThrowable(final Throwable th, final HttpServletRequest request, final HttpServletResponse response, final HttpStatus errorStatus, final String errorMessage) throws Throwable {
+		final String exceptionMessage = errorMessage != null ? errorMessage : th.getClass().getSimpleName();
 		if (UiRequestUtil.isJsonRequest(request)) {
 			final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
-			final String exceptionMessage = th.getMessage() != null ? th.getMessage() : th.getClass().getSimpleName();
 			uiMessageStack.addGlobalMessage(Level.ERROR, exceptionMessage);
 			return uiMessageStack;
 		}
+		response.sendError(errorStatus.value(), exceptionMessage);
 		throw th;
 	}
 
@@ -130,7 +129,7 @@ public final class VSpringMvcControllerAdvice {
 		final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 		ex.flushToUiMessageStack(uiMessageStack);
 		//---
-		return handleVUserException(uiMessageStack, request);
+		return handleVUserException(uiMessageStack, request, ex);
 	}
 
 	@ResponseBody
@@ -140,15 +139,19 @@ public final class VSpringMvcControllerAdvice {
 		final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 		uiMessageStack.addGlobalMessage(Level.ERROR, ex.getMessage());
 		//---
-		return handleVUserException(uiMessageStack, request);
+		return handleVUserException(uiMessageStack, request, ex);
 	}
 
-	private static Object handleVUserException(final UiMessageStack uiMessageStack, final HttpServletRequest request) {
+	private static Object handleVUserException(final UiMessageStack uiMessageStack, final HttpServletRequest request, final VUserException ex) {
 		//---
 		final AnalyticsManager analyticsManager = Node.getNode().getComponentSpace().resolve(AnalyticsManager.class);
 		analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer
 				.addTag("exception", "userException"));
 		//---
+		//If GET request, we throw exception : can't render page on an invalid context
+		if (!("POST".equals(request.getMethod()) || "PUT".equals(request.getMethod()) || "DELETE".equals(request.getMethod()))) {
+			throw WrappedException.wrap(ex);
+		}
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
 		//---
 		if (UiRequestUtil.isJsonRequest(request)) {
