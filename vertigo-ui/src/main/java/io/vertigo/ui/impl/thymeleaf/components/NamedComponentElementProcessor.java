@@ -170,7 +170,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				final Map<String, IModel> slotContents = slotNames.isEmpty() ? Collections.emptyMap() : removeAndExtractSlots(contentModel, context);
 
 				for (final Map.Entry<String, IModel> entry : slotContents.entrySet()) {
-					Assertion.check().isTrue(slotNames.contains(entry.getKey()), "Component {0} have no slot {1} (accepted slots : {3})", componentName, entry.getKey(), slotNames);
+					Assertion.check().isTrue(slotNames.contains(entry.getKey()), "Component {0} have no slot {1} (accepted slots : {2})", componentName, entry.getKey(), slotNames);
 					//-----
 					structureHandler.setLocalVariable(entry.getKey(), entry.getValue());
 				}
