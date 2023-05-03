@@ -23,15 +23,15 @@ export default {
             }
             //Setup Generic Response Messages
             if (response.status === 401) {
-                notif.message = 'UnAuthorized, you may login with an authorized account'	            
+                notif.message = this.$q.lang.vui.ajaxErrors.code401	            
                 this.$root.$emit('unauthorized', response) //Emit Logout Event
                 return;
             } else if (response.status === 403) {
-                notif.message = 'Forbidden, your havn&quote;t enought rights'
+                notif.message = this.$q.lang.vui.ajaxErrors.code403
             } else if (response.status === 404) {
-                notif.message = 'API Route is Missing or Undefined'
+                notif.message = this.$q.lang.vui.ajaxErrors.code404
             } else if (response.status === 405) {
-                notif.message = 'API Route Method Not Allowed'
+                notif.message = this.$q.lang.vui.ajaxErrors.code405
             } else if (response.status === 422) {
                 //Validation Message
                 notif.message = '';
@@ -39,7 +39,7 @@ export default {
                     this.$data.uiMessageStack[key] = response.data[key];
                 }.bind(this));
             } else if (response.status >= 500) {
-                notif.message = 'Server Error'
+                notif.message = this.$q.lang.vui.ajaxErrors.code500
             }
             if (response.statusText && response.status !== 422) {
                 notif.message = response.statusText

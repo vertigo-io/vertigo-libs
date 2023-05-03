@@ -4872,15 +4872,15 @@ function isNumber (v) {
       }
       //Setup Generic Response Messages
       if (response.status === 401) {
-        notif.message = 'UnAuthorized, you may login with an authorized account';
+        notif.message = this.$q.lang.vui.ajaxErrors.code401;
         this.$root.$emit('unauthorized', response); //Emit Logout Event
         return;
       } else if (response.status === 403) {
-        notif.message = 'Forbidden, your havn&quote;t enought rights';
+        notif.message = this.$q.lang.vui.ajaxErrors.code403;
       } else if (response.status === 404) {
-        notif.message = 'API Route is Missing or Undefined';
+        notif.message = this.$q.lang.vui.ajaxErrors.code404;
       } else if (response.status === 405) {
-        notif.message = 'API Route Method Not Allowed';
+        notif.message = this.$q.lang.vui.ajaxErrors.code405;
       } else if (response.status === 422) {
         //Validation Message
         notif.message = '';
@@ -4888,7 +4888,7 @@ function isNumber (v) {
           this.$data.uiMessageStack[key] = response.data[key];
         }.bind(this));
       } else if (response.status >= 500) {
-        notif.message = 'Server Error';
+        notif.message = this.$q.lang.vui.ajaxErrors.code500;
       }
       if (response.statusText && response.status !== 422) {
         notif.message = response.statusText;
@@ -5601,6 +5601,13 @@ function isNumber (v) {
 });
 ;// CONCATENATED MODULE: ./src/lang/vertigo-ui-lang-en-us.js
 /* harmony default export */ var vertigo_ui_lang_en_us = ({
+  ajaxErrors: {
+    code401: 'UnAuthorized, you may login with an authorized account',
+    code403: 'Forbidden, your havn&quote;t enought rights',
+    code404: 'API Route is Missing or Undefined',
+    code405: 'API Route Method Not Allowed',
+    code500: 'Server Error'
+  },
   comments: {
     title: "Comments",
     inputLabel: "Insert here a comment",
@@ -5644,6 +5651,13 @@ function isNumber (v) {
 });
 ;// CONCATENATED MODULE: ./src/lang/vertigo-ui-lang-fr.js
 /* harmony default export */ var vertigo_ui_lang_fr = ({
+  ajaxErrors: {
+    code401: 'Non autoris&eacute;, essayez de vous reconnecter',
+    code403: 'Vous n&quote;avez pas les droits suffisants pour effectuer cette action',
+    code404: 'API introuvable',
+    code405: 'API non autoris&eacute;e',
+    code500: 'Erreur serveur'
+  },
   comments: {
     title: "Commentaires",
     inputLabel: "Insérer un commentaire ici",
