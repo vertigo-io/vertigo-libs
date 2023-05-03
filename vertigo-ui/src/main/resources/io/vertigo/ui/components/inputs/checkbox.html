@@ -26,3 +26,26 @@
 		</q-checkbox>
 	</vu:label-read>
 </th:block>
+
+<th:block th:fragment="checkbox-confirm(object, field, label, required, edit_content_slot, label_attrs, input_attrs)" vu:alias="checkbox-confirm" 
+		th:assert="${object} != null and ${field} != null"
+		th:with="myRequired=${required != null ? required : model.util.required(object + '.' + field)}">
+	<vu:include-data object="${object}" field="${field}"/>
+	<q-field
+		th::error="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
+        th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+        orientation="vertical"
+        borderless
+        th:attr="__${label_attrs}__">
+		<q-checkbox 
+	        th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
+			class="text-dark"
+	        th:classappend="${myRequired ? 'v-field__required' : ''}"
+	        th:label="${label?:model.util.label(object + '.' + field)}"
+			dense
+			th:attr="__${input_attrs}__"
+			 >
+			<vu:content-slot name="edit_content_slot"/>
+		</q-checkbox>
+	</q-field>
+</th:block>
