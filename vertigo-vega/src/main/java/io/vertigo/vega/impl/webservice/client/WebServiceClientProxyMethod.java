@@ -36,6 +36,7 @@ import com.google.gson.JsonSyntaxException;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.connectors.httpclient.HttpClientConnector;
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.VUserException;
@@ -54,17 +55,20 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 
 	private final Map<String, HttpClientConnector> httpClientConnectorByName = new HashMap<>();
 	private final JsonEngine jsonReaderEngine;
+	private final AnalyticsManager analyticsManager;
 
 	/**
 	* @param jsonReaderEngine jsonReaderEngine
 	*/
 	@Inject
 	public WebServiceClientProxyMethod(final JsonEngine jsonReaderEngine,
-			final List<HttpClientConnector> httpClientConnectors) {
+			final List<HttpClientConnector> httpClientConnectors,
+			final AnalyticsManager analyticsManager) {
 		Assertion.check().isNotNull(jsonReaderEngine)
 				.isNotNull(httpClientConnectors);
 		//-----
 		this.jsonReaderEngine = jsonReaderEngine;
+		this.analyticsManager = analyticsManager;
 
 		httpClientConnectors.forEach(
 				connector -> {
@@ -94,37 +98,42 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 
 		final HttpRequest httpRequest = createHttpRequest(webServiceDefinition, namedArgs(webServiceDefinition.getWebServiceParams(), args), httpClientConnector, requestSpecializerOpt);
 
-		final HttpResponse response;
+		final HttpResponse<String> response;
+		//same name for WS that  Vega (AnalyticsWebServiceHandlerPlugin);
+		final String name = "/" + webServiceDefinition.getVerb().name() + "/" + webServiceDefinition.getPath();
+		response = analyticsManager.traceWithReturn("wsclient", name, tracer -> {
 		try {
-			response = httpClientConnector.getClient().send(httpRequest, BodyHandlers.ofString());
+				return httpClientConnector.getClient().send(httpRequest, BodyHandlers.ofString());
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw WrappedException.wrap(e);
 		}
+		});
+
 		final int responseStatus = response.statusCode();
 		if (responseStatus / 100 == 2) {
 			final Type returnType = webServiceDefinition.getMethod().getGenericReturnType();
 			if (Void.TYPE.equals(returnType)) {
 				return null;
 			}
-			return convertResultFromJson((String) response.body(), returnType);
+			return convertResultFromJson(response.body(), returnType);
 		} else if (responseStatus / 100 == 3) {
-			throw new VUserException((String) response.body());
+			throw new VUserException(response.body());
 		} else if (responseStatus / 100 == 4) {
 			if (responseStatus == HttpServletResponse.SC_UNAUTHORIZED) {
-				throw WrappedException.wrap(new SessionException((String) response.body()));
+				throw WrappedException.wrap(new SessionException(response.body()));
 			} else if (responseStatus == HttpServletResponse.SC_FORBIDDEN) {
-				throw new VSecurityException(MessageText.of((String) response.body()));
+				throw new VSecurityException(MessageText.of(response.body()));
 			} else if (responseStatus == HttpServletResponse.SC_BAD_REQUEST) {
-				throw new JsonSyntaxException((String) response.body());
+				throw new JsonSyntaxException(response.body());
 			} else {
-				final Map errorMessages = convertErrorFromJson((String) response.body(), Map.class);
+				final Map errorMessages = convertErrorFromJson(response.body(), Map.class);
 				throw new WebServiceUserException(responseStatus, errorMessages);
 			}
 		} else {
-			throw WrappedException.wrap(new VSystemException((String) response.body()));
+			throw WrappedException.wrap(new VSystemException(response.body()));
 		}
 	}
 
