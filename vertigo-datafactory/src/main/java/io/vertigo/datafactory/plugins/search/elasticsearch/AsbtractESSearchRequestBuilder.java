@@ -91,7 +91,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	private DtDefinition myIndexDtDefinition;
 	private SearchQuery mySearchQuery;
 	private DtListState myListState;
-	protected int myDefaultMaxRows = 10;
+	private int myDefaultMaxRows = 10;
 	private boolean myUseHighlight = false;
 
 	/**
