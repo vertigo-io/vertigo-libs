@@ -195,7 +195,8 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		for (int i = 0; i < fullContentSize; i++) {
 			final ITemplateEvent templateEvent = contentModel.get(0); //get always first (because we remove it)
 			if (templateEvent instanceof IOpenElementTag) {
-				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
+				//we only parse slots at first level (tagDepth == 0)
+				if (tapDepth == 0 && "vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
 					//support slot of an component into slot of another
 					slotName = ((IProcessableElementTag) templateEvent).getAttributeValue("name");
 				} else if (tapDepth == 0) {
@@ -205,9 +206,9 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			} else if (templateEvent instanceof ICloseElementTag) {
 				tapDepth--;
 			} else if (templateEvent instanceof IStandaloneElementTag) {
-				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
+				//we only parse slots at first level (tagDepth == 0)
+				if (tapDepth == 0 && "vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
 					//we accept empty slot (to clear a component default slot)
-					Assertion.check().isTrue(tapDepth == 0, "Can't parse slot {0} it contains another slot", slotName);
 					slotName = ((IProcessableElementTag) templateEvent).getAttributeValue("name");
 				} else if (tapDepth == 0) {
 					break; //slots must be set at first
