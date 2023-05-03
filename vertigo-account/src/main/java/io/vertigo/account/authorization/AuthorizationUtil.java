@@ -19,7 +19,11 @@ package io.vertigo.account.authorization;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.account.authorization.definitions.OperationName;
@@ -33,6 +37,7 @@ import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 
 public final class AuthorizationUtil {
 	private static final MessageText DEFAULT_FORBIDDEN_MESSAGE = MessageText.ofDefaultMsg("Not enough authorizations", Resources.AUTHORIZATION_DEFAULT_FORBIDDEN_MESSAGE);
+	private static final Logger LOG = LogManager.getLogger(AuthorizationUtil.class);
 
 	public static void assertAuthorizations(final AuthorizationName... authorizationName) {
 		assertAuthorizations(DEFAULT_FORBIDDEN_MESSAGE, authorizationName); //no too sharp info here : may use log
@@ -41,6 +46,10 @@ public final class AuthorizationUtil {
 	public static void assertAuthorizations(final MessageText message, final AuthorizationName... authorizationName) {
 		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
 		if (!authorizationManager.hasAuthorization(authorizationName)) {
+			final String names = Stream.of(authorizationName)
+					.map(AuthorizationName::name)
+					.collect(Collectors.joining(", "));
+			LOG.warn("Not enought authorizations : " + names);
 			throw new VSecurityException(message);
 		}
 	}
@@ -52,6 +61,7 @@ public final class AuthorizationUtil {
 	public static <E extends Entity> void assertOperations(final E entity, final OperationName<E> operation, final MessageText message) {
 		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
 		if (!authorizationManager.isAuthorized(entity, operation)) {
+			LOG.warn("Not enought authorizations : operation " + operation + " on " + entity.getClass().getSimpleName());
 			throw new VSecurityException(message);
 		}
 	}
