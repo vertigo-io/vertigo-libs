@@ -110,13 +110,13 @@ public final class AuthorizationWebFilter extends AbstractFilter {
 		final UserSession userSession = getUserSession(req);
 		final UserAuthorizations userAuthorizations = getUserAuthorizations(userSession);
 		for (final Tuple<AuthorizationName[], Optional<Pattern>> entry : filterRulesPerRoutes) {
-			if (isUrlMatch(req, entry.getVal2())) {
+			if (isUrlMatch(req, entry.val2())) {
 				//il faut ajouter la session ici, sinon on ne peut pas controler les droits
 				if (userAuthorizations == null) {
 					//pas d'authorization
 					sendSecurityException(res, () -> "Authentified");
-				} else if (!hasAuthorization(userAuthorizations, entry.getVal1())) {
-					sendSecurityException(res, entry.getVal1());
+				} else if (!hasAuthorization(userAuthorizations, entry.val1())) {
+					sendSecurityException(res, entry.val1());
 				}
 			}
 		}
