@@ -144,7 +144,7 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 						|| value instanceof Integer
 						|| value instanceof Long
 						|| value instanceof BigDecimal,
-				"Only String,Long, Integers and booleans are allowed in a where in clause.");
+				"Only String,Long,Integers and booleans are allowed in a where in clause.");
 		// we check to avoid sql injection without espacing and parametizing the statement
 		Assertion.check()
 				.when(value instanceof String, () -> Assertion.check()

@@ -70,6 +70,7 @@ public class VSpringDispatcherServlet extends DispatcherServlet {
 										.setTag("requestMethod", request.getMethod());
 								try {
 									super.doDispatch(request, response);
+									tracer.addTag("responseStatus", String.valueOf(response.getStatus()));
 								} catch (final Exception e) {
 									throw WrappedException.wrap(e);
 								}

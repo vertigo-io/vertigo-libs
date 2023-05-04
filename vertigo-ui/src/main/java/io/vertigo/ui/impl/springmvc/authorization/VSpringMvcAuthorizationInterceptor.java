@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 	private static final String SECURED_DEV_MODE_PARAM_NAME = "devMode.authzLogOnly";
 	private static final Logger LOG = LogManager.getLogger(VSpringMvcAuthorizationInterceptor.class);
 
-	public Boolean securedDevMode;
+	private Boolean securedDevMode;
 	private AuthorizationManager authorizationManager;
 
 	@Override
@@ -72,9 +72,9 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 						.toArray(AuthorizationName[]::new);
 				if (!getAuthorizationManager().hasAuthorization(authorizationNames)) {
 					final String authNames = Arrays.stream(authorizationNames)
-							.map(a -> a.name())
+							.map(AuthorizationName::name)
 							.collect(Collectors.joining(", "));
-					if (getSecuredDevMode()) {
+					if (isSecuredDevMode()) {
 						LOG.error("securedDevMode: Not enought authorizations '" + authNames + "' => keep going, don't throw VSecurityException");
 					} else {
 						LOG.warn("Not enought authorizations '" + authNames + "'");
@@ -108,7 +108,7 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 		return authorizationManager;
 	}
 
-	private boolean getSecuredDevMode() {
+	private boolean isSecuredDevMode() {
 		if (securedDevMode == null) {
 			final ParamManager paramManager = Node.getNode().getComponentSpace().resolve(ParamManager.class);
 			securedDevMode = paramManager.getOptionalParam(SECURED_DEV_MODE_PARAM_NAME).map(Param::getValueAsBoolean).orElse(Boolean.FALSE);

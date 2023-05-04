@@ -103,8 +103,8 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 		//On rend le path plus lisible et compatible DefinitionName
 		final String normalizedConstString = StringUtil.camelToSnakeCase(argsRemovedPath)
 				.replaceAll("[\\-/]", "_")
-				.replaceAll("\\.", "_P_") //a point is a P (p after conversion on camelCase)
-				.replaceAll("([0-9]+)([^0-9])", "_$1_$2")
+				.replace(".", "_P_") //a point is a P (p after conversion on camelCase)
+				.replaceAll("([0-9])([^0-9])", "$1_$2") //dont use ([0-9]+)([^0-9]) : ReDos
 				.replaceAll("([0-9]+)", "_$1")
 				.replaceAll("_+", "_")
 				.toUpperCase(Locale.ROOT);

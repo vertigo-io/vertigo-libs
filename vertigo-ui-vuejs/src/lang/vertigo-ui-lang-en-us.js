@@ -1,4 +1,11 @@
 export default {
+        ajaxErrors: {
+            code401: 'UnAuthorized, you may login with an authorized account',
+            code403: 'Forbidden, your havn&quote;t enought rights',
+            code404: 'API Route is Missing or Undefined',
+            code405: 'API Route Method Not Allowed',
+            code500: 'Server Error'
+        },
         comments: {
             title : "Comments",
             inputLabel : "Insert here a comment",
