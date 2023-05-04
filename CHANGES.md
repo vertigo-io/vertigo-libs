@@ -6,6 +6,87 @@ Running 4.0.0
 
 more to come :)
 
+Release 3.6.0 - 2023/05/04
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-350-to-360)
+- **[DataModel] Fix criteria precedence : `a or b and c` => `(a or b) and c`** ( *before 3.5.1 : a or b and c => a or (b and c)* )
+- [Datamodel] Write criteria operators in uppercase
+- [Datastore] support boolean in non bind parameters in criteria (safe)
+- [Datastore, Ui] mimetype resolution in fileStoreManager (with plugin)
+- [DataFactory] Fix defaultMaxRows (didn't use the maxRows set by setListState)
+- [DataFactory] searchManager support sort with geoDistance query
+- [Account] Fix criteriaSecurity tree for > and >= (include all keys null)
+- [Account] support fixed values in security rules
+- [Account] Add log on assertAuthz
+- [Account] Fix accept fixedValue on simple or enum authz rules
+- [Social] add `SmsManager` and a `OvhSmsSendPlugin` using ovh api (an example of WebServiceProxyAnnotation Amplifier)
+- [Orchestra] add threadContext in log on startup
+- [Orchestra] distinguish module information in log for the actual job
+- [Quarto] Support KeyField when export field with a denorm list
+- [Vega] WebAuthentication change session ID for security purpose (session fixation attack)
+- [Vega] Permit ; escaping (\;) in ContentSecurityPolicyFilter
+- [Vega] add . (dot) support in webservice path
+- [Vega] support scanning of WebServiceAnnotation on the interface method if not on the impl class (usefull for `WebServiceProxyAnnotation` stub)
+- [Vega] Add analytics on HttpClient amplifier
+- [Vega] add `AuthorizationWebFilter` for high level filtering based on global authorizations
+- [Vega] appLoginHandler must specify the afterLogin URL and afterLogOutUrl
+- [Vega] handle request that are not GET in webauthentication in keycloack
+- [Vega] requestedUrl in appLogin
+- [Vega] Update swaggerUi version 4.18.3
+- [Vega] Fix assertion in uiListModifiable when add then remove elements before checkAndMerge
+- [Vega] sonar : fix ReDos
+- **[Ui] Add xxx_content_slot on input components to define specific vue's slots (xxx = input, date, or time)**
+- [ui] add `after_label_slot` on input components
+- [Ui] Fix grid : don't create cell around include-data tags
+- [Ui] Fix return reject promise onAjaxError
+- [Ui] Add `delayUiMessageStask` to keep message, in case of refresh for redirect
+- [Ui] Fix slots propagation (no at all propagation)
+- [Ui] Refactor component's content (support slots and contents inside slots and contents)
+- [Ui] Extract other_attrs attributes when passed to another component : support overrides used to pass required to label for example
+- [Ui] Return 401 on viewContext not found exception (instead of 500)
+- [Ui] authz attrs javadoc
+- [Ui] Fix regression with axios 1.0+
+- [Ui] Add a loading stats with spinner on button-submit(show after a delay, rely on pendingAction map : share with httpPostAjax)
+  - on `q-btn`, you may use something like : `th::loading="|isPendingAction('@{_myAction}')|"`
+- [ui] add parameter `devMode.authzLogOnly` to toogle secureDevMode
+- [Ui] Add a check in Authz tag : don't support `&&` as AND
+- [ui] Link protectedValues to Session
+- [ui] Fix load of project's thymleaf components on a customPathPrefix
+- [ui] modal title is reactive
+- [ui] table : add `additional_content_slot` to customise table structure (for exemple multiple `<tr>`)
+- [ui] add required attribute on input components
+- [Ui] Add Handler for ExpiredViewContextException (like other Ui exceptions)
+- [ui] add qcard slot on cards
+- [UI] Mimetype detection with 'file.tikaMimeType' and optional lib
+- [ui] support autocomplete multiple + custom endpoint
+- [ui] support autocomplete in modifiableTable and split autocomplete in dedicated component
+- [Ui] Refactor marging on button confirm message
+- [Ui] add responseStatus in Analytics tracer
+- [ui] add standard boot class for embeddedJetty
+- [ui] stop jetty when error at vertigo boot
+- [Ui] Fix exceptionHandler : don't response.sendError in Ajax
+- [UI] Add checkbox-confirm : for usage like CGU acceptations
+- [Ui] Refactor component contents and other_attrs 
+- [ui] sanitize options on q-select based components
+- [ui] fix required asterisk with after_label_slot
+- [ui-vuejs] better ajaxError support *(fix case when response doesn't exist, add case when ajax response is a redirect, add case when a message is built on server side)*
+- [ui-vuejs] for httpPostAjax, support dot notation in vueDataParams for selecting some inner fields
+- [ui-vuejs] can omit vueDataParam call in httpPostAjax for much simpler usage
+- [ui-vuejs] refactor vueDataParams (perf improvements) and skip fields with modifiers
+- [ui-vuejs] externalize ajax errorMessages
+- [VueJs-UI] update dependencies
+  - quasar: 1.22.3 => 1.22.9
+- [All] update libs 
+  - log4j : 2.19.0 -> 2.20.0
+  - jetty : 9.4.50.v20221201 -> 9.4.51.v20230217
+  - elasticsearch : 7.17.8 -> 7.17.9
+  - liquibase-core : 4.18.0 -> 4.20.0
+  - ojdbc10 : 19.17.0.0 -> 19.18.0.0
+  - postgresql : 42.5.1 -> 42.6.0
+  - SODS : 1.5.2 -> 1.5.3
+  - spring : 5.3.24 -> 5.3.27
+  
+  
 Release 3.5.0 - 2023/01/06
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-340-to-350)
@@ -24,7 +105,7 @@ Release 3.5.0 - 2023/01/06
 - [Ui] assert attributs vu:select in readonly too
 - [Ui] add aria-required on textfield
 - [Ui] Add class and aria if field is required
-**- [UI] Link CTX to session ID (break old context storage compatibility)**
+- **[UI] Link CTX to session ID (break old context storage compatibility)**
 - [Ui] Update textEditor : add param plainTextOnly and showErrors (and add js method helper for fix FireFox Blockquote and H1-9 don't toggle correctly)
 - [Ui] Add libraries_slot in component <vu:page>
 - [ui] Add header_slot in component <vu:table>
@@ -39,7 +120,7 @@ Release 3.5.0 - 2023/01/06
 - [Ui] Fix logout on keycloak
 - [Ui] Store main instants of context : creation, and input reuse, "CTX_CREATION_INSTANT"; //instant of initContext; "CTX_REUSE_INSTANT"; //instant of currentCtx reuse; "INPUT_CTX_REUSE_INSTANT"; //instant of inputCtx reuse
 - [Ui] Fix error if there is comment in slot
-**- [Audit] Refactoring api**
+- **[Audit] Refactoring api**
 - [Audit] Add Database store plugin
 - [Orchestra] Force desynchronization of execution in node (prevent double excecutions, if DB isolation level doesn't garantee lock as same ms) 
 - [Orchestra] Fix equals test in request
