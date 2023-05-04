@@ -27,6 +27,15 @@
   color: var(--q-color-negative);
 } 
 
+.v-field__required.v-field__has_after_label .q-field__label::after, .v-field__required.v-field__has_after_label .q-checkbox__label::after {
+  content: "";
+} 
+
+.v-field__required.v-field__has_after_label .q-field__label>:first-child::after, .v-field__required .q-checkbox__label>:first-child::after {
+  content: " *";
+  color: var(--q-color-negative);
+} 
+
 .q-field--error .q-checkbox__label {
   color: var(--q-color-negative);
 }
