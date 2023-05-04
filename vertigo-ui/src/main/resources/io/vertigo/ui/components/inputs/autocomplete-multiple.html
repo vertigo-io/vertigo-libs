@@ -1,4 +1,4 @@
-<th:block th:fragment="autocomplete-multiple-edit(object, field, label, list, valueField, labelField, autocompleteId, required, inputUrl, filterUrl, edit_content_slot, input_attrs, label_attrs)" vu:alias="autocomplete-multiple" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="autocomplete-multiple-edit(object, field, label, list, valueField, labelField, autocompleteId, required, inputUrl, filterUrl, edit_content_slot, after_label_slot, input_attrs, label_attrs)" vu:alias="autocomplete-multiple" vu:selector="${viewMode=='edit'}"
 	  th:assert="${object} != null and ${field} != null and ${list} != null"
 	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, 
 	  myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, 
