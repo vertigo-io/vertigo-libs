@@ -27,7 +27,7 @@
        	th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
        	th::label-width="${overridedLabelWidth?:3}"
 		th:label="${myLabel}"
-		th:class="${myRequired}?'v-field__required'"
+		th:classappend="|${myRequired?'v-field_'+'_required':''}${after_label_slot!=null?' v-field_'+'_has_after_label':''}|"
 		th::error="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
 		th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
 		orientation="vertical"
