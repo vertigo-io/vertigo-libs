@@ -305,11 +305,9 @@ module.exports = function (it) {
 /***/ }),
 
 /***/ 8113:
-/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
+/***/ (function(module) {
 
-var getBuiltIn = __webpack_require__(5005);
-
-module.exports = getBuiltIn('navigator', 'userAgent') || '';
+module.exports = typeof navigator != 'undefined' && String(navigator.userAgent) || '';
 
 
 /***/ }),
@@ -865,6 +863,7 @@ module.exports = function (obj) {
 /***/ 6339:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
+var uncurryThis = __webpack_require__(1702);
 var fails = __webpack_require__(7293);
 var isCallable = __webpack_require__(614);
 var hasOwn = __webpack_require__(2597);
@@ -875,8 +874,12 @@ var InternalStateModule = __webpack_require__(9909);
 
 var enforceInternalState = InternalStateModule.enforce;
 var getInternalState = InternalStateModule.get;
+var $String = String;
 // eslint-disable-next-line es/no-object-defineproperty -- safe
 var defineProperty = Object.defineProperty;
+var stringSlice = uncurryThis(''.slice);
+var replace = uncurryThis(''.replace);
+var join = uncurryThis([].join);
 
 var CONFIGURABLE_LENGTH = DESCRIPTORS && !fails(function () {
   return defineProperty(function () { /* empty */ }, 'length', { value: 8 }).length !== 8;
@@ -885,8 +888,8 @@ var CONFIGURABLE_LENGTH = DESCRIPTORS && !fails(function () {
 var TEMPLATE = String(String).split('String');
 
 var makeBuiltIn = module.exports = function (value, name, options) {
-  if (String(name).slice(0, 7) === 'Symbol(') {
-    name = '[' + String(name).replace(/^Symbol\(([^)]*)\)/, '$1') + ']';
+  if (stringSlice($String(name), 0, 7) === 'Symbol(') {
+    name = '[' + replace($String(name), /^Symbol\(([^)]*)\)/, '$1') + ']';
   }
   if (options && options.getter) name = 'get ' + name;
   if (options && options.setter) name = 'set ' + name;
@@ -905,7 +908,7 @@ var makeBuiltIn = module.exports = function (value, name, options) {
   } catch (error) { /* empty */ }
   var state = enforceInternalState(value);
   if (!hasOwn(state, 'source')) {
-    state.source = TEMPLATE.join(typeof name == 'string' ? name : '');
+    state.source = join(TEMPLATE, typeof name == 'string' ? name : '');
   } return value;
 };
 
@@ -1198,10 +1201,10 @@ var store = __webpack_require__(5465);
 (module.exports = function (key, value) {
   return store[key] || (store[key] = value !== undefined ? value : {});
 })('versions', []).push({
-  version: '3.27.1',
+  version: '3.29.1',
   mode: IS_PURE ? 'pure' : 'global',
-  copyright: '© 2014-2022 Denis Pushkarev (zloirock.ru)',
-  license: 'https://github.com/zloirock/core-js/blob/v3.27.1/LICENSE',
+  copyright: '© 2014-2023 Denis Pushkarev (zloirock.ru)',
+  license: 'https://github.com/zloirock/core-js/blob/v3.29.1/LICENSE',
   source: 'https://github.com/zloirock/core-js'
 });
 
@@ -1444,21 +1447,15 @@ var uid = __webpack_require__(9711);
 var NATIVE_SYMBOL = __webpack_require__(6293);
 var USE_SYMBOL_AS_UID = __webpack_require__(3307);
 
-var WellKnownSymbolsStore = shared('wks');
 var Symbol = global.Symbol;
-var symbolFor = Symbol && Symbol['for'];
-var createWellKnownSymbol = USE_SYMBOL_AS_UID ? Symbol : Symbol && Symbol.withoutSetter || uid;
+var WellKnownSymbolsStore = shared('wks');
+var createWellKnownSymbol = USE_SYMBOL_AS_UID ? Symbol['for'] || Symbol : Symbol && Symbol.withoutSetter || uid;
 
 module.exports = function (name) {
-  if (!hasOwn(WellKnownSymbolsStore, name) || !(NATIVE_SYMBOL || typeof WellKnownSymbolsStore[name] == 'string')) {
-    var description = 'Symbol.' + name;
-    if (NATIVE_SYMBOL && hasOwn(Symbol, name)) {
-      WellKnownSymbolsStore[name] = Symbol[name];
-    } else if (USE_SYMBOL_AS_UID && symbolFor) {
-      WellKnownSymbolsStore[name] = symbolFor(description);
-    } else {
-      WellKnownSymbolsStore[name] = createWellKnownSymbol(description);
-    }
+  if (!hasOwn(WellKnownSymbolsStore, name)) {
+    WellKnownSymbolsStore[name] = NATIVE_SYMBOL && hasOwn(Symbol, name)
+      ? Symbol[name]
+      : createWellKnownSymbol('Symbol.' + name);
   } return WellKnownSymbolsStore[name];
 };
 
@@ -1483,18 +1480,20 @@ var INCORRECT_TO_LENGTH = fails(function () {
 
 // V8 and Safari <= 15.4, FF < 23 throws InternalError
 // https://bugs.chromium.org/p/v8/issues/detail?id=12681
-var SILENT_ON_NON_WRITABLE_LENGTH = !function () {
+var properErrorOnNonWritableLength = function () {
   try {
     // eslint-disable-next-line es/no-object-defineproperty -- safe
     Object.defineProperty([], 'length', { writable: false }).push();
   } catch (error) {
     return error instanceof TypeError;
   }
-}();
+};
+
+var FORCED = INCORRECT_TO_LENGTH || !properErrorOnNonWritableLength();
 
 // `Array.prototype.push` method
 // https://tc39.es/ecma262/#sec-array.prototype.push
-$({ target: 'Array', proto: true, arity: 1, forced: INCORRECT_TO_LENGTH || SILENT_ON_NON_WRITABLE_LENGTH }, {
+$({ target: 'Array', proto: true, arity: 1, forced: FORCED }, {
   // eslint-disable-next-line no-unused-vars -- required for `.length`
   push: function push(item) {
     var O = toObject(this);
@@ -4734,20 +4733,23 @@ function isDeepEqual (a, b) {
         return false
       }
 
-      i = a.entries().next()
+      let iter = a.entries()
+
+      i = iter.next()
       while (i.done !== true) {
         if (b.has(i.value[0]) !== true) {
           return false
         }
-        i = i.next()
+        i = iter.next()
       }
 
-      i = a.entries().next()
+      iter = a.entries()
+      i = iter.next()
       while (i.done !== true) {
         if (isDeepEqual(i.value[1], b.get(i.value[0])) !== true) {
           return false
         }
-        i = i.next()
+        i = iter.next()
       }
 
       return true
@@ -4758,12 +4760,14 @@ function isDeepEqual (a, b) {
         return false
       }
 
-      i = a.entries().next()
+      const iter = a.entries()
+
+      i = iter.next()
       while (i.done !== true) {
         if (b.has(i.value[0]) !== true) {
           return false
         }
-        i = i.next()
+        i = iter.next()
       }
 
       return true
@@ -4862,49 +4866,102 @@ function isNumber (v) {
     };
 
     //Setup Error Message
-    if (Object.prototype.hasOwnProperty.call(response.data, 'redirect')) {
-      //if response was an redirect
-      window.location = response.data.redirect;
-      return;
-    } else if (Object.prototype.hasOwnProperty.call(response.data, 'message')) {
-      //if response was an error
-      notif.message = response.data.message;
-    }
-
-    //Setup Generic Response Messages
-    if (response.status === 401) {
-      notif.message = 'UnAuthorized, you may login with an authorized account';
-      this.$root.$emit('unauthorized', response); //Emit Logout Event // surcharge ajout de la response en parametre
-      return;
-    } else if (response.status === 403) {
-      notif.message = 'Forbidden, your havn&quote;t enought rights';
-    } else if (response.status === 404) {
-      notif.message = 'API Route is Missing or Undefined';
-    } else if (response.status === 405) {
-      notif.message = 'API Route Method Not Allowed';
-    } else if (response.status === 422) {
-      //Validation Message
-      notif.message = '';
-      Object.keys(response.data).forEach(function (key) {
-        this.$data.uiMessageStack[key] = response.data[key];
-      }.bind(this));
-    } else if (response.status >= 500) {
-      notif.message = 'Server Error';
-    }
-    if (response.statusText && response.status !== 422) {
-      notif.message = response.statusText;
-    }
-    //Try to Use the Response Message
-    if (Object.prototype.hasOwnProperty.call(response, 'data')) {
-      if (Object.prototype.hasOwnProperty.call(response.data, 'message') && response.data.message && response.data.message.length > 0) {
+    if (response) {
+      if (Object.prototype.hasOwnProperty.call(response.data, 'redirect')) {
+        //if response was a redirect
+        window.location = response.data.redirect;
+        return;
+      } else if (Object.prototype.hasOwnProperty.call(response.data, 'message')) {
+        //if response was an error
         notif.message = response.data.message;
-      } else if (Object.prototype.hasOwnProperty.call(response.data, 'globalErrors') && response.data.globalErrors && response.data.globalErrors.length > 0) {
-        notif.message = response.data.globalErrors.join('<br/>\n ');
+      }
+      //Setup Generic Response Messages
+      if (response.status === 401) {
+        notif.message = this.$q.lang.vui.ajaxErrors.code401;
+        this.$root.$emit('unauthorized', response); //Emit Logout Event
+        return;
+      } else if (response.status === 403) {
+        notif.message = this.$q.lang.vui.ajaxErrors.code403;
+      } else if (response.status === 404) {
+        notif.message = this.$q.lang.vui.ajaxErrors.code404;
+      } else if (response.status === 405) {
+        notif.message = this.$q.lang.vui.ajaxErrors.code405;
+      } else if (response.status === 422) {
+        //Validation Message
+        notif.message = '';
+        Object.keys(response.data).forEach(function (key) {
+          this.$data.uiMessageStack[key] = response.data[key];
+        }.bind(this));
+      } else if (response.status >= 500) {
+        notif.message = this.$q.lang.vui.ajaxErrors.code500;
+      }
+      if (response.statusText && response.status !== 422) {
+        notif.message = response.statusText;
+      }
+      //Try to Use the Response Message
+      if (Object.prototype.hasOwnProperty.call(response, 'data')) {
+        if (Object.prototype.hasOwnProperty.call(response.data, 'message') && response.data.message && response.data.message.length > 0) {
+          notif.message = response.data.message;
+        } else if (Object.prototype.hasOwnProperty.call(response.data, 'globalErrors') && response.data.globalErrors && response.data.globalErrors.length > 0) {
+          var notifyMessages = this.uiMessageStackToNotify(response.data);
+          notifyMessages.forEach(function (notifyMessage) {
+            this.$q.notify(notifyMessage);
+          }.bind(this));
+          notif.message = ''; //déja envoyé
+        }
       }
     }
     //Send the notif
     if (notif.message.length > 0) {
       this.$q.notify(notif);
+    }
+  },
+  uiMessageStackToNotify: function (uiMessageStack) {
+    if (uiMessageStack) {
+      var notifyMessages = [];
+      if (Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalErrors') && uiMessageStack.globalErrors && uiMessageStack.globalErrors.length > 0) {
+        uiMessageStack.globalErrors.forEach(function (uiMessage) {
+          notifyMessages.push({
+            type: 'negative',
+            message: uiMessage,
+            multiLine: true,
+            timeout: 2500
+          });
+        });
+      }
+      if (Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalWarnings') && uiMessageStack.globalWarnings && uiMessageStack.globalWarnings.length > 0) {
+        uiMessageStack.globalWarnings.forEach(function (uiMessage) {
+          notifyMessages.push({
+            type: 'warning',
+            message: uiMessage,
+            multiLine: true,
+            timeout: 2500
+          });
+        });
+      }
+      if (Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalInfos') && uiMessageStack.globalInfos && uiMessageStack.globalInfos.length > 0) {
+        uiMessageStack.globalInfos.forEach(function (uiMessage) {
+          notifyMessages.push({
+            type: 'info',
+            message: uiMessage,
+            multiLine: true,
+            timeout: 2500
+          });
+        });
+      }
+      if (Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalSuccess') && uiMessageStack.globalSuccess && uiMessageStack.globalSuccess.length > 0) {
+        uiMessageStack.globalSuccess.forEach(function (uiMessage) {
+          notifyMessages.push({
+            type: 'positive',
+            message: uiMessage,
+            multiLine: true,
+            timeout: 2500
+          });
+        });
+      }
+      //Pour le moment, rien avec : objectFieldErrors, objectFieldWarnings, objectFieldInfos
+
+      return notifyMessages;
     }
   },
   getSafeValue: function (objectkey, fieldKey, subFieldKey) {
@@ -5025,21 +5082,30 @@ function isNumber (v) {
       update([]);
     });
   },
-  loadAutocompleteById: function (list, valueField, labelField, componentId, url, objectName, fieldName) {
+  loadAutocompleteById: function (list, valueField, labelField, componentId, url, objectName, fieldName, rowIndex) {
     //Method use when value(id) is set by another way : like Ajax Viewcontext update, other component, ...
     //if options already contains the value (id) : we won't reload.
-    if (!this.$data.vueData[objectName][fieldName] || this.$data.componentStates[componentId].options.filter(function (option) {
-      return option.value === this.$data.vueData[objectName][fieldName];
+    var value;
+    if (rowIndex != null) {
+      value = this.$data.vueData[objectName][rowIndex][fieldName];
+    } else {
+      value = this.$data.vueData[objectName][fieldName];
+    }
+    if (Array.isArray(value)) {
+      value.forEach(element => this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, element));
+    } else {
+      this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, value);
+    }
+  },
+  loadMissingAutocompleteOption: function (list, valueField, labelField, componentId, url, value) {
+    if (!value || this.$data.componentStates[componentId].options.filter(function (option) {
+      return option.value === value;
     }.bind(this)).length > 0) {
       return;
     }
     this.$data.componentStates[componentId].loading = true;
-    this.$data.componentStates[componentId].options.push({
-      'value': this.$data.vueData[objectName][fieldName],
-      'label': ''
-    });
     this.$http.post(url, this.objectToFormData({
-      value: this.$data.vueData[objectName][fieldName],
+      value: value,
       list: list,
       valueField: valueField,
       labelField: labelField,
@@ -5052,10 +5118,8 @@ function isNumber (v) {
         }; // a label is always a string
       });
 
-      this.$data.componentStates[componentId].options.pop();
       this.$data.componentStates[componentId].options = this.$data.componentStates[componentId].options.concat(finalList);
     }.bind(this)).catch(function (error) {
-      this.$data.componentStates[componentId].options.pop();
       this.$q.notify(error.response.status + ":" + error.response.statusText);
     }.bind(this)).then(function () {
       // always executed
@@ -5343,10 +5407,12 @@ function isNumber (v) {
     }.bind(this));
   },
   httpPostAjax: function (url, paramsIn, options) {
+    var paramsInResolved = Array.isArray(paramsIn) ? this.vueDataParams(paramsIn) : paramsIn;
     let vueData = this.$data.vueData;
     let uiMessageStack = this.$data.uiMessageStack;
-    let params = this.isFormData(paramsIn) ? paramsIn : this.objectToFormData(paramsIn);
+    let params = this.isFormData(paramsInResolved) ? paramsInResolved : this.objectToFormData(paramsInResolved);
     params.append('CTX', vueData.CTX);
+    this.pushPendingAction(url);
     this.$http.post(url, params).then(function (response) {
       if (response.data.model.CTX) {
         vueData.CTX = response.data.model.CTX;
@@ -5366,7 +5432,22 @@ function isNumber (v) {
       if (options && options.onError) {
         options.onError.call(this, error.response);
       }
-    });
+    }).finally(function () {
+      this.removePendingAction(url);
+    }.bind(this));
+  },
+  isPendingAction: function (actionName) {
+    if (actionName) {
+      return this.$data.componentStates.pendingAction.actionNames.includes(actionName);
+    } else {
+      return this.$data.componentStates.pendingAction.actionNames.length > 0;
+    }
+  },
+  pushPendingAction: function (actionName) {
+    this.$data.componentStates.pendingAction.actionNames.push(actionName);
+  },
+  removePendingAction: function (actionName) {
+    this.$data.componentStates.pendingAction.actionNames = this.$data.componentStates.pendingAction.actionNames.filter(e => e !== actionName);
   },
   hasFieldsError: function (object, field, rowIndex) {
     const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
@@ -5390,41 +5471,51 @@ function isNumber (v) {
   vueDataParams: function (keys) {
     var params = new FormData();
     for (var i = 0; i < keys.length; i++) {
-      var contextKey = keys[i];
+      var attribs = keys[i].split('.', 2);
+      var contextKey = attribs[0];
+      var attribute = attribs[1];
       var vueDataValue = this.$data.vueData[contextKey];
       if (vueDataValue && typeof vueDataValue === 'object' && Array.isArray(vueDataValue) === false) {
         // object
-        Object.keys(vueDataValue).forEach(function (propertyKey) {
-          if (!propertyKey.startsWith("_")) {
-            // _ properties are private and don't belong to the serialized entity
-            if (Array.isArray(vueDataValue[propertyKey])) {
-              let vueDataFieldValue = vueDataValue[propertyKey];
-              if (!vueDataFieldValue || vueDataFieldValue.length == 0) {
-                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', ""); // reset array with an empty string
-              } else {
-                vueDataFieldValue.forEach(function (value, index) {
-                  if (vueDataFieldValue[index] && typeof vueDataFieldValue[index] === 'object') {
-                    this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]['_v_inputValue']);
-                  } else {
-                    this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]);
-                  }
-                }.bind(this));
-              }
-            } else {
-              if (vueDataValue[propertyKey] && typeof vueDataValue[propertyKey] === 'object') {
-                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]['_v_inputValue']);
-              } else {
-                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]);
-              }
+        if (!attribute) {
+          Object.keys(vueDataValue).forEach(function (propertyKey) {
+            if (!propertyKey.includes("_")) {
+              //  properties taht start with _ are private and don't belong to the serialized entity
+              // we filter field with modifiers (like <field>_display and <field>_fmt)
+              this._vueDataParamsKey(params, contextKey, propertyKey, vueDataValue);
             }
-          }
-        }.bind(this));
+          }.bind(this));
+        } else {
+          this._vueDataParamsKey(params, contextKey, attribute, vueDataValue);
+        }
       } else {
         //primitive
         this.appendToFormData(params, 'vContext[' + contextKey + ']', vueDataValue);
       }
     }
     return params;
+  },
+  _vueDataParamsKey: function (params, contextKey, propertyKey, vueDataValue) {
+    let vueDataFieldValue = vueDataValue[propertyKey];
+    if (Array.isArray(vueDataFieldValue)) {
+      if (!vueDataFieldValue || vueDataFieldValue.length == 0) {
+        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', ""); // reset array with an empty string
+      } else {
+        vueDataFieldValue.forEach(function (value, index) {
+          if (vueDataFieldValue[index] && typeof vueDataFieldValue[index] === 'object') {
+            this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]['_v_inputValue']);
+          } else {
+            this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]);
+          }
+        }.bind(this));
+      }
+    } else {
+      if (vueDataFieldValue && typeof vueDataFieldValue === 'object') {
+        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue['_v_inputValue']);
+      } else {
+        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue);
+      }
+    }
   },
   objectToFormData: function (object) {
     const formData = new FormData();
@@ -5515,6 +5606,13 @@ function isNumber (v) {
 });
 ;// CONCATENATED MODULE: ./src/lang/vertigo-ui-lang-en-us.js
 /* harmony default export */ var vertigo_ui_lang_en_us = ({
+  ajaxErrors: {
+    code401: 'UnAuthorized, you may login with an authorized account',
+    code403: 'Forbidden, your havn&quote;t enought rights',
+    code404: 'API Route is Missing or Undefined',
+    code405: 'API Route Method Not Allowed',
+    code500: 'Server Error'
+  },
   comments: {
     title: "Comments",
     inputLabel: "Insert here a comment",
@@ -5558,6 +5656,13 @@ function isNumber (v) {
 });
 ;// CONCATENATED MODULE: ./src/lang/vertigo-ui-lang-fr.js
 /* harmony default export */ var vertigo_ui_lang_fr = ({
+  ajaxErrors: {
+    code401: 'Non autoris&eacute;, essayez de vous reconnecter',
+    code403: 'Vous n&quote;avez pas les droits suffisants pour effectuer cette action',
+    code404: 'API introuvable',
+    code405: 'API non autoris&eacute;e',
+    code500: 'Erreur serveur'
+  },
   comments: {
     title: "Commentaires",
     inputLabel: "Insérer un commentaire ici",

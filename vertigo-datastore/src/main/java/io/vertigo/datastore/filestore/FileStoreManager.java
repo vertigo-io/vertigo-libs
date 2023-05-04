@@ -20,6 +20,7 @@ package io.vertigo.datastore.filestore;
 import io.vertigo.core.node.component.Manager;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
+import io.vertigo.datastore.filestore.model.VFile;
 
 /**
  * Defines the way to store and access all the files.
@@ -61,5 +62,12 @@ public interface FileStoreManager extends Manager {
 	 * @return VFileInfo correspondant à l'URI fournie.
 	 */
 	FileInfo read(final FileInfoURI uri);
+
+	/**
+	 * Resolve mimetype
+	 * @param vFile the file to probe
+	 * @return the resolved MimeType
+	 */
+	String resolveMimeType(final VFile vFile);
 
 }

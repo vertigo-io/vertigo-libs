@@ -29,6 +29,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.ui.impl.springmvc.util.SpringVFileUtil;
 import io.vertigo.vega.webservice.stereotype.QueryParam;
 
 public class VFileMethodArgumentResolver implements HandlerMethodArgumentResolver {

@@ -57,6 +57,8 @@ public class SlotAttributeTagProcessor extends AbstractAttributeTagProcessor {
 				"{0} isn't a slot. Attribute vu:slot supports only slots, names must ends with '_slot'", attributeValue);
 		//-----
 		final Object slotModelObject = context.getVariable(attributeValue);
+		structureHandler.setLocalVariable(attributeValue, null); //don't keep this localVariable
+
 		final IModel slotModel;
 		if (slotModelObject instanceof Fragment) {
 			slotModel = ((Fragment) slotModelObject).getTemplateModel();
@@ -69,7 +71,6 @@ public class SlotAttributeTagProcessor extends AbstractAttributeTagProcessor {
 				structureHandler.removeElement();
 			} else {
 				//Else we replace the body by user defined slot
-				//structureHandler.removeBody();
 				structureHandler.setBody(slotModel, true);
 			}
 		} else if (tag instanceof IStandaloneElementTag) {

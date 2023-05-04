@@ -22,14 +22,19 @@ import java.util.Map;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
+import io.vertigo.datafactory.impl.search.dsl.model.DslGeoDistanceQuery;
 import io.vertigo.datafactory.plugins.search.elasticsearch.AsbtractESSearchRequestBuilder;
+import io.vertigo.datafactory.plugins.search.elasticsearch.DslGeoToQueryBuilderUtil;
 import io.vertigo.datafactory.plugins.search.elasticsearch.ESDocumentCodec;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
@@ -62,12 +67,23 @@ final class ESSearchRequestBuilder extends AsbtractESSearchRequestBuilder<Search
 	}
 
 	@Override
-	protected void appendListState(final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows, final DtDefinition indexDtDefinition) {
+	protected void appendListState(final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows,
+			final DtDefinition indexDtDefinition, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		searchSourceBuilder.from(listState.getSkipRows())
 				//If we send a clustering query, we don't retrieve result with hits response but with buckets
 				.size(searchQuery.isClusteringFacet() ? 0 : listState.getMaxRows().orElse(defaultMaxRows));
 		if (listState.getSortFieldName().isPresent()) {
-			searchSourceBuilder.sort(getFieldSortBuilder(indexDtDefinition, listState));
+			final var sortFieldName = listState.getSortFieldName().get();
+			if (searchQuery.getGeoExpression().isPresent()
+					&& searchQuery.getGeoExpression().get().getGeoQuery() instanceof DslGeoDistanceQuery
+					&& sortFieldName.equals(searchQuery.getGeoExpression().get().getField().getFieldName())) {
+				final var geoDistanceQuery = (DslGeoDistanceQuery) searchQuery.getGeoExpression().get().getGeoQuery();
+				final GeoPoint geoPoint = DslGeoToQueryBuilderUtil.computeGeoPoint(geoDistanceQuery.getGeoPoint(), searchQuery.getCriteria(), typeAdapters);
+				Assertion.check().isNotNull(geoPoint, "When sorting by distance the geoPoint used as criteria cannot be null");
+				searchSourceBuilder.sort(SortBuilders.geoDistanceSort(listState.getSortFieldName().get(), geoPoint));
+			} else {
+				searchSourceBuilder.sort(getFieldSortBuilder(indexDtDefinition, listState));
+			}
 		}
 	}
 

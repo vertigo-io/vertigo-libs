@@ -36,12 +36,15 @@ import com.google.gson.JsonSyntaxException;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.connectors.httpclient.HttpClientConnector;
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.amplifier.ProxyMethod;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.plugins.webservice.scanner.annotations.AnnotationsWebServiceScannerUtil;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
@@ -52,17 +55,20 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 
 	private final Map<String, HttpClientConnector> httpClientConnectorByName = new HashMap<>();
 	private final JsonEngine jsonReaderEngine;
+	private final AnalyticsManager analyticsManager;
 
 	/**
 	* @param jsonReaderEngine jsonReaderEngine
 	*/
 	@Inject
 	public WebServiceClientProxyMethod(final JsonEngine jsonReaderEngine,
-			final List<HttpClientConnector> httpClientConnectors) {
+			final List<HttpClientConnector> httpClientConnectors,
+			final AnalyticsManager analyticsManager) {
 		Assertion.check().isNotNull(jsonReaderEngine)
 				.isNotNull(httpClientConnectors);
 		//-----
 		this.jsonReaderEngine = jsonReaderEngine;
+		this.analyticsManager = analyticsManager;
 
 		httpClientConnectors.forEach(
 				connector -> {
@@ -83,44 +89,51 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 
 	@Override
 	public Object invoke(final Method method, final Object[] args) {
-		final String connectorName = obtainConnectorName(method);
+		final WebServiceProxyAnnotation webServiceProxyAnnotation = obtainWebServiceProxyAnnotation(method);
+		final String connectorName = webServiceProxyAnnotation.connectorName();
+		final Optional<RequestSpecializer> requestSpecializerOpt = obtainRequestSpecializer(webServiceProxyAnnotation.requestSpecializer());
 		final WebServiceDefinition webServiceDefinition = createWebServiceDefinition(method);
 		final HttpClientConnector httpClientConnector = Optional.ofNullable(httpClientConnectorByName.get(connectorName))
 				.orElseThrow(() -> new VSystemException("Can't found HttpClientConnector with name {0}", connectorName));
 
-		final HttpRequest httpRequest = createHttpRequest(webServiceDefinition, namedArgs(webServiceDefinition.getWebServiceParams(), args), httpClientConnector);
+		final HttpRequest httpRequest = createHttpRequest(webServiceDefinition, namedArgs(webServiceDefinition.getWebServiceParams(), args), httpClientConnector, requestSpecializerOpt);
 
-		final HttpResponse response;
+		final HttpResponse<String> response;
+		//same name for WS that  Vega (AnalyticsWebServiceHandlerPlugin);
+		final String name = "/" + webServiceDefinition.getVerb().name() + "/" + webServiceDefinition.getPath();
+		response = analyticsManager.traceWithReturn("wsclient", name, tracer -> {
 		try {
-			response = httpClientConnector.getClient().send(httpRequest, BodyHandlers.ofString());
+				return httpClientConnector.getClient().send(httpRequest, BodyHandlers.ofString());
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw WrappedException.wrap(e);
 		}
+		});
+
 		final int responseStatus = response.statusCode();
 		if (responseStatus / 100 == 2) {
 			final Type returnType = webServiceDefinition.getMethod().getGenericReturnType();
 			if (Void.TYPE.equals(returnType)) {
 				return null;
 			}
-			return convertResultFromJson((String) response.body(), returnType);
+			return convertResultFromJson(response.body(), returnType);
 		} else if (responseStatus / 100 == 3) {
-			throw new VUserException((String) response.body());
+			throw new VUserException(response.body());
 		} else if (responseStatus / 100 == 4) {
 			if (responseStatus == HttpServletResponse.SC_UNAUTHORIZED) {
-				throw WrappedException.wrap(new SessionException((String) response.body()));
+				throw WrappedException.wrap(new SessionException(response.body()));
 			} else if (responseStatus == HttpServletResponse.SC_FORBIDDEN) {
-				throw new VSecurityException(MessageText.of((String) response.body()));
+				throw new VSecurityException(MessageText.of(response.body()));
 			} else if (responseStatus == HttpServletResponse.SC_BAD_REQUEST) {
-				throw new JsonSyntaxException((String) response.body());
+				throw new JsonSyntaxException(response.body());
 			} else {
-				final Map errorMessages = convertErrorFromJson((String) response.body(), Map.class);
+				final Map errorMessages = convertErrorFromJson(response.body(), Map.class);
 				throw new WebServiceUserException(responseStatus, errorMessages);
 			}
 		} else {
-			throw WrappedException.wrap(new VSystemException((String) response.body()));
+			throw WrappedException.wrap(new VSystemException(response.body()));
 		}
 	}
 
@@ -132,12 +145,19 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 		return jsonReaderEngine.fromJson(json, returnType);
 	}
 
-	private String obtainConnectorName(final Method method) {
+	private WebServiceProxyAnnotation obtainWebServiceProxyAnnotation(final Method method) {
 		WebServiceProxyAnnotation webServiceProxyAnnotation = method.getAnnotation(WebServiceProxyAnnotation.class);
 		if (webServiceProxyAnnotation == null) {
 			webServiceProxyAnnotation = method.getDeclaringClass().getAnnotation(WebServiceProxyAnnotation.class);
 		}
-		return webServiceProxyAnnotation.connectorName();
+		return webServiceProxyAnnotation;
+	}
+
+	private Optional<RequestSpecializer> obtainRequestSpecializer(final String requestSpecializer) {
+		if (StringUtil.isBlank(requestSpecializer)) {
+			return Optional.empty();
+		}
+		return Optional.of(Node.getNode().getComponentSpace().resolve(requestSpecializer, RequestSpecializer.class));
 	}
 
 	private Map<String, Object> namedArgs(final List<WebServiceParam> params, final Object[] args) {
@@ -151,7 +171,7 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 		return namedArgs;
 	}
 
-	private HttpRequest createHttpRequest(final WebServiceDefinition webServiceDefinition, final Map<String, Object> namedArgs, final HttpClientConnector httpClientConnector) {
+	private HttpRequest createHttpRequest(final WebServiceDefinition webServiceDefinition, final Map<String, Object> namedArgs, final HttpClientConnector httpClientConnector, final Optional<RequestSpecializer> requestSpecializerOpt) {
 		final HttpRequestBuilder httpRequestBuilder = new HttpRequestBuilder(httpClientConnector.getUrlPrefix(), webServiceDefinition.getPath(), jsonReaderEngine);
 		httpRequestBuilder.header("Content-Type", "application/json;charset=UTF-8");
 		httpRequestBuilder.verb(webServiceDefinition.getVerb());
@@ -179,6 +199,8 @@ public final class WebServiceClientProxyMethod implements ProxyMethod {
 					break;
 			}
 		}
+		requestSpecializerOpt.ifPresent(
+				requestSpecializer -> requestSpecializer.specialize(httpRequestBuilder, webServiceDefinition, namedArgs, httpClientConnector));
 		return httpRequestBuilder.build();
 	}
 

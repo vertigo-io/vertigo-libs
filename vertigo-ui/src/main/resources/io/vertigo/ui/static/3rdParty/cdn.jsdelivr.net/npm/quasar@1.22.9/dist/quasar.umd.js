@@ -1,5 +1,5 @@
 /*!
- * Quasar Framework v1.22.3
+ * Quasar Framework v1.22.9
  * (c) 2015-present Razvan Stoenescu
  * Released under the MIT License.
  */
@@ -12,7 +12,7 @@
 
   Vue = Vue && Object.prototype.hasOwnProperty.call(Vue, 'default') ? Vue['default'] : Vue;
 
-  var version = "1.22.3";
+  var version = "1.22.9";
 
   /* eslint-disable no-useless-escape */
 
@@ -2418,7 +2418,7 @@
   var imgRE = /^img:/;
   var svgUseRE = /^svguse:/;
   var ionRE = /^ion-/;
-  var faRE = /^(fa-(solid|regular|light|brands|duotone|thin)|[lf]a[srlbdk]?) /;
+  var faRE = /^(fa-(sharp|solid|regular|light|brands|duotone|thin)|[lf]a[srlbdk]?) /;
 
   var QIcon = Vue.extend({
     name: 'QIcon',
@@ -5358,14 +5358,31 @@
     }
 
     return {
-      top: top,
-      left: left,
-      right: right,
-      bottom: bottom,
-      width: width,
-      height: height,
+      top: top, bottom: bottom, height: height,
+      left: left, right: right, width: width,
       middle: left + (right - left) / 2,
       center: top + (bottom - top) / 2
+    }
+  }
+
+  function getAbsoluteAnchorProps (el, absoluteOffset, offset) {
+    var ref = el.getBoundingClientRect();
+    var top = ref.top;
+    var left = ref.left;
+
+    top += absoluteOffset.top;
+    left += absoluteOffset.left;
+
+    if (offset !== void 0) {
+      top += offset[ 1 ];
+      left += offset[ 0 ];
+    }
+
+    return {
+      top: top, bottom: top + 1, height: 1,
+      left: left, right: left + 1, width: 1,
+      middle: left,
+      center: top
     }
   }
 
@@ -5377,6 +5394,13 @@
       left: 0,
       middle: el.offsetWidth / 2,
       right: el.offsetWidth
+    }
+  }
+
+  function getTopLeftProps (anchorProps, targetProps, cfg) {
+    return {
+      top: anchorProps[ cfg.anchorOrigin.vertical ] - targetProps[ cfg.selfOrigin.vertical ],
+      left: anchorProps[ cfg.anchorOrigin.horizontal ] - targetProps[ cfg.selfOrigin.horizontal ]
     }
   }
 
@@ -5400,8 +5424,6 @@
       }
     }
 
-    var anchorProps;
-
     // scroll position might change
     // if max-height/-width changes, so we
     // need to restore it after we calculate
@@ -5410,18 +5432,9 @@
     var scrollLeft = ref$1.scrollLeft;
     var scrollTop = ref$1.scrollTop;
 
-    if (cfg.absoluteOffset === void 0) {
-      anchorProps = getAnchorProps(cfg.anchorEl, cfg.cover === true ? [0, 0] : cfg.offset);
-    }
-    else {
-      var ref$2 = cfg.anchorEl.getBoundingClientRect();
-      var anchorTop = ref$2.top;
-      var anchorLeft = ref$2.left;
-      var top$1 = anchorTop + cfg.absoluteOffset.top,
-        left$1 = anchorLeft + cfg.absoluteOffset.left;
-
-      anchorProps = { top: top$1, left: left$1, width: 1, height: 1, right: left$1 + 1, center: top$1, middle: left$1, bottom: top$1 + 1 };
-    }
+    var anchorProps = cfg.absoluteOffset === void 0
+      ? getAnchorProps(cfg.anchorEl, cfg.cover === true ? [ 0, 0 ] : cfg.offset)
+      : getAbsoluteAnchorProps(cfg.anchorEl, cfg.absoluteOffset, cfg.offset);
 
     var elStyle = {
       maxHeight: cfg.maxHeight,
@@ -5438,14 +5451,45 @@
 
     Object.assign(cfg.el.style, elStyle);
 
-    var
-      targetProps = getTargetProps(cfg.el),
-      props = {
-        top: anchorProps[cfg.anchorOrigin.vertical] - targetProps[cfg.selfOrigin.vertical],
-        left: anchorProps[cfg.anchorOrigin.horizontal] - targetProps[cfg.selfOrigin.horizontal]
-      };
+    var targetProps = getTargetProps(cfg.el);
+    var props = getTopLeftProps(anchorProps, targetProps, cfg);
 
-    applyBoundaries(props, anchorProps, targetProps, cfg.anchorOrigin, cfg.selfOrigin);
+    if (cfg.absoluteOffset === void 0 || cfg.offset === void 0) {
+      applyBoundaries(props, anchorProps, targetProps, cfg.anchorOrigin, cfg.selfOrigin);
+    }
+    else { // we have touch position or context menu with offset
+      var top$1 = props.top;
+      var left$1 = props.left; // cache initial values
+
+      // apply initial boundaries
+      applyBoundaries(props, anchorProps, targetProps, cfg.anchorOrigin, cfg.selfOrigin);
+
+      var hasChanged = false;
+
+      // did it flip vertically?
+      if (props.top !== top$1) {
+        hasChanged = true;
+        var offsetY = 2 * cfg.offset[ 1 ];
+        anchorProps.center = anchorProps.top -= offsetY;
+        anchorProps.bottom -= offsetY + 2;
+      }
+
+      // did it flip horizontally?
+      if (props.left !== left$1) {
+        hasChanged = true;
+        var offsetX = 2 * cfg.offset[ 0 ];
+        anchorProps.middle = anchorProps.left -= offsetX;
+        anchorProps.right -= offsetX + 2;
+      }
+
+      if (hasChanged === true) {
+        // re-calculate props with the new anchor
+        props = getTopLeftProps(anchorProps, targetProps, cfg);
+
+        // and re-apply boundaries
+        applyBoundaries(props, anchorProps, targetProps, cfg.anchorOrigin, cfg.selfOrigin);
+      }
+    }
 
     elStyle = {
       top: props.top + 'px',
@@ -7215,20 +7259,23 @@
           return false
         }
 
-        i = a.entries().next();
+        var iter = a.entries();
+
+        i = iter.next();
         while (i.done !== true) {
           if (b.has(i.value[0]) !== true) {
             return false
           }
-          i = i.next();
+          i = iter.next();
         }
 
-        i = a.entries().next();
+        iter = a.entries();
+        i = iter.next();
         while (i.done !== true) {
           if (isDeepEqual(i.value[1], b.get(i.value[0])) !== true) {
             return false
           }
-          i = i.next();
+          i = iter.next();
         }
 
         return true
@@ -7239,12 +7286,14 @@
           return false
         }
 
-        i = a.entries().next();
+        var iter$1 = a.entries();
+
+        i = iter$1.next();
         while (i.done !== true) {
           if (b.has(i.value[0]) !== true) {
             return false
           }
-          i = i.next();
+          i = iter$1.next();
         }
 
         return true
@@ -13405,10 +13454,8 @@
           this.lastEmitValue = 0;
         }
         else {
-          var ref = this.__getViewModel(this.innerMask, this.innerLocale);
-          var year = ref.year;
-          var month = ref.month;
-          this.__updateViewModel(year, month);
+          var model = this.__getViewModel(this.innerMask, this.innerLocale);
+          this.__updateViewModel(model.year, model.month, model);
         }
       },
 
@@ -14626,7 +14673,7 @@
         }
       },
 
-      __updateViewModel: function __updateViewModel (year, month) {
+      __updateViewModel: function __updateViewModel (year, month, time) {
         var this$1 = this;
 
         if (this.minNav !== void 0 && year <= this.minNav.year) {
@@ -14641,6 +14688,16 @@
           if (month > this.maxNav.month) {
             month = this.maxNav.month;
           }
+        }
+
+        if (time !== void 0) {
+          var hour = time.hour;
+          var minute = time.minute;
+          var second = time.second;
+          var millisecond = time.millisecond;
+          var timezoneOffset = time.timezoneOffset;
+          var timeHash = time.timeHash;
+          Object.assign(this.viewModel, { hour: hour, minute: minute, second: second, millisecond: millisecond, timezoneOffset: timezoneOffset, timeHash: timeHash });
         }
 
         var newHash = year + '/' + pad(month) + '/01';
@@ -14879,6 +14936,7 @@
     vpPendingUpdate = false,
     bodyLeft,
     bodyTop,
+    href,
     closeTimer;
 
   function onWheel (e) {
@@ -14967,6 +15025,8 @@
       bodyLeft = body.style.left;
       bodyTop = body.style.top;
 
+      href = window.location.href;
+
       body.style.left = "-" + scrollPositionX + "px";
       body.style.top = "-" + scrollPositionY + "px";
       if (overflowY !== 'hidden' && (overflowY === 'scroll' || body.scrollHeight > window.innerHeight)) {
@@ -14975,6 +15035,7 @@
 
       body.classList.add('q-body--prevent-scroll');
       document.qScrollPrevented = true;
+
       if (client.is.ios === true) {
         if (hasViewport === true) {
           window.scrollTo(0, 0);
@@ -15011,7 +15072,11 @@
       body.style.left = bodyLeft;
       body.style.top = bodyTop;
 
-      window.scrollTo(scrollPositionX, scrollPositionY);
+      // scroll back only if route has not changed
+      if (window.location.href === href) {
+        window.scrollTo(scrollPositionX, scrollPositionY);
+      }
+
       maxScrollTop = void 0;
     }
   }
@@ -15431,7 +15496,7 @@
             h('div', {
               staticClass: 'q-dialog__backdrop fixed-full',
               attrs: backdropAttrs,
-              on: cache(this, 'bkdrop', ( obj = {}, obj[ this.$q.platform.is.ios === true ? 'click' : 'focusin' ] = this.__onBackdropClick, obj ))
+              on: cache(this, 'bkdrop', ( obj = {}, obj[ this.backdropEvt ] = this.__onBackdropClick, obj ))
             })
           ] : null),
 
@@ -15453,6 +15518,7 @@
     created: function created () {
       this.__useTick('__registerTick', '__removeTick');
       this.__useTimeout('__registerTimeout');
+      this.backdropEvt = this.$q.platform.is.ios === true || this.$q.platform.is.safari ? 'click' : 'focusin';
     },
 
     mounted: function mounted () {
@@ -17970,7 +18036,7 @@
 
     methods: {
       __begin: function __begin (el, height, done) {
-        el.style.overflowY = 'hidden';
+        // here overflowY is 'hidden'
         if (height !== void 0) {
           el.style.height = height + "px";
         }
@@ -18017,12 +18083,14 @@
             var pos = 0;
             this$1.el = el;
 
+            // if animationg overflowY is already 'hidden'
             if (this$1.animating === true) {
               this$1.__cleanup();
               pos = el.offsetHeight === el.scrollHeight ? 0 : void 0;
             }
             else {
               this$1.lastEvent = 'hide';
+              el.style.overflowY = 'hidden';
             }
 
             this$1.__begin(el, pos, done);
@@ -18048,6 +18116,9 @@
             }
             else {
               this$1.lastEvent = 'show';
+              // we need to set overflowY 'hidden' before calculating the height
+              // or else we get small differences
+              el.style.overflowY = 'hidden';
               pos = el.scrollHeight;
             }
 
@@ -19177,7 +19248,11 @@
           this.focused === true ||
           typeof this.inputValue === 'number' ||
           (typeof this.inputValue === 'string' && this.inputValue.length > 0) ||
-          (this.hideSelected !== true && this.hasValue === true) ||
+          (
+            this.hideSelected !== true &&
+            this.hasValue === true &&
+            (this.type !== 'number' || isNaN(this.value) === false)
+          ) ||
           (
             this.displayValue !== void 0 &&
             this.displayValue !== null &&
@@ -20823,6 +20898,7 @@
       imgStyle: Object,
 
       nativeContextMenu: Boolean,
+      notDraggable: Boolean,
 
       noDefaultSpinner: Boolean,
       spinnerColor: String,
@@ -20858,6 +20934,14 @@
         var att = { role: 'img' };
         if (this.alt !== void 0) {
           att['aria-label'] = this.alt;
+        }
+        return att
+      },
+
+      imgAttrs: function imgAttrs () {
+        var att = { src: this.url, 'aria-hidden': 'true' };
+        if (this.notDraggable === true) {
+          att.draggable = false;
         }
         return att
       },
@@ -21018,7 +21102,7 @@
           ? [
             h('img', {
               staticClass: 'absolute-full fit',
-              attrs: { src: this.url, 'aria-hidden': 'true' }
+              attrs: this.imgAttrs
             })
           ]
           : void 0;
@@ -21144,6 +21228,12 @@
       }
     },
 
+    computed: {
+      renderLoadingSlot: function renderLoadingSlot () {
+        return this.disable !== true && this.isWorking === true
+      }
+    },
+
     watch: {
       disable: function disable (val) {
         if (val === true) { this.stop(); }
@@ -21162,6 +21252,14 @@
 
       debounce: function debounce (val) {
         this.__setDebounce(val);
+      },
+
+      isFetching: function isFetching () {
+        this.__updateSvgAnimations();
+      },
+
+      renderLoadingSlot: function renderLoadingSlot () {
+        this.__updateSvgAnimations();
       }
     },
 
@@ -21285,14 +21383,36 @@
 
           this.__scrollTarget.addEventListener('scroll', this.poll, passive$1);
         }
+      },
+
+      __updateSvgAnimations: function __updateSvgAnimations (isRetry) {
+        var this$1 = this;
+
+        if (this.renderLoadingSlot === true) {
+          var el = this.$refs.loading;
+
+          if (!el) {
+            isRetry !== true && this.$nextTick(function () {
+              this$1.__updateSvgAnimations(true);
+            });
+            return
+          }
+
+          // we need to pause svg animations (if any) when hiding
+          // otherwise the browser will keep on recalculating the style
+          var action = (this.isFetching === true ? 'un' : '') + "pauseAnimations";
+          Array.from(el.getElementsByTagName('svg')).forEach(function (el) {
+            el[ action ]();
+          });
+        }
       }
     },
 
     mounted: function mounted () {
       this.immediatePoll = this.poll;
       this.__setDebounce(this.debounce);
-
       this.updateScrollTarget();
+      this.isFetching === false && this.__updateSvgAnimations();
     },
 
     activated: function activated () {
@@ -21314,9 +21434,10 @@
     render: function render (h) {
       var child = uniqueSlot(this, 'default', []);
 
-      if (this.disable !== true && this.isWorking === true) {
+      if (this.renderLoadingSlot === true) {
         child[this.reverse === false ? 'push' : 'unshift'](
           h('div', {
+            ref: 'loading',
             staticClass: 'q-infinite-scroll__loading',
             class: this.isFetching === true ? '' : 'invisible'
           }, slot(this, 'loading'))
@@ -21598,7 +21719,7 @@
 
         this.computedMask = mask;
         this.computedUnmask = function (val) {
-          var unmaskMatch = unmaskMatcher.exec(this$1.reverseFillMask === true ? val : val.slice(0, mask.length));
+          var unmaskMatch = unmaskMatcher.exec(this$1.reverseFillMask === true ? val : val.slice(0, mask.length + 1));
           if (unmaskMatch !== null) {
             val = unmaskMatch.slice(1).join('');
           }
@@ -21660,8 +21781,15 @@
           }
 
           if (inputType === 'insertFromPaste' && this$1.reverseFillMask !== true) {
+            var maxEnd = inp.selectionEnd;
             var cursor$1 = end - 1;
-            this$1.__moveCursorRight(inp, cursor$1, cursor$1);
+            // each non-marker char means we move once to right
+            for (var i = this$1.__pastedTextStart; i <= cursor$1 && i < maxEnd; i++) {
+              if (this$1.maskMarked[i] !== MARKER) {
+                cursor$1++;
+              }
+            }
+            this$1.__moveCursorRight(inp, cursor$1);
 
             return
           }
@@ -21687,7 +21815,7 @@
                 inp.setSelectionRange(cursor$3, cursor$3, 'forward');
               }
               else {
-                this$1.__moveCursorRightReverse(inp, cursor$3, cursor$3);
+                this$1.__moveCursorRightReverse(inp, cursor$3);
               }
             }
             else {
@@ -21698,11 +21826,11 @@
           else {
             if (changed === true) {
               var cursor$5 = Math.max(0, this$1.maskMarked.indexOf(MARKER), Math.min(preMasked.length, end) - 1);
-              this$1.__moveCursorRight(inp, cursor$5, cursor$5);
+              this$1.__moveCursorRight(inp, cursor$5);
             }
             else {
               var cursor$6 = end - 1;
-              this$1.__moveCursorRight(inp, cursor$6, cursor$6);
+              this$1.__moveCursorRight(inp, cursor$6);
             }
           }
         });
@@ -21718,73 +21846,70 @@
         var preMasked = this.__mask(this.__unmask(inp.value));
 
         start = Math.max(0, this.maskMarked.indexOf(MARKER), Math.min(preMasked.length, start));
+        this.__pastedTextStart = start;
 
         inp.setSelectionRange(start, end, 'forward');
       },
 
-      __moveCursorLeft: function __moveCursorLeft (inp, start, end, selection) {
-        var noMarkBefore = this.maskMarked.slice(start - 1).indexOf(MARKER) === -1;
-        var i = Math.max(0, start - 1);
+      __moveCursorLeft: function __moveCursorLeft (inp, cursor) {
+        var noMarkBefore = this.maskMarked.slice(cursor - 1).indexOf(MARKER) === -1;
+        var i = Math.max(0, cursor - 1);
 
         for (; i >= 0; i--) {
           if (this.maskMarked[i] === MARKER) {
-            start = i;
-            noMarkBefore === true && start++;
+            cursor = i;
+            noMarkBefore === true && cursor++;
             break
           }
         }
 
         if (
           i < 0 &&
-          this.maskMarked[start] !== void 0 &&
-          this.maskMarked[start] !== MARKER
+          this.maskMarked[cursor] !== void 0 &&
+          this.maskMarked[cursor] !== MARKER
         ) {
-          return this.__moveCursorRight(inp, 0, 0)
+          return this.__moveCursorRight(inp, 0)
         }
 
-        start >= 0 && inp.setSelectionRange(
-          start,
-          selection === true ? end : start, 'backward'
-        );
+        cursor >= 0 && inp.setSelectionRange(cursor, cursor, 'backward');
       },
 
-      __moveCursorRight: function __moveCursorRight (inp, start, end, selection) {
+      __moveCursorRight: function __moveCursorRight (inp, cursor) {
         var limit = inp.value.length;
-        var i = Math.min(limit, end + 1);
+        var i = Math.min(limit, cursor + 1);
 
         for (; i <= limit; i++) {
           if (this.maskMarked[i] === MARKER) {
-            end = i;
+            cursor = i;
             break
           }
           else if (this.maskMarked[i - 1] === MARKER) {
-            end = i;
+            cursor = i;
           }
         }
 
         if (
           i > limit &&
-          this.maskMarked[end - 1] !== void 0 &&
-          this.maskMarked[end - 1] !== MARKER
+          this.maskMarked[cursor - 1] !== void 0 &&
+          this.maskMarked[cursor - 1] !== MARKER
         ) {
-          return this.__moveCursorLeft(inp, limit, limit)
+          return this.__moveCursorLeft(inp, limit)
         }
 
-        inp.setSelectionRange(selection ? start : end, end, 'forward');
+        inp.setSelectionRange(cursor, cursor, 'forward');
       },
 
-      __moveCursorLeftReverse: function __moveCursorLeftReverse (inp, start, end, selection) {
-        var
-          maskMarked = this.__getPaddedMaskMarked(inp.value.length);
-        var i = Math.max(0, start - 1);
+      __moveCursorLeftReverse: function __moveCursorLeftReverse (inp, cursor) {
+        var maskMarked = this.__getPaddedMaskMarked(inp.value.length);
+        var i = Math.max(0, cursor - 1);
 
         for (; i >= 0; i--) {
           if (maskMarked[i - 1] === MARKER) {
-            start = i;
+            cursor = i;
             break
           }
           else if (maskMarked[i] === MARKER) {
-            start = i;
+            cursor = i;
             if (i === 0) {
               break
             }
@@ -21793,42 +21918,45 @@
 
         if (
           i < 0 &&
-          maskMarked[start] !== void 0 &&
-          maskMarked[start] !== MARKER
+          maskMarked[cursor] !== void 0 &&
+          maskMarked[cursor] !== MARKER
         ) {
-          return this.__moveCursorRightReverse(inp, 0, 0)
+          return this.__moveCursorRightReverse(inp, 0)
         }
 
-        start >= 0 && inp.setSelectionRange(
-          start,
-          selection === true ? end : start, 'backward'
-        );
+        cursor >= 0 && inp.setSelectionRange(cursor, cursor, 'backward');
       },
 
-      __moveCursorRightReverse: function __moveCursorRightReverse (inp, start, end, selection) {
+      __moveCursorRightReverse: function __moveCursorRightReverse (inp, cursor) {
         var
           limit = inp.value.length,
           maskMarked = this.__getPaddedMaskMarked(limit),
-          noMarkBefore = maskMarked.slice(0, end + 1).indexOf(MARKER) === -1;
-        var i = Math.min(limit, end + 1);
+          noMarkBefore = maskMarked.slice(0, cursor + 1).indexOf(MARKER) === -1;
+        var i = Math.min(limit, cursor + 1);
 
         for (; i <= limit; i++) {
           if (maskMarked[i - 1] === MARKER) {
-            end = i;
-            end > 0 && noMarkBefore === true && end--;
+            cursor = i;
+            cursor > 0 && noMarkBefore === true && cursor--;
             break
           }
         }
 
         if (
           i > limit &&
-          maskMarked[end - 1] !== void 0 &&
-          maskMarked[end - 1] !== MARKER
+          maskMarked[cursor - 1] !== void 0 &&
+          maskMarked[cursor - 1] !== MARKER
         ) {
-          return this.__moveCursorLeftReverse(inp, limit, limit)
+          return this.__moveCursorLeftReverse(inp, limit)
         }
 
-        inp.setSelectionRange(selection === true ? start : end, end, 'forward');
+        inp.setSelectionRange(cursor, cursor, 'forward');
+      },
+
+      __onMaskedClick: function __onMaskedClick (e) {
+        this.qListeners.click !== void 0 && this.$emit('click', e);
+
+        this.__selectionAnchor = void 0;
       },
 
       __onMaskedKeydown: function __onMaskedKeydown (e) {
@@ -21843,25 +21971,41 @@
           start = inp.selectionStart,
           end = inp.selectionEnd;
 
+        if (!e.shiftKey) {
+          this.__selectionAnchor = void 0;
+        }
+
         if (e.keyCode === 37 || e.keyCode === 39) { // Left / Right
+          if (e.shiftKey && this.__selectionAnchor === void 0) {
+            this.__selectionAnchor = inp.selectionDirection === 'forward' ? start : end;
+          }
+
           var fn = this['__moveCursor' + (e.keyCode === 39 ? 'Right' : 'Left') + (this.reverseFillMask === true ? 'Reverse' : '')];
 
           e.preventDefault();
-          fn(inp, start, end, e.shiftKey);
+          fn(inp, this.__selectionAnchor === start ? end : start);
+
+          if (e.shiftKey) {
+            var anchor = this.__selectionAnchor;
+            var cursor = inp.selectionStart;
+            inp.setSelectionRange(Math.min(anchor, cursor), Math.max(anchor, cursor), 'forward');
+          }
         }
         else if (
           e.keyCode === 8 && // Backspace
           this.reverseFillMask !== true &&
           start === end
         ) {
-          this.__moveCursorLeft(inp, start, end, true);
+          this.__moveCursorLeft(inp, start);
+          inp.setSelectionRange(inp.selectionStart, end, 'backward');
         }
         else if (
           e.keyCode === 46 && // Delete
           this.reverseFillMask === true &&
           start === end
         ) {
-          this.__moveCursorRightReverse(inp, start, end, true);
+          this.__moveCursorRightReverse(inp, end);
+          inp.setSelectionRange(start, inp.selectionEnd, 'forward');
         }
 
         this.$emit('keydown', e);
@@ -22110,6 +22254,8 @@
 
         if (this.hasMask === true) {
           on.keydown = this.__onMaskedKeydown;
+          // reset selection anchor on pointer selection
+          on.click = this.__onMaskedClick;
         }
 
         if (this.autogrow === true) {
@@ -22265,19 +22411,31 @@
           var inp = this$1.$refs.input;
           if (inp !== void 0) {
             var parentStyle = inp.parentNode.style;
-            var ref = inp.style;
-            var overflow = ref.overflow;
+            // chrome does not keep scroll #15498
+            var scrollTop = inp.scrollTop;
+            // chrome calculates a smaller scrollHeight when in a .column container
+            var ref = this$1.$q.platform.is.firefox === true
+              ? {}
+              : window.getComputedStyle(inp);
+            var overflowY = ref.overflowY;
+            var maxHeight = ref.maxHeight;
+            // on firefox or if overflowY is specified as scroll #14263, #14344
+            // we don't touch overflow
+            // firefox is not so bad in the end
+            var changeOverflow = overflowY !== void 0 && overflowY !== 'scroll';
 
             // reset height of textarea to a small size to detect the real height
             // but keep the total control size the same
-            // Firefox rulez #14263, #14344
-            this$1.$q.platform.is.firefox !== true && (inp.style.overflow = 'hidden');
+            changeOverflow === true && (inp.style.overflowY = 'hidden');
             parentStyle.marginBottom = (inp.scrollHeight - 1) + 'px';
             inp.style.height = '1px';
 
             inp.style.height = inp.scrollHeight + 'px';
-            inp.style.overflow = overflow;
+            // we should allow scrollbars only
+            // if there is maxHeight and content is taller than maxHeight
+            changeOverflow === true && (inp.style.overflowY = parseInt(maxHeight, 10) < inp.scrollHeight ? 'auto' : 'hidden');
             parentStyle.marginBottom = '';
+            inp.scrollTop = scrollTop;
           }
         });
       },
@@ -32396,7 +32554,7 @@
 
           if (topLeft !== void 0) {
             child.push(
-              h('div', { staticClass: 'q-table-control' }, [
+              h('div', { staticClass: 'q-table__control' }, [
                 topLeft(this.marginalsScope)
               ])
             );
@@ -39220,6 +39378,7 @@
             : h('div', {
               staticClass: 'q-bottom-sheet__item q-hoverable q-focusable cursor-pointer relative-position',
               class: action.classes,
+              style: action.style,
               attrs: attrsGridItem,
               on: {
                 click: function () {
@@ -39259,6 +39418,7 @@
             : h(QItem, {
               staticClass: 'q-bottom-sheet__item',
               class: action.classes,
+              style: action.style,
               props: {
                 tabindex: 0,
                 clickable: true,

@@ -285,8 +285,8 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 
 	/** {@inheritDoc} */
 	@Override
-	public String getRequestedUri(final HttpServletRequest httpRequest) {
-		return httpRequest.getParameter("RelayState");
+	public Optional<String> getRequestedUri(final HttpServletRequest httpRequest) {
+		return Optional.ofNullable(httpRequest.getParameter("RelayState"));
 	}
 
 	@Override

@@ -4,7 +4,7 @@
 	th:attr="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('columns', {name: '__${columnName}__', field: '__${field}__', label: '__${columnLabel}__', align: '__${columnAlign}__', 'sortable': __${modifiableTable!=null?false:columnSortable}__, 'classes':'__${class?:columnClass}__'})}" >
 	<vu:include-data th:if="${field != null}" object="${list}" field="${field}"/>
 	<q-td th:key="${columnName}" :props="props" th:class="${class?:columnClass}"  th:attr="__${td_attrs}__" >
-		<vu:content>{{ props.row.[[${field}]] }}</vu:content><!--/* Default content */-->
+		<vu:content><template>{{ props.row.[[${field}]] }}</template></vu:content><!--/* Default content */-->
 	</q-td>
 </th:block> 
 
@@ -15,7 +15,7 @@
 	<div class="q-table__grid-item-row" th:attr="__${td_attrs}__" >
 		<div class="q-table__grid-item-title" vu:text="${columnLabel}"></div>
 		<div class="q-table__grid-item-value">
-        	 <vu:content>{{ props.row.[[${field}]] }}</vu:content>
+        	 <vu:content><template>{{ props.row.[[${field}]] }}</template></vu:content>
 		</div>
 	</div>
 </th:block> 

@@ -1,9 +1,9 @@
-<th:block th:fragment="select-multiple-edit(object,list,field, rowIndex, label, valueField, labelField, filterFunction, input_attrs, label_attrs)" vu:alias="select-multiple" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="select-multiple-edit(object,list,field, rowIndex, label, valueField, labelField, filterFunction, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)" vu:alias="select-multiple" vu:selector="${viewMode=='edit'}"
 	  th:assert="${object} != null and ${field} != null and ${list} != null"
 	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, 
 	  myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, 
-	  myLabel=${label?:model.util.label(object + '.' + field)},
-      required=${model.util.required(object + '.' + field)}">
+	  myLabel=${modifiableTable!=null?null:label?:model.util.label(object + '.' + field)},
+      myRequired=${required != null ? required : model.util.required(object + '.' + field)}">
 	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 	<vu:include-data object="${list}" field="${myValueField}"/>
 	<vu:include-data object="${list}" field="${myLabelField}"/>
@@ -13,10 +13,11 @@
 	        map-options
 	        emit-value
             th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}', ${filterFunction?:null})|"
+            options-sanitize
 			th::label-width="${overridedLabelWidth?:3}"
 			th:label="${myLabel}"
-			th:classappend="${required}?'v-field__required'"
-            th:aria-required="${required}"
+			th:classappend="|${myRequired?'v-field_'+'_required':''}${after_label_slot!=null?' v-field_'+'_has_after_label':''}|"
+            th:aria-required="${myRequired}"
             th::error="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
             th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
 			stack-label
@@ -24,27 +25,27 @@
 			multiple
 			th:attr="__${label_attrs}__,__${input_attrs}__"
 			>
-			<vu:content/>
+			<vu:quasar-label-slot label="${myLabel}" after_label_slot="after_label_slot"/>
+			<vu:content-slot name="edit_content_slot"/>
 	</q-select>
 	<input th:v-for="|id in ${model.util.vueDataKey(object, field, rowIndex)}|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" th:v-bind:value="id" />
 	<input th:v-if="|vueData.${object}.${field}.length == 0|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
 </th:block> 
 
-<th:block th:fragment="select-multiple-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, input_attrs, label_attrs)" 
+<th:block th:fragment="select-multiple-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)" 
 th:if="${modifiableTable==null}"
 vu:alias="select-multiple" vu:selector="${viewMode=='read'}" 
 	th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')}">
-	<vu:label-read object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}" >
+	<vu:label-read object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}" after_label_slot="after_label_slot"  >
 		<th:block th:if="${value!=null}" th:each="singleValue, iterStat : ${value} " >
-			<span  
+			<q-chip  
 				th:attr="__${input_attrs}__"
-				vu:text="${singleValue!=null?model.vContext[__${list}__].getById('__${myValueField}__', singleValue)['__${myLabelField}__']:'is null'}"></span>
-			<span th:if="${!iterStat.last}">, </span>
+				th:text="${singleValue!=null?model.vContext[__${list}__].getById('__${myValueField}__', singleValue)['__${myLabelField}__']:'is null'}"></q-chip>
 		</th:block>
 	</vu:label-read>
 </th:block>
 
-<th:block th:fragment="select-multiple-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, input_attrs, label_attrs)"
+<th:block th:fragment="select-multiple-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
 th:if="${modifiableTable!=null}"
 vu:alias="select-multiple" vu:selector="${viewMode=='read'}" 
     th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}">

@@ -19,6 +19,7 @@ package io.vertigo.vega.impl.authentication;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,8 +33,16 @@ public interface AppLoginHandler<T> {
 	 * @param request HttpRequest.
 	 * @param claims resolved claims from SAML Assertion
 	 * @param rawResult raw result returned from SSO authentication
+	 * @param requestedUrl the original requested url before redirect to login page (sso or internal)
+	 * @return the page to redirect to after succesful login
 	 */
-	void doLogin(final HttpServletRequest request, final Map<String, Object> claims, final T rawResult);
+	String doLogin(final HttpServletRequest request, final Map<String, Object> claims, final T rawResult, final Optional<String> requestedUrl);
+
+	/**
+	 * Perform business disconnection of user.
+	 * @return the page to redirect to after succesful logout
+	 */
+	String doLogout(final HttpServletRequest request);
 
 	/**
 	 * When login fails do something special

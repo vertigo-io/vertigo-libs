@@ -29,4 +29,7 @@ import io.vertigo.core.node.component.amplifier.ProxyMethodAnnotation;
 @ProxyMethodAnnotation
 public @interface WebServiceProxyAnnotation {
 	String connectorName() default "main";
+
+	String requestSpecializer() default "";
+
 }

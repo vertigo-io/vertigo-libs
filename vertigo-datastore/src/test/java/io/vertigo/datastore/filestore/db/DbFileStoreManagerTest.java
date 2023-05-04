@@ -114,6 +114,7 @@ public class DbFileStoreManagerTest extends AbstractFileStoreManagerTest {
 								Param.of("path", "${java.io.tmpdir}/testVertigo/"),
 								Param.of("purgeDelayMinutes", "0"),
 								Param.of("fileInfoClass", FileInfoTemp.class.getName()))
+						.withTikaMimeTypeResolver()
 						.build())
 				.addModule(ModuleConfig.builder("definition")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)

@@ -63,6 +63,8 @@ public class ContentSlotComponentProcessor extends AbstractElementModelProcessor
 		//-----
 		removeCurrentTag(model);
 		final Object slotModelObject = context.getVariable(attributeValue);
+		structureHandler.setLocalVariable(attributeValue, null);
+		
 		final IModel slotModel;
 		if (slotModelObject instanceof Fragment) {
 			slotModel = ((Fragment) slotModelObject).getTemplateModel();
@@ -81,7 +83,7 @@ public class ContentSlotComponentProcessor extends AbstractElementModelProcessor
 		} else {
 			//if empty slot we remove all tag (open tag, body and close tag)
 		}
-		//-----
+		//else we keep slot in component as is => use component default
 	}
 
 	private static Map<String, String> processAttribute(final IModel model) {

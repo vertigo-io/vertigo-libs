@@ -87,7 +87,7 @@ public interface WebAuthenticationPlugin<T> extends Plugin {
 	 * @param httpRequest the request
 	 * @return the uri
 	 */
-	String getRequestedUri(HttpServletRequest httpRequest);
+	Optional<String> getRequestedUri(HttpServletRequest httpRequest);
 
 	/**
 	 * Return an optional external url of the application (if it is behind a firewall or a proxy)

@@ -13,49 +13,84 @@ export default {
             timeout: 2500,
         }
 
-       //Setup Error Message
-		if (Object.prototype.hasOwnProperty.call(response.data, 'redirect')) { //if response was an redirect
-			window.location = response.data.redirect;
-			return;
-		} else if (Object.prototype.hasOwnProperty.call(response.data, 'message')) { //if response was an error
-			notif.message = response.data.message
-		}
-
-		//Setup Generic Response Messages
-		if (response.status === 401) {
-			notif.message = 'UnAuthorized, you may login with an authorized account'
-			this.$root.$emit('unauthorized', response) //Emit Logout Event // surcharge ajout de la response en parametre
-			return 
-        } else if (response.status === 403) {
-            notif.message = 'Forbidden, your havn&quote;t enought rights'
-        } else if (response.status === 404) {
-            notif.message = 'API Route is Missing or Undefined'
-        } else if (response.status === 405) {
-            notif.message = 'API Route Method Not Allowed'
-        } else if (response.status === 422) {
-            //Validation Message
-            notif.message = '';
-            Object.keys(response.data).forEach(function (key) {
-                this.$data.uiMessageStack[key] = response.data[key];
-            }.bind(this));
-        } else if (response.status >= 500) {
-            notif.message = 'Server Error'
-        }
-        if (response.statusText && response.status !== 422) {
-            notif.message = response.statusText
-        }
-        //Try to Use the Response Message
-        if (Object.prototype.hasOwnProperty.call(response, 'data')) {
-            if (Object.prototype.hasOwnProperty.call(response.data, 'message') && response.data.message && response.data.message.length > 0) {
+        //Setup Error Message
+        if(response) {
+            if (Object.prototype.hasOwnProperty.call(response.data, 'redirect')) { //if response was a redirect
+                 window.location = response.data.redirect;
+                 return;
+            } else if (Object.prototype.hasOwnProperty.call(response.data, 'message')) { //if response was an error
                 notif.message = response.data.message
-            } else if (Object.prototype.hasOwnProperty.call(response.data, 'globalErrors') && response.data.globalErrors && response.data.globalErrors.length > 0) {
-                notif.message = response.data.globalErrors.join('<br/>\n ');
+            }
+            //Setup Generic Response Messages
+            if (response.status === 401) {
+                notif.message = this.$q.lang.vui.ajaxErrors.code401	            
+                this.$root.$emit('unauthorized', response) //Emit Logout Event
+                return;
+            } else if (response.status === 403) {
+                notif.message = this.$q.lang.vui.ajaxErrors.code403
+            } else if (response.status === 404) {
+                notif.message = this.$q.lang.vui.ajaxErrors.code404
+            } else if (response.status === 405) {
+                notif.message = this.$q.lang.vui.ajaxErrors.code405
+            } else if (response.status === 422) {
+                //Validation Message
+                notif.message = '';
+                Object.keys(response.data).forEach(function (key) {
+                    this.$data.uiMessageStack[key] = response.data[key];
+                }.bind(this));
+            } else if (response.status >= 500) {
+                notif.message = this.$q.lang.vui.ajaxErrors.code500
+            }
+            if (response.statusText && response.status !== 422) {
+                notif.message = response.statusText
+            }
+            //Try to Use the Response Message
+            if (Object.prototype.hasOwnProperty.call(response, 'data')) {
+                if (Object.prototype.hasOwnProperty.call(response.data, 'message') && response.data.message && response.data.message.length > 0) {
+                    notif.message = response.data.message
+                } else if (Object.prototype.hasOwnProperty.call(response.data, 'globalErrors') && response.data.globalErrors && response.data.globalErrors.length > 0) {
+                    var notifyMessages = this.uiMessageStackToNotify(response.data);
+                    notifyMessages.forEach(function(notifyMessage) { this.$q.notify(notifyMessage)}.bind(this));
+                    notif.message = ''; //déja envoyé
+                }
             }
         }
         //Send the notif
         if (notif.message.length > 0) {
             this.$q.notify(notif);
         }
+    },
+    uiMessageStackToNotify : function(uiMessageStack) {
+      if(uiMessageStack) {
+        var notifyMessages = [];
+        if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalErrors') && uiMessageStack.globalErrors && uiMessageStack.globalErrors.length > 0) {
+           uiMessageStack.globalErrors.forEach(function(uiMessage) { notifyMessages.push( {
+            type: 'negative', message: uiMessage,
+            multiLine: true, timeout: 2500,
+           })});
+        }
+        if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalWarnings') && uiMessageStack.globalWarnings && uiMessageStack.globalWarnings.length > 0) {
+           uiMessageStack.globalWarnings.forEach(function(uiMessage) { notifyMessages.push( {
+            type: 'warning', message: uiMessage,
+            multiLine: true, timeout: 2500,
+           })});
+        }
+        if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalInfos') && uiMessageStack.globalInfos && uiMessageStack.globalInfos.length > 0) {
+           uiMessageStack.globalInfos.forEach(function(uiMessage) { notifyMessages.push( {
+            type: 'info', message: uiMessage,
+            multiLine: true, timeout: 2500,
+           })});
+        }
+        if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalSuccess') && uiMessageStack.globalSuccess && uiMessageStack.globalSuccess.length > 0) {
+           uiMessageStack.globalSuccess.forEach(function(uiMessage) { notifyMessages.push( {
+            type: 'positive', message: uiMessage,
+            multiLine: true, timeout: 2500,
+           })});
+        }
+        //Pour le moment, rien avec : objectFieldErrors, objectFieldWarnings, objectFieldInfos
+        
+        return notifyMessages;
+      }
     },
 
     getSafeValue: function (objectkey, fieldKey, subFieldKey) {
@@ -176,32 +211,43 @@ export default {
             });
 
     },
-    loadAutocompleteById: function (list, valueField, labelField, componentId, url, objectName, fieldName) {
+    loadAutocompleteById: function (list, valueField, labelField, componentId, url, objectName, fieldName, rowIndex) {
         //Method use when value(id) is set by another way : like Ajax Viewcontext update, other component, ...
         //if options already contains the value (id) : we won't reload.
-        if (!this.$data.vueData[objectName][fieldName] || (this.$data.componentStates[componentId].options
-            .filter(function (option) { return option.value === this.$data.vueData[objectName][fieldName] }.bind(this)).length > 0)) {
+        var value
+        if (rowIndex != null) {
+            value = this.$data.vueData[objectName][rowIndex][fieldName];
+        } else {
+            value = this.$data.vueData[objectName][fieldName];
+        }
+         
+        if (Array.isArray(value)) {
+            value.forEach(element => this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, element));
+        } else {
+            this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, value);
+        }
+        
+    },
+	loadMissingAutocompleteOption: function (list, valueField, labelField, componentId, url, value){
+        if (!value || (this.$data.componentStates[componentId].options
+            .filter(function (option) { return option.value === value }.bind(this)).length > 0)) {
             return
         }
         this.$data.componentStates[componentId].loading = true;
-        this.$data.componentStates[componentId].options.push({ 'value': this.$data.vueData[objectName][fieldName], 'label': '' })
-        this.$http.post(url, this.objectToFormData({ value: this.$data.vueData[objectName][fieldName], list: list, valueField: valueField, labelField: labelField, CTX: this.$data.vueData.CTX }))
+        this.$http.post(url, this.objectToFormData({ value: value, list: list, valueField: valueField, labelField: labelField, CTX: this.$data.vueData.CTX }))
             .then(function (response) {
                 var finalList = response.data.map(function (object) {
                     return { value: object[valueField], label: object[labelField].toString() } // a label is always a string
                 });
-                this.$data.componentStates[componentId].options.pop();
                 this.$data.componentStates[componentId].options = this.$data.componentStates[componentId].options.concat(finalList);
             }.bind(this))
             .catch(function (error) {
-                this.$data.componentStates[componentId].options.pop();
                 this.$q.notify(error.response.status + ":" + error.response.statusText);
             }.bind(this))
             .then(function () {// always executed
                 this.$data.componentStates[componentId].loading = false;
             }.bind(this));
-    },
-
+	},
     decodeDate: function (value, format) {
         if (value === Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(value, 'DD/MM/YYYY'), 'DD/MM/YYYY')) {
             return Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(value, 'DD/MM/YYYY'), format);
@@ -485,32 +531,49 @@ export default {
     },
 
 
-    httpPostAjax: function (url, paramsIn, options) {
+    httpPostAjax: function (url, paramsIn, options) { 
+        var paramsInResolved = Array.isArray(paramsIn) ? this.vueDataParams(paramsIn) : paramsIn;
         let vueData = this.$data.vueData;
         let uiMessageStack = this.$data.uiMessageStack;
-        let params = this.isFormData(paramsIn) ? paramsIn : this.objectToFormData(paramsIn);
+        let params = this.isFormData(paramsInResolved) ? paramsInResolved : this.objectToFormData(paramsInResolved);
         params.append('CTX', vueData.CTX);
+        this.pushPendingAction(url);
         this.$http.post(url, params).then(function (response) {
-            if (response.data.model.CTX) {
-                vueData.CTX = response.data.model.CTX;
+          if (response.data.model.CTX) {
+            vueData.CTX = response.data.model.CTX;
+          }
+          Object.keys(response.data.model).forEach(function (key) {
+            if ('CTX' != key) {
+              vueData[key] = response.data.model[key];
             }
-            Object.keys(response.data.model).forEach(function (key) {
-                if ('CTX' != key) {
-                    vueData[key] = response.data.model[key];
-                }
-            });
-            Object.keys(response.data.uiMessageStack).forEach(function (key) {
-                uiMessageStack[key] = response.data.uiMessageStack[key];
-            });
-            if (options && options.onSuccess) {
-                options.onSuccess.call(this, response);
-            }
+          });
+          Object.keys(response.data.uiMessageStack).forEach(function (key) {
+            uiMessageStack[key] = response.data.uiMessageStack[key];
+          });
+          if (options && options.onSuccess) {
+            options.onSuccess.call(this, response);
+          }
         }.bind(this)).catch(function (error) {
-            if (options && options.onError) {
-                options.onError.call(this, error.response);
-            }
-        });
+          if (options && options.onError) {
+            options.onError.call(this, error.response);
+          }              
+        }).finally(function () {
+          this.removePendingAction(url);
+        }.bind(this));
     },
+    isPendingAction: function(actionName) {
+        if(actionName) {
+            return this.$data.componentStates.pendingAction.actionNames.includes(actionName);
+        } else {
+            return this.$data.componentStates.pendingAction.actionNames.length > 0;
+        }
+    },
+    pushPendingAction: function(actionName) {
+         this.$data.componentStates.pendingAction.actionNames.push(actionName);
+    },
+    removePendingAction: function(actionName) {
+        this.$data.componentStates.pendingAction.actionNames = this.$data.componentStates.pendingAction.actionNames.filter(e => e !== actionName);
+    },        
 
     hasFieldsError: function (object, field, rowIndex) {
         const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
@@ -538,35 +601,23 @@ export default {
     vueDataParams: function (keys) {
         var params = new FormData();
         for (var i = 0; i < keys.length; i++) {
-            var contextKey = keys[i];
+            var attribs = keys[i].split('.',2);
+            var contextKey = attribs[0];
+            var attribute = attribs[1];
             var vueDataValue = this.$data.vueData[contextKey];
             if (vueDataValue && typeof vueDataValue === 'object' && Array.isArray(vueDataValue) === false) {
                 // object
-                Object.keys(vueDataValue).forEach(function (propertyKey) {
-                    if (!propertyKey.startsWith("_")) {
-                        // _ properties are private and don't belong to the serialized entity
-                        if (Array.isArray(vueDataValue[propertyKey])) {
-                            let vueDataFieldValue = vueDataValue[propertyKey];
-                            if (!vueDataFieldValue || vueDataFieldValue.length == 0) {
-                                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', ""); // reset array with an empty string
-                            } else {
-                                vueDataFieldValue.forEach(function (value, index) {
-                                    if (vueDataFieldValue[index] && typeof vueDataFieldValue[index] === 'object') {
-                                        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]['_v_inputValue']);
-                                    } else {
-                                        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]);
-                                    }
-                                }.bind(this));
-                            }
-                        } else {
-                            if (vueDataValue[propertyKey] && typeof vueDataValue[propertyKey] === 'object') {
-                                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]['_v_inputValue']);
-                            } else {
-                                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]);
-                            }
+                if(!attribute) {
+                    Object.keys(vueDataValue).forEach(function (propertyKey) {
+                        if (!propertyKey.includes("_") ) {
+                            //  properties taht start with _ are private and don't belong to the serialized entity
+                            // we filter field with modifiers (like <field>_display and <field>_fmt)
+                            this._vueDataParamsKey(params, contextKey, propertyKey, vueDataValue)
                         }
-                    }
-                }.bind(this));
+                    }.bind(this));
+                } else {
+                    this._vueDataParamsKey(params, contextKey, attribute, vueDataValue)
+                }
             } else {
                 //primitive
                 this.appendToFormData(params, 'vContext[' + contextKey + ']', vueDataValue);
@@ -575,7 +626,28 @@ export default {
         return params;
 
     },
-
+    _vueDataParamsKey: function(params, contextKey, propertyKey, vueDataValue) {
+        let vueDataFieldValue = vueDataValue[propertyKey];
+        if (Array.isArray(vueDataFieldValue)) {
+            if (!vueDataFieldValue || vueDataFieldValue.length == 0) {
+                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', ""); // reset array with an empty string
+            } else {
+                vueDataFieldValue.forEach(function (value, index) {
+                    if (vueDataFieldValue[index] && typeof vueDataFieldValue[index] === 'object') {
+                        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]['_v_inputValue']);
+                    } else {
+                        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]);
+                    }
+                }.bind(this));
+            }
+        } else {
+            if (vueDataFieldValue && typeof vueDataFieldValue === 'object') {
+                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue['_v_inputValue']);
+            } else {
+                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue);
+            }
+        }
+    },
     objectToFormData: function (object) {
         const formData = new FormData();
         Object.keys(object).forEach(function (key) {

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui.impl.springmvc.argumentresolvers;
+package io.vertigo.ui.impl.springmvc.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +35,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.Node;
+import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.StreamFile;
@@ -53,10 +55,8 @@ public final class SpringVFileUtil {
 
 	public static VFile createVFile(final MultipartFile file) {
 		final String fileName = file.getOriginalFilename();
-		String mimeType = file.getContentType();
-		if (mimeType == null) {
-			mimeType = "application/octet-stream";
-		}
+		final FileStoreManager fileStoreManager = Node.getNode().getComponentSpace().resolve(FileStoreManager.class);
+		final String mimeType = fileStoreManager.resolveMimeType(StreamFile.of(fileName, file.getContentType(), Instant.now(), file.getSize(), file::getInputStream));
 		return StreamFile.of(fileName, mimeType, Instant.now(), file.getSize(), new MultipartFileInputStreamBuilder(file));
 	}
 
@@ -64,7 +64,7 @@ public final class SpringVFileUtil {
 	 * @param result WebService result
 	 * @param response Response
 	 */
-	static void sendVFile(final VFile result, final HttpServletResponse response) {
+	public static void sendVFile(final VFile result, final HttpServletResponse response) {
 		sendVFile(result, true, response);
 	}
 
@@ -77,7 +77,7 @@ public final class SpringVFileUtil {
 		// response already send
 	}
 
-	static VFile readQueryFile(final HttpServletRequest request, final String requestParamName) {
+	public static VFile readQueryFile(final HttpServletRequest request, final String requestParamName) {
 		try {
 			Assertion.check()
 					.isTrue(request.getContentType().contains("multipart/form-data"), "File {0} not found. Request contentType isn't \"multipart/form-data\"", requestParamName)
@@ -119,6 +119,7 @@ public final class SpringVFileUtil {
 
 	/**
 	 * Encode fileName according to RFC 5987.
+	 *
 	 * @param fileName String
 	 * @param isAttachment boolean is Content an attachment
 	 * @return String
@@ -162,6 +163,7 @@ public final class SpringVFileUtil {
 
 	/**
 	 * Copie le contenu d'un flux d'entrée vers un flux de sortie.
+	 *
 	 * @param in flux d'entrée
 	 * @param out flux de sortie
 	 * @throws IOException Erreur d'entrée/sortie
@@ -182,10 +184,8 @@ public final class SpringVFileUtil {
 
 	private static VFile createVFile(final Part file) {
 		final String fileName = getSubmittedFileName(file);
-		String mimeType = file.getContentType();
-		if (mimeType == null) {
-			mimeType = "application/octet-stream";
-		}
+		final FileStoreManager fileStoreManager = Node.getNode().getComponentSpace().resolve(FileStoreManager.class);
+		final String mimeType = fileStoreManager.resolveMimeType(StreamFile.of(fileName, file.getContentType(), Instant.now(), file.getSize(), file::getInputStream));
 		return StreamFile.of(fileName, mimeType, Instant.now(), file.getSize(), new FileInputStreamBuilder(file));
 	}
 

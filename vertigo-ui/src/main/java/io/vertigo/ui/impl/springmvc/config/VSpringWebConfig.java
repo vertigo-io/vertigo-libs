@@ -84,11 +84,11 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 			"layout/messages", //messages
 			"inputs/label", "inputs/text-field", "inputs/text-area", "inputs/checkbox", "inputs/checkbox-multiple", "inputs/slider", "inputs/knob", "inputs/fileupload", //standard controls components
 			"inputs/select", "inputs/select-multiple", "inputs/radio", //select controls components
-			"inputs/autocomplete", "inputs/date", "inputs/datetime", "inputs/chips-autocomplete", //with client-worflow controls components
+			"inputs/autocomplete", "inputs/autocomplete-multiple", "inputs/chips-autocomplete", //with client-worflow controls components
+			"inputs/date", "inputs/datetime", //date
 			"inputs/geolocation", // geoLocation
 			"inputs/tree", // tree
 			"inputs/text-editor", //text-editor (richtext)
-			"inputs/input", // basic input
 			"table/table", "table/column", //table
 			"collections/collection", "collections/list", "collections/cards", "collections/field-read", // collections
 			"collections/search", "collections/facets", //search
@@ -144,7 +144,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		templateEngine.addTemplateResolver(componentResolvers);
 
 		//---
-		final VUiStandardDialect dialect = new VUiStandardDialect(getUiComponents(componentResolvers));
+		final VUiStandardDialect dialect = new VUiStandardDialect(getUiComponents(componentResolvers, customComponentResolvers));
 		templateEngine.addDialect("vu", dialect);
 
 		templateEngine.addDialect(new LayoutDialect());
@@ -152,8 +152,9 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		return templateEngine;
 	}
 
-	private Set<NamedComponentDefinition> getUiComponents(final VuiResourceTemplateResolver componentResolvers) {
+	private Set<NamedComponentDefinition> getUiComponents(final VuiResourceTemplateResolver componentResolvers, final VuiResourceTemplateResolver customComponentResolvers) {
 		final NamedComponentParser parser = new NamedComponentParser("vu", componentResolvers);
+		final NamedComponentParser parserCustom = new NamedComponentParser("vu", customComponentResolvers);
 
 		final Set<NamedComponentDefinition> standardUiComponents = new HashSet<>();
 		//standard components
@@ -162,7 +163,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		}
 		// custom compenents
 		for (final String componentName : getCustomComponentNames()) {
-			standardUiComponents.addAll(parser.parseComponent(componentName));
+			standardUiComponents.addAll(parserCustom.parseComponent(componentName));
 		}
 		return standardUiComponents;
 	}

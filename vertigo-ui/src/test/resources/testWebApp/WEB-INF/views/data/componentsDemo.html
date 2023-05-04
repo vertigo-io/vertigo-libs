@@ -23,11 +23,15 @@
                 <vu:block id="movie" title="#{movie.title.information}">
                        <vu:include-data object="movies" field="*" />
                        <vu:include-data-primitive key='timeZoneList'/>
-                       <vu:include-data-primitive key='selectedTimeZoneList'/>
+                       <vu:include-data-primitive key='selectedTimeZoneList' modifiable/>
                        <vu:grid cols="3">
                         <vu:text-field :class="{ disabled: true && false || false }" object="movie" field="movId"/>
                         <vu:text-field object="movie" field="title" class="fieldTitle v-field__required"/>
-                        <vu:text-field object="movie" field="year"  debounce="500" hint="Debouncing 500ms"/>
+                        <vu:text-field object="movie" field="year"  debounce="500" hint="Debouncing 500ms" required>
+                            <vu:slot name="after_label_slot">
+                            <q-icon name="info" title="Year of publishing" size="sm"></q-icon>
+                            </vu:slot>
+                        </vu:text-field>
                         <vu:slider object="movie" field="year"  />
                         <vu:knob object="movie" field="year"/>
                         <vu:select object="movie" field="movId" list="movies" />
@@ -44,6 +48,9 @@
                         <vu:text-field object="movie" field="title" />
                         <vu:chips-autocomplete object="movie" field="tags" list="movies" staticData="false"/>
                         <vu:grid-cell/>
+                        <vu:grid-cell col="1">
+							 <vu:autocomplete-multiple object="movieDisplayInput" field="movIds" list="moviesMdl"  />
+						</vu:grid-cell>
                         <vu:grid-cell col="1">
                             <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" @input="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
                             <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" 

@@ -37,6 +37,7 @@ import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
 import io.vertigo.datastore.plugins.filestore.db.DbFileStorePlugin;
 import io.vertigo.datastore.plugins.filestore.fs.FsFileStorePlugin;
 import io.vertigo.datastore.plugins.filestore.fs.FsFullFileStorePlugin;
+import io.vertigo.datastore.plugins.filestore.mimetype.tika.TikaMimeTypeResolverPlugin;
 import io.vertigo.datastore.plugins.kvstore.berkeley.BerkeleyKVStorePlugin;
 import io.vertigo.datastore.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 
@@ -101,6 +102,13 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 	public DataStoreFeatures withFsFullFileStore(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(FsFullFileStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("filestore.mimeType.tika")
+	public DataStoreFeatures withTikaMimeTypeResolver() {
+		getModuleConfigBuilder()
+				.addPlugin(TikaMimeTypeResolverPlugin.class);
 		return this;
 	}
 

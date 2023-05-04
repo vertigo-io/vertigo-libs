@@ -17,7 +17,9 @@
  */
 package io.vertigo.datastore.impl.filestore;
 
+import java.net.URLConnection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -30,6 +32,7 @@ import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
+import io.vertigo.datastore.filestore.model.VFile;
 
 /**
  * Implementation of FileStore.
@@ -39,6 +42,7 @@ public final class FileStoreManagerImpl implements FileStoreManager, SimpleDefin
 
 	private final FileStoreConfig fileStoreConfig;
 	private final List<FileStorePlugin> fileStorePlugins;
+	private final Optional<MimeTypeResolverPlugin> mimeTypeResolverPluginOpt;
 
 	/**
 	 * Constructor.
@@ -46,11 +50,14 @@ public final class FileStoreManagerImpl implements FileStoreManager, SimpleDefin
 	 */
 	@Inject
 	public FileStoreManagerImpl(
-			final List<FileStorePlugin> fileStorePlugins) {
+			final List<FileStorePlugin> fileStorePlugins,
+			final Optional<MimeTypeResolverPlugin> mimeTypeResolverPluginOpt) {
 		Assertion.check().isNotNull(fileStorePlugins);
 		//-----
 		this.fileStorePlugins = fileStorePlugins;
 		fileStoreConfig = new FileStoreConfig(fileStorePlugins);
+		this.mimeTypeResolverPluginOpt = mimeTypeResolverPluginOpt;
+
 	}
 
 	@Override
@@ -99,6 +106,14 @@ public final class FileStoreManagerImpl implements FileStoreManager, SimpleDefin
 		//-----
 		Assertion.check().isNotNull(fileInfo, "Le fichier {0} n''a pas été trouvé", uri);
 		return fileInfo;
+	}
+
+	@Override
+	public String resolveMimeType(final VFile vFile) {
+		return mimeTypeResolverPluginOpt
+				.map(plugin -> plugin.resolveMimeType(vFile))
+				.map(mimeTypeOpt -> mimeTypeOpt.orElseGet(() -> URLConnection.guessContentTypeFromName(vFile.getFileName())))
+				.orElse("application/octet-stream");
 	}
 
 }

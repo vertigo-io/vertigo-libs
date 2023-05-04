@@ -151,9 +151,14 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		handleDeadNodeProcesses();
-		nodId = nodeManager.registerNode(nodeName);
-		handleNodeDeadProcesses(nodId);
+		ThreadContext.put("module", "orchestra"); // to filter logs
+		try {
+			handleDeadNodeProcesses();
+			nodId = nodeManager.registerNode(nodeName);
+			handleNodeDeadProcesses(nodId);
+		} finally {
+			ThreadContext.remove("module");
+		}
 	}
 
 	private void executeProcesses() {
@@ -376,7 +381,9 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 					((AbstractActivityEngine) activityEngine).getLogger().info(workspaceInLog);
 				}
 				// We try the execution and we keep the result
+				ThreadContext.put("module", "orchestra-worker");
 				resultWorkspace = activityEngine.execute(workspace);
+				ThreadContext.put("module", "orchestra");
 				Assertion.check()
 						.isNotNull(resultWorkspace)
 						.isNotNull(resultWorkspace.getValue("status"), "Le status est obligatoire dans le résultat");

@@ -354,13 +354,13 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 	}
 
 	@Override
-	public String getRequestedUri(final HttpServletRequest httpRequest) {
+	public Optional<String> getRequestedUri(final HttpServletRequest httpRequest) {
 		final Map<String, List<String>> params = new HashMap<>();
 		for (final String key : httpRequest.getParameterMap().keySet()) {
 			params.put(key, Collections.singletonList(httpRequest.getParameterMap().get(key)[0]));
 		}
 		final var state = params.get(SessionManagementHelper.STATE).get(0);
-		return SessionManagementHelper.getRequestedUri(httpRequest.getSession(), state);
+		return Optional.ofNullable(SessionManagementHelper.getRequestedUri(httpRequest.getSession(), state));
 	}
 
 	@Override

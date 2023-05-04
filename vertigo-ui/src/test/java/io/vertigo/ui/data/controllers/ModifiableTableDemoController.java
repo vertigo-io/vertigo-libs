@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import org.elasticsearch.core.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,6 +54,7 @@ public class ModifiableTableDemoController extends AbstractVSpringMvcController 
 
 	private final ViewContextKey<Movie> movieListModifiables = ViewContextKey.of("moviesModifiable");
 	private final ViewContextKey<MovieDisplay> movieDisplayList = ViewContextKey.of("movies");
+	private final ViewContextKey<MovieDisplay> movieDisplayListModifiable = ViewContextKey.of("moviesDisplayModifiable");
 
 	public static final ViewContextKey<ArrayList<FileInfoURI>> fileUrisKey1 = ViewContextKey.of("myFilesUris1");
 	public static final ViewContextKey<ArrayList<FileInfoURI>> fileUrisKey2 = ViewContextKey.of("myFilesUris2");
@@ -71,7 +73,7 @@ public class ModifiableTableDemoController extends AbstractVSpringMvcController 
 
 		final DtList<Movie> myList = movieServices.getMovies(DtListState.defaultOf(Movie.class));
 
-		final DtList<Movie> mySubList = DtList.of(myList.get(0), myList.get(1));
+		final DtList<Movie> mySubList = DtList.of(myList.get(0), myList.get(0));
 		mySubList.get(0).setTestBoolean(true);
 
 		viewContext.publishDtListModifiable(movieListModifiables, mySubList);
@@ -89,6 +91,12 @@ public class ModifiableTableDemoController extends AbstractVSpringMvcController 
 		final ArrayList<FileInfoURI> fileUris = new ArrayList<>();
 		fileUris.add(fileInfoTmp1.getURI());
 		fileUris.add(fileInfoTmp2.getURI());
+
+		final var movieDisplay1 = new MovieDisplay();
+		movieDisplay1.setMovIds(List.of(1004L, 1003L));
+		final var movieDisplay2 = new MovieDisplay();
+		movieDisplay2.setMovIds(List.of(1002L));
+		viewContext.publishDtListModifiable(movieDisplayListModifiable, DtList.of(movieDisplay1, movieDisplay2));
 
 		mySubList.get(0).setMainPicture(fileInfoTmp3.getURI());
 		mySubList.get(1).setPictures(fileUris);

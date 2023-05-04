@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.vertigo.account.authorization.definitions.SecurityDimension;
+import io.vertigo.account.authorization.definitions.SecurityDimensionType;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression.ValueOperator;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleFixedValue;
@@ -104,7 +105,14 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			}
 			return Criterions.alwaysFalse();
 		} else if (expression.getValue() instanceof RuleFixedValue) {
-			return toCriteria(expression.getFieldName(), expression.getOperator(), ((RuleFixedValue) expression.getValue()).getFixedValue());
+			//FixedValue supported only for SIMPLE and ENUM
+			Assertion.check().isTrue(isSimpleSecurityField(expression.getFieldName())
+					|| getSecurityDimension(expression.getFieldName()).getType() == SecurityDimensionType.ENUM,
+					"FixedValue rule only support simple field ({0})", expression.getFieldName());
+			//---
+			final var stringValue = ((RuleFixedValue) expression.getValue()).getFixedValue();
+			final Serializable typedFixedValue = parseFixedValue(expression.getFieldName(), stringValue);
+			return toCriteria(expression.getFieldName(), expression.getOperator(), typedFixedValue);
 		} else {
 			throw new IllegalArgumentException("value type not supported " + expression.getValue().getClass().getName());
 		}
@@ -113,12 +121,12 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 	private Criteria<E> toCriteria(final String fieldName, final ValueOperator operator, final Serializable value) {
 		if (isSimpleSecurityField(fieldName)) {
 			//field normal
-			return toCriteria(fieldName::toString, operator, value);
+			return simpleToCriteria(fieldName::toString, operator, value);
 		}
 		final SecurityDimension securityDimension = getSecurityDimension(fieldName);
 		switch (securityDimension.getType()) {
 			case SIMPLE: //TODO not use yet ?
-				return toCriteria(fieldName::toString, operator, value);
+				return simpleToCriteria(fieldName::toString, operator, value);
 			case ENUM:
 				Assertion.check().isTrue(value instanceof String, "Enum criteria must be a code String ({0})", value);
 				//----
@@ -130,7 +138,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		}
 	}
 
-	private Criteria<E> toCriteria(final DtFieldName<E> fieldName, final ValueOperator operator, final Serializable value) {
+	private Criteria<E> simpleToCriteria(final DtFieldName<E> fieldName, final ValueOperator operator, final Serializable value) {
 		switch (operator) {
 			case EQ:
 				return Criterions.isEqualTo(fieldName, value);
@@ -219,7 +227,24 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			//1- règles avant le point de pivot : 'Eq' pout tous les opérateurs
 			for (int i = 0; i < lastIndexNotNull; i++) {
 				final DtFieldName<E> fieldName = strDimensionfields.get(i)::toString;
-				mainCriteria = andCriteria(mainCriteria, Criterions.isEqualTo(fieldName, treeKeys[i]));
+				switch (operator) {
+					case GT:
+					case GTE:
+						//pour > et >= : doit être égale à la clé du user ou null (supérieur)
+						final Criteria<E> equalsCriteria = Criterions.isEqualTo(fieldName, treeKeys[i]);
+						final Criteria<E> greaterCriteria = Criterions.isNull(fieldName);
+						final Criteria<E> gteCriteria = greaterCriteria.or(equalsCriteria);
+						mainCriteria = andCriteria(mainCriteria, gteCriteria);
+						break;
+					case LT:
+					case LTE:
+					case EQ:
+					case NEQ:
+						mainCriteria = andCriteria(mainCriteria, Criterions.isEqualTo(fieldName, treeKeys[i]));
+						break;
+					default:
+						throw new IllegalArgumentException("Operator not supported " + operator.name());
+				}
 			}
 
 			//2- règles pour le point de pivot
