@@ -19,6 +19,7 @@
 	<artifactId>vertigo-extensions</artifactId>
 	<name>vertigo-extensions</name>
 	<packaging>pom</packaging>
+	<version>3.5.1-SNAPSHOT</version>
 
 	<properties>
 		<!-- For global junit test coverage -->
