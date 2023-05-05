@@ -2122,21 +2122,21 @@ const _sfc_main$2 = {
       return null;
     },
     convertListToTree: function(list, subTreeKey) {
-      var map = {}, node, roots = [], i;
+      var map = {}, node, roots = [], i, newList = [];
       for (i = 0; i < list.length; i += 1) {
         map[list[i][this.$props.keyField]] = i;
-        list[i].children = [];
+        newList.push({ ...list[i], children: [] });
       }
       for (i = 0; i < list.length; i += 1) {
-        node = list[i];
+        node = newList[i];
         if (node[this.$props.parentKeyField]) {
-          list[map[node[this.$props.parentKeyField]]].children.push(node);
+          newList[map[node[this.$props.parentKeyField]]].children.push(node);
         } else {
           roots.push(node);
         }
       }
       if (subTreeKey) {
-        return [list[map[subTreeKey]]];
+        return [newList[map[subTreeKey]]];
       }
       return roots;
     }
@@ -3737,22 +3737,22 @@ var VMethods = {
         notif.message = response.data.message;
       }
       if (response.status === 401) {
-        notif.message = "UnAuthorized, you may login with an authorized account";
+        notif.message = this.$q.lang.vui.ajaxErrors.code401;
         this.$root.$emit("unauthorized", response);
         return;
       } else if (response.status === 403) {
-        notif.message = "Forbidden, your havn&quote;t enought rights";
+        notif.message = this.$q.lang.vui.ajaxErrors.code403;
       } else if (response.status === 404) {
-        notif.message = "API Route is Missing or Undefined";
+        notif.message = this.$q.lang.vui.ajaxErrors.code404;
       } else if (response.status === 405) {
-        notif.message = "API Route Method Not Allowed";
+        notif.message = this.$q.lang.vui.ajaxErrors.code405;
       } else if (response.status === 422) {
         notif.message = "";
         Object.keys(response.data).forEach(function(key) {
           this.$data.uiMessageStack[key] = response.data[key];
         }.bind(this));
       } else if (response.status >= 500) {
-        notif.message = "Server Error";
+        notif.message = this.$q.lang.vui.ajaxErrors.code500;
       }
       if (response.statusText && response.status !== 422) {
         notif.message = response.statusText;
@@ -4199,35 +4199,42 @@ var VMethods = {
       var attribute = attribs[1];
       var vueDataValue = this.$data.vueData[contextKey];
       if (vueDataValue && typeof vueDataValue === "object" && Array.isArray(vueDataValue) === false) {
-        Object.keys(vueDataValue).forEach(function(propertyKey) {
-          if (!propertyKey.startsWith("_") && (!attribute || attribute === propertyKey)) {
-            if (Array.isArray(vueDataValue[propertyKey])) {
-              let vueDataFieldValue = vueDataValue[propertyKey];
-              if (!vueDataFieldValue || vueDataFieldValue.length == 0) {
-                this.appendToFormData(params, "vContext[" + contextKey + "][" + propertyKey + "]", "");
-              } else {
-                vueDataFieldValue.forEach(function(value, index) {
-                  if (vueDataFieldValue[index] && typeof vueDataFieldValue[index] === "object") {
-                    this.appendToFormData(params, "vContext[" + contextKey + "][" + propertyKey + "]", vueDataFieldValue[index]["_v_inputValue"]);
-                  } else {
-                    this.appendToFormData(params, "vContext[" + contextKey + "][" + propertyKey + "]", vueDataFieldValue[index]);
-                  }
-                }.bind(this));
-              }
-            } else {
-              if (vueDataValue[propertyKey] && typeof vueDataValue[propertyKey] === "object") {
-                this.appendToFormData(params, "vContext[" + contextKey + "][" + propertyKey + "]", vueDataValue[propertyKey]["_v_inputValue"]);
-              } else {
-                this.appendToFormData(params, "vContext[" + contextKey + "][" + propertyKey + "]", vueDataValue[propertyKey]);
-              }
+        if (!attribute) {
+          Object.keys(vueDataValue).forEach(function(propertyKey) {
+            if (!propertyKey.includes("_")) {
+              this._vueDataParamsKey(params, contextKey, propertyKey, vueDataValue);
             }
-          }
-        }.bind(this));
+          }.bind(this));
+        } else {
+          this._vueDataParamsKey(params, contextKey, attribute, vueDataValue);
+        }
       } else {
         this.appendToFormData(params, "vContext[" + contextKey + "]", vueDataValue);
       }
     }
     return params;
+  },
+  _vueDataParamsKey: function(params, contextKey, propertyKey, vueDataValue) {
+    let vueDataFieldValue = vueDataValue[propertyKey];
+    if (Array.isArray(vueDataFieldValue)) {
+      if (!vueDataFieldValue || vueDataFieldValue.length == 0) {
+        this.appendToFormData(params, "vContext[" + contextKey + "][" + propertyKey + "]", "");
+      } else {
+        vueDataFieldValue.forEach(function(value, index) {
+          if (vueDataFieldValue[index] && typeof vueDataFieldValue[index] === "object") {
+            this.appendToFormData(params, "vContext[" + contextKey + "][" + propertyKey + "]", vueDataFieldValue[index]["_v_inputValue"]);
+          } else {
+            this.appendToFormData(params, "vContext[" + contextKey + "][" + propertyKey + "]", vueDataFieldValue[index]);
+          }
+        }.bind(this));
+      }
+    } else {
+      if (vueDataFieldValue && typeof vueDataFieldValue === "object") {
+        this.appendToFormData(params, "vContext[" + contextKey + "][" + propertyKey + "]", vueDataFieldValue["_v_inputValue"]);
+      } else {
+        this.appendToFormData(params, "vContext[" + contextKey + "][" + propertyKey + "]", vueDataFieldValue);
+      }
+    }
   },
   objectToFormData: function(object) {
     const formData = new FormData();
@@ -4312,6 +4319,13 @@ var VMethods = {
   }
 };
 var EnUs = {
+  ajaxErrors: {
+    code401: "UnAuthorized, you may login with an authorized account",
+    code403: "Forbidden, your havn&quote;t enought rights",
+    code404: "API Route is Missing or Undefined",
+    code405: "API Route Method Not Allowed",
+    code500: "Server Error"
+  },
   comments: {
     title: "Comments",
     inputLabel: "Insert here a comment",
@@ -4354,6 +4368,13 @@ var EnUs = {
   }
 };
 var Fr = {
+  ajaxErrors: {
+    code401: "Non autoris&eacute;, essayez de vous reconnecter",
+    code403: "Vous n&quote;avez pas les droits suffisants pour effectuer cette action",
+    code404: "API introuvable",
+    code405: "API non autoris&eacute;e",
+    code500: "Erreur serveur"
+  },
   comments: {
     title: "Commentaires",
     inputLabel: "Ins\xE9rer un commentaire ici",
