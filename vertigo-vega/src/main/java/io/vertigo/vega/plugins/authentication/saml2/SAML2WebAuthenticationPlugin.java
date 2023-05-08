@@ -301,12 +301,12 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 
 		// Validating the signature
 		final var sig = response.getSignature();
-		if (!checkSignature(sig)) {
+		if (!checkSignature(saml2Parameters, sig)) {
 			throw new VSystemException("SAML signature check fail.");
 		}
 
 		// read or decrypt assertion
-		final var assertion = getAssertion(response);
+		final var assertion = getAssertion(saml2Parameters, response);
 		try {
 			final var claims = OpenSAMLUtil.extractAttributes(assertion);
 			return AuthenticationResult.of(claims, assertion);
@@ -316,12 +316,12 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		}
 	}
 
-	private boolean checkSignature(final Signature sig) {
+	private static boolean checkSignature(final SAML2Parameters saml2Parameters, final Signature signature) {
 		var signatureValid = false;
 		var checkCount = 1;
 		for (final Credential cred : saml2Parameters.getIpPublicCredentials()) {
 			try {
-				SignatureValidator.validate(sig, cred);
+				SignatureValidator.validate(signature, cred);
 				signatureValid = true;
 				break;
 			} catch (final SignatureException e) {
@@ -341,10 +341,10 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		return signatureValid;
 	}
 
-	private Assertion getAssertion(final Response response) {
+	private static Assertion getAssertion(final SAML2Parameters saml2Parameters, final Response response) {
 		final var encryptedAssertions = response.getEncryptedAssertions();
 		if (!encryptedAssertions.isEmpty()) {
-			return decryptAssertion(encryptedAssertions.get(0));
+			return decryptAssertion(saml2Parameters, encryptedAssertions.get(0));
 		}
 
 		final var assertions = response.getAssertions();
@@ -354,7 +354,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		return assertions.get(0);
 	}
 
-	private Assertion decryptAssertion(final EncryptedAssertion encryptedAssertion) {
+	private static Assertion decryptAssertion(final SAML2Parameters saml2Parameters, final EncryptedAssertion encryptedAssertion) {
 		final var keyInfoCredentialResolver = new StaticKeyInfoCredentialResolver(saml2Parameters.getSpCredentials());
 
 		final var decrypter = new Decrypter(null, keyInfoCredentialResolver, new InlineEncryptedKeyResolver());

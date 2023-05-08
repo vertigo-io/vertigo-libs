@@ -124,13 +124,12 @@ public final class VHTTPRedirectDeflateEncoder {
 
 		final String redirectURL = buildRedirectURL(endpointURL, encodedMessage);
 
-		final HttpServletResponse response = httpServletResponse;
-		response.setHeader("Cache-control", "no-cache, no-store");
-		response.setHeader("Pragma", "no-cache");
-		response.setCharacterEncoding("UTF-8");
+		httpServletResponse.setHeader("Cache-control", "no-cache, no-store");
+		httpServletResponse.setHeader("Pragma", "no-cache");
+		httpServletResponse.setCharacterEncoding("UTF-8");
 
 		try {
-			response.sendRedirect(redirectURL);
+			httpServletResponse.sendRedirect(redirectURL);
 		} catch (final IOException e) {
 			throw new MessageEncodingException("Problem sending HTTP redirect", e);
 		}
