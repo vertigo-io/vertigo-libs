@@ -291,12 +291,12 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		for (final UiObject<D> uiObject : bufferUiObjects) {
 			if (uiObject.isModified()) {
 				final D validatedDto = uiObject.mergeAndCheckInput(validators, uiMessageStack);
-				if (!uiListDelta.getCreatesMap().containsKey(uiObject.getInputKey())) {
+				if (!uiListDelta.getCreatesMap().containsValue(uiObject)) {
 					dtListDelta.getUpdated().add(validatedDto);
 				} else {
 					dtListDelta.getCreated().add(validatedDto);
 				}
-			} else if (uiListDelta.getCreatesMap().containsKey(uiObject.getInputKey())) {
+			} else if (uiListDelta.getCreatesMap().containsValue(uiObject)) {
 				dtListDelta.getCreated().add(uiObject.getServerSideObject()); //on ne force pas la validation
 			}
 		}

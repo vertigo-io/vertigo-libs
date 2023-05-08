@@ -1,4 +1,11 @@
 export default {
+        ajaxErrors: {
+            code401: 'Non autoris&eacute;, essayez de vous reconnecter',
+            code403: 'Vous n&quote;avez pas les droits suffisants pour effectuer cette action',
+            code404: 'API introuvable',
+            code405: 'API non autoris&eacute;e',
+            code500: 'Erreur serveur'
+        },
         comments: {
             title : "Commentaires",
             inputLabel : "Insérer un commentaire ici",

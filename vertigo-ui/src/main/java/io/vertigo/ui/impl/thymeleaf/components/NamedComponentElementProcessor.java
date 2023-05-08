@@ -19,17 +19,19 @@ package io.vertigo.ui.impl.thymeleaf.components;
 
 import static java.util.Collections.singleton;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Stack;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -90,7 +92,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 	private final Optional<String> unnamedPlaceholderPrefix;
 	private final String frag;
 
-	private final Stack<IModel> emptyStack = new Stack();
+	private final Deque<IModel> emptyStack = new UnmodifiableDeque<>();
 
 	/**
 	 * Constructor
@@ -137,15 +139,21 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				structureHandler.setLocalVariable(CONTENT_TAGS, Collections.emptyList());
 			}
 			for (final String slotName : slotNames) {
-				structureHandler.setLocalVariable(slotName, null);
+				if (attributes.containsKey(slotName)) {
+					final String slotNameValue = attributes.get(slotName);
+					structureHandler.setLocalVariable(slotName, context.getVariable(slotNameValue));
+				} else {
+					structureHandler.setLocalVariable(slotName, null);
+				}
 			}
 
 			if (!(tag instanceof IStandaloneElementTag)) { //this tag has got a body : we get and stack content
-				Stack<IModel> contentStack = (Stack<IModel>) context.getVariable("contentStack");
+				Deque<IModel> contentStack = (Deque<IModel>) context.getVariable("contentStack");
 				if (contentStack == null || contentStack.isEmpty()) {
-					contentStack = new Stack<>();
+					contentStack = new LinkedList<>();
 				} else {
-					contentStack = clone(contentStack);
+					//we must clone contentStack to keep the scope of thymleaf variable
+					contentStack = new LinkedList<>(contentStack);
 				}
 
 				//Manage content
@@ -162,7 +170,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				final Map<String, IModel> slotContents = slotNames.isEmpty() ? Collections.emptyMap() : removeAndExtractSlots(contentModel, context);
 
 				for (final Map.Entry<String, IModel> entry : slotContents.entrySet()) {
-					Assertion.check().isTrue(slotNames.contains(entry.getKey()), "Component {0} have no slot {1} (accepted slots : {3})", componentName, entry.getKey(), slotNames);
+					Assertion.check().isTrue(slotNames.contains(entry.getKey()), "Component {0} have no slot {1} (accepted slots : {2})", componentName, entry.getKey(), slotNames);
 					//-----
 					structureHandler.setLocalVariable(entry.getKey(), entry.getValue());
 				}
@@ -177,14 +185,6 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 	}
 
-	private Stack<IModel> clone(Stack<IModel> contentStack) {
-		Stack<IModel> clone = new Stack<>();
-		for(IModel model : contentStack) {
-			clone.push(model);
-		}		
-		return clone;
-	}
-
 	private static Map<String, IModel> removeAndExtractSlots(final IModel contentModel, final ITemplateContext context) {
 		final Map<String, IModel> slotContents = new HashMap<>();
 		final IModel buildingModel = contentModel.cloneModel(); //contains each first level tag (and all it's sub-tags)
@@ -195,7 +195,8 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		for (int i = 0; i < fullContentSize; i++) {
 			final ITemplateEvent templateEvent = contentModel.get(0); //get always first (because we remove it)
 			if (templateEvent instanceof IOpenElementTag) {
-				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
+				//we only parse slots at first level (tagDepth == 0)
+				if (tapDepth == 0 && "vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
 					//support slot of an component into slot of another
 					slotName = ((IProcessableElementTag) templateEvent).getAttributeValue("name");
 				} else if (tapDepth == 0) {
@@ -205,9 +206,9 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			} else if (templateEvent instanceof ICloseElementTag) {
 				tapDepth--;
 			} else if (templateEvent instanceof IStandaloneElementTag) {
-				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
+				//we only parse slots at first level (tagDepth == 0)
+				if (tapDepth == 0 && "vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
 					//we accept empty slot (to clear a component default slot)
-					Assertion.check().isTrue(tapDepth == 0, "Can't parse slot {0} it contains another slot", slotName);
 					slotName = ((IProcessableElementTag) templateEvent).getAttributeValue("name");
 				} else if (tapDepth == 0) {
 					break; //slots must be set at first
@@ -406,7 +407,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		}
 	}
 
-	private static Map<String, String> processAttribute(final IModel model, final ITemplateContext context, final IElementModelStructureHandler structureHandler) {
+	private Map<String, String> processAttribute(final IModel model, final ITemplateContext context, final IElementModelStructureHandler structureHandler) {
 		final ITemplateEvent firstEvent = model.get(0);
 		final Map<String, String> attributes = new HashMap<>();
 
@@ -415,7 +416,30 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			for (final IAttribute attribute : processableElementTag.getAllAttributes()) {
 				final String completeName = attribute.getAttributeCompleteName();
 				if (!isDynamicAttribute(completeName, StandardDialect.PREFIX)) {
-					attributes.put(completeName, attribute.getValue());
+					if (isPlaceholder(completeName)) {
+						final String attrsValue = executeAttrsExpression(context, attribute.getValue());
+						final AssignationSequence assignations = AssignationUtils.parseAssignationSequence(context, attrsValue, false /* no parameters without value */);
+						if (assignations == null) {
+							throw new TemplateProcessingException("Could not parse value as attribute assignations: \"" + attribute.getValue() + "\"");
+						}
+						for (final Assignation assignation : assignations.getAssignations()) {
+							final IStandardExpression leftExpr = assignation.getLeft();
+							final Object leftValue = leftExpr.execute(context);
+
+							final String newVariableName = leftValue == null ? null : leftValue.toString();
+							if ("noOp".equals(newVariableName)) {
+								continue;
+							}
+							if (StringUtils.isEmptyOrWhitespace(newVariableName)) {
+								throw new TemplateProcessingException("Variable name expression evaluated as null or empty: \"" + leftExpr + "\"");
+							}
+							final IStandardExpression rightExpr = assignation.getRight();
+							//must execute rightExpr too : if not must use th: in component, else expression will be parsed/encoded two times
+							attributes.put(newVariableName, String.valueOf(rightExpr.execute(context)));
+						}
+					} else {
+						attributes.put(completeName, attribute.getValue());
+					}
 				}
 			}
 		}
@@ -434,6 +458,28 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			}
 		}
 		return attributes;
+	}
+
+	private String executeAttrsExpression(final ITemplateContext context, final String attrValue) {
+		//final IStandardExpressionParser expressionParser = StandardExpressions.getExpressionParser(context.getConfiguration());
+		//final IStandardExpression standardExpression = expressionParser.parseExpression(context, attrValue.trim());
+		//return String.valueOf(standardExpression.execute(context));
+		if (attrValue.contains("__")) {
+			return attrValue;
+		}
+		final AssignationSequence assignations = AssignationUtils.parseAssignationSequence(context, "attrs=" + attrValue, false /* no parameters without value */);
+		if (assignations == null) {
+			throw new TemplateProcessingException("Could not parse value as attribute assignations: \"" + attrValue + "\"");
+		}
+		if (assignations.getAssignations().isEmpty()) {
+			throw new TemplateProcessingException("Could not parse value as attribute assignations: \"" + attrValue + "\" (found 0 assignation)");
+		}
+		if (assignations.getAssignations().size() > 1) {
+			throw new TemplateProcessingException("Could not parse value as attribute assignations: \"" + attrValue + "\" (found more than 1 assignation)");
+		}
+		final Assignation assignation = assignations.getAssignations().get(0);
+		final IStandardExpression rightExpr = assignation.getRight();
+		return String.valueOf(rightExpr.execute(context));
 	}
 
 	private static boolean shouldConcat(final String key) {
@@ -548,6 +594,36 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 					structureHandler.setLocalVariable(newVariableName, rightValue);
 				}
 			}
+		}
+	}
+
+	private final static class UnmodifiableDeque<E> extends ArrayDeque<E> {
+		private static final long serialVersionUID = 1415497376066075497L;
+
+		/** {@inheritDoc} */
+		@Override
+		public boolean isEmpty() {
+			return true;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public int size() {
+			return 0;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public void addFirst(final E e) {
+			//inactive all other push and add
+			throw new UnsupportedOperationException("unmodifiable Deque");
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public void addLast(final E e) {
+			//inactive all other push and add
+			throw new UnsupportedOperationException("unmodifiable Deque");
 		}
 	}
 }

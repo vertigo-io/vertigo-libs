@@ -23,15 +23,15 @@ export default {
             }
             //Setup Generic Response Messages
             if (response.status === 401) {
-                notif.message = 'UnAuthorized, you may login with an authorized account'	            
+                notif.message = this.$q.lang.vui.ajaxErrors.code401	            
                 this.$root.$emit('unauthorized', response) //Emit Logout Event
                 return;
             } else if (response.status === 403) {
-                notif.message = 'Forbidden, your havn&quote;t enought rights'
+                notif.message = this.$q.lang.vui.ajaxErrors.code403
             } else if (response.status === 404) {
-                notif.message = 'API Route is Missing or Undefined'
+                notif.message = this.$q.lang.vui.ajaxErrors.code404
             } else if (response.status === 405) {
-                notif.message = 'API Route Method Not Allowed'
+                notif.message = this.$q.lang.vui.ajaxErrors.code405
             } else if (response.status === 422) {
                 //Validation Message
                 notif.message = '';
@@ -39,7 +39,7 @@ export default {
                     this.$data.uiMessageStack[key] = response.data[key];
                 }.bind(this));
             } else if (response.status >= 500) {
-                notif.message = 'Server Error'
+                notif.message = this.$q.lang.vui.ajaxErrors.code500
             }
             if (response.statusText && response.status !== 422) {
                 notif.message = response.statusText
@@ -523,31 +523,17 @@ export default {
             var vueDataValue = this.$data.vueData[contextKey];
             if (vueDataValue && typeof vueDataValue === 'object' && Array.isArray(vueDataValue) === false) {
                 // object
-                Object.keys(vueDataValue).forEach(function (propertyKey) {
-                    if (!propertyKey.startsWith("_") && (!attribute || attribute === propertyKey)) {
-                        // _ properties are private and don't belong to the serialized entity
-                        if (Array.isArray(vueDataValue[propertyKey])) {
-                            let vueDataFieldValue = vueDataValue[propertyKey];
-                            if (!vueDataFieldValue || vueDataFieldValue.length == 0) {
-                                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', ""); // reset array with an empty string
-                            } else {
-                                vueDataFieldValue.forEach(function (value, index) {
-                                    if (vueDataFieldValue[index] && typeof vueDataFieldValue[index] === 'object') {
-                                        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]['_v_inputValue']);
-                                    } else {
-                                        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]);
-                                    }
-                                }.bind(this));
-                            }
-                        } else {
-                            if (vueDataValue[propertyKey] && typeof vueDataValue[propertyKey] === 'object') {
-                                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]['_v_inputValue']);
-                            } else {
-                                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataValue[propertyKey]);
-                            }
+                if(!attribute) {
+                    Object.keys(vueDataValue).forEach(function (propertyKey) {
+                        if (!propertyKey.includes("_") ) {
+                            //  properties taht start with _ are private and don't belong to the serialized entity
+                            // we filter field with modifiers (like <field>_display and <field>_fmt)
+                            this._vueDataParamsKey(params, contextKey, propertyKey, vueDataValue)
                         }
-                    }
-                }.bind(this));
+                    }.bind(this));
+                } else {
+                    this._vueDataParamsKey(params, contextKey, attribute, vueDataValue)
+                }
             } else {
                 //primitive
                 this.appendToFormData(params, 'vContext[' + contextKey + ']', vueDataValue);
@@ -556,7 +542,28 @@ export default {
         return params;
 
     },
-
+    _vueDataParamsKey: function(params, contextKey, propertyKey, vueDataValue) {
+        let vueDataFieldValue = vueDataValue[propertyKey];
+        if (Array.isArray(vueDataFieldValue)) {
+            if (!vueDataFieldValue || vueDataFieldValue.length == 0) {
+                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', ""); // reset array with an empty string
+            } else {
+                vueDataFieldValue.forEach(function (value, index) {
+                    if (vueDataFieldValue[index] && typeof vueDataFieldValue[index] === 'object') {
+                        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]['_v_inputValue']);
+                    } else {
+                        this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue[index]);
+                    }
+                }.bind(this));
+            }
+        } else {
+            if (vueDataFieldValue && typeof vueDataFieldValue === 'object') {
+                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue['_v_inputValue']);
+            } else {
+                this.appendToFormData(params, 'vContext[' + contextKey + '][' + propertyKey + ']', vueDataFieldValue);
+            }
+        }
+    },
     objectToFormData: function (object) {
         const formData = new FormData();
         Object.keys(object).forEach(function (key) {

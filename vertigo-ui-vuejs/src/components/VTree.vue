@@ -62,24 +62,24 @@ export default {
 			return null;
 		},
 		convertListToTree: function (list, subTreeKey) {
-			var map = {}, node, roots = [], i;
+			var map = {}, node, roots = [], i, newList = [];
 			for (i = 0; i < list.length; i += 1) {
 				map[list[i][this.$props.keyField]] = i; // initialize the map
-				list[i].children = []; // initialize the children
+				newList.push({...list[i], children : []}); // initialize the newList with children
 			}
 		
 			for (i = 0; i < list.length; i += 1) {
-				node = list[i];
+				node = newList[i];
 				if (node[this.$props.parentKeyField]) {
 					// if you have dangling branches check that map[node.parentId] exists
-					list[map[node[this.$props.parentKeyField]]].children.push(node);
+					newList[map[node[this.$props.parentKeyField]]].children.push(node);
 				} else {
 					roots.push(node);
 				}
 			}
 			
 			if (subTreeKey) {
-				return [list[map[subTreeKey]]];
+				return [newList[map[subTreeKey]]];
 			}
 			
 			return roots;

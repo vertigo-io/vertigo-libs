@@ -1,3 +1,20 @@
+/**
+ * vertigo - application development platform
+ *
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.vertigo.social.impl.sms;
 
 import java.util.List;
@@ -21,7 +38,7 @@ public final class SmsManagerImpl implements SmsManager {
 	private final List<SmsSendPlugin> smsSendPlugins;
 	private final Boolean silentFail;
 	private final AnalyticsManager analyticsManager;
-	private static Logger LOGGER = LogManager.getLogger(SmsManagerImpl.class);
+	private static final Logger LOGGER = LogManager.getLogger(SmsManagerImpl.class);
 
 	private static final SmsSendingReport NON_SENT_SMS_REPORT = new SmsSendingReport(0.0, false);
 
@@ -54,15 +71,15 @@ public final class SmsManagerImpl implements SmsManager {
 					final SmsSendingReport smsSendingReport;
 					if (pluginToUseOpt.isPresent()) {
 						smsSendingReport = pluginToUseOpt.get().sendSms(sms);
-					} else if (!silentFail) {
-						LOGGER.warn("No plugin found to send mail with destinations : {}",
-								() -> sms.getReceivers() //param supplier
-										.stream()
-										.map(receiver -> receiver.substring(0, 5))
-										.collect(Collectors.joining(", ")));
-						smsSendingReport = NON_SENT_SMS_REPORT;
 					} else {
 						smsSendingReport = NON_SENT_SMS_REPORT;
+						if (!silentFail) {
+							LOGGER.warn("No plugin found to send mail with destinations : {}",
+									() -> sms.getReceivers() //param supplier
+											.stream()
+											.map(receiver -> receiver.substring(0, 5))
+											.collect(Collectors.joining(", ")));
+						}
 					}
 					tracer
 							.setTag("senderName", sms.getSender())

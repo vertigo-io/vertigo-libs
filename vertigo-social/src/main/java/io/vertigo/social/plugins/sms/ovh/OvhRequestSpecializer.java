@@ -1,6 +1,23 @@
+/**
+ * vertigo - application development platform
+ *
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.vertigo.social.plugins.sms.ovh;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -67,17 +84,15 @@ public class OvhRequestSpecializer implements RequestSpecializer, Component {
 	public static String hashSHA1(final String text) {
 
 		try {
-			MessageDigest md;
-			md = MessageDigest.getInstance("SHA-1");
-			byte[] sha1hash = new byte[40];
-			md.update(text.getBytes("iso-8859-1"), 0, text.length());
-			sha1hash = md.digest();
-			final StringBuffer sb = new StringBuffer();
+			final MessageDigest md = MessageDigest.getInstance("SHA-1"); //SHA-1 : imposé par l'api OVH
+			md.update(text.getBytes(StandardCharsets.ISO_8859_1), 0, text.length());//iso-8859-1 : imposé par l'api OVH
+			final byte[] sha1hash = md.digest();
+			final StringBuilder sb = new StringBuilder();
 			for (final byte element : sha1hash) {
 				sb.append(Integer.toString((element & 0xff) + 0x100, 16).substring(1));
 			}
 			return sb.toString();
-		} catch (final NoSuchAlgorithmException | UnsupportedEncodingException e) {
+		} catch (final NoSuchAlgorithmException e) {
 			throw WrappedException.wrap(e);
 		}
 

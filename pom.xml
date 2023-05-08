@@ -19,6 +19,7 @@
 	<artifactId>vertigo-extensions</artifactId>
 	<name>vertigo-extensions</name>
 	<packaging>pom</packaging>
+	<version>4.0.0-SNAPSHOT</version>
 
 	<modules>
 		<module>vertigo-commons</module>

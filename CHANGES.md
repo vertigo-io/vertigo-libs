@@ -8,7 +8,7 @@ more to come :)
 
 Release 3.5.0 - 2023/01/06
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-340-to-330)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-340-to-350)
 - [Datafactory] fix uri.getId to string String.valueOf(Serializable.class.cast(uri.getId())))
 - [Datafactory] fix add boostMostRecent on filteredQuery
 - [vega] CSP : Rename parameter externalUrl to cspFrameAncestor

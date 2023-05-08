@@ -261,7 +261,7 @@ public class TestUi {
 	public void testSecuredController() throws InterruptedException {
 		driver.get(baseUrl + "/test/securedMovie/");
 
-		assertTrue(waitElement(By.xpath("/html/body/table/tbody/tr[3]/td")).getText().contains("Not enought authorizations"));
+		assertTrue(waitElement(By.xpath("/html/body/table/tbody/tr[3]/td")).getText().contains("Forbidden action"));
 		assertTrue(waitElement(By.xpath("/html/body/table/tbody/tr[2]/td")).getText().contains("403"));
 
 	}
@@ -274,7 +274,7 @@ public class TestUi {
 
 		findElement(By.id("saveAction")).click();
 		Thread.sleep(5000);
-		assertTrue(waitElement(By.xpath("/html/body/table/tbody/tr[3]/td")).getText().contains("Not enought authorizations"));
+		assertTrue(waitElement(By.xpath("/html/body/table/tbody/tr[3]/td")).getText().contains("Forbidden action"));
 		assertTrue(waitElement(By.xpath("/html/body/table/tbody/tr[2]/td")).getText().contains("403"));
 
 	}

@@ -27,7 +27,11 @@
                        <vu:grid cols="3">
                         <vu:text-field :class="{ disabled: true && false || false }" object="movie" field="movId"/>
                         <vu:text-field object="movie" field="title" class="fieldTitle v-field__required"/>
-                        <vu:text-field object="movie" field="year"  debounce="500" hint="Debouncing 500ms"/>
+                        <vu:text-field object="movie" field="year"  debounce="500" hint="Debouncing 500ms" required>
+                            <vu:slot name="after_label_slot">
+                            <q-icon name="info" title="Year of publishing" size="sm"></q-icon>
+                            </vu:slot>
+                        </vu:text-field>
                         <vu:slider object="movie" field="year"  />
                         <vu:knob object="movie" field="year"/>
                         <vu:select object="movie" field="movId" list="movies" />

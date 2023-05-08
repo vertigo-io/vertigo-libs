@@ -17,9 +17,10 @@
  */
 package io.vertigo.ui.impl.thymeleaf.components;
 
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
-import java.util.Stack;
 
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IAttribute;
@@ -59,8 +60,7 @@ public class ContentComponentProcessor extends AbstractElementModelProcessor {
 	@Override
 	protected void doProcess(final ITemplateContext context, final IModel model, final IElementModelStructureHandler structureHandler) {
 		final Map<String, String> attributes = processAttribute(model);
-		final var contentId = attributes.get(CONTENT_ID_ATTR_NAME);
-		attributes.remove(CONTENT_ID_ATTR_NAME);
+		final var contentId = attributes.remove(CONTENT_ID_ATTR_NAME); //remove() return removed element
 		final Object content = context.getVariable("contentStack");
 
 		Assertion.check().isNotNull(content, "'" + contentId + "' variable missing.");
@@ -68,9 +68,12 @@ public class ContentComponentProcessor extends AbstractElementModelProcessor {
 		removeCurrentTag(model);
 		final IModel defaultModel = model.cloneModel(); //default is the body of the content tag
 		final IModel mergedModel;
-		if (content instanceof Stack) {
-			final Stack<IModel> contentStack = (Stack<IModel>) content;
+		if (content instanceof Deque) {
+			Deque<IModel> contentStack = (Deque<IModel>) content;
 			if (!contentStack.isEmpty()) {
+				//we must clone contentStack to keep the scope of thymleaf variable
+				contentStack = new LinkedList<>(contentStack);
+
 				//We merge models : ie replace vu:content tag in component fragment by the body of tag in call page
 				mergedModel = contentStack.pop();
 				structureHandler.setLocalVariable("contentStack", contentStack);
