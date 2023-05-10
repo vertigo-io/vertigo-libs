@@ -49,7 +49,7 @@ public class RedisCacheManagerTest extends AbstractCacheManagerTest {
 						.build())
 				.addModule(new RedisFeatures()
 						.withJedis(
-								Param.of("host", "redis-pic.part.klee.lan.net"),
+								Param.of("host", "docker-vertigo.part.klee.lan.net"),
 								Param.of("port", "6379"),
 								Param.of("ssl", "false"),
 								Param.of("database", "0"))
