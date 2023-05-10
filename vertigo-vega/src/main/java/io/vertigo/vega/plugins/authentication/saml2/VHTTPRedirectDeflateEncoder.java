@@ -116,7 +116,7 @@ public final class VHTTPRedirectDeflateEncoder {
 			throw new MessageEncodingException("No outbound SAML message contained in message context");
 		}
 
-		final String endpointURL = getEndpointURL().toString();
+		final String endpointURL = getEndpointURL(messageContext).toString();
 
 		removeSignature((SAMLObject) outboundMessage);
 
@@ -124,13 +124,12 @@ public final class VHTTPRedirectDeflateEncoder {
 
 		final String redirectURL = buildRedirectURL(endpointURL, encodedMessage);
 
-		final HttpServletResponse response = httpServletResponse;
-		response.setHeader("Cache-control", "no-cache, no-store");
-		response.setHeader("Pragma", "no-cache");
-		response.setCharacterEncoding("UTF-8");
+		httpServletResponse.setHeader("Cache-control", "no-cache, no-store");
+		httpServletResponse.setHeader("Pragma", "no-cache");
+		httpServletResponse.setCharacterEncoding("UTF-8");
 
 		try {
-			response.sendRedirect(redirectURL);
+			httpServletResponse.sendRedirect(redirectURL);
 		} catch (final IOException e) {
 			throw new MessageEncodingException("Problem sending HTTP redirect", e);
 		}
@@ -141,7 +140,7 @@ public final class VHTTPRedirectDeflateEncoder {
 	 *
 	 * @param message current message context
 	 */
-	private void removeSignature(final SAMLObject message) {
+	private static void removeSignature(final SAMLObject message) {
 		if (message instanceof SignableSAMLObject) {
 			final SignableSAMLObject signableMessage = (SignableSAMLObject) message;
 			if (signableMessage.isSigned()) {
@@ -160,7 +159,7 @@ public final class VHTTPRedirectDeflateEncoder {
 	 *
 	 * @throws MessageEncodingException thrown if there is a problem compressing the message
 	 */
-	private String deflateAndBase64Encode(final SAMLObject message) throws MessageEncodingException {
+	private static String deflateAndBase64Encode(final SAMLObject message) throws MessageEncodingException {
 		LOG.debug("Deflating and Base64 encoding SAML message");
 		try {
 			final String messageStr = SerializeSupport.nodeToString(marshallMessage(message));
@@ -193,7 +192,7 @@ public final class VHTTPRedirectDeflateEncoder {
 			throws MessageEncodingException {
 		LOG.debug("Building URL to redirect client to");
 
-		URLBuilder urlBuilder = null;
+		final URLBuilder urlBuilder;
 		try {
 			urlBuilder = new URLBuilder(endpoint);
 		} catch (final MalformedURLException e) {
@@ -256,7 +255,7 @@ public final class VHTTPRedirectDeflateEncoder {
 	 *
 	 * @param queryParams the list of query params on which to operate
 	 */
-	private void removeDisallowedQueryParams(final @Nonnull List<Pair<String, String>> queryParams) {
+	private static void removeDisallowedQueryParams(final @Nonnull List<Pair<String, String>> queryParams) {
 		final Iterator<Pair<String, String>> iter = queryParams.iterator();
 		while (iter.hasNext()) {
 			final String paramName = StringSupport.trimOrNull(iter.next().getFirst());
@@ -277,7 +276,7 @@ public final class VHTTPRedirectDeflateEncoder {
 	 * @throws MessageEncodingException thrown if the algorithm URI is not supplied explicitly and
 	 *          could not be derived from the supplied credential
 	 */
-	private String getSignatureAlgorithmURI(final SignatureSigningParameters signingParameters)
+	private static String getSignatureAlgorithmURI(final SignatureSigningParameters signingParameters)
 			throws MessageEncodingException {
 
 		if (signingParameters.getSignatureAlgorithm() != null) {
@@ -298,7 +297,7 @@ public final class VHTTPRedirectDeflateEncoder {
 	 *
 	 * @throws MessageEncodingException there is an error computing the signature
 	 */
-	private String generateSignature(final Credential signingCredential, final String algorithmURI,
+	private static String generateSignature(final Credential signingCredential, final String algorithmURI,
 			final String queryString)
 			throws MessageEncodingException {
 
@@ -332,7 +331,7 @@ public final class VHTTPRedirectDeflateEncoder {
 	*
 	* @throws MessageEncodingException throw if no relying party endpoint is available
 	*/
-	private URI getEndpointURL() throws MessageEncodingException {
+	private static URI getEndpointURL(MessageContext messageContext) throws MessageEncodingException {
 		try {
 			return SAMLBindingSupport.getEndpointURL(messageContext);
 		} catch (final BindingException e) {
@@ -349,7 +348,7 @@ public final class VHTTPRedirectDeflateEncoder {
 	*
 	* @throws MessageEncodingException thrown if the give message can not be marshalled into its DOM representation
 	*/
-	private Element marshallMessage(@Nonnull final XMLObject message) throws MessageEncodingException {
+	private static Element marshallMessage(@Nonnull final XMLObject message) throws MessageEncodingException {
 		LOG.debug("Marshalling message");
 
 		try {
@@ -363,7 +362,7 @@ public final class VHTTPRedirectDeflateEncoder {
 	/** A subclass of {@link DeflaterOutputStream} which defaults in a no-wrap {@link Deflater} instance and
 	 * closes it when the stream is closed.
 	 */
-	private class NoWrapAutoEndDeflaterOutputStream extends DeflaterOutputStream {
+	private static class NoWrapAutoEndDeflaterOutputStream extends DeflaterOutputStream {
 
 		/**
 		 * Creates a new output stream with a default no-wrap compressor and buffer size,
