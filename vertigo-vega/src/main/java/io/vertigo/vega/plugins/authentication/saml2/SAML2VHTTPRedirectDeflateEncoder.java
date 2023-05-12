@@ -90,27 +90,23 @@ import net.shibboleth.utilities.java.support.xml.SerializeSupport;
  *
  * This encoder only supports DEFLATE compression.
  */
-public final class VHTTPRedirectDeflateEncoder {
+final class SAML2HTTPRedirectDeflateEncoder {
 
 	/** Params which are disallowed from appearing in the input endpoint URL. */
 	private static final Set<String> DISALLOWED_ENDPOINT_QUERY_PARAMS = Set.of("SAMLEncoding", "SAMLRequest", "SAMLResponse", "RelayState", "SigAlg", "Signature");
 
 	/** Class logger. */
-	private static final Logger LOG = LoggerFactory.getLogger(VHTTPRedirectDeflateEncoder.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SAML2HTTPRedirectDeflateEncoder.class);
 
-	private final MessageContext messageContext;
-	private final HttpServletResponse httpServletResponse;
+	private SAML2HTTPRedirectDeflateEncoder() {
+		// helper
+	}
 
-	VHTTPRedirectDeflateEncoder(final HttpServletResponse httpServletResponse, final MessageContext messageContext) {
+	static void encode(final HttpServletResponse httpServletResponse, final MessageContext messageContext) throws MessageEncodingException {
 		Assertion.check()
 				.isNotNull(httpServletResponse)
 				.isNotNull(messageContext);
 		//---
-		this.httpServletResponse = httpServletResponse;
-		this.messageContext = messageContext;
-	}
-
-	void encode() throws MessageEncodingException {
 		final Object outboundMessage = messageContext.getMessage();
 		if (outboundMessage == null || !(outboundMessage instanceof SAMLObject)) {
 			throw new MessageEncodingException("No outbound SAML message contained in message context");
@@ -122,7 +118,7 @@ public final class VHTTPRedirectDeflateEncoder {
 
 		final String encodedMessage = deflateAndBase64Encode((SAMLObject) outboundMessage);
 
-		final String redirectURL = buildRedirectURL(endpointURL, encodedMessage);
+		final String redirectURL = buildRedirectURL(endpointURL, encodedMessage, messageContext);
 
 		httpServletResponse.setHeader("Cache-control", "no-cache, no-store");
 		httpServletResponse.setHeader("Pragma", "no-cache");
@@ -188,7 +184,7 @@ public final class VHTTPRedirectDeflateEncoder {
 	 *
 	 * @throws MessageEncodingException thrown if the SAML message is neither a RequestAbstractType or Response
 	 */
-	private String buildRedirectURL(final String endpoint, final String message)
+	private static String buildRedirectURL(final String endpoint, final String message, final MessageContext messageContext)
 			throws MessageEncodingException {
 		LOG.debug("Building URL to redirect client to");
 
@@ -304,7 +300,7 @@ public final class VHTTPRedirectDeflateEncoder {
 		LOG.debug(String.format("Generating signature with key type '%s', algorithm URI '%s' over query string '%s'",
 				CredentialSupport.extractSigningKey(signingCredential).getAlgorithm(), algorithmURI, queryString));
 
-		String b64Signature = null;
+		final String b64Signature;
 		try {
 			final byte[] rawSignature = XMLSigningUtil.signWithURI(signingCredential, algorithmURI, queryString.getBytes("UTF-8"));
 			b64Signature = Base64Support.encode(rawSignature, Base64Support.UNCHUNKED);
@@ -312,13 +308,11 @@ public final class VHTTPRedirectDeflateEncoder {
 		} catch (final SecurityException e) {
 			LOG.error("Error during URL signing process: {}", e.getMessage());
 			throw new MessageEncodingException("Unable to sign URL query string", e);
-		} catch (final UnsupportedEncodingException e) {
+		} catch (final UnsupportedEncodingException | EncodingException e) {
 			// UTF-8 encoding is required to be supported by all JVMs
-		} catch (final EncodingException e) {
 			LOG.error("Error during URL signing process: {}", e.getMessage());
 			throw new MessageEncodingException("Unable to base64 encode signature of URL query string", e);
 		}
-
 		return b64Signature;
 	}
 

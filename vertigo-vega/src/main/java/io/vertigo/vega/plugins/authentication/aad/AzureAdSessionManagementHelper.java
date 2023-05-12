@@ -40,6 +40,10 @@ final class AzureAdSessionManagementHelper {
 	private static final String STATES = "states";
 	private static final Integer STATE_TTL = 3600;
 
+	private AzureAdSessionManagementHelper() {
+		// helper
+	}
+
 	static AzureAdStateData validateState(final HttpSession session, final String state) throws Exception {
 		if (!StringUtil.isBlank(state)) {
 			final AzureAdStateData stateDataInSession = removeStateFromSession(session, state);

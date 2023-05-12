@@ -39,7 +39,7 @@ final class OIDCSessionManagementHelper {
 		// helper
 	}
 
-	static StateData retrieveStateDataFromSession(final HttpSession session, final String state) {
+	static OIDCStateData retrieveStateDataFromSession(final HttpSession session, final String state) {
 		if (!StringUtil.isBlank(state)) {
 			final var stateDataInSession = removeStateFromSession(session, state);
 			if (stateDataInSession != null) {
@@ -51,7 +51,7 @@ final class OIDCSessionManagementHelper {
 
 	static String getRequestedUri(final HttpSession session, final String state) {
 		if (!StringUtil.isBlank(state)) {
-			final var states = (Map<String, StateData>) session.getAttribute(STATES);
+			final var states = (Map<String, OIDCStateData>) session.getAttribute(STATES);
 			if (states != null) {
 				final var stateData = states.get(state);
 				if (stateData != null) {
@@ -62,8 +62,8 @@ final class OIDCSessionManagementHelper {
 		throw new VSystemException("Failed to validate data received from Authorization service - could not validate state");
 	}
 
-	private static StateData removeStateFromSession(final HttpSession session, final String state) {
-		final var states = (Map<String, StateData>) session.getAttribute(STATES);
+	private static OIDCStateData removeStateFromSession(final HttpSession session, final String state) {
+		final var states = (Map<String, OIDCStateData>) session.getAttribute(STATES);
 		if (states != null) {
 			eliminateExpiredStates(states);
 			final var stateData = states.get(state);
@@ -76,7 +76,7 @@ final class OIDCSessionManagementHelper {
 		return null;
 	}
 
-	private static void eliminateExpiredStates(final Map<String, StateData> map) {
+	private static void eliminateExpiredStates(final Map<String, OIDCStateData> map) {
 		final var it = map.entrySet().iterator();
 
 		final var currTime = new Date();
@@ -92,9 +92,9 @@ final class OIDCSessionManagementHelper {
 
 	static void storeStateDataInSession(final HttpSession session, final String state, final String nonce, final String requestedUri) {
 		// state parameter to validate response from Authorization server and nonce parameter to validate idToken
-		final var states = Optional.ofNullable((Map<String, StateData>) session.getAttribute(STATES))
+		final var states = Optional.ofNullable((Map<String, OIDCStateData>) session.getAttribute(STATES))
 				.orElseGet(HashMap::new);
-		states.put(state, new StateData(nonce, new Date(), requestedUri));
+		states.put(state, new OIDCStateData(nonce, new Date(), requestedUri));
 		session.setAttribute(STATES, states);
 	}
 

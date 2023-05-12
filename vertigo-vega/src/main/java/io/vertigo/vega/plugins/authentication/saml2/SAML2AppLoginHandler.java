@@ -15,13 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.plugins.authentication.oidc;
+package io.vertigo.vega.plugins.authentication.saml2;
 
-import java.io.Serializable;
-import java.util.Date;
+import org.opensaml.saml.saml2.core.Assertion;
 
-record StateData(
-		String nonce,
-		Date stateDate,
-		String requestedUri) implements Serializable {
+import io.vertigo.vega.impl.authentication.AppLoginHandler;
+
+public interface SAML2AppLoginHandler extends AppLoginHandler<Assertion> {
+	//
 }

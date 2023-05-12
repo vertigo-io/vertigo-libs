@@ -247,10 +247,8 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		context.getSubcontext(SecurityParametersContext.class, true)
 				.setSignatureSigningParameters(signatureSigningParameters);
 
-		final var encoder = new VHTTPRedirectDeflateEncoder(response, context);
-
 		try {
-			encoder.encode(); // send redirect in httpServletResponse
+			SAML2HTTPRedirectDeflateEncoder.encode(response, context); // send redirect in httpServletResponse
 		} catch (final MessageEncodingException e) {
 			throw WrappedException.wrap(e);
 		}
