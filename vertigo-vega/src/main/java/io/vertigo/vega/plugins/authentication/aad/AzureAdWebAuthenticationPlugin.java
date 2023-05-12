@@ -128,7 +128,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 				&& isAccessTokenExpired(httpRequest)) {
 			try {
 				final var authResult = getAuthResultBySilentFlow(httpRequest);
-				AzureAdSessionManagementHelper.setSessionPrincipal(httpRequest, authResult);
+				AzureAdSessionManagementUtil.setSessionPrincipal(httpRequest, authResult);
 			} catch (final Throwable e) {
 				throw WrappedException.wrap(e);
 			}
@@ -151,12 +151,12 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 			// response should have authentication code, which will be used to acquire access token
 			// we also retrieve the orignal uri requested before the OIDC flow
 			processAuthenticationCodeRedirect(request, currentUriWithScheme, fullUrl);
-			return AuthenticationResult.of(Map.of(), AzureAdSessionManagementHelper.getAuthSessionObject(request));
+			return AuthenticationResult.of(Map.of(), AzureAdSessionManagementUtil.getAuthSessionObject(request));
 
 		} catch (final MsalException authException) {
 			// something went wrong (like expiration or revocation of token)
 			// we should invalidate AuthData stored in session and redirect to Authorization server
-			AzureAdSessionManagementHelper.removePrincipalFromSession(request);
+			AzureAdSessionManagementUtil.removePrincipalFromSession(request);
 			doRedirectToSso(request, response);
 			return AuthenticationResult.ofConsumed();
 		} catch (final Throwable e) {
@@ -194,7 +194,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 	}
 
 	private boolean isAccessTokenExpired(final HttpServletRequest httpRequest) {
-		final IAuthenticationResult result = AzureAdSessionManagementHelper.getAuthSessionObject(httpRequest);
+		final IAuthenticationResult result = AzureAdSessionManagementUtil.getAuthSessionObject(httpRequest);
 		return result.expiresOnDate().before(new Date());
 	}
 
@@ -206,7 +206,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 			params.put(key, Collections.singletonList(httpRequest.getParameterMap().get(key)[0]));
 		}
 		// validate that state in response equals to state in request
-		final AzureAdStateData azureAdStateData = AzureAdSessionManagementHelper.validateState(httpRequest.getSession(), params.get(AzureAdSessionManagementHelper.STATE).get(0));
+		final AzureAdStateData azureAdStateData = AzureAdSessionManagementUtil.validateState(httpRequest.getSession(), params.get(AzureAdSessionManagementUtil.STATE).get(0));
 
 		final AuthenticationResponse authResponse = AuthenticationResponseParser.parse(new URI(fullUrl), params);
 		if (isAuthenticationSuccessful(authResponse)) {
@@ -222,7 +222,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 			// validate nonce to prevent reply attacks (code maybe substituted to one with broader access)
 			validateNonce(azureAdStateData, getNonceClaimValueFromIdToken(result.idToken()));
 
-			AzureAdSessionManagementHelper.setSessionPrincipal(httpRequest, result);
+			AzureAdSessionManagementUtil.setSessionPrincipal(httpRequest, result);
 		} else {
 			final AuthenticationErrorResponse oidcResponse = (AuthenticationErrorResponse) authResponse;
 			throw new Exception(String.format("Request for auth code failed: %s - %s",
@@ -234,7 +234,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 	private IAuthenticationResult getAuthResultBySilentFlow(final HttpServletRequest httpRequest)
 			throws Throwable {
 
-		final IAuthenticationResult result = AzureAdSessionManagementHelper.getAuthSessionObject(httpRequest);
+		final IAuthenticationResult result = AzureAdSessionManagementUtil.getAuthSessionObject(httpRequest);
 
 		final IConfidentialClientApplication app = azureAdConnector.getClient();
 
@@ -251,14 +251,14 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 		final IAuthenticationResult updatedResult = future.get();
 
 		//update session with latest token cache
-		AzureAdSessionManagementHelper.storeTokenCacheInSession(httpRequest, app.tokenCache().serialize());
+		AzureAdSessionManagementUtil.storeTokenCacheInSession(httpRequest, app.tokenCache().serialize());
 
 		return updatedResult;
 	}
 
 	private void validateNonce(final AzureAdStateData azureAdStateData, final String nonce) throws Exception {
 		if (StringUtil.isBlank(nonce) || !nonce.equals(azureAdStateData.nonce())) {
-			throw new Exception(AzureAdSessionManagementHelper.FAILED_TO_VALIDATE_MESSAGE + "could not validate nonce");
+			throw new Exception(AzureAdSessionManagementUtil.FAILED_TO_VALIDATE_MESSAGE + "could not validate nonce");
 		}
 	}
 
@@ -269,7 +269,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 	private void validateAuthRespMatchesAuthCodeFlow(final AuthenticationSuccessResponse oidcResponse) throws Exception {
 		if (oidcResponse.getIDToken() != null || oidcResponse.getAccessToken() != null ||
 				oidcResponse.getAuthorizationCode() == null) {
-			throw new Exception(AzureAdSessionManagementHelper.FAILED_TO_VALIDATE_MESSAGE + "unexpected set of artifacts received");
+			throw new Exception(AzureAdSessionManagementUtil.FAILED_TO_VALIDATE_MESSAGE + "unexpected set of artifacts received");
 		}
 	}
 
@@ -279,7 +279,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 		final String state = UUID.randomUUID().toString();
 		final String nonce = UUID.randomUUID().toString();
 
-		AzureAdSessionManagementHelper.storeStateAndNonceInSession(httpRequest.getSession(), state, nonce, requestedUri);
+		AzureAdSessionManagementUtil.storeStateAndNonceInSession(httpRequest.getSession(), state, nonce, requestedUri);
 
 		try {
 			httpResponse.setStatus(302);
@@ -332,7 +332,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 			throw new ServiceUnavailableException("authentication result was null");
 		}
 
-		AzureAdSessionManagementHelper.storeTokenCacheInSession(httpServletRequest, app.tokenCache().serialize());
+		AzureAdSessionManagementUtil.storeTokenCacheInSession(httpServletRequest, app.tokenCache().serialize());
 
 		return result;
 	}
@@ -342,7 +342,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 	}
 
 	public static IAuthenticationResult getAuthSessionObject(final HttpServletRequest request) {
-		return AzureAdSessionManagementHelper.getAuthSessionObject(request);
+		return AzureAdSessionManagementUtil.getAuthSessionObject(request);
 	}
 
 	@Override
@@ -356,8 +356,8 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 		for (final String key : httpRequest.getParameterMap().keySet()) {
 			params.put(key, Collections.singletonList(httpRequest.getParameterMap().get(key)[0]));
 		}
-		final var state = params.get(AzureAdSessionManagementHelper.STATE).get(0);
-		return Optional.ofNullable(AzureAdSessionManagementHelper.getRequestedUri(httpRequest.getSession(), state));
+		final var state = params.get(AzureAdSessionManagementUtil.STATE).get(0);
+		return Optional.ofNullable(AzureAdSessionManagementUtil.getRequestedUri(httpRequest.getSession(), state));
 	}
 
 	@Override

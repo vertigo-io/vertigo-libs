@@ -250,7 +250,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 	public Optional<String> getRequestedUri(final HttpServletRequest httpRequest) {
 		final var successResponse = parseResponseRequest(httpRequest);
 		final var state = successResponse.getState();
-		return Optional.ofNullable(OIDCSessionManagementHelper.getRequestedUri(httpRequest.getSession(), state.getValue()));
+		return Optional.ofNullable(OIDCSessionManagementUtil.getRequestedUri(httpRequest.getSession(), state.getValue()));
 	}
 
 	/** {@inheritDoc} */
@@ -258,7 +258,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 	public AuthenticationResult<AuthorizationSuccessResponse> doHandleCallback(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
 		final var successResponse = parseResponseRequest(httpRequest);
 		final var state = successResponse.getState();
-		final var stateData = OIDCSessionManagementHelper.retrieveStateDataFromSession(httpRequest.getSession(), state.getValue());
+		final var stateData = OIDCSessionManagementUtil.retrieveStateDataFromSession(httpRequest.getSession(), state.getValue());
 		loadMetadataIfNeeded(false);
 
 		final var oidcTokens = doGetOIDCTokens(successResponse.getAuthorizationCode(), resolveCallbackUri(httpRequest));
@@ -377,7 +377,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 		// save all this in http session paired with the original requested URL to forward user after authentication
 		final var state = new State();
 		final var nonce = new Nonce();
-		OIDCSessionManagementHelper.storeStateDataInSession(httpRequest.getSession(), state.getValue(), nonce.getValue(), WebAuthenticationUtil.resolveUrlRedirect(httpRequest));
+		OIDCSessionManagementUtil.storeStateDataInSession(httpRequest.getSession(), state.getValue(), nonce.getValue(), WebAuthenticationUtil.resolveUrlRedirect(httpRequest));
 
 		// Compose the OpenID authentication request (for the code flow)
 		final var authRequest = new AuthenticationRequest.Builder(

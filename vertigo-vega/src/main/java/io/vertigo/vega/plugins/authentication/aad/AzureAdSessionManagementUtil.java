@@ -32,7 +32,7 @@ import jakarta.servlet.http.HttpSession;
 /**
  * Helpers for managing session
  */
-final class AzureAdSessionManagementHelper {
+final class AzureAdSessionManagementUtil {
 
 	protected static final String STATE = "state";
 	protected static final String FAILED_TO_VALIDATE_MESSAGE = "Failed to validate data received from Authorization service - ";
@@ -40,7 +40,7 @@ final class AzureAdSessionManagementHelper {
 	private static final String STATES = "states";
 	private static final Integer STATE_TTL = 3600;
 
-	private AzureAdSessionManagementHelper() {
+	private AzureAdSessionManagementUtil() {
 		// helper
 	}
 

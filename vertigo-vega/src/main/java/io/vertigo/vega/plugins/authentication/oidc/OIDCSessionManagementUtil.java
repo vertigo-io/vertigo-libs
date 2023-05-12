@@ -30,12 +30,12 @@ import jakarta.servlet.http.HttpSession;
 /**
  * Helpers for managing session
  */
-final class OIDCSessionManagementHelper {
+final class OIDCSessionManagementUtil {
 
 	private static final String STATES = "states";
 	private static final Integer STATE_TTL = 3600;
 
-	private OIDCSessionManagementHelper() {
+	private OIDCSessionManagementUtil() {
 		// helper
 	}
 
