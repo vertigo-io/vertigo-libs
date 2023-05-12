@@ -206,7 +206,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 			params.put(key, Collections.singletonList(httpRequest.getParameterMap().get(key)[0]));
 		}
 		// validate that state in response equals to state in request
-		final StateData stateData = AzureAdSessionManagementHelper.validateState(httpRequest.getSession(), params.get(AzureAdSessionManagementHelper.STATE).get(0));
+		final AzureAdStateData azureAdStateData = AzureAdSessionManagementHelper.validateState(httpRequest.getSession(), params.get(AzureAdSessionManagementHelper.STATE).get(0));
 
 		final AuthenticationResponse authResponse = AuthenticationResponseParser.parse(new URI(fullUrl), params);
 		if (isAuthenticationSuccessful(authResponse)) {
@@ -220,7 +220,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 					currentUri);
 
 			// validate nonce to prevent reply attacks (code maybe substituted to one with broader access)
-			validateNonce(stateData, getNonceClaimValueFromIdToken(result.idToken()));
+			validateNonce(azureAdStateData, getNonceClaimValueFromIdToken(result.idToken()));
 
 			AzureAdSessionManagementHelper.setSessionPrincipal(httpRequest, result);
 		} else {
@@ -256,8 +256,8 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 		return updatedResult;
 	}
 
-	private void validateNonce(final StateData stateData, final String nonce) throws Exception {
-		if (StringUtil.isBlank(nonce) || !nonce.equals(stateData.nonce())) {
+	private void validateNonce(final AzureAdStateData azureAdStateData, final String nonce) throws Exception {
+		if (StringUtil.isBlank(nonce) || !nonce.equals(azureAdStateData.nonce())) {
 			throw new Exception(AzureAdSessionManagementHelper.FAILED_TO_VALIDATE_MESSAGE + "could not validate nonce");
 		}
 	}

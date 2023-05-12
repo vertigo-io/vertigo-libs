@@ -40,9 +40,9 @@ final class AzureAdSessionManagementHelper {
 	private static final String STATES = "states";
 	private static final Integer STATE_TTL = 3600;
 
-	static StateData validateState(final HttpSession session, final String state) throws Exception {
+	static AzureAdStateData validateState(final HttpSession session, final String state) throws Exception {
 		if (!StringUtil.isBlank(state)) {
-			final StateData stateDataInSession = removeStateFromSession(session, state);
+			final AzureAdStateData stateDataInSession = removeStateFromSession(session, state);
 			if (stateDataInSession != null) {
 				return stateDataInSession;
 			}
@@ -52,7 +52,7 @@ final class AzureAdSessionManagementHelper {
 
 	static String getRequestedUri(final HttpSession session, final String state) {
 		if (!StringUtil.isBlank(state)) {
-			final var states = (Map<String, StateData>) session.getAttribute(STATES);
+			final var states = (Map<String, AzureAdStateData>) session.getAttribute(STATES);
 			if (states != null) {
 				final var stateData = states.get(state);
 				if (stateData != null) {
@@ -63,26 +63,26 @@ final class AzureAdSessionManagementHelper {
 		throw new VSystemException("Failed to validate data received from Authorization service - could not validate state");
 	}
 
-	private static StateData removeStateFromSession(final HttpSession session, final String state) {
-		final Map<String, StateData> states = (Map<String, StateData>) session.getAttribute(STATES);
+	private static AzureAdStateData removeStateFromSession(final HttpSession session, final String state) {
+		final Map<String, AzureAdStateData> states = (Map<String, AzureAdStateData>) session.getAttribute(STATES);
 		if (states != null) {
 			eliminateExpiredStates(states);
-			final StateData stateData = states.get(state);
-			if (stateData != null) {
+			final AzureAdStateData azureAdStateData = states.get(state);
+			if (azureAdStateData != null) {
 				states.remove(state);
-				return stateData;
+				return azureAdStateData;
 			}
 			session.setAttribute(STATES, states);
 		}
 		return null;
 	}
 
-	private static void eliminateExpiredStates(final Map<String, StateData> map) {
+	private static void eliminateExpiredStates(final Map<String, AzureAdStateData> map) {
 		final var it = map.entrySet().iterator();
 
 		final var currTime = new Date();
 		while (it.hasNext()) {
-			final Map.Entry<String, StateData> entry = it.next();
+			final Map.Entry<String, AzureAdStateData> entry = it.next();
 			final long diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(currTime.getTime() - entry.getValue().stateDate().getTime());
 
 			if (diffInSeconds > STATE_TTL) {
@@ -95,10 +95,10 @@ final class AzureAdSessionManagementHelper {
 
 		// state parameter to validate response from Authorization server and nonce parameter to validate idToken
 		if (session.getAttribute(STATES) == null) {
-			session.setAttribute(STATES, new HashMap<String, StateData>());
+			session.setAttribute(STATES, new HashMap<String, AzureAdStateData>());
 		}
-		final var states = ((Map<String, StateData>) session.getAttribute(STATES));
-		states.put(state, new StateData(nonce, new Date(), requestedUri));
+		final var states = ((Map<String, AzureAdStateData>) session.getAttribute(STATES));
+		states.put(state, new AzureAdStateData(nonce, new Date(), requestedUri));
 		session.setAttribute(STATES, states);
 	}
 

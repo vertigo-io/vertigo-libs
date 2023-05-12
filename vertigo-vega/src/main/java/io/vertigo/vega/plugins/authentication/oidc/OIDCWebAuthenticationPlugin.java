@@ -316,7 +316,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 		}
 
 		// Call the endpoint
-		TokenResponse tokenResponse;
+		final TokenResponse tokenResponse;
 		try {
 			tokenResponse = OIDCTokenResponseParser.parse(request.toHTTPRequest().send());
 		} catch (com.nimbusds.oauth2.sdk.ParseException | IOException e) {
@@ -345,7 +345,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 		// The UserInfoEndpoint of the OpenID provider
 		final var userInfoEndpoint = ssoMetadata.getUserInfoEndpointURI();
 
-		UserInfoResponse userInfoResponse;
+		final UserInfoResponse userInfoResponse;
 		try {
 			// Make the request
 			final var httpResponse = new UserInfoRequest(userInfoEndpoint, accessToken)

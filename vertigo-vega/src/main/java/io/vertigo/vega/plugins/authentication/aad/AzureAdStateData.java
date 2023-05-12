@@ -20,7 +20,7 @@ package io.vertigo.vega.plugins.authentication.aad;
 import java.io.Serializable;
 import java.util.Date;
 
-record StateData(
+record AzureAdStateData(
 		String nonce,
 		Date stateDate,
 		String requestedUri) implements Serializable {
