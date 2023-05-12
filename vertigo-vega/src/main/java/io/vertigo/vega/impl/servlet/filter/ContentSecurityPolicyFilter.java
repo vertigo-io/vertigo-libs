@@ -24,6 +24,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Node;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.param.ParamManager;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
@@ -31,11 +35,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.Node;
-import io.vertigo.core.param.Param;
-import io.vertigo.core.param.ParamManager;
 
 /**
  * Filter to add CSP directives; compute a nonce if necessary and put it in request attribute.
@@ -70,11 +69,11 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 
 		final ParamManager paramManager = Node.getNode().getComponentSpace().resolve(ParamManager.class);
 		//String.replace : => est équivalent à replaceAll sans regexp (et remplace bien toutes les occurences)
-		cspPattern = cspPattern.replace(FRAME_ANCESTOR_PATTERN, paramManager.getOptionalParam(FRAME_ANCESTOR_PARAM_NAME).map(Param::getValue).orElse(""));
-
-		cspPattern = cspPattern.replace(CSP_PARAM1_PATTERN, paramManager.getOptionalParam(CSP_PARAM1_PARAM_NAME).map(Param::getValue).orElse(""));
-		cspPattern = cspPattern.replace(CSP_PARAM2_PATTERN, paramManager.getOptionalParam(CSP_PARAM2_PARAM_NAME).map(Param::getValue).orElse(""));
-		cspPattern = cspPattern.replace(CSP_PARAM3_PATTERN, paramManager.getOptionalParam(CSP_PARAM3_PARAM_NAME).map(Param::getValue).orElse(""));
+		cspPattern = cspPattern
+				.replace(FRAME_ANCESTOR_PATTERN, paramManager.getOptionalParam(FRAME_ANCESTOR_PARAM_NAME).map(Param::getValue).orElse(""))
+				.replace(CSP_PARAM1_PATTERN, paramManager.getOptionalParam(CSP_PARAM1_PARAM_NAME).map(Param::getValue).orElse(""))
+				.replace(CSP_PARAM2_PATTERN, paramManager.getOptionalParam(CSP_PARAM2_PARAM_NAME).map(Param::getValue).orElse(""))
+				.replace(CSP_PARAM3_PATTERN, paramManager.getOptionalParam(CSP_PARAM3_PARAM_NAME).map(Param::getValue).orElse(""));
 
 		final Optional<Param> reportUri = paramManager.getOptionalParam(REPORT_WS_PARAM_NAME);
 		if (reportUri.isPresent() && !reportUri.get().getValue().isBlank()) {

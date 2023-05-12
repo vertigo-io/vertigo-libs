@@ -137,19 +137,19 @@ public final class AuthorizationWebFilter extends AbstractFilter {
 		}
 	}
 
-	private boolean hasAuthorization(final UserAuthorizations userAuthorizations, final AuthorizationName... permissionNames) {
+	private static boolean hasAuthorization(final UserAuthorizations userAuthorizations, final AuthorizationName... permissionNames) {
 		Assertion.check().isNotNull(permissionNames);
 		//may check authorizationNames exists to prevent badly names
 		//---
 		return userAuthorizations.hasAuthorization(permissionNames);
 	}
 
-	private UserSession getUserSession(final ServletRequest request) {
+	private static UserSession getUserSession(final ServletRequest request) {
 		final HttpSession session = ((HttpServletRequest) request).getSession(false);
 		return session == null ? null : (UserSession) session.getAttribute(USER_SESSION);
 	}
 
-	private UserAuthorizations getUserAuthorizations(final UserSession userSession) {
+	private static UserAuthorizations getUserAuthorizations(final UserSession userSession) {
 		if (userSession == null) {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return null;
