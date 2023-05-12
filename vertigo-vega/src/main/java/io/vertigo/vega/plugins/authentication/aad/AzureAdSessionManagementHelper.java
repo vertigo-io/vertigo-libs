@@ -19,22 +19,20 @@ package io.vertigo.vega.plugins.authentication.aad;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
 import com.microsoft.aad.msal4j.IAuthenticationResult;
 
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.StringUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Helpers for managing session
  */
-class SessionManagementHelper {
+final class AzureAdSessionManagementHelper {
 
 	protected static final String STATE = "state";
 	protected static final String FAILED_TO_VALIDATE_MESSAGE = "Failed to validate data received from Authorization service - ";
@@ -58,7 +56,7 @@ class SessionManagementHelper {
 			if (states != null) {
 				final var stateData = states.get(state);
 				if (stateData != null) {
-					return stateData.getRequestedUri();
+					return stateData.requestedUri();
 				}
 			}
 		}
@@ -80,12 +78,12 @@ class SessionManagementHelper {
 	}
 
 	private static void eliminateExpiredStates(final Map<String, StateData> map) {
-		final Iterator<Map.Entry<String, StateData>> it = map.entrySet().iterator();
+		final var it = map.entrySet().iterator();
 
-		final Date currTime = new Date();
+		final var currTime = new Date();
 		while (it.hasNext()) {
 			final Map.Entry<String, StateData> entry = it.next();
-			final long diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(currTime.getTime() - entry.getValue().getExpirationDate().getTime());
+			final long diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(currTime.getTime() - entry.getValue().stateDate().getTime());
 
 			if (diffInSeconds > STATE_TTL) {
 				it.remove();

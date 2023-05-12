@@ -32,8 +32,6 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 import javax.inject.Inject;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -83,6 +81,8 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.vega.impl.authentication.AuthenticationResult;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Base authentication handler for OpenId Connect.
@@ -250,7 +250,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 	public Optional<String> getRequestedUri(final HttpServletRequest httpRequest) {
 		final var successResponse = parseResponseRequest(httpRequest);
 		final var state = successResponse.getState();
-		return Optional.ofNullable(SessionManagementHelper.getRequestedUri(httpRequest.getSession(), state.getValue()));
+		return Optional.ofNullable(OIDCSessionManagementHelper.getRequestedUri(httpRequest.getSession(), state.getValue()));
 	}
 
 	/** {@inheritDoc} */
@@ -258,13 +258,13 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 	public AuthenticationResult<AuthorizationSuccessResponse> doHandleCallback(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
 		final var successResponse = parseResponseRequest(httpRequest);
 		final var state = successResponse.getState();
-		final var stateData = SessionManagementHelper.retrieveStateDataFromSession(httpRequest.getSession(), state.getValue());
+		final var stateData = OIDCSessionManagementHelper.retrieveStateDataFromSession(httpRequest.getSession(), state.getValue());
 		loadMetadataIfNeeded(false);
 
 		final var oidcTokens = doGetOIDCTokens(successResponse.getAuthorizationCode(), resolveCallbackUri(httpRequest));
 
 		if (!Boolean.TRUE.equals(oidcParameters.getSkipIdTokenValidation())) {
-			doValidateToken(oidcTokens.getIDToken(), stateData.getNonce());
+			doValidateToken(oidcTokens.getIDToken(), stateData.nonce());
 		}
 
 		final var userInfos = doGetUserInfos(oidcTokens.getAccessToken());
@@ -377,7 +377,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 		// save all this in http session paired with the original requested URL to forward user after authentication
 		final var state = new State();
 		final var nonce = new Nonce();
-		SessionManagementHelper.storeStateDataInSession(httpRequest.getSession(), state.getValue(), nonce.getValue(), WebAuthenticationUtil.resolveUrlRedirect(httpRequest));
+		OIDCSessionManagementHelper.storeStateDataInSession(httpRequest.getSession(), state.getValue(), nonce.getValue(), WebAuthenticationUtil.resolveUrlRedirect(httpRequest));
 
 		// Compose the OpenID authentication request (for the code flow)
 		final var authRequest = new AuthenticationRequest.Builder(

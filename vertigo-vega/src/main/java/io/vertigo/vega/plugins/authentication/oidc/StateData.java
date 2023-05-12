@@ -20,30 +20,8 @@ package io.vertigo.vega.plugins.authentication.oidc;
 import java.io.Serializable;
 import java.util.Date;
 
-class StateData implements Serializable {
-
-	private static final long serialVersionUID = -6277164482455702137L;
-
-	private final String nonce;
-	private final Date stateDate;
-	private final String requestedUri;
-
-	StateData(final String nonce, final String requestedUri) {
-		this.nonce = nonce;
-		stateDate = new Date();
-		this.requestedUri = requestedUri;
-	}
-
-	String getNonce() {
-		return nonce;
-	}
-
-	Date getStateDate() {
-		return stateDate;
-	}
-
-	String getRequestedUri() {
-		return requestedUri;
-	}
-
+record StateData(
+		String nonce,
+		Date stateDate,
+		String requestedUri) implements Serializable {
 }

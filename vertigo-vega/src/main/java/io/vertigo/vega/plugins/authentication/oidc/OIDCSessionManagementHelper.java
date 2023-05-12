@@ -23,20 +23,19 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.servlet.http.HttpSession;
-
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.StringUtil;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Helpers for managing session
  */
-final class SessionManagementHelper {
+final class OIDCSessionManagementHelper {
 
 	private static final String STATES = "states";
 	private static final Integer STATE_TTL = 3600;
 
-	private SessionManagementHelper() {
+	private OIDCSessionManagementHelper() {
 		// helper
 	}
 
@@ -56,7 +55,7 @@ final class SessionManagementHelper {
 			if (states != null) {
 				final var stateData = states.get(state);
 				if (stateData != null) {
-					return stateData.getRequestedUri();
+					return stateData.requestedUri();
 				}
 			}
 		}
@@ -83,7 +82,7 @@ final class SessionManagementHelper {
 		final var currTime = new Date();
 		while (it.hasNext()) {
 			final var entry = it.next();
-			final var diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(currTime.getTime() - entry.getValue().getStateDate().getTime());
+			final var diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(currTime.getTime() - entry.getValue().stateDate().getTime());
 
 			if (diffInSeconds > STATE_TTL) {
 				it.remove();
@@ -95,7 +94,7 @@ final class SessionManagementHelper {
 		// state parameter to validate response from Authorization server and nonce parameter to validate idToken
 		final var states = Optional.ofNullable((Map<String, StateData>) session.getAttribute(STATES))
 				.orElseGet(HashMap::new);
-		states.put(state, new StateData(nonce, requestedUri));
+		states.put(state, new StateData(nonce, new Date(), requestedUri));
 		session.setAttribute(STATES, states);
 	}
 
