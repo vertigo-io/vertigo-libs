@@ -63,6 +63,7 @@ import io.vertigo.ui.impl.springmvc.config.interceptors.VAnnotationHandlerInterc
 import io.vertigo.ui.impl.springmvc.config.interceptors.VControllerInterceptorEngine;
 import io.vertigo.ui.impl.springmvc.config.interceptors.VSpringMvcViewContextInterceptor;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
+import io.vertigo.ui.impl.springmvc.controller.VSpringMvcExceptionHandler;
 import io.vertigo.ui.impl.thymeleaf.VUiStandardDialect;
 import io.vertigo.ui.impl.thymeleaf.components.NamedComponentDefinition;
 import io.vertigo.ui.impl.thymeleaf.components.NamedComponentParser;
@@ -233,6 +234,8 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		if (applicationContext instanceof ConfigurableApplicationContext) {
 			final VSpringMvcControllerAdvice controllerAdvice = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(VSpringMvcControllerAdvice.class);
 			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("viewContextControllerAdvice", controllerAdvice);
+			final VSpringMvcExceptionHandler vExceptionHandler = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(VSpringMvcExceptionHandler.class);
+			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("vExceptionHandler", vExceptionHandler);
 			final ListAutocompleteController listAutocompleteController = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(ListAutocompleteController.class);
 			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("listAutocompleteController", listAutocompleteController);
 		}
