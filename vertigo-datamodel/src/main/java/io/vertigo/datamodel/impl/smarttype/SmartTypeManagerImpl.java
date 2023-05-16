@@ -25,11 +25,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.MapBuilder;
 import io.vertigo.core.lang.Tuple;
+import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
@@ -38,6 +41,7 @@ import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.AdapterConfig;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
+import io.vertigo.datamodel.smarttype.SmarttypeResources;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.Constraint;
 import io.vertigo.datamodel.structure.definitions.ConstraintException;
@@ -52,6 +56,14 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 	//--
 	private final Map<String, Map<Class, BasicTypeAdapter>> adaptersByType = new HashMap<>();
 	private final Map<Class, BasicTypeAdapter> wildcardAdapters = new HashMap<>();
+
+	@Inject
+	public SmartTypeManagerImpl(final LocaleManager localeManager) {
+		Assertion.check()
+				.isNotNull(localeManager);
+		//---
+		localeManager.add("io.vertigo.datamodel.smarttype.SmarttypeResources", io.vertigo.datamodel.smarttype.SmarttypeResources.class.getEnumConstants());
+	}
 
 	@Override
 	public void start() {
@@ -180,7 +192,7 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 				break;
 			case ONE:
 				if (value == null) {
-					throw new ConstraintException(LocaleMessageText.of("A non-null value is required for {0}", smartTypeDefinition.id()));
+					throw new ConstraintException(LocaleMessageText.of(SmarttypeResources.SMARTTYPE_MISSING_VALUE, smartTypeDefinition.id()));
 				}
 			case OPTIONAL_OR_NULLABLE:
 				checkConstraints(smartTypeDefinition, value);
