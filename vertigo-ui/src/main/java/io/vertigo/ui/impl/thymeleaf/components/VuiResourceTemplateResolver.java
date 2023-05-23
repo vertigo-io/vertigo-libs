@@ -20,7 +20,6 @@ package io.vertigo.ui.impl.thymeleaf.components;
 import java.util.Collections;
 import java.util.Map;
 
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.thymeleaf.IEngineConfiguration;
@@ -39,7 +38,7 @@ public class VuiResourceTemplateResolver
 	}
 
 	@Override
-	public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
+	public void setApplicationContext(final ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
 	}
 

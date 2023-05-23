@@ -41,7 +41,7 @@ public final class ProtectedValueUtil {
 	//weak ref are kept as long as the instance are kept : so no clean during request
 	//- Dev MUST use the same instance for the same value
 	//- Might be kept too long (multiple requests)
-	private static WeakHashMap<Serializable, String> PREVIOUSLY_GENERATED_PROTECTED_VALUE = new WeakHashMap<>();
+	private static final WeakHashMap<Serializable, String> PREVIOUSLY_GENERATED_PROTECTED_VALUE = new WeakHashMap<>();
 
 	/**
 	 * Genere et conserve une URL protégée.

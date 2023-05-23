@@ -291,7 +291,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 			LOG.trace(new String(base64DecodedResponse, StandardCharsets.UTF_8));
 		}
 		final Response response;
-		try (final var is = new ByteArrayInputStream(base64DecodedResponse);) {
+		try (final var is = new ByteArrayInputStream(base64DecodedResponse)) {
 			response = OpenSAMLUtil.extractSamlResponse(is);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);

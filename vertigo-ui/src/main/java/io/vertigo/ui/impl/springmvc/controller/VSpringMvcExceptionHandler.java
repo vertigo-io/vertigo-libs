@@ -46,7 +46,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @ControllerAdvice(assignableTypes = { AbstractVSpringMvcController.class })
 public final class VSpringMvcExceptionHandler {
-	private static Logger LOGGER = LogManager.getLogger(VSpringMvcExceptionHandler.class);
+	private static final Logger LOGGER = LogManager.getLogger(VSpringMvcExceptionHandler.class);
 
 	@ResponseBody
 	@ExceptionHandler(SessionException.class)

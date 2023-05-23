@@ -309,7 +309,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		}
 
 		@Override
-		public D deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
+		public D deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition((Class<D>) typeOfT);
 
 			// we use as base the default deserialization
