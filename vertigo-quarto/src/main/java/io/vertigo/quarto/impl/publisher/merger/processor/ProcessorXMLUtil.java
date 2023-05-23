@@ -183,7 +183,7 @@ public final class ProcessorXMLUtil {
 			return 0;
 		}
 
-		int endTagIndex = content.indexOf('>', 0);
+		int endTagIndex = content.indexOf('>');
 		Assertion.check().isTrue(endTagIndex != -1, "Une balise est mal fermée (manque le >) : {0}", content);
 		int beginTagIndex = content.indexOf('<', endTagIndex);
 

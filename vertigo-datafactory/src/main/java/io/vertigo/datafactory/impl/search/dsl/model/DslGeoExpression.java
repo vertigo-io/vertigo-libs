@@ -62,10 +62,8 @@ public final class DslGeoExpression {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return new StringBuilder()
-				.append(field)
-				.append(":")
-				.append(geoQuery)
-				.toString();
+		return field +
+				":" +
+				geoQuery;
 	}
 }

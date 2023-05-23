@@ -71,15 +71,13 @@ final class ODTInputTagReverserUtil {
 			final String valueAttribut = tagToInverse.substring(indexAttribut + DESCRIPTION_ATTRIBUTE.length() + 2, indexFinAttribut);
 			final int indexDebutBody = tagToInverse.indexOf(bodyContent, indexFinAttribut);
 
-			return new StringBuilder(tagToInverse.length())
-					.append(tagToInverse.substring(0, indexAttribut))
-					.append(DESCRIPTION_ATTRIBUTE)
-					.append("=\"")
-					.append(bodyContent)
-					.append("\">")
-					.append(valueAttribut)
-					.append(tagToInverse.substring(indexDebutBody + bodyContent.length()))
-					.toString();
+			return tagToInverse.substring(0, indexAttribut) +
+                    DESCRIPTION_ATTRIBUTE +
+                    "=\"" +
+                    bodyContent +
+                    "\">" +
+                    valueAttribut +
+                    tagToInverse.substring(indexDebutBody + bodyContent.length());
 		}
 		return "";
 	}

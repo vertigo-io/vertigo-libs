@@ -171,12 +171,10 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 */
 	protected String getSqlQuery() {
 		//On ajoute dans la requête SQL le nom de la tache utilisée
-		return preProcessQuery(new StringBuilder()
-				.append("/* TaskEngine : ")
-				.append(getTaskDefinition().getName())
-				.append(" */\n")
-				.append(getTaskDefinition().getRequest())
-				.toString());
+		return preProcessQuery("/* TaskEngine : " +
+				getTaskDefinition().getName() +
+				" */\n" +
+				getTaskDefinition().getRequest());
 	}
 
 	/**

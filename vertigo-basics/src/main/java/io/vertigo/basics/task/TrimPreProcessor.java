@@ -53,7 +53,7 @@ final class TrimPreProcessor {
 		while (beginIndex != -1) {
 			sb.append(sqlQuery.substring(index, beginIndex).trim()).append(' ');
 			index = sqlQuery.indexOf(endSeparator, beginIndex) + endSeparator.length();
-			sb.append(sqlQuery.substring(beginIndex, index)).append(' ');
+			sb.append(sqlQuery, beginIndex, index).append(' ');
 			beginIndex = sqlQuery.indexOf(beginSeparator, index);
 		}
 		sb.append(sqlQuery.substring(index).trim());

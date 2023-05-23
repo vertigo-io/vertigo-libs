@@ -152,7 +152,7 @@ abstract class AbstractCodec implements Codec<String, String> {
 					replaceCodecChar(sb, s, i, c, j);
 					i += j;
 				} else {
-					sb.append(s.substring(i, i + j));
+					sb.append(s, i, i + j);
 					i += j - 1;
 				}
 			}

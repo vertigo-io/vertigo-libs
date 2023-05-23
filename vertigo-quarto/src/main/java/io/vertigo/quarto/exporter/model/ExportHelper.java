@@ -103,8 +103,7 @@ public final class ExportHelper {
 				referenceCache.put(dtField, referenceIndex);
 			}
 			value = referenceIndex.get(dtField.getDataAccessor().getValue(dto));
-		} else if (exportColumn instanceof ExportDenormField) {
-			final ExportDenormField exportDenormColumn = (ExportDenormField) exportColumn;
+		} else if (exportColumn instanceof ExportDenormField exportDenormColumn) {
 			Map<Object, String> denormIndex = denormCache.get(dtField);
 			if (denormIndex == null) {
 				denormIndex = createDenormIndex(exportDenormColumn.getDenormList(), exportDenormColumn.getKeyField(), exportDenormColumn.getDisplayField());

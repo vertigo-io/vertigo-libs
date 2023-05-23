@@ -54,8 +54,7 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 
 	@Override
 	public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception {
-		if (handler instanceof HandlerMethod) {
-			final HandlerMethod handlerMethod = (HandlerMethod) handler;
+		if (handler instanceof HandlerMethod handlerMethod) {
 
 			final Secured secured = handlerMethod.getMethodAnnotation(Secured.class) == null
 					? handlerMethod.getMethod().getDeclaringClass().getAnnotation(Secured.class)

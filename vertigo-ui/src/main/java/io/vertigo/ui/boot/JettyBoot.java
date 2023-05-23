@@ -60,7 +60,7 @@ public class JettyBoot {
 
 	public static void startServer(
 			final JettyBootParams jettyBootParams,
-			final Function<WebAppContext, List<Handler>> additionalHandlersProvider) throws IOException, Exception {
+			final Function<WebAppContext, List<Handler>> additionalHandlersProvider) throws Exception {
 		server = new Server(jettyBootParams.getPort());
 
 		//set workerName if present

@@ -78,8 +78,7 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 	private void appendExpression(final StringBuilder query, final RuleExpression expressionDefinition) {
 
 		query.append(expressionDefinition.getFieldName());
-		if (expressionDefinition.getValue() instanceof RuleUserPropertyValue) {
-			final RuleUserPropertyValue userPropertyValue = (RuleUserPropertyValue) expressionDefinition.getValue();
+		if (expressionDefinition.getValue() instanceof RuleUserPropertyValue userPropertyValue) {
 			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
 			if (userValues.size() > 0) {
 				if (userValues.size() == 1) {

@@ -73,7 +73,7 @@ public final class Authorization extends AbstractDefinition<Authorization> {
 		grants = Collections.emptySet();
 		entityOpt = Optional.empty();
 		operationOpt = Optional.empty();
-		rules = Arrays.asList();
+		rules = List.of();
 		this.comment = comment;
 	}
 

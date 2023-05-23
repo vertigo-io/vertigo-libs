@@ -94,12 +94,10 @@ public interface SqlDialect {
 	 * @return select à exécuter.
 	 */
 	default String createSelectForUpdateQuery(final String tableName, final String requestedFields, final String idFieldName) {
-		return new StringBuilder()
-				.append(" select ").append(requestedFields)
-				.append(" from ").append(tableName)
-				.append(" where ").append(StringUtil.camelToConstCase(idFieldName)).append(" = #").append(idFieldName).append('#')
-				.append(" for update ")
-				.toString();
+		return " select " + requestedFields +
+				" from " + tableName +
+				" where " + StringUtil.camelToConstCase(idFieldName) + " = #" + idFieldName + '#' +
+				" for update ";
 	}
 
 	/**

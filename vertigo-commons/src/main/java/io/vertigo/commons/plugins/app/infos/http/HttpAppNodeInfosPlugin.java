@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +88,7 @@ public final class HttpAppNodeInfosPlugin implements AppNodeInfosPlugin {
 					result.write(buffer, 0, length);
 				}
 			}
-			return GSON.fromJson(result.toString("UTF-8"), returnType);
+			return GSON.fromJson(result.toString(StandardCharsets.UTF_8), returnType);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}

@@ -81,10 +81,7 @@ public final class UiAuthorizationUtil extends HashSet<String> {
 		Assertion.check().isNotNull(uiObject, "UiObject not load in context (null), can't check operation {0}", operationName);
 		//----
 		final String operationKey = uiObject.getInputKey() + OPERATION_KEY_SEP + operationName;
-		if (cacheOperations.computeIfAbsent(operationKey, k -> computeHasOperation(uiObject, operationName, operationKey))) {
-			return true;
-		}
-		return false;
+		return cacheOperations.computeIfAbsent(operationKey, k -> computeHasOperation(uiObject, operationName, operationKey));
 	}
 
 	private boolean computeHasAuthorization(final String authorizationName) {

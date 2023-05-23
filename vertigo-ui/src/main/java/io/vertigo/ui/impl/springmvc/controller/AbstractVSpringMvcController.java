@@ -137,10 +137,9 @@ public abstract class AbstractVSpringMvcController {
 				final Encoder<byte[], byte[]> sha256Encoder = codecManager.getSha256Encoder();
 				final String sessionIdHash = base64Codec.encode(sha256Encoder.encode(session.getId().getBytes(StandardCharsets.UTF_8)));
 
-				return new StringBuilder(ctxId)
-						.append("-")
-						.append(sessionIdHash)
-						.toString();
+				return ctxId +
+						"-" +
+						sessionIdHash;
 			}
 		}
 		return ctxId;

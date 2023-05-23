@@ -75,9 +75,8 @@ final class ESSearchRequestBuilder extends AsbtractESSearchRequestBuilder<Search
 		if (listState.getSortFieldName().isPresent()) {
 			final var sortFieldName = listState.getSortFieldName().get();
 			if (searchQuery.getGeoExpression().isPresent()
-					&& searchQuery.getGeoExpression().get().getGeoQuery() instanceof DslGeoDistanceQuery
+					&& searchQuery.getGeoExpression().get().getGeoQuery() instanceof DslGeoDistanceQuery geoDistanceQuery
 					&& sortFieldName.equals(searchQuery.getGeoExpression().get().getField().getFieldName())) {
-				final var geoDistanceQuery = (DslGeoDistanceQuery) searchQuery.getGeoExpression().get().getGeoQuery();
 				final GeoPoint geoPoint = DslGeoToQueryBuilderUtil.computeGeoPoint(geoDistanceQuery.getGeoPoint(), searchQuery.getCriteria(), typeAdapters);
 				Assertion.check().isNotNull(geoPoint, "When sorting by distance the geoPoint used as criteria cannot be null");
 				searchSourceBuilder.sort(SortBuilders.geoDistanceSort(listState.getSortFieldName().get(), geoPoint));
