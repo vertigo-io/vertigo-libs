@@ -435,7 +435,7 @@ public final class DslListFilterBuilderTest {
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+null#) +PRENOM:#+null#", testBean, "+NOM_NAISSANCE:(+Test)" }, //4
 				{ "+(NOM_NAISSANCE:#+null# OR NOM:#+null#) +PRENOM:#+null#", testBean, "" }, //5
 				{ "(dateFin:#null#) and nitCd:#str1#", testBean, "nitCd:Test" },
-				{ "(dateFin:#null#) and (nitCd:#str1#)", testBean, "nitCd:Test" },				
+				{ "(dateFin:#null#) and (nitCd:#str1#)", testBean, "nitCd:Test" },
 
 		};
 		testObjectFixedQuery(testQueries);

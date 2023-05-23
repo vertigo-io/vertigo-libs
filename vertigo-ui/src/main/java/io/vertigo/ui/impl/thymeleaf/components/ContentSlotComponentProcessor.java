@@ -64,7 +64,7 @@ public class ContentSlotComponentProcessor extends AbstractElementModelProcessor
 		removeCurrentTag(model);
 		final Object slotModelObject = context.getVariable(attributeValue);
 		structureHandler.setLocalVariable(attributeValue, null);
-		
+
 		final IModel slotModel;
 		if (slotModelObject instanceof Fragment) {
 			slotModel = ((Fragment) slotModelObject).getTemplateModel();

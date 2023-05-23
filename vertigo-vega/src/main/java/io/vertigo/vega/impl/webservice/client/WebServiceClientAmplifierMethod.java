@@ -102,14 +102,14 @@ public final class WebServiceClientAmplifierMethod implements AmplifierMethod {
 		//same name for WS that  Vega (AnalyticsWebServiceHandlerPlugin);
 		final String name = "/" + webServiceDefinition.getVerb().name() + "/" + webServiceDefinition.getPath();
 		response = analyticsManager.traceWithReturn("wsclient", name, tracer -> {
-		try {
+			try {
 				return httpClientConnector.getClient().send(httpRequest, BodyHandlers.ofString());
-		} catch (final IOException e) {
-			throw WrappedException.wrap(e);
-		} catch (final InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw WrappedException.wrap(e);
-		}
+			} catch (final IOException e) {
+				throw WrappedException.wrap(e);
+			} catch (final InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw WrappedException.wrap(e);
+			}
 		});
 
 		final int responseStatus = response.statusCode();

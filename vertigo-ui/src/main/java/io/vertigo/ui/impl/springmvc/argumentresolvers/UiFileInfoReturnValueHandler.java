@@ -44,7 +44,7 @@ public class UiFileInfoReturnValueHandler extends AbstractMessageConverterMethod
 	@Override
 	public boolean supportsReturnType(final MethodParameter returnType) {
 		return UiFileInfo.class.isAssignableFrom(returnType.getParameterType())
-				|| (List.class.isAssignableFrom(returnType.getParameterType()) && UiFileInfo.class.isAssignableFrom(Class.class.cast(((ParameterizedType)returnType.getGenericParameterType()).getActualTypeArguments()[0])));
+				|| (List.class.isAssignableFrom(returnType.getParameterType()) && UiFileInfo.class.isAssignableFrom(Class.class.cast(((ParameterizedType) returnType.getGenericParameterType()).getActualTypeArguments()[0])));
 	}
 
 	@Override

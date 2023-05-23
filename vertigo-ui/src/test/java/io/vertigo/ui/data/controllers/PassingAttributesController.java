@@ -37,7 +37,7 @@ public class PassingAttributesController extends AbstractVSpringMvcController {
 		final Movie movie = new Movie();
 		movie.setMovId(1000L);
 		viewContext
-		.publishDto(movieKey, movie)
-		.toModeCreate();
+				.publishDto(movieKey, movie)
+				.toModeCreate();
 	}
 }
