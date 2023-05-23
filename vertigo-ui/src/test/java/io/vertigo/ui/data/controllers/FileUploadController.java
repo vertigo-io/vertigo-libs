@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -47,6 +46,7 @@ import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 import io.vertigo.vega.webservice.stereotype.QueryParam;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.UiMessageStack.Level;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/commons/")

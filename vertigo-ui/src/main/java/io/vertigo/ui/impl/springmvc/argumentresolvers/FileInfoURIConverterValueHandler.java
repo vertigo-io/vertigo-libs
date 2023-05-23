@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -39,6 +37,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
 import io.vertigo.ui.core.ProtectedValueUtil;
 import io.vertigo.vega.webservice.stereotype.QueryParam;
+import jakarta.servlet.http.HttpServletRequest;
 
 public final class FileInfoURIConverterValueHandler extends AbstractMessageConverterMethodProcessor {
 

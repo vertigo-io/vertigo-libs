@@ -19,17 +19,16 @@ package io.vertigo.ui.impl.springmvc.config;
 
 import java.util.stream.Stream;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
-import jakarta.servlet.ServletException;
-
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.FrameworkServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import io.vertigo.core.node.Node;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.ServletException;
 
 public abstract class AbstractVSpringMvcWebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 

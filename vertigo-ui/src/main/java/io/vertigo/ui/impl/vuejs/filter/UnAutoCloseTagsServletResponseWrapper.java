@@ -17,10 +17,9 @@
  */
 package io.vertigo.ui.impl.vuejs.filter;
 
+import io.vertigo.vega.impl.servlet.filter.AbstractHttpServletResponseWrapper;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
-
-import io.vertigo.vega.impl.servlet.filter.AbstractHttpServletResponseWrapper;
 
 /**
  * Impl of HttpServletResponseWrapper to intercept and return content as String.

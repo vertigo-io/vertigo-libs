@@ -17,8 +17,6 @@
  */
 package io.vertigo.ui.impl.springmvc.argumentresolvers;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.lang.NonNull;
@@ -30,6 +28,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.ui.impl.springmvc.util.SpringVFileUtil;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class VFileReturnValueHandler implements HandlerMethodReturnValueHandler {
 

@@ -17,15 +17,14 @@
  */
 package io.vertigo.ui.impl.springmvc.config.interceptors;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public final class VSpringMvcViewContextInterceptor implements HandlerInterceptor {
 

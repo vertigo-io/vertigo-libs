@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.vertigo.vega.impl.servlet.filter.AbstractFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
@@ -31,8 +32,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import io.vertigo.vega.impl.servlet.filter.AbstractFilter;
 
 /**
  * Un AutoClosed Vue.js tags filter.

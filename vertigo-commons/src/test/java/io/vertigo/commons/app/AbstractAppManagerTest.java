@@ -26,8 +26,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.node.Node;
 import io.vertigo.core.node.AutoCloseableNode;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
