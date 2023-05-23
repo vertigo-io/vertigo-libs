@@ -149,7 +149,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		return null;
 	}
 
-	private boolean isBlank(final String[] values) {
+	private static boolean isBlank(final String[] values) {
 		for (final String value : values) {
 			if (!StringUtil.isBlank(value)) {
 				return false;
