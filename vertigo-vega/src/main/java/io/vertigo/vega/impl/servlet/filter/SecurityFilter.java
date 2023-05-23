@@ -22,6 +22,12 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
+
+import io.vertigo.account.security.UserSession;
+import io.vertigo.account.security.VSecurityManager;
+import io.vertigo.core.util.InjectorUtil;
+import io.vertigo.vega.authentication.WebAuthenticationManager;
+import io.vertigo.vega.webservice.exception.SessionException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -29,12 +35,6 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
-import io.vertigo.account.security.UserSession;
-import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.core.util.InjectorUtil;
-import io.vertigo.vega.authentication.WebAuthenticationManager;
-import io.vertigo.vega.webservice.exception.SessionException;
 
 /**
  * Filtre de gestion des sessions utilisateurs bindées sur HTTP.

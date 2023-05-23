@@ -17,10 +17,9 @@
  */
 package io.vertigo.vega.impl.servlet.filter;
 
+import io.vertigo.core.lang.Tuple;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import io.vertigo.core.lang.Tuple;
 
 /**
  * The Vertigo Security Filter {@link io.vertigo.vega.impl.servlet.filter.SecurityFilter} can delegate the authentication workflow to a custom compoment.

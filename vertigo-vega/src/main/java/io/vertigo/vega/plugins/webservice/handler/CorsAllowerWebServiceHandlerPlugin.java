@@ -23,8 +23,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.locale.LocaleMessageText;
@@ -32,6 +30,8 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 import io.vertigo.vega.webservice.exception.SessionException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Handler of Cross-Origin Resource Sharing (CORS).

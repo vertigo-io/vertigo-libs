@@ -28,9 +28,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.security.UserSession;
@@ -42,6 +39,9 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.authentication.WebAuthenticationManager;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Standard pattern for SSO authentication handlers.
