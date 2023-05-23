@@ -21,10 +21,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,6 +33,9 @@ import io.vertigo.core.param.Param;
 import io.vertigo.vega.plugins.webservice.servlet.ServletResourceResolverPlugin;
 import io.vertigo.vega.plugins.webservice.servlet.WebAppContextParamPlugin;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
 /**
  * @author npiedeloup

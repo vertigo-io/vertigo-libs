@@ -24,8 +24,6 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 import javax.inject.Inject;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.WrappedException;
@@ -33,6 +31,8 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.impl.authentication.AuthenticationResult;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class LocalWebAuthenticationPlugin implements WebAuthenticationPlugin<AuthenticationResult> {
 

@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import jakarta.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.datastore.filestore.model.VFile;
@@ -37,6 +36,7 @@ import io.vertigo.vega.webservice.stereotype.GET;
 import io.vertigo.vega.webservice.stereotype.HeaderParam;
 import io.vertigo.vega.webservice.stereotype.PathPrefix;
 import io.vertigo.vega.webservice.stereotype.QueryParam;
+import jakarta.servlet.http.HttpServletResponse;
 
 //bas� sur http://www.restapitutorial.com/lessons/httpmethods.html
 

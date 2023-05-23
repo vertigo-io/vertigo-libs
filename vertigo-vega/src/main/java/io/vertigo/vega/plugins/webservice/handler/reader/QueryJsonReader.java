@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.inject.Inject;
-import jakarta.servlet.http.HttpServletRequest;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.model.DtListState;
@@ -32,6 +31,7 @@ import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.definitions.WebServiceParam;
 import io.vertigo.vega.webservice.definitions.WebServiceParam.WebServiceParamType;
+import jakarta.servlet.http.HttpServletRequest;
 
 public final class QueryJsonReader implements JsonReader<String> {
 

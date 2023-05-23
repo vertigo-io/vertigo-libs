@@ -19,12 +19,11 @@ package io.vertigo.vega.plugins.webservice.handler.reader;
 
 import java.util.Arrays;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.definitions.WebServiceParam;
 import io.vertigo.vega.webservice.definitions.WebServiceParam.WebServiceParamType;
+import jakarta.servlet.http.HttpServletRequest;
 
 public final class PathJsonReader implements JsonReader<String> {
 

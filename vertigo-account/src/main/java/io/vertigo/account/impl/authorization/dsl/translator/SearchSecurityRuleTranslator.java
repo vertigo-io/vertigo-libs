@@ -265,28 +265,24 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		if (operator == ValueOperator.EQ) {
 			String inSep = "";
 			for (int i = 0; i < strDimensionfields.size(); i++) {
+				query.append(inSep);
 				if (treeKeys[i] != null) {
-					query.append(inSep);
 					appendSimpleExpression(query, strDimensionfields.get(i), ValueOperator.EQ, treeKeys[i], false, true);
-					inSep = " ";
 				} else {
-					query.append(inSep);
 					appendSimpleExpression(query, ES_EXISTS_CRITERIA, ValueOperator.NEQ, strDimensionfields.get(i), false, true);
-					inSep = " ";
 				}
+				inSep = " ";
 			}
 		} else if (operator == ValueOperator.NEQ) {
 			String inSep = "";
 			for (int i = 0; i < strDimensionfields.size(); i++) {
+				query.append(inSep);
 				if (treeKeys[i] != null) {
-					query.append(inSep);
 					appendSimpleExpression(query, strDimensionfields.get(i), ValueOperator.NEQ, treeKeys[i], false, true);
-					inSep = " ";
 				} else {
-					query.append(inSep);
 					appendSimpleExpression(query, ES_EXISTS_CRITERIA, ValueOperator.EQ, strDimensionfields.get(i), false, true);
-					inSep = " ";
 				}
+				inSep = " ";
 			}
 		} else { //cas des < , <= , > et >=
 			//le < signifie au-dessus dans la hierachie et > en-dessous
