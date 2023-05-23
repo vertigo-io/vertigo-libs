@@ -12,7 +12,7 @@ const VUiApp = Vue.createApp({
 	  }
   },
   methods: { ...VertigoUi.methods, ...VUiExtensions.methods }
-});
+}, {...VUiExtensions.rootOptions });
 if (Quasar.lang.enUS) {
   Quasar.lang.enUS.vui = VertigoUi.lang.enUS;
 }
@@ -26,6 +26,8 @@ VUiApp.use(Quasar, {
 	config: window?.quasarConfig || {},
 	lang : Quasar.lang[VertigoUi.vuiLang]
 })
+VUiApp.config.globalProperties.Quasar = Quasar
+VUiApp.config.globalProperties.VUiExtensions = VUiExtensions
 VUiApp.use(VertigoUi, {axios : axios});
 
 window.dispatchEvent(new CustomEvent('vui-before-page-mounted', { detail : {vuiAppInstance : VUiApp}}));
