@@ -34,6 +34,7 @@ import io.vertigo.social.sms.SmsSendingReport;
 
 public class OvhSmsSendPlugin implements SmsSendPlugin {
 
+	private static final int MAX_LOGGED_PREFIX_NUM = 8; //maximum numbers keep in tracer tag for matched whitelistPrefix
 	private final AnalyticsManager analyticsManager;
 	private final OvhSmsWebServiceClient ovhSmsWebServiceClient;
 	private final String serviceName;
@@ -73,7 +74,15 @@ public class OvhSmsSendPlugin implements SmsSendPlugin {
 		return acceptAll ||
 				sms.getReceivers().stream()
 						.map(receiver -> receiver.replace(" ", ""))
-						.allMatch(receiver -> whitelistPrefixes.stream().anyMatch(prefix -> receiver.startsWith(prefix)));
+						.allMatch(receiver -> whitelistPrefixes.stream()
+								.anyMatch(prefix -> {
+									if (receiver.startsWith(prefix)) {
+										analyticsManager.getCurrentTracer().ifPresent(
+												tracer -> tracer.addTag("whitelistPrefix", prefix.substring(0, Math.min(prefix.length(), MAX_LOGGED_PREFIX_NUM))));
+										return true;
+									}
+									return false;
+								}));
 	}
 
 	@Override
