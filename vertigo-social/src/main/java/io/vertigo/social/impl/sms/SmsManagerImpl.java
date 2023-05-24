@@ -69,6 +69,11 @@ public final class SmsManagerImpl implements SmsManager {
 				tracer -> {
 					final Optional<SmsSendPlugin> pluginToUseOpt = smsSendPlugins.stream().filter(smsSendPlugin -> smsSendPlugin.acceptSms(sms)).findFirst();
 					final SmsSendingReport smsSendingReport;
+					tracer
+							.addTag("senderName", sms.getSender())
+							.incMeasure("cost", 0)
+							.incMeasure("sent", 0.0);
+
 					if (pluginToUseOpt.isPresent()) {
 						smsSendingReport = pluginToUseOpt.get().sendSms(sms);
 					} else {
@@ -82,7 +87,6 @@ public final class SmsManagerImpl implements SmsManager {
 						}
 					}
 					tracer
-							.addTag("senderName", sms.getSender())
 							.incMeasure("cost", smsSendingReport.getCost())
 							.incMeasure("sent", smsSendingReport.isSent() ? 100.0 : 0.0);
 					return smsSendingReport;
