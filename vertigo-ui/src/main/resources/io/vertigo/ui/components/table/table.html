@@ -107,6 +107,7 @@
             th:selection="${mySelectable ? 'multiple' : ''}"
             th::selected.sync="|componentStates.${componentId}.selected|"
             th::loading="|componentStates.${componentId}.loading|"
+            th::pagination.sync="|componentStates.${componentId}.pagination|"
             th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
             hide-bottom
             th:attr="__${other_attrs}__">
