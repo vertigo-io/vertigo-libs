@@ -43,10 +43,16 @@
     </th:block>
     <vu:content-slot name="header_slot"/>
 
-    <template slot="top-left" slot-scope="props" th:if="${title!=null}">
+    <template slot="top-left" slot-scope="props" th:if="${title!=null && subtitle==null}">
       <div class="text-h6" vu:text="${title?:''}" />
-      <div class="text-subtitle2" vu:text="${subtitle?:''}" />
     </template>
+    <template slot="top-left" slot-scope="props" th:if="${title!=null && subtitle!=null}">
+      <div class="column">
+	      <div class="text-h6" vu:text="${title?:''}" />
+	      <div class="text-subtitle2" vu:text="${subtitle?:''}" />
+      </div>
+    </template>
+    
     <template slot="top-left" slot-scope="props" vu:slot="top_left_slot"/>
     <template slot="top-right" slot-scope="props" vu:slot="top_right_slot"/>
     <template slot="body" slot-scope="props" :props="props">
@@ -103,10 +109,8 @@
             th::loading="|componentStates.${componentId}.loading|"
             th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
             hide-bottom
-            th:attr="__${other_attrs}__"
-    >
+            th:attr="__${other_attrs}__">
       <vu:content-slot name="header_slot"/>
-
       <template slot="top-left" slot-scope="props" th:if="${title!=null}">
         <div class="text-h6" vu:text="${title?:''}" />
         <div class="text-subtitle2" vu:text="${subtitle?:''}" />
@@ -127,7 +131,6 @@
         </q-tr>
         <vu:content-slot name="additional_content_slot"/>
       </template>
-
     </q-table>
   </div>
 </th:block>
