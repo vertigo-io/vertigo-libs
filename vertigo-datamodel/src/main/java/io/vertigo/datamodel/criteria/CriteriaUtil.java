@@ -45,7 +45,6 @@ final class CriteriaUtil {
 					LOG.warn("Criteria `({}) AND {}` You may check regressions : `a or b and c` is now `(a or b) and c`, before 3.5.1 it was `a or (b and c)`", leftOperand, rightOperand);
 					yield new CriteriaExpression<>(CriteriaLogicalOperator.AND, leftOperand, rightOperand);
 				}
-				default -> throw new IllegalStateException();
 			};
 		}
 		return new CriteriaExpression<>(CriteriaLogicalOperator.AND, leftOperand, rightOperand);

@@ -230,19 +230,19 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 		final String globalDataVariable = buildGlobalDataVariable(appName, measures, dataFilter, timeFilter, groupBy);
 
-		final StringBuilder queryBuilder = new StringBuilder(globalDataVariable)
-				.append("data \n")
-				.append("|> filter(fn: (r) => (r._field ==\"value\" ) ) \n")
-				.append("|> toString() \n")
-				.append("|> group(columns: [" + Stream.of(groupBy).collect(Collectors.joining("\", \"", "\"", "\"")) + "]) \n")
-				.append("|> sort(columns: [\"_time\"]) \n")
-				.append("|> limit(n: 1) \n")
-				.append("|> group() \n")
-				.append("|> rename(columns: {\"_value\" : \"value\"}) \n")
-				.append("|> keep(columns: [ \"_time\", " + measures.stream().collect(Collectors.joining("\" , \"", "\"", "\"")) + "]) \n")
-				.append("|> yield()");
+		String queryBuilder = globalDataVariable +
+				"data \n" +
+				"|> filter(fn: (r) => (r._field ==\"value\" ) ) \n" +
+				"|> toString() \n" +
+				"|> group(columns: [" + Stream.of(groupBy).collect(Collectors.joining("\", \"", "\"", "\"")) + "]) \n" +
+				"|> sort(columns: [\"_time\"]) \n" +
+				"|> limit(n: 1) \n" +
+				"|> group() \n" +
+				"|> rename(columns: {\"_value\" : \"value\"}) \n" +
+				"|> keep(columns: [ \"_time\", " + measures.stream().collect(Collectors.joining("\" , \"", "\"", "\"")) + "]) \n" +
+				"|> yield()";
 
-		return executeTimedQuery(queryBuilder.toString());
+		return executeTimedQuery(queryBuilder);
 
 	}
 
@@ -291,15 +291,15 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	@Override
 	public List<String> getTagValues(final String appName, final String measurement, final String tag) {
-		final StringBuilder queryBuilder = new StringBuilder("import \"influxdata/influxdb/schema\" \n")
-				.append('\n')
-				.append("schema.tagValues( \n")
-				.append(" bucket: \"" + appName + "\",\n")
-				.append(" predicate: (r) => r._measurement == \"" + measurement + "\",\n")
-				.append(" tag: \"" + tag + "\"  \n")
-				.append(") \n");
+		String queryBuilder = "import \"influxdata/influxdb/schema\" \n" +
+				'\n' +
+				"schema.tagValues( \n" +
+				" bucket: \"" + appName + "\",\n" +
+				" predicate: (r) => r._measurement == \"" + measurement + "\",\n" +
+				" tag: \"" + tag + "\"  \n" +
+				") \n";
 
-		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(queryBuilder.toString());
+		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(queryBuilder);
 		if (!queryResult.isEmpty()) {
 			final FluxTable table = queryResult.get(0);
 			if (table.getRecords() != null && !table.getRecords().isEmpty()) {

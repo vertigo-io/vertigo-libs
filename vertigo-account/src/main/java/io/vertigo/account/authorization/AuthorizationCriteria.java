@@ -46,7 +46,7 @@ public class AuthorizationCriteria<E extends Entity> {
 				.isNotNull(criteria)
 				.isNotNull(clazz);
 		InjectorUtil.injectMembers(this);
-		//-----
+		//--
 		this.criteria = criteria;
 		this.clazz = clazz;
 	}
@@ -54,6 +54,7 @@ public class AuthorizationCriteria<E extends Entity> {
 	public String asSqlWhere(final String alias, final Map<String, String> taskContext) {
 		Assertion.check()
 				.isNotNull(taskContext, "You must pass 'ctx', in your Task request, use implicit 'ctx' parameter");
+		//--
 		final SqlDialect sqlDialect = sqlManager.getConnectionProvider(taskContext.getOrDefault("connectionName", SqlManager.MAIN_CONNECTION_PROVIDER_NAME))
 				.getDataBase().getSqlDialect();
 		final CriteriaEncoder criteriaEncoder = new SqlCriteriaEncoder(sqlDialect, Optional.ofNullable(alias), false);
@@ -67,12 +68,11 @@ public class AuthorizationCriteria<E extends Entity> {
 				.isNotNull(taskContext, "You must pass 'ctx', in your Task request, use implicit 'ctx' parameter")
 				.isNotBlank(sqlEntityName)
 				.isTrue(sqlEntityName.equalsIgnoreCase(criteriaEntity), "Sql Table ({0}) and the entity of the criteria ({1}) must be the same or compatible", sqlEntityName, criteriaEntity);
-
-		final StringBuilder securedFrom = new StringBuilder("select * from ")
-				.append(sqlEntityName)
-				.append(" where ")
-				.append(asSqlWhere(null, taskContext));
-		return securedFrom.toString();
+		//--
+		return "select * from " +
+				sqlEntityName +
+				" where " +
+				asSqlWhere(null, taskContext);
 	}
 
 }

@@ -60,20 +60,19 @@ public class OvhRequestSpecializer implements RequestSpecializer, Component {
 		final long timestamp = System.currentTimeMillis() / 1000;
 
 		// build signature
-		final String toSign = new StringBuilder(appSecret)
-				.append("+")
-				.append(consumerKey)
-				.append("+")
-				.append(webServiceDefinition.getVerb().name().toUpperCase())
-				.append("+")
-				.append(httpRequestBuilder.buildURI().toASCIIString())
-				.append("+")
-				.append(httpRequestBuilder.prepareBody())
-				.append("+")
-				.append(timestamp)
-				.toString();
+		final String toSign = appSecret +
+				"+" +
+				consumerKey +
+				"+" +
+				webServiceDefinition.getVerb().name().toUpperCase() +
+				"+" +
+				httpRequestBuilder.buildURI().toASCIIString() +
+				"+" +
+				httpRequestBuilder.prepareBody() +
+				"+" +
+				timestamp;
 
-		final String signature = new StringBuilder("$1$").append(hashSHA1(toSign)).toString();
+		final String signature = "$1$" + hashSHA1(toSign);
 
 		httpRequestBuilder.header("X-Ovh-Application", appKey);
 		httpRequestBuilder.header("X-Ovh-Consumer", consumerKey);

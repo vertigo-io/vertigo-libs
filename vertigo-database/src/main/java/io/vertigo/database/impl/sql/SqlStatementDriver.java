@@ -88,7 +88,6 @@ final class SqlStatementDriver {
 					.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			case GENERATED_COLUMNS -> connection.getJdbcConnection()
 					.prepareStatement(sql, generatedColumns);
-			default -> throw new IllegalStateException();
 		};
 		//by experience 150 is a right value (Oracle is set by default at 10 : that's not sufficient)
 		preparedStatement.setFetchSize(FETCH_SIZE);

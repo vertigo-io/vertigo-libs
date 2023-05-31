@@ -367,7 +367,6 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 			case alpha -> BucketOrder.key(true);
 			case count -> BucketOrder.count(false);
 			case definition -> null; //ES accept null for no sorting
-			default -> throw new IllegalArgumentException("Unknown facetOrder :" + facetDefinition.getOrder());
 		};
 		//Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
 		String fieldName = dtField.name();
@@ -547,11 +546,9 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 			listFilterValue = listFilterValue.replace(keywordField.name() + ":", keywordField.name() + ".keyword:");
 		}
 
-		final String query = new StringBuilder()
-				.append(" +(")
-				.append(listFilterValue)
-				.append(')')
-				.toString();
+		final String query = " +(" +
+				listFilterValue +
+				')';
 		return QueryBuilders.queryStringQuery(query)
 				//.lowercaseExpandedTerms(false) ?? TODO maj version
 				.analyzeWildcard(true);

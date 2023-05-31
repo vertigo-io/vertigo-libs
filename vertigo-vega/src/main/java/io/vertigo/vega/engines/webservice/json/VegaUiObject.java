@@ -259,12 +259,11 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return new StringBuilder("uiObject(modified:")
-				.append(inputBuffer.keySet())
-				.append(" over dto:")
-				.append(serverSideDto)
-				.append(")")
-				.toString();
+		return "uiObject(modified:" +
+				inputBuffer.keySet() +
+				" over dto:" +
+				serverSideDto +
+				")";
 	}
 
 	/** {@inheritDoc} */

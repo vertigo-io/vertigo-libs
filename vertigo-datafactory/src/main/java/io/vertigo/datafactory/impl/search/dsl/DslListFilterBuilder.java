@@ -555,7 +555,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	 * @return la chaine de caractere formattée.
 	 */
 	private static String formatDate(final LocalDate date) {
-		return new StringBuilder("\"").append(date.toString()).append("\"").toString();
+		return "\"" + date.toString() + "\"";
 	}
 
 	/**
@@ -565,6 +565,6 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	 * @return la chaine de caractere formattée.
 	 */
 	private static String formatInstant(final Instant instant) {
-		return new StringBuilder("\"").append(instant.toString()).append("\"").toString();
+		return "\"" + instant.toString() + "\"";
 	}
 }

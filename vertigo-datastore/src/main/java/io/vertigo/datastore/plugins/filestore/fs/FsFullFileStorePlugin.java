@@ -210,12 +210,10 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		final VFile vFile = fileInfo.getVFile();
 		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INFOS_DATE_PATTERN)
 				.withZone(ZoneId.of("UTC"));
-		final String metaData = new StringBuilder()
-				.append(vFile.getFileName()).append('\n')
-				.append(vFile.getMimeType()).append('\n')
-				.append(formatter.format(vFile.getLastModified())).append('\n')
-				.append(vFile.getLength()).append('\n')
-				.toString();
+		final String metaData = vFile.getFileName() + '\n' +
+				vFile.getMimeType() + '\n' +
+				formatter.format(vFile.getLastModified()) + '\n' +
+				vFile.getLength() + '\n';
 
 		final FileInfoURI uri = createNewFileInfoURI(fileInfo.getDefinition());
 		fileInfo.setURIStored(uri);
@@ -237,12 +235,10 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		final VFile vFile = fileInfo.getVFile();
 		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INFOS_DATE_PATTERN)
 				.withZone(ZoneId.of("UTC"));
-		final String metaData = new StringBuilder()
-				.append(vFile.getFileName()).append('\n')
-				.append(vFile.getMimeType()).append('\n')
-				.append(formatter.format(vFile.getLastModified())).append('\n')
-				.append(vFile.getLength()).append('\n')
-				.toString();
+		final String metaData = vFile.getFileName() + '\n' +
+				vFile.getMimeType() + '\n' +
+				formatter.format(vFile.getLastModified()) + '\n' +
+				vFile.getLength() + '\n';
 
 		saveFile(metaData, fileInfo);
 	}

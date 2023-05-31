@@ -173,15 +173,13 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 			openOfficeConnection.connect(); //Attention déjà observé : connection ne s'établissant pas et pas de timeout
 		} catch (final ConnectException connectException) {
 			//On précise les causes possibles de l'erreur.
-			final String msg = new StringBuilder()
-					.append("Dans le fichier OOoBasePath\\Basis\\share\\registry\\data\\org\\openoffice\\Setup.xcu.\n")
-					.append("Juste après cette ligne-ci : <node oor:name=\"Office\">\n")
-					.append("Il faut ajouter les lignes suivantes :\n")
-					.append("<prop oor:name=\"ooSetupConnectionURL\" oor:type=\"xs:string\">\n")
-					.append("<value>socket,host=localhost,port=").append(unoPort).append(";urp;</value>\n")
-					.append("</prop>\n")
-					.append("Ensuite, il faut lancer OpenOffice... et l'agent OpenOffice si il tourne.")
-					.toString();
+			final String msg = "Dans le fichier OOoBasePath\\Basis\\share\\registry\\data\\org\\openoffice\\Setup.xcu.\n" +
+					"Juste après cette ligne-ci : <node oor:name=\"Office\">\n" +
+					"Il faut ajouter les lignes suivantes :\n" +
+					"<prop oor:name=\"ooSetupConnectionURL\" oor:type=\"xs:string\">\n" +
+					"<value>socket,host=localhost,port=" + unoPort + ";urp;</value>\n" +
+					"</prop>\n" +
+					"Ensuite, il faut lancer OpenOffice... et l'agent OpenOffice si il tourne.";
 
 			throw new IOException("Impossible de se connecter à OpenOffice, vérifier qu'il est bien en écoute sur " + unoHost + ":" + unoPort + ".\n\n" + msg, connectException);
 		}

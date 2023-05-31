@@ -187,11 +187,9 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		final String requestedCols = getRequestedCols(dtDefinition);
 		final DtField idField = getIdField(dtDefinition);
 		final String idFieldName = idField.name();
-		final String request = new StringBuilder()
-				.append(" select ").append(requestedCols)
-				.append(" from ").append(tableName)
-				.append(" where ").append(StringUtil.camelToConstCase(idFieldName)).append(" = #").append(idFieldName).append('#')
-				.toString();
+		final String request = " select " + requestedCols +
+				" from " + tableName +
+				" where " + StringUtil.camelToConstCase(idFieldName) + " = #" + idFieldName + '#';
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
@@ -236,13 +234,12 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		final DtField fkField = getIdField(associationNode.getDtDefinition());
 		final String fkFieldName = fkField.name();
 
-		final String request = new StringBuilder(" select t.* from ")
-				.append(tableName).append(" t")
+		final String request = " select t.* from " +
+				tableName + " t" +
 				//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
-				.append(" join ").append(joinTableName).append(" j on j.").append(joinDtFieldName).append(" = t.").append(idFieldName)
+				" join " + joinTableName + " j on j." + joinDtFieldName + " = t." + idFieldName +
 				//Condition de la recherche
-				.append(" where j.").append(StringUtil.camelToConstCase(fkFieldName)).append(" = #").append(fkFieldName).append('#')
-				.toString();
+				" where j." + StringUtil.camelToConstCase(fkFieldName) + " = #" + fkFieldName + '#';
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
@@ -320,11 +317,10 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	}
 
 	private static String getListTaskName(final String entityName) {
-		final String fullName = new StringBuilder(TASK.TkSelect.name())
-				.append("List")
-				.append(entityName)
-				.append("ByCriteria")
-				.toString();
+		final String fullName = TASK.TkSelect.name() +
+				"List" +
+				entityName +
+				"ByCriteria";
 		if (fullName.length() > MAX_TASK_SPECIFIC_NAME_LENGTH) {
 			return fullName.substring(0, MAX_TASK_SPECIFIC_NAME_LENGTH);
 		}
@@ -422,17 +418,14 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final DtField idField = getIdField(dtDefinition);
 
-		return new StringBuilder()
-				.append("update ").append(tableName).append(" set ")
-
-				.append(dtDefinition.getFields()
+		return "update " + tableName + " set " +
+				dtDefinition.getFields()
 						.stream()
 						.filter(dtField -> dtField.isPersistent() && !dtField.getType().isId())
 						.map(dtField -> StringUtil.camelToConstCase(dtField.name()) + " =#" + parameterName + '.' + dtField.name() + '#')
-						.collect(Collectors.joining(", ")))
-				.append(" where ")
-				.append(StringUtil.camelToConstCase(idField.name())).append(" = #").append(parameterName).append('.').append(idField.name()).append('#')
-				.toString();
+						.collect(Collectors.joining(", ")) +
+				" where " +
+				StringUtil.camelToConstCase(idField.name()) + " = #" + parameterName + '.' + idField.name() + '#';
 	}
 
 	/**
@@ -506,10 +499,8 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 		final String idFieldName = idField.name();
 
-		final String request = new StringBuilder()
-				.append("delete from ").append(tableName)
-				.append(" where ").append(StringUtil.camelToConstCase(idFieldName)).append(" = #").append(idFieldName).append('#')
-				.toString();
+		final String request = "delete from " + tableName +
+				" where " + StringUtil.camelToConstCase(idFieldName) + " = #" + idFieldName + '#';
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineProc.class)

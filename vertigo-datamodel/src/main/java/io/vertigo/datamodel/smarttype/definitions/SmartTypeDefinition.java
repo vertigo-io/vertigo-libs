@@ -178,7 +178,6 @@ public final class SmartTypeDefinition extends AbstractDefinition<SmartTypeDefin
 				? switch (scope) {
 				case DATA_TYPE -> DtList.class;
 				case BASIC_TYPE, VALUE_TYPE -> List.class;
-				default -> throw new IllegalStateException();
 				}
 				: javaClass;
 	}

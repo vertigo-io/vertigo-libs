@@ -303,10 +303,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		if (includedFields.isEmpty() && excludedFields.isEmpty()) {
 			return "";
 		}
-		final String sb = new StringBuilder()
-				.append("+(").append(includedFields).append(")")
-				.append("-(").append(excludedFields).append(")")
-				.toString();
+		final String sb = "+(" + includedFields + ")" +
+				"-(" + excludedFields + ")";
 		return "$" + sb.hashCode();
 	}
 

@@ -101,7 +101,6 @@ public final class FormatterString implements Formatter {
 				case UPPER -> sValue.toUpperCase(TO_UPPER_CASE_LOCALE);
 				case LOWER -> sValue.toLowerCase(TO_UPPER_CASE_LOCALE);
 				case UPPER_FIRST -> firstLetterUpper(sValue);
-				default -> throw new IllegalAccessError("cas non implémenté");
 				};
 	}
 

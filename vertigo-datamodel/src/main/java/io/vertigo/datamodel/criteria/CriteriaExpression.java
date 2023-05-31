@@ -65,7 +65,6 @@ final class CriteriaExpression<D extends DtObject> extends Criteria<D> {
 		final BinaryOperator<Predicate<D>> accumulator = switch (operator) {
 			case OR -> Predicate::or;
 			case AND -> Predicate::and;
-			default -> throw new IllegalAccessError();
 		};
 		return Arrays.stream(operands)
 				.map(Criteria::toPredicate)
