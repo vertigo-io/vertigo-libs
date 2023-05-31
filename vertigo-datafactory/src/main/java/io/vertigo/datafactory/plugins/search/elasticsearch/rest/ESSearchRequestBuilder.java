@@ -28,6 +28,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 
 import io.vertigo.core.lang.Assertion;
@@ -74,15 +75,17 @@ final class ESSearchRequestBuilder extends AsbtractESSearchRequestBuilder<Search
 				.size(searchQuery.isClusteringFacet() ? 0 : listState.getMaxRows().orElse(defaultMaxRows));
 		if (listState.getSortFieldName().isPresent()) {
 			final var sortFieldName = listState.getSortFieldName().get();
+			final SortBuilder<?> sortBuilder;
 			if (searchQuery.getGeoExpression().isPresent()
-					&& searchQuery.getGeoExpression().get().getGeoQuery() instanceof DslGeoDistanceQuery geoDistanceQuery
+					&& searchQuery.getGeoExpression().get().getGeoQuery()instanceof DslGeoDistanceQuery geoDistanceQuery
 					&& sortFieldName.equals(searchQuery.getGeoExpression().get().getField().getFieldName())) {
 				final GeoPoint geoPoint = DslGeoToQueryBuilderUtil.computeGeoPoint(geoDistanceQuery.getGeoPoint(), searchQuery.getCriteria(), typeAdapters);
 				Assertion.check().isNotNull(geoPoint, "When sorting by distance the geoPoint used as criteria cannot be null");
-				searchSourceBuilder.sort(SortBuilders.geoDistanceSort(listState.getSortFieldName().get(), geoPoint));
+				sortBuilder = SortBuilders.geoDistanceSort(listState.getSortFieldName().get(), geoPoint);
 			} else {
-				searchSourceBuilder.sort(getFieldSortBuilder(indexDtDefinition, listState));
+				sortBuilder = getFieldSortBuilder(indexDtDefinition, listState);
 			}
+			searchSourceBuilder.sort(sortBuilder);
 		}
 	}
 

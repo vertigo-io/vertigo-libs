@@ -75,14 +75,14 @@ public final class SmsManagerImpl implements SmsManager {
 						smsSendingReport = NON_SENT_SMS_REPORT;
 						if (!silentFail) {
 							LOGGER.warn("No plugin found to send mail with destinations : {}",
-									() -> sms.getReceivers() //param supplier
+									() -> sms.receivers() //param supplier
 											.stream()
 											.map(receiver -> receiver.substring(0, 5))
 											.collect(Collectors.joining(", ")));
 						}
 					}
 					tracer
-							.setTag("senderName", sms.getSender())
+							.setTag("senderName", sms.sender())
 							.incMeasure("cost", smsSendingReport.getCost())
 							.incMeasure("sent", smsSendingReport.isSent() ? 100.0 : 0.0);
 					return smsSendingReport;

@@ -71,7 +71,7 @@ public class OvhSmsSendPlugin implements SmsSendPlugin {
 	@Override
 	public boolean acceptSms(final Sms sms) {
 		return acceptAll ||
-				sms.getReceivers().stream()
+				sms.receivers().stream()
 						.map(receiver -> receiver.replace(" ", ""))
 						.allMatch(receiver -> whitelistPrefixes.stream().anyMatch(prefix -> receiver.startsWith(prefix)));
 	}
@@ -80,9 +80,9 @@ public class OvhSmsSendPlugin implements SmsSendPlugin {
 	public SmsSendingReport sendSms(final Sms sms) {
 		final var ovhSendingReportMap = ovhSmsWebServiceClient.sendSms(
 				serviceName,
-				sms.getSender(),
-				sms.getReceivers(),
-				sms.getTextContent(),
+				sms.sender(),
+				sms.receivers(),
+				sms.textContent(),
 				sms.isNonCommercialMessage());
 
 		analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer.setTag("ovh-serviceName", serviceName));
