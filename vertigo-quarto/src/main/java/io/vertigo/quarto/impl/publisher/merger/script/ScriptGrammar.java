@@ -19,7 +19,6 @@ package io.vertigo.quarto.impl.publisher.merger.script;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
