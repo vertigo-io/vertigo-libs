@@ -35,7 +35,6 @@ import io.vertigo.quarto.plugins.exporter.pdfrtf.AbstractExporterIText;
 final class PDFExporter extends AbstractExporterIText {
 	/**
 	 * Constructor.
-	 * @param storeManager Store manager
 	 */
 	PDFExporter(final EntityStoreManager entityStoreManager, final SmartTypeManager smartTypeManager) {
 		super(entityStoreManager, smartTypeManager);

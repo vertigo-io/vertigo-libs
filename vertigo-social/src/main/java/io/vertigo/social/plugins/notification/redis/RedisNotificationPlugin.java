@@ -50,7 +50,6 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	/**
 	 * Constructor.
 	 * @param redisConnector the connector to REDIS database
-	 * @param daemonManager Daemon Manager
 	 */
 	@Inject
 	public RedisNotificationPlugin(

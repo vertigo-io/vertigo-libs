@@ -47,7 +47,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 	private final RedisConnector redisConnector;
 
 	/**
-	 * @param redisConnector Redis connector
+	 * @param connectorNameOpt Redis connector Name
 	 */
 	@Inject
 	public RedisCommentPlugin(
