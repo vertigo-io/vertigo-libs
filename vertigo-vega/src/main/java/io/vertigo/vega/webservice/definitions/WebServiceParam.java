@@ -255,10 +255,8 @@ public final class WebServiceParam {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return new StringBuilder()
-				.append(type)
-				.append(" ")
-				.append(fullName)
-				.toString();
+		return type +
+				" " +
+				fullName;
 	}
 }
