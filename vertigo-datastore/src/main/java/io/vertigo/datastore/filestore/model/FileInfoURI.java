@@ -206,7 +206,7 @@ public final class FileInfoURI implements Serializable {
 		} else if (key instanceof Long) {
 			return "l-" + key;
 		}
-		throw new IllegalArgumentException(key.toString() + " n'est pas géré par URI");
+		throw new IllegalArgumentException(key + " n'est pas géré par URI");
 	}
 
 	/**

@@ -224,7 +224,7 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 	}
 
 	private static String vuejsSsrDoublePass(final String compiledTemplate, final StringBuffer currentUrl, final CacheManager cacheManager) {
-		final String uid = currentUrl.append(VUEJS_SSR_CACHE_URL_SUFFIX).append(UUID.randomUUID().toString()).append(".js").toString();
+		final String uid = currentUrl.append(VUEJS_SSR_CACHE_URL_SUFFIX).append(UUID.randomUUID()).append(".js").toString();
 
 		cacheManager.put(VUEJS_SSR_CACHE_COLLECTION, uid, compiledTemplate);
 

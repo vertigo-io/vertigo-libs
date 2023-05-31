@@ -134,7 +134,7 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 					.append(max.isIncluded() ? " <= " : " < ")
 					.append(encodedAttribute(ctx, dtFieldName, (Serializable) max.getValue()));
 		}
-		return "( " + sql.toString() + " )";
+		return "( " + sql + " )";
 	}
 
 	private static String prepareSqlInlineArgument(final Serializable value) {
@@ -151,7 +151,7 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 						.isTrue(ONLY_SIMPLE_CHAR_PATTERN.matcher((String) value).matches(), "Only simple characters are allowed"));
 		//---
 		if (value instanceof String) {
-			return "'" + value.toString() + "'";
+			return "'" + value + "'";
 		}
 		return value.toString();
 	}

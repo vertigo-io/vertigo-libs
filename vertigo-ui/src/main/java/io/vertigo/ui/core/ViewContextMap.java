@@ -430,7 +430,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		//----
 		valueTransformers.computeIfAbsent(objectKey,
 				k -> new HashMap<>()).put(objectFieldName,
-						Arrays.asList(PROTECTED_VALUE_TRANSFORMER));
+				List.of(PROTECTED_VALUE_TRANSFORMER));
 	}
 
 	public String obtainFkList(final String objectKey, final String objectFieldName) {

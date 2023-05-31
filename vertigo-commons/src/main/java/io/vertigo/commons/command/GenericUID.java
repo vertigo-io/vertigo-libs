@@ -166,7 +166,7 @@ public final class GenericUID<O> implements Serializable {
 		} else if (id instanceof Long) {
 			return "l-" + id;
 		}
-		throw new IllegalArgumentException(id.toString() + " not supported by URI");
+		throw new IllegalArgumentException(id + " not supported by URI");
 	}
 
 	/**

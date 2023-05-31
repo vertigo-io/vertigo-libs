@@ -431,7 +431,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 						.map(dtField -> StringUtil.camelToConstCase(dtField.name()) + " =#" + parameterName + '.' + dtField.name() + '#')
 						.collect(Collectors.joining(", ")))
 				.append(" where ")
-				.append(StringUtil.camelToConstCase(idField.name())).append(" = #" + parameterName + '.').append(idField.name()).append('#')
+				.append(StringUtil.camelToConstCase(idField.name())).append(" = #").append(parameterName).append('.').append(idField.name()).append('#')
 				.toString();
 	}
 
