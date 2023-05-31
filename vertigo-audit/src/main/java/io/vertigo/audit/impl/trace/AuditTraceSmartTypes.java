@@ -53,7 +53,7 @@ public enum AuditTraceSmartTypes {
 
 	@SmartTypeDefinition(String.class)
 	@Formatter(clazz = FormatterDefault.class)
-	@Constraint(clazz = ConstraintStringLength.class, arg = "250", msg = "")
+	@Constraint(clazz = ConstraintStringLength.class, arg = "250")
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(250)")
 	ATraceItem,
 

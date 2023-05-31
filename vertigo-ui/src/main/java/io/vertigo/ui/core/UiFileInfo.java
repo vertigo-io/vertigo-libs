@@ -33,7 +33,7 @@ public final class UiFileInfo<F extends FileInfo> implements Serializable {
 	private final String name;
 	private final String type;
 	private final Long size;
-	private final String __status = "uploaded";
+	private final static String STATUS = "uploaded";
 
 	/**
 	 * Constructeur.
@@ -48,8 +48,6 @@ public final class UiFileInfo<F extends FileInfo> implements Serializable {
 		this.type = fileInfo.getVFile().getMimeType();
 		this.size = fileInfo.getVFile().getLength();
 	}
-
-	// ==========================================================================
 
 	public FileInfoURI getFileUri() {
 		return fileUri;
@@ -68,6 +66,6 @@ public final class UiFileInfo<F extends FileInfo> implements Serializable {
 	}
 
 	public String getStatus() {
-		return __status;
+		return STATUS;
 	}
 }
