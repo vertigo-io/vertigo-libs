@@ -71,7 +71,7 @@ public final class ScriptGrammar {
 		orderedParsingTags.clear();
 		orderedParsingTags.addAll(tagDefinitionBySyntax.keySet());
 		//On tri pour que les tag les plus long soient testé en premier, ainsi il n'y a pas de pb de recouvrement
-		Collections.sort(orderedParsingTags, new StringLengthComparator());
+		orderedParsingTags.sort(new StringLengthComparator());
 	}
 
 	/**

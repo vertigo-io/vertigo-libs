@@ -119,7 +119,7 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 		//we do nothing with webServerPlugin
 		//2- We sort by path, parameterized path should be after strict path
 		final List<WebServiceDefinition> allWebServiceDefinitions = new ArrayList<>(Node.getNode().getDefinitionSpace().getAll(WebServiceDefinition.class));
-		Collections.sort(allWebServiceDefinitions, Comparator.comparing(WebServiceDefinition::getSortPath));
+		allWebServiceDefinitions.sort(Comparator.comparing(WebServiceDefinition::getSortPath));
 		webServerPlugin.registerWebServiceRoute(handlerChain, allWebServiceDefinitions);
 	}
 

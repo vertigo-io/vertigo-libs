@@ -285,25 +285,19 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			dtDefinition.getFields()
 					.stream()
 					.filter(dtField -> dtField.getType() != FieldType.COMPUTED)// we don't serialize computed fields
-					.forEach(field -> {
-						jsonObject.add(field.name(), context.serialize(field.getDataAccessor().getValue(src)));
-					});
+					.forEach(field -> jsonObject.add(field.name(), context.serialize(field.getDataAccessor().getValue(src))));
 
 			Stream.of(src.getClass().getDeclaredFields())
 					.filter(field -> VAccessor.class.isAssignableFrom(field.getType()))
 					.map(field -> getAccessor(field, src))
 					.filter(VAccessor::isLoaded)
-					.forEach(accessor -> {
-						jsonObject.add(accessor.getRole(), context.serialize(accessor.get()));
-					});
+					.forEach(accessor -> jsonObject.add(accessor.getRole(), context.serialize(accessor.get())));
 
 			Stream.of(src.getClass().getDeclaredFields())
 					.filter(field -> ListVAccessor.class.isAssignableFrom(field.getType()))
 					.map(field -> getListAccessor(field, src))
 					.filter(ListVAccessor::isLoaded)
-					.forEach(accessor -> {
-						jsonObject.add(StringUtil.first2LowerCase(accessor.getRole()), context.serialize(accessor.get()));
-					});
+					.forEach(accessor -> jsonObject.add(StringUtil.first2LowerCase(accessor.getRole()), context.serialize(accessor.get())));
 			return jsonObject;
 
 		}

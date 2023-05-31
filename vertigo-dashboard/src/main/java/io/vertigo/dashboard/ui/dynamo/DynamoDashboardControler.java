@@ -107,9 +107,7 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 		metrics
 				.stream()
 				.filter(metric -> "definitionFieldCount".equals(metric.name()))
-				.forEach(metric -> {
-					fieldCount.put(metric.feature(), metric.value());
-				});
+				.forEach(metric -> fieldCount.put(metric.feature(), metric.value()));
 
 		final Collection<String> dtDefinitions = metrics.stream().map(Metric::feature).filter(feature -> feature.startsWith("Dt")).collect(Collectors.toSet());
 		final List<EntityModel> entities = dtDefinitions
