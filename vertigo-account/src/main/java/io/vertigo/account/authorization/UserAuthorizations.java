@@ -175,7 +175,7 @@ public final class UserAuthorizations implements Serializable {
 	}
 
 	/**
-	 * @param authorizationNamse Authorization
+	 * @param authorizationName Authorization
 	 * @return true if user has this authorization
 	 */
 	public boolean hasAuthorization(final AuthorizationName... authorizationNames) {

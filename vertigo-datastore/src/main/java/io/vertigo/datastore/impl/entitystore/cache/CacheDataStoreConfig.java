@@ -80,9 +80,7 @@ public final class CacheDataStoreConfig {
 	/**
 	 * Register a Dtdefinition as cacheable and define cache behaviors.
 	 * @param dtDefinition DT definition
-	 * @param timeToLiveInSeconds time to live in cache
 	 * @param isReloadedByList On reload, elements should be load by full list or only missing ones
-	 * @param serializeElements Elements should be serialized to guarantee there aren't modified
 	 */
 	public void registerCacheable(
 			final DtDefinition dtDefinition,

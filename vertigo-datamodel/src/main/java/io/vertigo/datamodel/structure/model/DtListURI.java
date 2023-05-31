@@ -91,7 +91,6 @@ public abstract class DtListURI implements Serializable {
 
 	/**
 	 * Builds a urn from all the params.
-	 * @param uri Uri to encode
 	 * @return Urn
 	 */
 	protected abstract String buildUrn();

@@ -77,7 +77,7 @@ public interface AuthorizationManager extends Manager {
 	 * @param entityClass secured data to check
 	 * @param operation operation name
 	 * @return Search query filter of security rules for this current user on this entity.
-	 * @param <O> entity type
+	 * @param <E> entity type
 	 */
 	<E extends Entity> String getSearchSecurity(final Class<E> entityClass, OperationName<E> operation);
 

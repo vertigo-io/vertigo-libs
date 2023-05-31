@@ -33,7 +33,6 @@ class VuejsSsrResponseStream extends ServletOutputStream {
 
 	/**
 	 * Construit un servlet output stream associé avec la réponse spécifiée.
-	 * @param response javax.servlet.http.HttpServletResponse
 	 */
 	VuejsSsrResponseStream() {
 		super();

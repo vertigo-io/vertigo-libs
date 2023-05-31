@@ -33,7 +33,6 @@ class UnAutoCloseTagsResponseStream extends ServletOutputStream {
 
 	/**
 	 * Construit un servlet output stream associé avec la réponse spécifiée.
-	 * @param response javax.servlet.http.HttpServletResponse
 	 */
 	UnAutoCloseTagsResponseStream() {
 		super();

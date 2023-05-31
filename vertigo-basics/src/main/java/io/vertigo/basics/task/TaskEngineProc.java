@@ -57,7 +57,6 @@ public class TaskEngineProc extends AbstractTaskEngineSQL {
 	 * Constructeur.
 	 * @param scriptManager Manager de traitment de scripts
 	 * @param transactionManager Transaction manager
-	 * @param entityStoreManager Store manager
 	 * @param sqlManager Sql dataBase manager
 	 */
 	@Inject

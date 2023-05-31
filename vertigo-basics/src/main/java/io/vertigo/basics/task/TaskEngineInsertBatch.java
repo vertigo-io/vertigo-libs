@@ -54,7 +54,6 @@ public final class TaskEngineInsertBatch extends AbstractTaskEngineSQL {
 	 * Constructeur.
 	 * @param scriptManager scriptManager
 	 * @param transactionManager transactionManager
-	 * @param entityStoreManager storeManager
 	 * @param sqlManager sqlDataBaseManager
 	 */
 	@Inject

@@ -123,7 +123,6 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	/**
 	 * Exécution de la requête.
 	 * @param connection Connexion BDD
-	 * @param statement Requête
 	 * @return Nombre de lignes affectées (Insert/ Update / Delete)
 	 * @throws SQLException Erreur sql
 	 */
@@ -268,7 +267,6 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * Gestion centralisée des exceptions SQL.
 	 * @param connection Connexion
 	 * @param sqle Exception SQL
-	 * @param statement Statement
 	 */
 	private static RuntimeException handleSQLException(final SqlConnection connection, final SQLException sqle, final String statementInfos) {
 		return connection.getDataBase().getSqlExceptionHandler()

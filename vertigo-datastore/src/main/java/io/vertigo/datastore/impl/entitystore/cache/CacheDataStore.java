@@ -57,7 +57,6 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 
 	/**
 	 * Constructor.
-	 * @param storeManager Store manager
 	 * @param dataStoreConfig Data store configuration
 	 */
 	public CacheDataStore(

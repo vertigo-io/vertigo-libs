@@ -98,7 +98,7 @@ public final class CompressionFilter extends AbstractFilter {
 	 * @param res javax.servlet.ServletResponse
 	 * @param chain javax.servlet.FilterChain
 	 * @throws java.io.IOException   Si une erreur d'entrée/sortie survient
-	 * @throws javax.servlet.ServletException   Si une erreur de servlet survient
+	 * @throws jakarta.servlet.ServletException   Si une erreur de servlet survient
 	 **/
 	@Override
 	public void doMyFilter(final ServletRequest req, final ServletResponse res, final FilterChain chain) throws IOException, ServletException {

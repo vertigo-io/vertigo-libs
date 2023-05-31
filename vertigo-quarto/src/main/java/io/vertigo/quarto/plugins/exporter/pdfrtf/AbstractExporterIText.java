@@ -61,7 +61,6 @@ public abstract class AbstractExporterIText {
 
 	/**
 	 * Constructor.
-	 * @param storeManager Store manager
 	 */
 	protected AbstractExporterIText(final EntityStoreManager entityStoreManager, final SmartTypeManager smartTypeManager) {
 		Assertion.check()

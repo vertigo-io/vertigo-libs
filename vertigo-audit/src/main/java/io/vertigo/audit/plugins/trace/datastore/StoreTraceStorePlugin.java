@@ -50,13 +50,7 @@ public final class StoreTraceStorePlugin implements TraceStorePlugin, Activeable
 
 	/**
 	 * Constructor.
-	 * @param userIdentityEntity Entity name of userIdentityEntity
-	 * @param groupIdentityEntity Entity name of groupIdentityEntity
-	 * @param userAuthField FieldName use to find user by it's authToken
-	 * @param userToAccountMappingStr User to account conversion mapping
-	 * @param groupToGroupAccountMappingStr User to account conversion mapping
 	 * @param entityStoreManager Store Manager
-	 * @param fileStoreManager File Store Manager
 	 */
 	@Inject
 	public StoreTraceStorePlugin(

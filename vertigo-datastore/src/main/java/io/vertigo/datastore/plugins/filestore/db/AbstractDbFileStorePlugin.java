@@ -126,7 +126,6 @@ abstract class AbstractDbFileStorePlugin {
 
 	/**
 	 * @param dto DtObject
-	 * @param value Pk value
 	 */
 	protected static void setIdValue(final DtObject dto, final FileInfoURI uri) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);

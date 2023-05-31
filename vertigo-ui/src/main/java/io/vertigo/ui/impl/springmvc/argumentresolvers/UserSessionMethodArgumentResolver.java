@@ -42,7 +42,6 @@ public final class UserSessionMethodArgumentResolver implements HandlerMethodArg
 
 	/**
 	 * Construct a new ArgumentResolver
-	 * @param securityManager VSecurityManager
 	 */
 	public UserSessionMethodArgumentResolver() {
 		InjectorUtil.injectMembers(this);

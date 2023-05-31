@@ -52,7 +52,6 @@ public final class ApiKeyWebServiceHandlerPlugin implements WebServiceHandlerPlu
 	/**
 	 * Constructor.
 	 *
-	 * @param securityManager Security Manager
 	 */
 	@Inject
 	public ApiKeyWebServiceHandlerPlugin(

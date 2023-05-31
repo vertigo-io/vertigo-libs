@@ -82,7 +82,6 @@ final class XLSExporter {
 
 	/**
 	 * Constructor.
-	 * @param storeManager Store manager
 	 */
 	XLSExporter(final EntityStoreManager entityStoreManager, final SmartTypeManager smartTypeManager) {
 		Assertion.check()

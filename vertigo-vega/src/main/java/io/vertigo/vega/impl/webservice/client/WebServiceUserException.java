@@ -31,7 +31,6 @@ public final class WebServiceUserException extends VUserException {
 
 	/**
 	 * Constructor.
-	 * @param uiMessageStack
 	 */
 	public WebServiceUserException(final int statusCode, final Object payload) {
 		super(LocaleMessageText.of(WEBSERVICE_ERROR_MESSAGE_TEXT, String.valueOf(payload)));

@@ -90,7 +90,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	}
 
 	/**
-	 * @param creationDate create date time
+	 * @param creationInstant creation Instant
 	 * @return this builder
 	 */
 	public CommentBuilder withCreationDate(final Instant creationInstant) {

@@ -109,7 +109,6 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	/**
 	 * Constructor.
 	 * @param envIndexPrefix ES index name
-	 * @param indexNameIsPrefix indexName use as prefix
 	 * @param defaultMaxRows Nombre de lignes
 	 * @param codecManager Manager de codec
 	 * @param configFile Fichier de configuration des indexs
