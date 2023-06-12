@@ -60,7 +60,7 @@ public class OvhSmsSendPlugin implements SmsSendPlugin {
 			acceptAll = false;
 			whitelistPrefixes = Arrays.asList(whitelistPrefixesOpt.get().split(";"))
 					.stream()
-					.map(prefix -> prefix.replace(" ", ""))
+					.map(prefix -> prefix.replaceAll("[\\(\\)\\s\\.\\-]+", "")) //on autorise ( ) . - et espaces comme séparateur
 					.collect(Collectors.toList());
 		} else {
 			acceptAll = true;
@@ -73,7 +73,7 @@ public class OvhSmsSendPlugin implements SmsSendPlugin {
 	public boolean acceptSms(final Sms sms) {
 		return acceptAll ||
 				sms.getReceivers().stream()
-						.map(receiver -> receiver.replace(" ", ""))
+						.map(receiver -> receiver.replaceAll("[\\(\\)\\s\\.\\-]+", ""))
 						.allMatch(receiver -> whitelistPrefixes.stream()
 								.anyMatch(prefix -> {
 									if (receiver.startsWith(prefix)) {
