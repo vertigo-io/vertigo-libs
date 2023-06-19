@@ -573,6 +573,9 @@ export default {
     },
     removePendingAction: function(actionName) {
         this.$data.componentStates.pendingAction.actionNames = this.$data.componentStates.pendingAction.actionNames.filter(e => e !== actionName);
+    },
+    removePendingActionAfterDelay: function(actionName, delay) {
+        setTimeout(function () {this.removePendingAction(actionName)}.bind(this), delay);
     },        
 
     hasFieldsError: function (object, field, rowIndex) {
