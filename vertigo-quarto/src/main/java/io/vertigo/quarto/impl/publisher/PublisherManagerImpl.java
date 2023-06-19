@@ -20,6 +20,7 @@ package io.vertigo.quarto.impl.publisher;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -38,6 +39,7 @@ import io.vertigo.quarto.publisher.model.PublisherData;
  */
 public final class PublisherManagerImpl implements PublisherManager {
 	private final MergerPlugin mergerPlugin;
+	private static final Pattern FILENAME_UNSUPPORTED_CHARS_PATTERN = Pattern.compile("[\\\\/?%*:|\"<>]");
 
 	/**
 	 * Constructeur.
@@ -59,7 +61,8 @@ public final class PublisherManagerImpl implements PublisherManager {
 		Assertion.check()
 				.isNotNull(fileName)
 				.isNotNull(modelFileURL)
-				.isNotNull(data);
+				.isNotNull(data)
+				.isFalse(FILENAME_UNSUPPORTED_CHARS_PATTERN.matcher(fileName).find(), "Filename contains invalid char (unsupported : \\/?%*:|\"<>");
 		//-----
 		try {
 			return generateFile(fileName, modelFileURL, data);
