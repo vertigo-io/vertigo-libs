@@ -28,7 +28,7 @@ public class RedisAppNodeRegistryPluginTest extends AbstractAppManagerTest {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 
-		final String redisHost = "redis-pic.part.klee.lan.net";
+		final String redisHost = "docker-vertigo.part.klee.lan.net";
 		final int redisPort = 6379;
 		final int redisDatabase = 11;
 
