@@ -43,6 +43,8 @@ public final class Record implements Entity {
 
 	private String etaCd;
 
+	private Boolean actif;
+
 	/** {@inheritDoc}*/
 	@Override
 	public UID<Record> getUID() {
@@ -128,6 +130,15 @@ public final class Record implements Entity {
 
 	public void setEtaCd(final String etaCd) {
 		this.etaCd = etaCd;
+	}
+
+	@Field(smartType = "STyActif", cardinality = Cardinality.ONE, label = "Actif")
+	public Boolean getActif() {
+		return actif;
+	}
+
+	public void setActif(final Boolean actif) {
+		this.actif = actif;
 	}
 
 	/** {@inheritDoc} */

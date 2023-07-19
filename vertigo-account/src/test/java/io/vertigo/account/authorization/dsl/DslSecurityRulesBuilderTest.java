@@ -46,6 +46,8 @@ public final class DslSecurityRulesBuilderTest {
 						"(ALL=Test OR OTHER='VALID') AND (ALL=Test OR OTHER='VALID')",
 						"(+(ALL:Test OTHER:'VALID') +(ALL:Test OTHER:'VALID'))" }, //6
 				{ "ALL>${query}", "'Test'", "ALL>'Test'", "(+ALL:>'Test')" }, //7
+				{ "actif=true && GEO<=${query}", "'Test'", "actif=true AND GEO<='Test'", "(+actif:true +GEO:<='Test')" }, //8
+				{ "GEO<=${query} && actif=true", "'Test'", "GEO<='Test' AND actif=true", "(+GEO:<='Test' +actif:true)" }, //9
 
 		};
 		testSearchAndSqlQuery(testQueries);

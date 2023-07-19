@@ -35,7 +35,7 @@ public final class SecurityNames {
 	 */
 	public enum RecordAuthorizations implements AuthorizationName {
 		AtzRecord$read, AtzRecord$read2, AtzRecord$read3, AtzRecord$readHp, AtzRecord$delete, AtzRecord$notify, AtzRecord$create, AtzRecord$write, //
-		AtzRecord$test, AtzRecord$test2, AtzRecord$test3, AtzRecord$test4
+		AtzRecord$test, AtzRecord$test2, AtzRecord$test3, AtzRecord$test4, AtzRecord$test5, AtzRecord$test6
 	}
 
 	/**
@@ -43,6 +43,6 @@ public final class SecurityNames {
 	 */
 	public enum RecordOperations implements OperationName<Record> {
 		read, read2, read3, readHp, write, create, delete, notify, //
-		test, test2, test3, test4
+		test, test2, test3, test4, test5, test6
 	}
 }

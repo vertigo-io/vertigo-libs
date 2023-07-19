@@ -48,4 +48,9 @@ public enum TestSmartTypes {
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(100)")
 	Label,
 
+	@SmartTypeDefinition(Boolean.class)
+	@Formatter(clazz = FormatterDefault.class)
+	@SmartTypeProperty(property = "storeType", value = "boolean")
+	Actif,
+
 }
