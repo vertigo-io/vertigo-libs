@@ -60,7 +60,7 @@ public class OvhSmsSendPlugin implements SmsSendPlugin {
 			acceptAll = false;
 			whitelistPrefixes = Arrays.asList(whitelistPrefixesOpt.get().split(";"))
 					.stream()
-					.map(prefix -> prefix.replaceAll("[\\(\\)\\s\\.\\-]+", "")) //on autorise ( ) . - et espaces comme séparateur
+					.map(prefix -> prefix.replaceAll("[\\(\\)\\s\\.\\-]+", "")) //we accept ( ) . - and spaces as separators
 					.collect(Collectors.toList());
 		} else {
 			acceptAll = true;
@@ -81,6 +81,7 @@ public class OvhSmsSendPlugin implements SmsSendPlugin {
 												tracer -> tracer.addTag("whitelistPrefix", prefix.substring(0, Math.min(prefix.length(), MAX_LOGGED_PREFIX_NUM))));
 										return true;
 									}
+									//We can't tag whitelistPrefix, because it could be accepted by another plugin
 									return false;
 								}));
 	}
@@ -100,7 +101,6 @@ public class OvhSmsSendPlugin implements SmsSendPlugin {
 		final Double totalCreditsRemoved = (Double) ovhSendingReportMap.getOrDefault("totalCreditsRemoved", 0.0);
 
 		return new SmsSendingReport(totalCreditsRemoved, !validReceivers.isEmpty());
-
 	}
 
 }
