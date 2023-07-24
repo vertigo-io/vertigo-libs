@@ -38,32 +38,34 @@
 			    th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
 			    th:@request="paginationAndSortHandler"
 				th::grid="${isGrid?('$q.screen.lt.'+gridBreak):'false'}"
-			    th:attr="__${other_attrs}__"
-			  >
-		</th:block>
-		
+			    th:attr="__${other_attrs}__">
+		</th:block>		
 		  <vu:content-slot name="header_slot"/>
-		  <template #top-left="props" th:if="${title!=null}">
-		  	<div class="text-h6" vu:text="${title?:''}" />
-			<div class="text-subtitle2" vu:text="${subtitle?:''}" />
+		  <template #top-left="props" th:if="${title!=null && subtitle==null}">
+              <div class="text-h6" vu:text="${title?:''}" />
 		  </template>
-		  <template #top-left="props" vu:slot="top_left_slot"/>
-		  <template #top-right="props" vu:slot="top_right_slot"/>
-		  <template #body="props">
-        <q-tr :props="props" th:attr="__${tr_attrs}__" >
-          <q-td th:if="${mySelectable}" auto-width>
-          <q-checkbox th:color="${color?:'primary'}" v-model="props.selected" ></q-checkbox>
-        </q-td>
-        <vu:content></vu:content>
-        <vu:column name="action" label="" sortable="false" th:if="${actions_slot != null}">
-          <div class="row self-center justify-end col showButtonOnHover">						
-            <vu:content-slot name="actions_slot" />
-          </div>
-        </vu:column>
-		  </q-tr>
-      <vu:content-slot name="additional_content_slot"/>
-		  </template>
-
+		  <template slot="top-left" slot-scope="props" th:if="${title!=null && subtitle!=null}">
+	      <div class="column">
+	          <div class="text-h6" vu:text="${title?:''}" />
+	          <div class="text-subtitle2" vu:text="${subtitle?:''}" />
+	      </div>
+	    </template>
+		<template #top-left="props" vu:slot="top_left_slot"/>
+		<template #top-right="props" vu:slot="top_right_slot"/>
+		<template #body="props">
+	        <q-tr :props="props" th:attr="__${tr_attrs}__" >
+	          <q-td th:if="${mySelectable}" auto-width>
+	          <q-checkbox th:color="${color?:'primary'}" v-model="props.selected" ></q-checkbox>
+	        </q-td>
+	        <vu:content></vu:content>
+	        <vu:column name="action" label="" sortable="false" th:if="${actions_slot != null}">
+	          <div class="row self-center justify-end col showButtonOnHover">						
+	            <vu:content-slot name="actions_slot" />
+	          </div>
+	        </vu:column>
+		    </q-tr>
+            <vu:content-slot name="additional_content_slot"/>
+		</template>
 		<template th:if="${isGrid}" #item="props" vu:slot="griditem_slot" th:with="renderTableAsGrid=true">
 			<div class="q-pa-xs col-xs-12 col-sm-6 col-md-4">
 		       <q-card th:attr="__${item_attrs}__" :class="{'q-table__grid-item--selected' : props.selected}">
@@ -101,20 +103,17 @@
                 th:selection="${mySelectable ? 'multiple' : ''}"
                 th:v-model:selected="|componentStates.${componentId}.selected|"
                 th::loading="|componentStates.${componentId}.loading|"
+                th::pagination.sync="|componentStates.${componentId}.pagination|"
                 th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
                 hide-bottom 
-                th:attr="__${other_attrs}__"
-              >
-
-		  <vu:content-slot name="header_slot"/>
-              
+                th:attr="__${other_attrs}__">
+		  <vu:content-slot name="header_slot"/>              
           <template #top-left="props" th:if="${title!=null}">
             <div class="text-h6" vu:text="${title?:''}" />
             <div class="text-subtitle2" vu:text="${subtitle?:''}" />
           </template>
           <template #top-left="props" vu:slot="top_left_slot"/>
-          <template #top-right="props" vu:slot="top_right_slot"/>          
-          
+          <template #top-right="props" vu:slot="top_right_slot"/>
           <template #body="props">
 	          <q-tr :props="props" th:attr="__${tr_attrs}__" >
 	            <q-td th:if="${mySelectable}" auto-width>
