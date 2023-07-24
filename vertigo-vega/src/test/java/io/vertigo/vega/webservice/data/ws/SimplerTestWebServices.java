@@ -391,7 +391,7 @@ public final class SimplerTestWebServices implements WebServices {
 	public UiContext testDate(@QueryParam("date") final Date date) {
 		final UiContext result = new UiContext();
 		result.put("input", date);
-		result.put("inputAsString", date.toString());
+		result.put("inputAsString", date.toInstant().toString());
 		return result;
 	}
 

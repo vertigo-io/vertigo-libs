@@ -1812,7 +1812,8 @@ abstract class AbstractWebServiceManagerTest {
 		final String inputUtc = "2016-01-18T17:21:42.026Z";
 		loggedAndExpect(given())
 				.body("input", Matchers.equalTo(inputUtc))
-				.body("inputAsString", Matchers.equalTo("Mon Jan 18 18:21:42 CET 2016"))
+				//.body("inputAsString", Matchers.equalTo("Mon Jan 18 18:21:42 CET 2016"))//
+				.body("inputAsString", Matchers.equalTo("2016-01-18T17:21:42.026Z"))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.get("/test/dates?date=" + inputUtc);
