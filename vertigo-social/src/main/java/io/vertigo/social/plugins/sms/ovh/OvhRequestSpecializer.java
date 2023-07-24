@@ -80,21 +80,20 @@ public class OvhRequestSpecializer implements RequestSpecializer, Component {
 		httpRequestBuilder.header("X-Ovh-Timestamp", Long.toString(timestamp));
 	}
 
-	public static String hashSHA1(final String text) {
-
+	private static String hashSHA1(final String text) {
 		try {
 			final MessageDigest md = MessageDigest.getInstance("SHA-1"); //SHA-1 : imposé par l'api OVH
-			md.update(text.getBytes(StandardCharsets.ISO_8859_1), 0, text.length());//iso-8859-1 : imposé par l'api OVH
+			final byte[] data = text.getBytes(StandardCharsets.UTF_8);
+			md.update(data, 0, data.length);
 			final byte[] sha1hash = md.digest();
 			final StringBuilder sb = new StringBuilder();
 			for (final byte element : sha1hash) {
-				sb.append(Integer.toString((element & 0xff) + 0x100, 16).substring(1));
+				sb.append(String.format("%02x", element));
 			}
 			return sb.toString();
 		} catch (final NoSuchAlgorithmException e) {
 			throw WrappedException.wrap(e);
 		}
-
 	}
 
 }

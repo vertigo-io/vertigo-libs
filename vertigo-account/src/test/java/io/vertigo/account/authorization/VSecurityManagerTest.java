@@ -260,9 +260,21 @@ public final class VSecurityManagerTest {
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test2))
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test3))
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test4))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test5))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test6))
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$write))
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$create))
 					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$delete));
+
+			//L'utilisateur est positionné sur un département
+			Assertions.assertEquals("(regId = #regId0# AND depId = #depId1# "// GEO2<=${geo}
+					+ "AND actif = #actif2#)", // actif=true
+					authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.test5).toString());
+
+			//L'utilisateur est positionné sur un département
+			Assertions.assertEquals("(actif = #actif0# " // actif=true
+					+ "AND (regId = #regId1# AND depId = #depId2#))", // GEO2<=${geo}
+					authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.test6).toString());
 
 			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$read);
 			Assertions.assertTrue(canReadRecord);
@@ -1038,6 +1050,7 @@ public final class VSecurityManagerTest {
 		record.setAmount(DEFAULT_MONTANT_MAX);
 		record.setUtiIdOwner(DEFAULT_UTI_ID);
 		record.setEtaCd("CRE");
+		record.setActif(Boolean.TRUE);
 		return record;
 	}
 

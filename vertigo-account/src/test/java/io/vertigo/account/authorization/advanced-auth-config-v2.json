@@ -11,7 +11,7 @@
 	}],
 	"securedEntities": [{
 		"entity": "Record",
-		"securityFields" : ["utiIdOwner","typId","amount" ],
+		"securityFields" : ["utiIdOwner","typId","amount", "actif" ],
 		"securityDimensions": [{
 				"name": "etaCd", "type": "ENUM", "values": ["CRE", "VAL", "PUB", "NOT", "REA", "ARC", "EXP"]
 			},{
@@ -171,6 +171,18 @@
 			"rules": [
 				"typId=${typId} and etaCd=PUB and GEO<=${geo}"
 			]
-		}]
+		}, {
+            "__comment": "Test",
+            "name": "test5", "label" : "test5",
+            "rules": [
+                "GEO<=${geo} && actif=true"
+            ]
+        }, {
+            "__comment": "Test",
+            "name": "test6", "label" : "test6",
+            "rules": [
+                "actif=true && GEO<=${geo}"
+            ]
+        }]
 	}]
 }

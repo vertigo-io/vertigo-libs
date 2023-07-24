@@ -49,7 +49,8 @@ public final class DslSecurityRulesBuilderTest {
 				{ "ALL>${query}", "'Test'", "ALL>'Test'", "(+ALL:>'Test')" }, //7
 				{ "ALL=${query}", null, "ALL is null", "(-_exists_:ALL)" }, //8*/
 				{ "ALL=${query}", "100;102", "ALL IN (100,102)", "(+(ALL:100 ALL:102))" }, //9
-
+				{ "actif=true && GEO<=${query}", "'Test'", "actif=true AND GEO<='Test'", "(+actif:true +GEO:<='Test')" }, //8
+				{ "GEO<=${query} && actif=true", "'Test'", "GEO<='Test' AND actif=true", "(+GEO:<='Test' +actif:true)" }, //9
 				//{ "ALL>${query}", "'Test'", "ALL like 'Test' || '%'" }, //3
 		};
 		testSearchAndSqlQuery(testQueries);
@@ -121,10 +122,10 @@ public final class DslSecurityRulesBuilderTest {
 		final CriteriaSecurityRuleTranslator securityRuleTranslator = new CriteriaSecurityRuleTranslator()
 				.withRule(testParam[0])
 				.withSecurityKeys(Collections.singletonMap("query", Collections.singletonList(testParam[1])));
-	
+
 		final Criteria result = securityRuleTranslator.toCriteria();
 		final String expectedResult = testParam[Math.min(getSqlResult(), testParam.length - 1)];
-	
+
 		final Tuple<String, CriteriaCtx> resultTuple = result.toStringAnCtx(defaultSQLCriteriaEncoder);
 		String resultStr = resultTuple.val1();
 		for (final String attr : resultTuple.val2().getAttributeNames()) {
@@ -132,9 +133,9 @@ public final class DslSecurityRulesBuilderTest {
 		}
 		Assertions.assertEquals(expectedResult, resultStr, "Built sql query #" + i + " incorrect");
 	}
-	
+
 	private final CriteriaEncoder defaultSQLCriteriaEncoder = new CriteriaEncoder() {
-	
+
 		@Override
 		public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DtFieldName dtFieldName, final Serializable[] values) {
 			final String fieldName = dtFieldName.name();
@@ -174,22 +175,22 @@ public final class DslSecurityRulesBuilderTest {
 					throw new IllegalAccessError();
 			}
 		}
-	
+
 		@Override
 		public String encodeLogicalOperator(final CriteriaLogicalOperator logicalOperator) {
 			return logicalOperator.name();
 		}
-	
+
 		@Override
 		public String getExpressionStartDelimiter() {
 			return "(";
 		}
-	
+
 		@Override
 		public String getExpressionEndDelimiter() {
 			return ")";
 		}
-	
+
 	};*/
 
 }

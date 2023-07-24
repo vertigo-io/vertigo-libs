@@ -63,7 +63,7 @@ import io.vertigo.quarto.publisher.model.PublisherNode;
 public abstract class AbstractPublisherMergerTest {
 	private static final boolean KEEP_OUTPUT_FILE = false;
 	//Répertoire de test
-	private static String OUTPUT_PATH = "c:/tmp/";
+	private static String OUTPUT_PATH = "";
 
 	private static final String DATA_PACKAGE = "io/vertigo/quarto/publisher/data/documents/";
 
