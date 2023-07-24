@@ -3,6 +3,8 @@ Version history
 
 Running 4.0.0
 ----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-360-to-400)
+* [Ui] Extract exceptions handling from VSpringMvcControllerAdvice to VSpringMvcExceptionHandler
 
 more to come :)
 
