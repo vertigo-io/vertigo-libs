@@ -11,11 +11,10 @@
 		<vu:content/>
 	</vertigo-ssr>
 	<script th:if="${!isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@2.12.3/dist/quasar.umd.prod.js}"></script>
-    <script th:if="${!isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@2.12.3/dist/lang/__${model.util.getCurrentLocalePrefixForQuasar()}__.umd.prod.js}"></script>
     <script th:if="${isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@2.12.3/dist/quasar.umd.js}"></script>
-    <script th:if="${isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@2.12.3/dist/lang/__${model.util.getCurrentLocalePrefixForQuasar()}__.umd.js}"></script>
-	<script th:if="${!isVuiDevMode && !isVuejsDevMode}" th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.js}"></script>
-    <script th:if="${!isVuiDevMode && isVuejsDevMode}" th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.js}"></script>
+    <script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@2.12.3/dist/lang/__${model.util.getCurrentLocalePrefixForQuasar()}__.umd.prod.js}"></script>
+    <script th:if="${!isVuiDevMode && !isVuejsDevMode}" th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.js?v=4.0.0-RC1}"></script>
+    <script th:if="${!isVuiDevMode && isVuejsDevMode}" th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.js?v=4.0.0-RC1}"></script>
 	<script th:if="${isVuiDevMode}" type="module" src="http://localhost:3000/@vite/client"></script>
 	<script th:if="${isVuiDevMode}" type="module" src="http://localhost:3000/src/main.js"></script>
 	<div vu:slot="libraries_slot" ></div>
