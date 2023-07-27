@@ -40,17 +40,14 @@
 				th::grid="${isGrid?('$q.screen.lt.'+gridBreak):'false'}"
 			    th:attr="__${other_attrs}__">
 		</th:block>		
-		  <vu:content-slot name="header_slot"/>
-		  <template #top-left="props" th:if="${title!=null && subtitle==null}">
-              <div class="text-h6" vu:text="${title?:''}" />
-		  </template>
-		  <template slot="top-left" slot-scope="props" th:if="${title!=null && subtitle!=null}">
-	      <div class="column">
-	          <div class="text-h6" vu:text="${title?:''}" />
-	          <div class="text-subtitle2" vu:text="${subtitle?:''}" />
-	      </div>
-	    </template>
-		<template #top-left="props" vu:slot="top_left_slot"/>
+		  <vu:content-slot name="header_slot"/>		  
+		<template #top-left="props" vu:slot="top_left_slot">
+			  <div class="text-h6" vu:text="${title?:''}" th:if="${title!=null && subtitle==null}"/>
+			  <div class="column" th:if="${title!=null && subtitle!=null}">
+	              <div class="text-h6" vu:text="${title?:''}" />
+	              <div class="text-subtitle2" vu:text="${subtitle?:''}" />
+	          </div>
+		</template>
 		<template #top-right="props" vu:slot="top_right_slot"/>
 		<template #body="props">
 	        <q-tr :props="props" th:attr="__${tr_attrs}__" >
