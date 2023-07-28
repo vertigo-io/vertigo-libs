@@ -1,6 +1,7 @@
-<th:block th:fragment="table(list, componentId, selectable, rowKey, rowsPerPage, sortUrl, sortBy, descending, navOnRow, color, tableClass, autoColClass, title, subtitle, gridBreak ,top_right_slot, top_left_slot, header_slot, actions_slot, additional_content_slot, griditem_slot, contentTags, tr_attrs, item_attrs,  other_attrs)"
+<th:block th:fragment="table(list, componentId, selectable, rowKey, rowsPerPage, sortUrl, sortBy, descending, navOnRow, color, tableClass, autoColClass, title, subtitle, dontUseHeading, gridBreak ,top_right_slot, top_left_slot, header_slot, actions_slot, additional_content_slot, griditem_slot, contentTags, tr_attrs, item_attrs,  other_attrs)"
 	th:assert="${componentId} != null and !(${sortUrl} != null and ${sortBy} != null) and !(${descending} != null and ${sortBy} == null)" 
-	th:with="tableKey=${list}, rowIndex='props.rowIndex', listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}, myRowKey=${rowKey?:model.util.getIdField('__${list}__')}, myRowsPerPage=${rowsPerPage?:10}, myAutoColClass=${autoColClass?:false}, isGrid=${gridBreak!=null?true:false}">
+	 myRowsPerPage=${rowsPerPage?:10}, myAutoColClass=${autoColClass?:false}, isGrid=${gridBreak!=null?true:false},
+	 currentBlockLevel=${dontUseHeading==true?-1:(currentBlockLevel != null ? currentBlockLevel+1 : 1)}">
 	<th:block th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')}, objectKey=${model.vContext['componentStates'][__${componentId}__].addList('selected')}, objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false }, objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {page: 1 , rowsPerPage : __${myRowsPerPage}__, componentId : '__${componentId}__', listKey : '__${list}__'})}" th:remove="all" />
 	<th:block th:if="${sortUrl != null}" th:attr="objectKey=${model.vContext['componentStates'][__${componentId}__]['pagination'].put('sortUrl', '__${sortUrl}__')}" th:remove="all" />
 	<th:block th:if="${sortUrl != null}" th:attr="objectKey=${model.vContext['componentStates'][__${componentId}__]['pagination'].put('rowsNumber', __${listSize}__)}" th:remove="all" />
@@ -40,13 +41,18 @@
 				th::grid="${isGrid?('$q.screen.lt.'+gridBreak):'false'}"
 			    th:attr="__${other_attrs}__">
 		</th:block>		
-		  <vu:content-slot name="header_slot"/>		  
+		<vu:content-slot name="header_slot"/>		  
 		<template #top-left="props" vu:slot="top_left_slot">
-			  <div class="text-h6" vu:text="${title?:''}" th:if="${title!=null && subtitle==null}"/>
-			  <div class="column" th:if="${title!=null && subtitle!=null}">
-	              <div class="text-h6" vu:text="${title?:''}" />
-	              <div class="text-subtitle2" vu:text="${subtitle?:''}" />
-	          </div>
+			  <div class="column" th:if="${title!=null}" th:remove="${subtitle==null}? tag">
+                  <h1 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 1}"></h1>
+                  <h2 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 2}"></h2>
+                  <h3 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 3}"></h3>
+                  <h4 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 4}"></h4>
+                  <h5 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 5}"></h5>
+                  <h6 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 6}"></h6>
+                  <div class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${dontUseHeading == true}" />                        
+                  <div class="text-subtitle2" vu:text="${subtitle?:''}" th:if="${subtitle!=null}"/>
+              </div>
 		</template>
 		<template #top-right="props" vu:slot="top_right_slot"/>
 		<template #body="props">
@@ -86,9 +92,11 @@
 </th:block>
 
 
-<th:block th:fragment="table-modifiable(list, componentId, selectable, rowKey, navOnRow, color, tableClass, autoColClass, title, subtitle, top_right_slot, top_left_slot, header_slot, actions_slot, additional_content_slot, tr_attrs, other_attrs)"
+<th:block th:fragment="table-modifiable(list, componentId, selectable, rowKey, navOnRow, color, tableClass, autoColClass, title, subtitle, dontUseHeading, top_right_slot, top_left_slot, header_slot, actions_slot, additional_content_slot, tr_attrs, other_attrs)"
     th:assert="${componentId} != null" 
-    th:with="modifiableTable=true, rowIndex='props.rowIndex', tableKey=${list}, listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}, myRowKey=${rowKey?:model.util.getIdField('__${list}__')}, myRowsPerPage=0, myAutoColClass=${autoColClass?:false}">
+    th:with="modifiableTable=true, rowIndex='props.rowIndex', tableKey=${list}, listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}, myRowKey=${rowKey?:model.util.getIdField('__${list}__')}, 
+    myRowsPerPage=0, myAutoColClass=${autoColClass?:false},
+    currentBlockLevel=${dontUseHeading==true?-1:(currentBlockLevel != null ? currentBlockLevel+1 : 1)}">
     <th:block th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')}, objectKey=${model.vContext['componentStates'][__${componentId}__].addList('selected')}, objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false }, objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {page: 1 , rowsPerPage : __${myRowsPerPage}__, componentId : '__${componentId}__', listKey : '__${list}__'})}" th:remove="all" />
     
     <div class="col-12">
@@ -104,12 +112,19 @@
                 th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
                 hide-bottom 
                 th:attr="__${other_attrs}__">
-		  <vu:content-slot name="header_slot"/>              
-          <template #top-left="props" th:if="${title!=null}">
-            <div class="text-h6" vu:text="${title?:''}" />
-            <div class="text-subtitle2" vu:text="${subtitle?:''}" />
+		  <vu:content-slot name="header_slot"/>
+		  <template #top-left="props" vu:slot="top_left_slot">
+              <div class="column" th:if="${title!=null && subtitle!=null}" th:remove="${subtitle==null}? tag"}>
+                  <h1 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 1}"></h1>
+                  <h2 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 2}"></h2>
+                  <h3 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 3}"></h3>
+                  <h4 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 4}"></h4>
+                  <h5 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 5}"></h5>
+                  <h6 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 6}"></h6>
+                  <div class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${dontUseHeading == true}" />                        
+                  <div class="text-subtitle2" vu:text="${subtitle?:''}" th:if="${subtitle!=null}"/>
+              </div>
           </template>
-          <template #top-left="props" vu:slot="top_left_slot"/>
           <template #top-right="props" vu:slot="top_right_slot"/>
           <template #body="props">
 	          <q-tr :props="props" th:attr="__${tr_attrs}__" >

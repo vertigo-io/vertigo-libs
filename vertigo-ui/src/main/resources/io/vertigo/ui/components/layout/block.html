@@ -1,11 +1,18 @@
-<th:block th:fragment="block(title, subtitle, icon, withFab, actions_slot, header_attrs, content_attrs, card_attrs)" 
+<th:block th:fragment="block(title, subtitle, icon, withFab, dontUseHeading, actions_slot, header_attrs, content_attrs, card_attrs)" 
+	th:with="currentBlockLevel=${dontUseHeading==true?-1:(currentBlockLevel != null ? currentBlockLevel+1 : 1)}" 
 	th:assert="${title} != null">
 	<div class="col-12">
 		<div th:class="${'q-card bg-white ' + ((withFab!=null && withFab)?'withFab':'')}" th:attr="__${card_attrs}__">
 			<div class="q-card__section" th:attr="__${header_attrs}__">
 				<q-item>
 					<q-item-section>
-						<div class="text-h6" vu:text="${title?:''}" />
+					    <h1 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 1}"></h1>
+						<h2 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 2}"></h2>
+						<h3 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 3}"></h3>
+						<h4 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 4}"></h4>
+						<h5 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 5}"></h5>
+						<h6 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 6}"></h6>
+						<div class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${dontUseHeading == true}" />
 						<div class="text-subtitle2" vu:text="${subtitle?:''}" />
 					</q-item-section>
 					<q-item-section side vu:slot="actions_slot"><q-icon th-if="${icon != null}" th:name="${icon}"></q-icon></q-item-section>
