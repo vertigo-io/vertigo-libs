@@ -97,7 +97,7 @@ public class OrchestraWsTest {
 				.expect()
 				.log()
 				.all()
-				.body("name", Matchers.equalTo("ProTestBasic"))
+				.body("definitionId", Matchers.equalTo("ProTestBasic"))
 				.body("activities", Matchers.hasSize(1))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
