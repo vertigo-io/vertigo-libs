@@ -46,11 +46,10 @@
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-datastore</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		
+		</dependency>		
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-elasticsearch-connector</artifactId>
+			<artifactId>vertigo-elasticsearch_7_17-connector</artifactId>
 			<version>${vertigo.version}</version>
 			<optional>true</optional>
 		</dependency>
