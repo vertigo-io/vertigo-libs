@@ -29,6 +29,7 @@ export default {
         const scanner = args.value.scanner ? args.value.scanner : fixedPos + 30; //scanner is 30px bottom of fixedPos, must be smaller than the smallest first element
         const elAs = elNav.querySelectorAll('a')
         elAs[0].classList.add("active") //first active
+        elAs[0].ariaCurrent = "step";
         const scrollContainer = Quasar.scroll.getScrollTarget(document.querySelector(elAs[0].hash))
 
         let scannerLines = []
@@ -83,8 +84,10 @@ export default {
             for (var i = 0; i < elAs.length; i++) {
                 if (scrollBreakpoints[i] <= scrollPosition && (i >= elAs.length - 1 || scrollPosition < scrollBreakpoints[i + 1])) {
                     elAs[i].classList.add("active")
+                    elAs[i].ariaCurrent = "step";
                 } else {
                     elAs[i].classList.remove("active");
+                    elAs[i].removeAttribute("aria-current");
                 }
             }
         };
