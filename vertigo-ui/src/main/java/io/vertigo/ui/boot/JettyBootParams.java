@@ -27,6 +27,7 @@ public class JettyBootParams {
 
 	private final int port;
 	private final boolean sslDisabled;
+	private final boolean sniHostCheckDisabled;
 	private final String keystoreUrl;
 	private final String keystorePassword;
 	private final String sslKeystoreAlias;
@@ -42,6 +43,7 @@ public class JettyBootParams {
 			final Optional<String> contextPath,
 			final Class<? extends WebApplicationInitializer> webApplicationInitializerClass,
 			final boolean sslDisabled,
+			final boolean sniHostCheckDisabled,
 			final String keystoreUrl,
 			final String keystorePassword,
 			final String sslKeystoreAlias,
@@ -60,6 +62,7 @@ public class JettyBootParams {
 		//---
 		this.port = port;
 		this.sslDisabled = sslDisabled;
+		this.sniHostCheckDisabled = sniHostCheckDisabled;
 		this.keystoreUrl = keystoreUrl;
 		this.keystorePassword = keystorePassword;
 		this.sslKeystoreAlias = sslKeystoreAlias;
@@ -80,6 +83,10 @@ public class JettyBootParams {
 
 	public boolean isSslDisabled() {
 		return sslDisabled;
+	}
+
+	public boolean isSniHostCheckDisabled() {
+		return sniHostCheckDisabled;
 	}
 
 	public String getKeystoreUrl() {

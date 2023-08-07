@@ -77,7 +77,6 @@ public class JettyBoot {
 
 		// Add support for X-Forwarded headers
 		httpConfig.addCustomizer(new org.eclipse.jetty.server.ForwardedRequestCustomizer());
-		httpConfig.addCustomizer(new SecureRequestCustomizer());
 
 		if (jettyBootParams.isSslDisabled()) {
 
@@ -107,7 +106,9 @@ public class JettyBoot {
 
 			// SSL HTTP Configuration
 			final var httpsConfig = new HttpConfiguration(httpConfig);
-			httpsConfig.addCustomizer(new SecureRequestCustomizer());
+			final SecureRequestCustomizer secureRequestCustomizer = new SecureRequestCustomizer();
+			secureRequestCustomizer.setSniHostCheck(!jettyBootParams.isSniHostCheckDisabled());
+			httpsConfig.addCustomizer(secureRequestCustomizer);
 
 			//Wont close ServerConnector with try-with-resources : we want it to keep running
 			// SSL Connector
