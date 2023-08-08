@@ -38,7 +38,7 @@
 
 .v-field__required .q-field__label::after, .v-field__required .q-checkbox__label::after {
   content: " *";
-  color: var(--q-color-negative);
+  color: var(--q-negative);
 } 
 
 .v-field__required.v-field__has_after_label .q-field__label::after, .v-field__required.v-field__has_after_label .q-checkbox__label::after {
@@ -47,20 +47,21 @@
 
 .v-field__required.v-field__has_after_label .q-field__label>:first-child::after, .v-field__required .q-checkbox__label>:first-child::after {
   content: " *";
-  color: var(--q-color-negative);
+  color: var(--q-negative);
 } 
 
 .q-field--error .q-checkbox__label {
-  color: var(--q-color-negative);
+  color: var(--q-negative);
 }
 
 .notifications a.q-item {
 	text-decoration: none;
-	color: var(--q-color-body-color) !important;
+	color: var(--q-dark) !important;
 }
 
 .not-mini .eq-mini { /* can't revert display:none (on IE of course), we must use a concrete selector*/
 	display:none;
+	visibility:hidden; /* for screen readers */
 }
 
 .mini {
@@ -79,6 +80,7 @@
 
 .mini .ne-mini {
 	display:none;
+    visibility:hidden; /* for screen readers */
 }
 
 .mini .eq-mini {
@@ -203,8 +205,8 @@ img.avatar {
 }
 
 .facets .q-item--clickable:hover {
-    border-left: 3px solid var(--q-color-primary);
-    color : var(--q-color-primary);
+    border-left: 3px solid var(--q-primary);
+    color : var(--q-primary);
 }
 
 .facets .q-list-dense .q-list-header {
@@ -286,7 +288,7 @@ table .q-uploader .q-btn {
 }
 
 .q-editor--error {
-    border-color: var(--q-color-negative)!important
+    border-color: var(--q-negative)!important
 }
 
 
