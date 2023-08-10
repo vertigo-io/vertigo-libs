@@ -24,6 +24,10 @@
   white-space: nowrap !important;
 }
 
+iframe {
+	border: 0;
+}
+
 .text-primary-inverted  {
 	color:var(--v-primary-invert) !important; 
 }
@@ -93,7 +97,6 @@
     padding-top: 35px;
 }
 
-.withFab .fab-block,
 .withFab .fab-block {
 	position: absolute;
 	top: 0;
@@ -183,6 +186,10 @@ img.avatar {
 .table-tertiary  .q-btn {
 	background: var(--q-tertiary);
 	color:var(--q-tertiary-invert);
+}
+
+.q-tr .q-btn {
+    font-size:12px;
 }
 
 
