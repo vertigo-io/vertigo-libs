@@ -548,6 +548,9 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		} else {
 			final String[] typeAndFormat = toSwaggerType(webServiceParam.getType());
 			parameter.put("type", typeAndFormat[0]);
+			if ("file".equals(typeAndFormat[0])) {
+				parameter.put("in", "formData");
+			}
 			if (typeAndFormat[1] != null) {
 				parameter.put("format", typeAndFormat[1]);
 			}
