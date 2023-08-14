@@ -9,6 +9,7 @@ Running 4.0.0
 	* css --q-color-* => --q-*
 * [Ui] Vue2 -> Vue3 slots syntax #body="props"
 * [Ui] Components' param name support kebab-case, context variables are always as CamelCase (ex : buttons support `text-color` and `textColor` input params and declare a `textColor` thymeleaf variable)
+* [Ui] *Replace buttons attribute ariaLabel to title* (aria-label wasn't use for a11y in button, title was)
 
 more to come :)
 
