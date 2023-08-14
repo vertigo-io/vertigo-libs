@@ -7,6 +7,8 @@ Running 4.0.0
 * [Ui] Extract exceptions handling from VSpringMvcControllerAdvice to VSpringMvcExceptionHandler
 * [Ui] Quasar v1 to v2
 	* css --q-color-* => --q-*
+* [Ui] Vue2 -> Vue3 slots syntax #body="props"
+* [Ui] Components' param name support kebab-case, context variables are always as CamelCase (ex : buttons support `text-color` and `textColor` input params and declare a `textColor` thymeleaf variable)
 
 more to come :)
 
