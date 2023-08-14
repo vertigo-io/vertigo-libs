@@ -1,0 +1,15 @@
+<th:block th:fragment="messages-dsfr(small)"
+          th:with="smallClass=${(small!=null && small)?'fr-alert--sm':''}, pClass=${(small!=null && small)?'':'fr-alert__title'}">
+        <div v-if="uiMessageStack.globalErrors && uiMessageStack.globalErrors.length > 0" th:class="|fr-alert fr-alert--error ${smallClass}|">
+            <p th:class="${pClass}" v-for="message in uiMessageStack.globalErrors">{{message}}</p>
+        </div>
+        <div v-if="uiMessageStack.globalWarnings && uiMessageStack.globalWarnings.length > 0" th:class="|fr-alert fr-alert--warning ${smallClass}|">
+                <p th:class="${pClass}" v-for="message in uiMessageStack.globalWarnings">{{message}}</p>
+        </div>
+        <div v-if="uiMessageStack.globalInfos && uiMessageStack.globalInfos.length > 0" th:class="|fr-alert fr-alert--info ${smallClass}|">
+                <p th:class="${pClass}" v-for="message in uiMessageStack.globalInfos">{{message}}</p>
+        </div>
+        <div v-if="uiMessageStack.globalSuccess && uiMessageStack.globalSuccess.length > 0" th:class="|fr-alert fr-alert--success ${smallClass}|">
+                <p th:class="${pClass}" v-for="message in uiMessageStack.globalSuccess">{{message}}</p>
+        </div>
+</th:block>

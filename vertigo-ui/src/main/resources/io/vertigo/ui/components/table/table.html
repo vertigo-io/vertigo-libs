@@ -1,4 +1,4 @@
-<th:block th:fragment="table(list, componentId, selectable, rowKey, rowsPerPage, sortUrl, sortBy, descending, navOnRow, color, tableClass, autoColClass, title, subtitle, dontUseHeading, gridBreak ,top_right_slot, top_left_slot, header_slot, actions_slot, additional_content_slot, griditem_slot, contentTags, tr_attrs, item_attrs,  other_attrs)"
+<th:block th:fragment="table(list, componentId, selectable, rowKey, rowsPerPage, sortUrl, sortBy, descending, navOnRow, color, tableClass, autoColClass, title, subtitle, dontUseHeading, gridBreak ,top_right_slot, top_left_slot, header_slot, actions_slot, additional_content_slot, griditem_slot, contentTags, tr_attrs, item_attrs,  table_attrs)"
 	th:assert="${componentId} != null and !(${sortUrl} != null and ${sortBy} != null) and !(${descending} != null and ${sortBy} == null)" 
 	th:with="tableKey=${list}, rowIndex='props.rowIndex', listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}, myRowKey=${rowKey?:model.util.getIdField('__${list}__')},
 	 myRowsPerPage=${rowsPerPage?:10}, myAutoColClass=${autoColClass?:false}, isGrid=${gridBreak!=null?true:false},
@@ -22,9 +22,9 @@
 			    th:v-model:pagination="|componentStates.${componentId}.pagination|"
 			    th::sort-method="|createDefaultTableSort('${componentId}')|"
 			    th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
-				th::grid="${isGrid?('$q.screen.lt.'+gridBreak):'false'}"
-			    th:attr="__${other_attrs}__"
-			  >
+			    th::grid="${isGrid?('$q.screen.lt.'+gridBreak):'false'}"
+			    th:title="${title?:''}"
+			    th:attr="__${table_attrs}__">
 		</th:block>
 		
 		<th:block th:if="${sortUrl != null}">
@@ -39,8 +39,9 @@
 			    th:v-model:pagination="|componentStates.${componentId}.pagination|"
 			    th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
 			    th:@request="paginationAndSortHandler"
-				th::grid="${isGrid?('$q.screen.lt.'+gridBreak):'false'}"
-			    th:attr="__${other_attrs}__">
+			    th::grid="${isGrid?('$q.screen.lt.'+gridBreak):'false'}"
+			    th:title="${title?:''}"
+			    th:attr="__${table_attrs}__">
 		</th:block>		
 		<vu:content-slot name="header_slot"/>		  
 		<template #top-left="props" vu:slot="top_left_slot">
@@ -56,15 +57,23 @@
               </div>
 		</template>
 		<template #top-right="props" vu:slot="top_right_slot"/>
+		<template #header="props">
+            <q-tr :props="props">
+              <q-th v-for="col in props.cols" :key="col.name" :props="props" scope="col" 
+               :aria-sort="col.__thClass.includes('sorted') ? col.__thClass.includes('sort-desc')?'descending':'ascending' : null">
+                {{ col.label }}
+              </q-th>
+            </q-tr>
+        </template>
 		<template #body="props">
 	        <q-tr :props="props" th:attr="__${tr_attrs}__" >
 	          <q-td th:if="${mySelectable}" auto-width>
 	          <q-checkbox th:color="${color?:'primary'}" v-model="props.selected" ></q-checkbox>
 	        </q-td>
 	        <vu:content></vu:content>
-	        <vu:column name="action" label="" sortable="false" align="right" th:if="${actions_slot != null}">
+	        <vu:column name="action" th:label="#{table.table.actionCol}" sortable="false" align="right" th:if="${actions_slot != null}">
 	          <div class="row self-center justify-end col showButtonOnHover">						
-	            <vu:content-slot name="actions_slot" />
+	            <vu:content-slot name="actions_slot" th:with="label=null"/>
 	          </div>
 	        </vu:column>
 		    </q-tr>
@@ -83,7 +92,7 @@
 		       		</q-card-section>
 					<q-separator></q-separator>
 					<q-card-section>
-						<vu:content-slot name="actions_slot" />
+						<vu:content-slot name="actions_slot" th:with="label=null" />
 					</q-card-section>
 		       </q-card>
 			</div>
@@ -93,7 +102,7 @@
 </th:block>
 
 
-<th:block th:fragment="table-modifiable(list, componentId, selectable, rowKey, navOnRow, color, tableClass, autoColClass, title, subtitle, dontUseHeading, top_right_slot, top_left_slot, header_slot, actions_slot, additional_content_slot, tr_attrs, other_attrs)"
+<th:block th:fragment="table-modifiable(list, componentId, selectable, rowKey, navOnRow, color, tableClass, autoColClass, title, subtitle, dontUseHeading, top_right_slot, top_left_slot, header_slot, actions_slot, additional_content_slot, tr_attrs, table_attrs)"
     th:assert="${componentId} != null" 
     th:with="modifiableTable=true, rowIndex='props.rowIndex', tableKey=${list}, listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}, myRowKey=${rowKey?:model.util.getIdField('__${list}__')}, 
     myRowsPerPage=0, myAutoColClass=${autoColClass?:false},
@@ -112,7 +121,8 @@
                 th::pagination.sync="|componentStates.${componentId}.pagination|"
                 th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
                 hide-bottom 
-                th:attr="__${other_attrs}__">
+                th:title="${title?:''}"
+                th:attr="__${table_attrs}__">
 		  <vu:content-slot name="header_slot"/>
 		  <template #top-left="props" vu:slot="top_left_slot">
               <div class="column" th:if="${title!=null && subtitle!=null}" th:remove="${subtitle==null}? tag"}>
@@ -127,15 +137,22 @@
               </div>
           </template>
           <template #top-right="props" vu:slot="top_right_slot"/>
+          <template #header="props">
+            <q-tr :props="props">
+              <q-th v-for="col in props.cols" :key="col.name" :props="props" scope="col" >
+                {{ col.label }}
+              </q-th>
+            </q-tr>
+          </template>
           <template #body="props">
 	          <q-tr :props="props" th:attr="__${tr_attrs}__" >
 	            <q-td th:if="${mySelectable}" auto-width>
 	                <q-checkbox th:color="${color?:'primary'}" v-model="props.selected" ></q-checkbox>
 	            </q-td>
 	            <vu:content></vu:content>
-	            <vu:column name="action" label="" sortable="false" th:if="${actions_slot != null}">
+	            <vu:column name="action" th:label="#{table.table.actionCol}" sortable="false" th:if="${actions_slot != null}">
 	                <div class="row self-center justify-end col showButtonOnHover">                     
-	                    <vu:content-slot name="actions_slot" />
+	                    <vu:content-slot name="actions_slot" th:with="label=null" />
 	                </div>
 	            </vu:column>
 	          </q-tr>

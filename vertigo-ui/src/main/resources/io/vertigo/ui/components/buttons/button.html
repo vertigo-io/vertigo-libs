@@ -1,0 +1,9 @@
+<th:block th:fragment="button(label, icon, color, text-color, ariaLabel, v-ariaLabel, other_attrs)"
+      th:assert="(${label} != null or (${icon} != null and (${ariaLabel} != null or ${#ctx.getVariable('v-ariaLabel')} != null)))"
+      th:with="vAriaLabel=${#ctx.getVariable('v-ariaLabel')} " >
+    <q-btn th:icon="${icon?:''}" th:label="${label?:''}" th:title="${vAriaLabel==null?ariaLabel?:'':''}" th::title="${vAriaLabel?:''}" 
+           th::round="${label==null?'true':''}" th:color="${color?:'primary'}" th:text-color="${#ctx.getVariable('text-color')?:''}" th:attr="__${other_attrs}__">
+           <vu:content><span class="sr-only" th:if="${label==null && vAriaLabel==null}" vu:text="${ariaLabel?:''}"></span>
+           <span class="sr-only" th:if="${label==null && vAriaLabel!=null}" th:text="|{{${vAriaLabel?:''}}}|"></span></vu:content>
+    </q-btn>
+</th:block>

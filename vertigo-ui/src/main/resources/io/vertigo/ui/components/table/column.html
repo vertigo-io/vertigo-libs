@@ -6,7 +6,7 @@
 		<th:block th:if="${myDatetimeFormat != null}" th:attr="datetimeFormatKey=${objectKey.put('datetimeFormat', '__${myDatetimeFormat}__')}" th:remove="all"></th:block>
 	</th:block>
 	<vu:include-data th:if="${field != null}" object="${list}" field="${field}"/>
-	<q-td th:key="${columnName}" :props="props" th:class="${class?:columnClass}"  th:attr="__${td_attrs}__" >
+	<q-td th:key="${columnName}" :props="props" th:class="${class?:columnClass}" th:with="label=null"  th:attr="__${td_attrs}__" >
 		<vu:content>{{ props.row.[[${field}]] }}</vu:content><!--/* Default content */-->
 	</q-td>
 </th:block> 
@@ -17,7 +17,7 @@
 	<vu:include-data th:if="${field != null}" object="${list}" field="${field}"/>
 	<div class="q-table__grid-item-row" th:attr="__${td_attrs}__" >
 		<div class="q-table__grid-item-title" vu:text="${columnLabel}"></div>
-		<div class="q-table__grid-item-value">
+		<div class="q-table__grid-item-value" th:with="label=null">
         	 <vu:content>{{ props.row.[[${field}]] }}</vu:content>
 		</div>
 	</div>

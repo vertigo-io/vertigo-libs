@@ -9,7 +9,7 @@
 	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 		<q-editor  
 			th:v-model="${model.util.vueDataKey(object, field, rowIndex)}" 
-			th::class="|{'q-editor--error':hasFieldsError('${object}', '${field}', ${rowIndex})}|"
+			th::class="|{'q-editor--error':hasFieldsError('${object}', '${field}', ${rowIndex})}|" paragraph-tag="p"
 			th:attr="__${pastePlainText}__, __${input_attrs}__" >
 			<vu:content-slot name="edit_content_slot"/>
 		</q-editor>
