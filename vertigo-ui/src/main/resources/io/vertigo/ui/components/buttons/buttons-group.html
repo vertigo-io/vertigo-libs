@@ -13,7 +13,7 @@
 			<q-menu>
 				<q-list class="column items-center" th:each="contentItem,iter:${contentTags}">
 					<q-item th:class="${iter.index>=xl?'':iter.index>=lg?'lt-xl':iter.index>=md?'lt-lg':iter.index>=sm?'lt-md':iter.index>=xs?'lt-sm':'lt-xs'}">
-					<vu:content-item size="md" :round="false" label="${contentItem.getAttribute('ariaLabel')}" />
+					<vu:content-item size="md" :round="false" label="${contentItem.getAttribute('title')}" />
 					</q-item>
 				</q-list>
 			</q-menu>

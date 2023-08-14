@@ -1,20 +1,20 @@
-<th:block th:fragment="button-submit(label, icon, color, text-color, action, ariaLabel, loading, other_attrs)"
-      th:assert="(${label} != null or (${icon} != null and ${ariaLabel} != null)) and ${action} != null"
+<th:block th:fragment="button-submit(label, icon, color, text-color, action, title, loading, other_attrs)"
+      th:assert="(${label} != null or (${icon} != null and ${title} != null)) and ${action} != null"
       th:with="myComponentId='button'+${action}, myLoading=${loading}?:true" >
-    <q-btn type="submit" th:formaction="${action}" th:icon="${icon?:''}" th:label="${label?:''}" th:title="${ariaLabel?:''}" 
+    <q-btn type="submit" th:formaction="${action}" th:icon="${icon?:''}" th:label="${label?:''}" th:title="${title?:''}" 
            th:@click="${myLoading}?|pushPendingAction('${action}')|:''" th::loading="${myLoading}?|isPendingAction('${action}')|:''" 
-           th::round="${label==null?'true':''}" th:color="${color?:'primary'}" th:text-color="${#ctx.getVariable('text-color')?:''}" th:attr="__${other_attrs}__">
-           <vu:content><span class="sr-only" th:if="${label==null}" vu:text="${ariaLabel?:''}"></span></vu:content>
+           th::round="${label==null?'true':''}" th:color="${color?:'primary'}" th:text-color="${textColor?:''}" th:attr="__${other_attrs}__">
+           <vu:content><span class="sr-only" th:if="${label==null}" vu:text="${title?:''}"></span></vu:content>
     </q-btn>
 </th:block>
-<th:block th:fragment="button-submit-confirm(actions_slot, label, icon, color, text-color, action, ariaLabel, loading, formId, confirmMessage, labelOk, labelCancel, other_attrs)"
-      th:assert="(${label} != null or (${icon} != null and ${ariaLabel} != null)) and ${action} != null and ${formId} != null"
+<th:block th:fragment="button-submit-confirm(actions_slot, label, icon, color, text-color, action, title, loading, formId, confirmMessage, labelOk, labelCancel, other_attrs)"
+      th:assert="(${label} != null or (${icon} != null and ${title} != null)) and ${action} != null and ${formId} != null"
       th:with="myComponentId='button'+${action},myLabelOk=${labelOk?:'Oui'},myLabelCancel=${labelCancel?:'Non'}, myLoading=${loading}?:true"
       th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('confirm',false)}">
-    <q-btn th:icon="${icon?:''}" th:label="${label?:''}" th:title="${ariaLabel?:''}"
+    <q-btn th:icon="${icon?:''}" th:label="${label?:''}" th:title="${title?:''}"
            th:@click="|componentStates.${myComponentId}.confirm = true|"
-           th::round="${label==null?'true':''}" th:color="${color?:'primary'}" th:text-color="${#ctx.getVariable('text-color')?:''}" th:attr="__${other_attrs}__">
-         <span class="sr-only" th:if="${label==null}" vu:text="${ariaLabel?:''}"></span>
+           th::round="${label==null?'true':''}" th:color="${color?:'primary'}" th:text-color="${textColor?:''}" th:attr="__${other_attrs}__">
+         <span class="sr-only" th:if="${label==null}" vu:text="${title?:''}"></span>
          <q-dialog th:v-model="|componentStates.${myComponentId}.confirm|" persistent>
           <q-card>
             <q-card-section class="row items-center">

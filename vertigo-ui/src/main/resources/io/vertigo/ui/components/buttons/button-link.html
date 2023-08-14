@@ -1,17 +1,17 @@
-<th:block th:fragment="button-link(label, icon, color, text-color, url, ariaLabel, disabled, other_attrs)"
-	  th:assert="(${label} != null or (${icon} != null and ${ariaLabel} != null)) and ${url} != null">
-	<q-btn type="a" th:icon="${icon?:''}" th:label="${label?:''}" th:title="${ariaLabel?:''}" th::href="|${disabled}?null:'${url}'|" 
-	       th::round="${label==null?'true':''}" th:color="${color?:'primary'}" th:text-color="${#ctx.getVariable('text-color')?:''}" th::disabled="${disabled}" th::ripple="|!${disabled}|" th:attr="__${other_attrs}__"><vu:content>
-	<span class="sr-only" th:if="${label==null}" vu:text="${ariaLabel?:''}"></span></vu:content></q-btn>
+<th:block th:fragment="button-link(label, icon, color, text-color, url, title, disabled, other_attrs)"
+	  th:assert="(${label} != null or (${icon} != null and ${title} != null)) and ${url} != null">
+	<q-btn type="a" th:icon="${icon?:''}" th:label="${label?:''}" th:title="${title?:''}" th::href="|${disabled}?null:'${url}'|" 
+	       th::round="${label==null?'true':''}" th:color="${color?:'primary'}" th:text-color="${textColor?:''}" th::disabled="${disabled}" th::ripple="|!${disabled}|" th:attr="__${other_attrs}__"><vu:content>
+	<span class="sr-only" th:if="${label==null}" vu:text="${title?:''}"></span></vu:content></q-btn>
 </th:block> 
-<th:block th:fragment="button-link-confirm(actions_slot, label, icon, color, text-color, url, ariaLabel, disabled, confirmMessage, labelOk, labelCancel, other_attrs)"
-          th:assert="(${label} != null or (${icon} != null and ${ariaLabel} != null)) and ${url} != null"
+<th:block th:fragment="button-link-confirm(actions_slot, label, icon, color, text-color, url, title, disabled, confirmMessage, labelOk, labelCancel, other_attrs)"
+          th:assert="(${label} != null or (${icon} != null and ${title} != null)) and ${url} != null"
           th:with="myComponentId='button'+${url},myLabelOk=${labelOk?:'Oui'},myLabelCancel=${labelCancel?:'Non'}"
           th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('confirm',false)}">
-    <q-btn th:icon="${icon?:''}" th:label="${label?:''}" th:title="${ariaLabel?:''}" 
-           th::round="${label==null?'true':''}" th:color="${color?:'primary'}" th:text-color="${#ctx.getVariable('text-color')?:''}" th:@click="|componentStates.${myComponentId}.confirm = true|"
+    <q-btn th:icon="${icon?:''}" th:label="${label?:''}" th:title="${title?:''}" 
+           th::round="${label==null?'true':''}" th:color="${color?:'primary'}" th:text-color="${textColor?:''}" th:@click="|componentStates.${myComponentId}.confirm = true|"
            th:attr="__${other_attrs}__">
-        <span class="sr-only" th:if="${label==null}" vu:text="${ariaLabel?:''}"></span>
+        <span class="sr-only" th:if="${label==null}" vu:text="${title?:''}"></span>
         <q-dialog th:v-model="|componentStates.${myComponentId}.confirm|" persistent>
             <q-card>
                 <q-card-section class="row items-center">
@@ -21,8 +21,8 @@
                 </q-card-section>
                 <q-card-actions align="right" vu:slot="actions_slot">
                     <q-btn flat th:label="${myLabelCancel}" color="primary" v-close-popup></q-btn>
-                    <q-btn type="a" th:label="${label?:''}" th:icon="${icon?:''}" th::disabled="${disabled}" th::ripple="|!${disabled}|" th::href="|${disabled}?null:'${url}'|" th:title="${ariaLabel?:label?:''}">
-                    <span class="sr-only" th:if="${label==null}" vu:text="${ariaLabel?:''}"></span></q-btn>
+                    <q-btn type="a" th:label="${label?:''}" th::round="${label==null?'true':''}" th:icon="${icon?:''}" th::disabled="${disabled}" th::ripple="|!${disabled}|" th::href="|${disabled}?null:'${url}'|" th:title="${title?:''}">
+                    <span class="sr-only" th:if="${label==null}" vu:text="${title?:''}"></span></q-btn>
                 </q-card-actions>
             </q-card>
         </q-dialog>
