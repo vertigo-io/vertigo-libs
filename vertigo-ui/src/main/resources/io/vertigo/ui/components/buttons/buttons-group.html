@@ -7,8 +7,9 @@
 		th:class="${iter.index>=xl?'gt-xl':iter.index>=lg?'gt-lg':iter.index>=md?'gt-md':iter.index>=sm?'gt-sm':iter.index>=xs?'gt-xs':''}"/>		
 	</th:block>
 	<th:block>
-		<q-btn round size="lg" color="primary" icon="more_horiz" direction="down" aria-label="More actions" title="More actions" class="on-left"
+		<q-btn round size="lg" color="primary" icon="more_horiz" direction="down" th:title="#{buttons.buttons-group.moreActions}" class="on-left"
 		th:classappend="${buttonsCount>=lg?'lt-xl':buttonsCount>=md?'lt-lg':buttonsCount>=sm?'lt-md':buttonsCount>=xs?'lt-sm':buttonsCount>0?'lt-xs':''}">
+			<span class="sr-only" vu:text="#{buttons.buttons-group.moreActions}"></span>
 			<q-menu>
 				<q-list class="column items-center" th:each="contentItem,iter:${contentTags}">
 					<q-item th:class="${iter.index>=xl?'':iter.index>=lg?'lt-xl':iter.index>=md?'lt-lg':iter.index>=sm?'lt-md':iter.index>=xs?'lt-sm':'lt-xs'}">
