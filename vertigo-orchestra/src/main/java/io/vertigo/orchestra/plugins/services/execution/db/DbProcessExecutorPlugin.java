@@ -17,7 +17,6 @@
  */
 package io.vertigo.orchestra.plugins.services.execution.db;
 
-import java.lang.reflect.Field;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
@@ -322,7 +321,6 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	}
 
 	private void doRunActivity(final OActivityExecution activityExecution, final ActivityExecutionWorkspace workspace) {
-		clearAllThreadLocals();
 		ThreadContext.put("module", "orchestra");
 		ActivityExecutionWorkspace result = null;
 		Throwable throwable = null;
@@ -340,16 +338,6 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		} finally {
 			putResult(activityExecution, result, throwable);
 			ThreadContext.remove("module");
-		}
-	}
-
-	private static void clearAllThreadLocals() {
-		try {
-			final Field threadLocals = Thread.class.getDeclaredField("threadLocals");
-			threadLocals.setAccessible(true);
-			threadLocals.set(Thread.currentThread(), null);
-		} catch (final Exception e) {
-			throw new AssertionError(e);
 		}
 	}
 

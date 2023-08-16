@@ -34,11 +34,11 @@ import io.vertigo.orchestra.boot.DataBaseInitializer;
 import io.vertigo.orchestra.util.monitoring.MonitoringServices;
 import io.vertigo.orchestra.util.monitoring.MonitoringServicesImpl;
 
-public final class OrchestraNode1NodeConfig {
+public final class OrchestraNode2NodeConfig {
 
 	public static NodeConfigBuilder createNodeConfigBuilder() {
 		return NodeConfig.builder()
-				.withNodeId("NodeTest1")
+				.withNodeId("NodeTest2")
 				.withBoot(BootConfig.builder()
 						.withLocales("fr_FR")
 						.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -73,10 +73,10 @@ public final class OrchestraNode1NodeConfig {
 				// we build h2 mem
 				.addModule(ModuleConfig.builder("databaseInitializer").addComponent(DataBaseInitializer.class).build())
 				.addModule(new OrchestraFeatures()
-						.withDataBase(Param.of("nodeName", "NodeTest1"), Param.of("daemonPeriodSeconds", "1"), Param.of("workersCount", "3"), Param.of("forecastDurationSeconds", "60"))
+						.withDataBase(Param.of("nodeName", "NodeTest2"), Param.of("daemonPeriodSeconds", "1"), Param.of("workersCount", "3"), Param.of("forecastDurationSeconds", "60"))
 						.withMemory(Param.of("workersCount", "1"))
 						.build())
-				.addModule(ModuleConfig.builder("orchestra-test-node1")
+				.addModule(ModuleConfig.builder("orchestra-test-node2")
 						//---Services
 						.addComponent(MonitoringServices.class, MonitoringServicesImpl.class)
 						.build())
