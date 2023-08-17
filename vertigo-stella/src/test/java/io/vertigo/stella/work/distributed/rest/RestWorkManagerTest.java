@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.connectors.javalin.JavalinFeatures;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.datamodel.DataModelFeatures;
@@ -66,6 +67,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
+				.withBoot(BootConfig.builder().withLocales("fr_FR").build())
 				.addModule(new JavalinFeatures()
 						.withEmbeddedServer(
 								Param.of("port", "10998"))
