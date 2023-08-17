@@ -1,4 +1,4 @@
-/**
+/*
  * vertigo - application development platform
  *
  * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /*
  * Licensed to the University Corporation for Advanced Internet Development,
  * Inc. (UCAID) under one or more contributor license agreements.  See the
