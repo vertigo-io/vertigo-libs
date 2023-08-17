@@ -143,6 +143,13 @@
 			</exclusions>
 		</dependency>
 		
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-firefox-driver</artifactId>
+            <version>4.10.0</version>
+            <scope>test</scope>
+        </dependency>
+		
 		<!-- Search -->
 		<dependency>
 			<groupId>org.elasticsearch</groupId>

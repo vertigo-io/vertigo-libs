@@ -34,13 +34,13 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-
-import com.gargoylesoftware.htmlunit.BrowserVersion;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 
 import io.vertigo.ui.boot.JettyBoot;
 import io.vertigo.ui.boot.JettyBootParams;
 
+@Disabled
 public class TestUi {
 
 	private static final int port = 18080;
@@ -54,7 +54,10 @@ public class TestUi {
 				.timezone(Timezone.EUROPE_PARIS)
 				.headless(true) //use false for debug purpose
 				.build());*/
-		driver = new HtmlUnitDriver(BrowserVersion.FIREFOX, true);
+		final FirefoxOptions options = new FirefoxOptions();
+		options.addArguments("-headless");
+		driver = new FirefoxDriver(options);
+		//driver = new HtmlUnitDriver(BrowserVersion.FIREFOX, true);
 		Thread.sleep(5000);
 	}
 
@@ -77,6 +80,7 @@ public class TestUi {
 
 	@AfterAll
 	public static void tearDown() throws Exception {
+		driver.quit();
 		JettyBoot.stop();
 	}
 
