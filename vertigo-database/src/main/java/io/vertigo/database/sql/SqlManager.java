@@ -111,4 +111,12 @@ public interface SqlManager extends Manager {
 			SqlStatement sqlStatement,
 			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlConnection connection) throws SQLException;
+
+	<O> Tuple<Integer, List<O>> executeBatchWithGeneratedKeys(
+			SqlStatement sqlStatement,
+			final GenerationMode generationMode,
+			final String columnName,
+			final Class<O> dataType,
+			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
+			final SqlConnection connection) throws SQLException;
 }

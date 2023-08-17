@@ -33,7 +33,7 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.core.util.StringUtil;
 
 @DefinitionPrefix(CommandDefinition.PREFIX)
-public final class CommandDefinition extends AbstractDefinition {
+public final class CommandDefinition extends AbstractDefinition<CommandDefinition> {
 	public static final String PREFIX = "Cmd";
 	private static final Pattern COMMAND_PATTERN = Pattern.compile("(\\/[a-zA-Z0-9]+)+");
 
@@ -59,7 +59,7 @@ public final class CommandDefinition extends AbstractDefinition {
 		//---
 		commandParams
 				.forEach(commandParam -> {
-					final Type type = commandParam.getType();
+					final Type type = commandParam.type();
 					if (type instanceof Class) {
 						Assertion.check().isTrue(String.class.isAssignableFrom((Class) type), "Only ParamUID and String params are allowed for command");
 					} else if (type instanceof ParameterizedType) {

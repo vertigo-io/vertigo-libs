@@ -22,7 +22,7 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
 
 public final class StoreUtil {
 
-	protected StoreUtil() {
+	private StoreUtil() {
 		// util
 	}
 

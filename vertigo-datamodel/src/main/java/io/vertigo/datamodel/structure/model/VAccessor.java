@@ -20,7 +20,7 @@ package io.vertigo.datamodel.structure.model;
 import java.io.Serializable;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
@@ -40,7 +40,7 @@ public class VAccessor<E extends Entity> implements Serializable {
 	}
 
 	private State status = State.NOT_LOADED;
-	private final DefinitionReference<DtDefinition> targetDtDefinitionRef;
+	private final DefinitionId<DtDefinition> targetDtDefinitionId;
 	private final String role;
 	private UID<E> targetURI;
 	private E value;
@@ -64,7 +64,7 @@ public class VAccessor<E extends Entity> implements Serializable {
 				.isNotNull(targetDtDefinition)
 				.isNotBlank(role);
 		//---
-		this.targetDtDefinitionRef = new DefinitionReference(targetDtDefinition);
+		this.targetDtDefinitionId = targetDtDefinition.id();
 		this.role = role;
 	}
 
@@ -112,7 +112,7 @@ public class VAccessor<E extends Entity> implements Serializable {
 		//---
 		//If already loaded and same id, we don't touch anything
 		if (!(status == State.LOADED && isSameId(id))) {
-			targetURI = id == null ? null : UID.of(targetDtDefinitionRef.get(), id);
+			targetURI = id == null ? null : UID.of(targetDtDefinitionId.get(), id);
 			//we have to reset the value and the state
 			value = null;
 			status = State.NOT_LOADED;

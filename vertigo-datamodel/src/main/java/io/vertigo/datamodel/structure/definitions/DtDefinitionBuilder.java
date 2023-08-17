@@ -24,9 +24,9 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.locale.MessageKey;
-import io.vertigo.core.locale.MessageText;
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.locale.LocaleMessageKey;
+import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 
@@ -39,7 +39,7 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
  */
 public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
-	private static class MessageKeyImpl implements MessageKey {
+	private static class MessageKeyImpl implements LocaleMessageKey {
 		private static final long serialVersionUID = 6959551752755175151L;
 
 		private final String name;
@@ -57,7 +57,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 	private DtDefinition dtDefinition;
 	private final String myName;
-	private DefinitionReference<DtDefinition> myFragmentRef;
+	private DefinitionId<DtDefinition> myFragmentId;
 	private String myPackageName;
 	private DtStereotype myStereotype;
 	private DtField myIdField;
@@ -99,7 +99,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		Assertion.check().isNotNull(fragment);
 		//---
 		myStereotype = DtStereotype.Fragment;
-		myFragmentRef = new DefinitionReference<>(fragment);
+		myFragmentId = fragment.id();
 		return this;
 	}
 
@@ -253,7 +253,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 		//2. Sinon Indication de longueur portée par le champ du DT.
 		//-----
-		final MessageText labelMsg = MessageText.ofDefaultMsg(strLabel, new MessageKeyImpl(id));
+		final LocaleMessageText labelMsg = LocaleMessageText.ofDefaultMsg(strLabel, new MessageKeyImpl(id));
 		// Champ CODE_COMMUNE >> getCodeCommune()
 		//Un champ est persisanty s'il est marqué comme tel et si la définition l'est aussi.
 		return new DtField(
@@ -333,7 +333,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			sortField = findFieldByName(mySortFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Sort field '{0}' not found on '{1}'", mySortFieldName, dtDefinition.getName())));
 		} else if (myStereotype == DtStereotype.Fragment) {
-			sortField = myFragmentRef.get().getSortField().orElse(null);
+			sortField = myFragmentId.get().getSortField().orElse(null);
 		} else {
 			sortField = null;
 		}
@@ -343,7 +343,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			displayField = findFieldByName(myDisplayFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Display field '{0}' not found on '{1}'", myDisplayFieldName, dtDefinition.getName())));
 		} else if (myStereotype == DtStereotype.Fragment) {
-			displayField = myFragmentRef.get().getDisplayField().orElse(null);
+			displayField = myFragmentId.get().getDisplayField().orElse(null);
 		} else {
 			displayField = null;
 		}
@@ -353,7 +353,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			handleField = findFieldByName(myHandleFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Handle field '{0}' not found on '{1}'", myHandleFieldName, dtDefinition.getName())));
 		} else if (myStereotype == DtStereotype.Fragment) {
-			handleField = myFragmentRef.get().getHandleField().orElse(null);
+			handleField = myFragmentId.get().getHandleField().orElse(null);
 		} else {
 			handleField = null;
 		}
@@ -368,7 +368,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 		dtDefinition = new DtDefinition(
 				myName,
-				Optional.ofNullable(myFragmentRef),
+				Optional.ofNullable(myFragmentId),
 				myPackageName,
 				myStereotype,
 				myFields,
@@ -384,7 +384,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		Assertion.check().isNotBlank(fieldName);
 		return myFields
 				.stream()
-				.filter(dtField -> fieldName.equals(dtField.getName()))
+				.filter(dtField -> fieldName.equals(dtField.name()))
 				.findFirst();
 	}
 

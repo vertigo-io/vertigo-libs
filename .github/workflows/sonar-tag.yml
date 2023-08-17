@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
         influxdb:
-            image: influxdb:2.0
+            image: influxdb:2.4
             env:
               DOCKER_INFLUXDB_INIT_MODE: setup
               DOCKER_INFLUXDB_INIT_USERNAME: vertigo
@@ -21,7 +21,7 @@ jobs:
             ports:
               - 8086:8086
         analytics:
-            image: vertigoio/vertigo-analytics-server
+            image: vertigoio/vertigo-analytics-server:0.9.2
             env:
               INFLUXDB_URL: http://influxdb:8086
               INFLUXDB_TOKEN: rytuvFE1f5JR4CPD1cOfr-74W2rL7tu1by-6DnO6zbTxMQy6foj7qtBMYSkFGT15Y1vjJCr5OP01Uci_ZdIlIA==
@@ -46,10 +46,10 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
           ref: ${{ github.event.inputs.version-tag }}
-      - name: Set up JDK 16
+      - name: Set up JDK 17
         uses: actions/setup-java@v1
         with:
-          java-version: 11
+          java-version: 17
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
@@ -66,9 +66,8 @@ jobs:
         run: |
           echo "127.0.0.1 analytica.part.klee.lan.net" | sudo tee -a /etc/hosts
           echo "127.0.0.1 docker-vertigo.part.klee.lan.net" | sudo tee -a /etc/hosts
-          echo "127.0.0.1 redis-pic.part.klee.lan.net" | sudo tee -a /etc/hosts
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn clean source:jar org.jacoco:jacoco-maven-plugin:prepare-agent package org.jacoco:jacoco-maven-plugin:report org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar -Dsonar.projectKey=vertigo-io_vertigo-connectors -Dsonar.organization=vertigo-io -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name="master" -Djacoco.destFile="\${project.build.directory}/jacoco.exec" -Dsonar.jacoco.reportPath=
+        run: mvn clean source:jar org.jacoco:jacoco-maven-plugin:prepare-agent package org.jacoco:jacoco-maven-plugin:report org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar -Dsonar.projectKey=vertigo-io_vertigo-extensions -Dsonar.organization=vertigo-io -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name="master" -Djacoco.destFile="\${project.build.directory}/jacoco.exec" -Dsonar.jacoco.reportPath=

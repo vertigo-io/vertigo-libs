@@ -104,8 +104,7 @@ public final class MemoryCachePlugin implements Activeable, CachePlugin {
 	public Object get(final String context, final Serializable key) {
 		final Object cachedObject = getElement(context, key);
 		//on ne connait pas l'état Modifiable ou non de l'objet, on se base sur son type.
-		if (cachedObject instanceof byte[]) {
-			final byte[] serializedObject = (byte[]) cachedObject;
+		if (cachedObject instanceof byte[] serializedObject) {
 			return codecManager.getCompressedSerializationCodec().decode(serializedObject);
 		}
 		return cachedObject;

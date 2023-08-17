@@ -50,13 +50,7 @@ public final class StoreTraceStorePlugin implements TraceStorePlugin, Activeable
 
 	/**
 	 * Constructor.
-	 * @param userIdentityEntity Entity name of userIdentityEntity
-	 * @param groupIdentityEntity Entity name of groupIdentityEntity
-	 * @param userAuthField FieldName use to find user by it's authToken
-	 * @param userToAccountMappingStr User to account conversion mapping
-	 * @param groupToGroupAccountMappingStr User to account conversion mapping
 	 * @param entityStoreManager Store Manager
-	 * @param fileStoreManager File Store Manager
 	 */
 	@Inject
 	public StoreTraceStorePlugin(
@@ -84,9 +78,7 @@ public final class StoreTraceStorePlugin implements TraceStorePlugin, Activeable
 
 	@Override
 	public Trace read(final Long idAuditTrace) {
-		return executeInTransaction(() -> {
-			return entityStoreManager.readOne(UID.of(Trace.class, idAuditTrace));
-		});
+		return executeInTransaction(() -> entityStoreManager.readOne(UID.of(Trace.class, idAuditTrace)));
 	}
 
 	@Override
@@ -95,9 +87,7 @@ public final class StoreTraceStorePlugin implements TraceStorePlugin, Activeable
 				.isNotNull(auditTrace)
 				.isNull(auditTrace.getTraId(), "A new audit trail must not have an id");
 		//---
-		executeInTransactionAndCommit(() -> {
-			return entityStoreManager.create(auditTrace);
-		});
+		executeInTransactionAndCommit(() -> entityStoreManager.create(auditTrace));
 	}
 
 	@Override

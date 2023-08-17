@@ -48,7 +48,7 @@ final class ScriptParser {
 
 	/**
 	 * Constructor.
-	 * @param separators Séparateurs pris en compte
+	 * @param separator separator
 	 */
 	ScriptParser(final ScriptSeparator separator) {
 		Assertion.check().isNotNull(separator);

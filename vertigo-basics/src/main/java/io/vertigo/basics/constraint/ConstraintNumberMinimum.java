@@ -20,7 +20,7 @@ package io.vertigo.basics.constraint;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.definitions.Constraint;
 import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.definitions.Property;
@@ -33,7 +33,7 @@ import io.vertigo.datamodel.structure.definitions.Property;
  */
 public final class ConstraintNumberMinimum implements Constraint<Number, Number> {
 	private final double minValue;
-	private final MessageText errorMessage;
+	private final LocaleMessageText errorMessage;
 
 	/**
 	 * Constructor.
@@ -46,7 +46,7 @@ public final class ConstraintNumberMinimum implements Constraint<Number, Number>
 		//-----
 		minValue = Double.parseDouble(args);
 		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
-				() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue));
+				() -> LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue));
 	}
 
 	/** {@inheritDoc} */
@@ -58,7 +58,7 @@ public final class ConstraintNumberMinimum implements Constraint<Number, Number>
 
 	/** {@inheritDoc} */
 	@Override
-	public MessageText getErrorMessage() {
+	public LocaleMessageText getErrorMessage() {
 		return errorMessage;
 	}
 

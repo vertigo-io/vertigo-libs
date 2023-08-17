@@ -22,9 +22,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 
+import io.vertigo.core.lang.TempFile;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.FileUtil;
-import io.vertigo.core.util.TempFile;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
 
@@ -35,7 +35,6 @@ import io.vertigo.datastore.impl.filestore.model.FSFile;
  */
 public final class VFileUtil {
 
-
 	/**
 	 * Constructeur privé pour classe utilitaire
 	 */
@@ -43,7 +42,6 @@ public final class VFileUtil {
 		//rien
 	}
 
-	
 	/**
 	 * @param vFile FileInfo à lire
 	 * @return Fichier physique readOnly (pour lecture d'un FileInfo)
@@ -67,7 +65,7 @@ public final class VFileUtil {
 	private static Path createTempFile(final VFile vFile) {
 		// TODO voir a ajouter une WeakRef sur FileInfo pour vérifier la suppression des fichiers temp après usage
 		try {
-			return doCreateTempPath(vFile); 
+			return doCreateTempPath(vFile);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Can't create temp file for FileInfo {0}", vFile.getFileName());
 		}
@@ -75,7 +73,7 @@ public final class VFileUtil {
 
 	private static Path doCreateTempPath(final VFile fileInfo) throws IOException {
 		final File tmpFile = new TempFile("fileInfo", '.' + FileUtil.getFileExtension(fileInfo.getFileName()));
-		try (final InputStream inputStream = fileInfo.createInputStream()) { 
+		try (final InputStream inputStream = fileInfo.createInputStream()) {
 			FileUtil.copy(inputStream, tmpFile);
 			return tmpFile.toPath();
 		}

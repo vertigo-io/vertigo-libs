@@ -1,8 +1,26 @@
-import Vue from "vue"
-import Quasar from "quasar"
+import * as Vue from "vue"
+import * as Quasar from "quasar"
 
 export default {
-    inserted: function (elNav, args) {
+    
+    created: function(elNav, args) {
+        Vue.createDebugLine = function (name, position, top, color) {
+            let scannerLine1 = document.createElement("div");
+            scannerLine1.style.position = position;
+            scannerLine1.style.top = top + 'px';
+            scannerLine1.style.border = 'none';
+            scannerLine1.style.borderTop = color + ' solid 1px';
+            scannerLine1.style.width = '100%';
+            scannerLine1.style.zIndex = '10000';
+            scannerLine1.style.padding = '0px';
+            scannerLine1.style.lineHeight = '0px';
+            scannerLine1.style.fontSize = '12px';
+            scannerLine1.style.color = color;
+            scannerLine1.innerHTML = name
+            document.querySelector('body').appendChild(scannerLine1);
+            return scannerLine1;
+        };
+        
         const debugMode = args.value.debug ? args.value.debug : false;
 
         const startingOffset = args.value.startingOffset ? args.value.startingOffset : 24;
@@ -11,7 +29,8 @@ export default {
         const scanner = args.value.scanner ? args.value.scanner : fixedPos + 30; //scanner is 30px bottom of fixedPos, must be smaller than the smallest first element
         const elAs = elNav.querySelectorAll('a')
         elAs[0].classList.add("active") //first active
-        const scrollContainer = Quasar.utils.scroll.getScrollTarget(document.querySelector(elAs[0].hash))
+        elAs[0].ariaCurrent = "step";
+        const scrollContainer = Quasar.scroll.getScrollTarget(document.querySelector(elAs[0].hash))
 
         let scannerLines = []
         let startLinearLine
@@ -59,14 +78,16 @@ export default {
             }
 
             //We compute breakpoints
-            var scrollPosition = Quasar.utils.scroll.getScrollPosition(scrollContainer)
+            var scrollPosition = Quasar.scroll.getVerticalScrollPosition(scrollContainer)
             var scrollBreakpoints = Vue.computeBreakPoints(scrollPosition);
             //We looks between which breakpoints we are
             for (var i = 0; i < elAs.length; i++) {
                 if (scrollBreakpoints[i] <= scrollPosition && (i >= elAs.length - 1 || scrollPosition < scrollBreakpoints[i + 1])) {
                     elAs[i].classList.add("active")
+                    elAs[i].ariaCurrent = "step";
                 } else {
                     elAs[i].classList.remove("active");
+                    elAs[i].removeAttribute("aria-current");
                 }
             }
         };
@@ -89,10 +110,10 @@ export default {
             event.preventDefault();
             const elScrollId = event.target.hash;
             const elScroll = document.querySelector(elScrollId)
-            var toScroll = Quasar.utils.scroll.getScrollPosition(scrollContainer) + elScroll.getBoundingClientRect().top - scanner
+            var toScroll = Quasar.scroll.getVerticalScrollPosition(scrollContainer) + elScroll.getBoundingClientRect().top - scanner
 
 
-            var scrollPosition = Quasar.utils.scroll.getScrollPosition(scrollContainer)
+            var scrollPosition = Quasar.scroll.getVerticalScrollPosition(scrollContainer)
             var blockTop = Vue.computeBlockTop(scrollPosition);
             var scrollBreakpoints = Vue.computeBreakPoints(scrollPosition);
             for (var i = 0; i < elAs.length; i++) {
@@ -107,7 +128,7 @@ export default {
                 }
             }
             var duration = 200
-            Quasar.utils.scroll.setScrollPosition(scrollContainer, toScroll, duration)
+            Quasar.scroll.setVerticalScrollPosition(scrollContainer, toScroll, duration)
         };
 
 
@@ -116,7 +137,7 @@ export default {
             var blockTop = Vue.computeBlockTop(scrollPosition);
 
             const windowHeight = (window.innerHeight || document.documentElement.clientHeight); /** visible height */
-            const scrollHeight = Quasar.utils.scroll.getScrollHeight(scrollContainer) /** height of scrollable element */
+            const scrollHeight = Quasar.scroll.getScrollHeight(scrollContainer) /** height of scrollable element */
             const scrollMax = scrollHeight - windowHeight /** Maximum possible scroll */
             const scrollEnd = scrollMax; //blockTop[blockTop.length-1]; /** Finish linear move at this scroll position */
             let scrollStart = scrollEnd - windowHeight + scanner; /** Start linear move at this scroll position : start a block start */
@@ -159,31 +180,16 @@ export default {
             return scrollBreakpoints;
         };
 
-        Vue.createDebugLine = function (name, position, top, color) {
-            let scannerLine1 = document.createElement("div");
-            scannerLine1.style.position = position;
-            scannerLine1.style.top = top + 'px';
-            scannerLine1.style.border = 'none';
-            scannerLine1.style.borderTop = color + ' solid 1px';
-            scannerLine1.style.width = '100%';
-            scannerLine1.style.zIndex = '10000';
-            scannerLine1.style.padding = '0px';
-            scannerLine1.style.lineHeight = '0px';
-            scannerLine1.style.fontSize = '12px';
-            scannerLine1.style.color = color;
-            scannerLine1.innerHTML = name
-            document.querySelector('body').appendChild(scannerLine1);
-            return scannerLine1;
-        };
+        
 
         elNav.classList.add("scroll-spy-nav");
         for (var i = 0; i < elAs.length; i++) {
             elAs[i].addEventListener('click', Vue.scrollTo);
         }
         window.addEventListener('scroll', Vue.scrollSpyHandler)
-        window.addEventListener('resize', Quasar.utils.throttle(Vue.scrollSpyHandler, 50))
+        window.addEventListener('resize', Quasar.throttle(Vue.scrollSpyHandler,50))
     },
-    unbind: function (elNav) {
+    unmounted: function(elNav) {
         elNav.classList.remove("scroll-spy-nav");
         window.removeEventListener('scroll')
         window.removeEventListener('resize')

@@ -41,6 +41,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.DataStream;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
@@ -64,9 +65,9 @@ public abstract class AbstractSqlManagerTest {
 	private static final String DROP_TABLE_MOVIE = "DROP TABLE movie";
 	private static final String DROP_SEQUENCE_MOVIE = "DROP SEQUENCE seq_movie";
 
-	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (#movie.id#, #movie.title#, #movie.mail#, #movie.fps#, #movie.income#, #movie.color#, #movie.releaseDate#, #movie.releaseLocalDate#, #movie.releaseInstant#, #movie.icon#)";
+	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (#movie.movId#, #movie.title#, #movie.mail#, #movie.fps#, #movie.income#, #movie.color#, #movie.releaseDate#, #movie.releaseLocalDate#, #movie.releaseInstant#, #movie.icon#)";
 	private static final String CREATE_TABLE_MOVIE = "create table movie ("
-			+ "id bigint , "
+			+ "mov_id bigint , "
 			+ "title varchar(255) , "
 			+ "mail varchar(255) , "
 			+ "fps double precision ,"
@@ -240,7 +241,7 @@ public abstract class AbstractSqlManagerTest {
 	public void testSelectObject() throws Exception {
 		createDatas();
 		//----
-		final List<Movie> movies = executeQuery(Movie.class, "select * from movie where id=1", null);
+		final List<Movie> movies = executeQuery(Movie.class, "select * from movie where mov_id=1", null);
 		Assertions.assertEquals(1, movies.size());
 		final Movie movie = movies.get(0);
 		Assertions.assertEquals("citizen kane", movie.getTitle());
@@ -281,7 +282,7 @@ public abstract class AbstractSqlManagerTest {
 	public void testSelectPrimitive2() throws Exception {
 		createDatas();
 		//----
-		final List<String> result = executeQuery(String.class, "select title from movie where id=1", 1);
+		final List<String> result = executeQuery(String.class, "select title from movie where mov_id=1", 1);
 		Assertions.assertEquals(1, result.size());
 		Assertions.assertEquals(Movies.TITLE_MOVIE_1, result.get(0));
 	}
@@ -362,6 +363,48 @@ public abstract class AbstractSqlManagerTest {
 	}
 
 	@Test
+	public void testBatchInsertsWithGeneratedKeys() throws Exception {
+		final SqlConnectionProvider sqlConnectionProvider = dataBaseManager.getConnectionProvider(SqlManager.MAIN_CONNECTION_PROVIDER_NAME);
+		final String sql = INSERT_INTO_MOVIE_VALUES;
+
+		final List<Movie> movies = Movies.bondMovies();
+
+		//--prepare data
+		final List<List<SqlParameter>> batch = new ArrayList<>();
+		for (final Movie movie : movies) {
+			final List<SqlParameter> sqlParameters = List.of(
+					SqlParameter.of(Long.class, movie.getMovId()),
+					SqlParameter.of(String.class, movie.getTitle()),
+					SqlParameter.of(Double.class, movie.getFps()),
+					SqlParameter.of(BigDecimal.class, movie.getIncome()),
+					SqlParameter.of(Boolean.class, movie.getColor()),
+					SqlParameter.of(Date.class, movie.getReleaseDate()),
+					SqlParameter.of(LocalDate.class, movie.getReleaseLocalDate()),
+					SqlParameter.of(Instant.class, movie.getReleaseInstant()),
+					SqlParameter.of(DataStream.class, movie.getIcon()));
+			batch.add(sqlParameters);
+		}
+
+		final Tuple<Integer, List<Long>> result;
+		try (final SqlConnection connection = sqlConnectionProvider.obtainConnection()) {
+			final SqlStatementBuilder sqlStatementBuilder = SqlStatement.builder(sql);
+
+			for (final Movie movie : movies) {
+				sqlStatementBuilder
+						.bind("movie", Movie.class, movie)
+						.nextLine();
+			}
+			result = dataBaseManager.executeBatchWithGeneratedKeys(sqlStatementBuilder.build(), connection.getDataBase().getSqlDialect().getGenerationMode(), "mov_id", Long.class, MAIL_ADAPTER, connection);
+			connection.commit();
+		}
+		//---
+		Assertions.assertEquals(movies.size(), result.val1());
+		final List<Integer> countMovie = executeQuery(Integer.class, "select count(*) from movie", 1);
+		Assertions.assertEquals(movies.size(), countMovie.get(0).intValue());
+		Assertions.assertEquals(movies.size(), result.val2().size());
+	}
+
+	@Test
 	public void testBatchInserts() throws Exception {
 		final SqlConnectionProvider sqlConnectionProvider = dataBaseManager.getConnectionProvider(SqlManager.MAIN_CONNECTION_PROVIDER_NAME);
 		final String sql = INSERT_INTO_MOVIE_VALUES;
@@ -372,7 +415,7 @@ public abstract class AbstractSqlManagerTest {
 		final List<List<SqlParameter>> batch = new ArrayList<>();
 		for (final Movie movie : movies) {
 			final List<SqlParameter> sqlParameters = List.of(
-					SqlParameter.of(Long.class, movie.getId()),
+					SqlParameter.of(Long.class, movie.getMovId()),
 					SqlParameter.of(String.class, movie.getTitle()),
 					SqlParameter.of(Double.class, movie.getFps()),
 					SqlParameter.of(BigDecimal.class, movie.getIncome()),
@@ -434,7 +477,7 @@ public abstract class AbstractSqlManagerTest {
 		final List<Integer> result2 = executeQuery(Integer.class, "select count(*) from movie", dataBaseManager.getConnectionProvider("secondary"), 1);
 		Assertions.assertEquals(1, result2.size());
 		Assertions.assertEquals(4, result2.get(0).intValue());
-		final List<Movie> resultMovie1 = executeQuery(Movie.class, "select * from movie where id=1", dataBaseManager.getConnectionProvider("secondary"), 1);
+		final List<Movie> resultMovie1 = executeQuery(Movie.class, "select * from movie where mov_id=1", dataBaseManager.getConnectionProvider("secondary"), 1);
 		Assertions.assertEquals(1, resultMovie1.size());
 		Assertions.assertEquals("Star wars", resultMovie1.get(0).getTitle());
 
@@ -458,10 +501,11 @@ public abstract class AbstractSqlManagerTest {
 	public final void testInsert() throws Exception {
 		final String insertWithgeneratedKey = obtainMainConnection().getDataBase().getSqlDialect()
 				.createInsertQuery(
-						"id",
+						"movId",
 						Arrays.asList("title"),
 						"seq_",
-						"movie");
+						"movie",
+						"dto");
 
 		final GenerationMode generationMode = obtainMainConnection().getDataBase().getSqlDialect().getGenerationMode();
 		//We check that we have the right expected mode
@@ -475,18 +519,18 @@ public abstract class AbstractSqlManagerTest {
 					.executeUpdateWithGeneratedKey(
 							SqlStatement.builder(insertWithgeneratedKey).bind("dto", Movie.class, movie).build(),
 							generationMode,
-							"id",
+							"mov_id",
 							Long.class,
 							MAIL_ADAPTER,
 							connection)
-					.getVal2();
+					.val2();
 			connection.commit();
 		}
 		final List<Integer> result = executeQuery(Integer.class, "select count(*) from movie", null);
 		Assertions.assertEquals(1, result.size());
 		Assertions.assertEquals(1, result.get(0).intValue());
 
-		final List<Integer> keys = executeQuery(Integer.class, "select id from movie", null);
+		final List<Integer> keys = executeQuery(Integer.class, "select mov_id from movie", null);
 		Assertions.assertEquals(1, keys.size());
 		Assertions.assertEquals(generatedKey, keys.get(0).intValue());
 	}
@@ -531,7 +575,7 @@ public abstract class AbstractSqlManagerTest {
 		final String querySkipRows = stringBuilder.toString();
 		final List<Movie> resultSkipRows = executeQuery(Movie.class, querySkipRows, null);
 		Assertions.assertEquals(2, resultSkipRows.size());
-		Assertions.assertEquals(resultMaxRows.get(1).getId(), resultSkipRows.get(0).getId());
+		Assertions.assertEquals(resultMaxRows.get(1).getMovId(), resultSkipRows.get(0).getMovId());
 
 	}
 }

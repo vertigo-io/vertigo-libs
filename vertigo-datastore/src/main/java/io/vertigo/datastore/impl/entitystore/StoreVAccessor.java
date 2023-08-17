@@ -38,7 +38,6 @@ public class StoreVAccessor<E extends Entity> extends VAccessor<E> {
 	 * Constructor.
 	 * @param clazz the entity class
 	 * @param role the role of the association (case of multiple associations with the same entity)
-	 * @param loadFunction function that need to be applied to retrieve the targeted entity
 	 */
 	public StoreVAccessor(final Class<E> clazz, final String role) {
 		super(clazz, role);

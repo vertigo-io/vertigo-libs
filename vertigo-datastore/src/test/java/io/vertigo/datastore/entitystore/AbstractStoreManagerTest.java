@@ -36,12 +36,12 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.ListBuilder;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
@@ -186,6 +186,42 @@ public abstract class AbstractStoreManagerTest {
 				getDropRequests(),
 				"TkShutDown",
 				Optional.empty());
+	}
+
+	@Test
+	public void testCreateListCar() {
+		SqlUtil.execRequests(
+				transactionManager,
+				taskManager,
+				List.of("delete from car"),
+				"TkDeleteCars",
+				Optional.empty());
+		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+			final DtList<Car> carWithoutId = carDataBase.getAllCars();
+			carWithoutId.forEach(car -> car.setId(null));
+			final DtList<Car> cars = entityStoreManager.createList(carWithoutId);
+			Assertions.assertEquals(carWithoutId.size(), cars.size());
+			cars.forEach(car -> Assertions.assertNotNull(car.getId()));
+		}
+	}
+
+	@Test
+	public void testUpdateListCar() {
+		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+
+			final DtList<Famille> dtc1 = new DtList<>(Famille.class);
+			for (int i = 0; i < 500; i++) {
+				final Famille famille = new Famille();
+				famille.setLibelle("famille" + i);
+				dtc1.add(famille);
+			}
+			entityStoreManager.createList(dtc1);
+			dtc1.forEach(famille -> famille.setLibelle("updated"));
+			entityStoreManager.updateList(dtc1);
+			final DtList<Famille> dtc2 = entityStoreManager.find(dtDefinitionFamille, Criterions.alwaysTrue(), DtListState.of(null));
+			Assertions.assertEquals(dtc1.size(), dtc2.size());
+			dtc2.forEach(famille -> Assertions.assertEquals("updated", famille.getLibelle()));
+		}
 	}
 
 	@Test

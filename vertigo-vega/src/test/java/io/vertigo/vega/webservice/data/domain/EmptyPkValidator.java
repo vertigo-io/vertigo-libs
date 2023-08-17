@@ -17,7 +17,7 @@
  */
 package io.vertigo.vega.webservice.data.domain;
 
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.vega.webservice.validation.AbstractDtObjectValidator;
@@ -33,9 +33,9 @@ public final class EmptyPkValidator<O extends DtObject> extends AbstractDtObject
 	/** {@inheritDoc} */
 	@Override
 	protected void checkMonoFieldConstraints(final O dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
-		final String camelCaseFieldName = dtField.getName();
+		final String camelCaseFieldName = dtField.name();
 		if (dtField.getType().isId() && !dtObjectErrors.hasError(camelCaseFieldName)) {
-			dtObjectErrors.addError(camelCaseFieldName, MessageText.of("Id must not be set"));
+			dtObjectErrors.addError(camelCaseFieldName, LocaleMessageText.of("Id must not be set"));
 		}
 	}
 }

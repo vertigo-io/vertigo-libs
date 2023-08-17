@@ -18,7 +18,6 @@
 package io.vertigo.vega.impl.webservice;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,14 +25,14 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.ListBuilder;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
-import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.AspectPlugin;
 import io.vertigo.core.node.component.ComponentSpace;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.vega.plugins.webservice.handler.AccessTokenWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.CorsAllowerWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.ExceptionWebServiceHandlerPlugin;
@@ -119,7 +118,7 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 		//we do nothing with webServerPlugin
 		//2- We sort by path, parameterized path should be after strict path
 		final List<WebServiceDefinition> allWebServiceDefinitions = new ArrayList<>(Node.getNode().getDefinitionSpace().getAll(WebServiceDefinition.class));
-		Collections.sort(allWebServiceDefinitions, Comparator.comparing(WebServiceDefinition::getSortPath));
+		allWebServiceDefinitions.sort(Comparator.comparing(WebServiceDefinition::getSortPath));
 		webServerPlugin.registerWebServiceRoute(handlerChain, allWebServiceDefinitions);
 	}
 
@@ -134,7 +133,7 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 	 * @return Scanned webServiceDefinitions
 	 */
 	List<WebServiceDefinition> scanComponents(final ComponentSpace componentSpace) {
-		final AopPlugin aopPlugin = Node.getNode().getNodeConfig().getBootConfig().getAopPlugin();
+		final AspectPlugin aopPlugin = Node.getNode().getNodeConfig().bootConfig().aspectPlugin();
 
 		final ListBuilder<WebServiceDefinition> allWebServiceDefinitionListBuilder = new ListBuilder<>();
 		//1- We introspect all RestfulService class

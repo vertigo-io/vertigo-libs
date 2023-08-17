@@ -17,12 +17,11 @@
  */
 package io.vertigo.ui.impl.springmvc.config;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.web.servlet.RequestToViewNameTranslator;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class VRequestToViewNameTranslator implements RequestToViewNameTranslator {
 

@@ -1,4 +1,4 @@
-import Quasar from "quasar"
+import * as Quasar from "quasar"
 import { sortDate } from "quasar/src/utils/private/sort.js"
 import { isNumber, isDate } from "quasar/src/utils/is.js"
 
@@ -100,8 +100,12 @@ export default {
         return null;
     },
 
-    transformListForSelection: function (list, valueField, labelField) {
-        return this.$data.vueData[list].map(function (object) {
+    transformListForSelection: function (list, valueField, labelField, filterFunction) {
+        var rawList = this.$data.vueData[list];
+        if (filterFunction) {
+            rawList = rawList.filter(filterFunction);
+        }
+        return rawList.map(function (object) {
             return { value: object[valueField], label: object[labelField].toString() } // a label is always a string
         });
     },
@@ -142,19 +146,32 @@ export default {
         }
         return this.$data.vueData[list];
     },
+    createDefaultTableSort: function(componentId) {
+        if (this.$data.componentStates[componentId]) {
+            return function (data, sortBy, descending) {
+                let sortedColumn = this.$data.componentStates[componentId].columns.find(column => column.name === sortBy);
+                if (sortedColumn.datetimeFormat) {
+                        const
+                        dir = descending === true ? -1 : 1,
+                        val =  v => v[sortBy]
 
-
-    sortCiAi: function (data, sortBy, descending) {
-        const col = this.colList.find(def => def.name === sortBy)
-        if (col === void 0 || col.field === void 0) {
-            return data
+                    return data.sort((a, b) => {
+                        let A = val(a),
+                            B = val(b);
+                        return ((Quasar.date.extractDate(A, sortedColumn.datetimeFormat).getTime() > Quasar.date.extractDate(B, sortedColumn.datetimeFormat).getTime()) ? 1 : -1) * dir;
+                    })
+                } else {
+                    return this.sortCiAi(data, sortBy, descending)
+                }
+            }.bind(this)
         }
+        return this.sortCiAi
+    },
+    sortCiAi: function (data, sortBy, descending) {
 
         const
             dir = descending === true ? -1 : 1,
-            val = typeof col.field === 'function'
-                ? v => col.field(v)
-                : v => v[col.field]
+            val =  v => v[sortBy]
 
         const collator = new Intl.Collator();
 
@@ -167,9 +184,6 @@ export default {
             }
             if (B === null || B === void 0) {
                 return 1 * dir;
-            }
-            if (col.sort !== void 0) {
-                return col.sort(A, B, a, b) * dir;
             }
             if (isNumber(A) === true && isNumber(B) === true) {
                 return (A - B) * dir;
@@ -249,40 +263,40 @@ export default {
             }.bind(this));
 	},
     decodeDate: function (value, format) {
-        if (value === Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(value, 'DD/MM/YYYY'), 'DD/MM/YYYY')) {
-            return Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(value, 'DD/MM/YYYY'), format);
+        if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY'), 'DD/MM/YYYY')) {
+            return Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY'), format);
         } else {
             return value;
         }
     },
 
     encodeDate: function (newValue, format) {
-        if (newValue === Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(newValue, format), format)) {
-            return Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(newValue, format), 'DD/MM/YYYY');
+        if (newValue === Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), format)) {
+            return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), 'DD/MM/YYYY');
         } else {
             return newValue;
         }
     },
 
     decodeDatetime: function (value, format) {
-        if (value === Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(value, 'DD/MM/YYYY HH:mm'), 'DD/MM/YYYY HH:mm')) {
-            return Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(value, 'DD/MM/YYYY HH:mm'), format);
+        if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY HH:mm'), 'DD/MM/YYYY HH:mm')) {
+            return Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY HH:mm'), format);
         } else {
             return value;
         }
     },
 
     encodeDatetime: function (newValue, format) {
-        if (newValue === Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(newValue, format), format)) {
-            return Quasar.utils.date.formatDate(Quasar.utils.date.extractDate(newValue, format), 'DD/MM/YYYY HH:mm');
+        if (newValue === Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), format)) {
+            return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), 'DD/MM/YYYY HH:mm');
         } else {
             return newValue;
         }
     },
 
     sortDatesAsString: function (format) {
-        return function (date1, date2) {
-            return (Quasar.utils.date.extractDate(date1, format).getTime() > Quasar.utils.date.extractDate(date2, format).getTime()) ? 1 : -1;
+        return function (date1, date2, rowA, rowB) {
+            return (Quasar.date.extractDate(date1, format).getTime() > Quasar.date.extractDate(date2, format).getTime()) ? 1 : -1;
         }
     },
 
@@ -330,7 +344,7 @@ export default {
         this.search(contextKey);
     },
 
-    search: Quasar.utils.debounce(function (contextKey) {
+    search: Quasar.debounce(function (contextKey) {
         let componentStates = this.$data.componentStates;
         let vueData = this.$data.vueData;
         var selectedFacetsContextKey = contextKey + "_selectedFacets";
@@ -376,6 +390,19 @@ export default {
         }
         return [];
     },
+    vueDataToObject(value) {
+        if(Array.isArray(value)) {
+            if (value.length == 0 ) {
+                return null
+            } else if (value.length == 1) {
+                return value[0]
+            }
+            return value;
+        } else if(value) {
+            return value;
+        }
+        return null;
+    },
     obtainVueDataAccessor(referer, object, field, rowIndex) {
         if (field != null && field != 'null') {
             if (rowIndex != null) {
@@ -408,48 +435,6 @@ export default {
             }
         }
     },
-    uploader_changeIcon() {
-        this.$q.iconSet.uploader.removeUploaded = 'delete_sweep'
-        this.$q.iconSet.uploader.done = 'delete'
-    },
-    uploader_mounted(componentId, object, field, rowIndex) {
-        this.uploader_changeIcon();
-        var component = this.$refs[componentId];
-        //must removed duplicate
-        component.vueDataAccessor = this.obtainVueDataAccessor(this, object, field, rowIndex);
-        var vueDataAccessor = component.vueDataAccessor;
-        var curValue = vueDataAccessor.get();
-        if (!Array.isArray(curValue)) {
-            vueDataAccessor.set(this.vueDataToArray(curValue));
-        }
-        vueDataAccessor.set(vueDataAccessor.get().filter(function (item, pos, self) {
-            return self.indexOf(item) == pos;
-        }));
-        vueDataAccessor.get().forEach(function (uri) {
-            var xhrParams = {};
-            xhrParams[component.fieldName] = uri;
-            this.$http.get(component.url, { params: xhrParams, credentials: component.withCredentials })
-                .then(function (response) { //Ok
-                    var fileData = response.data;
-                    if (component.files.some(file => file.name === fileData.name)) {
-                        console.warn("Component doesn't support duplicate file ", fileData);
-                    } else {
-                        fileData.__sizeLabel = Quasar.utils.format.humanStorageSize(fileData.size);
-                        fileData.__progressLabel = '100%';
-                        component.files.push(fileData);
-                        component.uploadedFiles.push(fileData);
-                        this.uploader_forceComputeUploadedSize(componentId);
-                    }
-                }.bind(this))
-                .catch(function (error) { //Ko
-                    if (error.response) {
-                        this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file " + uri);
-                    } else {
-                        this.$q.notify(error + " Can't load file " + uri);
-                    }
-                }.bind(this));
-        }.bind(this));
-    },
     uploader_dragenter(componentId) {
         let componentStates = this.$data.componentStates;
         componentStates[componentId].dragover = true;
@@ -462,76 +447,7 @@ export default {
         var component = this.$refs[componentId];
         component.addFiles(event.dataTransfer.files);
     },
-    uploader_forceComputeUploadedSize: function (componentId) {
-        var component = this.$refs[componentId];
-        //recompute totalSize
-        component.uploadedSize = 0;
-        component.uploadedFiles.forEach(function (file) { component.uploadedSize += file.size; });
-        component.uploadSize = component.uploadedSize;
-        component.queuedFiles.forEach(function (file) { component.uploadSize += file.size; });
-
-    },
-    uploader_humanStorageSize: function (size) {
-        return Quasar.utils.format.humanStorageSize(size);
-    },
-    uploader_addedFile: function (isMultiple, componentId) {
-        if (!isMultiple) {
-            var component = this.$refs[componentId];
-            var vueDataAccessor = component.vueDataAccessor;
-            component.removeUploadedFiles();
-            vueDataAccessor.set([]);
-        }
-    },
-    uploader_uploadedFiles: function (uploadInfo, componentId) {
-        var component = this.$refs[componentId];
-        var vueDataAccessor = component.vueDataAccessor;
-        uploadInfo.files.forEach(function (file) {
-            file.fileUri = file.xhr.response;
-            vueDataAccessor.get().push(file.fileUri);
-        }.bind(this));
-    },
-    uploader_failedFiles: function (uploadInfo) {
-        uploadInfo.files.forEach(function (file) {
-            this.onAjaxError({
-                status: file.xhr.status,
-                statusText: file.xhr.statusText,
-                data: JSON.parse(file.xhr.response)
-            }
-            );
-            //server can return : a response with a uiMessageStack object or directly the uiMessageStack
-            /*let uiMessageStack = response.globalErrors?response:response.uiMessageStack;
-            Object.keys(uiMessageStack).forEach(function (key) {
-                this.$data.uiMessageStack[key] = uiMessageStack[key];
-            }.bind(this));*/
-        }.bind(this));
-    },
-    uploader_removeFiles: function (removedFiles, componentId) {
-        var component = this.$refs[componentId];
-        var vueDataAccessor = component.vueDataAccessor;
-        var dataFileUris = vueDataAccessor.get();
-        removedFiles.forEach(function (removedFile) {
-            if (removedFile.fileUri) { //if file is serverside
-                var indexOfFileUri = dataFileUris.indexOf(removedFile.fileUri);
-                var xhrParams = {};
-                xhrParams[component.fieldName] = removedFile.fileUri;
-                this.$http.delete(component.url, { params: xhrParams, credentials: component.withCredentials })
-                    .then(function (/*response*/) { //Ok
-                        if (component.multiple) {
-                            dataFileUris.splice(indexOfFileUri, 1);
-                        } else {
-                            dataFileUris.splice(0);
-                        }
-                        this.uploader_forceComputeUploadedSize(componentId);
-                    }.bind(this))
-                    .catch(function (error) { //Ko
-                        this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't remove temporary file");
-                    }.bind(this));
-            }
-        }.bind(this));
-    },
-
-
-    httpPostAjax: function (url, paramsIn, options) { 
+    httpPostAjax: function (url, paramsIn, options) {
         var paramsInResolved = Array.isArray(paramsIn) ? this.vueDataParams(paramsIn) : paramsIn;
         let vueData = this.$data.vueData;
         let uiMessageStack = this.$data.uiMessageStack;
@@ -573,6 +489,9 @@ export default {
     },
     removePendingAction: function(actionName) {
         this.$data.componentStates.pendingAction.actionNames = this.$data.componentStates.pendingAction.actionNames.filter(e => e !== actionName);
+    },
+    removePendingActionAfterDelay: function(actionName, delay) {
+        setTimeout(function () {this.removePendingAction(actionName)}.bind(this), delay);
     },        
 
     hasFieldsError: function (object, field, rowIndex) {

@@ -33,7 +33,7 @@ import io.vertigo.orchestra.services.execution.engine.TestJob2;
 public class MultiNodesExecutionTest extends ExecutionTest {
 	private static final Logger LOG = LogManager.getLogger(MultiNodesExecutionTest.class);
 	private static OrchestraNode orchestraNode1;
-	//private static OrchestraNode orchestraNode2;
+	private static OrchestraNode orchestraNode2;
 
 	protected static OrchestraNode startOrchestraNode(final int numClient) throws IOException {
 		LOG.info("Starting OrchestraNode " + numClient + "...");
@@ -50,7 +50,7 @@ public class MultiNodesExecutionTest extends ExecutionTest {
 	public static void setUpOrchestraNode() throws Exception {
 		//pour éviter le mécanisme d'attente du client lorsque le serveur est absend, on démarre le serveur puis le client
 		orchestraNode1 = startOrchestraNode(1);
-		//orchestraNode2 = startOrchestraNode(2);
+		orchestraNode2 = startOrchestraNode(2);
 	}
 
 	/**
@@ -64,11 +64,11 @@ public class MultiNodesExecutionTest extends ExecutionTest {
 			orchestraNode1.stop();
 			orchestraNode1 = null;
 		}
-		/*if (orchestraNode2 != null) {
+		if (orchestraNode2 != null) {
 			LOG.info("Stopping OrchestraNode2...");
 			orchestraNode2.stop();
 			orchestraNode2 = null;
-		}*/
+		}
 	}
 
 	@Test

@@ -18,7 +18,6 @@
 package io.vertigo.datafactory.impl.search;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -271,13 +270,12 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	 */
 	@EventBusSubscribed
 	public void onEvent(final StoreEvent storeEvent) {
-		final UID uid = storeEvent.getUID();
-		//On ne traite l'event que si il porte sur un KeyConcept
-		if (uid.getDefinition().getStereotype() == DtStereotype.KeyConcept
-				&& hasIndexDefinitionByKeyConcept(uid.getDefinition())) {
-			final List<UID<? extends KeyConcept>> list = Collections.singletonList(uid);
-			markAsDirty(list);
-		}
+		markAsDirty((List) storeEvent.getUIDs().stream()
+				//On ne traite l'event que si il porte sur un KeyConcept
+				.filter(uid -> uid.getDefinition().getStereotype() == DtStereotype.KeyConcept
+						&& hasIndexDefinitionByKeyConcept(uid.getDefinition()))
+				.toList());
+
 	}
 
 }

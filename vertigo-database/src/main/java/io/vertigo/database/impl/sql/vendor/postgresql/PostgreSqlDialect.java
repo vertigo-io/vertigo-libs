@@ -28,7 +28,7 @@ final class PostgreSqlDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public String createInsertQuery(final String idFieldName, final List<String> dataFieldsName, final String sequencePrefix, final String tableName) {
+	public String createInsertQuery(final String idFieldName, final List<String> dataFieldsName, final String sequencePrefix, final String tableName, final String parameterName) {
 		Assertion.check()
 				.isNotBlank(idFieldName)
 				.isNotNull(dataFieldsName)
@@ -46,7 +46,7 @@ final class PostgreSqlDialect implements SqlDialect {
 				.append("nextval('").append(sequencePrefix).append(tableName).append("'), ")
 				.append(dataFieldsName
 						.stream()
-						.map(fieldName -> " #dto." + fieldName + '#')
+						.map(fieldName -> " #" + parameterName + '.' + fieldName + '#')
 						.collect(Collectors.joining(", ")))
 				.append(");")
 				.toString();

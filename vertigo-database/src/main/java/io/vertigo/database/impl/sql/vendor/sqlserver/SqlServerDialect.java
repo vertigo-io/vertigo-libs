@@ -33,7 +33,7 @@ final class SqlServerDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public String createInsertQuery(final String idFieldName, final List<String> dataFieldsName, final String sequencePrefix, final String tableName) {
+	public String createInsertQuery(final String idFieldName, final List<String> dataFieldsName, final String sequencePrefix, final String tableName, final String parameterName) {
 		Assertion.check()
 				.isNotBlank(idFieldName)
 				.isNotNull(dataFieldsName)
@@ -48,7 +48,7 @@ final class SqlServerDialect implements SqlDialect {
 				.append(") values ( ")
 				.append(dataFieldsName
 						.stream()
-						.map(fieldName -> " #dto." + fieldName + '#')
+						.map(fieldName -> " #" + parameterName + '.' + fieldName + '#')
 						.collect(Collectors.joining(", ")))
 				.append(") ")
 				.toString();

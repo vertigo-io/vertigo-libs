@@ -18,6 +18,8 @@
 package io.vertigo.commons.plugins.app.registry.redis;
 
 import java.lang.reflect.Type;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,7 +30,10 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
@@ -36,8 +41,8 @@ import io.vertigo.commons.app.AppNode;
 import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.JsonExclude;
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.lang.json.JsonExclude;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.param.ParamValue;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
@@ -130,16 +135,17 @@ public final class RedisAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 	private static Gson createGson() {
 		return new GsonBuilder()
 				.setPrettyPrinting()
-				.registerTypeAdapter(DefinitionReference.class, new DefinitionReferenceJsonSerializer())
+				.registerTypeAdapter(DefinitionId.class, new DefinitionReferenceJsonSerializer())
 				.registerTypeAdapter(Optional.class, new OptionJsonSerializer())
+				.registerTypeAdapter(Instant.class, new InstantJsonAdapter())
 				.addSerializationExclusionStrategy(new JsonExclusionStrategy())
 				.create();
 	}
 
-	private static final class DefinitionReferenceJsonSerializer implements JsonSerializer<DefinitionReference> {
+	private static final class DefinitionReferenceJsonSerializer implements JsonSerializer<DefinitionId> {
 		/** {@inheritDoc} */
 		@Override
-		public JsonElement serialize(final DefinitionReference src, final Type typeOfSrc, final JsonSerializationContext context) {
+		public JsonElement serialize(final DefinitionId src, final Type typeOfSrc, final JsonSerializationContext context) {
 			return context.serialize(src.get().getName());
 		}
 	}
@@ -152,6 +158,21 @@ public final class RedisAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 				return context.serialize(src.get());
 			}
 			return null; //rien
+		}
+	}
+
+	private static final class InstantJsonAdapter implements JsonSerializer<Instant>, JsonDeserializer<Instant> {
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final Instant instant, final Type typeOfSrc, final JsonSerializationContext context) {
+			return new JsonPrimitive(DateTimeFormatter.ISO_INSTANT.format(instant)); //ISO8601
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public Instant deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
+			final String instantStr = jsonElement.getAsString();
+			return DateTimeFormatter.ISO_INSTANT.parse(instantStr, Instant::from);
 		}
 	}
 

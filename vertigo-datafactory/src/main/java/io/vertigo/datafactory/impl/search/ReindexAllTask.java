@@ -132,13 +132,11 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	}
 
 	private static ListFilter urisRangeToListFilter(final Serializable firstUri, final Serializable lastUri) {
-		final String filterValue = new StringBuilder()
-				.append("docId").append(":{") //{ for exclude min
-				.append(firstUri != null ? escapeStringId(firstUri) : "*")
-				.append(" TO ")
-				.append(lastUri != null ? escapeStringId(lastUri) : "*")
-				.append("]")
-				.toString();
+		final String filterValue = "docId" + ":{" + //{ for exclude min
+				(firstUri != null ? escapeStringId(firstUri) : "*") +
+				" TO " +
+				(lastUri != null ? escapeStringId(lastUri) : "*") +
+				"]";
 		return ListFilter.of(filterValue);
 	}
 

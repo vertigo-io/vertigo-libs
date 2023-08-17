@@ -29,9 +29,8 @@ import io.vertigo.vega.impl.token.TokenManagerImpl;
 import io.vertigo.vega.impl.webservice.WebServiceManagerImpl;
 import io.vertigo.vega.impl.webservice.catalog.CatalogWebServices;
 import io.vertigo.vega.impl.webservice.catalog.SwaggerWebServices;
-import io.vertigo.vega.impl.webservice.client.WebServiceClientProxyMethod;
+import io.vertigo.vega.impl.webservice.client.WebServiceClientAmplifierMethod;
 import io.vertigo.vega.plugins.authentication.aad.AzureAdWebAuthenticationPlugin;
-import io.vertigo.vega.plugins.authentication.keycloak.KeycloakWebAuthenticationPlugin;
 import io.vertigo.vega.plugins.authentication.local.LocalWebAuthenticationPlugin;
 import io.vertigo.vega.plugins.authentication.oidc.OIDCWebAuthenticationPlugin;
 import io.vertigo.vega.plugins.authentication.saml2.SAML2WebAuthenticationPlugin;
@@ -159,7 +158,7 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	@Feature("webservices.proxyclient")
 	public VegaFeatures withWebServicesProxyClient() {
 		getModuleConfigBuilder()
-				.addProxyMethod(WebServiceClientProxyMethod.class);
+				.addAmplifierMethod(WebServiceClientAmplifierMethod.class);
 		return this;
 	}
 
@@ -181,13 +180,6 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	public VegaFeatures withOIDCWebAuthentication(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(OIDCWebAuthenticationPlugin.class, params);
-		return this;
-	}
-
-	@Feature("authentication.keycloak")
-	public VegaFeatures withKeycloakWebAuthentication(final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(KeycloakWebAuthenticationPlugin.class, params);
 		return this;
 	}
 

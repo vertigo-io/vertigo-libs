@@ -39,7 +39,7 @@ import io.vertigo.database.sql.statement.SqlStatement;
  */
 public class DataBaseInitializer implements Component, Activeable {
 
-	private static String AUDIT_CONNECTION_NAME = "audit";
+	private static final String AUDIT_CONNECTION_NAME = "audit";
 
 	@Inject
 	private ResourceManager resourceManager;

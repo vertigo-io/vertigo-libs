@@ -29,8 +29,6 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -48,7 +46,6 @@ import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.opensaml.saml.common.messaging.context.SAMLEndpointContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.saml.saml2.binding.encoding.impl.HTTPRedirectDeflateEncoder;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.EncryptedAssertion;
@@ -81,7 +78,8 @@ import io.vertigo.core.util.XmlUtil;
 import io.vertigo.vega.impl.authentication.AuthenticationResult;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Base authentication handler for SAML2.
@@ -249,14 +247,9 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		context.getSubcontext(SecurityParametersContext.class, true)
 				.setSignatureSigningParameters(signatureSigningParameters);
 
-		final var encoder = new HTTPRedirectDeflateEncoder();
-		encoder.setMessageContext(context);
-		encoder.setHttpServletResponse(response);
-
 		try {
-			encoder.initialize();
-			encoder.encode(); // send redirect in httpServletResponse
-		} catch (final ComponentInitializationException | MessageEncodingException e) {
+			SAML2HTTPRedirectDeflateEncoder.encode(response, context); // send redirect in httpServletResponse
+		} catch (final MessageEncodingException e) {
 			throw WrappedException.wrap(e);
 		}
 	}
@@ -298,7 +291,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 			LOG.trace(new String(base64DecodedResponse, StandardCharsets.UTF_8));
 		}
 		final Response response;
-		try (final var is = new ByteArrayInputStream(base64DecodedResponse);) {
+		try (final var is = new ByteArrayInputStream(base64DecodedResponse)) {
 			response = OpenSAMLUtil.extractSamlResponse(is);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
@@ -306,12 +299,12 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 
 		// Validating the signature
 		final var sig = response.getSignature();
-		if (!checkSignature(sig)) {
+		if (!checkSignature(saml2Parameters, sig)) {
 			throw new VSystemException("SAML signature check fail.");
 		}
 
 		// read or decrypt assertion
-		final var assertion = getAssertion(response);
+		final var assertion = getAssertion(saml2Parameters, response);
 		try {
 			final var claims = OpenSAMLUtil.extractAttributes(assertion);
 			return AuthenticationResult.of(claims, assertion);
@@ -321,12 +314,12 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		}
 	}
 
-	private boolean checkSignature(final Signature sig) {
+	private static boolean checkSignature(final SAML2Parameters saml2Parameters, final Signature signature) {
 		var signatureValid = false;
 		var checkCount = 1;
 		for (final Credential cred : saml2Parameters.getIpPublicCredentials()) {
 			try {
-				SignatureValidator.validate(sig, cred);
+				SignatureValidator.validate(signature, cred);
 				signatureValid = true;
 				break;
 			} catch (final SignatureException e) {
@@ -346,10 +339,10 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		return signatureValid;
 	}
 
-	private Assertion getAssertion(final Response response) {
+	private static Assertion getAssertion(final SAML2Parameters saml2Parameters, final Response response) {
 		final var encryptedAssertions = response.getEncryptedAssertions();
 		if (!encryptedAssertions.isEmpty()) {
-			return decryptAssertion(encryptedAssertions.get(0));
+			return decryptAssertion(saml2Parameters, encryptedAssertions.get(0));
 		}
 
 		final var assertions = response.getAssertions();
@@ -359,7 +352,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		return assertions.get(0);
 	}
 
-	private Assertion decryptAssertion(final EncryptedAssertion encryptedAssertion) {
+	private static Assertion decryptAssertion(final SAML2Parameters saml2Parameters, final EncryptedAssertion encryptedAssertion) {
 		final var keyInfoCredentialResolver = new StaticKeyInfoCredentialResolver(saml2Parameters.getSpCredentials());
 
 		final var decrypter = new Decrypter(null, keyInfoCredentialResolver, new InlineEncryptedKeyResolver());

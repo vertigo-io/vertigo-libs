@@ -22,19 +22,19 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.vega.authentication.WebAuthenticationManager;
 import io.vertigo.vega.webservice.exception.SessionException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Filtre de gestion des sessions utilisateurs bindées sur HTTP.
@@ -97,10 +97,10 @@ public final class SecurityFilter extends AbstractFilter {
 				// authent workflow
 				try {
 					final var beforeOutcome = webAuthenticationManagerOpt.get().doBeforeChain(httpRequest, httpResponse);
-					if (Boolean.TRUE.equals(beforeOutcome.getVal1())) {
+					if (Boolean.TRUE.equals(beforeOutcome.val1())) {
 						return;
 					}
-					chain.doFilter(beforeOutcome.getVal2(), httpResponse);
+					chain.doFilter(beforeOutcome.val2(), httpResponse);
 				} finally {
 					// nothing
 				}

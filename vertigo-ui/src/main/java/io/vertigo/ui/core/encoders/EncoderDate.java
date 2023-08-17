@@ -83,7 +83,7 @@ public final class EncoderDate {
 	 */
 	private static <T> T applyStringToObject(final String dateString, final Function<String, T> fun) throws FormatterException {
 		//StringToDate renvoit null si elle n'a pas réussi à convertir la date
-		T dateValue ;
+		T dateValue;
 		try {
 			dateValue = fun.apply(dateString);
 		} catch (final Exception e) {

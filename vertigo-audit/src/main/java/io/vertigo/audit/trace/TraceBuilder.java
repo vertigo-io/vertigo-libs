@@ -42,7 +42,7 @@ public final class TraceBuilder implements Builder<Trace> {
 	 * Builder for AuditTrace
 	 * @param category
 	 * @param user
-	 * @param item
+	 * @param itemUrn
 	 */
 	public TraceBuilder(final String category, final String user, final String itemUrn, final String message) {
 		Assertion.check()

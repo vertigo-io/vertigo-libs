@@ -39,9 +39,7 @@ final class CriteriaExpression<D extends DtObject> extends Criteria<D> {
 		this.operator = operator;
 		final int size = leftOperands.length + 1;
 		this.operands = new Criteria[size];
-		for (int i = 0; i < leftOperands.length; i++) {
-			this.operands[i] = leftOperands[i];
-		}
+		System.arraycopy(leftOperands, 0, this.operands, 0, leftOperands.length);
 		this.operands[size - 1] = rightOperand;
 	}
 
@@ -64,15 +62,10 @@ final class CriteriaExpression<D extends DtObject> extends Criteria<D> {
 
 	@Override
 	public Predicate<D> toPredicate() {
-		final BinaryOperator<Predicate<D>> accumulator;
-		if (operator == CriteriaLogicalOperator.OR) {
-			accumulator = Predicate::or;
-		} else if (operator == CriteriaLogicalOperator.AND) {
-			accumulator = Predicate::and;
-		} else {
-			throw new IllegalAccessError();
-		}
-
+		final BinaryOperator<Predicate<D>> accumulator = switch (operator) {
+			case OR -> Predicate::or;
+			case AND -> Predicate::and;
+		};
 		return Arrays.stream(operands)
 				.map(Criteria::toPredicate)
 				.reduce(accumulator)

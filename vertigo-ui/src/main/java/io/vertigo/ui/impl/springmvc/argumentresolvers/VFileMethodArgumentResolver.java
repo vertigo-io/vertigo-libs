@@ -17,8 +17,6 @@
  */
 package io.vertigo.ui.impl.springmvc.argumentresolvers;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.util.Assert;
@@ -31,6 +29,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.ui.impl.springmvc.util.SpringVFileUtil;
 import io.vertigo.vega.webservice.stereotype.QueryParam;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class VFileMethodArgumentResolver implements HandlerMethodArgumentResolver {
 

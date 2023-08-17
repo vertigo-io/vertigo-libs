@@ -85,11 +85,31 @@ public interface EntityStoreManager extends Manager {
 	<E extends Entity> E create(E entity);
 
 	/**
+	* Create a list of object.
+	* The underlying implementation is performance optimized (like batch mode in SQL)
+	* No object with the same id must have been created previously.
+	*
+	* @param entities the entity to create
+	* @return the created objects
+	*/
+	<E extends Entity> DtList<E> createList(DtList<E> entities);
+
+	/**
 	* Update an object.
 	* This object must have an id.
 	* @param entity the entity to update
 	*/
 	void update(Entity entity);
+
+	/**
+	* Update a list of object.
+	* The underlying implementation is performance optimized (like batch mode in SQL)
+	* All objects in the list must have an id
+	*
+	* @param entities the entity to create
+	* @return the updated objects
+	*/
+	<E extends Entity> void updateList(DtList<E> entities);
 
 	/**
 	 * Destruction d'un objet persistant par son UID.

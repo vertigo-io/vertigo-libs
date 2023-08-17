@@ -19,6 +19,7 @@ package io.vertigo.datastore.impl.entitystore.cache;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.commons.eventbus.definitions.EventBusSubscriptionDefinition;
 import io.vertigo.core.lang.Assertion;
@@ -56,7 +57,6 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 
 	/**
 	 * Constructor.
-	 * @param storeManager Store manager
 	 * @param dataStoreConfig Data store configuration
 	 */
 	public CacheDataStore(
@@ -146,7 +146,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 		final DtListState dtListState;
 		if (uri.getDtDefinition().getSortField().get().isPersistent()) {
 			//On ne tri dans le PhysicalStore que si c'est un champ persistant
-			dtListState = DtListState.of(null, 0, uri.getDtDefinition().getSortField().get().getName(), false);
+			dtListState = DtListState.of(null, 0, uri.getDtDefinition().getSortField().get().name(), false);
 		} else {
 			dtListState = DtListState.of(null);
 		}
@@ -214,7 +214,12 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 		final EventBusSubscriptionDefinition<StoreEvent> eventBusSubscription = new EventBusSubscriptionDefinition<>(
 				"EvtClearCache",
 				StoreEvent.class,
-				event -> clearCache(event.getUID().getDefinition()));
+				event -> {
+					event.getUIDs().stream()
+							.map(UID::getDefinition)
+							.collect(Collectors.toSet())
+							.forEach(this::clearCache);
+				});
 		return Collections.singletonList(eventBusSubscription);
 	}
 }

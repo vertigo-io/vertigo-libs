@@ -20,7 +20,7 @@ package io.vertigo.datafactory.collections.definitions;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.datafactory.collections.ListFilter;
@@ -63,7 +63,7 @@ public final class FacetRangeDefinitionSupplier implements DefinitionSupplier {
 	}
 
 	public FacetRangeDefinitionSupplier withRange(final String code, final String filter, final String label) {
-		facetValues.add(new FacetValue(code, ListFilter.of(filter), MessageText.of(label)));
+		facetValues.add(new FacetValue(code, ListFilter.of(filter), LocaleMessageText.of(label)));
 		return this;
 	}
 
@@ -78,7 +78,7 @@ public final class FacetRangeDefinitionSupplier implements DefinitionSupplier {
 		return FacetDefinition.createFacetDefinitionByRange(
 				myName,
 				indexDtDefinition.getField(myFieldName),
-				MessageText.of(myLabel),
+				LocaleMessageText.of(myLabel),
 				facetValues,
 				myMultiSelectable,
 				myOrder);

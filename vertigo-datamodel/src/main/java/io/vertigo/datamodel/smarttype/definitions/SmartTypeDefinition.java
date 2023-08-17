@@ -25,13 +25,14 @@ import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.smarttype.AdapterConfig;
 import io.vertigo.datamodel.smarttype.ConstraintConfig;
 import io.vertigo.datamodel.smarttype.FormatterConfig;
 import io.vertigo.datamodel.structure.definitions.Properties;
+import io.vertigo.datamodel.structure.model.DtList;
 
 /**
  * A smarttype exists to enrich the primitive datatypes, giving them super powers.
@@ -49,42 +50,42 @@ import io.vertigo.datamodel.structure.definitions.Properties;
  * @author pchretien
  */
 @DefinitionPrefix(SmartTypeDefinition.PREFIX)
-public final class SmartTypeDefinition extends AbstractDefinition {
+public final class SmartTypeDefinition extends AbstractDefinition<SmartTypeDefinition> {
 	public static final String PREFIX = "STy";
 
 	public enum Scope {
-		PRIMITIVE,
-		VALUE_OBJECT,
-		DATA_OBJECT;
+		BASIC_TYPE, //
+		VALUE_TYPE, //
+		DATA_TYPE;
 
 		/**
-		 * @return if the smartType is a primitive type
+		 * @return if the smartType is a basic-type
 		 */
-		public boolean isPrimitive() {
-			return this == Scope.PRIMITIVE;
+		public boolean isBasicType() {
+			return this == Scope.BASIC_TYPE;
 		}
 
 		/**
-		 * @return if the smartType is a value-object
+		 * @return if the smartType is a value-type
 		 */
-		public boolean isValueObject() {
-			return this == Scope.VALUE_OBJECT;
+		public boolean isValueType() {
+			return this == Scope.VALUE_TYPE;
 		}
 
 		/**
-		 * @return if the smartType is a data-object
+		 * @return if the smartType is a data-type
 		 */
-		public boolean isDataObject() {
-			return this == Scope.DATA_OBJECT;
+		public boolean isDataType() {
+			return this == Scope.DATA_TYPE;
 		}
 	}
 
 	private final Scope scope;
-	private final String valueObjectClassName;
-	private final Optional<BasicType> basicTypeOpt; //nullable
+	private final Class javaClass;
+	private final Optional<BasicType> basicTypeOpt;
 	private final AdapterConfig wildCardAdapterConfig; //nullable
 	private final Map<String, AdapterConfig> adapterConfigs;
-	private final FormatterConfig formatterConfig;
+	private final FormatterConfig formatterConfig;//nullable
 	private final List<ConstraintConfig> constraintConfigs;
 
 	private final Properties properties;
@@ -92,7 +93,7 @@ public final class SmartTypeDefinition extends AbstractDefinition {
 	public SmartTypeDefinition(
 			final String name,
 			final Scope scope,
-			final String valueObjectClassName,
+			final Class javaClass,
 			final List<AdapterConfig> adapterConfigs,
 			final FormatterConfig formatterConfig,
 			final List<ConstraintConfig> constraintConfigs,
@@ -101,23 +102,23 @@ public final class SmartTypeDefinition extends AbstractDefinition {
 		//---
 		Assertion.check()
 				.isNotNull(scope)
-				.isNotNull(valueObjectClassName)
+				.isNotNull(javaClass)
 				.isNotNull(adapterConfigs)
 				.isNotNull(constraintConfigs)
 				.isNotNull(properties);
 		//---
 		this.scope = scope;
-		this.valueObjectClassName = valueObjectClassName;
-		basicTypeOpt = BasicType.of(getJavaClass());
+		this.javaClass = javaClass;
+		basicTypeOpt = BasicType.of(javaClass);
 		this.adapterConfigs = adapterConfigs
 				.stream()
-				.collect(Collectors.toMap(AdapterConfig::getType, Function.identity(), (a, b) -> {
-					throw new IllegalArgumentException("Only one adapter per type is supported. Smarttype '" + name + "' declares multiple adapters for type '" + a.getType() + "'");
+				.collect(Collectors.toMap(AdapterConfig::type, Function.identity(), (a, b) -> {
+					throw new IllegalArgumentException("Only one adapter per type is supported. Smarttype '" + name + "' declares multiple adapters for type '" + a.type() + "'");
 				}));
 		wildCardAdapterConfig = this.adapterConfigs.get("*");
 		this.properties = properties;
 		this.formatterConfig = formatterConfig;
-		this.constraintConfigs = constraintConfigs;
+		this.constraintConfigs = List.copyOf(constraintConfigs);
 
 	}
 
@@ -128,12 +129,8 @@ public final class SmartTypeDefinition extends AbstractDefinition {
 		return scope;
 	}
 
-	public String getValueObjectClassName() {
-		return valueObjectClassName;
-	}
-
 	public Class getJavaClass() {
-		return ClassUtil.classForName(valueObjectClassName);
+		return javaClass;
 	}
 
 	public BasicType getBasicType() {
@@ -166,11 +163,23 @@ public final class SmartTypeDefinition extends AbstractDefinition {
 		return constraintConfigs;
 	}
 
-	public static SmartTypeDefinitionBuilder builder(final String name, final BasicType dataType) {
-		return new SmartTypeDefinitionBuilder(name, dataType);
+	public static SmartTypeDefinitionBuilder builder(final String name, final BasicType basicType) {
+		return new SmartTypeDefinitionBuilder(name, basicType);
 	}
 
 	public static SmartTypeDefinitionBuilder builder(final String name, final Class clazz) {
 		return new SmartTypeDefinitionBuilder(name, clazz);
 	}
+
+	public Class getJavaClass(final Cardinality cardinality) {
+		Assertion.check().isNotNull(cardinality);
+		//---
+		return cardinality.hasMany()
+				? switch (scope) {
+				case DATA_TYPE -> DtList.class;
+				case BASIC_TYPE, VALUE_TYPE -> List.class;
+				}
+				: javaClass;
+	}
+
 }

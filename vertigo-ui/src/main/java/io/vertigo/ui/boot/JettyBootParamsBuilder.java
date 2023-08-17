@@ -33,6 +33,7 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 	private final Class<? extends WebApplicationInitializer> myWebApplicationInitializerClass;
 	private String myContextPath;
 	private boolean mySslDisabled;
+	private boolean mySniHostCheckDisabled;
 	private String myKeystoreUrl;
 	private String myKeystorePassword;
 	private String mySslKeystoreAlias;
@@ -67,6 +68,11 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 		return this;
 	}
 
+	public JettyBootParamsBuilder noSniHostCheck() {
+		mySniHostCheckDisabled = true;
+		return this;
+	}
+
 	public JettyBootParamsBuilder withJettyNodeName(final String jettyNodeName) {
 		myJettyNodeName = jettyNodeName;
 		return this;
@@ -80,11 +86,12 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 	@Override
 	public JettyBootParams build() {
 		return new JettyBootParams(
-				myPort != null ? myPort : (mySslDisabled ? portHttp : portHttps),
+				myPort != null ? myPort : mySslDisabled ? portHttp : portHttps,
 				myContextRoot,
 				Optional.ofNullable(myContextPath),
 				myWebApplicationInitializerClass,
 				mySslDisabled,
+				mySniHostCheckDisabled,
 				myKeystoreUrl,
 				myKeystorePassword,
 				mySslKeystoreAlias,

@@ -32,7 +32,8 @@ final class H2SqlDialect implements SqlDialect {
 			final String idFieldName,
 			final List<String> dataFieldsName,
 			final String sequencePrefix,
-			final String tableName) {
+			final String tableName,
+			final String parameterName) {
 		Assertion.check()
 				.isNotBlank(idFieldName)
 				.isNotNull(dataFieldsName)
@@ -50,7 +51,7 @@ final class H2SqlDialect implements SqlDialect {
 				.append("nextval('").append(sequencePrefix).append(tableName).append("'), ")
 				.append(dataFieldsName
 						.stream()
-						.map(fieldName -> " #dto." + fieldName + '#')
+						.map(fieldName -> " #" + parameterName + '.' + fieldName + '#')
 						.collect(Collectors.joining(", ")))
 				.append(");")
 				.toString();

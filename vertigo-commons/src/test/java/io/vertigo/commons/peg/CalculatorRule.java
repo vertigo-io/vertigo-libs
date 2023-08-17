@@ -50,7 +50,7 @@ final class CalculatorRule extends AbstractRule<Integer, List<Object>> {
 		final Integer a = Integer.parseInt((String) parsing.get(0));
 		final Integer b = Integer.parseInt((String) parsing.get(4));
 		final PegChoice tuple = (PegChoice) parsing.get(2);
-		switch (tuple.getChoiceIndex()) {
+		switch (tuple.choiceIndex()) {
 			case 0:
 				return a * b;
 			case 1:

@@ -20,6 +20,7 @@ package io.vertigo.social.impl.handle;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,7 @@ import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.structure.definitions.DataAccessor;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
@@ -92,36 +94,42 @@ public final class HandleManagerImpl implements HandleManager, Activeable {
 	 */
 	@EventBusSubscribed
 	public void onEvent(final StoreEvent storeEvent) {
-		final UID uid = storeEvent.getUID();
-		//On ne traite l'event que si il porte sur un KeyConcept
-		if (uid.getDefinition().getHandleField().isPresent()) {
+		final Map<DtDefinition, List<UID>> uidsByDefinition = storeEvent.getUIDs().stream()
+				//On ne traite l'event que si il porte sur un KeyConcept
+				.filter(uid -> uid.getDefinition().getHandleField().isPresent())
+				.collect(Collectors.groupingBy(uid -> uid.getDefinition()));
 
-			switch (storeEvent.getType()) {
-				case UPDATE:
-				case CREATE:
+		uidsByDefinition.entrySet().stream()
+				.forEach(entry -> {
+					final DtDefinition dtDefinition = entry.getKey();
+					final List<UID> uids = entry.getValue();
+					switch (storeEvent.getType()) {
+						case UPDATE:
+						case CREATE:
 
-					final Entity entity;
-					try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-						//we need to make better than this...
-						entity = entityStoreManager.readOne(uid);
+							final DtList<Entity> entities;
+							try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+								//we need to make better than this...
+								entities = entityStoreManager.find(dtDefinition, Criterions.in(() -> dtDefinition.getIdField().get().name(), uids.toArray()), DtListState.of(null));
+							}
+							// add the handle in the plugin
+							handlePlugin.add(entities.stream().map(entity -> toHandle(dtDefinition, entity)).toList());
+							break;
+						case DELETE:
+							handlePlugin.remove(uids);
+							break;
+						default:
+							throw new VSystemException("Type of store Event {0} is not supported", storeEvent.getType());
 					}
-					// add the handle in the plugin
-					handlePlugin.add(Collections.singletonList(toHandle(uid.getDefinition(), entity)));
-					break;
-				case DELETE:
-					handlePlugin.remove(Collections.singletonList(uid));
-					break;
-				default:
-					throw new VSystemException("Type of store Event {0} is not supported", storeEvent.getType());
-			}
 
-		}
+				});
+
 	}
 
 	@Override
 	public List<String> getHandlePrefixes() {
 		return dtDefinitionsWithHandle.stream()
-				.map(DtDefinition::getLocalName)
+				.map(dtDefinition -> dtDefinition.id().shortName())
 				.map(StringUtil::first2LowerCase)
 				.collect(Collectors.toList());
 	}
@@ -150,14 +158,14 @@ public final class HandleManagerImpl implements HandleManager, Activeable {
 	private Optional<DtDefinition> isStartingByDtDefinition(final String handlePrefix) {
 		return dtDefinitionsWithHandle
 				.stream()
-				.filter(dtDefinition -> handlePrefix.startsWith(StringUtil.first2LowerCase(dtDefinition.getLocalName()) + "/"))
+				.filter(dtDefinition -> handlePrefix.startsWith(StringUtil.first2LowerCase(dtDefinition.id().shortName()) + "/"))
 				.findAny();
 	}
 
 	private static Handle toHandle(final DtDefinition dtDefinition, final Entity entity) {
 		final DataAccessor dataAccessor = dtDefinition.getHandleField().get().getDataAccessor();
 		return new Handle(entity.getUID(),
-				StringUtil.first2LowerCase(dtDefinition.getLocalName()) + "/" +
+				StringUtil.first2LowerCase(dtDefinition.id().shortName()) + "/" +
 						dataAccessor.getValue(entity));
 	}
 
@@ -168,7 +176,7 @@ public final class HandleManagerImpl implements HandleManager, Activeable {
 	}
 
 	private void indexDefinition(final DtDefinition dtDefinition) {
-		final String idFieldName = dtDefinition.getIdField().get().getName();
+		final String idFieldName = dtDefinition.getIdField().get().name();
 		final DataAccessor idFieldAccessor = dtDefinition.getIdField().get().getDataAccessor();
 		int lastResultsSize;
 		Serializable lastId = null;

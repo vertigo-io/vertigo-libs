@@ -9,20 +9,20 @@
                 </template>
             </div>
         </div>
-            <q-list  v-for="facet in facets" :key="facet.code" class="facetValues q-py-none" dense >
+            <q-list v-for="facet in facets" :key="facet.code" class="facetValues q-py-none" dense >
                 <template v-if="facet.multiple || !isFacetSelected(facet.code)">
                     <q-item-label header><big>{{facet.label}}</big></q-item-label>
-                    <q-item v-for="(value) in selectedInvisibleFacets(facet.code)" :key="value.code" class="facetValue q-ml-md" clickable @click.native="$emit('toogle-facet', facet.code, value.code, contextKey)">
+                    <q-item v-for="(value) in selectedInvisibleFacets(facet.code)" :key="value.code" class="facetValue q-ml-md" clickable @click="$emit('toogle-facet', facet.code, value.code, contextKey)">
                         <q-item-section side v-if="facet.multiple" >
-                            <q-checkbox dense v-bind:value="true" @input="$emit('toogle-facet', facet.code, value.code, contextKey)" ></q-checkbox>
+                            <q-checkbox dense v-bind:modelValue="true" @update:modelValue="$emit('toogle-facet', facet.code, value.code, contextKey)" ></q-checkbox>
                         </q-item-section>
                         <q-item-section >{{value.label}}</q-item-section> 
                         <q-item-section side>{{value.count}}</q-item-section>
                     </q-item>
                     
-                    <q-item v-for="(value) in visibleFacets(facet.code, facet.values)" :key="value.code" class="facetValue q-ml-md" clickable @click.native="$emit('toogle-facet', facet.code, value.code, contextKey)">
+                    <q-item v-for="(value) in visibleFacets(facet.code, facet.values)" :key="value.code" class="facetValue q-ml-md" clickable @click="$emit('toogle-facet', facet.code, value.code, contextKey)">
                         <q-item-section side v-if="facet.multiple" >
-                            <q-checkbox dense v-bind:value="isFacetValueSelected(facet.code, value.code)" @input="$emit('toogle-facet', facet.code, value.code, contextKey)" ></q-checkbox>
+                            <q-checkbox dense v-bind:modelValue="isFacetValueSelected(facet.code, value.code)" @update:modelValue="$emit('toogle-facet', facet.code, value.code, contextKey)" ></q-checkbox>
                         </q-item-section>
                         <q-item-section >{{value.label}}</q-item-section> 
                         <q-item-section side>{{value.count}}</q-item-section>
@@ -44,6 +44,7 @@ export default {
             default : 5
         }
   },
+  emits: ["toogle-facet"],
   computed: {
   },
   data : function() {
@@ -52,54 +53,54 @@ export default {
       }
   },
   methods: {
-      facetByCode : function (facetCode) {
+      facetByCode(facetCode) {
           return this.facets.filter(function (facet) {
               return facet.code === facetCode;
           })[0];
       },
-      facetValueByCode : function (facetCode, facetValueCode) {
+      facetValueByCode(facetCode, facetValueCode) {
           return this.facetByCode(facetCode).values.filter(function (facetValue) {
               return facetValue.code === facetValueCode;
           })[0];
       },
-      facetLabelByCode : function (facetCode) {
+      facetLabelByCode(facetCode) {
           return this.facetByCode(facetCode).label;
       },      
-      facetMultipleByCode : function (facetCode) {
+      facetMultipleByCode(facetCode) {
           return this.facetByCode(facetCode).multiple;
       },
-      facetValueLabelByCode : function (facetCode, facetValueCode) {
+      facetValueLabelByCode(facetCode, facetValueCode) {
           var facetValueByCode = this.facetValueByCode(facetCode,facetValueCode);
           return facetValueByCode?facetValueByCode.label:facetValueCode; //might be not found
       },
-      isFacetValueSelected : function (facetCode, facetValueCode){
+      isFacetValueSelected(facetCode, facetValueCode){
           return this.selectedFacets[facetCode].includes(facetValueCode);
       },
-      isFacetSelected : function (facetCode){
+      isFacetSelected(facetCode){
           if (this.selectedFacets[facetCode]) {
               return this.selectedFacets[facetCode].length > 0;
           }
           return false;
       },
-      isAnyFacetValueSelected : function() {
+      isAnyFacetValueSelected() {
           return Object.keys(this.selectedFacets).some(function (facetCode) {
               return !this.facetMultipleByCode(facetCode);
           }.bind(this));
       },
-      expandFacet : function (facetCode){
+      expandFacet(facetCode){
           if (!this.isFacetExpanded(facetCode)) {
               this.$data.expandedFacets.push(facetCode);
           }
       },
-      reduceFacet : function (facetCode){
+      reduceFacet(facetCode){
           if (this.isFacetExpanded(facetCode)) {
               this.$data.expandedFacets.splice( this.$data.expandedFacets.indexOf(facetCode), 1);
           }
       },
-      isFacetExpanded : function (facetCode){
+      isFacetExpanded(facetCode){
          return this.$data.expandedFacets.includes(facetCode);
       },
-      selectedInvisibleFacets : function (facetCode) {
+      selectedInvisibleFacets(facetCode) {
           return this.selectedFacets[facetCode]
              .filter( facetValueCode => !this.facetValueByCode(facetCode, facetValueCode) )
              .map(facetValueCode => { 
@@ -110,7 +111,7 @@ export default {
               return obj; 
           });
       },
-      visibleFacets : function (facetCode, facetValues){
+      visibleFacets(facetCode, facetValues){
           if (!this.isFacetExpanded(facetCode)) {
               return  facetValues.slice(0, this.maxValues);
           }

@@ -33,9 +33,9 @@ import io.restassured.filter.session.SessionFilter;
 import io.restassured.parsing.Parser;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
+import io.vertigo.core.lang.ListBuilder;
+import io.vertigo.core.lang.MapBuilder;
 import io.vertigo.core.node.AutoCloseableNode;
-import io.vertigo.core.util.ListBuilder;
-import io.vertigo.core.util.MapBuilder;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
 
 public final class WebServiceManagerSecuredTest {

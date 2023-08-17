@@ -17,13 +17,13 @@
  */
 package io.vertigo.database.impl.sql;
 
-import io.vertigo.core.locale.MessageKey;
+import io.vertigo.core.locale.LocaleMessageKey;
 
 /**
  *
  * @author jmforhan
  */
-public enum Resources implements MessageKey {
+public enum Resources implements LocaleMessageKey {
 	/**
 	 * Value to big for field in database.
 	 */

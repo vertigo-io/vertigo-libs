@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.BootConfig;
@@ -168,7 +168,7 @@ public final class ExportManagerTest {
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")
 				.beginSheet(china, "china")
-				.addField(CountryFields.name, MessageText.of("test"))
+				.addField(CountryFields.name, LocaleMessageText.of("test"))
 				.endSheet()
 				.build();
 
@@ -210,7 +210,7 @@ public final class ExportManagerTest {
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test5.csv")
 				.beginSheet(germany, "country")
-				.addField(CountryFields.id, dtc, CountryFields.name, MessageText.of("test"))
+				.addField(CountryFields.id, dtc, CountryFields.name, LocaleMessageText.of("test"))
 				.endSheet()
 				.build();
 

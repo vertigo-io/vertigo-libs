@@ -17,11 +17,10 @@
  */
 package io.vertigo.vega.authentication;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.component.Component;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This manager can intercept HttpRequests, to manage webbase authentication mecanisms (SAML2, OIDC, etc...)

@@ -36,9 +36,10 @@ import io.restassured.response.Response;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.connectors.redis.RedisConnector;
+import io.vertigo.core.lang.MapBuilder;
+import io.vertigo.core.lang.json.UTCDateUtil;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.util.InjectorUtil;
-import io.vertigo.core.util.MapBuilder;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
@@ -47,7 +48,6 @@ import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.comment.Comment;
 import io.vertigo.social.comment.CommentManager;
 import io.vertigo.social.data.MockIdentities;
-import io.vertigo.vega.engines.webservice.json.UTCDateUtil;
 import redis.clients.jedis.Jedis;
 
 public final class CommentWebServicesTest {
@@ -174,7 +174,7 @@ public final class CommentWebServicesTest {
 		final Comment editComment = Comment.builder()
 				.withUuid(UUID.fromString(uuid))
 				.withAuthor(account1Uri)
-				.withCreationDate(newComment.getCreationDate())
+				.withCreationDate(newComment.creationDate())
 				.withMsg("edited Lorem ipsum edited")
 				.build();
 
@@ -275,11 +275,12 @@ public final class CommentWebServicesTest {
 
 	private static Map<String, Object> commentToMap(final Comment comment) {
 		return new MapBuilder<String, Object>()
-				.put("uuid", comment.getUuid())
-				.put("author", comment.getAuthor().getId())
-				.put("msg", comment.getMsg())
-				.put("creationDate", convertDate(comment.getCreationDate()))
-				.putNullable("lastModified", convertDate(comment.getLastModified()))
+				.put("uuid", comment.uuid())
+				.put("author", comment.author().getId())
+				.put("authorDisplayName", comment.authorDisplayName())
+				.put("msg", comment.msg())
+				.put("creationDate", convertDate(comment.creationDate()))
+				.putNullable("lastModified", convertDate(comment.lastModified()))
 				.build();
 	}
 }

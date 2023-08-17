@@ -53,14 +53,14 @@ public class MovieController extends AbstractVSpringMvcController {
 		oui.setKey(Boolean.TRUE);
 		final OuiNonChoice non = new OuiNonChoice();
 		non.setKey(Boolean.FALSE);
-		viewContext.publishDto(ouiKey, oui);
-		viewContext.publishDto(nonKey, non);
-		viewContext.publishDtList(moviesKey, movieServices.getMovies(DtListState.defaultOf(Movie.class)));
+		viewContext.publishDto(ouiKey, oui)
+				.publishDto(nonKey, non)
+				.publishDtList(moviesKey, movieServices.getMovies(DtListState.defaultOf(Movie.class)));
 	}
 
 	@PostMapping("/_edit")
-	public void doEdit() {
-		toModeEdit();
+	public void doEdit(final ViewContext viewContext) {
+		viewContext.toModeEdit();
 	}
 
 	@PostMapping("/_save")

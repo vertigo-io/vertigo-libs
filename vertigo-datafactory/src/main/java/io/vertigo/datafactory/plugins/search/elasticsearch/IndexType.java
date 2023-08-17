@@ -131,13 +131,13 @@ public final class IndexType {
 	private static String obtainDefaultIndexDataType(final SmartTypeDefinition smartTypeDefinition) {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
-		Assertion.check().isTrue(smartTypeDefinition.getScope().isPrimitive()
-				|| smartTypeDefinition.getScope().isValueObject(), "Type de donnée non pris en charge pour le keyconcept indexé [" + smartTypeDefinition + "].");
+		Assertion.check().isTrue(smartTypeDefinition.getScope().isBasicType()
+				|| smartTypeDefinition.getScope().isValueType(), "Type de donnée non pris en charge pour le keyconcept indexé [" + smartTypeDefinition + "].");
 		final BasicType basicType;
-		if (smartTypeDefinition.getScope().isPrimitive()) {
+		if (smartTypeDefinition.getScope().isBasicType()) {
 			basicType = smartTypeDefinition.getBasicType();
 		} else { // smartTypeDefinition.getScope().isValueObject()
-			basicType = smartTypeDefinition.getAdapterConfig("search").getTargetBasicType();
+			basicType = smartTypeDefinition.getAdapterConfig("search").targetBasicType();
 		}
 
 		switch (basicType) {
@@ -162,14 +162,14 @@ public final class IndexType {
 	private static void checkIndexType(final String indexType, final SmartTypeDefinition smartTypeDefinition) {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
-		Assertion.check().isTrue(smartTypeDefinition.getScope().isPrimitive()
-				|| smartTypeDefinition.getScope().isValueObject(), "Type de donnée non pris en charge pour le keyconcept indexé [" + smartTypeDefinition + "].");
+		Assertion.check().isTrue(smartTypeDefinition.getScope().isBasicType()
+				|| smartTypeDefinition.getScope().isValueType(), "Type de donnée non pris en charge pour le keyconcept indexé [" + smartTypeDefinition + "].");
 
 		final BasicType basicType;
-		if (smartTypeDefinition.getScope().isPrimitive()) {
+		if (smartTypeDefinition.getScope().isBasicType()) {
 			basicType = smartTypeDefinition.getBasicType();
 		} else { // smartTypeDefinition.getScope().isValueObject()
-			basicType = smartTypeDefinition.getAdapterConfig("search").getTargetBasicType();
+			basicType = smartTypeDefinition.getAdapterConfig("search").targetBasicType();
 		}
 		switch (basicType) {
 			case Boolean:

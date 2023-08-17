@@ -17,7 +17,6 @@
  */
 package io.vertigo.vega.plugins.authentication.aad;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.Collections;
@@ -34,8 +33,6 @@ import java.util.function.BiFunction;
 
 import javax.inject.Inject;
 import javax.naming.ServiceUnavailableException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.microsoft.aad.msal4j.AuthorizationCodeParameters;
 import com.microsoft.aad.msal4j.AuthorizationRequestUrlParameters;
@@ -62,6 +59,8 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.vega.impl.authentication.AuthenticationResult;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<IAuthenticationResult> {
 
@@ -129,7 +128,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 				&& isAccessTokenExpired(httpRequest)) {
 			try {
 				final var authResult = getAuthResultBySilentFlow(httpRequest);
-				SessionManagementHelper.setSessionPrincipal(httpRequest, authResult);
+				AzureAdSessionManagementUtil.setSessionPrincipal(httpRequest, authResult);
 			} catch (final Throwable e) {
 				throw WrappedException.wrap(e);
 			}
@@ -152,12 +151,12 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 			// response should have authentication code, which will be used to acquire access token
 			// we also retrieve the orignal uri requested before the OIDC flow
 			processAuthenticationCodeRedirect(request, currentUriWithScheme, fullUrl);
-			return AuthenticationResult.of(Map.of(), SessionManagementHelper.getAuthSessionObject(request));
+			return AuthenticationResult.of(Map.of(), AzureAdSessionManagementUtil.getAuthSessionObject(request));
 
 		} catch (final MsalException authException) {
 			// something went wrong (like expiration or revocation of token)
 			// we should invalidate AuthData stored in session and redirect to Authorization server
-			SessionManagementHelper.removePrincipalFromSession(request);
+			AzureAdSessionManagementUtil.removePrincipalFromSession(request);
 			doRedirectToSso(request, response);
 			return AuthenticationResult.ofConsumed();
 		} catch (final Throwable e) {
@@ -195,7 +194,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 	}
 
 	private boolean isAccessTokenExpired(final HttpServletRequest httpRequest) {
-		final IAuthenticationResult result = SessionManagementHelper.getAuthSessionObject(httpRequest);
+		final IAuthenticationResult result = AzureAdSessionManagementUtil.getAuthSessionObject(httpRequest);
 		return result.expiresOnDate().before(new Date());
 	}
 
@@ -207,7 +206,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 			params.put(key, Collections.singletonList(httpRequest.getParameterMap().get(key)[0]));
 		}
 		// validate that state in response equals to state in request
-		final StateData stateData = SessionManagementHelper.validateState(httpRequest.getSession(), params.get(SessionManagementHelper.STATE).get(0));
+		final AzureAdStateData azureAdStateData = AzureAdSessionManagementUtil.validateState(httpRequest.getSession(), params.get(AzureAdSessionManagementUtil.STATE).get(0));
 
 		final AuthenticationResponse authResponse = AuthenticationResponseParser.parse(new URI(fullUrl), params);
 		if (isAuthenticationSuccessful(authResponse)) {
@@ -221,9 +220,9 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 					currentUri);
 
 			// validate nonce to prevent reply attacks (code maybe substituted to one with broader access)
-			validateNonce(stateData, getNonceClaimValueFromIdToken(result.idToken()));
+			validateNonce(azureAdStateData, getNonceClaimValueFromIdToken(result.idToken()));
 
-			SessionManagementHelper.setSessionPrincipal(httpRequest, result);
+			AzureAdSessionManagementUtil.setSessionPrincipal(httpRequest, result);
 		} else {
 			final AuthenticationErrorResponse oidcResponse = (AuthenticationErrorResponse) authResponse;
 			throw new Exception(String.format("Request for auth code failed: %s - %s",
@@ -235,7 +234,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 	private IAuthenticationResult getAuthResultBySilentFlow(final HttpServletRequest httpRequest)
 			throws Throwable {
 
-		final IAuthenticationResult result = SessionManagementHelper.getAuthSessionObject(httpRequest);
+		final IAuthenticationResult result = AzureAdSessionManagementUtil.getAuthSessionObject(httpRequest);
 
 		final IConfidentialClientApplication app = azureAdConnector.getClient();
 
@@ -252,14 +251,14 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 		final IAuthenticationResult updatedResult = future.get();
 
 		//update session with latest token cache
-		SessionManagementHelper.storeTokenCacheInSession(httpRequest, app.tokenCache().serialize());
+		AzureAdSessionManagementUtil.storeTokenCacheInSession(httpRequest, app.tokenCache().serialize());
 
 		return updatedResult;
 	}
 
-	private void validateNonce(final StateData stateData, final String nonce) throws Exception {
-		if (StringUtil.isBlank(nonce) || !nonce.equals(stateData.getNonce())) {
-			throw new Exception(SessionManagementHelper.FAILED_TO_VALIDATE_MESSAGE + "could not validate nonce");
+	private void validateNonce(final AzureAdStateData azureAdStateData, final String nonce) throws Exception {
+		if (StringUtil.isBlank(nonce) || !nonce.equals(azureAdStateData.nonce())) {
+			throw new Exception(AzureAdSessionManagementUtil.FAILED_TO_VALIDATE_MESSAGE + "could not validate nonce");
 		}
 	}
 
@@ -270,7 +269,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 	private void validateAuthRespMatchesAuthCodeFlow(final AuthenticationSuccessResponse oidcResponse) throws Exception {
 		if (oidcResponse.getIDToken() != null || oidcResponse.getAccessToken() != null ||
 				oidcResponse.getAuthorizationCode() == null) {
-			throw new Exception(SessionManagementHelper.FAILED_TO_VALIDATE_MESSAGE + "unexpected set of artifacts received");
+			throw new Exception(AzureAdSessionManagementUtil.FAILED_TO_VALIDATE_MESSAGE + "unexpected set of artifacts received");
 		}
 	}
 
@@ -280,7 +279,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 		final String state = UUID.randomUUID().toString();
 		final String nonce = UUID.randomUUID().toString();
 
-		SessionManagementHelper.storeStateAndNonceInSession(httpRequest.getSession(), state, nonce, requestedUri);
+		AzureAdSessionManagementUtil.storeStateAndNonceInSession(httpRequest.getSession(), state, nonce, requestedUri);
 
 		try {
 			httpResponse.setStatus(302);
@@ -291,9 +290,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 		}
 	}
 
-	private String getAuthorizationCodeUrl(final String claims, final String scope, final String registeredRedirectURL, final String state, final String nonce)
-			throws MalformedURLException {
-
+	private String getAuthorizationCodeUrl(final String claims, final String scope, final String registeredRedirectURL, final String state, final String nonce) {
 		final String updatedScopes = scope == null ? "" : scope;
 
 		final AuthorizationRequestUrlParameters parameters = AuthorizationRequestUrlParameters
@@ -335,7 +332,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 			throw new ServiceUnavailableException("authentication result was null");
 		}
 
-		SessionManagementHelper.storeTokenCacheInSession(httpServletRequest, app.tokenCache().serialize());
+		AzureAdSessionManagementUtil.storeTokenCacheInSession(httpServletRequest, app.tokenCache().serialize());
 
 		return result;
 	}
@@ -345,7 +342,7 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 	}
 
 	public static IAuthenticationResult getAuthSessionObject(final HttpServletRequest request) {
-		return SessionManagementHelper.getAuthSessionObject(request);
+		return AzureAdSessionManagementUtil.getAuthSessionObject(request);
 	}
 
 	@Override
@@ -359,8 +356,8 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 		for (final String key : httpRequest.getParameterMap().keySet()) {
 			params.put(key, Collections.singletonList(httpRequest.getParameterMap().get(key)[0]));
 		}
-		final var state = params.get(SessionManagementHelper.STATE).get(0);
-		return Optional.ofNullable(SessionManagementHelper.getRequestedUri(httpRequest.getSession(), state));
+		final var state = params.get(AzureAdSessionManagementUtil.STATE).get(0);
+		return Optional.ofNullable(AzureAdSessionManagementUtil.getRequestedUri(httpRequest.getSession(), state));
 	}
 
 	@Override

@@ -21,8 +21,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
 
 /**
  * Impl of ServletOutputStream to intercept and return content as String.
@@ -33,7 +33,6 @@ class UnAutoCloseTagsResponseStream extends ServletOutputStream {
 
 	/**
 	 * Construit un servlet output stream associé avec la réponse spécifiée.
-	 * @param response javax.servlet.http.HttpServletResponse
 	 */
 	UnAutoCloseTagsResponseStream() {
 		super();

@@ -44,8 +44,10 @@
   			<q-drawer
   			  content-class="bg-white text-primary"
 		      side="left"
-		      :mini="function() {var miniMenu = this.$cookies.get('miniMenu', true) === 'true';componentStates.navDrawer.mini = miniMenu;return miniMenu;}()"
-		      v-model="componentStates.navDrawer.showLeft">
+		      @vue:mounted="function() { componentStates.navDrawer.mini = (this.localStorage.miniMenu === 'true')}"
+		      :mini="componentStates.navDrawer.mini"
+			  v-model="componentStates.navDrawer.showLeft"
+			>
 		      
 		      <q-list :class="{'v-navList':true, 'dense-list-header':!componentStates.navDrawer.mini}" >
 		      <nav class="text-no-wrap">
@@ -72,18 +74,19 @@
 		          <q-item-section>Equipments</q-item-section>
 		        </q-item>
 		       	<q-separator></q-separator>
-		        <q-item v-if="componentStates.navDrawer.mini"
-						@click.native="componentStates.navDrawer.mini = false; $cookies.set('miniMenu', false)" title="Expand menu">
-						<q-item-section avatar>
-		          			<q-icon name="arrow_right"></q-icon>
-		          		</q-item-section>
-				</q-item>
-				 <q-item v-if="!componentStates.navDrawer.mini"
-						@click.native="componentStates.navDrawer.mini = true; $cookies.set('miniMenu', true)" title="Minify menu">
-					<q-item-section side>
-		          		<q-icon name="arrow_left"></q-icon>
-		          	</q-item-section>
-				</q-item>
+		        <q-item v-if="componentStates.navDrawer.mini" clickable
+							@click="componentStates.navDrawer.mini = false; $event.view.window.localStorage.miniMenu = 'false'" title="Expand menu">
+							<q-item-section avatar>
+			          			<q-icon name="fas fa-chevron-circle-right" color="secondary" size="sm"></q-icon>
+			          		</q-item-section>
+					</q-item>
+					 <q-item v-if="!componentStates.navDrawer.mini" clickable
+							@click="componentStates.navDrawer.mini = true; $event.view.window.localStorage.miniMenu = 'true'" title="Minify menu">
+						<q-item-section></q-item-section>
+						<q-item-section avatar >
+			          		<q-icon right name="fas fa-chevron-circle-left" color="secondary" size="sm" ></q-icon>
+			          	</q-item-section>
+					</q-item>
 		        </nav>
 		        </q-list>
 		        

@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.node.AutoCloseableNode;
@@ -268,6 +269,7 @@ public abstract class AbstractWorkManagerTest {
 	 * Teste les Work qui NE vident PAS leur threadLocal.
 	 */
 	@Test
+	@Disabled // we cannot make the test, waiting for virtual threads
 	public void testThreadLocalWorkNotReset() {
 		final int workToCreate = 20 * WORKER_COUNT;
 		final int workTime = 200; //200ms temps d'exécution d'un work

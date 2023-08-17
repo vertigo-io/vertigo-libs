@@ -34,6 +34,7 @@ import io.vertigo.social.sms.SmsSendingReport;
 
 public class OvhSmsSendPlugin implements SmsSendPlugin {
 
+	private static final int MAX_LOGGED_PREFIX_NUM = 8; //maximum numbers keep in tracer tag for matched whitelistPrefix
 	private final AnalyticsManager analyticsManager;
 	private final OvhSmsWebServiceClient ovhSmsWebServiceClient;
 	private final String serviceName;
@@ -59,7 +60,7 @@ public class OvhSmsSendPlugin implements SmsSendPlugin {
 			acceptAll = false;
 			whitelistPrefixes = Arrays.asList(whitelistPrefixesOpt.get().split(";"))
 					.stream()
-					.map(prefix -> prefix.replace(" ", ""))
+					.map(prefix -> prefix.replaceAll("[\\(\\)\\s\\.\\-]+", "")) //we accept ( ) . - and spaces as separators
 					.collect(Collectors.toList());
 		} else {
 			acceptAll = true;
@@ -71,27 +72,35 @@ public class OvhSmsSendPlugin implements SmsSendPlugin {
 	@Override
 	public boolean acceptSms(final Sms sms) {
 		return acceptAll ||
-				sms.getReceivers().stream()
-						.map(receiver -> receiver.replace(" ", ""))
-						.allMatch(receiver -> whitelistPrefixes.stream().anyMatch(prefix -> receiver.startsWith(prefix)));
+				sms.receivers().stream()
+						.map(receiver -> receiver.replaceAll("[\\(\\)\\s\\.\\-]+", ""))
+						.allMatch(receiver -> whitelistPrefixes.stream()
+								.anyMatch(prefix -> {
+									if (receiver.startsWith(prefix)) {
+										analyticsManager.getCurrentTracer().ifPresent(
+												tracer -> tracer.setTag("whitelistPrefix", prefix.substring(0, Math.min(prefix.length(), MAX_LOGGED_PREFIX_NUM))));
+										return true;
+									}
+									//We can't tag whitelistPrefix, because it could be accepted by another plugin
+									return false;
+								}));
 	}
 
 	@Override
 	public SmsSendingReport sendSms(final Sms sms) {
 		final var ovhSendingReportMap = ovhSmsWebServiceClient.sendSms(
 				serviceName,
-				sms.getSender(),
-				sms.getReceivers(),
-				sms.getTextContent(),
+				sms.sender(),
+				sms.receivers(),
+				sms.textContent(),
 				sms.isNonCommercialMessage());
 
-		analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer.addTag("ovh-serviceName", serviceName));
+		analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer.setTag("ovh-serviceName", serviceName));
 
 		final List<String> validReceivers = (List<String>) ovhSendingReportMap.getOrDefault("validReceivers", Collections.emptyList());
 		final Double totalCreditsRemoved = (Double) ovhSendingReportMap.getOrDefault("totalCreditsRemoved", 0.0);
 
 		return new SmsSendingReport(totalCreditsRemoved, !validReceivers.isEmpty());
-
 	}
 
 }

@@ -60,7 +60,7 @@ public interface SqlConnectionProviderPlugin extends SqlConnectionProvider, Plug
 			}
 			healthMeasureBuilder.withGreenStatus();
 		} catch (final Exception e) {
-			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
+			healthMeasureBuilder.withRedStatus(e.getMessage());
 		}
 		return healthMeasureBuilder.build();
 

@@ -17,11 +17,10 @@
  */
 package io.vertigo.vega.plugins.webservice.webserver.javalin;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import io.javalin.http.Context;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 final class JavalinWebServiceContext implements WebServiceContext {
 	private final Context ctx;
@@ -37,13 +36,13 @@ final class JavalinWebServiceContext implements WebServiceContext {
 	/** {@inheritDoc} */
 	@Override
 	public HttpServletRequest getRequest() {
-		return ctx.req;
+		return ctx.req();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public HttpServletResponse getResponse() {
-		return ctx.res;
+		return ctx.res();
 	}
 
 	/** {@inheritDoc} */

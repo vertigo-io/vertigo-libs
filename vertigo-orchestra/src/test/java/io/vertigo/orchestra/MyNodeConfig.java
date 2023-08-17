@@ -85,7 +85,7 @@ public final class MyNodeConfig {
 				//
 				.addModule(new OrchestraFeatures()
 						.withDataBase(Param.of("nodeName", "NODE_TEST_1"), Param.of("daemonPeriodSeconds", "1"), Param.of("workersCount", "3"), Param.of("forecastDurationSeconds", "60"))
-						.withMemory(Param.of("workersCount", "1"))
+						.withMemory(Param.of("workersCount", "1")) //for unsupervised process
 						.build())
 				.addModule(ModuleConfig.builder("orchestra-test")
 						//---Services

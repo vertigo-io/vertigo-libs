@@ -36,7 +36,7 @@ import com.github.miachm.sods.Style;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
@@ -92,11 +92,11 @@ final class ODSExporter {
 	 */
 	void exportData(final Export documentParameters, final OutputStream out) throws IOException {
 		// Workbook
-		final boolean forceLandscape = Export.Orientation.Landscape == documentParameters.getOrientation();
+		final boolean forceLandscape = Export.Orientation.Landscape == documentParameters.orientation();
 		final SpreadSheet spreadSheet = new SpreadSheet();
 		//initHssfStyle(spreadSheet);
 		int sheetNum = 0;
-		for (final ExportSheet exportSheet : documentParameters.getSheets()) {
+		for (final ExportSheet exportSheet : documentParameters.sheets()) {
 			final String title = exportSheet.getTitle();
 			final Sheet sheet = title == null ? new Sheet("" + (char) ('A' + sheetNum)) : new Sheet(title);
 			spreadSheet.addSheet(sheet, sheetNum);
@@ -176,7 +176,7 @@ final class ODSExporter {
 			for (final ExportField exportColumn : parameters.getExportFields()) {
 				final Range cell = sheet.getRange(rowIndex, cellIndex);
 				value = ExporterUtil.getValue(entityStoreManager, smartTypeManager, exportAdapters, referenceCache, denormCache, dto, exportColumn);
-				putValueInCell(smartTypeManager, value, cell, getRowCellStyle(rowIndex % 2 == 0), cellIndex, maxWidthPerColumn, exportColumn.getDtField().getSmartTypeDefinition());
+				putValueInCell(smartTypeManager, value, cell, getRowCellStyle(rowIndex % 2 == 0), cellIndex, maxWidthPerColumn, exportColumn.getDtField().smartTypeDefinition());
 
 				cellIndex++;
 			}
@@ -194,14 +194,14 @@ final class ODSExporter {
 			sheet.appendRow();
 
 			final Range cell = sheet.getRange(rowIndex, labelCellIndex);
-			final MessageText label = exportColumn.getLabel();
+			final LocaleMessageText label = exportColumn.getLabel();
 			cell.setValue(label.getDisplay());
 			cell.setStyle(getHeaderCellStyle());
 			updateMaxWidthPerColumn(label.getDisplay(), 1.2, labelCellIndex, maxWidthPerColumn); // +20% pour les majuscules
 
 			final Range valueCell = sheet.getRange(rowIndex, valueCellIndex);
 			value = ExporterUtil.getValue(entityStoreManager, smartTypeManager, exportAdapters, referenceCache, denormCache, dto, exportColumn);
-			putValueInCell(smartTypeManager, value, valueCell, getRowCellStyle(false), valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().getSmartTypeDefinition());
+			putValueInCell(smartTypeManager, value, valueCell, getRowCellStyle(false), valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().smartTypeDefinition());
 			rowIndex++;
 		}
 

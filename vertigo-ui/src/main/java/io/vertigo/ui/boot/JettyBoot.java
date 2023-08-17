@@ -21,18 +21,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.KeyStore;
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
-import org.eclipse.jetty.plus.annotation.ContainerInitializer;
+import org.eclipse.jetty.annotations.AnnotationConfiguration;
+import org.eclipse.jetty.annotations.AnnotationConfiguration.ClassInheritanceMap;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -47,7 +43,11 @@ import org.eclipse.jetty.server.session.DefaultSessionIdManager;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.springframework.web.SpringServletContainerInitializer;
+import org.springframework.web.WebApplicationInitializer;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class JettyBoot {
 
@@ -60,7 +60,7 @@ public class JettyBoot {
 
 	public static void startServer(
 			final JettyBootParams jettyBootParams,
-			final Function<WebAppContext, List<Handler>> additionalHandlersProvider) throws IOException, Exception {
+			final Function<WebAppContext, List<Handler>> additionalHandlersProvider) throws Exception {
 		server = new Server(jettyBootParams.getPort());
 
 		//set workerName if present
@@ -77,7 +77,6 @@ public class JettyBoot {
 
 		// Add support for X-Forwarded headers
 		httpConfig.addCustomizer(new org.eclipse.jetty.server.ForwardedRequestCustomizer());
-		httpConfig.addCustomizer(new SecureRequestCustomizer());
 
 		if (jettyBootParams.isSslDisabled()) {
 
@@ -96,7 +95,7 @@ public class JettyBoot {
 			final var keyStorePassword = jettyBootParams.getKeystorePassword();
 			final var jks = KeyStore.getInstance("PKCS12");
 			jks.load(new URL(jettyBootParams.getKeystoreUrl()).openStream(), keyStorePassword.toCharArray());
-			final SslContextFactory sslContextFactory = new SslContextFactory.Server();
+			final SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
 			sslContextFactory.setKeyStore(jks);
 			sslContextFactory.setKeyStoreType("PKCS12");
 			sslContextFactory.setCertAlias(jettyBootParams.getSslKeystoreAlias());
@@ -107,7 +106,9 @@ public class JettyBoot {
 
 			// SSL HTTP Configuration
 			final var httpsConfig = new HttpConfiguration(httpConfig);
-			httpsConfig.addCustomizer(new SecureRequestCustomizer());
+			final SecureRequestCustomizer secureRequestCustomizer = new SecureRequestCustomizer();
+			secureRequestCustomizer.setSniHostCheck(!jettyBootParams.isSniHostCheckDisabled());
+			httpsConfig.addCustomizer(secureRequestCustomizer);
 
 			//Wont close ServerConnector with try-with-resources : we want it to keep running
 			// SSL Connector
@@ -128,11 +129,8 @@ public class JettyBoot {
 		final var context = new WebAppContext(rootClassLoader.getResource(contextRoot).toExternalForm(), contextPath);
 		System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
 		context.setAttribute("jacoco.exclClassLoaders", "*");
+		context.setAttribute(AnnotationConfiguration.CLASS_INHERITANCE_MAP, createClassInheritanceMap(jettyBootParams.getWebApplicationInitializerClass()));
 
-		final var springInitializer = new ContainerInitializer(new SpringServletContainerInitializer(), null);
-		springInitializer.addApplicableTypeName(jettyBootParams.getWebApplicationInitializerClass().getCanonicalName());
-		context.setAttribute("org.eclipse.jetty.containerInitializers", Collections.singletonList(springInitializer));
-		context.addBean(new ServletContainerInitializersStarter(context), true);
 		context.setClassLoader(new URLClassLoader(new URL[0], rootClassLoader));
 		context.setClassLoader(new WebAppClassLoader(rootClassLoader, context));
 		context.setThrowUnavailableOnStartupException(true);
@@ -174,7 +172,13 @@ public class JettyBoot {
 		}
 	}
 
-	private static final class NotFoundAllHandler extends AbstractHandler {
+	private static ClassInheritanceMap createClassInheritanceMap(final Class clazz) {
+		final var map = new ClassInheritanceMap();
+		map.put(WebApplicationInitializer.class.getName(), Set.of(clazz.getName()));
+		return map;
+	}
+
+	private static class NotFoundAllHandler extends AbstractHandler {
 
 		@Override
 		public void handle(final String target, final Request baseRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {

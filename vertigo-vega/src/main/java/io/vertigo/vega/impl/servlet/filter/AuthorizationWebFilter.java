@@ -26,15 +26,6 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,10 +36,18 @@ import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Filter to check Authorization rights over some webapp routes, without intrusive codes
@@ -111,13 +110,13 @@ public final class AuthorizationWebFilter extends AbstractFilter {
 		final UserSession userSession = getUserSession(req);
 		final UserAuthorizations userAuthorizations = getUserAuthorizations(userSession);
 		for (final Tuple<AuthorizationName[], Optional<Pattern>> entry : filterRulesPerRoutes) {
-			if (isUrlMatch(req, entry.getVal2())) {
+			if (isUrlMatch(req, entry.val2())) {
 				//il faut ajouter la session ici, sinon on ne peut pas controler les droits
 				if (userAuthorizations == null) {
 					//pas d'authorization
 					sendSecurityException(res, () -> "Authentified");
-				} else if (!hasAuthorization(userAuthorizations, entry.getVal1())) {
-					sendSecurityException(res, entry.getVal1());
+				} else if (!hasAuthorization(userAuthorizations, entry.val1())) {
+					sendSecurityException(res, entry.val1());
 				}
 			}
 		}
@@ -134,23 +133,23 @@ public final class AuthorizationWebFilter extends AbstractFilter {
 		} else {
 			((HttpServletResponse) res).sendError(errorCode);
 			LOG.warn("Not enought authorizations '" + authNames + "'");
-			throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log
+			throw new VSecurityException(LocaleMessageText.of("Not enought authorizations"));//no too sharp info here : may use log
 		}
 	}
 
-	private boolean hasAuthorization(final UserAuthorizations userAuthorizations, final AuthorizationName... permissionNames) {
+	private static boolean hasAuthorization(final UserAuthorizations userAuthorizations, final AuthorizationName... permissionNames) {
 		Assertion.check().isNotNull(permissionNames);
 		//may check authorizationNames exists to prevent badly names
 		//---
 		return userAuthorizations.hasAuthorization(permissionNames);
 	}
 
-	private UserSession getUserSession(final ServletRequest request) {
+	private static UserSession getUserSession(final ServletRequest request) {
 		final HttpSession session = ((HttpServletRequest) request).getSession(false);
 		return session == null ? null : (UserSession) session.getAttribute(USER_SESSION);
 	}
 
-	private UserAuthorizations getUserAuthorizations(final UserSession userSession) {
+	private static UserAuthorizations getUserAuthorizations(final UserSession userSession) {
 		if (userSession == null) {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return null;

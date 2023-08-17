@@ -24,18 +24,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Filter to add CSP directives; compute a nonce if necessary and put it in request attribute.
@@ -70,11 +69,11 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 
 		final ParamManager paramManager = Node.getNode().getComponentSpace().resolve(ParamManager.class);
 		//String.replace : => est équivalent à replaceAll sans regexp (et remplace bien toutes les occurences)
-		cspPattern = cspPattern.replace(FRAME_ANCESTOR_PATTERN, paramManager.getOptionalParam(FRAME_ANCESTOR_PARAM_NAME).map(Param::getValue).orElse(""));
-
-		cspPattern = cspPattern.replace(CSP_PARAM1_PATTERN, paramManager.getOptionalParam(CSP_PARAM1_PARAM_NAME).map(Param::getValue).orElse(""));
-		cspPattern = cspPattern.replace(CSP_PARAM2_PATTERN, paramManager.getOptionalParam(CSP_PARAM2_PARAM_NAME).map(Param::getValue).orElse(""));
-		cspPattern = cspPattern.replace(CSP_PARAM3_PATTERN, paramManager.getOptionalParam(CSP_PARAM3_PARAM_NAME).map(Param::getValue).orElse(""));
+		cspPattern = cspPattern
+				.replace(FRAME_ANCESTOR_PATTERN, paramManager.getOptionalParam(FRAME_ANCESTOR_PARAM_NAME).map(Param::getValue).orElse(""))
+				.replace(CSP_PARAM1_PATTERN, paramManager.getOptionalParam(CSP_PARAM1_PARAM_NAME).map(Param::getValue).orElse(""))
+				.replace(CSP_PARAM2_PATTERN, paramManager.getOptionalParam(CSP_PARAM2_PARAM_NAME).map(Param::getValue).orElse(""))
+				.replace(CSP_PARAM3_PATTERN, paramManager.getOptionalParam(CSP_PARAM3_PARAM_NAME).map(Param::getValue).orElse(""));
 
 		final Optional<Param> reportUri = paramManager.getOptionalParam(REPORT_WS_PARAM_NAME);
 		if (reportUri.isPresent() && !reportUri.get().getValue().isBlank()) {
@@ -87,8 +86,8 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 		final String compatibilityHeadersParam = filterConfig.getInitParameter(COMPATIBILITY_HEADERS_ATTRIBUTE_NAME);
 		final Map<String, String> tmp = new HashMap<>();
 		if (compatibilityHeadersParam != null) {
-			for (final String compatibilityHeaders : compatibilityHeadersParam.split("(?<!\\\\);")) {
-				final String[] compatibilityHeader = compatibilityHeaders.split(":");
+			for (final String localCompatibilityHeaders : compatibilityHeadersParam.split("(?<!\\\\);")) {
+				final String[] compatibilityHeader = localCompatibilityHeaders.split(":");
 				tmp.put(compatibilityHeader[0].trim(), compatibilityHeader[1].replace("\\;", ";").trim());
 			}
 		}

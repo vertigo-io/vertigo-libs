@@ -26,21 +26,22 @@ import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
+import io.vertigo.datastore.kvstore.KVCollection;
 import io.vertigo.datastore.kvstore.KVStoreManager;
 
 /**
  * @author npiedeloup
  */
 public final class ProtectedValueUtil {
-	public static final String PROTECTED_VALUE_COLLECTION_NAME = "protected-value";
+	public static final KVCollection PROTECTED_VALUE_COLLECTION_NAME = new KVCollection("protected-value");
 
 	//we keep a cache of already protected value.
 	//weak ref are kept as long as the instance are kept : so no clean during request
 	//- Dev MUST use the same instance for the same value
 	//- Might be kept too long (multiple requests)
-	private static WeakHashMap<Serializable, String> PREVIOUSLY_GENERATED_PROTECTED_VALUE = new WeakHashMap<>();
+	private static final WeakHashMap<Serializable, String> PREVIOUSLY_GENERATED_PROTECTED_VALUE = new WeakHashMap<>();
 
 	/**
 	 * Genere et conserve une URL protégée.
@@ -76,7 +77,7 @@ public final class ProtectedValueUtil {
 			final V unprotectedValue;
 			unprotectedValue = getKVStoreManager()
 					.find(PROTECTED_VALUE_COLLECTION_NAME, protectedValue + getSessionIdIfExists(), clazz)
-					.orElseThrow(() -> new VSecurityException(MessageText.of("Resources not found.")));
+					.orElseThrow(() -> new VSecurityException(LocaleMessageText.of("Resources not found.")));
 			return unprotectedValue;
 		}
 	}

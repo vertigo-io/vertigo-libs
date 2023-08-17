@@ -20,18 +20,18 @@ package io.vertigo.vega.plugins.webservice.handler;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.account.authorization.VSecurityException;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 import io.vertigo.vega.webservice.exception.SessionException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Security handler.
@@ -52,7 +52,6 @@ public final class ApiKeyWebServiceHandlerPlugin implements WebServiceHandlerPlu
 	/**
 	 * Constructor.
 	 *
-	 * @param securityManager Security Manager
 	 */
 	@Inject
 	public ApiKeyWebServiceHandlerPlugin(
@@ -78,7 +77,7 @@ public final class ApiKeyWebServiceHandlerPlugin implements WebServiceHandlerPlu
 		final String providedApiKey = request.getHeader(headerName);
 
 		if (!apiKey.equals(providedApiKey)) {
-			throw new VSecurityException(MessageText.of("Wrong api key"));
+			throw new VSecurityException(LocaleMessageText.of("Wrong api key"));
 		}
 		return chain.handle(request, response, webServiceCallContext);
 	}

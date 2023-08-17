@@ -38,14 +38,12 @@ public final class PegRulesHtmlRenderer {
 	public String render(final PegRule<?> rootRule) {
 		return obtainGrammar(rootRule).entrySet()
 				.stream()
-				.map(entry -> new StringBuilder()
-						.append("<h1 id='").append(entry.getKey()).append("'>").append(entry.getKey()).append("</h1>\n")
-						.append("<script>\n")
-						.append("Diagram(\n\t")
-						.append(entry.getValue())
-						.append("\n).addTo();\n")
-						.append("</script>\n\n")
-						.toString())
+				.map(entry -> "<h1 id='" + entry.getKey() + "'>" + entry.getKey() + "</h1>\n" +
+						"<script>\n" +
+						"Diagram(\n\t" +
+						entry.getValue() +
+						"\n).addTo();\n" +
+						"</script>\n\n")
 				.collect(Collectors.joining());
 	}
 

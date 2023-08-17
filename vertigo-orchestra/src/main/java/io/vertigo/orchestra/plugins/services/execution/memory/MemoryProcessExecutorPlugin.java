@@ -89,7 +89,7 @@ public class MemoryProcessExecutorPlugin implements ProcessExecutorPlugin, Activ
 
 	private void doSequentialExecute(final ProcessDefinition processDefinition, final Optional<String> initialParams) {
 		final Map<String, String> myInitialParams = new HashMap<>();
-		myInitialParams.putAll(processDefinition.getTriggeringStrategy().getInitialParams());
+		myInitialParams.putAll(processDefinition.getTriggeringStrategy().initialParams());
 		final ActivityExecutionWorkspace initialWorkspace = new ActivityExecutionWorkspace(myInitialParams);
 		if (initialParams.isPresent()) {
 			initialWorkspace.addExternalParams(mapCodec.decode(initialParams.get()));

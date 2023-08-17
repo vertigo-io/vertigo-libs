@@ -103,8 +103,7 @@ public final class NamedComponentContentComponent {
 		final ITemplateEvent firstEvent = model.get(0);
 		final Map<String, String> attributes = new HashMap<>();
 
-		if (firstEvent instanceof IProcessableElementTag) {
-			final IProcessableElementTag processableElementTag = (IProcessableElementTag) firstEvent;
+		if (firstEvent instanceof IProcessableElementTag processableElementTag) {
 			for (final IAttribute attribute : processableElementTag.getAllAttributes()) {
 				final String completeName = attribute.getAttributeCompleteName();
 				if (!isDynamicAttribute(completeName, StandardDialect.PREFIX)) {

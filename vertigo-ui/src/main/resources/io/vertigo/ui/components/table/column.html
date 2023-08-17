@@ -1,21 +1,24 @@
-<th:block th:fragment="column-table(list, field, name, label, align, sortable, class, td_attrs)" vu:alias="column" vu:selector="${renderTableAsGrid == null || !renderTableAsGrid }"
+<th:block th:fragment="column-table(list, field, name, label, align, sortable, datetimeFormat, class, td_attrs)" vu:alias="column" vu:selector="${renderTableAsGrid == null || !renderTableAsGrid }"
 	th:assert="${(field != null) or (name != null and label != null)}"
-	th:with="columnName=${field != null ? field : name }, columnLabel=${label != null ? label : model.util.label('__${list + '.' + field}__')}, columnAlign=${model.util.smartTypeAlign(list, field, align)}, columnClass=${model.util.smartTypeCss(list, field, class, 'col_'+name)}, columnSortable=${sortable != null ? sortable : true } "
-	th:attr="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('columns', {name: '__${columnName}__', field: '__${field}__', label: '__${columnLabel}__', align: '__${columnAlign}__', 'sortable': __${modifiableTable!=null?false:columnSortable}__, 'classes':'__${class?:columnClass}__'})}" >
+	th:with="columnName=${field != null ? field : name }, columnLabel=${label != null ? label : model.util.label('__${list + '.' + field}__')}, columnAlign=${model.util.smartTypeAlign(list, field, align)}, columnClass=${model.util.smartTypeCss(list, field, class, 'col_'+name)}, columnSortable=${sortable != null ? sortable : true }">
+	<th:block th:with="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('columns', {name: '__${columnName}__', field: '__${field}__', label: '__${columnLabel}__', align: '__${columnAlign}__', 'sortable': __${modifiableTable!=null?false:columnSortable}__, 'classes':'__${class?:columnClass}__' })},
+				myDatetimeFormat=${datetimeFormat?:(field !=null ? model.util.getUiDatetimeFormat(list + '.' + field) : null)}">
+		<th:block th:if="${myDatetimeFormat != null}" th:attr="datetimeFormatKey=${objectKey.put('datetimeFormat', '__${myDatetimeFormat}__')}" th:remove="all"></th:block>
+	</th:block>
 	<vu:include-data th:if="${field != null}" object="${list}" field="${field}"/>
-	<q-td th:key="${columnName}" :props="props" th:class="${class?:columnClass}"  th:attr="__${td_attrs}__" >
-		<vu:content><template>{{ props.row.[[${field}]] }}</template></vu:content><!--/* Default content */-->
+	<q-td th:key="${columnName}" :props="props" th:class="${class?:columnClass}" th:with="label=null"  th:attr="__${td_attrs}__" >
+		<vu:content>{{ props.row.[[${field}]] }}</vu:content><!--/* Default content */-->
 	</q-td>
 </th:block> 
 
-<th:block th:fragment="column-grid(list, field, name, label, align, sortable, class, td_attrs)" vu:alias="column" vu:selector="${renderTableAsGrid?:false}"
+<th:block th:fragment="column-grid(list, field, name, label, align, sortable, datetimeFormat, class, td_attrs)" vu:alias="column" vu:selector="${renderTableAsGrid?:false}"
 	th:assert="${(field != null) or (name != null and label != null)}"
 	th:with="columnName=${field != null ? field : name }, columnLabel=${label != null ? label : model.util.label('__${list + '.' + field}__')}" >
 	<vu:include-data th:if="${field != null}" object="${list}" field="${field}"/>
 	<div class="q-table__grid-item-row" th:attr="__${td_attrs}__" >
 		<div class="q-table__grid-item-title" vu:text="${columnLabel}"></div>
-		<div class="q-table__grid-item-value">
-        	 <vu:content><template>{{ props.row.[[${field}]] }}</template></vu:content>
+		<div class="q-table__grid-item-value" th:with="label=null">
+        	 <vu:content>{{ props.row.[[${field}]] }}</vu:content>
 		</div>
 	</div>
 </th:block> 

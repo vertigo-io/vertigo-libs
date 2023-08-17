@@ -40,7 +40,8 @@ class OracleDialect implements SqlDialect {
 			final String idFieldName,
 			final List<String> dataFieldsName,
 			final String sequencePrefix,
-			final String tableName) {
+			final String tableName,
+			final String parameterName) {
 		Assertion.check()
 				.isNotBlank(idFieldName)
 				.isNotNull(dataFieldsName)
@@ -58,7 +59,7 @@ class OracleDialect implements SqlDialect {
 				.append(getSequenceName(sequencePrefix, tableName)).append(".nextval , ")
 				.append(dataFieldsName
 						.stream()
-						.map(fieldName -> " #dto." + fieldName + '#')
+						.map(fieldName -> " #" + parameterName + '.' + fieldName + '#')
 						.collect(Collectors.joining(", ")))
 				.append(")")
 				.toString();

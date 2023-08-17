@@ -27,8 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +44,7 @@ import io.vertigo.dashboard.ui.commons.CommonsDashboardControler;
 import io.vertigo.dashboard.ui.dynamo.DynamoDashboardControler;
 import io.vertigo.dashboard.ui.vega.VegaDashboardControler;
 import io.vertigo.dashboard.ui.vui.VUiDashboardControler;
+import jakarta.servlet.http.HttpServletResponse;
 
 public final class DashboardRouter {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardRouter.class);
@@ -88,7 +87,7 @@ public final class DashboardRouter {
 
 		javalin.get("/dashboard/static/{fileName}", (ctx) -> {
 			try (InputStream inputStream = DashboardRouter.class.getResource("/static/" + ctx.pathParam("{fileName}")).openStream()) {
-				try (final OutputStream output = ctx.res.getOutputStream()) {
+				try (final OutputStream output = ctx.res().getOutputStream()) {
 					FileUtil.copy(inputStream, output);
 				}
 			}
@@ -101,7 +100,7 @@ public final class DashboardRouter {
 			final Map<String, Object> model = new HashMap<>();
 			model.put("modules", modules);
 			model.put("contextName", ctx.contextPath());
-			render(ctx.res, "templates/home.ftl", model);
+			render(ctx.res(), "templates/home.ftl", model);
 		});
 
 		javalin.get("/dashboard/modules/{moduleName}", (ctx) -> {
@@ -109,7 +108,7 @@ public final class DashboardRouter {
 			final DashboardModuleControler controler = InjectorUtil.newInstance(controlerMap.get(moduleName));
 			final Map<String, Object> model = controler.buildModel(node, moduleName);
 			model.put("contextName", ctx.contextPath());
-			render(ctx.res, "templates/" + moduleName + ".ftl", model);
+			render(ctx.res(), "templates/" + moduleName + ".ftl", model);
 		});
 
 	}

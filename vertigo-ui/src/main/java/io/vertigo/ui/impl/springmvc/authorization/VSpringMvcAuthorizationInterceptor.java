@@ -20,9 +20,6 @@ package io.vertigo.ui.impl.springmvc.authorization;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.core.MethodParameter;
@@ -36,11 +33,13 @@ import io.vertigo.account.authorization.annotations.SecuredOperation;
 import io.vertigo.account.authorization.definitions.Authorization;
 import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Aspect pour la gestion des Secured au niveau de la couche service.
@@ -55,8 +54,7 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 
 	@Override
 	public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception {
-		if (handler instanceof HandlerMethod) {
-			final HandlerMethod handlerMethod = (HandlerMethod) handler;
+		if (handler instanceof HandlerMethod handlerMethod) {
 
 			final Secured secured = handlerMethod.getMethodAnnotation(Secured.class) == null
 					? handlerMethod.getMethod().getDeclaringClass().getAnnotation(Secured.class)
@@ -79,7 +77,7 @@ public final class VSpringMvcAuthorizationInterceptor implements HandlerIntercep
 						LOG.error("securedDevMode: Not enought authorizations '" + authNames + "' => keep going, don't throw VSecurityException");
 					} else {
 						LOG.warn("Not enought authorizations '" + authNames + "'");
-						throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log
+						throw new VSecurityException(LocaleMessageText.of("Not enought authorizations"));//no too sharp info here : may use log
 					}
 				}
 

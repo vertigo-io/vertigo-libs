@@ -46,7 +46,6 @@ final class RTFExporter extends AbstractExporterIText {
 
 	/**
 	 * Constructor.
-	 * @param storeManager Store manager
 	 */
 	RTFExporter(final EntityStoreManager entityStoreManager, final SmartTypeManager smartTypeManager) {
 		super(entityStoreManager, smartTypeManager);

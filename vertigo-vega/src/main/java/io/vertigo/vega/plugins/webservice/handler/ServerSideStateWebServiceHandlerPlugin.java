@@ -24,12 +24,10 @@ import java.util.Map.Entry;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
@@ -43,6 +41,8 @@ import io.vertigo.vega.webservice.definitions.WebServiceParam;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.model.ExtendedObject;
 import io.vertigo.vega.webservice.model.UiObject;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * ServerSide state handler.
@@ -55,7 +55,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 	/** Stack index of the handler for sorting at startup**/
 	public static final int STACK_INDEX = 80;
 
-	private static final MessageText SERVER_SIDE_MANDATORY = MessageText.of("ServerSideToken mandatory");
+	private static final LocaleMessageText SERVER_SIDE_MANDATORY = LocaleMessageText.of("ServerSideToken mandatory");
 	private final TokenManager tokenManager;
 
 	/**

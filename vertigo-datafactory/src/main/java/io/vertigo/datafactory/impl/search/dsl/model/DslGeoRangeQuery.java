@@ -61,13 +61,11 @@ public final class DslGeoRangeQuery implements DslQuery {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return new StringBuilder()
-				.append(preBody).append("[")
-				.append(startGeoPoint)
-				.append(" to ")
-				.append(endGeoPoint)
-				.append("]").append(postBody)
-				.toString();
+		return preBody + "[" +
+                startGeoPoint +
+                " to " +
+                endGeoPoint +
+                "]" + postBody;
 	}
 
 	/**

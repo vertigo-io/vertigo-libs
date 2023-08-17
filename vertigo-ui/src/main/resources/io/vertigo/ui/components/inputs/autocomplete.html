@@ -27,6 +27,7 @@
        	th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
        	th::label-width="${overridedLabelWidth?:3}"
 		th:label="${myLabel}"
+		th:aria-required="${myRequired}"
 		th:classappend="|${myRequired?'v-field_'+'_required':''}${after_label_slot!=null?' v-field_'+'_has_after_label':''}|"
 		th::error="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
 		th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
@@ -39,8 +40,7 @@
 		emit-value
 		th::loading="|componentStates.${myComponentId}.loading|"
         th::options="|componentStates.${myComponentId}.options|"
-        options-sanitize
-        th:@hook:mounted="|() => {
+        th:@vue:mounted="|() => {
 			$watch(function() {return ${model.util.vueDataKey(object, field, rowIndex)} }, (newValue, oldValue) => { loadAutocompleteById('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myInputUrl}','${object}','${field}', ${rowIndex})} )
 			}|"
         th:@filter="|function (val, update, abort) { searchAutocomplete('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myFilterUrl}', val, update, abort)}|"

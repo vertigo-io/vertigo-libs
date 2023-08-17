@@ -68,7 +68,7 @@ public final class OracleDataBaseManagerTest extends AbstractSqlManagerTest {
 	@Override
 	protected String createTableMovie() {
 		return "CREATE TABLE movie ( "
-				+ "id 						NUMBER(6), "
+				+ "mov_id 						NUMBER(6), "
 				+ "title 					VARCHAR2(255), "
 				+ "mail 					VARCHAR2(255), "
 				+ "fps 						NUMBER(6,3), "

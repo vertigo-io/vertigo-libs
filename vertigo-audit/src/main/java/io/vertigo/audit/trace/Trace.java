@@ -111,7 +111,7 @@ public final class Trace implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'category'.
-	 * @param name String
+	 * @param category String
 	 */
 	public void setCategory(final String category) {
 		this.category = category;
@@ -127,7 +127,7 @@ public final class Trace implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'username'.
-	 * @param name String
+	 * @param userName String
 	 */
 	public void setUsername(final String username) {
 		this.username = username;

@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -44,6 +45,7 @@ import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtListURI;
 import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.cache.CacheManager;
 import io.vertigo.datastore.cache.definitions.CacheDefinition;
 import io.vertigo.datastore.entitystore.StoreEvent;
@@ -88,7 +90,10 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 	 */
 	@EventBusSubscribed
 	public void onStoreEvent(final StoreEvent event) {
-		cacheManager.remove(CACHE_LUCENE_INDEX, getIndexCacheContext(event.getUID().getDefinition()));
+		event.getUIDs().stream()
+				.map(UID::getDefinition)
+				.collect(Collectors.toSet())
+				.forEach(dtDefinition -> cacheManager.remove(CACHE_LUCENE_INDEX, getIndexCacheContext(dtDefinition)));
 	}
 
 	/** {@inheritDoc} */

@@ -42,14 +42,15 @@ import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.ListBuilder;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.FileUtil;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datastore.impl.kvstore.KVStorePlugin;
+import io.vertigo.datastore.kvstore.KVCollection;
 
 /**
  * Implémentation d'un store BerkeleyDB.
@@ -62,7 +63,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 	private static final int REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS = 60;
 
 	private final List<BerkeleyCollectionConfig> collectionConfigs;
-	private final List<String> collectionNames;
+	private final List<KVCollection> collections;
 
 	private final CodecManager codecManager;
 	private final VTransactionManager transactionManager;
@@ -72,7 +73,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 
 	private Environment fsEnvironment;
 	private Environment ramEnvironment;
-	private final Map<String, BerkeleyDatabase> databases = new HashMap<>();
+	private final Map<KVCollection, BerkeleyDatabase> databases = new HashMap<>();
 
 	/**
 	 * Constructor.
@@ -102,9 +103,10 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 				.isNotNull(analyticsManager);
 		//-----
 		collectionConfigs = parseCollectionConfigs(collections);
-		collectionNames = collectionConfigs
+		this.collections = collectionConfigs
 				.stream()
 				.map(BerkeleyCollectionConfig::getCollectionName)
+				.map(KVCollection::new)
 				.collect(Collectors.toList());
 		//-----
 		dbFilePathTranslated = FileUtil.translatePath(dbFilePath);
@@ -147,8 +149,8 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 
 	/** {@inheritDoc} */
 	@Override
-	public List<String> getCollections() {
-		return collectionNames;
+	public List<KVCollection> getCollections() {
+		return collections;
 	}
 
 	/** {@inheritDoc} */
@@ -168,7 +170,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 					(collectionConfig.isInMemory() ? ramEnvironment : fsEnvironment) //select environment (FS or RAM)
 							.openDatabase(null, collectionConfig.getCollectionName(), databaseConfig), //open database
 					collectionConfig.getTimeToLiveSeconds(), transactionManager, codecManager);
-			databases.put(collectionConfig.getCollectionName(), berkeleyDatabase);
+			databases.put(new KVCollection(collectionConfig.getCollectionName()), berkeleyDatabase);
 		}
 	}
 
@@ -219,7 +221,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 	 * Remove too old elements.
 	 */
 	private void removeTooOldElements() {
-		for (final String collection : collectionNames) {
+		for (final KVCollection collection : collections) {
 			try {
 				getDatabase(collection).removeTooOldElements();
 			} catch (final DatabaseException dbe) {
@@ -228,45 +230,45 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 		}
 	}
 
-	private BerkeleyDatabase getDatabase(final String collection) {
+	private BerkeleyDatabase getDatabase(final KVCollection collection) {
 		final BerkeleyDatabase database = databases.get(collection);
-		Assertion.check().isNotNull("database {0} not null", collection);
+		Assertion.check().isNotNull(database, "database {0} not null", collection);
 		return database;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final String collection, final String id) {
+	public void remove(final KVCollection collection, final String id) {
 		getDatabase(collection).delete(id);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void clear(final String collection) {
+	public void clear(final KVCollection collection) {
 		getDatabase(collection).clear();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final String collection, final String id, final Object element) {
+	public void put(final KVCollection collection, final String id, final Object element) {
 		getDatabase(collection).put(id, element);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <C> Optional<C> find(final String collection, final String id, final Class<C> clazz) {
+	public <C> Optional<C> find(final KVCollection collection, final String id, final Class<C> clazz) {
 		return getDatabase(collection).find(id, clazz);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <C> List<C> findAll(final String collection, final int skip, final Integer limit, final Class<C> clazz) {
+	public <C> List<C> findAll(final KVCollection collection, final int skip, final Integer limit, final Class<C> clazz) {
 		return getDatabase(collection).findAll(skip, limit, clazz);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public int count(final String collection) {
+	public int count(final KVCollection collection) {
 		return getDatabase(collection).count();
 	}
 

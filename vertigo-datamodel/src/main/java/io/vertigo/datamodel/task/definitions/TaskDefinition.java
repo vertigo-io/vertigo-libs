@@ -35,7 +35,7 @@ import io.vertigo.datamodel.task.model.TaskEngine;
  * @author  fconstantin, pchretien
  */
 @DefinitionPrefix(TaskDefinition.PREFIX)
-public final class TaskDefinition extends AbstractDefinition {
+public final class TaskDefinition extends AbstractDefinition<TaskDefinition> {
 	public static final String PREFIX = "Tk";
 	/** the package name. */
 	private final String packageName;
@@ -104,9 +104,9 @@ public final class TaskDefinition extends AbstractDefinition {
 		for (final TaskAttribute taskAttribute : taskAttributes) {
 			Assertion.check()
 					.isNotNull(taskAttribute)
-					.isFalse(map.containsKey(taskAttribute.getName()), "attribut {0} existe déjà", taskAttribute.getName());
+					.isFalse(map.containsKey(taskAttribute.name()), "attribut {0} existe déjà", taskAttribute.name());
 			//-----
-			map.put(taskAttribute.getName(), taskAttribute);
+			map.put(taskAttribute.name(), taskAttribute);
 		}
 		return java.util.Collections.unmodifiableMap(map);
 	}

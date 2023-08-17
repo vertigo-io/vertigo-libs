@@ -406,7 +406,9 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	}
 
 	public void addKeyForClient(final String object, final String fieldName, final String rowIndex, final boolean modifiable) {
-		Assertion.check().isTrue(containsKey(object), "No {0} in context", object);
+		Assertion.check()
+				.isTrue(containsKey(object), "No {0} in context", object)
+				.when(modifiable, () -> Assertion.check().isFalse("*".equals(fieldName), "Cannot make modifiable all fields of object '{0}' in ViewContext ", object));
 		//----
 		keysForClient.computeIfAbsent(object, k -> new HashSet<>()).add(fieldName);
 		if (modifiable) {
@@ -428,7 +430,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		//----
 		valueTransformers.computeIfAbsent(objectKey,
 				k -> new HashMap<>()).put(objectFieldName,
-						Arrays.asList(PROTECTED_VALUE_TRANSFORMER));
+				List.of(PROTECTED_VALUE_TRANSFORMER));
 	}
 
 	public String obtainFkList(final String objectKey, final String objectFieldName) {

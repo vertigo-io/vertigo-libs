@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -39,6 +37,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
 import io.vertigo.ui.core.ProtectedValueUtil;
 import io.vertigo.vega.webservice.stereotype.QueryParam;
+import jakarta.servlet.http.HttpServletRequest;
 
 public final class FileInfoURIConverterValueHandler extends AbstractMessageConverterMethodProcessor {
 
@@ -86,9 +85,13 @@ public final class FileInfoURIConverterValueHandler extends AbstractMessageConve
 		final HttpServletRequest request = getRequest(webRequest);
 		final QueryParam requestParam = parameter.getParameterAnnotation(QueryParam.class);
 		Assertion.check().isNotNull(requestParam, "Parameter name wasnt't found. Use @QueryParam('myFileParam') in your controller.");
-		final String fileUriProtected = request.getParameter(requestParam.value());
-
-		return parameterizedTypeValueHandlerHelper.convert(fileUriProtected, parameter);
+		if (parameterizedTypeValueHandlerHelper.isMultiple(parameter)) {
+			final String[] fileUriProtected = request.getParameterValues(requestParam.value());
+			return parameterizedTypeValueHandlerHelper.convertArray(fileUriProtected);
+		} else {
+			final String fileUriProtected = request.getParameter(requestParam.value());
+			return parameterizedTypeValueHandlerHelper.convert(fileUriProtected, parameter);
+		}
 	}
 
 	private static FileInfoURI toFileInfoURI(final String requestValue) {

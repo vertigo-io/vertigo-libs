@@ -19,7 +19,7 @@ package io.vertigo.basics.constraint;
 
 import java.util.Optional;
 
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 
 /**
  * Contrainte pour gérer la longueur des chaines de caractères.
@@ -28,7 +28,7 @@ import io.vertigo.core.locale.MessageText;
  */
 public final class ConstraintStringLength extends AbstractConstraintLength<String> {
 
-	private final MessageText errorMessage;
+	private final LocaleMessageText errorMessage;
 
 	/**
 	 * @param args Liste des arguments réduite à un seul castable en integer.
@@ -38,7 +38,7 @@ public final class ConstraintStringLength extends AbstractConstraintLength<Strin
 		super(args);
 		//---
 		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
-				() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED, Integer.toString(getMaxLength())));
+				() -> LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED, Integer.toString(getMaxLength())));
 	}
 
 	/** {@inheritDoc} */
@@ -50,7 +50,7 @@ public final class ConstraintStringLength extends AbstractConstraintLength<Strin
 
 	/** {@inheritDoc} */
 	@Override
-	public MessageText getErrorMessage() {
+	public LocaleMessageText getErrorMessage() {
 		return errorMessage;
 	}
 }

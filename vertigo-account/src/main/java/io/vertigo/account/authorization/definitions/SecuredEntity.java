@@ -37,7 +37,7 @@ import io.vertigo.datamodel.structure.definitions.DtField;
  * @author jgarnier, npiedeloup
  */
 @DefinitionPrefix(SecuredEntity.PREFIX)
-public final class SecuredEntity extends AbstractDefinition {
+public final class SecuredEntity extends AbstractDefinition<SecuredEntity> {
 	public static final String PREFIX = "Sec";
 	private final DtDefinition entityDefinition;
 	private final List<DtField> securityFields;

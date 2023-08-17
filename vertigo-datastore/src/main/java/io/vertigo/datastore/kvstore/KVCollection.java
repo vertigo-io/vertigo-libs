@@ -1,0 +1,37 @@
+/**
+ * vertigo - application development platform
+ *
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.vertigo.datastore.kvstore;
+
+import io.vertigo.core.lang.Assertion;
+
+/**
+* Key Value Collection.
+*
+* @author pchretien
+*/
+public record KVCollection(String name) {
+	private static final int NAME_MAX_LENGTH = 30;
+
+	public KVCollection {
+		Assertion.check()
+				.isNotBlank(name)
+				.isTrue(name.length() <= NAME_MAX_LENGTH, "the name of the collection {0} has a limit size of {1}", name, NAME_MAX_LENGTH);
+		//				.isTrue(StringUtil.isLowerCamelCase(name),
+		//						"the name of the descriptor {0} must be in lowerCamelCase", name);
+	}
+}

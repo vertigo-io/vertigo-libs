@@ -6,7 +6,7 @@
 	<vu:content />
 	<div class="row justify-center"><q-btn flat th:if="${showMoreEnabled}" color="primary" class="q-my-md"
 	th:v-if="|componentStates.${componentId}.pagination.rowsNumber > componentStates.${componentId}.pagination.rowsPerPage|" 
-	th:label="${showMoreLabel}" th:@click="|showMore('${componentId}')|"></q-btn></div>
+	th:label="${showMoreLabel?:'Show more'}" th:@click="|showMore('${componentId}')|"></q-btn></div>
 	<q-pagination 
 		th:if="${!showMoreEnabled}" 
 		th:v-model="|componentStates.${componentId}.pagination.page|" 

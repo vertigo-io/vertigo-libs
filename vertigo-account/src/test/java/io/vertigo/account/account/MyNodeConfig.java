@@ -37,7 +37,7 @@ import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datastore.DataStoreFeatures;
 
 public final class MyNodeConfig {
-	private static final String REDIS_HOST = "redis-pic.part.klee.lan.net";
+	private static final String REDIS_HOST = "docker-vertigo.part.klee.lan.net";
 	private static final int REDIS_PORT = 6379;
 	private static final int REDIS_DATABASE = 15;
 

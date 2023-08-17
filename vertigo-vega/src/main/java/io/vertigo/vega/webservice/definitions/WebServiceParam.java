@@ -26,15 +26,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * WebService param infos :
@@ -256,10 +255,8 @@ public final class WebServiceParam {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return new StringBuilder()
-				.append(type)
-				.append(" ")
-				.append(fullName)
-				.toString();
+		return type +
+				" " +
+				fullName;
 	}
 }

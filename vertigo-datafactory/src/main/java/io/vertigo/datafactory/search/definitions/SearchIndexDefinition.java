@@ -50,7 +50,7 @@ import io.vertigo.datamodel.structure.definitions.DtStereotype;
  * @author dchallas, npiedeloup
  */
 @DefinitionPrefix(SearchIndexDefinition.PREFIX)
-public final class SearchIndexDefinition extends AbstractDefinition {
+public final class SearchIndexDefinition extends AbstractDefinition<SearchIndexDefinition> {
 	public static final String PREFIX = "Idx";
 
 	/** Structure des éléments indexés. */

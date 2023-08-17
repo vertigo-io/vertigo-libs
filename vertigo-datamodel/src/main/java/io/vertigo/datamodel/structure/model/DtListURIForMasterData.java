@@ -49,9 +49,8 @@ public final class DtListURIForMasterData extends DtListURI {
 
 	@Override
 	public String buildUrn() {
-		if (code == null) {
-			return getDtDefinition().getName();
-		}
-		return getDtDefinition().getName() + D2A_SEPARATOR + code;
+		return code == null
+				? getDtDefinition().getName()
+				: getDtDefinition().getName() + D2A_SEPARATOR + code;
 	}
 }

@@ -17,7 +17,6 @@
  */
 package io.vertigo.stella.impl.workers.coordinator;
 
-import java.lang.reflect.Field;
 import java.util.concurrent.Callable;
 
 import org.apache.logging.log4j.LogManager;
@@ -40,22 +39,6 @@ import io.vertigo.stella.master.WorkResultHandler;
 final class Worker<R, W> implements Callable<R> {
 
 	private static final Logger LOGGER = LogManager.getLogger(MasterManager.class); //même logger que le WorkListenerImpl
-
-	/**
-	 * Pour vider les threadLocal entre deux utilisations du Thread dans le pool,
-	 * on garde un accès débridé au field threadLocals de Thread.
-	 * On fait le choix de ne pas vider inheritedThreadLocal qui est moins utilisé.
-	 */
-	private static final Field threadLocalsField;
-
-	static {
-		try {
-			threadLocalsField = Thread.class.getDeclaredField("threadLocals");
-		} catch (final SecurityException | NoSuchFieldException e) {
-			throw WrappedException.wrap(e);
-		}
-		threadLocalsField.setAccessible(true);
-	}
 
 	private final WorkItem<W, R> workItem;
 	private final WorkResultHandler<R> workResultHandler;
@@ -116,10 +99,6 @@ final class Worker<R, W> implements Callable<R> {
 	 * Voir aussi: http://weblogs.java.net/blog/jjviana/archive/2010/06/10/threadlocal-thread-pool-bad-idea-or-dealing-apparent-glassfish-memor
 	 */
 	private static void cleanThreadLocals() {
-		try {
-			threadLocalsField.set(Thread.currentThread(), null);
-		} catch (final IllegalArgumentException | IllegalAccessException e) {
-			throw WrappedException.wrap(e);
-		}
+		// we cannot clean the threadLocal field anymore due to jdk17. Should switch to virtual thread in jdk21+
 	}
 }

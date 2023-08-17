@@ -21,11 +21,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.component.Plugin;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public interface WebAuthenticationPlugin<T> extends Plugin {
 

@@ -19,9 +19,6 @@ package io.vertigo.ui.impl.springmvc.util;
 
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -30,6 +27,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcUiMessageStack;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Utilitaire d'accès à la Request.

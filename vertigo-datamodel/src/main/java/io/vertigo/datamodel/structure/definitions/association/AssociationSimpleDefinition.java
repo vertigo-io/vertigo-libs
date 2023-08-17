@@ -30,7 +30,7 @@ import io.vertigo.datamodel.structure.util.AssociationUtil;
  * @author  jcassignol, pchretien
  */
 @DefinitionPrefix("A")
-public final class AssociationSimpleDefinition extends AssociationDefinition {
+public final class AssociationSimpleDefinition extends AssociationDefinition<AssociationSimpleDefinition> {
 	private final AssociationNode foreignAssociationNode;
 	private final AssociationNode primaryAssociationNode;
 	private final String fkFieldName;

@@ -52,7 +52,7 @@ public final class SingleAppNodeRegistryPlugin implements AppNodeRegistryPlugin 
 
 	@Override
 	public Optional<AppNode> find(final String nodeId) {
-		if (Node.getNode().getNodeConfig().getNodeId().equals(nodeId)) {
+		if (Node.getNode().getNodeConfig().nodeId().equals(nodeId)) {
 			return Optional.of(localNode);
 		}
 		return Optional.empty();

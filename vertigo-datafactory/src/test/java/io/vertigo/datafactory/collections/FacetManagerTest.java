@@ -29,8 +29,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.node.Node;
 import io.vertigo.core.node.AutoCloseableNode;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
@@ -123,7 +123,7 @@ public class FacetManagerTest {
 
 		boolean found = false;
 		for (final Entry<FacetValue, Long> entry : yearFacet.getFacetValues().entrySet()) {
-			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).contains("avant")) {
+			if (entry.getKey().label().getDisplay().toLowerCase(Locale.FRENCH).contains("avant")) {
 				found = true;
 				Assertions.assertEquals(smartCarDataBase.getCarsBefore(2000), entry.getValue().longValue());
 			}
@@ -140,14 +140,14 @@ public class FacetManagerTest {
 		//On recherche la facette constructeur
 		final Facet manufacturerFacet = getFacetByName(result, "FctManufacturerCar");
 		//On vérifie que l'on est sur le champ Make
-		Assertions.assertEquals("manufacturer", manufacturerFacet.getDefinition().getDtField().getName());
+		Assertions.assertEquals("manufacturer", manufacturerFacet.getDefinition().getDtField().name());
 		Assertions.assertFalse(manufacturerFacet.getDefinition().isRangeFacet());
 
 		//On vérifie qu'il existe une valeur pour peugeot et que le nombre d'occurrences est correct
 		boolean found = false;
 		final String manufacturer = "peugeot";
 		for (final Entry<FacetValue, Long> entry : manufacturerFacet.getFacetValues().entrySet()) {
-			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).equals(manufacturer)) {
+			if (entry.getKey().label().getDisplay().toLowerCase(Locale.FRENCH).equals(manufacturer)) {
 				found = true;
 				//System.out.println("manufacturer" + entry.getKey().getLabel().getDisplay());
 				Assertions.assertEquals(smartCarDataBase.getCarsByManufacturer(manufacturer).size(), entry.getValue().intValue());
@@ -165,7 +165,7 @@ public class FacetManagerTest {
 		//On vérifie qu'il existe une valeur pour avant 2000 et que le nombre d'occurrences est correct
 		boolean found = false;
 		for (final Entry<FacetValue, DtList<SmartCar>> entry : result.getClusters().entrySet()) {
-			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).contains("avant")) {
+			if (entry.getKey().label().getDisplay().toLowerCase(Locale.FRENCH).contains("avant")) {
 				found = true;
 				Assertions.assertEquals(smartCarDataBase.getCarsBefore(2000), entry.getValue().size());
 			}
@@ -183,7 +183,7 @@ public class FacetManagerTest {
 		boolean found = false;
 		final String manufacturer = "peugeot";
 		for (final Entry<FacetValue, DtList<SmartCar>> entry : result.getClusters().entrySet()) {
-			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).equals(manufacturer)) {
+			if (entry.getKey().label().getDisplay().toLowerCase(Locale.FRENCH).equals(manufacturer)) {
 				found = true;
 				Assertions.assertEquals(smartCarDataBase.getCarsByManufacturer(manufacturer).size(), entry.getValue().size());
 			}
@@ -229,7 +229,7 @@ public class FacetManagerTest {
 		FacetValue facetFilter = null; //pb d'initialisation, et Assertions.notNull ne suffit pas
 		final Facet yearFacet = getFacetByName(result, facetName);
 		for (final Entry<FacetValue, Long> entry : yearFacet.getFacetValues().entrySet()) {
-			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).contains(facetValueLabel)) {
+			if (entry.getKey().label().getDisplay().toLowerCase(Locale.FRENCH).contains(facetValueLabel)) {
 				facetFilter = entry.getKey();
 				break;
 			}

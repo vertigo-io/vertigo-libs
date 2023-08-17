@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
  * @author npiedeloup, pchretien
  */
 public final class HtmlCodec extends AbstractCodec {
-	private static final String ESCAPE_PATTERN_STRING = "&#[0-9]{2,4};";
+	private static final String ESCAPE_PATTERN_STRING = "&#([0-9]{2,4});";
 	private final Pattern pattern;
 
 	/**
@@ -384,7 +384,10 @@ public final class HtmlCodec extends AbstractCodec {
 		if (encoded == null) {
 			return null;
 		}
-		return doDecode(encoded);
+		final var decodeHtmlChar = pattern.matcher(encoded)
+				.replaceAll(
+						match -> String.valueOf((char) Integer.parseInt(match.group(1))));
+		return doDecode(decodeHtmlChar);
 	}
 
 	/** {@inheritDoc} */

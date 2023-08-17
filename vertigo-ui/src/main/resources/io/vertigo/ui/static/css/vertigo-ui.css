@@ -5,26 +5,44 @@
 }
 		
 :root {
-	--q-color-primary-invert: rgba(255, 255, 255, 0.9);
-	--q-color-secondary-invert: rgba(255, 255, 255, 0.9);
-	--q-color-accent-invert:	rgba(255, 255, 255, 0.9);
+	--v-primary-invert: rgba(255, 255, 255, 0.9);
+	--v-secondary-invert: rgba(255, 255, 255, 0.9);
+	--v-accent-invert:	rgba(255, 255, 255, 0.9);
+}
+
+/** Use to add elements for ScreenReader only */
+.sr-only {
+  border: 0 !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  -webkit-clip-path: inset(50%) !important;
+  clip-path: inset(50%) !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: 1px !important;
+  white-space: nowrap !important;
+}
+
+iframe {
+	border: 0;
 }
 
 .text-primary-inverted  {
-	color:var(--q-color-primary-invert) !important; 
+	color:var(--v-primary-invert) !important; 
 }
 
 .text-secondary-inverted  {
-	color:var(--q-color-secondary-invert) !important; 
+	color:var(--v-secondary-invert) !important; 
 }
 
 .text-accent-inverted  {
-	color:var(--q-color-accent-invert) !important; 
+	color:var(--v-accent-invert) !important; 
 }
 
 .v-field__required .q-field__label::after, .v-field__required .q-checkbox__label::after {
   content: " *";
-  color: var(--q-color-negative);
+  color: var(--q-negative);
 } 
 
 .v-field__required.v-field__has_after_label .q-field__label::after, .v-field__required.v-field__has_after_label .q-checkbox__label::after {
@@ -33,20 +51,21 @@
 
 .v-field__required.v-field__has_after_label .q-field__label>:first-child::after, .v-field__required .q-checkbox__label>:first-child::after {
   content: " *";
-  color: var(--q-color-negative);
+  color: var(--q-negative);
 } 
 
 .q-field--error .q-checkbox__label {
-  color: var(--q-color-negative);
+  color: var(--q-negative);
 }
 
 .notifications a.q-item {
 	text-decoration: none;
-	color: var(--q-color-body-color) !important;
+	color: var(--q-dark) !important;
 }
 
 .not-mini .eq-mini { /* can't revert display:none (on IE of course), we must use a concrete selector*/
 	display:none;
+	visibility:hidden; /* for screen readers */
 }
 
 .mini {
@@ -65,6 +84,7 @@
 
 .mini .ne-mini {
 	display:none;
+    visibility:hidden; /* for screen readers */
 }
 
 .mini .eq-mini {
@@ -77,7 +97,6 @@
     padding-top: 35px;
 }
 
-.withFab .fab-block,
 .withFab .fab-block {
 	position: absolute;
 	top: 0;
@@ -107,13 +126,13 @@ img.avatar {
 }
 */
 .table-primary thead {
-	background:var(--q-color-primary) !important;
+	background:var(--q-primary) !important;
 }
 .table-secondary thead {
-	background:var(--q-color-secondary) !important;
+	background:var(--q-secondary) !important;
 }
 .table-accent thead {
-	background:var(--q-color-accent) !important;
+	background:var(--q-accent) !important;
 }
 
 .q-table__container th {
@@ -123,14 +142,27 @@ img.avatar {
   line-height: 2rem;
 }
 
+/* check if usefull by default
+.q-table tr:hover td {
+    overflow: visible; 
+    white-space: normal;    
+}
+
+.q-table td, .q-table th {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}*/
+
 .table-primary th {
-	color:var(--q-color-primary-invert) !important;
+	color:var(--q-primary-invert) !important;
 }
 .table-secondary th {
-	color:var(--q-color-secondary-invert) !important;
+	color:var(--q-secondary-invert) !important;
 }
 .table-accent th {
-	color:var(--q-color-accent-invert) !important;
+	color:var(--q-accent-invert) !important;
 }
 
 
@@ -144,16 +176,20 @@ img.avatar {
 }
 
 .table-primary  .q-btn {
-	background: var(--q-color-primary);
-	color:var(--q-color-primary-invert);
+	background: var(--q-primary);
+	color:var(--q-primary-invert);
 }
 .table-secondary  .q-btn {
-	background: var(--q-color-secondary);
-	color:var(--q-color-secondary-invert);
+	background: var(--q-secondary);
+	color:var(--q-secondary-invert);
 }
 .table-tertiary  .q-btn {
-	background: var(--q-color-tertiary);
-	color:var(--q-color-tertiary-invert);
+	background: var(--q-tertiary);
+	color:var(--q-tertiary-invert);
+}
+
+.q-tr .q-btn {
+    font-size:12px;
 }
 
 
@@ -176,8 +212,8 @@ img.avatar {
 }
 
 .facets .q-item--clickable:hover {
-    border-left: 3px solid var(--q-color-primary);
-    color : var(--q-color-primary);
+    border-left: 3px solid var(--q-primary);
+    color : var(--q-primary);
 }
 
 .facets .q-list-dense .q-list-header {
@@ -209,6 +245,36 @@ img.avatar {
 	position: relative;
 }
 
+.q-uploader {
+	max-width:320px; /*choosed by quasar*/
+	width:auto !important;
+}
+.q-uploader__title {
+    min-width:25px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.q-uploader__title:hover {
+    overflow: visible; 
+    white-space: normal;
+}
+.q-uploader.q-uploader-readonly {
+    box-shadow: none;
+}
+.q-uploader.q-uploader-readonly .q-uploader__list {
+    padding:0px;
+    min-height:56px;
+}
+.q-uploader .q-uploader__list.scroll {
+    overflow:visible; 
+}
+.q-uploader__list.scroll .q-field__native.row {
+    overflow:auto; 
+}
+.q-uploader__list.scroll .q-field--auto-height .q-field__control {
+	max-height: 300px;
+}
 .q-uploader .q-field__label {
 	top: 10px;
 }
@@ -220,15 +286,21 @@ table .q-uploader .q-btn {
     background: none;
     color:rgba(0,0,0,0.54);
 }
+.q-table .q-uploader__file {
+    max-width: inherit; /* for ellipsis */
+}
 
 .q-editor__content {
     color: rgba(0,0,0,0.87); /** same color as q-field-input or textarea */
 }
 
 .q-editor--error {
-    border-color: var(--q-color-negative)!important
+    border-color: var(--q-negative)!important
 }
 
+.q-field .q-editor {
+	width: 100%;
+}
 
 /*
 .q-table .q-btn {

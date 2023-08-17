@@ -19,13 +19,12 @@ package io.vertigo.ui.impl.springmvc.config;
 
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.web.servlet.LocaleResolver;
 
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Node;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class VertigoLocaleResolver implements LocaleResolver {
 

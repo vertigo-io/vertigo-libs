@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.commons.codec.AbstractCodecTest;
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.util.ListBuilder;
+import io.vertigo.core.lang.ListBuilder;
 
 /**
  * Test du codec de sérialisation.

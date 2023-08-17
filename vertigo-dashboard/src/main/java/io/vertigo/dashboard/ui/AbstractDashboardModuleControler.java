@@ -57,13 +57,13 @@ public abstract class AbstractDashboardModuleControler implements DashboardModul
 		final List<HealthCheck> healthChecks = dataProvider.getHealthChecks();
 		final Map<String, List<HealthCheck>> healthChecksByFeature = healthChecks
 				.stream()
-				.filter(healthCheck -> moduleName.equals(healthCheck.getModule()))
-				.collect(Collectors.groupingBy(HealthCheck::getFeature, Collectors.toList()));
+				.filter(healthCheck -> moduleName.equals(healthCheck.module()))
+				.collect(Collectors.groupingBy(HealthCheck::feature, Collectors.toList()));
 
 		final Set<String> features = healthChecks
 				.stream()
-				.filter(healthCheck -> moduleName.equals(healthCheck.getModule()))
-				.map(HealthCheck::getFeature)
+				.filter(healthCheck -> moduleName.equals(healthCheck.module()))
+				.map(HealthCheck::feature)
 				.collect(Collectors.toSet());
 
 		//---

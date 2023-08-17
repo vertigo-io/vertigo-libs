@@ -32,8 +32,6 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -83,6 +81,8 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.vega.impl.authentication.AuthenticationResult;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Base authentication handler for OpenId Connect.
@@ -131,7 +131,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 		loadMetadataIfNeeded(oidcParameters.isDontFailAtStartup());
 	}
 
-	private final synchronized void loadMetadataIfNeeded(final boolean silentFail) {
+	private synchronized void loadMetadataIfNeeded(final boolean silentFail) {
 		if (ssoMetadata != null) {
 			return;
 		}
@@ -250,7 +250,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 	public Optional<String> getRequestedUri(final HttpServletRequest httpRequest) {
 		final var successResponse = parseResponseRequest(httpRequest);
 		final var state = successResponse.getState();
-		return Optional.ofNullable(SessionManagementHelper.getRequestedUri(httpRequest.getSession(), state.getValue()));
+		return Optional.ofNullable(OIDCSessionManagementUtil.getRequestedUri(httpRequest.getSession(), state.getValue()));
 	}
 
 	/** {@inheritDoc} */
@@ -258,13 +258,13 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 	public AuthenticationResult<AuthorizationSuccessResponse> doHandleCallback(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
 		final var successResponse = parseResponseRequest(httpRequest);
 		final var state = successResponse.getState();
-		final var stateData = SessionManagementHelper.retrieveStateDataFromSession(httpRequest.getSession(), state.getValue());
+		final var stateData = OIDCSessionManagementUtil.retrieveStateDataFromSession(httpRequest.getSession(), state.getValue());
 		loadMetadataIfNeeded(false);
 
 		final var oidcTokens = doGetOIDCTokens(successResponse.getAuthorizationCode(), resolveCallbackUri(httpRequest));
 
 		if (!Boolean.TRUE.equals(oidcParameters.getSkipIdTokenValidation())) {
-			doValidateToken(oidcTokens.getIDToken(), stateData.getNonce());
+			doValidateToken(oidcTokens.getIDToken(), stateData.nonce());
 		}
 
 		final var userInfos = doGetUserInfos(oidcTokens.getAccessToken());
@@ -316,7 +316,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 		}
 
 		// Call the endpoint
-		TokenResponse tokenResponse;
+		final TokenResponse tokenResponse;
 		try {
 			tokenResponse = OIDCTokenResponseParser.parse(request.toHTTPRequest().send());
 		} catch (com.nimbusds.oauth2.sdk.ParseException | IOException e) {
@@ -345,7 +345,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 		// The UserInfoEndpoint of the OpenID provider
 		final var userInfoEndpoint = ssoMetadata.getUserInfoEndpointURI();
 
-		UserInfoResponse userInfoResponse;
+		final UserInfoResponse userInfoResponse;
 		try {
 			// Make the request
 			final var httpResponse = new UserInfoRequest(userInfoEndpoint, accessToken)
@@ -377,7 +377,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 		// save all this in http session paired with the original requested URL to forward user after authentication
 		final var state = new State();
 		final var nonce = new Nonce();
-		SessionManagementHelper.storeStateDataInSession(httpRequest.getSession(), state.getValue(), nonce.getValue(), WebAuthenticationUtil.resolveUrlRedirect(httpRequest));
+		OIDCSessionManagementUtil.storeStateDataInSession(httpRequest.getSession(), state.getValue(), nonce.getValue(), WebAuthenticationUtil.resolveUrlRedirect(httpRequest));
 
 		// Compose the OpenID authentication request (for the code flow)
 		final var authRequest = new AuthenticationRequest.Builder(

@@ -154,8 +154,7 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 		final Object nullableResult;
 		if (result == null) {
 			nullableResult = null;
-		} else if (result instanceof Collection) {
-			final Collection resultList = (Collection) result;
+		} else if (result instanceof Collection resultList) {
 			Assertion.check().isTrue(resultList.size() <= 1, "Can't map a list of {0} elements to single object", resultList.size());
 			nullableResult = resultList.isEmpty() ? null : resultList.iterator().next();
 		} else if (result.getClass().isArray()) {

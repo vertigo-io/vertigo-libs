@@ -100,11 +100,11 @@ public class TimeSeriesManagerImpl implements TimeSeriesManager {
 				.isNotBlank(dbName)
 				.isNotNull(measures)
 				.isNotNull(dataFilter)
-				.isNotNull(timeFilter.getDim());// we check dim is not null because we need it
+				.isNotNull(timeFilter.dim());// we check dim is not null because we need it
 		//---
 		return analyticsManager.traceWithReturn(
 				TIMESERIES_CATEGORY,
-				"/timed/" + dbName + "/" + dataFilter.getMeasurement(),
+				"/timed/" + dbName + "/" + dataFilter.measurement(),
 				tracer -> getPluginByDb(dbName).getTimeSeries(dbName, measures, dataFilter, timeFilter));
 
 	}
@@ -115,19 +115,19 @@ public class TimeSeriesManagerImpl implements TimeSeriesManager {
 				.isNotBlank(dbName)
 				.isNotNull(dataFilter)
 				.isNotNull(timeFilter)
-				.isNotNull(timeFilter.getDim()) // we check dim is not null because we need it
+				.isNotNull(timeFilter.dim()) // we check dim is not null because we need it
 				.isNotNull(clusteredMeasure);
 		//---
 		Assertion.check()
-				.isNotBlank(clusteredMeasure.getMeasure())
-				.isNotNull(clusteredMeasure.getThresholds())
-				.isFalse(clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
+				.isNotBlank(clusteredMeasure.measure())
+				.isNotNull(clusteredMeasure.thresholds())
+				.isFalse(clusteredMeasure.thresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.measure());
 		//we use the natural order
-		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
+		clusteredMeasure.thresholds().sort(Comparator.naturalOrder());
 		//---
 		return analyticsManager.traceWithReturn(
 				TIMESERIES_CATEGORY,
-				"/clusturedTimed/" + dbName + "/" + dataFilter.getMeasurement(),
+				"/clusturedTimed/" + dbName + "/" + dataFilter.measurement(),
 				tracer -> getPluginByDb(dbName).getClusteredTimeSeries(dbName, clusteredMeasure, dataFilter, timeFilter));
 	}
 
@@ -135,7 +135,7 @@ public class TimeSeriesManagerImpl implements TimeSeriesManager {
 	public TimedDatas getLastTabularDatas(final String dbName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
 		return analyticsManager.traceWithReturn(
 				TIMESERIES_CATEGORY,
-				"/tabularTimed/" + dbName + "/" + dataFilter.getMeasurement(),
+				"/tabularTimed/" + dbName + "/" + dataFilter.measurement(),
 				tracer -> getPluginByDb(dbName).getLastTabularDatas(dbName, measures, dataFilter, timeFilter, groupBy));
 	}
 
@@ -143,7 +143,7 @@ public class TimeSeriesManagerImpl implements TimeSeriesManager {
 	public TabularDatas getTabularData(final String dbName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
 		return analyticsManager.traceWithReturn(
 				TIMESERIES_CATEGORY,
-				"/tabular/" + dbName + "/" + dataFilter.getMeasurement(),
+				"/tabular/" + dbName + "/" + dataFilter.measurement(),
 				tracer -> getPluginByDb(dbName).getTabularData(dbName, measures, dataFilter, timeFilter, groupBy));
 	}
 
@@ -151,7 +151,7 @@ public class TimeSeriesManagerImpl implements TimeSeriesManager {
 	public TabularDatas getTops(final String dbName, final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
 		return analyticsManager.traceWithReturn(
 				TIMESERIES_CATEGORY,
-				"/tops/" + dbName + "/" + dataFilter.getMeasurement(),
+				"/tops/" + dbName + "/" + dataFilter.measurement(),
 				tracer -> getPluginByDb(dbName).getTops(dbName, measure, dataFilter, timeFilter, groupBy, maxRows));
 	}
 

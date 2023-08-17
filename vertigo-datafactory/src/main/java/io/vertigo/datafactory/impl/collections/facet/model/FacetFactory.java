@@ -27,7 +27,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datafactory.collections.CollectionsManager;
 import io.vertigo.datafactory.collections.ListFilter;
@@ -132,7 +132,7 @@ public final class FacetFactory {
 
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			//Pour chaque Valeur de facette on trouve les élements.
-			final DtList<D> facetFilteredList = apply(facetRange.getListFilter(), dtList);
+			final DtList<D> facetFilteredList = apply(facetRange.listFilter(), dtList);
 			clusterValues.put(facetRange, facetFilteredList);
 		}
 		return clusterValues;
@@ -160,16 +160,16 @@ public final class FacetFactory {
 			final Object value = dtField.getDataAccessor().getValue(dto);
 			facetValue = facetFilterIndex.get(value);
 			if (facetValue == null) {
-				final String valueAsString = smartTypeManager.valueToString(dtField.getSmartTypeDefinition(), value);
+				final String valueAsString = smartTypeManager.valueToString(dtField.smartTypeDefinition(), value);
 				final String label;
 				if (StringUtil.isBlank(valueAsString)) {
 					label = "_empty_";
 				} else {
 					label = valueAsString;
 				}
-				final MessageText labelMsg = MessageText.of(label);
+				final LocaleMessageText labelMsg = LocaleMessageText.of(label);
 				//on garde la syntaxe Solr pour l'instant
-				final ListFilter listFilter = ListFilter.of(dtField.getName() + ":\"" + valueAsString + "\"");
+				final ListFilter listFilter = ListFilter.of(dtField.name() + ":\"" + valueAsString + "\"");
 				facetValue = new FacetValue(label, listFilter, labelMsg);
 				facetFilterIndex.put(value, facetValue);
 				clusterValues.put(facetValue, new DtList<D>(dtList.getDefinition()));
@@ -195,7 +195,7 @@ public final class FacetFactory {
 		@Override
 		public int compare(final FacetValue o1, final FacetValue o2) {
 			final int compareNbDoc = clusterValues.get(o2).size() - clusterValues.get(o1).size();
-			return compareNbDoc != 0 ? compareNbDoc : o1.getLabel().getDisplay().compareToIgnoreCase(o2.getLabel().getDisplay());
+			return compareNbDoc != 0 ? compareNbDoc : o1.label().getDisplay().compareToIgnoreCase(o2.label().getDisplay());
 		}
 	}
 

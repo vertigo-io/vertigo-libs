@@ -59,10 +59,6 @@ import io.vertigo.database.sql.vendor.SqlMapping;
  */
 final class SqlStatementDriver {
 
-	private static final int NO_GENERATED_KEY_ERROR_VENDOR_CODE = 100;
-
-	private static final int TOO_MANY_GENERATED_KEY_ERROR_VENDOR_CODE = 464;
-
 	private static final int NULL_GENERATED_KEY_ERROR_VENDOR_CODE = -407;
 
 	private static final int FETCH_SIZE = 150;
@@ -87,19 +83,12 @@ final class SqlStatementDriver {
 			final String[] generatedColumns,
 			final SqlConnection connection) throws SQLException {
 		//created PrepareStatement must be use into a try-with-resource in caller
-		final PreparedStatement preparedStatement;
-		switch (generationMode) {
-			case GENERATED_KEYS:
-				preparedStatement = connection.getJdbcConnection()
-						.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-				break;
-			case GENERATED_COLUMNS:
-				preparedStatement = connection.getJdbcConnection()
-						.prepareStatement(sql, generatedColumns);
-				break;
-			default:
-				throw new IllegalStateException();
-		}
+		final PreparedStatement preparedStatement = switch (generationMode) {
+			case GENERATED_KEYS -> connection.getJdbcConnection()
+					.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			case GENERATED_COLUMNS -> connection.getJdbcConnection()
+					.prepareStatement(sql, generatedColumns);
+		};
 		//by experience 150 is a right value (Oracle is set by default at 10 : that's not sufficient)
 		preparedStatement.setFetchSize(FETCH_SIZE);
 		return preparedStatement;
@@ -115,15 +104,15 @@ final class SqlStatementDriver {
 		//-----
 		for (int index = 0; index < parameters.size(); index++) {
 			final SqlParameter parameter = parameters.get(index);
-			final Class javaDataType = parameter.getDataType();
-			if (isPrimitive(parameter.getDataType())) {
+			final Class javaDataType = parameter.dataType();
+			if (isPrimitive(parameter.dataType())) {
 				connection.getDataBase().getSqlMapping().setValueOnStatement(
-						statement, index + 1, javaDataType, parameter.getValue());
+						statement, index + 1, javaDataType, parameter.value());
 			} else {
 				// complex we find the adapter
-				final BasicTypeAdapter adapter = basicTypeAdapters.get(parameter.getDataType());
+				final BasicTypeAdapter adapter = basicTypeAdapters.get(parameter.dataType());
 				connection.getDataBase().getSqlMapping().setValueOnStatement(
-						statement, index + 1, adapter.getBasicType().getJavaClass(), adapter.toBasic(parameter.getValue()));
+						statement, index + 1, adapter.getBasicType().getJavaClass(), adapter.toBasic(parameter.value()));
 			}
 		}
 	}
@@ -266,7 +255,7 @@ final class SqlStatementDriver {
 				.anyMatch(primitiveClazz -> primitiveClazz.isAssignableFrom(dataType));
 	}
 
-	<O> O getGeneratedKey(
+	<O> List<O> getGeneratedKeys(
 			final PreparedStatement statement,
 			final String columnName,
 			final Class<O> dataType,
@@ -279,22 +268,19 @@ final class SqlStatementDriver {
 		// serveur d'application et la base de données pour un insert et la récupération de la
 		// valeur de la clé primaire en respectant les standards jdbc et sql ansi.
 		final SqlMapping sqlMapping = connection.getDataBase().getSqlMapping();
+		final List<O> generatedKeys = new ArrayList<>();
 		try (final ResultSet rs = statement.getGeneratedKeys()) {
-			final boolean next = rs.next();
-			if (!next) {
-				throw new SQLException("GeneratedKeys empty", "02000", NO_GENERATED_KEY_ERROR_VENDOR_CODE);
-			}
-			//ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
-			final int pkRsCol = rs.findColumn(columnName); //on cherche le bon index de la pk (certaines bdd retournent toutes les colonnes : la pk n'est pas forcément la 1ere)
-			final O id = sqlMapping.getValueForResultSet(rs, pkRsCol, dataType);
-			if (rs.wasNull()) {
-				throw new SQLException("GeneratedKeys wasNull", "23502", NULL_GENERATED_KEY_ERROR_VENDOR_CODE);
+			while (rs.next()) {
+				//ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
+				int pkRsCol = rs.findColumn(columnName); //on cherche le bon index de la pk
+				final O id = sqlMapping.getValueForResultSet(rs, pkRsCol, dataType);
+				if (rs.wasNull()) {
+					throw new SQLException("GeneratedKeys wasNull", "23502", NULL_GENERATED_KEY_ERROR_VENDOR_CODE);
+				}
+				generatedKeys.add(id);
 			}
 
-			if (rs.next()) {
-				throw new SQLException("GeneratedKeys.size >1 ", "0100E", TOO_MANY_GENERATED_KEY_ERROR_VENDOR_CODE);
-			}
-			return id;
+			return generatedKeys;
 		}
 	}
 

@@ -37,17 +37,15 @@ final class CriteriaUtil {
 		//		then *(exp, c))
 		if (leftOperand instanceof CriteriaExpression && rightOperand instanceof Criterion) {
 			final CriteriaExpression<D> criteria = CriteriaExpression.class.cast(leftOperand);
-			switch (criteria.getOperator()) {
-				case AND:
-					return new CriteriaExpression<>(CriteriaLogicalOperator.AND, criteria.getOperands(), rightOperand);
-				case OR:
+			return switch (criteria.getOperator()) {
+				case AND -> new CriteriaExpression<>(CriteriaLogicalOperator.AND, criteria.getOperands(), rightOperand);
+				case OR -> {
 					// ! before 3.5.1, there was a bad precedence changing  a+b*c => a + (b * c), now it's (a + b) * c
 					//We log a warning for regressions
 					LOG.warn("Criteria `({}) AND {}` You may check regressions : `a or b and c` is now `(a or b) and c`, before 3.5.1 it was `a or (b and c)`", leftOperand, rightOperand);
-					return new CriteriaExpression<>(CriteriaLogicalOperator.AND, leftOperand, rightOperand);
-				default:
-					throw new IllegalStateException();
-			}
+					yield new CriteriaExpression<>(CriteriaLogicalOperator.AND, leftOperand, rightOperand);
+				}
+			};
 		}
 		return new CriteriaExpression<>(CriteriaLogicalOperator.AND, leftOperand, rightOperand);
 	}

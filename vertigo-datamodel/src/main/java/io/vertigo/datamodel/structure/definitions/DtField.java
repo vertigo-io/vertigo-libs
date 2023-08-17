@@ -17,17 +17,12 @@
  */
 package io.vertigo.datamodel.structure.definitions;
 
-import java.util.List;
-
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.JsonExclude;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.lang.json.JsonExclude;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.node.definition.DefinitionReference;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.model.DtList;
 
 /**
  * This class defines the structure of a field.
@@ -35,19 +30,18 @@ import io.vertigo.datamodel.structure.model.DtList;
  * A field represents a named and typed data
  *
  * A field
- *   - has a name
- *   - has a domain
+ *   - is a dataDesciptor with
+ *   	- a name,
+ *   	- a smartType
+ *    	- a cardinality
  *   - has a fieldType
  *   - has a label
- *   - can be required
  *   - can be persistent
- *   - can be dynamic
  *
  * @author  fconstantin, pchretien , npiedeloup
  */
-public final class DtField {
+public final class DtField extends DataDescriptor {
 
-	private static final int FIELD_NAME_MAX_LENGTH = 30;
 	/** Field definition Prefix. */
 	public static final String PREFIX = "fld";
 
@@ -84,11 +78,8 @@ public final class DtField {
 		}
 	}
 
-	private final String name;
 	private final FieldType type;
-	private final Cardinality cardinality;
-	private final DefinitionReference<SmartTypeDefinition> smartTypeRef;
-	private final MessageText label;
+	private final LocaleMessageText label;
 	private final boolean persistent;
 
 	/** Cas des FK ; référence à une FK. */
@@ -105,7 +96,7 @@ public final class DtField {
 	 * @param id the ID of the field
 	 * @param fieldName the name of the field
 	 * @param type the type of the field
-	 * @param smartType the smartType of the field
+	 * @param smartTypeDefinition the smartType of the field
 	 * @param cardinality cardinality of the field see {@code Cardinality}
 	 * @param label the label of the field
 	 * @param required if the field is required
@@ -118,28 +109,21 @@ public final class DtField {
 			final String id,
 			final String fieldName,
 			final FieldType type,
-			final SmartTypeDefinition smartType,
-			final MessageText label,
+			final SmartTypeDefinition smartTypeDefinition,
+			final LocaleMessageText label,
 			final Cardinality cardinality,
 			final boolean persistent,
 			final String fkDtDefinitionName) {
+		super(fieldName, smartTypeDefinition, cardinality);
 		Assertion.check()
 				.isNotBlank(id)
 				.isNotNull(type)
-				.isNotNull(smartType)
+				.isNotNull(smartTypeDefinition)
 				.isNotNull(type)
 				.isNotNull(cardinality);
 		//-----
 		this.id = id;
-		smartTypeRef = new DefinitionReference<>(smartType);
 		this.type = type;
-		this.cardinality = cardinality;
-		//-----
-		Assertion.check()
-				.isNotNull(fieldName)
-				.isTrue(fieldName.length() <= FIELD_NAME_MAX_LENGTH, "the name of the field {0} has a limit size of {1}", fieldName, FIELD_NAME_MAX_LENGTH)
-				.isTrue(StringUtil.isLowerCamelCase(fieldName), "the name of the field {0} must be in lowerCamelCase", fieldName);
-		name = fieldName;
 		//-----
 		Assertion.check().isNotNull(label);
 		this.label = label;
@@ -165,20 +149,6 @@ public final class DtField {
 	}
 
 	/**
-	 * @return the name of the field
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @return the cardinality of the field (one, optional, many)
-	 */
-	public Cardinality getCardinality() {
-		return cardinality;
-	}
-
-	/**
 	 * @return the type of the field
 	 */
 	public FieldType getType() {
@@ -186,16 +156,9 @@ public final class DtField {
 	}
 
 	/**
-	 * @return the smarttype of the field
-	 */
-	public SmartTypeDefinition getSmartTypeDefinition() {
-		return smartTypeRef.get();
-	}
-
-	/**
 	 * @return the label of the field
 	 */
-	public MessageText getLabel() {
+	public LocaleMessageText getLabel() {
 		return label;
 	}
 
@@ -208,7 +171,8 @@ public final class DtField {
 	}
 
 	public boolean isDtList() {
-		return getSmartTypeDefinition().getScope().isDataObject() && cardinality.hasMany();
+		return smartTypeDefinition().getScope().isDataType()
+				&& cardinality().hasMany();
 	}
 
 	/**
@@ -227,27 +191,5 @@ public final class DtField {
 	 */
 	public DataAccessor getDataAccessor() {
 		return dataAccessor;
-	}
-
-	/**
-	 * Returns the class that holds the value of the field.
-	 * If cardinality is many it's either a list or a dtList, if not then it's the base type of the domain.
-	 * @return the data accessor.
-	 */
-	public Class getTargetJavaClass() {
-		final SmartTypeDefinition domain = getSmartTypeDefinition();
-		if (cardinality.hasMany()) {
-			switch (domain.getScope()) {
-				case PRIMITIVE:
-					return List.class;
-				case DATA_OBJECT:
-					return DtList.class;
-				case VALUE_OBJECT:
-					return List.class;
-				default:
-					throw new IllegalStateException();
-			}
-		}
-		return domain.getJavaClass();
 	}
 }

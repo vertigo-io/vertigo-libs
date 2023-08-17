@@ -21,7 +21,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -44,7 +43,7 @@ public final class CatalogWebServices implements WebServices {
 	@GET("/catalog")
 	public List<String> publishCatalog() {
 		final List<WebServiceDefinition> webServiceDefinitions = new ArrayList<>(Node.getNode().getDefinitionSpace().getAll(WebServiceDefinition.class));
-		Collections.sort(webServiceDefinitions, Comparator.comparing(WebServiceDefinition::getSortPath));
+		webServiceDefinitions.sort(Comparator.comparing(WebServiceDefinition::getSortPath));
 		return publishCatalog(webServiceDefinitions);
 	}
 

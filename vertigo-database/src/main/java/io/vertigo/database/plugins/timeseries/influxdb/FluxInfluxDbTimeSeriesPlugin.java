@@ -148,19 +148,23 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	@Override
 	public TimedDatas getClusteredTimeSeries(final String appName, final ClusteredMeasure clusteredMeasure, final DataFilter dataFilter, final TimeFilter timeFilter) {
-		final String globalDataVariable = buildGlobalDataVariable(appName, Collections.singletonList(clusteredMeasure.getMeasure()), dataFilter, timeFilter, new String[] {});
+		final String globalDataVariable = buildGlobalDataVariable(appName, Collections.singletonList(clusteredMeasure.measure()), dataFilter, timeFilter);
 
 		final StringBuilder queryBuilder = new StringBuilder(globalDataVariable);
-		final String[] splitedMeasure = clusteredMeasure.getMeasure().split(":");
+		final String[] splitedMeasure = clusteredMeasure.measure().split(":");
 		final String function = splitedMeasure[1];
 
 		final var orderedClusteredMeasures = getOrderedClusterMeasures(clusteredMeasure);
+		queryBuilder
+				.append("|> window(every: " + timeFilter.dim() + ", createEmpty:true ) \n")
+				.append("\n")
+				.append("dataNil = data \n")
+				.append("|> count() \n")
+				.append("|> map(fn: (r) => ({ _time:r._start, _value:r._value, _field:\"total\" }))\n");
 
-		Assertion
-				.check()
-				.isTrue("count".equals(function) || "sum".equals(function), "Function {0} is not supported with clusteredMeasure, only sum and count is supported", function);
+		Assertion.check().isTrue("count".equals(function) || "sum".equals(function), "Function {0} is not supported with clusteredMeasure, only sum and count is supported", function);
 
-		final var thresholds = clusteredMeasure.getThresholds();
+		final var thresholds = clusteredMeasure.thresholds();
 		for (int idx = 0; idx < thresholds.size() + 1; idx++) {
 			final String condition;
 			if (idx == 0) {
@@ -174,22 +178,19 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 					.append('\n')
 					.append("data" + idx + " = data \n")
 					.append("|> filter(fn: (r) => " + condition + ") \n")
-					.append("|> window(every: 1h, createEmpty:true ) \n")
-					.append("|> duplicate(column: \"_stop\", as:\"_time\") \n")
 					.append("|> " + function + "() \n")
-					.append("|> duplicate(column: \"_stop\", as:\"_time\") \n")
-					.append("|> drop(columns: [\"_start\", \"_stop\"]) \n")
-					.append("|> set(key: \"alias\", value:\"" + orderedClusteredMeasures.get(idx) + "\" ) \n");
+					.append("|> map(fn: (r) => ({ _time:r._start,  _value:r._value, _field:\"" + orderedClusteredMeasures.get(idx) + "\"})) \n");
 
 		}
 
-		final String allDataJoined = IntStream.range(0, clusteredMeasure.getThresholds().size() + 1)
+		final String allDataJoined = IntStream.range(0, clusteredMeasure.thresholds().size() + 1)
 				.boxed()
 				.map(idx -> "data" + idx)
 				.collect(Collectors.joining(", "));
-		queryBuilder
-				.append("union(tables :[" + allDataJoined + "]) \n")
-				.append("|> pivot(columnKey: [\"_field\", \"alias\"], rowKey: [\"_time\"], valueColumn: \"_value\") \n")
+		queryBuilder.append("\n").append("union(tables :[ dataNil," + allDataJoined + "]) \n")
+				.append("|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") \n")
+				.append("|> drop(columns : [\"total\"] )\n")
+				.append("|> sort(columns: [\"_time\"]) \n")
 				.append("|> yield() \n");
 
 		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(queryBuilder.toString());
@@ -211,13 +212,13 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	private static List<String> getOrderedClusterMeasures(final ClusteredMeasure clusteredMeasure) {
 		final List<String> result = new ArrayList<>();
-		for (int i = 0; i <= clusteredMeasure.getThresholds().size(); i++) {
+		for (int i = 0; i <= clusteredMeasure.thresholds().size(); i++) {
 			if (i == 0) {
-				result.add(clusteredMeasure.getMeasure() + "<" + clusteredMeasure.getThresholds().get(i));
-			} else if (i == clusteredMeasure.getThresholds().size()) {
-				result.add(clusteredMeasure.getMeasure() + ">" + clusteredMeasure.getThresholds().get(i - 1));
+				result.add(clusteredMeasure.measure() + "<" + clusteredMeasure.thresholds().get(i));
+			} else if (i == clusteredMeasure.thresholds().size()) {
+				result.add(clusteredMeasure.measure() + ">" + clusteredMeasure.thresholds().get(i - 1));
 			} else {
-				result.add(clusteredMeasure.getMeasure() + "_" + clusteredMeasure.getThresholds().get(i));
+				result.add(clusteredMeasure.measure() + "_" + clusteredMeasure.thresholds().get(i));
 			}
 		}
 		return result;
@@ -229,27 +230,27 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 		final String globalDataVariable = buildGlobalDataVariable(appName, measures, dataFilter, timeFilter, groupBy);
 
-		final StringBuilder queryBuilder = new StringBuilder(globalDataVariable)
-				.append("data \n")
-				.append("|> filter(fn: (r) => (r._field ==\"value\" ) ) \n")
-				.append("|> toString() \n")
-				.append("|> group(columns: [" + Stream.of(groupBy).collect(Collectors.joining("\", \"", "\"", "\"")) + "]) \n")
-				.append("|> sort(columns: [\"_time\"]) \n")
-				.append("|> limit(n: 1) \n")
-				.append("|> group() \n")
-				.append("|> rename(columns: {\"_value\" : \"value\"}) \n")
-				.append("|> keep(columns: [ \"_time\", " + measures.stream().collect(Collectors.joining("\" , \"", "\"", "\"")) + "]) \n")
-				.append("|> yield()");
+		String queryBuilder = globalDataVariable +
+				"data \n" +
+				"|> filter(fn: (r) => (r._field ==\"value\" ) ) \n" +
+				"|> toString() \n" +
+				"|> group(columns: [" + Stream.of(groupBy).collect(Collectors.joining("\", \"", "\"", "\"")) + "]) \n" +
+				"|> sort(columns: [\"_time\"]) \n" +
+				"|> limit(n: 1) \n" +
+				"|> group() \n" +
+				"|> rename(columns: {\"_value\" : \"value\"}) \n" +
+				"|> keep(columns: [ \"_time\", " + measures.stream().collect(Collectors.joining("\" , \"", "\"", "\"")) + "]) \n" +
+				"|> yield()";
 
-		return executeTimedQuery(queryBuilder.toString());
+		return executeTimedQuery(queryBuilder);
 
 	}
 
 	private static String buildGlobalDataVariable(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
 		final StringBuilder dataVariableBuilder = new StringBuilder("data = from(bucket:\"" + appName + "\") \n")
-				.append("|> range(start: " + timeFilter.getFrom() + ", stop: " + timeFilter.getTo() + ") \n")
+				.append("|> range(start: " + timeFilter.from() + ", stop: " + timeFilter.to() + ") \n")
 				.append("|> filter(fn: (r) => \n")
-				.append("r._measurement == \"" + dataFilter.getMeasurement() + "\" \n");
+				.append("r._measurement == \"" + dataFilter.measurement() + "\" \n");
 
 		final Set<String> fields = getMeasureFields(measures);
 		// add the global data with all the fields we need
@@ -264,7 +265,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 			dataVariableBuilder.append(") \n");
 		}
 
-		for (final Map.Entry<String, String> filter : dataFilter.getFilters().entrySet()) {
+		for (final Map.Entry<String, String> filter : dataFilter.filters().entrySet()) {
 			if (filter.getValue() != null && !"*".equals(filter.getValue())) {
 				dataVariableBuilder.append(" and r.").append(filter.getKey()).append("==\"").append(filter.getValue()).append("\"\n");
 			}
@@ -290,15 +291,15 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	@Override
 	public List<String> getTagValues(final String appName, final String measurement, final String tag) {
-		final StringBuilder queryBuilder = new StringBuilder("import \"influxdata/influxdb/schema\" \n")
-				.append('\n')
-				.append("schema.tagValues( \n")
-				.append(" bucket: \"" + appName + "\",\n")
-				.append(" predicate: (r) => r._measurement == \"" + measurement + "\",\n")
-				.append(" tag: \"" + tag + "\"  \n")
-				.append(") \n");
+		String queryBuilder = "import \"influxdata/influxdb/schema\" \n" +
+				'\n' +
+				"schema.tagValues( \n" +
+				" bucket: \"" + appName + "\",\n" +
+				" predicate: (r) => r._measurement == \"" + measurement + "\",\n" +
+				" tag: \"" + tag + "\"  \n" +
+				") \n";
 
-		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(queryBuilder.toString());
+		final List<FluxTable> queryResult = influxDBClient.getQueryApi().query(queryBuilder);
 		if (!queryResult.isEmpty()) {
 			final FluxTable table = queryResult.get(0);
 			if (table.getRecords() != null && !table.getRecords().isEmpty()) {
@@ -318,7 +319,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		Assertion.check()
 				.isNotNull(measures)
 				.isNotNull(dataFilter)
-				.isNotNull(timeFilter.getDim());// we check dim is not null because we need it
+				.isNotNull(timeFilter.dim());// we check dim is not null because we need it
 		//---
 		final String q = buildTimedQuery(appName, measures, dataFilter, timeFilter)
 				.toString();
@@ -349,10 +350,10 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 	}
 
 	private static Point measureToMeasurement(final Measure measure) {
-		return Point.measurement(measure.getMeasurement())
-				.time(measure.getInstant(), WritePrecision.MS)
-				.addFields(measure.getFields())
-				.addTags(measure.getTags());
+		return Point.measurement(measure.measurement())
+				.time(measure.instant(), WritePrecision.MS)
+				.addFields(measure.fields())
+				.addTags(measure.tags());
 	}
 
 	@Override
@@ -376,16 +377,14 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 	private static String buildMeasureFunction(final String function) {
 		final Tuple<String, List<String>> aggregateFunction = parseAggregateFunction(function);
 		// append function name
-		final StringBuilder measureQueryBuilder = new java.lang.StringBuilder(aggregateFunction.getVal1()).append("(");
+		final StringBuilder measureQueryBuilder = new java.lang.StringBuilder(aggregateFunction.val1()).append("(");
 		// append parameters
-		if (!aggregateFunction.getVal2().isEmpty()) {
+		if (!aggregateFunction.val2().isEmpty()) {
 
-			measureQueryBuilder.append(aggregateFunction.getVal2()
+			measureQueryBuilder.append(aggregateFunction.val2()
 					.stream()
 					.map(param -> param.split("_"))
-					.map(paramAsArray -> {
-						return paramAsArray[0] + ": " + paramAsArray[1];
-					})
+					.map(paramAsArray -> (paramAsArray[0] + ": " + paramAsArray[1]))
 					.collect(Collectors.joining(", ")));
 		}
 		measureQueryBuilder.append(')');
@@ -445,7 +444,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 							+ "}))\n")
 					.append("|> pivot(rowKey:[" + groupByFields + "], columnKey: [\"_field\", \"alias\"], valueColumn: \"_value\") \n")
 					.append("|> map(fn: (r) => ({ r with " + measures.stream().map(measure -> Tuple.of(measure, properedMeasures.get(measure)))
-							.map(tuple -> tuple.getVal2() + ": if exists r." + tuple.getVal2() + " then r." + tuple.getVal2() + " else " + getDefaultValueByMeasure(tuple.getVal1())).collect(Collectors.joining(", "))
+							.map(tuple -> tuple.val2() + ": if exists r." + tuple.val2() + " then r." + tuple.val2() + " else " + getDefaultValueByMeasure(tuple.val1())).collect(Collectors.joining(", "))
 							+ "}))\n")
 
 					.append("|> group() \n")
@@ -460,7 +459,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		final Set<String> fields = getMeasureFields(measures);
 		final StringBuilder queryBuilder = new StringBuilder(globalDataVariable);
 		queryBuilder
-				.append("|> window(every: " + timeFilter.getDim() + ", createEmpty:true ) \n");
+				.append("|> window(every: " + timeFilter.dim() + ", createEmpty:true ) \n");
 
 		final Map<String, List<String>> fieldsByFunction = getFieldsByFunction(measures);
 		if (fieldsByFunction.size() == 1) { // union works with 2 tables minimum
@@ -544,7 +543,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 	}
 
 	private static String buildDataFilterCondition(final DataFilter dataFilter, final String field) {
-		final String filterOnField = dataFilter.getFilters().get(field);
+		final String filterOnField = dataFilter.filters().get(field);
 		if (filterOnField == null || "*".equals(filterOnField)) {
 			return "";
 		}

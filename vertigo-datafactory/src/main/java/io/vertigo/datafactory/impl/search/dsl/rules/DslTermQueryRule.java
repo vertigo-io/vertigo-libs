@@ -78,16 +78,11 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<Object>> {
 		final Optional<PegChoice> escapeRule = (Optional<PegChoice>) term.get(5);
 		final EscapeMode escapeMode;
 		if (escapeRule.isPresent()) {
-			switch (escapeRule.get().getChoiceIndex()) {
-				case 0:
-					escapeMode = EscapeMode.remove;
-					break;
-				case 1:
-					escapeMode = EscapeMode.escape;
-					break;
-				default:
-					throw new IllegalArgumentException("case " + escapeRule.get().getChoiceIndex() + " not implemented");
-			}
+			escapeMode = switch (escapeRule.get().choiceIndex()) {
+				case 0 -> EscapeMode.remove;
+				case 1 -> EscapeMode.escape;
+				default -> throw new IllegalArgumentException("case " + escapeRule.get().choiceIndex() + " not implemented");
+			};
 		} else {
 			escapeMode = EscapeMode.none;
 		}

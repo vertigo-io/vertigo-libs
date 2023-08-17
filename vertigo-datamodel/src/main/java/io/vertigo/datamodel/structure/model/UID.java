@@ -21,8 +21,9 @@ import java.io.Serializable;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
@@ -49,7 +50,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 */
 	private static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
 
-	private final DefinitionReference<DtDefinition> definitionRef;
+	private final DefinitionId<DtDefinition> definitionId;
 	private final Serializable id;
 
 	/** URN de la ressource (Nom complet).*/
@@ -65,10 +66,10 @@ public final class UID<E extends Entity> implements Serializable {
 				.isNotNull(id)
 				.isNotNull(definition);
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-		smartTypeManager.checkValue(definition.getIdField().get().getSmartTypeDefinition(), id);
+		smartTypeManager.checkType(definition.getIdField().get().smartTypeDefinition(), Cardinality.ONE, id);
 		//-----
 		this.id = Serializable.class.cast(id);
-		this.definitionRef = new DefinitionReference<>(definition);
+		this.definitionId = definition.id();
 		//---
 		//Calcul de l'urn
 		urn = toURN(this);
@@ -141,7 +142,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 * @return Définition de la ressource.
 	 */
 	public DtDefinition getDefinition() {
-		return definitionRef.get();
+		return definitionId.get();
 	}
 
 	/**
@@ -211,7 +212,7 @@ public final class UID<E extends Entity> implements Serializable {
 		} else if (id instanceof Long) {
 			return "l-" + id;
 		}
-		throw new IllegalArgumentException(id.toString() + " not supported by URI");
+		throw new IllegalArgumentException(id + " not supported by URI");
 	}
 
 	/**

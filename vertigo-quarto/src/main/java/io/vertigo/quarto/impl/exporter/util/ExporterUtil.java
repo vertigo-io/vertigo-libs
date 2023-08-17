@@ -116,8 +116,7 @@ public final class ExporterUtil {
 					referenceCache.put(dtField, referenceIndex);
 				}
 				value = referenceIndex.get(dtField.getDataAccessor().getValue(dto));
-			} else if (exportColumn instanceof ExportDenormField) {
-				final ExportDenormField exportDenormColumn = (ExportDenormField) exportColumn;
+			} else if (exportColumn instanceof ExportDenormField exportDenormColumn) {
 				Map<Object, String> denormIndex = denormCache.get(dtField);
 				if (denormIndex == null) {
 					denormIndex = createDenormIndex(smartTypeManager, exportDenormColumn.getDenormList(), exportDenormColumn.getKeyField(), exportDenormColumn.getDisplayField());
@@ -127,9 +126,9 @@ public final class ExporterUtil {
 			} else {
 				value = exportColumn.getDtField().getDataAccessor().getValue(dto);
 				if (forceStringValue) {
-					final var smartTypeDefinition = exportColumn.getDtField().getSmartTypeDefinition();
-					if (!dtField.getCardinality().hasMany()) {
-						if (smartTypeDefinition.getScope().isPrimitive()) {
+					final var smartTypeDefinition = exportColumn.getDtField().smartTypeDefinition();
+					if (!dtField.cardinality().hasMany()) {
+						if (smartTypeDefinition.getScope().isBasicType()) {
 							value = smartTypeManager.valueToString(smartTypeDefinition, value);
 						} else {
 							final var adapter = exportAdapters.get(smartTypeDefinition.getJavaClass());
@@ -147,7 +146,7 @@ public final class ExporterUtil {
 		} catch (final Exception e) {
 			// TODO : solution ? => ouvrir pour surcharge de cette gestion
 			value = "Non Exportable";
-			LOGGER.warn("Field " + dtField.getName() + " non exportable", e);
+			LOGGER.warn("Field " + dtField.name() + " non exportable", e);
 		}
 		return value;
 	}
@@ -172,7 +171,7 @@ public final class ExporterUtil {
 			final DtField displayField) {
 		final Map<Object, String> denormIndex = new HashMap<>(valueList.size());
 		for (final DtObject dto : valueList) {
-			final String svalue = smartTypeManager.valueToString(displayField.getSmartTypeDefinition(), displayField.getDataAccessor().getValue(dto));
+			final String svalue = smartTypeManager.valueToString(displayField.smartTypeDefinition(), displayField.getDataAccessor().getValue(dto));
 			denormIndex.put(keyField.getDataAccessor().getValue(dto), svalue);
 		}
 		return denormIndex;

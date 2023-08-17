@@ -32,7 +32,7 @@ import io.vertigo.account.authorization.definitions.Authorization;
 import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.account.authorization.definitions.Role;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 
 /**
@@ -47,18 +47,18 @@ public final class UserAuthorizations implements Serializable {
 	/**
 	 * All authorizations list of this user (global and keyConcept)
 	 */
-	private final Map<String, DefinitionReference<Authorization>> authorizationRefs = new HashMap<>();
+	private final Map<String, DefinitionId<Authorization>> authorizationRefs = new HashMap<>();
 
 	/**
 	 * KeyConcept dependent authorizations list by keyConcept of this user.
 	 */
-	private final Map<DefinitionReference<DtDefinition>, Map<String, DefinitionReference<Authorization>>> authorizationMapRefs = new HashMap<>();
+	private final Map<DefinitionId<DtDefinition>, Map<String, DefinitionId<Authorization>>> authorizationMapRefs = new HashMap<>();
 
 	/**
 	 * Accepted roles for this user.
 	 * Use for asc-compatibility.
 	 */
-	private final Set<DefinitionReference<Role>> roleRefs = new HashSet<>();
+	private final Set<DefinitionId<Role>> roleRefs = new HashSet<>();
 
 	private final Map<String, List<Serializable>> mySecurityKeys = new HashMap<>();
 
@@ -75,7 +75,7 @@ public final class UserAuthorizations implements Serializable {
 	public UserAuthorizations addRole(final Role role) {
 		Assertion.check().isNotNull(role);
 		//-----
-		roleRefs.add(new DefinitionReference<>(role));
+		roleRefs.add(role.id());
 		role.getAuthorizations()
 				.forEach(this::addAuthorization);
 		return this;
@@ -87,7 +87,7 @@ public final class UserAuthorizations implements Serializable {
 	 */
 	public Set<Role> getRoles() {
 		return roleRefs.stream()
-				.map(DefinitionReference::get)
+				.map(DefinitionId::get)
 				.collect(Collectors.toSet());
 	}
 
@@ -98,7 +98,7 @@ public final class UserAuthorizations implements Serializable {
 	public boolean hasRole(final Role role) {
 		Assertion.check().isNotNull(role);
 		//-----
-		return roleRefs.contains(new DefinitionReference<>(role));
+		return roleRefs.contains(role.id());
 	}
 
 	/**
@@ -122,15 +122,14 @@ public final class UserAuthorizations implements Serializable {
 	public UserAuthorizations addAuthorization(final Authorization authorization) {
 		Assertion.check().isNotNull(authorization);
 		//-----
-		final DefinitionReference<Authorization> definitionReference = new DefinitionReference<>(authorization);
+		final DefinitionId<Authorization> definitionReference = authorization.id();
 		if (!authorizationRefs.containsKey(authorization.getName())) {
 			authorizationRefs.put(authorization.getName(), definitionReference);
 			//On ne prend la définition de l'autorisation que si elle est nouvelle, sinon elle a déjà été donnée ou overridée
 		} // else assert authorizationRefs.get(authorization.getName()).get().getOverrides().contains(authorization.getName())
 
 		if (authorization.getEntityDefinition().isPresent()) {
-			final Map<String, DefinitionReference<Authorization>> entityAuthorizationRefs = authorizationMapRefs.computeIfAbsent(new DefinitionReference<>(authorization.getEntityDefinition().get()), key -> new HashMap<>());
-
+			final Map<String, DefinitionId<Authorization>> entityAuthorizationRefs = authorizationMapRefs.computeIfAbsent(authorization.getEntityDefinition().get().id(), key -> new HashMap<>());
 			if (!entityAuthorizationRefs.containsKey(authorization.getName())) {
 				entityAuthorizationRefs.put(authorization.getName(), definitionReference);
 				//On ne prend la définition de l'autorisation que si elle est nouvelle, sinon elle a déjà été donnée ou overridée
@@ -140,8 +139,8 @@ public final class UserAuthorizations implements Serializable {
 					addAuthorization(grantedAuthorization);
 				}
 			}
-			//on ajoute pas vraiment les overrides, car on a juste ajouter un nom d'opération pour la rule de l'authorization actuelle
-			final String authorizationPrefix = Authorization.PREFIX + authorization.getEntityDefinition().get().getLocalName() + '$';
+			//on ajoute pas vraiment les overrides, car on a juste ajouté un nom d'opération pour la rule de l'authorization actuelle
+			final String authorizationPrefix = Authorization.PREFIX + authorization.getEntityDefinition().get().id().shortName() + '$';
 			for (final String overridedAuthorization : authorization.getOverrides()) {
 				authorizationRefs.put(authorizationPrefix + overridedAuthorization, definitionReference);
 				entityAuthorizationRefs.put(authorizationPrefix + overridedAuthorization, definitionReference);
@@ -166,17 +165,17 @@ public final class UserAuthorizations implements Serializable {
 	 * @return Authorizations set
 	 */
 	public Set<Authorization> getEntityAuthorizations(final DtDefinition entityDefinition) {
-		final Map<String, DefinitionReference<Authorization>> entityAuthorizationRefs = authorizationMapRefs.get(new DefinitionReference<>(entityDefinition));
+		final Map<String, DefinitionId<Authorization>> entityAuthorizationRefs = authorizationMapRefs.get(entityDefinition.id());
 		if (entityAuthorizationRefs != null) {
 			return entityAuthorizationRefs.values().stream()
-					.map(DefinitionReference::get)
+					.map(DefinitionId::get)
 					.collect(Collectors.toSet());
 		}
 		return Collections.emptySet();
 	}
 
 	/**
-	 * @param authorizationNamse Authorization
+	 * @param authorizationName Authorization
 	 * @return true if user has this authorization
 	 */
 	public boolean hasAuthorization(final AuthorizationName... authorizationNames) {
@@ -210,6 +209,7 @@ public final class UserAuthorizations implements Serializable {
 	 * Add a security key part of his security perimeter.
 	 * A security key can be multi-valued (then withSecurityKeys is call multiple times).
 	 * Value should be an array if this securityKey is a tree (hierarchical) key.
+	 * Value can be null : but this don't give any authorizations : if it should be authorized it must be explicitly declared in auth config
 	 *
 	 * @param securityKey Name
 	 * @param value Value

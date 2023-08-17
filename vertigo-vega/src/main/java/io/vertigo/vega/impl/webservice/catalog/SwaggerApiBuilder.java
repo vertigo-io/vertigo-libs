@@ -303,10 +303,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		if (includedFields.isEmpty() && excludedFields.isEmpty()) {
 			return "";
 		}
-		final String sb = new StringBuilder()
-				.append("+(").append(includedFields).append(")")
-				.append("-(").append(excludedFields).append(")")
-				.toString();
+		final String sb = "+(" + includedFields + ")" +
+				"-(" + excludedFields + ")";
 		return "$" + sb.hashCode();
 	}
 
@@ -316,14 +314,14 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		final List<String> required = new ArrayList<>(); //mandatory fields
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(objectClass);
 		for (final DtField dtField : dtDefinition.getFields()) {
-			final String fieldName = dtField.getName();
+			final String fieldName = dtField.name();
 			if (isExcludedField(fieldName, includedFields, excludedFields)) {
 				continue;
 			}
 			final Type fieldType = getFieldType(dtField);
 			final Map<String, Object> fieldSchema = createSchemaObject(fieldType, subFilter(fieldName, includedFields), subFilter(fieldName, excludedFields)); //not Nullable
 			fieldSchema.put("title", dtField.getLabel().getDisplay());
-			if (dtField.getCardinality().hasOne()) {
+			if (dtField.cardinality().hasOne()) {
 				required.add(fieldName);
 			}
 			//could add enum on field to specify all values authorized
@@ -336,8 +334,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	private Set<String> subFilter(final String prefix, final Set<String> filterFields) {
 		//for apply sub filter, we just look for sub prefix field
 		return filterFields.stream()
-				.filter((field) -> field.startsWith(prefix + "."))
-				.map((field) -> field.substring(prefix.length() + 1))
+				.filter(field -> field.startsWith(prefix + "."))
+				.map(field -> field.substring(prefix.length() + 1))
 				.collect(Collectors.toSet());
 	}
 
@@ -352,8 +350,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	}
 
 	private static Type getFieldType(final DtField dtField) {
-		final Class<?> dtClass = dtField.getSmartTypeDefinition().getJavaClass();
-		if (dtField.getCardinality().hasMany()) {
+		final Class<?> dtClass = dtField.smartTypeDefinition().getJavaClass();
+		if (dtField.cardinality().hasMany()) {
 			return new CustomParameterizedType(dtField.getTargetJavaClass(), dtClass);
 		}
 		return dtClass;
@@ -483,8 +481,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			final Class<? extends DtObject> paramClass = (Class<? extends DtObject>) webServiceParam.getType();
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(paramClass);
 			for (final DtField dtField : dtDefinition.getFields()) {
-				final String fieldName = dtField.getName();
-				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.getSmartTypeDefinition().getJavaClass())
+				final String fieldName = dtField.name();
+				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.smartTypeDefinition().getJavaClass())
 						.with(webServiceParam.getParamType(), prefix + fieldName)
 						.build());
 			}
@@ -550,6 +548,9 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		} else {
 			final String[] typeAndFormat = toSwaggerType(webServiceParam.getType());
 			parameter.put("type", typeAndFormat[0]);
+			if ("file".equals(typeAndFormat[0])) {
+				parameter.put("in", "formData");
+			}
 			if (typeAndFormat[1] != null) {
 				parameter.put("format", typeAndFormat[1]);
 			}

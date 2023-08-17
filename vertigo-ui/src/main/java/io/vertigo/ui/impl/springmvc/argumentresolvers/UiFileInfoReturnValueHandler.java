@@ -17,7 +17,9 @@
  */
 package io.vertigo.ui.impl.springmvc.argumentresolvers;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -41,7 +43,8 @@ public class UiFileInfoReturnValueHandler extends AbstractMessageConverterMethod
 
 	@Override
 	public boolean supportsReturnType(final MethodParameter returnType) {
-		return UiFileInfo.class.isAssignableFrom(returnType.getParameterType());
+		return UiFileInfo.class.isAssignableFrom(returnType.getParameterType())
+				|| (List.class.isAssignableFrom(returnType.getParameterType()) && UiFileInfo.class.isAssignableFrom(Class.class.cast(((ParameterizedType) returnType.getGenericParameterType()).getActualTypeArguments()[0])));
 	}
 
 	@Override

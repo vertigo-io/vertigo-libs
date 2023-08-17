@@ -19,14 +19,13 @@ package io.vertigo.vega.plugins.webservice.handler.converter;
 
 import java.util.Arrays;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 import io.vertigo.vega.webservice.definitions.WebServiceParam;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public final class VFileJsonConverter implements JsonConverter, JsonSerializer {
 

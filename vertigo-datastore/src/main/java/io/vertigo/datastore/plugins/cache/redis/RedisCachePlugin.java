@@ -174,6 +174,6 @@ public class RedisCachePlugin implements CachePlugin {
 		} else if (key instanceof Long) {
 			return key.toString();
 		}
-		throw new IllegalArgumentException(key.toString() + " is not supported as a key type");
+		throw new IllegalArgumentException(key + " is not supported as a key type");
 	}
 }

@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
@@ -48,7 +48,7 @@ public final class SearchQuery implements Serializable {
 	private final Integer numDaysOfBoostRefDocument;
 	private final Integer mostRecentBoost;
 	private final Optional<FacetedQuery> facetedQuery;
-	private final DefinitionReference<FacetDefinition> clusteringFacetDefinitionRef;
+	private final DefinitionId<FacetDefinition> clusteringFacetDefinitionId;
 
 	/**
 	 * Constructor.
@@ -102,10 +102,14 @@ public final class SearchQuery implements Serializable {
 		dslGeoExpression = geoSearchQuery.map(DslParserUtil::parseGeoExpression);
 
 		this.securityListFilter = securityListFilter;
-		boostedDocumentDateFieldName = boostedDocumentDateField != null ? boostedDocumentDateField.getName() : null;
+		boostedDocumentDateFieldName = boostedDocumentDateField != null
+				? boostedDocumentDateField.name()
+				: null;
 		this.numDaysOfBoostRefDocument = numDaysOfBoostRefDocument;
 		this.mostRecentBoost = mostRecentBoost;
-		clusteringFacetDefinitionRef = clusteringFacetDefinition != null ? new DefinitionReference<>(clusteringFacetDefinition) : null;
+		clusteringFacetDefinitionId = clusteringFacetDefinition != null
+				? clusteringFacetDefinition.id()
+				: null;
 	}
 
 	/**
@@ -165,7 +169,7 @@ public final class SearchQuery implements Serializable {
 	 * @return si le clustering est activé
 	 */
 	public boolean isClusteringFacet() {
-		return clusteringFacetDefinitionRef != null;
+		return clusteringFacetDefinitionId != null;
 	}
 
 	/**
@@ -174,7 +178,7 @@ public final class SearchQuery implements Serializable {
 	public FacetDefinition getClusteringFacetDefinition() {
 		Assertion.check().isTrue(isClusteringFacet(), "Le clustering des documents par facette n'est pas activé sur cette recherche");
 		//-----
-		return clusteringFacetDefinitionRef.get();
+		return clusteringFacetDefinitionId.get();
 	}
 
 	/**

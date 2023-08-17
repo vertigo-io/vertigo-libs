@@ -42,9 +42,9 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.thymeleaf.spring5.SpringTemplateEngine;
-import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
-import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
+import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 
 import io.vertigo.connectors.spring.EnableVertigoSpringBridge;
 import io.vertigo.ui.controllers.ListAutocompleteController;
@@ -53,6 +53,7 @@ import io.vertigo.ui.impl.springmvc.argumentresolvers.FileInfoURIConverter;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.FileInfoURIConverterValueHandler;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.UiFileInfoReturnValueHandler;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.UiMessageStackMethodArgumentResolver;
+import io.vertigo.ui.impl.springmvc.argumentresolvers.UserSessionMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.VFileMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.VFileReturnValueHandler;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttributeMethodArgumentResolver;
@@ -62,6 +63,7 @@ import io.vertigo.ui.impl.springmvc.config.interceptors.VAnnotationHandlerInterc
 import io.vertigo.ui.impl.springmvc.config.interceptors.VControllerInterceptorEngine;
 import io.vertigo.ui.impl.springmvc.config.interceptors.VSpringMvcViewContextInterceptor;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
+import io.vertigo.ui.impl.springmvc.controller.VSpringMvcExceptionHandler;
 import io.vertigo.ui.impl.thymeleaf.VUiStandardDialect;
 import io.vertigo.ui.impl.thymeleaf.components.NamedComponentDefinition;
 import io.vertigo.ui.impl.thymeleaf.components.NamedComponentParser;
@@ -154,24 +156,30 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 
 	private Set<NamedComponentDefinition> getUiComponents(final VuiResourceTemplateResolver componentResolvers, final VuiResourceTemplateResolver customComponentResolvers) {
 		final NamedComponentParser parser = new NamedComponentParser("vu", componentResolvers);
-		final NamedComponentParser parserCustom = new NamedComponentParser("vu", customComponentResolvers);
 
-		final Set<NamedComponentDefinition> standardUiComponents = new HashSet<>();
+		final Set<NamedComponentDefinition> uiComponents = new HashSet<>();
 		//standard components
 		for (final String componentName : STANDARD_UI_COMPONENTS_NAME) {
-			standardUiComponents.addAll(parser.parseComponent(componentName));
+			uiComponents.addAll(parser.parseComponent(componentName));
 		}
-		// custom compenents
+		// custom components
+		final NamedComponentParser customParser = new NamedComponentParser("vu", customComponentResolvers);
 		for (final String componentName : getCustomComponentNames()) {
-			standardUiComponents.addAll(parserCustom.parseComponent(componentName));
+			uiComponents.addAll(customParser.parseComponent(componentName));
 		}
-		return standardUiComponents;
+		return uiComponents;
 	}
 
 	protected Set<String> getCustomComponentNames() {
 		return Collections.emptySet();
 	}
 
+	/**
+	 * Define prefix for custom components.
+	 * Should be the module name : don't starts with /, ends with /
+	 * Components must be put in : prefix+"/components/"+componentName
+	 * @return path prefix for custom components
+	 */
 	protected String getCustomComponentsPathPrefix() {
 		return COMPONENT_PATH_PREFIX;
 	}
@@ -207,6 +215,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		resolvers.add(new ViewAttributeMethodArgumentResolver());
 		resolvers.add(new ViewContextReturnValueAndArgumentResolver());
 		resolvers.add(new UiMessageStackMethodArgumentResolver());
+		resolvers.add(new UserSessionMethodArgumentResolver());
 		resolvers.add(new DtListStateMethodArgumentResolver());
 		resolvers.add(new VFileMethodArgumentResolver());
 		resolvers.add(new FileInfoURIConverterValueHandler());
@@ -225,6 +234,8 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		if (applicationContext instanceof ConfigurableApplicationContext) {
 			final VSpringMvcControllerAdvice controllerAdvice = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(VSpringMvcControllerAdvice.class);
 			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("viewContextControllerAdvice", controllerAdvice);
+			final VSpringMvcExceptionHandler vExceptionHandler = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(VSpringMvcExceptionHandler.class);
+			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("vExceptionHandler", vExceptionHandler);
 			final ListAutocompleteController listAutocompleteController = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(ListAutocompleteController.class);
 			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("listAutocompleteController", listAutocompleteController);
 		}

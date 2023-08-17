@@ -21,18 +21,9 @@ import java.lang.reflect.Type;
 
 import io.vertigo.core.lang.Assertion;
 
-public final class CommandParam {
+public record CommandParam(Type type) {
 
-	private final Type paramType;
-
-	public CommandParam(final Type paramType) {
-		Assertion.check().isNotNull(paramType);
-		//---
-		this.paramType = paramType;
+	public CommandParam {
+		Assertion.check().isNotNull(type);
 	}
-
-	public Type getType() {
-		return paramType;
-	}
-
 }

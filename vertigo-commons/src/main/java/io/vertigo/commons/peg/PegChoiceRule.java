@@ -91,7 +91,7 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 		throw keepBestUncompleteRule(new PegNoMatchFoundException(text, start, null, "No rule found when evalutating  FirstOf : '{0}'", getExpression()), best);
 	}
 
-	private PegNoMatchFoundException keepBestUncompleteRule(final PegNoMatchFoundException first, final PegNoMatchFoundException otherNullable) {
+	private static PegNoMatchFoundException keepBestUncompleteRule(final PegNoMatchFoundException first, final PegNoMatchFoundException otherNullable) {
 		Assertion.check().isNotNull(first);
 		//----
 		if (otherNullable == null || otherNullable.getIndex() < first.getIndex()) {

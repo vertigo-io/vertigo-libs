@@ -9,46 +9,47 @@
         <q-menu :breakpoint="600" fit ref="menu">
             <q-tree :nodes="convertListToTree($props.list, $props.subTreeKey)" 
                     :node-key="$props.keyField" :label-key="$props.labelField" 
-                    :expanded.sync="expandedNodes"
+                    v-model:expanded="expandedNodes"
                     @update:expanded="handleExpanded" 
-                    :selected.sync="selectedNode" 
+                    v-model:selected="selectedNode" 
                     @update:selected="handleSelected" >
             </q-tree>
         </q-menu>
     </q-field>
 </template>
 <script>
-import Quasar from "quasar"
+import * as Quasar from "quasar"
 
 export default {
 	props : {
-		value:			{ type: String, required: true},
+		modelValue:			{ type: String, required: true},
 		list:          	{ type: Array,  required: true },
 		keyField:     	{ type: String,  required: true },
 		labelField:  	{ type: String,  required: true },
 		parentKeyField: { type: String,  required: true },
 		subTreeKey: 	{ type: String,  required: false },
 	},
+	emits: ["update:modelValue"],
 	data: function () {
 		return {
-			selectedNode: this.$props.value,
-			expandedNodes: [this.$props.value]
+			selectedNode: this.$props.modelValue,
+			expandedNodes: [this.$props.modelValue]
 		}
 	},
 	watch: { 
-          value: function(newVal) {
+          modelValue: function(newVal) {
               this.$data.selectedNode = newVal;
           }
     },
 	methods: {
 		handleSelected: function(target) {
-			this.$emit('input', this.$data.selectedNode);
+			this.$emit('update:modelValue', this.$data.selectedNode);
 			if (target) {
 				this.$refs.menu.hide()
 			}
 		},
 		handleExpanded: function() {
-			Quasar.utils.debounce(this.$refs.menu.updatePosition, 500)();
+			Quasar.debounce(this.$refs.menu.updatePosition, 500)();
 		},
 		getSelectedLabel: function() {
 			if (this.$data.selectedNode) {
@@ -61,24 +62,24 @@ export default {
 			return null;
 		},
 		convertListToTree: function (list, subTreeKey) {
-			var map = {}, node, roots = [], i;
+			var map = {}, node, roots = [], i, newList = [];
 			for (i = 0; i < list.length; i += 1) {
 				map[list[i][this.$props.keyField]] = i; // initialize the map
-				list[i].children = []; // initialize the children
+				newList.push({...list[i], children : []}); // initialize the newList with children
 			}
 		
 			for (i = 0; i < list.length; i += 1) {
-				node = list[i];
+				node = newList[i];
 				if (node[this.$props.parentKeyField]) {
 					// if you have dangling branches check that map[node.parentId] exists
-					list[map[node[this.$props.parentKeyField]]].children.push(node);
+					newList[map[node[this.$props.parentKeyField]]].children.push(node);
 				} else {
 					roots.push(node);
 				}
 			}
 			
 			if (subTreeKey) {
-				return [list[map[subTreeKey]]];
+				return [newList[map[subTreeKey]]];
 			}
 			
 			return roots;

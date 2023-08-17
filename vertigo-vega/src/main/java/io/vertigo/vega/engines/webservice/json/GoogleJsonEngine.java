@@ -22,13 +22,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,8 +35,6 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -61,11 +53,10 @@ import com.google.gson.reflect.TypeToken;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.BasicTypeAdapter;
-import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.lang.json.CoreJsonAdapters;
 import io.vertigo.core.node.component.Activeable;
-import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
@@ -251,153 +242,6 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		return new KnownParameterizedType(rawClass, typeArguments);
 	}
 
-	private static final class JsonExclusionStrategy implements ExclusionStrategy {
-		/** {@inheritDoc} */
-		@Override
-		public boolean shouldSkipField(final FieldAttributes arg0) {
-			return arg0.getAnnotation(JsonExclude.class) != null;
-		}
-
-		@Override
-		public boolean shouldSkipClass(final Class<?> arg0) {
-			return false;
-		}
-	}
-
-	private static final class ClassJsonSerializer implements JsonSerializer<Class> {
-		/** {@inheritDoc} */
-		@Override
-		public JsonElement serialize(final Class src, final Type typeOfSrc, final JsonSerializationContext context) {
-			return new JsonPrimitive(src.getName());
-		}
-	}
-
-	private static final class OptionJsonSerializer implements JsonSerializer<Optional> {
-		/** {@inheritDoc} */
-		@Override
-		public JsonElement serialize(final Optional src, final Type typeOfSrc, final JsonSerializationContext context) {
-			if (src.isPresent()) {
-				return context.serialize(src.get());
-			}
-			return null; //rien
-		}
-	}
-
-	private final class DtObjectJsonAdapter<D extends DtObject> implements JsonSerializer<D>, JsonDeserializer<D> {
-
-		/** {@inheritDoc} */
-		@Override
-		public JsonElement serialize(final D src, final Type typeOfSrc, final JsonSerializationContext context) {
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(src.getClass());
-			final JsonObject jsonObject = new JsonObject();
-
-			dtDefinition.getFields()
-					.stream()
-					.filter(dtField -> dtField.getType() != FieldType.COMPUTED)// we don't serialize computed fields
-					.forEach(field -> {
-						jsonObject.add(field.getName(), context.serialize(field.getDataAccessor().getValue(src)));
-					});
-
-			Stream.of(src.getClass().getDeclaredFields())
-					.filter(field -> VAccessor.class.isAssignableFrom(field.getType()))
-					.map(field -> getAccessor(field, src))
-					.filter(VAccessor::isLoaded)
-					.forEach(accessor -> {
-						jsonObject.add(accessor.getRole(), context.serialize(accessor.get()));
-					});
-
-			Stream.of(src.getClass().getDeclaredFields())
-					.filter(field -> ListVAccessor.class.isAssignableFrom(field.getType()))
-					.map(field -> getListAccessor(field, src))
-					.filter(ListVAccessor::isLoaded)
-					.forEach(accessor -> {
-						jsonObject.add(StringUtil.first2LowerCase(accessor.getRole()), context.serialize(accessor.get()));
-					});
-			return jsonObject;
-
-		}
-
-		@Override
-		public D deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition((Class<D>) typeOfT);
-
-			// we use as base the default deserialization
-			final D dtObject = (D) gson.getDelegateAdapter(null, TypeToken.get(typeOfT)).fromJsonTree(json);
-			final JsonObject jsonObject = json.getAsJsonObject();
-
-			//for now Many relationships (represented by ListVAccessor) are readonly so we don't handle them at deserialization
-
-			// case of the lazy objet passed
-			Stream.of(((Class<D>) typeOfT).getDeclaredFields())
-					.filter(field -> VAccessor.class.isAssignableFrom(field.getType()))
-					.map(field -> Tuple.of(field, getAccessor(field, dtObject)))
-					.filter(tuple -> jsonObject.has(tuple.getVal2().getRole()))
-					.forEach(tuple -> tuple.getVal2().set(context.deserialize(jsonObject.get(tuple.getVal2().getRole()), ClassUtil.getGeneric(tuple.getVal1()))));
-
-			// case of the fk we need to handle after because it's the primary information
-			dtDefinition.getFields()
-					.stream()
-					.filter(field -> field.getType() == FieldType.FOREIGN_KEY)
-					.forEach(field -> field.getDataAccessor()
-							.setValue(
-									dtObject,
-									context.deserialize(jsonObject.get(field.getName()), field.getSmartTypeDefinition().getJavaClass())));
-
-			return dtObject;
-
-		}
-
-	}
-
-	private static VAccessor getAccessor(final Field field, final Object object) {
-		try {
-			field.setAccessible(true);
-			return (VAccessor) field.get(object);
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			throw WrappedException.wrap(e);
-		}
-	}
-
-	private static ListVAccessor getListAccessor(final Field field, final Object object) {
-		try {
-			field.setAccessible(true);
-			return (ListVAccessor) field.get(object);
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			throw WrappedException.wrap(e);
-		}
-	}
-
-	private static final class DefinitionReferenceJsonSerializer implements JsonSerializer<DefinitionReference> {
-		/** {@inheritDoc} */
-		@Override
-		public JsonElement serialize(final DefinitionReference src, final Type typeOfSrc, final JsonSerializationContext context) {
-			return context.serialize(src.get().getName());
-		}
-	}
-
-	private static final class MapJsonSerializer implements JsonSerializer<Map> {
-		/** {@inheritDoc} */
-		@Override
-		public JsonElement serialize(final Map src, final Type typeOfSrc, final JsonSerializationContext context) {
-			if (src.isEmpty()) {
-				return null;
-			}
-			return context.serialize(src);
-		}
-	}
-
-	private static final class ListJsonSerializer implements JsonSerializer<List> {
-
-		/** {@inheritDoc} */
-		@Override
-		public JsonElement serialize(final List src, final Type typeOfSrc, final JsonSerializationContext context) {
-			if (src.isEmpty()) {
-				return null;
-			}
-			return context.serialize(src);
-		}
-	}
-
 	private final class URIJsonAdapter implements JsonSerializer<UID>, JsonDeserializer<UID> {
 
 		/** {@inheritDoc} */
@@ -420,7 +264,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 				final DtDefinition entityDefinition = DtObjectUtil.findDtDefinition(entityClass);
 				Object entityId;
 				try {
-					entityId = smartTypeManager.stringToValue(entityDefinition.getIdField().get().getSmartTypeDefinition(), uidJsonValue);
+					entityId = smartTypeManager.stringToValue(entityDefinition.getIdField().get().smartTypeDefinition(), uidJsonValue);
 				} catch (final FormatterException e) {
 					throw new JsonParseException("Unsupported UID format " + uidJsonValue, e);
 				}
@@ -430,77 +274,81 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		}
 	}
 
-	private static class UTCDateAdapter implements JsonSerializer<Date>, JsonDeserializer<Date> {
+	private final class DtObjectJsonAdapter<D extends DtObject> implements JsonSerializer<D>, JsonDeserializer<D> {
 
 		/** {@inheritDoc} */
 		@Override
-		public JsonElement serialize(final Date date, final Type type, final JsonSerializationContext jsonSerializationContext) {
-			//Use INPUT_DATE_FORMATS[0] => ISO8601 format
-			return new JsonPrimitive(UTCDateUtil.format(date));
+		public JsonElement serialize(final D src, final Type typeOfSrc, final JsonSerializationContext context) {
+			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(src.getClass());
+			final JsonObject jsonObject = new JsonObject();
+
+			dtDefinition.getFields()
+					.stream()
+					.filter(dtField -> dtField.getType() != FieldType.COMPUTED)// we don't serialize computed fields
+					.forEach(field -> jsonObject.add(field.name(), context.serialize(field.getDataAccessor().getValue(src))));
+
+			Stream.of(src.getClass().getDeclaredFields())
+					.filter(field -> VAccessor.class.isAssignableFrom(field.getType()))
+					.map(field -> getAccessor(field, src))
+					.filter(VAccessor::isLoaded)
+					.forEach(accessor -> jsonObject.add(accessor.getRole(), context.serialize(accessor.get())));
+
+			Stream.of(src.getClass().getDeclaredFields())
+					.filter(field -> ListVAccessor.class.isAssignableFrom(field.getType()))
+					.map(field -> getListAccessor(field, src))
+					.filter(ListVAccessor::isLoaded)
+					.forEach(accessor -> jsonObject.add(StringUtil.first2LowerCase(accessor.getRole()), context.serialize(accessor.get())));
+			return jsonObject;
+
 		}
 
-		/** {@inheritDoc} */
 		@Override
-		public Date deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
-			return UTCDateUtil.parse(jsonElement.getAsString());
+		public D deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
+			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition((Class<D>) typeOfT);
+
+			// we use as base the default deserialization
+			final D dtObject = (D) gson.getDelegateAdapter(null, TypeToken.get(typeOfT)).fromJsonTree(json);
+			final JsonObject jsonObject = json.getAsJsonObject();
+
+			//for now Many relationships (represented by ListVAccessor) are readonly so we don't handle them at deserialization
+
+			// case of the lazy objet passed
+			Stream.of(((Class<D>) typeOfT).getDeclaredFields())
+					.filter(field -> VAccessor.class.isAssignableFrom(field.getType()))
+					.map(field -> Tuple.of(field, getAccessor(field, dtObject)))
+					.filter(tuple -> jsonObject.has(tuple.val2().getRole()))
+					.forEach(tuple -> tuple.val2().set(context.deserialize(jsonObject.get(tuple.val2().getRole()), ClassUtil.getGeneric(tuple.val1()))));
+
+			// case of the fk we need to handle after because it's the primary information
+			dtDefinition.getFields()
+					.stream()
+					.filter(field -> field.getType() == FieldType.FOREIGN_KEY)
+					.forEach(field -> field.getDataAccessor()
+							.setValue(
+									dtObject,
+									context.deserialize(jsonObject.get(field.name()), field.smartTypeDefinition().getJavaClass())));
+
+			return dtObject;
+
+		}
+
+	}
+
+	private static VAccessor getAccessor(final Field field, final Object object) {
+		try {
+			field.setAccessible(true);
+			return (VAccessor) field.get(object);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			throw WrappedException.wrap(e);
 		}
 	}
 
-	private static class LocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
-
-		/** {@inheritDoc} */
-		@Override
-		public JsonElement serialize(final LocalDate date, final Type typeOfSrc, final JsonSerializationContext context) {
-			return new JsonPrimitive(date.format(DateTimeFormatter.ISO_LOCAL_DATE)); // "yyyy-mm-dd"
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public LocalDate deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
-			return LocalDate.parse(jsonElement.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE);
-		}
-	}
-
-	private static class ZonedDateTimeAdapter implements JsonSerializer<ZonedDateTime>, JsonDeserializer<ZonedDateTime> {
-
-		/** {@inheritDoc} */
-		@Override
-		public JsonElement serialize(final ZonedDateTime date, final Type typeOfSrc, final JsonSerializationContext context) {
-			return new JsonPrimitive(date.format(DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.of("UTC")))); // "yyyy-mm-ddTHH:MI:SSZ"
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public ZonedDateTime deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
-			return ZonedDateTime.parse(jsonElement.getAsString(), DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.of("UTC")));
-		}
-	}
-
-	private static class InstantAdapter implements JsonSerializer<Instant>, JsonDeserializer<Instant> {
-
-		/** {@inheritDoc} */
-		@Override
-		public JsonElement serialize(final Instant date, final Type typeOfSrc, final JsonSerializationContext context) {
-			return new JsonPrimitive(UTCDateUtil.formatInstant(date)); // "yyyy-mm-ddTHH:MI:SSZ"
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public Instant deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
-			return UTCDateUtil.parseInstant(jsonElement.getAsString());
-		}
-	}
-
-	private static class EmptyStringAsNull implements JsonDeserializer<String> {
-
-		/** {@inheritDoc} */
-		@Override
-		public String deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
-			final String value = jsonElement.getAsString();
-			if (value != null && value.isEmpty()) {
-				return null;
-			}
-			return value;
+	private static ListVAccessor getListAccessor(final Field field, final Object object) {
+		try {
+			field.setAccessible(true);
+			return (ListVAccessor) field.get(object);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			throw WrappedException.wrap(e);
 		}
 	}
 
@@ -543,31 +391,17 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 					.setPrettyPrinting()
 					//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 					.registerTypeHierarchyAdapter(DtObject.class, new DtObjectJsonAdapter())
-					.registerTypeAdapter(Date.class, new UTCDateAdapter())
-					.registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-					.registerTypeAdapter(ZonedDateTime.class, new ZonedDateTimeAdapter())
-					.registerTypeAdapter(Instant.class, new InstantAdapter())
-					.registerTypeAdapter(String.class, new EmptyStringAsNull())// add "" <=> null
 					.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
 					.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
 					.registerTypeHierarchyAdapter(UiList.class, new UiListDeserializer<>())
 					.registerTypeAdapter(DtList.class, new DtListDeserializer<>())
 					.registerTypeAdapter(DtListState.class, new DtListStateDeserializer())
 					.registerTypeAdapter(FacetedQueryResult.class, searchApiVersion.getJsonSerializerClass().newInstance())
-					.registerTypeAdapter(SelectedFacetValues.class, new SelectedFacetValuesDeserializer());
+					.registerTypeAdapter(SelectedFacetValues.class, new SelectedFacetValuesDeserializer())
+					.registerTypeAdapter(UID.class, new URIJsonAdapter());
 
-			if (!serializeNulls) {
-				gsonBuilder
-						.registerTypeAdapter(List.class, new ListJsonSerializer())
-						.registerTypeAdapter(Map.class, new MapJsonSerializer());
-			}
+			CoreJsonAdapters.addCoreGsonConfig(gsonBuilder, serializeNulls);
 
-			gsonBuilder
-					.registerTypeAdapter(DefinitionReference.class, new DefinitionReferenceJsonSerializer())
-					.registerTypeAdapter(Optional.class, new OptionJsonSerializer())
-					.registerTypeAdapter(Class.class, new ClassJsonSerializer())
-					.registerTypeAdapter(UID.class, new URIJsonAdapter())
-					.addSerializationExclusionStrategy(new JsonExclusionStrategy());
 			return gsonBuilder.create();
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw WrappedException.wrap(e, "Can't create Gson");
@@ -594,8 +428,8 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		final Set<String> includedFields;
 		final Set<String> excludedFields;
 		if (firstLevel != null) { //Sonar préfère à contains
-			includedFields = filteredSubFields.get(FIRST_LEVEL_KEY).getVal1();
-			excludedFields = filteredSubFields.get(FIRST_LEVEL_KEY).getVal2();
+			includedFields = filteredSubFields.get(FIRST_LEVEL_KEY).val1();
+			excludedFields = filteredSubFields.get(FIRST_LEVEL_KEY).val2();
 		} else {
 			includedFields = Collections.emptySet();
 			excludedFields = Collections.emptySet();
@@ -620,7 +454,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 
 		for (final Map.Entry<String, Tuple<Set<String>, Set<String>>> filteredField : filteredSubFields.entrySet()) {
 			if (filteredField.getValue() != null) {
-				filterFields(jsonObject.get(filteredField.getKey()), filteredField.getValue().getVal1(), filteredField.getValue().getVal2());
+				filterFields(jsonObject.get(filteredField.getKey()), filteredField.getValue().val1(), filteredField.getValue().val2());
 			}
 		}
 	}
@@ -630,8 +464,8 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			return Collections.emptyMap();
 		}
 		final Map<String, Tuple<Set<String>, Set<String>>> subFields = new HashMap<>();
-		parseSubFieldName(includedFields, subFields, Tuple::getVal1);
-		parseSubFieldName(excludedFields, subFields, Tuple::getVal2);
+		parseSubFieldName(includedFields, subFields, Tuple::val1);
+		parseSubFieldName(excludedFields, subFields, Tuple::val2);
 		return subFields;
 	}
 

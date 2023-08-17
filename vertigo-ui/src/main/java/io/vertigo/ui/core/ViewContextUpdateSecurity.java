@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.account.authorization.VSecurityException;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 
 /**
  * Keep the viewContext updatable data allowed.
@@ -64,13 +64,13 @@ public final class ViewContextUpdateSecurity implements Serializable {
 		final String row = splitObject[SPLIT_ROW_INDEX];
 
 		if (checkUpdates && !isAllowedField(objectKey, row, fieldName)) {
-			throw new VSecurityException(MessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, object + "." + fieldName));
+			throw new VSecurityException(LocaleMessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, object + "." + fieldName));
 		}
 	}
 
 	public void assertIsUpdatable(final String object) {
 		if (checkUpdates && !updatablesKeys.containsKey(object)) {
-			throw new VSecurityException(MessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, object));
+			throw new VSecurityException(LocaleMessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, object));
 		}
 	}
 
@@ -122,7 +122,7 @@ public final class ViewContextUpdateSecurity implements Serializable {
 				.filter(n -> !isAllowedField(n))
 				.findFirst(); //faster than findFirst
 		if (firstDisallowedField.isPresent()) {
-			throw new VSecurityException(MessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, firstDisallowedField.orElse("<<not found>>")));
+			throw new VSecurityException(LocaleMessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, firstDisallowedField.orElse("<<not found>>")));
 		}
 	}
 

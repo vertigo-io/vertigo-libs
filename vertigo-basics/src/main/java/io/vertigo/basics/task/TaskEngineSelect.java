@@ -62,7 +62,6 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 	 * Constructor.
 	 * @param scriptManager scriptManager
 	 * @param transactionManager transactionManager
-	 * @param entityStoreManager storeManager
 	 * @param sqlManager sqlDataBaseManager
 	 */
 	@Inject
@@ -89,24 +88,24 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 			final SqlConnection connection) throws SQLException {
 		final TaskAttribute outAttribute = getOutTaskAttribute();
 		final List<?> result;
-		final Integer limit = outAttribute.getCardinality().hasMany() ? null : 1;
-		result = getDataBaseManager().executeQuery(sqlStatement, outAttribute.getSmartTypeDefinition().getJavaClass(), getModelManager().getTypeAdapters("sql"), limit, connection);
-		switch (outAttribute.getSmartTypeDefinition().getScope()) {
-			case DATA_OBJECT:
-				if (outAttribute.getCardinality().hasMany()) {
+		final Integer limit = outAttribute.cardinality().hasMany() ? null : 1;
+		result = getSqlManager().executeQuery(sqlStatement, outAttribute.smartTypeDefinition().getJavaClass(), getSmartTypeManager().getTypeAdapters("sql"), limit, connection);
+		switch (outAttribute.smartTypeDefinition().getScope()) {
+			case DATA_TYPE:
+				if (outAttribute.cardinality().hasMany()) {
 					final DtList<?> dtList = (DtList<?>) result
 							.stream()
 							.map(DtObject.class::cast)
-							.collect(VCollectors.toDtList(outAttribute.getSmartTypeDefinition().getJavaClass()));
+							.collect(VCollectors.toDtList(outAttribute.smartTypeDefinition().getJavaClass()));
 					setResult(dtList);
 				} else {
 					Assertion.check().isTrue(result.size() <= 1, "Limit exceeded");
 					setResult(result.isEmpty() ? null : result.get(0));
 				}
 				break;
-			case PRIMITIVE:
-			case VALUE_OBJECT:
-				if (outAttribute.getCardinality().hasMany()) {
+			case BASIC_TYPE:
+			case VALUE_TYPE:
+				if (outAttribute.cardinality().hasMany()) {
 					setResult(result);
 				} else {
 					Assertion.check().isTrue(result.size() <= 1, "Limit exceeded");

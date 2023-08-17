@@ -49,7 +49,6 @@ public final class CSVExporterPlugin implements ExporterPlugin {
 	/**
 	 * Constructor.
 	 *
-	 * @param storeManager the storeManager
 	 * @param codecManager the codecmanager
 	 */
 	@Inject

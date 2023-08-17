@@ -107,7 +107,7 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 	@Override
 	public void start() {
 		disposable = web3j.transactionFlowable()
-				.filter(tx -> tx.getTo().equals(myWalletAddress.getPublicAddress()))
+				.filter(tx -> tx.getTo().equals(myWalletAddress.publicAddress()))
 				.map(EthereumLedgerPlugin::convertTransactionToLedgerTransaction)
 				.subscribe(ledgerTransaction -> eventBusManager.post(new LedgerTransactionEvent(ledgerTransaction)));
 		LOGGER.info("Getting new messages sent to {}.", myWalletAddress);
@@ -129,7 +129,7 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 		//---
 		final EthGetBalance balance;
 		try {
-			balance = web3j.ethGetBalance(ledgerAddress.getPublicAddress(), DefaultBlockParameterName.LATEST).sendAsync().get();
+			balance = web3j.ethGetBalance(ledgerAddress.publicAddress(), DefaultBlockParameterName.LATEST).sendAsync().get();
 		} catch (InterruptedException | ExecutionException e) {
 			throw WrappedException.wrap(e);
 		}
@@ -153,7 +153,7 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 				.isNotNull(priority);
 		//---
 		try {
-			final TransactionReceipt transactionReceipt = EthereumTransfer.sendFunds(web3j, credentials, ledgerAddress.getPublicAddress(),
+			final TransactionReceipt transactionReceipt = EthereumTransfer.sendFunds(web3j, credentials, ledgerAddress.publicAddress(),
 					BigDecimal.valueOf(0), Convert.Unit.WEI, data, priority)
 					.send();
 

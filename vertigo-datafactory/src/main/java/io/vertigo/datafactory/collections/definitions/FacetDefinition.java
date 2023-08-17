@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datafactory.collections.model.FacetValue;
@@ -51,10 +51,10 @@ import io.vertigo.datamodel.structure.definitions.DtField;
  * @author pchretien
  */
 @DefinitionPrefix(FacetDefinition.PREFIX)
-public final class FacetDefinition extends AbstractDefinition {
+public final class FacetDefinition extends AbstractDefinition<FacetDefinition> {
 	public static final String PREFIX = "Fct";
 	private final DtField dtField;
-	private final MessageText label;
+	private final LocaleMessageText label;
 	private final List<FacetValue> facetValues;
 	private final Map<String, String> customFacetParams;
 	private final boolean rangeFacet;
@@ -86,7 +86,7 @@ public final class FacetDefinition extends AbstractDefinition {
 	private FacetDefinition(
 			final String name,
 			final DtField dtField,
-			final MessageText label,
+			final LocaleMessageText label,
 			final List<FacetValue> facetValues,
 			final Map<String, String> customFacetParams,
 			final boolean rangeFacet,
@@ -133,7 +133,7 @@ public final class FacetDefinition extends AbstractDefinition {
 	public static FacetDefinition createFacetDefinitionByRange(
 			final String name,
 			final DtField dtField,
-			final MessageText label,
+			final LocaleMessageText label,
 			final List<FacetValue> facetValues,
 			final boolean multiSelectable,
 			final FacetOrder order) {
@@ -153,7 +153,7 @@ public final class FacetDefinition extends AbstractDefinition {
 	public static FacetDefinition createFacetDefinitionByTerm(
 			final String name,
 			final DtField dtField,
-			final MessageText label,
+			final LocaleMessageText label,
 			final boolean multiSelectable,
 			final FacetOrder order) {
 		return new FacetDefinition(name, dtField, label, Collections.emptyList(), Collections.emptyMap(), false, multiSelectable, order);
@@ -172,7 +172,7 @@ public final class FacetDefinition extends AbstractDefinition {
 	public static FacetDefinition createCustomFacetDefinition(
 			final String name,
 			final DtField dtField,
-			final MessageText label,
+			final LocaleMessageText label,
 			final Map<String, String> customParams,
 			final FacetOrder order) {
 		return new FacetDefinition(name, dtField, label, Collections.emptyList(), customParams, false, false, order);
@@ -181,7 +181,7 @@ public final class FacetDefinition extends AbstractDefinition {
 	/**
 	 * @return the label of the facet
 	 */
-	public MessageText getLabel() {
+	public LocaleMessageText getLabel() {
 		return label;
 	}
 

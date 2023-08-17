@@ -19,34 +19,9 @@ package io.vertigo.datamodel.smarttype;
 
 import io.vertigo.datamodel.structure.definitions.Constraint;
 
-public class ConstraintConfig {
-
-	private final Class<? extends Constraint> clazz;
-	private final String arg;
-	private final String msg;
-	private final String resourceMsg;
-
-	public ConstraintConfig(final Class<? extends Constraint> clazz, final String arg, final String msg, final String resourceMsg) {
-		this.clazz = clazz;
-		this.arg = arg;
-		this.msg = msg;
-		this.resourceMsg = resourceMsg;
-	}
-
-	public Class<? extends Constraint> getConstraintClass() {
-		return clazz;
-	}
-
-	public String getArg() {
-		return arg;
-	}
-
-	public String getMsg() {
-		return msg;
-	}
-
-	public String getResourceMsg() {
-		return resourceMsg;
-	}
-
+public record ConstraintConfig(
+		Class<? extends Constraint> constraintClass,
+		String arg,
+		String msg,
+		String resourceMsg) {
 }

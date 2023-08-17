@@ -106,12 +106,33 @@ public class DAO<E extends Entity, P> {
 	}
 
 	/**
+	 * Creates a list of objects (performance optimized).
+	 * You should take care of supplying a reasonable chunk size (max 5 000)
+	 *
+	 * @param entities the list of objets to create
+	 * @return the created entity
+	 */
+	public final DtList<E> createList(final DtList<E> entities) {
+		return entityStoreManager.createList(entities);
+	}
+
+	/**
 	 * Update an object.
 	 *
 	 * @param entity Object to update
 	 */
 	public final void update(final E entity) {
 		entityStoreManager.update(entity);
+	}
+
+	/**
+	 * Updates a list of objects (performance optimized).
+	 * You should take care of supplying a reasonable chunk size (max 5 000)
+	 *
+	 * @param entities the list of objets to update
+	 */
+	public final void updateList(final DtList<E> entities) {
+		entityStoreManager.updateList(entities);
 	}
 
 	/**
@@ -129,9 +150,9 @@ public class DAO<E extends Entity, P> {
 		final E dto = get(entityId);
 		for (final DtField fragmentField : fragmentDefinition.getFields()) {
 			//On vérifie la présence du champ dans l'Entity (il peut s'agir d'un champ non persistent d'UI
-			if (entityFields.containsKey(fragmentField.getName())) {
+			if (entityFields.containsKey(fragmentField.name())) {
 				final DataAccessor fragmentDataAccessor = fragmentField.getDataAccessor();
-				final DataAccessor entityDataAccessor = entityFields.get(fragmentField.getName()).getDataAccessor();
+				final DataAccessor entityDataAccessor = entityFields.get(fragmentField.name()).getDataAccessor();
 				entityDataAccessor.setValue(dto, fragmentDataAccessor.getValue(fragment));
 			}
 		}
@@ -141,7 +162,7 @@ public class DAO<E extends Entity, P> {
 	private static Map<String, DtField> indexFields(final List<DtField> fields) {
 		return fields
 				.stream()
-				.collect(Collectors.toMap(DtField::getName, Function.identity()));
+				.collect(Collectors.toMap(DtField::name, Function.identity()));
 	}
 
 	/**
@@ -238,16 +259,7 @@ public class DAO<E extends Entity, P> {
 		// Verification de la valeur est du type du champ
 		final DtDefinition dtDefinition = getDtDefinition();
 		final DtField dtField = dtDefinition.getField(dtFieldName.name());
-		if (dtField.getCardinality().hasMany()) {
-			if (!(value instanceof List)) {
-				throw new ClassCastException("Value " + value + " must be a list");
-			}
-			for (final Object element : List.class.cast(value)) {
-				smartTypeManager.checkValue(dtField.getSmartTypeDefinition(), element);
-			}
-		} else {
-			smartTypeManager.checkValue(dtField.getSmartTypeDefinition(), value);
-		}
+		smartTypeManager.checkType(dtField.smartTypeDefinition(), dtField.cardinality(), value);
 		return entityStoreManager.find(dtDefinition, criteria, dtListState);
 	}
 

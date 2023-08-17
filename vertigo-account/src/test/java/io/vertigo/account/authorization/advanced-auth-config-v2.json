@@ -11,7 +11,7 @@
 	}],
 	"securedEntities": [{
 		"entity": "Record",
-		"securityFields" : ["utiIdOwner","typId","amount" ],
+		"securityFields" : ["utiIdOwner","typId","amount", "actif" ],
 		"securityDimensions": [{
 				"name": "etaCd", "type": "ENUM", "values": ["CRE", "VAL", "PUB", "NOT", "REA", "ARC", "EXP"]
 			},{
@@ -30,21 +30,57 @@
 			"__comment": "Visibilité attribuable avec un montant maximum, et visibilité pour l'utilisateur créateur.",
 			"name": "read3", "label" : "Lecture",
 			"rules": [
-				"(amount<=${montantMax} AND utiIdOwner!=${utiId}) or (amount>${montantMax} AND utiIdOwner=${utiId})"
+				"(amount<=${montantMax} AND utiIdOwner!=${utiId}) OR (amount>${montantMax} AND utiIdOwner=${utiId})"
 			]
 		},{
 			"__comment": "Tests uniquement",
 			"name": "test", "label" : "Test",
 			"rules": [
-				"((amount<${montantMax} OR amount=${montantMax} OR amount<=${montantMax}) AND utiIdOwner!=${utiId}) or ((amount>${montantMax} OR amount=${montantMax} OR amount>=${montantMax}) AND utiIdOwner=${utiId})"
+				"((amount<${montantMax} OR amount=${montantMax} OR amount<=${montantMax}) AND utiIdOwner!=${utiId}) OR ((amount>${montantMax} OR amount=${montantMax} OR amount>=${montantMax}) AND utiIdOwner=${utiId})"
 			]
 		},{
+            "__comment": "Tests uniquement",
+            "name": "test2", "label" : "Test Enum",
+            "rules": [
+                "etaCd<NOT OR etaCd<=PUB OR etaCd=PUB OR etaCd!=PUB OR etaCd>VAL OR etaCd>=PUB"             
+            ]
+        },{
 			"__comment": "Tests uniquement",
-			"name": "test2", "label" : "Test Enum",
+			"name": "test2LT", "label" : "Test Enum",
 			"rules": [
-				"etaCd<NOT OR etaCd<=PUB OR etaCd=PUB OR etaCd!=PUB OR etaCd>VAL OR etaCd>=PUB"				
+				"etaCd<PUB"				
 			]
 		},{
+            "__comment": "Tests uniquement",
+            "name": "test2LTE", "label" : "Test Enum",
+            "rules": [
+                "etaCd<=PUB"             
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test2EQ", "label" : "Test Enum",
+            "rules": [
+                "etaCd=PUB"             
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test2NEQ", "label" : "Test Enum",
+            "rules": [
+                "etaCd!=PUB"             
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test2GT", "label" : "Test Enum",
+            "rules": [
+                "etaCd>PUB"             
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test2GTE", "label" : "Test Enum",
+            "rules": [
+                "etaCd>=PUB"             
+            ]
+        },{
 			"__comment": "Tests uniquement",
 			"name": "test3", "label" : "Test Tree",
 			"rules": [
@@ -52,6 +88,42 @@
 			]
 		},{
             "__comment": "Tests uniquement",
+            "name": "test3LT", "label" : "Test Tree",
+            "rules": [
+                "GEO<${geo}"               
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test3LTE", "label" : "Test Tree",
+            "rules": [
+                "GEO<=${geo}"               
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test3EQ", "label" : "Test Tree",
+            "rules": [
+                "GEO=${geo}"               
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test3NEQ", "label" : "Test Tree",
+            "rules": [
+                "GEO!=${geo}"               
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test3GT", "label" : "Test Tree",
+            "rules": [
+                "GEO>${geo}"               
+            ]
+        },{
+            "__comment": "Tests uniquement",
+            "name": "test3GTE", "label" : "Test Tree",
+            "rules": [
+                "GEO>=${geo}" 
+			]
+		},{   
+			"__comment": "Tests uniquement",           
             "name": "test4", "label" : "Test Tree",
             "rules": [
                 "GEO2<${geo2} OR GEO2<=${geo2} OR GEO2=${geo2} OR GEO2!=${geo2} OR GEO2>${geo2} OR GEO2>=${geo2}"               
@@ -99,6 +171,18 @@
 			"rules": [
 				"typId=${typId} and etaCd=PUB and GEO<=${geo}"
 			]
-		}]
+		}, {
+            "__comment": "Test",
+            "name": "test5", "label" : "test5",
+            "rules": [
+                "GEO<=${geo} && actif=true"
+            ]
+        }, {
+            "__comment": "Test",
+            "name": "test6", "label" : "test6",
+            "rules": [
+                "actif=true && GEO<=${geo}"
+            ]
+        }]
 	}]
 }

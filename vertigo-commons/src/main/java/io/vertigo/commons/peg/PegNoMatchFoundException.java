@@ -134,15 +134,14 @@ public final class PegNoMatchFoundException extends Exception {
 		}
 		pointeur.append("^^^");
 
-		return new StringBuilder("Erreur à la ligne ")
-				.append(getLine())
-				.append(" colonne ")
-				.append(index - start)
-				.append("\n\tvers : ")
-				.append(s.substring(start, end).replace('\t', ' '))
-				.append("\n\t      ")
-				.append(pointeur)
-				.toString();
+		return "Erreur à la ligne " +
+				getLine() +
+				" colonne " +
+				(index - start) +
+				"\n\tvers : " +
+				s.substring(start, end).replace('\t', ' ') +
+				"\n\t      " +
+				pointeur;
 	}
 
 	/**

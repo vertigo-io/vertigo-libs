@@ -64,7 +64,7 @@ public class ContentSlotComponentProcessor extends AbstractElementModelProcessor
 		removeCurrentTag(model);
 		final Object slotModelObject = context.getVariable(attributeValue);
 		structureHandler.setLocalVariable(attributeValue, null);
-		
+
 		final IModel slotModel;
 		if (slotModelObject instanceof Fragment) {
 			slotModel = ((Fragment) slotModelObject).getTemplateModel();
@@ -89,8 +89,7 @@ public class ContentSlotComponentProcessor extends AbstractElementModelProcessor
 	private static Map<String, String> processAttribute(final IModel model) {
 		final ITemplateEvent firstEvent = model.get(0);
 		final Map<String, String> attributes = new HashMap<>();
-		if (firstEvent instanceof IProcessableElementTag) {
-			final IProcessableElementTag processableElementTag = (IProcessableElementTag) firstEvent;
+		if (firstEvent instanceof IProcessableElementTag processableElementTag) {
 			for (final IAttribute attribute : processableElementTag.getAllAttributes()) {
 				final String completeName = attribute.getAttributeCompleteName();
 				attributes.put(completeName, attribute.getValue());

@@ -232,7 +232,6 @@ final class BerkeleyDatabase {
 	/**
 	 * Remove too old elements.
 	 *
-	 * @param maxRemovedTooOldElements max elements too removed
 	 */
 	public void removeTooOldElements() {
 		final DatabaseEntry foundKey = new DatabaseEntry();

@@ -26,8 +26,8 @@ import javax.inject.Inject;
 
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.MapBuilder;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.core.util.MapBuilder;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.handle.Handle;
 import io.vertigo.social.impl.handle.HandlePlugin;

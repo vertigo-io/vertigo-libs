@@ -20,6 +20,7 @@
             th:aria-required="${myRequired}"
             th::error="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
             th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+			orientation="vertical"
 			stack-label
 			use-chips
 			multiple

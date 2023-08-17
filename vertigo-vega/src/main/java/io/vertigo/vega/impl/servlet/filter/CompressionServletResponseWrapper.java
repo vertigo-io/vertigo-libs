@@ -17,8 +17,8 @@
  */
 package io.vertigo.vega.impl.servlet.filter;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Implémentation de HttpServletResponseWrapper qui fonctionne avec le CompressionServletResponseStream.

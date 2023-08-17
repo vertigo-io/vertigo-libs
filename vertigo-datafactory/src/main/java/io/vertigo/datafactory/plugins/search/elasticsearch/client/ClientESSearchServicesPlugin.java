@@ -109,7 +109,6 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	/**
 	 * Constructor.
 	 * @param envIndexPrefix ES index name
-	 * @param indexNameIsPrefix indexName use as prefix
 	 * @param defaultMaxRows Nombre de lignes
 	 * @param codecManager Manager de codec
 	 * @param configFile Fichier de configuration des indexs
@@ -352,7 +351,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	private static String obtainPkIndexDataType(final SmartTypeDefinition smartTypeDefinition) {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
-		Assertion.check().isTrue(smartTypeDefinition.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartTypeDefinition + "].");
+		Assertion.check().isTrue(smartTypeDefinition.getScope().isBasicType(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartTypeDefinition + "].");
 		switch (smartTypeDefinition.getBasicType()) {
 			case Boolean:
 			case Double:
@@ -387,15 +386,15 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 					.endObject();
 
 			typeMapping.startObject(ESDocumentCodec.DOC_ID)
-					.field("type", obtainPkIndexDataType(indexDefinition.getKeyConceptDtDefinition().getIdField().get().getSmartTypeDefinition()))
+					.field("type", obtainPkIndexDataType(indexDefinition.getKeyConceptDtDefinition().getIdField().get().smartTypeDefinition()))
 					.endObject();
 
 			/* 3 : Les champs du dto index */
 			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
-				final IndexType indexType = IndexType.readIndexType(dtField.getSmartTypeDefinition());
-				typeMapping.startObject(dtField.getName());
+				final IndexType indexType = IndexType.readIndexType(dtField.smartTypeDefinition());
+				typeMapping.startObject(dtField.name());
 				appendIndexTypeMapping(typeMapping, indexType);
 				if (copyFromFields.contains(dtField)) {
 					appendIndexCopyToMapping(indexDefinition, typeMapping, dtField);
@@ -433,11 +432,11 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	private static void appendIndexCopyToMapping(final SearchIndexDefinition indexDefinition, final XContentBuilder typeMapping, final DtField dtField) throws IOException {
 		final List<DtField> copyToFields = indexDefinition.getIndexCopyToFields(dtField);
 		if (copyToFields.size() == 1) {
-			typeMapping.field("copy_to", copyToFields.get(0).getName());
+			typeMapping.field("copy_to", copyToFields.get(0).name());
 		} else {
 			final String[] copyToFieldNames = new String[copyToFields.size()];
 			for (int i = 0; i < copyToFieldNames.length; i++) {
-				copyToFieldNames[i] = copyToFields.get(i).getName();
+				copyToFieldNames[i] = copyToFields.get(i).name();
 			}
 			typeMapping.field("copy_to", copyToFieldNames);
 		}
@@ -484,16 +483,16 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 					healthMeasureBuilder.withGreenStatus();
 					break;
 				case YELLOW:
-					healthMeasureBuilder.withYellowStatus(null, null);
+					healthMeasureBuilder.withYellowStatus(null);
 					break;
 				case RED:
-					healthMeasureBuilder.withRedStatus(null, null);
+					healthMeasureBuilder.withRedStatus(null);
 					break;
 				default:
 					break;
 			}
 		} catch (final Exception e) {
-			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
+			healthMeasureBuilder.withRedStatus(e.getMessage());
 		}
 		return healthMeasureBuilder.build();
 	}

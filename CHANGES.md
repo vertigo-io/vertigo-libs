@@ -3,6 +3,13 @@ Version history
 
 Running 4.0.0
 ----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-360-to-400)
+* [Ui] Extract exceptions handling from VSpringMvcControllerAdvice to VSpringMvcExceptionHandler
+* [Ui] Quasar v1 to v2
+	* css --q-color-* => --q-*
+* [Ui] Vue2 -> Vue3 slots syntax #body="props"
+* [Ui] Components' param name support kebab-case, context variables are always as CamelCase (ex : buttons support `text-color` and `textColor` input params and declare a `textColor` thymeleaf variable)
+* [Ui] *Replace buttons attribute ariaLabel to title* (aria-label wasn't use for a11y in button, title was)
 
 more to come :)
 

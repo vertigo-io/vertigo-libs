@@ -17,9 +17,6 @@
  */
 package io.vertigo.ui.impl.springmvc.config;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.WebApplicationContext;
@@ -31,6 +28,8 @@ import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class VSpringDispatcherServlet extends DispatcherServlet {
 
@@ -66,11 +65,11 @@ public class VSpringDispatcherServlet extends DispatcherServlet {
 							"page",
 							path,
 							tracer -> {
-								tracer.addTag("pathPrefix", pathPrefix)
-										.addTag("requestMethod", request.getMethod());
+								tracer.setTag("pathPrefix", pathPrefix)
+										.setTag("requestMethod", request.getMethod());
 								try {
 									super.doDispatch(request, response);
-									tracer.addTag("responseStatus", String.valueOf(response.getStatus()));
+									tracer.setTag("responseStatus", String.valueOf(response.getStatus()));
 								} catch (final Exception e) {
 									throw WrappedException.wrap(e);
 								}

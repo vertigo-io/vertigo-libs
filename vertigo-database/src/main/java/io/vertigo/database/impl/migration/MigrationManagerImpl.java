@@ -46,7 +46,7 @@ public final class MigrationManagerImpl implements MigrationManager, Activeable 
 		check,
 		update,
 		none
-    }
+	}
 
 	private final MigrationMode migrationMode;
 

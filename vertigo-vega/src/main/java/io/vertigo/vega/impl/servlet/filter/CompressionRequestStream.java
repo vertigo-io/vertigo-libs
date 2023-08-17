@@ -20,7 +20,7 @@ package io.vertigo.vega.impl.servlet.filter;
 import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Implémentation de ServletInputStream qui fonctionne avec le CompressionServletRequestWrapper.

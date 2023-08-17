@@ -55,9 +55,9 @@ final class RamLuceneQueryFactory {
 		this.queryAnalyzer = queryAnalyzer;
 	}
 
-	Query createFilterQuery(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final Optional<DtField> boostedField) throws IOException {
+	Query createFilterQuery(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final Optional<DtField> pkField, final Optional<DtField> boostedField) throws IOException {
 		final Query filteredQuery;
-		final Query keywordsQuery = createKeywordQuery(queryAnalyzer, keywords, searchedFields, boostedField);
+		final Query keywordsQuery = createKeywordQuery(queryAnalyzer, keywords, searchedFields, pkField, boostedField);
 		if (!listFilters.isEmpty()) {
 			filteredQuery = createFilteredQuery(queryAnalyzer, keywordsQuery, listFilters);
 		} else {
@@ -66,14 +66,14 @@ final class RamLuceneQueryFactory {
 		return filteredQuery;
 	}
 
-	private static Query createKeywordQuery(final Analyzer queryAnalyser, final String keywords, final Collection<DtField> searchedFieldList, final Optional<DtField> boostedField) throws IOException {
+	private static Query createKeywordQuery(final Analyzer queryAnalyser, final String keywords, final Collection<DtField> searchedFieldList, final Optional<DtField> pkField, final Optional<DtField> boostedField) throws IOException {
 		if (StringUtil.isBlank(keywords)) {
 			return new MatchAllDocsQuery();
 		}
 		//-----
 		final Builder queryBuilder = new BooleanQuery.Builder();
 		for (final DtField dtField : searchedFieldList) {
-			Query queryWord = createParsedKeywordsQuery(queryAnalyser, dtField.getName(), keywords);
+			Query queryWord = createParsedKeywordsQuery(queryAnalyser, dtField.name(), keywords, pkField.isEmpty() || !dtField.equals(pkField.get()));
 			if (boostedField.isPresent() && dtField.equals(boostedField.get())) {
 				queryWord = new BoostQuery(queryWord, 4);
 			}
@@ -102,7 +102,7 @@ final class RamLuceneQueryFactory {
 		return listFilterValue.startsWith("-");
 	}
 
-	private static Query createParsedKeywordsQuery(final Analyzer queryAnalyser, final String fieldName, final String keywords) throws IOException {
+	private static Query createParsedKeywordsQuery(final Analyzer queryAnalyser, final String fieldName, final String keywords, final boolean useSpanFirst) throws IOException {
 		final Builder queryBuilder = new BooleanQuery.Builder();
 		final Reader reader = new StringReader(keywords);
 		try (final TokenStream tokenStream = queryAnalyser.tokenStream(fieldName, reader)) {
@@ -113,8 +113,10 @@ final class RamLuceneQueryFactory {
 					final String term = new String(termAttribute.buffer(), 0, termAttribute.length());
 					final PrefixQuery prefixQuery = new PrefixQuery(new Term(fieldName, term));
 					queryBuilder.add(prefixQuery, BooleanClause.Occur.MUST);
-					final SpanFirstQuery spanSecondQuery = new SpanFirstQuery(new SpanMultiTermQueryWrapper<>(prefixQuery), 1);
-					queryBuilder.add(spanSecondQuery, BooleanClause.Occur.SHOULD);
+					if (useSpanFirst) {
+						final SpanFirstQuery spanSecondQuery = new SpanFirstQuery(new SpanMultiTermQueryWrapper<>(prefixQuery), 1);
+						queryBuilder.add(spanSecondQuery, BooleanClause.Occur.SHOULD);
+					}
 				}
 			} finally {
 				reader.reset();

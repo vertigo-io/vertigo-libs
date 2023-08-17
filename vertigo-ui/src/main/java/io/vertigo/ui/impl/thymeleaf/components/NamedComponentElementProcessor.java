@@ -108,6 +108,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 		selectionExpressionOpt = thymeleafComponent.getSelectionExpression();
 		parameterNames = new HashSet<>(thymeleafComponent.getParameters());
+		acceptCamelCaseNameForKebabParameters();
 
 		slotNames = parameterNames.stream()
 				.filter(key -> key.endsWith(VARIABLE_PLACEHOLDER_SEPARATOR + SLOTS_SUFFIX))
@@ -118,6 +119,16 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				.map(parameterName -> parameterName.substring(0, parameterName.length() - ATTRS_SUFFIX.length()))
 				.collect(Collectors.toList());
 		unnamedPlaceholderPrefix = placeholderPrefixes.isEmpty() ? Optional.empty() : Optional.of(placeholderPrefixes.get(placeholderPrefixes.size() - 1));
+	}
+
+	private void acceptCamelCaseNameForKebabParameters() {
+		final Set<String> camelCaseParameterNames = new HashSet<>();
+		for (final String parameterName : parameterNames) {
+			if (parameterName.indexOf('-') > 0) {
+				camelCaseParameterNames.add(kebabToCamelCase(parameterName));
+			}
+		}
+		parameterNames.addAll(camelCaseParameterNames);
 	}
 
 	@Override
@@ -404,6 +415,10 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				affectationString = "noOp=_";
 			}
 			structureHandler.setLocalVariable(placeholder, preAffectationString + affectationString);
+
+			/** It works, may be used to check placeholder params to avoid override : but may prefer use of declared component's params.
+			 * structureHandler.setLocalVariable(placeholder + "Map", placeholderValues);
+			 */
 		}
 	}
 
@@ -435,10 +450,10 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 							}
 							final IStandardExpression rightExpr = assignation.getRight();
 							//must execute rightExpr too : if not must use th: in component, else expression will be parsed/encoded two times
-							attributes.put(newVariableName, String.valueOf(rightExpr.execute(context)));
+							putAttributeSupportKebabCase(newVariableName, String.valueOf(rightExpr.execute(context)), attributes);
 						}
 					} else {
-						attributes.put(completeName, attribute.getValue());
+						putAttributeSupportKebabCase(completeName, attribute.getValue(), attributes);
 					}
 				}
 			}
@@ -450,14 +465,22 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			for (final Entry<String, String> attribute : contentAttrs.entrySet()) {
 				if (ContentComponentProcessor.CONTENT_ID_ATTR_NAME.equals(attribute.getKey())) {
 					//don't copy contentId on inner tags
-				} else if (shouldConcat(attribute.getKey())) {
+				} else if (shouldConcat(attribute.getKey())) { //concat some attribute (like class) //no kebab-case here
 					attributes.compute(attribute.getKey(), (k, v) -> (v == null ? "" : v + " ") + attribute.getValue());
 				} else {
-					attributes.put(attribute.getKey(), attribute.getValue());
+					putAttributeSupportKebabCase(attribute.getKey(), attribute.getValue(), attributes);
 				}
 			}
 		}
 		return attributes;
+	}
+
+	private void putAttributeSupportKebabCase(final String variableName, final String variableValue, final Map<String, String> attributes) {
+		if (variableName.indexOf('-') > 0 && parameterNames.contains(variableName)) {
+			attributes.put(kebabToCamelCase(variableName), variableValue);
+		} else {
+			attributes.put(variableName, variableValue);
+		}
 	}
 
 	private String executeAttrsExpression(final ITemplateContext context, final String attrValue) {
@@ -537,7 +560,12 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 		if (!isPlaceholder(attributeKey) && isPlaceholderable(attributeKey)) {
 			//We prepared prefixed placeholders variables.
-			addPlaceholderVariable(placeholders, attributeKey, attributeValue);
+			Object unescapedattributeValue = attributeValue;
+			if (attributeValue instanceof String) {
+				//We need to unescape placeholder : it will be escaped again when used in component (th:attr="__${other_attrs}__" => escape value)
+				unescapedattributeValue = EscapedAttributeUtils.unescapeAttribute(context.getTemplateMode(), (String) attributeValue);
+			}
+			addPlaceholderVariable(placeholders, attributeKey, unescapedattributeValue);
 		} else if (!parameterNames.contains(attributeKey)) {
 			Assertion.check().isTrue(
 					unnamedPlaceholderPrefix.isPresent(),
@@ -590,6 +618,37 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				}
 			}
 		}
+	}
+
+	/**
+	 * xxx-Yyy-zzzAaa -> xxxYyyZzzAaa
+	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
+	 * @return Renvoie une chaine de caractére correspondant à la chaine entrante sans - avec le caractère suivant un - en majuscule
+	 */
+	private static String kebabToCamelCase(final String str) {
+		Assertion.check()
+				.isNotNull(str)
+				.isTrue(str.length() > 0, "Chaine à modifier invalide (ne doit pas être vide)")
+				.isFalse(str.contains("--"), "Chaine à modifier invalide : {0} (-- interdit)", str);
+		//-----
+		final StringBuilder result = new StringBuilder();
+		boolean upper = false;
+		final int length = str.length();
+		char c;
+		for (int i = 0; i < length; i++) {
+			c = str.charAt(i);
+			if (c == '-') {
+				upper = true;
+			} else {
+				if (upper) {
+					result.append(Character.toUpperCase(c));
+					upper = false;
+				} else {
+					result.append(c); //on ne force pas lowerCase ici
+				}
+			}
+		}
+		return result.toString();
 	}
 
 	private final static class UnmodifiableDeque<E> extends ArrayDeque<E> {

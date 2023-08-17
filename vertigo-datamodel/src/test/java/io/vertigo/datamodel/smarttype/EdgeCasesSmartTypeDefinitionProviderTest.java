@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.node.AutoCloseableNode;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -38,6 +39,9 @@ public class EdgeCasesSmartTypeDefinitionProviderTest {
 	public void testObjectSmartTypeOverride() {
 		//Overide infered smartType
 		final NodeConfig nodeConfig = NodeConfig.builder()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(ModuleConfig.builder("myModule")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
@@ -49,7 +53,7 @@ public class EdgeCasesSmartTypeDefinitionProviderTest {
 				.build();
 		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
 			final SmartTypeDefinition dtBaseSmartType = node.getDefinitionSpace().resolve("STyDtBase", SmartTypeDefinition.class);
-			Assertions.assertEquals(FormatterTest.class, dtBaseSmartType.getFormatterConfig().getFormatterClass());
+			Assertions.assertEquals(FormatterTest.class, dtBaseSmartType.getFormatterConfig().formatterClass());
 		}
 	}
 
@@ -71,7 +75,7 @@ public class EdgeCasesSmartTypeDefinitionProviderTest {
 		Assertions.assertThrows(IllegalStateException.class, () -> {
 			try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
 				final SmartTypeDefinition dtBaseSmartType = node.getDefinitionSpace().resolve("STyDtBase", SmartTypeDefinition.class);
-				Assertions.assertEquals(FormatterTest.class, dtBaseSmartType.getFormatterConfig().getFormatterClass());
+				Assertions.assertEquals(FormatterTest.class, dtBaseSmartType.getFormatterConfig().formatterClass());
 			}
 		});
 	}

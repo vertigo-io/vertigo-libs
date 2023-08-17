@@ -23,14 +23,13 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 
 import io.vertigo.datamodel.structure.model.DtListState;
 
 final class DtListStateDeserializer implements JsonDeserializer<DtListState> {
 
 	@Override
-	public DtListState deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
+	public DtListState deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 		final JsonObject jsonObject = json.getAsJsonObject();
 
 		final Integer top = jsonObject.has("top") ? jsonObject.get("top").getAsInt() : null;

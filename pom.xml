@@ -13,19 +13,13 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-parent</artifactId>
-		<version>3.6.0</version>
+		<version>4.0.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>vertigo-extensions</artifactId>
 	<name>vertigo-extensions</name>
 	<packaging>pom</packaging>
 	<version>4.0.0-SNAPSHOT</version>
-
-	<properties>
-		<!-- For global junit test coverage -->
-		<jacoco.destFile>${project.basedir}/../target/jacoco-it.exec</jacoco.destFile>
-		<sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.reportPaths>
-	</properties>
 
 	<modules>
 		<module>vertigo-commons</module>
@@ -39,12 +33,13 @@
 		
 		<module>vertigo-audit</module>
 		<module>vertigo-quarto</module>
-		<module>vertigo-stella</module>
+	
+ 		<module>vertigo-stella</module>
 		<module>vertigo-geo</module>
 		<module>vertigo-ui</module>
 		<module>vertigo-dashboard</module>
 		<module>vertigo-orchestra</module>
-		<module>vertigo-social</module>
+    	<module>vertigo-social</module>
 	</modules>
 
 	<scm>
@@ -53,4 +48,31 @@
 		<url>scm:git:https://github.com/vertigo-io/vertigo-extensions.git</url>
 		<tag>vertigo-extensions</tag>
 	</scm>
+	
+	<profiles>
+		<profile>
+			<id>Github</id>
+			<repositories>
+				<repository>
+					<id>github</id>
+					<name>GitHub Vertigo-io Apache Maven Packages</name>
+					<url>https://maven.pkg.github.com/vertigo-io/vertigo</url>
+					<snapshots><enabled>true</enabled></snapshots>
+				</repository>
+				<repository>
+					<id>github-connectors</id>
+					<name>GitHub Vertigo-io Apache Maven Packages</name>
+					<url>https://maven.pkg.github.com/vertigo-io/vertigo-connectors</url>
+					<snapshots><enabled>true</enabled></snapshots>
+				</repository>
+			</repositories>
+			<distributionManagement>
+				<snapshotRepository>
+					<id>github</id>
+					<name>GitHub Vertigo-io Apache Maven Packages</name>
+					<url>https://maven.pkg.github.com/vertigo-io/vertigo-extensions</url>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+	</profiles>
 </project>

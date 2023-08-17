@@ -28,7 +28,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import io.vertigo.core.util.TempFile;
+import io.vertigo.core.lang.TempFile;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.quarto.impl.publisher.merger.processor.ZipUtil;
 

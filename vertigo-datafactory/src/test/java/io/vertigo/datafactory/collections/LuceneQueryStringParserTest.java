@@ -360,6 +360,9 @@ public final class LuceneQueryStringParserTest {
 				{ "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test))", "NOM_NAISSANCE:Test NOM:Test" }, //2
 				{ "+(NOM:(+Test))", "NOM:Test" }, //3
 				{ "+(NOM_NAISSANCE:(+Test))", "NOM_NAISSANCE:Test" }, //4
+				{ "(+NOM:null)", "NOM:null" }, //5
+				{ "(+(-_exists_:ALL))", "-_exists_:ALL" }, //6
+
 		};
 		testStringFixedQuery(testQueries);
 	}

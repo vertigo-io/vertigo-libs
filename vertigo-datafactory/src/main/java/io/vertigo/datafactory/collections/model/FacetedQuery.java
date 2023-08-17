@@ -20,7 +20,7 @@ package io.vertigo.datafactory.collections.model;
 import java.io.Serializable;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datafactory.collections.definitions.FacetedQueryDefinition;
 
 /**
@@ -30,7 +30,7 @@ import io.vertigo.datafactory.collections.definitions.FacetedQueryDefinition;
 public final class FacetedQuery implements Serializable {
 	private static final long serialVersionUID = -3215786603726103410L;
 
-	private final DefinitionReference<FacetedQueryDefinition> facetedQueryDefinitionRef;
+	private final DefinitionId<FacetedQueryDefinition> facetedQueryDefinitionId;
 	private final SelectedFacetValues selectedFacetValues;
 
 	/**
@@ -43,7 +43,7 @@ public final class FacetedQuery implements Serializable {
 				.isNotNull(facetedQueryDefinition)
 				.isNotNull(selectedFacetValue);
 		//-----
-		facetedQueryDefinitionRef = new DefinitionReference<>(facetedQueryDefinition);
+		facetedQueryDefinitionId = facetedQueryDefinition.id();
 		selectedFacetValues = selectedFacetValue;
 	}
 
@@ -51,7 +51,7 @@ public final class FacetedQuery implements Serializable {
 	 * @return Définition du FacetedQuery.
 	 */
 	public FacetedQueryDefinition getDefinition() {
-		return facetedQueryDefinitionRef.get();
+		return facetedQueryDefinitionId.get();
 	}
 
 	/**

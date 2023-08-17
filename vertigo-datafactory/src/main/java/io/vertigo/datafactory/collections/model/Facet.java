@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 
 /**
@@ -41,7 +41,7 @@ import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 public final class Facet implements Serializable {
 	private static final long serialVersionUID = -6496651592068817414L;
 
-	private final DefinitionReference<FacetDefinition> facetDefinitionRef;
+	private final DefinitionId<FacetDefinition> facetDefinitionId;
 	private final Map<FacetValue, Long> facetValues;
 
 	/**
@@ -56,7 +56,7 @@ public final class Facet implements Serializable {
 				.isTrue(facetValues instanceof LinkedHashMap || facetValues instanceof SortedMap,
 						"FacetValues must be sorted, shoud implements SortedMap or LinkedHashMap ({0})", facetValues.getClass().getSimpleName());
 		//-----
-		facetDefinitionRef = new DefinitionReference<>(facetDefinition);
+		facetDefinitionId = facetDefinition.id();
 		this.facetValues = Collections.unmodifiableMap(facetValues);
 	}
 
@@ -64,7 +64,7 @@ public final class Facet implements Serializable {
 	 * @return Définition de la facette.
 	 */
 	public FacetDefinition getDefinition() {
-		return facetDefinitionRef.get();
+		return facetDefinitionId.get();
 	}
 
 	/**

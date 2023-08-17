@@ -18,7 +18,6 @@
 package io.vertigo.account.authorization.definitions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -39,7 +38,7 @@ import io.vertigo.datamodel.structure.definitions.DtDefinition;
  * @author prahmoune, npiedeloup
  */
 @DefinitionPrefix(Authorization.PREFIX)
-public final class Authorization extends AbstractDefinition {
+public final class Authorization extends AbstractDefinition<Authorization> {
 	public static final String PREFIX = "Atz";
 	//soit authorization globale (sans règle)
 	//soit authorization = une opération sur une entity
@@ -73,7 +72,7 @@ public final class Authorization extends AbstractDefinition {
 		grants = Collections.emptySet();
 		entityOpt = Optional.empty();
 		operationOpt = Optional.empty();
-		rules = Arrays.asList();
+		rules = List.of();
 		this.comment = comment;
 	}
 
@@ -96,7 +95,7 @@ public final class Authorization extends AbstractDefinition {
 			final DtDefinition entityDefinition,
 			final List<RuleMultiExpression> rules,
 			final Optional<String> comment) {
-		super(PREFIX + entityDefinition.getLocalName() + '$' + operation);
+		super(PREFIX + entityDefinition.id().shortName() + '$' + operation);
 		//---
 		Assertion.check()
 				.isNotBlank(operation)

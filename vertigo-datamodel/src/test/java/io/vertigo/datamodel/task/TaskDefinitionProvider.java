@@ -33,11 +33,11 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
 
 public final class TaskDefinitionProvider implements SimpleDefinitionProvider {
-	public static String TK_MULTIPLICATION = "TkMultiplication";
-	public static String TK_ADDITION = "TkAddition";
+	public static final String TK_MULTIPLICATION = "TkMultiplication";
+	public static final String TK_ADDITION = "TkAddition";
 
-	public static String TK_MULTIPLICATION_2 = "TkMultiplication2";
-	public static String TK_ADDITION_2 = "TkAddition2";
+	public static final String TK_MULTIPLICATION_2 = "TkMultiplication2";
+	public static final String TK_ADDITION_2 = "TkAddition2";
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {

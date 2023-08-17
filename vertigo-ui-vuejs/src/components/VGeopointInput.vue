@@ -1,21 +1,22 @@
 <template>
     <div class="row">
-        <q-input label="Longitude" stack-label  v-model.number="inputObject.lon" @input="updateJson" ></q-input>
-        <q-input label="Latitude" stack-label  v-model.number="inputObject.lat" @input="updateJson" ></q-input>
+        <q-input label="Longitude" stack-label  v-model.number="inputObject.lon" @update:modelValue="updateJson" ></q-input>
+        <q-input label="Latitude" stack-label  v-model.number="inputObject.lat" @update:modelValue="updateJson" ></q-input>
     </div>
 </template>
 <script>
 export default {
     props : {
-        value: { type: Object}
+        modelValue: { type: Object}
     },
+    emits: ["update:modelValue"],
     data : function () {
         return {
-            inputObject : this.$props.value ? this.$props.value : {}
+            inputObject : this.$props.modelValue ? this.$props.modelValue : {}
         }
     },
     watch: { 
-          value: function(newVal) {
+          modelValue: function(newVal) {
               this.$data.inputObject = newVal ? newVal : {};
               this.updateJson();
           }
@@ -27,13 +28,13 @@ export default {
     methods: {
         updateJson() {
         var newInputValue;
-        if(this.$props.value) {
+        if(this.$props.modelValue) {
           newInputValue = JSON.stringify({  lon : this.$data.inputObject.lon, lat : this.$data.inputObject.lat});
-          this.$set(this.$props.value, '_v_inputValue', newInputValue );
+          this.$props.modelValue['_v_inputValue'] = newInputValue;
         } else {
           //this.$set(this.$props.value, null );
         }        
-        this.$emit('input', this.$data.inputObject);        
+        this.$emit('update:modelValue', this.$data.inputObject);        
       }
     }
 }

@@ -28,7 +28,7 @@ import io.vertigo.core.lang.DataStream;
  * Movie.
  */
 public final class Movie {
-	private Long id;
+	private Long movId;
 	private String title;
 	private Mail mail;
 	@Deprecated
@@ -42,12 +42,12 @@ public final class Movie {
 	private Instant releaseInstant;
 	//	private Mail mail;
 
-	public final Long getId() {
-		return id;
+	public final Long getMovId() {
+		return movId;
 	}
 
-	public final void setId(final Long id) {
-		this.id = id;
+	public final void setMovId(final Long movId) {
+		this.movId = movId;
 	}
 
 	public DataStream getIcon() {

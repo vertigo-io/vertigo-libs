@@ -28,9 +28,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.security.UserSession;
@@ -42,6 +39,9 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.authentication.WebAuthenticationManager;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Standard pattern for SSO authentication handlers.
@@ -91,7 +91,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		final var urlPreHandler = urlPreHandlerMap.get(request.getServletPath());
 		if (urlPreHandler != null) {
 			final var handlerResult = urlPreHandler.apply(request, response);
-			if (Boolean.TRUE.equals(handlerResult.getVal1())) {
+			if (Boolean.TRUE.equals(handlerResult.val1())) {
 				return handlerResult;
 			}
 		}
@@ -99,8 +99,8 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		// intercept request
 		final var plugin = getPluginForRequest(request);
 		final Tuple<AuthenticationResult, HttpServletRequest> interceptResult = plugin.doInterceptRequest(request, response);
-		final var authenticationResult = interceptResult.getVal1();
-		final HttpServletRequest requestResolved = interceptResult.getVal2() != null ? interceptResult.getVal2() : request;
+		final var authenticationResult = interceptResult.val1();
+		final HttpServletRequest requestResolved = interceptResult.val2() != null ? interceptResult.val2() : request;
 		if (authenticationResult.isRequestConsumed()) {
 			return Tuple.of(true, request);
 		} else if (authenticationResult.getRawCallbackResult() != null && !isAuthenticated()) {

@@ -94,8 +94,7 @@ public final class ComponentCmdWebServices implements WebServices {
 
 	private JsonArray doGetModuleConfigs() {
 		final String json = jsonEngine.toJson(Node.getNode().getNodeConfig());
-		final JsonParser parser = new JsonParser();
-		final JsonObject jsonObject = (JsonObject) parser.parse(json);
+		final JsonObject jsonObject = (JsonObject) JsonParser.parseString(json);
 		final JsonArray jsonModuleConfigs = jsonObject.get("moduleConfigs").getAsJsonArray();
 		return jsonModuleConfigs;
 	}

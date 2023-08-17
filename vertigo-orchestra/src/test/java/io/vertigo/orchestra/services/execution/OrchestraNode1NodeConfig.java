@@ -38,7 +38,7 @@ public final class OrchestraNode1NodeConfig {
 
 	public static NodeConfigBuilder createNodeConfigBuilder() {
 		return NodeConfig.builder()
-				.withNodeId("NodeTest2")
+				.withNodeId("NodeTest1")
 				.withBoot(BootConfig.builder()
 						.withLocales("fr_FR")
 						.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -73,10 +73,10 @@ public final class OrchestraNode1NodeConfig {
 				// we build h2 mem
 				.addModule(ModuleConfig.builder("databaseInitializer").addComponent(DataBaseInitializer.class).build())
 				.addModule(new OrchestraFeatures()
-						.withDataBase(Param.of("nodeName", "NodeTest2"), Param.of("daemonPeriodSeconds", "1"), Param.of("workersCount", "3"), Param.of("forecastDurationSeconds", "60"))
+						.withDataBase(Param.of("nodeName", "NodeTest1"), Param.of("daemonPeriodSeconds", "1"), Param.of("workersCount", "3"), Param.of("forecastDurationSeconds", "60"))
 						.withMemory(Param.of("workersCount", "1"))
 						.build())
-				.addModule(ModuleConfig.builder("orchestra-test-node2")
+				.addModule(ModuleConfig.builder("orchestra-test-node1")
 						//---Services
 						.addComponent(MonitoringServices.class, MonitoringServicesImpl.class)
 						.build())

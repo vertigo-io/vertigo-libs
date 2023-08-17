@@ -20,7 +20,7 @@
             <vu:form id="myFormId">
            
             
-                <vu:block id="movie" title="#{movie.title.information}">
+                <vu:block id="movie" title="#{movie.title.information}" >
                        <vu:include-data object="movies" field="*" />
                        <vu:include-data-primitive key='timeZoneList'/>
                        <vu:include-data-primitive key='selectedTimeZoneList' modifiable/>
@@ -45,17 +45,17 @@
                         <vu:radio object="movie" field="movId" list="movies" layout="horizontal" labelField="movId"/>
                         <vu:radio object="movie" field="movId" list="movies" />
                         <vu:text-field object="movie" field="movId"/>
-                        <vu:text-field object="movie" field="title" />
+                        <vu:text-area object="movie" field="title" />
                         <vu:chips-autocomplete object="movie" field="tags" list="movies" staticData="false"/>
                         <vu:grid-cell/>
                         <vu:grid-cell col="1">
 							 <vu:autocomplete-multiple object="movieDisplayInput" field="movIds" list="moviesMdl"  />
 						</vu:grid-cell>
                         <vu:grid-cell col="1">
-                            <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" @input="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
+                            <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" @update:model-value="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
                             <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" 
                             :disabled="true || false"
-                            @input="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
+                            @update:model-value="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
                         </vu:grid-cell>
                         <q-btn th:@click="|httpPostAjax('@{_ajaxArray}', vueDataParams(['selectedTimeZoneList']))|" color="primary" label="Ajax save" ></q-btn>
                         
@@ -68,13 +68,12 @@
                                 <vu:fileupload label="Upload file" th:url="'@{/commons/upload}'" key="myFilesUris1" multiple />           
                             </vu:fileupload-dropzone>
                         </vu:grid-cell>                
-                        <vu:fileupload-custom label="Custom upload file" th:url="'@{/commons/upload}'" key="myFilesUris2" multiple/>                            
-                        <vu:fileupload-simple-object label="Simple upload file" th:url="'@{/commons/upload}'" object="myFilesUris3" multiple/>                            
+                        <vu:fileupload-simple label="Simple upload file" th:url="'@{/commons/upload}'" key="myFilesUris3" multiple/>                            
                         <vu:fileupload-simple-object label="Movie pictures" th:url="'@{/commons/upload}'" object="movie" field="pictures" multiple/>                            
                         <vu:fileupload-simple-object label="Movie main picture" th:url="'@{/commons/upload}'" object="movie" field="mainPicture"/>                            
                         
                         <vu:modal componentId="myModal" closeLabel="Close"/>
-                        <vu:grid-cell>
+                        <vu:grid-cell class="q-gutter-md">
                             <vu:button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}" color="primary"/>
                             <vu:button-submit th:if="${model.modeReadOnly}" label="Edit" action="@{_edit}" color="primary"/>
                             <vu:button-submit th:if="${!model.modeReadOnly}" id="saveAction" label="Save (Default)" action="@{_save}" color="primary" />
@@ -85,8 +84,8 @@
                             </vu:button-submit-confirm>
                             <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save (confirm with custom actions)" action="@{notUsed}" formId="myFormId" confirmMessage="Etes vous sûr ?" color="primary">
                                <vu:slot name="actions_slot">
-                                 <q-btn flat label="Cancel custom" color="primary" v-close-popup />
-                                 <q-btn type="submit" th:formaction="@{_save}" form="myFormId" label="Ok custom" color="primary" v-close-popup />
+                                 <q-btn flat label="Cancel custom" color="primary" v-close-popup ></q-btn>
+                                 <q-btn type="submit" th:formaction="@{_save}" form="myFormId" label="Ok custom" color="primary" v-close-popup ></q-btn>
                                </vu:slot>
                                <span>C'est OK ?</span>
                             </vu:button-submit-confirm>
@@ -94,7 +93,7 @@
                             <vu:button-link th:if="${model.modeEdit}"  label="Movies" url="@{/movies/}" color="primary" />
                             <q-btn  th:label="OpenModal" th:@click="|openModal('myModal', '@{/movies/}')|"></q-btn>
                         </vu:grid-cell>
-                        <vu:grid-cell>
+                        <vu:grid-cell class="q-gutter-md">
                             <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionDtCheck" label="Save (with DtObj Check)" action="@{_saveDtCheck}" color="primary" />
                             <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionUiCheck" label="Save (with UiObj Check)" action="@{_saveUiCheck}" color="primary" />
                             

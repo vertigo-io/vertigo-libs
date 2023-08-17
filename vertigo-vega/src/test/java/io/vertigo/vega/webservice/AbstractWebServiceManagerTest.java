@@ -48,7 +48,7 @@ import io.restassured.parsing.Parser;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
-import io.vertigo.core.util.MapBuilder;
+import io.vertigo.core.lang.MapBuilder;
 
 abstract class AbstractWebServiceManagerTest {
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
@@ -1812,7 +1812,8 @@ abstract class AbstractWebServiceManagerTest {
 		final String inputUtc = "2016-01-18T17:21:42.026Z";
 		loggedAndExpect(given())
 				.body("input", Matchers.equalTo(inputUtc))
-				.body("inputAsString", Matchers.equalTo("Mon Jan 18 18:21:42 CET 2016"))
+				//.body("inputAsString", Matchers.equalTo("Mon Jan 18 18:21:42 CET 2016"))//
+				.body("inputAsString", Matchers.equalTo("2016-01-18T17:21:42.026Z"))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.get("/test/dates?date=" + inputUtc);

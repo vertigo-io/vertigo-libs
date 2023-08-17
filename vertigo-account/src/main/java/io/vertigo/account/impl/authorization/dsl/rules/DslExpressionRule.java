@@ -20,8 +20,8 @@ package io.vertigo.account.impl.authorization.dsl.rules;
 import java.util.List;
 
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression;
-import io.vertigo.account.authorization.definitions.rulemodel.RuleValue;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression.ValueOperator;
+import io.vertigo.account.authorization.definitions.rulemodel.RuleValue;
 import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;
@@ -59,7 +59,7 @@ final class DslExpressionRule extends AbstractRule<RuleExpression, List<Object>>
 	protected RuleExpression handle(final List<Object> parsing) {
 		final String fieldName = (String) parsing.get(1);
 		final ValueOperator operator = (ValueOperator) parsing.get(3);
-		final RuleValue value = (RuleValue) ((PegChoice) parsing.get(5)).getValue();
+		final RuleValue value = (RuleValue) ((PegChoice) parsing.get(5)).value();
 		return new RuleExpression(fieldName, operator, value);
 	}
 }

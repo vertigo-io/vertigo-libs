@@ -80,12 +80,10 @@ abstract class AbstractScriptTag {
 	 * @return Code java resultant.
 	 */
 	protected static final String getCallForEqualsBooleanFieldPath(final String fieldPath, final String value, final String currentVariableName) {
-		return new StringBuilder()
-				.append(getCallForFieldPath(fieldPath, currentVariableName))
-				.append(".equals(\"")
-				.append(value)
-				.append("\")")
-				.toString();
+		return getCallForFieldPath(fieldPath, currentVariableName) +
+				".equals(\"" +
+				value +
+				"\")";
 	}
 
 	/**

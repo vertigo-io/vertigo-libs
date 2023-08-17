@@ -64,13 +64,11 @@ public final class DslRangeQuery implements DslQuery {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return new StringBuilder()
-				.append(preBody).append(startRange)
-				.append(startQueryDefinitions)
-				.append(" to ")
-				.append(endQueryDefinitions)
-				.append(endRange).append(postBody)
-				.toString();
+		return preBody + startRange +
+                startQueryDefinitions +
+                " to " +
+                endQueryDefinitions +
+                endRange + postBody;
 	}
 
 	/**

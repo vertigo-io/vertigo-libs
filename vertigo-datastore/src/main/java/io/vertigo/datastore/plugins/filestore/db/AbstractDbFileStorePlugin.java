@@ -17,12 +17,9 @@
  */
 package io.vertigo.datastore.plugins.filestore.db;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataStream;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
@@ -34,7 +31,6 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
-import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.AbstractFileInfo;
 
@@ -130,12 +126,11 @@ abstract class AbstractDbFileStorePlugin {
 
 	/**
 	 * @param dto DtObject
-	 * @param value Pk value
 	 */
 	protected static void setIdValue(final DtObject dto, final FileInfoURI uri) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final DtField idField = dtDefinition.getIdField().get();
-		idField.getDataAccessor().setValue(dto, uri.getKeyAs(idField.getSmartTypeDefinition().getJavaClass()));
+		idField.getDataAccessor().setValue(dto, uri.getKeyAs(idField.smartTypeDefinition().getJavaClass()));
 	}
 
 	/**
@@ -153,54 +148,6 @@ abstract class AbstractDbFileStorePlugin {
 		 */
 		protected DatabaseFileInfo(final FileInfoDefinition fileInfoDefinition, final VFile vFile) {
 			super(fileInfoDefinition, vFile);
-		}
-	}
-
-	/**
-	 * DataStream from VFile.
-	 */
-	protected static final class VFileDataStream implements DataStream {
-		private final VFile vFile;
-
-		/**
-		 * Constructor.
-		 * @param vFile File data
-		 */
-		VFileDataStream(final VFile vFile) {
-			this.vFile = vFile;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public InputStream createInputStream() throws IOException {
-			return vFile.createInputStream();
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public long getLength() {
-			return vFile.getLength();
-		}
-	}
-
-	/**
-	 * InputStreamBuilder from DataStream.
-	 */
-	protected static final class DataStreamInputStreamBuilder implements InputStreamBuilder {
-		private final DataStream dataStream;
-
-		/**
-		 * Constructor.
-		 * @param dataStream Data Stream
-		 */
-		DataStreamInputStreamBuilder(final DataStream dataStream) {
-			this.dataStream = dataStream;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public InputStream createInputStream() throws IOException {
-			return dataStream.createInputStream();
 		}
 	}
 

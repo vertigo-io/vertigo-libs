@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.servlet.ServletContext;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,6 +34,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.vega.plugins.webservice.servlet.ServletResourceResolverPlugin;
 import io.vertigo.vega.plugins.webservice.servlet.WebAppContextParamPlugin;
+import jakarta.servlet.ServletContext;
 
 /**
  * @author npiedeloup

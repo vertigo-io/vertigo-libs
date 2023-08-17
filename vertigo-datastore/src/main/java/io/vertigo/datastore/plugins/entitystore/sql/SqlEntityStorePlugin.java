@@ -25,9 +25,11 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import io.vertigo.basics.task.AbstractTaskEngineSQL;
+import io.vertigo.basics.task.TaskEngineInsert;
+import io.vertigo.basics.task.TaskEngineInsertBatch;
 import io.vertigo.basics.task.TaskEngineProc;
+import io.vertigo.basics.task.TaskEngineProcBatch;
 import io.vertigo.basics.task.TaskEngineSelect;
-import io.vertigo.basics.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.Cardinality;
@@ -87,8 +89,12 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		TkSelect,
 		/** Prefix of the INSERT.*/
 		TkInsert,
+		/** Prefix of the INSERT BATCH.*/
+		TkInsertBatch,
 		/** Prefix of the UPDATE.*/
 		TkUpdate,
+		/** Prefix of the UPDATE BATCH.*/
+		TkUpdateBatch,
 		/** Prefix of the DELETE.*/
 		TkDelete,
 		/** Prefix of the COUNT.*/
@@ -139,14 +145,14 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	 * @return the name of the table
 	 */
 	private static String getEntityName(final DtDefinition dtDefinition) {
-		return dtDefinition.getFragment().orElse(dtDefinition).getLocalName();
+		return dtDefinition.getFragment().orElse(dtDefinition).id().shortName();
 	}
 
 	private static String getRequestedCols(final DtDefinition dtDefinition) {
 		if (dtDefinition.getFragment().isPresent()) {
 			return dtDefinition.getFields()
 					.stream()
-					.map(DtField::getName)
+					.map(DtField::name)
 					.map(StringUtil::camelToConstCase)
 					.collect(Collectors.joining(", "));
 		}
@@ -180,18 +186,16 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 		final String requestedCols = getRequestedCols(dtDefinition);
 		final DtField idField = getIdField(dtDefinition);
-		final String idFieldName = idField.getName();
-		final String request = new StringBuilder()
-				.append(" select ").append(requestedCols)
-				.append(" from ").append(tableName)
-				.append(" where ").append(StringUtil.camelToConstCase(idFieldName)).append(" = #").append(idFieldName).append('#')
-				.toString();
+		final String idFieldName = idField.name();
+		final String request = " select " + requestedCols +
+				" from " + tableName +
+				" where " + StringUtil.camelToConstCase(idFieldName) + " = #" + idFieldName + '#';
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute(idFieldName, idField.getSmartTypeDefinition(), Cardinality.ONE)
+				.addInAttribute(idFieldName, idField.smartTypeDefinition(), Cardinality.ONE)
 				.withOutAttribute("dto", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + uri.getDefinition().getName(), SmartTypeDefinition.class), Cardinality.OPTIONAL_OR_NULLABLE)
 				.build();
 
@@ -218,31 +222,30 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		final String taskName = TASK.TkSelect + "NNList" + entityName + "ByUri";
 
 		//PK de la DtList recherchée
-		final String idFieldName = StringUtil.camelToConstCase(getIdField(dtDefinition).getName());
+		final String idFieldName = StringUtil.camelToConstCase(getIdField(dtDefinition).name());
 		//FK dans la table nn correspondant à la collection recherchée. (clé de jointure ).
 		final AssociationNNDefinition associationNNDefinition = dtcUri.getAssociationDefinition();
 		final String joinTableName = associationNNDefinition.getTableName();
 		final DtDefinition joinDtDefinition = AssociationUtil.getAssociationNode(associationNNDefinition, dtcUri.getRoleName()).getDtDefinition();
-		final String joinDtFieldName = StringUtil.camelToConstCase(getIdField(joinDtDefinition).getName());
+		final String joinDtFieldName = StringUtil.camelToConstCase(getIdField(joinDtDefinition).name());
 
 		//La condition s'applique sur l'autre noeud de la relation (par rapport à la collection attendue)
 		final AssociationNode associationNode = AssociationUtil.getAssociationNodeTarget(associationNNDefinition, dtcUri.getRoleName());
 		final DtField fkField = getIdField(associationNode.getDtDefinition());
-		final String fkFieldName = fkField.getName();
+		final String fkFieldName = fkField.name();
 
-		final String request = new StringBuilder(" select t.* from ")
-				.append(tableName).append(" t")
+		final String request = " select t.* from " +
+				tableName + " t" +
 				//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
-				.append(" join ").append(joinTableName).append(" j on j.").append(joinDtFieldName).append(" = t.").append(idFieldName)
+				" join " + joinTableName + " j on j." + joinDtFieldName + " = t." + idFieldName +
 				//Condition de la recherche
-				.append(" where j.").append(StringUtil.camelToConstCase(fkFieldName)).append(" = #").append(fkFieldName).append('#')
-				.toString();
+				" where j." + StringUtil.camelToConstCase(fkFieldName) + " = #" + fkFieldName + '#';
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute(fkFieldName, fkField.getSmartTypeDefinition(), Cardinality.ONE)
+				.addInAttribute(fkFieldName, fkField.smartTypeDefinition(), Cardinality.ONE)
 				.withOutAttribute("dtc", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
 				.build();
 
@@ -268,7 +271,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Serializable value = dtcUri.getSource().getId();
 
-		return findByCriteria(dtDefinition, Criterions.isEqualTo(fkField::getName, value), DtListState.of(null));
+		return findByCriteria(dtDefinition, Criterions.isEqualTo(fkField::name, value), DtListState.of(null));
 	}
 
 	/** {@inheritDoc} */
@@ -284,17 +287,17 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		final String requestedCols = getRequestedCols(dtDefinition);
 		final String taskName = getListTaskName(entityName);
 		final Tuple<String, CriteriaCtx> tuple = criteria.toStringAnCtx(criteriaEncoder);
-		final String where = tuple.getVal1();
+		final String where = tuple.val1();
 		final String request = createLoadAllLikeQuery(tableName, requestedCols, where, dtListState);
 		final TaskDefinitionBuilder taskDefinitionBuilder = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request);
 
-		final CriteriaCtx ctx = tuple.getVal2();
+		final CriteriaCtx ctx = tuple.val2();
 		//IN, Optional
 		for (final String attributeName : ctx.getAttributeNames()) {
-			taskDefinitionBuilder.addInAttribute(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).getSmartTypeDefinition(), Cardinality.OPTIONAL_OR_NULLABLE);
+			taskDefinitionBuilder.addInAttribute(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).smartTypeDefinition(), Cardinality.OPTIONAL_OR_NULLABLE);
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder
@@ -314,11 +317,10 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	}
 
 	private static String getListTaskName(final String entityName) {
-		final String fullName = new StringBuilder(TASK.TkSelect.name())
-				.append("List")
-				.append(entityName)
-				.append("ByCriteria")
-				.toString();
+		final String fullName = TASK.TkSelect.name() +
+				"List" +
+				entityName +
+				"ByCriteria";
 		if (fullName.length() > MAX_TASK_SPECIFIC_NAME_LENGTH) {
 			return fullName.substring(0, MAX_TASK_SPECIFIC_NAME_LENGTH);
 		}
@@ -338,6 +340,34 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		return entity;
 	}
 
+	@Override
+	public <E extends Entity> DtList<E> createList(final DtList<E> entities) {
+		final DtDefinition dtDefinition = entities.getDefinition();
+		final String entityName = getEntityName(dtDefinition);
+		final String tableName = StringUtil.camelToConstCase(entityName);
+		//---
+		final String request = sqlDialect.createInsertQuery(dtDefinition.getIdField().get().name(), getDataFields(dtDefinition), sequencePrefix, tableName, "dtos");
+
+		final TaskDefinition taskDefinition = TaskDefinition.builder(TASK.TkInsertBatch.name() + entityName)
+				.withEngine(TaskEngineInsertBatch.class)
+				.withDataSpace(dataSpace)
+				.withRequest(request)
+				.addInAttribute("dtos", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerSmartType, Cardinality.ONE)
+				.build();
+
+		final Task task = Task.builder(taskDefinition)
+				.addValue("dtos", entities)
+				.addContextProperty("connectionName", getConnectionName())
+				.build();
+
+		/*final int sqlRowCount =*/ taskManager
+				.execute(task)
+				.getResult();
+
+		return entities;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public void update(final DtDefinition dtDefinition, final Entity entity) {
@@ -347,28 +377,55 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		put(entity, insert);
 	}
 
+	@Override
+	public <E extends Entity> void updateList(final DtList<E> entities) {
+		final DtDefinition dtDefinition = entities.getDefinition();
+		final String entityName = getEntityName(dtDefinition);
+		//---
+		final String request = createUpdateQuery(dtDefinition, "dtos");
+
+		final TaskDefinition taskDefinition = TaskDefinition.builder(TASK.TkUpdateBatch.name() + entityName)
+				.withEngine(TaskEngineProcBatch.class)
+				.withDataSpace(dataSpace)
+				.withRequest(request)
+				.addInAttribute("dtos", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerSmartType, Cardinality.ONE)
+				.build();
+
+		final Task task = Task.builder(taskDefinition)
+				.addValue("dtos", entities)
+				.addContextProperty("connectionName", getConnectionName())
+				.build();
+
+		final int sqlRowCount = taskManager
+				.execute(task)
+				.getResult();
+
+		if (sqlRowCount == 0) {
+			throw new VSystemException("no data updated");
+		}
+
+	}
+
 	/**
 	 * Creates the update request.
 	 *
 	 * @param dtDefinition the dtDefinition
 	 * @return the sql request
 	 */
-	private static String createUpdateQuery(final DtDefinition dtDefinition) {
+	private static String createUpdateQuery(final DtDefinition dtDefinition, final String parameterName) {
 		final String entityName = getEntityName(dtDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final DtField idField = getIdField(dtDefinition);
 
-		return new StringBuilder()
-				.append("update ").append(tableName).append(" set ")
-
-				.append(dtDefinition.getFields()
+		return "update " + tableName + " set " +
+				dtDefinition.getFields()
 						.stream()
 						.filter(dtField -> dtField.isPersistent() && !dtField.getType().isId())
-						.map(dtField -> StringUtil.camelToConstCase(dtField.getName()) + " =#dto." + dtField.getName() + '#')
-						.collect(Collectors.joining(", ")))
-				.append(" where ")
-				.append(StringUtil.camelToConstCase(idField.getName())).append(" = #dto.").append(idField.getName()).append('#')
-				.toString();
+						.map(dtField -> StringUtil.camelToConstCase(dtField.name()) + " =#" + parameterName + '.' + dtField.name() + '#')
+						.collect(Collectors.joining(", ")) +
+				" where " +
+				StringUtil.camelToConstCase(idField.name()) + " = #" + parameterName + '.' + idField.name() + '#';
 	}
 
 	/**
@@ -377,7 +434,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	 */
 	private static Class<? extends TaskEngine> getTaskEngineClass(final boolean insert) {
 		if (insert) {
-			return TaskEngineInsertWithGeneratedKeys.class;
+			return TaskEngineInsert.class;
 		}
 		return TaskEngineProc.class;
 	}
@@ -392,7 +449,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final String taskName = (insert ? TASK.TkInsert : TASK.TkUpdate) + entityName;
 
-		final String request = insert ? sqlDialect.createInsertQuery(dtDefinition.getIdField().get().getName(), getDataFields(dtDefinition), sequencePrefix, tableName) : createUpdateQuery(dtDefinition);
+		final String request = insert ? sqlDialect.createInsertQuery(dtDefinition.getIdField().get().name(), getDataFields(dtDefinition), sequencePrefix, tableName, "dto") : createUpdateQuery(dtDefinition, "dto");
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(getTaskEngineClass(insert))
@@ -424,7 +481,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 				.stream()
 				.filter(dtField -> !dtField.getType().isId())
 				.filter(DtField::isPersistent)
-				.map(DtField::getName)
+				.map(DtField::name)
 				.collect(Collectors.toList());
 	}
 
@@ -440,18 +497,16 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final String taskName = TASK.TkDelete + entityName;
 
-		final String idFieldName = idField.getName();
+		final String idFieldName = idField.name();
 
-		final String request = new StringBuilder()
-				.append("delete from ").append(tableName)
-				.append(" where ").append(StringUtil.camelToConstCase(idFieldName)).append(" = #").append(idFieldName).append('#')
-				.toString();
+		final String request = "delete from " + tableName +
+				" where " + StringUtil.camelToConstCase(idFieldName) + " = #" + idFieldName + '#';
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineProc.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute(idFieldName, idField.getSmartTypeDefinition(), Cardinality.ONE)
+				.addInAttribute(idFieldName, idField.smartTypeDefinition(), Cardinality.ONE)
 				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerSmartType, Cardinality.ONE)
 				.build();
 
@@ -512,14 +567,14 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 		final String requestedCols = getRequestedCols(dtDefinition);
 		final DtField idField = getIdField(dtDefinition);
-		final String idFieldName = idField.getName();
+		final String idFieldName = idField.name();
 		final String request = sqlDialect.createSelectForUpdateQuery(tableName, requestedCols, idFieldName);
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute(idFieldName, idField.getSmartTypeDefinition(), Cardinality.ONE)
+				.addInAttribute(idFieldName, idField.smartTypeDefinition(), Cardinality.ONE)
 				.withOutAttribute("dto", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + uri.getDefinition().getName(), SmartTypeDefinition.class), Cardinality.OPTIONAL_OR_NULLABLE)
 				.build();
 

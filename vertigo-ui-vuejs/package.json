@@ -1,29 +1,29 @@
 {
   "name": "@vertigo-io/vertigo-ui-vuejs",
-  "version": "3.6.0",
+  "version": "4.0.0",
   "scripts": {
-    "serve": "vue-cli-service serve --port 3000",
-    "build": "vue-cli-service build",
-    "build-lib": "vue-cli-service build --target lib --name VertigoUi --filename vertigo-ui src/main.js && cp dist/vertigo-ui.* ../vertigo-ui/src/main/resources/io/vertigo/ui/static/js/",
-    "lint": "vue-cli-service lint"
+    "dev": "vite --port 3000",
+    "build": "vite build",
+    "preview": "vite preview --port 5050",
+    "build-lib": "vite build && cp dist/vertigo-ui.* ../vertigo-ui/src/main/resources/io/vertigo/ui/static/js/"
   },
   "dependencies": {
-    "core-js": "^3.27.0"
+    "animate.css": "^4.1.1",
+    "axios": "^0.24.0",
+    "core-js": "^3.20.3",
+    "d3-color": "^3.1.0",
+    "d3-interpolate": "^3.0.1",
+    "ionicons": "^6.0.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^5.0.8",
-    "@vue/cli-plugin-eslint": "^5.0.8",
-    "@vue/cli-service": "^5.0.8",
-    "vue-template-compiler": "^2.7.14",
-    
-    "babel-eslint": "^10.1.0",
-    "eslint": "^7.5.0",
-    "eslint-plugin-vue": "^7.5.0",
-    
-    "vue": "^2.7.14",
-    "quasar": "^1.22.9",
-    "axios": "^1.2.1",
-    "ol": "^7.2.2"
+    "@vitejs/plugin-vue": "^2.2.2",
+    "eslint": "^6.8.0",
+    "eslint-plugin-vue": "^6.2.2",
+    "ol": "^5.3.3",
+    "quasar": "^2.12.3",
+    "vite": "^2.8.4",
+    "vite-plugin-externals": "^0.4.0",
+    "vue": "^3.3.4"
   },
   "eslintConfig": {
     "root": true,

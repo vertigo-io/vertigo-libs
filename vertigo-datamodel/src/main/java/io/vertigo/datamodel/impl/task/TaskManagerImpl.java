@@ -28,14 +28,14 @@ import javax.inject.Inject;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.Selector;
+import io.vertigo.core.lang.Selector.MethodConditions;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.util.InjectorUtil;
-import io.vertigo.core.util.Selector;
-import io.vertigo.core.util.Selector.MethodConditions;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
@@ -90,7 +90,7 @@ public final class TaskManagerImpl implements TaskManager, SimpleDefinitionProvi
 				.filterMethods(MethodConditions.annotatedWith(TaskAnnotation.class))
 				.findMethods()
 				.stream()
-				.map(Tuple::getVal2)
+				.map(Tuple::val2)
 				.map(TaskManagerImpl::createTaskDefinition)
 				.collect(Collectors.toList());
 	}
@@ -106,7 +106,7 @@ public final class TaskManagerImpl implements TaskManager, SimpleDefinitionProvi
 		if (hasOut(method)) {
 			final Tuple<String, SmartTypeDefinition> outSmartTypeAndName = findOutSmartType(method);
 			final Cardinality outCardinality = getCardinality(method.getReturnType());
-			taskDefinitionBuilder.withOutAttribute(outSmartTypeAndName.getVal1(), outSmartTypeAndName.getVal2(), outCardinality);
+			taskDefinitionBuilder.withOutAttribute(outSmartTypeAndName.val1(), outSmartTypeAndName.val2(), outCardinality);
 		}
 		for (final Parameter parameter : method.getParameters()) {
 			final TaskInput taskAttributeAnnotation = parameter.getAnnotation(TaskInput.class);

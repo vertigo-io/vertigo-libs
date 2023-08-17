@@ -53,7 +53,7 @@ public class NumberFormatterTest {
 		}
 	}
 
-	private NodeConfig buildNodeConfig() {
+	private static NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.withBoot(BootConfig.builder()
 						.withLocalesAndDefaultZoneId("fr_FR", "UTC")
@@ -148,15 +148,15 @@ public class NumberFormatterTest {
 		Assertions.assertEquals(new BigDecimal("0.14"), formatterNumberLocalized.stringToValue("0.14", BasicType.BigDecimal));
 
 		Assertions.assertEquals("3.14", formatterNumberLocalized.valueToString(pi, BasicType.BigDecimal));
-		Assertions.assertEquals("1 495", formatterNumberLocalized.valueToString(1495, BasicType.BigDecimal));
+		Assertions.assertEquals("1 495", formatterNumberLocalized.valueToString(1495, BasicType.BigDecimal));
 		Assertions.assertEquals("1 495.52", formatterNumberLocalizedSpace.valueToString(1495.52, BasicType.BigDecimal));
 
 		//Integer
 		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1492", BasicType.Integer));
-		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1 492", BasicType.Integer));
+		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1 492", BasicType.Integer));
 		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1492  ", BasicType.Integer));
 		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("01492  ", BasicType.Integer));
-		Assertions.assertEquals("1 492", formatterNumberLocalized.valueToString(1492, BasicType.Integer));
+		Assertions.assertEquals("1 492", formatterNumberLocalized.valueToString(1492, BasicType.Integer));
 
 		//Long
 		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("1492", BasicType.Long));

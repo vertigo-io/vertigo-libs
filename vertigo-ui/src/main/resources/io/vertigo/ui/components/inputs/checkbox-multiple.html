@@ -1,4 +1,4 @@
-<th:block th:fragment="checkbox-multiple-edit(object,list,field, label, valueField, labelField, layout, required, edit_content_slot, after_label_slot, label_attrs, input_attrs)" vu:alias="checkbox-multiple" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="checkbox-multiple-edit(object,list,field, label, valueField, labelField, filterFunction, layout, required, edit_content_slot, after_label_slot, label_attrs, input_attrs)" vu:alias="checkbox-multiple" vu:selector="${viewMode=='edit'}"
 	  th:assert="${object} != null and ${field} != null and ${list} != null"
 	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
 	   myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)},
@@ -9,12 +9,12 @@
 	<vu:include-data object="${list}" field="${myLabelField}"/>
 	<vu:label-edit object="${object}" field="${field}" label="${label}" required="${myRequired}" after_label_slot="after_label_slot" label_attrs="${label_attrs}">
 		<q-option-group
-			th:@hook:created="|function() { if (!vueData.${object}.${field}) { vueData.${object}.${field} = []}}|"
+			th:@vue:created="|function() { if (!vueData.${object}.${field}) { vueData.${object}.${field} = []}}|"
 			th:name="|vContext[${object}][${field}]|"
 			th::inline="${inline}"
 		    type="checkbox"
 		   	th:v-model="|vueData.${object}.${field}|" 
-			th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}')|"
+			th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}', ${filterFunction?:null})|"
 			dense
 			th:attr="__${input_attrs}__"
 		 >
@@ -23,7 +23,7 @@
 	</vu:label-edit>
 </th:block> 
 
-<th:block th:fragment="checkbox-multiple-read(object, field, label, list, valueField, labelField, layout, required, edit_content_slot, after_label_slot, label_attrs, input_attrs)" vu:alias="checkbox-multiple" vu:selector="${viewMode=='read'}" 
+<th:block th:fragment="checkbox-multiple-read(object, field, label, list, valueField, labelField, filterFunction, layout, required, edit_content_slot, after_label_slot, label_attrs, input_attrs)" vu:alias="checkbox-multiple" vu:selector="${viewMode=='read'}" 
   th:assert="${object} != null and ${field} != null and ${list} != null"
 	th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, inline=${(layout != null && layout == 'horizontal') ? true : false }">
 	<vu:include-data object="${object}" field="${field}"/>
@@ -31,12 +31,12 @@
 	<vu:include-data object="${list}" field="${myLabelField}"/>
 	<vu:label-read object="${object}" field="${field}" label="${label}" after_label_slot="after_label_slot" label_attrs="${label_attrs}">
 		<q-option-group
-			th:@hook:created="|function() { if (!vueData.${object}.${field}) { vueData.${object}.${field} = []}}|"
+			th:@vue:created="|function() { if (!vueData.${object}.${field}) { vueData.${object}.${field} = []}}|"
 			th:name="|vContext[${object}][${field}]|"
 			th::inline="${inline}"
 		    type="checkbox"
 		   	th:v-model="|vueData.${object}.${field}|" 
-			th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}')|"
+			th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}', ${filterFunction?:null})|"
 			dense
 			disable
 			th:attr="__${input_attrs}__"

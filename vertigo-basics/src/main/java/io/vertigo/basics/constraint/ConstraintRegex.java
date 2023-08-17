@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.definitions.Constraint;
 import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.definitions.Property;
@@ -33,7 +33,7 @@ import io.vertigo.datamodel.structure.definitions.Property;
  */
 public final class ConstraintRegex implements Constraint<String, String> {
 	private final Pattern pattern;
-	private final MessageText errorMessage;
+	private final LocaleMessageText errorMessage;
 
 	/**
 	 * @param regex Expression régulière
@@ -44,7 +44,7 @@ public final class ConstraintRegex implements Constraint<String, String> {
 		//---
 		pattern = Pattern.compile(regex);
 		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
-				() -> MessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern()));
+				() -> LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern()));
 	}
 
 	/** {@inheritDoc} */
@@ -57,7 +57,7 @@ public final class ConstraintRegex implements Constraint<String, String> {
 
 	/** {@inheritDoc} */
 	@Override
-	public MessageText getErrorMessage() {
+	public LocaleMessageText getErrorMessage() {
 		return errorMessage;
 	}
 

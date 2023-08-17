@@ -1,12 +1,12 @@
-import Vue from "vue"
-import Quasar from "quasar"
+import * as Vue from "vue"
+import * as Quasar from "quasar"
 
 export default {
-    bind: function(elMaxi, args) {
-            const topOffset = args.value.topOffset;
-            const topOffsetElSelector = args.value.topOffsetEl;
-            const leftOffset = args.value.leftOffset;
-            const leftOffsetElSelector = args.value.leftOffsetEl;
+    created: function(elMaxi, binding) {
+            const topOffset = binding.value.topOffset;
+            const topOffsetElSelector = binding.value.topOffsetEl;
+            const leftOffset = binding.value.leftOffset;
+            const leftOffsetElSelector = binding.value.leftOffsetEl;
             const elMini = elMaxi.querySelector('.mini')
             for(var i=0 ; i<elMaxi.childNodes.length; i++) {
                 var elChild = elMaxi.childNodes[i];
@@ -49,16 +49,16 @@ export default {
                 return currentOffset;
             }
             window.addEventListener('scroll', Vue.minifyHandler)
-            window.addEventListener('resize', Quasar.utils.throttle(Vue.minifyHandler,50))
+            window.addEventListener('resize', Quasar.throttle(Vue.minifyHandler,50))
         },
-        componentUpdated : function() {
+        updated : function() {
             const interval = 50;
             const maxDelay = 1000;
             for(var delay = interval ; delay < maxDelay ; delay += delay) {
                 setTimeout(Vue.minifyHandler,delay);
             }
         },
-        unbind: function(elMaxi) {
+        unmounted: function(elMaxi) {
             window.removeEventListener('scroll');
             window.removeEventListener('resize');
             

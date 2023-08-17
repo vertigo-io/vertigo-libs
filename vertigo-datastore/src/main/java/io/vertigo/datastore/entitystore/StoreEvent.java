@@ -17,12 +17,14 @@
  */
 package io.vertigo.datastore.entitystore;
 
+import java.util.List;
+
 import io.vertigo.commons.eventbus.Event;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.model.UID;
 
 /**
- * This class defines the event that is emitted when the store deals with an object identified by an uri.
+ * This class defines the event that is emitted when the store deals with a list of object identified by an uid.
  *
  * @author pchretien
  */
@@ -40,27 +42,27 @@ public final class StoreEvent implements Event {
 	}
 
 	private final Type type;
-	private final UID uid;
+	private final List<UID> uids;
 
 	/**
 	 * Constructor.
 	 * @param type Store type
 	 * @param uid UID of stored element
 	 */
-	public StoreEvent(final Type type, final UID uid) {
+	public StoreEvent(final Type type, final List<UID> uids) {
 		Assertion.check()
 				.isNotNull(type)
-				.isNotNull(uid);
+				.isNotNull(uids);
 		//-----
 		this.type = type;
-		this.uid = uid;
+		this.uids = uids;
 	}
 
 	/**
 	 * @return UID of stored element
 	 */
-	public UID getUID() {
-		return uid;
+	public List<UID> getUIDs() {
+		return uids;
 	}
 
 	/**

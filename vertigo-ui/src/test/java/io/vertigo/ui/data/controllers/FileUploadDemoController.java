@@ -90,10 +90,6 @@ public class FileUploadDemoController extends AbstractVSpringMvcController {
 		final ArrayList<FileInfoURI> fileUris = new ArrayList<>();
 		fileUris.add(fileInfoTmp1.getURI());
 		fileUris.add(fileInfoTmp2.getURI());
-		viewContext.publishFileInfoURI(fileUriKeyMono, null);
-		viewContext.publishFileInfoURIs(fileUrisKey1, fileUris);
-		viewContext.publishFileInfoURIs(fileUrisKey2, fileUris);
-		viewContext.publishFileInfoURIs(fileUrisKey3, fileUris);
 
 		final ArrayList<FileInfoURI> fileUris2 = new ArrayList<>();
 		fileUris2.add(fileInfoTmp1.getURI());
@@ -101,7 +97,13 @@ public class FileUploadDemoController extends AbstractVSpringMvcController {
 		fileUris2.add(fileInfoTmp3.getURI());
 		myMovie.setPictures(fileUris2); //TODO
 		mySubList.get(0).setMainPicture(fileInfoTmp1.getURI());
-		toModeCreate();
+
+		viewContext
+				.publishFileInfoURI(fileUriKeyMono, null)
+				.publishFileInfoURIs(fileUrisKey1, fileUris)
+				.publishFileInfoURIs(fileUrisKey2, fileUris)
+				.publishFileInfoURIs(fileUrisKey3, fileUris)
+				.toModeCreate();
 	}
 
 	@PostMapping("/movies/{movieId}")
@@ -150,13 +152,13 @@ public class FileUploadDemoController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/_read")
-	public void toRead() {
-		toModeReadOnly();
+	public void toRead(final ViewContext viewContext) {
+		viewContext.toModeReadOnly();
 	}
 
 	@PostMapping("/_edit")
-	public void toEdit() {
-		toModeEdit();
+	public void toEdit(final ViewContext viewContext) {
+		viewContext.toModeEdit();
 	}
 
 	@GetMapping("/myFiles")

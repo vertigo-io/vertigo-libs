@@ -19,9 +19,9 @@ package io.vertigo.vega.impl.servlet.filter;
 
 import java.io.IOException;
 
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 
 /**
  * Implémentation de HttpServletRequestWrapper qui fonctionne avec le CompressionServletRequestStream.

@@ -41,7 +41,6 @@ import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
@@ -94,10 +93,10 @@ public final class UiUtil implements Serializable {
 	 * @return Name in context (use for input name)
 	 */
 	public static String generateComponentUID(final String component, final String object, final String field, final String row) {
-		final var prefix = new StringBuilder(component)
-				.append(Long.toHexString(UUID.randomUUID().getLeastSignificantBits()))
-				.append("_");
-		return contextGet(prefix.toString(), object, field, row, true);
+		String prefix = component +
+				Long.toHexString(UUID.randomUUID().getLeastSignificantBits()) +
+				"_";
+		return contextGet(prefix, object, field, row, true);
 	}
 
 	/**
@@ -185,7 +184,7 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			return getDtField(object + '.' + fieldName).getSmartTypeDefinition().getProperties().getValue(DtProperty.UNIT);
+			return getDtField(object + '.' + fieldName).smartTypeDefinition().getProperties().getValue(DtProperty.UNIT);
 		}
 		return "";
 	}
@@ -210,7 +209,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public static Integer smartTypeMaxLength(final String object, final String fieldName) {
 		if (fieldName != null) {
-			return getDtField(object + '.' + fieldName).getSmartTypeDefinition().getProperties().getValue(DtProperty.MAX_LENGTH);
+			return getDtField(object + '.' + fieldName).smartTypeDefinition().getProperties().getValue(DtProperty.MAX_LENGTH);
 		}
 		return null;
 	}
@@ -223,7 +222,7 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			return "col_" + getDtField(object + '.' + fieldName).getSmartTypeDefinition().getName();
+			return "col_" + getDtField(object + '.' + fieldName).smartTypeDefinition().getName();
 		}
 		return defaultValue;
 	}
@@ -236,8 +235,8 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			final var smartTypeDefinition = getDtField(object + '.' + fieldName).getSmartTypeDefinition();
-			if (smartTypeDefinition.getScope().isPrimitive()) {
+			final var smartTypeDefinition = getDtField(object + '.' + fieldName).smartTypeDefinition();
+			if (smartTypeDefinition.getScope().isBasicType()) {
 				final var dataType = smartTypeDefinition.getBasicType();
 				switch (dataType) {
 					case Long:
@@ -256,6 +255,7 @@ public final class UiUtil implements Serializable {
 			}
 		}
 		return "left";
+
 	}
 
 	/**
@@ -268,15 +268,19 @@ public final class UiUtil implements Serializable {
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
 			return DEFAULT_FORMATTER.valueToString(value, BasicType.Boolean);
 		}
-		return smartTypeManager.valueToString(getDtField(fieldPath).getSmartTypeDefinition(), value);
+		return smartTypeManager.valueToString(getDtField(fieldPath).smartTypeDefinition(), value);
 	}
 
 	public static Double getMinValue(final String fieldPath) {
-		return getDtField(fieldPath).getSmartTypeDefinition().getProperties().getValue(DtProperty.MIN_VALUE);
+		return getDtField(fieldPath).smartTypeDefinition().getProperties().getValue(DtProperty.MIN_VALUE);
 	}
 
 	public static Double getMaxValue(final String fieldPath) {
-		return getDtField(fieldPath).getSmartTypeDefinition().getProperties().getValue(DtProperty.MAX_VALUE);
+		return getDtField(fieldPath).smartTypeDefinition().getProperties().getValue(DtProperty.MAX_VALUE);
+	}
+
+	public static String getUiDatetimeFormat(final String fieldPath) {
+		return getDtField(fieldPath).smartTypeDefinition().getProperties().getValue(DtProperty.UI_DATETIME_FORMAT);
 	}
 
 	public static Double getStep(final Double minValue, final Double maxValue) {
@@ -309,7 +313,7 @@ public final class UiUtil implements Serializable {
 		Assertion.check().isTrue(fieldPath.indexOf('.') != 0, "FieldPath shouldn't starts with . ({0})", fieldPath);
 		//-----
 		if (fieldPath.indexOf('.') > 0) { //Le champs est porté par un Object
-			return getDtField(fieldPath).getCardinality().hasOne();
+			return getDtField(fieldPath).cardinality().hasOne();
 		}
 		return false; //on ne sait pas dire, mais on ne force pas à obligatoire
 	}
@@ -320,7 +324,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public static String getDisplayField(final String uiListKey) {
 		final var dtDefinition = getUiList(uiListKey).getDtDefinition();
-		return dtDefinition.getDisplayField().get().getName();
+		return dtDefinition.getDisplayField().get().name();
 	}
 
 	/**
@@ -333,7 +337,7 @@ public final class UiUtil implements Serializable {
 			return ((AbstractUiListUnmodifiable) uiList).getIdFieldName();
 		}
 		final var dtDefinition = getUiList(uiListKey).getDtDefinition();
-		return dtDefinition.getIdField().get().getName();
+		return dtDefinition.getIdField().get().name();
 	}
 
 	/**
@@ -352,9 +356,9 @@ public final class UiUtil implements Serializable {
 		} else if (currentLocaleTag.startsWith("it")) {
 			return "it";
 		} else if ("en".equals(currentLocaleTag)) {
-			return "en-us"; //we need to make a choice...
+			return "en-US"; //we need to make a choice...
 		} else {
-			return currentLocaleTag.toLowerCase();
+			return currentLocaleTag;
 		}
 	}
 
@@ -364,7 +368,7 @@ public final class UiUtil implements Serializable {
 	 * @return the locale (in the quasar's style) to select the right language in quasar
 	 */
 	public static String getCurrentLocaleForQuasar() {
-		return StringUtil.constToLowerCamelCase(getCurrentLocalePrefixForQuasar().toUpperCase().replace('-', '_'));
+		return getCurrentLocalePrefixForQuasar().replaceAll("-", "");
 	}
 
 	public static String compileVueJsTemplate(final String template) {

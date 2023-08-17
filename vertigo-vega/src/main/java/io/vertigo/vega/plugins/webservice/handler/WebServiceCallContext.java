@@ -21,9 +21,6 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -33,6 +30,8 @@ import io.vertigo.vega.webservice.model.DtListDelta;
 import io.vertigo.vega.webservice.validation.UiContextResolver;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.VegaUiMessageStack;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
 * @author npiedeloup
@@ -47,8 +46,6 @@ public final class WebServiceCallContext {
 
 	/**
 	 * Constructor.
-	 * @param request Request
-	 * @param response Response
 	 * @param webServiceDefinition WebServiceDefinition
 	 */
 	public WebServiceCallContext(final WebServiceContext webServiceContext, final WebServiceDefinition webServiceDefinition) {
@@ -115,11 +112,6 @@ public final class WebServiceCallContext {
 		return webServiceContext.getPathParam(webServiceParam.getName());
 	}
 
-	/**
-	 * Get path param of an endpoint.
-	 * @param webServiceParam param name
-	 * @return path param value
-	 */
 	public String getBody() {
 		return webServiceContext.getBody();
 	}
@@ -144,10 +136,8 @@ public final class WebServiceCallContext {
 	}
 
 	private static Object ifOptional(final WebServiceParam webServiceParam, final Object value) {
-		Object newValue = value;
-		if (webServiceParam.isOptional()) {
-			newValue = Optional.ofNullable(value);
-		}
-		return newValue;
+		return webServiceParam.isOptional()
+				? Optional.ofNullable(value)
+				: value;
 	}
 }

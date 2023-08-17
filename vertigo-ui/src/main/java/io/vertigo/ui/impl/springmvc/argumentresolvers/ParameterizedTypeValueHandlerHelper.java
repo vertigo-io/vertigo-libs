@@ -116,4 +116,8 @@ final class ParameterizedTypeValueHandlerHelper<V> {
 		throw new IllegalArgumentException("Parameters/Return Type must be Class or ParameterizedType, unsupported type:" + testedType);
 	}
 
+	public boolean isMultiple(final MethodParameter parameter) {
+		return List.class.equals(parameter.getParameterType());
+	}
+
 }

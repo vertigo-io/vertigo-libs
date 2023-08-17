@@ -33,6 +33,7 @@ import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToke
 import io.vertigo.connectors.ldap.EsapiLdapEncoder;
 import io.vertigo.connectors.ldap.LdapConnector;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 
@@ -44,15 +45,13 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 	private static final Logger LOGGER = LogManager.getLogger(LdapAuthenticationPlugin.class);
 
 	private static final String USERDN_SUBSTITUTION_TOKEN = "{0}";
-	private String userLoginPrefix;
-	private String userLoginSuffix;
+	private final String userLoginPrefix;
+	private final String userLoginSuffix;
 	private final LdapConnector ldapConnector;
 
 	/**
 	 * Constructor.
 	 * @param userLoginTemplate userLoginTemplate
-	 * @param ldapServerHost Ldap Server host
-	 * @param ldapServerPort Ldap server port (default : 389)
 	 */
 	@Inject
 	public LdapAuthenticationPlugin(
@@ -63,7 +62,10 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 				.isNotNull(ldapConnectors)
 				.isFalse(ldapConnectors.isEmpty(), "At least one LdapConnector espected");
 		//----
-		parseUserLoginTemplate(userLoginTemplate);
+		Tuple<String, String> tuple = parseUserLoginTemplate(userLoginTemplate);
+		userLoginPrefix = tuple.val1();
+		userLoginSuffix = tuple.val2();
+
 		final String connectorName = connectorNameOpt.orElse("main");
 		ldapConnector = ldapConnectors.stream()
 				.filter(connector -> connectorName.equals(connector.getName()))
@@ -105,7 +107,7 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 		}
 	}
 
-	private void parseUserLoginTemplate(final String template) {
+	private static Tuple<String, String> parseUserLoginTemplate(final String template) {
 		Assertion.check().isNotBlank(template, "User DN template cannot be null or empty.");
 		//----
 		final int index = template.indexOf(USERDN_SUBSTITUTION_TOKEN);
@@ -118,8 +120,7 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 		final String prefix = template.substring(0, index);
 		final String suffix = template.substring(prefix.length() + USERDN_SUBSTITUTION_TOKEN.length());
 
-		userLoginPrefix = prefix;
-		userLoginSuffix = suffix;
+		return Tuple.of(prefix, suffix);
 	}
 
 	private static String protectLdap(final String principal) {

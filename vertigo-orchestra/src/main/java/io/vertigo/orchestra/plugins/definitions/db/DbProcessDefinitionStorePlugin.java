@@ -75,15 +75,15 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 
 		process.setName(processDefinition.getName());
 		process.setLabel(processDefinition.getLabel());
-		process.setCronExpression(processDefinition.getTriggeringStrategy().getCronExpression().orElse(null));
-		process.setInitialParams(mapCodec.encode(processDefinition.getTriggeringStrategy().getInitialParams()));
+		process.setCronExpression(processDefinition.getTriggeringStrategy().cronExpressionOpt().orElse(null));
+		process.setInitialParams(mapCodec.encode(processDefinition.getTriggeringStrategy().initialParams()));
 		process.setMultiexecution(processDefinition.getTriggeringStrategy().isMultiExecution());
-		process.setRescuePeriod(processDefinition.getTriggeringStrategy().getRescuePeriod());
+		process.setRescuePeriod(processDefinition.getTriggeringStrategy().rescuePeriodInSeconds());
 		if (!processDefinition.getMetadatas().isEmpty()) {
 			process.setMetadatas(new GsonBuilder().create().toJson(processDefinition.getMetadatas()));
 		}
 		process.setNeedUpdate(processDefinition.getNeedUpdate());
-		if (processDefinition.getTriggeringStrategy().getCronExpression().isPresent()) {
+		if (processDefinition.getTriggeringStrategy().cronExpressionOpt().isPresent()) {
 			process.setTrtCd("SCHEDULED");
 		} else {
 			process.setTrtCd("MANUAL");

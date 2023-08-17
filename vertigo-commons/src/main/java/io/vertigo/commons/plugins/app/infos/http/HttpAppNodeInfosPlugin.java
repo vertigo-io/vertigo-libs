@@ -23,20 +23,13 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.time.Instant;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
 import io.vertigo.commons.app.AppNode;
@@ -44,6 +37,7 @@ import io.vertigo.commons.impl.app.AppNodeInfosPlugin;
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.lang.json.CoreJsonAdapters;
 
 /**
  * Plugin to retrieve infos of a node with the http protocol (Rest Webservices)
@@ -54,24 +48,7 @@ public final class HttpAppNodeInfosPlugin implements AppNodeInfosPlugin {
 
 	private static final int TIMEOUT_MS = 500;
 
-	private static class InstantAdapter implements JsonSerializer<Instant>, JsonDeserializer<Instant> {
-
-		/** {@inheritDoc} */
-		@Override
-		public JsonElement serialize(final Instant date, final Type typeOfSrc, final JsonSerializationContext context) {
-			return new JsonPrimitive(date.toString()); // "yyyy-mm-ddTHH:MI:SSZ"
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public Instant deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
-			return Instant.parse(jsonElement.getAsString());
-		}
-	}
-
-	private static final Gson GSON = new GsonBuilder()
-			.registerTypeAdapter(Instant.class, new InstantAdapter())
-			.create();
+	private static final Gson GSON = CoreJsonAdapters.V_CORE_GSON;
 
 	@Override
 	public String getConfig(final AppNode node) {
@@ -111,7 +88,7 @@ public final class HttpAppNodeInfosPlugin implements AppNodeInfosPlugin {
 					result.write(buffer, 0, length);
 				}
 			}
-			return GSON.fromJson(result.toString("UTF-8"), returnType);
+			return GSON.fromJson(result.toString(StandardCharsets.UTF_8), returnType);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}

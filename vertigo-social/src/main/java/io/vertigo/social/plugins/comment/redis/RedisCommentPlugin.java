@@ -17,6 +17,7 @@
  */
 package io.vertigo.social.plugins.comment.redis;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +30,8 @@ import javax.inject.Inject;
 import io.vertigo.account.account.Account;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.MapBuilder;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.core.util.MapBuilder;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.comment.Comment;
@@ -46,7 +47,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 	private final RedisConnector redisConnector;
 
 	/**
-	 * @param redisConnector Redis connector
+	 * @param connectorNameOpt Redis connector Name
 	 */
 	@Inject
 	public RedisCommentPlugin(
@@ -67,8 +68,8 @@ public final class RedisCommentPlugin implements CommentPlugin {
 	public <S extends KeyConcept> void publish(final Comment comment, final UID<S> keyConceptUri) {
 		try (final Jedis jedis = redisConnector.getClient()) {
 			try (final Transaction tx = jedis.multi()) {
-				tx.hmset("comment:" + comment.getUuid(), toMap(comment));
-				tx.lpush("comments:" + keyConceptUri.urn(), comment.getUuid().toString());
+				tx.hmset("comment:" + comment.uuid(), toMap(comment));
+				tx.lpush("comments:" + keyConceptUri.urn(), comment.uuid().toString());
 				tx.exec();
 			}
 		}
@@ -81,11 +82,11 @@ public final class RedisCommentPlugin implements CommentPlugin {
 		try (final Jedis jedis = redisConnector.getClient()) {
 			//On vérifie la présence de l'élément en base pour s'assurer la cohérence du stockage,
 			//et notament qu'il soit référencé dans "comments:keyConceptUrn"
-			final boolean elementExist = jedis.exists("comment:" + comment.getUuid());
+			final boolean elementExist = jedis.exists("comment:" + comment.uuid());
 			if (!elementExist) {
-				throw new UnsupportedOperationException("Comment " + comment.getUuid() + " doesn't exists");
+				throw new UnsupportedOperationException("Comment " + comment.uuid() + " doesn't exists");
 			}
-			jedis.hmset("comment:" + comment.getUuid(), toMap(comment));
+			jedis.hmset("comment:" + comment.uuid(), toMap(comment));
 		}
 	}
 
@@ -122,12 +123,12 @@ public final class RedisCommentPlugin implements CommentPlugin {
 	}
 
 	private static Map<String, String> toMap(final Comment comment) {
-		final String lastModified = comment.getLastModified() != null ? comment.getLastModified().toString() : null;
+		final String lastModified = comment.lastModified() != null ? comment.lastModified().toString() : null;
 		return new MapBuilder<String, String>()
-				.put("uuid", comment.getUuid().toString())
-				.put("author", comment.getAuthor().getId())
-				.put("msg", comment.getMsg())
-				.put("creationDate", comment.getCreationDate().toString())
+				.put("uuid", comment.uuid().toString())
+				.put("author", String.valueOf(Serializable.class.cast(comment.author().getId())))
+				.put("msg", comment.msg())
+				.put("creationDate", comment.creationDate().toString())
 				.putNullable("lastModified", lastModified)
 				.build();
 	}

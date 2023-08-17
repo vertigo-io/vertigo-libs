@@ -29,10 +29,11 @@ import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
@@ -49,7 +50,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
 public abstract class AbstractUiListModifiable<D extends DtObject> extends AbstractList<UiObject<D>> implements UiList<D>, Serializable {
 
 	private static final long serialVersionUID = -8398542301760300787L;
-	private final DefinitionReference<DtDefinition> dtDefinitionRef;
+	private final DefinitionId<DtDefinition> dtDefinitionId;
 	private final Class<D> objectType;
 
 	private final String inputKey;
@@ -81,7 +82,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		this.dtList = dtList;
 		this.inputKey = inputKey;
 		final DtDefinition dtDefinition = dtList.getDefinition();
-		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
+		dtDefinitionId = dtDefinition.id();
 		this.objectType = (Class<D>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
 		// ---
 		uiListDelta = new UiListDelta<>(objectType, new HashMap<>(), new HashMap<>(), new HashMap<>());
@@ -123,7 +124,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	 */
 	@Override
 	public DtDefinition getDtDefinition() {
-		return dtDefinitionRef.get();
+		return dtDefinitionId.get();
 	}
 
 	private String findContextKey(final UiObject<D> uiObject) {
@@ -134,8 +135,8 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		return toContextKey(inputKey, index);
 	}
 
-	protected String toContextKey(final String inputKey, final int index) {
-		return inputKey + ".get(" + index + ")";
+	protected String toContextKey(final String locInputKey, final int index) {
+		return locInputKey + ".get(" + index + ")";
 	}
 
 	/**
@@ -209,10 +210,10 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		//id>=0 : par index dans la UiList (pour boucle, uniquement dans la même request)
 		Assertion.check()
 				.isTrue(row >= 0, "Le getteur utilisé n'est pas le bon: utiliser getByRowId")
-				.isTrue(row < 200, "UiListModifiable is limited to 200 elements");
+				.isTrue(row <= DtListState.DEFAULT_MAX_ROWS, "UiListModifiable is limited to " + DtListState.DEFAULT_MAX_ROWS + " elements");
 
 		//SKE MLA : lazy initialisation of buffer uiObjects for size changing uiListModifiable
-		final DtDefinition dtDefinition = dtDefinitionRef.get();
+		final DtDefinition dtDefinition = dtDefinitionId.get();
 		for (int i = bufferUiObjects.size(); i < row + 1; i++) {
 			add((D) DtObjectUtil.createDtObject(dtDefinition));
 		}

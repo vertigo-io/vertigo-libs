@@ -17,9 +17,8 @@
  */
 package io.vertigo.vega.plugins.webservice.handler.converter;
 
-import javax.servlet.http.HttpServletResponse;
-
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Converter result object into json.
