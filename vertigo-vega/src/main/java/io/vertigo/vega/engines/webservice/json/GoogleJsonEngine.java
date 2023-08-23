@@ -305,10 +305,16 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		@Override
 		public D deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition((Class<D>) typeOfT);
-
-			// we use as base the default deserialization
-			final D dtObject = (D) gson.getDelegateAdapter(null, TypeToken.get(typeOfT)).fromJsonTree(json);
+			final D dtObject = (D) DtObjectUtil.createDtObject(dtDefinition);
 			final JsonObject jsonObject = json.getAsJsonObject();
+
+			dtDefinition.getFields()
+					.stream()
+					.filter(dtField -> dtField.getType() != FieldType.COMPUTED)// we don't deserialize computed fields
+					.forEach(field -> {
+						final Type targetType = field.cardinality().hasMany() ? new KnownParameterizedType(field.getTargetJavaClass(), field.smartTypeDefinition().getJavaClass()) : field.smartTypeDefinition().getJavaClass();
+						field.getDataAccessor().setValue(dtObject, context.deserialize(jsonObject.get(field.name()), targetType));
+					});
 
 			//for now Many relationships (represented by ListVAccessor) are readonly so we don't handle them at deserialization
 
