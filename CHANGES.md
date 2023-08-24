@@ -6,7 +6,7 @@ Running 4.1.0
 
 more to come :)
 
-Release 4.0.0 - 2023/08/24
+Release 4.0.0 - 2023/08/17
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-360-to-400)
 * [Account] Fix security translators when missing/null SecurityKeys
