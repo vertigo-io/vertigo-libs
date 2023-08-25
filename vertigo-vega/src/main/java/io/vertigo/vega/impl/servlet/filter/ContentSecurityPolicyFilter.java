@@ -18,11 +18,13 @@
 package io.vertigo.vega.impl.servlet.filter;
 
 import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.Random;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
@@ -104,10 +106,14 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 		final HttpServletRequest request = (HttpServletRequest) req;
 		final HttpServletResponse response = (HttpServletResponse) res;
 
-		String nonce = "Missing-Nonce-Add-" + NONCE_PATTERN + "-in-csp-pattern";
+		String nonce = "MissingNonceAdd" + NONCE_PATTERN + "InCspPattern";
 		String cspToApply = cspPattern;
 		if (useNonce) {
-			nonce = UUID.randomUUID().toString();
+			final Random srnd = new SecureRandom();
+			final byte[] randomNonce = new byte[32];
+			srnd.nextBytes(randomNonce);
+			nonce = Base64.getEncoder().encodeToString(randomNonce);
+			//nonce = UUID.randomUUID().toString(); //UUID contains - badly parsed by some tool
 			cspToApply = cspToApply.replace(NONCE_PATTERN, nonce);
 		}
 		request.setAttribute("nonce", nonce);
