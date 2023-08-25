@@ -99,6 +99,12 @@ public final class AuthorizationUtil {
 		return new AuthorizationCriteria<>(criteria, clazz);
 	}
 
+	public static <E extends Entity> String getSearchSecurity(final Class<E> clazz, final OperationName<E> operation) {
+		/** TODO : Devrait passer par getCriteriaSecurity*/
+		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
+		return authorizationManager.getSearchSecurity(clazz, operation);
+	}
+
 	public static <E extends Entity> Criteria<E> getCriteriaSecurity(final Class<E> clazz, final OperationName<E> operation) {
 		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
 		return authorizationManager.getCriteriaSecurity(clazz, operation);
