@@ -48,7 +48,6 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
