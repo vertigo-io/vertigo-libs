@@ -20,9 +20,11 @@ package io.vertigo.stella.impl.workers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
@@ -37,6 +39,9 @@ import io.vertigo.stella.workers.WorkersManager;
 public final class WorkersManagerImpl implements WorkersManager, Activeable {
 	private final List<Thread> dispatcherThreads = new ArrayList<>();
 	private final WorkersCoordinator workersCoordinator;
+	private final WorkersPlugin workerPlugin;
+	private final String nodeId;
+	private final Set<String> workTypes;
 
 	/**
 	 * Constructeur.
@@ -53,8 +58,11 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 				.isNotNull(workerPlugin)
 				.isNotBlank(workTypes);
 		//-----
+		this.workerPlugin = workerPlugin;
 		workersCoordinator = new WorkersCoordinator(workersCount);
 		final Map<String, Integer> workTypesMap = WorkDispatcherConfUtil.readWorkTypeConf(workTypes);
+		this.nodeId = nodeId;
+		this.workTypes = workTypesMap.keySet();
 		//-----
 		for (final Map.Entry<String, Integer> entry : workTypesMap.entrySet()) {
 			final String workType = entry.getKey();
@@ -64,6 +72,11 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 				dispatcherThreads.add(new Thread(worker, "WorkDispatcher-" + workTypeName + "-" + i));
 			}
 		}
+	}
+
+	@DaemonScheduled(name = "DmnWorkerHeartBeat", periodInSeconds = 10)
+	public void workerHeartBeat() {
+		workerPlugin.heartBeat(nodeId, workTypes);
 	}
 
 	/** {@inheritDoc} */

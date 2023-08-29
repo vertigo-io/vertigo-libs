@@ -31,4 +31,6 @@ public interface MasterPlugin extends Plugin {
 	<R, W> void putWorkItem(final WorkItem<R, W> workItem);
 
 	WorkResult pollResult(final int waitTimeSeconds);
+
+	void checkDeadNodesAndWorkItems();
 }

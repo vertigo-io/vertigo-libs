@@ -19,6 +19,7 @@ package io.vertigo.stella.plugins.work.redis.workers;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -64,18 +65,24 @@ public final class RedisUnifiedWorkersPlugin implements WorkersPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public <R, W> WorkItem<R, W> pollWorkItem(final String nodeId, final String workType) {
-		return redisDB.pollWorkItem(workType);
+		return redisDB.pollWorkItem(nodeId, workType);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <R> void putResult(final String workId, final String workType, final R result, final Throwable error) {
-		redisDB.putResult(workId, workType, result, error);
+	public <R> void putResult(final String nodeId, final String workType, final String workId, final R result, final Throwable error) {
+		redisDB.putResult(nodeId, workType, workId, result, error);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void putStart(final String workId, final String workType) {
-		redisDB.putStart(workId, workType);
+	public void putStart(final String nodeId, final String workType, final String workId) {
+		redisDB.putStart(nodeId, workType, workId);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void heartBeat(final String nodeId, final Set<String> workTypes) {
+		redisDB.heartBeat(nodeId, workTypes);
 	}
 }

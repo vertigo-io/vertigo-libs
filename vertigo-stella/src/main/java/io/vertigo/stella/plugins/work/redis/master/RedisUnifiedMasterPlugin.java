@@ -71,4 +71,10 @@ public final class RedisUnifiedMasterPlugin implements MasterPlugin {
 		workTypes.add(workItem.getWorkEngineClass().getName());
 		redisDB.putWorkItem(workItem);
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void checkDeadNodesAndWorkItems() {
+		redisDB.checkDeadNodes(workTypes);
+	}
 }

@@ -20,8 +20,10 @@ package io.vertigo.stella.plugins.work.redis;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.connectors.redis.RedisUnifiedConnector;
@@ -40,6 +42,9 @@ import redis.clients.jedis.UnifiedJedis;
  */
 public final class RedisUnifiedDB {
 	private static final String REDIS_KEY_PREFIX = "unified:";
+	private static final int DEAD_NODE_TIMEOUT_SECOND = 60; //by convention : dead workType timeout after 60s
+	private static final long DONE_COMPLETED = 1 * 60 * 60; //Keep expired 1h
+	private static final long EXPIRE_COMPLETED = 1 * 60 * 60; //Keep expired 1h
 	private final RedisUnifiedConnector redisConnector;
 	private final CodecManager codecManager;
 
@@ -68,7 +73,7 @@ public final class RedisUnifiedDB {
 	 * @param workId  Work Id
 	 * @param workType Work type
 	 */
-	public void putStart(final String workId, final String workType) {
+	public void putStart(final String nodeId, final String workType, final String workId) {
 		//Todo : not really use now, may just log starting in master
 	}
 
@@ -106,12 +111,12 @@ public final class RedisUnifiedDB {
 	 * @param workType the type of workItem
 	 * @return null or a workitem
 	 */
-	public <R, W> WorkItem<R, W> pollWorkItem(final String workType) {
+	public <R, W> WorkItem<R, W> pollWorkItem(final String nodeId, final String workType) {
 		Assertion.check().isNotNull(workType);
 		//-----
 		final long start = System.currentTimeMillis();
 		while (System.currentTimeMillis() - start < 1 * 1000) {
-			final WorkItem<R, W> result = doPollWorkItem(workType);
+			final WorkItem<R, W> result = doPollWorkItem(nodeId, workType);
 			if (result != null) {
 				return result;
 			}
@@ -125,10 +130,10 @@ public final class RedisUnifiedDB {
 		return null;
 	}
 
-	private <W, R> WorkItem<W, R> doPollWorkItem(final String workType) {
+	private <W, R> WorkItem<W, R> doPollWorkItem(final String nodeId, final String workType) {
 		final UnifiedJedis jedis = redisConnector.getClient();
 		{
-			final String workId = jedis.rpoplpush(redisKeyWorksTodo(workType), redisKeyWorksInProgress(workType));
+			final String workId = jedis.rpoplpush(redisKeyWorksTodo(workType), redisKeyWorksInProgress(nodeId, workType));
 			if (workId == null) {
 				return null;
 			}
@@ -146,7 +151,7 @@ public final class RedisUnifiedDB {
 	 * @param result the result
 	 * @param error if an error occurred
 	 */
-	public <R> void putResult(final String workId, final String workType, final R result, final Throwable error) {
+	public <R> void putResult(final String nodeId, final String workType, final String workId, final R result, final Throwable error) {
 		Assertion.check()
 				.isNotBlank(workId)
 				.isTrue(result == null ^ error == null, "result xor error is null");
@@ -164,8 +169,9 @@ public final class RedisUnifiedDB {
 			try (final Jedis jedis = redisConnector.getClient(workType)) {
 				try (final Transaction tx = jedis.multi()) {
 					tx.hmset(redisKeyWork(workType, workId), datas);
-					tx.lrem(redisKeyWorksInProgress(workType), 0, workId);
+					tx.lrem(redisKeyWorksInProgress(nodeId, workType), 0, workId);
 					tx.lpush(redisKeyWorksDone(workType), workId);
+					tx.expire(redisKeyWorksDone(workType), DONE_COMPLETED);
 					tx.exec();
 				}
 			}
@@ -198,6 +204,8 @@ public final class RedisUnifiedDB {
 			if (workId == null) {
 				return null;
 			}
+			jedis.expire(redisKeyWorksDone(workType), DONE_COMPLETED);
+			jedis.expire(redisKeyWorksCompleted(workType), EXPIRE_COMPLETED);
 			final Map<String, String> hash = jedis.hgetAll(redisKeyWork(workType, workId));
 			//final boolean succeeded = "ok".equals(hash.get("status"));
 			final R value = (R) decode(hash.get("result"));
@@ -212,8 +220,8 @@ public final class RedisUnifiedDB {
 		return REDIS_KEY_PREFIX + "works:todo:{" + workType + "}";
 	}
 
-	private static String redisKeyWorksInProgress(final String workType) {
-		return REDIS_KEY_PREFIX + "works:in progress:{" + workType + "}";
+	private static String redisKeyWorksInProgress(final String nodeId, final String workType) {
+		return REDIS_KEY_PREFIX + "works:in progress:" + nodeId + "{" + workType + "}";
 	}
 
 	private static String redisKeyWorksDone(final String workType) {
@@ -226,6 +234,14 @@ public final class RedisUnifiedDB {
 
 	private static String redisKeyWork(final String workType, final String workId) {
 		return REDIS_KEY_PREFIX + "work:{" + workType + "}" + workId;
+	}
+
+	private static String redisKeyNodeHealth(final String nodeId) {
+		return REDIS_KEY_PREFIX + "node:{" + nodeId + "}";
+	}
+
+	private static String redisKeyWorkers(final String workType) {
+		return REDIS_KEY_PREFIX + "workers:{" + workType + "}";
 	}
 
 	//	public void registerNode(final Node node) {
@@ -253,6 +269,67 @@ public final class RedisUnifiedDB {
 	//			return nodes;
 	//		}
 	//	}
+
+	public void heartBeat(final String nodeId, final Set<String> workTypes) {
+		final UnifiedJedis jedis = redisConnector.getClient();
+		//Une clé avec le nodeId et la list des workTypes traités, une expiration a DEAD_NODE_TIMEOUT_SECOND (heartBeat toutes les 10s)
+		jedis.setex(redisKeyNodeHealth(nodeId), DEAD_NODE_TIMEOUT_SECOND, workTypes.stream().collect(Collectors.joining(";")));
+		for (final String workType : workTypes) {
+			jedis.sadd(redisKeyWorkers(workType), nodeId);
+		}
+	}
+
+	/**
+	 * Vérifie les noeuds morts, et si oui remets les workItems dans la pile.
+	 * @param workTypes
+	 */
+	public void checkDeadNodes(final Set<String> workTypes) {
+		final Map<String, Set<String>> nodeIds = new HashMap<>();
+		final Set<String> deadNodes = new HashSet<>();
+		final Set<String> deadWorkType = new HashSet<>();
+		final UnifiedJedis jedis = redisConnector.getClient();
+
+		/** Detect dead nodes or workType without nodes */
+		for (final var workType : workTypes) {
+			final Set<String> nodeIdsPerWorkType = jedis.smembers(redisKeyWorkers(workType));
+			if (nodeIdsPerWorkType == null || nodeIdsPerWorkType.isEmpty()) {
+				//no node for this workType
+				deadWorkType.add(workType);
+			} else {
+				for (final var nodeId : nodeIdsPerWorkType) {
+					nodeIds.computeIfAbsent(nodeId, k -> new HashSet<>()).add(workType);
+				}
+			}
+		}
+		for (final var entry : nodeIds.entrySet()) {
+			final String nodeWorkTypes = jedis.get(redisKeyNodeHealth(entry.getKey()));
+			if (nodeWorkTypes == null) {
+				//no heartbeat for DEAD_NODE_TIMEOUT_SECOND
+				deadNodes.add(entry.getKey());
+			}
+		}
+
+		/** Managed dead nodes **/
+		for (final var nodeId : deadNodes) {
+			for (final var workType : nodeIds.get(nodeId)) {
+				jedis.srem(redisKeyWorkers(workType), nodeId);
+				while (jedis.rpoplpush(redisKeyWorksInProgress(nodeId, workType), redisKeyWorksTodo(workType)) != null) {
+					//loop to move to todo all in progress WorkItem
+				}
+			}
+		}
+
+		for (final var workType : deadWorkType) {
+			//Remove todo for this workType
+			jedis.srem(redisKeyWorksTodo(workType));
+			//Other keys :
+			//- InProgress already move to Todo
+			//- Done have an expirations delay
+			//- Completed have an expirations delay
+			//- nodeHealth is already empty by definition of deadNodes
+			//- workers is already empty by definition of deadWorkType
+		}
+	}
 
 	private String encode(final Object toEncode) {
 		return codecManager.getBase64Codec().encode(codecManager.getSerializationCodec().encode((Serializable) toEncode));

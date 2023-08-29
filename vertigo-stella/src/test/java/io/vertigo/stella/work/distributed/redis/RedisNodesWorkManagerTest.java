@@ -18,7 +18,6 @@
 package io.vertigo.stella.work.distributed.redis;
 
 import java.io.IOException;
-import java.net.URI;
 
 import javax.inject.Inject;
 
@@ -37,7 +36,6 @@ import io.vertigo.stella.work.AbstractWorkManagerTest;
 import io.vertigo.stella.work.MyWorkResultHanlder;
 import io.vertigo.stella.work.mock.SlowWork;
 import io.vertigo.stella.work.mock.SlowWorkEngine;
-import jakarta.ws.rs.core.UriBuilder;
 
 /**
  * @author npiedeloup
@@ -47,12 +45,6 @@ public final class RedisNodesWorkManagerTest extends AbstractWorkManagerTest {
 	@Inject
 	private MasterManager masterManager;
 	private ClientNode clientNode1;
-
-	private static URI getBaseURI() {
-		return UriBuilder.fromUri("http://127.0.0.1/").port(10998).build();
-	}
-
-	public static final URI BASE_URI = getBaseURI();
 
 	protected static ClientNode startClientNode(final int numClient) throws IOException {
 		LOG.info("Starting ClientNode " + numClient + "...");
@@ -90,7 +82,6 @@ public final class RedisNodesWorkManagerTest extends AbstractWorkManagerTest {
 		//pour éviter le mécanisme d'attente du client lorsque le serveur est absend, on démarre le serveur puis le client
 		Thread.sleep(1000);
 		clientNode1 = startClientNode(1);
-		LOG.info(String.format("Jersey node started with WADL available at " + "%sapplication.wadl", BASE_URI));
 	}
 
 	/**
@@ -126,7 +117,7 @@ public final class RedisNodesWorkManagerTest extends AbstractWorkManagerTest {
 		LOG.info("Start ClientNode 2 : " + workResultHanlder.toString());
 		final ClientNode clientNode2 = startClientNode(2);
 		try {
-			final boolean finished = workResultHanlder.waitFinish(20, 35 * 1000); //Le timeout des nodes est configuré à 20s
+			final boolean finished = workResultHanlder.waitFinish(20, 65 * 1000); //Le timeout des nodes est configuré à 20s
 			LOG.info(workResultHanlder);
 			Assertions.assertEquals(null, workResultHanlder.getLastThrowable());
 			Assertions.assertTrue(finished);

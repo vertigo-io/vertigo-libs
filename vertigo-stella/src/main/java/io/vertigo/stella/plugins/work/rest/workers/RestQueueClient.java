@@ -18,6 +18,7 @@
 package io.vertigo.stella.plugins.work.rest.workers;
 
 import java.io.Serializable;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -153,6 +154,10 @@ final class RestQueueClient {
 		}
 		//call methode distante
 		sendValue(workId, address, value);
+	}
+
+	void heartBeat(final String nodeId, final Set<String> workTypes) {
+		//TODO
 	}
 
 	private void sendValue(final String uuid, final String address, final Object value) {

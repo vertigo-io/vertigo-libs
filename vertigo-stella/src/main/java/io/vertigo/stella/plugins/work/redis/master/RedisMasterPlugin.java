@@ -67,4 +67,9 @@ public final class RedisMasterPlugin implements MasterPlugin {
 	public <R, W> void putWorkItem(final WorkItem<R, W> workItem) {
 		redisDB.putWorkItem(workItem);
 	}
+
+	@Override
+	public void checkDeadNodesAndWorkItems() {
+		//TODO
+	}
 }
