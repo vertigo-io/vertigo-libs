@@ -23,12 +23,12 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.connectors.redis.RedisConnector;
+import io.vertigo.connectors.redis.RedisUnifiedConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.stella.impl.work.WorkItem;
 import io.vertigo.stella.impl.workers.WorkersPlugin;
-import io.vertigo.stella.plugins.work.redis.RedisDB;
+import io.vertigo.stella.plugins.work.redis.RedisUnifiedDB;
 
 /**
  * NodePlugin
@@ -37,8 +37,8 @@ import io.vertigo.stella.plugins.work.redis.RedisDB;
  *
  * @author pchretien
  */
-public final class RedisWorkersPlugin implements WorkersPlugin {
-	private final RedisDB redisDB;
+public final class RedisUnifiedWorkersPlugin implements WorkersPlugin {
+	private final RedisUnifiedDB redisDB;
 
 	/**
 	 *
@@ -46,19 +46,19 @@ public final class RedisWorkersPlugin implements WorkersPlugin {
 	 * @param redisConnector
 	 */
 	@Inject
-	public RedisWorkersPlugin(
+	public RedisUnifiedWorkersPlugin(
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
-			final List<RedisConnector> redisConnectors,
+			final List<RedisUnifiedConnector> redisConnectors,
 			final CodecManager codecManager) {
 		Assertion.check()
 				.isNotNull(codecManager)
 				.isNotNull(redisConnectors);
 		//-----
 		final String connectorName = connectorNameOpt.orElse("main");
-		final RedisConnector redisConnector = redisConnectors.stream()
+		final RedisUnifiedConnector redisConnector = redisConnectors.stream()
 				.filter(connector -> connectorName.equals(connector.getName()))
 				.findFirst().get();
-		redisDB = new RedisDB(codecManager, redisConnector);
+		redisDB = new RedisUnifiedDB(codecManager, redisConnector);
 	}
 
 	/** {@inheritDoc} */
@@ -70,12 +70,12 @@ public final class RedisWorkersPlugin implements WorkersPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public <R> void putResult(final String workId, final String workType, final R result, final Throwable error) {
-		redisDB.putResult(workId, result, error);
+		redisDB.putResult(workId, workType, result, error);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void putStart(final String workId, final String workType) {
-		redisDB.putStart(workId);
+		redisDB.putStart(workId, workType);
 	}
 }

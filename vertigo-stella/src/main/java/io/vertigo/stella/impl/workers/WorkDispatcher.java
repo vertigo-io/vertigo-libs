@@ -63,7 +63,7 @@ final class WorkDispatcher implements Runnable {
 			final WorkResultHandler<R> workResultHandler = new WorkResultHandler<>() {
 				@Override
 				public void onStart() {
-					workerPlugin.putStart(workItem.getId());
+					workerPlugin.putStart(workItem.getId(), workType);
 				}
 
 				@Override
@@ -76,9 +76,9 @@ final class WorkDispatcher implements Runnable {
 			R result;
 			try {
 				result = futureResult.get();
-				workerPlugin.putResult(workItem.getId(), result, null);
+				workerPlugin.putResult(workItem.getId(), workType, result, null);
 			} catch (final ExecutionException e) {
-				workerPlugin.putResult(workItem.getId(), null, e.getCause());
+				workerPlugin.putResult(workItem.getId(), workType, null, e.getCause());
 			}
 		}
 		//if workitem is null, that's mean there is no workitem available;

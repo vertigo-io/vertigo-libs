@@ -42,7 +42,7 @@ public interface WorkersPlugin extends Plugin {
 	 * @param error Error ( not null if execution failed)
 	 * @param <R> result
 	 */
-	<R> void putResult(final String workId, R result, Throwable error);
+	<R> void putResult(final String workId, String workType, R result, Throwable error);
 
-	void putStart(final String workId);
+	void putStart(final String workId, String workType);
 }

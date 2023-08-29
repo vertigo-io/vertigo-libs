@@ -24,6 +24,8 @@ import io.vertigo.stella.impl.master.MasterManagerImpl;
 import io.vertigo.stella.impl.workers.WorkersManagerImpl;
 import io.vertigo.stella.master.MasterManager;
 import io.vertigo.stella.plugins.work.redis.master.RedisMasterPlugin;
+import io.vertigo.stella.plugins.work.redis.master.RedisUnifiedMasterPlugin;
+import io.vertigo.stella.plugins.work.redis.workers.RedisUnifiedWorkersPlugin;
 import io.vertigo.stella.plugins.work.redis.workers.RedisWorkersPlugin;
 import io.vertigo.stella.plugins.work.rest.master.RestMasterPlugin;
 import io.vertigo.stella.plugins.work.rest.master.RestMasterWebService;
@@ -56,6 +58,12 @@ public final class StellaFeatures extends Features<StellaFeatures> {
 		return this;
 	}
 
+	@Feature("master.redis-unified")
+	public StellaFeatures withRedisUnifiedMasterPlugin(final Param... params) {
+		getModuleConfigBuilder().addPlugin(RedisUnifiedMasterPlugin.class, params);
+		return this;
+	}
+
 	@Feature("master.rest")
 	public StellaFeatures withRestMasterPlugin(final Param... params) {
 		getModuleConfigBuilder()
@@ -73,6 +81,12 @@ public final class StellaFeatures extends Features<StellaFeatures> {
 	@Feature("worker.redis")
 	public StellaFeatures withRedisWorkerPlugin(final Param... params) {
 		getModuleConfigBuilder().addPlugin(RedisWorkersPlugin.class, params);
+		return this;
+	}
+
+	@Feature("worker.redis-unified")
+	public StellaFeatures withRedisUnifiedWorkerPlugin(final Param... params) {
+		getModuleConfigBuilder().addPlugin(RedisUnifiedWorkersPlugin.class, params);
 		return this;
 	}
 

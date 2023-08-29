@@ -63,13 +63,13 @@ public final class RestWorkersPlugin implements WorkersPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <R> void putResult(final String workId, final R result, final Throwable error) {
+	public <R> void putResult(final String workId, final String workType, final R result, final Throwable error) {
 		restQueueClient.putResult(workId, result, error);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void putStart(final String workId) {
+	public void putStart(final String workId, final String workType) {
 		restQueueClient.putStart(workId);
 	}
 }

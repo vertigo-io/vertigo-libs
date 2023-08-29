@@ -71,16 +71,9 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 		return future;
 	}
 
-	private <R> void setResult(final String workId, final R result, final Throwable error) {
-		Assertion.check()
-				.isNotBlank(workId)
-				.isTrue(result == null ^ error == null, "result xor error is null");
-		//-----
-		final WorkResultHandler workResultHandler = workResultHandlers.remove(workId);
-		if (workResultHandler != null) {
-			//Que faire sinon
-			workResultHandler.onDone(result, error);
-		}
+	private <W, R> void putWorkItem(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {
+		workResultHandlers.put(workItem.getId(), workResultHandler);
+		masterPlugin.putWorkItem(workItem);
 	}
 
 	private Thread createWatcher() {
@@ -100,8 +93,15 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 		};
 	}
 
-	private <W, R> void putWorkItem(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {
-		workResultHandlers.put(workItem.getId(), workResultHandler);
-		masterPlugin.putWorkItem(workItem);
+	private <R> void setResult(final String workId, final R result, final Throwable error) {
+		Assertion.check()
+				.isNotBlank(workId)
+				.isTrue(result == null ^ error == null, "result xor error is null");
+		//-----
+		final WorkResultHandler workResultHandler = workResultHandlers.remove(workId);
+		if (workResultHandler != null) {
+			//Que faire sinon
+			workResultHandler.onDone(result, error);
+		}
 	}
 }
