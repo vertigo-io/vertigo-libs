@@ -109,7 +109,7 @@ public final class RedisNodesWorkManagerTest extends AbstractWorkManagerTest {
 			masterManager.schedule(slowWork, SlowWorkEngine.class, workResultHanlder);
 		}
 		final boolean firstsFinished = workResultHanlder.waitFinish(5, 6 * 1000);
-		Assertions.assertTrue(firstsFinished, "First 5 works should finished before 6s, to test deadnode failover");
+		Assertions.assertTrue(firstsFinished, "First 5 works should finished before 6s, to test deadnode failover (" + workResultHanlder.toString() + ")");
 		//On stop le client1 avec des jobs en cours. Ils doivent être redispatchés après détection des noeuds morts
 		clientNode1.stop();
 		LOG.info("Stop ClientNode 1 : " + workResultHanlder.toString());

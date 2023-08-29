@@ -72,6 +72,7 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 				dispatcherThreads.add(new Thread(worker, "WorkDispatcher-" + workTypeName + "-" + i));
 			}
 		}
+		workerPlugin.heartBeat(nodeId, this.workTypes);
 	}
 
 	@DaemonScheduled(name = "DmnWorkerHeartBeat", periodInSeconds = 10)

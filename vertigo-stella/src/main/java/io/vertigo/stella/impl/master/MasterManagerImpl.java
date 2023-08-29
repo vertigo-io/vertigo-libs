@@ -22,6 +22,7 @@ import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.stella.impl.master.coordinator.MasterCoordinator;
@@ -41,6 +42,7 @@ import io.vertigo.stella.work.WorkEngine;
 public final class MasterManagerImpl implements MasterManager, Activeable {
 	private final WorkListener workListener;
 	private final MasterCoordinator masterCoordinator;
+	private final MasterPlugin masterPlugin;
 
 	/**
 	 * Constructeur.
@@ -52,6 +54,7 @@ public final class MasterManagerImpl implements MasterManager, Activeable {
 		//-----
 		workListener = new WorkListenerImpl(/*analyticsManager*/);
 		masterCoordinator = new MasterCoordinator(masterPlugin);
+		this.masterPlugin = masterPlugin;
 	}
 
 	/** {@inheritDoc} */
@@ -119,4 +122,10 @@ public final class MasterManagerImpl implements MasterManager, Activeable {
 			workListener.onFinish(workItem.getWorkEngineClass().getName(), System.currentTimeMillis() - start, executed);
 		}
 	}
+
+	@DaemonScheduled(name = "DmnWorkerDeadNodeDetector", periodInSeconds = 10)
+	public void checkDeadNodesAndWorkItems() {
+		masterPlugin.checkDeadNodesAndWorkItems();
+	}
+
 }

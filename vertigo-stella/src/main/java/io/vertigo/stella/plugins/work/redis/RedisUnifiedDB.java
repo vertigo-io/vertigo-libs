@@ -38,11 +38,11 @@ import redis.clients.jedis.Transaction;
 import redis.clients.jedis.UnifiedJedis;
 
 /**
- * @author pchretien
+ * @author pchretien, npiedeloup
  */
 public final class RedisUnifiedDB {
 	private static final String REDIS_KEY_PREFIX = "unified:";
-	private static final int DEAD_NODE_TIMEOUT_SECOND = 60; //by convention : dead workType timeout after 60s
+	private static final int DEAD_NODE_TIMEOUT_SECOND = 20; //by convention : dead workType timeout after 60s
 	private static final long DONE_COMPLETED = 1 * 60 * 60; //Keep expired 1h
 	private static final long EXPIRE_COMPLETED = 1 * 60 * 60; //Keep expired 1h
 	private final RedisUnifiedConnector redisConnector;
@@ -321,7 +321,7 @@ public final class RedisUnifiedDB {
 
 		for (final var workType : deadWorkType) {
 			//Remove todo for this workType
-			jedis.srem(redisKeyWorksTodo(workType));
+			jedis.del(redisKeyWorksTodo(workType));
 			//Other keys :
 			//- InProgress already move to Todo
 			//- Done have an expirations delay
