@@ -19,6 +19,8 @@ package io.vertigo.stella.plugins.work.redis.master;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 
@@ -35,13 +37,15 @@ import io.vertigo.stella.plugins.work.redis.RedisDB;
  * Ce plugin permet de distribuer des travaux.
  * REDIS est utilisé comme plateforme d'échanges.
  *
- * @author pchretien
+ * @author pchretien, npiedeloup
  */
 public final class RedisMasterPlugin implements MasterPlugin {
 	private final RedisDB redisDB;
+	private final Set<String> workTypes = ConcurrentHashMap.newKeySet();
 
 	@Inject
 	public RedisMasterPlugin(
+			@ParamValue("deadNodeTimeoutSecond") final Optional<Integer> deadNodeTimeoutSecond,
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<RedisConnector> redisConnectors,
 			final CodecManager codecManager) {
@@ -53,23 +57,25 @@ public final class RedisMasterPlugin implements MasterPlugin {
 		final RedisConnector redisConnector = redisConnectors.stream()
 				.filter(connector -> connectorName.equals(connector.getName()))
 				.findFirst().get();
-		redisDB = new RedisDB(codecManager, redisConnector);
+		redisDB = new RedisDB(deadNodeTimeoutSecond.orElse(30), codecManager, redisConnector);
 	}
 
 	/** {@inheritDoc}*/
 	@Override
 	public WorkResult pollResult(final int waitTimeSeconds) {
-		return redisDB.pollResult(waitTimeSeconds);
+		return redisDB.pollResult(waitTimeSeconds, workTypes);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <R, W> void putWorkItem(final WorkItem<R, W> workItem) {
+		workTypes.add(workItem.getWorkEngineClass().getName());
 		redisDB.putWorkItem(workItem);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void checkDeadNodesAndWorkItems() {
-		//TODO
+		redisDB.checkDeadNodes(workTypes);
 	}
 }

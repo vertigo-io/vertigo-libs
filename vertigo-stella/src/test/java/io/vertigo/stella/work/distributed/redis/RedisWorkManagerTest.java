@@ -17,11 +17,7 @@
  */
 package io.vertigo.stella.work.distributed.redis;
 
-import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.core.param.Param;
-import io.vertigo.stella.StellaFeatures;
 import io.vertigo.stella.work.AbstractWorkManagerTest;
 
 /**
@@ -31,30 +27,6 @@ public class RedisWorkManagerTest extends AbstractWorkManagerTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
-		return NodeConfig.builder()
-				.addModule(new RedisFeatures()
-						.withJedis(
-								Param.of("host", "docker-vertigo.part.klee.lan.net"),
-								Param.of("port", "6379"),
-								Param.of("ssl", "false"),
-								Param.of("database", "15"))
-						.build())
-				.addModule(new CommonsFeatures().build())
-				.addModule(new StellaFeatures()
-						.withMaster()
-						.withWorker(
-								Param.of("workersCount", "10"),
-								Param.of("nodeId", "node#1-1"),
-								Param.of("workTypes", "io.vertigo.stella.work.mock.DivideWorkEngine^5;io.vertigo.stella.work.mock.SlowWorkEngine^5;io.vertigo.stella.work.AbstractWorkManagerTest$LengthWorkEngine^1;io.vertigo.stella.work.AbstractWorkManagerTest$SquareWorkEngine^1;io.vertigo.stella.work.mock.ThreadLocalWorkEngine^5"))
-						.withRedisMasterPlugin()
-						.withRedisWorkerPlugin()
-						.build())
-				.build();
+		return MyNodeConfig.config(true, true, "node#1");
 	}
-
-	//	@Override
-	//	protected void doSetUp() throws Exception {
-	//		//		final RedisDB redisDB = new RedisDB(new CodecManagerImpl(), App.getApp().getComponentSpace().resolve(RedisConnector.class), 10);
-	//		//		redisDB.reset();
-	//	}
 }

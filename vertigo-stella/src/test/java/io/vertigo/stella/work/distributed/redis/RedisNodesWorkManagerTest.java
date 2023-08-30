@@ -26,11 +26,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.core.param.Param;
-import io.vertigo.stella.StellaFeatures;
 import io.vertigo.stella.master.MasterManager;
 import io.vertigo.stella.work.AbstractWorkManagerTest;
 import io.vertigo.stella.work.MyWorkResultHanlder;
@@ -55,22 +51,7 @@ public final class RedisNodesWorkManagerTest extends AbstractWorkManagerTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
-		return NodeConfig.builder()
-				.addModule(new RedisFeatures()
-						.withJedisUnified(
-								Param.of("clusterNodes", "localhost:7000;localhost:7001;localhost:7002"),
-								Param.of("password", "foobared"),
-								//Param.of("host", "docker-vertigo.part.klee.lan.net"),
-								//Param.of("port", "6379"),
-								Param.of("ssl", "false"),
-								Param.of("database", "0")) //In cluster mode : only database 0 is supported
-						.build())
-				.addModule(new CommonsFeatures().build())
-				.addModule(new StellaFeatures()
-						.withMaster()
-						.withRedisUnifiedMasterPlugin()
-						.build())
-				.build();
+		return MyNodeConfig.config(true, false, "node#master");
 	}
 
 	/**
