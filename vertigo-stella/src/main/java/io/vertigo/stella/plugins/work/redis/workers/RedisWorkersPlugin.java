@@ -42,9 +42,10 @@ public final class RedisWorkersPlugin implements WorkersPlugin {
 	private final RedisDB redisDB;
 
 	/**
-	 *
-	 * @param codecManager
-	 * @param redisConnector
+	 * @param connectorName Connector name to use (default to main)
+	 * @param timeoutSeconds Timeout Seconds to declare dead node (default to 30s)
+	 * @param redisConnector Declared Redis connectors
+	 * @param codecManager Codec manager
 	 */
 	@Inject
 	public RedisWorkersPlugin(
