@@ -46,20 +46,20 @@ public final class RedisDB {
 	private static final long EXPIRE_COMPLETED = 1 * 60 * 60; //Keep expired 1h
 	private final RedisConnector redisConnector;
 	private final CodecManager codecManager;
-	private final int deadNodeTimeoutSecond;
+	private final int timeoutSeconds;
 
 	/**
 	 * Constructor.
 	 * @param codecManager the codecManager
 	 * @param redisConnector the redis connector
 	 */
-	public RedisDB(final int deadNodeTimeoutSecond, final CodecManager codecManager, final RedisConnector redisConnector) {
+	public RedisDB(final int timeoutSeconds, final CodecManager codecManager, final RedisConnector redisConnector) {
 		Assertion.check()
 				.isNotNull(redisConnector)
 				.isNotNull(codecManager)
-				.isTrue(deadNodeTimeoutSecond > 5 && deadNodeTimeoutSecond <= 60 * 60, "deadNodeTimeoutSecond must be between 5 and 3600s ({0}s)", deadNodeTimeoutSecond);
+				.isTrue(timeoutSeconds > 5 && timeoutSeconds <= 60 * 60, "timeoutSeconds must be between 5 and 3600s ({0}s)", timeoutSeconds);
 		//-----
-		this.deadNodeTimeoutSecond = deadNodeTimeoutSecond;
+		this.timeoutSeconds = timeoutSeconds;
 		this.redisConnector = redisConnector;
 		this.codecManager = codecManager;
 	}
@@ -248,7 +248,7 @@ public final class RedisDB {
 	public void heartBeat(final String nodeId, final Set<String> workTypes) {
 		final UnifiedJedis jedis = redisConnector.getClient();
 		//Une clé avec le nodeId et la list des workTypes traités, une expiration a DEAD_NODE_TIMEOUT_SECOND (heartBeat toutes les 10s)
-		jedis.setex(redisKeyNodeHealth(nodeId), deadNodeTimeoutSecond, workTypes.stream().collect(Collectors.joining(";")));
+		jedis.setex(redisKeyNodeHealth(nodeId), timeoutSeconds, workTypes.stream().collect(Collectors.joining(";")));
 		for (final String workType : workTypes) {
 			jedis.sadd(redisKeyWorkers(workType), nodeId);
 		}
