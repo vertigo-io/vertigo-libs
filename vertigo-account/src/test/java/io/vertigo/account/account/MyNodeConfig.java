@@ -51,6 +51,8 @@ public final class MyNodeConfig {
 		if (redis) {
 			nodeConfigBuilder.addModule(new RedisFeatures()
 					.withJedis(
+							//Param.of("clusterNodes", "localhost:7000;localhost:7001;localhost:7002"),
+							//Param.of("password", "foobared"),
 							Param.of("host", REDIS_HOST),
 							Param.of("port", REDIS_PORT),
 							Param.of("ssl", "false"),
