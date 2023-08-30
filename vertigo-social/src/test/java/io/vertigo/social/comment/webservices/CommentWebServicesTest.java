@@ -48,7 +48,7 @@ import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.comment.Comment;
 import io.vertigo.social.comment.CommentManager;
 import io.vertigo.social.data.MockIdentities;
-import redis.clients.jedis.Jedis;
+import redis.clients.jedis.UnifiedJedis;
 
 public final class CommentWebServicesTest {
 	private static final int WS_PORT = 8088;
@@ -76,9 +76,8 @@ public final class CommentWebServicesTest {
 		node = new AutoCloseableNode(MyNodeConfig.vegaConfig());
 		InjectorUtil.injectMembers(this);
 		//---
-		try (final Jedis jedis = redisConnector.getClient()) {
-			jedis.flushAll();
-		}
+		final UnifiedJedis jedis = redisConnector.getClient();
+		jedis.flushAll();
 		mockIdentities.initData();
 		account1Uri = MockIdentities.createAccountURI("1");
 
