@@ -35,7 +35,7 @@ public class DumbActivityEngine extends AbstractActivityEngine {
 		try {
 			Thread.sleep(1000 * 10);
 		} catch (final InterruptedException e) {
-			e.printStackTrace();
+			Thread.currentThread().interrupt(); //si interrupt on relance
 		}
 		return workspace;
 	}

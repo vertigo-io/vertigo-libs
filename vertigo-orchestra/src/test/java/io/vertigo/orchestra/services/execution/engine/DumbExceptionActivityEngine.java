@@ -35,7 +35,7 @@ public class DumbExceptionActivityEngine extends AbstractActivityEngine {
 		try {
 			Thread.sleep(3 * 1000);
 		} catch (final InterruptedException e) {
-			// we do nothing
+			Thread.currentThread().interrupt(); //if interrupt we re-set the flag
 		}
 		Integer.valueOf("a");
 		return workspace;
