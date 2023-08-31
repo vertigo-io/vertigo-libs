@@ -26,7 +26,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.WrappedException;
 import io.vertigo.stella.master.WorkResultHandler;
 
 /**
@@ -84,7 +83,7 @@ final class WFuture<R> implements Future<R>, WorkResultHandler<R> {
 			try {
 				countDownLatch.await();
 			} catch (final InterruptedException e) {
-				throw WrappedException.wrap(e);
+				Thread.currentThread().interrupt(); //if interrupt we re-set the flag
 			}
 			return myError instanceof CancellationException;
 		}

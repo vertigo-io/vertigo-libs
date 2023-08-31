@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.stella.impl.master.MasterPlugin;
 import io.vertigo.stella.impl.master.WorkResult;
@@ -45,8 +46,8 @@ public final class RedisMasterPlugin implements MasterPlugin {
 
 	@Inject
 	public RedisMasterPlugin(
-			@ParamValue("deadNodeTimeoutSecond") final Optional<Integer> deadNodeTimeoutSecond,
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
+			@ParamValue("deadWorkTypeTimeoutSeconds") final Optional<Integer> deadWorkTypeTimeoutSeconds,
 			final List<RedisConnector> redisConnectors,
 			final CodecManager codecManager) {
 		Assertion.check()
@@ -57,25 +58,27 @@ public final class RedisMasterPlugin implements MasterPlugin {
 		final RedisConnector redisConnector = redisConnectors.stream()
 				.filter(connector -> connectorName.equals(connector.getName()))
 				.findFirst().get();
-		redisDB = new RedisDB(deadNodeTimeoutSecond.orElse(30), codecManager, redisConnector);
+		redisDB = new RedisDB(deadWorkTypeTimeoutSeconds.orElse(60), codecManager, redisConnector);
 	}
 
 	/** {@inheritDoc}*/
 	@Override
 	public WorkResult pollResult(final int waitTimeSeconds) {
+		/** TODO : need to poll result for THIS master not others !! */
 		return redisDB.pollResult(waitTimeSeconds, workTypes);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <R, W> void putWorkItem(final WorkItem<R, W> workItem) {
-		workTypes.add(workItem.getWorkEngineClass().getName());
+		workTypes.add(workItem.getWorkType());
 		redisDB.putWorkItem(workItem);
 	}
 
-	/** {@inheritDoc} */
+	/** {@inheritDoc}
+	 * @return */
 	@Override
-	public void checkDeadNodesAndWorkItems() {
-		redisDB.checkDeadNodes(workTypes);
+	public Tuple<Set<String>, Set<String>> checkDeadNodesAndWorkItems() {
+		return redisDB.checkDeadNodes(workTypes);
 	}
 }

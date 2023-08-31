@@ -80,8 +80,9 @@ final class RestQueueServer {
 	/**
 	 * Vérifie les noeuds morts, et si oui remets les workItems dans la pile.
 	 */
-	void checkDeadNodes() {
+	Set<String> checkDeadNodes() {
 		final Set<String> deadNodes = new HashSet<>();
+		final Set<String> retriedWorkId = new HashSet<>();
 		//Comme défini dans le contrat de la ConcurrentMap : l'iterator est weakly consistent : et ne lance pas de ConcurrentModificationException
 		for (final NodeState nodeState : knownNodes.values()) {
 			//sans signe de vie depuis deadNodeTimeout, on considère le noeud comme mort
@@ -94,22 +95,25 @@ final class RestQueueServer {
 			for (final RunningWorkInfos runningWorkInfos : runningWorkInfosMap.values()) {
 				if (deadNodes.contains(runningWorkInfos.getNodeUID())) {
 					putWorkItem(runningWorkInfos.getWorkItem());
+					retriedWorkId.add(runningWorkInfos.getWorkItem().getId());
 				}
 			}
 		}
+		return retriedWorkId;
 	}
 
 	/**
 	 * Vérifie les WorkItems sur des workTypes inactifs
 	 */
-	void checkDeadWorkItems() {
+	Set<String> checkDeadWorkItems() {
+		final Set<String> abandonnedWorkId = new HashSet<>();
 		for (final String workType : new ArrayList<>(workQueueMap.keySet())) {
 			BlockingQueue<WaitingWorkInfos> workItemQueue;
 			try {
 				workItemQueue = obtainWorkQueue(workType);
 			} catch (final InterruptedException e) {
-				Thread.currentThread().interrupt();
-				return;
+				Thread.currentThread().interrupt(); // Preserve interrupt status
+				return abandonnedWorkId;
 			}
 			if (!workItemQueue.isEmpty() && !isActiveWorkType(workType)) {
 				//Comme défini dans le contrat de la BlockingQueue : l'iterator est weakly consistent : et ne lance pas de ConcurrentModificationException
@@ -117,6 +121,7 @@ final class RestQueueServer {
 					final WaitingWorkInfos waitingWorkInfos = it.next();
 					if (waitingWorkInfos.getWaitingAge() > deadWorkTypeTimeoutSec * 1000) {
 						it.remove();
+						abandonnedWorkId.add(waitingWorkInfos.getWorkItem().getId());
 						LOG.info("waiting timeout ({})", waitingWorkInfos.getWorkItem().getId());
 						resultQueue.add(new WorkResult(waitingWorkInfos.getWorkItem().getId(), null, new IOException(
 								"Timeout workId " + waitingWorkInfos.getWorkItem().getId() + " after " + deadWorkTypeTimeoutSec + "s : No active node for this workType (" + workType + ")")));
@@ -124,6 +129,7 @@ final class RestQueueServer {
 				}
 			}
 		}
+		return abandonnedWorkId;
 	}
 
 	private boolean isActiveNode(final NodeState nodeState) {
@@ -212,7 +218,7 @@ final class RestQueueServer {
 		try {
 			return resultQueue.poll(waitTimeSeconds, TimeUnit.SECONDS);
 		} catch (final InterruptedException e) {
-			Thread.currentThread().interrupt();
+			Thread.currentThread().interrupt(); // Preserve interrupt status
 			return null;
 		}
 	}
@@ -231,6 +237,7 @@ final class RestQueueServer {
 			final WaitingWorkInfos waitingWorkInfos = obtainWorkQueue(workType).poll(pullTimeoutInSeconds, TimeUnit.SECONDS);
 			return waitingWorkInfos != null ? waitingWorkInfos.getWorkItem() : null;
 		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt(); // Preserve interrupt status
 			//dans le cas d'une interruption on arrête de dépiler
 			return null;
 		}
@@ -244,12 +251,13 @@ final class RestQueueServer {
 	 */
 	<R, W> void putWorkItem(final WorkItem<R, W> workItem) {
 		Assertion.check().isNotNull(workItem);
-		if (!isActiveWorkType(workItem.getWorkEngineClass().getName())) {
+		if (!isActiveWorkType(workItem.getWorkType())) {
 			LOG.warn("No active node for this workType : {}", workItem.getWorkEngineClass().getName());
 		}
 		try {
 			obtainWorkQueue(workItem.getWorkEngineClass().getName()).put(new WaitingWorkInfos(workItem));
 		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt(); // Preserve interrupt status
 			//dans le cas d'une interruption on interdit d'empiler de nouveaux Works
 			throw WrappedException.wrap(e, "putWorkItem");
 		}

@@ -52,6 +52,7 @@ final class WorkDispatcher implements Runnable {
 			try {
 				doRun();
 			} catch (final InterruptedException e) {
+				Thread.currentThread().interrupt(); // Preserve interrupt status
 				break; //stop on Interrupt
 			}
 		}

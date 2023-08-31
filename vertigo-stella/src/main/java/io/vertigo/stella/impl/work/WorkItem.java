@@ -55,6 +55,10 @@ public final class WorkItem<W, R> {
 		return id;
 	}
 
+	public String getWorkType() {
+		return workEngineClass.getName();
+	}
+
 	/**
 	 * Permet de récupérer les informations pour réaliser un traitement.
 	 * @return le work

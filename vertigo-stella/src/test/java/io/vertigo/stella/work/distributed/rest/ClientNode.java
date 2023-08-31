@@ -98,7 +98,9 @@ final class ClientNode {
 							Thread.sleep(50);
 						}
 					}
-				} catch (final InterruptedException | IOException e) {
+				} catch (final InterruptedException e) {
+					Thread.currentThread().interrupt(); // Preserve interrupt status
+				} catch (final IOException e) {
 					return;
 				}
 			}

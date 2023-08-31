@@ -83,6 +83,7 @@ public final class MyWorkResultHanlder<R> implements WorkResultHandler<R> {
 			try {
 				Thread.sleep(100); //On attend 100ms
 			} catch (final InterruptedException e) {
+				Thread.currentThread().interrupt(); // Preserve interrupt status
 				break;//on quitte
 			}
 		}

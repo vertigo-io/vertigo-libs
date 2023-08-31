@@ -17,12 +17,18 @@
  */
 package io.vertigo.stella.impl.master.coordinator;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
+import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.stella.impl.master.MasterPlugin;
 import io.vertigo.stella.impl.master.WorkResult;
@@ -31,17 +37,30 @@ import io.vertigo.stella.impl.work.WorkItem;
 import io.vertigo.stella.master.WorkResultHandler;
 
 /**
- * @author pchretien
+ * @author pchretien, npiedeloup
  */
 public final class MasterCoordinator implements Coordinator, Activeable {
+	private static final String ANALYTICS_CATEGORY = "distributedwork";
+	private final AnalyticsManager analyticsManager;
 	private final MasterPlugin masterPlugin;
 	private final Thread watcher;
-	private final Map<String, WorkResultHandler> workResultHandlers = Collections.synchronizedMap(new HashMap<String, WorkResultHandler>());
+	private final Map<String, WorkProcessingInfo> workProcessingInfos = Collections.synchronizedMap(new HashMap<String, WorkProcessingInfo>());
 
-	public MasterCoordinator(final MasterPlugin masterPlugin) {
-		Assertion.check().isNotNull(masterPlugin);
+	public record WorkProcessingInfo(String workType, Instant submitInstant, WorkResultHandler workResultHandler) {
+		public WorkProcessingInfo {
+			Assertion.check().isNotBlank(workType)
+					.isNotNull(submitInstant)
+					.isNotNull(workResultHandler);
+		}
+	}
+
+	public MasterCoordinator(final MasterPlugin masterPlugin, final AnalyticsManager analyticsManager) {
+		Assertion.check()
+				.isNotNull(masterPlugin)
+				.isNotNull(analyticsManager);
 		//-----
 		this.masterPlugin = masterPlugin;
+		this.analyticsManager = analyticsManager;
 		watcher = createWatcher();
 	}
 
@@ -58,7 +77,7 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 		try {
 			watcher.join();
 		} catch (final InterruptedException e) {
-			//On ne fait rien
+			Thread.currentThread().interrupt(); //if interrupt we re-set the flag
 		}
 	}
 
@@ -72,8 +91,11 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 	}
 
 	private <W, R> void putWorkItem(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {
-		workResultHandlers.put(workItem.getId(), workResultHandler);
-		masterPlugin.putWorkItem(workItem);
+		analyticsManager.trace(ANALYTICS_CATEGORY, "putWorkItem", tracer -> {
+			tracer.setTag("workType", workItem.getWorkType());
+			workProcessingInfos.put(workItem.getId(), new WorkProcessingInfo(workItem.getWorkType(), Instant.now(), workResultHandler));
+			masterPlugin.putWorkItem(workItem);
+		});
 	}
 
 	private Thread createWatcher() {
@@ -88,6 +110,11 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 					if (result != null) {
 						setResult(result.workId, result.result, result.error);
 					}
+					try {
+						Thread.sleep(10); //we let other threads to run
+					} catch (final InterruptedException e) {
+						Thread.currentThread().interrupt(); //if interrupt we re-set the flag
+					}
 				}
 			}
 		};
@@ -98,10 +125,45 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 				.isNotBlank(workId)
 				.isTrue(result == null ^ error == null, "result xor error is null");
 		//-----
-		final WorkResultHandler workResultHandler = workResultHandlers.remove(workId);
-		if (workResultHandler != null) {
-			//Que faire sinon
-			workResultHandler.onDone(result, error);
+		final WorkProcessingInfo workProcessingInfo = workProcessingInfos.remove(workId);
+
+		if (workProcessingInfo != null) {
+			analyticsManager.addSpan(TraceSpan.builder(ANALYTICS_CATEGORY, "process", workProcessingInfo.submitInstant, Instant.now())
+					.withTag("workType", workProcessingInfo.workType)
+					.incMeasure("success", error == null ? 100 : 0)
+					.build());
+			analyticsManager.trace(ANALYTICS_CATEGORY, "onDone", tracer -> {
+				tracer
+						.incMeasure("processSuccess", error == null ? 100 : 0)
+						.setTag("workType", workProcessingInfo.workType);
+				//Que faire sinon
+				workProcessingInfo.workResultHandler.onDone(result, error);
+			});
 		}
+	}
+
+	public void checkDeadNodesAndWorkItems() {
+		analyticsManager.trace(ANALYTICS_CATEGORY, "deadNodeDetector", tracer -> {
+			final var issueWorks = masterPlugin.checkDeadNodesAndWorkItems();
+			final Set<String> retriedWorkIds = issueWorks.val1();
+			final Set<String> abandonnedWorkIds = issueWorks.val2();
+
+			retriedWorkIds.add("test");
+			tracer.setMeasure("retriedWorks", retriedWorkIds.size())
+					.setMeasure("abandonnedWorkIds", abandonnedWorkIds.size());
+
+			final Map<String, Long> countByWorkType = retriedWorkIds.stream()
+					.filter(workId -> workProcessingInfos.get(workId) != null)
+					.collect(Collectors.groupingBy(workId -> workProcessingInfos.get(workId).workType(), Collectors.counting()));
+			countByWorkType.entrySet().forEach(entry -> {
+				tracer.setMetadata("retried-" + entry.getKey(), String.valueOf(entry.getValue()));
+			});
+
+			abandonnedWorkIds.forEach(workId -> {
+				setResult(workId, null, new VSystemException("Can't process, no compatible worker available"));
+				//remove abandonned workProcessingInfo
+			});
+		});
+
 	}
 }

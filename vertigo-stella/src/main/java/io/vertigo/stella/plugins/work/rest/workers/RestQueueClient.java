@@ -111,11 +111,13 @@ final class RestQueueClient {
 					Thread.sleep(2000); //on veut bien un sleep
 				}
 			} catch (final InterruptedException e) {
+				Thread.currentThread().interrupt(); // Preserve interrupt status
 				//nothing, in case of interrupt just return null, like no message
 			} catch (final Exception c) {
 				LOG.warn("[pollWork] Erreur de traitement de l'accès au serveur " + serverUrl + "/pollWork/" + workType + " (" + c.getMessage() + ")", c);
 			}
 		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt(); // Preserve interrupt status
 			//nothing, in case of interrupt just return null, like no message
 		}
 		return null;

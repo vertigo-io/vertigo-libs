@@ -30,6 +30,7 @@ public final class SlowWorkEngine implements WorkEngine<SlowWork, Boolean> {
 			final long sleepTimeMin = Math.round(sleepTimeAvg * 0.9d); //-10%
 			Thread.sleep((sleepTimeMax + sleepTimeMin) / 2);
 		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt(); // Preserve interrupt status
 			return false;
 		}
 		return true;

@@ -22,6 +22,7 @@ import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Activeable;
@@ -42,19 +43,19 @@ import io.vertigo.stella.work.WorkEngine;
 public final class MasterManagerImpl implements MasterManager, Activeable {
 	private final WorkListener workListener;
 	private final MasterCoordinator masterCoordinator;
-	private final MasterPlugin masterPlugin;
 
 	/**
 	 * Constructeur.
 	 * @param masterPlugin Optional plugin for work's distribution
 	 */
 	@Inject
-	public MasterManagerImpl(final MasterPlugin masterPlugin) {
-		Assertion.check().isNotNull(masterPlugin);
+	public MasterManagerImpl(final MasterPlugin masterPlugin, final AnalyticsManager analyticsManager) {
+		Assertion.check()
+				.isNotNull(masterPlugin)
+				.isNotNull(analyticsManager);
 		//-----
 		workListener = new WorkListenerImpl(/*analyticsManager*/);
-		masterCoordinator = new MasterCoordinator(masterPlugin);
-		this.masterPlugin = masterPlugin;
+		masterCoordinator = new MasterCoordinator(masterPlugin, analyticsManager);
 	}
 
 	/** {@inheritDoc} */
@@ -111,7 +112,7 @@ public final class MasterManagerImpl implements MasterManager, Activeable {
 	}
 
 	private <W, R> Future<R> submit(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {
-		workListener.onStart(workItem.getWorkEngineClass().getName());
+		workListener.onStart(workItem.getWorkType());
 		boolean executed = false;
 		final long start = System.currentTimeMillis();
 		try {
@@ -125,7 +126,7 @@ public final class MasterManagerImpl implements MasterManager, Activeable {
 
 	@DaemonScheduled(name = "DmnWorkerDeadNodeDetector", periodInSeconds = 10)
 	public void checkDeadNodesAndWorkItems() {
-		masterPlugin.checkDeadNodesAndWorkItems();
+		masterCoordinator.checkDeadNodesAndWorkItems();
 	}
 
 }

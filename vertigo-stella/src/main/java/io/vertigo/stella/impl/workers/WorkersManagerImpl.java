@@ -103,7 +103,8 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 					try {
 						dispatcherThread.join(1000);
 					} catch (final InterruptedException e) {
-						//On ne fait rien
+						Thread.currentThread().interrupt(); // Preserve interrupt status
+						//nothing we are stopping
 					}
 					isOneAlive = isOneAlive || dispatcherThread.isAlive();
 				}

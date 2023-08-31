@@ -36,7 +36,7 @@ final class WorkPromiseImpl implements WorkPromise {
 	WorkPromiseImpl(final Future future) {
 		Assertion.check().isNotNull(future);
 		//---
-		this.internal = future;
+		internal = future;
 	}
 
 	@Override
@@ -69,9 +69,6 @@ final class WorkPromiseImpl implements WorkPromise {
 		try {
 			return internal.get();
 		} catch (final ExecutionException | InterruptedException e) {
-			if (e.getCause() instanceof RuntimeException) {
-				throw (RuntimeException) e.getCause();
-			}
 			throw WrappedException.wrap(e.getCause());
 		}
 	}

@@ -65,8 +65,7 @@ public final class WorkersCoordinator implements Coordinator, Closeable {
 		} catch (final InterruptedException ie) {
 			// (Re-)Cancel if current thread also interrupted
 			workers.shutdownNow();
-			// Preserve interrupt status
-			Thread.currentThread().interrupt();
+			Thread.currentThread().interrupt(); // Preserve interrupt status
 		}
 	}
 

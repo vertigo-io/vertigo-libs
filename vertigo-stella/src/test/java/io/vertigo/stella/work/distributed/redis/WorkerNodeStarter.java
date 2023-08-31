@@ -63,6 +63,7 @@ public class WorkerNodeStarter {
 			}
 			System.out.println("Node stopping by timeout");
 		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt(); // Preserve interrupt status
 			//rien arret normal
 			System.out.println("Node stopping by interrupted");
 		} catch (final Exception e) {
