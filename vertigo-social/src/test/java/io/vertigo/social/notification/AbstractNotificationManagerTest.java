@@ -290,7 +290,7 @@ public abstract class AbstractNotificationManagerTest {
 		try {
 			Thread.sleep(time);
 		} catch (final InterruptedException e) {
-			//nothing
+			Thread.currentThread().interrupt(); //if interrupt we re-set the flag
 		}
 	}
 }
