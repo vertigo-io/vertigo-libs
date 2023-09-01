@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.stella.impl.master.MasterPlugin;
 import io.vertigo.stella.impl.master.WorkResult;
@@ -41,6 +40,7 @@ import io.vertigo.stella.master.WorkResultHandler;
  */
 public final class MasterCoordinator implements Coordinator, Activeable {
 	private static final String ANALYTICS_CATEGORY = "distributedwork";
+	private final String nodeId;
 	private final AnalyticsManager analyticsManager;
 	private final MasterPlugin masterPlugin;
 	private final Thread watcher;
@@ -54,11 +54,13 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 		}
 	}
 
-	public MasterCoordinator(final MasterPlugin masterPlugin, final AnalyticsManager analyticsManager) {
+	public MasterCoordinator(final String nodeId, final MasterPlugin masterPlugin, final AnalyticsManager analyticsManager) {
 		Assertion.check()
+				.isNotBlank(nodeId)
 				.isNotNull(masterPlugin)
 				.isNotNull(analyticsManager);
 		//-----
+		this.nodeId = nodeId;
 		this.masterPlugin = masterPlugin;
 		this.analyticsManager = analyticsManager;
 		watcher = createWatcher();
@@ -106,7 +108,7 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 				while (!Thread.currentThread().isInterrupted()) {
 					//On attend le résultat (par tranches de 1s)
 					final int waitTimeSeconds = 1;
-					final WorkResult result = masterPlugin.pollResult(waitTimeSeconds);
+					final WorkResult result = masterPlugin.pollResult(nodeId, waitTimeSeconds);
 					if (result != null) {
 						setResult(result.workId, result.result, result.error);
 					}
@@ -156,13 +158,10 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 					.filter(workId -> workProcessingInfos.get(workId) != null)
 					.collect(Collectors.groupingBy(workId -> workProcessingInfos.get(workId).workType(), Collectors.counting()));
 			countByWorkType.entrySet().forEach(entry -> {
-				tracer.setMetadata("retried-" + entry.getKey(), String.valueOf(entry.getValue()));
+				final String simplerWorkType = entry.getKey().substring(entry.getKey().lastIndexOf('.'));
+				tracer.setMeasure("retried-" + simplerWorkType, entry.getValue());
 			});
-
-			abandonnedWorkIds.forEach(workId -> {
-				setResult(workId, null, new VSystemException("Can't process, no compatible worker available"));
-				//remove abandonned workProcessingInfo
-			});
+			//abandonnedWork are managed by a result with error
 		});
 
 	}

@@ -72,8 +72,8 @@ public final class RedisWorkersPlugin implements WorkersPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <R> void putResult(final String nodeId, final String workType, final String workId, final R result, final Throwable error) {
-		redisDB.putResult(nodeId, workType, workId, result, error);
+	public <R> void putResult(final String callerNodeId, final String nodeId, final String workType, final String workId, final R result, final Throwable error) {
+		redisDB.putResult(callerNodeId, nodeId, workType, workId, result, error);
 	}
 
 	/** {@inheritDoc} */

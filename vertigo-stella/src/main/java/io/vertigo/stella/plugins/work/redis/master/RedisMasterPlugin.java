@@ -63,9 +63,9 @@ public final class RedisMasterPlugin implements MasterPlugin {
 
 	/** {@inheritDoc}*/
 	@Override
-	public WorkResult pollResult(final int waitTimeSeconds) {
+	public WorkResult pollResult(final String callerNodeId, final int waitTimeSeconds) {
 		/** TODO : need to poll result for THIS master not others !! */
-		return redisDB.pollResult(waitTimeSeconds, workTypes);
+		return redisDB.pollResult(callerNodeId, waitTimeSeconds, workTypes);
 	}
 
 	/** {@inheritDoc} */

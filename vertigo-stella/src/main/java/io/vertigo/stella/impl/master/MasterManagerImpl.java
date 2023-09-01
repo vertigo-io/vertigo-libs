@@ -26,6 +26,7 @@ import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.stella.impl.master.coordinator.MasterCoordinator;
 import io.vertigo.stella.impl.master.listener.WorkListener;
 import io.vertigo.stella.impl.master.listener.WorkListenerImpl;
@@ -41,6 +42,7 @@ import io.vertigo.stella.work.WorkEngine;
  * @author pchretien, npiedeloup
  */
 public final class MasterManagerImpl implements MasterManager, Activeable {
+	private final String nodeId;
 	private final WorkListener workListener;
 	private final MasterCoordinator masterCoordinator;
 
@@ -49,13 +51,15 @@ public final class MasterManagerImpl implements MasterManager, Activeable {
 	 * @param masterPlugin Optional plugin for work's distribution
 	 */
 	@Inject
-	public MasterManagerImpl(final MasterPlugin masterPlugin, final AnalyticsManager analyticsManager) {
+	public MasterManagerImpl(@ParamValue("nodeId") final String nodeId, final MasterPlugin masterPlugin, final AnalyticsManager analyticsManager) {
 		Assertion.check()
+				.isNotBlank(nodeId)
 				.isNotNull(masterPlugin)
 				.isNotNull(analyticsManager);
 		//-----
+		this.nodeId = nodeId;
 		workListener = new WorkListenerImpl(/*analyticsManager*/);
-		masterCoordinator = new MasterCoordinator(masterPlugin, analyticsManager);
+		masterCoordinator = new MasterCoordinator(nodeId, masterPlugin, analyticsManager);
 	}
 
 	/** {@inheritDoc} */
@@ -83,7 +87,7 @@ public final class MasterManagerImpl implements MasterManager, Activeable {
 				.isNotNull(work)
 				.isNotNull(workEngineClass);
 		//-----
-		final WorkItem<W, R> workItem = new WorkItem<>(createWorkId(), work, workEngineClass);
+		final WorkItem<W, R> workItem = new WorkItem<>(nodeId, createWorkId(), work, workEngineClass);
 		final WorkResultHandler<R> emptyWorkResultHandler = new WorkResultHandler<>() {
 			@Override
 			public void onStart() {
@@ -107,7 +111,7 @@ public final class MasterManagerImpl implements MasterManager, Activeable {
 				.isNotNull(workEngineClass)
 				.isNotNull(workResultHandler);
 		//-----
-		final WorkItem<W, R> workItem = new WorkItem<>(createWorkId(), work, workEngineClass);
+		final WorkItem<W, R> workItem = new WorkItem<>(nodeId, createWorkId(), work, workEngineClass);
 		submit(workItem, workResultHandler);
 	}
 

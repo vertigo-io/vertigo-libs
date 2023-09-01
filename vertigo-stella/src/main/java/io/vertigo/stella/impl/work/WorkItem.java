@@ -30,6 +30,7 @@ public final class WorkItem<W, R> {
 	private final W work;
 	private final Class<? extends WorkEngine<W, R>> workEngineClass;
 	private final String id;
+	private final String callerNodeId;
 
 	/**
 	 * Constructor.
@@ -37,13 +38,14 @@ public final class WorkItem<W, R> {
 	 * @param id Id
 	 * @param work Travail dont on représente l'état.
 	 */
-	public WorkItem(final String id, final W work, final Class<? extends WorkEngine<W, R>> workEngineClass) {
+	public WorkItem(final String callerNodeId, final String id, final W work, final Class<? extends WorkEngine<W, R>> workEngineClass) {
 		Assertion.check()
 				.isNotNull(id)
 				//work can be null
 				.isNotNull(workEngineClass);
 		//-----
 		this.id = id;
+		this.callerNodeId = callerNodeId;
 		this.work = work;
 		this.workEngineClass = workEngineClass;
 	}
@@ -53,6 +55,13 @@ public final class WorkItem<W, R> {
 	 */
 	public String getId() {
 		return id;
+	}
+
+	/**
+	 * @return caller NodeId
+	 */
+	public String getCallerNodeId() {
+		return callerNodeId;
 	}
 
 	public String getWorkType() {

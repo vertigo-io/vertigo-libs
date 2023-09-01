@@ -42,10 +42,11 @@ public interface MasterPlugin extends Plugin {
 
 	/**
 	 * Wait for next result.
+	 * @param callerNodeId
 	 * @param waitTimeSeconds wait result for x seconds
 	 * @return Work result (null if none) : may be any result type
 	 */
-	WorkResult pollResult(final int waitTimeSeconds);
+	WorkResult pollResult(String callerNodeId, final int waitTimeSeconds);
 
 	/**
 	 * Check for dead nodes and manage (retry) unfinished workItems.

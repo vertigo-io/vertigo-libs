@@ -77,9 +77,9 @@ final class WorkDispatcher implements Runnable {
 			R result;
 			try {
 				result = futureResult.get();
-				workerPlugin.putResult(nodeId, workType, workItem.getId(), result, null);
+				workerPlugin.putResult(workItem.getCallerNodeId(), nodeId, workType, workItem.getId(), result, null);
 			} catch (final ExecutionException e) {
-				workerPlugin.putResult(nodeId, workType, workItem.getId(), null, e.getCause());
+				workerPlugin.putResult(workItem.getCallerNodeId(), nodeId, workType, workItem.getId(), null, e.getCause());
 			}
 		}
 		//if workitem is null, that's mean there is no workitem available;

@@ -17,6 +17,7 @@
  */
 package io.vertigo.stella.plugins.work.redis;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -42,6 +43,9 @@ import redis.clients.jedis.UnifiedJedis;
  * @author pchretien, npiedeloup
  */
 public final class RedisDB {
+
+	//TODO : think about that : simpler if workId is parseable abd contains : {workType} - callerNodeId - an uuid
+
 	private static final String REDIS_KEY_PREFIX = "vertigo:work";
 	private static final long DONE_COMPLETED = 1 * 60 * 60; //Keep expired 1h
 	private static final long EXPIRE_COMPLETED = 1 * 60 * 60; //Keep expired 1h
@@ -92,6 +96,7 @@ public final class RedisDB {
 		final Map<String, String> datas = new MapBuilder<String, String>()
 				.put("work64", encode(workItem.getWork()))
 				.put("provider64", encode(workType))
+				.put("caller64", encode(workItem.getCallerNodeId()))
 				.put("x-date", LocalDate.now().toString())
 				.build();
 		try (final Jedis jedis = redisConnector.getClient(workType)) {
@@ -141,8 +146,9 @@ public final class RedisDB {
 		final Map<String, String> hash = jedis.hgetAll(redisKeyWork(workType, workId));
 		final W work = (W) decode(hash.get("work64"));
 		final String name = (String) decode(hash.get("provider64"));
+		final String callerNodeId = (String) decode(hash.get("caller64"));
 		final Class<? extends WorkEngine> workEngineClass = ClassUtil.classForName(name, WorkEngine.class);
-		return new WorkItem(workId, work, workEngineClass);
+		return new WorkItem(callerNodeId, workId, work, workEngineClass);
 	}
 
 	/**
@@ -151,7 +157,7 @@ public final class RedisDB {
 	 * @param result the result
 	 * @param error if an error occurred
 	 */
-	public <R> void putResult(final String nodeId, final String workType, final String workId, final R result, final Throwable error) {
+	public <R> void putResult(final String callerNodeId, final String nodeId, final String workType, final String workId, final R result, final Throwable error) {
 		Assertion.check()
 				.isNotBlank(workId)
 				.isTrue(result == null ^ error == null, "result xor error is null");
@@ -168,17 +174,17 @@ public final class RedisDB {
 				final Transaction tx = jedis.multi()) {
 			tx.hmset(redisKeyWork(workType, workId), datas);
 			tx.lrem(redisKeyWorksInProgress(nodeId, workType), 0, workId);
-			tx.lpush(redisKeyWorksDone(workType), workId);
-			tx.expire(redisKeyWorksDone(workType), DONE_COMPLETED);
+			tx.lpush(redisKeyWorksDone(callerNodeId, workType), workId);
+			tx.expire(redisKeyWorksDone(callerNodeId, workType), DONE_COMPLETED);
 			tx.exec();
 		}
 	}
 
-	public <R> WorkResult<R> pollResult(final int waitTimeSeconds, final Set<String> workTypes) {
+	public <R> WorkResult<R> pollResult(final String callerNodeId, final int waitTimeSeconds, final Set<String> workTypes) {
 		final long start = System.currentTimeMillis();
 		while (System.currentTimeMillis() - start < waitTimeSeconds * 1000) {
 			for (final String workType : workTypes) {
-				final WorkResult<R> result = doPollResult(workType);
+				final WorkResult<R> result = doPollResult(callerNodeId, workType);
 				if (result != null) {
 					return result;
 				}
@@ -193,13 +199,13 @@ public final class RedisDB {
 		return null;
 	}
 
-	private <R> WorkResult<R> doPollResult(final String workType) {
+	private <R> WorkResult<R> doPollResult(final String callerNodeId, final String workType) {
 		final UnifiedJedis jedis = redisConnector.getClient();
-		final String workId = jedis.rpoplpush(redisKeyWorksDone(workType), redisKeyWorksCompleted(workType));
+		final String workId = jedis.rpoplpush(redisKeyWorksDone(callerNodeId, workType), redisKeyWorksCompleted(workType));
 		if (workId == null) {
 			return null;
 		}
-		jedis.expire(redisKeyWorksDone(workType), DONE_COMPLETED);
+		jedis.expire(redisKeyWorksDone(callerNodeId, workType), DONE_COMPLETED);
 		jedis.expire(redisKeyWorksCompleted(workType), EXPIRE_COMPLETED);
 		final Map<String, String> hash = jedis.hgetAll(redisKeyWork(workType, workId));
 		//final boolean succeeded = "ok".equals(hash.get("status"));
@@ -277,13 +283,19 @@ public final class RedisDB {
 				if (System.currentTimeMillis() / 1000 > timeDetected + timeoutSeconds) {
 					int loop = 0;
 					do { //loop to remove all work of this workType
-						final String workId = jedis.rpop(redisKeyWorksTodo(workType));
+						final String workId = jedis.rpop(redisKeyWorksTodo(workType)); //remove from todo
 						if (workId == null) {
 							break;
 						}
-						jedis.del(redisKeyWork(workType, workId));
+						final String callerNodeId64 = jedis.hget(redisKeyWork(workType, workId), "caller64");
+						if (callerNodeId64 == null) {
+							continue; //work not here ? shouldn't stop this detector for that
+						}
+						final String callerNodeId = (String) decode(callerNodeId64);
+						//we add a result for caller
+						this.putResult(callerNodeId, "noWorker", workType, workId, null,
+								new IOException("Timeout workId " + workId + " after " + timeoutSeconds + "s : No active node for this workType (" + workType + ")"));
 						abandonnedWorkId.add(workId);
-
 					} while (++loop < MAX_LOOP);
 
 					//Other keys :
@@ -296,8 +308,8 @@ public final class RedisDB {
 				}
 			}
 		}
-		retriedWorkId.removeAll(abandonnedWorkId); //abandonned aren't really retried
 
+		retriedWorkId.removeAll(abandonnedWorkId); //abandonned aren't really retried
 		return Tuple.of(retriedWorkId, abandonnedWorkId);
 	}
 
@@ -313,8 +325,8 @@ public final class RedisDB {
 		return REDIS_KEY_PREFIX + "s:in progress:" + nodeId + "{" + workType + "}";
 	}
 
-	private static String redisKeyWorksDone(final String workType) {
-		return REDIS_KEY_PREFIX + "s:done:{" + workType + "}";
+	private static String redisKeyWorksDone(final String callerNodeId, final String workType) {
+		return REDIS_KEY_PREFIX + "s:done:" + callerNodeId + ":{" + workType + "}";
 	}
 
 	private static String redisKeyWorksCompleted(final String workType) {
