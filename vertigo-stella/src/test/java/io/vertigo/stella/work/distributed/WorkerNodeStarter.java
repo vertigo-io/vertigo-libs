@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.work.distributed.rest;
+package io.vertigo.stella.work.distributed;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,6 +64,7 @@ public class WorkerNodeStarter {
 			System.out.println("Node stopping by timeout");
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt(); // Preserve interrupt status
+			//rien arret normal
 			System.out.println("Node stopping by interrupted");
 		} catch (final Exception e) {
 			System.err.println("Application error, exit " + e.getMessage());

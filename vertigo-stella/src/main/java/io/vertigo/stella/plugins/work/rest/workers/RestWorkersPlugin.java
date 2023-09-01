@@ -65,7 +65,8 @@ public final class RestWorkersPlugin implements WorkersPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <R> void putResult(final String nodeId, final String workType, final String workId, final R result, final Throwable error) {
+	public <R> void putResult(final String callerNodeId, final String nodeId, final String workType, final String workId, final R result, final Throwable error) {
+		//TODO this plugin support only one server, callerNodeId not used
 		restQueueClient.putResult(workId, result, error);
 	}
 

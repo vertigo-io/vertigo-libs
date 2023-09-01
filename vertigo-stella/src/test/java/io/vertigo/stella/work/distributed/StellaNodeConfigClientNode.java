@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.work.distributed.redis;
+package io.vertigo.stella.work.distributed;
 
 import io.vertigo.core.node.config.NodeConfig;
 

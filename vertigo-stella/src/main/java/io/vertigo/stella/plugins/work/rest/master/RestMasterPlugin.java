@@ -66,7 +66,8 @@ public final class RestMasterPlugin implements MasterPlugin, WebServices {
 
 	/** {@inheritDoc} */
 	@Override
-	public WorkResult pollResult(final int waitTimeSeconds) {
+	public WorkResult pollResult(final String callerNodeId, final int waitTimeSeconds) {
+		//There is one queue per master, not need of callerNodeId
 		return restQueueServer.pollResult(waitTimeSeconds);
 	}
 

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.work.distributed.redis;
+package io.vertigo.stella.work.distributed;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import io.vertigo.core.lang.Assertion;
 /**
  * @author npiedeloup
  */
-final class ClientNode {
+public final class ClientNode {
 	private Process nodeProcess;
 	private final List<Thread> subThreads = new ArrayList<>();
 	private final int maxLifeTime;
@@ -41,23 +41,23 @@ final class ClientNode {
 
 	/**
 	 * Constructeur.
-	 * @param nodeId Node id : 1 or 2
+	 * @param nodeConfigClassName NodeConfig provider class
 	 * @param maxLifeTime Durée de vie max en seconde
 	 */
-	ClientNode(final int nodeId, final int maxLifeTime) {
+	public ClientNode(final String nodeConfigClassName, final int maxLifeTime) {
 		Assertion.check()
-				.isTrue(nodeId == 1 || nodeId == 2, "You must specified nodeId : 1 or 2")
+				.isNotBlank(nodeConfigClassName, "You must specified nodeConfigClassName")
 				.isTrue(maxLifeTime >= 0 && maxLifeTime < 30000, "MaxLifeTime is in seconde and must be less than 30000 ({0}). Use 0 if you need infinit life.", maxLifeTime);
 		//-----
 		this.maxLifeTime = maxLifeTime;
-		nodeConfigClassName = StellaNodeConfigClientNode.class.getName() + nodeId;
+		this.nodeConfigClassName = nodeConfigClassName;
 	}
 
 	public void start() throws IOException {
 		final String command = new StringBuilder()
 				.append("java -cp ")
 				.append(properSystemPath(System.getProperty("java.class.path")))
-				.append(" io.vertigo.stella.work.distributed.redis.WorkerNodeStarter " + nodeConfigClassName + " " + maxLifeTime)
+				.append(" io.vertigo.stella.work.distributed.WorkerNodeStarter " + nodeConfigClassName + " " + maxLifeTime)
 				.toString();
 		nodeProcess = Runtime.getRuntime().exec(command);
 		subThreads.add(createOutputFlusher(nodeProcess.getInputStream(), "[ClientNode] ", System.out));

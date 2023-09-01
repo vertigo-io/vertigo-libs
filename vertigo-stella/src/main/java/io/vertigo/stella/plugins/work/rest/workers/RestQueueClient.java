@@ -95,7 +95,7 @@ final class RestQueueClient {
 					final byte[] serializedResult = codecManager.getBase64Codec().decode(result[1]);
 					final Object work = codecManager.getCompressedSerializationCodec().decode(serializedResult);
 					LOG.info("pollWork({}) : 1 Work", workType);
-					return new WorkItem(uuid, work, ClassUtil.classForName(workType));
+					return new WorkItem(serverUrl, uuid, work, ClassUtil.classForName(workType));
 				}
 				LOG.info("pollWork({}) : no Work", workType);
 				//pas de travaux : inutil d'attendre le poll attend déjà 1s coté serveur
