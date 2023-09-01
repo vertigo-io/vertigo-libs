@@ -23,7 +23,6 @@ import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.config.NodeConfigBuilder;
 import io.vertigo.core.param.Param;
-import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.stella.StellaFeatures;
 
 public final class MyNodeConfig {
@@ -35,7 +34,6 @@ public final class MyNodeConfig {
 		final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder()
 				.withBoot(BootConfig.builder()
 						.withLocales("fr")
-						.addPlugin(ClassPathResourceResolverPlugin.class)
 						.build())
 				.addModule(new CommonsFeatures().build())
 				.addModule(new RedisFeatures()
@@ -51,7 +49,8 @@ public final class MyNodeConfig {
 		final StellaFeatures stellaFeatures = new StellaFeatures();
 		if (master) {
 			stellaFeatures
-					.withMaster()
+					.withMaster(
+							Param.of("nodeId", nodeId))
 					.withRedisMasterPlugin();
 		}
 		if (workers) {
