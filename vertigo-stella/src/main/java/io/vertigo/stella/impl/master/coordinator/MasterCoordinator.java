@@ -41,6 +41,7 @@ import io.vertigo.stella.master.WorkResultHandler;
 public final class MasterCoordinator implements Coordinator, Activeable {
 	private static final String ANALYTICS_CATEGORY = "distributedwork";
 	private final String nodeId;
+	private final long pollFrequencyMs; //poll work and poll result frequency
 	private final AnalyticsManager analyticsManager;
 	private final MasterPlugin masterPlugin;
 	private final Thread watcher;
@@ -54,13 +55,15 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 		}
 	}
 
-	public MasterCoordinator(final String nodeId, final MasterPlugin masterPlugin, final AnalyticsManager analyticsManager) {
+	public MasterCoordinator(final String nodeId, final long pollFrequencyMs, final MasterPlugin masterPlugin, final AnalyticsManager analyticsManager) {
 		Assertion.check()
 				.isNotBlank(nodeId)
+				.isTrue(pollFrequencyMs >= 100 && pollFrequencyMs <= 5 * 60 * 1000, "pollFrequency must be between 0.1s and 300s ({0}s)", pollFrequencyMs)
 				.isNotNull(masterPlugin)
 				.isNotNull(analyticsManager);
 		//-----
 		this.nodeId = nodeId;
+		this.pollFrequencyMs = pollFrequencyMs;
 		this.masterPlugin = masterPlugin;
 		this.analyticsManager = analyticsManager;
 		watcher = createWatcher();
@@ -93,7 +96,7 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 	}
 
 	private <W, R> void putWorkItem(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {
-		analyticsManager.trace(ANALYTICS_CATEGORY, "putWorkItem", tracer -> {
+		analyticsManager.trace(ANALYTICS_CATEGORY, "workSubmit", tracer -> {
 			tracer.setTag("workType", workItem.getWorkType());
 			workProcessingInfos.put(workItem.getId(), new WorkProcessingInfo(workItem.getWorkType(), Instant.now(), workResultHandler));
 			masterPlugin.putWorkItem(workItem);
@@ -106,16 +109,21 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 			@Override
 			public void run() {
 				while (!Thread.currentThread().isInterrupted()) {
-					//On attend le résultat (par tranches de 1s)
-					final int waitTimeSeconds = 1;
-					final WorkResult result = masterPlugin.pollResult(nodeId, waitTimeSeconds);
-					if (result != null) {
-						setResult(result.workId, result.result, result.error);
-					}
 					try {
-						Thread.sleep(10); //we let other threads to run
+						final long start = System.currentTimeMillis();
+						do {
+							final WorkResult result = masterPlugin.pollResult(nodeId, 1);
+							if (result != null) {
+								setResult(result.workId, result.result, result.error);
+							} else {
+								break; //if no mass result : wait pollFrequency
+							}
+						} while (System.currentTimeMillis() - start < pollFrequencyMs * 2);
+						//wait pollFrequency between mass work
+						Thread.sleep(pollFrequencyMs);
 					} catch (final InterruptedException e) {
-						Thread.currentThread().interrupt(); //if interrupt we re-set the flag
+						Thread.currentThread().interrupt(); // Preserve interrupt status
+						break; //stop on Interrupt
 					}
 				}
 			}
@@ -130,11 +138,11 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 		final WorkProcessingInfo workProcessingInfo = workProcessingInfos.remove(workId);
 
 		if (workProcessingInfo != null) {
-			analyticsManager.addSpan(TraceSpan.builder(ANALYTICS_CATEGORY, "process", workProcessingInfo.submitInstant, Instant.now())
+			analyticsManager.addSpan(TraceSpan.builder(ANALYTICS_CATEGORY, "workProcessed", workProcessingInfo.submitInstant, Instant.now())
 					.withTag("workType", workProcessingInfo.workType)
 					.incMeasure("success", error == null ? 100 : 0)
 					.build());
-			analyticsManager.trace(ANALYTICS_CATEGORY, "onDone", tracer -> {
+			analyticsManager.trace(ANALYTICS_CATEGORY, "workResultHandler.onDone", tracer -> {
 				tracer
 						.incMeasure("processSuccess", error == null ? 100 : 0)
 						.setTag("workType", workProcessingInfo.workType);
@@ -158,7 +166,7 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 					.filter(workId -> workProcessingInfos.get(workId) != null)
 					.collect(Collectors.groupingBy(workId -> workProcessingInfos.get(workId).workType(), Collectors.counting()));
 			countByWorkType.entrySet().forEach(entry -> {
-				final String simplerWorkType = entry.getKey().substring(entry.getKey().lastIndexOf('.'));
+				final String simplerWorkType = entry.getKey().substring(entry.getKey().lastIndexOf('.') + 1);
 				tracer.setMeasure("retried-" + simplerWorkType, entry.getValue());
 			});
 			//abandonnedWork are managed by a result with error

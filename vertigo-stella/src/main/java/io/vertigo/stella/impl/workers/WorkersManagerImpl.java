@@ -20,10 +20,12 @@ package io.vertigo.stella.impl.workers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Activeable;
@@ -50,11 +52,13 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 	@Inject
 	public WorkersManagerImpl(
 			@ParamValue("nodeId") final String nodeId,
+			@ParamValue("pollFrequencyMs") final Optional<Integer> pollFrequencyMs,
 			final @ParamValue("workersCount") int workersCount,
 			@ParamValue("workTypes") final String workTypes,
-			final WorkersPlugin workerPlugin) {
+			final WorkersPlugin workerPlugin, final AnalyticsManager analyticsManager) {
 		Assertion.check()
 				.isNotBlank(nodeId)
+				.isNotNull(pollFrequencyMs)
 				.isNotNull(workerPlugin)
 				.isNotBlank(workTypes);
 		//-----
@@ -66,7 +70,7 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 		//-----
 		for (final Map.Entry<String, Integer> entry : workTypesMap.entrySet()) {
 			final String workType = entry.getKey();
-			final WorkDispatcher worker = new WorkDispatcher(nodeId, workType, workersCoordinator, workerPlugin);
+			final WorkDispatcher worker = new WorkDispatcher(nodeId, workType, pollFrequencyMs.orElse(5000), workersCoordinator, workerPlugin, analyticsManager);
 			final String workTypeName = workType.substring(workType.lastIndexOf('.') + 1);
 			for (int i = 1; i <= entry.getValue(); i++) {
 				dispatcherThreads.add(new Thread(worker, "WorkDispatcher-" + workTypeName + "-" + i));

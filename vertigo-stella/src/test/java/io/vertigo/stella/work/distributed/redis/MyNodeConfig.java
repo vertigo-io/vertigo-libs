@@ -50,7 +50,8 @@ public final class MyNodeConfig {
 		if (master) {
 			stellaFeatures
 					.withMaster(
-							Param.of("nodeId", nodeId))
+							Param.of("nodeId", nodeId),
+							Param.of("pollFrequencyMs", 100))
 					.withRedisMasterPlugin();
 		}
 		if (workers) {
@@ -58,6 +59,7 @@ public final class MyNodeConfig {
 					.withWorker(
 							Param.of("workersCount", "10"),
 							Param.of("nodeId", nodeId),
+							Param.of("pollFrequencyMs", 100),
 							Param.of("workTypes", "io.vertigo.stella.work.mock.DivideWorkEngine^5;io.vertigo.stella.work.mock.SlowWorkEngine^5;io.vertigo.stella.work.AbstractWorkManagerTest$LengthWorkEngine^1;io.vertigo.stella.work.AbstractWorkManagerTest$SquareWorkEngine^1;io.vertigo.stella.work.mock.ThreadLocalWorkEngine^5"))
 					.withRedisWorkerPlugin(
 							Param.of("timeoutSeconds", "20"));

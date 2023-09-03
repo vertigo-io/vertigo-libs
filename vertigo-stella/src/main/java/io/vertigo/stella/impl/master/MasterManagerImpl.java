@@ -17,6 +17,7 @@
  */
 package io.vertigo.stella.impl.master;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Future;
 
@@ -51,15 +52,18 @@ public final class MasterManagerImpl implements MasterManager, Activeable {
 	 * @param masterPlugin Optional plugin for work's distribution
 	 */
 	@Inject
-	public MasterManagerImpl(@ParamValue("nodeId") final String nodeId, final MasterPlugin masterPlugin, final AnalyticsManager analyticsManager) {
+	public MasterManagerImpl(@ParamValue("nodeId") final String nodeId,
+			@ParamValue("pollFrequencyMs") final Optional<Integer> pollFrequencyMs,
+			final MasterPlugin masterPlugin, final AnalyticsManager analyticsManager) {
 		Assertion.check()
 				.isNotBlank(nodeId)
+				.isNotNull(pollFrequencyMs)
 				.isNotNull(masterPlugin)
 				.isNotNull(analyticsManager);
 		//-----
 		this.nodeId = nodeId;
 		workListener = new WorkListenerImpl(/*analyticsManager*/);
-		masterCoordinator = new MasterCoordinator(nodeId, masterPlugin, analyticsManager);
+		masterCoordinator = new MasterCoordinator(nodeId, pollFrequencyMs.orElse(5000), masterPlugin, analyticsManager);
 	}
 
 	/** {@inheritDoc} */

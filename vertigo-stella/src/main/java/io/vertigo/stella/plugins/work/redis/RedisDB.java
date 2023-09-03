@@ -20,8 +20,11 @@ package io.vertigo.stella.plugins.work.redis;
 import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,6 +41,7 @@ import io.vertigo.stella.work.WorkEngine;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 import redis.clients.jedis.UnifiedJedis;
+import redis.clients.jedis.args.ListDirection;
 
 /**
  * @author pchretien, npiedeloup
@@ -47,13 +51,10 @@ public final class RedisDB {
 	//TODO : think about that : simpler if workId is parseable abd contains : {workType} - callerNodeId - an uuid
 
 	private static final String REDIS_KEY_PREFIX = "vertigo:work";
-	private static final long DONE_COMPLETED = 1 * 60 * 60; //Keep expired 1h
-	private static final long EXPIRE_COMPLETED = 1 * 60 * 60; //Keep expired 1h
 	private static final int MAX_LOOP = 10_000;
-	private static final int POLL_WORK_WAIT_SECONDS = 5;
 	private final RedisConnector redisConnector;
 	private final CodecManager codecManager;
-	private final int timeoutSeconds;
+	private final int timeoutSeconds; //work timeout (before retry) and node timeout (before deadnode)
 
 	/**
 	 * Constructor.
@@ -64,7 +65,7 @@ public final class RedisDB {
 		Assertion.check()
 				.isNotNull(redisConnector)
 				.isNotNull(codecManager)
-				.isTrue(timeoutSeconds > 5 && timeoutSeconds <= 60 * 60, "timeoutSeconds must be between 5 and 3600s ({0}s)", timeoutSeconds);
+				.isTrue(timeoutSeconds >= 5 && timeoutSeconds <= 60 * 60, "timeoutSeconds must be between 5 and 3600s ({0}s)", timeoutSeconds);
 		//-----
 		this.timeoutSeconds = timeoutSeconds;
 		this.redisConnector = redisConnector;
@@ -102,7 +103,6 @@ public final class RedisDB {
 		try (final Jedis jedis = redisConnector.getClient(workType)) {
 			try (final Transaction tx = jedis.multi()) {
 				tx.hmset(redisKeyWork(workType, workItem.getId()), datas);
-				//tx.expire("work:" + workId, 70);
 				//On publie la demande de travaux
 				tx.lpush(redisKeyWorksTodo(workType), workItem.getId());
 				tx.exec();
@@ -118,28 +118,9 @@ public final class RedisDB {
 	public <R, W> WorkItem<R, W> pollWorkItem(final String nodeId, final String workType) {
 		Assertion.check().isNotNull(workType);
 		//-----
-		final long start = System.currentTimeMillis();
-		while (System.currentTimeMillis() - start < POLL_WORK_WAIT_SECONDS * 1000) {
-			final WorkItem<R, W> result = doPollWorkItem(nodeId, workType);
-			if (result != null) {
-				return result;
-			}
-			//retry until timeout
-			try {
-				Thread.sleep(100L);
-			} catch (final InterruptedException e) {
-				Thread.currentThread().interrupt();
-			}
-		}
-		return null;
-	}
-
-	private <W, R> WorkItem<W, R> doPollWorkItem(final String nodeId, final String workType) {
-		Assertion.check().isNotNull(workType);
-		//-----
 		final UnifiedJedis jedis = redisConnector.getClient();
 		//we could do a blocked wait, because we have one thread per workType
-		final String workId = jedis.rpoplpush(redisKeyWorksTodo(workType), redisKeyWorksInProgress(nodeId, workType)); //brpoplpush seems to lock database CHECKME
+		final String workId = jedis.lmove(redisKeyWorksTodo(workType), redisKeyWorksInProgress(nodeId, workType), ListDirection.RIGHT, ListDirection.LEFT); //blmove have strange issue
 		if (workId == null) {
 			return null;
 		}
@@ -160,7 +141,7 @@ public final class RedisDB {
 	public <R> void putResult(final String callerNodeId, final String nodeId, final String workType, final String workId, final R result, final Throwable error) {
 		Assertion.check()
 				.isNotBlank(workId)
-				.isTrue(result == null ^ error == null, "result xor error is null");
+				.isTrue(result == null ^ error == null, "result xor error is null ({0},{1} workType:{2})", result, error, workType);
 		//-----
 		final Map<String, String> datas = new HashMap<>();
 		if (error == null) {
@@ -175,25 +156,17 @@ public final class RedisDB {
 			tx.hmset(redisKeyWork(workType, workId), datas);
 			tx.lrem(redisKeyWorksInProgress(nodeId, workType), 0, workId);
 			tx.lpush(redisKeyWorksDone(callerNodeId, workType), workId);
-			tx.expire(redisKeyWorksDone(callerNodeId, workType), DONE_COMPLETED);
 			tx.exec();
 		}
 	}
 
-	public <R> WorkResult<R> pollResult(final String callerNodeId, final int waitTimeSeconds, final Set<String> workTypes) {
-		final long start = System.currentTimeMillis();
-		while (System.currentTimeMillis() - start < waitTimeSeconds * 1000) {
-			for (final String workType : workTypes) {
-				final WorkResult<R> result = doPollResult(callerNodeId, workType);
-				if (result != null) {
-					return result;
-				}
-			}
-			//retry until timeout
-			try {
-				Thread.sleep(100L);
-			} catch (final InterruptedException e) {
-				Thread.currentThread().interrupt(); // Preserve interrupt status
+	public <R> WorkResult<R> pollResult(final String callerNodeId, final Set<String> workTypes) {
+		final List<String> workTypesShuffled = new ArrayList<>(workTypes);
+		Collections.shuffle(workTypesShuffled); //shuffle list to evenly take worktypes results
+		for (final String workType : workTypes) {
+			final WorkResult<R> result = doPollResult(callerNodeId, workType);
+			if (result != null) {
+				return result;
 			}
 		}
 		return null;
@@ -201,17 +174,15 @@ public final class RedisDB {
 
 	private <R> WorkResult<R> doPollResult(final String callerNodeId, final String workType) {
 		final UnifiedJedis jedis = redisConnector.getClient();
-		final String workId = jedis.rpoplpush(redisKeyWorksDone(callerNodeId, workType), redisKeyWorksCompleted(workType));
-		if (workId == null) {
+		final List<String> workIdResult = jedis.rpop(redisKeyWorksDone(callerNodeId, workType), 1);
+		if (workIdResult == null) {
 			return null;
 		}
-		jedis.expire(redisKeyWorksDone(callerNodeId, workType), DONE_COMPLETED);
-		jedis.expire(redisKeyWorksCompleted(workType), EXPIRE_COMPLETED);
+		final String workId = workIdResult.get(0);
 		final Map<String, String> hash = jedis.hgetAll(redisKeyWork(workType, workId));
-		//final boolean succeeded = "ok".equals(hash.get("status"));
 		final R value = (R) decode(hash.get("result"));
 		final Throwable error = (Throwable) decode(jedis.hget(redisKeyWork(workType, workId), "error"));
-		//et on détruit le work (ou bien on l'archive ???
+		//et on détruit le work
 		jedis.del(redisKeyWork(workType, workId));
 		return new WorkResult<>(workId, value, error);
 	}
@@ -266,7 +237,7 @@ public final class RedisDB {
 				jedis.srem(redisKeyWorkers(workType), nodeId);
 				int loop = 0;
 				do { //loop to move to todo all in progress WorkItem
-					final String workId = jedis.rpoplpush(redisKeyWorksInProgress(nodeId, workType), redisKeyWorksTodo(workType));
+					final String workId = jedis.lmove(redisKeyWorksInProgress(nodeId, workType), redisKeyWorksTodo(workType), ListDirection.RIGHT, ListDirection.LEFT);
 					if (workId == null) {
 						break;
 					}
@@ -327,10 +298,6 @@ public final class RedisDB {
 
 	private static String redisKeyWorksDone(final String callerNodeId, final String workType) {
 		return REDIS_KEY_PREFIX + "s:done:" + callerNodeId + ":{" + workType + "}";
-	}
-
-	private static String redisKeyWorksCompleted(final String workType) {
-		return REDIS_KEY_PREFIX + "s:completed:{" + workType + "}";
 	}
 
 	private static String redisKeyWork(final String workType, final String workId) {

@@ -49,7 +49,8 @@ public final class MyNodeConfig {
 							.build());
 			stellaFeatures
 					.withMaster(
-							Param.of("nodeId", nodeId))
+							Param.of("nodeId", nodeId),
+							Param.of("pollFrequencyMs", 100))
 					.withRestMasterPlugin(
 							Param.of("timeoutSeconds", "20"));
 		}
@@ -58,6 +59,7 @@ public final class MyNodeConfig {
 					.withWorker(
 							Param.of("workersCount", "10"),
 							Param.of("nodeId", nodeId),
+							Param.of("pollFrequencyMs", 100),
 							Param.of("workTypes", "io.vertigo.stella.work.mock.DivideWorkEngine^5;io.vertigo.stella.work.mock.SlowWorkEngine^5;io.vertigo.stella.work.AbstractWorkManagerTest$LengthWorkEngine^1;io.vertigo.stella.work.AbstractWorkManagerTest$SquareWorkEngine^1;io.vertigo.stella.work.mock.ThreadLocalWorkEngine^5"))
 					.withRestWorkerPlugin(
 							Param.of("timeoutSeconds", "10"),
