@@ -174,6 +174,8 @@ public final class RedisDB {
 
 	private <R> WorkResult<R> doPollResult(final String callerNodeId, final String workType) {
 		final UnifiedJedis jedis = redisConnector.getClient();
+		//can't block pop here : we have multiple worktypes and probably not on same redis node (if cluster)
+		//blocking on one workType will block other too..
 		final List<String> workIdResult = jedis.rpop(redisKeyWorksDone(callerNodeId, workType), 1);
 		if (workIdResult == null) {
 			return null;
