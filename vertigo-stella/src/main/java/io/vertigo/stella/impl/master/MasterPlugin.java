@@ -50,7 +50,8 @@ public interface MasterPlugin extends Plugin {
 
 	/**
 	 * Check for dead nodes and manage (retry) unfinished workItems.
+	 * @param maxRetrycount max number of retry
 	 * @return WorkIds retried, WorkId abandonned
 	 */
-	Tuple<Set<String>, Set<String>> checkDeadNodesAndWorkItems();
+	Tuple<Set<String>, Set<String>> checkDeadNodesAndWorkItems(int maxRetrycount);
 }

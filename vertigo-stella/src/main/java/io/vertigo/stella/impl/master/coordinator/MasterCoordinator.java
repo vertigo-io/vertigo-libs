@@ -40,6 +40,7 @@ import io.vertigo.stella.master.WorkResultHandler;
  */
 public final class MasterCoordinator implements Coordinator, Activeable {
 	private static final String ANALYTICS_CATEGORY = "distributedwork";
+	private static final int MAX_WORK_RETRY_COUNT = 3;
 	private final String nodeId;
 	private final long pollFrequencyMs; //poll work and poll result frequency
 	private final AnalyticsManager analyticsManager;
@@ -118,9 +119,9 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 							} else {
 								break; //if no mass result : wait pollFrequency
 							}
-						} while (System.currentTimeMillis() - start < pollFrequencyMs * 2);
-						//wait pollFrequency between mass work
-						Thread.sleep(pollFrequencyMs);
+						} while (System.currentTimeMillis() - start < pollFrequencyMs);
+						//wait to next pollFrequencyMs time, mini 10ms while mass work
+						Thread.sleep(Math.max(10, pollFrequencyMs - System.currentTimeMillis() - start));
 					} catch (final InterruptedException e) {
 						Thread.currentThread().interrupt(); // Preserve interrupt status
 						break; //stop on Interrupt
@@ -143,8 +144,7 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 					.incMeasure("success", error == null ? 100 : 0)
 					.build());
 			analyticsManager.trace(ANALYTICS_CATEGORY, "workResultHandler.onDone", tracer -> {
-				tracer
-						.incMeasure("processSuccess", error == null ? 100 : 0)
+				tracer.incMeasure("processSuccess", error == null ? 100 : 0)
 						.setTag("workType", workProcessingInfo.workType);
 				//Que faire sinon
 				workProcessingInfo.workResultHandler.onDone(result, error);
@@ -154,11 +154,10 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 
 	public void checkDeadNodesAndWorkItems() {
 		analyticsManager.trace(ANALYTICS_CATEGORY, "deadNodeDetector", tracer -> {
-			final var issueWorks = masterPlugin.checkDeadNodesAndWorkItems();
+			final var issueWorks = masterPlugin.checkDeadNodesAndWorkItems(MAX_WORK_RETRY_COUNT);
 			final Set<String> retriedWorkIds = issueWorks.val1();
 			final Set<String> abandonnedWorkIds = issueWorks.val2();
-
-			retriedWorkIds.add("test");
+			//may check retry count
 			tracer.setMeasure("retriedWorks", retriedWorkIds.size())
 					.setMeasure("abandonnedWorkIds", abandonnedWorkIds.size());
 

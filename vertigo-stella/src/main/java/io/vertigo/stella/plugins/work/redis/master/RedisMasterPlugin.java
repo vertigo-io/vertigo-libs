@@ -77,7 +77,7 @@ public final class RedisMasterPlugin implements MasterPlugin {
 	/** {@inheritDoc}
 	 * @return */
 	@Override
-	public Tuple<Set<String>, Set<String>> checkDeadNodesAndWorkItems() {
-		return redisDB.checkDeadNodes(workTypes);
+	public Tuple<Set<String>, Set<String>> checkDeadNodesAndWorkItems(final int maxRetry) {
+		return redisDB.checkDeadNodes(maxRetry, workTypes);
 	}
 }

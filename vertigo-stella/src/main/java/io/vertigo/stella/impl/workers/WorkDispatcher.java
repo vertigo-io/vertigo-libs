@@ -58,25 +58,18 @@ final class WorkDispatcher implements Runnable {
 	/** {@inheritDoc} */
 	@Override
 	public void run() {
-		while (!Thread.currentThread().isInterrupted()) {
-			try {
-				final long start = System.currentTimeMillis();
-				boolean hasWork = false;
-				do {
-					hasWork = doRun(); //if hasWork : poll works
-				} while (hasWork && System.currentTimeMillis() - start < pollFrequencyMs * 2);
-				//wait pollFrequency between mass work
-				Thread.sleep(pollFrequencyMs);
-			} catch (final InterruptedException e) {
-				Thread.currentThread().interrupt(); // Preserve interrupt status
-				break; //stop on Interrupt
-			}
-		}
+		final long start = System.currentTimeMillis();
+		boolean hasWork = false;
+		do {
+			hasWork = doRun(); //if hasWork : continue to poll work
+		} while (!Thread.currentThread().isInterrupted()
+				&& hasWork
+				&& System.currentTimeMillis() - start < pollFrequencyMs);
 	}
 
-	private <W, R> boolean doRun() throws InterruptedException {
+	private <W, R> boolean doRun() {
 		final WorkItem<W, R> workItem = workerPlugin.pollWorkItem(nodeId, workType);
-		if (workItem != null) {
+		if (workItem != null) { //if workitem is null, that's mean there is no workitem available;
 			analyticsManager.trace(ANALYTICS_CATEGORY, "workerProcess", tracer -> {
 				final Tracer localTracer = tracer;
 				tracer.setTag("workType", workItem.getWorkType());
@@ -108,14 +101,12 @@ final class WorkDispatcher implements Runnable {
 				} catch (final ExecutionException e) {
 					workerPlugin.putResult(workItem.getCallerNodeId(), nodeId, workType, workItem.getId(), null, e.getCause());
 				} catch (final InterruptedException e) {
-					workerPlugin.putResult(workItem.getCallerNodeId(), nodeId, workType, workItem.getId(), null, e);
+					//in case of interrupt we won't push result : might succeed, let the work to be retried
 					Thread.currentThread().interrupt();
 				}
 			});
 			return true;
 		}
 		return false;
-		//if workitem is null, that's mean there is no workitem available;
 	}
-
 }

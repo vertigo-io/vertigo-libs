@@ -22,7 +22,6 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.param.ParamValue;
@@ -57,9 +56,8 @@ public final class RestMasterPlugin implements MasterPlugin, WebServices {
 	}
 
 	@Override
-	@DaemonScheduled(name = "DmnWorkQueueTimeoutCheck", periodInSeconds = 10)
-	public Tuple<Set<String>, Set<String>> checkDeadNodesAndWorkItems() {
-		final Set<String> retriedWorkId = restQueueServer.checkDeadNodes();
+	public Tuple<Set<String>, Set<String>> checkDeadNodesAndWorkItems(final int maxRetry) {
+		final Set<String> retriedWorkId = restQueueServer.checkDeadNodes(maxRetry);
 		final Set<String> abandonnedWorkId = restQueueServer.checkDeadWorkItems();
 		return Tuple.of(retriedWorkId, abandonnedWorkId);
 	}

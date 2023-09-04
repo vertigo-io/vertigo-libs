@@ -119,8 +119,8 @@ public final class RedisDB {
 		Assertion.check().isNotNull(workType);
 		//-----
 		final UnifiedJedis jedis = redisConnector.getClient();
-		//we could do a blocked wait, because we have one thread per workType
-		final String workId = jedis.lmove(redisKeyWorksTodo(workType), redisKeyWorksInProgress(nodeId, workType), ListDirection.RIGHT, ListDirection.LEFT); //blmove have strange issue
+		//We could do a blocked wait, because we have one thread per workType BUT blmove won't work if not enought redis connections : default 8 !!
+		final String workId = jedis.lmove(redisKeyWorksTodo(workType), redisKeyWorksInProgress(nodeId, workType), ListDirection.RIGHT, ListDirection.LEFT);
 		if (workId == null) {
 			return null;
 		}
@@ -200,10 +200,11 @@ public final class RedisDB {
 	/**
 	 * Vérifie les noeuds morts, et si oui remets les workItems dans la pile.
 	 * Could be executed concurrently by other Master.
+	 * @param maxRetry number of retry before cancel work @TODO
 	 * @param workTypes to checks
-	 * @return List of retried and abandonned workId
+	 * @return List of retried and canceled workId
 	 */
-	public Tuple<Set<String>, Set<String>> checkDeadNodes(final Set<String> workTypes) {
+	public Tuple<Set<String>, Set<String>> checkDeadNodes(final int maxRetry, final Set<String> workTypes) {
 		final Map<String, Set<String>> nodeIds = new HashMap<>();
 		final Set<String> deadNodes = new HashSet<>();
 		final Set<String> deadWorkType = new HashSet<>();

@@ -79,8 +79,9 @@ final class RestQueueServer {
 
 	/**
 	 * Vérifie les noeuds morts, et si oui remets les workItems dans la pile.
+	 * @param maxRetry max try
 	 */
-	Set<String> checkDeadNodes() {
+	Set<String> checkDeadNodes(final int maxRetry) {
 		final Set<String> deadNodes = new HashSet<>();
 		final Set<String> retriedWorkId = new HashSet<>();
 		//Comme défini dans le contrat de la ConcurrentMap : l'iterator est weakly consistent : et ne lance pas de ConcurrentModificationException
@@ -94,6 +95,7 @@ final class RestQueueServer {
 			LOG.warn("Stopped nodes detected : {}", deadNodes);
 			for (final RunningWorkInfos runningWorkInfos : runningWorkInfosMap.values()) {
 				if (deadNodes.contains(runningWorkInfos.getNodeUID())) {
+					//if retry < maxRetry else
 					putWorkItem(runningWorkInfos.getWorkItem());
 					retriedWorkId.add(runningWorkInfos.getWorkItem().getId());
 				}

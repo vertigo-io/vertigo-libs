@@ -85,6 +85,7 @@ public final class RedisNodesWorkManagerTest extends AbstractWorkManagerTest {
 	 */
 	@Test
 	public void testDeadNode() throws InterruptedException, IOException {
+		Thread.sleep(500);
 		final MyWorkResultHanlder<Boolean> workResultHanlder = new MyWorkResultHanlder<>(1);
 		final SlowWork slowWork = new SlowWork(1000);
 		for (int i = 0; i < 20; i++) {

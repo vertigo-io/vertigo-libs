@@ -261,7 +261,7 @@ public abstract class AbstractWorkManagerTest {
 
 		final boolean finished = workResultHanlder.waitFinish(workToCreate, workTime * workToCreate);
 		//-----
-		Assertions.assertTrue(finished, "Les works n'ont pas terminés dans les temps, le timeout à " + workTime * workToCreate + "ms s'est déclenché");
+		Assertions.assertTrue(finished, "Les works n'ont pas terminés dans les temps, le timeout à " + workTime * workToCreate + "ms s'est déclenché (" + workResultHanlder.toString() + ")");
 		Assertions.assertEquals(Integer.valueOf(1), workResultHanlder.getLastResult(), "ThreadLocal conservé entre deux exécutions ");
 	}
 
