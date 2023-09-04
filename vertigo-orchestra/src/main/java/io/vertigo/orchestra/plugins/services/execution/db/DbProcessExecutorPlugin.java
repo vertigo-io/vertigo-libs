@@ -46,6 +46,7 @@ import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.InjectorUtil;
+import io.vertigo.core.util.NamedThreadFactory;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
@@ -139,7 +140,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		// ---
 		executionPeriodSeconds = executionPeriodSecondsOpt.orElse(30);
 		// ---
-		workers = Executors.newFixedThreadPool(workersCount);
+		workers = Executors.newFixedThreadPool(workersCount, new NamedThreadFactory("v-orchestra-dbWorkers-"));
 	}
 
 	@Override

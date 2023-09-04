@@ -24,9 +24,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.NamedThreadFactory;
 import io.vertigo.stella.impl.work.Coordinator;
 import io.vertigo.stella.impl.work.WorkItem;
-import io.vertigo.stella.impl.workers.NamedThreadFactory;
 import io.vertigo.stella.master.WorkResultHandler;
 
 /**
@@ -46,7 +46,7 @@ public final class WorkersCoordinator implements Coordinator, Closeable {
 	public WorkersCoordinator(final int workerCount) {
 		Assertion.check().isTrue(workerCount >= 1, "At least one thread must be allowed to process asynchronous works.");
 		//-----
-		workers = Executors.newFixedThreadPool(workerCount, new NamedThreadFactory("workers-"));
+		workers = Executors.newFixedThreadPool(workerCount, new NamedThreadFactory("v-workers-"));
 	}
 
 	/** {@inheritDoc} */

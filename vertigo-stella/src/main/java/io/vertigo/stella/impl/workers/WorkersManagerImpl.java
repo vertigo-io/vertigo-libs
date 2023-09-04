@@ -32,6 +32,7 @@ import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.util.NamedThreadFactory;
 import io.vertigo.stella.impl.workers.coordinator.WorkersCoordinator;
 import io.vertigo.stella.workers.WorkersManager;
 
@@ -89,7 +90,7 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 		for (final Map.Entry<String, Integer> entry : workTypesMap.entrySet()) {
 			final String workType = entry.getKey();
 			final String workTypeName = workType.substring(workType.lastIndexOf('.') + 1);
-			final ScheduledExecutorService worktypeExecutorService = Executors.newScheduledThreadPool(entry.getValue(), new NamedThreadFactory("WorkDispatcher-" + workTypeName + "-"));
+			final ScheduledExecutorService worktypeExecutorService = Executors.newScheduledThreadPool(entry.getValue(), new NamedThreadFactory("v-workDispatcher-" + workTypeName + "-"));
 			workDispatcherExecutors.add(worktypeExecutorService);
 			final WorkDispatcher worker = new WorkDispatcher(nodeId, workType, pollFrequencyMs, workersCoordinator, workerPlugin, analyticsManager);
 			//initial delay randomly between 0.1s and 1s.

@@ -33,6 +33,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.InjectorUtil;
+import io.vertigo.core.util.NamedThreadFactory;
 import io.vertigo.orchestra.definitions.ActivityDefinition;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.definitions.ProcessType;
@@ -66,7 +67,7 @@ public class MemoryProcessExecutorPlugin implements ProcessExecutorPlugin, Activ
 	public MemoryProcessExecutorPlugin(@ParamValue("workersCount") final Integer workersCount) {
 		Assertion.check().isNotNull(workersCount);
 		// ---
-		localExecutor = Executors.newFixedThreadPool(workersCount);
+		localExecutor = Executors.newFixedThreadPool(workersCount, new NamedThreadFactory("v-orchestra-memWorkers-"));
 	}
 
 	@Override

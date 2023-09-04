@@ -43,6 +43,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.TempFile;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.util.NamedThreadFactory;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.VFileUtil;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
@@ -58,7 +59,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 
 	private static final Logger LOGGER = LogManager.getLogger(AbstractOpenOfficeConverterPlugin.class);
 
-	private final ExecutorService executors = Executors.newFixedThreadPool(1);
+	private final ExecutorService executors = Executors.newFixedThreadPool(1, new NamedThreadFactory("v-converter-openoffice-"));
 
 	private final String unoHost;
 	private final int unoPort;

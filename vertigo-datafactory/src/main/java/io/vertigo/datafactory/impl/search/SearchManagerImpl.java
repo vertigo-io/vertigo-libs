@@ -39,6 +39,7 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.util.NamedThreadFactory;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.search.SearchManager;
@@ -86,7 +87,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		this.analyticsManager = analyticsManager;
 		localeManager.add(io.vertigo.datafactory.impl.search.SearchResource.class.getName(), io.vertigo.datafactory.impl.search.SearchResource.values());
 
-		executorService = Executors.newSingleThreadScheduledExecutor();
+		executorService = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("v-search-reindex-"));
 	}
 
 	/** {@inheritDoc} */
