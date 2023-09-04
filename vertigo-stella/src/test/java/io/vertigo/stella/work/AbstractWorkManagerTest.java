@@ -56,6 +56,7 @@ public abstract class AbstractWorkManagerTest {
 		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		doSetUp();
+		Thread.sleep(1000);
 	}
 
 	protected void doSetUp() throws Exception {
