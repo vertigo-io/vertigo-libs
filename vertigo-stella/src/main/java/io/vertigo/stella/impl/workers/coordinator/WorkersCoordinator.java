@@ -46,7 +46,7 @@ public final class WorkersCoordinator implements Coordinator, Closeable {
 	public WorkersCoordinator(final int workerCount) {
 		Assertion.check().isTrue(workerCount >= 1, "At least one thread must be allowed to process asynchronous works.");
 		//-----
-		workers = Executors.newFixedThreadPool(workerCount, new NamedThreadFactory("workers"));
+		workers = Executors.newFixedThreadPool(workerCount, new NamedThreadFactory("workers-"));
 	}
 
 	/** {@inheritDoc} */
