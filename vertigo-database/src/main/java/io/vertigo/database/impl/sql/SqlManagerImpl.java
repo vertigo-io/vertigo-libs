@@ -299,12 +299,21 @@ public final class SqlManagerImpl implements SqlManager {
 	 * Enregistre le début d'exécution du PrepareStatement
 	 */
 	private <O> O traceWithReturn(final String sql, final Function<Tracer, O> function) {
+		final String requestTracerHeader;
+		if (sql.startsWith("/*")) { //default build query startWith /* task name */ : use it for tracer header
+			final int indexEnds = sql.indexOf("*/");
+			requestTracerHeader = sql.substring("/*".length(), Math.min(indexEnds > 0 ? indexEnds : REQUEST_HEADER_FOR_TRACER, sql.length())).trim();
+		} else {
+			requestTracerHeader = sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACER, sql.length())).trim();
+		}
+
 		return analyticsManager.traceWithReturn(
 				"sql",
-				"/execute/" + sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACER, sql.length())),
+				"/execute/" + requestTracerHeader,
 				tracer -> {
 					final O result = function.apply(tracer);
-					tracer.setTag("statement", sql.substring(0, Math.min(REQUEST_STATEMENT_FOR_TRACER, sql.length())));
+					tracer.setTag("statementHeader", requestTracerHeader)
+							.setMetadata("statement", sql.substring(0, Math.min(REQUEST_STATEMENT_FOR_TRACER, sql.length())));
 					return result;
 				});
 	}
