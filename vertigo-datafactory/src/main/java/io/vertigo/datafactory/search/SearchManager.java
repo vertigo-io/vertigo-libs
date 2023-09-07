@@ -17,6 +17,7 @@
  */
 package io.vertigo.datafactory.search;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -68,6 +69,21 @@ public interface SearchManager extends Manager {
 	 * @return Future of number elements indexed
 	 */
 	Future<Long> reindexAll(SearchIndexDefinition indexDefinition);
+
+	/**
+	 * Launch a full reindexation of an index, with check modified data to limit updates (based on version field)
+	 * @param indexDefinition Type de l'index
+	 * @return Future of number elements indexed
+	 */
+	Future<Long> reindexAllModified(SearchIndexDefinition searchIndexDefinition);
+
+	/**
+	 * Launch a delta reindexation of an index based on a version field (like lastModified or version).
+	 * Last value of this version field is store into index (as metadata).
+	 * @param indexDefinition Type de l'index
+	 * @return Future of number elements indexed
+	 */
+	Future<Long> reindexDelta(SearchIndexDefinition searchIndexDefinition);
 
 	/**
 	 * Ajout de plusieurs ressources à l'index.
@@ -129,5 +145,22 @@ public interface SearchManager extends Manager {
 	 * @param listFilter Filtre des éléments à supprimer
 	 */
 	void removeAll(SearchIndexDefinition indexDefinition, final ListFilter listFilter);
+
+	/**
+	 * Ajout de meta data à l'index.
+	 * Si l'élément était déjà dans l'index il est remplacé.
+	 * @param indexDefinition Type de l'index
+	 * @param dataPath Clé de la métadonnée
+	 * @param dataValue Valeur de la métadonnée
+	 */
+	void putMetaData(final SearchIndexDefinition indexDefinition, final String dataPath, final Serializable dataValue);
+
+	/**
+	 * Lecture de meta data à l'index.
+	 * @param indexDefinition Type de l'index
+	 * @param dataPath Clé de la métadonnée
+	 * @return Valeur de la métadonnée, null si pas de donnée
+	 */
+	Serializable getMetaData(final SearchIndexDefinition indexDefinition, final String dataPath);
 
 }

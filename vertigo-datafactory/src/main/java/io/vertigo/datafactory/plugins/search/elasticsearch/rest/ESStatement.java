@@ -18,7 +18,10 @@
 package io.vertigo.datafactory.plugins.search.elasticsearch.rest;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.time.Instant;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -34,17 +37,22 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.CountRequest;
 import org.elasticsearch.client.core.CountResponse;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.xcontent.XContentBuilder;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.VUserException;
@@ -58,6 +66,7 @@ import io.vertigo.datafactory.plugins.search.elasticsearch.ESFacetedQueryResultB
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
@@ -173,6 +182,57 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		}
 	}
 
+	Map<UID<K>, Serializable> loadVersions(final DtField versionField, final ListFilter listFilter) {
+		Assertion.check().isNotNull(versionField).isNotNull(listFilter);
+		//-----
+		try {
+			final QueryBuilder queryfilterBuilder = QueryBuilders
+					.queryStringQuery(listFilter.getFilterValue())
+					.analyzeWildcard(true);
+
+			final var searchRequest = new SearchRequest(indexName)
+					.searchType(SearchType.QUERY_THEN_FETCH)
+					.source(new SearchSourceBuilder()
+							.trackTotalHitsUpTo(10_000)
+							.query(queryfilterBuilder)
+							.fetchSource(new String[] { versionField.name() }, null));
+
+			final SearchResponse searchResponse = esClient.search(searchRequest, RequestOptions.DEFAULT);
+			final Map<UID<K>, Serializable> result = new HashMap<>();
+			for (final SearchHit searchHit : searchResponse.getHits()) {
+				final String urn = searchHit.getId();
+				final Serializable value = decodeVersionValue(versionField, searchHit.getSourceAsMap().get(versionField.name()));
+				result.put(UID.of(urn), value);
+			}
+			return result;
+		} catch (final SearchPhaseExecutionException e) {
+			final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_QUERY_SYNTAX_ERROR);
+			vue.initCause(e);
+			throw vue;
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Error in loadVersions() on {0}", indexName);
+		}
+	}
+
+	private Serializable decodeVersionValue(final DtField versionField, final Object value) {
+		Assertion.check().isTrue(
+				versionField.smartTypeDefinition().getScope().isBasicType(),
+				"Field use for iterate must be primitives : versionField '{0}' has the smartType '{2}'", versionField.name(), versionField.smartTypeDefinition());
+		//---
+		if (value == null) {
+			return null;
+		}
+		final BasicType versionFieldDataType = versionField.smartTypeDefinition().getBasicType();
+		return switch (versionFieldDataType) {
+			case Integer -> value instanceof Integer ? (Integer) value : Integer.valueOf(String.valueOf(value));
+			case Long -> value instanceof Long ? (Long) value : Long.valueOf(String.valueOf(value));
+			case Instant -> value instanceof Instant ? (Instant) value : Instant.parse(String.valueOf(value));
+			case String -> String.valueOf(value);
+			case BigDecimal, DataStream, Boolean, Double, LocalDate -> throw new IllegalArgumentException("Type's versionField " + versionFieldDataType.name() + " from "
+					+ indexName + " is not supported, prefer int, long, Instant or String.");
+		};
+	}
+
 	/**
 	 * Supprime un document.
 	 * @param uid UID du document à supprimer
@@ -241,4 +301,5 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			throw WrappedException.wrap(e, "Error in count() on {0}", indexName);
 		}
 	}
+
 }

@@ -17,6 +17,7 @@
  */
 package io.vertigo.datafactory.impl.search;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -263,6 +264,34 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		final WritableFuture<Long> reindexFuture = new WritableFuture<>();
 		executorService.schedule(new ReindexAllTask(searchIndexDefinition, reindexFuture, this), 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
 		return reindexFuture;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Future<Long> reindexAllModified(final SearchIndexDefinition searchIndexDefinition) {
+		final WritableFuture<Long> reindexFuture = new WritableFuture<>();
+		executorService.schedule(new ReindexAllModifiedTask(searchIndexDefinition, reindexFuture, this, searchServicesPlugin), 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
+		return reindexFuture;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Future<Long> reindexDelta(final SearchIndexDefinition searchIndexDefinition) {
+		final WritableFuture<Long> reindexFuture = new WritableFuture<>();
+		executorService.schedule(new ReindexDeltaTask(searchIndexDefinition, reindexFuture, this, searchServicesPlugin), 5, TimeUnit.SECONDS); //une reindexation delta dans max 5s
+		return reindexFuture;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void putMetaData(final SearchIndexDefinition indexDefinition, final String dataPath, final Serializable dataValue) {
+		searchServicesPlugin.putMetaData(indexDefinition, dataPath, dataValue);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Serializable getMetaData(final SearchIndexDefinition indexDefinition, final String dataPath) {
+		return searchServicesPlugin.getMetaData(indexDefinition, dataPath);
 	}
 
 	/**

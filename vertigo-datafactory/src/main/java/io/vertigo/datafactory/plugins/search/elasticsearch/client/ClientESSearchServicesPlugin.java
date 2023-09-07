@@ -19,7 +19,9 @@ package io.vertigo.datafactory.plugins.search.elasticsearch.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URL;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +39,8 @@ import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthAction;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequestBuilder;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
@@ -74,6 +78,7 @@ import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
@@ -131,10 +136,10 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 		//Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
 		//Assertion.when(!indexNameIsPrefix).check(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
 		//-----
-		this.defaultMaxRows = defaultMaxRows;
-		defaultListState = DtListState.of(defaultMaxRows);
 		this.smartTypeManager = smartTypeManager;
 		this.codecManager = codecManager;
+		this.defaultMaxRows = defaultMaxRows;
+		defaultListState = DtListState.of(defaultMaxRows);
 		//------
 		this.envIndexPrefix = envIndexPrefix;
 		configFileUrl = resourceManager.resolve(configFile);
@@ -158,7 +163,6 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 		for (final SearchIndexDefinition indexDefinition : Node.getNode().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			final String myIndexName = obtainIndexName(indexDefinition);
 			createIndex(myIndexName);
-
 			updateTypeMapping(indexDefinition, hasSortableNormalizer(myIndexName));
 			logMappings(myIndexName);
 			types.add(indexDefinition.getName());
@@ -329,6 +333,13 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 
 	/** {@inheritDoc} */
 	@Override
+	public <K extends KeyConcept> Map<UID<K>, Serializable> loadVersions(final SearchIndexDefinition indexDefinition, final DtFieldName<K> versionFieldName, final ListFilter listFilter) {
+		final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
+		return ((ESStatement<K, ?>) createElasticStatement(indexDefinition)).loadVersions(indexDtDefinition.getField(versionFieldName), listFilter);
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public void remove(final SearchIndexDefinition indexDefinition, final ListFilter listFilter) {
 		Assertion.check()
 				.isNotNull(indexDefinition)
@@ -336,6 +347,102 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 		//-----
 		createElasticStatement(indexDefinition).remove(listFilter);
 		markToOptimize(obtainIndexName(indexDefinition));
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void putMetaData(final SearchIndexDefinition indexDefinition, final String dataPath, final Serializable dataValue) {
+		Assertion.check()
+				.isNotNull(indexDefinition)
+				.isNotBlank(dataPath);
+		//-----
+		final String metaDataIndex = obtainIndexName(indexDefinition) + ".metadata";
+		ensureIndiceMetadataExists(metaDataIndex);
+
+		if (dataValue == null) {
+			esClient.prepareDelete().setRefreshPolicy(RefreshPolicy.NONE)
+					.setIndex(metaDataIndex)
+					.setId(dataPath)
+					.get(); //get wait exec
+		} else {
+			try (final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder()) {
+				xContentBuilder.startObject()
+						.field("value", dataValue)
+						.field("type", dataValue.getClass().getSimpleName())
+						.endObject();
+
+				esClient.prepareIndex().setRefreshPolicy(RefreshPolicy.NONE)
+						.setIndex(metaDataIndex)
+						.setId(dataPath)
+						.setSource(xContentBuilder)
+						.get(); //get wait exec
+				
+			} catch (final IOException e) {
+				throw WrappedException.wrap(e, "Error on index {0}", metaDataIndex);
+			}
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Serializable getMetaData(final SearchIndexDefinition indexDefinition, final String dataPath) {
+		Assertion.check()
+				.isNotNull(indexDefinition)
+				.isNotBlank(dataPath);
+		//-----
+		final String metaDataIndex = obtainIndexName(indexDefinition) + ".metadata";
+		if (esClient.admin().indices().prepareExists(metaDataIndex).get().isExists()) {
+			final GetResponse response = esClient.prepareGet()
+					.setIndex(metaDataIndex)
+					.setId(dataPath)
+					.execute() //execute asynchrone
+					.actionGet(); //get wait exec
+
+			if (response.isExists()) {
+				final String type = (String) response.getSource().get("type");
+				final Serializable value = Serializable.class.cast(response.getSource().get("value"));
+				if (value instanceof Integer && "Long".equals(type)) {
+					return Long.valueOf((Integer) value); //ES use integer to store short long : and forget the source type
+				} else if (value instanceof String && "Instant".equals(type)) {
+					return Instant.parse(String.valueOf(value)); //ES use String to Instant
+				}
+				return value;
+			}
+		}
+		return null;
+	}
+
+	private void ensureIndiceMetadataExists(final String metaDataIndex) {
+		if (!esClient.admin().indices().prepareExists(metaDataIndex).get().isExists()) {
+			try (final XContentBuilder mappingXContentBuilder = XContentFactory.jsonBuilder()) {
+				mappingXContentBuilder.startObject()
+						.startArray("dynamic_templates")
+						.startObject()
+						.startObject("all_metadata")
+						.field("match", "*")
+						.startObject("mapping")
+						.field("type", "keyword")
+						.field("ignore_above", 256)
+						.endObject()
+						.endObject()
+						.endObject()
+						.endArray()
+						.endObject();
+
+				esClient.admin().indices().prepareCreate(metaDataIndex)
+						.addMapping("_doc", mappingXContentBuilder).get();
+				/*to rebuild index :
+				  else {
+					esClient.admin().indices().prepareDelete(metaDataIndex).get();
+					esClient.admin().indices().prepareCreate(metaDataIndex)
+							.addMapping("_doc", mappingXContentBuilder).get();
+				}*/
+
+				logMappings(metaDataIndex);
+			} catch (final IOException e) {
+				throw WrappedException.wrap(e, "Error on create index {0}", metaDataIndex);
+			}
+		}
 	}
 
 	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
@@ -365,8 +472,8 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 			case BigDecimal:
 			case DataStream:
 			default:
-				throw new IllegalArgumentException();
-		}
+				throw new IllegalArgumentException("Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartTypeDefinition + "].");
+				}
 	}
 
 	/**

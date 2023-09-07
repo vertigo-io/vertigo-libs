@@ -20,6 +20,7 @@ package io.vertigo.datafactory.search.withstore;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -38,6 +39,7 @@ import io.vertigo.datafactory.search.definitions.SearchChunk;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
+import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.task.TaskManager;
@@ -48,7 +50,7 @@ import io.vertigo.datamodel.task.model.Task;
  * SearchLoader of Item keyconcept, load uses StoreManager.
  * @author npiedeloup
  */
-public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, Item> {
+public final class ItemSearchLoader extends AbstractSqlSearchLoader<Item, Item> {
 	private final SearchManager searchManager;
 	private final DefinitionSpace definitionSpace;
 
@@ -96,7 +98,7 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 		final String sql = searchChunk.getAllUIDs()
 				.stream()
 				.map(uri -> String.valueOf(Serializable.class.cast(uri.getId())))
-				.collect(Collectors.joining(", ", "select * from ITEM where ID in (", ")"));
+				.collect(Collectors.joining(", ", "select * from ITEM where ID in (", ") and ITEM_YEAR > 1970")); //filter in loadData to support reindexDelta (instead of getSqlQueryFilter)
 
 		return TaskDefinition.builder("TkLoadAllItems")
 				.withEngine(TaskEngineSelect.class)
@@ -104,5 +106,10 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
 				.withOutAttribute("dtc", smartTypeItem, Cardinality.MANY)
 				.build();
+	}
+
+	@Override
+	public Optional<DtFieldName<Item>> getVersionFieldName() {
+		return Optional.of(() -> "lastModified");
 	}
 }

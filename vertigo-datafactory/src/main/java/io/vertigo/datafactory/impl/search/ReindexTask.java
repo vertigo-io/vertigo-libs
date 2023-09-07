@@ -30,6 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.search.SearchManager;
@@ -41,6 +42,10 @@ import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 
+/**
+ * Reindex dirty data task.
+ * @author npiedeloup (2015)
+ */
 final class ReindexTask implements Runnable {
 	private static final Logger LOGGER = LogManager.getLogger(ReindexTask.class);
 	private static final int DIRTY_ELEMENTS_CHUNK_SIZE = 500;
@@ -68,7 +73,7 @@ final class ReindexTask implements Runnable {
 		long dirtyElementsCount = 0;
 		do {
 			final long startTime = System.currentTimeMillis();
-			final List<UID<? extends KeyConcept>> reindexUris = new ArrayList<>();
+			final List<UID> reindexUris = new ArrayList<>();
 			try {
 				synchronized (dirtyElements) {
 					if (!dirtyElements.isEmpty()) {
@@ -80,8 +85,10 @@ final class ReindexTask implements Runnable {
 				}
 				dirtyElementsCount = reindexUris.size();
 				if (!reindexUris.isEmpty()) {
-
-					loadAndIndexAndRetry(new SearchChunk(reindexUris), 0);
+					final List<Tuple<UID, Serializable>> reindexTuples = reindexUris.stream()
+							.map(uid -> Tuple.of(uid, uid.getId()))
+							.collect(Collectors.toList());
+					loadAndIndexAndRetry(new SearchChunk(reindexTuples, reindexTuples.get(reindexTuples.size() - 1).val2()), 0);
 				}
 			} catch (final Exception e) {
 				LOGGER.error("Update index error, skip " + dirtyElementsCount + " elements (" + reindexUris + ")", e);
@@ -93,7 +100,7 @@ final class ReindexTask implements Runnable {
 
 	}
 
-	private void loadAndIndexAndRetry(final SearchChunk<? extends KeyConcept> searchChunk, final int tryNumber) {
+	private void loadAndIndexAndRetry(final SearchChunk searchChunk, final int tryNumber) {
 		try {
 			loadAndIndex(searchChunk);
 		} catch (final Exception e) {
@@ -112,8 +119,8 @@ final class ReindexTask implements Runnable {
 		}
 	}
 
-	private void loadAndIndex(final SearchChunk<? extends KeyConcept> searchChunk) {
-		final SearchLoader searchLoader = Node.getNode().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
+	private void loadAndIndex(final SearchChunk searchChunk) {
+		final var searchLoader = Node.getNode().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 		final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes;
 
 		searchIndexes = searchLoader.loadData(searchChunk);
@@ -124,9 +131,9 @@ final class ReindexTask implements Runnable {
 		}
 	}
 
-	private void removedNotFoundKeyConcept(final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes, final SearchChunk<? extends KeyConcept> searchChunk) {
+	private void removedNotFoundKeyConcept(final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes, final SearchChunk searchChunk) {
 		if (searchIndexes.size() < searchChunk.getAllUIDs().size()) {
-			final Set<UID<? extends KeyConcept>> notFoundUris = new LinkedHashSet<>(searchChunk.getAllUIDs());
+			final var notFoundUris = new LinkedHashSet<>(searchChunk.getAllUIDs());
 			for (final SearchIndex<KeyConcept, DtObject> searchIndex : searchIndexes) {
 				notFoundUris.remove(searchIndex.getUID());
 			}

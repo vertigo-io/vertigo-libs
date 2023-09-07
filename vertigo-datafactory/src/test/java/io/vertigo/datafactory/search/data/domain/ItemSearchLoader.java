@@ -17,6 +17,7 @@
  */
 package io.vertigo.datafactory.search.data.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.datafactory.impl.search.loader.AbstractSearchLoader;
 import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.search.definitions.SearchChunk;
@@ -33,7 +35,7 @@ import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.model.UID;
 
-public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Item> {
+public final class ItemSearchLoader extends AbstractSearchLoader<Item, Item> {
 	private static final int SEARCH_CHUNK_SIZE = 5;
 	private final SearchManager searchManager;
 	private ItemDataBase itemDataBase;
@@ -63,7 +65,9 @@ public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Ite
 		final List<SearchIndex<Item, Item>> itemIndexes = new ArrayList<>();
 		final Map<Long, Item> itemPerId = new HashMap<>();
 		for (final Item item : itemDataBase.getAllItems()) {
-			itemPerId.put(item.getId(), item);
+			if (item.getItemYear() > 1970) { //on ajout un filtre
+				itemPerId.put(item.getId(), item);
+			}
 		}
 		for (final UID<Item> uid : searchChunk.getAllUIDs()) {
 			final Item item = itemPerId.get(uid.getId());
@@ -74,18 +78,18 @@ public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Ite
 
 	/** {@inheritDoc} */
 	@Override
-	protected List<UID<Item>> loadNextURI(final Long lastId, final DtDefinition dtDefinition) {
-		final SearchIndexDefinition indexDefinition = searchManager.findFirstIndexDefinitionByKeyConcept(Item.class);
+	protected List<Tuple<UID<Item>, Serializable>> loadNextURI(final Serializable lastValue, final boolean orderByVersion, final DtDefinition dtDefinition) {
 		final List<UID<Item>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
 		//call loader service
+		final List<Tuple<UID<Item>, Serializable>> uids = new ArrayList<>(itemDataBase.getAllItems().size());
 		for (final Item item : itemDataBase.getAllItems()) {
-			if (item.getId() > lastId) {
-				uris.add(UID.of(indexDefinition.getKeyConceptDtDefinition(), item.getId()));
+			if (item.getId() > (Long) lastValue) {
+				uids.add(Tuple.of(item.getUID(), item.getId()));
 			}
 			if (uris.size() >= SEARCH_CHUNK_SIZE) {
 				break;
 			}
 		}
-		return uris;
+		return uids;
 	}
 }

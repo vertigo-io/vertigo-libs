@@ -20,6 +20,7 @@ package io.vertigo.datafactory.search.withstore;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Collections;
 
 import javax.inject.Inject;
@@ -256,6 +257,105 @@ abstract class AbstractSearchManagerStoreTest {
 		Assertions.assertEquals(initialDbItemSize, resize);
 	}
 
+	@Test
+	public void testMetaData() {
+		searchManager.putMetaData(itemIndexDefinition, "testKey", null);
+		Assertions.assertNull(searchManager.getMetaData(itemIndexDefinition, "testKey"));
+
+		searchManager.putMetaData(itemIndexDefinition, "testKey", "testValue");
+		Assertions.assertEquals("testValue", searchManager.getMetaData(itemIndexDefinition, "testKey"));
+
+		searchManager.putMetaData(itemIndexDefinition, "testKey", null);
+		Assertions.assertNull(searchManager.getMetaData(itemIndexDefinition, "testKey"));
+	}
+
+	@Test
+	public void testTypedIntegerMetaData() {
+		searchManager.putMetaData(itemIndexDefinition, "testKeyInteger", null);
+		Assertions.assertNull(searchManager.getMetaData(itemIndexDefinition, "testKeyInteger"));
+
+		searchManager.putMetaData(itemIndexDefinition, "testKeyInteger", 1337);
+		Assertions.assertEquals(1337, searchManager.getMetaData(itemIndexDefinition, "testKeyInteger"));
+	}
+
+	@Test
+	public void testTypedLongMetaData() {
+		searchManager.putMetaData(itemIndexDefinition, "testKeyLong", null);
+		Assertions.assertNull(searchManager.getMetaData(itemIndexDefinition, "testKeyLong"));
+
+		searchManager.putMetaData(itemIndexDefinition, "testKeyLong", 1337133713371337L);
+		Assertions.assertEquals(1337133713371337L, searchManager.getMetaData(itemIndexDefinition, "testKeyLong"));
+
+		searchManager.putMetaData(itemIndexDefinition, "testKeyLong", 1337L);
+		Assertions.assertEquals(1337L, searchManager.getMetaData(itemIndexDefinition, "testKeyLong")); //missing type Long
+	}
+
+	@Test
+	public void testTypedMetaDataChangeStringToInteger() {
+		searchManager.putMetaData(itemIndexDefinition, "testKeyChangeType2", null);
+		Assertions.assertNull(searchManager.getMetaData(itemIndexDefinition, "testKeyChangeType2"));
+
+		searchManager.putMetaData(itemIndexDefinition, "testKeyChangeType2", "My test text2");
+		Assertions.assertEquals("My test text2", searchManager.getMetaData(itemIndexDefinition, "testKeyChangeType2"));
+
+		searchManager.putMetaData(itemIndexDefinition, "testKeyChangeType2", 13370);
+		Assertions.assertEquals(13370, searchManager.getMetaData(itemIndexDefinition, "testKeyChangeType2"));
+	}
+
+	@Test
+	public void testTypedMetaDataChangeIntegerToString() {
+		searchManager.putMetaData(itemIndexDefinition, "testKeyChangeType", null);
+		Assertions.assertNull(searchManager.getMetaData(itemIndexDefinition, "testKeyChangeType"));
+
+		searchManager.putMetaData(itemIndexDefinition, "testKeyChangeType", 13370);
+		Assertions.assertEquals(13370, searchManager.getMetaData(itemIndexDefinition, "testKeyChangeType"));
+
+		searchManager.putMetaData(itemIndexDefinition, "testKeyChangeType", null);
+		searchManager.putMetaData(itemIndexDefinition, "testKeyChangeType", "My test text");
+		Assertions.assertEquals("My test text", searchManager.getMetaData(itemIndexDefinition, "testKeyChangeType"));
+	}
+
+	/**
+	 * Test de mise à jour de l'index après une creation.
+	 * La création s'effectue dans une seule transaction.
+	 * @throws SQLException
+	 */
+	@Test
+	public void testReIndexDeltaLogicalDelete() throws SQLException {
+		testIndexAllQuery();
+		final long resize = query("*:*");
+		Assertions.assertEquals(initialDbItemSize, resize);
+
+		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
+			execCallableStatement(connectionCloseable.getConnection(), "update item set item_year=1961, last_modified = now() where id = 10010");
+			execCallableStatement(connectionCloseable.getConnection(), "update item set item_year=1948, last_modified = now() where id = 10011");
+			connectionCloseable.commit();
+		}
+
+		doReindexDelta();
+		waitAndExpectIndexation(initialDbItemSize - 2);
+
+		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
+			execCallableStatement(connectionCloseable.getConnection(), "update item set item_year=3000, last_modified = now() where id = 10010");
+			execCallableStatement(connectionCloseable.getConnection(), "update item set item_year=3000, last_modified = now() where id = 10011");
+			connectionCloseable.commit();
+		}
+
+		doReindexDelta();
+		waitAndExpectIndexation(initialDbItemSize);
+
+		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
+			execCallableStatement(connectionCloseable.getConnection(), "delete from item where id in ( 10010, 10011 )");
+			connectionCloseable.commit();
+		}
+
+		doReindexDelta();
+		waitAndExpectIndexation(initialDbItemSize); //reindex Delta can't support physicam delete
+
+		doReindexModified();
+		waitAndExpectIndexation(initialDbItemSize - 2); //reindex Modified support physicam delete
+	}
+
 	/**
 	 * Test de mise à jour de l'index après une creation.
 	 * La création s'effectue dans une seule transaction.
@@ -277,6 +377,47 @@ abstract class AbstractSearchManagerStoreTest {
 	}
 
 	/**
+	 * Test de mise à jour de l'index après une modification.
+	 * La création s'effectue dans une seule transaction.
+	 * @throws SQLException if some error in test
+	 */
+	@Test
+	public void testReIndexDeltaAfterDirectUdpate() throws SQLException {
+		testIndexAllQuery();
+
+		final long resultSize = query("optionalString:(testUpdate)");
+		Assertions.assertEquals(0L, resultSize);
+
+		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
+			execCallableStatement(connectionCloseable.getConnection(), "update item set optional_string='testUpdate', last_modified = now() where id = 10001");
+			connectionCloseable.commit();
+		}
+
+		doReindexDelta();
+		waitAndExpectIndexation(1L, "optionalString:(testUpdate)");
+	}
+
+	/**
+	 * Test de mise à jour de l'index après une creation.
+	 * La création s'effectue dans une seule transaction.
+	 * @throws SQLException if some error in test
+	 */
+	@Test
+	public void testReIndexModifiedAfterDirectDelete() throws SQLException {
+		testIndexAllQuery();
+
+		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
+			execCallableStatement(connectionCloseable.getConnection(), "delete from item where id = 10001");
+			connectionCloseable.commit();
+		}
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			Assertions.assertEquals(initialDbItemSize - 1, entityStoreManager.count(itemIndexDefinition.getKeyConceptDtDefinition()));
+		}
+		doReindexModified();
+		waitAndExpectIndexation(initialDbItemSize - 1);
+	}
+
+	/**
 	 * Test de mise à jour de l'index après une creation.
 	 * La création s'effectue dans une seule transaction.
 	 * @throws SQLException if some error in test
@@ -292,7 +433,27 @@ abstract class AbstractSearchManagerStoreTest {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			Assertions.assertEquals(0, entityStoreManager.count(itemIndexDefinition.getKeyConceptDtDefinition()));
 		}
-		doReindexAll();
+		doReindexModified();
+		waitAndExpectIndexation(0);
+	}
+
+	/**
+	 * Test de mise à jour de l'index après une creation.
+	 * La création s'effectue dans une seule transaction.
+	 * @throws SQLException if some error in test
+	 */
+	@Test
+	public void testReIndexModifiedAfterDirectDeleteAll() throws SQLException {
+		testIndexAllQuery();
+
+		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
+			execCallableStatement(connectionCloseable.getConnection(), "delete from item ");
+			connectionCloseable.commit();
+		}
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			Assertions.assertEquals(0, entityStoreManager.count(itemIndexDefinition.getKeyConceptDtDefinition()));
+		}
+		doReindexModified();
 		waitAndExpectIndexation(0);
 	}
 
@@ -309,6 +470,7 @@ abstract class AbstractSearchManagerStoreTest {
 		item.setConsommation(conso);
 		item.setMotorType("essence");
 		item.setDescription("Voiture de légende assurant une reindexation dès son insertion");
+		item.setLastModified(Instant.now());
 		return item;
 	}
 
@@ -332,10 +494,19 @@ abstract class AbstractSearchManagerStoreTest {
 	private void doRemove(final String query) {
 		final ListFilter removeQuery = ListFilter.of(query);
 		searchManager.removeAll(itemIndexDefinition, removeQuery);
+		searchManager.putMetaData(itemIndexDefinition, "lastlastModifiedValue", null);
 	}
 
 	private void doReindexAll() {
 		searchManager.reindexAll(itemIndexDefinition);
+	}
+
+	private void doReindexDelta() {
+		searchManager.reindexDelta(itemIndexDefinition);
+	}
+
+	private void doReindexModified() {
+		searchManager.reindexAllModified(itemIndexDefinition);
 	}
 
 	private void removeAll() {

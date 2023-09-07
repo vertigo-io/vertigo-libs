@@ -19,11 +19,15 @@ package io.vertigo.datafactory.impl.search;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.ClassUtil;
@@ -35,19 +39,21 @@ import io.vertigo.datafactory.search.definitions.SearchLoader;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
+import io.vertigo.datamodel.structure.model.UID;
 
 /**
- * Reindex all data task.
- * @author npiedeloup (2015)
+ * Reindex all modified data task.
+ * @author npiedeloup (2023)
  * @param <S> KeyConcept type
  */
-final class ReindexAllTask<S extends KeyConcept> implements Runnable {
-	private static final Logger LOGGER = LogManager.getLogger(ReindexAllTask.class);
+final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
+	private static final Logger LOGGER = LogManager.getLogger(ReindexAllModifiedTask.class);
 	private static volatile boolean REINDEXATION_IN_PROGRESS;
 	private static volatile long REINDEX_COUNT;
 	private final WritableFuture<Long> reindexFuture;
 	private final SearchIndexDefinition searchIndexDefinition;
 	private final SearchManager searchManager;
+	private final SearchServicesPlugin searchServicesPlugin;
 
 	/**
 	 * Constructor.
@@ -55,15 +61,17 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	 * @param reindexFuture Future for result
 	 * @param searchManager Search manager
 	 */
-	ReindexAllTask(final SearchIndexDefinition searchIndexDefinition, final WritableFuture<Long> reindexFuture, final SearchManager searchManager) {
+	ReindexAllModifiedTask(final SearchIndexDefinition searchIndexDefinition, final WritableFuture<Long> reindexFuture, final SearchManager searchManager, final SearchServicesPlugin searchServicesPlugin) {
 		Assertion.check()
 				.isNotNull(searchIndexDefinition)
 				.isNotNull(reindexFuture)
-				.isNotNull(searchManager);
+				.isNotNull(searchManager)
+				.isNotNull(searchServicesPlugin);
 		//-----
 		this.searchIndexDefinition = searchIndexDefinition;
 		this.reindexFuture = reindexFuture;
 		this.searchManager = searchManager;
+		this.searchServicesPlugin = searchServicesPlugin;
 	}
 
 	/** {@inheritDoc} */
@@ -81,24 +89,34 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 			try {
 				final Class<S> keyConceptClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getKeyConceptDtDefinition().getClassCanonicalName(), KeyConcept.class);
 				final SearchLoader<S, DtObject> searchLoader = Node.getNode().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
+				Assertion.check()
+						.isNotNull(searchLoader.getVersionFieldName().isPresent(),
+								"To use this reindexAllModified, indexed keyConcept need a version field use to check if element is up-to-date. Check getVersionFieldName() in {0}", searchLoader.getClass().getName());
+				//---
 				Serializable lastUID = null;
 				LOGGER.info("Full reindexation of {} started", searchIndexDefinition.getName());
 
 				for (final SearchChunk<S> searchChunk : searchLoader.chunk(keyConceptClass)) {
-					final Collection<SearchIndex<S, DtObject>> searchIndexes = searchLoader.loadData(searchChunk);
-
 					final Serializable maxUID = searchChunk.getLastValue();
 					Assertion.check().isFalse(maxUID.equals(lastUID), "SearchLoader ({0}) error : return the same uid list", searchIndexDefinition.getSearchLoaderId());
-					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUID, maxUID));
+
+					final Map<UID<S>, Serializable> alreadyIndexedVersions = searchServicesPlugin.loadVersions(searchIndexDefinition, searchLoader.getVersionFieldName().get(), urisRangeToListFilter("docId", lastUID, maxUID));
+					final Tuple<SearchChunk<S>, Set<UID<S>>> chunkOfModifiedAndRemovedUid = searchChunk.compare(alreadyIndexedVersions);
+					final Collection<SearchIndex<S, DtObject>> searchIndexes = searchLoader.loadData(chunkOfModifiedAndRemovedUid.val1());//load updated element
 					if (!searchIndexes.isEmpty()) {
 						searchManager.putAll(searchIndexDefinition, searchIndexes);
 					}
+					if (!chunkOfModifiedAndRemovedUid.val2().isEmpty()) {
+						searchManager.removeAll(searchIndexDefinition, urisSetToListFilter("docId", chunkOfModifiedAndRemovedUid.val2())); //remove by id
+					}
+
 					lastUID = maxUID;
-					reindexCount += searchChunk.getAllUIDs().size();
+					reindexCount += chunkOfModifiedAndRemovedUid.val1().getAllUIDs().size();
+					reindexCount += chunkOfModifiedAndRemovedUid.val2().size();
 					updateReindexCount(reindexCount);
 				}
 				//On vide la suite, pour le cas ou les dernières données ne sont plus là
-				searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUID, null));
+				searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter("docId", lastUID, null)); //remove by id
 				//On ne retire pas la fin, il y a un risque de retirer les données ajoutées depuis le démarrage de l'indexation
 				reindexFuture.success(reindexCount);
 			} catch (final Exception e) {
@@ -131,12 +149,19 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 		return REINDEX_COUNT;
 	}
 
-	private static ListFilter urisRangeToListFilter(final Serializable firstUri, final Serializable lastUri) {
-		final String filterValue = "docId" + ":{" + //{ for exclude min
+	private static ListFilter urisRangeToListFilter(final String indexFieldName, final Serializable firstUri, final Serializable lastUri) {
+		final String filterValue = indexFieldName + ":{" + //{ for exclude min
 				(firstUri != null ? escapeStringId(firstUri) : "*") +
 				" TO " +
 				(lastUri != null ? escapeStringId(lastUri) : "*") +
 				"]";
+		return ListFilter.of(filterValue);
+	}
+
+	private ListFilter urisSetToListFilter(final String indexFieldName, final Set<UID<S>> uris) {
+		final String filterValue = uris.stream()
+				.map(uid -> String.valueOf(escapeStringId(uid.getId())))
+				.collect(Collectors.joining(" OR ", indexFieldName + ":(", ")"));
 		return ListFilter.of(filterValue);
 	}
 

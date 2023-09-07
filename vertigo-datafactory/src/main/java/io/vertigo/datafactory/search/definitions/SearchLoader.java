@@ -17,15 +17,19 @@
  */
 package io.vertigo.datafactory.search.definitions;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.core.node.component.Component;
 import io.vertigo.datafactory.search.model.SearchIndex;
+import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 
 /**
  * Specific SearchIndex loader.
+ * @param <P> Type of the iterator field value
  * @param <K> KeyConcept
  * @param <I> Indexed data's type
  * @author npiedeloup, pchretien
@@ -41,7 +45,24 @@ public interface SearchLoader<K extends KeyConcept, I extends DtObject> extends 
 	/**
 	 * Create a chunk iterator for crawl all keyConcept data.
 	 * @param keyConceptClass keyConcept class
-	 * @return Iterator of chunk
+	 * @return Iterator of chunk (ordered by ID)
 	 */
 	Iterable<SearchChunk<K>> chunk(final Class<K> keyConceptClass);
+
+	/**
+	 * Create a chunk iterator for crawl keyConcept data over a specific version field, starting at a specific value.
+	 * @param startValue startValue (version), if empty start with lowest value.
+	 * @param keyConceptClass keyConcept class
+	 * @return Iterator of chunk ordered by versionFieldName
+	 */
+	Iterable<SearchChunk<K>> chunk(final Optional<Serializable> startVersion, final Class<K> keyConceptClass);
+
+	/**
+	 * Field use as a version field.
+	 * It's use to check if an element was modified.
+	 * If it's comparable for the whole entity set (like a sequence, or an lastModified), it could be use for delta reindexing
+	 * @return optional version field
+	 */
+	Optional<DtFieldName<K>> getVersionFieldName();
+
 }

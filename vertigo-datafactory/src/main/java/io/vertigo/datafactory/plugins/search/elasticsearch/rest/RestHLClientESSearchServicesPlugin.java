@@ -19,7 +19,9 @@ package io.vertigo.datafactory.plugins.search.elasticsearch.rest;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URL;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -40,6 +42,10 @@ import org.elasticsearch.action.admin.indices.forcemerge.ForceMergeRequest;
 import org.elasticsearch.action.admin.indices.forcemerge.ForceMergeResponse;
 import org.elasticsearch.action.admin.indices.settings.get.GetSettingsRequest;
 import org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.get.GetRequest;
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -79,6 +85,7 @@ import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
@@ -328,6 +335,13 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 
 	/** {@inheritDoc} */
 	@Override
+	public <K extends KeyConcept> Map<UID<K>, Serializable> loadVersions(final SearchIndexDefinition indexDefinition, final DtFieldName<K> versionFieldName, final ListFilter listFilter) {
+		final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
+		return ((ESStatement<K, ?>) createElasticStatement(indexDefinition)).loadVersions(indexDtDefinition.getField(versionFieldName), listFilter);
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public void remove(final SearchIndexDefinition indexDefinition, final ListFilter listFilter) {
 		Assertion.check()
 				.isNotNull(indexDefinition)
@@ -335,6 +349,94 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		//-----
 		createElasticStatement(indexDefinition).remove(listFilter);
 		markToOptimize(obtainIndexName(indexDefinition));
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Serializable getMetaData(final SearchIndexDefinition indexDefinition, final String dataPath) {
+		Assertion.check()
+				.isNotNull(indexDefinition)
+				.isNotBlank(dataPath);
+		//-----
+		final String metaDataIndex = obtainIndexName(indexDefinition) + ".metadata";
+		try {
+			if (esClient.indices().exists(new GetIndexRequest(metaDataIndex), RequestOptions.DEFAULT)) {
+				final GetRequest getRequest = new GetRequest(metaDataIndex, dataPath);
+				final GetResponse response = esClient.get(getRequest, RequestOptions.DEFAULT);
+				if (response.isExists()) {
+					final String type = (String) response.getSource().get("type");
+					final Serializable value = Serializable.class.cast(response.getSource().get("value"));
+					if (value instanceof Integer && "Long".equals(type)) {
+						return Long.valueOf((Integer) value); //ES use integer to store short long : and forget the source type
+					} else if (value instanceof String && "Instant".equals(type)) {
+						return Instant.parse(String.valueOf(value)); //ES use String to Instant
+					}
+					return value;
+				}
+			} //no metadata index => return null
+			return null;
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Error getMetaData on index {0}", metaDataIndex);
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void putMetaData(final SearchIndexDefinition indexDefinition, final String dataPath, final Serializable dataValue) {
+		Assertion.check()
+				.isNotNull(indexDefinition)
+				.isNotBlank(dataPath);
+		//-----
+		final String metaDataIndex = obtainIndexName(indexDefinition) + ".metadata";
+		ensureIndiceMetadataExists(metaDataIndex);
+		try {
+			if (dataValue == null) {
+				final DeleteRequest deleteRequest = new DeleteRequest(metaDataIndex, dataPath);
+				esClient.delete(deleteRequest, RequestOptions.DEFAULT);
+			} else {
+				try (final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder()) {
+					xContentBuilder.startObject()
+							.field("value", dataValue)
+							.field("type", dataValue.getClass().getSimpleName())
+							.endObject();
+
+					final IndexRequest indexRequest = new IndexRequest(metaDataIndex)
+							.id(dataPath)
+							.source(xContentBuilder);
+					esClient.index(indexRequest, RequestOptions.DEFAULT);
+				}
+			}
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Error putMetaData on index {0}", metaDataIndex);
+		}
+	}
+
+	private void ensureIndiceMetadataExists(final String metaDataIndex) {
+		try {
+			if (!esClient.indices().exists(new GetIndexRequest(metaDataIndex), RequestOptions.DEFAULT)) {
+				try (final XContentBuilder mappingXContentBuilder = XContentFactory.jsonBuilder()) {
+					mappingXContentBuilder.startObject()
+							.startArray("dynamic_templates")
+							.startObject()
+							.startObject("all_metadata")
+							.field("match", "*")
+							.startObject("mapping")
+							.field("type", "keyword")
+							.field("ignore_above", 256)
+							.endObject()
+							.endObject()
+							.endObject()
+							.endArray()
+							.endObject();
+
+					esClient.indices().create(new CreateIndexRequest(metaDataIndex)
+							.mapping(mappingXContentBuilder), RequestOptions.DEFAULT);
+					logMappings(metaDataIndex);
+				}
+			}
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Error on create index {0}", metaDataIndex);
+		}
 	}
 
 	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
