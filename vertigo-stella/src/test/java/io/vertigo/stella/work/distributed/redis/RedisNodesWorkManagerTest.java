@@ -45,7 +45,7 @@ public final class RedisNodesWorkManagerTest extends AbstractWorkManagerTest {
 
 	protected static ClientNode startClientNode(final int numClient) throws IOException {
 		LOG.info("Starting ClientNode " + numClient + "...");
-		final ClientNode clientNode = new ClientNode("io.vertigo.stella.work.distributed.redis.StellaNodeConfigClientNode" + numClient, 30);//duree de vie 30s max
+		final ClientNode clientNode = new ClientNode("io.vertigo.stella.work.distributed.redis.StellaNodeConfigClientNode" + numClient, 45);//duree de vie 45s max
 		clientNode.start();
 		return clientNode;
 	}
