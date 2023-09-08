@@ -11,7 +11,7 @@
         </div>
             <q-list v-for="facet in facets" :key="facet.code" class="facetValues q-py-none" dense >
                 <template v-if="facet.multiple || !isFacetSelected(facet.code)">
-                    <q-item-label header><big>{{facet.label}}</big></q-item-label>
+                    <q-item-label header>{{facet.label}}</q-item-label>
                     <q-item v-for="(value) in selectedInvisibleFacets(facet.code)" :key="value.code" class="facetValue q-ml-md" clickable @click="$emit('toogle-facet', facet.code, value.code, contextKey)">
                         <q-item-section side v-if="facet.multiple" >
                             <q-checkbox dense v-bind:modelValue="true" @update:modelValue="$emit('toogle-facet', facet.code, value.code, contextKey)" ></q-checkbox>
