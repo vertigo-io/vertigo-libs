@@ -47,6 +47,9 @@ import io.vertigo.datamodel.structure.model.UID;
  * @param <S> KeyConcept type
  */
 final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
+
+	private static final int MAX_DELETED_INDEX_PER_CHUNK = 200;
+
 	private static final Logger LOGGER = LogManager.getLogger(ReindexAllModifiedTask.class);
 	private static volatile boolean REINDEXATION_IN_PROGRESS;
 	private static volatile long REINDEX_COUNT;
@@ -94,13 +97,13 @@ final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
 								"To use this reindexAllModified, indexed keyConcept need a version field use to check if element is up-to-date. Check getVersionFieldName() in {0}", searchLoader.getClass().getName());
 				//---
 				Serializable lastUID = null;
-				LOGGER.info("Full reindexation of {} started", searchIndexDefinition.getName());
+				LOGGER.info("Full reindexation (modified only) of {} started", searchIndexDefinition.getName());
 
 				for (final SearchChunk<S> searchChunk : searchLoader.chunk(keyConceptClass)) {
 					final Serializable maxUID = searchChunk.getLastValue();
 					Assertion.check().isFalse(maxUID.equals(lastUID), "SearchLoader ({0}) error : return the same uid list", searchIndexDefinition.getSearchLoaderId());
 
-					final Map<UID<S>, Serializable> alreadyIndexedVersions = searchServicesPlugin.loadVersions(searchIndexDefinition, searchLoader.getVersionFieldName().get(), urisRangeToListFilter("docId", lastUID, maxUID));
+					final Map<UID<S>, Serializable> alreadyIndexedVersions = searchServicesPlugin.loadVersions(searchIndexDefinition, searchLoader.getVersionFieldName().get(), urisRangeToListFilter("docId", lastUID, maxUID), searchChunk.getAllUIDs().size() + MAX_DELETED_INDEX_PER_CHUNK);
 					final Tuple<SearchChunk<S>, Set<UID<S>>> chunkOfModifiedAndRemovedUid = searchChunk.compare(alreadyIndexedVersions);
 					final Collection<SearchIndex<S, DtObject>> searchIndexes = searchLoader.loadData(chunkOfModifiedAndRemovedUid.val1());//load updated element
 					if (!searchIndexes.isEmpty()) {
@@ -120,11 +123,11 @@ final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
 				//On ne retire pas la fin, il y a un risque de retirer les données ajoutées depuis le démarrage de l'indexation
 				reindexFuture.success(reindexCount);
 			} catch (final Exception e) {
-				LOGGER.error("Full reindexation error", e);
+				LOGGER.error("Full reindexation (modified only) error", e);
 				reindexFuture.fail(e);
 			} finally {
 				stopReindex();
-				LOGGER.info("Full reindexation of {} finished in {} ms ({} elements done)", searchIndexDefinition.getName(), System.currentTimeMillis() - startTime, reindexCount);
+				LOGGER.info("Full reindexation (modified only) of {} finished in {} ms ({} elements done)", searchIndexDefinition.getName(), System.currentTimeMillis() - startTime, reindexCount);
 			}
 		}
 	}

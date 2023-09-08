@@ -107,7 +107,7 @@ final class ReindexDeltaTask<S extends KeyConcept> implements Runnable {
 					Assertion.check().isFalse(lastValue.equals(previousValue), "SearchLoader ({0}) error : return the same uid list", searchIndexDefinition.getSearchLoaderId());
 
 					//final Map<UID<S>, Serializable> alreadyIndexedVersions = searchServicesPlugin.loadVersions(searchIndexDefinition, iteratorFieldName, urisRangeToListFilter(iteratorFieldName.name(), previousValue, lastValue));
-					final Map<UID<S>, Serializable> alreadyIndexedVersions = searchServicesPlugin.loadVersions(searchIndexDefinition, iteratorFieldName, urisSetToListFilter("docId", searchChunk.getAllUIDs()));
+					final Map<UID<S>, Serializable> alreadyIndexedVersions = searchServicesPlugin.loadVersions(searchIndexDefinition, iteratorFieldName, urisSetToListFilter("docId", searchChunk.getAllUIDs()), searchChunk.getAllUIDs().size());
 					final Tuple<SearchChunk<S>, Set<UID<S>>> chunkOfModifiedAndRemovedUid = searchChunk.compare(alreadyIndexedVersions);
 
 					final Collection<SearchIndex<S, DtObject>> searchIndexes = searchLoader.loadData(chunkOfModifiedAndRemovedUid.val1());//load updated element

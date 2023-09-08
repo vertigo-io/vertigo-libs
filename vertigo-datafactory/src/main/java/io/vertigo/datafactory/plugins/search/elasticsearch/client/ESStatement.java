@@ -169,7 +169,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		}
 	}
 
-	Map<UID<K>, Serializable> loadVersions(final DtField versionField, final ListFilter listFilter) {
+	Map<UID<K>, Serializable> loadVersions(final DtField versionField, final ListFilter listFilter, final int maxElements) {
 		Assertion.check().isNotNull(versionField).isNotNull(listFilter);
 		//-----
 		try {
@@ -180,6 +180,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			final SearchResponse searchResponse = esClient.prepareSearch()
 					.setIndices(indexName)
 					.setSearchType(SearchType.QUERY_THEN_FETCH)
+					.setSize(maxElements)
 					.setFetchSource(versionField.name(), null)
 					.setQuery(queryfilterBuilder)
 					.get();
