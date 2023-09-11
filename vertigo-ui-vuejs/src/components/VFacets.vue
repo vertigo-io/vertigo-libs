@@ -9,28 +9,28 @@
                 </template>
             </div>
         </div>
-            <q-list v-for="facet in facets" :key="facet.code" class="facetValues q-py-none" dense >
-                <template v-if="facet.multiple || !isFacetSelected(facet.code)">
-                    <q-item-label header>{{facet.label}}</q-item-label>
-                    <q-item v-for="(value) in selectedInvisibleFacets(facet.code)" :key="value.code" class="facetValue q-ml-md" clickable @click="$emit('toogle-facet', facet.code, value.code, contextKey)">
-                        <q-item-section side v-if="facet.multiple" >
-                            <q-checkbox dense v-bind:modelValue="true" @update:modelValue="$emit('toogle-facet', facet.code, value.code, contextKey)" ></q-checkbox>
-                        </q-item-section>
-                        <q-item-section >{{value.label}}</q-item-section> 
-                        <q-item-section side>{{value.count}}</q-item-section>
-                    </q-item>
-                    
-                    <q-item v-for="(value) in visibleFacets(facet.code, facet.values)" :key="value.code" class="facetValue q-ml-md" clickable @click="$emit('toogle-facet', facet.code, value.code, contextKey)">
-                        <q-item-section side v-if="facet.multiple" >
-                            <q-checkbox dense v-bind:modelValue="isFacetValueSelected(facet.code, value.code)" @update:modelValue="$emit('toogle-facet', facet.code, value.code, contextKey)" ></q-checkbox>
-                        </q-item-section>
-                        <q-item-section >{{value.label}}</q-item-section> 
-                        <q-item-section side>{{value.count}}</q-item-section>
-                    </q-item>
-                    <q-btn flat v-if="facet.values.length > maxValues && !isFacetExpanded(facet.code)" @click="expandFacet(facet.code)">{{$q.lang.vui.facets.showAll}}</q-btn>
-                    <q-btn flat v-if="facet.values.length > maxValues && isFacetExpanded(facet.code)" @click="reduceFacet(facet.code)">{{$q.lang.vui.facets.showLess}}</q-btn>
-                </template>
-            </q-list>
+        <q-list v-for="facet in facets" :key="facet.code" class="facetValues q-py-none" dense >
+            <template v-if="facet.multiple || !isFacetSelected(facet.code)">
+                <q-item-label header>{{facet.label}}</q-item-label>
+                <q-item v-for="(value) in selectedInvisibleFacets(facet.code)" :key="value.code" class="facetValue q-ml-md" clickable @click="$emit('toogle-facet', facet.code, value.code, contextKey)">
+                    <q-item-section side v-if="facet.multiple" >
+                        <q-checkbox dense v-bind:modelValue="true" @update:modelValue="$emit('toogle-facet', facet.code, value.code, contextKey)" ></q-checkbox>
+                    </q-item-section>
+                    <q-item-section >{{facetValueLabelByCode(facet.code, value.code)}}</q-item-section> 
+                    <q-item-section side>{{value.count}}</q-item-section>
+                </q-item>
+                
+                <q-item v-for="(value) in visibleFacets(facet.code, facet.values)" :key="value.code" class="facetValue q-ml-md" clickable @click="$emit('toogle-facet', facet.code, value.code, contextKey)">
+                    <q-item-section side v-if="facet.multiple" >
+                        <q-checkbox dense v-bind:modelValue="isFacetValueSelected(facet.code, value.code)" @update:modelValue="$emit('toogle-facet', facet.code, value.code, contextKey)" ></q-checkbox>
+                    </q-item-section>
+                    <q-item-section >{{facetValueLabelByCode(facet.code, value.code)}}</q-item-section> 
+                    <q-item-section side>{{value.count}}</q-item-section>
+                </q-item>
+                <q-btn flat v-if="facet.values.length > maxValues && !isFacetExpanded(facet.code)" @click="expandFacet(facet.code)">{{$q.lang.vui.facets.showAll}}</q-btn>
+                <q-btn flat v-if="facet.values.length > maxValues && isFacetExpanded(facet.code)" @click="reduceFacet(facet.code)">{{$q.lang.vui.facets.showLess}}</q-btn>
+            </template>
+        </q-list>
     </div>
 </template>
 <script>
@@ -39,6 +39,7 @@ export default {
         facets: Array,
         selectedFacets: Object,
         contextKey: String,
+        facetValueTranslatorProvider : Function,
         maxValues: {
             type : Number,
             default : 5
@@ -49,10 +50,17 @@ export default {
   },
   data : function() {
       return {
-          expandedFacets:[]
+          expandedFacets:[],
+          codeToLabelTranslater:{} /** facetCode : function (facetCode, facetValueCode) return facetValueLabel */
       }
   },
+  created : function() {
+    this.facetValueTranslatorProvider(this);
+  },
   methods: {
+      addFacetValueTranslator(facetCode, facetValueCodeTranslator) {
+          this.codeToLabelTranslater[facetCode] = facetValueCodeTranslator;
+      },
       facetByCode(facetCode) {
           return this.facets.filter(function (facet) {
               return facet.code === facetCode;
@@ -70,6 +78,9 @@ export default {
           return this.facetByCode(facetCode).multiple;
       },
       facetValueLabelByCode(facetCode, facetValueCode) {
+          if(this.codeToLabelTranslater[facetCode]) {
+                return this.codeToLabelTranslater[facetCode](facetCode, facetValueCode);
+          }
           var facetValueByCode = this.facetValueByCode(facetCode,facetValueCode);
           return facetValueByCode?facetValueByCode.label:facetValueCode; //might be not found
       },
