@@ -195,7 +195,7 @@ public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 		//-----
 		final DtField dtField = mappedFields.get(fieldName);
 		//-----
-		Assertion.check().isNotNull(dtField, "field '{0}' not found on '{1}'. Available fields are :{2}", fieldName, this, mappedFields.keySet());
+		Assertion.check().isNotNull(dtField, "field '{0}' not found on '{1}'. Available fields are :{2}", fieldName, getName(), mappedFields.keySet());
 		return dtField;
 	}
 
