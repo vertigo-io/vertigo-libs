@@ -120,7 +120,8 @@ final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
 				}
 				//On vide la suite, pour le cas ou les dernières données ne sont plus là
 				searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter("docId", lastUID, null)); //remove by id
-				//On ne retire pas la fin, il y a un risque de retirer les données ajoutées depuis le démarrage de l'indexation
+				//Les chuncks sont relus de la source en permanence : le dernier chunck à récupérer les dernières données même si elles ont été ajoutées pendant l'indexation
+
 				reindexFuture.success(reindexCount);
 			} catch (final Exception e) {
 				LOGGER.error("Full reindexation (modified only) error", e);
@@ -161,7 +162,7 @@ final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
 		return ListFilter.of(filterValue);
 	}
 
-	private ListFilter urisSetToListFilter(final String indexFieldName, final Set<UID<S>> uris) {
+	private ListFilter urisSetToListFilter(final String indexFieldName, final Collection<UID<S>> uris) {
 		final String filterValue = uris.stream()
 				.map(uid -> String.valueOf(escapeStringId(uid.getId())))
 				.collect(Collectors.joining(" OR ", indexFieldName + ":(", ")"));
