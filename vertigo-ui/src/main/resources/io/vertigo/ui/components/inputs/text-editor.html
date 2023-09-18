@@ -2,7 +2,7 @@
     th:with="myComponentId='editor_'+${object}+'_'+${field}, isPlainTextOnly=${plainTextOnly != null ? plainTextOnly : false},
      isPlainTextOnly=${plainTextOnly != null ? plainTextOnly : false},
      isShowErrors=${showErrors != null ? showErrors : myLabel==null},
-     pastePlainText=${isPlainTextOnly?'''ref''='''+myComponentId+''',''@paste.native''=''evt => pastePlainTextCapture(evt,`'+myComponentId+'`)''':''},  
+     pastePlainText=${isPlainTextOnly?'''ref''='''+myComponentId+''',''@paste.stop''=''evt => pastePlainTextCapture(evt,`'+myComponentId+'`)''':''},  
      "
 	vu:alias="text-editor" vu:selector="${viewMode=='edit'}"
 	th:assert="${object} != null and ${field} != null">
