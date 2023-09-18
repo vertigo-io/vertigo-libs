@@ -33,7 +33,7 @@ import io.vertigo.core.lang.Assertion;
  */
 public final class LogTraceStorePlugin implements TraceStorePlugin {
 	//execDate, category, username, itemUrn, message, businessDate, context, id
-	private static final String AUDIT_PATTERN = "id:{7}, executionDate:{0}, category:{1}, username:{2}, itemUrn:{3}, message:{4}, businessDate:{5}, context:{6}";
+	private static final String AUDIT_PATTERN = "id:\"{}\", executionDate:\"{}\", category:\"{}\", username:\"{}\", itemUrn:\"{}\", message:\"{}\", businessDate:\"{}\", context:\"{}\"";
 	private static final Logger AUDIT_LOGGER = LogManager.getLogger("audit");
 	private final AtomicLong logSequenceGenerator = new AtomicLong(0);
 
@@ -49,8 +49,8 @@ public final class LogTraceStorePlugin implements TraceStorePlugin {
 				.isNull(auditTrace.getTraId(), "A new audit trail must not have an id");
 		//---
 		auditTrace.setTraId(logSequenceGenerator.addAndGet(1));
-		AUDIT_LOGGER.info(AUDIT_PATTERN, auditTrace.getExecutionDate(), auditTrace.getCategory(), auditTrace.getUsername(),
-				auditTrace.getItemUrn(), auditTrace.getMessage(), auditTrace.getBusinessDate(), auditTrace.getContext(), auditTrace.getTraId());
+		AUDIT_LOGGER.info(AUDIT_PATTERN, auditTrace.getTraId(), auditTrace.getExecutionDate(), auditTrace.getCategory(), auditTrace.getUsername(),
+				auditTrace.getItemUrn(), auditTrace.getMessage(), auditTrace.getBusinessDate(), auditTrace.getContext());
 	}
 
 	@Override
