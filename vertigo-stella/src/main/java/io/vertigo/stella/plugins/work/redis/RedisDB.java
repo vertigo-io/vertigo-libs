@@ -42,6 +42,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 import redis.clients.jedis.UnifiedJedis;
 import redis.clients.jedis.args.ListDirection;
+import redis.clients.jedis.params.SetParams;
 
 /**
  * @author pchretien, npiedeloup
@@ -191,7 +192,8 @@ public final class RedisDB {
 
 	public void heartBeat(final String nodeId, final Set<String> workTypes) {
 		final UnifiedJedis jedis = redisConnector.getClient();
-		//Une clé avec le nodeId et la list des workTypes traités, une expiration a DEAD_NODE_TIMEOUT_SECOND (heartBeat toutes les 10s)
+		//Une clé avec le nodeId et la list des workTypes traités, une expiration a DEAD_NODE_TIMEOUT_SECOND (heartBeat toutes les 20s)
+		//we set a heartbeat for timeoutSeconds (set on workersPlugin), after that node is dead and his works could return to TodoList
 		jedis.setex(redisKeyNodeHealth(nodeId), timeoutSeconds, workTypes.stream().collect(Collectors.joining(";")));
 		for (final String workType : workTypes) {
 			jedis.sadd(redisKeyWorkers(workType), nodeId);
@@ -250,8 +252,9 @@ public final class RedisDB {
 		}
 
 		for (final var workType : deadWorkType) {
-			final long wasSet = jedis.setnx(redisKeyWorksTimeout(workType), String.valueOf(System.currentTimeMillis() / 1000));
-			if (wasSet == 0) { //if already exist
+			//set time when dateWorkType was detected : after the timeoutSeconds (set on masterPlugin) : the workType is considered dead
+			final String setResult = jedis.set(redisKeyWorksTimeout(workType), String.valueOf(System.currentTimeMillis() / 1000), new SetParams().nx());
+			if (setResult == null) { //if already exist ( Redis.SET with NX params return null or "OK", @see https://redis.io/commands/set/ )
 				final String timeDetectedStr = jedis.get(redisKeyWorksTimeout(workType));
 				final long timeDetected = timeDetectedStr != null ? Long.parseLong(timeDetectedStr) : 0; //0 by default : can't append : timeout
 				if (System.currentTimeMillis() / 1000 > timeDetected + timeoutSeconds) {

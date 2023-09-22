@@ -89,7 +89,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 
 					final Serializable maxUID = searchChunk.getLastValue();
 					Assertion.check().isFalse(maxUID.equals(lastUID), "SearchLoader ({0}) error : return the same uid list", searchIndexDefinition.getSearchLoaderId());
-					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUID, maxUID));
+					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter("docId", lastUID, maxUID));
 					if (!searchIndexes.isEmpty()) {
 						searchManager.putAll(searchIndexDefinition, searchIndexes);
 					}
@@ -98,8 +98,8 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 					updateReindexCount(reindexCount);
 				}
 				//On vide la suite, pour le cas ou les dernières données ne sont plus là
-				searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUID, null));
-				//On ne retire pas la fin, il y a un risque de retirer les données ajoutées depuis le démarrage de l'indexation
+				searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter("docId", lastUID, null));
+				//Les chuncks sont relus de la source en permanence : le dernier chunck à récupérer les dernières données même si elles ont été ajoutées pendant l'indexation
 				reindexFuture.success(reindexCount);
 			} catch (final Exception e) {
 				LOGGER.error("Full reindexation error", e);
@@ -131,8 +131,8 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 		return REINDEX_COUNT;
 	}
 
-	private static ListFilter urisRangeToListFilter(final Serializable firstUri, final Serializable lastUri) {
-		final String filterValue = "docId" + ":{" + //{ for exclude min
+	private static ListFilter urisRangeToListFilter(final String indexFieldName, final Serializable firstUri, final Serializable lastUri) {
+		final String filterValue = indexFieldName + ":{" + //{ for exclude min
 				(firstUri != null ? escapeStringId(firstUri) : "*") +
 				" TO " +
 				(lastUri != null ? escapeStringId(lastUri) : "*") +

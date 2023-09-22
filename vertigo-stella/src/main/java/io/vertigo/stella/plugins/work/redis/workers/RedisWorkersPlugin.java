@@ -43,7 +43,7 @@ public final class RedisWorkersPlugin implements WorkersPlugin {
 
 	/**
 	 * @param connectorName Connector name to use (default to main)
-	 * @param timeoutSeconds Timeout Seconds to declare dead node (default to 30s)
+	 * @param timeoutSeconds Timeout Seconds to declare dead node (default to 60s / ping every 20s)
 	 * @param redisConnector Declared Redis connectors
 	 * @param codecManager Codec manager
 	 */
@@ -61,7 +61,7 @@ public final class RedisWorkersPlugin implements WorkersPlugin {
 		final RedisConnector redisConnector = redisConnectors.stream()
 				.filter(connector -> connectorName.equals(connector.getName()))
 				.findFirst().get();
-		redisDB = new RedisDB(timeoutSeconds.orElse(30), codecManager, redisConnector);
+		redisDB = new RedisDB(timeoutSeconds.orElse(60), codecManager, redisConnector);
 	}
 
 	/** {@inheritDoc} */

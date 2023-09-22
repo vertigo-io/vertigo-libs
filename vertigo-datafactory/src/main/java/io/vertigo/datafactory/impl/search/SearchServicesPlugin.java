@@ -94,9 +94,10 @@ public interface SearchServicesPlugin extends Plugin {
 	 * @param indexDefinitions Type de l'index
 	 * @param versionFieldName Field qui porte la version du keyconcept
 	 * @param listFilter Filtre des document
+	 * @param maxElements Nb Max elements to return
 	 * @return Map des versions par UID
 	 */
-	<K extends KeyConcept> Map<UID<K>, Serializable> loadVersions(final SearchIndexDefinition indexDefinitions, DtFieldName<K> versionFieldName, final ListFilter listFilter);
+	<K extends KeyConcept> Map<UID<K>, Serializable> loadVersions(final SearchIndexDefinition indexDefinitions, final DtFieldName<K> versionFieldName, final ListFilter listFilter, final int maxElements);
 
 	/**
 	 * @param indexDefinition  Type de l'index

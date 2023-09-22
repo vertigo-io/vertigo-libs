@@ -18,6 +18,7 @@
 package io.vertigo.datafactory.impl.search;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -50,6 +51,7 @@ import io.vertigo.datamodel.structure.model.UID;
  * @param <S> KeyConcept type
  */
 final class ReindexDeltaTask<S extends KeyConcept> implements Runnable {
+	private static final int LAST_MODIFIED_GAP_BEFORE_NOW = 10;
 	private static final Logger LOGGER = LogManager.getLogger(ReindexDeltaTask.class);
 	private static volatile boolean REINDEXATION_IN_PROGRESS;
 	private static volatile long REINDEX_COUNT;
@@ -60,7 +62,6 @@ final class ReindexDeltaTask<S extends KeyConcept> implements Runnable {
 
 	/**
 	 * Constructor.
-	 * @param iteratorFieldName Field name for delta field
 	 * @param searchIndexDefinition Search index definition
 	 * @param reindexFuture Future for result
 	 * @param searchManager Search manager
@@ -106,16 +107,15 @@ final class ReindexDeltaTask<S extends KeyConcept> implements Runnable {
 					final Serializable lastValue = searchChunk.getLastValue();
 					Assertion.check().isFalse(lastValue.equals(previousValue), "SearchLoader ({0}) error : return the same uid list", searchIndexDefinition.getSearchLoaderId());
 
-					//final Map<UID<S>, Serializable> alreadyIndexedVersions = searchServicesPlugin.loadVersions(searchIndexDefinition, iteratorFieldName, urisRangeToListFilter(iteratorFieldName.name(), previousValue, lastValue));
-					final Map<UID<S>, Serializable> alreadyIndexedVersions = searchServicesPlugin.loadVersions(searchIndexDefinition, iteratorFieldName, urisSetToListFilter("docId", searchChunk.getAllUIDs()));
-					final Tuple<SearchChunk<S>, Set<UID<S>>> chunkOfModifiedAndRemovedUid = searchChunk.compare(alreadyIndexedVersions);
+					final Map<UID<S>, Serializable> alreadyIndexedVersions = searchServicesPlugin.loadVersions(searchIndexDefinition, iteratorFieldName, urisSetToListFilter("docId", searchChunk.getAllUIDs()), searchChunk.getAllUIDs().size());
+					final Tuple<SearchChunk<S>, Set<UID<S>>> chunkOfModifiedAndRemovedUid = searchChunk.compare(alreadyIndexedVersions); //Tuple #1:modified, #2:removed
 
 					final Collection<SearchIndex<S, DtObject>> searchIndexes = searchLoader.loadData(chunkOfModifiedAndRemovedUid.val1());//load updated element
 					if (!searchIndexes.isEmpty()) {
 						searchManager.putAll(searchIndexDefinition, searchIndexes);
 					}
 					if (searchIndexes.size() < chunkOfModifiedAndRemovedUid.val1().getAllUIDs().size()) {
-						//some elements are inactive : remove them
+						//some elements are inactive (ie: in index but not in loadData) : remove them
 						final Set<UID<S>> inactived = new HashSet<>(chunkOfModifiedAndRemovedUid.val1().getAllUIDs());
 						searchIndexes.forEach(searchIndex -> inactived.remove(searchIndex.getUID()));
 						searchManager.removeAll(searchIndexDefinition, urisSetToListFilter("docId", inactived)); //remove by id
@@ -126,20 +126,25 @@ final class ReindexDeltaTask<S extends KeyConcept> implements Runnable {
 					}
 
 					previousValue = lastValue;
-					searchManager.putMetaData(searchIndexDefinition, metaDataName, previousValue);
+					searchManager.putMetaData(searchIndexDefinition, metaDataName, previousValue); //setMetaData each loop
 
 					reindexCount += chunkOfModifiedAndRemovedUid.val1().getAllUIDs().size();
 					reindexCount += chunkOfModifiedAndRemovedUid.val2().size();
 					updateReindexCount(reindexCount);
 				}
 
-				//test
-				final Serializable newLastValue = searchManager.getMetaData(searchIndexDefinition, metaDataName);
-				LOGGER.info("Reindexation delta of {} finished at {}", searchIndexDefinition.getName(), newLastValue);
+				Serializable storedValue = previousValue;
+				if (reindexCount > 0 && previousValue instanceof Instant) {
+					//After delta reindexing, we set current fresh at now-10s (LAST_MODIFIED_GAP_BEFORE_NOW)
+					//- some elements could be younger, but version continuity isn't garantee in case of uncommited TX (should wait 10s)
+					//- we don't want to reindex tail forever
+					//- we prefered to set a usefull index version in metadata : not just now-10s for ever... : set version only if we found something
+					final Instant maxInstant = Instant.now().minusSeconds(LAST_MODIFIED_GAP_BEFORE_NOW);
+					storedValue = ((Instant) previousValue).isAfter(maxInstant) ? maxInstant : previousValue;
+					searchManager.putMetaData(searchIndexDefinition, metaDataName, storedValue); //setMetaData each loop
+				}
 
-				//On vide la suite, pour le cas ou les dernières données ne sont plus là
-				searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(iteratorFieldName.name(), previousValue, null));
-				//On ne retire pas la fin, il y a un risque de retirer les données ajoutées depuis le démarrage de l'indexation
+				LOGGER.info("Reindexation delta of {} finished at {} (keep {})", searchIndexDefinition.getName(), previousValue, storedValue);
 				reindexFuture.success(reindexCount);
 			} catch (final Exception e) {
 				LOGGER.error("Reindexation error", e);
@@ -157,6 +162,7 @@ final class ReindexDeltaTask<S extends KeyConcept> implements Runnable {
 
 	private static void startReindex() {
 		REINDEXATION_IN_PROGRESS = true;
+		REINDEX_COUNT = 0;
 	}
 
 	private static void stopReindex() {
@@ -169,15 +175,6 @@ final class ReindexDeltaTask<S extends KeyConcept> implements Runnable {
 
 	private static long getReindexCount() {
 		return REINDEX_COUNT;
-	}
-
-	private static ListFilter urisRangeToListFilter(final String indexIteratorName, final Serializable firstUri, final Serializable lastUri) {
-		final String filterValue = indexIteratorName + ":{" + //{ for exclude min
-				(firstUri != null ? escapeStringId(firstUri) : "*") +
-				" TO " +
-				(lastUri != null ? escapeStringId(lastUri) : "*") +
-				"]";
-		return ListFilter.of(filterValue);
 	}
 
 	private ListFilter urisSetToListFilter(final String indexFieldName, final Collection<UID<S>> uris) {

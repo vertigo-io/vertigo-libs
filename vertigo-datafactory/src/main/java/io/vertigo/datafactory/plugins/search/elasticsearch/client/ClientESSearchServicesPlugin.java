@@ -333,9 +333,9 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 
 	/** {@inheritDoc} */
 	@Override
-	public <K extends KeyConcept> Map<UID<K>, Serializable> loadVersions(final SearchIndexDefinition indexDefinition, final DtFieldName<K> versionFieldName, final ListFilter listFilter) {
+	public <K extends KeyConcept> Map<UID<K>, Serializable> loadVersions(final SearchIndexDefinition indexDefinition, final DtFieldName<K> versionFieldName, final ListFilter listFilter, final int maxElements) {
 		final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
-		return ((ESStatement<K, ?>) createElasticStatement(indexDefinition)).loadVersions(indexDtDefinition.getField(versionFieldName), listFilter);
+		return ((ESStatement<K, ?>) createElasticStatement(indexDefinition)).loadVersions(indexDtDefinition.getField(versionFieldName), listFilter, maxElements);
 	}
 
 	/** {@inheritDoc} */
@@ -376,7 +376,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 						.setId(dataPath)
 						.setSource(xContentBuilder)
 						.get(); //get wait exec
-				
+
 			} catch (final IOException e) {
 				throw WrappedException.wrap(e, "Error on index {0}", metaDataIndex);
 			}
@@ -473,7 +473,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 			case DataStream:
 			default:
 				throw new IllegalArgumentException("Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartTypeDefinition + "].");
-				}
+		}
 	}
 
 	/**

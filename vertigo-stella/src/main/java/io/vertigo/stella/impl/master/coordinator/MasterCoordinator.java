@@ -22,13 +22,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.util.NamedThreadFactory;
 import io.vertigo.stella.impl.master.MasterPlugin;
 import io.vertigo.stella.impl.master.WorkResult;
 import io.vertigo.stella.impl.work.Coordinator;
@@ -45,16 +49,8 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 	private final long pollFrequencyMs; //poll work and poll result frequency
 	private final AnalyticsManager analyticsManager;
 	private final MasterPlugin masterPlugin;
-	private final Thread watcher;
+	private final ScheduledExecutorService watcher;
 	private final Map<String, WorkProcessingInfo> workProcessingInfos = Collections.synchronizedMap(new HashMap<String, WorkProcessingInfo>());
-
-	public record WorkProcessingInfo(String workType, Instant submitInstant, WorkResultHandler workResultHandler) {
-		public WorkProcessingInfo {
-			Assertion.check().isNotBlank(workType)
-					.isNotNull(submitInstant)
-					.isNotNull(workResultHandler);
-		}
-	}
 
 	public MasterCoordinator(final String nodeId, final long pollFrequencyMs, final MasterPlugin masterPlugin, final AnalyticsManager analyticsManager) {
 		Assertion.check()
@@ -67,23 +63,34 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 		this.pollFrequencyMs = pollFrequencyMs;
 		this.masterPlugin = masterPlugin;
 		this.analyticsManager = analyticsManager;
-		watcher = createWatcher();
+		watcher = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("v-distributedWorkResultWatcher-"));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		watcher.start();
+		final DistributedWorkResultWatcher watcherTask = new DistributedWorkResultWatcher(nodeId, pollFrequencyMs, this, masterPlugin, analyticsManager);
+		watcher.scheduleAtFixedRate(watcherTask, 100, pollFrequencyMs, TimeUnit.MILLISECONDS);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void stop() {
-		watcher.interrupt();
+		//Shutdown in two phases (see doc)
+		watcher.shutdown();
 		try {
-			watcher.join();
-		} catch (final InterruptedException e) {
-			Thread.currentThread().interrupt(); //if interrupt we re-set the flag
+			// Wait a while for existing tasks to terminate
+			if (!watcher.awaitTermination(60, TimeUnit.SECONDS)) {
+				watcher.shutdownNow(); // Cancel currently executing tasks
+				// Wait a while for tasks to respond to being cancelled
+				if (!watcher.awaitTermination(60, TimeUnit.SECONDS)) {
+					System.err.println("Pool did not terminate");
+				}
+			}
+		} catch (final InterruptedException ie) {
+			// (Re-)Cancel if current thread also interrupted
+			watcher.shutdownNow();
+			Thread.currentThread().interrupt(); // Preserve interrupt status
 		}
 	}
 
@@ -104,34 +111,62 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 		});
 	}
 
-	private Thread createWatcher() {
-		return new Thread("DistributedWorkResultWatcher") {
-			/** {@inheritDoc} */
-			@Override
-			public void run() {
-				while (!Thread.currentThread().isInterrupted()) {
-					try {
-						final long start = System.currentTimeMillis();
-						do {
-							final WorkResult result = masterPlugin.pollResult(nodeId, 1);
-							if (result != null) {
-								setResult(result.workId, result.result, result.error);
-							} else {
-								break; //if no mass result : wait pollFrequency
-							}
-						} while (System.currentTimeMillis() - start < pollFrequencyMs);
-						//wait to next pollFrequencyMs time, mini 10ms while mass work
-						Thread.sleep(Math.max(10, pollFrequencyMs - System.currentTimeMillis() - start));
-					} catch (final InterruptedException e) {
-						Thread.currentThread().interrupt(); // Preserve interrupt status
-						break; //stop on Interrupt
-					}
-				}
-			}
-		};
+	private record WorkProcessingInfo(String workType, Instant submitInstant, WorkResultHandler workResultHandler) {
+		public WorkProcessingInfo {
+			Assertion.check().isNotBlank(workType)
+					.isNotNull(submitInstant)
+					.isNotNull(workResultHandler);
+		}
 	}
 
-	private <R> void setResult(final String workId, final R result, final Throwable error) {
+	private static class DistributedWorkResultWatcher implements Runnable {
+		private final String nodeId;
+		private final long pollFrequencyMs; //poll work and poll result frequency
+		private final MasterCoordinator masterCoordinator;
+		private final MasterPlugin masterPlugin;
+		private final AnalyticsManager analyticsManager;
+
+		public DistributedWorkResultWatcher(final String nodeId, final long pollFrequencyMs, final MasterCoordinator masterCoordinator, final MasterPlugin masterPlugin, final AnalyticsManager analyticsManager) {
+			Assertion.check()
+					.isNotBlank(nodeId)
+					.isTrue(pollFrequencyMs >= 100 && pollFrequencyMs <= 5 * 60 * 1000, "pollFrequency must be between 0.1s and 300s ({0}s)", pollFrequencyMs)
+					.isNotNull(masterCoordinator)
+					.isNotNull(masterPlugin)
+					.isNotNull(analyticsManager);
+			//-----
+			this.nodeId = nodeId;
+			this.pollFrequencyMs = pollFrequencyMs;
+			this.masterCoordinator = masterCoordinator;
+			this.masterPlugin = masterPlugin;
+			this.analyticsManager = analyticsManager;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public void run() {
+			int nbPollResult = 0;
+			int nbMissingWorkProcessingInfos = 0;
+			final long start = System.currentTimeMillis();
+			do {
+				final WorkResult result = masterPlugin.pollResult(nodeId, 1);
+				if (result != null) {
+					final boolean found = masterCoordinator.setResult(result.workId, result.result, result.error);
+					nbPollResult++;
+					nbMissingWorkProcessingInfos += found ? 1 : 0;
+				} else {
+					break; //if no mass result : wait next exec at pollFrequency
+				}
+			} while (System.currentTimeMillis() - start < pollFrequencyMs);
+			if (nbPollResult > 0) { //we log analytics only if there is result
+				analyticsManager.addSpan(TraceSpan.builder(ANALYTICS_CATEGORY, "distributedWorkResultWatcher", Instant.ofEpochMilli(start), Instant.now())
+						.incMeasure("pollResult", nbPollResult)
+						.incMeasure("missingWorkProcessingInfos", nbMissingWorkProcessingInfos)
+						.build());
+			}
+		}
+	}
+
+	private <R> boolean setResult(final String workId, final R result, final Throwable error) {
 		Assertion.check()
 				.isNotBlank(workId)
 				.isTrue(result == null ^ error == null, "result xor error is null");
@@ -149,6 +184,9 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 				//Que faire sinon
 				workProcessingInfo.workResultHandler.onDone(result, error);
 			});
+			return true;
+		} else {
+			return false; //missing workProcessingInfos for workId, not for this master ?
 		}
 	}
 

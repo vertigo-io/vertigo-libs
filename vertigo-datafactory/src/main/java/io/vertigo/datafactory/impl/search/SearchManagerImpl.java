@@ -300,12 +300,14 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	 */
 	@EventBusSubscribed
 	public void onEvent(final StoreEvent storeEvent) {
-		markAsDirty((List) storeEvent.getUIDs().stream()
+		final List<UID<? extends KeyConcept>> keyConceptUris = (List) storeEvent.getUIDs().stream()
 				//On ne traite l'event que si il porte sur un KeyConcept
 				.filter(uid -> uid.getDefinition().getStereotype() == DtStereotype.KeyConcept
 						&& hasIndexDefinitionByKeyConcept(uid.getDefinition()))
-				.toList());
-
+				.toList();
+		if (!keyConceptUris.isEmpty()) {
+			markAsDirty(keyConceptUris);
+		}
 	}
 
 }

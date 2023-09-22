@@ -52,6 +52,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Builder;
+import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.BeanUtil;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
@@ -455,7 +456,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.listFilter().getFilterValue();
 			Assertion.check().isTrue(filterValue.contains(dtField.name()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.name(), filterValue);
-			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
+			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).orElseThrow(() -> new VSystemException("Range Facet syntaxe invalid : " + filterValue));
 			final String minValue = parsedFilter[3];
 			final String maxValue = parsedFilter[4];
 			if ("*".equals(minValue)) {

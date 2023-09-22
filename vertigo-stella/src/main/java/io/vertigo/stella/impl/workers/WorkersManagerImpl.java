@@ -77,7 +77,7 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 		this.pollFrequencyMs = pollFrequencyMs.orElse(5000);
 	}
 
-	@DaemonScheduled(name = "DmnWorkerHeartBeat", periodInSeconds = 10)
+	@DaemonScheduled(name = "DmnWorkerHeartBeat", periodInSeconds = 20)
 	public void workerHeartBeat() {
 		workerPlugin.heartBeat(nodeId, workTypesMap.keySet());
 	}

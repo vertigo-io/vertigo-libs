@@ -132,7 +132,7 @@ public final class MasterManagerImpl implements MasterManager, Activeable {
 		}
 	}
 
-	@DaemonScheduled(name = "DmnWorkerDeadNodeDetector", periodInSeconds = 10)
+	@DaemonScheduled(name = "DmnWorkerDeadNodeDetector", periodInSeconds = 20)
 	public void checkDeadNodesAndWorkItems() {
 		masterCoordinator.checkDeadNodesAndWorkItems();
 	}

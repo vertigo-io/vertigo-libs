@@ -52,6 +52,6 @@ public final class VTransactionListenerImpl implements VTransactionListener {
 	/** {@inheritDoc} */
 	@Override
 	public void logAfterCommitError(final Throwable th) {
-		LOGGER.info("an error occured after commit : " + th.getMessage(), th);
+		LOGGER.error("an error occured after commit : " + th.getMessage(), th);
 	}
 }
