@@ -1,0 +1,8 @@
+lorem ipsum { } #lkjhdfhjd
+hello [] #fds
+  "this" "is" 
+  "escape\"char"  
+ "jhjh\\" test{} 
+ 
+ "litteral with no end 
+ 
