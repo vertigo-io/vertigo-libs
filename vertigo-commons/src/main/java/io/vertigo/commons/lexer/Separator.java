@@ -9,7 +9,7 @@ public enum Separator {
 	SEMI_COLON(';'),
 	COMMA(',');
 
-	private final char sep;
+	final char sep;
 	private final Token token;
 
 	Separator(char sep) {
@@ -21,12 +21,4 @@ public enum Separator {
 		return token;
 	}
 
-	public static Separator find(char sep) {
-		for (Separator separator : Separator.values()) {
-			if (separator.sep == sep) {
-				return separator;
-			}
-		}
-		return null;
-	}
 }

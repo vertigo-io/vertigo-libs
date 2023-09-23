@@ -60,8 +60,17 @@ public class LexerTest {
 		lexer = new Lexer("  lorem ipsum #jhdfjdhfjd");
 		assertEquals(2, lexer.tokenize().size());
 
+		lexer = new Lexer("  lorem 123 ");
+		assertEquals(2, lexer.tokenize().size());
+
+		lexer = new Lexer("0 1 2 3 456");
+		assertEquals(5, lexer.tokenize().size());
+
 		lexer = new Lexer("[]{};,: []{}");
 		assertEquals(11, lexer.tokenize().size());
+
+		lexer = new Lexer("true false");
+		assertEquals(2, lexer.tokenize().size());
 	}
 
 	@Test
@@ -85,7 +94,7 @@ public class LexerTest {
 
 	@Test
 	public void testFail2() {
-		var lexer = new Lexer("  &test"); //Unexpected Char
+		var lexer = new Lexer("  &test "); //Unexpected Char
 		Assertions.assertThrows(VUserException.class, () -> lexer.tokenize());
 	}
 

@@ -5,6 +5,8 @@ public enum TokenType {
 	///	identifier,
 	word,
 	separator,
-	litteral,
-	//	_boolean
+	// litteral
+	string,
+	integer,
+	bool
 }
