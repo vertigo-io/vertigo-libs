@@ -19,6 +19,9 @@ import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.util.FileUtil;
 
 public class LexerTest {
+	@Inject
+	private ResourceManager resourceManager;
+
 	private AutoCloseableNode node;
 
 	@BeforeEach
@@ -34,73 +37,70 @@ public class LexerTest {
 		}
 	}
 
-	@Inject
-	private ResourceManager resourceManager;
-
 	@Test
 	public void test() {
-		var lexer = new Lexer("lorem ipsum");
+		var lexer = new Scanner("lorem ipsum");
 		assertEquals(2, lexer.tokenize().size());
 
-		lexer = new Lexer("lor-e-m ip__s.um");
+		lexer = new Scanner("lor-e-m ip__s.um");
 		assertEquals(2, lexer.tokenize().size());
 
-		lexer = new Lexer("  lorem ipsum   ");
+		lexer = new Scanner("  lorem ipsum   ");
 		assertEquals(2, lexer.tokenize().size());
 
-		lexer = new Lexer("  \"lorem\" ipsum   ");
+		lexer = new Scanner("  \"lorem\" ipsum   ");
 		assertEquals(2, lexer.tokenize().size());
 
-		lexer = new Lexer("  { lorem ipsum }");
+		lexer = new Scanner("  { lorem ipsum }");
 		assertEquals(4, lexer.tokenize().size());
 
-		lexer = new Lexer("  { lorem, ipsum }");
+		lexer = new Scanner("  { lorem, ipsum }");
 		assertEquals(5, lexer.tokenize().size());
 
-		lexer = new Lexer("  lorem ipsum #jhdfjdhfjd");
+		lexer = new Scanner("  lorem ipsum #jhdfjdhfjd");
 		assertEquals(2, lexer.tokenize().size());
 
-		lexer = new Lexer("  lorem 123 ");
+		lexer = new Scanner("  lorem 123 ");
 		assertEquals(2, lexer.tokenize().size());
 
-		lexer = new Lexer("0 1 2 3 456");
+		lexer = new Scanner("0 1 2 3 456");
 		assertEquals(5, lexer.tokenize().size());
 
-		lexer = new Lexer("[]{};,: []{}");
+		lexer = new Scanner("[]{};,: []{}");
 		assertEquals(11, lexer.tokenize().size());
 
-		lexer = new Lexer("true false");
+		lexer = new Scanner("true false");
 		assertEquals(2, lexer.tokenize().size());
 	}
 
 	@Test
 	public void testFile() {
 		final String source = FileUtil.read(resourceManager.resolve("io/vertigo/commons/lexer/data/src1.txt"));
-		var lexer = new Lexer(source);
+		var lexer = new Scanner(source);
 		assertEquals(11, lexer.tokenize().size());
 	}
 
 	@Test
 	public void testFail0() {
-		var lexer = new Lexer("  lorém ipsum"); //word can't contain é
+		var lexer = new Scanner("  lorém ipsum"); //word can't contain é
 		Assertions.assertThrows(VUserException.class, () -> lexer.tokenize());
 	}
 
 	@Test
 	public void testFail1() {
-		var lexer = new Lexer("  \"lorem"); //litteral must be closed
+		var lexer = new Scanner("  \"lorem"); //litteral must be closed
 		Assertions.assertThrows(VUserException.class, () -> lexer.tokenize());
 	}
 
 	@Test
 	public void testFail2() {
-		var lexer = new Lexer("  &test "); //Unexpected Char
+		var lexer = new Scanner("  &test "); //Unexpected Char
 		Assertions.assertThrows(VUserException.class, () -> lexer.tokenize());
 	}
 
 	@Test
 	public void testFail3() {
-		var lexer = new Lexer("  \"test \r\n"
+		var lexer = new Scanner("  \"test \r\n"
 				+ " second line\" "); //Unexpected Char
 		Assertions.assertThrows(VUserException.class, () -> lexer.tokenize());
 	}

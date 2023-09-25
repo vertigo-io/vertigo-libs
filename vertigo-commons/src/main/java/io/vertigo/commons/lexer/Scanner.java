@@ -13,8 +13,13 @@ import io.vertigo.core.lang.VUserException;
  * Comments :
  * single line: begins with #, ends with EOL or EOF
 
- * Separators : see Separator.class ( all in only ONE character)
- * 	- ex : [ ] # are 3 different separators
+ * Separators : all in only ONE character
+ * 	- ex : ; ,  are 3 different separators
+ * 
+ * Blocks : block separator  all in only ONE character
+ * - must be well formed
+ * 
+ * 	- ex : ; ,  are 3 different separators
  * 
  * Words : 
  * - are keywords or identifiers
@@ -56,7 +61,7 @@ import io.vertigo.core.lang.VUserException;
  * 
  * @author pchretien
  */
-public final class Lexer {
+public final class Scanner {
 	private static final char STRING_MARKER = '"';
 	//	private static final char STRING2_MARKER = '\'';
 	private static final char BEGIN_COMMENT = '#';
@@ -66,14 +71,14 @@ public final class Lexer {
 	//	private static final String EOL = System.lineSeparator();
 
 	private final String source;
+	private final List<Token> tokens = new ArrayList<>();
+
+	//---Context
 	private Mode mode = Mode.waiting;
 	private int index = 0;
-	private int beginWord = -1;
-	private int beginString = -1;
-	private int beginInteger = -1;
+	private int beginToken = -1;
 	private boolean escapingLitteral = false;
-	private final List<Token> tokens = new ArrayList<>();
-	//	private final Tokens tokens = new Tokens();
+	//---
 
 	private enum Mode {
 		waiting,
@@ -84,7 +89,7 @@ public final class Lexer {
 		comment; //beginning with '#', ending with a EOL / EOF
 	}
 
-	public Lexer(String source) {
+	public Scanner(String source) {
 		Assertion.check().isNotBlank(source);
 		//---
 		this.source = source;
@@ -110,7 +115,8 @@ public final class Lexer {
 		boolean isEOF = (index == (source.length() - 1));
 		final var car = source.charAt(index);
 
-		final Token separator = Lexic.separatorToToken(car);
+		final Token separator = Lexic.charToToken(car);
+		//Is this character associated to a separator or a block
 		switch (mode) {
 			case waiting:
 				if (separator != null) {
@@ -121,29 +127,30 @@ public final class Lexer {
 					mode = Mode.waiting;
 				} else if (isLetter(car)) {
 					mode = Mode.word;
-					beginWord = index;
+					beginToken = index;
 				} else if (car == STRING_MARKER) {
 					escapingLitteral = false;
 					mode = Mode.string;
-					beginString = index + 1;
+					beginToken = index + 1;
 				} else if (isDigit(car)) {
 					mode = Mode.integer;
-					beginInteger = index;
+					beginToken = index;
 				} else if (car == BEGIN_COMMENT) {
 					mode = Mode.comment;
+					beginToken = index;
 				} else {
 					throw new VUserException("Error at [" + index + "],  unexceped character");
 				}
 				break;
 			case word:
 				if (isBlank(car) || isEOF || separator != null) { //ending word
-					var word = source.substring(beginWord, index - 1);
+					var word = source.substring(beginToken, index - 1);
 					addToken(Lexic.wordToTokenFromW(word));
 
 					if (separator != null) {
 						addToken(separator);
 					}
-					beginWord = -1;
+					beginToken = -1;
 					mode = Mode.waiting;
 				} else {
 					if (!isMiddleCharAcceptedinaWord(car)) {
@@ -154,11 +161,11 @@ public final class Lexer {
 				break;
 			case integer:
 				if (isBlank(car) || isEOF || separator != null) { //ending word
-					addToken(new Token(TokenType.integer, source.substring(beginInteger, index - 1)));
+					addToken(new Token(TokenType.integer, source.substring(beginToken, index - 1)));
 					if (separator != null) {
 						addToken(separator);
 					}
-					beginInteger = -1;
+					beginToken = -1;
 					mode = Mode.waiting;
 				} else {
 					if (!isDigit(car)) {
@@ -180,11 +187,11 @@ public final class Lexer {
 				} else if (car == ESCAPE_LITTERAL) {
 					escapingLitteral = true;
 				} else if (car == STRING_MARKER) { //ending litteral
-					final var litteral = source.substring(beginString, index - 1)
+					final var litteral = source.substring(beginToken, index - 1)
 							.replace("\\\"", "\"")
 							.replace("\\\\", "\\");
 					addToken(new Token(TokenType.string, litteral));
-					beginString = -1;
+					beginToken = -1;
 					mode = Mode.waiting;
 				} else if (isEOL(car) || isEOF) {
 					throw new VUserException("Error at [" + index + "],  a litteral must be defined on a single line ");
@@ -237,19 +244,20 @@ public final class Lexer {
 				|| car == '.';
 	}
 
-	private Stack<String> stack = new Stack();
+	private Stack<String> stack = new Stack<>();
 
-	void checkBlocks() {
+	private void checkBlocks() {
 		if (!stack.isEmpty()) {
 			throw new VUserException("a block is not well formed");
 		}
 	}
 
-	void addToken(Token token) {
+	private void addToken(Token token) {
 		Assertion.check().isNotNull(token);
 		//---
 		tokens.add(token);
 
+		// Block Separator
 		if (token.type() == TokenType.separator) {
 			var value = token.value();
 			switch (value) {
@@ -271,5 +279,4 @@ public final class Lexer {
 			}
 		}
 	}
-
 }
