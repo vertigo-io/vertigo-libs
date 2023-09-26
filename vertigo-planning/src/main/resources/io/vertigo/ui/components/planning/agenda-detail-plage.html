@@ -1,0 +1,102 @@
+<th:block th:fragment="agenda-detail-plage(plage_actions_slot)" vu:alias="agenda-detail-plage" vu:selector="${true}" 
+ th:attr="objectKey=${model.vContext['componentStates'].addComponentState('viewItemDrawer').addPrimitive('opened', false)}">
+    <q-dialog v-model="componentStates.viewItemDrawer.opened" maximized position="right" >
+       <q-card class="bg-white v-modal detailPlageModal">
+            <q-toolbar class="bg-primary">
+                  <q-btn flat round dense v-close-popup icon="keyboard_arrow_left" text-color="white" ></q-btn>
+                  <q-toolbar-title class="text-white"><vu:include-data object="plageHoraireDetail" field="dateLocale" />
+                       <vu:include-data object="plageHoraireDetail" field="minutesDebut" />
+                       <vu:include-data object="plageHoraireDetail" field="minutesFin" />
+                       Plage horaire                          
+                          du {{ vueData.plageHoraireDetail.dateLocale }}
+                          de {{ formatMinutes(vueData.plageHoraireDetail.minutesDebut) }}
+                          à {{ formatMinutes(vueData.plageHoraireDetail.minutesFin) }}
+                  </q-toolbar-title>
+            </q-toolbar>
+            <q-card-section class="q-gutter-md">
+                <vu:block title="Détails">
+                    <vu:slot name="actions_slot">
+                           <div vu:slot="plage_actions_slot"></div>
+                    </vu:slot>
+                
+                    <vu:grid cols="3">
+                    <vu:grid-cell col=1>
+                        <q-field th:label="${model.util.label('plageHoraireDetail.dateLocale')}"
+                            orientation="vertical" stack-label readonly borderless >
+                            {{vueData.plageHoraireDetail.dateLocale}}
+                        </q-field>
+                    </vu:grid-cell>
+                    <vu:grid-cell col=1>
+                        <q-field th:label="${model.util.label('plageHoraireDetail.minutesDebut')}"
+                            orientation="vertical" stack-label readonly borderless >
+                            {{ formatMinutes(vueData.plageHoraireDetail.minutesDebut) }}
+                        </q-field>
+                    </vu:grid-cell>
+                    <vu:grid-cell col=1>
+                        <q-field th:label="${model.util.label('plageHoraireDetail.minutesFin')}"
+                            orientation="vertical" stack-label readonly borderless >
+                            {{ formatMinutes(vueData.plageHoraireDetail.minutesFin) }}
+                        </q-field>
+                    </vu:grid-cell>
+                    <vu:grid-cell col=1>
+                        <vu:include-data object="plageHoraireDetail" field="nbGuichet" />
+                        <q-field th:label="${model.util.label('plageHoraireDetail.nbGuichet')}"
+					        orientation="vertical" stack-label readonly borderless >
+					        {{vueData.plageHoraireDetail.nbGuichet}}
+					    </q-field>
+				    </vu:grid-cell>
+                    <vu:grid-cell col=2>
+                        <vu:include-data object="plageHoraireDetail" field="nbReserve" />
+                        <vu:include-data object="plageHoraireDetail" field="nbTotal" />
+                        <vu:include-data object="plageHoraireDetail" field="nbReserveNonPublie" />
+                        <vu:include-data-primitive key="canCreateReservation" />
+                        <q-field label="Réservations" orientation="vertical" stack-label readonly borderless >
+                            {{vueData.plageHoraireDetail.nbReserve}} rendez-vous réservé(s) sur {{vueData.plageHoraireDetail.nbTotal}} proposés.
+                            <q-icon  v-if="vueData.plageHoraireDetail.nbReserveNonPublie>0" name="ri-error-warning-fill" size="sm" color="negative"
+                               title="rendez-vous réservé(s) sur des créneaux non publiés"></q-icon>
+                        </q-field>
+                   </vu:grid-cell>
+				    <vu:grid-cell col=2>
+                        <vu:include-data object="plageHoraireDetail" field="nbNonPublie" />
+                        <vu:include-data object="plageHoraireDetail" field="nbPlanifie" />
+                        <vu:include-data object="plageHoraireDetail" field="nbPublie" />
+                        <vu:include-data object="plageHoraireDetail" field="instantPublication" />
+                        <q-field label="Publication" orientation="vertical" stack-label readonly borderless >
+                            <q-chip color="trh-publie" v-if="vueData.plageHoraireDetail.nbPublie>0">Publié depuis le {{vueData.plageHoraireDetail.instantPublication}}</q-chip>
+                            <q-chip color="trh-planifie" v-else-if="vueData.plageHoraireDetail.nbPlanifie>0">Planifié le {{vueData.plageHoraireDetail.instantPublication}}</q-chip>
+                            <q-chip color="trh-nonPublie" v-else-if="vueData.plageHoraireDetail.nbNonPublie>0 ">Non publié</q-chip>
+                        </q-field>
+                    </vu:grid-cell>
+                    </vu:grid>
+				</vu:block>
+			    <vu:block title="Liste des créneaux">
+				    <vu:list list="trancheHoraires" componentId="trancheHorairesList" item_class="q-mb-none" rowsPerPage="250" showMore="true">
+	                  <q-item-section side class="text-dark">
+                          <vu:include-data object="trancheHoraires" field="minutesDebut" />
+                          <vu:include-data object="trancheHoraires" field="minutesFin" />
+                          {{ formatMinutes(item.minutesDebut) }} - {{ formatMinutes(item.minutesFin) }}
+                      </q-item-section>
+                      <q-item-section align="right">
+                          <vu:include-data object="trancheHoraires" field="nbReserve" />
+                          <vu:include-data object="trancheHoraires" field="nbGuichet" />
+                              {{ item.nbReserve?item.nbReserve:0 }} / {{ item.nbGuichet }} rendez-vous réservé(s)
+                      </q-item-section>                              
+                      <q-item-section side>
+                           <vu:include-data object="trancheHoraires" field="nbReserveNonPublie" />
+                           <q-icon name="ri-error-warning-fill" color="negative" v-if="item.nbReserveNonPublie>0"
+                                title="rendez-vous pris sur des créneaux non publiés"></q-icon>
+                      </q-item-section>
+                      <q-item-section side>
+                           <vu:include-data object="trancheHoraires" field="etatPublication" />
+                           <vu:include-data object="trancheHoraires" field="nbReserve" />
+                           <vu:include-data object="trancheHoraires" field="nbGuichet" />
+                           <q-icon name="ri-checkbox-blank-circle-line" v-if="item.nbReserve==0 || !item.nbReserve" :color="'trh-'+item.etatPublication" :title="item.etatPublication" ></q-icon>
+                           <q-icon name="ri-contrast-fill" v-if="item.nbReserve>0 && item.nbReserve<item.nbGuichet" :color="'trh-'+item.etatPublication" :title="item.etatPublication" ></q-icon>
+                           <q-icon name="ri-checkbox-blank-circle-fill" v-if="item.nbReserve==item.nbGuichet" :color="'trh-'+item.etatPublication" :title="item.etatPublication" ></q-icon>
+                           <q-icon name="ri-share-circle-fill" v-if="item.nbReserve>item.nbGuichet" :color="'trh-'+item.etatPublication" :title="item.etatPublication" ></q-icon>                                      
+                      </q-item-section>
+		            </vu:list>
+	            </vu:block>
+          </q-card-section>
+    </q-dialog>
+</th:block>

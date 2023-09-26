@@ -1,0 +1,65 @@
+<th:block th:fragment="agenda-create-plage" vu:alias="agenda-create-plage" vu:selector="${true}" 
+    th:attr="objectKey=${model.vContext['componentStates'].addComponentState('createItemModal').addPrimitive('opened', false)}">
+    <vu:include-data object="defaultPlageHoraire" field="*" />
+    <vu:include-data object="creationPlageHoraireForm" field="dureeCreneau" />
+    <q-dialog th:v-model="componentStates.createItemModal.opened" >
+        <q-card class="bg-white v-modal createPlageModal">
+            <q-toolbar class="bg-primary">
+                <q-toolbar-title class="text-white">Créer une plage horaire</q-toolbar-title>
+                <div class="col-1"></div>
+                <q-btn flat dense v-close-popup icon="ri-close-line" text-color="white" >Fermer</q-btn>
+                
+            </q-toolbar>
+            <q-card-section class="q-layout-padding">
+                <vu:grid>
+                    <vu:grid-cell col="2">
+                        <vu:date-edit object="creationPlageHoraireForm" field="dateLocale" />
+                    </vu:grid-cell>                            
+                    
+                    <vu:text-field-edit object="creationPlageHoraireForm" field="minutesDebut">
+						<vu:slot name="edit_content_slot">
+	                        <template v-slot:append>
+	                            <q-icon name="access_time" class="cursor-pointer">
+	                                <q-popup-proxy :breakpoint="600" transition-show="scale" transition-hide="scale" ref='datetime_creationPlageHoraireForm_minutesDebut' >
+	                                     <q-time 
+	                                        v-model="vueData.creationPlageHoraireForm.minutesDebut"
+	                                        :landscape="$q.screen.gt.xs"
+	                                        mask="HH:mm"
+	                                        format24h
+	                                        :minute-options="[0, 5,10,15,20,25, 30,35,40, 45,50,55]"
+	                                        @update:model-value="() => $refs.datetime_creationPlageHoraireForm_minutesDebut.hide()"
+	                                        ></q-time> 
+	                                </q-popup-proxy>
+	                            </q-icon>
+	                        </template>
+						</vu:slot>
+                    </vu:text-field-edit>
+                    
+				    <vu:text-field-edit object="creationPlageHoraireForm" field="minutesFin">
+						<vu:slot name="edit_content_slot">
+						    <template v-slot:append>
+	                            <q-icon name="access_time" class="cursor-pointer">
+	                                <q-popup-proxy :breakpoint="600" transition-show="scale" transition-hide="scale" ref='datetime_creationPlageHoraireForm_minutesFin' >
+	                                     <q-time 
+	                                        v-model="vueData.creationPlageHoraireForm.minutesFin"
+	                                        :landscape="$q.screen.gt.xs"
+	                                        mask="HH:mm"
+	                                        format24h
+	                                        :minute-options="[0, 5,10,15,20,25, 30,35,40, 45,50,55]"
+	                                        @update:model-value="() => $refs.datetime_creationPlageHoraireForm_minutesFin.hide()"
+	                                        ></q-time> 
+	                                </q-popup-proxy>
+	                            </q-icon>
+	                        </template>
+						</vu:slot>
+				    </vu:text-field-edit>
+				    
+                    <vu:text-field-edit object="creationPlageHoraireForm" field="nbGuichet" mask="'#'" />
+                </vu:grid>
+            </q-card-section>
+            <q-card-section class="flex justify-end">
+                <q-btn color="primary" label="Valider" @click="createPlageHoraire" :loading="isPendingAction()"></q-btn>
+            </q-card-section>
+        </q-card>
+    </q-dialog>
+</th:block>
