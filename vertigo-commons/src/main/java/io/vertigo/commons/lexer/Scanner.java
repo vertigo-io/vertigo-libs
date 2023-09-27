@@ -72,7 +72,7 @@ public final class Scanner {
 		waiting,
 		string, //beginning with '"', ending with '"'
 		integer, //beginning with a digit '"', , ending with a blank/EOl/EOF or a separator 
-		word, //beginning with a letter, ending with a blank/EOl/EOF or a separator 
+		text, //beginning with a letter, ending with a blank/EOl/EOF or a separator 
 		comment; //beginning with '#', ending with a EOL / EOF
 	}
 	//	private static final String EOL = System.lineSeparator();
@@ -125,7 +125,7 @@ public final class Scanner {
 				} else if (isBlank(car)) {
 					state = State.waiting;
 				} else if (isLetter(car)) {
-					state = State.word;
+					state = State.text;
 					beginToken = index;
 				} else if (car == STRING_MARKER) {
 					escapingLitteral = false;
@@ -141,10 +141,10 @@ public final class Scanner {
 					throw new VUserException("Error at [" + index + "],  unexceped character");
 				}
 				break;
-			case word:
+			case text:
 				if (isBlank(car) || isEOF || separator != null) { //ending word
-					final var word = source.substring(beginToken, isBlank(car) || separator != null ? index : index + 1);
-					addToken(Lexicon.wordToTokenFromW(word));
+					final var text = source.substring(beginToken, isBlank(car) || separator != null ? index : index + 1);
+					addToken(Lexicon.textdToToken(text));
 
 					if (separator != null) {
 						addToken(separator);
