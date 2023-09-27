@@ -35,15 +35,18 @@ public final class Lexicon {
 
 	public static Token charToToken(char sep) {
 		return switch (sep) {
+			//---brackets
 			case '{' -> LCURLY_BRACKET;
 			case '}' -> RCURLY_BRACKET;
 			case '[' -> LSQUARE_BRACKET;
 			case ']' -> RSQUARE_BRACKET;
 			case '(' -> LROUND_BRACKET;
 			case ')' -> RROUND_BRACKET;
+			//---separators
 			case ':' -> COLON;
 			case ';' -> SEMI_COLON;
 			case ',' -> COMMA;
+			//---no token
 			default -> null;
 		};
 	}

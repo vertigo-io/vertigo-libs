@@ -42,28 +42,55 @@ public class LexerTest {
 		}
 	}
 
+	private static NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.withBoot(BootConfig.builder()
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.build())
+				.build();
+	}
+
+	//=========================================================================
+	//=== WORDS 
+	//=========================================================================
 	@ParameterizedTest
-	@ValueSource(strings = { "lorem ip-s_u.m", " lorem   ip-s_u.m ", " lorem   ip-s_u.m\r\n" })
+	@ValueSource(strings = { "lorem ip-s_u.m test", " lorem   ip-s_u.m t", " lorem   ip-s_u.m\r\nt" })
 	public void test00(String src) {
 		List<Token> tokens = tokenize(src);
-		assertEquals(2, tokenize(src).size());
+		assertEquals(3, tokenize(src).size());
 		assertEquals("lorem", tokens.get(0).value());
 		assertEquals(TokenType.word, tokens.get(0).type());
 		assertEquals("ip-s_u.m", tokens.get(1).value());
 		assertEquals(TokenType.word, tokens.get(1).type());
+		assertEquals(TokenType.word, tokens.get(2).type());
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "999 88", " 999 88 ", " 999 88\r\n" })
-	public void test10(String src) {
-		List<Token> tokens = tokenize(src);
-		assertEquals(2, tokenize(src).size());
-		assertEquals("999", tokens.get(0).value());
-		assertEquals(TokenType.integer, tokens.get(0).type());
-		assertEquals("88", tokens.get(1).value());
-		assertEquals(TokenType.integer, tokens.get(1).type());
+	@ValueSource(strings = { "lorém", " lorém ", "lor%m", "&lorem" })
+	public void testFail01(String src) {
+		var lexer = new Scanner(src); //word can't contain é or %
+		Assertions.assertThrows(VUserException.class, () -> lexer.tokenize());
 	}
 
+	//=========================================================================
+	//=== INTEGERS 
+	//=========================================================================
+	@ParameterizedTest
+	@ValueSource(strings = { "1 999 8", " 1 999 8 ", " 1 999 8\r\n", " 1 999 \r\n8" })
+	public void test10(String src) {
+		List<Token> tokens = tokenize(src);
+		assertEquals(3, tokenize(src).size());
+		assertEquals("1", tokens.get(0).value());
+		assertEquals(TokenType.integer, tokens.get(0).type());
+		assertEquals("999", tokens.get(1).value());
+		assertEquals(TokenType.integer, tokens.get(1).type());
+		assertEquals("8", tokens.get(2).value());
+		assertEquals(TokenType.integer, tokens.get(2).type());
+	}
+
+	//=========================================================================
+	//=== BOOLEANS 
+	//=========================================================================
 	@ParameterizedTest
 	@ValueSource(strings = { "true", " true ", " true\r\n", "false", " false ", " false\r\n" })
 	public void test20(String src) {
@@ -73,8 +100,12 @@ public class LexerTest {
 		assertEquals(TokenType.bool, tokens.get(0).type());
 	}
 
+	//=========================================================================
+	//=== STRINGS 
+	//=========================================================================
 	@ParameterizedTest
 	@ValueSource(strings = { "\"lorem\"", " \"lorem\" ", "\"lorem\"\r\n" })
+
 	public void test30(String src) {
 		List<Token> tokens = tokenize(src);
 		assertEquals(1, tokenize(src).size());
@@ -82,17 +113,18 @@ public class LexerTest {
 		assertEquals(TokenType.string, tokens.get(0).type());
 	}
 
-	//	@Test
-	//	public void test40() {
-	//		var src = "create";
-	//		List<Token> tokens = tokenize(src);
-	//		assertEquals(1, tokenize(src).size());
-	//		assertEquals(src, tokens.get(0).value());
-	//		assertEquals(TokenType.word, tokens.get(0).type());
-	//	}
-
 	@ParameterizedTest
-	@ValueSource(strings = { "#lorem", " #lorem", "    #lorem\r\n" })
+	@ValueSource(strings = { "\"lorem", " lorem\" ", "\"lorem\r\n", "\"\"" })
+	public void testFail31(String src) {
+		var lexer = new Scanner(src); //litteral must be closed
+		Assertions.assertThrows(VUserException.class, () -> lexer.tokenize());
+	}
+
+	//=========================================================================
+	//=== COMMENTS 
+	//=========================================================================
+	@ParameterizedTest
+	@ValueSource(strings = { "#lorem", " #lorem", " #", "    #lorem\r\n" })
 	public void test50(String src) {
 		List<Token> tokens = tokenize(src);
 		assertEquals(1, tokenize(src).size());
@@ -100,6 +132,9 @@ public class LexerTest {
 		assertEquals(TokenType.comment, tokens.get(0).type());
 	}
 
+	//=========================================================================
+	//=== BRACKETS 
+	//=========================================================================
 	@ParameterizedTest
 	@ValueSource(strings = { "{}", " {}", "  {}  ", "  {   }  ", " {}\r\n", "  {}  \r\n" })
 	public void test60(String src) {
@@ -111,50 +146,26 @@ public class LexerTest {
 		assertEquals(TokenType.bracket, tokens.get(1).type());
 	}
 
+	@ParameterizedTest
+	@ValueSource(strings = { "[]", "{}", "()", "  [   ]  ", "  {   }  ", "  (   )  " })
+	public void test61(String src) {
+		List<Token> tokens = tokenize(src);
+		assertEquals(2, tokenize(src).size());
+		assertEquals(TokenType.bracket, tokens.get(0).type());
+		assertEquals(TokenType.bracket, tokens.get(1).type());
+
+	}
+
+	@Test
+	public void test() {
+		var src = ("1");
+		assertEquals(1, tokenize(src).size());
+	}
+
 	@Test
 	public void test200() {
 		var src = FileUtil.read(resourceManager.resolve("io/vertigo/commons/lexer/data/src1.txt"));
 		assertEquals(124, tokenize(src).size());
-	}
-
-	@Test
-	public void test100() {
-		var src = "[]{};,: []{}";
-		assertEquals(11, tokenize(src).size());
-
-	}
-
-	@Test
-	public void testFail0() {
-		var lexer = new Scanner("  lorém ipsum"); //word can't contain é
-		Assertions.assertThrows(VUserException.class, () -> lexer.tokenize());
-	}
-
-	@Test
-	public void testFail1() {
-		var lexer = new Scanner("  \"lorem"); //litteral must be closed
-		Assertions.assertThrows(VUserException.class, () -> lexer.tokenize());
-	}
-
-	@Test
-	public void testFail2() {
-		var lexer = new Scanner("  &test "); //Unexpected Char
-		Assertions.assertThrows(VUserException.class, () -> lexer.tokenize());
-	}
-
-	@Test
-	public void testFail3() {
-		var lexer = new Scanner("  \"test \r\n"
-				+ " second line\" "); //Unexpected Char
-		Assertions.assertThrows(VUserException.class, () -> lexer.tokenize());
-	}
-
-	private static NodeConfig buildNodeConfig() {
-		return NodeConfig.builder()
-				.withBoot(BootConfig.builder()
-						.addPlugin(ClassPathResourceResolverPlugin.class)
-						.build())
-				.build();
 	}
 
 	private List<Token> tokenize(String src) {

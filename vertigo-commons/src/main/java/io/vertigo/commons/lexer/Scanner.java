@@ -192,6 +192,10 @@ public final class Scanner {
 					final var litteral = source.substring(beginToken, index)
 							.replace("\\\"", "\"")
 							.replace("\\\\", "\\");
+					if (litteral.isEmpty()) {
+						throw new VUserException("Error at [" + index + "],  a string must be fulfilled");
+					}
+
 					addToken(new Token(TokenType.string, litteral));
 					beginToken = -1;
 					state = State.waiting;
@@ -270,9 +274,10 @@ public final class Scanner {
 			stack.push(token);
 		} else {
 			final var last = stack.pop();
-			if (!(token == Lexicon.RCURLY_BRACKET && last == Lexicon.LCURLY_BRACKET)
+			//an ending bracket must follow an opening bracket ]=>[ ; }=>{ ; )=>(
+			if (!((token == Lexicon.RCURLY_BRACKET && last == Lexicon.LCURLY_BRACKET)
 					|| (token == Lexicon.RSQUARE_BRACKET && last == Lexicon.LSQUARE_BRACKET)
-					|| (token == Lexicon.RROUND_BRACKET && last == Lexicon.LROUND_BRACKET)) {
+					|| (token == Lexicon.RROUND_BRACKET && last == Lexicon.LROUND_BRACKET))) {
 				throw new VUserException("Error at [" + index + "],  a block is not well formed");
 			}
 		}
