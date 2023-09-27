@@ -169,7 +169,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 			final BerkeleyDatabase berkeleyDatabase = new BerkeleyDatabase(
 					(collectionConfig.isInMemory() ? ramEnvironment : fsEnvironment) //select environment (FS or RAM)
 							.openDatabase(null, collectionConfig.getCollectionName(), databaseConfig), //open database
-					collectionConfig.getTimeToLiveSeconds(), transactionManager, codecManager);
+					collectionConfig.getTimeToLiveSeconds(), transactionManager, codecManager, analyticsManager);
 			databases.put(new KVCollection(collectionConfig.getCollectionName()), berkeleyDatabase);
 		}
 	}

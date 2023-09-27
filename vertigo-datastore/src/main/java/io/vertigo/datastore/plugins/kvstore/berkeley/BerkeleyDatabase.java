@@ -40,6 +40,7 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionResourceId;
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
@@ -56,6 +57,7 @@ final class BerkeleyDatabase {
 	private final TupleBinding<Serializable> dataTimeCheckBinding;
 	private static final EntryBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 	private final VTransactionManager transactionManager;
+	private final AnalyticsManager analyticsManager;
 	private Database database;
 
 	/**
@@ -66,12 +68,15 @@ final class BerkeleyDatabase {
 	 * @param transactionManager Transaction manager
 	 * @param codecManager Codec manager
 	 */
-	BerkeleyDatabase(final Database database, final long timeToLiveSeconds, final VTransactionManager transactionManager, final CodecManager codecManager) {
+	BerkeleyDatabase(final Database database, final long timeToLiveSeconds, final VTransactionManager transactionManager, final CodecManager codecManager, final AnalyticsManager analyticsManager) {
 		Assertion.check()
 				.isNotNull(database)
-				.isNotNull(transactionManager);
+				.isNotNull(transactionManager)
+				.isNotNull(codecManager)
+				.isNotNull(analyticsManager);
 		//-----
 		this.transactionManager = transactionManager;
+		this.analyticsManager = analyticsManager;
 		this.database = database;
 		dataBinding = new BerkeleyTimedDataBinding(timeToLiveSeconds, new BerkeleySerializableBinding(codecManager.getCompressedSerializationCodec()));
 		dataTimeCheckBinding = new BerkeleyTimeCheckDataBinding(timeToLiveSeconds);
@@ -237,20 +242,32 @@ final class BerkeleyDatabase {
 		final DatabaseEntry foundKey = new DatabaseEntry();
 		final DatabaseEntry foundData = new DatabaseEntry();
 		int removed = 0;
+		int readed = 0;
+
+		final int dataCount = (int) database.count();
 		final Transaction transaction = database.getEnvironment().beginTransaction(null, null);
 		try {
 			try (Cursor cursor = database.openCursor(transaction, null)) {
 				while (cursor.getNext(foundKey, foundData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
+					readed++;
 					if (doNeedToRemove(foundKey, foundData)) {
 						cursor.delete();
 						removed++;
-					}
+					} 
 				}
 			}
 		} finally {
 			transaction.commit();
 			LOGGER.info("Berkeley database ({}) purge {} elements", database.getDatabaseName(), removed);
 		}
+		
+		final int purgeRead = readed;
+		final int purgeDelete = removed;
+		analyticsManager.getCurrentTracer().ifPresent(tracer -> {
+			tracer.setMeasure("totalSize", dataCount)
+					.setMeasure("purgeRead", purgeRead)
+					.setMeasure("purgeDelete", purgeDelete);
+		});
 	}
 
 	private boolean doNeedToRemove(final DatabaseEntry theKey, final DatabaseEntry theData) {
