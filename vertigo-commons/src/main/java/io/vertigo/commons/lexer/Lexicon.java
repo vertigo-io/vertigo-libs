@@ -43,4 +43,16 @@ public final class Lexicon {
 		};
 	}
 
+	static boolean isLeftBracket(Token token) {
+		return token == Lexicon.LCURLY_BRACKET
+				|| token == Lexicon.LSQUARE_BRACKET
+				|| token == Lexicon.LROUND_BRACKET;
+	}
+
+	static boolean isPairOfBrackets(Token ltoken, Token rtoken) {
+		return (rtoken == Lexicon.RCURLY_BRACKET && ltoken == Lexicon.LCURLY_BRACKET)
+				|| (rtoken == Lexicon.RSQUARE_BRACKET && ltoken == Lexicon.LSQUARE_BRACKET)
+				|| (rtoken == Lexicon.RROUND_BRACKET && ltoken == Lexicon.LROUND_BRACKET);
+	}
+
 }

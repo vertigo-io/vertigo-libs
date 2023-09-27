@@ -268,16 +268,12 @@ public final class Scanner {
 				.isNotNull(token);
 		//---
 		//---Brackets define blocks 
-		if (token == Lexicon.LCURLY_BRACKET
-				|| token == Lexicon.LSQUARE_BRACKET
-				|| token == Lexicon.LROUND_BRACKET) {
+		if (Lexicon.isLeftBracket(token)) {
 			stack.push(token);
 		} else {
 			final var last = stack.pop();
 			//an ending bracket must follow an opening bracket ]=>[ ; }=>{ ; )=>(
-			if (!((token == Lexicon.RCURLY_BRACKET && last == Lexicon.LCURLY_BRACKET)
-					|| (token == Lexicon.RSQUARE_BRACKET && last == Lexicon.LSQUARE_BRACKET)
-					|| (token == Lexicon.RROUND_BRACKET && last == Lexicon.LROUND_BRACKET))) {
+			if (!Lexicon.isPairOfBrackets(last, token)) {
 				throw new VUserException("Error at [" + index + "],  a block is not well formed");
 			}
 		}
