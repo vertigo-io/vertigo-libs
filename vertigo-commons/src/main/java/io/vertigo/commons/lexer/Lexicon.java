@@ -1,6 +1,20 @@
 package io.vertigo.commons.lexer;
 
+/**
+ * Contains the core elements of any structural grammar.
+ * - Brackets
+ * - Separators
+ * - Boolean
+ * 
+ * @author pchretien
+ *
+ */
 public final class Lexicon {
+	//The markers are reserved words, they can not be used as keywords, separators
+	static final char STRING_MARKER = '"';
+	//	private static final char STRING2_MARKER = '\'';
+	static final char COMMENT_MARKER = '#';
+
 	public static Token LCURLY_BRACKET = Token.bracket('{');
 	public static Token RCURLY_BRACKET = Token.bracket('}');
 	public static Token LSQUARE_BRACKET = Token.bracket('[');
@@ -15,7 +29,7 @@ public final class Lexicon {
 	public static Token TRUE = Token.bool("true");
 	public static Token FALSE = Token.bool("false");
 
-	public static Token textdToToken(String text) {
+	public static Token textToToken(String text) {
 		return switch (text) {
 			//---Token : boolean
 			case "true" -> Lexicon.TRUE;

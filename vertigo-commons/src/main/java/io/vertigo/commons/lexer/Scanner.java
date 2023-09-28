@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Stack;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.VUserException;
 
 /**
@@ -62,10 +61,6 @@ import io.vertigo.core.lang.VUserException;
  * @author pchretien
  */
 public final class Scanner {
-	private static final char STRING_MARKER = '"';
-	//	private static final char STRING2_MARKER = '\'';
-	private static final char BEGIN_COMMENT = '#';
-
 	private static final char ESCAPE_LITTERAL = '\\';
 
 	private enum State {
@@ -95,25 +90,24 @@ public final class Scanner {
 
 	public List<Token> tokenize() {
 		do {
-			nextCar();
+			nextCharacter();
 			index++;
 		} while (index < source.length());
 		//---
 		if (state != State.waiting) {
 			if (state == State.string) {
-				throw new VUserException("a litteral string must be closed");
+				throw buildException("a litteral string must be closed");
 			}
-			throw new VSystemException("state is unexpected {0}", state);
+			throw buildException("this state is unexpected : " + state);
 		}
 		checkBlocks();
 		return tokens;
 	}
 
-	private void nextCar() {
+	private void nextCharacter() {
 		final boolean isEOF = (index == (source.length() - 1));
 		final var car = source.charAt(index);
-		if (isEOF)
-			System.out.println(">>>" + car);
+
 		final Token separator = Lexicon.charToToken(car);
 		//Is this character associated to a separator or a block
 		switch (state) {
@@ -127,24 +121,24 @@ public final class Scanner {
 				} else if (isLetter(car)) {
 					state = State.text;
 					beginToken = index;
-				} else if (car == STRING_MARKER) {
+				} else if (car == Lexicon.STRING_MARKER) {
 					escapingLitteral = false;
 					state = State.string;
 					beginToken = index + 1;
 				} else if (isDigit(car)) {
 					state = State.integer;
 					beginToken = index;
-				} else if (car == BEGIN_COMMENT) {
+				} else if (car == Lexicon.COMMENT_MARKER) {
 					state = State.comment;
 					beginToken = index + 1;
 				} else {
-					throw new VUserException("Error at [" + index + "],  unexceped character");
+					throw buildException("unexceped character : " + car);
 				}
 				break;
 			case text:
 				if (isBlank(car) || isEOF || separator != null) { //ending word
 					final var text = source.substring(beginToken, isBlank(car) || separator != null ? index : index + 1);
-					addToken(Lexicon.textdToToken(text));
+					addToken(Lexicon.textToToken(text));
 
 					if (separator != null) {
 						addToken(separator);
@@ -153,7 +147,7 @@ public final class Scanner {
 					state = State.waiting;
 				} else {
 					if (!isMiddleCharAcceptedinaWord(car)) {
-						throw new VUserException("Error at [" + index + "],  a word (keyword, var..) must contain only letters,digits and _ or -");
+						throw buildException("a word (keyword, var..) must contain only letters,digits and _ or -");
 					}
 
 				}
@@ -169,7 +163,7 @@ public final class Scanner {
 					state = State.waiting;
 				} else {
 					if (!isDigit(car)) {
-						throw new VUserException("Error at [" + index + "],  an integer must contain only digits");
+						throw buildException("an integer must contain only digits");
 					}
 				}
 				break;
@@ -182,25 +176,25 @@ public final class Scanner {
 				break;
 			case string:
 				if (escapingLitteral) {
-					if ((car != ESCAPE_LITTERAL) && (car != STRING_MARKER)) {
-						throw new VUserException("Only \\ or \" characters are accepted after a \\ in a litteral");
+					if ((car != ESCAPE_LITTERAL) && (car != Lexicon.STRING_MARKER)) {
+						throw buildException("Only \\ or \" characters are accepted after a \\ in a litteral");
 					}
 					escapingLitteral = false;
 				} else if (car == ESCAPE_LITTERAL) {
 					escapingLitteral = true;
-				} else if (car == STRING_MARKER) { //ending litteral
+				} else if (car == Lexicon.STRING_MARKER) { //ending litteral
 					final var litteral = source.substring(beginToken, index)
 							.replace("\\\"", "\"")
 							.replace("\\\\", "\\");
 					if (litteral.isEmpty()) {
-						throw new VUserException("Error at [" + index + "],  a string must be fulfilled");
+						throw buildException("a string must be fulfilled");
 					}
 
 					addToken(new Token(TokenType.string, litteral));
 					beginToken = -1;
 					state = State.waiting;
 				} else if (isEOL(car) || isEOF) {
-					throw new VUserException("Error at [" + index + "],  a litteral must be defined on a single line ");
+					throw buildException("a litteral must be defined on a single line ");
 				}
 				break;
 		}
@@ -250,7 +244,7 @@ public final class Scanner {
 
 	private void checkBlocks() {
 		if (!stack.isEmpty()) {
-			throw new VUserException("a block is not well formed");
+			throw buildException("a block is not well formed");
 		}
 	}
 
@@ -274,8 +268,12 @@ public final class Scanner {
 			final var last = stack.pop();
 			//an ending bracket must follow an opening bracket ]=>[ ; }=>{ ; )=>(
 			if (!Lexicon.isPairOfBrackets(last, token)) {
-				throw new VUserException("Error at [" + index + "],  a block is not well formed");
+				throw buildException("a block is not well formed");
 			}
 		}
+	}
+
+	private RuntimeException buildException(String msg) {
+		return new VUserException("Error at [" + index + "],  " + msg);
 	}
 }
