@@ -41,6 +41,7 @@ import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSAlgorithm.Family;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
 import com.nimbusds.oauth2.sdk.AuthorizationGrant;
@@ -57,16 +58,12 @@ import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.oauth2.sdk.id.State;
-import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.AuthenticationResponse;
 import com.nimbusds.openid.connect.sdk.AuthenticationResponseParser;
 import com.nimbusds.openid.connect.sdk.Nonce;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
-import com.nimbusds.openid.connect.sdk.UserInfoRequest;
-import com.nimbusds.openid.connect.sdk.UserInfoResponse;
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
@@ -86,9 +83,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Base authentication handler for OpenId Connect.
+ *
  * @author skerdudou
  */
-public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<AuthorizationSuccessResponse> {
+public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDCTokens> {
 
 	private static final Logger LOG = LogManager.getLogger(OIDCWebAuthenticationPlugin.class);
 	// if metadata is not available at startup, limit check frequency at runtime
@@ -255,7 +253,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 
 	/** {@inheritDoc} */
 	@Override
-	public AuthenticationResult<AuthorizationSuccessResponse> doHandleCallback(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+	public AuthenticationResult<OIDCTokens> doHandleCallback(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
 		final var successResponse = parseResponseRequest(httpRequest);
 		final var state = successResponse.getState();
 		final var stateData = OIDCSessionManagementUtil.retrieveStateDataFromSession(httpRequest.getSession(), state.getValue());
@@ -267,9 +265,14 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 			doValidateToken(oidcTokens.getIDToken(), stateData.nonce());
 		}
 
-		final var userInfos = doGetUserInfos(oidcTokens.getAccessToken());
+		JWTClaimsSet userInfos;
+		try {
+			userInfos = oidcTokens.getIDToken().getJWTClaimsSet();
+		} catch (final java.text.ParseException e) {
+			throw WrappedException.wrap(e);
+		}
 
-		return AuthenticationResult.of(userInfos.toJSONObject(), successResponse);
+		return AuthenticationResult.of(userInfos.getClaims(), oidcTokens);
 	}
 
 	private URI resolveCallbackUri(final HttpServletRequest httpRequest) {
@@ -339,33 +342,6 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<Auth
 		} catch (BadJOSEException | JOSEException e) {
 			throw new VSystemException(e, "Error validating OIDC Id token.");
 		}
-	}
-
-	private UserInfo doGetUserInfos(final AccessToken accessToken) {
-		// The UserInfoEndpoint of the OpenID provider
-		final var userInfoEndpoint = ssoMetadata.getUserInfoEndpointURI();
-
-		final UserInfoResponse userInfoResponse;
-		try {
-			// Make the request
-			final var httpResponse = new UserInfoRequest(userInfoEndpoint, accessToken)
-					.toHTTPRequest()
-					.send();
-
-			// Parse the response
-			userInfoResponse = UserInfoResponse.parse(httpResponse);
-		} catch (IOException | com.nimbusds.oauth2.sdk.ParseException e) {
-			throw new VSystemException(e, "Error while calling userInfo endpoint");
-		}
-
-		if (!userInfoResponse.indicatesSuccess()) {
-			// The request failed, e.g. due to invalid or expired token
-			final var errorObject = userInfoResponse.toErrorResponse().getErrorObject();
-			throw new VSystemException("Error while calling userInfo endpoint '{0} : {1}'", errorObject.getCode(), errorObject.getDescription());
-		}
-
-		// Extract the claims
-		return userInfoResponse.toSuccessResponse().getUserInfo();
 	}
 
 	/** {@inheritDoc} */
