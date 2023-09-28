@@ -23,7 +23,7 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.util.FileUtil;
 
-public class LexerTest {
+public class ScannerTest {
 	@Inject
 	private ResourceManager resourceManager;
 
@@ -66,10 +66,27 @@ public class LexerTest {
 	}
 
 	@ParameterizedTest
+	@ValueSource(strings = { "test99", "t99678", " test88   ", "   t_-.__", "   t_-.__   ", "   t_12-.   " })
+	public void test01(String src) {
+		List<Token> tokens = tokenize(src);
+		assertEquals(1, tokens.size());
+		assertEquals(6, tokens.get(0).value().length());
+		assertEquals(TokenType.word, tokens.get(0).type());
+	}
+
+	@ParameterizedTest
 	@ValueSource(strings = { "lorém", " lorém ", "lor%m", "&lorem" })
 	public void testFail01(String src) {
-		var lexer = new Scanner(src); //word can't contain é or %
-		Assertions.assertThrows(VUserException.class, () -> lexer.tokenize());
+		Assertions.assertThrows(VUserException.class, () -> tokenize(src));
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "test,", " test;", "test:" })
+	public void test03(String src) {
+		List<Token> tokens = tokenize(src);
+		assertEquals(2, tokens.size());
+		assertEquals(TokenType.word, tokens.get(0).type());
+		assertEquals(TokenType.separator, tokens.get(1).type());
 	}
 
 	//=========================================================================
@@ -89,10 +106,29 @@ public class LexerTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "1A" })
+	@ValueSource(strings = { "1A", "  99A", "9." })
 	public void test11(String src) {
+		Assertions.assertThrows(VUserException.class, () -> tokenize(src));
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "1,", " 1;", "1:" })
+	public void test12(String src) {
 		List<Token> tokens = tokenize(src);
-		System.out.println(tokens);
+		assertEquals(2, tokens.size());
+		assertEquals(TokenType.integer, tokens.get(0).type());
+		assertEquals(TokenType.separator, tokens.get(1).type());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "1{8}", " 1(5)", "1[21]" })
+	public void test13(String src) {
+		List<Token> tokens = tokenize(src);
+		assertEquals(4, tokens.size());
+		assertEquals(TokenType.integer, tokens.get(0).type());
+		assertEquals(TokenType.bracket, tokens.get(1).type());
+		assertEquals(TokenType.integer, tokens.get(2).type());
+		assertEquals(TokenType.bracket, tokens.get(3).type());
 	}
 
 	//=========================================================================
@@ -123,8 +159,7 @@ public class LexerTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "\"lorem", " lorem\" ", "\"lorem\r\n", "\"\"" })
 	public void testFail31(String src) {
-		var lexer = new Scanner(src); //litteral must be closed
-		Assertions.assertThrows(VUserException.class, () -> lexer.tokenize());
+		Assertions.assertThrows(VUserException.class, () -> tokenize(src));
 	}
 
 	//=========================================================================
@@ -152,7 +187,7 @@ public class LexerTest {
 	//=== BRACKETS 
 	//=========================================================================
 	@ParameterizedTest
-	@ValueSource(strings = { "{}", " {}", "  {}  ", "  {   }  ", " {}\r\n", "  {}  \r\n" })
+	@ValueSource(strings = { "{}", " {}", "  {}  ", "  {   }  ", " {}\r\n", "  {  \r\n }", })
 	public void test60(String src) {
 		List<Token> tokens = tokenize(src);
 		assertEquals(2, tokens.size());
@@ -170,13 +205,6 @@ public class LexerTest {
 		assertEquals(TokenType.bracket, tokens.get(0).type());
 		assertEquals(TokenType.bracket, tokens.get(1).type());
 
-	}
-
-	@Test
-	public void test() {
-		var src = ("1");
-		List<Token> tokens = tokenize(src);
-		assertEquals(1, tokens.size());
 	}
 
 	@Test
