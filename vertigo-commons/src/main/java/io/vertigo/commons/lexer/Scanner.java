@@ -79,8 +79,7 @@ public final class Scanner {
 	//---Context
 	private State state = State.waiting;
 	private int index = 0;
-	private int beginToken = -1;
-	private boolean opening = false;
+	private int openingToken = -1;
 	private boolean escapingLitteral = false;
 	//---
 
@@ -117,29 +116,23 @@ public final class Scanner {
 		if (state == State.waiting) {
 			if (isBlank(car)) {
 				//No token 
-				state = State.waiting;
 			} else {
 				if (separator != null) {
 					state = State.Separator;
-					beginToken = index;
 				} else if (isLetter(car)) {
 					state = State.text;
-					beginToken = index;
 				} else if (car == Lexicon.STRING_MARKER) {
 					escapingLitteral = false;
 					state = State.string;
-					beginToken = index + 1;
 				} else if (isDigit(car)) {
 					state = State.integer;
-					beginToken = index;
 				} else if (car == Lexicon.COMMENT_MARKER) {
 					state = State.comment;
-					beginToken = index + 1;
 				} else {
 					throw buildException("unexceped character : " + car);
 				}
-				//We have opened a new token, yeah ! 
-				opening = true;
+				//We have "opened" a new token, yeah ! 
+				openingToken = index;
 			}
 		}
 
@@ -150,8 +143,6 @@ public final class Scanner {
 				break;
 			case Separator:
 				addToken(separator);
-				beginToken = -1;
-				state = State.waiting;
 				break;
 			case text:
 				//inside a text-token
@@ -162,10 +153,8 @@ public final class Scanner {
 				}
 				//closing a text-token
 				if (isBlank(car) || isEOF || separator != null) {
-					final var text = source.substring(beginToken, isBlank(car) || separator != null ? index : index + 1);
+					final var text = source.substring(openingToken, isBlank(car) || separator != null ? index : index + 1);
 					addToken(Lexicon.textToToken(text));
-					beginToken = -1;
-					state = State.waiting;
 				}
 
 				//separator ?
@@ -183,14 +172,8 @@ public final class Scanner {
 
 				//closing a word-token
 				if (isBlank(car) || isEOF || separator != null) {
-					final var text = source.substring(beginToken, isBlank(car) || separator != null ? index : index + 1);
+					final var text = source.substring(openingToken, isBlank(car) || separator != null ? index : index + 1);
 					addToken(new Token(TokenType.integer, text));
-					beginToken = -1;
-					state = State.waiting;
-				} else {
-					if (!isDigit(car)) {
-						throw buildException("an integer must contain only digits");
-					}
 				}
 
 				//separator ?
@@ -204,9 +187,7 @@ public final class Scanner {
 
 				//closing a comment-token
 				if (isEOL(car) || isEOF) {
-					addToken(new Token(TokenType.comment, source.substring(beginToken, isEOL(car) ? index : index + 1)));
-					beginToken = -1;
-					state = State.waiting;
+					addToken(new Token(TokenType.comment, source.substring(openingToken + 1, isEOL(car) ? index : index + 1).trim()));
 				}
 				break;
 			case string:
@@ -222,8 +203,10 @@ public final class Scanner {
 				}
 
 				//closing a string-token
-				if (car == Lexicon.STRING_MARKER && !opening) {
-					final var litteral = source.substring(beginToken, index)
+				//the index must be greater than the openingToken
+				if (car == Lexicon.STRING_MARKER
+						&& (openingToken < index)) {
+					final var litteral = source.substring(openingToken + 1, index)
 							.replace("\\\"", "\"")
 							.replace("\\\\", "\\");
 					if (litteral.isEmpty()) {
@@ -231,12 +214,9 @@ public final class Scanner {
 					}
 
 					addToken(new Token(TokenType.string, litteral));
-					beginToken = -1;
-					state = State.waiting;
 				} else if (isEOL(car) || isEOF) {
 					throw buildException("a litteral must be defined on a single line ");
 				}
-				opening = false;
 				break;
 		}
 
@@ -297,6 +277,9 @@ public final class Scanner {
 		if (token.type() == TokenType.bracket) {
 			pushBracket(token);
 		}
+		//reset
+		state = State.waiting;
+		openingToken = -1;
 	}
 
 	private void pushBracket(Token token) {

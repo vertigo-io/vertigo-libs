@@ -166,7 +166,7 @@ public class ScannerTest {
 	//=== COMMENTS 
 	//=========================================================================
 	@ParameterizedTest
-	@ValueSource(strings = { "#lorem", " #lorem", "    #lorem\r\n" })
+	@ValueSource(strings = { "#lorem", "# lorem", "# lorem  ", " #lorem", "    #lorem\r\n" })
 	public void test50(String src) {
 		List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
