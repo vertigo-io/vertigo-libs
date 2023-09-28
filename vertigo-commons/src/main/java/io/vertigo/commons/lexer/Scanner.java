@@ -65,6 +65,7 @@ public final class Scanner {
 
 	private enum State {
 		waiting,
+		Separator,
 		string, //beginning with '"', ending with '"'
 		integer, //beginning with a digit '"', , ending with a blank/EOl/EOF or a separator 
 		text, //beginning with a letter, ending with a blank/EOl/EOF or a separator 
@@ -79,6 +80,7 @@ public final class Scanner {
 	private State state = State.waiting;
 	private int index = 0;
 	private int beginToken = -1;
+	private boolean stringCanBeClosed = false;
 	private boolean escapingLitteral = false;
 	//---
 
@@ -110,36 +112,46 @@ public final class Scanner {
 
 		final Token separator = Lexicon.charToToken(car);
 		//Is this character associated to a separator or a block
+
+		//Opening a new Token
+		if (state == State.waiting) {
+			if (isBlank(car)) {
+				state = State.waiting;
+			} else if (separator != null) {
+				state = State.Separator;
+				beginToken = index;
+			} else if (isLetter(car)) {
+				state = State.text;
+				beginToken = index;
+			} else if (car == Lexicon.STRING_MARKER) {
+				escapingLitteral = false;
+				state = State.string;
+				beginToken = index + 1;
+				stringCanBeClosed = false;
+			} else if (isDigit(car)) {
+				state = State.integer;
+				beginToken = index;
+			} else if (car == Lexicon.COMMENT_MARKER) {
+				state = State.comment;
+				beginToken = index + 1;
+			} else {
+				throw buildException("unexceped character : " + car);
+			}
+		}
+
+		//Closing a Token
 		switch (state) {
 			case waiting:
-				if (separator != null) {
-					// we have found a separator 
-					addToken(separator);
-					state = State.waiting;
-				} else if (isBlank(car)) {
-					state = State.waiting;
-				} else if (isLetter(car)) {
-					state = State.text;
-					beginToken = index;
-				} else if (car == Lexicon.STRING_MARKER) {
-					escapingLitteral = false;
-					state = State.string;
-					beginToken = index + 1;
-				} else if (isDigit(car)) {
-					state = State.integer;
-					beginToken = index;
-				} else if (car == Lexicon.COMMENT_MARKER) {
-					state = State.comment;
-					beginToken = index + 1;
-				} else {
-					throw buildException("unexceped character : " + car);
-				}
+				break;
+			case Separator:
+				addToken(separator);
+				beginToken = -1;
+				state = State.waiting;
 				break;
 			case text:
 				if (isBlank(car) || isEOF || separator != null) { //ending word
 					final var text = source.substring(beginToken, isBlank(car) || separator != null ? index : index + 1);
 					addToken(Lexicon.textToToken(text));
-
 					if (separator != null) {
 						addToken(separator);
 					}
@@ -182,7 +194,7 @@ public final class Scanner {
 					escapingLitteral = false;
 				} else if (car == ESCAPE_LITTERAL) {
 					escapingLitteral = true;
-				} else if (car == Lexicon.STRING_MARKER) { //ending litteral
+				} else if (car == Lexicon.STRING_MARKER && stringCanBeClosed) { //ending litteral
 					final var litteral = source.substring(beginToken, index)
 							.replace("\\\"", "\"")
 							.replace("\\\\", "\\");
@@ -196,6 +208,7 @@ public final class Scanner {
 				} else if (isEOL(car) || isEOF) {
 					throw buildException("a litteral must be defined on a single line ");
 				}
+				stringCanBeClosed = true;
 				break;
 		}
 	}

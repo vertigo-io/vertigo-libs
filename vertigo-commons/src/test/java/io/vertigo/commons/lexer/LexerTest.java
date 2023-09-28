@@ -57,7 +57,7 @@ public class LexerTest {
 	@ValueSource(strings = { "lorem ip-s_u.m test", " lorem   ip-s_u.m t", " lorem   ip-s_u.m\r\nt" })
 	public void test00(String src) {
 		List<Token> tokens = tokenize(src);
-		assertEquals(3, tokenize(src).size());
+		assertEquals(3, tokens.size());
 		assertEquals("lorem", tokens.get(0).value());
 		assertEquals(TokenType.word, tokens.get(0).type());
 		assertEquals("ip-s_u.m", tokens.get(1).value());
@@ -79,13 +79,20 @@ public class LexerTest {
 	@ValueSource(strings = { "1 999 8", " 1 999 8 ", " 1 999 8\r\n", " 1 999 \r\n8" })
 	public void test10(String src) {
 		List<Token> tokens = tokenize(src);
-		assertEquals(3, tokenize(src).size());
+		assertEquals(3, tokens.size());
 		assertEquals("1", tokens.get(0).value());
 		assertEquals(TokenType.integer, tokens.get(0).type());
 		assertEquals("999", tokens.get(1).value());
 		assertEquals(TokenType.integer, tokens.get(1).type());
 		assertEquals("8", tokens.get(2).value());
 		assertEquals(TokenType.integer, tokens.get(2).type());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "1A" })
+	public void test11(String src) {
+		List<Token> tokens = tokenize(src);
+		System.out.println(tokens);
 	}
 
 	//=========================================================================
@@ -95,7 +102,7 @@ public class LexerTest {
 	@ValueSource(strings = { "true", " true ", " true\r\n", "false", " false ", " false\r\n" })
 	public void test20(String src) {
 		List<Token> tokens = tokenize(src);
-		assertEquals(1, tokenize(src).size());
+		assertEquals(1, tokens.size());
 		assertTrue(List.of("true", "false").contains(tokens.get(0).value()));
 		assertEquals(TokenType.bool, tokens.get(0).type());
 	}
@@ -108,7 +115,7 @@ public class LexerTest {
 
 	public void test30(String src) {
 		List<Token> tokens = tokenize(src);
-		assertEquals(1, tokenize(src).size());
+		assertEquals(1, tokens.size());
 		assertEquals("lorem", tokens.get(0).value());
 		assertEquals(TokenType.string, tokens.get(0).type());
 	}
@@ -124,11 +131,20 @@ public class LexerTest {
 	//=== COMMENTS 
 	//=========================================================================
 	@ParameterizedTest
-	@ValueSource(strings = { "#lorem", " #lorem", " #", "    #lorem\r\n" })
+	@ValueSource(strings = { "#lorem", " #lorem", "    #lorem\r\n" })
 	public void test50(String src) {
 		List<Token> tokens = tokenize(src);
-		assertEquals(1, tokenize(src).size());
+		assertEquals(1, tokens.size());
 		assertEquals("lorem", tokens.get(0).value());
+		assertEquals(TokenType.comment, tokens.get(0).type());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "#", " #", "    #", "    #\r\n" })
+	public void test51(String src) {
+		List<Token> tokens = tokenize(src);
+		assertEquals(1, tokens.size());
+		assertEquals("", tokens.get(0).value());
 		assertEquals(TokenType.comment, tokens.get(0).type());
 	}
 
@@ -139,7 +155,7 @@ public class LexerTest {
 	@ValueSource(strings = { "{}", " {}", "  {}  ", "  {   }  ", " {}\r\n", "  {}  \r\n" })
 	public void test60(String src) {
 		List<Token> tokens = tokenize(src);
-		assertEquals(2, tokenize(src).size());
+		assertEquals(2, tokens.size());
 		assertEquals("{", tokens.get(0).value());
 		assertEquals("}", tokens.get(1).value());
 		assertEquals(TokenType.bracket, tokens.get(0).type());
@@ -150,7 +166,7 @@ public class LexerTest {
 	@ValueSource(strings = { "[]", "{}", "()", "  [   ]  ", "  {   }  ", "  (   )  " })
 	public void test61(String src) {
 		List<Token> tokens = tokenize(src);
-		assertEquals(2, tokenize(src).size());
+		assertEquals(2, tokens.size());
 		assertEquals(TokenType.bracket, tokens.get(0).type());
 		assertEquals(TokenType.bracket, tokens.get(1).type());
 
@@ -159,7 +175,8 @@ public class LexerTest {
 	@Test
 	public void test() {
 		var src = ("1");
-		assertEquals(1, tokenize(src).size());
+		List<Token> tokens = tokenize(src);
+		assertEquals(1, tokens.size());
 	}
 
 	@Test
@@ -168,7 +185,7 @@ public class LexerTest {
 		assertEquals(124, tokenize(src).size());
 	}
 
-	private List<Token> tokenize(String src) {
+	private static List<Token> tokenize(String src) {
 		var scanner = new Scanner(src);
 		List<Token> tokens = scanner.tokenize();
 		//---
