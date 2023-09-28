@@ -36,7 +36,7 @@ public final class Formatter {
 					indent = true;
 				}
 				return before;
-			case separator:
+			case punctuation:
 				return before;
 			//			case command:
 			//				return before;
@@ -63,7 +63,7 @@ public final class Formatter {
 				}
 				indent = level > 0;
 				return NEW_LINE;
-			case separator:
+			case punctuation:
 				return SPACE;
 			//			case command:
 			//				return SPACE;

@@ -7,8 +7,8 @@ public record Token(TokenType type, String value) {
 		return "{ type:" + type + ", " + "value:" + value + " }";
 	}
 
-	static Token separator(char sep) {
-		return new Token(TokenType.separator, Character.toString(sep));
+	static Token punctuation(char sep) {
+		return new Token(TokenType.punctuation, Character.toString(sep));
 	}
 
 	static Token bracket(char sep) {

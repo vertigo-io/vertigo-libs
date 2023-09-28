@@ -86,7 +86,7 @@ public class ScannerTest {
 		List<Token> tokens = tokenize(src);
 		assertEquals(2, tokens.size());
 		assertEquals(TokenType.word, tokens.get(0).type());
-		assertEquals(TokenType.separator, tokens.get(1).type());
+		assertEquals(TokenType.punctuation, tokens.get(1).type());
 	}
 
 	//=========================================================================
@@ -117,7 +117,7 @@ public class ScannerTest {
 		List<Token> tokens = tokenize(src);
 		assertEquals(2, tokens.size());
 		assertEquals(TokenType.integer, tokens.get(0).type());
-		assertEquals(TokenType.separator, tokens.get(1).type());
+		assertEquals(TokenType.punctuation, tokens.get(1).type());
 	}
 
 	@ParameterizedTest

@@ -22,9 +22,9 @@ public final class Lexicon {
 	public static Token LROUND_BRACKET = Token.bracket('(');
 	public static Token RROUND_BRACKET = Token.bracket(')');
 	//---
-	public static Token COLON = Token.separator(':');
-	public static Token SEMI_COLON = Token.separator(';');
-	public static Token COMMA = Token.separator(',');
+	public static Token COLON = Token.punctuation(':');
+	public static Token SEMI_COLON = Token.punctuation(';');
+	public static Token COMMA = Token.punctuation(',');
 	//--
 	public static Token TRUE = Token.bool("true");
 	public static Token FALSE = Token.bool("false");
@@ -48,7 +48,7 @@ public final class Lexicon {
 			case ']' -> RSQUARE_BRACKET;
 			case '(' -> LROUND_BRACKET;
 			case ')' -> RROUND_BRACKET;
-			//---separators
+			//---punctuations
 			case ':' -> COLON;
 			case ';' -> SEMI_COLON;
 			case ',' -> COMMA;

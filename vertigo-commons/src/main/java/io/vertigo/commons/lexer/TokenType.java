@@ -6,8 +6,9 @@ public enum TokenType {
 	//	identifier,
 	//	keyword
 	//---
+	//---separator---
 	bracket,
-	separator,
+	punctuation,
 	// ---litteral---
 	string,
 	integer,
