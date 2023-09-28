@@ -173,7 +173,7 @@ public final class Scanner {
 				//closing a word-token
 				if (isBlank(car) || isEOF || separator != null) {
 					final var text = source.substring(openingToken, isBlank(car) || separator != null ? index : index + 1);
-					addToken(new Token(TokenType.integer, text));
+					addToken(Token.integer(text));
 				}
 
 				//separator ?
