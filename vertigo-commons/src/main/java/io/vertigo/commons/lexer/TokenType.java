@@ -9,7 +9,7 @@ public enum TokenType {
 	//---separator---
 	bracket,
 	punctuation,
-	// ---litteral---
+	// ---literal---
 	string,
 	integer,
 	bool,

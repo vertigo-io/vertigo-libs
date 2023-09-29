@@ -2,9 +2,9 @@ package io.vertigo.commons.lexer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VUserException;
 
 /**
@@ -74,7 +74,7 @@ public final class Scanner {
 	//	private static final String EOL = System.lineSeparator();
 
 	private final String source;
-	private final List<Token> tokens = new ArrayList<>();
+	private final List<Tuple<Token, Integer>> tokenPositions = new ArrayList<>();
 
 	//---Context
 	private State state = State.waiting;
@@ -89,7 +89,7 @@ public final class Scanner {
 		this.source = source;
 	}
 
-	public List<Token> tokenize() {
+	public Scan tokenize() {
 		do {
 			nextCharacter();
 			index++;
@@ -97,12 +97,11 @@ public final class Scanner {
 		//---
 		if (state != State.waiting) {
 			if (state == State.string) {
-				throw buildException("a litteral string must be closed");
+				throw buildException("a literal string must be closed");
 			}
 			throw buildException("this state is unexpected : " + state);
 		}
-		checkBlocks();
-		return tokens;
+		return new Scan(source, tokenPositions);
 	}
 
 	private void nextCharacter() {
@@ -195,7 +194,7 @@ public final class Scanner {
 				//inside a string-token
 				if (escapingLitteral) {
 					if ((car != ESCAPE_LITTERAL) && (car != Lexicon.STRING_MARKER)) {
-						throw buildException("Only \\ or \" characters are accepted after a \\ in a litteral");
+						throw buildException("Only \\ or \" characters are accepted after a \\ in a literal");
 					}
 					escapingLitteral = false;
 				} else if (car == ESCAPE_LITTERAL) {
@@ -206,16 +205,16 @@ public final class Scanner {
 				//the index must be greater than the openingToken
 				if (car == Lexicon.STRING_MARKER
 						&& (openingToken < index)) {
-					final var litteral = source.substring(openingToken + 1, index)
+					final var literal = source.substring(openingToken + 1, index)
 							.replace("\\\"", "\"")
 							.replace("\\\\", "\\");
-					if (litteral.isEmpty()) {
+					if (literal.isEmpty()) {
 						throw buildException("a string must be fulfilled");
 					}
 
-					addToken(new Token(TokenType.string, litteral));
+					addToken(new Token(TokenType.string, literal));
 				} else if (isEOL(car) || isEOF) {
-					throw buildException("a litteral must be defined on a single line ");
+					throw buildException("a literal must be defined on a single line ");
 				}
 				break;
 		}
@@ -262,40 +261,13 @@ public final class Scanner {
 				|| car == '.';
 	}
 
-	private Stack<Token> stack = new Stack<>();
-
-	private void checkBlocks() {
-		if (!stack.isEmpty()) {
-			throw buildException("a block is not well formed");
-		}
-	}
-
 	private void addToken(Token token) {
 		Assertion.check().isNotNull(token);
 		//---
-		tokens.add(token);
-		if (token.type() == TokenType.bracket) {
-			pushBracket(token);
-		}
+		tokenPositions.add(Tuple.of(token, index));
 		//reset
 		state = State.waiting;
 		openingToken = -1;
-	}
-
-	private void pushBracket(Token token) {
-		Assertion.check()
-				.isNotNull(token);
-		//---
-		//---Brackets define blocks 
-		if (Lexicon.isLeftBracket(token)) {
-			stack.push(token);
-		} else {
-			final var last = stack.pop();
-			//an ending bracket must follow an opening bracket ]=>[ ; }=>{ ; )=>(
-			if (!Lexicon.isPairOfBrackets(last, token)) {
-				throw buildException("a block is not well formed");
-			}
-		}
 	}
 
 	private RuntimeException buildException(String msg) {

@@ -56,7 +56,7 @@ public class ScannerTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "lorem ip-s_u.m test", " lorem   ip-s_u.m t", " lorem   ip-s_u.m\r\nt" })
 	public void test00(String src) {
-		List<Token> tokens = tokenize(src);
+		List<Token> tokens = tokenize(src, true);
 		assertEquals(3, tokens.size());
 		assertEquals("lorem", tokens.get(0).value());
 		assertEquals(TokenType.word, tokens.get(0).type());
@@ -68,7 +68,7 @@ public class ScannerTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "test99", "t99678", " test88   ", "   t_-.__", "   t_-.__   ", "   t_12-.   " })
 	public void test01(String src) {
-		List<Token> tokens = tokenize(src);
+		List<Token> tokens = tokenize(src, true);
 		assertEquals(1, tokens.size());
 		assertEquals(6, tokens.get(0).value().length());
 		assertEquals(TokenType.word, tokens.get(0).type());
@@ -77,13 +77,13 @@ public class ScannerTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "lorém", " lorém ", "lor%m", "&lorem" })
 	public void testFail01(String src) {
-		Assertions.assertThrows(VUserException.class, () -> tokenize(src));
+		Assertions.assertThrows(VUserException.class, () -> tokenize(src, true));
 	}
 
 	@ParameterizedTest
 	@ValueSource(strings = { "test,", " test;", "test:" })
 	public void test03(String src) {
-		List<Token> tokens = tokenize(src);
+		List<Token> tokens = tokenize(src, true);
 		assertEquals(2, tokens.size());
 		assertEquals(TokenType.word, tokens.get(0).type());
 		assertEquals(TokenType.punctuation, tokens.get(1).type());
@@ -95,7 +95,7 @@ public class ScannerTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "1 999 8", " 1 999 8 ", " 1 999 8\r\n", " 1 999 \r\n8" })
 	public void test10(String src) {
-		List<Token> tokens = tokenize(src);
+		List<Token> tokens = tokenize(src, false);
 		assertEquals(3, tokens.size());
 		assertEquals("1", tokens.get(0).value());
 		assertEquals(TokenType.integer, tokens.get(0).type());
@@ -108,13 +108,13 @@ public class ScannerTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "1A", "  99A", "9." })
 	public void test11(String src) {
-		Assertions.assertThrows(VUserException.class, () -> tokenize(src));
+		Assertions.assertThrows(VUserException.class, () -> tokenize(src, false));
 	}
 
 	@ParameterizedTest
 	@ValueSource(strings = { "1,", " 1;", "1:" })
 	public void test12(String src) {
-		List<Token> tokens = tokenize(src);
+		List<Token> tokens = tokenize(src, false);
 		assertEquals(2, tokens.size());
 		assertEquals(TokenType.integer, tokens.get(0).type());
 		assertEquals(TokenType.punctuation, tokens.get(1).type());
@@ -123,12 +123,27 @@ public class ScannerTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "1{8}", " 1(5)", "1[21]" })
 	public void test13(String src) {
-		List<Token> tokens = tokenize(src);
+		List<Token> tokens = tokenize(src, false);
 		assertEquals(4, tokens.size());
 		assertEquals(TokenType.integer, tokens.get(0).type());
 		assertEquals(TokenType.bracket, tokens.get(1).type());
 		assertEquals(TokenType.integer, tokens.get(2).type());
 		assertEquals(TokenType.bracket, tokens.get(3).type());
+	}
+
+	//pair not well formed
+	@ParameterizedTest
+	@ValueSource(strings = { "1", "test 1" })
+	public void test14(String src) {
+		Assertions.assertThrows(VUserException.class, () -> tokenize(src, true));
+	}
+
+	//pair well formed
+	@ParameterizedTest
+	@ValueSource(strings = { "test:1", "test :1", " test : 1 " })
+	public void test15(String src) {
+		List<Token> tokens = tokenize(src, true);
+		assertEquals(3, tokens.size());
 	}
 
 	//=========================================================================
@@ -137,10 +152,25 @@ public class ScannerTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "true", " true ", " true\r\n", "false", " false ", " false\r\n" })
 	public void test20(String src) {
-		List<Token> tokens = tokenize(src);
+		List<Token> tokens = tokenize(src, false);
 		assertEquals(1, tokens.size());
 		assertTrue(List.of("true", "false").contains(tokens.get(0).value()));
 		assertEquals(TokenType.bool, tokens.get(0).type());
+	}
+
+	//pair not well formed
+	@ParameterizedTest
+	@ValueSource(strings = { "true", "test true" })
+	public void test21(String src) {
+		Assertions.assertThrows(VUserException.class, () -> tokenize(src, true));
+	}
+
+	//pair well formed
+	@ParameterizedTest
+	@ValueSource(strings = { "test:true", "test :true", " test : true ", "test:false", "test :false", " test : false " })
+	public void test22(String src) {
+		List<Token> tokens = tokenize(src, true);
+		assertEquals(3, tokens.size());
 	}
 
 	//=========================================================================
@@ -150,7 +180,7 @@ public class ScannerTest {
 	@ValueSource(strings = { "\"lorem\"", " \"lorem\" ", "\"lorem\"\r\n" })
 
 	public void test30(String src) {
-		List<Token> tokens = tokenize(src);
+		List<Token> tokens = tokenize(src, false);
 		assertEquals(1, tokens.size());
 		assertEquals("lorem", tokens.get(0).value());
 		assertEquals(TokenType.string, tokens.get(0).type());
@@ -159,7 +189,22 @@ public class ScannerTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "\"lorem", " lorem\" ", "\"lorem\r\n", "\"\"" })
 	public void testFail31(String src) {
-		Assertions.assertThrows(VUserException.class, () -> tokenize(src));
+		Assertions.assertThrows(VUserException.class, () -> tokenize(src, false));
+	}
+
+	//pair not well formed
+	@ParameterizedTest
+	@ValueSource(strings = { "\"lorem\"", "test \"lorem\" " })
+	public void test32(String src) {
+		Assertions.assertThrows(VUserException.class, () -> tokenize(src, true));
+	}
+
+	//pair well formed
+	@ParameterizedTest
+	@ValueSource(strings = { "test:\"lorem\"", "test: \"lorem\" ", "test : \"lorem\" " })
+	public void test33(String src) {
+		List<Token> tokens = tokenize(src, true);
+		assertEquals(3, tokens.size());
 	}
 
 	//=========================================================================
@@ -168,7 +213,7 @@ public class ScannerTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "#lorem", "# lorem", "# lorem  ", " #lorem", "    #lorem\r\n" })
 	public void test50(String src) {
-		List<Token> tokens = tokenize(src);
+		List<Token> tokens = tokenize(src, true);
 		assertEquals(1, tokens.size());
 		assertEquals("lorem", tokens.get(0).value());
 		assertEquals(TokenType.comment, tokens.get(0).type());
@@ -177,7 +222,7 @@ public class ScannerTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "#", " #", "    #", "    #\r\n" })
 	public void test51(String src) {
-		List<Token> tokens = tokenize(src);
+		List<Token> tokens = tokenize(src, true);
 		assertEquals(1, tokens.size());
 		assertEquals("", tokens.get(0).value());
 		assertEquals(TokenType.comment, tokens.get(0).type());
@@ -189,7 +234,7 @@ public class ScannerTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "{}", " {}", "  {}  ", "  {   }  ", " {}\r\n", "  {  \r\n }", })
 	public void test60(String src) {
-		List<Token> tokens = tokenize(src);
+		List<Token> tokens = tokenize(src, true);
 		assertEquals(2, tokens.size());
 		assertEquals("{", tokens.get(0).value());
 		assertEquals("}", tokens.get(1).value());
@@ -200,7 +245,7 @@ public class ScannerTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "[]", "{}", "()", "  [   ]  ", "  {   }  ", "  (   )  " })
 	public void test61(String src) {
-		List<Token> tokens = tokenize(src);
+		List<Token> tokens = tokenize(src, true);
 		assertEquals(2, tokens.size());
 		assertEquals(TokenType.bracket, tokens.get(0).type());
 		assertEquals(TokenType.bracket, tokens.get(1).type());
@@ -210,15 +255,16 @@ public class ScannerTest {
 	@Test
 	public void test200() {
 		var src = FileUtil.read(resourceManager.resolve("io/vertigo/commons/lexer/data/src1.txt"));
-		assertEquals(124, tokenize(src).size());
+		assertEquals(124, tokenize(src, true).size());
 	}
 
-	private static List<Token> tokenize(String src) {
+	private static List<Token> tokenize(String src, boolean checkPair) {
 		var scanner = new Scanner(src);
-		List<Token> tokens = scanner.tokenize();
+		Scan scan = scanner.tokenize();
+		scan.check(checkPair);
 		//---
 		var formatter = new Formatter();
-		formatter.toText(tokens);
-		return tokens;
+		formatter.toText(scan.tokens());
+		return scan.tokens();
 	}
 }

@@ -7,10 +7,31 @@ import io.vertigo.core.lang.Assertion;
 public record Token(TokenType type, String value) {
 	private static final String INTEGER_REGEX = "[0-9]+";
 
+	boolean isWord() {
+		return type == TokenType.word;
+	}
+
+	boolean isBracket() {
+		return type == TokenType.bracket;
+	}
+
+	boolean isLiteral() {
+		return switch (type()) {
+			case string -> true;
+			case integer -> true;
+			case bool -> true;
+			default -> false;
+		};
+	}
+
 	@Override
 	public String toString() {
 		return "{ type:" + type + ", " + "value:" + value + " }";
 	}
+
+	//---
+	//--- Builders
+	//---
 
 	static Token punctuation(char punctuation) {
 		return new Token(TokenType.punctuation, Character.toString(punctuation));
