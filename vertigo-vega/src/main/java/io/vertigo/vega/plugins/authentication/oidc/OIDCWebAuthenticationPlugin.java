@@ -58,6 +58,8 @@ import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.oauth2.sdk.id.State;
+import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
+import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.AuthenticationResponse;
 import com.nimbusds.openid.connect.sdk.AuthenticationResponseParser;
@@ -259,7 +261,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 		final var stateData = OIDCSessionManagementUtil.retrieveStateDataFromSession(httpRequest.getSession(), state.getValue());
 		loadMetadataIfNeeded(false);
 
-		final var oidcTokens = doGetOIDCTokens(successResponse.getAuthorizationCode(), resolveCallbackUri(httpRequest));
+		final var oidcTokens = doGetOIDCTokens(successResponse.getAuthorizationCode(), stateData.pkceCodeVerifier(), resolveCallbackUri(httpRequest));
 
 		if (!Boolean.TRUE.equals(oidcParameters.getSkipIdTokenValidation())) {
 			doValidateToken(oidcTokens.getIDToken(), stateData.nonce());
@@ -301,11 +303,11 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 		return authResponse.toSuccessResponse();
 	}
 
-	private OIDCTokens doGetOIDCTokens(final AuthorizationCode code, final URI callbackURI) {
+	private OIDCTokens doGetOIDCTokens(final AuthorizationCode code, final String pkceCodeVerifier, final URI callbackURI) {
 		// The token endpoint
 		final var tokenEndpoint = ssoMetadata.getTokenEndpointURI();
 
-		final AuthorizationGrant codeGrant = new AuthorizationCodeGrant(code, callbackURI);
+		final AuthorizationGrant codeGrant = new AuthorizationCodeGrant(code, callbackURI, pkceCodeVerifier == null ? null : new CodeVerifier(pkceCodeVerifier));
 
 		// Make the token request
 		TokenRequest request;
@@ -353,7 +355,9 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 		// save all this in http session paired with the original requested URL to forward user after authentication
 		final var state = new State();
 		final var nonce = new Nonce();
-		OIDCSessionManagementUtil.storeStateDataInSession(httpRequest.getSession(), state.getValue(), nonce.getValue(), WebAuthenticationUtil.resolveUrlRedirect(httpRequest));
+		final var codeVerifier = Boolean.TRUE.equals(oidcParameters.getUsePKCE()) ? new CodeVerifier() : null;
+		OIDCSessionManagementUtil.storeStateDataInSession(httpRequest.getSession(), state.getValue(), nonce.getValue(), codeVerifier == null ? null : codeVerifier.getValue(),
+				WebAuthenticationUtil.resolveUrlRedirect(httpRequest));
 
 		// Compose the OpenID authentication request (for the code flow)
 		final var authRequest = new AuthenticationRequest.Builder(
@@ -364,6 +368,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 						.endpointURI(ssoMetadata.getAuthorizationEndpointURI())
 						.state(state)
 						.nonce(nonce)
+						.codeChallenge(codeVerifier, CodeChallengeMethod.S256)
 						.build();
 
 		try {

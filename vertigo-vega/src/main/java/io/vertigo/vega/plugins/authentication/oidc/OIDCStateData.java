@@ -22,6 +22,7 @@ import java.util.Date;
 
 record OIDCStateData(
 		String nonce,
+		String pkceCodeVerifier,
 		Date stateDate,
 		String requestedUri) implements Serializable {
 }
