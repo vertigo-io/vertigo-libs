@@ -8,9 +8,11 @@ import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VUserException;
 
 /**
+ * Quotes, brackets must be balanced
  * 
  * Comments :
- * single line: begins with #, ends with EOL or EOF
+ * 		single line: begins with #, ends with EOL or EOF
+ * 		This kind of comment is easily 
 
  * Separators : all in only ONE character
  * 	- ex : ; ,  are 3 different separators
@@ -21,41 +23,40 @@ import io.vertigo.core.lang.VUserException;
  * 	- ex : ; ,  are 3 different separators
  * 
  * Words : 
- * - are commands or keywords or identifiers
- * - begins with [a-z] or [A-Z] 
- * - contains [a-z] or [A-Z] or [0-9] or '-' or '_' or '.'
- * - must be declared in a single line ( EOL or EOF is a separator)
- * 	- ex : toto # is a word
+ * 		- such as commands, keywords or identifiers
+ * 		- begins with [a-z] or [A-Z] 
+ * 		- contains [a-z] or [A-Z] or [0-9] or '-' or '_' or '.'
+ * 		- must be declared in a single line ( EOL or EOF is a separator)
+ * 		- ex : toto # is a word
  *  
  *  ____________________________________________________________________________________
- * Litteral :
- * String :
- * - begins AND ends with " for String with escape
- * - must be declared in a single line ( EOL or EOF is a separator)
- * 	- ex : "toto" => toto
- * 	- ex : "to\\to" => to\to
- * 	- ex : "to\"to" => to"to
+ * Literal :
+ * 		String :
+ * 			- begins AND ends with " for String with escape
+ * 			- must be declared in a single line ( EOL or EOF is a separator)
+ * 			- ex : "toto" => toto
+ * 			- ex : "to\\to" => to\to
+ * 			- ex : "to\"to" => to"to
  *
- * - begins AND ends with """ for multiline String with escape
+ * 			- begins AND ends with """ for multiline String with escape
+ * 			- must be declared in a single line ( EOL or EOF is a separator)
+ * 			- ex : 'toto' => toto
+ * 			- ex : 'to\to' => to\to
+ * 			- ex : 'to"to' => to"to
  * 
- * - begins AND ends with ' for String with NO escape ( ' can't be used!)
- * - must be declared in a single line ( EOL or EOF is a separator)
- * 	- ex : 'toto' => toto
- * 	- ex : 'to\to' => to\to
- * 	- ex : 'to"to' => to"to
- * 
- * - begins AND ends with ''' for multi line String with NO escape ( ' can't be used!)
+ * 			- begins AND ends with ' for String with NO escape ( ' can't be used!)
+ * 			- begins AND ends with ''' for multi line String with NO escape ( ' can't be used!)
  *   
- * Integer :
- * - begins AND ends with a digit [0-9] 
- * - must be declared in a single line ( EOL or EOF is a separator)
- * 	- ex : 56
- * 	- ex : 056
- * 	- ex : -56
+ * 		Integer :
+ * 			- begins AND ends with a digit [0-9] or '-' and a digit 
+ * 			- must be declared in a single line ( EOL or EOF is a separator)
+ * 			- ex : 56
+ * 			- ex : 056
+ * 			- ex : -56
  * 
- * Boolean :
- * - true or false (case sensitive)
- * 	- ex : true
+ * 		Boolean :
+ * 			- true or false (case sensitive)
+ * 			- ex : true
  *  ____________________________________________________________________________________
  * 
  * @author pchretien
