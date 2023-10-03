@@ -90,11 +90,11 @@ final class OIDCSessionManagementUtil {
 		}
 	}
 
-	static void storeStateDataInSession(final HttpSession session, final String state, final String nonce, final String requestedUri) {
+	static void storeStateDataInSession(final HttpSession session, final String state, final String nonce, final String pkceCodeVerifier, final String requestedUri) {
 		// state parameter to validate response from Authorization server and nonce parameter to validate idToken
 		final var states = Optional.ofNullable((Map<String, OIDCStateData>) session.getAttribute(STATES))
 				.orElseGet(HashMap::new);
-		states.put(state, new OIDCStateData(nonce, new Date(), requestedUri));
+		states.put(state, new OIDCStateData(nonce, pkceCodeVerifier, new Date(), requestedUri));
 		session.setAttribute(STATES, states);
 	}
 
