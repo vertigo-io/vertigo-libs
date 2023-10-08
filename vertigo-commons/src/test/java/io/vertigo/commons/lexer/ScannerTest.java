@@ -261,7 +261,7 @@ public class ScannerTest {
 	private static List<Token> tokenize(String src, boolean checkPair) {
 		var scanner = new Scanner(src);
 		Scan scan = scanner.tokenize();
-		scan.check(checkPair);
+		//		scan.check(checkPair);
 		//		//---
 		//		var formatter = new Formatter();
 		//		formatter.toText(scan.tokens());

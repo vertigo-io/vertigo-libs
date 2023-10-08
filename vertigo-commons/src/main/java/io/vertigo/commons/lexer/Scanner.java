@@ -2,6 +2,7 @@ package io.vertigo.commons.lexer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
@@ -14,16 +15,25 @@ import io.vertigo.core.lang.VUserException;
  * 		single line: begins with #, ends with EOL or EOF
  * 		This kind of comment is easily 
 
- * Separators : all in only ONE character
- * 	- ex : ; ,  are 3 different separators
+ *  ____________________________________________________________________________________
+ * Separators : 
+ * 		- all separators are defined in only ONE character
  * 
- * Blocks : block separator  all in only ONE character
- * - must be well formed
+ * 		Punctuation :
+ * 			- ':' ';' ',' '$' '@'
  * 
- * 	- ex : ; ,  are 3 different separators
+ * 		Brackets :
+ * 			- brackets must be balanced
+ * 			- 4 types of brackets :
+ * 				- curvy brackets 	{} 
+ * 				- round brackets 	()
+ * 				- square brackets 	[]
+ * 				- angle brackets 	<>
  * 
+ *  ____________________________________________________________________________________
  * Words : 
  * 		- such as commands, keywords or identifiers
+ * 		- words are case sensitive
  * 		- begins with [a-z] or [A-Z] 
  * 		- contains [a-z] or [A-Z] or [0-9] or '-' or '_' or '.'
  * 		- must be declared in a single line ( EOL or EOF is a separator)
@@ -33,6 +43,7 @@ import io.vertigo.core.lang.VUserException;
  * Literal :
  * 		String :
  * 			- begins AND ends with " for String with escape
+ * 			- Quotes must be balanced
  * 			- must be declared in a single line ( EOL or EOF is a separator)
  * 			- ex : "toto" => toto
  * 			- ex : "to\\to" => to\to
@@ -102,6 +113,11 @@ public final class Scanner {
 			}
 			throw buildException("this state is unexpected : " + state);
 		}
+		//---
+		if (!bracketStack.isEmpty()) {
+			throw buildException("some brackets must be closed");
+		}
+		//---
 		return new Scan(source, tokenPositions);
 	}
 
@@ -270,6 +286,9 @@ public final class Scanner {
 		Assertion.check().isNotNull(token);
 		//---
 		tokenPositions.add(Tuple.of(token, index));
+		if (token.isBracket()) {
+			pushBracket(token);
+		}
 		//reset
 		state = State.waiting;
 		openingToken = -1;
@@ -278,4 +297,22 @@ public final class Scanner {
 	private RuntimeException buildException(String msg) {
 		return new VUserException("Error at [" + index + "],  " + msg);
 	}
+
+	private Stack<Tuple<Token, Integer>> bracketStack = new Stack<>(); // 
+
+	private void pushBracket(Token bracket) {
+		Assertion.check().isNotNull(bracket);
+		//---
+		//---Brackets define blocks 
+		if (Lexicon.isLeftBracket(bracket)) {
+			bracketStack.push(Tuple.of(bracket, index));
+		} else {
+			final var last = bracketStack.pop();
+			//an ending bracket must follow an opening bracket ]=>[ ; }=>{ ; )=>(
+			if (!Lexicon.isPairOfBrackets(last.val1(), bracket)) {
+				throw buildException("a block is not well formed");
+			}
+		}
+	}
+
 }
