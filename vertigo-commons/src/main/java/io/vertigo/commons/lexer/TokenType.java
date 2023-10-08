@@ -1,10 +1,13 @@
 package io.vertigo.commons.lexer;
 
 public enum TokenType {
+	// ---comment---
+	comment,
+
 	word,
 	//	command,
-	//	identifier,
 	//	keyword
+	//	identifier,
 
 	//---separators---
 	bracket,
@@ -15,6 +18,4 @@ public enum TokenType {
 	integer,
 	bool,
 
-	// ---comment---
-	comment
 }

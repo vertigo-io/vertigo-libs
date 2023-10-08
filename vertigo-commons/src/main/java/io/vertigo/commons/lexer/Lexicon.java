@@ -15,24 +15,24 @@ public final class Lexicon {
 	//	private static final char STRING2_MARKER = '\'';
 	static final char COMMENT_MARKER = '#';
 
-	public static Token LCURLY_BRACKET = Token.bracket('{');
-	public static Token RCURLY_BRACKET = Token.bracket('}');
-	public static Token LSQUARE_BRACKET = Token.bracket('[');
-	public static Token RSQUARE_BRACKET = Token.bracket(']');
-	public static Token LROUND_BRACKET = Token.bracket('(');
-	public static Token RROUND_BRACKET = Token.bracket(')');
-	public static Token LANGLE_BRACKET = Token.bracket('<');
-	public static Token RANGLE_BRACKET = Token.bracket('>');
+	public static Token LCURLY_BRACKET = bracket('{');
+	public static Token RCURLY_BRACKET = bracket('}');
+	public static Token LSQUARE_BRACKET = bracket('[');
+	public static Token RSQUARE_BRACKET = bracket(']');
+	public static Token LROUND_BRACKET = bracket('(');
+	public static Token RROUND_BRACKET = bracket(')');
+	public static Token LANGLE_BRACKET = bracket('<');
+	public static Token RANGLE_BRACKET = bracket('>');
 	//---
-	public static Token COLON = Token.punctuation(':');
-	public static Token SEMI_COLON = Token.punctuation(';');
-	public static Token COMMA = Token.punctuation(',');
-	public static Token AT = Token.punctuation('@');
-	public static Token DOLLAR = Token.punctuation('$');
+	public static Token COLON = punctuation(':');
+	public static Token SEMI_COLON = punctuation(';');
+	public static Token COMMA = punctuation(',');
+	public static Token AT = punctuation('@');
+	public static Token DOLLAR = punctuation('$');
 
 	//--
-	public static Token TRUE = Token.bool("true");
-	public static Token FALSE = Token.bool("false");
+	public static Token TRUE = new Token(TokenType.bool, "true");
+	public static Token FALSE = new Token(TokenType.bool, "false");
 
 	static Token textToToken(String text) {
 		return switch (text) {
@@ -80,4 +80,11 @@ public final class Lexicon {
 				|| (rtoken == Lexicon.RANGLE_BRACKET && ltoken == Lexicon.LANGLE_BRACKET);
 	}
 
+	private static Token punctuation(char punctuation) {
+		return new Token(TokenType.punctuation, Character.toString(punctuation));
+	}
+
+	private static Token bracket(char bracket) {
+		return new Token(TokenType.bracket, Character.toString(bracket));
+	}
 }

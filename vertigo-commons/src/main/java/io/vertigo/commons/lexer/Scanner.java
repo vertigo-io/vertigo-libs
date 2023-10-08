@@ -148,7 +148,7 @@ public final class Scanner {
 
 				//closing a comment-token
 				if (isEOL(car) || isEOF) {
-					addToken(Token.comment(source.substring(openingToken + 1, isEOL(car) ? index : index + 1).trim()));
+					addToken(new Token(TokenType.comment, source.substring(openingToken + 1, isEOL(car) ? index : index + 1).trim()));
 				}
 				break;
 
@@ -186,7 +186,7 @@ public final class Scanner {
 				//closing a word-token
 				if (isBlank(car) || isEOF || separator != null) {
 					final var text = source.substring(openingToken, isBlank(car) || separator != null ? index : index + 1);
-					addToken(Token.integer(text));
+					addToken(new Token(TokenType.integer, text));
 				}
 
 				//separator ?
@@ -217,7 +217,7 @@ public final class Scanner {
 						throw buildException("a string must be fulfilled");
 					}
 
-					addToken(Token.string(literal));
+					addToken(new Token(TokenType.string, literal));
 				} else if (isEOL(car) || isEOF) {
 					throw buildException("a literal must be defined on a single line ");
 				}

@@ -7,6 +7,29 @@ import io.vertigo.core.lang.Assertion;
 public record Token(TokenType type, String value) {
 
 	private static final String INTEGER_REGEX = "[0-9]+";
+	private static final String WORD_REGEX = "[a-zA-Z][a-zA-Z0-9_\\-\\.]*";
+
+	public Token {
+		switch (type) {
+			case comment:
+				break;
+			case word:
+				Assertion.check()
+						.isTrue(Pattern.matches(WORD_REGEX, value), "a word must contain only letters, digits or '-', '_', '.'  >" + value);
+				break;
+			case string:
+				break;
+			case integer:
+				Assertion.check()
+						.isTrue(Pattern.matches(INTEGER_REGEX, value), "an integer must contain only digits : " + value);
+				break;
+			case bool:
+				Assertion.check()
+						.isTrue("true".equals(value) || "false".equals(value), "a bool must be true or false");
+				break;
+			default:
+		}
+	}
 
 	boolean isWord() {
 		return type == TokenType.word;
@@ -29,39 +52,4 @@ public record Token(TokenType type, String value) {
 	public String toString() {
 		return "{ type:" + type + ", " + "value:" + value + " }";
 	}
-
-	//---
-	//--- Builders
-	//---
-
-	static Token comment(String comment) {
-		return new Token(TokenType.comment, comment);
-	}
-
-	static Token punctuation(char punctuation) {
-		return new Token(TokenType.punctuation, Character.toString(punctuation));
-	}
-
-	static Token string(String value) {
-		return new Token(TokenType.string, value);
-	}
-
-	static Token bracket(char bracket) {
-		return new Token(TokenType.bracket, Character.toString(bracket));
-	}
-
-	static Token bool(String bool) {
-		Assertion.check()
-				.isTrue("true".equals(bool) || "false".equals(bool), "a bool must be true or false");
-		//---
-		return new Token(TokenType.bool, bool);
-	}
-
-	static Token integer(String integer) {
-		Assertion.check()
-				.isTrue(Pattern.matches(INTEGER_REGEX, integer), "an integer must contain only digits : " + integer);
-		//---
-		return new Token(TokenType.integer, integer);
-	}
-
 }
