@@ -300,6 +300,11 @@ public final class Scanner {
 
 	private Stack<Tuple<Token, Integer>> bracketStack = new Stack<>(); // 
 
+	/*
+	* We put the opening brackets in this bracketStack 
+	* we pop when a closing bracket is found
+	* the two brackets must be balanced
+	*/
 	private void pushBracket(Token bracket) {
 		Assertion.check().isNotNull(bracket);
 		//---
@@ -310,7 +315,7 @@ public final class Scanner {
 			final var last = bracketStack.pop();
 			//an ending bracket must follow an opening bracket ]=>[ ; }=>{ ; )=>(
 			if (!Lexicon.isPairOfBrackets(last.val1(), bracket)) {
-				throw buildException("a block is not well formed");
+				throw buildException("a block is not well formed, all brackets must be balanced");
 			}
 		}
 	}

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
@@ -265,6 +267,8 @@ public class ScannerTest {
 		//		//---
 		//		var formatter = new Formatter();
 		//		formatter.toText(scan.tokens());
-		return scan.tokens();
+		return scan.tokenPositions().stream()
+				.map(Tuple::val1)
+				.collect(Collectors.toList());
 	}
 }
