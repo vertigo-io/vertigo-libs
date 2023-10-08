@@ -243,7 +243,7 @@ public class ScannerTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "[]", "{}", "()", "  [   ]  ", "  {   }  ", "  (   )  " })
+	@ValueSource(strings = { "[]", "{}", "()", "<>", "  [   ]  ", "  {   }  ", "  (   )  ", "  <   >  " })
 	public void test61(String src) {
 		List<Token> tokens = tokenize(src, true);
 		assertEquals(2, tokens.size());
@@ -255,16 +255,16 @@ public class ScannerTest {
 	@Test
 	public void test200() {
 		var src = FileUtil.read(resourceManager.resolve("io/vertigo/commons/lexer/data/src1.txt"));
-		assertEquals(124, tokenize(src, true).size());
+		assertEquals(80522, tokenize(src, true).size());
 	}
 
 	private static List<Token> tokenize(String src, boolean checkPair) {
 		var scanner = new Scanner(src);
 		Scan scan = scanner.tokenize();
 		scan.check(checkPair);
-		//---
-		var formatter = new Formatter();
-		formatter.toText(scan.tokens());
+		//		//---
+		//		var formatter = new Formatter();
+		//		formatter.toText(scan.tokens());
 		return scan.tokens();
 	}
 }

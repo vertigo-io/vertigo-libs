@@ -5,14 +5,16 @@ public enum TokenType {
 	//	command,
 	//	identifier,
 	//	keyword
-	//---
-	//---separator---
+
+	//---separators---
 	bracket,
 	punctuation,
+
 	// ---literal---
 	string,
 	integer,
 	bool,
+
 	// ---comment---
 	comment
 }

@@ -1,7 +1,9 @@
-package io.vertigo.commons.lexer;
+package io.vertigo.commons.lexer.old;
 
 import java.util.List;
 
+import io.vertigo.commons.lexer.Token;
+import io.vertigo.commons.lexer.TokenType;
 import io.vertigo.core.lang.Assertion;
 
 public final class Formatter {

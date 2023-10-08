@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import io.vertigo.core.lang.Assertion;
 
 public record Token(TokenType type, String value) {
+
 	private static final String INTEGER_REGEX = "[0-9]+";
 
 	boolean isWord() {
@@ -33,8 +34,16 @@ public record Token(TokenType type, String value) {
 	//--- Builders
 	//---
 
+	static Token comment(String comment) {
+		return new Token(TokenType.comment, comment);
+	}
+
 	static Token punctuation(char punctuation) {
 		return new Token(TokenType.punctuation, Character.toString(punctuation));
+	}
+
+	static Token string(String value) {
+		return new Token(TokenType.string, value);
 	}
 
 	static Token bracket(char bracket) {

@@ -21,15 +21,20 @@ public final class Lexicon {
 	public static Token RSQUARE_BRACKET = Token.bracket(']');
 	public static Token LROUND_BRACKET = Token.bracket('(');
 	public static Token RROUND_BRACKET = Token.bracket(')');
+	public static Token LANGLE_BRACKET = Token.bracket('<');
+	public static Token RANGLE_BRACKET = Token.bracket('>');
 	//---
 	public static Token COLON = Token.punctuation(':');
 	public static Token SEMI_COLON = Token.punctuation(';');
 	public static Token COMMA = Token.punctuation(',');
+	public static Token AT = Token.punctuation('@');
+	public static Token DOLLAR = Token.punctuation('$');
+
 	//--
 	public static Token TRUE = Token.bool("true");
 	public static Token FALSE = Token.bool("false");
 
-	public static Token textToToken(String text) {
+	static Token textToToken(String text) {
 		return switch (text) {
 			//---Token : boolean
 			case "true" -> Lexicon.TRUE;
@@ -39,7 +44,7 @@ public final class Lexicon {
 		};
 	}
 
-	public static Token charToToken(char sep) {
+	static Token charToTokenOrNull(char sep) {
 		return switch (sep) {
 			//---brackets
 			case '{' -> LCURLY_BRACKET;
@@ -48,10 +53,14 @@ public final class Lexicon {
 			case ']' -> RSQUARE_BRACKET;
 			case '(' -> LROUND_BRACKET;
 			case ')' -> RROUND_BRACKET;
+			case '<' -> LANGLE_BRACKET;
+			case '>' -> RANGLE_BRACKET;
 			//---punctuations
 			case ':' -> COLON;
 			case ';' -> SEMI_COLON;
 			case ',' -> COMMA;
+			case '@' -> AT;
+			case '$' -> DOLLAR;
 			//---no token
 			default -> null;
 		};
@@ -60,13 +69,15 @@ public final class Lexicon {
 	static boolean isLeftBracket(Token token) {
 		return token == Lexicon.LCURLY_BRACKET
 				|| token == Lexicon.LSQUARE_BRACKET
-				|| token == Lexicon.LROUND_BRACKET;
+				|| token == Lexicon.LROUND_BRACKET
+				|| token == Lexicon.LANGLE_BRACKET;
 	}
 
 	static boolean isPairOfBrackets(Token ltoken, Token rtoken) {
 		return (rtoken == Lexicon.RCURLY_BRACKET && ltoken == Lexicon.LCURLY_BRACKET)
 				|| (rtoken == Lexicon.RSQUARE_BRACKET && ltoken == Lexicon.LSQUARE_BRACKET)
-				|| (rtoken == Lexicon.RROUND_BRACKET && ltoken == Lexicon.LROUND_BRACKET);
+				|| (rtoken == Lexicon.RROUND_BRACKET && ltoken == Lexicon.LROUND_BRACKET)
+				|| (rtoken == Lexicon.RANGLE_BRACKET && ltoken == Lexicon.LANGLE_BRACKET);
 	}
 
 }

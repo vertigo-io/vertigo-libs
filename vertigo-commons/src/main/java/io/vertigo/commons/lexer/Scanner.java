@@ -109,7 +109,7 @@ public final class Scanner {
 		final boolean isEOF = (index == (source.length() - 1));
 		final var car = source.charAt(index);
 
-		final Token separator = Lexicon.charToToken(car);
+		final Token separator = Lexicon.charToTokenOrNull(car);
 		//Is this character associated to a separator or a block
 
 		//Opening a new Token
@@ -141,9 +141,21 @@ public final class Scanner {
 			case waiting:
 				//nothing to do 
 				break;
+
+			case comment:
+				//inside a comment-token
+				//do anything you want
+
+				//closing a comment-token
+				if (isEOL(car) || isEOF) {
+					addToken(Token.comment(source.substring(openingToken + 1, isEOL(car) ? index : index + 1).trim()));
+				}
+				break;
+
 			case Separator:
 				addToken(separator);
 				break;
+
 			case text:
 				//inside a text-token
 				if (!isBlank(car) && separator == null) {
@@ -162,6 +174,7 @@ public final class Scanner {
 					addToken(separator);
 				}
 				break;
+
 			case integer:
 				//inside an integer-token
 				if (!isBlank(car) && separator == null) {
@@ -181,17 +194,8 @@ public final class Scanner {
 					addToken(separator);
 				}
 				break;
-			case comment:
-				//inside a comment-token
-				//do anything you want
 
-				//closing a comment-token
-				if (isEOL(car) || isEOF) {
-					addToken(new Token(TokenType.comment, source.substring(openingToken + 1, isEOL(car) ? index : index + 1).trim()));
-				}
-				break;
 			case string:
-
 				//inside a string-token
 				if (escapingLitteral) {
 					if ((car != ESCAPE_LITTERAL) && (car != Lexicon.STRING_MARKER)) {
@@ -213,7 +217,7 @@ public final class Scanner {
 						throw buildException("a string must be fulfilled");
 					}
 
-					addToken(new Token(TokenType.string, literal));
+					addToken(Token.string(literal));
 				} else if (isEOL(car) || isEOF) {
 					throw buildException("a literal must be defined on a single line ");
 				}
@@ -244,14 +248,14 @@ public final class Scanner {
 		}
 	}
 
+	private static boolean isDigit(char car) {
+		return car >= '0' && car <= '9';
+	}
+
 	private static boolean isLetter(char car) {
 		return (car >= 'a' && car <= 'z')
 				|| (car >= 'A' && car <= 'Z');
 
-	}
-
-	private static boolean isDigit(char car) {
-		return car >= '0' && car <= '9';
 	}
 
 	private static boolean isMiddleCharAcceptedinaWord(char car) {
