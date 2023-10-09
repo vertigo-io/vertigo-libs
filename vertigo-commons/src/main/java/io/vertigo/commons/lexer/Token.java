@@ -6,7 +6,7 @@ import io.vertigo.core.lang.Assertion;
 
 public record Token(TokenType type, String value) {
 
-	private static final String INTEGER_REGEX = "[0-9]+|([\\-][0-9]+)";
+	private static final String INTEGER_REGEX = "[\\-]?\\d+";
 	private static final String WORD_REGEX = "[a-zA-Z][a-zA-Z0-9_\\-\\.]*";
 
 	public Token {

@@ -12,8 +12,8 @@ import io.vertigo.core.lang.VUserException;
  * Quotes, brackets must be balanced
  * 
  * Comments :
- * 		single line: begins with #, ends with EOL or EOF
- * 		This kind of comment is easily 
+ * 		- single line: begins with #, ends with EOL or EOF
+ * 		- This kind of comment can easily be cut and pasted
 
  *  ____________________________________________________________________________________
  * Separators : 
@@ -61,9 +61,13 @@ import io.vertigo.core.lang.VUserException;
  * 		Integer :
  * 			- begins AND ends with a digit [0-9] or '-' and a digit 
  * 			- must be declared in a single line ( EOL or EOF is a separator)
+ * 			- you can use many 0 at the begin of an integer	
  * 			- ex : 56
  * 			- ex : 056
+ * 			- ex : 00056
  * 			- ex : -56
+ * 			- ex : -056  
+ * 	
  * 
  * 		Boolean :
  * 			- true or false (case sensitive)
