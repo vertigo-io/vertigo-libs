@@ -14,6 +14,7 @@ public final class Lexicon {
 	static final char STRING_MARKER = '"';
 	//	private static final char STRING2_MARKER = '\'';
 	static final char COMMENT_MARKER = '#';
+	static final char NEGATIVE_MARKER = '-';
 
 	public static Token LCURLY_BRACKET = bracket('{');
 	public static Token RCURLY_BRACKET = bracket('}');

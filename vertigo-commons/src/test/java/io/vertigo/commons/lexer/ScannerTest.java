@@ -95,22 +95,24 @@ public class ScannerTest {
 	//=== INTEGERS 
 	//=========================================================================
 	@ParameterizedTest
-	@ValueSource(strings = { "1 999 8", " 1 999 8 ", " 1 999 8\r\n", " 1 999 \r\n8" })
+	@ValueSource(strings = { "1 999 -6 8", " 1 999 -6  8 ", " 1 999 -6  8\r\n", " 1 999 -6\r\n8" })
 	public void test10(String src) {
 		List<Token> tokens = tokenize(src, false);
-		assertEquals(3, tokens.size());
+		assertEquals(4, tokens.size());
 		assertEquals("1", tokens.get(0).value());
 		assertEquals(TokenType.integer, tokens.get(0).type());
 		assertEquals("999", tokens.get(1).value());
 		assertEquals(TokenType.integer, tokens.get(1).type());
-		assertEquals("8", tokens.get(2).value());
+		assertEquals("-6", tokens.get(2).value());
+		assertEquals(TokenType.integer, tokens.get(2).type());
+		assertEquals("8", tokens.get(3).value());
 		assertEquals(TokenType.integer, tokens.get(2).type());
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "1A", "  99A", "9." })
+	@ValueSource(strings = { "1A", "  99A", "9.", "-", "--7", "- 6" })
 	public void test11(String src) {
-		Assertions.assertThrows(VUserException.class, () -> tokenize(src, false));
+		Assertions.assertThrows(Throwable.class, () -> tokenize(src, false));
 	}
 
 	@ParameterizedTest

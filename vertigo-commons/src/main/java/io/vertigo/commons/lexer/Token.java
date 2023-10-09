@@ -6,7 +6,7 @@ import io.vertigo.core.lang.Assertion;
 
 public record Token(TokenType type, String value) {
 
-	private static final String INTEGER_REGEX = "[0-9]+";
+	private static final String INTEGER_REGEX = "[0-9]+|([\\-][0-9]+)";
 	private static final String WORD_REGEX = "[a-zA-Z][a-zA-Z0-9_\\-\\.]*";
 
 	public Token {
@@ -21,7 +21,7 @@ public record Token(TokenType type, String value) {
 				break;
 			case integer:
 				Assertion.check()
-						.isTrue(Pattern.matches(INTEGER_REGEX, value), "an integer must contain only digits : " + value);
+						.isTrue(Pattern.matches(INTEGER_REGEX, value), "an integer must contain only digits after an optional minus sign : " + value);
 				break;
 			case bool:
 				Assertion.check()

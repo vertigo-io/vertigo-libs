@@ -25,7 +25,7 @@ import io.vertigo.core.lang.VUserException;
  * 		Brackets :
  * 			- brackets must be balanced
  * 			- 4 types of brackets :
- * 				- curvy brackets 	{} 
+ * 				- curly brackets 	{} 
  * 				- round brackets 	()
  * 				- square brackets 	[]
  * 				- angle brackets 	<>
@@ -140,7 +140,7 @@ public final class Scanner {
 				} else if (car == Lexicon.STRING_MARKER) {
 					escapingLitteral = false;
 					state = State.string;
-				} else if (isDigit(car)) {
+				} else if (isDigit(car) || car == Lexicon.NEGATIVE_MARKER) {
 					state = State.integer;
 				} else if (car == Lexicon.COMMENT_MARKER) {
 					state = State.comment;
@@ -194,7 +194,9 @@ public final class Scanner {
 			case integer:
 				//inside an integer-token
 				if (!isBlank(car) && separator == null) {
-					if (!isDigit(car)) {
+					if (car == Lexicon.NEGATIVE_MARKER && openingToken == index) {
+						//a negative marker must be at the opening 
+					} else if (!isDigit(car)) {
 						throw buildException("an integer must contain only digits");
 					}
 				}
