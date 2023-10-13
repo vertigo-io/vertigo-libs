@@ -45,7 +45,7 @@ public final class Lexicon {
 		};
 	}
 
-	static Token charToTokenOrNull(char sep) {
+	static Token charToSeparatorTokenOrNull(char sep) {
 		return switch (sep) {
 			//---brackets
 			case '{' -> LCURLY_BRACKET;

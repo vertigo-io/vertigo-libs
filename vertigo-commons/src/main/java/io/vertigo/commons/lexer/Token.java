@@ -8,11 +8,10 @@ public record Token(TokenType type, String value) {
 
 	private static final String INTEGER_REGEX = "[\\-]?\\d+";
 	private static final String WORD_REGEX = "[a-zA-Z][a-zA-Z0-9_\\-\\.]*";
+	private static final String BOOL_REGEX = "[true]|[false]";
 
 	public Token {
 		switch (type) {
-			case comment:
-				break;
 			case word:
 				Assertion.check()
 						.isTrue(Pattern.matches(WORD_REGEX, value), "a word must contain only letters, digits or '-', '_', '.'  >" + value);
@@ -25,9 +24,11 @@ public record Token(TokenType type, String value) {
 				break;
 			case bool:
 				Assertion.check()
-						.isTrue("true".equals(value) || "false".equals(value), "a bool must be true or false");
+						.isTrue(Pattern.matches(BOOL_REGEX, value), "a bool must be true or false");
 				break;
-			default:
+			case comment:
+			case bracket:
+			case punctuation:
 		}
 	}
 

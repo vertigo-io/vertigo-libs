@@ -9,8 +9,9 @@ import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VUserException;
 
 /**
+ * All token types are defined by their first character.
  * Quotes, brackets must be balanced
- * 
+ *  ____________________________________________________________________________________
  * Comments :
  * 		- single line: begins with #, ends with EOL or EOF
  * 		- This kind of comment can easily be cut and pasted
@@ -67,7 +68,6 @@ import io.vertigo.core.lang.VUserException;
  * 			- ex : 00056
  * 			- ex : -56
  * 			- ex : -056  
- * 	
  * 
  * 		Boolean :
  * 			- true or false (case sensitive)
@@ -129,7 +129,7 @@ public final class Scanner {
 		final boolean isEOF = (index == (source.length() - 1));
 		final var car = source.charAt(index);
 
-		final Token separator = Lexicon.charToTokenOrNull(car);
+		final Token separator = Lexicon.charToSeparatorTokenOrNull(car);
 		//Is this character associated to a separator or a block
 
 		//Opening a new Token
@@ -154,6 +154,8 @@ public final class Scanner {
 				//We have "opened" a new token, yeah ! 
 				openingToken = index;
 			}
+			//We have "opened" a new token, yeah ! 
+			openingToken = index;
 		}
 
 		//Closing a Token
