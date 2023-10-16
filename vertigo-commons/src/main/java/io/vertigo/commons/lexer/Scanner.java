@@ -9,19 +9,23 @@ import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VUserException;
 
 /**
+ * This scanner split a text into tokens to read a 'command grammar'.
+ * To be fast, furious and simple, only one character is necessary to identify the type of tokens.  
+ * 
+ * 
  * All token types are defined by their first character.
  * Quotes, brackets must be balanced
+ * EOF is equivalent to an EOL 
  *  ____________________________________________________________________________________
  * Comments :
  * 		- single line: begins with #, ends with EOL or EOF
  * 		- This kind of comment can easily be cut and pasted
-
  *  ____________________________________________________________________________________
  * Separators : 
  * 		- all separators are defined in only ONE character
  * 
  * 		Punctuation :
- * 			- ':' ';' ',' '$' '@'
+ * 			- ':' ';' ','
  * 
  * 		Brackets :
  * 			- brackets must be balanced
@@ -30,7 +34,6 @@ import io.vertigo.core.lang.VUserException;
  * 				- round brackets 	()
  * 				- square brackets 	[]
  * 				- angle brackets 	<>
- * 
  *  ____________________________________________________________________________________
  * Words : 
  * 		- such as commands, keywords or identifiers
@@ -41,7 +44,7 @@ import io.vertigo.core.lang.VUserException;
  * 		- ex : toto # is a word
  *  
  *  ____________________________________________________________________________________
- * Literal :
+ * Literals :
  * 		String :
  * 			- begins AND ends with " for String with escape
  * 			- Quotes must be balanced
@@ -73,6 +76,24 @@ import io.vertigo.core.lang.VUserException;
  * 			- true or false (case sensitive)
  * 			- ex : true
  *  ____________________________________________________________________________________
+ *  ____________________________________________________________________________________
+ * Pre-processing 
+ * 	transforms source with some directives to include/exclude parts or include some other sources with conditions.
+ * 	these directives can be viewed as pre-processor commands
+ * 	+ variables 
+ *  + directives to allow a pre-processing of source (directives )
+ *  
+ * 		Variable :
+ * 			- begins with $ 
+ * 			- contains [a-z] or [A-Z]
+ * 			- must be declared in a single line ( EOL or EOF is a separator)
+ * 			- ex : $hidden # is a variable
+ * 	
+ * 		Directive :
+ * 			- begins with / 
+ * 			- contains [a-z] or [A-Z]
+ * 			- must be declared in a single line ( EOL or EOF is a separator)
+ * 			- ex : /set  # is a directive
  * 
  * @author pchretien
  */
@@ -81,11 +102,17 @@ public final class Scanner {
 
 	private enum State {
 		waiting,
-		Separator,
+		separator,
+		//---
 		string, //beginning with '"', ending with '"'
 		integer, //beginning with a digit '"', , ending with a blank/EOl/EOF or a separator 
-		text, //beginning with a letter, ending with a blank/EOl/EOF or a separator 
-		comment; //beginning with '#', ending with a EOL / EOF
+		text, //beginning with a letter, ending with a blank/EOl/EOF or a separator
+		//---
+		comment, //beginning with '#', ending with a EOL / EOF
+
+		//Pre-processing
+		variable, //beginning with '$', ending with blank/EOl/EOF or a separator
+		directive; //beginning with '/', ending with blank/EOl/EOF or a separator
 	}
 	//	private static final String EOL = System.lineSeparator();
 
@@ -140,7 +167,7 @@ public final class Scanner {
 				//No token 
 			} else {
 				if (separator != null) {
-					state = State.Separator;
+					state = State.separator;
 				} else if (Lexicon.isLetter(car)) {
 					state = State.text;
 				} else if (car == Lexicon.STRING_MARKER) {
@@ -150,14 +177,16 @@ public final class Scanner {
 					state = State.integer;
 				} else if (car == Lexicon.COMMENT_MARKER) {
 					state = State.comment;
+				} else if (car == Lexicon.VARIABLE_MARKER) {
+					state = State.variable;
+				} else if (car == Lexicon.DIRECTIVE_MARKER) {
+					state = State.directive;
 				} else {
 					throw buildException("unexceped character : " + car);
 				}
 				//We have "opened" a new token, yeah ! 
 				openingToken = index;
 			}
-			//We have "opened" a new token, yeah ! 
-			openingToken = index;
 		}
 
 		//---------------------------------------------------------------------
@@ -178,7 +207,7 @@ public final class Scanner {
 				}
 				break;
 
-			case Separator:
+			case separator:
 				addToken(separator);
 				break;
 
@@ -250,6 +279,42 @@ public final class Scanner {
 					throw buildException("a literal must be defined on a single line ");
 				}
 				break;
+			case variable:
+				//inside a variable-token
+				if (!Lexicon.isBlank(car) && separator == null && index > openingToken) { // not the first character
+					if (!Lexicon.isLetter(car)) {
+						throw buildException("a variable contains only latin letters : " + car);
+					}
+				}
+				//closing a variable-token
+				if (Lexicon.isBlank(car) || isEOF || separator != null) {
+					final var text = source.substring(openingToken, Lexicon.isBlank(car) || separator != null ? index : index + 1);
+					addToken(new Token(TokenType.variable, text));
+				}
+
+				//separator ?
+				if (separator != null) {
+					addToken(separator);
+				}
+				break;
+			case directive:
+				//inside a directive-token
+				if (!Lexicon.isBlank(car) && separator == null && index > openingToken) { // not the first character
+					if (!Lexicon.isLetter(car)) {
+						throw buildException("a directive contains only latin letters : " + car);
+					}
+				}
+				//closing a directive-token
+				if (Lexicon.isBlank(car) || isEOF || separator != null) {
+					final var text = source.substring(openingToken, Lexicon.isBlank(car) || separator != null ? index : index + 1);
+					addToken(new Token(TokenType.directive, text));
+				}
+
+				//separator ?
+				if (separator != null) {
+					addToken(separator);
+				}
+				break;
 		}
 
 	}
@@ -266,7 +331,7 @@ public final class Scanner {
 		Assertion.check().isNotNull(token);
 		//---
 		tokenPositions.add(Tuple.of(token, index));
-		if (token.isBracket()) {
+		if (token.type() == TokenType.bracket) {
 			pushBracket(token);
 		}
 		//reset

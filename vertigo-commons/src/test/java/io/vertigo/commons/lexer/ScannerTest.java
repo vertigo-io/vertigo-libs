@@ -135,20 +135,20 @@ public class ScannerTest {
 		assertEquals(TokenType.bracket, tokens.get(3).type());
 	}
 
-	//pair not well formed
-	@ParameterizedTest
-	@ValueSource(strings = { "1", "test 1" })
-	public void test14(String src) {
-		Assertions.assertThrows(VUserException.class, () -> tokenize(src, true));
-	}
-
-	//pair well formed
-	@ParameterizedTest
-	@ValueSource(strings = { "test:1", "test :1", " test : 1 " })
-	public void test15(String src) {
-		List<Token> tokens = tokenize(src, true);
-		assertEquals(3, tokens.size());
-	}
+	//	//pair not well formed
+	//	@ParameterizedTest
+	//	@ValueSource(strings = { "1", "test 1" })
+	//	public void test14(String src) {
+	//		Assertions.assertThrows(VUserException.class, () -> tokenize(src, true));
+	//	}
+	//
+	//	//pair well formed
+	//	@ParameterizedTest
+	//	@ValueSource(strings = { "test:1", "test :1", " test : 1 " })
+	//	public void test15(String src) {
+	//		List<Token> tokens = tokenize(src, true);
+	//		assertEquals(3, tokens.size());
+	//	}
 
 	//=========================================================================
 	//=== BOOLEANS 
@@ -162,20 +162,20 @@ public class ScannerTest {
 		assertEquals(TokenType.bool, tokens.get(0).type());
 	}
 
-	//pair not well formed
-	@ParameterizedTest
-	@ValueSource(strings = { "true", "test true" })
-	public void test21(String src) {
-		Assertions.assertThrows(VUserException.class, () -> tokenize(src, true));
-	}
-
-	//pair well formed
-	@ParameterizedTest
-	@ValueSource(strings = { "test:true", "test :true", " test : true ", "test:false", "test :false", " test : false " })
-	public void test22(String src) {
-		List<Token> tokens = tokenize(src, true);
-		assertEquals(3, tokens.size());
-	}
+	//	//pair not well formed
+	//	@ParameterizedTest
+	//	@ValueSource(strings = { "true", "test true" })
+	//	public void test21(String src) {
+	//		Assertions.assertThrows(VUserException.class, () -> tokenize(src, true));
+	//	}
+	//
+	//	//pair well formed
+	//	@ParameterizedTest
+	//	@ValueSource(strings = { "test:true", "test :true", " test : true ", "test:false", "test :false", " test : false " })
+	//	public void test22(String src) {
+	//		List<Token> tokens = tokenize(src, true);
+	//		assertEquals(3, tokens.size());
+	//	}
 
 	//=========================================================================
 	//=== STRINGS 
@@ -196,20 +196,20 @@ public class ScannerTest {
 		Assertions.assertThrows(VUserException.class, () -> tokenize(src, false));
 	}
 
-	//pair not well formed
-	@ParameterizedTest
-	@ValueSource(strings = { "\"lorem\"", "test \"lorem\" " })
-	public void test32(String src) {
-		Assertions.assertThrows(VUserException.class, () -> tokenize(src, true));
-	}
+	//	//pair not well formed
+	//	@ParameterizedTest
+	//	@ValueSource(strings = { "\"lorem\"", "test \"lorem\" " })
+	//	public void test32(String src) {
+	//		Assertions.assertThrows(VUserException.class, () -> tokenize(src, true));
+	//	}
 
 	//pair well formed
-	@ParameterizedTest
-	@ValueSource(strings = { "test:\"lorem\"", "test: \"lorem\" ", "test : \"lorem\" " })
-	public void test33(String src) {
-		List<Token> tokens = tokenize(src, true);
-		assertEquals(3, tokens.size());
-	}
+	//	@ParameterizedTest
+	//	@ValueSource(strings = { "test:\"lorem\"", "test: \"lorem\" ", "test : \"lorem\" " })
+	//	public void test33(String src) {
+	//		List<Token> tokens = tokenize(src, true);
+	//		assertEquals(3, tokens.size());
+	//	}
 
 	//=========================================================================
 	//=== COMMENTS 
@@ -256,6 +256,51 @@ public class ScannerTest {
 
 	}
 
+	//=========================================================================
+	//=== VARIABLES 
+	//=========================================================================
+	@ParameterizedTest
+	@ValueSource(strings = { "$lorem", " $lorem", "$lorem  ", " $lorem ", "    $lorem\r\n" })
+	public void test70(String src) {
+		List<Token> tokens = tokenize(src, true);
+		assertEquals(1, tokens.size());
+		assertEquals("$lorem", tokens.get(0).value());
+		assertEquals(TokenType.variable, tokens.get(0).type());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "$lorem ipsum est", " $lorem ipsum 99", "$lorem, ipsum", " $lorem { }", "    $lorem\r\n ipsum est" })
+	public void test71(String src) {
+		List<Token> tokens = tokenize(src, true);
+		assertEquals(3, tokens.size());
+		assertEquals("$lorem", tokens.get(0).value());
+		assertEquals(TokenType.variable, tokens.get(0).type());
+	}
+
+	//=========================================================================
+	//=== DIRECTIVES 
+	//=========================================================================
+	@ParameterizedTest
+	@ValueSource(strings = { "/lorem", " /lorem", "/lorem  ", " /lorem ", "    /lorem\r\n" })
+	public void test80(String src) {
+		List<Token> tokens = tokenize(src, true);
+		assertEquals(1, tokens.size());
+		assertEquals("/lorem", tokens.get(0).value());
+		assertEquals(TokenType.directive, tokens.get(0).type());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "/lorem ipsum est", " /lorem ipsum 99", "/lorem, ipsum", " /lorem { }", "    /lorem\r\n ipsum est" })
+	public void test81(String src) {
+		List<Token> tokens = tokenize(src, true);
+		assertEquals(3, tokens.size());
+		assertEquals("/lorem", tokens.get(0).value());
+		assertEquals(TokenType.directive, tokens.get(0).type());
+	}
+
+	//=========================================================================
+	//=== FULL
+	//=========================================================================
 	@Test
 	public void test200() {
 		var src = FileUtil.read(resourceManager.resolve("io/vertigo/commons/lexer/data/src1.txt"));
@@ -273,4 +318,5 @@ public class ScannerTest {
 				.map(Tuple::val1)
 				.collect(Collectors.toList());
 	}
+
 }

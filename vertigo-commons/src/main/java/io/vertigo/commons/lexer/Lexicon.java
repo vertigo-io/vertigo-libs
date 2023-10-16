@@ -15,21 +15,22 @@ public final class Lexicon {
 	//	private static final char STRING2_MARKER = '\'';
 	static final char COMMENT_MARKER = '#';
 	static final char NEGATIVE_MARKER = '-';
+	static final char VARIABLE_MARKER = '$';
+	static final char DIRECTIVE_MARKER = '/';
 
-	public static Token LCURLY_BRACKET = bracket('{');
-	public static Token RCURLY_BRACKET = bracket('}');
-	public static Token LSQUARE_BRACKET = bracket('[');
-	public static Token RSQUARE_BRACKET = bracket(']');
-	public static Token LROUND_BRACKET = bracket('(');
-	public static Token RROUND_BRACKET = bracket(')');
-	public static Token LANGLE_BRACKET = bracket('<');
-	public static Token RANGLE_BRACKET = bracket('>');
+	public static final Token LCURLY_BRACKET = bracket('{');
+	public static final Token RCURLY_BRACKET = bracket('}');
+	public static final Token LSQUARE_BRACKET = bracket('[');
+	public static final Token RSQUARE_BRACKET = bracket(']');
+	public static final Token LROUND_BRACKET = bracket('(');
+	public static final Token RROUND_BRACKET = bracket(')');
+	public static final Token LANGLE_BRACKET = bracket('<');
+	public static final Token RANGLE_BRACKET = bracket('>');
 	//---
-	public static Token COLON = punctuation(':');
-	public static Token SEMI_COLON = punctuation(';');
-	public static Token COMMA = punctuation(',');
-	public static Token AT = punctuation('@');
-	public static Token DOLLAR = punctuation('$');
+	public static final Token COLON = punctuation(':');
+	public static final Token SEMI_COLON = punctuation(';');
+	public static final Token COMMA = punctuation(',');
+	//	public static Token AT = punctuation('@');
 
 	//--
 	public static Token TRUE = new Token(TokenType.bool, "true");
@@ -68,8 +69,8 @@ public final class Lexicon {
 			case ':' -> COLON;
 			case ';' -> SEMI_COLON;
 			case ',' -> COMMA;
-			case '@' -> AT;
-			case '$' -> DOLLAR;
+			//			case '@' -> AT;
+			//			case '$' -> DOLLAR;
 			//---no token
 			default -> null;
 		};
