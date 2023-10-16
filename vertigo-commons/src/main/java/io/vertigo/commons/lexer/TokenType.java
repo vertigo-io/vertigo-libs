@@ -3,6 +3,7 @@ package io.vertigo.commons.lexer;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VUserException;
 
 public enum TokenType {
 	// ---comments---
@@ -60,5 +61,39 @@ public enum TokenType {
 	void check(String value) {
 		Assertion.check()
 				.isTrue(pattern.matcher(value).matches(), error + value);
+	}
+
+	void checkAfterFirstCharacter(int index, char c) {
+		switch (this) {
+			case integer:
+				if (!Lexicon.isDigit(c)) {
+					throw buildException(index, "an integer must contain only digits");
+				}
+				break;
+			case variable:
+				if (!Lexicon.isLetter(c)) {
+					throw buildException(index, "a variable contains only latin letters : " + c);
+				}
+				break;
+			case directive:
+				if (!Lexicon.isLetter(c)) {
+					throw buildException(index, "a directive contains only latin letters : " + c);
+				}
+				break;
+			case word:
+				if (!Lexicon.isMiddleCharAcceptedinaWord(c)) {
+					throw buildException(index, "a word (keyword, var..) must contain only letters,digits and _ or -");
+				}
+				break;
+			case bool:
+			case bracket:
+			case punctuation:
+			case comment:
+			case string:
+		}
+	}
+
+	private static RuntimeException buildException(int index, String msg) {
+		return new VUserException("Error at [" + index + "],  " + msg);
 	}
 }

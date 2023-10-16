@@ -112,6 +112,14 @@ public final class Lexicon {
 		}
 	}
 
+	static boolean isMiddleCharAcceptedinaWord(char c) {
+		return Lexicon.isLetter(c)
+				|| Lexicon.isDigit(c)
+				|| c == '-'
+				|| c == '_'
+				|| c == '.';
+	}
+
 	/**
 	 * @param c character
 	 * @return true if the character is a digit

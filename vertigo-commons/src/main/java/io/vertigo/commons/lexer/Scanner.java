@@ -253,10 +253,8 @@ public final class Scanner {
 			case text:
 				closing = Lexicon.isBlank(car) || separator != null;
 				//inside a text-token
-				if (!closing) {
-					if (!isMiddleCharAcceptedinaWord(car)) {
-						throw buildException("a word (keyword, var..) must contain only letters,digits and _ or -");
-					}
+				if (!closing && index > openingToken) { // not the first character
+					TokenType.word.checkAfterFirstCharacter(index, car);
 				}
 				//closing a text-token
 				if (closing) {
@@ -273,12 +271,8 @@ public final class Scanner {
 			case integer:
 				closing = Lexicon.isBlank(car) || separator != null;
 				//inside an integer-token
-				if (!closing) {
-					if (car == Lexicon.NEGATIVE_MARKER && openingToken == index) {
-						//a negative marker must be at the opening 
-					} else if (!Lexicon.isDigit(car)) {
-						throw buildException("an integer must contain only digits");
-					}
+				if (!closing && index > openingToken) { // not the first character
+					TokenType.integer.checkAfterFirstCharacter(index, car);
 				}
 
 				//closing a word-token
@@ -298,9 +292,7 @@ public final class Scanner {
 
 				//inside a variable-token
 				if (!closing && index > openingToken) { // not the first character
-					if (!Lexicon.isLetter(car)) {
-						throw buildException("a variable contains only latin letters : " + car);
-					}
+					TokenType.variable.checkAfterFirstCharacter(index, car);
 				}
 				//closing a variable-token
 				if (closing) {
@@ -317,9 +309,7 @@ public final class Scanner {
 				closing = Lexicon.isBlank(car) || separator != null;
 				//inside a directive-token
 				if (!closing && index > openingToken) { // not the first character
-					if (!Lexicon.isLetter(car)) {
-						throw buildException("a directive contains only latin letters : " + car);
-					}
+					TokenType.directive.checkAfterFirstCharacter(index, car);
 				}
 				//closing a directive-token
 				if (closing) {
@@ -334,14 +324,6 @@ public final class Scanner {
 				break;
 		}
 
-	}
-
-	private static boolean isMiddleCharAcceptedinaWord(char car) {
-		return Lexicon.isLetter(car)
-				|| Lexicon.isDigit(car)
-				|| car == '-'
-				|| car == '_'
-				|| car == '.';
 	}
 
 	private void addToken(Token token) {
