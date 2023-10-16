@@ -35,6 +35,14 @@ public final class Lexicon {
 	public static Token TRUE = new Token(TokenType.bool, "true");
 	public static Token FALSE = new Token(TokenType.bool, "false");
 
+	private static Token punctuation(char punctuation) {
+		return new Token(TokenType.punctuation, Character.toString(punctuation));
+	}
+
+	private static Token bracket(char bracket) {
+		return new Token(TokenType.bracket, Character.toString(bracket));
+	}
+
 	static Token textToToken(String text) {
 		return switch (text) {
 			//---Token : boolean
@@ -81,11 +89,45 @@ public final class Lexicon {
 				|| (rtoken == Lexicon.RANGLE_BRACKET && ltoken == Lexicon.LANGLE_BRACKET);
 	}
 
-	private static Token punctuation(char punctuation) {
-		return new Token(TokenType.punctuation, Character.toString(punctuation));
+	static boolean isEOL(char car) {
+		switch (car) {
+			case '\n':
+			case '\r':
+				return true;
+			default:
+				return false;
+		}
 	}
 
-	private static Token bracket(char bracket) {
-		return new Token(TokenType.bracket, Character.toString(bracket));
+	static boolean isBlank(char car) {
+		switch (car) {
+			case ' ':
+			case '\t':
+			case '\n':
+			case '\r':
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * @param c character
+	 * @return true if the character is a digit
+	 */
+	static boolean isDigit(char car) {
+		return car >= '0' && car <= '9';
+	}
+
+	/**
+	 * Only latin letters. No accent. No specific characters. 
+	 * 
+	 * @param c character
+	 * @return true if the character is a latin letter
+	 */
+	static boolean isLetter(char c) {
+		return (c >= 'a' && c <= 'z')
+				|| (c >= 'A' && c <= 'Z');
+
 	}
 }
