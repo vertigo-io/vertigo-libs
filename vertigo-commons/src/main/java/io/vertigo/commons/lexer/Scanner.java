@@ -12,8 +12,7 @@ import io.vertigo.core.lang.VUserException;
  * This scanner split a text into tokens to read a 'command grammar'.
  * To be fast, furious and simple, only one character is necessary to identify the type of tokens.  
  * 
- * 
- * All token types are defined by their first character.
+ * All token types are defined by their first character
  * Quotes, brackets must be balanced
  * EOF is equivalent to an EOL 
  *  ____________________________________________________________________________________
@@ -78,7 +77,7 @@ import io.vertigo.core.lang.VUserException;
  *  ____________________________________________________________________________________
  *  ____________________________________________________________________________________
  * Pre-processing 
- * 	transforms source with some directives to include/exclude parts or include some other sources with conditions.
+ * 	transforms source with some directives to include/exclude parts of text or include some other sources with conditions.
  * 	these directives can be viewed as pre-processor commands
  * 	+ variables 
  *  + directives to allow a pre-processing of source (directives )
@@ -98,21 +97,21 @@ import io.vertigo.core.lang.VUserException;
  * @author pchretien
  */
 public final class Scanner {
-	private static final char ESCAPE_LITTERAL = '\\';
+	private static final char ESCAPE_LITERAL = '\\';
 
 	private enum State {
 		waiting,
 		separator,
 		//---
 		string, //beginning with '"', ending with '"'
-		integer, //beginning with a digit '"', , ending with a blank/EOl/EOF or a separator 
-		text, //beginning with a letter, ending with a blank/EOl/EOF or a separator
+		integer, //beginning with a digit '"', , ending with a blank/EOl or a separator 
+		text, //beginning with a letter, ending with a blank/EOl or a separator
 		//---
-		comment, //beginning with '#', ending with a EOL / EOF
+		comment, //beginning with '#', ending with a EOL 
 
 		//Pre-processing
-		variable, //beginning with '$', ending with blank/EOl/EOF or a separator
-		directive; //beginning with '/', ending with blank/EOl/EOF or a separator
+		variable, //beginning with '$', ending with blank/EOL or a separator
+		directive; //beginning with '/', ending with blank/EOL or a separator
 	}
 	//	private static final String EOL = System.lineSeparator();
 
@@ -123,15 +122,7 @@ public final class Scanner {
 	private State state = State.waiting;
 	private int index = 0;
 	private int openingToken = -1;
-	private boolean escapingLitteral = false;
-	//---
-	//	//---Context
-	//	private static class Context {
-	//		State state = State.waiting;
-	//		int index = 0;
-	//		int openingToken = -1;
-	//		boolean escapingLitteral = false;
-	//	}
+	private boolean escapingString = false;
 
 	public Scanner(String source) {
 		Assertion.check().isNotBlank(source);
@@ -180,7 +171,7 @@ public final class Scanner {
 				} else if (Lexicon.isLetter(car)) {
 					state = State.text;
 				} else if (car == Lexicon.STRING_MARKER) {
-					escapingLitteral = false;
+					escapingString = false;
 					state = State.string;
 				} else if (Lexicon.isDigit(car) || car == Lexicon.NEGATIVE_MARKER) {
 					state = State.integer;
@@ -224,26 +215,22 @@ public final class Scanner {
 
 			case string:
 				//inside a string-token
-				if (escapingLitteral) {
-					if ((car != ESCAPE_LITTERAL) && (car != Lexicon.STRING_MARKER)) {
-						throw buildException("Only \\ or \" characters are accepted after a \\ in a literal");
+				//We have to manage the escape character'\' =>  \\ or \"
+				if (escapingString) {
+					if ((car != ESCAPE_LITERAL) && (car != Lexicon.STRING_MARKER)) {
+						throw buildException("Only \\\\ or \" characters are accepted after a \\ in a string");
 					}
-					escapingLitteral = false;
-				} else if (car == ESCAPE_LITTERAL) {
-					escapingLitteral = true;
+					escapingString = false;
+				} else if (car == ESCAPE_LITERAL) {
+					escapingString = true;
 				}
 
 				//closing a string-token
 				//the index must be greater than the openingToken
-				if (car == Lexicon.STRING_MARKER
-						&& (openingToken < index)) {
+				else if (car == Lexicon.STRING_MARKER && (openingToken < index)) {
 					final var literal = source.substring(openingToken + 1, index)
 							.replace("\\\"", "\"")
 							.replace("\\\\", "\\");
-					if (literal.isEmpty()) {
-						throw buildException("a string must be fulfilled");
-					}
-
 					addToken(new Token(TokenType.string, literal));
 				} else if (Lexicon.isEOL(car)) {
 					throw buildException("a literal must be defined on a single line ");

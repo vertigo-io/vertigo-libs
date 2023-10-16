@@ -29,8 +29,8 @@ public enum TokenType {
 
 	// ---literals---
 	string(
-			".*",
-			"this string is not allowed : "),
+			".+",
+			"a string must no be empty : "),
 	integer(
 			"[\\-]?\\d+",
 			"an integer must contain only digits after an optional minus sign : "),
@@ -82,7 +82,7 @@ public enum TokenType {
 				break;
 			case word:
 				if (!Lexicon.isMiddleCharAcceptedinaWord(c)) {
-					throw buildException(index, "a word (keyword, var..) must contain only letters,digits and _ or -");
+					throw buildException(index, "a word must contain only letters,digits and _ or -");
 				}
 				break;
 			case bool:

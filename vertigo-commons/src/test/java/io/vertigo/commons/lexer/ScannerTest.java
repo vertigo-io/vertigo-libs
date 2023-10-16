@@ -191,9 +191,19 @@ public class ScannerTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "\"lorem", " lorem\" ", "\"lorem\r\n", "\"\"" })
-	public void testFail31(String src) {
-		Assertions.assertThrows(VUserException.class, () -> tokenize(src, false));
+	@ValueSource(strings = { "\"lo\\\"rem\"", " \"lo\\\"rem\" ", "\"lo\\\"rem\"\r\n" })
+
+	public void test31(String src) {
+		List<Token> tokens = tokenize(src, false);
+		assertEquals(1, tokens.size());
+		assertEquals("lo\"rem", tokens.get(0).value());
+		assertEquals(TokenType.string, tokens.get(0).type());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "\"lorem", " lorem\" ", "\"lorem\r\n", "\"\"", " \"lo\\rem\"" })
+	public void testFail32(String src) {
+		Assertions.assertThrows(Throwable.class, () -> tokenize(src, false));
 	}
 
 	//	//pair not well formed
