@@ -134,17 +134,17 @@ public final class Scanner {
 
 		//Opening a new Token
 		if (state == State.waiting) {
-			if (isBlank(car)) {
+			if (Utils.isBlank(car)) {
 				//No token 
 			} else {
 				if (separator != null) {
 					state = State.Separator;
-				} else if (isLetter(car)) {
+				} else if (Utils.isLetter(car)) {
 					state = State.text;
 				} else if (car == Lexicon.STRING_MARKER) {
 					escapingLitteral = false;
 					state = State.string;
-				} else if (isDigit(car) || car == Lexicon.NEGATIVE_MARKER) {
+				} else if (Utils.isDigit(car) || car == Lexicon.NEGATIVE_MARKER) {
 					state = State.integer;
 				} else if (car == Lexicon.COMMENT_MARKER) {
 					state = State.comment;
@@ -169,8 +169,8 @@ public final class Scanner {
 				//do anything you want
 
 				//closing a comment-token
-				if (isEOL(car) || isEOF) {
-					addToken(new Token(TokenType.comment, source.substring(openingToken + 1, isEOL(car) ? index : index + 1).trim()));
+				if (Utils.isEOL(car) || isEOF) {
+					addToken(new Token(TokenType.comment, source.substring(openingToken + 1, Utils.isEOL(car) ? index : index + 1).trim()));
 				}
 				break;
 
@@ -180,14 +180,14 @@ public final class Scanner {
 
 			case text:
 				//inside a text-token
-				if (!isBlank(car) && separator == null) {
+				if (!Utils.isBlank(car) && separator == null) {
 					if (!isMiddleCharAcceptedinaWord(car)) {
 						throw buildException("a word (keyword, var..) must contain only letters,digits and _ or -");
 					}
 				}
 				//closing a text-token
-				if (isBlank(car) || isEOF || separator != null) {
-					final var text = source.substring(openingToken, isBlank(car) || separator != null ? index : index + 1);
+				if (Utils.isBlank(car) || isEOF || separator != null) {
+					final var text = source.substring(openingToken, Utils.isBlank(car) || separator != null ? index : index + 1);
 					addToken(Lexicon.textToToken(text));
 				}
 
@@ -199,17 +199,17 @@ public final class Scanner {
 
 			case integer:
 				//inside an integer-token
-				if (!isBlank(car) && separator == null) {
+				if (!Utils.isBlank(car) && separator == null) {
 					if (car == Lexicon.NEGATIVE_MARKER && openingToken == index) {
 						//a negative marker must be at the opening 
-					} else if (!isDigit(car)) {
+					} else if (!Utils.isDigit(car)) {
 						throw buildException("an integer must contain only digits");
 					}
 				}
 
 				//closing a word-token
-				if (isBlank(car) || isEOF || separator != null) {
-					final var text = source.substring(openingToken, isBlank(car) || separator != null ? index : index + 1);
+				if (Utils.isBlank(car) || isEOF || separator != null) {
+					final var text = source.substring(openingToken, Utils.isBlank(car) || separator != null ? index : index + 1);
 					addToken(new Token(TokenType.integer, text));
 				}
 
@@ -242,7 +242,7 @@ public final class Scanner {
 					}
 
 					addToken(new Token(TokenType.string, literal));
-				} else if (isEOL(car) || isEOF) {
+				} else if (Utils.isEOL(car) || isEOF) {
 					throw buildException("a literal must be defined on a single line ");
 				}
 				break;
@@ -250,41 +250,9 @@ public final class Scanner {
 
 	}
 
-	private static boolean isEOL(char car) {
-		switch (car) {
-			case '\n':
-			case '\r':
-				return true;
-			default:
-				return false;
-		}
-	}
-
-	private static boolean isBlank(char car) {
-		switch (car) {
-			case ' ':
-			case '\t':
-			case '\n':
-			case '\r':
-				return true;
-			default:
-				return false;
-		}
-	}
-
-	private static boolean isDigit(char car) {
-		return car >= '0' && car <= '9';
-	}
-
-	private static boolean isLetter(char car) {
-		return (car >= 'a' && car <= 'z')
-				|| (car >= 'A' && car <= 'Z');
-
-	}
-
 	private static boolean isMiddleCharAcceptedinaWord(char car) {
-		return isLetter(car)
-				|| isDigit(car)
+		return Utils.isLetter(car)
+				|| Utils.isDigit(car)
 				|| car == '-'
 				|| car == '_'
 				|| car == '.';
