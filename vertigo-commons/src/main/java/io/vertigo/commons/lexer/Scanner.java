@@ -201,65 +201,25 @@ public final class Scanner {
 		//---------------------------------------------------------------------
 		//-- Closing a Token
 		//---------------------------------------------------------------------
-		var boolean closing; 
+		final boolean closing;
 		switch (state) {
 			case waiting:
 				//nothing to do 
 				break;
 
 			case comment:
+				closing = Lexicon.isEOL(car);
 				//inside a comment-token
 				//do anything you want
 
 				//closing a comment-token
-				if (Lexicon.isEOL(car)) {
-					addToken(new Token(TokenType.comment, source.substring(openingToken + 1, Lexicon.isEOL(car) ? index : index + 1).trim()));
+				if (closing) {
+					addToken(new Token(TokenType.comment, source.substring(openingToken + 1, index).trim()));
 				}
 				break;
 
 			case separator:
 				addToken(separator);
-				break;
-
-			case text:
-				//inside a text-token
-				if (!Lexicon.isBlank(car) && separator == null) {
-					if (!isMiddleCharAcceptedinaWord(car)) {
-						throw buildException("a word (keyword, var..) must contain only letters,digits and _ or -");
-					}
-				}
-				//closing a text-token
-				if (Lexicon.isBlank(car) || separator != null) {
-					final var text = source.substring(openingToken, Lexicon.isBlank(car) || separator != null ? index : index + 1);
-					addToken(Lexicon.textToToken(text));
-				}
-
-				//separator ?
-				if (separator != null) {
-					addToken(separator);
-				}
-				break;
-
-			case integer:
-				//inside an integer-token
-				if (!Lexicon.isBlank(car) && separator == null) {
-					if (car == Lexicon.NEGATIVE_MARKER && openingToken == index) {
-						//a negative marker must be at the opening 
-					} else if (!Lexicon.isDigit(car)) {
-						throw buildException("an integer must contain only digits");
-					}
-				}
-
-				//closing a word-token
-				if (Lexicon.isBlank(car) || separator != null) {
-					final var text = source.substring(openingToken, Lexicon.isBlank(car) || separator != null ? index : index + 1);
-					addToken(new Token(TokenType.integer, text));
-				}
-
-				//separator ?
-				if (separator != null) {
-					addToken(separator);
-				}
 				break;
 
 			case string:
@@ -289,16 +249,62 @@ public final class Scanner {
 					throw buildException("a literal must be defined on a single line ");
 				}
 				break;
+
+			case text:
+				closing = Lexicon.isBlank(car) || separator != null;
+				//inside a text-token
+				if (!closing) {
+					if (!isMiddleCharAcceptedinaWord(car)) {
+						throw buildException("a word (keyword, var..) must contain only letters,digits and _ or -");
+					}
+				}
+				//closing a text-token
+				if (closing) {
+					final var text = source.substring(openingToken, index);
+					addToken(Lexicon.textToToken(text));
+				}
+
+				//separator ?
+				if (separator != null) {
+					addToken(separator);
+				}
+				break;
+
+			case integer:
+				closing = Lexicon.isBlank(car) || separator != null;
+				//inside an integer-token
+				if (!closing) {
+					if (car == Lexicon.NEGATIVE_MARKER && openingToken == index) {
+						//a negative marker must be at the opening 
+					} else if (!Lexicon.isDigit(car)) {
+						throw buildException("an integer must contain only digits");
+					}
+				}
+
+				//closing a word-token
+				if (closing) {
+					final var text = source.substring(openingToken, index);
+					addToken(new Token(TokenType.integer, text));
+				}
+
+				//separator ?
+				if (separator != null) {
+					addToken(separator);
+				}
+				break;
+
 			case variable:
+				closing = Lexicon.isBlank(car) || separator != null;
+
 				//inside a variable-token
-				if (!Lexicon.isBlank(car) && separator == null && index > openingToken) { // not the first character
+				if (!closing && index > openingToken) { // not the first character
 					if (!Lexicon.isLetter(car)) {
 						throw buildException("a variable contains only latin letters : " + car);
 					}
 				}
 				//closing a variable-token
-				if (Lexicon.isBlank(car) || separator != null) {
-					final var text = source.substring(openingToken, Lexicon.isBlank(car) || separator != null ? index : index + 1);
+				if (closing) {
+					final var text = source.substring(openingToken, index);
 					addToken(new Token(TokenType.variable, text));
 				}
 
@@ -308,15 +314,16 @@ public final class Scanner {
 				}
 				break;
 			case directive:
+				closing = Lexicon.isBlank(car) || separator != null;
 				//inside a directive-token
-				if (!Lexicon.isBlank(car) && separator == null && index > openingToken) { // not the first character
+				if (!closing && index > openingToken) { // not the first character
 					if (!Lexicon.isLetter(car)) {
 						throw buildException("a directive contains only latin letters : " + car);
 					}
 				}
 				//closing a directive-token
-				if (Lexicon.isBlank(car) || separator != null) {
-					final var text = source.substring(openingToken, Lexicon.isBlank(car) || separator != null ? index : index + 1);
+				if (closing) {
+					final var text = source.substring(openingToken, index);
 					addToken(new Token(TokenType.directive, text));
 				}
 
