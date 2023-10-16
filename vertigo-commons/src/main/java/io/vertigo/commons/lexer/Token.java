@@ -8,7 +8,7 @@ public record Token(TokenType type, String value) {
 
 	private static final String INTEGER_REGEX = "[\\-]?\\d+";
 	private static final String WORD_REGEX = "[a-zA-Z][a-zA-Z0-9_\\-\\.]*";
-	private static final String BOOL_REGEX = "[true]|[false]";
+	private static final String BOOL_REGEX = "true|false";
 
 	public Token {
 		switch (type) {

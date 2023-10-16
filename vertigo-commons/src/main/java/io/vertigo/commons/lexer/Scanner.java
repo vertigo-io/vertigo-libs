@@ -132,7 +132,9 @@ public final class Scanner {
 		final Token separator = Lexicon.charToSeparatorTokenOrNull(car);
 		//Is this character associated to a separator or a block
 
-		//Opening a new Token
+		//---------------------------------------------------------------------
+		//-- Opening a new Token
+		//---------------------------------------------------------------------
 		if (state == State.waiting) {
 			if (Utils.isBlank(car)) {
 				//No token 
@@ -158,7 +160,9 @@ public final class Scanner {
 			openingToken = index;
 		}
 
-		//Closing a Token
+		//---------------------------------------------------------------------
+		//-- Closing a Token
+		//---------------------------------------------------------------------
 		switch (state) {
 			case waiting:
 				//nothing to do 

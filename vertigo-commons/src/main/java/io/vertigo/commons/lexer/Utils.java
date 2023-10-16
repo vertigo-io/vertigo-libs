@@ -23,13 +23,23 @@ final class Utils {
 		}
 	}
 
+	/**
+	 * @param c character
+	 * @return true if the character is a digit
+	 */
 	static boolean isDigit(char car) {
 		return car >= '0' && car <= '9';
 	}
 
-	static boolean isLetter(char car) {
-		return (car >= 'a' && car <= 'z')
-				|| (car >= 'A' && car <= 'Z');
+	/**
+	 * Only latin letters. No accent. No specific characters. 
+	 * 
+	 * @param c character
+	 * @return true if the character is a latin letter
+	 */
+	static boolean isLetter(char c) {
+		return (c >= 'a' && c <= 'z')
+				|| (c >= 'A' && c <= 'Z');
 
 	}
 
