@@ -125,6 +125,13 @@ public final class Scanner {
 	private int openingToken = -1;
 	private boolean escapingLitteral = false;
 	//---
+	//	//---Context
+	//	private static class Context {
+	//		State state = State.waiting;
+	//		int index = 0;
+	//		int openingToken = -1;
+	//		boolean escapingLitteral = false;
+	//	}
 
 	public Scanner(String source) {
 		Assertion.check().isNotBlank(source);
@@ -136,7 +143,7 @@ public final class Scanner {
 		do {
 			nextCharacter();
 			index++;
-		} while (index < source.length());
+		} while (index <= source.length());
 		//---
 		if (state != State.waiting) {
 			if (state == State.string) {
@@ -153,11 +160,13 @@ public final class Scanner {
 	}
 
 	private void nextCharacter() {
-		final boolean isEOF = (index == (source.length() - 1));
-		final var car = source.charAt(index);
+		//To obtain a standard behavior, we add a break line at the end of the file 
+		final var car = index < source.length()
+				? source.charAt(index)
+				: '\r';
 
 		final Token separator = Lexicon.charToSeparatorTokenOrNull(car);
-		//Is this character associated to a separator or a block
+		//Is this character associated to a separator ( a punctuation or a bracket)
 
 		//---------------------------------------------------------------------
 		//-- Opening a new Token
@@ -192,6 +201,7 @@ public final class Scanner {
 		//---------------------------------------------------------------------
 		//-- Closing a Token
 		//---------------------------------------------------------------------
+		var boolean closing; 
 		switch (state) {
 			case waiting:
 				//nothing to do 
@@ -202,7 +212,7 @@ public final class Scanner {
 				//do anything you want
 
 				//closing a comment-token
-				if (Lexicon.isEOL(car) || isEOF) {
+				if (Lexicon.isEOL(car)) {
 					addToken(new Token(TokenType.comment, source.substring(openingToken + 1, Lexicon.isEOL(car) ? index : index + 1).trim()));
 				}
 				break;
@@ -219,7 +229,7 @@ public final class Scanner {
 					}
 				}
 				//closing a text-token
-				if (Lexicon.isBlank(car) || isEOF || separator != null) {
+				if (Lexicon.isBlank(car) || separator != null) {
 					final var text = source.substring(openingToken, Lexicon.isBlank(car) || separator != null ? index : index + 1);
 					addToken(Lexicon.textToToken(text));
 				}
@@ -241,7 +251,7 @@ public final class Scanner {
 				}
 
 				//closing a word-token
-				if (Lexicon.isBlank(car) || isEOF || separator != null) {
+				if (Lexicon.isBlank(car) || separator != null) {
 					final var text = source.substring(openingToken, Lexicon.isBlank(car) || separator != null ? index : index + 1);
 					addToken(new Token(TokenType.integer, text));
 				}
@@ -275,7 +285,7 @@ public final class Scanner {
 					}
 
 					addToken(new Token(TokenType.string, literal));
-				} else if (Lexicon.isEOL(car) || isEOF) {
+				} else if (Lexicon.isEOL(car)) {
 					throw buildException("a literal must be defined on a single line ");
 				}
 				break;
@@ -287,7 +297,7 @@ public final class Scanner {
 					}
 				}
 				//closing a variable-token
-				if (Lexicon.isBlank(car) || isEOF || separator != null) {
+				if (Lexicon.isBlank(car) || separator != null) {
 					final var text = source.substring(openingToken, Lexicon.isBlank(car) || separator != null ? index : index + 1);
 					addToken(new Token(TokenType.variable, text));
 				}
@@ -305,7 +315,7 @@ public final class Scanner {
 					}
 				}
 				//closing a directive-token
-				if (Lexicon.isBlank(car) || isEOF || separator != null) {
+				if (Lexicon.isBlank(car) || separator != null) {
 					final var text = source.substring(openingToken, Lexicon.isBlank(car) || separator != null ? index : index + 1);
 					addToken(new Token(TokenType.directive, text));
 				}
