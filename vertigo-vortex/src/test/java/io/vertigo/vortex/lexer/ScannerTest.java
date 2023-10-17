@@ -1,4 +1,4 @@
-package io.vertigo.commons.lexer;
+package io.vertigo.vortex.lexer;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -313,7 +313,7 @@ public class ScannerTest {
 	//=========================================================================
 	@Test
 	public void test200() {
-		var src = FileUtil.read(resourceManager.resolve("io/vertigo/commons/lexer/data/src1.txt"));
+		var src = FileUtil.read(resourceManager.resolve("io/vertigo/vortex/lexer/data/src1.txt"));
 		assertEquals(80522, tokenize(src, true).size());
 	}
 

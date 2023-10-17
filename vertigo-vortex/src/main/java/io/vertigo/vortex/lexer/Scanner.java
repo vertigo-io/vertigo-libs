@@ -1,4 +1,4 @@
-package io.vertigo.commons.lexer;
+package io.vertigo.vortex.lexer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ import io.vertigo.core.lang.VUserException;
  * Separators : 
  * 		- all separators are defined in only ONE character
  * 
- * 		Punctuation :
+ * 		Punctuation :O
  * 			- ':' ';' ','
  * 
  * 		Brackets :
@@ -313,6 +313,8 @@ public final class Scanner {
 			//					addToken(separator);
 			//				}
 			//				break;
+			default:
+				throw new IllegalStateException();
 		}
 
 	}

@@ -1,4 +1,4 @@
-package io.vertigo.commons.lexer;
+package io.vertigo.vortex.lexer;
 
 public record Token(TokenType type, String value) {
 	public Token {

@@ -1,4 +1,4 @@
-package io.vertigo.commons.lexer;
+package io.vertigo.vortex.lexer;
 
 /**
  * Contains the core elements of any structural grammar.

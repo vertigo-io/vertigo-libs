@@ -1,4 +1,4 @@
-package io.vertigo.commons.lexer;
+package io.vertigo.vortex.lexer;
 
 import java.util.regex.Pattern;
 
@@ -90,6 +90,7 @@ public enum TokenType {
 			case punctuation:
 			case comment:
 			case string:
+			default:
 		}
 	}
 
