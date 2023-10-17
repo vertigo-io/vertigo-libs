@@ -9,11 +9,11 @@ public enum TokenType {
 	// ---comments---
 	comment(
 			".*",
-			"this comment is not allowed"),
+			"this comment is not allowed > "),
 
 	word(
 			"[a-zA-Z][a-zA-Z0-9_\\-\\.]*",
-			"a word must contain only letters, digits or '-', '_', '.'  >"),
+			"a word start with letters and contains only letters, digits or '-', '_', '.'  > "),
 	//	command,
 	//	keyword
 	//	identifier,
@@ -21,30 +21,30 @@ public enum TokenType {
 	//---separators---
 	bracket(
 			"(\\{)|(\\})|(\\[)|(\\])|(\\()|(\\))|<|>",
-			"this bracket is not allowed : "),
+			"this bracket is not allowed > "),
 
 	punctuation(
 			":|;|,",
-			"this punctuation is not allowed : "),
+			"this punctuation is not allowed > "),
 
 	// ---literals---
 	string(
 			".+",
-			"a string must no be empty : "),
+			"a string must no be empty > "),
 	integer(
 			"[\\-]?\\d+",
-			"an integer must contain only digits after an optional minus sign : "),
+			"an integer must contain only digits after an optional minus sign > "),
 	bool(
 			"true|false",
-			"a bool must be true or false : "),
+			"a bool must be true or false > "),
 
 	//---pre-processing
 	variable(
-			"\\$[a-zA-Z]+",
-			"a variable begins with '$' and contains only latin letters : "),
-	directive(
-			"\\/[a-zA-Z]+",
-			"a directive begins with '/' and contains only latin letters : ");
+			"(/[a-z0-9]+)+",
+			"a variable looks like '/xxx/yyy' starting with '/' and followed only by lowercase latin letters > ");
+	//	command(
+	//			"/[a-zA-Z]+",
+	//			"a directive begins with '/' and contains only latin letters > ");
 
 	private final Pattern pattern;
 	private final String error;
@@ -71,15 +71,15 @@ public enum TokenType {
 				}
 				break;
 			case variable:
-				if (!Lexicon.isLetter(c)) {
-					throw buildException(index, "a variable contains only latin letters : " + c);
+				if (!Lexicon.isLowerCaseLetter(c) && c != '/') {
+					throw buildException(index, "a variable contains only lowercase latin letters separated with '/' : " + c);
 				}
 				break;
-			case directive:
-				if (!Lexicon.isLetter(c)) {
-					throw buildException(index, "a directive contains only latin letters : " + c);
-				}
-				break;
+			//			case command:
+			//				if (!Lexicon.isLetter(c)) {
+			//					throw buildException(index, "a directive contains only latin letters : " + c);
+			//				}
+			//				break;
 			case word:
 				if (!Lexicon.isMiddleCharAcceptedinaWord(c)) {
 					throw buildException(index, "a word must contain only letters,digits and _ or -");

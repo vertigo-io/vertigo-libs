@@ -15,8 +15,8 @@ public final class Lexicon {
 	//	private static final char STRING2_MARKER = '\'';
 	static final char COMMENT_MARKER = '#';
 	static final char NEGATIVE_MARKER = '-';
-	static final char VARIABLE_MARKER = '$';
-	static final char DIRECTIVE_MARKER = '/';
+	static final char VARIABLE_MARKER = '/';
+	static final char COMMAND_MARKER = '/';
 
 	public static final Token LCURLY_BRACKET = bracket('{');
 	public static final Token RCURLY_BRACKET = bracket('}');
@@ -138,5 +138,9 @@ public final class Lexicon {
 		return (c >= 'a' && c <= 'z')
 				|| (c >= 'A' && c <= 'Z');
 
+	}
+
+	static boolean isLowerCaseLetter(char c) {
+		return (c >= 'a' && c <= 'z');
 	}
 }

@@ -83,10 +83,11 @@ import io.vertigo.core.lang.VUserException;
  *  + directives to allow a pre-processing of source (directives )
  *  
  * 		Variable :
- * 			- begins with $ 
- * 			- contains [a-z] or [A-Z]
+ * 			- is a path of simple keys 
+ * 			- begins with '/'
+ * 			- contains the pattern /[a-z]+  that can be repeated
  * 			- must be declared in a single line ( EOL or EOF is a separator)
- * 			- ex : $hidden # is a variable
+ * 			- ex : /test/hidden # is a variable
  * 	
  * 		Directive :
  * 			- begins with / 
@@ -104,14 +105,14 @@ public final class Scanner {
 		separator,
 		//---
 		string, //beginning with '"', ending with '"'
-		integer, //beginning with a digit '"', , ending with a blank/EOl or a separator 
-		text, //beginning with a letter, ending with a blank/EOl or a separator
+		integer, //beginning with a digit '"', , ending with a blank or a separator 
+		text, //beginning with a letter, ending with a blank or a separator
 		//---
 		comment, //beginning with '#', ending with a EOL 
 
 		//Pre-processing
-		variable, //beginning with '$', ending with blank/EOL or a separator
-		directive; //beginning with '/', ending with blank/EOL or a separator
+		variable, //beginning with '/', ending with blank or a separator
+		//		command; //beginning with '/', ending with blank or a separator
 	}
 	//	private static final String EOL = System.lineSeparator();
 
@@ -179,8 +180,8 @@ public final class Scanner {
 					state = State.comment;
 				} else if (car == Lexicon.VARIABLE_MARKER) {
 					state = State.variable;
-				} else if (car == Lexicon.DIRECTIVE_MARKER) {
-					state = State.directive;
+					//				} else if (car == Lexicon.COMMAND_MARKER) {
+					//					state = State.command;
 				} else {
 					throw buildException("unexceped character : " + car);
 				}
@@ -191,6 +192,8 @@ public final class Scanner {
 
 		//---------------------------------------------------------------------
 		//-- Closing a Token
+		// ! Some tokens (text, boolean, variable, directive) can be closed by a separator or a blank ( ws, tab, or lr)
+		// If a separator is used then two tokens must be declared
 		//---------------------------------------------------------------------
 		final boolean closing;
 		switch (state) {
@@ -292,23 +295,24 @@ public final class Scanner {
 					addToken(separator);
 				}
 				break;
-			case directive:
-				closing = Lexicon.isBlank(car) || separator != null;
-				//inside a directive-token
-				if (!closing && index > openingToken) { // not the first character
-					TokenType.directive.checkAfterFirstCharacter(index, car);
-				}
-				//closing a directive-token
-				if (closing) {
-					final var text = source.substring(openingToken, index);
-					addToken(new Token(TokenType.directive, text));
-				}
-
-				//separator ?
-				if (separator != null) {
-					addToken(separator);
-				}
-				break;
+			//			case command:
+			//				closing = Lexicon.isBlank(car) || separator != null;
+			//
+			//				//inside a directive-token
+			//				if (!closing && index > openingToken) { // not the first character
+			//					TokenType.command.checkAfterFirstCharacter(index, car);
+			//				}
+			//				//closing a directive-token
+			//				if (closing) {
+			//					final var text = source.substring(openingToken, index);
+			//					addToken(new Token(TokenType.command, text));
+			//				}
+			//
+			//				//separator ?
+			//				if (separator != null) {
+			//					addToken(separator);
+			//				}
+			//				break;
 		}
 
 	}
