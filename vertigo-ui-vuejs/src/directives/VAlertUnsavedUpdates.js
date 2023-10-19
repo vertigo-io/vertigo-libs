@@ -1,5 +1,5 @@
 export default {
-    inserted: function (el, binding, vnode) {
+    mounted: function (el, binding, vnode) {
         var watchKeys = binding.expression;
         if (!window.watcherUpdates) {
             //Some init must be only once
@@ -47,7 +47,7 @@ export default {
             }, { deep: true });
         }
     },
-    unbind: function () {
+    unmounted: function () {
         window.removeEventListener('beforeunload', window.watcherUpdates.beforeWindowUnload)
     }
 }

@@ -1,5 +1,5 @@
 export default {
-    bind: function(el, binding, vnode) {
+    beforeMount: function(el, binding, vnode) {
         var doFocus = binding.value;
         if(doFocus && !window.autofocus) {
              window.autofocus = true;
