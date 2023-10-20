@@ -40,6 +40,9 @@ import io.vertigo.datastore.plugins.filestore.fs.FsFullFileStorePlugin;
 import io.vertigo.datastore.plugins.filestore.mimetype.tika.TikaMimeTypeResolverPlugin;
 import io.vertigo.datastore.plugins.kvstore.berkeley.BerkeleyKVStorePlugin;
 import io.vertigo.datastore.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
+import io.vertigo.datastore.plugins.kvstore.ehcache.EhCacheKVStorePlugin;
+import io.vertigo.datastore.plugins.kvstore.h2.H2KVStorePlugin;
+import io.vertigo.datastore.plugins.kvstore.speedb.SpeedbKVStorePlugin;
 
 /**
  * Defines dynamo features.
@@ -127,6 +130,27 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 	public DataStoreFeatures withBerkleyKV(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(BerkeleyKVStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("kvStore.speedb")
+	public DataStoreFeatures withSpeedbKV(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(SpeedbKVStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("kvStore.speedb")
+	public DataStoreFeatures withH2KV(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(H2KVStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("kvStore.ehcache")
+	public DataStoreFeatures withEhCacheKV(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(EhCacheKVStorePlugin.class, params);
 		return this;
 	}
 
