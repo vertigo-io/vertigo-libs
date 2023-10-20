@@ -3425,7 +3425,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 var VDashboardChart = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
 var VAlertUnsavedUpdates = {
   mounted: function(el, binding, vnode) {
-    var watchKeys = binding.expression;
+    var watchKeys = binding.value;
     if (!window.watcherUpdates) {
       window.watcherUpdates = {
         originalDocumentTitle: document.title,
@@ -3442,8 +3442,8 @@ var VAlertUnsavedUpdates = {
         }
       };
       window.addEventListener("beforeunload", window.watcherUpdates.beforeWindowUnload);
-      if (vnode.context.$root.uiMessageStack) {
-        var uiMessageStack = vnode.context.$root.uiMessageStack;
+      if (binding.instance.$root.uiMessageStack) {
+        var uiMessageStack = binding.instance.$root.uiMessageStack;
         var hasError = uiMessageStack.globalErrors.length > 0;
         for (let watchKey of watchKeys.split(",")) {
           hasError = hasError || uiMessageStack.objectFieldErrors[watchKey];
@@ -3458,7 +3458,7 @@ var VAlertUnsavedUpdates = {
     }
     el.addEventListener("click", window.watcherUpdates.acceptedUpdates);
     for (let watchKey of watchKeys.split(",")) {
-      vnode.context.$root.$watch("vueData." + watchKey, function() {
+      binding.instance.$root.$watch("vueData." + watchKey, function() {
         window.watcherUpdates.updates_detected = true;
         document.title = "*" + window.watcherUpdates.originalDocumentTitle;
       }, { deep: true });
@@ -3477,9 +3477,10 @@ var VAutofocus = {
     }
   }
 };
+const nextTick = window["Vue"].nextTick;
 var VIfUnsavedUpdates = {
   updated: function(el, binding, vnode) {
-    vnode.context.$nextTick(() => {
+    nextTick(() => {
       if (!window.watcherUpdates || !window.watcherUpdates.updates_detected) {
         el.classList.add("hidden");
       } else {
