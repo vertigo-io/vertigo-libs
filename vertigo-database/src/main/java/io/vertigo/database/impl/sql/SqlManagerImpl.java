@@ -301,8 +301,14 @@ public final class SqlManagerImpl implements SqlManager {
 	private <O> O traceWithReturn(final String sql, final Function<Tracer, O> function) {
 		final String requestTracerHeader;
 		if (sql.startsWith("/*")) { //default build query startWith /* task name */ : use it for tracer header
+			final int indexStart;
 			final int indexEnds = sql.indexOf("*/");
-			requestTracerHeader = sql.substring("/*".length(), Math.min(indexEnds > 0 ? indexEnds : REQUEST_HEADER_FOR_TRACER, sql.length())).trim();
+			if (sql.startsWith("/* TaskEngine : ")) { //default build query startWith /* task name */ : use it for tracer header
+				indexStart = "/* TaskEngine : ".length();
+			} else {
+				indexStart = "/*".length();
+			}
+			requestTracerHeader = sql.substring(indexStart, Math.min(indexEnds > 0 ? indexEnds : REQUEST_HEADER_FOR_TRACER, sql.length())).trim();
 		} else {
 			requestTracerHeader = sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACER, sql.length())).trim();
 		}
