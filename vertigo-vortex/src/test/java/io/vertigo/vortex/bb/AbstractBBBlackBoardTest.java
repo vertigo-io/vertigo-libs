@@ -219,6 +219,20 @@ public abstract class AbstractBBBlackBoardTest {
 	}
 
 	@Test
+	public void testBoolean() {
+		final BlackBoard blackBoard = blackBoardManager.connect(BBKey.of("/test"));
+		//---
+		final BBKey sampleKey = BBKey.of("/sample");
+		Assertions.assertEquals(null, blackBoard.getBoolean(sampleKey));
+		blackBoard.putBoolean(sampleKey, true);
+		Assertions.assertTrue(blackBoard.getBoolean(sampleKey));
+		blackBoard.putBoolean(sampleKey, false);
+		Assertions.assertTrue(blackBoard.eq(sampleKey, false));
+		blackBoard.putBoolean(sampleKey, true);
+		Assertions.assertTrue(blackBoard.eq(sampleKey, true));
+	}
+
+	@Test
 	public void testString() {
 		final BlackBoard blackBoard = blackBoardManager.connect(BBKey.of("/test"));
 		//---

@@ -17,7 +17,7 @@ public interface BlackBoard {
 	 * Types
 	 */
 	enum Type {
-		String, Integer, List
+		Boolean, String, Integer, List
 	}
 
 	//------------------------------------
@@ -165,6 +165,25 @@ public interface BlackBoard {
 	boolean eq(final BBKey key, final Integer compare);
 
 	boolean gt(final BBKey key, final Integer compare);
+
+	//--- KV Boolean
+	/**
+	 * Returns the value or null if the key does not exist
+	 *
+	 * @param key the key
+	 * @return the value mapped with the key or null if the key does not exist
+	 */
+	Boolean getBoolean(final BBKey key);
+
+	/**
+	 * Associates the specified value with the specified key
+	 *
+	 * @param key the key
+	 * @param value the value
+	 */
+	void putBoolean(final BBKey key, final Boolean value);
+
+	boolean eq(final BBKey key, final Boolean compare);
 
 	//------------------------------------
 	//- List

@@ -1,4 +1,4 @@
-Opackage io.vertigo.vortex.plugins.bb.redis;
+package io.vertigo.vortex.plugins.bb.redis;
 
 import java.util.HashSet;
 import java.util.List;

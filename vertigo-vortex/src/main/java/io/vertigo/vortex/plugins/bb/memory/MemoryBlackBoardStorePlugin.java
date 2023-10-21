@@ -111,6 +111,13 @@ public final class MemoryBlackBoardStorePlugin implements BlackBoardStorePlugin 
 	}
 
 	@Override
+	public Boolean getBoolean(final BBKey key) {
+		Assertion.check().isNotNull(key);
+		// ---
+		return (Boolean) values.get(key);
+	}
+
+	@Override
 	public void putString(final BBKey key, final String value) {
 		doPut(key, Type.String, value);
 	}
@@ -118,6 +125,11 @@ public final class MemoryBlackBoardStorePlugin implements BlackBoardStorePlugin 
 	@Override
 	public void putInteger(final BBKey key, final Integer value) {
 		doPut(key, Type.Integer, value);
+	}
+
+	@Override
+	public void putBoolean(final BBKey key, final Boolean value) {
+		doPut(key, Type.Boolean, value);
 	}
 
 	private void doPut(final BBKey key, final Type type, final Object value) {

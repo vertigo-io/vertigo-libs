@@ -37,6 +37,7 @@ final class BlackBoardImpl implements BlackBoard {
 
 	@Override
 	public Set<BBKey> keys(final BBKeyPattern keyPattern) {
+		Assertion.check().isNotNull(keyPattern);
 		//---
 		return blackBoardStorePlugin
 				.keys(keyPattern.indent(rootKey.key()))
@@ -47,6 +48,7 @@ final class BlackBoardImpl implements BlackBoard {
 
 	@Override
 	public void delete(final BBKeyPattern keyPattern) {
+		Assertion.check().isNotNull(keyPattern);
 		//---
 		blackBoardStorePlugin
 				.delete(keyPattern.indent(rootKey.key()));
@@ -56,7 +58,8 @@ final class BlackBoardImpl implements BlackBoard {
 	public Type getType(final BBKey key) {
 		Assertion.check().isNotNull(key);
 		//---
-		return blackBoardStorePlugin.getType(rootKey.add(key));
+		return blackBoardStorePlugin
+				.getType(rootKey.add(key));
 	}
 
 	//------------------------------------
@@ -175,6 +178,36 @@ final class BlackBoardImpl implements BlackBoard {
 		return compareInteger(value, compare);
 	}
 
+	//--- KV Boolean
+
+	@Override
+	public Boolean getBoolean(final BBKey key) {
+		checkKey(key, Type.Boolean);
+		//---
+		return blackBoardStorePlugin
+				.getBoolean(rootKey.add(key));
+	}
+
+	@Override
+	public void putBoolean(final BBKey key, final Boolean value) {
+		checkKey(key, Type.Boolean);
+		//---
+		blackBoardStorePlugin
+				.putBoolean(rootKey.add(key), value);
+	}
+
+	@Override
+	public boolean eq(final BBKey key, final Boolean compare) {
+		return compareBoolean(key, compare) == 0;
+	}
+
+	private int compareBoolean(final BBKey key, final Boolean compare) {
+		checkKey(key, Type.Boolean);
+		//---
+		final Boolean value = getBoolean(key);
+		return compareBoolean(value, compare);
+	}
+
 	//------------------------------------
 	//- List
 	//- All methods are prefixed with list
@@ -240,6 +273,20 @@ final class BlackBoardImpl implements BlackBoard {
 		if (t != null && !type.equals(t)) {
 			throw new IllegalStateException("the type of the key " + t + " is not the one expected " + type);
 		}
+	}
+
+	private static int compareBoolean(final Boolean value, final Boolean compare) {
+		if (value == null) {
+			return compare == null
+					? 0
+					: -1;
+		}
+		if (compare == null) {
+			return value == null
+					? 0
+					: -1;
+		}
+		return value.compareTo(compare);
 	}
 
 	private static int compareInteger(final Integer value, final Integer compare) {

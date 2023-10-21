@@ -85,6 +85,17 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 */
 	void incrBy(final BBKey key, final int value);
 
+	//--- KV Boolean
+	/**
+	 * Returns the value or null if the key does not exist
+	 *
+	 * @param key the key
+	 * @return the value mapped with the key or null if the key does not exist
+	 */
+	Boolean getBoolean(final BBKey key);
+
+	void putBoolean(final BBKey key, final Boolean value);
+
 	//------------------------------------
 	//- List
 	//- All methods are prefixed with list
