@@ -26,38 +26,24 @@ import com.sleepycat.bind.tuple.TupleOutput;
 import io.vertigo.core.lang.Assertion;
 
 /**
- * Time checker, entryToObject return true if data is still valid against ttl.
+ * Time extract and store
  *
- * @author skerdudou
+ * @author npiedeloup
  */
-class BerkeleyTimeCheckDataBinding extends TupleBinding<Serializable> {
-	public static final String PREFIX = "TimedValue:";
-	private final long timeToLiveSeconds;
-
-	/**
-	 * @param timeToLiveSeconds Time to live, is data too old return false
-	 */
-	BerkeleyTimeCheckDataBinding(final long timeToLiveSeconds) {
-		this.timeToLiveSeconds = timeToLiveSeconds;
-	}
+class BerkeleyTimePrefixDataBinding extends TupleBinding<Serializable> {
 
 	/** {@inheritDoc} */
 	@Override
 	public Serializable entryToObject(final TupleInput ti) {
 		final String prefix = ti.readString();
-		Assertion.check().isTrue(PREFIX.equals(prefix), "Can't read this entry {0}", prefix);
-		final long createTime = ti.readLong();
-		return !isValueTooOld(createTime);
+		Assertion.check().isTrue(BerkeleyTimeCheckDataBinding.PREFIX.equals(prefix), "Can't read this entry {0}", prefix);
+		return ti.readLong();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void objectToEntry(final Serializable value, final TupleOutput to) {
-		throw new UnsupportedOperationException("This data binding is for read-only.");
-	}
-
-	protected boolean isValueTooOld(final long createTime) {
-		return timeToLiveSeconds > 0 && System.currentTimeMillis() - createTime >= timeToLiveSeconds * 1000;
+		to.writeLong((Long) value);
 	}
 
 }

@@ -15,28 +15,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.datastore.kvstore.berkeley;
+package io.vertigo.datastore.kvstore.speedb;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
+import io.vertigo.core.plugins.param.env.SystemPropertyParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.kvstore.AbstractKVStoreManagerTest;
 
 /**
- * @author pchretien
+ * @author npiedeloup
  */
-public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest {
+public final class SpeedbKVStoreManagerTest extends AbstractKVStoreManagerTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
+		System.setProperty("analyticsServer", "analytica.part.klee.lan.net");
+		//System.setProperty("analyticsServer", "0.0.0.0");
+		final boolean json = true;
 		return NodeConfig.builder()
 				.withBoot(BootConfig.builder()
+						.addPlugin(SystemPropertyParamPlugin.class)
 						.addPlugin(ClassPathResourceResolverPlugin.class)
-						.addAnalyticsConnectorPlugin(SocketLoggerAnalyticsConnectorPlugin.class)
+						.addAnalyticsConnectorPlugin(SocketLoggerAnalyticsConnectorPlugin.class,
+								Param.of("hostNameParam", "analyticsServer"),
+								Param.of("port", json ? 4563 : 4562), //4562:serialiazed, 4563:json
+								Param.of("batchSize", "10"),
+								Param.of("jsonLayout", String.valueOf(json)),
+								Param.of("compressOutputStream", "true"))
 						.build())
 				.addModule(new CommonsFeatures()
 						.build())
@@ -44,12 +57,24 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 						.withCache()
 						.withMemoryCache()
 						.withKVStore()
-						.withBerkleyKV(
+						.withSpeedbKV(
 								Param.of("collections", "flowers;TTL=" + TTL + ", trees;inMemory"),
-								Param.of("dbFilePath", storagePath),
-								Param.of("purgeVersion", "V3"))
+								Param.of("dbFilePath", storagePath))
 						.build())
 				.build();
 	}
 
+	@Override
+	@Disabled
+	@Test
+	public void testRemoveFail() {
+		//cant detect not found key
+	}
+
+	@Override
+	@Disabled
+	@Test
+	public void testTimeToLive() {
+		//need daemon : get can return expired key @see https://github.com/facebook/rocksdb/wiki/Time-to-Live
+	}
 }

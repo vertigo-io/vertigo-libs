@@ -1,6 +1,6 @@
 {
   "name": "@vertigo-io/vertigo-ui-vuejs",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "scripts": {
     "dev": "vite --port 3000",
     "build": "vite build",

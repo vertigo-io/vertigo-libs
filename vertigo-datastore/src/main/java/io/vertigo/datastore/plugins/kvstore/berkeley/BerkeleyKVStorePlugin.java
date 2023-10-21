@@ -31,7 +31,6 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
@@ -58,6 +57,7 @@ import io.vertigo.datastore.kvstore.KVCollection;
  * @author pchretien, npiedeloup
  */
 public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, SimpleDefinitionProvider {
+	private static final String ANALYTICS_CATEGORY = "kvstore";
 	private static final boolean READONLY = false;
 	private static final Logger LOGGER = LogManager.getLogger(BerkeleyKVStorePlugin.class);
 	private static final int REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS = 60;
@@ -74,6 +74,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 	private Environment fsEnvironment;
 	private Environment ramEnvironment;
 	private final Map<KVCollection, BerkeleyDatabase> databases = new HashMap<>();
+	private final Optional<String> purgeVersion;
 
 	/**
 	 * Constructor.
@@ -93,12 +94,14 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 	public BerkeleyKVStorePlugin(
 			@ParamValue("collections") final String collections,
 			@ParamValue("dbFilePath") final String dbFilePath,
+			@ParamValue("purgeVersion") final Optional<String> purgeVersion,
 			final VTransactionManager transactionManager,
 			final CodecManager codecManager,
 			final AnalyticsManager analyticsManager) {
 		Assertion.check()
 				.isNotBlank(collections)
 				.isNotBlank(dbFilePath)
+				.isNotNull(purgeVersion)
 				.isNotNull(transactionManager)
 				.isNotNull(analyticsManager);
 		//-----
@@ -110,15 +113,16 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 				.collect(Collectors.toList());
 		//-----
 		dbFilePathTranslated = FileUtil.translatePath(dbFilePath);
-		minFreeDisk = "100000000"; //Minimum free disk space to maintain, in bytes. If the limit is exceeded, write operations will be prohibited. Default to 100M.
+		minFreeDisk = "1000000000"; //Minimum free disk space to maintain, in bytes. If the limit is exceeded, write operations will be prohibited. Default to 1Go.
 		this.transactionManager = transactionManager;
+		this.purgeVersion = purgeVersion;
 		this.codecManager = codecManager;
 		this.analyticsManager = analyticsManager;
 	}
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		final var name = "DmnPurgeBerkeleyKvStore$a" + hashCode();
+		final var name = "DmnPurgeBerkeleyKvStore$a" + Math.abs(dbFilePathTranslated.hashCode()); //more stable in time
 		final Supplier<Daemon> daemonSupplier = () -> () -> analyticsManager.trace("daemon", name, tracer -> removeTooOldElements());
 		return Collections.singletonList(new DaemonDefinition(name, daemonSupplier, REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS));
 	}
@@ -160,16 +164,11 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 		ramEnvironment = buildRamEnvironment(new File(dbFilePathTranslated + File.separator + "ram"), readOnly);
 		fsEnvironment = buildFsEnvironment(new File(dbFilePathTranslated), readOnly, minFreeDisk);
 
-		final DatabaseConfig databaseConfig = new DatabaseConfig()
-				.setReadOnly(readOnly)
-				.setAllowCreate(!readOnly)
-				.setTransactional(!readOnly);
-
 		for (final BerkeleyCollectionConfig collectionConfig : collectionConfigs) {
-			final BerkeleyDatabase berkeleyDatabase = new BerkeleyDatabase(
-					(collectionConfig.isInMemory() ? ramEnvironment : fsEnvironment) //select environment (FS or RAM)
-							.openDatabase(null, collectionConfig.getCollectionName(), databaseConfig), //open database
-					collectionConfig.getTimeToLiveSeconds(), transactionManager, codecManager, analyticsManager);
+			final BerkeleyDatabase berkeleyDatabase = new BerkeleyDatabase(collectionConfig.getCollectionName(),
+					collectionConfig.isInMemory() ? ramEnvironment : fsEnvironment, //open database
+					collectionConfig.getTimeToLiveSeconds(), purgeVersion, transactionManager, codecManager, analyticsManager);
+
 			databases.put(new KVCollection(collectionConfig.getCollectionName()), berkeleyDatabase);
 		}
 	}
@@ -204,7 +203,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 	public void stop() {
 		try {
 			for (final BerkeleyDatabase berkeleyDatabase : databases.values()) {
-				berkeleyDatabase.getDatabase().close();
+				berkeleyDatabase.close();
 			}
 			fsEnvironment.cleanLog(); //we make some cleaning
 		} finally {
@@ -223,7 +222,9 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 	private void removeTooOldElements() {
 		for (final KVCollection collection : collections) {
 			try {
-				getDatabase(collection).removeTooOldElements();
+				analyticsManager.trace(ANALYTICS_CATEGORY, "removeTooOldElements" + purgeVersion.orElse("V3"), tracer -> {
+					getDatabase(collection).removeTooOldElements();
+				});
 			} catch (final DatabaseException dbe) {
 				LOGGER.error("Error closing BerkeleyContextCachePlugin (database:" + collection + ") " + dbe, dbe);
 			}
@@ -239,37 +240,55 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 	/** {@inheritDoc} */
 	@Override
 	public void remove(final KVCollection collection, final String id) {
-		getDatabase(collection).delete(id);
+		analyticsManager.trace(ANALYTICS_CATEGORY, "remove", tracer -> {
+			tracer.setTag("collection", collection.name());
+			getDatabase(collection).delete(id);
+		});
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void clear(final KVCollection collection) {
-		getDatabase(collection).clear();
+		analyticsManager.trace(ANALYTICS_CATEGORY, "clear", tracer -> {
+			tracer.setTag("collection", collection.name());
+			getDatabase(collection).clear();
+		});
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void put(final KVCollection collection, final String id, final Object element) {
+		//analyticsManager.trace(ANALYTICS_CATEGORY, "put", tracer -> {
+		//	tracer.setTag("collection", collection.name());
 		getDatabase(collection).put(id, element);
+		//});
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <C> Optional<C> find(final KVCollection collection, final String id, final Class<C> clazz) {
-		return getDatabase(collection).find(id, clazz);
+		return analyticsManager.traceWithReturn(ANALYTICS_CATEGORY, "find", tracer -> {
+			tracer.setTag("collection", collection.name());
+			return getDatabase(collection).find(id, clazz);
+		});
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <C> List<C> findAll(final KVCollection collection, final int skip, final Integer limit, final Class<C> clazz) {
-		return getDatabase(collection).findAll(skip, limit, clazz);
+		return analyticsManager.traceWithReturn(ANALYTICS_CATEGORY, "findAll", tracer -> {
+			tracer.setTag("collection", collection.name());
+			return getDatabase(collection).findAll(skip, limit, clazz);
+		});
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public int count(final KVCollection collection) {
-		return getDatabase(collection).count();
+		return analyticsManager.traceWithReturn(ANALYTICS_CATEGORY, "count", tracer -> {
+			tracer.setTag("collection", collection.name());
+			return getDatabase(collection).count();
+		});
 	}
 
 }

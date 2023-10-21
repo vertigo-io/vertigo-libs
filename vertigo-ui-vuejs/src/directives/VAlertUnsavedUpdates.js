@@ -1,6 +1,6 @@
 export default {
-    inserted: function (el, binding, vnode) {
-        var watchKeys = binding.expression;
+    mounted: function (el, binding, vnode) {
+        var watchKeys = binding.value;
         if (!window.watcherUpdates) {
             //Some init must be only once
             window.watcherUpdates = {
@@ -21,9 +21,8 @@ export default {
                 },
             };
             window.addEventListener('beforeunload', window.watcherUpdates.beforeWindowUnload);
-
-            if (vnode.context.$root.uiMessageStack) {
-                var uiMessageStack = vnode.context.$root.uiMessageStack;
+            if (binding.instance.$root.uiMessageStack) {                
+                var uiMessageStack = binding.instance.$root.uiMessageStack;
                 var hasError = uiMessageStack.globalErrors.length > 0;
                 for (let watchKey of watchKeys.split(",")) {
                     hasError = hasError || uiMessageStack.objectFieldErrors[watchKey];
@@ -41,13 +40,13 @@ export default {
 
         //each button watch data (watchKey may differ)
         for (let watchKey of watchKeys.split(",")) {
-            vnode.context.$root.$watch('vueData.' + watchKey, function () {
+            binding.instance.$root.$watch('vueData.' + watchKey, function () {
                 window.watcherUpdates.updates_detected = true;
                 document.title = '*' + window.watcherUpdates.originalDocumentTitle;
             }, { deep: true });
         }
     },
-    unbind: function () {
+    unmounted: function () {
         window.removeEventListener('beforeunload', window.watcherUpdates.beforeWindowUnload)
     }
 }

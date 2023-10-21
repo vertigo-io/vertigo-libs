@@ -1,6 +1,8 @@
+import { nextTick } from 'vue'
+
 export default {
-     update: function (el, binding, vnode) {
-          vnode.context.$nextTick(() => {
+     updated: function (el, binding, vnode) {
+          nextTick(() => {
                if (!window.watcherUpdates || !window.watcherUpdates.updates_detected) {
                     el.classList.add('hidden')
                } else {

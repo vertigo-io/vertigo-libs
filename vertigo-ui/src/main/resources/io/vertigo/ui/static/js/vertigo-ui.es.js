@@ -990,6 +990,7 @@ const _sfc_main$9 = {
     facets: Array,
     selectedFacets: Object,
     contextKey: String,
+    facetValueTranslatorProvider: Function,
     maxValues: {
       type: Number,
       default: 5
@@ -999,10 +1000,17 @@ const _sfc_main$9 = {
   computed: {},
   data: function() {
     return {
-      expandedFacets: []
+      expandedFacets: [],
+      codeToLabelTranslater: {}
     };
   },
+  created: function() {
+    this.facetValueTranslatorProvider(this);
+  },
   methods: {
+    addFacetValueTranslator(facetCode, facetValueCodeTranslator) {
+      this.codeToLabelTranslater[facetCode] = facetValueCodeTranslator;
+    },
     facetByCode(facetCode) {
       return this.facets.filter(function(facet) {
         return facet.code === facetCode;
@@ -1020,6 +1028,9 @@ const _sfc_main$9 = {
       return this.facetByCode(facetCode).multiple;
     },
     facetValueLabelByCode(facetCode, facetValueCode) {
+      if (this.codeToLabelTranslater[facetCode]) {
+        return this.codeToLabelTranslater[facetCode](facetCode, facetValueCode);
+      }
       var facetValueByCode = this.facetValueByCode(facetCode, facetValueCode);
       return facetValueByCode ? facetValueByCode.label : facetValueCode;
     },
@@ -1085,7 +1096,6 @@ const _hoisted_2$2 = {
 };
 function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_q_chip = _resolveComponent$7("q-chip");
-  const _component_big = _resolveComponent$7("big");
   const _component_q_item_label = _resolveComponent$7("q-item-label");
   const _component_q_checkbox = _resolveComponent$7("q-checkbox");
   const _component_q_item_section = _resolveComponent$7("q-item-section");
@@ -1123,12 +1133,7 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
           facet.multiple || !$options.isFacetSelected(facet.code) ? (_openBlock$9(), _createElementBlock$8(_Fragment$4, { key: 0 }, [
             _createVNode$5(_component_q_item_label, { header: "" }, {
               default: _withCtx$6(() => [
-                _createVNode$5(_component_big, null, {
-                  default: _withCtx$6(() => [
-                    _createTextVNode$3(_toDisplayString$6(facet.label), 1)
-                  ]),
-                  _: 2
-                }, 1024)
+                _createTextVNode$3(_toDisplayString$6(facet.label), 1)
               ]),
               _: 2
             }, 1024),
@@ -1155,7 +1160,7 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
                   }, 1024)) : _createCommentVNode$3("", true),
                   _createVNode$5(_component_q_item_section, null, {
                     default: _withCtx$6(() => [
-                      _createTextVNode$3(_toDisplayString$6(value.label), 1)
+                      _createTextVNode$3(_toDisplayString$6($options.facetValueLabelByCode(facet.code, value.code)), 1)
                     ]),
                     _: 2
                   }, 1024),
@@ -1192,7 +1197,7 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
                   }, 1024)) : _createCommentVNode$3("", true),
                   _createVNode$5(_component_q_item_section, null, {
                     default: _withCtx$6(() => [
-                      _createTextVNode$3(_toDisplayString$6(value.label), 1)
+                      _createTextVNode$3(_toDisplayString$6($options.facetValueLabelByCode(facet.code, value.code)), 1)
                     ]),
                     _: 2
                   }, 1024),
@@ -3419,8 +3424,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 var VDashboardChart = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
 var VAlertUnsavedUpdates = {
-  inserted: function(el, binding, vnode) {
-    var watchKeys = binding.expression;
+  mounted: function(el, binding, vnode) {
+    var watchKeys = binding.value;
     if (!window.watcherUpdates) {
       window.watcherUpdates = {
         originalDocumentTitle: document.title,
@@ -3437,8 +3442,8 @@ var VAlertUnsavedUpdates = {
         }
       };
       window.addEventListener("beforeunload", window.watcherUpdates.beforeWindowUnload);
-      if (vnode.context.$root.uiMessageStack) {
-        var uiMessageStack = vnode.context.$root.uiMessageStack;
+      if (binding.instance.$root.uiMessageStack) {
+        var uiMessageStack = binding.instance.$root.uiMessageStack;
         var hasError = uiMessageStack.globalErrors.length > 0;
         for (let watchKey of watchKeys.split(",")) {
           hasError = hasError || uiMessageStack.objectFieldErrors[watchKey];
@@ -3453,18 +3458,18 @@ var VAlertUnsavedUpdates = {
     }
     el.addEventListener("click", window.watcherUpdates.acceptedUpdates);
     for (let watchKey of watchKeys.split(",")) {
-      vnode.context.$root.$watch("vueData." + watchKey, function() {
+      binding.instance.$root.$watch("vueData." + watchKey, function() {
         window.watcherUpdates.updates_detected = true;
         document.title = "*" + window.watcherUpdates.originalDocumentTitle;
       }, { deep: true });
     }
   },
-  unbind: function() {
+  unmounted: function() {
     window.removeEventListener("beforeunload", window.watcherUpdates.beforeWindowUnload);
   }
 };
 var VAutofocus = {
-  bind: function(el, binding, vnode) {
+  beforeMount: function(el, binding, vnode) {
     var doFocus = binding.value;
     if (doFocus && !window.autofocus) {
       window.autofocus = true;
@@ -3472,9 +3477,10 @@ var VAutofocus = {
     }
   }
 };
+const nextTick = window["Vue"].nextTick;
 var VIfUnsavedUpdates = {
-  update: function(el, binding, vnode) {
-    vnode.context.$nextTick(() => {
+  updated: function(el, binding, vnode) {
+    nextTick(() => {
       if (!window.watcherUpdates || !window.watcherUpdates.updates_detected) {
         el.classList.add("hidden");
       } else {
@@ -4152,11 +4158,11 @@ var VMethods = {
         uiMessageStack[key] = response.data.uiMessageStack[key];
       });
       if (options && options.onSuccess) {
-        options.onSuccess.call(this, response);
+        options.onSuccess.call(this, response, window);
       }
     }.bind(this)).catch(function(error) {
       if (options && options.onError) {
-        options.onError.call(this, error.response);
+        options.onError.call(this, error.response, window);
       }
     }).finally(function() {
       this.removePendingAction(url);
