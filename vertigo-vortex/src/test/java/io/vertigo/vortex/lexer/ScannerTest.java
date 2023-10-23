@@ -298,26 +298,26 @@ public class ScannerTest {
 		assertEquals(TokenType.variable, tokens.get(0).type());
 	}
 
-	//	//=========================================================================
-	//	//=== COMMANDS
-	//	//=========================================================================
-	//	@ParameterizedTest
-	//	@ValueSource(strings = { "/lorem", " /lorem", "/lorem  ", " /lorem ", "    /lorem\r\n" })
-	//	public void test80(String src) {
-	//		List<Token> tokens = tokenize(src, true);
-	//		assertEquals(1, tokens.size());
-	//		assertEquals("/lorem", tokens.get(0).value());
-	//		assertEquals(TokenType.command, tokens.get(0).type());
-	//	}
-	//
-	//	@ParameterizedTest
-	//	@ValueSource(strings = { "/lorem ipsum est", " /lorem ipsum 99", "/lorem, ipsum", " /lorem { }", "    /lorem\r\n ipsum est" })
-	//	public void test81(String src) {
-	//		List<Token> tokens = tokenize(src, true);
-	//		assertEquals(3, tokens.size());
-	//		assertEquals("/lorem", tokens.get(0).value());
-	//		assertEquals(TokenType.command, tokens.get(0).type());
-	//	}
+	//=========================================================================
+	//=== DIRECTIVES
+	//=========================================================================
+	@ParameterizedTest
+	@ValueSource(strings = { "/lorem", " /lorem", "/lorem  ", " /lorem ", "    /lorem\r\n" })
+	public void test80(String src) {
+		List<Token> tokens = tokenize(src, true);
+		assertEquals(1, tokens.size());
+		assertEquals("/lorem", tokens.get(0).value());
+		assertEquals(TokenType.directive, tokens.get(0).type());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "/lorem ipsum est", " /lorem ipsum 99", "/lorem, ipsum", " /lorem { }", "    /lorem\r\n ipsum est" })
+	public void test81(String src) {
+		List<Token> tokens = tokenize(src, true);
+		assertEquals(3, tokens.size());
+		assertEquals("/lorem", tokens.get(0).value());
+		assertEquals(TokenType.directive, tokens.get(0).type());
+	}
 
 	//=========================================================================
 	//=== FULL
