@@ -20,7 +20,7 @@ public enum TokenType {
 
 	//---separators---
 	bracket(
-			"(\\{)|(\\})|(\\[)|(\\])|(\\()|(\\))|<|>",
+			"(\\{)|(\\})|(\\[)|(\\])|(\\()|(\\))|<|>", // {}[]()<>
 			"this bracket is not allowed > "),
 
 	punctuation(
@@ -40,11 +40,11 @@ public enum TokenType {
 
 	//---pre-processing
 	variable(
-			"(/[a-z0-9]+)+",
-			"a variable looks like '/xxx/yyy' starting with '/' and followed only by lowercase latin letters > ");
-	//	command(
-	//			"/[a-zA-Z]+",
-	//			"a directive begins with '/' and contains only latin letters > ");
+			"\\$(/[a-z0-9]+)+",
+			"a variable looks like '$/xxx/yyy' starting with '$' and followed only by a path in lowercase latin letters or digits > "),
+	directive(
+			"/[a-z]+",
+			"a directive begins with '/' and contains only lowercase latin letters > ");
 
 	private final Pattern pattern;
 	private final String error;

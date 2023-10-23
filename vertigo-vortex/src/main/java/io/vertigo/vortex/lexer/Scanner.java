@@ -9,7 +9,7 @@ import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VUserException;
 
 /**
- * This scanner split a text into tokens to read a 'command grammar'.
+ * This scanner splits a text into tokens to read a 'command grammar'.
  * To be fast, furious and simple, only one character is necessary to identify the type of tokens.  
  * 
  * All token types are defined by their first character
@@ -80,18 +80,18 @@ import io.vertigo.core.lang.VUserException;
  * 	transforms source with some directives to include/exclude parts of text or include some other sources with conditions.
  * 	these directives can be viewed as pre-processor commands
  * 	+ variables 
- *  + directives to allow a pre-processing of source (directives )
+ *  + directives to allow pre-processing of source
  *  
  * 		Variable :
  * 			- is a path of simple keys 
- * 			- begins with '/'
+ * 			- begins with '$'
  * 			- contains the pattern /[a-z]+  that can be repeated
  * 			- must be declared in a single line ( EOL or EOF is a separator)
- * 			- ex : /test/hidden # is a variable
+ * 			- ex : $/test/hidden # is a variable
  * 	
  * 		Directive :
  * 			- begins with / 
- * 			- contains [a-z] or [A-Z]
+ * 			- contains [a-z] and '-' as a separator ( snake-case)
  * 			- must be declared in a single line ( EOL or EOF is a separator)
  * 			- ex : /set  # is a directive
  * 
@@ -102,17 +102,19 @@ public final class Scanner {
 
 	private enum State {
 		waiting,
-		separator,
+		separator, // in only one character ( brackets or punctuation)
 		//---
-		string, //beginning with '"', ending with '"'
-		integer, //beginning with a digit '"', , ending with a blank or a separator 
-		text, //beginning with a letter, ending with a blank or a separator
+		//	openingString,
+		string, //beginning with '"', ending with '"' 
+		//	closingString,
+		integer, //beginning with a digit or a minus sign,ending with a [blank or a separator] 
+		text, //beginning with a letter, ending with a [blank or a separator]
 		//---
 		comment, //beginning with '#', ending with a EOL 
 
 		//Pre-processing
-		variable, //beginning with '/', ending with blank or a separator
-		//		command; //beginning with '/', ending with blank or a separator
+		variable, //beginning with '$', ending with [blank or a separator]
+		directive; //beginning with '/', ending with [blank or a separator]
 	}
 	//	private static final String EOL = System.lineSeparator();
 
@@ -180,8 +182,8 @@ public final class Scanner {
 					state = State.comment;
 				} else if (car == Lexicon.VARIABLE_MARKER) {
 					state = State.variable;
-					//				} else if (car == Lexicon.COMMAND_MARKER) {
-					//					state = State.command;
+				} else if (car == Lexicon.DIRECTIVE_MARKER) {
+					state = State.directive;
 				} else {
 					throw buildException("unexceped character : " + car);
 				}
@@ -295,7 +297,24 @@ public final class Scanner {
 					addToken(separator);
 				}
 				break;
-			//			case command:
+			case directive:
+				closing = Lexicon.isBlank(car) || separator != null;
+
+				//inside a variable-token
+				if (!closing && index > openingToken) { // not the first character
+					//TokenType.variable.checkAfterFirstCharacter(index, car);
+				}
+				//closing a variable-token
+				if (closing) {
+					final var text = source.substring(openingToken, index);
+					addToken(new Token(TokenType.directive, text));
+				}
+
+				//separator ?
+				if (separator != null) {
+					addToken(separator);
+				}
+				break; //			case command:
 			//				closing = Lexicon.isBlank(car) || separator != null;
 			//
 			//				//inside a directive-token

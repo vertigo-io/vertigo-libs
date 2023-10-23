@@ -201,8 +201,19 @@ public class ScannerTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "\"lorem", " lorem\" ", "\"lorem\r\n", "\"\"", " \"lo\\rem\"" })
-	public void testFail32(String src) {
+	@ValueSource(strings = { "\"lorem\" \"IPSUM\"", "  \"lorem\"     \"IPSUM\"   ", "  \"lorem\"   \r\n  \"IPSUM\"   " })
+	public void test32(String src) {
+		List<Token> tokens = tokenize(src, false);
+		assertEquals(2, tokens.size());
+		assertEquals("lorem", tokens.get(0).value());
+		assertEquals(TokenType.string, tokens.get(0).type());
+		assertEquals("IPSUM", tokens.get(1).value());
+		assertEquals(TokenType.string, tokens.get(1).type());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "\"lorem", " lorem\" ", "\"lorem\r\n", "\"\"", " \"lo\\rem\"", "\"lorem\"\"IPSUM\"" })
+	public void testFail33(String src) {
 		Assertions.assertThrows(Throwable.class, () -> tokenize(src, false));
 	}
 
@@ -270,20 +281,20 @@ public class ScannerTest {
 	//=== VARIABLES 
 	//=========================================================================
 	@ParameterizedTest
-	@ValueSource(strings = { "/lorem", " /lorem", "/lorem  ", " /lorem ", "    /lorem\r\n" })
+	@ValueSource(strings = { "$/lorem", " $/lorem", "$/lorem  ", " $/lorem ", "    $/lorem\r\n" })
 	public void test70(String src) {
 		List<Token> tokens = tokenize(src, true);
 		assertEquals(1, tokens.size());
-		assertEquals("/lorem", tokens.get(0).value());
+		assertEquals("$/lorem", tokens.get(0).value());
 		assertEquals(TokenType.variable, tokens.get(0).type());
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "/lorem ipsum est", " /lorem ipsum 99", "/lorem, ipsum", " /lorem { }", "    /lorem\r\n ipsum est" })
+	@ValueSource(strings = { "$/lorem ipsum est", " $/lorem ipsum 99", "$/lorem, ipsum", " $/lorem { }", "    $/lorem\r\n ipsum est" })
 	public void test71(String src) {
 		List<Token> tokens = tokenize(src, true);
 		assertEquals(3, tokens.size());
-		assertEquals("/lorem", tokens.get(0).value());
+		assertEquals("$/lorem", tokens.get(0).value());
 		assertEquals(TokenType.variable, tokens.get(0).type());
 	}
 
