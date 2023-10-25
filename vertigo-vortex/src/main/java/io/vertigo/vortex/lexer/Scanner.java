@@ -165,31 +165,27 @@ public final class Scanner {
 		//---------------------------------------------------------------------
 		//-- Opening a new Token
 		//---------------------------------------------------------------------
-		if (state == State.waiting) {
-			if (Lexicon.isBlank(car)) {
-				//No token 
+		if (state == State.waiting && !Lexicon.isBlank(car)) {
+			if (separator != null) {
+				state = State.separator;
+			} else if (Lexicon.isLetter(car)) {
+				state = State.text;
+			} else if (car == Lexicon.STRING_MARKER) {
+				escapingString = false;
+				state = State.string;
+			} else if (Lexicon.isDigit(car) || car == Lexicon.NEGATIVE_MARKER) {
+				state = State.integer;
+			} else if (car == Lexicon.COMMENT_MARKER) {
+				state = State.comment;
+			} else if (car == Lexicon.VARIABLE_MARKER) {
+				state = State.variable;
+			} else if (car == Lexicon.DIRECTIVE_MARKER) {
+				state = State.directive;
 			} else {
-				if (separator != null) {
-					state = State.separator;
-				} else if (Lexicon.isLetter(car)) {
-					state = State.text;
-				} else if (car == Lexicon.STRING_MARKER) {
-					escapingString = false;
-					state = State.string;
-				} else if (Lexicon.isDigit(car) || car == Lexicon.NEGATIVE_MARKER) {
-					state = State.integer;
-				} else if (car == Lexicon.COMMENT_MARKER) {
-					state = State.comment;
-				} else if (car == Lexicon.VARIABLE_MARKER) {
-					state = State.variable;
-				} else if (car == Lexicon.DIRECTIVE_MARKER) {
-					state = State.directive;
-				} else {
-					throw buildException("unexceped character : " + car);
-				}
-				//We have "opened" a new token, yeah ! 
-				openingToken = index;
+				throw buildException("unexceped character : " + car);
 			}
+			//We have "opened" a new token, yeah ! 
+			openingToken = index;
 		}
 
 		//---------------------------------------------------------------------
@@ -314,24 +310,7 @@ public final class Scanner {
 				if (separator != null) {
 					addToken(separator);
 				}
-				break; //			case command:
-			//				closing = Lexicon.isBlank(car) || separator != null;
-			//
-			//				//inside a directive-token
-			//				if (!closing && index > openingToken) { // not the first character
-			//					TokenType.command.checkAfterFirstCharacter(index, car);
-			//				}
-			//				//closing a directive-token
-			//				if (closing) {
-			//					final var text = source.substring(openingToken, index);
-			//					addToken(new Token(TokenType.command, text));
-			//				}
-			//
-			//				//separator ?
-			//				if (separator != null) {
-			//					addToken(separator);
-			//				}
-			//				break;
+				break;
 			default:
 				throw new IllegalStateException();
 		}

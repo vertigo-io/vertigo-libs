@@ -8,11 +8,11 @@ import io.vertigo.core.lang.VUserException;
 public enum TokenType {
 	// ---comments---
 	comment(
-			".*",
+			".*", //regex
 			"this comment is not allowed > "),
 
 	word(
-			"[a-zA-Z][a-zA-Z0-9_\\-\\.]*",
+			"[a-zA-Z][a-zA-Z0-9_\\-\\.]*", //regex
 			"a word start with letters and contains only letters, digits or '-', '_', '.'  > "),
 	//	command,
 	//	keyword
@@ -20,19 +20,19 @@ public enum TokenType {
 
 	//---separators---
 	bracket(
-			"(\\{)|(\\})|(\\[)|(\\])|(\\()|(\\))|<|>", // {}[]()<>
+			"(\\{)|(\\})|(\\[)|(\\])|(\\()|(\\))|<|>", // regex {}[]()<>
 			"this bracket is not allowed > "),
 
 	punctuation(
-			":|;|,",
+			":|;|,", //regex
 			"this punctuation is not allowed > "),
 
 	// ---literals---
 	string(
-			".+",
+			".+", //regex
 			"a string must no be empty > "),
 	integer(
-			"[\\-]?\\d+",
+			"[\\-]?\\d+", //regex
 			"an integer must contain only digits after an optional minus sign > "),
 	bool(
 			"true|false",
@@ -40,10 +40,10 @@ public enum TokenType {
 
 	//---pre-processing
 	variable(
-			"\\$(/[a-z0-9]+)+",
+			"\\$(/[a-z0-9]+)+", //regex
 			"a variable looks like '$/xxx/yyy' starting with '$' and followed only by a path in lowercase latin letters or digits > "),
 	directive(
-			"/[a-z]+",
+			"/[a-z]+", //regex
 			"a directive begins with '/' and contains only lowercase latin letters > ");
 
 	private final Pattern pattern;
