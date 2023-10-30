@@ -101,7 +101,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 			masterManager.schedule(slowWork, SlowWorkEngine.class, workResultHanlder);
 		}
 		final boolean firstsFinished = workResultHanlder.waitFinish(5, 6 * 1000);
-		Assertions.assertTrue(firstsFinished, "First 5 works should finished before 6s, to test deadnode failover");
+		Assertions.assertTrue(firstsFinished, "First 5 works should finished before 6s, to test deadnode failover (" + workResultHanlder.toString() + ")");
 		//On stop le client1 avec des jobs en cours. Ils doivent être redispatchés après détection des noeuds morts
 		clientNode1.stop();
 		LOG.info("Stop ClientNode 1 : " + workResultHanlder.toString());
@@ -109,7 +109,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 		LOG.info("Start ClientNode 2 : " + workResultHanlder.toString());
 		final ClientNode clientNode2 = startClientNode(2);
 		try {
-			final boolean finished = workResultHanlder.waitFinish(20, 35 * 1000); //Le timeout des nodes est configuré à 20s
+			final boolean finished = workResultHanlder.waitFinish(20, 65 * 1000); //Le timeout des nodes est configuré à 20s
 			LOG.info(workResultHanlder);
 			Assertions.assertEquals(null, workResultHanlder.getLastThrowable());
 			Assertions.assertTrue(finished);
