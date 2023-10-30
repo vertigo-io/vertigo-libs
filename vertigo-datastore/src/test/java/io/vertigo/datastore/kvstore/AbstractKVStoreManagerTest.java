@@ -57,8 +57,8 @@ public abstract class AbstractKVStoreManagerTest {
 
 	protected static final KVCollection FLOWERS = new KVCollection("flowers");
 	protected static final int TTL = 10;
-	//protected final String storagePath = System.getProperty("user.home") + "/datastore-tmp";
-	protected final String storagePath = "d:\\datastore-tmp";
+	protected final String storagePath = System.getProperty("user.home") + "/datastore-tmp";
+	//protected final String storagePath = "d:\\datastore-tmp";
 
 	@BeforeEach
 	public final void setUp() throws Exception {
