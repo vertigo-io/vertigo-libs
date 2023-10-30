@@ -35,7 +35,7 @@ import io.vertigo.datastore.cache.TestCacheDefinitionProvider;
  */
 public class RedisCacheManagerTest extends AbstractCacheManagerTest {
 	// Unit tests use abstract class methods
-	private static final boolean REDIS_CLUSTER_MODE = true;
+	private static final boolean REDIS_CLUSTER_MODE = false;
 	private static final String REDIS_HOST = "docker-vertigo.part.klee.lan.net";
 	private static final String REDIS_CLUSTER_NODES = "localhost:7000;localhost:7001;localhost:7002";
 
