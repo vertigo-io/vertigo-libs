@@ -17,6 +17,7 @@
  */
 package io.vertigo.datastore.plugins.kvstore.speedb;
 
+import java.io.File;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -192,6 +193,8 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 			if (collectionConfig.isInMemory()) {
 				options = memOptions;
 				path = "/dir/db";
+			} else {
+				new File(dbFilePathTranslated).mkdirs();
 			}
 			if (collectionConfig.getTimeToLiveSeconds() > 0) {
 				try {
