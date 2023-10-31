@@ -36,6 +36,7 @@ import io.vertigo.planning.agenda.services.TrancheHoraireEvent.HoraireImpacte;
 import redis.clients.jedis.params.ScanParams;
 
 @NotDiscoverable
+@Deprecated
 public class RedisFoConsultationPlanningPlugin extends DbFoConsultationPlanningPlugin {
 
 	private static final String SINGLE_JEDIS_NODE = "singleNode";
@@ -173,7 +174,7 @@ public class RedisFoConsultationPlanningPlugin extends DbFoConsultationPlanningP
 
 		for (final Agenda agenda : agendas) {
 			analyticsManager.trace("synchroagenda", agenda.getUID().urn(), tracer -> {
-				final var trancheHoraires = trancheHoraireDAO.synchroGetTrancheHorairesByAgeId(agenda.getAgeId(), Instant.now());
+				final var trancheHoraires = trancheHoraireDAO.synchroGetTrancheHorairesByAgeId(List.of(agenda.getAgeId()), Instant.now());
 				synchroDbRedisCreneauFromTrancheHoraire(Map.of(agenda.getAgeId(), trancheHoraires));
 				tracer.incMeasure("nbDispos", 0) //pour init a 0
 						.setTag("agenda", agenda.getUID().urn())
@@ -240,7 +241,7 @@ public class RedisFoConsultationPlanningPlugin extends DbFoConsultationPlanningP
 			final List<LocalDate> listDates = entry.getValue().stream()
 					.map(HoraireImpacte::getLocalDate)
 					.collect(Collectors.toList());
-			final var trancheHoraires = trancheHoraireDAO.synchroGetTrancheHorairesByAgeIdAndDates(entry.getKey(), listDates, Instant.now());
+			final var trancheHoraires = trancheHoraireDAO.synchroGetTrancheHorairesByAgeIdAndDates(List.of(entry.getKey()), listDates, Instant.now());
 			trancheHoraireByDemToResync.put(entry.getKey(), trancheHoraires);
 		}
 		synchroDbRedisCreneauFromTrancheHoraire(trancheHoraireByDemToResync);

@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,25 +48,31 @@ public class WorkEngineSynchroDbRedisCreneau implements WorkEngine<List<String>,
 
 	@Override
 	public Boolean process(final List<String> idsTodo) {
-		LOG.debug("post blmpop : " + idsTodo.size());
+		final Map<Long, String> agendaNames = new HashMap<>();
 		for (final var idTodo : idsTodo) {
 			final String[] idSplit = idTodo.split("->");
-			final String agendaUrn = idSplit[0];
-			final UID<Agenda> agendaUid = UID.of(agendaUrn);
+			final UID<Agenda> agendaUid = UID.of(idSplit[0]);
 			final String agendaName = idSplit[1];
-			LOG.debug("pre synchroagenda");
+			agendaNames.put(agendaUid.getId(), agendaName);
+		}
+
+		final List<TrancheHoraire> trancheHoraires;
+		try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+			trancheHoraires = trancheHoraireDAO.synchroGetTrancheHorairesByAgeId(new ArrayList<>(agendaNames.keySet()), Instant.now());
+			tx.rollback();
+		}
+		LOG.debug("synchroagenda: ageSize: {}, trhSize: {} : {} ", idsTodo.size(), trancheHoraires.size(), agendaNames.keySet());
+
+		final Map<UID<Agenda>, List<TrancheHoraire>> trancheHorairesPerAgenda = trancheHoraires.stream()
+				.collect(Collectors.groupingBy((trh) -> trh.agenda().getUID()));
+		for (final Entry<UID<Agenda>, List<TrancheHoraire>> trhPerAge : trancheHorairesPerAgenda.entrySet()) {
+			final String agendaUrn = trhPerAge.getKey().urn();
 			analyticsManager.trace("synchroagenda", agendaUrn, tracer -> {
-				final List<TrancheHoraire> trancheHoraires;
-				try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-					trancheHoraires = trancheHoraireDAO.synchroGetTrancheHorairesByAgeId(agendaUid.getId(), Instant.now());
-					tx.rollback();
-				}
-				synchroDbRedisCreneauFromTrancheHoraire(Map.of(agendaUid.getId(), trancheHoraires));
+				synchroDbRedisCreneauFromTrancheHoraire(Map.of(trhPerAge.getKey().getId(), trhPerAge.getValue()));
 				tracer.incMeasure("nbDispos", 0) //pour init a 0
 						.setTag("agenda", agendaUrn)
-						.setMetadata("agendaName", agendaName);
+						.setMetadata("agendaName", agendaNames.get(trhPerAge.getKey().getId()));
 			});
-			LOG.debug("post synchroagenda");
 		}
 		return true;
 	}
