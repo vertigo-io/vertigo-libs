@@ -100,7 +100,7 @@ public class DashboardLauncherTest {
 						.build())
 				.addModule(new ElasticSearchFeatures()
 						.withEmbeddedServer(Param.of("home", "io/vertigo/dashboard/search/indexconfig"))
-						.withRestHL(Param.of("servers.names", "localhost:9200"))
+						.withRestHL(Param.of("servers.names", "localhost:9200"), Param.of("ssl", "false"))
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
