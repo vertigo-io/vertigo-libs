@@ -28,6 +28,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.lang.Assertion;
@@ -120,6 +123,8 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 	}
 
 	private static class DistributedWorkResultWatcher implements Runnable {
+		private static final Logger LOG = LogManager.getLogger(DistributedWorkResultWatcher.class);
+
 		private final String nodeId;
 		private final long pollFrequencyMs; //poll work and poll result frequency
 		private final MasterCoordinator masterCoordinator;
@@ -144,24 +149,31 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 		/** {@inheritDoc} */
 		@Override
 		public void run() {
-			int nbPollResult = 0;
-			int nbMissingWorkProcessingInfos = 0;
-			final long start = System.currentTimeMillis();
-			do {
-				final WorkResult result = masterPlugin.pollResult(nodeId, 1);
-				if (result != null) {
-					final boolean found = masterCoordinator.setResult(result.workId, result.result, result.error);
-					nbPollResult++;
-					nbMissingWorkProcessingInfos += found ? 1 : 0;
-				} else {
-					break; //if no mass result : wait next exec at pollFrequency
+			try {
+				int nbPollResult = 0;
+				int nbMissingWorkProcessingInfos = 0;
+				final long start = System.currentTimeMillis();
+				do {
+					final WorkResult result = masterPlugin.pollResult(nodeId, 1);
+					if (result != null) {
+						final boolean found = masterCoordinator.setResult(result.workId, result.result, result.error);
+						nbPollResult++;
+						nbMissingWorkProcessingInfos += found ? 1 : 0;
+					} else {
+						break; //if no mass result : wait next exec at pollFrequency
+					}
+				} while (System.currentTimeMillis() - start < pollFrequencyMs);
+				if (nbPollResult > 0) { //we log analytics only if there is result
+					analyticsManager.addSpan(TraceSpan.builder(ANALYTICS_CATEGORY, "distributedWorkResultWatcher", Instant.ofEpochMilli(start), Instant.now())
+							.incMeasure("pollResult", nbPollResult)
+							.incMeasure("missingWorkProcessingInfos", nbMissingWorkProcessingInfos)
+							.build());
 				}
-			} while (System.currentTimeMillis() - start < pollFrequencyMs);
-			if (nbPollResult > 0) { //we log analytics only if there is result
-				analyticsManager.addSpan(TraceSpan.builder(ANALYTICS_CATEGORY, "distributedWorkResultWatcher", Instant.ofEpochMilli(start), Instant.now())
-						.incMeasure("pollResult", nbPollResult)
-						.incMeasure("missingWorkProcessingInfos", nbMissingWorkProcessingInfos)
-						.build());
+			} catch (final Exception e) {
+				//Must protect exception in run (like inaccessible bdd)
+				//ExecutorService will cancel repeative task if one exec throw an exception !!
+				LOG.error("DistributedWork : an error has occured during the execution of the masterCoordinator, nodeId:" + nodeId, e);
+				return;
 			}
 		}
 	}
