@@ -71,14 +71,14 @@
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>5.2.3</version>
+			<version>5.2.4</version>
 			<optional>true</optional>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>5.2.3</version> <!-- pour le plugin XDocReportConverterPlugin -->
+			<version>5.2.4</version> <!-- pour le plugin XDocReportConverterPlugin -->
 			<optional>true</optional>
 			<exclusions>
 				<!-- STAX comes with Java 1.6 -->
@@ -120,7 +120,7 @@
 		<dependency>
 		    <groupId>com.github.miachm.sods</groupId>
 		    <artifactId>SODS</artifactId>
-		    <version>1.6.2</version>
+		    <version>1.6.4</version>
             <optional>true</optional>
 		</dependency>
 
