@@ -23,6 +23,12 @@
 			<artifactId>vertigo-commons</artifactId><!-- for ConfigPlugin and ResourceResolverPlugin -->
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+            <groupId>io.vertigo</groupId>
+            <artifactId>vertigo-redis-connector</artifactId>
+            <version>${vertigo.version}</version>
+            <optional>true</optional> <!-- pour RedisBlackBoardStorePlugin -->
+        </dependency>
 	</dependencies>
 
 </project>
