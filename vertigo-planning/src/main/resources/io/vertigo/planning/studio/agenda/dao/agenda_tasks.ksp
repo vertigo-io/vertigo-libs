@@ -56,6 +56,7 @@ create Task TkSynchroGetTrancheHorairesByAgeId {
         select * from (
             select 
                 trh.trh_id,
+                trh.age_id,
                 trh.date_locale,
                 trh.minutes_debut,
                 trh.minutes_fin,
@@ -63,7 +64,7 @@ create Task TkSynchroGetTrancheHorairesByAgeId {
                 sum( case when cre.rec_id is null then 1 else 0 end) as nb_guichet
                 from creneau cre
                 join tranche_horaire trh on cre.trh_id = trh.trh_id
-                where  trh.age_id = #ageId#
+                where trh.age_id in ( #ageIds.rownum# )     
                 AND trh.date_locale >= #now#::Date
                 AND trh.instant_publication <= #now#
                 group by trh.trh_id, trh.date_locale, trh.minutes_debut
@@ -71,7 +72,7 @@ create Task TkSynchroGetTrancheHorairesByAgeId {
          ) as dispo
          where dispo.nb_guichet > 0
          "
-    in  ageId        {domain : DoPId                 cardinality: "1" }
+    in  ageIds        {domain : DoPId                 cardinality: "*" }    
     in  now          {domain : DoPInstant              cardinality: "1" }
     out trancheHoraires     {domain : DoDtTrancheHoraire   cardinality: "*" }
 }
@@ -82,13 +83,14 @@ create Task TkSynchroGetTrancheHorairesByAgeIdAndDates {
         select * from (
             select 
                 trh.trh_id,
+                trh.age_id,
                 trh.date_locale,
                 trh.minutes_debut,
                 trh.instant_publication,
                 sum( case when cre.rec_id is null then 1 else 0 end) as nb_guichet
                 from creneau cre
                 join tranche_horaire trh on cre.trh_id = trh.trh_id
-                where trh.age_id = #ageId#
+                where trh.age_id in ( #ageIds.rownum# ) 
                 AND trh.date_locale in (#localDates.rownum#)
                 AND trh.instant_publication <= #now#
                 group by trh.trh_id, trh.date_locale, trh.minutes_debut
@@ -96,7 +98,7 @@ create Task TkSynchroGetTrancheHorairesByAgeIdAndDates {
          ) as dispo
          where dispo.nb_guichet > 0
          "
-    in  ageId        {domain : DoPId                 cardinality: "1" }
+    in  ageIds        {domain : DoPId                 cardinality: "*" }
     in  localDates   {domain : DoPLocalDate          cardinality: "*" }
     in  now          {domain : DoPInstant            cardinality: "1" }
     out trancheHoraires     {domain : DoDtTrancheHoraire   cardinality: "*" }
@@ -127,12 +129,12 @@ create Task TkGetPrecedentePublicationByAgeId {
             instant_publication
           FROM tranche_horaire trh1
           WHERE trh1.age_id in ( #ageIds.rownum# ) 
-            AND trh1.date_locale BETWEEN (#now#::Date - interval '1 year') AND #now#::Date
+            AND trh1.date_locale BETWEEN (#now#::Date - interval '1 year') AND (#now#::Date + interval '1 year')
             AND trh1.instant_publication IN (
               SELECT max(trh2.instant_publication)
               FROM tranche_horaire trh2
               WHERE trh2.age_id in ( #ageIds.rownum# ) 
-                AND trh2.date_locale BETWEEN (#now#::Date - interval '1 year') AND #now#::Date
+                AND trh2.date_locale BETWEEN (#now#::Date - interval '1 year') AND (#now#::Date + interval '1 year')
                 AND trh2.instant_publication <= #now#
             )
           GROUP BY trh1.instant_publication;
@@ -274,7 +276,8 @@ create Task TkGetTrancheHoraireDisplayByPlhId {
                             AND res.minutes_debut < trh.minutes_Fin
                     WHERE trh.plh_id = #plhId#
                     GROUP BY trh.trh_id) as res on res.trh_id = trh.trh_id
-           WHERE trh.plh_id = #plhId#;
+           WHERE trh.plh_id = #plhId#
+           ORDER BY trh.minutes_Debut;
            "
     in  plhId        {domain : DoPId                 cardinality: "1" }
     in  now        {domain : DoPInstant              cardinality: "1" }

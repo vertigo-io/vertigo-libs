@@ -517,12 +517,12 @@ public final class AgendaPAO implements StoreServices {
             instant_publication
           FROM tranche_horaire trh1
           WHERE trh1.age_id in ( #ageIds.rownum# ) 
-            AND trh1.date_locale BETWEEN (#now#::Date - interval '1 year') AND #now#::Date
+            AND trh1.date_locale BETWEEN (#now#::Date - interval '1 year') AND (#now#::Date + interval '1 year')
             AND trh1.instant_publication IN (
               SELECT max(trh2.instant_publication)
               FROM tranche_horaire trh2
               WHERE trh2.age_id in ( #ageIds.rownum# ) 
-                AND trh2.date_locale BETWEEN (#now#::Date - interval '1 year') AND #now#::Date
+                AND trh2.date_locale BETWEEN (#now#::Date - interval '1 year') AND (#now#::Date + interval '1 year')
                 AND trh2.instant_publication <= #now#
             )
           GROUP BY trh1.instant_publication;""",
@@ -660,7 +660,8 @@ public final class AgendaPAO implements StoreServices {
                             AND res.minutes_debut < trh.minutes_Fin
                     WHERE trh.plh_id = #plhId#
                     GROUP BY trh.trh_id) as res on res.trh_id = trh.trh_id
-           WHERE trh.plh_id = #plhId#;""",
+           WHERE trh.plh_id = #plhId#
+           ORDER BY trh.minutes_Debut;""",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
 	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtTrancheHoraireDisplay", name = "trancheHoraires")
 	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.planning.agenda.domain.TrancheHoraireDisplay> getTrancheHoraireDisplayByPlhId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "plhId", smartType = "STyPId") final Long plhId, @io.vertigo.datamodel.task.proxy.TaskInput(name = "now", smartType = "STyPInstant") final java.time.Instant now) {
