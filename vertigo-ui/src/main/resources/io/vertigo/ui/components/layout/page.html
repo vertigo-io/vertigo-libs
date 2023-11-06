@@ -3,7 +3,7 @@
 	isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false}, 
 	isVuiSsr=${vuiSsr != null ? vuiSsr : false},
 	pendingAction=${model.vContext['componentStates'].addComponentState('pendingAction').addList('actionNames')},
-	myQuasarVersion=${quasarVersion?:'2.12.3'},myVertigoUiVersion=${vertigoUiVersion?:'4.0.0'}">
+	myQuasarVersion=${quasarVersion?:'2.13.0'},myVertigoUiVersion=${vertigoUiVersion?:'4.1.0'}">
 	<div th:if="${!isVuiSsr}" id="page">
 		<vu:content/>
 	</div>
@@ -15,7 +15,7 @@
     <script th:if="${isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@__${myQuasarVersion}__/dist/quasar.umd.js}"></script>
     <script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@__${myQuasarVersion}__/dist/lang/__${model.util.getCurrentLocalePrefixForQuasar()}__.umd.prod.js}"></script>
     <script th:if="${!isVuiDevMode && !isVuejsDevMode}" th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.js?v=__${myVertigoUiVersion}__}"></script>
-    <script th:if="${!isVuiDevMode && isVuejsDevMode}" th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.js?v=__${myVertigoUiVersion}__}"></script>
+    <script th:if="${!isVuiDevMode && isVuejsDevMode}" th:src="@{/vertigo-ui/static/js/vertigo-ui.es.js?v=__${myVertigoUiVersion}__}"></script>
 	<script th:if="${isVuiDevMode}" type="module" src="http://localhost:3000/@vite/client"></script>
 	<script th:if="${isVuiDevMode}" type="module" src="http://localhost:3000/src/main.js"></script>
 	<div vu:slot="libraries_slot" ></div>
