@@ -339,6 +339,8 @@ public final class H2KVStorePlugin implements KVStorePlugin, SimpleDefinitionPro
 	}
 
 	static class H2KVEntry implements Serializable {
+		private static final long serialVersionUID = 1L;
+
 		final Long timestamp;
 		final byte[] object;
 
