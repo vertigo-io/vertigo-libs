@@ -48,7 +48,7 @@ public final class StructureMetricsProvider implements Component {
 						.withFeature(dtDefinition.getName())
 						.withValue(Double.valueOf(dtDefinition.getFields().size()))
 						.build())
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
@@ -62,7 +62,7 @@ public final class StructureMetricsProvider implements Component {
 						.withFeature(dtDefinition.getName())
 						.withValue(countTaskDependencies(dtDefinition))
 						.build())
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
@@ -76,7 +76,7 @@ public final class StructureMetricsProvider implements Component {
 						.withFeature(smartType.getName())
 						.withValue(countTaskDependencies(smartType))
 						.build())
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
@@ -90,7 +90,7 @@ public final class StructureMetricsProvider implements Component {
 						.withFeature(smartType.getName())
 						.withValue(countDtDefinitionDependencies(smartType))
 						.build())
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 

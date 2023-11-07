@@ -121,7 +121,7 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 							new Class[] { String.class, Optional.class, Optional.class });
 					return ClassUtil.newInstance(constructor, new Object[] { constraintConfig.arg(), msgOpt, resourceMsgOpt });
 				})
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private static BasicTypeAdapter createBasicTypeAdapter(final AdapterConfig adapterConfig) {

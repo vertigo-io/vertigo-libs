@@ -291,7 +291,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		if (hasEmpty) {
 			final List<String> values = Arrays.stream(strValues)
 					.filter(v -> !v.isEmpty())
-					.collect(Collectors.toList());
+					.toList();
 			return values.toArray(new String[values.size()]);
 		}
 		return strValues;

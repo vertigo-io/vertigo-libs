@@ -67,7 +67,7 @@ public final class FacetedQueryDefinitionSupplier implements DefinitionSupplier 
 	public FacetedQueryDefinition get(final DefinitionSpace definitionSpace) {
 		final List<FacetDefinition> facetDefinitions = facets.stream()
 				.map(facetName -> definitionSpace.resolve(facetName, FacetDefinition.class))
-				.collect(Collectors.toList());
+				.toList();
 		final SmartTypeDefinition criteriaSmartType = definitionSpace.resolve(myCriteriaSmartTypeName, SmartTypeDefinition.class);
 		return new FacetedQueryDefinition(
 				name,

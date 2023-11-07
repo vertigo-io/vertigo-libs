@@ -90,7 +90,7 @@ public final class AnnotationsWebServiceScannerUtil {
 				.map(AnnotationsWebServiceScannerUtil::buildWebServiceDefinition)
 				.filter(Optional::isPresent)
 				.map(Optional::get)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public static Optional<WebServiceDefinition> buildWebServiceDefinition(final Method method) {

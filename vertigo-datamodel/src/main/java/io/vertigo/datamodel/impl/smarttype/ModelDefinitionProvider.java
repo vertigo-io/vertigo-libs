@@ -79,7 +79,7 @@ public class ModelDefinitionProvider implements DefinitionProvider {
 		return DynamicDefinitionSolver.solve(definitionSpace, dynamicDefinitions)
 				.stream()
 				.map(DynamicDefinition::getDefinitionSupplier)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 }

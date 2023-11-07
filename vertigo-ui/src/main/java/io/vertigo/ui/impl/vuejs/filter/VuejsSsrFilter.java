@@ -256,7 +256,7 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 		final String render = compiledTemplate.get("render").getAsString();
 		final List<String> staticRenderFns = StreamSupport.stream(compiledTemplate.get("staticRenderFns").getAsJsonArray().spliterator(), false)
 				.map(JsonElement::getAsString)
-				.collect(Collectors.toList());
+				.toList();
 
 		return createRenderScript(render, staticRenderFns);
 	}
@@ -268,7 +268,7 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 			final List<String> staticRenderFns = ((JSObject) compilationResult.getMember("staticRenderFns")).values()
 					.stream()
 					.map(String.class::cast)
-					.collect(Collectors.toList());
+					.toList();
 			return createRenderScript(render, staticRenderFns);
 
 		} catch (ScriptException | NoSuchMethodException e) {

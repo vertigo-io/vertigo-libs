@@ -66,7 +66,7 @@ public final class FileStoreManagerImpl implements FileStoreManager, SimpleDefin
 				.map(fileStorePlugin -> new FileInfoDefinition(
 						FileInfoDefinition.PREFIX + fileStorePlugin.getFileInfoClass().getSimpleName(),
 						fileStorePlugin.getName()))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private FileStorePlugin getPhysicalStore(final FileInfoDefinition fileInfoDefinition) {

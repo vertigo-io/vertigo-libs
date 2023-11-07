@@ -114,7 +114,7 @@ public class SmartTypesLoader implements Loader {
 			final Constraint[] constraints = field.getAnnotationsByType(Constraint.class);
 			constraintConfigs = Arrays.stream(constraints)
 					.map(contraint -> new ConstraintConfig(contraint.clazz(), contraint.arg(), contraint.msg(), contraint.resourceMsg()))
-					.collect(Collectors.toList());
+					.toList();
 
 			constraintConfigs
 					.forEach(constraintConfig -> {

@@ -111,7 +111,7 @@ public class DbProcessReportPlugin implements ProcessReportPlugin {
 		return summaries
 				.stream()
 				.map(DbProcessReportPlugin::decodeSummary)
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
@@ -132,7 +132,7 @@ public class DbProcessReportPlugin implements ProcessReportPlugin {
 		return executions
 				.stream()
 				.map(DbProcessReportPlugin::decodeExecution)
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
@@ -154,7 +154,7 @@ public class DbProcessReportPlugin implements ProcessReportPlugin {
 		return executions
 				.stream()
 				.map(DbProcessReportPlugin::decodeActivityExecution)
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 

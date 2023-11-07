@@ -125,7 +125,7 @@ public final class RedisAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 				.stream()
 				.map(nodeId -> jedis.hget(VERTIGO_NODE + nodeId, "json"))
 				.map(nodeJson -> gson.fromJson(nodeJson, AppNode.class))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private static Gson createGson() {

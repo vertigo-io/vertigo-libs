@@ -87,7 +87,7 @@ public class FileUploadController {
 					}
 					return uiFileInfo;
 				})
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	@PostMapping("/upload")

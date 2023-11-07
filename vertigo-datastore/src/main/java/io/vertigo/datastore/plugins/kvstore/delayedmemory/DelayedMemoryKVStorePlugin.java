@@ -79,7 +79,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 				.map(String::trim)
 				.map(KVCollection::new)
 				.peek(kvc -> collectionsData.put(kvc, new ConcurrentHashMap<String, DelayedMemoryCacheValue>()))
-				.collect(Collectors.toList());
+				.toList();
 		//-----
 		this.timeToLiveSeconds = timeToLiveSeconds;
 		dmnUniqueName = "DmnKvDataStore$t" + timeToLiveSeconds + "c" + Long.toHexString(collections.hashCode());

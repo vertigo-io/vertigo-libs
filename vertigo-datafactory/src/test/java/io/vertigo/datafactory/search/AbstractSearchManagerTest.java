@@ -1718,7 +1718,7 @@ public abstract class AbstractSearchManagerTest {
 			final List<SearchIndex<Item, Item>> indexes = itemDataBase.getAllItems()
 					.stream()
 					.map(item -> SearchIndex.createIndex(itemIndexDefinition, item.getUID(), item))
-					.collect(Collectors.toList());
+					.toList();
 			searchManager.putAll(itemIndexDefinition, indexes);
 		} else {
 			//Indexation unitaire

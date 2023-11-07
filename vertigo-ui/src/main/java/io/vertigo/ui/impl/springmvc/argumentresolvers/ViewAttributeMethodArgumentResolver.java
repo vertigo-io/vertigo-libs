@@ -137,7 +137,7 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 		if (validateAnnotation != null) {
 			validators = Stream.of(validateAnnotation.value())
 					.map(dtObjectValidatorClass -> (DtObjectValidator<DtObject>) InjectorUtil.newInstance(dtObjectValidatorClass))
-					.collect(Collectors.toList());
+					.toList();
 		} else {
 			validators = defaultDtObjectValidators;
 		}

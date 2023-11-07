@@ -117,7 +117,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		placeholderPrefixes = thymeleafComponent.getParameters().stream() //we read from thymeleafComponent.getParameters() to keep order of placeholders
 				.filter(parameterName -> parameterName.endsWith(VARIABLE_PLACEHOLDER_SEPARATOR + ATTRS_SUFFIX))
 				.map(parameterName -> parameterName.substring(0, parameterName.length() - ATTRS_SUFFIX.length()))
-				.collect(Collectors.toList());
+				.toList();
 		unnamedPlaceholderPrefix = placeholderPrefixes.isEmpty() ? Optional.empty() : Optional.of(placeholderPrefixes.get(placeholderPrefixes.size() - 1));
 	}
 

@@ -44,7 +44,7 @@ public final class TasksMetricsProvider implements Component {
 						.withValue(Double.valueOf(taskDefinition.getRequest().length()))
 						.withSuccess()
 						.build())
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
@@ -62,7 +62,7 @@ public final class TasksMetricsProvider implements Component {
 							.withSuccess()
 							.build();
 				})
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
@@ -76,7 +76,7 @@ public final class TasksMetricsProvider implements Component {
 						.withValue(taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("SELECT").length - 1d)
 						.withSuccess()
 						.build())
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 

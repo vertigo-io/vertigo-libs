@@ -142,7 +142,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	public <E extends Entity> List<E> getAllUsers() {
 		return (List<E>) authToUsers.values().stream()
 				.map(IdentityUserInfo::getUser)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/** {@inheritDoc} */

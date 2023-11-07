@@ -196,7 +196,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, searchRequest, top, mapperHelper.sourceAttributes(), ldapContext);
 		return (List<E>) result.stream()
 				.map(this::parseUser)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private Attributes getLdapAttributes(final Serializable accountId, final Set<String> returningAttributes, final LdapContext ldapContext) {

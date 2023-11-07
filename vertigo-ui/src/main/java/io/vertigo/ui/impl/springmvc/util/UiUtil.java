@@ -378,7 +378,7 @@ public final class UiUtil implements Serializable {
 		final var render = compiledTemplate.get("render").getAsString();
 		final List<String> staticRenderFns = StreamSupport.stream(compiledTemplate.get("staticRenderFns").getAsJsonArray().spliterator(), false)
 				.map(JsonElement::getAsString)
-				.collect(Collectors.toList());
+				.toList();
 
 		final var renderJsFunctions = new StringBuilder(",\r\n");
 		renderJsFunctions.append("render (h) {\r\n")

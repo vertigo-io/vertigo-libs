@@ -107,7 +107,7 @@ public final class TaskEngineInsertBatch extends AbstractTaskEngineSQL {
 		final List<TaskAttribute> otherAttributes = getTaskDefinition().getInAttributes()
 				.stream()
 				.filter(inAttribute -> !inAttribute.cardinality().hasMany())// not multiple
-				.collect(Collectors.toList());
+				.toList();
 		//---
 		final List<?> list = getValue(listAttribute.name());
 		list.forEach(object -> {
@@ -124,7 +124,7 @@ public final class TaskEngineInsertBatch extends AbstractTaskEngineSQL {
 		final List<TaskAttribute> potentialBatchAttributes = getTaskDefinition().getInAttributes()
 				.stream()
 				.filter(inAttribute -> inAttribute.cardinality().hasMany())// multiple
-				.collect(Collectors.toList());
+				.toList();
 
 		Assertion.check().isTrue(potentialBatchAttributes.size() == 1, "For batch a single List param is required");
 		return potentialBatchAttributes.get(0);

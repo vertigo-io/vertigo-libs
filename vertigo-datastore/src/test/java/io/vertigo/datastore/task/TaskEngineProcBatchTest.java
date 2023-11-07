@@ -203,7 +203,7 @@ public final class TaskEngineProcBatchTest {
 				.withRequest(request)
 				.build();
 
-		final List<Long> superHeroesIds = SuperHeroDataBase.getSuperHeroes().stream().map(superHero -> superHero.getId()).collect(Collectors.toList());
+		final List<Long> superHeroesIds = SuperHeroDataBase.getSuperHeroes().stream().map(superHero -> superHero.getId()).toList();
 
 		final Task task = Task.builder(taskDefinition)
 				.addValue(SUPER_HERO_ID_LIST_IN, superHeroesIds)

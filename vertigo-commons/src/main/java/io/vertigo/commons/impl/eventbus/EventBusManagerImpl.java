@@ -63,7 +63,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 		return Node.getNode().getComponentSpace().keySet()
 				.stream()
 				.flatMap(id -> createEventSubscriptions(id, Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**
@@ -88,7 +88,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 					final String subscriptionName = "Evt" + StringUtil.first2UpperCase(componentId) + "$" + StringUtil.first2LowerCase(eventType.getSimpleName());
 					return new EventBusSubscriptionDefinition<>(subscriptionName, eventType, event -> ClassUtil.invoke(subscriberInstance, method, event));
 				})
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 

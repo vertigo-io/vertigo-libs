@@ -50,7 +50,7 @@ public final class EventBusModel {
 		return subscriptions
 				.stream()
 				.map(EventBusSubscriptionDefinition::getName)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 }

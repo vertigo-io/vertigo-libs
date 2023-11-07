@@ -123,7 +123,7 @@ public final class DataProviderImpl implements DataProvider {
 						buildHealthMeasure(
 								Double.valueOf((String) timedDataSerie.getValues().get("status")),
 								(String) timedDataSerie.getValues().get("message"))))
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
@@ -165,7 +165,7 @@ public final class DataProviderImpl implements DataProvider {
 						.withValue(Double.valueOf((String) timedDataSerie.getValues().get("value")))
 						.withSuccess()
 						.build())
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 

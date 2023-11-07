@@ -79,7 +79,7 @@ public final class FacetFactory {
 		return facetedQueryDefinition.getFacetDefinitions()
 				.stream()
 				.map(facetDefinition -> createFacet(facetDefinition, dtList))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**

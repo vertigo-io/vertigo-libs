@@ -354,7 +354,7 @@ public class ScannerTest {
 		//		formatter.toText(scan.tokens());
 		return scan.tokenPositions().stream()
 				.map(Tuple::val1)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 }

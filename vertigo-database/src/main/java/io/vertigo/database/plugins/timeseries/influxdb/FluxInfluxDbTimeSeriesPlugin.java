@@ -113,7 +113,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 						.stream()
 						.map(record -> new TabularDataSerie(
 								buildMapValue(record)))
-						.collect(Collectors.toList());
+						.toList();
 				return new TabularDatas(dataSeries, table.getColumns().stream()
 						.filter(column -> !"table".equals(column.getLabel()))
 						.filter(column -> !"result".equals(column.getLabel()))
@@ -135,7 +135,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 						.map(record -> new TimedDataSerie(
 								record.getTime(),
 								buildMapValue(record)))
-						.collect(Collectors.toList());
+						.toList();
 				return new TimedDatas(dataSeries, table.getColumns().stream()
 						.filter(column -> !"_time".equals(column.getLabel()))
 						.filter(column -> !"table".equals(column.getLabel()))
@@ -203,7 +203,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 						.map(record -> new TimedDataSerie(
 								record.getTime(),
 								buildMapValue(record)))
-						.collect(Collectors.toList());
+						.toList();
 				return new TimedDatas(dataSeries, getOrderedClusterMeasures(clusteredMeasure));//we remove the time
 			}
 		}
@@ -307,7 +307,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 						.stream()
 						.map(FluxRecord::getValue)
 						.map(String.class::cast)
-						.collect(Collectors.toList());
+						.toList();
 			}
 		}
 		return Collections.emptyList();

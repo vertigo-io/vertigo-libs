@@ -70,7 +70,7 @@ public class WsDefinition implements WebServices {
 		return definitions
 				.stream()
 				.filter(definition -> definition.getLabel().startsWith(criteria))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**

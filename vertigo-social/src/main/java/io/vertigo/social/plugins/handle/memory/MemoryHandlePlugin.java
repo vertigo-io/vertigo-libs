@@ -57,7 +57,7 @@ public class MemoryHandlePlugin implements HandlePlugin {
 		return handlesPerUid.values().stream()
 				.filter(handle -> handle.getCode().startsWith(prefix))
 				.limit(10)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/** {@inheritDoc} */

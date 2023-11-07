@@ -67,7 +67,7 @@ public final class EntityMetricsProvider implements Component {
 					.stream()
 					.filter(DtDefinition::isPersistent)
 					.map(dtDefinition -> doExecute(dtDefinition, transaction))
-					.collect(Collectors.toList());
+					.toList();
 		}
 
 	}

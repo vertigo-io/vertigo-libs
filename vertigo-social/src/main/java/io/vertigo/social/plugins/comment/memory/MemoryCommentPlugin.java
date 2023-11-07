@@ -64,6 +64,6 @@ public final class MemoryCommentPlugin implements CommentPlugin {
 		return commentsMap.getOrDefault(uid, Collections.emptyList())
 				.stream()
 				.map(this::get)
-				.collect(Collectors.toList());
+				.toList();
 	}
 }

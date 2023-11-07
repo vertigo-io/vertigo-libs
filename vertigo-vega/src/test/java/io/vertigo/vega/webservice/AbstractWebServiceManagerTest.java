@@ -1567,7 +1567,7 @@ abstract class AbstractWebServiceManagerTest {
 				createDefaultContact(124L),
 				createDefaultContact(125L),
 				createDefaultContact(126L))
-				.collect(Collectors.toList());
+				.toList();
 
 		loggedAndExpect(given().body(dtList))
 				.body("globalErrors", Matchers.contains("Name is mandatory"))
@@ -1613,7 +1613,7 @@ abstract class AbstractWebServiceManagerTest {
 				createDefaultContact(124L),
 				createDefaultContact(125L),
 				createDefaultContact(126L))
-				.collect(Collectors.toList());
+				.toList();
 
 		loggedAndExpect(given().body(dtList))
 				.body("globalErrors", Matchers.contains("Name is mandatory"))

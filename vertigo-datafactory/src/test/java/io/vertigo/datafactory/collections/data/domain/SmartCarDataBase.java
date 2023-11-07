@@ -71,7 +71,7 @@ public final class SmartCarDataBase {
 		return cars
 				.stream()
 				.filter(car -> car.getManufacturer().toLowerCase(Locale.FRENCH).equals(manufacturer))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public long getCarsBefore(final int year) {

@@ -68,7 +68,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 				//on remplace la notif
 						updateNotification(notification, userContent)
 						: notification)
-				.collect(Collectors.toList());
+				.toList();
 		//on remplace la liste
 		notificationsByAccountURI.put(accountURI, newNotifications);
 	}

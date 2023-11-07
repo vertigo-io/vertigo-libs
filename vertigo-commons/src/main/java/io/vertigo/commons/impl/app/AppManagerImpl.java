@@ -94,7 +94,7 @@ public final class AppManagerImpl implements AppManager, Activeable {
 		return getTopology()
 				.stream()
 				.filter(node -> node.getSkills().containsAll(Arrays.asList(skills)))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public final class AppManagerImpl implements AppManager, Activeable {
 				.stream()
 				// we wait two heartbeat to decide that a node is dead
 				.filter(node -> node.getLastTouch().plus(2L * HEART_BEAT_SECONDS, ChronoUnit.SECONDS).isBefore(Instant.now()))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	@Override
@@ -163,7 +163,7 @@ public final class AppManagerImpl implements AppManager, Activeable {
 	private static List<String> getSkills(final Node node) {
 		return node.getNodeConfig().moduleConfigs().stream()
 				.map(ModuleConfig::name)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public enum NodeStatus {

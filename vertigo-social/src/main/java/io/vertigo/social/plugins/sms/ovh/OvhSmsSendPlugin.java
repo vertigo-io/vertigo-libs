@@ -61,7 +61,7 @@ public class OvhSmsSendPlugin implements SmsSendPlugin {
 			whitelistPrefixes = Arrays.asList(whitelistPrefixesOpt.get().split(";"))
 					.stream()
 					.map(prefix -> prefix.replaceAll("[\\(\\)\\s\\.\\-]+", "")) //we accept ( ) . - and spaces as separators
-					.collect(Collectors.toList());
+					.toList();
 		} else {
 			acceptAll = true;
 			whitelistPrefixes = Collections.emptyList();

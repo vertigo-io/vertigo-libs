@@ -297,7 +297,7 @@ public class Redis2FoConsultationPlanningPlugin extends DbFoConsultationPlanning
 		for (final Entry<Long, List<HoraireImpacte>> entry : horaireImpacteByDem.entrySet()) {
 			final List<LocalDate> listDates = entry.getValue().stream()
 					.map(HoraireImpacte::getLocalDate)
-					.collect(Collectors.toList());
+					.toList();
 			final var trancheHoraires = trancheHoraireDAO.synchroGetTrancheHorairesByAgeIdAndDates(List.of(entry.getKey()), listDates, Instant.now());
 			trancheHoraireByDemToResync.put(entry.getKey(), trancheHoraires);
 		}

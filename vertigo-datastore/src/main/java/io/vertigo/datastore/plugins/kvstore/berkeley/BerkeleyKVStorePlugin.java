@@ -110,7 +110,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 				.stream()
 				.map(BerkeleyCollectionConfig::getCollectionName)
 				.map(KVCollection::new)
-				.collect(Collectors.toList());
+				.toList();
 		//-----
 		dbFilePathTranslated = FileUtil.translatePath(dbFilePath);
 		minFreeDisk = "1000000000"; //Minimum free disk space to maintain, in bytes. If the limit is exceeded, write operations will be prohibited. Default to 1Go.

@@ -83,7 +83,7 @@ public final class TaskManagerImpl implements TaskManager, SimpleDefinitionProvi
 		final List<Class> componenentClasses = Node.getNode().getComponentSpace().keySet()
 				.stream()
 				.map(componentId -> Node.getNode().getComponentSpace().resolve(componentId, Object.class).getClass())
-				.collect(Collectors.toList());
+				.toList();
 
 		return Selector
 				.from(componenentClasses)
@@ -92,7 +92,7 @@ public final class TaskManagerImpl implements TaskManager, SimpleDefinitionProvi
 				.stream()
 				.map(Tuple::val2)
 				.map(TaskManagerImpl::createTaskDefinition)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private static TaskDefinition createTaskDefinition(final Method method) {

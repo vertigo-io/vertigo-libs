@@ -75,7 +75,7 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 		return processDefinitionStorePluginsByProcessType.values()
 				.stream()
 				.flatMap(processDefinitionStorePlugin -> processDefinitionStorePlugin.getAllProcessDefinitions().stream())
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/** {@inheritDoc} */

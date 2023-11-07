@@ -70,7 +70,7 @@ public final class SearchIndexDefinitionSupplier implements DefinitionSupplier {
 			final DtField dtFieldFrom = indexDtDefinition.getField(indexCopyTo.getKey());
 			final List<DtField> dtFieldTos = Stream.of(indexCopyTo.getValue())
 					.map(indexDtDefinition::getField)
-					.collect(Collectors.toList());
+					.toList();
 			copyToFields.put(dtFieldFrom, dtFieldTos);
 		}
 		return new SearchIndexDefinition(
