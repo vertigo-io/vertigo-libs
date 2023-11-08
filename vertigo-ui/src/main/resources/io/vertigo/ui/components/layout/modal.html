@@ -7,7 +7,7 @@
 			<vu:content>
 			<q-card class="bg-white v-modal">
 				<q-toolbar class="bg-primary" th:if="${title != null}">
-				    <vu:button flat dense v-close-popup icon="keyboard_arrow_left" color="primary" textColor="white" th:title="#{layout.modal.close}"/>
+				    <vu:button flat dense v-close-popup icon="keyboard_arrow_left" color="primary" textColor="white" th:title="#{layout.modal.close}" />
 				    <q-toolbar-title class="text-white">{{ componentStates.[[${componentId}]].title }}</q-toolbar-title>
 				</q-toolbar>
 				<q-card-section class="q-pa-none">
