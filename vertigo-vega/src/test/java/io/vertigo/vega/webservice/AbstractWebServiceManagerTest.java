@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.http.HttpStatus;
@@ -1566,7 +1567,7 @@ abstract class AbstractWebServiceManagerTest {
 				createDefaultContact(124L),
 				createDefaultContact(125L),
 				createDefaultContact(126L))
-				.toList();
+				.collect(Collectors.toList());
 
 		loggedAndExpect(given().body(dtList))
 				.body("globalErrors", Matchers.contains("Name is mandatory"))
@@ -1612,7 +1613,7 @@ abstract class AbstractWebServiceManagerTest {
 				createDefaultContact(124L),
 				createDefaultContact(125L),
 				createDefaultContact(126L))
-				.toList();
+				.collect(Collectors.toList());
 
 		loggedAndExpect(given().body(dtList))
 				.body("globalErrors", Matchers.contains("Name is mandatory"))
