@@ -3,20 +3,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>io.vertigo</groupId>
+		<artifactId>vertigo-extensions</artifactId>
+		<version>4.1.0-SNAPSHOT</version>
+	</parent>
+
+
 	<groupId>io.vertigo</groupId>
 	<artifactId>vertigo-planning</artifactId>
 	<version>4.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>vertigo-planning</name>
-
-	<properties>
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.test.failure.ignore>true</maven.test.failure.ignore>
-		<maven.test.error.ignore>true</maven.test.error.ignore>
-		<vertigo.version>4.1.0-SNAPSHOT</vertigo.version>
-	</properties>
 
 	<dependencies>
 		<dependency>
@@ -39,22 +38,7 @@
             <artifactId>vertigo-stella</artifactId>
             <version>${vertigo.version}</version>
         </dependency>
-		
-
-		
-		<!-- test -->
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.9.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.9.1</version>
-			<scope>test</scope>
-		</dependency>
+				
 	</dependencies>
 
 	<build>
