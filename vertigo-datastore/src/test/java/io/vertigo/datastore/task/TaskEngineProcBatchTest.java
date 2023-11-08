@@ -18,7 +18,6 @@
 package io.vertigo.datastore.task;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 

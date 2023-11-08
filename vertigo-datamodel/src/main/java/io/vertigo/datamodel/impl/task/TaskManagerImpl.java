@@ -83,7 +83,7 @@ public final class TaskManagerImpl implements TaskManager, SimpleDefinitionProvi
 		final List<Class> componenentClasses = Node.getNode().getComponentSpace().keySet()
 				.stream()
 				.map(componentId -> Node.getNode().getComponentSpace().resolve(componentId, Object.class).getClass())
-				.toList();
+				.collect(Collectors.toList());
 
 		return Selector
 				.from(componenentClasses)

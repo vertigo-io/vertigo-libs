@@ -120,8 +120,7 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 					final Constructor<? extends Constraint> constructor = ClassUtil.findConstructor(constraintConfig.constraintClass(),
 							new Class[] { String.class, Optional.class, Optional.class });
 					return ClassUtil.newInstance(constructor, new Object[] { constraintConfig.arg(), msgOpt, resourceMsgOpt });
-				})
-				.toList();
+				}).collect(Collectors.toList());
 	}
 
 	private static BasicTypeAdapter createBasicTypeAdapter(final AdapterConfig adapterConfig) {

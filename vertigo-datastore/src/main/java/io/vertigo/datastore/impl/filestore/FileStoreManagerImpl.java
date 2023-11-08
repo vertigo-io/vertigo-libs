@@ -20,7 +20,6 @@ package io.vertigo.datastore.impl.filestore;
 import java.net.URLConnection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 

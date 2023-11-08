@@ -20,7 +20,6 @@ package io.vertigo.commons.impl.eventbus;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -86,9 +85,8 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 					//2. For each method register a listener
 					final Class<? extends Event> eventType = (Class<? extends Event>) method.getParameterTypes()[0];
 					final String subscriptionName = "Evt" + StringUtil.first2UpperCase(componentId) + "$" + StringUtil.first2LowerCase(eventType.getSimpleName());
-					return new EventBusSubscriptionDefinition<>(subscriptionName, eventType, event -> ClassUtil.invoke(subscriberInstance, method, event));
-				})
-				.toList();
+					return new EventBusSubscriptionDefinition(subscriptionName, eventType, event -> ClassUtil.invoke(subscriberInstance, method, event));
+				}).toList();
 
 	}
 

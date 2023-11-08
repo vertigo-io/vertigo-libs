@@ -18,7 +18,6 @@
 package io.vertigo.dashboard.ui.commons.model;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.vertigo.commons.eventbus.definitions.EventBusSubscriptionDefinition;
 import io.vertigo.core.lang.Assertion;

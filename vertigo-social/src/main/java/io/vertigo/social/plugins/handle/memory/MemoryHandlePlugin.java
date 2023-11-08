@@ -20,7 +20,6 @@ package io.vertigo.social.plugins.handle.memory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.handle.Handle;

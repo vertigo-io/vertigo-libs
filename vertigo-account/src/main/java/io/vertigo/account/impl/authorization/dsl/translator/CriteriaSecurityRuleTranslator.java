@@ -19,7 +19,6 @@ package io.vertigo.account.impl.authorization.dsl.translator;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.vertigo.account.authorization.definitions.SecurityDimension;
 import io.vertigo.account.authorization.definitions.SecurityDimensionType;

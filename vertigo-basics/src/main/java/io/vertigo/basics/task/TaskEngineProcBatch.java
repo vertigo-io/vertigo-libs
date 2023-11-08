@@ -23,7 +23,6 @@ package io.vertigo.basics.task;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.OptionalInt;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 

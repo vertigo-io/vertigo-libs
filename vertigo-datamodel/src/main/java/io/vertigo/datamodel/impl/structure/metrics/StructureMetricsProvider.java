@@ -18,7 +18,6 @@
 package io.vertigo.datamodel.impl.structure.metrics;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.metric.Metrics;

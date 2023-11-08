@@ -24,7 +24,6 @@ import java.util.Map;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.http.server.ServletServerHttpResponse;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
@@ -48,7 +47,7 @@ public class ViewContextReturnValueAndArgumentResolver extends AbstractMessageCo
 	}
 
 	@Override
-	public void handleReturnValue(@Nullable final Object returnValue, final MethodParameter returnType, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest) throws Exception {
+	public void handleReturnValue(final Object returnValue, final MethodParameter returnType, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest) throws Exception {
 		Assertion.check()
 				.isNotNull(mavContainer)
 				.isNotNull(returnValue);
