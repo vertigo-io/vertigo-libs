@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.xcontent.XContentBuilder;
@@ -191,7 +192,7 @@ public final class ESDocumentCodec {
 		return dtDefinition.getFields().stream()
 				//We don't store (in Result) computed fields and fields with a "notStored" domain
 				.filter(dtField -> !isIndexStoredDomain(dtField.smartTypeDefinition()) || dtField.getType() == FieldType.COMPUTED)
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	private static <I extends DtObject> I cloneDto(final DtDefinition dtDefinition, final I dto, final List<DtField> excludedFields) {

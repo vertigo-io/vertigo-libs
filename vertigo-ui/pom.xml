@@ -95,6 +95,7 @@
 			<version>15.4</version>
 			<optional>true</optional>  <!-- for VuejsSsrFilter -->
 		</dependency>
+		
 		<!-- for tests -->
 		<!-- for Embedded Jetty Server and tests -->
 		<!-- Connections Pool -->
@@ -116,6 +117,12 @@
 			<version>0.9.5.5</version>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>com.sleepycat</groupId>
+            <artifactId>je</artifactId>
+            <version>18.3.12</version>
+            <scope>test</scope> 
+        </dependency>
 			
 		
 		<dependency>
@@ -160,6 +167,10 @@
 				<exclusion>
 					<groupId>org.apache.logging.log4j</groupId>
 					<artifactId>log4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
