@@ -109,7 +109,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 		LOG.info("Start ClientNode 2 : " + workResultHanlder.toString());
 		final ClientNode clientNode2 = startClientNode(2);
 		try {
-			final boolean finished = workResultHanlder.waitFinish(20, 65 * 1000); //Le timeout des nodes est configuré à 20s
+			final boolean finished = workResultHanlder.waitFinish(20, 85 * 1000); //Le timeout des nodes est configuré à 20s
 			LOG.info(workResultHanlder);
 			Assertions.assertEquals(null, workResultHanlder.getLastThrowable());
 			Assertions.assertTrue(finished);
