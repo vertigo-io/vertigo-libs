@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.core.daemon.DaemonScheduled;
@@ -67,7 +68,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 				//on remplace la notif
 						updateNotification(notification, userContent)
 						: notification)
-				.toList();
+				.collect(Collectors.toList());
 		//on remplace la liste
 		notificationsByAccountURI.put(accountURI, newNotifications);
 	}
