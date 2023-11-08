@@ -63,8 +63,8 @@ public abstract class AbstractKVStoreManagerTest {
 
 	@BeforeEach
 	public final void setUp() throws Exception {
-		node = new AutoCloseableNode(buildNodeConfig());
 		purgeDirectory(new File(storagePath));
+		node = new AutoCloseableNode(buildNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		doSetUp();
