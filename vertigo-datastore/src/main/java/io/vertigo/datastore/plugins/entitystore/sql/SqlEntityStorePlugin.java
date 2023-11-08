@@ -482,7 +482,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 				.filter(dtField -> !dtField.getType().isId())
 				.filter(DtField::isPersistent)
 				.map(DtField::name)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/** {@inheritDoc} */

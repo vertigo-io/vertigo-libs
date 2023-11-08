@@ -20,7 +20,6 @@ package io.vertigo.dashboard.impl.services.data;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -123,7 +122,7 @@ public final class DataProviderImpl implements DataProvider {
 						buildHealthMeasure(
 								Double.valueOf((String) timedDataSerie.getValues().get("status")),
 								(String) timedDataSerie.getValues().get("message"))))
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
@@ -165,7 +164,7 @@ public final class DataProviderImpl implements DataProvider {
 						.withValue(Double.valueOf((String) timedDataSerie.getValues().get("value")))
 						.withSuccess()
 						.build())
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 

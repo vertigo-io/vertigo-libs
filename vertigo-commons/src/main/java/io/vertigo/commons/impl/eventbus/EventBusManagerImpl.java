@@ -20,8 +20,10 @@ package io.vertigo.commons.impl.eventbus;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.commons.eventbus.Event;
 import io.vertigo.commons.eventbus.EventBusManager;
@@ -44,6 +46,7 @@ import io.vertigo.core.util.StringUtil;
 public final class EventBusManagerImpl implements EventBusManager, Activeable, SimpleDefinitionProvider {
 	private final List<EventBusSubscriptionDefinition> subscriptions = new ArrayList<>();
 	private final List<Consumer<Event>> deadEventListeners = new ArrayList<>();
+	private static final Logger LOG = LogManager.getLogger(EventBusManagerImpl.class);
 
 	/**
 	 * Constructor.
@@ -59,7 +62,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 		return Node.getNode().getComponentSpace().keySet()
 				.stream()
 				.flatMap(id -> createEventSubscriptions(id, Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**
@@ -82,9 +85,8 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 					//2. For each method register a listener
 					final Class<? extends Event> eventType = (Class<? extends Event>) method.getParameterTypes()[0];
 					final String subscriptionName = "Evt" + StringUtil.first2UpperCase(componentId) + "$" + StringUtil.first2LowerCase(eventType.getSimpleName());
-					return new EventBusSubscriptionDefinition<>(subscriptionName, eventType, event -> ClassUtil.invoke(subscriberInstance, method, event));
-				})
-				.collect(Collectors.toList());
+					return new EventBusSubscriptionDefinition(subscriptionName, eventType, event -> ClassUtil.invoke(subscriberInstance, method, event));
+				}).toList();
 
 	}
 
@@ -111,13 +113,21 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 		//-----
 		final long emitted = subscriptions.stream()
 				.filter(subscription -> subscription.match(event))
-				.peek(subscription -> subscription.getListener().accept(event))
+				.peek(subscription -> eventBusExcecutor(subscription.getListener(), event))
 				.count();
 
 		//manages dead event
 		if (emitted == 0) {
 			deadEventListeners
 					.forEach(deadEventlistener -> deadEventlistener.accept(event));
+		}
+	}
+
+	private void eventBusExcecutor(final Consumer listener, final Event event) {
+		try {//try catch needed to ensure execution of other listener aren't suppressed
+			listener.accept(event);
+		} catch (final Exception e) {
+			LOG.error("Error in eventBus", e);
 		}
 	}
 

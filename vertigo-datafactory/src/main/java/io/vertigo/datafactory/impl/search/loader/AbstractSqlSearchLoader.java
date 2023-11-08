@@ -29,9 +29,11 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
+import io.vertigo.datamodel.structure.definitions.DataAccessor;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
@@ -46,11 +48,10 @@ import io.vertigo.datamodel.task.model.Task;
 /**
  * Default SearchLoader for Database datasource.
  * @author npiedeloup
- * @param <P> Primary key type
  * @param <S> KeyConcept type
  * @param <I> Index type
  */
-public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends KeyConcept, I extends DtObject> extends AbstractSearchLoader<P, S, I> {
+public abstract class AbstractSqlSearchLoader<S extends KeyConcept, I extends DtObject> extends AbstractSearchLoader<S, I> {
 	private static final int SEARCH_CHUNK_SIZE = 500;
 	private final TaskManager taskManager;
 	private final VTransactionManager transactionManager;
@@ -79,61 +80,71 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	/** {@inheritDoc} */
 	@Override
 	@Transactional
-	protected final List<UID<S>> loadNextURI(final P lastId, final DtDefinition dtDefinition) {
+	protected final List<Tuple<UID<S>, Serializable>> loadNextURI(final Serializable lastValue, final boolean orderByVersion, final DtDefinition dtDefinition) {
 		try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			final String entityName = getEntityName(dtDefinition);
 			final String tableName = StringUtil.camelToConstCase(entityName);
 			final String taskName = "TkSelect" + entityName + "NextSearchChunk";
 			final DtField idField = dtDefinition.getIdField().get();
-			final String idFieldName = idField.name();
-			final String request = getNextIdsSqlQuery(tableName, idFieldName);
+			final DtField versionField = getVersionField(dtDefinition);
+			final DtField iteratorField = orderByVersion ? versionField : idField;
+
+			final String request = getNextIdsSqlQuery(tableName, idField.name(), iteratorField.name(), versionField.name());
 
 			final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 					.withEngine(TaskEngineSelect.class)
 					.withDataSpace(dtDefinition.getDataSpace())
 					.withRequest(request)
-					.addInAttribute(idFieldName, idField.smartTypeDefinition(), Cardinality.ONE)
+					.addInAttribute(iteratorField.name(), iteratorField.smartTypeDefinition(), Cardinality.ONE)
 					.withOutAttribute("dtc", Node.getNode().getDefinitionSpace().resolve(SmartTypeDefinition.PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
 					.build();
 
 			final Task task = Task.builder(taskDefinition)
-					.addValue(idFieldName, lastId)
+					.addValue(iteratorField.name(), lastValue)
 					.build();
 
 			final DtList<S> resultDtc = taskManager
 					.execute(task)
 					.getResult();
 
-			final List<UID<S>> uris = new ArrayList<>(resultDtc.size());
+			final List<Tuple<UID<S>, Serializable>> uids = new ArrayList<>(resultDtc.size());
+			final DataAccessor versionFieldAccessor = versionField.getDataAccessor();
 			for (final S dto : resultDtc) {
-				uris.add(UID.<S> of(dtDefinition, DtObjectUtil.getId(dto)));
+				uids.add(Tuple.of(UID.<S> of(dtDefinition, DtObjectUtil.getId(dto)), (Serializable) versionFieldAccessor.getValue(dto)));
 			}
-			return uris;
+			return uids;
 		}
 	}
 
 	/**
 	 * Create a SQL query to get next chunk's ids next in table from previous chunk
 	 * @param tableName Table name to use
-	 * @param pkFieldName Pk field name
+	 * @param pkFieldName Pk field name to return
+	 * @param iteratorFieldName Iterator field name use in where clause
+	 * @param versionFieldName Version field name to return
 	 * @return SQL query
 	 */
-	protected String getNextIdsSqlQuery(final String tableName, final String pkFieldName) {
+	protected String getNextIdsSqlQuery(final String tableName, final String pkFieldName, final String iteratorFieldName, final String versionFieldName) {
 		final String pkColumnName = StringUtil.camelToConstCase(pkFieldName);
+		final String iteratorColumnName = StringUtil.camelToConstCase(iteratorFieldName);
+		final String versionColumnName = StringUtil.camelToConstCase(versionFieldName);
+
 		final StringBuilder request = new StringBuilder()
-				.append(" select ").append(pkColumnName).append(" from ")
+				.append(" select ").append(pkColumnName)
+				.append(pkColumnName.equals(versionColumnName) ? "" : ", " + versionColumnName)
+				.append(" from ")
 				.append(tableName)
 				.append(" where ")
-				.append(pkColumnName)
+				.append(iteratorColumnName)
 				.append(" > #")
-				.append(pkFieldName)
+				.append(iteratorFieldName)
 				.append('#');
 		final String sqlQueryFilter = getSqlQueryFilter();
 		Assertion.check().isNotNull(sqlQueryFilter, "getSqlQueryFilter can't be null");
 		if (!sqlQueryFilter.isEmpty()) {
 			request.append(" and (").append(sqlQueryFilter).append(')');
 		}
-		request.append(" order by ").append(pkColumnName).append(" ASC");
+		request.append(" order by ").append(iteratorColumnName).append(" ASC");
 		appendMaxRows(request, SEARCH_CHUNK_SIZE);
 		return request.toString();
 	}
@@ -149,6 +160,12 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	}
 
 	/**
+	 * Specific SqlQuery structural filter.
+	 * If use with reindexDelta : logicaly elements must be returned by this filter, and index data must be filterd by loadData query.
+	 * So this filter may no change during data life cycle ( like `type='text'`) and inactivity filter should be in loadData query.
+	 *
+	 * To use a limit by a date (for archive for exemple), you may add a filter here with 1 hour or 1 day more
+	 * and the right limit is loadData quey.
 	 * @return Specific SqlQuery filter
 	 */
 	protected String getSqlQueryFilter() {

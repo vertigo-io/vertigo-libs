@@ -20,7 +20,6 @@ package io.vertigo.datafactory.search.definitions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -70,7 +69,7 @@ public final class SearchIndexDefinitionSupplier implements DefinitionSupplier {
 			final DtField dtFieldFrom = indexDtDefinition.getField(indexCopyTo.getKey());
 			final List<DtField> dtFieldTos = Stream.of(indexCopyTo.getValue())
 					.map(indexDtDefinition::getField)
-					.collect(Collectors.toList());
+					.toList();
 			copyToFields.put(dtFieldFrom, dtFieldTos);
 		}
 		return new SearchIndexDefinition(

@@ -44,6 +44,7 @@ import redis.clients.jedis.Transaction;
  * @author pchretien
  */
 public final class RedisNotificationPlugin implements NotificationPlugin {
+	private static final String REDIS_PREFIX = "{notif}:";
 	private static final long REMOVE_PACKET_SIZE = 100L;
 	private final RedisConnector redisConnector;
 
@@ -63,6 +64,8 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 		redisConnector = redisConnectors.stream()
 				.filter(connector -> connectorName.equals(connector.getName()))
 				.findFirst().get();
+		//current version don't support multi nodes. Migration needs to rework keys and will break compatibility (need data migration).
+		Assertion.check().isFalse(redisConnector.isMultiNodes(), this.getClass().getSimpleName() + " isn't compatible with RedisConnector multiNodes (cluster)");
 	}
 
 	/** {@inheritDoc} */
@@ -78,7 +81,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 		// - notifs:$accountId in queue with key= accounts:$uuid
 		// - userContent value per accountId:$accountId in map with key= userContent:$uuid
 
-		try (final Jedis jedis = redisConnector.getClient()) {
+		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			final Notification notification = notificationEvent.getNotification();
 			final String uuid = notification.uuid().toString();
 			final String typedTarget = "type:" + notification.type() + ";target:" + notification.targetUrl() + ";uuid";
@@ -144,7 +147,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 		//-----
 		final List<Response<Map<String, String>>> responses = new ArrayList<>();
 		final List<Response<String>> responsesUserContent = new ArrayList<>();
-		try (final Jedis jedis = redisConnector.getClient()) {
+		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			final List<String> uuids = jedis.lrange("notifs:" + accountURI.getId(), 0, -1);
 			final Transaction tx = jedis.multi();
 			for (final String uuid : uuids) {
@@ -174,7 +177,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 				.isNotNull(accountURI)
 				.isNotNull(notificationUUID);
 		//-----
-		try (final Jedis jedis = redisConnector.getClient()) {
+		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			final String uuid = notificationUUID.toString();
 			final String updatedAccount = "accountURI:" + accountURI.getId();
 
@@ -193,7 +196,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 				.isNotNull(accountURI)
 				.isNotNull(notificationUUID);
 		//-----
-		try (final Jedis jedis = redisConnector.getClient()) {
+		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			final String notifiedAccount = "notifs:" + accountURI.getId();
 			final String uuid = notificationUUID.toString();
 			//we remove notif from account stack and account from notif stack
@@ -228,7 +231,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void removeAll(final String type, final String targetUrl) {
-		try (final Jedis jedis = redisConnector.getClient()) {
+		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			final List<String> uuids = jedis.lrange("type:" + type + ";target:" + targetUrl + ";uuid", 0, -1);
 			for (final String uuid : uuids) {
 				//we search accounts for this notif
@@ -260,7 +263,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 		long startIndex = -1L;
 		final long startTime = System.currentTimeMillis();
 		while (System.currentTimeMillis() - startTime < 10 * 1000) {
-			try (final Jedis jedis = redisConnector.getClient()) {
+			try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 				final List<String> uuids = jedis.lrange("notifs:all", startIndex - REMOVE_PACKET_SIZE, startIndex); //return last (older) 100 uuid (but not sorted)
 				if (uuids.isEmpty()) {
 					break;// no more notifs we do nothing and stop now

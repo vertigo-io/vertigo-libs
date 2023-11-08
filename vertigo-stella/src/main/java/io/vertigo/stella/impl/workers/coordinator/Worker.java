@@ -89,7 +89,7 @@ final class Worker<R, W> implements Callable<R> {
 	}
 
 	private void logError(final Throwable e) {
-		LOGGER.error("Erreur de la tache de type : " + workItem.getWorkEngineClass().getName(), e);
+		LOGGER.error("Erreur de la tache de type : " + workItem.getWorkType(), e);
 	}
 
 	/**

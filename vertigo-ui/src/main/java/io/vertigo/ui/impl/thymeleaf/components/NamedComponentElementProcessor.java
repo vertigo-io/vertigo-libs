@@ -117,14 +117,18 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		placeholderPrefixes = thymeleafComponent.getParameters().stream() //we read from thymeleafComponent.getParameters() to keep order of placeholders
 				.filter(parameterName -> parameterName.endsWith(VARIABLE_PLACEHOLDER_SEPARATOR + ATTRS_SUFFIX))
 				.map(parameterName -> parameterName.substring(0, parameterName.length() - ATTRS_SUFFIX.length()))
-				.collect(Collectors.toList());
+				.toList();
 		unnamedPlaceholderPrefix = placeholderPrefixes.isEmpty() ? Optional.empty() : Optional.of(placeholderPrefixes.get(placeholderPrefixes.size() - 1));
 	}
 
 	private void acceptCamelCaseNameForKebabParameters() {
 		final Set<String> camelCaseParameterNames = new HashSet<>();
 		for (final String parameterName : parameterNames) {
-			if (parameterName.indexOf('-') > 0) {
+			if (parameterName.startsWith("v-")) {
+				final String camelName = kebabToCamelCase(parameterName);
+				camelCaseParameterNames.add(camelName);
+				camelCaseParameterNames.add(":" + parameterName.substring("v-".length()));
+			} else if (parameterName.indexOf('-') > 0) {
 				camelCaseParameterNames.add(kebabToCamelCase(parameterName));
 			}
 		}
@@ -377,20 +381,6 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		return attributeValue;
 	}
 
-	private static String encodeAttributeName(final String attributeName, final Object attributeValue) {
-		if (!attributeName.startsWith(":") && !attributeName.startsWith("'")
-				&& (attributeValue == null
-						|| attributeValue instanceof String
-								&& "true".equalsIgnoreCase((String) attributeValue) //boolean
-								&& "false".equalsIgnoreCase((String) attributeValue))) {
-			return "':" + attributeName + "'";
-		} else if (!attributeName.startsWith("'") //if not only char and don't already start by ' add them
-				&& !SIMPLE_TEXT_PATTERN.matcher(attributeName).matches()) {
-			return "'" + attributeName + "'";
-		}
-		return attributeName;
-	}
-
 	private void setLocalPlaceholderVariables(final ITemplateContext context, final IElementModelStructureHandler structureHandler, final Map<String, Map<String, Object>> placeholders) {
 		for (final String placeholderPrefix : placeholderPrefixes) {
 			final String placeholder = placeholderPrefix + ATTRS_SUFFIX;
@@ -478,6 +468,8 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 	private void putAttributeSupportKebabCase(final String variableName, final String variableValue, final Map<String, String> attributes) {
 		if (variableName.indexOf('-') > 0 && parameterNames.contains(variableName)) {
 			attributes.put(kebabToCamelCase(variableName), variableValue);
+		} else if (variableName.charAt(0) == ':' && parameterNames.contains(variableName)) {
+			attributes.put(kebabToCamelCase("v-" + variableName.substring(1)), variableValue);
 		} else {
 			attributes.put(variableName, variableValue);
 		}
@@ -524,7 +516,21 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			previousPlaceholderValues = new HashMap<>();
 			placeholders.put(placeholderPrefix + ATTRS_SUFFIX, previousPlaceholderValues);
 		}
-		previousPlaceholderValues.put(encodeAttributeName(attributeName, value), encodeAttributeValue(value, true));
+		previousPlaceholderValues.put(encodePlaceholderAttributeName(attributeName, value), encodeAttributeValue(value, true));
+	}
+
+	private static String encodePlaceholderAttributeName(final String attributeName, final Object attributeValue) {
+		if (!attributeName.startsWith(":") && !attributeName.startsWith("v-") && !attributeName.startsWith("'")
+				&& (attributeValue == null
+						|| attributeValue instanceof String
+								&& "true".equalsIgnoreCase((String) attributeValue) //boolean
+								&& "false".equalsIgnoreCase((String) attributeValue))) {
+			return "':" + attributeName + "'";
+		} else if (!attributeName.startsWith("'") //if not only char and don't already start by ' add them
+				&& !SIMPLE_TEXT_PATTERN.matcher(attributeName).matches()) {
+			return "'" + attributeName + "'";
+		}
+		return attributeName;
 	}
 
 	private boolean isPlaceholderable(final String prefixedVariableName) {

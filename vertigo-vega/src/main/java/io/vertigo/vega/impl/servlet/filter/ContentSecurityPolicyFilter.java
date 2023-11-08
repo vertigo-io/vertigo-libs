@@ -18,11 +18,13 @@
 package io.vertigo.vega.impl.servlet.filter;
 
 import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.Random;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
@@ -57,6 +59,7 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 
 	private String cspPattern;
 	private boolean useNonce = false;
+	private Random srnd;
 	private Map<String, String> compatibilityHeaders;
 
 	/** {@inheritDoc} */
@@ -66,6 +69,7 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 		cspPattern = filterConfig.getInitParameter("cspPattern");
 		Assertion.check().isNotBlank(cspPattern);
 		useNonce = cspPattern.contains(NONCE_PATTERN);
+		srnd = useNonce ? new SecureRandom() : null;
 
 		final ParamManager paramManager = Node.getNode().getComponentSpace().resolve(ParamManager.class);
 		//String.replace : => est équivalent à replaceAll sans regexp (et remplace bien toutes les occurences)
@@ -104,10 +108,13 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 		final HttpServletRequest request = (HttpServletRequest) req;
 		final HttpServletResponse response = (HttpServletResponse) res;
 
-		String nonce = "Missing-Nonce-Add-" + NONCE_PATTERN + "-in-csp-pattern";
+		String nonce = "MissingNonceAdd" + NONCE_PATTERN + "InCspPattern";
 		String cspToApply = cspPattern;
 		if (useNonce) {
-			nonce = UUID.randomUUID().toString();
+			final byte[] randomNonce = new byte[32];
+			srnd.nextBytes(randomNonce);
+			nonce = Base64.getEncoder().encodeToString(randomNonce);
+			//nonce = UUID.randomUUID().toString(); //UUID contains - badly parsed by some tool
 			cspToApply = cspToApply.replace(NONCE_PATTERN, nonce);
 		}
 		request.setAttribute("nonce", nonce);

@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.DelayQueue;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -36,6 +35,7 @@ import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.daemon.DaemonManager;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
@@ -78,7 +78,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 				.map(String::trim)
 				.map(KVCollection::new)
 				.peek(kvc -> collectionsData.put(kvc, new ConcurrentHashMap<String, DelayedMemoryCacheValue>()))
-				.collect(Collectors.toList());
+				.toList();
 		//-----
 		this.timeToLiveSeconds = timeToLiveSeconds;
 		dmnUniqueName = "DmnKvDataStore$t" + timeToLiveSeconds + "c" + Long.toHexString(collections.hashCode());
@@ -128,7 +128,10 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 				.isNotNull(collection)
 				.isNotBlank(key);
 		//-----
-		getCollectionData(collection).remove(key);
+		final var oldValue = getCollectionData(collection).remove(key);
+		if (oldValue == null) {
+			throw new VSystemException("delete has failed because no data found with key : {0}", key);
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -165,7 +168,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 	 * Purge les elements trop vieux.
 	 */
 	void removeTooOldElements() {
-		final int maxChecked = 500;
+		final int maxChecked = Math.max(timeoutQueue.size() / 5, 100_000);
 		int checked = 0;
 		//Les elements sont parcouru dans l'ordre d'insertion (sans lock)
 		while (checked < maxChecked) {

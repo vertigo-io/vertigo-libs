@@ -20,7 +20,6 @@ package io.vertigo.commons.impl.command;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -48,7 +47,7 @@ public final class CommandManagerImpl implements CommandManager, SimpleDefinitio
 		return Node.getNode().getComponentSpace().keySet()
 				.stream()
 				.flatMap(id -> createCommandDefinition(Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private static List<CommandDefinition> createCommandDefinition(final CoreComponent component, final AspectPlugin aopPlugin) {
@@ -63,7 +62,7 @@ public final class CommandManagerImpl implements CommandManager, SimpleDefinitio
 							final Command command = method.getAnnotation(Command.class);
 							final List<CommandParam> commandParams = Stream.of(method.getGenericParameterTypes())
 									.map(CommandParam::new)
-									.collect(Collectors.toList());
+									.toList();
 							return new CommandDefinition(
 									command.handle(),
 									command.description(),
@@ -71,7 +70,7 @@ public final class CommandManagerImpl implements CommandManager, SimpleDefinitio
 									commandParams,
 									args -> (CommandResponse) ClassUtil.invoke(component, method, args));
 						})
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
@@ -80,7 +79,7 @@ public final class CommandManagerImpl implements CommandManager, SimpleDefinitio
 		return Node.getNode().getDefinitionSpace().getAll(CommandDefinition.class)
 				.stream()
 				.filter(commandDefinition -> commandDefinition.getCommand().startsWith(prefix))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	@Override

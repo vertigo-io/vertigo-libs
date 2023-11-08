@@ -35,8 +35,11 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.params.ScanParams;
 import redis.clients.jedis.resps.ScanResult;
 
+/**
+ * @author mlaroche
+ */
 public class RedisHandlePlugin implements HandlePlugin {
-
+	private static final String REDIS_PREFIX = "{handle}:";
 	private final RedisConnector redisConnector;
 
 	@Inject
@@ -51,11 +54,13 @@ public class RedisHandlePlugin implements HandlePlugin {
 		redisConnector = redisConnectors.stream()
 				.filter(connector -> connectorName.equals(connector.getName()))
 				.findFirst().get();
+		//current version don't support multi nodes. Migration needs to rework keys and will break compatibility (need data migration).
+		Assertion.check().isFalse(redisConnector.isMultiNodes(), this.getClass().getSimpleName() + " isn't compatible with RedisConnector multiNodes (cluster)");
 	}
 
 	@Override
 	public void add(final List<Handle> handles) {
-		try (final Jedis jedis = redisConnector.getClient()) {
+		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			for (final Handle handle : handles) {
 				if (jedis.exists("urn_handle:" + handle.getUid().urn())) {
 					// if exist we need to clean the index and the reverse index
@@ -72,7 +77,7 @@ public class RedisHandlePlugin implements HandlePlugin {
 
 	@Override
 	public void remove(final List<UID> uids) {
-		try (final Jedis jedis = redisConnector.getClient()) {
+		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			for (final UID uid : uids) {
 				if (jedis.exists("urn_handle:" + uid.urn())) {
 					// if exist we need to clean the index and the reverse index
@@ -87,7 +92,7 @@ public class RedisHandlePlugin implements HandlePlugin {
 
 	@Override
 	public List<Handle> search(final String prefix) {
-		try (final Jedis jedis = redisConnector.getClient()) {
+		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			final List<Handle> handleResults = new ArrayList<>();
 			String cursor = "0";
 			final ScanParams scanParams = new ScanParams();
@@ -110,14 +115,14 @@ public class RedisHandlePlugin implements HandlePlugin {
 
 	@Override
 	public Handle getByCode(final String handleCode) {
-		try (final Jedis jedis = redisConnector.getClient()) {
+		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			return fromMap(jedis.hgetAll("handle:" + handleCode));
 		}
 	}
 
 	@Override
 	public Handle getByUid(final UID uid) {
-		try (final Jedis jedis = redisConnector.getClient()) {
+		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			return fromMap(jedis.hgetAll("urn_handle:" + uid.urn()));
 		}
 	}
@@ -136,7 +141,7 @@ public class RedisHandlePlugin implements HandlePlugin {
 
 	@Override
 	public void removeAll() {
-		try (final Jedis jedis = redisConnector.getClient()) {
+		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			String cursor = "0";
 			final ScanParams handleScanParams = new ScanParams();
 			handleScanParams.match("handle:*");

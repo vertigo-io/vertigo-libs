@@ -43,7 +43,7 @@ public final class MyNodeConfig {
 	private static NodeConfigBuilder createNodeConfigBuilder(final boolean redis) {
 		final String redisHost = "docker-vertigo.part.klee.lan.net";
 		final String redisPort = "6379";
-		final String redisDatabase = "15";
+		final String redisDatabase = "0";
 
 		final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder()
 				.withBoot(BootConfig.builder()
@@ -55,6 +55,8 @@ public final class MyNodeConfig {
 		if (redis) {
 			nodeConfigBuilder.addModule(new RedisFeatures()
 					.withJedis(
+							//Param.of("clusterNodes", "localhost:7000;localhost:7001;localhost:7002"),
+							//Param.of("password", "foobared"),
 							Param.of("host", redisHost),
 							Param.of("port", redisPort),
 							Param.of("ssl", "false"),

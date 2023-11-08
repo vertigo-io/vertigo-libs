@@ -20,7 +20,6 @@ package io.vertigo.datastore.impl.filestore;
 import java.net.URLConnection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -66,7 +65,7 @@ public final class FileStoreManagerImpl implements FileStoreManager, SimpleDefin
 				.map(fileStorePlugin -> new FileInfoDefinition(
 						FileInfoDefinition.PREFIX + fileStorePlugin.getFileInfoClass().getSimpleName(),
 						fileStorePlugin.getName()))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private FileStorePlugin getPhysicalStore(final FileInfoDefinition fileInfoDefinition) {

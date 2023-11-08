@@ -17,6 +17,7 @@
  */
 package io.vertigo.datafactory.impl.search;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -39,6 +40,7 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.util.NamedThreadFactory;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.search.SearchManager;
@@ -86,7 +88,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		this.analyticsManager = analyticsManager;
 		localeManager.add(io.vertigo.datafactory.impl.search.SearchResource.class.getName(), io.vertigo.datafactory.impl.search.SearchResource.values());
 
-		executorService = Executors.newSingleThreadScheduledExecutor();
+		executorService = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("v-search-reindex-"));
 	}
 
 	/** {@inheritDoc} */
@@ -234,7 +236,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	private static List<SearchIndexDefinition> findIndexDefinitionByKeyConcept(final DtDefinition keyConceptDtDefinition) {
 		return Node.getNode().getDefinitionSpace().getAll(SearchIndexDefinition.class).stream()
 				.filter(indexDefinition -> indexDefinition.getKeyConceptDtDefinition().equals(keyConceptDtDefinition))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/** {@inheritDoc} */
@@ -264,18 +266,48 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		return reindexFuture;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public Future<Long> reindexAllModified(final SearchIndexDefinition searchIndexDefinition) {
+		final WritableFuture<Long> reindexFuture = new WritableFuture<>();
+		executorService.schedule(new ReindexAllModifiedTask(searchIndexDefinition, reindexFuture, this, searchServicesPlugin), 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
+		return reindexFuture;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Future<Long> reindexDelta(final SearchIndexDefinition searchIndexDefinition) {
+		final WritableFuture<Long> reindexFuture = new WritableFuture<>();
+		executorService.schedule(new ReindexDeltaTask(searchIndexDefinition, reindexFuture, this, searchServicesPlugin), 5, TimeUnit.SECONDS); //une reindexation delta dans max 5s
+		return reindexFuture;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void putMetaData(final SearchIndexDefinition indexDefinition, final String dataPath, final Serializable dataValue) {
+		searchServicesPlugin.putMetaData(indexDefinition, dataPath, dataValue);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Serializable getMetaData(final SearchIndexDefinition indexDefinition, final String dataPath) {
+		return searchServicesPlugin.getMetaData(indexDefinition, dataPath);
+	}
+
 	/**
 	 * Receive Store event.
 	 * @param storeEvent Store event
 	 */
 	@EventBusSubscribed
 	public void onEvent(final StoreEvent storeEvent) {
-		markAsDirty((List) storeEvent.getUIDs().stream()
+		final List<UID<? extends KeyConcept>> keyConceptUris = (List) storeEvent.getUIDs().stream()
 				//On ne traite l'event que si il porte sur un KeyConcept
 				.filter(uid -> uid.getDefinition().getStereotype() == DtStereotype.KeyConcept
 						&& hasIndexDefinitionByKeyConcept(uid.getDefinition()))
-				.toList());
-
+				.toList();
+		if (!keyConceptUris.isEmpty()) {
+			markAsDirty(keyConceptUris);
+		}
 	}
 
 }

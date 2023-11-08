@@ -19,7 +19,6 @@ package io.vertigo.account.impl.authorization.dsl.translator;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.vertigo.account.authorization.definitions.SecurityDimension;
 import io.vertigo.account.authorization.definitions.SecurityDimensionType;
@@ -199,7 +198,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		//on vérifie qu'on a bien toutes les clées.
 		final List<String> strDimensionfields = securityDimension.getFields().stream()
 				.map(DtField::name)
-				.collect(Collectors.toList());
+				.toList();
 		Assertion.check()
 				.isTrue(strDimensionfields.size() <= treeKeys.length, "Entity security tree must have the same or at least the {0} firsts fields ({1}) of User securityKey {2}", strDimensionfields.size(), strDimensionfields, securityDimension.getName());
 		//		.when(strDimensionfields.size() < treeKeys.length,

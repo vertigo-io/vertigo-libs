@@ -37,21 +37,23 @@ import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.filestore.model.VFile;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
+import redis.clients.jedis.UnifiedJedis;
 
 /**
- * @author pchretien
+ * @author pchretien, npiedeloup
  */
 public final class RedisAccountCachePlugin implements AccountCachePlugin {
-	private static final String HPHOTO_BY_ACCOUNT_START_KEY = "photoByAccount:";
-	private static final String HGROUP_START_KEY = "group:";
-	private static final String HACCOUNT_START_KEY = "account:";
-	private static final String HAUTHTOKEN_INDEX_KEY = "authToken";
+	private static final String REDIS_PREFIX = "{account:}";
+	private static final String HPHOTO_BY_ACCOUNT_START_KEY = REDIS_PREFIX + "photoByAccount:";
+	private static final String HGROUP_START_KEY = REDIS_PREFIX + "group:";
+	private static final String HACCOUNT_START_KEY = REDIS_PREFIX + "account:";
+	private static final String HAUTHTOKEN_INDEX_KEY = REDIS_PREFIX + "authToken";
 
-	private static final String SGROUPS_BY_ACCOUNT_START_KEY = "groupsByAccount:";
-	private static final String SACCOUNTS_BY_GROUP_START_KEY = "accountsByGroup:";
+	private static final String SGROUPS_BY_ACCOUNT_START_KEY = REDIS_PREFIX + "groupsByAccount:";
+	private static final String SACCOUNTS_BY_GROUP_START_KEY = REDIS_PREFIX + "accountsByGroup:";
 
-	private static final String SGROUPS_KEY = "groups";
-	private static final String SACCOUNTS_KEY = "accounts";
+	private static final String SGROUPS_KEY = REDIS_PREFIX + "groups";
+	private static final String SACCOUNTS_KEY = REDIS_PREFIX + "accounts";
 
 	private final RedisConnector redisConnector;
 	private final PhotoCodec photoCodec;
@@ -83,7 +85,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	public void putAccount(final Account account) {
 		Assertion.check().isNotNull(account);
 		//-----
-		try (final Jedis jedis = redisConnector.getClient()) {
+		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			try (final Transaction tx = jedis.multi()) {
 				tx.hmset(HACCOUNT_START_KEY + account.getId(), account2Map(account));
 				tx.hset(HAUTHTOKEN_INDEX_KEY, account.getAuthToken(), account.getId());
@@ -98,13 +100,12 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	public Optional<Account> getAccount(final UID<Account> accountUID) {
 		Assertion.check().isNotNull(accountUID);
 		//-----
-		try (final Jedis jedis = redisConnector.getClient()) {
-			final String key = HACCOUNT_START_KEY + accountUID.getId();
-			if (jedis.exists(key)) {
-				return Optional.of(map2Account(jedis.hgetAll(key)));
-			}
-			return Optional.empty();
+		final UnifiedJedis jedis = redisConnector.getClient();
+		final String key = HACCOUNT_START_KEY + accountUID.getId();
+		if (jedis.exists(key)) {
+			return Optional.of(map2Account(jedis.hgetAll(key)));
 		}
+		return Optional.empty();
 	}
 
 	/** {@inheritDoc} */
@@ -113,7 +114,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 		Assertion.check().isNotNull(group);
 		//-----
 		//----
-		try (final Jedis jedis = redisConnector.getClient()) {
+		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			try (final Transaction tx = jedis.multi()) {
 				tx.hmset(HGROUP_START_KEY + group.getId(), group2Map(group));
 				tx.sadd(SGROUPS_KEY, group.getId());
@@ -127,13 +128,12 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	public Optional<AccountGroup> getGroup(final UID<AccountGroup> groupUID) {
 		Assertion.check().isNotNull(groupUID);
 		//-----
-		try (final Jedis jedis = redisConnector.getClient()) {
-			final String key = HGROUP_START_KEY + groupUID.getId();
-			if (jedis.exists(key)) {
-				return Optional.of(map2Group(jedis.hgetAll(key)));
-			}
-			return Optional.empty();
+		final UnifiedJedis jedis = redisConnector.getClient();
+		final String key = HGROUP_START_KEY + groupUID.getId();
+		if (jedis.exists(key)) {
+			return Optional.of(map2Group(jedis.hgetAll(key)));
 		}
+		return Optional.empty();
 	}
 
 	/*
@@ -170,7 +170,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 				.isNotNull(accountsUID)
 				.isNotNull(groupUID);
 		//-----
-		try (final Jedis jedis = redisConnector.getClient()) {
+		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			try (final Transaction tx = jedis.multi()) {
 				for (final UID<Account> accountURI : accountsUID) {
 					tx.sadd(SACCOUNTS_BY_GROUP_START_KEY + groupUID.getId(), accountURI.getId().toString());
@@ -188,7 +188,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 				.isNotNull(accountUID)
 				.isNotNull(groupUIDs);
 		//-----
-		try (final Jedis jedis = redisConnector.getClient()) {
+		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			try (final Transaction tx = jedis.multi()) {
 				for (final UID<AccountGroup> groupURI : groupUIDs) {
 					tx.sadd(SACCOUNTS_BY_GROUP_START_KEY + groupURI.getId(), accountUID.getId().toString());
@@ -205,13 +205,12 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 		Assertion.check().isNotNull(groupUID);
 		//-----
 		final Set<UID<Account>> set = new HashSet<>();
-		try (final Jedis jedis = redisConnector.getClient()) {
-			final Set<String> ids = jedis.smembers(SACCOUNTS_BY_GROUP_START_KEY + groupUID.getId());
-			for (final String id : ids) {
-				set.add(UID.of(Account.class, id));
-			}
-			return set;
+		final UnifiedJedis jedis = redisConnector.getClient();
+		final Set<String> ids = jedis.smembers(SACCOUNTS_BY_GROUP_START_KEY + groupUID.getId());
+		for (final String id : ids) {
+			set.add(UID.of(Account.class, id));
 		}
+		return set;
 	}
 
 	/** {@inheritDoc} */
@@ -220,13 +219,12 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 		Assertion.check().isNotNull(accountUID);
 		//-----
 		final Set<UID<AccountGroup>> set = new HashSet<>();
-		try (final Jedis jedis = redisConnector.getClient()) {
-			final Set<String> ids = jedis.smembers(SGROUPS_BY_ACCOUNT_START_KEY + accountUID.getId());
-			for (final String id : ids) {
-				set.add(UID.of(AccountGroup.class, id));
-			}
-			return set;
+		final UnifiedJedis jedis = redisConnector.getClient();
+		final Set<String> ids = jedis.smembers(SGROUPS_BY_ACCOUNT_START_KEY + accountUID.getId());
+		for (final String id : ids) {
+			set.add(UID.of(AccountGroup.class, id));
 		}
+		return set;
 	}
 
 	private static Map<String, String> account2Map(final Account account) {
@@ -265,7 +263,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 				.isNotNull(photo);
 		//-----
 		final Map<String, String> vFileMapPhoto = photoCodec.vFile2Map(photo);
-		try (final Jedis jedis = redisConnector.getClient()) {
+		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			try (final Transaction tx = jedis.multi()) {
 				tx.hmset(HPHOTO_BY_ACCOUNT_START_KEY + accountUID.getId(), vFileMapPhoto);
 				tx.exec();
@@ -277,9 +275,8 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	@Override
 	public Optional<VFile> getPhoto(final UID<Account> accountUID) {
 		final Map<String, String> result;
-		try (final Jedis jedis = redisConnector.getClient()) {
-			result = jedis.hgetAll(HPHOTO_BY_ACCOUNT_START_KEY + accountUID.getId());
-		}
+		final UnifiedJedis jedis = redisConnector.getClient();
+		result = jedis.hgetAll(HPHOTO_BY_ACCOUNT_START_KEY + accountUID.getId());
 		if (result.isEmpty()) {
 			return Optional.empty();
 		}
@@ -289,24 +286,19 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void reset() {
-		try (final Jedis jedis = redisConnector.getClient()) {
-			try (final Transaction tx = jedis.multi()) {
-				//todo : les haccount, photos et accountsByGroup", "photoByAccount ne sont pas supprimées
-				tx.del(SACCOUNTS_KEY, SGROUPS_KEY, "accountsByGroup", "photoByAccount", HAUTHTOKEN_INDEX_KEY);
-				tx.exec();
-			}
-		}
+		final UnifiedJedis jedis = redisConnector.getClient();
+		//todo : les clés de préfix haccount, photos et accountsByGroup, photoByAccount ne sont pas supprimées
+		jedis.del(SACCOUNTS_KEY, SGROUPS_KEY, HAUTHTOKEN_INDEX_KEY);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Account> getAccountByAuthToken(final String userAuthToken) {
-		try (final Jedis jedis = redisConnector.getClient()) {
-			final String accountUri = jedis.hget(HAUTHTOKEN_INDEX_KEY, userAuthToken);
-			if (accountUri != null) {
-				return Optional.of(map2Account(jedis.hgetAll(HACCOUNT_START_KEY + accountUri)));
-			}
-			return Optional.empty();
+		final UnifiedJedis jedis = redisConnector.getClient();
+		final String accountUri = jedis.hget(HAUTHTOKEN_INDEX_KEY, userAuthToken);
+		if (accountUri != null) {
+			return Optional.of(map2Account(jedis.hgetAll(HACCOUNT_START_KEY + accountUri)));
 		}
+		return Optional.empty();
 	}
 }

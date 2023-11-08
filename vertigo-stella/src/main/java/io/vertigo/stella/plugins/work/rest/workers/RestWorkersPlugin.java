@@ -17,6 +17,8 @@
  */
 package io.vertigo.stella.plugins.work.rest.workers;
 
+import java.util.Set;
+
 import javax.inject.Inject;
 
 import io.vertigo.commons.codec.CodecManager;
@@ -63,13 +65,20 @@ public final class RestWorkersPlugin implements WorkersPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <R> void putResult(final String workId, final R result, final Throwable error) {
+	public <R> void putResult(final String callerNodeId, final String nodeId, final String workType, final String workId, final R result, final Throwable error) {
+		//TODO this plugin support only one server, callerNodeId not used
 		restQueueClient.putResult(workId, result, error);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void putStart(final String workId) {
+	public void putStart(final String nodeId, final String workType, final String workId) {
 		restQueueClient.putStart(workId);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void heartBeat(final String nodeId, final Set<String> workTypes) {
+		restQueueClient.heartBeat(nodeId, workTypes);
 	}
 }

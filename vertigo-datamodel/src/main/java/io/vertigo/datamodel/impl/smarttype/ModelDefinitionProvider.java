@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -79,7 +78,7 @@ public class ModelDefinitionProvider implements DefinitionProvider {
 		return DynamicDefinitionSolver.solve(definitionSpace, dynamicDefinitions)
 				.stream()
 				.map(DynamicDefinition::getDefinitionSupplier)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 }

@@ -156,7 +156,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 						.withRule(rule)
 						.withSecurityKeys(userPermissions.getSecurityKeys())
 						.toCriteria())
-				.collect(Collectors.toList());
+				.toList();
 
 		if (criterions.isEmpty()) {
 			// Si il n'y a pas de droits alors pas d'autorisation.
@@ -199,7 +199,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		final List<Authorization> permissions = userPermissions.getEntityAuthorizations(dtDefinition).stream()
 				.filter(permission -> permission.getOperation().get().equals(operationName.name())
 						|| permission.getOverrides().contains(operationName.name()))
-				.collect(Collectors.toList());
+				.toList();
 
 		if (permissions.isEmpty()) {
 			// Si il n'y a pas d'autorisation.

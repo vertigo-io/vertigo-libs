@@ -17,6 +17,9 @@
  */
 package io.vertigo.stella.impl.master;
 
+import java.util.Set;
+
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.stella.impl.work.WorkItem;
 
@@ -28,7 +31,27 @@ import io.vertigo.stella.impl.work.WorkItem;
  * @author npiedeloup, pchretien
  */
 public interface MasterPlugin extends Plugin {
+
+	/**
+	 * Add a WorkItem to do
+	 * @param <R> Result type
+	 * @param <W> Work type
+	 * @param workItem Work item
+	 */
 	<R, W> void putWorkItem(final WorkItem<R, W> workItem);
 
-	WorkResult pollResult(final int waitTimeSeconds);
+	/**
+	 * Wait for next result.
+	 * @param callerNodeId
+	 * @param waitTimeSeconds wait result for x seconds
+	 * @return Work result (null if none) : may be any result type
+	 */
+	WorkResult pollResult(String callerNodeId, final int waitTimeSeconds);
+
+	/**
+	 * Check for dead nodes and manage (retry) unfinished workItems.
+	 * @param maxRetrycount max number of retry
+	 * @return WorkIds retried, WorkId abandonned
+	 */
+	Tuple<Set<String>, Set<String>> checkDeadNodesAndWorkItems(int maxRetrycount);
 }

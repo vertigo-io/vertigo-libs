@@ -294,8 +294,8 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		//-----
 		// 3- Création du résultat :  GeoLocation
 		LOGGER.info("{ 'address': '" + address + "'"
-				+ "	'level1' : '" + level1 + "'"
-				+ "	'level2' : '" + level2 + "'}");
+				+ " 'level1': '" + level1 + "'"
+				+ " 'level2': '" + level2 + "'}");
 
 		return new GeoLocation(latitude, longitude, countryCode, level1, level2, locality);
 	}

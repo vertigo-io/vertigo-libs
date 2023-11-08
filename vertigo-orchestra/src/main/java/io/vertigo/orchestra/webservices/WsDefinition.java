@@ -20,7 +20,6 @@ package io.vertigo.orchestra.webservices;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -70,7 +69,7 @@ public class WsDefinition implements WebServices {
 		return definitions
 				.stream()
 				.filter(definition -> definition.getLabel().startsWith(criteria))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**

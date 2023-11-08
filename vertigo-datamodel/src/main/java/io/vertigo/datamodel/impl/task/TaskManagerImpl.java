@@ -92,7 +92,7 @@ public final class TaskManagerImpl implements TaskManager, SimpleDefinitionProvi
 				.stream()
 				.map(Tuple::val2)
 				.map(TaskManagerImpl::createTaskDefinition)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private static TaskDefinition createTaskDefinition(final Method method) {

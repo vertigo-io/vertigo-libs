@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.naming.NamingEnumeration;
@@ -196,7 +195,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, searchRequest, top, mapperHelper.sourceAttributes(), ldapContext);
 		return (List<E>) result.stream()
 				.map(this::parseUser)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private Attributes getLdapAttributes(final Serializable accountId, final Set<String> returningAttributes, final LdapContext ldapContext) {

@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
@@ -114,7 +113,7 @@ public class SmartTypesLoader implements Loader {
 			final Constraint[] constraints = field.getAnnotationsByType(Constraint.class);
 			constraintConfigs = Arrays.stream(constraints)
 					.map(contraint -> new ConstraintConfig(contraint.clazz(), contraint.arg(), contraint.msg(), contraint.resourceMsg()))
-					.collect(Collectors.toList());
+					.toList();
 
 			constraintConfigs
 					.forEach(constraintConfig -> {

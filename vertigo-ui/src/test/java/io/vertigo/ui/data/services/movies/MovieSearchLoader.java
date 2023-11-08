@@ -34,7 +34,7 @@ import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.ui.data.domain.movies.Movie;
 import io.vertigo.ui.data.domain.movies.MovieIndex;
 
-public final class MovieSearchLoader extends AbstractSqlSearchLoader<Long, Movie, MovieIndex> {
+public final class MovieSearchLoader extends AbstractSqlSearchLoader<Movie, MovieIndex> {
 
 	private final MovieServices movieServices;
 	private final SearchManager searchManager;

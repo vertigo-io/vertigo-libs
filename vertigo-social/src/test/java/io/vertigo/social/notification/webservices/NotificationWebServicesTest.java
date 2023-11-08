@@ -45,7 +45,7 @@ import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.notification.Notification;
 import io.vertigo.social.notification.NotificationManager;
-import redis.clients.jedis.Jedis;
+import redis.clients.jedis.UnifiedJedis;
 
 public final class NotificationWebServicesTest {
 	private static final int WS_PORT = 8088;
@@ -71,9 +71,8 @@ public final class NotificationWebServicesTest {
 	public void setUpInstance() {
 		InjectorUtil.injectMembers(this);
 		//---
-		try (final Jedis jedis = redisConnector.getClient()) {
-			jedis.flushAll();
-		}
+		final UnifiedJedis jedis = redisConnector.getClient();
+		jedis.flushAll();
 		mockIdentities.initData();
 
 		preTestLogin();

@@ -98,7 +98,10 @@ final class OrchestraNode {
 							Thread.sleep(50);
 						}
 					}
-				} catch (final InterruptedException | IOException e) {
+				} catch (final InterruptedException e) {
+					Thread.currentThread().interrupt(); //if interrupt we re-set the flag
+					return;
+				} catch (final IOException e) {
 					return;
 				}
 			}

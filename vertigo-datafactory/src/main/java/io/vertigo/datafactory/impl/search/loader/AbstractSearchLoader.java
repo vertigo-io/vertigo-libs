@@ -18,16 +18,20 @@
 package io.vertigo.datafactory.impl.search.loader;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.datafactory.search.definitions.SearchChunk;
 import io.vertigo.datafactory.search.definitions.SearchLoader;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
@@ -36,50 +40,72 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
 /**
  * Abstract SearchLoader with default chunk implementation.
  * @author npiedeloup
- * @param <P> Primary key type
  * @param <K> KeyConcept type
  * @param <I> Index type
  */
-public abstract class AbstractSearchLoader<P extends Serializable, K extends KeyConcept, I extends DtObject> implements
+public abstract class AbstractSearchLoader<K extends KeyConcept, I extends DtObject> implements
 		SearchLoader<K, I> {
 
 	/** {@inheritDoc} */
 	@Override
 	public final Iterable<SearchChunk<K>> chunk(final Class<K> keyConceptClass) {
-		return () -> createIterator(keyConceptClass);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
+		final DtField idField = dtDefinition.getIdField().get();
+		final Serializable firstId = getLowestIteratorValue(idField, dtDefinition);
+
+		return () -> createIterator(firstId, false, dtDefinition);
 	}
 
-	private List<UID<K>> doLoadNextURI(final P lastId, final DtDefinition dtDefinition) {
-		return loadNextURI(lastId, dtDefinition);
+	/** {@inheritDoc} */
+	@Override
+	public final Iterable<SearchChunk<K>> chunk(final Optional<Serializable> startValue, final Class<K> keyConceptClass) {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
+		final DtField versionField = getVersionField(dtDefinition);
+
+		return () -> createIterator(startValue.orElse(getLowestIteratorValue(versionField, dtDefinition)), true, dtDefinition);
+	}
+
+	public DtField getVersionField(final DtDefinition dtDefinition) {
+		if (getVersionFieldName().isEmpty()) {
+			return dtDefinition.getIdField().get();
+		}
+		return dtDefinition.getField(getVersionFieldName().get());
 	}
 
 	/**
 	 * Load uris of next chunk.
-	 * @param lastId Last chunk id
+	 * @param lastValue Last chunk value
+	 * @param orderByVersion Order chunk by version or by id (if versionFieldName not empty, we could crawl data by version or by id)
 	 * @param dtDefinition KeyConcept definition
 	 * @return Uris of next chunk.
 	 */
-	protected abstract List<UID<K>> loadNextURI(final P lastId, final DtDefinition dtDefinition);
+	protected abstract List<Tuple<UID<K>, Serializable>> loadNextURI(final Serializable lastValue, final boolean orderByVersion, final DtDefinition dtDefinition);
 
-	private P getLowestIdValue(final DtDefinition dtDefinition) {
-		final DtField idField = dtDefinition.getIdField().get();
+	/** {@inheritDoc} */
+	@Override
+	public Optional<DtFieldName<K>> getVersionFieldName() {
+		return Optional.empty(); //Overridable
+	}
+
+	private Serializable getLowestIteratorValue(final DtField iteratorField, final DtDefinition dtDefinition) {
 		Assertion.check().isTrue(
-				idField.smartTypeDefinition().getScope().isBasicType(),
-				"Ids must be primitives : idField '{0}' on dtDefinition '{1}' has the smartType '{2}'", dtDefinition, idField.name(), idField.smartTypeDefinition());
+				iteratorField.smartTypeDefinition().getScope().isBasicType(),
+				"Field use for iterate must be primitives : iteratorField '{0}' on dtDefinition '{1}' has the smartType '{2}'", dtDefinition, iteratorField.name(), iteratorField.smartTypeDefinition());
 		//---
-		final BasicType idDataType = idField.smartTypeDefinition().getBasicType();
-		return switch (idDataType) {
-			case Integer -> (P) Integer.valueOf(-1);
-			case Long -> (P) Long.valueOf(-1);
-			case String -> (P) "";
-			case BigDecimal, DataStream, Boolean, Double, LocalDate, Instant -> throw new IllegalArgumentException("Type's PK " + idDataType.name() + " of "
-					+ dtDefinition.getClassSimpleName() + " is not supported, prefer int, long or String ID.");
+
+		final BasicType iteratorFieldDataType = iteratorField.smartTypeDefinition().getBasicType();
+		return switch (iteratorFieldDataType) {
+			case Integer -> Integer.valueOf(-1);
+			case Long -> Long.valueOf(-1);
+			case Instant -> Instant.ofEpochMilli(0);
+			case String -> "";
+			case BigDecimal, DataStream, Boolean, Double, LocalDate -> throw new IllegalArgumentException("Type's iteratorField " + iteratorFieldDataType.name() + " of "
+					+ dtDefinition.getClassSimpleName() + " is not supported, prefer int, long, Instant or String.");
 		};
 	}
 
-	private Iterator<SearchChunk<K>> createIterator(final Class<K> keyConceptClass) {
+	private Iterator<SearchChunk<K>> createIterator(final Serializable firstValue, final boolean orderByVersion, final DtDefinition dtDefinition) {
 		return new Iterator<>() {
-			private final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
 			private SearchChunk<K> current;
 			private SearchChunk<K> next = firstChunk();
 
@@ -104,17 +130,28 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 			}
 
 			private SearchChunk<K> nextChunk(final SearchChunk<K> previousChunk) {
-				final P lastId = (P) previousChunk.getLastUID().getId();
+				final Serializable lastValue = previousChunk.getLastValue();
 				// call loader service
-				final List<UID<K>> uris = doLoadNextURI(lastId, dtDefinition);
-				return new SearchChunk<>(uris);
+				final List<Tuple<UID<K>, Serializable>> uris = loadNextURI(lastValue, orderByVersion, dtDefinition);
+				return new SearchChunk<>(uris, getLastValue(uris, orderByVersion));
 			}
 
 			private SearchChunk<K> firstChunk() {
-				final P lastId = getLowestIdValue(dtDefinition);
 				// call loader service
-				final List<UID<K>> uris = doLoadNextURI(lastId, dtDefinition);
-				return new SearchChunk<>(uris);
+				final List<Tuple<UID<K>, Serializable>> uris = loadNextURI(firstValue, orderByVersion, dtDefinition);
+				return new SearchChunk<>(uris, getLastValue(uris, orderByVersion));
+			}
+
+			private Serializable getLastValue(final List<Tuple<UID<K>, Serializable>> uris, final boolean orderByVersion) {
+				Serializable nextLastValue;
+				if (!uris.isEmpty()) {
+					Tuple<UID<K>, Serializable> lastElement;
+					lastElement = uris.get(uris.size() - 1);
+					nextLastValue = orderByVersion ? lastElement.val2() : lastElement.val1().getId();
+				} else {
+					nextLastValue = null;
+				}
+				return nextLastValue;
 			}
 
 		};

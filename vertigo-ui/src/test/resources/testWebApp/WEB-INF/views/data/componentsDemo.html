@@ -72,7 +72,7 @@
                         <vu:fileupload-simple-object label="Movie pictures" th:url="'@{/commons/upload}'" object="movie" field="pictures" multiple/>                            
                         <vu:fileupload-simple-object label="Movie main picture" th:url="'@{/commons/upload}'" object="movie" field="mainPicture"/>                            
                         
-                        <vu:modal componentId="myModal" closeLabel="Close"/>
+                        <vu:modal componentId="myModal" closeLabel="Close" />
                         <vu:grid-cell class="q-gutter-md">
                             <vu:button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}" color="primary"/>
                             <vu:button-submit th:if="${model.modeReadOnly}" label="Edit" action="@{_edit}" color="primary"/>

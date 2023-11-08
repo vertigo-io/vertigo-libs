@@ -18,6 +18,7 @@
 package io.vertigo.stella.plugins.work.rest.workers;
 
 import java.io.Serializable;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -94,7 +95,7 @@ final class RestQueueClient {
 					final byte[] serializedResult = codecManager.getBase64Codec().decode(result[1]);
 					final Object work = codecManager.getCompressedSerializationCodec().decode(serializedResult);
 					LOG.info("pollWork({}) : 1 Work", workType);
-					return new WorkItem(uuid, work, ClassUtil.classForName(workType));
+					return new WorkItem(serverUrl, uuid, work, ClassUtil.classForName(workType));
 				}
 				LOG.info("pollWork({}) : no Work", workType);
 				//pas de travaux : inutil d'attendre le poll attend déjà 1s coté serveur
@@ -110,11 +111,13 @@ final class RestQueueClient {
 					Thread.sleep(2000); //on veut bien un sleep
 				}
 			} catch (final InterruptedException e) {
+				Thread.currentThread().interrupt(); // Preserve interrupt status
 				//nothing, in case of interrupt just return null, like no message
 			} catch (final Exception c) {
 				LOG.warn("[pollWork] Erreur de traitement de l'accès au serveur " + serverUrl + "/pollWork/" + workType + " (" + c.getMessage() + ")", c);
 			}
 		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt(); // Preserve interrupt status
 			//nothing, in case of interrupt just return null, like no message
 		}
 		return null;
@@ -153,6 +156,10 @@ final class RestQueueClient {
 		}
 		//call methode distante
 		sendValue(workId, address, value);
+	}
+
+	void heartBeat(final String nodeId, final Set<String> workTypes) {
+		//TODO
 	}
 
 	private void sendValue(final String uuid, final String address, final Object value) {

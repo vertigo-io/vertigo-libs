@@ -30,7 +30,7 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datastore.cache.definitions.CacheDefinition;
 import io.vertigo.datastore.impl.cache.CachePlugin;
-import redis.clients.jedis.Jedis;
+import redis.clients.jedis.UnifiedJedis;
 
 /**
  * RedisCache plugin
@@ -38,12 +38,11 @@ import redis.clients.jedis.Jedis;
  * @author pchretien, dszniten
  */
 public class RedisCachePlugin implements CachePlugin {
+	private static final String REDIS_PREFIX = "{vertigo:cache:}";
+	private static final String DELETE_KEYS_ON_PATTERN_SCRIPT = "local keys = redis.call('keys', KEYS[1]) for i,k in ipairs(keys) do local res = redis.call('del', k) end";
 
 	private final CodecManager codecManager;
 	private final RedisConnector redisConnector;
-
-	private static final String VERTIGO_CACHE = "vertigo:cache";
-	private static final String DELETE_KEYS_ON_PATTERN_SCRIPT = "local keys = redis.call('keys', '%s') for i,k in ipairs(keys) do local res = redis.call('del', k) end";
 
 	/**
 	 * Constructor.
@@ -72,7 +71,7 @@ public class RedisCachePlugin implements CachePlugin {
 	public void put(final String context, final Serializable key, final Object value) {
 		Assertion.check()
 				.isNotNull(value, "CachePlugin can't cache null value. (context: {0}, key:{1})", context, key)
-				.isFalse((value instanceof byte[]), "CachePlugin can't cache byte[] values")
+				.isFalse(value instanceof byte[], "CachePlugin can't cache byte[] values")
 				.isTrue(value instanceof Serializable,
 						"Object to cache isn't Serializable. Make it unmodifiable or add it in noSerialization's plugin parameter. (context: {0}, key:{1}, class:{2})",
 						context, key, value.getClass().getSimpleName());
@@ -83,9 +82,8 @@ public class RedisCachePlugin implements CachePlugin {
 		final byte[] serializedObject = codecManager.getCompressedSerializationCodec().encode((Serializable) value);
 		final String redisValue = codecManager.getBase64Codec().encode(serializedObject);
 
-		try (final Jedis jedis = redisConnector.getClient()) {
-			jedis.setex(redisKey, getCacheDefinition(context).getTimeToLiveSeconds(), redisValue);
-		}
+		final UnifiedJedis jedis = redisConnector.getClient();
+		jedis.setex(redisKey, getCacheDefinition(context).getTimeToLiveSeconds(), redisValue);
 	}
 
 	/** {@inheritDoc} */
@@ -94,9 +92,8 @@ public class RedisCachePlugin implements CachePlugin {
 		final String redisKey = buildRedisKey(context, key); //Assertions on context and key done inside this private method
 		final String redisValue;
 
-		try (final Jedis jedis = redisConnector.getClient()) {
-			redisValue = jedis.get(redisKey);
-		}
+		final UnifiedJedis jedis = redisConnector.getClient();
+		redisValue = jedis.get(redisKey);
 
 		if (redisValue == null) {
 			return null;
@@ -109,27 +106,23 @@ public class RedisCachePlugin implements CachePlugin {
 	@Override
 	public boolean remove(final String context, final Serializable key) {
 		final String redisKey = buildRedisKey(context, key); //Assertions on context and key done inside this private method
-		try (final Jedis jedis = redisConnector.getClient()) {
-			return jedis.del(redisKey) > 0;
-		}
+		final UnifiedJedis jedis = redisConnector.getClient();
+		return jedis.del(redisKey) > 0;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void clear(final String context) {
 		final String pattern = buildPatternFromContext(context);
-		try (final Jedis jedis = redisConnector.getClient()) {
-			jedis.eval(String.format(DELETE_KEYS_ON_PATTERN_SCRIPT, pattern));
-		}
+		final UnifiedJedis jedis = redisConnector.getClient();
+		jedis.eval(DELETE_KEYS_ON_PATTERN_SCRIPT, List.of(pattern), List.of());
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void clearAll() {
-		try (final Jedis jedis = redisConnector.getClient()) {
-			jedis.eval(String.format(DELETE_KEYS_ON_PATTERN_SCRIPT, VERTIGO_CACHE + ":*"));
-		}
-
+		final UnifiedJedis jedis = redisConnector.getClient();
+		jedis.eval(DELETE_KEYS_ON_PATTERN_SCRIPT, List.of(REDIS_PREFIX + "*"), List.of());
 	}
 
 	private static CacheDefinition getCacheDefinition(final String cacheName) {
@@ -145,7 +138,7 @@ public class RedisCachePlugin implements CachePlugin {
 				.isNotBlank(context)
 				.isNotNull(key);
 		//---
-		return VERTIGO_CACHE + ":" + context + ":" + keyToString(key);
+		return REDIS_PREFIX + context + ":" + keyToString(key);
 	}
 
 	/*
@@ -155,7 +148,7 @@ public class RedisCachePlugin implements CachePlugin {
 	private static String buildPatternFromContext(final String context) {
 		Assertion.check().isNotBlank(context);
 		//---
-		return VERTIGO_CACHE + ":" + context + ":*";
+		return REDIS_PREFIX + context + ":*";
 	}
 
 	/*

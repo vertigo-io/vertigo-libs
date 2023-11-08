@@ -132,7 +132,7 @@ public final class IndexType {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
 		Assertion.check().isTrue(smartTypeDefinition.getScope().isBasicType()
-				|| smartTypeDefinition.getScope().isValueType(), "Type de donnée non pris en charge pour le keyconcept indexé [" + smartTypeDefinition + "].");
+				|| smartTypeDefinition.getScope().isValueType(), "Type de donnée non pris en charge pour le keyconcept indexé [" + smartTypeDefinition.getName() + "].");
 		final BasicType basicType;
 		if (smartTypeDefinition.getScope().isBasicType()) {
 			basicType = smartTypeDefinition.getBasicType();
@@ -155,7 +155,7 @@ public final class IndexType {
 				return "scaled_float";
 			case DataStream:
 			default:
-				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + smartTypeDefinition + "].");
+				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + smartTypeDefinition.getName() + "].");
 		}
 	}
 
@@ -163,7 +163,7 @@ public final class IndexType {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
 		Assertion.check().isTrue(smartTypeDefinition.getScope().isBasicType()
-				|| smartTypeDefinition.getScope().isValueType(), "Type de donnée non pris en charge pour le keyconcept indexé [" + smartTypeDefinition + "].");
+				|| smartTypeDefinition.getScope().isValueType(), "Type de donnée non pris en charge pour le keyconcept indexé [" + smartTypeDefinition.getName() + "].");
 
 		final BasicType basicType;
 		if (smartTypeDefinition.getScope().isBasicType()) {
@@ -183,12 +183,12 @@ public final class IndexType {
 				break;
 			case String:
 				if (indexType == null) {
-					throw new IllegalArgumentException("Précisez la valeur \"indexType\" dans le smart type [" + smartTypeDefinition + "].");
+					throw new IllegalArgumentException("Précisez la valeur \"indexType\" dans le smart type [" + smartTypeDefinition.getName() + "].");
 				}
 				break;
 			case DataStream:
 			default:
-				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + smartTypeDefinition + "].");
+				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + smartTypeDefinition.getName() + "].");
 		}
 	}
 

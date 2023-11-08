@@ -146,7 +146,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	public boolean remove(final UiObject<D> dto) {
 		final boolean result = bufferUiObjects.remove(dto);
 		if (result) {
-			if (uiListDelta.getCreatesMap().containsKey(dto.getInputKey())) {
+			if (uiListDelta.getCreatesMap().containsValue(dto)) {
 				//Si on supprime (remove) un objet déjà ajouté (add),
 				//alors il suffit de l'enlever de la liste des éléments ajoutés.
 				uiListDelta.getCreatesMap().remove(dto.getInputKey());
@@ -154,6 +154,8 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 				//Sinon on l'ajoute à la liste des éléments supprimés.
 				uiListDelta.getDeletesMap().put(dto.getInputKey(), dto);
 			}
+
+			//CHECKME : les inputKey des objets suivant ne sont plus bon
 		}
 		return result;
 	}
@@ -184,8 +186,8 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		final boolean result = bufferUiObjects.add(uiObject);
 		uiObject.setInputKey(findContextKey(uiObject));
 		if (result) {
-			if (uiListDelta.getDeletesMap().containsKey(uiObject.getInputKey())) {
-				//Si on ajoute (add) un objet précédemment supprimé (add),
+			if (uiListDelta.getDeletesMap().containsValue(uiObject)) {
+				//Si on ajoute (add) un objet précédemment supprimé (remove),
 				//alors il suffit de l'enlever de la liste des éléments supprimés.
 				uiListDelta.getDeletesMap().remove(uiObject.getInputKey());
 			} else {
@@ -209,7 +211,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	public UiObject<D> get(final int row) {
 		//id>=0 : par index dans la UiList (pour boucle, uniquement dans la même request)
 		Assertion.check()
-				.isTrue(row >= 0, "Le getteur utilisé n'est pas le bon: utiliser getByRowId")
+				.isTrue(row >= 0, "Le getteur utilisé n'est pas le bon")
 				.isTrue(row <= DtListState.DEFAULT_MAX_ROWS, "UiListModifiable is limited to " + DtListState.DEFAULT_MAX_ROWS + " elements");
 
 		//SKE MLA : lazy initialisation of buffer uiObjects for size changing uiListModifiable

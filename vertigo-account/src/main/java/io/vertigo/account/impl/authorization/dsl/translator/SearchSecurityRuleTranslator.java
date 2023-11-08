@@ -19,7 +19,6 @@ package io.vertigo.account.impl.authorization.dsl.translator;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.vertigo.account.authorization.definitions.SecurityDimension;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression;
@@ -254,7 +253,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		//on vérifie qu'on a bien toutes les clées.
 		final List<String> strDimensionfields = securityDimension.getFields().stream()
 				.map(DtField::name)
-				.collect(Collectors.toList());
+				.toList();
 		Assertion.check().isTrue(strDimensionfields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strDimensionfields);
 		if (mandatory) {
 			query.append('+');

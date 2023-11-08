@@ -72,6 +72,7 @@ public class OrchestraNodeStarter {
 		} catch (final InterruptedException e) {
 			//rien arret normal
 			System.out.println("Node stopping by interrupted");
+			Thread.currentThread().interrupt(); //if interrupt we re-set the flag
 		} catch (final Exception e) {
 			System.err.println("Application error, exit " + e.getMessage());
 			e.printStackTrace(System.err);

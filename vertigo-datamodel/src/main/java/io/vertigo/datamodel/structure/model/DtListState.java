@@ -89,6 +89,14 @@ public final class DtListState {
 		return new DtListState(maxRows.orElse(defaultMaxRows), skipRows, sortFieldName.orElse(defaultSortFieldNameAsString), sortDesc.orElse(defaultSortDesc));
 	}
 
+	public DtListState withLimit(final Integer limitMaxRows) {
+		if (limitMaxRows == null
+				|| maxRows.isPresent() && maxRows.get() <= limitMaxRows) {
+			return this; //optim to avoid new DtListState if obvious unnecessary
+		}
+		return new DtListState(limitMaxRows, skipRows, sortFieldName.orElse(null), sortDesc.orElse(null));
+	}
+
 	/**
 	 * @param maxRows max returning elements (null if not use)
 	 * @param skipRows elements to skip (mandatory, 0 by default)

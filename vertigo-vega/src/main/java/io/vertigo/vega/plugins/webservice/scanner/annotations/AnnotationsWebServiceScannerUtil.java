@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
@@ -90,7 +89,7 @@ public final class AnnotationsWebServiceScannerUtil {
 				.map(AnnotationsWebServiceScannerUtil::buildWebServiceDefinition)
 				.filter(Optional::isPresent)
 				.map(Optional::get)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public static Optional<WebServiceDefinition> buildWebServiceDefinition(final Method method) {

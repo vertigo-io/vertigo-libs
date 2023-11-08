@@ -467,11 +467,11 @@ export default {
             uiMessageStack[key] = response.data.uiMessageStack[key];
           });
           if (options && options.onSuccess) {
-            options.onSuccess.call(this, response);
+            options.onSuccess.call(this, response, window);
           }
         }.bind(this)).catch(function (error) {
           if (options && options.onError) {
-            options.onError.call(this, error.response);
+            options.onError.call(this, error.response, window);
           }              
         }).finally(function () {
           this.removePendingAction(url);

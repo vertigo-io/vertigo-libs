@@ -30,7 +30,7 @@ public interface ActivityEngine {
 	 * @param workspace le workspace d'entrée
 	 * @return le workspace de sortie
 	 */
-	ActivityExecutionWorkspace execute(final ActivityExecutionWorkspace workspace);
+	ActivityExecutionWorkspace execute(final ActivityExecutionWorkspace workspace) throws Exception;
 
 	/**
 	 * Post-traitement à effectuer en cas de succès.

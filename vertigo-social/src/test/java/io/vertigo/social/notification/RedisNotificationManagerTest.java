@@ -22,7 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.social.MyNodeConfig;
-import redis.clients.jedis.Jedis;
+import redis.clients.jedis.UnifiedJedis;
 
 public final class RedisNotificationManagerTest extends AbstractNotificationManagerTest {
 
@@ -34,8 +34,7 @@ public final class RedisNotificationManagerTest extends AbstractNotificationMana
 	@BeforeEach
 	public void cleanUp() {
 		final RedisConnector redisConnector = getApp().getComponentSpace().resolve(RedisConnector.class);
-		try (final Jedis jedis = redisConnector.getClient()) {
-			jedis.flushAll();
-		}
+		final UnifiedJedis jedis = redisConnector.getClient();
+		jedis.flushAll();
 	}
 }

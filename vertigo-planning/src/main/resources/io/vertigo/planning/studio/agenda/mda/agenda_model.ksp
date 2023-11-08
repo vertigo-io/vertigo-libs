@@ -1,0 +1,109 @@
+package io.vertigo.planning.agenda.domain
+
+
+create DtDefinition DtAgenda {
+    stereotype: "KeyConcept"
+    id ageId {domain: DoPId label:"Id"}
+    field nom {domain: DoPLabel label: "Nom" cardinality:"1"}
+}
+
+
+
+create DtDefinition DtReservationCreneau { /* Element réservé */
+    id recId {domain: DoPId label:"Id"}
+    field dateLocale {domain: DoPLocalDate label: "Date du créneau"  cardinality:"1"}
+    field minutesDebut {domain: DoPHeureMinute label: "Heure de début"  cardinality:"1"}
+    field minutesFin {domain: DoPHeureMinute label: "Heure de fin"  cardinality:"1"}
+    field instantCreation {domain: DoPInstant label: "Date de réservation" cardinality:"1"}    
+}
+
+create DtDefinition DtCreneau { /* Element réservable */
+    id creId {domain: DoPId label:"Id"}
+    /*recId à la place : field reserve {domain: DoPBooleen label: "Reserve" cardinality:"1"}*/
+}
+
+create DtDefinition DtTrancheHoraire { /* Element administrable avec un stock */
+    id trhId {domain: DoPId label:"Id"}
+    field dateLocale {domain: DoPLocalDate label: "Date du créneau"  cardinality:"1"}
+    field minutesDebut {domain: DoPHeureMinute label: "Heure de début"  cardinality:"1"}
+    field minutesFin   {domain: DoPHeureMinute label: "Heure de fin"  cardinality:"1"}
+    field nbGuichet {domain: DoPNbGuichet label: "Nombre de guichets"  cardinality:"1"}
+    field instantPublication {domain: DoPInstant label: "Date publication"}
+}
+
+create DtDefinition DtPlageHoraire { /* Niveau d'administration */
+    id plhId {domain: DoPId label:"Id"}
+    field dateLocale {domain: DoPLocalDate label: "Date de la plage"  cardinality:"1"}
+    field minutesDebut {domain: DoPHeureMinute label: "Heure de début"  cardinality:"1"}
+    field minutesFin   {domain: DoPHeureMinute label: "Heure de fin"  cardinality:"1"}
+    field nbGuichet {domain: DoPNbGuichet label: "Nombre de guichets"  cardinality:"1"}
+}
+
+create DtDefinition DtAffectionReservation {
+    field trhId {domain: DoPId label:"Id de tranche horaire" }
+    field creIds {domain: DoMultipleIds label:"Liste des creneaux disponibles" }
+    field creId {domain: DoPId label:"creneau affecté" }
+    field recId {domain: DoPId label:"Id de la reservation" }
+    field instantCreation {domain: DoPInstant label:"Date de creation de la reservation" }
+}
+
+create Association APlageHoraireAgenda {
+    fkFieldName : "ageId"
+    
+    dtDefinitionA : DtPlageHoraire
+    type : "*>1"
+    dtDefinitionB : DtAgenda
+            
+    labelB : "Agenda"
+}
+
+create Association ATranchePlageHoraire {
+    fkFieldName : "plhId"
+    
+    dtDefinitionA : DtTrancheHoraire
+    type : "*>1"
+    dtDefinitionB : DtPlageHoraire
+            
+    labelB : "Plage horaire"
+}
+
+create Association ACreneauTrancheHoraire {
+    fkFieldName : "trhId"
+    
+    dtDefinitionA : DtCreneau
+    type : "*>1"
+    dtDefinitionB : DtTrancheHoraire
+            
+    labelB : "Tranche horaire"
+}
+
+create Association ATrancheHoraireAgenda {
+    fkFieldName : "ageId"
+    
+    dtDefinitionA : DtTrancheHoraire
+    type : "*>1"
+    dtDefinitionB : DtAgenda
+            
+    labelB : "Agenda"
+}
+
+create Association AReservationCreneauAgenda {
+    fkFieldName : "ageId"
+    
+    dtDefinitionA : DtReservationCreneau
+    type : "*>1"
+    dtDefinitionB : DtAgenda
+            
+    labelB : "Agenda"
+}
+
+create Association AReservationCreneauCreneau {
+    fkFieldName : "recId"
+    
+    dtDefinitionA : DtCreneau
+    type : "*>?"
+    dtDefinitionB : DtReservationCreneau
+            
+    labelB : "Réservation"
+}
+

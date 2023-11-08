@@ -89,7 +89,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 
 		EncoderType(final String contentType) {
 			this.contentType = contentType;
-			contentTypePattern = Pattern.compile(contentType.replaceAll("%s", ".+"));
+			contentTypePattern = Pattern.compile(contentType.replace("%s", ".+"));
 		}
 
 		/**

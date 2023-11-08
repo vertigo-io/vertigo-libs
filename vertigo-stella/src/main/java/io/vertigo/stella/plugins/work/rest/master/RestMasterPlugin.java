@@ -17,11 +17,13 @@
  */
 package io.vertigo.stella.plugins.work.rest.master;
 
+import java.util.Set;
+
 import javax.inject.Inject;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.stella.impl.master.MasterPlugin;
 import io.vertigo.stella.impl.master.WorkResult;
@@ -53,15 +55,17 @@ public final class RestMasterPlugin implements MasterPlugin, WebServices {
 		restQueueServer = new RestQueueServer(20, codecManager, 5);
 	}
 
-	@DaemonScheduled(name = "DmnWorkQueueTimeoutCheck", periodInSeconds = 10)
-	public void checkDeadNodesAndWorkItems() {
-		restQueueServer.checkDeadNodes();
-		restQueueServer.checkDeadWorkItems();
+	@Override
+	public Tuple<Set<String>, Set<String>> checkDeadNodesAndWorkItems(final int maxRetry) {
+		final Set<String> retriedWorkId = restQueueServer.checkDeadNodes(maxRetry);
+		final Set<String> abandonnedWorkId = restQueueServer.checkDeadWorkItems();
+		return Tuple.of(retriedWorkId, abandonnedWorkId);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public WorkResult pollResult(final int waitTimeSeconds) {
+	public WorkResult pollResult(final String callerNodeId, final int waitTimeSeconds) {
+		//There is one queue per master, not need of callerNodeId
 		return restQueueServer.pollResult(waitTimeSeconds);
 	}
 

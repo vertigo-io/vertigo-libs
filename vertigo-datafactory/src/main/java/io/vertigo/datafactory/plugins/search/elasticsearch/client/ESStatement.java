@@ -18,7 +18,10 @@
 package io.vertigo.datafactory.plugins.search.elasticsearch.client;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.time.Instant;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,15 +31,19 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.xcontent.XContentBuilder;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.VUserException;
@@ -50,6 +57,7 @@ import io.vertigo.datafactory.plugins.search.elasticsearch.ESFacetedQueryResultB
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
@@ -159,6 +167,54 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			vue.initCause(e);
 			throw vue;
 		}
+	}
+
+	Map<UID<K>, Serializable> loadVersions(final DtField versionField, final ListFilter listFilter, final int maxElements) {
+		Assertion.check().isNotNull(versionField).isNotNull(listFilter);
+		//-----
+		try {
+			final QueryBuilder queryfilterBuilder = QueryBuilders
+					.queryStringQuery(listFilter.getFilterValue())
+					.analyzeWildcard(true);
+
+			final SearchResponse searchResponse = esClient.prepareSearch()
+					.setIndices(indexName)
+					.setSearchType(SearchType.QUERY_THEN_FETCH)
+					.setSize(maxElements)
+					.setFetchSource(versionField.name(), null)
+					.setQuery(queryfilterBuilder)
+					.get();
+			final Map<UID<K>, Serializable> result = new HashMap<>();
+			for (final SearchHit searchHit : searchResponse.getHits()) {
+				final String urn = searchHit.getId();
+				final Serializable value = decodeVersionValue(versionField, searchHit.getSourceAsMap().get(versionField.name()));
+				result.put(UID.of(urn), value);
+			}
+			return result;
+		} catch (final SearchPhaseExecutionException e) {
+			final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_QUERY_SYNTAX_ERROR);
+			vue.initCause(e);
+			throw vue;
+		}
+	}
+
+	private Serializable decodeVersionValue(final DtField versionField, final Object value) {
+		Assertion.check().isTrue(
+				versionField.smartTypeDefinition().getScope().isBasicType(),
+				"Field use for iterate must be primitives : versionField '{0}' has the smartType '{2}'", versionField.name(), versionField.smartTypeDefinition());
+		//---
+		if (value == null) {
+			return null;
+		}
+		final BasicType versionFieldDataType = versionField.smartTypeDefinition().getBasicType();
+		return switch (versionFieldDataType) {
+			case Integer -> value instanceof Integer ? (Integer) value : Integer.valueOf(String.valueOf(value));
+			case Long -> value instanceof Long ? (Long) value : Long.valueOf(String.valueOf(value));
+			case Instant -> value instanceof Instant ? (Instant) value : Instant.parse(String.valueOf(value));
+			case String -> String.valueOf(value);
+			case BigDecimal, DataStream, Boolean, Double, LocalDate -> throw new IllegalArgumentException("Type's versionField " + versionFieldDataType.name() + " from "
+					+ indexName + " is not supported, prefer int, long, Instant or String.");
+		};
 	}
 
 	/**

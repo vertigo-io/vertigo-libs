@@ -24,22 +24,21 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 
 public class RedisAppNodeRegistryPluginTest extends AbstractAppManagerTest {
+	private static final String REDIS_HOST = "docker-vertigo.part.klee.lan.net";
+	private static final int REDIS_PORT = 6379;
+	private static final int REDIS_DATABASE = 15;
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
-
-		final String redisHost = "docker-vertigo.part.klee.lan.net";
-		final int redisPort = 6379;
-		final int redisDatabase = 11;
-
-		return buildRootNodeConfig()
-				.addModule(new RedisFeatures()
-						.withJedis(
-								Param.of("host", redisHost),
-								Param.of("port", redisPort),
-								Param.of("ssl", "false"),
-								Param.of("database", redisDatabase))
-						.build())
+		return buildRootNodeConfig().addModule(new RedisFeatures()
+				.withJedis(
+						//Param.of("clusterNodes", "localhost:7000;localhost:7001;localhost:7002"),
+						//Param.of("password", "foobared"),
+						Param.of("host", REDIS_HOST),
+						Param.of("port", REDIS_PORT),
+						Param.of("ssl", "false"),
+						Param.of("database", REDIS_DATABASE))
+				.build())
 				.addModule(new CommonsFeatures()
 						.withNodeRegistryPlugin(RedisAppNodeRegistryPlugin.class)
 						.build())

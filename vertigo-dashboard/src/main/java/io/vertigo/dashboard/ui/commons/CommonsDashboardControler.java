@@ -59,7 +59,7 @@ public class CommonsDashboardControler extends AbstractDashboardModuleControler 
 								.filter(stat -> daemonDefinition.getName().equals(stat.getDaemonName()))
 								.findFirst()
 								.get()))
-				.collect(Collectors.toList());
+				.toList();
 		model.put("daemons", daemonModels);
 		//---
 		model.put("daemonsStatus", getHealthStatus(node, model, "daemons"));
@@ -74,7 +74,7 @@ public class CommonsDashboardControler extends AbstractDashboardModuleControler 
 				.entrySet()
 				.stream()
 				.map(entry -> new EventBusModel(entry.getKey(), entry.getValue()))
-				.collect(Collectors.toList());
+				.toList();
 		model.put("events", events);
 		//---
 		model.put("eventSubcriptionsCount", eventBusSubscriptions.size());
@@ -85,7 +85,7 @@ public class CommonsDashboardControler extends AbstractDashboardModuleControler 
 		final List<CacheModel> caches = Node.getNode().getDefinitionSpace().getAll(CacheDefinition.class)
 				.stream()
 				.map(CacheModel::new)
-				.collect(Collectors.toList());
+				.toList();
 		model.put("caches", caches);
 		model.put("cacheStatus", getHealthStatus(node, model, "cache"));
 	}
@@ -99,7 +99,7 @@ public class CommonsDashboardControler extends AbstractDashboardModuleControler 
 				.stream()
 				.filter(entry -> myTopics.contains(entry.getKey()))
 				.flatMap(entry -> entry.getValue().stream())
-				.collect(Collectors.toList());
+				.toList();
 
 		return analyticsManager.aggregate(healtChecksToAggregate);
 	}

@@ -19,7 +19,6 @@ package io.vertigo.datamodel.impl.task.metrics;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.metric.Metrics;
@@ -44,7 +43,7 @@ public final class TasksMetricsProvider implements Component {
 						.withValue(Double.valueOf(taskDefinition.getRequest().length()))
 						.withSuccess()
 						.build())
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
@@ -62,7 +61,7 @@ public final class TasksMetricsProvider implements Component {
 							.withSuccess()
 							.build();
 				})
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
@@ -76,7 +75,7 @@ public final class TasksMetricsProvider implements Component {
 						.withValue(taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("SELECT").length - 1d)
 						.withSuccess()
 						.build())
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 

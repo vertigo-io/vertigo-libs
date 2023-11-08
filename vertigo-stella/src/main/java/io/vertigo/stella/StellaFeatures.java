@@ -45,8 +45,8 @@ public final class StellaFeatures extends Features<StellaFeatures> {
 	}
 
 	@Feature("master")
-	public StellaFeatures withMaster() {
-		getModuleConfigBuilder().addComponent(MasterManager.class, MasterManagerImpl.class);
+	public StellaFeatures withMaster(final Param... params) {
+		getModuleConfigBuilder().addComponent(MasterManager.class, MasterManagerImpl.class, params);
 		return this;
 	}
 

@@ -119,7 +119,7 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 				.map(namedParameterValues -> sqlNamedParameters.stream()
 						.map(namedParameter -> buildSqlParameter(namedParameter, namedParameterValues))
 						.collect(Collectors.toList()))
-				.collect(Collectors.toList());
+				.toList();
 		return new SqlStatement(rawSqlQuery, sqlParameters);
 	}
 

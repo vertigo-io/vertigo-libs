@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -61,7 +60,7 @@ public class OvhSmsSendPlugin implements SmsSendPlugin {
 			whitelistPrefixes = Arrays.asList(whitelistPrefixesOpt.get().split(";"))
 					.stream()
 					.map(prefix -> prefix.replaceAll("[\\(\\)\\s\\.\\-]+", "")) //we accept ( ) . - and spaces as separators
-					.collect(Collectors.toList());
+					.toList();
 		} else {
 			acceptAll = true;
 			whitelistPrefixes = Collections.emptyList();

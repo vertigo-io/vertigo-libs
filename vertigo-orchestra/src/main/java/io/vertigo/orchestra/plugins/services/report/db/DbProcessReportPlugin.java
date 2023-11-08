@@ -20,7 +20,6 @@ package io.vertigo.orchestra.plugins.services.report.db;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -111,7 +110,7 @@ public class DbProcessReportPlugin implements ProcessReportPlugin {
 		return summaries
 				.stream()
 				.map(DbProcessReportPlugin::decodeSummary)
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
@@ -132,7 +131,7 @@ public class DbProcessReportPlugin implements ProcessReportPlugin {
 		return executions
 				.stream()
 				.map(DbProcessReportPlugin::decodeExecution)
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
@@ -154,7 +153,7 @@ public class DbProcessReportPlugin implements ProcessReportPlugin {
 		return executions
 				.stream()
 				.map(DbProcessReportPlugin::decodeActivityExecution)
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 

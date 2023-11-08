@@ -17,6 +17,9 @@
  */
 package io.vertigo.datastore.kvstore.delayedmemory;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -43,8 +46,27 @@ public final class DelayedMemoryKVStoreManagerTest extends AbstractKVStoreManage
 						.withKVStore()
 						.withDelayedMemoryKV(
 								Param.of("collections", "flowers"),
-								Param.of("timeToLiveSeconds", "5"))
+								Param.of("timeToLiveSeconds", TTL))
 						.build())
 				.build();
+	}
+
+	@Override
+	@Test
+	public void testFindAll() {
+		Assertions.assertThrows(RuntimeException.class, () -> {
+			super.testFindAll();
+		});
+	}
+
+	@Override
+	@Test
+	public void testRollback() {
+		//no transactions
+	}
+
+	@Override
+	protected boolean supportFindAll() {
+		return false;
 	}
 }

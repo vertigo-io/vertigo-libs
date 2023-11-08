@@ -21,6 +21,7 @@ import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
+import io.vertigo.core.node.config.NodeConfigBuilder;
 import io.vertigo.core.param.Param;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.cache.AbstractCacheManagerTest;
@@ -34,6 +35,9 @@ import io.vertigo.datastore.cache.TestCacheDefinitionProvider;
  */
 public class RedisCacheManagerTest extends AbstractCacheManagerTest {
 	// Unit tests use abstract class methods
+	private static final boolean REDIS_CLUSTER_MODE = false;
+	private static final String REDIS_HOST = "docker-vertigo.part.klee.lan.net";
+	private static final String REDIS_CLUSTER_NODES = "localhost:7000;localhost:7001;localhost:7002";
 
 	/**
 	 * Max nbRows to 500.
@@ -44,20 +48,32 @@ public class RedisCacheManagerTest extends AbstractCacheManagerTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
-		return NodeConfig.builder()
+		final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder()
 				.addModule(new CommonsFeatures()
-						.build())
-				.addModule(new RedisFeatures()
-						.withJedis(
-								Param.of("host", "docker-vertigo.part.klee.lan.net"),
-								Param.of("port", "6379"),
-								Param.of("ssl", "false"),
-								Param.of("database", "0"))
-						.build())
-				.addModule(new DataStoreFeatures()
-						.withCache()
-						.withRedisCache()
-						.build())
+						.build());
+
+		if (!REDIS_CLUSTER_MODE) {
+			nodeConfigBuilder.addModule(new RedisFeatures()
+					.withJedis(
+							Param.of("host", REDIS_HOST),
+							Param.of("port", 6379),
+							Param.of("ssl", "false"),
+							Param.of("database", 15))
+					.build());
+		} else {
+			nodeConfigBuilder.addModule(new RedisFeatures()
+					.withJedis(
+							Param.of("clusterNodes", REDIS_CLUSTER_NODES),
+							Param.of("password", "foobared"),
+							Param.of("ssl", "false"),
+							Param.of("database", 0))
+					.build());
+		}
+
+		return nodeConfigBuilder.addModule(new DataStoreFeatures()
+				.withCache()
+				.withRedisCache()
+				.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(TestCacheDefinitionProvider.class)
 						.build())

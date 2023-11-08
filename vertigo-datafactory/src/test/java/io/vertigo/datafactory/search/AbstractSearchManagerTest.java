@@ -31,7 +31,6 @@ import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -641,7 +640,7 @@ public abstract class AbstractSearchManagerTest {
 		Assertions.assertEquals(1998, firstItem.getItemYear().intValue());
 
 		firstItem = doQueryAllAndGetFirst("itemYear", true);
-		Assertions.assertEquals(2010, firstItem.getItemYear().intValue());
+		Assertions.assertEquals(2061, firstItem.getItemYear().intValue());
 
 		final DtListState listState = DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField("model").name(), true);
 		final DtList<Item> dtList = doQuery(SearchQuery
@@ -837,7 +836,7 @@ public abstract class AbstractSearchManagerTest {
 	}
 
 	private void testFacetResultByGeo(final FacetedQueryResult<Item, ?> result, final GeoPoint origin) {
-		Assertions.assertEquals(itemDataBase.size() - 1, result.getCount());
+		Assertions.assertEquals(itemDataBase.size() - 3, result.getCount()); //3 items without geo
 
 		//On vérifie qu'il y a le bon nombre de facettes.
 		Assertions.assertEquals(2, result.getFacets().size());
@@ -888,7 +887,7 @@ public abstract class AbstractSearchManagerTest {
 		Assertions.assertEquals(1, customSumPriceFacet.getFacetValues().size());
 		for (final Entry<FacetValue, Long> entry : customSumPriceFacet.getFacetValues().entrySet()) {
 			Assertions.assertEquals("FctCustomSumPriceItem", entry.getKey().code());
-			Assertions.assertEquals(198290, entry.getValue());
+			Assertions.assertEquals(203290, entry.getValue());
 		}
 
 		final Facet customAvgKiloItem = getFacetByName(result, "FctCustomAvgKiloItem");
@@ -896,7 +895,7 @@ public abstract class AbstractSearchManagerTest {
 		Assertions.assertEquals(1, customAvgKiloItem.getFacetValues().size());
 		for (final Entry<FacetValue, Long> entry : customAvgKiloItem.getFacetValues().entrySet()) {
 			Assertions.assertEquals("FctCustomAvgKiloItem", entry.getKey().code());
-			Assertions.assertEquals(119321.11, entry.getValue() / 100d);
+			Assertions.assertEquals(178144.55, entry.getValue() / 100d);
 		}
 
 		final Facet customAvgYearItem = getFacetByName(result, "FctCustomAvgYearItem");
@@ -904,7 +903,7 @@ public abstract class AbstractSearchManagerTest {
 		Assertions.assertEquals(1, customAvgYearItem.getFacetValues().size());
 		for (final Entry<FacetValue, Long> entry : customAvgYearItem.getFacetValues().entrySet()) {
 			Assertions.assertEquals("FctCustomAvgYearItem", entry.getKey().code());
-			Assertions.assertEquals(2004, entry.getValue());
+			Assertions.assertEquals(2013, entry.getValue());
 		}
 	}
 
@@ -1718,7 +1717,7 @@ public abstract class AbstractSearchManagerTest {
 			final List<SearchIndex<Item, Item>> indexes = itemDataBase.getAllItems()
 					.stream()
 					.map(item -> SearchIndex.createIndex(itemIndexDefinition, item.getUID(), item))
-					.collect(Collectors.toList());
+					.toList();
 			searchManager.putAll(itemIndexDefinition, indexes);
 		} else {
 			//Indexation unitaire

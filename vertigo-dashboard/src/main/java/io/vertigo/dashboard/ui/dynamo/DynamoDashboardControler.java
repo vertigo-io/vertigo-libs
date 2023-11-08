@@ -63,7 +63,7 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 						taskDefinition,
 						getValue(tabularDatas, "/execute/" + taskDefinition, "duration:count"),
 						getValue(tabularDatas, "/execute/" + taskDefinition, "duration:median")))
-				.collect(Collectors.toList());
+				.toList();
 
 		model.put("tasks", tasks);
 
@@ -117,7 +117,7 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 						entityCounts.get(dtDefinition),
 						taskCounts.get(dtDefinition),
 						fieldCount.get(dtDefinition)))
-				.collect(Collectors.toList());
+				.toList();
 		model.put("entities", entities);
 		//---
 		model.put("entityCount", entities.size());
@@ -150,7 +150,7 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 						smartType,
 						taskCount.get(smartType),
 						dtDefinitionCount.get(smartType)))
-				.collect(Collectors.toList());
+				.toList();
 
 		model.put("smartTypes", smartTypeModels);
 

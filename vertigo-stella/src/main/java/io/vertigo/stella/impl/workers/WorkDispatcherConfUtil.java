@@ -44,7 +44,7 @@ public final class WorkDispatcherConfUtil {
 		final Map<String, Integer> workTypesConf = new HashMap<>();
 		for (final String workTypeConf : workTypes.trim().split(";")) {
 			final int dispatcherCountIdx = workTypeConf.indexOf('^');
-			Assertion.check().isTrue(dispatcherCountIdx > 0, "Each workType must set the dispatcher count");
+			Assertion.check().isTrue(dispatcherCountIdx > 0, "Each workType must set the dispatcher count with '^' and number");
 			//-----
 			final int dispatcherCount = Integer.parseInt(workTypeConf.substring(dispatcherCountIdx + 1));
 			final String workType = workTypeConf.substring(0, dispatcherCountIdx);

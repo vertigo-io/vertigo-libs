@@ -57,7 +57,7 @@ class BerkeleyTimeCheckDataBinding extends TupleBinding<Serializable> {
 	}
 
 	protected boolean isValueTooOld(final long createTime) {
-		return timeToLiveSeconds > 0 && (System.currentTimeMillis() - createTime) >= timeToLiveSeconds * 1000;
+		return timeToLiveSeconds > 0 && System.currentTimeMillis() - createTime >= timeToLiveSeconds * 1000;
 	}
 
 }

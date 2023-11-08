@@ -111,7 +111,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		if (!strRules.isEmpty()) {
 			rules = strRules.stream()
 					.map(SecuredEntityDeserializer::parseRule)
-					.collect(Collectors.toList());
+					.toList();
 		} else {
 			rules = Collections.emptyList(); //if empty -> always true
 		}
@@ -168,7 +168,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		final List<String> fieldNames = deserializeList(advancedDimension.get("fields"), String.class, context);
 		final List<DtField> fields = fieldNames.stream()
 				.map(fieldName -> deserializeDtField(entityDefinition, fieldName))
-				.collect(Collectors.toList());
+				.toList();
 		final List<String> values = deserializeList(advancedDimension.get("values"), String.class, context);
 		return new SecurityDimension(name, type, fields, values);
 	}

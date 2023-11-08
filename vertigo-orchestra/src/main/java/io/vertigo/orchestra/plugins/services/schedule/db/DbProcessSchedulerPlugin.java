@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -321,7 +320,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 		return definitionManager.getAllProcessDefinitionsByType(getHandledProcessType()).stream()
 				.filter(ProcessDefinition::isActive)// We only want actives
 				.filter(processDefinition -> processDefinition.getTriggeringStrategy().cronExpressionOpt().isPresent())// We only want the processes to schedule
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private static void changeState(final OProcessPlanification processPlanification, final SchedulerState planificationState) {

@@ -45,7 +45,7 @@ public final class ThreadLocalWorkEngine implements WorkEngine<ThreadLocalWork, 
 		try {
 			Thread.sleep(work.getSleepTime());
 		} catch (final InterruptedException e) {
-			//rien
+			Thread.currentThread().interrupt(); // Preserve interrupt status
 		}
 		if (work.getClearThreadLocal()) {
 			threadLocalCache.remove();

@@ -31,7 +31,7 @@ import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.data.MockIdentities;
-import redis.clients.jedis.Jedis;
+import redis.clients.jedis.UnifiedJedis;
 
 /**
  * Account extension web services tests.
@@ -58,9 +58,9 @@ public final class AccountWebServicesTest {
 	public void setUpInstance() {
 		InjectorUtil.injectMembers(this);
 		//-----
-		try (final Jedis jedis = redisConnector.getClient()) {
-			jedis.flushAll();
-		} //populate accounts
+		final UnifiedJedis jedis = redisConnector.getClient();
+		jedis.flushAll();
+		//populate accounts
 		mockIdentities.initData();
 	}
 

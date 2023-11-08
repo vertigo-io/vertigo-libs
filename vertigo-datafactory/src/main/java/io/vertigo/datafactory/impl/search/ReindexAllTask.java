@@ -37,8 +37,8 @@ import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 
 /**
- * Reindex all data taks.
- * @author npiedeloup (27 juil. 2015 14:35:14)
+ * Reindex all data task.
+ * @author npiedeloup (2015)
  * @param <S> KeyConcept type
  */
 final class ReindexAllTask<S extends KeyConcept> implements Runnable {
@@ -70,7 +70,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	@Override
 	public void run() {
 		if (isReindexInProgress()) {
-			final String warnMessage = "Reindexation of " + searchIndexDefinition.getName() + " is already in progess (" + getReindexCount() + " elements done)";
+			final String warnMessage = "Full reindexation of " + searchIndexDefinition.getName() + " is already in progess (" + getReindexCount() + " elements done)";
 			LOGGER.warn(warnMessage);
 			reindexFuture.fail(new VSystemException(warnMessage));
 		} else {
@@ -82,14 +82,14 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 				final Class<S> keyConceptClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getKeyConceptDtDefinition().getClassCanonicalName(), KeyConcept.class);
 				final SearchLoader<S, DtObject> searchLoader = Node.getNode().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 				Serializable lastUID = null;
-				LOGGER.info("Reindexation of {} started", searchIndexDefinition.getName());
+				LOGGER.info("Full reindexation of {} started", searchIndexDefinition.getName());
 
 				for (final SearchChunk<S> searchChunk : searchLoader.chunk(keyConceptClass)) {
 					final Collection<SearchIndex<S, DtObject>> searchIndexes = searchLoader.loadData(searchChunk);
 
-					final Serializable maxUID = searchChunk.getLastUID().getId();
+					final Serializable maxUID = searchChunk.getLastValue();
 					Assertion.check().isFalse(maxUID.equals(lastUID), "SearchLoader ({0}) error : return the same uid list", searchIndexDefinition.getSearchLoaderId());
-					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUID, maxUID));
+					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter("docId", lastUID, maxUID));
 					if (!searchIndexes.isEmpty()) {
 						searchManager.putAll(searchIndexDefinition, searchIndexes);
 					}
@@ -98,15 +98,15 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 					updateReindexCount(reindexCount);
 				}
 				//On vide la suite, pour le cas ou les dernières données ne sont plus là
-				searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUID, null));
-				//On ne retire pas la fin, il y a un risque de retirer les données ajoutées depuis le démarrage de l'indexation
+				searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter("docId", lastUID, null));
+				//Les chuncks sont relus de la source en permanence : le dernier chunck à récupérer les dernières données même si elles ont été ajoutées pendant l'indexation
 				reindexFuture.success(reindexCount);
 			} catch (final Exception e) {
-				LOGGER.error("Reindexation error", e);
+				LOGGER.error("Full reindexation error", e);
 				reindexFuture.fail(e);
 			} finally {
 				stopReindex();
-				LOGGER.info("Reindexation of {} finished in {} ms ({} elements done)", searchIndexDefinition.getName(), System.currentTimeMillis() - startTime, reindexCount);
+				LOGGER.info("Full reindexation of {} finished in {} ms ({} elements done)", searchIndexDefinition.getName(), System.currentTimeMillis() - startTime, reindexCount);
 			}
 		}
 	}
@@ -131,8 +131,8 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 		return REINDEX_COUNT;
 	}
 
-	private static ListFilter urisRangeToListFilter(final Serializable firstUri, final Serializable lastUri) {
-		final String filterValue = "docId" + ":{" + //{ for exclude min
+	private static ListFilter urisRangeToListFilter(final String indexFieldName, final Serializable firstUri, final Serializable lastUri) {
+		final String filterValue = indexFieldName + ":{" + //{ for exclude min
 				(firstUri != null ? escapeStringId(firstUri) : "*") +
 				" TO " +
 				(lastUri != null ? escapeStringId(lastUri) : "*") +

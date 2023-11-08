@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.node.config.NodeConfig;
-import redis.clients.jedis.Jedis;
+import redis.clients.jedis.UnifiedJedis;
 
 public final class RedisAccountManagerTest extends AbstractAccountManagerTest {
 
@@ -42,10 +42,8 @@ public final class RedisAccountManagerTest extends AbstractAccountManagerTest {
 
 	@BeforeEach
 	public void clean() {
-		try (final Jedis jedis = redisConnector.getClient()) {
-			jedis.flushAll();
-		}
-
+		final UnifiedJedis jedis = redisConnector.getClient();
+		jedis.flushAll();
 	}
 
 	@Test

@@ -19,7 +19,6 @@ package io.vertigo.datafactory.collections.data.domain;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.util.VCollectors;
@@ -71,7 +70,7 @@ public final class SmartCarDataBase {
 		return cars
 				.stream()
 				.filter(car -> car.getManufacturer().toLowerCase(Locale.FRENCH).equals(manufacturer))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public long getCarsBefore(final int year) {

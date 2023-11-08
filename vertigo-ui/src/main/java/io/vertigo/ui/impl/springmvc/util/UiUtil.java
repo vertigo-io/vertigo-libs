@@ -26,7 +26,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import com.google.gson.Gson;
@@ -93,7 +92,7 @@ public final class UiUtil implements Serializable {
 	 * @return Name in context (use for input name)
 	 */
 	public static String generateComponentUID(final String component, final String object, final String field, final String row) {
-		String prefix = component +
+		final String prefix = component +
 				Long.toHexString(UUID.randomUUID().getLeastSignificantBits()) +
 				"_";
 		return contextGet(prefix, object, field, row, true);
@@ -368,7 +367,7 @@ public final class UiUtil implements Serializable {
 	 * @return the locale (in the quasar's style) to select the right language in quasar
 	 */
 	public static String getCurrentLocaleForQuasar() {
-		return getCurrentLocalePrefixForQuasar().replaceAll("-", "");
+		return getCurrentLocalePrefixForQuasar().replace("-", "");
 	}
 
 	public static String compileVueJsTemplate(final String template) {
@@ -378,7 +377,7 @@ public final class UiUtil implements Serializable {
 		final var render = compiledTemplate.get("render").getAsString();
 		final List<String> staticRenderFns = StreamSupport.stream(compiledTemplate.get("staticRenderFns").getAsJsonArray().spliterator(), false)
 				.map(JsonElement::getAsString)
-				.collect(Collectors.toList());
+				.toList();
 
 		final var renderJsFunctions = new StringBuilder(",\r\n");
 		renderJsFunctions.append("render (h) {\r\n")
@@ -386,9 +385,9 @@ public final class UiUtil implements Serializable {
 				.append("},\r\n")
 				.append("  staticRenderFns : [\r\n");
 		staticRenderFns.forEach(staticFn -> renderJsFunctions
-				.append("		  function () {\r\n")
+				.append("         function () {\r\n")
 				.append(staticFn).append(" \r\n")
-				.append("		  }\r\n"));
+				.append("         }\r\n"));
 		renderJsFunctions.append("]\r\n");
 		return renderJsFunctions.toString();
 	}

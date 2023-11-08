@@ -30,7 +30,6 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -142,7 +141,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	public <E extends Entity> List<E> getAllUsers() {
 		return (List<E>) authToUsers.values().stream()
 				.map(IdentityUserInfo::getUser)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/** {@inheritDoc} */

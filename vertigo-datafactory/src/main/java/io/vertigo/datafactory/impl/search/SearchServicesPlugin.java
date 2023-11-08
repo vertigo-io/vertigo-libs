@@ -17,8 +17,10 @@
  */
 package io.vertigo.datafactory.impl.search;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.datafactory.collections.ListFilter;
@@ -26,6 +28,7 @@ import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
+import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
@@ -59,6 +62,23 @@ public interface SearchServicesPlugin extends Plugin {
 	<K extends KeyConcept, I extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<K, I> index);
 
 	/**
+	 * Ajout de meta data à l'index.
+	 * Si l'élément était déjà dans l'index il est remplacé.
+	 * @param indexDefinition Type de l'index
+	 * @param dataPath Clé de la métadonnée
+	 * @param dataValue Valeur de la métadonnée
+	 */
+	void putMetaData(final SearchIndexDefinition indexDefinition, final String dataPath, final Serializable dataValue);
+
+	/**
+	 * Lecture de meta data à l'index.
+	 * @param indexDefinition Type de l'index
+	 * @param dataPath Clé de la métadonnée
+	 * @return Valeur de la métadonnée, null si pas de donnée
+	 */
+	Serializable getMetaData(final SearchIndexDefinition indexDefinition, final String dataPath);
+
+	/**
 	 * Récupération du résultat issu d'une requête.
 	 * @param searchQuery critères initiaux
 	 * @param indexDefinition Type de l'index
@@ -67,6 +87,17 @@ public interface SearchServicesPlugin extends Plugin {
 	 * @param <R> Type de l'objet resultant de la recherche
 	 */
 	<R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState);
+
+	/**
+	 *
+	 * @param <K>Type du keyConcept métier indexé
+	 * @param indexDefinitions Type de l'index
+	 * @param versionFieldName Field qui porte la version du keyconcept
+	 * @param listFilter Filtre des document
+	 * @param maxElements Nb Max elements to return
+	 * @return Map des versions par UID
+	 */
+	<K extends KeyConcept> Map<UID<K>, Serializable> loadVersions(final SearchIndexDefinition indexDefinitions, final DtFieldName<K> versionFieldName, final ListFilter listFilter, final int maxElements);
 
 	/**
 	 * @param indexDefinition  Type de l'index
