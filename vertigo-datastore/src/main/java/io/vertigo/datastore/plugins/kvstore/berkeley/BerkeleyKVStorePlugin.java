@@ -257,10 +257,10 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 	/** {@inheritDoc} */
 	@Override
 	public void put(final KVCollection collection, final String id, final Object element) {
-		//analyticsManager.trace(ANALYTICS_CATEGORY, "put", tracer -> {
-		//	tracer.setTag("collection", collection.name());
+		analyticsManager.trace(ANALYTICS_CATEGORY, "put", tracer -> {
+			tracer.setTag("collection", collection.name());
 		getDatabase(collection).put(id, element);
-		//});
+		});
 	}
 
 	/** {@inheritDoc} */
