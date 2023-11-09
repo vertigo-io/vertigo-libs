@@ -40,7 +40,7 @@
 		<module>vertigo-dashboard</module>
 		<module>vertigo-orchestra</module>
     	<module>vertigo-social</module>
-        <!-- module>vertigo-planning</module depends studio -->
+        <module>vertigo-planning</module>
     	<!-- module>vertigo-vortex</module NOT RELEASED YET -->
 	</modules>
 
