@@ -1,7 +1,6 @@
 package io.vertigo.planning.agenda.domain
 
 create DtDefinition DtAgendaDisplayRange {
-    field demId {domain: DoPId label: "Id démarche"}
     field ageId {domain: DoPId label: "Id agenda"}
     field showDate {domain: DoPLocalDate label: "Date sélectionnée"}
     field firstDate {domain: DoPLocalDate label: "Date de début"}

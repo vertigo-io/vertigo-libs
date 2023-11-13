@@ -169,7 +169,7 @@ public class AbstractAgendaController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/_deletePlage")
-	public ViewContext _deletePlage(final ViewContext viewContext, @ViewAttribute("agendaRange") final AgendaDisplayRange agenda, @RequestParam("plhId") final Long plhId) {
+	public ViewContext deletePlage(final ViewContext viewContext, @ViewAttribute("agendaRange") final AgendaDisplayRange agenda, @RequestParam("plhId") final Long plhId) {
 		final UID<Agenda> ageUid = UID.of(Agenda.class, agenda.getAgeId());
 		planningServices.deletePlageHoraireCascade(ageUid, UID.of(PlageHoraire.class, plhId));
 
