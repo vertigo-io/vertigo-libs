@@ -17,7 +17,10 @@ public interface BlackBoard {
 	 * Types
 	 */
 	enum Type {
-		Boolean, String, Integer, List
+		Boolean,
+		String,
+		Integer,
+		List // of Strings
 	}
 
 	//------------------------------------
@@ -69,7 +72,7 @@ public interface BlackBoard {
 	String format(final String msg);
 
 	/**
-	 * Evaluate a keyTemplate including {{keys}} with mustaches
+	 * Evaluates a keyTemplate including {{keys}} with mustaches
 	 *
 	 * @param keyTemplate the keyTemplate
 	 * @return the key
