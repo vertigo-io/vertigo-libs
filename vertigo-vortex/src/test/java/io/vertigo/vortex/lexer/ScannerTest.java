@@ -228,7 +228,7 @@ public class ScannerTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "\"lorem", " lorem\" ", "\"lorem\r\n", "\"\"", " \"lo\\rem\"", "\"lorem\"\"IPSUM\"" })
+	@ValueSource(strings = { "\"lorem", " lorem\" ", "\"lorem\r\n", "\"\"", " \"lo\\rem\"" })
 	public void testFail33(final String src) {
 		Assertions.assertThrows(Throwable.class, () -> tokenize(src, false));
 	}

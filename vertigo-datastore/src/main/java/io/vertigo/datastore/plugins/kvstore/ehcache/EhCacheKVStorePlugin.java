@@ -182,7 +182,7 @@ public final class EhCacheKVStorePlugin implements KVStorePlugin, Activeable {
 		}
 	}
 
-	private class JavaObjectSerializer implements Serializer<Object> {
+	private static class JavaObjectSerializer implements Serializer<Object> {
 		private final Codec<Serializable, byte[]> codec;
 
 		JavaObjectSerializer(final Codec<Serializable, byte[]> codec) {
