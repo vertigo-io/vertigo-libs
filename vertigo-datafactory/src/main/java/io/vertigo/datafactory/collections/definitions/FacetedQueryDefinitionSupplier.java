@@ -19,7 +19,6 @@ package io.vertigo.datafactory.collections.definitions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
@@ -67,7 +66,7 @@ public final class FacetedQueryDefinitionSupplier implements DefinitionSupplier 
 	public FacetedQueryDefinition get(final DefinitionSpace definitionSpace) {
 		final List<FacetDefinition> facetDefinitions = facets.stream()
 				.map(facetName -> definitionSpace.resolve(facetName, FacetDefinition.class))
-				.collect(Collectors.toList());
+				.toList();
 		final SmartTypeDefinition criteriaSmartType = definitionSpace.resolve(myCriteriaSmartTypeName, SmartTypeDefinition.class);
 		return new FacetedQueryDefinition(
 				name,

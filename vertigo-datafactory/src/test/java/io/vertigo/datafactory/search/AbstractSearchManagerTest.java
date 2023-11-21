@@ -31,7 +31,6 @@ import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -1718,7 +1717,7 @@ public abstract class AbstractSearchManagerTest {
 			final List<SearchIndex<Item, Item>> indexes = itemDataBase.getAllItems()
 					.stream()
 					.map(item -> SearchIndex.createIndex(itemIndexDefinition, item.getUID(), item))
-					.collect(Collectors.toList());
+					.toList();
 			searchManager.putAll(itemIndexDefinition, indexes);
 		} else {
 			//Indexation unitaire

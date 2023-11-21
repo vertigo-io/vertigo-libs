@@ -1,17 +1,125 @@
 Version history
 ===============
 
-Running 4.0.0
+Running 4.1.0
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-360-to-400)
-* [Ui] Extract exceptions handling from VSpringMvcControllerAdvice to VSpringMvcExceptionHandler
-* [Ui] Quasar v1 to v2
-	* css --q-color-* => --q-*
-* [Ui] Vue2 -> Vue3 slots syntax #body="props"
-* [Ui] Components' param name support kebab-case, context variables are always as CamelCase (ex : buttons support `text-color` and `textColor` input params and declare a `textColor` thymeleaf variable)
-* [Ui] *Replace buttons attribute ariaLabel to title* (aria-label wasn't use for a11y in button, title was)
 
 more to come :)
+
+Release 4.0.0 - 2023/08/17
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-360-to-400)
+* [Account] Fix security translators when missing/null SecurityKeys
+* [Account] Fix Search security translator and tests multiples user values
+* [Account] Fix override authorizations when unordered registration
+* [Commons] decode html char to (&#...;)
+* **[Ui, Vega] jakarta namespace : Spring 6, Javalin 5, Jetty 11**
+* [Ui] Add Jetty Boot Param : noSniHostCheck (needed when behind a proxy)
+* [Ui] Extract exceptions handling from VSpringMvcControllerAdvice to VSpringMvcExceptionHandler
+* **[Ui] Quasar v1 to v2** (see https://quasar.dev/start/upgrade-guide/)
+  - update css variable names
+    *  `--q-color-*` to `--q-*`
+  * Quasar utils : `Quasar.utils.date.getDateDiff` to `Quasar.date.getDateDiff`
+  * QTablme rename `:data` to `:rows`
+  * QSelect change `@input` to `@update:model-value`
+* [Ui] export VertigoUi to window.VertigoUi
+* **[Ui] Vue2 -> Vue3** (see https://v3-migration.vuejs.org/)
+  * slots syntax `slot="body" slot-scope="props"` to `#body="props"`
+  * no need .native event
+  * `:key` needed on same tag as `v-for` loop
+  * `v-bind:value` to `v-bind:modelValue`
+  * `@input` to `@update:model-value`
+  * `value` to `modelValue
+  * no need of `$set`
+    * `this.$set(this.$props.value, '_v_inputValue', newInputValue );`
+    * to `this.$props.modelValue['_v_inputValue'] = newInputValue;`
+  * pass function instead of a anonymous function
+	* `@filter="function(val, update, abort) { autocompleteParam(param, index, val, update, abort);}"`
+ 	* to `@filter="function(val, update, abort) { autocompleteParam(param, index, val, update, abort);}"`
+  * In components : `import Quasar from "quasar"`to `import * as Quasar from "quasar"`
+  * Life cycle change :
+    * `bind` to `created`
+    * `componentUpdated` to `updated`
+    * `unbind` to `unmounted`
+  * `@hook` to `@vue`
+  * (weird) httpPostAjax.onSuccess : `this` and `window` are undefined in function body. To fix: `this` undefined when use fat arrow =>, so use `function(...) {...}`; `window` pass as second onSuccess arg)
+* [Ui] Components' param name support kebab-case, context variables are always as CamelCase (ex : buttons support `text-color` and `textColor` input params and declare a `textColor` thymeleaf variable)
+* **[Ui] Replace buttons attribute ariaLabel to title** (aria-label wasn't use for a11y in button, title was)
+* [datamodel] check required field throw a ConstraintException
+* [ui] replace cookie by localstorage in sample menu mini's state 
+* [Ui] vui Table : Add rowIndex even if not modifiable
+* [Ui] Added attribute sample with conditional
+* [Vega] Configure uiListModifiable maximum rows to default max rows
+* [vega] move some gson type adapters in core
+* [vega] improve swagger for File parameters
+* [Ui] Fix doubled escaped chars when using specific attrs
+* [Ui] Add aria-required in components
+* [Ui] Fix usage of VSpringWebConfig CustomComponentsPathPrefix
+* [DataFactory] Inactive spanQuery for string pkfield in collections fulltext filtering
+* [DataFactory] Fix Dsl ListFilterBuilder with multifield and support AND, OR with nullable fields
+* [DataBase] Switch postgre PK on insert to GENERATED_COLUMNS
+* [database] improved clusteredMeasure perf
+* [DataStore] add createList and updateList on entityStore (and DAO)
+* [datamodel] externalize smarttype validation MessageText
+* [orchestra] cannot clean thread local anymore + fix multi node test
+* [Ui] Stop attributes propagation on vu:block tag (use `th:with="actions_slot=null, header_attrs=null,content_attrs=null,card_attrs=null"`)
+* [Ui] Add UserSessionMethodArgumentResolver : can declare `final UserSession session` parameter in controllers
+* [Ui] Support multiple QueryParams as List
+* [Ui] Support vu:select into modifiableTable
+* [Ui] Fix : no pagination on modifiableTable
+* [Ui] Add ellipsis on uploader title, show on hover
+* [Ui] clientSide filter in ui selection components add ability to filter a list client side, for selection in ui components
+* [ui] add asssertion to prevent all modified fields in context
+* [ui] sort date and datetime in table automatically
+* [ui] fix autocomplete-multiple (missing after_label_slot param)
+* [ui] highest precedence is not for native exception handler
+* [ui] add global properties for Vue instance to ease migration
+* [Ui] Fix QTables if no subtitle no empty `<div></div>`
+* [Ui] Add missing 3rdParty for some uncommon cases
+* [Ui] Add parameter loading state on button
+* [Ui] Add method to remove pendingAction after a delay (use it with v-on)
+* [Ui] Add css sr-only for screen reader elements
+* [Ui] [A11y] use heading for title (block and table) support embedded block
+* [Ui] [A11y] use heading for title (block and table)
+* [Ui] [A11y] Add aria-current="step" to vScrollSpy
+* [Ui] Column actions align right
+* [Ui] [A11y] add 'Actions' title to actions column
+* [Ui] [A11y] Update buttons and table and some DX 
+   - button : round if icon only
+   - force ariaLabel if icon only
+   - add sub span sr-only if necessary
+   - table : add scope col on th and aria-sort if sorted
+* [Ui] Support kebab-case in namedComposant : param with - : var in camelCase
+* [Ui] Fix width of qEditor inside a qLabel
+* [Ui] add parameters on head and page to change vueJs, Quasar and vertigoUi versions (you need to put wanted version in same place like `/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/`)
+* [Social] Add analytics to SmsManager : matchs whilelistPrefix (max 8 chars)
+* [Quarto] Check for forbidden char in filename (much clear execption message)
+* [Quarto] filename can't contains path
+* [ui] update js libs
+  * vue 2.7.14 -> 3.3.4
+  * quasar 1.22.9 => 2.12.3
+  * @mdi 7.2.96
+  * materialIcons v140
+  * babel 7.21.4 -> 7.22.7
+* [All] update libs
+  * h2 2.1.214 -> 2.2.220
+  * assertj 3.23.1 -> 3.24.2
+  * janino 3.1.9 -> 3.1.10
+  * freemarker 2.3.31 -> 2.3.32
+  * servlet 4.0.1 -> jakarta 5.0.0
+  * jetty 9.4.51 -> 11.0.15
+  * lucene 8.11.1 -> 8.11.1 (cant update compatibility with ES 7.17.12)
+  * elasticsearch 7.17.9 -> 7.17.12
+  * rest-assured 5.2.0 -> 5.3.1
+  * liquibase 4.21.1 -> 4.23.0
+  * ojdbc 19.18.0.0 -> 19.19.0.0
+  * ehcache 3.9.10 -> 3.9.11 (dep errors with 3.10.x)
+  * tika 2.7.0 -> 2.8.0
+  * guava 31.1-jre -> 32.1.1-jre (for tika cve in 31.1-jre)
+  * sods 1.5.3 -> 1.6.2
+  * spring-webmvc 5.3.27 -> 6.0.11
+  * selenium 4.7.2 -> 4.10.0
+  * jackson 2.14.1 -> 2.15.2 
 
 Release 3.6.0 - 2023/05/04
 ----------------------

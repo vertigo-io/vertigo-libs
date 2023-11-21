@@ -120,8 +120,7 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 					final Constructor<? extends Constraint> constructor = ClassUtil.findConstructor(constraintConfig.constraintClass(),
 							new Class[] { String.class, Optional.class, Optional.class });
 					return ClassUtil.newInstance(constructor, new Object[] { constraintConfig.arg(), msgOpt, resourceMsgOpt });
-				})
-				.collect(Collectors.toList());
+				}).collect(Collectors.toList());
 	}
 
 	private static BasicTypeAdapter createBasicTypeAdapter(final AdapterConfig adapterConfig) {
@@ -147,28 +146,32 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 		//---
 		switch (cardinality) {
 			case MANY:
-				switch (smartTypeDefinition.getScope()) {
-					case DATA_TYPE:
-						if (!(value instanceof DtList)) {
-							throw new ClassCastException("Value " + value + " must be a data-list");
-						}
-						for (final Object element : DtList.class.cast(value)) {
-							checkType(smartTypeDefinition, element);
-						}
-						break;
-					case BASIC_TYPE:
-					case VALUE_TYPE:
-						if (!(value instanceof List)) {
-							throw new ClassCastException("Value " + value + " must be a list");
-						}
-						break;
-					default:
-						throw new IllegalStateException();
-				}
+				checkTypeMany(smartTypeDefinition, value);
 				break;
 			case ONE:
 			case OPTIONAL_OR_NULLABLE:
 				checkType(smartTypeDefinition, value);
+				break;
+			default:
+				throw new IllegalStateException();
+		}
+	}
+
+	private void checkTypeMany(final SmartTypeDefinition smartTypeDefinition, final Object value) {
+		switch (smartTypeDefinition.getScope()) {
+			case DATA_TYPE:
+				if (!(value instanceof DtList)) {
+					throw new ClassCastException("Value " + value + " must be a data-list");
+				}
+				for (final Object element : DtList.class.cast(value)) {
+					checkType(smartTypeDefinition, element);
+				}
+				break;
+			case BASIC_TYPE:
+			case VALUE_TYPE:
+				if (!(value instanceof List)) {
+					throw new ClassCastException("Value " + value + " must be a list");
+				}
 				break;
 			default:
 				throw new IllegalStateException();
@@ -194,6 +197,8 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 				if (value == null) {
 					throw new ConstraintException(LocaleMessageText.of(SmarttypeResources.SMARTTYPE_MISSING_VALUE, smartTypeDefinition.id()));
 				}
+				checkConstraints(smartTypeDefinition, value);
+				break;
 			case OPTIONAL_OR_NULLABLE:
 				checkConstraints(smartTypeDefinition, value);
 				break;

@@ -1,28 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>io.vertigo</groupId>
-		<artifactId>vertigo-extensions</artifactId>
-		<version>4.1.0-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>io.vertigo</groupId>
+        <artifactId>vertigo-extensions</artifactId>
+        <version>4.1.0-SNAPSHOT</version>
+    </parent>
 
-	<artifactId>vertigo-vortex</artifactId>
-	<packaging>jar</packaging>
-	<name>vertigo-vortex</name>
+    <artifactId>vertigo-vortex</artifactId>
+    <packaging>jar</packaging>
+    <name>vertigo-vortex</name>
 
-	<dependencies>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-core</artifactId>
-			<version>${vertigo.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-commons</artifactId><!-- for ConfigPlugin and ResourceResolverPlugin -->
-			<version>${project.version}</version>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>io.vertigo</groupId>
+            <artifactId>vertigo-core</artifactId>
+            <version>${vertigo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.vertigo</groupId>
+            <artifactId>vertigo-commons</artifactId> <!-- for ConfigPlugin and ResourceResolverPlugin -->
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.vertigo</groupId>
+            <artifactId>vertigo-redis-connector</artifactId>
+            <version>${vertigo.version}</version>
+            <optional>true</optional> <!-- pour RedisBlackBoardStorePlugin -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -87,7 +87,7 @@ final class ReindexTask implements Runnable {
 				if (!reindexUris.isEmpty()) {
 					final List<Tuple<UID, Serializable>> reindexTuples = reindexUris.stream()
 							.map(uid -> Tuple.of(uid, uid.getId()))
-							.collect(Collectors.toList());
+							.toList();
 					loadAndIndexAndRetry(new SearchChunk(reindexTuples, reindexTuples.get(reindexTuples.size() - 1).val2()), 0);
 				}
 			} catch (final Exception e) {

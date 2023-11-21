@@ -18,7 +18,6 @@
 package io.vertigo.datastore.entitystore.metrics;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -67,7 +66,7 @@ public final class EntityMetricsProvider implements Component {
 					.stream()
 					.filter(DtDefinition::isPersistent)
 					.map(dtDefinition -> doExecute(dtDefinition, transaction))
-					.collect(Collectors.toList());
+					.toList();
 		}
 
 	}

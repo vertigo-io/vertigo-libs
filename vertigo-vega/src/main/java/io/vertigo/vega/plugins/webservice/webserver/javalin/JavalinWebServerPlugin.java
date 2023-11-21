@@ -99,8 +99,8 @@ public final class JavalinWebServerPlugin implements WebServerPlugin {
 	}
 
 	private static String convertJaxRsPathToJavalin(final String path) {
-		return path.replaceAll("\\(", "%28")
-				.replaceAll("\\)", "%29");
+		return path.replace("(", "%28")
+				.replace(")", "%29");
 		//.replaceAll("\\{(.+?)\\}", ":$1"); //.+? : Reluctant regexp
 	}
 }

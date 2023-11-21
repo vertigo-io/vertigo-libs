@@ -113,7 +113,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 						.stream()
 						.map(record -> new TabularDataSerie(
 								buildMapValue(record)))
-						.collect(Collectors.toList());
+						.toList();
 				return new TabularDatas(dataSeries, table.getColumns().stream()
 						.filter(column -> !"table".equals(column.getLabel()))
 						.filter(column -> !"result".equals(column.getLabel()))
@@ -135,7 +135,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 						.map(record -> new TimedDataSerie(
 								record.getTime(),
 								buildMapValue(record)))
-						.collect(Collectors.toList());
+						.toList();
 				return new TimedDatas(dataSeries, table.getColumns().stream()
 						.filter(column -> !"_time".equals(column.getLabel()))
 						.filter(column -> !"table".equals(column.getLabel()))
@@ -157,7 +157,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		final var orderedClusteredMeasures = getOrderedClusterMeasures(clusteredMeasure);
 		queryBuilder
 				.append("|> window(every: " + timeFilter.dim() + ", createEmpty:true ) \n")
-				.append("\n")
+				.append('\n')
 				.append("dataNil = data \n")
 				.append("|> count() \n")
 				.append("|> map(fn: (r) => ({ _time:r._start, _value:r._value, _field:\"total\" }))\n");
@@ -187,7 +187,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 				.boxed()
 				.map(idx -> "data" + idx)
 				.collect(Collectors.joining(", "));
-		queryBuilder.append("\n").append("union(tables :[ dataNil," + allDataJoined + "]) \n")
+		queryBuilder.append('\n').append("union(tables :[ dataNil," + allDataJoined + "]) \n")
 				.append("|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") \n")
 				.append("|> drop(columns : [\"total\"] )\n")
 				.append("|> sort(columns: [\"_time\"]) \n")
@@ -203,7 +203,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 						.map(record -> new TimedDataSerie(
 								record.getTime(),
 								buildMapValue(record)))
-						.collect(Collectors.toList());
+						.toList();
 				return new TimedDatas(dataSeries, getOrderedClusterMeasures(clusteredMeasure));//we remove the time
 			}
 		}
@@ -230,7 +230,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 		final String globalDataVariable = buildGlobalDataVariable(appName, measures, dataFilter, timeFilter, groupBy);
 
-		String queryBuilder = globalDataVariable +
+		final String queryBuilder = globalDataVariable +
 				"data \n" +
 				"|> filter(fn: (r) => (r._field ==\"value\" ) ) \n" +
 				"|> toString() \n" +
@@ -291,7 +291,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	@Override
 	public List<String> getTagValues(final String appName, final String measurement, final String tag) {
-		String queryBuilder = "import \"influxdata/influxdb/schema\" \n" +
+		final String queryBuilder = "import \"influxdata/influxdb/schema\" \n" +
 				'\n' +
 				"schema.tagValues( \n" +
 				" bucket: \"" + appName + "\",\n" +
@@ -307,7 +307,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 						.stream()
 						.map(FluxRecord::getValue)
 						.map(String.class::cast)
-						.collect(Collectors.toList());
+						.toList();
 			}
 		}
 		return Collections.emptyList();
@@ -397,7 +397,8 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		final StringBuilder queryBuilder = new StringBuilder(globalDataVariable);
 
 		final String groupByFields = Stream.of(groupBy).collect(Collectors.joining("\", \"", "\"", "\""));
-		final Map<String, String> properedMeasures = measures.stream().collect(Collectors.toMap(Function.identity(), measure -> measure.replaceFirst(":", "_").replaceAll("\\.", "_")));
+		final Map<String, String> properedMeasures = measures.stream().collect(Collectors
+				.toMap(Function.identity(), measure -> measure.replaceFirst(":", "_").replace('.', '_')));
 
 		final Map<String, List<String>> fieldsByFunction = getFieldsByFunction(measures);
 		if (fieldsByFunction.size() == 1) { // union works with 2 tables minimum
@@ -410,7 +411,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 			}
 			queryBuilder
 					.append("|> " + buildMeasureFunction(function) + " \n")
-					.append("|> set(key: \"alias\", value:\"" + function.replaceAll("\\.", "_") + "\" ) \n")
+					.append("|> set(key: \"alias\", value:\"" + function.replace('.', '_') + "\" ) \n")
 					.append("|> group() \n")
 					.append("|> map(fn: (r) => ({ r with " + Stream.of(groupBy)
 							.map(field -> field + ": if exists r." + field + " then r." + field + " else \"\"").collect(Collectors.joining(", "))
@@ -425,7 +426,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 				// declare a new variable
 				queryBuilder
-						.append(entry.getKey().replaceAll("\\.", "_") + "Data = data \n");
+						.append(entry.getKey().replace('.', '_') + "Data = data \n");
 				if (fields.size() > 1) {
 					queryBuilder
 							.append("|> filter(fn: (r) => " + entry.getValue().stream().map(field -> "r._field==\"" + field + "\"").collect(Collectors.joining(" or ")) + ") \n");
@@ -433,12 +434,12 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 				queryBuilder
 						.append("|> " + buildMeasureFunction(entry.getKey()) + " \n")
 						.append("|> " + (isTextFunction(entry.getKey()) ? "toString()" : "toFloat()") + "\n") // add a conversion toFloat for the union
-						.append("|> set(key: \"alias\", value:\"" + entry.getKey().replaceAll("\\.", "_") + "\" ) \n")
+						.append("|> set(key: \"alias\", value:\"" + entry.getKey().replace('.', '_') + "\" ) \n")
 						.append('\n'); // window by time
 			}
 
 			queryBuilder
-					.append("union(tables:[" + fieldsByFunction.keySet().stream().map(function -> function.replaceAll("\\.", "_") + "Data").collect(Collectors.joining(", ")) + "]) \n")
+					.append("union(tables:[" + fieldsByFunction.keySet().stream().map(function -> function.replace('.', '_') + "Data").collect(Collectors.joining(", ")) + "]) \n")
 					.append("|> map(fn: (r) => ({ r with " + Stream.of(groupBy)
 							.map(field -> field + ": if exists r." + field + " then r." + field + " else \"\"").collect(Collectors.joining(", "))
 							+ "}))\n")
@@ -482,7 +483,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 			for (final Map.Entry<String, List<String>> entry : fieldsByFunction.entrySet()) {
 				// declare a new variable
 				queryBuilder
-						.append(entry.getKey().replaceAll("\\.", "_") + "Data = data \n");
+						.append(entry.getKey().replace('.', '_') + "Data = data \n");
 				if (fields.size() > 1) {
 					queryBuilder
 							.append("|> filter(fn: (r) => " + entry.getValue().stream().map(field -> "r._field==\"" + field + "\"").collect(Collectors.joining(" or ")) + ") \n");
@@ -491,14 +492,14 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 						.append("|> " + buildMeasureFunction(entry.getKey()) + " \n")
 						.append("|> duplicate(column: \"_stop\", as: \"_time\") \n")
 						.append("|> group() \n")
-						.append("|> set(key: \"alias\", value:\"" + entry.getKey().replaceAll("\\.", "_") + "\" ) \n")
+						.append("|> set(key: \"alias\", value:\"" + entry.getKey().replace('.', '_') + "\" ) \n")
 						.append('\n'); // window by time
 			}
 
-			final Map<String, String> properedMeasures = measures.stream().collect(Collectors.toMap(Function.identity(), measure -> measure.replaceFirst(":", "_").replaceAll("\\.", "_")));
+			final Map<String, String> properedMeasures = measures.stream().collect(Collectors.toMap(Function.identity(), measure -> measure.replaceFirst(":", "_").replace('.', '_')));
 
 			queryBuilder
-					.append("union(tables:[" + fieldsByFunction.keySet().stream().map(function -> function.replaceAll("\\.", "_") + "Data").collect(Collectors.joining(", ")) + "]) \n")
+					.append("union(tables:[" + fieldsByFunction.keySet().stream().map(function -> function.replace('.', '_') + "Data").collect(Collectors.joining(", ")) + "]) \n")
 					.append("|> pivot(rowKey:[\"_time\"], columnKey: [\"_field\", \"alias\"], valueColumn: \"_value\") \n")
 					.append("|> drop(columns: [\"_start\", \"_stop\"]) \n")
 					.append("|> map(fn: (r) => ({ r with " + measures.stream().map(properedMeasures::get)

@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.DelayQueue;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -79,7 +78,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 				.map(String::trim)
 				.map(KVCollection::new)
 				.peek(kvc -> collectionsData.put(kvc, new ConcurrentHashMap<String, DelayedMemoryCacheValue>()))
-				.collect(Collectors.toList());
+				.toList();
 		//-----
 		this.timeToLiveSeconds = timeToLiveSeconds;
 		dmnUniqueName = "DmnKvDataStore$t" + timeToLiveSeconds + "c" + Long.toHexString(collections.hashCode());

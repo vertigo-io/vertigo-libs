@@ -236,7 +236,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	private static List<SearchIndexDefinition> findIndexDefinitionByKeyConcept(final DtDefinition keyConceptDtDefinition) {
 		return Node.getNode().getDefinitionSpace().getAll(SearchIndexDefinition.class).stream()
 				.filter(indexDefinition -> indexDefinition.getKeyConceptDtDefinition().equals(keyConceptDtDefinition))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/** {@inheritDoc} */

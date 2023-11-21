@@ -1,3 +1,20 @@
+/*
+ * vertigo - application development platform
+ *
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.vertigo.planning.agenda;
 
 import javax.inject.Inject;
@@ -517,12 +534,12 @@ public final class AgendaPAO implements StoreServices {
             instant_publication
           FROM tranche_horaire trh1
           WHERE trh1.age_id in ( #ageIds.rownum# ) 
-            AND trh1.date_locale BETWEEN (#now#::Date - interval '1 year') AND #now#::Date
+            AND trh1.date_locale BETWEEN (#now#::Date - interval '1 year') AND (#now#::Date + interval '1 year')
             AND trh1.instant_publication IN (
               SELECT max(trh2.instant_publication)
               FROM tranche_horaire trh2
               WHERE trh2.age_id in ( #ageIds.rownum# ) 
-                AND trh2.date_locale BETWEEN (#now#::Date - interval '1 year') AND #now#::Date
+                AND trh2.date_locale BETWEEN (#now#::Date - interval '1 year') AND (#now#::Date + interval '1 year')
                 AND trh2.instant_publication <= #now#
             )
           GROUP BY trh1.instant_publication;""",
@@ -660,7 +677,8 @@ public final class AgendaPAO implements StoreServices {
                             AND res.minutes_debut < trh.minutes_Fin
                     WHERE trh.plh_id = #plhId#
                     GROUP BY trh.trh_id) as res on res.trh_id = trh.trh_id
-           WHERE trh.plh_id = #plhId#;""",
+           WHERE trh.plh_id = #plhId#
+           ORDER BY trh.minutes_Debut;""",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
 	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtTrancheHoraireDisplay", name = "trancheHoraires")
 	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.planning.agenda.domain.TrancheHoraireDisplay> getTrancheHoraireDisplayByPlhId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "plhId", smartType = "STyPId") final Long plhId, @io.vertigo.datamodel.task.proxy.TaskInput(name = "now", smartType = "STyPInstant") final java.time.Instant now) {

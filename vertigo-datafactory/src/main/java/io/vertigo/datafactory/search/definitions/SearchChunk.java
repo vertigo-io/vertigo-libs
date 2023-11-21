@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
@@ -55,7 +54,7 @@ public final class SearchChunk<K extends KeyConcept> {
 	 * @return All KeyConcept's uids of this chunk
 	 */
 	public List<UID<K>> getAllUIDs() {
-		return uids.stream().map(Tuple::val1).collect(Collectors.toList());
+		return uids.stream().map(Tuple::val1).toList();
 	}
 
 	/**

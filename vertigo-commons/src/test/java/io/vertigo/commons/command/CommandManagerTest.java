@@ -38,13 +38,13 @@ public final class CommandManagerTest {
 	private AutoCloseableNode node;
 
 	@BeforeEach
-	public final void setUp() {
+	public void setUp() {
 		node = new AutoCloseableNode(buildNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	@AfterEach
-	public final void tearDown() {
+	public void tearDown() {
 		if (node != null) {
 			node.close();
 		}
@@ -86,7 +86,7 @@ public final class CommandManagerTest {
 
 	@Test
 	public void testGenricUidCommandParam() {
-		final CommandResponse<String> commandResponse = commandManager.executeCommand("/t/exists", GenericUID.of("myObject", 1000L).urn());
+		final CommandResponse<Boolean> commandResponse = commandManager.executeCommand("/t/exists", GenericUID.of("myObject", 1000L).urn());
 		Assertions.assertEquals(CommandResponseStatus.OK, commandResponse.status());
 		Assertions.assertEquals("myObject@l-1000", commandResponse.display());
 		Assertions.assertEquals(false, commandResponse.payload());
@@ -94,7 +94,7 @@ public final class CommandManagerTest {
 
 	@Test
 	public void testGenricUidIntCommandParam() {
-		final CommandResponse<String> commandResponse = commandManager.executeCommand("/t/exists", GenericUID.of("myObject", 1000).urn());
+		final CommandResponse<Boolean> commandResponse = commandManager.executeCommand("/t/exists", GenericUID.of("myObject", 1000).urn());
 		Assertions.assertEquals(CommandResponseStatus.OK, commandResponse.status());
 		Assertions.assertEquals("myObject@i-1000", commandResponse.display());
 		Assertions.assertEquals(false, commandResponse.payload());
@@ -102,7 +102,7 @@ public final class CommandManagerTest {
 
 	@Test
 	public void testGenricUidStrCommandParam() {
-		final CommandResponse<String> commandResponse = commandManager.executeCommand("/t/exists", GenericUID.of("myObject", "first").urn());
+		final CommandResponse<Boolean> commandResponse = commandManager.executeCommand("/t/exists", GenericUID.of("myObject", "first").urn());
 		Assertions.assertEquals(CommandResponseStatus.OK, commandResponse.status());
 		Assertions.assertEquals("myObject@s-first", commandResponse.display());
 		Assertions.assertEquals(false, commandResponse.payload());

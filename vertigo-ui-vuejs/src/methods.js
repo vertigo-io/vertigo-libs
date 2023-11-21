@@ -205,8 +205,8 @@ export default {
         this.$data.vueData[object][field] = item.value;
     },
 
-    searchAutocomplete: function (list, valueField, labelField, componentId, url, terms, update, abort) {
-        if (terms.length < 2) {
+    searchAutocomplete: function (list, valueField, labelField, componentId, url, minQueryLength, terms, update, abort) {
+        if (terms.length < minQueryLength) {
             abort();
             return
         }

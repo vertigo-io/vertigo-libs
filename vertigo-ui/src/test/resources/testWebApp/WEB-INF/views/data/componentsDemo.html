@@ -41,7 +41,7 @@
                         </vu:grid-cell>
                         <vu:date object="movie" field="released"/>
                         <vu:datetime object="movie" field="lastModified" />
-                        <vu:autocomplete object="movie" field="movId" list="moviesMdl"/>
+                        <vu:autocomplete object="movie" field="movId" list="moviesMdl" minQueryLength="2"/>
                         <vu:radio object="movie" field="movId" list="movies" layout="horizontal" labelField="movId"/>
                         <vu:radio object="movie" field="movId" list="movies" />
                         <vu:text-field object="movie" field="movId"/>
@@ -72,7 +72,7 @@
                         <vu:fileupload-simple-object label="Movie pictures" th:url="'@{/commons/upload}'" object="movie" field="pictures" multiple/>                            
                         <vu:fileupload-simple-object label="Movie main picture" th:url="'@{/commons/upload}'" object="movie" field="mainPicture"/>                            
                         
-                        <vu:modal componentId="myModal" closeLabel="Close"/>
+                        <vu:modal componentId="myModal" closeLabel="Close" />
                         <vu:grid-cell class="q-gutter-md">
                             <vu:button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}" color="primary"/>
                             <vu:button-submit th:if="${model.modeReadOnly}" label="Edit" action="@{_edit}" color="primary"/>
@@ -125,7 +125,7 @@
             <br/>
            <h6>Test table</h6>
             <vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}"
-                tr_@click.native="|goTo('@{/movie/}'+props.row.movId)|" tr_class="nav">
+                th:tr_@click.native="|goTo('@{/movie/}'+props.row.movId)|" tr_class="nav">
                 <vu:slot name="actions_slot"><q-btn label="View detail" th:@click="|openModal('movieDetailModal', '@{/movie/}'+props.row.movId, {  })|"></q-btn></vu:slot>
                 <vu:include-data object="movies" field="movId" />
                 <vu:column field="movId" >

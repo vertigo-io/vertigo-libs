@@ -140,7 +140,7 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 		return this;
 	}
 
-	@Feature("kvStore.speedb")
+	@Feature("kvStore.h2")
 	public DataStoreFeatures withH2KV(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(H2KVStorePlugin.class, params);

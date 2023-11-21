@@ -97,6 +97,7 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 			final long firstDelay = Math.round(Math.random() * 900 + 100);
 			for (int i = 1; i <= entry.getValue(); i++) {
 				//If multiples workers for same type, initial delay evenly distributed during pollFrequency.
+				//ExecutorService : will cancel repeative task if one exec throw an exception !!
 				worktypeExecutorService.scheduleAtFixedRate(worker, firstDelay + i * (pollFrequencyMs / entry.getValue()), pollFrequencyMs, TimeUnit.MILLISECONDS);
 			}
 		}

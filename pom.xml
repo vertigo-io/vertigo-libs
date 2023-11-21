@@ -13,13 +13,13 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-parent</artifactId>
-		<version>4.1.0-SNAPSHOT</version>
+		<version>4.1.0</version>
 	</parent>
 
 	<artifactId>vertigo-extensions</artifactId>
 	<name>vertigo-extensions</name>
 	<packaging>pom</packaging>
-	<version>4.1.0-SNAPSHOT</version>
+	<version>4.2.0-SNAPSHOT</version>
 
 	<modules>
 		<module>vertigo-commons</module>
@@ -40,7 +40,8 @@
 		<module>vertigo-dashboard</module>
 		<module>vertigo-orchestra</module>
     	<module>vertigo-social</module>
-    	<module>vertigo-vortex</module>
+        <module>vertigo-planning</module>
+    	<!-- module>vertigo-vortex</module NOT RELEASED YET -->
 	</modules>
 
 	<scm>

@@ -20,6 +20,9 @@ package io.vertigo.stella.impl.workers;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.trace.Tracer;
 import io.vertigo.core.lang.Assertion;
@@ -28,6 +31,7 @@ import io.vertigo.stella.impl.workers.coordinator.WorkersCoordinator;
 import io.vertigo.stella.master.WorkResultHandler;
 
 final class WorkDispatcher implements Runnable {
+	private static final Logger LOG = LogManager.getLogger(WorkDispatcher.class);
 	private static final String ANALYTICS_CATEGORY = "distributedwork";
 	private final AnalyticsManager analyticsManager;
 
@@ -58,13 +62,20 @@ final class WorkDispatcher implements Runnable {
 	/** {@inheritDoc} */
 	@Override
 	public void run() {
-		final long start = System.currentTimeMillis();
-		boolean hasWork = false;
-		do {
-			hasWork = doRun(); //if hasWork : continue to poll work
-		} while (!Thread.currentThread().isInterrupted()
-				&& hasWork
-				&& System.currentTimeMillis() - start < pollFrequencyMs);
+		try {
+			final long start = System.currentTimeMillis();
+			boolean hasWork = false;
+			do {
+				hasWork = doRun(); //if hasWork : continue to poll work
+			} while (!Thread.currentThread().isInterrupted()
+					&& hasWork
+					&& System.currentTimeMillis() - start < pollFrequencyMs);
+		} catch (final Exception e) {
+			//Must protect exception in run (like inaccessible bdd)
+			//ExecutorService will cancel repeative task if one exec throw an exception !!
+			LOG.error("Workers : an error has occured during the execution of the workDispatcher, workType:" + workType, e);
+			return;
+		}
 	}
 
 	private <W, R> boolean doRun() {

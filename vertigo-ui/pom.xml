@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-extensions</artifactId>
-		<version>4.1.0-SNAPSHOT</version>
+		<version>4.2.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>vertigo-ui</artifactId>
@@ -61,30 +61,30 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>6.0.11</version>
+			<version>6.0.13</version>
 		</dependency>
 		<dependency>
         	<groupId>org.thymeleaf</groupId>
 			<artifactId>thymeleaf-spring6</artifactId>
-			<version>3.1.1.RELEASE</version>
+			<version>3.1.2.RELEASE</version>
 		</dependency>
 		<dependency>
 		  <groupId>nz.net.ultraq.thymeleaf</groupId>
 		  <artifactId>thymeleaf-layout-dialect</artifactId>
-		  <version>3.2.1</version>
+		  <version>3.3.0</version>
 		</dependency>
 		
 		<!-- Optionals -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>11.0.15</version>
+			<version>11.0.18</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
 			<artifactId>websocket-jetty-server</artifactId>
-			<version>11.0.15</version>
+			<version>11.0.18</version>
 			<optional>true</optional>
 		</dependency>
 		
@@ -95,6 +95,7 @@
 			<version>15.4</version>
 			<optional>true</optional>  <!-- for VuejsSsrFilter -->
 		</dependency>
+		
 		<!-- for tests -->
 		<!-- for Embedded Jetty Server and tests -->
 		<!-- Connections Pool -->
@@ -107,7 +108,7 @@
 		<dependency>
 		    <groupId>com.h2database</groupId>
 		    <artifactId>h2</artifactId>
-		    <version>2.2.220</version>
+		    <version>2.2.224</version>
 		    <scope>test</scope>
 		</dependency>
 		<dependency>
@@ -116,24 +117,30 @@
 			<version>0.9.5.5</version>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>com.sleepycat</groupId>
+            <artifactId>je</artifactId>
+            <version>18.3.12</version>
+            <scope>test</scope> 
+        </dependency>
 			
 		
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-support</artifactId>
-			<version>4.10.0</version>
+			<version>4.15.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-api</artifactId>
-			<version>4.10.0</version>
+			<version>4.15.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 		    <artifactId>htmlunit-driver</artifactId>
-		    <version>4.10.0</version>
+		    <version>4.13.0</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -146,7 +153,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-firefox-driver</artifactId>
-            <version>4.10.0</version>
+            <version>4.15.0</version>
             <scope>test</scope>
         </dependency>
 		
@@ -154,19 +161,23 @@
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>7.17.12</version>
+			<version>7.17.14</version>
 			<scope>test</scope> <!-- EsTransportSearchServicesPlugin -->
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.logging.log4j</groupId>
 					<artifactId>log4j-api</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
 		    <artifactId>transport</artifactId>
-		    <version>7.17.12</version>
+		    <version>7.17.14</version>
 		    <scope>test</scope> <!-- EsTransportSearchServicesPlugin -->
 		</dependency>
 		<dependency>
@@ -199,25 +210,25 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.15.2</version> <!-- version for spring -->
+			<version>2.15.3</version> <!-- version for spring -->
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
     		<artifactId>jackson-dataformat-smile</artifactId>
-    		<version>2.15.2</version> <!-- version for spring -->
+    		<version>2.15.3</version> <!-- version for spring -->
     		<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
     		<artifactId>jackson-dataformat-yaml</artifactId>
-    		<version>2.15.2</version> <!-- version for spring -->
+    		<version>2.15.3</version> <!-- version for spring -->
     		<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
     		<artifactId>jackson-dataformat-cbor</artifactId>
-    		<version>2.15.2</version> <!-- version for spring -->
+    		<version>2.15.3</version> <!-- version for spring -->
     		<scope>test</scope>
 		</dependency>
 		

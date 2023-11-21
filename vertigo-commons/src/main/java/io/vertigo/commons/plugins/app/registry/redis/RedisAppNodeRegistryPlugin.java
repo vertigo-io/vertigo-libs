@@ -22,7 +22,6 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -125,7 +124,7 @@ public final class RedisAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 				.stream()
 				.map(nodeId -> jedis.hget(VERTIGO_NODE + nodeId, "json"))
 				.map(nodeJson -> gson.fromJson(nodeJson, AppNode.class))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private static Gson createGson() {

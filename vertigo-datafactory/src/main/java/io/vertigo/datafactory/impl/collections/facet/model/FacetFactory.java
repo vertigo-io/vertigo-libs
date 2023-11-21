@@ -24,7 +24,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleMessageText;
@@ -79,7 +78,7 @@ public final class FacetFactory {
 		return facetedQueryDefinition.getFacetDefinitions()
 				.stream()
 				.map(facetDefinition -> createFacet(facetDefinition, dtList))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**

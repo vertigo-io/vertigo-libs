@@ -59,6 +59,7 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 
 	private String cspPattern;
 	private boolean useNonce = false;
+	private Random srnd;
 	private Map<String, String> compatibilityHeaders;
 
 	/** {@inheritDoc} */
@@ -68,6 +69,7 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 		cspPattern = filterConfig.getInitParameter("cspPattern");
 		Assertion.check().isNotBlank(cspPattern);
 		useNonce = cspPattern.contains(NONCE_PATTERN);
+		srnd = useNonce ? new SecureRandom() : null;
 
 		final ParamManager paramManager = Node.getNode().getComponentSpace().resolve(ParamManager.class);
 		//String.replace : => est équivalent à replaceAll sans regexp (et remplace bien toutes les occurences)
@@ -109,7 +111,6 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 		String nonce = "MissingNonceAdd" + NONCE_PATTERN + "InCspPattern";
 		String cspToApply = cspPattern;
 		if (useNonce) {
-			final Random srnd = new SecureRandom();
 			final byte[] randomNonce = new byte[32];
 			srnd.nextBytes(randomNonce);
 			nonce = Base64.getEncoder().encodeToString(randomNonce);

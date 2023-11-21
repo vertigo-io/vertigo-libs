@@ -1,3 +1,20 @@
+/*
+ * vertigo - application development platform
+ *
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.vertigo.planning.agenda.services.fo.plugin;
 
 import java.time.Instant;
@@ -10,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -36,6 +52,7 @@ import io.vertigo.planning.agenda.services.TrancheHoraireEvent.HoraireImpacte;
 import redis.clients.jedis.params.ScanParams;
 
 @NotDiscoverable
+@Deprecated
 public class RedisFoConsultationPlanningPlugin extends DbFoConsultationPlanningPlugin {
 
 	private static final String SINGLE_JEDIS_NODE = "singleNode";
@@ -173,7 +190,7 @@ public class RedisFoConsultationPlanningPlugin extends DbFoConsultationPlanningP
 
 		for (final Agenda agenda : agendas) {
 			analyticsManager.trace("synchroagenda", agenda.getUID().urn(), tracer -> {
-				final var trancheHoraires = trancheHoraireDAO.synchroGetTrancheHorairesByAgeId(agenda.getAgeId(), Instant.now());
+				final var trancheHoraires = trancheHoraireDAO.synchroGetTrancheHorairesByAgeId(List.of(agenda.getAgeId()), Instant.now());
 				synchroDbRedisCreneauFromTrancheHoraire(Map.of(agenda.getAgeId(), trancheHoraires));
 				tracer.incMeasure("nbDispos", 0) //pour init a 0
 						.setTag("agenda", agenda.getUID().urn())
@@ -239,8 +256,8 @@ public class RedisFoConsultationPlanningPlugin extends DbFoConsultationPlanningP
 		for (final Entry<Long, List<HoraireImpacte>> entry : horaireImpacteByDem.entrySet()) {
 			final List<LocalDate> listDates = entry.getValue().stream()
 					.map(HoraireImpacte::getLocalDate)
-					.collect(Collectors.toList());
-			final var trancheHoraires = trancheHoraireDAO.synchroGetTrancheHorairesByAgeIdAndDates(entry.getKey(), listDates, Instant.now());
+					.toList();
+			final var trancheHoraires = trancheHoraireDAO.synchroGetTrancheHorairesByAgeIdAndDates(List.of(entry.getKey()), listDates, Instant.now());
 			trancheHoraireByDemToResync.put(entry.getKey(), trancheHoraires);
 		}
 		synchroDbRedisCreneauFromTrancheHoraire(trancheHoraireByDemToResync);

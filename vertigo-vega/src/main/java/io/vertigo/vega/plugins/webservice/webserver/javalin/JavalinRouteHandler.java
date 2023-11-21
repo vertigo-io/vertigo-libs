@@ -59,9 +59,9 @@ final class JavalinRouteHandler implements Handler {
 				ctx.json(result);
 			}
 
-		} catch (final Throwable th) {
-			LOGGER.error(th.getMessage(), th);
-			ctx.result(th.getMessage());
+		} catch (final Exception e) {
+			LOGGER.error(e.getMessage(), e);
+			ctx.result(e.getMessage());
 		}
 	}
 }

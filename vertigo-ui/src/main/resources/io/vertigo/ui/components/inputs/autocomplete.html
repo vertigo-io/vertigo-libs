@@ -1,9 +1,10 @@
-<th:block th:fragment="autocomplete-edit(object, field, label, list, valueField, labelField, autocompleteId, required, inputUrl, filterUrl, edit_content_slot, after_label_slot, input_attrs, label_attrs)" vu:alias="autocomplete" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="autocomplete-edit(object, field, label, list, valueField, labelField, minQueryLength, autocompleteId, required, inputUrl, filterUrl, edit_content_slot, after_label_slot, input_attrs, label_attrs)" vu:alias="autocomplete" vu:selector="${viewMode=='edit'}"
 	  th:assert="${object} != null and ${field} != null and ${list} != null"
 	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, 
 	  myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, 
 	  myComponentId=${autocompleteId != null ? autocompleteId : 'autocomplete_' + list}, 
 	  myLabel=${modifiableTable!=null?null:label?:model.util.label(object + '.' + field)},
+	  myMinQueryLength=${minQueryLength != null ? minQueryLength : 2},
       myRequired=${required != null ? required : model.util.required(object + '.' + field)},
       myInputUrl=${inputUrl != null ? inputUrl : '__@{/autocomplete/_searchByValue}__'},
       myFilterUrl=${filterUrl != null ? filterUrl : '__@{/autocomplete/_searchFullText}__'}">
@@ -43,7 +44,7 @@
         th:@vue:mounted="|() => {
 			$watch(function() {return ${model.util.vueDataKey(object, field, rowIndex)} }, (newValue, oldValue) => { loadAutocompleteById('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myInputUrl}','${object}','${field}', ${rowIndex})} )
 			}|"
-        th:@filter="|function (val, update, abort) { searchAutocomplete('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myFilterUrl}', val, update, abort)}|"
+        th:@filter="|function (val, update, abort) { searchAutocomplete('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myFilterUrl}', ${myMinQueryLength}, val, update, abort)}|"
         th:attr="__${label_attrs}__,__${input_attrs}__"
      >
      <vu:quasar-label-slot label="${myLabel}" after_label_slot="after_label_slot"/>

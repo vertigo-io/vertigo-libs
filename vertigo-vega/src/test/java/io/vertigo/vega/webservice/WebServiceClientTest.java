@@ -1167,7 +1167,7 @@ public final class WebServiceClientTest {
 					createDefaultContact(124L),
 					createDefaultContact(125L),
 					createDefaultContact(126L))
-					.collect(Collectors.toList());
+					.toList();
 	
 			loggedAndExpect(given().body(dtList))
 					.body("globalErrors", Matchers.contains("Name is mandatory"))
@@ -1213,7 +1213,7 @@ public final class WebServiceClientTest {
 					createDefaultContact(124L),
 					createDefaultContact(125L),
 					createDefaultContact(126L))
-					.collect(Collectors.toList());
+					.toList();
 	
 			loggedAndExpect(given().body(dtList))
 					.body("globalErrors", Matchers.contains("Name is mandatory"))

@@ -21,7 +21,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -75,7 +74,7 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 		return processDefinitionStorePluginsByProcessType.values()
 				.stream()
 				.flatMap(processDefinitionStorePlugin -> processDefinitionStorePlugin.getAllProcessDefinitions().stream())
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/** {@inheritDoc} */

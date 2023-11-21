@@ -20,7 +20,6 @@ package io.vertigo.vega.impl.webservice;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -96,7 +95,7 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 		final List<WebServiceHandlerPlugin> sortedWebServiceHandlerPlugins = restHandlerPlugins
 				.stream()
 				.sorted(Comparator.comparingInt(WebServiceHandlerPlugin::getStackIndex))
-				.collect(Collectors.toList());
+				.toList();
 		//-----
 		Assertion.check().isTrue(sortedWebServiceHandlerPlugins.get(sortedWebServiceHandlerPlugins.size() - 1) instanceof RestfulServiceWebServiceHandlerPlugin,
 				"WebServiceHandlerPlugins must end with a RestfulServiceHandler in order to dispatch request to WebService, check your WebServiceHandlerPlugins in RestManagerImpl.\n{0}",

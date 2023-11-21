@@ -1,3 +1,20 @@
+/*
+ * vertigo - application development platform
+ *
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.vertigo.planning.agenda.services.fo.plugin;
 
 import java.time.Instant;
@@ -12,9 +29,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+
+import com.google.gson.Gson;
 
 import io.vertigo.commons.eventbus.EventBusSubscribed;
 import io.vertigo.commons.transaction.Transactional;
@@ -24,6 +44,7 @@ import io.vertigo.core.analytics.trace.Trace;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.lang.json.CoreJsonAdapters;
 import io.vertigo.core.node.config.discovery.NotDiscoverable;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.structure.model.DtList;
@@ -33,6 +54,7 @@ import io.vertigo.planning.agenda.dao.AgendaDAO;
 import io.vertigo.planning.agenda.dao.TrancheHoraireDAO;
 import io.vertigo.planning.agenda.domain.Agenda;
 import io.vertigo.planning.agenda.domain.CritereTrancheHoraire;
+import io.vertigo.planning.agenda.domain.PublicationRange;
 import io.vertigo.planning.agenda.domain.TrancheHoraire;
 import io.vertigo.planning.agenda.services.TrancheHoraireEvent;
 import io.vertigo.planning.agenda.services.TrancheHoraireEvent.HoraireImpacte;
@@ -41,6 +63,7 @@ import redis.clients.jedis.params.ScanParams;
 
 @NotDiscoverable
 public class Redis2FoConsultationPlanningPlugin extends DbFoConsultationPlanningPlugin {
+	private static final Gson V_CORE_GSON = CoreJsonAdapters.V_CORE_GSON;
 
 	private static final String SINGLE_JEDIS_NODE = "singleNode";
 	private static final int SYNCHRO_FREQUENCE_SECOND = 60;
@@ -48,6 +71,8 @@ public class Redis2FoConsultationPlanningPlugin extends DbFoConsultationPlanning
 
 	private static final int EXPIRATION_DELAY_DATE_PREMIERE_DISPO_SECONDE = 15;
 	private static final int EXPIRATION_DELAY_DATE_DERNIERE_PUBLI_SECONDE = 60;
+	private static final int EXPIRATION_DELAY_PRECEDENTE_PUBLI_SECONDE = 10 * 60; //10 min de cache pour les dates de publication
+	private static final int EXPIRATION_DELAY_PROCHAINE_PUBLI_SECONDE = 10 * 60; //10 min de cache pour les dates de publication
 	private static final long TTL_MINIMUM_TO_INCR_DISPO = 5;
 
 	private static final DateTimeFormatter FORMATTER_LOCAL_DATE = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -132,43 +157,66 @@ public class Redis2FoConsultationPlanningPlugin extends DbFoConsultationPlanning
 		final var premierJour = critereTrancheHoraire.getPremierJour();
 		// we make a hashcode of the list of ageId for the key, because here redis is a simple cache over the db
 		final var keyProchaineDispo = critereTrancheHoraire.getAgeIds().hashCode() + ":" + FORMATTER_LOCAL_DATE.format(premierJour) + ":prochaine-dispo";
-		try (var jedis = redisConnector.getClient(SINGLE_JEDIS_NODE)) {
-			final var prochaineDispo = jedis.get(keyProchaineDispo);
-			if (prochaineDispo == null) {
-				final var prochaineDispoDbOpt = super.getDateDePremiereDisponibilite(critereTrancheHoraire);
-				prochaineDispoDbOpt.ifPresentOrElse(prochaineDispoDb -> {
-					jedis.set(keyProchaineDispo, FORMATTER_LOCAL_DATE.format(prochaineDispoDb));
-				}, () -> {
-					jedis.set(keyProchaineDispo, "none");
-				});
-				jedis.expire(keyProchaineDispo, EXPIRATION_DELAY_DATE_PREMIERE_DISPO_SECONDE);
-				return prochaineDispoDbOpt;
-			} else if ("none".equals(prochaineDispo)) {
-				return Optional.empty();
-			}
-			return Optional.of(LocalDate.parse(prochaineDispo, FORMATTER_LOCAL_DATE));
-		}
+		return applyCache(keyProchaineDispo, EXPIRATION_DELAY_DATE_PREMIERE_DISPO_SECONDE,
+				critereTrancheHoraire, super::getDateDePremiereDisponibilite,
+				(date) -> FORMATTER_LOCAL_DATE.format(date),
+				(dateStr) -> LocalDate.parse(dateStr, FORMATTER_LOCAL_DATE));
 	}
 
 	@Trace(category = "redis", name = "getDateDeDernierePublication")
 	@Override
 	public Optional<LocalDate> getDateDeDernierePublication(final List<UID<Agenda>> agendaUids) {
 		final var keyDernierePublication = agendaUids.hashCode() + ":derniere-publication";
+		return applyCache(keyDernierePublication, EXPIRATION_DELAY_DATE_DERNIERE_PUBLI_SECONDE,
+				agendaUids, super::getDateDeDernierePublication,
+				(date) -> FORMATTER_LOCAL_DATE.format(date),
+				(dateStr) -> LocalDate.parse(dateStr, FORMATTER_LOCAL_DATE));
+	}
+
+	@Trace(category = "redis", name = "getPrecedentePublication")
+	@Override
+	public Optional<PublicationRange> getPrecedentePublication(final List<UID<Agenda>> agendaUids) {
+		final var keyPrecedentePublication = agendaUids.hashCode() + ":precedente-publication";
+		return applyCache(keyPrecedentePublication, EXPIRATION_DELAY_PRECEDENTE_PUBLI_SECONDE,
+				agendaUids, super::getPrecedentePublication,
+				(publicationRange) -> formatPublicationRange(publicationRange),
+				(publicationRangeStr) -> parsePublicationRange(publicationRangeStr));
+	}
+
+	@Trace(category = "redis", name = "getProchainePublication")
+	@Override
+	public Optional<PublicationRange> getProchainePublication(final List<UID<Agenda>> agendaUids) {
+		final var keyProchainePublication = agendaUids.hashCode() + ":prochaine-publication";
+		return applyCache(keyProchainePublication, EXPIRATION_DELAY_PROCHAINE_PUBLI_SECONDE,
+				agendaUids, super::getProchainePublication,
+				(publicationRange) -> formatPublicationRange(publicationRange),
+				(publicationRangeStr) -> parsePublicationRange(publicationRangeStr));
+	}
+
+	private String formatPublicationRange(final PublicationRange publicationRange) {
+		return V_CORE_GSON.toJson(publicationRange);
+	}
+
+	private PublicationRange parsePublicationRange(final String publicationRangeStr) {
+		return V_CORE_GSON.fromJson(publicationRangeStr, PublicationRange.class);
+	}
+
+	private <R, I> Optional<R> applyCache(final String cacheKey, final long cacheSecond, final I param, final Function<I, Optional<R>> function, final Function<R, String> toString, final Function<String, R> fromString) {
 		try (var jedis = redisConnector.getClient(SINGLE_JEDIS_NODE)) {
-			final var dateDernierePublication = jedis.get(keyDernierePublication);
-			if (dateDernierePublication == null) {
-				final var dernierePublicationDbOpt = super.getDateDeDernierePublication(agendaUids);
-				dernierePublicationDbOpt.ifPresentOrElse(prochaineDispoDb -> {
-					jedis.set(keyDernierePublication, FORMATTER_LOCAL_DATE.format(prochaineDispoDb));
+			final var cachedValue = jedis.get(cacheKey);
+			if (cachedValue == null) {
+				final var resultOpt = function.apply(param);
+				resultOpt.ifPresentOrElse(result -> {
+					jedis.set(cacheKey, toString.apply(result));
 				}, () -> {
-					jedis.set(keyDernierePublication, "none");
+					jedis.set(cacheKey, "none");
 				});
-				jedis.expire(keyDernierePublication, EXPIRATION_DELAY_DATE_DERNIERE_PUBLI_SECONDE);
-				return dernierePublicationDbOpt;
-			} else if ("none".equals(dateDernierePublication)) {
+				jedis.expire(cacheKey, cacheSecond);
+				return resultOpt;
+			} else if ("none".equals(cachedValue)) {
 				return Optional.empty();
 			}
-			return Optional.of(LocalDate.parse(dateDernierePublication, FORMATTER_LOCAL_DATE));
+			return Optional.of(fromString.apply(cachedValue));
 		}
 	}
 
@@ -178,13 +226,21 @@ public class Redis2FoConsultationPlanningPlugin extends DbFoConsultationPlanning
 		// pour l'instant on prend toutes les agendas
 		final var agendas = agendaDAO.findAll(Criterions.alwaysTrue(), DtListState.of(null));
 
-		for (final Agenda agenda : agendas) {
-			analyticsManager.trace("synchroagenda", agenda.getUID().urn(), tracer -> {
-				final var trancheHoraires = trancheHoraireDAO.synchroGetTrancheHorairesByAgeId(agenda.getAgeId(), Instant.now());
-				synchroDbRedisCreneauFromTrancheHoraire(Map.of(agenda.getAgeId(), trancheHoraires));
+		final Map<Long, String> agendaNames = new HashMap<>();
+		for (final var agenda : agendas) {
+			agendaNames.put(agenda.getAgeId(), agenda.getNom());
+		}
+		final List<TrancheHoraire> trancheHoraires = trancheHoraireDAO.synchroGetTrancheHorairesByAgeId(new ArrayList<>(agendaNames.keySet()), Instant.now());
+		final Map<UID<Agenda>, List<TrancheHoraire>> trancheHorairesPerAgenda = trancheHoraires.stream()
+				.collect(Collectors.groupingBy((trh) -> trh.agenda().getUID()));
+
+		for (final Entry<UID<Agenda>, List<TrancheHoraire>> trhPerAge : trancheHorairesPerAgenda.entrySet()) {
+			final String agendaUrn = trhPerAge.getKey().urn();
+			analyticsManager.trace("synchroagenda", agendaUrn, tracer -> {
+				synchroDbRedisCreneauFromTrancheHoraire(Map.of(trhPerAge.getKey().getId(), trhPerAge.getValue()));
 				tracer.incMeasure("nbDispos", 0) //pour init a 0
-						.setTag("agenda", agenda.getUID().urn())
-						.setMetadata("agendaName", agenda.getNom());
+						.setTag("agenda", agendaUrn)
+						.setMetadata("agendaName", agendaNames.get(trhPerAge.getKey().getId()));
 			});
 		}
 	}
@@ -258,8 +314,8 @@ public class Redis2FoConsultationPlanningPlugin extends DbFoConsultationPlanning
 		for (final Entry<Long, List<HoraireImpacte>> entry : horaireImpacteByDem.entrySet()) {
 			final List<LocalDate> listDates = entry.getValue().stream()
 					.map(HoraireImpacte::getLocalDate)
-					.collect(Collectors.toList());
-			final var trancheHoraires = trancheHoraireDAO.synchroGetTrancheHorairesByAgeIdAndDates(entry.getKey(), listDates, Instant.now());
+					.toList();
+			final var trancheHoraires = trancheHoraireDAO.synchroGetTrancheHorairesByAgeIdAndDates(List.of(entry.getKey()), listDates, Instant.now());
 			trancheHoraireByDemToResync.put(entry.getKey(), trancheHoraires);
 		}
 		synchroDbRedisCreneauFromTrancheHoraire(trancheHoraireByDemToResync);

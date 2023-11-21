@@ -55,6 +55,18 @@ public final class EhCacheKVStoreManagerTest extends AbstractKVStoreManagerTest 
 	}
 
 	@Override
+	protected boolean supportFindAll() {
+		return false;
+	}
+
+	@Override
+	@Disabled
+	@Test
+	public void testFindAll() {
+		//no findAll
+	}
+
+	@Override
 	@Disabled
 	@Test
 	public void testRemoveFail() {
@@ -66,5 +78,12 @@ public final class EhCacheKVStoreManagerTest extends AbstractKVStoreManagerTest 
 	@Test
 	public void testTimeToLive() {
 		//need daemon : get can return expired key @see https://github.com/facebook/rocksdb/wiki/Time-to-Live
+	}
+
+	@Override
+	@Disabled
+	@Test
+	public void testRollback() {
+		//not transactional
 	}
 }

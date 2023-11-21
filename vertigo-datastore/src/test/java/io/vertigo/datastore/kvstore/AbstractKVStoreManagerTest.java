@@ -17,6 +17,7 @@
  */
 package io.vertigo.datastore.kvstore;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -57,15 +58,26 @@ public abstract class AbstractKVStoreManagerTest {
 
 	protected static final KVCollection FLOWERS = new KVCollection("flowers");
 	protected static final int TTL = 10;
-	//protected final String storagePath = System.getProperty("user.home") + "/datastore-tmp";
-	protected final String storagePath = "d:\\datastore-tmp";
+	protected final String storagePath = System.getProperty("user.home") + "/datastore-tmp";
+	//protected final String storagePath = "d:\\datastore-tmp";
 
 	@BeforeEach
 	public final void setUp() throws Exception {
+		purgeDirectory(new File(storagePath));
 		node = new AutoCloseableNode(buildNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
 		doSetUp();
+	}
+
+	private void purgeDirectory(final File dir) {
+		dir.mkdirs();
+		for (final File file : dir.listFiles()) {
+			if (file.isDirectory()) {
+				purgeDirectory(file);
+			}
+			file.delete();
+		}
 	}
 
 	protected void doSetUp() throws Exception {

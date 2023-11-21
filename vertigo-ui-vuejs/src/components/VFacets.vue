@@ -27,8 +27,10 @@
                     <q-item-section >{{facetValueLabelByCode(facet.code, value.code)}}</q-item-section> 
                     <q-item-section side>{{value.count}}</q-item-section>
                 </q-item>
-                <q-btn flat v-if="facet.values.length > maxValues && !isFacetExpanded(facet.code)" @click="expandFacet(facet.code)">{{$q.lang.vui.facets.showAll}}</q-btn>
-                <q-btn flat v-if="facet.values.length > maxValues && isFacetExpanded(facet.code)" @click="reduceFacet(facet.code)">{{$q.lang.vui.facets.showLess}}</q-btn>
+                <q-item>
+                <q-btn flat v-if="facet.values.length > maxValues && !isFacetExpanded(facet.code)" @click="expandFacet(facet.code)" class="q-ma-none">{{$q.lang.vui.facets.showAll}}</q-btn>
+                <q-btn flat v-if="facet.values.length > maxValues && isFacetExpanded(facet.code)" @click="reduceFacet(facet.code)" class="q-ma-none">{{$q.lang.vui.facets.showLess}}</q-btn>
+                </q-item>
             </template>
         </q-list>
     </div>
@@ -59,7 +61,7 @@ export default {
   },
   methods: {
       addFacetValueTranslator(facetCode, facetValueCodeTranslator) {
-          this.codeToLabelTranslater[facetCode] = facetValueCodeTranslator;
+         this.codeToLabelTranslater[facetCode] = facetValueCodeTranslator;
       },
       facetByCode(facetCode) {
           return this.facets.filter(function (facet) {
@@ -79,7 +81,7 @@ export default {
       },
       facetValueLabelByCode(facetCode, facetValueCode) {
           if(this.codeToLabelTranslater[facetCode]) {
-                return this.codeToLabelTranslater[facetCode](facetCode, facetValueCode);
+            return this.codeToLabelTranslater[facetCode](facetCode, facetValueCode);
           }
           var facetValueByCode = this.facetValueByCode(facetCode,facetValueCode);
           return facetValueByCode?facetValueByCode.label:facetValueCode; //might be not found
@@ -122,7 +124,7 @@ export default {
               return obj; 
           });
       },
-      visibleFacets(facetCode, facetValues){
+      visibleFacets(facetCode, facetValues) {
           if (!this.isFacetExpanded(facetCode)) {
               return  facetValues.slice(0, this.maxValues);
           }

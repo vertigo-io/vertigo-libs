@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -110,7 +109,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 				.stream()
 				.map(BerkeleyCollectionConfig::getCollectionName)
 				.map(KVCollection::new)
-				.collect(Collectors.toList());
+				.toList();
 		//-----
 		dbFilePathTranslated = FileUtil.translatePath(dbFilePath);
 		minFreeDisk = "1000000000"; //Minimum free disk space to maintain, in bytes. If the limit is exceeded, write operations will be prohibited. Default to 1Go.
@@ -258,10 +257,10 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 	/** {@inheritDoc} */
 	@Override
 	public void put(final KVCollection collection, final String id, final Object element) {
-		//analyticsManager.trace(ANALYTICS_CATEGORY, "put", tracer -> {
-		//	tracer.setTag("collection", collection.name());
+		analyticsManager.trace(ANALYTICS_CATEGORY, "put", tracer -> {
+			tracer.setTag("collection", collection.name());
 		getDatabase(collection).put(id, element);
-		//});
+		});
 	}
 
 	/** {@inheritDoc} */

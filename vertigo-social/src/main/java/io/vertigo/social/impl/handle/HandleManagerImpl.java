@@ -78,7 +78,7 @@ public final class HandleManagerImpl implements HandleManager, Activeable {
 		dtDefinitionsWithHandle = Node.getNode().getDefinitionSpace().getAll(DtDefinition.class)
 				.stream()
 				.filter(dtDefinition -> dtDefinition.getHandleField().isPresent())
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
@@ -131,7 +131,7 @@ public final class HandleManagerImpl implements HandleManager, Activeable {
 		return dtDefinitionsWithHandle.stream()
 				.map(dtDefinition -> dtDefinition.id().shortName())
 				.map(StringUtil::first2LowerCase)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	@Override

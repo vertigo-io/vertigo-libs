@@ -29,6 +29,8 @@ import io.vertigo.datastore.filestore.model.FileInfoURI;
  */
 public final class UiFileInfo<F extends FileInfo> implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	private final FileInfoURI fileUri;//match quasar file api
 	private final String name;
 	private final String type;

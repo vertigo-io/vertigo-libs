@@ -60,7 +60,7 @@ import io.vertigo.datastore.kvstore.KVCollection;
  * @author pchretien, npiedeloup
  */
 public final class EhCacheKVStorePlugin implements KVStorePlugin, Activeable {
-	private static final String ANALYTICS_CATEGORY = "ehcache";
+	private static final String ANALYTICS_CATEGORY = "kvstore";
 	private final org.ehcache.CacheManager manager;
 	private final StatisticsService statisticsService;
 	private final Map<KVCollection, EhCacheCollectionConfig> collectionConfigs = new HashMap<>();

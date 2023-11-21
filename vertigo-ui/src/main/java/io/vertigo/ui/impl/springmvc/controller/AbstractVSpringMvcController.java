@@ -180,10 +180,10 @@ public abstract class AbstractVSpringMvcController {
 		// or group.id.project.controllers and we look in project/
 		Assertion.check().isTrue(path.contains(".controllers"), "Default naming only works if your package contains .controllers, it's not the case for the controller {0}", controller.getClass());
 		path = path.substring(path.lastIndexOf('.', path.indexOf(".controllers") - 1) + 1);
-		path = path.replaceAll("\\.controllers", "");
-		path = path.replaceAll("\\.", SLASH);
+		path = path.replace(".controllers", "");
+		path = path.replace(".", SLASH);
 		String simpleName = StringUtil.first2LowerCase(controller.getClass().getSimpleName());
-		simpleName = simpleName.replaceAll("Controller", "");
+		simpleName = simpleName.replace("Controller", "");
 		return path + SLASH + simpleName;
 	}
 

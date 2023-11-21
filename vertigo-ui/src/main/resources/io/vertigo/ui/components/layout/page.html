@@ -3,7 +3,7 @@
 	isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false}, 
 	isVuiSsr=${vuiSsr != null ? vuiSsr : false},
 	pendingAction=${model.vContext['componentStates'].addComponentState('pendingAction').addList('actionNames')},
-	myQuasarVersion=${quasarVersion?:'2.12.3'},myVertigoUiVersion=${vertigoUiVersion?:'4.0.0'}">
+	myQuasarVersion=${quasarVersion?:'2.13.0'},myVertigoUiVersion=${vertigoUiVersion?:'4.1.0'}">
 	<div th:if="${!isVuiSsr}" id="page">
 		<vu:content/>
 	</div>

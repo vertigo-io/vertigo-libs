@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 /**
  * database of items.
@@ -134,7 +133,7 @@ public final class ItemDataBase {
 	}
 
 	public List<Long> getAllIds() {
-		return items.stream().map(Item::getId).collect(Collectors.toList());
+		return items.stream().map(Item::getId).toList();
 	}
 
 	public List<Item> getItemsByManufacturers(final String... manufacturers) {
@@ -147,7 +146,7 @@ public final class ItemDataBase {
 	public List<Item> getItemsByManufacturer(final String manufacturer) {
 		return items.stream()
 				.filter(item -> item.getManufacturer().toLowerCase(Locale.FRENCH).equals(manufacturer.toLowerCase(Locale.FRENCH)))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public long before(final int year) {

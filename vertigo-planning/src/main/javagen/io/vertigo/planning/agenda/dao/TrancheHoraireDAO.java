@@ -1,3 +1,20 @@
+/*
+ * vertigo - application development platform
+ *
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.vertigo.planning.agenda.dao;
 
 import javax.inject.Inject;
@@ -144,7 +161,7 @@ public final class TrancheHoraireDAO extends DAO<TrancheHoraire, java.lang.Long>
 
 	/**
 	 * Execute la tache TkSynchroGetTrancheHorairesByAgeId.
-	 * @param ageId Long
+	 * @param ageIds List de Long
 	 * @param now Instant
 	 * @return DtList de TrancheHoraire trancheHoraires
 	*/
@@ -154,6 +171,7 @@ public final class TrancheHoraireDAO extends DAO<TrancheHoraire, java.lang.Long>
 			select * from (
             select 
                 trh.trh_id,
+                trh.age_id,
                 trh.date_locale,
                 trh.minutes_debut,
                 trh.minutes_fin,
@@ -161,7 +179,7 @@ public final class TrancheHoraireDAO extends DAO<TrancheHoraire, java.lang.Long>
                 sum( case when cre.rec_id is null then 1 else 0 end) as nb_guichet
                 from creneau cre
                 join tranche_horaire trh on cre.trh_id = trh.trh_id
-                where  trh.age_id = #ageId#
+                where trh.age_id in ( #ageIds.rownum# )     
                 AND trh.date_locale >= #now#::Date
                 AND trh.instant_publication <= #now#
                 group by trh.trh_id, trh.date_locale, trh.minutes_debut
@@ -170,9 +188,9 @@ public final class TrancheHoraireDAO extends DAO<TrancheHoraire, java.lang.Long>
          where dispo.nb_guichet > 0""",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
 	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtTrancheHoraire", name = "trancheHoraires")
-	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.planning.agenda.domain.TrancheHoraire> synchroGetTrancheHorairesByAgeId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "ageId", smartType = "STyPId") final Long ageId, @io.vertigo.datamodel.task.proxy.TaskInput(name = "now", smartType = "STyPInstant") final java.time.Instant now) {
+	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.planning.agenda.domain.TrancheHoraire> synchroGetTrancheHorairesByAgeId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "ageIds", smartType = "STyPId") final java.util.List<Long> ageIds, @io.vertigo.datamodel.task.proxy.TaskInput(name = "now", smartType = "STyPInstant") final java.time.Instant now) {
 		final Task task = createTaskBuilder("TkSynchroGetTrancheHorairesByAgeId")
-				.addValue("ageId", ageId)
+				.addValue("ageIds", ageIds)
 				.addValue("now", now)
 				.build();
 		return getTaskManager()
@@ -182,7 +200,7 @@ public final class TrancheHoraireDAO extends DAO<TrancheHoraire, java.lang.Long>
 
 	/**
 	 * Execute la tache TkSynchroGetTrancheHorairesByAgeIdAndDates.
-	 * @param ageId Long
+	 * @param ageIds List de Long
 	 * @param localDates List de LocalDate
 	 * @param now Instant
 	 * @return DtList de TrancheHoraire trancheHoraires
@@ -193,13 +211,14 @@ public final class TrancheHoraireDAO extends DAO<TrancheHoraire, java.lang.Long>
 			select * from (
             select 
                 trh.trh_id,
+                trh.age_id,
                 trh.date_locale,
                 trh.minutes_debut,
                 trh.instant_publication,
                 sum( case when cre.rec_id is null then 1 else 0 end) as nb_guichet
                 from creneau cre
                 join tranche_horaire trh on cre.trh_id = trh.trh_id
-                where trh.age_id = #ageId#
+                where trh.age_id in ( #ageIds.rownum# ) 
                 AND trh.date_locale in (#localDates.rownum#)
                 AND trh.instant_publication <= #now#
                 group by trh.trh_id, trh.date_locale, trh.minutes_debut
@@ -208,9 +227,9 @@ public final class TrancheHoraireDAO extends DAO<TrancheHoraire, java.lang.Long>
          where dispo.nb_guichet > 0""",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
 	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtTrancheHoraire", name = "trancheHoraires")
-	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.planning.agenda.domain.TrancheHoraire> synchroGetTrancheHorairesByAgeIdAndDates(@io.vertigo.datamodel.task.proxy.TaskInput(name = "ageId", smartType = "STyPId") final Long ageId, @io.vertigo.datamodel.task.proxy.TaskInput(name = "localDates", smartType = "STyPLocalDate") final java.util.List<java.time.LocalDate> localDates, @io.vertigo.datamodel.task.proxy.TaskInput(name = "now", smartType = "STyPInstant") final java.time.Instant now) {
+	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.planning.agenda.domain.TrancheHoraire> synchroGetTrancheHorairesByAgeIdAndDates(@io.vertigo.datamodel.task.proxy.TaskInput(name = "ageIds", smartType = "STyPId") final java.util.List<Long> ageIds, @io.vertigo.datamodel.task.proxy.TaskInput(name = "localDates", smartType = "STyPLocalDate") final java.util.List<java.time.LocalDate> localDates, @io.vertigo.datamodel.task.proxy.TaskInput(name = "now", smartType = "STyPInstant") final java.time.Instant now) {
 		final Task task = createTaskBuilder("TkSynchroGetTrancheHorairesByAgeIdAndDates")
-				.addValue("ageId", ageId)
+				.addValue("ageIds", ageIds)
 				.addValue("localDates", localDates)
 				.addValue("now", now)
 				.build();
