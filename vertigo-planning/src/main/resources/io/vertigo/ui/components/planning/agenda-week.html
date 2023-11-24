@@ -42,8 +42,8 @@
 		           locale="fr"
 		           hour24-format
 		           interval-minutes="30"
-		           interval-start="15"
-		           interval-count="22"
+		           :interval-start="intervalStart(vueData.plagesHoraire)"
+		           :interval-count="intervalCount(vueData.plagesHoraire)"
 		           interval-height="30"
 		           view="week"
 		           :weekdays="[1, 2, 3, 4, 5, 6]"
@@ -54,7 +54,7 @@
 		           @click-time="onCreatePlageHoraireDateTime($event)">
 		
 		               <template #day-body="{ scope: { timestamp, timeStartPos, timeDurationHeight } }">
-		                <template  v-for="(event, index) in getEvents(timestamp.date, vueData.plagesHoraire)" :key="event.eventId">
+		                <template v-for="(event, index) in getEvents(timestamp.date, vueData.plagesHoraire)" :key="event.eventId">
 		                  <div
 		                    class="my-event q-pa-sm row justify-center text-dark"
 		                    :class="badgeClasses(event, 'body')"

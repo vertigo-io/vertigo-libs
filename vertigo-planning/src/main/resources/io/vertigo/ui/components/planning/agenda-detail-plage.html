@@ -79,7 +79,8 @@
                       <q-item-section align="right">
                           <vu:include-data object="trancheHoraires" field="nbReserve" />
                           <vu:include-data object="trancheHoraires" field="nbGuichet" />
-                              {{ item.nbReserve?item.nbReserve:0 }} / {{ item.nbGuichet }} rendez-vous réservé(s)
+                          <span v-if="item.nbGuichet != 0">{{ item.nbReserve?item.nbReserve:0 }} / {{ item.nbGuichet }} rendez-vous réservé(s)</span>
+                          <span v-if="item.nbGuichet == 0">Créneau supprimé</span>
                       </q-item-section>                              
                       <q-item-section side>
                            <vu:include-data object="trancheHoraires" field="nbReserveNonPublie" />
@@ -90,10 +91,14 @@
                            <vu:include-data object="trancheHoraires" field="etatPublication" />
                            <vu:include-data object="trancheHoraires" field="nbReserve" />
                            <vu:include-data object="trancheHoraires" field="nbGuichet" />
-                           <q-icon name="ri-checkbox-blank-circle-line" v-if="item.nbReserve==0 || !item.nbReserve" :color="'trh-'+item.etatPublication" :title="item.etatPublication" ></q-icon>
-                           <q-icon name="ri-contrast-fill" v-if="item.nbReserve>0 && item.nbReserve<item.nbGuichet" :color="'trh-'+item.etatPublication" :title="item.etatPublication" ></q-icon>
-                           <q-icon name="ri-checkbox-blank-circle-fill" v-if="item.nbReserve==item.nbGuichet" :color="'trh-'+item.etatPublication" :title="item.etatPublication" ></q-icon>
-                           <q-icon name="ri-share-circle-fill" v-if="item.nbReserve>item.nbGuichet" :color="'trh-'+item.etatPublication" :title="item.etatPublication" ></q-icon>                                      
+                           <q-icon name="ri-checkbox-blank-circle-line" v-if="item.nbReserve == 0 || !item.nbReserve || item.nbGuichet == 0" :color="'trh-'+item.etatPublication" :title="item.etatPublication" ></q-icon>
+                           <q-icon name="ri-contrast-fill" v-if="item.nbReserve > 0 && item.nbReserve < item.nbGuichet" :color="'trh-'+item.etatPublication" :title="item.etatPublication" ></q-icon>
+                           <q-icon name="ri-checkbox-blank-circle-fill" v-if="item.nbReserve == item.nbGuichet && item.nbGuichet != 0" :color="'trh-'+item.etatPublication" :title="item.etatPublication" ></q-icon>
+                           <q-icon name="ri-share-circle-fill" v-if="item.nbReserve > item.nbGuichet && item.nbGuichet != 0" :color="'trh-'+item.etatPublication" :title="item.etatPublication" ></q-icon>                                      
+                      </q-item-section>
+                      <q-item-section side>
+                           <vu:include-data object="trancheHoraires" field="trhId" />
+                           <q-btn v-if="item.nbGuichet != 0" icon="ri-delete-bin-2-line" title="Supprimer" size="md" dense round flat color="black" @click.stop.prevent="deleteTrancheHoraire(item.trhId)" ></q-btn>
                       </q-item-section>
 		            </vu:list>
 	            </vu:block>

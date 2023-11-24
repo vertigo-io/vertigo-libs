@@ -92,7 +92,7 @@ VUiExtensions.methods.badgeStyles = function(event, type, timeStartPos, timeDura
         s.color = luminosity(event.bgcolor) > 0.5 ? 'black' : 'white'
     }
     if (timeStartPos) {
-        s.top = timeStartPos(event.eventCalendar.time) + 'px'
+        s.top = timeStartPos(event.eventCalendar.time,false) + 'px'
     }
     if (timeDurationHeight) {
         let endMinuteOfDay = event.eventEndCalendar.hour*60+event.eventEndCalendar.minute;
@@ -102,6 +102,24 @@ VUiExtensions.methods.badgeStyles = function(event, type, timeStartPos, timeDura
     //s['align-items'] = 'flex-start'
     return s
 };
+
+VUiExtensions.methods.intervalStart = function(allEvents) {
+    var minTime = (7*60+30); //7h30
+    for (let i = 0; i < allEvents.length; ++i) {
+        minTime = Math.min(minTime, allEvents[i].minutesDebut);
+    }
+    return minTime/30; //30min per interval 
+}
+
+VUiExtensions.methods.intervalCount = function(allEvents) {
+    var maxTime = (18*60+30); //18h30
+    for (let i = 0; i < allEvents.length; ++i) {
+        maxTime = Math.max(maxTime, allEvents[i].minutesFin);
+    }
+    var maxInterval = maxTime/30; //30min per interval 
+    var minInterval = this.intervalStart(allEvents); 
+    return maxInterval-minInterval; //18h30 - 7h30
+}
 
 VUiExtensions.methods.getEvents = function(dt, allEvents) {
     const currentDate = QCalendarDay.parsed(dt)

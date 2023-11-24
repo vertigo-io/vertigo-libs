@@ -32,7 +32,8 @@ create DtDefinition DtPublicationTrancheHoraireForm {
     field dateLocaleFin {domain: DoPLocalDate label: "Date de fin (incluse)" cardinality:"1"}
     
     field publicationDateLocale {domain: DoPLocalDate label: "Date de publication" cardinality:"1" }
-    field publicationMinutesDebut {domain: DoPHeureMinute label: "Heure de publication" cardinality:"1" }    
+    field publicationMinutesDebut {domain: DoPHeureMinute label: "Heure de publication" cardinality:"1" }  
+    field publicationZonCd {domain: DoPCode label: "Fuseau horaire publication" cardinality:"1" }
 }
 
 create DtDefinition DtDuplicationSemaineForm {

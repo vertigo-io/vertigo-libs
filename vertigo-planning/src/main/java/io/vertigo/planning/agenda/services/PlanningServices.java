@@ -137,9 +137,9 @@ public class PlanningServices implements Component {
 			uiErrorBuilder.addError(creationPlageHoraireForm, CreationPlageHoraireFormFields.minutesDebut,
 					LocaleMessageText.of("La plage horaire doit débuter au plus tôt à 07:30"));
 		}
-		if (creationPlageHoraireForm.getMinutesFin() > 18 * 60 + 30) {
-			uiErrorBuilder.addError(creationPlageHoraireForm, CreationPlageHoraireFormFields.minutesDebut,
-					LocaleMessageText.of("La plage horaire doit finir au plus tard à 18:30"));
+		if (creationPlageHoraireForm.getMinutesFin() > 21 * 60) {
+			uiErrorBuilder.addError(creationPlageHoraireForm, CreationPlageHoraireFormFields.minutesFin,
+					LocaleMessageText.of("La plage horaire doit finir au plus tard à 21:00"));
 		}
 
 		final var dureePlageMinute = creationPlageHoraireForm.getMinutesFin() - creationPlageHoraireForm.getMinutesDebut();
@@ -546,8 +546,12 @@ public class PlanningServices implements Component {
 			final var localTime = LocalTime.ofSecondOfDay(publicationTrancheHoraireForm.getPublicationMinutesDebut() * 60l);
 			final var publishLocalDateTime = LocalDateTime.of(publicationTrancheHoraireForm.getPublicationDateLocale(), localTime);
 
-			//on suppose l'heure exprimée à paris
-			datePublication = publishLocalDateTime.atZone(ZoneId.of("Europe/Paris")).toInstant();
+			//on suppose l'heure exprimée à paris par défaut
+			String zonCd = "Europe/Paris";
+			if (publicationTrancheHoraireForm.getPublicationZonCd() != null) {
+				zonCd = publicationTrancheHoraireForm.getPublicationZonCd();
+			}
+			datePublication = publishLocalDateTime.atZone(ZoneId.of(zonCd)).toInstant();
 		}
 		uiErrorBuilder.throwUserExceptionIfErrors();
 		/*****/
