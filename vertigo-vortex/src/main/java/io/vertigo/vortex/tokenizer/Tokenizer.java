@@ -136,18 +136,22 @@ public final class Tokenizer {
 		this.tokenTypes = tokenTypes;
 	}
 
-	public List<Token> tokenize(String src) {
+	public List<Token> tokenize(final String src) {
 		final List<Token> tokens = new ArrayList<>();
-		while (!src.equals("")) {
+		int position = 0;
+		while (position < src.length()) {
 			boolean match = false;
 			for (TokenType tokenType : tokenTypes) {
 				Matcher matcher = tokenType.pattern.matcher(src);
-				if (matcher.find()) {
-					match = true;
-					String tok = matcher.group();
-					src = matcher.replaceFirst("");
-					tokens.add(new Token(tokenType, tok));
-					break;
+				if (matcher.find(position)) {
+					if (matcher.start() == position) {
+						match = true;
+						String tok = matcher.group();
+						position = matcher.end();
+						//					src = matcher.replaceFirst("");
+						tokens.add(new Token(tokenType, tok));
+						break;
+					}
 				}
 			}
 			if (!match)

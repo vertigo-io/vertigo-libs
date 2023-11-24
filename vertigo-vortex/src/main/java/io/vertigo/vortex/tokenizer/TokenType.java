@@ -44,7 +44,7 @@ public enum TokenType {
 			"[A-Z][a-zA-Z0-9]*", //regex
 			"an identifier must be like this 'MySpace' or 'MySpace99'  > "),
 	string(
-			"\"(\\\\|\\\"|[^\\\"])*\"", //regex >>  \" or \\ OR any char except (" or \)  
+			"\"(\\\\\\\\|\\\\\\\"|[^\\\"])*\"", //regex >>  \" or \\ OR any char except (" or \)  
 			"a string must be escaped > "),
 	integer(
 			"[\\-]?\\d+", //regex
@@ -74,7 +74,7 @@ public enum TokenType {
 				.isNotNull(regex)
 				.isNotBlank(error);
 		//---
-		this.pattern = Pattern.compile("^(" + regex + ")");
+		this.pattern = Pattern.compile(regex);
 		this.error = error;
 	}
 

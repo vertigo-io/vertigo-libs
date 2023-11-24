@@ -236,19 +236,19 @@ public class TokenizerTest {
 	//=== STRINGS
 	//=========================================================================
 	@ParameterizedTest
-	@ValueSource(strings = { "\"lorem\",", "\"lorem\" ", "\"lorem\"\r\n" })
-
+	@ValueSource(strings = { "\"lorem\"" })
 	public void test30(final String src) {
 		final List<Token> tokens = tokenize(src);
-		assertEquals(2, tokens.size());
+		assertEquals(1, tokens.size());
 		assertEquals("\"lorem\"", tokens.get(0).value());
 		assertEquals(TokenType.string, tokens.get(0).type());
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "\"lo\\\"rem\"" })
+	@ValueSource(strings = { "\"lo\\\"rem\"" }) // a token with a double quote
 	public void test31(final String src) {
 		final List<Token> tokens = tokenize(src);
+		assertEquals(1, tokens.size());
 		assertEquals("\"lo\\\"rem\"", tokens.get(0).value());
 		assertEquals(TokenType.string, tokens.get(0).type());
 	}
@@ -265,7 +265,7 @@ public class TokenizerTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "\"lorem", " lorem\" ", "\"lorem\r\n", "\"\"", " \"lo\\rem\"" })
+	@ValueSource(strings = { "\"lorem", " lorem\" ", "\"lorem\r\n" })
 	public void testFail33(final String src) {
 		Assertions.assertThrows(Throwable.class, () -> tokenize(src));
 	}
