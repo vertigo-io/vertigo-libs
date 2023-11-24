@@ -22,20 +22,13 @@ import java.util.regex.Pattern;
 import io.vertigo.core.lang.Assertion;
 
 public enum TokenType {
-	blank(
+	blanks(
 			"(\\s|\\n|\\r)+", //regex
 			"only blank"),
-	// ---comments---
+
 	comment(
 			"#.*", //regex
 			"this comment is not allowed > "),
-
-	word(
-			"[a-zA-Z][a-zA-Z0-9_\\-\\.]*", //regex
-			"a word start with letters and contains only letters, digits or '-', '_', '.'  > "),
-	//	command,
-	//	keyword
-	//	identifier,
 
 	//	//---separators---
 	bracket(
@@ -47,15 +40,23 @@ public enum TokenType {
 			"this punctuation is not allowed > "),
 	//
 	//	// ---literals---
-	//	string(
-	//			"\".+", //regex
-	//			"a string must no be empty > "),
+	identifier(
+			"[A-Z][a-zA-Z0-9]*", //regex
+			"an identifier must be like this 'MySpace' or 'MySpace99'  > "),
+	string(
+			"\"(\\\\|\\\"|[^\\\"])*\"", //regex >>  \" or \\ OR any char except (" or \)  
+			"a string must be escaped > "),
 	integer(
 			"[\\-]?\\d+", //regex
 			"an integer must contain only digits after an optional minus sign > "),
 	bool(
-			"true|false",
-			"a bool must be true or false > ");
+			"(true|false)[a-z\\-]?", // regex to accept true or false and exclude keywords beginning with true or false like trueliness
+			"a bool must be true or false > "),
+
+	// Keyword must be placed AFTER bool 
+	keyword(
+			"[a-z][a-z\\-]*[a-z]", //regex
+			"a keyword must be like this 'name' or 'first-name'  > ");
 
 	//	//---pre-processing
 	//	variable(
