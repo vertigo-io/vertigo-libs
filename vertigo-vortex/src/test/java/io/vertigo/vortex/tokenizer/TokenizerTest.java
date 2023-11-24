@@ -54,7 +54,7 @@ public class TokenizerTest {
 
 	private List<Token> tokenize(String src) {
 		List<Token> tokens = tokenizer.tokenize(src);
-		System.out.println(tokens);
+		System.out.println(tokens.stream().limit(10).toList());
 		return tokens;
 	}
 
