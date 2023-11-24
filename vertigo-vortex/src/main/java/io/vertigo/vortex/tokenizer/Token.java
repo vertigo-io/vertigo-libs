@@ -17,15 +17,10 @@
  */
 package io.vertigo.vortex.tokenizer;
 
-public record Token(TokenType type, String value) {
-	public Token
-
-	{
-		type.check(value);
-	}
+public record Token(TokenType type, String value, int start) {
 
 	@Override
 	public String toString() {
-		return type + " : " + value;
+		return type + "[" + start + "] : " + value;
 	}
 }

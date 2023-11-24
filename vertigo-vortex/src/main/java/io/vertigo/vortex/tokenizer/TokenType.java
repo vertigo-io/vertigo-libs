@@ -22,41 +22,26 @@ import java.util.regex.Pattern;
 import io.vertigo.core.lang.Assertion;
 
 public enum TokenType {
-	blanks(
-			"(\\s|\\n|\\r)+", //regex
-			"only blank"),
+	blanks("(\\s|\\n|\\r)+"),
 
-	comment(
-			"#.*", //regex
-			"this comment is not allowed > "),
+	comment("#.*"),
 
 	//	//---separators---
-	bracket(
-			"(\\{)|(\\})|(\\[)|(\\])|(\\()|(\\))|<|>", // regex {}[]()<>
-			"this bracket is not allowed > "),
+	bracket("(\\{)|(\\})|(\\[)|(\\])|(\\()|(\\))|<|>"), // regex {}[]()<>
 
-	punctuation(
-			":|;|,", //regex
-			"this punctuation is not allowed > "),
+	punctuation(":|;|,"),
 	//
 	//	// ---literals---
-	identifier(
-			"[A-Z][a-zA-Z0-9]*", //regex
-			"an identifier must be like this 'MySpace' or 'MySpace99'  > "),
-	string(
-			"\"(\\\\\\\\|\\\\\\\"|[^\\\"])*\"", //regex >>  \" or \\ OR any char except (" or \)  
-			"a string must be escaped > "),
-	integer(
-			"[\\-]?\\d+", //regex
-			"an integer must contain only digits after an optional minus sign > "),
-	bool(
-			"(true|false)[a-z\\-]?", // regex to accept true or false and exclude keywords beginning with true or false like trueliness
-			"a bool must be true or false > "),
+	identifier("[A-Z][a-zA-Z0-9]*"),
+
+	string("\"(\\\\\\\\|\\\\\\\"|[^\\\"])*\""), //regex >>  \" or \\ OR any char except (" or \)  
+
+	integer("[\\-]?\\d+"), //an integer must contain only digits after an optional minus sign
+
+	bool("(true|false)[a-z\\-]?"), // regex to accept true or false and exclude keywords beginning with true or false like trueliness
 
 	// Keyword must be placed AFTER bool 
-	keyword(
-			"[a-z][a-z\\-]*[a-z]", //regex
-			"a keyword must be like this 'name' or 'first-name'  > ");
+	keyword("[a-z][a-z\\-]*[a-z]"); //a keyword must be like this 'name' or 'first-name'  > ")
 
 	//	//---pre-processing
 	//	variable(
@@ -67,19 +52,11 @@ public enum TokenType {
 	//			"a directive begins with '/' and contains only lowercase latin letters > ");
 
 	final Pattern pattern;
-	final String error;
 
-	TokenType(String regex, String error) {
+	TokenType(String regex) {
 		Assertion.check()
-				.isNotNull(regex)
-				.isNotBlank(error);
+				.isNotNull(regex);
 		//---
 		this.pattern = Pattern.compile(regex);
-		this.error = error;
-	}
-
-	void check(String value) {
-		Assertion.check()
-				.isTrue(pattern.matcher(value).matches(), error + value);
 	}
 }

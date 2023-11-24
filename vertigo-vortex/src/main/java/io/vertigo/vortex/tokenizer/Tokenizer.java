@@ -144,12 +144,13 @@ public final class Tokenizer {
 			boolean match = false;
 			for (TokenType tokenType : tokenTypes) {
 				matcher = tokenType.pattern.matcher(src);
+				//we have to set the region 
 				matcher.region(pos, src.length());
 				if (matcher.lookingAt()) {
 					match = true;
 					String tok = matcher.group();
+					tokens.add(new Token(tokenType, tok, pos));
 					pos = matcher.end();
-					tokens.add(new Token(tokenType, tok));
 					break;
 				}
 			}
