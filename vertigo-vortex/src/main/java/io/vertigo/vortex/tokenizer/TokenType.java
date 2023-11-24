@@ -74,7 +74,7 @@ public enum TokenType {
 				.isNotNull(regex)
 				.isNotBlank(error);
 		//---
-		this.pattern = Pattern.compile("^(" + regex + ")");
+		this.pattern = Pattern.compile(regex);
 		this.error = error;
 	}
 

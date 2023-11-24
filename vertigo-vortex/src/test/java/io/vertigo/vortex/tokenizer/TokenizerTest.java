@@ -54,7 +54,10 @@ public class TokenizerTest {
 
 	private List<Token> tokenize(String src) {
 		List<Token> tokens = tokenizer.tokenize(src);
-		System.out.println(tokens.stream().limit(10).toList());
+		tokens.stream()
+				.filter(t -> t.type() != TokenType.blanks)
+				.limit(100)
+				.forEach(t -> System.out.println(t));
 		return tokens;
 	}
 
@@ -378,6 +381,6 @@ public class TokenizerTest {
 	@Test
 	public void test200() {
 		final var src = FileUtil.read(resourceManager.resolve("io/vertigo/vortex/tokenizer/data/src1.txt"));
-		assertEquals(80522, tokenize(src).size());
+		assertEquals(133984, tokenize(src).size());
 	}
 }

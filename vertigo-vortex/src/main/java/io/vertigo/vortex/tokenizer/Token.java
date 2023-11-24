@@ -18,12 +18,14 @@
 package io.vertigo.vortex.tokenizer;
 
 public record Token(TokenType type, String value) {
-	public Token {
+	public Token
+
+	{
 		type.check(value);
 	}
 
 	@Override
 	public String toString() {
-		return "{ type:" + type + ", " + "value:" + value + " }";
+		return type + " : " + value;
 	}
 }
