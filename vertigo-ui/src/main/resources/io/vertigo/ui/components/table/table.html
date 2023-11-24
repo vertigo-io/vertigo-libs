@@ -1,4 +1,4 @@
-<th:block th:fragment="table(list, componentId, selectable, rowKey, rowsPerPage, sortUrl, sortBy, descending, navOnRow, color, tableClass, autoColClass, title, subtitle, dontUseHeading, gridBreak ,top_right_slot, top_left_slot, header_slot, actions_slot, additional_content_slot, griditem_slot, contentTags, tr_attrs, item_attrs,  table_attrs)"
+<th:block th:fragment="table(list, componentId, selectable, rowKey, rowsPerPage, sortUrl, sortBy, descending, navOnRow, color, tableClass, autoColClass, title, v-title, subtitle, v-subtitle, dontUseHeading, gridBreak ,top_right_slot, top_left_slot, header_slot, actions_slot, additional_content_slot, griditem_slot, contentTags, tr_attrs, item_attrs, table_attrs)"
 	th:assert="${componentId} != null and !(${sortUrl} != null and ${sortBy} != null) and !(${descending} != null and ${sortBy} == null)" 
 	th:with="tableKey=${list}, rowIndex='props.rowIndex', listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}, myRowKey=${rowKey?:model.util.getIdField('__${list}__')},
 	 myRowsPerPage=${rowsPerPage?:10}, myAutoColClass=${autoColClass?:false}, isGrid=${gridBreak!=null?true:false},
@@ -22,8 +22,8 @@
 			    th:v-model:pagination="|componentStates.${componentId}.pagination|"
 			    th::sort-method="|createDefaultTableSort('${componentId}')|"
 			    th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
-			    th::grid="${isGrid?('$q.screen.lt.'+gridBreak):'false'}"
-			    th:title="${title?:''}"
+				th::grid="${isGrid?('$q.screen.lt.'+gridBreak):'false'}"
+				th:title="${vTitle==null?title?:'':''}" th::title="${vTitle?:''}"
 			    th:attr="__${table_attrs}__">
 		</th:block>
 		
@@ -39,41 +39,42 @@
 			    th:v-model:pagination="|componentStates.${componentId}.pagination|"
 			    th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
 			    th:@request="paginationAndSortHandler"
-			    th::grid="${isGrid?('$q.screen.lt.'+gridBreak):'false'}"
-			    th:title="${title?:''}"
+				th::grid="${isGrid?('$q.screen.lt.'+gridBreak):'false'}"
+				th:title="${vTitle==null?title?:'':''}" th::title="${vTitle?:''}"
 			    th:attr="__${table_attrs}__">
 		</th:block>		
 		<vu:content-slot name="header_slot"/>		  
 		<template #top-left="props" vu:slot="top_left_slot">
-			  <div class="column" th:if="${title!=null}" th:remove="${subtitle==null}? tag">
-                  <h1 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 1}"></h1>
-                  <h2 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 2}"></h2>
-                  <h3 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 3}"></h3>
-                  <h4 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 4}"></h4>
-                  <h5 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 5}"></h5>
-                  <h6 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 6}"></h6>
-                  <div class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${dontUseHeading == true}" />                        
-                  <div class="text-subtitle2" vu:text="${subtitle?:''}" th:if="${subtitle!=null}"/>
+			  <div class="column" th:if="${vTitle!=null || title!=null}" th:remove="${subtitle==null}? tag">
+			      <h1 class="text-h6 q-ma-none" th:if="${currentBlockLevel == 1}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h1>
+                  <h2 class="text-h6 q-ma-none" th:if="${currentBlockLevel == 2}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h2>
+                  <h3 class="text-h6 q-ma-none" th:if="${currentBlockLevel == 3}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h3>
+                  <h4 class="text-h6 q-ma-none" th:if="${currentBlockLevel == 4}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h4>
+                  <h5 class="text-h6 q-ma-none" th:if="${currentBlockLevel == 5}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h5>
+                  <h6 class="text-h6 q-ma-none" th:if="${currentBlockLevel == 6}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h6>
+                  <div class="text-h6 q-ma-none" th:if="${dontUseHeading == true}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></div>                        
+                  <div class="text-subtitle2" vu:text="${subtitle}" th:if="${subtitle!=null}"/>
+                  <div class="text-subtitle2" th:text="${'{{'+vSubtitle+'}}'}" th:if="${vSubtitle!=null}"/>
               </div>
 		</template>
 		<template #top-right="props" vu:slot="top_right_slot"/>
 		<template #header="props">
-            <q-tr :props="props">
-              <q-th v-for="col in props.cols" :key="col.name" :props="props" scope="col" 
-               :aria-sort="col.__thClass.includes('sorted') ? col.__thClass.includes('sort-desc')?'descending':'ascending' : null">
-                {{ col.label }}
-              </q-th>
-            </q-tr>
-        </template>
+		    <q-tr :props="props">
+	          <q-th v-for="col in props.cols" :key="col.name" :props="props" scope="col" 
+	           :aria-sort="col.__thClass.includes('sorted') ? col.__thClass.includes('sort-desc')?'descending':'ascending' : null">
+	            {{ col.label }}
+	          </q-th>
+	        </q-tr>
+	    </template>		
 		<template #body="props">
 	        <q-tr :props="props" th:attr="__${tr_attrs}__" >
 	          <q-td th:if="${mySelectable}" auto-width>
 	          <q-checkbox th:color="${color?:'primary'}" v-model="props.selected" ></q-checkbox>
 	        </q-td>
 	        <vu:content></vu:content>
-	        <vu:column name="action" th:label="#{table.table.actionCol}" sortable="false" align="right" th:if="${actions_slot != null}">
-	          <div class="row self-center justify-end col showButtonOnHover">						
-	            <vu:content-slot name="actions_slot" th:with="label=null"/>
+	        <vu:column name="action" th:label="#{table.table.actionCol}" sortable="false" align="right" auto-width th:if="${actions_slot != null}">
+	          <div class="row self-center justify-end col showButtonOnHover no-wrap" role="toolbar">						
+	            <vu:content-slot name="actions_slot" th:with="label=null, title=null, vTitle=null"/>
 	          </div>
 	        </vu:column>
 		    </q-tr>
@@ -91,8 +92,8 @@
 						</th:block>
 		       		</q-card-section>
 					<q-separator></q-separator>
-					<q-card-section>
-						<vu:content-slot name="actions_slot" th:with="label=null" />
+					<q-card-section role="toolbar">
+						<vu:content-slot name="actions_slot" th:with="label=null, title=null, vTitle=null" />
 					</q-card-section>
 		       </q-card>
 			</div>
@@ -102,7 +103,7 @@
 </th:block>
 
 
-<th:block th:fragment="table-modifiable(list, componentId, selectable, rowKey, navOnRow, color, tableClass, autoColClass, title, subtitle, dontUseHeading, top_right_slot, top_left_slot, header_slot, actions_slot, additional_content_slot, tr_attrs, table_attrs)"
+<th:block th:fragment="table-modifiable(list, componentId, selectable, rowKey, navOnRow, color, tableClass, autoColClass, title, v-title, subtitle, v-subtitle, dontUseHeading, top_right_slot, top_left_slot, header_slot, actions_slot, additional_content_slot, tr_attrs, table_attrs)"
     th:assert="${componentId} != null" 
     th:with="modifiableTable=true, rowIndex='props.rowIndex', tableKey=${list}, listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}, myRowKey=${rowKey?:model.util.getIdField('__${list}__')}, 
     myRowsPerPage=0, myAutoColClass=${autoColClass?:false},
@@ -121,19 +122,20 @@
                 th::pagination.sync="|componentStates.${componentId}.pagination|"
                 th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
                 hide-bottom 
-                th:title="${title?:''}"
+                th:title="${vTitle==null?title?:'':''}" th::title="${vTitle?:''}"
                 th:attr="__${table_attrs}__">
 		  <vu:content-slot name="header_slot"/>
 		  <template #top-left="props" vu:slot="top_left_slot">
-              <div class="column" th:if="${title!=null && subtitle!=null}" th:remove="${subtitle==null}? tag"}>
-                  <h1 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 1}"></h1>
-                  <h2 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 2}"></h2>
-                  <h3 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 3}"></h3>
-                  <h4 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 4}"></h4>
-                  <h5 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 5}"></h5>
-                  <h6 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 6}"></h6>
-                  <div class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${dontUseHeading == true}" />                        
+              <div class="column" th:if="${vTitle!=null || title!=null}" th:remove="${subtitle==null}? tag" th:with="headerTitle=${vTitle!=null?'{{'+vTitle+'}}' : title?:''}" >
+                  <h1 class="text-h6 q-ma-none" th:if="${currentBlockLevel == 1}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h1>
+                  <h2 class="text-h6 q-ma-none" th:if="${currentBlockLevel == 2}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h2>
+                  <h3 class="text-h6 q-ma-none" th:if="${currentBlockLevel == 3}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h3>
+                  <h4 class="text-h6 q-ma-none" th:if="${currentBlockLevel == 4}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h4>
+                  <h5 class="text-h6 q-ma-none" th:if="${currentBlockLevel == 5}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h5>
+                  <h6 class="text-h6 q-ma-none" th:if="${currentBlockLevel == 6}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h6>
+                  <div class="text-h6 q-ma-none" th:if="${dontUseHeading == true}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></div>                        
                   <div class="text-subtitle2" vu:text="${subtitle?:''}" th:if="${subtitle!=null}"/>
+                  <div class="text-subtitle2" th:text="${'{{'+vSubtitle+'}}'?:''}" th:if="${vSubtitle!=null}"/>
               </div>
           </template>
           <template #top-right="props" vu:slot="top_right_slot"/>
@@ -151,8 +153,8 @@
 	            </q-td>
 	            <vu:content></vu:content>
 	            <vu:column name="action" th:label="#{table.table.actionCol}" sortable="false" th:if="${actions_slot != null}">
-	                <div class="row self-center justify-end col showButtonOnHover">                     
-	                    <vu:content-slot name="actions_slot" th:with="label=null" />
+	                <div class="row self-center justify-end col showButtonOnHover no-wrap" role="toolbar">                     
+	                    <vu:content-slot name="actions_slot" th:with="label=null, title=null, vTitle=null" />
 	                </div>
 	            </vu:column>
 	          </q-tr>
