@@ -74,7 +74,7 @@ public enum TokenType {
 				.isNotNull(regex)
 				.isNotBlank(error);
 		//---
-		this.pattern = Pattern.compile(regex);
+		this.pattern = Pattern.compile("^(" + regex + ")");
 		this.error = error;
 	}
 
@@ -82,39 +82,4 @@ public enum TokenType {
 		Assertion.check()
 				.isTrue(pattern.matcher(value).matches(), error + value);
 	}
-
-	//	void checkAfterFirstCharacter(int index, char c) {
-	//		switch (this) {
-	//			case integer:
-	//				if (!Lexicon.isDigit(c)) {
-	//					throw buildException(index, "an integer must contain only digits");
-	//				}
-	//				break;
-	//			case variable:
-	//				if (!Lexicon.isLowerCaseLetter(c) && c != '/') {
-	//					throw buildException(index, "a variable contains only lowercase latin letters separated with '/' : " + c);
-	//				}
-	//				break;
-	//			//			case command:
-	//			//				if (!Lexicon.isLetter(c)) {
-	//			//					throw buildException(index, "a directive contains only latin letters : " + c);
-	//			//				}
-	//			//				break;
-	//			case word:
-	//				if (!Lexicon.isMiddleCharAcceptedinaWord(c)) {
-	//					throw buildException(index, "a word must contain only letters,digits and _ or -");
-	//				}
-	//				break;
-	//			case bool:
-	//			case bracket:
-	//			case punctuation:
-	//			case comment:
-	//			case string:
-	//			default:
-	//		}
-	//	}
-
-	//	private static RuntimeException buildException(int index, String msg) {
-	//		return new VUserException("Error at [" + index + "],  " + msg);
-	//	}
 }
