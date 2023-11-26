@@ -1,20 +1,3 @@
-/*
- * vertigo - application development platform
- *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.planning.agenda;
 
 import javax.inject.Inject;
@@ -219,11 +202,11 @@ public final class AgendaPAO implements StoreServices {
                 min(instant_Publication) as instant_Publication  
             from (select
                         plh.date_Locale as date_Locale,
-                        sum(((trh.instant_Publication is null)::int)) * plh.nb_Guichet as nb_Non_Publie,
-                        sum(COALESCE(((trh.instant_Publication > #now#)::int),0)) * plh.nb_Guichet as nb_Planifie,
-                        sum(COALESCE(((trh.instant_Publication <= #now#)::int),0)) * plh.nb_Guichet as nb_Publie,
+                        sum(((trh.instant_Publication is null)::int) * trh.nb_Guichet) as nb_Non_Publie,
+                        sum(COALESCE(((trh.instant_Publication > #now#)::int),0) * trh.nb_Guichet) as nb_Planifie,
+                        sum(COALESCE(((trh.instant_Publication <= #now#)::int),0) * trh.nb_Guichet) as nb_Publie,
                         sum(COALESCE(res.nb_Reserve,0)) as nb_Reserve,
-                        count(1) * plh.nb_Guichet as nb_Total,
+                        sum(trh.nb_Guichet) as nb_Total,
                         min(trh.instant_Publication) as instant_Publication              
                    from plage_horaire plh
                         join tranche_horaire trh on trh.plh_id = plh.plh_id
@@ -432,10 +415,10 @@ public final class AgendaPAO implements StoreServices {
                 plh.minutes_Debut as minutes_Debut,
                 plh.minutes_Fin as minutes_Fin,
                 plh.nb_Guichet as nb_Guichet,
-                sum(((trh.instant_Publication is null)::int)) * plh.nb_Guichet as nb_Non_Publie,
-                sum(COALESCE(((trh.instant_Publication > #now#)::int),0)) * plh.nb_Guichet as nb_Planifie,
-                sum(COALESCE(((trh.instant_Publication <= #now#)::int),0)) * plh.nb_Guichet as nb_Publie,
-                count(1) * plh.nb_Guichet as nb_Total,
+                sum(((trh.instant_Publication is null)::int) * trh.nb_Guichet) as nb_Non_Publie,
+                sum(COALESCE(((trh.instant_Publication > #now#)::int),0) * trh.nb_Guichet) as nb_Planifie,
+                sum(COALESCE(((trh.instant_Publication <= #now#)::int),0) * trh.nb_Guichet) as nb_Publie,
+                sum(trh.nb_Guichet) as nb_Total,
                 min(trh.instant_Publication) as instant_Publication,
                 sum(COALESCE(res.nb_Reserve_Non_Publie,0)) as nb_Reserve_Non_Publie,
                 sum(COALESCE(res.nb_Reserve,0)) as nb_Reserve                
@@ -485,10 +468,10 @@ public final class AgendaPAO implements StoreServices {
                 plh.minutes_Debut as minutes_Debut,
                 plh.minutes_Fin as minutes_Fin,
                 plh.nb_Guichet as nb_Guichet,
-                sum(((trh.instant_Publication is null)::int)) * plh.nb_Guichet as nb_Non_Publie,
-                sum(COALESCE(((trh.instant_Publication > #now#)::int),0)) * plh.nb_Guichet as nb_Planifie,
-                sum(COALESCE(((trh.instant_Publication <= #now#)::int),0)) * plh.nb_Guichet as nb_Publie,
-                count(1) * plh.nb_Guichet as nb_Total,
+                sum(((trh.instant_Publication is null)::int) * trh.nb_Guichet) as nb_Non_Publie,
+                sum(COALESCE(((trh.instant_Publication > #now#)::int),0) * trh.nb_Guichet) as nb_Planifie,
+                sum(COALESCE(((trh.instant_Publication <= #now#)::int),0) * trh.nb_Guichet) as nb_Publie,
+                sum(trh.nb_Guichet) as nb_Total,
                 min(trh.instant_Publication) as instant_Publication,
                 sum(COALESCE(res.nb_Reserve_Non_Publie,0)) as nb_Reserve_Non_Publie,
                 sum(COALESCE(res.nb_Reserve,0)) as nb_Reserve
