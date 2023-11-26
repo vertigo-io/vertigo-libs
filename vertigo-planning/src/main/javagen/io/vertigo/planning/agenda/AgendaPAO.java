@@ -426,7 +426,7 @@ public final class AgendaPAO implements StoreServices {
                 join tranche_horaire trh on trh.plh_id = plh.plh_id
                 left join (
                     SELECT trh.trh_Id as trh_Id,
-                          sum (case when trh.instant_Publication <= #now# then 0 else 1 end) as nb_Reserve_Non_Publie,
+                          sum (case when trh.instant_Publication <= #now# and trh.nb_Guichet > 0 then 0 else 1 end) as nb_Reserve_Non_Publie,
                           count(1) as nb_Reserve
                     FROM reservation_creneau res
                          join tranche_horaire trh on trh.age_id = res.age_id 
@@ -479,7 +479,7 @@ public final class AgendaPAO implements StoreServices {
                 join tranche_horaire trh on trh.plh_id = plh.plh_id
                 left join (
                     SELECT trh.trh_Id as trh_Id,
-                          sum (case when trh.instant_Publication <= #now# then 0 else 1 end) as nb_Reserve_Non_Publie,
+                          sum (case when trh.instant_Publication <= #now# and trh.nb_Guichet > 0 then 0 else 1 end) as nb_Reserve_Non_Publie,
                           count(1) as nb_Reserve
                     FROM reservation_creneau res
                          join tranche_horaire trh on trh.age_id = res.age_id 
@@ -601,7 +601,7 @@ public final class AgendaPAO implements StoreServices {
            from tranche_horaire trh
            left join (
                     SELECT trh.trh_Id as trh_Id,
-                          sum (case when trh.instant_Publication <= #now# then 0 else 1 end) as nb_Reserve_Non_Publie,
+                          sum (case when trh.instant_Publication <= #now# and trh.nb_Guichet > 0 then 0 else 1 end) as nb_Reserve_Non_Publie,
                           count(1) as nb_Reserve
                     FROM reservation_creneau res
                          join tranche_horaire trh on trh.age_id = res.age_id 
@@ -651,7 +651,7 @@ public final class AgendaPAO implements StoreServices {
            from tranche_horaire trh
            left join (
                     SELECT trh.trh_Id as trh_Id,
-                          sum (case when trh.instant_Publication <= #now# then 0 else 1 end) as nb_Reserve_Non_Publie,
+                          sum (case when trh.instant_Publication <= #now# and trh.nb_Guichet > 0 then 0 else 1 end) as nb_Reserve_Non_Publie,
                           count(1) as nb_Reserve
                     FROM reservation_creneau res
                          join tranche_horaire trh on trh.age_id = res.age_id 
@@ -707,6 +707,7 @@ public final class AgendaPAO implements StoreServices {
             SET instant_publication = #instantPublication#
         WHERE age_id = #ageId#
         AND trh.date_locale BETWEEN #startDate# AND #endDate#
+        AND trh.nb_Guichet > 0
         AND (trh.instant_Publication is null OR trh.instant_Publication > #now#);""",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineProc.class)
 	public void publishTrancheHoraireByAgeId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "ageId", smartType = "STyPId") final Long ageId, @io.vertigo.datamodel.task.proxy.TaskInput(name = "startDate", smartType = "STyPLocalDate") final java.time.LocalDate startDate, @io.vertigo.datamodel.task.proxy.TaskInput(name = "endDate", smartType = "STyPLocalDate") final java.time.LocalDate endDate, @io.vertigo.datamodel.task.proxy.TaskInput(name = "now", smartType = "STyPInstant") final java.time.Instant now, @io.vertigo.datamodel.task.proxy.TaskInput(name = "instantPublication", smartType = "STyPInstant") final java.time.Instant instantPublication) {
