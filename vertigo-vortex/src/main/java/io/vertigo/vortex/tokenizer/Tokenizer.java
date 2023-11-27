@@ -155,7 +155,7 @@ public final class Tokenizer {
 				}
 			}
 			if (!match)
-				throw new ParserException("Unexpected character in input(" + src.length() + "): " + src);
+				throw new ParserException("Unexpected character in input(" + pos + "): " + src.substring(pos));
 		}
 		return tokens;
 	}

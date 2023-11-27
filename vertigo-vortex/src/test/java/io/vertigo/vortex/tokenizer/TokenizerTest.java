@@ -381,6 +381,6 @@ public class TokenizerTest {
 	@Test
 	public void test200() {
 		final var src = FileUtil.read(resourceManager.resolve("io/vertigo/vortex/tokenizer/data/src1.txt"));
-		assertEquals(133984, tokenize(src).size());
+		assertEquals(140605, tokenize(src).size());
 	}
 }

@@ -1,6 +1,23 @@
 package "io.vertigo.studio.domain.security"
 
 
+
+create Task TkLoadBaseIndex {
+	className : "io.vertigo.basics.task.TaskEngineSelect",
+	request : "	select 	bas.BASE_ID, 
+						bas.NAME, 
+						bas.CODE, 
+						bas.CREATION_DATE, 
+						bas.TAGS,
+						bas.GEO_LOCATION,  
+						bastype.LABEL as BASE_TYPE_LABEL
+				from BASE bas
+				join BASE_TYPE bastype on bastype.base_type_id = bas.base_type_id
+				where BASE_ID in (#baseIds.rownum#);"
+	in 	baseIds 	{domain : DoId, 		cardinality: "*"} 
+	out	dtcIndex	{domain : DoDtBaseIndex cardinality: "*"} 
+}
+
 create DtDefinition DtRecord {
 	stereotype : "KeyConcept"
 	id	  dosId			{domain: DoId 		label: "Id"}
@@ -9900,4 +9917,987 @@ create DtDefinition DtRecord {
 	field utiIdOwner 	{domain: DoId 		label: "Owner" 			cardinality:"1" }
   
   	field etaCd 		{domain: DoString 	label: "State" 			cardinality:"1"}	
+}
+alter DtDefinition DtBaseType {
+	sortField : "label"
+ 	displayField : "label"
+}
+##*************************************************************************************************/
+##******************************** Domains ********************************************************/
+##*************************************************************************************************/
+
+create Domain DoId {
+	dataType : Long
+	storeType : "NUMERIC"
+}
+
+create Domain DoMultipleIds {
+	dataType : String
+    storeType : "TEXT"
+}
+
+
+
+create Domain DoInstant {
+	dataType : Instant
+	storeType : "TIMESTAMP"
+}
+
+create Domain DoLocaldate {
+	dataType : LocalDate
+	storeType : "DATE"
+}
+
+
+create Domain DoCurrency {
+	dataType : BigDecimal
+	unit : "$"
+	storeType: "NUMERIC(12,2)"
+}
+
+
+create Domain DoHealth {
+	dataType: Integer
+	storeType : "NUMERIC"
+}
+
+create Domain DoLabel {
+	dataType : String
+	storeType : "VARCHAR(100)"
+	indexType : "text_fr:sortable"
+}
+
+create Domain DoDescription {
+	dataType : String
+	storeType : "VARCHAR(350)"
+	indexType : "text_fr"
+}
+
+create Domain DoEmail {
+	dataType : String
+	storeType : "VARCHAR(150)"
+}
+
+create Domain DoUrl {
+	dataType : String
+	storeType : "TEXT"
+}
+
+create Domain DoCode {
+	dataType : String
+	storeType : "VARCHAR(100)"
+	indexType : "code:keyword"
+}
+
+
+create Domain DoPassword {
+	dataType : String
+	storeType : "VARCHAR(32)"
+}
+
+create Domain DoText {
+	dataType : String
+	storeType : "TEXT"
+}
+
+create Domain DoFilePath {
+	dataType : String
+	storeType : "VARCHAR(500)"
+}
+
+create Domain DoFileData {
+	dataType : DataStream
+	storeType : "bytea"
+}
+
+create Domain DoTags {
+	dataType : String
+	storeType : "TEXT"
+	indexType : "multiple_code:facetable"
+}
+
+create Domain DoYesNo {
+	dataType : Boolean
+	storeType : "bool"
+}
+
+
+create Domain DoSize {
+	dataType : Long
+	storeType : "NUMERIC"
+}
+
+create Domain DoCount {
+	dataType : Long
+	storeType : "NUMERIC"
+}
+
+create Domain DoGeoPoint {
+	dataType : ValueObject
+	type : "io.mars.support.smarttypes.GeoPoint"
+	storeType : "TEXT"
+}
+
+create Task TkSelectEquipmentType {  
+    className : "io.vertigo.basics.task.TaskEngineSelect"
+    request : "
+            select EQUIPMENT_TYPE_ID, LABEL, EQUIPMENT_CATEGORY_ID from EQUIPMENT_TYPE
+             "
+    out dtcEquipmentType     {domain : DoDtEquipmentType cardinality: "*" }
+}
+
+create Task TkGetBaseManager {  
+    className : "io.vertigo.basics.task.TaskEngineSelect"
+    request : "
+            select per.*
+            	from mission mis
+            	join person per on mis.person_id = per.person_id
+            	where mis.base_id = #baseId# and mis.role_id= 'MANAG'
+            	limit 1;
+             "
+    in 	baseId   {domain : DoId         cardinality: "1"}
+    out manager  {domain : DoDtPerson 	cardinality: "?"}
+}
+
+
+create Task TkGetMissionsDisplayByPersonId {  
+    className : "io.vertigo.basics.task.TaskEngineSelect"
+    request : "
+           select 
+            		mis.mission_id as MISSION_ID,
+            		rol.label as ROLE,
+            		bas.name as BASE_NAME,
+            		bus.name as BUSINESS_NAME
+            	from mission mis
+                left join role rol on mis.role_id = rol.role_id
+            	left join base bas on mis.base_id = bas.base_id
+				left join business bus on mis.business_id = bus.business_id
+            	where mis.person_id = #personId#;
+             "
+    in	personId     {domain : DoId         		cardinality: "1" }
+    out missions     {domain : DoDtMissionDisplay   cardinality: "*" }
+}
+create Task TkGetLastTicketsByBaseId {  
+    className : "io.vertigo.basics.task.TaskEngineSelect"
+    request : "
+            select 
+            	tic.*
+			from ticket tic
+			join equipment equ on equ.equipment_id = tic.equipment_id
+			where equ.base_id = #baseId#
+			order by tic.date_created desc
+			limit 50
+             "
+    in 	baseId 	{domain : DoId         	cardinality: "1" }
+    out tickets {domain : DoDtTicket    cardinality: "*" }
+}
+
+create Task TkGetLastTickets {  
+    className : "io.vertigo.basics.task.TaskEngineSelect"
+    request : "
+            select 
+            	tic.*
+			from ticket tic
+			order by tic.date_created desc
+			limit 50
+             "
+    out  tickets     {domain : DoDtTicket    cardinality: "*"}
+}
+
+create Task TkGetLastWorkOrders {  
+    className : "io.vertigo.basics.task.TaskEngineSelect"
+    request : "
+            select 
+            	wor.*
+			from work_order wor
+			order by wor.date_created desc
+			limit 20
+             "
+    out workOrders     {domain : DoDtWorkOrder    cardinality: "*"}
+}
+
+create DtDefinition DtOpendataSet {
+	id odsId 			{domain: DoId 			label:"Id"}
+	field code 			{domain: DoCode 		label: "Code" 					}
+	field title 		{domain: DoLabel 		label: "Title" 					}
+	field description 	{domain: DoDescription 	label: "Description" 			}
+	field endPointUrl 	{domain: DoUrl 			label:"Service Endpoint URL" 	}
+	field picturefileId {domain: DoId 			label:"Picture" 				}
+	field tags 			{domain: DoMultipleIds 	label: "Tags" 					}
+}
+
+create DtDefinition DtOpendataSetStatus {
+	stereotype: "StaticMasterData"
+	id opendataSetStatusId 		{domain: DoCode 		label:"Id"}
+	field label				 	{domain: DoLabel 		label:"Status Label" 	}
+}
+
+create Association AOpendataSetOpendataSetStatus {
+	fkFieldName : "opendataSetStatusId"
+    
+ 	dtDefinitionA : DtOpendataSet
+ 	type : "*>?"
+	dtDefinitionB : DtOpendataSetStatus
+			
+	labelB : "Opendata Set Status"
+}
+
+create DtDefinition DtTicket {
+	id ticketId {domain: DoId label:"Id"}
+	field code {domain: DoLabel label: "Number" }
+	field title {domain: DoLabel label: "Title" }
+	field description {domain: DoDescription label: "Description" }
+	field dateCreated {domain: DoLocaldate label: "Creation Date" }
+	field dateClosed {domain: DoLocaldate label: "Closing Date" }
+}
+
+create DtDefinition DtWorkOrder {
+	id woId {domain: DoId label:"Id"}
+	field code {domain: DoLabel label: "Code" }
+	field ticketCode {domain: DoLabel label: "Number" }
+	field name {domain: DoLabel label: "Name" }
+	field description {domain: DoDescription label: "Description" }
+	field dateCreated {domain: DoLocaldate label: "Creation Date" }
+	field dateClosed {domain: DoLocaldate label: "Closing Date" }
+	field dueDate {domain: DoLocaldate label: "Due Date" }	
+}
+
+create DtDefinition DtWorkOrderStatus {
+	stereotype: "StaticMasterData"
+	id workOrderStatusId {domain: DoCode label:"Id"}
+	field label {domain: DoLabel label:"Status Label" }
+}
+
+create DtDefinition DtTicketStatus {
+	stereotype: "StaticMasterData"
+	id ticketStatusId {domain: DoCode label:"Id"}
+	field label {domain: DoLabel label:"Status Label" }
+}
+
+
+
+create Association ATicketWorkOrder {
+	fkFieldName : "ticketId"
+    
+ 	dtDefinitionA : DtWorkOrder
+ 	type : "*>?"
+	dtDefinitionB : DtTicket
+			
+	labelB : "Ticket"
+}
+
+create Association ATicketTicketStatus {
+	fkFieldName : "ticketStatusId"
+    
+ 	dtDefinitionA : DtTicket
+ 	type : "*>?"
+	dtDefinitionB : DtTicketStatus
+			
+	labelB : "Ticket Status"
+}
+
+
+create Association AWorkOrderWorkOrderStatus {
+	fkFieldName : "workOrderStatusId"
+    
+ 	dtDefinitionA : DtWorkOrder
+ 	type : "*>?"
+	dtDefinitionB : DtWorkOrderStatus
+			
+	labelB : "Work Order Status"
+}
+
+create Association AEquipmentTicket {
+	fkFieldName : "equipmentId"
+    
+ 	dtDefinitionA : DtTicket
+ 	type : "*>?"
+	dtDefinitionB : DtEquipment
+			
+	labelB : "Equipment"
+}
+create Task TkGetBaseManager {  
+    className : "io.vertigo.basics.task.TaskEngineSelect"
+    request : "
+            select per.*
+            	from mission mis
+            	join person per on mis.person_id = per.person_id
+            	where mis.base_id = #baseId# and mis.role_id= 'MANAG'
+            	limit 1;
+             "
+    in 	baseId   {domain : DoId         cardinality: "1"}
+    out manager  {domain : DoDtPerson 	cardinality: "?"}
+}
+
+
+create Task TkGetMissionsDisplayByPersonId {  
+    className : "io.vertigo.basics.task.TaskEngineSelect"
+    request : "
+           select 
+            		mis.mission_id as MISSION_ID,
+            		rol.label as ROLE,
+            		bas.name as BASE_NAME,
+            		bus.name as BUSINESS_NAME
+            	from mission mis
+                left join role rol on mis.role_id = rol.role_id
+            	left join base bas on mis.base_id = bas.base_id
+				left join business bus on mis.business_id = bus.business_id
+            	where mis.person_id = #personId#;
+             "
+    in	personId     {domain : DoId         		cardinality: "1" }
+    out missions     {domain : DoDtMissionDisplay   cardinality: "*" }
+}
+create Task TkSelectBusinessId {  
+    className : "io.vertigo.basics.task.TaskEngineSelect"
+    request : "
+            select BUSINESS_ID from BUSINESS
+             "
+    out businessIdList     {domain : DoId         cardinality: "*" }
+}
+
+create Task TkSelectBusiness {  
+    className : "io.vertigo.basics.task.TaskEngineSelect"
+    request : "
+            select BUSINESS_ID, NAME from BUSINESS
+             "
+    out dtcBusiness     {domain : DoDtBusiness cardinality: "*" } 
+}
+
+
+create Task TkSelectBaseId {
+   className : "io.vertigo.basics.task.TaskEngineSelect"
+   request : "
+            select BASE_ID from BASE
+             "
+    out baseIdList     {domain : DoId         cardinality: "*"}
+
+}
+
+create Task TkSelectGeosectorId {
+   className : "io.vertigo.basics.task.TaskEngineSelect"
+   request : "
+            select GEOSECTOR_ID from GEOSECTOR
+             "
+    out geosectorIdList     {domain : DoId         cardinality: "*"}
+
+}
+
+create DtDefinition DtMediaFileInfo {
+	 id  filId 			{domain : DoId 			label : "Id" }
+	 field fileName 	{domain : DoLabel 		label : "Name" 				cardinality: "1" }
+	 field mimeType		{domain : DoLabel 		label : "MimeType" 			cardinality: "1" }
+ 	 field length 		{domain : DoSize 		label : "Size" 			    cardinality: "1" }
+	 field lastModified {domain : DoInstant		label : "Modification Date" cardinality: "1" }
+	 field filePath 	{domain : DoFilePath	label : "path" 				}	 
+	 field fileData 	{domain : DoFileData	label : "data" 				}	
+}
+
+
+create IndexDefinition IdxEquipment {  
+  keyConcept : DtEquipment
+  dtIndex : DtEquipmentIndex 
+  indexCopyTo allText { from: "name,code,description,tags,equipmentTypeName,equipmentCategoryName,baseName" }
+  loaderId : "EquipmentSearchLoader"
+} 
+
+create FacetDefinition FctEquipmentEquipmentTypeName {
+	dtDefinition:DtEquipmentIndex, fieldName:"equipmentTypeName", label:"Equipment Type"
+}
+
+create FacetDefinition FctEquipmentEquipmentCategoryName {
+	dtDefinition:DtEquipmentIndex, fieldName:"equipmentCategoryName", label:"Equipment Category"
+} 
+
+create FacetDefinition FctEquipmentPurchaseDate {
+	dtDefinition:DtEquipmentIndex, fieldName:"purchaseDate", label:"Purchase Date"
+	range r1 { filter:"purchaseDate:[01/01/2008 TO 01/01/2012]", label:"2008-2012"},
+	range r2 { filter:"purchaseDate:[01/01/2012 TO 01/01/2016]", label:"2012-2016"},
+	range r3 { filter:"purchaseDate:[01/01/2016 TO *]", label:"after 2016"}
+}
+
+create FacetDefinition FctEquipmentGeoDistance { 
+	dtDefinition:DtEquipmentIndex, fieldName:"geoLocation", label:"Location"
+	range r1 { filter:"geoLocation:#geoLocation#~5km", label:"< 5km"}, # #geoLocation# ref a field of criteria not index */
+	range r2 { filter:"geoLocation:#geoLocation#~10km", label:"< 10km"},
+	range r3 { filter:"geoLocation:#geoLocation#~20km", label:"< 20km"},
+	range r4 { filter:"geoLocation:#geoLocation#~50km", label:"< 50km"},
+	range r5 { filter:"geoLocation:#geoLocation#~100km", label:"< 100km"},
+	range r6 { filter:"geoLocation:#geoLocation#~200km", label:"< 200km"},
+	range r7 { filter:"geoLocation:#geoLocation#~500km", label:"< 500km"},
+	range r8 { filter:"geoLocation:[#geoLocation#~500km to #geoLocation#~0km]", label:"> 500km"}	
+}
+
+create FacetDefinition FctEquipmentGeoHash {
+	dtDefinition:DtEquipmentIndex, fieldName:"geoLocation", label:"Location"
+	params geohash-grid { value : "{\"field\" : \"geoLocation\", \"precision\" : #geoPrecision#}" }
+	params innerWriteTo { value : "writeVInt(#geoPrecision#);writeVInt(1000);writeVInt(-1)" }
+}
+
+create FacetedQueryDefinition QryEquipment {
+	keyConcept : DtEquipment
+	facets : [FctEquipmentEquipmentTypeName, FctEquipmentPurchaseDate, FctEquipmentEquipmentCategoryName ]
+	domainCriteria : DoLabel
+	listFilterBuilderClass : "io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder"  
+	listFilterBuilderQuery : "allText:#+query*#"
+}
+
+
+create FacetedQueryDefinition QryEquipmentGeo {
+	keyConcept : DtEquipment
+	facets : [FctEquipmentEquipmentTypeName, FctEquipmentPurchaseDate, FctEquipmentEquipmentCategoryName, FctEquipmentGeoHash]
+	domainCriteria : DoDtGeoSearchEquipmentCriteria
+	listFilterBuilderClass : "io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder"  
+	listFilterBuilderQuery : "allText:#+criteria*#"
+	geoSearchQuery : "geoLocation: [#geoUpperLeft# to #geoLowerRight#]"
+}
+
+create FacetedQueryDefinition QryEquipmentGeoDistance {
+	keyConcept : DtEquipment
+	facets : [FctEquipmentEquipmentTypeName, FctEquipmentPurchaseDate, FctEquipmentEquipmentCategoryName, FctEquipmentGeoDistance, FctEquipmentGeoHash]
+	domainCriteria : DoDtGeoSearchEquipmentCriteria
+	listFilterBuilderClass : "io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder"  
+	listFilterBuilderQuery : "allText:#+criteria*#"
+	geoSearchQuery : "geoLocation: [#geoUpperLeft# to #geoLowerRight#]"
+}
+
+create IndexDefinition IdxBase {  
+  keyConcept : DtBase
+  dtIndex : DtBaseIndex
+  loaderId : "BaseSearchLoader"
+}
+
+
+create FacetDefinition FctBaseBaseTypeLabel {
+	dtDefinition:DtBaseIndex, fieldName:"baseTypeLabel", label:"Base Type"
+} 
+
+create FacetDefinition FctBaseCreationDate {
+	dtDefinition:DtBaseIndex, fieldName:"creationDate", label:"Creation Date"
+	range r1 { filter:"creationDate:[01/01/2008 TO 01/01/2012]", label:"2008-2012"},
+	range r2 { filter:"creationDate:[01/01/2012 TO 01/01/2016]", label:"2012-2016"},
+	range r3 { filter:"creationDate:[01/01/2016 TO *]", label:"after 2016"}
+}
+
+create FacetedQueryDefinition QryBase {
+	keyConcept : DtBase
+	facets : [FctBaseBaseTypeLabel,  FctBaseCreationDate ]
+	domainCriteria : DoLabel
+	listFilterBuilderClass : "io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder"  
+	listFilterBuilderQuery : "baseId:#query# name:#query# code:#+query*#"
 }
+
+create DtDefinition DtBaseIndex {
+  field baseId {domain: DoId label: "id" cardinality: "1" }
+  field name {domain: DoLabel label: "Name" }
+  field code {domain: DoCode label: "Code" }
+  field creationDate {domain: DoLocaldate label: "Creation Date" }
+  field tags {domain: DoTags label: "Tags" }
+  field baseTypeLabel {domain: DoLabel label: "Type"  }
+  field geoLocation {domain: DoGeoPoint label:"Geographic Location" }
+}
+
+
+create DtDefinition DtEquipmentIndex {
+	field equipmentId {domain: DoId label:"Id" cardinality: "1"}
+	field name {domain: DoLabel label: "Name" }
+	field code {domain: DoCode label: "Code" }
+	field purchaseDate {domain: DoLocaldate label: "Date of purchase" }
+	field description {domain: DoDescription label: "Description" }
+	field tags {domain: DoTags label: "Tags" }
+	field equipmentTypeName {domain: DoLabel label:"Type" }
+	field equipmentCategoryName {domain: DoLabel label:"Category" }
+    field baseName {domain: DoLabel label: "Base Name" }
+	field geoLocation {domain: DoGeoPoint label:"Geographic Location" }
+}
+
+create DtDefinition DtGeoSearchEquipmentCriteria {
+	field criteria {domain: DoLabel label: "Criteria" }
+	field geoUpperLeft {domain: DoGeoPoint label: "geoUpperLeft" }
+	field geoLowerRight {domain: DoGeoPoint label: "geoLowerRight" }
+	field geoLocation {domain: DoGeoPoint label: "geoLocation" }
+    field geoPrecision {domain: DoSize label: "geoPrecision" }
+}
+
+alter DtDefinition DtEquipmentIndex {
+    computed allText {	domain : DoDescription, label:"ALL_TEXT", expression:"throw new io.vertigo.core.lang.VSystemException(\"Can't use index copyTo field\");"     }
+}
+
+
+create Task TkGetEquipmentsOverview {  
+    className : "io.vertigo.basics.task.TaskEngineSelect"
+    request : "
+            select 
+            	count(1) as count,
+            	bus.business_id as business_id,
+            	bus.name as business_name,
+            	bus.icon as business_icon,
+            	sum(case when equ.health_level >= 30 then 1 else 0 end) as ok_count,
+            	sum(case when equ.health_level < 30 then 1 else 0 end) as down_count
+			from equipment equ
+				join business bus on bus.business_id = equ.business_id 
+			where equ.base_id = #baseId#
+			group by business_name, bus.business_id
+             "
+    in 	baseId     {domain : DoId         			cardinality: "1"  }
+    out overview   {domain : DoDtEquipmentOverview  cardinality: "*"  }
+}
+
+create Task TkGetBasesSummary {  
+    className : "io.vertigo.basics.task.TaskEngineSelect"
+    request : "
+            select 
+				(select count(*) from base) as base_count,
+				(select avg(health_level) from base) as base_mean_health,
+				(select count(*) from ticket tic where tic.ticket_status_id = 'OPEN' or tic.ticket_status_id = 'ASSIGNED') as opened_tickets,
+				(select sum(case when health_level > 30 then 1.0 else 0.0 end) / count(*) * 100 from equipment) as online_equipment_percent;
+             "
+    out basesSummary     {domain : DoDtBasesSummary    cardinality: "1" }
+}
+
+create Task TkGetBaseOverview {  
+    className : "io.vertigo.basics.task.TaskEngineSelect"
+    request : "
+           select 
+				(select count(*) from equipment equ where equ.base_id = #baseId#) as equipment_count,
+				(select count(*) from ticket tic join equipment equ on equ.equipment_id = tic.equipment_id where equ.base_id = #baseId# and ( tic.ticket_status_id = 'OPEN' or tic.ticket_status_id = 'ASSIGNED')) as opened_tickets,
+				(select count(*) from work_order wor join ticket tic on tic.ticket_id = wor.ticket_id join equipment equ on equ.equipment_id = tic.equipment_id where equ.base_id = #baseId#  and wor.work_order_status_id = 'INPROGRESS') as work_orders_inprogress
+             "
+    in 	baseId     		{domain : DoId    				cardinality: "1"  }
+    out baseOverview    {domain : DoDtBaseOverview    	cardinality: "1"  }
+}
+
+
+create Task TkGetEquipmentMaintenanceOverview {  
+    className : "io.vertigo.basics.task.TaskEngineSelect"
+    request : "
+           select 
+				(select count(*) from ticket tic where tic.equipment_id = #equipmentId# and ( tic.ticket_status_id = 'OPEN' or tic.ticket_status_id = 'ASSIGNED')) as opened_tickets,
+				(select count(*) from work_order wor join ticket tic on tic.ticket_id = wor.ticket_id join equipment equ on equ.equipment_id = #equipmentId#  and wor.work_order_status_id = 'INPROGRESS') as work_orders_inprogress
+             "
+    in 	equipmentId     				{domain : DoId    							cardinality: "1" }
+    out equipmentMaintenanceOverview    {domain : DoDtEquipmentMaintenanceOverview  cardinality: "1" }
+}
+
+create DtDefinition DtBasesSummary {
+	field baseCount 				{domain: DoCount label: "Bases count" cardinality: "1"}
+	field baseMeanHealth 			{domain: DoHealth label: "Name" cardinality: "1"}
+	field openedTickets		 	{domain: DoCount label: "Health Level" cardinality: "1"}	
+	field onlineEquipmentPercent	{domain: DoHealth label: "Equipment Health" cardinality: "1"}
+}
+
+create DtDefinition DtBaseOverview {
+	field equipmentCount 			{domain: DoCount label: "Equipments count" cardinality: "1"}
+	field openedTickets		 	{domain: DoCount label: "Open tickets" cardinality: "1"}	
+	field workOrdersInprogress	{domain: DoCount label: "Work Orders in progress" cardinality: "1"}
+}
+
+create DtDefinition DtEquipmentMaintenanceOverview {
+	field openedTickets		 	{domain: DoCount label: "Open tickets" cardinality: "1"}	
+	field workOrdersInprogress	{domain: DoCount label: "Work Orders in progress" cardinality: "1"}
+}
+
+create DtDefinition DtEquipmentOverview {
+	field businessId  {domain: DoId label: "Business Id" }
+	field count  {domain: DoCount label: "Count by business" }
+	field businessName  {domain: DoLabel label: "Business" }
+	field businessIcon  {domain: DoLabel label: "Business" }
+	field okCount  {domain: DoCount label: "Ok count" }
+	field downCount  {domain: DoCount label: "Down count" }
+}
+
+create DtDefinition DtBaseIndex {
+  field baseId {domain: DoId label: "id" cardinality: "1" }
+  field name {domain: DoLabel label: "Name" }
+  field code {domain: DoCode label: "Code" }
+  field creationDate {domain: DoLocaldate label: "Creation Date" }
+  field tags {domain: DoTags label: "Tags" }
+  field baseTypeLabel {domain: DoLabel label: "Type"  }
+  field geoLocation {domain: DoGeoPoint label:"Geographic Location" }
+}
+
+create Task TkLoadBaseIndex {
+	className : "io.vertigo.basics.task.TaskEngineSelect",
+	request : "	select 	bas.BASE_ID, 
+						bas.NAME, 
+						bas.CODE, 
+						bas.CREATION_DATE, 
+						bas.TAGS,
+						bas.GEO_LOCATION,  
+						bastype.LABEL as BASE_TYPE_LABEL
+				from BASE bas
+				join BASE_TYPE bastype on bastype.base_type_id = bas.base_type_id
+				where BASE_ID in (#baseIds.rownum#);"
+	in 	baseIds 	{domain : DoId, 		cardinality: "*"} 
+	out	dtcIndex	{domain : DoDtBaseIndex cardinality: "*"} 
+}
+
+
+create Task TkLoadEquipmentIndex {
+	className : "io.vertigo.basics.task.TaskEngineSelect",
+	request : "	select 	equ.EQUIPMENT_ID,
+						equ.NAME, 
+						equ.CODE, 
+						equ.PURCHASE_DATE, 
+						equ.TAGS, 
+						equ.GEO_LOCATION,  
+						equipmentType.LABEL as EQUIPMENT_TYPE_NAME,
+						equipmentCategory.LABEL as EQUIPMENT_CATEGORY_NAME,
+                        bas.NAME as BASE_NAME
+				from EQUIPMENT equ
+                join BASE bas on bas.base_id = equ.base_id
+                join EQUIPMENT_TYPE equipmentType on equipmentType.equipment_type_id = equ.equipment_type_id
+				join EQUIPMENT_CATEGORY equipmentCategory on equipmentCategory.equipment_category_id = equipmentType.equipment_category_id
+				where EQUIPMENT_ID in (#equipmentIds.rownum#);"
+	in 	equipmentIds 	{domain : DoId, cardinality: "*"} 
+	out dtcIndex 		{domain : DoDtEquipmentIndex, cardinality: "*"} 
+}
+
+
+create DtDefinition DtSupplier {
+	stereotype: "KeyConcept"
+	id siren                                 	{domain: DoLabel 		label:"Siren" }
+	field statutDiffusion                      {domain: DoCode 		label:"Broadcast status" 		}
+	field dateCreation                         {domain: DoLocaldate 	label:"Creation date" 			}
+	field sexe                                  {domain: DoCode 		label:"Sex" 						}
+	field prenomUsuel                          {domain: DoLabel 		label:"Firstname" 				}
+	field trancheEffectifs                     {domain: DoCode 		label:"Workforce range" 		}
+	field dateDernierTraitement               {domain: DoInstant 	label:"Last treatment" 	}
+	field nombrePeriodes                       {domain: DoCount 		label:"Number of periods" 			}
+	field categorieEntreprise                  {domain: DoCode 		label:"Business category" 		}
+	field dateDebut                            {domain: DoLocaldate 	label:"Start date" 					}
+	field etatAdministratif                    {domain: DoCode 		label:"Administrative State" 			}
+	field nom                                   {domain: DoLabel 		label:"Name" 						}
+	field nomUsage                             {domain: DoLabel 		label:"Use name" 				}
+	field denomination                          {domain: DoLabel 		label:"Denomination" 				}
+	field categorieJuridique                   {domain: DoCode 		label:"Legal category" 		}
+	field activitePrincipale                   {domain: DoCode 		label:"Core business" 		}
+	field nomenclatureActivite				    {domain: DoCode 		label:"Business nomenclature" 	}
+	field nicSiege                             {domain: DoCount 		label:"Nic Siege" 					}
+	field caractereEmployeur                   {domain: DoYesNo 		label:"Employer" 		}
+	
+}
+
+create IndexDefinition IdxSupplier {  
+  keyConcept : DtSupplier
+  dtIndex : DtSupplier
+  loaderId : "SupplierSearchLoader"
+}
+
+
+create FacetDefinition FctSupplierTrancheEffectifs {
+	dtDefinition:DtSupplier, fieldName:"trancheEffectifs", label:"Workforce range"
+} 
+
+create FacetDefinition FctSupplierCategorieEntreprise {
+	dtDefinition:DtSupplier, fieldName:"categorieEntreprise", label:"Business category"
+} 
+
+create FacetDefinition FctSupplierCategorieJuridique {
+	dtDefinition:DtSupplier, fieldName:"categorieJuridique", label:"Legal category"
+} 
+
+create FacetDefinition FctSupplierActivitePrincipale {
+	dtDefinition:DtSupplier, fieldName:"activitePrincipale", label:"Core business"
+} 
+
+
+create FacetDefinition FctSupplierDateCreation {
+	dtDefinition:DtSupplier, fieldName:"dateCreation", label:"Creation date"
+	range r1 { filter:"dateCreation:[01/01/2000 TO 01/01/2005]", label:"2000-2005"},
+	range r2 { filter:"dateCreation:[01/01/2005 TO 01/01/2010]", label:"2005-2010"},
+	range r2 { filter:"dateCreation:[01/01/2010 TO 01/01/2015]", label:"2010-2015"},
+	range r3 { filter:"dateCreation:[01/01/2015 TO *]", label:"depuis 2015"}
+}
+
+create FacetedQueryDefinition QrySupplier {
+	keyConcept : DtSupplier
+	facets : [FctSupplierTrancheEffectifs, FctSupplierCategorieEntreprise, FctSupplierCategorieJuridique, FctSupplierActivitePrincipale, FctSupplierDateCreation ]
+	domainCriteria : DoLabel
+	listFilterBuilderClass : "io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder"  
+	listFilterBuilderQuery : "[nom,denomination]:#+query*#"
+}
+
+
+create DtDefinition DtPerson {
+	id personId {domain: DoId label:"Id"}
+	field firstName {domain: DoLabel label: "First Name" }
+	field lastName {domain: DoLabel label: "Last Name" }
+	field email {domain: DoEmail label:"E-mail" }
+	field picturefileId {domain: DoId label:"Picture" }
+	field picturefileIdTmp {domain: DoLabel label:"Picture"  persistent:"false"}
+	field tags {domain: DoMultipleIds label: "Tags" }
+	field dateHired {domain: DoLocaldate label: "Date hired" }
+	computed fullName {domain : DoLabel, label:"Full name" 
+        expression:"return getFirstName() + \" \" + getLastName();"
+    }
+}
+
+create DtDefinition DtGroups {
+	id groupId {domain: DoId label:"Id"}
+	field name {domain: DoLabel label: "Name" }
+}
+
+create DtDefinition DtMission {
+	id missionId {domain: DoId label:"Id"}
+}
+
+create Association AMissionRole {
+    fkFieldName : "roleId"    
+    dtDefinitionA : DtMission
+    type : "*>1"
+    dtDefinitionB : DtRole    
+    labelB : "Role"
+}
+
+create DtDefinition DtRole {
+    stereotype : "StaticMasterData"
+    id roleId {domain: DoCode label:"Id"}
+    field label {domain: DoLabel label:"Role Label" }  
+}
+
+create DtDefinition DtMissionDisplay {
+	field missionId {domain: DoId label:"Id" }
+	field role {domain: DoLabel label:"Role" }
+	field baseName {domain: DoLabel label:"Base" }
+	field businessName {domain: DoLabel label:"Business" }
+}
+
+create DtDefinition DtPersonInput {
+	field groups {domain: DoId label:"Groups" cardinality : "*"}
+}
+
+
+# Associations */
+
+create Association APersonMission {
+	fkFieldName : "personId"
+    
+ 	dtDefinitionA : DtMission
+ 	type : "*>?"
+	dtDefinitionB : DtPerson
+			
+	labelB : "Person"
+}
+
+create Association APersonGroups {
+	fkFieldName : "groupId"
+    
+ 	dtDefinitionA : DtPerson
+ 	type : "*>?"
+	dtDefinitionB : DtGroups
+	
+	labelB : "Group"
+}
+
+# Exemple : "Drone", "Rover" */
+create DtDefinition DtEquipmentType {
+	id equipmentTypeId {domain: DoId label:"Id"}
+	field label {domain: DoLabel label:"Equipment Type Label" }
+	field active {domain: DoYesNo label:"Equipment type is active" }
+}
+
+
+# Exemple : "Robotics Unit", "Transport Unit"... */
+create DtDefinition DtEquipmentCategory {
+	id equipmentCategoryId {domain: DoId label:"Id"}
+	field label {domain: DoLabel label:"Equipment Category Label" }
+	field active {domain: DoYesNo label:"Equipment category is active" }
+}
+
+
+
+create Association AEquipmentTypeEquipmentCategory {
+	fkFieldName : "equipmentCategoryId"
+    
+ 	dtDefinitionA : DtEquipmentType
+ 	type : "*>?"
+	dtDefinitionB : DtEquipmentCategory
+			
+	labelB : "Equipment Category"
+}
+
+create DtDefinition DtBase {
+	stereotype: "KeyConcept"
+	id baseId {domain: DoId label: "Id"}
+	field code {domain: DoCode label: "Code" cardinality:"1"}
+	field name {domain: DoLabel label: "Name" }
+	field healthLevel {domain: DoHealth label: "Health Level" }	
+	field creationDate {domain: DoLocaldate label: "Creation Date" }
+	field description {domain: DoDescription label: "Description" }
+	field geoLocation {domain: DoGeoPoint label:"Geographic Location" }
+	field assetsValue {domain: DoCurrency label:"Current base assets value" }
+	field rentingFee {domain: DoCurrency label: "Renting Fee" }
+	field tags {domain: DoMultipleIds label: "Tags" }
+	computed tagsAsList {domain: DoLabel label: "Tags" cardinality:"*" expression:"return io.vertigo.core.util.StringUtil.isBlank(tags) ? java.util.Collections.emptyList() : java.util.Arrays.asList(tags.split(\";\"));"}
+}
+
+
+create DtDefinition DtTag {
+	stereotype: "KeyConcept"
+	id tagId {domain: DoId label: "Id"}
+	field label {domain: DoLabel label: "Label" }
+}
+
+
+create DtDefinition DtBaseType {
+	stereotype : "StaticMasterData"
+	id baseTypeId {domain: DoCode label:"Id"}
+	field label {domain: DoLabel label:"Base Type Label" }	
+}
+
+create DtDefinition DtPicture {
+	id pictureId {domain: DoId label:"Id"}
+	field picturefileId {domain: DoId label:"Id" }
+}
+
+
+create DtDefinition DtGeosector {
+	id geosectorId {domain: DoId label:"Id"} 
+	field sectorLabel {domain: DoLabel label:"Sector Label" }
+}
+
+create DtDefinition DtEquipment {
+	stereotype: "KeyConcept"
+	id equipmentId {domain: DoId label:"Id"}
+	field name {domain: DoLabel label: "Name" }
+	field code {domain: DoCode label: "Code" }
+	field healthLevel {domain: DoHealth label: "Health Level" }	
+	field purchaseDate {domain: DoLocaldate label: "Date of purchase" }
+	field description {domain: DoDescription label: "Description" }
+	field tags {domain: DoMultipleIds label: "Tags" }
+	field geoLocation {domain: DoGeoPoint label:"Geographic Location" }
+	field rentingFee {domain: DoCurrency label: "Renting Fee" }
+	field equipmentValue {domain: DoCurrency label:"Current equipment value" }
+}
+
+
+
+# Exemple : "Long Range Antenna","High Res Camera", "All Terrain Tires" */
+create DtDefinition DtEquipmentFeature {
+	id equipmentFeatureId {domain: DoId label:"Id"}
+	field name {domain: DoLabel label: "Name" }
+}
+
+
+create DtDefinition DtBusiness {
+	id businessId {domain: DoId label:"Id"}
+	field name {domain: DoLabel label: "Name" }
+	field icon {domain: DoLabel label: "Icon" }
+}
+
+# Associations */
+
+create Association AMissionBase {
+	fkFieldName : "baseId"
+    
+ 	dtDefinitionA : DtMission
+ 	type : "*>?"
+	dtDefinitionB : DtBase
+	
+	labelB : "Base"
+}
+
+create Association ABaseBasetype {
+	fkFieldName : "baseTypeId"
+    
+ 	dtDefinitionA : DtBase
+ 	type : "*>1"
+	dtDefinitionB : DtBaseType
+	
+	labelB : "Base Type"
+}
+
+create Association ABaseGeosector {
+	fkFieldName : "geosectorId"
+    
+ 	dtDefinitionA : DtBase
+ 	type : "*>?"
+	dtDefinitionB : DtGeosector
+	
+	labelB : "Base Geosector"
+}
+
+create Association ABasePicture {
+	fkFieldName : "baseId"
+    
+ 	dtDefinitionA : DtPicture
+ 	type : "*>1"
+	dtDefinitionB : DtBase
+			
+	labelB : "Base"
+}
+
+create Association ABaseEquipment {
+	fkFieldName : "baseId"
+    
+ 	dtDefinitionA : DtEquipment
+ 	type : "*>1"
+	dtDefinitionB : DtBase
+			
+	labelB : "Base"
+}
+
+create Association AEquipmentEquipmentType {
+	fkFieldName : "equipmentTypeId"
+    
+ 	dtDefinitionA : DtEquipment
+ 	type : "*>1"
+	dtDefinitionB : DtEquipmentType
+			
+	labelB : "Equipment Type"
+}
+
+
+create Association AEquipmentGeosector {
+	fkFieldName : "geosectorId"
+    
+ 	dtDefinitionA : DtEquipment
+ 	type : "*>?"
+	dtDefinitionB : DtGeosector
+			
+	labelB : "Equipment Geosector"
+	
+}
+
+create Association AEquipmentEquipmentFeature {
+	fkFieldName : "equipmentId"
+    
+ 	dtDefinitionA : DtEquipmentFeature
+ 	type : "*>?"
+	dtDefinitionB : DtEquipment
+			
+	labelB : "Equipment"
+}
+
+create Association ABusinessMission {
+	fkFieldName : "businessId"
+    
+ 	dtDefinitionA : DtMission
+ 	type : "*>?"
+	dtDefinitionB : DtBusiness
+			
+	labelB : "Business"
+}
+
+create Association ABusinessEquipment {
+	fkFieldName : "businessId"
+    
+ 	dtDefinitionA : DtEquipment
+ 	type : "*>?"
+	dtDefinitionB : DtBusiness
+			
+	labelB : "Business"
+}
+
+# /*ghfdghdgfhdf */
+
+#	values : `{		"enabled" : 	{ "opendataSetStatusId" : "ENABLED", 	"label" : "Enabled" },
+#        			"disabled" : 	{ "opendataSetStatusId" : "DISABLED", 	"label" : "Disabled"}}`
+
+#	values : ` { 	"done" : 		{ "workOrderStatusId" : "DONE", 		"label" : "Done" 		},
+#        			"inProgress" : 	{ "workOrderStatusId" : "INPROGRESS",  	"label" : "In Progress" },
+#        			"failed" : 		{ "workOrderStatusId" : "FAILED", 		"label" : "Failed"		},
+#        			"pending" : 	{ "workOrderStatusId" : "PENDING", 		"label" : "Pending" 	}}`
+
+# geohash_grid
+	
