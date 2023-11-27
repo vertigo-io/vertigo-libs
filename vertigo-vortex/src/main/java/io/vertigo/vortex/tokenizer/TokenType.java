@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 import io.vertigo.core.lang.Assertion;
 
 public enum TokenType {
-	blanks("(\\s|\\n|\\r)+"),
+	blanks("(\\s)+"), // \s is the whitespace character: [ \t\n\x0B\f\r]
 
 	comment("#.*"),
 
@@ -38,10 +38,10 @@ public enum TokenType {
 
 	integer("[\\-]?\\d+"), //an integer must contain only digits after an optional minus sign
 
-	bool("(true|false)[a-z\\-]?"), // regex to accept true or false and exclude keywords beginning with true or false like trueliness
+	bool("(true|false)\\b"), // regex to accept true or false and exclude keywords beginning with true or false like trueliness
 
 	// Keyword must be placed AFTER bool 
-	keyword("[a-z][a-z\\-]*[a-z]"); //a keyword must be like this 'name' or 'first-name'  > ")
+	keyword("[a-z](\\-[a-z]|[a-z0-9])*"); //a keyword must be like this 'name' or 'first-name'  > ")
 
 	//	//---pre-processing
 	//	variable(

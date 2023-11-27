@@ -1,6 +1,7 @@
 package io.vertigo.vortex.tokenizer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -217,6 +218,15 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
 		assertEquals(TokenType.bool, tokens.get(0).type());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "trueliness", "true45" })
+	public void test21(final String src) {
+		final List<Token> tokens = tokenize(src);
+		System.out.println(tokens);
+		assertEquals(1, tokens.size());
+		assertNotEquals(TokenType.bool, tokens.get(0).type());
 	}
 
 	//
