@@ -1,20 +1,3 @@
-/*
- * vertigo - application development platform
- *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.planning.agenda;
 
 import javax.inject.Inject;
@@ -219,11 +202,11 @@ public final class AgendaPAO implements StoreServices {
                 min(instant_Publication) as instant_Publication  
             from (select
                         plh.date_Locale as date_Locale,
-                        sum(((trh.instant_Publication is null)::int)) * plh.nb_Guichet as nb_Non_Publie,
-                        sum(COALESCE(((trh.instant_Publication > #now#)::int),0)) * plh.nb_Guichet as nb_Planifie,
-                        sum(COALESCE(((trh.instant_Publication <= #now#)::int),0)) * plh.nb_Guichet as nb_Publie,
+                        sum(((trh.instant_Publication is null)::int) * trh.nb_Guichet) as nb_Non_Publie,
+                        sum(COALESCE(((trh.instant_Publication > #now#)::int),0) * trh.nb_Guichet) as nb_Planifie,
+                        sum(COALESCE(((trh.instant_Publication <= #now#)::int),0) * trh.nb_Guichet) as nb_Publie,
                         sum(COALESCE(res.nb_Reserve,0)) as nb_Reserve,
-                        count(1) * plh.nb_Guichet as nb_Total,
+                        sum(trh.nb_Guichet) as nb_Total,
                         min(trh.instant_Publication) as instant_Publication              
                    from plage_horaire plh
                         join tranche_horaire trh on trh.plh_id = plh.plh_id
@@ -432,10 +415,10 @@ public final class AgendaPAO implements StoreServices {
                 plh.minutes_Debut as minutes_Debut,
                 plh.minutes_Fin as minutes_Fin,
                 plh.nb_Guichet as nb_Guichet,
-                sum(((trh.instant_Publication is null)::int)) * plh.nb_Guichet as nb_Non_Publie,
-                sum(COALESCE(((trh.instant_Publication > #now#)::int),0)) * plh.nb_Guichet as nb_Planifie,
-                sum(COALESCE(((trh.instant_Publication <= #now#)::int),0)) * plh.nb_Guichet as nb_Publie,
-                count(1) * plh.nb_Guichet as nb_Total,
+                sum(((trh.instant_Publication is null)::int) * trh.nb_Guichet) as nb_Non_Publie,
+                sum(COALESCE(((trh.instant_Publication > #now#)::int),0) * trh.nb_Guichet) as nb_Planifie,
+                sum(COALESCE(((trh.instant_Publication <= #now#)::int),0) * trh.nb_Guichet) as nb_Publie,
+                sum(trh.nb_Guichet) as nb_Total,
                 min(trh.instant_Publication) as instant_Publication,
                 sum(COALESCE(res.nb_Reserve_Non_Publie,0)) as nb_Reserve_Non_Publie,
                 sum(COALESCE(res.nb_Reserve,0)) as nb_Reserve                
@@ -443,7 +426,7 @@ public final class AgendaPAO implements StoreServices {
                 join tranche_horaire trh on trh.plh_id = plh.plh_id
                 left join (
                     SELECT trh.trh_Id as trh_Id,
-                          sum (case when trh.instant_Publication <= #now# then 0 else 1 end) as nb_Reserve_Non_Publie,
+                          sum (case when trh.instant_Publication <= #now# and trh.nb_Guichet > 0 then 0 else 1 end) as nb_Reserve_Non_Publie,
                           count(1) as nb_Reserve
                     FROM reservation_creneau res
                          join tranche_horaire trh on trh.age_id = res.age_id 
@@ -485,10 +468,10 @@ public final class AgendaPAO implements StoreServices {
                 plh.minutes_Debut as minutes_Debut,
                 plh.minutes_Fin as minutes_Fin,
                 plh.nb_Guichet as nb_Guichet,
-                sum(((trh.instant_Publication is null)::int)) * plh.nb_Guichet as nb_Non_Publie,
-                sum(COALESCE(((trh.instant_Publication > #now#)::int),0)) * plh.nb_Guichet as nb_Planifie,
-                sum(COALESCE(((trh.instant_Publication <= #now#)::int),0)) * plh.nb_Guichet as nb_Publie,
-                count(1) * plh.nb_Guichet as nb_Total,
+                sum(((trh.instant_Publication is null)::int) * trh.nb_Guichet) as nb_Non_Publie,
+                sum(COALESCE(((trh.instant_Publication > #now#)::int),0) * trh.nb_Guichet) as nb_Planifie,
+                sum(COALESCE(((trh.instant_Publication <= #now#)::int),0) * trh.nb_Guichet) as nb_Publie,
+                sum(trh.nb_Guichet) as nb_Total,
                 min(trh.instant_Publication) as instant_Publication,
                 sum(COALESCE(res.nb_Reserve_Non_Publie,0)) as nb_Reserve_Non_Publie,
                 sum(COALESCE(res.nb_Reserve,0)) as nb_Reserve
@@ -496,7 +479,7 @@ public final class AgendaPAO implements StoreServices {
                 join tranche_horaire trh on trh.plh_id = plh.plh_id
                 left join (
                     SELECT trh.trh_Id as trh_Id,
-                          sum (case when trh.instant_Publication <= #now# then 0 else 1 end) as nb_Reserve_Non_Publie,
+                          sum (case when trh.instant_Publication <= #now# and trh.nb_Guichet > 0 then 0 else 1 end) as nb_Reserve_Non_Publie,
                           count(1) as nb_Reserve
                     FROM reservation_creneau res
                          join tranche_horaire trh on trh.age_id = res.age_id 
@@ -618,7 +601,7 @@ public final class AgendaPAO implements StoreServices {
            from tranche_horaire trh
            left join (
                     SELECT trh.trh_Id as trh_Id,
-                          sum (case when trh.instant_Publication <= #now# then 0 else 1 end) as nb_Reserve_Non_Publie,
+                          sum (case when trh.instant_Publication <= #now# and trh.nb_Guichet > 0 then 0 else 1 end) as nb_Reserve_Non_Publie,
                           count(1) as nb_Reserve
                     FROM reservation_creneau res
                          join tranche_horaire trh on trh.age_id = res.age_id 
@@ -668,7 +651,7 @@ public final class AgendaPAO implements StoreServices {
            from tranche_horaire trh
            left join (
                     SELECT trh.trh_Id as trh_Id,
-                          sum (case when trh.instant_Publication <= #now# then 0 else 1 end) as nb_Reserve_Non_Publie,
+                          sum (case when trh.instant_Publication <= #now# and trh.nb_Guichet > 0 then 0 else 1 end) as nb_Reserve_Non_Publie,
                           count(1) as nb_Reserve
                     FROM reservation_creneau res
                          join tranche_horaire trh on trh.age_id = res.age_id 
@@ -724,6 +707,7 @@ public final class AgendaPAO implements StoreServices {
             SET instant_publication = #instantPublication#
         WHERE age_id = #ageId#
         AND trh.date_locale BETWEEN #startDate# AND #endDate#
+        AND trh.nb_Guichet > 0
         AND (trh.instant_Publication is null OR trh.instant_Publication > #now#);""",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineProc.class)
 	public void publishTrancheHoraireByAgeId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "ageId", smartType = "STyPId") final Long ageId, @io.vertigo.datamodel.task.proxy.TaskInput(name = "startDate", smartType = "STyPLocalDate") final java.time.LocalDate startDate, @io.vertigo.datamodel.task.proxy.TaskInput(name = "endDate", smartType = "STyPLocalDate") final java.time.LocalDate endDate, @io.vertigo.datamodel.task.proxy.TaskInput(name = "now", smartType = "STyPInstant") final java.time.Instant now, @io.vertigo.datamodel.task.proxy.TaskInput(name = "instantPublication", smartType = "STyPInstant") final java.time.Instant instantPublication) {
