@@ -169,7 +169,7 @@ public class AbstractAgendaController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/_deletePlage")
-	public ViewContext deletePlage(final ViewContext viewContext, @ViewAttribute("agendaRange") final AgendaDisplayRange agenda, @RequestParam("plhId") final Long plhId) {
+	public ViewContext _deletePlage(final ViewContext viewContext, @ViewAttribute("agendaRange") final AgendaDisplayRange agenda, @RequestParam("plhId") final Long plhId) {
 		final UID<Agenda> ageUid = UID.of(Agenda.class, agenda.getAgeId());
 		planningServices.deletePlageHoraireCascade(ageUid, UID.of(PlageHoraire.class, plhId));
 
@@ -199,13 +199,13 @@ public class AbstractAgendaController extends AbstractVSpringMvcController {
 	}
 
 	private static PublicationTrancheHoraireForm preparePublicationTrancheHoraireForm(final AgendaDisplayRange agendaRange) {
-		//par defaut la semaine prochaine à 8h00
+		//par defaut non renseigné : il faut regarder l'historique pour proposer par exemple : la semaine prochaine à 8h00
 		final LocalDate today = LocalDate.now();
 		final var publicationTrancheHoraireForm = new PublicationTrancheHoraireForm();
 		publicationTrancheHoraireForm.setDateLocaleDebut(today.isAfter(agendaRange.getFirstDate()) ? today : agendaRange.getFirstDate()); //par défaut aujourd'hui->samedi
 		publicationTrancheHoraireForm.setDateLocaleFin(agendaRange.getLastDate());
-		publicationTrancheHoraireForm.setPublicationDateLocale(toPreviousMonday(LocalDate.now().plusWeeks(1)));
-		publicationTrancheHoraireForm.setPublicationMinutesDebut(8 * 60);
+		//publicationTrancheHoraireForm.setPublicationDateLocale(toPreviousMonday(LocalDate.now().plusWeeks(1)));
+		//publicationTrancheHoraireForm.setPublicationMinutesDebut(8 * 60);
 		publicationTrancheHoraireForm.setPublishNow(false); //par défaut on planifie
 		return publicationTrancheHoraireForm;
 	}
