@@ -80,9 +80,9 @@ public final class PublicationTrancheHoraireForm implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de publication'.
-	 * @return LocalDate publicationDateLocale <b>Obligatoire</b>
+	 * @return LocalDate publicationDateLocale
 	 */
-	@Field(smartType = "STyPLocalDate", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Date de publication")
+	@Field(smartType = "STyPLocalDate", label = "Date de publication")
 	public java.time.LocalDate getPublicationDateLocale() {
 		return publicationDateLocale;
 	}
@@ -90,7 +90,7 @@ public final class PublicationTrancheHoraireForm implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de publication'.
-	 * @param publicationDateLocale LocalDate <b>Obligatoire</b>
+	 * @param publicationDateLocale LocalDate
 	 */
 	public void setPublicationDateLocale(final java.time.LocalDate publicationDateLocale) {
 		this.publicationDateLocale = publicationDateLocale;
@@ -99,9 +99,9 @@ public final class PublicationTrancheHoraireForm implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Heure de publication'.
-	 * @return Integer publicationMinutesDebut <b>Obligatoire</b>
+	 * @return Integer publicationMinutesDebut
 	 */
-	@Field(smartType = "STyPHeureMinute", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Heure de publication")
+	@Field(smartType = "STyPHeureMinute", label = "Heure de publication")
 	public Integer getPublicationMinutesDebut() {
 		return publicationMinutesDebut;
 	}
@@ -109,7 +109,7 @@ public final class PublicationTrancheHoraireForm implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Heure de publication'.
-	 * @param publicationMinutesDebut Integer <b>Obligatoire</b>
+	 * @param publicationMinutesDebut Integer
 	 */
 	public void setPublicationMinutesDebut(final Integer publicationMinutesDebut) {
 		this.publicationMinutesDebut = publicationMinutesDebut;
@@ -118,9 +118,9 @@ public final class PublicationTrancheHoraireForm implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Fuseau horaire publication'.
-	 * @return String publicationZonCd <b>Obligatoire</b>
+	 * @return String publicationZonCd
 	 */
-	@Field(smartType = "STyPCode", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Fuseau horaire publication")
+	@Field(smartType = "STyPCode", label = "Fuseau horaire publication")
 	public String getPublicationZonCd() {
 		return publicationZonCd;
 	}
@@ -128,7 +128,7 @@ public final class PublicationTrancheHoraireForm implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Fuseau horaire publication'.
-	 * @param publicationZonCd String <b>Obligatoire</b>
+	 * @param publicationZonCd String
 	 */
 	public void setPublicationZonCd(final String publicationZonCd) {
 		this.publicationZonCd = publicationZonCd;
