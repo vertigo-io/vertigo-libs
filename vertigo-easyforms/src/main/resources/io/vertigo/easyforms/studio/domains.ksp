@@ -1,0 +1,59 @@
+package io.vertigo.easyforms
+    
+create Domain DoFId {
+	dataType : Long
+	storeType : "NUMERIC"
+}
+
+create Domain DoFLabel {
+	dataType : String
+	storeType : "VARCHAR(100)"
+}
+
+create Domain DoFNombre {
+	dataType : Integer
+	storeType : "NUMERIC"
+}
+
+create Domain DoFSort {
+    dataType : Integer
+    storeType : "NUMERIC"
+}
+
+create Domain DoFBooleen {
+	dataType : Boolean
+	storeType : "BOOLEAN"
+}
+
+create Domain DoFInstant {
+	dataType : Instant
+	storeType : "TIMESTAMP"
+}
+
+create Domain DoFLocalDate {
+	dataType : LocalDate
+	storeType : "DATE"
+}
+
+create Domain DoFCode {
+	dataType : String
+	storeType : "VARCHAR(100)"
+}
+
+create Domain DoFText {
+    dataType : String
+    storeType : "TEXT"
+}
+
+create Domain DoFFormulaire {
+    dataType : ValueObject
+    type : "io.vertigo.easyforms.smarttypes.Formulaire"
+    storeType : "JSONB"
+}
+
+create Domain DoFModeleFormulaire {
+    dataType : ValueObject
+    type : "io.vertigo.easyforms.metaformulaire.ModeleFormulaire"
+    storeType : "JSONB"
+}
+
