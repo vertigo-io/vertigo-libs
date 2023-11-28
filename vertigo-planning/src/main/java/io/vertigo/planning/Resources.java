@@ -28,6 +28,6 @@ public enum Resources implements LocaleMessageKey {
 	/**
 	 * Type de donnée erroné.
 	 */
-	RDVPREF_HOUR_MINUTE_NOT_FORMATTED,
+	PLANNING_HOUR_MINUTE_NOT_FORMATTED,
 
 }
