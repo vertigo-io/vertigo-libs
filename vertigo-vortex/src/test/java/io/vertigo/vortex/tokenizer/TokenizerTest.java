@@ -56,7 +56,7 @@ public class TokenizerTest {
 	private List<Token> tokenize(String src) {
 		List<Token> tokens = tokenizer.tokenize(src);
 		tokens.stream()
-				.filter(t -> t.type() != TokenType.blanks)
+				.filter(t -> t.type() != TokenType.spaces)
 				.limit(100)
 				.forEach(t -> System.out.println(t));
 		return tokens;
@@ -71,7 +71,7 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
 		assertEquals("lorem", tokens.get(0).value());
-		assertEquals(TokenType.keyword, tokens.get(0).type());
+		assertEquals(TokenType.word, tokens.get(0).type());
 	}
 
 	@ParameterizedTest
@@ -80,20 +80,20 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(5, tokens.size());
 		assertEquals("lorem", tokens.get(0).value());
-		assertEquals(TokenType.keyword, tokens.get(0).type());
+		assertEquals(TokenType.word, tokens.get(0).type());
 		assertEquals("ipsum", tokens.get(2).value());
-		assertEquals(TokenType.keyword, tokens.get(2).type());
+		assertEquals(TokenType.word, tokens.get(2).type());
 		assertEquals("est", tokens.get(4).value());
-		assertEquals(TokenType.keyword, tokens.get(4).type());
+		assertEquals(TokenType.word, tokens.get(4).type());
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "lorem-ipsum" })
+	@ValueSource(strings = { "lorem_ipsum" })
 	public void test01(final String src) {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
-		assertEquals("lorem-ipsum", tokens.get(0).value());
-		assertEquals(TokenType.keyword, tokens.get(0).type());
+		assertEquals("lorem_ipsum", tokens.get(0).value());
+		assertEquals(TokenType.word, tokens.get(0).type());
 	}
 
 	@ParameterizedTest
@@ -107,8 +107,8 @@ public class TokenizerTest {
 	public void test03(final String src) {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(2, tokens.size());
-		assertEquals(TokenType.keyword, tokens.get(0).type());
-		assertEquals(TokenType.punctuation, tokens.get(1).type());
+		assertEquals(TokenType.word, tokens.get(0).type());
+		assertEquals(TokenType.symbols, tokens.get(1).type());
 	}
 
 	//=========================================================================
@@ -120,7 +120,7 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
 		assertEquals("Lorem", tokens.get(0).value());
-		assertEquals(TokenType.identifier, tokens.get(0).type());
+		assertEquals(TokenType.word, tokens.get(0).type());
 	}
 
 	@ParameterizedTest
@@ -129,7 +129,7 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
 		assertEquals("LoremIpsum", tokens.get(0).value());
-		assertEquals(TokenType.identifier, tokens.get(0).type());
+		assertEquals(TokenType.word, tokens.get(0).type());
 	}
 
 	@ParameterizedTest
@@ -137,11 +137,11 @@ public class TokenizerTest {
 	public void test102(final String src) {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
-		assertEquals(TokenType.identifier, tokens.get(0).type());
+		assertEquals(TokenType.word, tokens.get(0).type());
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "Lorém", "Lorem_Ipsum", "Lorem-Ipsum" })
+	@ValueSource(strings = { "Lorém", "Lorem-Ipsum", "Lorem.Ipsum" })
 	public void testFail103(final String src) {
 		Assertions.assertThrows(VUserException.class, () -> tokenize(src));
 	}
@@ -180,7 +180,7 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(2, tokens.size());
 		assertEquals(TokenType.integer, tokens.get(0).type());
-		assertEquals(TokenType.punctuation, tokens.get(1).type());
+		assertEquals(TokenType.symbols, tokens.get(1).type());
 	}
 
 	@ParameterizedTest
@@ -254,7 +254,16 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
 		assertEquals("\"lorem\"", tokens.get(0).value());
-		assertEquals(TokenType.string, tokens.get(0).type());
+		assertEquals(TokenType.string_basic, tokens.get(0).type());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "'lorem'" })
+	public void test300(final String src) {
+		final List<Token> tokens = tokenize(src);
+		assertEquals(1, tokens.size());
+		assertEquals("'lorem'", tokens.get(0).value());
+		assertEquals(TokenType.string_strict, tokens.get(0).type());
 	}
 
 	@ParameterizedTest
@@ -263,7 +272,16 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
 		assertEquals("\"lo\\\"rem\"", tokens.get(0).value());
-		assertEquals(TokenType.string, tokens.get(0).type());
+		assertEquals(TokenType.string_basic, tokens.get(0).type());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "'lo\"rem'" }) // a token with a double quote
+	public void test310(final String src) {
+		final List<Token> tokens = tokenize(src);
+		assertEquals(1, tokens.size());
+		assertEquals("'lo\"rem'", tokens.get(0).value());
+		assertEquals(TokenType.string_strict, tokens.get(0).type());
 	}
 
 	@ParameterizedTest
@@ -272,9 +290,9 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(3, tokens.size());
 		assertEquals("\"lorem\"", tokens.get(0).value());
-		assertEquals(TokenType.string, tokens.get(0).type());
+		assertEquals(TokenType.string_basic, tokens.get(0).type());
 		assertEquals("\"IPSUM\"", tokens.get(2).value());
-		assertEquals(TokenType.string, tokens.get(2).type());
+		assertEquals(TokenType.string_basic, tokens.get(2).type());
 	}
 
 	@ParameterizedTest

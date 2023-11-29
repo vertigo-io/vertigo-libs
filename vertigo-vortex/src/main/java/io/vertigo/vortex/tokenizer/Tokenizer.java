@@ -14,8 +14,8 @@ import io.vertigo.core.lang.Assertion;
  * Quotes, brackets must be balanced
  * EOF is equivalent to an EOL 
  *  ____________________________________________________________________________________
- * Blanks :
- * 		- a sequence of one or more  : space, tab, new line
+ * Spaces :
+ * 		- a sequence of one or more  : whitespace, tab, new line
  *  ____________________________________________________________________________________
  * Comments :
  * 		- single line: begins with #, ends at the end of line -EOL- or at the end of file -EOF-
@@ -23,7 +23,7 @@ import io.vertigo.core.lang.Assertion;
  *  ____________________________________________________________________________________
  * Separators : 
  * 		- all symbolic separators are defined in only ONE character
- * 		Punctuation :
+ * 		Symbols :
  * 			- colon 		: ':'
  * 			- semi-colon 	: ';' 
  * 			- comma 		: ','
@@ -68,22 +68,25 @@ import io.vertigo.core.lang.Assertion;
  *			- see above
  *			
  * 		String :
- * 			- begins AND ends with a double quote : '"'
- * 			- The double quote character has to be escaped with a backslash '\'
- * 			- The backslash must be duplicated in a String
- * 			- Quotes must be balanced
- * 			- must be declared in a single line
-  * 
- * 			- ex : "toto" => toto
- * 			- ex : "to\\to" => to\to
- * 			- ex : "to\"to" => to"to
- *
- *		<TODO>
- * 			- begins AND ends with """ for multiline String with escape character
- * 			- ex : """select name 
+ * 			- basic 
+ * 				- begins AND ends with a double quote : '"'
+ * 				- The double quote character has to be escaped with a backslash '\'
+ * 			-	 The backslash must be duplicated in a String
+ * 				- Quotes must be balanced
+ * 				- must be declared in a single line
+  * 		- basic multi line 
+ * 				- begins AND ends with a triple double quote : '"""'
+  * * 			- ex : """select name 
  * 						from user
  *						where id = xx""" 
- * 		</TODO>			
+ * 			- strict 
+ * 				- begins AND ends with a simple quote : '
+ * 				- There is NO escaping
+ * 				- backslash and double quote can be used as usual 
+ * 				- must be declared in a single line
+ * 				- ex 'C:\Users\download' 
+ * 			- strict multi line 
+ * 				- begins AND ends with a triple simple quote : '''
  * 
  * 		Integer :
  * 			- begins AND ends with a digit [0-9] or '-' and a digit 
@@ -138,7 +141,7 @@ public final class Tokenizer {
 
 	public List<Token> tokenize(final String src) {
 		final List<Token> tokens = new ArrayList<>();
-		final Matcher matcher = TokenType.blanks.pattern.matcher(src);
+		final Matcher matcher = TokenType.spaces.pattern.matcher(src);
 		for (int pos = 0; pos < src.length();) {
 			boolean match = false;
 			for (TokenType tokenType : tokenTypes) {

@@ -22,26 +22,31 @@ import java.util.regex.Pattern;
 import io.vertigo.core.lang.Assertion;
 
 public enum TokenType {
-	blanks("(\\s)+"), // \s is the whitespace character: [ \t\n\x0B\f\r]
+	spaces("(\\s)+"), // \s is the whitespace character: [ \t\n\x0B\f\r]
 
 	comment("#.*"),
 
 	//	//---separators---
 	bracket("(\\{)|(\\})|(\\[)|(\\])|(\\()|(\\))|<|>"), // regex {}[]()<>
 
-	punctuation(":|;|,"),
-	//
-	//	// ---literals---
-	identifier("[A-Z][a-zA-Z0-9]*"),
+	symbols(":|;|,"),
 
-	string("\"(\\\\\\\\|\\\\\\\"|[^\\\"])*\""), //regex >>  \" or \\ OR any char except (" or \)  
+	//	// ---literals---
+	//	identifier("[A-Z][a-zA-Z0-9]*"),
+
+	//multi-line regex MUST BE PLACED BEFORE 
+	string_basic_multi_line("\"\"\"(\\\\\\\\|\\\\\\\"|[^\\\"])*\"\"\""), //regex >>  \" or \\ OR any char except (" or \)  
+	string_basic("\"(\\\\\\\\|\\\\\\\"|[^\r\n\\\"])*\""), //regex >>  \" or \\ OR any char except (" or \ or Line return)  
+	string_strict_multi_line("'''[^']*'''"), //regex >>  ` any character `  
+	string_strict("'[^'\r\n]*'"), //regex >>  ` any character `  
 
 	integer("[\\-]?\\d+"), //an integer must contain only digits after an optional minus sign
 
 	bool("(true|false)\\b"), // regex to accept true or false and exclude keywords beginning with true or false like trueliness
 
 	// Keyword must be placed AFTER bool 
-	keyword("[a-z](\\-[a-z]|[a-z0-9])*"); //a keyword must be like this 'name' or 'first-name'  > ")
+	//	keyword("[a-z](\\-[a-z]|[a-z0-9])*"); //a keyword must be like this 'name' or 'first-name'  > ")
+	word("[a-zA-Z]([a-zA-Z0-9]|(_[a-zA-Z0-9]))*"); //a word must be like this 'name' or 'first_name'  > ") 
 
 	//	//---pre-processing
 	//	variable(

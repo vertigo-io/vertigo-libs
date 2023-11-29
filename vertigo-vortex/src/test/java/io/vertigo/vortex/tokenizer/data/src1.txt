@@ -4,7 +4,7 @@ package "io.vertigo.studio.domain.security"
 
 create Task TkLoadBaseIndex {
 	className : "io.vertigo.basics.task.TaskEngineSelect",
-	request : "	select 	bas.BASE_ID, 
+	request : """	select 	bas.BASE_ID, 
 						bas.NAME, 
 						bas.CODE, 
 						bas.CREATION_DATE, 
@@ -13,7 +13,7 @@ create Task TkLoadBaseIndex {
 						bastype.LABEL as BASE_TYPE_LABEL
 				from BASE bas
 				join BASE_TYPE bastype on bastype.base_type_id = bas.base_type_id
-				where BASE_ID in (#baseIds.rownum#);"
+				where BASE_ID in (#baseIds.rownum#);"""
 	in 	baseIds 	{domain : DoId, 		cardinality: "*"} 
 	out	dtcIndex	{domain : DoDtBaseIndex cardinality: "*"} 
 }
@@ -10040,21 +10040,21 @@ create Domain DoGeoPoint {
 
 create Task TkSelectEquipmentType {  
     className : "io.vertigo.basics.task.TaskEngineSelect"
-    request : "
+    request : """
             select EQUIPMENT_TYPE_ID, LABEL, EQUIPMENT_CATEGORY_ID from EQUIPMENT_TYPE
-             "
+             """
     out dtcEquipmentType     {domain : DoDtEquipmentType cardinality: "*" }
 }
 
 create Task TkGetBaseManager {  
     className : "io.vertigo.basics.task.TaskEngineSelect"
-    request : "
+    request : """
             select per.*
             	from mission mis
             	join person per on mis.person_id = per.person_id
             	where mis.base_id = #baseId# and mis.role_id= 'MANAG'
             	limit 1;
-             "
+             """
     in 	baseId   {domain : DoId         cardinality: "1"}
     out manager  {domain : DoDtPerson 	cardinality: "?"}
 }
@@ -10062,7 +10062,7 @@ create Task TkGetBaseManager {
 
 create Task TkGetMissionsDisplayByPersonId {  
     className : "io.vertigo.basics.task.TaskEngineSelect"
-    request : "
+    request : """
            select 
             		mis.mission_id as MISSION_ID,
             		rol.label as ROLE,
@@ -10073,13 +10073,13 @@ create Task TkGetMissionsDisplayByPersonId {
             	left join base bas on mis.base_id = bas.base_id
 				left join business bus on mis.business_id = bus.business_id
             	where mis.person_id = #personId#;
-             "
+             """
     in	personId     {domain : DoId         		cardinality: "1" }
     out missions     {domain : DoDtMissionDisplay   cardinality: "*" }
 }
 create Task TkGetLastTicketsByBaseId {  
     className : "io.vertigo.basics.task.TaskEngineSelect"
-    request : "
+    request : """
             select 
             	tic.*
 			from ticket tic
@@ -10087,32 +10087,32 @@ create Task TkGetLastTicketsByBaseId {
 			where equ.base_id = #baseId#
 			order by tic.date_created desc
 			limit 50
-             "
+             """
     in 	baseId 	{domain : DoId         	cardinality: "1" }
     out tickets {domain : DoDtTicket    cardinality: "*" }
 }
 
 create Task TkGetLastTickets {  
     className : "io.vertigo.basics.task.TaskEngineSelect"
-    request : "
+    request : """
             select 
             	tic.*
 			from ticket tic
 			order by tic.date_created desc
 			limit 50
-             "
+             """
     out  tickets     {domain : DoDtTicket    cardinality: "*"}
 }
 
 create Task TkGetLastWorkOrders {  
     className : "io.vertigo.basics.task.TaskEngineSelect"
-    request : "
+    request : """
             select 
             	wor.*
 			from work_order wor
 			order by wor.date_created desc
 			limit 20
-             "
+             """
     out workOrders     {domain : DoDtWorkOrder    cardinality: "*"}
 }
 
@@ -10218,13 +10218,13 @@ create Association AEquipmentTicket {
 }
 create Task TkGetBaseManager {  
     className : "io.vertigo.basics.task.TaskEngineSelect"
-    request : "
+    request : """
             select per.*
             	from mission mis
             	join person per on mis.person_id = per.person_id
             	where mis.base_id = #baseId# and mis.role_id= 'MANAG'
             	limit 1;
-             "
+             """
     in 	baseId   {domain : DoId         cardinality: "1"}
     out manager  {domain : DoDtPerson 	cardinality: "?"}
 }
@@ -10232,7 +10232,7 @@ create Task TkGetBaseManager {
 
 create Task TkGetMissionsDisplayByPersonId {  
     className : "io.vertigo.basics.task.TaskEngineSelect"
-    request : "
+    request : """
            select 
             		mis.mission_id as MISSION_ID,
             		rol.label as ROLE,
@@ -10243,41 +10243,41 @@ create Task TkGetMissionsDisplayByPersonId {
             	left join base bas on mis.base_id = bas.base_id
 				left join business bus on mis.business_id = bus.business_id
             	where mis.person_id = #personId#;
-             "
+             """
     in	personId     {domain : DoId         		cardinality: "1" }
     out missions     {domain : DoDtMissionDisplay   cardinality: "*" }
 }
 create Task TkSelectBusinessId {  
     className : "io.vertigo.basics.task.TaskEngineSelect"
-    request : "
+    request : """
             select BUSINESS_ID from BUSINESS
-             "
+             """
     out businessIdList     {domain : DoId         cardinality: "*" }
 }
 
 create Task TkSelectBusiness {  
     className : "io.vertigo.basics.task.TaskEngineSelect"
-    request : "
+    request : """
             select BUSINESS_ID, NAME from BUSINESS
-             "
+             """
     out dtcBusiness     {domain : DoDtBusiness cardinality: "*" } 
 }
 
 
 create Task TkSelectBaseId {
    className : "io.vertigo.basics.task.TaskEngineSelect"
-   request : "
+   request : """
             select BASE_ID from BASE
-             "
+             """
     out baseIdList     {domain : DoId         cardinality: "*"}
 
 }
 
 create Task TkSelectGeosectorId {
    className : "io.vertigo.basics.task.TaskEngineSelect"
-   request : "
+   request : """
             select GEOSECTOR_ID from GEOSECTOR
-             "
+             """
     out geosectorIdList     {domain : DoId         cardinality: "*"}
 
 }
@@ -10329,7 +10329,7 @@ create FacetDefinition FctEquipmentGeoDistance {
 
 create FacetDefinition FctEquipmentGeoHash {
 	dtDefinition:DtEquipmentIndex, fieldName:"geoLocation", label:"Location"
-	params geohash-grid { value : "{\"field\" : \"geoLocation\", \"precision\" : #geoPrecision#}" }
+	params geohash_grid { value : "{\"field\" : \"geoLocation\", \"precision\" : #geoPrecision#}" }
 	params innerWriteTo { value : "writeVInt(#geoPrecision#);writeVInt(1000);writeVInt(-1)" }
 }
 
@@ -10425,7 +10425,7 @@ alter DtDefinition DtEquipmentIndex {
 
 create Task TkGetEquipmentsOverview {  
     className : "io.vertigo.basics.task.TaskEngineSelect"
-    request : "
+    request : """
             select 
             	count(1) as count,
             	bus.business_id as business_id,
@@ -10437,31 +10437,31 @@ create Task TkGetEquipmentsOverview {
 				join business bus on bus.business_id = equ.business_id 
 			where equ.base_id = #baseId#
 			group by business_name, bus.business_id
-             "
+             """
     in 	baseId     {domain : DoId         			cardinality: "1"  }
     out overview   {domain : DoDtEquipmentOverview  cardinality: "*"  }
 }
 
 create Task TkGetBasesSummary {  
     className : "io.vertigo.basics.task.TaskEngineSelect"
-    request : "
+    request : """
             select 
 				(select count(*) from base) as base_count,
 				(select avg(health_level) from base) as base_mean_health,
 				(select count(*) from ticket tic where tic.ticket_status_id = 'OPEN' or tic.ticket_status_id = 'ASSIGNED') as opened_tickets,
 				(select sum(case when health_level > 30 then 1.0 else 0.0 end) / count(*) * 100 from equipment) as online_equipment_percent;
-             "
+             """
     out basesSummary     {domain : DoDtBasesSummary    cardinality: "1" }
 }
 
 create Task TkGetBaseOverview {  
     className : "io.vertigo.basics.task.TaskEngineSelect"
-    request : "
+    request : """
            select 
 				(select count(*) from equipment equ where equ.base_id = #baseId#) as equipment_count,
 				(select count(*) from ticket tic join equipment equ on equ.equipment_id = tic.equipment_id where equ.base_id = #baseId# and ( tic.ticket_status_id = 'OPEN' or tic.ticket_status_id = 'ASSIGNED')) as opened_tickets,
 				(select count(*) from work_order wor join ticket tic on tic.ticket_id = wor.ticket_id join equipment equ on equ.equipment_id = tic.equipment_id where equ.base_id = #baseId#  and wor.work_order_status_id = 'INPROGRESS') as work_orders_inprogress
-             "
+             """
     in 	baseId     		{domain : DoId    				cardinality: "1"  }
     out baseOverview    {domain : DoDtBaseOverview    	cardinality: "1"  }
 }
@@ -10469,11 +10469,11 @@ create Task TkGetBaseOverview {
 
 create Task TkGetEquipmentMaintenanceOverview {  
     className : "io.vertigo.basics.task.TaskEngineSelect"
-    request : "
+    request : """
            select 
 				(select count(*) from ticket tic where tic.equipment_id = #equipmentId# and ( tic.ticket_status_id = 'OPEN' or tic.ticket_status_id = 'ASSIGNED')) as opened_tickets,
 				(select count(*) from work_order wor join ticket tic on tic.ticket_id = wor.ticket_id join equipment equ on equ.equipment_id = #equipmentId#  and wor.work_order_status_id = 'INPROGRESS') as work_orders_inprogress
-             "
+             """
     in 	equipmentId     				{domain : DoId    							cardinality: "1" }
     out equipmentMaintenanceOverview    {domain : DoDtEquipmentMaintenanceOverview  cardinality: "1" }
 }
@@ -10517,8 +10517,8 @@ create DtDefinition DtBaseIndex {
 
 create Task TkLoadBaseIndex {
 	className : "io.vertigo.basics.task.TaskEngineSelect",
-	request : "	select 	bas.BASE_ID, 
-						bas.NAME, 
+	request : """	select 	bas.BASE_ID, 
+						bas.NaAME, 
 						bas.CODE, 
 						bas.CREATION_DATE, 
 						bas.TAGS,
@@ -10526,7 +10526,7 @@ create Task TkLoadBaseIndex {
 						bastype.LABEL as BASE_TYPE_LABEL
 				from BASE bas
 				join BASE_TYPE bastype on bastype.base_type_id = bas.base_type_id
-				where BASE_ID in (#baseIds.rownum#);"
+				where BASE_ID in (#baseIds.rownum#);"""
 	in 	baseIds 	{domain : DoId, 		cardinality: "*"} 
 	out	dtcIndex	{domain : DoDtBaseIndex cardinality: "*"} 
 }
@@ -10534,7 +10534,7 @@ create Task TkLoadBaseIndex {
 
 create Task TkLoadEquipmentIndex {
 	className : "io.vertigo.basics.task.TaskEngineSelect",
-	request : "	select 	equ.EQUIPMENT_ID,
+	request : """	select 	equ.EQUIPMENT_ID,
 						equ.NAME, 
 						equ.CODE, 
 						equ.PURCHASE_DATE, 
@@ -10547,7 +10547,7 @@ create Task TkLoadEquipmentIndex {
                 join BASE bas on bas.base_id = equ.base_id
                 join EQUIPMENT_TYPE equipmentType on equipmentType.equipment_type_id = equ.equipment_type_id
 				join EQUIPMENT_CATEGORY equipmentCategory on equipmentCategory.equipment_category_id = equipmentType.equipment_category_id
-				where EQUIPMENT_ID in (#equipmentIds.rownum#);"
+				where EQUIPMENT_ID in (#equipmentIds.rownum#);"""
 	in 	equipmentIds 	{domain : DoId, cardinality: "*"} 
 	out dtcIndex 		{domain : DoDtEquipmentIndex, cardinality: "*"} 
 }
@@ -10889,6 +10889,16 @@ create Association ABusinessEquipment {
 	labelB : "Business"
 }
 
+create DtDefinition DtBaseType {
+	stereotype : 'StaticMasterData'
+	id baseTypeId {domain: DoCode label:"Id"}
+	field label {domain: DoLabel label:"Base Type Label" }	
+	values : '''{ "hydro" : 		{ "baseTypeId" : "HYDRO",  		"label" : "Hydroponic"},
+				"mine" : 		{ "baseTypeId" : "MINE", 		"label" : "Mining Complex" },
+        		"dwelling" : 	{ "baseTypeId" : "DWELLING", 	"label" : "Dwelling Complex"} }'''
+}
+
+
 # /*ghfdghdgfhdf */
 
 #	values : `{		"enabled" : 	{ "opendataSetStatusId" : "ENABLED", 	"label" : "Enabled" },
@@ -10899,5 +10909,4 @@ create Association ABusinessEquipment {
 #        			"failed" : 		{ "workOrderStatusId" : "FAILED", 		"label" : "Failed"		},
 #        			"pending" : 	{ "workOrderStatusId" : "PENDING", 		"label" : "Pending" 	}}`
 
-# geohash_grid
 	
