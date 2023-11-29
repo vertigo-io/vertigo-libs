@@ -138,14 +138,15 @@ public final class Tokenizer {
 
 	public List<Token> tokenize(final String src) {
 		final List<Token> tokens = new ArrayList<>();
-		Matcher matcher;
-		int pos = 0;
-		while (pos < src.length()) {
+		final Matcher matcher = TokenType.blanks.pattern.matcher(src);
+		for (int pos = 0; pos < src.length();) {
 			boolean match = false;
 			for (TokenType tokenType : tokenTypes) {
-				matcher = tokenType.pattern.matcher(src);
-				//we have to set the region 
-				matcher.region(pos, src.length());
+				matcher
+						//we have to set the pattern 
+						.usePattern(tokenType.pattern)
+						//we have to set the region 
+						.region(pos, src.length());
 				if (matcher.lookingAt()) {
 					match = true;
 					String tok = matcher.group();
