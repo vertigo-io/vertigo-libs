@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.planning;
+package io.vertigo.easyforms;
 
 import io.vertigo.core.locale.LocaleMessageKey;
 
@@ -25,9 +25,5 @@ import io.vertigo.core.locale.LocaleMessageKey;
  * @author  npiedeloup
 */
 public enum Resources implements LocaleMessageKey {
-	/**
-	 * Type de donnée erroné.
-	 */
-	PLANNING_HOUR_MINUTE_NOT_FORMATTED,
 
 }

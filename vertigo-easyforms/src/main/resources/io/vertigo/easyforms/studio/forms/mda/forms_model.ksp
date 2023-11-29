@@ -1,0 +1,63 @@
+package io.vertigo.easyforms.metaformulaire.domain
+
+
+create DtDefinition DtMetaFormulaire {
+    id mfoId {domain: DoFId label:"Id"}
+    field modele {domain: DoFModeleFormulaire label:"Modèle" }
+}
+
+create DtDefinition DtTypeDeChampUi {
+    field nom {domain: DoFLabel label:"Type de champ" }
+    sortField: "nom"
+    displayField: "nom"
+}
+
+create DtDefinition DtControleDeChampUi {
+    field code {domain: DoFCode label:"Contrôle" }
+    field label {domain: DoFLabel label:"Contrôle" }
+    field description {domain: DoFText label:"Description" }
+    field typeDeChamps {domain: DoFText label:"Compatible avec les types" cardinality:"*" }
+    sortField: "code"
+    displayField: "label"
+}
+
+create DtDefinition DtChampUi {
+    field codeChamp {domain: DoFCode label:"Code du champ" cardinality:"1" }
+    field typeDeChamp {domain: DoFLabel label:"Type de champ" cardinality:"1" }
+    field listId {domain: DoFId label:"Id liste de valeurs" cardinality:"?" }
+    field listValue {domain: DoFText label:"Id valeur dans la liste" cardinality:"?" }
+    field libelle {domain: DoFLabel label:"Libellé" cardinality:"1"}
+    field infobulle {domain: DoFLabel label:"Infobulle" }
+    field isDefault {domain: DoFBooleen label:"Champs par défaut (non supprimable)" cardinality:"1"}
+    field isDisplay {domain: DoFBooleen label:"Information affichée sur la réservation" cardinality:"1"}
+    field controleDeChamps {domain: DoFText label:"Contrôles appliqués" cardinality:"*" }
+}
+
+create DtDefinition DtTaxonomieType {
+    id tatId {domain: DoFId label:"Id"}
+    field code {domain: DoFLabel label:"Code liste" }
+    field label {domain: DoFLabel label:"Libelle" cardinality:"1"}
+    field active {domain: DoFBooleen label:"Actif" cardinality:"1"}
+    sortField: "label"
+    displayField: "label"
+}
+
+create DtDefinition DtTaxonomie {
+    id taxId {domain: DoFId label:"Id"}
+    field value {domain: DoFLabel label:"Valeur" }
+    field sort {domain: DoFSort label:"Ordre" cardinality:"1"}
+    field active {domain: DoFBooleen label:"Actif" cardinality:"1"}
+    sortField: "sort"
+    displayField: "value"
+}
+
+create Association ATaxonomieValueType {
+    fkFieldName : "tatId"
+    
+    dtDefinitionA : DtTaxonomie
+    type : "*>1"
+    dtDefinitionB : DtTaxonomieType
+            
+    labelB : "Taxonomie type"
+}
+

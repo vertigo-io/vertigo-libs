@@ -81,7 +81,7 @@ public class FormatterMinutes implements Formatter {
 			}
 		} catch (final NumberFormatException e) {
 			// cas des erreurs sur les formats de nombre
-			throw (FormatterException) new FormatterException(Resources.RDVPREF_HOUR_MINUTE_NOT_FORMATTED)
+			throw (FormatterException) new FormatterException(Resources.PLANNING_HOUR_MINUTE_NOT_FORMATTED)
 					.initCause(e);
 		}
 	}

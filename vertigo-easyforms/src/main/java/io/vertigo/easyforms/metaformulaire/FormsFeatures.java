@@ -15,19 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.planning;
+package io.vertigo.easyforms.metaformulaire;
 
-import io.vertigo.core.locale.LocaleMessageKey;
+import io.vertigo.core.node.config.discovery.ModuleDiscoveryFeatures;
 
-/**
- * Dictionnaire des ressources.
- *
- * @author  npiedeloup
-*/
-public enum Resources implements LocaleMessageKey {
-	/**
-	 * Type de donnée erroné.
-	 */
-	PLANNING_HOUR_MINUTE_NOT_FORMATTED,
+public class FormsFeatures extends ModuleDiscoveryFeatures<FormsFeatures> {
+
+	public FormsFeatures() {
+		super("vertigo-easyforms-forms");
+	}
+
+	@Override
+	protected String getPackageRoot() {
+		return this.getClass().getPackage().getName();
+	}
 
 }

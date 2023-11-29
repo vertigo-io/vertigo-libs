@@ -1,0 +1,30 @@
+<th:block th:fragment="agenda-duplicate-week" vu:alias="agenda-duplicate-week" vu:selector="${true}" 
+    th:attr="objectKey=${model.vContext['componentStates'].addComponentState('duplicateWeekModal').addPrimitive('opened', false)}">
+
+    <q-dialog th:v-model="componentStates.duplicateWeekModal.opened" >
+        <q-card class="bg-white v-modal duplicateWeekModal" >
+            <q-toolbar class="bg-primary">
+                <q-toolbar-title class="text-white">Dupliquer cette semaine</q-toolbar-title>
+                <div class="col-1"></div>
+                <q-btn flat dense v-close-popup icon="ri-close-line" text-color="white" >Fermer</q-btn>                
+            </q-toolbar>
+            <q-card-section><i>            
+                Selectionner les dates de début et de fin de la période sur laquelle vous souhaitez copier la semaine affichée.<br/>
+                Les plages horaires ainsi créées seront dans l'état "Non publié".<br/>
+                <br/>
+                S'il a déjà des plages horaires sur la période de destination, elles ne seront pas modifiées.<br/>
+                Seules les nouvelles plages qui n'entrent pas en conflits seront créées.
+            </i>
+            </q-card-section>
+            <q-card-section class="q-layout-padding">
+                <vu:grid>
+                        <vu:date-edit object="duplicationSemaineForm" field="dateLocaleToDebut" />
+                        <vu:date-edit object="duplicationSemaineForm" field="dateLocaleToFin" />
+                </vu:grid>
+            </q-card-section>
+            <q-card-section class="flex justify-end">
+                <q-btn color="primary" label="Valider" @click="doDuplicateWeek" :loading="isPendingAction()"></q-btn>
+            </q-card-section>
+        </q-card>
+    </q-dialog>
+</th:block>

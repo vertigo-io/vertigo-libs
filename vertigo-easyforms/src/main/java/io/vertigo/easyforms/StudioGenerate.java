@@ -15,19 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.planning;
+package io.vertigo.easyforms;
 
-import io.vertigo.core.locale.LocaleMessageKey;
+import java.net.MalformedURLException;
+import java.nio.file.Paths;
 
-/**
- * Dictionnaire des ressources.
- *
- * @author  npiedeloup
-*/
-public enum Resources implements LocaleMessageKey {
-	/**
-	 * Type de donnée erroné.
-	 */
-	PLANNING_HOUR_MINUTE_NOT_FORMATTED,
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.studio.tools.VertigoStudioMda;
 
+public class StudioGenerate {
+
+	public static void main(final String[] args) {
+		try {
+			VertigoStudioMda.main(new String[] { "generate", Paths.get("studio-config.yaml").toUri().toURL().toExternalForm() });
+		} catch (final MalformedURLException e) {
+			throw WrappedException.wrap(e);
+		}
+	}
 }
