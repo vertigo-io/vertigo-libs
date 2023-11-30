@@ -537,6 +537,21 @@ export default {
                 } else {
                     this._vueDataParamsKey(params, contextKey, attribute, vueDataValue)
                 }
+            } else if (vueDataValue && Array.isArray(vueDataValue) === true) {
+                // array
+                vueDataValue.forEach(function (value, index) {
+                    if(!attribute) {
+                        Object.keys(value).forEach(function (propertyKey) {
+                            if (!propertyKey.includes("_") ) {
+                                //  properties that start with _ are private and don't belong to the serialized entity
+                                // we filter field with modifiers (like <field>_display and <field>_fmt)
+                                this._vueDataParamsKey(params, contextKey +']['+ index , propertyKey, value)
+                            }
+                        }.bind(this));
+                    } else {
+                        this._vueDataParamsKey(params, contextKey +']['+ index, attribute, value)
+                    }
+                }.bind(this));
             } else {
                 //primitive
                 this.appendToFormData(params, 'vContext[' + contextKey + ']', vueDataValue);

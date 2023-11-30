@@ -3,7 +3,7 @@ const T = (e, t) => {
   for (const [o, i] of t)
     n[o] = i;
   return n;
-}, Kt = {
+}, Xt = {
   props: {
     botUrl: { type: String, required: !0 },
     devMode: { type: Boolean, default: !1 },
@@ -116,7 +116,7 @@ const T = (e, t) => {
       });
     }
   }
-}, gt = window.Vue.renderList, wt = window.Vue.Fragment, N = window.Vue.openBlock, Fe = window.Vue.createElementBlock, pe = window.Vue.resolveComponent, ie = window.Vue.createVNode, he = window.Vue.withCtx, X = window.Vue.createBlock, se = window.Vue.createCommentVNode, bt = window.Vue.toDisplayString, J = window.Vue.createElementVNode, Xt = window.Vue.withKeys, Wt = { class: "bot" }, Zt = { class: "q-pr-md" }, en = { class: "sys-chat" }, tn = { class: "q-pb-sm" }, nn = { class: "sys-chat non-selectable" }, on = { class: "text-blue-2 q-caption" }, an = { class: "row docs-btn" }, sn = { class: "message-processing sys-chat non-selectable" }, rn = { class: "non-selectable" }, ln = { class: "message-response row docs-btn q-pl-sm non-selectable" };
+}, gt = window.Vue.renderList, wt = window.Vue.Fragment, N = window.Vue.openBlock, Fe = window.Vue.createElementBlock, pe = window.Vue.resolveComponent, ie = window.Vue.createVNode, he = window.Vue.withCtx, K = window.Vue.createBlock, se = window.Vue.createCommentVNode, bt = window.Vue.toDisplayString, J = window.Vue.createElementVNode, Kt = window.Vue.withKeys, Wt = { class: "bot" }, Zt = { class: "q-pr-md" }, en = { class: "sys-chat" }, tn = { class: "q-pb-sm" }, nn = { class: "sys-chat non-selectable" }, on = { class: "text-blue-2 q-caption" }, an = { class: "row docs-btn" }, sn = { class: "message-processing sys-chat non-selectable" }, rn = { class: "non-selectable" }, ln = { class: "message-response row docs-btn q-pl-sm non-selectable" };
 function cn(e, t, n, o, i, a) {
   const s = pe("q-rating"), r = pe("q-chat-message"), l = pe("q-btn"), c = pe("q-spinner-dots"), d = pe("q-scroll-area"), p = pe("q-input");
   return N(), Fe("div", Wt, [
@@ -127,7 +127,7 @@ function cn(e, t, n, o, i, a) {
       default: he(() => [
         J("div", Zt, [
           (N(!0), Fe(wt, null, gt(e.messages, (u, h) => (N(), Fe("div", { key: h }, [
-            u.rating ? (N(), X(r, {
+            u.rating ? (N(), K(r, {
               class: "animate-fade",
               key: "msgRating-" + h,
               sent: u.sent,
@@ -145,7 +145,7 @@ function cn(e, t, n, o, i, a) {
               ]),
               _: 2
             }, 1032, ["sent", "bg-color", "avatar"])) : se("", !0),
-            u.text ? (N(), X(r, {
+            u.text ? (N(), K(r, {
               class: "animate-fade",
               key: "msg-" + h,
               label: u.label,
@@ -159,7 +159,7 @@ function cn(e, t, n, o, i, a) {
             }, null, 8, ["label", "sent", "text-color", "bg-color", "name", "avatar", "text", "stamp"])) : se("", !0)
           ]))), 128)),
           J("div", en, [
-            e.error ? (N(), X(r, {
+            e.error ? (N(), K(r, {
               key: 0,
               class: "animate-fade",
               "bg-color": "orange-4",
@@ -180,7 +180,7 @@ function cn(e, t, n, o, i, a) {
             })) : se("", !0)
           ]),
           J("div", nn, [
-            e.inputConfig.buttons.length > 0 ? (N(), X(r, {
+            e.inputConfig.buttons.length > 0 ? (N(), K(r, {
               key: 0,
               class: "animate-fade",
               "bg-color": "primary",
@@ -189,7 +189,7 @@ function cn(e, t, n, o, i, a) {
               default: he(() => [
                 J("div", on, bt(e.$q.lang.vui.suggestedAnswers), 1),
                 J("div", an, [
-                  (N(!0), Fe(wt, null, gt(e.inputConfig.buttons, (u, h) => (N(), X(l, {
+                  (N(!0), Fe(wt, null, gt(e.inputConfig.buttons, (u, h) => (N(), K(l, {
                     class: "full-width",
                     key: "repChatBtn-" + h,
                     onClick: (f) => a.postAnswerBtn(u),
@@ -203,7 +203,7 @@ function cn(e, t, n, o, i, a) {
             })) : se("", !0)
           ]),
           J("div", sn, [
-            e.processing ? (N(), X(r, {
+            e.processing ? (N(), K(r, {
               key: 0,
               class: "animate-fade",
               "bg-color": "grey-4"
@@ -215,7 +215,7 @@ function cn(e, t, n, o, i, a) {
             })) : se("", !0)
           ]),
           J("div", rn, [
-            e.inputConfig.showRating ? (N(), X(r, {
+            e.inputConfig.showRating ? (N(), K(r, {
               key: 0,
               class: "animate-fade",
               "bg-color": "primary",
@@ -240,7 +240,7 @@ function cn(e, t, n, o, i, a) {
       ie(p, {
         type: e.inputConfig.modeTextarea ? "textarea" : "text",
         ref: "input",
-        onKeyup: t[2] || (t[2] = Xt((u) => e.inputConfig.modeTextarea || e.inputConfig.responseText.trim() === "" && e.inputConfig.rating === 0 ? !1 : a.postAnswerText(), ["enter"])),
+        onKeyup: t[2] || (t[2] = Kt((u) => e.inputConfig.modeTextarea || e.inputConfig.responseText.trim() === "" && e.inputConfig.rating === 0 ? !1 : a.postAnswerText(), ["enter"])),
         "max-height": 100,
         class: "col-grow",
         modelValue: e.inputConfig.responseText,
@@ -256,7 +256,7 @@ function cn(e, t, n, o, i, a) {
         onClick: t[4] || (t[4] = (u) => a.postAnswerText()),
         disable: e.processing || e.inputConfig.responseText.trim() === "" && e.inputConfig.rating === 0
       }, null, 8, ["disable"]),
-      n.devMode === !0 ? (N(), X(l, {
+      n.devMode === !0 ? (N(), K(l, {
         key: 0,
         round: "",
         color: "red",
@@ -266,7 +266,7 @@ function cn(e, t, n, o, i, a) {
     ])
   ]);
 }
-const dn = /* @__PURE__ */ T(Kt, [["render", cn]]), un = {
+const dn = /* @__PURE__ */ T(Xt, [["render", cn]]), un = {
   data: function() {
     return {
       text: "",
@@ -1025,7 +1025,7 @@ const Hn = /* @__PURE__ */ T(Un, [["render", Rn]]), zn = {
     }
   }
 }, Jn = window.Vue.resolveComponent, kt = window.Vue.createVNode, Yn = window.Vue.openBlock, Gn = window.Vue.createElementBlock, Qn = { class: "row" };
-function Kn(e, t, n, o, i, a) {
+function Xn(e, t, n, o, i, a) {
   const s = Jn("q-input");
   return Yn(), Gn("div", Qn, [
     kt(s, {
@@ -1050,7 +1050,7 @@ function Kn(e, t, n, o, i, a) {
     }, null, 8, ["modelValue", "onUpdate:modelValue"])
   ]);
 }
-const Xn = /* @__PURE__ */ T(zn, [["render", Kn]]), Wn = {
+const Kn = /* @__PURE__ */ T(zn, [["render", Xn]]), Wn = {
   props: {
     baseUrl: { type: String, default: "/" }
   },
@@ -1675,7 +1675,7 @@ const Yo = /* @__PURE__ */ T(No, [["render", Jo]]), Go = window.Quasar, Qo = {
       return t ? [s[n[t]]] : i;
     }
   }
-}, ze = window.Vue.resolveComponent, rt = window.Vue.createVNode, Ko = window.Vue.toDisplayString, Xo = window.Vue.createElementVNode, Je = window.Vue.withCtx, Wo = window.Vue.normalizeProps, Zo = window.Vue.guardReactiveProps, ea = window.Vue.openBlock, ta = window.Vue.createBlock, na = {
+}, ze = window.Vue.resolveComponent, rt = window.Vue.createVNode, Xo = window.Vue.toDisplayString, Ko = window.Vue.createElementVNode, Je = window.Vue.withCtx, Wo = window.Vue.normalizeProps, Zo = window.Vue.guardReactiveProps, ea = window.Vue.openBlock, ta = window.Vue.createBlock, na = {
   class: "self-center full-width no-outline",
   tabindex: "0"
 };
@@ -1686,7 +1686,7 @@ function oa(e, t, n, o, i, a) {
       rt(s, { name: "arrow_drop_down" })
     ]),
     control: Je(() => [
-      Xo("div", na, Ko(a.getSelectedLabel()), 1)
+      Ko("div", na, Xo(a.getSelectedLabel()), 1)
     ]),
     default: Je(() => [
       rt(l, {
@@ -1782,7 +1782,7 @@ const aa = /* @__PURE__ */ T(Qo, [["render", oa]]), ia = window.Quasar.format, {
       return sa(t + n);
     }
   }
-}, I = window.Vue.toDisplayString, Ye = window.Vue.createTextVNode, oe = window.Vue.resolveComponent, O = window.Vue.withCtx, j = window.Vue.createVNode, _ = window.Vue.openBlock, A = window.Vue.createBlock, q = window.Vue.createCommentVNode, K = window.Vue.createElementBlock, R = window.Vue.createElementVNode, Bt = window.Vue.renderList, lt = window.Vue.Fragment, la = window.Vue.normalizeClass, ca = window.Vue.mergeProps, da = window.Vue.createSlots, ua = { class: "row" }, fa = { class: "col column justify-center" }, pa = { class: "q-uploader__file-header row flex-center no-wrap" }, ha = { class: "q-uploader__file-header-content col" }, ma = { class: "q-uploader__title" }, ga = { class: "q-uploader__file-header row flex-center no-wrap" }, wa = { class: "q-uploader__file-header-content col" }, ba = { class: "q-uploader__title" }, va = {
+}, I = window.Vue.toDisplayString, Ye = window.Vue.createTextVNode, oe = window.Vue.resolveComponent, O = window.Vue.withCtx, j = window.Vue.createVNode, _ = window.Vue.openBlock, A = window.Vue.createBlock, q = window.Vue.createCommentVNode, X = window.Vue.createElementBlock, R = window.Vue.createElementVNode, Bt = window.Vue.renderList, lt = window.Vue.Fragment, la = window.Vue.normalizeClass, ca = window.Vue.mergeProps, da = window.Vue.createSlots, ua = { class: "row" }, fa = { class: "col column justify-center" }, pa = { class: "q-uploader__file-header row flex-center no-wrap" }, ha = { class: "q-uploader__file-header-content col" }, ma = { class: "q-uploader__title" }, ga = { class: "q-uploader__file-header row flex-center no-wrap" }, wa = { class: "q-uploader__file-header-content col" }, ba = { class: "q-uploader__title" }, va = {
   key: 0,
   class: "q-field__after q-field__marginal row no-wrap items-center"
 };
@@ -1810,10 +1810,10 @@ function ya(e, t, n, o, i, a) {
         }, {
           control: O(() => [
             R("div", fa, [
-              e.$props.readonly ? q("", !0) : (_(!0), K(lt, { key: 0 }, Bt(f.files, (m) => (_(), K(lt, {
+              e.$props.readonly ? q("", !0) : (_(!0), X(lt, { key: 0 }, Bt(f.files, (m) => (_(), X(lt, {
                 key: m.name
               }, [
-                m.__status !== "uploaded" ? (_(), K("div", {
+                m.__status !== "uploaded" ? (_(), X("div", {
                   key: 0,
                   class: la(["q-uploader__file relative-position", {
                     "q-uploader__file--failed": m.__status === "failed",
@@ -1852,7 +1852,7 @@ function ya(e, t, n, o, i, a) {
                   ])
                 ], 2)) : q("", !0)
               ], 64))), 128)),
-              (_(!0), K(lt, null, Bt(e.files, (m) => (_(), K("div", {
+              (_(!0), X(lt, null, Bt(e.files, (m) => (_(), X("div", {
                 key: m.name,
                 class: "q-uploader__file relative-position q-uploader__file--uploaded"
               }, [
@@ -1885,7 +1885,7 @@ function ya(e, t, n, o, i, a) {
           ]),
           _: 2
         }, 1032, ["label"]),
-        e.$props.simple && !e.$props.readonly ? (_(), K("div", va, [
+        e.$props.simple && !e.$props.readonly ? (_(), X("div", va, [
           f.isUploading ? (_(), A(l, {
             key: 0,
             class: "q-uploader__spinner"
@@ -1952,14 +1952,14 @@ function ya(e, t, n, o, i, a) {
             _: 2
           }, 1032, ["icon", "onClick"])) : q("", !0),
           R("div", { class: "col column justify-center" }, [
-            e.$props.label !== void 0 ? (_(), K("div", {
+            e.$props.label !== void 0 ? (_(), X("div", {
               key: 0,
               class: "q-uploader__title"
             }, I(e.$props.label), 1)) : q("", !0),
-            f.isUploading ? (_(), K("div", {
+            f.isUploading ? (_(), X("div", {
               key: 1,
               class: "q-uploader__subtitle"
-            }, I(a.getGlobalSize(f.files)) + " / " + I(f.uploadProgressLabel), 1)) : (_(), K("div", {
+            }, I(a.getGlobalSize(f.files)) + " / " + I(f.uploadProgressLabel), 1)) : (_(), X("div", {
               key: 2,
               class: "q-uploader__subtitle"
             }, I(a.getGlobalSize(f.files)), 1))
@@ -2022,7 +2022,7 @@ function Jt(e, t) {
 }
 function Ee() {
 }
-var Se = 0.7, Ke = 1 / Se, ve = "\\s*([+-]?\\d+)\\s*", De = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)\\s*", H = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)%\\s*", $a = /^#([0-9a-f]{3,8})$/, xa = new RegExp(`^rgb\\(${ve},${ve},${ve}\\)$`), Ca = new RegExp(`^rgb\\(${H},${H},${H}\\)$`), Va = new RegExp(`^rgba\\(${ve},${ve},${ve},${De}\\)$`), ka = new RegExp(`^rgba\\(${H},${H},${H},${De}\\)$`), qa = new RegExp(`^hsl\\(${De},${H},${H}\\)$`), Sa = new RegExp(`^hsla\\(${De},${H},${H},${De}\\)$`), Ot = {
+var Se = 0.7, Xe = 1 / Se, ve = "\\s*([+-]?\\d+)\\s*", De = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)\\s*", H = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)%\\s*", $a = /^#([0-9a-f]{3,8})$/, xa = new RegExp(`^rgb\\(${ve},${ve},${ve}\\)$`), Ca = new RegExp(`^rgb\\(${H},${H},${H}\\)$`), Va = new RegExp(`^rgba\\(${ve},${ve},${ve},${De}\\)$`), ka = new RegExp(`^rgba\\(${H},${H},${H},${De}\\)$`), qa = new RegExp(`^hsl\\(${De},${H},${H}\\)$`), Sa = new RegExp(`^hsla\\(${De},${H},${H},${De}\\)$`), Ot = {
   aliceblue: 15792383,
   antiquewhite: 16444375,
   aqua: 65535,
@@ -2220,7 +2220,7 @@ function E(e, t, n, o) {
 }
 pt(E, ut, Jt(Ee, {
   brighter(e) {
-    return e = e == null ? Ke : Math.pow(Ke, e), new E(this.r * e, this.g * e, this.b * e, this.opacity);
+    return e = e == null ? Xe : Math.pow(Xe, e), new E(this.r * e, this.g * e, this.b * e, this.opacity);
   },
   darker(e) {
     return e = e == null ? Se : Math.pow(Se, e), new E(this.r * e, this.g * e, this.b * e, this.opacity);
@@ -2229,7 +2229,7 @@ pt(E, ut, Jt(Ee, {
     return this;
   },
   clamp() {
-    return new E(fe(this.r), fe(this.g), fe(this.b), Xe(this.opacity));
+    return new E(fe(this.r), fe(this.g), fe(this.b), Ke(this.opacity));
   },
   displayable() {
     return -0.5 <= this.r && this.r < 255.5 && -0.5 <= this.g && this.g < 255.5 && -0.5 <= this.b && this.b < 255.5 && 0 <= this.opacity && this.opacity <= 1;
@@ -2248,10 +2248,10 @@ function Fa() {
   return `#${ue(this.r)}${ue(this.g)}${ue(this.b)}${ue((isNaN(this.opacity) ? 1 : this.opacity) * 255)}`;
 }
 function Mt() {
-  const e = Xe(this.opacity);
+  const e = Ke(this.opacity);
   return `${e === 1 ? "rgb(" : "rgba("}${fe(this.r)}, ${fe(this.g)}, ${fe(this.b)}${e === 1 ? ")" : `, ${e})`}`;
 }
-function Xe(e) {
+function Ke(e) {
   return isNaN(e) ? 1 : Math.max(0, Math.min(1, e));
 }
 function fe(e) {
@@ -2282,7 +2282,7 @@ function M(e, t, n, o) {
 }
 pt(M, ft, Jt(Ee, {
   brighter(e) {
-    return e = e == null ? Ke : Math.pow(Ke, e), new M(this.h, this.s, this.l * e, this.opacity);
+    return e = e == null ? Xe : Math.pow(Xe, e), new M(this.h, this.s, this.l * e, this.opacity);
   },
   darker(e) {
     return e = e == null ? Se : Math.pow(Se, e), new M(this.h, this.s, this.l * e, this.opacity);
@@ -2297,13 +2297,13 @@ pt(M, ft, Jt(Ee, {
     );
   },
   clamp() {
-    return new M(It(this.h), Qe(this.s), Qe(this.l), Xe(this.opacity));
+    return new M(It(this.h), Qe(this.s), Qe(this.l), Ke(this.opacity));
   },
   displayable() {
     return (0 <= this.s && this.s <= 1 || isNaN(this.s)) && 0 <= this.l && this.l <= 1 && 0 <= this.opacity && this.opacity <= 1;
   },
   formatHsl() {
-    const e = Xe(this.opacity);
+    const e = Ke(this.opacity);
     return `${e === 1 ? "hsl(" : "hsla("}${It(this.h)}, ${Qe(this.s) * 100}%, ${Qe(this.l) * 100}%${e === 1 ? ")" : `, ${e})`}`;
   }
 }));
@@ -2698,9 +2698,9 @@ const Ya = /* @__PURE__ */ T(ja, [["render", Ja]]), Ga = {
     var o = t.value;
     o && !window.autofocus && (window.autofocus = !0, e.focus());
   }
-}, Ka = window.Vue.nextTick, Xa = {
+}, Xa = window.Vue.nextTick, Ka = {
   updated: function(e, t, n) {
-    Ka(() => {
+    Xa(() => {
       !window.watcherUpdates || !window.watcherUpdates.updates_detected ? e.classList.add("hidden") : e.classList.remove("hidden");
     });
   }
@@ -3125,6 +3125,10 @@ const $ = window.Quasar, zt = {
       var o = e[n].split(".", 2), i = o[0], a = o[1], s = this.$data.vueData[i];
       s && typeof s == "object" && Array.isArray(s) === !1 ? a ? this._vueDataParamsKey(t, i, a, s) : Object.keys(s).forEach((function(r) {
         r.includes("_") || this._vueDataParamsKey(t, i, r, s);
+      }).bind(this)) : s && Array.isArray(s) === !0 ? s.forEach((function(r, l) {
+        a ? this._vueDataParamsKey(t, i + "][" + l, a, r) : Object.keys(r).forEach((function(c) {
+          c.includes("_") || this._vueDataParamsKey(t, i + "][" + l, c, r);
+        }).bind(this));
       }).bind(this)) : this.appendToFormData(t, "vContext[" + i + "]", s);
     }
     return t;
@@ -3287,7 +3291,7 @@ var Qt = {
     return Object.keys(t).forEach((o) => n[o] = t[o].bind(e)), n;
   },
   install: function(e, t) {
-    if (e.component("v-chatbot", dn), e.component("v-commands", _n), e.component("v-comments", Sn), e.component("v-extensions-store", Mn), e.component("v-facets", Hn), e.component("v-geopoint-input", Xn), e.component("v-handles", ro), e.component("v-json-editor", bo), e.component("v-notifications", Vo), e.component("v-map", Oo), e.component("v-map-layer", Yo), e.component("v-tree", aa), e.component("v-file-upload", _a), e.component("v-dashboard-chart", Ya), e.directive("alert-unsaved-updates", Ga), e.directive("autofocus", Qa), e.directive("if-unsaved-updates", Xa), e.directive("minify", Za), e.directive("scroll-spy", ei), !t.axios) {
+    if (e.component("v-chatbot", dn), e.component("v-commands", _n), e.component("v-comments", Sn), e.component("v-extensions-store", Mn), e.component("v-facets", Hn), e.component("v-geopoint-input", Kn), e.component("v-handles", ro), e.component("v-json-editor", bo), e.component("v-notifications", Vo), e.component("v-map", Oo), e.component("v-map-layer", Yo), e.component("v-tree", aa), e.component("v-file-upload", _a), e.component("v-dashboard-chart", Ya), e.directive("alert-unsaved-updates", Ga), e.directive("autofocus", Qa), e.directive("if-unsaved-updates", Ka), e.directive("minify", Za), e.directive("scroll-spy", ei), !t.axios) {
       console.error("You have to install axios");
       return;
     }
