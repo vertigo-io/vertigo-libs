@@ -152,9 +152,9 @@
 	                <q-checkbox th:color="${color?:'primary'}" v-model="props.selected" ></q-checkbox>
 	            </q-td>
 	            <vu:content></vu:content>
-	            <vu:column name="action" th:label="#{table.table.actionCol}" sortable="false" th:if="${actions_slot != null}">
-	                <div class="row self-center justify-end col showButtonOnHover no-wrap" role="toolbar">                     
-	                    <vu:content-slot name="actions_slot" th:with="label=null, title=null, vTitle=null" />
+	            <vu:column name="action" th:label="#{table.table.actionCol}" sortable="false" align="right" auto-width th:if="${actions_slot != null}">
+	              <div class="row self-center justify-end col showButtonOnHover no-wrap" role="toolbar">                        
+	                <vu:content-slot name="actions_slot" th:with="label=null, title=null, vTitle=null"/>
 	                </div>
 	            </vu:column>
 	          </q-tr>
