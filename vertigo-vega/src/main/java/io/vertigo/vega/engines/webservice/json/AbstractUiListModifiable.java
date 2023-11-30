@@ -198,6 +198,24 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	}
 
 	/**
+	 * @param uiObject Element to add at index
+	 * @return true (as specified by List.add)
+	 */
+	@Override
+	public void add(final int index, final UiObject<D> uiObject) {
+		bufferUiObjects.add(index, uiObject);
+		if (uiObject != null) {
+			if (uiListDelta.getDeletesMap().containsValue(uiObject)) {
+				//Si on ajoute (add) un objet précédemment supprimé (remove),
+				//alors il suffit de l'enlever de la liste des éléments supprimés.
+				uiListDelta.getDeletesMap().remove(uiObject.getInputKey());
+			} else {
+				uiListDelta.getCreatesMap().put(uiObject.getInputKey(), uiObject);
+			}
+		}
+	}
+
+	/**
 	 * @return DtListDelta
 	 */
 	public DtListDelta<D> getDtListDelta() {
@@ -290,17 +308,25 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 
 		//1. check Error => KUserException
 		//on valide les éléments internes
+		int index = 0;
 		for (final UiObject<D> uiObject : bufferUiObjects) {
 			if (uiObject.isModified()) {
 				final D validatedDto = uiObject.mergeAndCheckInput(validators, uiMessageStack);
 				if (!uiListDelta.getCreatesMap().containsValue(uiObject)) {
 					dtListDelta.getUpdated().add(validatedDto);
+					final int prevIndex = dtList.indexOf(validatedDto);
+					if (prevIndex >= 0 && prevIndex != index) {
+						dtList.remove(prevIndex);
+						dtList.add(index, validatedDto); //on le déplace si besoin
+					}
 				} else {
 					dtListDelta.getCreated().add(validatedDto);
+					dtList.add(index, validatedDto); //on l'ajoute au bon endroit
 				}
 			} else if (uiListDelta.getCreatesMap().containsValue(uiObject)) {
 				dtListDelta.getCreated().add(uiObject.getServerSideObject()); //on ne force pas la validation
 			}
+			index++;
 		}
 
 		//2. Opérations
@@ -314,9 +340,6 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 
 		//on vérifie avant s'il y a des elements pour le cas des listes non modifiable
 		//il faudrait plutot que la DtListInput soit non modifiable aussi
-		if (!dtListDelta.getCreated().isEmpty()) {
-			dtList.addAll(dtListDelta.getCreated());
-		}
 		if (!dtListDelta.getDeleted().isEmpty()) {
 			dtList.removeAll(dtListDelta.getDeleted());
 		}
