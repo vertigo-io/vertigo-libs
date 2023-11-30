@@ -165,7 +165,6 @@ img.avatar {
 	color:var(--q-accent-invert) !important;
 }
 
-
 .q-table-container th.sortable:hover,
 .q-table-container th.sorted {
   color: rgba(255,255,255,1);  
@@ -188,9 +187,111 @@ img.avatar {
 	color:var(--q-tertiary-invert);
 }
 
-.q-tr .q-btn {
-    font-size:12px;
+/** tableaux auto-ellipsis */
+.auto-ellipsis .q-table tr:hover td {
+    overflow: visible; 
+    white-space: normal;
+    animation: delay-from-ellipsis 2s;
 }
+
+@keyframes delay-from-ellipsis {
+  from { 
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
+.auto-ellipsis .q-table tr td {
+    overflow: hidden;
+    max-width: 150px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-wrap: break-word;
+}
+
+.auto-ellipsis .q-table th {
+    vertical-align: baseline;
+    max-width: 150px;   
+}
+
+.q-table tr .q-btn {
+    font-size: 10px; /** eq qBtn size="sm" */
+}
+
+/** Actions columns */
+
+td.col_action .q-hoverable:hover {
+	box-shadow: inset -1px 0 0 #000, inset 0 -1px 0 #000, inset 1px 0 0 #000, inset 0 1px 0 #000;
+}
+
+td.col_action .text-primary.q-hoverable:hover {
+    box-shadow: inset -1px 0 0 var(--q-primary), inset 0 -1px 0 var(--q-primary), inset 1px 0 0 var(--q-primary), inset 0 1px 0 var(--q-primary);
+}
+
+.col_action .showButtonOnHover > button {
+    margin-left: 4px;
+}
+
+.no-touch .showButtonOnHover:hover > .q-btn[disabled],
+.no-touch tr:hover .showButtonOnHover > .q-btn[disabled] {
+  opacity: 0.5!important;
+  transition: .5s;
+}
+
+.no-touch .showButtonOnHover > .q-btn[disabled] {
+  opacity: 0!important;
+  transition: .5s;
+}
+
+.table-primary  .q-btn, .table-secondary  .q-btn {
+     background: none; 
+}
+
+/*fix cursor on <a> without href in q-editor*/
+.q-editor a.q-btn {
+    cursor: pointer;
+}
+
+
+/** Tests to show Actions on hover 
+ but will mask right column (controls, to favorites, etc ...)
+**/
+
+/** Test 1 : show on hover 
+thead tr:last-child th.col_action, td.col_action {
+   display:none;
+}
+
+tr:hover td.col_action:last-child:before {
+    display:none;
+}
+    
+tr:hover td.col_action:last-child {
+    background: linear-gradient(90deg, #F7F7F700 0px, #F7F7F7FF 16px);
+    position: absolute;
+    right: 0;
+    z-index: 1;
+    width:auto;
+    display:flex;
+    border-bottom-width: 0px;
+    height:47px; --dont mask bottom border   
+}
+*/
+/*
+Test2 : replace most right column on hover : like GMail
+
+tbody tr:hover td.col_action {
+    display:table-cell;
+}
+
+thead tr:hover:last-child th:last-child, tr:hover td.col_action:last-child {
+    display:table-cell;
+}
+
+thead tr:hover:last-child th:last-child:not(:first-child), tr:hover td:nth-last-child(2):not(:first-child){
+    display:none;
+}*/
+
 
 
 
