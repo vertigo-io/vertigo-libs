@@ -11,64 +11,84 @@ import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.easyforms.domain.DtDefinitions.TaxonomieFields;
-import io.vertigo.easyforms.metaformulaire.dao.TaxonomieDAO;
-import io.vertigo.easyforms.metaformulaire.dao.TaxonomieTypeDAO;
-import io.vertigo.easyforms.metaformulaire.domain.Taxonomie;
-import io.vertigo.easyforms.metaformulaire.domain.TaxonomieType;
+import io.vertigo.easyforms.domain.DtDefinitions.TaxonomyFields;
+import io.vertigo.easyforms.metaformulaire.MetaformulairePAO;
+import io.vertigo.easyforms.metaformulaire.dao.TaxonomyDAO;
+import io.vertigo.easyforms.metaformulaire.dao.TaxonomyTypeDAO;
+import io.vertigo.easyforms.metaformulaire.domain.Taxonomy;
+import io.vertigo.easyforms.metaformulaire.domain.TaxonomyType;
 
 @Transactional
 public class TaxonomyListServices implements Component {
 
 	private static final int MAX_LIST = 100;
+	public static final int MAX_VALUE_PER_LIST = 100;
 
 	@Inject
-	private TaxonomieTypeDAO taxonomieTypeDAO;
+	private TaxonomyTypeDAO taxonomyTypeDAO;
 	@Inject
-	private TaxonomieDAO taxonomieDAO;
+	private TaxonomyDAO taxonomyDAO;
+	@Inject
+	private MetaformulairePAO metaformulairePAO;
 
-	public DtList<TaxonomieType> getAllLists() {
-		final var result = taxonomieTypeDAO.findAll(Criterions.alwaysTrue(), DtListState.of(MAX_LIST + 1));
+	public DtList<TaxonomyType> getAllLists() {
+		final var result = taxonomyTypeDAO.findAll(Criterions.alwaysTrue(), DtListState.of(MAX_LIST + 1));
 		Assertion.check().isTrue(result.size() <= MAX_LIST, "Trop de liste (>" + MAX_LIST + ")");
 		return result;
 	}
 
-	public TaxonomieType getTaxonomieTypeById(final UID<TaxonomieType> tatUid) {
+	public TaxonomyType getTaxonomyTypeById(final UID<TaxonomyType> tatUid) {
 		Assertion.check().isNotNull(tatUid);
-		return taxonomieTypeDAO.get(tatUid);
+		return taxonomyTypeDAO.get(tatUid);
 	}
 
-	public DtList<Taxonomie> getTaxonomiesByType(final UID<TaxonomieType> tatUid) {
+	public DtList<Taxonomy> getTaxonomysByType(final UID<TaxonomyType> tatUid) {
 		Assertion.check().isNotNull(tatUid);
-		return taxonomieDAO.findAll(Criterions.isEqualTo(TaxonomieFields.tatId, tatUid.getId()),
-				DtListState.defaultOf(Taxonomie.class));
+		return taxonomyDAO.findAll(Criterions.isEqualTo(TaxonomyFields.tatId, tatUid.getId()),
+				DtListState.defaultOf(Taxonomy.class));
 	}
 
-	public TaxonomieType initTaxonomieType() {
-		return new TaxonomieType();
+	public TaxonomyType initTaxonomyType() {
+		final var taxonomyType = new TaxonomyType();
+		taxonomyType.setActive(Boolean.TRUE);
+		return taxonomyType;
 	}
 
-	public TaxonomieType saveTaxonomieType(final TaxonomieType taxonomieType) {
-		taxonomieTypeDAO.save(taxonomieType);
-		return taxonomieType;
+	public void enableTaxonomyType(final TaxonomyType taxonomyType, final boolean active) {
+		taxonomyType.setActive(active);
+		taxonomyTypeDAO.save(taxonomyType);
 	}
 
-	public void deleteTaxonomieType(final TaxonomieType taxonomieType) {
-		taxonomieType.setActive(Boolean.FALSE);
-		taxonomieTypeDAO.save(taxonomieType);
+	public void deleteTaxonomyType(final TaxonomyType taxonomyType) {
+		taxonomyType.setActive(Boolean.FALSE);
+		taxonomyTypeDAO.save(taxonomyType);
 	}
 
-	public void saveTaxonomies(final TaxonomieType taxonomieType, final DtList<Taxonomie> taxonomies) {
-		final var tatId = taxonomieType.getTatId();
+	public TaxonomyType saveTaxonomyType(final TaxonomyType taxonomyType) {
+		taxonomyTypeDAO.save(taxonomyType);
+		return taxonomyType;
+	}
+
+	public void deleteTaxonomyValue(final Taxonomy taxonomyValue) {
+		Assertion.check().isNotNull(taxonomyValue);
+		taxonomyDAO.delete(taxonomyValue.getTaxId());
+	}
+
+	public void saveTaxonomies(final TaxonomyType taxonomyType, final DtList<Taxonomy> taxonomys) {
+		final var tatId = taxonomyType.getTatId();
 		Assertion.check().isNotNull(tatId);
 		// ---
+		taxonomyTypeDAO.save(taxonomyType);
+		metaformulairePAO.deleteListTaxonomyValuesByTatId(tatId);
+
 		final var sort = new AtomicInteger();
-		taxonomies.stream().forEach(tax -> {
+		taxonomys.stream().forEach(tax -> {
 			tax.setTatId(tatId);
+			tax.setTaxId(null);// all values have been deleted, we recreate them
 			tax.setSort(sort.getAndIncrement());
 			tax.setActive(Boolean.TRUE);
 		});
-		taxonomies.stream().forEach(taxonomieDAO::save);
+		taxonomyDAO.createList(taxonomys);
 	}
 
 }

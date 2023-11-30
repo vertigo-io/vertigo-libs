@@ -250,17 +250,18 @@
 			graphData.metaformulaire = `classDiagram
 class MetaFormulaire:::entity {
 		+Long mfoId
-		+io.vertigo.easyforms.metaformulaire.ModeleFormulaire modele
+		+io.vertigo.easyforms.metaformulaire.domain.ModeleFormulaire modele
 }
-class Taxonomie:::entity {
+class Taxonomy:::entity {
 		+Long taxId
 		+String value
 		+Integer sort
 		+Boolean active
+		+String code
 		+Long tatId
 }
-Taxonomie "*" --> "1" TaxonomieType : TaxonomieType
-class TaxonomieType:::entity {
+Taxonomy "*" --> "1" TaxonomyType : TaxonomyType
+class TaxonomyType:::entity {
 		+Long tatId
 		+String code
 		+String label

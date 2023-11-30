@@ -57,6 +57,40 @@ VUiExtensions.methods = {
                 this.$q.notify({ message: 'Element déplacé', type: 'positive' });
             }.bind(this)
         });
+    },
+    
+    /** When used without itemModal */
+    addItemNoModal: function(listName) {
+        this.httpPostAjax('_addItem', this.vueDataParams([listName]), { });
+    },
+    deleteItemNoModal: function(listName, editIndex) {
+        let formData = this.vueDataParams([listName]);
+        formData.append('editIndex', editIndex);
+        this.httpPostAjax('_deleteItem', formData, {
+            onSuccess: function(response) {
+                this.$q.notify({ message: 'Element supprimé', type: 'positive' });
+            }.bind(this)
+         });
+    },
+    moveItemNoModal: function(listName, editIndex, offset) {
+        let formData = this.vueDataParams([listName]);
+        formData.append('editIndex', editIndex);
+        formData.append('offset', offset);
+        this.httpPostAjax('_moveItem', formData, {            
+        });
+    },
+    
+    /** When used inner vueData */
+    addItemVueData: function() {
+        this.$data.vueData.motifValues.push({label:''});
+    },
+    deleteItemVueData: function(editIndex) {
+        this.$data.vueData.motifValues.splice(editIndex, 1);
+    },
+    moveItemVueData: function(editIndex, offset) {
+	let element = this.$data.vueData.motifValues[editIndex];
+	this.$data.vueData.motifValues.splice(editIndex, 1);
+	this.$data.vueData.motifValues.splice(editIndex + offset, 0, element);
     }
 }
 

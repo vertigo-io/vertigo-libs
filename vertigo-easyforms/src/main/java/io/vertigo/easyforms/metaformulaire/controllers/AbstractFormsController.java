@@ -35,7 +35,7 @@ import io.vertigo.easyforms.metaformulaire.domain.ChampUi;
 import io.vertigo.easyforms.metaformulaire.domain.ControleDeChampDefinitionProvider.ControleDeChampEnum;
 import io.vertigo.easyforms.metaformulaire.domain.ControleDeChampUi;
 import io.vertigo.easyforms.metaformulaire.domain.MetaFormulaire;
-import io.vertigo.easyforms.metaformulaire.domain.TaxonomieType;
+import io.vertigo.easyforms.metaformulaire.domain.TaxonomyType;
 import io.vertigo.easyforms.metaformulaire.domain.TypeDeChampUi;
 import io.vertigo.easyforms.metaformulaire.services.MetaFormulaireServices;
 import io.vertigo.easyforms.metaformulaire.services.TaxonomyListServices;
@@ -52,7 +52,7 @@ public class AbstractFormsController extends AbstractVSpringMvcController {
 	private static final ViewContextKey<ChampUi> champsKey = ViewContextKey.of("champs");
 	private static final ViewContextKey<ControleDeChampUi> controleDeChampsEditKey = ViewContextKey.of("controleDeChampsEdit");
 	private static final ViewContextKey<ChampUi> champEditKey = ViewContextKey.of("champEdit");
-	private static final ViewContextKey<TaxonomieType> taxonomyTypesKey = ViewContextKey.of("taxonomyTypes");
+	private static final ViewContextKey<TaxonomyType> taxonomyTypesKey = ViewContextKey.of("taxonomyTypes");
 
 	@Inject
 	private MetaFormulaireServices metaFormulaireServices;

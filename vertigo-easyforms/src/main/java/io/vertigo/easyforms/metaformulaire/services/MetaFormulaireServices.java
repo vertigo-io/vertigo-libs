@@ -51,6 +51,7 @@ public class MetaFormulaireServices implements Component {
 				.map(typeDeChamp -> {
 					final var typeDeChampUi = new TypeDeChampUi();
 					typeDeChampUi.setNom(typeDeChamp.id().shortName());
+					typeDeChampUi.setLabel(typeDeChamp.getLabel());
 					return typeDeChampUi;
 				})
 				.collect(VCollectors.toDtList(TypeDeChampUi.class));
@@ -78,9 +79,11 @@ public class MetaFormulaireServices implements Component {
 		final var metaFormulaire = getMetaFormulaireById(mfoUid);
 		return metaFormulaire.getModele().getChamps().stream()
 				.map(champ -> {
+					var tchamp = TypeDeChamp.of(champ.getTypeChamp());
 					final var champUi = new ChampUi();
 					champUi.setCodeChamp(champ.getCodeChamp());
-					champUi.setTypeDeChamp(TypeDeChamp.of(champ.getTypeChamp()).id().shortName());
+					champUi.setTypeDeChamp(tchamp.id().shortName());
+					champUi.setTypeDeChampLabel(tchamp.getLabel());
 					champUi.setListId(champ.getListId());
 					champUi.setListValue(champ.getListValue());
 					champUi.setLibelle(champ.getLibelle());
@@ -115,16 +118,6 @@ public class MetaFormulaireServices implements Component {
 				if (champIndex != editIndex && champUi.getIsDisplay() && !champUi.getIsDefault()) {
 					champUi.setIsDisplay(false);
 					uiMessageStack.warning("Il ne peut y avoir qu'un seul champ complémentaire affiché dans les réservations.\nLe champ \"" + champUi.getCodeChamp() + "\" n'est plus inclus");
-				}
-			}
-		}
-		if (champEdit.getControleDeChamps().contains(ControleDeChampEnum.Unique.name())) {
-			//on retire tous les autres qui auraient un contrôle Unique
-			for (var champIndex = 0; champIndex < champs.size(); ++champIndex) {
-				final var champUi = champs.get(champIndex);
-				if (champIndex != editIndex && champUi.getControleDeChamps().contains(ControleDeChampEnum.Unique.name())) {
-					champUi.getControleDeChamps().remove(ControleDeChampEnum.Unique.name());
-					uiMessageStack.warning("Il ne peut y avoir qu'un seul champ unique par démarche.\nLe contrôle d'unicité sur le champ \"" + champUi.getCodeChamp() + "\" a été désactivé");
 				}
 			}
 		}

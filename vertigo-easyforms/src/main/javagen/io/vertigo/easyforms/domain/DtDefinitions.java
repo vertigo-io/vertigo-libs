@@ -23,10 +23,10 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		ControleDeChampUi(io.vertigo.easyforms.metaformulaire.domain.ControleDeChampUi.class),
 		/** Objet de données MetaFormulaire. */
 		MetaFormulaire(io.vertigo.easyforms.metaformulaire.domain.MetaFormulaire.class),
-		/** Objet de données Taxonomie. */
-		Taxonomie(io.vertigo.easyforms.metaformulaire.domain.Taxonomie.class),
-		/** Objet de données TaxonomieType. */
-		TaxonomieType(io.vertigo.easyforms.metaformulaire.domain.TaxonomieType.class),
+		/** Objet de données Taxonomy. */
+		Taxonomy(io.vertigo.easyforms.metaformulaire.domain.Taxonomy.class),
+		/** Objet de données TaxonomyType. */
+		TaxonomyType(io.vertigo.easyforms.metaformulaire.domain.TaxonomyType.class),
 		/** Objet de données TypeDeChampUi. */
 		TypeDeChampUi(io.vertigo.easyforms.metaformulaire.domain.TypeDeChampUi.class)		;
 
@@ -53,6 +53,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		codeChamp,
 		/** Propriété 'Type de champ'. */
 		typeDeChamp,
+		/** Propriété 'Type de champ'. */
+		typeDeChampLabel,
 		/** Propriété 'Id liste de valeurs'. */
 		listId,
 		/** Propriété 'Id valeur dans la liste'. */
@@ -91,9 +93,9 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		modele	}
 
 	/**
-	 * Enumération des champs de Taxonomie.
+	 * Enumération des champs de Taxonomy.
 	 */
-	public enum TaxonomieFields implements DtFieldName<io.vertigo.easyforms.metaformulaire.domain.Taxonomie> {
+	public enum TaxonomyFields implements DtFieldName<io.vertigo.easyforms.metaformulaire.domain.Taxonomy> {
 		/** Propriété 'Id'. */
 		taxId,
 		/** Propriété 'Valeur'. */
@@ -102,13 +104,15 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		sort,
 		/** Propriété 'Actif'. */
 		active,
-		/** Propriété 'Taxonomie type'. */
+		/** Propriété 'Code'. */
+		code,
+		/** Propriété 'Taxonomy type'. */
 		tatId	}
 
 	/**
-	 * Enumération des champs de TaxonomieType.
+	 * Enumération des champs de TaxonomyType.
 	 */
-	public enum TaxonomieTypeFields implements DtFieldName<io.vertigo.easyforms.metaformulaire.domain.TaxonomieType> {
+	public enum TaxonomyTypeFields implements DtFieldName<io.vertigo.easyforms.metaformulaire.domain.TaxonomyType> {
 		/** Propriété 'Id'. */
 		tatId,
 		/** Propriété 'Code liste'. */
@@ -123,7 +127,9 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum TypeDeChampUiFields implements DtFieldName<io.vertigo.easyforms.metaformulaire.domain.TypeDeChampUi> {
 		/** Propriété 'Type de champ'. */
-		nom	}
+		nom,
+		/** Propriété 'Label'. */
+		label	}
 
 	/** {@inheritDoc} */
 	@Override

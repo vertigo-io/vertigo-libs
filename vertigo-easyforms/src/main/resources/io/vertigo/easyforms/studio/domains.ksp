@@ -53,7 +53,7 @@ create Domain DoFFormulaire {
 
 create Domain DoFModeleFormulaire {
     dataType : ValueObject
-    type : "io.vertigo.easyforms.metaformulaire.ModeleFormulaire"
+    type : "io.vertigo.easyforms.metaformulaire.domain.ModeleFormulaire"
     storeType : "JSONB"
 }
 

@@ -7,10 +7,10 @@
 -- ============================================================
 drop table IF EXISTS META_FORMULAIRE cascade;
 drop sequence IF EXISTS SEQ_META_FORMULAIRE;
-drop table IF EXISTS TAXONOMIE cascade;
-drop sequence IF EXISTS SEQ_TAXONOMIE;
-drop table IF EXISTS TAXONOMIE_TYPE cascade;
-drop sequence IF EXISTS SEQ_TAXONOMIE_TYPE;
+drop table IF EXISTS TAXONOMY cascade;
+drop sequence IF EXISTS SEQ_TAXONOMY;
+drop table IF EXISTS TAXONOMY_TYPE cascade;
+drop sequence IF EXISTS SEQ_TAXONOMY_TYPE;
 
 
 
@@ -21,10 +21,10 @@ drop sequence IF EXISTS SEQ_TAXONOMIE_TYPE;
 create sequence SEQ_META_FORMULAIRE
 	start with 1000 cache 1; 
 
-create sequence SEQ_TAXONOMIE
+create sequence SEQ_TAXONOMY
 	start with 1000 cache 1; 
 
-create sequence SEQ_TAXONOMIE_TYPE
+create sequence SEQ_TAXONOMY_TYPE
 	start with 1000 cache 1; 
 
 
@@ -45,62 +45,66 @@ comment on column META_FORMULAIRE.MODELE is
 'Modèle';
 
 -- ============================================================
---   Table : TAXONOMIE                                        
+--   Table : TAXONOMY                                        
 -- ============================================================
-create table TAXONOMIE
+create table TAXONOMY
 (
     TAX_ID      	 NUMERIC     	not null,
     VALUE       	 VARCHAR(100)	,
     SORT        	 NUMERIC     	not null,
     ACTIVE      	 BOOLEAN     	not null,
+    CODE        	 VARCHAR(100)	,
     TAT_ID      	 NUMERIC     	not null,
-    constraint PK_TAXONOMIE primary key (TAX_ID)
+    constraint PK_TAXONOMY primary key (TAX_ID)
 );
 
-comment on column TAXONOMIE.TAX_ID is
+comment on column TAXONOMY.TAX_ID is
 'Id';
 
-comment on column TAXONOMIE.VALUE is
+comment on column TAXONOMY.VALUE is
 'Valeur';
 
-comment on column TAXONOMIE.SORT is
+comment on column TAXONOMY.SORT is
 'Ordre';
 
-comment on column TAXONOMIE.ACTIVE is
+comment on column TAXONOMY.ACTIVE is
 'Actif';
 
-comment on column TAXONOMIE.TAT_ID is
-'Taxonomie type';
+comment on column TAXONOMY.CODE is
+'Code';
+
+comment on column TAXONOMY.TAT_ID is
+'Taxonomy type';
 
 -- ============================================================
---   Table : TAXONOMIE_TYPE                                        
+--   Table : TAXONOMY_TYPE                                        
 -- ============================================================
-create table TAXONOMIE_TYPE
+create table TAXONOMY_TYPE
 (
     TAT_ID      	 NUMERIC     	not null,
     CODE        	 VARCHAR(100)	,
     LABEL       	 VARCHAR(100)	not null,
     ACTIVE      	 BOOLEAN     	not null,
-    constraint PK_TAXONOMIE_TYPE primary key (TAT_ID)
+    constraint PK_TAXONOMY_TYPE primary key (TAT_ID)
 );
 
-comment on column TAXONOMIE_TYPE.TAT_ID is
+comment on column TAXONOMY_TYPE.TAT_ID is
 'Id';
 
-comment on column TAXONOMIE_TYPE.CODE is
+comment on column TAXONOMY_TYPE.CODE is
 'Code liste';
 
-comment on column TAXONOMIE_TYPE.LABEL is
+comment on column TAXONOMY_TYPE.LABEL is
 'Libelle';
 
-comment on column TAXONOMIE_TYPE.ACTIVE is
+comment on column TAXONOMY_TYPE.ACTIVE is
 'Actif';
 
 
-alter table TAXONOMIE
-	add constraint FK_A_TAXONOMIE_VALUE_TYPE_TAXONOMIE_TYPE foreign key (TAT_ID)
-	references TAXONOMIE_TYPE (TAT_ID);
+alter table TAXONOMY
+	add constraint FK_A_TAXONOMY_VALUE_TYPE_TAXONOMY_TYPE foreign key (TAT_ID)
+	references TAXONOMY_TYPE (TAT_ID);
 
-create index A_TAXONOMIE_VALUE_TYPE_TAXONOMIE_TYPE_FK on TAXONOMIE (TAT_ID asc);
+create index A_TAXONOMY_VALUE_TYPE_TAXONOMY_TYPE_FK on TAXONOMY (TAT_ID asc);
 
 

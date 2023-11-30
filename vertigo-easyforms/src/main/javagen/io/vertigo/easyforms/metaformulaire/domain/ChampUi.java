@@ -15,6 +15,7 @@ public final class ChampUi implements DtObject {
 
 	private String codeChamp;
 	private String typeDeChamp;
+	private String typeDeChampLabel;
 	private Long listId;
 	private String listValue;
 	private String libelle;
@@ -59,6 +60,25 @@ public final class ChampUi implements DtObject {
 	 */
 	public void setTypeDeChamp(final String typeDeChamp) {
 		this.typeDeChamp = typeDeChamp;
+	}
+	
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'Type de champ'.
+	 * @return String typeDeChampLabel
+	 */
+	@Field(smartType = "STyFLabel", label = "Type de champ")
+	public String getTypeDeChampLabel() {
+		return typeDeChampLabel;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'Type de champ'.
+	 * @param typeDeChampLabel String
+	 */
+	public void setTypeDeChampLabel(final String typeDeChampLabel) {
+		this.typeDeChampLabel = typeDeChampLabel;
 	}
 	
 	/**

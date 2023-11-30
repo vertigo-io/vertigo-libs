@@ -14,6 +14,7 @@ public final class TypeDeChampUi implements DtObject {
 	private static final long serialVersionUID = 1L;
 
 	private String nom;
+	private String label;
 	
 	/**
 	 * Champ : DATA.
@@ -22,7 +23,6 @@ public final class TypeDeChampUi implements DtObject {
 	 */
 	@Field(smartType = "STyFLabel", label = "Type de champ")
 	@io.vertigo.datamodel.structure.stereotype.SortField
-	@io.vertigo.datamodel.structure.stereotype.DisplayField
 	public String getNom() {
 		return nom;
 	}
@@ -34,6 +34,26 @@ public final class TypeDeChampUi implements DtObject {
 	 */
 	public void setNom(final String nom) {
 		this.nom = nom;
+	}
+	
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'Label'.
+	 * @return String label
+	 */
+	@Field(smartType = "STyFLabel", label = "Label")
+	@io.vertigo.datamodel.structure.stereotype.DisplayField
+	public String getLabel() {
+		return label;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'Label'.
+	 * @param label String
+	 */
+	public void setLabel(final String label) {
+		this.label = label;
 	}
 	
 	/** {@inheritDoc} */

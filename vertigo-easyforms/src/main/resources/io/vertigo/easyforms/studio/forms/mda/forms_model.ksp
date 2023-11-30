@@ -8,8 +8,9 @@ create DtDefinition DtMetaFormulaire {
 
 create DtDefinition DtTypeDeChampUi {
     field nom {domain: DoFLabel label:"Type de champ" }
+    field label {domain: DoFLabel label:"Label" }
     sortField: "nom"
-    displayField: "nom"
+    displayField: "label"
 }
 
 create DtDefinition DtControleDeChampUi {
@@ -24,6 +25,7 @@ create DtDefinition DtControleDeChampUi {
 create DtDefinition DtChampUi {
     field codeChamp {domain: DoFCode label:"Code du champ" cardinality:"1" }
     field typeDeChamp {domain: DoFLabel label:"Type de champ" cardinality:"1" }
+    field typeDeChampLabel {domain: DoFLabel label:"Type de champ" cardinality:"?" }
     field listId {domain: DoFId label:"Id liste de valeurs" cardinality:"?" }
     field listValue {domain: DoFText label:"Id valeur dans la liste" cardinality:"?" }
     field libelle {domain: DoFLabel label:"Libellé" cardinality:"1"}
@@ -33,7 +35,7 @@ create DtDefinition DtChampUi {
     field controleDeChamps {domain: DoFText label:"Contrôles appliqués" cardinality:"*" }
 }
 
-create DtDefinition DtTaxonomieType {
+create DtDefinition DtTaxonomyType {
     id tatId {domain: DoFId label:"Id"}
     field code {domain: DoFLabel label:"Code liste" }
     field label {domain: DoFLabel label:"Libelle" cardinality:"1"}
@@ -42,22 +44,23 @@ create DtDefinition DtTaxonomieType {
     displayField: "label"
 }
 
-create DtDefinition DtTaxonomie {
+create DtDefinition DtTaxonomy {
     id taxId {domain: DoFId label:"Id"}
     field value {domain: DoFLabel label:"Valeur" }
     field sort {domain: DoFSort label:"Ordre" cardinality:"1"}
     field active {domain: DoFBooleen label:"Actif" cardinality:"1"}
+    field code {domain: DoFCode label:"Code" cardinality:"?"}
     sortField: "sort"
     displayField: "value"
 }
 
-create Association ATaxonomieValueType {
+create Association ATaxonomyValueType {
     fkFieldName : "tatId"
     
-    dtDefinitionA : DtTaxonomie
+    dtDefinitionA : DtTaxonomy
     type : "*>1"
-    dtDefinitionB : DtTaxonomieType
+    dtDefinitionB : DtTaxonomyType
             
-    labelB : "Taxonomie type"
+    labelB : "Taxonomy type"
 }
 

@@ -1,1 +1,9 @@
 package io.vertigo.easyforms.metaformulaire
+
+create Task TkDeleteListTaxonomyValuesByTatId {
+    className : "io.vertigo.basics.task.TaskEngineProc"
+    request : "
+        DELETE FROM taxonomy tax WHERE tax.tat_id = #tatId#     
+        "
+    in  tatId        {domain : DoFId                     cardinality: "1" }
+}

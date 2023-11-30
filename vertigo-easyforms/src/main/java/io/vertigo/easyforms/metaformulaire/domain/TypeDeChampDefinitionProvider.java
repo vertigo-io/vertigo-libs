@@ -17,16 +17,16 @@ public class TypeDeChampDefinitionProvider implements SimpleDefinitionProvider {
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		return List.of(
-				TypeDeChamp.of("EfTchNom", "STyEfNom", "textfield", "family-name"),
-				TypeDeChamp.of("EfTchPrenom", "STyEfPrenom", "textfield", "given-name"),
-				TypeDeChamp.of("EfTchEmail", "STyEfEmail", "textfield", "email"),
-				TypeDeChamp.of("EfTchDate", "STyEfDate", "date", null),
-				TypeDeChamp.of(TYPE_DATE_NAISSANCE, "STyEfDatePassee", "date", "bday"),
-				TypeDeChamp.of(TYPE_TELEPHONE, "STyEfTelephone", "textfield", "tel"),
-				TypeDeChamp.of(TYPE_VISA, "STyEfVisa", "textfield", null),
-				TypeDeChamp.of(TYPE_NATIONALITE, "STyEfNationalite", "textfield", null),
-				TypeDeChamp.of(TYPE_CODE_POSTAL, "STyEfCodePostal", "textfield", "postal-code"),
-				TypeDeChamp.of(TYPE_TAXONOMY, "STyEfMotif", "select", null, TaxonomieType.class));
+				TypeDeChamp.of("EfTchNom", "Nom", "STyEfNom", "textfield", "family-name"),
+				TypeDeChamp.of("EfTchPrenom", "Prénom", "STyEfPrenom", "textfield", "given-name"),
+				TypeDeChamp.of("EfTchEmail", "Email", "STyEfEmail", "textfield", "email"),
+				TypeDeChamp.of("EfTchDate", "Date", "STyEfDate", "date", null),
+				TypeDeChamp.of(TYPE_DATE_NAISSANCE, "Date de naissance", "STyEfDatePassee", "date", "bday"),
+				TypeDeChamp.of(TYPE_TELEPHONE, "Téléphone", "STyEfTelephone", "textfield", "tel"),
+				TypeDeChamp.of(TYPE_VISA, "N° de visa", "STyEfVisa", "textfield", null),
+				TypeDeChamp.of(TYPE_NATIONALITE, "Nationalité", "STyEfNationalite", "textfield", null),
+				TypeDeChamp.of(TYPE_CODE_POSTAL, "Code postal", "STyEfCodePostal", "textfield", "postal-code"),
+				TypeDeChamp.of(TYPE_TAXONOMY, "Taxonomie", "STyEfTaxonomy", "select", null, TaxonomyType.class));
 	}
 
 }
