@@ -529,20 +529,26 @@ public class PlanningServices implements Component {
 			uiErrorBuilder.addError(publicationTrancheHoraireForm, PublicationTrancheHoraireFormFields.dateLocaleFin,
 					LocaleMessageText.of("Vous ne pouvez pas publier plus de 2 mois à la fois"));
 		}
+		if (!publicationTrancheHoraireForm.getPublishNow()) {
+			uiErrorBuilder.checkFieldNotNull(publicationTrancheHoraireForm, PublicationTrancheHoraireFormFields.publicationDateLocale,
+					LocaleMessageText.of("La date de publication est obligatoire"));
+			uiErrorBuilder.checkFieldNotNull(publicationTrancheHoraireForm, PublicationTrancheHoraireFormFields.publicationMinutesDebut,
+					LocaleMessageText.of("L'heure de publication est obligatoire"));
+			if (publicationTrancheHoraireForm.getPublicationDateLocale() != null) {
+				final var decalageJoursPublish = ChronoUnit.DAYS.between(LocalDate.now(), publicationTrancheHoraireForm.getPublicationDateLocale());
+				if (decalageJoursPublish < 0) {
+					uiErrorBuilder.addError(publicationTrancheHoraireForm, PublicationTrancheHoraireFormFields.publicationDateLocale,
+							LocaleMessageText.of("Vous ne pouvez pas planifier la publication à une date dans le passé"));
+				}
+			}
+		}
+		uiErrorBuilder.throwUserExceptionIfErrors();
 
 		Instant datePublication;
 		if (publicationTrancheHoraireForm.getPublishNow()) {
 			datePublication = Instant.now().plusSeconds(PUBLISH_NOW_DELAY_S);
 		} else {
-			uiErrorBuilder.checkFieldNotNull(publicationTrancheHoraireForm, PublicationTrancheHoraireFormFields.publicationDateLocale,
-					LocaleMessageText.of("La date de publication est obligatoire"));
-			uiErrorBuilder.checkFieldNotNull(publicationTrancheHoraireForm, PublicationTrancheHoraireFormFields.publicationMinutesDebut,
-					LocaleMessageText.of("L'heure de publication est obligatoire"));
-			final var decalageJoursPublish = ChronoUnit.DAYS.between(LocalDate.now(), publicationTrancheHoraireForm.getPublicationDateLocale());
-			if (decalageJoursPublish < 0) {
-				uiErrorBuilder.addError(publicationTrancheHoraireForm, PublicationTrancheHoraireFormFields.publicationDateLocale,
-						LocaleMessageText.of("Vous ne pouvez pas planifier la publication à une date dans le passé"));
-			}
+
 			final var localTime = LocalTime.ofSecondOfDay(publicationTrancheHoraireForm.getPublicationMinutesDebut() * 60l);
 			final var publishLocalDateTime = LocalDateTime.of(publicationTrancheHoraireForm.getPublicationDateLocale(), localTime);
 

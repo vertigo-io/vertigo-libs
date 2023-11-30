@@ -1,20 +1,3 @@
-/*
- * vertigo - application development platform
- *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.planning.agenda.domain;
 
 import io.vertigo.core.lang.Generated;
@@ -36,7 +19,7 @@ public final class AgendaDisplayRange implements DtObject {
 	private java.time.LocalDate lastDate;
 	private Boolean mondayLock;
 	private Integer showDays;
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Id agenda'.
@@ -55,7 +38,7 @@ public final class AgendaDisplayRange implements DtObject {
 	public void setAgeId(final Long ageId) {
 		this.ageId = ageId;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date sélectionnée'.
@@ -74,7 +57,7 @@ public final class AgendaDisplayRange implements DtObject {
 	public void setShowDate(final java.time.LocalDate showDate) {
 		this.showDate = showDate;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de début'.
@@ -93,7 +76,7 @@ public final class AgendaDisplayRange implements DtObject {
 	public void setFirstDate(final java.time.LocalDate firstDate) {
 		this.firstDate = firstDate;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de fin (incluse)'.
@@ -112,7 +95,7 @@ public final class AgendaDisplayRange implements DtObject {
 	public void setLastDate(final java.time.LocalDate lastDate) {
 		this.lastDate = lastDate;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Si commence toujours par lundi'.
@@ -131,7 +114,7 @@ public final class AgendaDisplayRange implements DtObject {
 	public void setMondayLock(final Boolean mondayLock) {
 		this.mondayLock = mondayLock;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Nombre de jour affichés'.
@@ -150,7 +133,7 @@ public final class AgendaDisplayRange implements DtObject {
 	public void setShowDays(final Integer showDays) {
 		this.showDays = showDays;
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

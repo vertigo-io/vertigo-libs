@@ -62,6 +62,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.params.ScanParams;
 
 @NotDiscoverable
+@Deprecated
 public class Redis2FoConsultationPlanningPlugin extends DbFoConsultationPlanningPlugin {
 	private static final Gson V_CORE_GSON = CoreJsonAdapters.V_CORE_GSON;
 
