@@ -3,10 +3,10 @@ import * as Quasar from "quasar"
 
 export default {
     created: function(elMaxi, binding) {
-            const topOffset = binding.value.topOffset;
-            const topOffsetElSelector = binding.value.topOffsetEl;
-            const leftOffset = binding.value.leftOffset;
-            const leftOffsetElSelector = binding.value.leftOffsetEl;
+            const topOffset = binding.value?binding.value.topOffset:null;
+            const topOffsetElSelector = binding.value?binding.value.topOffsetEl:null;
+            const leftOffset = binding.value?binding.value.leftOffset:null;
+            const leftOffsetElSelector = binding.value?binding.value.leftOffsetEl:null;
             const elMini = elMaxi.querySelector('.mini')
             for(var i=0 ; i<elMaxi.childNodes.length; i++) {
                 var elChild = elMaxi.childNodes[i];

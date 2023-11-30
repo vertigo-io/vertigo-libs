@@ -2706,7 +2706,7 @@ const Ya = /* @__PURE__ */ T(ja, [["render", Ja]]), Ga = {
   }
 }, ce = window.Vue, Wa = window.Quasar, Za = {
   created: function(e, t) {
-    const n = t.value.topOffset, o = t.value.topOffsetEl, i = t.value.leftOffset, a = t.value.leftOffsetEl, s = e.querySelector(".mini");
+    const n = t.value ? t.value.topOffset : null, o = t.value ? t.value.topOffsetEl : null, i = t.value ? t.value.leftOffset : null, a = t.value ? t.value.leftOffsetEl : null, s = e.querySelector(".mini");
     for (var r = 0; r < e.childNodes.length; r++) {
       var l = e.childNodes[r];
       l.classList && !l.classList.contains("mini") && l.classList.add("not-mini");
