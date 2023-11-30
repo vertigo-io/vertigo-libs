@@ -28,8 +28,10 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
@@ -37,8 +39,10 @@ import io.vertigo.datafactory.impl.search.dsl.model.DslGeoDistanceQuery;
 import io.vertigo.datafactory.plugins.search.elasticsearch.AsbtractESSearchRequestBuilder;
 import io.vertigo.datafactory.plugins.search.elasticsearch.DslGeoToQueryBuilderUtil;
 import io.vertigo.datafactory.plugins.search.elasticsearch.ESDocumentCodec;
+import io.vertigo.datafactory.plugins.search.elasticsearch.IndexType;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtListState;
 
 //vérifier
@@ -74,19 +78,38 @@ final class ESSearchRequestBuilder extends AsbtractESSearchRequestBuilder<Search
 				//If we send a clustering query, we don't retrieve result with hits response but with buckets
 				.size(searchQuery.isClusteringFacet() ? 0 : listState.getMaxRows().orElse(defaultMaxRows));
 		if (listState.getSortFieldName().isPresent()) {
-			final var sortFieldName = listState.getSortFieldName().get();
-			final SortBuilder<?> sortBuilder;
-			if (searchQuery.getGeoExpression().isPresent()
-					&& searchQuery.getGeoExpression().get().getGeoQuery()instanceof DslGeoDistanceQuery geoDistanceQuery
-					&& sortFieldName.equals(searchQuery.getGeoExpression().get().getField().getFieldName())) {
-				final GeoPoint geoPoint = DslGeoToQueryBuilderUtil.computeGeoPoint(geoDistanceQuery.getGeoPoint(), searchQuery.getCriteria(), typeAdapters);
-				Assertion.check().isNotNull(geoPoint, "When sorting by distance the geoPoint used as criteria cannot be null");
-				sortBuilder = SortBuilders.geoDistanceSort(listState.getSortFieldName().get(), geoPoint);
-			} else {
-				sortBuilder = getFieldSortBuilder(indexDtDefinition, listState);
+			var sortFieldNames = listState.getSortFieldName().get();
+			sortFieldNames = sortFieldNames;
+			for (var sortFieldName : sortFieldNames.split(",")) {
+				sortFieldName = sortFieldName.trim(); //avoid split'\s*,\s*' cause ReDos
+				final SortBuilder<?> sortBuilder;
+				if (searchQuery.getGeoExpression().isPresent()
+						&& searchQuery.getGeoExpression().get().getGeoQuery() instanceof final DslGeoDistanceQuery geoDistanceQuery
+						&& sortFieldName.equals(searchQuery.getGeoExpression().get().getField().getFieldName())) {
+					final GeoPoint geoPoint = DslGeoToQueryBuilderUtil.computeGeoPoint(geoDistanceQuery.getGeoPoint(), searchQuery.getCriteria(), typeAdapters);
+					Assertion.check().isNotNull(geoPoint, "When sorting by distance the geoPoint used as criteria cannot be null");
+					sortBuilder = SortBuilders.geoDistanceSort(sortFieldName, geoPoint);
+				} else if (sortFieldName.indexOf('.') >= 0) {
+					sortBuilder = SortBuilders.fieldSort(sortFieldName)
+							.order(listState.isSortDesc().get() ? SortOrder.DESC : SortOrder.ASC);
+				} else {
+					sortBuilder = getFieldSortBuilder(indexDtDefinition, sortFieldName, listState.isSortDesc().get());
+				}
+				searchSourceBuilder.sort(sortBuilder);
 			}
-			searchSourceBuilder.sort(sortBuilder);
 		}
+	}
+
+	protected FieldSortBuilder getFieldSortBuilder(final DtDefinition indexDefinition, final String sortFieldName, final boolean sortDesc) {
+		final DtField sortField = indexDefinition.getField(sortFieldName);
+		String sortIndexFieldName = sortField.name();
+		final IndexType indexType = IndexType.readIndexType(sortField.smartTypeDefinition());
+
+		if (indexType.isIndexSubKeyword()) { //s'il y a un subKeyword on tri dessus
+			sortIndexFieldName = sortIndexFieldName + ".keyword";
+		}
+		return SortBuilders.fieldSort(sortIndexFieldName)
+				.order(sortDesc ? SortOrder.DESC : SortOrder.ASC);
 	}
 
 	@Override
