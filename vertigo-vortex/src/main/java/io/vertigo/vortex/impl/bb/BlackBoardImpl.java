@@ -23,12 +23,16 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.vortex.bb.BBCommandBoolean;
+import io.vertigo.vortex.bb.BBCommandInteger;
+import io.vertigo.vortex.bb.BBCommandList;
+import io.vertigo.vortex.bb.BBCommandString;
 import io.vertigo.vortex.bb.BBKey;
 import io.vertigo.vortex.bb.BBKeyPattern;
 import io.vertigo.vortex.bb.BBKeyTemplate;
 import io.vertigo.vortex.bb.BlackBoard;
 
-final class BlackBoardImpl implements BlackBoard {
+final class BlackBoardImpl implements BlackBoard, BBCommandBoolean, BBCommandString, BBCommandInteger, BBCommandList {
 	private final BlackBoardStorePlugin blackBoardStorePlugin;
 	private final BBKey rootKey;
 
@@ -39,6 +43,26 @@ final class BlackBoardImpl implements BlackBoard {
 		//---
 		this.blackBoardStorePlugin = blackBoardStorePlugin;
 		this.rootKey = rootKey;
+	}
+
+	@Override
+	public BBCommandBoolean bool() {
+		return this;
+	}
+
+	@Override
+	public BBCommandString string() {
+		return this;
+	}
+
+	@Override
+	public BBCommandInteger integer() {
+		return this;
+	}
+
+	@Override
+	public BBCommandList list() {
+		return this;
 	}
 
 	//------------------------------------
@@ -346,4 +370,5 @@ final class BlackBoardImpl implements BlackBoard {
 		}
 		return builder.toString();
 	}
+
 }
