@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import io.vertigo.connectors.redis.RedisConnector;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vortex.bb.BBKey;
 import io.vertigo.vortex.bb.BBKeyPattern;
@@ -130,15 +131,23 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 		return get(key);
 	}
 
-	@Override
-	public void putString(final BBKey key, final String value) {
+	private void doPut(final BBKey key, final String value, final Type type) {
+		Assertion.check()
+				.isNotNull(key)
+				.isNotNull(type);
+		// ---
 		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
 			try (final Transaction tx = jedis.multi()) {
-				tx.hset("types", key.key(), Type.String.name());
+				tx.hset("types", key.key(), type.name());
 				tx.set(key.key(), value);
 				tx.exec();
 			}
 		}
+	}
+
+	@Override
+	public void putString(final BBKey key, final String value) {
+		doPut(key, value, Type.String);
 	}
 
 	@Override
@@ -149,13 +158,7 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 
 	@Override
 	public void putInteger(final BBKey key, final Integer value) {
-		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
-			try (final Transaction tx = jedis.multi()) {
-				tx.hset("types", key.key(), Type.Integer.name());
-				tx.set(key.key(), String.valueOf(value));
-				tx.exec();
-			}
-		}
+		doPut(key, String.valueOf(value), Type.Integer);
 	}
 
 	@Override
@@ -166,13 +169,7 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 
 	@Override
 	public void putBoolean(final BBKey key, final Boolean value) {
-		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
-			try (final Transaction tx = jedis.multi()) {
-				tx.hset("types", key.key(), Type.Boolean.name());
-				tx.set(key.key(), String.valueOf(value));
-				tx.exec();
-			}
-		}
+		doPut(key, String.valueOf(value), Type.Boolean);
 	}
 
 	@Override
