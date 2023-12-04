@@ -127,7 +127,7 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 	}
 
 	@Override
-	public String getString(final BBKey key) {
+	public String stringGet(final BBKey key) {
 		return get(key);
 	}
 
@@ -146,34 +146,34 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 	}
 
 	@Override
-	public void putString(final BBKey key, final String value) {
+	public void stringPut(final BBKey key, final String value) {
 		doPut(key, value, Type.String);
 	}
 
 	@Override
-	public Integer getInteger(final BBKey key) {
+	public Integer integerGet(final BBKey key) {
 		final var value = get(key);
 		return value != null ? Integer.parseInt(value) : null;
 	}
 
 	@Override
-	public void putInteger(final BBKey key, final Integer value) {
+	public void integerPut(final BBKey key, final Integer value) {
 		doPut(key, String.valueOf(value), Type.Integer);
 	}
 
 	@Override
-	public Boolean getBoolean(final BBKey key) {
+	public Boolean boolGet(final BBKey key) {
 		final var value = get(key);
 		return value != null ? Boolean.parseBoolean(value) : null;
 	}
 
 	@Override
-	public void putBoolean(final BBKey key, final Boolean value) {
+	public void boolPut(final BBKey key, final Boolean value) {
 		doPut(key, String.valueOf(value), Type.Boolean);
 	}
 
 	@Override
-	public void incrBy(final BBKey key, final int value) {
+	public void integerIncrBy(final BBKey key, final int value) {
 		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
 			try (final Transaction tx = jedis.multi()) {
 				tx.hset("types", key.key(), Type.Integer.name()); // ensure type is set

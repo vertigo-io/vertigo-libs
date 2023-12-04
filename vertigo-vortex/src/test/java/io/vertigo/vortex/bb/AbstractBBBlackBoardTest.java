@@ -134,11 +134,11 @@ public abstract class AbstractBBBlackBoardTest {
 		final BlackBoard blackBoard = blackBoardManager.connect(BBKey.of("/test"));
 		//---
 		final BBKey sampleKey = BBKey.of("/sample/key");
-		Assertions.assertEquals(null, blackBoard.string().getString(sampleKey));
-		blackBoard.string().putString(sampleKey, "test");
-		Assertions.assertEquals("test", blackBoard.string().getString(sampleKey));
-		blackBoard.string().putString(sampleKey, "test2");
-		Assertions.assertEquals("test2", blackBoard.string().getString(sampleKey));
+		Assertions.assertEquals(null, blackBoard.string().get(sampleKey));
+		blackBoard.string().put(sampleKey, "test");
+		Assertions.assertEquals("test", blackBoard.string().get(sampleKey));
+		blackBoard.string().put(sampleKey, "test2");
+		Assertions.assertEquals("test2", blackBoard.string().get(sampleKey));
 	}
 
 	@Test
@@ -147,7 +147,7 @@ public abstract class AbstractBBBlackBoardTest {
 		//---
 		Assertions.assertEquals("", blackBoard.format(""));
 		Assertions.assertEquals("hello", blackBoard.format("hello"));
-		blackBoard.string().putString(BBKey.of("/sample/key"), "test");
+		blackBoard.string().put(BBKey.of("/sample/key"), "test");
 		Assertions.assertEquals("hello test", blackBoard.format("hello {{/sample/key}}"));
 	}
 
@@ -155,7 +155,7 @@ public abstract class AbstractBBBlackBoardTest {
 	public void testEvalKeyTemplate() {
 		final BlackBoard blackBoard = blackBoardManager.connect(BBKey.of("/test"));
 		//---
-		blackBoard.string().putString(BBKey.of("/sample/key"), "test");
+		blackBoard.string().put(BBKey.of("/sample/key"), "test");
 		Assertions.assertEquals("/u/test", blackBoard.format("/u/{{/sample/key}}"));
 	}
 
@@ -164,13 +164,13 @@ public abstract class AbstractBBBlackBoardTest {
 		final BlackBoard blackBoard = blackBoardManager.connect(BBKey.of("/test"));
 		//---
 		final BBKey key = BBKey.of("/key");
-		Assertions.assertEquals(null, blackBoard.integer().getInteger(key));
+		Assertions.assertEquals(null, blackBoard.integer().get(key));
 		blackBoard.integer().incr(key);
-		Assertions.assertEquals(1, blackBoard.integer().getInteger(key));
+		Assertions.assertEquals(1, blackBoard.integer().get(key));
 		blackBoard.integer().incr(key);
-		Assertions.assertEquals(2, blackBoard.integer().getInteger(key));
+		Assertions.assertEquals(2, blackBoard.integer().get(key));
 		blackBoard.integer().incrBy(key, 10);
-		Assertions.assertEquals(12, blackBoard.integer().getInteger(key));
+		Assertions.assertEquals(12, blackBoard.integer().get(key));
 	}
 
 	@Test
@@ -178,15 +178,15 @@ public abstract class AbstractBBBlackBoardTest {
 		final BlackBoard blackBoard = blackBoardManager.connect(BBKey.of("/test"));
 		//---
 		final BBKey key = BBKey.of("/key");
-		Assertions.assertEquals(null, blackBoard.integer().getInteger(key));
+		Assertions.assertEquals(null, blackBoard.integer().get(key));
 		blackBoard.integer().incrBy(key, 10);
-		Assertions.assertEquals(10, blackBoard.integer().getInteger(key));
+		Assertions.assertEquals(10, blackBoard.integer().get(key));
 		blackBoard.integer().decr(key);
-		Assertions.assertEquals(9, blackBoard.integer().getInteger(key));
+		Assertions.assertEquals(9, blackBoard.integer().get(key));
 		blackBoard.integer().decr(key);
-		Assertions.assertEquals(8, blackBoard.integer().getInteger(key));
+		Assertions.assertEquals(8, blackBoard.integer().get(key));
 		blackBoard.integer().incrBy(key, -5);
-		Assertions.assertEquals(3, blackBoard.integer().getInteger(key));
+		Assertions.assertEquals(3, blackBoard.integer().get(key));
 
 	}
 
@@ -218,21 +218,21 @@ public abstract class AbstractBBBlackBoardTest {
 		final BlackBoard blackBoard = blackBoardManager.connect(BBKey.of("/test"));
 		//---
 		final BBKey sampleKey = BBKey.of("/sample");
-		Assertions.assertEquals(null, blackBoard.integer().getInteger(sampleKey));
+		Assertions.assertEquals(null, blackBoard.integer().get(sampleKey));
 		blackBoard.integer().incr(sampleKey);
-		Assertions.assertEquals(1, blackBoard.integer().getInteger(sampleKey));
+		Assertions.assertEquals(1, blackBoard.integer().get(sampleKey));
 		blackBoard.integer().incr(sampleKey);
-		Assertions.assertEquals(2, blackBoard.integer().getInteger(sampleKey));
-		blackBoard.integer().putInteger(sampleKey, 56);
-		Assertions.assertEquals(56, blackBoard.integer().getInteger(sampleKey));
+		Assertions.assertEquals(2, blackBoard.integer().get(sampleKey));
+		blackBoard.integer().put(sampleKey, 56);
+		Assertions.assertEquals(56, blackBoard.integer().get(sampleKey));
 		Assertions.assertEquals(false, blackBoard.integer().lt(sampleKey, 50));
 		Assertions.assertEquals(true, blackBoard.integer().gt(sampleKey, 50));
 		Assertions.assertEquals(false, blackBoard.integer().eq(sampleKey, 50));
 		Assertions.assertEquals(true, blackBoard.integer().eq(sampleKey, 56));
-		blackBoard.integer().putInteger(sampleKey, -55);
-		Assertions.assertEquals(-55, blackBoard.integer().getInteger(sampleKey));
+		blackBoard.integer().put(sampleKey, -55);
+		Assertions.assertEquals(-55, blackBoard.integer().get(sampleKey));
 		blackBoard.integer().incrBy(sampleKey, 100);
-		Assertions.assertEquals(45, blackBoard.integer().getInteger(sampleKey));
+		Assertions.assertEquals(45, blackBoard.integer().get(sampleKey));
 	}
 
 	@Test
@@ -240,12 +240,12 @@ public abstract class AbstractBBBlackBoardTest {
 		final BlackBoard blackBoard = blackBoardManager.connect(BBKey.of("/test"));
 		//---
 		final BBKey sampleKey = BBKey.of("/sample");
-		Assertions.assertEquals(null, blackBoard.bool().getBoolean(sampleKey));
-		blackBoard.bool().putBoolean(sampleKey, true);
-		Assertions.assertTrue(blackBoard.bool().getBoolean(sampleKey));
-		blackBoard.bool().putBoolean(sampleKey, false);
+		Assertions.assertEquals(null, blackBoard.bool().get(sampleKey));
+		blackBoard.bool().put(sampleKey, true);
+		Assertions.assertTrue(blackBoard.bool().get(sampleKey));
+		blackBoard.bool().put(sampleKey, false);
 		Assertions.assertTrue(blackBoard.bool().eq(sampleKey, false));
-		blackBoard.bool().putBoolean(sampleKey, true);
+		blackBoard.bool().put(sampleKey, true);
 		Assertions.assertTrue(blackBoard.bool().eq(sampleKey, true));
 	}
 
@@ -254,14 +254,14 @@ public abstract class AbstractBBBlackBoardTest {
 		final BlackBoard blackBoard = blackBoardManager.connect(BBKey.of("/test"));
 		//---
 		final BBKey sampleKey = BBKey.of("/sample");
-		Assertions.assertEquals(null, blackBoard.string().getString(sampleKey));
-		blackBoard.string().putString(sampleKey, "test");
-		Assertions.assertEquals("test", blackBoard.string().getString(sampleKey));
+		Assertions.assertEquals(null, blackBoard.string().get(sampleKey));
+		blackBoard.string().put(sampleKey, "test");
+		Assertions.assertEquals("test", blackBoard.string().get(sampleKey));
 		blackBoard.delete(BBKeyPattern.of("/*"));
 		blackBoard.string().append(sampleKey, "hello");
 		blackBoard.string().append(sampleKey, " ");
 		blackBoard.string().append(sampleKey, "world");
-		Assertions.assertEquals("hello world", blackBoard.string().getString(sampleKey));
+		Assertions.assertEquals("hello world", blackBoard.string().get(sampleKey));
 	}
 
 	@Test
@@ -269,28 +269,28 @@ public abstract class AbstractBBBlackBoardTest {
 		final BlackBoard blackBoard = blackBoardManager.connect(BBKey.of("/test"));
 		//---
 		final BBKey sampleKey = BBKey.of("/sample");
-		Assertions.assertEquals(0, blackBoard.list().listSize(sampleKey));
-		blackBoard.list().listPush(sampleKey, "a");
-		blackBoard.list().listPush(sampleKey, "b");
-		blackBoard.list().listPush(sampleKey, "c");
-		Assertions.assertEquals(3, blackBoard.list().listSize(sampleKey));
-		Assertions.assertEquals("c", blackBoard.list().listPop(sampleKey));
-		Assertions.assertEquals(2, blackBoard.list().listSize(sampleKey));
-		Assertions.assertEquals("b", blackBoard.list().listPeek(sampleKey));
-		Assertions.assertEquals(2, blackBoard.list().listSize(sampleKey));
-		blackBoard.list().listPush(sampleKey, "c");
-		Assertions.assertEquals(3, blackBoard.list().listSize(sampleKey));
-		Assertions.assertEquals("a", blackBoard.list().listGet(sampleKey, 0));
-		Assertions.assertEquals("b", blackBoard.list().listGet(sampleKey, 1));
-		Assertions.assertEquals("c", blackBoard.list().listGet(sampleKey, 2));
-		Assertions.assertEquals("c", blackBoard.list().listGet(sampleKey, -1));
-		Assertions.assertEquals("b", blackBoard.list().listGet(sampleKey, -2));
-		Assertions.assertEquals("a", blackBoard.list().listGet(sampleKey, -3));
-		blackBoard.list().listPop(sampleKey);
-		blackBoard.list().listPop(sampleKey);
-		blackBoard.list().listPop(sampleKey);
-		blackBoard.list().listPop(sampleKey);
-		Assertions.assertEquals(0, blackBoard.list().listSize(sampleKey));
+		Assertions.assertEquals(0, blackBoard.list().size(sampleKey));
+		blackBoard.list().push(sampleKey, "a");
+		blackBoard.list().push(sampleKey, "b");
+		blackBoard.list().push(sampleKey, "c");
+		Assertions.assertEquals(3, blackBoard.list().size(sampleKey));
+		Assertions.assertEquals("c", blackBoard.list().pop(sampleKey));
+		Assertions.assertEquals(2, blackBoard.list().size(sampleKey));
+		Assertions.assertEquals("b", blackBoard.list().peek(sampleKey));
+		Assertions.assertEquals(2, blackBoard.list().size(sampleKey));
+		blackBoard.list().push(sampleKey, "c");
+		Assertions.assertEquals(3, blackBoard.list().size(sampleKey));
+		Assertions.assertEquals("a", blackBoard.list().get(sampleKey, 0));
+		Assertions.assertEquals("b", blackBoard.list().get(sampleKey, 1));
+		Assertions.assertEquals("c", blackBoard.list().get(sampleKey, 2));
+		Assertions.assertEquals("c", blackBoard.list().get(sampleKey, -1));
+		Assertions.assertEquals("b", blackBoard.list().get(sampleKey, -2));
+		Assertions.assertEquals("a", blackBoard.list().get(sampleKey, -3));
+		blackBoard.list().pop(sampleKey);
+		blackBoard.list().pop(sampleKey);
+		blackBoard.list().pop(sampleKey);
+		blackBoard.list().pop(sampleKey);
+		Assertions.assertEquals(0, blackBoard.list().size(sampleKey));
 	}
 
 }

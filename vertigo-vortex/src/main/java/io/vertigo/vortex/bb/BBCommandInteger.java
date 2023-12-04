@@ -18,7 +18,7 @@
 package io.vertigo.vortex.bb;
 
 /**
- * Part of Blackboard to manage booleans
+ * Blackboard commands  to manage booleans
  * @author pchretien
  */
 public interface BBCommandInteger {
@@ -29,7 +29,7 @@ public interface BBCommandInteger {
 	 * @param key the key
 	 * @return the value mapped with the key or null if the key does not exist
 	 */
-	Integer getInteger(final BBKey key);
+	Integer get(final BBKey key);
 
 	/**
 	 * Associates the specified value with the specified key
@@ -37,7 +37,7 @@ public interface BBCommandInteger {
 	 * @param key the key
 	 * @param value the value
 	 */
-	void putInteger(final BBKey key, final Integer value);
+	void put(final BBKey key, final Integer value);
 
 	/**
 	 * Increments the value (must be an integer) at the key by a value

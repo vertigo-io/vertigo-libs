@@ -32,9 +32,13 @@ import io.vertigo.vortex.bb.BBKeyPattern;
 import io.vertigo.vortex.bb.BBKeyTemplate;
 import io.vertigo.vortex.bb.BlackBoard;
 
-final class BlackBoardImpl implements BlackBoard, BBCommandBoolean, BBCommandString, BBCommandInteger, BBCommandList {
+final class BlackBoardImpl implements BlackBoard {
 	private final BlackBoardStorePlugin blackBoardStorePlugin;
 	private final BBKey rootKey;
+	private BBCommandBoolean commandBoolean;
+	private BBCommandString commandString;
+	private BBCommandInteger commandInteger;
+	private BBCommandList commandList;
 
 	BlackBoardImpl(final BlackBoardStorePlugin blackBoardStorePlugin, final BBKey rootKey) {
 		Assertion.check()
@@ -43,26 +47,30 @@ final class BlackBoardImpl implements BlackBoard, BBCommandBoolean, BBCommandStr
 		//---
 		this.blackBoardStorePlugin = blackBoardStorePlugin;
 		this.rootKey = rootKey;
+		this.commandBoolean = new BBCommandBooleanImpl();
+		this.commandString = new BBCommandStringImpl();
+		this.commandInteger = new BBCommandIntegerImpl();
+		this.commandList = new BBCommandListImpl();
 	}
 
 	@Override
 	public BBCommandBoolean bool() {
-		return this;
+		return commandBoolean;
 	}
 
 	@Override
 	public BBCommandString string() {
-		return this;
+		return commandString;
 	}
 
 	@Override
 	public BBCommandInteger integer() {
-		return this;
+		return commandInteger;
 	}
 
 	@Override
 	public BBCommandList list() {
-		return this;
+		return commandList;
 	}
 
 	//------------------------------------
@@ -117,182 +125,216 @@ final class BlackBoardImpl implements BlackBoard, BBCommandBoolean, BBCommandStr
 	}
 
 	//--- KV String
-	@Override
-	public String getString(final BBKey key) {
-		checkKey(key, Type.String);
-		//---
-		return blackBoardStorePlugin
-				.getString(rootKey.add(key));
-	}
-
-	@Override
-	public void putString(final BBKey key, final String value) {
-		checkKey(key, Type.String);
-		//---
-		blackBoardStorePlugin
-				.putString(rootKey.add(key), value);
-	}
-
-	@Override
-	public void append(final BBKey key, final String something) {
-		String value = getString(key); // getString includes type checking
-		if (value == null) {
-			value = "";
+	private class BBCommandStringImpl implements BBCommandString {
+		@Override
+		public String get(final BBKey key) {
+			checkKey(key, Type.String);
+			//---
+			return blackBoardStorePlugin
+					.stringGet(rootKey.add(key));
 		}
-		putString(key, value + something);
-	}
 
-	@Override
-	public boolean eq(final BBKey key, final String compare) {
-		final String value = getString(key); // getString includes type checking
-		return value == null ? compare == null : value.equals(compare);
-	}
+		@Override
+		public void put(final BBKey key, final String value) {
+			checkKey(key, Type.String);
+			//---
+			blackBoardStorePlugin
+					.stringPut(rootKey.add(key), value);
+		}
 
-	@Override
-	public boolean eqCaseInsensitive(final BBKey key, final String compare) {
-		final String value = getString(key); // getString includes type checking
-		return value == null ? compare == null : value.equalsIgnoreCase(compare);
-	}
+		@Override
+		public void append(final BBKey key, final String something) {
+			String value = get(key); // getString includes type checking
+			if (value == null) {
+				value = "";
+			}
+			put(key, value + something);
+		}
 
-	@Override
-	public boolean startsWith(final BBKey key, final String compare) {
-		final String value = getString(key); // getString includes type checking
-		return value == null
-				? compare == null
-				: value.startsWith(compare);
+		@Override
+		public boolean eq(final BBKey key, final String compare) {
+			final String value = get(key); // getString includes type checking
+			return value == null ? compare == null : value.equals(compare);
+		}
+
+		@Override
+		public boolean eqCaseInsensitive(final BBKey key, final String compare) {
+			final String value = get(key); // getString includes type checking
+			return value == null ? compare == null : value.equalsIgnoreCase(compare);
+		}
+
+		@Override
+		public boolean startsWith(final BBKey key, final String compare) {
+			final String value = get(key); // getString includes type checking
+			return value == null
+					? compare == null
+					: value.startsWith(compare);
+		}
 	}
 
 	//--- KV Integer
+	private class BBCommandIntegerImpl implements BBCommandInteger {
+		@Override
+		public Integer get(final BBKey key) {
+			checkKey(key, Type.Integer);
+			//---
+			return blackBoardStorePlugin
+					.integerGet(rootKey.add(key));
+		}
 
-	@Override
-	public Integer getInteger(final BBKey key) {
-		checkKey(key, Type.Integer);
-		//---
-		return blackBoardStorePlugin
-				.getInteger(rootKey.add(key));
-	}
+		@Override
+		public void put(final BBKey key, final Integer value) {
+			checkKey(key, Type.Integer);
+			//---
+			blackBoardStorePlugin
+					.integerPut(rootKey.add(key), value);
+		}
 
-	@Override
-	public void putInteger(final BBKey key, final Integer value) {
-		checkKey(key, Type.Integer);
-		//---
-		blackBoardStorePlugin
-				.putInteger(rootKey.add(key), value);
-	}
+		@Override
+		public void incrBy(final BBKey key, final int value) {
+			checkKey(key, Type.Integer);
+			//---
+			blackBoardStorePlugin.integerIncrBy(rootKey.add(key), value);
+		}
 
-	@Override
-	public void incrBy(final BBKey key, final int value) {
-		checkKey(key, Type.Integer);
-		//---
-		blackBoardStorePlugin.incrBy(rootKey.add(key), value);
-	}
+		@Override
+		public void incr(final BBKey key) {
+			incrBy(key, 1);
+		}
 
-	@Override
-	public void incr(final BBKey key) {
-		incrBy(key, 1);
-	}
+		@Override
+		public void decr(final BBKey key) {
+			incrBy(key, -1);
+		}
 
-	@Override
-	public void decr(final BBKey key) {
-		incrBy(key, -1);
-	}
+		@Override
+		public boolean lt(final BBKey key, final Integer compare) {
+			return compareInteger(key, compare) < 0;
+		}
 
-	@Override
-	public boolean lt(final BBKey key, final Integer compare) {
-		return compareInteger(key, compare) < 0;
-	}
+		@Override
+		public boolean eq(final BBKey key, final Integer compare) {
+			return compareInteger(key, compare) == 0;
+		}
 
-	@Override
-	public boolean eq(final BBKey key, final Integer compare) {
-		return compareInteger(key, compare) == 0;
-	}
+		@Override
+		public boolean gt(final BBKey key, final Integer compare) {
+			return compareInteger(key, compare) > 0;
+		}
 
-	@Override
-	public boolean gt(final BBKey key, final Integer compare) {
-		return compareInteger(key, compare) > 0;
-	}
+		private int compareInteger(final BBKey key, final Integer compare) {
+			checkKey(key, Type.Integer);
+			//---
+			final Integer value = get(key);
+			return compareInteger(value, compare);
+		}
 
-	private int compareInteger(final BBKey key, final Integer compare) {
-		checkKey(key, Type.Integer);
-		//---
-		final Integer value = getInteger(key);
-		return compareInteger(value, compare);
+		private static int compareInteger(final Integer value, final Integer compare) {
+			if (value == null) {
+				return compare == null
+						? 0
+						: -1;
+			}
+			if (compare == null) {
+				return value == null
+						? 0
+						: -1;
+			}
+			return value.compareTo(compare);
+		}
 	}
 
 	//--- KV Boolean
+	private class BBCommandBooleanImpl implements BBCommandBoolean {
 
-	@Override
-	public Boolean getBoolean(final BBKey key) {
-		checkKey(key, Type.Boolean);
-		//---
-		return blackBoardStorePlugin
-				.getBoolean(rootKey.add(key));
-	}
+		@Override
+		public Boolean get(final BBKey key) {
+			checkKey(key, Type.Boolean);
+			//---
+			return blackBoardStorePlugin
+					.boolGet(rootKey.add(key));
+		}
 
-	@Override
-	public void putBoolean(final BBKey key, final Boolean value) {
-		checkKey(key, Type.Boolean);
-		//---
-		blackBoardStorePlugin
-				.putBoolean(rootKey.add(key), value);
-	}
+		@Override
+		public void put(final BBKey key, final Boolean value) {
+			checkKey(key, Type.Boolean);
+			//---
+			blackBoardStorePlugin
+					.boolPut(rootKey.add(key), value);
+		}
 
-	@Override
-	public boolean eq(final BBKey key, final Boolean compare) {
-		return compareBoolean(key, compare) == 0;
-	}
+		@Override
+		public boolean eq(final BBKey key, final Boolean compare) {
+			return compareBoolean(key, compare) == 0;
+		}
 
-	private int compareBoolean(final BBKey key, final Boolean compare) {
-		checkKey(key, Type.Boolean);
-		//---
-		final Boolean value = getBoolean(key);
-		return compareBoolean(value, compare);
+		private int compareBoolean(final BBKey key, final Boolean compare) {
+			checkKey(key, Type.Boolean);
+			//---
+			final Boolean value = get(key);
+			return compareBoolean(value, compare);
+		}
+
+		private static int compareBoolean(final Boolean value, final Boolean compare) {
+			if (value == null) {
+				return compare == null
+						? 0
+						: -1;
+			}
+			if (compare == null) {
+				return value == null
+						? 0
+						: -1;
+			}
+			return value.compareTo(compare);
+		}
 	}
 
 	//------------------------------------
 	//- List
 	//- All methods are prefixed with list
 	//------------------------------------
-	@Override
-	public int listSize(final BBKey key) {
-		checkKey(key, Type.List);
-		//---
-		return blackBoardStorePlugin
-				.listSize(rootKey.add(key));
-	}
+	private class BBCommandListImpl implements BBCommandList {
+		@Override
+		public int size(final BBKey key) {
+			checkKey(key, Type.List);
+			//---
+			return blackBoardStorePlugin
+					.listSize(rootKey.add(key));
+		}
 
-	@Override
-	public void listPush(final BBKey key, final String value) {
-		checkKey(key, Type.List);
-		//---
-		blackBoardStorePlugin
-				.listPush(rootKey.add(key), value);
-	}
+		@Override
+		public void push(final BBKey key, final String value) {
+			checkKey(key, Type.List);
+			//---
+			blackBoardStorePlugin
+					.listPush(rootKey.add(key), value);
+		}
 
-	@Override
-	public String listPop(final BBKey key) {
-		checkKey(key, Type.List);
-		//---
-		return blackBoardStorePlugin
-				.listPop(rootKey.add(key));
-	}
+		@Override
+		public String pop(final BBKey key) {
+			checkKey(key, Type.List);
+			//---
+			return blackBoardStorePlugin
+					.listPop(rootKey.add(key));
+		}
 
-	@Override
-	public String listPeek(final BBKey key) {
-		checkKey(rootKey.add(key), Type.List);
-		//---
-		return blackBoardStorePlugin
-				.listPeek(rootKey.add(key));
-	}
+		@Override
+		public String peek(final BBKey key) {
+			checkKey(rootKey.add(key), Type.List);
+			//---
+			return blackBoardStorePlugin
+					.listPeek(rootKey.add(key));
+		}
 
-	@Override
-	public String listGet(final BBKey key, final int idx) {
-		checkKey(rootKey.add(key), Type.List);
-		//---
-		return blackBoardStorePlugin
-				.listGet(rootKey.add(key), idx);
+		@Override
+		public String get(final BBKey key, final int idx) {
+			checkKey(rootKey.add(key), Type.List);
+			//---
+			return blackBoardStorePlugin
+					.listGet(rootKey.add(key), idx);
+		}
 	}
-
 	//------------------------------------
 	//- Utils                             -
 	//------------------------------------
@@ -314,34 +356,6 @@ final class BlackBoardImpl implements BlackBoard, BBCommandBoolean, BBCommandStr
 		if (t != null && !type.equals(t)) {
 			throw new IllegalStateException("the type of the key " + t + " is not the one expected " + type);
 		}
-	}
-
-	private static int compareBoolean(final Boolean value, final Boolean compare) {
-		if (value == null) {
-			return compare == null
-					? 0
-					: -1;
-		}
-		if (compare == null) {
-			return value == null
-					? 0
-					: -1;
-		}
-		return value.compareTo(compare);
-	}
-
-	private static int compareInteger(final Integer value, final Integer compare) {
-		if (value == null) {
-			return compare == null
-					? 0
-					: -1;
-		}
-		if (compare == null) {
-			return value == null
-					? 0
-					: -1;
-		}
-		return value.compareTo(compare);
 	}
 
 	public static String format(final String msg, final Function<BBKey, String> kv) {

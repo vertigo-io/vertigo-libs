@@ -29,7 +29,7 @@ public interface BBCommandString {
 	 * @param key the key
 	 * @return the value mapped with the key or null if the key does not exist
 	 */
-	String getString(final BBKey key);
+	String get(final BBKey key);
 
 	/**
 	 * Associates the specified value with the specified key
@@ -37,7 +37,7 @@ public interface BBCommandString {
 	 * @param key the key
 	 * @param value the value
 	 */
-	void putString(final BBKey key, final String value);
+	void put(final BBKey key, final String value);
 
 	/**
 	 * Appends something to a key

@@ -33,7 +33,7 @@ public interface BBCommandList {
 	 * @param key the key
 	 * @return the size of the list
 	 */
-	int listSize(final BBKey key);
+	int size(final BBKey key);
 
 	/**
 	 * Pushes a value at the top of the list
@@ -41,7 +41,7 @@ public interface BBCommandList {
 	 * @param key the key
 	 * @param value the value
 	 */
-	void listPush(final BBKey key, final String value);
+	void push(final BBKey key, final String value);
 
 	/**
 	 * Removes and returns the value at the top of the list
@@ -49,7 +49,7 @@ public interface BBCommandList {
 	 * @param key the key
 	 * @param value the value
 	 */
-	String listPop(final BBKey key);
+	String pop(final BBKey key);
 
 	/**
 	 * Returns the value at the top of the list
@@ -57,7 +57,7 @@ public interface BBCommandList {
 	 * @param key the key
 	 * @param value the value
 	 */
-	String listPeek(final BBKey key);
+	String peek(final BBKey key);
 
 	/**
 	 * Reads the value at the index of the list
@@ -66,5 +66,5 @@ public interface BBCommandList {
 	 * @param idx the index
 	 * @return the value at the corresponding index
 	 */
-	String listGet(final BBKey key, final int idx);
+	String get(final BBKey key, final int idx);
 }

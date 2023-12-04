@@ -21,9 +21,15 @@ import java.util.Set;
 
 /**
  * The blackboard is a simple structure allowing to read and write values identified by keys.
- * Some basic operations are supported
- * The blackboard can be volatile or persistent
- * The blackboard can be shared or not
+ * Some basic commands are supported.
+ * The blackboard can be volatile or persistent.
+ * The blackboard can be shared or not.
+ * 
+ * The blackBoard manages 4 different types 
+ * 		- Boolean, // bool because boolean is a java reserved word
+ * 		- String,
+ * 		- Integer,
+ * 		- List // of Strings
  *
  * Keys must follow a rule (see the regex)
  * @author pchretien

@@ -79,9 +79,9 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 * @param key the key
 	 * @return the value mapped with the key or null if the key does not exist
 	 */
-	String getString(final BBKey key);
+	String stringGet(final BBKey key);
 
-	void putString(final BBKey key, final String value);
+	void stringPut(final BBKey key, final String value);
 
 	//--- KV Integer
 	/**
@@ -90,9 +90,9 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 * @param key the key
 	 * @return the value mapped with the key or null if the key does not exist
 	 */
-	Integer getInteger(final BBKey key);
+	Integer integerGet(final BBKey key);
 
-	void putInteger(final BBKey key, final Integer value);
+	void integerPut(final BBKey key, final Integer value);
 
 	/**
 	 * Increments the value (must be an integer) at the key by a value
@@ -100,7 +100,7 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 * @param key the key
 	 * @param value the value
 	 */
-	void incrBy(final BBKey key, final int value);
+	void integerIncrBy(final BBKey key, final int value);
 
 	//--- KV Boolean
 	/**
@@ -109,9 +109,9 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 * @param key the key
 	 * @return the value mapped with the key or null if the key does not exist
 	 */
-	Boolean getBoolean(final BBKey key);
+	Boolean boolGet(final BBKey key);
 
-	void putBoolean(final BBKey key, final Boolean value);
+	void boolPut(final BBKey key, final Boolean value);
 
 	//------------------------------------
 	//- List

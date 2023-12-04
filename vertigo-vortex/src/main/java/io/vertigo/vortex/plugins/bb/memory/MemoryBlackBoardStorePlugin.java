@@ -114,38 +114,38 @@ public final class MemoryBlackBoardStorePlugin implements BlackBoardStorePlugin 
 	}
 
 	@Override
-	public String getString(final BBKey key) {
+	public String stringGet(final BBKey key) {
 		Assertion.check().isNotNull(key);
 		// ---
 		return (String) values.get(key);
 	}
 
 	@Override
-	public Integer getInteger(final BBKey key) {
+	public Integer integerGet(final BBKey key) {
 		Assertion.check().isNotNull(key);
 		// ---
 		return (Integer) values.get(key);
 	}
 
 	@Override
-	public Boolean getBoolean(final BBKey key) {
+	public Boolean boolGet(final BBKey key) {
 		Assertion.check().isNotNull(key);
 		// ---
 		return (Boolean) values.get(key);
 	}
 
 	@Override
-	public void putString(final BBKey key, final String value) {
+	public void stringPut(final BBKey key, final String value) {
 		doPut(key, Type.String, value);
 	}
 
 	@Override
-	public void putInteger(final BBKey key, final Integer value) {
+	public void integerPut(final BBKey key, final Integer value) {
 		doPut(key, Type.Integer, value);
 	}
 
 	@Override
-	public void putBoolean(final BBKey key, final Boolean value) {
+	public void boolPut(final BBKey key, final Boolean value) {
 		doPut(key, Type.Boolean, value);
 	}
 
@@ -163,15 +163,15 @@ public final class MemoryBlackBoardStorePlugin implements BlackBoardStorePlugin 
 	}
 
 	@Override
-	public void incrBy(final BBKey key, final int value) {
+	public void integerIncrBy(final BBKey key, final int value) {
 		Assertion.check()
 				.isNotNull(key);
 		//---
-		Integer i = getInteger(key);
+		Integer i = integerGet(key);
 		if (i == null) {
 			i = 0;
 		}
-		putInteger(key, i + value);
+		integerPut(key, i + value);
 	}
 
 	@Override

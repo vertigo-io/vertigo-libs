@@ -18,7 +18,7 @@
 package io.vertigo.vortex.bb;
 
 /**
- * Part of Blackboard to manage booleans
+ * Blackboard commands to manage booleans
  * @author pchretien
  */
 public interface BBCommandBoolean {
@@ -29,7 +29,7 @@ public interface BBCommandBoolean {
 	 * @param key the key
 	 * @return the value mapped with the key or null if the key does not exist
 	 */
-	Boolean getBoolean(final BBKey key);
+	Boolean get(final BBKey key);
 
 	/**
 	 * Associates the specified value with the specified key
@@ -37,7 +37,7 @@ public interface BBCommandBoolean {
 	 * @param key the key
 	 * @param value the value
 	 */
-	void putBoolean(final BBKey key, final Boolean value);
+	void put(final BBKey key, final Boolean value);
 
 	boolean eq(final BBKey key, final Boolean compare);
 }
