@@ -253,7 +253,7 @@ public class TokenizerTest {
 	public void test30(final String src) {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
-		assertEquals("\"lorem\"", tokens.get(0).value());
+		assertEquals("lorem", tokens.get(0).value());
 		assertEquals(TokenType.string_basic, tokens.get(0).type());
 	}
 
@@ -262,7 +262,7 @@ public class TokenizerTest {
 	public void test300(final String src) {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
-		assertEquals("'lorem'", tokens.get(0).value());
+		assertEquals("lorem", tokens.get(0).value());
 		assertEquals(TokenType.string_strict, tokens.get(0).type());
 	}
 
@@ -271,7 +271,7 @@ public class TokenizerTest {
 	public void test31(final String src) {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
-		assertEquals("\"lo\\\"rem\"", tokens.get(0).value());
+		assertEquals("lo\"rem", tokens.get(0).value());
 		assertEquals(TokenType.string_basic, tokens.get(0).type());
 	}
 
@@ -280,7 +280,7 @@ public class TokenizerTest {
 	public void test310(final String src) {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
-		assertEquals("'lo\"rem'", tokens.get(0).value());
+		assertEquals("lo\"rem", tokens.get(0).value());
 		assertEquals(TokenType.string_strict, tokens.get(0).type());
 	}
 
@@ -289,9 +289,9 @@ public class TokenizerTest {
 	public void test32(final String src) {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(3, tokens.size());
-		assertEquals("\"lorem\"", tokens.get(0).value());
+		assertEquals("lorem", tokens.get(0).value());
 		assertEquals(TokenType.string_basic, tokens.get(0).type());
-		assertEquals("\"IPSUM\"", tokens.get(2).value());
+		assertEquals("IPSUM", tokens.get(2).value());
 		assertEquals(TokenType.string_basic, tokens.get(2).type());
 	}
 

@@ -4,7 +4,7 @@ package "io.vertigo.studio.domain.security"
 
 create Task TkLoadBaseIndex {
 	className : "io.vertigo.basics.task.TaskEngineSelect",
-	request : """	select 	bas.BASE_ID, 
+	request : """select 	bas.BASE_ID, 
 						bas.NAME, 
 						bas.CODE, 
 						bas.CREATION_DATE, 
