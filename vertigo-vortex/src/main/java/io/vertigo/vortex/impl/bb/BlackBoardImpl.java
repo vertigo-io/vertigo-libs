@@ -141,35 +141,6 @@ final class BlackBoardImpl implements BlackBoard {
 			blackBoardStorePlugin
 					.stringPut(rootKey.add(key), value);
 		}
-
-		@Override
-		public void append(final BBKey key, final String something) {
-			String value = get(key); // getString includes type checking
-			if (value == null) {
-				value = "";
-			}
-			put(key, value + something);
-		}
-
-		@Override
-		public boolean eq(final BBKey key, final String compare) {
-			final String value = get(key); // getString includes type checking
-			return value == null ? compare == null : value.equals(compare);
-		}
-
-		@Override
-		public boolean eqCaseInsensitive(final BBKey key, final String compare) {
-			final String value = get(key); // getString includes type checking
-			return value == null ? compare == null : value.equalsIgnoreCase(compare);
-		}
-
-		@Override
-		public boolean startsWith(final BBKey key, final String compare) {
-			final String value = get(key); // getString includes type checking
-			return value == null
-					? compare == null
-					: value.startsWith(compare);
-		}
 	}
 
 	//--- KV Integer
@@ -196,52 +167,6 @@ final class BlackBoardImpl implements BlackBoard {
 			//---
 			blackBoardStorePlugin.integerIncrBy(rootKey.add(key), value);
 		}
-
-		@Override
-		public void incr(final BBKey key) {
-			incrBy(key, 1);
-		}
-
-		@Override
-		public void decr(final BBKey key) {
-			incrBy(key, -1);
-		}
-
-		@Override
-		public boolean lt(final BBKey key, final Integer compare) {
-			return compareInteger(key, compare) < 0;
-		}
-
-		@Override
-		public boolean eq(final BBKey key, final Integer compare) {
-			return compareInteger(key, compare) == 0;
-		}
-
-		@Override
-		public boolean gt(final BBKey key, final Integer compare) {
-			return compareInteger(key, compare) > 0;
-		}
-
-		private int compareInteger(final BBKey key, final Integer compare) {
-			checkKey(key, Type.Integer);
-			//---
-			final Integer value = get(key);
-			return compareInteger(value, compare);
-		}
-
-		private static int compareInteger(final Integer value, final Integer compare) {
-			if (value == null) {
-				return compare == null
-						? 0
-						: -1;
-			}
-			if (compare == null) {
-				return value == null
-						? 0
-						: -1;
-			}
-			return value.compareTo(compare);
-		}
 	}
 
 	//--- KV Boolean
@@ -261,32 +186,6 @@ final class BlackBoardImpl implements BlackBoard {
 			//---
 			blackBoardStorePlugin
 					.boolPut(rootKey.add(key), value);
-		}
-
-		@Override
-		public boolean eq(final BBKey key, final Boolean compare) {
-			return compareBoolean(key, compare) == 0;
-		}
-
-		private int compareBoolean(final BBKey key, final Boolean compare) {
-			checkKey(key, Type.Boolean);
-			//---
-			final Boolean value = get(key);
-			return compareBoolean(value, compare);
-		}
-
-		private static int compareBoolean(final Boolean value, final Boolean compare) {
-			if (value == null) {
-				return compare == null
-						? 0
-						: -1;
-			}
-			if (compare == null) {
-				return value == null
-						? 0
-						: -1;
-			}
-			return value.compareTo(compare);
 		}
 	}
 

@@ -17,46 +17,38 @@
  */
 package io.vertigo.vortex.bb;
 
+import java.util.Objects;
+
 /**
  * Part of Blackboard to manage strings
+ * 	- put
+ *  - get
+ *  - eq
+ *  - append
+ *  - eqCaseInsensitive
+ *  - startsWith
+ *  
  * @author pchretien
  */
-public interface BBCommandString {
-	//--- KV String
-	/**
-	 * Returns the value or null if the key does not exist
-	 *
-	 * @param key the key
-	 * @return the value mapped with the key or null if the key does not exist
-	 */
-	String get(final BBKey key);
-
-	/**
-	 * Associates the specified value with the specified key
-	 *
-	 * @param key the key
-	 * @param value the value
-	 */
-	void put(final BBKey key, final String value);
-
+public interface BBCommandString extends BBCommandKV<String> {
 	/**
 	 * Appends something to a key
 	 *
 	 * @param key the key
 	 * @param something something
 	 */
-	void append(final BBKey key, final String something);
+	default void append(final BBKey key, final String something) {
+		String value = get(key); // getString includes type checking
+		if (value == null) {
+			value = "";
+		}
+		put(key, value + something);
+	}
 
-	/**
-	 * Returns true if the value associated to the key equals the compare string
-	 *
-	 * @param key the key
-	 * @param compare the value to compare
-	 * @return true if the value associated to the key equals the compare
-	 */
-	boolean eq(final BBKey key, final String compare);
-
-	boolean eqCaseInsensitive(final BBKey key, final String compare);
+	default boolean eqCaseInsensitive(final BBKey key, final String compare) {
+		final String value = get(key); // getString includes type checking
+		return value == null ? compare == null : value.equalsIgnoreCase(compare);
+	}
 
 	/**
 	 * Returns true if the value associated to the key starts with the compare string
@@ -65,5 +57,16 @@ public interface BBCommandString {
 	 * @param compare the value to compare
 	 * @return true if the value associated to the key starts with the compare string
 	 */
-	boolean startsWith(final BBKey key, final String compare);
+	default boolean startsWith(final BBKey key, final String compare) {
+		final String value = get(key); // getString includes type checking
+		return value == null
+				? compare == null
+				: value.startsWith(compare);
+	}
+
+	@Override
+	default boolean eq(final BBKey key, final String compare) {
+		final String value = get(key); // getString includes type checking
+		return Objects.equals(value, compare);
+	}
 }

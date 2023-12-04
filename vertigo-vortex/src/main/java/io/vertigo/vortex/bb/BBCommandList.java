@@ -18,7 +18,7 @@
 package io.vertigo.vortex.bb;
 
 /**
- * Part of Blackboard to manage lists
+ * Blackboard commands to manage lists
  *
  * @author pchretien
  */

@@ -19,26 +19,19 @@ package io.vertigo.vortex.bb;
 
 /**
  * Blackboard commands  to manage booleans
+ *  - put
+ *  - get
+ *  - eq
+ *  - incrBy
+ *  - incr
+ *  - decr
+ *  - lt
+ *  - gt
+
  * @author pchretien
  */
-public interface BBCommandInteger {
+public interface BBCommandInteger extends BBCommandKV<Integer> {
 	//--- KV Integer
-	/**
-	 * Returns the value or null if the key does not exist
-	 *
-	 * @param key the key
-	 * @return the value mapped with the key or null if the key does not exist
-	 */
-	Integer get(final BBKey key);
-
-	/**
-	 * Associates the specified value with the specified key
-	 *
-	 * @param key the key
-	 * @param value the value
-	 */
-	void put(final BBKey key, final Integer value);
-
 	/**
 	 * Increments the value (must be an integer) at the key by a value
 	 *
@@ -52,18 +45,48 @@ public interface BBCommandInteger {
 	 *
 	 * @param key the key
 	 */
-	void incr(final BBKey key);
+	default void incr(final BBKey key) {
+		incrBy(key, 1);
+	}
 
 	/**
 	 * Decrements the value (must be an integer) at the key
 	 *
 	 * @param key the key
 	 */
-	void decr(final BBKey key);
+	default void decr(final BBKey key) {
+		incrBy(key, -1);
+	}
 
-	boolean lt(final BBKey key, final Integer compare);
+	@Override
+	default boolean eq(final BBKey key, final Integer compare) {
+		return compareInteger(key, compare) == 0;
+	}
 
-	boolean eq(final BBKey key, final Integer compare);
+	default boolean lt(final BBKey key, final Integer compare) {
+		return compareInteger(key, compare) < 0;
+	}
 
-	boolean gt(final BBKey key, final Integer compare);
+	default boolean gt(final BBKey key, final Integer compare) {
+		return compareInteger(key, compare) > 0;
+	}
+
+	private int compareInteger(final BBKey key, final Integer compare) {
+		final Integer value = get(key);
+		return compareInteger(value, compare);
+	}
+
+	private static int compareInteger(final Integer value, final Integer compare) {
+		if (value == null) {
+			return compare == null
+					? 0
+					: -1;
+		}
+		if (compare == null) {
+			return value == null
+					? 0
+					: -1;
+		}
+		return value.compareTo(compare);
+	}
 }
