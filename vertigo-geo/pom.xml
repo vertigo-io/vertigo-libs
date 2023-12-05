@@ -31,7 +31,6 @@
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
 		    <artifactId>elasticsearch-rest-high-level-client</artifactId>
-		    <version>7.17.14</version>
 		    <optional>true</optional> <!-- RestHighLevelElasticSearchConnector -->
 		</dependency>
 	</dependencies>
