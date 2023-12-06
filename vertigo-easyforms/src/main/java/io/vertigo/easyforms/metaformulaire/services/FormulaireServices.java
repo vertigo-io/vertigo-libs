@@ -31,6 +31,8 @@ import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.ConstraintException;
 import io.vertigo.datamodel.structure.definitions.FormatterException;
+import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.easyforms.metaformulaire.domain.ControleDeChampDefinitionProvider.ControleDeChampEnum;
 import io.vertigo.easyforms.metaformulaire.domain.ModeleFormulaire;
@@ -90,29 +92,26 @@ public class FormulaireServices implements Component {
 	@Inject
 	private AnalyticsManager analyticsManager;
 
-	public void checkFormulaire(final Formulaire formulaire, final ModeleFormulaire modeleFormulaire, final UiMessageStack uiMessageStack) {
+	public void checkFormulaire(Entity formulaireOwner, final Formulaire formulaire, final ModeleFormulaire modeleFormulaire, final UiMessageStack uiMessageStack) {
 		final Set<String> champsAutorises = modeleFormulaire.getChamps().stream().map(Champ::getCodeChamp).collect(Collectors.toSet());
-		for (final String champFormulaire : reservation.getFormulaire().keySet()) {
+		for (final String champFormulaire : formulaire.keySet()) {
 			if (!champsAutorises.contains(champFormulaire)) {
-				uiMessageStack.error("Champ non autorisé ", reservation, FORMULAIRE_PREFIX + champFormulaire);
+				uiMessageStack.error("Champ non autorisé ", formulaireOwner, FORMULAIRE_PREFIX + champFormulaire);
 			}
 		}
 		//---
-		analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer
-				.setMeasure(ERREUR_CONTROLE_FORMULAIRE_MEASURE, 0)); //init a 0
-		//---
-		final var formulaireCore = new FormulaireDemarche();
-		final var formulaireDisplay = new FormulaireDemarche();
+		final var formulaireCore = new Formulaire();
+		final var formulaireDisplay = new Formulaire();
 
-		final List<FormulaireDemarche> formulaireUniques = new ArrayList<>();
+		final List<Formulaire> formulaireUniques = new ArrayList<>();
 		final List<Champ> champUniques = new ArrayList<>();
 		for (final Champ champ : modeleFormulaire.getChamps()) {
-			checkChampFormulaire(champ, reservation, uiMessageStack, formulaireCore, formulaireDisplay, champUniques, formulaireUniques);
+			checkChampFormulaire(champ, formulaireOwner, uiMessageStack, formulaireCore, formulaireDisplay, champUniques, formulaireUniques);
 		}
 
 		//on fait les contrôles d'unicités en masse qui si tout est bon
 		if (!uiMessageStack.hasErrors() && !formulaireUniques.isEmpty()) {
-			checkUnique(formulaireUniques, champUniques, reservation.demarche().getUID(), uiMessageStack,
+			checkUnique(formulaireUniques, champUniques, formulaireOwner.getUID(), uiMessageStack,
 					MetaFormulaireResources.RDVPREF_FORMULAIRE_CONTROLE_UNIQUE_ERROR, reservation);
 		}
 
