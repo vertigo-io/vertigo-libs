@@ -25,6 +25,7 @@ import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -189,9 +190,20 @@ public class PlanningServices implements Component {
 	}
 
 	private static DtList<TrancheHoraire> createTrancheHoraires(final PlageHoraire plageHoraire, final int dureeTrancheMinute) {
+		return createTrancheHoraires(plageHoraire, dureeTrancheMinute, Collections.emptyList());
+	}
+
+	private static DtList<TrancheHoraire> createTrancheHoraires(final PlageHoraire plageHoraire, final int dureeTrancheMinute, final List<TrancheHoraire> closedTranchesHoraires) {
 		final var trancheHoraires = new DtList<TrancheHoraire>(TrancheHoraire.class);
 		for (int i = plageHoraire.getMinutesDebut(); i < plageHoraire.getMinutesFin(); i += dureeTrancheMinute) {
-			trancheHoraires.add(createTrancheHoraire(plageHoraire, i, dureeTrancheMinute, plageHoraire.getNbGuichet()));
+			boolean isClosed = false;
+			for (final TrancheHoraire closedTrancheHoraire : closedTranchesHoraires) {
+				if (i < closedTrancheHoraire.getMinutesFin() && i + dureeTrancheMinute > closedTrancheHoraire.getMinutesDebut()) {
+					isClosed = true;
+					break;
+				}
+			}
+			trancheHoraires.add(createTrancheHoraire(plageHoraire, i, dureeTrancheMinute, isClosed ? 0 : plageHoraire.getNbGuichet()));
 		}
 		return trancheHoraires;
 	}
@@ -253,6 +265,8 @@ public class PlanningServices implements Component {
 			//erreur bloquante
 			throw new VUserException("La semaine que vous souhaitez dupliquer n'a aucune plage horaire");
 		}
+		final var closedTranchesHorairesFrom = trancheHoraireDAO.getTrancheHorairesFermeesByAgeIds(List.of((Long) ageUid.getId()),
+				duplicationSemaineForm.getDateLocaleFromDebut(), duplicationSemaineForm.getDateLocaleFromFin());
 
 		final var previousPlageHorairesTo = plageHoraireDAO.findAll(
 				Criterions.isEqualTo(PlageHoraireFields.ageId, ageUid.getId())
@@ -266,7 +280,11 @@ public class PlanningServices implements Component {
 		final Map<LocalDate, List<PlageHoraire>> mapPreviousPlagesHorairesToPerLocalDate = previousPlageHorairesTo.stream()
 				.collect(Collectors.groupingBy(plh -> plh.getDateLocale()));
 
+		final Map<DayOfWeek, List<TrancheHoraire>> mapClosedTranchesHorairesFromPerDayOfWeek = closedTranchesHorairesFrom.stream()
+				.collect(Collectors.groupingBy(trh -> trh.getDateLocale().getDayOfWeek()));
+
 		final var plageHorairesToCreate = new DtList<PlageHoraire>(PlageHoraire.class);
+		final var trancheHoraires = new DtList<TrancheHoraire>(TrancheHoraire.class);
 
 		final int dureeTrancheMinute = duplicationSemaineForm.getDureeCreneau();
 		for (var d = 0; d < dureeDuplicationJours + 1; ++d) { //+1 => date de fin incluse
@@ -293,17 +311,17 @@ public class PlanningServices implements Component {
 				plageHoraire.setNbGuichet(plageHoraireFrom.getNbGuichet());
 				plageHorairesToCreate.add(plageHoraire);
 
-				//(les tranches seront crées après l'insert pour pouvoir récupérer la PK générée)
+				//(les tranches seront mis à jour après l'insert pour pouvoir récupérer la PK générée)
 			}
 		}
 		//le batch ne marche pas car l'id n'est pas setté
 		//on le fait quand meme en dernier pour locker moins longtemps
 		//Creation des tranches horaires associées
-		final var trancheHoraires = new DtList<TrancheHoraire>(TrancheHoraire.class);
 		for (final PlageHoraire plageHoraire : plageHorairesToCreate) {
 			plageHoraireDAO.save(plageHoraire);
 			//cette fois l'id de la plage existe et peut être associée dans la FK des tranches
-			trancheHoraires.addAll(createTrancheHoraires(plageHoraire, dureeTrancheMinute));
+			//RDV-351 : il faut vérifier les tranches supprimées
+			trancheHoraires.addAll(createTrancheHoraires(plageHoraire, dureeTrancheMinute, mapClosedTranchesHorairesFromPerDayOfWeek.getOrDefault(plageHoraire.getDateLocale().getDayOfWeek(), Collections.emptyList())));
 		}
 		trancheHoraireDAO.batchInsertTrancheHoraire(trancheHoraires);
 	}
@@ -325,6 +343,14 @@ public class PlanningServices implements Component {
 		//--
 		agendaDAO.readOneForUpdate(agendaUid); //ForUpdate pour éviter les doublons
 		agendaPAO.deletePlageHoraireCascadeByPlhId((Long) plageHoraireUid.getId());
+	}
+
+	public void closeTrancheHoraire(final UID<Agenda> agendaUid, final UID<TrancheHoraire> trancheHoraireUid) {
+		Assertion.check().isNotNull(agendaUid)
+				.isNotNull(trancheHoraireUid);
+		//--
+		agendaDAO.readOneForUpdate(agendaUid); //ForUpdate pour éviter les doublons
+		agendaPAO.closeTrancheHoraireByTrhId(List.of((Long) trancheHoraireUid.getId()));
 	}
 
 	public Agenda getAgenda(final UID<Agenda> ageUid) {

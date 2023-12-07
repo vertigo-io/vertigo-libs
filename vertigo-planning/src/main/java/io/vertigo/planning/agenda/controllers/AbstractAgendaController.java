@@ -37,6 +37,7 @@ import io.vertigo.planning.agenda.domain.DuplicationSemaineForm;
 import io.vertigo.planning.agenda.domain.PlageHoraire;
 import io.vertigo.planning.agenda.domain.PlageHoraireDisplay;
 import io.vertigo.planning.agenda.domain.PublicationTrancheHoraireForm;
+import io.vertigo.planning.agenda.domain.TrancheHoraire;
 import io.vertigo.planning.agenda.domain.TrancheHoraireDisplay;
 import io.vertigo.planning.agenda.services.PlanningServices;
 import io.vertigo.ui.core.ViewContext;
@@ -169,7 +170,7 @@ public class AbstractAgendaController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/_deletePlage")
-	public ViewContext _deletePlage(final ViewContext viewContext, @ViewAttribute("agendaRange") final AgendaDisplayRange agenda, @RequestParam("plhId") final Long plhId) {
+	public ViewContext deletePlage(final ViewContext viewContext, @ViewAttribute("agendaRange") final AgendaDisplayRange agenda, @RequestParam("plhId") final Long plhId) {
 		final UID<Agenda> ageUid = UID.of(Agenda.class, agenda.getAgeId());
 		planningServices.deletePlageHoraireCascade(ageUid, UID.of(PlageHoraire.class, plhId));
 
@@ -187,6 +188,14 @@ public class AbstractAgendaController extends AbstractVSpringMvcController {
 		viewContext.publishDto(plageHoraireDetailKey, plageHoraireDisplay);
 		viewContext.publishDtList(trancheHorairesKey, trancheHoraire);
 		return viewContext;
+	}
+
+	@PostMapping("/_deleteTrancheHoraire")
+	public ViewContext deleteTrancheHoraire(final ViewContext viewContext, @ViewAttribute("agendaRange") final AgendaDisplayRange agenda, @ViewAttribute("plageHoraireDetail") final PlageHoraireDisplay plageHoraireDetail, @RequestParam("trhId") final Long trhId) {
+		final UID<Agenda> ageUid = UID.of(Agenda.class, agenda.getAgeId());
+		final UID<TrancheHoraire> trhUid = UID.of(TrancheHoraire.class, trhId);
+		planningServices.closeTrancheHoraire(ageUid, trhUid);
+		return loadPlageHoraireDetail(viewContext, agenda, plageHoraireDetail.getPlhId());
 	}
 
 	private void prepareContextAtDate(final LocalDate showDate, final AgendaDisplayRange agenda, final UID<Agenda> ageUid, final ViewContext viewContext) {

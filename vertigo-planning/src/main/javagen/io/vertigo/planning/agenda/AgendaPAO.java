@@ -42,6 +42,24 @@ public final class AgendaPAO implements StoreServices {
 	}
 
 	/**
+	 * Execute la tache TkCloseTrancheHoraireByTrhId.
+	 * @param trhIds List de Long
+	*/
+	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
+			name = "TkCloseTrancheHoraireByTrhId",
+			request = """
+			delete from creneau cre where cre.trh_id in ( #trhIds.rownum# );
+        update tranche_horaire trh set nb_guichet = 0, instant_Publication = null
+        where trh.trh_id in ( #trhIds.rownum# );""",
+			taskEngineClass = io.vertigo.basics.task.TaskEngineProc.class)
+	public void closeTrancheHoraireByTrhId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "trhIds", smartType = "STyPId") final java.util.List<Long> trhIds) {
+		final Task task = createTaskBuilder("TkCloseTrancheHoraireByTrhId")
+				.addValue("trhIds", trhIds)
+				.build();
+		getTaskManager().execute(task);
+	}
+
+	/**
 	 * Execute la tache TkCountUnlinkReservationPerXminByAgeId.
 	 * @param ageId Long
 	 * @param startDate LocalDate
@@ -322,30 +340,26 @@ public final class AgendaPAO implements StoreServices {
 	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			name = "TkGetFirstLocalDatesFreeOfPlageHorairePerDayOfWeek",
 			request = """
-			WITH plhTo as 
-                (SELECT distinct plhTo.date_locale, plhFrom.dow, 
-                row_number() over (partition by extract(isodow from plhTo.date_locale) order by plhTo.date_locale asc) as date_per_dow_order
-                FROM (SELECT distinct age_id, date_locale from plage_horaire 
-                        WHERE age_id = #ageId# 
-                        AND date_locale between #dateLocaleToDebut# AND #dateLocaleToFin#) plhTo
-                    join (SELECT distinct age_id, date_locale, extract(isodow from date_locale) dow --on ne garde que les DayOfWeek de la semaine source
+			WITH plhTo as --récupère la liste jour déjà renseigné en collision avec celles de la semaine à copier
+                (SELECT distinct plhTo.date_locale, plhFrom.dow, plhTo.woe,
+                row_number() over (partition by plhFrom.dow order by plhTo.date_locale asc) as date_per_dow_order
+                FROM (SELECT distinct age_id, date_locale, extract(isodow from date_locale) dow, floor(extract(JULIAN from date_locale)/7) woe 
+                        FROM plage_horaire 
+                        WHERE age_id = #ageId#
+                        AND date_locale between #dateLocaleFromDebut# AND #dateLocaleFromFin#) as plhFrom
+                    left join (SELECT distinct age_id, date_locale, extract(isodow from date_locale) dow, floor(extract(JULIAN from date_locale)/7) woe --on ne garde que les DayOfWeek de la semaine source
                             FROM plage_horaire plh
-                            WHERE age_id = #ageId# 
-                              AND date_locale between #dateLocaleFromDebut# AND #dateLocaleFromFin#) as plhFrom 
-                    on plhTo.age_id = plhFrom.age_id and plhFrom.dow = extract(isodow from plhTo.date_locale))
-            
-            SELECT firstFreeDate 
+                            WHERE age_id = #ageId#
+                              AND date_locale between #dateLocaleToDebut# AND #dateLocaleToFin#) as plhTo 
+                    on plhTo.age_id = plhFrom.age_id and plhTo.dow = plhFrom.dow)
+            SELECT *
             FROM (
-                SELECT firstDate.date_locale+7 firstFreeDate, firstDate.dow, row_number() over (partition by firstDate.dow  order by  firstDate.date_locale asc)
-                FROM plhTo as firstDate 
-                     left join plhTo as secondDate on firstDate.dow = secondDate.dow --on filtre les dates qui se suivent à 7 jours pour un même jour de la semaine
-                        and secondDate.date_per_dow_order = firstDate.date_per_dow_order+1 
-                        and secondDate.date_locale = firstDate.date_locale+7
-                WHERE secondDate.date_locale is null --on ne retient que ceux qui ont un jour libre
-                ) firstDates
-            WHERE firstDates.row_number = 1
-            order by firstDates.firstFreeDate
-           ;""",
+                SELECT (firstDate.date_locale+7-firstDate.dow::integer+1) firstFreeDate, row_number() over (partition by firstDate.dow  order by  firstDate.date_locale asc) 
+                FROM plhTo as firstDate
+                WHERE not exists (select 1 from plhTo as secondDate where secondDate.woe = firstDate.woe+1) --on filtre les dates dont la semaine suivante est libre
+            ) firstDates
+           WHERE firstDates.row_number = 1
+           order by firstDates.firstFreeDate;""",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
 	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyPLocalDate", name = "firstDatesPerDow")
 	public java.util.List<java.time.LocalDate> getFirstLocalDatesFreeOfPlageHorairePerDayOfWeek(@io.vertigo.datamodel.task.proxy.TaskInput(name = "ageId", smartType = "STyPId") final Long ageId, @io.vertigo.datamodel.task.proxy.TaskInput(name = "dateLocaleFromDebut", smartType = "STyPLocalDate") final java.time.LocalDate dateLocaleFromDebut, @io.vertigo.datamodel.task.proxy.TaskInput(name = "dateLocaleFromFin", smartType = "STyPLocalDate") final java.time.LocalDate dateLocaleFromFin, @io.vertigo.datamodel.task.proxy.TaskInput(name = "dateLocaleToDebut", smartType = "STyPLocalDate") final java.time.LocalDate dateLocaleToDebut, @io.vertigo.datamodel.task.proxy.TaskInput(name = "dateLocaleToFin", smartType = "STyPLocalDate") final java.time.LocalDate dateLocaleToFin) {
