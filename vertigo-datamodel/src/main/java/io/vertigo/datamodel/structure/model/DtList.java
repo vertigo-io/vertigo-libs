@@ -38,7 +38,7 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
  * Une dtList est une liste constituée avec un seul type d'objet.
  * Les objets null ne sont pas autorisés.
  *
- * @author  fconstantin
+ * @author fconstantin
  * @param <D> Type du DtObject
  */
 public final class DtList<D extends DtObject> extends AbstractList<D> implements Serializable {
@@ -62,6 +62,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 
 	/**
 	 * Constructor.
+	 *
 	 * @param dtDefinition Définition de DT
 	 */
 	public DtList(final DtDefinition dtDefinition) {
@@ -73,6 +74,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 
 	/**
 	 * Constructor.
+	 *
 	 * @param dtList DtList to clone
 	 * @param uri DtList uri
 	 */
@@ -87,15 +89,17 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 
 	/**
 	 * Constructor.
+	 *
 	 * @param dtObjectClass Type d'objet
 	 */
-	public DtList(final Class<? extends DtObject> dtObjectClass) {
+	public DtList(final Class<D> dtObjectClass) {
 		this(DtObjectUtil.findDtDefinition(dtObjectClass));
 	}
 
 	/**
 	 * Static method factory for convenient creation of DtList using 'of' pattern.
-	 * @param dto the mandatory dto to add  which defines the type.
+	 *
+	 * @param dto the mandatory dto to add which defines the type.
 	 * @param dtos Dtos to add.
 	 * @return the created DtList.
 	 * @param <D> Type of this list
@@ -107,7 +111,8 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 
 	/**
 	 * Static method factory for convenient creation of DtList using 'of' pattern.
-	 * @param dto the mandatory dto to add  which defines the type.
+	 *
+	 * @param dto the mandatory dto to add which defines the type.
 	 * @param dtos Dtos to add.
 	 * @return the created DtList.
 	 * @param <D> Type of this list
@@ -263,6 +268,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 * <b>WARN</b>
 	 * <b>Developers must ensure</b> this metaData keep coherent with current list datas, <b>all the time</b>.
 	 * <b>WARN</b>
+	 *
 	 * @param metaDataName MetaData name
 	 * @param value MetaData value
 	 */
