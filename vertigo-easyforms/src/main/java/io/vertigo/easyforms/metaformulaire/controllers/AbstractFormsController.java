@@ -59,12 +59,12 @@ public class AbstractFormsController extends AbstractVSpringMvcController {
 	@Inject
 	private TaxonomyListServices formListServices;
 
-	public void initContext(final ViewContext viewContext, final UID<MetaFormulaire> mfoId) {
+	public void initContext(final ViewContext viewContext, final Optional<UID<MetaFormulaire>> mfoIdOpt) {
 		viewContext.publishDtList(typeDeChampsKey, metaFormulaireServices.getTypesDeChampUi());
 		viewContext.publishDtList(controleDeChampsKey, ControleDeChampUiFields.code, metaFormulaireServices.getControleDeChampUi());
-		viewContext.publishDtList(controleDeChampsEditKey, new DtList<ControleDeChampUi>(ControleDeChampUi.class));
+		viewContext.publishDtList(controleDeChampsEditKey, new DtList<>(ControleDeChampUi.class));
 		//---
-		viewContext.publishDtList(champsKey, metaFormulaireServices.getListChampUiByMetaFormulaireId(mfoId));
+		viewContext.publishDtList(champsKey, mfoIdOpt.map(metaFormulaireServices::getListChampUiByMetaFormulaireId).orElseGet(() -> new DtList<>(ChampUi.class)));
 		viewContext.publishDto(champEditKey, buildChampUi());
 		viewContext.publishDtList(taxonomyTypesKey, formListServices.getAllLists());
 	}
@@ -89,7 +89,7 @@ public class AbstractFormsController extends AbstractVSpringMvcController {
 	@PostMapping("/_addItem")
 	public ViewContext addNewItem(final ViewContext viewContext) {
 		viewContext.publishDto(champEditKey, buildChampUi());
-		viewContext.publishDtList(controleDeChampsEditKey, new DtList<ControleDeChampUi>(ControleDeChampUi.class));
+		viewContext.publishDtList(controleDeChampsEditKey, new DtList<>(ControleDeChampUi.class));
 		return viewContext;
 	}
 

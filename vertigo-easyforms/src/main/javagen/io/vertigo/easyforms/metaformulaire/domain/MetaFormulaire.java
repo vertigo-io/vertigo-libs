@@ -28,7 +28,7 @@ public final class MetaFormulaire implements Entity {
 	 * Récupère la valeur de la propriété 'Id'.
 	 * @return Long mfoId <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyFId", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id")
+	@Field(smartType = "STyEfId", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id")
 	public Long getMfoId() {
 		return mfoId;
 	}
@@ -47,7 +47,7 @@ public final class MetaFormulaire implements Entity {
 	 * Récupère la valeur de la propriété 'Modèle'.
 	 * @return ModeleFormulaire modele
 	 */
-	@Field(smartType = "STyFModeleFormulaire", label = "Modèle")
+	@Field(smartType = "STyEfModeleFormulaire", label = "Modèle")
 	public io.vertigo.easyforms.metaformulaire.domain.ModeleFormulaire getModele() {
 		return modele;
 	}

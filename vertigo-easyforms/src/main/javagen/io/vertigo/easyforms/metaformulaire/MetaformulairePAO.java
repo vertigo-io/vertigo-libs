@@ -49,7 +49,7 @@ public final class MetaformulairePAO implements StoreServices {
 			request = """
 			DELETE FROM taxonomy tax WHERE tax.tat_id = #tatId#""",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineProc.class)
-	public void deleteListTaxonomyValuesByTatId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "tatId", smartType = "STyFId") final Long tatId) {
+	public void deleteListTaxonomyValuesByTatId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "tatId", smartType = "STyEfId") final Long tatId) {
 		final Task task = createTaskBuilder("TkDeleteListTaxonomyValuesByTatId")
 				.addValue("tatId", tatId)
 				.build();

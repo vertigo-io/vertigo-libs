@@ -47,7 +47,7 @@ public final class Taxonomy implements Entity {
 	 * Récupère la valeur de la propriété 'Id'.
 	 * @return Long taxId <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyFId", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id")
+	@Field(smartType = "STyEfId", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id")
 	public Long getTaxId() {
 		return taxId;
 	}
@@ -66,7 +66,7 @@ public final class Taxonomy implements Entity {
 	 * Récupère la valeur de la propriété 'Valeur'.
 	 * @return String value
 	 */
-	@Field(smartType = "STyFLabel", label = "Valeur")
+	@Field(smartType = "STyEfLabel", label = "Valeur")
 	@io.vertigo.datamodel.structure.stereotype.DisplayField
 	public String getValue() {
 		return value;
@@ -86,7 +86,7 @@ public final class Taxonomy implements Entity {
 	 * Récupère la valeur de la propriété 'Ordre'.
 	 * @return Integer sort <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyFSort", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Ordre")
+	@Field(smartType = "STyEfSort", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Ordre")
 	@io.vertigo.datamodel.structure.stereotype.SortField
 	public Integer getSort() {
 		return sort;
@@ -106,7 +106,7 @@ public final class Taxonomy implements Entity {
 	 * Récupère la valeur de la propriété 'Actif'.
 	 * @return Boolean active <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyFBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Actif")
+	@Field(smartType = "STyEfBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Actif")
 	public Boolean getActive() {
 		return active;
 	}
@@ -125,7 +125,7 @@ public final class Taxonomy implements Entity {
 	 * Récupère la valeur de la propriété 'Code'.
 	 * @return String code
 	 */
-	@Field(smartType = "STyFCode", label = "Code")
+	@Field(smartType = "STyEfCode", label = "Code")
 	public String getCode() {
 		return code;
 	}
@@ -144,7 +144,7 @@ public final class Taxonomy implements Entity {
 	 * Récupère la valeur de la propriété 'Taxonomy type'.
 	 * @return Long tatId <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyFId", label = "Taxonomy type", fkDefinition = "DtTaxonomyType", cardinality = io.vertigo.core.lang.Cardinality.ONE )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyEfId", label = "Taxonomy type", fkDefinition = "DtTaxonomyType", cardinality = io.vertigo.core.lang.Cardinality.ONE )
 	public Long getTatId() {
 		return (Long) tatIdAccessor.getId();
 	}

@@ -2,54 +2,54 @@ package io.vertigo.easyforms.metaformulaire.domain
 
 
 create DtDefinition DtMetaFormulaire {
-    id mfoId {domain: DoFId label:"Id"}
-    field modele {domain: DoFModeleFormulaire label:"Modèle" }
+    id mfoId {domain: DoEfId label:"Id"}
+    field modele {domain: DoEfModeleFormulaire label:"Modèle" }
 }
 
 create DtDefinition DtTypeDeChampUi {
-    field nom {domain: DoFLabel label:"Type de champ" }
-    field label {domain: DoFLabel label:"Label" }
+    field nom {domain: DoEfLabel label:"Type de champ" }
+    field label {domain: DoEfLabel label:"Label" }
     sortField: "nom"
     displayField: "label"
 }
 
 create DtDefinition DtControleDeChampUi {
-    field code {domain: DoFCode label:"Contrôle" }
-    field label {domain: DoFLabel label:"Contrôle" }
-    field description {domain: DoFText label:"Description" }
-    field typeDeChamps {domain: DoFText label:"Compatible avec les types" cardinality:"*" }
+    field code {domain: DoEfCode label:"Contrôle" }
+    field label {domain: DoEfLabel label:"Contrôle" }
+    field description {domain: DoEfText label:"Description" }
+    field typeDeChamps {domain: DoEfText label:"Compatible avec les types" cardinality:"*" }
     sortField: "code"
     displayField: "label"
 }
 
 create DtDefinition DtChampUi {
-    field codeChamp {domain: DoFCode label:"Code du champ" cardinality:"1" }
-    field typeDeChamp {domain: DoFLabel label:"Type de champ" cardinality:"1" }
-    field typeDeChampLabel {domain: DoFLabel label:"Type de champ" cardinality:"?" }
-    field listId {domain: DoFId label:"Id liste de valeurs" cardinality:"?" }
-    field listValue {domain: DoFText label:"Id valeur dans la liste" cardinality:"?" }
-    field libelle {domain: DoFLabel label:"Libellé" cardinality:"1"}
-    field infobulle {domain: DoFLabel label:"Infobulle" }
-    field isDefault {domain: DoFBooleen label:"Champs par défaut (non supprimable)" cardinality:"1"}
-    field isDisplay {domain: DoFBooleen label:"Information affichée sur la réservation" cardinality:"1"}
-    field controleDeChamps {domain: DoFText label:"Contrôles appliqués" cardinality:"*" }
+    field codeChamp {domain: DoEfCode label:"Code du champ" cardinality:"1" }
+    field typeDeChamp {domain: DoEfLabel label:"Type de champ" cardinality:"1" }
+    field typeDeChampLabel {domain: DoEfLabel label:"Type de champ" cardinality:"?" }
+    field listId {domain: DoEfId label:"Id liste de valeurs" cardinality:"?" }
+    field listValue {domain: DoEfText label:"Id valeur dans la liste" cardinality:"?" }
+    field libelle {domain: DoEfLabel label:"Libellé" cardinality:"1"}
+    field infobulle {domain: DoEfLabel label:"Infobulle" }
+    field isDefault {domain: DoEfBooleen label:"Champs par défaut (non supprimable)" cardinality:"1"}
+    field isDisplay {domain: DoEfBooleen label:"Information affichée sur la réservation" cardinality:"1"}
+    field controleDeChamps {domain: DoEfText label:"Contrôles appliqués" cardinality:"*" }
 }
 
 create DtDefinition DtTaxonomyType {
-    id tatId {domain: DoFId label:"Id"}
-    field code {domain: DoFLabel label:"Code liste" }
-    field label {domain: DoFLabel label:"Libelle" cardinality:"1"}
-    field active {domain: DoFBooleen label:"Actif" cardinality:"1"}
+    id tatId {domain: DoEfId label:"Id"}
+    field code {domain: DoEfLabel label:"Code liste" }
+    field label {domain: DoEfLabel label:"Libelle" cardinality:"1"}
+    field active {domain: DoEfBooleen label:"Actif" cardinality:"1"}
     sortField: "label"
     displayField: "label"
 }
 
 create DtDefinition DtTaxonomy {
-    id taxId {domain: DoFId label:"Id"}
-    field value {domain: DoFLabel label:"Valeur" }
-    field sort {domain: DoFSort label:"Ordre" cardinality:"1"}
-    field active {domain: DoFBooleen label:"Actif" cardinality:"1"}
-    field code {domain: DoFCode label:"Code" cardinality:"?"}
+    id taxId {domain: DoEfId label:"Id"}
+    field value {domain: DoEfLabel label:"Valeur" }
+    field sort {domain: DoEfSort label:"Ordre" cardinality:"1"}
+    field active {domain: DoEfBooleen label:"Actif" cardinality:"1"}
+    field code {domain: DoEfCode label:"Code" cardinality:"?"}
     sortField: "sort"
     displayField: "value"
 }

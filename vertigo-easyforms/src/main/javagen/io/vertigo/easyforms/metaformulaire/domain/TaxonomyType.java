@@ -30,7 +30,7 @@ public final class TaxonomyType implements Entity {
 	 * Récupère la valeur de la propriété 'Id'.
 	 * @return Long tatId <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyFId", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id")
+	@Field(smartType = "STyEfId", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id")
 	public Long getTatId() {
 		return tatId;
 	}
@@ -49,7 +49,7 @@ public final class TaxonomyType implements Entity {
 	 * Récupère la valeur de la propriété 'Code liste'.
 	 * @return String code
 	 */
-	@Field(smartType = "STyFLabel", label = "Code liste")
+	@Field(smartType = "STyEfLabel", label = "Code liste")
 	public String getCode() {
 		return code;
 	}
@@ -68,7 +68,7 @@ public final class TaxonomyType implements Entity {
 	 * Récupère la valeur de la propriété 'Libelle'.
 	 * @return String label <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyFLabel", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Libelle")
+	@Field(smartType = "STyEfLabel", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Libelle")
 	@io.vertigo.datamodel.structure.stereotype.SortField
 	@io.vertigo.datamodel.structure.stereotype.DisplayField
 	public String getLabel() {
@@ -89,7 +89,7 @@ public final class TaxonomyType implements Entity {
 	 * Récupère la valeur de la propriété 'Actif'.
 	 * @return Boolean active <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyFBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Actif")
+	@Field(smartType = "STyEfBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Actif")
 	public Boolean getActive() {
 		return active;
 	}

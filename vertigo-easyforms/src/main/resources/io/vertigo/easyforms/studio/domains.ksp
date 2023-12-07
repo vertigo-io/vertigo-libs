@@ -1,57 +1,57 @@
 package io.vertigo.easyforms
     
-create Domain DoFId {
+create Domain DoEfId {
 	dataType : Long
 	storeType : "NUMERIC"
 }
 
-create Domain DoFLabel {
+create Domain DoEfLabel {
 	dataType : String
 	storeType : "VARCHAR(100)"
 }
 
-create Domain DoFNombre {
+create Domain DoEfNombre {
 	dataType : Integer
 	storeType : "NUMERIC"
 }
 
-create Domain DoFSort {
+create Domain DoEfSort {
     dataType : Integer
     storeType : "NUMERIC"
 }
 
-create Domain DoFBooleen {
+create Domain DoEfBooleen {
 	dataType : Boolean
 	storeType : "BOOLEAN"
 }
 
-create Domain DoFInstant {
+create Domain DoEfInstant {
 	dataType : Instant
 	storeType : "TIMESTAMP"
 }
 
-create Domain DoFLocalDate {
+create Domain DoEfLocalDate {
 	dataType : LocalDate
 	storeType : "DATE"
 }
 
-create Domain DoFCode {
+create Domain DoEfCode {
 	dataType : String
 	storeType : "VARCHAR(100)"
 }
 
-create Domain DoFText {
+create Domain DoEfText {
     dataType : String
     storeType : "TEXT"
 }
 
-create Domain DoFFormulaire {
+create Domain DoEfFormulaire {
     dataType : ValueObject
     type : "io.vertigo.easyforms.smarttypes.Formulaire"
     storeType : "JSONB"
 }
 
-create Domain DoFModeleFormulaire {
+create Domain DoEfModeleFormulaire {
     dataType : ValueObject
     type : "io.vertigo.easyforms.metaformulaire.domain.ModeleFormulaire"
     storeType : "JSONB"

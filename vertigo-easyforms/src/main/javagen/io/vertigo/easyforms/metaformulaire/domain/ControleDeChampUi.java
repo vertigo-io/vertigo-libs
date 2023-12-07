@@ -23,7 +23,7 @@ public final class ControleDeChampUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Contrôle'.
 	 * @return String code
 	 */
-	@Field(smartType = "STyFCode", label = "Contrôle")
+	@Field(smartType = "STyEfCode", label = "Contrôle")
 	@io.vertigo.datamodel.structure.stereotype.SortField
 	public String getCode() {
 		return code;
@@ -43,7 +43,7 @@ public final class ControleDeChampUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Contrôle'.
 	 * @return String label
 	 */
-	@Field(smartType = "STyFLabel", label = "Contrôle")
+	@Field(smartType = "STyEfLabel", label = "Contrôle")
 	@io.vertigo.datamodel.structure.stereotype.DisplayField
 	public String getLabel() {
 		return label;
@@ -63,7 +63,7 @@ public final class ControleDeChampUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Description'.
 	 * @return String description
 	 */
-	@Field(smartType = "STyFText", label = "Description")
+	@Field(smartType = "STyEfText", label = "Description")
 	public String getDescription() {
 		return description;
 	}
@@ -82,7 +82,7 @@ public final class ControleDeChampUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Compatible avec les types'.
 	 * @return List de String typeDeChamps
 	 */
-	@Field(smartType = "STyFText", cardinality = io.vertigo.core.lang.Cardinality.MANY, label = "Compatible avec les types")
+	@Field(smartType = "STyEfText", cardinality = io.vertigo.core.lang.Cardinality.MANY, label = "Compatible avec les types")
 	public java.util.List<String> getTypeDeChamps() {
 		return typeDeChamps;
 	}

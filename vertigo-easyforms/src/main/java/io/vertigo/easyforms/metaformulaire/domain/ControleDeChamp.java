@@ -5,8 +5,8 @@ import java.util.Set;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 
-@DefinitionPrefix("RdvCoc")
-public final class ControleDeChamp extends AbstractDefinition {
+@DefinitionPrefix("EfCoc")
+public final class ControleDeChamp extends AbstractDefinition<ControleDeChamp> {
 
 	private final String label;
 	private final int priorite;

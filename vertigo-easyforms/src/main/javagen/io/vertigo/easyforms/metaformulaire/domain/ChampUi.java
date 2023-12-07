@@ -29,7 +29,7 @@ public final class ChampUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Code du champ'.
 	 * @return String codeChamp <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyFCode", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Code du champ")
+	@Field(smartType = "STyEfCode", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Code du champ")
 	public String getCodeChamp() {
 		return codeChamp;
 	}
@@ -48,7 +48,7 @@ public final class ChampUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Type de champ'.
 	 * @return String typeDeChamp <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyFLabel", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Type de champ")
+	@Field(smartType = "STyEfLabel", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Type de champ")
 	public String getTypeDeChamp() {
 		return typeDeChamp;
 	}
@@ -67,7 +67,7 @@ public final class ChampUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Type de champ'.
 	 * @return String typeDeChampLabel
 	 */
-	@Field(smartType = "STyFLabel", label = "Type de champ")
+	@Field(smartType = "STyEfLabel", label = "Type de champ")
 	public String getTypeDeChampLabel() {
 		return typeDeChampLabel;
 	}
@@ -86,7 +86,7 @@ public final class ChampUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Id liste de valeurs'.
 	 * @return Long listId
 	 */
-	@Field(smartType = "STyFId", label = "Id liste de valeurs")
+	@Field(smartType = "STyEfId", label = "Id liste de valeurs")
 	public Long getListId() {
 		return listId;
 	}
@@ -105,7 +105,7 @@ public final class ChampUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Id valeur dans la liste'.
 	 * @return String listValue
 	 */
-	@Field(smartType = "STyFText", label = "Id valeur dans la liste")
+	@Field(smartType = "STyEfText", label = "Id valeur dans la liste")
 	public String getListValue() {
 		return listValue;
 	}
@@ -124,7 +124,7 @@ public final class ChampUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Libellé'.
 	 * @return String libelle <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyFLabel", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Libellé")
+	@Field(smartType = "STyEfLabel", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Libellé")
 	public String getLibelle() {
 		return libelle;
 	}
@@ -143,7 +143,7 @@ public final class ChampUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Infobulle'.
 	 * @return String infobulle
 	 */
-	@Field(smartType = "STyFLabel", label = "Infobulle")
+	@Field(smartType = "STyEfLabel", label = "Infobulle")
 	public String getInfobulle() {
 		return infobulle;
 	}
@@ -162,7 +162,7 @@ public final class ChampUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Champs par défaut (non supprimable)'.
 	 * @return Boolean isDefault <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyFBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Champs par défaut (non supprimable)")
+	@Field(smartType = "STyEfBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Champs par défaut (non supprimable)")
 	public Boolean getIsDefault() {
 		return isDefault;
 	}
@@ -181,7 +181,7 @@ public final class ChampUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Information affichée sur la réservation'.
 	 * @return Boolean isDisplay <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyFBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Information affichée sur la réservation")
+	@Field(smartType = "STyEfBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Information affichée sur la réservation")
 	public Boolean getIsDisplay() {
 		return isDisplay;
 	}
@@ -200,7 +200,7 @@ public final class ChampUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Contrôles appliqués'.
 	 * @return List de String controleDeChamps
 	 */
-	@Field(smartType = "STyFText", cardinality = io.vertigo.core.lang.Cardinality.MANY, label = "Contrôles appliqués")
+	@Field(smartType = "STyEfText", cardinality = io.vertigo.core.lang.Cardinality.MANY, label = "Contrôles appliqués")
 	public java.util.List<String> getControleDeChamps() {
 		return controleDeChamps;
 	}

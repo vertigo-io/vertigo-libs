@@ -19,21 +19,27 @@ package io.vertigo.easyforms;
 
 import io.vertigo.core.impl.analytics.trace.TraceAspect;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
-import io.vertigo.core.node.config.Features;
+import io.vertigo.core.node.config.discovery.ModuleDiscoveryFeatures;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.easyforms.domain.DtDefinitions;
 import io.vertigo.easyforms.metaformulaire.domain.ControleDeChampDefinitionProvider;
 import io.vertigo.easyforms.metaformulaire.domain.MetaFormulaireSmartTypes;
 import io.vertigo.easyforms.metaformulaire.domain.TypeDeChampDefinitionProvider;
 
-public class EasyFormsFeatures extends Features<EasyFormsFeatures> {
+public class EasyFormsFeatures extends ModuleDiscoveryFeatures<EasyFormsFeatures> {
 
 	public EasyFormsFeatures() {
 		super("vertigo-easyforms");
 	}
 
 	@Override
+	protected String getPackageRoot() {
+		return this.getClass().getPackage().getName();
+	}
+
+	@Override
 	protected void buildFeatures() {
+		super.buildFeatures();
 		getModuleConfigBuilder()
 				.addAspect(TraceAspect.class)
 				.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
