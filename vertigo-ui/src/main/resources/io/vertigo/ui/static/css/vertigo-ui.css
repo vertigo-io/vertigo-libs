@@ -156,13 +156,13 @@ img.avatar {
 }*/
 
 .table-primary th {
-	color:var(--q-primary-invert) !important;
+	color:var(--v-primary-invert) !important;
 }
 .table-secondary th {
-	color:var(--q-secondary-invert) !important;
+	color:var(--v-secondary-invert) !important;
 }
 .table-accent th {
-	color:var(--q-accent-invert) !important;
+	color:var(--v-accent-invert) !important;
 }
 
 .q-table-container th.sortable:hover,
@@ -176,11 +176,11 @@ img.avatar {
 
 .table-primary  .q-btn {
 	background: var(--q-primary);
-	color:var(--q-primary-invert);
+	color:var(--v-primary-invert);
 }
 .table-secondary  .q-btn {
 	background: var(--q-secondary);
-	color:var(--q-secondary-invert);
+	color:var(--v-secondary-invert);
 }
 .table-tertiary  .q-btn {
 	background: var(--q-tertiary);
