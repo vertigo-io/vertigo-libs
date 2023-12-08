@@ -47,6 +47,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 public class AbstractFormsController extends AbstractVSpringMvcController {
 
+	private static final ViewContextKey<MetaFormulaire> mfoKey = ViewContextKey.of("mfo");
 	private static final ViewContextKey<TypeDeChampUi> typeDeChampsKey = ViewContextKey.of("typeDeChamps");
 	private static final ViewContextKey<ControleDeChampUi> controleDeChampsKey = ViewContextKey.of("controleDeChamps");
 	private static final ViewContextKey<ChampUi> champsKey = ViewContextKey.of("champs");
@@ -64,7 +65,12 @@ public class AbstractFormsController extends AbstractVSpringMvcController {
 		viewContext.publishDtList(controleDeChampsKey, ControleDeChampUiFields.code, metaFormulaireServices.getControleDeChampUi());
 		viewContext.publishDtList(controleDeChampsEditKey, new DtList<>(ControleDeChampUi.class));
 		//---
-		viewContext.publishDtList(champsKey, mfoIdOpt.map(metaFormulaireServices::getListChampUiByMetaFormulaireId).orElseGet(() -> new DtList<>(ChampUi.class)));
+		viewContext.publishDto(mfoKey, mfoIdOpt
+				.map(metaFormulaireServices::getMetaFormulaireById)
+				.orElseGet(MetaFormulaire::new));
+		viewContext.publishDtList(champsKey, mfoIdOpt
+				.map(metaFormulaireServices::getListChampUiByMetaFormulaireId)
+				.orElseGet(() -> new DtList<>(ChampUi.class)));
 		viewContext.publishDto(champEditKey, buildChampUi());
 		viewContext.publishDtList(taxonomyTypesKey, formListServices.getAllLists());
 	}
@@ -147,9 +153,12 @@ public class AbstractFormsController extends AbstractVSpringMvcController {
 		return viewContext;
 	}
 
-	public void save(final UID<MetaFormulaire> mfoId, @ViewAttribute("champs") final DtList<ChampUi> champs) {
-		metaFormulaireServices.sauverNouveauFormulaire(mfoId, champs);
+	public Long save(final ViewContext viewContext) {
+		final var mfo = viewContext.readDto(mfoKey, getUiMessageStack());
+		final var champs = viewContext.readDtList(champsKey, getUiMessageStack());
+		final var mfoId = metaFormulaireServices.sauverNouveauFormulaire(mfo, champs);
 		toModeReadOnly();
+		return mfoId;
 	}
 
 	protected static void loadControlesByType(final ViewContext viewContext,
