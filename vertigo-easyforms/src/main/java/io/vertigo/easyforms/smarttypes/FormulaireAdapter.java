@@ -14,6 +14,16 @@ public class FormulaireAdapter implements BasicTypeAdapter<Formulaire, String> {
 		if (formulaireAsString == null) {
 			return null;
 		}
+
+		// H2 wraps json in a String by default (http://www.h2database.com/html/datatypes.html#json_type)
+		// temporary fix to unescape json, it should have been inserted as json value not json string
+		if (formulaireAsString.startsWith("\"")) {
+			final var resolvedJson = formulaireAsString
+					.substring(1, formulaireAsString.length() - 1)
+					.replace("\\\"", "\"")
+					.replace("\\\\", "\\");
+			return GSON.fromJson(resolvedJson, Formulaire.class);
+		}
 		return GSON.fromJson(formulaireAsString, Formulaire.class);
 
 	}

@@ -23,7 +23,9 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import io.vertigo.core.util.StringUtil;
@@ -45,6 +47,8 @@ import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttribute;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
+@Controller
+@RequestMapping("/easyforms/metaformulaire")
 public class AbstractFormsController extends AbstractVSpringMvcController {
 
 	private static final ViewContextKey<MetaFormulaire> mfoKey = ViewContextKey.of("mfo");
@@ -156,9 +160,7 @@ public class AbstractFormsController extends AbstractVSpringMvcController {
 	public Long save(final ViewContext viewContext) {
 		final var mfo = viewContext.readDto(mfoKey, getUiMessageStack());
 		final var champs = viewContext.readDtList(champsKey, getUiMessageStack());
-		final var mfoId = metaFormulaireServices.sauverNouveauFormulaire(mfo, champs);
-		toModeReadOnly();
-		return mfoId;
+		return metaFormulaireServices.sauverNouveauFormulaire(mfo, champs);
 	}
 
 	protected static void loadControlesByType(final ViewContext viewContext,

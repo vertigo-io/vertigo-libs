@@ -17,16 +17,18 @@
  */
 package io.vertigo.easyforms;
 
+import java.util.List;
+
 import io.vertigo.core.impl.analytics.trace.TraceAspect;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
-import io.vertigo.core.node.config.discovery.ModuleDiscoveryFeatures;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.easyforms.domain.DtDefinitions;
 import io.vertigo.easyforms.metaformulaire.domain.ControleDeChampDefinitionProvider;
 import io.vertigo.easyforms.metaformulaire.domain.MetaFormulaireSmartTypes;
 import io.vertigo.easyforms.metaformulaire.domain.TypeDeChampDefinitionProvider;
+import io.vertigo.ui.impl.springmvc.config.DefaultUiModuleFeatures;
 
-public class EasyFormsFeatures extends ModuleDiscoveryFeatures<EasyFormsFeatures> {
+public class EasyFormsFeatures extends DefaultUiModuleFeatures<EasyFormsFeatures> {
 
 	public EasyFormsFeatures() {
 		super("vertigo-easyforms");
@@ -48,6 +50,11 @@ public class EasyFormsFeatures extends ModuleDiscoveryFeatures<EasyFormsFeatures
 						.build())
 				.addDefinitionProvider(TypeDeChampDefinitionProvider.class)
 				.addDefinitionProvider(ControleDeChampDefinitionProvider.class);
+	}
+
+	@Override
+	protected List<String> getControllerPackages() {
+		return List.of(".metaformulaire.controllers");
 	}
 
 }
