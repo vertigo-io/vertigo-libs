@@ -97,6 +97,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 
 	/**
 	 * Constructor.
+	 *
 	 * @param name Store name
 	 * @param storeDtDefinitionName Nom du dt de stockage
 	 * @param path le chemin jndi pour récupérer le paramètre path dans le context
@@ -213,7 +214,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	public FileInfo create(final FileInfo fileInfo) {
 		Assertion.check()
 				.isFalse(readOnly, STORE_READ_ONLY)
-				.isNotNull(fileInfo.getURI(), "Only file without any id can be created.");
+				.isNull(fileInfo.getURI(), "Only file without any id can be created.");
 		//-----
 		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
 		//-----
@@ -241,7 +242,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	public void update(final FileInfo fileInfo) {
 		Assertion.check()
 				.isFalse(readOnly, STORE_READ_ONLY)
-				.isNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
+				.isNotNull(fileInfo.getURI(), "Only file with an id can be updated.");
 		//-----
 		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
 		//-----

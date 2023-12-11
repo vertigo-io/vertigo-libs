@@ -5,7 +5,7 @@ import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datamodel.structure.model.DtObject;
 
-@DefinitionPrefix("RdvTch")
+@DefinitionPrefix("EfTch")
 public class TypeDeChamp extends AbstractDefinition {
 
 	private final String label;
@@ -17,7 +17,7 @@ public class TypeDeChamp extends AbstractDefinition {
 	 */
 	private final String listName;
 
-	private TypeDeChamp(final String nom, String label, final String smartType, final String composantUi, final String uiAutocompleteInputAttribute) {
+	private TypeDeChamp(final String nom, final String label, final String smartType, final String composantUi, final String uiAutocompleteInputAttribute) {
 		this(nom, label, smartType, composantUi, uiAutocompleteInputAttribute, null);
 	}
 
@@ -39,17 +39,19 @@ public class TypeDeChamp extends AbstractDefinition {
 		return new TypeDeChamp(nom, label, smartType, composantUi, uiAutocompleteInputAttribute, listName);
 	}
 
-	public static TypeDeChamp of(final String nom, final String label, final String smartType, final String composantUi, final String uiAutocompleteInputAttribute, final Class<? extends DtObject> listClass) {
+	public static TypeDeChamp of(final String nom, final String label, final String smartType, final String composantUi, final String uiAutocompleteInputAttribute,
+			final Class<? extends DtObject> listClass) {
 		return new TypeDeChamp(nom, label, smartType, composantUi, uiAutocompleteInputAttribute, listClass == null ? null : listClass.getSimpleName());
 	}
 
 	public static TypeDeChamp of(final String nom) {
 		return Node.getNode().getDefinitionSpace().resolve(nom, TypeDeChamp.class);
 	}
-	
+
 	public String getLabel() {
 		return label;
 	}
+
 	public String getSmartType() {
 		return smartType;
 	}

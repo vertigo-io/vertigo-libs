@@ -79,7 +79,7 @@ public class MetaFormulaireServices implements Component {
 		final var metaFormulaire = getMetaFormulaireById(mfoUid);
 		return metaFormulaire.getModele().getChamps().stream()
 				.map(champ -> {
-					var tchamp = TypeDeChamp.of(champ.getTypeChamp());
+					final var tchamp = TypeDeChamp.of(champ.getTypeChamp());
 					final var champUi = new ChampUi();
 					champUi.setCodeChamp(champ.getCodeChamp());
 					champUi.setTypeDeChamp(tchamp.id().shortName());
@@ -123,8 +123,7 @@ public class MetaFormulaireServices implements Component {
 		}
 	}
 
-	public void sauverNouveauFormulaire(final UID<MetaFormulaire> mfoUid, final DtList<ChampUi> champs) {
-
+	public Long sauverNouveauFormulaire(final MetaFormulaire metaFormulaire, final DtList<ChampUi> champs) {
 		final var modeleFormulaireBuilder = new ModeleFormulaireBuilder();
 		for (final ChampUi champUi : champs) {
 			final TypeDeChamp typeChamp = TypeDeChamp.of(PREFIX_CODE_TYPE_CHAMP + champUi.getTypeDeChamp());
@@ -139,9 +138,9 @@ public class MetaFormulaireServices implements Component {
 					champUi.getIsDisplay(),
 					champUi.getControleDeChamps());
 		}
-		final var metaFormulaire = getMetaFormulaireById(mfoUid);
 		metaFormulaire.setModele(modeleFormulaireBuilder.build());
 		metaFormulaireDAO.save(metaFormulaire);
+		return metaFormulaire.getMfoId();
 	}
 
 	public MetaFormulaire creerMetaFormulaire(final MetaFormulaire metaFormulaire) {

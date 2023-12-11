@@ -1,20 +1,3 @@
-/*
- * vertigo - application development platform
- *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.planning.agenda.dao;
 
 import javax.inject.Inject;
@@ -119,6 +102,35 @@ public final class TrancheHoraireDAO extends DAO<TrancheHoraire, java.lang.Long>
 				.addValue("now", now)
 				.addValue("displayDayMin", displayDayMin)
 				.addValue("displayMinutesMin", displayMinutesMin)
+				.build();
+		return getTaskManager()
+				.execute(task)
+				.getResult();
+	}
+
+	/**
+	 * Execute la tache TkGetTrancheHorairesFermeesByAgeIds.
+	 * @param ageIds List de Long
+	 * @param startDate LocalDate
+	 * @param endDate LocalDate
+	 * @return DtList de TrancheHoraire trancheHoraires
+	*/
+	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
+			name = "TkGetTrancheHorairesFermeesByAgeIds",
+			request = """
+			SELECT trh.*
+           FROM tranche_horaire trh
+           WHERE trh.age_id in ( #ageIds.rownum# )
+           AND trh.date_locale BETWEEN #startDate# AND #endDate#
+           AND trh.nb_guichet = 0
+           order by trh.date_locale, trh.minutes_Debut;""",
+			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtTrancheHoraire", name = "trancheHoraires")
+	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.planning.agenda.domain.TrancheHoraire> getTrancheHorairesFermeesByAgeIds(@io.vertigo.datamodel.task.proxy.TaskInput(name = "ageIds", smartType = "STyPId") final java.util.List<Long> ageIds, @io.vertigo.datamodel.task.proxy.TaskInput(name = "startDate", smartType = "STyPLocalDate") final java.time.LocalDate startDate, @io.vertigo.datamodel.task.proxy.TaskInput(name = "endDate", smartType = "STyPLocalDate") final java.time.LocalDate endDate) {
+		final Task task = createTaskBuilder("TkGetTrancheHorairesFermeesByAgeIds")
+				.addValue("ageIds", ageIds)
+				.addValue("startDate", startDate)
+				.addValue("endDate", endDate)
 				.build();
 		return getTaskManager()
 				.execute(task)

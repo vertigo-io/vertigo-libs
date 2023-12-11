@@ -5,5 +5,5 @@ create Task TkDeleteListTaxonomyValuesByTatId {
     request : "
         DELETE FROM taxonomy tax WHERE tax.tat_id = #tatId#     
         "
-    in  tatId        {domain : DoFId                     cardinality: "1" }
+    in  tatId        {domain : DoEfId                     cardinality: "1" }
 }

@@ -58,7 +58,6 @@
 		<dependency>
 		    <groupId>com.h2database</groupId>
 		    <artifactId>h2</artifactId>
-		    <version>2.2.224</version>
 		    <scope>test</scope>
 		</dependency>
 
@@ -70,19 +69,16 @@
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>8.11.1</version><!-- 8.11.1 compatible with ElasticSearch 7.17.12 -->
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-analyzers-common</artifactId>
-			<version>8.11.1</version><!-- 8.11.1 compatible with ElasticSearch 7.17.12 -->
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-queryparser</artifactId>
-			<version>8.11.1</version><!-- 8.11.1 compatible with ElasticSearch 7.17.12 -->
 			<optional>true</optional>
 		</dependency>
 
@@ -90,7 +86,6 @@
 		<dependency>
 			<groupId>com.mchange</groupId>
 			<artifactId>c3p0</artifactId>
-			<version>0.9.5.5</version>
 			<optional>true</optional><!-- C3p0DataSourceProviderPlugin -->
 		</dependency>
 
@@ -98,25 +93,21 @@
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
 		    <artifactId>transport</artifactId>
-		    <version>7.17.14</version>
 		    <scope>test</scope> <!-- TransportSearchServicesPlugin -->
 		</dependency>
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
 		    <artifactId>elasticsearch-rest-high-level-client</artifactId>
-		    <version>7.17.14</version>
 		    <optional>true</optional> <!-- RestHighLevelSearchServicesPlugin -->
 		</dependency>
 		<dependency>
             <groupId>org.codelibs.elasticsearch.module</groupId>
-            <artifactId>analysis-common</artifactId> 
-            <version>7.17.9</version> <!-- required by EmbeddedSearchServicesPlugin -->
+            <artifactId>analysis-common</artifactId>  <!-- required by EmbeddedSearchServicesPlugin -->
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.codelibs.elasticsearch.module</groupId>
-            <artifactId>mapper-extras</artifactId>
-            <version>7.17.9</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
+            <artifactId>mapper-extras</artifactId> <!-- required by ESEmbeddedSearchServicesPlugin -->
             <optional>true</optional>
         </dependency>
 

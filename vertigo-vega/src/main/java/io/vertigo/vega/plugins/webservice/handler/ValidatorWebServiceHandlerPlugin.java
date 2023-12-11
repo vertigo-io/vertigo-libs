@@ -43,11 +43,12 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Params handler. Extract and Json convert.
+ *
  * @author npiedeloup
  */
 public final class ValidatorWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 
-	/** Stack index of the handler for sorting at startup**/
+	/** Stack index of the handler for sorting at startup **/
 	public static final int STACK_INDEX = 110;
 
 	/** {@inheritDoc} */
@@ -56,7 +57,7 @@ public final class ValidatorWebServiceHandlerPlugin implements WebServiceHandler
 		return true;
 	}
 
-	/** {@inheritDoc}  */
+	/** {@inheritDoc} */
 	@Override
 	public Object handle(final HttpServletRequest request, final HttpServletResponse response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		final WebServiceDefinition webServiceDefinition = routeContext.getWebServiceDefinition();
@@ -134,7 +135,7 @@ public final class ValidatorWebServiceHandlerPlugin implements WebServiceHandler
 	}
 
 	private static <D extends DtObject> DtList<D> mergeAndCheckInput(
-			final Class<DtObject> objectType,
+			final Class<D> objectType,
 			final UiListModifiable<D> uiList,
 			final List<DtObjectValidator<D>> dtObjectValidators,
 			final UiMessageStack uiMessageStack,

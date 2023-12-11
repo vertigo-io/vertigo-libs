@@ -21,7 +21,7 @@ public final class TypeDeChampUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Type de champ'.
 	 * @return String nom
 	 */
-	@Field(smartType = "STyFLabel", label = "Type de champ")
+	@Field(smartType = "STyEfLabel", label = "Type de champ")
 	@io.vertigo.datamodel.structure.stereotype.SortField
 	public String getNom() {
 		return nom;
@@ -41,7 +41,7 @@ public final class TypeDeChampUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Label'.
 	 * @return String label
 	 */
-	@Field(smartType = "STyFLabel", label = "Label")
+	@Field(smartType = "STyEfLabel", label = "Label")
 	@io.vertigo.datamodel.structure.stereotype.DisplayField
 	public String getLabel() {
 		return label;
