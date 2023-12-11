@@ -26,28 +26,5 @@ package io.vertigo.vortex.bb;
  * @author pchretien
  */
 public interface BBCommandBoolean extends BBCommandKV<Boolean> {
-	//--- KV Boolean
-	@Override
-	default boolean eq(final BBKey key, final Boolean compare) {
-		return compareBoolean(key, compare) == 0;
-	}
-
-	private int compareBoolean(final BBKey key, final Boolean compare) {
-		final Boolean value = get(key);
-		return compareBoolean(value, compare);
-	}
-
-	private static int compareBoolean(final Boolean value, final Boolean compare) {
-		if (value == null) {
-			return compare == null
-					? 0
-					: -1;
-		}
-		if (compare == null) {
-			return value == null
-					? 0
-					: -1;
-		}
-		return value.compareTo(compare);
-	}
+	//
 }

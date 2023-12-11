@@ -17,15 +17,13 @@
  */
 package io.vertigo.vortex.bb;
 
-import java.util.Set;
-
 /**
  * The blackboard is a simple structure allowing to read and write values identified by keys.
  * Some basic commands are supported.
  * The blackboard can be volatile or persistent.
  * The blackboard can be shared or not.
  * 
- * The blackBoard manages 4 different types 
+ * The blackBoard manages keys and 4 different types 
  * 		- Boolean, // bool because boolean is a java reserved word
  * 		- String,
  * 		- Integer,
@@ -35,53 +33,15 @@ import java.util.Set;
  * @author pchretien
  */
 public interface BlackBoard {
+	BBCommandKeys keys();
 
-	/**
-	 * Types
-	 */
-	enum Type {
-		Boolean,
-		String,
-		Integer,
-		List // of Strings
-	}
+	BBCommandBoolean bool();
 
-	//------------------------------------
-	//--- Keys
-	//------------------------------------
-	/**
-	 * Returns if the keys exists
-	 *
-	 * @param key the key
-	 * @return if the key exists
-	 */
-	boolean exists(final BBKey key);
+	BBCommandString string();
 
-	/**
-	 * Returns all the keys matching the pattern
-	 * The magic pattern * returns all the keys
-	 *
-	 * @param keyPattern the pattern
-	 * @return A list of keys
-	 */
-	Set<BBKey> keys(final BBKeyPattern keyPattern);
+	BBCommandInteger integer();
 
-	/**
-	 * Deletes all the keys matching the pattern
-	 *
-	 * The magic pattern * remove all the keys
-	 *
-	 * @param keyPattern the pattern
-	 */
-	void delete(final BBKeyPattern keyPattern);
-
-	/**
-	 * Returns the key type or null if the keys doesn't exist
-	 *
-	 * @param key the key
-	 * @return the key type or null
-	 */
-	Type getType(final BBKey key);
+	BBCommandList list();
 
 	//------------------------------------
 	//--- KV
@@ -101,12 +61,4 @@ public interface BlackBoard {
 	 * @return the key
 	 */
 	BBKey eval(final BBKeyTemplate keyTemplate);
-
-	BBCommandBoolean bool();
-
-	BBCommandString string();
-
-	BBCommandInteger integer();
-
-	BBCommandList list();
 }

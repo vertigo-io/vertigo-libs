@@ -22,7 +22,7 @@ import java.util.Set;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.vortex.bb.BBKey;
 import io.vertigo.vortex.bb.BBKeyPattern;
-import io.vertigo.vortex.bb.BlackBoard.Type;
+import io.vertigo.vortex.bb.BBType;
 
 public interface BlackBoardStorePlugin extends Plugin {
 
@@ -61,7 +61,7 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 * @param key the key
 	 * @return the key type or null
 	 */
-	Type getType(final BBKey key);
+	BBType getType(final BBKey key);
 
 	//------------------------------------
 	//--- KV

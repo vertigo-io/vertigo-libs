@@ -17,50 +17,45 @@
  */
 package io.vertigo.vortex.bb;
 
+import java.util.Set;
+
 /**
- * Blackboard commands to manage lists
- *
+ * Blackboard commands to manage keys.
+ * 	
  * @author pchretien
  */
-public interface BBCommandList {
+public interface BBCommandKeys {
 	/**
-	 * Returns the size of the list identified by the key
+	 * Returns if the keys exists
 	 *
 	 * @param key the key
-	 * @return the size of the list
+	 * @return if the key exists
 	 */
-	int size(final BBKey key);
+	boolean exists(final BBKey key);
 
 	/**
-	 * Pushes a value at the top of the list
+	 * Returns all the keys matching the pattern
+	 * The magic pattern * returns all the keys
 	 *
-	 * @param key the key
-	 * @param value the value
+	 * @param keyPattern the pattern
+	 * @return A list of keys
 	 */
-	void push(final BBKey key, final String value);
+	Set<BBKey> keys(final BBKeyPattern keyPattern);
 
 	/**
-	 * Removes and returns the value at the top of the list
+	 * Deletes all the keys matching the pattern
 	 *
-	 * @param key the key
-	 * @param value the value
+	 * The magic pattern * remove all the keys
+	 *
+	 * @param keyPattern the pattern
 	 */
-	String pop(final BBKey key);
+	void delete(final BBKeyPattern keyPattern);
 
 	/**
-	 * Returns the value at the top of the list
+	 * Returns the key type or null if the keys doesn't exist
 	 *
 	 * @param key the key
-	 * @param value the value
+	 * @return the key type or null
 	 */
-	String peek(final BBKey key);
-
-	/**
-	 * Reads the value at the index of the list
-	 *
-	 * @param key the key
-	 * @param idx the index
-	 * @return the value at the corresponding index
-	 */
-	String get(final BBKey key, final int idx);
+	BBType getType(final BBKey key);
 }

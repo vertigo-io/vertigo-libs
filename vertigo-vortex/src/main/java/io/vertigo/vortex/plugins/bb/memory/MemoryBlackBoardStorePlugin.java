@@ -30,12 +30,12 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vortex.bb.BBKey;
 import io.vertigo.vortex.bb.BBKeyPattern;
-import io.vertigo.vortex.bb.BlackBoard.Type;
+import io.vertigo.vortex.bb.BBType;
 import io.vertigo.vortex.bb.BlackBoardManager;
 import io.vertigo.vortex.impl.bb.BlackBoardStorePlugin;
 
 public final class MemoryBlackBoardStorePlugin implements BlackBoardStorePlugin {
-	private final Map<BBKey, Type> keys = Collections.synchronizedMap(new LinkedHashMap<>());
+	private final Map<BBKey, BBType> keys = Collections.synchronizedMap(new LinkedHashMap<>());
 	private final Map<BBKey, Object> values = Collections.synchronizedMap(new LinkedHashMap<>());
 	private final Map<BBKey, BBList> lists = Collections.synchronizedMap(new LinkedHashMap<>());
 
@@ -136,26 +136,26 @@ public final class MemoryBlackBoardStorePlugin implements BlackBoardStorePlugin 
 
 	@Override
 	public void stringPut(final BBKey key, final String value) {
-		doPut(key, Type.String, value);
+		doPut(key, BBType.String, value);
 	}
 
 	@Override
 	public void integerPut(final BBKey key, final Integer value) {
-		doPut(key, Type.Integer, value);
+		doPut(key, BBType.Integer, value);
 	}
 
 	@Override
 	public void boolPut(final BBKey key, final Boolean value) {
-		doPut(key, Type.Boolean, value);
+		doPut(key, BBType.Boolean, value);
 	}
 
-	private void doPut(final BBKey key, final Type type, final Object value) {
+	private void doPut(final BBKey key, final BBType type, final Object value) {
 		Assertion.check()
 				.isNotNull(key)
 				.isNotNull(type);
 		// ---
 		//---
-		final Type previousType = keys.put(key, type);
+		final BBType previousType = keys.put(key, type);
 		if (previousType != null && type != previousType) {
 			throw new IllegalStateException("the type is already defined" + previousType);
 		}
@@ -175,7 +175,7 @@ public final class MemoryBlackBoardStorePlugin implements BlackBoardStorePlugin 
 	}
 
 	@Override
-	public Type getType(final BBKey key) {
+	public BBType getType(final BBKey key) {
 		return keys.get(key);
 	}
 

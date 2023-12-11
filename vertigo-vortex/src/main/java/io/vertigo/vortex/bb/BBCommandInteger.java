@@ -31,7 +31,6 @@ package io.vertigo.vortex.bb;
  * @author pchretien
  */
 public interface BBCommandInteger extends BBCommandKV<Integer> {
-	//--- KV Integer
 	/**
 	 * Increments the value (must be an integer) at the key by a value
 	 *
@@ -45,48 +44,16 @@ public interface BBCommandInteger extends BBCommandKV<Integer> {
 	 *
 	 * @param key the key
 	 */
-	default void incr(final BBKey key) {
-		incrBy(key, 1);
-	}
+	void incr(final BBKey key);
 
 	/**
 	 * Decrements the value (must be an integer) at the key
 	 *
 	 * @param key the key
 	 */
-	default void decr(final BBKey key) {
-		incrBy(key, -1);
-	}
+	void decr(final BBKey key);
 
-	@Override
-	default boolean eq(final BBKey key, final Integer compare) {
-		return compareInteger(key, compare) == 0;
-	}
+	boolean lt(final BBKey key, final Integer compare);
 
-	default boolean lt(final BBKey key, final Integer compare) {
-		return compareInteger(key, compare) < 0;
-	}
-
-	default boolean gt(final BBKey key, final Integer compare) {
-		return compareInteger(key, compare) > 0;
-	}
-
-	private int compareInteger(final BBKey key, final Integer compare) {
-		final Integer value = get(key);
-		return compareInteger(value, compare);
-	}
-
-	private static int compareInteger(final Integer value, final Integer compare) {
-		if (value == null) {
-			return compare == null
-					? 0
-					: -1;
-		}
-		if (compare == null) {
-			return value == null
-					? 0
-					: -1;
-		}
-		return value.compareTo(compare);
-	}
+	boolean gt(final BBKey key, final Integer compare);
 }

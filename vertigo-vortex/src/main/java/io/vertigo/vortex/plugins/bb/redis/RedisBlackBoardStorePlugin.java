@@ -29,7 +29,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vortex.bb.BBKey;
 import io.vertigo.vortex.bb.BBKeyPattern;
-import io.vertigo.vortex.bb.BlackBoard.Type;
+import io.vertigo.vortex.bb.BBType;
 import io.vertigo.vortex.bb.BlackBoardManager;
 import io.vertigo.vortex.impl.bb.BlackBoardStorePlugin;
 import redis.clients.jedis.Jedis;
@@ -111,10 +111,10 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 	}
 
 	@Override
-	public Type getType(final BBKey key) {
+	public BBType getType(final BBKey key) {
 		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
 			final var storedType = jedis.hget("types", key.key());
-			return storedType != null ? Type.valueOf(storedType) : null;
+			return storedType != null ? BBType.valueOf(storedType) : null;
 		}
 	}
 
@@ -131,7 +131,7 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 		return get(key);
 	}
 
-	private void doPut(final BBKey key, final String value, final Type type) {
+	private void doPut(final BBKey key, final String value, final BBType type) {
 		Assertion.check()
 				.isNotNull(key)
 				.isNotNull(type);
@@ -147,7 +147,7 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 
 	@Override
 	public void stringPut(final BBKey key, final String value) {
-		doPut(key, value, Type.String);
+		doPut(key, value, BBType.String);
 	}
 
 	@Override
@@ -158,7 +158,7 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 
 	@Override
 	public void integerPut(final BBKey key, final Integer value) {
-		doPut(key, String.valueOf(value), Type.Integer);
+		doPut(key, String.valueOf(value), BBType.Integer);
 	}
 
 	@Override
@@ -169,14 +169,14 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 
 	@Override
 	public void boolPut(final BBKey key, final Boolean value) {
-		doPut(key, String.valueOf(value), Type.Boolean);
+		doPut(key, String.valueOf(value), BBType.Boolean);
 	}
 
 	@Override
 	public void integerIncrBy(final BBKey key, final int value) {
 		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
 			try (final Transaction tx = jedis.multi()) {
-				tx.hset("types", key.key(), Type.Integer.name()); // ensure type is set
+				tx.hset("types", key.key(), BBType.Integer.name()); // ensure type is set
 				tx.incrBy(key.key(), value);
 				tx.exec();
 			}
