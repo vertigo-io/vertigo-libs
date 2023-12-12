@@ -17,6 +17,7 @@ public class TypeDeChampDefinitionProvider implements SimpleDefinitionProvider {
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		return List.of(
+				TypeDeChamp.of("EfTchLabel", "Label", "STyEfLabel", "textfield", null),
 				TypeDeChamp.of("EfTchNom", "Nom", "STyEfNom", "textfield", "family-name"),
 				TypeDeChamp.of("EfTchPrenom", "Prénom", "STyEfPrenom", "textfield", "given-name"),
 				TypeDeChamp.of("EfTchEmail", "Email", "STyEfEmail", "textfield", "email"),
