@@ -23,7 +23,9 @@ package io.vertigo.vortex.bb;
  * The blackboard can be volatile or persistent.
  * The blackboard can be shared or not.
  * 
- * The blackBoard manages keys and 4 different types 
+ * The blackBoard manages 
+ * 		- keys 
+ * and 4 different types 
  * 		- Boolean, // bool because boolean is a java reserved word
  * 		- String,
  * 		- Integer,

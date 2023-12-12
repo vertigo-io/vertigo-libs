@@ -57,14 +57,14 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 	}
 
 	@Override
-	public boolean exists(final BBKey key) {
+	public boolean keysExists(final BBKey key) {
 		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
 			return jedis.exists(key.key());
 		}
 	}
 
 	@Override
-	public Set<BBKey> keys(final BBKeyPattern keyPattern) {
+	public Set<BBKey> keysFindAll(final BBKeyPattern keyPattern) {
 		final Set<BBKey> result = new HashSet<>();
 		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
 			final ScanParams scanParams = new ScanParams().count(1000).match(keyPattern.keyPattern());
@@ -86,7 +86,7 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 	}
 
 	@Override
-	public void delete(final BBKeyPattern keyPattern) {
+	public void keysDeleteAll(final BBKeyPattern keyPattern) {
 		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
 			final ScanParams scanParams = new ScanParams().count(1000).match(keyPattern.keyPattern());
 			String cur = ScanParams.SCAN_POINTER_START;
@@ -111,7 +111,7 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 	}
 
 	@Override
-	public BBType getType(final BBKey key) {
+	public BBType keysGetType(final BBKey key) {
 		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
 			final var storedType = jedis.hget("types", key.key());
 			return storedType != null ? BBType.valueOf(storedType) : null;

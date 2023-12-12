@@ -40,7 +40,7 @@ public interface BBCommandKeys {
 	 * @param keyPattern the pattern
 	 * @return A list of keys
 	 */
-	Set<BBKey> keys(final BBKeyPattern keyPattern);
+	Set<BBKey> findAll(final BBKeyPattern keyPattern);
 
 	/**
 	 * Deletes all the keys matching the pattern
@@ -49,7 +49,7 @@ public interface BBCommandKeys {
 	 *
 	 * @param keyPattern the pattern
 	 */
-	void delete(final BBKeyPattern keyPattern);
+	void deleteAll(final BBKeyPattern keyPattern);
 
 	/**
 	 * Returns the key type or null if the keys doesn't exist

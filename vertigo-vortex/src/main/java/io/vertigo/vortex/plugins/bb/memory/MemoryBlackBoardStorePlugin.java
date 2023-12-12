@@ -53,14 +53,14 @@ public final class MemoryBlackBoardStorePlugin implements BlackBoardStorePlugin 
 	//--- Keys
 	//------------------------------------
 	@Override
-	public boolean exists(final BBKey key) {
+	public boolean keysExists(final BBKey key) {
 		Assertion.check().isNotNull(key);
 		// ---
 		return keys.containsKey(key);
 	}
 
 	@Override
-	public Set<BBKey> keys(final BBKeyPattern keyPattern) {
+	public Set<BBKey> keysFindAll(final BBKeyPattern keyPattern) {
 		Assertion.check().isNotNull(keyPattern);
 		final var keyPatternString = keyPattern.keyPattern();
 		//---
@@ -84,7 +84,7 @@ public final class MemoryBlackBoardStorePlugin implements BlackBoardStorePlugin 
 	}
 
 	@Override
-	public void delete(final BBKeyPattern keyPattern) {
+	public void keysDeleteAll(final BBKeyPattern keyPattern) {
 		Assertion.check().isNotNull(keyPattern);
 		final var keyPatternString = keyPattern.keyPattern();
 		if ("/*".equals(keyPatternString)) {
@@ -175,7 +175,7 @@ public final class MemoryBlackBoardStorePlugin implements BlackBoardStorePlugin 
 	}
 
 	@Override
-	public BBType getType(final BBKey key) {
+	public BBType keysGetType(final BBKey key) {
 		return keys.get(key);
 	}
 

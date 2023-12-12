@@ -35,7 +35,7 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 * @param key the key
 	 * @return if the key exists
 	 */
-	boolean exists(final BBKey key);
+	boolean keysExists(final BBKey key);
 
 	/**
 	 * Returns all the keys matching the pattern
@@ -44,7 +44,7 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 * @param keyPattern the pattern
 	 * @return A list of keys
 	 */
-	Set<BBKey> keys(final BBKeyPattern keyPattern);
+	Set<BBKey> keysFindAll(final BBKeyPattern keyPattern);
 
 	/**
 	 * Deletes all the keys matching the pattern
@@ -53,7 +53,7 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 *
 	 * @param keyPattern the pattern
 	 */
-	void delete(final BBKeyPattern keyPattern);
+	void keysDeleteAll(final BBKeyPattern keyPattern);
 
 	/**
 	 * Returns the key type or null if the keys doesn't exist
@@ -61,7 +61,7 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 * @param key the key
 	 * @return the key type or null
 	 */
-	BBType getType(final BBKey key);
+	BBType keysGetType(final BBKey key);
 
 	//------------------------------------
 	//--- KV

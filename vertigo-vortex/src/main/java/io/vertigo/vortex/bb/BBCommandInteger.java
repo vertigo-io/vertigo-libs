@@ -22,6 +22,7 @@ package io.vertigo.vortex.bb;
  *  - put
  *  - get
  *  - eq
+ *  and some specific commands 
  *  - incrBy
  *  - incr
  *  - decr

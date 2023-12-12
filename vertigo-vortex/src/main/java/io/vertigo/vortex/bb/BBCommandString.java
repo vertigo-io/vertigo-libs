@@ -17,13 +17,12 @@
  */
 package io.vertigo.vortex.bb;
 
-import java.util.Objects;
-
 /**
  * Part of Blackboard to manage strings
  * 	- put
  *  - get
  *  - eq
+ *  and some specific commands 
  *  - append
  *  - eqCaseInsensitive
  *  - startsWith
@@ -37,18 +36,9 @@ public interface BBCommandString extends BBCommandKV<String> {
 	 * @param key the key
 	 * @param something something
 	 */
-	default void append(final BBKey key, final String something) {
-		String value = get(key); // getString includes type checking
-		if (value == null) {
-			value = "";
-		}
-		put(key, value + something);
-	}
+	void append(final BBKey key, final String something);
 
-	default boolean eqCaseInsensitive(final BBKey key, final String compare) {
-		final String value = get(key); // getString includes type checking
-		return value == null ? compare == null : value.equalsIgnoreCase(compare);
-	}
+	boolean eqCaseInsensitive(final BBKey key, final String compare);
 
 	/**
 	 * Returns true if the value associated to the key starts with the compare string
@@ -57,16 +47,5 @@ public interface BBCommandString extends BBCommandKV<String> {
 	 * @param compare the value to compare
 	 * @return true if the value associated to the key starts with the compare string
 	 */
-	default boolean startsWith(final BBKey key, final String compare) {
-		final String value = get(key); // getString includes type checking
-		return value == null
-				? compare == null
-				: value.startsWith(compare);
-	}
-
-	@Override
-	default boolean eq(final BBKey key, final String compare) {
-		final String value = get(key); // getString includes type checking
-		return Objects.equals(value, compare);
-	}
+	boolean startsWith(final BBKey key, final String compare);
 }

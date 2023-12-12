@@ -17,6 +17,7 @@
  */
 package io.vertigo.vortex.impl.bb;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -92,26 +93,26 @@ final class BlackBoardImpl implements BlackBoard {
 			Assertion.check().isNotNull(key);
 			//---
 			return blackBoardStorePlugin
-					.exists(rootKey.add(key));
+					.keysExists(rootKey.add(key));
 		}
 
 		@Override
-		public Set<BBKey> keys(final BBKeyPattern keyPattern) {
+		public Set<BBKey> findAll(final BBKeyPattern keyPattern) {
 			Assertion.check().isNotNull(keyPattern);
 			//---
 			return blackBoardStorePlugin
-					.keys(keyPattern.indent(rootKey.key()))
+					.keysFindAll(keyPattern.indent(rootKey.key()))
 					.stream()
 					.map(k -> BBKey.of(k.key().substring(rootKey.key().length())))
 					.collect(Collectors.toSet());
 		}
 
 		@Override
-		public void delete(final BBKeyPattern keyPattern) {
+		public void deleteAll(final BBKeyPattern keyPattern) {
 			Assertion.check().isNotNull(keyPattern);
 			//---
 			blackBoardStorePlugin
-					.delete(keyPattern.indent(rootKey.key()));
+					.keysDeleteAll(keyPattern.indent(rootKey.key()));
 		}
 
 		@Override
@@ -119,7 +120,7 @@ final class BlackBoardImpl implements BlackBoard {
 			Assertion.check().isNotNull(key);
 			//---
 			return blackBoardStorePlugin
-					.getType(rootKey.add(key));
+					.keysGetType(rootKey.add(key));
 		}
 	}
 
@@ -139,6 +140,35 @@ final class BlackBoardImpl implements BlackBoard {
 			//---
 			blackBoardStorePlugin
 					.stringPut(rootKey.add(key), value);
+		}
+
+		@Override
+		public void append(final BBKey key, final String something) {
+			String value = get(key); // getString includes type checking
+			if (value == null) {
+				value = "";
+			}
+			put(key, value + something);
+		}
+
+		@Override
+		public boolean eqCaseInsensitive(final BBKey key, final String compare) {
+			final String value = get(key); // getString includes type checking
+			return value == null ? compare == null : value.equalsIgnoreCase(compare);
+		}
+
+		@Override
+		public boolean startsWith(final BBKey key, final String compare) {
+			final String value = get(key); // getString includes type checking
+			return value == null
+					? compare == null
+					: value.startsWith(compare);
+		}
+
+		@Override
+		public boolean eq(final BBKey key, final String compare) {
+			final String value = get(key); // getString includes type checking
+			return Objects.equals(value, compare);
 		}
 	}
 

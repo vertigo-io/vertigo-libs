@@ -1,7 +1,6 @@
 package io.vertigo.vortex.bb;
 
 public interface BBCommandKV<O> {
-	//--- KV Boolean
 	/**
 	 * Returns the value or null if the key does not exist
 	 *
