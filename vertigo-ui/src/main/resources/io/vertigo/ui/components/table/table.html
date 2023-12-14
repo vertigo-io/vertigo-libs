@@ -42,10 +42,10 @@
 				th::grid="${isGrid?('$q.screen.lt.'+gridBreak):'false'}"
 				th:title="${vTitle==null?title?:'':''}" th::title="${vTitle?:''}"
 			    th:attr="__${table_attrs}__">
-		</th:block>		
-		<vu:content-slot name="header_slot"/>		  
-		<template #top-left="props" vu:slot="top_left_slot">
-			  <div class="column" th:if="${vTitle!=null || title!=null}" th:remove="${subtitle==null}? tag">
+		</th:block>
+		<vu:content-slot name="header_slot"/>
+		<template #top-left="props" vu:slot="top_left_slot" th:if="${vTitle!=null || title!=null}" th:remove="${subtitle==null}? tag">
+			  <div class="column">
 			      <h1 class="text-h6 q-ma-none" th:if="${currentBlockLevel == 1}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h1>
                   <h2 class="text-h6 q-ma-none" th:if="${currentBlockLevel == 2}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h2>
                   <h3 class="text-h6 q-ma-none" th:if="${currentBlockLevel == 3}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h3>
