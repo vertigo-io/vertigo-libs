@@ -38,6 +38,7 @@ import io.vertigo.easyforms.metaformulaire.domain.ControleDeChampDefinitionProvi
 import io.vertigo.easyforms.metaformulaire.domain.ControleDeChampUi;
 import io.vertigo.easyforms.metaformulaire.domain.MetaFormulaire;
 import io.vertigo.easyforms.metaformulaire.domain.TaxonomyType;
+import io.vertigo.easyforms.metaformulaire.domain.TypeDeChamp;
 import io.vertigo.easyforms.metaformulaire.domain.TypeDeChampUi;
 import io.vertigo.easyforms.metaformulaire.services.MetaFormulaireServices;
 import io.vertigo.easyforms.metaformulaire.services.TaxonomyListServices;
@@ -146,6 +147,7 @@ public class AbstractFormsController extends AbstractVSpringMvcController {
 
 		metaFormulaireServices.checkUpdateChamp(champs, editIndex, champEdit, uiMessageStack);
 
+		champEdit.setTypeDeChampLabel(TypeDeChamp.of(MetaFormulaireServices.PREFIX_CODE_TYPE_CHAMP + champEdit.getTypeDeChamp()).getLabel());
 		if (editIndex == -1) {
 			champs.add(champEdit);
 		} else {
