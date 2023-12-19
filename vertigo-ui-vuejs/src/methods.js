@@ -100,14 +100,22 @@ export default {
         return null;
     },
 
-    transformListForSelection: function (list, valueField, labelField, filterFunction) {
-        var rawList = this.$data.vueData[list];
+    transformListForSelection: function (list, valueField, labelField, filterFunction, searchValue) {
+        let rawList = this.$data.vueData[list];
         if (filterFunction) {
             rawList = rawList.filter(filterFunction);
+        }
+        if (searchValue != null && searchValue.trim() !== '') {
+	        const searchNormalized = this.unaccentLower(searchValue);
+	        rawList = rawList.filter(val => this.unaccentLower(val[labelField].toString()).indexOf(searchNormalized) > -1); // label contains
         }
         return rawList.map(function (object) {
             return { value: object[valueField], label: object[labelField].toString() } // a label is always a string
         });
+    },
+    
+    unaccentLower: function(value) {
+	    return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
     },
 
     paginationAndSortHandler: function (params) {

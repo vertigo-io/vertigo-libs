@@ -504,7 +504,10 @@ const _n = /* @__PURE__ */ T(un, [["render", yn]]), et = window.Quasar, $n = {
     icon: { type: String, default: "comment" },
     iconNone: { type: String, default: "add_comment" },
     baseUrl: { type: String, default: "/api/", required: !0 },
-    connectedAccount: { type: String }
+    connectedAccount: { type: String },
+    color: { type: String, default: "primary" },
+    textColor: { type: String, default: "white" },
+    flat: { type: Boolean, default: !1 }
   },
   data: function() {
     return {
@@ -547,12 +550,14 @@ function qn(e, t, n, o, i, a) {
   return ge(), xt("span", null, [
     C(r, {
       round: "",
+      flat: n.flat,
       size: "lg",
-      color: "primary",
-      textColor: "white",
+      color: n.color,
+      "text-color": n.textColor,
       icon: e.count > 0 ? n.icon : n.iconNone,
       onClick: t[0] || (t[0] = (g) => e.commentDrawer = !e.commentDrawer),
-      class: "on-left"
+      class: "on-left",
+      title: e.$q.lang.vui.comments.title
     }, {
       default: V(() => [
         e.count > 0 ? (ge(), Pe(s, {
@@ -569,7 +574,7 @@ function qn(e, t, n, o, i, a) {
         })) : tt("", !0)
       ]),
       _: 1
-    }, 8, ["icon"]),
+    }, 8, ["flat", "color", "text-color", "icon", "title"]),
     C(x, {
       overlay: "",
       behavior: "mobile",
@@ -2888,11 +2893,18 @@ const $ = window.Quasar, zt = {
   getSafeValue: function(e, t, n) {
     return this.$data.vueData[e] && this.$data.vueData[e][t] ? this.$data.vueData[e][t][n] : null;
   },
-  transformListForSelection: function(e, t, n, o) {
-    var i = this.$data.vueData[e];
-    return o && (i = i.filter(o)), i.map(function(a) {
-      return { value: a[t], label: a[n].toString() };
+  transformListForSelection: function(e, t, n, o, i) {
+    let a = this.$data.vueData[e];
+    if (o && (a = a.filter(o)), i != null && i.trim() !== "") {
+      const s = this.unaccentLower(i);
+      a = a.filter((r) => this.unaccentLower(r[n].toString()).indexOf(s) > -1);
+    }
+    return a.map(function(s) {
+      return { value: s[t], label: s[n].toString() };
     });
+  },
+  unaccentLower: function(e) {
+    return e.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   },
   paginationAndSortHandler: function(e) {
     var t = e.pagination;
