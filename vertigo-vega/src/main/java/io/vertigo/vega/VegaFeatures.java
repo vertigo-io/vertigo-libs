@@ -54,6 +54,7 @@ import io.vertigo.vega.webservice.WebServiceManager;
 
 /**
  * Defines module Vega.
+ *
  * @author pchretien
  */
 public final class VegaFeatures extends Features<VegaFeatures> {
@@ -94,9 +95,9 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	}
 
 	@Feature("webservices.rateLimiting")
-	public VegaFeatures withWebServicesRateLimiting() {
+	public VegaFeatures withWebServicesRateLimiting(final Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(RateLimitingWebServiceHandlerPlugin.class);
+				.addPlugin(RateLimitingWebServiceHandlerPlugin.class, params);
 		return this;
 	}
 
