@@ -15,7 +15,7 @@
 						<div class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${dontUseHeading == true}" />
 						<div class="text-subtitle2" vu:text="${subtitle?:''}" />
 					</q-item-section>
-					<q-item-section side vu:slot="actions_slot"><q-icon th-if="${icon != null}" th:name="${icon}"></q-icon></q-item-section>
+					<q-item-section side vu:slot="actions_slot" th:if="${actions_slot != null || icon != null}"><q-icon th:if="${icon != null}" th:name="${icon}"></q-icon></q-item-section>
 				</q-item>
 			</div>
 			<div class="q-separator q-separator--horizontal"></div>
