@@ -1250,9 +1250,10 @@ function Co(e, t, n, o, i, a) {
   const s = ne("q-badge"), r = ne("q-icon"), l = ne("q-item-section"), c = ne("q-item-label"), d = ne("q-item"), p = ne("q-list"), u = ne("q-menu"), h = ne("q-btn");
   return Re(), st(h, {
     round: "",
+    flat: !e.hasNew,
     dense: "",
-    color: e.hasNew ? "primary" : "white",
-    textColor: e.hasNew ? "white" : "primary",
+    color: e.hasNew ? "accent" : "secondary",
+    "text-color": e.hasNew ? "accent-inverted" : "secondary-inverted",
     icon: e.count > 0 ? n.icon : n.iconNone,
     class: "on-left"
   }, {
@@ -1332,7 +1333,7 @@ function Co(e, t, n, o, i, a) {
       })
     ]),
     _: 1
-  }, 8, ["color", "textColor", "icon"]);
+  }, 8, ["flat", "color", "text-color", "icon"]);
 }
 const Vo = /* @__PURE__ */ T(vo, [["render", Co]]), Et = window.Quasar, U = window.ol, ko = {
   props: {

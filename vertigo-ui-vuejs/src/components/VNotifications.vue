@@ -1,5 +1,5 @@
 <template>
-    <q-btn round dense :color="hasNew?'primary':'white'" :textColor="hasNew?'white':'primary'" :icon="count>0?icon:iconNone" class="on-left" >
+    <q-btn round :flat="!hasNew" dense :color="hasNew?'accent':'secondary'" :text-color="hasNew?'accent-inverted':'secondary-inverted'" :icon="count>0?icon:iconNone" class="on-left" >
         <q-badge color="red" text-color="white" floating v-if="count>0" >{{count}}</q-badge>
         <q-menu class="notifications">
             <q-list style="width:300px">
