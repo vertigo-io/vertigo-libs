@@ -18,7 +18,7 @@
 package io.vertigo.vega.authentication;
 
 import io.vertigo.core.lang.Tuple;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.Manager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -28,7 +28,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author mlaroche
  *
  */
-public interface WebAuthenticationManager extends Component {
+public interface WebAuthenticationManager extends Manager {
 
 	/**
 	 * Code to execute before the call to the filter chain.
