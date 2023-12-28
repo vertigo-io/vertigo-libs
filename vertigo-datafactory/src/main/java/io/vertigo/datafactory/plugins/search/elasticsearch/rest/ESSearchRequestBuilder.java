@@ -79,7 +79,6 @@ final class ESSearchRequestBuilder extends AsbtractESSearchRequestBuilder<Search
 				.size(searchQuery.isClusteringFacet() ? 0 : listState.getMaxRows().orElse(defaultMaxRows));
 		if (listState.getSortFieldName().isPresent()) {
 			var sortFieldNames = listState.getSortFieldName().get();
-			sortFieldNames = sortFieldNames;
 			for (var sortFieldName : sortFieldNames.split(",")) {
 				sortFieldName = sortFieldName.trim(); //avoid split'\s*,\s*' cause ReDos
 				final SortBuilder<?> sortBuilder;

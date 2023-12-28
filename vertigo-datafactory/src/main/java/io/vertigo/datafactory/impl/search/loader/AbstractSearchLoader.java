@@ -133,16 +133,16 @@ public abstract class AbstractSearchLoader<K extends KeyConcept, I extends DtObj
 				final Serializable lastValue = previousChunk.getLastValue();
 				// call loader service
 				final List<Tuple<UID<K>, Serializable>> uris = loadNextURI(lastValue, orderByVersion, dtDefinition);
-				return new SearchChunk<>(uris, getLastValue(uris, orderByVersion));
+				return new SearchChunk<>(uris, getLastValue(uris));
 			}
 
 			private SearchChunk<K> firstChunk() {
 				// call loader service
 				final List<Tuple<UID<K>, Serializable>> uris = loadNextURI(firstValue, orderByVersion, dtDefinition);
-				return new SearchChunk<>(uris, getLastValue(uris, orderByVersion));
+				return new SearchChunk<>(uris, getLastValue(uris));
 			}
 
-			private Serializable getLastValue(final List<Tuple<UID<K>, Serializable>> uris, final boolean orderByVersion) {
+			private Serializable getLastValue(final List<Tuple<UID<K>, Serializable>> uris) {
 				Serializable nextLastValue;
 				if (!uris.isEmpty()) {
 					Tuple<UID<K>, Serializable> lastElement;
