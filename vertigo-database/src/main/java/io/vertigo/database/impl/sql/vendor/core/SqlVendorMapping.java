@@ -180,7 +180,7 @@ public final class SqlVendorMapping implements SqlMapping {
 		return dataType.cast(value);
 	}
 
-	private String getStringValueForResultSet(final ResultSet resultSet, final int col) throws SQLException {
+	private static String getStringValueForResultSet(final ResultSet resultSet, final int col) throws SQLException {
 		final String value;
 		if (resultSet.getMetaData().getColumnType(col) == Types.CLOB) {
 			final Clob clob = resultSet.getClob(col);

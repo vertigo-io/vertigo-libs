@@ -290,7 +290,7 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 		return database;
 	}
 
-	private byte[] toBytes(final String value) {
+	private static byte[] toBytes(final String value) {
 		return value.getBytes(StandardCharsets.UTF_8);
 	}
 

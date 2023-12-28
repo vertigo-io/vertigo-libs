@@ -157,7 +157,7 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 		}
 	}
 
-	private void checkTypeMany(final SmartTypeDefinition smartTypeDefinition, final Object value) {
+	private static void checkTypeMany(final SmartTypeDefinition smartTypeDefinition, final Object value) {
 		switch (smartTypeDefinition.getScope()) {
 			case DATA_TYPE:
 				if (!(value instanceof DtList)) {

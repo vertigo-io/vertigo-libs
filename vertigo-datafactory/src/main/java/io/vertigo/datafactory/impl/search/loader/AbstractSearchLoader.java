@@ -87,7 +87,7 @@ public abstract class AbstractSearchLoader<K extends KeyConcept, I extends DtObj
 		return Optional.empty(); //Overridable
 	}
 
-	private Serializable getLowestIteratorValue(final DtField iteratorField, final DtDefinition dtDefinition) {
+	private static Serializable getLowestIteratorValue(final DtField iteratorField, final DtDefinition dtDefinition) {
 		Assertion.check().isTrue(
 				iteratorField.smartTypeDefinition().getScope().isBasicType(),
 				"Field use for iterate must be primitives : iteratorField '{0}' on dtDefinition '{1}' has the smartType '{2}'", dtDefinition, iteratorField.name(), iteratorField.smartTypeDefinition());

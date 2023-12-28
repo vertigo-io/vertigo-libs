@@ -123,7 +123,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 		}
 	}
 
-	private void eventBusExcecutor(final Consumer listener, final Event event) {
+	private static void eventBusExcecutor(final Consumer listener, final Event event) {
 		try {//try catch needed to ensure execution of other listener aren't suppressed
 			listener.accept(event);
 		} catch (final Exception e) {

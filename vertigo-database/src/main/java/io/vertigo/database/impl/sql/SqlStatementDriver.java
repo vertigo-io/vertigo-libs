@@ -143,7 +143,7 @@ final class SqlStatementDriver {
 		return retrieveData(dataType, basicTypeAdapters, sqlMapping, resultSet, limit);
 	}
 
-	private <O> List<O> retrieveData(
+	private static <O> List<O> retrieveData(
 			final Class<O> dataType,
 			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlMapping sqlMapping,
