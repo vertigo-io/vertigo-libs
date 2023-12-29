@@ -30,9 +30,9 @@ import javax.inject.Inject;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.NamedThreadFactory;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.core.util.NamedThreadFactory;
 import io.vertigo.stella.impl.workers.coordinator.WorkersCoordinator;
 import io.vertigo.stella.workers.WorkersManager;
 

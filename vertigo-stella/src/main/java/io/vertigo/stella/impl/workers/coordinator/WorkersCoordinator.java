@@ -24,7 +24,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.NamedThreadFactory;
+import io.vertigo.core.lang.NamedThreadFactory;
 import io.vertigo.stella.impl.work.Coordinator;
 import io.vertigo.stella.impl.work.WorkItem;
 import io.vertigo.stella.master.WorkResultHandler;
