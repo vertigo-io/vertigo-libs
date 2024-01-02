@@ -30,6 +30,7 @@ import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionResourceId;
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
@@ -98,6 +99,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	private final VTransactionManager transactionManager;
 	private final SqlManager sqlManager;
 	private final SmartTypeManager smartTypeManager;
+	private final AnalyticsManager analyticsManager;
 
 	/**
 	 * Constructor.
@@ -107,17 +109,20 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 			final ScriptManager scriptManager,
 			final VTransactionManager transactionManager,
 			final SqlManager sqlManager,
-			final SmartTypeManager smartTypeManager) {
+			final SmartTypeManager smartTypeManager,
+			final AnalyticsManager analyticsManager) {
 		Assertion.check()
 				.isNotNull(scriptManager)
 				.isNotNull(transactionManager)
 				.isNotNull(sqlManager)
-				.isNotNull(smartTypeManager);
+				.isNotNull(smartTypeManager)
+				.isNotNull(analyticsManager);
 		//-----
 		this.scriptManager = scriptManager;
 		this.transactionManager = transactionManager;
 		this.sqlManager = sqlManager;
 		this.smartTypeManager = smartTypeManager;
+		this.analyticsManager = analyticsManager;
 	}
 
 	/**
@@ -154,6 +159,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	}
 
 	private void setRowCount(final int sqlRowcount) {
+		analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer.setMeasure("sqlRowCount", sqlRowcount));
 		getTaskDefinition().getOutAttributeOption().ifPresent(
 				outTaskAttribute -> {
 					if (SQL_ROWCOUNT.equals(outTaskAttribute.name())) {

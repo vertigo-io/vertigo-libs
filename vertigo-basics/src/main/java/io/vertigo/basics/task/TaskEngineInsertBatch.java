@@ -28,6 +28,7 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.util.StringUtil;
@@ -60,8 +61,9 @@ public final class TaskEngineInsertBatch extends AbstractTaskEngineSQL {
 			final ScriptManager scriptManager,
 			final VTransactionManager transactionManager,
 			final SqlManager sqlManager,
-			final SmartTypeManager smartTypeManager) {
-		super(scriptManager, transactionManager, sqlManager, smartTypeManager);
+			final SmartTypeManager smartTypeManager,
+			final AnalyticsManager analyticsManager) {
+		super(scriptManager, transactionManager, sqlManager, smartTypeManager, analyticsManager);
 	}
 
 	/** {@inheritDoc} */
