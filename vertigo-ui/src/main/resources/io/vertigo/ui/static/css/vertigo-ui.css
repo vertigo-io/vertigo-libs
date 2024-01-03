@@ -459,3 +459,9 @@ table .q-uploader .q-btn {
    -moz-animation: spinner-waitHidden 500ms;
    animation: spinner-waitHidden 500ms;
 } 
+
+/******** for buttons-group, hide elements when collapsed *******/
+
+.more-elements .hide-on-more {
+	display:none;
+}
