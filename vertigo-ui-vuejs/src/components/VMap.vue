@@ -1,5 +1,5 @@
 <template>
-    <div :id="id" >
+    <div :id="id">
         <slot v-bind="$attrs"></slot>
     </div>
 </template>
@@ -17,7 +17,7 @@ export default {
     emits:["moveend", "click"],
     methods: {
           onMapLoad: function(found) {
-            var vm = this;
+            let vm = this;
             function checkForMap() {
               if (vm.olMap) {
                 found(vm.olMap);
@@ -35,14 +35,14 @@ export default {
           }
     },
     mounted : function() {        
-        var view = new ol.View();
+        let view = new ol.View();
         
-        var osmLayer = new ol.layer.Tile({
+        let osmLayer = new ol.layer.Tile({
             preload : 4,
             source : new ol.source.OSM()
         })
         this.olMap = new ol.Map({
-            interactions: ol.interaction.defaults({
+            interactions: ol.interaction.defaults.defaults({
               onFocusOnly: true
             }),
             target : this.$props.id,
@@ -58,10 +58,10 @@ export default {
         
         // handle refresh if an endPoint is specified
         this.olMap.on('moveend', function(e) {
-            var mapExtent =  e.map.getView().calculateExtent();
-            var wgs84Extent = ol.proj.transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
-            var topLeft = ol.extent.getTopLeft(wgs84Extent);
-            var bottomRight = ol.extent.getBottomRight(wgs84Extent);
+            let mapExtent =  e.map.getView().calculateExtent();
+            let wgs84Extent = ol.proj.transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
+            let topLeft = ol.extent.getTopLeft(wgs84Extent);
+            let bottomRight = ol.extent.getBottomRight(wgs84Extent);
             Quasar.debounce(this.$emit('moveend',topLeft, bottomRight) , 300);        
         }.bind(this));
         

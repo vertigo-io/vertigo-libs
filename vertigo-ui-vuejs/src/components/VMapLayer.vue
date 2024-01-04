@@ -58,7 +58,7 @@ export default {
            //console.log('watch cluster');
            this.$data.items = [];
            this.$data.clusters = [];
-           for(var i =0 ; i< newVal.length; i++) {
+           for(let i =0 ; i< newVal.length; i++) {
                     if(newVal[i].totalCount == 1) {
                         this.$data.items = this.$data.items.concat(newVal[i].list);                        
                     } else {
@@ -78,19 +78,19 @@ export default {
     },
     computed : {
         features: function() {
-            var geoField = this.$props.field;
-            var arrayOfFeatures = this.$data.items
+            let geoField = this.$props.field;
+            let arrayOfFeatures = this.$data.items
             .filter(function(object) {
                 return object[geoField]!=null;
             }).map(function(object) {
-                var geoObject;
+                let geoObject;
                 if (typeof object[geoField] === 'string' || object[geoField] instanceof String){
                     geoObject = JSON.parse(object[geoField]);
                 } else {
                     geoObject = object[geoField];
                 }
                 if(geoObject != null) {
-                    var iconFeature = new ol.Feature({
+                    let iconFeature = new ol.Feature({
                         geometry : new ol.geom.Point(ol.proj.fromLonLat([ geoObject.lon, geoObject.lat ])),
                     });
                     
@@ -104,18 +104,18 @@ export default {
                 return null;
             }.bind(this));
             
-            var arrayOfClusterFeatures = this.$data.clusters
+            let arrayOfClusterFeatures = this.$data.clusters
             .filter(function(object) {
                 return object[geoField]!=null;
             }).map(function(object) {
-                var geoObject;
+                let geoObject;
                 if (typeof object[geoField] === 'string' || object[geoField] instanceof String){
                     geoObject = JSON.parse(object[geoField]);
                 } else {
                     geoObject = object[geoField];
                 }
                 if(geoObject != null) {
-                    var iconFeature = new ol.Feature({
+                    let iconFeature = new ol.Feature({
                         geometry : new ol.geom.Point(ol.proj.fromLonLat([ geoObject.lon, geoObject.lat ])),
                     });
                     
@@ -220,7 +220,7 @@ export default {
             if(this.$props.list) {
                 this.$data.items = this.$props.list
             } else if(this.$props.cluster) {
-                for(var i =0 ; i< this.$props.cluster.length; i++) {
+                for(let i =0 ; i< this.$props.cluster.length; i++) {
                     if(this.$props.cluster[i].totalCount == 1) {
                         this.$data.items = this.$data.items.concat(this.$props.cluster[i].list);                        
                     } else {
@@ -237,15 +237,15 @@ export default {
                 features : this.features
             });
             
-            var clusterSource = new ol.source.Cluster({
+            let clusterSource = new ol.source.Cluster({
                 source: this.$data.vectorSource,
                 distance : 2*this.$props.clusterCircleSize
             });
-            var clusterLayer = new ol.layer.Vector({
+            let clusterLayer = new ol.layer.Vector({
                 source: clusterSource
             });
             
-            var styleIcon = new ol.style.Style({
+            let styleIcon = new ol.style.Style({
                 text : new ol.style.Text({
                     font : this.$props.markerSize +'px ' + this.$props.markerFont,
                     text : this.$props.markerIcon,
@@ -254,19 +254,19 @@ export default {
                 })
             });
             
-            var styleCache = {};
+            let styleCache = {};
             clusterLayer.setStyle(function(feature, /*resolution*/) {
-                var size = 0;
-                var agregateFeatures = feature.get('features');
-                for(var i = 0; i<agregateFeatures.length;i++) {
-                    var fSize = agregateFeatures[i].get('totalCount');
+                let size = 0;
+                let agregateFeatures = feature.get('features');
+                for(let i = 0; i<agregateFeatures.length;i++) {
+                    let fSize = agregateFeatures[i].get('totalCount');
                     size += !fSize?1:fSize;
                 }
                 if (!size || size == 1) {
                     return styleIcon;
                 } else {
                       // otherwise show the number of features
-                      var style = styleCache[size];
+                      let style = styleCache[size];
                       if (!style) {
                         style = new ol.style.Style({
                           image: new ol.style.Circle({
@@ -300,10 +300,10 @@ export default {
             }
             // handle refresh if an endPoint is specified
             this.olMap.on('moveend', function(e) {
-                var mapExtent =  e.map.getView().calculateExtent();
-                var wgs84Extent = ol.proj.transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
-                var topLeft = ol.extent.getTopLeft(wgs84Extent);
-                var bottomRight = ol.extent.getBottomRight(wgs84Extent);
+                let mapExtent =  e.map.getView().calculateExtent();
+                let wgs84Extent = ol.proj.transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
+                let topLeft = ol.extent.getTopLeft(wgs84Extent);
+                let bottomRight = ol.extent.getBottomRight(wgs84Extent);
                 if (this.baseUrl) {
                    Quasar.debounce(this.fetchList({lat:topLeft[0] , lon:topLeft[1]},{lat:bottomRight[0] , lon:bottomRight[1]}),300);
                 }
@@ -312,7 +312,7 @@ export default {
             .bind(this));        
             
             if (this.$props.nameField) {
-                var popup = new ol.Overlay({
+                let popup = new ol.Overlay({
                     element: this.$el.querySelector('#'+this.$props.id+'Popup'),
                     positioning: 'bottom-center',
                     stopEvent: false,
@@ -321,12 +321,12 @@ export default {
                 this.olMap.addOverlay(popup);
                 // display popup on click
                 this.olMap.on('click', function(evt) {
-                  var feature = this.olMap.forEachFeatureAtPixel(evt.pixel,
+                  let feature = this.olMap.forEachFeatureAtPixel(evt.pixel,
                     function(feature) {
                       return feature;
                     });
                   if (feature && feature.get('features').length == 1) {
-                    var coordinates = feature.getGeometry().getCoordinates();
+                    let coordinates = feature.getGeometry().getCoordinates();
                     popup.setPosition(coordinates);
                     this.$data.popupDisplayed = true;
                     this.$data.objectDisplayed = feature.get('features')[0].get('innerObject');
@@ -343,18 +343,18 @@ export default {
                         this.$data.popupDisplayed = false;
                       return;
                     }
-                    var pixel = this.olMap.getEventPixel(e.originalEvent);
-                    var hit = this.olMap.hasFeatureAtPixel(pixel);
+                    let pixel = this.olMap.getEventPixel(e.originalEvent);
+                    let hit = this.olMap.hasFeatureAtPixel(pixel);
                     this.olMap.getTargetElement().style.cursor = hit ? 'pointer' : '';
                 }.bind(this));
             } else {
                 this.olMap.on('click', function(evt) {
-                  var feature = this.olMap.forEachFeatureAtPixel(evt.pixel,
+                  let feature = this.olMap.forEachFeatureAtPixel(evt.pixel,
                     function(feature) {
                       return feature;
                     });
                   if (feature && feature.get('features').length == 1) {
-                    var coordinates = feature.getGeometry().getCoordinates();
+                    let coordinates = feature.getGeometry().getCoordinates();
                     evt.stopPropagation();
                     Quasar.debounce(this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
                   }
