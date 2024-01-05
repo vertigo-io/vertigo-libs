@@ -735,7 +735,7 @@ const Sn = /* @__PURE__ */ F($n, [["render", qn]]), Dn = {
     }
   }
 }, En = window.Vue.renderList, Fn = window.Vue.Fragment, nt = window.Vue.openBlock, ot = window.Vue.createElementBlock, $e = window.Vue.resolveComponent, Tn = window.Vue.normalizeStyle, we = window.Vue.createVNode, Ae = window.Vue.withCtx, Vt = window.Vue.toDisplayString, ke = window.Vue.createElementVNode, Bn = { class: "row q-col-gutter-md" }, On = { class: "row col items-center" }, Nn = { class: "q-subheading text-bold" }, Pn = /* @__PURE__ */ ke("div", { class: "col" }, null, -1), An = { class: "row col q-body-2 text-justify" };
-function Ln(e, t, n, o, i, a) {
+function Mn(e, t, n, o, i, a) {
   const s = $e("q-icon"), r = $e("q-item-section"), l = $e("q-toggle"), c = $e("q-item"), d = $e("q-card");
   return nt(), ot("div", Bn, [
     (nt(!0), ot(Fn, null, En(e.extensions, (h) => (nt(), ot("div", {
@@ -787,7 +787,7 @@ function Ln(e, t, n, o, i, a) {
     ]))), 128))
   ]);
 }
-const Mn = /* @__PURE__ */ F(Dn, [["render", Ln]]), Un = {
+const Ln = /* @__PURE__ */ F(Dn, [["render", Mn]]), Un = {
   props: {
     facets: Array,
     selectedFacets: Object,
@@ -1072,11 +1072,11 @@ const Kn = /* @__PURE__ */ F(zn, [["render", Xn]]), Wn = {
       }).bind(this));
     }
   }
-}, Ce = window.Vue.resolveComponent, Le = window.Vue.createVNode, Me = window.Vue.withCtx, Zn = window.Vue.renderList, eo = window.Vue.Fragment, at = window.Vue.openBlock, qt = window.Vue.createElementBlock, to = window.Vue.toDisplayString, no = window.Vue.createTextVNode, oo = window.Vue.resolveDirective, ao = window.Vue.createBlock, io = window.Vue.withDirectives;
+}, Ce = window.Vue.resolveComponent, Me = window.Vue.createVNode, Le = window.Vue.withCtx, Zn = window.Vue.renderList, eo = window.Vue.Fragment, at = window.Vue.openBlock, qt = window.Vue.createElementBlock, to = window.Vue.toDisplayString, no = window.Vue.createTextVNode, oo = window.Vue.resolveDirective, ao = window.Vue.createBlock, io = window.Vue.withDirectives;
 function so(e, t, n, o, i, a) {
   const s = Ce("q-icon"), r = Ce("q-input"), l = Ce("q-item-section"), c = Ce("q-item"), d = Ce("q-list"), h = oo("ripple");
   return at(), qt("div", null, [
-    Le(r, {
+    Me(r, {
       placeholder: e.$q.lang.vui.handles.placeholder,
       modelValue: e.text,
       "onUpdate:modelValue": t[0] || (t[0] = (u) => e.text = u),
@@ -1087,25 +1087,25 @@ function so(e, t, n, o, i, a) {
       "bg-color": "white",
       dense: ""
     }, {
-      prepend: Me(() => [
-        Le(s, { name: "search" })
+      prepend: Le(() => [
+        Me(s, { name: "search" })
       ]),
       _: 1
     }, 8, ["placeholder", "modelValue", "onInput"]),
-    Le(d, {
+    Me(d, {
       bordered: "",
       dense: "",
       separator: ""
     }, {
-      default: Me(() => [
+      default: Le(() => [
         (at(!0), qt(eo, null, Zn(e.handles, (u) => io((at(), ao(c, {
           clickable: "",
           onClick: (p) => e.VUi.methods.goTo(n.baseUrl + "hw/" + u.code),
           key: u.code
         }, {
-          default: Me(() => [
-            Le(l, null, {
-              default: Me(() => [
+          default: Le(() => [
+            Me(l, null, {
+              default: Le(() => [
                 no(to(u.code), 1)
               ]),
               _: 2
@@ -1245,7 +1245,7 @@ const bo = /* @__PURE__ */ F(lo, [["render", wo]]), Ue = window.Quasar, yo = {
   beforeDestroy: function() {
     clearInterval(this.timer);
   }
-}, Ie = window.Vue.toDisplayString, je = window.Vue.createTextVNode, ne = window.Vue.resolveComponent, L = window.Vue.withCtx, Re = window.Vue.openBlock, st = window.Vue.createBlock, vo = window.Vue.createCommentVNode, _o = window.Vue.renderList, $o = window.Vue.Fragment, xo = window.Vue.createElementBlock, Q = window.Vue.createVNode;
+}, Ie = window.Vue.toDisplayString, je = window.Vue.createTextVNode, ne = window.Vue.resolveComponent, M = window.Vue.withCtx, Re = window.Vue.openBlock, st = window.Vue.createBlock, vo = window.Vue.createCommentVNode, _o = window.Vue.renderList, $o = window.Vue.Fragment, xo = window.Vue.createElementBlock, Q = window.Vue.createVNode;
 function Co(e, t, n, o, i, a) {
   const s = ne("q-badge"), r = ne("q-icon"), l = ne("q-item-section"), c = ne("q-item-label"), d = ne("q-item"), h = ne("q-list"), u = ne("q-menu"), p = ne("q-btn");
   return Re(), st(p, {
@@ -1257,30 +1257,30 @@ function Co(e, t, n, o, i, a) {
     icon: e.count > 0 ? n.icon : n.iconNone,
     class: "on-left"
   }, {
-    default: L(() => [
+    default: M(() => [
       e.count > 0 ? (Re(), st(s, {
         key: 0,
         color: "red",
         "text-color": "white",
         floating: ""
       }, {
-        default: L(() => [
+        default: M(() => [
           je(Ie(e.count), 1)
         ]),
         _: 1
       })) : vo("", !0),
       Q(u, { class: "notifications" }, {
-        default: L(() => [
+        default: M(() => [
           Q(h, { style: { width: "300px" } }, {
-            default: L(() => [
+            default: M(() => [
               (Re(!0), xo($o, null, _o(e.list, (f) => (Re(), st(d, {
                 key: f.uuid,
                 tag: "a",
                 href: f.targetUrl
               }, {
-                default: L(() => [
+                default: M(() => [
                   Q(l, { avatar: "" }, {
-                    default: L(() => [
+                    default: M(() => [
                       Q(r, {
                         name: a.toIcon(f.type),
                         size: "2rem"
@@ -1289,9 +1289,9 @@ function Co(e, t, n, o, i, a) {
                     _: 2
                   }, 1024),
                   Q(l, null, {
-                    default: L(() => [
+                    default: M(() => [
                       Q(c, null, {
-                        default: L(() => [
+                        default: M(() => [
                           je(Ie(f.title), 1)
                         ]),
                         _: 2
@@ -1300,7 +1300,7 @@ function Co(e, t, n, o, i, a) {
                         caption: "",
                         lines: "3"
                       }, {
-                        default: L(() => [
+                        default: M(() => [
                           je(Ie(f.content), 1)
                         ]),
                         _: 2
@@ -1312,9 +1312,9 @@ function Co(e, t, n, o, i, a) {
                     side: "",
                     top: ""
                   }, {
-                    default: L(() => [
+                    default: M(() => [
                       Q(c, { caption: "" }, {
-                        default: L(() => [
+                        default: M(() => [
                           je(Ie(a.toDelay(new Date(f.creationDate))), 1)
                         ]),
                         _: 2
@@ -1409,7 +1409,9 @@ const Oo = /* @__PURE__ */ F(ko, [["render", Bo]]), He = window.Quasar, b = wind
       popupDisplayed: !1,
       objectDisplayed: {},
       items: [],
+      _itemsCoordString: null,
       clusters: [],
+      _clusterCoordString: null,
       olMap: {},
       vectorSource: {},
       base32: "0123456789bcdefghjkmnpqrstuvwxyz"
@@ -1417,21 +1419,49 @@ const Oo = /* @__PURE__ */ F(ko, [["render", Bo]]), He = window.Quasar, b = wind
     };
   },
   watch: {
-    list: function(e) {
-      this.$data.items = e, this.$data.vectorSource.clear(), this.$data.vectorSource.addFeatures(this.features);
+    // watch list, cluster and object but filter to only process when desired field ('field' prop, eg geoLocation) is modified
+    list: {
+      handler(e) {
+        if (e) {
+          let t = this.computeCoordString(e);
+          this._itemsCoordString && t !== this._itemsCoordString && (this.$data.items = e, this.updateMap()), this._itemsCoordString = t;
+        }
+      },
+      deep: !0,
+      immediate: !0
+      // initialize _itemsCoordString
     },
-    cluster: function(e) {
-      this.$data.items = [], this.$data.clusters = [];
-      for (let t = 0; t < e.length; t++)
-        e[t].totalCount == 1 ? this.$data.items = this.$data.items.concat(e[t].list) : this.$data.clusters.push({
-          geoHash: e[t].code,
-          geoLocation: this.decode(e[t].code),
-          totalCount: e[t].totalCount
-        });
-      this.$data.vectorSource.clear(), this.$data.vectorSource.addFeatures(this.features);
+    cluster: {
+      handler(e) {
+        if (e) {
+          let t = this.computeCoordString(e);
+          if (this._clusterCoordString && t !== this._clusterCoordString) {
+            this.$data.clusters = [];
+            for (let n = 0; n < e.length; n++)
+              e[n].totalCount == 1 ? this.$data.items = this.$data.items.concat(e[n].list) : this.$data.clusters.push({
+                geoHash: e[n].code,
+                geoLocation: this.decode(e[n].code),
+                totalCount: e[n].totalCount
+              });
+            this.updateMap();
+          }
+          this._clusterCoordString = t;
+        }
+      },
+      deep: !0,
+      immediate: !0
+      // initialize _clusterCoordString
     },
-    "object.geoLocation": function() {
-      this.$data.vectorSource.clear(), this.$data.vectorSource.addFeatures(this.features);
+    object: {
+      handler(e) {
+        if (e) {
+          let t = this.computeCoordString(e);
+          this._itemsCoordString && t !== this._itemsCoordString && this.updateMap(), this._itemsCoordString = t;
+        }
+      },
+      deep: !0,
+      immediate: !0
+      // initialize _itemsCoordString
     }
   },
   computed: {
@@ -1463,10 +1493,23 @@ const Oo = /* @__PURE__ */ F(ko, [["render", Bo]]), He = window.Quasar, b = wind
     }
   },
   methods: {
+    fitView: function() {
+      if (this.features.length > 0) {
+        let e = 19, t = this.features.length == 1 ? Math.min(this.olMap.getView().getZoom() || e, e) : e, n = b.geom.Polygon.fromExtent(this.$data.vectorSource.getExtent());
+        n.scale(1.2), this.olMap.getView().fit(n, { size: this.olMap.getSize(), maxZoom: t });
+      }
+    },
     fetchList: function(e, t) {
       this.$http.get(this.baseUrl + '_geoSearch?topLeft="' + e.lat + "," + e.lon + '"&bottomRight="' + t.lat + "," + t.lon + '"', { timeout: 5 * 1e3 }).then((function(n) {
         this.$data.items = n.data, this.$data.vectorSource.clear(), this.$data.vectorSource.addFeatures(this.features);
       }).bind(this));
+    },
+    computeCoordString: function(e) {
+      let t = Array.isArray(e) ? e.map((n) => n[this.$props.field]) : e[this.$props.field];
+      return JSON.stringify(t);
+    },
+    updateMap: function() {
+      this.$data.vectorSource.clear(), this.$data.vectorSource.addFeatures(this.features), this.fitView();
     },
     /**
     * Decode geohash to latitude/longitude (location is approximate centre of geohash cell,
@@ -1576,7 +1619,7 @@ const Oo = /* @__PURE__ */ F(ko, [["render", Bo]]), He = window.Quasar, b = wind
             })
           }), i[s] = l), l;
         }
-      }).bind(this)), this.olMap.addLayer(n), this.features.length > 0 && this.olMap.getView().fit(n.getSource().getSource().getExtent(), this.olMap.getSize()), this.olMap.on("moveend", (function(a) {
+      }).bind(this)), this.olMap.addLayer(n), this.fitView(), this.olMap.on("moveend", (function(a) {
         let s = a.map.getView().calculateExtent(), r = b.proj.transformExtent(s, "EPSG:3857", "EPSG:4326"), l = b.extent.getTopLeft(r), c = b.extent.getBottomRight(r);
         this.baseUrl && He.debounce(this.fetchList({ lat: l[0], lon: l[1] }, { lat: c[0], lon: c[1] }), 300), He.debounce(this.$emit("moveend", l, c), 300);
       }).bind(this)), this.$props.nameField) {
@@ -1621,9 +1664,9 @@ const Oo = /* @__PURE__ */ F(ko, [["render", Bo]]), He = window.Quasar, b = wind
         }).bind(this));
     }).bind(this));
   }
-}, Po = window.Vue.renderSlot, Ao = window.Vue.toDisplayString, Ft = window.Vue.createElementVNode, Lo = window.Vue.resolveComponent, Mo = window.Vue.withCtx, Tt = window.Vue.openBlock, Uo = window.Vue.createBlock, Io = window.Vue.createCommentVNode, jo = window.Vue.createElementBlock, Ro = ["id"], Ho = ["id"], zo = { class: "text-subtitle2" };
+}, Po = window.Vue.renderSlot, Ao = window.Vue.toDisplayString, Ft = window.Vue.createElementVNode, Mo = window.Vue.resolveComponent, Lo = window.Vue.withCtx, Tt = window.Vue.openBlock, Uo = window.Vue.createBlock, Io = window.Vue.createCommentVNode, jo = window.Vue.createElementBlock, Ro = ["id"], Ho = ["id"], zo = { class: "text-subtitle2" };
 function Jo(e, t, n, o, i, a) {
-  const s = Lo("q-card");
+  const s = Mo("q-card");
   return Tt(), jo("div", { id: n.id }, [
     Ft("div", {
       id: n.id + "Popup"
@@ -1632,7 +1675,7 @@ function Jo(e, t, n, o, i, a) {
         key: 0,
         class: "q-px-md"
       }, {
-        default: Mo(() => [
+        default: Lo(() => [
           Po(e.$slots, "card", { objectDisplayed: e.objectDisplayed }, () => [
             Ft("div", zo, Ao(e.objectDisplayed[n.nameField]), 1)
           ])
@@ -2243,20 +2286,20 @@ pt(E, ut, Jt(Ee, {
   displayable() {
     return -0.5 <= this.r && this.r < 255.5 && -0.5 <= this.g && this.g < 255.5 && -0.5 <= this.b && this.b < 255.5 && 0 <= this.opacity && this.opacity <= 1;
   },
-  hex: Lt,
+  hex: Mt,
   // Deprecated! Use color.formatHex.
-  formatHex: Lt,
+  formatHex: Mt,
   formatHex8: Ta,
-  formatRgb: Mt,
-  toString: Mt
+  formatRgb: Lt,
+  toString: Lt
 }));
-function Lt() {
+function Mt() {
   return `#${ue(this.r)}${ue(this.g)}${ue(this.b)}`;
 }
 function Ta() {
   return `#${ue(this.r)}${ue(this.g)}${ue(this.b)}${ue((isNaN(this.opacity) ? 1 : this.opacity) * 255)}`;
 }
-function Mt() {
+function Lt() {
   const e = Ke(this.opacity);
   return `${e === 1 ? "rgb(" : "rgba("}${fe(this.r)}, ${fe(this.g)}, ${fe(this.b)}${e === 1 ? ")" : `, ${e})`}`;
 }
@@ -2270,31 +2313,31 @@ function ue(e) {
   return e = fe(e), (e < 16 ? "0" : "") + e.toString(16);
 }
 function Ut(e, t, n, o) {
-  return o <= 0 ? e = t = n = NaN : n <= 0 || n >= 1 ? e = t = NaN : t <= 0 && (e = NaN), new M(e, t, n, o);
+  return o <= 0 ? e = t = n = NaN : n <= 0 || n >= 1 ? e = t = NaN : t <= 0 && (e = NaN), new L(e, t, n, o);
 }
 function Yt(e) {
-  if (e instanceof M)
-    return new M(e.h, e.s, e.l, e.opacity);
+  if (e instanceof L)
+    return new L(e.h, e.s, e.l, e.opacity);
   if (e instanceof Ee || (e = We(e)), !e)
-    return new M();
-  if (e instanceof M)
+    return new L();
+  if (e instanceof L)
     return e;
   e = e.rgb();
   var t = e.r / 255, n = e.g / 255, o = e.b / 255, i = Math.min(t, n, o), a = Math.max(t, n, o), s = NaN, r = a - i, l = (a + i) / 2;
-  return r ? (t === a ? s = (n - o) / r + (n < o) * 6 : n === a ? s = (o - t) / r + 2 : s = (t - n) / r + 4, r /= l < 0.5 ? a + i : 2 - a - i, s *= 60) : r = l > 0 && l < 1 ? 0 : s, new M(s, r, l, e.opacity);
+  return r ? (t === a ? s = (n - o) / r + (n < o) * 6 : n === a ? s = (o - t) / r + 2 : s = (t - n) / r + 4, r /= l < 0.5 ? a + i : 2 - a - i, s *= 60) : r = l > 0 && l < 1 ? 0 : s, new L(s, r, l, e.opacity);
 }
 function ft(e, t, n, o) {
-  return arguments.length === 1 ? Yt(e) : new M(e, t, n, o ?? 1);
+  return arguments.length === 1 ? Yt(e) : new L(e, t, n, o ?? 1);
 }
-function M(e, t, n, o) {
+function L(e, t, n, o) {
   this.h = +e, this.s = +t, this.l = +n, this.opacity = +o;
 }
-pt(M, ft, Jt(Ee, {
+pt(L, ft, Jt(Ee, {
   brighter(e) {
-    return e = e == null ? Xe : Math.pow(Xe, e), new M(this.h, this.s, this.l * e, this.opacity);
+    return e = e == null ? Xe : Math.pow(Xe, e), new L(this.h, this.s, this.l * e, this.opacity);
   },
   darker(e) {
-    return e = e == null ? Se : Math.pow(Se, e), new M(this.h, this.s, this.l * e, this.opacity);
+    return e = e == null ? Se : Math.pow(Se, e), new L(this.h, this.s, this.l * e, this.opacity);
   },
   rgb() {
     var e = this.h % 360 + (this.h < 0) * 360, t = isNaN(e) || isNaN(this.s) ? 0 : this.s, n = this.l, o = n + (n < 0.5 ? n : 1 - n) * t, i = 2 * n - o;
@@ -2306,7 +2349,7 @@ pt(M, ft, Jt(Ee, {
     );
   },
   clamp() {
-    return new M(It(this.h), Qe(this.s), Qe(this.l), Ke(this.opacity));
+    return new L(It(this.h), Qe(this.s), Qe(this.l), Ke(this.opacity));
   },
   displayable() {
     return (0 <= this.s && this.s <= 1 || isNaN(this.s)) && 0 <= this.l && this.l <= 1 && 0 <= this.opacity && this.opacity <= 1;
@@ -2367,11 +2410,11 @@ function Aa(e) {
     };
   };
 }
-const La = Aa(Oa);
-let ae = { color: We, interpolateHsl: La, interpolateRgb: Pa };
+const Ma = Aa(Oa);
+let ae = { color: We, interpolateHsl: Ma, interpolateRgb: Pa };
 function jt(e, t, n) {
   if (e != "DEFAULT") {
-    var o, i = Ma;
+    var o, i = La;
     e == "RAINBOW" || e == "iRAINBOW" ? o = ["#FF0000", "#FFA500", "#FFFF00", "#00FF00", "#00FF00", "rgb(75, 0, 130)", "rgb(238, 130, 238)"] : e == "SPECTRUM" || e == "iSPECTRUM" ? (o = ["rgb(230, 30, 30)", "rgb(230, 230, 30)", "rgb(30, 230, 30)", "rgb(30, 230, 230)", "rgb(30, 30, 230)", "rgb(230, 30, 230)", "rgb(230, 30, 30)"], i = Ia) : e == "RED2GREEN" || e == "iRED2GREEN" ? o = ["rgb(255, 51, 51)", "rgb(250, 235, 0)", "rgb(51, 200, 51)"] : e == "GREEN2BLUE" || e == "iGREEN2BLUE" ? o = ["rgb(51, 153, 51)", "rgb(51, 153, 200)", "rgb(51, 51, 255)"] : e == "HEAT" || e == "iHEAT" ? o = ["rgb(255, 51, 51)", "rgb(255, 255, 51)", "rgb(51, 153, 51)", "rgb(51, 153, 255)"] : e == "GREEN:INTENSITY" || e == "iGREEN:INTENSITY" ? (o = ["rgb(51, 153, 51)", "rgb(170, 250, 170)"], i = Ua) : e == "ANDROID" || e == "iANDROID" ? o = ["#0099CC", "#9933CC", "#CC0000", "#FF8800", "#669900"] : (e == "ANDROID:LIGHT" || e == "iANDROID:LIGHT") && (o = ["#33B5E5", "#AA66CC", "#ff4444", "#ffbb33", "#99cc00"]), e.charAt(0) == "i" && (o = o.reverse());
     var s, a = o[0] == o[o.length - 1], s = i(o, t + (a ? 1 : 0));
     return n ? s.map(function(r, l) {
@@ -2380,7 +2423,7 @@ function jt(e, t, n) {
     }) : s;
   }
 }
-function Ma(e, t) {
+function La(e, t) {
   return mt(e, t, function(n, o, i, a, s) {
     return ae.interpolateHsl(i, a)(n);
   });
@@ -3307,7 +3350,7 @@ var Qt = {
     return Object.keys(t).forEach((o) => n[o] = t[o].bind(e)), n;
   },
   install: function(e, t) {
-    if (e.component("v-chatbot", dn), e.component("v-commands", _n), e.component("v-comments", Sn), e.component("v-extensions-store", Mn), e.component("v-facets", Hn), e.component("v-geopoint-input", Kn), e.component("v-handles", ro), e.component("v-json-editor", bo), e.component("v-notifications", Vo), e.component("v-map", Oo), e.component("v-map-layer", Yo), e.component("v-tree", aa), e.component("v-file-upload", _a), e.component("v-dashboard-chart", Ya), e.directive("alert-unsaved-updates", Ga), e.directive("autofocus", Qa), e.directive("if-unsaved-updates", Ka), e.directive("minify", Za), e.directive("scroll-spy", ei), !t.axios) {
+    if (e.component("v-chatbot", dn), e.component("v-commands", _n), e.component("v-comments", Sn), e.component("v-extensions-store", Ln), e.component("v-facets", Hn), e.component("v-geopoint-input", Kn), e.component("v-handles", ro), e.component("v-json-editor", bo), e.component("v-notifications", Vo), e.component("v-map", Oo), e.component("v-map-layer", Yo), e.component("v-tree", aa), e.component("v-file-upload", _a), e.component("v-dashboard-chart", Ya), e.directive("alert-unsaved-updates", Ga), e.directive("autofocus", Qa), e.directive("if-unsaved-updates", Ka), e.directive("minify", Za), e.directive("scroll-spy", ei), !t.axios) {
       console.error("You have to install axios");
       return;
     }

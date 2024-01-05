@@ -40,7 +40,9 @@ export default {
             popupDisplayed : false,
             objectDisplayed: {},
             items: [],
+            _itemsCoordString: null,
             clusters: [],
+            _clusterCoordString: null,
             olMap: {},
             vectorSource : {},
             base32 : '0123456789bcdefghjkmnpqrstuvwxyz' // (geohash-specific) Base32 map
@@ -48,33 +50,64 @@ export default {
         }
     },
     watch : {
-        list : function(newVal) {
-           //console.log('watch list');
-           this.$data.items = newVal;
-           this.$data.vectorSource.clear();
-           this.$data.vectorSource.addFeatures(this.features);
+        // watch list, cluster and object but filter to only process when desired field ('field' prop, eg geoLocation) is modified
+        list : {
+           handler(newVal) {
+              if (!!newVal) {
+                  // console.log('watch list');
+                  let newItemsCoordString = this.computeCoordString(newVal);
+                  
+                  if (!!this._itemsCoordString && newItemsCoordString !== this._itemsCoordString) {
+                      this.$data.items = newVal;
+                      this.updateMap();
+                  }
+                  this._itemsCoordString = newItemsCoordString;
+              }
+           },
+           deep: true,
+           immediate: true, // initialize _itemsCoordString
         },
-        cluster : function(newVal) {
-           //console.log('watch cluster');
-           this.$data.items = [];
-           this.$data.clusters = [];
-           for(let i =0 ; i< newVal.length; i++) {
-                    if(newVal[i].totalCount == 1) {
-                        this.$data.items = this.$data.items.concat(newVal[i].list);                        
-                    } else {
-                        this.$data.clusters.push({
-                        geoHash:newVal[i].code,
-                        geoLocation:this.decode(newVal[i].code),
-                        totalCount:newVal[i].totalCount});
-                    }
-                }
-           this.$data.vectorSource.clear();
-           this.$data.vectorSource.addFeatures(this.features);
+        cluster : {
+           handler(newVal) {
+              if (!!newVal) {
+                  // console.log('watch cluster');
+                  let newClusterCoordString = this.computeCoordString(newVal);
+                  
+                  if (!!this._clusterCoordString && newClusterCoordString !== this._clusterCoordString) {
+                      this.$data.clusters = [];
+                      for(let i =0 ; i< newVal.length; i++) {
+                          if(newVal[i].totalCount == 1) {
+                              this.$data.items = this.$data.items.concat(newVal[i].list);
+                          } else {
+                              this.$data.clusters.push({
+                              geoHash:newVal[i].code,
+                              geoLocation:this.decode(newVal[i].code),
+                              totalCount:newVal[i].totalCount});
+                          }
+                      }
+                      this.updateMap();
+                  }
+                  this._clusterCoordString = newClusterCoordString;
+              }
+           },
+           deep: true,
+           immediate: true, // initialize _clusterCoordString
         },
-        'object.geoLocation' : function() {
-           this.$data.vectorSource.clear();
-           this.$data.vectorSource.addFeatures(this.features);
-        }
+        object : {
+           handler(newVal) {
+              if (!!newVal) {
+                   // console.log('watch object');
+                   let newItemsCoordString = this.computeCoordString(newVal);
+                   
+                   if (!!this._itemsCoordString && newItemsCoordString !== this._itemsCoordString) {
+                       this.updateMap();
+                   }
+                   this._itemsCoordString = newItemsCoordString;
+               }
+           },
+           deep: true,
+           immediate: true, // initialize _itemsCoordString
+        },
     },
     computed : {
         features: function() {
@@ -132,6 +165,16 @@ export default {
         }
     },
     methods : {
+        fitView: function() {
+            if (this.features.length > 0) {
+                let maxZoom = 19;
+                let maxZoomResolved = this.features.length == 1 ? Math.min(this.olMap.getView().getZoom()||maxZoom, maxZoom) // keep zoom if < maxZoom
+                                                                : maxZoom; // if multiple features, dont keep zoom but dont zoom > maxZoom
+                let extentPadded = ol.geom.Polygon.fromExtent(this.$data.vectorSource.getExtent())
+                extentPadded.scale(1.2);
+                this.olMap.getView().fit(extentPadded, {size : this.olMap.getSize(), maxZoom : maxZoomResolved});
+            }
+        },
         fetchList: function(topLeft, bottomRight) {
             this.$http.get(this.baseUrl+'_geoSearch?topLeft="'+ topLeft.lat+','+topLeft.lon+'"&bottomRight="'+ bottomRight.lat+','+bottomRight.lon+ '"', { timeout:5*1000, })
             .then( function (response) { //Ok
@@ -140,75 +183,84 @@ export default {
                 this.$data.vectorSource.addFeatures(this.features);
             }.bind(this));
         },
-            /**
-     * Decode geohash to latitude/longitude (location is approximate centre of geohash cell,
-     *     to reasonable precision).
-     *
-     * @param   {string} geohash - Geohash string to be converted to latitude/longitude.
-     * @returns {{lat:number, lon:number}} (Center of) geohashed location.
-     * @throws  Invalid geohash.
-     *
-     * @example
-     *     const latlon = Geohash.decode('u120fxw'); // => { lat: 52.205, lon: 0.1188 }
-     */
-    decode : function (geohash) {
-        const bounds = this.bounds(geohash); // <-- the hard work
-        // now just determine the centre of the cell...
-        const latMin = bounds.sw.lat, lonMin = bounds.sw.lon;
-        const latMax = bounds.ne.lat, lonMax = bounds.ne.lon;
-        // cell centre
-        let lat = (latMin + latMax)/2;
-        let lon = (lonMin + lonMax)/2;
-        // round to close to centre without excessive precision: ⌊2-log10(Δ°)⌋ decimal places
-        lat = lat.toFixed(Math.floor(2-Math.log(latMax-latMin)/Math.LN10));
-        lon = lon.toFixed(Math.floor(2-Math.log(lonMax-lonMin)/Math.LN10));
-        return { lat: Number(lat), lon: Number(lon) };
-    },
-    /**
-     * Returns SW/NE latitude/longitude bounds of specified geohash.
-     *
-     * @param   {string} geohash - Cell that bounds are required of.
-     * @returns {{sw: {lat: number, lon: number}, ne: {lat: number, lon: number}}}
-     * @throws  Invalid geohash.
-     */
-    bounds : function(geohash) {
-        if (geohash.length == 0) throw new Error('Invalid geohash');
-        geohash = geohash.toLowerCase();
-        let evenBit = true;
-        let latMin =  -90, latMax =  90;
-        let lonMin = -180, lonMax = 180;
-        for (let i=0; i<geohash.length; i++) {
-            const chr = geohash.charAt(i);
-            const idx = this.$data.base32.indexOf(chr);
-            if (idx == -1) throw new Error('Invalid geohash');
-            for (let n=4; n>=0; n--) {
-                const bitN = idx >> n & 1;
-                if (evenBit) {
-                    // longitude
-                    const lonMid = (lonMin+lonMax) / 2;
-                    if (bitN == 1) {
-                        lonMin = lonMid;
+        computeCoordString: function(value) {
+            let valueCoord = Array.isArray(value) ? value.map(el => el[this.$props.field]) : value[this.$props.field];
+            return JSON.stringify(valueCoord);
+        },
+        updateMap: function() {
+            this.$data.vectorSource.clear();
+            this.$data.vectorSource.addFeatures(this.features);
+            this.fitView();
+        },
+         /**
+         * Decode geohash to latitude/longitude (location is approximate centre of geohash cell,
+         *     to reasonable precision).
+         *
+         * @param   {string} geohash - Geohash string to be converted to latitude/longitude.
+         * @returns {{lat:number, lon:number}} (Center of) geohashed location.
+         * @throws  Invalid geohash.
+         *
+         * @example
+         *     const latlon = Geohash.decode('u120fxw'); // => { lat: 52.205, lon: 0.1188 }
+         */
+        decode : function (geohash) {
+            const bounds = this.bounds(geohash); // <-- the hard work
+            // now just determine the centre of the cell...
+            const latMin = bounds.sw.lat, lonMin = bounds.sw.lon;
+            const latMax = bounds.ne.lat, lonMax = bounds.ne.lon;
+            // cell centre
+            let lat = (latMin + latMax)/2;
+            let lon = (lonMin + lonMax)/2;
+            // round to close to centre without excessive precision: ⌊2-log10(Δ°)⌋ decimal places
+            lat = lat.toFixed(Math.floor(2-Math.log(latMax-latMin)/Math.LN10));
+            lon = lon.toFixed(Math.floor(2-Math.log(lonMax-lonMin)/Math.LN10));
+            return { lat: Number(lat), lon: Number(lon) };
+        },
+        /**
+         * Returns SW/NE latitude/longitude bounds of specified geohash.
+         *
+         * @param   {string} geohash - Cell that bounds are required of.
+         * @returns {{sw: {lat: number, lon: number}, ne: {lat: number, lon: number}}}
+         * @throws  Invalid geohash.
+         */
+        bounds : function(geohash) {
+            if (geohash.length == 0) throw new Error('Invalid geohash');
+            geohash = geohash.toLowerCase();
+            let evenBit = true;
+            let latMin =  -90, latMax =  90;
+            let lonMin = -180, lonMax = 180;
+            for (let i=0; i<geohash.length; i++) {
+                const chr = geohash.charAt(i);
+                const idx = this.$data.base32.indexOf(chr);
+                if (idx == -1) throw new Error('Invalid geohash');
+                for (let n=4; n>=0; n--) {
+                    const bitN = idx >> n & 1;
+                    if (evenBit) {
+                        // longitude
+                        const lonMid = (lonMin+lonMax) / 2;
+                        if (bitN == 1) {
+                            lonMin = lonMid;
+                        } else {
+                            lonMax = lonMid;
+                        }
                     } else {
-                        lonMax = lonMid;
+                        // latitude
+                        const latMid = (latMin+latMax) / 2;
+                        if (bitN == 1) {
+                            latMin = latMid;
+                        } else {
+                            latMax = latMid;
+                        }
                     }
-                } else {
-                    // latitude
-                    const latMid = (latMin+latMax) / 2;
-                    if (bitN == 1) {
-                        latMin = latMid;
-                    } else {
-                        latMax = latMid;
-                    }
+                    evenBit = !evenBit;
                 }
-                evenBit = !evenBit;
             }
+            const bounds = {
+                sw: { lat: latMin, lon: lonMin },
+                ne: { lat: latMax, lon: lonMax },
+            };
+            return bounds;
         }
-        const bounds = {
-            sw: { lat: latMin, lon: lonMin },
-            ne: { lat: latMax, lon: lonMax },
-        };
-        return bounds;
-    }
         
     },
    
@@ -295,9 +347,8 @@ export default {
             this.olMap.addLayer(clusterLayer); 
             
             // fit view
-            if (this.features.length > 0) {
-                this.olMap.getView().fit(clusterLayer.getSource().getSource().getExtent(), this.olMap.getSize());
-            }
+            this.fitView();
+                
             // handle refresh if an endPoint is specified
             this.olMap.on('moveend', function(e) {
                 let mapExtent =  e.map.getView().calculateExtent();
