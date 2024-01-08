@@ -178,6 +178,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	 * Define prefix for custom components.
 	 * Should be the module name : don't starts with /, ends with /
 	 * Components must be put in : prefix+"/components/"+componentName
+	 *
 	 * @return path prefix for custom components
 	 */
 	protected String getCustomComponentsPathPrefix() {
@@ -202,6 +203,9 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		final ThymeleafViewResolver resolver = new ThymeleafViewResolver();
 		resolver.setCharacterEncoding("UTF-8");
 		resolver.setTemplateEngine(templateEngine());
+		// partial output is true by default, in case of error while writing vueData on view, start of page could have been already rendered/sent and error page is written after all this
+		// with this parameter to false, only the error page is sent to the client
+		resolver.setProducePartialOutputWhileProcessing(false);
 		registry.viewResolver(resolver);
 	}
 
@@ -231,13 +235,15 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 
 	@Override
 	public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
-		if (applicationContext instanceof ConfigurableApplicationContext) {
-			final VSpringMvcControllerAdvice controllerAdvice = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(VSpringMvcControllerAdvice.class);
-			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("viewContextControllerAdvice", controllerAdvice);
-			final VSpringMvcExceptionHandler vExceptionHandler = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(VSpringMvcExceptionHandler.class);
-			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("vExceptionHandler", vExceptionHandler);
-			final ListAutocompleteController listAutocompleteController = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(ListAutocompleteController.class);
-			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("listAutocompleteController", listAutocompleteController);
+		if (applicationContext instanceof final ConfigurableApplicationContext configurableApplicationContext) {
+			final VSpringMvcControllerAdvice controllerAdvice = configurableApplicationContext.getBeanFactory().createBean(VSpringMvcControllerAdvice.class);
+			configurableApplicationContext.getBeanFactory().registerSingleton("viewContextControllerAdvice", controllerAdvice);
+
+			final VSpringMvcExceptionHandler vExceptionHandler = configurableApplicationContext.getBeanFactory().createBean(VSpringMvcExceptionHandler.class);
+			configurableApplicationContext.getBeanFactory().registerSingleton("vExceptionHandler", vExceptionHandler);
+
+			final ListAutocompleteController listAutocompleteController = configurableApplicationContext.getBeanFactory().createBean(ListAutocompleteController.class);
+			configurableApplicationContext.getBeanFactory().registerSingleton("listAutocompleteController", listAutocompleteController);
 		}
 	}
 
