@@ -13,13 +13,13 @@
 import * as Quasar from "quasar"
 import * as ol from "ol"
 
-
 export default {
     props : {
         id: { type: String, required: true},
         list : { type: Array },
         cluster : { type: Array },
         object : { type: Object },
+        objectEditable: {type: Boolean },
         baseUrl : { type: String },
         field: { type: String, required: true},
         nameField: { type: String},        
@@ -172,7 +172,7 @@ export default {
                                                                 : maxZoom; // if multiple features, dont keep zoom but dont zoom > maxZoom
                 let extentPadded = ol.geom.Polygon.fromExtent(this.$data.vectorSource.getExtent())
                 extentPadded.scale(1.2);
-                this.olMap.getView().fit(extentPadded, {size : this.olMap.getSize(), maxZoom : maxZoomResolved});
+                this.olMap.getView().fit(extentPadded, {size : this.olMap.getSize(), maxZoom : maxZoomResolved, duration: 750});
             }
         },
         fetchList: function(topLeft, bottomRight) {
@@ -376,7 +376,7 @@ export default {
                     function(feature) {
                       return feature;
                     });
-                  if (feature && feature.get('features').length == 1) {
+                  if (feature && feature.get('features') && feature.get('features').length == 1) {
                     let coordinates = feature.getGeometry().getCoordinates();
                     popup.setPosition(coordinates);
                     this.$data.popupDisplayed = true;
@@ -404,12 +404,52 @@ export default {
                     function(feature) {
                       return feature;
                     });
-                  if (feature && feature.get('features').length == 1) {
+                  if (feature && feature.get('features') && feature.get('features').length == 1) {
                     let coordinates = feature.getGeometry().getCoordinates();
                     evt.stopPropagation();
                     Quasar.debounce(this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
                   }
                 }.bind(this));
+            }
+            
+            if (this.$props.object && this.$props.objectEditable) {
+               let draw = new ol.interaction.Draw({
+                  source: this.$data.vectorSource,
+                  type: "Point",
+               });
+               draw.on('drawend', (event) => {
+                  let feature = event.feature;
+                  let coord = ol.proj.toLonLat(feature.getGeometry().getCoordinates());
+                  
+                  this.$data.vectorSource.clear();
+                  this.olMap.removeInteraction(draw);
+                  button.classList.remove("active");
+                  
+                  this.$props.object[this.$props.field] = {
+                     lon:coord[0],
+                     lat:coord[1],
+                  };
+               });
+                        
+               const button = document.createElement('button');
+               button.innerHTML = '&#9678;';
+               button.addEventListener(
+                  'click',
+                  (evt) => {
+                     evt.preventDefault();
+                     
+                     if (button.classList.contains("active")) {
+                        this.olMap.removeInteraction(draw);
+                        button.classList.remove("active");
+                     } else {
+                        this.olMap.addInteraction(draw);
+                        draw = this.olMap.getInteractions().getArray().slice(-1)[0]; // update ref as it changes when added
+                        button.classList.add("active");
+                     }
+                  },
+                  false);
+               
+               this.olMap.getViewport().getElementsByClassName("ol-v-custom-buttons")[0].appendChild(button);
             }
         }.bind(this)); 
     }

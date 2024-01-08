@@ -49,7 +49,23 @@ export default {
             layers : [ osmLayer ],
             // Improve user experience by loading tiles while animating. Will make animations stutter on mobile or slow devices.
             loadTilesWhileAnimating : true,
-            view : view
+            view : view,
+            controls: ol.control.defaults.defaults().extend([new class VCustomControls extends ol.control.Control {
+                   /**
+                    * @param {Object} [opt_options] Control options.
+                    */
+                   constructor(opt_options) {
+                      const options = opt_options || {};
+                    
+                      const element = document.createElement('div');
+                      element.className = 'ol-v-custom-buttons ol-unselectable ol-control';
+                    
+                      super({
+                         element: element,
+                         target: options.target,
+                      });
+                   }
+                }]),
         });
         
         if (this.$props.initialCenter) {

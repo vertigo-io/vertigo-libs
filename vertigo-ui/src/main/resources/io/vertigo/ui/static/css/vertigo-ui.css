@@ -465,3 +465,14 @@ table .q-uploader .q-btn {
 .more-elements .hide-on-more {
 	display:none;
 }
+
+
+/** v-map **/
+.ol-v-custom-buttons {
+	top: 4em;
+	left: .5em;
+}
+
+.ol-v-custom-buttons .active {
+	color: blue !important;	
+}
