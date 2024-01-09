@@ -414,7 +414,19 @@ table .q-uploader .q-btn {
 */
 
 .v-modal{
-    max-width:unset;
+    max-width:unset !important;
+}
+
+.v-modal .q-card__section {
+	max-height: calc(100vh - 100px);
+	max-width: calc(100vw - 100px);
+	overflow: auto;
+}
+
+.v-modal .q-card__section iframe {
+	display: block;
+	width: 100%;
+	height: 100%;
 }
 
 /******** dev mode of authorizations *******/
