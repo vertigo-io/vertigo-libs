@@ -456,7 +456,7 @@ export default {
         component.addFiles(event.dataTransfer.files);
     },
     httpPostAjax: function (url, paramsIn, options) {
-        var paramsInResolved = Array.isArray(paramsIn) ? this.vueDataParams(paramsIn) : paramsIn;
+        var paramsInResolved = !paramsIn ? [] :  Array.isArray(paramsIn) ? this.vueDataParams(paramsIn) : paramsIn;
         let vueData = this.$data.vueData;
         let uiMessageStack = this.$data.uiMessageStack;
         let params = this.isFormData(paramsInResolved) ? paramsInResolved : this.objectToFormData(paramsInResolved);

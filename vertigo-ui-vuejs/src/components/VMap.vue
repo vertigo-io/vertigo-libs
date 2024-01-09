@@ -13,6 +13,7 @@ export default {
         id: { type: String, required: true},
         initialZoomLevel : { type: Number},
         initialCenter : { type: Object },
+        overview : { type: Boolean },
     },
     emits:["moveend", "click"],
     methods: {
@@ -36,11 +37,18 @@ export default {
     },
     mounted : function() {        
         let view = new ol.View();
+        const osmSource = new ol.source.OSM();
         
         let osmLayer = new ol.layer.Tile({
             preload : 4,
-            source : new ol.source.OSM()
+            source : osmSource
         })
+        
+        const customControls = [buildCustomControls()];
+        if (this.$props.overview) {
+            customControls.push(new ol.control.OverviewMap({layers: [new ol.layer.Tile({preload : 4,source: osmSource}),],}));
+        }
+        
         this.olMap = new ol.Map({
             interactions: ol.interaction.defaults.defaults({
               onFocusOnly: true
@@ -50,22 +58,7 @@ export default {
             // Improve user experience by loading tiles while animating. Will make animations stutter on mobile or slow devices.
             loadTilesWhileAnimating : true,
             view : view,
-            controls: ol.control.defaults.defaults().extend([new class VCustomControls extends ol.control.Control {
-                   /**
-                    * @param {Object} [opt_options] Control options.
-                    */
-                   constructor(opt_options) {
-                      const options = opt_options || {};
-                    
-                      const element = document.createElement('div');
-                      element.className = 'ol-v-custom-buttons ol-unselectable ol-control';
-                    
-                      super({
-                         element: element,
-                         target: options.target,
-                      });
-                   }
-                }]),
+            controls: ol.control.defaults.defaults().extend(customControls),
         });
         
         if (this.$props.initialCenter) {
@@ -87,6 +80,25 @@ export default {
                 Quasar.debounce(this.$emit('click',ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) , 300);
             }.bind(this)); 
         }.bind(this), 300); 
+    }
+}
+
+function buildCustomControls() {
+    return new class VCustomControls extends ol.control.Control {
+       /**
+        * @param {Object} [opt_options] Control options.
+        */
+       constructor(opt_options) {
+          const options = opt_options || {};
+        
+          const element = document.createElement('div');
+          element.className = 'ol-v-custom-buttons ol-unselectable ol-control';
+        
+          super({
+             element: element,
+             target: options.target,
+          });
+       }
     }
 }
 </script>
