@@ -492,3 +492,15 @@ table .q-uploader .q-btn {
 .ol-v-custom-buttons .active {
 	color: blue !important;	
 }
+
+.ol-geocoder.gcd-gl-container {
+	top: .5em !important;
+	left: 3em !important;	
+}
+.ol-geocoder .gcd-gl-btn {
+	font-size: 1.1em !important;
+}
+.ol-geocoder .gcd-gl-input {
+	top: .125em !important;
+	height: 2.25em !important;
+}

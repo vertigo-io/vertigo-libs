@@ -9,7 +9,7 @@
 			<v-geopoint-input th:v-model="|vueData.${object}.${field}|" th:class="${myRequired}?'v-field__required'" th:attr="__${input_attrs}__"></v-geopoint-input>
 			<input type="hidden" th:name="|vContext[${object}][${field}]|"  th:v-if="|vueData.${object}.${field}!=null|" th:v-bind:value="|vueData.${object}.${field}._v_inputValue|" />
 			
-			<v-map  tabindex="1" style="height: 400px; width:100%;" th:id="|map_${object}_${field}|" :initial-zoom-level="11" th:attr="__${map_attrs}__" >
+			<v-map  tabindex="1" style="height: 400px; width:100%;" th:id="|map_${object}_${field}|" :initial-zoom-level="11" search th:attr="__${map_attrs}__" >
 				<v-map-layer th::object="|vueData.${object}|" th:field="${field}" marker-color="#027BE3" object-editable></v-map-layer>
 			</v-map>
 		</div>

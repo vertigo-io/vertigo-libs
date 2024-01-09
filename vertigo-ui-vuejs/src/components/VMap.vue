@@ -13,6 +13,7 @@ export default {
         id: { type: String, required: true},
         initialZoomLevel : { type: Number},
         initialCenter : { type: Object },
+        search: { type: Boolean },
         overview : { type: Boolean },
     },
     emits:["moveend", "click"],
@@ -44,9 +45,24 @@ export default {
             source : osmSource
         })
         
-        const customControls = [buildCustomControls()];
+        const mapControls = [buildCustomControls()];
         if (this.$props.overview) {
-            customControls.push(new ol.control.OverviewMap({layers: [new ol.layer.Tile({preload : 4,source: osmSource}),],}));
+            mapControls.push(new ol.control.OverviewMap({layers: [new ol.layer.Tile({source: osmSource}),],}));
+        }
+        if (this.$props.search && (typeof Geocoder === 'function')) {
+            // this functionnality needs https://unpkg.com/ol-geocoder@4.3.1/dist/ol-geocoder.js and https://unpkg.com/ol-geocoder@4.3.1/dist/ol-geocoder.min.css
+            // see https://github.com/Dominique92/ol-geocoder
+        	mapControls.push(new Geocoder('nominatim', {
+                provider: 'osm',
+                lang: this.$q.lang.isoName,
+                placeholder: 'Search for ...',
+                limit: 5,
+                debug: false,
+                autoComplete: true,
+                keepOpen: true,
+                preventMarker: true,
+                defaultFlyResolution: 19,
+            }));
         }
         
         this.olMap = new ol.Map({
@@ -58,7 +74,7 @@ export default {
             // Improve user experience by loading tiles while animating. Will make animations stutter on mobile or slow devices.
             loadTilesWhileAnimating : true,
             view : view,
-            controls: ol.control.defaults.defaults().extend(customControls),
+            controls: ol.control.defaults.defaults().extend(mapControls),
         });
         
         if (this.$props.initialCenter) {

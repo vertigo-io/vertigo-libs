@@ -1340,6 +1340,7 @@ const Vo = /* @__PURE__ */ T(yo, [["render", Co]]), Et = window.Quasar, E = wind
     id: { type: String, required: !0 },
     initialZoomLevel: { type: Number },
     initialCenter: { type: Object },
+    search: { type: Boolean },
     overview: { type: Boolean }
   },
   emits: ["moveend", "click"],
@@ -1363,7 +1364,17 @@ const Vo = /* @__PURE__ */ T(yo, [["render", Co]]), Et = window.Quasar, E = wind
       source: t
     });
     const o = [qo()];
-    this.$props.overview && o.push(new E.control.OverviewMap({ layers: [new E.layer.Tile({ preload: 4, source: t })] })), this.olMap = new E.Map({
+    this.$props.overview && o.push(new E.control.OverviewMap({ layers: [new E.layer.Tile({ source: t })] })), this.$props.search && typeof Geocoder == "function" && o.push(new Geocoder("nominatim", {
+      provider: "osm",
+      lang: this.$q.lang.isoName,
+      placeholder: "Search for ...",
+      limit: 5,
+      debug: !1,
+      autoComplete: !0,
+      keepOpen: !0,
+      preventMarker: !0,
+      defaultFlyResolution: 19
+    })), this.olMap = new E.Map({
       interactions: E.interaction.defaults.defaults({
         onFocusOnly: !0
       }),
