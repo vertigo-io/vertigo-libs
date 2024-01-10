@@ -51,6 +51,7 @@ import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * Class utilitaire pour le rendu des pages en jsp/ftl.
+ *
  * @author npiedeloup
  */
 public final class UiUtil implements Serializable {
@@ -189,7 +190,7 @@ public final class UiUtil implements Serializable {
 	}
 
 	private static String removeUiModifier(final String fieldKey) {
-		Assertion.check().isNotBlank(fieldKey, "fieldName can't be blanck");
+		Assertion.check().isNotBlank(fieldKey, "fieldName can't be blank");
 		//---
 		final String fieldName;
 		final var firstUnderscoreIndex = fieldKey.indexOf('_');
@@ -342,6 +343,7 @@ public final class UiUtil implements Serializable {
 	/**
 	 * Get the current locale prefix (either the user's or the node (see LocaleManager javadoc)
 	 * ex : fr, en-us, en-gb, es, it
+	 *
 	 * @return the locale (in the quasar's style) to download the right js file
 	 */
 	public static String getCurrentLocalePrefixForQuasar() {
@@ -364,6 +366,7 @@ public final class UiUtil implements Serializable {
 	/**
 	 * Get the current locale tag (either the user's or the node (see LocaleManager javadoc)
 	 * ex : fr, enUs, enGb, es, it
+	 *
 	 * @return the locale (in the quasar's style) to select the right language in quasar
 	 */
 	public static String getCurrentLocaleForQuasar() {
