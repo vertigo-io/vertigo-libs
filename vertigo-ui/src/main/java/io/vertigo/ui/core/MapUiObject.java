@@ -58,6 +58,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 
 	/**
 	 * Constructor.
+	 *
 	 * @param serverSideDto DtObject
 	 */
 	public MapUiObject(final D serverSideDto, final ViewContextUpdateSecurity viewContextUpdateSecurity) {
@@ -66,7 +67,8 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 
 	/**
 	 * Constructor.
-	 * @param serverSideDto  DtObject
+	 *
+	 * @param serverSideDto DtObject
 	 * @param inputDto Input DtObject
 	 * @param modifiedFields List of modified fields
 	 */
@@ -163,9 +165,9 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	}
 
 	private static String formatMultipleValue(final Object values) {
-		if (values instanceof String) {
+		if (values instanceof final String valueS) {
 			// just one
-			return (String) values;
+			return StringUtil.isBlank(valueS) ? null : valueS;
 		}
 		// we are a String array
 		return Arrays
@@ -174,7 +176,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	}
 
 	private static String[] parseMultipleValue(final String strValue) {
-		return strValue.split(";");
+		return StringUtil.isBlank(strValue) ? new String[0] : strValue.split(";");
 	}
 
 	private static boolean isMultiple(final DtField dtField) {
@@ -254,6 +256,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 
 	/**
 	 * Return the typed value.
+	 *
 	 * @param fieldName Field
 	 * @return Typed value
 	 */
@@ -263,6 +266,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 
 	/**
 	 * Return a Serializable Map for client.
+	 *
 	 * @param fieldsForClient List of fields
 	 * @param valueTransformers Map of transformers
 	 * @return HashMap (needed for Serializable)
@@ -320,7 +324,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 				return EncoderDate.valueToString(value, dtField.smartTypeDefinition().getBasicType());// encodeValue
 			} else if (isMultiple(dtField)) {
 				final String value = getTypedValue(keyFieldName, String.class);
-				return value != null ? parseMultipleValue(value) : new String[0];
+				return parseMultipleValue(value);
 			}
 		}
 		return getTypedValue(keyFieldName, Serializable.class);
