@@ -416,7 +416,7 @@ table .q-uploader .q-btn {
     max-width:unset !important;
 }
 
-.v-modal .q-card__section {
+.q-dialog__inner--minimized .v-modal .q-card__section {
 	max-height: calc(100vh - 100px);
 	max-width: calc(100vw - 100px);
 	overflow: auto;
