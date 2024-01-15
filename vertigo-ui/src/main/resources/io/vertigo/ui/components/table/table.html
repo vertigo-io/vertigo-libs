@@ -91,10 +91,12 @@
 							</th:block>
 						</th:block>
 		       		</q-card-section>
-					<q-separator></q-separator>
-					<q-card-section role="toolbar">
-						<vu:content-slot name="actions_slot" th:with="label=null, title=null, vTitle=null" />
-					</q-card-section>
+		       		<th:block th:if="${actions_slot != null}">
+						<q-separator></q-separator>
+						<q-card-section role="toolbar">
+							<vu:content-slot name="actions_slot" th:with="label=null, title=null, vTitle=null" />
+						</q-card-section>
+					</th:block>
 		       </q-card>
 			</div>
 		</template>
