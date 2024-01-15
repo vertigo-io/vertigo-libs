@@ -63,17 +63,15 @@ export default {
             if (window.pageYOffset > fixeTrigger) {
                 if (!elNav.style.top) {
                     elNav.style.top = fixedPos + "px";
-                    //when fixed, we must set a valid width
-                    if (!elNav.style.width) {
-                        elNav.style.width = elNav.getBoundingClientRect().width + "px";
-                    }
                     elNav.classList.add("fixed");
                 }
+                //when fixed, we must set a valid width
+                elNav.style.width = elNav.parentElement.getBoundingClientRect().width + "px";
             } else {
                 if (elNav.style.top) {
                     elNav.classList.remove("fixed");
                     elNav.style.top = null;
-                    elNav.style.width = elNav.getBoundingClientRect().width + "px"; //we keep the element size, when it's not fixed and keep it after
+                    elNav.style.width = null;
                 }
             }
 

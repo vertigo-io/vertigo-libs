@@ -2858,7 +2858,7 @@ const Ga = /* @__PURE__ */ T(Ra, [["render", Ya]]), Qa = {
           f += p.offsetLeft - p.scrollLeft, m += p.offsetTop - p.scrollTop, p = p.offsetParent;
         console.log("x: " + f), console.log("y: " + m + " (startingOffset)");
       }
-      window.pageYOffset > a ? e.style.top || (e.style.top = i + "px", e.style.width || (e.style.width = e.getBoundingClientRect().width + "px"), e.classList.add("fixed")) : e.style.top && (e.classList.remove("fixed"), e.style.top = null, e.style.width = e.getBoundingClientRect().width + "px");
+      window.pageYOffset > a ? (e.style.top || (e.style.top = i + "px", e.classList.add("fixed")), e.style.width = e.parentElement.getBoundingClientRect().width + "px") : e.style.top && (e.classList.remove("fixed"), e.style.top = null, e.style.width = null);
       for (var y = de.scroll.getVerticalScrollPosition(l), b = S.computeBreakPoints(y), x = 0; x < r.length; x++)
         b[x] <= y && (x >= r.length - 1 || y < b[x + 1]) ? (r[x].classList.add("active"), r[x].ariaCurrent = "step") : (r[x].classList.remove("active"), r[x].removeAttribute("aria-current"));
     }, S.computeBlockTop = function(p) {
