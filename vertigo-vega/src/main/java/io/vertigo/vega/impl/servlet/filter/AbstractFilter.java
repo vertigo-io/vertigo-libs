@@ -18,10 +18,14 @@
 package io.vertigo.vega.impl.servlet.filter;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.vertigo.core.node.Node;
+import io.vertigo.core.param.EnvParamUtil;
+import io.vertigo.core.param.ParamManager;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -112,6 +116,29 @@ public abstract class AbstractFilter implements Filter {
 
 	protected final FilterConfig getFilterConfig() {
 		return config;
+	}
+
+	protected final <P extends Serializable> P parseParam(final String paramName, final Class<P> paramClass, final P defaultValue) {
+		final String paramStrValue = config.getInitParameter(paramName);
+		if (paramStrValue != null) {
+			final var param = EnvParamUtil.getParam(paramName, paramStrValue, Optional.of(Node.getNode().getComponentSpace().resolve(ParamManager.class)));
+			if (param.isPresent()) {
+				if (Long.class.equals(paramClass)) {
+					return (P) Long.valueOf(param.get().getValueAsLong());
+				} else if (Integer.class.equals(paramClass)) {
+					return (P) Integer.valueOf(param.get().getValueAsInt());
+				} else if (Double.class.equals(paramClass)) {
+					return (P) Double.valueOf(paramStrValue);
+				} else if (Boolean.class.equals(paramClass)) {
+					return (P) Boolean.valueOf(param.get().getValueAsBoolean());
+				} else if (String.class.equals(paramClass)) {
+					return (P) param.get().getValueAsString();
+				} else {
+					throw new IllegalArgumentException("Support Long, Integer, Double, Boolean and String parameters (not : " + paramClass.getSimpleName() + ")");
+				}
+			}
+		}
+		return defaultValue;
 	}
 
 	protected abstract void doInit();

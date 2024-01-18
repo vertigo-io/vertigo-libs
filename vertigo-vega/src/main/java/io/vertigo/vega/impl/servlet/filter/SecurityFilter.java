@@ -65,7 +65,7 @@ public final class SecurityFilter extends AbstractFilter {
 	@Override
 	public void doInit() {
 		InjectorUtil.injectMembers(this);
-		noAuthentificationPattern = parsePattern(getFilterConfig().getInitParameter(NO_AUTHENTIFICATION_PATTERN_PARAM_NAME));
+		noAuthentificationPattern = parsePattern(parseParam(NO_AUTHENTIFICATION_PATTERN_PARAM_NAME, String.class, null));
 	}
 
 	/** {@inheritDoc} */

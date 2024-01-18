@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -29,8 +28,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Implémentation de javax.servlet.Filter utilisée pour compresser le flux de réponse si il d�passe un seuil,
+ * Implémentation de javax.servlet.Filter utilisée pour compresser le flux de réponse si il dépasse un seuil,
  * et pour décompresser le flux d'entrée si nécessaire.
+ * Le paramètre userAgent permet de désactiver la compression quand un mot clé est présent dans le user-agent.
  * @author Amy Roh, Dmitri Valdin (Apache Software Foundation)
  */
 public final class CompressionFilter extends AbstractFilter {
@@ -43,23 +43,14 @@ public final class CompressionFilter extends AbstractFilter {
 	/** {@inheritDoc} */
 	@Override
 	public void doInit() {
-		final FilterConfig filterConfig = getFilterConfig();
-		if (filterConfig != null) { //NOPMD
-			userAgent = filterConfig.getInitParameter("userAgent");
-			final int minThreshold = 128;
-			final String str = filterConfig.getInitParameter("compressionThreshold");
-			if (str != null) { //NOPMD
-				compressionThreshold = Integer.parseInt(str);
-				if (compressionThreshold <= 0) {
-					compressionThreshold = 0;
-				} else if (compressionThreshold < minThreshold) {
-					compressionThreshold = minThreshold;
-				}
-			} else {
-				compressionThreshold = 0;
-			}
-		} else {
+		userAgent = parseParam("userAgent", String.class, null); //inactive compression for an user-agent keyword
+		compressionThreshold = parseParam("compressionThreshold", Integer.class, 0);
+
+		final int minThreshold = 128;
+		if (compressionThreshold <= 0) {
 			compressionThreshold = 0;
+		} else if (compressionThreshold < minThreshold) {
+			compressionThreshold = minThreshold;
 		}
 	}
 
@@ -78,20 +69,20 @@ public final class CompressionFilter extends AbstractFilter {
 	 *
 	 * @param reqGzip reqGzip
 	 * @param reqUserAgent reqUserAgent
-	 * @return boolean
+	 * @return boolean si la compression doit être activé ou non
 	 */
 	public boolean isUserAgentNullOrCompressionNull(final String reqGzip, final String reqUserAgent) {
-		return compressionThreshold == 0 || "false".equalsIgnoreCase(reqGzip) || reqUserAgent != null && !reqUserAgent.contains(userAgent);
+		return compressionThreshold == 0 || "false".equalsIgnoreCase(reqGzip) || reqUserAgent != null && userAgent != null && !reqUserAgent.contains(userAgent);
 	}
 
 	/**
 	 * La méthode doFilter est appelée par le container chaque fois qu'une paire requête/réponse passe à travers
 	 * la chaîne suite à une requête d'un client pour une ressource au bout de la chaîne.
-	 * L'instance de FilterChain pass�e dans cette méthode permet au filtre de passer la requête et la réponse
+	 * L'instance de FilterChain passée dans cette méthode permet au filtre de passer la requête et la réponse
 	 * à l'entité suivante dans la chaîne.
 	 *
-	 * Le flux d'entrée est encapsul� pour décompression si son Content-Encoding est gzip. Le flux de sortie est
-	 * encapsul� pour compression si le nombre d'octets �crits (dans un buffer au début) d�passe le paramètre de filtre
+	 * Le flux d'entrée est encapsulé pour décompression si son Content-Encoding est gzip. Le flux de sortie est
+	 * encapsulé pour compression si le nombre d'octets écrits (dans un buffer au début) dépasse le paramètre de filtre
 	 * compressionThreshold.
 	 *
 	 * @param req javax.servlet.ServletRequest

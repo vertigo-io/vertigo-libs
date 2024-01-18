@@ -76,10 +76,7 @@ public final class AuthorizationWebFilter extends AbstractFilter {
 	@Override
 	public void doInit() {
 		final FilterConfig filterConfig = getFilterConfig();
-		final String errorCodeValue = filterConfig.getInitParameter(ERROR_CODE_PARAM_NAME);
-		if (errorCodeValue != null) {
-			errorCode = Integer.parseInt(errorCodeValue);
-		}
+		errorCode = parseParam(ERROR_CODE_PARAM_NAME, Integer.class, errorCode);
 
 		final Enumeration<String> authz = filterConfig.getInitParameterNames();
 		while (authz.hasMoreElements()) {

@@ -63,7 +63,6 @@ import io.vertigo.datastore.cache.definitions.CacheDefinition;
 import io.vertigo.vega.impl.servlet.filter.AbstractFilter;
 import io.vertigo.vega.impl.servlet.filter.ContentSecurityPolicyFilter;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -95,16 +94,13 @@ public final class VuejsSsrFilter extends AbstractFilter implements SimpleDefini
 	@Override
 	public void doInit() {
 		cacheManager = Node.getNode().getComponentSpace().resolve(CacheManager.class);
-
-		final FilterConfig filterConfig = getFilterConfig();
-		ssrServerUrl = filterConfig.getInitParameter("ssrServerUrl");
+		ssrServerUrl = parseParam("ssrServerUrl", String.class, null);
 		if (ssrServerUrl == null) {
 			final var script = FileUtil.read(Thread.currentThread().getContextClassLoader().getResource("io/vertigo/ui/static/3rdParty/cdn.jsdelivr.net/npm/vue-template-compiler@2.7.14/browser.js"))
 					+ "\r\ncompileFunction = function(template) { return VueTemplateCompiler.compile(template); }";
 			nashornEngine = createNashornEngine(script);
 		}
-
-		doublePassRender = Boolean.parseBoolean(filterConfig.getInitParameter("doublePassRender"));
+		doublePassRender = parseParam("doublePassRender", Boolean.class, false);
 	}
 
 	private static ScriptEngine createNashornEngine(final String script) {
