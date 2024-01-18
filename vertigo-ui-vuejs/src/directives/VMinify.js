@@ -16,8 +16,11 @@ export default {
             }
             
             Vue.minifyHandler = function() {
-                var currentTopOffset = elMaxi.getBoundingClientRect().y+window.pageYOffset;
-                var currentLeftOffset = elMaxi.getBoundingClientRect().x+window.pageXOffset;
+                var scrollContainer = elMaxi.closest('.q-page-container'); 
+                var currentYScroll = scrollContainer?-scrollContainer.getBoundingClientRect().y:window.pageYOffset;
+                var currentXScroll = scrollContainer?-scrollContainer.getBoundingClientRect().x:window.pageXOffset;
+                var currentTopOffset = elMaxi.getBoundingClientRect().y+currentYScroll;
+                var currentLeftOffset = elMaxi.getBoundingClientRect().x+currentXScroll;
                 if(topOffset || topOffsetElSelector) {
                     currentTopOffset = Vue.minifyComputeOffset(topOffset, topOffsetElSelector, 0, 'TOP');
                 }
@@ -28,7 +31,7 @@ export default {
                 var elMaxiHeight = elMaxi.getBoundingClientRect().height;
                 //We check if nav should be fixed
                 // Add the fixed class to the header when you reach its scroll position. Remove "fixed" when you leave the scroll position
-                if (window.pageYOffset > elMaxiHeight-elMiniHeight) {
+                if (currentYScroll > elMaxiHeight-elMiniHeight) {
                     elMini.classList.add("visible");
                     elMini.style.top=currentTopOffset+"px";//top
                     elMini.style.left=currentLeftOffset+"px";//left  			
