@@ -20,6 +20,7 @@ export default {
         cluster : { type: Array },
         object : { type: Object },
         objectEditable: {type: Boolean },
+        fitOnDataUpdate: {type: Boolean },
         baseUrl : { type: String },
         field: { type: String, required: true},
         nameField: { type: String},        
@@ -74,15 +75,17 @@ export default {
                   let newClusterCoordString = this.computeCoordString(newVal);
                   
                   if (!!this._clusterCoordString && newClusterCoordString !== this._clusterCoordString) {
+                      this.$data.items = [];
                       this.$data.clusters = [];
                       for(let i =0 ; i< newVal.length; i++) {
                           if(newVal[i].totalCount == 1) {
                               this.$data.items = this.$data.items.concat(newVal[i].list);
                           } else {
                               this.$data.clusters.push({
-                              geoHash:newVal[i].code,
-                              geoLocation:this.decode(newVal[i].code),
-                              totalCount:newVal[i].totalCount});
+                                  geoHash:newVal[i].code,
+                                  geoLocation:this.decode(newVal[i].code),
+                                  totalCount:newVal[i].totalCount
+                              });
                           }
                       }
                       this.updateMap();
@@ -184,13 +187,24 @@ export default {
             }.bind(this));
         },
         computeCoordString: function(value) {
-            let valueCoord = Array.isArray(value) ? value.map(el => el[this.$props.field]) : value[this.$props.field];
+            let valueCoord;
+            if (Array.isArray(value)) {
+                if (!!this.$props.cluster) {
+                    valueCoord = value.map(el => this.decode(el.code));
+                } else {
+                    valueCoord = value.map(el => el[this.$props.field]);
+                } 
+            } else {
+                valueCoord = value[this.$props.field];
+            }
             return JSON.stringify(valueCoord);
         },
         updateMap: function() {
             this.$data.vectorSource.clear();
             this.$data.vectorSource.addFeatures(this.features);
-            this.fitView();
+            if (this.$props.fitOnDataUpdate) {
+                this.fitView();
+            }
         },
          /**
          * Decode geohash to latitude/longitude (location is approximate centre of geohash cell,

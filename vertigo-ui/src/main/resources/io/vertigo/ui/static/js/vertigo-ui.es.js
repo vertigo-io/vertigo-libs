@@ -1421,6 +1421,7 @@ const No = /* @__PURE__ */ T(ko, [["render", Oo]]), He = window.Quasar, w = wind
     cluster: { type: Array },
     object: { type: Object },
     objectEditable: { type: Boolean },
+    fitOnDataUpdate: { type: Boolean },
     baseUrl: { type: String },
     field: { type: String, required: !0 },
     nameField: { type: String },
@@ -1468,7 +1469,7 @@ const No = /* @__PURE__ */ T(ko, [["render", Oo]]), He = window.Quasar, w = wind
         if (e) {
           let t = this.computeCoordString(e);
           if (this._clusterCoordString && t !== this._clusterCoordString) {
-            this.$data.clusters = [];
+            this.$data.items = [], this.$data.clusters = [];
             for (let n = 0; n < e.length; n++)
               e[n].totalCount == 1 ? this.$data.items = this.$data.items.concat(e[n].list) : this.$data.clusters.push({
                 geoHash: e[n].code,
@@ -1537,11 +1538,11 @@ const No = /* @__PURE__ */ T(ko, [["render", Oo]]), He = window.Quasar, w = wind
       }).bind(this));
     },
     computeCoordString: function(e) {
-      let t = Array.isArray(e) ? e.map((n) => n[this.$props.field]) : e[this.$props.field];
-      return JSON.stringify(t);
+      let t;
+      return Array.isArray(e) ? this.$props.cluster ? t = e.map((n) => this.decode(n.code)) : t = e.map((n) => n[this.$props.field]) : t = e[this.$props.field], JSON.stringify(t);
     },
     updateMap: function() {
-      this.$data.vectorSource.clear(), this.$data.vectorSource.addFeatures(this.features), this.fitView();
+      this.$data.vectorSource.clear(), this.$data.vectorSource.addFeatures(this.features), this.$props.fitOnDataUpdate && this.fitView();
     },
     /**
     * Decode geohash to latitude/longitude (location is approximate centre of geohash cell,
