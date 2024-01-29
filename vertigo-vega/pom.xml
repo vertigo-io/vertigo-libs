@@ -52,6 +52,13 @@
 			<optional>true</optional>
 		</dependency>
 		
+		<dependency>
+            <groupId>io.vertigo</groupId>
+            <artifactId>vertigo-redis-connector</artifactId> <!-- For RateLimitingRedisStorePlugin -->
+            <version>${vertigo.version}</version>
+            <optional>true</optional>
+        </dependency>
+		
         <dependency>
             <groupId>io.vertigo</groupId>
             <artifactId>vertigo-httpclient-connector</artifactId>

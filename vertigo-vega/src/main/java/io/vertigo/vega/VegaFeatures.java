@@ -25,6 +25,7 @@ import io.vertigo.vega.authentication.WebAuthenticationManager;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.impl.authentication.WebAuthenticationManagerImpl;
+import io.vertigo.vega.impl.ratelimiting.RateLimitingManagerImpl;
 import io.vertigo.vega.impl.token.TokenManagerImpl;
 import io.vertigo.vega.impl.webservice.WebServiceManagerImpl;
 import io.vertigo.vega.impl.webservice.catalog.CatalogWebServices;
@@ -34,6 +35,8 @@ import io.vertigo.vega.plugins.authentication.aad.AzureAdWebAuthenticationPlugin
 import io.vertigo.vega.plugins.authentication.local.LocalWebAuthenticationPlugin;
 import io.vertigo.vega.plugins.authentication.oidc.OIDCWebAuthenticationPlugin;
 import io.vertigo.vega.plugins.authentication.saml2.SAML2WebAuthenticationPlugin;
+import io.vertigo.vega.plugins.ratelimiting.mem.RateLimitingMemStorePlugin;
+import io.vertigo.vega.plugins.ratelimiting.redis.RateLimitingRedisStorePlugin;
 import io.vertigo.vega.plugins.webservice.handler.AccessTokenWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.AnalyticsWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.ApiKeyWebServiceHandlerPlugin;
@@ -49,6 +52,7 @@ import io.vertigo.vega.plugins.webservice.handler.SessionWebServiceHandlerPlugin
 import io.vertigo.vega.plugins.webservice.handler.ValidatorWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.scanner.annotations.AnnotationsWebServiceScannerPlugin;
 import io.vertigo.vega.plugins.webservice.webserver.javalin.JavalinWebServerPlugin;
+import io.vertigo.vega.ratelimiting.RateLimitingManager;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.WebServiceManager;
 
@@ -76,6 +80,27 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 				.addPlugin(JsonConverterWebServiceHandlerPlugin.class)
 				.addPlugin(ValidatorWebServiceHandlerPlugin.class)
 				.addPlugin(RestfulServiceWebServiceHandlerPlugin.class);
+		return this;
+	}
+
+	@Feature("rateLimiting")
+	public VegaFeatures withRateLimiting(final Param... params) {
+		getModuleConfigBuilder()
+				.addComponent(RateLimitingManager.class, RateLimitingManagerImpl.class, params);
+		return this;
+	}
+
+	@Feature("rateLimiting.redis")
+	public VegaFeatures withRateLimitingRedisStore(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(RateLimitingRedisStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("rateLimiting.mem")
+	public VegaFeatures withRateLimitingMemStore(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(RateLimitingMemStorePlugin.class, params);
 		return this;
 	}
 
