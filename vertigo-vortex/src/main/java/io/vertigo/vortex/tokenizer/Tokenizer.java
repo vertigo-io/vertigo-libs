@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
 
 /**
  * This tokenizer splits a text into tokens to read a 'command grammar'.
@@ -159,7 +160,7 @@ public final class Tokenizer {
 				}
 			}
 			if (!match)
-				throw new ParserException("Unexpected character in input(" + pos + "): " + src.substring(pos));
+				throw new VSystemException("Unexpected character in input({0}): {1}", pos, src.substring(pos));
 		}
 		return tokens;
 	}

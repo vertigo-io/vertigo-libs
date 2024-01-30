@@ -1,4 +1,4 @@
-package io.vertigo.vortex.tokenizer;
+package io.vertigo.vortex.parser;
 
 public final class PairValidator {
 
