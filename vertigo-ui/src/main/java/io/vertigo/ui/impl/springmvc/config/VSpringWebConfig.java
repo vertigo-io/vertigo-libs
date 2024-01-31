@@ -128,7 +128,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	* */
 	@Bean
 	public SpringTemplateEngine templateEngine() {
-		final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+		final SpringTemplateEngine templateEngine = new VSpringTemplateEngine();
 		final SpringResourceTemplateResolver viewsResolvers = templateResolver();
 		viewsResolvers.setOrder(3);
 		templateEngine.setTemplateResolver(viewsResolvers);
