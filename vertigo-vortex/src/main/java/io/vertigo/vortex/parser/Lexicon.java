@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vortex.tokenizer;
+package io.vertigo.vortex.parser;
 
 /**
  * Contains the core elements of any structural grammar.
