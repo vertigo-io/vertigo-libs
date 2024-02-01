@@ -24,7 +24,7 @@ import io.vertigo.datafactory.collections.CollectionsManager;
 import io.vertigo.datafactory.impl.collections.CollectionsManagerImpl;
 import io.vertigo.datafactory.impl.search.SearchManagerImpl;
 import io.vertigo.datafactory.impl.task.TaskManagerImpl;
-import io.vertigo.datafactory.impl.task.metrics.TasksMetricsProvider;
+import io.vertigo.datafactory.impl.task.metrics.TaskMetricsProvider;
 import io.vertigo.datafactory.plugins.collections.lucene.LuceneIndexPlugin;
 import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.task.TaskManager;
@@ -77,6 +77,6 @@ public final class DataFactoryFeatures extends Features<DataFactoryFeatures> {
 		getModuleConfigBuilder()
 				.addComponent(CollectionsManager.class, CollectionsManagerImpl.class)
 				.addComponent(TaskManager.class, TaskManagerImpl.class)
-				.addComponent(TasksMetricsProvider.class);
+				.addComponent(TaskMetricsProvider.class);
 	}
 }

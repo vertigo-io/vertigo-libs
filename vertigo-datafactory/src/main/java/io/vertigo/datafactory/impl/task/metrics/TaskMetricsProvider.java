@@ -22,16 +22,90 @@ import java.util.Locale;
 
 import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.metric.Metrics;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Component;
+import io.vertigo.datafactory.task.definitions.TaskAttribute;
 import io.vertigo.datafactory.task.definitions.TaskDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 
 /**
  * Implémentation de TaskReportingManager.
  *
  * @author tchassagnette
  */
-public final class TasksMetricsProvider implements Component {
+public final class TaskMetricsProvider implements Component {
+	@Metrics
+	public List<Metric> getDependencyMetrics() {
+		return Node.getNode().getDefinitionSpace().getAll(DataDefinition.class)
+				.stream()
+				.map(dtDefinition -> Metric.builder()
+						.withSuccess()
+						.withName("definitionUsageInDao")
+						.withFeature(dtDefinition.getName())
+						.withValue(countTaskDependencies(dtDefinition))
+						.build())
+				.toList();
+
+	}
+
+	@Metrics
+	public List<Metric> getSmartTypeUsageTasksMetrics() {
+		return Node.getNode().getDefinitionSpace().getAll(SmartTypeDefinition.class)
+				.stream()
+				.map(smartType -> Metric.builder()
+						.withSuccess()
+						.withName("smartTypeUsageInTasks")
+						.withFeature(smartType.getName())
+						.withValue(countTaskDependencies(smartType))
+						.build())
+				.toList();
+
+	}
+
+	private static double countTaskDependencies(final SmartTypeDefinition smartTypeDefinition) {
+		Assertion.check().isNotNull(smartTypeDefinition);
+		//---
+		int count = 0;
+		for (final TaskDefinition taskDefinition : Node.getNode().getDefinitionSpace().getAll(TaskDefinition.class)) {
+			for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
+				if (smartTypeDefinition.equals(taskAttribute.smartTypeDefinition())) {
+					count++;
+				}
+			}
+			if (taskDefinition.getOutAttributeOption().isPresent()) {
+				if (smartTypeDefinition.equals(taskDefinition.getOutAttributeOption().get().smartTypeDefinition())) {
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+	private static double countTaskDependencies(final DataDefinition dataDefinition) {
+		int count = 0;
+		for (final TaskDefinition taskDefinition : Node.getNode().getDefinitionSpace().getAll(TaskDefinition.class)) {
+			for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
+				count += count(dataDefinition, taskAttribute);
+			}
+			if (taskDefinition.getOutAttributeOption().isPresent()) {
+				final TaskAttribute taskAttribute = taskDefinition.getOutAttributeOption().get();
+				count += count(dataDefinition, taskAttribute);
+			}
+		}
+		return count;
+	}
+
+	private static double count(final DataDefinition dataDefinition, final TaskAttribute taskAttribute) {
+		if (taskAttribute.smartTypeDefinition().getScope().isDataType()) {
+			if (dataDefinition.equals(DtObjectUtil.findDtDefinition(taskAttribute.smartTypeDefinition().getJavaClass()))) {
+				return 1;
+			}
+		}
+		return 0;
+	}
 
 	@Metrics
 	public List<Metric> getTasksRequestSizeMetric() {
