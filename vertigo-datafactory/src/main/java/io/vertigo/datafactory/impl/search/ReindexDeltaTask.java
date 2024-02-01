@@ -40,7 +40,7 @@ import io.vertigo.datafactory.search.definitions.SearchChunk;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.definitions.SearchLoader;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
@@ -98,7 +98,7 @@ final class ReindexDeltaTask<S extends KeyConcept> implements Runnable {
 						.isNotNull(searchLoader.getVersionFieldName().isPresent(),
 								"To use this reindexDelta, indexed keyConcept need a version field use to iterate throught all entity table. Check getVersionFieldName() in {0}", searchLoader.getClass().getName());
 				//---
-				final DtFieldName<S> iteratorFieldName = searchLoader.getVersionFieldName().get();
+				final DataFieldName<S> iteratorFieldName = searchLoader.getVersionFieldName().get();
 				final String metaDataName = "last" + iteratorFieldName.name() + "Value";
 				Serializable previousValue = searchManager.getMetaData(searchIndexDefinition, metaDataName);
 				LOGGER.info("Reindexation delta of {} started. Start at {}", searchIndexDefinition.getName(), previousValue);

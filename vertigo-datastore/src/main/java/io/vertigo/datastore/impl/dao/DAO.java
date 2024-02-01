@@ -31,7 +31,7 @@ import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.definitions.DataAccessor;
 import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.Entity;
@@ -249,16 +249,16 @@ public class DAO<E extends Entity, P> {
 	}
 
 	/**
-	 * @param dtFieldName de l'object à récupérer NOT NULL
+	 * @param dataFieldName de l'object à récupérer NOT NULL
 	 * @param value de l'object à récupérer NOT NULL
 	 * @param dtListState Etat de la liste : Sort, top, offset
 	 * @return DtList<D> récupéré NOT NUL
 	 */
-	public final DtList<E> getListByDtFieldName(final DtFieldName dtFieldName, final Serializable value, final DtListState dtListState) {
-		final Criteria<E> criteria = Criterions.isEqualTo(dtFieldName, value);
+	public final DtList<E> getListByDtFieldName(final DataFieldName dataFieldName, final Serializable value, final DtListState dtListState) {
+		final Criteria<E> criteria = Criterions.isEqualTo(dataFieldName, value);
 		// Verification de la valeur est du type du champ
 		final DataDefinition dataDefinition = getDtDefinition();
-		final DtField dtField = dataDefinition.getField(dtFieldName.name());
+		final DtField dtField = dataDefinition.getField(dataFieldName.name());
 		smartTypeManager.checkType(dtField.smartTypeDefinition(), dtField.cardinality(), value);
 		return entityStoreManager.find(dataDefinition, criteria, dtListState);
 	}

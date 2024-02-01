@@ -19,7 +19,7 @@ package io.vertigo.datastore.entitystore.data.domain.otherstore;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Generated;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.DataSpace;
@@ -36,7 +36,7 @@ import io.vertigo.datastore.impl.entitystore.StoreListVAccessor;
 @DataSpace("otherStore")
 public final class Famille implements Entity {
 
-	public enum CarFields implements DtFieldName<Car> {
+	public enum CarFields implements DataFieldName<Car> {
 		id, manufacturer, model, description, year, kilo, price, consomation, mtyCd, famId
 	}
 

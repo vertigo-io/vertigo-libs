@@ -205,7 +205,7 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 	 * @param fieldName Nom du champ
 	 * @return Champ correspondant
 	 */
-	public DtField getField(final DtFieldName fieldName) {
+	public DtField getField(final DataFieldName fieldName) {
 		return getField(fieldName.name());
 	}
 

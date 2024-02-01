@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import io.vertigo.core.node.component.Component;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 
@@ -63,6 +63,6 @@ public interface SearchLoader<K extends KeyConcept, I extends DtObject> extends 
 	 * If it's comparable for the whole entity set (like a sequence, or an lastModified), it could be use for delta reindexing
 	 * @return optional version field
 	 */
-	Optional<DtFieldName<K>> getVersionFieldName();
+	Optional<DataFieldName<K>> getVersionFieldName();
 
 }

@@ -39,7 +39,7 @@ import io.vertigo.datafactory.search.definitions.SearchChunk;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.task.TaskManager;
@@ -109,7 +109,7 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Item, Item> 
 	}
 
 	@Override
-	public Optional<DtFieldName<Item>> getVersionFieldName() {
+	public Optional<DataFieldName<Item>> getVersionFieldName() {
 		return Optional.of(() -> "lastModified");
 	}
 }

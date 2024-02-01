@@ -29,7 +29,7 @@ import io.vertigo.datamodel.criteria.CriterionOperator;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtListURI;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -123,8 +123,8 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	private int getCriteriaHashCode() {
 		return getCriteria().toStringAnCtx(new CriteriaEncoder() {
 			@Override
-			public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DtFieldName dtFieldName, final Serializable[] values) {
-				return criterionOperator.name() + "-" + dtFieldName.name() + "@" + Arrays.hashCode(values);
+			public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DataFieldName dataFieldName, final Serializable[] values) {
+				return criterionOperator.name() + "-" + dataFieldName.name() + "@" + Arrays.hashCode(values);
 			}
 
 			@Override

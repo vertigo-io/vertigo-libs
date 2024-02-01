@@ -24,7 +24,7 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
@@ -105,7 +105,7 @@ abstract class AbstractDbFileStorePlugin {
 	 * @param valueClass Type du champ
 	 * @return Valeur typé du champ
 	 */
-	protected static <V> V getValue(final DtObject dto, final DtFieldName fieldName, final Class<V> valueClass) {
+	protected static <V> V getValue(final DtObject dto, final DataFieldName fieldName, final Class<V> valueClass) {
 		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(dto);
 		final DtField dtField = dataDefinition.getField(fieldName.name());
 		return valueClass.cast(dtField.getDataAccessor().getValue(dto));
@@ -118,7 +118,7 @@ abstract class AbstractDbFileStorePlugin {
 	 * @param fieldName Nom du champs
 	 * @param value Valeur
 	 */
-	protected static void setValue(final DtObject dto, final DtFieldName fieldName, final Object value) {
+	protected static void setValue(final DtObject dto, final DataFieldName fieldName, final Object value) {
 		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(dto);
 		final DtField dtField = dataDefinition.getField(fieldName.name());
 		dtField.getDataAccessor().setValue(dto, value);

@@ -31,7 +31,7 @@ import io.vertigo.datafactory.search.definitions.SearchChunk;
 import io.vertigo.datafactory.search.definitions.SearchLoader;
 import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
@@ -83,7 +83,7 @@ public abstract class AbstractSearchLoader<K extends KeyConcept, I extends DtObj
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<DtFieldName<K>> getVersionFieldName() {
+	public Optional<DataFieldName<K>> getVersionFieldName() {
 		return Optional.empty(); //Overridable
 	}
 

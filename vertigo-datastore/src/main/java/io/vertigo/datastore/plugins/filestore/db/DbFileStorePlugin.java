@@ -30,7 +30,7 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
@@ -53,7 +53,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	 * Ces champs sont obligatoire sur les Dt associés aux fileInfoDefinitions
 	 * @author npiedeloup
 	 */
-	private enum DtoFields implements DtFieldName {
+	private enum DtoFields implements DataFieldName {
 		fileName, mimeType, lastModified, length, fileData
 	}
 

@@ -19,11 +19,11 @@ package io.vertigo.datamodel.criteria;
 
 import java.io.Serializable;
 
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 
 public interface CriteriaEncoder {
 
-	String encodeOperator(CriteriaCtx ctx, CriterionOperator criterionOperator, DtFieldName dtFieldName, Serializable[] values);
+	String encodeOperator(CriteriaCtx ctx, CriterionOperator criterionOperator, DataFieldName dataFieldName, Serializable[] values);
 
 	String encodeLogicalOperator(CriteriaLogicalOperator logicalOperator);
 

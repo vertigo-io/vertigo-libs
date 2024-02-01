@@ -22,7 +22,7 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
 /**
@@ -78,7 +78,7 @@ public final class DtListState {
 	 */
 	public DtListState withDefault(
 			final Integer defaultMaxRows,
-			final DtFieldName defaultSortFieldName,
+			final DataFieldName defaultSortFieldName,
 			final Boolean defaultSortDesc) {
 		if ((maxRows.isPresent() || defaultMaxRows == null)
 				&& (sortFieldName.isPresent() || defaultSortFieldName == null)

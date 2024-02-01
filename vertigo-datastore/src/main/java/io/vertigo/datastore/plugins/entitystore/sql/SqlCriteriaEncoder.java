@@ -32,7 +32,7 @@ import io.vertigo.datamodel.criteria.CriteriaEncoder;
 import io.vertigo.datamodel.criteria.CriteriaLogicalOperator;
 import io.vertigo.datamodel.criteria.CriterionLimit;
 import io.vertigo.datamodel.criteria.CriterionOperator;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 
 public class SqlCriteriaEncoder implements CriteriaEncoder {
 
@@ -68,8 +68,8 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 	}
 
 	@Override
-	public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DtFieldName dtFieldName, final Serializable[] values) {
-		final String sqlFieldName = sqlAlias + StringUtil.camelToConstCase(dtFieldName.name());
+	public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DataFieldName dataFieldName, final Serializable[] values) {
+		final String sqlFieldName = sqlAlias + StringUtil.camelToConstCase(dataFieldName.name());
 		//---
 		switch (criterionOperator) {
 			case IS_NOT_NULL:
@@ -80,24 +80,24 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 				if (values[0] == null) {
 					return sqlFieldName + " is null ";
 				}
-				return sqlFieldName + " = " + encodedAttribute(ctx, dtFieldName, values[0]);
+				return sqlFieldName + " = " + encodedAttribute(ctx, dataFieldName, values[0]);
 			case NEQ:
 				if (values[0] == null) {
 					return sqlFieldName + " is not null ";
 				}
-				return "(" + sqlFieldName + " is null OR " + sqlFieldName + " != " + encodedAttribute(ctx, dtFieldName, values[0]) + " )";
+				return "(" + sqlFieldName + " is null OR " + sqlFieldName + " != " + encodedAttribute(ctx, dataFieldName, values[0]) + " )";
 			case GT:
-				return sqlFieldName + " > " + encodedAttribute(ctx, dtFieldName, values[0]);
+				return sqlFieldName + " > " + encodedAttribute(ctx, dataFieldName, values[0]);
 			case GTE:
-				return sqlFieldName + " >= " + encodedAttribute(ctx, dtFieldName, values[0]);
+				return sqlFieldName + " >= " + encodedAttribute(ctx, dataFieldName, values[0]);
 			case LT:
-				return sqlFieldName + " < " + encodedAttribute(ctx, dtFieldName, values[0]);
+				return sqlFieldName + " < " + encodedAttribute(ctx, dataFieldName, values[0]);
 			case LTE:
-				return sqlFieldName + " <= " + encodedAttribute(ctx, dtFieldName, values[0]);
+				return sqlFieldName + " <= " + encodedAttribute(ctx, dataFieldName, values[0]);
 			case BETWEEN:
-				return toSqlBetweenCase(ctx, dtFieldName, values);
+				return toSqlBetweenCase(ctx, dataFieldName, values);
 			case STARTS_WITH:
-				return sqlFieldName + " like  " + encodedAttribute(ctx, dtFieldName, values[0]) + sqlDialect.getConcatOperator() + "'%%'";
+				return sqlFieldName + " like  " + encodedAttribute(ctx, dataFieldName, values[0]) + sqlDialect.getConcatOperator() + "'%%'";
 			case IN:
 				return Stream.of(values)
 						.map(SqlCriteriaEncoder::prepareSqlInlineArgument)
@@ -107,16 +107,16 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 		}
 	}
 
-	private String encodedAttribute(final CriteriaCtx ctx, final DtFieldName dtFieldName, final Serializable value) {
+	private String encodedAttribute(final CriteriaCtx ctx, final DataFieldName dataFieldName, final Serializable value) {
 		if (bindedParameters) {
-			return "#" + ctx.attributeName(dtFieldName, value) + "#";
+			return "#" + ctx.attributeName(dataFieldName, value) + "#";
 		} else {
 			return prepareSqlInlineArgument(value);
 		}
 	}
 
-	private String toSqlBetweenCase(final CriteriaCtx ctx, final DtFieldName dtFieldName, final Serializable[] values) {
-		final String sqlFieldName = StringUtil.camelToConstCase(dtFieldName.name());
+	private String toSqlBetweenCase(final CriteriaCtx ctx, final DataFieldName dataFieldName, final Serializable[] values) {
+		final String sqlFieldName = StringUtil.camelToConstCase(dataFieldName.name());
 
 		final CriterionLimit min = CriterionLimit.class.cast(values[0]);
 		final CriterionLimit max = CriterionLimit.class.cast(values[1]);
@@ -124,7 +124,7 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 		if (min.isDefined()) {
 			sql.append(sqlFieldName)
 					.append(min.isIncluded() ? " >= " : " > ")
-					.append(encodedAttribute(ctx, dtFieldName, (Serializable) min.getValue()));
+					.append(encodedAttribute(ctx, dataFieldName, (Serializable) min.getValue()));
 		}
 		if (max.isDefined()) {
 			if (sql.length() > 0) {
@@ -132,7 +132,7 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 			}
 			sql.append(sqlFieldName)
 					.append(max.isIncluded() ? " <= " : " < ")
-					.append(encodedAttribute(ctx, dtFieldName, (Serializable) max.getValue()));
+					.append(encodedAttribute(ctx, dataFieldName, (Serializable) max.getValue()));
 		}
 		return "( " + sql + " )";
 	}

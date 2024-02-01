@@ -25,7 +25,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
@@ -62,7 +62,7 @@ public final class ValidationUserException extends VUserException {
 	 * @param dto object
 	 * @param fieldName field
 	 */
-	public ValidationUserException(final LocaleMessageText messageText, final DtObject dto, final DtFieldName fieldName) {
+	public ValidationUserException(final LocaleMessageText messageText, final DtObject dto, final DataFieldName fieldName) {
 		this(messageText, fieldName.name(), dto);
 	}
 

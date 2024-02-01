@@ -24,7 +24,7 @@ import io.vertigo.datafactory.collections.data.domain.SmartCar;
 import io.vertigo.datafactory.collections.data.domain.SmartItem;
 import io.vertigo.datafactory.collections.data.domain.SmartItemCd;
 import io.vertigo.datafactory.collections.data.domain.SmartItemIhm;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 
 public final class DtDefinitions implements Iterable<Class<?>> {
 	@Override
@@ -37,7 +37,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		}).iterator();
 	}
 
-	public enum Fields implements DtFieldName<SmartItem> {
+	public enum Fields implements DataFieldName<SmartItem> {
 		id, label
 	}
 }

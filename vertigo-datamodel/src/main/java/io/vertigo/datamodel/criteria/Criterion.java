@@ -28,7 +28,7 @@ import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.util.DateUtil;
 import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
@@ -38,11 +38,11 @@ final class Criterion<D extends DtObject> extends Criteria<D> {
 	private static final String DATE_PATTERN = "dd/MM/yyyy";
 	private static final String INSTANT_PATTERN = "dd/MM/yyyy HH:mm:ss";
 
-	private final DtFieldName<D> dtFieldName;
+	private final DataFieldName<D> dataFieldName;
 	private final CriterionOperator criterionOperator;
 	private final Serializable[] values;
 
-	Criterion(final DtFieldName<D> dtFieldName, final CriterionOperator criterionOperator, final Serializable... values) {
+	Criterion(final DataFieldName<D> dtFieldName, final CriterionOperator criterionOperator, final Serializable... values) {
 		Assertion.check()
 				.isNotNull(dtFieldName)
 				.isNotNull(criterionOperator)
@@ -53,13 +53,13 @@ final class Criterion<D extends DtObject> extends Criteria<D> {
 								criterionOperator));
 		//---
 		this.criterionOperator = criterionOperator;
-		this.dtFieldName = dtFieldName;
+		this.dataFieldName = dtFieldName;
 		this.values = values;
 	}
 
 	@Override
 	String toString(final CriteriaCtx ctx, final CriteriaEncoder criteriaEncoder) {
-		return criteriaEncoder.encodeOperator(ctx, criterionOperator, dtFieldName, values);
+		return criteriaEncoder.encodeOperator(ctx, criterionOperator, dataFieldName, values);
 	}
 
 	@Override
@@ -69,7 +69,7 @@ final class Criterion<D extends DtObject> extends Criteria<D> {
 
 	private boolean test(final D entity) {
 		final DataDefinition entitytDefinition = DtObjectUtil.findDtDefinition(entity.getClass());
-		final DtField dtField = entitytDefinition.getField(dtFieldName);
+		final DtField dtField = entitytDefinition.getField(dataFieldName);
 
 		final Object value = dtField.getDataAccessor().getValue(entity);
 		final Serializable[] criterionValues = new Serializable[values.length];

@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 
 /**
  * Context of a criteria (Handles values of parameters for filtering)
@@ -32,17 +32,17 @@ public final class CriteriaCtx {
 	private int i;
 	private final Map<String, String> fieldValueNames = new HashMap<>();
 	private final Map<String, Object> attributeValues = new HashMap<>();
-	private final Map<String, DtFieldName> attributeNames = new HashMap<>();
+	private final Map<String, DataFieldName> attributeNames = new HashMap<>();
 
-	public String attributeName(final DtFieldName dtFieldName, final Object value) {
-		final String attributeValueName = dtFieldName.name() + value;
+	public String attributeName(final DataFieldName dataFieldName, final Object value) {
+		final String attributeValueName = dataFieldName.name() + value;
 		String attributeName = fieldValueNames.get(attributeValueName);
 		if (attributeName == null) {
-			attributeName = dtFieldName.name() + i;
+			attributeName = dataFieldName.name() + i;
 			i++;
 			fieldValueNames.put(attributeValueName, attributeName);
 			attributeValues.put(attributeName, value);
-			attributeNames.put(attributeName, dtFieldName);
+			attributeNames.put(attributeName, dataFieldName);
 		}
 		return attributeName;
 	}
@@ -60,7 +60,7 @@ public final class CriteriaCtx {
 	 * @param attributeName the name of the attribute
 	 * @return the corresponding DtFieldName
 	 */
-	public DtFieldName getDtFieldName(final String attributeName) {
+	public DataFieldName getDtFieldName(final String attributeName) {
 		return attributeNames.get(attributeName);
 	}
 

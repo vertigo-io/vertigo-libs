@@ -28,7 +28,7 @@ import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
@@ -97,7 +97,7 @@ public interface SearchServicesPlugin extends Plugin {
 	 * @param maxElements Nb Max elements to return
 	 * @return Map des versions par UID
 	 */
-	<K extends KeyConcept> Map<UID<K>, Serializable> loadVersions(final SearchIndexDefinition indexDefinitions, final DtFieldName<K> versionFieldName, final ListFilter listFilter, final int maxElements);
+	<K extends KeyConcept> Map<UID<K>, Serializable> loadVersions(final SearchIndexDefinition indexDefinitions, final DataFieldName<K> versionFieldName, final ListFilter listFilter, final int maxElements);
 
 	/**
 	 * @param indexDefinition  Type de l'index

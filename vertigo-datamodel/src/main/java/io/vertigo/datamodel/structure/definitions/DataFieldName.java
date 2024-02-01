@@ -26,7 +26,7 @@ import io.vertigo.datamodel.structure.model.DtObject;
  * @param <D> the dtobject associated to this dtField
  * @author mlaroche
  */
-public interface DtFieldName<D extends DtObject> extends Serializable {
+public interface DataFieldName<D extends DtObject> extends Serializable {
 
 	/** @return nom du champ (const case) */
 	String name();

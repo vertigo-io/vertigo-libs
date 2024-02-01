@@ -42,15 +42,15 @@ import io.vertigo.datamodel.criteria.data.DtDefinitions;
 import io.vertigo.datamodel.criteria.data.movies.Movie2;
 import io.vertigo.datamodel.criteria.data.movies.Movie2DataBase;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 
 /**
  *
  */
 public final class PredicateCriteriaTest {
 
-	private static final DtFieldName<Movie2> year = () -> "year";
-	private static final DtFieldName<Movie2> title = () -> "title";
+	private static final DataFieldName<Movie2> year = () -> "year";
+	private static final DataFieldName<Movie2> title = () -> "title";
 	private AutoCloseableNode node;
 
 	@BeforeEach
