@@ -72,6 +72,7 @@ public final class DtObjectUtil {
 
 	/**
 	 * Returns the 'id' of a 'DtObject'.
+	 *
 	 * @param entity the entity
 	 * @return the id of the specified 'DtObject'
 	 */
@@ -88,14 +89,13 @@ public final class DtObjectUtil {
 	 * On récupère l'URI d'un DTO référencé par une association.
 	 * Il est nécessaire que l'association soit simple.
 	 * Si l'association est multiple on ne récupère pas une UID mais une DtListURI, c'est à dire le pointeur vers une liste.
+	 * On recherche une UID correspondant à une association.
+	 * Exemple : Une Commande possède un bénéficiaire.
+	 * Dans cetexemple on recherche l'UID du bénéficiaire à partir de l'objet commande.
 	 *
-	 *  On recherche une UID correspondant à une association.
-	 *  Exemple : Une Commande possède un bénéficiaire.
-	 *  Dans cetexemple on recherche l'UID du bénéficiaire à partir de l'objet commande.
 	 * @param <E>
-	
 	 * @param associationDefinitionName Nom de la définition d'une association
-	 * @param dto  Object
+	 * @param dto Object
 	 * @param dtoTargetClass Class of entity of this association
 	 * @return dto du DTO relié via l'association au dto passé en paramètre (Nullable)
 	 */
@@ -122,6 +122,7 @@ public final class DtObjectUtil {
 
 	/**
 	 * Récupération d'une UID de Collection à partir d'un dto
+	 *
 	 * @param entity the entity
 	 * @param associationDefinitionName Nom de l'association
 	 * @param roleName Nom du role
@@ -139,6 +140,7 @@ public final class DtObjectUtil {
 
 	/**
 	 * Récupération d'une UID de Collection à partir d'un dto
+	 *
 	 * @param entity the entity
 	 * @param associationDefinitionName Nom de l'association
 	 * @param roleName Nom du role
@@ -156,6 +158,7 @@ public final class DtObjectUtil {
 
 	/**
 	 * Creates an UID of entity from an existing fragment.
+	 *
 	 * @param fragment fragment
 	 * @return related entity UID
 	 */
@@ -171,6 +174,7 @@ public final class DtObjectUtil {
 
 	/**
 	 * Représentation sous forme text d'un dtObject.
+	 *
 	 * @param dto dtObject
 	 * @return Représentation sous forme text du dtObject.
 	 */
@@ -186,6 +190,7 @@ public final class DtObjectUtil {
 
 	/**
 	 * Finds the definition to which the specified 'DtObject' is mapped.
+	 *
 	 * @param dto DtObject
 	 * @return the id
 	 */
@@ -197,7 +202,8 @@ public final class DtObjectUtil {
 
 	/**
 	 * Finds the definition from a type of 'DtObject'
-	 * @param dtObjectClass  the type of the 'DtObject'
+	 *
+	 * @param dtObjectClass the type of the 'DtObject'
 	 * @return the id
 	 */
 	public static DtDefinition findDtDefinition(final Class<? extends DtObject> dtObjectClass) {
@@ -209,18 +215,20 @@ public final class DtObjectUtil {
 
 	/**
 	 * Finds the definition from a type of 'DtObject'
-	 * @param dtObjectClassName  the name of the 'DtObject'
+	 *
+	 * @param dtObjectClassName the name of the 'DtObject'
 	 * @return the id
 	 */
 	public static DtDefinition findDtDefinition(final String className) {
 		Assertion.check().isNotNull(className);
 		//-----
-		final String simpleName = className.substring(className.lastIndexOf('.') + 1);
+		final String simpleName = DtDefinition.PREFIX + className.substring(className.lastIndexOf('.') + 1);
 		return Node.getNode().getDefinitionSpace().resolve(simpleName, DtDefinition.class);
 	}
 
 	/**
 	 * Compare values.
+	 *
 	 * @param sortDesc sort order
 	 * @param dtoObject1 value 1
 	 * @param dtoObject2 value 2
@@ -228,13 +236,15 @@ public final class DtObjectUtil {
 	 * @return compare value1 to value2
 	 */
 	public static int compareFieldValues(final DtObject dtoObject1, final DtObject dtoObject2, final DtField dtField, final boolean sortDesc) {
-		Assertion.check().isTrue(DtObjectUtil.findDtDefinition(dtoObject1).equals(DtObjectUtil.findDtDefinition(dtoObject2)), "Only Dtobjects of the same type can be compared, you try to compare object types '{0}' and '{1}'", dtoObject1.getClass(), dtoObject2.getClass());
+		Assertion.check().isTrue(DtObjectUtil.findDtDefinition(dtoObject1).equals(DtObjectUtil.findDtDefinition(dtoObject2)),
+				"Only Dtobjects of the same type can be compared, you try to compare object types '{0}' and '{1}'", dtoObject1.getClass(), dtoObject2.getClass());
 		final DataAccessor dataAccessor = dtField.getDataAccessor();
 		return compareFieldValues(dataAccessor.getValue(dtoObject1), dataAccessor.getValue(dtoObject2), sortDesc);
 	}
 
 	/**
 	 * Compare values.
+	 *
 	 * @param sortDesc sort order
 	 * @param fieldValue1 value 1
 	 * @param fieldValue2 value 2
