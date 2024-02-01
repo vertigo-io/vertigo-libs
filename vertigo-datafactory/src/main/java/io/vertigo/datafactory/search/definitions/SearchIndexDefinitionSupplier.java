@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 
 public final class SearchIndexDefinitionSupplier implements DefinitionSupplier {
@@ -61,8 +61,8 @@ public final class SearchIndexDefinitionSupplier implements DefinitionSupplier {
 
 	@Override
 	public SearchIndexDefinition get(final DefinitionSpace definitionSpace) {
-		final DtDefinition keyConceptDtDefinition = definitionSpace.resolve(myKeyConceptDtDefinitionName, DtDefinition.class);
-		final DtDefinition indexDtDefinition = definitionSpace.resolve(myIndexDtDefinitionName, DtDefinition.class);
+		final DataDefinition keyConceptDtDefinition = definitionSpace.resolve(myKeyConceptDtDefinitionName, DataDefinition.class);
+		final DataDefinition indexDtDefinition = definitionSpace.resolve(myIndexDtDefinitionName, DataDefinition.class);
 
 		final Map<DtField, List<DtField>> copyToFields = new HashMap<>(); //(map fromField : [toField, toField, ...])
 		for (final Map.Entry<String, String[]> indexCopyTo : myIndexCopyTo.entrySet()) {

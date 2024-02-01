@@ -28,7 +28,7 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.Entity;
@@ -59,7 +59,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 
 	private final String storeDtDefinitionName;
 	private DtField storeIdField;
-	private DtDefinition storeDtDefinition;
+	private DataDefinition storeDtDefinition;
 
 	/**
 	 * Constructor.
@@ -80,7 +80,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 
 	@Override
 	public void start() {
-		storeDtDefinition = Node.getNode().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
+		storeDtDefinition = Node.getNode().getDefinitionSpace().resolve(storeDtDefinitionName, DataDefinition.class);
 		storeIdField = storeDtDefinition.getIdField().get();
 	}
 

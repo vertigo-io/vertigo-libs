@@ -41,7 +41,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
@@ -112,9 +112,9 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 			return false;
 		}
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
-		final Optional<Authorization> authorization = userPermissions.getEntityAuthorizations(dtDefinition).stream()
+		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entity);
+		final SecuredEntity securedEntity = findSecuredEntity(dataDefinition);
+		final Optional<Authorization> authorization = userPermissions.getEntityAuthorizations(dataDefinition).stream()
 				.filter(permission -> permission.getOperation().orElse("").equals(operationName.name())
 						|| permission.getOverrides().contains(operationName.name()))
 				.findFirst();
@@ -137,7 +137,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		Assertion.check().isNotNull(entityClass)
 				.isNotNull(operation);
 		//---
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
+		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entityClass);
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
 		if (userPermissionsOpt.isEmpty()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
@@ -145,9 +145,9 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		}
 
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
-		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
+		final SecuredEntity securedEntity = findSecuredEntity(dataDefinition);
 
-		final List<Criteria<E>> criterions = userPermissions.getEntityAuthorizations(dtDefinition).stream()
+		final List<Criteria<E>> criterions = userPermissions.getEntityAuthorizations(dataDefinition).stream()
 				.filter(permission -> permission.getOperation().get().equals(operation.name())
 						|| permission.getOverrides().contains(operation.name()))
 				.flatMap(permission -> permission.getRules().stream())
@@ -188,15 +188,15 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 			return ""; //Attention : pas de *:*
 		}
 
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
-		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
+		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entityClass);
+		final SecuredEntity securedEntity = findSecuredEntity(dataDefinition);
 
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
 		final SearchSecurityRuleTranslator securityRuleTranslator = new SearchSecurityRuleTranslator()
 				.on(securedEntity)
 				.withSecurityKeys(userPermissions.getSecurityKeys());
 
-		final List<Authorization> permissions = userPermissions.getEntityAuthorizations(dtDefinition).stream()
+		final List<Authorization> permissions = userPermissions.getEntityAuthorizations(dataDefinition).stream()
 				.filter(permission -> permission.getOperation().get().equals(operationName.name())
 						|| permission.getOverrides().contains(operationName.name()))
 				.toList();
@@ -233,10 +233,10 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 			return Collections.emptySet();
 		}
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
+		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entity);
+		final SecuredEntity securedEntity = findSecuredEntity(dataDefinition);
 
-		return userPermissions.getEntityAuthorizations(dtDefinition).stream()
+		return userPermissions.getEntityAuthorizations(dataDefinition).stream()
 				.filter(permission -> permission.getRules().stream()
 						.anyMatch(rule -> new CriteriaSecurityRuleTranslator<E>()
 								.on(securedEntity)
@@ -250,13 +250,13 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 
 	/**
 	 * Finds the SecuredEntity from a type of 'dtDefinition'
-	 * @param dtDefinition the 'dtDefinition'
+	 * @param dataDefinition the 'dtDefinition'
 	 * @return SecuredEntity
 	 */
-	public static SecuredEntity findSecuredEntity(final DtDefinition dtDefinition) {
-		Assertion.check().isNotNull(dtDefinition);
+	public static SecuredEntity findSecuredEntity(final DataDefinition dataDefinition) {
+		Assertion.check().isNotNull(dataDefinition);
 		//---
-		final String name = SecuredEntity.PREFIX + dtDefinition.getName();
+		final String name = SecuredEntity.PREFIX + dataDefinition.getName();
 		return Node.getNode().getDefinitionSpace().resolve(name, SecuredEntity.class);
 	}
 

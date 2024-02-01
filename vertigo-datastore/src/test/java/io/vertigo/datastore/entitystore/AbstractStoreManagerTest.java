@@ -44,7 +44,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.UID;
@@ -73,8 +73,8 @@ public abstract class AbstractStoreManagerTest {
 	@Inject
 	protected TaskManager taskManager;
 
-	protected DtDefinition dtDefinitionFamille;
-	private DtDefinition dtDefinitionCar;
+	protected DataDefinition dtDefinitionFamille;
+	private DataDefinition dtDefinitionCar;
 
 	private CarDataBase carDataBase;
 

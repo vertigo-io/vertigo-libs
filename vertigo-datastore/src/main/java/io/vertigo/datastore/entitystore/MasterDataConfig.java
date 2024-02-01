@@ -19,7 +19,7 @@ package io.vertigo.datastore.entitystore;
 
 import java.util.function.Predicate;
 
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datastore.entitystore.definitions.MasterDataDefinition;
@@ -39,17 +39,17 @@ public interface MasterDataConfig {
 
 	/**
 	 * Indique s'il existe une MasterDataList pour ce type d'objet.
-	 * @param dtDefinition  Définition de DT
+	 * @param dataDefinition  Définition de DT
 	 * @return True, s'il existe une MasterDataList
 	 */
-	boolean containsMasterData(final DtDefinition dtDefinition);
+	boolean containsMasterData(final DataDefinition dataDefinition);
 
 	/**
 	 * Renvoi l'URI à partir d'une définition.
-	 * @param dtDefinition DId de la Définition de DT
+	 * @param dataDefinition DId de la Définition de DT
 	 * @return URI de retour (notNUll)
 	 */
-	DtListURIForMasterData getDtListURIForMasterData(final DtDefinition dtDefinition);
+	DtListURIForMasterData getDtListURIForMasterData(final DataDefinition dataDefinition);
 
 	/**
 	 * @param uri URI de la liste

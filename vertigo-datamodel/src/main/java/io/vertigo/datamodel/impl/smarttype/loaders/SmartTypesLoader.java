@@ -43,7 +43,7 @@ import io.vertigo.datamodel.smarttype.annotations.Formatter;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition.Scope;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.definitions.Properties;
 import io.vertigo.datamodel.structure.definitions.PropertiesBuilder;
@@ -92,7 +92,7 @@ public class SmartTypesLoader implements Loader {
 			}
 			if (DtObject.class.isAssignableFrom(targetJavaClass)) {
 				scope = Scope.DATA_TYPE;
-				Assertion.check().isTrue(field.getName().equals(DtDefinition.PREFIX + targetJavaClass.getSimpleName()), "The name of the SmartType {0} is not consistent with the class {1}",
+				Assertion.check().isTrue(field.getName().equals(DataDefinition.PREFIX + targetJavaClass.getSimpleName()), "The name of the SmartType {0} is not consistent with the class {1}",
 						field.getName(), targetJavaClass);
 			} else {
 				Assertion.check().isTrue(adapters.length > 0,

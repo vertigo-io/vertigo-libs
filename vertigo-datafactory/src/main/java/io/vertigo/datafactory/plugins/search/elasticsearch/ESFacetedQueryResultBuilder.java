@@ -49,7 +49,7 @@ import io.vertigo.datafactory.collections.model.Facet;
 import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -67,7 +67,7 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 	private static final String EMPTY_TERM = "_empty_";
 
 	private final ESDocumentCodec esDocumentCodec;
-	private final DtDefinition indexDtDefinition;
+	private final DataDefinition indexDtDefinition;
 	private final SearchResponse queryResponse;
 	private final SearchQuery searchQuery;
 
@@ -80,7 +80,7 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 	 */
 	public ESFacetedQueryResultBuilder(
 			final ESDocumentCodec esDocumentCodec,
-			final DtDefinition indexDtDefinition,
+			final DataDefinition indexDtDefinition,
 			final SearchResponse queryResponse,
 			final SearchQuery searchQuery) {
 		Assertion.check()
@@ -183,7 +183,7 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 		resultCluster.put(facetValue, facetDtc);
 	}
 
-	private static Map<DtField, String> createHighlight(final SearchHit searchHit, final DtDefinition resultDtDefinition) {
+	private static Map<DtField, String> createHighlight(final SearchHit searchHit, final DataDefinition resultDtDefinition) {
 		final Map<DtField, String> highlights = new HashMap<>();
 		final Map<String, HighlightField> highlightsMap = searchHit.getHighlightFields();
 

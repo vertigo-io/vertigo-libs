@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 
 /**
  * URI d'une DTC.
@@ -35,7 +35,7 @@ public abstract class DtListURI implements Serializable {
 	 */
 	private static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
 	private static final long serialVersionUID = -1L;
-	private final DefinitionId<DtDefinition> dtDefinitionId;
+	private final DefinitionId<DataDefinition> dtDefinitionId;
 	protected static final char D2A_SEPARATOR = '@';
 
 	/**
@@ -45,16 +45,16 @@ public abstract class DtListURI implements Serializable {
 
 	/**
 	 * Constructor.
-	 * @param dtDefinition Definition de la ressource
+	 * @param dataDefinition Definition de la ressource
 	 */
-	public DtListURI(final DtDefinition dtDefinition) {
-		dtDefinitionId = dtDefinition.id();
+	public DtListURI(final DataDefinition dataDefinition) {
+		dtDefinitionId = dataDefinition.id();
 	}
 
 	/**
 	 * @return Définition de la ressource.
 	 */
-	public DtDefinition getDtDefinition() {
+	public DataDefinition getDtDefinition() {
 		return dtDefinitionId.get();
 	}
 

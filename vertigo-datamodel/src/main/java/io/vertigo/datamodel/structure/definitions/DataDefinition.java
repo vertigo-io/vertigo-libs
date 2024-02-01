@@ -35,15 +35,15 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
  *
  * @author pchretien
  */
-@DefinitionPrefix(DtDefinition.PREFIX)
-public final class DtDefinition extends AbstractDefinition<DtDefinition> {
+@DefinitionPrefix(DataDefinition.PREFIX)
+public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 	public static final String PREFIX = "Dt";
 	/** the dataSpace must match this pattern. */
 	public static final Pattern REGEX_DATA_SPACE = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
 	public static final String DEFAULT_DATA_SPACE = "main";
 
 	/** if the definition is a fragment. */
-	private final Optional<DefinitionId<DtDefinition>> fragmentOpt;
+	private final Optional<DefinitionId<DataDefinition>> fragmentOpt;
 
 	/** name of the package. */
 	private final String packageName;
@@ -69,9 +69,9 @@ public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 	/**
 	 * Constructor.
 	 */
-	DtDefinition(
+	DataDefinition(
 			final String name,
-			final Optional<DefinitionId<DtDefinition>> fragment,
+			final Optional<DefinitionId<DataDefinition>> fragment,
 			final String packageName,
 			final DtStereotype stereotype,
 			final List<DtField> dtFields,
@@ -140,8 +140,8 @@ public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 	 * @param name the name of the dtDefinition
 	 * @return DtDefinitionBuilder
 	 */
-	public static DtDefinitionBuilder builder(final String name) {
-		return new DtDefinitionBuilder(name);
+	public static DataDefinitionBuilder builder(final String name) {
+		return new DataDefinitionBuilder(name);
 	}
 
 	private static void registerDtField(final MapBuilder<String, DtField> mappedFieldsBuilder, final ListBuilder<DtField> fieldsBuilder, final DtField dtField) {
@@ -152,7 +152,7 @@ public final class DtDefinition extends AbstractDefinition<DtDefinition> {
 		mappedFieldsBuilder.putCheckKeyNotExists(dtField.name(), dtField);
 	}
 
-	public Optional<DtDefinition> getFragment() {
+	public Optional<DataDefinition> getFragment() {
 		return fragmentOpt.map(DefinitionId::get);
 	}
 

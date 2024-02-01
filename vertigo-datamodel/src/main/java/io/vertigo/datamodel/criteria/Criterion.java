@@ -26,7 +26,7 @@ import java.util.function.Predicate;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.util.DateUtil;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -68,7 +68,7 @@ final class Criterion<D extends DtObject> extends Criteria<D> {
 	}
 
 	private boolean test(final D entity) {
-		final DtDefinition entitytDefinition = DtObjectUtil.findDtDefinition(entity.getClass());
+		final DataDefinition entitytDefinition = DtObjectUtil.findDtDefinition(entity.getClass());
 		final DtField dtField = entitytDefinition.getField(dtFieldName);
 
 		final Object value = dtField.getDataAccessor().getValue(entity);

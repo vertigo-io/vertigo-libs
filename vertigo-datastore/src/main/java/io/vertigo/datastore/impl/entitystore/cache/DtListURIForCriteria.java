@@ -27,7 +27,7 @@ import io.vertigo.datamodel.criteria.CriteriaEncoder;
 import io.vertigo.datamodel.criteria.CriteriaLogicalOperator;
 import io.vertigo.datamodel.criteria.CriterionOperator;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtListState;
@@ -55,12 +55,12 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 
 	/**
 	 * Constructor.
-	 *  @param dtDefinition Id de la Définition de DT
+	 *  @param dataDefinition Id de la Définition de DT
 	 * @param criteria critere
 	 * @param dtListState Etat de la liste : Sort, Top, Offset
 	 */
-	DtListURIForCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
-		super(dtDefinition);
+	DtListURIForCriteria(final DataDefinition dataDefinition, final Criteria<E> criteria, final DtListState dtListState) {
+		super(dataDefinition);
 		Assertion.check()
 				.isNotNull(criteria)
 				.isNotNull(dtListState);
@@ -94,10 +94,10 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	public static <E extends Entity> Criteria<E> createCriteria(final DtObject dtoCriteria) {
 		Assertion.check().isNotNull(dtoCriteria);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtoCriteria);
+		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(dtoCriteria);
 
 		Criteria<E> criteria = Criterions.alwaysTrue();
-		for (final DtField field : dtDefinition.getFields()) {
+		for (final DtField field : dataDefinition.getFields()) {
 			final String fieldName = field.name();
 			if (field.getType() != DtField.FieldType.COMPUTED) {
 				final Object value = field.getDataAccessor().getValue(dtoCriteria);

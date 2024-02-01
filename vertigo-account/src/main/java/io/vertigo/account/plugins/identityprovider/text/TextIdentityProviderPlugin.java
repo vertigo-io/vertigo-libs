@@ -42,7 +42,7 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.util.FileUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.FormatterException;
 import io.vertigo.datamodel.structure.model.Entity;
@@ -186,7 +186,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		final DtDefinition userDtDefinition = Node.getNode().getDefinitionSpace().resolve(userIdentityEntity, DtDefinition.class);
+		final DataDefinition userDtDefinition = Node.getNode().getDefinitionSpace().resolve(userIdentityEntity, DataDefinition.class);
 		Assertion.check().isTrue(userDtDefinition.contains(userAuthField), "User definition ({0}) should contains the userAuthField ({1})", userIdentityEntity, userAuthField);
 
 		final URL realmURL = resourceManager.resolve(filePath);
@@ -199,7 +199,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		}
 	}
 
-	private void parseAndPopulateUserInfo(final String line, final DtDefinition userDtDefinition) {
+	private void parseAndPopulateUserInfo(final String line, final DataDefinition userDtDefinition) {
 		final Matcher matcher = filePattern.matcher(line);
 		if (!matcher.find()) {
 			throw new IllegalArgumentException("Can't parse textIdentity file , pattern can't match");
@@ -226,7 +226,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		idsToUsers.put(user.getUID().getId(), userInfo);
 	}
 
-	private void setTypedValue(final DtDefinition userDtDefinition, final Entity user, final String fieldName, final String valueStr) {
+	private void setTypedValue(final DataDefinition userDtDefinition, final Entity user, final String fieldName, final String valueStr) {
 		final DtField dtField = userDtDefinition.getField(fieldName);
 		final Serializable typedValue;
 		try {

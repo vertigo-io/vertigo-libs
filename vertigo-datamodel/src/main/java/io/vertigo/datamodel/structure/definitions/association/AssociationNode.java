@@ -19,7 +19,7 @@ package io.vertigo.datamodel.structure.definitions.association;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 
 /**
  * Noeud d'une association.
@@ -27,7 +27,7 @@ import io.vertigo.datamodel.structure.definitions.DtDefinition;
  * @author  jcassignol, pchretien
  */
 public final class AssociationNode {
-	private final DefinitionId<DtDefinition> dtDefinitionId;
+	private final DefinitionId<DataDefinition> dtDefinitionId;
 	private final boolean navigable;
 	private final String role;
 	private final String label;
@@ -36,7 +36,7 @@ public final class AssociationNode {
 
 	/**
 	 * Constructeur d'un noeud.
-	 * @param dtDefinition Définition de DT
+	 * @param dataDefinition Définition de DT
 	 * @param isNavigable Si le noeud est navigable (i.e. visible)
 	 * @param role Role
 	 * @param label Label
@@ -44,19 +44,19 @@ public final class AssociationNode {
 	 * @param isNotNull Si la cardinalité min est non null (au moins)
 	 */
 	public AssociationNode(
-			final DtDefinition dtDefinition,
+			final DataDefinition dataDefinition,
 			final boolean isNavigable,
 			final String role,
 			final String label,
 			final boolean isMultiple,
 			final boolean isNotNull) {
 		Assertion.check()
-				.isNotNull(dtDefinition)
+				.isNotNull(dataDefinition)
 				.isNotNull(label)
 				.isNotNull(role)
 				.isTrue(role.indexOf(' ') == -1, "Le role ne doit pas être un label : {0}", role);
 		//-----
-		dtDefinitionId = dtDefinition.id();
+		dtDefinitionId = dataDefinition.id();
 		this.role = role;
 		this.label = label;
 		navigable = isNavigable;
@@ -67,7 +67,7 @@ public final class AssociationNode {
 	/**
 	 * @return DT (classe de l'objet métier) associé au noeud
 	 */
-	public DtDefinition getDtDefinition() {
+	public DataDefinition getDtDefinition() {
 		return dtDefinitionId.get();
 	}
 

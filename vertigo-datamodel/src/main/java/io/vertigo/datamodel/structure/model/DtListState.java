@@ -20,7 +20,7 @@ package io.vertigo.datamodel.structure.model;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
@@ -44,8 +44,8 @@ public final class DtListState {
 	 * skipRows elements to skip (mandatory, 0 by default)
 	 */
 	public static DtListState defaultOf(final Class<? extends Entity> entityClass) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
-		return new DtListState(DEFAULT_MAX_ROWS, 0, dtDefinition.getSortField().map(DtField::name).orElse(null), false);
+		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entityClass);
+		return new DtListState(DEFAULT_MAX_ROWS, 0, dataDefinition.getSortField().map(DtField::name).orElse(null), false);
 	}
 
 	/**

@@ -25,7 +25,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.structure.definitions.DataAccessor;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.association.AssociationNNDefinition;
 import io.vertigo.datamodel.structure.definitions.association.AssociationSimpleDefinition;
@@ -50,24 +50,24 @@ public final class DtObjectUtil {
 	/**
 	 * Creates a new instance of 'DtObject' from a 'DtDefinition'.
 	 *
-	 * @param dtDefinition the definition to use for creation
+	 * @param dataDefinition the definition to use for creation
 	 * @return the new instance
 	 */
-	public static DtObject createDtObject(final DtDefinition dtDefinition) {
-		Assertion.check().isNotNull(dtDefinition);
+	public static DtObject createDtObject(final DataDefinition dataDefinition) {
+		Assertion.check().isNotNull(dataDefinition);
 		//-----
 		//La création des DtObject n'est pas sécurisée
-		return ClassUtil.newInstance(dtDefinition.getClassCanonicalName(), DtObject.class);
+		return ClassUtil.newInstance(dataDefinition.getClassCanonicalName(), DtObject.class);
 	}
 
 	/**
 	 * Creates a new entity from a 'DtDefinition'.
 	 *
-	 * @param dtDefinition the definition to use for creation
+	 * @param dataDefinition the definition to use for creation
 	 * @return the new instance
 	 */
-	public static Entity createEntity(final DtDefinition dtDefinition) {
-		return Entity.class.cast(createDtObject(dtDefinition));
+	public static Entity createEntity(final DataDefinition dataDefinition) {
+		return Entity.class.cast(createDtObject(dataDefinition));
 	}
 
 	/**
@@ -78,8 +78,8 @@ public final class DtObjectUtil {
 	public static Object getId(final Entity entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DtDefinition dtDefinition = findDtDefinition(entity);
-		final DtField idField = dtDefinition.getIdField().get();
+		final DataDefinition dataDefinition = findDtDefinition(entity);
+		final DtField idField = dataDefinition.getIdField().get();
 		return idField.getDataAccessor().getValue(entity);
 	}
 
@@ -107,7 +107,7 @@ public final class DtObjectUtil {
 		//-----
 		final AssociationSimpleDefinition associationSimpleDefinition = Node.getNode().getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
 		// 1. On recherche le nom du champ portant l'objet référencé (Exemple : personne)
-		final DtDefinition dtDefinition = associationSimpleDefinition.getPrimaryAssociationNode().getDtDefinition();
+		final DataDefinition dataDefinition = associationSimpleDefinition.getPrimaryAssociationNode().getDtDefinition();
 
 		// 2. On calcule le nom de la fk.
 		final DtField fkField = associationSimpleDefinition.getFKField();
@@ -117,7 +117,7 @@ public final class DtObjectUtil {
 		if (id == null) {
 			return null;
 		}
-		return UID.of(dtDefinition, id);
+		return UID.of(dataDefinition, id);
 	}
 
 	/**
@@ -162,8 +162,8 @@ public final class DtObjectUtil {
 	public static <E extends Entity, F extends Fragment<E>> UID<E> createEntityUID(final F fragment) {
 		Assertion.check().isNotNull(fragment);
 		//-----
-		final DtDefinition dtDefinition = findDtDefinition(fragment);
-		final DtDefinition entityDtDefinition = dtDefinition.getFragment().get();
+		final DataDefinition dataDefinition = findDtDefinition(fragment);
+		final DataDefinition entityDtDefinition = dataDefinition.getFragment().get();
 		final DtField idField = entityDtDefinition.getIdField().get();
 		final Object idValue = idField.getDataAccessor().getValue(fragment);
 		return UID.of(entityDtDefinition, idValue);
@@ -189,7 +189,7 @@ public final class DtObjectUtil {
 	 * @param dto DtObject
 	 * @return the id
 	 */
-	public static DtDefinition findDtDefinition(final DtObject dto) {
+	public static DataDefinition findDtDefinition(final DtObject dto) {
 		Assertion.check().isNotNull(dto);
 		//-----
 		return findDtDefinition(dto.getClass());
@@ -200,11 +200,11 @@ public final class DtObjectUtil {
 	 * @param dtObjectClass  the type of the 'DtObject'
 	 * @return the id
 	 */
-	public static DtDefinition findDtDefinition(final Class<? extends DtObject> dtObjectClass) {
+	public static DataDefinition findDtDefinition(final Class<? extends DtObject> dtObjectClass) {
 		Assertion.check().isNotNull(dtObjectClass);
 		//-----
-		final String name = DtDefinition.PREFIX + dtObjectClass.getSimpleName();
-		return Node.getNode().getDefinitionSpace().resolve(name, DtDefinition.class);
+		final String name = DataDefinition.PREFIX + dtObjectClass.getSimpleName();
+		return Node.getNode().getDefinitionSpace().resolve(name, DataDefinition.class);
 	}
 
 	/**
@@ -212,11 +212,11 @@ public final class DtObjectUtil {
 	 * @param dtObjectClassName  the name of the 'DtObject'
 	 * @return the id
 	 */
-	public static DtDefinition findDtDefinition(final String className) {
+	public static DataDefinition findDtDefinition(final String className) {
 		Assertion.check().isNotNull(className);
 		//-----
 		final String simpleName = className.substring(className.lastIndexOf('.') + 1);
-		return Node.getNode().getDefinitionSpace().resolve(simpleName, DtDefinition.class);
+		return Node.getNode().getDefinitionSpace().resolve(simpleName, DataDefinition.class);
 	}
 
 	/**

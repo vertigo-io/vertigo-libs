@@ -28,7 +28,7 @@ import java.util.Set;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtStereotype;
 
@@ -54,9 +54,9 @@ public final class SearchIndexDefinition extends AbstractDefinition<SearchIndexD
 	public static final String PREFIX = "Idx";
 
 	/** Structure des éléments indexés. */
-	private final DtDefinition indexDtDefinition;
+	private final DataDefinition indexDtDefinition;
 
-	private final DtDefinition keyConceptDtDefinition;
+	private final DataDefinition keyConceptDtDefinition;
 
 	private final Map<DtField, List<DtField>> indexCopyFromFieldsMap; //(map toField : [fromField, fromField, ...])
 	private final Map<DtField, List<DtField>> indexCopyToFieldsMap; //(map fromField : [toField, toField, ...])
@@ -75,8 +75,8 @@ public final class SearchIndexDefinition extends AbstractDefinition<SearchIndexD
 	 */
 	public SearchIndexDefinition(
 			final String name,
-			final DtDefinition keyConceptDtDefinition,
-			final DtDefinition indexDtDefinition,
+			final DataDefinition keyConceptDtDefinition,
+			final DataDefinition indexDtDefinition,
 			final Map<DtField, List<DtField>> indexCopyFromFieldsMap,
 			final String searchLoaderId) {
 		super(name);
@@ -108,7 +108,7 @@ public final class SearchIndexDefinition extends AbstractDefinition<SearchIndexD
 	 * Définition de l'objet représentant le contenu de l'index (indexé et résultat).
 	 * @return Définition des champs indexés.
 	 */
-	public DtDefinition getIndexDtDefinition() {
+	public DataDefinition getIndexDtDefinition() {
 		return indexDtDefinition;
 	}
 
@@ -117,7 +117,7 @@ public final class SearchIndexDefinition extends AbstractDefinition<SearchIndexD
 	 * Le keyConcept de l'index est surveillé pour rafraichir l'index.
 	 * @return Définition du keyConcept.
 	 */
-	public DtDefinition getKeyConceptDtDefinition() {
+	public DataDefinition getKeyConceptDtDefinition() {
 		return keyConceptDtDefinition;
 	}
 

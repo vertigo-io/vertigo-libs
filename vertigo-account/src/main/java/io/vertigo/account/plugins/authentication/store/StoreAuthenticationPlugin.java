@@ -31,7 +31,7 @@ import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -48,7 +48,7 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 	private final String userLoginField;
 	private final String userPasswordField;
 	private final String userTokenIdField;
-	private DtDefinition userCredentialDefinition;
+	private DataDefinition userCredentialDefinition;
 	private UsernamePasswordAuthenticationToken defaultUserTrustedCredential;
 
 	/**
@@ -122,7 +122,7 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		userCredentialDefinition = Node.getNode().getDefinitionSpace().resolve(userCredentialEntity, DtDefinition.class);
+		userCredentialDefinition = Node.getNode().getDefinitionSpace().resolve(userCredentialEntity, DataDefinition.class);
 		defaultUserTrustedCredential = new UsernamePasswordAuthenticationToken("defaultLogin", "defaultPassword");
 	}
 

@@ -62,7 +62,7 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField.FieldType;
 import io.vertigo.datamodel.structure.definitions.FormatterException;
 import io.vertigo.datamodel.structure.model.DtList;
@@ -260,7 +260,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			if (paramType instanceof ParameterizedType
 					&& uidJsonValue != null && uidJsonValue.indexOf('@') == -1) { //Temporaly we accecpt two UID patterns : key only or urn
 				final Class<Entity> entityClass = (Class<Entity>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that UID has one parameterized type
-				final DtDefinition entityDefinition = DtObjectUtil.findDtDefinition(entityClass);
+				final DataDefinition entityDefinition = DtObjectUtil.findDtDefinition(entityClass);
 				Object entityId;
 				try {
 					entityId = smartTypeManager.stringToValue(entityDefinition.getIdField().get().smartTypeDefinition(), uidJsonValue);
@@ -278,10 +278,10 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		/** {@inheritDoc} */
 		@Override
 		public JsonElement serialize(final D src, final Type typeOfSrc, final JsonSerializationContext context) {
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(src.getClass());
+			final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(src.getClass());
 			final JsonObject jsonObject = new JsonObject();
 
-			dtDefinition.getFields()
+			dataDefinition.getFields()
 					.stream()
 					.filter(dtField -> dtField.getType() != FieldType.COMPUTED)// we don't serialize computed fields
 					.forEach(field -> jsonObject.add(field.name(), context.serialize(field.getDataAccessor().getValue(src))));
@@ -302,11 +302,11 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 
 		@Override
 		public D deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition((Class<D>) typeOfT);
-			final D dtObject = (D) DtObjectUtil.createDtObject(dtDefinition);
+			final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition((Class<D>) typeOfT);
+			final D dtObject = (D) DtObjectUtil.createDtObject(dataDefinition);
 			final JsonObject jsonObject = json.getAsJsonObject();
 
-			dtDefinition.getFields()
+			dataDefinition.getFields()
 					.stream()
 					.filter(dtField -> dtField.getType() != FieldType.COMPUTED)// we don't deserialize computed fields
 					.forEach(field -> {
@@ -324,7 +324,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 					.forEach(tuple -> tuple.val2().set(context.deserialize(jsonObject.get(tuple.val2().getRole()), ClassUtil.getGeneric(tuple.val1()))));
 
 			// case of the fk we need to handle after because it's the primary information
-			dtDefinition.getFields()
+			dataDefinition.getFields()
 					.stream()
 					.filter(field -> field.getType() == FieldType.FOREIGN_KEY)
 					.forEach(field -> field.getDataAccessor()

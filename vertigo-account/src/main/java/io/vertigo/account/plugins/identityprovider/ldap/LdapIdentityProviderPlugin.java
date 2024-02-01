@@ -50,7 +50,7 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.FormatterException;
 import io.vertigo.datamodel.structure.model.Entity;
@@ -130,7 +130,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		final DtDefinition userDtDefinition = Node.getNode().getDefinitionSpace().resolve(userIdentityEntity, DtDefinition.class);
+		final DataDefinition userDtDefinition = Node.getNode().getDefinitionSpace().resolve(userIdentityEntity, DataDefinition.class);
 		mapperHelper = new AccountMapperHelper(userDtDefinition, ldapUserAttributeMappingStr)
 				.withReservedDestField(PHOTO_RESERVED_FIELD)
 				.parseAttributeMapping();

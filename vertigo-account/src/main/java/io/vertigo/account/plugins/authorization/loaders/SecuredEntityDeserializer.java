@@ -43,7 +43,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 
 /**
@@ -60,7 +60,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 	@Override
 	public SecuredEntity deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 		final JsonObject jsonSecuredEntity = json.getAsJsonObject();
-		final DtDefinition entityDefinition = findDtDefinition(jsonSecuredEntity.get("entity").getAsString());
+		final DataDefinition entityDefinition = findDtDefinition(jsonSecuredEntity.get("entity").getAsString());
 		//----
 		asserUnsupportedAttributes("SecuredEntity " + entityDefinition.getClassSimpleName(), jsonSecuredEntity, SECURED_ENTITY_SUPPORTED_ATTRIBUTES);
 		//----
@@ -86,7 +86,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 	}
 
 	private static Authorization deserializeOperations(
-			final DtDefinition entityDefinition,
+			final DataDefinition entityDefinition,
 			final JsonObject operation,
 			final JsonDeserializationContext context,
 			final Map<String, Authorization> permissionPerOperations) {
@@ -126,7 +126,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		Assertion.check().isTrue(unsupportedAttributes.isEmpty(), "Json declaration of {0} can't support some attribut(s) : {1}. You may use one of {2}", objectName, unsupportedAttributes, supportedAttributes);
 	}
 
-	private static Set<Authorization> resolveAuthorizations(final Set<String> authorizationNames, final Map<String, Authorization> permissionPerOperations, final DtDefinition entityDefinition) {
+	private static Set<Authorization> resolveAuthorizations(final Set<String> authorizationNames, final Map<String, Authorization> permissionPerOperations, final DataDefinition entityDefinition) {
 		final Set<Authorization> authorizations;
 		if (authorizationNames == null) {
 			authorizations = Collections.emptySet();
@@ -138,7 +138,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		return authorizations;
 	}
 
-	private static Authorization resolvePermission(final String operationName, final Map<String, Authorization> permissionPerOperations, final DtDefinition entityDefinition) {
+	private static Authorization resolvePermission(final String operationName, final Map<String, Authorization> permissionPerOperations, final DataDefinition entityDefinition) {
 		Assertion.check().isTrue(permissionPerOperations.containsKey(operationName),
 				"Operation {0} not declared on {1} (may check declaration order)", operationName, entityDefinition.getName());
 		//-----
@@ -160,7 +160,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 	}
 
 	private static SecurityDimension deserializeSecurityDimensions(
-			final DtDefinition entityDefinition,
+			final DataDefinition entityDefinition,
 			final JsonObject advancedDimension,
 			final JsonDeserializationContext context) {
 		final String name = advancedDimension.get("name").getAsString();
@@ -178,7 +178,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		return new KnownParameterizedType(rawClass, typeArguments);
 	}
 
-	private static DtField deserializeDtField(final DtDefinition entityDefinition, final String fieldName) {
+	private static DtField deserializeDtField(final DataDefinition entityDefinition, final String fieldName) {
 		return entityDefinition.getField(fieldName);
 	}
 
@@ -192,8 +192,8 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		return context.deserialize(jsonElement, createParameterizedType(List.class, elementClass));
 	}
 
-	private static DtDefinition findDtDefinition(final String entityName) {
-		final String name = DtDefinition.PREFIX + entityName;
-		return Node.getNode().getDefinitionSpace().resolve(name, DtDefinition.class);
+	private static DataDefinition findDtDefinition(final String entityName) {
+		final String name = DataDefinition.PREFIX + entityName;
+		return Node.getNode().getDefinitionSpace().resolve(name, DataDefinition.class);
 	}
 }

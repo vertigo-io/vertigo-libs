@@ -26,7 +26,7 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
 /**
@@ -50,7 +50,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 */
 	private static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
 
-	private final DefinitionId<DtDefinition> definitionId;
+	private final DefinitionId<DataDefinition> definitionId;
 	private final Serializable id;
 
 	/** URN de la ressource (Nom complet).*/
@@ -61,7 +61,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 * @param definition the entity definition
 	 * @param id the entity id
 	 */
-	private UID(final DtDefinition definition, final Object id) {
+	private UID(final DataDefinition definition, final Object id) {
 		Assertion.check()
 				.isNotNull(id)
 				.isNotNull(definition);
@@ -89,7 +89,7 @@ public final class UID<E extends Entity> implements Serializable {
 		final Object id = stringToId(urn.substring(i + 1));
 
 		//On ne type pas, la seule chose que l'on sait est qu'il s'agit d'une définition.
-		final DtDefinition definition = Node.getNode().getDefinitionSpace().resolve(dname, DtDefinition.class);
+		final DataDefinition definition = Node.getNode().getDefinitionSpace().resolve(dname, DataDefinition.class);
 		return new UID(definition, id);
 	}
 
@@ -102,7 +102,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 * @param id the entity id
 	 * @return the entity UID
 	 */
-	public static <E extends Entity> UID<E> of(final DtDefinition definition, final Object id) {
+	public static <E extends Entity> UID<E> of(final DataDefinition definition, final Object id) {
 		return new UID(definition, id);
 	}
 
@@ -117,8 +117,8 @@ public final class UID<E extends Entity> implements Serializable {
 	public static <E extends Entity> UID<E> of(final E entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		return new UID<>(dtDefinition, DtObjectUtil.getId(entity));
+		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entity);
+		return new UID<>(dataDefinition, DtObjectUtil.getId(entity));
 	}
 
 	/**
@@ -132,8 +132,8 @@ public final class UID<E extends Entity> implements Serializable {
 	 * @return the entity UID
 	 */
 	public static <E extends Entity> UID<E> of(final Class<E> entityClass, final Object uriValue) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
-		return new UID<>(dtDefinition, uriValue);
+		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entityClass);
+		return new UID<>(dataDefinition, uriValue);
 	}
 
 	/**
@@ -141,7 +141,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 *
 	 * @return Définition de la ressource.
 	 */
-	public DtDefinition getDefinition() {
+	public DataDefinition getDefinition() {
 		return definitionId.get();
 	}
 

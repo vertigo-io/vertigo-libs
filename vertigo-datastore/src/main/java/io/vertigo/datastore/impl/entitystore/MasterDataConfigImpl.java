@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 import io.vertigo.datastore.entitystore.MasterDataConfig;
 import io.vertigo.datastore.entitystore.definitions.MasterDataDefinition;
@@ -33,7 +33,7 @@ import io.vertigo.datastore.entitystore.definitions.MasterDataDefinition;
  */
 public final class MasterDataConfigImpl implements MasterDataConfig {
 	private final Map<DtListURIForMasterData, Predicate> mdlUriFilterMap = new HashMap<>();
-	private final Map<DtDefinition, DtListURIForMasterData> defaultMdlMap2 = new HashMap<>();
+	private final Map<DataDefinition, DtListURIForMasterData> defaultMdlMap2 = new HashMap<>();
 
 	/** {@inheritDoc} */
 	@Override
@@ -61,18 +61,18 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean containsMasterData(final DtDefinition dtDefinition) {
-		Assertion.check().isNotNull(dtDefinition);
+	public boolean containsMasterData(final DataDefinition dataDefinition) {
+		Assertion.check().isNotNull(dataDefinition);
 		//-----
-		return defaultMdlMap2.containsKey(dtDefinition);
+		return defaultMdlMap2.containsKey(dataDefinition);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public DtListURIForMasterData getDtListURIForMasterData(final DtDefinition dtDefinition) {
-		Assertion.check().isNotNull(dtDefinition);
+	public DtListURIForMasterData getDtListURIForMasterData(final DataDefinition dataDefinition) {
+		Assertion.check().isNotNull(dataDefinition);
 		//-----
-		final DtListURIForMasterData uri = defaultMdlMap2.get(dtDefinition);
+		final DtListURIForMasterData uri = defaultMdlMap2.get(dataDefinition);
 		return uri;
 	}
 

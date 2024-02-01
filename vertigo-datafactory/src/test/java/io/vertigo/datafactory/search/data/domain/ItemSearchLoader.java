@@ -32,7 +32,7 @@ import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.search.definitions.SearchChunk;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.model.UID;
 
 public final class ItemSearchLoader extends AbstractSearchLoader<Item, Item> {
@@ -78,7 +78,7 @@ public final class ItemSearchLoader extends AbstractSearchLoader<Item, Item> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected List<Tuple<UID<Item>, Serializable>> loadNextURI(final Serializable lastValue, final boolean orderByVersion, final DtDefinition dtDefinition) {
+	protected List<Tuple<UID<Item>, Serializable>> loadNextURI(final Serializable lastValue, final boolean orderByVersion, final DataDefinition dataDefinition) {
 		final List<UID<Item>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
 		//call loader service
 		final List<Tuple<UID<Item>, Serializable>> uids = new ArrayList<>(itemDataBase.getAllItems().size());

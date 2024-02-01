@@ -47,7 +47,7 @@ import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtStereotype;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -222,18 +222,18 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		return findFirstIndexDefinitionByKeyConcept(keyConceptClass);
 	}
 
-	private static boolean hasIndexDefinitionByKeyConcept(final DtDefinition keyConceptDefinition) {
+	private static boolean hasIndexDefinitionByKeyConcept(final DataDefinition keyConceptDefinition) {
 		final List<SearchIndexDefinition> indexDefinitions = findIndexDefinitionByKeyConcept(keyConceptDefinition);
 		return !indexDefinitions.isEmpty();
 	}
 
-	private static Optional<SearchIndexDefinition> findFirstIndexDefinitionByKeyConcept(final DtDefinition keyConceptDtDefinition) {
+	private static Optional<SearchIndexDefinition> findFirstIndexDefinitionByKeyConcept(final DataDefinition keyConceptDtDefinition) {
 		return Node.getNode().getDefinitionSpace().getAll(SearchIndexDefinition.class).stream()
 				.filter(indexDefinition -> indexDefinition.getKeyConceptDtDefinition().equals(keyConceptDtDefinition))
 				.findFirst();
 	}
 
-	private static List<SearchIndexDefinition> findIndexDefinitionByKeyConcept(final DtDefinition keyConceptDtDefinition) {
+	private static List<SearchIndexDefinition> findIndexDefinitionByKeyConcept(final DataDefinition keyConceptDtDefinition) {
 		return Node.getNode().getDefinitionSpace().getAll(SearchIndexDefinition.class).stream()
 				.filter(indexDefinition -> indexDefinition.getKeyConceptDtDefinition().equals(keyConceptDtDefinition))
 				.toList();
@@ -246,7 +246,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 				.isNotNull(keyConceptUris)
 				.isFalse(keyConceptUris.isEmpty(), "dirty keyConceptUris cant be empty");
 		//-----
-		final DtDefinition keyConceptDefinition = keyConceptUris.get(0).getDefinition();
+		final DataDefinition keyConceptDefinition = keyConceptUris.get(0).getDefinition();
 		final List<SearchIndexDefinition> searchIndexDefinitions = findIndexDefinitionByKeyConcept(keyConceptDefinition);
 		Assertion.check().isFalse(searchIndexDefinitions.isEmpty(), "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptDefinition.getName());
 		//-----

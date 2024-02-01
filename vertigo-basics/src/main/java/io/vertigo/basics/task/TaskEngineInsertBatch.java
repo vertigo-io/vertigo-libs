@@ -39,7 +39,7 @@ import io.vertigo.database.sql.statement.SqlStatementBuilder;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.definitions.DataAccessor;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.Entity;
@@ -81,8 +81,8 @@ public final class TaskEngineInsertBatch extends AbstractTaskEngineSQL {
 		// gestion de generatedKey
 		final GenerationMode generationMode = connection.getDataBase().getSqlDialect().getGenerationMode();
 		final DtList<Entity> list = getValue(listAttribute.name());
-		final DtDefinition dtDefinition = list.getDefinition();
-		final DtField idField = dtDefinition.getIdField().get();
+		final DataDefinition dataDefinition = list.getDefinition();
+		final DtField idField = dataDefinition.getIdField().get();
 
 		final Tuple<Integer, List<?>> result = getSqlManager().executeBatchWithGeneratedKeys(sqlStatement,
 				generationMode,

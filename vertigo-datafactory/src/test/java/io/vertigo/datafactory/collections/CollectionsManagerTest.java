@@ -47,7 +47,7 @@ import io.vertigo.datafactory.collections.data.domain.SmartItemIhm;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -63,8 +63,8 @@ public class CollectionsManagerTest {
 	private static final String Ba_aa = "Ba aa";
 	private static final String aaa_ba = "aaa ba";
 	private static final String bb_aa = "bb aa";
-	private DtDefinition dtDefinitionItem;
-	private DtDefinition dtDefinitionItemCd;
+	private DataDefinition dtDefinitionItem;
+	private DataDefinition dtDefinitionItemCd;
 	@Inject
 	private CollectionsManager collectionsManager;
 	private AutoCloseableNode node;

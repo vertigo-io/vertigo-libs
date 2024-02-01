@@ -76,7 +76,7 @@ import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtListState;
@@ -299,8 +299,8 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 		return statement.loadList(obtainIndexDtDefinition(indexDefinitions), obtainIndicesNames(indexDefinitions), searchQuery, usedListState, defaultMaxRows);
 	}
 
-	private DtDefinition obtainIndexDtDefinition(final List<SearchIndexDefinition> indexDefinitions) {
-		DtDefinition indexDtDefinition = null;
+	private DataDefinition obtainIndexDtDefinition(final List<SearchIndexDefinition> indexDefinitions) {
+		DataDefinition indexDtDefinition = null;
 		for (final SearchIndexDefinition indexDefinition : indexDefinitions) {
 			if (indexDtDefinition == null) {
 				indexDtDefinition = indexDefinition.getIndexDtDefinition();
@@ -334,7 +334,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	/** {@inheritDoc} */
 	@Override
 	public <K extends KeyConcept> Map<UID<K>, Serializable> loadVersions(final SearchIndexDefinition indexDefinition, final DtFieldName<K> versionFieldName, final ListFilter listFilter, final int maxElements) {
-		final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
+		final DataDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 		return ((ESStatement<K, ?>) createElasticStatement(indexDefinition)).loadVersions(indexDtDefinition.getField(versionFieldName), listFilter, maxElements);
 	}
 
@@ -498,7 +498,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 
 			/* 3 : Les champs du dto index */
 			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
-			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
+			final DataDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
 				final IndexType indexType = IndexType.readIndexType(dtField.smartTypeDefinition());
 				typeMapping.startObject(dtField.name());

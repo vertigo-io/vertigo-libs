@@ -39,7 +39,7 @@ import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.impl.collections.IndexPlugin;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
@@ -127,8 +127,8 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 		return createIndex(fullDtc, storeValue);
 	}
 
-	private static String getIndexCacheContext(final DtDefinition dtDefinition) {
-		return "IndexCache:" + dtDefinition.getName();
+	private static String getIndexCacheContext(final DataDefinition dataDefinition) {
+		return "IndexCache:" + dataDefinition.getName();
 	}
 
 	private <D extends DtObject> RamLuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {

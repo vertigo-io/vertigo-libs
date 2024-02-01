@@ -36,7 +36,7 @@ import io.vertigo.datafactory.plugins.search.elasticsearch.AsbtractESSearchReque
 import io.vertigo.datafactory.plugins.search.elasticsearch.DslGeoToQueryBuilderUtil;
 import io.vertigo.datafactory.plugins.search.elasticsearch.ESDocumentCodec;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.model.DtListState;
 
 //vérifier
@@ -64,7 +64,7 @@ final class ESSearchRequestBuilder extends AsbtractESSearchRequestBuilder<Search
 
 	@Override
 	protected void appendListState(final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows,
-			final DtDefinition indexDtDefinition, final Map<Class, BasicTypeAdapter> typeAdapters) {
+			final DataDefinition indexDtDefinition, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		mySearchRequestBuilder.setFrom(listState.getSkipRows())
 				//If we send a clustering query, we don't retrieve result with hits response but with buckets
 				.setSize(searchQuery.isClusteringFacet() ? 0 : listState.getMaxRows().orElse(defaultMaxRows));

@@ -37,7 +37,7 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
  *
  * @author pchretien
  */
-public final class DtDefinitionBuilder implements Builder<DtDefinition> {
+public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 
 	private static class MessageKeyImpl implements LocaleMessageKey {
 		private static final long serialVersionUID = 6959551752755175151L;
@@ -55,9 +55,9 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		}
 	}
 
-	private DtDefinition dtDefinition;
+	private DataDefinition dataDefinition;
 	private final String myName;
-	private DefinitionId<DtDefinition> myFragmentId;
+	private DefinitionId<DataDefinition> myFragmentId;
 	private String myPackageName;
 	private DtStereotype myStereotype;
 	private DtField myIdField;
@@ -72,7 +72,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * Constructor.
 	 * @param name the name of the dtDefinition
 	 */
-	DtDefinitionBuilder(final String name) {
+	DataDefinitionBuilder(final String name) {
 		Assertion.check().isNotBlank(name);
 		//-----
 		myName = name;
@@ -83,7 +83,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param packageName the name of the package (nullable)
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder withPackageName(final String packageName) {
+	public DataDefinitionBuilder withPackageName(final String packageName) {
 		//the packageName can be null
 		//-----
 		myPackageName = packageName;
@@ -95,7 +95,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param fragment Persistent root DtDefinition for this fragment
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder withFragment(final DtDefinition fragment) {
+	public DataDefinitionBuilder withFragment(final DataDefinition fragment) {
 		Assertion.check().isNotNull(fragment);
 		//---
 		myStereotype = DtStereotype.Fragment;
@@ -109,7 +109,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param stereotype the stereotype of the dtDefinition
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder withStereoType(final DtStereotype stereotype) {
+	public DataDefinitionBuilder withStereoType(final DtStereotype stereotype) {
 		Assertion.check().isNotNull(stereotype);
 		//-----
 		myStereotype = stereotype;
@@ -127,7 +127,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param required if the field is required
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder addForeignKey(
+	public DataDefinitionBuilder addForeignKey(
 			final String fieldName,
 			final String label,
 			final SmartTypeDefinition domain,
@@ -156,7 +156,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param cardinality cardinality of the field see {@code Cardinality}
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder addComputedField(
+	public DataDefinitionBuilder addComputedField(
 			final String fieldName,
 			final String label,
 			final SmartTypeDefinition smartType,
@@ -185,7 +185,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param persistent if the fiels is persistent
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder addDataField(
+	public DataDefinitionBuilder addDataField(
 			final String fieldName,
 			final String label,
 			final SmartTypeDefinition domain,
@@ -213,7 +213,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param label the label of the field
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder addIdField(
+	public DataDefinitionBuilder addIdField(
 			final String fieldName,
 			final String label,
 			final SmartTypeDefinition domain) {
@@ -246,7 +246,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			final boolean persistent,
 			final String fkDtDefinitionName) {
 
-		final String shortName = myName.substring(DtDefinition.PREFIX.length());
+		final String shortName = myName.substring(DataDefinition.PREFIX.length());
 		//-----
 		// Le DtField vérifie ses propres règles et gère ses propres optimisations
 		final String id = DtField.PREFIX + shortName + '$' + fieldName;
@@ -272,7 +272,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param dataSpace the dataSpace to which the DtDefinition is mapped.
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder withDataSpace(final String dataSpace) {
+	public DataDefinitionBuilder withDataSpace(final String dataSpace) {
 		//the dataSpace can be null, in this case the default dataSpace will be chosen.
 		//-----
 		myDataSpace = dataSpace;
@@ -284,7 +284,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param sortFieldName fieldName to use
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder withSortField(final String sortFieldName) {
+	public DataDefinitionBuilder withSortField(final String sortFieldName) {
 		mySortFieldName = sortFieldName;
 		return this;
 	}
@@ -294,7 +294,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param displayFieldName fieldName to use
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder withDisplayField(final String displayFieldName) {
+	public DataDefinitionBuilder withDisplayField(final String displayFieldName) {
 		myDisplayFieldName = displayFieldName;
 		return this;
 	}
@@ -304,7 +304,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param handleFieldName fieldName to use
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder withHandleField(final String handleFieldName) {
+	public DataDefinitionBuilder withHandleField(final String handleFieldName) {
 		myHandleFieldName = handleFieldName;
 		return this;
 	}
@@ -314,15 +314,15 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param keyFieldName fieldName to use
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder withKeyField(final String keyFieldName) {
+	public DataDefinitionBuilder withKeyField(final String keyFieldName) {
 		myKeyFieldName = keyFieldName;
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public DtDefinition build() {
-		Assertion.check().isNull(dtDefinition, "build() already executed");
+	public DataDefinition build() {
+		Assertion.check().isNull(dataDefinition, "build() already executed");
 		//-----
 		if (myStereotype == null) {
 			myStereotype = myIdField == null ? DtStereotype.ValueObject : DtStereotype.Entity;
@@ -331,7 +331,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		final DtField sortField;
 		if (mySortFieldName != null) {
 			sortField = findFieldByName(mySortFieldName)
-					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Sort field '{0}' not found on '{1}'", mySortFieldName, dtDefinition.getName())));
+					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Sort field '{0}' not found on '{1}'", mySortFieldName, dataDefinition.getName())));
 		} else if (myStereotype == DtStereotype.Fragment) {
 			sortField = myFragmentId.get().getSortField().orElse(null);
 		} else {
@@ -341,7 +341,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		final DtField displayField;
 		if (myDisplayFieldName != null) {
 			displayField = findFieldByName(myDisplayFieldName)
-					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Display field '{0}' not found on '{1}'", myDisplayFieldName, dtDefinition.getName())));
+					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Display field '{0}' not found on '{1}'", myDisplayFieldName, dataDefinition.getName())));
 		} else if (myStereotype == DtStereotype.Fragment) {
 			displayField = myFragmentId.get().getDisplayField().orElse(null);
 		} else {
@@ -351,7 +351,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		final DtField handleField;
 		if (myHandleFieldName != null) {
 			handleField = findFieldByName(myHandleFieldName)
-					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Handle field '{0}' not found on '{1}'", myHandleFieldName, dtDefinition.getName())));
+					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Handle field '{0}' not found on '{1}'", myHandleFieldName, dataDefinition.getName())));
 		} else if (myStereotype == DtStereotype.Fragment) {
 			handleField = myFragmentId.get().getHandleField().orElse(null);
 		} else {
@@ -361,23 +361,23 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		final DtField keyField;
 		if (myKeyFieldName != null) {
 			keyField = findFieldByName(myKeyFieldName)
-					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Key field '{0}' not found on '{1}'", myKeyFieldName, dtDefinition.getName())));
+					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Key field '{0}' not found on '{1}'", myKeyFieldName, dataDefinition.getName())));
 		} else {
 			keyField = null;
 		}
 
-		dtDefinition = new DtDefinition(
+		dataDefinition = new DataDefinition(
 				myName,
 				Optional.ofNullable(myFragmentId),
 				myPackageName,
 				myStereotype,
 				myFields,
-				myDataSpace == null ? DtDefinition.DEFAULT_DATA_SPACE : myDataSpace,
+				myDataSpace == null ? DataDefinition.DEFAULT_DATA_SPACE : myDataSpace,
 				Optional.ofNullable(sortField),
 				Optional.ofNullable(displayField),
 				Optional.ofNullable(handleField),
 				Optional.ofNullable(keyField));
-		return dtDefinition;
+		return dataDefinition;
 	}
 
 	private Optional<DtField> findFieldByName(final String fieldName) {

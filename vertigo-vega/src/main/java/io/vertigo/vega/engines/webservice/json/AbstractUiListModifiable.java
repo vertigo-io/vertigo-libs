@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -50,7 +50,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
 public abstract class AbstractUiListModifiable<D extends DtObject> extends AbstractList<UiObject<D>> implements UiList<D>, Serializable {
 
 	private static final long serialVersionUID = -8398542301760300787L;
-	private final DefinitionId<DtDefinition> dtDefinitionId;
+	private final DefinitionId<DataDefinition> dtDefinitionId;
 	private final Class<D> objectType;
 
 	private final String inputKey;
@@ -81,12 +81,12 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		//-----
 		this.dtList = dtList;
 		this.inputKey = inputKey;
-		final DtDefinition dtDefinition = dtList.getDefinition();
-		dtDefinitionId = dtDefinition.id();
-		this.objectType = (Class<D>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
+		final DataDefinition dataDefinition = dtList.getDefinition();
+		dtDefinitionId = dataDefinition.id();
+		this.objectType = (Class<D>) ClassUtil.classForName(dataDefinition.getClassCanonicalName());
 		// ---
 		uiListDelta = new UiListDelta<>(objectType, new HashMap<>(), new HashMap<>(), new HashMap<>());
-		dtListDelta = new DtListDelta<>(new DtList<>(dtDefinition), new DtList<>(dtDefinition), new DtList<>(dtDefinition));
+		dtListDelta = new DtListDelta<>(new DtList<>(dataDefinition), new DtList<>(dataDefinition), new DtList<>(dataDefinition));
 		bufferUiObjects = new ArrayList<>(dtList.size());
 		postInit.accept((U) this);
 		rebuildBuffer();
@@ -123,7 +123,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	 * @return DtDefinition de l'objet métier
 	 */
 	@Override
-	public DtDefinition getDtDefinition() {
+	public DataDefinition getDtDefinition() {
 		return dtDefinitionId.get();
 	}
 
@@ -233,9 +233,9 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 				.isTrue(row <= DtListState.DEFAULT_MAX_ROWS, "UiListModifiable is limited to " + DtListState.DEFAULT_MAX_ROWS + " elements");
 
 		//SKE MLA : lazy initialisation of buffer uiObjects for size changing uiListModifiable
-		final DtDefinition dtDefinition = dtDefinitionId.get();
+		final DataDefinition dataDefinition = dtDefinitionId.get();
 		for (int i = bufferUiObjects.size(); i < row + 1; i++) {
-			add((D) DtObjectUtil.createDtObject(dtDefinition));
+			add((D) DtObjectUtil.createDtObject(dataDefinition));
 		}
 
 		final UiObject<D> uiObject = bufferUiObjects.get(row);

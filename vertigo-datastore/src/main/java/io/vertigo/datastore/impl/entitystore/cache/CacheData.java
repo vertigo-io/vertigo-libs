@@ -18,7 +18,7 @@
 package io.vertigo.datastore.impl.entitystore.cache;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListURI;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -46,12 +46,12 @@ public final class CacheData {
 		this.cacheManager = cacheManager;
 	}
 
-	public static String getContext(final DtDefinition dtDefinition) {
-		return "CacheData" + dtDefinition.getName();
+	public static String getContext(final DataDefinition dataDefinition) {
+		return "CacheData" + dataDefinition.getName();
 	}
 
-	public static Object getContextLock(final DtDefinition dtDefinition) {
-		return getContext(dtDefinition).intern();
+	public static Object getContextLock(final DataDefinition dataDefinition) {
+		return getContext(dataDefinition).intern();
 	}
 
 	/**
@@ -61,8 +61,8 @@ public final class CacheData {
 	 * @param <E> the type of entity
 	 */
 	<E extends Entity> E getDtObject(final UID<E> uid) {
-		final DtDefinition dtDefinition = uid.getDefinition();
-		return (E) cacheManager.get(getContext(dtDefinition), uid);
+		final DataDefinition dataDefinition = uid.getDefinition();
+		return (E) cacheManager.get(getContext(dataDefinition), uid);
 	}
 
 	/**
@@ -107,11 +107,11 @@ public final class CacheData {
 	}
 
 	/**
-	 * @param dtDefinition Dt definition to clear
+	 * @param dataDefinition Dt definition to clear
 	 */
-	void clear(final DtDefinition dtDefinition) {
-		Assertion.check().isNotNull(dtDefinition);
+	void clear(final DataDefinition dataDefinition) {
+		Assertion.check().isNotNull(dataDefinition);
 		//-----
-		cacheManager.clear(getContext(dtDefinition));
+		cacheManager.clear(getContext(dataDefinition));
 	}
 }

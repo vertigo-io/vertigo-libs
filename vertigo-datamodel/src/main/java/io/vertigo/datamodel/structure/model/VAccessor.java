@@ -21,7 +21,7 @@ import java.io.Serializable;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
 /**
@@ -40,7 +40,7 @@ public class VAccessor<E extends Entity> implements Serializable {
 	}
 
 	private State status = State.NOT_LOADED;
-	private final DefinitionId<DtDefinition> targetDtDefinitionId;
+	private final DefinitionId<DataDefinition> targetDtDefinitionId;
 	private final String role;
 	private UID<E> targetURI;
 	private E value;
@@ -59,7 +59,7 @@ public class VAccessor<E extends Entity> implements Serializable {
 	 * @param targetDtDefinition the entity definition
 	 * @param role the role of the association (case of multiple associations with the same entity)
 	 */
-	public VAccessor(final DtDefinition targetDtDefinition, final String role) {
+	public VAccessor(final DataDefinition targetDtDefinition, final String role) {
 		Assertion.check()
 				.isNotNull(targetDtDefinition)
 				.isNotBlank(role);

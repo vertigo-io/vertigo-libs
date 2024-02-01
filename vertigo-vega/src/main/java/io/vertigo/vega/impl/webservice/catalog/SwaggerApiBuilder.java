@@ -41,7 +41,7 @@ import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -312,8 +312,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		//can't be a primitive nor array nor DtListDelta
 		final Map<String, Object> properties = new LinkedHashMap<>();
 		final List<String> required = new ArrayList<>(); //mandatory fields
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(objectClass);
-		for (final DtField dtField : dtDefinition.getFields()) {
+		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(objectClass);
+		for (final DtField dtField : dataDefinition.getFields()) {
 			final String fieldName = dtField.name();
 			if (isExcludedField(fieldName, includedFields, excludedFields)) {
 				continue;
@@ -479,8 +479,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 					.with(webServiceParam.getParamType(), prefix + "sortDesc").build());
 		} else if (DtObject.class.isAssignableFrom(webServiceParam.getType())) {
 			final Class<? extends DtObject> paramClass = (Class<? extends DtObject>) webServiceParam.getType();
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(paramClass);
-			for (final DtField dtField : dtDefinition.getFields()) {
+			final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(paramClass);
+			for (final DtField dtField : dataDefinition.getFields()) {
 				final String fieldName = dtField.name();
 				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.smartTypeDefinition().getJavaClass())
 						.with(webServiceParam.getParamType(), prefix + fieldName)

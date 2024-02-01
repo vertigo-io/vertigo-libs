@@ -30,7 +30,7 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.DateUtil;
 import io.vertigo.datamodel.criteria.CriterionLimit;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 
@@ -67,15 +67,15 @@ public final class DtListPatternFilterUtil {
 		//private constructor
 	}
 
-	static <D extends DtObject> Predicate<D> createDtListFilterForPattern(final FilterPattern filterPattern, final String[] parsedFilter, final DtDefinition dtDefinition) {
+	static <D extends DtObject> Predicate<D> createDtListFilterForPattern(final FilterPattern filterPattern, final String[] parsedFilter, final DataDefinition dataDefinition) {
 		Assertion.check()
 				.isNotNull(filterPattern)
 				.isNotNull(parsedFilter)
-				.isNotNull(dtDefinition);
+				.isNotNull(dataDefinition);
 		//-----
 		//Si on trouve un pattern, on passe sur du code spécifique
 		final String fieldName = parsedFilter[1]; //attention parsedFilter[0] = filtre entier
-		final DtField dtField = dtDefinition.getField(fieldName);
+		final DtField dtField = dataDefinition.getField(fieldName);
 		Assertion.check().isTrue(dtField.smartTypeDefinition().getScope().isBasicType(), "Only primitive types can be used in pattern");
 		final BasicType dataType = dtField.smartTypeDefinition().getBasicType();
 

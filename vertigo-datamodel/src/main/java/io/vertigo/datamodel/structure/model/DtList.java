@@ -30,7 +30,7 @@ import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
 /**
@@ -52,7 +52,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	private final DtListURI uri;
 
 	/** Reéférence vers la Définition. */
-	private final DefinitionId<DtDefinition> dtDefinitionId;
+	private final DefinitionId<DataDefinition> dtDefinitionId;
 
 	/** List des dto contenus. */
 	private final List<D> dtObjects;
@@ -63,10 +63,10 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	/**
 	 * Constructor.
 	 *
-	 * @param dtDefinition Définition de DT
+	 * @param dataDefinition Définition de DT
 	 */
-	public DtList(final DtDefinition dtDefinition) {
-		this.dtDefinitionId = dtDefinition.id();
+	public DtList(final DataDefinition dataDefinition) {
+		this.dtDefinitionId = dataDefinition.id();
 		this.uri = null; //new DtListURIForValueObject(dtDefinition);
 		this.dtObjects = new ArrayList<>(); //
 		this.metaDatas = new LinkedHashMap<>();
@@ -175,7 +175,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	@Override
 	public boolean add(final D dto) {
 		Assertion.check().isNotNull(dto);
-		final DtDefinition foundDtDefinition = DtObjectUtil.findDtDefinition(dto);
+		final DataDefinition foundDtDefinition = DtObjectUtil.findDtDefinition(dto);
 		Assertion.check().isTrue(getDefinition().equals(foundDtDefinition), "Ne peut pas inserer un dto '{0}' dans une collection '{1}'", foundDtDefinition, getDefinition());
 		//-----
 		return dtObjects.add(dto);
@@ -185,7 +185,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	@Override
 	public void add(final int index, final D dto) {
 		Assertion.check().isNotNull(dto);
-		final DtDefinition foundDtDefinition = DtObjectUtil.findDtDefinition(dto);
+		final DataDefinition foundDtDefinition = DtObjectUtil.findDtDefinition(dto);
 		Assertion.check().isTrue(getDefinition().equals(foundDtDefinition), "Ne peut pas inserer un dto '{0}' dans une collection '{1}'", foundDtDefinition, getDefinition());
 		//-----
 		dtObjects.add(index, dto);
@@ -213,7 +213,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	/**
 	 * @return Définition de la liste.
 	 */
-	public DtDefinition getDefinition() {
+	public DataDefinition getDefinition() {
 		return dtDefinitionId.get();
 	}
 

@@ -17,7 +17,7 @@
  */
 package io.vertigo.datamodel.structure.model;
 
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 
 /**
  * Gestion d'une liste de référence.
@@ -38,11 +38,11 @@ public final class DtListURIForMasterData extends DtListURI {
 
 	/**
 	 * Constructor.
-	 * @param dtDefinition Définition de la liste de référentiel
+	 * @param dataDefinition Définition de la liste de référentiel
 	 * @param code Code de la liste de référence. Tous les codes commencent par MDL_.
 	 */
-	public DtListURIForMasterData(final DtDefinition dtDefinition, final String code) {
-		super(dtDefinition);
+	public DtListURIForMasterData(final DataDefinition dataDefinition, final String code) {
+		super(dataDefinition);
 		//-----
 		this.code = code;
 	}

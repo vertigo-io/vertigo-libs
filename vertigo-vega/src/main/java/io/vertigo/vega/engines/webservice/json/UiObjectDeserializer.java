@@ -29,7 +29,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
@@ -48,8 +48,8 @@ final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer
 		final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
 		final JsonObject jsonObject = json.getAsJsonObject();
 		final D inputDto = context.deserialize(jsonObject, dtoClass);
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtoClass);
-		final Set<String> dtFields = getFieldNames(dtDefinition);
+		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(dtoClass);
+		final Set<String> dtFields = getFieldNames(dataDefinition);
 		final Set<String> modifiedFields = new HashSet<>();
 		for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
 			final String fieldName = entry.getKey();
@@ -72,9 +72,9 @@ final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer
 		return uiObject;
 	}
 
-	private static Set<String> getFieldNames(final DtDefinition dtDefinition) {
+	private static Set<String> getFieldNames(final DataDefinition dataDefinition) {
 		final Set<String> dtFieldNames = new HashSet<>();
-		for (final DtField dtField : dtDefinition.getFields()) {
+		for (final DtField dtField : dataDefinition.getFields()) {
 			dtFieldNames.add(dtField.name());
 		}
 		return dtFieldNames;

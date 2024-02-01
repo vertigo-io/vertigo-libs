@@ -24,7 +24,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionId;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.association.AssociationDefinition;
 import io.vertigo.datamodel.structure.definitions.association.AssociationNNDefinition;
 import io.vertigo.datamodel.structure.definitions.association.AssociationSimpleDefinition;
@@ -52,7 +52,7 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 	private final DefinitionId<AssociationDefinition> associationDefinitionReference;
 	private final String roleName;
 	private DtList<E> value;
-	private final DefinitionId<DtDefinition> targetDefinitionReference;
+	private final DefinitionId<DataDefinition> targetDefinitionReference;
 
 	/**
 	 * Constructor.
@@ -70,7 +70,7 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 		//---
 		final AssociationDefinition associationDefinition = Node.getNode().getDefinitionSpace().resolve(associationDefinitionName, AssociationDefinition.class);
 		this.associationDefinitionReference = associationDefinition.id();
-		final DtDefinition targetDefinition = Stream.of(associationDefinition.getAssociationNodeA(), associationDefinition.getAssociationNodeB())
+		final DataDefinition targetDefinition = Stream.of(associationDefinition.getAssociationNodeA(), associationDefinition.getAssociationNodeB())
 				.filter(associationNode -> roleName.equals(associationNode.getRole()))
 				.findFirst()
 				.orElseThrow(() -> new VSystemException("Unable to find association node with role '{1}' on association '{0}'", associationDefinitionName, roleName))
@@ -135,7 +135,7 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 		return entity.getUID();
 	}
 
-	protected DefinitionId<DtDefinition> getTargetDefinitionReference() {
+	protected DefinitionId<DataDefinition> getTargetDefinitionReference() {
 		return targetDefinitionReference;
 	}
 

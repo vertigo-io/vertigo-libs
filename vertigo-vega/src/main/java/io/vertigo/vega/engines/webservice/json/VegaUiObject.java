@@ -38,7 +38,7 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.FormatterException;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -61,7 +61,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	private static final long serialVersionUID = -4639050257543017072L;
 
 	/** Référence vers la définition. */
-	private final DefinitionId<DtDefinition> dtDefinitionId;
+	private final DefinitionId<DataDefinition> dtDefinitionId;
 	protected final Set<String> fieldIndex;
 
 	private String inputKey;
@@ -159,7 +159,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @return DtDefinition de l'objet métier
 	 */
 	@Override
-	public final DtDefinition getDtDefinition() {
+	public final DataDefinition getDtDefinition() {
 		return dtDefinitionId.get();
 	}
 

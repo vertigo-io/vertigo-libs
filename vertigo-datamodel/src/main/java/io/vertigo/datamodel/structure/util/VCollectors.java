@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 
@@ -129,13 +129,13 @@ public final class VCollectors {
 	}
 
 	/**
-	 * @param dtDefinition
+	 * @param dataDefinition
 	 * @return A collector for DtList
 	 */
-	public static <T extends DtObject> Collector<T, ?, DtList<T>> toDtList(final DtDefinition dtDefinition) {
-		Assertion.check().isNotNull(dtDefinition);
+	public static <T extends DtObject> Collector<T, ?, DtList<T>> toDtList(final DataDefinition dataDefinition) {
+		Assertion.check().isNotNull(dataDefinition);
 		//---
-		final Supplier<DtList<T>> dtSupplier = () -> new DtList<>(dtDefinition);
+		final Supplier<DtList<T>> dtSupplier = () -> new DtList<>(dataDefinition);
 		return new CollectorImpl<>(dtSupplier, List::add, (left, right) -> {
 			left.addAll(right);
 			return left;

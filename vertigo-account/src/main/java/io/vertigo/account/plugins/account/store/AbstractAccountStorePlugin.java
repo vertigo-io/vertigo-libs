@@ -23,7 +23,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.Entity;
 
@@ -32,7 +32,7 @@ import io.vertigo.datamodel.structure.model.Entity;
  */
 public abstract class AbstractAccountStorePlugin implements Activeable {
 
-	private DtDefinition userDtDefinition;
+	private DataDefinition userDtDefinition;
 	private final String userDtDefinitionName;
 	private final String userToAccountMappingStr;
 
@@ -60,7 +60,7 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public final void start() {
-		userDtDefinition = Node.getNode().getDefinitionSpace().resolve(userDtDefinitionName, DtDefinition.class);
+		userDtDefinition = Node.getNode().getDefinitionSpace().resolve(userDtDefinitionName, DataDefinition.class);
 		mapperHelper = new AccountMapperHelper(userDtDefinition, AccountProperty.class, userToAccountMappingStr)
 				.withMandatoryDestField(AccountProperty.id)
 				.withMandatoryDestField(AccountProperty.displayName)
@@ -80,7 +80,7 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 		//rien
 	}
 
-	protected final DtDefinition getUserDtDefinition() {
+	protected final DataDefinition getUserDtDefinition() {
 		return userDtDefinition;
 	}
 

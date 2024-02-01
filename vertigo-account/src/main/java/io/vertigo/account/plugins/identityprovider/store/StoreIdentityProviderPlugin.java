@@ -29,7 +29,7 @@ import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.Entity;
@@ -51,7 +51,7 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 
 	private final String userIdentityEntity;
 	private final String userAuthField;
-	private DtDefinition userIdentityDefinition;
+	private DataDefinition userIdentityDefinition;
 	private final Optional<String> photoIdField;
 	private final Optional<String> photoFileInfo;
 	private Optional<FileInfoDefinition> photoFileInfoDefinition = Optional.empty();
@@ -125,7 +125,7 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		userIdentityDefinition = Node.getNode().getDefinitionSpace().resolve(userIdentityEntity, DtDefinition.class);
+		userIdentityDefinition = Node.getNode().getDefinitionSpace().resolve(userIdentityEntity, DataDefinition.class);
 		if (photoFileInfo.isPresent()) {
 			photoFileInfoDefinition = Optional.of(Node.getNode().getDefinitionSpace().resolve(photoFileInfo.get(), FileInfoDefinition.class));
 		}

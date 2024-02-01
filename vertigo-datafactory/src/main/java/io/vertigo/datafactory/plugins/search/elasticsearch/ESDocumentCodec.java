@@ -34,7 +34,7 @@ import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DataAccessor;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtField.FieldType;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -94,7 +94,7 @@ public final class ESDocumentCodec {
 	 * @param searchHit Resultat ElasticSearch
 	 * @return Objet logique de recherche
 	 */
-	public <I extends DtObject> I searchHit2DtIndex(final DtDefinition indexDtDefinition, final SearchHit searchHit) {
+	public <I extends DtObject> I searchHit2DtIndex(final DataDefinition indexDtDefinition, final SearchHit searchHit) {
 		/* On lit du document les données persistantes. */
 		/* 1. UID */
 		final String urn = searchHit.getId();
@@ -107,7 +107,7 @@ public final class ESDocumentCodec {
 			resultDtObjectdtObject = decode(searchHit.field(FULL_RESULT).getValue());
 		}
 		//-----
-		final DtDefinition resultDtDefinition = DtObjectUtil.findDtDefinition(resultDtObjectdtObject);
+		final DataDefinition resultDtDefinition = DtObjectUtil.findDtDefinition(resultDtObjectdtObject);
 		Assertion.check()
 				.isNotNull(uid)
 				.isNotNull(indexDtDefinition)
@@ -131,14 +131,14 @@ public final class ESDocumentCodec {
 		Assertion.check().isNotNull(index);
 		//-----
 
-		final DtDefinition dtDefinition = index.getDefinition().getIndexDtDefinition();
-		final List<DtField> notStoredFields = getNotStoredFields(dtDefinition); //on ne copie pas les champs not stored dans le domain
+		final DataDefinition dataDefinition = index.getDefinition().getIndexDtDefinition();
+		final List<DtField> notStoredFields = getNotStoredFields(dataDefinition); //on ne copie pas les champs not stored dans le domain
 		notStoredFields.addAll(index.getDefinition().getIndexCopyToFields()); //on ne copie pas les champs (copyTo)
 		final I dtResult;
 		if (notStoredFields.isEmpty()) {
 			dtResult = index.getIndexDtObject();
 		} else {
-			dtResult = cloneDto(dtDefinition, index.getIndexDtObject(), notStoredFields);
+			dtResult = cloneDto(dataDefinition, index.getIndexDtObject(), notStoredFields);
 		}
 
 		/* 2: Result stocké */
@@ -152,7 +152,7 @@ public final class ESDocumentCodec {
 
 			/* 3 : Les champs du dto index */
 			final DtObject dtIndex = index.getIndexDtObject();
-			final DtDefinition indexDtDefinition = DtObjectUtil.findDtDefinition(dtIndex);
+			final DataDefinition indexDtDefinition = DtObjectUtil.findDtDefinition(dtIndex);
 			final Set<DtField> copyToFields = index.getDefinition().getIndexCopyToFields();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
 				if (!copyToFields.contains(dtField)) {//On index pas les copyFields
@@ -188,16 +188,16 @@ public final class ESDocumentCodec {
 		return encodedValue;
 	}
 
-	private static List<DtField> getNotStoredFields(final DtDefinition dtDefinition) {
-		return dtDefinition.getFields().stream()
+	private static List<DtField> getNotStoredFields(final DataDefinition dataDefinition) {
+		return dataDefinition.getFields().stream()
 				//We don't store (in Result) computed fields and fields with a "notStored" domain
 				.filter(dtField -> !isIndexStoredDomain(dtField.smartTypeDefinition()) || dtField.getType() == FieldType.COMPUTED)
 				.collect(Collectors.toList());
 	}
 
-	private static <I extends DtObject> I cloneDto(final DtDefinition dtDefinition, final I dto, final List<DtField> excludedFields) {
-		final I clonedDto = (I) DtObjectUtil.createDtObject(dtDefinition);
-		for (final DtField dtField : dtDefinition.getFields()) {
+	private static <I extends DtObject> I cloneDto(final DataDefinition dataDefinition, final I dto, final List<DtField> excludedFields) {
+		final I clonedDto = (I) DtObjectUtil.createDtObject(dataDefinition);
+		for (final DtField dtField : dataDefinition.getFields()) {
 			if (!excludedFields.contains(dtField)) {
 				final DataAccessor dataAccessor = dtField.getDataAccessor();
 				dataAccessor.setValue(clonedDto, dataAccessor.getValue(dto));

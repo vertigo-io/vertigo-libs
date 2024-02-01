@@ -19,7 +19,7 @@ package io.vertigo.vega.webservice.model;
 
 import java.util.List;
 
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
@@ -41,7 +41,7 @@ public interface UiList<D extends DtObject> extends List<UiObject<D>> {
 	/**
 	 * @return the definition of the elements of the list
 	 */
-	DtDefinition getDtDefinition();
+	DataDefinition getDtDefinition();
 
 	/**
 	 * Vérifie les UiObjects de la liste, met à jour les objets métiers et retourne la liste.

@@ -25,7 +25,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.task.model.TaskEngine;
 
 /**
@@ -139,7 +139,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		return new TaskDefinition(
 				myTaskDefinitionName,
 				myPackageName,
-				myDataSpace == null ? DtDefinition.DEFAULT_DATA_SPACE : myDataSpace,
+				myDataSpace == null ? DataDefinition.DEFAULT_DATA_SPACE : myDataSpace,
 				myTaskEngineClass,
 				myRequest,
 				myInTaskAttributes,

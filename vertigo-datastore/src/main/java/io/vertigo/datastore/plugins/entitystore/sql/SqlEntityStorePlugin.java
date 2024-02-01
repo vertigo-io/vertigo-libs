@@ -45,7 +45,7 @@ import io.vertigo.datamodel.criteria.CriteriaCtx;
 import io.vertigo.datamodel.criteria.CriteriaEncoder;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.association.AssociationNNDefinition;
 import io.vertigo.datamodel.structure.definitions.association.AssociationNode;
@@ -141,16 +141,16 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	/**
 	 * Return the tableName to which the dtDefinition is mapped.
 	 *
-	 * @param dtDefinition the dtDefinition
+	 * @param dataDefinition the dtDefinition
 	 * @return the name of the table
 	 */
-	private static String getEntityName(final DtDefinition dtDefinition) {
-		return dtDefinition.getFragment().orElse(dtDefinition).id().shortName();
+	private static String getEntityName(final DataDefinition dataDefinition) {
+		return dataDefinition.getFragment().orElse(dataDefinition).id().shortName();
 	}
 
-	private static String getRequestedCols(final DtDefinition dtDefinition) {
-		if (dtDefinition.getFragment().isPresent()) {
-			return dtDefinition.getFields()
+	private static String getRequestedCols(final DataDefinition dataDefinition) {
+		if (dataDefinition.getFragment().isPresent()) {
+			return dataDefinition.getFields()
 					.stream()
 					.map(DtField::name)
 					.map(StringUtil::camelToConstCase)
@@ -171,21 +171,21 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		return connectionName;
 	}
 
-	private static DtField getIdField(final DtDefinition dtDefinition) {
-		Assertion.check().isNotNull(dtDefinition);
+	private static DtField getIdField(final DataDefinition dataDefinition) {
+		Assertion.check().isNotNull(dataDefinition);
 		//---
-		return dtDefinition.getIdField().orElseThrow(() -> new IllegalStateException("no ID found"));
+		return dataDefinition.getIdField().orElseThrow(() -> new IllegalStateException("no ID found"));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final UID<E> uri) {
-		final String entityName = getEntityName(dtDefinition);
+	public <E extends Entity> E readNullable(final DataDefinition dataDefinition, final UID<E> uri) {
+		final String entityName = getEntityName(dataDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final String taskName = TASK.TkSelect + entityName + "ByUri";
 
-		final String requestedCols = getRequestedCols(dtDefinition);
-		final DtField idField = getIdField(dtDefinition);
+		final String requestedCols = getRequestedCols(dataDefinition);
+		final DtField idField = getIdField(dataDefinition);
 		final String idFieldName = idField.name();
 		final String request = " select " + requestedCols +
 				" from " + tableName +
@@ -211,22 +211,22 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
+	public <E extends Entity> DtList<E> findAll(final DataDefinition dataDefinition, final DtListURIForNNAssociation dtcUri) {
 		Assertion.check()
-				.isNotNull(dtDefinition)
+				.isNotNull(dataDefinition)
 				.isNotNull(dtcUri);
 		//-----
-		final String entityName = getEntityName(dtDefinition);
+		final String entityName = getEntityName(dataDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
 
 		final String taskName = TASK.TkSelect + "NNList" + entityName + "ByUri";
 
 		//PK de la DtList recherchée
-		final String idFieldName = StringUtil.camelToConstCase(getIdField(dtDefinition).name());
+		final String idFieldName = StringUtil.camelToConstCase(getIdField(dataDefinition).name());
 		//FK dans la table nn correspondant à la collection recherchée. (clé de jointure ).
 		final AssociationNNDefinition associationNNDefinition = dtcUri.getAssociationDefinition();
 		final String joinTableName = associationNNDefinition.getTableName();
-		final DtDefinition joinDtDefinition = AssociationUtil.getAssociationNode(associationNNDefinition, dtcUri.getRoleName()).getDtDefinition();
+		final DataDefinition joinDtDefinition = AssociationUtil.getAssociationNode(associationNNDefinition, dtcUri.getRoleName()).getDtDefinition();
 		final String joinDtFieldName = StringUtil.camelToConstCase(getIdField(joinDtDefinition).name());
 
 		//La condition s'applique sur l'autre noeud de la relation (par rapport à la collection attendue)
@@ -246,7 +246,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInAttribute(fkFieldName, fkField.smartTypeDefinition(), Cardinality.ONE)
-				.withOutAttribute("dtc", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
+				.withOutAttribute("dtc", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dataDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
 				.build();
 
 		final UID uid = dtcUri.getSource();
@@ -263,28 +263,28 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
+	public <E extends Entity> DtList<E> findAll(final DataDefinition dataDefinition, final DtListURIForSimpleAssociation dtcUri) {
 		Assertion.check()
-				.isNotNull(dtDefinition)
+				.isNotNull(dataDefinition)
 				.isNotNull(dtcUri);
 		//---
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Serializable value = dtcUri.getSource().getId();
 
-		return findByCriteria(dtDefinition, Criterions.isEqualTo(fkField::name, value), DtListState.of(null));
+		return findByCriteria(dataDefinition, Criterions.isEqualTo(fkField::name, value), DtListState.of(null));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
+	public <E extends Entity> DtList<E> findByCriteria(final DataDefinition dataDefinition, final Criteria<E> criteria, final DtListState dtListState) {
 		Assertion.check()
-				.isNotNull(dtDefinition)
+				.isNotNull(dataDefinition)
 				.isNotNull(criteria)
 				.isNotNull(dtListState);
 		//---
-		final String entityName = getEntityName(dtDefinition);
+		final String entityName = getEntityName(dataDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
-		final String requestedCols = getRequestedCols(dtDefinition);
+		final String requestedCols = getRequestedCols(dataDefinition);
 		final String taskName = getListTaskName(entityName);
 		final Tuple<String, CriteriaCtx> tuple = criteria.toStringAnCtx(criteriaEncoder);
 		final String where = tuple.val1();
@@ -297,11 +297,11 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		final CriteriaCtx ctx = tuple.val2();
 		//IN, Optional
 		for (final String attributeName : ctx.getAttributeNames()) {
-			taskDefinitionBuilder.addInAttribute(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).smartTypeDefinition(), Cardinality.OPTIONAL_OR_NULLABLE);
+			taskDefinitionBuilder.addInAttribute(attributeName, dataDefinition.getField(ctx.getDtFieldName(attributeName)).smartTypeDefinition(), Cardinality.OPTIONAL_OR_NULLABLE);
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder
-				.withOutAttribute("dtc", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
+				.withOutAttribute("dtc", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dataDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
 				.build();
 
 		final TaskBuilder taskBuilder = Task.builder(taskDefinition);
@@ -332,7 +332,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	//==========================================================================
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E create(final DtDefinition dtDefinition, final E entity) {
+	public <E extends Entity> E create(final DataDefinition dataDefinition, final E entity) {
 		Assertion.check().isNull(DtObjectUtil.getId(entity), "Only object without any id can be created");
 		//------
 		final boolean insert = true;
@@ -342,17 +342,17 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 	@Override
 	public <E extends Entity> DtList<E> createList(final DtList<E> entities) {
-		final DtDefinition dtDefinition = entities.getDefinition();
-		final String entityName = getEntityName(dtDefinition);
+		final DataDefinition dataDefinition = entities.getDefinition();
+		final String entityName = getEntityName(dataDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		//---
-		final String request = sqlDialect.createInsertQuery(dtDefinition.getIdField().get().name(), getDataFields(dtDefinition), sequencePrefix, tableName, "dtos");
+		final String request = sqlDialect.createInsertQuery(dataDefinition.getIdField().get().name(), getDataFields(dataDefinition), sequencePrefix, tableName, "dtos");
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(TASK.TkInsertBatch.name() + entityName)
 				.withEngine(TaskEngineInsertBatch.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute("dtos", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
+				.addInAttribute("dtos", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dataDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
 				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerSmartType, Cardinality.ONE)
 				.build();
 
@@ -370,7 +370,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void update(final DtDefinition dtDefinition, final Entity entity) {
+	public void update(final DataDefinition dataDefinition, final Entity entity) {
 		Assertion.check().isNotNull(DtObjectUtil.getId(entity), "Need an id to update an object ");
 		//-----
 		final boolean insert = false;
@@ -379,16 +379,16 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 	@Override
 	public <E extends Entity> void updateList(final DtList<E> entities) {
-		final DtDefinition dtDefinition = entities.getDefinition();
-		final String entityName = getEntityName(dtDefinition);
+		final DataDefinition dataDefinition = entities.getDefinition();
+		final String entityName = getEntityName(dataDefinition);
 		//---
-		final String request = createUpdateQuery(dtDefinition, "dtos");
+		final String request = createUpdateQuery(dataDefinition, "dtos");
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(TASK.TkUpdateBatch.name() + entityName)
 				.withEngine(TaskEngineProcBatch.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute("dtos", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
+				.addInAttribute("dtos", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dataDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
 				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerSmartType, Cardinality.ONE)
 				.build();
 
@@ -410,16 +410,16 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	/**
 	 * Creates the update request.
 	 *
-	 * @param dtDefinition the dtDefinition
+	 * @param dataDefinition the dtDefinition
 	 * @return the sql request
 	 */
-	private static String createUpdateQuery(final DtDefinition dtDefinition, final String parameterName) {
-		final String entityName = getEntityName(dtDefinition);
+	private static String createUpdateQuery(final DataDefinition dataDefinition, final String parameterName) {
+		final String entityName = getEntityName(dataDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
-		final DtField idField = getIdField(dtDefinition);
+		final DtField idField = getIdField(dataDefinition);
 
 		return "update " + tableName + " set " +
-				dtDefinition.getFields()
+				dataDefinition.getFields()
 						.stream()
 						.filter(dtField -> dtField.isPersistent() && !dtField.getType().isId())
 						.map(dtField -> StringUtil.camelToConstCase(dtField.name()) + " =#" + parameterName + '.' + dtField.name() + '#')
@@ -444,18 +444,18 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	 * @param insert Si opération de type insert (update sinon)
 	 */
 	private void put(final Entity entity, final boolean insert) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		final String entityName = getEntityName(dtDefinition);
+		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entity);
+		final String entityName = getEntityName(dataDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final String taskName = (insert ? TASK.TkInsert : TASK.TkUpdate) + entityName;
 
-		final String request = insert ? sqlDialect.createInsertQuery(dtDefinition.getIdField().get().name(), getDataFields(dtDefinition), sequencePrefix, tableName, "dto") : createUpdateQuery(dtDefinition, "dto");
+		final String request = insert ? sqlDialect.createInsertQuery(dataDefinition.getIdField().get().name(), getDataFields(dataDefinition), sequencePrefix, tableName, "dto") : createUpdateQuery(dataDefinition, "dto");
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(getTaskEngineClass(insert))
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute("dto", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.ONE)
+				.addInAttribute("dto", Node.getNode().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dataDefinition.getName(), SmartTypeDefinition.class), Cardinality.ONE)
 				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerSmartType, Cardinality.ONE)
 				.build();
 
@@ -476,8 +476,8 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		}
 	}
 
-	private static List<String> getDataFields(final DtDefinition dtDefinition) {
-		return dtDefinition.getFields()
+	private static List<String> getDataFields(final DataDefinition dataDefinition) {
+		return dataDefinition.getFields()
 				.stream()
 				.filter(dtField -> !dtField.getType().isId())
 				.filter(DtField::isPersistent)
@@ -487,13 +487,13 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final DtDefinition dtDefinition, final UID uri) {
+	public void delete(final DataDefinition dataDefinition, final UID uri) {
 		Assertion.check()
-				.isNotNull(dtDefinition)
+				.isNotNull(dataDefinition)
 				.isNotNull(uri);
 		//---
-		final DtField idField = getIdField(dtDefinition);
-		final String entityName = getEntityName(dtDefinition);
+		final DtField idField = getIdField(dataDefinition);
+		final String entityName = getEntityName(dataDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final String taskName = TASK.TkDelete + entityName;
 
@@ -528,12 +528,12 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public int count(final DtDefinition dtDefinition) {
+	public int count(final DataDefinition dataDefinition) {
 		Assertion.check()
-				.isNotNull(dtDefinition)
-				.isTrue(dtDefinition.isPersistent(), "DtDefinition is not  persistent");
+				.isNotNull(dataDefinition)
+				.isTrue(dataDefinition.isPersistent(), "DtDefinition is not  persistent");
 		//-----
-		final String entityName = getEntityName(dtDefinition);
+		final String entityName = getEntityName(dataDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final String taskName = TASK.TkCount + entityName;
 		final SmartTypeDefinition countSmartType = SmartTypeDefinition.builder("STyCount", BasicType.Long).build();
@@ -560,13 +560,13 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final UID<?> uri) {
-		final String entityName = getEntityName(dtDefinition);
+	public <E extends Entity> E readNullableForUpdate(final DataDefinition dataDefinition, final UID<?> uri) {
+		final String entityName = getEntityName(dataDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final String taskName = TASK.TkLock + entityName;
 
-		final String requestedCols = getRequestedCols(dtDefinition);
-		final DtField idField = getIdField(dtDefinition);
+		final String requestedCols = getRequestedCols(dataDefinition);
+		final DtField idField = getIdField(dataDefinition);
 		final String idFieldName = idField.name();
 		final String request = sqlDialect.createSelectForUpdateQuery(tableName, requestedCols, idFieldName);
 

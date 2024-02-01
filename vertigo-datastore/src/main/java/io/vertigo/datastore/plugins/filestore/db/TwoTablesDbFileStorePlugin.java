@@ -27,7 +27,7 @@ import io.vertigo.core.lang.DataStream;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -56,9 +56,9 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		fileName, mimeType, lastModified, length, fileData, fmdId, fdtId
 	}
 
-	private final DtDefinition storeMetaDataDtDefinition;
+	private final DataDefinition storeMetaDataDtDefinition;
 	private final DtField storeMetaDataIdField;
-	private final DtDefinition storeFileDtDefinition;
+	private final DataDefinition storeFileDtDefinition;
 
 	/**
 	 * Constructor.
@@ -74,8 +74,8 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 			@ParamValue("fileInfoClass") final String fileInfoClassName) {
 		super(name, fileInfoClassName);
 		//-----
-		storeMetaDataDtDefinition = Node.getNode().getDefinitionSpace().resolve(storeMetaDataDtDefinitionName, DtDefinition.class);
-		storeFileDtDefinition = Node.getNode().getDefinitionSpace().resolve(storeFileDtDefinitionName, DtDefinition.class);
+		storeMetaDataDtDefinition = Node.getNode().getDefinitionSpace().resolve(storeMetaDataDtDefinitionName, DataDefinition.class);
+		storeFileDtDefinition = Node.getNode().getDefinitionSpace().resolve(storeFileDtDefinitionName, DataDefinition.class);
 		storeMetaDataIdField = storeMetaDataDtDefinition.getIdField().get();
 	}
 

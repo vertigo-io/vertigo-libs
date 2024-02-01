@@ -24,7 +24,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -44,7 +44,7 @@ public interface UiObject<D extends DtObject> extends Serializable {
 	/**
 	 * @return DtDefinition de l'objet métier
 	 */
-	DtDefinition getDtDefinition();
+	DataDefinition getDtDefinition();
 
 	/**
 	 * @param inputKey Object reference keep in this request context (for error handling)

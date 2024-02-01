@@ -29,7 +29,7 @@ import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.definitions.DataAccessor;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtList;
@@ -142,8 +142,8 @@ public class DAO<E extends Entity, P> {
 	 * @return merged root entity merged with the fragment
 	 */
 	public final E reloadAndMerge(final Fragment<E> fragment) {
-		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragment);
-		final DtDefinition entityDefinition = fragmentDefinition.getFragment().get();
+		final DataDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragment);
+		final DataDefinition entityDefinition = fragmentDefinition.getFragment().get();
 		final Map<String, DtField> entityFields = indexFields(entityDefinition.getFields());
 		final DtField idField = entityDefinition.getIdField().get();
 		final P entityId = (P) idField.getDataAccessor().getValue(fragment);//etrange on utilise l'accessor de l'entity sur le fragment
@@ -204,7 +204,7 @@ public class DAO<E extends Entity, P> {
 	 */
 	public final <F extends Fragment<E>> F getFragment(final UID<E> uid, final Class<F> fragmentClass) {
 		final E dto = entityStoreManager.readOne(uid);
-		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragmentClass);
+		final DataDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragmentClass);
 		final F fragment = fragmentClass.cast(DtObjectUtil.createDtObject(fragmentDefinition));
 		for (final DtField dtField : fragmentDefinition.getFields()) {
 			final DataAccessor dataAccessor = dtField.getDataAccessor();
@@ -257,10 +257,10 @@ public class DAO<E extends Entity, P> {
 	public final DtList<E> getListByDtFieldName(final DtFieldName dtFieldName, final Serializable value, final DtListState dtListState) {
 		final Criteria<E> criteria = Criterions.isEqualTo(dtFieldName, value);
 		// Verification de la valeur est du type du champ
-		final DtDefinition dtDefinition = getDtDefinition();
-		final DtField dtField = dtDefinition.getField(dtFieldName.name());
+		final DataDefinition dataDefinition = getDtDefinition();
+		final DtField dtField = dataDefinition.getField(dtFieldName.name());
 		smartTypeManager.checkType(dtField.smartTypeDefinition(), dtField.cardinality(), value);
-		return entityStoreManager.find(dtDefinition, criteria, dtListState);
+		return entityStoreManager.find(dataDefinition, criteria, dtListState);
 	}
 
 	/**
@@ -295,7 +295,7 @@ public class DAO<E extends Entity, P> {
 		return entityStoreManager.find(getDtDefinition(), criteria, dtListState);
 	}
 
-	private DtDefinition getDtDefinition() {
+	private DataDefinition getDtDefinition() {
 		return DtObjectUtil.findDtDefinition(entityClass);
 	}
 }

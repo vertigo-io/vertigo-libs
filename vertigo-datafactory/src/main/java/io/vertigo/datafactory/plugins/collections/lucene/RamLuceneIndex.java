@@ -54,7 +54,7 @@ import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
@@ -75,7 +75,7 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
 final class RamLuceneIndex<D extends DtObject> {
 
 	//DtDefinition est non serializable
-	private final DtDefinition dtDefinition;
+	private final DataDefinition dataDefinition;
 
 	private final Optional<DtField> idFieldOpt;
 	private final String idFieldName;
@@ -88,22 +88,22 @@ final class RamLuceneIndex<D extends DtObject> {
 	private final SmartTypeManager smartTypeManager;
 
 	/**
-	 * @param dtDefinition DtDefinition des objets indexés
+	 * @param dataDefinition DtDefinition des objets indexés
 	 * @throws IOException Exception I/O
 	 */
 	RamLuceneIndex(
-			final DtDefinition dtDefinition,
+			final DataDefinition dataDefinition,
 			final SmartTypeManager smartTypeManager) throws IOException {
 		Assertion.check()
-				.isNotNull(dtDefinition)
+				.isNotNull(dataDefinition)
 				.isNotNull(smartTypeManager);
 		//-----
 		indexAnalyser = new DefaultAnalyzer(false); //les stop word marchent mal si asymétrique entre l'indexation et la query
 		luceneQueryFactory = new RamLuceneQueryFactory(indexAnalyser);
-		this.dtDefinition = dtDefinition;
+		this.dataDefinition = dataDefinition;
 		this.smartTypeManager = smartTypeManager;
 		directory = new RAMDirectory();
-		idFieldOpt = dtDefinition.getIdField();
+		idFieldOpt = dataDefinition.getIdField();
 		idFieldName = idFieldOpt.isPresent() ? idFieldOpt.get().name() : "_id";
 		//l'index est crée automatiquement la premiere fois.
 		buildIndex();
@@ -164,7 +164,7 @@ final class RamLuceneIndex<D extends DtObject> {
 			final int skip,
 			final int top) throws IOException {
 
-		final DtList<D> dtcResult = new DtList<>(dtDefinition);
+		final DtList<D> dtcResult = new DtList<>(dataDefinition);
 		final int resultLength = topDocs.scoreDocs.length;
 		if (resultLength > skip) {
 			for (int i = skip; i < Math.min(skip + top, resultLength); i++) {
@@ -184,7 +184,7 @@ final class RamLuceneIndex<D extends DtObject> {
 	 */
 	public void addAll(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
 		Assertion.check().isNotNull(fullDtc)
-				.isTrue(dtDefinition.equals(fullDtc.getDefinition()), "Indexed DtList's definition ({0}) must equals the same definition than index ({1}", fullDtc.getDefinition().getName(), dtDefinition.getName());
+				.isTrue(dataDefinition.equals(fullDtc.getDefinition()), "Indexed DtList's definition ({0}) must equals the same definition than index ({1}", fullDtc.getDefinition().getName(), dataDefinition.getName());
 
 		//-----
 		try (final IndexWriter indexWriter = createIndexWriter()) {
@@ -218,7 +218,7 @@ final class RamLuceneIndex<D extends DtObject> {
 	private String obtainIndexedIdValue(final D dto) {
 		if (idFieldOpt.isPresent()) {
 			final Object pkValue = idFieldOpt.get().getDataAccessor().getValue(dto);
-			Assertion.check().isNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", dtDefinition.getName(), idFieldOpt.get().name());
+			Assertion.check().isNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", dataDefinition.getName(), idFieldOpt.get().name());
 			return String.valueOf(pkValue);
 		} else {
 			return String.valueOf(dto.hashCode());
@@ -271,7 +271,7 @@ final class RamLuceneIndex<D extends DtObject> {
 				.isTrue(dtListState.getMaxRows().isPresent(), "MaxRows is mandatory, can't get all data :(");
 		//-----
 
-		final Query filterQuery = luceneQueryFactory.createFilterQuery(keywords, searchedFields, listFilters, dtDefinition.getIdField(), boostedField);
+		final Query filterQuery = luceneQueryFactory.createFilterQuery(keywords, searchedFields, listFilters, dataDefinition.getIdField(), boostedField);
 		final Optional<Sort> sortOpt = createSort(dtListState);
 		return executeQuery(filterQuery, dtListState.getSkipRows(), dtListState.getMaxRows().get(), sortOpt);
 	}

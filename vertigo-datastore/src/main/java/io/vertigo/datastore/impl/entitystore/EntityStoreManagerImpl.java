@@ -32,7 +32,7 @@ import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtListURI;
@@ -104,8 +104,8 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	@Override
 	public void start() {
 		// register as cacheable the dtDefinitions that are persistant and have a corresponding CacheDefinition
-		Node.getNode().getDefinitionSpace().getAll(DtDefinition.class).stream()
-				.filter(DtDefinition::isPersistent)
+		Node.getNode().getDefinitionSpace().getAll(DataDefinition.class).stream()
+				.filter(DataDefinition::isPersistent)
 				.filter(dtDefinition -> Node.getNode().getDefinitionSpace().contains(CacheData.getContext(dtDefinition)))
 				.forEach(dtDefinition -> dataStoreConfig.getCacheStoreConfig().registerCacheable(dtDefinition, Node.getNode().getDefinitionSpace().resolve(CacheData.getContext(dtDefinition), CacheDefinition.class).isReloadedByList()));
 
@@ -120,8 +120,8 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 
 	}
 
-	private EntityStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
-		return logicalStoreConfig.getPhysicalDataStore(dtDefinition);
+	private EntityStorePlugin getPhysicalStore(final DataDefinition dataDefinition) {
+		return logicalStoreConfig.getPhysicalDataStore(dataDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -129,8 +129,8 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> E readOneForUpdate(final UID<E> uri) {
 		Assertion.check().isNotNull(uri);
 		//-----
-		final DtDefinition dtDefinition = uri.getDefinition();
-		final E entity = getPhysicalStore(dtDefinition).readNullableForUpdate(dtDefinition, uri);
+		final DataDefinition dataDefinition = uri.getDefinition();
+		final E entity = getPhysicalStore(dataDefinition).readNullableForUpdate(dataDefinition, uri);
 		//-----
 		Assertion.check().isNotNull(entity, "no entity found for : '{0}'", uri);
 		//-----
@@ -154,10 +154,10 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> E create(final E entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		final E createdEntity = getPhysicalStore(dtDefinition).create(dtDefinition, entity);
+		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entity);
+		final E createdEntity = getPhysicalStore(dataDefinition).create(dataDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.CREATE, List.of(UID.of(dtDefinition, DtObjectUtil.getId(createdEntity))));
+		fireAfterCommit(StoreEvent.Type.CREATE, List.of(UID.of(dataDefinition, DtObjectUtil.getId(createdEntity))));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 		return createdEntity;
 	}
@@ -167,8 +167,8 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> DtList<E> createList(final DtList<E> entities) {
 		Assertion.check().isNotNull(entities);
 		//-----
-		final DtDefinition dtDefinition = entities.getDefinition();
-		final DtList<E> createdEntities = getPhysicalStore(dtDefinition).createList(entities);
+		final DataDefinition dataDefinition = entities.getDefinition();
+		final DtList<E> createdEntities = getPhysicalStore(dataDefinition).createList(entities);
 		//-----
 		fireAfterCommit(StoreEvent.Type.CREATE, createdEntities.stream().map(Entity::getUID).toList());
 		return createdEntities;
@@ -179,10 +179,10 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public void update(final Entity entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		getPhysicalStore(dtDefinition).update(dtDefinition, entity);
+		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entity);
+		getPhysicalStore(dataDefinition).update(dataDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.UPDATE, List.of(UID.of(dtDefinition, DtObjectUtil.getId(entity))));
+		fireAfterCommit(StoreEvent.Type.UPDATE, List.of(UID.of(dataDefinition, DtObjectUtil.getId(entity))));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 	}
 
@@ -190,8 +190,8 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> void updateList(final DtList<E> entities) {
 		Assertion.check().isNotNull(entities);
 		//-----
-		final DtDefinition dtDefinition = entities.getDefinition();
-		getPhysicalStore(dtDefinition).updateList(entities);
+		final DataDefinition dataDefinition = entities.getDefinition();
+		getPhysicalStore(dataDefinition).updateList(entities);
 		//-----
 		fireAfterCommit(StoreEvent.Type.UPDATE, entities.stream().map(Entity::getUID).toList());
 	}
@@ -201,8 +201,8 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public void delete(final UID<? extends Entity> uri) {
 		Assertion.check().isNotNull(uri);
 		//-----
-		final DtDefinition dtDefinition = uri.getDefinition();
-		getPhysicalStore(dtDefinition).delete(dtDefinition, uri);
+		final DataDefinition dataDefinition = uri.getDefinition();
+		getPhysicalStore(dataDefinition).delete(dataDefinition, uri);
 		//-----
 		fireAfterCommit(StoreEvent.Type.DELETE, List.of(uri));
 	}
@@ -231,18 +231,18 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 
 	/** {@inheritDoc} */
 	@Override
-	public int count(final DtDefinition dtDefinition) {
-		return getPhysicalStore(dtDefinition).count(dtDefinition);
+	public int count(final DataDefinition dataDefinition) {
+		return getPhysicalStore(dataDefinition).count(dataDefinition);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> find(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
+	public <E extends Entity> DtList<E> find(final DataDefinition dataDefinition, final Criteria<E> criteria, final DtListState dtListState) {
 		Assertion.check()
-				.isNotNull(dtDefinition)
+				.isNotNull(dataDefinition)
 				.isNotNull(dtListState);
 		//-----
-		final DtList<E> list = cacheDataStore.findByCriteria(dtDefinition, criteria != null ? criteria : CRITERIA_ALWAYS_TRUE, dtListState);
+		final DtList<E> list = cacheDataStore.findByCriteria(dataDefinition, criteria != null ? criteria : CRITERIA_ALWAYS_TRUE, dtListState);
 		//-----
 		Assertion.check().isNotNull(list);
 		return list;

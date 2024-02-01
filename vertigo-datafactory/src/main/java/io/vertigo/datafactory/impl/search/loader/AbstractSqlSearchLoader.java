@@ -34,7 +34,7 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.definitions.DataAccessor;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -80,23 +80,23 @@ public abstract class AbstractSqlSearchLoader<S extends KeyConcept, I extends Dt
 	/** {@inheritDoc} */
 	@Override
 	@Transactional
-	protected final List<Tuple<UID<S>, Serializable>> loadNextURI(final Serializable lastValue, final boolean orderByVersion, final DtDefinition dtDefinition) {
+	protected final List<Tuple<UID<S>, Serializable>> loadNextURI(final Serializable lastValue, final boolean orderByVersion, final DataDefinition dataDefinition) {
 		try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			final String entityName = getEntityName(dtDefinition);
+			final String entityName = getEntityName(dataDefinition);
 			final String tableName = StringUtil.camelToConstCase(entityName);
 			final String taskName = "TkSelect" + entityName + "NextSearchChunk";
-			final DtField idField = dtDefinition.getIdField().get();
-			final DtField versionField = getVersionField(dtDefinition);
+			final DtField idField = dataDefinition.getIdField().get();
+			final DtField versionField = getVersionField(dataDefinition);
 			final DtField iteratorField = orderByVersion ? versionField : idField;
 
 			final String request = getNextIdsSqlQuery(tableName, idField.name(), iteratorField.name(), versionField.name());
 
 			final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 					.withEngine(TaskEngineSelect.class)
-					.withDataSpace(dtDefinition.getDataSpace())
+					.withDataSpace(dataDefinition.getDataSpace())
 					.withRequest(request)
 					.addInAttribute(iteratorField.name(), iteratorField.smartTypeDefinition(), Cardinality.ONE)
-					.withOutAttribute("dtc", Node.getNode().getDefinitionSpace().resolve(SmartTypeDefinition.PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
+					.withOutAttribute("dtc", Node.getNode().getDefinitionSpace().resolve(SmartTypeDefinition.PREFIX + dataDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
 					.build();
 
 			final Task task = Task.builder(taskDefinition)
@@ -110,7 +110,7 @@ public abstract class AbstractSqlSearchLoader<S extends KeyConcept, I extends Dt
 			final List<Tuple<UID<S>, Serializable>> uids = new ArrayList<>(resultDtc.size());
 			final DataAccessor versionFieldAccessor = versionField.getDataAccessor();
 			for (final S dto : resultDtc) {
-				uids.add(Tuple.of(UID.<S> of(dtDefinition, DtObjectUtil.getId(dto)), (Serializable) versionFieldAccessor.getValue(dto)));
+				uids.add(Tuple.of(UID.<S> of(dataDefinition, DtObjectUtil.getId(dto)), (Serializable) versionFieldAccessor.getValue(dto)));
 			}
 			return uids;
 		}
@@ -183,11 +183,11 @@ public abstract class AbstractSqlSearchLoader<S extends KeyConcept, I extends Dt
 	/**
 	 * Nom de la table en fonction de la définition du DT mappé.
 	 *
-	 * @param dtDefinition Définition du DT mappé
+	 * @param dataDefinition Définition du DT mappé
 	 * @return Nom de la table
 	 */
-	protected static final String getEntityName(final DtDefinition dtDefinition) {
-		return dtDefinition.getFragment().orElse(dtDefinition).id().shortName();
+	protected static final String getEntityName(final DataDefinition dataDefinition) {
+		return dataDefinition.getFragment().orElse(dataDefinition).id().shortName();
 	}
 
 }

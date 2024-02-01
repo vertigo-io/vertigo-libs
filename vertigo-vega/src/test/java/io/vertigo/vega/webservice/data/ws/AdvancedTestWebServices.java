@@ -35,7 +35,7 @@ import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.datamodel.criteria.CriterionLimit;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
@@ -339,8 +339,8 @@ public final class AdvancedTestWebServices implements WebServices {
 
 	private <C extends DtObject, E extends Entity> Predicate<E> createFilterFunction(final C criteria, final Class<E> resultClass) {
 		Predicate<E> filter = (o) -> true;
-		final DtDefinition criteriaDefinition = DtObjectUtil.findDtDefinition(criteria);
-		final DtDefinition resultDefinition = DtObjectUtil.findDtDefinition(resultClass);
+		final DataDefinition criteriaDefinition = DtObjectUtil.findDtDefinition(criteria);
+		final DataDefinition resultDefinition = DtObjectUtil.findDtDefinition(resultClass);
 		final Set<String> alreadyAddedField = new HashSet<>();
 		for (final DtField field : criteriaDefinition.getFields()) {
 			final String fieldName = field.name();

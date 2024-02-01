@@ -25,7 +25,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datamodel.task.definitions.TaskAttribute;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
@@ -39,7 +39,7 @@ public final class StructureMetricsProvider implements Component {
 
 	@Metrics
 	public List<Metric> getFieldMetrics() {
-		return Node.getNode().getDefinitionSpace().getAll(DtDefinition.class)
+		return Node.getNode().getDefinitionSpace().getAll(DataDefinition.class)
 				.stream()
 				.map(dtDefinition -> Metric.builder()
 						.withSuccess()
@@ -53,7 +53,7 @@ public final class StructureMetricsProvider implements Component {
 
 	@Metrics
 	public List<Metric> getDependencyMetrics() {
-		return Node.getNode().getDefinitionSpace().getAll(DtDefinition.class)
+		return Node.getNode().getDefinitionSpace().getAll(DataDefinition.class)
 				.stream()
 				.map(dtDefinition -> Metric.builder()
 						.withSuccess()
@@ -115,30 +115,30 @@ public final class StructureMetricsProvider implements Component {
 	private static double countDtDefinitionDependencies(final SmartTypeDefinition smartTypeDefinition) {
 		Assertion.check().isNotNull(smartTypeDefinition);
 		//---
-		return Node.getNode().getDefinitionSpace().getAll(DtDefinition.class)
+		return Node.getNode().getDefinitionSpace().getAll(DataDefinition.class)
 				.stream()
 				.flatMap(dtDefinition -> dtDefinition.getFields().stream())
 				.filter(field -> smartTypeDefinition.equals(field.smartTypeDefinition()))
 				.count();
 	}
 
-	private static double countTaskDependencies(final DtDefinition dtDefinition) {
+	private static double countTaskDependencies(final DataDefinition dataDefinition) {
 		int count = 0;
 		for (final TaskDefinition taskDefinition : Node.getNode().getDefinitionSpace().getAll(TaskDefinition.class)) {
 			for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
-				count += count(dtDefinition, taskAttribute);
+				count += count(dataDefinition, taskAttribute);
 			}
 			if (taskDefinition.getOutAttributeOption().isPresent()) {
 				final TaskAttribute taskAttribute = taskDefinition.getOutAttributeOption().get();
-				count += count(dtDefinition, taskAttribute);
+				count += count(dataDefinition, taskAttribute);
 			}
 		}
 		return count;
 	}
 
-	private static double count(final DtDefinition dtDefinition, final TaskAttribute taskAttribute) {
+	private static double count(final DataDefinition dataDefinition, final TaskAttribute taskAttribute) {
 		if (taskAttribute.smartTypeDefinition().getScope().isDataType()) {
-			if (dtDefinition.equals(DtObjectUtil.findDtDefinition(taskAttribute.smartTypeDefinition().getJavaClass()))) {
+			if (dataDefinition.equals(DtObjectUtil.findDtDefinition(taskAttribute.smartTypeDefinition().getJavaClass()))) {
 				return 1;
 			}
 		}

@@ -65,7 +65,7 @@ import io.vertigo.datafactory.impl.search.dsl.model.DslGeoExpression;
 import io.vertigo.datafactory.impl.search.dsl.model.DslGeoRangeQuery;
 import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.model.DtListState;
@@ -89,7 +89,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	private static final Pattern SIMPLE_CRITERIA_PATTERN = Pattern.compile("#([a-z][a-zA-Z0-9]*)#");
 
 	private final Map<Class, BasicTypeAdapter> myTypeAdapters;
-	private DtDefinition myIndexDtDefinition;
+	private DataDefinition myIndexDtDefinition;
 	private SearchQuery mySearchQuery;
 	private DtListState myListState;
 	private int myDefaultMaxRows = 10;
@@ -108,7 +108,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	 * @param indexDtDefinition Index dtDefinition
 	 * @return this builder
 	 */
-	public T withIndexDtDefinition(final DtDefinition indexDtDefinition) {
+	public T withIndexDtDefinition(final DataDefinition indexDtDefinition) {
 		Assertion.check().isNotNull(indexDtDefinition);
 		//-----
 		myIndexDtDefinition = indexDtDefinition;
@@ -168,7 +168,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	protected abstract R getSearchRequest();
 
-	protected abstract void appendListState(SearchQuery searchQuery, DtListState listState, int defaultMaxRows, DtDefinition indexDtDefinition, Map<Class, BasicTypeAdapter> typeAdapters);
+	protected abstract void appendListState(SearchQuery searchQuery, DtListState listState, int defaultMaxRows, DataDefinition indexDtDefinition, Map<Class, BasicTypeAdapter> typeAdapters);
 
 	protected abstract void setQueryAndPostFilter(QueryBuilder requestQueryBuilder, BoolQueryBuilder postFilterBoolQueryBuilder);
 
@@ -176,7 +176,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 
 	protected abstract void addAggregation(S searchRequestBuilder, AggregationBuilder aggregationBuilder);
 
-	protected FieldSortBuilder getFieldSortBuilder(final DtDefinition indexDefinition, final DtListState listState) {
+	protected FieldSortBuilder getFieldSortBuilder(final DataDefinition indexDefinition, final DtListState listState) {
 		final DtField sortField = indexDefinition.getField(listState.getSortFieldName().get());
 		String sortIndexFieldName = sortField.name();
 		final IndexType indexType = IndexType.readIndexType(sortField.smartTypeDefinition());
@@ -296,7 +296,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	private void appendFacetDefinition(
 			final SearchQuery searchQuery,
 			final S searchRequestBuilder,
-			final DtDefinition indexDefinition,
+			final DataDefinition indexDefinition,
 			final DtListState listState,
 			final boolean useHighlight,
 			final Map<Class, BasicTypeAdapter> typeAdapters) {

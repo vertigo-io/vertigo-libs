@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 
 /**
  * @author npiedeloup
@@ -38,9 +38,9 @@ public final class AccountMapperHelper<S, D> {
 	private static final Pattern ATTRIBUTES_PATTERN = Pattern.compile("\\s*,\\s*");
 	private static final Pattern ATTRIBUTE_VALUE_PATTERN = Pattern.compile("\\s*:\\s*");
 
-	private final Optional<DtDefinition> sourceDtDefinition;
+	private final Optional<DataDefinition> sourceDtDefinition;
 	private final Optional<Class<? extends Enum>> destEnum;
-	private final Optional<DtDefinition> destDtDefinition;
+	private final Optional<DataDefinition> destDtDefinition;
 
 	private final String sourceToDestMappingStr;
 	private final Set<String> reservedDestField = new HashSet<>();
@@ -54,7 +54,7 @@ public final class AccountMapperHelper<S, D> {
 	 * @param destDtDefinition Destination dtDefinition
 	 * @param sourceToDestMappingStr source to dest mapping
 	 */
-	public AccountMapperHelper(final DtDefinition destDtDefinition, final String sourceToDestMappingStr) {
+	public AccountMapperHelper(final DataDefinition destDtDefinition, final String sourceToDestMappingStr) {
 		sourceDtDefinition = Optional.empty();
 		destEnum = Optional.empty();
 		this.destDtDefinition = Optional.of(destDtDefinition);
@@ -67,7 +67,7 @@ public final class AccountMapperHelper<S, D> {
 	 * @param destEnum Destination enum
 	 * @param sourceToDestMappingStr source to dest mapping
 	 */
-	public AccountMapperHelper(final DtDefinition sourceDtDefinition, final Class<? extends Enum> destEnum, final String sourceToDestMappingStr) {
+	public AccountMapperHelper(final DataDefinition sourceDtDefinition, final Class<? extends Enum> destEnum, final String sourceToDestMappingStr) {
 		this.sourceDtDefinition = Optional.of(sourceDtDefinition);
 		this.destEnum = Optional.of(destEnum);
 		destDtDefinition = Optional.empty();
@@ -144,7 +144,7 @@ public final class AccountMapperHelper<S, D> {
 		return reservedToSourceMapping.get(reservedField);
 	}
 
-	public DtDefinition getDestDefinition() {
+	public DataDefinition getDestDefinition() {
 		return destDtDefinition.get();
 	}
 

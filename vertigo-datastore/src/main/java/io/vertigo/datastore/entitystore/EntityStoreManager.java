@@ -19,7 +19,7 @@ package io.vertigo.datastore.entitystore;
 
 import io.vertigo.core.node.component.Manager;
 import io.vertigo.datamodel.criteria.Criteria;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtListURI;
@@ -41,10 +41,10 @@ public interface EntityStoreManager extends Manager {
 
 	/**
 	 * Nombre d'éléments présents dans le sysème de persistance.
-	 * @param dtDefinition Définition de DT
+	 * @param dataDefinition Définition de DT
 	 * @return Nombre d'éléments.
 	 */
-	int count(final DtDefinition dtDefinition);
+	int count(final DataDefinition dataDefinition);
 
 	/**
 	 * Récupération d'un objet persistant par son UID.
@@ -120,12 +120,12 @@ public interface EntityStoreManager extends Manager {
 
 	/**
 	 * Returns a list identified by criteria
-	 * @param dtDefinition the list definition
+	 * @param dataDefinition the list definition
 	 * @param criteria criteria
 	 * @param dtListState request state : sort, top, offset
 	 * @return list
 	 */
-	<E extends Entity> DtList<E> find(final DtDefinition dtDefinition, Criteria<E> criteria, final DtListState dtListState);
+	<E extends Entity> DtList<E> find(final DataDefinition dataDefinition, Criteria<E> criteria, final DtListState dtListState);
 
 	/**
 	 * Sorts a list from a column.

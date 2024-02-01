@@ -40,7 +40,7 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.definitions.FormatterException;
 import io.vertigo.datamodel.structure.definitions.association.AssociationDefinition;
@@ -75,7 +75,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	private final String userAuthField;
 	private final Optional<String> photoFileInfo;
 	private Optional<FileInfoDefinition> photoFileInfoDefinition = Optional.empty();
-	private DtDefinition userGroupDtDefinition;
+	private DataDefinition userGroupDtDefinition;
 	private DtField groupIdField;
 	private final String groupToGroupAccountMappingStr;
 	private AssociationDefinition associationUserGroup;
@@ -136,7 +136,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 			photoFileInfoDefinition = Optional.of(Node.getNode().getDefinitionSpace().resolve(photoFileInfo.get(), FileInfoDefinition.class));
 		}
 
-		userGroupDtDefinition = Node.getNode().getDefinitionSpace().resolve(groupIdentityEntity, DtDefinition.class);
+		userGroupDtDefinition = Node.getNode().getDefinitionSpace().resolve(groupIdentityEntity, DataDefinition.class);
 		groupIdField = userGroupDtDefinition.getIdField().get(); //Entity with Id mandatory
 		mapperHelper = new AccountMapperHelper(userGroupDtDefinition, GroupProperty.class, groupToGroupAccountMappingStr)
 				.withMandatoryDestField(GroupProperty.id)

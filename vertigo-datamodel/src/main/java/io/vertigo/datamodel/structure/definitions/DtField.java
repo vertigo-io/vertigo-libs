@@ -179,10 +179,10 @@ public final class DtField extends DataDescriptor {
 	 *  @return DtDefinition de la ForeignKey (caractère obligatoire lié au type)
 	 */
 	//Todo changer le nom
-	public DtDefinition getFkDtDefinition() {
+	public DataDefinition getFkDtDefinition() {
 		Assertion.check().isNotNull(fkDtDefinitionName);
 		//-----
-		return Node.getNode().getDefinitionSpace().resolve(fkDtDefinitionName, DtDefinition.class);
+		return Node.getNode().getDefinitionSpace().resolve(fkDtDefinitionName, DataDefinition.class);
 	}
 
 	/**

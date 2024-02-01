@@ -26,7 +26,7 @@ import java.util.function.Predicate;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtStereotype;
 import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -61,21 +61,21 @@ public abstract class AbstractMasterDataDefinitionProvider implements SimpleDefi
 	}
 
 	protected <O extends DtObject> void registerDtMasterDatas(final Class<O> dtObjectClass, final Map<String, Predicate<O>> namedLists, final boolean isReloadedByList) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtObjectClass);
+		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(dtObjectClass);
 		// Si la durée dans le cache n'est pas précisé, on se base sur le type de la clé primaire pour déterminer la durée
 		final int cacheDuration;
-		if (dtDefinition.getStereotype() == DtStereotype.StaticMasterData) {
+		if (dataDefinition.getStereotype() == DtStereotype.StaticMasterData) {
 			cacheDuration = CACHE_DURATION_LONG;
 		} else {
 			cacheDuration = CACHE_DURATION_SHORT;
 		}
 
-		tempList.add(new CacheDefinition(CacheData.getContext(dtDefinition), true, 1000, cacheDuration, cacheDuration / 2, isReloadedByList));
+		tempList.add(new CacheDefinition(CacheData.getContext(dataDefinition), true, 1000, cacheDuration, cacheDuration / 2, isReloadedByList));
 
 		namedLists.entrySet()
-				.forEach(entry -> tempList.add(new MasterDataDefinition("Md" + dtDefinition.getName() + entry.getKey(), new DtListURIForMasterData(dtDefinition, entry.getKey()), entry.getValue())));
+				.forEach(entry -> tempList.add(new MasterDataDefinition("Md" + dataDefinition.getName() + entry.getKey(), new DtListURIForMasterData(dataDefinition, entry.getKey()), entry.getValue())));
 
-		tempList.add(new MasterDataDefinition("Md" + dtDefinition.getName(), new DtListURIForMasterData(dtDefinition, null), o -> true));
+		tempList.add(new MasterDataDefinition("Md" + dataDefinition.getName(), new DtListURIForMasterData(dataDefinition, null), o -> true));
 
 	}
 

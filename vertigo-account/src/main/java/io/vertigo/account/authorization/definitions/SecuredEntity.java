@@ -22,7 +22,7 @@ import java.util.List;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
 
 /**
@@ -39,7 +39,7 @@ import io.vertigo.datamodel.structure.definitions.DtField;
 @DefinitionPrefix(SecuredEntity.PREFIX)
 public final class SecuredEntity extends AbstractDefinition<SecuredEntity> {
 	public static final String PREFIX = "Sec";
-	private final DtDefinition entityDefinition;
+	private final DataDefinition entityDefinition;
 	private final List<DtField> securityFields;
 	private final List<SecurityDimension> advancedDimensions;
 	private final List<Authorization> operations;
@@ -53,7 +53,7 @@ public final class SecuredEntity extends AbstractDefinition<SecuredEntity> {
 	 * @param operations opérations attribuées.
 	 */
 	public SecuredEntity(
-			final DtDefinition entityDefinition,
+			final DataDefinition entityDefinition,
 			final List<DtField> securityFields,
 			final List<SecurityDimension> advancedDimensions,
 			final List<Authorization> operations) {
@@ -74,7 +74,7 @@ public final class SecuredEntity extends AbstractDefinition<SecuredEntity> {
 	/**
 	 * @return the value of entity.
 	 */
-	public DtDefinition getEntity() {
+	public DataDefinition getEntity() {
 		return entityDefinition;
 	}
 

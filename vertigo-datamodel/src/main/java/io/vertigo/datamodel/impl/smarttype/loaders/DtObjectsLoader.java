@@ -42,8 +42,8 @@ import io.vertigo.datamodel.smarttype.annotations.Adapter;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition.Scope;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinitionBuilder;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtDefinitionBuilder;
+import io.vertigo.datamodel.structure.definitions.DataDefinition;
+import io.vertigo.datamodel.structure.definitions.DataDefinitionBuilder;
 import io.vertigo.datamodel.structure.definitions.DtField.FieldType;
 import io.vertigo.datamodel.structure.definitions.DtStereotype;
 import io.vertigo.datamodel.structure.definitions.association.AssociationNNDefinition;
@@ -113,7 +113,7 @@ public final class DtObjectsLoader implements Loader {
 	private static void parseDynamicDefinitionBuilder(final Class<DtObject> clazz, final Map<String, DynamicDefinition> dynamicModelRepository) {
 		final String simpleName = clazz.getSimpleName();
 		final String packageName = clazz.getPackage().getName();
-		final String dtDefinitionName = DtDefinition.PREFIX + simpleName;
+		final String dtDefinitionName = DataDefinition.PREFIX + simpleName;
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
 		// un ordre relativement aléatoire et la lecture des annotations peut donc changer l'ordre
@@ -179,72 +179,72 @@ public final class DtObjectsLoader implements Loader {
 				dtDefinitionName,
 				definitionLinks,
 				definitionSpace -> {
-					final DtDefinitionBuilder dtDefinitionBuilder = DtDefinition.builder(dtDefinitionName)
+					final DataDefinitionBuilder dataDefinitionBuilder = DataDefinition.builder(dtDefinitionName)
 							.withPackageName(packageName)
 							.withDataSpace(parseDataSpaceAnnotation(clazz));
 					if (Fragment.class.isAssignableFrom(clazz)) {
 						//Fragments
-						extractDynamicDefinitionForFragment(clazz, definitionSpace, dtDefinitionBuilder);
+						extractDynamicDefinitionForFragment(clazz, definitionSpace, dataDefinitionBuilder);
 					} else {
-						dtDefinitionBuilder.withStereoType(parseStereotype(clazz));
+						dataDefinitionBuilder.withStereoType(parseStereotype(clazz));
 					}
-					extractDynamicDefinitionFromFields(fields, definitionSpace, dtDefinitionBuilder);
-					extractDynamicDefinitionFromMethods(methods, definitionSpace, dtDefinitionBuilder);
-					return dtDefinitionBuilder.build();
+					extractDynamicDefinitionFromFields(fields, definitionSpace, dataDefinitionBuilder);
+					extractDynamicDefinitionFromMethods(methods, definitionSpace, dataDefinitionBuilder);
+					return dataDefinitionBuilder.build();
 				}
 
 		);
 	}
 
-	private static void extractDynamicDefinitionForFragment(final Class<DtObject> clazz, final DefinitionSpace definitionSpace, final DtDefinitionBuilder dtDefinitionBuilder) {
+	private static void extractDynamicDefinitionForFragment(final Class<DtObject> clazz, final DefinitionSpace definitionSpace, final DataDefinitionBuilder dataDefinitionBuilder) {
 		for (final Annotation annotation : clazz.getAnnotations()) {
 			if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Fragment) {
-				dtDefinitionBuilder.withStereoType(DtStereotype.Fragment);
-				dtDefinitionBuilder.withFragment(definitionSpace.resolve(((io.vertigo.datamodel.structure.stereotype.Fragment) annotation).fragmentOf(), DtDefinition.class));
+				dataDefinitionBuilder.withStereoType(DtStereotype.Fragment);
+				dataDefinitionBuilder.withFragment(definitionSpace.resolve(((io.vertigo.datamodel.structure.stereotype.Fragment) annotation).fragmentOf(), DataDefinition.class));
 				break;
 			}
 		}
 	}
 
-	private static void extractDynamicDefinitionFromMethods(final Method[] methods, final DefinitionSpace definitionSpace, final DtDefinitionBuilder dtDefinitionBuilder) {
+	private static void extractDynamicDefinitionFromMethods(final Method[] methods, final DefinitionSpace definitionSpace, final DataDefinitionBuilder dataDefinitionBuilder) {
 		for (final Method method : methods) {
 			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.Field.class)) {
 				final io.vertigo.datamodel.structure.stereotype.Field methodAnnotation = method.getAnnotation(io.vertigo.datamodel.structure.stereotype.Field.class);
 				final String fieldName = createFieldName(method);
-				parseAnnotation(fieldName, dtDefinitionBuilder, methodAnnotation, definitionSpace);
+				parseAnnotation(fieldName, dataDefinitionBuilder, methodAnnotation, definitionSpace);
 			}
 			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.SortField.class)) {
-				dtDefinitionBuilder.withSortField(createFieldName(method));
+				dataDefinitionBuilder.withSortField(createFieldName(method));
 			}
 			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.DisplayField.class)) {
-				dtDefinitionBuilder.withDisplayField(createFieldName(method));
+				dataDefinitionBuilder.withDisplayField(createFieldName(method));
 			}
 			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.KeyField.class)) {
-				dtDefinitionBuilder.withKeyField(createFieldName(method));
+				dataDefinitionBuilder.withKeyField(createFieldName(method));
 			}
 			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.ForeignKey.class)) {
 				//Le nom est automatiquement déduit du nom du champ
 				final io.vertigo.datamodel.structure.stereotype.ForeignKey foreignKeyAnnotation = method.getAnnotation(io.vertigo.datamodel.structure.stereotype.ForeignKey.class);
-				dtDefinitionBuilder.addForeignKey(createFieldName(method), foreignKeyAnnotation.label(), definitionSpace.resolve(foreignKeyAnnotation.smartType(), SmartTypeDefinition.class), foreignKeyAnnotation.cardinality(), foreignKeyAnnotation.fkDefinition());
+				dataDefinitionBuilder.addForeignKey(createFieldName(method), foreignKeyAnnotation.label(), definitionSpace.resolve(foreignKeyAnnotation.smartType(), SmartTypeDefinition.class), foreignKeyAnnotation.cardinality(), foreignKeyAnnotation.fkDefinition());
 			}
 		}
 	}
 
-	private static void extractDynamicDefinitionFromFields(final List<Field> fields, final DefinitionSpace definitionSpace, final DtDefinitionBuilder dtDefinitionBuilder) {
+	private static void extractDynamicDefinitionFromFields(final List<Field> fields, final DefinitionSpace definitionSpace, final DataDefinitionBuilder dataDefinitionBuilder) {
 		for (final Field field : fields) {
 			if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.Field.class)) {
 				//Le nom est automatiquement déduit du nom du champ
 				final io.vertigo.datamodel.structure.stereotype.Field fieldAnnotation = field.getAnnotation(io.vertigo.datamodel.structure.stereotype.Field.class);
-				parseAnnotation(createFieldName(field), dtDefinitionBuilder, fieldAnnotation, definitionSpace);
+				parseAnnotation(createFieldName(field), dataDefinitionBuilder, fieldAnnotation, definitionSpace);
 			}
 			if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.SortField.class)) {
-				dtDefinitionBuilder.withSortField(createFieldName(field));
+				dataDefinitionBuilder.withSortField(createFieldName(field));
 			}
 			if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.DisplayField.class)) {
-				dtDefinitionBuilder.withDisplayField(createFieldName(field));
+				dataDefinitionBuilder.withDisplayField(createFieldName(field));
 			}
 			if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.KeyField.class)) {
-				dtDefinitionBuilder.withKeyField(createFieldName(field));
+				dataDefinitionBuilder.withKeyField(createFieldName(field));
 			}
 
 		}
@@ -274,7 +274,7 @@ public final class DtObjectsLoader implements Loader {
 		if (dataSpaceAnnotations.length == 1) {
 			return dataSpaceAnnotations[0].value();
 		}
-		return DtDefinition.DEFAULT_DATA_SPACE;
+		return DataDefinition.DEFAULT_DATA_SPACE;
 	}
 
 	private static DtStereotype parseStereotype(final Class<DtObject> clazz) {
@@ -346,13 +346,13 @@ public final class DtObjectsLoader implements Loader {
 
 					final String fkFieldName = association.fkFieldName();
 
-					final DtDefinition dtDefinitionA = definitionSpace.resolve(association.primaryDtDefinitionName(), DtDefinition.class);
+					final DataDefinition dtDefinitionA = definitionSpace.resolve(association.primaryDtDefinitionName(), DataDefinition.class);
 					final String roleAOpt = association.primaryRole();
 					final String roleA = roleAOpt != null ? roleAOpt : dtDefinitionA.id().shortName();
 					final String labelAOpt = association.primaryLabel();
 					final String labelA = labelAOpt != null ? labelAOpt : dtDefinitionA.id().shortName();
 
-					final DtDefinition dtDefinitionB = definitionSpace.resolve(association.foreignDtDefinitionName(), DtDefinition.class);
+					final DataDefinition dtDefinitionB = definitionSpace.resolve(association.foreignDtDefinitionName(), DataDefinition.class);
 					final String roleBOpt = association.foreignRole();
 					final String roleB = roleBOpt != null ? roleBOpt : dtDefinitionB.id().shortName();
 					final String labelB = association.foreignLabel();
@@ -369,8 +369,8 @@ public final class DtObjectsLoader implements Loader {
 				association.name(),
 				Arrays.asList(association.dtDefinitionA(), association.dtDefinitionB()),
 				definitionSpace -> {
-					final DtDefinition dtDefinitionA = definitionSpace.resolve(association.dtDefinitionA(), DtDefinition.class);
-					final DtDefinition dtDefinitionB = definitionSpace.resolve(association.dtDefinitionB(), DtDefinition.class);
+					final DataDefinition dtDefinitionA = definitionSpace.resolve(association.dtDefinitionA(), DataDefinition.class);
+					final DataDefinition dtDefinitionB = definitionSpace.resolve(association.dtDefinitionB(), DataDefinition.class);
 					final AssociationNode associationNodeA = new AssociationNode(dtDefinitionA, association.navigabilityA(), association.roleA(), association.labelA(), true, false);
 					final AssociationNode associationNodeB = new AssociationNode(dtDefinitionB, association.navigabilityB(), association.roleB(), association.labelB(), true, false);
 					return new AssociationNNDefinition(association.name(), association.tableName(), associationNodeA, associationNodeB);
@@ -380,19 +380,19 @@ public final class DtObjectsLoader implements Loader {
 	/*
 	 * Centralisation du parsing des annotations liées à un champ.
 	 */
-	private static void parseAnnotation(final String fieldName, final DtDefinitionBuilder dtDefinitionBuilder, final io.vertigo.datamodel.structure.stereotype.Field field, final DefinitionSpace definitionSpace) {
+	private static void parseAnnotation(final String fieldName, final DataDefinitionBuilder dataDefinitionBuilder, final io.vertigo.datamodel.structure.stereotype.Field field, final DefinitionSpace definitionSpace) {
 		//Si on trouve un smartType on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
 		switch (type) {
 			case ID:
-				dtDefinitionBuilder.addIdField(fieldName, field.label(), definitionSpace.resolve(field.smartType(), SmartTypeDefinition.class));
+				dataDefinitionBuilder.addIdField(fieldName, field.label(), definitionSpace.resolve(field.smartType(), SmartTypeDefinition.class));
 				break;
 			case DATA:
-				dtDefinitionBuilder.addDataField(fieldName, field.label(), definitionSpace.resolve(field.smartType(), SmartTypeDefinition.class), field.cardinality(), field.persistent());
+				dataDefinitionBuilder.addDataField(fieldName, field.label(), definitionSpace.resolve(field.smartType(), SmartTypeDefinition.class), field.cardinality(), field.persistent());
 				break;
 			case COMPUTED:
 				//Valeurs renseignées automatiquement parce que l'on est dans le cas d'un champ calculé
-				dtDefinitionBuilder.addComputedField(fieldName, field.label(), definitionSpace.resolve(field.smartType(), SmartTypeDefinition.class), field.cardinality());
+				dataDefinitionBuilder.addComputedField(fieldName, field.label(), definitionSpace.resolve(field.smartType(), SmartTypeDefinition.class), field.cardinality());
 				break;
 			case FOREIGN_KEY:
 				throw new IllegalArgumentException("field of type  FOREIGN_KEY must be declared with a method annotated with @ForeignKey");
