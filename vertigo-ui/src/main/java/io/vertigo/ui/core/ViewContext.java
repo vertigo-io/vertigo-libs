@@ -61,6 +61,7 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
 
 /**
  * Liste des couples (clé, object) enregistrés.
+ *
  * @author npiedeloup
  */
 public final class ViewContext implements Serializable {
@@ -300,6 +301,7 @@ public final class ViewContext implements Serializable {
 	/* ================================ ContextForm ==================================*/
 	/**
 	 * Ajoute un objet de type form au context.
+	 *
 	 * @param dto Objet à publier
 	 */
 	public <O extends DtObject> ViewContext publishDto(final ViewContextKey<O> contextKey, final O dto) {
@@ -343,6 +345,7 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Ajoute une liste au context.
+	 *
 	 * @param dtList List à publier
 	 */
 	private <O extends DtObject> void publishDtList(final ViewContextKey<O> contextKey, final Optional<DtFieldName<O>> keyFieldNameOpt, final DtList<O> dtList, final boolean modifiable) {
@@ -355,6 +358,7 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Ajoute une liste au context.
+	 *
 	 * @param dtList List à publier
 	 */
 	public <O extends DtObject> ViewContext publishDtList(final ViewContextKey<O> contextKey, final DtFieldName<O> keyFieldName, final DtList<O> dtList) {
@@ -364,6 +368,7 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Ajoute une liste au context.
+	 *
 	 * @param dtList List à publier
 	 */
 	public <O extends DtObject> ViewContext publishDtList(final ViewContextKey<O> contextKey, final DtList<O> dtList) {
@@ -389,6 +394,7 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Ajoute une liste au context.
+	 *
 	 * @param dtList List à publier
 	 */
 	public <O extends DtObject> ViewContext publishDtListModifiable(final ViewContextKey<O> contextKey, final DtList<O> dtList) {
@@ -430,13 +436,25 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Publie une liste de référence.
+	 *
 	 * @param contextKey Context key
 	 * @param entityClass Class associée
 	 * @param code Code
 	 */
 	public <E extends Entity> ViewContext publishMdl(final ViewContextKey<E> contextKey, final Class<E> entityClass, final String code) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
-		put(contextKey, new UiMdList<E>(new DtListURIForMasterData(dtDefinition, code)));
+		return publishMdl(contextKey, dtDefinition, code);
+	}
+
+	/**
+	 * Publie une liste de référence.
+	 *
+	 * @param contextKey Context key
+	 * @param entityClass Class associée
+	 * @param code Code
+	 */
+	public <E extends Entity> ViewContext publishMdl(final ViewContextKey<E> contextKey, final DtDefinition entityDefinition, final String code) {
+		put(contextKey, new UiMdList<E>(new DtListURIForMasterData(entityDefinition, code)));
 		return this;
 	}
 
@@ -444,6 +462,7 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Get UI file uri.
+	 *
 	 * @param contextKey Context key
 	 */
 	public Optional<FileInfoURI> getFileInfoURI(final ViewContextKey<FileInfoURI> contextKey) {
@@ -454,6 +473,7 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Get UI file info uri list.
+	 *
 	 * @param contextKey Context key
 	 */
 	public ArrayList<FileInfoURI> getFileInfoURIs(final ViewContextKey<FileInfoURI> contextKey) {
@@ -462,6 +482,7 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Publish file's info.
+	 *
 	 * @param contextKey Context key
 	 * @param fileInfo file's info
 	 */
@@ -476,6 +497,7 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Publish list of file's info.
+	 *
 	 * @param contextKey Context key
 	 * @param fileInfos list of file's info.
 	 */
@@ -489,6 +511,7 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Publie une FacetedQueryResult.
+	 *
 	 * @param contextKey Context key
 	 * @param keyFieldName Id's fieldName
 	 * @param facetedQueryResult Result
@@ -584,6 +607,7 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Returns selectedFacetValues of a given facetedQuery.
+	 *
 	 * @param contextKey Context key
 	 * @return selectedFacetValues
 	 */
