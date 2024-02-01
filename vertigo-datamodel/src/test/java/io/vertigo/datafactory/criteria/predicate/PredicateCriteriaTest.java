@@ -15,10 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.datamodel.criteria.predicate;
+package io.vertigo.datafactory.criteria.predicate;
 
-import static io.vertigo.datamodel.criteria.CriterionLimit.ofExcluded;
-import static io.vertigo.datamodel.criteria.CriterionLimit.ofIncluded;
+import static io.vertigo.datafactory.criteria.CriterionLimit.ofExcluded;
+import static io.vertigo.datafactory.criteria.CriterionLimit.ofIncluded;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.Serializable;
@@ -35,12 +35,12 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.datamodel.criteria.Criteria;
-import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.criteria.data.CriteriaTestSmartTypes;
-import io.vertigo.datamodel.criteria.data.DtDefinitions;
-import io.vertigo.datamodel.criteria.data.movies.Movie2;
-import io.vertigo.datamodel.criteria.data.movies.Movie2DataBase;
+import io.vertigo.datafactory.criteria.Criteria;
+import io.vertigo.datafactory.criteria.Criterions;
+import io.vertigo.datafactory.criteria.data.CriteriaTestSmartTypes;
+import io.vertigo.datafactory.criteria.data.DtDefinitions;
+import io.vertigo.datafactory.criteria.data.movies.Movie2;
+import io.vertigo.datafactory.criteria.data.movies.Movie2DataBase;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 

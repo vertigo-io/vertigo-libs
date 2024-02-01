@@ -21,12 +21,12 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.criteria.Criteria;
-import io.vertigo.datamodel.criteria.CriteriaCtx;
-import io.vertigo.datamodel.criteria.CriteriaEncoder;
-import io.vertigo.datamodel.criteria.CriteriaLogicalOperator;
-import io.vertigo.datamodel.criteria.CriterionOperator;
-import io.vertigo.datamodel.criteria.Criterions;
+import io.vertigo.datafactory.criteria.Criteria;
+import io.vertigo.datafactory.criteria.CriteriaCtx;
+import io.vertigo.datafactory.criteria.CriteriaEncoder;
+import io.vertigo.datafactory.criteria.CriteriaLogicalOperator;
+import io.vertigo.datafactory.criteria.CriterionOperator;
+import io.vertigo.datafactory.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.definitions.DtField;

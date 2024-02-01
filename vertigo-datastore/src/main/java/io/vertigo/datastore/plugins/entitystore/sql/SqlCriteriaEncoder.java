@@ -27,11 +27,11 @@ import java.util.stream.Stream;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.database.sql.vendor.SqlDialect;
-import io.vertigo.datamodel.criteria.CriteriaCtx;
-import io.vertigo.datamodel.criteria.CriteriaEncoder;
-import io.vertigo.datamodel.criteria.CriteriaLogicalOperator;
-import io.vertigo.datamodel.criteria.CriterionLimit;
-import io.vertigo.datamodel.criteria.CriterionOperator;
+import io.vertigo.datafactory.criteria.CriteriaCtx;
+import io.vertigo.datafactory.criteria.CriteriaEncoder;
+import io.vertigo.datafactory.criteria.CriteriaLogicalOperator;
+import io.vertigo.datafactory.criteria.CriterionLimit;
+import io.vertigo.datafactory.criteria.CriterionOperator;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
 
 public class SqlCriteriaEncoder implements CriteriaEncoder {

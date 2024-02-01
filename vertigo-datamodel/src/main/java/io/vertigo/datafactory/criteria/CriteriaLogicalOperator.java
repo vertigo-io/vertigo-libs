@@ -15,20 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.datamodel.criteria;
+package io.vertigo.datafactory.criteria;
 
-import java.io.Serializable;
-
-import io.vertigo.datamodel.data.definitions.DataFieldName;
-
-public interface CriteriaEncoder {
-
-	String encodeOperator(CriteriaCtx ctx, CriterionOperator criterionOperator, DataFieldName dataFieldName, Serializable[] values);
-
-	String encodeLogicalOperator(CriteriaLogicalOperator logicalOperator);
-
-	String getExpressionStartDelimiter();
-
-	String getExpressionEndDelimiter();
-
+/**
+ * Enum of logical operator between criteria expressions
+ * or and and
+ * @author mlaroche
+ *
+ */
+public enum CriteriaLogicalOperator {
+	OR, AND
 }

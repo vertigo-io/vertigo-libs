@@ -18,7 +18,7 @@
 package io.vertigo.datastore.impl.entitystore;
 
 import io.vertigo.core.node.component.Plugin;
-import io.vertigo.datamodel.criteria.Criteria;
+import io.vertigo.datafactory.criteria.Criteria;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.association.DtListURIForNNAssociation;
 import io.vertigo.datamodel.data.definitions.association.DtListURIForSimpleAssociation;

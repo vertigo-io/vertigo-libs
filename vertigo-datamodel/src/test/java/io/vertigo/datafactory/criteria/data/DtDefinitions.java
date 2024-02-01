@@ -15,17 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.datamodel.criteria.data;
+package io.vertigo.datafactory.criteria.data;
 
-import io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition;
+import java.util.Iterator;
 
-public enum CriteriaTestSmartTypes {
-	@SmartTypeDefinition(String.class)
-	String,
+import io.vertigo.core.lang.ListBuilder;
+import io.vertigo.datafactory.criteria.data.movies.Movie2;
 
-	@SmartTypeDefinition(Integer.class)
-	Integer,
+public final class DtDefinitions implements Iterable<Class<?>> {
 
-	@SmartTypeDefinition(Long.class)
-	Id;
+	@Override
+	public Iterator<Class<?>> iterator() {
+		return new ListBuilder<Class<?>>()
+				.add(Movie2.class)
+				.build()
+				.iterator();
+	}
+
 }

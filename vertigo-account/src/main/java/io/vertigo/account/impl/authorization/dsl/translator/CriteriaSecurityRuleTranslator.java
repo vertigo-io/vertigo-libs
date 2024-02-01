@@ -29,8 +29,8 @@ import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpressio
 import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression.BoolOperator;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleUserPropertyValue;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.criteria.Criteria;
-import io.vertigo.datamodel.criteria.Criterions;
+import io.vertigo.datafactory.criteria.Criteria;
+import io.vertigo.datafactory.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.definitions.DtField;
 import io.vertigo.datamodel.data.model.Entity;

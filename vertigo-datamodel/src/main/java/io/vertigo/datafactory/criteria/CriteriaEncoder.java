@@ -15,21 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.datamodel.criteria.data;
+package io.vertigo.datafactory.criteria;
 
-import java.util.Iterator;
+import java.io.Serializable;
 
-import io.vertigo.core.lang.ListBuilder;
-import io.vertigo.datamodel.criteria.data.movies.Movie2;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
 
-public final class DtDefinitions implements Iterable<Class<?>> {
+public interface CriteriaEncoder {
 
-	@Override
-	public Iterator<Class<?>> iterator() {
-		return new ListBuilder<Class<?>>()
-				.add(Movie2.class)
-				.build()
-				.iterator();
-	}
+	String encodeOperator(CriteriaCtx ctx, CriterionOperator criterionOperator, DataFieldName dataFieldName, Serializable[] values);
+
+	String encodeLogicalOperator(CriteriaLogicalOperator logicalOperator);
+
+	String getExpressionStartDelimiter();
+
+	String getExpressionEndDelimiter();
 
 }

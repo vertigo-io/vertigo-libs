@@ -15,14 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.datamodel.criteria;
+package io.vertigo.datafactory.criteria.data;
 
-/**
- * Enum of logical operator between criteria expressions
- * or and and
- * @author mlaroche
- *
- */
-public enum CriteriaLogicalOperator {
-	OR, AND
+import io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition;
+
+public enum CriteriaTestSmartTypes {
+	@SmartTypeDefinition(String.class)
+	String,
+
+	@SmartTypeDefinition(Integer.class)
+	Integer,
+
+	@SmartTypeDefinition(Long.class)
+	Id;
 }

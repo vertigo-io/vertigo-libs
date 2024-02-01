@@ -33,8 +33,8 @@ import javax.inject.Inject;
 
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.datamodel.criteria.CriterionLimit;
-import io.vertigo.datamodel.criteria.Criterions;
+import io.vertigo.datafactory.criteria.CriterionLimit;
+import io.vertigo.datafactory.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DtField;
 import io.vertigo.datamodel.data.model.DtList;
