@@ -20,7 +20,7 @@ package io.vertigo.datamodel.smarttype.data;
 import java.util.Optional;
 
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.datamodel.structure.definitions.Constraint;
+import io.vertigo.datamodel.smarttype.definitions.Constraint;
 import io.vertigo.datamodel.structure.definitions.Property;
 
 /**

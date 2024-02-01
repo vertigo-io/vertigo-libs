@@ -15,9 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.datamodel.structure.definitions;
+package io.vertigo.datamodel.smarttype.definitions;
 
 import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.datamodel.structure.definitions.Property;
 
 /**
  * Interface de base pour la définition de contrainte

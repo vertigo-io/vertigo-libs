@@ -45,7 +45,7 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinitionBuilder;
 import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DataDefinitionBuilder;
 import io.vertigo.datamodel.structure.definitions.DtField.FieldType;
-import io.vertigo.datamodel.structure.definitions.DtStereotype;
+import io.vertigo.datamodel.structure.definitions.DataStereotype;
 import io.vertigo.datamodel.structure.definitions.association.AssociationNNDefinition;
 import io.vertigo.datamodel.structure.definitions.association.AssociationNode;
 import io.vertigo.datamodel.structure.definitions.association.AssociationSimpleDefinition;
@@ -199,7 +199,7 @@ public final class DtObjectsLoader implements Loader {
 	private static void extractDynamicDefinitionForFragment(final Class<DtObject> clazz, final DefinitionSpace definitionSpace, final DataDefinitionBuilder dataDefinitionBuilder) {
 		for (final Annotation annotation : clazz.getAnnotations()) {
 			if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Fragment) {
-				dataDefinitionBuilder.withStereoType(DtStereotype.Fragment);
+				dataDefinitionBuilder.withStereoType(DataStereotype.Fragment);
 				dataDefinitionBuilder.withFragment(definitionSpace.resolve(((io.vertigo.datamodel.structure.stereotype.Fragment) annotation).fragmentOf(), DataDefinition.class));
 				break;
 			}
@@ -277,17 +277,17 @@ public final class DtObjectsLoader implements Loader {
 		return DataDefinition.DEFAULT_DATA_SPACE;
 	}
 
-	private static DtStereotype parseStereotype(final Class<DtObject> clazz) {
+	private static DataStereotype parseStereotype(final Class<DtObject> clazz) {
 		if (DtStaticMasterData.class.isAssignableFrom(clazz)) {
-			return DtStereotype.StaticMasterData;
+			return DataStereotype.StaticMasterData;
 		} else if (DtMasterData.class.isAssignableFrom(clazz)) {
-			return DtStereotype.MasterData;
+			return DataStereotype.MasterData;
 		} else if (KeyConcept.class.isAssignableFrom(clazz)) {
-			return DtStereotype.KeyConcept;
+			return DataStereotype.KeyConcept;
 		} else if (Entity.class.isAssignableFrom(clazz)) {
-			return DtStereotype.Entity;
+			return DataStereotype.Entity;
 		}
-		return DtStereotype.ValueObject;
+		return DataStereotype.ValueObject;
 	}
 
 	private static void parseAssociationDefinition(final Map<String, DynamicDefinition> dynamicModelRepository, final Field field) {

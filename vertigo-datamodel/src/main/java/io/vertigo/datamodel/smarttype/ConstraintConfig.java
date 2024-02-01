@@ -17,7 +17,7 @@
  */
 package io.vertigo.datamodel.smarttype;
 
-import io.vertigo.datamodel.structure.definitions.Constraint;
+import io.vertigo.datamodel.smarttype.definitions.Constraint;
 
 public record ConstraintConfig(
 		Class<? extends Constraint> constraintClass,

@@ -54,7 +54,7 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 	/** Map. (fieldName, DtField). */
 	private final Map<String, DtField> mappedFields;
 
-	private final DtStereotype stereotype;
+	private final DataStereotype stereotype;
 
 	/** id Field */
 	private final Optional<DtField> idFieldOpt;
@@ -73,7 +73,7 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 			final String name,
 			final Optional<DefinitionId<DataDefinition>> fragment,
 			final String packageName,
-			final DtStereotype stereotype,
+			final DataStereotype stereotype,
 			final List<DtField> dtFields,
 			final String dataSpace,
 			final Optional<DtField> sortField,
@@ -125,7 +125,7 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 		//-----
 		Assertion.check()
 				.when(fragment.isPresent(), () -> Assertion.check()
-						.isTrue(DtStereotype.Fragment == stereotype, "Error on {0} with sterotype {1}, If an object is a fragment then it must have this stereotype", name, stereotype))
+						.isTrue(DataStereotype.Fragment == stereotype, "Error on {0} with sterotype {1}, If an object is a fragment then it must have this stereotype", name, stereotype))
 				//Persistent => ID
 				.when(stereotype.isPersistent(), () -> Assertion.check()
 						.isTrue(idFieldOpt.isPresent(), "Error on {0}, If an object is persistent then it must have an ID", name))
@@ -159,7 +159,7 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 	/**
 	 * @return Stereotype du Dt
 	 */
-	public DtStereotype getStereotype() {
+	public DataStereotype getStereotype() {
 		return stereotype;
 	}
 

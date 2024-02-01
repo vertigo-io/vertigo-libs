@@ -27,7 +27,7 @@ import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.datamodel.structure.definitions.DataDefinition;
-import io.vertigo.datamodel.structure.definitions.DtStereotype;
+import io.vertigo.datamodel.structure.definitions.DataStereotype;
 import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
@@ -64,7 +64,7 @@ public abstract class AbstractMasterDataDefinitionProvider implements SimpleDefi
 		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(dtObjectClass);
 		// Si la durée dans le cache n'est pas précisé, on se base sur le type de la clé primaire pour déterminer la durée
 		final int cacheDuration;
-		if (dataDefinition.getStereotype() == DtStereotype.StaticMasterData) {
+		if (dataDefinition.getStereotype() == DataStereotype.StaticMasterData) {
 			cacheDuration = CACHE_DURATION_LONG;
 		} else {
 			cacheDuration = CACHE_DURATION_SHORT;

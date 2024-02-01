@@ -23,8 +23,8 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.structure.definitions.Formatter;
-import io.vertigo.datamodel.structure.definitions.FormatterException;
+import io.vertigo.datamodel.smarttype.definitions.Formatter;
+import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 
 /**
  * Default formatter for boolean, number, date and string.

@@ -21,7 +21,7 @@ package io.vertigo.datamodel.structure.definitions;
  * The type of dt (Will be refactored in next releases, not homogeneous)
  *
  */
-public enum DtStereotype {
+public enum DataStereotype {
 	MasterData, //
 	StaticMasterData, //
 	KeyConcept, //

@@ -29,8 +29,8 @@ import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.datamodel.structure.definitions.Formatter;
-import io.vertigo.datamodel.structure.definitions.FormatterException;
+import io.vertigo.datamodel.smarttype.definitions.Formatter;
+import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 
 /**
  * Test de l'implémentation standard.

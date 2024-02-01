@@ -23,6 +23,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
+import io.vertigo.datamodel.smarttype.definitions.ConstraintException;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 
 /**

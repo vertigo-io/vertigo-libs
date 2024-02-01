@@ -30,8 +30,8 @@ import io.vertigo.core.lang.json.JsonExclude;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.structure.definitions.Formatter;
-import io.vertigo.datamodel.structure.definitions.FormatterException;
+import io.vertigo.datamodel.smarttype.definitions.Formatter;
+import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 
 /**
  * Gestion des formattages de dates.

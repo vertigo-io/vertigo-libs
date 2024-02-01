@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 @Target({ ElementType.FIELD })
 @Repeatable(Constraints.class)
 public @interface Constraint {
-	Class<? extends io.vertigo.datamodel.structure.definitions.Constraint> clazz();
+	Class<? extends io.vertigo.datamodel.smarttype.definitions.Constraint> clazz();
 
 	String arg() default "";
 

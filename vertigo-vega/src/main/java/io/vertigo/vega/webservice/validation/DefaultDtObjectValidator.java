@@ -19,7 +19,7 @@ package io.vertigo.vega.webservice.validation;
 
 import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.ConstraintException;
+import io.vertigo.datamodel.smarttype.definitions.ConstraintException;
 import io.vertigo.datamodel.structure.definitions.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 

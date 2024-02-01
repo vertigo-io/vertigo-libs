@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.datamodel.structure.definitions.Constraint;
+import io.vertigo.datamodel.smarttype.definitions.Constraint;
 import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.definitions.Property;
 

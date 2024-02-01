@@ -59,7 +59,7 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 	private final String myName;
 	private DefinitionId<DataDefinition> myFragmentId;
 	private String myPackageName;
-	private DtStereotype myStereotype;
+	private DataStereotype myStereotype;
 	private DtField myIdField;
 	private final List<DtField> myFields = new ArrayList<>();
 	private String myDataSpace;
@@ -98,7 +98,7 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 	public DataDefinitionBuilder withFragment(final DataDefinition fragment) {
 		Assertion.check().isNotNull(fragment);
 		//---
-		myStereotype = DtStereotype.Fragment;
+		myStereotype = DataStereotype.Fragment;
 		myFragmentId = fragment.id();
 		return this;
 	}
@@ -109,7 +109,7 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 	 * @param stereotype the stereotype of the dtDefinition
 	 * @return this builder
 	 */
-	public DataDefinitionBuilder withStereoType(final DtStereotype stereotype) {
+	public DataDefinitionBuilder withStereoType(final DataStereotype stereotype) {
 		Assertion.check().isNotNull(stereotype);
 		//-----
 		myStereotype = stereotype;
@@ -325,14 +325,14 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 		Assertion.check().isNull(dataDefinition, "build() already executed");
 		//-----
 		if (myStereotype == null) {
-			myStereotype = myIdField == null ? DtStereotype.ValueObject : DtStereotype.Entity;
+			myStereotype = myIdField == null ? DataStereotype.ValueObject : DataStereotype.Entity;
 		}
 
 		final DtField sortField;
 		if (mySortFieldName != null) {
 			sortField = findFieldByName(mySortFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Sort field '{0}' not found on '{1}'", mySortFieldName, dataDefinition.getName())));
-		} else if (myStereotype == DtStereotype.Fragment) {
+		} else if (myStereotype == DataStereotype.Fragment) {
 			sortField = myFragmentId.get().getSortField().orElse(null);
 		} else {
 			sortField = null;
@@ -342,7 +342,7 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 		if (myDisplayFieldName != null) {
 			displayField = findFieldByName(myDisplayFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Display field '{0}' not found on '{1}'", myDisplayFieldName, dataDefinition.getName())));
-		} else if (myStereotype == DtStereotype.Fragment) {
+		} else if (myStereotype == DataStereotype.Fragment) {
 			displayField = myFragmentId.get().getDisplayField().orElse(null);
 		} else {
 			displayField = null;
@@ -352,7 +352,7 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 		if (myHandleFieldName != null) {
 			handleField = findFieldByName(myHandleFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Handle field '{0}' not found on '{1}'", myHandleFieldName, dataDefinition.getName())));
-		} else if (myStereotype == DtStereotype.Fragment) {
+		} else if (myStereotype == DataStereotype.Fragment) {
 			handleField = myFragmentId.get().getHandleField().orElse(null);
 		} else {
 			handleField = null;

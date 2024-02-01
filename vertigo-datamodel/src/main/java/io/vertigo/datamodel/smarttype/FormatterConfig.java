@@ -17,7 +17,7 @@
  */
 package io.vertigo.datamodel.smarttype;
 
-import io.vertigo.datamodel.structure.definitions.Formatter;
+import io.vertigo.datamodel.smarttype.definitions.Formatter;
 
 public record FormatterConfig(
 		Class<? extends Formatter> formatterClass,

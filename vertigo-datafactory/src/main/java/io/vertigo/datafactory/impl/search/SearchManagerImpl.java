@@ -48,7 +48,7 @@ import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.definitions.DataDefinition;
-import io.vertigo.datamodel.structure.definitions.DtStereotype;
+import io.vertigo.datamodel.structure.definitions.DataStereotype;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.KeyConcept;
@@ -302,7 +302,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	public void onEvent(final StoreEvent storeEvent) {
 		final List<UID<? extends KeyConcept>> keyConceptUris = (List) storeEvent.getUIDs().stream()
 				//On ne traite l'event que si il porte sur un KeyConcept
-				.filter(uid -> uid.getDefinition().getStereotype() == DtStereotype.KeyConcept
+				.filter(uid -> uid.getDefinition().getStereotype() == DataStereotype.KeyConcept
 						&& hasIndexDefinitionByKeyConcept(uid.getDefinition()))
 				.toList();
 		if (!keyConceptUris.isEmpty()) {

@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.lang.BasicType;
-import io.vertigo.datamodel.structure.definitions.Formatter;
-import io.vertigo.datamodel.structure.definitions.FormatterException;
+import io.vertigo.datamodel.smarttype.definitions.Formatter;
+import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 
 /**
  * Test de l'implémentation standard.

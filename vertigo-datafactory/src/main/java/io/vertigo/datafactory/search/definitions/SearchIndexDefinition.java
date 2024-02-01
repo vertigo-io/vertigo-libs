@@ -30,7 +30,7 @@ import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datamodel.structure.definitions.DataDefinition;
 import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtStereotype;
+import io.vertigo.datamodel.structure.definitions.DataStereotype;
 
 /**
  * Définition de l'index de recherche.
@@ -84,7 +84,7 @@ public final class SearchIndexDefinition extends AbstractDefinition<SearchIndexD
 		Assertion.check()
 				.isNotNull(keyConceptDtDefinition)
 				.isTrue(
-						keyConceptDtDefinition.getStereotype() == DtStereotype.KeyConcept,
+						keyConceptDtDefinition.getStereotype() == DataStereotype.KeyConcept,
 						"keyConceptDtDefinition ({0}) must be a DtDefinition of a KeyConcept class", keyConceptDtDefinition.getName())
 				.isNotNull(indexDtDefinition)
 				.isNotNull(indexCopyFromFieldsMap)
