@@ -222,7 +222,7 @@ public final class DtObjectUtil {
 	public static DataDefinition findDtDefinition(final String className) {
 		Assertion.check().isNotNull(className);
 		//-----
-		final String simpleName = DtDefinition.PREFIX + className.substring(className.lastIndexOf('.') + 1);
+		final String simpleName = DataDefinition.PREFIX + className.substring(className.lastIndexOf('.') + 1);
 		return Node.getNode().getDefinitionSpace().resolve(simpleName, DataDefinition.class);
 	}
 
