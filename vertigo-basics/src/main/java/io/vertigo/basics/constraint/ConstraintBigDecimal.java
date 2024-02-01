@@ -24,8 +24,8 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.datamodel.data.definitions.Property;
 import io.vertigo.datamodel.smarttype.definitions.Constraint;
-import io.vertigo.datamodel.structure.definitions.Property;
 
 /**
  * Manage BigDecimal's constraints.

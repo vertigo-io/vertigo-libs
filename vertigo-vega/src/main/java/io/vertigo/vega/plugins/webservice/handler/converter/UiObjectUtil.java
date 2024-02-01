@@ -22,7 +22,7 @@ import java.util.Set;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
 import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.webservice.definitions.WebServiceParam;

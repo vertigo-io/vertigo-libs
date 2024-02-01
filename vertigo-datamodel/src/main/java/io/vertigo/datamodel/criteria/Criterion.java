@@ -26,11 +26,11 @@ import java.util.function.Predicate;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.util.DateUtil;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DataFieldName;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.util.DtObjectUtil;
 
 final class Criterion<D extends DtObject> extends Criteria<D> {
 	private static final long serialVersionUID = -7797854063455062775L;

@@ -19,8 +19,8 @@ package io.vertigo.datastore.entitystore;
 
 import java.util.List;
 
-import io.vertigo.datamodel.structure.definitions.association.DtListURIForNNAssociation;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.data.definitions.association.DtListURIForNNAssociation;
+import io.vertigo.datamodel.data.model.UID;
 
 /**
  * Gestion des relations NN.

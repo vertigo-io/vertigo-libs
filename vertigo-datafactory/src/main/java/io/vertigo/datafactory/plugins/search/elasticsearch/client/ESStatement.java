@@ -56,12 +56,12 @@ import io.vertigo.datafactory.plugins.search.elasticsearch.ESDocumentCodec;
 import io.vertigo.datafactory.plugins.search.elasticsearch.ESFacetedQueryResultBuilder;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.KeyConcept;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.KeyConcept;
+import io.vertigo.datamodel.data.model.UID;
 
 //vérifier
 /**

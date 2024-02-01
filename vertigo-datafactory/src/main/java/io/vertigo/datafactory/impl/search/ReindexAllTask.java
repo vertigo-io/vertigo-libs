@@ -33,8 +33,8 @@ import io.vertigo.datafactory.search.definitions.SearchChunk;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.definitions.SearchLoader;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.KeyConcept;
+import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.KeyConcept;
 
 /**
  * Reindex all data task.

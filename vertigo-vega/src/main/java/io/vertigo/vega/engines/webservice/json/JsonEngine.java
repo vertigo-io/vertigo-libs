@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import io.vertigo.core.node.component.Component;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.vega.webservice.model.UiObject;
 
 /**

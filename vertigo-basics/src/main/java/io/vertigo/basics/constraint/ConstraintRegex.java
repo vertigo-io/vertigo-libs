@@ -22,9 +22,9 @@ import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.datamodel.data.definitions.DtProperty;
+import io.vertigo.datamodel.data.definitions.Property;
 import io.vertigo.datamodel.smarttype.definitions.Constraint;
-import io.vertigo.datamodel.structure.definitions.DtProperty;
-import io.vertigo.datamodel.structure.definitions.Property;
 
 /**
  * Exemple de contrainte utilisant une expression régulière.

@@ -21,9 +21,9 @@ import java.util.Collection;
 import java.util.function.UnaryOperator;
 
 import io.vertigo.core.lang.Builder;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtObject;
 
 /**
  * Processor that can be composed of filters or sorters and be applied on a list. *

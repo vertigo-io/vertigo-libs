@@ -23,7 +23,7 @@ import java.util.List;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DtObjectUtil;
 import io.vertigo.datastore.cache.definitions.CacheDefinition;
 import io.vertigo.datastore.entitystore.data.domain.car.Car;
 import io.vertigo.datastore.impl.entitystore.cache.CacheData;

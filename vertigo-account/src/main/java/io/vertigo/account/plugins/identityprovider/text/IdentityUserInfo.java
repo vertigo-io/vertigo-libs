@@ -18,7 +18,7 @@
 package io.vertigo.account.plugins.identityprovider.text;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.data.model.Entity;
 
 final class IdentityUserInfo {
 

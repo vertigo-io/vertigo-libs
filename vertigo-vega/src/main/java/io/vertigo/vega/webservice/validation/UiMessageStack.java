@@ -19,7 +19,7 @@ package io.vertigo.vega.webservice.validation;
 
 import java.io.Serializable;
 
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DtObject;
 
 /**
  * Class d'enregistrement des messages.

@@ -21,10 +21,10 @@ import io.vertigo.basics.task.TaskEngineProc;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.task.TaskManager;
-import io.vertigo.datamodel.task.definitions.TaskDefinition;
-import io.vertigo.datamodel.task.model.Task;
+import io.vertigo.datafactory.task.TaskManager;
+import io.vertigo.datafactory.task.definitions.TaskDefinition;
+import io.vertigo.datafactory.task.model.Task;
+import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 
 public final class SuperHeroDataBase {

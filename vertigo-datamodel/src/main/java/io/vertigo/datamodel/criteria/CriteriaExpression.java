@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DtObject;
 
 final class CriteriaExpression<D extends DtObject> extends Criteria<D> {
 	private static final long serialVersionUID = 8301054336845536973L;

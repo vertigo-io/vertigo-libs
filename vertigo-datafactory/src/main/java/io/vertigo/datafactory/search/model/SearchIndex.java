@@ -19,10 +19,10 @@ package io.vertigo.datafactory.search.model;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.KeyConcept;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.KeyConcept;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.util.DtObjectUtil;
 
 /**
  * Objet d'échange avec l'index.

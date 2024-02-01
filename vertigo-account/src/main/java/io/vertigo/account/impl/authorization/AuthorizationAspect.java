@@ -32,7 +32,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.component.aspect.Aspect;
 import io.vertigo.core.node.component.aspect.AspectMethodInvocation;
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.data.model.Entity;
 
 /**
  * Aspect pour la gestion des Secured au niveau de la couche service.

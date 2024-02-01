@@ -32,7 +32,7 @@ import io.vertigo.datamodel.criteria.CriteriaEncoder;
 import io.vertigo.datamodel.criteria.CriteriaLogicalOperator;
 import io.vertigo.datamodel.criteria.CriterionLimit;
 import io.vertigo.datamodel.criteria.CriterionOperator;
-import io.vertigo.datamodel.structure.definitions.DataFieldName;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
 
 public class SqlCriteriaEncoder implements CriteriaEncoder {
 

@@ -46,13 +46,13 @@ import io.vertigo.datafactory.collections.data.domain.SmartItemCd;
 import io.vertigo.datafactory.collections.data.domain.SmartItemIhm;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.criteria.Criterions;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
-import io.vertigo.datamodel.structure.util.VCollectors;
 import io.vertigo.datastore.DataStoreFeatures;
 
 /**

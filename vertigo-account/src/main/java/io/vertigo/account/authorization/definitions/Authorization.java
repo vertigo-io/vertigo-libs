@@ -28,7 +28,7 @@ import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpressio
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 
 /**
  * Une authorization est un droit sur une fonction de l'application.

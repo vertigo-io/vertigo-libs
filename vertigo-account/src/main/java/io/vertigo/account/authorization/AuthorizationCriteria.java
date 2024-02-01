@@ -31,7 +31,7 @@ import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.CriteriaCtx;
 import io.vertigo.datamodel.criteria.CriteriaEncoder;
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datastore.plugins.entitystore.sql.SqlCriteriaEncoder;
 
 public class AuthorizationCriteria<E extends Entity> {

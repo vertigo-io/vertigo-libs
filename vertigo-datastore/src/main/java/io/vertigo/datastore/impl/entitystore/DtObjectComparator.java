@@ -21,14 +21,14 @@ import java.util.Comparator;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.datamodel.structure.definitions.DataAccessor;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtField.FieldType;
-import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataAccessor;
+import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DtField.FieldType;
+import io.vertigo.datamodel.data.model.DtListURIForMasterData;
+import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.util.DtObjectUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 
 /**

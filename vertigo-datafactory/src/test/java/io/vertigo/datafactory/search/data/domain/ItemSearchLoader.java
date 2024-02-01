@@ -32,8 +32,8 @@ import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.search.definitions.SearchChunk;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.model.UID;
 
 public final class ItemSearchLoader extends AbstractSearchLoader<Item, Item> {
 	private static final int SEARCH_CHUNK_SIZE = 5;

@@ -37,26 +37,26 @@ import io.vertigo.core.lang.Selector.ClassConditions;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinitionBuilder;
+import io.vertigo.datamodel.data.definitions.DataStereotype;
+import io.vertigo.datamodel.data.definitions.DtField.FieldType;
+import io.vertigo.datamodel.data.definitions.association.AssociationNNDefinition;
+import io.vertigo.datamodel.data.definitions.association.AssociationNode;
+import io.vertigo.datamodel.data.definitions.association.AssociationSimpleDefinition;
+import io.vertigo.datamodel.data.model.DtMasterData;
+import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.DtStaticMasterData;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.Fragment;
+import io.vertigo.datamodel.data.model.KeyConcept;
+import io.vertigo.datamodel.data.stereotype.DataSpace;
+import io.vertigo.datamodel.data.util.AssociationUtil;
 import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinition;
 import io.vertigo.datamodel.smarttype.annotations.Adapter;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition.Scope;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinitionBuilder;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
-import io.vertigo.datamodel.structure.definitions.DataDefinitionBuilder;
-import io.vertigo.datamodel.structure.definitions.DtField.FieldType;
-import io.vertigo.datamodel.structure.definitions.DataStereotype;
-import io.vertigo.datamodel.structure.definitions.association.AssociationNNDefinition;
-import io.vertigo.datamodel.structure.definitions.association.AssociationNode;
-import io.vertigo.datamodel.structure.definitions.association.AssociationSimpleDefinition;
-import io.vertigo.datamodel.structure.model.DtMasterData;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.DtStaticMasterData;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.Fragment;
-import io.vertigo.datamodel.structure.model.KeyConcept;
-import io.vertigo.datamodel.structure.stereotype.DataSpace;
-import io.vertigo.datamodel.structure.util.AssociationUtil;
 
 /**
  * Lecture des annotations présentes sur les objets métier.
@@ -148,26 +148,26 @@ public final class DtObjectsLoader implements Loader {
 		final List<String> definitionLinks = new ArrayList<>();
 
 		for (final Annotation annotation : clazz.getAnnotations()) {
-			if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Fragment) {
-				definitionLinks.add(io.vertigo.datamodel.structure.stereotype.Fragment.class.cast(annotation).fragmentOf());
+			if (annotation instanceof io.vertigo.datamodel.data.stereotype.Fragment) {
+				definitionLinks.add(io.vertigo.datamodel.data.stereotype.Fragment.class.cast(annotation).fragmentOf());
 			}
 		}
 
 		for (final Field field : fields) {
 			for (final Annotation annotation : field.getAnnotations()) {
-				if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Field) {
-					definitionLinks.add(io.vertigo.datamodel.structure.stereotype.Field.class.cast(annotation).smartType());
+				if (annotation instanceof io.vertigo.datamodel.data.stereotype.Field) {
+					definitionLinks.add(io.vertigo.datamodel.data.stereotype.Field.class.cast(annotation).smartType());
 				}
 			}
 		}
 		for (final Method method : methods) {
 			for (final Annotation annotation : method.getAnnotations()) {
-				if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Field) {
-					definitionLinks.add(io.vertigo.datamodel.structure.stereotype.Field.class.cast(annotation).smartType());
+				if (annotation instanceof io.vertigo.datamodel.data.stereotype.Field) {
+					definitionLinks.add(io.vertigo.datamodel.data.stereotype.Field.class.cast(annotation).smartType());
 				}
 				//FK are only on getter/setter
-				if (annotation instanceof io.vertigo.datamodel.structure.stereotype.ForeignKey) {
-					definitionLinks.add(io.vertigo.datamodel.structure.stereotype.ForeignKey.class.cast(annotation).smartType());
+				if (annotation instanceof io.vertigo.datamodel.data.stereotype.ForeignKey) {
+					definitionLinks.add(io.vertigo.datamodel.data.stereotype.ForeignKey.class.cast(annotation).smartType());
 				}
 			}
 		}
@@ -198,9 +198,9 @@ public final class DtObjectsLoader implements Loader {
 
 	private static void extractDynamicDefinitionForFragment(final Class<DtObject> clazz, final DefinitionSpace definitionSpace, final DataDefinitionBuilder dataDefinitionBuilder) {
 		for (final Annotation annotation : clazz.getAnnotations()) {
-			if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Fragment) {
+			if (annotation instanceof io.vertigo.datamodel.data.stereotype.Fragment) {
 				dataDefinitionBuilder.withStereoType(DataStereotype.Fragment);
-				dataDefinitionBuilder.withFragment(definitionSpace.resolve(((io.vertigo.datamodel.structure.stereotype.Fragment) annotation).fragmentOf(), DataDefinition.class));
+				dataDefinitionBuilder.withFragment(definitionSpace.resolve(((io.vertigo.datamodel.data.stereotype.Fragment) annotation).fragmentOf(), DataDefinition.class));
 				break;
 			}
 		}
@@ -208,23 +208,23 @@ public final class DtObjectsLoader implements Loader {
 
 	private static void extractDynamicDefinitionFromMethods(final Method[] methods, final DefinitionSpace definitionSpace, final DataDefinitionBuilder dataDefinitionBuilder) {
 		for (final Method method : methods) {
-			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.Field.class)) {
-				final io.vertigo.datamodel.structure.stereotype.Field methodAnnotation = method.getAnnotation(io.vertigo.datamodel.structure.stereotype.Field.class);
+			if (method.isAnnotationPresent(io.vertigo.datamodel.data.stereotype.Field.class)) {
+				final io.vertigo.datamodel.data.stereotype.Field methodAnnotation = method.getAnnotation(io.vertigo.datamodel.data.stereotype.Field.class);
 				final String fieldName = createFieldName(method);
 				parseAnnotation(fieldName, dataDefinitionBuilder, methodAnnotation, definitionSpace);
 			}
-			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.SortField.class)) {
+			if (method.isAnnotationPresent(io.vertigo.datamodel.data.stereotype.SortField.class)) {
 				dataDefinitionBuilder.withSortField(createFieldName(method));
 			}
-			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.DisplayField.class)) {
+			if (method.isAnnotationPresent(io.vertigo.datamodel.data.stereotype.DisplayField.class)) {
 				dataDefinitionBuilder.withDisplayField(createFieldName(method));
 			}
-			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.KeyField.class)) {
+			if (method.isAnnotationPresent(io.vertigo.datamodel.data.stereotype.KeyField.class)) {
 				dataDefinitionBuilder.withKeyField(createFieldName(method));
 			}
-			if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.ForeignKey.class)) {
+			if (method.isAnnotationPresent(io.vertigo.datamodel.data.stereotype.ForeignKey.class)) {
 				//Le nom est automatiquement déduit du nom du champ
-				final io.vertigo.datamodel.structure.stereotype.ForeignKey foreignKeyAnnotation = method.getAnnotation(io.vertigo.datamodel.structure.stereotype.ForeignKey.class);
+				final io.vertigo.datamodel.data.stereotype.ForeignKey foreignKeyAnnotation = method.getAnnotation(io.vertigo.datamodel.data.stereotype.ForeignKey.class);
 				dataDefinitionBuilder.addForeignKey(createFieldName(method), foreignKeyAnnotation.label(), definitionSpace.resolve(foreignKeyAnnotation.smartType(), SmartTypeDefinition.class), foreignKeyAnnotation.cardinality(), foreignKeyAnnotation.fkDefinition());
 			}
 		}
@@ -232,18 +232,18 @@ public final class DtObjectsLoader implements Loader {
 
 	private static void extractDynamicDefinitionFromFields(final List<Field> fields, final DefinitionSpace definitionSpace, final DataDefinitionBuilder dataDefinitionBuilder) {
 		for (final Field field : fields) {
-			if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.Field.class)) {
+			if (field.isAnnotationPresent(io.vertigo.datamodel.data.stereotype.Field.class)) {
 				//Le nom est automatiquement déduit du nom du champ
-				final io.vertigo.datamodel.structure.stereotype.Field fieldAnnotation = field.getAnnotation(io.vertigo.datamodel.structure.stereotype.Field.class);
+				final io.vertigo.datamodel.data.stereotype.Field fieldAnnotation = field.getAnnotation(io.vertigo.datamodel.data.stereotype.Field.class);
 				parseAnnotation(createFieldName(field), dataDefinitionBuilder, fieldAnnotation, definitionSpace);
 			}
-			if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.SortField.class)) {
+			if (field.isAnnotationPresent(io.vertigo.datamodel.data.stereotype.SortField.class)) {
 				dataDefinitionBuilder.withSortField(createFieldName(field));
 			}
-			if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.DisplayField.class)) {
+			if (field.isAnnotationPresent(io.vertigo.datamodel.data.stereotype.DisplayField.class)) {
 				dataDefinitionBuilder.withDisplayField(createFieldName(field));
 			}
-			if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.KeyField.class)) {
+			if (field.isAnnotationPresent(io.vertigo.datamodel.data.stereotype.KeyField.class)) {
 				dataDefinitionBuilder.withKeyField(createFieldName(field));
 			}
 
@@ -303,13 +303,13 @@ public final class DtObjectsLoader implements Loader {
 	}
 
 	private static void parseAssociationDefinition(final Map<String, DynamicDefinition> dynamicModelRepository, final Annotation annotation) {
-		if (annotation instanceof final io.vertigo.datamodel.structure.stereotype.Association association) {
+		if (annotation instanceof final io.vertigo.datamodel.data.stereotype.Association association) {
 			if (!dynamicModelRepository.containsKey(association.name())) {
 				//Les associations peuvent être déclarées sur les deux noeuds de l'association.
 				dynamicModelRepository.put(association.name(),
 						createAssociationSimpleDefinition(association));
 			}
-		} else if (annotation instanceof final io.vertigo.datamodel.structure.stereotype.AssociationNN association) {
+		} else if (annotation instanceof final io.vertigo.datamodel.data.stereotype.AssociationNN association) {
 			if (!dynamicModelRepository.containsKey(association.name())) {
 				//Les associations peuvent être déclarées sur les deux noeuds de l'association.
 				dynamicModelRepository.put(association.name(),
@@ -318,7 +318,7 @@ public final class DtObjectsLoader implements Loader {
 		}
 	}
 
-	private static DynamicDefinition createAssociationSimpleDefinition(final io.vertigo.datamodel.structure.stereotype.Association association) {
+	private static DynamicDefinition createAssociationSimpleDefinition(final io.vertigo.datamodel.data.stereotype.Association association) {
 		return new DynamicDefinition(
 				association.name(),
 				Arrays.asList(association.primaryDtDefinitionName(), association.foreignDtDefinitionName()),
@@ -364,7 +364,7 @@ public final class DtObjectsLoader implements Loader {
 				});
 	}
 
-	private static DynamicDefinition createAssociationNNDefinition(final io.vertigo.datamodel.structure.stereotype.AssociationNN association) {
+	private static DynamicDefinition createAssociationNNDefinition(final io.vertigo.datamodel.data.stereotype.AssociationNN association) {
 		return new DynamicDefinition(
 				association.name(),
 				Arrays.asList(association.dtDefinitionA(), association.dtDefinitionB()),
@@ -380,7 +380,7 @@ public final class DtObjectsLoader implements Loader {
 	/*
 	 * Centralisation du parsing des annotations liées à un champ.
 	 */
-	private static void parseAnnotation(final String fieldName, final DataDefinitionBuilder dataDefinitionBuilder, final io.vertigo.datamodel.structure.stereotype.Field field, final DefinitionSpace definitionSpace) {
+	private static void parseAnnotation(final String fieldName, final DataDefinitionBuilder dataDefinitionBuilder, final io.vertigo.datamodel.data.stereotype.Field field, final DefinitionSpace definitionSpace) {
 		//Si on trouve un smartType on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
 		switch (type) {

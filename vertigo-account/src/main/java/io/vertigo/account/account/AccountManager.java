@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.core.node.component.Manager;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datastore.filestore.model.VFile;
 
 /**

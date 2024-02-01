@@ -24,8 +24,8 @@ import java.util.stream.Stream;
 
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DtField;
 
 public final class SearchIndexDefinitionSupplier implements DefinitionSupplier {
 

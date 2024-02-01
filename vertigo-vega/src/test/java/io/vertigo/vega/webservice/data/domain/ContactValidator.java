@@ -21,7 +21,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DtField;
 import io.vertigo.vega.webservice.validation.AbstractDtObjectValidator;
 import io.vertigo.vega.webservice.validation.DtObjectErrors;
 

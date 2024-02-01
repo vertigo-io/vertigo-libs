@@ -20,7 +20,7 @@ package io.vertigo.datamodel.criteria;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DtObject;
 
 final class CriteriaUtil {
 	private static final Logger LOG = LogManager.getLogger(CriteriaUtil.class);

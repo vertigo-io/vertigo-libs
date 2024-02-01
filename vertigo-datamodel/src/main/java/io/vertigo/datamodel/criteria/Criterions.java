@@ -21,8 +21,8 @@ import java.io.Serializable;
 import java.util.function.Predicate;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.definitions.DataFieldName;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.DtObject;
 
 /**
  *

@@ -32,6 +32,12 @@ import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DtProperty;
+import io.vertigo.datamodel.data.definitions.Properties;
+import io.vertigo.datamodel.data.definitions.PropertiesBuilder;
+import io.vertigo.datamodel.data.definitions.Property;
+import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinition;
 import io.vertigo.datamodel.smarttype.AdapterConfig;
 import io.vertigo.datamodel.smarttype.ConstraintConfig;
@@ -43,12 +49,6 @@ import io.vertigo.datamodel.smarttype.annotations.Formatter;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition.Scope;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
-import io.vertigo.datamodel.structure.definitions.DtProperty;
-import io.vertigo.datamodel.structure.definitions.Properties;
-import io.vertigo.datamodel.structure.definitions.PropertiesBuilder;
-import io.vertigo.datamodel.structure.definitions.Property;
-import io.vertigo.datamodel.structure.model.DtObject;
 
 public class SmartTypesLoader implements Loader {
 

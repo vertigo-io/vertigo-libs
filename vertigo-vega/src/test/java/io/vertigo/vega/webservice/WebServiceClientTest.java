@@ -38,7 +38,7 @@ import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.connectors.httpclient.HttpClientCookie;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.AutoCloseableNode;
-import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.vega.impl.webservice.client.WebServiceUserException;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
 import io.vertigo.vega.webservice.data.domain.Address;

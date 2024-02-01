@@ -22,8 +22,8 @@ import java.util.List;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DtField;
 
 /**
  * Une SecuredEntity est une entité sécurisé.

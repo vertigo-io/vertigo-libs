@@ -26,7 +26,7 @@ import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition.FacetOrder;
 import io.vertigo.datafactory.collections.model.FacetValue;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 
 public final class FacetRangeDefinitionSupplier implements DefinitionSupplier {
 

@@ -33,12 +33,12 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.smarttype.data.DtDefinitions;
 import io.vertigo.datamodel.smarttype.data.TestSmartTypes;
 import io.vertigo.datamodel.smarttype.data.domain.Artist;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.util.VCollectors;
 
 /**
  *

@@ -31,11 +31,11 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
+import io.vertigo.datafactory.task.definitions.TaskAttribute;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.VCollectors;
-import io.vertigo.datamodel.task.definitions.TaskAttribute;
 
 /**
  * Permet de réaliser des requêtes sur un base de données.<br>

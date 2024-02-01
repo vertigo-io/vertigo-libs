@@ -31,9 +31,9 @@ import io.vertigo.account.authorization.definitions.rulemodel.RuleUserPropertyVa
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DataFieldName;
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.model.Entity;
 
 /**
  * Translate a security rule into a criteria to be used in SQL queries and as a Java predicate.

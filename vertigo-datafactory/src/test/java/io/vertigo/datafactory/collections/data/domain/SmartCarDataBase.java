@@ -20,8 +20,8 @@ package io.vertigo.datafactory.collections.data.domain;
 import java.util.List;
 import java.util.Locale;
 
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.util.VCollectors;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.util.VCollectors;
 
 /**
  * Base de données des voitures.

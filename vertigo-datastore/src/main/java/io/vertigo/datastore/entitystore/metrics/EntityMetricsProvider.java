@@ -31,7 +31,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.database.sql.connection.SqlConnection;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 
 /**

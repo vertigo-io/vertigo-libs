@@ -25,9 +25,9 @@ import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.smarttype.FormatterConfig;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
 
 /**
  * Provides all the definitions used in the 'account' module.

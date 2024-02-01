@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;

@@ -27,14 +27,14 @@ import io.vertigo.datamodel.criteria.CriteriaEncoder;
 import io.vertigo.datamodel.criteria.CriteriaLogicalOperator;
 import io.vertigo.datamodel.criteria.CriterionOperator;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DataFieldName;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtListURI;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.DtListURI;
+import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.util.DtObjectUtil;
 
 /**
  * Implementation d'une liste filtré par un Criteria.

@@ -23,7 +23,7 @@ import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.account.authorization.definitions.OperationName;
 import io.vertigo.core.node.component.Manager;
 import io.vertigo.datamodel.criteria.Criteria;
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.data.model.Entity;
 
 /**
  * Authorizations manager.

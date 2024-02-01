@@ -37,9 +37,9 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.statement.SqlStatementBuilder;
+import io.vertigo.datafactory.task.definitions.TaskAttribute;
+import io.vertigo.datafactory.task.model.TaskEngine;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.task.definitions.TaskAttribute;
-import io.vertigo.datamodel.task.model.TaskEngine;
 
 /**
  * Fournit des méthodes de haut niveau pour les services de type SQL.<br>

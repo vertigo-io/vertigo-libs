@@ -27,10 +27,10 @@ import java.util.function.UnaryOperator;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.impl.collections.IndexPlugin;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.DtObject;
 
 /**
  * List Function powered with index engine.

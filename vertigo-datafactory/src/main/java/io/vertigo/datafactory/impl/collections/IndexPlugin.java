@@ -23,10 +23,10 @@ import java.util.Optional;
 
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.datafactory.collections.ListFilter;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.DtObject;
 
 /**
  * Plugin de construction et d'interrogation de l'index d'une DtList.

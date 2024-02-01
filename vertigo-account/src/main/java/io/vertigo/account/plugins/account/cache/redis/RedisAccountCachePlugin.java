@@ -33,7 +33,7 @@ import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.MapBuilder;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datastore.filestore.model.VFile;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;

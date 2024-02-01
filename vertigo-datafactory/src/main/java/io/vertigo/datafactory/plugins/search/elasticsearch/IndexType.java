@@ -24,8 +24,8 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.datamodel.data.definitions.DtProperty;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DtProperty;
 
 public final class IndexType {
 

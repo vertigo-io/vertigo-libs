@@ -27,8 +27,8 @@ import java.util.Optional;
 
 import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.impl.webservice.client.WebServiceProxyAnnotation;
 import io.vertigo.vega.webservice.data.domain.Contact;

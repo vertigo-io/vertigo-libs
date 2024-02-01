@@ -51,8 +51,8 @@ import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datamodel.DataModelFeatures;
+import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
-import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datastore.DataStoreFeatures;
 
 /**

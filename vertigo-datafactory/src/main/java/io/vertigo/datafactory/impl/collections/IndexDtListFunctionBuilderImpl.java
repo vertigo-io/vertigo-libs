@@ -24,9 +24,9 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.collections.IndexDtListFunctionBuilder;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.impl.collections.functions.index.IndexFilterFunction;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtObject;
 
 /**
  * Builder for DtListFunction powered by index engine. *

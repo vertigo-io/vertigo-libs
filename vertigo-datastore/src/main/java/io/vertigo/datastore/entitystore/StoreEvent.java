@@ -21,7 +21,7 @@ import java.util.List;
 
 import io.vertigo.commons.eventbus.Event;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.data.model.UID;
 
 /**
  * This class defines the event that is emitted when the store deals with a list of object identified by an uid.

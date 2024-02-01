@@ -19,8 +19,8 @@ package io.vertigo.vega.webservice.data.domain;
 
 import java.time.LocalDate;
 
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.stereotype.Field;
+import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.stereotype.Field;
 
 public final class ContactCriteria implements DtObject {
 

@@ -32,15 +32,15 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.datafactory.search.model.SearchIndex;
+import io.vertigo.datamodel.data.definitions.DataAccessor;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DtField.FieldType;
+import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.KeyConcept;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.util.DtObjectUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DataAccessor;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtField.FieldType;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.KeyConcept;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
 /**
  * Traduction bi directionnelle des objets SOLR en objets logique de recherche.
@@ -98,7 +98,7 @@ public final class ESDocumentCodec {
 		/* On lit du document les données persistantes. */
 		/* 1. UID */
 		final String urn = searchHit.getId();
-		final UID uid = io.vertigo.datamodel.structure.model.UID.of(urn);
+		final UID uid = io.vertigo.datamodel.data.model.UID.of(urn);
 		/* 2 : Result stocké */
 		final I resultDtObjectdtObject;
 		if (searchHit.field(FULL_RESULT) == null) {

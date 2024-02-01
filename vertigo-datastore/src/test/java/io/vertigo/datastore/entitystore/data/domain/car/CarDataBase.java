@@ -21,8 +21,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.util.VCollectors;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datastore.entitystore.data.domain.GeoPoint;
 
 /**

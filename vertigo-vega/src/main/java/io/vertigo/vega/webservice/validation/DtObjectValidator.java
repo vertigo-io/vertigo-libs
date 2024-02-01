@@ -19,7 +19,7 @@ package io.vertigo.vega.webservice.validation;
 
 import java.util.Set;
 
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DtObject;
 
 /**
  * Validator of DtObject.

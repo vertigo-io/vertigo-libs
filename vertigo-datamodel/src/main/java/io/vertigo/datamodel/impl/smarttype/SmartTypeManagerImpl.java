@@ -39,6 +39,7 @@ import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.smarttype.AdapterConfig;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmarttypeResources;
@@ -47,7 +48,6 @@ import io.vertigo.datamodel.smarttype.definitions.ConstraintException;
 import io.vertigo.datamodel.smarttype.definitions.Formatter;
 import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.model.DtList;
 
 public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 

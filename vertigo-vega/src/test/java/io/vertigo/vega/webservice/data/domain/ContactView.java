@@ -23,9 +23,9 @@ import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.stereotype.Field;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.stereotype.Field;
 
 public final class ContactView implements DtObject {
 	private static final long serialVersionUID = 2074906343392206381L;

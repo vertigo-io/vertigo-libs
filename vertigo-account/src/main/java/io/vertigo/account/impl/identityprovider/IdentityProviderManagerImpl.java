@@ -24,8 +24,8 @@ import javax.inject.Inject;
 
 import io.vertigo.account.identityprovider.IdentityProviderManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datastore.filestore.model.VFile;
 
 /**

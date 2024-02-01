@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
 import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;

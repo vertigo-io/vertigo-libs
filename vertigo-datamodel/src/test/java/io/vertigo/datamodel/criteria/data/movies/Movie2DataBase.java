@@ -19,8 +19,8 @@ package io.vertigo.datamodel.criteria.data.movies;
 
 import java.util.List;
 
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.util.VCollectors;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.util.VCollectors;
 
 /**
  *

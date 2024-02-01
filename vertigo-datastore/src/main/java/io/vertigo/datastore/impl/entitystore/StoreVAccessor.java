@@ -18,8 +18,8 @@
 package io.vertigo.datastore.impl.entitystore;
 
 import io.vertigo.core.node.Node;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.VAccessor;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.VAccessor;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 
 /**

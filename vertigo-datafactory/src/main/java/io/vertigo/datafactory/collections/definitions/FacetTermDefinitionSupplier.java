@@ -21,7 +21,7 @@ import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition.FacetOrder;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 
 public final class FacetTermDefinitionSupplier implements DefinitionSupplier {
 

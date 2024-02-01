@@ -18,7 +18,7 @@
 package io.vertigo.datamodel.smarttype.definitions;
 
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.datamodel.structure.definitions.Property;
+import io.vertigo.datamodel.data.definitions.Property;
 
 /**
  * Interface de base pour la définition de contrainte

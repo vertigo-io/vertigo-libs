@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datastore.cache.CacheManager;
 
 /**

@@ -29,7 +29,7 @@ import io.vertigo.datafactory.collections.definitions.ListFilterBuilder;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.impl.search.dsl.model.DslGeoExpression;
 import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
-import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DtField;
 
 /**
  * Critères de recherche.

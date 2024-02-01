@@ -19,8 +19,8 @@ package io.vertigo.datastore.entitystore.data.domain.car;
 
 import java.io.Serializable;
 
-import io.vertigo.datamodel.structure.model.MasterDataEnum;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.data.model.MasterDataEnum;
+import io.vertigo.datamodel.data.model.UID;
 
 public enum MotorTypeEnum implements MasterDataEnum<MotorType> {
 

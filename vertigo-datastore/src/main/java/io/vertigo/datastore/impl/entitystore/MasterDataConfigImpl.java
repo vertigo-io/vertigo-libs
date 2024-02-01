@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
-import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.model.DtListURIForMasterData;
 import io.vertigo.datastore.entitystore.MasterDataConfig;
 import io.vertigo.datastore.entitystore.definitions.MasterDataDefinition;
 

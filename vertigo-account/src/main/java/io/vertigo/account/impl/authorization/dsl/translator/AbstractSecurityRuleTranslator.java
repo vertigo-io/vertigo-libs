@@ -34,7 +34,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.DateUtil;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DtField;
 
 abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTranslator<S>> {
 	private static final Pattern BEGIN_LINE_TRIM_PATTERN = Pattern.compile("^\\s+");

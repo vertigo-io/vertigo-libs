@@ -19,9 +19,9 @@ package io.vertigo.datastore.impl.entitystore;
 
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Node;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.ListVAccessor;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.ListVAccessor;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 
 public class StoreListVAccessor<E extends Entity> extends ListVAccessor<E> {

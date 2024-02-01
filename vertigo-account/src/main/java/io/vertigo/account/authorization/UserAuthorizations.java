@@ -33,7 +33,7 @@ import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.account.authorization.definitions.Role;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 
 /**
  * This class list User's Authorizations.

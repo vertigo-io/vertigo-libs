@@ -37,13 +37,13 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.statement.SqlStatementBuilder;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
+import io.vertigo.datafactory.task.definitions.TaskAttribute;
+import io.vertigo.datamodel.data.definitions.DataAccessor;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DataAccessor;
-import io.vertigo.datamodel.structure.definitions.DataDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.task.definitions.TaskAttribute;
 
 /**
  * @author jmforhan

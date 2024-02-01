@@ -19,7 +19,7 @@ package io.vertigo.datamodel.criteria;
 
 import java.io.Serializable;
 
-import io.vertigo.datamodel.structure.definitions.DataFieldName;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
 
 public interface CriteriaEncoder {
 

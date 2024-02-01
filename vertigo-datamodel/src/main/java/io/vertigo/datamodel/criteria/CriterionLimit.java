@@ -19,8 +19,8 @@ package io.vertigo.datamodel.criteria;
 
 import java.io.Serializable;
 
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Entity;
 
 /**
  * Defines a limit/boundary.

@@ -19,7 +19,7 @@ package io.vertigo.account.authorization.definitions;
 
 import java.io.Serializable;
 
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DtObject;
 
 /**
  * The name of the security operation.

@@ -22,7 +22,7 @@ import java.util.function.Predicate;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
+import io.vertigo.datamodel.data.model.DtListURIForMasterData;
 
 @DefinitionPrefix(MasterDataDefinition.PREFIX)
 public final class MasterDataDefinition extends AbstractDefinition<MasterDataDefinition> {
