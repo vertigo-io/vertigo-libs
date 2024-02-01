@@ -37,6 +37,7 @@ import com.google.gson.JsonPrimitive;
 import io.vertigo.basics.formatter.FormatterDefault;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Node;
@@ -324,7 +325,13 @@ public final class UiUtil implements Serializable {
 	 */
 	public static String getDisplayField(final String uiListKey) {
 		final var dtDefinition = getUiList(uiListKey).getDtDefinition();
-		return dtDefinition.getDisplayField().get().name();
+		final var displayFieldOpt = dtDefinition.getDisplayField();
+
+		if (displayFieldOpt.isEmpty()) {
+			throw new VSystemException("Display field must be set on the definition for entity '{0}' (needed to display the list '{1}' from context).", dtDefinition.getName(), uiListKey);
+		}
+
+		return displayFieldOpt.get().name();
 	}
 
 	/**
@@ -333,11 +340,17 @@ public final class UiUtil implements Serializable {
 	 */
 	public static String getIdField(final String uiListKey) {
 		final var uiList = getUiList(uiListKey);
-		if (uiList instanceof AbstractUiListUnmodifiable) {
-			return ((AbstractUiListUnmodifiable) uiList).getIdFieldName();
+		if (uiList instanceof final AbstractUiListUnmodifiable uiListUnmodifiable) {
+			return uiListUnmodifiable.getIdFieldName();
 		}
-		final var dtDefinition = getUiList(uiListKey).getDtDefinition();
-		return dtDefinition.getIdField().get().name();
+		final var dtDefinition = uiList.getDtDefinition();
+
+		final var idFieldOpt = dtDefinition.getIdField();
+		if (idFieldOpt.isEmpty()) {
+			throw new VSystemException("Id field must be set on the definition for entity '{0}' (needed to display the list '{1}' from context).", dtDefinition, uiListKey);
+		}
+
+		return idFieldOpt.get().name();
 	}
 
 	/**
