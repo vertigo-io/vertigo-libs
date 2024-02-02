@@ -41,10 +41,10 @@ import io.vertigo.account.impl.authorization.dsl.rules.DslParserUtil;
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.util.DtObjectUtil;
 
 /**
  * Deserializer json
@@ -60,7 +60,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 	@Override
 	public SecuredEntity deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 		final JsonObject jsonSecuredEntity = json.getAsJsonObject();
-		final DataDefinition entityDefinition = findDtDefinition(jsonSecuredEntity.get("entity").getAsString());
+		final DataDefinition entityDefinition = DtObjectUtil.findDtDefinition(jsonSecuredEntity.get("entity").getAsString());
 		//----
 		asserUnsupportedAttributes("SecuredEntity " + entityDefinition.getClassSimpleName(), jsonSecuredEntity, SECURED_ENTITY_SUPPORTED_ATTRIBUTES);
 		//----
@@ -123,7 +123,8 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 				.map(e -> e.getKey())
 				.collect(Collectors.toSet());
 		unsupportedAttributes.removeAll(supportedAttributes);
-		Assertion.check().isTrue(unsupportedAttributes.isEmpty(), "Json declaration of {0} can't support some attribut(s) : {1}. You may use one of {2}", objectName, unsupportedAttributes, supportedAttributes);
+		Assertion.check().isTrue(unsupportedAttributes.isEmpty(), "Json declaration of {0} can't support some attribut(s) : {1}. You may use one of {2}", objectName, unsupportedAttributes,
+				supportedAttributes);
 	}
 
 	private static Set<Authorization> resolveAuthorizations(final Set<String> authorizationNames, final Map<String, Authorization> permissionPerOperations, final DataDefinition entityDefinition) {
@@ -192,8 +193,4 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		return context.deserialize(jsonElement, createParameterizedType(List.class, elementClass));
 	}
 
-	private static DataDefinition findDtDefinition(final String entityName) {
-		final String name = DataDefinition.PREFIX + entityName;
-		return Node.getNode().getDefinitionSpace().resolve(name, DataDefinition.class);
-	}
 }
