@@ -24,11 +24,11 @@ import io.vertigo.basics.task.TaskEngineProc;
 import io.vertigo.basics.task.TaskEngineSelect;
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.core.node.component.Amplifier;
-import io.vertigo.datafactory.task.proxy.TaskContextProperty;
-import io.vertigo.datafactory.task.proxy.TaskInput;
-import io.vertigo.datafactory.task.proxy.TaskOutput;
-import io.vertigo.datafactory.task.proxy.TaskProxyAnnotation;
 import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.task.proxy.TaskContextProperty;
+import io.vertigo.datamodel.task.proxy.TaskInput;
+import io.vertigo.datamodel.task.proxy.TaskOutput;
+import io.vertigo.datamodel.task.proxy.TaskProxyAnnotation;
 import io.vertigo.datastore.task.data.domain.SuperHero;
 
 @Transactional

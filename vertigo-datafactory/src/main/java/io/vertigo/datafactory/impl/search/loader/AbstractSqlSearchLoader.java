@@ -32,9 +32,6 @@ import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datafactory.task.TaskManager;
-import io.vertigo.datafactory.task.definitions.TaskDefinition;
-import io.vertigo.datafactory.task.model.Task;
 import io.vertigo.datamodel.data.definitions.DataAccessor;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DtField;
@@ -44,6 +41,9 @@ import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
+import io.vertigo.datamodel.task.TaskManager;
+import io.vertigo.datamodel.task.definitions.TaskDefinition;
+import io.vertigo.datamodel.task.model.Task;
 
 /**
  * Default SearchLoader for Database datasource.

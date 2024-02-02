@@ -25,9 +25,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datafactory.criteria.Criteria;
-import io.vertigo.datafactory.criteria.Criterions;
-import io.vertigo.datafactory.task.TaskManager;
+import io.vertigo.datamodel.criteria.Criteria;
+import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataAccessor;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
@@ -39,6 +38,7 @@ import io.vertigo.datamodel.data.model.Fragment;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
+import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 
 /**

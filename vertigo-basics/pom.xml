@@ -14,7 +14,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-datafactory</artifactId>
+			<artifactId>vertigo-datamodel</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

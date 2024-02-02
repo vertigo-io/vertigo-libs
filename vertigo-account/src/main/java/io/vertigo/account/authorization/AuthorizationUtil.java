@@ -29,7 +29,7 @@ import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.account.authorization.definitions.OperationName;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
-import io.vertigo.datafactory.criteria.Criteria;
+import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;

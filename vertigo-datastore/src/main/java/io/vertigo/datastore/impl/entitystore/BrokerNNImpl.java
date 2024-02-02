@@ -28,11 +28,6 @@ import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datafactory.task.TaskManager;
-import io.vertigo.datafactory.task.definitions.TaskDefinition;
-import io.vertigo.datafactory.task.definitions.TaskDefinitionBuilder;
-import io.vertigo.datafactory.task.model.Task;
-import io.vertigo.datafactory.task.model.TaskBuilder;
 import io.vertigo.datamodel.data.definitions.DtField;
 import io.vertigo.datamodel.data.definitions.association.AssociationNNDefinition;
 import io.vertigo.datamodel.data.definitions.association.AssociationNode;
@@ -40,6 +35,11 @@ import io.vertigo.datamodel.data.definitions.association.DtListURIForNNAssociati
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.util.AssociationUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
+import io.vertigo.datamodel.task.TaskManager;
+import io.vertigo.datamodel.task.definitions.TaskDefinition;
+import io.vertigo.datamodel.task.definitions.TaskDefinitionBuilder;
+import io.vertigo.datamodel.task.model.Task;
+import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.BrokerNN;
 
 /**

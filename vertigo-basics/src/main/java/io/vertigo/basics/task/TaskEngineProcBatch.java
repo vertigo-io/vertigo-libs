@@ -34,8 +34,8 @@ import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.statement.SqlStatementBuilder;
-import io.vertigo.datafactory.task.definitions.TaskAttribute;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
+import io.vertigo.datamodel.task.definitions.TaskAttribute;
 
 /**
  * @author jmforhan

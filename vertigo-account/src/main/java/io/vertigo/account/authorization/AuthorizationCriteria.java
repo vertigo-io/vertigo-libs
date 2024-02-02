@@ -28,9 +28,9 @@ import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.vendor.SqlDialect;
-import io.vertigo.datafactory.criteria.Criteria;
-import io.vertigo.datafactory.criteria.CriteriaCtx;
-import io.vertigo.datafactory.criteria.CriteriaEncoder;
+import io.vertigo.datamodel.criteria.Criteria;
+import io.vertigo.datamodel.criteria.CriteriaCtx;
+import io.vertigo.datamodel.criteria.CriteriaEncoder;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datastore.plugins.entitystore.sql.SqlCriteriaEncoder;
 

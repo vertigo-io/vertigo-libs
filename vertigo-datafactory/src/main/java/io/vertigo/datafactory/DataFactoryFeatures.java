@@ -23,11 +23,11 @@ import io.vertigo.core.param.Param;
 import io.vertigo.datafactory.collections.CollectionsManager;
 import io.vertigo.datafactory.impl.collections.CollectionsManagerImpl;
 import io.vertigo.datafactory.impl.search.SearchManagerImpl;
-import io.vertigo.datafactory.impl.task.TaskManagerImpl;
-import io.vertigo.datafactory.impl.task.metrics.TaskMetricsProvider;
 import io.vertigo.datafactory.plugins.collections.lucene.LuceneIndexPlugin;
 import io.vertigo.datafactory.search.SearchManager;
-import io.vertigo.datafactory.task.TaskManager;
+import io.vertigo.datamodel.impl.task.TaskManagerImpl;
+import io.vertigo.datamodel.impl.task.metrics.TaskMetricsProvider;
+import io.vertigo.datamodel.task.TaskManager;
 
 /**
  * Defines dynamo features.
