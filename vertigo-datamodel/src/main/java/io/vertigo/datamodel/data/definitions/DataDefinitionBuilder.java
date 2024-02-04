@@ -60,8 +60,8 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 	private DefinitionId<DataDefinition> myFragmentId;
 	private String myPackageName;
 	private DataStereotype myStereotype;
-	private DtField myIdField;
-	private final List<DtField> myFields = new ArrayList<>();
+	private DataField myIdField;
+	private final List<DataField> myFields = new ArrayList<>();
 	private String myDataSpace;
 	private String mySortFieldName;
 	private String myDisplayFieldName;
@@ -135,9 +135,9 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 			final String fkDtDefinitionName) {
 		//Pour l'instant on ne gère pas les chamsp computed dynamiques
 		final boolean persistent = true;
-		final DtField dtField = createField(
+		final DataField dtField = createField(
 				fieldName,
-				DtField.FieldType.FOREIGN_KEY,
+				DataField.FieldType.FOREIGN_KEY,
 				domain,
 				label,
 				cardinality,
@@ -162,9 +162,9 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 			final SmartTypeDefinition smartType,
 			final Cardinality cardinality) {
 		final boolean persistent = false;
-		final DtField dtField = createField(
+		final DataField dtField = createField(
 				fieldName,
-				DtField.FieldType.COMPUTED,
+				DataField.FieldType.COMPUTED,
 				smartType,
 				label,
 				cardinality,
@@ -192,9 +192,9 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 			final Cardinality cardinality,
 			final boolean persistent) {
 		//the field is dynamic if and only if the dtDefinition is dynamic
-		final DtField dtField = createField(
+		final DataField dtField = createField(
 				fieldName,
-				DtField.FieldType.DATA,
+				DataField.FieldType.DATA,
 				domain,
 				label,
 				cardinality,
@@ -224,9 +224,9 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 		//le champ ID est persistant SSI la définition est persitante.
 		final boolean persistent = true;
 		//le champ  est dynamic SSI la définition est dynamique
-		final DtField dtField = createField(
+		final DataField dtField = createField(
 				fieldName,
-				DtField.FieldType.ID,
+				DataField.FieldType.ID,
 				domain,
 				label,
 				cardinality,
@@ -237,9 +237,9 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 		return this;
 	}
 
-	private DtField createField(
+	private DataField createField(
 			final String fieldName,
-			final DtField.FieldType type,
+			final DataField.FieldType type,
 			final SmartTypeDefinition domain,
 			final String strLabel,
 			final Cardinality cardinality,
@@ -248,15 +248,15 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 
 		final String shortName = myName.substring(DataDefinition.PREFIX.length());
 		//-----
-		// Le DtField vérifie ses propres règles et gère ses propres optimisations
-		final String id = DtField.PREFIX + shortName + '$' + fieldName;
+		// Le DataField vérifie ses propres règles et gère ses propres optimisations
+		final String id = DataField.PREFIX + shortName + '$' + fieldName;
 
 		//2. Sinon Indication de longueur portée par le champ du DT.
 		//-----
 		final LocaleMessageText labelMsg = LocaleMessageText.ofDefaultMsg(strLabel, new MessageKeyImpl(id));
 		// Champ CODE_COMMUNE >> getCodeCommune()
 		//Un champ est persisanty s'il est marqué comme tel et si la définition l'est aussi.
-		return new DtField(
+		return new DataField(
 				id,
 				fieldName,
 				type,
@@ -328,7 +328,7 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 			myStereotype = myIdField == null ? DataStereotype.ValueObject : DataStereotype.Entity;
 		}
 
-		final DtField sortField;
+		final DataField sortField;
 		if (mySortFieldName != null) {
 			sortField = findFieldByName(mySortFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Sort field '{0}' not found on '{1}'", mySortFieldName, dataDefinition.getName())));
@@ -338,7 +338,7 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 			sortField = null;
 		}
 
-		final DtField displayField;
+		final DataField displayField;
 		if (myDisplayFieldName != null) {
 			displayField = findFieldByName(myDisplayFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Display field '{0}' not found on '{1}'", myDisplayFieldName, dataDefinition.getName())));
@@ -348,7 +348,7 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 			displayField = null;
 		}
 
-		final DtField handleField;
+		final DataField handleField;
 		if (myHandleFieldName != null) {
 			handleField = findFieldByName(myHandleFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Handle field '{0}' not found on '{1}'", myHandleFieldName, dataDefinition.getName())));
@@ -358,7 +358,7 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 			handleField = null;
 		}
 
-		final DtField keyField;
+		final DataField keyField;
 		if (myKeyFieldName != null) {
 			keyField = findFieldByName(myKeyFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Key field '{0}' not found on '{1}'", myKeyFieldName, dataDefinition.getName())));
@@ -380,7 +380,7 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 		return dataDefinition;
 	}
 
-	private Optional<DtField> findFieldByName(final String fieldName) {
+	private Optional<DataField> findFieldByName(final String fieldName) {
 		Assertion.check().isNotBlank(fieldName);
 		return myFields
 				.stream()

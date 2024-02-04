@@ -44,7 +44,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datafactory.collections.ListFilter;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 
 final class RamLuceneQueryFactory {
 	private final Analyzer queryAnalyzer;
@@ -55,7 +55,7 @@ final class RamLuceneQueryFactory {
 		this.queryAnalyzer = queryAnalyzer;
 	}
 
-	Query createFilterQuery(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final Optional<DtField> pkField, final Optional<DtField> boostedField) throws IOException {
+	Query createFilterQuery(final String keywords, final Collection<DataField> searchedFields, final List<ListFilter> listFilters, final Optional<DataField> pkField, final Optional<DataField> boostedField) throws IOException {
 		final Query filteredQuery;
 		final Query keywordsQuery = createKeywordQuery(queryAnalyzer, keywords, searchedFields, pkField, boostedField);
 		if (!listFilters.isEmpty()) {
@@ -66,13 +66,13 @@ final class RamLuceneQueryFactory {
 		return filteredQuery;
 	}
 
-	private static Query createKeywordQuery(final Analyzer queryAnalyser, final String keywords, final Collection<DtField> searchedFieldList, final Optional<DtField> pkField, final Optional<DtField> boostedField) throws IOException {
+	private static Query createKeywordQuery(final Analyzer queryAnalyser, final String keywords, final Collection<DataField> searchedFieldList, final Optional<DataField> pkField, final Optional<DataField> boostedField) throws IOException {
 		if (StringUtil.isBlank(keywords)) {
 			return new MatchAllDocsQuery();
 		}
 		//-----
 		final Builder queryBuilder = new BooleanQuery.Builder();
-		for (final DtField dtField : searchedFieldList) {
+		for (final DataField dtField : searchedFieldList) {
 			Query queryWord = createParsedKeywordsQuery(queryAnalyser, dtField.name(), keywords, pkField.isEmpty() || !dtField.equals(pkField.get()));
 			if (boostedField.isPresent() && dtField.equals(boostedField.get())) {
 				queryWord = new BoostQuery(queryWord, 4);

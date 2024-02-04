@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.datafactory.collections.ListFilter;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.DtObject;
@@ -46,9 +46,9 @@ public interface IndexPlugin extends Plugin {
 	 */
 	<D extends DtObject> DtList<D> getCollection(
 			final String keywords,
-			final Collection<DtField> searchedFields,
+			final Collection<DataField> searchedFields,
 			final List<ListFilter> listFilters,
 			final DtListState listState,
-			final Optional<DtField> boostedFieldOpt,
+			final Optional<DataField> boostedFieldOpt,
 			final DtList<D> dtc);
 }

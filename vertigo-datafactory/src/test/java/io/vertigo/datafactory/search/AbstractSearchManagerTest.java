@@ -791,7 +791,7 @@ public abstract class AbstractSearchManagerTest {
 		//On recherche la facette constructeur
 		final Facet optionalStringFacet = getFacetByName(result, "FctOptionalStringItem");
 		//On vérifie que l'on est sur le champ Manufacturer
-		Assertions.assertEquals("optionalString", optionalStringFacet.getDefinition().getDtField().name());
+		Assertions.assertEquals("optionalString", optionalStringFacet.getDefinition().getDataField().name());
 		Assertions.assertFalse(optionalStringFacet.getDefinition().isRangeFacet());
 
 		//On vérifie qu'il existe une valeur pour empty et que le nombre d'occurrences est correct
@@ -817,7 +817,7 @@ public abstract class AbstractSearchManagerTest {
 		//On recherche la facette constructeur
 		final Facet manufacturerFacet = getFacetByName(result, "FctManufacturerItem");
 		//On vérifie que l'on est sur le champ Manufacturer
-		Assertions.assertEquals("manufacturer", manufacturerFacet.getDefinition().getDtField().name());
+		Assertions.assertEquals("manufacturer", manufacturerFacet.getDefinition().getDataField().name());
 		Assertions.assertFalse(manufacturerFacet.getDefinition().isRangeFacet());
 
 		//On vérifie qu'il existe une valeur pour peugeot et que le nombre d'occurrences est correct
@@ -845,7 +845,7 @@ public abstract class AbstractSearchManagerTest {
 		//On recherche la facette constructeur
 		final Facet localisationFacet = getFacetByName(result, "FctLocalisationItem");
 		//On vérifie que l'on est sur le champ Manufacturer
-		Assertions.assertEquals("localisation", localisationFacet.getDefinition().getDtField().name());
+		Assertions.assertEquals("localisation", localisationFacet.getDefinition().getDataField().name());
 		Assertions.assertTrue(localisationFacet.getDefinition().isRangeFacet());
 
 		Assertions.assertEquals(5, localisationFacet.getFacetValues().size());

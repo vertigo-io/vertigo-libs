@@ -22,8 +22,8 @@ import java.util.Comparator;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.datamodel.data.definitions.DataAccessor;
-import io.vertigo.datamodel.data.definitions.DtField;
-import io.vertigo.datamodel.data.definitions.DtField.FieldType;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.DataField.FieldType;
 import io.vertigo.datamodel.data.model.DtListURIForMasterData;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.Entity;
@@ -51,7 +51,7 @@ public final class DtObjectComparator<D extends DtObject> implements Comparator<
 	/**
 	 * Field du tri
 	 */
-	private final DtField sortField;
+	private final DataField sortField;
 
 	/**
 	 * Constructor.
@@ -59,7 +59,7 @@ public final class DtObjectComparator<D extends DtObject> implements Comparator<
 	 * @param sortField the sort field
 	 * @param sortDesc sort order
 	 */
-	public DtObjectComparator(final EntityStoreManager entityStoreManager, final DtField sortField, final boolean sortDesc) {
+	public DtObjectComparator(final EntityStoreManager entityStoreManager, final DataField sortField, final boolean sortDesc) {
 		Assertion.check().isNotNull(sortField);
 		//-----
 		this.sortField = sortField;
@@ -98,7 +98,7 @@ public final class DtObjectComparator<D extends DtObject> implements Comparator<
 				.isNotNull(entityStoreManager)
 				.isNotNull(dtcURIForMasterData);
 		//-----
-		final DtField mdFieldSort = dtcURIForMasterData.getDtDefinition().getSortField().get();
+		final DataField mdFieldSort = dtcURIForMasterData.getDtDefinition().getSortField().get();
 		return new MasterDataComparator(dtcURIForMasterData, sortDesc, entityStoreManager, mdFieldSort);
 	}
 
@@ -106,9 +106,9 @@ public final class DtObjectComparator<D extends DtObject> implements Comparator<
 		private final DtListURIForMasterData dtcURIForMasterData;
 		private final boolean sortDesc;
 		private final EntityStoreManager dataStore;
-		private final DtField mdFieldSort;
+		private final DataField mdFieldSort;
 
-		MasterDataComparator(final DtListURIForMasterData dtcURIForMasterData, final boolean sortDesc, final EntityStoreManager dataStore, final DtField mdFieldSort) {
+		MasterDataComparator(final DtListURIForMasterData dtcURIForMasterData, final boolean sortDesc, final EntityStoreManager dataStore, final DataField mdFieldSort) {
 			this.dtcURIForMasterData = dtcURIForMasterData;
 			this.sortDesc = sortDesc;
 			this.dataStore = dataStore;

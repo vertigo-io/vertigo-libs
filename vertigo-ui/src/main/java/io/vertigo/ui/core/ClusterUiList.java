@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
@@ -45,7 +45,7 @@ public final class ClusterUiList<O extends DtObject> extends AbstractUiListUnmod
 	 * Constructeur.
 	 * @param dtList Liste à encapsuler
 	 */
-	public ClusterUiList(final DtList<O> dtList, final Optional<DtFieldName<O>> keyFieldNameOpt, final String code, final String label, final String listType, final Long totalCount) {
+	public ClusterUiList(final DtList<O> dtList, final Optional<DataFieldName<O>> keyFieldNameOpt, final String code, final String label, final String listType, final Long totalCount) {
 		super(dtList.getDefinition(), keyFieldNameOpt);
 		//-----
 		this.dtList = dtList;

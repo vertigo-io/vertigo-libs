@@ -30,8 +30,8 @@ import io.vertigo.core.lang.Tuple;
 import io.vertigo.datafactory.search.definitions.SearchChunk;
 import io.vertigo.datafactory.search.definitions.SearchLoader;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.definitions.DtField;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
@@ -50,7 +50,7 @@ public abstract class AbstractSearchLoader<K extends KeyConcept, I extends DtObj
 	@Override
 	public final Iterable<SearchChunk<K>> chunk(final Class<K> keyConceptClass) {
 		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
-		final DtField idField = dataDefinition.getIdField().get();
+		final DataField idField = dataDefinition.getIdField().get();
 		final Serializable firstId = getLowestIteratorValue(idField, dataDefinition);
 
 		return () -> createIterator(firstId, false, dataDefinition);
@@ -60,12 +60,12 @@ public abstract class AbstractSearchLoader<K extends KeyConcept, I extends DtObj
 	@Override
 	public final Iterable<SearchChunk<K>> chunk(final Optional<Serializable> startValue, final Class<K> keyConceptClass) {
 		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
-		final DtField versionField = getVersionField(dataDefinition);
+		final DataField versionField = getVersionField(dataDefinition);
 
 		return () -> createIterator(startValue.orElse(getLowestIteratorValue(versionField, dataDefinition)), true, dataDefinition);
 	}
 
-	public DtField getVersionField(final DataDefinition dataDefinition) {
+	public DataField getVersionField(final DataDefinition dataDefinition) {
 		if (getVersionFieldName().isEmpty()) {
 			return dataDefinition.getIdField().get();
 		}
@@ -87,7 +87,7 @@ public abstract class AbstractSearchLoader<K extends KeyConcept, I extends DtObj
 		return Optional.empty(); //Overridable
 	}
 
-	private static Serializable getLowestIteratorValue(final DtField iteratorField, final DataDefinition dataDefinition) {
+	private static Serializable getLowestIteratorValue(final DataField iteratorField, final DataDefinition dataDefinition) {
 		Assertion.check().isTrue(
 				iteratorField.smartTypeDefinition().getScope().isBasicType(),
 				"Field use for iterate must be primitives : iteratorField '{0}' on dtDefinition '{1}' has the smartType '{2}'", dataDefinition, iteratorField.name(), iteratorField.smartTypeDefinition());

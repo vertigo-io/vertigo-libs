@@ -23,7 +23,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 
 /**
  * Une SecuredEntity est une entité sécurisé.
@@ -40,7 +40,7 @@ import io.vertigo.datamodel.data.definitions.DtField;
 public final class SecuredEntity extends AbstractDefinition<SecuredEntity> {
 	public static final String PREFIX = "Sec";
 	private final DataDefinition entityDefinition;
-	private final List<DtField> securityFields;
+	private final List<DataField> securityFields;
 	private final List<SecurityDimension> advancedDimensions;
 	private final List<Authorization> operations;
 
@@ -54,7 +54,7 @@ public final class SecuredEntity extends AbstractDefinition<SecuredEntity> {
 	 */
 	public SecuredEntity(
 			final DataDefinition entityDefinition,
-			final List<DtField> securityFields,
+			final List<DataField> securityFields,
 			final List<SecurityDimension> advancedDimensions,
 			final List<Authorization> operations) {
 		super(PREFIX + entityDefinition.getName());
@@ -81,7 +81,7 @@ public final class SecuredEntity extends AbstractDefinition<SecuredEntity> {
 	/**
 	 * @return the list of security fieldNames.
 	 */
-	public List<DtField> getSecurityFields() {
+	public List<DataField> getSecurityFields() {
 		return securityFields;
 	}
 

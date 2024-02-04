@@ -34,7 +34,7 @@ import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.definitions.FacetedQueryDefinition;
 import io.vertigo.datafactory.collections.model.Facet;
 import io.vertigo.datafactory.collections.model.FacetValue;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.util.VCollectors;
@@ -150,7 +150,7 @@ public final class FacetFactory {
 		final Map<FacetValue, DtList<D>> clusterValues = new LinkedHashMap<>();
 
 		//Cas des facettes par Term
-		final DtField dtField = facetDefinition.getDtField();
+		final DataField dtField = facetDefinition.getDataField();
 		//on garde un index pour incrémenter le facetFilter pour chaque Term
 		final Map<Object, FacetValue> facetFilterIndex = new HashMap<>();
 

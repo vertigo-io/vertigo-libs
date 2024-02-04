@@ -58,9 +58,9 @@ public final class CriteriaCtx {
 	/**
 	 * Return the dtFieldName linked to an attribute name
 	 * @param attributeName the name of the attribute
-	 * @return the corresponding DtFieldName
+	 * @return the corresponding DataFieldName
 	 */
-	public DataFieldName getDtFieldName(final String attributeName) {
+	public DataFieldName getDataFieldName(final String attributeName) {
 		return attributeNames.get(attributeName);
 	}
 

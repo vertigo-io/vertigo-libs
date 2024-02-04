@@ -29,8 +29,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataStereotype;
-import io.vertigo.datamodel.data.definitions.DtField;
 
 /**
  * Définition de l'index de recherche.
@@ -58,10 +58,10 @@ public final class SearchIndexDefinition extends AbstractDefinition<SearchIndexD
 
 	private final DataDefinition keyConceptDtDefinition;
 
-	private final Map<DtField, List<DtField>> indexCopyFromFieldsMap; //(map toField : [fromField, fromField, ...])
-	private final Map<DtField, List<DtField>> indexCopyToFieldsMap; //(map fromField : [toField, toField, ...])
+	private final Map<DataField, List<DataField>> indexCopyFromFieldsMap; //(map toField : [fromField, fromField, ...])
+	private final Map<DataField, List<DataField>> indexCopyToFieldsMap; //(map fromField : [toField, toField, ...])
 
-	//private final Set<DtField> indexCopyFromFields;
+	//private final Set<DataField> indexCopyFromFields;
 
 	private final String searchLoaderId;
 
@@ -77,7 +77,7 @@ public final class SearchIndexDefinition extends AbstractDefinition<SearchIndexD
 			final String name,
 			final DataDefinition keyConceptDtDefinition,
 			final DataDefinition indexDtDefinition,
-			final Map<DtField, List<DtField>> indexCopyFromFieldsMap,
+			final Map<DataField, List<DataField>> indexCopyFromFieldsMap,
 			final String searchLoaderId) {
 		super(name);
 		//---
@@ -96,9 +96,9 @@ public final class SearchIndexDefinition extends AbstractDefinition<SearchIndexD
 		this.searchLoaderId = searchLoaderId;
 
 		indexCopyToFieldsMap = new HashMap<>();
-		for (final Entry<DtField, List<DtField>> entry : indexCopyFromFieldsMap.entrySet()) {
-			final List<DtField> fromFields = entry.getValue();
-			for (final DtField fromField : fromFields) {
+		for (final Entry<DataField, List<DataField>> entry : indexCopyFromFieldsMap.entrySet()) {
+			final List<DataField> fromFields = entry.getValue();
+			for (final DataField fromField : fromFields) {
 				indexCopyToFieldsMap.computeIfAbsent(fromField, k -> new ArrayList<>()).add(entry.getKey());
 			}
 		}
@@ -125,8 +125,8 @@ public final class SearchIndexDefinition extends AbstractDefinition<SearchIndexD
 	 * @param fromField Field to copy to others
 	 * @return list des copyToFields.
 	 */
-	public List<DtField> getIndexCopyToFields(final DtField fromField) {
-		final List<DtField> copyToFields = indexCopyToFieldsMap.get(fromField);
+	public List<DataField> getIndexCopyToFields(final DataField fromField) {
+		final List<DataField> copyToFields = indexCopyToFieldsMap.get(fromField);
 		Assertion.check().isNotNull(copyToFields);
 		//-----
 		return Collections.unmodifiableList(copyToFields);
@@ -135,14 +135,14 @@ public final class SearchIndexDefinition extends AbstractDefinition<SearchIndexD
 	/**
 	 * @return copyFields from.
 	 */
-	public Set<DtField> getIndexCopyFromFields() {
+	public Set<DataField> getIndexCopyFromFields() {
 		return Collections.unmodifiableSet(indexCopyToFieldsMap.keySet());
 	}
 
 	/**
 	 * @return copyFields to.
 	 */
-	public Set<DtField> getIndexCopyToFields() {
+	public Set<DataField> getIndexCopyToFields() {
 		return Collections.unmodifiableSet(indexCopyFromFieldsMap.keySet());
 	}
 

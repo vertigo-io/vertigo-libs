@@ -66,7 +66,7 @@ import io.vertigo.datafactory.plugins.search.elasticsearch.ESFacetedQueryResultB
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.KeyConcept;
@@ -182,7 +182,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		}
 	}
 
-	Map<UID<K>, Serializable> loadVersions(final DtField versionField, final ListFilter listFilter, final int maxElements) {
+	Map<UID<K>, Serializable> loadVersions(final DataField versionField, final ListFilter listFilter, final int maxElements) {
 		Assertion.check().isNotNull(versionField).isNotNull(listFilter);
 		//-----
 		try {
@@ -215,7 +215,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		}
 	}
 
-	private Serializable decodeVersionValue(final DtField versionField, final Object value) {
+	private Serializable decodeVersionValue(final DataField versionField, final Object value) {
 		Assertion.check().isTrue(
 				versionField.smartTypeDefinition().getScope().isBasicType(),
 				"Field use for iterate must be primitives : versionField '{0}' has the smartType '{2}'", versionField.name(), versionField.smartTypeDefinition());

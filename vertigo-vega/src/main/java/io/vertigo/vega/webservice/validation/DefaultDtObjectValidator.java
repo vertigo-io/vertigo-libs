@@ -18,7 +18,7 @@
 package io.vertigo.vega.webservice.validation;
 
 import io.vertigo.core.node.Node;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.ConstraintException;
@@ -32,7 +32,7 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 
 	/** {@inheritDoc} */
 	@Override
-	protected void checkMonoFieldConstraints(final O dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
+	protected void checkMonoFieldConstraints(final O dtObject, final DataField dtField, final DtObjectErrors dtObjectErrors) {
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		//---
 		final Object value = dtField.getDataAccessor().getValue(dtObject);

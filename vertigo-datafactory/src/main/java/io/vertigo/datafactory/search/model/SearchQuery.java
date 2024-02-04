@@ -29,7 +29,7 @@ import io.vertigo.datafactory.collections.definitions.ListFilterBuilder;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.impl.search.dsl.model.DslGeoExpression;
 import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 
 /**
  * Critères de recherche.
@@ -69,7 +69,7 @@ public final class SearchQuery implements Serializable {
 			final Optional<ListFilter> securityListFilter,
 			final Optional<FacetedQuery> facetedQuery,
 			final FacetDefinition clusteringFacetDefinition,
-			final DtField boostedDocumentDateField,
+			final DataField boostedDocumentDateField,
 			final Integer numDaysOfBoostRefDocument,
 			final Integer mostRecentBoost) {
 		Assertion.check()

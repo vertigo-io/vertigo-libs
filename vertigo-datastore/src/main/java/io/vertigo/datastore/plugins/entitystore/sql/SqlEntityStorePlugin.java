@@ -45,7 +45,7 @@ import io.vertigo.datamodel.criteria.CriteriaCtx;
 import io.vertigo.datamodel.criteria.CriteriaEncoder;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.association.AssociationNNDefinition;
 import io.vertigo.datamodel.data.definitions.association.AssociationNode;
 import io.vertigo.datamodel.data.definitions.association.DtListURIForNNAssociation;
@@ -152,7 +152,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		if (dataDefinition.getFragment().isPresent()) {
 			return dataDefinition.getFields()
 					.stream()
-					.map(DtField::name)
+					.map(DataField::name)
 					.map(StringUtil::camelToConstCase)
 					.collect(Collectors.joining(", "));
 		}
@@ -171,7 +171,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		return connectionName;
 	}
 
-	private static DtField getIdField(final DataDefinition dataDefinition) {
+	private static DataField getIdField(final DataDefinition dataDefinition) {
 		Assertion.check().isNotNull(dataDefinition);
 		//---
 		return dataDefinition.getIdField().orElseThrow(() -> new IllegalStateException("no ID found"));
@@ -185,7 +185,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		final String taskName = TASK.TkSelect + entityName + "ByUri";
 
 		final String requestedCols = getRequestedCols(dataDefinition);
-		final DtField idField = getIdField(dataDefinition);
+		final DataField idField = getIdField(dataDefinition);
 		final String idFieldName = idField.name();
 		final String request = " select " + requestedCols +
 				" from " + tableName +
@@ -227,17 +227,17 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		final AssociationNNDefinition associationNNDefinition = dtcUri.getAssociationDefinition();
 		final String joinTableName = associationNNDefinition.getTableName();
 		final DataDefinition joinDtDefinition = AssociationUtil.getAssociationNode(associationNNDefinition, dtcUri.getRoleName()).getDtDefinition();
-		final String joinDtFieldName = StringUtil.camelToConstCase(getIdField(joinDtDefinition).name());
+		final String joinDataFieldName = StringUtil.camelToConstCase(getIdField(joinDtDefinition).name());
 
 		//La condition s'applique sur l'autre noeud de la relation (par rapport à la collection attendue)
 		final AssociationNode associationNode = AssociationUtil.getAssociationNodeTarget(associationNNDefinition, dtcUri.getRoleName());
-		final DtField fkField = getIdField(associationNode.getDtDefinition());
+		final DataField fkField = getIdField(associationNode.getDtDefinition());
 		final String fkFieldName = fkField.name();
 
 		final String request = " select t.* from " +
 				tableName + " t" +
 				//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
-				" join " + joinTableName + " j on j." + joinDtFieldName + " = t." + idFieldName +
+				" join " + joinTableName + " j on j." + joinDataFieldName + " = t." + idFieldName +
 				//Condition de la recherche
 				" where j." + StringUtil.camelToConstCase(fkFieldName) + " = #" + fkFieldName + '#';
 
@@ -268,7 +268,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 				.isNotNull(dataDefinition)
 				.isNotNull(dtcUri);
 		//---
-		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
+		final DataField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Serializable value = dtcUri.getSource().getId();
 
 		return findByCriteria(dataDefinition, Criterions.isEqualTo(fkField::name, value), DtListState.of(null));
@@ -297,7 +297,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		final CriteriaCtx ctx = tuple.val2();
 		//IN, Optional
 		for (final String attributeName : ctx.getAttributeNames()) {
-			taskDefinitionBuilder.addInAttribute(attributeName, dataDefinition.getField(ctx.getDtFieldName(attributeName)).smartTypeDefinition(), Cardinality.OPTIONAL_OR_NULLABLE);
+			taskDefinitionBuilder.addInAttribute(attributeName, dataDefinition.getField(ctx.getDataFieldName(attributeName)).smartTypeDefinition(), Cardinality.OPTIONAL_OR_NULLABLE);
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder
@@ -416,14 +416,15 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	private static String createUpdateQuery(final DataDefinition dataDefinition, final String parameterName) {
 		final String entityName = getEntityName(dataDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
-		final DtField idField = getIdField(dataDefinition);
+		final DataField idField = getIdField(dataDefinition);
 
 		return "update " + tableName + " set " +
 				dataDefinition.getFields()
 						.stream()
 						.filter(dtField -> dtField.isPersistent() && !dtField.getType().isId())
 						.map(dtField -> StringUtil.camelToConstCase(dtField.name()) + " =#" + parameterName + '.' + dtField.name() + '#')
-						.collect(Collectors.joining(", ")) +
+						.collect(Collectors.joining(", "))
+				+
 				" where " +
 				StringUtil.camelToConstCase(idField.name()) + " = #" + parameterName + '.' + idField.name() + '#';
 	}
@@ -480,8 +481,8 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		return dataDefinition.getFields()
 				.stream()
 				.filter(dtField -> !dtField.getType().isId())
-				.filter(DtField::isPersistent)
-				.map(DtField::name)
+				.filter(DataField::isPersistent)
+				.map(DataField::name)
 				.toList();
 	}
 
@@ -492,7 +493,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 				.isNotNull(dataDefinition)
 				.isNotNull(uri);
 		//---
-		final DtField idField = getIdField(dataDefinition);
+		final DataField idField = getIdField(dataDefinition);
 		final String entityName = getEntityName(dataDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final String taskName = TASK.TkDelete + entityName;
@@ -566,7 +567,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		final String taskName = TASK.TkLock + entityName;
 
 		final String requestedCols = getRequestedCols(dataDefinition);
-		final DtField idField = getIdField(dataDefinition);
+		final DataField idField = getIdField(dataDefinition);
 		final String idFieldName = idField.name();
 		final String request = sqlDialect.createSelectForUpdateQuery(tableName, requestedCols, idFieldName);
 

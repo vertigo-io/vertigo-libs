@@ -21,7 +21,7 @@ import java.util.Set;
 
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 import io.vertigo.vega.webservice.validation.AbstractDtObjectValidator;
@@ -44,7 +44,7 @@ public final class MandatoryPkValidator<E extends Entity> extends AbstractDtObje
 	@Override
 	protected void checkMultiFieldConstraints(final E entity, final Set<String> modifiedFieldNameSet, final DtObjectErrors dtObjectErrors) {
 		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entity);
-		final DtField idField = dataDefinition.getIdField().get();
+		final DataField idField = dataDefinition.getIdField().get();
 		final String camelCaseFieldName = idField.name();
 		if (!dtObjectErrors.hasError(camelCaseFieldName)) {
 			if (DtObjectUtil.getId(entity) == null) {

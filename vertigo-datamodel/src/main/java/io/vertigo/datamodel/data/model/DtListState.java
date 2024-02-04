@@ -22,7 +22,7 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 
 /**
@@ -45,7 +45,7 @@ public final class DtListState {
 	 */
 	public static DtListState defaultOf(final Class<? extends Entity> entityClass) {
 		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entityClass);
-		return new DtListState(DEFAULT_MAX_ROWS, 0, dataDefinition.getSortField().map(DtField::name).orElse(null), false);
+		return new DtListState(DEFAULT_MAX_ROWS, 0, dataDefinition.getSortField().map(DataField::name).orElse(null), false);
 	}
 
 	/**

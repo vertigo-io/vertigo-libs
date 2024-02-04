@@ -26,7 +26,7 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtObject;
 
@@ -43,7 +43,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 
 	private final DtList<R> list;
 	private final List<Facet> facets;
-	private final Map<R, Map<DtField, String>> highlights;
+	private final Map<R, Map<DataField, String>> highlights;
 	private final DefinitionId<FacetDefinition> clusterFacetDefinitionId; //nullable
 	private final Map<FacetValue, DtList<R>> clusteredDtc;
 	private final long count;
@@ -68,7 +68,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 			final List<Facet> facets,
 			final Optional<FacetDefinition> clusterFacetDefinition,
 			final Map<FacetValue, DtList<R>> clusteredDtc,
-			final Map<R, Map<DtField, String>> highlights,
+			final Map<R, Map<DataField, String>> highlights,
 			final S source) {
 		Assertion.check()
 				.isNotNull(query)
@@ -138,7 +138,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 * @param document Document dont on veut les highlights
 	 * @return Extrait avec mise en valeur par champs. (Peut être vide jamais null)
 	 */
-	public Map<DtField, String> getHighlights(final R document) {
+	public Map<DataField, String> getHighlights(final R document) {
 		return highlights.getOrDefault(document, Collections.emptyMap());
 	}
 

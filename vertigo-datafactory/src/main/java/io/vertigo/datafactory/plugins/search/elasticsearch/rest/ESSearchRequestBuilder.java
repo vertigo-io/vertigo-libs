@@ -42,7 +42,7 @@ import io.vertigo.datafactory.plugins.search.elasticsearch.ESDocumentCodec;
 import io.vertigo.datafactory.plugins.search.elasticsearch.IndexType;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtListState;
 
 //vérifier
@@ -100,7 +100,7 @@ final class ESSearchRequestBuilder extends AsbtractESSearchRequestBuilder<Search
 	}
 
 	protected FieldSortBuilder getFieldSortBuilder(final DataDefinition indexDefinition, final String sortFieldName, final boolean sortDesc) {
-		final DtField sortField = indexDefinition.getField(sortFieldName);
+		final DataField sortField = indexDefinition.getField(sortFieldName);
 		String sortIndexFieldName = sortField.name();
 		final IndexType indexType = IndexType.readIndexType(sortField.smartTypeDefinition());
 

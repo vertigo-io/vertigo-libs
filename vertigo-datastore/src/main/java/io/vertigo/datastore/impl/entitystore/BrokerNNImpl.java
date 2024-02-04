@@ -28,7 +28,7 @@ import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.association.AssociationNNDefinition;
 import io.vertigo.datamodel.data.definitions.association.AssociationNode;
 import io.vertigo.datamodel.data.definitions.association.DtListURIForNNAssociation;
@@ -55,9 +55,9 @@ final class BrokerNNImpl implements BrokerNN {
 
 		private final String dataSpace;
 		private final String tableName;
-		private final DtField sourceField;
+		private final DataField sourceField;
 		private final Object sourceValue;
-		private final DtField targetField;
+		private final DataField targetField;
 
 		DescriptionNN(final DtListURIForNNAssociation dtListURIForAssociation) {
 			Assertion.check().isNotNull(dtListURIForAssociation);
@@ -192,9 +192,9 @@ final class BrokerNNImpl implements BrokerNN {
 			final String taskDefinitionName,
 			final String request,
 			final String dataSpace,
-			final DtField sourceField,
+			final DataField sourceField,
 			final Object sourceValue,
-			final DtField targetField,
+			final DataField targetField,
 			final Object targetValue) {
 		//FieldName
 		final String sourceFieldName = sourceField.name();

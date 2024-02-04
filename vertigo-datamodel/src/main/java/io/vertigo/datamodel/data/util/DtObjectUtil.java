@@ -26,7 +26,7 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.data.definitions.DataAccessor;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.association.AssociationNNDefinition;
 import io.vertigo.datamodel.data.definitions.association.AssociationSimpleDefinition;
 import io.vertigo.datamodel.data.definitions.association.DtListURIForNNAssociation;
@@ -80,7 +80,7 @@ public final class DtObjectUtil {
 		Assertion.check().isNotNull(entity);
 		//-----
 		final DataDefinition dataDefinition = findDtDefinition(entity);
-		final DtField idField = dataDefinition.getIdField().get();
+		final DataField idField = dataDefinition.getIdField().get();
 		return idField.getDataAccessor().getValue(entity);
 	}
 
@@ -110,7 +110,7 @@ public final class DtObjectUtil {
 		final DataDefinition dataDefinition = associationSimpleDefinition.getPrimaryAssociationNode().getDtDefinition();
 
 		// 2. On calcule le nom de la fk.
-		final DtField fkField = associationSimpleDefinition.getFKField();
+		final DataField fkField = associationSimpleDefinition.getFKField();
 
 		// 3. On calcule l'URI de la clé étrangère
 		final Object id = fkField.getDataAccessor().getValue(dto);
@@ -167,7 +167,7 @@ public final class DtObjectUtil {
 		//-----
 		final DataDefinition dataDefinition = findDtDefinition(fragment);
 		final DataDefinition entityDtDefinition = dataDefinition.getFragment().get();
-		final DtField idField = entityDtDefinition.getIdField().get();
+		final DataField idField = entityDtDefinition.getIdField().get();
 		final Object idValue = idField.getDataAccessor().getValue(fragment);
 		return UID.of(entityDtDefinition, idValue);
 	}
@@ -183,7 +183,7 @@ public final class DtObjectUtil {
 		//-----
 		return findDtDefinition(dto).getFields()
 				.stream()
-				.filter(dtField -> dtField.getType() != DtField.FieldType.COMPUTED)
+				.filter(dtField -> dtField.getType() != DataField.FieldType.COMPUTED)
 				.map(dtField -> dtField.name() + '=' + dtField.getDataAccessor().getValue(dto))
 				.collect(Collectors.joining(", ", findDtDefinition(dto).getName() + '(', ")"));
 	}
@@ -235,7 +235,7 @@ public final class DtObjectUtil {
 	 * @param dtField field to compare
 	 * @return compare value1 to value2
 	 */
-	public static int compareFieldValues(final DtObject dtoObject1, final DtObject dtoObject2, final DtField dtField, final boolean sortDesc) {
+	public static int compareFieldValues(final DtObject dtoObject1, final DtObject dtoObject2, final DataField dtField, final boolean sortDesc) {
 		Assertion.check().isTrue(DtObjectUtil.findDtDefinition(dtoObject1).equals(DtObjectUtil.findDtDefinition(dtoObject2)),
 				"Only Dtobjects of the same type can be compared, you try to compare object types '{0}' and '{1}'", dtoObject1.getClass(), dtoObject2.getClass());
 		final DataAccessor dataAccessor = dtField.getDataAccessor();

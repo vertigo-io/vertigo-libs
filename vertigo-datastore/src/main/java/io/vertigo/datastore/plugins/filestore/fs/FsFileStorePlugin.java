@@ -40,7 +40,7 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.FileUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
@@ -89,7 +89,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	private final boolean readOnly;
 	private final String name;
 	private final String documentRoot;
-	private DtField storeIdField;
+	private DataField storeIdField;
 	private DataDefinition storeDtDefinition;
 	private final String storeDtDefinitionName;
 	private final VTransactionManager transactionManager;
@@ -311,7 +311,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 */
 	private static <V> V getValue(final DtObject dto, final DtoFields field, final Class<V> valueClass) {
 		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(dto);
-		final DtField dtField = dataDefinition.getField(field.name());
+		final DataField dtField = dataDefinition.getField(field.name());
 		return valueClass.cast(dtField.getDataAccessor().getValue(dto));
 	}
 
@@ -323,12 +323,12 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 * @param value Valeur
 	 */
 	private static void setValue(final DtObject dto, final DtoFields field, final Object value) {
-		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(field.name());
+		final DataField dtField = DtObjectUtil.findDtDefinition(dto).getField(field.name());
 		dtField.getDataAccessor().setValue(dto, value);
 	}
 
 	private static void setIdValue(final DtObject dto, final FileInfoURI uri) {
-		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getIdField().get();
+		final DataField dtField = DtObjectUtil.findDtDefinition(dto).getIdField().get();
 		dtField.getDataAccessor().setValue(dto, uri.getKeyAs(dtField.smartTypeDefinition().getJavaClass()));
 	}
 

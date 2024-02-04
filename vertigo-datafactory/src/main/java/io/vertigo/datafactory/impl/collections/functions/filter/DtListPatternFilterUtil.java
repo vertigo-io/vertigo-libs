@@ -31,7 +31,7 @@ import io.vertigo.core.util.DateUtil;
 import io.vertigo.datamodel.criteria.CriterionLimit;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtObject;
 
 /**
@@ -75,7 +75,7 @@ public final class DtListPatternFilterUtil {
 		//-----
 		//Si on trouve un pattern, on passe sur du code spécifique
 		final String fieldName = parsedFilter[1]; //attention parsedFilter[0] = filtre entier
-		final DtField dtField = dataDefinition.getField(fieldName);
+		final DataField dtField = dataDefinition.getField(fieldName);
 		Assertion.check().isTrue(dtField.smartTypeDefinition().getScope().isBasicType(), "Only primitive types can be used in pattern");
 		final BasicType dataType = dtField.smartTypeDefinition().getBasicType();
 

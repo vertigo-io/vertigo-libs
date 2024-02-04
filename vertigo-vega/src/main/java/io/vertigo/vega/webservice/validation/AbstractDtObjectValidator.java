@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.Set;
 
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 
@@ -36,7 +36,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	@Override
 	public void validate(final O dtObject, final Set<String> modifiedFieldNames, final DtObjectErrors dtObjectErrors) {
 		for (final String fieldName : modifiedFieldNames) {
-			final DtField dtField = getDtField(fieldName, dtObject);
+			final DataField dtField = getDataField(fieldName, dtObject);
 			checkMonoFieldConstraints(dtObject, dtField, dtObjectErrors);
 		}
 		checkMultiFieldConstraints(dtObject, modifiedFieldNames, dtObjectErrors);
@@ -59,7 +59,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	 * @param dtField Champs à tester
 	 * @param dtObjectErrors Pile des erreurs
 	 */
-	protected void checkMonoFieldConstraints(final O dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
+	protected void checkMonoFieldConstraints(final O dtObject, final DataField dtField, final DtObjectErrors dtObjectErrors) {
 		//enrichissable pour un type d'objet particulier
 		//ex: input.addError(e.getMessageText());
 	}
@@ -188,9 +188,9 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	/**
 	 * @param fieldName Nom du champ
 	 * @param dto Objet portant le champ
-	 * @return DtField.
+	 * @return DataField.
 	 */
-	protected final DtField getDtField(final String fieldName, final O dto) {
+	protected final DataField getDataField(final String fieldName, final O dto) {
 		return DtObjectUtil.findDtDefinition(dto).getField(fieldName);
 	}
 
@@ -200,6 +200,6 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	 * @return Value
 	 */
 	protected final Object getValue(final String fieldName, final O dto) {
-		return getDtField(fieldName, dto).getDataAccessor().getValue(dto);
+		return getDataField(fieldName, dto).getDataAccessor().getValue(dto);
 	}
 }

@@ -34,7 +34,7 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataAccessor;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.KeyConcept;
@@ -85,9 +85,9 @@ public abstract class AbstractSqlSearchLoader<S extends KeyConcept, I extends Dt
 			final String entityName = getEntityName(dataDefinition);
 			final String tableName = StringUtil.camelToConstCase(entityName);
 			final String taskName = "TkSelect" + entityName + "NextSearchChunk";
-			final DtField idField = dataDefinition.getIdField().get();
-			final DtField versionField = getVersionField(dataDefinition);
-			final DtField iteratorField = orderByVersion ? versionField : idField;
+			final DataField idField = dataDefinition.getIdField().get();
+			final DataField versionField = getVersionField(dataDefinition);
+			final DataField iteratorField = orderByVersion ? versionField : idField;
 
 			final String request = getNextIdsSqlQuery(tableName, idField.name(), iteratorField.name(), versionField.name());
 

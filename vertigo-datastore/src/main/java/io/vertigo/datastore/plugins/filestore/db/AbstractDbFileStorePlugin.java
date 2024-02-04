@@ -23,8 +23,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.definitions.DtField;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
@@ -107,7 +107,7 @@ abstract class AbstractDbFileStorePlugin {
 	 */
 	protected static <V> V getValue(final DtObject dto, final DataFieldName fieldName, final Class<V> valueClass) {
 		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(dto);
-		final DtField dtField = dataDefinition.getField(fieldName.name());
+		final DataField dtField = dataDefinition.getField(fieldName.name());
 		return valueClass.cast(dtField.getDataAccessor().getValue(dto));
 	}
 
@@ -120,7 +120,7 @@ abstract class AbstractDbFileStorePlugin {
 	 */
 	protected static void setValue(final DtObject dto, final DataFieldName fieldName, final Object value) {
 		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(dto);
-		final DtField dtField = dataDefinition.getField(fieldName.name());
+		final DataField dtField = dataDefinition.getField(fieldName.name());
 		dtField.getDataAccessor().setValue(dto, value);
 	}
 
@@ -129,7 +129,7 @@ abstract class AbstractDbFileStorePlugin {
 	 */
 	protected static void setIdValue(final DtObject dto, final FileInfoURI uri) {
 		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(dto);
-		final DtField idField = dataDefinition.getIdField().get();
+		final DataField idField = dataDefinition.getIdField().get();
 		idField.getDataAccessor().setValue(dto, uri.getKeyAs(idField.smartTypeDefinition().getJavaClass()));
 	}
 

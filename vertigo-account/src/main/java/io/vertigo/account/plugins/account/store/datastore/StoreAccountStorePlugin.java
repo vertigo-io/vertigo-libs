@@ -40,7 +40,7 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.association.AssociationDefinition;
 import io.vertigo.datamodel.data.definitions.association.AssociationNNDefinition;
 import io.vertigo.datamodel.data.definitions.association.AssociationSimpleDefinition;
@@ -70,19 +70,19 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	private final EntityStoreManager entityStoreManager;
 	private final FileStoreManager fileStoreManager;
 
-	private DtField userIdField;
+	private DataField userIdField;
 	private final String groupIdentityEntity;
 	private final String userAuthField;
 	private final Optional<String> photoFileInfo;
 	private Optional<FileInfoDefinition> photoFileInfoDefinition = Optional.empty();
 	private DataDefinition userGroupDtDefinition;
-	private DtField groupIdField;
+	private DataField groupIdField;
 	private final String groupToGroupAccountMappingStr;
 	private AssociationDefinition associationUserGroup;
 	private String associationGroupRoleName;
 	private String associationUserRoleName;
 
-	private AccountMapperHelper<DtField, GroupProperty> mapperHelper; //GroupProperty from UserGroupAttribute
+	private AccountMapperHelper<DataField, GroupProperty> mapperHelper; //GroupProperty from UserGroupAttribute
 
 	private enum GroupProperty {
 		id, displayName
@@ -264,7 +264,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	}
 
 	private String parseAttribute(final GroupProperty accountProperty, final Entity userEntity) {
-		final DtField attributeField = mapperHelper.getSourceAttribute(accountProperty);
+		final DataField attributeField = mapperHelper.getSourceAttribute(accountProperty);
 		return String.valueOf(attributeField.getDataAccessor().getValue(userEntity));
 	}
 

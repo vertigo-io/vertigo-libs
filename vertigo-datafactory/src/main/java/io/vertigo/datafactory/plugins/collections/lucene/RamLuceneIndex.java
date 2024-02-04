@@ -54,7 +54,7 @@ import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.DtListURIForMasterData;
@@ -77,7 +77,7 @@ final class RamLuceneIndex<D extends DtObject> {
 	//DtDefinition est non serializable
 	private final DataDefinition dataDefinition;
 
-	private final Optional<DtField> idFieldOpt;
+	private final Optional<DataField> idFieldOpt;
 	private final String idFieldName;
 
 	private final Map<String, D> indexedObjectPerPk = new HashMap<>();
@@ -188,14 +188,14 @@ final class RamLuceneIndex<D extends DtObject> {
 
 		//-----
 		try (final IndexWriter indexWriter = createIndexWriter()) {
-			final Collection<DtField> dtFields = fullDtc.getDefinition().getFields();
+			final Collection<DataField> dtFields = fullDtc.getDefinition().getFields();
 
 			for (final D dto : fullDtc) {
 				final Document document = new Document();
 				final String indexedPkValue = obtainIndexedIdValue(dto);
 
 				addKeyword(document, idFieldName, indexedPkValue, true);
-				for (final DtField dtField : dtFields) {
+				for (final DataField dtField : dtFields) {
 					final Object value = dtField.getDataAccessor().getValue(dto);
 					if (value != null && (idFieldOpt.isEmpty() || !dtField.equals(idFieldOpt.get()))) {
 						if (value instanceof String) {
@@ -229,14 +229,14 @@ final class RamLuceneIndex<D extends DtObject> {
 		return Node.getNode().getComponentSpace().resolve(EntityStoreManager.class);
 	}
 
-	private static String getStringValue(final DtObject dto, final DtField field, final SmartTypeManager smartTypeManager) {
+	private static String getStringValue(final DtObject dto, final DataField field, final SmartTypeManager smartTypeManager) {
 		final String stringValue;
 		final Object value = field.getDataAccessor().getValue(dto);
 		if (value != null) {
-			if (field.getType() == DtField.FieldType.FOREIGN_KEY && getEntityStoreManager().getMasterDataConfig().containsMasterData(field.getFkDtDefinition())) {
+			if (field.getType() == DataField.FieldType.FOREIGN_KEY && getEntityStoreManager().getMasterDataConfig().containsMasterData(field.getFkDtDefinition())) {
 				//TODO voir pour mise en cache de cette navigation
 				final DtListURIForMasterData mdlUri = getEntityStoreManager().getMasterDataConfig().getDtListURIForMasterData(field.getFkDtDefinition());
-				final DtField displayField = mdlUri.getDtDefinition().getDisplayField().get();
+				final DataField displayField = mdlUri.getDtDefinition().getDisplayField().get();
 				final UID<Entity> uid = UID.of(field.getFkDtDefinition(), value);
 				final DtObject fkDto = getEntityStoreManager().readOne(uid);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
@@ -261,10 +261,10 @@ final class RamLuceneIndex<D extends DtObject> {
 	 */
 	public DtList<D> getCollection(
 			final String keywords,
-			final Collection<DtField> searchedFields,
+			final Collection<DataField> searchedFields,
 			final List<ListFilter> listFilters,
 			final DtListState dtListState,
-			final Optional<DtField> boostedField) throws IOException {
+			final Optional<DataField> boostedField) throws IOException {
 		Assertion.check()
 				.isNotNull(searchedFields)
 				.isNotNull(dtListState)

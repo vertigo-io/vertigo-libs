@@ -30,7 +30,7 @@ import java.util.function.BiPredicate;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 import io.vertigo.vega.webservice.validation.UiMessageStack.Level;
@@ -41,7 +41,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack.Level;
  */
 public final class UiErrorBuilder {
 	private final List<UiError> uiObjectErrors = new ArrayList<>();
-	private final Map<DtObject, Set<DtField>> uiErrorIndex = new HashMap<>();
+	private final Map<DtObject, Set<DataField>> uiErrorIndex = new HashMap<>();
 
 	/**
 	 * @return Si il y a des erreurs
@@ -58,7 +58,7 @@ public final class UiErrorBuilder {
 		return !obtainUiErrorIndex(dtObject).isEmpty();
 	}
 
-	private Set<DtField> obtainUiErrorIndex(final DtObject dtObject) {
+	private Set<DataField> obtainUiErrorIndex(final DtObject dtObject) {
 		var dtFieldError = uiErrorIndex.get(dtObject);
 		if (dtFieldError == null) {
 			dtFieldError = new HashSet<>();
@@ -72,7 +72,7 @@ public final class UiErrorBuilder {
 	 * @param dtField Champ
 	 * @return si le champ de l'objet porte des erreurs
 	 */
-	public boolean hasError(final DtObject dtObject, final DtField dtField) {
+	public boolean hasError(final DtObject dtObject, final DataField dtField) {
 		return obtainUiErrorIndex(dtObject).contains(dtField);
 	}
 
@@ -90,7 +90,7 @@ public final class UiErrorBuilder {
 	 * @param dtObject Objet
 	 * @param dtField Champ
 	 */
-	void clearErrors(final DtObject dtObject, final DtField dtField) {
+	void clearErrors(final DtObject dtObject, final DataField dtField) {
 		Assertion.check().isNotNull(dtField);
 		//-----
 		uiObjectErrors.removeIf(uiError -> uiError.dtObject().equals(dtObject) && uiError.dtField().equals(dtField));
@@ -103,7 +103,7 @@ public final class UiErrorBuilder {
 	 * @param dtField Champ porteur de l'erreur
 	 * @param messageText Message d'erreur
 	 */
-	public void addError(final DtObject dtObject, final DtField dtField, final LocaleMessageText messageText) {
+	public void addError(final DtObject dtObject, final DataField dtField, final LocaleMessageText messageText) {
 		uiObjectErrors.add(new UiError(dtObject, dtField, messageText));
 		obtainUiErrorIndex(dtObject).add(dtField);
 	}
@@ -115,7 +115,7 @@ public final class UiErrorBuilder {
 	 * @param messageText Message d'erreur
 	 */
 	public void addError(final DtObject dtObject, final DataFieldName fieldName, final LocaleMessageText messageText) {
-		addError(dtObject, getDtField(dtObject, fieldName), messageText);
+		addError(dtObject, getDataField(dtObject, fieldName), messageText);
 	}
 
 	/**
@@ -126,8 +126,8 @@ public final class UiErrorBuilder {
 	 * @param messageText Message à appliquer si erreur
 	 */
 	public void checkFieldEquals(final DtObject dto, final DataFieldName fieldName1, final DataFieldName fieldName2, final LocaleMessageText messageText) {
-		final var dtField1 = getDtField(dto, fieldName1);
-		final var dtField2 = getDtField(dto, fieldName2);
+		final var dtField1 = getDataField(dto, fieldName1);
+		final var dtField2 = getDataField(dto, fieldName2);
 		final var value1 = getValue(dto, dtField1);
 		final var value2 = getValue(dto, dtField2);
 		//value1 et value2 == null ou value1 equals value2, sinon error
@@ -173,8 +173,8 @@ public final class UiErrorBuilder {
 	}
 
 	public <T> void checkFieldCompare(final DtObject dto, final DataFieldName fieldName1, final DataFieldName fieldName2, final LocaleMessageText messageText, final BiPredicate<T, T> predicate, final Class<T> fieldClass) {
-		final var dtField1 = getDtField(dto, fieldName1);
-		final var dtField2 = getDtField(dto, fieldName2);
+		final var dtField1 = getDataField(dto, fieldName1);
+		final var dtField2 = getDataField(dto, fieldName2);
 		final var value1 = fieldClass.cast(getValue(dto, dtField1)); //la valeur typée peut être null
 		final var value2 = fieldClass.cast(getValue(dto, dtField2));
 		if (value1 != null && value2 != null && !predicate.test(value1, value2)) {
@@ -190,8 +190,8 @@ public final class UiErrorBuilder {
 	 * @param messageText Message à appliquer si erreur
 	 */
 	public void checkFieldLongAfter(final DtObject dto, final DataFieldName fieldName1, final DataFieldName fieldName2, final LocaleMessageText messageText) {
-		final var dtField1 = getDtField(dto, fieldName1);
-		final var dtField2 = getDtField(dto, fieldName2);
+		final var dtField1 = getDataField(dto, fieldName1);
+		final var dtField2 = getDataField(dto, fieldName2);
 		final var value1 = (Long) getValue(dto, dtField1); //la valeur typée peut être null
 		final var value2 = (Long) getValue(dto, dtField2);
 		if (value1 != null && value2 != null && !(value2.compareTo(value1) > 0)) {
@@ -207,8 +207,8 @@ public final class UiErrorBuilder {
 	 * @param messageText Message à appliquer si erreur
 	 */
 	public void checkFieldLongAfterOrEquals(final DtObject dto, final DataFieldName fieldName1, final DataFieldName fieldName2, final LocaleMessageText messageText) {
-		final var dtField1 = getDtField(dto, fieldName1);
-		final var dtField2 = getDtField(dto, fieldName2);
+		final var dtField1 = getDataField(dto, fieldName1);
+		final var dtField2 = getDataField(dto, fieldName2);
 		final var value1 = (Long) getValue(dto, dtField1); //la valeur typée peut être null
 		final var value2 = (Long) getValue(dto, dtField2);
 		if (value1 != null && value2 != null && !(value2.compareTo(value1) >= 0)) {
@@ -223,18 +223,18 @@ public final class UiErrorBuilder {
 	 * @param messageText Message à appliquer si erreur
 	 */
 	public void checkFieldNotNull(final DtObject dto, final DataFieldName fieldName, final LocaleMessageText messageText) {
-		final var dtField = getDtField(dto, fieldName);
+		final var dtField = getDataField(dto, fieldName);
 		final var value = getValue(dto, dtField);
 		if (value == null || value.toString().isEmpty()) {
 			addError(dto, dtField, messageText);
 		}
 	}
 
-	private static <T> T getValue(final DtObject dto, final DtField dtField) {
+	private static <T> T getValue(final DtObject dto, final DataField dtField) {
 		return (T) dtField.getDataAccessor().getValue(dto);
 	}
 
-	private static DtField getDtField(final DtObject dto, final DataFieldName fieldName) {
+	private static DataField getDataField(final DtObject dto, final DataFieldName fieldName) {
 		return DtObjectUtil.findDtDefinition(dto).getField(fieldName);
 	}
 

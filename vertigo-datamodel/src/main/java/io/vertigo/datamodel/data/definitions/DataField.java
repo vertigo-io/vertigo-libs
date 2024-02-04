@@ -40,7 +40,7 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
  *
  * @author  fconstantin, pchretien , npiedeloup
  */
-public final class DtField extends DataDescriptor {
+public final class DataField extends DataDescriptor {
 
 	/** Field definition Prefix. */
 	public static final String PREFIX = "fld";
@@ -105,7 +105,7 @@ public final class DtField extends DataDescriptor {
 	 * @param computedExpression Expression du computed (noNull si type=Computed)
 	 * @param dynamic if the field is dynamic
 	 */
-	DtField(
+	DataField(
 			final String id,
 			final String fieldName,
 			final FieldType type,

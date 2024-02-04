@@ -137,7 +137,7 @@ public final class DslSecurityRulesBuilderTest {
 	private final CriteriaEncoder defaultSQLCriteriaEncoder = new CriteriaEncoder() {
 
 		@Override
-		public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DtFieldName dtFieldName, final Serializable[] values) {
+		public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DataFieldName dtFieldName, final Serializable[] values) {
 			final String fieldName = dtFieldName.name();
 			//---
 			switch (criterionOperator) {

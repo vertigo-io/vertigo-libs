@@ -39,7 +39,7 @@ import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.impl.collections.IndexPlugin;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.DtListURI;
@@ -143,10 +143,10 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 	@Override
 	public <D extends DtObject> DtList<D> getCollection(
 			final String keywords,
-			final Collection<DtField> searchedFields,
+			final Collection<DataField> searchedFields,
 			final List<ListFilter> listFilters,
 			final DtListState listState,
-			final Optional<DtField> boostedField,
+			final Optional<DataField> boostedField,
 			final DtList<D> dtc) {
 		Assertion.check().isTrue(listState.getMaxRows().isPresent(), "Can't return all results, you must define maxRows");
 		try {

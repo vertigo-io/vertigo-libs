@@ -43,7 +43,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 
 /**
@@ -64,9 +64,9 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		//----
 		asserUnsupportedAttributes("SecuredEntity " + entityDefinition.getClassSimpleName(), jsonSecuredEntity, SECURED_ENTITY_SUPPORTED_ATTRIBUTES);
 		//----
-		final List<DtField> securityFields = new ArrayList<>();
+		final List<DataField> securityFields = new ArrayList<>();
 		for (final JsonElement securityField : jsonSecuredEntity.get("securityFields").getAsJsonArray()) {
-			securityFields.add(deserializeDtField(entityDefinition, securityField.getAsString()));
+			securityFields.add(deserializeDataField(entityDefinition, securityField.getAsString()));
 		}
 
 		final List<SecurityDimension> advancedDimensions = new ArrayList<>();
@@ -167,8 +167,8 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		final String name = advancedDimension.get("name").getAsString();
 		final SecurityDimensionType type = SecurityDimensionType.valueOf(advancedDimension.get("type").getAsString());
 		final List<String> fieldNames = deserializeList(advancedDimension.get("fields"), String.class, context);
-		final List<DtField> fields = fieldNames.stream()
-				.map(fieldName -> deserializeDtField(entityDefinition, fieldName))
+		final List<DataField> fields = fieldNames.stream()
+				.map(fieldName -> deserializeDataField(entityDefinition, fieldName))
 				.toList();
 		final List<String> values = deserializeList(advancedDimension.get("values"), String.class, context);
 		return new SecurityDimension(name, type, fields, values);
@@ -179,7 +179,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		return new KnownParameterizedType(rawClass, typeArguments);
 	}
 
-	private static DtField deserializeDtField(final DataDefinition entityDefinition, final String fieldName) {
+	private static DataField deserializeDataField(final DataDefinition entityDefinition, final String fieldName) {
 		return entityDefinition.getField(fieldName);
 	}
 

@@ -94,9 +94,9 @@ public final class SelectedFacetValuesDeserializer implements JsonDeserializer<S
 			valueAsString = code;
 		}
 		if (valueAsString != null) {
-			query = facetDefinition.getDtField().name() + ":\"" + valueAsString + "\"";
+			query = facetDefinition.getDataField().name() + ":\"" + valueAsString + "\"";
 		} else {
-			query = "!_exists_:" + facetDefinition.getDtField().name(); //only for null value, empty ones use FIELD:""
+			query = "!_exists_:" + facetDefinition.getDataField().name(); //only for null value, empty ones use FIELD:""
 		}
 		final FacetValue facetValue = new FacetValue(code, ListFilter.of(query), LocaleMessageText.of(code));
 		selectedFacetValuesBuilder.add(facetDefinition, facetValue);

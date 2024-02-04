@@ -30,7 +30,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 import io.vertigo.vega.webservice.model.UiObject;
@@ -74,7 +74,7 @@ final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer
 
 	private static Set<String> getFieldNames(final DataDefinition dataDefinition) {
 		final Set<String> dtFieldNames = new HashSet<>();
-		for (final DtField dtField : dataDefinition.getFields()) {
+		for (final DataField dtField : dataDefinition.getFields()) {
 			dtFieldNames.add(dtField.name());
 		}
 		return dtFieldNames;

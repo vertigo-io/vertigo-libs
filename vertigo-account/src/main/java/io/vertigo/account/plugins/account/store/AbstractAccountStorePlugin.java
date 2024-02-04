@@ -24,7 +24,7 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.Entity;
 
 /**
@@ -36,7 +36,7 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 	private final String userDtDefinitionName;
 	private final String userToAccountMappingStr;
 
-	private AccountMapperHelper<DtField, AccountProperty> mapperHelper; //AccountAttribute from UserAttribute
+	private AccountMapperHelper<DataField, AccountProperty> mapperHelper; //AccountAttribute from UserAttribute
 
 	private enum AccountProperty {
 		id, displayName, email, authToken, photo
@@ -99,7 +99,7 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 	}
 
 	private String parseAttribute(final AccountProperty accountProperty, final Entity userEntity) {
-		final DtField attributeField = mapperHelper.getSourceAttribute(accountProperty);
+		final DataField attributeField = mapperHelper.getSourceAttribute(accountProperty);
 		if (attributeField != null) {
 			final Object value = attributeField.getDataAccessor().getValue(userEntity);
 			return value != null ? String.valueOf(value) : null;

@@ -87,7 +87,7 @@ public final class SelectedFacetValues implements Serializable {
 					}
 				}
 			} else {
-				add(facetDefinition, new FacetValue(facetValueCode, ListFilter.of(facetDefinition.getDtField().name() + ":" + facetValueCode), LocaleMessageText.of(facetValueCode)));
+				add(facetDefinition, new FacetValue(facetValueCode, ListFilter.of(facetDefinition.getDataField().name() + ":" + facetValueCode), LocaleMessageText.of(facetValueCode)));
 			}
 			return this;
 		}

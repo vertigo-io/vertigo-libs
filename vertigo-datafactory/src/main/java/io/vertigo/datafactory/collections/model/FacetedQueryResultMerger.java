@@ -32,7 +32,7 @@ import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition.FacetOrder;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtObject;
 
@@ -120,7 +120,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> {
 		final Map<FacetValue, DtList<R>> clustersDtc = new LinkedHashMap<>(otherResults.size());
 		final Map<FacetValue, Long> clustersCount = new LinkedHashMap<>(otherResults.size());
 		final List<Facet> facets = new ArrayList<>();
-		final Map<R, Map<DtField, String>> highlights = Collections.emptyMap();
+		final Map<R, Map<DataField, String>> highlights = Collections.emptyMap();
 
 		for (final Entry<FacetValue, List<FacetedQueryResult<?, S>>> otherResult : otherResults.entrySet()) {
 			long clusterCount = 0;

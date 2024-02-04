@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
@@ -41,7 +41,7 @@ public final class UiListUnmodifiable<O extends DtObject> extends AbstractUiList
 	 * Constructeur.
 	 * @param dtList Liste à encapsuler
 	 */
-	public UiListUnmodifiable(final DtList<O> dtList, final Optional<DtFieldName<O>> keyFieldNameOpt) {
+	public UiListUnmodifiable(final DtList<O> dtList, final Optional<DataFieldName<O>> keyFieldNameOpt) {
 		super(dtList.getDefinition(), keyFieldNameOpt);
 		//-----
 		this.dtList = dtList;

@@ -19,7 +19,7 @@ package io.vertigo.vega.webservice.validation;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtObject;
 
 /**
@@ -31,7 +31,7 @@ import io.vertigo.datamodel.data.model.DtObject;
  */
 public record UiError(
 		DtObject dtObject,
-		DtField dtField,
+		DataField dtField,
 		LocaleMessageText errorMessage) {
 
 	public UiError {

@@ -33,8 +33,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataField;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.definitions.FormatterException;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -75,12 +75,12 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * Constructeur.
 	 * @param dtDefinition DtDefinition
 	 */
-	AbstractUiListUnmodifiable(final DtDefinition dtDefinition, final Optional<DtFieldName<O>> keyFieldNameOpt) {
+	AbstractUiListUnmodifiable(final DtDefinition dtDefinition, final Optional<DataFieldName<O>> keyFieldNameOpt) {
 		Assertion.check().isNotNull(dtDefinition);
 		//-----
 		dtDefinitionId = dtDefinition.id();
-		final Optional<DtField> idFieldOpt = getDtDefinition().getIdField();
-		final Optional<DtField> keyFieldOpt = getDtDefinition().getKeyField();
+		final Optional<DataField> idFieldOpt = getDtDefinition().getIdField();
+		final Optional<DataField> keyFieldOpt = getDtDefinition().getKeyField();
 		if (idFieldOpt.isPresent()) {
 			camelIdFieldName = idFieldOpt.get().name();
 		} else if (keyFieldOpt.isPresent()) {
@@ -211,7 +211,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		Assertion.check().isTrue(dtDefinition.getIdField().isPresent(), "The definition : {0} must have an id to retrieve missing elements by Id", dtDefinition);
 		// ---
 		UiObject<O> uiObject;
-		final DtField dtField = dtDefinition.getField(keyFieldName);
+		final DataField dtField = dtDefinition.getField(keyFieldName);
 		Assertion.check().isTrue(dtField.getType().isId(), "La clé {0} de la liste doit être la PK", keyFieldName);
 
 		final O entity = (O) loadDto(keyValue);

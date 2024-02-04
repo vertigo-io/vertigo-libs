@@ -29,7 +29,7 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
@@ -57,7 +57,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	}
 
 	private final DataDefinition storeMetaDataDtDefinition;
-	private final DtField storeMetaDataIdField;
+	private final DataField storeMetaDataIdField;
 	private final DataDefinition storeFileDtDefinition;
 
 	/**

@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 
 /**
  * Secured data dimension.
@@ -35,7 +35,7 @@ public final class SecurityDimension {
 
 	private final String name;
 	private final SecurityDimensionType type;
-	private final List<DtField> fields;
+	private final List<DataField> fields;
 	private final List<String> values;
 
 	/**
@@ -49,7 +49,7 @@ public final class SecurityDimension {
 	public SecurityDimension(
 			final String name,
 			final SecurityDimensionType type,
-			final List<DtField> fields,
+			final List<DataField> fields,
 			final List<String> values) {
 		Assertion.check()
 				.isNotBlank(name)
@@ -92,7 +92,7 @@ public final class SecurityDimension {
 	 *
 	 * @return the ordered list of fields.
 	 */
-	public List<DtField> getFields() {
+	public List<DataField> getFields() {
 		return fields;
 	}
 

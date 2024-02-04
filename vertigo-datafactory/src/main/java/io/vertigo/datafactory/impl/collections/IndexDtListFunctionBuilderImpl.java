@@ -24,7 +24,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.collections.IndexDtListFunctionBuilder;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.impl.collections.functions.index.IndexFilterFunction;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtObject;
 
@@ -48,7 +48,7 @@ final class IndexDtListFunctionBuilderImpl<D extends DtObject> implements IndexD
 
 	/** {@inheritDoc} */
 	@Override
-	public IndexDtListFunctionBuilder<D> filter(final String userKeywords, final int maxRows, final Collection<DtField> keywordsSearchedFields) {
+	public IndexDtListFunctionBuilder<D> filter(final String userKeywords, final int maxRows, final Collection<DataField> keywordsSearchedFields) {
 		indexFilterFunction.filter(userKeywords, maxRows, keywordsSearchedFields);
 		return this;
 	}

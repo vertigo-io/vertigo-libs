@@ -20,7 +20,7 @@ package io.vertigo.datamodel.data.definitions.association;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.util.AssociationUtil;
 
 /**
@@ -91,7 +91,7 @@ public final class AssociationSimpleDefinition extends AssociationDefinition<Ass
 	/**
 	 * @return the field that supports the link
 	 */
-	public DtField getFKField() {
+	public DataField getFKField() {
 		return foreignAssociationNode.getDtDefinition().getField(fkFieldName);
 	}
 }

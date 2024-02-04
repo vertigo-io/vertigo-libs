@@ -29,8 +29,8 @@ import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataAccessor;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.definitions.DtField;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.Entity;
@@ -144,11 +144,11 @@ public class DAO<E extends Entity, P> {
 	public final E reloadAndMerge(final Fragment<E> fragment) {
 		final DataDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragment);
 		final DataDefinition entityDefinition = fragmentDefinition.getFragment().get();
-		final Map<String, DtField> entityFields = indexFields(entityDefinition.getFields());
-		final DtField idField = entityDefinition.getIdField().get();
+		final Map<String, DataField> entityFields = indexFields(entityDefinition.getFields());
+		final DataField idField = entityDefinition.getIdField().get();
 		final P entityId = (P) idField.getDataAccessor().getValue(fragment);//etrange on utilise l'accessor de l'entity sur le fragment
 		final E dto = get(entityId);
-		for (final DtField fragmentField : fragmentDefinition.getFields()) {
+		for (final DataField fragmentField : fragmentDefinition.getFields()) {
 			//On vérifie la présence du champ dans l'Entity (il peut s'agir d'un champ non persistent d'UI
 			if (entityFields.containsKey(fragmentField.name())) {
 				final DataAccessor fragmentDataAccessor = fragmentField.getDataAccessor();
@@ -159,10 +159,10 @@ public class DAO<E extends Entity, P> {
 		return dto;
 	}
 
-	private static Map<String, DtField> indexFields(final List<DtField> fields) {
+	private static Map<String, DataField> indexFields(final List<DataField> fields) {
 		return fields
 				.stream()
-				.collect(Collectors.toMap(DtField::name, Function.identity()));
+				.collect(Collectors.toMap(DataField::name, Function.identity()));
 	}
 
 	/**
@@ -206,7 +206,7 @@ public class DAO<E extends Entity, P> {
 		final E dto = entityStoreManager.readOne(uid);
 		final DataDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragmentClass);
 		final F fragment = fragmentClass.cast(DtObjectUtil.createDtObject(fragmentDefinition));
-		for (final DtField dtField : fragmentDefinition.getFields()) {
+		for (final DataField dtField : fragmentDefinition.getFields()) {
 			final DataAccessor dataAccessor = dtField.getDataAccessor();
 			dataAccessor.setValue(fragment, dataAccessor.getValue(dto));
 			//etrange on utilise l'accessor du fragment sur l'entity
@@ -254,11 +254,11 @@ public class DAO<E extends Entity, P> {
 	 * @param dtListState Etat de la liste : Sort, top, offset
 	 * @return DtList<D> récupéré NOT NUL
 	 */
-	public final DtList<E> getListByDtFieldName(final DataFieldName dataFieldName, final Serializable value, final DtListState dtListState) {
+	public final DtList<E> getListByDataFieldName(final DataFieldName dataFieldName, final Serializable value, final DtListState dtListState) {
 		final Criteria<E> criteria = Criterions.isEqualTo(dataFieldName, value);
 		// Verification de la valeur est du type du champ
 		final DataDefinition dataDefinition = getDtDefinition();
-		final DtField dtField = dataDefinition.getField(dataFieldName.name());
+		final DataField dtField = dataDefinition.getField(dataFieldName.name());
 		smartTypeManager.checkType(dtField.smartTypeDefinition(), dtField.cardinality(), value);
 		return entityStoreManager.find(dataDefinition, criteria, dtListState);
 	}

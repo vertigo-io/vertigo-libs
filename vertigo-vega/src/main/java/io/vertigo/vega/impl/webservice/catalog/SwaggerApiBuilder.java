@@ -42,7 +42,7 @@ import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
@@ -313,7 +313,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		final Map<String, Object> properties = new LinkedHashMap<>();
 		final List<String> required = new ArrayList<>(); //mandatory fields
 		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(objectClass);
-		for (final DtField dtField : dataDefinition.getFields()) {
+		for (final DataField dtField : dataDefinition.getFields()) {
 			final String fieldName = dtField.name();
 			if (isExcludedField(fieldName, includedFields, excludedFields)) {
 				continue;
@@ -349,7 +349,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		return excludedFields.contains(fieldName);
 	}
 
-	private static Type getFieldType(final DtField dtField) {
+	private static Type getFieldType(final DataField dtField) {
 		final Class<?> dtClass = dtField.smartTypeDefinition().getJavaClass();
 		if (dtField.cardinality().hasMany()) {
 			return new CustomParameterizedType(dtField.getTargetJavaClass(), dtClass);
@@ -480,7 +480,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		} else if (DtObject.class.isAssignableFrom(webServiceParam.getType())) {
 			final Class<? extends DtObject> paramClass = (Class<? extends DtObject>) webServiceParam.getType();
 			final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(paramClass);
-			for (final DtField dtField : dataDefinition.getFields()) {
+			for (final DataField dtField : dataDefinition.getFields()) {
 				final String fieldName = dtField.name();
 				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.smartTypeDefinition().getJavaClass())
 						.with(webServiceParam.getParamType(), prefix + fieldName)

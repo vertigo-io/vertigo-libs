@@ -42,7 +42,7 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.util.FileUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
@@ -227,7 +227,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	}
 
 	private void setTypedValue(final DataDefinition userDtDefinition, final Entity user, final String fieldName, final String valueStr) {
-		final DtField dtField = userDtDefinition.getField(fieldName);
+		final DataField dtField = userDtDefinition.getField(fieldName);
 		final Serializable typedValue;
 		try {
 			typedValue = (Serializable) smartTypeManager.stringToValue(dtField.smartTypeDefinition(), valueStr);

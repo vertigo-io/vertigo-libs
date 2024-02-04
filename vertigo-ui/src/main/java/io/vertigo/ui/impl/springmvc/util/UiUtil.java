@@ -43,7 +43,7 @@ import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.structure.definitions.DataField;
 import io.vertigo.datamodel.structure.definitions.DtProperty;
 import io.vertigo.datamodel.structure.definitions.Formatter;
 import io.vertigo.ui.core.AbstractUiListUnmodifiable;
@@ -174,7 +174,7 @@ public final class UiUtil implements Serializable {
 	 * @return Label du champs
 	 */
 	public static String label(final String fieldPath) {
-		return getDtField(fieldPath).getLabel().getDisplay();
+		return getDataField(fieldPath).getLabel().getDisplay();
 	}
 
 	/**
@@ -185,7 +185,7 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			return getDtField(object + '.' + fieldName).smartTypeDefinition().getProperties().getValue(DtProperty.UNIT);
+			return getDataField(object + '.' + fieldName).smartTypeDefinition().getProperties().getValue(DtProperty.UNIT);
 		}
 		return "";
 	}
@@ -210,7 +210,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public static Integer smartTypeMaxLength(final String object, final String fieldName) {
 		if (fieldName != null) {
-			return getDtField(object + '.' + fieldName).smartTypeDefinition().getProperties().getValue(DtProperty.MAX_LENGTH);
+			return getDataField(object + '.' + fieldName).smartTypeDefinition().getProperties().getValue(DtProperty.MAX_LENGTH);
 		}
 		return null;
 	}
@@ -223,7 +223,7 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			return "col_" + getDtField(object + '.' + fieldName).smartTypeDefinition().getName();
+			return "col_" + getDataField(object + '.' + fieldName).smartTypeDefinition().getName();
 		}
 		return defaultValue;
 	}
@@ -236,7 +236,7 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			final var smartTypeDefinition = getDtField(object + '.' + fieldName).smartTypeDefinition();
+			final var smartTypeDefinition = getDataField(object + '.' + fieldName).smartTypeDefinition();
 			if (smartTypeDefinition.getScope().isBasicType()) {
 				final var dataType = smartTypeDefinition.getBasicType();
 				switch (dataType) {
@@ -269,19 +269,19 @@ public final class UiUtil implements Serializable {
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
 			return DEFAULT_FORMATTER.valueToString(value, BasicType.Boolean);
 		}
-		return smartTypeManager.valueToString(getDtField(fieldPath).smartTypeDefinition(), value);
+		return smartTypeManager.valueToString(getDataField(fieldPath).smartTypeDefinition(), value);
 	}
 
 	public static Double getMinValue(final String fieldPath) {
-		return getDtField(fieldPath).smartTypeDefinition().getProperties().getValue(DtProperty.MIN_VALUE);
+		return getDataField(fieldPath).smartTypeDefinition().getProperties().getValue(DtProperty.MIN_VALUE);
 	}
 
 	public static Double getMaxValue(final String fieldPath) {
-		return getDtField(fieldPath).smartTypeDefinition().getProperties().getValue(DtProperty.MAX_VALUE);
+		return getDataField(fieldPath).smartTypeDefinition().getProperties().getValue(DtProperty.MAX_VALUE);
 	}
 
 	public static String getUiDatetimeFormat(final String fieldPath) {
-		return getDtField(fieldPath).smartTypeDefinition().getProperties().getValue(DtProperty.UI_DATETIME_FORMAT);
+		return getDataField(fieldPath).smartTypeDefinition().getProperties().getValue(DtProperty.UI_DATETIME_FORMAT);
 	}
 
 	public static Double getStep(final Double minValue, final Double maxValue) {
@@ -314,7 +314,7 @@ public final class UiUtil implements Serializable {
 		Assertion.check().isTrue(fieldPath.indexOf('.') != 0, "FieldPath shouldn't starts with . ({0})", fieldPath);
 		//-----
 		if (fieldPath.indexOf('.') > 0) { //Le champs est porté par un Object
-			return getDtField(fieldPath).cardinality().hasOne();
+			return getDataField(fieldPath).cardinality().hasOne();
 		}
 		return false; //on ne sait pas dire, mais on ne force pas à obligatoire
 	}
@@ -447,7 +447,7 @@ public final class UiUtil implements Serializable {
 		return (UiList) viewContext.get(uiListKey);
 	}
 
-	private static DtField getDtField(final String fieldPath) {
+	private static DataField getDataField(final String fieldPath) {
 		Assertion.check().isTrue(fieldPath.indexOf('.') > 0, "Le champs n'est pas porté par un Object ({0})", fieldPath);
 		//Assertion.check().argument(fieldPath.indexOf('.') == fieldPath.lastIndexOf('.'), "Seul un point est autorisé ({0})", fieldPath);
 		final var contextKey = fieldPath.substring(0, fieldPath.lastIndexOf('.'));

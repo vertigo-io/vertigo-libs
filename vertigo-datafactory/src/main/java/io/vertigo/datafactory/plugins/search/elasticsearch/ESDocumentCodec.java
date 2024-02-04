@@ -34,8 +34,8 @@ import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datamodel.data.definitions.DataAccessor;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
-import io.vertigo.datamodel.data.definitions.DtField.FieldType;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.DataField.FieldType;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
@@ -132,7 +132,7 @@ public final class ESDocumentCodec {
 		//-----
 
 		final DataDefinition dataDefinition = index.getDefinition().getIndexDtDefinition();
-		final List<DtField> notStoredFields = getNotStoredFields(dataDefinition); //on ne copie pas les champs not stored dans le domain
+		final List<DataField> notStoredFields = getNotStoredFields(dataDefinition); //on ne copie pas les champs not stored dans le domain
 		notStoredFields.addAll(index.getDefinition().getIndexCopyToFields()); //on ne copie pas les champs (copyTo)
 		final I dtResult;
 		if (notStoredFields.isEmpty()) {
@@ -153,8 +153,8 @@ public final class ESDocumentCodec {
 			/* 3 : Les champs du dto index */
 			final DtObject dtIndex = index.getIndexDtObject();
 			final DataDefinition indexDtDefinition = DtObjectUtil.findDtDefinition(dtIndex);
-			final Set<DtField> copyToFields = index.getDefinition().getIndexCopyToFields();
-			for (final DtField dtField : indexDtDefinition.getFields()) {
+			final Set<DataField> copyToFields = index.getDefinition().getIndexCopyToFields();
+			for (final DataField dtField : indexDtDefinition.getFields()) {
 				if (!copyToFields.contains(dtField)) {//On index pas les copyFields
 					final Object value = dtField.getDataAccessor().getValue(dtIndex);
 					if (value != null) { //les valeurs null ne sont pas indexées => conséquence : on ne peut pas les rechercher
@@ -188,16 +188,16 @@ public final class ESDocumentCodec {
 		return encodedValue;
 	}
 
-	private static List<DtField> getNotStoredFields(final DataDefinition dataDefinition) {
+	private static List<DataField> getNotStoredFields(final DataDefinition dataDefinition) {
 		return dataDefinition.getFields().stream()
 				//We don't store (in Result) computed fields and fields with a "notStored" domain
 				.filter(dtField -> !isIndexStoredDomain(dtField.smartTypeDefinition()) || dtField.getType() == FieldType.COMPUTED)
 				.collect(Collectors.toList());
 	}
 
-	private static <I extends DtObject> I cloneDto(final DataDefinition dataDefinition, final I dto, final List<DtField> excludedFields) {
+	private static <I extends DtObject> I cloneDto(final DataDefinition dataDefinition, final I dto, final List<DataField> excludedFields) {
 		final I clonedDto = (I) DtObjectUtil.createDtObject(dataDefinition);
-		for (final DtField dtField : dataDefinition.getFields()) {
+		for (final DataField dtField : dataDefinition.getFields()) {
 			if (!excludedFields.contains(dtField)) {
 				final DataAccessor dataAccessor = dtField.getDataAccessor();
 				dataAccessor.setValue(clonedDto, dataAccessor.getValue(dto));

@@ -36,7 +36,7 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.datafactory.collections.CollectionsManager;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.structure.definitions.DataField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.ui.core.UiListUnmodifiable;
@@ -68,8 +68,8 @@ public final class ListAutocompleteController extends AbstractVSpringMvcControll
 
 		final DtList dtList = obtainDtList(viewContext, list);
 		final DtDefinition dtDefinition = dtList.getDefinition();
-		final DtField labelDtField = dtDefinition.getField(labelField);
-		final Collection<DtField> searchedFields = Collections.singletonList(labelDtField);
+		final DataField labelDataField = dtDefinition.getField(labelField);
+		final Collection<DataField> searchedFields = Collections.singletonList(labelDataField);
 		//-----
 		final UnaryOperator<DtList<DtObject>> fullTextFilter = collectionsManager.createIndexDtListFunctionBuilder()
 				.filter(terms != null ? terms : "", 20, searchedFields)

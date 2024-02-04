@@ -49,20 +49,20 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 	private final String packageName;
 
 	/** List of fields.  */
-	private final List<DtField> fields;
+	private final List<DataField> fields;
 
-	/** Map. (fieldName, DtField). */
-	private final Map<String, DtField> mappedFields;
+	/** Map. (fieldName, DataField). */
+	private final Map<String, DataField> mappedFields;
 
 	private final DataStereotype stereotype;
 
 	/** id Field */
-	private final Optional<DtField> idFieldOpt;
+	private final Optional<DataField> idFieldOpt;
 
-	private final Optional<DtField> sortFieldOpt;
-	private final Optional<DtField> displayFieldOpt;
-	private final Optional<DtField> handleFieldOpt;
-	private final Optional<DtField> keyFieldOpt;
+	private final Optional<DataField> sortFieldOpt;
+	private final Optional<DataField> displayFieldOpt;
+	private final Optional<DataField> handleFieldOpt;
+	private final Optional<DataField> keyFieldOpt;
 
 	private final String dataSpace;
 
@@ -74,12 +74,12 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 			final Optional<DefinitionId<DataDefinition>> fragment,
 			final String packageName,
 			final DataStereotype stereotype,
-			final List<DtField> dtFields,
+			final List<DataField> dtFields,
 			final String dataSpace,
-			final Optional<DtField> sortField,
-			final Optional<DtField> displayField,
-			final Optional<DtField> handleField,
-			final Optional<DtField> keyField) {
+			final Optional<DataField> sortField,
+			final Optional<DataField> displayField,
+			final Optional<DataField> handleField,
+			final Optional<DataField> keyField) {
 		super(name);
 		//---
 		Assertion.check()
@@ -93,21 +93,21 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 				.isNotNull(handleField)
 				.isNotNull(keyField);
 		//-----
-		final var fieldsBuilder = new ListBuilder<DtField>();
-		final var mappedFieldsBuilder = new MapBuilder<String, DtField>();
+		final var fieldsBuilder = new ListBuilder<DataField>();
+		final var mappedFieldsBuilder = new MapBuilder<String, DataField>();
 		//-----
 		fragmentOpt = fragment;
 		//
 		this.stereotype = stereotype;
 		this.packageName = packageName;
-		DtField id = null;
+		DataField id = null;
 
 		sortFieldOpt = sortField;
 		displayFieldOpt = displayField;
 		handleFieldOpt = handleField;
 		keyFieldOpt = keyField;
 
-		for (final DtField dtField : dtFields) {
+		for (final DataField dtField : dtFields) {
 			Assertion.check()
 					.when(stereotype.isPersistent() && dtField.isPersistent(), () -> Assertion.check()
 							.isTrue(!dtField.cardinality().hasMany(),
@@ -116,7 +116,7 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 				Assertion.check().isNull(id, "Only one ID Field is allowed : {0}", name);
 				id = dtField;
 			}
-			registerDtField(mappedFieldsBuilder, fieldsBuilder, dtField);
+			registerDataField(mappedFieldsBuilder, fieldsBuilder, dtField);
 		}
 		fields = fieldsBuilder.unmodifiable().build();
 		mappedFields = mappedFieldsBuilder.unmodifiable().build();
@@ -144,7 +144,7 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 		return new DataDefinitionBuilder(name);
 	}
 
-	private static void registerDtField(final MapBuilder<String, DtField> mappedFieldsBuilder, final ListBuilder<DtField> fieldsBuilder, final DtField dtField) {
+	private static void registerDataField(final MapBuilder<String, DataField> mappedFieldsBuilder, final ListBuilder<DataField> fieldsBuilder, final DataField dtField) {
 		Assertion.check()
 				.isNotNull(dtField);
 		//-----
@@ -190,10 +190,10 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 	 * @param fieldName Nom du champ
 	 * @return Champ correspondant
 	 */
-	public DtField getField(final String fieldName) {
+	public DataField getField(final String fieldName) {
 		Assertion.check().isNotBlank(fieldName);
 		//-----
-		final DtField dtField = mappedFields.get(fieldName);
+		final DataField dtField = mappedFields.get(fieldName);
 		//-----
 		Assertion.check().isNotNull(dtField, "field '{0}' not found on '{1}'. Available fields are :{2}", fieldName, getName(), mappedFields.keySet());
 		return dtField;
@@ -205,7 +205,7 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 	 * @param fieldName Nom du champ
 	 * @return Champ correspondant
 	 */
-	public DtField getField(final DataFieldName fieldName) {
+	public DataField getField(final DataFieldName fieldName) {
 		return getField(fieldName.name());
 	}
 
@@ -222,14 +222,14 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 	/**
 	 * @return Collection des champs.
 	 */
-	public List<DtField> getFields() {
+	public List<DataField> getFields() {
 		return Collections.unmodifiableList(fields);
 	}
 
 	/**
 	 * @return Champ identifiant l'identifiant
 	 */
-	public Optional<DtField> getIdField() {
+	public Optional<DataField> getIdField() {
 		return idFieldOpt;
 	}
 
@@ -244,28 +244,28 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 	/**
 	 * @return Champ représentant l'affichage
 	 */
-	public Optional<DtField> getDisplayField() {
+	public Optional<DataField> getDisplayField() {
 		return displayFieldOpt;
 	}
 
 	/**
 	 * @return Champ représentant le tri
 	 */
-	public Optional<DtField> getSortField() {
+	public Optional<DataField> getSortField() {
 		return sortFieldOpt;
 	}
 
 	/**
 	 * @return Champ représentant le handle
 	 */
-	public Optional<DtField> getHandleField() {
+	public Optional<DataField> getHandleField() {
 		return handleFieldOpt;
 	}
 
 	/**
 	 * @return Champ représentant le champ servant de clé pour différencier localement les éléments d'une collection
 	 */
-	public Optional<DtField> getKeyField() {
+	public Optional<DataField> getKeyField() {
 		return keyFieldOpt;
 	}
 

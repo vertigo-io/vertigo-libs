@@ -50,7 +50,7 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
@@ -80,7 +80,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 
 	private final String userIdentityEntity;
 	private final String ldapUserAttributeMappingStr;
-	private AccountMapperHelper<String, DtField> mapperHelper;
+	private AccountMapperHelper<String, DataField> mapperHelper;
 
 	/**
 	 * Constructor.
@@ -281,7 +281,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	private Entity parseUser(final Attributes attrs) {
 		try {
 			final Entity user = Entity.class.cast(DtObjectUtil.createDtObject(mapperHelper.getDestDefinition()));
-			for (final DtField dtField : mapperHelper.destAttributes()) {
+			for (final DataField dtField : mapperHelper.destAttributes()) {
 				final String value = parseNullableAttribute(mapperHelper.getSourceAttribute(dtField), attrs);
 				if (value != null) {
 					setTypedValue(dtField, user, value);
@@ -293,7 +293,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		}
 	}
 
-	private void setTypedValue(final DtField dtField, final Entity user, final String valueStr) throws FormatterException {
+	private void setTypedValue(final DataField dtField, final Entity user, final String valueStr) throws FormatterException {
 		final Serializable typedValue = (Serializable) smartTypeManager.stringToValue(dtField.smartTypeDefinition(), valueStr);
 		dtField.getDataAccessor().setValue(user, typedValue);
 	}

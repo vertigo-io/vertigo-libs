@@ -28,7 +28,7 @@ import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.util.DateUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 
@@ -69,7 +69,7 @@ final class Criterion<D extends DtObject> extends Criteria<D> {
 
 	private boolean test(final D entity) {
 		final DataDefinition entitytDefinition = DtObjectUtil.findDtDefinition(entity.getClass());
-		final DtField dtField = entitytDefinition.getField(dataFieldName);
+		final DataField dtField = entitytDefinition.getField(dataFieldName);
 
 		final Object value = dtField.getDataAccessor().getValue(entity);
 		final Serializable[] criterionValues = new Serializable[values.length];

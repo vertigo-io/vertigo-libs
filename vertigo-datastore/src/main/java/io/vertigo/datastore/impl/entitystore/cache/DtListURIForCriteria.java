@@ -29,7 +29,7 @@ import io.vertigo.datamodel.criteria.CriterionOperator;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.DtListURI;
 import io.vertigo.datamodel.data.model.DtObject;
@@ -97,11 +97,11 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(dtoCriteria);
 
 		Criteria<E> criteria = Criterions.alwaysTrue();
-		for (final DtField field : dataDefinition.getFields()) {
+		for (final DataField field : dataDefinition.getFields()) {
 			final String fieldName = field.name();
-			if (field.getType() != DtField.FieldType.COMPUTED) {
+			if (field.getType() != DataField.FieldType.COMPUTED) {
 				final Object value = field.getDataAccessor().getValue(dtoCriteria);
-				if (value instanceof String && field.getType() != DtField.FieldType.FOREIGN_KEY) {
+				if (value instanceof String && field.getType() != DataField.FieldType.FOREIGN_KEY) {
 					//si String et pas une FK : on met en préfix
 					criteria = criteria.and(Criterions.startsWith(() -> fieldName, (String) value));
 				} else if (value != null) {

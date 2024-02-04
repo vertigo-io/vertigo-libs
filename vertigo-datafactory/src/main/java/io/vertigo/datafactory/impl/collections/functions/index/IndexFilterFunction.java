@@ -27,7 +27,7 @@ import java.util.function.UnaryOperator;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.impl.collections.IndexPlugin;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.DtObject;
@@ -41,7 +41,7 @@ public final class IndexFilterFunction<D extends DtObject> implements UnaryOpera
 
 	private static final int DEFAULT_MAX_ROWS = 250;
 	private String keywords;
-	private Collection<DtField> searchedFields = Collections.emptyList();
+	private Collection<DataField> searchedFields = Collections.emptyList();
 	private final List<ListFilter> listFilters = new ArrayList<>();
 	private int skip = 0;
 	private int top = DEFAULT_MAX_ROWS;
@@ -66,7 +66,7 @@ public final class IndexFilterFunction<D extends DtObject> implements UnaryOpera
 	 * @param maxRows Max rows
 	 * @param keywordsSearchedFields searched fields
 	 */
-	public void filter(final String userKeywords, final int maxRows, final Collection<DtField> keywordsSearchedFields) {
+	public void filter(final String userKeywords, final int maxRows, final Collection<DataField> keywordsSearchedFields) {
 		Assertion.check()
 				.isNull(keywords, "Keywords was already set on this processor : {0}. Only one is supported.", keywords)
 				.isNotNull(userKeywords)

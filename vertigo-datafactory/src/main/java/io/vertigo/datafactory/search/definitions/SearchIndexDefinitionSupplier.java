@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 
 public final class SearchIndexDefinitionSupplier implements DefinitionSupplier {
 
@@ -64,10 +64,10 @@ public final class SearchIndexDefinitionSupplier implements DefinitionSupplier {
 		final DataDefinition keyConceptDtDefinition = definitionSpace.resolve(myKeyConceptDtDefinitionName, DataDefinition.class);
 		final DataDefinition indexDtDefinition = definitionSpace.resolve(myIndexDtDefinitionName, DataDefinition.class);
 
-		final Map<DtField, List<DtField>> copyToFields = new HashMap<>(); //(map fromField : [toField, toField, ...])
+		final Map<DataField, List<DataField>> copyToFields = new HashMap<>(); //(map fromField : [toField, toField, ...])
 		for (final Map.Entry<String, String[]> indexCopyTo : myIndexCopyTo.entrySet()) {
-			final DtField dtFieldFrom = indexDtDefinition.getField(indexCopyTo.getKey());
-			final List<DtField> dtFieldTos = Stream.of(indexCopyTo.getValue())
+			final DataField dtFieldFrom = indexDtDefinition.getField(indexCopyTo.getKey());
+			final List<DataField> dtFieldTos = Stream.of(indexCopyTo.getValue())
 					.map(indexDtDefinition::getField)
 					.toList();
 			copyToFields.put(dtFieldFrom, dtFieldTos);

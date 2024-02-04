@@ -33,7 +33,7 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
@@ -77,7 +77,7 @@ public class TaskEngineInsert extends AbstractTaskEngineSQL {
 		final Entity entity = getValue("dto");
 
 		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entity);
-		final DtField idField = dataDefinition.getIdField().get();
+		final DataField idField = dataDefinition.getIdField().get();
 
 		final Tuple<Integer, ?> result = getSqlManager()
 				.executeUpdateWithGeneratedKey(

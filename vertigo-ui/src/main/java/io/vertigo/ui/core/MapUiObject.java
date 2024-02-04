@@ -35,7 +35,7 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.structure.definitions.DataField;
 import io.vertigo.datamodel.structure.definitions.FormatterException;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
@@ -88,7 +88,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 				.isNotBlank(keyFieldName)
 				.isTrue(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//-----
-		final DtField dtField = getDtField(keyFieldName);
+		final DataField dtField = getDataField(keyFieldName);
 		if (dtField.cardinality().hasMany()) {
 			return getInputValue(keyFieldName);
 		}
@@ -113,7 +113,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		//----
 		viewContextUpdateSecurity.assertIsUpdatable(getInputKey(), fieldName);
 		//----
-		final DtField dtField = getDtField(fieldName);
+		final DataField dtField = getDataField(fieldName);
 		if (dtField.cardinality().hasMany()) {
 			if (value instanceof String[]) {
 				if (isBlank((String[]) value)) {
@@ -179,15 +179,15 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		return StringUtil.isBlank(strValue) ? new String[0] : strValue.split(";");
 	}
 
-	private static boolean isMultiple(final DtField dtField) {
+	private static boolean isMultiple(final DataField dtField) {
 		return SMART_TYPE_MULTIPLE_IDS.equals(dtField.smartTypeDefinition().getName());
 	}
 
-	private static boolean isBoolean(final DtField dtField) {
+	private static boolean isBoolean(final DataField dtField) {
 		return dtField.smartTypeDefinition().getScope().isBasicType() && dtField.smartTypeDefinition().getBasicType() == BasicType.Boolean;
 	}
 
-	private static boolean isAboutDate(final DtField dtField) {
+	private static boolean isAboutDate(final DataField dtField) {
 		return dtField.smartTypeDefinition().getScope().isBasicType() && dtField.smartTypeDefinition().getBasicType().isAboutDate();
 	}
 
@@ -316,7 +316,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 				.isNotBlank(keyFieldName)
 				.isTrue(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//---
-		final DtField dtField = getDtField(keyFieldName);
+		final DataField dtField = getDataField(keyFieldName);
 		final SmartTypeDefinition smartType = dtField.smartTypeDefinition();
 		if (smartType.getScope().isBasicType()) {
 			if (isAboutDate(dtField)) {
@@ -332,7 +332,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 
 	private String getFormattedValue(final String keyFieldName) {
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-		final DtField dtField = getDtField(keyFieldName);
+		final DataField dtField = getDataField(keyFieldName);
 		final Serializable typedValue = getEncodedValue(keyFieldName);
 		return typedValue != null ? smartTypeManager.valueToString(dtField.smartTypeDefinition(), typedValue) : null;
 	}

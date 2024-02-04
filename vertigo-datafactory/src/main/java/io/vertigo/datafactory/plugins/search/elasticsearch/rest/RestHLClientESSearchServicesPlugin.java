@@ -83,7 +83,7 @@ import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.KeyConcept;
@@ -491,9 +491,9 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 					.endObject();
 
 			/* 3 : Les champs du dto index */
-			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
+			final Set<DataField> copyFromFields = indexDefinition.getIndexCopyFromFields();
 			final DataDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
-			for (final DtField dtField : indexDtDefinition.getFields()) {
+			for (final DataField dtField : indexDtDefinition.getFields()) {
 				final IndexType indexType = IndexType.readIndexType(dtField.smartTypeDefinition());
 				typeMapping.startObject(dtField.name());
 				appendIndexTypeMapping(typeMapping, indexType);
@@ -527,8 +527,8 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		}
 	}
 
-	private static void appendIndexCopyToMapping(final SearchIndexDefinition indexDefinition, final XContentBuilder typeMapping, final DtField dtField) throws IOException {
-		final List<DtField> copyToFields = indexDefinition.getIndexCopyToFields(dtField);
+	private static void appendIndexCopyToMapping(final SearchIndexDefinition indexDefinition, final XContentBuilder typeMapping, final DataField dtField) throws IOException {
+		final List<DataField> copyToFields = indexDefinition.getIndexCopyToFields(dtField);
 		if (copyToFields.size() == 1) {
 			typeMapping.field("copy_to", copyToFields.get(0).name());
 		} else {

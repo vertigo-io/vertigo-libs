@@ -40,7 +40,7 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataDefinitionBuilder;
 import io.vertigo.datamodel.data.definitions.DataStereotype;
-import io.vertigo.datamodel.data.definitions.DtField.FieldType;
+import io.vertigo.datamodel.data.definitions.DataField.FieldType;
 import io.vertigo.datamodel.data.definitions.association.AssociationNNDefinition;
 import io.vertigo.datamodel.data.definitions.association.AssociationNode;
 import io.vertigo.datamodel.data.definitions.association.AssociationSimpleDefinition;

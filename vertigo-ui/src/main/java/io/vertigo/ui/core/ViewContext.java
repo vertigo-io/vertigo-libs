@@ -44,7 +44,7 @@ import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.structure.definitions.DataFieldName;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -348,7 +348,7 @@ public final class ViewContext implements Serializable {
 	 *
 	 * @param dtList List à publier
 	 */
-	private <O extends DtObject> void publishDtList(final ViewContextKey<O> contextKey, final Optional<DtFieldName<O>> keyFieldNameOpt, final DtList<O> dtList, final boolean modifiable) {
+	private <O extends DtObject> void publishDtList(final ViewContextKey<O> contextKey, final Optional<DataFieldName<O>> keyFieldNameOpt, final DtList<O> dtList, final boolean modifiable) {
 		if (modifiable) {
 			put(contextKey, new BasicUiListModifiable<>(dtList, contextKey.get(), viewContextMap.viewContextUpdateSecurity()));
 		} else {
@@ -361,7 +361,7 @@ public final class ViewContext implements Serializable {
 	 *
 	 * @param dtList List à publier
 	 */
-	public <O extends DtObject> ViewContext publishDtList(final ViewContextKey<O> contextKey, final DtFieldName<O> keyFieldName, final DtList<O> dtList) {
+	public <O extends DtObject> ViewContext publishDtList(final ViewContextKey<O> contextKey, final DataFieldName<O> keyFieldName, final DtList<O> dtList) {
 		publishDtList(contextKey, Optional.of(keyFieldName), dtList, false);
 		return this;
 	}
@@ -517,7 +517,7 @@ public final class ViewContext implements Serializable {
 	 * @param facetedQueryResult Result
 	 */
 	public <O extends DtObject> ViewContext publishFacetedQueryResult(final ViewContextKey<FacetedQueryResult<O, SearchQuery>> contextKey,
-			final DtFieldName<O> keyFieldName, final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final ViewContextKey<?> criteriaContextKey) {
+			final DataFieldName<O> keyFieldName, final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final ViewContextKey<?> criteriaContextKey) {
 		if (facetedQueryResult.getClusterFacetDefinition().isPresent()) {
 			publishDtList(() -> contextKey.get() + "_list", Optional.of(keyFieldName), new DtList<O>(facetedQueryResult.getDtList().getDefinition()), false);
 			put(() -> contextKey.get() + "_cluster", translateClusters(facetedQueryResult, Optional.of(keyFieldName)));
@@ -540,7 +540,7 @@ public final class ViewContext implements Serializable {
 		return this;
 	}
 
-	private <O extends DtObject> ArrayList<ClusterUiList> translateClusters(final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final Optional<DtFieldName<O>> keyFieldNameOpt) {
+	private <O extends DtObject> ArrayList<ClusterUiList> translateClusters(final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final Optional<DataFieldName<O>> keyFieldNameOpt) {
 		//if it's a cluster add data's cluster
 		final Map<FacetValue, DtList<O>> clusters = facetedQueryResult.getClusters();
 		final ArrayList<ClusterUiList> jsonCluster = new ArrayList<>();
@@ -559,7 +559,7 @@ public final class ViewContext implements Serializable {
 		return jsonCluster;
 
 	}
-	/* private <O extends DtObject> void publishClustersList(final String prefix, final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final Optional<DtFieldName<O>> keyFieldNameOpt) {
+	/* private <O extends DtObject> void publishClustersList(final String prefix, final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final Optional<DataFieldName<O>> keyFieldNameOpt) {
 			//if it's a cluster add data's cluster
 			final Map<FacetValue, DtList<O>> clusters = facetedQueryResult.getClusters();
 			for (final Entry<FacetValue, DtList<O>> cluster : clusters.entrySet()) {

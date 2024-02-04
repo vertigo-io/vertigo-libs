@@ -28,9 +28,9 @@ import io.vertigo.datamodel.data.model.DtObject;
  * @author  pchretien
  */
 public final class DataAccessor {
-	private final DtField dtField;
+	private final DataField dtField;
 
-	DataAccessor(final DtField dtField) {
+	DataAccessor(final DataField dtField) {
 		Assertion.check().isNotNull(dtField);
 		//-----
 		this.dtField = dtField;

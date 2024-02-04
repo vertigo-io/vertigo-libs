@@ -37,7 +37,7 @@ import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datafactory.impl.collections.facet.model.FacetFactory;
 import io.vertigo.datafactory.impl.collections.functions.filter.DtListPatternFilter;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.util.VCollectors;
@@ -95,7 +95,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		}
 
 		//TODO 2c- mise en valeur vide
-		final Map<R, Map<DtField, String>> highlights = Collections.emptyMap();
+		final Map<R, Map<DataField, String>> highlights = Collections.emptyMap();
 
 		//3- on construit le résultat
 		return new FacetedQueryResult<>(

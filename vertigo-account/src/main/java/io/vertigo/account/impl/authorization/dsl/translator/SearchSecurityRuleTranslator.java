@@ -29,7 +29,7 @@ import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpressio
 import io.vertigo.account.authorization.definitions.rulemodel.RuleUserPropertyValue;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.data.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 
 /**
  *
@@ -252,7 +252,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 	private static <K extends Serializable> void appendTreeExpressionValues(final StringBuilder query, final SecurityDimension securityDimension, final ValueOperator operator, final K[] treeKeys, final boolean mandatory) {
 		//on vérifie qu'on a bien toutes les clées.
 		final List<String> strDimensionfields = securityDimension.getFields().stream()
-				.map(DtField::name)
+				.map(DataField::name)
 				.toList();
 		Assertion.check().isTrue(strDimensionfields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strDimensionfields);
 		if (mandatory) {
