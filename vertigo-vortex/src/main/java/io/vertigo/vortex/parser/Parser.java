@@ -1,24 +1,22 @@
 package io.vertigo.vortex.parser;
 
-import java.util.List;
-
 public class Parser {
-	private enum Syntax
-
-	// command name {payload}
-	// command 
-	List<Command> parse(List<Token> tokens) {
-		for (Token token : tokens) {
-			if (TokenType.word == token.type() && "create".equals(token.value())) {
-				
-			}
-			if (TokenType.word == token.type() && "create".equals(token.value())) {
-			
-		}
-	}
-
-	expected (int i, Token token){
-		}
-	}
+	//	private enum Syntax
+	//
+	//	// command name {payload}
+	//	// command 
+	//	List<Command> parse(List<Token> tokens) {
+	//		for (Token token : tokens) {
+	//			if (TokenType.word == token.type() && "create".equals(token.value())) {
+	//				
+	//			}
+	//			if (TokenType.word == token.type() && "create".equals(token.value())) {
+	//			
+	//		}
+	//	}
+	//
+	//	expected (int i, Token token){
+	//		}
+	//	}
 
 }
