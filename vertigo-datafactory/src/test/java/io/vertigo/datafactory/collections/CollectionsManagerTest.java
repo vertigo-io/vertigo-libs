@@ -48,8 +48,8 @@ import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
@@ -74,8 +74,8 @@ public class CollectionsManagerTest {
 		node = new AutoCloseableNode(buildNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
-		dtDefinitionItem = DtObjectUtil.findDtDefinition(SmartItem.class);
-		dtDefinitionItemCd = DtObjectUtil.findDtDefinition(SmartItemCd.class);
+		dtDefinitionItem = DtObjectUtil.findDataDefinition(SmartItem.class);
+		dtDefinitionItemCd = DtObjectUtil.findDataDefinition(SmartItemCd.class);
 	}
 
 	@AfterEach
@@ -408,7 +408,7 @@ public class CollectionsManagerTest {
 
 	@Test
 	public void testCreateFilter() {
-		final Predicate<DtObject> predicate = collectionsManager.filter(ListFilter.of("label" + ":[a TO b]"));
+		final Predicate<Data> predicate = collectionsManager.filter(ListFilter.of("label" + ":[a TO b]"));
 		Assertions.assertNotNull(predicate);
 	}
 

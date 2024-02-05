@@ -24,7 +24,7 @@ import java.util.Optional;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.KeyConcept;
 
 /**
@@ -34,7 +34,7 @@ import io.vertigo.datamodel.data.model.KeyConcept;
  * @param <I> Indexed data's type
  * @author npiedeloup, pchretien
  */
-public interface SearchLoader<K extends KeyConcept, I extends DtObject> extends Component {
+public interface SearchLoader<K extends KeyConcept, I extends Data> extends Component {
 	/**
 	 * Load all data from a list of keyConcepts.
 	 * @param searchChunk the chunk

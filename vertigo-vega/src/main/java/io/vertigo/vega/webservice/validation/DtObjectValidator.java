@@ -19,7 +19,7 @@ package io.vertigo.vega.webservice.validation;
 
 import java.util.Set;
 
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 
 /**
  * Validator of DtObject.
@@ -27,7 +27,7 @@ import io.vertigo.datamodel.data.model.DtObject;
  * @author npiedeloup
  * @param <O> Type of DtObject
  */
-public interface DtObjectValidator<O extends DtObject> {
+public interface DtObjectValidator<O extends Data> {
 
 	/**
 	 * Effectue les validations prévu d'un objet.

@@ -33,10 +33,10 @@ import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.DtListURI;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
@@ -154,7 +154,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> E create(final E entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entity);
+		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(entity);
 		final E createdEntity = getPhysicalStore(dataDefinition).create(dataDefinition, entity);
 		//-----
 		fireAfterCommit(StoreEvent.Type.CREATE, List.of(UID.of(dataDefinition, DtObjectUtil.getId(createdEntity))));
@@ -179,7 +179,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public void update(final Entity entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entity);
+		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(entity);
 		getPhysicalStore(dataDefinition).update(dataDefinition, entity);
 		//-----
 		fireAfterCommit(StoreEvent.Type.UPDATE, List.of(UID.of(dataDefinition, DtObjectUtil.getId(entity))));
@@ -279,7 +279,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc) {
+	public <D extends Data> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc) {
 		Assertion.check()
 				.isNotNull(list)
 				.isNotBlank(fieldName);

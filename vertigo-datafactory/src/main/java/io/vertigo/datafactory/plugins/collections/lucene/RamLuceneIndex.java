@@ -55,10 +55,10 @@ import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.DtListURIForMasterData;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
@@ -72,7 +72,7 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
  * @author  pchretien, npiedeloup
  * @param <D> Type d'objet
  */
-final class RamLuceneIndex<D extends DtObject> {
+final class RamLuceneIndex<D extends Data> {
 
 	//DtDefinition est non serializable
 	private final DataDefinition dataDefinition;
@@ -229,7 +229,7 @@ final class RamLuceneIndex<D extends DtObject> {
 		return Node.getNode().getComponentSpace().resolve(EntityStoreManager.class);
 	}
 
-	private static String getStringValue(final DtObject dto, final DataField field, final SmartTypeManager smartTypeManager) {
+	private static String getStringValue(final Data dto, final DataField field, final SmartTypeManager smartTypeManager) {
 		final String stringValue;
 		final Object value = field.getDataAccessor().getValue(dto);
 		if (value != null) {
@@ -238,7 +238,7 @@ final class RamLuceneIndex<D extends DtObject> {
 				final DtListURIForMasterData mdlUri = getEntityStoreManager().getMasterDataConfig().getDtListURIForMasterData(field.getFkDtDefinition());
 				final DataField displayField = mdlUri.getDtDefinition().getDisplayField().get();
 				final UID<Entity> uid = UID.of(field.getFkDtDefinition(), value);
-				final DtObject fkDto = getEntityStoreManager().readOne(uid);
+				final Data fkDto = getEntityStoreManager().readOne(uid);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
 				stringValue = smartTypeManager.valueToString(displayField.smartTypeDefinition(), displayValue);
 			} else {

@@ -19,7 +19,7 @@ package io.vertigo.vega.webservice.validation;
 
 import java.io.Serializable;
 
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 
 /**
  * Class d'enregistrement des messages.
@@ -74,21 +74,21 @@ public interface UiMessageStack extends Serializable {
 	 * @param dto Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	void error(final String message, final DtObject dto, final String fieldName);
+	void error(final String message, final Data dto, final String fieldName);
 
 	/**
 	 * @param message Message d'alerte
 	 * @param dto Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	void warning(final String message, final DtObject dto, final String fieldName);
+	void warning(final String message, final Data dto, final String fieldName);
 
 	/**
 	 * @param message Message d'info
 	 * @param dto Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	void info(final String message, final DtObject dto, final String fieldName);
+	void info(final String message, final Data dto, final String fieldName);
 
 	/**
 	 * Add the message to the stack.
@@ -97,7 +97,7 @@ public interface UiMessageStack extends Serializable {
 	 * @param dtObject the object
 	 * @param fieldName the name of the field associated with the error
 	 */
-	void addFieldMessage(Level level, String message, DtObject dtObject, String fieldName);
+	void addFieldMessage(Level level, String message, Data dtObject, String fieldName);
 
 	/**
 	 * Add the message to the stack.

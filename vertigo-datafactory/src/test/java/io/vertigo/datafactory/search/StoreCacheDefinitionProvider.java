@@ -37,7 +37,7 @@ public class StoreCacheDefinitionProvider implements SimpleDefinitionProvider {
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new CacheDefinition(CacheData.getContext(DtObjectUtil.findDtDefinition(Item.class)), true, 1000, 3600, 3600 / 2, true));
+		return Collections.singletonList(new CacheDefinition(CacheData.getContext(DtObjectUtil.findDataDefinition(Item.class)), true, 1000, 3600, 3600 / 2, true));
 	}
 
 }

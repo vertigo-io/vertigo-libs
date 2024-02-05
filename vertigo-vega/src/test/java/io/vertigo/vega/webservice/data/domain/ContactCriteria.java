@@ -19,10 +19,10 @@ package io.vertigo.vega.webservice.data.domain;
 
 import java.time.LocalDate;
 
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.stereotype.Field;
 
-public final class ContactCriteria implements DtObject {
+public final class ContactCriteria implements Data {
 
 	private static final long serialVersionUID = 6839427455017031471L;
 

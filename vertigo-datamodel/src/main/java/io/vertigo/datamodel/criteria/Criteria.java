@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 
 /**
  * A criteria to filter a list.
@@ -34,7 +34,7 @@ import io.vertigo.datamodel.data.model.DtObject;
  * @param <D> the type of dtObject filtered with this criteria
  * @author mlaroche
  */
-public abstract class Criteria<D extends DtObject> implements Serializable {
+public abstract class Criteria<D extends Data> implements Serializable {
 	private static final long serialVersionUID = -990254492823334724L;
 
 	/**

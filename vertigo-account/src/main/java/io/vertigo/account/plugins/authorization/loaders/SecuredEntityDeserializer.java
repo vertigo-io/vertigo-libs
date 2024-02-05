@@ -60,7 +60,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 	@Override
 	public SecuredEntity deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 		final JsonObject jsonSecuredEntity = json.getAsJsonObject();
-		final DataDefinition entityDefinition = DtObjectUtil.findDtDefinition(jsonSecuredEntity.get("entity").getAsString());
+		final DataDefinition entityDefinition = DtObjectUtil.findDataDefinition(jsonSecuredEntity.get("entity").getAsString());
 		//----
 		asserUnsupportedAttributes("SecuredEntity " + entityDefinition.getClassSimpleName(), jsonSecuredEntity, SECURED_ENTITY_SUPPORTED_ATTRIBUTES);
 		//----

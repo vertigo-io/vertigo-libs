@@ -20,19 +20,19 @@ package io.vertigo.vega.webservice.validation;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 
 /**
 * @author npiedeloup
 */
 public final class UiContextResolver {
-	private final Map<DtObject, String> dtObjectDictionary = new HashMap<>();
+	private final Map<Data, String> dtObjectDictionary = new HashMap<>();
 
-	public void register(final String contextKey, final DtObject dtObject) {
+	public void register(final String contextKey, final Data dtObject) {
 		dtObjectDictionary.put(dtObject, contextKey);
 	}
 
-	public String resolveContextKey(final DtObject dtObject) {
+	public String resolveContextKey(final Data dtObject) {
 		return dtObjectDictionary.get(dtObject);
 	}
 

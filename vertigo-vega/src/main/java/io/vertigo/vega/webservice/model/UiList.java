@@ -20,8 +20,8 @@ package io.vertigo.vega.webservice.model;
 import java.util.List;
 
 import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
@@ -30,7 +30,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author npiedeloup
  * @param <D> Type d'objet
  */
-public interface UiList<D extends DtObject> extends List<UiObject<D>> {
+public interface UiList<D extends Data> extends List<UiObject<D>> {
 
 	/**
 	 * @return the object type of the list

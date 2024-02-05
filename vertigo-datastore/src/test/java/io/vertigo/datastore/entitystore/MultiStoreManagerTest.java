@@ -191,7 +191,7 @@ public final class MultiStoreManagerTest {
 	@Test
 	public void testGetFamille() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final DtList<Famille> dtc = entityStoreManager.find(DtObjectUtil.findDtDefinition(Famille.class), null, DtListState.of(null));
+			final DtList<Famille> dtc = entityStoreManager.find(DtObjectUtil.findDataDefinition(Famille.class), null, DtListState.of(null));
 			Assertions.assertNotNull(dtc);
 			Assertions.assertTrue(dtc.isEmpty(), "La liste des famille est vide");
 			transaction.commit();
@@ -204,7 +204,7 @@ public final class MultiStoreManagerTest {
 	@Test
 	public void testAddFamille() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			DtList<Famille> dtc = entityStoreManager.find(DtObjectUtil.findDtDefinition(Famille.class), null, DtListState.of(null));
+			DtList<Famille> dtc = entityStoreManager.find(DtObjectUtil.findDataDefinition(Famille.class), null, DtListState.of(null));
 			Assertions.assertEquals(0, dtc.size());
 			//-----
 			final Famille famille = new Famille();
@@ -213,7 +213,7 @@ public final class MultiStoreManagerTest {
 			// on attend un objet avec un id non null ?
 			Assertions.assertNotNull(createdFamille.getFamId());
 			//-----
-			dtc = entityStoreManager.find(DtObjectUtil.findDtDefinition(Famille.class), null, DtListState.of(null));
+			dtc = entityStoreManager.find(DtObjectUtil.findDataDefinition(Famille.class), null, DtListState.of(null));
 			Assertions.assertEquals(1, dtc.size());
 			transaction.commit();
 		}

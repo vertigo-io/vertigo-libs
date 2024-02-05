@@ -19,9 +19,9 @@ package io.vertigo.datastore.impl.entitystore.cache;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListURI;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
@@ -72,7 +72,7 @@ public final class CacheData {
 	void putDtObject(final Entity entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final String context = getContext(DtObjectUtil.findDtDefinition(entity));
+		final String context = getContext(DtObjectUtil.findDataDefinition(entity));
 		//2.On met à jour l'objet
 		cacheManager.put(context, entity.getUID(), entity);
 	}
@@ -83,7 +83,7 @@ public final class CacheData {
 	 * @return null ou DTC
 	 * @param <D> Dt type
 	 */
-	<D extends DtObject> DtList<D> getDtList(final DtListURI dtcUri) {
+	<D extends Data> DtList<D> getDtList(final DtListURI dtcUri) {
 		Assertion.check().isNotNull(dtcUri);
 		//-----
 		return DtList.class.cast(cacheManager.get(getContext(dtcUri.getDtDefinition()), dtcUri));

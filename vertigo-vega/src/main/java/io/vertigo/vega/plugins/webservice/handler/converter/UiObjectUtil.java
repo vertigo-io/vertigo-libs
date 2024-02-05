@@ -22,7 +22,7 @@ import java.util.Set;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
 import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.webservice.definitions.WebServiceParam;
@@ -38,38 +38,38 @@ final class UiObjectUtil {
 		//nothing
 	}
 
-	static void postReadUiListDelta(final UiListDelta<DtObject> uiListDelta, final String inputKey, final WebServiceParam webServiceParam) {
+	static void postReadUiListDelta(final UiListDelta<Data> uiListDelta, final String inputKey, final WebServiceParam webServiceParam) {
 		final String prefix = inputKey.length() > 0 ? inputKey + "." : "";
-		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getCreatesMap().entrySet()) {
+		for (final Map.Entry<String, UiObject<Data>> entry : uiListDelta.getCreatesMap().entrySet()) {
 			final String uiObjectInputKey = prefix + entry.getKey();
 			postReadUiObject(entry.getValue(), uiObjectInputKey, webServiceParam);
 		}
-		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getUpdatesMap().entrySet()) {
+		for (final Map.Entry<String, UiObject<Data>> entry : uiListDelta.getUpdatesMap().entrySet()) {
 			final String uiObjectInputKey = prefix + entry.getKey();
 			postReadUiObject(entry.getValue(), uiObjectInputKey, webServiceParam);
 		}
-		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getDeletesMap().entrySet()) {
+		for (final Map.Entry<String, UiObject<Data>> entry : uiListDelta.getDeletesMap().entrySet()) {
 			final String uiObjectInputKey = prefix + entry.getKey();
 			postReadUiObject(entry.getValue(), uiObjectInputKey, webServiceParam);
 		}
 	}
 
-	static void postReadUiList(final UiListModifiable<DtObject> uiList, final String inputKey, final WebServiceParam webServiceParam) {
+	static void postReadUiList(final UiListModifiable<Data> uiList, final String inputKey, final WebServiceParam webServiceParam) {
 		final String prefix = inputKey.length() > 0 ? inputKey + "." : "";
 		int index = 0;
-		for (final UiObject<DtObject> entry : uiList) {
+		for (final UiObject<Data> entry : uiList) {
 			final String uiObjectInputKey = prefix + "idx" + index;
 			postReadUiObject(entry, uiObjectInputKey, webServiceParam);
 			index++;
 		}
 	}
 
-	static void postReadUiObject(final UiObject<DtObject> uiObject, final String inputKey, final WebServiceParam webServiceParam) {
+	static void postReadUiObject(final UiObject<Data> uiObject, final String inputKey, final WebServiceParam webServiceParam) {
 		uiObject.setInputKey(inputKey);
 		checkUnauthorizedFieldModifications(uiObject, webServiceParam);
 	}
 
-	private static void checkUnauthorizedFieldModifications(final UiObject<DtObject> uiObject, final WebServiceParam webServiceParam) {
+	private static void checkUnauthorizedFieldModifications(final UiObject<Data> uiObject, final WebServiceParam webServiceParam) {
 		for (final String excludedField : webServiceParam.getExcludedFields()) {
 			if (uiObject.isModified(excludedField)) {
 				throw new VSecurityException(LocaleMessageText.of(FORBIDDEN_OPERATION_FIELD_MODIFICATION, excludedField));

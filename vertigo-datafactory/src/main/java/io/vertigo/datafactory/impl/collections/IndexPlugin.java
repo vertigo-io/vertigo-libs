@@ -24,9 +24,9 @@ import java.util.Optional;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
-import io.vertigo.datamodel.data.model.DtObject;
 
 /**
  * Plugin de construction et d'interrogation de l'index d'une DtList.
@@ -44,7 +44,7 @@ public interface IndexPlugin extends Plugin {
 	 * @param dtc Liste d'origine à filtrer
 	 * @return Liste résultat
 	 */
-	<D extends DtObject> DtList<D> getCollection(
+	<D extends Data> DtList<D> getCollection(
 			final String keywords,
 			final Collection<DataField> searchedFields,
 			final List<ListFilter> listFilters,

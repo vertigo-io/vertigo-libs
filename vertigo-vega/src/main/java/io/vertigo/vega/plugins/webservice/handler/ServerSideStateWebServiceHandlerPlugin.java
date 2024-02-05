@@ -28,8 +28,8 @@ import javax.inject.Inject;
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleMessageText;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
@@ -87,11 +87,11 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 			if (webServiceParam.isNeedServerSideToken()) {
 				final Object webServiceValue = routeContext.getParamValue(webServiceParam);
 				if (webServiceValue instanceof UiObject) {
-					readServerSideUiObject((UiObject<DtObject>) webServiceValue, webServiceParam.isConsumeServerSideToken());
+					readServerSideUiObject((UiObject<Data>) webServiceValue, webServiceParam.isConsumeServerSideToken());
 				} else if (webServiceValue instanceof UiListModifiable) {
-					readServerSideUiList((UiListModifiable<DtObject>) webServiceValue, webServiceParam.isConsumeServerSideToken());
+					readServerSideUiList((UiListModifiable<Data>) webServiceValue, webServiceParam.isConsumeServerSideToken());
 				} else if (webServiceValue instanceof UiListDelta) {
-					readServerSideUiListDelta((UiListDelta<DtObject>) webServiceValue, webServiceParam.isConsumeServerSideToken());
+					readServerSideUiListDelta((UiListDelta<Data>) webServiceValue, webServiceParam.isConsumeServerSideToken());
 				} else {
 					throw new UnsupportedOperationException("Can't read serverSide state for this object type : " + webServiceParam.getGenericType());
 				}
@@ -110,7 +110,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		return returnValue;
 	}
 
-	private void readServerSideUiObject(final UiObject<DtObject> uiObject, final boolean consumeServerSideToken) {
+	private void readServerSideUiObject(final UiObject<Data> uiObject, final boolean consumeServerSideToken) {
 		final String accessToken = uiObject.getServerSideToken();
 		if (accessToken == null) {
 			throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no ServerSideToken or bad ServerSideToken
@@ -126,16 +126,16 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 				//same message for no ServerSideToken or bad ServerSideToken
 				.orElseThrow(() -> new VSecurityException(SERVER_SIDE_MANDATORY));
 
-		uiObject.setServerSideObject((DtObject) serverSideObject);
+		uiObject.setServerSideObject((Data) serverSideObject);
 	}
 
-	private void readServerSideUiList(final Collection<UiObject<DtObject>> uiList, final boolean consumeServerSideToken) {
-		for (final UiObject<DtObject> entry : uiList) {
+	private void readServerSideUiList(final Collection<UiObject<Data>> uiList, final boolean consumeServerSideToken) {
+		for (final UiObject<Data> entry : uiList) {
 			readServerSideUiObject(entry, consumeServerSideToken);
 		}
 	}
 
-	private void readServerSideUiListDelta(final UiListDelta<DtObject> uiListDelta, final boolean consumeServerSideToken) {
+	private void readServerSideUiListDelta(final UiListDelta<Data> uiListDelta, final boolean consumeServerSideToken) {
 		readServerSideUiList(uiListDelta.getCreatesMap().values(), consumeServerSideToken);
 		readServerSideUiList(uiListDelta.getUpdatesMap().values(), consumeServerSideToken);
 		readServerSideUiList(uiListDelta.getDeletesMap().values(), consumeServerSideToken);
@@ -144,7 +144,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 	private Serializable writeServerSideObject(final Object returnValue) {
 		Assertion.check()
 				.isNotNull(returnValue, "Return null value can't be saved ServerSide")
-				.isTrue(DtObject.class.isInstance(returnValue)
+				.isTrue(Data.class.isInstance(returnValue)
 						|| DtList.class.isInstance(returnValue)
 						|| UiContext.class.isInstance(returnValue)
 						|| ExtendedObject.class.isInstance(returnValue), "Return type can't be saved ServerSide : {0}", returnValue.getClass().getSimpleName());
@@ -158,7 +158,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 
 				final Serializable overridedEntry;
 				//On enregistre et on ajoute le token sur les objets qui le supportent mais on accepte les autres.
-				if (DtObject.class.isInstance(entry.getValue())
+				if (Data.class.isInstance(entry.getValue())
 						|| DtList.class.isInstance(entry.getValue())
 						|| ExtendedObject.class.isInstance(entry.getValue())) {
 					overridedEntry = writeServerSideObject(entry.getValue());
@@ -171,7 +171,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		} else if (returnValue instanceof ExtendedObject) {
 			overridedReturnValue = (ExtendedObject<Object>) returnValue;
 			savedObject = ((ExtendedObject<Object>) returnValue).getInnerObject();
-			Assertion.check().isTrue(DtObject.class.isInstance(savedObject)
+			Assertion.check().isTrue(Data.class.isInstance(savedObject)
 					|| DtList.class.isInstance(savedObject)
 					|| UiContext.class.isInstance(savedObject), "Return type can't be saved ServerSide : {0}", savedObject.getClass().getSimpleName());
 		} else {

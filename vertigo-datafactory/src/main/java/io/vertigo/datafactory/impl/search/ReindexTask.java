@@ -38,7 +38,7 @@ import io.vertigo.datafactory.search.definitions.SearchChunk;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.definitions.SearchLoader;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
 
@@ -121,7 +121,7 @@ final class ReindexTask implements Runnable {
 
 	private void loadAndIndex(final SearchChunk searchChunk) {
 		final var searchLoader = Node.getNode().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
-		final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes;
+		final Collection<SearchIndex<KeyConcept, Data>> searchIndexes;
 
 		searchIndexes = searchLoader.loadData(searchChunk);
 
@@ -131,10 +131,10 @@ final class ReindexTask implements Runnable {
 		}
 	}
 
-	private void removedNotFoundKeyConcept(final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes, final SearchChunk searchChunk) {
+	private void removedNotFoundKeyConcept(final Collection<SearchIndex<KeyConcept, Data>> searchIndexes, final SearchChunk searchChunk) {
 		if (searchIndexes.size() < searchChunk.getAllUIDs().size()) {
 			final var notFoundUris = new LinkedHashSet<>(searchChunk.getAllUIDs());
-			for (final SearchIndex<KeyConcept, DtObject> searchIndex : searchIndexes) {
+			for (final SearchIndex<KeyConcept, Data> searchIndex : searchIndexes) {
 				notFoundUris.remove(searchIndex.getUID());
 			}
 			searchManager.removeAll(searchIndexDefinition, urisToListFilter(notFoundUris));

@@ -29,8 +29,8 @@ import java.util.stream.Collector;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.model.DtObject;
 
 /**
  * Collectors 'Lite' Java 8 pour vertigo
@@ -132,7 +132,7 @@ public final class VCollectors {
 	 * @param dataDefinition
 	 * @return A collector for DtList
 	 */
-	public static <T extends DtObject> Collector<T, ?, DtList<T>> toDtList(final DataDefinition dataDefinition) {
+	public static <T extends Data> Collector<T, ?, DtList<T>> toDtList(final DataDefinition dataDefinition) {
 		Assertion.check().isNotNull(dataDefinition);
 		//---
 		final Supplier<DtList<T>> dtSupplier = () -> new DtList<>(dataDefinition);
@@ -146,9 +146,9 @@ public final class VCollectors {
 	 * @param dtClass
 	 * @return A collector for DtList
 	 */
-	public static <T extends DtObject> Collector<T, ?, DtList<T>> toDtList(final Class<T> dtClass) {
+	public static <T extends Data> Collector<T, ?, DtList<T>> toDtList(final Class<T> dtClass) {
 		Assertion.check().isNotNull(dtClass);
 		//---
-		return toDtList(DtObjectUtil.findDtDefinition(dtClass));
+		return toDtList(DtObjectUtil.findDataDefinition(dtClass));
 	}
 }

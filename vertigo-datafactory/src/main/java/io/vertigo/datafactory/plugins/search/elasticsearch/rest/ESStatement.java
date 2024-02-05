@@ -67,8 +67,8 @@ import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtListState;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
 
@@ -80,7 +80,7 @@ import io.vertigo.datamodel.data.model.UID;
  * @param <I> Type de l'objet représentant l'index
  * @param <K> Type du keyConcept métier indexé
  */
-final class ESStatement<K extends KeyConcept, I extends DtObject> {
+final class ESStatement<K extends KeyConcept, I extends Data> {
 
 	private static final RefreshPolicy DEFAULT_REFRESH = RefreshPolicy.NONE; //mettre a true pour TU uniquement
 	private static final RefreshPolicy BULK_REFRESH = RefreshPolicy.NONE; //mettre a RefreshPolicy.IMMEDIATE pour TU uniquement

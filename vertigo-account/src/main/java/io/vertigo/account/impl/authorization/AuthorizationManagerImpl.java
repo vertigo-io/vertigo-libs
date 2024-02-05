@@ -112,7 +112,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 			return false;
 		}
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
-		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entity);
+		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(entity);
 		final SecuredEntity securedEntity = findSecuredEntity(dataDefinition);
 		final Optional<Authorization> authorization = userPermissions.getEntityAuthorizations(dataDefinition).stream()
 				.filter(permission -> permission.getOperation().orElse("").equals(operationName.name())
@@ -137,7 +137,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		Assertion.check().isNotNull(entityClass)
 				.isNotNull(operation);
 		//---
-		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entityClass);
+		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(entityClass);
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
 		if (userPermissionsOpt.isEmpty()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
@@ -188,7 +188,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 			return ""; //Attention : pas de *:*
 		}
 
-		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entityClass);
+		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(entityClass);
 		final SecuredEntity securedEntity = findSecuredEntity(dataDefinition);
 
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
@@ -233,7 +233,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 			return Collections.emptySet();
 		}
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
-		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entity);
+		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(entity);
 		final SecuredEntity securedEntity = findSecuredEntity(dataDefinition);
 
 		return userPermissions.getEntityAuthorizations(dataDefinition).stream()

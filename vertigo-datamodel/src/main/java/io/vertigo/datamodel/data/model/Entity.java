@@ -25,7 +25,7 @@ package io.vertigo.datamodel.data.model;
  *
  * @author pchretien
  */
-public interface Entity extends DtObject {
+public interface Entity extends Data {
 
 	/**
 	 * @return UID of this entity

@@ -108,9 +108,9 @@ public abstract class AbstractStoreManagerTest {
 
 	protected void doSetUp() {
 		carDataBase = new CarDataBase();
-		dtDefinitionFamille = DtObjectUtil.findDtDefinition(Famille.class);
+		dtDefinitionFamille = DtObjectUtil.findDataDefinition(Famille.class);
 
-		dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
+		dtDefinitionCar = DtObjectUtil.findDataDefinition(Car.class);
 
 		initMainStore();
 	}
@@ -267,7 +267,7 @@ public abstract class AbstractStoreManagerTest {
 	public void testSelectCarAndTestMasterDataEnum() {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			final DtList<Car> dtcEssence = entityStoreManager.find(
-					DtObjectUtil.findDtDefinition(Car.class),
+					DtObjectUtil.findDataDefinition(Car.class),
 					Criterions.isEqualTo(CarFields.mtyCd, MotorTypeEnum.essence.getEntityUID().getId()),
 					DtListState.of(2));
 			//---

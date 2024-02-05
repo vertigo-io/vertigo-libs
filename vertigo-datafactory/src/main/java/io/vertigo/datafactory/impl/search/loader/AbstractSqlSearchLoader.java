@@ -35,8 +35,8 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataAccessor;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
@@ -51,7 +51,7 @@ import io.vertigo.datamodel.task.model.Task;
  * @param <S> KeyConcept type
  * @param <I> Index type
  */
-public abstract class AbstractSqlSearchLoader<S extends KeyConcept, I extends DtObject> extends AbstractSearchLoader<S, I> {
+public abstract class AbstractSqlSearchLoader<S extends KeyConcept, I extends Data> extends AbstractSearchLoader<S, I> {
 	private static final int SEARCH_CHUNK_SIZE = 500;
 	private final TaskManager taskManager;
 	private final VTransactionManager transactionManager;

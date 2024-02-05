@@ -38,8 +38,8 @@ import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datafactory.impl.collections.facet.model.FacetFactory;
 import io.vertigo.datafactory.impl.collections.functions.filter.DtListPatternFilter;
 import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 
@@ -69,7 +69,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <R extends DtObject> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery, final Optional<FacetDefinition> clusterFacetDefinition) {
+	public <R extends Data> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery, final Optional<FacetDefinition> clusterFacetDefinition) {
 		Assertion.check()
 				.isNotNull(dtList)
 				.isNotNull(facetedQuery);
@@ -112,7 +112,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	//=========================================================================
 	//=======================Filtrage==========================================
 	//=========================================================================
-	private <D extends DtObject> Predicate<D> filter(final FacetedQuery facetedQuery) {
+	private <D extends Data> Predicate<D> filter(final FacetedQuery facetedQuery) {
 		final SelectedFacetValues selectedFacetValues = facetedQuery.getSelectedFacetValues();
 		Predicate<D> predicate = list -> true;
 		for (final FacetDefinition facetDefinition : facetedQuery.getDefinition().getFacetDefinitions()) {
@@ -129,7 +129,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> IndexDtListFunctionBuilder<D> createIndexDtListFunctionBuilder() {
+	public <D extends Data> IndexDtListFunctionBuilder<D> createIndexDtListFunctionBuilder() {
 		Assertion.check().isTrue(indexPluginOpt.isPresent(), "An IndexPlugin is required to use this function");
 		//-----
 		return new IndexDtListFunctionBuilderImpl<>(indexPluginOpt.get());
@@ -137,7 +137,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> Predicate<D> filter(final ListFilter listFilter) {
+	public <D extends Data> Predicate<D> filter(final ListFilter listFilter) {
 		return new DtListPatternFilter<>(listFilter.getFilterValue());
 	}
 }

@@ -22,15 +22,15 @@ import java.util.function.UnaryOperator;
 
 import io.vertigo.core.lang.Builder;
 import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.model.DtObject;
 
 /**
  * Processor that can be composed of filters or sorters and be applied on a list. *
  * @author npiedeloup
  * @param <D> the type of dtObject in the modified list
  */
-public interface IndexDtListFunctionBuilder<D extends DtObject> extends Builder<UnaryOperator<DtList<D>>> {
+public interface IndexDtListFunctionBuilder<D extends Data> extends Builder<UnaryOperator<DtList<D>>> {
 
 	/**
 	 * Création d'un tri de colonne.

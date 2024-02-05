@@ -19,7 +19,7 @@ package io.vertigo.datamodel.data.definitions;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.BeanUtil;
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 
 /**
  * Permet d'accéder aux données d'un objet par son champ.
@@ -45,7 +45,7 @@ public final class DataAccessor {
 	 * @param dto the object in which data will be set
 	 * @param value Object
 	 */
-	public void setValue(final DtObject dto, final Object value) {
+	public void setValue(final Data dto, final Object value) {
 		dtField.checkType(value);
 		//-----
 		BeanUtil.setValue(dto, dtField.name(), value);
@@ -62,7 +62,7 @@ public final class DataAccessor {
 	 * @param dto the object in which data will be retrieved
 	 * @return valeur non typée
 	 */
-	public Object getValue(final DtObject dto) {
+	public Object getValue(final Data dto) {
 		//Dans le cas d'un champ statique
 		return BeanUtil.getValue(dto, dtField.name());
 	}

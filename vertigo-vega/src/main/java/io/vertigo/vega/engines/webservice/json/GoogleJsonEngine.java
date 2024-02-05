@@ -63,9 +63,9 @@ import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField.FieldType;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.ListVAccessor;
 import io.vertigo.datamodel.data.model.UID;
@@ -180,23 +180,23 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> UiObject<D> uiObjectFromJson(final String json, final Type paramType) {
+	public <D extends Data> UiObject<D> uiObjectFromJson(final String json, final Type paramType) {
 		final Type typeOfDest = createParameterizedType(UiObject.class, paramType);
 		return gson.fromJson(json, typeOfDest);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> UiListDelta<D> uiListDeltaFromJson(final String json, final Type paramType) {
-		final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtListDelta has one parameterized type
+	public <D extends Data> UiListDelta<D> uiListDeltaFromJson(final String json, final Type paramType) {
+		final Class<Data> dtoClass = (Class<Data>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtListDelta has one parameterized type
 		final Type typeOfDest = createParameterizedType(UiListDelta.class, dtoClass);
 		return gson.fromJson(json, typeOfDest);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> UiListModifiable<D> uiListFromJson(final String json, final Type paramType) {
-		final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtList has one parameterized type
+	public <D extends Data> UiListModifiable<D> uiListFromJson(final String json, final Type paramType) {
+		final Class<Data> dtoClass = (Class<Data>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtList has one parameterized type
 		final Type typeOfDest = createParameterizedType(UiListModifiable.class, dtoClass);
 		return gson.fromJson(json, typeOfDest);
 	}
@@ -214,15 +214,15 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 				final JsonElement jsonSubElement = jsonObject.get(key);
 
 				final Serializable value;
-				if (WebServiceTypeUtil.isAssignableFrom(DtObject.class, paramType)) {
+				if (WebServiceTypeUtil.isAssignableFrom(Data.class, paramType)) {
 					final Type typeOfDest = new KnownParameterizedType(UiObject.class, paramType);
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else if (WebServiceTypeUtil.isAssignableFrom(DtListDelta.class, paramType)) {
-					final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtListDelta has one parameterized type
+					final Class<Data> dtoClass = (Class<Data>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtListDelta has one parameterized type
 					final Type typeOfDest = new KnownParameterizedType(UiListDelta.class, dtoClass);
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else if (WebServiceTypeUtil.isAssignableFrom(DtList.class, paramType)) {
-					final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtList has one parameterized type
+					final Class<Data> dtoClass = (Class<Data>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtList has one parameterized type
 					final Type typeOfDest = new KnownParameterizedType(UiListModifiable.class, dtoClass);
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else {
@@ -260,7 +260,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			if (paramType instanceof ParameterizedType
 					&& uidJsonValue != null && uidJsonValue.indexOf('@') == -1) { //Temporaly we accecpt two UID patterns : key only or urn
 				final Class<Entity> entityClass = (Class<Entity>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that UID has one parameterized type
-				final DataDefinition entityDefinition = DtObjectUtil.findDtDefinition(entityClass);
+				final DataDefinition entityDefinition = DtObjectUtil.findDataDefinition(entityClass);
 				Object entityId;
 				try {
 					entityId = smartTypeManager.stringToValue(entityDefinition.getIdField().get().smartTypeDefinition(), uidJsonValue);
@@ -273,12 +273,12 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		}
 	}
 
-	private final class DtObjectJsonAdapter<D extends DtObject> implements JsonSerializer<D>, JsonDeserializer<D> {
+	private final class DtObjectJsonAdapter<D extends Data> implements JsonSerializer<D>, JsonDeserializer<D> {
 
 		/** {@inheritDoc} */
 		@Override
 		public JsonElement serialize(final D src, final Type typeOfSrc, final JsonSerializationContext context) {
-			final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(src.getClass());
+			final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(src.getClass());
 			final JsonObject jsonObject = new JsonObject();
 
 			dataDefinition.getFields()
@@ -302,8 +302,8 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 
 		@Override
 		public D deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
-			final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition((Class<D>) typeOfT);
-			final D dtObject = (D) DtObjectUtil.createDtObject(dataDefinition);
+			final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition((Class<D>) typeOfT);
+			final D dtObject = (D) DtObjectUtil.createData(dataDefinition);
 			final JsonObject jsonObject = json.getAsJsonObject();
 
 			dataDefinition.getFields()
@@ -394,7 +394,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			gsonBuilder
 					.setPrettyPrinting()
 					//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-					.registerTypeHierarchyAdapter(DtObject.class, new DtObjectJsonAdapter())
+					.registerTypeHierarchyAdapter(Data.class, new DtObjectJsonAdapter())
 					.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
 					.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
 					.registerTypeHierarchyAdapter(UiList.class, new UiListDeserializer<>())

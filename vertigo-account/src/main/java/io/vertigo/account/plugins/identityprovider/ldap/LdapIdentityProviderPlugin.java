@@ -280,7 +280,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 
 	private Entity parseUser(final Attributes attrs) {
 		try {
-			final Entity user = Entity.class.cast(DtObjectUtil.createDtObject(mapperHelper.getDestDefinition()));
+			final Entity user = Entity.class.cast(DtObjectUtil.createData(mapperHelper.getDestDefinition()));
 			for (final DataField dtField : mapperHelper.destAttributes()) {
 				final String value = parseNullableAttribute(mapperHelper.getSourceAttribute(dtField), attrs);
 				if (value != null) {

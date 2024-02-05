@@ -33,7 +33,7 @@ import io.vertigo.datafactory.search.definitions.SearchChunk;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.definitions.SearchLoader;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.KeyConcept;
 
 /**
@@ -80,12 +80,12 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 			final long startTime = System.currentTimeMillis();
 			try {
 				final Class<S> keyConceptClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getKeyConceptDtDefinition().getClassCanonicalName(), KeyConcept.class);
-				final SearchLoader<S, DtObject> searchLoader = Node.getNode().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
+				final SearchLoader<S, Data> searchLoader = Node.getNode().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 				Serializable lastUID = null;
 				LOGGER.info("Full reindexation of {} started", searchIndexDefinition.getName());
 
 				for (final SearchChunk<S> searchChunk : searchLoader.chunk(keyConceptClass)) {
-					final Collection<SearchIndex<S, DtObject>> searchIndexes = searchLoader.loadData(searchChunk);
+					final Collection<SearchIndex<S, Data>> searchIndexes = searchLoader.loadData(searchChunk);
 
 					final Serializable maxUID = searchChunk.getLastValue();
 					Assertion.check().isFalse(maxUID.equals(lastUID), "SearchLoader ({0}) error : return the same uid list", searchIndexDefinition.getSearchLoaderId());

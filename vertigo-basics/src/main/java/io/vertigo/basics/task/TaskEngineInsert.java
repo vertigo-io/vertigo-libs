@@ -76,7 +76,7 @@ public class TaskEngineInsert extends AbstractTaskEngineSQL {
 		// gestion de generatedKey
 		final Entity entity = getValue("dto");
 
-		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entity);
+		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(entity);
 		final DataField idField = dataDefinition.getIdField().get();
 
 		final Tuple<Integer, ?> result = getSqlManager()

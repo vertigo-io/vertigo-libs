@@ -113,7 +113,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @param key Clé de context
 	 * @return UiObject du context
 	 */
-	public <O extends DtObject> UiObject<O> getUiObject(final String key) {
+	public <O extends Data> UiObject<O> getUiObject(final String key) {
 		return (UiObject<O>) get(key);
 	}
 
@@ -121,7 +121,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @param key Clé de context
 	 * @return UiList du context
 	 */
-	public <O extends DtObject> UiList<O> getUiList(final String key) {
+	public <O extends Data> UiList<O> getUiList(final String key) {
 		return (UiList<O>) get(key);
 	}
 
@@ -129,7 +129,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @param key Clé de context
 	 * @return UiListModifiable du context
 	 */
-	public <O extends DtObject> BasicUiListModifiable<O> getUiListModifiable(final String key) {
+	public <O extends Data> BasicUiListModifiable<O> getUiListModifiable(final String key) {
 		return (BasicUiListModifiable<O>) get(key);
 	}
 
@@ -369,7 +369,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * Ajoute un objet de type form au context.
 	 * @param dto Objet à publier
 	 */
-	public <O extends DtObject> void publish(final String contextKey, final O dto) {
+	public <O extends Data> void publish(final String contextKey, final O dto) {
 		final UiObject<O> mapUiObject = new MapUiObject<>(dto, viewContextUpdateSecurity);
 		mapUiObject.setInputKey(contextKey);
 		put(contextKey, mapUiObject);
@@ -388,14 +388,14 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	/**
 	 * @return objet métier validé. Lance une exception si erreur.
 	 */
-	public <O extends DtObject> O readDto(final String contextKey, final UiMessageStack uiMessageStack) {
+	public <O extends Data> O readDto(final String contextKey, final UiMessageStack uiMessageStack) {
 		return readDto(contextKey, new DefaultDtObjectValidator<>(), uiMessageStack);
 	}
 
 	/**
 	 * @return objet métier validé. Lance une exception si erreur.
 	 */
-	public <O extends DtObject> O readDto(final String contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
+	public <O extends Data> O readDto(final String contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
 		checkErrors(contextKey, uiMessageStack);
 		// ---
 		final O validatedDto = ((UiObject<O>) getUiObject(contextKey)).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);

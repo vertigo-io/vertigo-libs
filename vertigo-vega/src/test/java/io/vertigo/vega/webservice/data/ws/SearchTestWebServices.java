@@ -31,8 +31,8 @@ import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.data.domain.Contact;
@@ -91,7 +91,7 @@ public final class SearchTestWebServices implements WebServices {
 		return Node.getNode().getDefinitionSpace().resolve(facetName, FacetDefinition.class);
 	}
 
-	private static <D extends DtObject> DtList<D> asDtList(final Collection<D> values, final Class<D> dtObjectClass) {
+	private static <D extends Data> DtList<D> asDtList(final Collection<D> values, final Class<D> dtObjectClass) {
 		final DtList<D> result = new DtList<>(dtObjectClass);
 		result.addAll(values);
 		return result;

@@ -240,7 +240,7 @@ public final class ViewContext implements Serializable {
 	 * @param key Clé de context
 	 * @return UiObject du context
 	 */
-	public <O extends DtObject> UiObject<O> getUiObject(final ViewContextKey<O> key) {
+	public <O extends Data> UiObject<O> getUiObject(final ViewContextKey<O> key) {
 		return (UiObject<O>) get(key);
 	}
 
@@ -248,7 +248,7 @@ public final class ViewContext implements Serializable {
 	 * @param key Clé de context
 	 * @return UiList du context
 	 */
-	public <O extends DtObject> UiList<O> getUiList(final ViewContextKey<O> key) {
+	public <O extends Data> UiList<O> getUiList(final ViewContextKey<O> key) {
 		return (UiList<O>) get(key);
 	}
 
@@ -256,7 +256,7 @@ public final class ViewContext implements Serializable {
 	 * @param key Clé de context
 	 * @return UiListModifiable du context
 	 */
-	public <O extends DtObject> BasicUiListModifiable<O> getUiListModifiable(final ViewContextKey<O> key) {
+	public <O extends Data> BasicUiListModifiable<O> getUiListModifiable(final ViewContextKey<O> key) {
 		return (BasicUiListModifiable<O>) get(key);
 	}
 
@@ -304,7 +304,7 @@ public final class ViewContext implements Serializable {
 	 *
 	 * @param dto Objet à publier
 	 */
-	public <O extends DtObject> ViewContext publishDto(final ViewContextKey<O> contextKey, final O dto) {
+	public <O extends Data> ViewContext publishDto(final ViewContextKey<O> contextKey, final O dto) {
 		final UiObject<O> strutsUiObject = new MapUiObject<>(dto, viewContextMap.viewContextUpdateSecurity());
 		strutsUiObject.setInputKey(contextKey.get());
 		put(contextKey, strutsUiObject);
@@ -314,7 +314,7 @@ public final class ViewContext implements Serializable {
 	/**
 	 * Vérifie les erreurs de l'objet. Celles-ci sont ajoutées à l'uiMessageStack si nécessaire.
 	 */
-	public <O extends DtObject> void checkDtoErrors(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
+	public <O extends Data> void checkDtoErrors(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
 		getUiObject(contextKey).checkFormat(uiMessageStack);
 		if (uiMessageStack.hasErrors()) {
 			throw new ValidationUserException();
@@ -324,14 +324,14 @@ public final class ViewContext implements Serializable {
 	/**
 	 * @return objet métier valid�. Lance une exception si erreur.
 	 */
-	public <O extends DtObject> O readDto(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
+	public <O extends Data> O readDto(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
 		return readDto(contextKey, new DefaultDtObjectValidator<>(), uiMessageStack);
 	}
 
 	/**
 	 * @return objet métier validé. Lance une exception si erreur.
 	 */
-	public <O extends DtObject> O readDto(final ViewContextKey<O> contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
+	public <O extends Data> O readDto(final ViewContextKey<O> contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
 		checkDtoErrors(contextKey, uiMessageStack);
 		// ---
 		final O validatedDto = getUiObject(contextKey).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
@@ -348,7 +348,7 @@ public final class ViewContext implements Serializable {
 	 *
 	 * @param dtList List à publier
 	 */
-	private <O extends DtObject> void publishDtList(final ViewContextKey<O> contextKey, final Optional<DataFieldName<O>> keyFieldNameOpt, final DtList<O> dtList, final boolean modifiable) {
+	private <O extends Data> void publishDtList(final ViewContextKey<O> contextKey, final Optional<DataFieldName<O>> keyFieldNameOpt, final DtList<O> dtList, final boolean modifiable) {
 		if (modifiable) {
 			put(contextKey, new BasicUiListModifiable<>(dtList, contextKey.get(), viewContextMap.viewContextUpdateSecurity()));
 		} else {
@@ -361,7 +361,7 @@ public final class ViewContext implements Serializable {
 	 *
 	 * @param dtList List à publier
 	 */
-	public <O extends DtObject> ViewContext publishDtList(final ViewContextKey<O> contextKey, final DataFieldName<O> keyFieldName, final DtList<O> dtList) {
+	public <O extends Data> ViewContext publishDtList(final ViewContextKey<O> contextKey, final DataFieldName<O> keyFieldName, final DtList<O> dtList) {
 		publishDtList(contextKey, Optional.of(keyFieldName), dtList, false);
 		return this;
 	}
@@ -371,7 +371,7 @@ public final class ViewContext implements Serializable {
 	 *
 	 * @param dtList List à publier
 	 */
-	public <O extends DtObject> ViewContext publishDtList(final ViewContextKey<O> contextKey, final DtList<O> dtList) {
+	public <O extends Data> ViewContext publishDtList(final ViewContextKey<O> contextKey, final DtList<O> dtList) {
 		publishDtList(contextKey, Optional.empty(), dtList, false);
 		return this;
 	}
@@ -379,14 +379,14 @@ public final class ViewContext implements Serializable {
 	/**
 	 * @return List des objets métiers validée. Lance une exception si erreur.
 	 */
-	public <O extends DtObject> DtList<O> readDtList(final ViewContextKey<O> contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
+	public <O extends Data> DtList<O> readDtList(final ViewContextKey<O> contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
 		return ((UiListUnmodifiable<O>) getUiList(contextKey)).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
 	}
 
 	/**
 	 * @return List des objets métiers validée. Lance une exception si erreur.
 	 */
-	public <O extends DtObject> DtList<O> readDtList(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
+	public <O extends Data> DtList<O> readDtList(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
 		return readDtList(contextKey, new DefaultDtObjectValidator<>(), uiMessageStack);
 	}
 
@@ -397,7 +397,7 @@ public final class ViewContext implements Serializable {
 	 *
 	 * @param dtList List à publier
 	 */
-	public <O extends DtObject> ViewContext publishDtListModifiable(final ViewContextKey<O> contextKey, final DtList<O> dtList) {
+	public <O extends Data> ViewContext publishDtListModifiable(final ViewContextKey<O> contextKey, final DtList<O> dtList) {
 		publishDtList(contextKey, Optional.empty(), dtList, true);
 		return this;
 	}
@@ -405,7 +405,7 @@ public final class ViewContext implements Serializable {
 	/**
 	 * Vérifie les erreurs de la liste. Celles-ci sont ajoutées à l'uiMessageStack si nécessaire.
 	 */
-	public <O extends DtObject> void checkDtListErrors(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
+	public <O extends Data> void checkDtListErrors(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
 		getUiListModifiable(contextKey).checkFormat(uiMessageStack);
 		if (uiMessageStack.hasErrors()) {
 			throw new ValidationUserException();
@@ -415,14 +415,14 @@ public final class ViewContext implements Serializable {
 	/**
 	 * @return List des objets métiers validée. Lance une exception si erreur.
 	 */
-	public <O extends DtObject> DtList<O> readDtListModifiable(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
+	public <O extends Data> DtList<O> readDtListModifiable(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
 		return readDtListModifiable(contextKey, new DefaultDtObjectValidator<>(), uiMessageStack);
 	}
 
 	/**
 	 * @return List des objets métiers validée. Lance une exception si erreur.
 	 */
-	public <O extends DtObject> DtList<O> readDtListModifiable(final ViewContextKey<O> contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
+	public <O extends Data> DtList<O> readDtListModifiable(final ViewContextKey<O> contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
 		checkDtListErrors(contextKey, uiMessageStack);
 		// ---
 		final DtList<O> validatedList = ((BasicUiListModifiable) getUiListModifiable(contextKey)).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
@@ -516,7 +516,7 @@ public final class ViewContext implements Serializable {
 	 * @param keyFieldName Id's fieldName
 	 * @param facetedQueryResult Result
 	 */
-	public <O extends DtObject> ViewContext publishFacetedQueryResult(final ViewContextKey<FacetedQueryResult<O, SearchQuery>> contextKey,
+	public <O extends Data> ViewContext publishFacetedQueryResult(final ViewContextKey<FacetedQueryResult<O, SearchQuery>> contextKey,
 			final DataFieldName<O> keyFieldName, final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final ViewContextKey<?> criteriaContextKey) {
 		if (facetedQueryResult.getClusterFacetDefinition().isPresent()) {
 			publishDtList(() -> contextKey.get() + "_list", Optional.of(keyFieldName), new DtList<O>(facetedQueryResult.getDtList().getDefinition()), false);
@@ -540,7 +540,7 @@ public final class ViewContext implements Serializable {
 		return this;
 	}
 
-	private <O extends DtObject> ArrayList<ClusterUiList> translateClusters(final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final Optional<DataFieldName<O>> keyFieldNameOpt) {
+	private <O extends Data> ArrayList<ClusterUiList> translateClusters(final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final Optional<DataFieldName<O>> keyFieldNameOpt) {
 		//if it's a cluster add data's cluster
 		final Map<FacetValue, DtList<O>> clusters = facetedQueryResult.getClusters();
 		final ArrayList<ClusterUiList> jsonCluster = new ArrayList<>();
@@ -559,7 +559,7 @@ public final class ViewContext implements Serializable {
 		return jsonCluster;
 
 	}
-	/* private <O extends DtObject> void publishClustersList(final String prefix, final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final Optional<DataFieldName<O>> keyFieldNameOpt) {
+	/* private <O extends Data> void publishClustersList(final String prefix, final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final Optional<DataFieldName<O>> keyFieldNameOpt) {
 			//if it's a cluster add data's cluster
 			final Map<FacetValue, DtList<O>> clusters = facetedQueryResult.getClusters();
 			for (final Entry<FacetValue, DtList<O>> cluster : clusters.entrySet()) {
@@ -611,7 +611,7 @@ public final class ViewContext implements Serializable {
 	 * @param contextKey Context key
 	 * @return selectedFacetValues
 	 */
-	public <O extends DtObject> SelectedFacetValues getSelectedFacetValues(final ViewContextKey<FacetedQueryResult<O, FacetedQuery>> contextKey) {
+	public <O extends Data> SelectedFacetValues getSelectedFacetValues(final ViewContextKey<FacetedQueryResult<O, FacetedQuery>> contextKey) {
 		return ((UiSelectedFacetValues) get(contextKey.get() + "_selectedFacets")).toSelectedFacetValues();
 	}
 

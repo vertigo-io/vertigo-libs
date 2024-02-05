@@ -85,7 +85,7 @@ public final class MoviesController extends AbstractVSpringMvcController {
 		return viewContext;
 	}
 
-	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
+	private <D extends Data> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
 		final DtList<D> sortedList;
 		if (dtListState.getSortFieldName().isPresent()) {
 			sortedList = entityStoreManager.sort(unFilteredList, dtListState.getSortFieldName().get(), dtListState.isSortDesc().get());

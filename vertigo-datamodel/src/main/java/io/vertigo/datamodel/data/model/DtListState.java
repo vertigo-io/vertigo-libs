@@ -21,8 +21,8 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 
 /**
@@ -44,7 +44,7 @@ public final class DtListState {
 	 * skipRows elements to skip (mandatory, 0 by default)
 	 */
 	public static DtListState defaultOf(final Class<? extends Entity> entityClass) {
-		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entityClass);
+		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(entityClass);
 		return new DtListState(DEFAULT_MAX_ROWS, 0, dataDefinition.getSortField().map(DataField::name).orElse(null), false);
 	}
 

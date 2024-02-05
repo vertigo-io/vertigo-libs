@@ -208,7 +208,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		String photoUrl = null;
 		String userAuthToken = null;
 
-		final Entity user = Entity.class.cast(DtObjectUtil.createDtObject(userDtDefinition));
+		final Entity user = Entity.class.cast(DtObjectUtil.createData(userDtDefinition));
 		for (final String fieldName : filePatternFieldsOrdered) {
 			final String valueStr = matcher.group(fieldName);
 			if (PHOTO_URL_RESERVED_FIELD.equals(fieldName)) {

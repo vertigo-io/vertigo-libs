@@ -142,7 +142,7 @@ public class DAO<E extends Entity, P> {
 	 * @return merged root entity merged with the fragment
 	 */
 	public final E reloadAndMerge(final Fragment<E> fragment) {
-		final DataDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragment);
+		final DataDefinition fragmentDefinition = DtObjectUtil.findDataDefinition(fragment);
 		final DataDefinition entityDefinition = fragmentDefinition.getFragment().get();
 		final Map<String, DataField> entityFields = indexFields(entityDefinition.getFields());
 		final DataField idField = entityDefinition.getIdField().get();
@@ -204,8 +204,8 @@ public class DAO<E extends Entity, P> {
 	 */
 	public final <F extends Fragment<E>> F getFragment(final UID<E> uid, final Class<F> fragmentClass) {
 		final E dto = entityStoreManager.readOne(uid);
-		final DataDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragmentClass);
-		final F fragment = fragmentClass.cast(DtObjectUtil.createDtObject(fragmentDefinition));
+		final DataDefinition fragmentDefinition = DtObjectUtil.findDataDefinition(fragmentClass);
+		final F fragment = fragmentClass.cast(DtObjectUtil.createData(fragmentDefinition));
 		for (final DataField dtField : fragmentDefinition.getFields()) {
 			final DataAccessor dataAccessor = dtField.getDataAccessor();
 			dataAccessor.setValue(fragment, dataAccessor.getValue(dto));
@@ -234,7 +234,7 @@ public class DAO<E extends Entity, P> {
 	 * @return D Fragment recherché
 	 */
 	public final <F extends Fragment<E>> F get(final P id, final Class<F> fragmentClass) {
-		final UID<E> uid = UID.of(DtObjectUtil.findDtDefinition(fragmentClass).getFragment().get(), id);
+		final UID<E> uid = UID.of(DtObjectUtil.findDataDefinition(fragmentClass).getFragment().get(), id);
 		return getFragment(uid, fragmentClass);
 	}
 
@@ -296,6 +296,6 @@ public class DAO<E extends Entity, P> {
 	}
 
 	private DataDefinition getDtDefinition() {
-		return DtObjectUtil.findDtDefinition(entityClass);
+		return DtObjectUtil.findDataDefinition(entityClass);
 	}
 }

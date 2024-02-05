@@ -31,8 +31,8 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.task.definitions.TaskAttribute;
@@ -97,7 +97,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 				if (outAttribute.cardinality().hasMany()) {
 					final DtList<?> dtList = (DtList<?>) result
 							.stream()
-							.map(DtObject.class::cast)
+							.map(Data.class::cast)
 							.collect(VCollectors.toDtList(outAttribute.smartTypeDefinition().getJavaClass()));
 					setResult(dtList);
 				} else {

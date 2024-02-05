@@ -24,8 +24,8 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.datamodel.data.definitions.DataAccessor;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataField.FieldType;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtListURIForMasterData;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
@@ -40,7 +40,7 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
  *
  * @author pchretien
  */
-public final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
+public final class DtObjectComparator<D extends Data> implements Comparator<D> {
 
 	//On ne veut pas d'un comparateur sérializable !!!
 	/**
@@ -117,7 +117,7 @@ public final class DtObjectComparator<D extends DtObject> implements Comparator<
 
 		private Object getSortValue(final Object o) {
 			final UID<Entity> uid = UID.of(dtcURIForMasterData.getDtDefinition(), o);
-			DtObject dto;
+			Data dto;
 			try {
 				dto = dataStore.readOne(uid);
 			} catch (final Exception e) {

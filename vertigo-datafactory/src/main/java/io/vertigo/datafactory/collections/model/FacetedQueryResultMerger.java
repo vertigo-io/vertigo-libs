@@ -33,8 +33,8 @@ import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition.FacetOrder;
 import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.model.DtObject;
 
 /**
  * Search faceted result merger.
@@ -46,7 +46,7 @@ import io.vertigo.datamodel.data.model.DtObject;
  * @param <R> Result object's type
  * @param <S> Source object's type
  */
-public final class FacetedQueryResultMerger<R extends DtObject, S> {
+public final class FacetedQueryResultMerger<R extends Data, S> {
 
 	private final Map<String, FacetValue> facetValuePerFilter = new HashMap<>();
 	private final Map<FacetValue, List<FacetedQueryResult<?, S>>> otherResults = new LinkedHashMap<>();

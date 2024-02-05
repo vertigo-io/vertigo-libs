@@ -32,9 +32,9 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
 import io.vertigo.vega.webservice.model.UiList;
@@ -47,7 +47,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author npiedeloup
  * @param <D> Type d'objet
  */
-public abstract class AbstractUiListModifiable<D extends DtObject> extends AbstractList<UiObject<D>> implements UiList<D>, Serializable {
+public abstract class AbstractUiListModifiable<D extends Data> extends AbstractList<UiObject<D>> implements UiList<D>, Serializable {
 
 	private static final long serialVersionUID = -8398542301760300787L;
 	private final DefinitionId<DataDefinition> dtDefinitionId;
@@ -235,7 +235,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		//SKE MLA : lazy initialisation of buffer uiObjects for size changing uiListModifiable
 		final DataDefinition dataDefinition = dtDefinitionId.get();
 		for (int i = bufferUiObjects.size(); i < row + 1; i++) {
-			add((D) DtObjectUtil.createDtObject(dataDefinition));
+			add((D) DtObjectUtil.createData(dataDefinition));
 		}
 
 		final UiObject<D> uiObject = bufferUiObjects.get(row);
@@ -246,8 +246,8 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	/** {@inheritDoc} */
 	@Override
 	public int indexOf(final Object o) {
-		if (o instanceof DtObject) {
-			return indexOfDtObject((DtObject) o);
+		if (o instanceof Data) {
+			return indexOfDtObject((Data) o);
 		} else if (o instanceof UiObject) {
 			return indexOfUiObject((UiObject<D>) o);
 		}
@@ -258,7 +258,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	 * @param dtObject DtObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	private int indexOfDtObject(final DtObject dtObject) {
+	private int indexOfDtObject(final Data dtObject) {
 		Assertion.check().isNotNull(dtObject);
 		//-----
 		for (int i = 0; i < bufferUiObjects.size(); i++) {

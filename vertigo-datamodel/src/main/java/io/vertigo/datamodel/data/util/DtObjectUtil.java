@@ -31,7 +31,7 @@ import io.vertigo.datamodel.data.definitions.association.AssociationNNDefinition
 import io.vertigo.datamodel.data.definitions.association.AssociationSimpleDefinition;
 import io.vertigo.datamodel.data.definitions.association.DtListURIForNNAssociation;
 import io.vertigo.datamodel.data.definitions.association.DtListURIForSimpleAssociation;
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.Fragment;
 import io.vertigo.datamodel.data.model.UID;
@@ -53,11 +53,11 @@ public final class DtObjectUtil {
 	 * @param dataDefinition the definition to use for creation
 	 * @return the new instance
 	 */
-	public static DtObject createDtObject(final DataDefinition dataDefinition) {
+	public static Data createData(final DataDefinition dataDefinition) {
 		Assertion.check().isNotNull(dataDefinition);
 		//-----
 		//La création des DtObject n'est pas sécurisée
-		return ClassUtil.newInstance(dataDefinition.getClassCanonicalName(), DtObject.class);
+		return ClassUtil.newInstance(dataDefinition.getClassCanonicalName(), Data.class);
 	}
 
 	/**
@@ -67,7 +67,7 @@ public final class DtObjectUtil {
 	 * @return the new instance
 	 */
 	public static Entity createEntity(final DataDefinition dataDefinition) {
-		return Entity.class.cast(createDtObject(dataDefinition));
+		return Entity.class.cast(createData(dataDefinition));
 	}
 
 	/**
@@ -79,7 +79,7 @@ public final class DtObjectUtil {
 	public static Object getId(final Entity entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DataDefinition dataDefinition = findDtDefinition(entity);
+		final DataDefinition dataDefinition = findDataDefinition(entity);
 		final DataField idField = dataDefinition.getIdField().get();
 		return idField.getDataAccessor().getValue(entity);
 	}
@@ -99,7 +99,7 @@ public final class DtObjectUtil {
 	 * @param dtoTargetClass Class of entity of this association
 	 * @return dto du DTO relié via l'association au dto passé en paramètre (Nullable)
 	 */
-	public static <E extends Entity> UID<E> createUID(final DtObject dto, final String associationDefinitionName, final Class<E> dtoTargetClass) {
+	public static <E extends Entity> UID<E> createUID(final Data dto, final String associationDefinitionName, final Class<E> dtoTargetClass) {
 		Assertion.check()
 				.isNotNull(associationDefinitionName)
 				.isNotNull(dto)
@@ -165,7 +165,7 @@ public final class DtObjectUtil {
 	public static <E extends Entity, F extends Fragment<E>> UID<E> createEntityUID(final F fragment) {
 		Assertion.check().isNotNull(fragment);
 		//-----
-		final DataDefinition dataDefinition = findDtDefinition(fragment);
+		final DataDefinition dataDefinition = findDataDefinition(fragment);
 		final DataDefinition entityDtDefinition = dataDefinition.getFragment().get();
 		final DataField idField = entityDtDefinition.getIdField().get();
 		final Object idValue = idField.getDataAccessor().getValue(fragment);
@@ -175,17 +175,17 @@ public final class DtObjectUtil {
 	/**
 	 * Représentation sous forme text d'un dtObject.
 	 *
-	 * @param dto dtObject
+	 * @param data dtObject
 	 * @return Représentation sous forme text du dtObject.
 	 */
-	public static String toString(final DtObject dto) {
-		Assertion.check().isNotNull(dto);
+	public static String toString(final Data data) {
+		Assertion.check().isNotNull(data);
 		//-----
-		return findDtDefinition(dto).getFields()
+		return findDataDefinition(data).getFields()
 				.stream()
 				.filter(dtField -> dtField.getType() != DataField.FieldType.COMPUTED)
-				.map(dtField -> dtField.name() + '=' + dtField.getDataAccessor().getValue(dto))
-				.collect(Collectors.joining(", ", findDtDefinition(dto).getName() + '(', ")"));
+				.map(dtField -> dtField.name() + '=' + dtField.getDataAccessor().getValue(data))
+				.collect(Collectors.joining(", ", findDataDefinition(data).getName() + '(', ")"));
 	}
 
 	/**
@@ -194,10 +194,10 @@ public final class DtObjectUtil {
 	 * @param dto DtObject
 	 * @return the id
 	 */
-	public static DataDefinition findDtDefinition(final DtObject dto) {
+	public static DataDefinition findDataDefinition(final Data dto) {
 		Assertion.check().isNotNull(dto);
 		//-----
-		return findDtDefinition(dto.getClass());
+		return findDataDefinition(dto.getClass());
 	}
 
 	/**
@@ -206,7 +206,7 @@ public final class DtObjectUtil {
 	 * @param dtObjectClass the type of the 'DtObject'
 	 * @return the id
 	 */
-	public static DataDefinition findDtDefinition(final Class<? extends DtObject> dtObjectClass) {
+	public static DataDefinition findDataDefinition(final Class<? extends Data> dtObjectClass) {
 		Assertion.check().isNotNull(dtObjectClass);
 		//-----
 		final String name = DataDefinition.PREFIX + dtObjectClass.getSimpleName();
@@ -219,7 +219,7 @@ public final class DtObjectUtil {
 	 * @param dtObjectClassName the name of the 'DtObject'
 	 * @return the id
 	 */
-	public static DataDefinition findDtDefinition(final String className) {
+	public static DataDefinition findDataDefinition(final String className) {
 		Assertion.check().isNotNull(className);
 		//-----
 		final String simpleName = DataDefinition.PREFIX + className.substring(className.lastIndexOf('.') + 1);
@@ -235,8 +235,8 @@ public final class DtObjectUtil {
 	 * @param dtField field to compare
 	 * @return compare value1 to value2
 	 */
-	public static int compareFieldValues(final DtObject dtoObject1, final DtObject dtoObject2, final DataField dtField, final boolean sortDesc) {
-		Assertion.check().isTrue(DtObjectUtil.findDtDefinition(dtoObject1).equals(DtObjectUtil.findDtDefinition(dtoObject2)),
+	public static int compareFieldValues(final Data dtoObject1, final Data dtoObject2, final DataField dtField, final boolean sortDesc) {
+		Assertion.check().isTrue(DtObjectUtil.findDataDefinition(dtoObject1).equals(DtObjectUtil.findDataDefinition(dtoObject2)),
 				"Only Dtobjects of the same type can be compared, you try to compare object types '{0}' and '{1}'", dtoObject1.getClass(), dtoObject2.getClass());
 		final DataAccessor dataAccessor = dtField.getDataAccessor();
 		return compareFieldValues(dataAccessor.getValue(dtoObject1), dataAccessor.getValue(dtoObject2), sortDesc);

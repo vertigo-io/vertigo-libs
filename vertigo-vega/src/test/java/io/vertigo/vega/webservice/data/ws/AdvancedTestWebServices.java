@@ -37,9 +37,9 @@ import io.vertigo.datamodel.criteria.CriterionLimit;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 import io.vertigo.datamodel.data.util.VCollectors;
@@ -308,7 +308,7 @@ public final class AdvancedTestWebServices implements WebServices {
 		return result;
 	}
 
-	private static <D extends DtObject> DtList<D> asDtList(final Collection<D> values, final Class<D> dtObjectClass) {
+	private static <D extends Data> DtList<D> asDtList(final Collection<D> values, final Class<D> dtObjectClass) {
 		final DtList<D> result = new DtList<>(dtObjectClass);
 		for (final D element : values) {
 			result.add(element);
@@ -316,7 +316,7 @@ public final class AdvancedTestWebServices implements WebServices {
 		return result;
 	}
 
-	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
+	private <D extends Data> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
 		final DtList<D> sortedList;
 		if (dtListState.getSortFieldName().isPresent()) {
 			final DataField sortField = unFilteredList.getDefinition().getField(dtListState.getSortFieldName().get());
@@ -337,10 +337,10 @@ public final class AdvancedTestWebServices implements WebServices {
 		return sortedList;
 	}
 
-	private <C extends DtObject, E extends Entity> Predicate<E> createFilterFunction(final C criteria, final Class<E> resultClass) {
+	private <C extends Data, E extends Entity> Predicate<E> createFilterFunction(final C criteria, final Class<E> resultClass) {
 		Predicate<E> filter = (o) -> true;
-		final DataDefinition criteriaDefinition = DtObjectUtil.findDtDefinition(criteria);
-		final DataDefinition resultDefinition = DtObjectUtil.findDtDefinition(resultClass);
+		final DataDefinition criteriaDefinition = DtObjectUtil.findDataDefinition(criteria);
+		final DataDefinition resultDefinition = DtObjectUtil.findDataDefinition(resultClass);
 		final Set<String> alreadyAddedField = new HashSet<>();
 		for (final DataField field : criteriaDefinition.getFields()) {
 			final String fieldName = field.name();

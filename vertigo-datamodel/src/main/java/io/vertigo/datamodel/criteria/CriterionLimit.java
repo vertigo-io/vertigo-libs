@@ -19,7 +19,7 @@ package io.vertigo.datamodel.criteria;
 
 import java.io.Serializable;
 
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.Entity;
 
 /**
@@ -31,7 +31,7 @@ import io.vertigo.datamodel.data.model.Entity;
  *
  * @param <E> the type of Entity
  */
-public final class CriterionLimit<E extends DtObject> implements Serializable {
+public final class CriterionLimit<E extends Data> implements Serializable {
 	private static final long serialVersionUID = 3903274923414317496L;
 
 	private final Serializable value;

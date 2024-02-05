@@ -108,7 +108,7 @@ public final class SqlCriteriaTest {
 	@Test
 	public void assertCriteria() {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			final DataDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
+			final DataDefinition dtDefinitionCar = DtObjectUtil.findDataDefinition(Car.class);
 			final long count = entityStoreManager.find(dtDefinitionCar, Criterions.isEqualTo(CarFields.model, "passat"), DtListState.of(null)).size();
 			Assertions.assertEquals(1, count);
 		}

@@ -24,8 +24,8 @@ import io.vertigo.core.node.component.Manager;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.model.DtObject;
 
 /**
  * Some tools on collections/lists to allow
@@ -41,14 +41,14 @@ public interface CollectionsManager extends Manager {
 	 * @param listFilter Filtre de liste
 	 * @return Function de filtrage
 	 */
-	<D extends DtObject> Predicate<D> filter(final ListFilter listFilter);
+	<D extends Data> Predicate<D> filter(final ListFilter listFilter);
 
 	/**
 	 * Filter or sort a list via a listProcessor powered by an index engine, can be composed of filters or sorters.
 	 * @return DtListIndexProcessor
 	 * @param <D> Type de l'objet de la liste
 	 */
-	<D extends DtObject> IndexDtListFunctionBuilder<D> createIndexDtListFunctionBuilder();
+	<D extends Data> IndexDtListFunctionBuilder<D> createIndexDtListFunctionBuilder();
 
 	/**
 	 * Facettage d'une liste selon une requete.
@@ -61,5 +61,5 @@ public interface CollectionsManager extends Manager {
 	 * @return Résultat correspondant à la requête
 	 * @param <R> Type de l'objet de la liste
 	 */
-	<R extends DtObject> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery, final Optional<FacetDefinition> clusterFacetDefinition);
+	<R extends Data> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery, final Optional<FacetDefinition> clusterFacetDefinition);
 }

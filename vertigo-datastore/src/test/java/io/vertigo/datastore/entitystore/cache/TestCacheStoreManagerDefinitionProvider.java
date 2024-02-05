@@ -39,7 +39,7 @@ public class TestCacheStoreManagerDefinitionProvider implements SimpleDefinition
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		return Arrays.asList(
-				new CacheDefinition(CacheData.getContext(DtObjectUtil.findDtDefinition(Car.class)), true, 1000, 3600, 3600 / 2, true),
-				new CacheDefinition(CacheData.getContext(DtObjectUtil.findDtDefinition(Famille.class)), true, 1000, 120, 120 / 2, true));
+				new CacheDefinition(CacheData.getContext(DtObjectUtil.findDataDefinition(Car.class)), true, 1000, 3600, 3600 / 2, true),
+				new CacheDefinition(CacheData.getContext(DtObjectUtil.findDataDefinition(Famille.class)), true, 1000, 120, 120 / 2, true));
 	}
 }

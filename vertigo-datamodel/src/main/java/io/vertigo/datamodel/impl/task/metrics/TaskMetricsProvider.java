@@ -100,7 +100,7 @@ public final class TaskMetricsProvider implements Component {
 
 	private static double count(final DataDefinition dataDefinition, final TaskAttribute taskAttribute) {
 		if (taskAttribute.smartTypeDefinition().getScope().isDataType()) {
-			if (dataDefinition.equals(DtObjectUtil.findDtDefinition(taskAttribute.smartTypeDefinition().getJavaClass()))) {
+			if (dataDefinition.equals(DtObjectUtil.findDataDefinition(taskAttribute.smartTypeDefinition().getJavaClass()))) {
 				return 1;
 			}
 		}

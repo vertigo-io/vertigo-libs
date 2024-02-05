@@ -445,7 +445,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	 * @param insert Si opération de type insert (update sinon)
 	 */
 	private void put(final Entity entity, final boolean insert) {
-		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entity);
+		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(entity);
 		final String entityName = getEntityName(dataDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final String taskName = (insert ? TASK.TkInsert : TASK.TkUpdate) + entityName;

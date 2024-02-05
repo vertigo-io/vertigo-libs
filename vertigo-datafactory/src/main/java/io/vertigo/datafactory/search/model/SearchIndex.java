@@ -19,7 +19,7 @@ package io.vertigo.datafactory.search.model;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
@@ -38,7 +38,7 @@ import io.vertigo.datamodel.data.util.DtObjectUtil;
  * @param <K> keyConcept type
  * @param <I> Index type
  */
-public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
+public final class SearchIndex<K extends KeyConcept, I extends Data> {
 	/** Définition de l'index. */
 	private final SearchIndexDefinition indexDefinition;
 
@@ -61,8 +61,8 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 				//On vérifie la consistance des données.
 				.isTrue(indexDefinition.getKeyConceptDtDefinition().equals(uid.getDefinition()),
 						"Le type de l'URI de l'objet indexé  ({0}) ne correspond pas au KeyConcept de l'index ({1})", uid.toString(), indexDefinition.getKeyConceptDtDefinition().getName())
-				.isTrue(indexDefinition.getIndexDtDefinition().equals(DtObjectUtil.findDtDefinition(indexDtObject)),
-						"Le type l'objet indexé ({0}) ne correspond pas à celui de l'index ({1})", DtObjectUtil.findDtDefinition(indexDtObject).getName(), indexDefinition.getIndexDtDefinition().getName());
+				.isTrue(indexDefinition.getIndexDtDefinition().equals(DtObjectUtil.findDataDefinition(indexDtObject)),
+						"Le type l'objet indexé ({0}) ne correspond pas à celui de l'index ({1})", DtObjectUtil.findDataDefinition(indexDtObject).getName(), indexDefinition.getIndexDtDefinition().getName());
 		//-----
 		this.uid = uid;
 		this.indexDefinition = indexDefinition;
@@ -110,7 +110,7 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 	 * @param indexDto  DTO représentant l'index
 	 * @return  Objet permettant de créer l'index
 	 */
-	public static <S extends KeyConcept, I extends DtObject> SearchIndex<S, I> createIndex(final SearchIndexDefinition indexDefinition, final UID<S> uid, final I indexDto) {
+	public static <S extends KeyConcept, I extends Data> SearchIndex<S, I> createIndex(final SearchIndexDefinition indexDefinition, final UID<S> uid, final I indexDto) {
 		return new SearchIndex<>(indexDefinition, uid, indexDto);
 	}
 

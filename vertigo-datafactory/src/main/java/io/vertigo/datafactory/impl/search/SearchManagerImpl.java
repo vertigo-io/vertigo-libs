@@ -49,8 +49,8 @@ import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataStereotype;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtListState;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
@@ -133,7 +133,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
+	public <S extends KeyConcept, I extends Data> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
 		analyticsManager.trace(
 				CATEGORY,
 				"/putAll/" + indexDefinition.getName(),
@@ -145,7 +145,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
+	public <S extends KeyConcept, I extends Data> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
 		analyticsManager.trace(
 				CATEGORY,
 				"/put/" + indexDefinition.getName(),
@@ -157,13 +157,13 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
+	public <R extends Data> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
 		return loadList(List.of(indexDefinition), searchQuery, listState);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState) {
+	public <R extends Data> FacetedQueryResult<R, SearchQuery> loadList(final List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState) {
 		final String definitionNames = indexDefinitions.stream()
 				.map(SearchIndexDefinition::getName)
 				.collect(Collectors.joining(";"));
@@ -210,7 +210,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public SearchIndexDefinition findFirstIndexDefinitionByKeyConcept(final Class<? extends KeyConcept> keyConceptClass) {
-		final Optional<SearchIndexDefinition> indexDefinition = findFirstIndexDefinitionByKeyConcept(DtObjectUtil.findDtDefinition(keyConceptClass));
+		final Optional<SearchIndexDefinition> indexDefinition = findFirstIndexDefinitionByKeyConcept(DtObjectUtil.findDataDefinition(keyConceptClass));
 		Assertion.check().isTrue(indexDefinition.isPresent(), "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptClass.getSimpleName());
 		return indexDefinition.get();
 	}

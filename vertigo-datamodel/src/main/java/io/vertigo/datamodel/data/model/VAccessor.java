@@ -51,7 +51,7 @@ public class VAccessor<E extends Entity> implements Serializable {
 	 * @param role the role of the association (case of multiple associations with the same entity)
 	 */
 	public VAccessor(final Class<E> clazz, final String role) {
-		this(DtObjectUtil.findDtDefinition(clazz), role);
+		this(DtObjectUtil.findDataDefinition(clazz), role);
 	}
 
 	/**

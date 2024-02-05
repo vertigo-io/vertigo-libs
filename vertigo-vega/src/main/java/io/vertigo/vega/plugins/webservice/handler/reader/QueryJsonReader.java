@@ -25,8 +25,8 @@ import java.util.Map.Entry;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtListState;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.definitions.WebServiceParam;
@@ -76,7 +76,7 @@ public final class QueryJsonReader implements JsonReader<String> {
 			return null;
 		}
 		if (DtListState.class.isAssignableFrom(paramClass)
-				|| DtObject.class.isAssignableFrom(paramClass)) {
+				|| Data.class.isAssignableFrom(paramClass)) {
 			return convertToJson(queryMap, webServiceParam.getName());
 		}
 		final String[] values = queryMap.get(paramName);

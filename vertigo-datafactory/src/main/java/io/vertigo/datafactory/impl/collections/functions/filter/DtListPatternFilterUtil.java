@@ -32,7 +32,7 @@ import io.vertigo.datamodel.criteria.CriterionLimit;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 
 /**
  * Parser des filtres utilisant une syntaxe définie.
@@ -67,7 +67,7 @@ public final class DtListPatternFilterUtil {
 		//private constructor
 	}
 
-	static <D extends DtObject> Predicate<D> createDtListFilterForPattern(final FilterPattern filterPattern, final String[] parsedFilter, final DataDefinition dataDefinition) {
+	static <D extends Data> Predicate<D> createDtListFilterForPattern(final FilterPattern filterPattern, final String[] parsedFilter, final DataDefinition dataDefinition) {
 		Assertion.check()
 				.isNotNull(filterPattern)
 				.isNotNull(parsedFilter)
@@ -116,7 +116,7 @@ public final class DtListPatternFilterUtil {
 		return Optional.of(groups);
 	}
 
-	private static <D extends DtObject> Predicate<D> createDtListTermFilter(final String[] parsedFilter, final String fieldName, final BasicType dataType) {
+	private static <D extends Data> Predicate<D> createDtListTermFilter(final String[] parsedFilter, final String fieldName, final BasicType dataType) {
 		final Serializable filterValue = convertToValue(parsedFilter[2], dataType, false);
 		final Predicate predicate;
 		if (filterValue != null) {
@@ -127,7 +127,7 @@ public final class DtListPatternFilterUtil {
 		return predicate;
 	}
 
-	private static <D extends DtObject> Predicate<D> createDtListRangeFilter(
+	private static <D extends Data> Predicate<D> createDtListRangeFilter(
 			final String[] parsedFilter,
 			final String fieldName,
 			final BasicType dataType) {

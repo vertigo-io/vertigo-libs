@@ -40,10 +40,10 @@ import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.impl.collections.IndexPlugin;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.DtListURI;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datastore.cache.CacheManager;
@@ -102,7 +102,7 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 		return Collections.singletonList(new CacheDefinition(CACHE_LUCENE_INDEX, false, 1000, 30 * 60, 60 * 60, true));
 	}
 
-	private <D extends DtObject> RamLuceneIndex<D> indexList(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
+	private <D extends Data> RamLuceneIndex<D> indexList(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
 		//TODO : gestion du cache a revoir... et le lien avec le CacheStore.
 		//L'index devrait être interrogé par le Broker ? on pourrait alors mettre en cache dans le DataCache.
 		final DtListURI dtcUri = fullDtc.getURI();
@@ -131,7 +131,7 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 		return "IndexCache:" + dataDefinition.getName();
 	}
 
-	private <D extends DtObject> RamLuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
+	private <D extends Data> RamLuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
 		Assertion.check().isNotNull(fullDtc);
 		//-----
 		final RamLuceneIndex<D> luceneDb = new RamLuceneIndex<>(fullDtc.getDefinition(), smartTypeManager);
@@ -141,7 +141,7 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> getCollection(
+	public <D extends Data> DtList<D> getCollection(
 			final String keywords,
 			final Collection<DataField> searchedFields,
 			final List<ListFilter> listFilters,

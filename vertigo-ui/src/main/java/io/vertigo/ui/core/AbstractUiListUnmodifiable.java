@@ -50,7 +50,7 @@ import io.vertigo.vega.webservice.model.UiObject;
  * @author npiedeloup
  * @param <O> the type of entity
  */
-public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends AbstractList<UiObject<O>> implements UiList<O>, Serializable {
+public abstract class AbstractUiListUnmodifiable<O extends Data> extends AbstractList<UiObject<O>> implements UiList<O>, Serializable {
 	private static final long serialVersionUID = 5475819598230056558L;
 
 	protected static final int NB_MAX_ELEMENTS = 1000; //Max nb elements in list. Must be kept under 1000 to ensure good performances.

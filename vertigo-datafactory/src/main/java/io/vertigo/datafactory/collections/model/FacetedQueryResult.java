@@ -27,8 +27,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.model.DtObject;
 
 /**
  * Résultat de la recherche.
@@ -38,7 +38,7 @@ import io.vertigo.datamodel.data.model.DtObject;
  * @param <R> Type de l'objet resultant de la recherche
  * @param <S> Type de l'objet source
  */
-public final class FacetedQueryResult<R extends DtObject, S> implements Serializable {
+public final class FacetedQueryResult<R extends Data, S> implements Serializable {
 	private static final long serialVersionUID = 1248453191954177054L;
 
 	private final DtList<R> list;

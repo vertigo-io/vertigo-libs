@@ -20,7 +20,7 @@ package io.vertigo.vega.webservice.validation;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 
 /**
  * Message d'IHM.
@@ -30,7 +30,7 @@ import io.vertigo.datamodel.data.model.DtObject;
  * @param errorMessage Champs portant le message
  */
 public record UiError(
-		DtObject dtObject,
+		Data dtObject,
 		DataField dtField,
 		LocaleMessageText errorMessage) {
 

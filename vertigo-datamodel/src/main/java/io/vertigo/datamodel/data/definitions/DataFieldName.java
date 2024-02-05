@@ -19,14 +19,14 @@ package io.vertigo.datamodel.data.definitions;
 
 import java.io.Serializable;
 
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 
 /**
  * Nom de champs de DT (marqueur).
  * @param <D> the dtobject associated to this dtField
  * @author mlaroche
  */
-public interface DataFieldName<D extends DtObject> extends Serializable {
+public interface DataFieldName<D extends Data> extends Serializable {
 
 	/** @return nom du champ (const case) */
 	String name();

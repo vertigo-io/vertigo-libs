@@ -38,7 +38,7 @@ import io.vertigo.datafactory.search.data.domain.ItemDataBase;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 
 /**
  * @author  npiedeloup
@@ -115,7 +115,7 @@ public class SearchManagerMultiIndexTest {
 		final SearchQuery searchQuery = SearchQuery.builder(query, DslListFilterBuilder.class)
 				.withCriteria("")
 				.build();
-		final FacetedQueryResult<DtObject, SearchQuery> result = searchManager.loadList(indexDefinition, searchQuery, null);
+		final FacetedQueryResult<Data, SearchQuery> result = searchManager.loadList(indexDefinition, searchQuery, null);
 		return result.getCount();
 	}
 

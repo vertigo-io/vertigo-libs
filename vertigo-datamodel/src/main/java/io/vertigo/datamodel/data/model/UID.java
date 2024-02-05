@@ -117,7 +117,7 @@ public final class UID<E extends Entity> implements Serializable {
 	public static <E extends Entity> UID<E> of(final E entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entity);
+		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(entity);
 		return new UID<>(dataDefinition, DtObjectUtil.getId(entity));
 	}
 
@@ -132,7 +132,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 * @return the entity UID
 	 */
 	public static <E extends Entity> UID<E> of(final Class<E> entityClass, final Object uriValue) {
-		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(entityClass);
+		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(entityClass);
 		return new UID<>(dataDefinition, uriValue);
 	}
 

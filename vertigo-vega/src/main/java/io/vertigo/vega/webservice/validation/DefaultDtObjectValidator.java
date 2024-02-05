@@ -19,7 +19,7 @@ package io.vertigo.vega.webservice.validation;
 
 import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.ConstraintException;
 
@@ -28,7 +28,7 @@ import io.vertigo.datamodel.smarttype.definitions.ConstraintException;
  * @author npiedeloup
  * @param <O> Type d'objet
  */
-public final class DefaultDtObjectValidator<O extends DtObject> extends AbstractDtObjectValidator<O> {
+public final class DefaultDtObjectValidator<O extends Data> extends AbstractDtObjectValidator<O> {
 
 	/** {@inheritDoc} */
 	@Override

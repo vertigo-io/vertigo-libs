@@ -26,7 +26,7 @@ package io.vertigo.datamodel.data.model;
  * @author pchretien
  * @param <E> Entity type
  */
-public interface Fragment<E extends Entity> extends DtObject {
+public interface Fragment<E extends Entity> extends Data {
 
 	/**
 	 * @return UID of linked entity

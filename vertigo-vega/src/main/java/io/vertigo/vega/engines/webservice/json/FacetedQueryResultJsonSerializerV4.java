@@ -33,8 +33,8 @@ import io.vertigo.datafactory.collections.model.Facet;
 import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.model.DtObject;
 
 /**
  * JsonSerializer of FacetedQueryResult.
@@ -150,9 +150,9 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 				.getValue();
 	}
 
-	private static JsonArray serializeHighLight(final DtList<?> dtList, final FacetedQueryResult<DtObject, ?> facetedQueryResult) {
+	private static JsonArray serializeHighLight(final DtList<?> dtList, final FacetedQueryResult<Data, ?> facetedQueryResult) {
 		final JsonArray jsonHighlightList = new JsonArray();
-		for (final DtObject document : dtList) {
+		for (final Data document : dtList) {
 			final Map<DataField, String> highlights = facetedQueryResult.getHighlights(document);
 			final JsonObject jsonHighlight = new JsonObject();
 			for (final Map.Entry<DataField, String> entry : highlights.entrySet()) {

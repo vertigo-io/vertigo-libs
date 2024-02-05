@@ -20,7 +20,7 @@ package io.vertigo.datamodel.criteria;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 
 final class CriteriaUtil {
 	private static final Logger LOG = LogManager.getLogger(CriteriaUtil.class);
@@ -29,7 +29,7 @@ final class CriteriaUtil {
 		//
 	}
 
-	static <D extends DtObject> Criteria<D> and(final Criteria<D> leftOperand, final Criteria<D> rightOperand) {
+	static <D extends Data> Criteria<D> and(final Criteria<D> leftOperand, final Criteria<D> rightOperand) {
 		//if exp*c
 		//	when a*b*c
 		//		then *(exp.operands, c)
@@ -50,7 +50,7 @@ final class CriteriaUtil {
 		return new CriteriaExpression<>(CriteriaLogicalOperator.AND, leftOperand, rightOperand);
 	}
 
-	static <D extends DtObject> Criteria<D> or(final Criteria<D> leftOperand, final Criteria<D> rightOperand) {
+	static <D extends Data> Criteria<D> or(final Criteria<D> leftOperand, final Criteria<D> rightOperand) {
 		//if exp+c
 		//	when a*b+c
 		//		then +(exp, c)

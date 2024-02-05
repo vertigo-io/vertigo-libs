@@ -31,7 +31,7 @@ import com.google.gson.JsonSyntaxException;
 
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 import io.vertigo.vega.webservice.model.UiObject;
 
@@ -39,7 +39,7 @@ import io.vertigo.vega.webservice.model.UiObject;
  * ParameterizedType use for UiObject.
  * @author npiedeloup
  */
-final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer<UiObject<D>> {
+final class UiObjectDeserializer<D extends Data> implements JsonDeserializer<UiObject<D>> {
 
 	/** {@inheritDoc} */
 	@Override
@@ -48,7 +48,7 @@ final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer
 		final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
 		final JsonObject jsonObject = json.getAsJsonObject();
 		final D inputDto = context.deserialize(jsonObject, dtoClass);
-		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(dtoClass);
+		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(dtoClass);
 		final Set<String> dtFields = getFieldNames(dataDefinition);
 		final Set<String> modifiedFields = new HashSet<>();
 		for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {

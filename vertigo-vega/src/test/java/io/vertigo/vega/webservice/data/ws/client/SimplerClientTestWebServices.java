@@ -27,8 +27,8 @@ import java.util.Optional;
 
 import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.impl.webservice.client.WebServiceProxyAnnotation;
 import io.vertigo.vega.webservice.data.domain.Contact;
@@ -222,6 +222,6 @@ public interface SimplerClientTestWebServices extends Amplifier {
 	String testOptionalQueryParam(final Contact contact, @QueryParam("token") final Optional<String> token);
 
 	@GET("/searchFacet")
-	FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact);
+	FacetedQueryResult<Data, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact);
 
 }

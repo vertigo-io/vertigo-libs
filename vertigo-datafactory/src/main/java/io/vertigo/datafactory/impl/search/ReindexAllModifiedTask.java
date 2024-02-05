@@ -37,7 +37,7 @@ import io.vertigo.datafactory.search.definitions.SearchChunk;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.definitions.SearchLoader;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
 
@@ -91,7 +91,7 @@ final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
 			final long startTime = System.currentTimeMillis();
 			try {
 				final Class<S> keyConceptClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getKeyConceptDtDefinition().getClassCanonicalName(), KeyConcept.class);
-				final SearchLoader<S, DtObject> searchLoader = Node.getNode().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
+				final SearchLoader<S, Data> searchLoader = Node.getNode().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 				Assertion.check()
 						.isNotNull(searchLoader.getVersionFieldName().isPresent(),
 								"To use this reindexAllModified, indexed keyConcept need a version field use to check if element is up-to-date. Check getVersionFieldName() in {0}", searchLoader.getClass().getName());
@@ -105,7 +105,7 @@ final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
 
 					final Map<UID<S>, Serializable> alreadyIndexedVersions = searchServicesPlugin.loadVersions(searchIndexDefinition, searchLoader.getVersionFieldName().get(), urisRangeToListFilter("docId", lastUID, maxUID), searchChunk.getAllUIDs().size() + MAX_DELETED_INDEX_PER_CHUNK);
 					final Tuple<SearchChunk<S>, Set<UID<S>>> chunkOfModifiedAndRemovedUid = searchChunk.compare(alreadyIndexedVersions);
-					final Collection<SearchIndex<S, DtObject>> searchIndexes = searchLoader.loadData(chunkOfModifiedAndRemovedUid.val1());//load updated element
+					final Collection<SearchIndex<S, Data>> searchIndexes = searchLoader.loadData(chunkOfModifiedAndRemovedUid.val1());//load updated element
 					if (!searchIndexes.isEmpty()) {
 						searchManager.putAll(searchIndexDefinition, searchIndexes);
 					}

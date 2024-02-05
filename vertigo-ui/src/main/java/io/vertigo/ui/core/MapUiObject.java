@@ -49,7 +49,7 @@ import io.vertigo.vega.engines.webservice.json.VegaUiObject;
  * @author pchretien, npiedeloup
  * @param <D> Type de DtObject représenté par cet Input
  */
-public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> implements Map<String, Serializable> {
+public final class MapUiObject<D extends Data> extends VegaUiObject<D> implements Map<String, Serializable> {
 	private static final long serialVersionUID = -4639050257543017072L;
 	private static final String SMART_TYPE_MULTIPLE_IDS = "STyMultipleIds";
 	private static final String[] EMPTY_INPUT = new String[0];

@@ -28,11 +28,11 @@ import io.vertigo.datamodel.criteria.CriteriaLogicalOperator;
 import io.vertigo.datamodel.criteria.CriterionOperator;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.DtListURI;
-import io.vertigo.datamodel.data.model.DtObject;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 
@@ -91,10 +91,10 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	* @param dtoCriteria Objet de critère
 	* @return Criteria resultant
 	*/
-	public static <E extends Entity> Criteria<E> createCriteria(final DtObject dtoCriteria) {
+	public static <E extends Entity> Criteria<E> createCriteria(final Data dtoCriteria) {
 		Assertion.check().isNotNull(dtoCriteria);
 		//-----
-		final DataDefinition dataDefinition = DtObjectUtil.findDtDefinition(dtoCriteria);
+		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(dtoCriteria);
 
 		Criteria<E> criteria = Criterions.alwaysTrue();
 		for (final DataField field : dataDefinition.getFields()) {

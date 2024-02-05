@@ -27,12 +27,12 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.util.DateUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.util.DtObjectUtil;
 
-final class Criterion<D extends DtObject> extends Criteria<D> {
+final class Criterion<D extends Data> extends Criteria<D> {
 	private static final long serialVersionUID = -7797854063455062775L;
 
 	private static final String DATE_PATTERN = "dd/MM/yyyy";
@@ -68,7 +68,7 @@ final class Criterion<D extends DtObject> extends Criteria<D> {
 	}
 
 	private boolean test(final D entity) {
-		final DataDefinition entitytDefinition = DtObjectUtil.findDtDefinition(entity.getClass());
+		final DataDefinition entitytDefinition = DtObjectUtil.findDataDefinition(entity.getClass());
 		final DataField dtField = entitytDefinition.getField(dataFieldName);
 
 		final Object value = dtField.getDataAccessor().getValue(entity);
