@@ -35,7 +35,7 @@ import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 
 /**
  * Abstract SearchLoader with default chunk implementation.
@@ -49,7 +49,7 @@ public abstract class AbstractSearchLoader<K extends KeyConcept, I extends Data>
 	/** {@inheritDoc} */
 	@Override
 	public final Iterable<SearchChunk<K>> chunk(final Class<K> keyConceptClass) {
-		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(keyConceptClass);
+		final DataDefinition dataDefinition = DataUtil.findDataDefinition(keyConceptClass);
 		final DataField idField = dataDefinition.getIdField().get();
 		final Serializable firstId = getLowestIteratorValue(idField, dataDefinition);
 
@@ -59,7 +59,7 @@ public abstract class AbstractSearchLoader<K extends KeyConcept, I extends Data>
 	/** {@inheritDoc} */
 	@Override
 	public final Iterable<SearchChunk<K>> chunk(final Optional<Serializable> startValue, final Class<K> keyConceptClass) {
-		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(keyConceptClass);
+		final DataDefinition dataDefinition = DataUtil.findDataDefinition(keyConceptClass);
 		final DataField versionField = getVersionField(dataDefinition);
 
 		return () -> createIterator(startValue.orElse(getLowestIteratorValue(versionField, dataDefinition)), true, dataDefinition);

@@ -55,7 +55,7 @@ import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.util.AssociationUtil;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
@@ -333,7 +333,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E create(final DataDefinition dataDefinition, final E entity) {
-		Assertion.check().isNull(DtObjectUtil.getId(entity), "Only object without any id can be created");
+		Assertion.check().isNull(DataUtil.getId(entity), "Only object without any id can be created");
 		//------
 		final boolean insert = true;
 		put(entity, insert);
@@ -371,7 +371,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void update(final DataDefinition dataDefinition, final Entity entity) {
-		Assertion.check().isNotNull(DtObjectUtil.getId(entity), "Need an id to update an object ");
+		Assertion.check().isNotNull(DataUtil.getId(entity), "Need an id to update an object ");
 		//-----
 		final boolean insert = false;
 		put(entity, insert);
@@ -445,7 +445,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	 * @param insert Si opération de type insert (update sinon)
 	 */
 	private void put(final Entity entity, final boolean insert) {
-		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(entity);
+		final DataDefinition dataDefinition = DataUtil.findDataDefinition(entity);
 		final String entityName = getEntityName(dataDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final String taskName = (insert ? TASK.TkInsert : TASK.TkUpdate) + entityName;

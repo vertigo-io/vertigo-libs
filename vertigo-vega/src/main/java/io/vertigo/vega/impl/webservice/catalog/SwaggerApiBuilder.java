@@ -45,7 +45,7 @@ import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtListState;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
@@ -312,7 +312,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		//can't be a primitive nor array nor DtListDelta
 		final Map<String, Object> properties = new LinkedHashMap<>();
 		final List<String> required = new ArrayList<>(); //mandatory fields
-		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(objectClass);
+		final DataDefinition dataDefinition = DataUtil.findDataDefinition(objectClass);
 		for (final DataField dtField : dataDefinition.getFields()) {
 			final String fieldName = dtField.name();
 			if (isExcludedField(fieldName, includedFields, excludedFields)) {
@@ -479,7 +479,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 					.with(webServiceParam.getParamType(), prefix + "sortDesc").build());
 		} else if (Data.class.isAssignableFrom(webServiceParam.getType())) {
 			final Class<? extends Data> paramClass = (Class<? extends Data>) webServiceParam.getType();
-			final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(paramClass);
+			final DataDefinition dataDefinition = DataUtil.findDataDefinition(paramClass);
 			for (final DataField dtField : dataDefinition.getFields()) {
 				final String fieldName = dtField.name();
 				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.smartTypeDefinition().getJavaClass())

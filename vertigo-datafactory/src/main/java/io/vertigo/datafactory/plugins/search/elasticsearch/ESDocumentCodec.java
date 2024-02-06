@@ -39,7 +39,7 @@ import io.vertigo.datamodel.data.definitions.DataField.FieldType;
 import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 
 /**
@@ -107,7 +107,7 @@ public final class ESDocumentCodec {
 			resultDtObjectdtObject = decode(searchHit.field(FULL_RESULT).getValue());
 		}
 		//-----
-		final DataDefinition resultDtDefinition = DtObjectUtil.findDataDefinition(resultDtObjectdtObject);
+		final DataDefinition resultDtDefinition = DataUtil.findDataDefinition(resultDtObjectdtObject);
 		Assertion.check()
 				.isNotNull(uid)
 				.isNotNull(indexDtDefinition)
@@ -152,7 +152,7 @@ public final class ESDocumentCodec {
 
 			/* 3 : Les champs du dto index */
 			final Data dtIndex = index.getIndexDtObject();
-			final DataDefinition indexDtDefinition = DtObjectUtil.findDataDefinition(dtIndex);
+			final DataDefinition indexDtDefinition = DataUtil.findDataDefinition(dtIndex);
 			final Set<DataField> copyToFields = index.getDefinition().getIndexCopyToFields();
 			for (final DataField dtField : indexDtDefinition.getFields()) {
 				if (!copyToFields.contains(dtField)) {//On index pas les copyFields
@@ -196,7 +196,7 @@ public final class ESDocumentCodec {
 	}
 
 	private static <I extends Data> I cloneDto(final DataDefinition dataDefinition, final I dto, final List<DataField> excludedFields) {
-		final I clonedDto = (I) DtObjectUtil.createData(dataDefinition);
+		final I clonedDto = (I) DataUtil.createData(dataDefinition);
 		for (final DataField dtField : dataDefinition.getFields()) {
 			if (!excludedFields.contains(dtField)) {
 				final DataAccessor dataAccessor = dtField.getDataAccessor();

@@ -26,7 +26,7 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 
 /**
@@ -117,8 +117,8 @@ public final class UID<E extends Entity> implements Serializable {
 	public static <E extends Entity> UID<E> of(final E entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(entity);
-		return new UID<>(dataDefinition, DtObjectUtil.getId(entity));
+		final DataDefinition dataDefinition = DataUtil.findDataDefinition(entity);
+		return new UID<>(dataDefinition, DataUtil.getId(entity));
 	}
 
 	/**
@@ -132,7 +132,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 * @return the entity UID
 	 */
 	public static <E extends Entity> UID<E> of(final Class<E> entityClass, final Object uriValue) {
-		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(entityClass);
+		final DataDefinition dataDefinition = DataUtil.findDataDefinition(entityClass);
 		return new UID<>(dataDefinition, uriValue);
 	}
 

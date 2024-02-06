@@ -37,7 +37,7 @@ import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.model.DtListState;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.entitystore.data.domain.car.Car;
@@ -108,7 +108,7 @@ public final class SqlCriteriaTest {
 	@Test
 	public void assertCriteria() {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			final DataDefinition dtDefinitionCar = DtObjectUtil.findDataDefinition(Car.class);
+			final DataDefinition dtDefinitionCar = DataUtil.findDataDefinition(Car.class);
 			final long count = entityStoreManager.find(dtDefinitionCar, Criterions.isEqualTo(CarFields.model, "passat"), DtListState.of(null)).size();
 			Assertions.assertEquals(1, count);
 		}

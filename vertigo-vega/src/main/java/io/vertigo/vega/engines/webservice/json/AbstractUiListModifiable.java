@@ -35,7 +35,7 @@ import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
@@ -235,7 +235,7 @@ public abstract class AbstractUiListModifiable<D extends Data> extends AbstractL
 		//SKE MLA : lazy initialisation of buffer uiObjects for size changing uiListModifiable
 		final DataDefinition dataDefinition = dtDefinitionId.get();
 		for (int i = bufferUiObjects.size(); i < row + 1; i++) {
-			add((D) DtObjectUtil.createData(dataDefinition));
+			add((D) DataUtil.createData(dataDefinition));
 		}
 
 		final UiObject<D> uiObject = bufferUiObjects.get(row);

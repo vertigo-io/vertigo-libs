@@ -33,7 +33,7 @@ import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
 import io.vertigo.datastore.filestore.model.VFile;
@@ -120,7 +120,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		//-----
 		getEntityStoreManager().create(fileInfoDto);
 		//-----
-		final Object fileInfoDtoId = DtObjectUtil.getId(fileInfoDto);
+		final Object fileInfoDtoId = DataUtil.getId(fileInfoDto);
 		Assertion.check().isNotNull(fileInfoDtoId, "File's id must be set");
 		final FileInfoURI uri = new FileInfoURI(fileInfo.getDefinition(), fileInfoDtoId);
 		fileInfo.setURIStored(uri);
@@ -157,7 +157,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 
 	private Entity createFileInfoDto(final FileInfo fileInfo) {
 		//Il doit exister un DtObjet associé à storeDtDefinition avec la structure attendue.
-		final Entity fileInfoDto = DtObjectUtil.createEntity(storeDtDefinition);
+		final Entity fileInfoDto = DataUtil.createEntity(storeDtDefinition);
 		//-----
 
 		final VFile vFile = fileInfo.getVFile();

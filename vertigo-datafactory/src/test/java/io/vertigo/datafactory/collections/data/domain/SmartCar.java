@@ -21,7 +21,7 @@ import io.vertigo.core.lang.Cardinality;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.stereotype.Field;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 
 public final class SmartCar implements KeyConcept {
 	/** SerialVersionUID. */
@@ -77,6 +77,6 @@ public final class SmartCar implements KeyConcept {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return DtObjectUtil.toString(this);
+		return DataUtil.toString(this);
 	}
 }

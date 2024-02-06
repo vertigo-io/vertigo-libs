@@ -27,7 +27,7 @@ import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.model.Data;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 
 /**
  * Validation exception on a object's field.
@@ -82,7 +82,7 @@ public final class ValidationUserException extends VUserException {
 				.isNotNull(dto, "L'objet est obligatoire")
 				.isNotBlank(constFieldName, "Le champs est obligatoire");
 		//-----
-		final DataField dtField = DtObjectUtil.findDataDefinition(dto).getField(constFieldName);
+		final DataField dtField = DataUtil.findDataDefinition(dto).getField(constFieldName);
 		uiErrors.add(new UiError(dto, dtField, messageText));
 	}
 

@@ -149,6 +149,6 @@ public final class VCollectors {
 	public static <T extends Data> Collector<T, ?, DtList<T>> toDtList(final Class<T> dtClass) {
 		Assertion.check().isNotNull(dtClass);
 		//---
-		return toDtList(DtObjectUtil.findDataDefinition(dtClass));
+		return toDtList(DataUtil.findDataDefinition(dtClass));
 	}
 }

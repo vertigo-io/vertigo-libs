@@ -39,7 +39,7 @@ import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.DtListURI;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datastore.cache.CacheManager;
@@ -154,10 +154,10 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> E create(final E entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(entity);
+		final DataDefinition dataDefinition = DataUtil.findDataDefinition(entity);
 		final E createdEntity = getPhysicalStore(dataDefinition).create(dataDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.CREATE, List.of(UID.of(dataDefinition, DtObjectUtil.getId(createdEntity))));
+		fireAfterCommit(StoreEvent.Type.CREATE, List.of(UID.of(dataDefinition, DataUtil.getId(createdEntity))));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 		return createdEntity;
 	}
@@ -179,10 +179,10 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public void update(final Entity entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(entity);
+		final DataDefinition dataDefinition = DataUtil.findDataDefinition(entity);
 		getPhysicalStore(dataDefinition).update(dataDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.UPDATE, List.of(UID.of(dataDefinition, DtObjectUtil.getId(entity))));
+		fireAfterCommit(StoreEvent.Type.UPDATE, List.of(UID.of(dataDefinition, DataUtil.getId(entity))));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 	}
 

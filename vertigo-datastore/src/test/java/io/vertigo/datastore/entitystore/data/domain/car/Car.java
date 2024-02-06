@@ -23,7 +23,7 @@ import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.stereotype.Field;
 import io.vertigo.datamodel.data.stereotype.ForeignKey;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datastore.entitystore.data.domain.GeoPoint;
 import io.vertigo.datastore.entitystore.data.domain.famille.Famille;
 import io.vertigo.datastore.impl.entitystore.EnumStoreVAccessor;
@@ -343,6 +343,6 @@ public final class Car implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return DtObjectUtil.toString(this);
+		return DataUtil.toString(this);
 	}
 }

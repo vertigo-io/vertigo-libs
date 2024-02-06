@@ -33,7 +33,7 @@ import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
@@ -117,9 +117,9 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		final Entity fileEntity = createFileEntity(fileInfo);
 		//-----
 		getEntityStoreManager().create(fileEntity);
-		setValue(fileMetadataDto, DtoFields.fdtId, DtObjectUtil.getId(fileEntity));
+		setValue(fileMetadataDto, DtoFields.fdtId, DataUtil.getId(fileEntity));
 		getEntityStoreManager().create(fileMetadataDto);
-		final FileInfoURI fileInfoUri = createURI(fileInfo.getDefinition(), DtObjectUtil.getId(fileMetadataDto));
+		final FileInfoURI fileInfoUri = createURI(fileInfo.getDefinition(), DataUtil.getId(fileMetadataDto));
 		fileInfo.setURIStored(fileInfoUri);
 		return fileInfo;
 	}
@@ -170,7 +170,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	}
 
 	private Entity createMetaDataEntity(final FileInfo fileInfo) {
-		final Entity fileMetadataDto = DtObjectUtil.createEntity(storeMetaDataDtDefinition);
+		final Entity fileMetadataDto = DataUtil.createEntity(storeMetaDataDtDefinition);
 		final VFile vFile = fileInfo.getVFile();
 		setValue(fileMetadataDto, DtoFields.fileName, vFile.getFileName());
 		setValue(fileMetadataDto, DtoFields.mimeType, vFile.getMimeType());
@@ -180,7 +180,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	}
 
 	private Entity createFileEntity(final FileInfo fileInfo) {
-		final Entity fileDataDto = DtObjectUtil.createEntity(storeFileDtDefinition);
+		final Entity fileDataDto = DataUtil.createEntity(storeFileDtDefinition);
 		final VFile vFile = fileInfo.getVFile();
 		setValue(fileDataDto, DtoFields.fileName, vFile.getFileName());
 		setValue(fileDataDto, DtoFields.fileData, vFile);

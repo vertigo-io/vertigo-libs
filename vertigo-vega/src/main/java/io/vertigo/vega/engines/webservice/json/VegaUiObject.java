@@ -39,7 +39,7 @@ import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.Data;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
@@ -92,7 +92,7 @@ public class VegaUiObject<D extends Data> implements io.vertigo.vega.webservice.
 				.isNotNull(modifiedFields, "modifiedFields can't be null");
 		//-----
 		this.inputDto = inputDto;
-		this.dtDefinitionId = DtObjectUtil.findDataDefinition(inputDto).id();
+		this.dtDefinitionId = DataUtil.findDataDefinition(inputDto).id();
 		fieldIndex = Collections.unmodifiableSet(getDtDefinition().getFields().stream()
 				.map(DataField::name)
 				.collect(Collectors.toSet()));
@@ -227,7 +227,7 @@ public class VegaUiObject<D extends Data> implements io.vertigo.vega.webservice.
 		getDtObjectErrors().flushIntoMessageStack(inputKey, uiMessageStack);
 		inputBuffer.clear();
 		if (serverSideDto != null) {
-			inputDto = (D) DtObjectUtil.createData(getDtDefinition());
+			inputDto = (D) DataUtil.createData(getDtDefinition());
 			return serverSideDto;
 		}
 		return inputDto;

@@ -23,7 +23,7 @@ import java.util.Set;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.Data;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 
 /**
  * Objet de validation d'un DtObject.
@@ -191,7 +191,7 @@ public abstract class AbstractDtObjectValidator<O extends Data> implements DtObj
 	 * @return DataField.
 	 */
 	protected final DataField getDataField(final String fieldName, final O dto) {
-		return DtObjectUtil.findDataDefinition(dto).getField(fieldName);
+		return DataUtil.findDataDefinition(dto).getField(fieldName);
 	}
 
 	/**

@@ -41,9 +41,9 @@ import io.vertigo.datamodel.data.model.UID;
  *
  * @author pchretien
  */
-public final class DtObjectUtil {
+public final class DataUtil {
 
-	private DtObjectUtil() {
+	private DataUtil() {
 		//private constructor.
 	}
 
@@ -236,7 +236,7 @@ public final class DtObjectUtil {
 	 * @return compare value1 to value2
 	 */
 	public static int compareFieldValues(final Data dtoObject1, final Data dtoObject2, final DataField dtField, final boolean sortDesc) {
-		Assertion.check().isTrue(DtObjectUtil.findDataDefinition(dtoObject1).equals(DtObjectUtil.findDataDefinition(dtoObject2)),
+		Assertion.check().isTrue(DataUtil.findDataDefinition(dtoObject1).equals(DataUtil.findDataDefinition(dtoObject2)),
 				"Only Dtobjects of the same type can be compared, you try to compare object types '{0}' and '{1}'", dtoObject1.getClass(), dtoObject2.getClass());
 		final DataAccessor dataAccessor = dtField.getDataAccessor();
 		return compareFieldValues(dataAccessor.getValue(dtoObject1), dataAccessor.getValue(dtoObject2), sortDesc);

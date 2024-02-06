@@ -22,7 +22,7 @@ import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 
 /**
  * Objet d'échange avec l'index.
@@ -61,8 +61,8 @@ public final class SearchIndex<K extends KeyConcept, I extends Data> {
 				//On vérifie la consistance des données.
 				.isTrue(indexDefinition.getKeyConceptDtDefinition().equals(uid.getDefinition()),
 						"Le type de l'URI de l'objet indexé  ({0}) ne correspond pas au KeyConcept de l'index ({1})", uid.toString(), indexDefinition.getKeyConceptDtDefinition().getName())
-				.isTrue(indexDefinition.getIndexDtDefinition().equals(DtObjectUtil.findDataDefinition(indexDtObject)),
-						"Le type l'objet indexé ({0}) ne correspond pas à celui de l'index ({1})", DtObjectUtil.findDataDefinition(indexDtObject).getName(), indexDefinition.getIndexDtDefinition().getName());
+				.isTrue(indexDefinition.getIndexDtDefinition().equals(DataUtil.findDataDefinition(indexDtObject)),
+						"Le type l'objet indexé ({0}) ne correspond pas à celui de l'index ({1})", DataUtil.findDataDefinition(indexDtObject).getName(), indexDefinition.getIndexDtDefinition().getName());
 		//-----
 		this.uid = uid;
 		this.indexDefinition = indexDefinition;

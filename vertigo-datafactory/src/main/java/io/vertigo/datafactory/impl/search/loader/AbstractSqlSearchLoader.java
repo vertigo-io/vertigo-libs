@@ -39,7 +39,7 @@ import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
@@ -110,7 +110,7 @@ public abstract class AbstractSqlSearchLoader<S extends KeyConcept, I extends Da
 			final List<Tuple<UID<S>, Serializable>> uids = new ArrayList<>(resultDtc.size());
 			final DataAccessor versionFieldAccessor = versionField.getDataAccessor();
 			for (final S dto : resultDtc) {
-				uids.add(Tuple.of(UID.<S> of(dataDefinition, DtObjectUtil.getId(dto)), (Serializable) versionFieldAccessor.getValue(dto)));
+				uids.add(Tuple.of(UID.<S> of(dataDefinition, DataUtil.getId(dto)), (Serializable) versionFieldAccessor.getValue(dto)));
 			}
 			return uids;
 		}

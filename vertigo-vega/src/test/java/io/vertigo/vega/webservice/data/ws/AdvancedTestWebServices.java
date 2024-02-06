@@ -41,7 +41,7 @@ import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.Entity;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
@@ -322,7 +322,7 @@ public final class AdvancedTestWebServices implements WebServices {
 			final DataField sortField = unFilteredList.getDefinition().getField(dtListState.getSortFieldName().get());
 			sortedList = unFilteredList
 					.stream()
-					.sorted((dt1, dt2) -> DtObjectUtil.compareFieldValues(dt1, dt2, sortField, dtListState.isSortDesc().get()))
+					.sorted((dt1, dt2) -> DataUtil.compareFieldValues(dt1, dt2, sortField, dtListState.isSortDesc().get()))
 					.collect(VCollectors.toDtList(unFilteredList.getDefinition()));
 		} else {
 			sortedList = unFilteredList;
@@ -339,8 +339,8 @@ public final class AdvancedTestWebServices implements WebServices {
 
 	private <C extends Data, E extends Entity> Predicate<E> createFilterFunction(final C criteria, final Class<E> resultClass) {
 		Predicate<E> filter = (o) -> true;
-		final DataDefinition criteriaDefinition = DtObjectUtil.findDataDefinition(criteria);
-		final DataDefinition resultDefinition = DtObjectUtil.findDataDefinition(resultClass);
+		final DataDefinition criteriaDefinition = DataUtil.findDataDefinition(criteria);
+		final DataDefinition resultDefinition = DataUtil.findDataDefinition(resultClass);
 		final Set<String> alreadyAddedField = new HashSet<>();
 		for (final DataField field : criteriaDefinition.getFields()) {
 			final String fieldName = field.name();

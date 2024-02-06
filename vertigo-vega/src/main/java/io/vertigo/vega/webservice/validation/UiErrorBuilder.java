@@ -32,7 +32,7 @@ import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.model.Data;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.vega.webservice.validation.UiMessageStack.Level;
 
 /**
@@ -235,7 +235,7 @@ public final class UiErrorBuilder {
 	}
 
 	private static DataField getDataField(final Data dto, final DataFieldName fieldName) {
-		return DtObjectUtil.findDataDefinition(dto).getField(fieldName);
+		return DataUtil.findDataDefinition(dto).getField(fieldName);
 	}
 
 	/**

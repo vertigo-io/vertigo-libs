@@ -50,7 +50,7 @@ import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datastore.DataStoreFeatures;
@@ -74,8 +74,8 @@ public class CollectionsManagerTest {
 		node = new AutoCloseableNode(buildNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
-		dtDefinitionItem = DtObjectUtil.findDataDefinition(SmartItem.class);
-		dtDefinitionItemCd = DtObjectUtil.findDataDefinition(SmartItemCd.class);
+		dtDefinitionItem = DataUtil.findDataDefinition(SmartItem.class);
+		dtDefinitionItemCd = DataUtil.findDataDefinition(SmartItemCd.class);
 	}
 
 	@AfterEach

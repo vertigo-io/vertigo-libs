@@ -28,7 +28,7 @@ import io.vertigo.datamodel.data.model.Data;
 import io.vertigo.datamodel.data.model.DtListURIForMasterData;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 
 /**
@@ -73,7 +73,7 @@ public final class DtObjectComparator<D extends Data> implements Comparator<D> {
 			this.comparator = createMasterDataComparator(sortDesc, entityStoreManager, mdlUri);
 		} else {
 			//Cas par défaut
-			this.comparator = (v1, v2) -> DtObjectUtil.compareFieldValues(v1, v2, sortDesc);
+			this.comparator = (v1, v2) -> DataUtil.compareFieldValues(v1, v2, sortDesc);
 		}
 	}
 
@@ -132,9 +132,9 @@ public final class DtObjectComparator<D extends Data> implements Comparator<D> {
 			if (o1 != null && o2 != null) {
 				final Object lib1 = getSortValue(o1);
 				final Object lib2 = getSortValue(o2);
-				return DtObjectUtil.compareFieldValues(lib1, lib2, sortDesc);
+				return DataUtil.compareFieldValues(lib1, lib2, sortDesc);
 			}
-			return DtObjectUtil.compareFieldValues(o1, o2, sortDesc); //si l'un des deux est null on retombe sur la comparaison standard
+			return DataUtil.compareFieldValues(o1, o2, sortDesc); //si l'un des deux est null on retombe sur la comparaison standard
 		}
 	}
 

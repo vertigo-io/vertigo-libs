@@ -37,7 +37,7 @@ import io.vertigo.datamodel.data.model.DtListURI;
 import io.vertigo.datamodel.data.model.DtListURIForMasterData;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datastore.entitystore.MasterDataConfig;
 import io.vertigo.datastore.entitystore.StoreEvent;
@@ -156,7 +156,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 				//1.on filtre
 				.filter(masterDataConfig.getFilter(uri))
 				//2.on trie
-				.sorted((dt1, dt2) -> DtObjectUtil.compareFieldValues(dt1, dt2, uri.getDtDefinition().getSortField().get(), false))
+				.sorted((dt1, dt2) -> DataUtil.compareFieldValues(dt1, dt2, uri.getDtDefinition().getSortField().get(), false))
 				.collect(VCollectors.toDtList(unFilteredDtc.getDefinition()));
 	}
 

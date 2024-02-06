@@ -24,7 +24,7 @@ import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListURI;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datastore.cache.CacheManager;
 
 /**
@@ -72,7 +72,7 @@ public final class CacheData {
 	void putDtObject(final Entity entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final String context = getContext(DtObjectUtil.findDataDefinition(entity));
+		final String context = getContext(DataUtil.findDataDefinition(entity));
 		//2.On met à jour l'objet
 		cacheManager.put(context, entity.getUID(), entity);
 	}

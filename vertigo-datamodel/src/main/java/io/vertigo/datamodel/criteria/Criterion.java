@@ -30,7 +30,7 @@ import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.model.Data;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 
 final class Criterion<D extends Data> extends Criteria<D> {
 	private static final long serialVersionUID = -7797854063455062775L;
@@ -68,7 +68,7 @@ final class Criterion<D extends Data> extends Criteria<D> {
 	}
 
 	private boolean test(final D entity) {
-		final DataDefinition entitytDefinition = DtObjectUtil.findDataDefinition(entity.getClass());
+		final DataDefinition entitytDefinition = DataUtil.findDataDefinition(entity.getClass());
 		final DataField dtField = entitytDefinition.getField(dataFieldName);
 
 		final Object value = dtField.getDataAccessor().getValue(entity);

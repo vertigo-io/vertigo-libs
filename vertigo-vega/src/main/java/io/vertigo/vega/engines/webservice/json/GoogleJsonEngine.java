@@ -70,7 +70,7 @@ import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.ListVAccessor;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.model.VAccessor;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
@@ -260,7 +260,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			if (paramType instanceof ParameterizedType
 					&& uidJsonValue != null && uidJsonValue.indexOf('@') == -1) { //Temporaly we accecpt two UID patterns : key only or urn
 				final Class<Entity> entityClass = (Class<Entity>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that UID has one parameterized type
-				final DataDefinition entityDefinition = DtObjectUtil.findDataDefinition(entityClass);
+				final DataDefinition entityDefinition = DataUtil.findDataDefinition(entityClass);
 				Object entityId;
 				try {
 					entityId = smartTypeManager.stringToValue(entityDefinition.getIdField().get().smartTypeDefinition(), uidJsonValue);
@@ -278,7 +278,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		/** {@inheritDoc} */
 		@Override
 		public JsonElement serialize(final D src, final Type typeOfSrc, final JsonSerializationContext context) {
-			final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition(src.getClass());
+			final DataDefinition dataDefinition = DataUtil.findDataDefinition(src.getClass());
 			final JsonObject jsonObject = new JsonObject();
 
 			dataDefinition.getFields()
@@ -302,8 +302,8 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 
 		@Override
 		public D deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
-			final DataDefinition dataDefinition = DtObjectUtil.findDataDefinition((Class<D>) typeOfT);
-			final D dtObject = (D) DtObjectUtil.createData(dataDefinition);
+			final DataDefinition dataDefinition = DataUtil.findDataDefinition((Class<D>) typeOfT);
+			final D dtObject = (D) DataUtil.createData(dataDefinition);
 			final JsonObject jsonObject = json.getAsJsonObject();
 
 			dataDefinition.getFields()

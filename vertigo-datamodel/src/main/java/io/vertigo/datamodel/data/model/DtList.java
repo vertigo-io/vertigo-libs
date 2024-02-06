@@ -31,7 +31,7 @@ import java.util.Set;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataUtil;
 
 /**
  * Classe de stockage des listes.
@@ -93,7 +93,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 	 * @param dtObjectClass Type d'objet
 	 */
 	public DtList(final Class<D> dtObjectClass) {
-		this(DtObjectUtil.findDataDefinition(dtObjectClass));
+		this(DataUtil.findDataDefinition(dtObjectClass));
 	}
 
 	/**
@@ -125,7 +125,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 		dtos.stream()
 				.forEach(other -> Assertion.check().isTrue(dto.getClass().equals(other.getClass()), "all dtos must have the same type"));
 		//---
-		final DtList<D> dtList = new DtList<>(DtObjectUtil.findDataDefinition(dto));
+		final DtList<D> dtList = new DtList<>(DataUtil.findDataDefinition(dto));
 		//---
 		dtList.add(dto);
 		dtList.addAll(dtos);
@@ -175,7 +175,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 	@Override
 	public boolean add(final D dto) {
 		Assertion.check().isNotNull(dto);
-		final DataDefinition foundDtDefinition = DtObjectUtil.findDataDefinition(dto);
+		final DataDefinition foundDtDefinition = DataUtil.findDataDefinition(dto);
 		Assertion.check().isTrue(getDefinition().equals(foundDtDefinition), "Ne peut pas inserer un dto '{0}' dans une collection '{1}'", foundDtDefinition, getDefinition());
 		//-----
 		return dtObjects.add(dto);
@@ -185,7 +185,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 	@Override
 	public void add(final int index, final D dto) {
 		Assertion.check().isNotNull(dto);
-		final DataDefinition foundDtDefinition = DtObjectUtil.findDataDefinition(dto);
+		final DataDefinition foundDtDefinition = DataUtil.findDataDefinition(dto);
 		Assertion.check().isTrue(getDefinition().equals(foundDtDefinition), "Ne peut pas inserer un dto '{0}' dans une collection '{1}'", foundDtDefinition, getDefinition());
 		//-----
 		dtObjects.add(index, dto);
