@@ -182,7 +182,7 @@ public class DAO<E extends Entity, P> {
 	 * @param id identifiant de l'objet persistant à supprimer
 	 */
 	public final void delete(final P id) {
-		delete(createDtObjectUID(id));
+		delete(createUID(id));
 	}
 
 	/**
@@ -223,7 +223,7 @@ public class DAO<E extends Entity, P> {
 	 * @return D Object objet recherché
 	 */
 	public final E get(final P id) {
-		return get(createDtObjectUID(id));
+		return get(createUID(id));
 	}
 
 	/**
@@ -244,7 +244,7 @@ public class DAO<E extends Entity, P> {
 	 * @param id identifiant de l'objet persistant recherché
 	 * @return UID recherchée
 	 */
-	protected final UID<E> createDtObjectUID(final P id) {
+	protected final UID<E> createUID(final P id) {
 		return UID.of(getDtDefinition(), id);
 	}
 

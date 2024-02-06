@@ -138,7 +138,7 @@ public final class ESDocumentCodec {
 		if (notStoredFields.isEmpty()) {
 			dtResult = index.getIndexDtObject();
 		} else {
-			dtResult = cloneDto(dataDefinition, index.getIndexDtObject(), notStoredFields);
+			dtResult = cloneData(dataDefinition, index.getIndexDtObject(), notStoredFields);
 		}
 
 		/* 2: Result stocké */
@@ -195,7 +195,7 @@ public final class ESDocumentCodec {
 				.collect(Collectors.toList());
 	}
 
-	private static <I extends Data> I cloneDto(final DataDefinition dataDefinition, final I dto, final List<DataField> excludedFields) {
+	private static <I extends Data> I cloneData(final DataDefinition dataDefinition, final I dto, final List<DataField> excludedFields) {
 		final I clonedDto = (I) DataUtil.createData(dataDefinition);
 		for (final DataField dtField : dataDefinition.getFields()) {
 			if (!excludedFields.contains(dtField)) {

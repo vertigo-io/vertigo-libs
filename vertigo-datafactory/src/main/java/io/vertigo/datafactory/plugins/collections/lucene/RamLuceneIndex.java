@@ -124,7 +124,7 @@ final class RamLuceneIndex<D extends Data> {
 	 * @param id Clé de l'objet
 	 * @return Objet associé dans cet index.
 	 */
-	private D getDtObjectIndexed(final String id) {
+	private D getDataIndexed(final String id) {
 		return indexedObjectPerPk.get(id);
 	}
 
@@ -170,7 +170,7 @@ final class RamLuceneIndex<D extends Data> {
 			for (int i = skip; i < Math.min(skip + top, resultLength); i++) {
 				final ScoreDoc scoreDoc = topDocs.scoreDocs[i];
 				final Document document = searcher.doc(scoreDoc.doc);
-				dtcResult.add(getDtObjectIndexed(document.get(idFieldName)));
+				dtcResult.add(getDataIndexed(document.get(idFieldName)));
 			}
 		}
 		return dtcResult;
