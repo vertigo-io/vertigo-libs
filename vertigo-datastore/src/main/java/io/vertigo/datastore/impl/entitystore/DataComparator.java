@@ -40,7 +40,7 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
  *
  * @author pchretien
  */
-public final class DtObjectComparator<D extends Data> implements Comparator<D> {
+public final class DataComparator<D extends Data> implements Comparator<D> {
 
 	//On ne veut pas d'un comparateur sérializable !!!
 	/**
@@ -59,7 +59,7 @@ public final class DtObjectComparator<D extends Data> implements Comparator<D> {
 	 * @param sortField the sort field
 	 * @param sortDesc sort order
 	 */
-	public DtObjectComparator(final EntityStoreManager entityStoreManager, final DataField sortField, final boolean sortDesc) {
+	public DataComparator(final EntityStoreManager entityStoreManager, final DataField sortField, final boolean sortDesc) {
 		Assertion.check().isNotNull(sortField);
 		//-----
 		this.sortField = sortField;

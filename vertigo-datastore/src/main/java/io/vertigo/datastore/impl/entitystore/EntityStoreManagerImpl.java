@@ -284,7 +284,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 				.isNotNull(list)
 				.isNotBlank(fieldName);
 		//-----
-		final Comparator<D> comparator = new DtObjectComparator<>(this, list.getDefinition().getField(fieldName), desc);
+		final Comparator<D> comparator = new DataComparator<>(this, list.getDefinition().getField(fieldName), desc);
 		return list.stream()
 				.sorted(comparator)
 				.collect(VCollectors.toDtList(list.getDefinition()));
