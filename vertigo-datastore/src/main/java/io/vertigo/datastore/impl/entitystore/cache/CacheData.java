@@ -86,7 +86,7 @@ public final class CacheData {
 	<D extends Data> DtList<D> getDtList(final DtListURI dtcUri) {
 		Assertion.check().isNotNull(dtcUri);
 		//-----
-		return DtList.class.cast(cacheManager.get(getContext(dtcUri.getDtDefinition()), dtcUri));
+		return DtList.class.cast(cacheManager.get(getContext(dtcUri.getDataDefinition()), dtcUri));
 	}
 
 	/**

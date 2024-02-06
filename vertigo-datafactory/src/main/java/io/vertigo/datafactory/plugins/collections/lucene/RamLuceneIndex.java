@@ -236,7 +236,7 @@ final class RamLuceneIndex<D extends Data> {
 			if (field.getType() == DataField.FieldType.FOREIGN_KEY && getEntityStoreManager().getMasterDataConfig().containsMasterData(field.getFkDtDefinition())) {
 				//TODO voir pour mise en cache de cette navigation
 				final DtListURIForMasterData mdlUri = getEntityStoreManager().getMasterDataConfig().getDtListURIForMasterData(field.getFkDtDefinition());
-				final DataField displayField = mdlUri.getDtDefinition().getDisplayField().get();
+				final DataField displayField = mdlUri.getDataDefinition().getDisplayField().get();
 				final UID<Entity> uid = UID.of(field.getFkDtDefinition(), value);
 				final Data fkDto = getEntityStoreManager().readOne(uid);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);

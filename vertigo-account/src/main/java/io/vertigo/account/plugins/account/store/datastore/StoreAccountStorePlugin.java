@@ -144,14 +144,14 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 				.parseAttributeMapping();
 
 		for (final AssociationDefinition association : Node.getNode().getDefinitionSpace().getAll(AssociationDefinition.class)) {
-			if (userGroupDtDefinition.equals(association.getAssociationNodeA().getDtDefinition())
-					&& getUserDtDefinition().equals(association.getAssociationNodeB().getDtDefinition())) {
+			if (userGroupDtDefinition.equals(association.getAssociationNodeA().getDataDefinition())
+					&& getUserDtDefinition().equals(association.getAssociationNodeB().getDataDefinition())) {
 				associationUserGroup = association;
 				associationUserRoleName = association.getAssociationNodeB().getRole();
 				associationGroupRoleName = association.getAssociationNodeA().getRole();
 				break;
-			} else if (userGroupDtDefinition.equals(association.getAssociationNodeB().getDtDefinition())
-					&& getUserDtDefinition().equals(association.getAssociationNodeA().getDtDefinition())) {
+			} else if (userGroupDtDefinition.equals(association.getAssociationNodeB().getDataDefinition())
+					&& getUserDtDefinition().equals(association.getAssociationNodeA().getDataDefinition())) {
 				associationUserGroup = association;
 				associationUserRoleName = association.getAssociationNodeA().getRole();
 				associationGroupRoleName = association.getAssociationNodeB().getRole();

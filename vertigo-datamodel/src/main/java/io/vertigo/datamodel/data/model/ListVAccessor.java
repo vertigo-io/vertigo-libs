@@ -74,7 +74,7 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 				.filter(associationNode -> roleName.equals(associationNode.getRole()))
 				.findFirst()
 				.orElseThrow(() -> new VSystemException("Unable to find association node with role '{1}' on association '{0}'", associationDefinitionName, roleName))
-				.getDtDefinition();
+				.getDataDefinition();
 		//---
 		targetDefinitionReference = targetDefinition.id();
 	}

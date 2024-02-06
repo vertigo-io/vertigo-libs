@@ -71,7 +71,7 @@ public final class AssociationSimpleDefinition extends AssociationDefinition<Ass
 		this.fkFieldName = fkFieldName;
 		//-----
 		// no one can make an association with you if you're not identified by a key (for now, before refac, isPersistent is the way to make the test isPersistent() <=> isEntity() )
-		Assertion.check().isTrue(primaryAssociationNode.getDtDefinition().getStereotype().isPersistent(), "assocation : {0}. The primary associationNode must be an entity ", name);
+		Assertion.check().isTrue(primaryAssociationNode.getDataDefinition().getStereotype().isPersistent(), "assocation : {0}. The primary associationNode must be an entity ", name);
 	}
 
 	/**
@@ -92,6 +92,6 @@ public final class AssociationSimpleDefinition extends AssociationDefinition<Ass
 	 * @return the field that supports the link
 	 */
 	public DataField getFKField() {
-		return foreignAssociationNode.getDtDefinition().getField(fkFieldName);
+		return foreignAssociationNode.getDataDefinition().getField(fkFieldName);
 	}
 }

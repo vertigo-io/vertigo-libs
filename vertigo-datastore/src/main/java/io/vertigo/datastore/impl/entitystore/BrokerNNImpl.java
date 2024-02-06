@@ -64,15 +64,15 @@ final class BrokerNNImpl implements BrokerNN {
 			final AssociationNNDefinition associationNNDefinition = dtListURIForAssociation.getAssociationDefinition();
 
 			tableName = associationNNDefinition.getTableName();
-			dataSpace = associationNNDefinition.getAssociationNodeB().getDtDefinition().getDataSpace();
+			dataSpace = associationNNDefinition.getAssociationNodeB().getDataDefinition().getDataSpace();
 
 			//Par rapport à l'objet on distingue la source et la cible.
 			final AssociationNode sourceAssociationNode = AssociationUtil.getAssociationNodeTarget(associationNNDefinition, dtListURIForAssociation.getRoleName());
-			sourceField = sourceAssociationNode.getDtDefinition().getIdField().get();
+			sourceField = sourceAssociationNode.getDataDefinition().getIdField().get();
 
 			//Clés primaires de la relation n-n.
 			final AssociationNode targetAssociationNode = AssociationUtil.getAssociationNode(associationNNDefinition, dtListURIForAssociation.getRoleName());
-			targetField = targetAssociationNode.getDtDefinition().getIdField().get();
+			targetField = targetAssociationNode.getDataDefinition().getIdField().get();
 			sourceValue = dtListURIForAssociation.getSource().getId();
 		}
 	}

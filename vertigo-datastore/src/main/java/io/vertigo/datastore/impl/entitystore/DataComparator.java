@@ -98,7 +98,7 @@ public final class DataComparator<D extends Data> implements Comparator<D> {
 				.isNotNull(entityStoreManager)
 				.isNotNull(dtcURIForMasterData);
 		//-----
-		final DataField mdFieldSort = dtcURIForMasterData.getDtDefinition().getSortField().get();
+		final DataField mdFieldSort = dtcURIForMasterData.getDataDefinition().getSortField().get();
 		return new MasterDataComparator(dtcURIForMasterData, sortDesc, entityStoreManager, mdFieldSort);
 	}
 
@@ -116,7 +116,7 @@ public final class DataComparator<D extends Data> implements Comparator<D> {
 		}
 
 		private Object getSortValue(final Object o) {
-			final UID<Entity> uid = UID.of(dtcURIForMasterData.getDtDefinition(), o);
+			final UID<Entity> uid = UID.of(dtcURIForMasterData.getDataDefinition(), o);
 			Data dto;
 			try {
 				dto = dataStore.readOne(uid);

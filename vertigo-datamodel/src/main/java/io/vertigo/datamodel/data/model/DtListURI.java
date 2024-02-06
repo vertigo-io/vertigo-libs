@@ -35,7 +35,7 @@ public abstract class DtListURI implements Serializable {
 	 */
 	private static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
 	private static final long serialVersionUID = -1L;
-	private final DefinitionId<DataDefinition> dtDefinitionId;
+	private final DefinitionId<DataDefinition> dataDefinitionId;
 	protected static final char D2A_SEPARATOR = '@';
 
 	/**
@@ -48,14 +48,14 @@ public abstract class DtListURI implements Serializable {
 	 * @param dataDefinition Definition de la ressource
 	 */
 	public DtListURI(final DataDefinition dataDefinition) {
-		dtDefinitionId = dataDefinition.id();
+		dataDefinitionId = dataDefinition.id();
 	}
 
 	/**
 	 * @return Définition de la ressource.
 	 */
-	public DataDefinition getDtDefinition() {
-		return dtDefinitionId.get();
+	public DataDefinition getDataDefinition() {
+		return dataDefinitionId.get();
 	}
 
 	/** {@inheritDoc} */

@@ -140,23 +140,23 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 	private <E extends Entity> DtList<E> loadMDList(final DtListURIForMasterData uri) {
 		Assertion.check()
 				.isNotNull(uri)
-				.isTrue(uri.getDtDefinition().getSortField().isPresent(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
+				.isTrue(uri.getDataDefinition().getSortField().isPresent(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDataDefinition().getName());
 		//-----
 		//On cherche la liste complete
 		final DtListState dtListState;
-		if (uri.getDtDefinition().getSortField().get().isPersistent()) {
+		if (uri.getDataDefinition().getSortField().get().isPersistent()) {
 			//On ne tri dans le PhysicalStore que si c'est un champ persistant
-			dtListState = DtListState.of(null, 0, uri.getDtDefinition().getSortField().get().name(), false);
+			dtListState = DtListState.of(null, 0, uri.getDataDefinition().getSortField().get().name(), false);
 		} else {
 			dtListState = DtListState.of(null);
 		}
-		final DtList<E> unFilteredDtc = getPhysicalStore(uri.getDtDefinition()).findByCriteria(uri.getDtDefinition(), Criterions.alwaysTrue(), dtListState);
+		final DtList<E> unFilteredDtc = getPhysicalStore(uri.getDataDefinition()).findByCriteria(uri.getDataDefinition(), Criterions.alwaysTrue(), dtListState);
 		return unFilteredDtc
 				.stream()
 				//1.on filtre
 				.filter(masterDataConfig.getFilter(uri))
 				//2.on trie
-				.sorted((dt1, dt2) -> DataUtil.compareFieldValues(dt1, dt2, uri.getDtDefinition().getSortField().get(), false))
+				.sorted((dt1, dt2) -> DataUtil.compareFieldValues(dt1, dt2, uri.getDataDefinition().getSortField().get(), false))
 				.collect(VCollectors.toDtList(unFilteredDtc.getDefinition()));
 	}
 
@@ -170,7 +170,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 		//-----
 		//- Prise en compte du cache
 		//On ne met pas en cache les URI d'une association NN
-		if (cacheDataStoreConfig.isCacheable(uri.getDtDefinition()) && !isMultipleAssociation(uri)) {
+		if (cacheDataStoreConfig.isCacheable(uri.getDataDefinition()) && !isMultipleAssociation(uri)) {
 			DtList<E> list = cacheDataStoreConfig.getDataCache().getDtList(uri);
 			if (list == null) {
 				list = this.<E> loadList(uri);
@@ -178,7 +178,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 			return list;
 		}
 		//Si la liste n'est pas dans le cache alors on lit depuis le store.
-		return doLoadList(uri.getDtDefinition(), uri);
+		return doLoadList(uri.getDataDefinition(), uri);
 	}
 
 	public <E extends Entity> DtList<E> findByCriteria(final DataDefinition dataDefinition, final Criteria<E> criteria, final DtListState dtListState) {
@@ -190,9 +190,9 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 	}
 
 	private <E extends Entity> DtList<E> loadList(final DtListURI uri) {
-		synchronized (CacheData.getContextLock(uri.getDtDefinition())) {
+		synchronized (CacheData.getContextLock(uri.getDataDefinition())) {
 			// On charge la liste initiale avec les critéres définis en amont
-			final DtList<E> list = doLoadList(uri.getDtDefinition(), uri);
+			final DtList<E> list = doLoadList(uri.getDataDefinition(), uri);
 			// Mise en cache de la liste et des éléments.
 			cacheDataStoreConfig.getDataCache().putDtList(list);
 			return list;

@@ -53,9 +53,9 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 
 		mdlUriFilterMap.put(uri, dtListFilter);
 
-		if (!defaultMdlMap2.containsKey(uri.getDtDefinition())) {
+		if (!defaultMdlMap2.containsKey(uri.getDataDefinition())) {
 			//On n'insère que le premier considérée par défaut
-			defaultMdlMap2.put(uri.getDtDefinition(), uri);
+			defaultMdlMap2.put(uri.getDataDefinition(), uri);
 		}
 	}
 

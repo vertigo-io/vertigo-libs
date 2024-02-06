@@ -226,12 +226,12 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		//FK dans la table nn correspondant à la collection recherchée. (clé de jointure ).
 		final AssociationNNDefinition associationNNDefinition = dtcUri.getAssociationDefinition();
 		final String joinTableName = associationNNDefinition.getTableName();
-		final DataDefinition joinDtDefinition = AssociationUtil.getAssociationNode(associationNNDefinition, dtcUri.getRoleName()).getDtDefinition();
+		final DataDefinition joinDtDefinition = AssociationUtil.getAssociationNode(associationNNDefinition, dtcUri.getRoleName()).getDataDefinition();
 		final String joinDataFieldName = StringUtil.camelToConstCase(getIdField(joinDtDefinition).name());
 
 		//La condition s'applique sur l'autre noeud de la relation (par rapport à la collection attendue)
 		final AssociationNode associationNode = AssociationUtil.getAssociationNodeTarget(associationNNDefinition, dtcUri.getRoleName());
-		final DataField fkField = getIdField(associationNode.getDtDefinition());
+		final DataField fkField = getIdField(associationNode.getDataDefinition());
 		final String fkFieldName = fkField.name();
 
 		final String request = " select t.* from " +

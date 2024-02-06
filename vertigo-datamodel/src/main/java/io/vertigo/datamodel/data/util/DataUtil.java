@@ -107,7 +107,7 @@ public final class DataUtil {
 		//-----
 		final AssociationSimpleDefinition associationSimpleDefinition = Node.getNode().getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
 		// 1. On recherche le nom du champ portant l'objet référencé (Exemple : personne)
-		final DataDefinition dataDefinition = associationSimpleDefinition.getPrimaryAssociationNode().getDtDefinition();
+		final DataDefinition dataDefinition = associationSimpleDefinition.getPrimaryAssociationNode().getDataDefinition();
 
 		// 2. On calcule le nom de la fk.
 		final DataField fkField = associationSimpleDefinition.getFKField();
