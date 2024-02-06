@@ -55,7 +55,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 	private final DefinitionId<DataDefinition> dtDefinitionId;
 
 	/** List des dto contenus. */
-	private final List<D> dtObjects;
+	private final List<D> datas;
 
 	/** List des dto contenus. */
 	private final Map<String, Serializable> metaDatas;
@@ -68,7 +68,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 	public DtList(final DataDefinition dataDefinition) {
 		this.dtDefinitionId = dataDefinition.id();
 		this.uri = null; //new DtListURIForValueObject(dtDefinition);
-		this.dtObjects = new ArrayList<>(); //
+		this.datas = new ArrayList<>(); //
 		this.metaDatas = new LinkedHashMap<>();
 	}
 
@@ -83,7 +83,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 		//---
 		this.dtDefinitionId = dtList.dtDefinitionId; //The same DtDefinition
 		this.uri = uri;
-		this.dtObjects = new ArrayList<>(dtList.dtObjects); //Clone
+		this.datas = new ArrayList<>(dtList.datas); //Clone
 		this.metaDatas = new LinkedHashMap<>(dtList.metaDatas); //clone
 	}
 
@@ -135,7 +135,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 	/** {@inheritDoc} */
 	@Override
 	public D get(final int row) {
-		return dtObjects.get(row);
+		return datas.get(row);
 	}
 
 	/** {@inheritDoc} */
@@ -143,25 +143,25 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 	public D set(final int row, final D object) {
 		//Implementation de set, pour que la collection soit modifiable
 		//Et donc pour que le Collections.sort(List<?> ) fonctionne
-		return dtObjects.set(row, object);
+		return datas.set(row, object);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public int size() {
-		return dtObjects.size();
+		return datas.size();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuilder buf = new StringBuilder()
-				.append("(def=").append(getDefinition()).append(", size=").append(dtObjects.size());
-		if (dtObjects.size() > TO_STRING_MAX_ELEMENTS) {
+				.append("(def=").append(getDefinition()).append(", size=").append(datas.size());
+		if (datas.size() > TO_STRING_MAX_ELEMENTS) {
 			buf.append(" show only the ").append(TO_STRING_MAX_ELEMENTS).append(" firsts");
 		}
 		buf.append(")\n");
-		for (int i = 0; i < Math.min(dtObjects.size(), TO_STRING_MAX_ELEMENTS); i++) { //pas plus de TO_STRING_MAX_ELEMENTS elements dans le toString
+		for (int i = 0; i < Math.min(datas.size(), TO_STRING_MAX_ELEMENTS); i++) { //pas plus de TO_STRING_MAX_ELEMENTS elements dans le toString
 			buf.append("\tRow #").append(i).append(" : ")
 					.append(get(i)).append('\n');
 		}
@@ -178,7 +178,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 		final DataDefinition foundDtDefinition = DataUtil.findDataDefinition(dto);
 		Assertion.check().isTrue(getDefinition().equals(foundDtDefinition), "Ne peut pas inserer un dto '{0}' dans une collection '{1}'", foundDtDefinition, getDefinition());
 		//-----
-		return dtObjects.add(dto);
+		return datas.add(dto);
 	}
 
 	/** {@inheritDoc} */
@@ -188,13 +188,13 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 		final DataDefinition foundDtDefinition = DataUtil.findDataDefinition(dto);
 		Assertion.check().isTrue(getDefinition().equals(foundDtDefinition), "Ne peut pas inserer un dto '{0}' dans une collection '{1}'", foundDtDefinition, getDefinition());
 		//-----
-		dtObjects.add(index, dto);
+		datas.add(index, dto);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public D remove(final int row) {
-		return dtObjects.remove(row);
+		return datas.remove(row);
 	}
 
 	/** {@inheritDoc} */
@@ -203,7 +203,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 		if (start == end) {
 			return new DtList<>(getDefinition());
 		}
-		return DtList.of(dtObjects.get(start), dtObjects.subList(start + 1, end));
+		return DtList.of(datas.get(start), datas.subList(start + 1, end));
 	}
 
 	//==========================================================================

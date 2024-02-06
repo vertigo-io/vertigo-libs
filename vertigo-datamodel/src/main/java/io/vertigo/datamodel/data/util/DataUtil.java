@@ -95,14 +95,14 @@ public final class DataUtil {
 	 *
 	 * @param <E>
 	 * @param associationDefinitionName Nom de la définition d'une association
-	 * @param dto Object
+	 * @param data Data
 	 * @param dtoTargetClass Class of entity of this association
 	 * @return dto du DTO relié via l'association au dto passé en paramètre (Nullable)
 	 */
-	public static <E extends Entity> UID<E> createUID(final Data dto, final String associationDefinitionName, final Class<E> dtoTargetClass) {
+	public static <E extends Entity> UID<E> createUID(final Data data, final String associationDefinitionName, final Class<E> dtoTargetClass) {
 		Assertion.check()
 				.isNotNull(associationDefinitionName)
-				.isNotNull(dto)
+				.isNotNull(data)
 				.isNotNull(dtoTargetClass);
 		//-----
 		final AssociationSimpleDefinition associationSimpleDefinition = Node.getNode().getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
@@ -113,7 +113,7 @@ public final class DataUtil {
 		final DataField fkField = associationSimpleDefinition.getFKField();
 
 		// 3. On calcule l'URI de la clé étrangère
-		final Object id = fkField.getDataAccessor().getValue(dto);
+		final Object id = fkField.getDataAccessor().getValue(data);
 		if (id == null) {
 			return null;
 		}
@@ -189,34 +189,34 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Finds the definition to which the specified 'DtObject' is mapped.
+	 * Finds the definition to which the specified 'Data' is mapped.
 	 *
-	 * @param dto DtObject
+	 * @param data Data
 	 * @return the id
 	 */
-	public static DataDefinition findDataDefinition(final Data dto) {
-		Assertion.check().isNotNull(dto);
+	public static DataDefinition findDataDefinition(final Data data) {
+		Assertion.check().isNotNull(data);
 		//-----
-		return findDataDefinition(dto.getClass());
+		return findDataDefinition(data.getClass());
 	}
 
 	/**
-	 * Finds the definition from a type of 'DtObject'
+	 * Finds the definition from a type of 'Data'
 	 *
-	 * @param dtObjectClass the type of the 'DtObject'
+	 * @param dataClass the type of the 'Data'
 	 * @return the id
 	 */
-	public static DataDefinition findDataDefinition(final Class<? extends Data> dtObjectClass) {
-		Assertion.check().isNotNull(dtObjectClass);
+	public static DataDefinition findDataDefinition(final Class<? extends Data> dataClass) {
+		Assertion.check().isNotNull(dataClass);
 		//-----
-		final String name = DataDefinition.PREFIX + dtObjectClass.getSimpleName();
+		final String name = DataDefinition.PREFIX + dataClass.getSimpleName();
 		return Node.getNode().getDefinitionSpace().resolve(name, DataDefinition.class);
 	}
 
 	/**
-	 * Finds the definition from a type of 'DtObject'
+	 * Finds the definition from a type of 'Data'
 	 *
-	 * @param dtObjectClassName the name of the 'DtObject'
+	 * @param dataClassName the name of the 'Data'
 	 * @return the id
 	 */
 	public static DataDefinition findDataDefinition(final String className) {
@@ -230,16 +230,16 @@ public final class DataUtil {
 	 * Compare values.
 	 *
 	 * @param sortDesc sort order
-	 * @param dtoObject1 value 1
-	 * @param dtoObject2 value 2
-	 * @param dtField field to compare
+	 * @param data1 value 1
+	 * @param data2 value 2
+	 * @param dataField field to compare
 	 * @return compare value1 to value2
 	 */
-	public static int compareFieldValues(final Data dtoObject1, final Data dtoObject2, final DataField dtField, final boolean sortDesc) {
-		Assertion.check().isTrue(DataUtil.findDataDefinition(dtoObject1).equals(DataUtil.findDataDefinition(dtoObject2)),
-				"Only Dtobjects of the same type can be compared, you try to compare object types '{0}' and '{1}'", dtoObject1.getClass(), dtoObject2.getClass());
-		final DataAccessor dataAccessor = dtField.getDataAccessor();
-		return compareFieldValues(dataAccessor.getValue(dtoObject1), dataAccessor.getValue(dtoObject2), sortDesc);
+	public static int compareFieldValues(final Data data1, final Data data2, final DataField dataField, final boolean sortDesc) {
+		Assertion.check().isTrue(DataUtil.findDataDefinition(data1).equals(DataUtil.findDataDefinition(data2)),
+				"Only Datas of the same type can be compared, you try to compare object types '{0}' and '{1}'", data1.getClass(), data2.getClass());
+		final DataAccessor dataAccessor = dataField.getDataAccessor();
+		return compareFieldValues(dataAccessor.getValue(data1), dataAccessor.getValue(data2), sortDesc);
 	}
 
 	/**

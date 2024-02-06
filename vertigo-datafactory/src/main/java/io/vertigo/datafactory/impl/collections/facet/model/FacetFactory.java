@@ -155,8 +155,8 @@ public final class FacetFactory {
 		final Map<Object, FacetValue> facetFilterIndex = new HashMap<>();
 
 		FacetValue facetValue;
-		for (final D dto : dtList) {
-			final Object value = dtField.getDataAccessor().getValue(dto);
+		for (final D data : dtList) {
+			final Object value = dtField.getDataAccessor().getValue(data);
 			facetValue = facetFilterIndex.get(value);
 			if (facetValue == null) {
 				final String valueAsString = smartTypeManager.valueToString(dtField.smartTypeDefinition(), value);
@@ -173,7 +173,7 @@ public final class FacetFactory {
 				facetFilterIndex.put(value, facetValue);
 				clusterValues.put(facetValue, new DtList<D>(dtList.getDefinition()));
 			}
-			clusterValues.get(facetValue).add(dto);
+			clusterValues.get(facetValue).add(data);
 		}
 
 		//tri des facettes
