@@ -22,10 +22,12 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import io.vertigo.account.authorization.VSecurityException;
@@ -73,6 +75,13 @@ public final class VSpringMvcExceptionHandler {
 	}
 
 	@ResponseBody
+	@ExceptionHandler(ResponseStatusException.class)
+	public static Object handleResponseStatusException(final ResponseStatusException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
+		LOGGER.error("Server Error with response status " + ex.getStatusCode() + " from " + request.getMethod() + " " + request.getRequestURL(), ex.getStatusCode().value() >= 500 || LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
+		return doHandleThrowable(ex, request, response, ex.getStatusCode(), ex.getMessage());
+	}
+
+	@ResponseBody
 	@ExceptionHandler(Throwable.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public static Object handleThrowable(final Throwable th, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
@@ -80,7 +89,7 @@ public final class VSpringMvcExceptionHandler {
 		return doHandleThrowable(th, request, response, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
 	}
 
-	private static Object doHandleThrowable(final Throwable th, final HttpServletRequest request, final HttpServletResponse response, final HttpStatus errorStatus, final String errorMessage) throws Throwable {
+	private static Object doHandleThrowable(final Throwable th, final HttpServletRequest request, final HttpServletResponse response, final HttpStatusCode errorStatus, final String errorMessage) throws Throwable {
 		final String exceptionMessage = errorMessage != null ? errorMessage : th.getClass().getSimpleName();
 		if (UiRequestUtil.isJsonRequest(request)) {
 			final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();

@@ -18,6 +18,7 @@
 package io.vertigo.vega.impl.ratelimiting;
 
 import java.time.Instant;
+import java.util.Map;
 
 import io.vertigo.core.node.component.Plugin;
 
@@ -42,6 +43,22 @@ public interface RateLimitingStorePlugin extends Plugin {
 	 * @return current banish counter
 	 */
 	int incrementBanishCounter(String userKey, final long maxBanishSeconds);
+
+	/**
+	 * Cancel banishment of a userkey.
+	 * @param userKey user key to reset
+	 */
+	void cancelBanishment(String userKey);
+
+	/**
+	 * Cancel all banishments.
+	 */
+	void cancelAllBanishments();
+
+	/**
+	 * @return current banished userKey
+	 */
+	Map<String, Instant> getBanishments();
 
 	/**
 	 * Set banish until instant for a userKey.
