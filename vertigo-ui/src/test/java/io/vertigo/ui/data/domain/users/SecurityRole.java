@@ -18,10 +18,10 @@
 package io.vertigo.ui.data.domain.users;
 
 import io.vertigo.core.lang.Generated;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.stereotype.Field;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.stereotype.Field;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datastore.impl.entitystore.StoreListVAccessor;
 
 /**
@@ -35,11 +35,11 @@ public final class SecurityRole implements Entity {
 	private String sroCd;
 	private String label;
 
-	@io.vertigo.datamodel.structure.stereotype.AssociationNN(
+	@io.vertigo.datamodel.data.stereotype.AssociationNN(
 			name = "AnnProSro",
 			tableName = "ProSro",
-			dtDefinitionA = "DtProfil",
-			dtDefinitionB = "DtSecurityRole",
+			dataDefinitionA = "DtProfil",
+			dataDefinitionB = "DtSecurityRole",
 			navigabilityA = false,
 			navigabilityB = true,
 			roleA = "Profil",
@@ -95,6 +95,6 @@ public final class SecurityRole implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return DtObjectUtil.toString(this);
+		return DataUtil.toString(this);
 	}
 }

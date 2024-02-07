@@ -18,10 +18,10 @@
 package io.vertigo.ui.data.domain.users;
 
 import io.vertigo.core.lang.Generated;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.stereotype.Field;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.stereotype.Field;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 
 /**
@@ -36,7 +36,7 @@ public final class UserAuthentification implements Entity {
 	private String login;
 	private String password;
 
-	@io.vertigo.datamodel.structure.stereotype.Association(
+	@io.vertigo.datamodel.data.stereotype.Association(
 			name = "AAuthUsr",
 			fkFieldName = "usrId",
 			primaryDtDefinitionName = "DtApplicationUser",
@@ -119,7 +119,7 @@ public final class UserAuthentification implements Entity {
 	 * Récupère la valeur de la propriété 'Application user'.
 	 * @return Long usrId <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyId", label = "Application user", fkDefinition = "DtApplicationUser")
+	@io.vertigo.datamodel.data.stereotype.ForeignKey(smartType = "STyId", label = "Application user", fkDefinition = "DtApplicationUser")
 	public Long getUsrId() {
 		return (Long) usrIdAccessor.getId();
 	}
@@ -144,6 +144,6 @@ public final class UserAuthentification implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return DtObjectUtil.toString(this);
+		return DataUtil.toString(this);
 	}
 }

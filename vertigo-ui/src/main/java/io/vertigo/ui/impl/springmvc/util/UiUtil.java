@@ -41,11 +41,11 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Node;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.DtProperty;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DataField;
-import io.vertigo.datamodel.structure.definitions.DtProperty;
-import io.vertigo.datamodel.structure.definitions.Formatter;
+import io.vertigo.datamodel.smarttype.definitions.Formatter;
 import io.vertigo.ui.core.AbstractUiListUnmodifiable;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
@@ -459,7 +459,7 @@ public final class UiUtil implements Serializable {
 				.isTrue(contextObject instanceof UiObject || contextObject instanceof UiList, "{0}({1}) doit être un UiObject ou une UiList ", contextKey,
 						contextObject.getClass().getSimpleName());
 
-		final DtDefinition dtDefinition;
+		final DataDefinition dtDefinition;
 		if (contextObject instanceof UiObject) {
 			dtDefinition = ((UiObject<?>) contextObject).getDtDefinition();
 		} else {

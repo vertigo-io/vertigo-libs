@@ -18,7 +18,7 @@
 package io.vertigo.ui.data.services.stats;
 
 import io.vertigo.core.node.component.Component;
-import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.ui.data.domain.stats.StatData;
 
 public interface StatsServices extends Component {

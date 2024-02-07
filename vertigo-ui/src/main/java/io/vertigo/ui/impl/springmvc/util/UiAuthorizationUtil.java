@@ -27,7 +27,7 @@ import io.vertigo.account.authorization.AuthorizationManager;
 import io.vertigo.account.authorization.definitions.Authorization;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.InjectorUtil;
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.vega.webservice.model.UiObject;
 
 /**

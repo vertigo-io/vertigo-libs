@@ -18,10 +18,10 @@
 package io.vertigo.ui.data.domain.people;
 
 import io.vertigo.core.lang.Generated;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.stereotype.Field;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.stereotype.Field;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 
 /**
@@ -35,7 +35,7 @@ public final class Casting implements Entity {
 	private Long castId;
 	private String characterName;
 
-	@io.vertigo.datamodel.structure.stereotype.Association(
+	@io.vertigo.datamodel.data.stereotype.Association(
 			name = "ACastPeo",
 			fkFieldName = "peoId",
 			primaryDtDefinitionName = "DtPeople",
@@ -50,7 +50,7 @@ public final class Casting implements Entity {
 			foreignMultiplicity = "0..*")
 	private final StoreVAccessor<io.vertigo.ui.data.domain.people.People> peoIdAccessor = new StoreVAccessor<>(io.vertigo.ui.data.domain.people.People.class, "People");
 
-	@io.vertigo.datamodel.structure.stereotype.Association(
+	@io.vertigo.datamodel.data.stereotype.Association(
 			name = "ACastMov",
 			fkFieldName = "movId",
 			primaryDtDefinitionName = "DtMovie",
@@ -114,7 +114,7 @@ public final class Casting implements Entity {
 	 * Récupère la valeur de la propriété 'People'.
 	 * @return Long peoId <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyId", label = "People", fkDefinition = "DtPeople")
+	@io.vertigo.datamodel.data.stereotype.ForeignKey(smartType = "STyId", label = "People", fkDefinition = "DtPeople")
 	public Long getPeoId() {
 		return (Long) peoIdAccessor.getId();
 	}
@@ -133,7 +133,7 @@ public final class Casting implements Entity {
 	 * Récupère la valeur de la propriété 'Movie'.
 	 * @return Long movId <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyId", label = "Movie", fkDefinition = "DtMovie")
+	@io.vertigo.datamodel.data.stereotype.ForeignKey(smartType = "STyId", label = "Movie", fkDefinition = "DtMovie")
 	public Long getMovId() {
 		return (Long) movIdAccessor.getId();
 	}
@@ -166,6 +166,6 @@ public final class Casting implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return DtObjectUtil.toString(this);
+		return DataUtil.toString(this);
 	}
 }

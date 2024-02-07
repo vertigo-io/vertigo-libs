@@ -18,7 +18,7 @@
 package io.vertigo.ui.data.services.stats;
 
 import io.vertigo.commons.transaction.Transactional;
-import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.ui.data.domain.stats.StatData;
 
 @Transactional
