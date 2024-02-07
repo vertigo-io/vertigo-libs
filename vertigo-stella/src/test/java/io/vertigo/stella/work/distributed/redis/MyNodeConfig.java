@@ -28,7 +28,7 @@ import io.vertigo.stella.StellaFeatures;
 public final class MyNodeConfig {
 	private static final String REDIS_HOST = "docker-vertigo.part.klee.lan.net";
 	private static final int REDIS_PORT = 6379;
-	private static final int REDIS_DATABASE = 15;
+	private static final int REDIS_DATABASE = 0;
 
 	public static NodeConfig config(final boolean master, final boolean workers, final String nodeId) {
 		final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder()
@@ -43,6 +43,7 @@ public final class MyNodeConfig {
 								Param.of("host", REDIS_HOST),
 								Param.of("port", REDIS_PORT),
 								Param.of("ssl", "false"),
+								//Param.of("maxTotal", "50"),
 								Param.of("database", REDIS_DATABASE))
 						.build());
 
@@ -61,6 +62,7 @@ public final class MyNodeConfig {
 							Param.of("nodeId", nodeId),
 							Param.of("pollFrequencyMs", 100),
 							Param.of("workTypes", "io.vertigo.stella.work.mock.DivideWorkEngine^5;io.vertigo.stella.work.mock.SlowWorkEngine^5;io.vertigo.stella.work.AbstractWorkManagerTest$LengthWorkEngine^1;io.vertigo.stella.work.AbstractWorkManagerTest$SquareWorkEngine^1;io.vertigo.stella.work.mock.ThreadLocalWorkEngine^5"))
+					//Param.of("workTypes", "io.vertigo.stella.work.mock.SlowWorkEngine^5"))
 					.withRedisWorkerPlugin(
 							Param.of("timeoutSeconds", "20"));
 		}
