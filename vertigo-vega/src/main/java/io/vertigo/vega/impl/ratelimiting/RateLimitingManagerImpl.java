@@ -3,6 +3,7 @@ package io.vertigo.vega.impl.ratelimiting;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -107,7 +108,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 
 	@Override
 	public boolean isActive() {
-		if (overRateLimitMode == OverRateLimitMode.nothing) { //fast bypass
+		if (overRateLimitMode != OverRateLimitMode.nothing) { //fast bypass
 			return true;
 		}
 		return false;
@@ -237,6 +238,21 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 			Optional.of(session.getId());
 		}
 		return Optional.empty();
+	}
+
+	@Override
+	public void cancelBanishment(final String userKey) {
+		rateLimitingStorePlugin.cancelBanishment(userKey);
+	}
+
+	@Override
+	public void cancelAllBanishments() {
+		rateLimitingStorePlugin.cancelAllBanishments();
+	}
+
+	@Override
+	public Map<String, Instant> getBanishments() {
+		return rateLimitingStorePlugin.getBanishments();
 	}
 
 }

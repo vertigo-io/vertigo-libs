@@ -18,6 +18,8 @@
 package io.vertigo.vega.ratelimiting;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.util.Map;
 
 import io.vertigo.core.node.component.Manager;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,5 +44,21 @@ public interface RateLimitingManager extends Manager {
 	 * @throws IOException
 	 */
 	boolean preHandle(final HttpServletRequest request, final HttpServletResponse response) throws IOException;
+
+	/**
+	 * Cancel banishment of a userkey.
+	 * @param userKey user key to reset
+	 */
+	void cancelBanishment(String userKey);
+
+	/**
+	 * Cancel all banishments.
+	 */
+	void cancelAllBanishments();
+
+	/**
+	 * @return current banished userKey
+	 */
+	Map<String, Instant> getBanishments();
 
 }
