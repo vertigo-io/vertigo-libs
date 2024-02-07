@@ -1,10 +1,95 @@
 Version history
 ===============
 
-Running 4.1.0
+Running 4.2.0
 ----------------------
-
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-410-to-420)
+* **Github : split `vertigo-extensions` to `vertigo-libs` and `vertigo-modules`**  
+  
 more to come :)
+
+
+Release 4.1.0 - 2023/11/09
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-400-to-410)
+* [Core] Add Standard NamedThreadFactory for ExecutorsServices
+* [Orchestra] Fix InterruptedException catch : must keep interrupt state in thread
+* [Planning] Add planning modules (post-incubating version)
+* [Audit] Fix log plugin
+* [Account] Add AuthorizationUtil getSearchSecurity
+* [Account] Refactor RedisConnector. Refactor keys for minimal cluster compatibility
+* [Commons] Fix Error on event execution
+* [Commons] AppNodeRegistry : Refactor RedisConnector. Refactor keys for minimal cluster compatibility
+* [Social] Refactor RedisConnector. Assert than not used in cluster mode (need to refactor keys and break compatibility)
+* [DataFactory] Search add metadata to index, and 2 new reindex modes by supporting version field (reindexDelta and reindexFullModified)
+* [Datafactory] Fix reindexAllModified (more than 10 elements from index)
+* [Datafactory] throw error if not range syntax error
+* [Datafactory] Add a gap for ReindexTask (only for Instant, not for number yet)
+* [DataFactory] Fix searchManager onStoreEvent. Before empty list throw error and stop event's bus, without any logs
+* [Datamodel] Add DtListState limit
+* [Database] Lighter analytics. Add statement as metadata, and only header as tag
+* [Ui-vueJs] Remove tag <big> in facets
+* [Ui-vuejs] Pass window in httpPostAjax onSuccess and onError : undefined
+* [Ui-VueJs] Fix directives vuejs3 migration
+* [Ui] Add thymeleaf component support of vueJs dynamic parameter (prefix : and v-)
+* [Ui] Use Firefox driver for tests (HtmlUnitDriver don't support vue3)
+* [Ui] Fix text-editor : paste should stop event propagation (link to vue3js miggration)
+* [Ui] Add custom facetValue translator
+* [Ui] Fix directives for vue3
+* [Ui] Fix escaped char in namedComponent
+* [Datastore] CachePlugin: Refactor RedisConnector. Refactor keys for minimal cluster compatibility
+* [Datastore] Add purge KV Berkeley analytics
+* [DataStore] Add 3 purges versions of KVStore Berkeley (fullscan, diskordered batch, secondary index per TTL)
+* [DataStore] Add SpeedbKVStorePlugin
+* [DataStore] Add H2KVStorePlugin
+* [DataStore] Add EhCacheKVStorePlugin (beta)
+* [Stella] Refactor to use mainly UnifiedJedis. add timeoutSeconds params to workersPlugin
+* [Stella] Add deadNode detection (UnifiedRedis)
+* [Stella] Add pollFrequency parameter (simpler and replace blocking wait : unsupported by RedisCluster)
+* [Stella] Use ExecutorService instead of Thread in Master (better managed exceptions)
+* [Stella] Daemon periode of 20s instead of 10 (in case of multiple nodes)
+* [Stella] Use Redis set + params instead of deprecated setnx
+* [vega] fix #129 rely exclusively on gson public api for dtObject deserialization
+* [Vega] Change Nonce to base64 instead of UUID (compatibility issue)
+* [Vega] OIDC, optim + forward Tokens instead of useless auth code
+* [Vega] OIDC, add support for PKCE (enabled by default)
+* [Vega] Fix deltaList compute
+* [all] Update libs 
+  - h2 2.2.220 -> 2.2.224
+  - log4j-slf4j 2.20.0 -> 2.21.1
+  - jetty 11.0.15 -> 11.0.18
+  - elasticsearch 7.17.12 -> 7.17.14
+  - rest-assured 5.3.1 -> 5.3.2
+  - liquibase 4.23.0 -> 4.24.0
+  - ojdbc 19.19.0.0 -> 19.21.0.0
+  - speedbjni -> 2.6.0 -> 2.7.0
+  - tika 2.8.0 -> 2.9.0
+  - guava 32.1.1 -> 32.1.3
+  - poi 5.2.3 -> 5.2.4
+  - sods 1.6.2 -> 1.6.4
+  - jersey 3.1.0 -> 3.1.3
+  - springmvc 6.0.11 -> 6.0.13
+  - thymeleaf 3.1.1 -> 3.1.2
+  - thymeleaf layout 3.2.1 -> 3.3.0
+  - selenium 4.10.0 -> 4.15.0
+  - htmlunit 4.10.0 -> 4.13.0
+  - jackson 2.15.2 -> 2.15.3
+* [Ui-vuejs] update libs 
+  - *JS libs :*
+  - vue: 3.3.4 ->3.3.7
+  - quasar 2.12.3 -> 2.13.0
+  - axios 0.24.0 -> 1.6.0
+  - core-js 3.20.3 -> 3.33.2
+  - @vitejs/plugin-vue: 2.2.2 -> 4.4.0
+  - eslint 6.8.0 -> 8.53.0
+  - eslint-plugin-vue 6.2.2 -> 9.18.1
+  - ol 5.3.3 -> 8.1.0
+  - vite 2.8.4 -> 4.5.0
+  - vite-plugin-externals 0.4.0 -> 0.6.2
+  - *3rd party :*
+  - fontawesome 6.4.0 -> 6.4.2
+  - @mdi/font 7.2.96 -> 7.3.37
+
 
 Release 4.0.0 - 2023/08/17
 ----------------------
