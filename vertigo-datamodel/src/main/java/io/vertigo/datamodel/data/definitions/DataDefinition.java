@@ -136,8 +136,8 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 	}
 
 	/**
-	 * Static method factory for DtDefinitionBuilder
-	 * @param name the name of the dtDefinition
+	 * Static method factory for DataDefinitionBuilder
+	 * @param name the name of the dataDefinition
 	 * @return DtDefinitionBuilder
 	 */
 	public static DataDefinitionBuilder builder(final String name) {

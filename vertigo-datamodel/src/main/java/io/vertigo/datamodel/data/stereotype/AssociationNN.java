@@ -45,12 +45,12 @@ public @interface AssociationNN {
 	/**
 	 * Nom du DT possédant la table A utilisée (n).
 	 */
-	String dtDefinitionA();
+	String dataDefinitionA();
 
 	/**
 	 * Nom du DT possédant la table A utilisée (n).
 	 */
-	String dtDefinitionB();
+	String dataDefinitionB();
 
 	/**
 	 * Si le noeud représentant la table A est navigable.

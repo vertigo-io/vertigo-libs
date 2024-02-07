@@ -50,7 +50,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
 public abstract class AbstractUiListModifiable<D extends Data> extends AbstractList<UiObject<D>> implements UiList<D>, Serializable {
 
 	private static final long serialVersionUID = -8398542301760300787L;
-	private final DefinitionId<DataDefinition> dtDefinitionId;
+	private final DefinitionId<DataDefinition> dataDefinitionId;
 	private final Class<D> objectType;
 
 	private final String inputKey;
@@ -82,7 +82,7 @@ public abstract class AbstractUiListModifiable<D extends Data> extends AbstractL
 		this.dtList = dtList;
 		this.inputKey = inputKey;
 		final DataDefinition dataDefinition = dtList.getDefinition();
-		dtDefinitionId = dataDefinition.id();
+		dataDefinitionId = dataDefinition.id();
 		this.objectType = (Class<D>) ClassUtil.classForName(dataDefinition.getClassCanonicalName());
 		// ---
 		uiListDelta = new UiListDelta<>(objectType, new HashMap<>(), new HashMap<>(), new HashMap<>());
@@ -124,7 +124,7 @@ public abstract class AbstractUiListModifiable<D extends Data> extends AbstractL
 	 */
 	@Override
 	public DataDefinition getDtDefinition() {
-		return dtDefinitionId.get();
+		return dataDefinitionId.get();
 	}
 
 	private String findContextKey(final UiObject<D> uiObject) {
@@ -233,7 +233,7 @@ public abstract class AbstractUiListModifiable<D extends Data> extends AbstractL
 				.isTrue(row <= DtListState.DEFAULT_MAX_ROWS, "UiListModifiable is limited to " + DtListState.DEFAULT_MAX_ROWS + " elements");
 
 		//SKE MLA : lazy initialisation of buffer uiObjects for size changing uiListModifiable
-		final DataDefinition dataDefinition = dtDefinitionId.get();
+		final DataDefinition dataDefinition = dataDefinitionId.get();
 		for (int i = bufferUiObjects.size(); i < row + 1; i++) {
 			add((D) DataUtil.createData(dataDefinition));
 		}

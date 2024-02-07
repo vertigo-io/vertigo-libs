@@ -26,7 +26,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.structure.model.DtListState;
+import io.vertigo.datamodel.data.model.DtListState;
 
 public final class DtListStateMethodArgumentResolver implements HandlerMethodArgumentResolver {
 

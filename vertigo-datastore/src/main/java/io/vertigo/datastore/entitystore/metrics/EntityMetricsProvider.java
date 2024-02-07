@@ -65,7 +65,7 @@ public final class EntityMetricsProvider implements Component {
 			return Node.getNode().getDefinitionSpace().getAll(DataDefinition.class)
 					.stream()
 					.filter(DataDefinition::isPersistent)
-					.map(dtDefinition -> doExecute(dtDefinition, transaction))
+					.map(dataDefinition -> doExecute(dataDefinition, transaction))
 					.toList();
 		}
 

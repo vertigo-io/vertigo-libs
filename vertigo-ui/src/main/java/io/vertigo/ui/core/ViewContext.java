@@ -43,13 +43,13 @@ import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DataFieldName;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListURIForMasterData;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.webservice.model.UiList;
@@ -207,7 +207,7 @@ public final class ViewContext implements Serializable {
 	 * @param dtObject DtObject recherché
 	 * @return Clé de context de l'élément (null si non trouvé)
 	 */
-	public String findKey(final DtObject dtObject) {
+	public String findKey(final Data dtObject) {
 		return viewContextMap.findKey(dtObject);
 	}
 
@@ -442,7 +442,7 @@ public final class ViewContext implements Serializable {
 	 * @param code Code
 	 */
 	public <E extends Entity> ViewContext publishMdl(final ViewContextKey<E> contextKey, final Class<E> entityClass, final String code) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
+		final DataDefinition dtDefinition = DataUtil.findDataDefinition(entityClass);
 		return publishMdl(contextKey, dtDefinition, code);
 	}
 
@@ -453,7 +453,7 @@ public final class ViewContext implements Serializable {
 	 * @param entityClass Class associée
 	 * @param code Code
 	 */
-	public <E extends Entity> ViewContext publishMdl(final ViewContextKey<E> contextKey, final DtDefinition entityDefinition, final String code) {
+	public <E extends Entity> ViewContext publishMdl(final ViewContextKey<E> contextKey, final DataDefinition entityDefinition, final String code) {
 		put(contextKey, new UiMdList<E>(new DtListURIForMasterData(entityDefinition, code)));
 		return this;
 	}

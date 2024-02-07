@@ -32,14 +32,14 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DataField;
-import io.vertigo.datamodel.structure.definitions.DataFieldName;
-import io.vertigo.datamodel.structure.definitions.FormatterException;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.vega.engines.webservice.json.VegaUiObject;
 import io.vertigo.vega.webservice.model.UiList;
@@ -68,14 +68,14 @@ public abstract class AbstractUiListUnmodifiable<O extends Data> extends Abstrac
 	private final Map<String, Map<Serializable, UiObject<O>>> uiObjectByFieldValue = new HashMap<>();
 
 	//==========================================================================
-	private final DefinitionId<DtDefinition> dtDefinitionId;
+	private final DefinitionId<DataDefinition> dtDefinitionId;
 	private final String camelIdFieldName; //nullable (Option n'est pas serializable)
 
 	/**
 	 * Constructeur.
 	 * @param dtDefinition DtDefinition
 	 */
-	AbstractUiListUnmodifiable(final DtDefinition dtDefinition, final Optional<DataFieldName<O>> keyFieldNameOpt) {
+	AbstractUiListUnmodifiable(final DataDefinition dtDefinition, final Optional<DataFieldName<O>> keyFieldNameOpt) {
 		Assertion.check().isNotNull(dtDefinition);
 		//-----
 		dtDefinitionId = dtDefinition.id();
@@ -136,7 +136,7 @@ public abstract class AbstractUiListUnmodifiable<O extends Data> extends Abstrac
 	 * @return DtDefinition de l'objet métier
 	 */
 	@Override
-	public final DtDefinition getDtDefinition() {
+	public final DataDefinition getDtDefinition() {
 		return dtDefinitionId.get();
 	}
 
@@ -158,8 +158,8 @@ public abstract class AbstractUiListUnmodifiable<O extends Data> extends Abstrac
 	/** {@inheritDoc} */
 	@Override
 	public int indexOf(final Object o) {
-		if (o instanceof DtObject) {
-			return indexOfDtObject((DtObject) o);
+		if (o instanceof Data) {
+			return indexOfDtObject((Data) o);
 		} else if (o instanceof UiObject) {
 			return indexOfUiObject((UiObject<O>) o);
 		}
@@ -180,7 +180,7 @@ public abstract class AbstractUiListUnmodifiable<O extends Data> extends Abstrac
 	 * @param dtObject DtObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	private int indexOfDtObject(final DtObject dtObject) {
+	private int indexOfDtObject(final Data dtObject) {
 		Assertion.check().isNotNull(dtObject);
 		//-----
 		return obtainDtList().indexOf(dtObject);
@@ -206,7 +206,7 @@ public abstract class AbstractUiListUnmodifiable<O extends Data> extends Abstrac
 	}
 
 	private UiObject<O> loadMissingEntity(final String keyFieldName, final Serializable keyValue, final Map<Serializable, UiObject<O>> uiObjectById) {
-		final DtDefinition dtDefinition = getDtDefinition();
+		final DataDefinition dtDefinition = getDtDefinition();
 		// ---
 		Assertion.check().isTrue(dtDefinition.getIdField().isPresent(), "The definition : {0} must have an id to retrieve missing elements by Id", dtDefinition);
 		// ---

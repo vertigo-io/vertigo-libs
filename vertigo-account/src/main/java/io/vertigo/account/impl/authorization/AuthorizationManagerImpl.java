@@ -249,8 +249,8 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 	}
 
 	/**
-	 * Finds the SecuredEntity from a type of 'dtDefinition'
-	 * @param dataDefinition the 'dtDefinition'
+	 * Finds the SecuredEntity from a type of 'dataDefinition'
+	 * @param dataDefinition the 'dataDefinition'
 	 * @return SecuredEntity
 	 */
 	public static SecuredEntity findSecuredEntity(final DataDefinition dataDefinition) {

@@ -90,8 +90,8 @@ public final class Car implements Entity {
 	@io.vertigo.datamodel.data.stereotype.AssociationNN(
 			name = "AnnFamCarLocation",
 			tableName = "FAM_CAR_LOCATION",
-			dtDefinitionA = "DtFamille",
-			dtDefinitionB = "DtCar",
+			dataDefinitionA = "DtFamille",
+			dataDefinitionB = "DtCar",
 			navigabilityA = false,
 			navigabilityB = true,
 			roleA = "Famille",

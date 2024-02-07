@@ -76,8 +76,8 @@ public final class DtObjectsLoader implements Loader {
 			selector = Selector.from(packageName);
 		} else {
 			//by Iterable of classes
-			final Iterable dtDefinitionsClass = ClassUtil.newInstance(resourcePath, Iterable.class);
-			final Iterator<Class> iterator = dtDefinitionsClass.iterator();
+			final Iterable dataDefinitionsClass = ClassUtil.newInstance(resourcePath, Iterable.class);
+			final Iterator<Class> iterator = dataDefinitionsClass.iterator();
 			final Set<Class> classes = new HashSet();
 			iterator.forEachRemaining(classes::add);
 			selector = Selector
@@ -113,7 +113,7 @@ public final class DtObjectsLoader implements Loader {
 	private static void parseDynamicDefinitionBuilder(final Class<Data> clazz, final Map<String, DynamicDefinition> dynamicModelRepository) {
 		final String simpleName = clazz.getSimpleName();
 		final String packageName = clazz.getPackage().getName();
-		final String dtDefinitionName = DataDefinition.PREFIX + simpleName;
+		final String dataDefinitionName = DataDefinition.PREFIX + simpleName;
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
 		// un ordre relativement aléatoire et la lecture des annotations peut donc changer l'ordre
@@ -128,8 +128,8 @@ public final class DtObjectsLoader implements Loader {
 		//DefinitionLinks
 		final List<String> definitionLinks = extractDefinitionLinks(clazz, fields, methods);
 
-		dynamicModelRepository.put(dtDefinitionName,
-				extractDynamicDefinition(clazz, packageName, dtDefinitionName, fields, methods, definitionLinks));
+		dynamicModelRepository.put(dataDefinitionName,
+				extractDynamicDefinition(clazz, packageName, dataDefinitionName, fields, methods, definitionLinks));
 
 		// Association
 		for (final Field field : fields) {
@@ -140,7 +140,7 @@ public final class DtObjectsLoader implements Loader {
 		}
 
 		// SmartType
-		parseSmartTypes(clazz, dynamicModelRepository, simpleName, dtDefinitionName);
+		parseSmartTypes(clazz, dynamicModelRepository, simpleName, dataDefinitionName);
 
 	}
 
@@ -174,12 +174,12 @@ public final class DtObjectsLoader implements Loader {
 		return definitionLinks;
 	}
 
-	private static DynamicDefinition extractDynamicDefinition(final Class<Data> clazz, final String packageName, final String dtDefinitionName, final List<Field> fields, final Method[] methods, final List<String> definitionLinks) {
+	private static DynamicDefinition extractDynamicDefinition(final Class<Data> clazz, final String packageName, final String dataDefinitionName, final List<Field> fields, final Method[] methods, final List<String> definitionLinks) {
 		return new DynamicDefinition(
-				dtDefinitionName,
+				dataDefinitionName,
 				definitionLinks,
 				definitionSpace -> {
-					final DataDefinitionBuilder dataDefinitionBuilder = DataDefinition.builder(dtDefinitionName)
+					final DataDefinitionBuilder dataDefinitionBuilder = DataDefinition.builder(dataDefinitionName)
 							.withPackageName(packageName)
 							.withDataSpace(parseDataSpaceAnnotation(clazz));
 					if (Fragment.class.isAssignableFrom(clazz)) {
@@ -250,8 +250,8 @@ public final class DtObjectsLoader implements Loader {
 		}
 	}
 
-	private static void parseSmartTypes(final Class<Data> clazz, final Map<String, DynamicDefinition> dynamicModelRepository, final String simpleName, final String dtDefinitionName) {
-		final String smartTypeName = SmartTypeDefinition.PREFIX + dtDefinitionName;
+	private static void parseSmartTypes(final Class<Data> clazz, final Map<String, DynamicDefinition> dynamicModelRepository, final String simpleName, final String dataDefinitionName) {
+		final String smartTypeName = SmartTypeDefinition.PREFIX + dataDefinitionName;
 		final Adapter[] adapters = clazz.getAnnotationsByType(Adapter.class);
 		dynamicModelRepository.putIfAbsent(// smartTypes infered from the dtObject class is only used when no explicit SmartTypeDefinition is registered via a SmartTypesLoader
 				smartTypeName,
@@ -367,12 +367,12 @@ public final class DtObjectsLoader implements Loader {
 	private static DynamicDefinition createAssociationNNDefinition(final io.vertigo.datamodel.data.stereotype.AssociationNN association) {
 		return new DynamicDefinition(
 				association.name(),
-				Arrays.asList(association.dtDefinitionA(), association.dtDefinitionB()),
+				Arrays.asList(association.dataDefinitionA(), association.dataDefinitionB()),
 				definitionSpace -> {
-					final DataDefinition dtDefinitionA = definitionSpace.resolve(association.dtDefinitionA(), DataDefinition.class);
-					final DataDefinition dtDefinitionB = definitionSpace.resolve(association.dtDefinitionB(), DataDefinition.class);
-					final AssociationNode associationNodeA = new AssociationNode(dtDefinitionA, association.navigabilityA(), association.roleA(), association.labelA(), true, false);
-					final AssociationNode associationNodeB = new AssociationNode(dtDefinitionB, association.navigabilityB(), association.roleB(), association.labelB(), true, false);
+					final DataDefinition dataDefinitionA = definitionSpace.resolve(association.dataDefinitionA(), DataDefinition.class);
+					final DataDefinition dataDefinitionB = definitionSpace.resolve(association.dataDefinitionB(), DataDefinition.class);
+					final AssociationNode associationNodeA = new AssociationNode(dataDefinitionA, association.navigabilityA(), association.roleA(), association.labelA(), true, false);
+					final AssociationNode associationNodeB = new AssociationNode(dataDefinitionB, association.navigabilityB(), association.roleB(), association.labelB(), true, false);
 					return new AssociationNNDefinition(association.name(), association.tableName(), associationNodeA, associationNodeB);
 				});
 	}

@@ -43,7 +43,7 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 	}
 
 	/**
-	 * @param userDtDefinitionName User dtDefinition name
+	 * @param userDtDefinitionName User dataDefinition name
 	 * @param userToAccountMappingStr User to account conversion mapping
 	 */
 	protected AbstractAccountStorePlugin(

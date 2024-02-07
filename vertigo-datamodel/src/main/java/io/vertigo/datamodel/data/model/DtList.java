@@ -52,7 +52,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 	private final DtListURI uri;
 
 	/** Reéférence vers la Définition. */
-	private final DefinitionId<DataDefinition> dtDefinitionId;
+	private final DefinitionId<DataDefinition> dataDefinitionId;
 
 	/** List des dto contenus. */
 	private final List<D> datas;
@@ -66,8 +66,8 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 	 * @param dataDefinition Définition de DT
 	 */
 	public DtList(final DataDefinition dataDefinition) {
-		this.dtDefinitionId = dataDefinition.id();
-		this.uri = null; //new DtListURIForValueObject(dtDefinition);
+		this.dataDefinitionId = dataDefinition.id();
+		this.uri = null; //new DtListURIForValueObject(dataDefinition);
 		this.datas = new ArrayList<>(); //
 		this.metaDatas = new LinkedHashMap<>();
 	}
@@ -81,7 +81,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 	public DtList(final DtList<D> dtList, final DtListURI uri) {
 		Assertion.check().isNotNull(uri);
 		//---
-		this.dtDefinitionId = dtList.dtDefinitionId; //The same DtDefinition
+		this.dataDefinitionId = dtList.dataDefinitionId; //The same DtDefinition
 		this.uri = uri;
 		this.datas = new ArrayList<>(dtList.datas); //Clone
 		this.metaDatas = new LinkedHashMap<>(dtList.metaDatas); //clone
@@ -214,7 +214,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 	 * @return Définition de la liste.
 	 */
 	public DataDefinition getDefinition() {
-		return dtDefinitionId.get();
+		return dataDefinitionId.get();
 	}
 
 	/**

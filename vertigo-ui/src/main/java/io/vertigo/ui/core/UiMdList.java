@@ -28,9 +28,9 @@ import java.util.function.Function;
 
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListURIForMasterData;
+import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -53,9 +53,9 @@ final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
 	 * @param dtListURIForMasterData Uri de la Liste à encapsuler
 	 */
 	public UiMdList(final DtListURIForMasterData dtListURIForMasterData) {
-		super(dtListURIForMasterData.getDtDefinition(), Optional.empty());
-		Assertion.check().isTrue(entityStoreManager.get().getMasterDataConfig().containsMasterData(dtListURIForMasterData.getDtDefinition()), "UiMdList can't be use with {0}, it's not a MasterDataList.",
-				dtListURIForMasterData.getDtDefinition().getName());
+		super(dtListURIForMasterData.getDataDefinition(), Optional.empty());
+		Assertion.check().isTrue(entityStoreManager.get().getMasterDataConfig().containsMasterData(dtListURIForMasterData.getDataDefinition()), "UiMdList can't be use with {0}, it's not a MasterDataList.",
+				dtListURIForMasterData.getDataDefinition().getName());
 		// -------------------------------------------------------------------------
 		this.dtListURIForMasterData = dtListURIForMasterData;
 

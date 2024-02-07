@@ -33,12 +33,12 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.util.DataUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
+import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DataField;
-import io.vertigo.datamodel.structure.definitions.FormatterException;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.ui.core.encoders.EncoderDate;
 import io.vertigo.vega.engines.webservice.json.VegaUiObject;
 
@@ -62,7 +62,7 @@ public final class MapUiObject<D extends Data> extends VegaUiObject<D> implement
 	 * @param serverSideDto DtObject
 	 */
 	public MapUiObject(final D serverSideDto, final ViewContextUpdateSecurity viewContextUpdateSecurity) {
-		this(serverSideDto, (D) DtObjectUtil.createDtObject(DtObjectUtil.findDtDefinition(serverSideDto)), Collections.emptySet(), viewContextUpdateSecurity);
+		this(serverSideDto, (D) DataUtil.createData(DataUtil.findDataDefinition(serverSideDto)), Collections.emptySet(), viewContextUpdateSecurity);
 	}
 
 	/**

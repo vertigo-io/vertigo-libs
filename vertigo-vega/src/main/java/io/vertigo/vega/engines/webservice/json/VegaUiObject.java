@@ -61,7 +61,7 @@ public class VegaUiObject<D extends Data> implements io.vertigo.vega.webservice.
 	private static final long serialVersionUID = -4639050257543017072L;
 
 	/** Référence vers la définition. */
-	private final DefinitionId<DataDefinition> dtDefinitionId;
+	private final DefinitionId<DataDefinition> dataDefinitionId;
 	protected final Set<String> fieldIndex;
 
 	private String inputKey;
@@ -92,7 +92,7 @@ public class VegaUiObject<D extends Data> implements io.vertigo.vega.webservice.
 				.isNotNull(modifiedFields, "modifiedFields can't be null");
 		//-----
 		this.inputDto = inputDto;
-		this.dtDefinitionId = DataUtil.findDataDefinition(inputDto).id();
+		this.dataDefinitionId = DataUtil.findDataDefinition(inputDto).id();
 		fieldIndex = Collections.unmodifiableSet(getDtDefinition().getFields().stream()
 				.map(DataField::name)
 				.collect(Collectors.toSet()));
@@ -160,7 +160,7 @@ public class VegaUiObject<D extends Data> implements io.vertigo.vega.webservice.
 	 */
 	@Override
 	public final DataDefinition getDtDefinition() {
-		return dtDefinitionId.get();
+		return dataDefinitionId.get();
 	}
 
 	private DtObjectErrors getDtObjectErrors() {

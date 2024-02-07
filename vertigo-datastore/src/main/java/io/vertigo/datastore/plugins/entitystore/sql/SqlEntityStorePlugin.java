@@ -139,9 +139,9 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	}
 
 	/**
-	 * Return the tableName to which the dtDefinition is mapped.
+	 * Return the tableName to which the dataDefinition is mapped.
 	 *
-	 * @param dataDefinition the dtDefinition
+	 * @param dataDefinition the dataDefinition
 	 * @return the name of the table
 	 */
 	private static String getEntityName(final DataDefinition dataDefinition) {
@@ -410,7 +410,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	/**
 	 * Creates the update request.
 	 *
-	 * @param dataDefinition the dtDefinition
+	 * @param dataDefinition the dataDefinition
 	 * @return the sql request
 	 */
 	private static String createUpdateQuery(final DataDefinition dataDefinition, final String parameterName) {

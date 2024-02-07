@@ -28,7 +28,7 @@ import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.structure.definitions.FormatterException;
+import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 
 /**
  * Encoder de date et de date time

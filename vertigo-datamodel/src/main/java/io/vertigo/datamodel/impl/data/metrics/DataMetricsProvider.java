@@ -38,11 +38,11 @@ public final class DataMetricsProvider implements Component {
 	public List<Metric> getFieldMetrics() {
 		return Node.getNode().getDefinitionSpace().getAll(DataDefinition.class)
 				.stream()
-				.map(dtDefinition -> Metric.builder()
+				.map(dataDefinition -> Metric.builder()
 						.withSuccess()
 						.withName("definitionFieldCount")
-						.withFeature(dtDefinition.getName())
-						.withValue(Double.valueOf(dtDefinition.getFields().size()))
+						.withFeature(dataDefinition.getName())
+						.withValue(Double.valueOf(dataDefinition.getFields().size()))
 						.build())
 				.toList();
 
@@ -67,7 +67,7 @@ public final class DataMetricsProvider implements Component {
 		//---
 		return Node.getNode().getDefinitionSpace().getAll(DataDefinition.class)
 				.stream()
-				.flatMap(dtDefinition -> dtDefinition.getFields().stream())
+				.flatMap(dataDefinition -> dataDefinition.getFields().stream())
 				.filter(field -> smartTypeDefinition.equals(field.smartTypeDefinition()))
 				.count();
 	}

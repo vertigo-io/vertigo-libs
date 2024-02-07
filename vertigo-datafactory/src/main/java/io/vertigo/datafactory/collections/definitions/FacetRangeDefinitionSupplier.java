@@ -42,8 +42,8 @@ public final class FacetRangeDefinitionSupplier implements DefinitionSupplier {
 		this.myName = name;
 	}
 
-	public FacetRangeDefinitionSupplier withDtDefinition(final String dtDefinitionName) {
-		this.myDtDefinitionName = dtDefinitionName;
+	public FacetRangeDefinitionSupplier withDtDefinition(final String dataDefinitionName) {
+		this.myDtDefinitionName = dataDefinitionName;
 		return this;
 	}
 

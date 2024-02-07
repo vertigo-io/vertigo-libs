@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import io.vertigo.datamodel.structure.definitions.DataFieldName;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
@@ -85,7 +85,7 @@ public final class UiListUnmodifiable<O extends Data> extends AbstractUiListUnmo
 		return dtList
 				.stream()
 				.limit(50) //we consider only the first 50 elements
-				.map(DtObject::toString)
+				.map(Data::toString)
 				.collect(Collectors.joining("; ",
 						"uiList(" + dtList.size() + " element(s) :", ")"));
 	}

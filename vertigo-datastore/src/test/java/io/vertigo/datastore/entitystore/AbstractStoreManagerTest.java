@@ -73,8 +73,8 @@ public abstract class AbstractStoreManagerTest {
 	@Inject
 	protected TaskManager taskManager;
 
-	protected DataDefinition dtDefinitionFamille;
-	private DataDefinition dtDefinitionCar;
+	protected DataDefinition dataDefinitionFamille;
+	private DataDefinition dataDefinitionCar;
 
 	private CarDataBase carDataBase;
 
@@ -108,9 +108,9 @@ public abstract class AbstractStoreManagerTest {
 
 	protected void doSetUp() {
 		carDataBase = new CarDataBase();
-		dtDefinitionFamille = DataUtil.findDataDefinition(Famille.class);
+		dataDefinitionFamille = DataUtil.findDataDefinition(Famille.class);
 
-		dtDefinitionCar = DataUtil.findDataDefinition(Car.class);
+		dataDefinitionCar = DataUtil.findDataDefinition(Car.class);
 
 		initMainStore();
 	}
@@ -218,7 +218,7 @@ public abstract class AbstractStoreManagerTest {
 			entityStoreManager.createList(dtc1);
 			dtc1.forEach(famille -> famille.setLibelle("updated"));
 			entityStoreManager.updateList(dtc1);
-			final DtList<Famille> dtc2 = entityStoreManager.find(dtDefinitionFamille, Criterions.alwaysTrue(), DtListState.of(null));
+			final DtList<Famille> dtc2 = entityStoreManager.find(dataDefinitionFamille, Criterions.alwaysTrue(), DtListState.of(null));
 			Assertions.assertEquals(dtc1.size(), dtc2.size());
 			dtc2.forEach(famille -> Assertions.assertEquals("updated", famille.getLibelle()));
 		}
@@ -227,10 +227,10 @@ public abstract class AbstractStoreManagerTest {
 	@Test
 	public void testSelectCarCachedRowMax() {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			final DtList<Car> dtc1 = entityStoreManager.find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3));
+			final DtList<Car> dtc1 = entityStoreManager.find(dataDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3));
 			Assertions.assertEquals(3, dtc1.size());
 			//-----
-			final DtList<Car> dtc = entityStoreManager.find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(null));
+			final DtList<Car> dtc = entityStoreManager.find(dataDefinitionCar, Criterions.alwaysTrue(), DtListState.of(null));
 			Assertions.assertEquals(9, dtc.size());
 		}
 	}
@@ -238,26 +238,26 @@ public abstract class AbstractStoreManagerTest {
 	@Test
 	public void testSelectCarDtListState() {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			final DtList<Car> dtc1 = entityStoreManager.find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3));
+			final DtList<Car> dtc1 = entityStoreManager.find(dataDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3));
 			Assertions.assertEquals(3, dtc1.size());
 			//-----
-			final DtList<Car> dtc2 = entityStoreManager.find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3, 2, null, null));
+			final DtList<Car> dtc2 = entityStoreManager.find(dataDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3, 2, null, null));
 			Assertions.assertEquals(3, dtc2.size());
 			Assertions.assertEquals(dtc1.get(2).getId(), dtc2.get(0).getId());
 			//-----
-			final DtList<Car> dtc3 = entityStoreManager.find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3, 0, CarFields.manufacturer.name(), false));
+			final DtList<Car> dtc3 = entityStoreManager.find(dataDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3, 0, CarFields.manufacturer.name(), false));
 			Assertions.assertEquals(3, dtc3.size());
 			Assertions.assertEquals("Audi", dtc3.get(0).getManufacturer());
 			//-----
-			final DtList<Car> dtc4 = entityStoreManager.find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3, 0, CarFields.manufacturer.name(), true));
+			final DtList<Car> dtc4 = entityStoreManager.find(dataDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3, 0, CarFields.manufacturer.name(), true));
 			Assertions.assertEquals(3, dtc4.size());
 			Assertions.assertEquals("Volkswagen", dtc4.get(0).getManufacturer());
 			//-----
-			final DtList<Car> dtc5 = entityStoreManager.find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3, 0, CarFields.price.name(), false));
+			final DtList<Car> dtc5 = entityStoreManager.find(dataDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3, 0, CarFields.price.name(), false));
 			Assertions.assertEquals(3, dtc5.size());
 			Assertions.assertEquals(2500, dtc5.get(0).getPrice().intValue());
 			//-----
-			final DtList<Car> dtc6 = entityStoreManager.find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3, 0, CarFields.price.name(), true));
+			final DtList<Car> dtc6 = entityStoreManager.find(dataDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3, 0, CarFields.price.name(), true));
 			Assertions.assertEquals(3, dtc6.size());
 			Assertions.assertEquals(109000, dtc6.get(0).getPrice().intValue());
 		}
@@ -342,7 +342,7 @@ public abstract class AbstractStoreManagerTest {
 	@Test
 	public void testGetFamille() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final DtList<Famille> dtc = entityStoreManager.find(dtDefinitionFamille, null, DtListState.of(null));
+			final DtList<Famille> dtc = entityStoreManager.find(dataDefinitionFamille, null, DtListState.of(null));
 			Assertions.assertNotNull(dtc);
 			Assertions.assertTrue(dtc.isEmpty(), "La liste des famille est vide");
 			transaction.commit();
@@ -355,7 +355,7 @@ public abstract class AbstractStoreManagerTest {
 	@Test
 	public void testAddFamille() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			DtList<Famille> dtc = entityStoreManager.find(dtDefinitionFamille, null, DtListState.of(null));
+			DtList<Famille> dtc = entityStoreManager.find(dataDefinitionFamille, null, DtListState.of(null));
 			Assertions.assertEquals(0, dtc.size());
 			//-----
 			final Famille famille = new Famille();
@@ -364,7 +364,7 @@ public abstract class AbstractStoreManagerTest {
 			// on attend un objet avec un id non null ?
 			Assertions.assertNotNull(createdFamille.getFamId());
 			//-----
-			dtc = entityStoreManager.find(dtDefinitionFamille, null, DtListState.of(null));
+			dtc = entityStoreManager.find(dataDefinitionFamille, null, DtListState.of(null));
 			Assertions.assertEquals(1, dtc.size());
 			transaction.commit();
 		}
@@ -406,7 +406,7 @@ public abstract class AbstractStoreManagerTest {
 			final Famille createdFamille = entityStoreManager.create(famille);
 
 			//on récupère la liste des voitures
-			final DtList<Car> cars = entityStoreManager.find(dtDefinitionCar, null, DtListState.of(null));
+			final DtList<Car> cars = entityStoreManager.find(dataDefinitionCar, null, DtListState.of(null));
 			Assertions.assertNotNull(cars);
 			Assertions.assertFalse(cars.isEmpty(), "La liste des cars est vide");
 
@@ -454,7 +454,7 @@ public abstract class AbstractStoreManagerTest {
 			final Famille createdFamille = entityStoreManager.create(famille);
 
 			//on récupère la liste des voitures
-			final DtList<Car> cars = entityStoreManager.find(dtDefinitionCar, null, DtListState.of(null));
+			final DtList<Car> cars = entityStoreManager.find(dataDefinitionCar, null, DtListState.of(null));
 			Assertions.assertNotNull(cars);
 			Assertions.assertFalse(cars.isEmpty(), "La liste des cars est vide");
 
@@ -730,7 +730,7 @@ public abstract class AbstractStoreManagerTest {
 	@Test
 	public void testCrudCountCars() {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			final long count = entityStoreManager.count(dtDefinitionCar);
+			final long count = entityStoreManager.count(dataDefinitionCar);
 			//-----
 			Assertions.assertEquals(9, count);
 		}
@@ -787,7 +787,7 @@ public abstract class AbstractStoreManagerTest {
 	}
 
 	private void checkCrudCarsCount(final int deltaCount) {
-		final DtList<Car> cars = entityStoreManager.find(dtDefinitionCar, null, DtListState.of(null));
+		final DtList<Car> cars = entityStoreManager.find(dataDefinitionCar, null, DtListState.of(null));
 		Assertions.assertNotNull(cars);
 		Assertions.assertEquals(carDataBase.size() + deltaCount, cars.size(), "Test du nombre de voiture");
 	}

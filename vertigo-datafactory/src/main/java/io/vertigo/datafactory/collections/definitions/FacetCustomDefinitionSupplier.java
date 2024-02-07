@@ -40,8 +40,8 @@ public final class FacetCustomDefinitionSupplier implements DefinitionSupplier {
 		myName = name;
 	}
 
-	public FacetCustomDefinitionSupplier withDtDefinition(final String dtDefinitionName) {
-		myDtDefinitionName = dtDefinitionName;
+	public FacetCustomDefinitionSupplier withDtDefinition(final String dataDefinitionName) {
+		myDtDefinitionName = dataDefinitionName;
 		return this;
 	}
 

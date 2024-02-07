@@ -82,7 +82,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	 * @param filePath File path
 	 * @param filePatternStr File Pattern (id, displayName, email, authToken, photoUrl)
 	 * @param userAuthField Authent token field name
-	 * @param userIdentityEntity User dtDefinition name
+	 * @param userIdentityEntity User dataDefinition name
 	 */
 	@Inject
 	public TextIdentityProviderPlugin(

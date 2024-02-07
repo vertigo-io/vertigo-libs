@@ -33,7 +33,7 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 /**
  * This class must be used to build a DtDefinition.
  *
- * Each dtDefinition must have a name following this pattern DT_XXX_YYYY
+ * Each dataDefinition must have a name following this pattern DT_XXX_YYYY
  *
  * @author pchretien
  */
@@ -70,7 +70,7 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 
 	/**
 	 * Constructor.
-	 * @param name the name of the dtDefinition
+	 * @param name the name of the dataDefinition
 	 */
 	DataDefinitionBuilder(final String name) {
 		Assertion.check().isNotBlank(name);
@@ -104,9 +104,9 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 	}
 
 	/**
-	 * Sets the stereotype of the dtDefinition.
+	 * Sets the stereotype of the dataDefinition.
 	 *
-	 * @param stereotype the stereotype of the dtDefinition
+	 * @param stereotype the stereotype of the dataDefinition
 	 * @return this builder
 	 */
 	public DataDefinitionBuilder withStereoType(final DataStereotype stereotype) {
@@ -117,7 +117,7 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 	}
 
 	/**
-	 * Adds a field linked to another dtDefinition (aka foreign key).
+	 * Adds a field linked to another dataDefinition (aka foreign key).
 	 *
 	 * @param fieldName the name of the field
 	 * @param fkDtDefinitionName the name of the linked definition
@@ -191,7 +191,7 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 			final SmartTypeDefinition domain,
 			final Cardinality cardinality,
 			final boolean persistent) {
-		//the field is dynamic if and only if the dtDefinition is dynamic
+		//the field is dynamic if and only if the dataDefinition is dynamic
 		final DataField dtField = createField(
 				fieldName,
 				DataField.FieldType.DATA,
@@ -268,8 +268,8 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 	}
 
 	/**
-	 * Sets the dataSpace to which the dtDefinition belongs.
-	 * @param dataSpace the dataSpace to which the DtDefinition is mapped.
+	 * Sets the dataSpace to which the dataDefinition belongs.
+	 * @param dataSpace the dataSpace to which the DataDefinition is mapped.
 	 * @return this builder
 	 */
 	public DataDefinitionBuilder withDataSpace(final String dataSpace) {
