@@ -67,8 +67,8 @@ import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.definitions.DtProperty;
 import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.smarttype.definitions.DtProperty;
 
 /**
  * ElasticSearch request builder from searchManager api.

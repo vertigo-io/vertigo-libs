@@ -20,8 +20,8 @@ package io.vertigo.datamodel.smarttype.data;
 import java.util.Optional;
 
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.datamodel.data.definitions.Property;
 import io.vertigo.datamodel.smarttype.definitions.Constraint;
+import io.vertigo.datamodel.smarttype.definitions.Property;
 
 /**
  * Contrainte pour gérer la longueur des chaines de caractères.

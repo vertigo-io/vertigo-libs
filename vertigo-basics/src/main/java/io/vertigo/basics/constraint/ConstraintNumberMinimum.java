@@ -21,9 +21,9 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.datamodel.data.definitions.DtProperty;
-import io.vertigo.datamodel.data.definitions.Property;
 import io.vertigo.datamodel.smarttype.definitions.Constraint;
+import io.vertigo.datamodel.smarttype.definitions.DtProperty;
+import io.vertigo.datamodel.smarttype.definitions.Property;
 
 /**
  * Contrainte sur la valeur minimale d'un nombre.

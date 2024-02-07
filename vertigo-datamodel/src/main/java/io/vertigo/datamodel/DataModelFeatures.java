@@ -20,7 +20,10 @@ package io.vertigo.datamodel;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.datamodel.impl.data.metrics.DataMetricsProvider;
 import io.vertigo.datamodel.impl.smarttype.SmartTypeManagerImpl;
+import io.vertigo.datamodel.impl.task.TaskManagerImpl;
+import io.vertigo.datamodel.impl.task.metrics.TaskMetricsProvider;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
+import io.vertigo.datamodel.task.TaskManager;
 
 /**
  * Defines dynamo features.
@@ -41,7 +44,9 @@ public final class DataModelFeatures extends Features<DataModelFeatures> {
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
 				.addComponent(SmartTypeManager.class, SmartTypeManagerImpl.class)
-				.addComponent(DataMetricsProvider.class);
+				.addComponent(DataMetricsProvider.class)
+				.addComponent(TaskManager.class, TaskManagerImpl.class)
+				.addComponent(TaskMetricsProvider.class);
 
 	}
 }
