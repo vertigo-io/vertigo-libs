@@ -11,7 +11,7 @@ final class VSpringTemplateEngine extends SpringTemplateEngine {
 	private static final class VSpringMessageResolver implements IMessageResolver {
 		@Override
 		public String resolveMessage(final ITemplateContext context, final Class<?> origin, final String key, final Object[] messageParameters) {
-			return LocaleMessageText.of(() -> key, messageParameters).getDisplay();
+			return LocaleMessageText.of(() -> key, messageParameters).getDisplayOpt().orElse(null);
 		}
 
 		@Override
@@ -26,7 +26,7 @@ final class VSpringTemplateEngine extends SpringTemplateEngine {
 
 		@Override
 		public String createAbsentMessageRepresentation(final ITemplateContext context, final Class<?> origin, final String key, final Object[] messageParameters) {
-			return null; // getDisplay already return "panic message" if not found
+			return LocaleMessageText.of(() -> key, messageParameters).toString();
 		}
 	}
 
