@@ -29,21 +29,25 @@ public class VSpringMvcConfigDefinition extends AbstractDefinition {
 	private final List<String> packagesToScan;
 	private final List<Class> configClasses;
 	private final List<Class> beanClasses;
+	private final List<String> componentDirs;
 
 	public VSpringMvcConfigDefinition(
 			final String name,
 			final List<String> packagesToScan,
 			final List<Class> configClasses,
-			final List<Class> beanClasses) {
+			final List<Class> beanClasses,
+			final List<String> componentDirs) {
 		super(name);
 		Assertion.check()
 				.isNotNull(packagesToScan)
 				.isNotNull(configClasses)
-				.isNotNull(beanClasses);
+				.isNotNull(beanClasses)
+				.isNotNull(componentDirs);
 		//---
 		this.packagesToScan = packagesToScan;
 		this.configClasses = configClasses;
 		this.beanClasses = beanClasses;
+		this.componentDirs = componentDirs;
 	}
 
 	public List<String> getPackagesToScan() {
@@ -56,6 +60,10 @@ public class VSpringMvcConfigDefinition extends AbstractDefinition {
 
 	public List<Class> getBeanClasses() {
 		return beanClasses;
+	}
+
+	public List<String> getComponentDirs() {
+		return componentDirs;
 	}
 
 }

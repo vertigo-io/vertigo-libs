@@ -39,7 +39,8 @@ public abstract class DefaultUiModuleFeatures<F> extends ModuleDiscoveryFeatures
 		getModuleConfigBuilder()
 				.addDefinitionProvider(VSpringMvcConfigDefinitionProvider.class,
 						Param.of("name", getModuleName(getPackageRoot())),
-						Param.of("packages", getControllerPackages().stream().map(packageName -> getPackageRoot() + packageName).collect(Collectors.joining(","))));
+						Param.of("packages", getControllerPackages().stream().map(packageName -> getPackageRoot() + packageName).collect(Collectors.joining(","))),
+						Param.of("componentDirs", getComponentsDirs().stream().map(dir -> getPackageRoot().replace('.', '/') + '/' + dir).collect(Collectors.joining(","))));
 	}
 
 	protected String getModuleName(final String packageRoot) {
@@ -49,6 +50,10 @@ public abstract class DefaultUiModuleFeatures<F> extends ModuleDiscoveryFeatures
 
 	protected List<String> getControllerPackages() {
 		return List.of(".controllers");
+	}
+
+	protected List<String> getComponentsDirs() {
+		return List.of("components/"); // all components (recursively) in component folder
 	}
 
 }
