@@ -50,6 +50,7 @@
                         <vu:grid-cell/>
                         <vu:grid-cell col="1">
 							 <vu:autocomplete-multiple object="movieDisplayInput" field="movIds" list="moviesMdl"  />
+							 <vu:checkbox-multiple object="movieDisplayInput" field="movIds" list="moviesMdl" />
 						</vu:grid-cell>
                         <vu:grid-cell col="1">
                             <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" @update:model-value="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
