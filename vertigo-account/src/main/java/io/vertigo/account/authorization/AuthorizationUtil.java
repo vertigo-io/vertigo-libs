@@ -31,7 +31,7 @@ import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.data.model.Entity;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 
@@ -72,7 +72,7 @@ public final class AuthorizationUtil {
 
 	public static <E extends Entity> E assertOperationsOnOriginalEntity(final E entity, final OperationName<E> operation, final LocaleMessageText message) {
 		E originalEntity;
-		if (DataUtil.getId(entity) != null) {
+		if (DataModelUtil.getId(entity) != null) {
 			final EntityStoreManager entityStoreManager = Node.getNode().getComponentSpace().resolve(EntityStoreManager.class);
 			originalEntity = (E) entityStoreManager.readOneForUpdate(entity.getUID());
 		} else {

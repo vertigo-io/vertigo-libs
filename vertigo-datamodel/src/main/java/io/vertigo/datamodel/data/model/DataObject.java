@@ -24,6 +24,6 @@ import java.io.Serializable;
  *
  * @author  fconstantin, pchretien
  */
-public interface Data extends Serializable {
+public interface DataObject extends Serializable {
 	//
 }

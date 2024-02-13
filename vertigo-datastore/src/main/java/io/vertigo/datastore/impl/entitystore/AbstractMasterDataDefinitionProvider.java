@@ -28,9 +28,9 @@ import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataStereotype;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtListURIForMasterData;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.cache.definitions.CacheDefinition;
 import io.vertigo.datastore.entitystore.definitions.MasterDataDefinition;
 import io.vertigo.datastore.impl.entitystore.cache.CacheData;
@@ -50,18 +50,18 @@ public abstract class AbstractMasterDataDefinitionProvider implements SimpleDefi
 
 	public abstract void declareMasterDataLists();
 
-	protected <O extends Data> void registerDtMasterDatas(final Class<O> dtObjectClass) {
+	protected <O extends DataObject> void registerDtMasterDatas(final Class<O> dtObjectClass) {
 		registerDtMasterDatas(dtObjectClass, Collections.emptyMap(), true);
 
 	}
 
-	protected <O extends Data> void registerDtMasterDatas(final Class<O> dtObjectClass, final boolean isReloadedByList) {
+	protected <O extends DataObject> void registerDtMasterDatas(final Class<O> dtObjectClass, final boolean isReloadedByList) {
 		registerDtMasterDatas(dtObjectClass, Collections.emptyMap(), isReloadedByList);
 
 	}
 
-	protected <O extends Data> void registerDtMasterDatas(final Class<O> dtObjectClass, final Map<String, Predicate<O>> namedLists, final boolean isReloadedByList) {
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(dtObjectClass);
+	protected <O extends DataObject> void registerDtMasterDatas(final Class<O> dtObjectClass, final Map<String, Predicate<O>> namedLists, final boolean isReloadedByList) {
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(dtObjectClass);
 		// Si la durée dans le cache n'est pas précisé, on se base sur le type de la clé primaire pour déterminer la durée
 		final int cacheDuration;
 		if (dataDefinition.getStereotype() == DataStereotype.StaticMasterData) {

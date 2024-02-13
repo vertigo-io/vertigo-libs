@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
 import io.vertigo.vega.webservice.definitions.WebServiceParam;
@@ -122,13 +122,13 @@ public final class WebServiceCallContext {
 	 * @param updatedValue param updatedvalue
 	 * @param contextKeyMap Map of elements contextKey
 	 */
-	public void registerUpdatedDtObjects(final WebServiceParam webServiceParam, final Serializable updatedValue, final Map<String, Data> contextKeyMap) {
-		Assertion.check().isTrue(updatedValue instanceof Data
+	public void registerUpdatedDtObjects(final WebServiceParam webServiceParam, final Serializable updatedValue, final Map<String, DataObject> contextKeyMap) {
+		Assertion.check().isTrue(updatedValue instanceof DataObject
 				|| updatedValue instanceof DtList
 				|| updatedValue instanceof DtListDelta,
 				"Context {0} format {1} not supported. Should be a Data, a DtList or a DtListDelta", webServiceParam.getFullName(), updatedValue.getClass().getSimpleName());
 
-		for (final Map.Entry<String, Data> entry : contextKeyMap.entrySet()) {
+		for (final Map.Entry<String, DataObject> entry : contextKeyMap.entrySet()) {
 			uiContextResolver.register(entry.getKey(), entry.getValue());
 		}
 		request.setAttribute(webServiceParam.getFullName() + "-input", request.getAttribute(webServiceParam.getFullName()));

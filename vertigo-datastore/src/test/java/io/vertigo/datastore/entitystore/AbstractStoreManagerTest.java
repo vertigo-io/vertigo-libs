@@ -47,7 +47,7 @@ import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
@@ -108,9 +108,9 @@ public abstract class AbstractStoreManagerTest {
 
 	protected void doSetUp() {
 		carDataBase = new CarDataBase();
-		dataDefinitionFamille = DataUtil.findDataDefinition(Famille.class);
+		dataDefinitionFamille = DataModelUtil.findDataDefinition(Famille.class);
 
-		dataDefinitionCar = DataUtil.findDataDefinition(Car.class);
+		dataDefinitionCar = DataModelUtil.findDataDefinition(Car.class);
 
 		initMainStore();
 	}
@@ -267,7 +267,7 @@ public abstract class AbstractStoreManagerTest {
 	public void testSelectCarAndTestMasterDataEnum() {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			final DtList<Car> dtcEssence = entityStoreManager.find(
-					DataUtil.findDataDefinition(Car.class),
+					DataModelUtil.findDataDefinition(Car.class),
 					Criterions.isEqualTo(CarFields.mtyCd, MotorTypeEnum.essence.getEntityUID().getId()),
 					DtListState.of(2));
 			//---

@@ -38,8 +38,8 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.Data;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
@@ -57,7 +57,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author pchretien, npiedeloup
  * @param <D> DtObject type
  */
-public class VegaUiObject<D extends Data> implements io.vertigo.vega.webservice.model.UiObject<D> {
+public class VegaUiObject<D extends DataObject> implements io.vertigo.vega.webservice.model.UiObject<D> {
 	private static final long serialVersionUID = -4639050257543017072L;
 
 	/** Référence vers la définition. */
@@ -92,7 +92,7 @@ public class VegaUiObject<D extends Data> implements io.vertigo.vega.webservice.
 				.isNotNull(modifiedFields, "modifiedFields can't be null");
 		//-----
 		this.inputDto = inputDto;
-		this.dataDefinitionId = DataUtil.findDataDefinition(inputDto).id();
+		this.dataDefinitionId = DataModelUtil.findDataDefinition(inputDto).id();
 		fieldIndex = Collections.unmodifiableSet(getDtDefinition().getFields().stream()
 				.map(DataField::name)
 				.collect(Collectors.toSet()));
@@ -227,7 +227,7 @@ public class VegaUiObject<D extends Data> implements io.vertigo.vega.webservice.
 		getDtObjectErrors().flushIntoMessageStack(inputKey, uiMessageStack);
 		inputBuffer.clear();
 		if (serverSideDto != null) {
-			inputDto = (D) DataUtil.createData(getDtDefinition());
+			inputDto = (D) DataModelUtil.createDataObject(getDtDefinition());
 			return serverSideDto;
 		}
 		return inputDto;

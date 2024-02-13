@@ -33,7 +33,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinition;
 import io.vertigo.datamodel.smarttype.AdapterConfig;
 import io.vertigo.datamodel.smarttype.ConstraintConfig;
@@ -90,7 +90,7 @@ public class SmartTypesLoader implements Loader {
 			for (final Adapter adapter : adapters) {
 				adapterConfigs.add(new AdapterConfig(adapter.type(), adapter.clazz(), adapter.targetBasicType()));
 			}
-			if (Data.class.isAssignableFrom(targetJavaClass)) {
+			if (DataObject.class.isAssignableFrom(targetJavaClass)) {
 				scope = Scope.DATA_TYPE;
 				Assertion.check().isTrue(field.getName().equals(DataDefinition.PREFIX + targetJavaClass.getSimpleName()), "The name of the SmartType {0} is not consistent with the class {1}",
 						field.getName(), targetJavaClass);

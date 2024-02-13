@@ -28,7 +28,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 
 /**
@@ -36,7 +36,7 @@ import io.vertigo.datamodel.data.model.DtList;
  * Warn : no validators, should use UiList instead.
  * @author npiedeloup
  */
-final class DtListDeserializer<D extends Data> implements JsonDeserializer<DtList<D>> {
+final class DtListDeserializer<D extends DataObject> implements JsonDeserializer<DtList<D>> {
 	/** {@inheritDoc} */
 	@Override
 	public DtList<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {

@@ -18,11 +18,11 @@
 package io.vertigo.datafactory.collections.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.stereotype.Field;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
-public final class SmartItemIhm implements Data {
+public final class SmartItemIhm implements DataObject {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -51,6 +51,6 @@ public final class SmartItemIhm implements Data {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return DataUtil.toString(this);
+		return DataModelUtil.toString(this);
 	}
 }

@@ -22,7 +22,7 @@ import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.model.VAccessor;
 import io.vertigo.datamodel.data.stereotype.Field;
 import io.vertigo.datamodel.data.stereotype.ForeignKey;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
 public final class Base implements KeyConcept {
 	private static final long serialVersionUID = 1L;
@@ -279,6 +279,6 @@ public final class Base implements KeyConcept {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return DataUtil.toString(this);
+		return DataModelUtil.toString(this);
 	}
 }

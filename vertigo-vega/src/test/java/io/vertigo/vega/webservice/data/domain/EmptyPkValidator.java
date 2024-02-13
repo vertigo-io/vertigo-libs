@@ -19,7 +19,7 @@ package io.vertigo.vega.webservice.data.domain;
 
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.vega.webservice.validation.AbstractDtObjectValidator;
 import io.vertigo.vega.webservice.validation.DtObjectErrors;
 
@@ -28,7 +28,7 @@ import io.vertigo.vega.webservice.validation.DtObjectErrors;
  * @author npiedeloup (4 nov. 2014 12:32:31)
  * @param <O> Object type
  */
-public final class EmptyPkValidator<O extends Data> extends AbstractDtObjectValidator<O> {
+public final class EmptyPkValidator<O extends DataObject> extends AbstractDtObjectValidator<O> {
 
 	/** {@inheritDoc} */
 	@Override

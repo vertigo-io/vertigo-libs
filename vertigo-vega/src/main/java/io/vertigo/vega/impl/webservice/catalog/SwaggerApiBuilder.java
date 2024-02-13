@@ -43,9 +43,9 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtListState;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
@@ -288,8 +288,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			if (!builderDefinitions.containsKey(objectName)) {
 				final Map<String, Object> definition = new LinkedHashMap<>();
 				builderDefinitions.put(objectName, definition); //we put definitions first to avoid infinite resolution loop
-				if (Data.class.isAssignableFrom(objectClass)) {
-					final Class<? extends Data> dtClass = (Class<? extends Data>) objectClass;
+				if (DataObject.class.isAssignableFrom(objectClass)) {
+					final Class<? extends DataObject> dtClass = (Class<? extends DataObject>) objectClass;
 					appendPropertiesDtObject(definition, dtClass, includedFields, excludedFields);
 				} else {
 					appendPropertiesObject(definition, objectClass, parameterClass, includedFields, excludedFields);
@@ -308,11 +308,11 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		return "$" + sb.hashCode();
 	}
 
-	private void appendPropertiesDtObject(final Map<String, Object> entity, final Class<? extends Data> objectClass, final Set<String> includedFields, final Set<String> excludedFields) {
+	private void appendPropertiesDtObject(final Map<String, Object> entity, final Class<? extends DataObject> objectClass, final Set<String> includedFields, final Set<String> excludedFields) {
 		//can't be a primitive nor array nor DtListDelta
 		final Map<String, Object> properties = new LinkedHashMap<>();
 		final List<String> required = new ArrayList<>(); //mandatory fields
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(objectClass);
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(objectClass);
 		for (final DataField dtField : dataDefinition.getFields()) {
 			final String fieldName = dtField.name();
 			if (isExcludedField(fieldName, includedFields, excludedFields)) {
@@ -477,9 +477,9 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 					.with(webServiceParam.getParamType(), prefix + "sortFieldName").build());
 			pseudoWebServiceParams.add(WebServiceParam.builder(boolean.class)
 					.with(webServiceParam.getParamType(), prefix + "sortDesc").build());
-		} else if (Data.class.isAssignableFrom(webServiceParam.getType())) {
-			final Class<? extends Data> paramClass = (Class<? extends Data>) webServiceParam.getType();
-			final DataDefinition dataDefinition = DataUtil.findDataDefinition(paramClass);
+		} else if (DataObject.class.isAssignableFrom(webServiceParam.getType())) {
+			final Class<? extends DataObject> paramClass = (Class<? extends DataObject>) webServiceParam.getType();
+			final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(paramClass);
 			for (final DataField dtField : dataDefinition.getFields()) {
 				final String fieldName = dtField.name();
 				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.smartTypeDefinition().getJavaClass())
@@ -494,7 +494,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		final Class<?> paramClass = webServiceParam.getType();
 		return webServiceParam.getParamType() == WebServiceParamType.Query &&
 				(DtListState.class.isAssignableFrom(paramClass)
-						|| Data.class.isAssignableFrom(paramClass));
+						|| DataObject.class.isAssignableFrom(paramClass));
 	}
 
 	private static boolean isMultipleInOneOutParams(final WebServiceParam webServiceParam) {

@@ -24,12 +24,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.vega.engines.webservice.json.AbstractUiListModifiable;
 import io.vertigo.vega.webservice.model.UiObject;
 
-public class BasicUiListModifiable<D extends Data> extends AbstractUiListModifiable<D> {
+public class BasicUiListModifiable<D extends DataObject> extends AbstractUiListModifiable<D> {
 
 	private static final long serialVersionUID = -6612061761970992295L;
 	private ViewContextUpdateSecurity viewContextUpdateSecurity;

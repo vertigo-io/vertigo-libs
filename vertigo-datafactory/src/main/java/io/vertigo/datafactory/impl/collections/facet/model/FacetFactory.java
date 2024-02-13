@@ -35,7 +35,7 @@ import io.vertigo.datafactory.collections.definitions.FacetedQueryDefinition;
 import io.vertigo.datafactory.collections.model.Facet;
 import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
@@ -88,7 +88,7 @@ public final class FacetFactory {
 	 * @param dtList Liste
 	 * @return Map du cluster
 	 */
-	public <D extends Data> Map<FacetValue, DtList<D>> createCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+	public <D extends DataObject> Map<FacetValue, DtList<D>> createCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
 		Assertion.check()
 				.isNotNull(facetDefinition)
 				.isNotNull(dtList);
@@ -101,7 +101,7 @@ public final class FacetFactory {
 		return createTermCluster(facetDefinition, dtList);
 	}
 
-	private <D extends Data> DtList<D> apply(final ListFilter listFilter, final DtList<D> fullDtList) {
+	private <D extends DataObject> DtList<D> apply(final ListFilter listFilter, final DtList<D> fullDtList) {
 		//on délégue à CollectionsManager les méthodes de requête de filtrage.
 		return fullDtList.stream()
 				.filter(collectionManager.filter(listFilter))
@@ -117,7 +117,7 @@ public final class FacetFactory {
 		return createTermFacet(facetDefinition, dtList);
 	}
 
-	private <D extends Data> Facet createRangeFacet(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+	private <D extends DataObject> Facet createRangeFacet(final FacetDefinition facetDefinition, final DtList<D> dtList) {
 		final Map<FacetValue, DtList<D>> clusterValues = createRangeCluster(facetDefinition, dtList);
 		//map résultat avec le count par FacetFilter
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
@@ -125,7 +125,7 @@ public final class FacetFactory {
 		return new Facet(facetDefinition, facetValues);
 	}
 
-	private <D extends Data> Map<FacetValue, DtList<D>> createRangeCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+	private <D extends DataObject> Map<FacetValue, DtList<D>> createRangeCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
 		//map résultat avec les docs par FacetFilter
 		final Map<FacetValue, DtList<D>> clusterValues = new LinkedHashMap<>();
 
@@ -137,7 +137,7 @@ public final class FacetFactory {
 		return clusterValues;
 	}
 
-	private <D extends Data> Facet createTermFacet(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+	private <D extends DataObject> Facet createTermFacet(final FacetDefinition facetDefinition, final DtList<D> dtList) {
 		final Map<FacetValue, DtList<D>> clusterValues = createTermCluster(facetDefinition, dtList);
 		//map résultat avec le count par FacetFilter
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
@@ -145,7 +145,7 @@ public final class FacetFactory {
 		return new Facet(facetDefinition, facetValues);
 	}
 
-	private <D extends Data> Map<FacetValue, DtList<D>> createTermCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+	private <D extends DataObject> Map<FacetValue, DtList<D>> createTermCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
 		//map résultat avec les docs par FacetFilter
 		final Map<FacetValue, DtList<D>> clusterValues = new LinkedHashMap<>();
 
@@ -183,7 +183,7 @@ public final class FacetFactory {
 		return sortedFacetValues;
 	}
 
-	private static final class FacetComparator<O extends Data> implements Comparator<FacetValue>, Serializable {
+	private static final class FacetComparator<O extends DataObject> implements Comparator<FacetValue>, Serializable {
 		private static final long serialVersionUID = 6149508435834977887L;
 		private final Map<FacetValue, DtList<O>> clusterValues;
 

@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -32,7 +32,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author npiedeloup
  * @param <O> the type of entity
  */
-public final class UiListUnmodifiable<O extends Data> extends AbstractUiListUnmodifiable<O> {
+public final class UiListUnmodifiable<O extends DataObject> extends AbstractUiListUnmodifiable<O> {
 	private static final long serialVersionUID = 5475819598230056558L;
 
 	private final DtList<O> dtList;
@@ -85,7 +85,7 @@ public final class UiListUnmodifiable<O extends Data> extends AbstractUiListUnmo
 		return dtList
 				.stream()
 				.limit(50) //we consider only the first 50 elements
-				.map(Data::toString)
+				.map(DataObject::toString)
 				.collect(Collectors.joining("; ",
 						"uiList(" + dtList.size() + " element(s) :", ")"));
 	}

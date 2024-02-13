@@ -35,11 +35,11 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataAccessor;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
@@ -51,7 +51,7 @@ import io.vertigo.datamodel.task.model.Task;
  * @param <S> KeyConcept type
  * @param <I> Index type
  */
-public abstract class AbstractSqlSearchLoader<S extends KeyConcept, I extends Data> extends AbstractSearchLoader<S, I> {
+public abstract class AbstractSqlSearchLoader<S extends KeyConcept, I extends DataObject> extends AbstractSearchLoader<S, I> {
 	private static final int SEARCH_CHUNK_SIZE = 500;
 	private final TaskManager taskManager;
 	private final VTransactionManager transactionManager;
@@ -110,7 +110,7 @@ public abstract class AbstractSqlSearchLoader<S extends KeyConcept, I extends Da
 			final List<Tuple<UID<S>, Serializable>> uids = new ArrayList<>(resultDtc.size());
 			final DataAccessor versionFieldAccessor = versionField.getDataAccessor();
 			for (final S dto : resultDtc) {
-				uids.add(Tuple.of(UID.<S> of(dataDefinition, DataUtil.getId(dto)), (Serializable) versionFieldAccessor.getValue(dto)));
+				uids.add(Tuple.of(UID.<S> of(dataDefinition, DataModelUtil.getId(dto)), (Serializable) versionFieldAccessor.getValue(dto)));
 			}
 			return uids;
 		}

@@ -53,7 +53,7 @@ import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 import io.vertigo.datastore.filestore.model.VFile;
@@ -280,7 +280,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 
 	private Entity parseUser(final Attributes attrs) {
 		try {
-			final Entity user = Entity.class.cast(DataUtil.createData(mapperHelper.getDestDefinition()));
+			final Entity user = Entity.class.cast(DataModelUtil.createDataObject(mapperHelper.getDestDefinition()));
 			for (final DataField dtField : mapperHelper.destAttributes()) {
 				final String value = parseNullableAttribute(mapperHelper.getSourceAttribute(dtField), attrs);
 				if (value != null) {

@@ -35,7 +35,7 @@ import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
@@ -50,7 +50,7 @@ import io.vertigo.vega.webservice.model.UiObject;
  * @author npiedeloup
  * @param <O> the type of entity
  */
-public abstract class AbstractUiListUnmodifiable<O extends Data> extends AbstractList<UiObject<O>> implements UiList<O>, Serializable {
+public abstract class AbstractUiListUnmodifiable<O extends DataObject> extends AbstractList<UiObject<O>> implements UiList<O>, Serializable {
 	private static final long serialVersionUID = 5475819598230056558L;
 
 	protected static final int NB_MAX_ELEMENTS = 1000; //Max nb elements in list. Must be kept under 1000 to ensure good performances.
@@ -158,8 +158,8 @@ public abstract class AbstractUiListUnmodifiable<O extends Data> extends Abstrac
 	/** {@inheritDoc} */
 	@Override
 	public int indexOf(final Object o) {
-		if (o instanceof Data) {
-			return indexOfDtObject((Data) o);
+		if (o instanceof DataObject) {
+			return indexOfDtObject((DataObject) o);
 		} else if (o instanceof UiObject) {
 			return indexOfUiObject((UiObject<O>) o);
 		}
@@ -180,7 +180,7 @@ public abstract class AbstractUiListUnmodifiable<O extends Data> extends Abstrac
 	 * @param dtObject DtObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	private int indexOfDtObject(final Data dtObject) {
+	private int indexOfDtObject(final DataObject dtObject) {
 		Assertion.check().isNotNull(dtObject);
 		//-----
 		return obtainDtList().indexOf(dtObject);

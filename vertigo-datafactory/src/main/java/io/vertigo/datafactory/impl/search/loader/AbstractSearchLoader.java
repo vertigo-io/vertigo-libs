@@ -32,10 +32,10 @@ import io.vertigo.datafactory.search.definitions.SearchLoader;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
 /**
  * Abstract SearchLoader with default chunk implementation.
@@ -43,13 +43,13 @@ import io.vertigo.datamodel.data.util.DataUtil;
  * @param <K> KeyConcept type
  * @param <I> Index type
  */
-public abstract class AbstractSearchLoader<K extends KeyConcept, I extends Data> implements
+public abstract class AbstractSearchLoader<K extends KeyConcept, I extends DataObject> implements
 		SearchLoader<K, I> {
 
 	/** {@inheritDoc} */
 	@Override
 	public final Iterable<SearchChunk<K>> chunk(final Class<K> keyConceptClass) {
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(keyConceptClass);
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(keyConceptClass);
 		final DataField idField = dataDefinition.getIdField().get();
 		final Serializable firstId = getLowestIteratorValue(idField, dataDefinition);
 
@@ -59,7 +59,7 @@ public abstract class AbstractSearchLoader<K extends KeyConcept, I extends Data>
 	/** {@inheritDoc} */
 	@Override
 	public final Iterable<SearchChunk<K>> chunk(final Optional<Serializable> startValue, final Class<K> keyConceptClass) {
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(keyConceptClass);
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(keyConceptClass);
 		final DataField versionField = getVersionField(dataDefinition);
 
 		return () -> createIterator(startValue.orElse(getLowestIteratorValue(versionField, dataDefinition)), true, dataDefinition);

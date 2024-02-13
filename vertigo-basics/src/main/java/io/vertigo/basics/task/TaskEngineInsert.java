@@ -35,7 +35,7 @@ import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.Entity;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 
 /**
@@ -76,7 +76,7 @@ public class TaskEngineInsert extends AbstractTaskEngineSQL {
 		// gestion de generatedKey
 		final Entity entity = getValue("dto");
 
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(entity);
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(entity);
 		final DataField idField = dataDefinition.getIdField().get();
 
 		final Tuple<Integer, ?> result = getSqlManager()

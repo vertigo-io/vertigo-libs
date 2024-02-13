@@ -22,7 +22,7 @@ import java.io.Serializable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
 /**
  * This class is a way to access an entity defined by a relationship.
@@ -51,7 +51,7 @@ public class VAccessor<E extends Entity> implements Serializable {
 	 * @param role the role of the association (case of multiple associations with the same entity)
 	 */
 	public VAccessor(final Class<E> clazz, final String role) {
-		this(DataUtil.findDataDefinition(clazz), role);
+		this(DataModelUtil.findDataDefinition(clazz), role);
 	}
 
 	/**

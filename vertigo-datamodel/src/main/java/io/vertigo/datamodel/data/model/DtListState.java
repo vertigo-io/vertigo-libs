@@ -23,7 +23,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
 /**
  * DtList state : sorting and paging informations
@@ -44,7 +44,7 @@ public final class DtListState {
 	 * skipRows elements to skip (mandatory, 0 by default)
 	 */
 	public static DtListState defaultOf(final Class<? extends Entity> entityClass) {
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(entityClass);
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(entityClass);
 		return new DtListState(DEFAULT_MAX_ROWS, 0, dataDefinition.getSortField().map(DataField::name).orElse(null), false);
 	}
 

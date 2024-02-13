@@ -22,7 +22,7 @@ import io.vertigo.core.lang.Generated;
 import io.vertigo.datamodel.data.model.DtStaticMasterData;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.stereotype.Field;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
 /**
  * This class is automatically generated.
@@ -82,6 +82,6 @@ public final class MotorType implements DtStaticMasterData {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return DataUtil.toString(this);
+		return DataModelUtil.toString(this);
 	}
 }

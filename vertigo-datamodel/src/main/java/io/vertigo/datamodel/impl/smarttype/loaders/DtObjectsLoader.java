@@ -44,7 +44,7 @@ import io.vertigo.datamodel.data.definitions.DataStereotype;
 import io.vertigo.datamodel.data.definitions.association.AssociationNNDefinition;
 import io.vertigo.datamodel.data.definitions.association.AssociationNode;
 import io.vertigo.datamodel.data.definitions.association.AssociationSimpleDefinition;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtMasterData;
 import io.vertigo.datamodel.data.model.DtStaticMasterData;
 import io.vertigo.datamodel.data.model.Entity;
@@ -99,18 +99,18 @@ public final class DtObjectsLoader implements Loader {
 				.isNotNull(dynamicDefinitions);
 		//-----
 		//--Enregistrement des fichiers java annotés
-		for (final Class<Data> javaClass : selectClasses(resourcePath, Data.class)) {
+		for (final Class<DataObject> javaClass : selectClasses(resourcePath, DataObject.class)) {
 			load(javaClass, dynamicDefinitions);
 		}
 	}
 
-	private static void load(final Class<Data> clazz, final Map<String, DynamicDefinition> dslDefinitionRepository) {
+	private static void load(final Class<DataObject> clazz, final Map<String, DynamicDefinition> dslDefinitionRepository) {
 		Assertion.check().isNotNull(dslDefinitionRepository);
 		//-----
 		parseDynamicDefinitionBuilder(clazz, dslDefinitionRepository);
 	}
 
-	private static void parseDynamicDefinitionBuilder(final Class<Data> clazz, final Map<String, DynamicDefinition> dynamicModelRepository) {
+	private static void parseDynamicDefinitionBuilder(final Class<DataObject> clazz, final Map<String, DynamicDefinition> dynamicModelRepository) {
 		final String simpleName = clazz.getSimpleName();
 		final String packageName = clazz.getPackage().getName();
 		final String dataDefinitionName = DataDefinition.PREFIX + simpleName;
@@ -174,7 +174,7 @@ public final class DtObjectsLoader implements Loader {
 		return definitionLinks;
 	}
 
-	private static DynamicDefinition extractDynamicDefinition(final Class<Data> clazz, final String packageName, final String dataDefinitionName, final List<Field> fields, final Method[] methods, final List<String> definitionLinks) {
+	private static DynamicDefinition extractDynamicDefinition(final Class<DataObject> clazz, final String packageName, final String dataDefinitionName, final List<Field> fields, final Method[] methods, final List<String> definitionLinks) {
 		return new DynamicDefinition(
 				dataDefinitionName,
 				definitionLinks,
@@ -196,7 +196,7 @@ public final class DtObjectsLoader implements Loader {
 		);
 	}
 
-	private static void extractDynamicDefinitionForFragment(final Class<Data> clazz, final DefinitionSpace definitionSpace, final DataDefinitionBuilder dataDefinitionBuilder) {
+	private static void extractDynamicDefinitionForFragment(final Class<DataObject> clazz, final DefinitionSpace definitionSpace, final DataDefinitionBuilder dataDefinitionBuilder) {
 		for (final Annotation annotation : clazz.getAnnotations()) {
 			if (annotation instanceof io.vertigo.datamodel.data.stereotype.Fragment) {
 				dataDefinitionBuilder.withStereoType(DataStereotype.Fragment);
@@ -250,7 +250,7 @@ public final class DtObjectsLoader implements Loader {
 		}
 	}
 
-	private static void parseSmartTypes(final Class<Data> clazz, final Map<String, DynamicDefinition> dynamicModelRepository, final String simpleName, final String dataDefinitionName) {
+	private static void parseSmartTypes(final Class<DataObject> clazz, final Map<String, DynamicDefinition> dynamicModelRepository, final String simpleName, final String dataDefinitionName) {
 		final String smartTypeName = SmartTypeDefinition.PREFIX + dataDefinitionName;
 		final Adapter[] adapters = clazz.getAnnotationsByType(Adapter.class);
 		dynamicModelRepository.putIfAbsent(// smartTypes infered from the dtObject class is only used when no explicit SmartTypeDefinition is registered via a SmartTypesLoader
@@ -277,7 +277,7 @@ public final class DtObjectsLoader implements Loader {
 		return DataDefinition.DEFAULT_DATA_SPACE;
 	}
 
-	private static DataStereotype parseStereotype(final Class<Data> clazz) {
+	private static DataStereotype parseStereotype(final Class<DataObject> clazz) {
 		if (DtStaticMasterData.class.isAssignableFrom(clazz)) {
 			return DataStereotype.StaticMasterData;
 		} else if (DtMasterData.class.isAssignableFrom(clazz)) {

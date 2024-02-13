@@ -40,7 +40,7 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListURIForMasterData;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
@@ -113,7 +113,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @param key Clé de context
 	 * @return UiObject du context
 	 */
-	public <O extends Data> UiObject<O> getUiObject(final String key) {
+	public <O extends DataObject> UiObject<O> getUiObject(final String key) {
 		return (UiObject<O>) get(key);
 	}
 
@@ -121,7 +121,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @param key Clé de context
 	 * @return UiList du context
 	 */
-	public <O extends Data> UiList<O> getUiList(final String key) {
+	public <O extends DataObject> UiList<O> getUiList(final String key) {
 		return (UiList<O>) get(key);
 	}
 
@@ -129,7 +129,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @param key Clé de context
 	 * @return UiListModifiable du context
 	 */
-	public <O extends Data> BasicUiListModifiable<O> getUiListModifiable(final String key) {
+	public <O extends DataObject> BasicUiListModifiable<O> getUiListModifiable(final String key) {
 		return (BasicUiListModifiable<O>) get(key);
 	}
 
@@ -203,7 +203,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @param dtObject DtObject recherché
 	 * @return Clé de context de l'élément (null si non trouvé)
 	 */
-	public String findKey(final Data dtObject) {
+	public String findKey(final DataObject dtObject) {
 		Assertion.check().isNotNull(dtObject);
 		//-----
 		final String contextKey = reverseUiObjectIndex.get(dtObject);
@@ -226,7 +226,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 				.isFalse(unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX))
 				.isNotBlank(key)
 				.isNotNull(value, "la valeur doit être renseignée pour {0}", key)
-				.isFalse(value instanceof Data, "Vous devez poser des uiObject dans le context pas des objets métiers ({0})", key)
+				.isFalse(value instanceof DataObject, "Vous devez poser des uiObject dans le context pas des objets métiers ({0})", key)
 				.isFalse(value instanceof DtList, "Vous devez poser des uiList dans le context pas des listes d'objets métiers ({0})", key);
 		viewContextUpdateSecurity.assertIsUpdatable(key);
 		//-----
@@ -369,7 +369,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * Ajoute un objet de type form au context.
 	 * @param dto Objet à publier
 	 */
-	public <O extends Data> void publish(final String contextKey, final O dto) {
+	public <O extends DataObject> void publish(final String contextKey, final O dto) {
 		final UiObject<O> mapUiObject = new MapUiObject<>(dto, viewContextUpdateSecurity);
 		mapUiObject.setInputKey(contextKey);
 		put(contextKey, mapUiObject);
@@ -388,14 +388,14 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	/**
 	 * @return objet métier validé. Lance une exception si erreur.
 	 */
-	public <O extends Data> O readDto(final String contextKey, final UiMessageStack uiMessageStack) {
+	public <O extends DataObject> O readDto(final String contextKey, final UiMessageStack uiMessageStack) {
 		return readDto(contextKey, new DefaultDtObjectValidator<>(), uiMessageStack);
 	}
 
 	/**
 	 * @return objet métier validé. Lance une exception si erreur.
 	 */
-	public <O extends Data> O readDto(final String contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
+	public <O extends DataObject> O readDto(final String contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
 		checkErrors(contextKey, uiMessageStack);
 		// ---
 		final O validatedDto = ((UiObject<O>) getUiObject(contextKey)).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);

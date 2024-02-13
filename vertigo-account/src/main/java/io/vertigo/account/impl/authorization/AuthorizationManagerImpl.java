@@ -43,7 +43,7 @@ import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.model.Entity;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
 /**
  * Main authorizations manager implementation.
@@ -112,7 +112,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 			return false;
 		}
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(entity);
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(entity);
 		final SecuredEntity securedEntity = findSecuredEntity(dataDefinition);
 		final Optional<Authorization> authorization = userPermissions.getEntityAuthorizations(dataDefinition).stream()
 				.filter(permission -> permission.getOperation().orElse("").equals(operationName.name())
@@ -137,7 +137,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		Assertion.check().isNotNull(entityClass)
 				.isNotNull(operation);
 		//---
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(entityClass);
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(entityClass);
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
 		if (userPermissionsOpt.isEmpty()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
@@ -188,7 +188,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 			return ""; //Attention : pas de *:*
 		}
 
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(entityClass);
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(entityClass);
 		final SecuredEntity securedEntity = findSecuredEntity(dataDefinition);
 
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
@@ -233,7 +233,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 			return Collections.emptySet();
 		}
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(entity);
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(entity);
 		final SecuredEntity securedEntity = findSecuredEntity(dataDefinition);
 
 		return userPermissions.getEntityAuthorizations(dataDefinition).stream()

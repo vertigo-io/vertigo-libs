@@ -51,7 +51,7 @@ import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 
 /**
@@ -60,7 +60,7 @@ import io.vertigo.datamodel.data.model.DtList;
  * @author pchretien, npiedeloup
  * @param <I> Type de l'objet représentant l'index
  */
-public final class ESFacetedQueryResultBuilder<I extends Data> implements Builder<FacetedQueryResult<I, SearchQuery>> {
+public final class ESFacetedQueryResultBuilder<I extends DataObject> implements Builder<FacetedQueryResult<I, SearchQuery>> {
 
 	private static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
 

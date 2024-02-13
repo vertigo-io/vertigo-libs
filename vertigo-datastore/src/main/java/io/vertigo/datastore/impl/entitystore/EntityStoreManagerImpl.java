@@ -33,13 +33,13 @@ import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.DtListURI;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datastore.cache.CacheManager;
@@ -154,10 +154,10 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> E create(final E entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(entity);
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(entity);
 		final E createdEntity = getPhysicalStore(dataDefinition).create(dataDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.CREATE, List.of(UID.of(dataDefinition, DataUtil.getId(createdEntity))));
+		fireAfterCommit(StoreEvent.Type.CREATE, List.of(UID.of(dataDefinition, DataModelUtil.getId(createdEntity))));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 		return createdEntity;
 	}
@@ -179,10 +179,10 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public void update(final Entity entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(entity);
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(entity);
 		getPhysicalStore(dataDefinition).update(dataDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.UPDATE, List.of(UID.of(dataDefinition, DataUtil.getId(entity))));
+		fireAfterCommit(StoreEvent.Type.UPDATE, List.of(UID.of(dataDefinition, DataModelUtil.getId(entity))));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 	}
 
@@ -279,7 +279,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Data> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc) {
+	public <D extends DataObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc) {
 		Assertion.check()
 				.isNotNull(list)
 				.isNotBlank(fieldName);

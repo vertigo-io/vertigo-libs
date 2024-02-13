@@ -23,7 +23,7 @@ import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.Entity;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.vega.webservice.validation.AbstractDtObjectValidator;
 import io.vertigo.vega.webservice.validation.DtObjectErrors;
 
@@ -43,11 +43,11 @@ public final class MandatoryPkValidator<E extends Entity> extends AbstractDtObje
 	/** {@inheritDoc} */
 	@Override
 	protected void checkMultiFieldConstraints(final E entity, final Set<String> modifiedFieldNameSet, final DtObjectErrors dtObjectErrors) {
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(entity);
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(entity);
 		final DataField idField = dataDefinition.getIdField().get();
 		final String camelCaseFieldName = idField.name();
 		if (!dtObjectErrors.hasError(camelCaseFieldName)) {
-			if (DataUtil.getId(entity) == null) {
+			if (DataModelUtil.getId(entity) == null) {
 				dtObjectErrors.addError(camelCaseFieldName, LocaleMessageText.of("Id is mandatory"));
 			}
 		}

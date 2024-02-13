@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.vega.webservice.model.DtListDelta;
 import io.vertigo.vega.webservice.model.UiObject;
@@ -34,7 +34,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author npiedeloup (16 sept. 2014 18:13:55)
  * @param <D> Object type
  */
-public final class UiListDelta<D extends Data> implements Serializable {
+public final class UiListDelta<D extends DataObject> implements Serializable {
 	private static final long serialVersionUID = 1592171971937013208L;
 	private final Map<String, UiObject<D>> collCreates;
 	private final Map<String, UiObject<D>> collUpdates;

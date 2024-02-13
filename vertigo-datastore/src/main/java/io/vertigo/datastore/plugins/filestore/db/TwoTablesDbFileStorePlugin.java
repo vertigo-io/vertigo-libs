@@ -30,10 +30,10 @@ import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
@@ -85,13 +85,13 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		checkDefinitionStoreBinding(fileInfoUri.getDefinition());
 		// Ramène FileMetada
 		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfoUri.getKeyAs(storeMetaDataIdField.smartTypeDefinition().getJavaClass()));
-		final Data fileMetadataDto = getEntityStoreManager().readOne(dtoMetaDataUri);
+		final DataObject fileMetadataDto = getEntityStoreManager().readOne(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDto, DtoFields.fdtId, Object.class);
 
 		// Ramène FileData
 		final UID<Entity> dtoDataUri = UID.of(storeFileDtDefinition, fdtId);
 
-		final Data fileDataDto = getEntityStoreManager().readOne(dtoDataUri);
+		final DataObject fileDataDto = getEntityStoreManager().readOne(dtoDataUri);
 		// Construction du vFile.
 		final DataStream dataStream = getValue(fileDataDto, DtoFields.fileData, DataStream.class);
 		final String fileName = getValue(fileMetadataDto, DtoFields.fileName, String.class);
@@ -117,9 +117,9 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		final Entity fileEntity = createFileEntity(fileInfo);
 		//-----
 		getEntityStoreManager().create(fileEntity);
-		setValue(fileMetadataDto, DtoFields.fdtId, DataUtil.getId(fileEntity));
+		setValue(fileMetadataDto, DtoFields.fdtId, DataModelUtil.getId(fileEntity));
 		getEntityStoreManager().create(fileMetadataDto);
-		final FileInfoURI fileInfoUri = createURI(fileInfo.getDefinition(), DataUtil.getId(fileMetadataDto));
+		final FileInfoURI fileInfoUri = createURI(fileInfo.getDefinition(), DataModelUtil.getId(fileMetadataDto));
 		fileInfo.setURIStored(fileInfoUri);
 		return fileInfo;
 	}
@@ -137,7 +137,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		setIdValue(fileMetadataDto, fileInfo.getURI());
 		// Chargement du FDT_ID
 		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfo.getURI().getKeyAs(storeMetaDataIdField.smartTypeDefinition().getJavaClass()));
-		final Data fileMetadataDtoOld = getEntityStoreManager().readOne(dtoMetaDataUri);
+		final DataObject fileMetadataDtoOld = getEntityStoreManager().readOne(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDtoOld, DtoFields.fdtId, Object.class);
 		setValue(fileMetadataDto, DtoFields.fdtId, fdtId);
 		setValue(fileDataDto, DtoFields.fdtId, fdtId);
@@ -156,7 +156,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		checkDefinitionStoreBinding(fileInfoUri.getDefinition());
 		//-----
 		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfoUri.getKeyAs(storeMetaDataIdField.smartTypeDefinition().getJavaClass()));
-		final Data fileMetadataDtoOld = getEntityStoreManager().readOne(dtoMetaDataUri);
+		final DataObject fileMetadataDtoOld = getEntityStoreManager().readOne(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDtoOld, DtoFields.fdtId, Object.class);
 		final UID<Entity> dtoDataUri = UID.of(storeFileDtDefinition, fdtId);
 
@@ -170,7 +170,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	}
 
 	private Entity createMetaDataEntity(final FileInfo fileInfo) {
-		final Entity fileMetadataDto = DataUtil.createEntity(storeMetaDataDtDefinition);
+		final Entity fileMetadataDto = DataModelUtil.createEntity(storeMetaDataDtDefinition);
 		final VFile vFile = fileInfo.getVFile();
 		setValue(fileMetadataDto, DtoFields.fileName, vFile.getFileName());
 		setValue(fileMetadataDto, DtoFields.mimeType, vFile.getMimeType());
@@ -180,7 +180,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	}
 
 	private Entity createFileEntity(final FileInfo fileInfo) {
-		final Entity fileDataDto = DataUtil.createEntity(storeFileDtDefinition);
+		final Entity fileDataDto = DataModelUtil.createEntity(storeFileDtDefinition);
 		final VFile vFile = fileInfo.getVFile();
 		setValue(fileDataDto, DtoFields.fileName, vFile.getFileName());
 		setValue(fileDataDto, DtoFields.fileData, vFile);

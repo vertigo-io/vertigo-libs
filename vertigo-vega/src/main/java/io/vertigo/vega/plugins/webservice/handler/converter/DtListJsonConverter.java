@@ -23,7 +23,7 @@ import java.util.Arrays;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
@@ -65,12 +65,12 @@ public final class DtListJsonConverter implements JsonConverter {
 		//-----
 		final Type paramGenericType = webServiceParam.getGenericType();
 		final String objectPath;
-		final UiListModifiable<Data> uiList;
+		final UiListModifiable<DataObject> uiList;
 		if (input instanceof String) {
 			uiList = jsonReaderEngine.uiListFromJson((String) input, paramGenericType);
 			objectPath = "";
 		} else if (input instanceof UiContext) {
-			uiList = (UiListModifiable<Data>) ((UiContext) input).get(webServiceParam.getName());
+			uiList = (UiListModifiable<DataObject>) ((UiContext) input).get(webServiceParam.getName());
 			Assertion.check().isNotNull(uiList, "InnerParam not found : {0}", webServiceParam);
 			objectPath = webServiceParam.getName();
 		} else {

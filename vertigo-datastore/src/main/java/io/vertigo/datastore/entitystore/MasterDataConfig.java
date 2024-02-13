@@ -20,7 +20,7 @@ package io.vertigo.datastore.entitystore;
 import java.util.function.Predicate;
 
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtListURIForMasterData;
 import io.vertigo.datastore.entitystore.definitions.MasterDataDefinition;
 
@@ -55,5 +55,5 @@ public interface MasterDataConfig {
 	 * @param uri URI de la liste
 	 * @return Fonction à appliquer sur la liste (par rapport à la liste complète).
 	 */
-	Predicate<? super Data> getFilter(final DtListURIForMasterData uri);
+	Predicate<? super DataObject> getFilter(final DtListURIForMasterData uri);
 }

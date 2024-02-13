@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import io.vertigo.core.node.component.Component;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.vega.webservice.model.UiObject;
 
 /**
@@ -96,7 +96,7 @@ public interface JsonEngine extends Component {
 	 * @param paramType Object type
 	 * @return UiObject filled with a DtObject partially filled and the accessToken if present
 	 */
-	<D extends Data> UiObject<D> uiObjectFromJson(String json, Type paramType);
+	<D extends DataObject> UiObject<D> uiObjectFromJson(String json, Type paramType);
 
 	/**
 	 * Specific convertion Json to UiObjectExtended.
@@ -125,7 +125,7 @@ public interface JsonEngine extends Component {
 	 * @param paramType Object type
 	 * @return UiListDelta filled with created/updated/deleted DtObjects list partially filled and the accessToken if present
 	 */
-	<D extends Data> UiListDelta<D> uiListDeltaFromJson(String json, Type paramType);
+	<D extends DataObject> UiListDelta<D> uiListDeltaFromJson(String json, Type paramType);
 
 	/**	
 	 * Specific convertion Json to UiList.
@@ -134,6 +134,6 @@ public interface JsonEngine extends Component {
 	 * @param paramType Object type
 	 * @return UiList filled with DtObjects list partially filled and the accessToken if present
 	 */
-	<D extends Data> UiListModifiable<D> uiListFromJson(String json, Type paramType);
+	<D extends DataObject> UiListModifiable<D> uiListFromJson(String json, Type paramType);
 
 }

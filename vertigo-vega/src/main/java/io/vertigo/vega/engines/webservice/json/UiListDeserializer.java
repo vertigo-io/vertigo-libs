@@ -25,14 +25,14 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * ParameterizedType use for UiList.
  * @author npiedeloup
  */
-final class UiListDeserializer<D extends Data> implements JsonDeserializer<UiListModifiable<D>> {
+final class UiListDeserializer<D extends DataObject> implements JsonDeserializer<UiListModifiable<D>> {
 
 	/** {@inheritDoc} */
 	@Override

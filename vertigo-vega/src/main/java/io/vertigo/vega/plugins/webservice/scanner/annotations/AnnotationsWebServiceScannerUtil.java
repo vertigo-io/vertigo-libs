@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.WebServices;
@@ -189,8 +189,8 @@ public final class AnnotationsWebServiceScannerUtil {
 
 	private static WebServiceParam buildWebServiceParam(final Annotation[] annotations, final Type paramType) {
 		final WebServiceParamBuilder builder = WebServiceParam.builder(paramType);
-		if (WebServiceTypeUtil.isAssignableFrom(Data.class, paramType)
-				|| WebServiceTypeUtil.isParameterizedBy(Data.class, paramType)) {
+		if (WebServiceTypeUtil.isAssignableFrom(DataObject.class, paramType)
+				|| WebServiceTypeUtil.isParameterizedBy(DataObject.class, paramType)) {
 			builder.addValidatorClasses(DefaultDtObjectValidator.class);
 		} else if (isImplicitParam(paramType)) {
 			builder.with(WebServiceParamType.Implicit, getImplicitParam(paramType).name());

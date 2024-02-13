@@ -25,14 +25,14 @@ import io.vertigo.datafactory.collections.IndexDtListFunctionBuilder;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.impl.collections.functions.index.IndexFilterFunction;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 
 /**
  * Builder for DtListFunction powered by index engine. *
  * @param <D> List element's type
  */
-final class IndexDtListFunctionBuilderImpl<D extends Data> implements IndexDtListFunctionBuilder<D> {
+final class IndexDtListFunctionBuilderImpl<D extends DataObject> implements IndexDtListFunctionBuilder<D> {
 
 	private final IndexFilterFunction<D> indexFilterFunction;
 

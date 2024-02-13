@@ -30,11 +30,11 @@ import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.DtListURI;
 import io.vertigo.datamodel.data.model.Entity;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
 /**
  * Implementation d'une liste filtré par un Criteria.
@@ -91,10 +91,10 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	* @param dtoCriteria Objet de critère
 	* @return Criteria resultant
 	*/
-	public static <E extends Entity> Criteria<E> createCriteria(final Data dtoCriteria) {
+	public static <E extends Entity> Criteria<E> createCriteria(final DataObject dtoCriteria) {
 		Assertion.check().isNotNull(dtoCriteria);
 		//-----
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(dtoCriteria);
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(dtoCriteria);
 
 		Criteria<E> criteria = Criterions.alwaysTrue();
 		for (final DataField field : dataDefinition.getFields()) {

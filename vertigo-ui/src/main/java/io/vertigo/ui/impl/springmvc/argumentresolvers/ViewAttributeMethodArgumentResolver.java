@@ -39,7 +39,7 @@ import com.google.gson.GsonBuilder;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.ui.core.UiSelectedFacetValues;
 import io.vertigo.ui.core.ViewContext;
@@ -54,7 +54,7 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
 
 public final class ViewAttributeMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
-	private final List<DtObjectValidator<Data>> defaultDtObjectValidators = Collections.singletonList(new DefaultDtObjectValidator<>());
+	private final List<DtObjectValidator<DataObject>> defaultDtObjectValidators = Collections.singletonList(new DefaultDtObjectValidator<>());
 	private final Gson gson = new GsonBuilder().registerTypeAdapter(SelectedFacetValues.class, new SelectedFacetValuesDeserializer()).create();
 
 	@Override
@@ -78,7 +78,7 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 			return viewContext.getUiObject(() -> contextKey);
 		} else if (SelectedFacetValues.class.isAssignableFrom(parameter.getParameterType())) {
 			return convertToSelectedFacetValues(webRequest, viewContext, contextKey);
-		} else if (Data.class.isAssignableFrom(parameter.getParameterType()) || DtList.class.isAssignableFrom(parameter.getParameterType())) {
+		} else if (DataObject.class.isAssignableFrom(parameter.getParameterType()) || DtList.class.isAssignableFrom(parameter.getParameterType())) {
 			return mergeAndCheckInput(contextKey, viewContext, parameter, uiMessageStack);
 		}
 		final Object result = viewContext.get(contextKey);// for primitive or other objects
@@ -109,7 +109,7 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 		Assertion.check().isNotNull(uiMessageStack);
 		//---
 		final Object value;
-		if (Data.class.isAssignableFrom(parameter.getParameterType())) {
+		if (DataObject.class.isAssignableFrom(parameter.getParameterType())) {
 			//object
 			if (viewContext.getUiObject(() -> contextKey).checkFormat(uiMessageStack)) {
 				value = viewContext.getUiObject(() -> contextKey).mergeAndCheckInput(getDtObjectValidators(parameter), uiMessageStack);
@@ -131,12 +131,12 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 		return value;
 	}
 
-	private List<DtObjectValidator<Data>> getDtObjectValidators(final MethodParameter parameter) {
+	private List<DtObjectValidator<DataObject>> getDtObjectValidators(final MethodParameter parameter) {
 		final Validate validateAnnotation = parameter.getParameterAnnotation(Validate.class);
-		List<DtObjectValidator<Data>> validators;
+		List<DtObjectValidator<DataObject>> validators;
 		if (validateAnnotation != null) {
 			validators = Stream.of(validateAnnotation.value())
-					.map(dtObjectValidatorClass -> (DtObjectValidator<Data>) InjectorUtil.newInstance(dtObjectValidatorClass))
+					.map(dtObjectValidatorClass -> (DtObjectValidator<DataObject>) InjectorUtil.newInstance(dtObjectValidatorClass))
 					.toList();
 		} else {
 			validators = defaultDtObjectValidators;
@@ -147,7 +147,7 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 	private static boolean isNotLastDt(final MethodParameter parameter) {
 		return Stream.of(parameter.getMethod().getParameters())
 				.skip(parameter.getParameterIndex() + 1L)
-				.anyMatch(remainingParam -> Data.class.isAssignableFrom(remainingParam.getType()) || DtList.class.isAssignableFrom(remainingParam.getType()));
+				.anyMatch(remainingParam -> DataObject.class.isAssignableFrom(remainingParam.getType()) || DtList.class.isAssignableFrom(remainingParam.getType()));
 	}
 
 	private Object convertMultipleToSingleParameter(final Object result, final MethodParameter parameter) {

@@ -23,8 +23,8 @@ import java.util.function.Predicate;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.impl.collections.functions.filter.DtListPatternFilterUtil.FilterPattern;
-import io.vertigo.datamodel.data.model.Data;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
 /**
  * Filtre de DtList prenant en entrée un String qui doit respecter certains patterns.
@@ -39,7 +39,7 @@ import io.vertigo.datamodel.data.util.DataUtil;
  * @author npiedeloup
  * @param <D> Type d'objet
  */
-public final class DtListPatternFilter<D extends Data> implements Predicate<D>, Serializable {
+public final class DtListPatternFilter<D extends DataObject> implements Predicate<D>, Serializable {
 	private static final long serialVersionUID = 6282972172196740177L;
 
 	private final FilterPattern filterPattern;
@@ -75,7 +75,7 @@ public final class DtListPatternFilter<D extends Data> implements Predicate<D>, 
 	@Override
 	public boolean test(final D dto) {
 		if (subDtListFilter == null) {
-			subDtListFilter = DtListPatternFilterUtil.createDtListFilterForPattern(filterPattern, parsedFilter, DataUtil.findDataDefinition(dto));
+			subDtListFilter = DtListPatternFilterUtil.createDtListFilterForPattern(filterPattern, parsedFilter, DataModelUtil.findDataDefinition(dto));
 		}
 		return subDtListFilter.test(dto);
 	}

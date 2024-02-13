@@ -20,7 +20,7 @@ package io.vertigo.vega.webservice.model;
 import java.io.Serializable;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 
 /**
@@ -28,7 +28,7 @@ import io.vertigo.datamodel.data.model.DtList;
  * @author npiedeloup (16 sept. 2014 18:13:55)
  * @param <D> Object type
  */
-public final class DtListDelta<D extends Data> implements Serializable {
+public final class DtListDelta<D extends DataObject> implements Serializable {
 	private static final long serialVersionUID = -5002177631553042497L;
 
 	private final DtList<D> dtListCreates;

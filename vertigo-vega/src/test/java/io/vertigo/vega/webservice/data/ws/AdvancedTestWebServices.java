@@ -37,11 +37,11 @@ import io.vertigo.datamodel.criteria.CriterionLimit;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.Entity;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
@@ -308,7 +308,7 @@ public final class AdvancedTestWebServices implements WebServices {
 		return result;
 	}
 
-	private static <D extends Data> DtList<D> asDtList(final Collection<D> values, final Class<D> dtObjectClass) {
+	private static <D extends DataObject> DtList<D> asDtList(final Collection<D> values, final Class<D> dtObjectClass) {
 		final DtList<D> result = new DtList<>(dtObjectClass);
 		for (final D element : values) {
 			result.add(element);
@@ -316,13 +316,13 @@ public final class AdvancedTestWebServices implements WebServices {
 		return result;
 	}
 
-	private <D extends Data> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
+	private <D extends DataObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
 		final DtList<D> sortedList;
 		if (dtListState.getSortFieldName().isPresent()) {
 			final DataField sortField = unFilteredList.getDefinition().getField(dtListState.getSortFieldName().get());
 			sortedList = unFilteredList
 					.stream()
-					.sorted((dt1, dt2) -> DataUtil.compareFieldValues(dt1, dt2, sortField, dtListState.isSortDesc().get()))
+					.sorted((dt1, dt2) -> DataModelUtil.compareFieldValues(dt1, dt2, sortField, dtListState.isSortDesc().get()))
 					.collect(VCollectors.toDtList(unFilteredList.getDefinition()));
 		} else {
 			sortedList = unFilteredList;
@@ -337,10 +337,10 @@ public final class AdvancedTestWebServices implements WebServices {
 		return sortedList;
 	}
 
-	private <C extends Data, E extends Entity> Predicate<E> createFilterFunction(final C criteria, final Class<E> resultClass) {
+	private <C extends DataObject, E extends Entity> Predicate<E> createFilterFunction(final C criteria, final Class<E> resultClass) {
 		Predicate<E> filter = (o) -> true;
-		final DataDefinition criteriaDefinition = DataUtil.findDataDefinition(criteria);
-		final DataDefinition resultDefinition = DataUtil.findDataDefinition(resultClass);
+		final DataDefinition criteriaDefinition = DataModelUtil.findDataDefinition(criteria);
+		final DataDefinition resultDefinition = DataModelUtil.findDataDefinition(resultClass);
 		final Set<String> alreadyAddedField = new HashSet<>();
 		for (final DataField field : criteriaDefinition.getFields()) {
 			final String fieldName = field.name();

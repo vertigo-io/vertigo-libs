@@ -29,7 +29,7 @@ import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
@@ -49,7 +49,7 @@ public interface SearchServicesPlugin extends Plugin {
 	 * @param indexDefinition Type de l'index
 	 * @param indexCollection Liste des objets à pousser dans l'index
 	 */
-	<K extends KeyConcept, I extends Data> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<K, I>> indexCollection);
+	<K extends KeyConcept, I extends DataObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<K, I>> indexCollection);
 
 	/**
 	 * Ajout d'une ressource à l'index.
@@ -59,7 +59,7 @@ public interface SearchServicesPlugin extends Plugin {
 	 * @param indexDefinition Type de l'index
 	 * @param index Objet à pousser dans l'index
 	 */
-	<K extends KeyConcept, I extends Data> void put(SearchIndexDefinition indexDefinition, SearchIndex<K, I> index);
+	<K extends KeyConcept, I extends DataObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<K, I> index);
 
 	/**
 	 * Ajout de meta data à l'index.
@@ -86,7 +86,7 @@ public interface SearchServicesPlugin extends Plugin {
 	 * @return Résultat correspondant à la requête
 	 * @param <R> Type de l'objet resultant de la recherche
 	 */
-	<R extends Data> FacetedQueryResult<R, SearchQuery> loadList(final List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState);
+	<R extends DataObject> FacetedQueryResult<R, SearchQuery> loadList(final List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState);
 
 	/**
 	 *

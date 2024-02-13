@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
@@ -39,7 +39,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author pchretien, npiedeloup
  * @param <D> DtObject type
  */
-public interface UiObject<D extends Data> extends Serializable {
+public interface UiObject<D extends DataObject> extends Serializable {
 
 	/**
 	 * @return DtDefinition de l'objet métier

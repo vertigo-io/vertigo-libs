@@ -20,7 +20,7 @@ package io.vertigo.datastore.entitystore;
 import io.vertigo.core.node.component.Manager;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.DtListURI;
@@ -134,7 +134,7 @@ public interface EntityStoreManager extends Manager {
 	 * @param desc if the sotr is desc
 	 * @return the sorted list
 	 */
-	<D extends Data> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc);
+	<D extends DataObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc);
 
 	/**
 	 * Return the a dedicated object that handles NN associations

@@ -44,7 +44,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
 /**
  * Deserializer json
@@ -60,7 +60,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 	@Override
 	public SecuredEntity deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 		final JsonObject jsonSecuredEntity = json.getAsJsonObject();
-		final DataDefinition entityDefinition = DataUtil.findDataDefinition(jsonSecuredEntity.get("entity").getAsString());
+		final DataDefinition entityDefinition = DataModelUtil.findDataDefinition(jsonSecuredEntity.get("entity").getAsString());
 		//----
 		asserUnsupportedAttributes("SecuredEntity " + entityDefinition.getClassSimpleName(), jsonSecuredEntity, SECURED_ENTITY_SUPPORTED_ATTRIBUTES);
 		//----

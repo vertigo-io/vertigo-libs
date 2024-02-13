@@ -31,7 +31,7 @@ import io.vertigo.datamodel.data.definitions.association.AssociationNNDefinition
 import io.vertigo.datamodel.data.definitions.association.AssociationSimpleDefinition;
 import io.vertigo.datamodel.data.definitions.association.DtListURIForNNAssociation;
 import io.vertigo.datamodel.data.definitions.association.DtListURIForSimpleAssociation;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.Fragment;
 import io.vertigo.datamodel.data.model.UID;
@@ -41,9 +41,9 @@ import io.vertigo.datamodel.data.model.UID;
  *
  * @author pchretien
  */
-public final class DataUtil {
+public final class DataModelUtil {
 
-	private DataUtil() {
+	private DataModelUtil() {
 		//private constructor.
 	}
 
@@ -53,11 +53,11 @@ public final class DataUtil {
 	 * @param dataDefinition the definition to use for creation
 	 * @return the new instance
 	 */
-	public static Data createData(final DataDefinition dataDefinition) {
+	public static DataObject createDataObject(final DataDefinition dataDefinition) {
 		Assertion.check().isNotNull(dataDefinition);
 		//-----
 		//La création des DtObject n'est pas sécurisée
-		return ClassUtil.newInstance(dataDefinition.getClassCanonicalName(), Data.class);
+		return ClassUtil.newInstance(dataDefinition.getClassCanonicalName(), DataObject.class);
 	}
 
 	/**
@@ -67,7 +67,7 @@ public final class DataUtil {
 	 * @return the new instance
 	 */
 	public static Entity createEntity(final DataDefinition dataDefinition) {
-		return Entity.class.cast(createData(dataDefinition));
+		return Entity.class.cast(createDataObject(dataDefinition));
 	}
 
 	/**
@@ -99,7 +99,7 @@ public final class DataUtil {
 	 * @param dtoTargetClass Class of entity of this association
 	 * @return dto du DTO relié via l'association au dto passé en paramètre (Nullable)
 	 */
-	public static <E extends Entity> UID<E> createUID(final Data data, final String associationDefinitionName, final Class<E> dtoTargetClass) {
+	public static <E extends Entity> UID<E> createUID(final DataObject data, final String associationDefinitionName, final Class<E> dtoTargetClass) {
 		Assertion.check()
 				.isNotNull(associationDefinitionName)
 				.isNotNull(data)
@@ -178,7 +178,7 @@ public final class DataUtil {
 	 * @param data dtObject
 	 * @return Représentation sous forme text du dtObject.
 	 */
-	public static String toString(final Data data) {
+	public static String toString(final DataObject data) {
 		Assertion.check().isNotNull(data);
 		//-----
 		return findDataDefinition(data).getFields()
@@ -194,7 +194,7 @@ public final class DataUtil {
 	 * @param data Data
 	 * @return the id
 	 */
-	public static DataDefinition findDataDefinition(final Data data) {
+	public static DataDefinition findDataDefinition(final DataObject data) {
 		Assertion.check().isNotNull(data);
 		//-----
 		return findDataDefinition(data.getClass());
@@ -206,7 +206,7 @@ public final class DataUtil {
 	 * @param dataClass the type of the 'Data'
 	 * @return the id
 	 */
-	public static DataDefinition findDataDefinition(final Class<? extends Data> dataClass) {
+	public static DataDefinition findDataDefinition(final Class<? extends DataObject> dataClass) {
 		Assertion.check().isNotNull(dataClass);
 		//-----
 		final String name = DataDefinition.PREFIX + dataClass.getSimpleName();
@@ -235,8 +235,8 @@ public final class DataUtil {
 	 * @param dataField field to compare
 	 * @return compare value1 to value2
 	 */
-	public static int compareFieldValues(final Data data1, final Data data2, final DataField dataField, final boolean sortDesc) {
-		Assertion.check().isTrue(DataUtil.findDataDefinition(data1).equals(DataUtil.findDataDefinition(data2)),
+	public static int compareFieldValues(final DataObject data1, final DataObject data2, final DataField dataField, final boolean sortDesc) {
+		Assertion.check().isTrue(DataModelUtil.findDataDefinition(data1).equals(DataModelUtil.findDataDefinition(data2)),
 				"Only Datas of the same type can be compared, you try to compare object types '{0}' and '{1}'", data1.getClass(), data2.getClass());
 		final DataAccessor dataAccessor = dataField.getDataAccessor();
 		return compareFieldValues(dataAccessor.getValue(data1), dataAccessor.getValue(data2), sortDesc);

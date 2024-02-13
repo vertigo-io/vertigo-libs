@@ -19,14 +19,14 @@ package io.vertigo.account.authorization.definitions;
 
 import java.io.Serializable;
 
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 
 /**
  * The name of the security operation.
  * @param <D> the object associated to this operation
  * @author npiedeloup
  */
-public interface OperationName<D extends Data> extends Serializable {
+public interface OperationName<D extends DataObject> extends Serializable {
 
 	/** @return the name of the operation (camel case) */
 	String name();

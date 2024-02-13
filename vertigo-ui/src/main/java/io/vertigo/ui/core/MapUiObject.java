@@ -34,8 +34,8 @@ import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.Data;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
@@ -49,7 +49,7 @@ import io.vertigo.vega.engines.webservice.json.VegaUiObject;
  * @author pchretien, npiedeloup
  * @param <D> Type de DtObject représenté par cet Input
  */
-public final class MapUiObject<D extends Data> extends VegaUiObject<D> implements Map<String, Serializable> {
+public final class MapUiObject<D extends DataObject> extends VegaUiObject<D> implements Map<String, Serializable> {
 	private static final long serialVersionUID = -4639050257543017072L;
 	private static final String SMART_TYPE_MULTIPLE_IDS = "STyMultipleIds";
 	private static final String[] EMPTY_INPUT = new String[0];
@@ -62,7 +62,7 @@ public final class MapUiObject<D extends Data> extends VegaUiObject<D> implement
 	 * @param serverSideDto DtObject
 	 */
 	public MapUiObject(final D serverSideDto, final ViewContextUpdateSecurity viewContextUpdateSecurity) {
-		this(serverSideDto, (D) DataUtil.createData(DataUtil.findDataDefinition(serverSideDto)), Collections.emptySet(), viewContextUpdateSecurity);
+		this(serverSideDto, (D) DataModelUtil.createDataObject(DataModelUtil.findDataDefinition(serverSideDto)), Collections.emptySet(), viewContextUpdateSecurity);
 	}
 
 	/**

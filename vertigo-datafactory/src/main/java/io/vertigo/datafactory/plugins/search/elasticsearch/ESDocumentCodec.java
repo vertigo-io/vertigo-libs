@@ -36,10 +36,10 @@ import io.vertigo.datamodel.data.definitions.DataAccessor;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataField.FieldType;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 
 /**
@@ -71,14 +71,14 @@ public final class ESDocumentCodec {
 		this.typeAdapters = typeAdapters;
 	}
 
-	private <I extends Data> String encode(final I dto) {
+	private <I extends DataObject> String encode(final I dto) {
 		Assertion.check().isNotNull(dto);
 		//-----
 		final byte[] data = codecManager.getCompressedSerializationCodec().encode(dto);
 		return codecManager.getBase64Codec().encode(data);
 	}
 
-	private <R extends Data> R decode(final String base64Data) {
+	private <R extends DataObject> R decode(final String base64Data) {
 		Assertion.check().isNotNull(base64Data);
 		//-----
 		final byte[] data = codecManager.getBase64Codec().decode(base64Data);
@@ -94,7 +94,7 @@ public final class ESDocumentCodec {
 	 * @param searchHit Resultat ElasticSearch
 	 * @return Objet logique de recherche
 	 */
-	public <I extends Data> I searchHit2DtIndex(final DataDefinition indexDtDefinition, final SearchHit searchHit) {
+	public <I extends DataObject> I searchHit2DtIndex(final DataDefinition indexDtDefinition, final SearchHit searchHit) {
 		/* On lit du document les données persistantes. */
 		/* 1. UID */
 		final String urn = searchHit.getId();
@@ -107,7 +107,7 @@ public final class ESDocumentCodec {
 			resultDtObjectdtObject = decode(searchHit.field(FULL_RESULT).getValue());
 		}
 		//-----
-		final DataDefinition resultDtDefinition = DataUtil.findDataDefinition(resultDtObjectdtObject);
+		final DataDefinition resultDtDefinition = DataModelUtil.findDataDefinition(resultDtObjectdtObject);
 		Assertion.check()
 				.isNotNull(uid)
 				.isNotNull(indexDtDefinition)
@@ -127,7 +127,7 @@ public final class ESDocumentCodec {
 	 * @return Document SOLR
 	 * @throws IOException Json exception
 	 */
-	public <S extends KeyConcept, I extends Data> XContentBuilder index2XContentBuilder(final SearchIndex<S, I> index) throws IOException {
+	public <S extends KeyConcept, I extends DataObject> XContentBuilder index2XContentBuilder(final SearchIndex<S, I> index) throws IOException {
 		Assertion.check().isNotNull(index);
 		//-----
 
@@ -151,8 +151,8 @@ public final class ESDocumentCodec {
 					.field(DOC_ID, Serializable.class.cast(index.getUID().getId()));
 
 			/* 3 : Les champs du dto index */
-			final Data dtIndex = index.getIndexDtObject();
-			final DataDefinition indexDtDefinition = DataUtil.findDataDefinition(dtIndex);
+			final DataObject dtIndex = index.getIndexDtObject();
+			final DataDefinition indexDtDefinition = DataModelUtil.findDataDefinition(dtIndex);
 			final Set<DataField> copyToFields = index.getDefinition().getIndexCopyToFields();
 			for (final DataField dtField : indexDtDefinition.getFields()) {
 				if (!copyToFields.contains(dtField)) {//On index pas les copyFields
@@ -195,8 +195,8 @@ public final class ESDocumentCodec {
 				.collect(Collectors.toList());
 	}
 
-	private static <I extends Data> I cloneData(final DataDefinition dataDefinition, final I dto, final List<DataField> excludedFields) {
-		final I clonedDto = (I) DataUtil.createData(dataDefinition);
+	private static <I extends DataObject> I cloneData(final DataDefinition dataDefinition, final I dto, final List<DataField> excludedFields) {
+		final I clonedDto = (I) DataModelUtil.createDataObject(dataDefinition);
 		for (final DataField dtField : dataDefinition.getFields()) {
 			if (!excludedFields.contains(dtField)) {
 				final DataAccessor dataAccessor = dtField.getDataAccessor();

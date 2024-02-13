@@ -37,7 +37,7 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.datafactory.collections.CollectionsManager;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.ui.core.UiListUnmodifiable;
 import io.vertigo.ui.core.ViewContext;
@@ -71,7 +71,7 @@ public final class ListAutocompleteController extends AbstractVSpringMvcControll
 		final DataField labelDataField = dtDefinition.getField(labelField);
 		final Collection<DataField> searchedFields = Collections.singletonList(labelDataField);
 		//-----
-		final UnaryOperator<DtList<Data>> fullTextFilter = collectionsManager.createIndexDtListFunctionBuilder()
+		final UnaryOperator<DtList<DataObject>> fullTextFilter = collectionsManager.createIndexDtListFunctionBuilder()
 				.filter(terms != null ? terms : "", 20, searchedFields)
 				.build();
 		return loadList(fullTextFilter, dtList, valueField, labelField);
@@ -86,7 +86,7 @@ public final class ListAutocompleteController extends AbstractVSpringMvcControll
 			@RequestParam("valueField") final String valueField,
 			@RequestParam("labelField") final String labelField) {
 		final DtList dtList = obtainDtList(viewContext, list);
-		final UnaryOperator<DtList<Data>> byValueFilter = collectionsManager.createIndexDtListFunctionBuilder()
+		final UnaryOperator<DtList<DataObject>> byValueFilter = collectionsManager.createIndexDtListFunctionBuilder()
 				.filterByValue(valueField, value)
 				.build();
 		return loadList(byValueFilter, dtList, valueField, labelField);
@@ -97,7 +97,7 @@ public final class ListAutocompleteController extends AbstractVSpringMvcControll
 		return contextList.mergeAndCheckInput(Collections.EMPTY_LIST, getUiMessageStack());
 	}
 
-	private List loadList(final UnaryOperator<DtList<Data>> listFilter, final DtList dtList, final String valueField,
+	private List loadList(final UnaryOperator<DtList<DataObject>> listFilter, final DtList dtList, final String valueField,
 			final String labelField) {
 		//-----
 		final DtList results;

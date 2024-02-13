@@ -28,7 +28,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.impl.collections.IndexPlugin;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
 
@@ -37,7 +37,7 @@ import io.vertigo.datamodel.data.model.DtListState;
  * @author npiedeloup (5 janv. 2015 10:47:08)
  * @param <D> Object type
  */
-public final class IndexFilterFunction<D extends Data> implements UnaryOperator<DtList<D>> {
+public final class IndexFilterFunction<D extends DataObject> implements UnaryOperator<DtList<D>> {
 
 	private static final int DEFAULT_MAX_ROWS = 250;
 	private String keywords;

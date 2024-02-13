@@ -22,7 +22,7 @@ import java.util.function.UnaryOperator;
 
 import io.vertigo.core.lang.Builder;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 
 /**
@@ -30,7 +30,7 @@ import io.vertigo.datamodel.data.model.DtList;
  * @author npiedeloup
  * @param <D> the type of dtObject in the modified list
  */
-public interface IndexDtListFunctionBuilder<D extends Data> extends Builder<UnaryOperator<DtList<D>>> {
+public interface IndexDtListFunctionBuilder<D extends DataObject> extends Builder<UnaryOperator<DtList<D>>> {
 
 	/**
 	 * Création d'un tri de colonne.

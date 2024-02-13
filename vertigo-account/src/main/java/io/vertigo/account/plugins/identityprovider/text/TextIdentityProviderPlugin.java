@@ -45,7 +45,7 @@ import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 import io.vertigo.datastore.filestore.model.VFile;
@@ -208,7 +208,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		String photoUrl = null;
 		String userAuthToken = null;
 
-		final Entity user = Entity.class.cast(DataUtil.createData(userDtDefinition));
+		final Entity user = Entity.class.cast(DataModelUtil.createDataObject(userDtDefinition));
 		for (final String fieldName : filePatternFieldsOrdered) {
 			final String valueStr = matcher.group(fieldName);
 			if (PHOTO_URL_RESERVED_FIELD.equals(fieldName)) {

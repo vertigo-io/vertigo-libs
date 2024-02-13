@@ -41,10 +41,10 @@ import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.FileUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
@@ -151,7 +151,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	public FileInfo read(final FileInfoURI uri) {
 		// récupération de l'objet en base
 		final UID<Entity> dtoUri = createDtObjectURI(uri);
-		final Data fileInfoDto = getEntityStoreManager().readOne(dtoUri);
+		final DataObject fileInfoDto = getEntityStoreManager().readOne(dtoUri);
 
 		// récupération du fichier
 		final String fileName = getValue(fileInfoDto, DtoFields.fileName, String.class);
@@ -194,7 +194,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
 			final UID<Entity> dtoUri = createDtObjectURI(fileInfo.getURI());
-			final Data fileInfoDtoBase = getEntityStoreManager().readOne(dtoUri);
+			final DataObject fileInfoDtoBase = getEntityStoreManager().readOne(dtoUri);
 			final String pathToSave = getValue(fileInfoDtoBase, DtoFields.filePath, String.class);
 			setValue(fileInfoDto, DtoFields.filePath, pathToSave);
 		}
@@ -221,7 +221,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		getEntityStoreManager().create(fileInfoDto);
 
 		// cas de la création
-		final Object fileInfoDtoId = DataUtil.getId(fileInfoDto);
+		final Object fileInfoDtoId = DataModelUtil.getId(fileInfoDto);
 		Assertion.check().isNotNull(fileInfoDtoId, "File's id must be set.");
 		final FileInfoURI uri = createURI(fileInfo.getDefinition(), fileInfoDtoId);
 		fileInfo.setURIStored(uri);
@@ -264,7 +264,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 
 		final UID<Entity> dtoUri = createDtObjectURI(uri);
 		//-----suppression du fichier
-		final Data fileInfoDto = getEntityStoreManager().readOne(dtoUri);
+		final DataObject fileInfoDto = getEntityStoreManager().readOne(dtoUri);
 		final String path = getValue(fileInfoDto, DtoFields.filePath, String.class);
 		getCurrentTransaction().addAfterCompletion(new FileActionDelete(documentRoot + path));
 		//-----suppression en base
@@ -299,7 +299,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		Assertion.check().isNotNull(fileInfoDefinition, "fileInfoDefinition must be provided.");
 		//-----
 		// Il doit exister un DtObjet associé, avec la structure attendue.
-		return DataUtil.createEntity(storeDtDefinition);
+		return DataModelUtil.createEntity(storeDtDefinition);
 	}
 
 	/**
@@ -309,8 +309,8 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 * @param field Nom du champs
 	 * @return Valeur typé du champ
 	 */
-	private static <V> V getValue(final Data dto, final DtoFields field, final Class<V> valueClass) {
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(dto);
+	private static <V> V getValue(final DataObject dto, final DtoFields field, final Class<V> valueClass) {
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(dto);
 		final DataField dtField = dataDefinition.getField(field.name());
 		return valueClass.cast(dtField.getDataAccessor().getValue(dto));
 	}
@@ -322,13 +322,13 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 * @param field Nom du champs
 	 * @param value Valeur
 	 */
-	private static void setValue(final Data dto, final DtoFields field, final Object value) {
-		final DataField dtField = DataUtil.findDataDefinition(dto).getField(field.name());
+	private static void setValue(final DataObject dto, final DtoFields field, final Object value) {
+		final DataField dtField = DataModelUtil.findDataDefinition(dto).getField(field.name());
 		dtField.getDataAccessor().setValue(dto, value);
 	}
 
-	private static void setIdValue(final Data dto, final FileInfoURI uri) {
-		final DataField dtField = DataUtil.findDataDefinition(dto).getIdField().get();
+	private static void setIdValue(final DataObject dto, final FileInfoURI uri) {
+		final DataField dtField = DataModelUtil.findDataDefinition(dto).getIdField().get();
 		dtField.getDataAccessor().setValue(dto, uri.getKeyAs(dtField.smartTypeDefinition().getJavaClass()));
 	}
 

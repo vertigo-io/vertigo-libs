@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
@@ -32,7 +32,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author npiedeloup (16 sept. 2014 18:13:55)
  * @param <D> Object type
  */
-public final class UiListModifiable<D extends Data> extends AbstractUiListModifiable<D> {
+public final class UiListModifiable<D extends DataObject> extends AbstractUiListModifiable<D> {
 	private static final long serialVersionUID = -8008715790791553036L;
 
 	protected UiListModifiable(final Class<D> objectType) {

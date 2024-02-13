@@ -25,7 +25,7 @@ import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.stereotype.Field;
 import io.vertigo.datamodel.data.stereotype.ForeignKey;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
 public final class Item implements KeyConcept {
 	/** SerialVersionUID. */
@@ -211,6 +211,6 @@ public final class Item implements KeyConcept {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return DataUtil.toString(this);
+		return DataModelUtil.toString(this);
 	}
 }

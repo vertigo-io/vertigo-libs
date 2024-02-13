@@ -26,7 +26,7 @@ import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.stereotype.DisplayField;
 import io.vertigo.datamodel.data.stereotype.Field;
 import io.vertigo.datamodel.data.stereotype.SortField;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
 
 /**
@@ -309,6 +309,6 @@ public final class Movie implements KeyConcept {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return DataUtil.toString(this);
+		return DataModelUtil.toString(this);
 	}
 }

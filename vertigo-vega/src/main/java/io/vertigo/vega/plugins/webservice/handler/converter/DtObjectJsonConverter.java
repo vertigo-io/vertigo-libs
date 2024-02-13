@@ -24,7 +24,7 @@ import java.util.Arrays;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
@@ -48,7 +48,7 @@ public final class DtObjectJsonConverter implements JsonConverter {
 	/** {@inheritDoc} */
 	@Override
 	public boolean canHandle(final Class<?> paramClass) {
-		return Data.class.isAssignableFrom(paramClass);
+		return DataObject.class.isAssignableFrom(paramClass);
 	}
 
 	/** {@inheritDoc}*/
@@ -56,19 +56,19 @@ public final class DtObjectJsonConverter implements JsonConverter {
 	public void populateWebServiceCallContext(final Object input, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		final Class<?> paramClass = webServiceParam.getType();
 		Assertion.check()
-				.isTrue(Data.class.isAssignableFrom(paramClass), "This JsonConverter can't read the asked type {0}. Only {1} is supported", paramClass.getSimpleName(),
-						Data.class.getSimpleName())
+				.isTrue(DataObject.class.isAssignableFrom(paramClass), "This JsonConverter can't read the asked type {0}. Only {1} is supported", paramClass.getSimpleName(),
+						DataObject.class.getSimpleName())
 				.isTrue(getSupportedInputs()[0].isInstance(input) || getSupportedInputs()[1].isInstance(input), "This JsonConverter doesn't support this input type {0}. Only {1} is supported",
 						input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
 		//-----
 		final Type paramGenericType = webServiceParam.getGenericType();
 		final String objectPath;
-		final UiObject<Data> uiObject;
+		final UiObject<DataObject> uiObject;
 		if (input instanceof String) {
 			uiObject = jsonReaderEngine.uiObjectFromJson((String) input, paramGenericType);
 			objectPath = "";
 		} else if (input instanceof UiContext) { //cas des innerBodyParam
-			uiObject = (UiObject<Data>) ((UiContext) input).get(webServiceParam.getName());
+			uiObject = (UiObject<DataObject>) ((UiContext) input).get(webServiceParam.getName());
 			objectPath = webServiceParam.getName();
 		} else {
 			throw new IllegalArgumentException(String.format("This JsonConverter can't read the asked type %s. Only %s is supported", paramClass.getSimpleName(), UiListDelta.class.getSimpleName()));

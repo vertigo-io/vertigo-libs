@@ -31,7 +31,7 @@ import java.util.Set;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
 /**
  * Classe de stockage des listes.
@@ -41,7 +41,7 @@ import io.vertigo.datamodel.data.util.DataUtil;
  * @author fconstantin
  * @param <D> Type du DtObject
  */
-public final class DtList<D extends Data> extends AbstractList<D> implements Serializable {
+public final class DtList<D extends DataObject> extends AbstractList<D> implements Serializable {
 	private static final int TO_STRING_MAX_ELEMENTS = 50;
 	private static final long serialVersionUID = -8059200549636099190L;
 	/**
@@ -93,7 +93,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 	 * @param dtObjectClass Type d'objet
 	 */
 	public DtList(final Class<D> dtObjectClass) {
-		this(DataUtil.findDataDefinition(dtObjectClass));
+		this(DataModelUtil.findDataDefinition(dtObjectClass));
 	}
 
 	/**
@@ -105,7 +105,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 	 * @param <D> Type of this list
 	 */
 	@SafeVarargs
-	public static <D extends Data> DtList<D> of(final D dto, final D... dtos) {
+	public static <D extends DataObject> DtList<D> of(final D dto, final D... dtos) {
 		return DtList.of(dto, Arrays.asList(dtos));
 	}
 
@@ -117,7 +117,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 	 * @return the created DtList.
 	 * @param <D> Type of this list
 	 */
-	public static <D extends Data> DtList<D> of(final D dto, final List<D> dtos) {
+	public static <D extends DataObject> DtList<D> of(final D dto, final List<D> dtos) {
 		Assertion.check()
 				.isNotNull(dto)
 				.isNotNull(dtos);
@@ -125,7 +125,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 		dtos.stream()
 				.forEach(other -> Assertion.check().isTrue(dto.getClass().equals(other.getClass()), "all dtos must have the same type"));
 		//---
-		final DtList<D> dtList = new DtList<>(DataUtil.findDataDefinition(dto));
+		final DtList<D> dtList = new DtList<>(DataModelUtil.findDataDefinition(dto));
 		//---
 		dtList.add(dto);
 		dtList.addAll(dtos);
@@ -175,7 +175,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 	@Override
 	public boolean add(final D dto) {
 		Assertion.check().isNotNull(dto);
-		final DataDefinition foundDtDefinition = DataUtil.findDataDefinition(dto);
+		final DataDefinition foundDtDefinition = DataModelUtil.findDataDefinition(dto);
 		Assertion.check().isTrue(getDefinition().equals(foundDtDefinition), "Ne peut pas inserer un dto '{0}' dans une collection '{1}'", foundDtDefinition, getDefinition());
 		//-----
 		return datas.add(dto);
@@ -185,7 +185,7 @@ public final class DtList<D extends Data> extends AbstractList<D> implements Ser
 	@Override
 	public void add(final int index, final D dto) {
 		Assertion.check().isNotNull(dto);
-		final DataDefinition foundDtDefinition = DataUtil.findDataDefinition(dto);
+		final DataDefinition foundDtDefinition = DataModelUtil.findDataDefinition(dto);
 		Assertion.check().isTrue(getDefinition().equals(foundDtDefinition), "Ne peut pas inserer un dto '{0}' dans une collection '{1}'", foundDtDefinition, getDefinition());
 		//-----
 		datas.add(index, dto);

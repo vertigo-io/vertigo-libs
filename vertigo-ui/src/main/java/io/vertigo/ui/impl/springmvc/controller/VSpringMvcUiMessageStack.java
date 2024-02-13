@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
@@ -106,7 +106,7 @@ public final class VSpringMvcUiMessageStack implements UiMessageStack {
 	 * @param fieldName Champ portant l'erreur
 	 */
 	@Override
-	public void error(final String message, final Data dto, final String fieldName) {
+	public void error(final String message, final DataObject dto, final String fieldName) {
 		addFieldMessage(Level.ERROR, message, dto, fieldName);
 	}
 
@@ -116,7 +116,7 @@ public final class VSpringMvcUiMessageStack implements UiMessageStack {
 	 * @param fieldName Champ portant l'erreur
 	 */
 	@Override
-	public void warning(final String message, final Data dto, final String fieldName) {
+	public void warning(final String message, final DataObject dto, final String fieldName) {
 		addFieldMessage(Level.WARNING, message, dto, fieldName);
 	}
 
@@ -126,7 +126,7 @@ public final class VSpringMvcUiMessageStack implements UiMessageStack {
 	 * @param fieldName Champ portant l'erreur
 	 */
 	@Override
-	public void info(final String message, final Data dto, final String fieldName) {
+	public void info(final String message, final DataObject dto, final String fieldName) {
 		addFieldMessage(Level.INFO, message, dto, fieldName);
 	}
 
@@ -134,7 +134,7 @@ public final class VSpringMvcUiMessageStack implements UiMessageStack {
 	 * @see io.vertigo.vega.webservice.validation.UiMessageStack#addFieldMessage(io.vertigo.vega.webservice.validation.UiMessageStack.Level, java.lang.String, io.vertigo.dynamo.domain.model.DtObject, java.lang.String)
 	 */
 	@Override
-	public void addFieldMessage(final Level level, final String message, final Data dto, final String fieldName) {
+	public void addFieldMessage(final Level level, final String message, final DataObject dto, final String fieldName) {
 		addFieldMessage(level, message, UiRequestUtil.getCurrentViewContext().findKey(dto), fieldName);
 
 	}

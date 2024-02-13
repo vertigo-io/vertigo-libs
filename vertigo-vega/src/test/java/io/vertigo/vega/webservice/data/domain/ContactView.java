@@ -23,11 +23,11 @@ import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.stereotype.Field;
 
-public final class ContactView implements Data {
+public final class ContactView implements DataObject {
 	private static final long serialVersionUID = 2074906343392206381L;
 
 	@Field(smartType = "STyCode", label = "Honorific title")

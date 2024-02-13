@@ -48,9 +48,9 @@ import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datastore.DataStoreFeatures;
@@ -74,8 +74,8 @@ public class CollectionsManagerTest {
 		node = new AutoCloseableNode(buildNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
 		//---
-		dtDefinitionItem = DataUtil.findDataDefinition(SmartItem.class);
-		dtDefinitionItemCd = DataUtil.findDataDefinition(SmartItemCd.class);
+		dtDefinitionItem = DataModelUtil.findDataDefinition(SmartItem.class);
+		dtDefinitionItemCd = DataModelUtil.findDataDefinition(SmartItemCd.class);
 	}
 
 	@AfterEach
@@ -408,7 +408,7 @@ public class CollectionsManagerTest {
 
 	@Test
 	public void testCreateFilter() {
-		final Predicate<Data> predicate = collectionsManager.filter(ListFilter.of("label" + ":[a TO b]"));
+		final Predicate<DataObject> predicate = collectionsManager.filter(ListFilter.of("label" + ":[a TO b]"));
 		Assertions.assertNotNull(predicate);
 	}
 

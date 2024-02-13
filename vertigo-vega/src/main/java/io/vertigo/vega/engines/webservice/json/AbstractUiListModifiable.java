@@ -32,10 +32,10 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.model.Data;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
@@ -47,7 +47,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author npiedeloup
  * @param <D> Type d'objet
  */
-public abstract class AbstractUiListModifiable<D extends Data> extends AbstractList<UiObject<D>> implements UiList<D>, Serializable {
+public abstract class AbstractUiListModifiable<D extends DataObject> extends AbstractList<UiObject<D>> implements UiList<D>, Serializable {
 
 	private static final long serialVersionUID = -8398542301760300787L;
 	private final DefinitionId<DataDefinition> dataDefinitionId;
@@ -235,7 +235,7 @@ public abstract class AbstractUiListModifiable<D extends Data> extends AbstractL
 		//SKE MLA : lazy initialisation of buffer uiObjects for size changing uiListModifiable
 		final DataDefinition dataDefinition = dataDefinitionId.get();
 		for (int i = bufferUiObjects.size(); i < row + 1; i++) {
-			add((D) DataUtil.createData(dataDefinition));
+			add((D) DataModelUtil.createDataObject(dataDefinition));
 		}
 
 		final UiObject<D> uiObject = bufferUiObjects.get(row);
@@ -246,8 +246,8 @@ public abstract class AbstractUiListModifiable<D extends Data> extends AbstractL
 	/** {@inheritDoc} */
 	@Override
 	public int indexOf(final Object o) {
-		if (o instanceof Data) {
-			return indexOfDtObject((Data) o);
+		if (o instanceof DataObject) {
+			return indexOfDtObject((DataObject) o);
 		} else if (o instanceof UiObject) {
 			return indexOfUiObject((UiObject<D>) o);
 		}
@@ -258,7 +258,7 @@ public abstract class AbstractUiListModifiable<D extends Data> extends AbstractL
 	 * @param dtObject DtObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	private int indexOfDtObject(final Data dtObject) {
+	private int indexOfDtObject(final DataObject dtObject) {
 		Assertion.check().isNotNull(dtObject);
 		//-----
 		for (int i = 0; i < bufferUiObjects.size(); i++) {

@@ -25,8 +25,8 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.model.Data;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
@@ -105,8 +105,8 @@ abstract class AbstractDbFileStorePlugin {
 	 * @param valueClass Type du champ
 	 * @return Valeur typé du champ
 	 */
-	protected static <V> V getValue(final Data dto, final DataFieldName fieldName, final Class<V> valueClass) {
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(dto);
+	protected static <V> V getValue(final DataObject dto, final DataFieldName fieldName, final Class<V> valueClass) {
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(dto);
 		final DataField dtField = dataDefinition.getField(fieldName.name());
 		return valueClass.cast(dtField.getDataAccessor().getValue(dto));
 	}
@@ -118,8 +118,8 @@ abstract class AbstractDbFileStorePlugin {
 	 * @param fieldName Nom du champs
 	 * @param value Valeur
 	 */
-	protected static void setValue(final Data dto, final DataFieldName fieldName, final Object value) {
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(dto);
+	protected static void setValue(final DataObject dto, final DataFieldName fieldName, final Object value) {
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(dto);
 		final DataField dtField = dataDefinition.getField(fieldName.name());
 		dtField.getDataAccessor().setValue(dto, value);
 	}
@@ -127,8 +127,8 @@ abstract class AbstractDbFileStorePlugin {
 	/**
 	 * @param dto DtObject
 	 */
-	protected static void setIdValue(final Data dto, final FileInfoURI uri) {
-		final DataDefinition dataDefinition = DataUtil.findDataDefinition(dto);
+	protected static void setIdValue(final DataObject dto, final FileInfoURI uri) {
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(dto);
 		final DataField idField = dataDefinition.getIdField().get();
 		idField.getDataAccessor().setValue(dto, uri.getKeyAs(idField.smartTypeDefinition().getJavaClass()));
 	}

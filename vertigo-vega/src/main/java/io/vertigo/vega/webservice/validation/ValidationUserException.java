@@ -26,8 +26,8 @@ import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
-import io.vertigo.datamodel.data.model.Data;
-import io.vertigo.datamodel.data.util.DataUtil;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
 /**
  * Validation exception on a object's field.
@@ -62,7 +62,7 @@ public final class ValidationUserException extends VUserException {
 	 * @param dto object
 	 * @param fieldName field
 	 */
-	public ValidationUserException(final LocaleMessageText messageText, final Data dto, final DataFieldName fieldName) {
+	public ValidationUserException(final LocaleMessageText messageText, final DataObject dto, final DataFieldName fieldName) {
 		this(messageText, fieldName.name(), dto);
 	}
 
@@ -72,17 +72,17 @@ public final class ValidationUserException extends VUserException {
 	 * @param dto object
 	 * @param fieldName fieldName in CamelCase
 	 */
-	public ValidationUserException(final LocaleMessageText messageText, final Data dto, final String fieldName) {
+	public ValidationUserException(final LocaleMessageText messageText, final DataObject dto, final String fieldName) {
 		this(messageText, fieldName, dto);
 	}
 
-	private ValidationUserException(final LocaleMessageText messageText, final String constFieldName, final Data dto) {
+	private ValidationUserException(final LocaleMessageText messageText, final String constFieldName, final DataObject dto) {
 		super(messageText);
 		Assertion.check()
 				.isNotNull(dto, "L'objet est obligatoire")
 				.isNotBlank(constFieldName, "Le champs est obligatoire");
 		//-----
-		final DataField dtField = DataUtil.findDataDefinition(dto).getField(constFieldName);
+		final DataField dtField = DataModelUtil.findDataDefinition(dto).getField(constFieldName);
 		uiErrors.add(new UiError(dto, dtField, messageText));
 	}
 
