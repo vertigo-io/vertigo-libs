@@ -17,14 +17,13 @@
  */
 package io.vertigo.vega.webservice.validation;
 
-import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DataObject;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.ConstraintException;
 
 /**
  * Default DtObject validation : check constraints on modified fields.
+ *
  * @author npiedeloup
  * @param <O> Type d'objet
  */
@@ -33,12 +32,10 @@ public final class DefaultDtObjectValidator<O extends DataObject> extends Abstra
 	/** {@inheritDoc} */
 	@Override
 	protected void checkMonoFieldConstraints(final O dtObject, final DataField dtField, final DtObjectErrors dtObjectErrors) {
-		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-		//---
 		final Object value = dtField.getDataAccessor().getValue(dtObject);
 		//Validates the value
 		try {
-			smartTypeManager.validate(dtField.smartTypeDefinition(), dtField.cardinality(), value);
+			dtField.validate(value);
 		} catch (final ConstraintException e) {
 			// Erreur lors du check de la valeur,
 			// la valeur est toutefois correctement typée.

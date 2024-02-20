@@ -19,7 +19,6 @@ package io.vertigo.datamodel.data.definitions;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
@@ -31,7 +30,6 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
  * This node can be a field, an attribute...
  *
  * @author pchretien
- *
  * @param name the name
  * @param smartTypeDefinition the smartType
  * @param cardinality the cardinality (one, optional, many)
@@ -76,6 +74,7 @@ public abstract class DataDescriptor {
 	 * Returns the class of the value defined by this node
 	 * If cardinality is many it's either a list or a dtList,
 	 * if not then it's the base type of the smartType.
+	 *
 	 * @return the java Class of the value defined by this node
 	 */
 	public final Class<?> getTargetJavaClass() {
@@ -84,6 +83,7 @@ public abstract class DataDescriptor {
 
 	/**
 	 * Checks the type of the value
+	 *
 	 * @param value the value
 	 */
 	public final void checkType(final Object value) {
@@ -93,14 +93,12 @@ public abstract class DataDescriptor {
 
 	/**
 	 * Validates the value (the value type is also automatically checked before)
+	 *
 	 * @param value the value
+	 * @throws ConstraintException
 	 */
-	public final void validate(final Object value) {
+	public final void validate(final Object value) throws ConstraintException {
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-		try {
-			smartTypeManager.validate(smartTypeDefinition(), cardinality(), value);
-		} catch (final ConstraintException e) {
-			throw WrappedException.wrap(e);
-		}
+		smartTypeManager.validate(smartTypeDefinition(), cardinality(), value);
 	}
 }
