@@ -20,11 +20,14 @@ package io.vertigo.datamodel.task.model;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.datamodel.smarttype.definitions.ConstraintException;
 import io.vertigo.datamodel.task.definitions.TaskAttribute;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
 
 /**
  * Résultat de l'exécution d'une tache.
+ *
  * @author dchallas
  */
 public final class TaskResult {
@@ -43,7 +46,13 @@ public final class TaskResult {
 		Assertion.check().isNotNull(taskDefinition);
 		//-----
 		outTaskAttributeOptional = taskDefinition.getOutAttributeOption();
-		outTaskAttributeOptional.ifPresent(outTaskAttribute -> outTaskAttribute.validate(result));
+		outTaskAttributeOptional.ifPresent(outTaskAttribute -> {
+			try {
+				outTaskAttribute.validate(result);
+			} catch (final ConstraintException e) {
+				throw WrappedException.wrap(e);
+			}
+		});
 
 		this.result = result;
 	}
