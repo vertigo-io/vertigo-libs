@@ -45,8 +45,7 @@ public final class ConstraintNumberMaximum implements Constraint<Number, Number>
 				.isNotBlank(args, "Vous devez préciser la valeur maximum comme argument de ConstraintNumberMaximum");
 		//-----
 		maxValue = Double.parseDouble(args);
-		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
-				() -> LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MAXIMUM, maxValue));
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt, Resources.DYNAMO_CONSTRAINT_NUMBER_MAXIMUM, maxValue);
 	}
 
 	/** {@inheritDoc} */

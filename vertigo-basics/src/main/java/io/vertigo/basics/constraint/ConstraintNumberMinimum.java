@@ -45,8 +45,7 @@ public final class ConstraintNumberMinimum implements Constraint<Number, Number>
 				.isNotBlank(args, "Vous devez préciser la valeur minimum comme argument de ConstraintNumberMinimum");
 		//-----
 		minValue = Double.parseDouble(args);
-		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
-				() -> LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue));
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt, Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue);
 	}
 
 	/** {@inheritDoc} */

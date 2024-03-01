@@ -67,8 +67,7 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 		maxValue = tmpMaxValue;
 		minValue = -tmpMaxValue;
 		//--
-		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
-				() -> LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_INTEGERLENGTH_EXCEEDED, minValue, maxValue));
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt, Resources.DYNAMO_CONSTRAINT_INTEGERLENGTH_EXCEEDED, minValue, maxValue);
 	}
 
 	/** {@inheritDoc} */

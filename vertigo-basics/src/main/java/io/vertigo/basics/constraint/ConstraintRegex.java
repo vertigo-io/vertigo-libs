@@ -43,8 +43,7 @@ public final class ConstraintRegex implements Constraint<String, String> {
 				.isNotBlank(regex);
 		//---
 		pattern = Pattern.compile(regex);
-		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
-				() -> LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern()));
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt, Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern());
 	}
 
 	/** {@inheritDoc} */

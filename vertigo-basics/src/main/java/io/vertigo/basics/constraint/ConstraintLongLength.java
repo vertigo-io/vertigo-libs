@@ -66,8 +66,7 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 		maxValue = tmpMaxValue;
 		minValue = -tmpMaxValue;
 		//---
-		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
-				() -> LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_LONGLENGTH_EXCEEDED, minValue, maxValue));
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt, Resources.DYNAMO_CONSTRAINT_LONGLENGTH_EXCEEDED, minValue, maxValue);
 	}
 
 	/** {@inheritDoc} */
