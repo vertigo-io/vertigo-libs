@@ -108,18 +108,18 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		final DtList<Movie> mySubList = DtList.of(myList.get(0), myList.get(1));
 		mySubList.get(0).setTestBoolean(true);
 
-		viewContext.publishDtListModifiable(movieListModifiables, mySubList);
-		viewContext.publishMdl(moviesListMdl, Movie.class, null);
-		viewContext.publishDtList(movieDisplayList, movieServices.getMoviesDisplay(DtListState.defaultOf(Movie.class)));
-		viewContext.publishDto(movieDisplayInputKey, new MovieDisplay());
+		viewContext.publishDtListModifiable(movieListModifiables, mySubList)
+				.publishMdl(moviesListMdl, Movie.class, null)
+				.publishDtList(movieDisplayList, movieServices.getMoviesDisplay(DtListState.defaultOf(Movie.class)))
+				.publishDto(movieDisplayInputKey, new MovieDisplay())
 
-		viewContext.publishMdl(communeListMdl, Commune.class, null);
+				.publishMdl(communeListMdl, Commune.class, null)
 
-		viewContext.publishRef(currentInstant, Instant.now());
-		viewContext.publishRef(currentZoneId, localeManager.getCurrentZoneId().getId());
-		viewContext.publishRef(zoneId, timeZoneListStatic[0]);
-		viewContext.publishRef(timeZoneList, timeZoneListStatic);
-		viewContext.publishRef(selectedTimeZoneList, "");
+				.publishRef(currentInstant, Instant.now())
+				.publishRef(currentZoneId, localeManager.getCurrentZoneId().getId())
+				.publishRef(zoneId, timeZoneListStatic[0])
+				.publishRef(timeZoneList, timeZoneListStatic)
+				.publishRef(selectedTimeZoneList, "");
 
 		final URI fullPath = getClass().getResource("/data/insee.csv").toURI();
 		final VFile dummyFile1 = new FSFile("my1stFile.csv", "text/csv", Paths.get(fullPath));

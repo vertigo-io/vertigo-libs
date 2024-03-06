@@ -44,9 +44,10 @@ public class SecuredActionController extends AbstractVSpringMvcController {
 
 	@GetMapping("/")
 	public void initContext(final ViewContext viewContext) {
-		viewContext.publishRef(movIdKey, 1000L);
 		final Movie movie = movieServices.get(viewContext.getLong(movIdKey));
+
 		viewContext
+				.publishRef(movIdKey, 1000L)
 				.publishDto(movieKey, movie)
 				.toModeEdit();
 	}

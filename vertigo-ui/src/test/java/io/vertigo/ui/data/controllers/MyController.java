@@ -54,11 +54,12 @@ public class MyController extends AbstractVSpringMvcController {
 
 	@GetMapping("/")
 	public void initContext(final ViewContext viewContext) {
-		viewContext.publishRef(movIdKey, 1000L);
 		final Movie movie = movieServices.get(viewContext.getLong(movIdKey));
-		viewContext.publishDto(movieKey, movie);
-		viewContext.publishDto(movie2Key, new Movie());
-		viewContext.publishRef(messageKey, "Hello!  movie id :" + viewContext.getLong(movIdKey));
+
+		viewContext.publishRef(movIdKey, 1000L)
+				.publishDto(movieKey, movie)
+				.publishDto(movie2Key, new Movie())
+				.publishRef(messageKey, "Hello!  movie id :" + viewContext.getLong(movIdKey));
 	}
 
 	@PostMapping("/")
