@@ -224,11 +224,11 @@ img.avatar {
 
 /** Actions columns */
 
-td.col_action .q-hoverable:hover {
+.col_action .q-hoverable:hover {
 	box-shadow: inset -1px 0 0 #000, inset 0 -1px 0 #000, inset 1px 0 0 #000, inset 0 1px 0 #000;
 }
 
-td.col_action .text-primary.q-hoverable:hover {
+.col_action .text-primary.q-hoverable:hover {
     box-shadow: inset -1px 0 0 var(--q-primary), inset 0 -1px 0 var(--q-primary), inset 1px 0 0 var(--q-primary), inset 0 1px 0 var(--q-primary);
 }
 
@@ -237,7 +237,8 @@ td.col_action .text-primary.q-hoverable:hover {
 }
 
 .no-touch .showButtonOnHover:hover > .q-btn[disabled],
-.no-touch tr:hover .showButtonOnHover > .q-btn[disabled] {
+.no-touch tr:hover .showButtonOnHover > .q-btn[disabled],
+.no-touch div.q-hoverable:hover .showButtonOnHover > .q-btn[disabled] {
   opacity: 0.5!important;
   transition: .5s;
 }
@@ -336,7 +337,8 @@ thead tr:hover:last-child th:last-child:not(:first-child), tr:hover td:nth-last-
 }
 
 .no-touch .showButtonOnHover:hover > .q-btn,
-.no-touch tr:hover .showButtonOnHover > .q-btn {
+.no-touch tr:hover .showButtonOnHover > .q-btn,
+.no-touch div.q-hoverable:hover .showButtonOnHover > .q-btn {
   opacity: 1;
   transition: .5s;
 }
@@ -344,6 +346,10 @@ thead tr:hover:last-child th:last-child:not(:first-child), tr:hover td:nth-last-
 .no-touch .showButtonOnHover > .q-btn {
   opacity: 0;
   transition: .5s;
+}
+
+.no-touch div.q-hoverable:not(:hover) .showButtonOnHover > .q-btn {
+  opacity: 0 !important;
 }
 
 .dropzone-area {
