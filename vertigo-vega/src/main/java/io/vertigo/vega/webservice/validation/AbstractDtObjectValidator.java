@@ -18,15 +18,19 @@
 package io.vertigo.vega.webservice.validation;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.util.DataModelUtil;
+import io.vertigo.datamodel.smarttype.SmarttypeResources;
 
 /**
  * Objet de validation d'un DtObject.
+ *
  * @author npiedeloup
  * @param <O> Type d'objet
  */
@@ -35,15 +39,26 @@ public abstract class AbstractDtObjectValidator<O extends DataObject> implements
 	/** {@inheritDoc} */
 	@Override
 	public void validate(final O dtObject, final Set<String> modifiedFieldNames, final DtObjectErrors dtObjectErrors) {
+		final List<String> fieldsNameToNullCheck = getFieldsToNullCheck(dtObject).stream()
+				.map(DataFieldName::name)
+				.toList();
+
 		for (final String fieldName : modifiedFieldNames) {
 			final DataField dtField = getDataField(fieldName, dtObject);
-			checkMonoFieldConstraints(dtObject, dtField, dtObjectErrors);
+			final Object value = dtField.getDataAccessor().getValue(dtObject);
+
+			if (value == null && fieldsNameToNullCheck.contains(dtField.name())) {
+				dtObjectErrors.addError(dtField.name(), LocaleMessageText.of(SmarttypeResources.SMARTTYPE_MISSING_VALUE));
+			} else {
+				checkMonoFieldConstraints(dtObject, dtField, dtObjectErrors);
+			}
 		}
 		checkMultiFieldConstraints(dtObject, modifiedFieldNames, dtObjectErrors);
 	}
 
 	/**
 	 * Effectue des controles multichamps spécifiques.
+	 *
 	 * @param dtObject Objet à tester
 	 * @param modifiedFieldNames Liste des champs modifiés
 	 * @param dtObjectErrors Pile des erreurs
@@ -55,6 +70,7 @@ public abstract class AbstractDtObjectValidator<O extends DataObject> implements
 
 	/**
 	 * Effectue des controles monochamps spécifiques.
+	 *
 	 * @param dtObject Objet à tester
 	 * @param dtField Champs à tester
 	 * @param dtObjectErrors Pile des erreurs
@@ -62,6 +78,16 @@ public abstract class AbstractDtObjectValidator<O extends DataObject> implements
 	protected void checkMonoFieldConstraints(final O dtObject, final DataField dtField, final DtObjectErrors dtObjectErrors) {
 		//enrichissable pour un type d'objet particulier
 		//ex: input.addError(e.getMessageText());
+	}
+
+	/**
+	 * Effectue le contrôle de non nullité sur les champs spécifiés.
+	 *
+	 * @param dtObject l'objet à tester
+	 * @return la liste des champs à contrôler
+	 */
+	protected List<DataFieldName<O>> getFieldsToNullCheck(final O dtObject) {
+		return List.of();
 	}
 
 	/**
@@ -80,6 +106,7 @@ public abstract class AbstractDtObjectValidator<O extends DataObject> implements
 
 	/**
 	 * Vérifie l'égalité des champs.
+	 *
 	 * @param dto Object a tester
 	 * @param fieldName1 Champs 1
 	 * @param fieldName2 Champs 2
@@ -96,6 +123,7 @@ public abstract class AbstractDtObjectValidator<O extends DataObject> implements
 
 	/**
 	 * Vérifie que la date du champ 2 est après (strictement) la date du champ 1.
+	 *
 	 * @param dto Object a tester
 	 * @param fieldName1 Champs 1
 	 * @param fieldName2 Champs 2
@@ -112,6 +140,7 @@ public abstract class AbstractDtObjectValidator<O extends DataObject> implements
 
 	/**
 	 * Vérifie que le Long du champ 2 est après (strictement) le Long du champ 1.
+	 *
 	 * @param dto Object a tester
 	 * @param fieldName1 Champs 1
 	 * @param fieldName2 Champs 2
@@ -128,6 +157,7 @@ public abstract class AbstractDtObjectValidator<O extends DataObject> implements
 
 	/**
 	 * Vérifie que le champ est renseigner.
+	 *
 	 * @param dto Object a tester
 	 * @param fieldName Champs
 	 * @param dtObjectErrors Pile des erreurs
@@ -142,6 +172,7 @@ public abstract class AbstractDtObjectValidator<O extends DataObject> implements
 
 	/**
 	 * Vérifie qu'au moins l'un des champs est renseigné.
+	 *
 	 * @param dto Object a tester
 	 * @param dtObjectErrors Pile des erreurs
 	 * @param messageText Message à appliquer si erreur
@@ -163,6 +194,7 @@ public abstract class AbstractDtObjectValidator<O extends DataObject> implements
 
 	/**
 	 * Vérifie qu'au plus un des champs est renseigné.
+	 *
 	 * @param dto Object a tester
 	 * @param dtObjectErrors Pile des erreurs
 	 * @param messageText Message à appliquer si erreur
