@@ -1,5 +1,5 @@
 <th:block th:fragment="search(resultKey, searchUrl, collectionComponentId)"
 	th:assert="${resultKey} != null and ${searchUrl} != null and ${collectionComponentId} != null" 
-	th:attr="objectKey=${model.vContext['componentStates'].addComponentState('__${resultKey}__Search').addPrimitive('searchUrl', '__${searchUrl}__' )}, objectKey=${model.vContext['componentStates']['__${resultKey}__Search'].addPrimitive('collectionComponentId', collectionComponentId )}">
+	th:attr="objectKey=${model.vContext['componentStates'].addComponentState('__${resultKey}__Search').addPrimitive('searchUrl', '__${searchUrl}__' ).addPrimitive('collectionComponentId', collectionComponentId )}">
 	<vu:content/>	
 </th:block>

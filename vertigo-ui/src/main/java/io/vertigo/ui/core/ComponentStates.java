@@ -28,6 +28,7 @@ import io.vertigo.core.lang.Assertion;
 
 /**
  * Map of componentStates that need to be stored
+ *
  * @author mlaroche
  */
 public final class ComponentStates extends HashMap<String, Serializable> {
@@ -68,9 +69,10 @@ public final class ComponentStates extends HashMap<String, Serializable> {
 			return addObject(key, Collections.emptyMap());
 		}
 
-		public void addPrimitive(final String key, final Serializable value) {
+		public ComponentState addPrimitive(final String key, final Serializable value) {
 			Assertion.check().isNotBlank(key);
 			put(key, value);
+			return this;
 		}
 
 		public HashMap<String, Serializable> addObject(final String key, final Map object) {
