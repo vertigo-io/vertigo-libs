@@ -49,7 +49,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  */
 public abstract class AbstractUiListModifiable<D extends DataObject> extends AbstractList<UiObject<D>> implements UiList<D>, Serializable {
 
-	private static final long serialVersionUID = -8398542301760300787L;
+	private static final long serialVersionUID = 1L;
 	private final DefinitionId<DataDefinition> dataDefinitionId;
 	private final Class<D> objectType;
 
