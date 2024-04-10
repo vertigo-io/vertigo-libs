@@ -102,7 +102,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 		this.banishRepeaterMult = banishRepeaterMult.orElse(DEFAULT_BANISH_REPEATER_MULT); //Banish mult for repeaters
 		this.maxBanishSeconds = maxBanishSeconds.orElse(DEFAULT_BANISH_MAX_SECONDS); //Max banish seconds
 
-		final double maxRequestsPerMinutes = Math.round(this.maxRequests * 60 * 10 / this.windowSeconds) / 10.0;
+		final double maxRequestsPerMinutes = Math.round(this.maxRequests * 60.0 * 10.0 / this.windowSeconds) / 10.0;
 		this.banishMessage = banishMessage.orElse(maxRequestsPerMinutes + " requests/min"); //Message returned if banished
 	}
 
@@ -235,7 +235,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 	private Optional<String> obtainSessionId(final HttpServletRequest request) {
 		final HttpSession session = request.getSession(false);
 		if (session != null && !session.isNew()) {
-			Optional.of(session.getId());
+			return Optional.of(session.getId());
 		}
 		return Optional.empty();
 	}
