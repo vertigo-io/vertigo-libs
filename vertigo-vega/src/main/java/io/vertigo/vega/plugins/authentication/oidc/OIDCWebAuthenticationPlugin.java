@@ -23,6 +23,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,6 +34,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 import javax.inject.Inject;
+import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,11 +58,15 @@ import com.nimbusds.oauth2.sdk.TokenResponse;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
+import com.nimbusds.oauth2.sdk.http.HTTPRequestConfigurator;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
+import com.nimbusds.oauth2.sdk.util.tls.TLSUtils;
+import com.nimbusds.oauth2.sdk.util.tls.TLSVersion;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.AuthenticationResponse;
 import com.nimbusds.openid.connect.sdk.AuthenticationResponseParser;
@@ -76,6 +83,7 @@ import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.vega.impl.authentication.AuthenticationResult;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
@@ -107,12 +115,15 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 	private final String callbackUrl;
 	private final String logoutUrl;
 
+	private final Optional<SSLSocketFactory> sslSocketFactoryOpt;
+
 	@Inject
 	public OIDCWebAuthenticationPlugin(
 			@ParamValue("urlPrefix") final Optional<String> urlPrefixOpt,
 			@ParamValue("urlHandlerPrefix") final Optional<String> urlHandlerPrefixOpt,
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
-			final List<OIDCDeploymentConnector> oidcDeploymentConnectors) {
+			final List<OIDCDeploymentConnector> oidcDeploymentConnectors,
+			final ResourceManager resourceManager) {
 		urlPrefix = urlPrefixOpt.orElse("/");
 		urlHandlerPrefix = urlHandlerPrefixOpt.orElse("/OIDC/");
 		callbackUrl = urlHandlerPrefix + "callback";
@@ -127,6 +138,19 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 
 		scope = new Scope(oidcParameters.getRequestedScopes());
 		scope.add("openid"); // mandatory scope
+
+		if (oidcParameters.getTrustStoreUrlOpt().isPresent()) {
+			// load custom trust store
+			try {
+				sslSocketFactoryOpt = Optional.of(createSSLSocketFactory(
+						resourceManager.resolve(oidcParameters.getTrustStoreUrlOpt().get()),
+						oidcParameters.getTrustStorePasswordOpt()));
+			} catch (final Exception e) {
+				throw WrappedException.wrap(e);
+			}
+		} else {
+			sslSocketFactoryOpt = Optional.empty();
+		}
 
 		loadMetadataIfNeeded(oidcParameters.isDontFailAtStartup());
 	}
@@ -151,6 +175,15 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 			LOG.info("OIDC metadata not loaded, wait before next try.");
 			throw new VSystemException("Sorry, authentification is currently unavaiable.");
 		}
+	}
+
+	private static SSLSocketFactory createSSLSocketFactory(final URL trustStoreUrl, final Optional<String> trustStorePassword) throws GeneralSecurityException, IOException {
+		final var trustStore = KeyStore.getInstance("pkcs12");
+		try (var inputStream = trustStoreUrl.openStream()) {
+			trustStore.load(inputStream, trustStorePassword.map(String::toCharArray).orElseGet(() -> null));
+		}
+
+		return TLSUtils.createSSLSocketFactory(trustStore, TLSVersion.TLS_1_3);
 	}
 
 	/** {@inheritDoc} */
@@ -223,9 +256,21 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 		}
 	}
 
-	private static OIDCProviderMetadata getOidcMetadataFromRemote(final Issuer issuer, final int httpConnectTimeout, final int httpReadTimeout) {
+	private OIDCProviderMetadata getOidcMetadataFromRemote(final Issuer issuer, final int httpConnectTimeout, final int httpReadTimeout) {
 		try {
-			return OIDCProviderMetadata.resolve(issuer, httpConnectTimeout, httpReadTimeout);
+
+			final HTTPRequestConfigurator requestConfigurator = new HTTPRequestConfigurator() {
+				@Override
+				public void configure(final HTTPRequest httpRequest) {
+					httpRequest.setConnectTimeout(httpConnectTimeout);
+					httpRequest.setReadTimeout(httpReadTimeout);
+					if (sslSocketFactoryOpt.isPresent()) {
+						httpRequest.setSSLSocketFactory(sslSocketFactoryOpt.get());
+					}
+				}
+			};
+
+			return OIDCProviderMetadata.resolve(issuer, requestConfigurator);
 		} catch (GeneralException | IOException e) {
 			throw new VSystemException(e, "Can't read remote OpenId metadata at '{0}'", issuer.getValue());
 		}
@@ -323,7 +368,11 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 		// Call the endpoint
 		final TokenResponse tokenResponse;
 		try {
-			tokenResponse = OIDCTokenResponseParser.parse(request.toHTTPRequest().send());
+			final HTTPRequest httpRequest = request.toHTTPRequest();
+			if (sslSocketFactoryOpt.isPresent()) {
+				httpRequest.setSSLSocketFactory(sslSocketFactoryOpt.get());
+			}
+			tokenResponse = OIDCTokenResponseParser.parse(httpRequest.send());
 		} catch (com.nimbusds.oauth2.sdk.ParseException | IOException e) {
 			throw new VSystemException(e, "Unable to retreive token from OIDC provider");
 		}
