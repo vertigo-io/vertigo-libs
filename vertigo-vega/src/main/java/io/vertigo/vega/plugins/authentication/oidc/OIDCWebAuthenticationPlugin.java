@@ -43,6 +43,7 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSAlgorithm.Family;
 import com.nimbusds.jose.proc.BadJOSEException;
+import com.nimbusds.jose.util.DefaultResourceRetriever;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
@@ -239,8 +240,10 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 			final var paddedKey = new String(getPaddedSecretKeyBytes(), StandardCharsets.UTF_8);
 			idTokenValidator = new IDTokenValidator(issuer, clientID, jwsAlgorithm, new Secret(paddedKey));
 		} else {
+			final var resourceRetriever = new DefaultResourceRetriever(oidcParameters.getHttpConnectTimeout(), oidcParameters.getHttpReadTimeout(), 0, true, sslSocketFactoryOpt.orElse(null));
+
 			try {
-				idTokenValidator = new IDTokenValidator(issuer, clientID, jwsAlgorithm, ssoMetadata.getJWKSetURI().toURL());
+				idTokenValidator = new IDTokenValidator(issuer, clientID, jwsAlgorithm, ssoMetadata.getJWKSetURI().toURL(), resourceRetriever);
 			} catch (final MalformedURLException e) {
 				throw WrappedException.wrap(e);
 			}
