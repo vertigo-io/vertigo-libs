@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
@@ -115,11 +114,11 @@ public final class ViewContext implements Serializable {
 		viewContextMap.put(ViewContextMap.INPUT_CTX, ctxId);
 	}
 
-	public void setCtxId() {
-		viewContextMap.put(CTX.get(), UUID.randomUUID().toString());
+	public void setCtxId(final String prefix) {
+		viewContextMap.put(CTX.get(), prefix + '$' + UUID.randomUUID().toString());
 
 		//we set CTX_REUSE_INSTANT and keep previous in INPUT_CTX_REUSE_INSTANT
-		final Instant previousInstant = (Instant) viewContextMap.put(ViewContextMap.CTX_REUSE_INSTANT, Instant.now());
+		final var previousInstant = (Instant) viewContextMap.put(ViewContextMap.CTX_REUSE_INSTANT, Instant.now());
 		if (previousInstant != null) {
 			viewContextMap.put(ViewContextMap.INPUT_CTX_REUSE_INSTANT, previousInstant);
 		}
@@ -179,7 +178,7 @@ public final class ViewContext implements Serializable {
 	/* ================================== Map =====================================*/
 
 	public Serializable get(final Object key) {
-		Object sKey = key;
+		var sKey = key;
 		if (key instanceof ViewContextKey) {
 			sKey = ((ViewContextKey<?>) key).get();
 		}
@@ -334,7 +333,7 @@ public final class ViewContext implements Serializable {
 	public <O extends DataObject> O readDto(final ViewContextKey<O> contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
 		checkDtoErrors(contextKey, uiMessageStack);
 		// ---
-		final O validatedDto = getUiObject(contextKey).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
+		final var validatedDto = getUiObject(contextKey).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
 		if (uiMessageStack.hasErrors()) {
 			throw new ValidationUserException();
 		}
@@ -442,7 +441,7 @@ public final class ViewContext implements Serializable {
 	 * @param code Code
 	 */
 	public <E extends Entity> ViewContext publishMdl(final ViewContextKey<E> contextKey, final Class<E> entityClass, final String code) {
-		final DataDefinition dtDefinition = DataModelUtil.findDataDefinition(entityClass);
+		final var dtDefinition = DataModelUtil.findDataDefinition(entityClass);
 		return publishMdl(contextKey, dtDefinition, code);
 	}
 
@@ -466,7 +465,7 @@ public final class ViewContext implements Serializable {
 	 * @param contextKey Context key
 	 */
 	public Optional<FileInfoURI> getFileInfoURI(final ViewContextKey<FileInfoURI> contextKey) {
-		final ArrayList<FileInfoURI> list = getFileInfoURIs(contextKey);
+		final var list = getFileInfoURIs(contextKey);
 		Assertion.check().isTrue(list.size() <= 1, "Can't list a list of {0} elements to Option", list.size());
 		return list.isEmpty() ? Optional.empty() : Optional.of(list.iterator().next());
 	}
@@ -487,7 +486,7 @@ public final class ViewContext implements Serializable {
 	 * @param fileInfo file's info
 	 */
 	public ViewContext publishFileInfoURI(final ViewContextKey<FileInfoURI> contextKey, final FileInfoURI fileInfoURI) {
-		final ArrayList<FileInfoURI> list = new ArrayList<>();
+		final var list = new ArrayList<FileInfoURI>();
 		if (fileInfoURI != null) {
 			list.add(fileInfoURI);
 		}
@@ -528,7 +527,7 @@ public final class ViewContext implements Serializable {
 		}
 		put(() -> contextKey.get() + "_facets", translateFacets(facetedQueryResult.getFacets()));
 
-		final FacetedQuery facetedQuery = facetedQueryResult.getSource().getFacetedQuery().get();
+		final var facetedQuery = facetedQueryResult.getSource().getFacetedQuery().get();
 		put(() -> contextKey.get() + "_selectedFacets", new UiSelectedFacetValues(
 				facetedQuery.getSelectedFacetValues(),
 				facetedQuery.getDefinition().getFacetDefinitions()
@@ -542,12 +541,12 @@ public final class ViewContext implements Serializable {
 
 	private <O extends DataObject> ArrayList<ClusterUiList> translateClusters(final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final Optional<DataFieldName<O>> keyFieldNameOpt) {
 		//if it's a cluster add data's cluster
-		final Map<FacetValue, DtList<O>> clusters = facetedQueryResult.getClusters();
-		final ArrayList<ClusterUiList> jsonCluster = new ArrayList<>();
+		final var clusters = facetedQueryResult.getClusters();
+		final var jsonCluster = new ArrayList<ClusterUiList>();
 		for (final Entry<FacetValue, DtList<O>> cluster : clusters.entrySet()) {
-			final DtList<O> dtList = cluster.getValue();
+			final var dtList = cluster.getValue();
 			if (!dtList.isEmpty()) {
-				final ClusterUiList clusterElement = new ClusterUiList(
+				final var clusterElement = new ClusterUiList(
 						dtList, keyFieldNameOpt,
 						cluster.getKey().code(),
 						cluster.getKey().label().getDisplay(),
@@ -571,7 +570,7 @@ public final class ViewContext implements Serializable {
 		}*/
 
 	private static Long getFacetCount(final FacetValue key, final FacetedQueryResult<?, ?> facetedQueryResult) {
-		final FacetDefinition clusterFacetDefinition = facetedQueryResult.getClusterFacetDefinition().get();
+		final var clusterFacetDefinition = facetedQueryResult.getClusterFacetDefinition().get();
 		return facetedQueryResult.getFacets()
 				.stream()
 				.filter(facet -> clusterFacetDefinition.equals(facet.getDefinition()))
@@ -583,19 +582,19 @@ public final class ViewContext implements Serializable {
 	}
 
 	private static ArrayList<Serializable> translateFacets(final List<Facet> facets) {
-		final ArrayList<Serializable> facetsList = new ArrayList<>();
+		final var facetsList = new ArrayList<Serializable>();
 		for (final Facet facet : facets) {
-			final ArrayList<HashMap<String, Serializable>> facetValues = new ArrayList<>();
+			final var facetValues = new ArrayList<HashMap<String, Serializable>>();
 			for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
 				if (entry.getValue() > 0) {
-					final HashMap<String, Serializable> facetValue = new HashMap<>();
+					final var facetValue = new HashMap<String, Serializable>();
 					facetValue.put("code", entry.getKey().code());
 					facetValue.put("count", entry.getValue());
 					facetValue.put("label", entry.getKey().label().getDisplay());
 					facetValues.add(facetValue);
 				}
 			}
-			final HashMap<String, Serializable> facetAsMap = new HashMap<>();
+			final var facetAsMap = new HashMap<String, Serializable>();
 			facetAsMap.put("code", facet.getDefinition().getName());
 			facetAsMap.put("multiple", facet.getDefinition().isMultiSelectable());
 			facetAsMap.put("label", facet.getDefinition().getLabel().getDisplay());

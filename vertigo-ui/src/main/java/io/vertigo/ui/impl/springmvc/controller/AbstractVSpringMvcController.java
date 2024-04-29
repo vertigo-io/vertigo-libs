@@ -30,12 +30,10 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.codec.Encoder;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datastore.kvstore.KVCollection;
 import io.vertigo.datastore.kvstore.KVStoreManager;
@@ -49,7 +47,6 @@ import io.vertigo.ui.impl.springmvc.util.UiUtil;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
 /**
  * Super class des Actions SpringMvc.
@@ -62,6 +59,8 @@ public abstract class AbstractVSpringMvcController {
 
 	/** Clé de la collection des contexts dans le KVStoreManager. */
 	public static final KVCollection CONTEXT_COLLECTION_NAME = new KVCollection("VViewContext");
+	/** Clé de la collection des initilizer de context dans le KVStoreManager. */
+	public static final KVCollection INIT_CONTEXT_COLLECTION_NAME = new KVCollection("VViewInitContext");
 
 	/** Clé de context du UiUtil. */
 	public static final ViewContextKey<UiUtil> UTIL_CONTEXT_KEY = ViewContextKey.of("util");
@@ -88,22 +87,29 @@ public abstract class AbstractVSpringMvcController {
 	@Inject
 	private JsonEngine jsonEngine;
 
-	public void prepareContext(final HttpServletRequest request) throws ExpiredViewContextException {
-		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
+	public void prepareContext(final HttpServletRequest request) {
+		final var attributes = RequestContextHolder.currentRequestAttributes();
 		ViewContext viewContext = null;
-		final String ctxId = request.getParameter(ViewContext.CTX.get());
+		final var ctxId = request.getParameter(ViewContext.CTX.get());
+		final String ctxInit;
 		if ("POST".equals(request.getMethod()) || "PUT".equals(request.getMethod()) || "DELETE".equals(request.getMethod())
 				|| ctxId != null && acceptCtxQueryParam()) {
 			if (ctxId == null) {
-				contextMiss(null);
+				throw new VSystemException("Context ctxId manquant");
 			} else {
+				ctxInit = ctxId.substring(0, ctxId.indexOf('$'));
+				final var ctxUid = ctxId.substring(ctxId.indexOf('$') + 1);
 				ViewContextMap viewContextMap;
-				try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
-					viewContextMap = kvStoreManager.find(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(ctxId, request), ViewContextMap.class).orElse(null);
+				try (var transactionWritable = transactionManager.createCurrentTransaction()) {
+					viewContextMap = kvStoreManager.find(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(ctxUid, request), ViewContextMap.class).orElse(null);
 					UiRequestUtil.setRequestScopedAttribute("createdContext", false);
 				}
 				if (viewContextMap == null) {
-					contextMiss(ctxId); //this throw an exception
+					// we retrieve the url that created this context
+					try (var transactionWritable = transactionManager.createCurrentTransaction()) {
+						final var urlInitContextOpt = kvStoreManager.find(INIT_CONTEXT_COLLECTION_NAME, ctxInit, String.class);
+						throw new ExpiredViewContextException("Context ctxId:'" + ctxId + "' manquant", urlInitContextOpt);
+					}
 				}
 				//viewContextMap can't be null here
 				viewContextMap.setJsonEngine(jsonEngine);
@@ -114,6 +120,12 @@ public abstract class AbstractVSpringMvcController {
 			}
 
 		} else {
+			final var initContextUrl = getUrlWithParam(request);
+			ctxInit = codecManager.getHexEncoder().encode(codecManager.getMD5Encoder().encode(initContextUrl.getBytes(StandardCharsets.UTF_8)));
+			try (var transactionWritable = transactionManager.createCurrentTransaction()) {
+				kvStoreManager.put(INIT_CONTEXT_COLLECTION_NAME, ctxInit, initContextUrl);
+				transactionWritable.commit();
+			}
 			viewContext = new ViewContext(new ViewContextMap(), jsonEngine);
 			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
 			//initContextUrlParameters(request, viewContext);
@@ -122,8 +134,9 @@ public abstract class AbstractVSpringMvcController {
 			Assertion.check().isTrue(viewContext.containsKey(UTIL_CONTEXT_KEY), "Pour surcharger preInitContext vous devez rappeler les parents super.preInitContext(). Action: {0}",
 					getClass().getSimpleName());
 			//initContext();
+
 		}
-		viewContext.setCtxId();
+		viewContext.setCtxId(ctxInit);
 		if (useDefaultViewName()) {
 			request.setAttribute(DEFAULT_VIEW_NAME_ATTRIBUTE, getDefaultViewName(this));
 		}
@@ -131,11 +144,11 @@ public abstract class AbstractVSpringMvcController {
 
 	private String obtainStoredCtxId(final String ctxId, final HttpServletRequest request) {
 		if (bindCtxToSession()) {
-			final HttpSession session = request.getSession(false);
+			final var session = request.getSession(false);
 			if (session != null) {
-				final Codec<byte[], String> base64Codec = codecManager.getBase64Codec();
-				final Encoder<byte[], byte[]> sha256Encoder = codecManager.getSha256Encoder();
-				final String sessionIdHash = base64Codec.encode(sha256Encoder.encode(session.getId().getBytes(StandardCharsets.UTF_8)));
+				final var base64Codec = codecManager.getBase64Codec();
+				final var sha256Encoder = codecManager.getSha256Encoder();
+				final var sessionIdHash = base64Codec.encode(sha256Encoder.encode(session.getId().getBytes(StandardCharsets.UTF_8)));
 
 				return ctxId +
 						"-" +
@@ -166,14 +179,14 @@ public abstract class AbstractVSpringMvcController {
 
 	@InitBinder()
 	public void initBinder(final WebDataBinder binder) {
-		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-		final ViewContext viewContext = (ViewContext) attributes.getAttribute("viewContext", RequestAttributes.SCOPE_REQUEST);
-		final ViewContextMap viewContextMap = viewContext.asMap();
+		final var attributes = RequestContextHolder.currentRequestAttributes();
+		final var viewContext = (ViewContext) attributes.getAttribute("viewContext", RequestAttributes.SCOPE_REQUEST);
+		final var viewContextMap = viewContext.asMap();
 		binder.setAllowedFields(viewContextMap.viewContextUpdateSecurity().getAllowedFields());
 	}
 
 	private static String getDefaultViewName(final AbstractVSpringMvcController controller) {
-		String path = controller.getClass().getName();
+		var path = controller.getClass().getName();
 		path = path.substring(0, path.lastIndexOf('.'));
 		//package is
 		// group.id.project.feature.controllers and we look in feature/...
@@ -182,25 +195,13 @@ public abstract class AbstractVSpringMvcController {
 		path = path.substring(path.lastIndexOf('.', path.indexOf(".controllers") - 1) + 1);
 		path = path.replace(".controllers", "");
 		path = path.replace(".", SLASH);
-		String simpleName = StringUtil.first2LowerCase(controller.getClass().getSimpleName());
+		var simpleName = StringUtil.first2LowerCase(controller.getClass().getSimpleName());
 		simpleName = simpleName.replace("Controller", "");
 		return path + SLASH + simpleName;
 	}
 
 	private boolean acceptCtxQueryParam() {
 		return this.getClass().isAnnotationPresent(AcceptCtxQueryParam.class);
-	}
-
-	/**
-	 * Appeler lorsque que le context est manquant.
-	 * Par défaut lance une ExpiredContextException.
-	 * Mais une action spécifique pourrait reconstruire le context si c'est pertinent.
-	 *
-	 * @param ctxId Id du context manquant (seule info disponible)
-	 * @throws ExpiredViewContextException Context expiré (comportement standard)
-	 */
-	protected void contextMiss(final String ctxId) throws ExpiredViewContextException {
-		throw new ExpiredViewContextException("Context ctxId:'" + ctxId + "' manquant");
 	}
 
 	/**
@@ -220,9 +221,10 @@ public abstract class AbstractVSpringMvcController {
 	 * @param request HttpServletRequest
 	 */
 	public final void storeContext(final HttpServletRequest request) {
-		final ViewContext viewContext = getViewContext();
-		try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
-			kvStoreManager.put(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(viewContext.getId(), request), viewContext.asMap());// we only store the underlying map
+		final var viewContext = getViewContext();
+		try (var transactionWritable = transactionManager.createCurrentTransaction()) {
+			final var ctxUid = viewContext.getId().substring(viewContext.getId().indexOf('$') + 1);
+			kvStoreManager.put(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(ctxUid, request), viewContext.asMap());// we only store the underlying map
 			transactionWritable.commit();
 		}
 	}
@@ -232,7 +234,7 @@ public abstract class AbstractVSpringMvcController {
 	 * Utilisé par le KActionContextStoreInterceptor.
 	 */
 	public final void makeUnmodifiable() {
-		final ViewContext viewContext = getViewContext();
+		final var viewContext = getViewContext();
 		viewContext.makeUnmodifiable();
 	}
 
@@ -244,8 +246,8 @@ public abstract class AbstractVSpringMvcController {
 
 	/** {@inheritDoc} */
 	private static ViewContext getViewContext() {
-		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-		final ViewContext viewContext = (ViewContext) attributes.getAttribute("viewContext", RequestAttributes.SCOPE_REQUEST);
+		final var attributes = RequestContextHolder.currentRequestAttributes();
+		final var viewContext = (ViewContext) attributes.getAttribute("viewContext", RequestAttributes.SCOPE_REQUEST);
 		Assertion.check().isNotNull(viewContext);
 		//---
 		return viewContext;
@@ -306,6 +308,15 @@ public abstract class AbstractVSpringMvcController {
 
 	protected boolean isNewContext() {
 		return UiRequestUtil.getRequestScopedAttribute("createdContext", Boolean.class).orElse(true);
+	}
+
+	private static String getUrlWithParam(final HttpServletRequest request) {
+		final var urlBuilder = new StringBuilder(request.getServletPath());
+		if (request.getQueryString() != null) {
+			urlBuilder.append("?");
+			urlBuilder.append(request.getQueryString());
+		}
+		return urlBuilder.toString();
 	}
 
 }

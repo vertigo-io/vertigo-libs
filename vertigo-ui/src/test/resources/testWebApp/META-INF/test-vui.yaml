@@ -45,7 +45,7 @@ modules:
           purgeDelayMinutes: 30
           fileInfoClass: io.vertigo.ui.data.domain.fileinfo.FileInfoTmp
       - kvStore.berkeley:
-          collections: VViewContext;TTL=43200
+          collections: VViewContext;TTL=43200, VViewInitContext;TTL=43200
           dbFilePath: ${java.io.tmpdir}/vertigo/TestVViewContext
       - kvStore.delayedMemory:
           collections: protected-value

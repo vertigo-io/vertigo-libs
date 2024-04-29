@@ -15,29 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui.exception;
+package io.vertigo.ui;
 
-import java.util.Optional;
+import io.vertigo.core.locale.LocaleMessageKey;
 
 /**
- * Exception lancée dans le cas ou l'on recherche un context expiré.
- * @author npiedeloup
- */
-public final class ExpiredViewContextException extends RuntimeException {
-
-	private static final long serialVersionUID = 2220920272938129138L;
-	private final Optional<String> redirectUrlOpt;
-
+ * Messages for UiExceptions
+ *
+ * @author  mlaroche
+*/
+public enum UiResources implements LocaleMessageKey {
 	/**
-	 * Constructeur.
-	 * @param message Message d'erreur
+	 * Message for missing view context
 	 */
-	public ExpiredViewContextException(final String message, final Optional<String> redirectUrlOpt) {
-		super(message);
-		this.redirectUrlOpt = redirectUrlOpt;
-	}
-
-	public Optional<String> getRedirectUrlOpt() {
-		return redirectUrlOpt;
-	}
+	MISSING_VIEW_CONTEXT,
 }
