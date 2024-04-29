@@ -13,6 +13,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.inject.Inject;
+
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -50,7 +52,9 @@ public final class RateLimitingMemStorePlugin implements RateLimitingStorePlugin
 	private final int _windowSeconds;
 	private final long _maxBanishSeconds;
 
-	public RateLimitingMemStorePlugin(@ParamValue("windowSeconds") final Optional<Integer> windowSeconds,
+	@Inject
+	public RateLimitingMemStorePlugin(
+			@ParamValue("windowSeconds") final Optional<Integer> windowSeconds,
 			@ParamValue("maxBanishSeconds") final Optional<Long> maxBanishSeconds) {
 		this._maxBanishSeconds = maxBanishSeconds.orElse(RateLimitingManagerImpl.DEFAULT_BANISH_MAX_SECONDS); //Max banish seconds
 		this._windowSeconds = windowSeconds.orElse(RateLimitingManagerImpl.DEFAULT_WINDOW_SECONDS);
@@ -58,8 +62,8 @@ public final class RateLimitingMemStorePlugin implements RateLimitingStorePlugin
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		final int purgePeriod = Math.min(15, _windowSeconds); //min 15s
-		return Collections.singletonList(new DaemonDefinition("DmnRateLimitingMemStoreReset", () -> () -> resetRateLimitWindow(), purgePeriod));
+		final var purgePeriod = Math.min(15, _windowSeconds); //min 15s
+		return Collections.singletonList(new DaemonDefinition("DmnRateLimitingMemStoreReset", () -> this::resetRateLimitWindow, purgePeriod));
 	}
 
 	@Override
@@ -69,16 +73,16 @@ public final class RateLimitingMemStorePlugin implements RateLimitingStorePlugin
 
 	@Override
 	public long touch(final String userKey, final long windowSeconds) {
-		final AtomicLong value = new AtomicLong(0);
-		final AtomicLong oldValue = hitsCounter.putIfAbsent(userKey, value);
+		final var value = new AtomicLong(0);
+		final var oldValue = hitsCounter.putIfAbsent(userKey, value);
 		return (oldValue != null ? oldValue : value).incrementAndGet();
 	}
 
 	@Override
 	public int incrementBanishCounter(final String userKey, final long maxBanishSeconds) {
-		final AtomicInteger value = new AtomicInteger(0);
-		final AtomicInteger oldValue = _banishCounter.putIfAbsent(userKey, value);
-		final int banishCounter = (oldValue != null ? oldValue : value).incrementAndGet();
+		final var value = new AtomicInteger(0);
+		final var oldValue = _banishCounter.putIfAbsent(userKey, value);
+		final var banishCounter = (oldValue != null ? oldValue : value).incrementAndGet();
 		return banishCounter;
 	}
 
@@ -99,7 +103,7 @@ public final class RateLimitingMemStorePlugin implements RateLimitingStorePlugin
 	}
 
 	private void resetBanish(final long maxBanishSeconds) {
-		final Instant now = Instant.now();
+		final var now = Instant.now();
 		final List<String> forgetUserKeys = new ArrayList<>();
 		for (final Entry<String, Instant> entry : banishInstant.entrySet()) {
 			if (now.isAfter(entry.getValue()) && ChronoUnit.SECONDS.between(entry.getValue(), now) > maxBanishSeconds) {
