@@ -2,12 +2,16 @@ package io.vertigo.vega.plugins.ratelimiting.redis;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import io.vertigo.connectors.redis.RedisConnector;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.impl.ratelimiting.RateLimitingStorePlugin;
 import redis.clients.jedis.params.SetParams;
 
@@ -22,10 +26,20 @@ public final class RateLimitingRedisStorePlugin implements RateLimitingStorePlug
 	static final String BANISH_INSTANT_KEY = "banishInstant";
 	static final String HITS_COUNTER_KEY = "hits";
 
-	@Inject
-	private RedisConnector redisConnector;
+	private final RedisConnector redisConnector;
 
-	public RateLimitingRedisStorePlugin() {
+	@Inject
+	public RateLimitingRedisStorePlugin(
+			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
+			final List<RedisConnector> redisConnectors) {
+		Assertion.check()
+				.isNotNull(connectorNameOpt)
+				.isNotNull(redisConnectors);
+		//-----
+		final var connectorName = connectorNameOpt.orElse("main");
+		redisConnector = redisConnectors.stream()
+				.filter(connector -> connectorName.equals(connector.getName()))
+				.findFirst().get();
 	}
 
 	private static String getPrefixKey(final String type, final String userKey) {
@@ -61,7 +75,7 @@ public final class RateLimitingRedisStorePlugin implements RateLimitingStorePlug
 			currentValue = (int) jedis.incr(getPrefixKey(BANISH_COUNTER_KEY, userKey));
 		} else {
 			//cas de réentrance, on prend le counter d'avant (mais > 0)
-			final String currentValueStr = jedis.get(getPrefixKey(BANISH_COUNTER_KEY, userKey));
+			final var currentValueStr = jedis.get(getPrefixKey(BANISH_COUNTER_KEY, userKey));
 			if (currentValueStr == null || "0".equals(currentValueStr)) {
 				currentValue = (int) jedis.incr(getPrefixKey(BANISH_COUNTER_KEY, userKey));
 			} else {
@@ -110,7 +124,7 @@ public final class RateLimitingRedisStorePlugin implements RateLimitingStorePlug
 	public void cancelAllBanishments() {
 		final var jedis = redisConnector.getClient();
 		final var banishedUserKeys = jedis.hkeys(BANISHED_KEY);
-		banishedUserKeys.forEach(key -> cancelBanishment(key));
+		banishedUserKeys.forEach(this::cancelBanishment);
 		jedis.del(BANISHED_KEY);
 	}
 
@@ -119,7 +133,7 @@ public final class RateLimitingRedisStorePlugin implements RateLimitingStorePlug
 		cleanBanishedKeys();
 		final var jedis = redisConnector.getClient();
 		return jedis.hgetAll(BANISHED_KEY).entrySet().stream()
-				.map((e) -> Map.entry(e.getKey(), Instant.ofEpochSecond(Long.parseLong(e.getValue()))))
+				.map(e -> Map.entry(e.getKey(), Instant.ofEpochSecond(Long.parseLong(e.getValue()))))
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
