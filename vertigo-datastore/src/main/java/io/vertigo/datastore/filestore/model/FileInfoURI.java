@@ -101,30 +101,30 @@ public final class FileInfoURI implements Serializable {
 		return key;
 	}
 
-	public Serializable getKeyAs(final Class valueObjectClass) {
+	public <K extends Serializable> K getKeyAs(final Class<K> valueObjectClass) {
 		final Optional<BasicType> dataTypeOpt = BasicType.of(valueObjectClass);
 		if (dataTypeOpt.isPresent()) {
 			switch (dataTypeOpt.get()) {
 				case Integer:
 					if (key instanceof final Long l) {
-						return l.intValue();
+						return (K) Integer.valueOf(l.intValue());
 					} else if (key instanceof Integer) {
-						return key;
+						return (K) key;
 					} else if (key instanceof String) {
-						return Integer.valueOf((String) key);
+						return (K) Integer.valueOf((String) key);
 					}
 					break;
 				case Long:
 					if (key instanceof Long) {
-						return key;
+						return (K) key;
 					} else if (key instanceof final Integer i) {
-						return i.longValue();
+						return (K) Long.valueOf(i.longValue());
 					} else if (key instanceof String) {
-						return Long.valueOf((String) key);
+						return (K) Long.valueOf((String) key);
 					}
 					break;
 				case String:
-					return String.valueOf(key);
+					return (K) String.valueOf(key);
 				case BigDecimal:
 				case Boolean:
 				case DataStream:
