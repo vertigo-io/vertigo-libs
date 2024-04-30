@@ -49,7 +49,7 @@ public final class RateLimitingRedisStorePlugin implements RateLimitingStorePlug
 	@Override
 	public long touch(final String userKey, final long windowSeconds) {
 		final var jedis = redisConnector.getClient();
-		//on initialise avec le expire si pas encore présent
+		//we initialize with the expire is not present
 		jedis.set(getPrefixKey(HITS_COUNTER_KEY, userKey), "0", new SetParams().nx().ex(windowSeconds));
 		return jedis.incr(getPrefixKey(HITS_COUNTER_KEY, userKey));
 	}
@@ -71,10 +71,10 @@ public final class RateLimitingRedisStorePlugin implements RateLimitingStorePlug
 		final int currentValue;
 		final var banishInstantStr = jedis.get(getPrefixKey(BANISH_INSTANT_KEY, userKey));
 		if (banishInstantStr == null) {
-			//cas normal
+			//main case
 			currentValue = (int) jedis.incr(getPrefixKey(BANISH_COUNTER_KEY, userKey));
 		} else {
-			//cas de réentrance, on prend le counter d'avant (mais > 0)
+			//reenter case : we keep the previous counter (but > 0)
 			final var currentValueStr = jedis.get(getPrefixKey(BANISH_COUNTER_KEY, userKey));
 			if (currentValueStr == null || "0".equals(currentValueStr)) {
 				currentValue = (int) jedis.incr(getPrefixKey(BANISH_COUNTER_KEY, userKey));
@@ -82,7 +82,8 @@ public final class RateLimitingRedisStorePlugin implements RateLimitingStorePlug
 				currentValue = Integer.parseInt(currentValueStr);
 			}
 		}
-		jedis.expire(getPrefixKey(BANISH_COUNTER_KEY, userKey), maxBanishSeconds); //à chaque banish, il repart pour le maxBanishSeconds
+		jedis.expire(getPrefixKey(BANISH_COUNTER_KEY, userKey), maxBanishSeconds * 2);
+		//at each banish, it starts again for the maxBanishSeconds *2 to continue monitoring even after the max banish.
 		return currentValue;
 	}
 
@@ -90,10 +91,11 @@ public final class RateLimitingRedisStorePlugin implements RateLimitingStorePlug
 	public void banishUntil(final String userKey, final Instant banishUntil) {
 		final var jedis = redisConnector.getClient();
 		final var banishInstantStr = String.valueOf(banishUntil.getEpochSecond());
+		final long banishInterval = ChronoUnit.SECONDS.between(Instant.now(), banishUntil);
 		jedis.set(getPrefixKey(BANISH_INSTANT_KEY, userKey), banishInstantStr,
-				new SetParams().ex(ChronoUnit.SECONDS.between(Instant.now(), banishUntil)));
+				new SetParams().ex(banishInterval));
 		jedis.hset(BANISHED_KEY, userKey, banishInstantStr);
-		jedis.expire(BANISHED_KEY, banishUntil.getEpochSecond());
+		jedis.expire(BANISHED_KEY, banishInterval);
 		cleanBanishedKeys();
 	}
 
@@ -104,7 +106,7 @@ public final class RateLimitingRedisStorePlugin implements RateLimitingStorePlug
 		if (banishInstantStr != null) {
 			final var banishInstant = Instant.ofEpochSecond(Long.parseLong(banishInstantStr));
 			if (banishInstant.isBefore(Instant.now())) {
-				//pour le cas ou il y a un pb avec l'expiration
+				//in case there's a problem with expiration
 				jedis.del(getPrefixKey(BANISH_INSTANT_KEY, userKey));
 				jedis.hdel(BANISHED_KEY, userKey);
 			}
