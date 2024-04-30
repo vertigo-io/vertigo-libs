@@ -26,6 +26,7 @@ import io.vertigo.commons.peg.PegWordRule.Mode;
 
 /**
  * Factory of all PeRules.
+ *
  * @author pchretien
  */
 public final class PegRules {
@@ -36,6 +37,7 @@ public final class PegRules {
 
 	/**
 	 * Named a Rule.
+	 *
 	 * @param innerRule Rule to name
 	 * @param ruleName Rule name
 	 * @return Named rule
@@ -115,7 +117,15 @@ public final class PegRules {
 	 * @return Rule to match any blank char
 	 */
 	public static PegRule<Dummy> skipBlanks(final String blanks) {
-		return new PegWhiteSpaceRule(blanks);
+		return new PegWhiteSpaceRule(blanks, true);
+	}
+
+	/**
+	 * @param blanks list of char to skip
+	 * @return Rule to match any blank char
+	 */
+	public static PegRule<Dummy> blanks(final String blanks) {
+		return new PegWhiteSpaceRule(blanks, false);
 	}
 
 	/**
