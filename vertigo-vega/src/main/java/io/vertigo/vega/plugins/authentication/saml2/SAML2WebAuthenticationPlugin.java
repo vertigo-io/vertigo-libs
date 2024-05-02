@@ -83,6 +83,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Base authentication handler for SAML2.
+ *
  * @author skerdudou
  */
 public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Assertion> {
@@ -255,10 +256,9 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 	}
 
 	@Override
-	public boolean doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+	public void doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final Optional<String> redirectUrlOpt) {
 		try {
 			httpResponse.sendRedirect(saml2Parameters.getLogoutUrl());
-			return true;
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}

@@ -35,7 +35,6 @@ import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VSystemException;
-import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.authentication.WebAuthenticationManager;
@@ -135,19 +134,19 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 			doHandleRedirect(httpRequest, httpResponse, requestedUrL.orElse(""));
 			return Tuple.of(true, httpRequest);
 		}
-		final var restult = plugin.doHandleCallback(httpRequest, httpResponse);
-		if (restult.isRequestConsumed()) {
+		final var result = plugin.doHandleCallback(httpRequest, httpResponse);
+		if (result.isRequestConsumed()) {
 			return Tuple.of(true, httpRequest);
 		}
 
-		return appLogin(httpRequest, httpResponse, restult, requestedUrL);
+		return appLogin(httpRequest, httpResponse, result, requestedUrL);
 
 	}
 
 	/**
 	 * Handle user redirect after login.
 	 *
-	 * @param httpRequest  HttpRequest
+	 * @param httpRequest HttpRequest
 	 * @param httpResponse HttpResponse
 	 * @param requestedUrl Original user requested URL (relative, with context path and query params).
 	 */
@@ -168,19 +167,14 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		final var appLoginHandlerInstance = Node.getNode().getComponentSpace().resolve(appLoginHandler, AppLoginHandler.class);
 		final var redirectUrlAfterLogout = appLoginHandlerInstance.doLogout(httpRequest);
 		//---
-		final var isConsumed = plugin.doLogout(httpRequest, httpResponse);
+		plugin.doLogout(httpRequest, httpResponse, redirectUrlAfterLogout);
+
 		Optional.ofNullable(httpRequest.getSession(false)).ifPresent(HttpSession::invalidate);
-		if (!isConsumed) {
-			try {
-				httpResponse.sendRedirect(WebAuthenticationUtil.resolveExternalUrl(httpRequest, plugin.getExternalUrlOptional()) + redirectUrlAfterLogout);
-			} catch (final IOException e) {
-				throw WrappedException.wrap(e);
-			}
-		}
 		return Tuple.of(true, httpRequest);
 	}
 
-	private Tuple<Boolean, HttpServletRequest> appLogin(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationResult interceptResult, final Optional<String> requestedUrl) {
+	private Tuple<Boolean, HttpServletRequest> appLogin(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationResult interceptResult,
+			final Optional<String> requestedUrl) {
 		final var appLoginHandlerInstance = Node.getNode().getComponentSpace().resolve(appLoginHandler, AppLoginHandler.class);
 		final var redirectUrlAfterLogin = appLoginHandlerInstance.doLogin(request, interceptResult.getClaims(), interceptResult.getRawCallbackResult(), requestedUrl);
 		if (isAuthenticated()) {

@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
@@ -99,6 +100,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDCTokens> {
 
+	private static final String OIDC_ID_TOKEN = "OIDC_ID_TOKEN";
 	private static final Logger LOG = LogManager.getLogger(OIDCWebAuthenticationPlugin.class);
 	// if metadata is not available at startup, limit check frequency at runtime
 	private static final int MIN_TIME_BETWEEN_METATADA_CHECK = 60;
@@ -315,6 +317,8 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 			doValidateToken(oidcTokens.getIDToken(), stateData.nonce());
 		}
 
+		httpRequest.getSession().setAttribute(OIDC_ID_TOKEN, oidcTokens.getIDTokenString()); // store ID token in session, keycloak needs it for logout with redirect
+
 		JWTClaimsSet userInfos;
 		try {
 			userInfos = oidcTokens.getIDToken().getJWTClaimsSet();
@@ -326,7 +330,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 	}
 
 	private URI resolveCallbackUri(final HttpServletRequest httpRequest) {
-		final var externalUrl = WebAuthenticationUtil.resolveExternalUrl(httpRequest, getExternalUrlOptional());
+		final var externalUrl = resolveExternalUrl(httpRequest);
 		try {
 			return new URI(externalUrl + getCallbackUrl());
 		} catch (final URISyntaxException e) {
@@ -431,10 +435,25 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 	}
 
 	@Override
-	public boolean doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+	public void doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final Optional<String> redirectUrlOpt) {
+		String logoutParam = "";
+		if (redirectUrlOpt.isPresent()) {
+			if (oidcParameters.getLogoutRedirectUriParamNameOpt().isPresent()) {
+				final var redirectUrl = resolveExternalUrl(httpRequest) + redirectUrlOpt.get();
+				logoutParam += "?" + oidcParameters.getLogoutRedirectUriParamNameOpt().get() + "=" + URLEncoder.encode(redirectUrl, StandardCharsets.UTF_8);
+			}
+			if (oidcParameters.getLogoutIdParamNameOpt().isPresent()) {
+				if (logoutParam == "") {
+					logoutParam = "?";
+				} else {
+					logoutParam += "&";
+				}
+				logoutParam += oidcParameters.getLogoutIdParamNameOpt().get() + "=" + httpRequest.getSession().getAttribute(OIDC_ID_TOKEN);
+			}
+		}
+
 		try {
-			httpResponse.sendRedirect(ssoMetadata.getEndSessionEndpointURI().toString());
-			return true;
+			httpResponse.sendRedirect(ssoMetadata.getEndSessionEndpointURI().toString() + logoutParam);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}

@@ -17,6 +17,7 @@
  */
 package io.vertigo.vega.plugins.authentication.aad;
 
+import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.Collections;
@@ -361,9 +362,13 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 	}
 
 	@Override
-	public boolean doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+	public void doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final Optional<String> redirectUrlOpt) {
 		// nothing for now WIP
-		return false;
+		try {
+			httpResponse.sendRedirect(resolveExternalUrl(httpRequest) + redirectUrlOpt.orElse("/"));
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
+		}
 	}
 
 }

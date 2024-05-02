@@ -99,6 +99,17 @@ public interface WebAuthenticationPlugin<T> extends Plugin {
 		return Tuple.of(AuthenticationResult.ofNotConsumed(), httpRequest);
 	}
 
-	boolean doLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse);
+	/**
+	 * Handle the logout request
+	 *
+	 * @param httpRequest the request
+	 * @param httpResponse the response
+	 * @param redirectUrlOpt the url to redirect after logout
+	 */
+	void doLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Optional<String> redirectUrlOpt);
+
+	default String resolveExternalUrl(final HttpServletRequest httpRequest) {
+		return WebAuthenticationUtil.resolveExternalUrl(httpRequest, getExternalUrlOptional());
+	}
 
 }
