@@ -31,6 +31,8 @@ import io.vertigo.commons.peg.PegWordRule.Mode;
  */
 public final class PegRules {
 
+	public static final String BLANKS = " \t\n\r";
+
 	private PegRules() {
 		//no constructor for factory class
 	}
@@ -120,12 +122,20 @@ public final class PegRules {
 		return new PegWhiteSpaceRule(blanks, true);
 	}
 
+	public static PegRule<Dummy> skipBlanks() {
+		return skipBlanks(BLANKS);
+	}
+
 	/**
 	 * @param blanks list of char to skip
 	 * @return Rule to match any blank char
 	 */
 	public static PegRule<Dummy> blanks(final String blanks) {
 		return new PegWhiteSpaceRule(blanks, false);
+	}
+
+	public static PegRule<Dummy> blanks() {
+		return blanks(BLANKS);
 	}
 
 	/**
