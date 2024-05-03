@@ -17,6 +17,8 @@
  */
 package io.vertigo.datastore.entitystore;
 
+import java.util.List;
+
 import io.vertigo.core.node.component.Manager;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
@@ -110,6 +112,14 @@ public interface EntityStoreManager extends Manager {
 	* @return the updated objects
 	*/
 	<E extends Entity> void updateList(DtList<E> entities);
+
+	/**
+	* Delete a list of object uids.
+	* The underlying implementation is performance optimized (like batch mode in SQL)
+	*
+	* @param uids the uids to delete
+	*/
+	<E extends Entity> void deleteList(List<UID<E>> uids);
 
 	/**
 	 * Destruction d'un objet persistant par son UID.

@@ -129,8 +129,8 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> E readOneForUpdate(final UID<E> uri) {
 		Assertion.check().isNotNull(uri);
 		//-----
-		final DataDefinition dataDefinition = uri.getDefinition();
-		final E entity = getPhysicalStore(dataDefinition).readNullableForUpdate(dataDefinition, uri);
+		final var dataDefinition = uri.getDefinition();
+		final var entity = (E) getPhysicalStore(dataDefinition).readNullableForUpdate(dataDefinition, uri);
 		//-----
 		Assertion.check().isNotNull(entity, "no entity found for : '{0}'", uri);
 		//-----
@@ -140,7 +140,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 
 	private void fireAfterCommit(final StoreEvent.Type evenType, final List<UID> uids) {
 		transactionManager.getCurrentTransaction().addAfterCompletion(
-				(final boolean txCommitted) -> {
+				(final var txCommitted) -> {
 					if (txCommitted) {//send event only is tx successful
 						eventBusManager.post(new StoreEvent(evenType, uids));
 					}
@@ -154,8 +154,8 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> E create(final E entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(entity);
-		final E createdEntity = getPhysicalStore(dataDefinition).create(dataDefinition, entity);
+		final var dataDefinition = DataModelUtil.findDataDefinition(entity);
+		final var createdEntity = getPhysicalStore(dataDefinition).create(dataDefinition, entity);
 		//-----
 		fireAfterCommit(StoreEvent.Type.CREATE, List.of(UID.of(dataDefinition, DataModelUtil.getId(createdEntity))));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
@@ -167,7 +167,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> DtList<E> createList(final DtList<E> entities) {
 		Assertion.check().isNotNull(entities);
 		//-----
-		final DataDefinition dataDefinition = entities.getDefinition();
+		final var dataDefinition = entities.getDefinition();
 		final DtList<E> createdEntities = getPhysicalStore(dataDefinition).createList(entities);
 		//-----
 		fireAfterCommit(StoreEvent.Type.CREATE, createdEntities.stream().map(Entity::getUID).toList());
@@ -179,7 +179,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public void update(final Entity entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(entity);
+		final var dataDefinition = DataModelUtil.findDataDefinition(entity);
 		getPhysicalStore(dataDefinition).update(dataDefinition, entity);
 		//-----
 		fireAfterCommit(StoreEvent.Type.UPDATE, List.of(UID.of(dataDefinition, DataModelUtil.getId(entity))));
@@ -190,7 +190,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> void updateList(final DtList<E> entities) {
 		Assertion.check().isNotNull(entities);
 		//-----
-		final DataDefinition dataDefinition = entities.getDefinition();
+		final var dataDefinition = entities.getDefinition();
 		getPhysicalStore(dataDefinition).updateList(entities);
 		//-----
 		fireAfterCommit(StoreEvent.Type.UPDATE, entities.stream().map(Entity::getUID).toList());
@@ -201,10 +201,26 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public void delete(final UID<? extends Entity> uri) {
 		Assertion.check().isNotNull(uri);
 		//-----
-		final DataDefinition dataDefinition = uri.getDefinition();
+		final var dataDefinition = uri.getDefinition();
 		getPhysicalStore(dataDefinition).delete(dataDefinition, uri);
 		//-----
 		fireAfterCommit(StoreEvent.Type.DELETE, List.of(uri));
+	}
+
+	@Override
+	public <E extends Entity> void deleteList(final List<UID<E>> uids) {
+		Assertion.check()
+				.isNotNull(uids);
+		//-----
+		if (!uids.isEmpty()) {
+			final var dataDefinition = uids.get(0).getDefinition();
+			uids.forEach(uid -> Assertion.check().isTrue(
+					dataDefinition.getName().equals(uid.getDefinition().getName()),
+					"When deleting by list all UIDs must be about the same definition"));
+			getPhysicalStore(dataDefinition).deleteList(uids);
+			//-----
+			fireAfterCommit(StoreEvent.Type.DELETE, (List) uids);
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -212,7 +228,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> E readOne(final UID<E> uri) {
 		Assertion.check().isNotNull(uri);
 		//-----
-		final E entity = cacheDataStore.readNullable(uri);
+		final var entity = cacheDataStore.readNullable(uri);
 		//-----
 		Assertion.check().isNotNull(entity, "no entity found for : '{0}'", uri);
 		return entity;

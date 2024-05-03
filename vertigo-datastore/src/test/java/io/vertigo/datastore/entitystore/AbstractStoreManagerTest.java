@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.basics.task.TaskEngineProc;
 import io.vertigo.basics.task.TaskEngineSelect;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.Cardinality;
@@ -41,7 +40,6 @@ import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.model.DtList;
@@ -124,7 +122,7 @@ public abstract class AbstractStoreManagerTest {
 				"TkInitMain",
 				Optional.empty());
 
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			for (final Car car : carDataBase.getAllCars()) {
 				car.setId(null);
 				entityStoreManager.create(car);
@@ -196,8 +194,8 @@ public abstract class AbstractStoreManagerTest {
 				List.of("delete from car"),
 				"TkDeleteCars",
 				Optional.empty());
-		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			final DtList<Car> carWithoutId = carDataBase.getAllCars();
+		try (var tx = transactionManager.createCurrentTransaction()) {
+			final var carWithoutId = carDataBase.getAllCars();
 			carWithoutId.forEach(car -> car.setId(null));
 			final DtList<Car> cars = entityStoreManager.createList(carWithoutId);
 			Assertions.assertEquals(carWithoutId.size(), cars.size());
@@ -207,11 +205,11 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testUpdateListCar() {
-		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+		try (var tx = transactionManager.createCurrentTransaction()) {
 
-			final DtList<Famille> dtc1 = new DtList<>(Famille.class);
-			for (int i = 0; i < 500; i++) {
-				final Famille famille = new Famille();
+			final var dtc1 = new DtList<Famille>(Famille.class);
+			for (var i = 0; i < 500; i++) {
+				final var famille = new Famille();
 				famille.setLibelle("famille" + i);
 				dtc1.add(famille);
 			}
@@ -225,8 +223,28 @@ public abstract class AbstractStoreManagerTest {
 	}
 
 	@Test
+	public void testDeleteListCar() {
+		try (var tx = transactionManager.createCurrentTransaction()) {
+
+			final var dtc1 = new DtList<Famille>(Famille.class);
+			for (var i = 0; i < 500; i++) {
+				final var famille = new Famille();
+				famille.setLibelle("famille" + i);
+				dtc1.add(famille);
+			}
+			entityStoreManager.createList(dtc1);
+			entityStoreManager.deleteList(dtc1.stream().map(Famille::getUID).toList());
+			final var dtc2 = entityStoreManager.find(
+					dtc1.getDefinition(),
+					Criterions.alwaysTrue(),
+					DtListState.of(null));
+			Assertions.assertEquals(0, dtc2.size());
+		}
+	}
+
+	@Test
 	public void testSelectCarCachedRowMax() {
-		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+		try (var tx = transactionManager.createCurrentTransaction()) {
 			final DtList<Car> dtc1 = entityStoreManager.find(dataDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3));
 			Assertions.assertEquals(3, dtc1.size());
 			//-----
@@ -237,7 +255,7 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testSelectCarDtListState() {
-		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+		try (var tx = transactionManager.createCurrentTransaction()) {
 			final DtList<Car> dtc1 = entityStoreManager.find(dataDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3));
 			Assertions.assertEquals(3, dtc1.size());
 			//-----
@@ -265,7 +283,7 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testSelectCarAndTestMasterDataEnum() {
-		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+		try (var tx = transactionManager.createCurrentTransaction()) {
 			final DtList<Car> dtcEssence = entityStoreManager.find(
 					DataModelUtil.findDataDefinition(Car.class),
 					Criterions.isEqualTo(CarFields.mtyCd, MotorTypeEnum.essence.getEntityUID().getId()),
@@ -278,14 +296,14 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testSelectCountCars() {
-		final TaskDefinition taskDefinition = TaskDefinition.builder("TkCountCars")
+		final var taskDefinition = TaskDefinition.builder("TkCountCars")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select count(*) from CAR")
 				.withOutAttribute("count", SmartTypeDefinition.builder("STyCount", BasicType.Long).build(), Cardinality.ONE)
 				.build();
 
-		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			final Task task = Task.builder(taskDefinition).build();
+		try (var tx = transactionManager.createCurrentTransaction()) {
+			final var task = Task.builder(taskDefinition).build();
 			final long count = taskManager
 					.execute(task)
 					.getResult();
@@ -297,20 +315,20 @@ public abstract class AbstractStoreManagerTest {
 	protected void nativeInsertCar(final Car car) {
 		Assertion.check().isNull(car.getId(), "L'id n'est pas null {0}", car.getId());
 		//-----
-		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
-		final SmartTypeDefinition smartTypeCar = definitionSpace.resolve("STyDtCar", SmartTypeDefinition.class);
+		final var definitionSpace = node.getDefinitionSpace();
+		final var smartTypeCar = definitionSpace.resolve("STyDtCar", SmartTypeDefinition.class);
 
-		final TaskDefinition taskDefinition = TaskDefinition.builder("TkInsertCar")
+		final var taskDefinition = TaskDefinition.builder("TkInsertCar")
 				.withEngine(TaskEngineProc.class)
 				.withRequest("insert into CAR (ID, FAM_ID,MANUFACTURER, MODEL, DESCRIPTION, CAR_YEAR, KILO, PRICE, MTY_CD) values "
 						+ "(NEXT VALUE FOR SEQ_CAR, #dtoCar.famId#, #dtoCar.manufacturer#, #dtoCar.model#, #dtoCar.description#, #dtoCar.carYear#, #dtoCar.kilo#, #dtoCar.price#, #dtoCar.mtyCd#)")
 				.addInAttribute("dtoCar", smartTypeCar, Cardinality.ONE)
 				.build();
 
-		final Task task = Task.builder(taskDefinition)
+		final var task = Task.builder(taskDefinition)
 				.addValue("dtoCar", car)
 				.build();
-		final TaskResult taskResult = taskManager
+		final var taskResult = taskManager
 				.execute(task);
 		nop(taskResult);
 	}
@@ -320,16 +338,16 @@ public abstract class AbstractStoreManagerTest {
 	}
 
 	protected final DtList<Car> nativeLoadCarList() {
-		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
-		final SmartTypeDefinition smartTypeCar = definitionSpace.resolve("STyDtCar", SmartTypeDefinition.class);
+		final var definitionSpace = node.getDefinitionSpace();
+		final var smartTypeCar = definitionSpace.resolve("STyDtCar", SmartTypeDefinition.class);
 
-		final TaskDefinition taskDefinition = TaskDefinition.builder("TkLoadAllCars")
+		final var taskDefinition = TaskDefinition.builder("TkLoadAllCars")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR")
 				.withOutAttribute("dtc", smartTypeCar, Cardinality.MANY)
 				.build();
 
-		final Task task = Task.builder(taskDefinition)
+		final var task = Task.builder(taskDefinition)
 				.build();
 		return taskManager
 				.execute(task)
@@ -341,7 +359,7 @@ public abstract class AbstractStoreManagerTest {
 	 */
 	@Test
 	public void testGetFamille() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			final DtList<Famille> dtc = entityStoreManager.find(dataDefinitionFamille, null, DtListState.of(null));
 			Assertions.assertNotNull(dtc);
 			Assertions.assertTrue(dtc.isEmpty(), "La liste des famille est vide");
@@ -354,13 +372,13 @@ public abstract class AbstractStoreManagerTest {
 	 */
 	@Test
 	public void testAddFamille() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			DtList<Famille> dtc = entityStoreManager.find(dataDefinitionFamille, null, DtListState.of(null));
 			Assertions.assertEquals(0, dtc.size());
 			//-----
-			final Famille famille = new Famille();
+			final var famille = new Famille();
 			famille.setLibelle("encore un");
-			final Famille createdFamille = entityStoreManager.create(famille);
+			final var createdFamille = entityStoreManager.create(famille);
 			// on attend un objet avec un id non null ?
 			Assertions.assertNotNull(createdFamille.getFamId());
 			//-----
@@ -376,12 +394,12 @@ public abstract class AbstractStoreManagerTest {
 	@Test
 	public void testCreateFamilleFail() {
 		Assertions.assertThrows(Exception.class, () -> {
-			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-				final DecimalFormat df = new DecimalFormat("000000000:");
+			try (var transaction = transactionManager.createCurrentTransaction()) {
+				final var df = new DecimalFormat("000000000:");
 				//-----
-				final Famille famille = new Famille();
-				final StringBuilder sb = new StringBuilder();
-				for (int i = 0; i < 4000; i++) {
+				final var famille = new Famille();
+				final var sb = new StringBuilder();
+				for (var i = 0; i < 4000; i++) {
 					sb.append(df.format(i));
 				}
 				// libelle
@@ -399,11 +417,11 @@ public abstract class AbstractStoreManagerTest {
 	 */
 	@Test
 	public void testGetFamilleLocationCars() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			//on crée une famille
-			final Famille famille = new Famille();
+			final var famille = new Famille();
 			famille.setLibelle("Ma famille");
-			final Famille createdFamille = entityStoreManager.create(famille);
+			final var createdFamille = entityStoreManager.create(famille);
 
 			//on récupère la liste des voitures
 			final DtList<Car> cars = entityStoreManager.find(dataDefinitionCar, null, DtListState.of(null));
@@ -419,7 +437,7 @@ public abstract class AbstractStoreManagerTest {
 
 			//On garde le résultat de l'association NN
 			createdFamille.voituresLocation().load();
-			final DtList<Car> firstResult = createdFamille.voituresLocation().get();
+			final var firstResult = createdFamille.voituresLocation().get();
 			Assertions.assertEquals(cars.size(), firstResult.size(), "Test tailles du nombre de voiture dans une NN");
 
 			//On met à jour l'association en retirant le premier élément
@@ -427,13 +445,13 @@ public abstract class AbstractStoreManagerTest {
 			entityStoreManager.getBrokerNN().updateNN(createdFamille.voituresLocation().getDtListURI(), carUriList);
 
 			//on garde le résultat en lazy : il doit avoir le meme nombre de voiture qu'au début
-			final DtList<Car> lazyResult = createdFamille.voituresLocation().get();
+			final var lazyResult = createdFamille.voituresLocation().get();
 			Assertions.assertEquals(firstResult.size(), lazyResult.size(), "Test tailles du nombre de voiture pour une NN");
 
 			//on recharge la famille et on recharge la liste issus de l'association NN : il doit avoir une voiture de moins qu'au début
-			final Famille famille2 = entityStoreManager.readOne(UID.of(Famille.class, createdFamille.getFamId()));
+			final var famille2 = entityStoreManager.readOne(UID.of(Famille.class, createdFamille.getFamId()));
 			famille2.voituresLocation().load();
-			final DtList<Car> secondResult = famille2.voituresLocation().get();
+			final var secondResult = famille2.voituresLocation().get();
 			Assertions.assertEquals(firstResult.size() - 1, secondResult.size(), "Test tailles du nombre de voiture dans une NN");
 			transaction.commit();
 		}
@@ -446,12 +464,12 @@ public abstract class AbstractStoreManagerTest {
 	@Test
 	public void testGetFamilliesCars() {
 		//on crée une famille
-		final Famille famille = new Famille();
+		final var famille = new Famille();
 		famille.setLibelle("Ma famille");
 
 		final DtList<Car> firstResult;
-		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Famille createdFamille = entityStoreManager.create(famille);
+		try (final var transaction = transactionManager.createCurrentTransaction()) {
+			final var createdFamille = entityStoreManager.create(famille);
 
 			//on récupère la liste des voitures
 			final DtList<Car> cars = entityStoreManager.find(dataDefinitionCar, null, DtListState.of(null));
@@ -468,21 +486,21 @@ public abstract class AbstractStoreManagerTest {
 			firstResult = createdFamille.getVoituresFamilleList();
 
 			//On met à jour l'association en retirant le premier élément
-			final Car firstCar = cars.get(0);
+			final var firstCar = cars.get(0);
 			firstCar.setFamId(null);
 			entityStoreManager.update(firstCar);
 			transaction.commit(); //sans commit le cache n'est pas rafraichit
 		}
 
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 
 			//on garde le résultat en lazy : il doit avoir le meme nombre de voiture qu'au début
-			final DtList<Car> lazyResult = famille.getVoituresFamilleList();
+			final var lazyResult = famille.getVoituresFamilleList();
 			Assertions.assertEquals(firstResult.size(), lazyResult.size(), "Test tailles du nombre de voiture pour une 1-N");
 
 			//on recharge la famille et on recharge la liste issus de l'association 1N : il doit avoir une voiture de moins qu'au début
-			final Famille famille2 = entityStoreManager.readOne(famille.getUID());
-			final DtList<Car> secondResult = famille2.getVoituresFamilleList();
+			final var famille2 = entityStoreManager.readOne(famille.getUID());
+			final var secondResult = famille2.getVoituresFamilleList();
 			Assertions.assertEquals(firstResult.size() - 1, secondResult.size(), "Test tailles du nombre de voiture pour une 1-N");
 			transaction.commit();
 		}
@@ -490,7 +508,7 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testTxCrudSelectRollback() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
 			checkCrudCarsCount(0);
 		}
@@ -498,15 +516,15 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testTxNativeSelectRollback() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			checkNativeCarsCount(0);
 		}
 	}
 
 	@Test
 	public void testSelectSmartType() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car peugeotCar = entityStoreManager.readOne(UID.of(Car.class, 10000L));
+		try (var transaction = transactionManager.createCurrentTransaction()) {
+			final var peugeotCar = entityStoreManager.readOne(UID.of(Car.class, 10000L));
 			Assertions.assertEquals(1, peugeotCar.getGeoPoint().getX(), "Test geopoint smartType adapter");
 			Assertions.assertEquals(2, peugeotCar.getGeoPoint().getY(), "Test geopoint smartType adapter");
 		}
@@ -514,8 +532,8 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testTxCrudInsertCrudSelectRollback() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar();
+		try (var transaction = transactionManager.createCurrentTransaction()) {
+			final var car = createNewCar();
 			entityStoreManager.create(car);
 
 			//on récupère la liste des voitures
@@ -525,8 +543,8 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testTxNativeInsertCrudSelectRollback() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar();
+		try (var transaction = transactionManager.createCurrentTransaction()) {
+			final var car = createNewCar();
 			nativeInsertCar(car);
 
 			//on récupère la liste des voitures
@@ -536,8 +554,8 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testTxCrudInsertNativeSelectRollback() {
-		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar();
+		try (final var transaction = transactionManager.createCurrentTransaction()) {
+			final var car = createNewCar();
 			entityStoreManager.create(car);
 
 			//on récupère la liste des voitures
@@ -547,8 +565,8 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testTxNativeInsertNativeSelectRollback() {
-		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar();
+		try (final var transaction = transactionManager.createCurrentTransaction()) {
+			final var car = createNewCar();
 			nativeInsertCar(car);
 
 			//on récupère la liste des voitures
@@ -558,11 +576,11 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testTxCrudInsertRollbackCrudSelectRollback() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar();
+		try (var transaction = transactionManager.createCurrentTransaction()) {
+			final var car = createNewCar();
 			entityStoreManager.create(car);
 		}
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
 			checkCrudCarsCount(0);
 		}
@@ -570,11 +588,11 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testTxNativeInsertRollbackCrudSelectRollback() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar();
+		try (var transaction = transactionManager.createCurrentTransaction()) {
+			final var car = createNewCar();
 			nativeInsertCar(car);
 		}
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
 			checkCrudCarsCount(0);
 		}
@@ -582,31 +600,31 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testTxCrudInsertRollbackNativeSelectRollback() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar();
+		try (var transaction = transactionManager.createCurrentTransaction()) {
+			final var car = createNewCar();
 			entityStoreManager.create(car);
 		}
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			checkNativeCarsCount(0);
 		}
 	}
 
 	@Test
 	public void testTxNativeInsertRollbackNativeSelectRollback() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar();
+		try (var transaction = transactionManager.createCurrentTransaction()) {
+			final var car = createNewCar();
 			nativeInsertCar(car);
 		}
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			checkNativeCarsCount(0);
 		}
 	}
 
 	@Test
 	public void testTxNativeInsertCrudInsertCommit() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar();
-			final Car car2 = createNewCar();
+		try (var transaction = transactionManager.createCurrentTransaction()) {
+			final var car = createNewCar();
+			final var car2 = createNewCar();
 			nativeInsertCar(car2);
 			entityStoreManager.create(car);
 			transaction.commit();
@@ -616,8 +634,8 @@ public abstract class AbstractStoreManagerTest {
 	@Test
 	public void testTxCrudInsertTwoCommit() {
 		Assertions.assertThrows(IllegalStateException.class, () -> {
-			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-				final Car car = createNewCar();
+			try (var transaction = transactionManager.createCurrentTransaction()) {
+				final var car = createNewCar();
 				entityStoreManager.create(car);
 				transaction.commit();
 				transaction.commit();
@@ -627,12 +645,12 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testTxCrudInsertCommitCrudSelectRollback() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar();
+		try (var transaction = transactionManager.createCurrentTransaction()) {
+			final var car = createNewCar();
 			entityStoreManager.create(car);
 			transaction.commit();
 		}
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
 			checkCrudCarsCount(1);
 		}
@@ -640,12 +658,12 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testTxNativeInsertCommitCrudSelectRollback() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar();
+		try (var transaction = transactionManager.createCurrentTransaction()) {
+			final var car = createNewCar();
 			nativeInsertCar(car);
 			transaction.commit();
 		}
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
 			checkCrudCarsCount(1);
 		}
@@ -653,12 +671,12 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testTxCrudInsertCommitNativeSelectRollback() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar();
+		try (var transaction = transactionManager.createCurrentTransaction()) {
+			final var car = createNewCar();
 			entityStoreManager.create(car);
 			transaction.commit();
 		}
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
 			checkNativeCarsCount(1);
 		}
@@ -666,12 +684,12 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testTxNativeInsertCommitNativeSelectRollback() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar();
+		try (var transaction = transactionManager.createCurrentTransaction()) {
+			final var car = createNewCar();
 			nativeInsertCar(car);
 			transaction.commit();
 		}
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
 			checkNativeCarsCount(1);
 		}
@@ -680,7 +698,7 @@ public abstract class AbstractStoreManagerTest {
 	@Test
 	public void testCrudInsertNoTx() {
 		Assertions.assertThrows(NullPointerException.class, () -> {
-			final Car car = createNewCar();
+			final var car = createNewCar();
 			entityStoreManager.create(car);
 		});
 	}
@@ -688,7 +706,7 @@ public abstract class AbstractStoreManagerTest {
 	@Test
 	public void testNativeInsertNoTx() {
 		Assertions.assertThrows(NullPointerException.class, () -> {
-			final Car car = createNewCar();
+			final var car = createNewCar();
 			nativeInsertCar(car);
 		});
 	}
@@ -705,31 +723,31 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testPerfCrudInsertCrudSelectRollback() {
-		final long start = System.currentTimeMillis();
-		int execCount = 0;
+		final var start = System.currentTimeMillis();
+		var execCount = 0;
 		while (System.currentTimeMillis() - start < 1000) {
 			testTxCrudInsertCrudSelectRollback();
 			execCount++;
 		}
-		final long time = System.currentTimeMillis() - start;
+		final var time = System.currentTimeMillis() - start;
 		System.out.println(execCount + " exec en 1s. moy=" + time * 1000 / execCount / 1000d + "ms");
 	}
 
 	@Test
 	public void testPerfNativeInsertNativeSelectRollback() {
-		final long start = System.currentTimeMillis();
-		int execCount = 0;
+		final var start = System.currentTimeMillis();
+		var execCount = 0;
 		while (System.currentTimeMillis() - start < 1000) {
 			testTxNativeInsertNativeSelectRollback();
 			execCount++;
 		}
-		final long time = System.currentTimeMillis() - start;
+		final var time = System.currentTimeMillis() - start;
 		System.out.println(execCount + " exec en 1s. moy=" + time * 1000 / execCount / 1000d + "ms");
 	}
 
 	@Test
 	public void testCrudCountCars() {
-		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+		try (var tx = transactionManager.createCurrentTransaction()) {
 			final long count = entityStoreManager.count(dataDefinitionCar);
 			//-----
 			Assertions.assertEquals(9, count);
@@ -738,29 +756,29 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testTxCrudInsertDeleteCommit() {
-		final Car car = createNewCar();
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car createdCar = entityStoreManager.create(car);
+		final var car = createNewCar();
+		try (var transaction = transactionManager.createCurrentTransaction()) {
+			final var createdCar = entityStoreManager.create(car);
 			//Check cars count
 			checkCrudCarsCount(1);
 			entityStoreManager.delete(createdCar.getUID());
 			checkCrudCarsCount(1); //car is cacheable : list was'nt flush here
 			transaction.commit();
 		}
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			checkCrudCarsCount(0); //car is cacheable : must wait commit to see delete
 		}
 	}
 
 	@Test
 	public void testTxCrudInsertCommitCrudDeleteCommit() {
-		final Car car = createNewCar();
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		final var car = createNewCar();
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			entityStoreManager.create(car);
 			checkCrudCarsCount(1);
 			transaction.commit();
 		}
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (var transaction = transactionManager.createCurrentTransaction()) {
 			entityStoreManager.delete(car.getUID());
 			checkCrudCarsCount(0);
 			transaction.commit();
@@ -769,9 +787,9 @@ public abstract class AbstractStoreManagerTest {
 
 	@Test
 	public void testTxCrudLockCommit() {
-		final Car car = createNewCar();
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car createdCar = entityStoreManager.create(car);
+		final var car = createNewCar();
+		try (var transaction = transactionManager.createCurrentTransaction()) {
+			final var createdCar = entityStoreManager.create(car);
 			//Check cars count
 			checkCrudCarsCount(1);
 			entityStoreManager.readOneForUpdate(createdCar.getUID());
@@ -781,7 +799,7 @@ public abstract class AbstractStoreManagerTest {
 	}
 
 	private void checkNativeCarsCount(final int deltaCount) {
-		final DtList<Car> cars = nativeLoadCarList();
+		final var cars = nativeLoadCarList();
 		Assertions.assertNotNull(cars);
 		Assertions.assertEquals(carDataBase.size() + deltaCount, cars.size(), "Test du nombre de voiture");
 	}
@@ -793,7 +811,7 @@ public abstract class AbstractStoreManagerTest {
 	}
 
 	private static Car createNewCar() {
-		final Car car = new Car();
+		final var car = new Car();
 		car.setId(null);
 		car.setPrice(5600);
 		car.setManufacturer("Peugeot");

@@ -17,6 +17,8 @@
  */
 package io.vertigo.datastore.impl.entitystore;
 
+import java.util.List;
+
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
@@ -114,6 +116,10 @@ public interface EntityStorePlugin extends Plugin {
 	 */
 	void update(DataDefinition dataDefinition, Entity entity);
 
+	/**
+	 * Update a list of entities
+	 * @param entities entities
+	 */
 	<E extends Entity> void updateList(DtList<E> entities);
 
 	/**
@@ -122,6 +128,12 @@ public interface EntityStorePlugin extends Plugin {
 	 * @param uid UID
 	 */
 	void delete(DataDefinition dataDefinition, UID<?> uid);
+
+	/**
+	 * Deletes a list of entities
+	 * @param uids uids of entities to delete
+	 */
+	<E extends Entity> void deleteList(List<UID<E>> uids);
 
 	/**
 	 * Loads for update.
