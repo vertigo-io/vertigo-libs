@@ -15,8 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.datastore.kvstore.berkeley;
+package io.vertigo.datastore.kvstore.ehcache;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
@@ -29,9 +30,9 @@ import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.kvstore.AbstractKVStoreManagerTest;
 
 /**
- * @author pchretien
+ * @author npiedeloup
  */
-public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest {
+public final class EhCacheKVStoreManagerTest extends AbstractKVStoreManagerTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
@@ -46,19 +47,43 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 						.withCache()
 						.withMemoryCache()
 						.withKVStore()
-						.withBerkleyKV(
+						.withEhCacheKV(
 								Param.of("collections", "flowers;TTL=" + TTL + ", trees;inMemory"),
-								Param.of("dbFilePath", storagePath),
-								Param.of("purgeVersion", "V3"))
+								Param.of("dbFilePath", storagePath))
 						.build())
 				.build();
 	}
 
 	@Override
-	@Test
-	public void testInsertMassConcurrent() throws InterruptedException {
-		super.testInsertMassConcurrent();
-
+	protected boolean supportFindAll() {
+		return false;
 	}
 
+	@Override
+	@Disabled
+	@Test
+	public void testFindAll() {
+		//no findAll
+	}
+
+	@Override
+	@Disabled
+	@Test
+	public void testRemoveFail() {
+		//cant detect not found key
+	}
+
+	@Override
+	@Disabled
+	@Test
+	public void testTimeToLive() {
+		//need daemon : get can return expired key @see https://github.com/facebook/rocksdb/wiki/Time-to-Live
+	}
+
+	@Override
+	@Disabled
+	@Test
+	public void testRollback() {
+		//not transactional
+	}
 }

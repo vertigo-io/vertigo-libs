@@ -42,6 +42,7 @@ import io.vertigo.datastore.plugins.kvstore.berkeley.BerkeleyKVStorePlugin;
 import io.vertigo.datastore.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.datastore.plugins.kvstore.ehcache.EhCacheKVStorePlugin;
 import io.vertigo.datastore.plugins.kvstore.h2.H2KVStorePlugin;
+import io.vertigo.datastore.plugins.kvstore.redis.RedisKVStorePlugin;
 import io.vertigo.datastore.plugins.kvstore.speedb.SpeedbKVStorePlugin;
 
 /**
@@ -130,6 +131,13 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 	public DataStoreFeatures withBerkleyKV(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(BerkeleyKVStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("kvStore.redis")
+	public DataStoreFeatures withRedisKV(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(RedisKVStorePlugin.class, params);
 		return this;
 	}
 

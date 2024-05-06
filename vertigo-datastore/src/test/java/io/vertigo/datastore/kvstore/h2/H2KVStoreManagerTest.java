@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.datastore.kvstore.speedb;
+package io.vertigo.datastore.kvstore.h2;
 
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.node.config.BootConfig;

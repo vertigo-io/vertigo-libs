@@ -15,12 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.datastore.kvstore.speedb;
+package io.vertigo.datastore.kvstore.redis;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
@@ -30,9 +31,9 @@ import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.kvstore.AbstractKVStoreManagerTest;
 
 /**
- * @author npiedeloup
+ * @author pchretien
  */
-public final class EhCacheKVStoreManagerTest extends AbstractKVStoreManagerTest {
+public final class RedisKVStoreManagerTest extends AbstractKVStoreManagerTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
@@ -41,43 +42,23 @@ public final class EhCacheKVStoreManagerTest extends AbstractKVStoreManagerTest 
 						.addPlugin(ClassPathResourceResolverPlugin.class)
 						.addAnalyticsConnectorPlugin(SocketLoggerAnalyticsConnectorPlugin.class)
 						.build())
+				.addModule(new RedisFeatures()
+						.withJedis(
+								Param.of("host", "docker-vertigo.part.klee.lan.net"),
+								Param.of("port", "6379"),
+								Param.of("ssl", "false"),
+								Param.of("database", "0"))
+						.build())
 				.addModule(new CommonsFeatures()
 						.build())
 				.addModule(new DataStoreFeatures()
 						.withCache()
 						.withMemoryCache()
 						.withKVStore()
-						.withEhCacheKV(
-								Param.of("collections", "flowers;TTL=" + TTL + ", trees;inMemory"),
-								Param.of("dbFilePath", storagePath))
+						.withRedisKV(
+								Param.of("collections", "flowers;TTL=" + TTL + ", trees"))
 						.build())
 				.build();
-	}
-
-	@Override
-	protected boolean supportFindAll() {
-		return false;
-	}
-
-	@Override
-	@Disabled
-	@Test
-	public void testFindAll() {
-		//no findAll
-	}
-
-	@Override
-	@Disabled
-	@Test
-	public void testRemoveFail() {
-		//cant detect not found key
-	}
-
-	@Override
-	@Disabled
-	@Test
-	public void testTimeToLive() {
-		//need daemon : get can return expired key @see https://github.com/facebook/rocksdb/wiki/Time-to-Live
 	}
 
 	@Override
@@ -86,4 +67,13 @@ public final class EhCacheKVStoreManagerTest extends AbstractKVStoreManagerTest 
 	public void testRollback() {
 		//not transactional
 	}
+
+	@Override
+	@Disabled
+	@Test
+	public void testInsertMassConcurrent() throws InterruptedException {
+		super.testInsertMassConcurrent();
+
+	}
+
 }
