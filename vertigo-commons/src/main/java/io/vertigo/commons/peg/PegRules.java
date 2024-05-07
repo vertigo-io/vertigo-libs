@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import io.vertigo.commons.peg.PegRule.Dummy;
 import io.vertigo.commons.peg.PegWordRule.Mode;
+import io.vertigo.core.locale.LocaleMessageKey;
 
 /**
  * Factory of all PeRules.
@@ -45,7 +46,33 @@ public final class PegRules {
 	 * @return Named rule
 	 */
 	public static <R> PegRule<R> named(final PegRule<R> innerRule, final String ruleName) {
-		return new PegGrammarRule<>(innerRule, ruleName);
+		return PegGrammarRule.of(innerRule, ruleName);
+	}
+
+	/**
+	 * Name a rule with a fixed error message.
+	 *
+	 * @param mainRule Rule to name
+	 * @param ruleName Rule name
+	 * @param errorMessage Fixed error message
+	 * @param <R> Type of the product text parsing
+	 * @return Named rule
+	 */
+	public static <R> PegRule<R> named(final PegRule<R> innerRule, final String ruleName, final String errorMessage) {
+		return PegGrammarRule.ofErrorMessage(innerRule, ruleName, errorMessage);
+	}
+
+	/**
+	 * Name a rule with a message key for error message.
+	 *
+	 * @param mainRule Rule to name
+	 * @param ruleName Rule name
+	 * @param messageKey Message key for error message
+	 * @param <R> Type of the product text parsing
+	 * @return Named rule
+	 */
+	public static <R> PegRule<R> named(final PegRule<R> innerRule, final String ruleName, final LocaleMessageKey messageKey) {
+		return PegGrammarRule.ofMessageKey(innerRule, ruleName, messageKey);
 	}
 
 	/**
