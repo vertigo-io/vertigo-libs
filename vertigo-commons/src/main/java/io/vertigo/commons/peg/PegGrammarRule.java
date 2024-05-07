@@ -48,7 +48,15 @@ final class PegGrammarRule<R> implements PegRule<R> {
 	/** {@inheritDoc} */
 	@Override
 	public PegResult<R> parse(final String text, final int start) throws PegNoMatchFoundException {
-		return mainRule.parse(text, start);
+		try {
+			PegLogger.look("NAME", ruleName, start, mainRule);
+			final PegResult<R> result = mainRule.parse(text, start);
+			PegLogger.found("NAME", ruleName, start, result.getIndex(), text, mainRule);
+			return result;
+		} catch (final PegNoMatchFoundException e) {
+			PegLogger.miss("NAME", ruleName, start, mainRule);
+			throw new PegNoMatchFoundException(text, e.getIndex(), e, "[" + ruleName + "]");
+		}
 	}
 
 	public String getRuleName() {

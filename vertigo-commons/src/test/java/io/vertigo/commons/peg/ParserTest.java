@@ -322,6 +322,48 @@ public final class ParserTest {
 		parse(MANY_AB_MORE, "aba");
 	}
 
+	@Test
+	void testParseAll() throws PegNoMatchFoundException {
+		final PegRule<List<Object>> rule = PegRules.parseAll(HELLO_WORLD);
+		final var cursor = rule.parse("hello world");
+		assertEquals(11, cursor.getIndex());
+
+		final PegNoMatchFoundException ex = Assertions.assertThrows(PegNoMatchFoundException.class, () -> rule.parse("hello world, my name"));
+		assertEquals(0, ex.getIndex());
+		assertTrue(ex.getFullMessage().contains("Can't parse whole input (parse until 11)"));
+	}
+
+	@Test
+	void testParseAllBestUnmatch() {
+		final PegNoMatchFoundException ex = Assertions.assertThrows(PegNoMatchFoundException.class, () -> PegRules.parseAll(
+				PegRules.sequence(
+						HELLO,
+						SPACE,
+						PegRules.choice(
+								PegRules.sequence(WORLD, PegRules.term(".")),
+								PegRules.optional(MUSIC))))
+				.parse("hello world"));
+
+		assertEquals(0, ex.getIndex());
+		assertTrue(ex.getFullMessage().contains("Terminal '.' is expected"));
+	}
+
+	@Test
+	void testParseChoiceSmallerFallback() throws PegNoMatchFoundException {
+		final var rule = PegRules.parseAll(PegRules.sequence(
+				HELLO,
+				SPACE,
+				PegRules.choice(
+						PegRules.sequence(WORLD_MUSIC, SPACE, PegRules.term("!")),
+						WHERE),
+				SPACE,
+				FROM,
+				SPACE,
+				WHERE));
+		rule.parse("hello world from paris");
+		rule.parse("hello music ! from toronto");
+	}
+
 	public static void main(final String[] args) throws PegNoMatchFoundException {
 		parse(HELLO_WORLD_MUSIC, "hello music b");
 

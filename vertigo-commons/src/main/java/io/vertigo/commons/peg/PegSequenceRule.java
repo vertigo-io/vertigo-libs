@@ -78,21 +78,13 @@ final class PegSequenceRule implements PegRule<List<Object>> {
 				index = cursor.getIndex();
 				results.add(cursor.getValue());
 				if (cursor.getBestUncompleteRule().isPresent()) {
-					best = keepBestUncompleteRule(cursor.getBestUncompleteRule().get(), best);
+					best = PegNoMatchFoundException.keepBestUncompleteRule(cursor.getBestUncompleteRule().get(), best);
 				}
 			}
 		} catch (final PegNoMatchFoundException e) {
-			throw keepBestUncompleteRule(new PegNoMatchFoundException(text, e.getIndex(), e, getExpression()), best);
+			throw PegNoMatchFoundException.keepBestUncompleteRule(new PegNoMatchFoundException(text, e.getIndex(), e, getExpression()), best);
 		}
-		return new PegResult<>(index, results);
+		return new PegResult<>(index, results, best);
 	}
 
-	private static PegNoMatchFoundException keepBestUncompleteRule(final PegNoMatchFoundException first, final PegNoMatchFoundException otherNullable) {
-		Assertion.check().isNotNull(first);
-		//----
-		if (otherNullable == null || otherNullable.getIndex() < first.getIndex()) {
-			return first;
-		}
-		return otherNullable;
-	}
 }

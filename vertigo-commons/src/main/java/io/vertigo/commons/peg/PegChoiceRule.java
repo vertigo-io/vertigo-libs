@@ -35,6 +35,7 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 
 	/**
 	 * Constructor.
+	 *
 	 * @param rules the list of rules to test
 	 */
 	PegChoiceRule(final List<PegRule<?>> rules) {
@@ -69,14 +70,17 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 				final PegResult<?> parserCursor = getRules().get(choiceIndex).parse(text, start);
 				final int end = parserCursor.getIndex();
 				if (parserCursor.getBestUncompleteRule().isPresent()) {
-					best = keepBestUncompleteRule(parserCursor.getBestUncompleteRule().get(), best);
+					best = PegNoMatchFoundException.keepBestUncompleteRule(parserCursor.getBestUncompleteRule().get(), best);
 				}
+				/*
+				 // SKE: A débattre, refuser un choix valide si un choix précédent invalide à été plus loin me semble une mauvaise approche
 				if (best != null && end < best.getIndex()) {
 					Assertion.check().isNotNull(best, "best exception should be set at same time of bestIndex");
 					//Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
 					PegLogger.log("Reject CHOICE pos" + start + " : " + choiceIndex + " at " + end);
 					throw best;
 				}
+				*/
 				PegLogger.found("CHOICE", "c" + choiceIndex, start, end, text, getRules().get(choiceIndex));
 				final PegChoice value = new PegChoice(choiceIndex, parserCursor.getValue());
 				return new PegResult<>(end, value, best);
@@ -84,19 +88,11 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 				//Tant que l'on a des erreurs sur l'évaluation des règles
 				//on recommence jusqu'à trouver la première qui fonctionne.
 				PegLogger.miss("CHOICE", "c" + choiceIndex, start, getRules().get(choiceIndex));
-				best = keepBestUncompleteRule(new PegNoMatchFoundException(text, e.getIndex(), e, getExpression()), best);
+				best = PegNoMatchFoundException.keepBestUncompleteRule(new PegNoMatchFoundException(text, e.getIndex(), e, getExpression()), best);
 			}
 		}
 		//Nothing has been found
-		throw keepBestUncompleteRule(new PegNoMatchFoundException(text, start, null, "No rule found when evalutating  FirstOf : '{0}'", getExpression()), best);
+		throw PegNoMatchFoundException.keepBestUncompleteRule(new PegNoMatchFoundException(text, start, null, "No rule found when evalutating  FirstOf : '{0}'", getExpression()), best);
 	}
 
-	private static PegNoMatchFoundException keepBestUncompleteRule(final PegNoMatchFoundException first, final PegNoMatchFoundException otherNullable) {
-		Assertion.check().isNotNull(first);
-		//----
-		if (otherNullable == null || otherNullable.getIndex() < first.getIndex()) {
-			return first;
-		}
-		return otherNullable;
-	}
 }

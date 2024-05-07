@@ -20,8 +20,8 @@ package io.vertigo.commons.peg;
 import io.vertigo.core.lang.Assertion;
 
 /**
- *
  * Ensure inner rule match all input : start at idx 0 and finish at last idx
+ *
  * @author npiedeloup
  */
 final class PegParseAllRule<O> implements PegRule<O> {
@@ -59,7 +59,7 @@ final class PegParseAllRule<O> implements PegRule<O> {
 			index = cursor.getIndex();
 			result = cursor.getValue();
 			if (index < text.length()) {
-				throw new PegNoMatchFoundException(text, start, null, "Can't parse whole input (parse until {0})", index);
+				throw new PegNoMatchFoundException(text, start, cursor.getBestUncompleteRule().orElse(null), "Can't parse whole input (parse until {0})", index);
 			}
 
 		} catch (final PegNoMatchFoundException e) {
