@@ -25,23 +25,41 @@
       </repository>
     </repositories>
     
+    <dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-core</artifactId> <!-- 8.11.1 compatible with ElasticSearch 7.17.12 -->
+				<version>8.11.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-analyzers-common</artifactId> <!-- 8.11.1 compatible with ElasticSearch 7.17.12 -->
+				<version>8.11.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-queryparser</artifactId> <!-- 8.11.1 compatible with ElasticSearch 7.17.12 -->
+				<version>8.11.1</version>
+			</dependency>
+			<dependency>
+				<groupId>io.vertigo</groupId>
+				<artifactId>vertigo-datastore</artifactId>
+				<version>${vertigo.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.vertigo</groupId>
+				<artifactId>vertigo-elasticsearch-connector</artifactId>
+				<version>${vertigo.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+    
 	<dependencies>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-core</artifactId>
-			<version>${vertigo.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-commons</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-database</artifactId>
-			<version>${project.version}</version>
-			<optional>true</optional>
-		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-datastore</artifactId>
@@ -49,16 +67,9 @@
 		</dependency>		
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-elasticsearch_7_17-connector</artifactId>
+			<artifactId>vertigo-elasticsearch-connector</artifactId>
 			<version>${vertigo.version}</version>
 			<optional>true</optional>
-		</dependency>
-
-		<!-- tests -->
-		<dependency>
-		    <groupId>com.h2database</groupId>
-		    <artifactId>h2</artifactId>
-		    <scope>test</scope>
 		</dependency>
 
 
@@ -82,12 +93,7 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- Connections Pool -->
-		<dependency>
-			<groupId>com.mchange</groupId>
-			<artifactId>c3p0</artifactId>
-			<optional>true</optional><!-- C3p0DataSourceProviderPlugin -->
-		</dependency>
+		
 
 		<!-- Dépendances à des librairies spécifiques au module -->
 		<dependency>
@@ -110,6 +116,20 @@
             <artifactId>mapper-extras</artifactId> <!-- required by ESEmbeddedSearchServicesPlugin -->
             <optional>true</optional>
         </dependency>
+        
+        
+        
+        <!-- tests -->
+		<dependency>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 	<build>

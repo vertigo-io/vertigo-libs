@@ -11,6 +11,18 @@
 	<artifactId>vertigo-vega</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-vega</name>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.vertigo</groupId>
+				<artifactId>vertigo-datafactory</artifactId>
+				<version>${vertigo.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>

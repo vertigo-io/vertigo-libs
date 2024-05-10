@@ -15,12 +15,7 @@
 
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-core</artifactId>
-			<version>${vertigo.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-commons</artifactId>
+			<artifactId>vertigo-datamodel</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -66,6 +61,12 @@
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-redis-connector</artifactId>
+			<version>${vertigo.version}</version>
+			<optional>true</optional> <!-- Redis DistributedWork impl -->
+		</dependency>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-javalin-connector</artifactId>
 			<version>${vertigo.version}</version>
 			<optional>true</optional> <!-- Redis DistributedWork impl -->
 		</dependency>
