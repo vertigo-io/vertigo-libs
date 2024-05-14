@@ -504,21 +504,23 @@ export default {
 
     hasFieldsError: function (object, field, rowIndex) {
         const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
+        const fieldName = field.split("_")[0]; // trim any qualifier like "_fmt"
         if (fieldsErrors) {
             var objectName = rowIndex != null ? object + '[' + rowIndex + ']' : object;
             return Object.prototype.hasOwnProperty.call(fieldsErrors, objectName) &&
-                fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], field) && fieldsErrors[objectName][field].length > 0
+                fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], fieldName) && fieldsErrors[objectName][fieldName].length > 0
         }
         return false;
     },
 
     getErrorMessage: function (object, field, rowIndex) {
         const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
+        const fieldName = field.split("_")[0]; // trim any qualifier like "_fmt"
         if (fieldsErrors) {
             var objectName = rowIndex != null ? object + '[' + rowIndex + ']' : object;
             if (Object.prototype.hasOwnProperty.call(fieldsErrors, objectName) &&
-                fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], field)) {
-                return fieldsErrors[objectName][field].join(', ');
+                fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], fieldName)) {
+                return fieldsErrors[objectName][fieldName].join(', ');
             }
         } else {
             return '';
