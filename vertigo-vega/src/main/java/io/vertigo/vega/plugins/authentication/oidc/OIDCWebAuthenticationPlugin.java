@@ -30,6 +30,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -79,6 +80,7 @@ import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.connectors.oidc.OIDCDeploymentConnector;
 import io.vertigo.connectors.oidc.OIDCDeploymentConnector.OIDCParameters;
 import io.vertigo.core.lang.Tuple;
@@ -120,13 +122,19 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 
 	private final Optional<SSLSocketFactory> sslSocketFactoryOpt;
 
+	private final VSecurityManager securityManager;
+
 	@Inject
 	public OIDCWebAuthenticationPlugin(
+			final VSecurityManager securityManager,
 			@ParamValue("urlPrefix") final Optional<String> urlPrefixOpt,
 			@ParamValue("urlHandlerPrefix") final Optional<String> urlHandlerPrefixOpt,
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<OIDCDeploymentConnector> oidcDeploymentConnectors,
 			final ResourceManager resourceManager) {
+
+		this.securityManager = securityManager;
+
 		urlPrefix = urlPrefixOpt.orElse("/");
 		urlHandlerPrefix = urlHandlerPrefixOpt.orElse("/OIDC/");
 		callbackUrl = urlHandlerPrefix + "callback";
@@ -416,7 +424,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 				WebAuthenticationUtil.resolveUrlRedirect(httpRequest));
 
 		// Compose the OpenID authentication request (for the code flow)
-		final var authRequest = new AuthenticationRequest.Builder(
+		final var authRequestBuilder = new AuthenticationRequest.Builder(
 				ResponseType.CODE,
 				scope,
 				clientID,
@@ -424,8 +432,17 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 						.endpointURI(ssoMetadata.getAuthorizationEndpointURI())
 						.state(state)
 						.nonce(nonce)
-						.codeChallenge(codeVerifier, CodeChallengeMethod.S256)
-						.build();
+						.codeChallenge(codeVerifier, CodeChallengeMethod.S256);
+
+		// forward suer locale to the SSO, for example keycloak uses ui_locales parameter
+		if (oidcParameters.getLoginLocaleParamNameOpt().isPresent()) {
+			securityManager.getCurrentUserSession().ifPresent(userSession -> {
+				final var locale = userSession.getLocale() == null ? Locale.FRENCH : userSession.getLocale();
+				authRequestBuilder.customParameter(oidcParameters.getLoginLocaleParamNameOpt().get(), locale.getLanguage());
+			});
+		}
+
+		final var authRequest = authRequestBuilder.build();
 
 		try {
 			httpResponse.sendRedirect(authRequest.toURI().toString()); // send 302 redirect to OIDC auth endpoint
