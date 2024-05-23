@@ -23,6 +23,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.StringUtil;
 import jakarta.servlet.http.HttpSession;
@@ -32,6 +35,8 @@ import jakarta.servlet.http.HttpSession;
  */
 final class OIDCSessionManagementUtil {
 
+	private static final Logger LOG = LogManager.getLogger(OIDCSessionManagementUtil.class);
+
 	private static final String STATES = "states";
 	private static final Integer STATE_TTL = 3600;
 
@@ -40,6 +45,9 @@ final class OIDCSessionManagementUtil {
 	}
 
 	static OIDCStateData retrieveStateDataFromSession(final HttpSession session, final String state) {
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Retrieving state " + state + " from session " + session.getId());
+		}
 		if (!StringUtil.isBlank(state)) {
 			final var stateDataInSession = removeStateFromSession(session, state);
 			if (stateDataInSession != null) {
@@ -50,6 +58,10 @@ final class OIDCSessionManagementUtil {
 	}
 
 	static String getRequestedUri(final HttpSession session, final String state) {
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Retrieving requestedUri for state " + state + " from session " + session.getId());
+			dumpStates(session);
+		}
 		if (!StringUtil.isBlank(state)) {
 			final var states = (Map<String, OIDCStateData>) session.getAttribute(STATES);
 			if (states != null) {
@@ -62,13 +74,31 @@ final class OIDCSessionManagementUtil {
 		throw new VSystemException("Failed to validate data received from Authorization service - could not validate state");
 	}
 
+	private static void dumpStates(final HttpSession session) {
+		final var states = (Map<String, OIDCStateData>) session.getAttribute(STATES);
+		if (states != null) {
+			LOG.trace("Existing states in session " + session.getId());
+			for (final Map.Entry<String, OIDCStateData> entry : states.entrySet()) {
+				LOG.trace("\tState: " + entry.getKey() + " Data: " + entry.getValue());
+			}
+		} else {
+			LOG.trace("No states in session " + session.getId());
+		}
+	}
+
 	private static OIDCStateData removeStateFromSession(final HttpSession session, final String state) {
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Removing state " + state + " from session " + session.getId());
+		}
 		final var states = (Map<String, OIDCStateData>) session.getAttribute(STATES);
 		if (states != null) {
 			eliminateExpiredStates(states);
 			final var stateData = states.get(state);
 			if (stateData != null) {
 				states.remove(state);
+				if (LOG.isTraceEnabled()) {
+					LOG.trace("Removing state " + state + " from session " + session.getId());
+				}
 				session.setAttribute(STATES, states); //needed for correct cluster sync (see fb-contrib:SCSS_SUSPICIOUS_CLUSTERED_SESSION_SUPPORT)
 				return stateData;
 			}
@@ -85,6 +115,9 @@ final class OIDCSessionManagementUtil {
 			final var diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(currTime.getTime() - entry.getValue().stateDate().getTime());
 
 			if (diffInSeconds > STATE_TTL) {
+				if (LOG.isTraceEnabled()) {
+					LOG.trace("Removing exired state " + entry.getKey());
+				}
 				it.remove();
 			}
 		}
@@ -94,6 +127,9 @@ final class OIDCSessionManagementUtil {
 		// state parameter to validate response from Authorization server and nonce parameter to validate idToken
 		final var states = Optional.ofNullable((Map<String, OIDCStateData>) session.getAttribute(STATES))
 				.orElseGet(HashMap::new);
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Storing state " + state + " in session " + session.getId());
+		}
 		states.put(state, new OIDCStateData(nonce, pkceCodeVerifier, new Date(), requestedUri));
 		session.setAttribute(STATES, states);
 	}
