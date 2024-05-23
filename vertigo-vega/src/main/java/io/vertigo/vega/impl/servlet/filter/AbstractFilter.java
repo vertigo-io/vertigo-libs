@@ -24,7 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.node.Node;
-import io.vertigo.core.param.EnvParamUtil;
+import io.vertigo.core.param.ParamEnvUtil;
 import io.vertigo.core.param.ParamManager;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -86,6 +86,7 @@ public abstract class AbstractFilter implements Filter {
 
 	/**
 	 * Test si l'url correspond au pattern.
+	 *
 	 * @param req Request
 	 * @param pattern Pattern de test
 	 * @return si l'url match le pattern, ou false si pas de pattern ou si pas httprequest.
@@ -100,6 +101,7 @@ public abstract class AbstractFilter implements Filter {
 
 	/**
 	 * Test si l'url (hors domain et context) correspond au pattern.
+	 *
 	 * @param context Context de la webapp
 	 * @param requestUri uri complete de la request
 	 * @param pattern Pattern de test
@@ -121,7 +123,7 @@ public abstract class AbstractFilter implements Filter {
 	protected final <P extends Serializable> P parseParam(final String paramName, final Class<P> paramClass, final P defaultValue) {
 		final String paramStrValue = config.getInitParameter(paramName);
 		if (paramStrValue != null) {
-			final var param = EnvParamUtil.getParam(paramName, paramStrValue, Optional.of(Node.getNode().getComponentSpace().resolve(ParamManager.class)));
+			final var param = ParamEnvUtil.getParam(paramName, paramStrValue, Optional.of(Node.getNode().getComponentSpace().resolve(ParamManager.class)));
 			if (param.isPresent()) {
 				if (Long.class.equals(paramClass)) {
 					return (P) Long.valueOf(param.get().getValueAsLong());
