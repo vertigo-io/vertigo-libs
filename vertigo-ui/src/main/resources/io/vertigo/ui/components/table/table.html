@@ -58,14 +58,12 @@
               </div>
 		</template>
 		<template #top-right="props" vu:slot="top_right_slot"/>
-		<template #header="props">
-		    <q-tr :props="props">
-	          <q-th v-for="col in props.cols" :key="col.name" :props="props" scope="col" 
-	           :aria-sort="col.__thClass.includes('sorted') ? col.__thClass.includes('sort-desc')?'descending':'ascending' : null">
-	            {{ col.label }}
-	          </q-th>
-	        </q-tr>
-	    </template>		
+		<template v-slot:header-cell="props">
+            <q-th :key="props.col.name" :props="props" scope="col" 
+                  :aria-sort="props.col.__thClass.includes('sorted') ? props.col.__thClass.includes('sort-desc')?'descending':'ascending' : null">
+              {{ props.col.label }}
+            </q-th>
+	    </template>
 		<template #body="props">
 	        <q-tr :props="props" th:attr="__${tr_attrs}__" >
 	          <q-td th:if="${mySelectable}" auto-width>
@@ -141,12 +139,11 @@
               </div>
           </template>
           <template #top-right="props" vu:slot="top_right_slot"/>
-          <template #header="props">
-            <q-tr :props="props">
-              <q-th v-for="col in props.cols" :key="col.name" :props="props" scope="col" >
-                {{ col.label }}
+          <template v-slot:header-cell="props">
+              <q-th :key="props.col.name" :props="props" scope="col" 
+                    :aria-sort="props.col.__thClass.includes('sorted') ? props.col.__thClass.includes('sort-desc')?'descending':'ascending' : null">
+                {{ props.col.label }}
               </q-th>
-            </q-tr>
           </template>
           <template #body="props">
 	          <q-tr :props="props" th:attr="__${tr_attrs}__" >

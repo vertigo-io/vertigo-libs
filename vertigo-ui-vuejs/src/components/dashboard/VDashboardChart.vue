@@ -6,45 +6,87 @@ import {getColors} from './dashboard-tools'
 
 export default {
 	props : {
-		type:          					{ type: String, 	required: true },
-		url:          					{ type: String, 	required: true },
-		queryClusteredMeasure:     		{ type: Object,  	required: false },
-		queryMeasures:     				{ type: Array,  	required: false },
-		queryDataFilter:  				{ type: Object,  	required: true },
-		queryTimeFilter:				{ type: Object,  	required: true },
-		colors: 						{ type: String,  	required: true },
-		labels: 						{ type: Object,  	required: true },
-		queryGroupBy: 					{ type: String,  	required: true },
-		additionalOptions: 				{ type: Object,  	required: false },
+        title:                          { type: String,  },
+		type:          					{ type: String,  required: true },
+		datas:                          { type: Array,   },
+		dataSeriesTranslator:           { type: Function,},
+		queryUrl:                       { type: String,  },
+        queryClusteredMeasure:     		{ type: Object,  },
+		queryMeasures:     				{ type: Array,   },
+		queryDataFilter:  				{ type: Object,  },
+		queryTimeFilter:				{ type: Object,  },
+		queryGroupBy:                   { type: String,  },
+        colors: 						{ type: String,  required: true,   default:'DEFAULT' },
+		labels:                         { type: Object,  required: true },
+        minTime:                        { type: String, },
+        maxTime:                        { type: String, },
+        fillGapDim:                     { type: String, },
+        timeFormat:                     { type: String,  required: true,   default:'DD/MM/YYYY HH:mm' },
+        additionalOptions: 				{ type: Object, },
 	},
 	created : function () {
-       this.fetchData();
-        
+       this.$data.graphChartId = "graphChartId_"+this.hashCode(this.type+'_'+JSON.stringify(this.labels));
+       if(!window.dashboardGraphChart) {
+           window.dashboardGraphChart = {};
+       }     
+    },
+    mounted: function() {
+       if(this.queryUrl) {
+           this.fetchData();
+       } else {
+           this.$data.graphDataSeriesTranslator = this.dataSeriesTranslator?this.dataSeriesTranslator:this.defaultDataSeriesTranslator;
+           var translatedData = this.$data.graphDataSeriesTranslator(this.datas);
+           this.showChartJsChart(translatedData.dataValues, translatedData.dataMetrics, translatedData.timedSeries, this.queryGroupBy, this.labels, this.colors, this.title, this.additionalOptions);
+       }  
     },
 	data: function () {
 		return {
-			graphDataSets: []
+			graphChartId: {},
+            graphDataSeriesTranslator: this.defaultDataSeriesTranslator,
+            graphDataSets: []
 		}
 	},
 	watch: { 
-          modelValue: {
+          datas: {
              handler(newValue, oldValue) {
-				// Note: `newValue` will be equal to `oldValue` here
-				// on nested mutations as long as the object itself
-				// hasn't been replaced.
+                if(!!this.datas) {
+                    var translatedData = this.$data.graphDataSeriesTranslator(newValue);
+                    this.showChartJsChart(translatedData.dataValues, translatedData.dataMetrics, translatedData.timedSeries, this.queryGroupBy, this.labels, this.colors, this.title, this.additionalOptions);
+                }
+            },
+            deep: true
+          },
+          queryTimeFilter: {
+             handler(newValue, oldValue) {
+                if(!!this.queryUrl && this.hashCode(JSON.stringify(newValue)) !== this.hashCode(JSON.stringify(oldValue))) {
+				    this.fetchData();
+				}
 			},
 			deep: true
+          },
+          queryDataFilter: {
+             handler(newValue, oldValue) {
+                if(!!this.queryUrl && this.hashCode(JSON.stringify(newValue)) !== this.hashCode(JSON.stringify(oldValue))) {
+                    this.fetchData();
+                }
+            },
+            deep: true
           }
     },
 	methods: {
+        hashCode: function(s) {
+            let h;
+            for(let i = 0; i < s.length; i++) 
+                  h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+        
+            return h;
+        },
 		fetchData: function() {
 			var dataQuery = this.buildQuery();
-            this.$http.post(this.url, dataQuery )
+            this.$http.post(this.queryUrl, dataQuery )
             .then( function (response) { //Ok
-                var datas = response.data;
-                var dataValues = datas.timedDataSeries ? datas.timedDataSeries : datas.tabularDataSeries;
-				var dataMetrics = datas.seriesNames;
-				this.showChartJsChart(dataValues, dataMetrics, dataQuery, this.labels, this.colors, this.additionalOptions);
+                var translatedData = this.$data.graphDataSeriesTranslator(response.data);
+                this.showChartJsChart(translatedData.dataValues, translatedData.dataMetrics, translatedData.timedSeries,this.queryGroupBy, this.labels, this.colors, this.title, this.additionalOptions);
             }.bind(this));
         },
 		buildQuery: function() {
@@ -61,45 +103,44 @@ export default {
 			return dataQuery;
 		},
 
-		showChartJsChart: function(datas, dataMetrics, dataQuery, dataLabels, dataColors, additionalOptions) {
-			var timedSeries = datas[0].time;
-			var labels = dataLabels
+		showChartJsChart: function(datas, dataMetrics, timedSeries, queryGroupBy, dataLabels, dataColors, chartTitle, additionalOptions) {
+			var xLabels = Object.values(dataLabels);
 			var chartOptions;
 			var chartJsDataSets;
 			var chartJsType;
 			if ( this.type === "bubbles") {
 				chartJsType = 'bubble';
-				var realMetrics = dataMetrics.filter(metric => metric !== dataQuery.groupBy);
-				var bubblesData = this.toChartJsBubblesData(datas, realMetrics , dataLabels, dataQuery.groupBy);
+				var realLabels = dataLabels.filter(metric => metric !== queryGroupBy);
+				xLabels = Object.values(realLabels);
+                var bubblesData = this.toChartJsBubblesData(datas, realLabels.keys(), realLabels, queryGroupBy);
 				chartJsDataSets = [ {data: bubblesData }];
-				chartOptions = this.getChartJsBubblesOptions(datas, realMetrics, dataQuery, dataLabels, additionalOptions);
+				chartOptions = this.getChartJsBubblesOptions(datas, realLabels.keys(), queryGroupBy, realLabels, chartTitle, additionalOptions);
 				this.setChartJsColorOptions(chartJsDataSets, dataColors, 0.5);
 			} else if (this.type ==="linechart") {
 				chartJsType = 'line';
-				chartJsDataSets = this.toChartJsData(datas, dataMetrics, dataLabels, timedSeries, dataQuery.groupBy);
-				chartOptions = this.getChartJsLineOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions);
+				chartJsDataSets = this.toChartJsData(datas, dataLabels, timedSeries, queryGroupBy);
+				chartOptions = this.getChartJsLineOptions(datas, queryGroupBy, dataLabels, timedSeries, chartTitle, additionalOptions);
 				this.setChartJsColorOptions(chartJsDataSets, dataColors);
 			} else if (this.type ==="stakedbarchart") {
 				chartJsType = 'bar';
-				chartJsDataSets = this.toChartJsData(datas, dataMetrics,  dataLabels, timedSeries, dataQuery.groupBy);
-				chartOptions = this.getStackedOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions);
+				chartJsDataSets = this.toChartJsData(datas, dataLabels, timedSeries, queryGroupBy);
+				chartOptions = this.getStackedOptions(datas, queryGroupBy, dataLabels, timedSeries, chartTitle, additionalOptions);
 				this.setChartJsColorOptions(chartJsDataSets, dataColors);
 			} else if (this.type ==="polararea") {
 				chartJsType = 'polarArea';
-				chartJsDataSets = this.toChartJsData(datas, dataMetrics,  dataLabels, timedSeries, dataQuery.groupBy);
+				chartJsDataSets = this.toChartJsData(datas, dataLabels, timedSeries, queryGroupBy);
 				var pieData  = this.toChartJsPieData(chartJsDataSets, dataLabels);
 				chartJsDataSets = pieData.datasets;
-				labels = pieData.labels;
-				chartOptions = this.getPolarChartOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions);
+				xLabels = pieData.labels;
+				chartOptions = this.getPolarChartOptions(datas, queryGroupBy, dataLabels, timedSeries, chartTitle, additionalOptions);
 				this.setChartJsPieColorOptions(chartJsDataSets, dataColors);
 			} else if (this.type ==="doughnut") {
 				chartJsType = 'doughnut';
-				
-				var realMetrics = dataMetrics.filter(metric => metric !== dataQuery.groupBy);
-				chartJsDataSets = this.toChartJsData(datas, realMetrics, dataLabels, timedSeries, dataQuery.groupBy);
+				var realLabels = dataLabels.filter(metric => metric !== queryGroupBy);
+				chartJsDataSets = this.toChartJsData(datas, realLabels, timedSeries, queryGroupBy);
 				var pieData  = this.toChartJsPieData(chartJsDataSets, dataLabels);
 				chartJsDataSets = pieData.datasets;
-				labels = pieData.labels;
+				xLabels = pieData.labels;
 				this.setChartJsPieColorOptions(chartJsDataSets, dataColors);
 				chartOptions = {
 					legend : {
@@ -110,22 +151,40 @@ export default {
 			}
 			//
 			var ctx = this.$.refs.graphCanvas;
-			var finalOptions = {...chartOptions, ...additionalOptions};
-			var myBubbleChart = new Chart(ctx,{
-				type: chartJsType,
-				data: {
-					labels : labels,
-					datasets: chartJsDataSets
-				},
-				options: finalOptions
-			});
+			var finalOptions = this.mergeDeep(chartOptions,additionalOptions);
+			if(!window.dashboardGraphChart[this.$data.graphChartId]) {
+    			let chartData = {
+                    datasets: chartJsDataSets
+                };
+                if(!timedSeries) {
+                    chartData.labels = xLabels;
+                }
+    			var graphChart = new Chart(ctx,{
+    				type: chartJsType,
+    				data: chartData,
+    				options: finalOptions
+    			});
+    			window.dashboardGraphChart[this.$data.graphChartId] = graphChart;
+			} else {
+                var graphChart =  window.dashboardGraphChart[this.$data.graphChartId];
+                graphChart.data.datasets = chartJsDataSets;
+			    if(this.hashCode(JSON.stringify(graphChart.options.scales)) !== this.hashCode(JSON.stringify(finalOptions.scales))) {
+                    graphChart.options.scales = finalOptions.scales;
+                }
+                graphChart.update("none");
+			}
 		},
 		setChartJsColorOptions: function(datasets, dataColors, opacity) {
 			if(dataColors) {
 				var myColors = getColors(dataColors, datasets.length, opacity);
-				for(var i = 0 ; i<datasets.length; i++) {
-					datasets[i].backgroundColor = myColors[i];
-					datasets[i].fill = true
+				var myBgColors = getColors(dataColors, datasets.length, opacity?opacity*0.25:0.25);
+                for(var i = 0 ; i<datasets.length; i++) {
+					datasets[i].borderColor = myColors[i];
+                    datasets[i].backgroundColor = myBgColors[i];
+                    datasets[i].pointBackgroundColor = myColors[i];
+                    datasets[i].pointBorderColor = '#FFFFFFAF';
+                    datasets[i].pointBorderWidth = 2;
+					datasets[i].fill = true;
 				}
 				
 			}
@@ -140,7 +199,7 @@ export default {
 		},
 
 
-		 getChartJsBubblesOptions: function(datas, dataMetrics, dataQuery, dataLabels, additionalOptions){
+		 getChartJsBubblesOptions: function(datas, dataMetrics, queryGroupBy, dataLabels, chartTitle, additionalOptions){
 			var maxRadius = this.getMaxRadius(datas, dataMetrics[2]); //always the third columns
 			var xAxisType = this.getAxisType(datas, additionalOptions, 'xAxisType', dataMetrics[0]);
 			var yAxisType = this.getAxisType(datas, additionalOptions, 'yAxisType', dataMetrics[1]);
@@ -190,7 +249,7 @@ export default {
 			};
 		},
 
-		getPolarChartOptions: function(datas, dataMetrics, dataQuery, dataLabels, additionalOptions){
+		getPolarChartOptions: function(datas, queryGroupBy, dataLabels, chartTitle, additionalOptions){
 			return {};
 		},
 
@@ -211,33 +270,52 @@ export default {
 			}
 			return axisType
 		},
-
-		getChartJsLineOptions: function(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions){
+		getChartJsLineOptions: function(datas, queryGroupBy, dataLabels, timedSeries, chartTitle, additionalOptions){
 			var options =  {
 				scales : {
-					y : {
+                    y : {
 						ticks : {
-							beginAtZero: true
-						}
+							beginAtZero: true,
+						},
+						suggestedMin: 0, 
+						suggestedMax: 10
 					}
 				},
 				plugins: {
+                    title: {
+                        display: !!chartTitle,
+                        text: chartTitle?chartTitle:'',
+                        align:'start',
+                        padding:20,
+                        font: {size: 14, weight:'bold'}
+                    },
+                    legend: {
+                        position: 'bottom'                           
+                    },
 					tooltip: {
 						mode: 'index',
-						callbacks: {
+						position: 'nearest',
+						boxPadding:3, 
+						backgroundColor:'#F8F8F8D0', 
+						titleColor:'#000', 
+						bodyColor:'#000', 
+						borderColor:'#333', 
+						borderWidth:1,
+						/*callbacks: {
 							label: function(graph) {
 								var point = graph.dataset.data[graph.dataIndex];
 								return graph.dataset.label +" : "+ Math.floor(point.y);
 							},
 							title: function(graphs) {
-								return '';
+								return timeFormatter;
 							}
-						}
+						}*/
 					}
 				},
 				elements : {
 					point : {
-						radius : 0
+						radius : 3,
+						hoverRadius : 6
 					},
 					line : {
 						tension: 0
@@ -246,14 +324,27 @@ export default {
 			};
 			if (timedSeries) {
 				options.scales.x = {
-						type: 'time',
-						time: {
-							unit: 'hour',
-							displayFormats: {
-								hour: 'HH:mm'
-							}
-						}
-					}
+                    type: 'time',
+					ticks: {
+                        source:'auto', 
+                        major: {
+                            enabled: true
+                        }
+                    },
+                    time: {
+                      displayFormats: {
+                        hour: 'HH:mm',
+                        minute: 'HH:mm'
+                      }, 
+                      tooltipFormat: this.timeFormat+' Z'
+                    }
+				}				
+                if(this.minTime) {
+                    options.scales.x.suggestedMin= dayjs(this.minTime, this.timeFormat).valueOf();
+                }
+                if(this.maxTime) {
+                    options.scales.x.suggestedMax= dayjs(this.maxTime, this.timeFormat).valueOf();
+                }
 			} else {
 				options.scales.x = {
 					type: 'category'
@@ -263,15 +354,15 @@ export default {
 		},
 
 
-		 getStackedOptions: function(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions){
-			var options = this.getChartJsLineOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions)
+		 getStackedOptions: function(datas, queryGroupBy, dataLabels, timedSeries, chartTitle, additionalOptions){
+			var options = this.getChartJsLineOptions(datas, dataQuery, dataLabels, timedSeries, additionalOptions)
 			options.scales.x.stacked = true;
 			options.scales.y.stacked = true;
 			return options;
 		},
 
 
-		 toChartJsBubblesData: function(data, dataMeasures,  dataLabels, groupBy) {
+		 toChartJsBubblesData: function(data, dataMeasures, dataLabels, groupBy) {
 			var newSeries = new Array();
 			for(var i = 0 ; i< data.length; i++) {
 				var serie = new Object();
@@ -317,39 +408,47 @@ export default {
 				max: max
 			}
 		},
-
-
-
+        defaultDataSeriesTranslator: function(datas) {
+            var dataValues = datas.timedDataSeries ? datas.timedDataSeries : datas.tabularDataSeries;
+            var dataMetrics = datas.seriesNames;
+            return {dataValues: dataValues, dataMetrics:dataMetrics, timedSeries:!!datas.timedDataSeries};
+        },
 		/** Conversion de données servers List<Instant, Map<NomMetric, value>> en données Chartjs.*/
-		toChartJsData: function(datas, metrics, dataLabels, timedSeries, xAxisMeasure) {
+		toChartJsData: function(datas, dataLabels, timedSeries, xAxisMeasure) {
 			let _endsWith = function(string, suffix) {
 				return string.indexOf(suffix, string.length - suffix.length) !== -1;
 			};
-			var categorieIndex = new Array();
+			//var categorieIndex = new Array();
 			
 			var newSeries = new Array();
-			for(var i = 0 ; i< metrics.length; i++) {
-				var metric = metrics[i];
+			for(const metric in dataLabels) {
 				var serie = new Object();
-				serie.parsing = false;
+				serie.data = new Array();
+                serie.parsing = false;
 				if(dataLabels && dataLabels[metric]) {
 					serie.label = dataLabels[metric];
 				}
-				serie.data = new Array();
+				var lastTime;
+                var stepSize = this.timeDimToSecondsStep()*1000;
 				for(var j = 0 ; j<datas.length; j++) {
+                    if(timedSeries && !!this.fillGapDim) {
+                        var dataTime = Date.parse(datas[j].time);
+                        while(dataTime >= lastTime+2*stepSize) {
+                            serie.data.push({x: lastTime+stepSize,y: null});
+                            lastTime = lastTime+stepSize;
+                        }
+                    }
 					var x = timedSeries ? Date.parse(datas[j].time) : datas[j].values[xAxisMeasure]; // timed series by default, else categories 
 					var y = datas[j].values[metric];
 					if (!this.isEmpty(datas[j].values) && !y) {
 						y = 0;
 					}
-					serie.data[j]=({
-						x: x,
-						y: y
-					});
+					serie.data.push({ x: x, y: y });
+					lastTime = x;
 				}
 				if(!serie.label) {
 					if(_endsWith(metric, 'count')) {
-						serie.label = "Quantit&eacute;";
+						serie.label = "Quantité";
 					} else if(_endsWith(metric, 'mean')) {
 						serie.label = "Moyenne";
 					} else if(_endsWith(metric, 'min')) {
@@ -357,8 +456,7 @@ export default {
 					} else if(_endsWith(metric, 'max')) {
 						serie.label = "Maximum";
 					}
-				}
-				
+				}				
 				newSeries.push(serie);
 			}
 			return newSeries;
@@ -382,9 +480,42 @@ export default {
 			}
 			
 		},
+		timeDimToSecondsStep : function() {
+            let dateTimeDim = this.fillGapDim;
+            if(dateTimeDim === '1h') {
+                return 60*60;
+            } else if(dateTimeDim === '1d') {
+                return 24*60*60;
+            } else if(dateTimeDim === '1w') {
+                return 7*24*60*60;
+            } else if(dateTimeDim === '1M') {
+                return 30*24*60*60;
+            } else {
+                return 30*24*60*60;
+            }
+        },
 		isEmpty: function(obj) {
 			return Object.keys(obj).length === 0;
-		}
+		},
+		isObject: function(item) {
+          return (item && typeof item === 'object' && !Array.isArray(item));
+        },
+        mergeDeep: function(target, ...sources) {
+          if (!sources.length) return target;
+          const source = sources.shift();
+        
+          if (this.isObject(target) && this.isObject(source)) {
+            for (const key in source) {
+              if (this.isObject(source[key])) {
+                if (!target[key]) Object.assign(target, { [key]: {} });
+                this.mergeDeep(target[key], source[key]);
+              } else {
+                Object.assign(target, { [key]: source[key] });
+              }
+            }
+          }
+          return this.mergeDeep(target, ...sources);
+        }
 	}
 }
 </script>
