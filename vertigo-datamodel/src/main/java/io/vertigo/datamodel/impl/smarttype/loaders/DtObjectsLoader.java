@@ -32,8 +32,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Selector;
-import io.vertigo.core.lang.Selector.ClassConditions;
+import io.vertigo.core.lang.ClassSelector;
+import io.vertigo.core.lang.ClassSelector.ClassConditions;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
@@ -69,21 +69,21 @@ public final class DtObjectsLoader implements Loader {
 	 * @return Liste des fichiers Java représentant des objets métiers.
 	 */
 	private static <F> Set<Class<F>> selectClasses(final String resourcePath, final Class<F> filterClass) {
-		final Selector selector;
+		final ClassSelector classSelector;
 		if (resourcePath.endsWith("*")) {
 			//by package
 			final String packageName = resourcePath.substring(0, resourcePath.length() - 1);
-			selector = Selector.from(packageName);
+			classSelector = ClassSelector.from(packageName);
 		} else {
 			//by Iterable of classes
 			final Iterable dataDefinitionsClass = ClassUtil.newInstance(resourcePath, Iterable.class);
 			final Iterator<Class> iterator = dataDefinitionsClass.iterator();
 			final Set<Class> classes = new HashSet();
 			iterator.forEachRemaining(classes::add);
-			selector = Selector
+			classSelector = ClassSelector
 					.from(classes);
 		}
-		return selector
+		return classSelector
 				.filterClasses(ClassConditions.subTypeOf(filterClass))
 				.findClasses()
 				.stream()
