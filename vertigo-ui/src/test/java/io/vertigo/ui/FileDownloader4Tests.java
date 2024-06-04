@@ -144,7 +144,7 @@ public class FileDownloader4Tests {
 		}
 
 		final URL fileToDownload = new URL(fileToDownloadLocation);
-		final File downloadedFile = new TempFile("test", ".tmp");
+		final File downloadedFile = TempFile.of("test", ".tmp");
 		if (downloadedFile.canWrite() == false) {
 			downloadedFile.setWritable(true);
 		}

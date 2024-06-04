@@ -72,7 +72,7 @@ public final class VFileUtil {
 	}
 
 	private static Path doCreateTempPath(final VFile fileInfo) throws IOException {
-		final File tmpFile = new TempFile("fileInfo", '.' + FileUtil.getFileExtension(fileInfo.getFileName()));
+		final File tmpFile = TempFile.of("fileInfo", '.' + FileUtil.getFileExtension(fileInfo.getFileName()));
 		try (final InputStream inputStream = fileInfo.createInputStream()) {
 			FileUtil.copy(inputStream, tmpFile);
 			return tmpFile.toPath();
