@@ -16,8 +16,8 @@
 		<version>3.7.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>vertigo-extensions</artifactId>
-	<name>vertigo-extensions</name>
+	<artifactId>vertigo-libs</artifactId>
+	<name>vertigo-libs</name>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -47,9 +47,9 @@
 	</modules>
 
 	<scm>
-		<connection>scm:git:https://github.com/vertigo-io/vertigo-extensions.git</connection>
-		<developerConnection>scm:git:https://github.com/vertigo-io/vertigo-extensions.git</developerConnection>
-		<url>scm:git:https://github.com/vertigo-io/vertigo-extensions.git</url>
-		<tag>vertigo-extensions</tag>
+		<connection>scm:git:https://github.com/vertigo-io/vertigo-libs.git</connection>
+		<developerConnection>scm:git:https://github.com/vertigo-io/vertigo-libs.git</developerConnection>
+		<url>scm:git:https://github.com/vertigo-io/vertigo-libs.git</url>
+		<tag>vertigo-libs</tag>
 	</scm>
 </project>
