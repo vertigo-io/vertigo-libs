@@ -43,9 +43,7 @@ public final class MigrationManagerImpl implements MigrationManager, Activeable 
 	private final Map<String, MigrationPlugin> dataBaseMigrationPlugins;
 
 	private enum MigrationMode {
-		check,
-		update,
-		none
+		check, update, none
 	}
 
 	private final MigrationMode migrationMode;
@@ -96,21 +94,20 @@ public final class MigrationManagerImpl implements MigrationManager, Activeable 
 	/** {@inheritDoc} */
 	@Override
 	public void check(final String connectionName) {
-		Assertion.check()
-				.isNotBlank(connectionName)
-				.isTrue(dataBaseMigrationPlugins.containsKey(connectionName), "No DataBaseMigrationPlugin for connection", connectionName);
-		//---
-		dataBaseMigrationPlugins.get(connectionName).check();
+		getMigrationPlugin(connectionName).check();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void update(final String connectionName) {
+		getMigrationPlugin(connectionName).update();
+	}
+
+	private MigrationPlugin getMigrationPlugin(final String connectionName) {
 		Assertion.check()
 				.isNotBlank(connectionName)
 				.isTrue(dataBaseMigrationPlugins.containsKey(connectionName), "No DataBaseMigrationPlugin for connection", connectionName);
 		//---
-		dataBaseMigrationPlugins.get(connectionName).update();
+		return dataBaseMigrationPlugins.get(connectionName);
 	}
-
 }
