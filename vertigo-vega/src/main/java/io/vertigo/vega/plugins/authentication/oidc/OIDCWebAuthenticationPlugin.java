@@ -63,6 +63,7 @@ import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPRequestConfigurator;
+import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.oauth2.sdk.id.State;
@@ -94,6 +95,7 @@ import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.minidev.json.JSONObject;
 
 /**
  * Base authentication handler for OpenId Connect.
@@ -234,13 +236,13 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 	}
 
 	private void doLoadMetadata() {
-		final var issuer = new Issuer(oidcParameters.getOidcURL());
-
 		// get OIDC Metadata from file if provided or from the provider itself
 		final var localOIDCMetadataOp = oidcParameters.getLocalOIDCMetadataOp();
 		if (localOIDCMetadataOp.isPresent()) {
 			ssoMetadata = getOidcMetadataFromFile(localOIDCMetadataOp.get());
 		}
+
+		final var issuer = new Issuer(oidcParameters.getOidcURL());
 		if (ssoMetadata == null) { // no file or error reading file
 			ssoMetadata = getOidcMetadataFromRemote(issuer, oidcParameters.getHttpConnectTimeout(), oidcParameters.getHttpReadTimeout());
 		}
@@ -282,11 +284,44 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 					}
 				}
 			};
-
+			if (Boolean.TRUE.equals(oidcParameters.getSkipAutoconfigIssuerValidation())) {
+				return resolveWithoutIssuerValidation(issuer, requestConfigurator);
+			}
 			return OIDCProviderMetadata.resolve(issuer, requestConfigurator);
 		} catch (GeneralException | IOException e) {
 			throw new VSystemException(e, "Can't read remote OpenId metadata at '{0}'", issuer.getValue());
 		}
+	}
+
+	/**
+	 * Fork of OIDCProviderMetadata.resolve to skip issuer validation.
+	 * Keycloak, if called by backend URL, still return the issuer with his external URL.
+	 */
+	public static OIDCProviderMetadata resolveWithoutIssuerValidation(final Issuer issuer,
+			final HTTPRequestConfigurator requestConfigurator)
+			throws GeneralException, IOException {
+
+		final URL configURL = OIDCProviderMetadata.resolveURL(issuer);
+
+		final HTTPRequest httpRequest = new HTTPRequest(HTTPRequest.Method.GET, configURL);
+		requestConfigurator.configure(httpRequest);
+
+		final HTTPResponse httpResponse = httpRequest.send();
+
+		if (httpResponse.getStatusCode() != 200) {
+			throw new IOException("Couldn't download OpenID Provider metadata from " + configURL +
+					": Status code " + httpResponse.getStatusCode());
+		}
+
+		final JSONObject jsonObject = httpResponse.getContentAsJSONObject();
+
+		final OIDCProviderMetadata op = OIDCProviderMetadata.parse(jsonObject);
+
+		//if (!issuer.equals(op.getIssuer())) {
+		//	throw new GeneralException("The returned issuer doesn't match the expected: " + op.getIssuer());
+		//}
+
+		return op;
 	}
 
 	private byte[] getPaddedSecretKeyBytes() {
