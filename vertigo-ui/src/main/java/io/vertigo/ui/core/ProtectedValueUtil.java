@@ -50,11 +50,16 @@ public final class ProtectedValueUtil {
 		if (unprotectedValue == null) {
 			return null;
 		}
+		final var transactionManager = getTransactionManager();
 		//unprotectedValue is not null here
 		final String protectedUrl = protectValue(unprotectedValue);
-		try (VTransactionWritable transactionWritable = getTransactionManager().createCurrentTransaction()) {
+		if (transactionManager.hasCurrentTransaction()) {
 			getKVStoreManager().put(PROTECTED_VALUE_COLLECTION_NAME, protectedUrl + getSessionIdIfExists(), unprotectedValue);
-			transactionWritable.commit();
+		} else {
+			try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
+				getKVStoreManager().put(PROTECTED_VALUE_COLLECTION_NAME, protectedUrl + getSessionIdIfExists(), unprotectedValue);
+				transactionWritable.commit();
+			}
 		}
 		return protectedUrl;
 	}
@@ -73,12 +78,19 @@ public final class ProtectedValueUtil {
 		if (protectedValue == null) {
 			return null;
 		}
-		try (VTransactionWritable transactionWritable = getTransactionManager().createCurrentTransaction()) {
-			final V unprotectedValue;
-			unprotectedValue = getKVStoreManager()
+		final var transactionManager = getTransactionManager();
+		if (transactionManager.hasCurrentTransaction()) {
+			return getKVStoreManager()
 					.find(PROTECTED_VALUE_COLLECTION_NAME, protectedValue + getSessionIdIfExists(), clazz)
 					.orElseThrow(() -> new VSecurityException(LocaleMessageText.of("Resources not found.")));
-			return unprotectedValue;
+		} else {
+			try (VTransactionWritable transactionWritable = getTransactionManager().createCurrentTransaction()) {
+				final V unprotectedValue;
+				unprotectedValue = getKVStoreManager()
+						.find(PROTECTED_VALUE_COLLECTION_NAME, protectedValue + getSessionIdIfExists(), clazz)
+						.orElseThrow(() -> new VSecurityException(LocaleMessageText.of("Resources not found.")));
+				return unprotectedValue;
+			}
 		}
 	}
 
