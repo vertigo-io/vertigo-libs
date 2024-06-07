@@ -1,5 +1,8 @@
 package io.vertigo.ui.impl.springmvc.config;
 
+import java.io.Serializable;
+import java.util.Arrays;
+
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.messageresolver.IMessageResolver;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -11,7 +14,11 @@ final class VSpringTemplateEngine extends SpringTemplateEngine {
 	private static final class VSpringMessageResolver implements IMessageResolver {
 		@Override
 		public String resolveMessage(final ITemplateContext context, final Class<?> origin, final String key, final Object[] messageParameters) {
-			return LocaleMessageText.of(() -> key, messageParameters).getDisplayOpt().orElse(null);
+			final var messageParametersSerializable = Arrays.stream(messageParameters)
+					.map(String::valueOf)
+					.toArray(Serializable[]::new);
+
+			return LocaleMessageText.of(() -> key, messageParametersSerializable).getDisplayOpt().orElse(null);
 		}
 
 		@Override
