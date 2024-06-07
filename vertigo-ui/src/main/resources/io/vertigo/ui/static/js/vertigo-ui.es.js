@@ -1883,9 +1883,12 @@ const ia = /* @__PURE__ */ O(Xo, [["render", aa]]), sa = window.Quasar.format, {
       var t = this.$refs.quasarUploader;
       this.globalCanAddFiles(t.files) && this.$refs.quasarUploader.addFiles(e);
     },
-    getGlobalSize(e) {
-      var t = e.filter((o) => o.__status != "uploaded").reduce((o, i) => o + i.size, 0), n = this.files.reduce((o, i) => o + i.size, 0);
-      return ra(t + n);
+    getGlobalSize() {
+      var e = this.files.filter((n) => n.__status != "uploaded").reduce((n, o) => n + o.size, 0), t = this.files.reduce((n, o) => n + o.size, 0);
+      return e + t;
+    },
+    getGlobalSizeLabel() {
+      return ra(this.getGlobalSize());
     }
   }
 }, I = window.Vue.toDisplayString, Ye = window.Vue.createTextVNode, oe = window.Vue.resolveComponent, M = window.Vue.withCtx, j = window.Vue.createVNode, $ = window.Vue.openBlock, L = window.Vue.createBlock, q = window.Vue.createCommentVNode, X = window.Vue.createElementBlock, R = window.Vue.createElementVNode, Bt = window.Vue.renderList, lt = window.Vue.Fragment, ca = window.Vue.normalizeClass, da = window.Vue.mergeProps, ua = window.Vue.createSlots, fa = { class: "row" }, ha = { class: "col column justify-center" }, pa = { class: "q-uploader__file-header row flex-center no-wrap" }, ma = { class: "q-uploader__file-header-content col" }, ga = { class: "q-uploader__title" }, wa = { class: "q-uploader__file-header row flex-center no-wrap" }, ba = { class: "q-uploader__file-header-content col" }, ya = { class: "q-uploader__title" }, va = {
@@ -2065,10 +2068,10 @@ function _a(e, t, n, o, i, a) {
             f.isUploading ? ($(), X("div", {
               key: 1,
               class: "q-uploader__subtitle"
-            }, I(a.getGlobalSize(f.files)) + " / " + I(f.uploadProgressLabel), 1)) : ($(), X("div", {
+            }, I(a.getGlobalSizeLabel()) + " / " + I(f.uploadProgressLabel), 1)) : ($(), X("div", {
               key: 2,
               class: "q-uploader__subtitle"
-            }, I(a.getGlobalSize(f.files)), 1))
+            }, I(a.getGlobalSizeLabel()), 1))
           ]),
           f.isUploading ? ($(), L(l, {
             key: 1,

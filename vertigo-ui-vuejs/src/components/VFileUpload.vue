@@ -17,8 +17,8 @@
 			            </q-btn>
 	                    <div class="col column justify-center">
 	                      <div v-if="$props.label !== void 0" class="q-uploader__title">{{$props.label}}</div>
-			              <div v-if="slotProps.isUploading" class="q-uploader__subtitle">{{getGlobalSize(slotProps.files)}} / {{slotProps.uploadProgressLabel}}</div>
-						  <div v-else class="q-uploader__subtitle">{{getGlobalSize(slotProps.files)}}</div>
+			              <div v-if="slotProps.isUploading" class="q-uploader__subtitle">{{getGlobalSizeLabel()}} / {{slotProps.uploadProgressLabel}}</div>
+						  <div v-else class="q-uploader__subtitle">{{getGlobalSizeLabel()}}</div>
 			            </div>
 	                    <q-spinner v-if="slotProps.isUploading" class="q-uploader__spinner"></q-spinner>
 	                    <q-btn v-if="slotProps.isUploading  && !slotProps.readonly" type="a" :icon="$q.iconSet.uploader.clear" flat dense @click="slotProps.abort">
@@ -197,8 +197,8 @@ export default {
          this.$refs.quasarUploader.addFiles(files);
         }
     },
-    getGlobalSize(quasarFiles) {
-        var quasarFileSize = quasarFiles
+    getGlobalSize() {
+        var quasarFileSize = this.files
         .filter( file => file.__status != "uploaded")
         .reduce( (totalSize, file) => {
             return totalSize + file.size;
@@ -207,8 +207,10 @@ export default {
         var remoteFilesSize = this.files.reduce( (totalSize, file) => {
             return totalSize + file.size;
         },0 )
-        return humanStorageSize(quasarFileSize + remoteFilesSize);
-
+        return quasarFileSize + remoteFilesSize;
+    },
+    getGlobalSizeLabel() {
+        return humanStorageSize(this.getGlobalSize());
     }
   }
 }
