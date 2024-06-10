@@ -83,7 +83,7 @@ import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.connectors.oidc.OIDCDeploymentConnector;
-import io.vertigo.connectors.oidc.OIDCDeploymentConnector.OIDCParameters;
+import io.vertigo.connectors.oidc.OIDCParameters;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
