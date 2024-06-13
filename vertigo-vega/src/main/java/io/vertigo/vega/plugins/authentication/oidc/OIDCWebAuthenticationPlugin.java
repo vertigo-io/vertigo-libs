@@ -147,17 +147,17 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 				.filter(connector -> connectorName.equals(connector.getName()))
 				.findFirst().orElseThrow(() -> new IllegalArgumentException("Can't found OIDCDeploymentConnector named '" + connectorName + "' in " + oidcDeploymentConnectors));
 		oidcParameters = oidcDeploymentConnector.getClient();
-		clientID = new ClientID(oidcParameters.getOidcClientName());
+		clientID = new ClientID(oidcParameters.oidcClientName());
 
-		scope = new Scope(oidcParameters.getRequestedScopes());
+		scope = new Scope(oidcParameters.requestedScopes());
 		scope.add("openid"); // mandatory scope
 
-		if (oidcParameters.getTrustStoreUrlOpt().isPresent()) {
+		if (oidcParameters.trustStoreUrlOpt().isPresent()) {
 			// load custom trust store
 			try {
 				sslSocketFactoryOpt = Optional.of(createSSLSocketFactory(
-						resourceManager.resolve(oidcParameters.getTrustStoreUrlOpt().get()),
-						oidcParameters.getTrustStorePasswordOpt()));
+						resourceManager.resolve(oidcParameters.trustStoreUrlOpt().get()),
+						oidcParameters.trustStorePasswordOpt()));
 			} catch (final Exception e) {
 				throw WrappedException.wrap(e);
 			}
@@ -165,7 +165,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 			sslSocketFactoryOpt = Optional.empty();
 		}
 
-		loadMetadataIfNeeded(oidcParameters.isDontFailAtStartup());
+		loadMetadataIfNeeded(oidcParameters.dontFailAtStartup());
 	}
 
 	private synchronized void loadMetadataIfNeeded(final boolean silentFail) {
@@ -232,27 +232,27 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 	/** {@inheritDoc} */
 	@Override
 	public Optional<String> getExternalUrlOptional() {
-		return oidcParameters.getExternalUrlOpt();
+		return oidcParameters.externalUrlOpt();
 	}
 
 	private void doLoadMetadata() {
 		// get OIDC Metadata from file if provided or from the provider itself
-		final var localOIDCMetadataOp = oidcParameters.getLocalOIDCMetadataOp();
+		final var localOIDCMetadataOp = oidcParameters.localOIDCMetadataOp();
 		if (localOIDCMetadataOp.isPresent()) {
 			ssoMetadata = getOidcMetadataFromFile(localOIDCMetadataOp.get());
 		}
 
-		final var issuer = new Issuer(oidcParameters.getOidcURL());
+		final var issuer = new Issuer(oidcParameters.overrideIssuerOpt().orElse(oidcParameters.oidcURL()));
 		if (ssoMetadata == null) { // no file or error reading file
-			ssoMetadata = getOidcMetadataFromRemote(issuer, oidcParameters.getHttpConnectTimeout(), oidcParameters.getHttpReadTimeout());
+			ssoMetadata = getOidcMetadataFromRemote(issuer, oidcParameters.httpConnectTimeout(), oidcParameters.httpReadTimeout());
 		}
 
-		final var jwsAlgorithm = JWSAlgorithm.parse(oidcParameters.getJwsAlgorithm().toUpperCase());
+		final var jwsAlgorithm = JWSAlgorithm.parse(oidcParameters.jwsAlgorithm().toUpperCase());
 		if (Family.HMAC_SHA.contains(jwsAlgorithm)) {
 			final var paddedKey = new String(getPaddedSecretKeyBytes(), StandardCharsets.UTF_8);
 			idTokenValidator = new IDTokenValidator(issuer, clientID, jwsAlgorithm, new Secret(paddedKey));
 		} else {
-			final var resourceRetriever = new DefaultResourceRetriever(oidcParameters.getHttpConnectTimeout(), oidcParameters.getHttpReadTimeout(), 0, true, sslSocketFactoryOpt.orElse(null));
+			final var resourceRetriever = new DefaultResourceRetriever(oidcParameters.httpConnectTimeout(), oidcParameters.httpReadTimeout(), 0, true, sslSocketFactoryOpt.orElse(null));
 
 			try {
 				idTokenValidator = new IDTokenValidator(issuer, clientID, jwsAlgorithm, ssoMetadata.getJWKSetURI().toURL(), resourceRetriever);
@@ -284,8 +284,8 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 					}
 				}
 			};
-			if (Boolean.TRUE.equals(oidcParameters.getSkipAutoconfigIssuerValidation())) {
-				return resolveWithoutIssuerValidation(issuer, requestConfigurator);
+			if (oidcParameters.overrideIssuerOpt().isPresent()) {
+				return resolveAlternateIssuerValidation(new Issuer(oidcParameters.oidcURL()), issuer, requestConfigurator);
 			}
 			return OIDCProviderMetadata.resolve(issuer, requestConfigurator);
 		} catch (GeneralException | IOException e) {
@@ -294,10 +294,12 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 	}
 
 	/**
-	 * Fork of OIDCProviderMetadata.resolve to skip issuer validation.
-	 * Keycloak, if called by backend URL, still return the issuer with his external URL.
+	 * Fork of OIDCProviderMetadata.resolve to change issuer validation.
+	 * Keycloak, if called by internal URL, still return the issuer with his external URL.
 	 */
-	public static OIDCProviderMetadata resolveWithoutIssuerValidation(final Issuer issuer,
+	private static OIDCProviderMetadata resolveAlternateIssuerValidation(
+			final Issuer issuer,
+			final Issuer returnedIssuer,
 			final HTTPRequestConfigurator requestConfigurator)
 			throws GeneralException, IOException {
 
@@ -317,16 +319,16 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 
 		final OIDCProviderMetadata op = OIDCProviderMetadata.parse(jsonObject);
 
-		//if (!issuer.equals(op.getIssuer())) {
-		//	throw new GeneralException("The returned issuer doesn't match the expected: " + op.getIssuer());
-		//}
+		if (!returnedIssuer.equals(op.getIssuer())) {
+			throw new GeneralException("The returned issuer doesn't match the expected: " + op.getIssuer());
+		}
 
 		return op;
 	}
 
 	private byte[] getPaddedSecretKeyBytes() {
 		// hmac validator need at least 32 bytes for the key or else throw an exception (we can pad data with 0s)
-		final var oidcClientSecretOpt = oidcParameters.getOidcClientSecret();
+		final var oidcClientSecretOpt = oidcParameters.oidcClientSecret();
 		if (oidcClientSecretOpt.isEmpty()) {
 			throw new VSystemException("HMAC type jwsAlgorithm needs clientSecret.");
 		}
@@ -356,7 +358,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 
 		final var oidcTokens = doGetOIDCTokens(successResponse.getAuthorizationCode(), stateData.pkceCodeVerifier(), resolveCallbackUri(httpRequest));
 
-		if (!Boolean.TRUE.equals(oidcParameters.getSkipIdTokenValidation())) {
+		if (!Boolean.TRUE.equals(oidcParameters.skipIdTokenValidation())) {
 			doValidateToken(oidcTokens.getIDToken(), stateData.nonce());
 		}
 
@@ -406,7 +408,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 
 		// Make the token request
 		TokenRequest request;
-		final var optSecret = oidcParameters.getOidcClientSecret();
+		final var optSecret = oidcParameters.oidcClientSecret();
 		if (optSecret.isEmpty() || StringUtil.isBlank(optSecret.get())) {
 			request = new TokenRequest(tokenEndpoint, clientID, codeGrant);
 		} else {
@@ -454,7 +456,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 		// save all this in http session paired with the original requested URL to forward user after authentication
 		final var state = new State();
 		final var nonce = new Nonce();
-		final var codeVerifier = Boolean.TRUE.equals(oidcParameters.getUsePKCE()) ? new CodeVerifier() : null;
+		final var codeVerifier = Boolean.TRUE.equals(oidcParameters.usePKCE()) ? new CodeVerifier() : null;
 		OIDCSessionManagementUtil.storeStateDataInSession(httpRequest.getSession(), state.getValue(), nonce.getValue(), codeVerifier == null ? null : codeVerifier.getValue(),
 				WebAuthenticationUtil.resolveUrlRedirect(httpRequest));
 
@@ -470,10 +472,10 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 						.codeChallenge(codeVerifier, CodeChallengeMethod.S256);
 
 		// forward suer locale to the SSO, for example keycloak uses ui_locales parameter
-		if (oidcParameters.getLoginLocaleParamNameOpt().isPresent()) {
+		if (oidcParameters.loginLocaleParamNameOpt().isPresent()) {
 			securityManager.getCurrentUserSession().ifPresent(userSession -> {
 				final var locale = userSession.getLocale() == null ? Locale.FRENCH : userSession.getLocale();
-				authRequestBuilder.customParameter(oidcParameters.getLoginLocaleParamNameOpt().get(), locale.getLanguage());
+				authRequestBuilder.customParameter(oidcParameters.loginLocaleParamNameOpt().get(), locale.getLanguage());
 			});
 		}
 
@@ -490,17 +492,17 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 	public void doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final Optional<String> redirectUrlOpt) {
 		String logoutParam = "";
 		if (redirectUrlOpt.isPresent()) {
-			if (oidcParameters.getLogoutRedirectUriParamNameOpt().isPresent()) {
+			if (oidcParameters.logoutRedirectUriParamNameOpt().isPresent()) {
 				final var redirectUrl = resolveExternalUrl(httpRequest) + redirectUrlOpt.get();
-				logoutParam += "?" + oidcParameters.getLogoutRedirectUriParamNameOpt().get() + "=" + URLEncoder.encode(redirectUrl, StandardCharsets.UTF_8);
+				logoutParam += "?" + oidcParameters.logoutRedirectUriParamNameOpt().get() + "=" + URLEncoder.encode(redirectUrl, StandardCharsets.UTF_8);
 			}
-			if (oidcParameters.getLogoutIdParamNameOpt().isPresent()) {
+			if (oidcParameters.logoutIdParamNameOpt().isPresent()) {
 				if (logoutParam == "") {
 					logoutParam = "?";
 				} else {
 					logoutParam += "&";
 				}
-				logoutParam += oidcParameters.getLogoutIdParamNameOpt().get() + "=" + httpRequest.getSession().getAttribute(OIDC_ID_TOKEN);
+				logoutParam += oidcParameters.logoutIdParamNameOpt().get() + "=" + httpRequest.getSession().getAttribute(OIDC_ID_TOKEN);
 			}
 		}
 
