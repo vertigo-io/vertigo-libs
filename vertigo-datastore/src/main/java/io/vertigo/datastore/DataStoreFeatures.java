@@ -38,6 +38,7 @@ import io.vertigo.datastore.plugins.filestore.db.DbFileStorePlugin;
 import io.vertigo.datastore.plugins.filestore.fs.FsFileStorePlugin;
 import io.vertigo.datastore.plugins.filestore.fs.FsFullFileStorePlugin;
 import io.vertigo.datastore.plugins.filestore.mimetype.tika.TikaMimeTypeResolverPlugin;
+import io.vertigo.datastore.plugins.filestore.s3.S3FileStorePlugin;
 import io.vertigo.datastore.plugins.kvstore.berkeley.BerkeleyKVStorePlugin;
 import io.vertigo.datastore.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.datastore.plugins.kvstore.ehcache.EhCacheKVStorePlugin;
@@ -61,7 +62,8 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 
 	/**
 	 * Add store to dynamo
-	 * @return  the feature
+	 *
+	 * @return the feature
 	 */
 	@Feature("entitystore")
 	public DataStoreFeatures withEntityStore() {
@@ -79,7 +81,8 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 
 	/**
 	 * Add store to dynamo
-	 * @return  the feature
+	 *
+	 * @return the feature
 	 */
 	@Feature("filestore")
 	public DataStoreFeatures withFileStore(final Param... params) {
@@ -109,6 +112,13 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 		return this;
 	}
 
+	@Feature("filestore.s3")
+	public DataStoreFeatures withS3FileStore(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(S3FileStorePlugin.class, params);
+		return this;
+	}
+
 	@Feature("filestore.mimeType.tika")
 	public DataStoreFeatures withTikaMimeTypeResolver() {
 		getModuleConfigBuilder()
@@ -118,7 +128,8 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 
 	/**
 	 * Add key/value store to dynamo
-	 * @return  the feature
+	 *
+	 * @return the feature
 	 */
 	@Feature("kvStore")
 	public DataStoreFeatures withKVStore() {
@@ -185,6 +196,7 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 
 	/**
 	 * Activates caches.
+	 *
 	 * @return these features
 	 */
 	@Feature("cache")
@@ -196,6 +208,7 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 
 	/**
 	 * Activates caches.
+	 *
 	 * @return these features
 	 */
 	@Feature("cache.redis")
@@ -207,6 +220,7 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 
 	/**
 	 * Activates caches.
+	 *
 	 * @return these features
 	 */
 	@Feature("cache.memory")
@@ -218,6 +232,7 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 
 	/**
 	 * Activates caches.
+	 *
 	 * @return these features
 	 */
 	@Feature("cache.eh")
