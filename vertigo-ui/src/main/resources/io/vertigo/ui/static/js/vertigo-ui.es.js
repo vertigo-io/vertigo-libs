@@ -374,7 +374,7 @@ const dn = /* @__PURE__ */ O(Xt, [["render", cn]]), un = {
       this.back(), this.$data.text = "";
     }
   }
-}, ve = window.Vue.toDisplayString, A = window.Vue.openBlock, K = window.Vue.createElementBlock, vt = window.Vue.createCommentVNode, Oe = window.Vue.resolveComponent, _t = window.Vue.withCtx, Be = window.Vue.createBlock, $t = window.Vue.createElementVNode, fn = window.Vue.renderList, Ct = window.Vue.Fragment, me = window.Vue.withKeys, Ze = window.Vue.createVNode, hn = window.Vue.createTextVNode, pn = {
+}, ve = window.Vue.toDisplayString, L = window.Vue.openBlock, K = window.Vue.createElementBlock, vt = window.Vue.createCommentVNode, Oe = window.Vue.resolveComponent, _t = window.Vue.withCtx, Be = window.Vue.createBlock, $t = window.Vue.createElementVNode, fn = window.Vue.renderList, Ct = window.Vue.Fragment, me = window.Vue.withKeys, Ze = window.Vue.createVNode, hn = window.Vue.createTextVNode, pn = {
   key: 0,
   style: { "line-height": "40px", opacity: "0.5", position: "fixed" }
 }, mn = {
@@ -395,16 +395,16 @@ const dn = /* @__PURE__ */ O(Xt, [["render", cn]]), un = {
 };
 function vn(e, t, n, o, i, a) {
   const s = Oe("q-select"), r = Oe("q-input"), l = Oe("q-separator"), c = Oe("q-btn");
-  return A(), K("div", null, [
-    e.isCommandCommited ? (A(), K("div", {
+  return L(), K("div", null, [
+    e.isCommandCommited ? (L(), K("div", {
       key: 1,
       class: "row col-12 justify-between bg-white round-borders overflow-hidden shadow-2 text-black",
       onKeyup: t[0] || (t[0] = me((...d) => a.executeCommand && a.executeCommand(...d), ["enter"]))
     }, [
       $t("div", mn, ve(e.selectedCommand.commandName), 1),
-      e.isExecuted ? (A(), K("div", bn, [
+      e.isExecuted ? (L(), K("div", bn, [
         $t("div", yn, ve(e.commandResult.display), 1),
-        e.commandResult.targetUrl ? (A(), Be(c, {
+        e.commandResult.targetUrl ? (L(), Be(c, {
           key: 0,
           type: "a",
           href: n.baseUrl + e.commandResult.targetUrl,
@@ -422,9 +422,9 @@ function vn(e, t, n, o, i, a) {
           size: "sm",
           round: ""
         }, null, 8, ["onClick"])
-      ])) : (A(), K("div", gn, [
-        e.selectedCommand.commandParams && e.selectedCommand.commandParams.length > 0 ? (A(!0), K(Ct, { key: 0 }, fn(e.selectedCommand.commandParams, (d, p) => (A(), K(Ct, { key: d }, [
-          d.paramType.rawType === "io.vertigo.commons.command.GenericUID" ? (A(), Be(s, {
+      ])) : (L(), K("div", gn, [
+        e.selectedCommand.commandParams && e.selectedCommand.commandParams.length > 0 ? (L(!0), K(Ct, { key: 0 }, fn(e.selectedCommand.commandParams, (d, p) => (L(), K(Ct, { key: d }, [
+          d.paramType.rawType === "io.vertigo.commons.command.GenericUID" ? (L(), Be(s, {
             key: 0,
             class: "col q-px-xs",
             "use-chips": "",
@@ -446,7 +446,7 @@ function vn(e, t, n, o, i, a) {
             onFilter: (u) => a.autocompleteParam(d, p, e.val, e.update, e.abort),
             "onUpdate:modelValue": (u) => a.selectParam(e.newValue, p),
             style: { height: "32px" }
-          }, null, 8, ["value", "options", "autofocus", "onKeydown", "onKeyup", "onFilter", "onUpdate:modelValue"])) : (A(), Be(r, {
+          }, null, 8, ["value", "options", "autofocus", "onKeydown", "onKeyup", "onFilter", "onUpdate:modelValue"])) : (L(), Be(r, {
             key: 1,
             class: "col q-px-xs",
             color: "secondary",
@@ -463,7 +463,7 @@ function vn(e, t, n, o, i, a) {
             style: { height: "32px" }
           }, null, 8, ["modelValue", "onUpdate:modelValue", "onKeydown", "onKeyup", "autofocus"])),
           Ze(l, { vertical: "" })
-        ], 64))), 128)) : (A(), K("div", wn, ve(e.$q.lang.vui.commands.executeCommand), 1)),
+        ], 64))), 128)) : (L(), K("div", wn, ve(e.$q.lang.vui.commands.executeCommand), 1)),
         Ze(c, {
           onClick: a.executeCommand,
           flat: "",
@@ -472,7 +472,7 @@ function vn(e, t, n, o, i, a) {
           round: ""
         }, null, 8, ["onClick"])
       ]))
-    ], 32)) : (A(), Be(s, {
+    ], 32)) : (L(), Be(s, {
       key: 0,
       placeholder: e.$q.lang.vui.commands.globalPlaceholder,
       outlined: "",
@@ -491,7 +491,7 @@ function vn(e, t, n, o, i, a) {
       "onUpdate:modelValue": a.selectCommand
     }, {
       default: _t(() => [
-        e.text !== "" && e.selectedCommand.commandName && e.selectedCommand.commandName.startsWith(e.text) ? (A(), K("span", pn, ve(e.selectedCommand.commandName), 1)) : vt("", !0)
+        e.text !== "" && e.selectedCommand.commandName && e.selectedCommand.commandName.startsWith(e.text) ? (L(), K("span", pn, ve(e.selectedCommand.commandName), 1)) : vt("", !0)
       ]),
       _: 1
     }, 8, ["placeholder", "onBlur", "onKeydown", "options", "onFilter", "onUpdate:modelValue"]))
@@ -734,8 +734,8 @@ const qn = /* @__PURE__ */ O($n, [["render", Sn]]), Dn = {
       return "border: 3px solid " + e + "; background-color: " + e + "; color: white; padding: 5px; width: 70px; height: 70px;";
     }
   }
-}, En = window.Vue.renderList, Fn = window.Vue.Fragment, nt = window.Vue.openBlock, ot = window.Vue.createElementBlock, $e = window.Vue.resolveComponent, Tn = window.Vue.normalizeStyle, we = window.Vue.createVNode, Ae = window.Vue.withCtx, kt = window.Vue.toDisplayString, ke = window.Vue.createElementVNode, On = { class: "row q-col-gutter-md" }, Bn = { class: "row col items-center" }, Mn = { class: "q-subheading text-bold" }, Nn = /* @__PURE__ */ ke("div", { class: "col" }, null, -1), An = { class: "row col q-body-2 text-justify" };
-function Ln(e, t, n, o, i, a) {
+}, En = window.Vue.renderList, Fn = window.Vue.Fragment, nt = window.Vue.openBlock, ot = window.Vue.createElementBlock, $e = window.Vue.resolveComponent, Tn = window.Vue.normalizeStyle, we = window.Vue.createVNode, Le = window.Vue.withCtx, kt = window.Vue.toDisplayString, ke = window.Vue.createElementVNode, On = { class: "row q-col-gutter-md" }, Bn = { class: "row col items-center" }, Mn = { class: "q-subheading text-bold" }, Nn = /* @__PURE__ */ ke("div", { class: "col" }, null, -1), Ln = { class: "row col q-body-2 text-justify" };
+function An(e, t, n, o, i, a) {
   const s = $e("q-icon"), r = $e("q-item-section"), l = $e("q-toggle"), c = $e("q-item"), d = $e("q-card");
   return nt(), ot("div", On, [
     (nt(!0), ot(Fn, null, En(e.extensions, (p) => (nt(), ot("div", {
@@ -743,14 +743,14 @@ function Ln(e, t, n, o, i, a) {
       key: p.name
     }, [
       we(d, null, {
-        default: Ae(() => [
+        default: Le(() => [
           we(c, {
             class: "bg-white",
             style: { height: "100px" }
           }, {
-            default: Ae(() => [
+            default: Le(() => [
               we(r, { avatar: "" }, {
-                default: Ae(() => [
+                default: Le(() => [
                   we(s, {
                     name: p.icon,
                     size: "40px",
@@ -760,7 +760,7 @@ function Ln(e, t, n, o, i, a) {
                 _: 2
               }, 1024),
               we(r, null, {
-                default: Ae(() => [
+                default: Le(() => [
                   ke("div", Bn, [
                     ke("div", Mn, kt(p.label), 1),
                     Nn,
@@ -774,7 +774,7 @@ function Ln(e, t, n, o, i, a) {
                       }, null, 8, ["modelValue", "onUpdate:modelValue"])
                     ])
                   ]),
-                  ke("div", An, kt(p.description), 1)
+                  ke("div", Ln, kt(p.description), 1)
                 ]),
                 _: 2
               }, 1024)
@@ -787,7 +787,7 @@ function Ln(e, t, n, o, i, a) {
     ]))), 128))
   ]);
 }
-const Pn = /* @__PURE__ */ O(Dn, [["render", Ln]]), Un = {
+const Pn = /* @__PURE__ */ O(Dn, [["render", An]]), Un = {
   props: {
     facets: Array,
     selectedFacets: Object,
@@ -1072,11 +1072,11 @@ const Wn = /* @__PURE__ */ O(zn, [["render", Xn]]), Kn = {
       }).bind(this));
     }
   }
-}, xe = window.Vue.resolveComponent, Le = window.Vue.createVNode, Pe = window.Vue.withCtx, Zn = window.Vue.renderList, eo = window.Vue.Fragment, at = window.Vue.openBlock, qt = window.Vue.createElementBlock, to = window.Vue.toDisplayString, no = window.Vue.createTextVNode, oo = window.Vue.resolveDirective, ao = window.Vue.createBlock, io = window.Vue.withDirectives;
+}, xe = window.Vue.resolveComponent, Ae = window.Vue.createVNode, Pe = window.Vue.withCtx, Zn = window.Vue.renderList, eo = window.Vue.Fragment, at = window.Vue.openBlock, qt = window.Vue.createElementBlock, to = window.Vue.toDisplayString, no = window.Vue.createTextVNode, oo = window.Vue.resolveDirective, ao = window.Vue.createBlock, io = window.Vue.withDirectives;
 function so(e, t, n, o, i, a) {
   const s = xe("q-icon"), r = xe("q-input"), l = xe("q-item-section"), c = xe("q-item"), d = xe("q-list"), p = oo("ripple");
   return at(), qt("div", null, [
-    Le(r, {
+    Ae(r, {
       placeholder: e.$q.lang.vui.handles.placeholder,
       modelValue: e.text,
       "onUpdate:modelValue": t[0] || (t[0] = (u) => e.text = u),
@@ -1088,11 +1088,11 @@ function so(e, t, n, o, i, a) {
       dense: ""
     }, {
       prepend: Pe(() => [
-        Le(s, { name: "search" })
+        Ae(s, { name: "search" })
       ]),
       _: 1
     }, 8, ["placeholder", "modelValue", "onInput"]),
-    Le(d, {
+    Ae(d, {
       bordered: "",
       dense: "",
       separator: ""
@@ -1104,7 +1104,7 @@ function so(e, t, n, o, i, a) {
           key: u.code
         }, {
           default: Pe(() => [
-            Le(l, null, {
+            Ae(l, null, {
               default: Pe(() => [
                 no(to(u.code), 1)
               ]),
@@ -1718,7 +1718,7 @@ const Mo = /* @__PURE__ */ O(ko, [["render", Bo]]), He = window.Quasar, b = wind
       }
     }).bind(this));
   }
-}, Ao = window.Vue.renderSlot, Lo = window.Vue.toDisplayString, Tt = window.Vue.createElementVNode, Po = window.Vue.resolveComponent, Uo = window.Vue.withCtx, Ot = window.Vue.openBlock, Io = window.Vue.createBlock, jo = window.Vue.createCommentVNode, Ro = window.Vue.createElementBlock, Ho = ["id"], zo = ["id"], Jo = { class: "text-subtitle2" };
+}, Lo = window.Vue.renderSlot, Ao = window.Vue.toDisplayString, Tt = window.Vue.createElementVNode, Po = window.Vue.resolveComponent, Uo = window.Vue.withCtx, Ot = window.Vue.openBlock, Io = window.Vue.createBlock, jo = window.Vue.createCommentVNode, Ro = window.Vue.createElementBlock, Ho = ["id"], zo = ["id"], Jo = { class: "text-subtitle2" };
 function Yo(e, t, n, o, i, a) {
   const s = Po("q-card");
   return Ot(), Ro("div", { id: n.id }, [
@@ -1730,8 +1730,8 @@ function Yo(e, t, n, o, i, a) {
         class: "q-px-md"
       }, {
         default: Uo(() => [
-          Ao(e.$slots, "card", { objectDisplayed: e.objectDisplayed }, () => [
-            Tt("div", Jo, Lo(e.objectDisplayed[n.nameField]), 1)
+          Lo(e.$slots, "card", { objectDisplayed: e.objectDisplayed }, () => [
+            Tt("div", Jo, Ao(e.objectDisplayed[n.nameField]), 1)
           ])
         ]),
         _: 3
@@ -1862,6 +1862,19 @@ const ia = /* @__PURE__ */ O(Xo, [["render", aa]]), sa = window.Quasar.format, {
         this.files.push(n), n.fileUri = n.xhr.response, t.push(n.fileUri), this.$refs.quasarUploader.removeFile(n), this.$emit("update:file-info-uris", t);
       }).bind(this));
     },
+    failedFiles(e) {
+      e.xhr.status === 413 ? this.$q.notify({
+        type: "negative",
+        message: this.$q.lang.vui.uploader.fileErrorTooBig,
+        multiLine: !0,
+        timeout: 2500
+      }) : this.$q.notify({
+        type: "negative",
+        message: this.$q.lang.vui.uploader.fileErrorUnknown,
+        multiLine: !0,
+        timeout: 2500
+      });
+    },
     start(e, t, n) {
       this.$refs.quasarUploader;
     },
@@ -1891,13 +1904,13 @@ const ia = /* @__PURE__ */ O(Xo, [["render", aa]]), sa = window.Quasar.format, {
       return ra(this.getGlobalSize());
     }
   }
-}, I = window.Vue.toDisplayString, Ye = window.Vue.createTextVNode, oe = window.Vue.resolveComponent, M = window.Vue.withCtx, j = window.Vue.createVNode, $ = window.Vue.openBlock, L = window.Vue.createBlock, q = window.Vue.createCommentVNode, X = window.Vue.createElementBlock, R = window.Vue.createElementVNode, Bt = window.Vue.renderList, lt = window.Vue.Fragment, ca = window.Vue.normalizeClass, da = window.Vue.mergeProps, ua = window.Vue.createSlots, fa = { class: "row" }, ha = { class: "col column justify-center" }, pa = { class: "q-uploader__file-header row flex-center no-wrap" }, ma = { class: "q-uploader__file-header-content col" }, ga = { class: "q-uploader__title" }, wa = { class: "q-uploader__file-header row flex-center no-wrap" }, ba = { class: "q-uploader__file-header-content col" }, ya = { class: "q-uploader__title" }, va = {
+}, I = window.Vue.toDisplayString, Ye = window.Vue.createTextVNode, oe = window.Vue.resolveComponent, M = window.Vue.withCtx, j = window.Vue.createVNode, $ = window.Vue.openBlock, A = window.Vue.createBlock, q = window.Vue.createCommentVNode, X = window.Vue.createElementBlock, R = window.Vue.createElementVNode, Bt = window.Vue.renderList, lt = window.Vue.Fragment, ca = window.Vue.normalizeClass, da = window.Vue.mergeProps, ua = window.Vue.createSlots, fa = { class: "row" }, ha = { class: "col column justify-center" }, pa = { class: "q-uploader__file-header row flex-center no-wrap" }, ma = { class: "q-uploader__file-header-content col" }, ga = { class: "q-uploader__title" }, wa = { class: "q-uploader__file-header row flex-center no-wrap" }, ba = { class: "q-uploader__file-header-content col" }, ya = { class: "q-uploader__title" }, va = {
   key: 0,
   class: "q-field__after q-field__marginal row no-wrap items-center"
 };
 function _a(e, t, n, o, i, a) {
   const s = oe("q-tooltip"), r = oe("q-btn"), l = oe("q-spinner"), c = oe("q-uploader-add-trigger"), d = oe("q-icon"), p = oe("q-circular-progress"), u = oe("q-field"), h = oe("q-uploader");
-  return $(), L(h, da({
+  return $(), A(h, da({
     url: e.$props.url,
     "auto-upload": "",
     "field-name": e.$props.fieldName,
@@ -1905,6 +1918,7 @@ function _a(e, t, n, o, i, a) {
     "max-files": e.$props.multiple ? void 0 : 1,
     headers: [{ name: "Accept", value: "application/json" }],
     onUploaded: a.uploadedFiles,
+    onFailed: a.failedFiles,
     readonly: e.$props.readonly || !a.globalCanAddFiles([])
   }, e.$attrs, { ref: "quasarUploader" }), ua({
     list: M((f) => [
@@ -1930,7 +1944,7 @@ function _a(e, t, n, o, i, a) {
                   }])
                 }, [
                   R("div", pa, [
-                    m.__status === "failed" ? ($(), L(d, {
+                    m.__status === "failed" ? ($(), A(d, {
                       key: 0,
                       class: "q-uploader__file-status",
                       name: e.$q.iconSet.type.negative,
@@ -1943,14 +1957,14 @@ function _a(e, t, n, o, i, a) {
                     R("div", ma, [
                       R("div", ga, I(m.name), 1)
                     ]),
-                    m.__status === "uploading" ? ($(), L(p, {
+                    m.__status === "uploading" ? ($(), A(p, {
                       key: 1,
                       value: m.__progress,
                       min: 0,
                       max: 1,
                       indeterminate: m.__progress === 0
                     }, null, 8, ["value", "indeterminate"])) : q("", !0),
-                    m.__status === "failed" ? ($(), L(r, {
+                    m.__status === "failed" ? ($(), A(r, {
                       key: 2,
                       round: "",
                       dense: "",
@@ -1973,7 +1987,7 @@ function _a(e, t, n, o, i, a) {
                   R("div", ba, [
                     R("div", ya, I(m.name), 1)
                   ]),
-                  e.$props.readonly ? q("", !0) : ($(), L(r, {
+                  e.$props.readonly ? q("", !0) : ($(), A(r, {
                     key: 0,
                     round: "",
                     dense: "",
@@ -1995,11 +2009,11 @@ function _a(e, t, n, o, i, a) {
           _: 2
         }, 1032, ["label"]),
         e.$props.simple && !e.$props.readonly ? ($(), X("div", va, [
-          f.isUploading ? ($(), L(l, {
+          f.isUploading ? ($(), A(l, {
             key: 0,
             class: "q-uploader__spinner"
           })) : q("", !0),
-          a.globalCanAddFiles(f.files) ? ($(), L(r, {
+          a.globalCanAddFiles(f.files) ? ($(), A(r, {
             key: 1,
             type: "a",
             icon: e.$q.iconSet.uploader.add,
@@ -2011,7 +2025,7 @@ function _a(e, t, n, o, i, a) {
             ]),
             _: 1
           }, 8, ["icon"])) : q("", !0),
-          f.isUploading ? ($(), L(r, {
+          f.isUploading ? ($(), A(r, {
             key: 2,
             type: "a",
             icon: e.$q.iconSet.uploader.clear,
@@ -2042,7 +2056,7 @@ function _a(e, t, n, o, i, a) {
       name: "header",
       fn: M((f) => [
         R("div", { class: "q-uploader__header-content flex flex-center no-wrap q-gutter-xs" }, [
-          f.queuedFiles.length > 0 && !f.readonly ? ($(), L(r, {
+          f.queuedFiles.length > 0 && !f.readonly ? ($(), A(r, {
             key: 0,
             type: "a",
             icon: e.$q.iconSet.uploader.clear_all,
@@ -2073,13 +2087,14 @@ function _a(e, t, n, o, i, a) {
               class: "q-uploader__subtitle"
             }, I(a.getGlobalSizeLabel()), 1))
           ]),
-          f.isUploading ? ($(), L(l, {
+          f.isUploading ? ($(), A(l, {
             key: 1,
             class: "q-uploader__spinner"
           })) : q("", !0),
-          f.isUploading && !f.readonly ? ($(), L(r, {
+          f.isUploading && !f.readonly ? ($(), A(r, {
             key: 2,
             type: "a",
+            href: "#",
             icon: e.$q.iconSet.uploader.clear,
             flat: "",
             dense: "",
@@ -2095,9 +2110,10 @@ function _a(e, t, n, o, i, a) {
             ]),
             _: 2
           }, 1032, ["icon", "onClick"])) : q("", !0),
-          a.globalCanAddFiles(f.files) && !f.readonly ? ($(), L(r, {
+          a.globalCanAddFiles(f.files) && !f.readonly ? ($(), A(r, {
             key: 3,
             type: "a",
+            href: "#",
             icon: e.$q.iconSet.uploader.add,
             flat: "",
             dense: ""
@@ -2117,7 +2133,7 @@ function _a(e, t, n, o, i, a) {
       ]),
       key: "1"
     }
-  ]), 1040, ["url", "field-name", "multiple", "max-files", "onUploaded", "readonly"]);
+  ]), 1040, ["url", "field-name", "multiple", "max-files", "onUploaded", "onFailed", "readonly"]);
 }
 const $a = /* @__PURE__ */ O(la, [["render", _a]]);
 function pt(e, t, n) {
@@ -2293,8 +2309,8 @@ pt(Ee, Ke, {
   formatHex: Nt,
   formatHex8: Ea,
   formatHsl: Fa,
-  formatRgb: At,
-  toString: At
+  formatRgb: Lt,
+  toString: Lt
 });
 function Nt() {
   return this.rgb().formatHex();
@@ -2305,14 +2321,14 @@ function Ea() {
 function Fa() {
   return Yt(this).formatHsl();
 }
-function At() {
+function Lt() {
   return this.rgb().formatRgb();
 }
 function Ke(e) {
   var t, n;
-  return e = (e + "").trim().toLowerCase(), (t = Ca.exec(e)) ? (n = t[1].length, t = parseInt(t[1], 16), n === 6 ? Lt(t) : n === 3 ? new T(t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, (t & 15) << 4 | t & 15, 1) : n === 8 ? Ge(t >> 24 & 255, t >> 16 & 255, t >> 8 & 255, (t & 255) / 255) : n === 4 ? Ge(t >> 12 & 15 | t >> 8 & 240, t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, ((t & 15) << 4 | t & 15) / 255) : null) : (t = xa.exec(e)) ? new T(t[1], t[2], t[3], 1) : (t = Va.exec(e)) ? new T(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, 1) : (t = ka.exec(e)) ? Ge(t[1], t[2], t[3], t[4]) : (t = Sa.exec(e)) ? Ge(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, t[4]) : (t = qa.exec(e)) ? It(t[1], t[2] / 100, t[3] / 100, 1) : (t = Da.exec(e)) ? It(t[1], t[2] / 100, t[3] / 100, t[4]) : Mt.hasOwnProperty(e) ? Lt(Mt[e]) : e === "transparent" ? new T(NaN, NaN, NaN, 0) : null;
+  return e = (e + "").trim().toLowerCase(), (t = Ca.exec(e)) ? (n = t[1].length, t = parseInt(t[1], 16), n === 6 ? At(t) : n === 3 ? new T(t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, (t & 15) << 4 | t & 15, 1) : n === 8 ? Ge(t >> 24 & 255, t >> 16 & 255, t >> 8 & 255, (t & 255) / 255) : n === 4 ? Ge(t >> 12 & 15 | t >> 8 & 240, t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, ((t & 15) << 4 | t & 15) / 255) : null) : (t = xa.exec(e)) ? new T(t[1], t[2], t[3], 1) : (t = Va.exec(e)) ? new T(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, 1) : (t = ka.exec(e)) ? Ge(t[1], t[2], t[3], t[4]) : (t = Sa.exec(e)) ? Ge(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, t[4]) : (t = qa.exec(e)) ? It(t[1], t[2] / 100, t[3] / 100, 1) : (t = Da.exec(e)) ? It(t[1], t[2] / 100, t[3] / 100, t[4]) : Mt.hasOwnProperty(e) ? At(Mt[e]) : e === "transparent" ? new T(NaN, NaN, NaN, 0) : null;
 }
-function Lt(e) {
+function At(e) {
   return new T(e >> 16 & 255, e >> 8 & 255, e & 255, 1);
 }
 function Ge(e, t, n, o) {
@@ -2449,7 +2465,7 @@ function Se(e, t) {
   var n = t - e;
   return n ? Gt(e, n) : mt(isNaN(e) ? t : e);
 }
-const Aa = function e(t) {
+const La = function e(t) {
   var n = Na(t);
   function o(i, a) {
     var s = n((i = ft(i)).r, (a = ft(a)).r), r = n(i.g, a.g), l = n(i.b, a.b), c = Se(i.opacity, a.opacity);
@@ -2459,7 +2475,7 @@ const Aa = function e(t) {
   }
   return o.gamma = e, o;
 }(1);
-function La(e) {
+function Aa(e) {
   return function(t, n) {
     var o = e((t = ht(t)).h, (n = ht(n)).h), i = Se(t.s, n.s), a = Se(t.l, n.l), s = Se(t.opacity, n.opacity);
     return function(r) {
@@ -2467,8 +2483,8 @@ function La(e) {
     };
   };
 }
-const Pa = La(Ma);
-let ae = { color: Ke, interpolateHsl: Pa, interpolateRgb: Aa };
+const Pa = Aa(Ma);
+let ae = { color: Ke, interpolateHsl: Pa, interpolateRgb: La };
 function dt(e, t, n) {
   if (e != "DEFAULT") {
     var o, i = Ua;
@@ -3443,7 +3459,9 @@ const C = window.Quasar, zt = {
     remove: "Remove",
     add: "Pick Files",
     upload: "Upload Files",
-    clear: "Abort Upload"
+    clear: "Abort Upload",
+    fileErrorTooBig: "Error : This file is too large",
+    fileErrorUnknown: "Unknown error : This file cannot be uploaded"
   },
   handles: {
     placeholder: "Enter a handle : format is type/code"
@@ -3491,7 +3509,9 @@ const C = window.Quasar, zt = {
     remove: "Supprimer",
     add: "Ajouter un fichier",
     upload: "Envoyer",
-    clear: "Annuler"
+    clear: "Annuler",
+    fileErrorTooBig: "Erreur : Le fichier est trop volumineux",
+    fileErrorUnknown: "Erreur inconnue : Ce fichier ne peut pas être envoyé"
   },
   handles: {
     placeholder: "Entrer un handle de la forme type/code"

@@ -6,29 +6,30 @@
             :max-files="$props.multiple ? undefined : 1"
             :headers="[{name: 'Accept', value: 'application/json'}]"
             @uploaded="uploadedFiles"
+            @failed="failedFiles"
             :readonly="$props.readonly || !globalCanAddFiles([])"
             v-bind="$attrs"
             ref="quasarUploader">
             <template v-if="$props.simple" v-slot:header ></template> 
             <template v-else v-slot:header="slotProps">
-		            <div class="q-uploader__header-content flex flex-center no-wrap q-gutter-xs">
-			            <q-btn v-if="slotProps.queuedFiles.length > 0 && !slotProps.readonly" type="a" :icon="$q.iconSet.uploader.clear_all" flat dense @click="slotProps.removeQueuedFiles">
-			               <q-tooltip>{{$q.lang.vui.uploader.clear_all}}</q-tooltip>
-			            </q-btn>
-	                    <div class="col column justify-center">
-	                      <div v-if="$props.label !== void 0" class="q-uploader__title">{{$props.label}}</div>
-			              <div v-if="slotProps.isUploading" class="q-uploader__subtitle">{{getGlobalSizeLabel()}} / {{slotProps.uploadProgressLabel}}</div>
-						  <div v-else class="q-uploader__subtitle">{{getGlobalSizeLabel()}}</div>
-			            </div>
-	                    <q-spinner v-if="slotProps.isUploading" class="q-uploader__spinner"></q-spinner>
-	                    <q-btn v-if="slotProps.isUploading  && !slotProps.readonly" type="a" :icon="$q.iconSet.uploader.clear" flat dense @click="slotProps.abort">
-	                        <q-tooltip>{{$q.lang.vui.uploader.clear}}</q-tooltip>
-	                    </q-btn>                    
-			            <q-btn v-if="globalCanAddFiles(slotProps.files) && !slotProps.readonly" type="a" :icon="$q.iconSet.uploader.add" flat dense>
-				            <q-uploader-add-trigger></q-uploader-add-trigger>
+                    <div class="q-uploader__header-content flex flex-center no-wrap q-gutter-xs">
+                        <q-btn v-if="slotProps.queuedFiles.length > 0 && !slotProps.readonly" type="a" :icon="$q.iconSet.uploader.clear_all" flat dense @click="slotProps.removeQueuedFiles">
+                           <q-tooltip>{{$q.lang.vui.uploader.clear_all}}</q-tooltip>
+                        </q-btn>
+                        <div class="col column justify-center">
+                          <div v-if="$props.label !== void 0" class="q-uploader__title">{{$props.label}}</div>
+                          <div v-if="slotProps.isUploading" class="q-uploader__subtitle">{{getGlobalSizeLabel()}} / {{slotProps.uploadProgressLabel}}</div>
+                          <div v-else class="q-uploader__subtitle">{{getGlobalSizeLabel()}}</div>
+                        </div>
+                        <q-spinner v-if="slotProps.isUploading" class="q-uploader__spinner"></q-spinner>
+                        <q-btn v-if="slotProps.isUploading  && !slotProps.readonly" type="a" href="#" :icon="$q.iconSet.uploader.clear" flat dense @click="slotProps.abort">
+                            <q-tooltip>{{$q.lang.vui.uploader.clear}}</q-tooltip>
+                        </q-btn>
+                        <q-btn v-if="globalCanAddFiles(slotProps.files) && !slotProps.readonly" type="a" href="#" :icon="$q.iconSet.uploader.add" flat dense>
+                            <q-uploader-add-trigger></q-uploader-add-trigger>
                             <q-tooltip>{{$q.lang.vui.uploader.add}}</q-tooltip>
-	                    </q-btn>
-		            </div>
+                        </q-btn>
+                    </div>
             </template> 
             <template v-slot:list="slotProps">
                <div class="row">
@@ -37,7 +38,7 @@
                             class="col"
                             orientation="vertical"
                             stack-label
-                            borderless>				        
+                            borderless>
                         <template v-slot:control>
                         <div class="col column justify-center">
                             <template v-if="!$props.readonly" >
@@ -151,6 +152,19 @@ export default {
             this.$refs.quasarUploader.removeFile(file)
             this.$emit('update:file-info-uris', newFileInforUris);
         }.bind(this));
+    },
+    failedFiles(info) {
+        if (info.xhr.status === 413) {
+             this.$q.notify({
+                type: 'negative', message: this.$q.lang.vui.uploader.fileErrorTooBig,
+                multiLine: true, timeout: 2500,
+               });
+        } else {
+            this.$q.notify({
+                type: 'negative', message: this.$q.lang.vui.uploader.fileErrorUnknown,
+                multiLine: true, timeout: 2500,
+               });
+        }
     },
     start(a,b,c){
         this.$refs.quasarUploader;
