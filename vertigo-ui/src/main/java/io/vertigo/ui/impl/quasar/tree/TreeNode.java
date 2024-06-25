@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import io.vertigo.core.lang.Assertion;
+
 public class TreeNode implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private String key;
 	private String label;
 	private String value;
 	private List<TreeNode> children = new ArrayList<>();
@@ -22,144 +25,161 @@ public class TreeNode implements Serializable {
 	private Boolean selectable;
 
 	/**
-	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'label'.
-	 *
-	 * @return String label
+	 * @return the key
+	 */
+	public String getKey() {
+		return key;
+	}
+
+	/**
+	 * @param key the key to set
+	 */
+	public void setKey(final String key) {
+		this.key = key;
+	}
+
+	/**
+	 * @return the label
 	 */
 	public String getLabel() {
 		return label;
 	}
 
 	/**
-	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'label'.
-	 *
-	 * @param label String
+	 * @param label the label to set
 	 */
 	public void setLabel(final String label) {
 		this.label = label;
 	}
 
 	/**
-	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'value'.
-	 *
-	 * @return String value
+	 * @return the value
 	 */
 	public String getValue() {
 		return value;
 	}
 
 	/**
-	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'value'.
-	 *
-	 * @param value String
+	 * @param value the value to set
 	 */
 	public void setValue(final String value) {
 		this.value = value;
 	}
 
 	/**
-	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Si le noeud doit être désactivé'.
-	 *
-	 * @return Boolean disabled
-	 */
-	public Boolean getDisabled() {
-		return disabled;
-	}
-
-	/**
-	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Si le noeud doit être désactivé'.
-	 *
-	 * @param disabled Boolean
-	 */
-	public void setDisabled(final Boolean disabled) {
-		this.disabled = disabled;
-	}
-
-	/**
-	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'children'.
-	 *
-	 * @return DtList de TreeNode children
+	 * @return the children
 	 */
 	public List<TreeNode> getChildren() {
 		return children;
 	}
 
 	/**
-	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'children'.
-	 *
-	 * @param children DtList de TreeNode
+	 * @param children the children to set
 	 */
 	public void setChildren(final List<TreeNode> children) {
-		io.vertigo.core.lang.Assertion.check().isNotNull(children);
-		//---
+		Assertion.check().isNotNull(children);
+		// ---
 		this.children = children;
 	}
 
 	/**
-	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'v-slot Header (cf Quasar)'.
-	 *
-	 * @return String header
+	 * @return the header
 	 */
 	public String getHeader() {
 		return header;
 	}
 
 	/**
-	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'v-slot Header (cf Quasar)'.
-	 *
-	 * @param header String
+	 * @param header the header to set
 	 */
 	public void setHeader(final String header) {
 		this.header = header;
 	}
 
-	public Boolean getTickable() {
-		return tickable;
-	}
-
-	public void setTickable(final Boolean tickable) {
-		this.tickable = tickable;
-	}
-
-	public Boolean getNoTick() {
-		return noTick;
-	}
-
-	public void setNoTick(final Boolean noTick) {
-		this.noTick = noTick;
-	}
-
-	public Boolean getExpandable() {
-		return expandable;
-	}
-
-	public void setExpandable(final Boolean expandable) {
-		this.expandable = expandable;
-	}
-
-	public Boolean getSelectable() {
-		return selectable;
-	}
-
-	public void setSelectable(final Boolean selectable) {
-		this.selectable = selectable;
-	}
-
+	/**
+	 * @return the data
+	 */
 	public Map<String, Object> getData() {
 		return data;
 	}
 
+	/**
+	 * @param data the data to set
+	 */
 	public void setData(final Map<String, Object> data) {
+		Assertion.check().isNotNull(data);
+		// ---
 		this.data = data;
 	}
+
+	/**
+	 * @return the disabled
+	 */
+	public Boolean getDisabled() {
+		return disabled;
+	}
+
+	/**
+	 * @param disabled the disabled to set
+	 */
+	public void setDisabled(final Boolean disabled) {
+		this.disabled = disabled;
+	}
+
+	/**
+	 * @return the tickable
+	 */
+	public Boolean getTickable() {
+		return tickable;
+	}
+
+	/**
+	 * @param tickable the tickable to set
+	 */
+	public void setTickable(final Boolean tickable) {
+		this.tickable = tickable;
+	}
+
+	/**
+	 * @return the noTick
+	 */
+	public Boolean getNoTick() {
+		return noTick;
+	}
+
+	/**
+	 * @param noTick the noTick to set
+	 */
+	public void setNoTick(final Boolean noTick) {
+		this.noTick = noTick;
+	}
+
+	/**
+	 * @return the expandable
+	 */
+	public Boolean getExpandable() {
+		return expandable;
+	}
+
+	/**
+	 * @param expandable the expandable to set
+	 */
+	public void setExpandable(final Boolean expandable) {
+		this.expandable = expandable;
+	}
+
+	/**
+	 * @return the selectable
+	 */
+	public Boolean getSelectable() {
+		return selectable;
+	}
+
+	/**
+	 * @param selectable the selectable to set
+	 */
+	public void setSelectable(final Boolean selectable) {
+		this.selectable = selectable;
+	}
+
 }
