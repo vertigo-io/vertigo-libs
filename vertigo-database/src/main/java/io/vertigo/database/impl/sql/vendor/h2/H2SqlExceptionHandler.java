@@ -36,6 +36,8 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 	private static final int UNIQUE_INDEX_1 = 23_505;
 	/** Champ REFERENTIAL_INTEGRITY_VIOLATED_CHILD_EXISTS_1. */
 	private static final int REFERENTIAL_INTEGRITY_VIOLATED_CHILD_EXISTS_1 = 23_003;
+	/** Champ REFERENTIAL_INTEGRITY_VIOLATED_CHILD_EXISTS_2. */
+	private static final int REFERENTIAL_INTEGRITY_VIOLATED_CHILD_EXISTS_2 = 23_503;
 	/** Champ REFERENTIAL_INTEGRITY_VIOLATED_PARENT_MISSING_1. */
 	private static final int REFERENTIAL_INTEGRITY_VIOLATED_PARENT_MISSING_1 = 23_002;
 	/** Champ VALUE_TOO_LARGE_FOR_PRECISION_1. */
@@ -61,6 +63,7 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 				return handleTooLargeValueSqlException(sqle);
 			case REFERENTIAL_INTEGRITY_VIOLATED_PARENT_MISSING_1:
 			case REFERENTIAL_INTEGRITY_VIOLATED_CHILD_EXISTS_1:
+			case REFERENTIAL_INTEGRITY_VIOLATED_CHILD_EXISTS_2:
 				// Violation de contrainte d'intégrité référentielle
 				return handleForeignConstraintSQLException(sqle);
 			case DUPLICATE_KEY_1:
