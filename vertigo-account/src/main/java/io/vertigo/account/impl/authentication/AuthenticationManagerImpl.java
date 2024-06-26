@@ -89,7 +89,9 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 				.ifPresent(UserSession::logout);
 	}
 
-	private Optional<Account> tryLoginAccount(final AuthenticationToken token) {
+	/** {@inheritDoc} */
+	@Override
+	public Optional<Account> tryLoginAccount(final AuthenticationToken token) {
 		boolean tokenSupported = false;
 		for (final AuthenticationPlugin authenticatingRealmPlugin : authenticationPlugins) {
 			if (authenticatingRealmPlugin.supports(token)) {

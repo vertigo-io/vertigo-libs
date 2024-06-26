@@ -32,11 +32,18 @@ import io.vertigo.core.node.component.Manager;
 public interface AuthenticationManager extends Manager {
 
 	/**
-	 * Tries and checks to login.
+	 * Tries and checks to login. Login user if successfull.
 	 * @param token the authentification token
 	 * @return Account the user account (Principal)
 	 */
 	Optional<Account> login(final AuthenticationToken token);
+	
+	/**
+	 * Tries and checks to login. (don't change current login user)
+	 * @param token the authentification token
+	 * @return Account the user account (Principal)
+	 */
+	Optional<Account> tryLoginAccount(final AuthenticationToken token);
 
 	/**
 	 * Closes the current session.
