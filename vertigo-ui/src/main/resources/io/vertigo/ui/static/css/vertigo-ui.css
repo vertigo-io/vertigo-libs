@@ -28,6 +28,17 @@ iframe {
 	border: 0;
 }
 
+
+.bg-primary-invert {
+    background-color: var(--v-primary-invert);
+}
+.bg-secondary-invert {
+    background-color: var(--v-secondary-invert);
+}
+.bg-accent-invert {
+    background-color: var(--v-accent-invert);
+}
+
 .text-primary-inverted  {
 	color:var(--v-primary-invert) !important; 
 }
