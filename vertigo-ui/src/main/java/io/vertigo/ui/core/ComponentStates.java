@@ -24,6 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.vertigo.core.lang.Assertion;
 
 /**
@@ -35,11 +38,16 @@ public final class ComponentStates extends HashMap<String, Serializable> {
 
 	private static final long serialVersionUID = -8925934036136725151L;
 
+	private static final Logger LOG = LogManager.getLogger(ComponentStates.class);
+
 	public ComponentState addComponentState(final String componentId) {
 		Assertion.check().isNotBlank(componentId);
 		//---
 		final ComponentState componentState = new ComponentState();
-		put(componentId, componentState);
+		final var oldValue = put(componentId, componentState);
+		if (oldValue != null) {
+			LOG.warn("[UI] The ID '" + componentId + "' already exists, previous component state is lost."); // Graceful period, do not throw an exception yet
+		}
 		return componentState;
 	}
 
