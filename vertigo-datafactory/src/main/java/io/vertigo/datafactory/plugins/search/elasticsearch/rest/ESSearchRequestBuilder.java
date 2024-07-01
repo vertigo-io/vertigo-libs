@@ -78,7 +78,7 @@ final class ESSearchRequestBuilder extends AsbtractESSearchRequestBuilder<Search
 				//If we send a clustering query, we don't retrieve result with hits response but with buckets
 				.size(searchQuery.isClusteringFacet() ? 0 : listState.getMaxRows().orElse(defaultMaxRows));
 		if (listState.getSortFieldName().isPresent()) {
-			var sortFieldNames = listState.getSortFieldName().get();
+			final var sortFieldNames = listState.getSortFieldName().get();
 			for (var sortFieldName : sortFieldNames.split(",")) {
 				sortFieldName = sortFieldName.trim(); //avoid split'\s*,\s*' cause ReDos
 				final SortBuilder<?> sortBuilder;
