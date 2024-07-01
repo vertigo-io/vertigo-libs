@@ -1,8 +1,9 @@
-<th:block th:fragment="autocomplete-multiple-edit(object, field, label, list, valueField, labelField, autocompleteId, required, inputUrl, filterUrl, edit_content_slot, after_label_slot, input_attrs, label_attrs)" vu:alias="autocomplete-multiple" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="autocomplete-multiple-edit(object, field, label, list, valueField, labelField, minQueryLength, autocompleteId, required, inputUrl, filterUrl, edit_content_slot, after_label_slot, input_attrs, label_attrs)" vu:alias="autocomplete-multiple" vu:selector="${viewMode=='edit'}"
 	  th:assert="${object} != null and ${field} != null and ${list} != null"
 	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, 
 	  myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, 
-	  myComponentId=${autocompleteId != null ? autocompleteId : 'autocomplete_' + list}, 
+	  myMinQueryLength=${minQueryLength != null ? minQueryLength : 2},
+	  myComponentId=${autocompleteId != null ? autocompleteId : 'autocomplete_' + object + '_' + field + '_' + list}, 
 	  myLabel=${modifiableTable!=null?null:label?:model.util.label(object + '.' + field)},
       myRequired=${required != null ? required : model.util.required(object + '.' + field)},
       myInputUrl=${inputUrl != null ? inputUrl : '__@{/autocomplete/_searchByValue}__'},
@@ -52,7 +53,7 @@
 			$watch(function() {return ${model.util.vueDataKey(object, field, rowIndex)} },
 				   (newValue, oldValue) => { loadAutocompleteById('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myInputUrl}','${object}','${field}', ${rowIndex})} )
 			}|"
-        th:@filter="|function (val, update, abort) { searchAutocomplete('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myFilterUrl}', val, update, abort)}|"
+        th:@filter="|function (val, update, abort) { searchAutocomplete('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myFilterUrl}', ${myMinQueryLength}, val, update, abort)}|"
         th:attr="__${label_attrs}__,__${input_attrs}__"
      >
      <vu:quasar-label-slot label="${myLabel}" after_label_slot="after_label_slot"/>
@@ -62,6 +63,6 @@
   	<input th:v-if="|${model.util.vueDataKey(object, field, rowIndex)}.length == 0|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
 </th:block> 
 
-<th:block th:fragment="autocomplete-multiple-read(object, field, label, list, valueField, labelField,autocompleteId, required, inputUrl, filterUrl, edit_content_slot, after_label_slot, input_attrs, label_attrs)" vu:alias="autocomplete-multiple" vu:selector="${viewMode=='read'}" >
+<th:block th:fragment="autocomplete-multiple-read(object, field, label, list, valueField, labelField, minQueryLength, autocompleteId, required, inputUrl, filterUrl, edit_content_slot, after_label_slot, input_attrs, label_attrs)" vu:alias="autocomplete-multiple" vu:selector="${viewMode=='read'}" >
 	<vu:select-multiple-read object="${object}" field="${field}" label="${label}" list="${list}" valueField="${valueField}" labelField="${labelField}" after_label_slot="after_label_slot" input_attrs="${input_attrs}" label_attrs="${label_attrs}" />
 </th:block>
