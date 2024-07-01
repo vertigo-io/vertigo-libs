@@ -258,7 +258,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 			dataVariableBuilder.append("and (");
 		}
 		dataVariableBuilder.append(fields.stream()
-				.map(field -> "(r._field ==\"" + field + "\" " + buildDataFilterCondition(dataFilter, field) + ")")
+				.map(field -> buildDataFilterCondition(dataFilter, field))
 				.collect(Collectors.joining(" or ")));
 
 		if (!fields.isEmpty()) {
@@ -266,8 +266,16 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		}
 
 		for (final Map.Entry<String, String> filter : dataFilter.filters().entrySet()) {
-			if (filter.getValue() != null && !"*".equals(filter.getValue())) {
-				dataVariableBuilder.append(" and r.").append(filter.getKey()).append("==\"").append(filter.getValue()).append("\"\n");
+			String filterValue = filter.getValue();
+			// <b>null</b> value mean no filter, <b>empty string</b> mean field shouldn't exists, <b>*</b> mean field must exists
+			if (filterValue != null) {
+				if("*".equals(filterValue)) {
+					dataVariableBuilder.append(" and exists r.").append(filter.getKey()).append("\n");
+				} else if(filterValue.isEmpty()) {
+					dataVariableBuilder.append(" and not exists r.").append(filter.getKey()).append("\n");
+				} else {
+					dataVariableBuilder.append(" and r.").append(filter.getKey()).append("==\"").append(filterValue).append("\"\n");
+				}
 			}
 		}
 
@@ -472,7 +480,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 					.append("|> group() \n")
 					.append("|> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") \n")
 					.append("|> map(fn: (r) => ({ r with " + fieldsByFunction.get(function).stream()
-							.map(field -> field + ": if exists r." + field + " then r." + field + " else 0.0").collect(Collectors.joining(", "))
+							.map(field -> field + ": if exists r." + field + " then float(v:r." + field + ") else 0.0").collect(Collectors.joining(", "))
 							+ "}))\n")
 					.append("|> rename(columns: {" + fieldsByFunction.get(function).stream().map(field -> field + ":\"" + field + ":" + function + "\"").collect(Collectors.joining(", ")) + "}) \n")
 					.append("|> drop(columns: [\"_start\", \"_stop\"]) \n")
@@ -503,7 +511,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 					.append("|> pivot(rowKey:[\"_time\"], columnKey: [\"_field\", \"alias\"], valueColumn: \"_value\") \n")
 					.append("|> drop(columns: [\"_start\", \"_stop\"]) \n")
 					.append("|> map(fn: (r) => ({ r with " + measures.stream().map(properedMeasures::get)
-							.map(properedMeasure -> properedMeasure + ": if exists r." + properedMeasure + " then r." + properedMeasure + " else 0.0").collect(Collectors.joining(", "))
+							.map(properedMeasure -> properedMeasure + ": if exists r." + properedMeasure + " then float(v:r." + properedMeasure + ") else 0.0").collect(Collectors.joining(", "))
 							+ "}))\n")
 					.append("|> rename(columns: {" + measures.stream().map(measure -> properedMeasures.get(measure) + ": \"" + measure + "\"").collect(Collectors.joining(", ")) + "}) \n")
 					.append("|> yield()");
@@ -545,10 +553,14 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	private static String buildDataFilterCondition(final DataFilter dataFilter, final String field) {
 		final String filterOnField = dataFilter.filters().get(field);
-		if (filterOnField == null || "*".equals(filterOnField)) {
+		// <b>null</b> value mean no filter, <b>empty string</b> mean field shouldn't exists, <b>*</b> mean field must exists
+		if (filterOnField == null) {
 			return "";
 		}
-		return "and r._value =\"" + filterOnField + "\"";
+		if ("*".equals(filterOnField)) {
+			return "(r._field ==\"" + field + "\")";
+		}
+		return "(r._field ==\"" + field + "\" and r._value =\"" + filterOnField + "\")";
 	}
 
 	private static Tuple<String, List<String>> parseAggregateFunction(final String aggregateFunction) {
