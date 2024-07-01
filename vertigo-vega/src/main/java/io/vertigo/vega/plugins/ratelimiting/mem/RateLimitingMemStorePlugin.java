@@ -111,20 +111,20 @@ public final class RateLimitingMemStorePlugin implements RateLimitingStorePlugin
 			}
 		}
 		for (final String forgetUserKey : forgetUserKeys) {
-			_banishCounter.remove(forgetUserKey);
+			banishCounter.remove(forgetUserKey);
 			banishInstant.remove(forgetUserKey);
 		}
 	}
 
 	@Override
 	public void cancelBanishment(final String userKey) {
-		_banishCounter.remove(userKey);
+		banishCounter.remove(userKey);
 		banishInstant.remove(userKey);
 	}
 
 	@Override
 	public void cancelAllBanishments() {
-		_banishCounter.clear();
+		banishCounter.clear();
 		banishInstant.clear();
 	}
 
