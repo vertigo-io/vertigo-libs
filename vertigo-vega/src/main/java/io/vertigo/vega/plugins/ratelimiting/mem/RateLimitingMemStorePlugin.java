@@ -37,7 +37,7 @@ public final class RateLimitingMemStorePlugin implements RateLimitingStorePlugin
 	/**
 	 * Banish counter by userKey.
 	 */
-	private final ConcurrentMap<String, AtomicInteger> _banishCounter = new ConcurrentHashMap<>();
+	private final ConcurrentMap<String, AtomicInteger> banishCounter = new ConcurrentHashMap<>();
 
 	/**
 	 * Banish time by userKey.
@@ -49,20 +49,20 @@ public final class RateLimitingMemStorePlugin implements RateLimitingStorePlugin
 	 */
 	private long lastRateLimitResetTime = System.currentTimeMillis();
 
-	private final int _windowSeconds;
-	private final long _maxBanishSeconds;
+	private final int windowSeconds;
+	private final long maxBanishSeconds;
 
 	@Inject
 	public RateLimitingMemStorePlugin(
 			@ParamValue("windowSeconds") final Optional<Integer> windowSeconds,
 			@ParamValue("maxBanishSeconds") final Optional<Long> maxBanishSeconds) {
-		this._maxBanishSeconds = maxBanishSeconds.orElse(RateLimitingManagerImpl.DEFAULT_BANISH_MAX_SECONDS); //Max banish seconds
-		this._windowSeconds = windowSeconds.orElse(RateLimitingManagerImpl.DEFAULT_WINDOW_SECONDS);
+		this.maxBanishSeconds = maxBanishSeconds.orElse(RateLimitingManagerImpl.DEFAULT_BANISH_MAX_SECONDS); //Max banish seconds
+		this.windowSeconds = windowSeconds.orElse(RateLimitingManagerImpl.DEFAULT_WINDOW_SECONDS);
 	}
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		final var purgePeriod = Math.min(15, _windowSeconds); //min 15s
+		final var purgePeriod = Math.min(15, windowSeconds); //min 15s
 		return Collections.singletonList(new DaemonDefinition("DmnRateLimitingMemStoreReset", () -> this::resetRateLimitWindow, purgePeriod));
 	}
 
@@ -81,7 +81,7 @@ public final class RateLimitingMemStorePlugin implements RateLimitingStorePlugin
 	@Override
 	public int incrementBanishCounter(final String userKey, final long maxBanishSeconds) {
 		final var value = new AtomicInteger(0);
-		final var oldValue = _banishCounter.putIfAbsent(userKey, value);
+		final var oldValue = banishCounter.putIfAbsent(userKey, value);
 		final var banishCounter = (oldValue != null ? oldValue : value).incrementAndGet();
 		return banishCounter;
 	}
@@ -93,13 +93,13 @@ public final class RateLimitingMemStorePlugin implements RateLimitingStorePlugin
 
 	@Override
 	public long remainingSeconds(final String userKey) {
-		return _windowSeconds - (System.currentTimeMillis() - lastRateLimitResetTime) / 1000;
+		return windowSeconds - (System.currentTimeMillis() - lastRateLimitResetTime) / 1000;
 	}
 
 	void resetRateLimitWindow() {
 		hitsCounter.clear();
 		lastRateLimitResetTime = System.currentTimeMillis();
-		resetBanish(_maxBanishSeconds);
+		resetBanish(maxBanishSeconds);
 	}
 
 	private void resetBanish(final long maxBanishSeconds) {

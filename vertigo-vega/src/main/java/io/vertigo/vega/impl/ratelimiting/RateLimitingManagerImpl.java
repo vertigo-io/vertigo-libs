@@ -200,9 +200,9 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 
 	private void logRateLimitExceeded(final String userKey, final long hits) {
 		if (hits == maxRequests + 1) {
-			LOG.warn("Rate limit exceeded (" + userKey + ")");
+			LOG.warn("Rate limit exceeded ({})", userKey);
 		} else if ((hits - maxRequests) % logEveryXRequests == 0) {
-			LOG.info("Rate limit exceeded (" + userKey + ")");
+			LOG.info("Rate limit exceeded ({})", userKey);
 		}
 	}
 
