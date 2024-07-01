@@ -39,6 +39,12 @@ public final class DataFilterBuilder implements Builder<DataFilter> {
 		myMeasurement = measurement;
 	}
 
+	/**
+	 * Add a filter to the data filter
+	 * @param field Field name (tag or field)
+	 * @param value Value to filter on; <b>null</b> value mean no filter, <b>empty string</b> mean field shouldn't exists, <b>*</b> mean field must exists
+	 * @return this builder
+	 */
 	public DataFilterBuilder addFilter(final String field, final String value) {
 		Assertion.check()
 				.isNotBlank(field)
