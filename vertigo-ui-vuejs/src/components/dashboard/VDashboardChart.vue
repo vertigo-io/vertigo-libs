@@ -4,6 +4,70 @@
 <script>
 import {getColors} from './dashboard-tools'
 
+
+const verticalLineTooltipPlugin = {
+ id: 'verticalLineTooltipPlugin',
+ afterDraw: (chart) => {
+    if (chart.tooltip?._active?.length) {
+      const { x } = chart.tooltip._active[0].element;
+      const yAxis = chart.scales.y;
+      const { ctx } = chart;
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(x, yAxis.top);
+      ctx.lineTo(x, yAxis.bottom);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgba(50, 50, 50, 0.4)';
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+}
+ 
+ 
+const verticalLinePlugin = {
+ id: 'verticalLinePlugin',
+ getLinePositionAtIndex: function (chart, pointIndex) {
+     const meta = chart.getDatasetMeta(0); // first dataset is used to discover X coordinate of a point
+     const data = meta.data;
+     return data[pointIndex].x;
+ },
+ getLinePositionAtX: function (chart, pointX) {
+     const scaleX = chart.scales['x'];
+     return scaleX.getPixelForValue(pointX,0);
+ },
+ renderVerticalLine: function (chartInstance, vLine) {
+     const scaleY = chartInstance.scales['y'];
+     const context = chartInstance.ctx;
+	  const lineLeftOffset = vLine.x?
+	  this.getLinePositionAtX(chartInstance, vLine.x)
+	  :getLinePositionAtIndex(chart, vLine.idx);
+    
+     // render vertical line
+     context.beginPath();
+     context.strokeStyle = vLine.color?vLine.color:'#ff0000';
+     context.moveTo(lineLeftOffset, scaleY.top);
+     context.lineTo(lineLeftOffset, scaleY.bottom);
+     context.stroke();
+
+     // write label
+     context.fillStyle = vLine.color?vLine.color:'#ff0000';
+     context.textAlign = 'center';
+	 if (typeof vLine.label === 'function') {
+		context.fillText(vLine.label(), lineLeftOffset, scaleY.top-8);
+	 } else {
+     	context.fillText(vLine.label?vLine.label:'', lineLeftOffset, scaleY.top-8);
+	 }
+ },
+
+ afterDatasetsDraw: function (chart, easing) {
+     if (chart.config.options.vLineAt) {
+         chart.config.options.vLineAt.forEach(vLine => this.renderVerticalLine(chart, vLine));
+     }
+ }
+ };
+
+
 export default {
 	props : {
         title:                          { type: String,  },
@@ -20,15 +84,17 @@ export default {
 		labels:                         { type: Object,  required: true },
         minTime:                        { type: String, },
         maxTime:                        { type: String, },
-        fillGapDim:                     { type: String, },
-        timeFormat:                     { type: String,  required: true,   default:'DD/MM/YYYY HH:mm' },
+		fillGapDim:                     { type: String, },
+		fillGapValue:					{ type: Number, },
+		timeFormat:                     { type: String,  required: true,   default:'DD/MM/YYYY HH:mm' },
+		verticalLines: 					{ type: Array, }, /** {x, label, color} */
         additionalOptions: 				{ type: Object, },
 	},
 	created : function () {
        this.$data.graphChartId = "graphChartId_"+this.hashCode(this.type+'_'+JSON.stringify(this.labels));
        if(!window.dashboardGraphChart) {
            window.dashboardGraphChart = {};
-       }     
+       }
     },
     mounted: function() {
        if(this.queryUrl) {
@@ -37,13 +103,15 @@ export default {
            this.$data.graphDataSeriesTranslator = this.dataSeriesTranslator?this.dataSeriesTranslator:this.defaultDataSeriesTranslator;
            var translatedData = this.$data.graphDataSeriesTranslator(this.datas);
            this.showChartJsChart(translatedData.dataValues, translatedData.dataMetrics, translatedData.timedSeries, this.queryGroupBy, this.labels, this.colors, this.title, this.additionalOptions);
-       }  
+       }	   
     },
 	data: function () {
 		return {
 			graphChartId: {},
-            graphDataSeriesTranslator: this.defaultDataSeriesTranslator,
-            graphDataSets: []
+            graphDataSeriesTranslator: this.defaultDataSeriesTranslator,			
+			stepSize: 1,			
+            truncatedMinTime: null,			
+			truncatedMaxTime: null,
 		}
 	},
 	watch: { 
@@ -104,6 +172,21 @@ export default {
 		},
 
 		showChartJsChart: function(datas, dataMetrics, timedSeries, queryGroupBy, dataLabels, dataColors, chartTitle, additionalOptions) {
+			var dimPeriod = this.timeDimToDayJsPeriod();
+			if(this.fillGapDim && this.minTime && this.maxTime && dimPeriod !== 'hour') {
+			   var truncatedMinTime = dayjs(this.minTime, this.timeFormat).startOf(dimPeriod);
+			   var truncatedMaxTime = dayjs(this.maxTime, this.timeFormat).startOf(dimPeriod);			   
+			   var truncatedEndOfMinTime = dayjs(this.minTime, this.timeFormat).endOf(dimPeriod);
+			   if(truncatedEndOfMinTime.isAfter(truncatedMaxTime)) { //On s'assure que la période min est celle de la dimenssion
+					truncatedMaxTime = truncatedEndOfMinTime;
+			   }
+			   this.$data.truncatedMinTime = truncatedMinTime.add(truncatedMinTime.utcOffset(), 'minute').valueOf();
+			   this.$data.truncatedMaxTime = truncatedMaxTime.add(truncatedMaxTime.utcOffset(), 'minute').valueOf();
+			} else {
+				this.$data.truncatedMinTime = this.minTime?dayjs(this.minTime, this.timeFormat).valueOf():null;
+				this.$data.truncatedMaxTime = this.maxTime?dayjs(this.maxTime, this.timeFormat).valueOf():null;
+			}
+			   
 			var xLabels = Object.values(dataLabels);
 			var chartOptions;
 			var chartJsDataSets;
@@ -162,8 +245,10 @@ export default {
     			var graphChart = new Chart(ctx,{
     				type: chartJsType,
     				data: chartData,
-    				options: finalOptions
+    				options: finalOptions,
+					plugins: [verticalLineTooltipPlugin, verticalLinePlugin]
     			});
+				
     			window.dashboardGraphChart[this.$data.graphChartId] = graphChart;
 			} else {
                 var graphChart =  window.dashboardGraphChart[this.$data.graphChartId];
@@ -278,7 +363,7 @@ export default {
 							beginAtZero: true,
 						},
 						suggestedMin: 0, 
-						suggestedMax: 10
+						suggestedMax: 5
 					}
 				},
 				plugins: {
@@ -339,11 +424,11 @@ export default {
                       tooltipFormat: this.timeFormat+' Z'
                     }
 				}				
-                if(this.minTime) {
-                    options.scales.x.suggestedMin= dayjs(this.minTime, this.timeFormat).valueOf();
+                if(this.$data.truncatedMinTime) {
+                    options.scales.x.suggestedMin = this.$data.truncatedMinTime;
                 }
-                if(this.maxTime) {
-                    options.scales.x.suggestedMax= dayjs(this.maxTime, this.timeFormat).valueOf();
+                if(this.$data.truncatedMaxTime) {
+                    options.scales.x.suggestedMax = this.$data.truncatedMaxTime;
                 }
 			} else {
 				options.scales.x = {
@@ -418,8 +503,8 @@ export default {
 			let _endsWith = function(string, suffix) {
 				return string.indexOf(suffix, string.length - suffix.length) !== -1;
 			};
-			//var categorieIndex = new Array();
 			
+			var dimPeriod = this.timeDimToDayJsPeriod();
 			var newSeries = new Array();
 			for(const metric in dataLabels) {
 				var serie = new Object();
@@ -428,17 +513,20 @@ export default {
 				if(dataLabels && dataLabels[metric]) {
 					serie.label = dataLabels[metric];
 				}
-				var lastTime;
-                var stepSize = this.timeDimToSecondsStep()*1000;
-				for(var j = 0 ; j<datas.length; j++) {
+				var lastTime = this.$data.truncatedMinTime?dayjs(this.$data.truncatedMinTime).subtract(1,dimPeriod):null;//if minTime, we start as we are just before; if no minTime, we keep undefined	
+                for(var j = 0 ; j<datas.length; j++) {
                     if(timedSeries && !!this.fillGapDim) {
-                        var dataTime = Date.parse(datas[j].time);
-                        while(dataTime >= lastTime+2*stepSize) {
-                            serie.data.push({x: lastTime+stepSize,y: null});
-                            lastTime = lastTime+stepSize;
+						var expectedNextTime = lastTime?dayjs(lastTime).add(1,dimPeriod):null;
+						var expected2NextTime = lastTime?expectedNextTime.add(1,dimPeriod):null;
+						var dataTime = dayjs(datas[j].time);
+                        while(!dataTime.isBefore(expected2NextTime)) {
+                            serie.data.push({x: expectedNextTime.valueOf(),y: this.fillGapValue});
+							expectedNextTime = expected2NextTime;
+							expected2NextTime = expected2NextTime.add(1,dimPeriod);
+							lastTime = expectedNextTime.valueOf();							
                         }
                     }
-					var x = timedSeries ? Date.parse(datas[j].time) : datas[j].values[xAxisMeasure]; // timed series by default, else categories 
+					var x = timedSeries ? dayjs(datas[j].time).valueOf() : datas[j].values[xAxisMeasure]; // timed series by default, else categories 
 					var y = datas[j].values[metric];
 					if (!this.isEmpty(datas[j].values) && !y) {
 						y = 0;
@@ -446,6 +534,17 @@ export default {
 					serie.data.push({ x: x, y: y });
 					lastTime = x;
 				}
+				/**We complete data to maxTime included */
+				if (timedSeries && !!this.fillGapDim && !!this.$data.truncatedMaxTime) {
+					var expectedNextTime = lastTime?dayjs(lastTime).add(1,dimPeriod):null;
+					var maxTime = dayjs(this.$data.truncatedMaxTime);
+                    while(!expectedNextTime.isAfter(maxTime)) {
+                        serie.data.push({x: expectedNextTime.valueOf(),y: this.fillGapValue});	
+						expectedNextTime = expectedNextTime.add(1,dimPeriod);
+						lastTime = expectedNextTime.valueOf();
+                    }
+				}
+				
 				if(!serie.label) {
 					if(_endsWith(metric, 'count')) {
 						serie.label = "Quantité";
@@ -480,20 +579,24 @@ export default {
 			}
 			
 		},
-		timeDimToSecondsStep : function() {
-            let dateTimeDim = this.fillGapDim;
-            if(dateTimeDim === '1h') {
-                return 60*60;
-            } else if(dateTimeDim === '1d') {
-                return 24*60*60;
-            } else if(dateTimeDim === '1w') {
-                return 7*24*60*60;
-            } else if(dateTimeDim === '1M') {
-                return 30*24*60*60;
-            } else {
-                return 30*24*60*60;
-            }
-        },
+		timeDimToDayJsPeriod : function() {
+		            let dateTimeDim = this.fillGapDim;
+		            if(dateTimeDim === '1h') {
+		                return 'hour';
+		            } else if(dateTimeDim === '1d') {
+		                return 'day';
+		            } else if(dateTimeDim === '1w') {
+		                return 'week';
+		            } else if(dateTimeDim === '1M') {
+		                return 'month';
+					} else if(dateTimeDim === '3M') {
+			            return 'quarter';
+					} else if(dateTimeDim === '1y') {
+			            return 'year';
+			        } else {
+		                return 'hour';
+		            }
+		        },
 		isEmpty: function(obj) {
 			return Object.keys(obj).length === 0;
 		},
