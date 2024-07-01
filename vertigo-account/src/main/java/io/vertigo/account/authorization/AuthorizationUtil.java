@@ -31,6 +31,7 @@ import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
