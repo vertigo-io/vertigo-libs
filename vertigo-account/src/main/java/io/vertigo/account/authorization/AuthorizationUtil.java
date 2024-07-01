@@ -110,6 +110,17 @@ public final class AuthorizationUtil {
 		return authorizationManager.getCriteriaSecurity(clazz, operation);
 	}
 
+	public static <E extends Entity> E assertOperationsWithLoad(final UID<E> entityUid, final OperationName<E> operation) {
+		return assertOperationsWithLoad(entityUid, operation, DEFAULT_FORBIDDEN_MESSAGE);
+	}
+
+	public static <E extends Entity> E assertOperationsWithLoad(final UID<E> entityUid, final OperationName<E> operation, final LocaleMessageText message) {
+		return assertOperationsAndReturn(() -> {
+			final EntityStoreManager entityStoreManager = Node.getNode().getComponentSpace().resolve(EntityStoreManager.class);
+			return entityStoreManager.readOne(entityUid);
+		}, operation, message);
+	}
+
 	public static <E extends Entity> void assertOperationsWithLoadIfNeeded(final StoreVAccessor<E> entityAccessor, final OperationName<E> operation) {
 		assertOperationsWithLoadIfNeeded(entityAccessor, operation, DEFAULT_FORBIDDEN_MESSAGE);
 	}
