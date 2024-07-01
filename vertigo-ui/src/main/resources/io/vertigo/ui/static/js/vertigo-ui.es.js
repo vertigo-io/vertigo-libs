@@ -3126,9 +3126,13 @@ const C = window.Quasar, zt = {
     var t = e.pagination;
     let n = this.$data.componentStates, o = this.$data.vueData;
     var i = n[t.componentId].pagination;
-    (i.sortBy != t.sortBy || i.descending != t.descending) && t.sortBy && (t.sortUrl ? (t.page = 1, this.$http.post(t.sortUrl, this.objectToFormData({ sortFieldName: t.sortBy, sortDesc: t.descending, CTX: this.$data.vueData.CTX })).then((function(a) {
-      o[t.listKey] = a.data.model[t.listKey], this.$data.vueData.CTX = a.data.model.CTX;
-    }).bind(this))) : this.$refs[t.componentId].sortMethod.apply(this.$refs[t.componentId], [o[t.listKey], t.sortBy, t.descending])), n[t.componentId].pagination = t;
+    if ((i.sortBy != t.sortBy || i.descending != t.descending) && t.sortBy) {
+      let a = n[t.componentId].columns.find((s) => s.name === t.sortBy);
+      t.sortUrl ? (t.page = 1, this.$http.post(t.sortUrl, this.objectToFormData({ sortFieldName: a.field, sortDesc: t.descending, CTX: this.$data.vueData.CTX })).then((function(s) {
+        o[t.listKey] = s.data.model[t.listKey], this.$data.vueData.CTX = s.data.model.CTX;
+      }).bind(this))) : this.$refs[t.componentId].sortMethod.apply(this.$refs[t.componentId], [o[t.listKey], a.field, t.descending]);
+    }
+    n[t.componentId].pagination = t;
   },
   paginatedData: function(e, t) {
     var o = this.$data.componentStates[t].pagination;
@@ -3142,13 +3146,13 @@ const C = window.Quasar, zt = {
     return this.$data.componentStates[e] ? (function(t, n, o) {
       let i = this.$data.componentStates[e].columns.find((a) => a.name === n);
       if (i.datetimeFormat) {
-        const a = o === !0 ? -1 : 1, s = (r) => r[n];
+        const a = o === !0 ? -1 : 1, s = (r) => r[i.field];
         return t.sort((r, l) => {
           let c = s(r), d = s(l);
           return (C.date.extractDate(c, i.datetimeFormat).getTime() > C.date.extractDate(d, i.datetimeFormat).getTime() ? 1 : -1) * a;
         });
       } else
-        return this.sortCiAi(t, n, o);
+        return this.sortCiAi(t, i.field, o);
     }).bind(this) : this.sortCiAi;
   },
   sortCiAi: function(e, t, n) {
@@ -3244,7 +3248,8 @@ const C = window.Quasar, zt = {
     var s = t[e + "Search"].searchUrl, r = t[e + "Search"].collectionComponentId;
     if (t[r].pagination && t[r].pagination.sortBy) {
       var l = t[r].pagination;
-      a.append("sortFieldName", l.sortBy), a.append("sortDesc", l.descending);
+      let c = t[r].columns.find((d) => d.name === l.sortBy);
+      c.field != null && a.append("sortFieldName", c.field), a.append("sortDesc", l.descending);
     }
     this.httpPostAjax(s, a, {
       onSuccess: function(c) {

@@ -23,7 +23,7 @@ export default {
             }
             //Setup Generic Response Messages
             if (response.status === 401) {
-                notif.message = this.$q.lang.vui.ajaxErrors.code401	            
+                notif.message = this.$q.lang.vui.ajaxErrors.code401
                 this.$root.$emit('unauthorized', response) //Emit Logout Event
                 return;
             } else if (response.status === 403) {
@@ -106,8 +106,8 @@ export default {
             rawList = rawList.filter(filterFunction);
         }
         if (searchValue != null && searchValue.trim() !== '') {
-	        const searchNormalized = this.unaccentLower(searchValue);
-	        rawList = rawList.filter(val => this.unaccentLower(val[labelField].toString()).indexOf(searchNormalized) > -1); // label contains
+            const searchNormalized = this.unaccentLower(searchValue);
+            rawList = rawList.filter(val => this.unaccentLower(val[labelField].toString()).indexOf(searchNormalized) > -1); // label contains
         }
         return rawList.map(function (object) {
             return { value: object[valueField], label: object[labelField].toString() } // a label is always a string
@@ -115,7 +115,7 @@ export default {
     },
     
     unaccentLower: function(value) {
-	    return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+        return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
     },
 
     paginationAndSortHandler: function (params) {
@@ -125,18 +125,19 @@ export default {
         var oldPagination = componentStates[pagination.componentId].pagination;
         if (oldPagination.sortBy != pagination.sortBy || oldPagination.descending != pagination.descending) {
             if (pagination.sortBy) {
+                let sortedColumn = componentStates[pagination.componentId].columns.find(column => column.name === pagination.sortBy);
                 // it's a sort
                 if (pagination.sortUrl) {
                     //order call the server
                     pagination.page = 1 //reset pagination
-                    this.$http.post(pagination.sortUrl, this.objectToFormData({ sortFieldName: pagination.sortBy, sortDesc: pagination.descending, CTX: this.$data.vueData.CTX }))
+                    this.$http.post(pagination.sortUrl, this.objectToFormData({ sortFieldName: sortedColumn.field, sortDesc: pagination.descending, CTX: this.$data.vueData.CTX }))
                         .then(function (response) {
                             vueData[pagination.listKey] = response.data.model[pagination.listKey];
                             this.$data.vueData.CTX = response.data.model['CTX'];
                         }.bind(this));
                 } else {
                     //do locally
-                    this.$refs[pagination.componentId].sortMethod.apply(this.$refs[pagination.componentId], [vueData[pagination.listKey], pagination.sortBy, pagination.descending])
+                    this.$refs[pagination.componentId].sortMethod.apply(this.$refs[pagination.componentId], [vueData[pagination.listKey], sortedColumn.field, pagination.descending])
                 }
             } // if we reset the sort we do nothing
         }
@@ -161,7 +162,7 @@ export default {
                 if (sortedColumn.datetimeFormat) {
                         const
                         dir = descending === true ? -1 : 1,
-                        val =  v => v[sortBy]
+                        val =  v => v[sortedColumn.field]
 
                     return data.sort((a, b) => {
                         let A = val(a),
@@ -169,7 +170,7 @@ export default {
                         return ((Quasar.date.extractDate(A, sortedColumn.datetimeFormat).getTime() > Quasar.date.extractDate(B, sortedColumn.datetimeFormat).getTime()) ? 1 : -1) * dir;
                     })
                 } else {
-                    return this.sortCiAi(data, sortBy, descending)
+                    return this.sortCiAi(data, sortedColumn.field, descending)
                 }
             }.bind(this)
         }
@@ -250,7 +251,7 @@ export default {
         }
         
     },
-	loadMissingAutocompleteOption: function (list, valueField, labelField, componentId, url, value){
+    loadMissingAutocompleteOption: function (list, valueField, labelField, componentId, url, value){
         if (!value || (this.$data.componentStates[componentId].options
             .filter(function (option) { return option.value === value }.bind(this)).length > 0)) {
             return
@@ -269,7 +270,7 @@ export default {
             .then(function () {// always executed
                 this.$data.componentStates[componentId].loading = false;
             }.bind(this));
-	},
+    },
     decodeDate: function (value, format) {
         if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY'), 'DD/MM/YYYY')) {
             return Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY'), format);
@@ -365,7 +366,10 @@ export default {
 
         if (componentStates[collectionComponentId].pagination && componentStates[collectionComponentId].pagination.sortBy) {
             var collectionPagination = componentStates[collectionComponentId].pagination;
-            params.append('sortFieldName', collectionPagination.sortBy);
+            let sortedColumn = componentStates[collectionComponentId].columns.find(column => column.name === collectionPagination.sortBy);
+            if (sortedColumn.field != null) {
+                params.append('sortFieldName', sortedColumn.field);
+            }
             params.append('sortDesc', collectionPagination.descending);
         }
         this.httpPostAjax(searchUrl, params, {
