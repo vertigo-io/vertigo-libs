@@ -1,5 +1,5 @@
-<th:block th:fragment="form(other_attrs)" th:with="viewMode=${model.mode.viewMode}">
-	<form action="#" method="post" autocomplete="off" spellcheck="false" accept-charset="UTF-8" th:attr="__${other_attrs}__">
+<th:block th:fragment="form(form_attrs)" th:with="viewMode=${model.mode.viewMode}">
+	<form action="#" method="post" autocomplete="off" spellcheck="false" accept-charset="UTF-8" th:attr="__${form_attrs}__">
 		<vu:content/>
 		<input type="hidden" name="CTX" v-bind:value="vueData.CTX">
 	</form>
