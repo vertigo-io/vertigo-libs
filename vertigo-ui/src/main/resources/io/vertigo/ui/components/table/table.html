@@ -57,14 +57,14 @@
                   <div class="text-subtitle2" th:text="${'{{'+vSubtitle+'}}'}" th:if="${vSubtitle!=null}"/>
               </div>
 		</template>
-		<template v-slot:header-cell="props">
+		<template #header-cell="props">
             <q-th :key="props.col.name" :props="props" scope="col" 
                   :aria-sort="props.col.__thClass.includes('sorted') ? props.col.__thClass.includes('sort-desc')?'descending':'ascending' : null">
               {{ props.col.label }}
             </q-th>
+		</template>
 		<template #top-right="props" vu:slot="top_right_slot" th:with="label=null, title=null, vTitle=null"/>
-	    </template>
-		<template #body="props">
+	    <template #body="props">
 	        <q-tr :props="props" th:attr="__${tr_attrs}__" >
 	          <q-td th:if="${mySelectable}" auto-width>
 	          <q-checkbox th:color="${color?:'primary'}" v-model="props.selected" ></q-checkbox>
@@ -139,7 +139,7 @@
               </div>
           </template>
           <template #top-right="props" vu:slot="top_right_slot" th:with="label=null, title=null, vTitle=null"/>
-          <template v-slot:header-cell="props">
+          <template #header-cell="props">
               <q-th :key="props.col.name" :props="props" scope="col" 
                     :aria-sort="props.col.__thClass.includes('sorted') ? props.col.__thClass.includes('sort-desc')?'descending':'ascending' : null">
                 {{ props.col.label }}
