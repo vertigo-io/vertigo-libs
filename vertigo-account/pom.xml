@@ -15,6 +15,20 @@
 		<dependencies>
 			<dependency>
 				<groupId>io.vertigo</groupId>
+				<artifactId>vertigo-redis-connector</artifactId>
+				<version>${vertigo.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>		
+			<dependency>
+				<groupId>io.vertigo</groupId>
+				<artifactId>vertigo-ldap-connector</artifactId>
+				<version>${vertigo.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.vertigo</groupId>
 				<artifactId>vertigo-datastore</artifactId>
 				<version>${vertigo.version}</version>
 				<type>pom</type>
@@ -24,16 +38,6 @@
 	</dependencyManagement>
 
 	<dependencies>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-core</artifactId>
-			<version>${vertigo.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-commons</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-datastore</artifactId>

@@ -11,6 +11,41 @@
 	<packaging>jar</packaging>
 	<name>vertigo-stella</name>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.glassfish.jersey.core</groupId>
+				<artifactId>jersey-client</artifactId>
+				<version>3.1.7</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.glassfish.jersey.inject</groupId>
+			    <artifactId>jersey-hk2</artifactId>
+			    <version>3.1.7</version>
+			</dependency>
+			<dependency>
+				<groupId>io.vertigo</groupId>
+				<artifactId>vertigo-vega</artifactId>
+				<version>${vertigo.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.vertigo</groupId>
+				<artifactId>vertigo-redis-connector</artifactId>
+				<version>${vertigo.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.vertigo</groupId>
+				<artifactId>vertigo-javalin-connector</artifactId>
+				<version>${vertigo.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<dependencies>
 
 		<dependency>
@@ -31,20 +66,17 @@
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
 			<artifactId>jakarta.servlet-api</artifactId>
-			<version>5.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
-			<version>3.1.3</version>
 			<optional>true</optional> <!-- REST DistributedWork impl -->
 		</dependency>
 		<dependency>
 		    <groupId>org.glassfish.jersey.inject</groupId>
 		    <artifactId>jersey-hk2</artifactId>
-		    <version>3.1.3</version>
 			<optional>true</optional> <!-- REST DistributedWork impl -->
 		</dependency>
 		<dependency>

@@ -40,7 +40,7 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
-				<version>6.0.13</version> <!-- need same version as in vertigo-spring-connector-->
+				<version>6.1.10</version> <!-- need same version as in vertigo-spring-connector-->
 			</dependency>
 			<dependency>
 	        	<groupId>org.thymeleaf</groupId>
@@ -89,7 +89,6 @@
 		<dependency>
          <groupId>jakarta.servlet</groupId>
          <artifactId>jakarta.servlet-api</artifactId>
-         <version>5.0.0</version>
 		</dependency>
 		
 		<!-- SpringMVC -->
