@@ -20,7 +20,7 @@
 			</div>
 			<div class="q-separator q-separator--horizontal"></div>
 			<div th:v-if="${loading == null ? null: '!('+ myLoading +')'}" class="q-card__section q-pa-md" th:attr="__${content_attrs}__">
-			  <th:block th:with="actions_slot=null, header_attrs=null,content_attrs=null,card_attrs=null">
+			  <th:block th:with="title=null,subtitle=null,actions_slot=null, header_attrs=null,content_attrs=null,card_attrs=null">
 				<vu:content />
 		      </th:block>
 			</div>
