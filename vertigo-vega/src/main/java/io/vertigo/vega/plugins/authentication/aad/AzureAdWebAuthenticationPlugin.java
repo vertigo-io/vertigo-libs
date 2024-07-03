@@ -239,10 +239,11 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 
 		final IConfidentialClientApplication app = azureAdConnector.getClient();
 
-		final Object tokenCache = httpRequest.getSession().getAttribute(TOKEN_CACHE_SESSION_ATTRIBUTE);
+		/**CHECKME : token cache is not necessary anymore
+		final Object tokenCache = httpRequest.getSession().getAttribute(TOKEN_CACHE_SESSION_ATTRIBUTE);		 
 		if (tokenCache != null) {
 			app.tokenCache().deserialize(tokenCache.toString());
-		}
+		}*/
 
 		final SilentParameters parameters = SilentParameters.builder(
 				Collections.singleton("User.Read"),
@@ -251,8 +252,10 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 		final CompletableFuture<IAuthenticationResult> future = app.acquireTokenSilently(parameters);
 		final IAuthenticationResult updatedResult = future.get();
 
-		//update session with latest token cache
+		//CHECKME: No need to manually handle token cache, MSAL does it for you
+		/* /update session with latest token cache
 		AzureAdSessionManagementUtil.storeTokenCacheInSession(httpRequest, app.tokenCache().serialize());
+		*/
 
 		return updatedResult;
 	}

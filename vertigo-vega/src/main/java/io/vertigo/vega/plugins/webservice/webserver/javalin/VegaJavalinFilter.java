@@ -22,12 +22,12 @@ import java.io.IOException;
 import javax.inject.Inject;
 
 import io.javalin.Javalin;
-import io.javalin.http.servlet.JavalinServlet;
 import io.vertigo.connectors.javalin.JavalinConnector;
 import io.vertigo.core.util.InjectorUtil;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
+import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -39,7 +39,7 @@ import jakarta.servlet.ServletResponse;
 public final class VegaJavalinFilter implements Filter {
 	@Inject
 	private JavalinConnector javalinConnector;
-	private JavalinServlet javalinServlet;
+	private Servlet javalinServlet;
 
 	public VegaJavalinFilter() {
 		InjectorUtil.injectMembers(this);
