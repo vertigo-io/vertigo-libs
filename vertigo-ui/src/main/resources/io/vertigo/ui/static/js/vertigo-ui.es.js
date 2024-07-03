@@ -1568,14 +1568,12 @@ const Po = /* @__PURE__ */ M(So, [["render", Bo]]), He = window.Quasar, y = wind
      * @throws  Invalid geohash.
      */
     bounds: function(e) {
-      if (e.length == 0)
-        throw new Error("Invalid geohash");
+      if (e.length == 0) throw new Error("Invalid geohash");
       e = e.toLowerCase();
       let t = !0, n = -90, o = 90, i = -180, a = 180;
       for (let r = 0; r < e.length; r++) {
         const l = e.charAt(r), c = this.$data.base32.indexOf(l);
-        if (c == -1)
-          throw new Error("Invalid geohash");
+        if (c == -1) throw new Error("Invalid geohash");
         for (let u = 4; u >= 0; u--) {
           const p = c >> u & 1;
           if (t) {
@@ -1605,8 +1603,7 @@ const Po = /* @__PURE__ */ M(So, [["render", Bo]]), He = window.Quasar, y = wind
             geoLocation: this.decode(this.$props.cluster[a].code),
             totalCount: this.$props.cluster[a].totalCount
           });
-      else
-        this.$props.object && (this.$data.items = [this.$props.object]);
+      else this.$props.object && (this.$data.items = [this.$props.object]);
       this.$data.vectorSource = new y.source.Vector({
         features: this.features
       });
@@ -1904,11 +1901,20 @@ const sa = /* @__PURE__ */ M(Wo, [["render", ia]]), ra = window.Quasar.format, {
       return la(this.getGlobalSize());
     }
   }
-}, I = window.Vue.toDisplayString, Ge = window.Vue.createTextVNode, ae = window.Vue.resolveComponent, P = window.Vue.withCtx, R = window.Vue.createVNode, $ = window.Vue.openBlock, L = window.Vue.createBlock, D = window.Vue.createCommentVNode, W = window.Vue.createElementBlock, H = window.Vue.createElementVNode, Mt = window.Vue.renderList, lt = window.Vue.Fragment, da = window.Vue.normalizeClass, ua = window.Vue.mergeProps, fa = window.Vue.createSlots, ha = { class: "row" }, pa = { class: "col column justify-center" }, ma = { class: "q-uploader__file-header row flex-center no-wrap" }, ga = { class: "q-uploader__file-header-content col" }, wa = { class: "q-uploader__title" }, ba = { class: "q-uploader__file-header row flex-center no-wrap" }, ya = { class: "q-uploader__file-header-content col" }, va = { class: "q-uploader__title" }, _a = {
+}, I = window.Vue.toDisplayString, Ge = window.Vue.createTextVNode, ae = window.Vue.resolveComponent, P = window.Vue.withCtx, R = window.Vue.createVNode, $ = window.Vue.openBlock, L = window.Vue.createBlock, D = window.Vue.createCommentVNode, W = window.Vue.createElementBlock, H = window.Vue.createElementVNode, Mt = window.Vue.renderList, lt = window.Vue.Fragment, da = window.Vue.normalizeClass, ua = window.Vue.mergeProps, fa = window.Vue.createSlots, ha = { class: "q-uploader__header-content flex flex-center no-wrap q-gutter-xs" }, pa = { class: "col column justify-center" }, ma = {
+  key: 0,
+  class: "q-uploader__title"
+}, ga = {
+  key: 1,
+  class: "q-uploader__subtitle"
+}, wa = {
+  key: 2,
+  class: "q-uploader__subtitle"
+}, ba = { class: "row" }, ya = { class: "col column justify-center" }, va = { class: "q-uploader__file-header row flex-center no-wrap" }, _a = { class: "q-uploader__file-header-content col" }, $a = { class: "q-uploader__title" }, Ca = { class: "q-uploader__file-header row flex-center no-wrap" }, xa = { class: "q-uploader__file-header-content col" }, Va = { class: "q-uploader__title" }, ka = {
   key: 0,
   class: "q-field__after q-field__marginal row no-wrap items-center"
 };
-function $a(e, t, n, o, i, a) {
+function Sa(e, t, n, o, i, a) {
   const s = ae("q-tooltip"), r = ae("q-btn"), l = ae("q-spinner"), c = ae("q-uploader-add-trigger"), u = ae("q-icon"), p = ae("q-circular-progress"), f = ae("q-field"), h = ae("q-uploader");
   return $(), L(h, ua({
     url: e.$props.url,
@@ -1922,7 +1928,7 @@ function $a(e, t, n, o, i, a) {
     readonly: e.$props.readonly || !a.globalCanAddFiles([])
   }, e.$attrs, { ref: "quasarUploader" }), fa({
     list: P((d) => [
-      H("div", ha, [
+      H("div", ba, [
         R(f, {
           "label-width": 3,
           label: e.$props.simple ? e.$props.label : void 0,
@@ -1932,7 +1938,7 @@ function $a(e, t, n, o, i, a) {
           borderless: ""
         }, {
           control: P(() => [
-            H("div", pa, [
+            H("div", ya, [
               e.$props.readonly ? D("", !0) : ($(!0), W(lt, { key: 0 }, Mt(d.files, (m) => ($(), W(lt, {
                 key: m.name
               }, [
@@ -1943,7 +1949,7 @@ function $a(e, t, n, o, i, a) {
                     "q-uploader__file--uploaded": m.__status === "uploaded"
                   }])
                 }, [
-                  H("div", ma, [
+                  H("div", va, [
                     m.__status === "failed" ? ($(), L(u, {
                       key: 0,
                       class: "q-uploader__file-status",
@@ -1954,8 +1960,8 @@ function $a(e, t, n, o, i, a) {
                       class: "q-uploader__file-status",
                       name: m.type.indexOf("video/") === 0 ? "movie" : m.type.indexOf("image/") === 0 ? "photo" : m.type.indexOf("audio/") === 0 ? "audiotrack" : "insert_drive_file"
                     }, null, 8, ["name"]),
-                    H("div", ga, [
-                      H("div", wa, I(m.name), 1)
+                    H("div", _a, [
+                      H("div", $a, I(m.name), 1)
                     ]),
                     m.__status === "uploading" ? ($(), L(p, {
                       key: 1,
@@ -1979,13 +1985,13 @@ function $a(e, t, n, o, i, a) {
                 key: m.name,
                 class: "q-uploader__file relative-position q-uploader__file--uploaded"
               }, [
-                H("div", ba, [
+                H("div", Ca, [
                   R(u, {
                     class: "q-uploader__file-status",
                     name: m.type.indexOf("video/") === 0 ? "movie" : m.type.indexOf("image/") === 0 ? "photo" : m.type.indexOf("audio/") === 0 ? "audiotrack" : "insert_drive_file"
                   }, null, 8, ["name"]),
-                  H("div", ya, [
-                    H("div", va, I(m.name), 1)
+                  H("div", xa, [
+                    H("div", Va, I(m.name), 1)
                   ]),
                   e.$props.readonly ? D("", !0) : ($(), L(r, {
                     key: 0,
@@ -2008,7 +2014,7 @@ function $a(e, t, n, o, i, a) {
           ]),
           _: 2
         }, 1032, ["label"]),
-        e.$props.simple && !e.$props.readonly ? ($(), W("div", _a, [
+        e.$props.simple && !e.$props.readonly ? ($(), W("div", ka, [
           d.isUploading ? ($(), L(l, {
             key: 0,
             class: "q-uploader__spinner"
@@ -2055,7 +2061,7 @@ function $a(e, t, n, o, i, a) {
     } : {
       name: "header",
       fn: P((d) => [
-        H("div", { class: "q-uploader__header-content flex flex-center no-wrap q-gutter-xs" }, [
+        H("div", ha, [
           d.queuedFiles.length > 0 && !d.readonly ? ($(), L(r, {
             key: 0,
             type: "a",
@@ -2074,18 +2080,9 @@ function $a(e, t, n, o, i, a) {
             ]),
             _: 2
           }, 1032, ["icon", "onClick"])) : D("", !0),
-          H("div", { class: "col column justify-center" }, [
-            e.$props.label !== void 0 ? ($(), W("div", {
-              key: 0,
-              class: "q-uploader__title"
-            }, I(e.$props.label), 1)) : D("", !0),
-            d.isUploading ? ($(), W("div", {
-              key: 1,
-              class: "q-uploader__subtitle"
-            }, I(a.getGlobalSizeLabel()) + " / " + I(d.uploadProgressLabel), 1)) : ($(), W("div", {
-              key: 2,
-              class: "q-uploader__subtitle"
-            }, I(a.getGlobalSizeLabel()), 1))
+          H("div", pa, [
+            e.$props.label !== void 0 ? ($(), W("div", ma, I(e.$props.label), 1)) : D("", !0),
+            d.isUploading ? ($(), W("div", ga, I(a.getGlobalSizeLabel()) + " / " + I(d.uploadProgressLabel), 1)) : ($(), W("div", wa, I(a.getGlobalSizeLabel()), 1))
           ]),
           d.isUploading ? ($(), L(l, {
             key: 1,
@@ -2135,19 +2132,18 @@ function $a(e, t, n, o, i, a) {
     }
   ]), 1040, ["url", "field-name", "multiple", "max-files", "onUploaded", "onFailed", "readonly"]);
 }
-const Ca = /* @__PURE__ */ M(ca, [["render", $a]]);
+const qa = /* @__PURE__ */ M(ca, [["render", Sa]]);
 function pt(e, t, n) {
   e.prototype = t.prototype = n, n.constructor = e;
 }
 function Jt(e, t) {
   var n = Object.create(e.prototype);
-  for (var o in t)
-    n[o] = t[o];
+  for (var o in t) n[o] = t[o];
   return n;
 }
 function Te() {
 }
-var De = 0.7, Xe = 1 / De, ve = "\\s*([+-]?\\d+)\\s*", Ee = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)\\s*", z = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)%\\s*", xa = /^#([0-9a-f]{3,8})$/, Va = new RegExp(`^rgb\\(${ve},${ve},${ve}\\)$`), ka = new RegExp(`^rgb\\(${z},${z},${z}\\)$`), Sa = new RegExp(`^rgba\\(${ve},${ve},${ve},${Ee}\\)$`), qa = new RegExp(`^rgba\\(${z},${z},${z},${Ee}\\)$`), Da = new RegExp(`^hsl\\(${Ee},${z},${z}\\)$`), Ea = new RegExp(`^hsla\\(${Ee},${z},${z},${Ee}\\)$`), Bt = {
+var De = 0.7, Xe = 1 / De, ve = "\\s*([+-]?\\d+)\\s*", Ee = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)\\s*", z = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)%\\s*", Da = /^#([0-9a-f]{3,8})$/, Ea = new RegExp(`^rgb\\(${ve},${ve},${ve}\\)$`), Ta = new RegExp(`^rgb\\(${z},${z},${z}\\)$`), Fa = new RegExp(`^rgba\\(${ve},${ve},${ve},${Ee}\\)$`), Oa = new RegExp(`^rgba\\(${z},${z},${z},${Ee}\\)$`), Ma = new RegExp(`^hsl\\(${Ee},${z},${z}\\)$`), Ba = new RegExp(`^hsla\\(${Ee},${z},${z},${Ee}\\)$`), Bt = {
   aliceblue: 15792383,
   antiquewhite: 16444375,
   aqua: 65535,
@@ -2307,18 +2303,18 @@ pt(Te, Ke, {
   hex: Pt,
   // Deprecated! Use color.formatHex.
   formatHex: Pt,
-  formatHex8: Ta,
-  formatHsl: Fa,
+  formatHex8: Pa,
+  formatHsl: Na,
   formatRgb: Nt,
   toString: Nt
 });
 function Pt() {
   return this.rgb().formatHex();
 }
-function Ta() {
+function Pa() {
   return this.rgb().formatHex8();
 }
-function Fa() {
+function Na() {
   return Gt(this).formatHsl();
 }
 function Nt() {
@@ -2326,7 +2322,7 @@ function Nt() {
 }
 function Ke(e) {
   var t, n;
-  return e = (e + "").trim().toLowerCase(), (t = xa.exec(e)) ? (n = t[1].length, t = parseInt(t[1], 16), n === 6 ? At(t) : n === 3 ? new O(t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, (t & 15) << 4 | t & 15, 1) : n === 8 ? Ye(t >> 24 & 255, t >> 16 & 255, t >> 8 & 255, (t & 255) / 255) : n === 4 ? Ye(t >> 12 & 15 | t >> 8 & 240, t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, ((t & 15) << 4 | t & 15) / 255) : null) : (t = Va.exec(e)) ? new O(t[1], t[2], t[3], 1) : (t = ka.exec(e)) ? new O(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, 1) : (t = Sa.exec(e)) ? Ye(t[1], t[2], t[3], t[4]) : (t = qa.exec(e)) ? Ye(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, t[4]) : (t = Da.exec(e)) ? jt(t[1], t[2] / 100, t[3] / 100, 1) : (t = Ea.exec(e)) ? jt(t[1], t[2] / 100, t[3] / 100, t[4]) : Bt.hasOwnProperty(e) ? At(Bt[e]) : e === "transparent" ? new O(NaN, NaN, NaN, 0) : null;
+  return e = (e + "").trim().toLowerCase(), (t = Da.exec(e)) ? (n = t[1].length, t = parseInt(t[1], 16), n === 6 ? At(t) : n === 3 ? new O(t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, (t & 15) << 4 | t & 15, 1) : n === 8 ? Ye(t >> 24 & 255, t >> 16 & 255, t >> 8 & 255, (t & 255) / 255) : n === 4 ? Ye(t >> 12 & 15 | t >> 8 & 240, t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, ((t & 15) << 4 | t & 15) / 255) : null) : (t = Ea.exec(e)) ? new O(t[1], t[2], t[3], 1) : (t = Ta.exec(e)) ? new O(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, 1) : (t = Fa.exec(e)) ? Ye(t[1], t[2], t[3], t[4]) : (t = Oa.exec(e)) ? Ye(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, t[4]) : (t = Ma.exec(e)) ? jt(t[1], t[2] / 100, t[3] / 100, 1) : (t = Ba.exec(e)) ? jt(t[1], t[2] / 100, t[3] / 100, t[4]) : Bt.hasOwnProperty(e) ? At(Bt[e]) : e === "transparent" ? new O(NaN, NaN, NaN, 0) : null;
 }
 function At(e) {
   return new O(e >> 16 & 255, e >> 8 & 255, e & 255, 1);
@@ -2334,11 +2330,11 @@ function At(e) {
 function Ye(e, t, n, o) {
   return o <= 0 && (e = t = n = NaN), new O(e, t, n, o);
 }
-function Oa(e) {
+function Aa(e) {
   return e instanceof Te || (e = Ke(e)), e ? (e = e.rgb(), new O(e.r, e.g, e.b, e.opacity)) : new O();
 }
 function ft(e, t, n, o) {
-  return arguments.length === 1 ? Oa(e) : new O(e, t, n, o ?? 1);
+  return arguments.length === 1 ? Aa(e) : new O(e, t, n, o ?? 1);
 }
 function O(e, t, n, o) {
   this.r = +e, this.g = +t, this.b = +n, this.opacity = +o;
@@ -2362,14 +2358,14 @@ pt(O, ft, Jt(Te, {
   hex: Lt,
   // Deprecated! Use color.formatHex.
   formatHex: Lt,
-  formatHex8: Ma,
+  formatHex8: La,
   formatRgb: Ut,
   toString: Ut
 }));
 function Lt() {
   return `#${fe(this.r)}${fe(this.g)}${fe(this.b)}`;
 }
-function Ma() {
+function La() {
   return `#${fe(this.r)}${fe(this.g)}${fe(this.b)}${fe((isNaN(this.opacity) ? 1 : this.opacity) * 255)}`;
 }
 function Ut() {
@@ -2389,12 +2385,9 @@ function jt(e, t, n, o) {
   return o <= 0 ? e = t = n = NaN : n <= 0 || n >= 1 ? e = t = NaN : t <= 0 && (e = NaN), new j(e, t, n, o);
 }
 function Gt(e) {
-  if (e instanceof j)
-    return new j(e.h, e.s, e.l, e.opacity);
-  if (e instanceof Te || (e = Ke(e)), !e)
-    return new j();
-  if (e instanceof j)
-    return e;
+  if (e instanceof j) return new j(e.h, e.s, e.l, e.opacity);
+  if (e instanceof Te || (e = Ke(e)), !e) return new j();
+  if (e instanceof j) return e;
   e = e.rgb();
   var t = e.r / 255, n = e.g / 255, o = e.b / 255, i = Math.min(t, n, o), a = Math.max(t, n, o), s = NaN, r = a - i, l = (a + i) / 2;
   return r ? (t === a ? s = (n - o) / r + (n < o) * 6 : n === a ? s = (o - t) / r + 2 : s = (t - n) / r + 4, r /= l < 0.5 ? a + i : 2 - a - i, s *= 60) : r = l > 0 && l < 1 ? 0 : s, new j(s, r, l, e.opacity);
@@ -2447,26 +2440,26 @@ function Yt(e, t) {
     return e + n * t;
   };
 }
-function Ba(e, t, n) {
+function Ua(e, t, n) {
   return e = Math.pow(e, n), t = Math.pow(t, n) - e, n = 1 / n, function(o) {
     return Math.pow(e + o * t, n);
   };
 }
-function Pa(e, t) {
+function ja(e, t) {
   var n = t - e;
   return n ? Yt(e, n > 180 || n < -180 ? n - 360 * Math.round(n / 360) : n) : mt(isNaN(e) ? t : e);
 }
-function Na(e) {
+function Ia(e) {
   return (e = +e) == 1 ? qe : function(t, n) {
-    return n - t ? Ba(t, n, e) : mt(isNaN(t) ? n : t);
+    return n - t ? Ua(t, n, e) : mt(isNaN(t) ? n : t);
   };
 }
 function qe(e, t) {
   var n = t - e;
   return n ? Yt(e, n) : mt(isNaN(e) ? t : e);
 }
-const Aa = function e(t) {
-  var n = Na(t);
+const Ra = function e(t) {
+  var n = Ia(t);
   function o(i, a) {
     var s = n((i = ft(i)).r, (a = ft(a)).r), r = n(i.g, a.g), l = n(i.b, a.b), c = qe(i.opacity, a.opacity);
     return function(u) {
@@ -2475,7 +2468,7 @@ const Aa = function e(t) {
   }
   return o.gamma = e, o;
 }(1);
-function La(e) {
+function Ha(e) {
   return function(t, n) {
     var o = e((t = ht(t)).h, (n = ht(n)).h), i = qe(t.s, n.s), a = qe(t.l, n.l), s = qe(t.opacity, n.opacity);
     return function(r) {
@@ -2483,12 +2476,12 @@ function La(e) {
     };
   };
 }
-const Ua = La(Pa);
-let ie = { color: Ke, interpolateHsl: Ua, interpolateRgb: Aa };
+const za = Ha(ja);
+let ie = { color: Ke, interpolateHsl: za, interpolateRgb: Ra };
 function dt(e, t, n) {
   if (e != "DEFAULT") {
-    var o, i = ja;
-    e == "RAINBOW" || e == "iRAINBOW" ? o = ["#FF0000", "#FFA500", "#FFFF00", "#00FF00", "#00FF00", "rgb(75, 0, 130)", "rgb(238, 130, 238)"] : e == "SPECTRUM" || e == "iSPECTRUM" ? (o = ["rgb(230, 30, 30)", "rgb(230, 230, 30)", "rgb(30, 230, 30)", "rgb(30, 230, 230)", "rgb(30, 30, 230)", "rgb(230, 30, 230)", "rgb(230, 30, 30)"], i = Ra) : e == "RED2GREEN" || e == "iRED2GREEN" ? o = ["rgb(255, 51, 51)", "rgb(250, 235, 0)", "rgb(51, 200, 51)"] : e == "GREEN2BLUE" || e == "iGREEN2BLUE" ? o = ["rgb(51, 153, 51)", "rgb(51, 153, 200)", "rgb(51, 51, 255)"] : e == "HEAT" || e == "iHEAT" ? o = ["rgb(255, 51, 51)", "rgb(255, 255, 51)", "rgb(51, 153, 51)", "rgb(51, 153, 255)"] : e == "GREEN:INTENSITY" || e == "iGREEN:INTENSITY" ? (o = ["rgb(51, 153, 51)", "rgb(170, 250, 170)"], i = Ia) : e == "ANDROID" || e == "iANDROID" ? o = ["#0099CC", "#9933CC", "#CC0000", "#FF8800", "#669900"] : (e == "ANDROID:LIGHT" || e == "iANDROID:LIGHT") && (o = ["#33B5E5", "#AA66CC", "#ff4444", "#ffbb33", "#99cc00"]), e.charAt(0) == "i" && (o = o.reverse());
+    var o, i = Ja;
+    e == "RAINBOW" || e == "iRAINBOW" ? o = ["#FF0000", "#FFA500", "#FFFF00", "#00FF00", "#00FF00", "rgb(75, 0, 130)", "rgb(238, 130, 238)"] : e == "SPECTRUM" || e == "iSPECTRUM" ? (o = ["rgb(230, 30, 30)", "rgb(230, 230, 30)", "rgb(30, 230, 30)", "rgb(30, 230, 230)", "rgb(30, 30, 230)", "rgb(230, 30, 230)", "rgb(230, 30, 30)"], i = Ya) : e == "RED2GREEN" || e == "iRED2GREEN" ? o = ["rgb(255, 51, 51)", "rgb(250, 235, 0)", "rgb(51, 200, 51)"] : e == "GREEN2BLUE" || e == "iGREEN2BLUE" ? o = ["rgb(51, 153, 51)", "rgb(51, 153, 200)", "rgb(51, 51, 255)"] : e == "HEAT" || e == "iHEAT" ? o = ["rgb(255, 51, 51)", "rgb(255, 255, 51)", "rgb(51, 153, 51)", "rgb(51, 153, 255)"] : e == "GREEN:INTENSITY" || e == "iGREEN:INTENSITY" ? (o = ["rgb(51, 153, 51)", "rgb(170, 250, 170)"], i = Ga) : e == "ANDROID" || e == "iANDROID" ? o = ["#0099CC", "#9933CC", "#CC0000", "#FF8800", "#669900"] : (e == "ANDROID:LIGHT" || e == "iANDROID:LIGHT") && (o = ["#33B5E5", "#AA66CC", "#ff4444", "#ffbb33", "#99cc00"]), e.charAt(0) == "i" && (o = o.reverse());
     var s, a = o[0] == o[o.length - 1], s = i(o, t + (a ? 1 : 0));
     return n ? s.map(function(r, l) {
       var c = ie.color(r);
@@ -2496,17 +2489,17 @@ function dt(e, t, n) {
     }) : s;
   }
 }
-function ja(e, t) {
+function Ja(e, t) {
   return gt(e, t, function(n, o, i, a, s) {
     return ie.interpolateHsl(i, a)(n);
   });
 }
-function Ia(e, t) {
+function Ga(e, t) {
   return gt(e, t, function(n, o, i, a, s) {
     return ie.interpolateRgb(i, a)(n);
   });
 }
-function Ra(e, t) {
+function Ya(e, t) {
   return gt(e, t, function(n, o, i, a, s) {
     var r = { r: null, g: null, b: null }, l = o ? ie.rgb(o) : r, c = ie.rgb(i), u = ie.rgb(a), p = s ? ie.rgb(s) : r, f = Math.max(Math.min(Math.round(ut(n, l.r, c.r, u.r, p.r)), 255), 0), h = Math.max(Math.min(Math.round(ut(n, l.g, c.g, u.g, p.g)), 255), 0), d = Math.max(Math.min(Math.round(ut(n, l.b, c.b, u.b, p.b)), 255), 0);
     return ie.rgb(f, h, d);
@@ -2535,7 +2528,7 @@ function ut(e, t, n, o, i) {
   var a = o - n, s = t ?? n - a, r = i ?? o + a;
   return 0.5 * (2 * n + (-s + o) * e + (2 * s - 5 * n + 4 * o - r) * e * e + (-s + 3 * n - 3 * o + r) * e * e * e);
 }
-const Ha = {
+const Qa = {
   id: "verticalLineTooltipPlugin",
   afterDraw: (e) => {
     var t, n;
@@ -2544,7 +2537,7 @@ const Ha = {
       a.save(), a.beginPath(), a.moveTo(o, i.top), a.lineTo(o, i.bottom), a.lineWidth = 2, a.strokeStyle = "rgba(50, 50, 50, 0.4)", a.stroke(), a.restore();
     }
   }
-}, za = {
+}, Xa = {
   id: "verticalLinePlugin",
   getLinePositionAtIndex: function(e, t) {
     return e.getDatasetMeta(0).data[t].x;
@@ -2559,7 +2552,7 @@ const Ha = {
   afterDatasetsDraw: function(e, t) {
     e.config.options.vLineAt && e.config.options.vLineAt.forEach((n) => this.renderVerticalLine(e, n));
   }
-}, Ja = {
+}, Wa = {
   props: {
     title: { type: String },
     type: { type: String, required: !0 },
@@ -2691,7 +2684,7 @@ const Ha = {
           type: m,
           data: J,
           options: V,
-          plugins: [Ha, za]
+          plugins: [Qa, Xa]
         });
         window.dashboardGraphChart[this.$data.graphChartId] = q;
       }
@@ -2911,8 +2904,7 @@ const Ha = {
       return e && typeof e == "object" && !Array.isArray(e);
     },
     mergeDeep: function(e, ...t) {
-      if (!t.length)
-        return e;
+      if (!t.length) return e;
       const n = t.shift();
       if (this.isObject(e) && this.isObject(n))
         for (const o in n)
@@ -2920,11 +2912,11 @@ const Ha = {
       return this.mergeDeep(e, ...t);
     }
   }
-}, Ga = window.Vue.openBlock, Ya = window.Vue.createElementBlock, Qa = { ref: "graphCanvas" };
-function Xa(e, t, n, o, i, a) {
-  return Ga(), Ya("canvas", Qa, null, 512);
+}, Ka = window.Vue.openBlock, Za = window.Vue.createElementBlock, ei = { ref: "graphCanvas" };
+function ti(e, t, n, o, i, a) {
+  return Ka(), Za("canvas", ei, null, 512);
 }
-const Wa = /* @__PURE__ */ M(Ja, [["render", Xa]]), Ka = {
+const ni = /* @__PURE__ */ M(Wa, [["render", ti]]), oi = {
   mounted: function(e, t, n) {
     var o = t.value;
     if (!window.watcherUpdates && (window.watcherUpdates = {
@@ -2953,18 +2945,18 @@ const Wa = /* @__PURE__ */ M(Ja, [["render", Xa]]), Ka = {
   unmounted: function() {
     window.removeEventListener("beforeunload", window.watcherUpdates.beforeWindowUnload);
   }
-}, Za = {
+}, ai = {
   mounted: function(e, t, n) {
     var o = t.value;
     o && !window.autofocus && (window.autofocus = !0, e.focus());
   }
-}, ei = window.Vue.nextTick, ti = {
+}, ii = window.Vue.nextTick, si = {
   updated: function(e, t, n) {
-    ei(() => {
+    ii(() => {
       !window.watcherUpdates || !window.watcherUpdates.updates_detected ? e.classList.add("hidden") : e.classList.remove("hidden");
     });
   }
-}, de = window.Vue, ni = window.Quasar, oi = {
+}, de = window.Vue, ri = window.Quasar, li = {
   created: function(e, t) {
     const n = t.value ? t.value.topOffset : null, o = t.value ? t.value.topOffsetEl : null, i = t.value ? t.value.leftOffset : null, a = t.value ? t.value.leftOffsetEl : null, s = e.querySelector(".mini");
     for (var r = 0; r < e.childNodes.length; r++) {
@@ -2985,7 +2977,7 @@ const Wa = /* @__PURE__ */ M(Ja, [["render", Xa]]), Ka = {
         f === "LEFT" ? h = m.width + m.x : f === "TOP" && (h = m.height + m.y);
       }
       return h;
-    }, window.addEventListener("scroll", de.minifyHandler), window.addEventListener("resize", ni.throttle(de.minifyHandler, 50));
+    }, window.addEventListener("scroll", de.minifyHandler), window.addEventListener("resize", ri.throttle(de.minifyHandler, 50));
   },
   updated: function() {
     setTimeout(de.minifyHandler, 50);
@@ -2997,7 +2989,7 @@ const Wa = /* @__PURE__ */ M(Ja, [["render", Xa]]), Ka = {
       n.classList && n.classList.remove("not-mini");
     }
   }
-}, E = window.Vue, ue = window.Quasar, ai = {
+}, E = window.Vue, ue = window.Quasar, ci = {
   created: function(e, t) {
     E.createDebugLine = function(h, d, m, g) {
       let b = document.createElement("div");
@@ -3067,7 +3059,7 @@ const Wa = /* @__PURE__ */ M(Ja, [["render", Xa]]), Ka = {
       t.removeEventListener("click");
   }
 };
-function ii(e, t) {
+function di(e, t) {
   return new Date(e) - new Date(t);
 }
 function Rt(e) {
@@ -3089,15 +3081,13 @@ const C = window.Quasar, zt = {
       if (Object.prototype.hasOwnProperty.call(e.data, "redirect")) {
         window.location = e.data.redirect;
         return;
-      } else
-        Object.prototype.hasOwnProperty.call(e.data, "message") && (t.message = e.data.message);
+      } else Object.prototype.hasOwnProperty.call(e.data, "message") && (t.message = e.data.message);
       if (e.status === 401) {
         t.message = this.$q.lang.vui.ajaxErrors.code401, this.$root.$emit("unauthorized", e);
         return;
-      } else
-        e.status === 403 ? t.message = this.$q.lang.vui.ajaxErrors.code403 : e.status === 404 ? t.message = this.$q.lang.vui.ajaxErrors.code404 : e.status === 405 ? t.message = this.$q.lang.vui.ajaxErrors.code405 : e.status === 422 ? (t.message = "", Object.keys(e.data).forEach((function(o) {
-          this.$data.uiMessageStack[o] = e.data[o];
-        }).bind(this))) : e.status >= 500 && (t.message = this.$q.lang.vui.ajaxErrors.code500);
+      } else e.status === 403 ? t.message = this.$q.lang.vui.ajaxErrors.code403 : e.status === 404 ? t.message = this.$q.lang.vui.ajaxErrors.code404 : e.status === 405 ? t.message = this.$q.lang.vui.ajaxErrors.code405 : e.status === 422 ? (t.message = "", Object.keys(e.data).forEach((function(o) {
+        this.$data.uiMessageStack[o] = e.data[o];
+      }).bind(this))) : e.status >= 500 && (t.message = this.$q.lang.vui.ajaxErrors.code500);
       if (e.statusText && e.status !== 422 && (t.message = e.statusText), Object.prototype.hasOwnProperty.call(e, "data")) {
         if (Object.prototype.hasOwnProperty.call(e.data, "message") && e.data.message && e.data.message.length > 0)
           t.message = e.data.message;
@@ -3198,7 +3188,7 @@ const C = window.Quasar, zt = {
     const o = n === !0 ? -1 : 1, i = (s) => s[t], a = new Intl.Collator();
     return e.sort((s, r) => {
       let l = i(s), c = i(r);
-      return l == null ? -1 * o : c == null ? 1 * o : Ht(l) === !0 && Ht(c) === !0 ? (l - c) * o : Rt(l) === !0 && Rt(c) === !0 ? ii(l, c) * o : typeof l == "boolean" && typeof c == "boolean" ? (l - c) * o : ([l, c] = [l, c].map((u) => (u + "").toLocaleString()), a.compare(l, c) * o);
+      return l == null ? -1 * o : c == null ? 1 * o : Ht(l) === !0 && Ht(c) === !0 ? (l - c) * o : Rt(l) === !0 && Rt(c) === !0 ? di(l, c) * o : typeof l == "boolean" && typeof c == "boolean" ? (l - c) * o : ([l, c] = [l, c].map((u) => (u + "").toLocaleString()), a.compare(l, c) * o);
     });
   },
   selectedFunction: function(e, t, n) {
@@ -3431,8 +3421,7 @@ const C = window.Quasar, zt = {
    * @license MIT
    */
   pastePlainTextCapture(e, t) {
-    if (e.target.nodeName === "INPUT")
-      return;
+    if (e.target.nodeName === "INPUT") return;
     let n, o;
     e.preventDefault(), e.originalEvent && e.originalEvent.clipboardData.getData ? (n = e.originalEvent.clipboardData.getData("text/plain"), this.$refs[t].runCmd("insertText", n)) : e.clipboardData && e.clipboardData.getData ? (n = e.clipboardData.getData("text/plain"), this.$refs[t].runCmd("insertText", n)) : window.clipboardData && window.clipboardData.getData && (o || (o = !0, this.$refs[t].runCmd("ms-pasteTextOnly", n)), o = !1);
   },
@@ -3460,7 +3449,7 @@ const C = window.Quasar, zt = {
   editorHandlerParagrapheFix(e, t, n) {
     this.editorHandlerFixHelper(["h1", "h2", "h3", "h4", "h5", "h6", "h7", "h8", "h9"], /<\/?h[1-9][^>]*\/?>/g, "div", "div", t, n);
   }
-}, si = {
+}, ui = {
   ajaxErrors: {
     code401: "UnAuthorized, you may login with an authorized account",
     code403: "Forbidden, your havn&quote;t enought rights",
@@ -3510,7 +3499,7 @@ const C = window.Quasar, zt = {
   handles: {
     placeholder: "Enter a handle : format is type/code"
   }
-}, ri = {
+}, fi = {
   ajaxErrors: {
     code401: "Non autoris&eacute;, essayez de vous reconnecter",
     code403: "Vous n&quote;avez pas les droits suffisants pour effectuer cette action",
@@ -3567,7 +3556,7 @@ var Qt = {
     return Object.keys(t).forEach((o) => n[o] = t[o].bind(e)), n;
   },
   install: function(e, t) {
-    if (e.component("v-chatbot", un), e.component("v-commands", $n), e.component("v-comments", Dn), e.component("v-extensions-store", Un), e.component("v-facets", zn), e.component("v-geopoint-input", Kn), e.component("v-handles", lo), e.component("v-json-editor", yo), e.component("v-notifications", ko), e.component("v-map", Po), e.component("v-map-layer", Qo), e.component("v-tree", sa), e.component("v-file-upload", Ca), e.component("v-dashboard-chart", Wa), e.directive("alert-unsaved-updates", Ka), e.directive("autofocus", Za), e.directive("if-unsaved-updates", ti), e.directive("minify", oi), e.directive("scroll-spy", ai), !t.axios) {
+    if (e.component("v-chatbot", un), e.component("v-commands", $n), e.component("v-comments", Dn), e.component("v-extensions-store", Un), e.component("v-facets", zn), e.component("v-geopoint-input", Kn), e.component("v-handles", lo), e.component("v-json-editor", yo), e.component("v-notifications", ko), e.component("v-map", Po), e.component("v-map-layer", Qo), e.component("v-tree", sa), e.component("v-file-upload", qa), e.component("v-dashboard-chart", ni), e.directive("alert-unsaved-updates", oi), e.directive("autofocus", ai), e.directive("if-unsaved-updates", si), e.directive("minify", li), e.directive("scroll-spy", ci), !t.axios) {
       console.error("You have to install axios");
       return;
     }
@@ -3594,8 +3583,8 @@ var Qt = {
     e.vueData = t.vueData, e.componentStates = t.componentStates, e.uiMessageStack = t.uiMessageStack, e.vuiLang = t.vuiLang;
   },
   lang: {
-    enUS: si,
-    fr: ri
+    enUS: ui,
+    fr: fi
   }
 };
 window && (window.VertigoUi = Qt);

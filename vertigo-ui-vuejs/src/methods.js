@@ -1,6 +1,6 @@
 import * as Quasar from "quasar"
-import { sortDate } from "quasar/src/utils/private/sort.js"
-import { isNumber, isDate } from "quasar/src/utils/is.js"
+import { sortDate } from "quasar/src/utils/private.sort/sort.js"
+import { isNumber, isDate } from "quasar/src/utils/is/is.js"
 
 export default {
     onAjaxError: function (response) {
