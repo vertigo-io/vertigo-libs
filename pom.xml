@@ -139,6 +139,13 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+	            <groupId>io.vertigo</groupId>
+	            <artifactId>vertigo-s3-connector</artifactId>
+				<version>${vertigo.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+        	</dependency>			
 		</dependencies>
 	</dependencyManagement>
 </project>
