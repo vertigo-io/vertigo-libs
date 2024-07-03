@@ -29,25 +29,23 @@ iframe {
 }
 
 
-.bg-primary-invert {
+.bg-primary-inverted {
     background-color: var(--v-primary-invert);
 }
-.bg-secondary-invert {
+.bg-secondary-inverted {
     background-color: var(--v-secondary-invert);
 }
-.bg-accent-invert {
+.bg-accent-inverted {
     background-color: var(--v-accent-invert);
 }
 
-.text-primary-inverted  {
+.text-primary-inverted {
 	color:var(--v-primary-invert) !important; 
 }
-
-.text-secondary-inverted  {
+.text-secondary-inverted {
 	color:var(--v-secondary-invert) !important; 
 }
-
-.text-accent-inverted  {
+.text-accent-inverted {
 	color:var(--v-accent-invert) !important; 
 }
 
