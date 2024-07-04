@@ -346,11 +346,12 @@ public final class UiUtil implements Serializable {
 		final var dtDefinition = uiList.getDtDefinition();
 
 		final var idFieldOpt = dtDefinition.getIdField();
-		if (idFieldOpt.isEmpty()) {
-			throw new VSystemException("Id field must be set on the definition for entity '{0}' (needed to display the list '{1}' from context).", dtDefinition, uiListKey);
+		final var keyFieldOpt = dtDefinition.getKeyField();
+		if (idFieldOpt.isEmpty() && keyFieldOpt.isEmpty()) {
+			throw new VSystemException("Id field (or key field) must be set on the definition for entity '{0}' (needed to display the list '{1}' from context).", dtDefinition, uiListKey);
 		}
 
-		return idFieldOpt.get().name();
+		return idFieldOpt.isPresent()?idFieldOpt.get().name():keyFieldOpt.get().name();
 	}
 
 	/**
