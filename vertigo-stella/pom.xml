@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-libs</artifactId>
-		<version>4.2.0-SNAPSHOT</version>
+		<version>4.3.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>vertigo-stella</artifactId>
@@ -26,7 +26,7 @@
 			<dependency>
 				<groupId>io.vertigo</groupId>
 				<artifactId>vertigo-vega</artifactId>
-				<version>${vertigo.version}</version>
+				<version>${project.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
