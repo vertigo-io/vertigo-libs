@@ -47,6 +47,7 @@ import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * Wrapper d'affichage des listes d'objets métier.
+ *
  * @author npiedeloup
  * @param <O> the type of entity
  */
@@ -73,6 +74,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DataObject> extends A
 
 	/**
 	 * Constructeur.
+	 *
 	 * @param dtDefinition DtDefinition
 	 */
 	AbstractUiListUnmodifiable(final DataDefinition dtDefinition, final Optional<DataFieldName<O>> keyFieldNameOpt) {
@@ -116,6 +118,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DataObject> extends A
 	/**
 	 * Initialize l'index des UiObjects par Clé.
 	 * Attention : nécessite la DtList (appel obtainDtList).
+	 *
 	 * @param keyFieldName Nom du champs à indexer
 	 */
 	protected final void initUiObjectByKeyIndex(final String keyFieldName) {
@@ -128,6 +131,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DataObject> extends A
 	/**
 	 * Récupère la liste des elements.
 	 * Peut-être appelé souvant : doit assurer un cache local (transient au besoin) si chargement.
+	 *
 	 * @return Liste des éléments
 	 */
 	protected abstract DtList<O> obtainDtList();
@@ -189,6 +193,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DataObject> extends A
 	/**
 	 * Récupère un objet par la valeur de son identifiant.
 	 * Utilisé par les select, radio et autocomplete en mode ReadOnly.
+	 *
 	 * @param keyFieldName Nom du champ identifiant
 	 * @param keyValue Valeur de l'identifiant
 	 * @return UiObject
@@ -222,15 +227,19 @@ public abstract class AbstractUiListUnmodifiable<O extends DataObject> extends A
 	}
 
 	private Entity loadDto(final Object key) {
+		if (transactionManager.get().hasCurrentTransaction()) {
+			return entityStoreManager.get().<Entity>readOne(UID.of(getDtDefinition(), key));
+		}
 		//-- Transaction BEGIN
 		try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-			return entityStoreManager.get().<Entity> readOne(UID.of(getDtDefinition(), key));
+			return entityStoreManager.get().<Entity>readOne(UID.of(getDtDefinition(), key));
 		}
 	}
 
 	/**
 	 * Récupère l'index des UiObjects par Id.
 	 * Calcul l'index si besoin.
+	 *
 	 * @param keyFieldName Nom du champ identifiant
 	 * @return Index des UiObjects par Id
 	 */
@@ -254,6 +263,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DataObject> extends A
 
 	/**
 	 * Return a Serializable List for client.
+	 *
 	 * @param fieldsForClient List of fields
 	 * @param valueTransformers Map of transformers
 	 * @return ArrayList of HashMap (needed for Serializable)
