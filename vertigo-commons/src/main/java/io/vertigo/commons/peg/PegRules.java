@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,16 @@ import java.util.Optional;
 
 import io.vertigo.commons.peg.PegRule.Dummy;
 import io.vertigo.commons.peg.PegWordRule.Mode;
+import io.vertigo.core.locale.LocaleMessageKey;
 
 /**
  * Factory of all PeRules.
+ *
  * @author pchretien
  */
 public final class PegRules {
+
+	public static final String BLANKS = " \t\n\r";
 
 	private PegRules() {
 		//no constructor for factory class
@@ -36,12 +40,39 @@ public final class PegRules {
 
 	/**
 	 * Named a Rule.
+	 *
 	 * @param innerRule Rule to name
 	 * @param ruleName Rule name
 	 * @return Named rule
 	 */
 	public static <R> PegRule<R> named(final PegRule<R> innerRule, final String ruleName) {
-		return new PegGrammarRule<>(innerRule, ruleName);
+		return PegGrammarRule.of(innerRule, ruleName);
+	}
+
+	/**
+	 * Name a rule with a fixed error message.
+	 *
+	 * @param mainRule Rule to name
+	 * @param ruleName Rule name
+	 * @param errorMessage Fixed error message
+	 * @param <R> Type of the product text parsing
+	 * @return Named rule
+	 */
+	public static <R> PegRule<R> named(final PegRule<R> innerRule, final String ruleName, final String errorMessage) {
+		return PegGrammarRule.ofErrorMessage(innerRule, ruleName, errorMessage);
+	}
+
+	/**
+	 * Name a rule with a message key for error message.
+	 *
+	 * @param mainRule Rule to name
+	 * @param ruleName Rule name
+	 * @param messageKey Message key for error message
+	 * @param <R> Type of the product text parsing
+	 * @return Named rule
+	 */
+	public static <R> PegRule<R> named(final PegRule<R> innerRule, final String ruleName, final LocaleMessageKey messageKey) {
+		return PegGrammarRule.ofMessageKey(innerRule, ruleName, messageKey);
 	}
 
 	/**
@@ -115,7 +146,23 @@ public final class PegRules {
 	 * @return Rule to match any blank char
 	 */
 	public static PegRule<Dummy> skipBlanks(final String blanks) {
-		return new PegWhiteSpaceRule(blanks);
+		return new PegWhiteSpaceRule(blanks, true);
+	}
+
+	public static PegRule<Dummy> skipBlanks() {
+		return skipBlanks(BLANKS);
+	}
+
+	/**
+	 * @param blanks list of char to skip
+	 * @return Rule to match any blank char
+	 */
+	public static PegRule<Dummy> blanks(final String blanks) {
+		return new PegWhiteSpaceRule(blanks, false);
+	}
+
+	public static PegRule<Dummy> blanks() {
+		return blanks(BLANKS);
 	}
 
 	/**

@@ -1,6 +1,6 @@
 <template>
     <span>
-        <q-btn round size="lg" color="primary" textColor="white" :icon="count>0?icon:iconNone" @click="commentDrawer = !commentDrawer" class="on-left" >
+        <q-btn round :flat="flat" size="lg" :color="color" :text-color="textColor" :icon="count>0?icon:iconNone" @click="commentDrawer = !commentDrawer" class="on-left" :title="$q.lang.vui.comments.title">
             <q-badge floating small color="red" v-if="count>0" style="right:-.4em;top:-.4em;">{{count}}</q-badge>
         </q-btn>
         <q-drawer overlay behavior="mobile" :width="600" v-model="commentDrawer" side="right" style="top:58px;">
@@ -41,7 +41,10 @@ export default {
         icon : { type: String, 'default': 'comment' },
         iconNone : { type: String, 'default': 'add_comment' },
         baseUrl : { type: String, 'default': '/api/', required:true },
-        connectedAccount : { type: String }
+        connectedAccount : { type: String },
+        color : { type: String, 'default': 'primary'},
+        textColor : { type: String, 'default': 'white'},
+        flat : { type: Boolean, 'default': false}
     },
     data: function() {
         return {

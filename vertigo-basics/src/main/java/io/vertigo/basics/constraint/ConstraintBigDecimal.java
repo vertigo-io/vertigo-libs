@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.datamodel.structure.definitions.Constraint;
-import io.vertigo.datamodel.structure.definitions.Property;
+import io.vertigo.datamodel.smarttype.definitions.Constraint;
+import io.vertigo.datamodel.smarttype.definitions.Property;
 
 /**
  * Manage BigDecimal's constraints.
@@ -65,11 +65,10 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 				.isNotNull(maxPrecision, "Le nombre de chiffres ne peut pas être null")
 				.isNotNull(maxScale, "Le nombre de chiffres après la virgule ne peut pas être null")
 				.isTrue(maxScale <= maxPrecision, "Le nombre de chiffres après la virgule doit être inférieur au nombre total de chiffres");
-		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
-				() -> LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED,
-						new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale),
-						maxScale,
-						maxPrecision - maxScale));
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt, Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED,
+				new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale),
+				maxScale,
+				maxPrecision - maxScale);
 	}
 
 	/** {@inheritDoc} */

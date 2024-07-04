@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ public final class SecurityFilter extends AbstractFilter {
 	@Override
 	public void doInit() {
 		InjectorUtil.injectMembers(this);
-		noAuthentificationPattern = parsePattern(getFilterConfig().getInitParameter(NO_AUTHENTIFICATION_PATTERN_PARAM_NAME));
+		noAuthentificationPattern = parsePattern(parseParam(NO_AUTHENTIFICATION_PATTERN_PARAM_NAME, String.class, null));
 	}
 
 	/** {@inheritDoc} */

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,12 @@ import java.util.List;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Generated;
-import io.vertigo.datamodel.structure.model.KeyConcept;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.stereotype.DisplayField;
-import io.vertigo.datamodel.structure.stereotype.Field;
-import io.vertigo.datamodel.structure.stereotype.SortField;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.model.KeyConcept;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.stereotype.DisplayField;
+import io.vertigo.datamodel.data.stereotype.Field;
+import io.vertigo.datamodel.data.stereotype.SortField;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
 
 /**
@@ -309,6 +309,6 @@ public final class Movie implements KeyConcept {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return DtObjectUtil.toString(this);
+		return DataModelUtil.toString(this);
 	}
 }

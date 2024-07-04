@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,11 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import io.vertigo.connectors.redis.RedisConnector;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vortex.bb.BBKey;
 import io.vertigo.vortex.bb.BBKeyPattern;
-import io.vertigo.vortex.bb.BlackBoard.Type;
+import io.vertigo.vortex.bb.BBType;
 import io.vertigo.vortex.bb.BlackBoardManager;
 import io.vertigo.vortex.impl.bb.BlackBoardStorePlugin;
 import redis.clients.jedis.Jedis;
@@ -56,14 +57,14 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 	}
 
 	@Override
-	public boolean exists(final BBKey key) {
+	public boolean keysExists(final BBKey key) {
 		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
 			return jedis.exists(key.key());
 		}
 	}
 
 	@Override
-	public Set<BBKey> keys(final BBKeyPattern keyPattern) {
+	public Set<BBKey> keysFindAll(final BBKeyPattern keyPattern) {
 		final Set<BBKey> result = new HashSet<>();
 		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
 			final ScanParams scanParams = new ScanParams().count(1000).match(keyPattern.keyPattern());
@@ -85,7 +86,7 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 	}
 
 	@Override
-	public void delete(final BBKeyPattern keyPattern) {
+	public void keysDeleteAll(final BBKeyPattern keyPattern) {
 		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
 			final ScanParams scanParams = new ScanParams().count(1000).match(keyPattern.keyPattern());
 			String cur = ScanParams.SCAN_POINTER_START;
@@ -110,10 +111,10 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 	}
 
 	@Override
-	public Type getType(final BBKey key) {
+	public BBType keysGetType(final BBKey key) {
 		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
 			final var storedType = jedis.hget("types", key.key());
-			return storedType != null ? Type.valueOf(storedType) : null;
+			return storedType != null ? BBType.valueOf(storedType) : null;
 		}
 	}
 
@@ -126,15 +127,18 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 	}
 
 	@Override
-	public String getString(final BBKey key) {
+	public String stringGet(final BBKey key) {
 		return get(key);
 	}
 
-	@Override
-	public void putString(final BBKey key, final String value) {
+	private void doPut(final BBKey key, final String value, final BBType type) {
+		Assertion.check()
+				.isNotNull(key)
+				.isNotNull(type);
+		// ---
 		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
 			try (final Transaction tx = jedis.multi()) {
-				tx.hset("types", key.key(), Type.String.name());
+				tx.hset("types", key.key(), type.name());
 				tx.set(key.key(), value);
 				tx.exec();
 			}
@@ -142,44 +146,37 @@ public class RedisBlackBoardStorePlugin implements BlackBoardStorePlugin {
 	}
 
 	@Override
-	public Integer getInteger(final BBKey key) {
+	public void stringPut(final BBKey key, final String value) {
+		doPut(key, value, BBType.String);
+	}
+
+	@Override
+	public Integer integerGet(final BBKey key) {
 		final var value = get(key);
 		return value != null ? Integer.parseInt(value) : null;
 	}
 
 	@Override
-	public void putInteger(final BBKey key, final Integer value) {
-		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
-			try (final Transaction tx = jedis.multi()) {
-				tx.hset("types", key.key(), Type.Integer.name());
-				tx.set(key.key(), String.valueOf(value));
-				tx.exec();
-			}
-		}
+	public void integerPut(final BBKey key, final Integer value) {
+		doPut(key, String.valueOf(value), BBType.Integer);
 	}
 
 	@Override
-	public Boolean getBoolean(final BBKey key) {
+	public Boolean boolGet(final BBKey key) {
 		final var value = get(key);
 		return value != null ? Boolean.parseBoolean(value) : null;
 	}
 
 	@Override
-	public void putBoolean(final BBKey key, final Boolean value) {
-		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
-			try (final Transaction tx = jedis.multi()) {
-				tx.hset("types", key.key(), Type.Boolean.name());
-				tx.set(key.key(), String.valueOf(value));
-				tx.exec();
-			}
-		}
+	public void boolPut(final BBKey key, final Boolean value) {
+		doPut(key, String.valueOf(value), BBType.Boolean);
 	}
 
 	@Override
-	public void incrBy(final BBKey key, final int value) {
+	public void integerIncrBy(final BBKey key, final int value) {
 		try (final Jedis jedis = redisConnector.getClient(JEDIS_CLUSTER_NAME)) {
 			try (final Transaction tx = jedis.multi()) {
-				tx.hset("types", key.key(), Type.Integer.name()); // ensure type is set
+				tx.hset("types", key.key(), BBType.Integer.name()); // ensure type is set
 				tx.incrBy(key.key(), value);
 				tx.exec();
 			}

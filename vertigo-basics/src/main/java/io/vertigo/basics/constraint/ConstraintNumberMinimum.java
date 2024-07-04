@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.datamodel.structure.definitions.Constraint;
-import io.vertigo.datamodel.structure.definitions.DtProperty;
-import io.vertigo.datamodel.structure.definitions.Property;
+import io.vertigo.datamodel.smarttype.definitions.Constraint;
+import io.vertigo.datamodel.smarttype.definitions.DtProperty;
+import io.vertigo.datamodel.smarttype.definitions.Property;
 
 /**
  * Contrainte sur la valeur minimale d'un nombre.
@@ -45,8 +45,7 @@ public final class ConstraintNumberMinimum implements Constraint<Number, Number>
 				.isNotBlank(args, "Vous devez préciser la valeur minimum comme argument de ConstraintNumberMinimum");
 		//-----
 		minValue = Double.parseDouble(args);
-		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
-				() -> LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue));
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt, Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue);
 	}
 
 	/** {@inheritDoc} */

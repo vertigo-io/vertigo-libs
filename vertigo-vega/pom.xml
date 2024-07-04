@@ -4,13 +4,30 @@
 
 	<parent>
 		<groupId>io.vertigo</groupId>
-		<artifactId>vertigo-extensions</artifactId>
+		<artifactId>vertigo-libs</artifactId>
 		<version>4.2.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>vertigo-vega</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-vega</name>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>jakarta.servlet</groupId>
+	    		<artifactId>jakarta.servlet-api</artifactId>
+				<version>6.1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>io.vertigo</groupId>
+				<artifactId>vertigo-datafactory</artifactId>
+				<version>${vertigo.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
@@ -52,6 +69,13 @@
 			<optional>true</optional>
 		</dependency>
 		
+		<dependency>
+            <groupId>io.vertigo</groupId>
+            <artifactId>vertigo-redis-connector</artifactId> <!-- For RateLimitingRedisStorePlugin -->
+            <version>${vertigo.version}</version>
+            <optional>true</optional>
+        </dependency>
+		
         <dependency>
             <groupId>io.vertigo</groupId>
             <artifactId>vertigo-httpclient-connector</artifactId>
@@ -79,7 +103,6 @@
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
     		<artifactId>jakarta.servlet-api</artifactId>
-			<version>5.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -93,25 +116,21 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>11.0.18</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>11.0.18</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
 			<artifactId>websocket-jetty-server</artifactId>
-			<version>11.0.18</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-slf4j2-impl</artifactId>
-			<version>2.21.1</version>
 			<scope>test</scope>
 		</dependency>
 		
@@ -121,7 +140,7 @@
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
-			<version>5.3.2</version>
+			<version>5.4.0</version>
 			<scope>test</scope>
 		</dependency>
 

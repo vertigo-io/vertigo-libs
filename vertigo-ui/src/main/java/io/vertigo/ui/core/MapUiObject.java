@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,12 +33,12 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
+import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.FormatterException;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.ui.core.encoders.EncoderDate;
 import io.vertigo.vega.engines.webservice.json.VegaUiObject;
 
@@ -49,7 +49,7 @@ import io.vertigo.vega.engines.webservice.json.VegaUiObject;
  * @author pchretien, npiedeloup
  * @param <D> Type de DtObject représenté par cet Input
  */
-public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> implements Map<String, Serializable> {
+public final class MapUiObject<D extends DataObject> extends VegaUiObject<D> implements Map<String, Serializable> {
 	private static final long serialVersionUID = -4639050257543017072L;
 	private static final String SMART_TYPE_MULTIPLE_IDS = "STyMultipleIds";
 	private static final String[] EMPTY_INPUT = new String[0];
@@ -58,15 +58,17 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 
 	/**
 	 * Constructor.
+	 *
 	 * @param serverSideDto DtObject
 	 */
 	public MapUiObject(final D serverSideDto, final ViewContextUpdateSecurity viewContextUpdateSecurity) {
-		this(serverSideDto, (D) DtObjectUtil.createDtObject(DtObjectUtil.findDtDefinition(serverSideDto)), Collections.emptySet(), viewContextUpdateSecurity);
+		this(serverSideDto, (D) DataModelUtil.createDataObject(DataModelUtil.findDataDefinition(serverSideDto)), Collections.emptySet(), viewContextUpdateSecurity);
 	}
 
 	/**
 	 * Constructor.
-	 * @param serverSideDto  DtObject
+	 *
+	 * @param serverSideDto DtObject
 	 * @param inputDto Input DtObject
 	 * @param modifiedFields List of modified fields
 	 */
@@ -86,7 +88,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 				.isNotBlank(keyFieldName)
 				.isTrue(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//-----
-		final DtField dtField = getDtField(keyFieldName);
+		final DataField dtField = getDataField(keyFieldName);
 		if (dtField.cardinality().hasMany()) {
 			return getInputValue(keyFieldName);
 		}
@@ -111,7 +113,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		//----
 		viewContextUpdateSecurity.assertIsUpdatable(getInputKey(), fieldName);
 		//----
-		final DtField dtField = getDtField(fieldName);
+		final DataField dtField = getDataField(fieldName);
 		if (dtField.cardinality().hasMany()) {
 			if (value instanceof String[]) {
 				if (isBlank((String[]) value)) {
@@ -163,9 +165,9 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	}
 
 	private static String formatMultipleValue(final Object values) {
-		if (values instanceof String) {
+		if (values instanceof final String valueS) {
 			// just one
-			return (String) values;
+			return StringUtil.isBlank(valueS) ? null : valueS;
 		}
 		// we are a String array
 		return Arrays
@@ -174,18 +176,18 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	}
 
 	private static String[] parseMultipleValue(final String strValue) {
-		return strValue.split(";");
+		return StringUtil.isBlank(strValue) ? new String[0] : strValue.split(";");
 	}
 
-	private static boolean isMultiple(final DtField dtField) {
+	private static boolean isMultiple(final DataField dtField) {
 		return SMART_TYPE_MULTIPLE_IDS.equals(dtField.smartTypeDefinition().getName());
 	}
 
-	private static boolean isBoolean(final DtField dtField) {
+	private static boolean isBoolean(final DataField dtField) {
 		return dtField.smartTypeDefinition().getScope().isBasicType() && dtField.smartTypeDefinition().getBasicType() == BasicType.Boolean;
 	}
 
-	private static boolean isAboutDate(final DtField dtField) {
+	private static boolean isAboutDate(final DataField dtField) {
 		return dtField.smartTypeDefinition().getScope().isBasicType() && dtField.smartTypeDefinition().getBasicType().isAboutDate();
 	}
 
@@ -254,6 +256,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 
 	/**
 	 * Return the typed value.
+	 *
 	 * @param fieldName Field
 	 * @return Typed value
 	 */
@@ -263,6 +266,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 
 	/**
 	 * Return a Serializable Map for client.
+	 *
 	 * @param fieldsForClient List of fields
 	 * @param valueTransformers Map of transformers
 	 * @return HashMap (needed for Serializable)
@@ -312,7 +316,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 				.isNotBlank(keyFieldName)
 				.isTrue(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//---
-		final DtField dtField = getDtField(keyFieldName);
+		final DataField dtField = getDataField(keyFieldName);
 		final SmartTypeDefinition smartType = dtField.smartTypeDefinition();
 		if (smartType.getScope().isBasicType()) {
 			if (isAboutDate(dtField)) {
@@ -320,7 +324,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 				return EncoderDate.valueToString(value, dtField.smartTypeDefinition().getBasicType());// encodeValue
 			} else if (isMultiple(dtField)) {
 				final String value = getTypedValue(keyFieldName, String.class);
-				return value != null ? parseMultipleValue(value) : new String[0];
+				return parseMultipleValue(value);
 			}
 		}
 		return getTypedValue(keyFieldName, Serializable.class);
@@ -328,7 +332,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 
 	private String getFormattedValue(final String keyFieldName) {
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-		final DtField dtField = getDtField(keyFieldName);
+		final DataField dtField = getDataField(keyFieldName);
 		final Serializable typedValue = getEncodedValue(keyFieldName);
 		return typedValue != null ? smartTypeManager.valueToString(dtField.smartTypeDefinition(), typedValue) : null;
 	}

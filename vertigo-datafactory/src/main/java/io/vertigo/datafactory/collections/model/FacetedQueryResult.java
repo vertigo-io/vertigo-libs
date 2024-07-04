@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,9 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
 
 /**
  * Résultat de la recherche.
@@ -38,12 +38,12 @@ import io.vertigo.datamodel.structure.model.DtObject;
  * @param <R> Type de l'objet resultant de la recherche
  * @param <S> Type de l'objet source
  */
-public final class FacetedQueryResult<R extends DtObject, S> implements Serializable {
+public final class FacetedQueryResult<R extends DataObject, S> implements Serializable {
 	private static final long serialVersionUID = 1248453191954177054L;
 
 	private final DtList<R> list;
 	private final List<Facet> facets;
-	private final Map<R, Map<DtField, String>> highlights;
+	private final Map<R, Map<DataField, String>> highlights;
 	private final DefinitionId<FacetDefinition> clusterFacetDefinitionId; //nullable
 	private final Map<FacetValue, DtList<R>> clusteredDtc;
 	private final long count;
@@ -68,7 +68,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 			final List<Facet> facets,
 			final Optional<FacetDefinition> clusterFacetDefinition,
 			final Map<FacetValue, DtList<R>> clusteredDtc,
-			final Map<R, Map<DtField, String>> highlights,
+			final Map<R, Map<DataField, String>> highlights,
 			final S source) {
 		Assertion.check()
 				.isNotNull(query)
@@ -138,7 +138,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 * @param document Document dont on veut les highlights
 	 * @return Extrait avec mise en valeur par champs. (Peut être vide jamais null)
 	 */
-	public Map<DtField, String> getHighlights(final R document) {
+	public Map<DataField, String> getHighlights(final R document) {
 		return highlights.getOrDefault(document, Collections.emptyMap());
 	}
 

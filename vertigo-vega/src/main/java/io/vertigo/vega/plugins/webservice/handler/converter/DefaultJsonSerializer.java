@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,8 @@ import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
@@ -179,7 +179,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 		} else if (value instanceof List) {
 			final String entityName = ((List) value).isEmpty() ? Object.class.getSimpleName() : ((List) value).get(0).getClass().getSimpleName();
 			encodedType = new EncodedType(EncoderType.JSON_LIST, false, entityName);
-		} else if (value instanceof DtObject) {
+		} else if (value instanceof DataObject) {
 			encodedType = new EncodedType(EncoderType.JSON_ENTITY, false, value.getClass().getSimpleName());
 		} else if (value instanceof UiContext) {
 			encodedType = new EncodedType(EncoderType.JSON_UI_CONTEXT, false, value.getClass().getSimpleName());
@@ -235,7 +235,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 		} else if (value instanceof List) {
 			writeListMetaToHeader((List) value, response);
 			return toJson(value, Collections.emptyMap(), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
-		} else if (value instanceof DtObject || value instanceof FacetedQueryResult<?, ?>) {
+		} else if (value instanceof DataObject || value instanceof FacetedQueryResult<?, ?>) {
 			return toJson(value, Collections.emptyMap(), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
 		} else if (value instanceof UiContext) {
 			//TODO build json in jsonWriterEngine

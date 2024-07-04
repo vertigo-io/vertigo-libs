@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ public interface AppLoginHandler<T> {
 
 	/**
 	 * Perform business authentication of user.
+	 *
 	 * @param request HttpRequest.
 	 * @param claims resolved claims from SAML Assertion
 	 * @param rawResult raw result returned from SSO authentication
@@ -39,12 +40,16 @@ public interface AppLoginHandler<T> {
 
 	/**
 	 * Perform business disconnection of user.
+	 *
 	 * @return the page to redirect to after succesful logout
 	 */
-	String doLogout(final HttpServletRequest request);
+	default Optional<String> doLogout(final HttpServletRequest request) {
+		return Optional.empty();
+	}
 
 	/**
 	 * When login fails do something special
+	 *
 	 * @param request HttpRequest.
 	 * @param response HttpResponse
 	 */

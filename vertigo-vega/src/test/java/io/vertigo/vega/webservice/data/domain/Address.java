@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@
 package io.vertigo.vega.webservice.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.stereotype.Field;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.stereotype.Field;
 import io.vertigo.datastore.impl.entitystore.StoreListVAccessor;
 
 public final class Address implements Entity {
@@ -39,7 +39,7 @@ public final class Address implements Entity {
 	@Field(smartType = "STyTexte50", label = "country")
 	private String country;
 
-	@io.vertigo.datamodel.structure.stereotype.Association(
+	@io.vertigo.datamodel.data.stereotype.Association(
 			name = "AConAdr",
 			fkFieldName = "adrId",
 			primaryDtDefinitionName = "DtAddress",

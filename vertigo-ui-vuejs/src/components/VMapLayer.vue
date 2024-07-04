@@ -13,13 +13,14 @@
 import * as Quasar from "quasar"
 import * as ol from "ol"
 
-
 export default {
     props : {
         id: { type: String, required: true},
         list : { type: Array },
         cluster : { type: Array },
         object : { type: Object },
+        objectEditable: {type: Boolean },
+        fitOnDataUpdate: {type: Boolean },
         baseUrl : { type: String },
         field: { type: String, required: true},
         nameField: { type: String},        
@@ -40,7 +41,9 @@ export default {
             popupDisplayed : false,
             objectDisplayed: {},
             items: [],
+            _itemsCoordString: null,
             clusters: [],
+            _clusterCoordString: null,
             olMap: {},
             vectorSource : {},
             base32 : '0123456789bcdefghjkmnpqrstuvwxyz' // (geohash-specific) Base32 map
@@ -48,49 +51,82 @@ export default {
         }
     },
     watch : {
-        list : function(newVal) {
-           //console.log('watch list');
-           this.$data.items = newVal;
-           this.$data.vectorSource.clear();
-           this.$data.vectorSource.addFeatures(this.features);
+        // watch list, cluster and object but filter to only process when desired field ('field' prop, eg geoLocation) is modified
+        list : {
+           handler(newVal) {
+              if (!!newVal) {
+                  // console.log('watch list');
+                  let newItemsCoordString = this.computeCoordString(newVal);
+                  
+                  if (!!this._itemsCoordString && newItemsCoordString !== this._itemsCoordString) {
+                      this.$data.items = newVal;
+                      this.updateMap();
+                  }
+                  this._itemsCoordString = newItemsCoordString;
+              }
+           },
+           deep: true,
+           immediate: true, // initialize _itemsCoordString
         },
-        cluster : function(newVal) {
-           //console.log('watch cluster');
-           this.$data.items = [];
-           this.$data.clusters = [];
-           for(var i =0 ; i< newVal.length; i++) {
-                    if(newVal[i].totalCount == 1) {
-                        this.$data.items = this.$data.items.concat(newVal[i].list);                        
-                    } else {
-                        this.$data.clusters.push({
-                        geoHash:newVal[i].code,
-                        geoLocation:this.decode(newVal[i].code),
-                        totalCount:newVal[i].totalCount});
-                    }
-                }
-           this.$data.vectorSource.clear();
-           this.$data.vectorSource.addFeatures(this.features);
+        cluster : {
+           handler(newVal) {
+              if (!!newVal) {
+                  // console.log('watch cluster');
+                  let newClusterCoordString = this.computeCoordString(newVal);
+                  
+                  if (!!this._clusterCoordString && newClusterCoordString !== this._clusterCoordString) {
+                      this.$data.items = [];
+                      this.$data.clusters = [];
+                      for(let i =0 ; i< newVal.length; i++) {
+                          if(newVal[i].totalCount == 1) {
+                              this.$data.items = this.$data.items.concat(newVal[i].list);
+                          } else {
+                              this.$data.clusters.push({
+                                  geoHash:newVal[i].code,
+                                  geoLocation:this.decode(newVal[i].code),
+                                  totalCount:newVal[i].totalCount
+                              });
+                          }
+                      }
+                      this.updateMap();
+                  }
+                  this._clusterCoordString = newClusterCoordString;
+              }
+           },
+           deep: true,
+           immediate: true, // initialize _clusterCoordString
         },
-        'object.geoLocation' : function() {
-           this.$data.vectorSource.clear();
-           this.$data.vectorSource.addFeatures(this.features);
-        }
+        object : {
+           handler(newVal) {
+              if (!!newVal) {
+                   // console.log('watch object');
+                   let newItemsCoordString = this.computeCoordString(newVal);
+                   
+                   if (!!this._itemsCoordString && newItemsCoordString !== this._itemsCoordString) {
+                       this.updateMap();
+                   }
+                   this._itemsCoordString = newItemsCoordString;
+               }
+           },
+           deep: true,
+           immediate: true, // initialize _itemsCoordString
+        },
     },
     computed : {
         features: function() {
-            var geoField = this.$props.field;
-            var arrayOfFeatures = this.$data.items
+            let geoField = this.$props.field;
+            let arrayOfFeatures = this.$data.items
             .filter(function(object) {
                 return object[geoField]!=null;
             }).map(function(object) {
-                var geoObject;
+                let geoObject;
                 if (typeof object[geoField] === 'string' || object[geoField] instanceof String){
                     geoObject = JSON.parse(object[geoField]);
                 } else {
                     geoObject = object[geoField];
                 }
                 if(geoObject != null) {
-                    var iconFeature = new ol.Feature({
+                    let iconFeature = new ol.Feature({
                         geometry : new ol.geom.Point(ol.proj.fromLonLat([ geoObject.lon, geoObject.lat ])),
                     });
                     
@@ -104,18 +140,18 @@ export default {
                 return null;
             }.bind(this));
             
-            var arrayOfClusterFeatures = this.$data.clusters
+            let arrayOfClusterFeatures = this.$data.clusters
             .filter(function(object) {
                 return object[geoField]!=null;
             }).map(function(object) {
-                var geoObject;
+                let geoObject;
                 if (typeof object[geoField] === 'string' || object[geoField] instanceof String){
                     geoObject = JSON.parse(object[geoField]);
                 } else {
                     geoObject = object[geoField];
                 }
                 if(geoObject != null) {
-                    var iconFeature = new ol.Feature({
+                    let iconFeature = new ol.Feature({
                         geometry : new ol.geom.Point(ol.proj.fromLonLat([ geoObject.lon, geoObject.lat ])),
                     });
                     
@@ -132,6 +168,16 @@ export default {
         }
     },
     methods : {
+        fitView: function() {
+            if (this.features.length > 0) {
+                let maxZoom = 19;
+                let maxZoomResolved = this.features.length == 1 ? Math.min(this.olMap.getView().getZoom()||maxZoom, maxZoom) // keep zoom if < maxZoom
+                                                                : maxZoom; // if multiple features, dont keep zoom but dont zoom > maxZoom
+                let extentPadded = ol.geom.Polygon.fromExtent(this.$data.vectorSource.getExtent())
+                extentPadded.scale(1.2);
+                this.olMap.getView().fit(extentPadded, {size : this.olMap.getSize(), maxZoom : maxZoomResolved, duration: 750});
+            }
+        },
         fetchList: function(topLeft, bottomRight) {
             this.$http.get(this.baseUrl+'_geoSearch?topLeft="'+ topLeft.lat+','+topLeft.lon+'"&bottomRight="'+ bottomRight.lat+','+bottomRight.lon+ '"', { timeout:5*1000, })
             .then( function (response) { //Ok
@@ -140,75 +186,95 @@ export default {
                 this.$data.vectorSource.addFeatures(this.features);
             }.bind(this));
         },
-            /**
-     * Decode geohash to latitude/longitude (location is approximate centre of geohash cell,
-     *     to reasonable precision).
-     *
-     * @param   {string} geohash - Geohash string to be converted to latitude/longitude.
-     * @returns {{lat:number, lon:number}} (Center of) geohashed location.
-     * @throws  Invalid geohash.
-     *
-     * @example
-     *     const latlon = Geohash.decode('u120fxw'); // => { lat: 52.205, lon: 0.1188 }
-     */
-    decode : function (geohash) {
-        const bounds = this.bounds(geohash); // <-- the hard work
-        // now just determine the centre of the cell...
-        const latMin = bounds.sw.lat, lonMin = bounds.sw.lon;
-        const latMax = bounds.ne.lat, lonMax = bounds.ne.lon;
-        // cell centre
-        let lat = (latMin + latMax)/2;
-        let lon = (lonMin + lonMax)/2;
-        // round to close to centre without excessive precision: ⌊2-log10(Δ°)⌋ decimal places
-        lat = lat.toFixed(Math.floor(2-Math.log(latMax-latMin)/Math.LN10));
-        lon = lon.toFixed(Math.floor(2-Math.log(lonMax-lonMin)/Math.LN10));
-        return { lat: Number(lat), lon: Number(lon) };
-    },
-    /**
-     * Returns SW/NE latitude/longitude bounds of specified geohash.
-     *
-     * @param   {string} geohash - Cell that bounds are required of.
-     * @returns {{sw: {lat: number, lon: number}, ne: {lat: number, lon: number}}}
-     * @throws  Invalid geohash.
-     */
-    bounds : function(geohash) {
-        if (geohash.length == 0) throw new Error('Invalid geohash');
-        geohash = geohash.toLowerCase();
-        let evenBit = true;
-        let latMin =  -90, latMax =  90;
-        let lonMin = -180, lonMax = 180;
-        for (let i=0; i<geohash.length; i++) {
-            const chr = geohash.charAt(i);
-            const idx = this.$data.base32.indexOf(chr);
-            if (idx == -1) throw new Error('Invalid geohash');
-            for (let n=4; n>=0; n--) {
-                const bitN = idx >> n & 1;
-                if (evenBit) {
-                    // longitude
-                    const lonMid = (lonMin+lonMax) / 2;
-                    if (bitN == 1) {
-                        lonMin = lonMid;
-                    } else {
-                        lonMax = lonMid;
-                    }
+        computeCoordString: function(value) {
+            let valueCoord;
+            if (Array.isArray(value)) {
+                if (!!this.$props.cluster) {
+                    valueCoord = value.map(el => this.decode(el.code));
                 } else {
-                    // latitude
-                    const latMid = (latMin+latMax) / 2;
-                    if (bitN == 1) {
-                        latMin = latMid;
-                    } else {
-                        latMax = latMid;
-                    }
-                }
-                evenBit = !evenBit;
+                    valueCoord = value.map(el => el[this.$props.field]);
+                } 
+            } else {
+                valueCoord = value[this.$props.field];
             }
+            return JSON.stringify(valueCoord);
+        },
+        updateMap: function() {
+            this.$data.vectorSource.clear();
+            this.$data.vectorSource.addFeatures(this.features);
+            if (this.$props.fitOnDataUpdate) {
+                this.fitView();
+            }
+        },
+         /**
+         * Decode geohash to latitude/longitude (location is approximate centre of geohash cell,
+         *     to reasonable precision).
+         *
+         * @param   {string} geohash - Geohash string to be converted to latitude/longitude.
+         * @returns {{lat:number, lon:number}} (Center of) geohashed location.
+         * @throws  Invalid geohash.
+         *
+         * @example
+         *     const latlon = Geohash.decode('u120fxw'); // => { lat: 52.205, lon: 0.1188 }
+         */
+        decode : function (geohash) {
+            const bounds = this.bounds(geohash); // <-- the hard work
+            // now just determine the centre of the cell...
+            const latMin = bounds.sw.lat, lonMin = bounds.sw.lon;
+            const latMax = bounds.ne.lat, lonMax = bounds.ne.lon;
+            // cell centre
+            let lat = (latMin + latMax)/2;
+            let lon = (lonMin + lonMax)/2;
+            // round to close to centre without excessive precision: ⌊2-log10(Δ°)⌋ decimal places
+            lat = lat.toFixed(Math.floor(2-Math.log(latMax-latMin)/Math.LN10));
+            lon = lon.toFixed(Math.floor(2-Math.log(lonMax-lonMin)/Math.LN10));
+            return { lat: Number(lat), lon: Number(lon) };
+        },
+        /**
+         * Returns SW/NE latitude/longitude bounds of specified geohash.
+         *
+         * @param   {string} geohash - Cell that bounds are required of.
+         * @returns {{sw: {lat: number, lon: number}, ne: {lat: number, lon: number}}}
+         * @throws  Invalid geohash.
+         */
+        bounds : function(geohash) {
+            if (geohash.length == 0) throw new Error('Invalid geohash');
+            geohash = geohash.toLowerCase();
+            let evenBit = true;
+            let latMin =  -90, latMax =  90;
+            let lonMin = -180, lonMax = 180;
+            for (let i=0; i<geohash.length; i++) {
+                const chr = geohash.charAt(i);
+                const idx = this.$data.base32.indexOf(chr);
+                if (idx == -1) throw new Error('Invalid geohash');
+                for (let n=4; n>=0; n--) {
+                    const bitN = idx >> n & 1;
+                    if (evenBit) {
+                        // longitude
+                        const lonMid = (lonMin+lonMax) / 2;
+                        if (bitN == 1) {
+                            lonMin = lonMid;
+                        } else {
+                            lonMax = lonMid;
+                        }
+                    } else {
+                        // latitude
+                        const latMid = (latMin+latMax) / 2;
+                        if (bitN == 1) {
+                            latMin = latMid;
+                        } else {
+                            latMax = latMid;
+                        }
+                    }
+                    evenBit = !evenBit;
+                }
+            }
+            const bounds = {
+                sw: { lat: latMin, lon: lonMin },
+                ne: { lat: latMax, lon: lonMax },
+            };
+            return bounds;
         }
-        const bounds = {
-            sw: { lat: latMin, lon: lonMin },
-            ne: { lat: latMax, lon: lonMax },
-        };
-        return bounds;
-    }
         
     },
    
@@ -220,7 +286,7 @@ export default {
             if(this.$props.list) {
                 this.$data.items = this.$props.list
             } else if(this.$props.cluster) {
-                for(var i =0 ; i< this.$props.cluster.length; i++) {
+                for(let i =0 ; i< this.$props.cluster.length; i++) {
                     if(this.$props.cluster[i].totalCount == 1) {
                         this.$data.items = this.$data.items.concat(this.$props.cluster[i].list);                        
                     } else {
@@ -237,15 +303,15 @@ export default {
                 features : this.features
             });
             
-            var clusterSource = new ol.source.Cluster({
+            let clusterSource = new ol.source.Cluster({
                 source: this.$data.vectorSource,
                 distance : 2*this.$props.clusterCircleSize
             });
-            var clusterLayer = new ol.layer.Vector({
+            let clusterLayer = new ol.layer.Vector({
                 source: clusterSource
             });
             
-            var styleIcon = new ol.style.Style({
+            let styleIcon = new ol.style.Style({
                 text : new ol.style.Text({
                     font : this.$props.markerSize +'px ' + this.$props.markerFont,
                     text : this.$props.markerIcon,
@@ -254,19 +320,19 @@ export default {
                 })
             });
             
-            var styleCache = {};
+            let styleCache = {};
             clusterLayer.setStyle(function(feature, /*resolution*/) {
-                var size = 0;
-                var agregateFeatures = feature.get('features');
-                for(var i = 0; i<agregateFeatures.length;i++) {
-                    var fSize = agregateFeatures[i].get('totalCount');
+                let size = 0;
+                let agregateFeatures = feature.get('features');
+                for(let i = 0; i<agregateFeatures.length;i++) {
+                    let fSize = agregateFeatures[i].get('totalCount');
                     size += !fSize?1:fSize;
                 }
                 if (!size || size == 1) {
                     return styleIcon;
                 } else {
                       // otherwise show the number of features
-                      var style = styleCache[size];
+                      let style = styleCache[size];
                       if (!style) {
                         style = new ol.style.Style({
                           image: new ol.style.Circle({
@@ -295,15 +361,14 @@ export default {
             this.olMap.addLayer(clusterLayer); 
             
             // fit view
-            if (this.features.length > 0) {
-                this.olMap.getView().fit(clusterLayer.getSource().getSource().getExtent(), this.olMap.getSize());
-            }
+            this.fitView();
+                
             // handle refresh if an endPoint is specified
             this.olMap.on('moveend', function(e) {
-                var mapExtent =  e.map.getView().calculateExtent();
-                var wgs84Extent = ol.proj.transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
-                var topLeft = ol.extent.getTopLeft(wgs84Extent);
-                var bottomRight = ol.extent.getBottomRight(wgs84Extent);
+                let mapExtent =  e.map.getView().calculateExtent();
+                let wgs84Extent = ol.proj.transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
+                let topLeft = ol.extent.getTopLeft(wgs84Extent);
+                let bottomRight = ol.extent.getBottomRight(wgs84Extent);
                 if (this.baseUrl) {
                    Quasar.debounce(this.fetchList({lat:topLeft[0] , lon:topLeft[1]},{lat:bottomRight[0] , lon:bottomRight[1]}),300);
                 }
@@ -312,7 +377,7 @@ export default {
             .bind(this));        
             
             if (this.$props.nameField) {
-                var popup = new ol.Overlay({
+                let popup = new ol.Overlay({
                     element: this.$el.querySelector('#'+this.$props.id+'Popup'),
                     positioning: 'bottom-center',
                     stopEvent: false,
@@ -321,12 +386,12 @@ export default {
                 this.olMap.addOverlay(popup);
                 // display popup on click
                 this.olMap.on('click', function(evt) {
-                  var feature = this.olMap.forEachFeatureAtPixel(evt.pixel,
+                  let feature = this.olMap.forEachFeatureAtPixel(evt.pixel,
                     function(feature) {
                       return feature;
                     });
-                  if (feature && feature.get('features').length == 1) {
-                    var coordinates = feature.getGeometry().getCoordinates();
+                  if (feature && feature.get('features') && feature.get('features').length == 1) {
+                    let coordinates = feature.getGeometry().getCoordinates();
                     popup.setPosition(coordinates);
                     this.$data.popupDisplayed = true;
                     this.$data.objectDisplayed = feature.get('features')[0].get('innerObject');
@@ -343,22 +408,62 @@ export default {
                         this.$data.popupDisplayed = false;
                       return;
                     }
-                    var pixel = this.olMap.getEventPixel(e.originalEvent);
-                    var hit = this.olMap.hasFeatureAtPixel(pixel);
+                    let pixel = this.olMap.getEventPixel(e.originalEvent);
+                    let hit = this.olMap.hasFeatureAtPixel(pixel);
                     this.olMap.getTargetElement().style.cursor = hit ? 'pointer' : '';
                 }.bind(this));
             } else {
                 this.olMap.on('click', function(evt) {
-                  var feature = this.olMap.forEachFeatureAtPixel(evt.pixel,
+                  let feature = this.olMap.forEachFeatureAtPixel(evt.pixel,
                     function(feature) {
                       return feature;
                     });
-                  if (feature && feature.get('features').length == 1) {
-                    var coordinates = feature.getGeometry().getCoordinates();
+                  if (feature && feature.get('features') && feature.get('features').length == 1) {
+                    let coordinates = feature.getGeometry().getCoordinates();
                     evt.stopPropagation();
                     Quasar.debounce(this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
                   }
                 }.bind(this));
+            }
+            
+            if (this.$props.object && this.$props.objectEditable) {
+               let draw = new ol.interaction.Draw({
+                  source: this.$data.vectorSource,
+                  type: "Point",
+               });
+               draw.on('drawend', (event) => {
+                  let feature = event.feature;
+                  let coord = ol.proj.toLonLat(feature.getGeometry().getCoordinates());
+                  
+                  this.$data.vectorSource.clear();
+                  this.olMap.removeInteraction(draw);
+                  button.classList.remove("active");
+                  
+                  this.$props.object[this.$props.field] = {
+                     lon:coord[0],
+                     lat:coord[1],
+                  };
+               });
+                        
+               const button = document.createElement('button');
+               button.innerHTML = '&#9678;';
+               button.addEventListener(
+                  'click',
+                  (evt) => {
+                     evt.preventDefault();
+                     
+                     if (button.classList.contains("active")) {
+                        this.olMap.removeInteraction(draw);
+                        button.classList.remove("active");
+                     } else {
+                        this.olMap.addInteraction(draw);
+                        draw = this.olMap.getInteractions().getArray().slice(-1)[0]; // update ref as it changes when added
+                        button.classList.add("active");
+                     }
+                  },
+                  false);
+               
+               this.olMap.getViewport().getElementsByClassName("ol-v-custom-buttons")[0].appendChild(button);
             }
         }.bind(this)); 
     }

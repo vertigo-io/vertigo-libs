@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DataObject;
 
-final class CriteriaExpression<D extends DtObject> extends Criteria<D> {
+final class CriteriaExpression<D extends DataObject> extends Criteria<D> {
 	private static final long serialVersionUID = 8301054336845536973L;
 
 	private final CriteriaLogicalOperator operator;

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,15 @@
  */
 package io.vertigo.ui.impl.springmvc.config;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +34,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.CacheControl;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -47,6 +52,8 @@ import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 
 import io.vertigo.connectors.spring.EnableVertigoSpringBridge;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.Node;
 import io.vertigo.ui.controllers.ListAutocompleteController;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.DtListStateMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.FileInfoURIConverter;
@@ -78,24 +85,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	@Autowired
 	private ApplicationContext applicationContext;
 
-	private static final String COMPONENT_PATH_PREFIX = "io/vertigo/ui/";
-	private static final String[] STANDARD_UI_COMPONENTS_NAME = {
-			"utils/vue-data", "utils/include-data", //technical components
-			"layout/page", "layout/head", "layout/form", "layout/modal", "layout/block", //layout components
-			"layout/grid", "layout/grid-cell", //grid
-			"layout/messages", //messages
-			"inputs/label", "inputs/text-field", "inputs/text-area", "inputs/checkbox", "inputs/checkbox-multiple", "inputs/slider", "inputs/knob", "inputs/fileupload", //standard controls components
-			"inputs/select", "inputs/select-multiple", "inputs/radio", //select controls components
-			"inputs/autocomplete", "inputs/autocomplete-multiple", "inputs/chips-autocomplete", //with client-worflow controls components
-			"inputs/date", "inputs/datetime", //date
-			"inputs/geolocation", // geoLocation
-			"inputs/tree", // tree
-			"inputs/text-editor", //text-editor (richtext)
-			"table/table", "table/column", //table
-			"collections/collection", "collections/list", "collections/cards", "collections/field-read", // collections
-			"collections/search", "collections/facets", //search
-			"buttons/button-submit", "buttons/button-link", "buttons/buttons-group" //buttons
-	};
+	private static final String COMPONENT_PATH_PREFIX = "io/vertigo/ui/components/";
 
 	/*
 	* STEP 1 - Create SpringResourceTemplateResolver
@@ -112,76 +102,159 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		return templateResolver;
 	}
 
-	private VuiResourceTemplateResolver componentsResolver(final String componentPath) {
-		final VuiResourceTemplateResolver templateResolver = new VuiResourceTemplateResolver();
-		templateResolver.setApplicationContext(applicationContext);
-		templateResolver.setPrefix("classpath://" + componentPath);
-		templateResolver.setSuffix(".html");
-		templateResolver.setResolvablePatterns(Collections.singleton("components/*"));
-		// for dev purpose
-		templateResolver.setCacheable(!isDevMode());
-		return templateResolver;
-	}
-
 	/*
 	* STEP 2 - Create SpringTemplateEngine
 	* */
 	@Bean
 	public SpringTemplateEngine templateEngine() {
-		final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+		final List<VModuleUiComponent> moduleUiComponents = getModuleUiComponents();
+		final var componentTemplateResolvers = moduleUiComponents.stream()
+				.flatMap(m -> m.getTemplateResolvers().stream())
+				.toList();
+
+		final SpringTemplateEngine templateEngine = new VSpringTemplateEngine();
+
+		// add view resolver
 		final SpringResourceTemplateResolver viewsResolvers = templateResolver();
-		viewsResolvers.setOrder(3);
+		viewsResolvers.setOrder(componentTemplateResolvers.size() + 1); // order last
 		templateEngine.setTemplateResolver(viewsResolvers);
 		templateEngine.setEnableSpringELCompiler(true);
-		//---
-		// add custom components
-		final VuiResourceTemplateResolver customComponentResolvers = componentsResolver(getCustomComponentsPathPrefix());
-		customComponentResolvers.setOrder(1); //custom first
-		customComponentResolvers.setCheckExistence(true); //some components may missing
-		templateEngine.addTemplateResolver(customComponentResolvers);
 
-		// add components
-		final VuiResourceTemplateResolver componentResolvers = componentsResolver(COMPONENT_PATH_PREFIX);
-		componentResolvers.setOrder(2);
-		templateEngine.addTemplateResolver(componentResolvers);
+		// add component resolvers
+		var order = componentTemplateResolvers.size();
+		for (final var templateResolver : componentTemplateResolvers) {
+			templateResolver.setOrder(order);
+			templateEngine.addTemplateResolver(templateResolver);
 
-		//---
-		final VUiStandardDialect dialect = new VUiStandardDialect(getUiComponents(componentResolvers, customComponentResolvers));
-		templateEngine.addDialect("vu", dialect);
+			order--; // latest declaration has priority
+		}
+
+		// register components to be resolved inside html (ex vu: components)
+		final var uiComponents = moduleUiComponents.stream()
+				.flatMap(m -> m.getUiComponents().stream())
+				.collect(Collectors.toUnmodifiableSet());
+		templateEngine.addDialect("vu", new VUiStandardDialect(uiComponents));
 
 		templateEngine.addDialect(new LayoutDialect());
 
 		return templateEngine;
 	}
 
-	private Set<NamedComponentDefinition> getUiComponents(final VuiResourceTemplateResolver componentResolvers, final VuiResourceTemplateResolver customComponentResolvers) {
-		final NamedComponentParser parser = new NamedComponentParser("vu", componentResolvers);
+	private List<VModuleUiComponent> getModuleUiComponents() {
+		final List<VModuleUiComponent> moduleUiComponents = new ArrayList<>();
 
-		final Set<NamedComponentDefinition> uiComponents = new HashSet<>();
-		//standard components
-		for (final String componentName : STANDARD_UI_COMPONENTS_NAME) {
-			uiComponents.addAll(parser.parseComponent(componentName));
+		// built in components
+		moduleUiComponents.add(new VModuleUiComponent(List.of(COMPONENT_PATH_PREFIX)));
+
+		// legacy project component registering. Deprecated, to be removed
+		if (getCustomComponentsPathPrefix() != null) {
+			moduleUiComponents.add(new VModuleUiComponent(getCustomComponentsPathPrefix() + "components/", getCustomComponentNames()));
 		}
-		// custom components
-		final NamedComponentParser customParser = new NamedComponentParser("vu", customComponentResolvers);
-		for (final String componentName : getCustomComponentNames()) {
-			uiComponents.addAll(customParser.parseComponent(componentName));
-		}
-		return uiComponents;
+		// ---
+
+		// add ui components by definition (and DefaultUiModuleFeatures)
+		final var vSpringMvcConfigDefinitions = Node.getNode().getDefinitionSpace().getAll(VSpringMvcConfigDefinition.class);
+		vSpringMvcConfigDefinitions.forEach(mvcConfigDefinition -> {
+			moduleUiComponents.add(new VModuleUiComponent(mvcConfigDefinition.getComponentDirs()));
+		});
+
+		return moduleUiComponents;
 	}
 
+	private class VModuleUiComponent {
+		private final Set<NamedComponentDefinition> uiComponents = new HashSet<>(); // used to resolve components into pages (dialect = vu: namespace)
+		private final List<VuiResourceTemplateResolver> templateResolvers = new ArrayList<>(); // used to resolve component files when found in page
+
+		public VModuleUiComponent(final List<String> componentDirs) {
+			for (final var dir : componentDirs) {
+				final var componentNames = getComponentNames(dir);
+				resolveComponents(dir, componentNames);
+			}
+		}
+
+		public VModuleUiComponent(final String pathPrefix, final Set<String> componentNames) {
+			resolveComponents(pathPrefix, componentNames);
+		}
+
+		private void resolveComponents(final String pathPrefix, final Set<String> componentNames) {
+			if (!componentNames.isEmpty()) {
+				final VuiResourceTemplateResolver resolver = getComponentsResolver(pathPrefix);
+
+				final NamedComponentParser parser = new NamedComponentParser("vu", resolver);
+				for (final String componentName : componentNames) {
+					uiComponents.addAll(parser.parseComponent(componentName));
+				}
+
+				if (!uiComponents.isEmpty()) {
+					templateResolvers.add(resolver);
+				}
+			}
+		}
+
+		private VuiResourceTemplateResolver getComponentsResolver(final String componentPath) {
+			final VuiResourceTemplateResolver templateResolver = new VuiResourceTemplateResolver();
+			templateResolver.setApplicationContext(applicationContext);
+			templateResolver.setPrefix("classpath://" + componentPath);
+			templateResolver.setSuffix(".html");
+			templateResolver.setCheckExistence(true); // go to next resolver if not found
+			// for dev purpose
+			templateResolver.setCacheable(!isDevMode());
+			return templateResolver;
+		}
+
+		private Set<String> getComponentNames(final String dir) {
+			final Resource[] resources;
+			try {
+				resources = applicationContext.getResources("classpath*:" + dir + "**/*.html");
+			} catch (final IOException e) {
+				throw WrappedException.wrap(e);
+			}
+			return Arrays.stream(resources)
+					.map(r -> getComponentName(r, dir))
+					.collect(Collectors.toUnmodifiableSet());
+		}
+
+		private static String getComponentName(final Resource resource, final String dir) {
+			String filePath;
+			try {
+				filePath = resource.getURL().getPath();
+			} catch (final IOException e) {
+				throw WrappedException.wrap(e);
+			}
+			return filePath.substring(filePath.lastIndexOf(dir) + dir.length(), filePath.length() - 5); // strip dir and extension
+		}
+
+		public Set<NamedComponentDefinition> getUiComponents() {
+			return uiComponents;
+		}
+
+		public List<VuiResourceTemplateResolver> getTemplateResolvers() {
+			return templateResolvers;
+		}
+
+	}
+
+	/**
+	 * Deprecated, UI components can be defined through VSpringMvcConfigDefinition.
+	 * For simplicity of declaration, use a module feature extending DefaultUiModuleFeatures and put your components in the "components" directory of your module.
+	 */
+	@Deprecated
 	protected Set<String> getCustomComponentNames() {
 		return Collections.emptySet();
 	}
 
 	/**
+	 * Deprecated, UI components can be defined through VSpringMvcConfigDefinition.
+	 * For simplicity of declaration, use a module feature extending DefaultUiModuleFeatures and put your components in the "components" directory of your module.
 	 * Define prefix for custom components.
 	 * Should be the module name : don't starts with /, ends with /
 	 * Components must be put in : prefix+"/components/"+componentName
+	 *
 	 * @return path prefix for custom components
 	 */
+	@Deprecated
 	protected String getCustomComponentsPathPrefix() {
-		return COMPONENT_PATH_PREFIX;
+		return null;
 	}
 
 	@Bean(DispatcherServlet.REQUEST_TO_VIEW_NAME_TRANSLATOR_BEAN_NAME)
@@ -202,6 +275,9 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		final ThymeleafViewResolver resolver = new ThymeleafViewResolver();
 		resolver.setCharacterEncoding("UTF-8");
 		resolver.setTemplateEngine(templateEngine());
+		// partial output is true by default, in case of error while writing vueData on view, start of page could have been already rendered/sent and error page is written after all this
+		// with this parameter to false, only the error page is sent to the client
+		resolver.setProducePartialOutputWhileProcessing(false);
 		registry.viewResolver(resolver);
 	}
 
@@ -231,13 +307,15 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 
 	@Override
 	public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
-		if (applicationContext instanceof ConfigurableApplicationContext) {
-			final VSpringMvcControllerAdvice controllerAdvice = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(VSpringMvcControllerAdvice.class);
-			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("viewContextControllerAdvice", controllerAdvice);
-			final VSpringMvcExceptionHandler vExceptionHandler = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(VSpringMvcExceptionHandler.class);
-			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("vExceptionHandler", vExceptionHandler);
-			final ListAutocompleteController listAutocompleteController = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(ListAutocompleteController.class);
-			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("listAutocompleteController", listAutocompleteController);
+		if (applicationContext instanceof final ConfigurableApplicationContext configurableApplicationContext) {
+			final VSpringMvcControllerAdvice controllerAdvice = configurableApplicationContext.getBeanFactory().createBean(VSpringMvcControllerAdvice.class);
+			configurableApplicationContext.getBeanFactory().registerSingleton("viewContextControllerAdvice", controllerAdvice);
+
+			final VSpringMvcExceptionHandler vExceptionHandler = configurableApplicationContext.getBeanFactory().createBean(VSpringMvcExceptionHandler.class);
+			configurableApplicationContext.getBeanFactory().registerSingleton("vExceptionHandler", vExceptionHandler);
+
+			final ListAutocompleteController listAutocompleteController = configurableApplicationContext.getBeanFactory().createBean(ListAutocompleteController.class);
+			configurableApplicationContext.getBeanFactory().registerSingleton("listAutocompleteController", listAutocompleteController);
 		}
 	}
 

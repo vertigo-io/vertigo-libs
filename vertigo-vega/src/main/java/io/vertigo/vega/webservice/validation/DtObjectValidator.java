@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package io.vertigo.vega.webservice.validation;
 
 import java.util.Set;
 
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DataObject;
 
 /**
  * Validator of DtObject.
@@ -27,7 +27,7 @@ import io.vertigo.datamodel.structure.model.DtObject;
  * @author npiedeloup
  * @param <O> Type of DtObject
  */
-public interface DtObjectValidator<O extends DtObject> {
+public interface DtObjectValidator<O extends DataObject> {
 
 	/**
 	 * Effectue les validations prévu d'un objet.

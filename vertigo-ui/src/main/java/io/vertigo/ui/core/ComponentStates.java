@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,21 +24,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.vertigo.core.lang.Assertion;
 
 /**
  * Map of componentStates that need to be stored
+ *
  * @author mlaroche
  */
 public final class ComponentStates extends HashMap<String, Serializable> {
 
 	private static final long serialVersionUID = -8925934036136725151L;
 
+	private static final Logger LOG = LogManager.getLogger(ComponentStates.class);
+
 	public ComponentState addComponentState(final String componentId) {
 		Assertion.check().isNotBlank(componentId);
 		//---
 		final ComponentState componentState = new ComponentState();
-		put(componentId, componentState);
+		final var oldValue = put(componentId, componentState);
+		if (oldValue != null) {
+			LOG.warn("[UI] The ID '" + componentId + "' already exists, previous component state is lost."); // Graceful period, do not throw an exception yet
+		}
 		return componentState;
 	}
 
@@ -68,9 +77,10 @@ public final class ComponentStates extends HashMap<String, Serializable> {
 			return addObject(key, Collections.emptyMap());
 		}
 
-		public void addPrimitive(final String key, final Serializable value) {
+		public ComponentState addPrimitive(final String key, final Serializable value) {
 			Assertion.check().isNotBlank(key);
 			put(key, value);
+			return this;
 		}
 
 		public HashMap<String, Serializable> addObject(final String key, final Map object) {

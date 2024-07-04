@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.CriteriaCtx;
 import io.vertigo.datamodel.criteria.CriteriaEncoder;
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datastore.plugins.entitystore.sql.SqlCriteriaEncoder;
 
 public class AuthorizationCriteria<E extends Entity> {

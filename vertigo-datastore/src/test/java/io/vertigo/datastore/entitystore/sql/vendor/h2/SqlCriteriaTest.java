@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,9 @@ import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.entitystore.data.domain.car.Car;
@@ -108,7 +108,7 @@ public final class SqlCriteriaTest {
 	@Test
 	public void assertCriteria() {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
+			final DataDefinition dtDefinitionCar = DataModelUtil.findDataDefinition(Car.class);
 			final long count = entityStoreManager.find(dtDefinitionCar, Criterions.isEqualTo(CarFields.model, "passat"), DtListState.of(null)).size();
 			Assertions.assertEquals(1, count);
 		}

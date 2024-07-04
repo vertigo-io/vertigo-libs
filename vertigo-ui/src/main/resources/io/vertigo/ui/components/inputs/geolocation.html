@@ -1,20 +1,26 @@
-<th:block th:fragment="geolocation-edit(object, field, label, suffix, required, after_label_slot, input_attrs, label_attrs)" 
+<th:block th:fragment="geolocation-edit(object, field, label, suffix, required, after_label_slot, input_attrs, label_attrs, map_attrs)" 
 	vu:alias="geolocation" vu:selector="${viewMode=='edit'}"
 	th:with="myLabel=${label?:model.util.label(object + '.' + field)},
 	 myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
 	th:assert="${object} != null and ${field} != null">
 	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 	<vu:label-edit label=${label}  required="${myRequired}" after_label_slot="after_label_slot" label_attrs="${label_attrs}" >
-		<v-geopoint-input th:v-model="|vueData.${object}.${field}|" th:class="${myRequired}?'v-field__required'" th:attr="__${input_attrs}__"></v-geopoint-input>
-		<input type="hidden" th:name="|vContext[${object}][${field}]|"  th:v-if="|vueData.${object}.${field}!=null|" th:v-bind:value="|vueData.${object}.${field}._v_inputValue|" />
+		<div class="row full-width q-gutter-md">
+			<v-geopoint-input th:v-model="|vueData.${object}.${field}|" th:class="${myRequired}?'v-field__required'" th:attr="__${input_attrs}__"></v-geopoint-input>
+			<input type="hidden" th:name="|vContext[${object}][${field}]|"  th:v-if="|vueData.${object}.${field}!=null|" th:v-bind:value="|vueData.${object}.${field}._v_inputValue|" />
+			
+			<v-map  tabindex="1" style="height: 400px; width:100%;" th:id="|map_${object}_${field}|" :initial-zoom-level="11" search th:attr="__${map_attrs}__" >
+				<v-map-layer th::object="|vueData.${object}|" th:field="${field}" marker-color="#027BE3" object-editable fit-on-data-update></v-map-layer>
+			</v-map>
+		</div>
 	</vu:label-edit>
 </th:block>
-<th:block th:fragment="geolocation-read(object, field, label, suffix, required, after_label_slot, input_attrs, label_attrs)" 
+<th:block th:fragment="geolocation-read(object, field, label, suffix, required, after_label_slot, input_attrs, label_attrs, map_attrs)" 
 	vu:alias="geolocation" vu:selector="${viewMode=='read'}"
 	th:assert="${object} != null and ${field} != null" 
 	th:with="mySuffix=${model.util.smartTypeUnit(object, field, suffix)}, useSuffix=${model.vContext[__${object}__][__${field}__]!='' && mySuffix!=''}">
 	<vu:label-read label=${label} after_label_slot="after_label_slot" label_attrs="${label_attrs}" >
-		<v-map  tabindex="1" style="width:100%;" th:id="|map_${object}_${field}|" :initial-zoom-level="11" th:attr="__${input_attrs}__" >
+		<v-map  tabindex="1" style="height: 400px; width:100%;" th:id="|map_${object}_${field}|" :initial-zoom-level="11" th:attr="__${map_attrs}__" >
 			<v-map-layer th::object="|{'geoLocation' : '${model.vContext[__${object}__][__${field}__]}' }|" field="geoLocation" marker-color="#027BE3"></v-map-layer>
 		</v-map>
 	</vu:label-read>

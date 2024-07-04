@@ -685,6 +685,8 @@ Release 3.0.0 - 2020/11/20
 * [dynamo] add cardinality on DtField and removed multiple behaviour on domain
 * [Dynamo] move smart DtList sorting to StoreManager
 * [dynamo] split dynamo in 3 modules (model, store, data)
+* [dynamo] split StoreManager into EntityStoreManager and FileStoreManager
+* [DataStore] Create directories at startup
 * [DataStore] FsFileStorePlugin Create directories at startup
 * [DataStore] Default mimeType if probeContentType failed
 * [Datastore] Lock cache per context

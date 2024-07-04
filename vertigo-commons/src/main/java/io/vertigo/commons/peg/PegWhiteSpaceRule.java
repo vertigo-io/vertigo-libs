@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import io.vertigo.core.lang.Assertion;
  * Enlève les blancs et les commentaires
  * Cette règle ne plante jamais -sauf si un blanc obligatoire n'est pas présent-
  * mais permet de faire avancer l'index.
+ *
  * @author pchretien
  */
 final class PegWhiteSpaceRule implements PegRule<Dummy> {
@@ -32,13 +33,15 @@ final class PegWhiteSpaceRule implements PegRule<Dummy> {
 
 	/**
 	 * Constructor.
+	 *
 	 * @param blanks Caractères "blancs" et commentaires.
+	 * @param emptyAccepted Si les blancs sont optionnels
 	 */
-	PegWhiteSpaceRule(final String blanks) {
+	PegWhiteSpaceRule(final String blanks, final boolean emptyAccepted) {
 		super();
 		Assertion.check().isNotNull(blanks);
 		//-----
-		rule = PegRules.word(true, blanks, PegWordRule.Mode.ACCEPT, "_");
+		rule = PegRules.word(emptyAccepted, blanks, PegWordRule.Mode.ACCEPT, "_");
 		expression = rule.getExpression();
 	}
 

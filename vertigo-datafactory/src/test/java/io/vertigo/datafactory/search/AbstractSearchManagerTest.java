@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ package io.vertigo.datafactory.search;
 import java.io.File;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,9 +64,9 @@ import io.vertigo.datafactory.search.data.domain.ItemSearchLoader;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.UID;
 
 /**
  * @author  npiedeloup
@@ -135,7 +136,7 @@ public abstract class AbstractSearchManagerTest {
 	public static void doBeforeClass() throws Exception {
 		//We must remove data dir in index, in order to support versions updates when testing on PIC
 		final URL esDataURL = Thread.currentThread().getContextClassLoader().getResource("io/vertigo/datafactory/search/indexconfig");
-		final File esData = new File(URLDecoder.decode(esDataURL.getFile() + "/data", "UTF-8"));
+		final File esData = new File(URLDecoder.decode(esDataURL.getFile() + "/data", StandardCharsets.UTF_8.name()));
 		if (esData.exists() && esData.isDirectory()) {
 			recursiveDelete(esData);
 		}
@@ -790,7 +791,7 @@ public abstract class AbstractSearchManagerTest {
 		//On recherche la facette constructeur
 		final Facet optionalStringFacet = getFacetByName(result, "FctOptionalStringItem");
 		//On vérifie que l'on est sur le champ Manufacturer
-		Assertions.assertEquals("optionalString", optionalStringFacet.getDefinition().getDtField().name());
+		Assertions.assertEquals("optionalString", optionalStringFacet.getDefinition().getDataField().name());
 		Assertions.assertFalse(optionalStringFacet.getDefinition().isRangeFacet());
 
 		//On vérifie qu'il existe une valeur pour empty et que le nombre d'occurrences est correct
@@ -816,7 +817,7 @@ public abstract class AbstractSearchManagerTest {
 		//On recherche la facette constructeur
 		final Facet manufacturerFacet = getFacetByName(result, "FctManufacturerItem");
 		//On vérifie que l'on est sur le champ Manufacturer
-		Assertions.assertEquals("manufacturer", manufacturerFacet.getDefinition().getDtField().name());
+		Assertions.assertEquals("manufacturer", manufacturerFacet.getDefinition().getDataField().name());
 		Assertions.assertFalse(manufacturerFacet.getDefinition().isRangeFacet());
 
 		//On vérifie qu'il existe une valeur pour peugeot et que le nombre d'occurrences est correct
@@ -844,7 +845,7 @@ public abstract class AbstractSearchManagerTest {
 		//On recherche la facette constructeur
 		final Facet localisationFacet = getFacetByName(result, "FctLocalisationItem");
 		//On vérifie que l'on est sur le champ Manufacturer
-		Assertions.assertEquals("localisation", localisationFacet.getDefinition().getDtField().name());
+		Assertions.assertEquals("localisation", localisationFacet.getDefinition().getDataField().name());
 		Assertions.assertTrue(localisationFacet.getDefinition().isRangeFacet());
 
 		Assertions.assertEquals(5, localisationFacet.getFacetValues().size());

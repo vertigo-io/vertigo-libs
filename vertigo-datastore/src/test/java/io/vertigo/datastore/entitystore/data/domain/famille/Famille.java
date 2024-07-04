@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ package io.vertigo.datastore.entitystore.data.domain.famille;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Generated;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.stereotype.Field;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.stereotype.Field;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.entitystore.data.domain.car.Car;
 import io.vertigo.datastore.impl.entitystore.StoreListVAccessor;
 
@@ -34,7 +34,7 @@ import io.vertigo.datastore.impl.entitystore.StoreListVAccessor;
 @Generated
 public final class Famille implements Entity {
 
-	public enum CarFields implements DtFieldName<Car> {
+	public enum CarFields implements DataFieldName<Car> {
 		id, manufacturer, model, description, year, kilo, price, consomation, mtyCd, famId
 	}
 
@@ -43,7 +43,7 @@ public final class Famille implements Entity {
 	private Long famId;
 	private String libelle;
 
-	@io.vertigo.datamodel.structure.stereotype.Association(
+	@io.vertigo.datamodel.data.stereotype.Association(
 			name = "AFamCarFamille",
 			fkFieldName = "famId",
 			primaryDtDefinitionName = "DtFamille",
@@ -58,11 +58,11 @@ public final class Famille implements Entity {
 			foreignMultiplicity = "0..*")
 	private final StoreListVAccessor<Car> voituresFamilleAccessor = new StoreListVAccessor<>(this, "AFamCarFamille", "VoituresFamille");
 
-	@io.vertigo.datamodel.structure.stereotype.AssociationNN(
+	@io.vertigo.datamodel.data.stereotype.AssociationNN(
 			name = "AnnFamCarLocation",
 			tableName = "FAM_CAR_LOCATION",
-			dtDefinitionA = "DtFamille",
-			dtDefinitionB = "DtCar",
+			dataDefinitionA = "DtFamille",
+			dataDefinitionB = "DtCar",
 			navigabilityA = false,
 			navigabilityB = true,
 			roleA = "Famille",
@@ -143,7 +143,7 @@ public final class Famille implements Entity {
 	 * @return io.vertigo.dynamo.domain.model.DtList<Car>
 	 */
 	@Deprecated
-	public io.vertigo.datamodel.structure.model.DtList<Car> getVoituresFamilleList() {
+	public io.vertigo.datamodel.data.model.DtList<Car> getVoituresFamilleList() {
 		// we keep the lazyness
 		if (!voituresFamilleAccessor.isLoaded()) {
 			voituresFamilleAccessor.load();
@@ -156,7 +156,7 @@ public final class Famille implements Entity {
 	 * @return URI de l'association
 	 */
 	@Deprecated
-	public io.vertigo.datamodel.structure.definitions.association.DtListURIForSimpleAssociation getVoituresFamilleDtListURI() {
+	public io.vertigo.datamodel.data.definitions.association.DtListURIForSimpleAssociation getVoituresFamilleDtListURI() {
 		return voituresFamilleAccessor.getDtListURI();
 	}
 
@@ -173,7 +173,7 @@ public final class Famille implements Entity {
 	 * @return io.vertigo.dynamo.domain.model.DtList<Car>
 	 */
 	@Deprecated
-	public io.vertigo.datamodel.structure.model.DtList<Car> getVoituresLocationList() {
+	public io.vertigo.datamodel.data.model.DtList<Car> getVoituresLocationList() {
 		// we keep the lazyness
 		if (!voituresLocationAccessor.isLoaded()) {
 			voituresLocationAccessor.load();
@@ -186,13 +186,13 @@ public final class Famille implements Entity {
 	 * @return URI de l'association
 	 */
 	@Deprecated
-	public io.vertigo.datamodel.structure.definitions.association.DtListURIForNNAssociation getVoituresLocationDtListURI() {
+	public io.vertigo.datamodel.data.definitions.association.DtListURIForNNAssociation getVoituresLocationDtListURI() {
 		return voituresLocationAccessor.getDtListURI();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return DtObjectUtil.toString(this);
+		return DataModelUtil.toString(this);
 	}
 }

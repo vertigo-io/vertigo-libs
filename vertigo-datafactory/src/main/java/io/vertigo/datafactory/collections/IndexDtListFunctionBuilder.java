@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,16 @@ import java.util.Collection;
 import java.util.function.UnaryOperator;
 
 import io.vertigo.core.lang.Builder;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
 
 /**
  * Processor that can be composed of filters or sorters and be applied on a list. *
  * @author npiedeloup
  * @param <D> the type of dtObject in the modified list
  */
-public interface IndexDtListFunctionBuilder<D extends DtObject> extends Builder<UnaryOperator<DtList<D>>> {
+public interface IndexDtListFunctionBuilder<D extends DataObject> extends Builder<UnaryOperator<DtList<D>>> {
 
 	/**
 	 * Création d'un tri de colonne.
@@ -49,7 +49,7 @@ public interface IndexDtListFunctionBuilder<D extends DtObject> extends Builder<
 	 * @param searchedFields Liste des champs sur lesquel porte la recherche  (nullable : tous)
 	 * @return Ce builder
 	 */
-	IndexDtListFunctionBuilder<D> filter(final String keywords, final int maxRows, final Collection<DtField> searchedFields);
+	IndexDtListFunctionBuilder<D> filter(final String keywords, final int maxRows, final Collection<DataField> searchedFields);
 
 	/**
 	 * Constructeur d'un filtre champ = valeur.

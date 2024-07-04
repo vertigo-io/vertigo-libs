@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ public final class SqlDataStreamMappingUtil {
 
 	private static DataStream createDataStream(final InputStream in, final byte[] bytes) throws IOException, SqlOffLimitsException {
 		//On crée  un fichier temporaire.
-		final File tmpFile = new TempFile("kdata", ".tmp");
+		final File tmpFile = TempFile.of("kdata", ".tmp");
 		//-----
 		//1ere étape : on recopie le contenu de la mémoire dans le fichier. (car on ne peut pas relire le Blob)
 		try (final OutputStream fileOut = Files.newOutputStream(tmpFile.toPath()); final InputStream memoryIn = new ByteArrayInputStream(bytes)) {

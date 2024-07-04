@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,9 +133,9 @@ public final class RoutesOrderTest {
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/downloadFile (class java.lang.Integer :Query:id) -> VFile"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/downloadFileContentType (class java.lang.Integer :Query:id) -> VFile"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/downloadNotModifiedFile (class java.lang.Integer :Query:id, class java.util.Date :Header:If-Modified-Since, interface jakarta.servlet.http.HttpServletResponse :Implicit:Response) -> VFile"))
-				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/dtList10/{id} (long :Path:id) -> class io.vertigo.datamodel.structure.model.DtList<Contact>"))
-				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/dtList10elts/{id} (long :Path:id) -> class io.vertigo.datamodel.structure.model.DtList<Contact>"))
-				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/dtListMeta () -> class io.vertigo.datamodel.structure.model.DtList<Contact>"))
+				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/dtList10/{id} (long :Path:id) -> class io.vertigo.datamodel.data.model.DtList<Contact>"))
+				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/dtList10elts/{id} (long :Path:id) -> class io.vertigo.datamodel.data.model.DtList<Contact>"))
+				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/dtListMeta () -> class io.vertigo.datamodel.data.model.DtList<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/dtListMetaAsList () -> interface java.util.List<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/export/pdf/ () -> VFile"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/export/pdf/{conId} (long :Path:conId) -> VFile"))
@@ -144,7 +144,7 @@ public final class RoutesOrderTest {
 				.body("get(" + i++ + ")", Matchers.equalTo(" /*Just send x-test-param:\"i'ts fine\"*/\nGet /test/headerParams (class java.lang.String :Header:x-test-param) -> String"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/instant () -> Instant"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/limitedAccess/{conId} (long :Path:conId) -> Contact"))
-				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/listComplexMeta () -> class io.vertigo.datamodel.structure.model.DtList<Contact>"))
+				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/listComplexMeta () -> class io.vertigo.datamodel.data.model.DtList<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/localDate () -> LocalDate"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/login ()"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/logout ()"))
@@ -168,8 +168,8 @@ public final class RoutesOrderTest {
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /vertigo/types () -> interface java.util.Collection<class java.lang.Class<? extends io.vertigo.core.node.definition.Definition>>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Post /contacts (class io.vertigo.vega.webservice.data.domain.Contact :Body:[1]) -> Contact"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Post /contacts/search() (class io.vertigo.vega.webservice.data.domain.ContactCriteria :Body:[1]) -> interface java.util.List<Contact>"))
-				.body("get(" + i++ + ")", Matchers.equalTo("Post /search/facetedClusteredResult (class io.vertigo.datafactory.collections.model.SelectedFacetValues :Body:[1]) -> class io.vertigo.datafactory.collections.model.FacetedQueryResult<Contact,class io.vertigo.datamodel.structure.model.DtList<Contact>>"))
-				.body("get(" + i++ + ")", Matchers.equalTo("Post /search/facetedResult (class io.vertigo.datafactory.collections.model.SelectedFacetValues :Body:[1]) -> class io.vertigo.datafactory.collections.model.FacetedQueryResult<Contact,class io.vertigo.datamodel.structure.model.DtList<Contact>>"))
+				.body("get(" + i++ + ")", Matchers.equalTo("Post /search/facetedClusteredResult (class io.vertigo.datafactory.collections.model.SelectedFacetValues :Body:[1]) -> class io.vertigo.datafactory.collections.model.FacetedQueryResult<Contact,class io.vertigo.datamodel.data.model.DtList<Contact>>"))
+				.body("get(" + i++ + ")", Matchers.equalTo("Post /search/facetedResult (class io.vertigo.datafactory.collections.model.SelectedFacetValues :Body:[1]) -> class io.vertigo.datafactory.collections.model.FacetedQueryResult<Contact,class io.vertigo.datamodel.data.model.DtList<Contact>>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Post /search/selectedFacetValues (class io.vertigo.datafactory.collections.model.SelectedFacetValues :Body:[1]) -> UiContext"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Post /secured/contacts (class io.vertigo.vega.webservice.data.domain.Contact :Body:[1]) -> Contact"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Post /secured/contacts/search() (class io.vertigo.vega.webservice.data.domain.ContactCriteria :Body:[1]) -> interface java.util.List<Contact>"))
@@ -181,15 +181,15 @@ public final class RoutesOrderTest {
 				.body("get(" + i++ + ")", Matchers.equalTo(" /*Test ws multipart body with serverSide objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an partial json of Contact with clientId.*/\nPost /test/innerBodyServerClient (class io.vertigo.vega.webservice.data.domain.Contact :InnerBody:contactFrom, class io.vertigo.vega.webservice.data.domain.Contact :InnerBody:contactTo) -> interface java.util.List<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Post /test/innerBodyValidationErrors (class io.vertigo.vega.webservice.data.domain.Contact :InnerBody:contactFrom, class io.vertigo.vega.webservice.data.domain.Contact :InnerBody:contactTo) -> interface java.util.List<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo(" /*Test ws multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.*/\nPost /test/innerLong (long :InnerBody:contactId1, long :InnerBody:contactId2) -> interface java.util.List<Contact>"))
-				.body("get(" + i++ + ")", Matchers.equalTo(" /*Test ws multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.*/\nPost /test/innerLongToDtList (long :InnerBody:contactId1, long :InnerBody:contactId2) -> class io.vertigo.datamodel.structure.model.DtList<Contact>"))
-				.body("get(" + i++ + ")", Matchers.equalTo(" /*Test ws with multiple path params.*/\nPost /test/multiPath/from/{conIdFrom}/to/{conIdTo} (long :Path:conIdFrom, long :Path:conIdTo) -> class io.vertigo.datamodel.structure.model.DtList<Contact>"))
-				.body("get(" + i++ + ")", Matchers.equalTo("Post /test/saveDtListContact (io.vertigo.datamodel.structure.model.DtList<io.vertigo.vega.webservice.data.domain.Contact> :Body:[1]) -> String"))
+				.body("get(" + i++ + ")", Matchers.equalTo(" /*Test ws multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.*/\nPost /test/innerLongToDtList (long :InnerBody:contactId1, long :InnerBody:contactId2) -> class io.vertigo.datamodel.data.model.DtList<Contact>"))
+				.body("get(" + i++ + ")", Matchers.equalTo(" /*Test ws with multiple path params.*/\nPost /test/multiPath/from/{conIdFrom}/to/{conIdTo} (long :Path:conIdFrom, long :Path:conIdTo) -> class io.vertigo.datamodel.data.model.DtList<Contact>"))
+				.body("get(" + i++ + ")", Matchers.equalTo("Post /test/saveDtListContact (io.vertigo.datamodel.data.model.DtList<io.vertigo.vega.webservice.data.domain.Contact> :Body:[1]) -> String"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Post /test/saveListContact (java.util.List<io.vertigo.vega.webservice.data.domain.Contact> :Body:[1]) -> String"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Post /test/saveListDelta (io.vertigo.vega.webservice.model.DtListDelta<io.vertigo.vega.webservice.data.domain.Contact> :Body:[1]) -> String"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Post /test/saveUiListContact (io.vertigo.vega.webservice.model.UiList<io.vertigo.vega.webservice.data.domain.Contact> :Body:[1], interface io.vertigo.vega.webservice.validation.UiMessageStack :Implicit:UiMessageStack) -> String"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Post /test/search() (class io.vertigo.vega.webservice.data.domain.ContactCriteria :Body:[1]) -> interface java.util.List<Contact>"))
-				.body("get(" + i++ + ")", Matchers.equalTo("Post /test/searchPagined() (class io.vertigo.vega.webservice.data.domain.ContactCriteria :InnerBody:criteria, class io.vertigo.datamodel.structure.model.DtListState :InnerBody:listState) -> interface java.util.List<Contact>"))
-				.body("get(" + i++ + ")", Matchers.equalTo("Post /test/_searchQueryPagined (class io.vertigo.vega.webservice.data.domain.ContactCriteria :Body:[1], class io.vertigo.datamodel.structure.model.DtListState :Query:) -> interface java.util.List<Contact>"))
+				.body("get(" + i++ + ")", Matchers.equalTo("Post /test/searchPagined() (class io.vertigo.vega.webservice.data.domain.ContactCriteria :InnerBody:criteria, class io.vertigo.datamodel.data.model.DtListState :InnerBody:listState) -> interface java.util.List<Contact>"))
+				.body("get(" + i++ + ")", Matchers.equalTo("Post /test/_searchQueryPagined (class io.vertigo.vega.webservice.data.domain.ContactCriteria :Body:[1], class io.vertigo.datamodel.data.model.DtListState :Query:) -> interface java.util.List<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Post /test/smartTypes/json/body (class io.vertigo.vega.webservice.data.domain.GeoPointJson :Body:[1]) -> GeoPointJson"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Post /test/smartTypes/json/innerbody (class io.vertigo.vega.webservice.data.domain.GeoPointJson :InnerBody:geoPoint) -> GeoPointJson"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Post /test/smartTypes/text/body (class io.vertigo.vega.webservice.data.domain.GeoPoint :Body:[1]) -> GeoPoint"))

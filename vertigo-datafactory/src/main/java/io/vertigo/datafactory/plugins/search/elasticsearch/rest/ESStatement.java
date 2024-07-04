@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,12 +65,12 @@ import io.vertigo.datafactory.plugins.search.elasticsearch.ESDocumentCodec;
 import io.vertigo.datafactory.plugins.search.elasticsearch.ESFacetedQueryResultBuilder;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.KeyConcept;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.KeyConcept;
+import io.vertigo.datamodel.data.model.UID;
 
 //vérifier
 /**
@@ -80,7 +80,7 @@ import io.vertigo.datamodel.structure.model.UID;
  * @param <I> Type de l'objet représentant l'index
  * @param <K> Type du keyConcept métier indexé
  */
-final class ESStatement<K extends KeyConcept, I extends DtObject> {
+final class ESStatement<K extends KeyConcept, I extends DataObject> {
 
 	private static final RefreshPolicy DEFAULT_REFRESH = RefreshPolicy.NONE; //mettre a true pour TU uniquement
 	private static final RefreshPolicy BULK_REFRESH = RefreshPolicy.NONE; //mettre a RefreshPolicy.IMMEDIATE pour TU uniquement
@@ -182,7 +182,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		}
 	}
 
-	Map<UID<K>, Serializable> loadVersions(final DtField versionField, final ListFilter listFilter, final int maxElements) {
+	Map<UID<K>, Serializable> loadVersions(final DataField versionField, final ListFilter listFilter, final int maxElements) {
 		Assertion.check().isNotNull(versionField).isNotNull(listFilter);
 		//-----
 		try {
@@ -215,7 +215,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		}
 	}
 
-	private Serializable decodeVersionValue(final DtField versionField, final Object value) {
+	private Serializable decodeVersionValue(final DataField versionField, final Object value) {
 		Assertion.check().isTrue(
 				versionField.smartTypeDefinition().getScope().isBasicType(),
 				"Field use for iterate must be primitives : versionField '{0}' has the smartType '{2}'", versionField.name(), versionField.smartTypeDefinition());
@@ -260,7 +260,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 * @param defaultMaxRows Nombre de ligne max par defaut
 	 * @return Résultat de la recherche
 	 */
-	FacetedQueryResult<I, SearchQuery> loadList(final DtDefinition indexDtDefinition, final String[] indexNames, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
+	FacetedQueryResult<I, SearchQuery> loadList(final DataDefinition indexDtDefinition, final String[] indexNames, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
 		Assertion.check().isNotNull(searchQuery);
 		//-----
 		final SearchRequest searchRequest = new ESSearchRequestBuilder(indexNames, esClient, typeAdapters)

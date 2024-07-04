@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
@@ -39,12 +39,12 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author pchretien, npiedeloup
  * @param <D> DtObject type
  */
-public interface UiObject<D extends DtObject> extends Serializable {
+public interface UiObject<D extends DataObject> extends Serializable {
 
 	/**
 	 * @return DtDefinition de l'objet métier
 	 */
-	DtDefinition getDtDefinition();
+	DataDefinition getDtDefinition();
 
 	/**
 	 * @param inputKey Object reference keep in this request context (for error handling)

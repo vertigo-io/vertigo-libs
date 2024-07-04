@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -137,7 +137,7 @@ public final class DslSecurityRulesBuilderTest {
 	private final CriteriaEncoder defaultSQLCriteriaEncoder = new CriteriaEncoder() {
 
 		@Override
-		public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DtFieldName dtFieldName, final Serializable[] values) {
+		public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DataFieldName dtFieldName, final Serializable[] values) {
 			final String fieldName = dtFieldName.name();
 			//---
 			switch (criterionOperator) {

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import java.util.List;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.cache.definitions.CacheDefinition;
 import io.vertigo.datastore.entitystore.data.domain.car.Car;
 import io.vertigo.datastore.entitystore.data.domain.famille.Famille;
@@ -39,7 +39,7 @@ public class TestCacheStoreManagerDefinitionProvider implements SimpleDefinition
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		return Arrays.asList(
-				new CacheDefinition(CacheData.getContext(DtObjectUtil.findDtDefinition(Car.class)), true, 1000, 3600, 3600 / 2, true),
-				new CacheDefinition(CacheData.getContext(DtObjectUtil.findDtDefinition(Famille.class)), true, 1000, 120, 120 / 2, true));
+				new CacheDefinition(CacheData.getContext(DataModelUtil.findDataDefinition(Car.class)), true, 1000, 3600, 3600 / 2, true),
+				new CacheDefinition(CacheData.getContext(DataModelUtil.findDataDefinition(Famille.class)), true, 1000, 120, 120 / 2, true));
 	}
 }

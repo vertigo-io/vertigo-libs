@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.datamodel.structure.definitions.Constraint;
-import io.vertigo.datamodel.structure.definitions.DtProperty;
-import io.vertigo.datamodel.structure.definitions.Property;
+import io.vertigo.datamodel.smarttype.definitions.Constraint;
+import io.vertigo.datamodel.smarttype.definitions.DtProperty;
+import io.vertigo.datamodel.smarttype.definitions.Property;
 
 /**
  * Exemple de contrainte utilisant une expression régulière.
@@ -43,8 +43,7 @@ public final class ConstraintRegex implements Constraint<String, String> {
 				.isNotBlank(regex);
 		//---
 		pattern = Pattern.compile(regex);
-		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt,
-				() -> LocaleMessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern()));
+		errorMessage = ConstraintUtil.resolveMessage(overrideMessageOpt, overrideResourceMessageOpt, Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern());
 	}
 
 	/** {@inheritDoc} */

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
@@ -43,13 +42,13 @@ import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListURIForMasterData;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.webservice.model.UiList;
@@ -61,6 +60,7 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
 
 /**
  * Liste des couples (clé, object) enregistrés.
+ *
  * @author npiedeloup
  */
 public final class ViewContext implements Serializable {
@@ -114,11 +114,11 @@ public final class ViewContext implements Serializable {
 		viewContextMap.put(ViewContextMap.INPUT_CTX, ctxId);
 	}
 
-	public void setCtxId() {
-		viewContextMap.put(CTX.get(), UUID.randomUUID().toString());
+	public void setCtxId(final String prefix) {
+		viewContextMap.put(CTX.get(), prefix + '$' + UUID.randomUUID().toString());
 
 		//we set CTX_REUSE_INSTANT and keep previous in INPUT_CTX_REUSE_INSTANT
-		final Instant previousInstant = (Instant) viewContextMap.put(ViewContextMap.CTX_REUSE_INSTANT, Instant.now());
+		final var previousInstant = (Instant) viewContextMap.put(ViewContextMap.CTX_REUSE_INSTANT, Instant.now());
 		if (previousInstant != null) {
 			viewContextMap.put(ViewContextMap.INPUT_CTX_REUSE_INSTANT, previousInstant);
 		}
@@ -178,7 +178,7 @@ public final class ViewContext implements Serializable {
 	/* ================================== Map =====================================*/
 
 	public Serializable get(final Object key) {
-		Object sKey = key;
+		var sKey = key;
 		if (key instanceof ViewContextKey) {
 			sKey = ((ViewContextKey<?>) key).get();
 		}
@@ -206,7 +206,7 @@ public final class ViewContext implements Serializable {
 	 * @param dtObject DtObject recherché
 	 * @return Clé de context de l'élément (null si non trouvé)
 	 */
-	public String findKey(final DtObject dtObject) {
+	public String findKey(final DataObject dtObject) {
 		return viewContextMap.findKey(dtObject);
 	}
 
@@ -239,7 +239,7 @@ public final class ViewContext implements Serializable {
 	 * @param key Clé de context
 	 * @return UiObject du context
 	 */
-	public <O extends DtObject> UiObject<O> getUiObject(final ViewContextKey<O> key) {
+	public <O extends DataObject> UiObject<O> getUiObject(final ViewContextKey<O> key) {
 		return (UiObject<O>) get(key);
 	}
 
@@ -247,7 +247,7 @@ public final class ViewContext implements Serializable {
 	 * @param key Clé de context
 	 * @return UiList du context
 	 */
-	public <O extends DtObject> UiList<O> getUiList(final ViewContextKey<O> key) {
+	public <O extends DataObject> UiList<O> getUiList(final ViewContextKey<O> key) {
 		return (UiList<O>) get(key);
 	}
 
@@ -255,7 +255,7 @@ public final class ViewContext implements Serializable {
 	 * @param key Clé de context
 	 * @return UiListModifiable du context
 	 */
-	public <O extends DtObject> BasicUiListModifiable<O> getUiListModifiable(final ViewContextKey<O> key) {
+	public <O extends DataObject> BasicUiListModifiable<O> getUiListModifiable(final ViewContextKey<O> key) {
 		return (BasicUiListModifiable<O>) get(key);
 	}
 
@@ -300,9 +300,10 @@ public final class ViewContext implements Serializable {
 	/* ================================ ContextForm ==================================*/
 	/**
 	 * Ajoute un objet de type form au context.
+	 *
 	 * @param dto Objet à publier
 	 */
-	public <O extends DtObject> ViewContext publishDto(final ViewContextKey<O> contextKey, final O dto) {
+	public <O extends DataObject> ViewContext publishDto(final ViewContextKey<O> contextKey, final O dto) {
 		final UiObject<O> strutsUiObject = new MapUiObject<>(dto, viewContextMap.viewContextUpdateSecurity());
 		strutsUiObject.setInputKey(contextKey.get());
 		put(contextKey, strutsUiObject);
@@ -312,7 +313,7 @@ public final class ViewContext implements Serializable {
 	/**
 	 * Vérifie les erreurs de l'objet. Celles-ci sont ajoutées à l'uiMessageStack si nécessaire.
 	 */
-	public <O extends DtObject> void checkDtoErrors(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
+	public <O extends DataObject> void checkDtoErrors(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
 		getUiObject(contextKey).checkFormat(uiMessageStack);
 		if (uiMessageStack.hasErrors()) {
 			throw new ValidationUserException();
@@ -322,17 +323,17 @@ public final class ViewContext implements Serializable {
 	/**
 	 * @return objet métier valid�. Lance une exception si erreur.
 	 */
-	public <O extends DtObject> O readDto(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
+	public <O extends DataObject> O readDto(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
 		return readDto(contextKey, new DefaultDtObjectValidator<>(), uiMessageStack);
 	}
 
 	/**
 	 * @return objet métier validé. Lance une exception si erreur.
 	 */
-	public <O extends DtObject> O readDto(final ViewContextKey<O> contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
+	public <O extends DataObject> O readDto(final ViewContextKey<O> contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
 		checkDtoErrors(contextKey, uiMessageStack);
 		// ---
-		final O validatedDto = getUiObject(contextKey).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
+		final var validatedDto = getUiObject(contextKey).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
 		if (uiMessageStack.hasErrors()) {
 			throw new ValidationUserException();
 		}
@@ -343,9 +344,10 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Ajoute une liste au context.
+	 *
 	 * @param dtList List à publier
 	 */
-	private <O extends DtObject> void publishDtList(final ViewContextKey<O> contextKey, final Optional<DtFieldName<O>> keyFieldNameOpt, final DtList<O> dtList, final boolean modifiable) {
+	private <O extends DataObject> void publishDtList(final ViewContextKey<O> contextKey, final Optional<DataFieldName<O>> keyFieldNameOpt, final DtList<O> dtList, final boolean modifiable) {
 		if (modifiable) {
 			put(contextKey, new BasicUiListModifiable<>(dtList, contextKey.get(), viewContextMap.viewContextUpdateSecurity()));
 		} else {
@@ -355,18 +357,20 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Ajoute une liste au context.
+	 *
 	 * @param dtList List à publier
 	 */
-	public <O extends DtObject> ViewContext publishDtList(final ViewContextKey<O> contextKey, final DtFieldName<O> keyFieldName, final DtList<O> dtList) {
+	public <O extends DataObject> ViewContext publishDtList(final ViewContextKey<O> contextKey, final DataFieldName<O> keyFieldName, final DtList<O> dtList) {
 		publishDtList(contextKey, Optional.of(keyFieldName), dtList, false);
 		return this;
 	}
 
 	/**
 	 * Ajoute une liste au context.
+	 *
 	 * @param dtList List à publier
 	 */
-	public <O extends DtObject> ViewContext publishDtList(final ViewContextKey<O> contextKey, final DtList<O> dtList) {
+	public <O extends DataObject> ViewContext publishDtList(final ViewContextKey<O> contextKey, final DtList<O> dtList) {
 		publishDtList(contextKey, Optional.empty(), dtList, false);
 		return this;
 	}
@@ -374,14 +378,14 @@ public final class ViewContext implements Serializable {
 	/**
 	 * @return List des objets métiers validée. Lance une exception si erreur.
 	 */
-	public <O extends DtObject> DtList<O> readDtList(final ViewContextKey<O> contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
+	public <O extends DataObject> DtList<O> readDtList(final ViewContextKey<O> contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
 		return ((UiListUnmodifiable<O>) getUiList(contextKey)).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
 	}
 
 	/**
 	 * @return List des objets métiers validée. Lance une exception si erreur.
 	 */
-	public <O extends DtObject> DtList<O> readDtList(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
+	public <O extends DataObject> DtList<O> readDtList(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
 		return readDtList(contextKey, new DefaultDtObjectValidator<>(), uiMessageStack);
 	}
 
@@ -389,9 +393,10 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Ajoute une liste au context.
+	 *
 	 * @param dtList List à publier
 	 */
-	public <O extends DtObject> ViewContext publishDtListModifiable(final ViewContextKey<O> contextKey, final DtList<O> dtList) {
+	public <O extends DataObject> ViewContext publishDtListModifiable(final ViewContextKey<O> contextKey, final DtList<O> dtList) {
 		publishDtList(contextKey, Optional.empty(), dtList, true);
 		return this;
 	}
@@ -399,7 +404,7 @@ public final class ViewContext implements Serializable {
 	/**
 	 * Vérifie les erreurs de la liste. Celles-ci sont ajoutées à l'uiMessageStack si nécessaire.
 	 */
-	public <O extends DtObject> void checkDtListErrors(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
+	public <O extends DataObject> void checkDtListErrors(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
 		getUiListModifiable(contextKey).checkFormat(uiMessageStack);
 		if (uiMessageStack.hasErrors()) {
 			throw new ValidationUserException();
@@ -409,14 +414,14 @@ public final class ViewContext implements Serializable {
 	/**
 	 * @return List des objets métiers validée. Lance une exception si erreur.
 	 */
-	public <O extends DtObject> DtList<O> readDtListModifiable(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
+	public <O extends DataObject> DtList<O> readDtListModifiable(final ViewContextKey<O> contextKey, final UiMessageStack uiMessageStack) {
 		return readDtListModifiable(contextKey, new DefaultDtObjectValidator<>(), uiMessageStack);
 	}
 
 	/**
 	 * @return List des objets métiers validée. Lance une exception si erreur.
 	 */
-	public <O extends DtObject> DtList<O> readDtListModifiable(final ViewContextKey<O> contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
+	public <O extends DataObject> DtList<O> readDtListModifiable(final ViewContextKey<O> contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
 		checkDtListErrors(contextKey, uiMessageStack);
 		// ---
 		final DtList<O> validatedList = ((BasicUiListModifiable) getUiListModifiable(contextKey)).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
@@ -430,13 +435,25 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Publie une liste de référence.
+	 *
 	 * @param contextKey Context key
 	 * @param entityClass Class associée
 	 * @param code Code
 	 */
 	public <E extends Entity> ViewContext publishMdl(final ViewContextKey<E> contextKey, final Class<E> entityClass, final String code) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
-		put(contextKey, new UiMdList<E>(new DtListURIForMasterData(dtDefinition, code)));
+		final var dtDefinition = DataModelUtil.findDataDefinition(entityClass);
+		return publishMdl(contextKey, dtDefinition, code);
+	}
+
+	/**
+	 * Publie une liste de référence.
+	 *
+	 * @param contextKey Context key
+	 * @param entityClass Class associée
+	 * @param code Code
+	 */
+	public <E extends Entity> ViewContext publishMdl(final ViewContextKey<E> contextKey, final DataDefinition entityDefinition, final String code) {
+		put(contextKey, new UiMdList<E>(new DtListURIForMasterData(entityDefinition, code)));
 		return this;
 	}
 
@@ -444,16 +461,18 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Get UI file uri.
+	 *
 	 * @param contextKey Context key
 	 */
 	public Optional<FileInfoURI> getFileInfoURI(final ViewContextKey<FileInfoURI> contextKey) {
-		final ArrayList<FileInfoURI> list = getFileInfoURIs(contextKey);
+		final var list = getFileInfoURIs(contextKey);
 		Assertion.check().isTrue(list.size() <= 1, "Can't list a list of {0} elements to Option", list.size());
 		return list.isEmpty() ? Optional.empty() : Optional.of(list.iterator().next());
 	}
 
 	/**
 	 * Get UI file info uri list.
+	 *
 	 * @param contextKey Context key
 	 */
 	public ArrayList<FileInfoURI> getFileInfoURIs(final ViewContextKey<FileInfoURI> contextKey) {
@@ -462,11 +481,12 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Publish file's info.
+	 *
 	 * @param contextKey Context key
 	 * @param fileInfo file's info
 	 */
 	public ViewContext publishFileInfoURI(final ViewContextKey<FileInfoURI> contextKey, final FileInfoURI fileInfoURI) {
-		final ArrayList<FileInfoURI> list = new ArrayList<>();
+		final var list = new ArrayList<FileInfoURI>();
 		if (fileInfoURI != null) {
 			list.add(fileInfoURI);
 		}
@@ -476,6 +496,7 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Publish list of file's info.
+	 *
 	 * @param contextKey Context key
 	 * @param fileInfos list of file's info.
 	 */
@@ -489,12 +510,13 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Publie une FacetedQueryResult.
+	 *
 	 * @param contextKey Context key
 	 * @param keyFieldName Id's fieldName
 	 * @param facetedQueryResult Result
 	 */
-	public <O extends DtObject> ViewContext publishFacetedQueryResult(final ViewContextKey<FacetedQueryResult<O, SearchQuery>> contextKey,
-			final DtFieldName<O> keyFieldName, final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final ViewContextKey<?> criteriaContextKey) {
+	public <O extends DataObject> ViewContext publishFacetedQueryResult(final ViewContextKey<FacetedQueryResult<O, SearchQuery>> contextKey,
+			final DataFieldName<O> keyFieldName, final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final ViewContextKey<?> criteriaContextKey) {
 		if (facetedQueryResult.getClusterFacetDefinition().isPresent()) {
 			publishDtList(() -> contextKey.get() + "_list", Optional.of(keyFieldName), new DtList<O>(facetedQueryResult.getDtList().getDefinition()), false);
 			put(() -> contextKey.get() + "_cluster", translateClusters(facetedQueryResult, Optional.of(keyFieldName)));
@@ -505,7 +527,7 @@ public final class ViewContext implements Serializable {
 		}
 		put(() -> contextKey.get() + "_facets", translateFacets(facetedQueryResult.getFacets()));
 
-		final FacetedQuery facetedQuery = facetedQueryResult.getSource().getFacetedQuery().get();
+		final var facetedQuery = facetedQueryResult.getSource().getFacetedQuery().get();
 		put(() -> contextKey.get() + "_selectedFacets", new UiSelectedFacetValues(
 				facetedQuery.getSelectedFacetValues(),
 				facetedQuery.getDefinition().getFacetDefinitions()
@@ -517,14 +539,14 @@ public final class ViewContext implements Serializable {
 		return this;
 	}
 
-	private <O extends DtObject> ArrayList<ClusterUiList> translateClusters(final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final Optional<DtFieldName<O>> keyFieldNameOpt) {
+	private <O extends DataObject> ArrayList<ClusterUiList> translateClusters(final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final Optional<DataFieldName<O>> keyFieldNameOpt) {
 		//if it's a cluster add data's cluster
-		final Map<FacetValue, DtList<O>> clusters = facetedQueryResult.getClusters();
-		final ArrayList<ClusterUiList> jsonCluster = new ArrayList<>();
+		final var clusters = facetedQueryResult.getClusters();
+		final var jsonCluster = new ArrayList<ClusterUiList>();
 		for (final Entry<FacetValue, DtList<O>> cluster : clusters.entrySet()) {
-			final DtList<O> dtList = cluster.getValue();
+			final var dtList = cluster.getValue();
 			if (!dtList.isEmpty()) {
-				final ClusterUiList clusterElement = new ClusterUiList(
+				final var clusterElement = new ClusterUiList(
 						dtList, keyFieldNameOpt,
 						cluster.getKey().code(),
 						cluster.getKey().label().getDisplay(),
@@ -536,7 +558,7 @@ public final class ViewContext implements Serializable {
 		return jsonCluster;
 
 	}
-	/* private <O extends DtObject> void publishClustersList(final String prefix, final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final Optional<DtFieldName<O>> keyFieldNameOpt) {
+	/* private <O extends Data> void publishClustersList(final String prefix, final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final Optional<DataFieldName<O>> keyFieldNameOpt) {
 			//if it's a cluster add data's cluster
 			final Map<FacetValue, DtList<O>> clusters = facetedQueryResult.getClusters();
 			for (final Entry<FacetValue, DtList<O>> cluster : clusters.entrySet()) {
@@ -548,7 +570,7 @@ public final class ViewContext implements Serializable {
 		}*/
 
 	private static Long getFacetCount(final FacetValue key, final FacetedQueryResult<?, ?> facetedQueryResult) {
-		final FacetDefinition clusterFacetDefinition = facetedQueryResult.getClusterFacetDefinition().get();
+		final var clusterFacetDefinition = facetedQueryResult.getClusterFacetDefinition().get();
 		return facetedQueryResult.getFacets()
 				.stream()
 				.filter(facet -> clusterFacetDefinition.equals(facet.getDefinition()))
@@ -560,19 +582,19 @@ public final class ViewContext implements Serializable {
 	}
 
 	private static ArrayList<Serializable> translateFacets(final List<Facet> facets) {
-		final ArrayList<Serializable> facetsList = new ArrayList<>();
+		final var facetsList = new ArrayList<Serializable>();
 		for (final Facet facet : facets) {
-			final ArrayList<HashMap<String, Serializable>> facetValues = new ArrayList<>();
+			final var facetValues = new ArrayList<HashMap<String, Serializable>>();
 			for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
 				if (entry.getValue() > 0) {
-					final HashMap<String, Serializable> facetValue = new HashMap<>();
+					final var facetValue = new HashMap<String, Serializable>();
 					facetValue.put("code", entry.getKey().code());
 					facetValue.put("count", entry.getValue());
 					facetValue.put("label", entry.getKey().label().getDisplay());
 					facetValues.add(facetValue);
 				}
 			}
-			final HashMap<String, Serializable> facetAsMap = new HashMap<>();
+			final var facetAsMap = new HashMap<String, Serializable>();
 			facetAsMap.put("code", facet.getDefinition().getName());
 			facetAsMap.put("multiple", facet.getDefinition().isMultiSelectable());
 			facetAsMap.put("label", facet.getDefinition().getLabel().getDisplay());
@@ -584,10 +606,11 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Returns selectedFacetValues of a given facetedQuery.
+	 *
 	 * @param contextKey Context key
 	 * @return selectedFacetValues
 	 */
-	public <O extends DtObject> SelectedFacetValues getSelectedFacetValues(final ViewContextKey<FacetedQueryResult<O, FacetedQuery>> contextKey) {
+	public <O extends DataObject> SelectedFacetValues getSelectedFacetValues(final ViewContextKey<FacetedQueryResult<O, FacetedQuery>> contextKey) {
 		return ((UiSelectedFacetValues) get(contextKey.get() + "_selectedFacets")).toSelectedFacetValues();
 	}
 

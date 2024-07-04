@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,11 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 
 /**
- * 	Contains the result of a parsing operation.
- *   - the new index position
- *   - the object created
- * @author pchretien
+ * Contains the result of a parsing operation.
+ * - the new index position
+ * - the object created
  *
+ * @author pchretien
  * @param <R> the type of the Result Object
  */
 public final class PegResult<R> {
@@ -36,10 +36,11 @@ public final class PegResult<R> {
 
 	/**
 	 * Constructor.
+	 *
 	 * @param index
 	 * @param result
 	 */
-	PegResult(final int index, final R result) {
+	public PegResult(final int index, final R result) {
 		Assertion.check().isNotNull(result);
 		//---
 		this.index = index;
@@ -49,11 +50,12 @@ public final class PegResult<R> {
 
 	/**
 	 * Constructor.
+	 *
 	 * @param index
 	 * @param result
 	 * @param bestUncompleteRule
 	 */
-	PegResult(final int index, final R result, final PegNoMatchFoundException bestUncompleteRule) {
+	public PegResult(final int index, final R result, final PegNoMatchFoundException bestUncompleteRule) {
 		Assertion.check().isNotNull(result);
 		//---
 		this.index = index;

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datafactory.collections.model.FacetValue;
-import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 
 /**
  * Définition de Facette.
@@ -53,7 +53,7 @@ import io.vertigo.datamodel.structure.definitions.DtField;
 @DefinitionPrefix(FacetDefinition.PREFIX)
 public final class FacetDefinition extends AbstractDefinition<FacetDefinition> {
 	public static final String PREFIX = "Fct";
-	private final DtField dtField;
+	private final DataField dtField;
 	private final LocaleMessageText label;
 	private final List<FacetValue> facetValues;
 	private final Map<String, String> customFacetParams;
@@ -85,7 +85,7 @@ public final class FacetDefinition extends AbstractDefinition<FacetDefinition> {
 	 */
 	private FacetDefinition(
 			final String name,
-			final DtField dtField,
+			final DataField dtField,
 			final LocaleMessageText label,
 			final List<FacetValue> facetValues,
 			final Map<String, String> customFacetParams,
@@ -132,7 +132,7 @@ public final class FacetDefinition extends AbstractDefinition<FacetDefinition> {
 	 */
 	public static FacetDefinition createFacetDefinitionByRange(
 			final String name,
-			final DtField dtField,
+			final DataField dtField,
 			final LocaleMessageText label,
 			final List<FacetValue> facetValues,
 			final boolean multiSelectable,
@@ -152,7 +152,7 @@ public final class FacetDefinition extends AbstractDefinition<FacetDefinition> {
 	 */
 	public static FacetDefinition createFacetDefinitionByTerm(
 			final String name,
-			final DtField dtField,
+			final DataField dtField,
 			final LocaleMessageText label,
 			final boolean multiSelectable,
 			final FacetOrder order) {
@@ -171,7 +171,7 @@ public final class FacetDefinition extends AbstractDefinition<FacetDefinition> {
 	 */
 	public static FacetDefinition createCustomFacetDefinition(
 			final String name,
-			final DtField dtField,
+			final DataField dtField,
 			final LocaleMessageText label,
 			final Map<String, String> customParams,
 			final FacetOrder order) {
@@ -189,7 +189,7 @@ public final class FacetDefinition extends AbstractDefinition<FacetDefinition> {
 	 * Ce champ est nécessairement inclus dans l'index.
 	 * @return Champ sur lequel porte la facette
 	 */
-	public DtField getDtField() {
+	public DataField getDataField() {
 		return dtField;
 	}
 

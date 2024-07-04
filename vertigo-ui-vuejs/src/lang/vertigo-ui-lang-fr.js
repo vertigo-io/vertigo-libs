@@ -35,13 +35,15 @@ export default {
             executeCommand : "Appuyer sur entrée pour executer la commande",
             linkLabel : "Voir les détails"
         },
-		"uploader" : {
-			"clear_all" : "Annuler tous",
-			"removeUploaded" : "Supprimer tous",
-			"remove" : "Supprimer",
-			"add" : "Ajouter un fichier",
-			"upload" : "Envoyer",
-			"clear" : "Annuler"
+		uploader : {
+			clear_all : "Annuler tous",
+			removeUploaded : "Supprimer tous",
+			remove : "Supprimer",
+			add : "Ajouter un fichier",
+			upload : "Envoyer",
+			clear : "Annuler",
+			fileErrorTooBig : "Erreur : Le fichier est trop volumineux",
+			fileErrorUnknown : "Erreur inconnue : Ce fichier ne peut pas être envoyé",
 		},
         handles : {
             placeholder : "Entrer un handle de la forme type/code"

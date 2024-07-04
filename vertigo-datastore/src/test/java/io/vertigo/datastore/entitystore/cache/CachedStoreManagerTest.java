@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datamodel.DataModelFeatures;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.entitystore.AbstractStoreManagerTest;
 import io.vertigo.datastore.entitystore.data.DtDefinitions;
@@ -90,7 +90,7 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 	public void testAddFamille() {
 		//ce test est modifier car le cache n'est pas transactionnel : la liste n'est pas accessible sans commit
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final DtList<Famille> dtc = entityStoreManager.find(dtDefinitionFamille, null, DtListState.of(null));
+			final DtList<Famille> dtc = entityStoreManager.find(dataDefinitionFamille, null, DtListState.of(null));
 			Assertions.assertEquals(0, dtc.size());
 			//-----
 			final Famille famille = new Famille();
@@ -101,7 +101,7 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 			transaction.commit();
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final DtList<Famille> dtc = entityStoreManager.find(dtDefinitionFamille, null, DtListState.of(null));
+			final DtList<Famille> dtc = entityStoreManager.find(dataDefinitionFamille, null, DtListState.of(null));
 			Assertions.assertEquals(1, dtc.size());
 
 		}

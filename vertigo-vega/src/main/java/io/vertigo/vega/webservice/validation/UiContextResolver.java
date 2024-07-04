@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,19 +20,19 @@ package io.vertigo.vega.webservice.validation;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DataObject;
 
 /**
 * @author npiedeloup
 */
 public final class UiContextResolver {
-	private final Map<DtObject, String> dtObjectDictionary = new HashMap<>();
+	private final Map<DataObject, String> dtObjectDictionary = new HashMap<>();
 
-	public void register(final String contextKey, final DtObject dtObject) {
+	public void register(final String contextKey, final DataObject dtObject) {
 		dtObjectDictionary.put(dtObject, contextKey);
 	}
 
-	public String resolveContextKey(final DtObject dtObject) {
+	public String resolveContextKey(final DataObject dtObject) {
 		return dtObjectDictionary.get(dtObject);
 	}
 

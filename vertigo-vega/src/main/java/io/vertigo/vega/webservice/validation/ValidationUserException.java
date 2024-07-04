@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@ import java.util.List;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
 /**
  * Validation exception on a object's field.
@@ -62,7 +62,7 @@ public final class ValidationUserException extends VUserException {
 	 * @param dto object
 	 * @param fieldName field
 	 */
-	public ValidationUserException(final LocaleMessageText messageText, final DtObject dto, final DtFieldName fieldName) {
+	public ValidationUserException(final LocaleMessageText messageText, final DataObject dto, final DataFieldName fieldName) {
 		this(messageText, fieldName.name(), dto);
 	}
 
@@ -72,17 +72,17 @@ public final class ValidationUserException extends VUserException {
 	 * @param dto object
 	 * @param fieldName fieldName in CamelCase
 	 */
-	public ValidationUserException(final LocaleMessageText messageText, final DtObject dto, final String fieldName) {
+	public ValidationUserException(final LocaleMessageText messageText, final DataObject dto, final String fieldName) {
 		this(messageText, fieldName, dto);
 	}
 
-	private ValidationUserException(final LocaleMessageText messageText, final String constFieldName, final DtObject dto) {
+	private ValidationUserException(final LocaleMessageText messageText, final String constFieldName, final DataObject dto) {
 		super(messageText);
 		Assertion.check()
 				.isNotNull(dto, "L'objet est obligatoire")
 				.isNotBlank(constFieldName, "Le champs est obligatoire");
 		//-----
-		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(constFieldName);
+		final DataField dtField = DataModelUtil.findDataDefinition(dto).getField(constFieldName);
 		uiErrors.add(new UiError(dto, dtField, messageText));
 	}
 

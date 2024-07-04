@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,14 @@
 package io.vertigo.vega.impl.servlet.filter;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.vertigo.core.node.Node;
+import io.vertigo.core.param.ParamEnvUtil;
+import io.vertigo.core.param.ParamManager;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -82,6 +86,7 @@ public abstract class AbstractFilter implements Filter {
 
 	/**
 	 * Test si l'url correspond au pattern.
+	 *
 	 * @param req Request
 	 * @param pattern Pattern de test
 	 * @return si l'url match le pattern, ou false si pas de pattern ou si pas httprequest.
@@ -96,6 +101,7 @@ public abstract class AbstractFilter implements Filter {
 
 	/**
 	 * Test si l'url (hors domain et context) correspond au pattern.
+	 *
 	 * @param context Context de la webapp
 	 * @param requestUri uri complete de la request
 	 * @param pattern Pattern de test
@@ -112,6 +118,29 @@ public abstract class AbstractFilter implements Filter {
 
 	protected final FilterConfig getFilterConfig() {
 		return config;
+	}
+
+	protected final <P extends Serializable> P parseParam(final String paramName, final Class<P> paramClass, final P defaultValue) {
+		final String paramStrValue = config.getInitParameter(paramName);
+		if (paramStrValue != null) {
+			final var param = ParamEnvUtil.getParam(paramName, paramStrValue, Optional.of(Node.getNode().getComponentSpace().resolve(ParamManager.class)));
+			if (param.isPresent()) {
+				if (Long.class.equals(paramClass)) {
+					return (P) Long.valueOf(param.get().getValueAsLong());
+				} else if (Integer.class.equals(paramClass)) {
+					return (P) Integer.valueOf(param.get().getValueAsInt());
+				} else if (Double.class.equals(paramClass)) {
+					return (P) Double.valueOf(paramStrValue);
+				} else if (Boolean.class.equals(paramClass)) {
+					return (P) Boolean.valueOf(param.get().getValueAsBoolean());
+				} else if (String.class.equals(paramClass)) {
+					return (P) param.get().getValueAsString();
+				} else {
+					throw new IllegalArgumentException("Support Long, Integer, Double, Boolean and String parameters (not : " + paramClass.getSimpleName() + ")");
+				}
+			}
+		}
+		return defaultValue;
 	}
 
 	protected abstract void doInit();

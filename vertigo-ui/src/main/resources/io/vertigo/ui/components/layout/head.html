@@ -8,17 +8,18 @@
 
 <th:block th:fragment="head-meta(vuejsDevMode, quasarVersion, vueVersion, vertigoUiVersion)" 
         th:with="isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false},
-                 myQuasarVersion=${quasarVersion?:'2.13.0'}, myVueJsVersion=${vueVersion?:'3.3.7'}, myVertigoUiVersion=${vertigoUiVersion?:'4.1.0'}">
+                 myQuasarVersion=${quasarVersion?:'2.16.5'}, myVueJsVersion=${vueVersion?:'3.4.31'}, myVertigoUiVersion=${vertigoUiVersion?:'4.2.0'}">
 		<link th:href="@{/vertigo-ui/static/3rdParty/roboto/v20/css/roboto.css}" rel="stylesheet" type="text/css"/>
-		<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v140/css/materialIcons.css}" rel="stylesheet" type="text/css"/>
-		<link th:href="@{/vertigo-ui/static/3rdParty/use.fontawesome.com/releases/v6.4.2/css/all.min.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v142/css/materialIconsOutlined.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v142/css/materialIcons.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/use.fontawesome.com/releases/v6.5.2/css/all.min.css}" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/ionicons@4.6.4-1/dist/css/ionicons.min.css}" rel="stylesheet" type="text/css"/>
-		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/@mdi/font@7.3.37/css/materialdesignicons.min.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css}" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css}" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@__${myQuasarVersion}__/dist/quasar.css}" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/css/vertigo-ui.css?v=__${myVertigoUiVersion}__}" rel="stylesheet" type="text/css"/>
 		
 		<script th:if="${!isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@__${myVueJsVersion}__/dist/vue.global.prod.js}"></script>
         <script th:if="${isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@__${myVueJsVersion}__/dist/vue.global.js}"></script>
-    	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js}" ></script>
+    	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js}" ></script>
 </th:block>

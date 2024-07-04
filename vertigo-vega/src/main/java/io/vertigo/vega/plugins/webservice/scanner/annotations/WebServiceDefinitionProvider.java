@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ import java.util.Collection;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Selector;
-import io.vertigo.core.lang.Selector.ClassConditions;
+import io.vertigo.core.lang.ClassSelector;
+import io.vertigo.core.lang.ClassSelector.ClassConditions;
 import io.vertigo.core.node.config.DefinitionResourceConfig;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -61,7 +61,7 @@ public final class WebServiceDefinitionProvider implements SimpleDefinitionProvi
 	}
 
 	private static void scanAndAddPackage(final String packagePath, final List<Definition> webServiceDefinitions) {
-		final Collection<Class> webServicesClasses = Selector
+		final Collection<Class> webServicesClasses = ClassSelector
 				.from(packagePath)
 				.filterClasses(ClassConditions.subTypeOf(WebServices.class))
 				.findClasses();

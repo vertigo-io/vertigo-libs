@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,9 +94,9 @@ public final class SelectedFacetValuesDeserializer implements JsonDeserializer<S
 			valueAsString = code;
 		}
 		if (valueAsString != null) {
-			query = facetDefinition.getDtField().name() + ":\"" + valueAsString + "\"";
+			query = facetDefinition.getDataField().name() + ":\"" + valueAsString + "\"";
 		} else {
-			query = "!_exists_:" + facetDefinition.getDtField().name(); //only for null value, empty ones use FIELD:""
+			query = "!_exists_:" + facetDefinition.getDataField().name(); //only for null value, empty ones use FIELD:""
 		}
 		final FacetValue facetValue = new FacetValue(code, ListFilter.of(query), LocaleMessageText.of(code));
 		selectedFacetValuesBuilder.add(facetDefinition, facetValue);

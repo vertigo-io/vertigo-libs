@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,11 +54,12 @@ public class MyController extends AbstractVSpringMvcController {
 
 	@GetMapping("/")
 	public void initContext(final ViewContext viewContext) {
-		viewContext.publishRef(movIdKey, 1000L);
 		final Movie movie = movieServices.get(viewContext.getLong(movIdKey));
-		viewContext.publishDto(movieKey, movie);
-		viewContext.publishDto(movie2Key, new Movie());
-		viewContext.publishRef(messageKey, "Hello!  movie id :" + viewContext.getLong(movIdKey));
+
+		viewContext.publishRef(movIdKey, 1000L)
+				.publishDto(movieKey, movie)
+				.publishDto(movie2Key, new Movie())
+				.publishRef(messageKey, "Hello!  movie id :" + viewContext.getLong(movIdKey));
 	}
 
 	@PostMapping("/")

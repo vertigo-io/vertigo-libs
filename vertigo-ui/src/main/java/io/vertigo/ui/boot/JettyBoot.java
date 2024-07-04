@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.session.DefaultSessionIdManager;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -143,6 +144,9 @@ public class JettyBoot {
 		handlerList.addHandler(new NotFoundAllHandler());
 		// Link the HandlerList to the Server.
 		server.setHandler(handlerList);
+
+		// Add errorHandler as NotFoundErrorHandler.
+		server.setErrorHandler(new NotFoundErrorHandler());
 		try {
 			LOG.info("Starting Jetty with 'http{}' on port '{}' at context '{}'.", jettyBootParams.isSslDisabled() ? "" : "s", jettyBootParams.getPort(), contextPath);
 			server.start();
@@ -179,6 +183,19 @@ public class JettyBoot {
 	}
 
 	private static class NotFoundAllHandler extends AbstractHandler {
+
+		@Override
+		public void handle(final String target, final Request baseRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
+			if (response.isCommitted() || baseRequest.isHandled()) {
+				return;
+			}
+
+			baseRequest.setHandled(true);
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		}
+	}
+
+	private static class NotFoundErrorHandler extends ErrorHandler {
 
 		@Override
 		public void handle(final String target, final Request baseRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {

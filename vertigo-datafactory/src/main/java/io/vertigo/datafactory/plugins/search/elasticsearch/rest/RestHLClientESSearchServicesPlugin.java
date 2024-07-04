@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,15 +81,15 @@ import io.vertigo.datafactory.plugins.search.elasticsearch.IndexType;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.KeyConcept;
+import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.KeyConcept;
-import io.vertigo.datamodel.structure.model.UID;
 
 /**
  * Gestion de la connexion au serveur Solr de manière transactionnel.
@@ -260,7 +260,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 
 	/** {@inheritDoc} */
 	@Override
-	public <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
+	public <S extends KeyConcept, I extends DataObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
 		Assertion.check().isNotNull(indexCollection);
 		//-----
 		final ESStatement<S, I> statement = createElasticStatement(indexDefinition);
@@ -269,7 +269,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 
 	/** {@inheritDoc} */
 	@Override
-	public <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
+	public <S extends KeyConcept, I extends DataObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
 		//On vérifie la cohérence des données SO et SOD.
 		Assertion.check()
 				.isNotNull(indexDefinition)
@@ -293,7 +293,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 
 	/** {@inheritDoc} */
 	@Override
-	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState) {
+	public <R extends DataObject> FacetedQueryResult<R, SearchQuery> loadList(final List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState) {
 		Assertion.check().isNotNull(searchQuery);
 		//-----
 		final ESStatement<KeyConcept, R> statement = createElasticStatement(indexDefinitions.get(0));
@@ -301,8 +301,8 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		return statement.loadList(obtainIndexDtDefinition(indexDefinitions), obtainIndicesNames(indexDefinitions), searchQuery, usedListState, defaultMaxRows);
 	}
 
-	private DtDefinition obtainIndexDtDefinition(final List<SearchIndexDefinition> indexDefinitions) {
-		DtDefinition indexDtDefinition = null;
+	private DataDefinition obtainIndexDtDefinition(final List<SearchIndexDefinition> indexDefinitions) {
+		DataDefinition indexDtDefinition = null;
 		for (final SearchIndexDefinition indexDefinition : indexDefinitions) {
 			if (indexDtDefinition == null) {
 				indexDtDefinition = indexDefinition.getIndexDtDefinition();
@@ -335,8 +335,8 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 
 	/** {@inheritDoc} */
 	@Override
-	public <K extends KeyConcept> Map<UID<K>, Serializable> loadVersions(final SearchIndexDefinition indexDefinition, final DtFieldName<K> versionFieldName, final ListFilter listFilter, final int maxElements) {
-		final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
+	public <K extends KeyConcept> Map<UID<K>, Serializable> loadVersions(final SearchIndexDefinition indexDefinition, final DataFieldName<K> versionFieldName, final ListFilter listFilter, final int maxElements) {
+		final DataDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 		return ((ESStatement<K, ?>) createElasticStatement(indexDefinition)).loadVersions(indexDtDefinition.getField(versionFieldName), listFilter, maxElements);
 	}
 
@@ -439,7 +439,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		}
 	}
 
-	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
+	private <S extends KeyConcept, I extends DataObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
 		Assertion.check()
 				.isTrue(indexSettingsValid,
 						"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.")
@@ -491,9 +491,9 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 					.endObject();
 
 			/* 3 : Les champs du dto index */
-			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
-			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
-			for (final DtField dtField : indexDtDefinition.getFields()) {
+			final Set<DataField> copyFromFields = indexDefinition.getIndexCopyFromFields();
+			final DataDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
+			for (final DataField dtField : indexDtDefinition.getFields()) {
 				final IndexType indexType = IndexType.readIndexType(dtField.smartTypeDefinition());
 				typeMapping.startObject(dtField.name());
 				appendIndexTypeMapping(typeMapping, indexType);
@@ -527,8 +527,8 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		}
 	}
 
-	private static void appendIndexCopyToMapping(final SearchIndexDefinition indexDefinition, final XContentBuilder typeMapping, final DtField dtField) throws IOException {
-		final List<DtField> copyToFields = indexDefinition.getIndexCopyToFields(dtField);
+	private static void appendIndexCopyToMapping(final SearchIndexDefinition indexDefinition, final XContentBuilder typeMapping, final DataField dtField) throws IOException {
+		final List<DataField> copyToFields = indexDefinition.getIndexCopyToFields(dtField);
 		if (copyToFields.size() == 1) {
 			typeMapping.field("copy_to", copyToFields.get(0).name());
 		} else {

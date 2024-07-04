@@ -8,6 +8,7 @@ import { viteExternalsPlugin } from 'vite-plugin-externals'
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
+    sourcemap: true,
     lib: {
       entry: path.resolve(__dirname, 'src/main.js'),
       name: 'VertigoUi',

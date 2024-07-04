@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@
 package io.vertigo.ui.data.domain.users;
 
 import io.vertigo.core.lang.Generated;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.stereotype.DisplayField;
-import io.vertigo.datamodel.structure.stereotype.Field;
-import io.vertigo.datamodel.structure.stereotype.SortField;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.stereotype.DisplayField;
+import io.vertigo.datamodel.data.stereotype.Field;
+import io.vertigo.datamodel.data.stereotype.SortField;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.impl.entitystore.StoreListVAccessor;
 
 /**
@@ -37,11 +37,11 @@ public final class Profil implements Entity {
 	private Long proId;
 	private String label;
 
-	@io.vertigo.datamodel.structure.stereotype.AssociationNN(
+	@io.vertigo.datamodel.data.stereotype.AssociationNN(
 			name = "AnnProSro",
 			tableName = "ProSro",
-			dtDefinitionA = "DtProfil",
-			dtDefinitionB = "DtSecurityRole",
+			dataDefinitionA = "DtProfil",
+			dataDefinitionB = "DtSecurityRole",
 			navigabilityA = false,
 			navigabilityB = true,
 			roleA = "Profil",
@@ -107,6 +107,6 @@ public final class Profil implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return DtObjectUtil.toString(this);
+		return DataModelUtil.toString(this);
 	}
 }

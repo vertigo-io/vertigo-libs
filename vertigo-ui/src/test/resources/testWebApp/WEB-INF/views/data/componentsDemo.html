@@ -41,7 +41,7 @@
                         </vu:grid-cell>
                         <vu:date object="movie" field="released"/>
                         <vu:datetime object="movie" field="lastModified" />
-                        <vu:autocomplete object="movie" field="movId" list="moviesMdl"/>
+                        <vu:autocomplete object="movie" field="movId" list="moviesMdl" minQueryLength="2"/>
                         <vu:radio object="movie" field="movId" list="movies" layout="horizontal" labelField="movId"/>
                         <vu:radio object="movie" field="movId" list="movies" />
                         <vu:text-field object="movie" field="movId"/>
@@ -50,6 +50,7 @@
                         <vu:grid-cell/>
                         <vu:grid-cell col="1">
 							 <vu:autocomplete-multiple object="movieDisplayInput" field="movIds" list="moviesMdl"  />
+							 <vu:checkbox-multiple object="movieDisplayInput" field="movIds" list="moviesMdl" />
 						</vu:grid-cell>
                         <vu:grid-cell col="1">
                             <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" @update:model-value="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
@@ -125,7 +126,7 @@
             <br/>
            <h6>Test table</h6>
             <vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}"
-                tr_@click.native="|goTo('@{/movie/}'+props.row.movId)|" tr_class="nav">
+                th:tr_@click.native="|goTo('@{/movie/}'+props.row.movId)|" tr_class="nav">
                 <vu:slot name="actions_slot"><q-btn label="View detail" th:@click="|openModal('movieDetailModal', '@{/movie/}'+props.row.movId, {  })|"></q-btn></vu:slot>
                 <vu:include-data object="movies" field="movId" />
                 <vu:column field="movId" >

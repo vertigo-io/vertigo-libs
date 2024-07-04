@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,15 +25,16 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.database.sql.SqlManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.VCollectors;
 import io.vertigo.datamodel.task.definitions.TaskAttribute;
 
 /**
@@ -69,8 +70,9 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 			final ScriptManager scriptManager,
 			final VTransactionManager transactionManager,
 			final SqlManager sqlManager,
-			final SmartTypeManager smartTypeManager) {
-		super(scriptManager, transactionManager, sqlManager, smartTypeManager);
+			final SmartTypeManager smartTypeManager,
+			final AnalyticsManager analyticsManager) {
+		super(scriptManager, transactionManager, sqlManager, smartTypeManager, analyticsManager);
 	}
 
 	/*
@@ -95,7 +97,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 				if (outAttribute.cardinality().hasMany()) {
 					final DtList<?> dtList = (DtList<?>) result
 							.stream()
-							.map(DtObject.class::cast)
+							.map(DataObject.class::cast)
 							.collect(VCollectors.toDtList(outAttribute.smartTypeDefinition().getJavaClass()));
 					setResult(dtList);
 				} else {

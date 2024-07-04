@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,9 +32,9 @@ import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition.FacetOrder;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
 
 /**
  * Search faceted result merger.
@@ -46,7 +46,7 @@ import io.vertigo.datamodel.structure.model.DtObject;
  * @param <R> Result object's type
  * @param <S> Source object's type
  */
-public final class FacetedQueryResultMerger<R extends DtObject, S> {
+public final class FacetedQueryResultMerger<R extends DataObject, S> {
 
 	private final Map<String, FacetValue> facetValuePerFilter = new HashMap<>();
 	private final Map<FacetValue, List<FacetedQueryResult<?, S>>> otherResults = new LinkedHashMap<>();
@@ -120,7 +120,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> {
 		final Map<FacetValue, DtList<R>> clustersDtc = new LinkedHashMap<>(otherResults.size());
 		final Map<FacetValue, Long> clustersCount = new LinkedHashMap<>(otherResults.size());
 		final List<Facet> facets = new ArrayList<>();
-		final Map<R, Map<DtField, String>> highlights = Collections.emptyMap();
+		final Map<R, Map<DataField, String>> highlights = Collections.emptyMap();
 
 		for (final Entry<FacetValue, List<FacetedQueryResult<?, S>>> otherResult : otherResults.entrySet()) {
 			long clusterCount = 0;

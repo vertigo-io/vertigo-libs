@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ package io.vertigo.datamodel.criteria;
 
 import java.io.Serializable;
 
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.Entity;
 
 /**
  * Defines a limit/boundary.
@@ -31,7 +31,7 @@ import io.vertigo.datamodel.structure.model.Entity;
  *
  * @param <E> the type of Entity
  */
-public final class CriterionLimit<E extends DtObject> implements Serializable {
+public final class CriterionLimit<E extends DataObject> implements Serializable {
 	private static final long serialVersionUID = 3903274923414317496L;
 
 	private final Serializable value;

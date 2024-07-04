@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,27 +20,26 @@ package io.vertigo.datamodel.task.model;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.datamodel.smarttype.definitions.ConstraintException;
 import io.vertigo.datamodel.task.definitions.TaskAttribute;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
 
 /**
  * Gestion des taches.
- *
  * Les taches sont implémentés par les classes dérivées de {@link io.vertigo.datamodel.task.model.TaskEngine}
- *
  * Une tache peut être perçue comme une instance d'une {@link io.vertigo.datamodel.task.definitions.TaskDefinition} ;
  * celle-ci doit être préalablement déclarée.
- *
  * L'utilisation d'une tache se fait en 4 étapes :
- * -  Etape 1 : récupération de la tache.
- * -  Etape 2 : définition des attributs (ou paramètres) d'entrées. <code>srv.setXXX(...);</code>
- * -  Etape 3 : exécution de la tache <code>srv.execute();</code>
- * -  Etape 4 : récupération des paramètres de sorties. <code>srv.getXXX(...);</code>
- *
+ * - Etape 1 : récupération de la tache.
+ * - Etape 2 : définition des attributs (ou paramètres) d'entrées. <code>srv.setXXX(...);</code>
+ * - Etape 3 : exécution de la tache <code>srv.execute();</code>
+ * - Etape 4 : récupération des paramètres de sorties. <code>srv.getXXX(...);</code>
  * Notes :
- * -  Une tache s'exécute dans le cadre de la transaction courante.
- * -  Une tache n'est pas sérializable ; elle doit en effet posséder une durée de vie la plus courte possible.
- * @author  fconstantin, pchretien
+ * - Une tache s'exécute dans le cadre de la transaction courante.
+ * - Une tache n'est pas sérializable ; elle doit en effet posséder une durée de vie la plus courte possible.
+ *
+ * @author fconstantin, pchretien
  */
 public final class Task {
 	/**
@@ -75,6 +74,7 @@ public final class Task {
 
 	/**
 	 * Static method factory for TaskBuilder
+	 *
 	 * @param taskDefinition the definition of the task
 	 * @return TaskBuilder
 	 */
@@ -87,7 +87,11 @@ public final class Task {
 			//on ne prend que les attributes correspondant au mode.
 			//We check all attributes
 			final Object value = inTaskAttributes.get(taskAttribute);
-			taskAttribute.validate(value);
+			try {
+				taskAttribute.validate(value);
+			} catch (final ConstraintException e) {
+				throw WrappedException.wrap(e);
+			}
 		}
 	}
 

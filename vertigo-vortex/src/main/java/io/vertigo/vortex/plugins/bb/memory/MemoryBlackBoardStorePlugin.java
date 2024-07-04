@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,12 +30,12 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vortex.bb.BBKey;
 import io.vertigo.vortex.bb.BBKeyPattern;
-import io.vertigo.vortex.bb.BlackBoard.Type;
+import io.vertigo.vortex.bb.BBType;
 import io.vertigo.vortex.bb.BlackBoardManager;
 import io.vertigo.vortex.impl.bb.BlackBoardStorePlugin;
 
 public final class MemoryBlackBoardStorePlugin implements BlackBoardStorePlugin {
-	private final Map<BBKey, Type> keys = Collections.synchronizedMap(new LinkedHashMap<>());
+	private final Map<BBKey, BBType> keys = Collections.synchronizedMap(new LinkedHashMap<>());
 	private final Map<BBKey, Object> values = Collections.synchronizedMap(new LinkedHashMap<>());
 	private final Map<BBKey, BBList> lists = Collections.synchronizedMap(new LinkedHashMap<>());
 
@@ -53,14 +53,14 @@ public final class MemoryBlackBoardStorePlugin implements BlackBoardStorePlugin 
 	//--- Keys
 	//------------------------------------
 	@Override
-	public boolean exists(final BBKey key) {
+	public boolean keysExists(final BBKey key) {
 		Assertion.check().isNotNull(key);
 		// ---
 		return keys.containsKey(key);
 	}
 
 	@Override
-	public Set<BBKey> keys(final BBKeyPattern keyPattern) {
+	public Set<BBKey> keysFindAll(final BBKeyPattern keyPattern) {
 		Assertion.check().isNotNull(keyPattern);
 		final var keyPatternString = keyPattern.keyPattern();
 		//---
@@ -84,7 +84,7 @@ public final class MemoryBlackBoardStorePlugin implements BlackBoardStorePlugin 
 	}
 
 	@Override
-	public void delete(final BBKeyPattern keyPattern) {
+	public void keysDeleteAll(final BBKeyPattern keyPattern) {
 		Assertion.check().isNotNull(keyPattern);
 		final var keyPatternString = keyPattern.keyPattern();
 		if ("/*".equals(keyPatternString)) {
@@ -114,48 +114,48 @@ public final class MemoryBlackBoardStorePlugin implements BlackBoardStorePlugin 
 	}
 
 	@Override
-	public String getString(final BBKey key) {
+	public String stringGet(final BBKey key) {
 		Assertion.check().isNotNull(key);
 		// ---
 		return (String) values.get(key);
 	}
 
 	@Override
-	public Integer getInteger(final BBKey key) {
+	public Integer integerGet(final BBKey key) {
 		Assertion.check().isNotNull(key);
 		// ---
 		return (Integer) values.get(key);
 	}
 
 	@Override
-	public Boolean getBoolean(final BBKey key) {
+	public Boolean boolGet(final BBKey key) {
 		Assertion.check().isNotNull(key);
 		// ---
 		return (Boolean) values.get(key);
 	}
 
 	@Override
-	public void putString(final BBKey key, final String value) {
-		doPut(key, Type.String, value);
+	public void stringPut(final BBKey key, final String value) {
+		doPut(key, BBType.String, value);
 	}
 
 	@Override
-	public void putInteger(final BBKey key, final Integer value) {
-		doPut(key, Type.Integer, value);
+	public void integerPut(final BBKey key, final Integer value) {
+		doPut(key, BBType.Integer, value);
 	}
 
 	@Override
-	public void putBoolean(final BBKey key, final Boolean value) {
-		doPut(key, Type.Boolean, value);
+	public void boolPut(final BBKey key, final Boolean value) {
+		doPut(key, BBType.Boolean, value);
 	}
 
-	private void doPut(final BBKey key, final Type type, final Object value) {
+	private void doPut(final BBKey key, final BBType type, final Object value) {
 		Assertion.check()
 				.isNotNull(key)
 				.isNotNull(type);
 		// ---
 		//---
-		final Type previousType = keys.put(key, type);
+		final BBType previousType = keys.put(key, type);
 		if (previousType != null && type != previousType) {
 			throw new IllegalStateException("the type is already defined" + previousType);
 		}
@@ -163,19 +163,19 @@ public final class MemoryBlackBoardStorePlugin implements BlackBoardStorePlugin 
 	}
 
 	@Override
-	public void incrBy(final BBKey key, final int value) {
+	public void integerIncrBy(final BBKey key, final int value) {
 		Assertion.check()
 				.isNotNull(key);
 		//---
-		Integer i = getInteger(key);
+		Integer i = integerGet(key);
 		if (i == null) {
 			i = 0;
 		}
-		putInteger(key, i + value);
+		integerPut(key, i + value);
 	}
 
 	@Override
-	public Type getType(final BBKey key) {
+	public BBType keysGetType(final BBKey key) {
 		return keys.get(key);
 	}
 

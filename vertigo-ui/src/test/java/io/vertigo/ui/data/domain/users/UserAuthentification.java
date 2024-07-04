@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@
 package io.vertigo.ui.data.domain.users;
 
 import io.vertigo.core.lang.Generated;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.stereotype.Field;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.stereotype.Field;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 
 /**
@@ -36,7 +36,7 @@ public final class UserAuthentification implements Entity {
 	private String login;
 	private String password;
 
-	@io.vertigo.datamodel.structure.stereotype.Association(
+	@io.vertigo.datamodel.data.stereotype.Association(
 			name = "AAuthUsr",
 			fkFieldName = "usrId",
 			primaryDtDefinitionName = "DtApplicationUser",
@@ -119,7 +119,7 @@ public final class UserAuthentification implements Entity {
 	 * Récupère la valeur de la propriété 'Application user'.
 	 * @return Long usrId <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyId", label = "Application user", fkDefinition = "DtApplicationUser")
+	@io.vertigo.datamodel.data.stereotype.ForeignKey(smartType = "STyId", label = "Application user", fkDefinition = "DtApplicationUser")
 	public Long getUsrId() {
 		return (Long) usrIdAccessor.getId();
 	}
@@ -144,6 +144,6 @@ public final class UserAuthentification implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return DtObjectUtil.toString(this);
+		return DataModelUtil.toString(this);
 	}
 }

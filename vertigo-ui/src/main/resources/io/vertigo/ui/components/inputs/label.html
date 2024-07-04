@@ -1,4 +1,4 @@
-<th:block th:fragment="label-edit(object,field, label, required, after_label_slot, label_attrs)" vu:alias="label" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="label-edit(object,field,rowIndex, label, required, after_label_slot, label_attrs)" vu:alias="label" vu:selector="${viewMode=='edit'}"
           th:with="myLabel=${label?:model.util.label(object + '.' + field)}, myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
           th:assert="${object} != null and ${field} != null">
     <q-field
@@ -18,7 +18,7 @@
     </q-field>
 </th:block>
 
-<th:block th:fragment="label-read(object, field, label, after_label_slot, label_attrs)" vu:alias="label" vu:selector="${viewMode=='read'}"
+<th:block th:fragment="label-read(object, field, rowIndex, label, after_label_slot, label_attrs)" vu:alias="label" vu:selector="${viewMode=='read'}"
           th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
           th:assert="${object} != null and ${field} != null">
     <q-field

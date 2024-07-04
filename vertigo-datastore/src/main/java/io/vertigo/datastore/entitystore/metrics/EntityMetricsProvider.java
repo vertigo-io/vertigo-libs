@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.database.sql.connection.SqlConnection;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 
 /**
@@ -62,29 +62,29 @@ public final class EntityMetricsProvider implements Component {
 	@Metrics
 	public List<Metric> getEntityCountMetrics() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			return Node.getNode().getDefinitionSpace().getAll(DtDefinition.class)
+			return Node.getNode().getDefinitionSpace().getAll(DataDefinition.class)
 					.stream()
-					.filter(DtDefinition::isPersistent)
-					.map(dtDefinition -> doExecute(dtDefinition, transaction))
+					.filter(DataDefinition::isPersistent)
+					.map(dataDefinition -> doExecute(dataDefinition, transaction))
 					.toList();
 		}
 
 	}
 
-	private Metric doExecute(final DtDefinition dtDefinition, final VTransactionWritable transaction) {
+	private Metric doExecute(final DataDefinition dataDefinition, final VTransactionWritable transaction) {
 		Assertion.check()
-				.isNotNull(dtDefinition)
-				.isTrue(dtDefinition.isPersistent(), "Count can only be performed on persistent entities, DtDefinition '{0}' is not", dtDefinition.getName());
+				.isNotNull(dataDefinition)
+				.isTrue(dataDefinition.isPersistent(), "Count can only be performed on persistent entities, DtDefinition '{0}' is not", dataDefinition.getName());
 		//-----
 		final MetricBuilder metricBuilder = Metric.builder()
 				.withName("entityCount")
-				.withFeature(dtDefinition.getName());
+				.withFeature(dataDefinition.getName());
 		try {
 			final SqlConnection vTransactionResource = transaction.getResource(AbstractTaskEngineSQL.SQL_MAIN_RESOURCE_ID);
 			if (vTransactionResource != null) {
 				vTransactionResource.getJdbcConnection().rollback();
 			}
-			final double count = entityStoreManager.count(dtDefinition);
+			final double count = entityStoreManager.count(dataDefinition);
 			return metricBuilder
 					.withSuccess()
 					.withValue(count)

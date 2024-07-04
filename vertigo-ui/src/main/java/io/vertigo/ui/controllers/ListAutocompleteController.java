@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.datafactory.collections.CollectionsManager;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.ui.core.UiListUnmodifiable;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
@@ -67,11 +67,11 @@ public final class ListAutocompleteController extends AbstractVSpringMvcControll
 			@RequestParam("labelField") final String labelField) {
 
 		final DtList dtList = obtainDtList(viewContext, list);
-		final DtDefinition dtDefinition = dtList.getDefinition();
-		final DtField labelDtField = dtDefinition.getField(labelField);
-		final Collection<DtField> searchedFields = Collections.singletonList(labelDtField);
+		final DataDefinition dtDefinition = dtList.getDefinition();
+		final DataField labelDataField = dtDefinition.getField(labelField);
+		final Collection<DataField> searchedFields = Collections.singletonList(labelDataField);
 		//-----
-		final UnaryOperator<DtList<DtObject>> fullTextFilter = collectionsManager.createIndexDtListFunctionBuilder()
+		final UnaryOperator<DtList<DataObject>> fullTextFilter = collectionsManager.createIndexDtListFunctionBuilder()
 				.filter(terms != null ? terms : "", 20, searchedFields)
 				.build();
 		return loadList(fullTextFilter, dtList, valueField, labelField);
@@ -86,7 +86,7 @@ public final class ListAutocompleteController extends AbstractVSpringMvcControll
 			@RequestParam("valueField") final String valueField,
 			@RequestParam("labelField") final String labelField) {
 		final DtList dtList = obtainDtList(viewContext, list);
-		final UnaryOperator<DtList<DtObject>> byValueFilter = collectionsManager.createIndexDtListFunctionBuilder()
+		final UnaryOperator<DtList<DataObject>> byValueFilter = collectionsManager.createIndexDtListFunctionBuilder()
 				.filterByValue(valueField, value)
 				.build();
 		return loadList(byValueFilter, dtList, valueField, labelField);
@@ -97,7 +97,7 @@ public final class ListAutocompleteController extends AbstractVSpringMvcControll
 		return contextList.mergeAndCheckInput(Collections.EMPTY_LIST, getUiMessageStack());
 	}
 
-	private List loadList(final UnaryOperator<DtList<DtObject>> listFilter, final DtList dtList, final String valueField,
+	private List loadList(final UnaryOperator<DtList<DataObject>> listFilter, final DtList dtList, final String valueField,
 			final String labelField) {
 		//-----
 		final DtList results;

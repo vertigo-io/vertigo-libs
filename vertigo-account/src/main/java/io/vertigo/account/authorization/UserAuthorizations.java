@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import io.vertigo.account.authorization.definitions.AuthorizationName;
 import io.vertigo.account.authorization.definitions.Role;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 
 /**
  * This class list User's Authorizations.
@@ -52,7 +52,7 @@ public final class UserAuthorizations implements Serializable {
 	/**
 	 * KeyConcept dependent authorizations list by keyConcept of this user.
 	 */
-	private final Map<DefinitionId<DtDefinition>, Map<String, DefinitionId<Authorization>>> authorizationMapRefs = new HashMap<>();
+	private final Map<DefinitionId<DataDefinition>, Map<String, DefinitionId<Authorization>>> authorizationMapRefs = new HashMap<>();
 
 	/**
 	 * Accepted roles for this user.
@@ -164,7 +164,7 @@ public final class UserAuthorizations implements Serializable {
 	 * @param entityDefinition Entity definition
 	 * @return Authorizations set
 	 */
-	public Set<Authorization> getEntityAuthorizations(final DtDefinition entityDefinition) {
+	public Set<Authorization> getEntityAuthorizations(final DataDefinition entityDefinition) {
 		final Map<String, DefinitionId<Authorization>> entityAuthorizationRefs = authorizationMapRefs.get(entityDefinition.id());
 		if (entityAuthorizationRefs != null) {
 			return entityAuthorizationRefs.values().stream()

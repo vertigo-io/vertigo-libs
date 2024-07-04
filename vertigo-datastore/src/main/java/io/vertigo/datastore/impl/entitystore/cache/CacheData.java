@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@
 package io.vertigo.datastore.impl.entitystore.cache;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListURI;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListURI;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.cache.CacheManager;
 
 /**
@@ -46,12 +46,12 @@ public final class CacheData {
 		this.cacheManager = cacheManager;
 	}
 
-	public static String getContext(final DtDefinition dtDefinition) {
-		return "CacheData" + dtDefinition.getName();
+	public static String getContext(final DataDefinition dataDefinition) {
+		return "CacheData" + dataDefinition.getName();
 	}
 
-	public static Object getContextLock(final DtDefinition dtDefinition) {
-		return getContext(dtDefinition).intern();
+	public static Object getContextLock(final DataDefinition dataDefinition) {
+		return getContext(dataDefinition).intern();
 	}
 
 	/**
@@ -61,8 +61,8 @@ public final class CacheData {
 	 * @param <E> the type of entity
 	 */
 	<E extends Entity> E getDtObject(final UID<E> uid) {
-		final DtDefinition dtDefinition = uid.getDefinition();
-		return (E) cacheManager.get(getContext(dtDefinition), uid);
+		final DataDefinition dataDefinition = uid.getDefinition();
+		return (E) cacheManager.get(getContext(dataDefinition), uid);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public final class CacheData {
 	void putDtObject(final Entity entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final String context = getContext(DtObjectUtil.findDtDefinition(entity));
+		final String context = getContext(DataModelUtil.findDataDefinition(entity));
 		//2.On met à jour l'objet
 		cacheManager.put(context, entity.getUID(), entity);
 	}
@@ -83,10 +83,10 @@ public final class CacheData {
 	 * @return null ou DTC
 	 * @param <D> Dt type
 	 */
-	<D extends DtObject> DtList<D> getDtList(final DtListURI dtcUri) {
+	<D extends DataObject> DtList<D> getDtList(final DtListURI dtcUri) {
 		Assertion.check().isNotNull(dtcUri);
 		//-----
-		return DtList.class.cast(cacheManager.get(getContext(dtcUri.getDtDefinition()), dtcUri));
+		return DtList.class.cast(cacheManager.get(getContext(dtcUri.getDataDefinition()), dtcUri));
 	}
 
 	/**
@@ -107,11 +107,11 @@ public final class CacheData {
 	}
 
 	/**
-	 * @param dtDefinition Dt definition to clear
+	 * @param dataDefinition Dt definition to clear
 	 */
-	void clear(final DtDefinition dtDefinition) {
-		Assertion.check().isNotNull(dtDefinition);
+	void clear(final DataDefinition dataDefinition) {
+		Assertion.check().isNotNull(dataDefinition);
 		//-----
-		cacheManager.clear(getContext(dtDefinition));
+		cacheManager.clear(getContext(dataDefinition));
 	}
 }

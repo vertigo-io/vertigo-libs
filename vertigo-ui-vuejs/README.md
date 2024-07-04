@@ -17,3 +17,5 @@ Won't work fine with https, and you should inactivate your ContentSecurityPolicy
 npm run build-lib
 ```
 
+### To update libs
+`npm outdated`

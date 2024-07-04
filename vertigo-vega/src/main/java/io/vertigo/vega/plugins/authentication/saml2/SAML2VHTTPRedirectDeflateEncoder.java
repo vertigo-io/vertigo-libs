@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,12 +74,12 @@ import com.google.common.collect.Lists;
 
 import io.vertigo.core.lang.Assertion;
 import jakarta.servlet.http.HttpServletResponse;
-import net.shibboleth.utilities.java.support.codec.Base64Support;
-import net.shibboleth.utilities.java.support.codec.EncodingException;
-import net.shibboleth.utilities.java.support.collection.Pair;
-import net.shibboleth.utilities.java.support.net.URLBuilder;
-import net.shibboleth.utilities.java.support.primitive.StringSupport;
-import net.shibboleth.utilities.java.support.xml.SerializeSupport;
+import net.shibboleth.shared.codec.Base64Support;
+import net.shibboleth.shared.codec.EncodingException;
+import net.shibboleth.shared.collection.Pair;
+import net.shibboleth.shared.net.URLBuilder;
+import net.shibboleth.shared.primitive.StringSupport;
+import net.shibboleth.shared.xml.SerializeSupport;
 
 /**
  * This encoder is mainly inspired by the org.opensaml.saml.saml2.binding.decoding.impl.HTTPRedirectDeflateDecoder but to make it usable with the new jakarta namespace.

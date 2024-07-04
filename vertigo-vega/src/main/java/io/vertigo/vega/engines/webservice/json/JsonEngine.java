@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import io.vertigo.core.node.component.Component;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.vega.webservice.model.UiObject;
 
 /**
@@ -96,7 +96,7 @@ public interface JsonEngine extends Component {
 	 * @param paramType Object type
 	 * @return UiObject filled with a DtObject partially filled and the accessToken if present
 	 */
-	<D extends DtObject> UiObject<D> uiObjectFromJson(String json, Type paramType);
+	<D extends DataObject> UiObject<D> uiObjectFromJson(String json, Type paramType);
 
 	/**
 	 * Specific convertion Json to UiObjectExtended.
@@ -107,7 +107,7 @@ public interface JsonEngine extends Component {
 	 * @param paramType Object type
 	 * @return UiObjectExtended filled with a DtObject partially filled, the accessToken if present, and all other properties send
 	 */
-	//<D extends DtObject> UiObjectExtended<D> uiObjectExtendedFromJson(String json, Type paramType);
+	//<D extends Data> UiObjectExtended<D> uiObjectExtendedFromJson(String json, Type paramType);
 
 	/**
 	 * Specific convertion Json to UiContext.
@@ -125,15 +125,15 @@ public interface JsonEngine extends Component {
 	 * @param paramType Object type
 	 * @return UiListDelta filled with created/updated/deleted DtObjects list partially filled and the accessToken if present
 	 */
-	<D extends DtObject> UiListDelta<D> uiListDeltaFromJson(String json, Type paramType);
+	<D extends DataObject> UiListDelta<D> uiListDeltaFromJson(String json, Type paramType);
 
-	/**
+	/**	
 	 * Specific convertion Json to UiList.
 	 * @param <D> Object type
 	 * @param json Json string
 	 * @param paramType Object type
 	 * @return UiList filled with DtObjects list partially filled and the accessToken if present
 	 */
-	<D extends DtObject> UiListModifiable<D> uiListFromJson(String json, Type paramType);
+	<D extends DataObject> UiListModifiable<D> uiListFromJson(String json, Type paramType);
 
 }

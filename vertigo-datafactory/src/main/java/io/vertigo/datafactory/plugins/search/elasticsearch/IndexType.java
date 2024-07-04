@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.datamodel.smarttype.definitions.DtProperty;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DtProperty;
 
 public final class IndexType {
 
@@ -89,7 +89,7 @@ public final class IndexType {
 		}
 	}
 
-	private Map<String, Object> parseIndexType(final String[] indexTypeArray, final String indexType) {
+	private static Map<String, Object> parseIndexType(final String[] indexTypeArray, final String indexType) {
 		final Map<String, Object> parsedIndexType = new HashMap<>();
 
 		//On parcours les paramètres et on détermine si on reconnait un mot clé

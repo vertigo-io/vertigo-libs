@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@
 package io.vertigo.account.data.model;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.datamodel.structure.model.KeyConcept;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.stereotype.Field;
-import io.vertigo.datamodel.structure.stereotype.ForeignKey;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.model.KeyConcept;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.stereotype.Field;
+import io.vertigo.datamodel.data.stereotype.ForeignKey;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 
 /**
@@ -36,7 +36,7 @@ public final class TestUser implements KeyConcept {
 	private String fullName;
 	private String email;
 
-	@io.vertigo.datamodel.structure.stereotype.Association(name = "AGrpUsr", fkFieldName = "grpId", primaryDtDefinitionName = "DtUserGroup", primaryIsNavigable = true, primaryRole = "Group", primaryLabel = "Group", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DtTestUser", foreignIsNavigable = false, foreignRole = "User", foreignLabel = "User", foreignMultiplicity = "0..*")
+	@io.vertigo.datamodel.data.stereotype.Association(name = "AGrpUsr", fkFieldName = "grpId", primaryDtDefinitionName = "DtUserGroup", primaryIsNavigable = true, primaryRole = "Group", primaryLabel = "Group", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DtTestUser", foreignIsNavigable = false, foreignRole = "User", foreignLabel = "User", foreignMultiplicity = "0..*")
 	private final StoreVAccessor<UserGroup> grpIdAccessor = new StoreVAccessor<>(UserGroup.class, "Group");
 
 	/** {@inheritDoc} */
@@ -94,6 +94,6 @@ public final class TestUser implements KeyConcept {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return DtObjectUtil.toString(this);
+		return DataModelUtil.toString(this);
 	}
 }

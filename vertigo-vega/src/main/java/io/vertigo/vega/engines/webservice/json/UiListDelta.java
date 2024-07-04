@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.vega.webservice.model.DtListDelta;
 import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
@@ -34,7 +34,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author npiedeloup (16 sept. 2014 18:13:55)
  * @param <D> Object type
  */
-public final class UiListDelta<D extends DtObject> implements Serializable {
+public final class UiListDelta<D extends DataObject> implements Serializable {
 	private static final long serialVersionUID = 1592171971937013208L;
 	private final Map<String, UiObject<D>> collCreates;
 	private final Map<String, UiObject<D>> collUpdates;

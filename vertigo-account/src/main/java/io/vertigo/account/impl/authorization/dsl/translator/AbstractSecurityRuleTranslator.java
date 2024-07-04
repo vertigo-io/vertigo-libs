@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.DateUtil;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 
 abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTranslator<S>> {
 	private static final Pattern BEGIN_LINE_TRIM_PATTERN = Pattern.compile("^\\s+");
@@ -156,7 +156,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 
 	protected final Serializable parseFixedValue(final String fieldName, final String stringValue) {
 		if (mySecuredEntity != null) {
-			final DtField field = mySecuredEntity.getEntity().getField(fieldName);
+			final DataField field = mySecuredEntity.getEntity().getField(fieldName);
 			Serializable typedValue;
 			switch (field.smartTypeDefinition().getBasicType()) {
 				case BigDecimal:

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,11 +31,11 @@ import java.util.function.Consumer;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
@@ -47,10 +47,10 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author npiedeloup
  * @param <D> Type d'objet
  */
-public abstract class AbstractUiListModifiable<D extends DtObject> extends AbstractList<UiObject<D>> implements UiList<D>, Serializable {
+public abstract class AbstractUiListModifiable<D extends DataObject> extends AbstractList<UiObject<D>> implements UiList<D>, Serializable {
 
-	private static final long serialVersionUID = -8398542301760300787L;
-	private final DefinitionId<DtDefinition> dtDefinitionId;
+	private static final long serialVersionUID = 1L;
+	private final DefinitionId<DataDefinition> dataDefinitionId;
 	private final Class<D> objectType;
 
 	private final String inputKey;
@@ -81,12 +81,12 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		//-----
 		this.dtList = dtList;
 		this.inputKey = inputKey;
-		final DtDefinition dtDefinition = dtList.getDefinition();
-		dtDefinitionId = dtDefinition.id();
-		this.objectType = (Class<D>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
+		final DataDefinition dataDefinition = dtList.getDefinition();
+		dataDefinitionId = dataDefinition.id();
+		this.objectType = (Class<D>) ClassUtil.classForName(dataDefinition.getClassCanonicalName());
 		// ---
 		uiListDelta = new UiListDelta<>(objectType, new HashMap<>(), new HashMap<>(), new HashMap<>());
-		dtListDelta = new DtListDelta<>(new DtList<>(dtDefinition), new DtList<>(dtDefinition), new DtList<>(dtDefinition));
+		dtListDelta = new DtListDelta<>(new DtList<>(dataDefinition), new DtList<>(dataDefinition), new DtList<>(dataDefinition));
 		bufferUiObjects = new ArrayList<>(dtList.size());
 		postInit.accept((U) this);
 		rebuildBuffer();
@@ -123,8 +123,8 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	 * @return DtDefinition de l'objet métier
 	 */
 	@Override
-	public DtDefinition getDtDefinition() {
-		return dtDefinitionId.get();
+	public DataDefinition getDtDefinition() {
+		return dataDefinitionId.get();
 	}
 
 	private String findContextKey(final UiObject<D> uiObject) {
@@ -198,6 +198,24 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	}
 
 	/**
+	 * @param uiObject Element to add at index
+	 * @return true (as specified by List.add)
+	 */
+	@Override
+	public void add(final int index, final UiObject<D> uiObject) {
+		bufferUiObjects.add(index, uiObject);
+		if (uiObject != null) {
+			if (uiListDelta.getDeletesMap().containsValue(uiObject)) {
+				//Si on ajoute (add) un objet précédemment supprimé (remove),
+				//alors il suffit de l'enlever de la liste des éléments supprimés.
+				uiListDelta.getDeletesMap().remove(uiObject.getInputKey());
+			} else {
+				uiListDelta.getCreatesMap().put(uiObject.getInputKey(), uiObject);
+			}
+		}
+	}
+
+	/**
 	 * @return DtListDelta
 	 */
 	public DtListDelta<D> getDtListDelta() {
@@ -215,9 +233,9 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 				.isTrue(row <= DtListState.DEFAULT_MAX_ROWS, "UiListModifiable is limited to " + DtListState.DEFAULT_MAX_ROWS + " elements");
 
 		//SKE MLA : lazy initialisation of buffer uiObjects for size changing uiListModifiable
-		final DtDefinition dtDefinition = dtDefinitionId.get();
+		final DataDefinition dataDefinition = dataDefinitionId.get();
 		for (int i = bufferUiObjects.size(); i < row + 1; i++) {
-			add((D) DtObjectUtil.createDtObject(dtDefinition));
+			add((D) DataModelUtil.createDataObject(dataDefinition));
 		}
 
 		final UiObject<D> uiObject = bufferUiObjects.get(row);
@@ -228,8 +246,8 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	/** {@inheritDoc} */
 	@Override
 	public int indexOf(final Object o) {
-		if (o instanceof DtObject) {
-			return indexOfDtObject((DtObject) o);
+		if (o instanceof DataObject) {
+			return indexOfDtObject((DataObject) o);
 		} else if (o instanceof UiObject) {
 			return indexOfUiObject((UiObject<D>) o);
 		}
@@ -240,7 +258,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	 * @param dtObject DtObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	private int indexOfDtObject(final DtObject dtObject) {
+	private int indexOfDtObject(final DataObject dtObject) {
 		Assertion.check().isNotNull(dtObject);
 		//-----
 		for (int i = 0; i < bufferUiObjects.size(); i++) {
@@ -290,17 +308,25 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 
 		//1. check Error => KUserException
 		//on valide les éléments internes
+		int index = 0;
 		for (final UiObject<D> uiObject : bufferUiObjects) {
 			if (uiObject.isModified()) {
 				final D validatedDto = uiObject.mergeAndCheckInput(validators, uiMessageStack);
 				if (!uiListDelta.getCreatesMap().containsValue(uiObject)) {
 					dtListDelta.getUpdated().add(validatedDto);
+					final int prevIndex = dtList.indexOf(validatedDto);
+					if (prevIndex >= 0 && prevIndex != index) {
+						dtList.remove(prevIndex);
+						dtList.add(index, validatedDto); //on le déplace si besoin
+					}
 				} else {
 					dtListDelta.getCreated().add(validatedDto);
+					dtList.add(index, validatedDto); //on l'ajoute au bon endroit
 				}
 			} else if (uiListDelta.getCreatesMap().containsValue(uiObject)) {
 				dtListDelta.getCreated().add(uiObject.getServerSideObject()); //on ne force pas la validation
 			}
+			index++;
 		}
 
 		//2. Opérations
@@ -314,9 +340,6 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 
 		//on vérifie avant s'il y a des elements pour le cas des listes non modifiable
 		//il faudrait plutot que la DtListInput soit non modifiable aussi
-		if (!dtListDelta.getCreated().isEmpty()) {
-			dtList.addAll(dtListDelta.getCreated());
-		}
 		if (!dtListDelta.getDeleted().isEmpty()) {
 			dtList.removeAll(dtListDelta.getDeleted());
 		}

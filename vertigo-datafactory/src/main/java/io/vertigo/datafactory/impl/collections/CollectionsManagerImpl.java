@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,11 +37,11 @@ import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datafactory.impl.collections.facet.model.FacetFactory;
 import io.vertigo.datafactory.impl.collections.functions.filter.DtListPatternFilter;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.VCollectors;
 
 /**
  * Implémentation du gestionnaire de la manipulation des collections.
@@ -69,7 +69,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <R extends DtObject> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery, final Optional<FacetDefinition> clusterFacetDefinition) {
+	public <R extends DataObject> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery, final Optional<FacetDefinition> clusterFacetDefinition) {
 		Assertion.check()
 				.isNotNull(dtList)
 				.isNotNull(facetedQuery);
@@ -95,7 +95,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		}
 
 		//TODO 2c- mise en valeur vide
-		final Map<R, Map<DtField, String>> highlights = Collections.emptyMap();
+		final Map<R, Map<DataField, String>> highlights = Collections.emptyMap();
 
 		//3- on construit le résultat
 		return new FacetedQueryResult<>(
@@ -112,7 +112,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	//=========================================================================
 	//=======================Filtrage==========================================
 	//=========================================================================
-	private <D extends DtObject> Predicate<D> filter(final FacetedQuery facetedQuery) {
+	private <D extends DataObject> Predicate<D> filter(final FacetedQuery facetedQuery) {
 		final SelectedFacetValues selectedFacetValues = facetedQuery.getSelectedFacetValues();
 		Predicate<D> predicate = list -> true;
 		for (final FacetDefinition facetDefinition : facetedQuery.getDefinition().getFacetDefinitions()) {
@@ -129,7 +129,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> IndexDtListFunctionBuilder<D> createIndexDtListFunctionBuilder() {
+	public <D extends DataObject> IndexDtListFunctionBuilder<D> createIndexDtListFunctionBuilder() {
 		Assertion.check().isTrue(indexPluginOpt.isPresent(), "An IndexPlugin is required to use this function");
 		//-----
 		return new IndexDtListFunctionBuilderImpl<>(indexPluginOpt.get());
@@ -137,7 +137,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> Predicate<D> filter(final ListFilter listFilter) {
+	public <D extends DataObject> Predicate<D> filter(final ListFilter listFilter) {
 		return new DtListPatternFilter<>(listFilter.getFilterValue());
 	}
 }

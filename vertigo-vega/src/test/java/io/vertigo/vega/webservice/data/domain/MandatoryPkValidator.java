@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@ package io.vertigo.vega.webservice.data.domain;
 import java.util.Set;
 
 import io.vertigo.core.locale.LocaleMessageText;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.vega.webservice.validation.AbstractDtObjectValidator;
 import io.vertigo.vega.webservice.validation.DtObjectErrors;
 
@@ -43,11 +43,11 @@ public final class MandatoryPkValidator<E extends Entity> extends AbstractDtObje
 	/** {@inheritDoc} */
 	@Override
 	protected void checkMultiFieldConstraints(final E entity, final Set<String> modifiedFieldNameSet, final DtObjectErrors dtObjectErrors) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		final DtField idField = dtDefinition.getIdField().get();
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(entity);
+		final DataField idField = dataDefinition.getIdField().get();
 		final String camelCaseFieldName = idField.name();
 		if (!dtObjectErrors.hasError(camelCaseFieldName)) {
-			if (DtObjectUtil.getId(entity) == null) {
+			if (DataModelUtil.getId(entity) == null) {
 				dtObjectErrors.addError(camelCaseFieldName, LocaleMessageText.of("Id is mandatory"));
 			}
 		}

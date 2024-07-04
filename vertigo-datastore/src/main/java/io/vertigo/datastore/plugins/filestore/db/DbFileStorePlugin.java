@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,12 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
 import io.vertigo.datastore.filestore.model.VFile;
@@ -53,13 +53,13 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	 * Ces champs sont obligatoire sur les Dt associés aux fileInfoDefinitions
 	 * @author npiedeloup
 	 */
-	private enum DtoFields implements DtFieldName {
+	private enum DtoFields implements DataFieldName {
 		fileName, mimeType, lastModified, length, fileData
 	}
 
 	private final String storeDtDefinitionName;
-	private DtField storeIdField;
-	private DtDefinition storeDtDefinition;
+	private DataField storeIdField;
+	private DataDefinition storeDtDefinition;
 
 	/**
 	 * Constructor.
@@ -80,7 +80,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 
 	@Override
 	public void start() {
-		storeDtDefinition = Node.getNode().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
+		storeDtDefinition = Node.getNode().getDefinitionSpace().resolve(storeDtDefinitionName, DataDefinition.class);
 		storeIdField = storeDtDefinition.getIdField().get();
 	}
 
@@ -120,7 +120,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		//-----
 		getEntityStoreManager().create(fileInfoDto);
 		//-----
-		final Object fileInfoDtoId = DtObjectUtil.getId(fileInfoDto);
+		final Object fileInfoDtoId = DataModelUtil.getId(fileInfoDto);
 		Assertion.check().isNotNull(fileInfoDtoId, "File's id must be set");
 		final FileInfoURI uri = new FileInfoURI(fileInfo.getDefinition(), fileInfoDtoId);
 		fileInfo.setURIStored(uri);
@@ -157,7 +157,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 
 	private Entity createFileInfoDto(final FileInfo fileInfo) {
 		//Il doit exister un DtObjet associé à storeDtDefinition avec la structure attendue.
-		final Entity fileInfoDto = DtObjectUtil.createEntity(storeDtDefinition);
+		final Entity fileInfoDto = DataModelUtil.createEntity(storeDtDefinition);
 		//-----
 
 		final VFile vFile = fileInfo.getVFile();

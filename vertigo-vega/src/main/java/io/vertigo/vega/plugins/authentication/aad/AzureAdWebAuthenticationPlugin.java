@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
  */
 package io.vertigo.vega.plugins.authentication.aad;
 
+import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.Collections;
@@ -238,10 +239,11 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 
 		final IConfidentialClientApplication app = azureAdConnector.getClient();
 
-		final Object tokenCache = httpRequest.getSession().getAttribute(TOKEN_CACHE_SESSION_ATTRIBUTE);
+		/**CHECKME : token cache is not necessary anymore
+		final Object tokenCache = httpRequest.getSession().getAttribute(TOKEN_CACHE_SESSION_ATTRIBUTE);		 
 		if (tokenCache != null) {
 			app.tokenCache().deserialize(tokenCache.toString());
-		}
+		}*/
 
 		final SilentParameters parameters = SilentParameters.builder(
 				Collections.singleton("User.Read"),
@@ -250,8 +252,10 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 		final CompletableFuture<IAuthenticationResult> future = app.acquireTokenSilently(parameters);
 		final IAuthenticationResult updatedResult = future.get();
 
-		//update session with latest token cache
+		//CHECKME: No need to manually handle token cache, MSAL does it for you
+		/* /update session with latest token cache
 		AzureAdSessionManagementUtil.storeTokenCacheInSession(httpRequest, app.tokenCache().serialize());
+		*/
 
 		return updatedResult;
 	}
@@ -361,9 +365,13 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 	}
 
 	@Override
-	public boolean doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+	public void doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final Optional<String> redirectUrlOpt) {
 		// nothing for now WIP
-		return false;
+		try {
+			httpResponse.sendRedirect(resolveExternalUrl(httpRequest) + redirectUrlOpt.orElse("/"));
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
+		}
 	}
 
 }

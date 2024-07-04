@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import java.util.Map.Entry;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.definitions.WebServiceParam;
@@ -76,7 +76,7 @@ public final class QueryJsonReader implements JsonReader<String> {
 			return null;
 		}
 		if (DtListState.class.isAssignableFrom(paramClass)
-				|| DtObject.class.isAssignableFrom(paramClass)) {
+				|| DataObject.class.isAssignableFrom(paramClass)) {
 			return convertToJson(queryMap, webServiceParam.getName());
 		}
 		final String[] values = queryMap.get(paramName);

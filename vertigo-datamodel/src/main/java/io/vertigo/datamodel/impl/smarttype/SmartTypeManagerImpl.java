@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,15 +39,15 @@ import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.smarttype.AdapterConfig;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmarttypeResources;
+import io.vertigo.datamodel.smarttype.definitions.Constraint;
+import io.vertigo.datamodel.smarttype.definitions.ConstraintException;
+import io.vertigo.datamodel.smarttype.definitions.Formatter;
+import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.Constraint;
-import io.vertigo.datamodel.structure.definitions.ConstraintException;
-import io.vertigo.datamodel.structure.definitions.Formatter;
-import io.vertigo.datamodel.structure.definitions.FormatterException;
-import io.vertigo.datamodel.structure.model.DtList;
 
 public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 
@@ -157,7 +157,7 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 		}
 	}
 
-	private void checkTypeMany(final SmartTypeDefinition smartTypeDefinition, final Object value) {
+	private static void checkTypeMany(final SmartTypeDefinition smartTypeDefinition, final Object value) {
 		switch (smartTypeDefinition.getScope()) {
 			case DATA_TYPE:
 				if (!(value instanceof DtList)) {

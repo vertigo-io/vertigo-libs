@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,15 +24,15 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.collections.IndexDtListFunctionBuilder;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.impl.collections.functions.index.IndexFilterFunction;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
 
 /**
  * Builder for DtListFunction powered by index engine. *
  * @param <D> List element's type
  */
-final class IndexDtListFunctionBuilderImpl<D extends DtObject> implements IndexDtListFunctionBuilder<D> {
+final class IndexDtListFunctionBuilderImpl<D extends DataObject> implements IndexDtListFunctionBuilder<D> {
 
 	private final IndexFilterFunction<D> indexFilterFunction;
 
@@ -48,7 +48,7 @@ final class IndexDtListFunctionBuilderImpl<D extends DtObject> implements IndexD
 
 	/** {@inheritDoc} */
 	@Override
-	public IndexDtListFunctionBuilder<D> filter(final String userKeywords, final int maxRows, final Collection<DtField> keywordsSearchedFields) {
+	public IndexDtListFunctionBuilder<D> filter(final String userKeywords, final int maxRows, final Collection<DataField> keywordsSearchedFields) {
 		indexFilterFunction.filter(userKeywords, maxRows, keywordsSearchedFields);
 		return this;
 	}

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,14 +35,14 @@ import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.datamodel.criteria.CriterionLimit;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
-import io.vertigo.datamodel.structure.util.VCollectors;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.util.DataModelUtil;
+import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.vega.engines.webservice.json.UiContext;
@@ -308,7 +308,7 @@ public final class AdvancedTestWebServices implements WebServices {
 		return result;
 	}
 
-	private static <D extends DtObject> DtList<D> asDtList(final Collection<D> values, final Class<D> dtObjectClass) {
+	private static <D extends DataObject> DtList<D> asDtList(final Collection<D> values, final Class<D> dtObjectClass) {
 		final DtList<D> result = new DtList<>(dtObjectClass);
 		for (final D element : values) {
 			result.add(element);
@@ -316,13 +316,13 @@ public final class AdvancedTestWebServices implements WebServices {
 		return result;
 	}
 
-	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
+	private <D extends DataObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
 		final DtList<D> sortedList;
 		if (dtListState.getSortFieldName().isPresent()) {
-			final DtField sortField = unFilteredList.getDefinition().getField(dtListState.getSortFieldName().get());
+			final DataField sortField = unFilteredList.getDefinition().getField(dtListState.getSortFieldName().get());
 			sortedList = unFilteredList
 					.stream()
-					.sorted((dt1, dt2) -> DtObjectUtil.compareFieldValues(dt1, dt2, sortField, dtListState.isSortDesc().get()))
+					.sorted((dt1, dt2) -> DataModelUtil.compareFieldValues(dt1, dt2, sortField, dtListState.isSortDesc().get()))
 					.collect(VCollectors.toDtList(unFilteredList.getDefinition()));
 		} else {
 			sortedList = unFilteredList;
@@ -337,24 +337,24 @@ public final class AdvancedTestWebServices implements WebServices {
 		return sortedList;
 	}
 
-	private <C extends DtObject, E extends Entity> Predicate<E> createFilterFunction(final C criteria, final Class<E> resultClass) {
+	private <C extends DataObject, E extends Entity> Predicate<E> createFilterFunction(final C criteria, final Class<E> resultClass) {
 		Predicate<E> filter = (o) -> true;
-		final DtDefinition criteriaDefinition = DtObjectUtil.findDtDefinition(criteria);
-		final DtDefinition resultDefinition = DtObjectUtil.findDtDefinition(resultClass);
+		final DataDefinition criteriaDefinition = DataModelUtil.findDataDefinition(criteria);
+		final DataDefinition resultDefinition = DataModelUtil.findDataDefinition(resultClass);
 		final Set<String> alreadyAddedField = new HashSet<>();
-		for (final DtField field : criteriaDefinition.getFields()) {
+		for (final DataField field : criteriaDefinition.getFields()) {
 			final String fieldName = field.name();
 			if (!alreadyAddedField.contains(fieldName)) { //when we consume two fields at once (min;max)
 				final Object value = field.getDataAccessor().getValue(criteria);
 				if (value != null) {
 					if (fieldName.endsWith("Min") || fieldName.endsWith("Max")) {
 						final String filteredField = fieldName.substring(0, fieldName.length() - "Min".length());
-						final DtField resultDtField = resultDefinition.getField(filteredField);
-						final DtField minField = fieldName.endsWith("Min") ? field : criteriaDefinition.getField(filteredField + "Min");
-						final DtField maxField = fieldName.endsWith("Max") ? field : criteriaDefinition.getField(filteredField + "Max");
+						final DataField resultDataField = resultDefinition.getField(filteredField);
+						final DataField minField = fieldName.endsWith("Min") ? field : criteriaDefinition.getField(filteredField + "Min");
+						final DataField maxField = fieldName.endsWith("Max") ? field : criteriaDefinition.getField(filteredField + "Max");
 						final Serializable minValue = (Serializable) minField.getDataAccessor().getValue(criteria);
 						final Serializable maxValue = (Serializable) maxField.getDataAccessor().getValue(criteria);
-						filter = filter.and(Criterions.isBetween(() -> resultDtField.name(),
+						filter = filter.and(Criterions.isBetween(() -> resultDataField.name(),
 								CriterionLimit.ofIncluded(minValue),
 								CriterionLimit.ofExcluded(maxValue))
 								.toPredicate());

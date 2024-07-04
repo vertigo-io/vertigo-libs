@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datastore.impl.entitystore.EntityStorePlugin;
 
 /**
@@ -59,13 +59,13 @@ public final class LogicalEntityStoreConfig {
 	/**
 	 * Provides a 'DataStorePlugin' for the specified 'DtDefinition'.
 	 * Each DtDefinition is mapped to a collection.
-	 * @param dtDefinition the DtDefinition
+	 * @param dataDefinition the DtDefinition
 	 * @return the dataStore used for the specified 'DtDefinition'
 	 */
-	public EntityStorePlugin getPhysicalDataStore(final DtDefinition dtDefinition) {
-		Assertion.check().isNotNull(dtDefinition);
+	public EntityStorePlugin getPhysicalDataStore(final DataDefinition dataDefinition) {
+		Assertion.check().isNotNull(dataDefinition);
 		//-----
-		return getDataStorePlugin(dtDefinition.getDataSpace());
+		return getDataStorePlugin(dataDefinition.getDataSpace());
 	}
 
 	/**

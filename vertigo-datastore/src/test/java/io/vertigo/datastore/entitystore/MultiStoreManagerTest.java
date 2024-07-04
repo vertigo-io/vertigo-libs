@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,10 +43,10 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datamodel.DataModelFeatures;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.entitystore.data.OtherStoreDtDefinitions;
@@ -191,7 +191,7 @@ public final class MultiStoreManagerTest {
 	@Test
 	public void testGetFamille() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final DtList<Famille> dtc = entityStoreManager.find(DtObjectUtil.findDtDefinition(Famille.class), null, DtListState.of(null));
+			final DtList<Famille> dtc = entityStoreManager.find(DataModelUtil.findDataDefinition(Famille.class), null, DtListState.of(null));
 			Assertions.assertNotNull(dtc);
 			Assertions.assertTrue(dtc.isEmpty(), "La liste des famille est vide");
 			transaction.commit();
@@ -204,7 +204,7 @@ public final class MultiStoreManagerTest {
 	@Test
 	public void testAddFamille() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			DtList<Famille> dtc = entityStoreManager.find(DtObjectUtil.findDtDefinition(Famille.class), null, DtListState.of(null));
+			DtList<Famille> dtc = entityStoreManager.find(DataModelUtil.findDataDefinition(Famille.class), null, DtListState.of(null));
 			Assertions.assertEquals(0, dtc.size());
 			//-----
 			final Famille famille = new Famille();
@@ -213,7 +213,7 @@ public final class MultiStoreManagerTest {
 			// on attend un objet avec un id non null ?
 			Assertions.assertNotNull(createdFamille.getFamId());
 			//-----
-			dtc = entityStoreManager.find(DtObjectUtil.findDtDefinition(Famille.class), null, DtListState.of(null));
+			dtc = entityStoreManager.find(DataModelUtil.findDataDefinition(Famille.class), null, DtListState.of(null));
 			Assertions.assertEquals(1, dtc.size());
 			transaction.commit();
 		}

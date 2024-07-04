@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,10 @@ import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.KeyConcept;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.KeyConcept;
+import io.vertigo.datamodel.data.model.UID;
 
 /**
  * Gestionnaire des indexes de recherche.
@@ -93,7 +93,7 @@ public interface SearchManager extends Manager {
 	 * @param indexDefinition Type de l'index
 	 * @param indexCollection Liste des objets à pousser dans l'index
 	 */
-	<K extends KeyConcept, I extends DtObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<K, I>> indexCollection);
+	<K extends KeyConcept, I extends DataObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<K, I>> indexCollection);
 
 	/**
 	 * Ajout d'une ressource à l'index.
@@ -103,7 +103,7 @@ public interface SearchManager extends Manager {
 	 * @param indexDefinition Type de l'index
 	 * @param index Objet à pousser dans l'index
 	 */
-	<K extends KeyConcept, I extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<K, I> index);
+	<K extends KeyConcept, I extends DataObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<K, I> index);
 
 	/**
 	 * Récupération du résultat issu d'une requête.
@@ -113,7 +113,7 @@ public interface SearchManager extends Manager {
 	 * @return Résultat correspondant à la requête
 	 * @param <I> Type de l'objet resultant de la recherche
 	 */
-	<I extends DtObject> FacetedQueryResult<I, SearchQuery> loadList(SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState);
+	<I extends DataObject> FacetedQueryResult<I, SearchQuery> loadList(SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState);
 
 	/**
 	 * Récupération du résultat issu d'une requête.
@@ -123,7 +123,7 @@ public interface SearchManager extends Manager {
 	 * @return Résultat correspondant à la requête
 	 * @param <I> Type de l'objet resultant de la recherche
 	 */
-	<I extends DtObject> FacetedQueryResult<I, SearchQuery> loadList(List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState);
+	<I extends DataObject> FacetedQueryResult<I, SearchQuery> loadList(List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState);
 
 	/**
 	 * @param indexDefinition  Type de l'index

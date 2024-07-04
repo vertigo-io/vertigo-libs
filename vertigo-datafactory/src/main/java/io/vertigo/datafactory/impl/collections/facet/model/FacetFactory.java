@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,11 +34,11 @@ import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.definitions.FacetedQueryDefinition;
 import io.vertigo.datafactory.collections.model.Facet;
 import io.vertigo.datafactory.collections.model.FacetValue;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.VCollectors;
 
 /**
  * Factory de FacetedQueryDefinition.
@@ -88,7 +88,7 @@ public final class FacetFactory {
 	 * @param dtList Liste
 	 * @return Map du cluster
 	 */
-	public <D extends DtObject> Map<FacetValue, DtList<D>> createCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+	public <D extends DataObject> Map<FacetValue, DtList<D>> createCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
 		Assertion.check()
 				.isNotNull(facetDefinition)
 				.isNotNull(dtList);
@@ -101,7 +101,7 @@ public final class FacetFactory {
 		return createTermCluster(facetDefinition, dtList);
 	}
 
-	private <D extends DtObject> DtList<D> apply(final ListFilter listFilter, final DtList<D> fullDtList) {
+	private <D extends DataObject> DtList<D> apply(final ListFilter listFilter, final DtList<D> fullDtList) {
 		//on délégue à CollectionsManager les méthodes de requête de filtrage.
 		return fullDtList.stream()
 				.filter(collectionManager.filter(listFilter))
@@ -117,7 +117,7 @@ public final class FacetFactory {
 		return createTermFacet(facetDefinition, dtList);
 	}
 
-	private <D extends DtObject> Facet createRangeFacet(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+	private <D extends DataObject> Facet createRangeFacet(final FacetDefinition facetDefinition, final DtList<D> dtList) {
 		final Map<FacetValue, DtList<D>> clusterValues = createRangeCluster(facetDefinition, dtList);
 		//map résultat avec le count par FacetFilter
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
@@ -125,7 +125,7 @@ public final class FacetFactory {
 		return new Facet(facetDefinition, facetValues);
 	}
 
-	private <D extends DtObject> Map<FacetValue, DtList<D>> createRangeCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+	private <D extends DataObject> Map<FacetValue, DtList<D>> createRangeCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
 		//map résultat avec les docs par FacetFilter
 		final Map<FacetValue, DtList<D>> clusterValues = new LinkedHashMap<>();
 
@@ -137,7 +137,7 @@ public final class FacetFactory {
 		return clusterValues;
 	}
 
-	private <D extends DtObject> Facet createTermFacet(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+	private <D extends DataObject> Facet createTermFacet(final FacetDefinition facetDefinition, final DtList<D> dtList) {
 		final Map<FacetValue, DtList<D>> clusterValues = createTermCluster(facetDefinition, dtList);
 		//map résultat avec le count par FacetFilter
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
@@ -145,18 +145,18 @@ public final class FacetFactory {
 		return new Facet(facetDefinition, facetValues);
 	}
 
-	private <D extends DtObject> Map<FacetValue, DtList<D>> createTermCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+	private <D extends DataObject> Map<FacetValue, DtList<D>> createTermCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
 		//map résultat avec les docs par FacetFilter
 		final Map<FacetValue, DtList<D>> clusterValues = new LinkedHashMap<>();
 
 		//Cas des facettes par Term
-		final DtField dtField = facetDefinition.getDtField();
+		final DataField dtField = facetDefinition.getDataField();
 		//on garde un index pour incrémenter le facetFilter pour chaque Term
 		final Map<Object, FacetValue> facetFilterIndex = new HashMap<>();
 
 		FacetValue facetValue;
-		for (final D dto : dtList) {
-			final Object value = dtField.getDataAccessor().getValue(dto);
+		for (final D data : dtList) {
+			final Object value = dtField.getDataAccessor().getValue(data);
 			facetValue = facetFilterIndex.get(value);
 			if (facetValue == null) {
 				final String valueAsString = smartTypeManager.valueToString(dtField.smartTypeDefinition(), value);
@@ -173,7 +173,7 @@ public final class FacetFactory {
 				facetFilterIndex.put(value, facetValue);
 				clusterValues.put(facetValue, new DtList<D>(dtList.getDefinition()));
 			}
-			clusterValues.get(facetValue).add(dto);
+			clusterValues.get(facetValue).add(data);
 		}
 
 		//tri des facettes
@@ -183,7 +183,7 @@ public final class FacetFactory {
 		return sortedFacetValues;
 	}
 
-	private static final class FacetComparator<O extends DtObject> implements Comparator<FacetValue>, Serializable {
+	private static final class FacetComparator<O extends DataObject> implements Comparator<FacetValue>, Serializable {
 		private static final long serialVersionUID = 6149508435834977887L;
 		private final Map<FacetValue, DtList<O>> clusterValues;
 

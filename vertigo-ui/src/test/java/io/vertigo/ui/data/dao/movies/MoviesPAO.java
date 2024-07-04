@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ public final class MoviesPAO implements StoreServices {
 					"				where MOV_ID in (#movieIds.rownum#);",
 			taskEngineClass = io.vertigo.basics.task.TaskEngineSelect.class)
 	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtMovieIndex")
-	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.ui.data.domain.movies.MovieIndex> loadMovieIndex(@io.vertigo.datamodel.task.proxy.TaskInput(name = "movieIds", smartType = "STyId") final java.util.List<Long> movieIds) {
+	public io.vertigo.datamodel.data.model.DtList<io.vertigo.ui.data.domain.movies.MovieIndex> loadMovieIndex(@io.vertigo.datamodel.task.proxy.TaskInput(name = "movieIds", smartType = "STyId") final java.util.List<Long> movieIds) {
 		final Task task = createTaskBuilder("TkLoadMovieIndex")
 				.addValue("movieIds", movieIds)
 				.build();

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,14 +38,14 @@ import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.impl.collections.IndexPlugin;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.DtListURI;
+import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtListURI;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.cache.CacheManager;
 import io.vertigo.datastore.cache.definitions.CacheDefinition;
 import io.vertigo.datastore.entitystore.StoreEvent;
@@ -102,7 +102,7 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 		return Collections.singletonList(new CacheDefinition(CACHE_LUCENE_INDEX, false, 1000, 30 * 60, 60 * 60, true));
 	}
 
-	private <D extends DtObject> RamLuceneIndex<D> indexList(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
+	private <D extends DataObject> RamLuceneIndex<D> indexList(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
 		//TODO : gestion du cache a revoir... et le lien avec le CacheStore.
 		//L'index devrait être interrogé par le Broker ? on pourrait alors mettre en cache dans le DataCache.
 		final DtListURI dtcUri = fullDtc.getURI();
@@ -127,11 +127,11 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 		return createIndex(fullDtc, storeValue);
 	}
 
-	private static String getIndexCacheContext(final DtDefinition dtDefinition) {
-		return "IndexCache:" + dtDefinition.getName();
+	private static String getIndexCacheContext(final DataDefinition dataDefinition) {
+		return "IndexCache:" + dataDefinition.getName();
 	}
 
-	private <D extends DtObject> RamLuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
+	private <D extends DataObject> RamLuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
 		Assertion.check().isNotNull(fullDtc);
 		//-----
 		final RamLuceneIndex<D> luceneDb = new RamLuceneIndex<>(fullDtc.getDefinition(), smartTypeManager);
@@ -141,12 +141,12 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> getCollection(
+	public <D extends DataObject> DtList<D> getCollection(
 			final String keywords,
-			final Collection<DtField> searchedFields,
+			final Collection<DataField> searchedFields,
 			final List<ListFilter> listFilters,
 			final DtListState listState,
-			final Optional<DtField> boostedField,
+			final Optional<DataField> boostedField,
 			final DtList<D> dtc) {
 		Assertion.check().isTrue(listState.getMaxRows().isPresent(), "Can't return all results, you must define maxRows");
 		try {

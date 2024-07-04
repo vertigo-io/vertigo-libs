@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,15 +53,15 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.node.Node;
 import io.vertigo.datafactory.collections.ListFilter;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.DtListURIForMasterData;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 
 /**
@@ -72,12 +72,12 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
  * @author  pchretien, npiedeloup
  * @param <D> Type d'objet
  */
-final class RamLuceneIndex<D extends DtObject> {
+final class RamLuceneIndex<D extends DataObject> {
 
 	//DtDefinition est non serializable
-	private final DtDefinition dtDefinition;
+	private final DataDefinition dataDefinition;
 
-	private final Optional<DtField> idFieldOpt;
+	private final Optional<DataField> idFieldOpt;
 	private final String idFieldName;
 
 	private final Map<String, D> indexedObjectPerPk = new HashMap<>();
@@ -88,22 +88,22 @@ final class RamLuceneIndex<D extends DtObject> {
 	private final SmartTypeManager smartTypeManager;
 
 	/**
-	 * @param dtDefinition DtDefinition des objets indexés
+	 * @param dataDefinition DtDefinition des objets indexés
 	 * @throws IOException Exception I/O
 	 */
 	RamLuceneIndex(
-			final DtDefinition dtDefinition,
+			final DataDefinition dataDefinition,
 			final SmartTypeManager smartTypeManager) throws IOException {
 		Assertion.check()
-				.isNotNull(dtDefinition)
+				.isNotNull(dataDefinition)
 				.isNotNull(smartTypeManager);
 		//-----
 		indexAnalyser = new DefaultAnalyzer(false); //les stop word marchent mal si asymétrique entre l'indexation et la query
 		luceneQueryFactory = new RamLuceneQueryFactory(indexAnalyser);
-		this.dtDefinition = dtDefinition;
+		this.dataDefinition = dataDefinition;
 		this.smartTypeManager = smartTypeManager;
 		directory = new RAMDirectory();
-		idFieldOpt = dtDefinition.getIdField();
+		idFieldOpt = dataDefinition.getIdField();
 		idFieldName = idFieldOpt.isPresent() ? idFieldOpt.get().name() : "_id";
 		//l'index est crée automatiquement la premiere fois.
 		buildIndex();
@@ -124,7 +124,7 @@ final class RamLuceneIndex<D extends DtObject> {
 	 * @param id Clé de l'objet
 	 * @return Objet associé dans cet index.
 	 */
-	private D getDtObjectIndexed(final String id) {
+	private D getDataIndexed(final String id) {
 		return indexedObjectPerPk.get(id);
 	}
 
@@ -164,13 +164,13 @@ final class RamLuceneIndex<D extends DtObject> {
 			final int skip,
 			final int top) throws IOException {
 
-		final DtList<D> dtcResult = new DtList<>(dtDefinition);
+		final DtList<D> dtcResult = new DtList<>(dataDefinition);
 		final int resultLength = topDocs.scoreDocs.length;
 		if (resultLength > skip) {
 			for (int i = skip; i < Math.min(skip + top, resultLength); i++) {
 				final ScoreDoc scoreDoc = topDocs.scoreDocs[i];
 				final Document document = searcher.doc(scoreDoc.doc);
-				dtcResult.add(getDtObjectIndexed(document.get(idFieldName)));
+				dtcResult.add(getDataIndexed(document.get(idFieldName)));
 			}
 		}
 		return dtcResult;
@@ -184,18 +184,18 @@ final class RamLuceneIndex<D extends DtObject> {
 	 */
 	public void addAll(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
 		Assertion.check().isNotNull(fullDtc)
-				.isTrue(dtDefinition.equals(fullDtc.getDefinition()), "Indexed DtList's definition ({0}) must equals the same definition than index ({1}", fullDtc.getDefinition().getName(), dtDefinition.getName());
+				.isTrue(dataDefinition.equals(fullDtc.getDefinition()), "Indexed DtList's definition ({0}) must equals the same definition than index ({1}", fullDtc.getDefinition().getName(), dataDefinition.getName());
 
 		//-----
 		try (final IndexWriter indexWriter = createIndexWriter()) {
-			final Collection<DtField> dtFields = fullDtc.getDefinition().getFields();
+			final Collection<DataField> dtFields = fullDtc.getDefinition().getFields();
 
 			for (final D dto : fullDtc) {
 				final Document document = new Document();
 				final String indexedPkValue = obtainIndexedIdValue(dto);
 
 				addKeyword(document, idFieldName, indexedPkValue, true);
-				for (final DtField dtField : dtFields) {
+				for (final DataField dtField : dtFields) {
 					final Object value = dtField.getDataAccessor().getValue(dto);
 					if (value != null && (idFieldOpt.isEmpty() || !dtField.equals(idFieldOpt.get()))) {
 						if (value instanceof String) {
@@ -218,7 +218,7 @@ final class RamLuceneIndex<D extends DtObject> {
 	private String obtainIndexedIdValue(final D dto) {
 		if (idFieldOpt.isPresent()) {
 			final Object pkValue = idFieldOpt.get().getDataAccessor().getValue(dto);
-			Assertion.check().isNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", dtDefinition.getName(), idFieldOpt.get().name());
+			Assertion.check().isNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", dataDefinition.getName(), idFieldOpt.get().name());
 			return String.valueOf(pkValue);
 		} else {
 			return String.valueOf(dto.hashCode());
@@ -229,16 +229,16 @@ final class RamLuceneIndex<D extends DtObject> {
 		return Node.getNode().getComponentSpace().resolve(EntityStoreManager.class);
 	}
 
-	private static String getStringValue(final DtObject dto, final DtField field, final SmartTypeManager smartTypeManager) {
+	private static String getStringValue(final DataObject dto, final DataField field, final SmartTypeManager smartTypeManager) {
 		final String stringValue;
 		final Object value = field.getDataAccessor().getValue(dto);
 		if (value != null) {
-			if (field.getType() == DtField.FieldType.FOREIGN_KEY && getEntityStoreManager().getMasterDataConfig().containsMasterData(field.getFkDtDefinition())) {
+			if (field.getType() == DataField.FieldType.FOREIGN_KEY && getEntityStoreManager().getMasterDataConfig().containsMasterData(field.getFkDtDefinition())) {
 				//TODO voir pour mise en cache de cette navigation
 				final DtListURIForMasterData mdlUri = getEntityStoreManager().getMasterDataConfig().getDtListURIForMasterData(field.getFkDtDefinition());
-				final DtField displayField = mdlUri.getDtDefinition().getDisplayField().get();
+				final DataField displayField = mdlUri.getDataDefinition().getDisplayField().get();
 				final UID<Entity> uid = UID.of(field.getFkDtDefinition(), value);
-				final DtObject fkDto = getEntityStoreManager().readOne(uid);
+				final DataObject fkDto = getEntityStoreManager().readOne(uid);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
 				stringValue = smartTypeManager.valueToString(displayField.smartTypeDefinition(), displayValue);
 			} else {
@@ -261,17 +261,17 @@ final class RamLuceneIndex<D extends DtObject> {
 	 */
 	public DtList<D> getCollection(
 			final String keywords,
-			final Collection<DtField> searchedFields,
+			final Collection<DataField> searchedFields,
 			final List<ListFilter> listFilters,
 			final DtListState dtListState,
-			final Optional<DtField> boostedField) throws IOException {
+			final Optional<DataField> boostedField) throws IOException {
 		Assertion.check()
 				.isNotNull(searchedFields)
 				.isNotNull(dtListState)
 				.isTrue(dtListState.getMaxRows().isPresent(), "MaxRows is mandatory, can't get all data :(");
 		//-----
 
-		final Query filterQuery = luceneQueryFactory.createFilterQuery(keywords, searchedFields, listFilters, dtDefinition.getIdField(), boostedField);
+		final Query filterQuery = luceneQueryFactory.createFilterQuery(keywords, searchedFields, listFilters, dataDefinition.getIdField(), boostedField);
 		final Optional<Sort> sortOpt = createSort(dtListState);
 		return executeQuery(filterQuery, dtListState.getSkipRows(), dtListState.getMaxRows().get(), sortOpt);
 	}

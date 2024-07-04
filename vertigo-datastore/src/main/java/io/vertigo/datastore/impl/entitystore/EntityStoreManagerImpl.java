@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,15 +32,15 @@ import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtListURI;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
-import io.vertigo.datamodel.structure.util.VCollectors;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.DtListURI;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.util.DataModelUtil;
+import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datastore.cache.CacheManager;
 import io.vertigo.datastore.cache.definitions.CacheDefinition;
@@ -104,8 +104,8 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	@Override
 	public void start() {
 		// register as cacheable the dtDefinitions that are persistant and have a corresponding CacheDefinition
-		Node.getNode().getDefinitionSpace().getAll(DtDefinition.class).stream()
-				.filter(DtDefinition::isPersistent)
+		Node.getNode().getDefinitionSpace().getAll(DataDefinition.class).stream()
+				.filter(DataDefinition::isPersistent)
 				.filter(dtDefinition -> Node.getNode().getDefinitionSpace().contains(CacheData.getContext(dtDefinition)))
 				.forEach(dtDefinition -> dataStoreConfig.getCacheStoreConfig().registerCacheable(dtDefinition, Node.getNode().getDefinitionSpace().resolve(CacheData.getContext(dtDefinition), CacheDefinition.class).isReloadedByList()));
 
@@ -120,8 +120,8 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 
 	}
 
-	private EntityStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
-		return logicalStoreConfig.getPhysicalDataStore(dtDefinition);
+	private EntityStorePlugin getPhysicalStore(final DataDefinition dataDefinition) {
+		return logicalStoreConfig.getPhysicalDataStore(dataDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -129,8 +129,8 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> E readOneForUpdate(final UID<E> uri) {
 		Assertion.check().isNotNull(uri);
 		//-----
-		final DtDefinition dtDefinition = uri.getDefinition();
-		final E entity = getPhysicalStore(dtDefinition).readNullableForUpdate(dtDefinition, uri);
+		final var dataDefinition = uri.getDefinition();
+		final var entity = (E) getPhysicalStore(dataDefinition).readNullableForUpdate(dataDefinition, uri);
 		//-----
 		Assertion.check().isNotNull(entity, "no entity found for : '{0}'", uri);
 		//-----
@@ -140,7 +140,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 
 	private void fireAfterCommit(final StoreEvent.Type evenType, final List<UID> uids) {
 		transactionManager.getCurrentTransaction().addAfterCompletion(
-				(final boolean txCommitted) -> {
+				(final var txCommitted) -> {
 					if (txCommitted) {//send event only is tx successful
 						eventBusManager.post(new StoreEvent(evenType, uids));
 					}
@@ -154,10 +154,10 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> E create(final E entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		final E createdEntity = getPhysicalStore(dtDefinition).create(dtDefinition, entity);
+		final var dataDefinition = DataModelUtil.findDataDefinition(entity);
+		final var createdEntity = getPhysicalStore(dataDefinition).create(dataDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.CREATE, List.of(UID.of(dtDefinition, DtObjectUtil.getId(createdEntity))));
+		fireAfterCommit(StoreEvent.Type.CREATE, List.of(UID.of(dataDefinition, DataModelUtil.getId(createdEntity))));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 		return createdEntity;
 	}
@@ -167,8 +167,8 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> DtList<E> createList(final DtList<E> entities) {
 		Assertion.check().isNotNull(entities);
 		//-----
-		final DtDefinition dtDefinition = entities.getDefinition();
-		final DtList<E> createdEntities = getPhysicalStore(dtDefinition).createList(entities);
+		final var dataDefinition = entities.getDefinition();
+		final DtList<E> createdEntities = getPhysicalStore(dataDefinition).createList(entities);
 		//-----
 		fireAfterCommit(StoreEvent.Type.CREATE, createdEntities.stream().map(Entity::getUID).toList());
 		return createdEntities;
@@ -179,10 +179,10 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public void update(final Entity entity) {
 		Assertion.check().isNotNull(entity);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		getPhysicalStore(dtDefinition).update(dtDefinition, entity);
+		final var dataDefinition = DataModelUtil.findDataDefinition(entity);
+		getPhysicalStore(dataDefinition).update(dataDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.UPDATE, List.of(UID.of(dtDefinition, DtObjectUtil.getId(entity))));
+		fireAfterCommit(StoreEvent.Type.UPDATE, List.of(UID.of(dataDefinition, DataModelUtil.getId(entity))));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 	}
 
@@ -190,8 +190,8 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> void updateList(final DtList<E> entities) {
 		Assertion.check().isNotNull(entities);
 		//-----
-		final DtDefinition dtDefinition = entities.getDefinition();
-		getPhysicalStore(dtDefinition).updateList(entities);
+		final var dataDefinition = entities.getDefinition();
+		getPhysicalStore(dataDefinition).updateList(entities);
 		//-----
 		fireAfterCommit(StoreEvent.Type.UPDATE, entities.stream().map(Entity::getUID).toList());
 	}
@@ -201,10 +201,26 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public void delete(final UID<? extends Entity> uri) {
 		Assertion.check().isNotNull(uri);
 		//-----
-		final DtDefinition dtDefinition = uri.getDefinition();
-		getPhysicalStore(dtDefinition).delete(dtDefinition, uri);
+		final var dataDefinition = uri.getDefinition();
+		getPhysicalStore(dataDefinition).delete(dataDefinition, uri);
 		//-----
 		fireAfterCommit(StoreEvent.Type.DELETE, List.of(uri));
+	}
+
+	@Override
+	public <E extends Entity> void deleteList(final List<UID<E>> uids) {
+		Assertion.check()
+				.isNotNull(uids);
+		//-----
+		if (!uids.isEmpty()) {
+			final var dataDefinition = uids.get(0).getDefinition();
+			uids.forEach(uid -> Assertion.check().isTrue(
+					dataDefinition.getName().equals(uid.getDefinition().getName()),
+					"When deleting by list all UIDs must be about the same definition"));
+			getPhysicalStore(dataDefinition).deleteList(uids);
+			//-----
+			fireAfterCommit(StoreEvent.Type.DELETE, (List) uids);
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -212,7 +228,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <E extends Entity> E readOne(final UID<E> uri) {
 		Assertion.check().isNotNull(uri);
 		//-----
-		final E entity = cacheDataStore.readNullable(uri);
+		final var entity = cacheDataStore.readNullable(uri);
 		//-----
 		Assertion.check().isNotNull(entity, "no entity found for : '{0}'", uri);
 		return entity;
@@ -231,18 +247,18 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 
 	/** {@inheritDoc} */
 	@Override
-	public int count(final DtDefinition dtDefinition) {
-		return getPhysicalStore(dtDefinition).count(dtDefinition);
+	public int count(final DataDefinition dataDefinition) {
+		return getPhysicalStore(dataDefinition).count(dataDefinition);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> find(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
+	public <E extends Entity> DtList<E> find(final DataDefinition dataDefinition, final Criteria<E> criteria, final DtListState dtListState) {
 		Assertion.check()
-				.isNotNull(dtDefinition)
+				.isNotNull(dataDefinition)
 				.isNotNull(dtListState);
 		//-----
-		final DtList<E> list = cacheDataStore.findByCriteria(dtDefinition, criteria != null ? criteria : CRITERIA_ALWAYS_TRUE, dtListState);
+		final DtList<E> list = cacheDataStore.findByCriteria(dataDefinition, criteria != null ? criteria : CRITERIA_ALWAYS_TRUE, dtListState);
 		//-----
 		Assertion.check().isNotNull(list);
 		return list;
@@ -279,12 +295,12 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc) {
+	public <D extends DataObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc) {
 		Assertion.check()
 				.isNotNull(list)
 				.isNotBlank(fieldName);
 		//-----
-		final Comparator<D> comparator = new DtObjectComparator<>(this, list.getDefinition().getField(fieldName), desc);
+		final Comparator<D> comparator = new DataComparator<>(this, list.getDefinition().getField(fieldName), desc);
 		return list.stream()
 				.sorted(comparator)
 				.collect(VCollectors.toDtList(list.getDefinition()));

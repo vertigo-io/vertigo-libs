@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.json.JsonExclude;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DataObject;
 
 /**
  * Class d'enregistrement des messages.
@@ -123,7 +123,7 @@ public final class VegaUiMessageStack implements UiMessageStack {
 	 * @param fieldName Champ portant l'erreur
 	 */
 	@Override
-	public void error(final String message, final DtObject dto, final String fieldName) {
+	public void error(final String message, final DataObject dto, final String fieldName) {
 		addFieldMessage(Level.ERROR, message, dto, fieldName);
 	}
 
@@ -133,7 +133,7 @@ public final class VegaUiMessageStack implements UiMessageStack {
 	 * @param fieldName Champ portant l'erreur
 	 */
 	@Override
-	public void warning(final String message, final DtObject dto, final String fieldName) {
+	public void warning(final String message, final DataObject dto, final String fieldName) {
 		addFieldMessage(Level.WARNING, message, dto, fieldName);
 	}
 
@@ -143,7 +143,7 @@ public final class VegaUiMessageStack implements UiMessageStack {
 	 * @param fieldName Champ portant l'erreur
 	 */
 	@Override
-	public void info(final String message, final DtObject dto, final String fieldName) {
+	public void info(final String message, final DataObject dto, final String fieldName) {
 		addFieldMessage(Level.INFO, message, dto, fieldName);
 	}
 
@@ -151,7 +151,7 @@ public final class VegaUiMessageStack implements UiMessageStack {
 	 * @see io.vertigo.vega.webservice.validation.UiMessageStack#addFieldMessage(io.vertigo.vega.webservice.validation.UiMessageStack.Level, java.lang.String, io.vertigo.dynamo.domain.model.DtObject, java.lang.String)
 	 */
 	@Override
-	public void addFieldMessage(final Level level, final String message, final DtObject dto, final String fieldName) {
+	public void addFieldMessage(final Level level, final String message, final DataObject dto, final String fieldName) {
 		addFieldMessage(level, message, uiContextResolver.resolveContextKey(dto), fieldName);
 
 	}

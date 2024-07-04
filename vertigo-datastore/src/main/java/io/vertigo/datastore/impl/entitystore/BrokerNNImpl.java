@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,13 +28,13 @@ import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.association.AssociationNNDefinition;
+import io.vertigo.datamodel.data.definitions.association.AssociationNode;
+import io.vertigo.datamodel.data.definitions.association.DtListURIForNNAssociation;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.util.AssociationUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.association.AssociationNNDefinition;
-import io.vertigo.datamodel.structure.definitions.association.AssociationNode;
-import io.vertigo.datamodel.structure.definitions.association.DtListURIForNNAssociation;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.util.AssociationUtil;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
 import io.vertigo.datamodel.task.definitions.TaskDefinitionBuilder;
@@ -55,24 +55,24 @@ final class BrokerNNImpl implements BrokerNN {
 
 		private final String dataSpace;
 		private final String tableName;
-		private final DtField sourceField;
+		private final DataField sourceField;
 		private final Object sourceValue;
-		private final DtField targetField;
+		private final DataField targetField;
 
 		DescriptionNN(final DtListURIForNNAssociation dtListURIForAssociation) {
 			Assertion.check().isNotNull(dtListURIForAssociation);
 			final AssociationNNDefinition associationNNDefinition = dtListURIForAssociation.getAssociationDefinition();
 
 			tableName = associationNNDefinition.getTableName();
-			dataSpace = associationNNDefinition.getAssociationNodeB().getDtDefinition().getDataSpace();
+			dataSpace = associationNNDefinition.getAssociationNodeB().getDataDefinition().getDataSpace();
 
 			//Par rapport à l'objet on distingue la source et la cible.
 			final AssociationNode sourceAssociationNode = AssociationUtil.getAssociationNodeTarget(associationNNDefinition, dtListURIForAssociation.getRoleName());
-			sourceField = sourceAssociationNode.getDtDefinition().getIdField().get();
+			sourceField = sourceAssociationNode.getDataDefinition().getIdField().get();
 
 			//Clés primaires de la relation n-n.
 			final AssociationNode targetAssociationNode = AssociationUtil.getAssociationNode(associationNNDefinition, dtListURIForAssociation.getRoleName());
-			targetField = targetAssociationNode.getDtDefinition().getIdField().get();
+			targetField = targetAssociationNode.getDataDefinition().getIdField().get();
 			sourceValue = dtListURIForAssociation.getSource().getId();
 		}
 	}
@@ -192,9 +192,9 @@ final class BrokerNNImpl implements BrokerNN {
 			final String taskDefinitionName,
 			final String request,
 			final String dataSpace,
-			final DtField sourceField,
+			final DataField sourceField,
 			final Object sourceValue,
-			final DtField targetField,
+			final DataField targetField,
 			final Object targetValue) {
 		//FieldName
 		final String sourceFieldName = sourceField.name();

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ import java.util.List;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
 
 /**
  * Une SecuredEntity est une entité sécurisé.
@@ -39,8 +39,8 @@ import io.vertigo.datamodel.structure.definitions.DtField;
 @DefinitionPrefix(SecuredEntity.PREFIX)
 public final class SecuredEntity extends AbstractDefinition<SecuredEntity> {
 	public static final String PREFIX = "Sec";
-	private final DtDefinition entityDefinition;
-	private final List<DtField> securityFields;
+	private final DataDefinition entityDefinition;
+	private final List<DataField> securityFields;
 	private final List<SecurityDimension> advancedDimensions;
 	private final List<Authorization> operations;
 
@@ -53,8 +53,8 @@ public final class SecuredEntity extends AbstractDefinition<SecuredEntity> {
 	 * @param operations opérations attribuées.
 	 */
 	public SecuredEntity(
-			final DtDefinition entityDefinition,
-			final List<DtField> securityFields,
+			final DataDefinition entityDefinition,
+			final List<DataField> securityFields,
 			final List<SecurityDimension> advancedDimensions,
 			final List<Authorization> operations) {
 		super(PREFIX + entityDefinition.getName());
@@ -74,14 +74,14 @@ public final class SecuredEntity extends AbstractDefinition<SecuredEntity> {
 	/**
 	 * @return the value of entity.
 	 */
-	public DtDefinition getEntity() {
+	public DataDefinition getEntity() {
 		return entityDefinition;
 	}
 
 	/**
 	 * @return the list of security fieldNames.
 	 */
-	public List<DtField> getSecurityFields() {
+	public List<DataField> getSecurityFields() {
 		return securityFields;
 	}
 

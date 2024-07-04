@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,9 @@ import io.vertigo.account.authorization.definitions.OperationName;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.datamodel.criteria.Criteria;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 
@@ -72,7 +73,7 @@ public final class AuthorizationUtil {
 
 	public static <E extends Entity> E assertOperationsOnOriginalEntity(final E entity, final OperationName<E> operation, final LocaleMessageText message) {
 		E originalEntity;
-		if (DtObjectUtil.getId(entity) != null) {
+		if (DataModelUtil.getId(entity) != null) {
 			final EntityStoreManager entityStoreManager = Node.getNode().getComponentSpace().resolve(EntityStoreManager.class);
 			originalEntity = (E) entityStoreManager.readOneForUpdate(entity.getUID());
 		} else {
@@ -108,6 +109,17 @@ public final class AuthorizationUtil {
 	public static <E extends Entity> Criteria<E> getCriteriaSecurity(final Class<E> clazz, final OperationName<E> operation) {
 		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
 		return authorizationManager.getCriteriaSecurity(clazz, operation);
+	}
+
+	public static <E extends Entity> E assertOperationsWithLoad(final UID<E> entityUid, final OperationName<E> operation) {
+		return assertOperationsWithLoad(entityUid, operation, DEFAULT_FORBIDDEN_MESSAGE);
+	}
+
+	public static <E extends Entity> E assertOperationsWithLoad(final UID<E> entityUid, final OperationName<E> operation, final LocaleMessageText message) {
+		return assertOperationsAndReturn(() -> {
+			final EntityStoreManager entityStoreManager = Node.getNode().getComponentSpace().resolve(EntityStoreManager.class);
+			return entityStoreManager.readOne(entityUid);
+		}, operation, message);
 	}
 
 	public static <E extends Entity> void assertOperationsWithLoadIfNeeded(final StoreVAccessor<E> entityAccessor, final OperationName<E> operation) {

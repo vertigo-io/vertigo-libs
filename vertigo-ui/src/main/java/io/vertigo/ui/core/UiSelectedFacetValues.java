@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,7 +95,7 @@ public final class UiSelectedFacetValues extends HashMap<String, List<String>> {
 
 	private static void appendTermFacetValue(final String value, final FacetDefinition facetDefinition, final SelectedFacetValuesBuilder selectedFacetValuesBuilder) {
 		final LocaleMessageText label = LocaleMessageText.of(value);
-		final String query = facetDefinition.getDtField().name() + ":\"" + value + "\"";
+		final String query = facetDefinition.getDataField().name() + ":\"" + value + "\"";
 		final FacetValue facetValue = new FacetValue(value, ListFilter.of(query), label);
 		selectedFacetValuesBuilder.add(facetDefinition, facetValue);
 	}

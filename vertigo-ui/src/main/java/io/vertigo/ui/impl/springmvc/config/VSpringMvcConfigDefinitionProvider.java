@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -38,17 +37,20 @@ public final class VSpringMvcConfigDefinitionProvider implements SimpleDefinitio
 	private final Optional<String> packages;
 	private final Optional<String> configClasses;
 	private final Optional<String> beanClasses;
+	private final Optional<String> componentDirs;
 
 	@Inject
 	public VSpringMvcConfigDefinitionProvider(
 			@ParamValue("name") final String configName,
 			@ParamValue("packages") final Optional<String> packages,
 			@ParamValue("configClasses") final Optional<String> configClasses,
-			@ParamValue("beanClasses") final Optional<String> beanClasses) {
+			@ParamValue("beanClasses") final Optional<String> beanClasses,
+			@ParamValue("componentDirs") final Optional<String> componentDirs) {
 		this.configName = configName;
 		this.packages = packages;
 		this.configClasses = configClasses;
 		this.beanClasses = beanClasses;
+		this.componentDirs = componentDirs;
 	}
 
 	@Override
@@ -59,11 +61,15 @@ public final class VSpringMvcConfigDefinitionProvider implements SimpleDefinitio
 				configClasses.map(locConfigClasses -> Arrays.stream(locConfigClasses.split(","))
 						.map(ClassUtil::classForName)
 						.map(Class.class::cast)
-						.collect(Collectors.toList())).orElseGet(Collections::emptyList),
+						.toList())
+						.orElseGet(Collections::emptyList),
 				beanClasses.map(locBeanClasses -> Arrays.stream(locBeanClasses.split(","))
 						.map(ClassUtil::classForName)
 						.map(Class.class::cast)
-						.collect(Collectors.toList())).orElseGet(Collections::emptyList)));
+						.toList())
+						.orElseGet(Collections::emptyList),
+				componentDirs.map(locComponentDirs -> Arrays.stream(locComponentDirs.split(",")).toList())
+						.orElseGet(Collections::emptyList)));
 	}
 
 }

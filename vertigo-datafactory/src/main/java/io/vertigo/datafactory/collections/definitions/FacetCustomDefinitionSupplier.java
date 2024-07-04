@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition.FacetOrder;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 
 public final class FacetCustomDefinitionSupplier implements DefinitionSupplier {
 
@@ -40,8 +40,8 @@ public final class FacetCustomDefinitionSupplier implements DefinitionSupplier {
 		myName = name;
 	}
 
-	public FacetCustomDefinitionSupplier withDtDefinition(final String dtDefinitionName) {
-		myDtDefinitionName = dtDefinitionName;
+	public FacetCustomDefinitionSupplier withDtDefinition(final String dataDefinitionName) {
+		myDtDefinitionName = dataDefinitionName;
 		return this;
 	}
 
@@ -72,7 +72,7 @@ public final class FacetCustomDefinitionSupplier implements DefinitionSupplier {
 	@Override
 	public FacetDefinition get(final DefinitionSpace definitionSpace) {
 		Assertion.check().isFalse(myParams.isEmpty(), "At least one params is mandatory for customFacet (in {0})", myName);
-		final DtDefinition indexDtDefinition = definitionSpace.resolve(myDtDefinitionName, DtDefinition.class);
+		final DataDefinition indexDtDefinition = definitionSpace.resolve(myDtDefinitionName, DataDefinition.class);
 		return FacetDefinition.createCustomFacetDefinition(
 				myName,
 				indexDtDefinition.getField(myFieldName),

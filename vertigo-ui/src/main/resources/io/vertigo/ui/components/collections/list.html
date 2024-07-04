@@ -1,4 +1,4 @@
-<th:block th:fragment="list(list, componentId, rowsPerPage, showMore, showMoreLabel, selectable, rowKey, sortUrl, listClass, item_attrs, pagination_attrs)" 
+<th:block th:fragment="list(list, componentId, rowsPerPage, showMore, showMoreLabel, selectable, rowKey, sortUrl, separator, listClass, item_attrs, pagination_attrs)" 
 	th:with="myRowKey=${rowKey?:model.util.getIdField('__${list}__')}, mySelectable=${selectable?:false}">
 	<vu:collection 
 	list="${list}" 
@@ -9,9 +9,12 @@
 	selectable="${mySelectable}" 
 	sortUrl="${sortUrl}" >
 		<q-list>
-			<q-item th:v-for="|item in paginatedData('${list}', '${componentId}' )|" th::key="|item.${myRowKey}|" class="q-mb-sm bg-white" th:attr="__${item_attrs}__" >
-				<vu:content/>
-			</q-item>
+			<template th:v-for="|item in paginatedData('${list}', '${componentId}' )|" th::key="|item.${myRowKey}|">
+				<q-item class="q-mb-sm bg-white" th:attr="__${item_attrs}__" >
+					<vu:content/>
+				</q-item>
+				<q-separator th:if="${separator}" spaced inset></q-separator>
+			</template>
 		</q-list>
 	</vu:collection>
 </th:block> 

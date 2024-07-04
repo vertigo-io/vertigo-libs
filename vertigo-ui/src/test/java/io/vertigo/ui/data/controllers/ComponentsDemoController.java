@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
 import io.vertigo.datastore.filestore.model.VFile;
@@ -108,18 +108,18 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 		final DtList<Movie> mySubList = DtList.of(myList.get(0), myList.get(1));
 		mySubList.get(0).setTestBoolean(true);
 
-		viewContext.publishDtListModifiable(movieListModifiables, mySubList);
-		viewContext.publishMdl(moviesListMdl, Movie.class, null);
-		viewContext.publishDtList(movieDisplayList, movieServices.getMoviesDisplay(DtListState.defaultOf(Movie.class)));
-		viewContext.publishDto(movieDisplayInputKey, new MovieDisplay());
+		viewContext.publishDtListModifiable(movieListModifiables, mySubList)
+				.publishMdl(moviesListMdl, Movie.class, null)
+				.publishDtList(movieDisplayList, movieServices.getMoviesDisplay(DtListState.defaultOf(Movie.class)))
+				.publishDto(movieDisplayInputKey, new MovieDisplay())
 
-		viewContext.publishMdl(communeListMdl, Commune.class, null);
+				.publishMdl(communeListMdl, Commune.class, null)
 
-		viewContext.publishRef(currentInstant, Instant.now());
-		viewContext.publishRef(currentZoneId, localeManager.getCurrentZoneId().getId());
-		viewContext.publishRef(zoneId, timeZoneListStatic[0]);
-		viewContext.publishRef(timeZoneList, timeZoneListStatic);
-		viewContext.publishRef(selectedTimeZoneList, "");
+				.publishRef(currentInstant, Instant.now())
+				.publishRef(currentZoneId, localeManager.getCurrentZoneId().getId())
+				.publishRef(zoneId, timeZoneListStatic[0])
+				.publishRef(timeZoneList, timeZoneListStatic)
+				.publishRef(selectedTimeZoneList, "");
 
 		final URI fullPath = getClass().getResource("/data/insee.csv").toURI();
 		final VFile dummyFile1 = new FSFile("my1stFile.csv", "text/csv", Paths.get(fullPath));

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datastore.cache.CacheManager;
 
 /**
@@ -49,7 +49,7 @@ import io.vertigo.datastore.cache.CacheManager;
  */
 public final class CacheDataStoreConfig {
 	/* Liste des DT gérées par le cache, et si le mode de chargement unitaire ou ensembliste. */
-	private final Map<DtDefinition, Boolean> cacheableDtDefinitionMap = new HashMap<>();
+	private final Map<DataDefinition, Boolean> cacheableDtDefinitionMap = new HashMap<>();
 
 	/* Délégation de la gestion du cache à un système tiers. */
 	private final CacheData dataCache;
@@ -63,11 +63,11 @@ public final class CacheDataStoreConfig {
 	}
 
 	/**
-	 * @param dtDefinition Dt definition
+	 * @param dataDefinition Dt definition
 	 * @return if elements of this type are cacheable
 	 */
-	boolean isCacheable(final DtDefinition dtDefinition) {
-		return cacheableDtDefinitionMap.containsKey(dtDefinition);
+	boolean isCacheable(final DataDefinition dataDefinition) {
+		return cacheableDtDefinitionMap.containsKey(dataDefinition);
 	}
 
 	/**
@@ -79,24 +79,24 @@ public final class CacheDataStoreConfig {
 
 	/**
 	 * Register a Dtdefinition as cacheable and define cache behaviors.
-	 * @param dtDefinition DT definition
+	 * @param dataDefinition DT definition
 	 * @param isReloadedByList On reload, elements should be load by full list or only missing ones
 	 */
 	public void registerCacheable(
-			final DtDefinition dtDefinition,
+			final DataDefinition dataDefinition,
 			final boolean isReloadedByList) {
-		Assertion.check().isNotNull(dtDefinition);
+		Assertion.check().isNotNull(dataDefinition);
 		//-----
-		cacheableDtDefinitionMap.put(dtDefinition, isReloadedByList);
+		cacheableDtDefinitionMap.put(dataDefinition, isReloadedByList);
 	}
 
 	/**
-	 * @param dtDefinition Définition de DT
+	 * @param dataDefinition Définition de DT
 	 * @return Si ce type d'objet doit être chargé de façon ensembliste ou non.
 	 */
-	boolean isReloadedByList(final DtDefinition dtDefinition) {
-		Assertion.check().isNotNull(dtDefinition);
+	boolean isReloadedByList(final DataDefinition dataDefinition) {
+		Assertion.check().isNotNull(dataDefinition);
 		//-----
-		return cacheableDtDefinitionMap.get(dtDefinition);
+		return cacheableDtDefinitionMap.get(dataDefinition);
 	}
 }

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 
 /**
  * Exception levée lorsque la règle n'est pas respectée.
+ *
  * @author pchretien
  */
 public final class PegNoMatchFoundException extends Exception {
@@ -35,8 +37,18 @@ public final class PegNoMatchFoundException extends Exception {
 	private final String comment;
 	private final Serializable[] commentValues;
 
+	public static PegNoMatchFoundException keepBestUncompleteRule(final PegNoMatchFoundException first, final PegNoMatchFoundException otherNullable) {
+		Assertion.check().isNotNull(first);
+		//----
+		if (otherNullable == null || otherNullable.getIndex() <= first.getIndex()) {
+			return first;
+		}
+		return otherNullable;
+	}
+
 	/**
 	 * Constructor.
+	 *
 	 * @param s Texte parsé
 	 * @param index Index dans le texte
 	 * @param rootException Cause
@@ -54,6 +66,7 @@ public final class PegNoMatchFoundException extends Exception {
 	/**
 	 * Ligne la plus avancée lors de de l'évaluation de la règle.
 	 * Cette ligne indique l'endroit vraisemblable de l'erreur SI IL s'agit de la bonne règle !!
+	 *
 	 * @return Index probable de l'erreur.
 	 */
 	private int getLine() {
@@ -74,6 +87,18 @@ public final class PegNoMatchFoundException extends Exception {
 	@Override
 	public String getMessage() {
 		return displayPosition() + "\n\t" + displayRule();
+	}
+
+	public String getRootMessage() {
+		return displayPosition() + "\n\t" + rootCause().displayRule();
+	}
+
+	private PegNoMatchFoundException rootCause() {
+		PegNoMatchFoundException root = this;
+		while (root.getCause() instanceof PegNoMatchFoundException) {
+			root = (PegNoMatchFoundException) root.getCause();
+		}
+		return root;
 	}
 
 	/**

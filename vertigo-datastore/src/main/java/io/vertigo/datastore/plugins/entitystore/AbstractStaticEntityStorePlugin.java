@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
  */
 package io.vertigo.datastore.plugins.entitystore;
 
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.association.DtListURIForNNAssociation;
-import io.vertigo.datamodel.structure.definitions.association.DtListURIForSimpleAssociation;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.association.DtListURIForNNAssociation;
+import io.vertigo.datamodel.data.definitions.association.DtListURIForSimpleAssociation;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datastore.impl.entitystore.EntityStorePlugin;
 
 /**
@@ -33,7 +33,7 @@ public abstract class AbstractStaticEntityStorePlugin implements EntityStorePlug
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E create(final DtDefinition dtDefinition, final E entity) {
+	public <E extends Entity> E create(final DataDefinition dataDefinition, final E entity) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -45,7 +45,7 @@ public abstract class AbstractStaticEntityStorePlugin implements EntityStorePlug
 
 	/** {@inheritDoc} */
 	@Override
-	public void update(final DtDefinition dtDefinition, final Entity entity) {
+	public void update(final DataDefinition dataDefinition, final Entity entity) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -57,19 +57,19 @@ public abstract class AbstractStaticEntityStorePlugin implements EntityStorePlug
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final DtDefinition dtDefinition, final UID uri) {
+	public void delete(final DataDefinition dataDefinition, final UID uri) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri) {
+	public <E extends Entity> DtList<E> findAll(final DataDefinition dataDefinition, final DtListURIForNNAssociation uri) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri) {
+	public <E extends Entity> DtList<E> findAll(final DataDefinition dataDefinition, final DtListURIForSimpleAssociation uri) {
 		throw new UnsupportedOperationException();
 	}
 }

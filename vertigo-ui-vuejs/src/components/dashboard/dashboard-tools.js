@@ -38,10 +38,10 @@ export function getColors(colorName, nbSeries, opacity) {
 	
 	if (opacity) {
 		// use the alpha
-		return  resultColors.map(function( val, i ) {
+		return resultColors.map(function( val, i ) {
 			var d3Color = d3.color(val);
 			d3Color.opacity = opacity;
-			return d3Color.rgb();
+			return d3Color.formatRgb();
 		});
 	}
 	return resultColors;

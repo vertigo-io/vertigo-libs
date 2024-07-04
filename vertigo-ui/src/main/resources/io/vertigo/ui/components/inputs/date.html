@@ -1,5 +1,5 @@
 <th:block th:fragment="date-edit(object, field, label, format, required, edit_content_slot, date_content_slot, after_label_slot, date_attrs, input_attrs)" vu:alias="date" vu:selector="${viewMode=='edit'}"
-		th:with="myLabel=${modifiableTable!=null?null:label?:model.util.label(object + '.' + field)}, myFormat=${format?:'DD/MM/YYYY'},
+		th:with="myLabel=${modifiableTable!=null?null:label?:model.util.label(object + '.' + field)}, myFormat=${format?: model.util.getUiDatetimeFormat(object + '.' + field)?: 'DD/MM/YYYY'},
       myRequired=${required != null ? required : model.util.required(object + '.' + field)},
       myRef='date_'+${object} + '_' + ${field}"
 	  th:assert="${object} != null and ${field} != null">

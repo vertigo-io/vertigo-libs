@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.VCollectors;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
@@ -61,10 +61,11 @@ public final class MoviesController extends AbstractVSpringMvcController {
 	public void initContext(final ViewContext viewContext) {
 		final DtListState dtListState = DtListState.defaultOf(Movie.class);
 		final DtList<MovieDisplay> sortedList = movieServices.getMoviesDisplay(dtListState);
-		viewContext.publishDtList(MOVIES, MovieDisplayFields.movId, sortedList);
-		viewContext.publishRef(CRITERIA, "");
 		final FacetedQueryResult<MovieIndex, SearchQuery> facetedQueryResult = movieServices.searchMovies("", SelectedFacetValues.empty().build(), dtListState, Optional.empty());
-		viewContext.publishFacetedQueryResult(FCTS, MovieIndexFields.movId, facetedQueryResult, CRITERIA);
+
+		viewContext.publishDtList(MOVIES, MovieDisplayFields.movId, sortedList)
+				.publishRef(CRITERIA, "")
+				.publishFacetedQueryResult(FCTS, MovieIndexFields.movId, facetedQueryResult, CRITERIA);
 	}
 
 	@PostMapping("/_search")
@@ -85,7 +86,7 @@ public final class MoviesController extends AbstractVSpringMvcController {
 		return viewContext;
 	}
 
-	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
+	private <D extends DataObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
 		final DtList<D> sortedList;
 		if (dtListState.getSortFieldName().isPresent()) {
 			sortedList = entityStoreManager.sort(unFilteredList, dtListState.getSortFieldName().get(), dtListState.isSortDesc().get());

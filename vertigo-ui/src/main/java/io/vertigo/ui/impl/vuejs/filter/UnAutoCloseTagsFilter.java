@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,11 @@ package io.vertigo.ui.impl.vuejs.filter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.vertigo.vega.impl.servlet.filter.AbstractFilter;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -45,8 +43,7 @@ public final class UnAutoCloseTagsFilter extends AbstractFilter {
 	/** {@inheritDoc} */
 	@Override
 	public void doInit() {
-		final FilterConfig filterConfig = getFilterConfig();
-		final String[] tagsPrefix = Optional.ofNullable(filterConfig.getInitParameter("tagsPrefix")).orElse("q-*;v-*").split("\\s*;\\s*");
+		final String[] tagsPrefix = parseParam("tagsPrefix", String.class, "q-*;v-*").split("\\s*;\\s*");
 		for (final String tagPrefix : tagsPrefix) {
 			final String preprocessedTagPrefix = tagPrefix.replace("*", "[^>\\s]+");
 			tagsPrefixPattern.add(Pattern.compile("<(" + preprocessedTagPrefix + ")(\\s[^>]*)?/>"));

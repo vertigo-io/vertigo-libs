@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,17 +28,17 @@ import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.association.DtListURIForNNAssociation;
-import io.vertigo.datamodel.structure.definitions.association.DtListURIForSimpleAssociation;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtListURI;
-import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
-import io.vertigo.datamodel.structure.util.VCollectors;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.association.DtListURIForNNAssociation;
+import io.vertigo.datamodel.data.definitions.association.DtListURIForSimpleAssociation;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.DtListURI;
+import io.vertigo.datamodel.data.model.DtListURIForMasterData;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.util.DataModelUtil;
+import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datastore.entitystore.MasterDataConfig;
 import io.vertigo.datastore.entitystore.StoreEvent;
 import io.vertigo.datastore.impl.entitystore.EntityStoreConfigImpl;
@@ -71,8 +71,8 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
 	}
 
-	private EntityStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
-		return logicalStoreConfig.getPhysicalDataStore(dtDefinition);
+	private EntityStorePlugin getPhysicalStore(final DataDefinition dataDefinition) {
+		return logicalStoreConfig.getPhysicalDataStore(dataDefinition);
 	}
 
 	/**
@@ -83,33 +83,33 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 	public <E extends Entity> E readNullable(final UID<E> uid) {
 		Assertion.check().isNotNull(uid);
 		//-----
-		final DtDefinition dtDefinition = uid.getDefinition();
+		final DataDefinition dataDefinition = uid.getDefinition();
 		E entity;
-		if (cacheDataStoreConfig.isCacheable(dtDefinition)) {
+		if (cacheDataStoreConfig.isCacheable(dataDefinition)) {
 			// - Prise en compte du cache
 			entity = cacheDataStoreConfig.getDataCache().getDtObject(uid);
 			// - Prise en compte du cache
 			if (entity == null) {
 				//Cas ou le dto représente un objet non mis en cache
-				entity = this.<E> loadNullable(dtDefinition, uid);
+				entity = this.<E> loadNullable(dataDefinition, uid);
 			}
 		} else {
-			entity = getPhysicalStore(dtDefinition).readNullable(dtDefinition, uid);
+			entity = getPhysicalStore(dataDefinition).readNullable(dataDefinition, uid);
 		}
 		return entity;
 	}
 
-	private <E extends Entity> E loadNullable(final DtDefinition dtDefinition, final UID<E> uid) {
+	private <E extends Entity> E loadNullable(final DataDefinition dataDefinition, final UID<E> uid) {
 		final E entity;
-		synchronized (CacheData.getContextLock(dtDefinition)) {
-			if (cacheDataStoreConfig.isReloadedByList(dtDefinition)) {
+		synchronized (CacheData.getContextLock(dataDefinition)) {
+			if (cacheDataStoreConfig.isReloadedByList(dataDefinition)) {
 				//On ne charge pas les cache de façon atomique.
-				final DtListURI dtcURIAll = new DtListURIForCriteria<>(dtDefinition, Criterions.alwaysTrue(), DtListState.of(null));
+				final DtListURI dtcURIAll = new DtListURIForCriteria<>(dataDefinition, Criterions.alwaysTrue(), DtListState.of(null));
 				loadList(dtcURIAll); //on charge la liste complete (et on remplit les caches)
 				entity = cacheDataStoreConfig.getDataCache().getDtObject(uid);
 			} else {
 				//On charge le cache de façon atomique à partir du dataStore
-				entity = getPhysicalStore(dtDefinition).readNullable(dtDefinition, uid);
+				entity = getPhysicalStore(dataDefinition).readNullable(dataDefinition, uid);
 				if (entity != null) {
 					cacheDataStoreConfig.getDataCache().putDtObject(entity);
 				}
@@ -118,19 +118,19 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 		return entity;
 	}
 
-	private <E extends Entity> DtList<E> doLoadList(final DtDefinition dtDefinition, final DtListURI listUri) {
+	private <E extends Entity> DtList<E> doLoadList(final DataDefinition dataDefinition, final DtListURI listUri) {
 		Assertion.check().isNotNull(listUri);
 		//-----
 		final DtList<E> list;
 		if (listUri instanceof DtListURIForMasterData) {
 			list = loadMDList((DtListURIForMasterData) listUri);
 		} else if (listUri instanceof DtListURIForSimpleAssociation) {
-			list = getPhysicalStore(dtDefinition).findAll(dtDefinition, (DtListURIForSimpleAssociation) listUri);
+			list = getPhysicalStore(dataDefinition).findAll(dataDefinition, (DtListURIForSimpleAssociation) listUri);
 		} else if (listUri instanceof DtListURIForNNAssociation) {
-			list = getPhysicalStore(dtDefinition).findAll(dtDefinition, (DtListURIForNNAssociation) listUri);
+			list = getPhysicalStore(dataDefinition).findAll(dataDefinition, (DtListURIForNNAssociation) listUri);
 		} else if (listUri instanceof DtListURIForCriteria<?>) {
 			final DtListURIForCriteria<E> castedListUri = DtListURIForCriteria.class.cast(listUri);
-			list = getPhysicalStore(dtDefinition).findByCriteria(dtDefinition, castedListUri.getCriteria(), castedListUri.getDtListState());
+			list = getPhysicalStore(dataDefinition).findByCriteria(dataDefinition, castedListUri.getCriteria(), castedListUri.getDtListState());
 		} else {
 			throw new IllegalArgumentException("cas non traité " + listUri);
 		}
@@ -140,23 +140,23 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 	private <E extends Entity> DtList<E> loadMDList(final DtListURIForMasterData uri) {
 		Assertion.check()
 				.isNotNull(uri)
-				.isTrue(uri.getDtDefinition().getSortField().isPresent(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
+				.isTrue(uri.getDataDefinition().getSortField().isPresent(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDataDefinition().getName());
 		//-----
 		//On cherche la liste complete
 		final DtListState dtListState;
-		if (uri.getDtDefinition().getSortField().get().isPersistent()) {
+		if (uri.getDataDefinition().getSortField().get().isPersistent()) {
 			//On ne tri dans le PhysicalStore que si c'est un champ persistant
-			dtListState = DtListState.of(null, 0, uri.getDtDefinition().getSortField().get().name(), false);
+			dtListState = DtListState.of(null, 0, uri.getDataDefinition().getSortField().get().name(), false);
 		} else {
 			dtListState = DtListState.of(null);
 		}
-		final DtList<E> unFilteredDtc = getPhysicalStore(uri.getDtDefinition()).findByCriteria(uri.getDtDefinition(), Criterions.alwaysTrue(), dtListState);
+		final DtList<E> unFilteredDtc = getPhysicalStore(uri.getDataDefinition()).findByCriteria(uri.getDataDefinition(), Criterions.alwaysTrue(), dtListState);
 		return unFilteredDtc
 				.stream()
 				//1.on filtre
 				.filter(masterDataConfig.getFilter(uri))
 				//2.on trie
-				.sorted((dt1, dt2) -> DtObjectUtil.compareFieldValues(dt1, dt2, uri.getDtDefinition().getSortField().get(), false))
+				.sorted((dt1, dt2) -> DataModelUtil.compareFieldValues(dt1, dt2, uri.getDataDefinition().getSortField().get(), false))
 				.collect(VCollectors.toDtList(unFilteredDtc.getDefinition()));
 	}
 
@@ -170,7 +170,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 		//-----
 		//- Prise en compte du cache
 		//On ne met pas en cache les URI d'une association NN
-		if (cacheDataStoreConfig.isCacheable(uri.getDtDefinition()) && !isMultipleAssociation(uri)) {
+		if (cacheDataStoreConfig.isCacheable(uri.getDataDefinition()) && !isMultipleAssociation(uri)) {
 			DtList<E> list = cacheDataStoreConfig.getDataCache().getDtList(uri);
 			if (list == null) {
 				list = this.<E> loadList(uri);
@@ -178,11 +178,11 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 			return list;
 		}
 		//Si la liste n'est pas dans le cache alors on lit depuis le store.
-		return doLoadList(uri.getDtDefinition(), uri);
+		return doLoadList(uri.getDataDefinition(), uri);
 	}
 
-	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
-		return findAll(new DtListURIForCriteria(dtDefinition, criteria, dtListState));
+	public <E extends Entity> DtList<E> findByCriteria(final DataDefinition dataDefinition, final Criteria<E> criteria, final DtListState dtListState) {
+		return findAll(new DtListURIForCriteria(dataDefinition, criteria, dtListState));
 	}
 
 	private static boolean isMultipleAssociation(final DtListURI uri) {
@@ -190,9 +190,9 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 	}
 
 	private <E extends Entity> DtList<E> loadList(final DtListURI uri) {
-		synchronized (CacheData.getContextLock(uri.getDtDefinition())) {
+		synchronized (CacheData.getContextLock(uri.getDataDefinition())) {
 			// On charge la liste initiale avec les critéres définis en amont
-			final DtList<E> list = doLoadList(uri.getDtDefinition(), uri);
+			final DtList<E> list = doLoadList(uri.getDataDefinition(), uri);
 			// Mise en cache de la liste et des éléments.
 			cacheDataStoreConfig.getDataCache().putDtList(list);
 			return list;
@@ -200,12 +200,12 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 	}
 
 	/* On notifie la mise à jour du cache, celui-ci est donc vidé. */
-	private void clearCache(final DtDefinition dtDefinition) {
-		Assertion.check().isNotNull(dtDefinition);
+	private void clearCache(final DataDefinition dataDefinition) {
+		Assertion.check().isNotNull(dataDefinition);
 		//-----
 		// On ne vérifie pas que la definition est cachable, Lucene utilise le même cache
 		// A changer si on gère lucene différemment
-		cacheDataStoreConfig.getDataCache().clear(dtDefinition);
+		cacheDataStoreConfig.getDataCache().clear(dataDefinition);
 	}
 
 	/** {@inheritDoc} */

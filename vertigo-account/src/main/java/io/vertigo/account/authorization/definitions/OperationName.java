@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,14 @@ package io.vertigo.account.authorization.definitions;
 
 import java.io.Serializable;
 
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DataObject;
 
 /**
  * The name of the security operation.
  * @param <D> the object associated to this operation
  * @author npiedeloup
  */
-public interface OperationName<D extends DtObject> extends Serializable {
+public interface OperationName<D extends DataObject> extends Serializable {
 
 	/** @return the name of the operation (camel case) */
 	String name();

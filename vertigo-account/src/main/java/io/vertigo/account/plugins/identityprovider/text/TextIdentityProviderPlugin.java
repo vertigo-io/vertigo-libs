@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,13 +41,13 @@ import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.util.FileUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.FormatterException;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
 
@@ -82,7 +82,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	 * @param filePath File path
 	 * @param filePatternStr File Pattern (id, displayName, email, authToken, photoUrl)
 	 * @param userAuthField Authent token field name
-	 * @param userIdentityEntity User dtDefinition name
+	 * @param userIdentityEntity User dataDefinition name
 	 */
 	@Inject
 	public TextIdentityProviderPlugin(
@@ -186,7 +186,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		final DtDefinition userDtDefinition = Node.getNode().getDefinitionSpace().resolve(userIdentityEntity, DtDefinition.class);
+		final DataDefinition userDtDefinition = Node.getNode().getDefinitionSpace().resolve(userIdentityEntity, DataDefinition.class);
 		Assertion.check().isTrue(userDtDefinition.contains(userAuthField), "User definition ({0}) should contains the userAuthField ({1})", userIdentityEntity, userAuthField);
 
 		final URL realmURL = resourceManager.resolve(filePath);
@@ -199,7 +199,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		}
 	}
 
-	private void parseAndPopulateUserInfo(final String line, final DtDefinition userDtDefinition) {
+	private void parseAndPopulateUserInfo(final String line, final DataDefinition userDtDefinition) {
 		final Matcher matcher = filePattern.matcher(line);
 		if (!matcher.find()) {
 			throw new IllegalArgumentException("Can't parse textIdentity file , pattern can't match");
@@ -208,7 +208,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		String photoUrl = null;
 		String userAuthToken = null;
 
-		final Entity user = Entity.class.cast(DtObjectUtil.createDtObject(userDtDefinition));
+		final Entity user = Entity.class.cast(DataModelUtil.createDataObject(userDtDefinition));
 		for (final String fieldName : filePatternFieldsOrdered) {
 			final String valueStr = matcher.group(fieldName);
 			if (PHOTO_URL_RESERVED_FIELD.equals(fieldName)) {
@@ -226,8 +226,8 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		idsToUsers.put(user.getUID().getId(), userInfo);
 	}
 
-	private void setTypedValue(final DtDefinition userDtDefinition, final Entity user, final String fieldName, final String valueStr) {
-		final DtField dtField = userDtDefinition.getField(fieldName);
+	private void setTypedValue(final DataDefinition userDtDefinition, final Entity user, final String fieldName, final String valueStr) {
+		final DataField dtField = userDtDefinition.getField(fieldName);
 		final Serializable typedValue;
 		try {
 			typedValue = (Serializable) smartTypeManager.stringToValue(dtField.smartTypeDefinition(), valueStr);

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,13 +49,13 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.FormatterException;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.StreamFile;
 
@@ -80,7 +80,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 
 	private final String userIdentityEntity;
 	private final String ldapUserAttributeMappingStr;
-	private AccountMapperHelper<String, DtField> mapperHelper;
+	private AccountMapperHelper<String, DataField> mapperHelper;
 
 	/**
 	 * Constructor.
@@ -130,7 +130,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		final DtDefinition userDtDefinition = Node.getNode().getDefinitionSpace().resolve(userIdentityEntity, DtDefinition.class);
+		final DataDefinition userDtDefinition = Node.getNode().getDefinitionSpace().resolve(userIdentityEntity, DataDefinition.class);
 		mapperHelper = new AccountMapperHelper(userDtDefinition, ldapUserAttributeMappingStr)
 				.withReservedDestField(PHOTO_RESERVED_FIELD)
 				.parseAttributeMapping();
@@ -280,8 +280,8 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 
 	private Entity parseUser(final Attributes attrs) {
 		try {
-			final Entity user = Entity.class.cast(DtObjectUtil.createDtObject(mapperHelper.getDestDefinition()));
-			for (final DtField dtField : mapperHelper.destAttributes()) {
+			final Entity user = Entity.class.cast(DataModelUtil.createDataObject(mapperHelper.getDestDefinition()));
+			for (final DataField dtField : mapperHelper.destAttributes()) {
 				final String value = parseNullableAttribute(mapperHelper.getSourceAttribute(dtField), attrs);
 				if (value != null) {
 					setTypedValue(dtField, user, value);
@@ -293,7 +293,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		}
 	}
 
-	private void setTypedValue(final DtField dtField, final Entity user, final String valueStr) throws FormatterException {
+	private void setTypedValue(final DataField dtField, final Entity user, final String valueStr) throws FormatterException {
 		final Serializable typedValue = (Serializable) smartTypeManager.stringToValue(dtField.smartTypeDefinition(), valueStr);
 		dtField.getDataAccessor().setValue(user, typedValue);
 	}

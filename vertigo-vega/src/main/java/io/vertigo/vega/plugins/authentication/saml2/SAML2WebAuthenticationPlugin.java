@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,6 +83,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Base authentication handler for SAML2.
+ *
  * @author skerdudou
  */
 public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Assertion> {
@@ -255,10 +256,9 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 	}
 
 	@Override
-	public boolean doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+	public void doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final Optional<String> redirectUrlOpt) {
 		try {
 			httpResponse.sendRedirect(saml2Parameters.getLogoutUrl());
-			return true;
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}

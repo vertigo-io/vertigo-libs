@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition.FacetOrder;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 
 public final class FacetTermDefinitionSupplier implements DefinitionSupplier {
 
@@ -63,7 +63,7 @@ public final class FacetTermDefinitionSupplier implements DefinitionSupplier {
 
 	@Override
 	public FacetDefinition get(final DefinitionSpace definitionSpace) {
-		final DtDefinition indexDtDefinition = definitionSpace.resolve(myDtDefinitionName, DtDefinition.class);
+		final DataDefinition indexDtDefinition = definitionSpace.resolve(myDtDefinitionName, DataDefinition.class);
 		return FacetDefinition.createFacetDefinitionByTerm(
 				myName,
 				indexDtDefinition.getField(myFieldName),

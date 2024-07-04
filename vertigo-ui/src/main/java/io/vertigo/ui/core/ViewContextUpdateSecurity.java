@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import io.vertigo.core.locale.LocaleMessageText;
 /**
  * Keep the viewContext updatable data allowed.
  * A state securedUpdates, defined when this security is enabled (controllers could always update data).
+ *
  * @author npiedeloup
  */
 public final class ViewContextUpdateSecurity implements Serializable {
@@ -59,12 +60,17 @@ public final class ViewContextUpdateSecurity implements Serializable {
 	private final Set<String> allowedFields = new HashSet<>();
 
 	public void assertIsUpdatable(final String object, final String fieldName) {
-		final String[] splitObject = splitObjectName(object);
-		final String objectKey = splitObject[SPLIT_OBJECT_INDEX];
-		final String row = splitObject[SPLIT_ROW_INDEX];
+		if (checkUpdates) {
+			if (object == null) {
+				throw new VSecurityException(LocaleMessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, fieldName));
+			}
+			final String[] splitObject = splitObjectName(object);
+			final String objectKey = splitObject[SPLIT_OBJECT_INDEX];
+			final String row = splitObject[SPLIT_ROW_INDEX];
 
-		if (checkUpdates && !isAllowedField(objectKey, row, fieldName)) {
-			throw new VSecurityException(LocaleMessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, object + "." + fieldName));
+			if (!isAllowedField(objectKey, row, fieldName)) {
+				throw new VSecurityException(LocaleMessageText.of(FORBIDDEN_DATA_UPDATE_MESSAGE, object + "." + fieldName));
+			}
 		}
 	}
 

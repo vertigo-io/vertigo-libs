@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,20 +39,20 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.association.AssociationDefinition;
+import io.vertigo.datamodel.data.definitions.association.AssociationNNDefinition;
+import io.vertigo.datamodel.data.definitions.association.AssociationSimpleDefinition;
+import io.vertigo.datamodel.data.definitions.association.DtListURIForNNAssociation;
+import io.vertigo.datamodel.data.definitions.association.DtListURIForSimpleAssociation;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.DtListURI;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.FormatterException;
-import io.vertigo.datamodel.structure.definitions.association.AssociationDefinition;
-import io.vertigo.datamodel.structure.definitions.association.AssociationNNDefinition;
-import io.vertigo.datamodel.structure.definitions.association.AssociationSimpleDefinition;
-import io.vertigo.datamodel.structure.definitions.association.DtListURIForNNAssociation;
-import io.vertigo.datamodel.structure.definitions.association.DtListURIForSimpleAssociation;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtListURI;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
@@ -70,19 +70,19 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	private final EntityStoreManager entityStoreManager;
 	private final FileStoreManager fileStoreManager;
 
-	private DtField userIdField;
+	private DataField userIdField;
 	private final String groupIdentityEntity;
 	private final String userAuthField;
 	private final Optional<String> photoFileInfo;
 	private Optional<FileInfoDefinition> photoFileInfoDefinition = Optional.empty();
-	private DtDefinition userGroupDtDefinition;
-	private DtField groupIdField;
+	private DataDefinition userGroupDtDefinition;
+	private DataField groupIdField;
 	private final String groupToGroupAccountMappingStr;
 	private AssociationDefinition associationUserGroup;
 	private String associationGroupRoleName;
 	private String associationUserRoleName;
 
-	private AccountMapperHelper<DtField, GroupProperty> mapperHelper; //GroupProperty from UserGroupAttribute
+	private AccountMapperHelper<DataField, GroupProperty> mapperHelper; //GroupProperty from UserGroupAttribute
 
 	private enum GroupProperty {
 		id, displayName
@@ -136,7 +136,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 			photoFileInfoDefinition = Optional.of(Node.getNode().getDefinitionSpace().resolve(photoFileInfo.get(), FileInfoDefinition.class));
 		}
 
-		userGroupDtDefinition = Node.getNode().getDefinitionSpace().resolve(groupIdentityEntity, DtDefinition.class);
+		userGroupDtDefinition = Node.getNode().getDefinitionSpace().resolve(groupIdentityEntity, DataDefinition.class);
 		groupIdField = userGroupDtDefinition.getIdField().get(); //Entity with Id mandatory
 		mapperHelper = new AccountMapperHelper(userGroupDtDefinition, GroupProperty.class, groupToGroupAccountMappingStr)
 				.withMandatoryDestField(GroupProperty.id)
@@ -144,14 +144,14 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 				.parseAttributeMapping();
 
 		for (final AssociationDefinition association : Node.getNode().getDefinitionSpace().getAll(AssociationDefinition.class)) {
-			if (userGroupDtDefinition.equals(association.getAssociationNodeA().getDtDefinition())
-					&& getUserDtDefinition().equals(association.getAssociationNodeB().getDtDefinition())) {
+			if (userGroupDtDefinition.equals(association.getAssociationNodeA().getDataDefinition())
+					&& getUserDtDefinition().equals(association.getAssociationNodeB().getDataDefinition())) {
 				associationUserGroup = association;
 				associationUserRoleName = association.getAssociationNodeB().getRole();
 				associationGroupRoleName = association.getAssociationNodeA().getRole();
 				break;
-			} else if (userGroupDtDefinition.equals(association.getAssociationNodeB().getDtDefinition())
-					&& getUserDtDefinition().equals(association.getAssociationNodeA().getDtDefinition())) {
+			} else if (userGroupDtDefinition.equals(association.getAssociationNodeB().getDataDefinition())
+					&& getUserDtDefinition().equals(association.getAssociationNodeA().getDataDefinition())) {
 				associationUserGroup = association;
 				associationUserRoleName = association.getAssociationNodeA().getRole();
 				associationGroupRoleName = association.getAssociationNodeB().getRole();
@@ -264,7 +264,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	}
 
 	private String parseAttribute(final GroupProperty accountProperty, final Entity userEntity) {
-		final DtField attributeField = mapperHelper.getSourceAttribute(accountProperty);
+		final DataField attributeField = mapperHelper.getSourceAttribute(accountProperty);
 		return String.valueOf(attributeField.getDataAccessor().getValue(userEntity));
 	}
 

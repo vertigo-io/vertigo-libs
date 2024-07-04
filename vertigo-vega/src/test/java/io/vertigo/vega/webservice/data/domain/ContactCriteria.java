@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ package io.vertigo.vega.webservice.data.domain;
 
 import java.time.LocalDate;
 
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.stereotype.Field;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.stereotype.Field;
 
-public final class ContactCriteria implements DtObject {
+public final class ContactCriteria implements DataObject {
 
 	private static final long serialVersionUID = 6839427455017031471L;
 

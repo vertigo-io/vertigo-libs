@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,14 +51,15 @@ public final class HeaderControlFilter extends AbstractFilter {
 			final Map<String, String> tmp = new HashMap<>();
 			String name;
 			String value;
+			forceOverride = parseParam(FORCE_OVERRIDE, Boolean.class, false); //false by default
+
 			for (final Enumeration en = filterConfig.getInitParameterNames(); en.hasMoreElements();) {
 				name = (String) en.nextElement();
-				if (FORCE_OVERRIDE.equals(name)) {
-					forceOverride = Boolean.parseBoolean(filterConfig.getInitParameter(name));
-				} else if (!EXCLUDE_PATTERN_PARAM_NAME.equals(name)) {
+				if (!FORCE_OVERRIDE.equals(name) && !EXCLUDE_PATTERN_PARAM_NAME.equals(name)) {
 					value = filterConfig.getInitParameter(name);
 					tmp.put(name, value);
 				} else {
+					//FORCE_OVERRIDE already used
 					//EXCLUDE_PATTERN_PARAM already process by AbstractFilter
 				}
 			}

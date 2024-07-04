@@ -21,7 +21,7 @@
 	    <Logger name="search" level="info" >
 	      <AppenderRef ref="Console"/>
 	    </Logger>
-	    <Root level="trace">
+	    <Root level="info">
 	      <AppenderRef ref="Console"/>
 	    </Root>
 	</Loggers>

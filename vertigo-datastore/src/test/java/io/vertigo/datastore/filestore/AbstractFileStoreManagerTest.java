@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.core.util.FileUtil;
 import io.vertigo.datastore.TestUtil;
 import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoStd;
 import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoTemp;
@@ -119,7 +118,7 @@ public abstract class AbstractFileStoreManagerTest {
 			final String source;
 			try (final OutputStream sourceOS = new java.io.ByteArrayOutputStream()) {
 				try (final InputStream in = vFile.createInputStream()) {
-					FileUtil.copy(in, sourceOS);
+					in.transferTo(sourceOS);
 				}
 				source = sourceOS.toString();
 			}
@@ -127,7 +126,7 @@ public abstract class AbstractFileStoreManagerTest {
 			final String read;
 			try (final OutputStream readOS = new java.io.ByteArrayOutputStream()) {
 				try (final InputStream in = readFileInfo.getVFile().createInputStream()) {
-					FileUtil.copy(in, readOS);
+					in.transferTo(readOS);
 				}
 				read = readOS.toString();
 			}
@@ -252,7 +251,7 @@ public abstract class AbstractFileStoreManagerTest {
 			final String source;
 			try (final OutputStream sourceOS = new ByteArrayOutputStream()) {
 				try (final InputStream sourceIS = vFile.createInputStream()) {
-					FileUtil.copy(sourceIS, sourceOS);
+					sourceIS.transferTo(sourceOS);
 				}
 				source = sourceOS.toString();
 			}
@@ -260,7 +259,7 @@ public abstract class AbstractFileStoreManagerTest {
 			final String read;
 			try (final OutputStream readOS = new ByteArrayOutputStream()) {
 				try (final InputStream in = readFileInfo.getVFile().createInputStream()) {
-					FileUtil.copy(in, readOS);
+					in.transferTo(readOS);
 				}
 				read = readOS.toString();
 			}
@@ -289,7 +288,7 @@ public abstract class AbstractFileStoreManagerTest {
 	private String readFileContent(final VFile vFile) throws IOException {
 		try (final OutputStream sourceOS = new ByteArrayOutputStream()) {
 			try (final InputStream fileIS = vFile.createInputStream()) {
-				FileUtil.copy(fileIS, sourceOS);
+				fileIS.transferTo(sourceOS);
 			}
 			return sourceOS.toString();
 		}

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,18 +22,21 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
-import io.vertigo.ui.core.ViewContext;
+import io.vertigo.ui.UiResources;
 import io.vertigo.ui.exception.ExpiredViewContextException;
 import io.vertigo.ui.impl.springmvc.util.UiAuthorizationUtil;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
@@ -61,6 +64,16 @@ public final class VSpringMvcExceptionHandler {
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	public static Object handleExpiredViewContextException(final ExpiredViewContextException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
 		LOGGER.warn("Expired ViewContext " + request.getMethod() + " " + request.getRequestURL(), LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
+		if (ex.getRedirectUrlOpt().isPresent()) {
+			final var uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
+			uiMessageStack.info(
+					LocaleMessageText.ofDefaultMsg("Due to technical reasons your last action has been lost, please try again",
+							UiResources.MISSING_VIEW_CONTEXT)
+							.getDisplay());
+			response
+					.sendRedirect(request.getContextPath() + ex.getRedirectUrlOpt().get());
+			return null;
+		}
 		return doHandleThrowable(ex, request, response, HttpStatus.UNAUTHORIZED, "Missing context"); //no stacktrace but throws Ex too
 	}
 
@@ -73,6 +86,13 @@ public final class VSpringMvcExceptionHandler {
 	}
 
 	@ResponseBody
+	@ExceptionHandler(ResponseStatusException.class)
+	public static Object handleResponseStatusException(final ResponseStatusException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
+		LOGGER.error("Server Error with response status " + ex.getStatusCode() + " from " + request.getMethod() + " " + request.getRequestURL(), ex.getStatusCode().value() >= 500 || LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
+		return doHandleThrowable(ex, request, response, ex.getStatusCode(), ex.getMessage());
+	}
+
+	@ResponseBody
 	@ExceptionHandler(Throwable.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public static Object handleThrowable(final Throwable th, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
@@ -80,10 +100,10 @@ public final class VSpringMvcExceptionHandler {
 		return doHandleThrowable(th, request, response, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
 	}
 
-	private static Object doHandleThrowable(final Throwable th, final HttpServletRequest request, final HttpServletResponse response, final HttpStatus errorStatus, final String errorMessage) throws Throwable {
-		final String exceptionMessage = errorMessage != null ? errorMessage : th.getClass().getSimpleName();
+	private static Object doHandleThrowable(final Throwable th, final HttpServletRequest request, final HttpServletResponse response, final HttpStatusCode errorStatus, final String errorMessage) throws Throwable {
+		final var exceptionMessage = errorMessage != null ? errorMessage : th.getClass().getSimpleName();
 		if (UiRequestUtil.isJsonRequest(request)) {
-			final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
+			final var uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 			uiMessageStack.addGlobalMessage(Level.ERROR, exceptionMessage);
 			return uiMessageStack;
 		}
@@ -95,7 +115,7 @@ public final class VSpringMvcExceptionHandler {
 	@ExceptionHandler(ValidationUserException.class)
 	@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
 	public static Object handleValidationUserException(final ValidationUserException ex, final HttpServletRequest request) {
-		final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
+		final var uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 		ex.flushToUiMessageStack(uiMessageStack);
 		//---
 		return handleVUserException(uiMessageStack, request, ex);
@@ -105,7 +125,7 @@ public final class VSpringMvcExceptionHandler {
 	@ExceptionHandler(VUserException.class)
 	@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
 	public static Object handleVUserException(final VUserException ex, final HttpServletRequest request) {
-		final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
+		final var uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 		uiMessageStack.addGlobalMessage(Level.ERROR, ex.getMessage());
 		//---
 		return handleVUserException(uiMessageStack, request, ex);
@@ -113,7 +133,7 @@ public final class VSpringMvcExceptionHandler {
 
 	private static Object handleVUserException(final UiMessageStack uiMessageStack, final HttpServletRequest request, final VUserException ex) {
 		//---
-		final AnalyticsManager analyticsManager = Node.getNode().getComponentSpace().resolve(AnalyticsManager.class);
+		final var analyticsManager = Node.getNode().getComponentSpace().resolve(AnalyticsManager.class);
 		analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer
 				.setTag("exception", "userException"));
 		//---
@@ -121,21 +141,16 @@ public final class VSpringMvcExceptionHandler {
 		if (!("POST".equals(request.getMethod()) || "PUT".equals(request.getMethod()) || "DELETE".equals(request.getMethod()))) {
 			throw WrappedException.wrap(ex);
 		}
-		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
+		final var viewContext = UiRequestUtil.getCurrentViewContext();
 		//---
 		if (UiRequestUtil.isJsonRequest(request)) {
 			return uiMessageStack;
 		}
 		//---
-		final ModelAndView modelAndView = new ModelAndView();
+		final var modelAndView = new ModelAndView();
 		viewContext.markDirty();
 		modelAndView.addObject("model", viewContext.asMap());
-		modelAndView.addObject("viewContextAsJson", new Supplier<String>() {
-			@Override
-			public String get() {
-				return viewContext.getFilteredViewContextAsJson();
-			}
-		});
+		modelAndView.addObject("viewContextAsJson", (Supplier<String>) () -> viewContext.getFilteredViewContextAsJson());
 		modelAndView.addObject("uiMessageStack", uiMessageStack);
 		modelAndView.addObject("authz", new UiAuthorizationUtil());
 		return modelAndView;

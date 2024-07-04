@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package io.vertigo.vega.webservice.validation;
 
 import java.io.Serializable;
 
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DataObject;
 
 /**
  * Class d'enregistrement des messages.
@@ -74,21 +74,21 @@ public interface UiMessageStack extends Serializable {
 	 * @param dto Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	void error(final String message, final DtObject dto, final String fieldName);
+	void error(final String message, final DataObject dto, final String fieldName);
 
 	/**
 	 * @param message Message d'alerte
 	 * @param dto Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	void warning(final String message, final DtObject dto, final String fieldName);
+	void warning(final String message, final DataObject dto, final String fieldName);
 
 	/**
 	 * @param message Message d'info
 	 * @param dto Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	void info(final String message, final DtObject dto, final String fieldName);
+	void info(final String message, final DataObject dto, final String fieldName);
 
 	/**
 	 * Add the message to the stack.
@@ -97,7 +97,7 @@ public interface UiMessageStack extends Serializable {
 	 * @param dtObject the object
 	 * @param fieldName the name of the field associated with the error
 	 */
-	void addFieldMessage(Level level, String message, DtObject dtObject, String fieldName);
+	void addFieldMessage(Level level, String message, DataObject dtObject, String fieldName);
 
 	/**
 	 * Add the message to the stack.

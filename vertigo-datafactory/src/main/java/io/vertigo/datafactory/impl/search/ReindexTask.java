@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +38,9 @@ import io.vertigo.datafactory.search.definitions.SearchChunk;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.definitions.SearchLoader;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.KeyConcept;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.KeyConcept;
+import io.vertigo.datamodel.data.model.UID;
 
 /**
  * Reindex dirty data task.
@@ -121,7 +121,7 @@ final class ReindexTask implements Runnable {
 
 	private void loadAndIndex(final SearchChunk searchChunk) {
 		final var searchLoader = Node.getNode().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
-		final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes;
+		final Collection<SearchIndex<KeyConcept, DataObject>> searchIndexes;
 
 		searchIndexes = searchLoader.loadData(searchChunk);
 
@@ -131,10 +131,10 @@ final class ReindexTask implements Runnable {
 		}
 	}
 
-	private void removedNotFoundKeyConcept(final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes, final SearchChunk searchChunk) {
+	private void removedNotFoundKeyConcept(final Collection<SearchIndex<KeyConcept, DataObject>> searchIndexes, final SearchChunk searchChunk) {
 		if (searchIndexes.size() < searchChunk.getAllUIDs().size()) {
 			final var notFoundUris = new LinkedHashSet<>(searchChunk.getAllUIDs());
-			for (final SearchIndex<KeyConcept, DtObject> searchIndex : searchIndexes) {
+			for (final SearchIndex<KeyConcept, DataObject> searchIndex : searchIndexes) {
 				notFoundUris.remove(searchIndex.getUID());
 			}
 			searchManager.removeAll(searchIndexDefinition, urisToListFilter(notFoundUris));

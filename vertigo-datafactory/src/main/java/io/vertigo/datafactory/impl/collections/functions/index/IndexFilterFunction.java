@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,21 +27,21 @@ import java.util.function.UnaryOperator;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.impl.collections.IndexPlugin;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
 
 /**
  * List Function powered with index engine.
  * @author npiedeloup (5 janv. 2015 10:47:08)
  * @param <D> Object type
  */
-public final class IndexFilterFunction<D extends DtObject> implements UnaryOperator<DtList<D>> {
+public final class IndexFilterFunction<D extends DataObject> implements UnaryOperator<DtList<D>> {
 
 	private static final int DEFAULT_MAX_ROWS = 250;
 	private String keywords;
-	private Collection<DtField> searchedFields = Collections.emptyList();
+	private Collection<DataField> searchedFields = Collections.emptyList();
 	private final List<ListFilter> listFilters = new ArrayList<>();
 	private int skip = 0;
 	private int top = DEFAULT_MAX_ROWS;
@@ -66,7 +66,7 @@ public final class IndexFilterFunction<D extends DtObject> implements UnaryOpera
 	 * @param maxRows Max rows
 	 * @param keywordsSearchedFields searched fields
 	 */
-	public void filter(final String userKeywords, final int maxRows, final Collection<DtField> keywordsSearchedFields) {
+	public void filter(final String userKeywords, final int maxRows, final Collection<DataField> keywordsSearchedFields) {
 		Assertion.check()
 				.isNull(keywords, "Keywords was already set on this processor : {0}. Only one is supported.", keywords)
 				.isNotNull(userKeywords)

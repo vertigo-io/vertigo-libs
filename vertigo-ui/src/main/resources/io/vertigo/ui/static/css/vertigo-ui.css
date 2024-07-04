@@ -28,31 +28,44 @@ iframe {
 	border: 0;
 }
 
-.text-primary-inverted  {
+
+.bg-primary-inverted {
+    background-color: var(--v-primary-invert);
+}
+.bg-secondary-inverted {
+    background-color: var(--v-secondary-invert);
+}
+.bg-accent-inverted {
+    background-color: var(--v-accent-invert);
+}
+
+.text-primary-inverted {
 	color:var(--v-primary-invert) !important; 
 }
-
-.text-secondary-inverted  {
+.text-secondary-inverted {
 	color:var(--v-secondary-invert) !important; 
 }
-
-.text-accent-inverted  {
+.text-accent-inverted {
 	color:var(--v-accent-invert) !important; 
 }
 
-.v-field__required .q-field__label::after, .v-field__required .q-checkbox__label::after {
+.v-field__required .q-field__label::after,
+.v-field__required .q-checkbox__label::after,
+.v-block__required::after {
   content: " *";
   color: var(--q-negative);
 } 
 
-.v-field__required.v-field__has_after_label .q-field__label::after, .v-field__required.v-field__has_after_label .q-checkbox__label::after {
+.v-field__required.v-field__has_after_label .q-field__label::after,
+.v-field__required.v-field__has_after_label .q-checkbox__label::after {
   content: "";
 } 
 
-.v-field__required.v-field__has_after_label .q-field__label>:first-child::after, .v-field__required .q-checkbox__label>:first-child::after {
+.v-field__required.v-field__has_after_label .q-field__label>:first-child::after,
+.v-field__required .q-checkbox__label>:first-child::after {
   content: " *";
   color: var(--q-negative);
-} 
+}
 
 .q-field--error .q-checkbox__label {
   color: var(--q-negative);
@@ -156,15 +169,14 @@ img.avatar {
 }*/
 
 .table-primary th {
-	color:var(--q-primary-invert) !important;
+	color:var(--v-primary-invert) !important;
 }
 .table-secondary th {
-	color:var(--q-secondary-invert) !important;
+	color:var(--v-secondary-invert) !important;
 }
 .table-accent th {
-	color:var(--q-accent-invert) !important;
+	color:var(--v-accent-invert) !important;
 }
-
 
 .q-table-container th.sortable:hover,
 .q-table-container th.sorted {
@@ -177,20 +189,123 @@ img.avatar {
 
 .table-primary  .q-btn {
 	background: var(--q-primary);
-	color:var(--q-primary-invert);
+	color:var(--v-primary-invert);
 }
 .table-secondary  .q-btn {
 	background: var(--q-secondary);
-	color:var(--q-secondary-invert);
+	color:var(--v-secondary-invert);
 }
 .table-tertiary  .q-btn {
 	background: var(--q-tertiary);
 	color:var(--q-tertiary-invert);
 }
 
-.q-tr .q-btn {
-    font-size:12px;
+/** tableaux auto-ellipsis */
+.auto-ellipsis .q-table tr:hover td {
+    overflow: visible; 
+    white-space: normal;
+    animation: delay-from-ellipsis 2s;
 }
+
+@keyframes delay-from-ellipsis {
+  from { 
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
+.auto-ellipsis .q-table tr td {
+    overflow: hidden;
+    max-width: 150px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-wrap: break-word;
+}
+
+.auto-ellipsis .q-table th {
+    vertical-align: baseline;
+    max-width: 150px;   
+}
+
+.q-table tr .q-btn {
+    font-size: 10px; /** eq qBtn size="sm" */
+}
+
+/** Actions columns */
+
+.col_action .q-hoverable:hover {
+	box-shadow: inset -1px 0 0 #000, inset 0 -1px 0 #000, inset 1px 0 0 #000, inset 0 1px 0 #000;
+}
+
+.col_action .text-primary.q-hoverable:hover {
+    box-shadow: inset -1px 0 0 var(--q-primary), inset 0 -1px 0 var(--q-primary), inset 1px 0 0 var(--q-primary), inset 0 1px 0 var(--q-primary);
+}
+
+.col_action .showButtonOnHover > button {
+    margin-left: 4px;
+}
+
+.no-touch .showButtonOnHover:hover > .q-btn[disabled],
+.no-touch tr:hover .showButtonOnHover > .q-btn[disabled],
+.no-touch div.q-hoverable:hover .showButtonOnHover > .q-btn[disabled] {
+  opacity: 0.5!important;
+  transition: .5s;
+}
+
+.no-touch .showButtonOnHover > .q-btn[disabled] {
+  opacity: 0!important;
+  transition: .5s;
+}
+
+.table-primary  .q-btn, .table-secondary  .q-btn {
+     background: none; 
+}
+
+/*fix cursor on <a> without href in q-editor*/
+.q-editor a.q-btn {
+    cursor: pointer;
+}
+
+
+/** Tests to show Actions on hover 
+ but will mask right column (controls, to favorites, etc ...)
+**/
+
+/** Test 1 : show on hover 
+thead tr:last-child th.col_action, td.col_action {
+   display:none;
+}
+
+tr:hover td.col_action:last-child:before {
+    display:none;
+}
+    
+tr:hover td.col_action:last-child {
+    background: linear-gradient(90deg, #F7F7F700 0px, #F7F7F7FF 16px);
+    position: absolute;
+    right: 0;
+    z-index: 1;
+    width:auto;
+    display:flex;
+    border-bottom-width: 0px;
+    height:47px; --dont mask bottom border   
+}
+*/
+/*
+Test2 : replace most right column on hover : like GMail
+
+tbody tr:hover td.col_action {
+    display:table-cell;
+}
+
+thead tr:hover:last-child th:last-child, tr:hover td.col_action:last-child {
+    display:table-cell;
+}
+
+thead tr:hover:last-child th:last-child:not(:first-child), tr:hover td:nth-last-child(2):not(:first-child){
+    display:none;
+}*/
+
 
 
 
@@ -231,7 +346,8 @@ img.avatar {
 }
 
 .no-touch .showButtonOnHover:hover > .q-btn,
-.no-touch tr:hover .showButtonOnHover > .q-btn {
+.no-touch tr:hover .showButtonOnHover > .q-btn,
+.no-touch div.q-hoverable:hover .showButtonOnHover > .q-btn {
   opacity: 1;
   transition: .5s;
 }
@@ -241,12 +357,15 @@ img.avatar {
   transition: .5s;
 }
 
+.no-touch div.q-hoverable:not(:hover) .showButtonOnHover > .q-btn {
+  opacity: 0 !important;
+}
+
 .dropzone-area {
 	position: relative;
 }
 
 .q-uploader {
-	max-width:320px; /*choosed by quasar*/
 	width:auto !important;
 }
 .q-uploader__title {
@@ -309,7 +428,19 @@ table .q-uploader .q-btn {
 */
 
 .v-modal{
-    max-width:unset;
+    max-width:unset !important;
+}
+
+.q-dialog__inner--minimized .v-modal .q-card__section {
+	max-height: calc(100vh - 100px);
+	max-width: calc(100vw - 100px);
+	overflow: auto;
+}
+
+.v-modal .q-card__section iframe {
+	display: block;
+	width: 100%;
+	height: 100%;
 }
 
 /******** dev mode of authorizations *******/
@@ -358,3 +489,32 @@ table .q-uploader .q-btn {
    -moz-animation: spinner-waitHidden 500ms;
    animation: spinner-waitHidden 500ms;
 } 
+
+/******** for buttons-group, hide elements when collapsed *******/
+
+.more-elements .hide-on-more {
+	display:none;
+}
+
+
+/** v-map **/
+.ol-v-custom-buttons {
+	top: 4em;
+	left: .5em;
+}
+
+.ol-v-custom-buttons .active {
+	color: blue !important;	
+}
+
+.ol-geocoder.gcd-gl-container {
+	top: .5em !important;
+	left: 3em !important;	
+}
+.ol-geocoder .gcd-gl-btn {
+	font-size: 1.1em !important;
+}
+.ol-geocoder .gcd-gl-input {
+	top: .125em !important;
+	height: 2.25em !important;
+}

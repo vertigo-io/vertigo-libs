@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ package io.vertigo.datamodel.criteria;
 
 import java.io.Serializable;
 
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
 
 public interface CriteriaEncoder {
 
-	String encodeOperator(CriteriaCtx ctx, CriterionOperator criterionOperator, DtFieldName dtFieldName, Serializable[] values);
+	String encodeOperator(CriteriaCtx ctx, CriterionOperator criterionOperator, DataFieldName dataFieldName, Serializable[] values);
 
 	String encodeLogicalOperator(CriteriaLogicalOperator logicalOperator);
 

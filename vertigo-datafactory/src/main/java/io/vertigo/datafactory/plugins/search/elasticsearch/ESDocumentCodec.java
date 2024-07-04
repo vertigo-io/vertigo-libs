@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,15 +32,15 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.datafactory.search.model.SearchIndex;
+import io.vertigo.datamodel.data.definitions.DataAccessor;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.DataField.FieldType;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.KeyConcept;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DataAccessor;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtField.FieldType;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.KeyConcept;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
 /**
  * Traduction bi directionnelle des objets SOLR en objets logique de recherche.
@@ -71,14 +71,14 @@ public final class ESDocumentCodec {
 		this.typeAdapters = typeAdapters;
 	}
 
-	private <I extends DtObject> String encode(final I dto) {
+	private <I extends DataObject> String encode(final I dto) {
 		Assertion.check().isNotNull(dto);
 		//-----
 		final byte[] data = codecManager.getCompressedSerializationCodec().encode(dto);
 		return codecManager.getBase64Codec().encode(data);
 	}
 
-	private <R extends DtObject> R decode(final String base64Data) {
+	private <R extends DataObject> R decode(final String base64Data) {
 		Assertion.check().isNotNull(base64Data);
 		//-----
 		final byte[] data = codecManager.getBase64Codec().decode(base64Data);
@@ -94,11 +94,11 @@ public final class ESDocumentCodec {
 	 * @param searchHit Resultat ElasticSearch
 	 * @return Objet logique de recherche
 	 */
-	public <I extends DtObject> I searchHit2DtIndex(final DtDefinition indexDtDefinition, final SearchHit searchHit) {
+	public <I extends DataObject> I searchHit2DtIndex(final DataDefinition indexDtDefinition, final SearchHit searchHit) {
 		/* On lit du document les données persistantes. */
 		/* 1. UID */
 		final String urn = searchHit.getId();
-		final UID uid = io.vertigo.datamodel.structure.model.UID.of(urn);
+		final UID uid = io.vertigo.datamodel.data.model.UID.of(urn);
 		/* 2 : Result stocké */
 		final I resultDtObjectdtObject;
 		if (searchHit.field(FULL_RESULT) == null) {
@@ -107,7 +107,7 @@ public final class ESDocumentCodec {
 			resultDtObjectdtObject = decode(searchHit.field(FULL_RESULT).getValue());
 		}
 		//-----
-		final DtDefinition resultDtDefinition = DtObjectUtil.findDtDefinition(resultDtObjectdtObject);
+		final DataDefinition resultDtDefinition = DataModelUtil.findDataDefinition(resultDtObjectdtObject);
 		Assertion.check()
 				.isNotNull(uid)
 				.isNotNull(indexDtDefinition)
@@ -127,18 +127,18 @@ public final class ESDocumentCodec {
 	 * @return Document SOLR
 	 * @throws IOException Json exception
 	 */
-	public <S extends KeyConcept, I extends DtObject> XContentBuilder index2XContentBuilder(final SearchIndex<S, I> index) throws IOException {
+	public <S extends KeyConcept, I extends DataObject> XContentBuilder index2XContentBuilder(final SearchIndex<S, I> index) throws IOException {
 		Assertion.check().isNotNull(index);
 		//-----
 
-		final DtDefinition dtDefinition = index.getDefinition().getIndexDtDefinition();
-		final List<DtField> notStoredFields = getNotStoredFields(dtDefinition); //on ne copie pas les champs not stored dans le domain
+		final DataDefinition dataDefinition = index.getDefinition().getIndexDtDefinition();
+		final List<DataField> notStoredFields = getNotStoredFields(dataDefinition); //on ne copie pas les champs not stored dans le domain
 		notStoredFields.addAll(index.getDefinition().getIndexCopyToFields()); //on ne copie pas les champs (copyTo)
 		final I dtResult;
 		if (notStoredFields.isEmpty()) {
 			dtResult = index.getIndexDtObject();
 		} else {
-			dtResult = cloneDto(dtDefinition, index.getIndexDtObject(), notStoredFields);
+			dtResult = cloneData(dataDefinition, index.getIndexDtObject(), notStoredFields);
 		}
 
 		/* 2: Result stocké */
@@ -151,10 +151,10 @@ public final class ESDocumentCodec {
 					.field(DOC_ID, Serializable.class.cast(index.getUID().getId()));
 
 			/* 3 : Les champs du dto index */
-			final DtObject dtIndex = index.getIndexDtObject();
-			final DtDefinition indexDtDefinition = DtObjectUtil.findDtDefinition(dtIndex);
-			final Set<DtField> copyToFields = index.getDefinition().getIndexCopyToFields();
-			for (final DtField dtField : indexDtDefinition.getFields()) {
+			final DataObject dtIndex = index.getIndexDtObject();
+			final DataDefinition indexDtDefinition = DataModelUtil.findDataDefinition(dtIndex);
+			final Set<DataField> copyToFields = index.getDefinition().getIndexCopyToFields();
+			for (final DataField dtField : indexDtDefinition.getFields()) {
 				if (!copyToFields.contains(dtField)) {//On index pas les copyFields
 					final Object value = dtField.getDataAccessor().getValue(dtIndex);
 					if (value != null) { //les valeurs null ne sont pas indexées => conséquence : on ne peut pas les rechercher
@@ -188,16 +188,16 @@ public final class ESDocumentCodec {
 		return encodedValue;
 	}
 
-	private static List<DtField> getNotStoredFields(final DtDefinition dtDefinition) {
-		return dtDefinition.getFields().stream()
+	private static List<DataField> getNotStoredFields(final DataDefinition dataDefinition) {
+		return dataDefinition.getFields().stream()
 				//We don't store (in Result) computed fields and fields with a "notStored" domain
 				.filter(dtField -> !isIndexStoredDomain(dtField.smartTypeDefinition()) || dtField.getType() == FieldType.COMPUTED)
 				.collect(Collectors.toList());
 	}
 
-	private static <I extends DtObject> I cloneDto(final DtDefinition dtDefinition, final I dto, final List<DtField> excludedFields) {
-		final I clonedDto = (I) DtObjectUtil.createDtObject(dtDefinition);
-		for (final DtField dtField : dtDefinition.getFields()) {
+	private static <I extends DataObject> I cloneData(final DataDefinition dataDefinition, final I dto, final List<DataField> excludedFields) {
+		final I clonedDto = (I) DataModelUtil.createDataObject(dataDefinition);
+		for (final DataField dtField : dataDefinition.getFields()) {
 			if (!excludedFields.contains(dtField)) {
 				final DataAccessor dataAccessor = dtField.getDataAccessor();
 				dataAccessor.setValue(clonedDto, dataAccessor.getValue(dto));

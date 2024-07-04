@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpressio
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 
 /**
  * Une authorization est un droit sur une fonction de l'application.
@@ -49,7 +49,7 @@ public final class Authorization extends AbstractDefinition<Authorization> {
 	private final Set<Authorization> grants;
 	private final List<RuleMultiExpression> rules; //empty -> always true
 
-	private final Optional<DtDefinition> entityOpt;
+	private final Optional<DataDefinition> entityOpt;
 	private final Optional<String> operationOpt;
 
 	/**
@@ -92,7 +92,7 @@ public final class Authorization extends AbstractDefinition<Authorization> {
 			final String label,
 			final Set<String> overrides,
 			final Set<Authorization> grants,
-			final DtDefinition entityDefinition,
+			final DataDefinition entityDefinition,
 			final List<RuleMultiExpression> rules,
 			final Optional<String> comment) {
 		super(PREFIX + entityDefinition.id().shortName() + '$' + operation);
@@ -153,7 +153,7 @@ public final class Authorization extends AbstractDefinition<Authorization> {
 	/**
 	 * @return entity definition
 	 */
-	public Optional<DtDefinition> getEntityDefinition() {
+	public Optional<DataDefinition> getEntityDefinition() {
 		return entityOpt;
 	}
 

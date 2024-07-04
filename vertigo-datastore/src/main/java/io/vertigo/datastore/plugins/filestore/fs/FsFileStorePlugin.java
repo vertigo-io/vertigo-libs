@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,12 +39,12 @@ import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.FileUtil;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
@@ -89,14 +89,15 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	private final boolean readOnly;
 	private final String name;
 	private final String documentRoot;
-	private DtField storeIdField;
-	private DtDefinition storeDtDefinition;
+	private DataField storeIdField;
+	private DataDefinition storeDtDefinition;
 	private final String storeDtDefinitionName;
 	private final VTransactionManager transactionManager;
 	private final String fileInfoClassName;
 
 	/**
 	 * Constructor.
+	 *
 	 * @param name Store name
 	 * @param storeDtDefinitionName Nom du dt de stockage
 	 * @param path le chemin jndi pour récupérer le paramètre path dans le context
@@ -127,7 +128,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 
 	@Override
 	public void start() {
-		storeDtDefinition = Node.getNode().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
+		storeDtDefinition = Node.getNode().getDefinitionSpace().resolve(storeDtDefinitionName, DataDefinition.class);
 		storeIdField = storeDtDefinition.getIdField().get();
 	}
 
@@ -150,7 +151,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	public FileInfo read(final FileInfoURI uri) {
 		// récupération de l'objet en base
 		final UID<Entity> dtoUri = createDtObjectURI(uri);
-		final DtObject fileInfoDto = getEntityStoreManager().readOne(dtoUri);
+		final DataObject fileInfoDto = getEntityStoreManager().readOne(dtoUri);
 
 		// récupération du fichier
 		final String fileName = getValue(fileInfoDto, DtoFields.fileName, String.class);
@@ -193,7 +194,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
 			final UID<Entity> dtoUri = createDtObjectURI(fileInfo.getURI());
-			final DtObject fileInfoDtoBase = getEntityStoreManager().readOne(dtoUri);
+			final DataObject fileInfoDtoBase = getEntityStoreManager().readOne(dtoUri);
 			final String pathToSave = getValue(fileInfoDtoBase, DtoFields.filePath, String.class);
 			setValue(fileInfoDto, DtoFields.filePath, pathToSave);
 		}
@@ -213,14 +214,14 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	public FileInfo create(final FileInfo fileInfo) {
 		Assertion.check()
 				.isFalse(readOnly, STORE_READ_ONLY)
-				.isNotNull(fileInfo.getURI(), "Only file without any id can be created.");
+				.isNull(fileInfo.getURI(), "Only file without any id can be created.");
 		//-----
 		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
 		//-----
 		getEntityStoreManager().create(fileInfoDto);
 
 		// cas de la création
-		final Object fileInfoDtoId = DtObjectUtil.getId(fileInfoDto);
+		final Object fileInfoDtoId = DataModelUtil.getId(fileInfoDto);
 		Assertion.check().isNotNull(fileInfoDtoId, "File's id must be set.");
 		final FileInfoURI uri = createURI(fileInfo.getDefinition(), fileInfoDtoId);
 		fileInfo.setURIStored(uri);
@@ -241,7 +242,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	public void update(final FileInfo fileInfo) {
 		Assertion.check()
 				.isFalse(readOnly, STORE_READ_ONLY)
-				.isNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
+				.isNotNull(fileInfo.getURI(), "Only file with an id can be updated.");
 		//-----
 		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
 		//-----
@@ -263,7 +264,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 
 		final UID<Entity> dtoUri = createDtObjectURI(uri);
 		//-----suppression du fichier
-		final DtObject fileInfoDto = getEntityStoreManager().readOne(dtoUri);
+		final DataObject fileInfoDto = getEntityStoreManager().readOne(dtoUri);
 		final String path = getValue(fileInfoDto, DtoFields.filePath, String.class);
 		getCurrentTransaction().addAfterCompletion(new FileActionDelete(documentRoot + path));
 		//-----suppression en base
@@ -298,7 +299,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		Assertion.check().isNotNull(fileInfoDefinition, "fileInfoDefinition must be provided.");
 		//-----
 		// Il doit exister un DtObjet associé, avec la structure attendue.
-		return DtObjectUtil.createEntity(storeDtDefinition);
+		return DataModelUtil.createEntity(storeDtDefinition);
 	}
 
 	/**
@@ -308,9 +309,9 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 * @param field Nom du champs
 	 * @return Valeur typé du champ
 	 */
-	private static <V> V getValue(final DtObject dto, final DtoFields field, final Class<V> valueClass) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		final DtField dtField = dtDefinition.getField(field.name());
+	private static <V> V getValue(final DataObject dto, final DtoFields field, final Class<V> valueClass) {
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(dto);
+		final DataField dtField = dataDefinition.getField(field.name());
 		return valueClass.cast(dtField.getDataAccessor().getValue(dto));
 	}
 
@@ -321,13 +322,13 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 * @param field Nom du champs
 	 * @param value Valeur
 	 */
-	private static void setValue(final DtObject dto, final DtoFields field, final Object value) {
-		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(field.name());
+	private static void setValue(final DataObject dto, final DtoFields field, final Object value) {
+		final DataField dtField = DataModelUtil.findDataDefinition(dto).getField(field.name());
 		dtField.getDataAccessor().setValue(dto, value);
 	}
 
-	private static void setIdValue(final DtObject dto, final FileInfoURI uri) {
-		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getIdField().get();
+	private static void setIdValue(final DataObject dto, final FileInfoURI uri) {
+		final DataField dtField = DataModelUtil.findDataDefinition(dto).getIdField().get();
 		dtField.getDataAccessor().setValue(dto, uri.getKeyAs(dtField.smartTypeDefinition().getJavaClass()));
 	}
 

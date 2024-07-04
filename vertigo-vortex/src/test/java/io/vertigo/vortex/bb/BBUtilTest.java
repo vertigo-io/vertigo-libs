@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,8 +71,8 @@ public class BBUtilTest {
 		final BlackBoard blackBoard = blackBoardManager.connect(BBKey.of("/test"));
 		//---
 		Assertions.assertEquals("hello world", blackBoard.format("hello world"));
-		blackBoard.putString(BBKey.of("/name"), "joe");
-		blackBoard.putString(BBKey.of("/lastname"), "diMagio");
+		blackBoard.string().put(BBKey.of("/name"), "joe");
+		blackBoard.string().put(BBKey.of("/lastname"), "diMagio");
 		//---
 		Assertions.assertEquals("joe", blackBoard.format("{{/name}}"));
 		Assertions.assertEquals("hello joe", blackBoard.format("hello {{/name}}"));
@@ -90,9 +90,9 @@ public class BBUtilTest {
 	public void testFormatter2() {
 		final BlackBoard blackBoard = blackBoardManager.connect(BBKey.of("/test"));
 		//---
-		blackBoard.putString(BBKey.of("/u/1/name"), "alan");
-		blackBoard.putString(BBKey.of("/u/2/name"), "ada");
-		blackBoard.putString(BBKey.of("/u/idx"), "2");
+		blackBoard.string().put(BBKey.of("/u/1/name"), "alan");
+		blackBoard.string().put(BBKey.of("/u/2/name"), "ada");
+		blackBoard.string().put(BBKey.of("/u/idx"), "2");
 		Assertions.assertEquals("hello ada", blackBoard.format("hello {{/u/{{/u/idx}}/name}}"));
 	}
 }

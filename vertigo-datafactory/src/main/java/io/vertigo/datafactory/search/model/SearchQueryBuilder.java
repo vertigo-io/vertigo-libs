@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import io.vertigo.datafactory.collections.definitions.FacetedQueryDefinition;
 import io.vertigo.datafactory.collections.definitions.ListFilterBuilder;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
-import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataField;
 
 /**
  * @author pchretien
@@ -42,7 +42,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	private Object myCriteria;
 	private ListFilter mySecurityListFilter;
 	//-----
-	private DtField myDateField;
+	private DataField myDateField;
 	private Integer myNumDaysOfBoostRef;
 	private Integer myMostRecentBoost;
 	private FacetedQuery myFacetedQuery;
@@ -90,7 +90,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * @param mostRecentBoost Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1) (null si non utilisé)
 	 * @return SearchQuery.
 	 */
-	public SearchQueryBuilder withDateBoost(final DtField dateField, final int numDaysOfBoostRef, final int mostRecentBoost) {
+	public SearchQueryBuilder withDateBoost(final DataField dateField, final int numDaysOfBoostRef, final int mostRecentBoost) {
 		Assertion.check()
 				.isNotNull(dateField)
 				.isTrue(numDaysOfBoostRef > 1 && mostRecentBoost > 1, "numDaysOfBoostRef et mostRecentBoost doivent être strictement supérieurs à 1.");

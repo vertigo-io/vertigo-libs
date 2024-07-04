@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.task.model.TaskEngine;
 
 /**
@@ -72,7 +72,7 @@ public final class TaskDefinition extends AbstractDefinition<TaskDefinition> {
 		super(name);
 		Assertion.check()
 				.isNotBlank(dataSpace)
-				.isTrue(DtDefinition.REGEX_DATA_SPACE.matcher(dataSpace).matches(), "collection {0} must match pattern {1}", dataSpace, DtDefinition.REGEX_DATA_SPACE)
+				.isTrue(DataDefinition.REGEX_DATA_SPACE.matcher(dataSpace).matches(), "collection {0} must match pattern {1}", dataSpace, DataDefinition.REGEX_DATA_SPACE)
 				.isNotNull(taskEngineClass, "a taskEngineClass is required")
 				.isNotNull(request, "a request is required")
 				.isNotNull(inTaskAttributes)

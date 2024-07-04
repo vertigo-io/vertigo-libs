@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,24 +36,24 @@ import javax.inject.Inject;
 import io.vertigo.commons.eventbus.EventBusSubscribed;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.NamedThreadFactory;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
-import io.vertigo.core.util.NamedThreadFactory;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtStereotype;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.KeyConcept;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataStereotype;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.KeyConcept;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.entitystore.StoreEvent;
 
 /**
@@ -133,7 +133,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
+	public <S extends KeyConcept, I extends DataObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
 		analyticsManager.trace(
 				CATEGORY,
 				"/putAll/" + indexDefinition.getName(),
@@ -145,7 +145,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
+	public <S extends KeyConcept, I extends DataObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
 		analyticsManager.trace(
 				CATEGORY,
 				"/put/" + indexDefinition.getName(),
@@ -157,13 +157,13 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
+	public <R extends DataObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
 		return loadList(List.of(indexDefinition), searchQuery, listState);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState) {
+	public <R extends DataObject> FacetedQueryResult<R, SearchQuery> loadList(final List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState) {
 		final String definitionNames = indexDefinitions.stream()
 				.map(SearchIndexDefinition::getName)
 				.collect(Collectors.joining(";"));
@@ -210,7 +210,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public SearchIndexDefinition findFirstIndexDefinitionByKeyConcept(final Class<? extends KeyConcept> keyConceptClass) {
-		final Optional<SearchIndexDefinition> indexDefinition = findFirstIndexDefinitionByKeyConcept(DtObjectUtil.findDtDefinition(keyConceptClass));
+		final Optional<SearchIndexDefinition> indexDefinition = findFirstIndexDefinitionByKeyConcept(DataModelUtil.findDataDefinition(keyConceptClass));
 		Assertion.check().isTrue(indexDefinition.isPresent(), "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptClass.getSimpleName());
 		return indexDefinition.get();
 	}
@@ -222,18 +222,18 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		return findFirstIndexDefinitionByKeyConcept(keyConceptClass);
 	}
 
-	private static boolean hasIndexDefinitionByKeyConcept(final DtDefinition keyConceptDefinition) {
+	private static boolean hasIndexDefinitionByKeyConcept(final DataDefinition keyConceptDefinition) {
 		final List<SearchIndexDefinition> indexDefinitions = findIndexDefinitionByKeyConcept(keyConceptDefinition);
 		return !indexDefinitions.isEmpty();
 	}
 
-	private static Optional<SearchIndexDefinition> findFirstIndexDefinitionByKeyConcept(final DtDefinition keyConceptDtDefinition) {
+	private static Optional<SearchIndexDefinition> findFirstIndexDefinitionByKeyConcept(final DataDefinition keyConceptDtDefinition) {
 		return Node.getNode().getDefinitionSpace().getAll(SearchIndexDefinition.class).stream()
 				.filter(indexDefinition -> indexDefinition.getKeyConceptDtDefinition().equals(keyConceptDtDefinition))
 				.findFirst();
 	}
 
-	private static List<SearchIndexDefinition> findIndexDefinitionByKeyConcept(final DtDefinition keyConceptDtDefinition) {
+	private static List<SearchIndexDefinition> findIndexDefinitionByKeyConcept(final DataDefinition keyConceptDtDefinition) {
 		return Node.getNode().getDefinitionSpace().getAll(SearchIndexDefinition.class).stream()
 				.filter(indexDefinition -> indexDefinition.getKeyConceptDtDefinition().equals(keyConceptDtDefinition))
 				.toList();
@@ -246,7 +246,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 				.isNotNull(keyConceptUris)
 				.isFalse(keyConceptUris.isEmpty(), "dirty keyConceptUris cant be empty");
 		//-----
-		final DtDefinition keyConceptDefinition = keyConceptUris.get(0).getDefinition();
+		final DataDefinition keyConceptDefinition = keyConceptUris.get(0).getDefinition();
 		final List<SearchIndexDefinition> searchIndexDefinitions = findIndexDefinitionByKeyConcept(keyConceptDefinition);
 		Assertion.check().isFalse(searchIndexDefinitions.isEmpty(), "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptDefinition.getName());
 		//-----
@@ -302,7 +302,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	public void onEvent(final StoreEvent storeEvent) {
 		final List<UID<? extends KeyConcept>> keyConceptUris = (List) storeEvent.getUIDs().stream()
 				//On ne traite l'event que si il porte sur un KeyConcept
-				.filter(uid -> uid.getDefinition().getStereotype() == DtStereotype.KeyConcept
+				.filter(uid -> uid.getDefinition().getStereotype() == DataStereotype.KeyConcept
 						&& hasIndexDefinitionByKeyConcept(uid.getDefinition()))
 				.toList();
 		if (!keyConceptUris.isEmpty()) {

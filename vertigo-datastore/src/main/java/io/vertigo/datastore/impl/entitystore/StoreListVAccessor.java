@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ package io.vertigo.datastore.impl.entitystore;
 
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Node;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.ListVAccessor;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.ListVAccessor;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 
 public class StoreListVAccessor<E extends Entity> extends ListVAccessor<E> {

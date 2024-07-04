@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,11 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.filestore.definitions.FileInfoDefinition;
@@ -105,9 +105,9 @@ abstract class AbstractDbFileStorePlugin {
 	 * @param valueClass Type du champ
 	 * @return Valeur typé du champ
 	 */
-	protected static <V> V getValue(final DtObject dto, final DtFieldName fieldName, final Class<V> valueClass) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		final DtField dtField = dtDefinition.getField(fieldName.name());
+	protected static <V> V getValue(final DataObject dto, final DataFieldName fieldName, final Class<V> valueClass) {
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(dto);
+		final DataField dtField = dataDefinition.getField(fieldName.name());
 		return valueClass.cast(dtField.getDataAccessor().getValue(dto));
 	}
 
@@ -118,18 +118,18 @@ abstract class AbstractDbFileStorePlugin {
 	 * @param fieldName Nom du champs
 	 * @param value Valeur
 	 */
-	protected static void setValue(final DtObject dto, final DtFieldName fieldName, final Object value) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		final DtField dtField = dtDefinition.getField(fieldName.name());
+	protected static void setValue(final DataObject dto, final DataFieldName fieldName, final Object value) {
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(dto);
+		final DataField dtField = dataDefinition.getField(fieldName.name());
 		dtField.getDataAccessor().setValue(dto, value);
 	}
 
 	/**
 	 * @param dto DtObject
 	 */
-	protected static void setIdValue(final DtObject dto, final FileInfoURI uri) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		final DtField idField = dtDefinition.getIdField().get();
+	protected static void setIdValue(final DataObject dto, final FileInfoURI uri) {
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(dto);
+		final DataField idField = dataDefinition.getIdField().get();
 		idField.getDataAccessor().setValue(dto, uri.getKeyAs(idField.smartTypeDefinition().getJavaClass()));
 	}
 

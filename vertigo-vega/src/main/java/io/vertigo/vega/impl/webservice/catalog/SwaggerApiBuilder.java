@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -41,11 +42,11 @@ import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
@@ -274,7 +275,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			final Class<?> parameterClass;
 			if (type instanceof ParameterizedType
 					&& (((ParameterizedType) type).getActualTypeArguments().length == 1 || FacetedQueryResult.class.isAssignableFrom(objectClass))
-					&& (((ParameterizedType) type).getActualTypeArguments()[0] instanceof Class || ((ParameterizedType) type).getActualTypeArguments()[0] instanceof ParameterizedType)) {
+					&& (((ParameterizedType) type).getActualTypeArguments()[0] instanceof Class || ((ParameterizedType) type).getActualTypeArguments()[0] instanceof ParameterizedType)
+					&& !(((ParameterizedType) type).getActualTypeArguments()[0] instanceof WildcardType)) {
 				//We have checked there is one parameter or we known that FacetedQueryResult has two parameterized type
 				final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0];
 				parameterClass = WebServiceTypeUtil.castAsClass(itemsType);
@@ -288,8 +290,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			if (!builderDefinitions.containsKey(objectName)) {
 				final Map<String, Object> definition = new LinkedHashMap<>();
 				builderDefinitions.put(objectName, definition); //we put definitions first to avoid infinite resolution loop
-				if (DtObject.class.isAssignableFrom(objectClass)) {
-					final Class<? extends DtObject> dtClass = (Class<? extends DtObject>) objectClass;
+				if (DataObject.class.isAssignableFrom(objectClass)) {
+					final Class<? extends DataObject> dtClass = (Class<? extends DataObject>) objectClass;
 					appendPropertiesDtObject(definition, dtClass, includedFields, excludedFields);
 				} else {
 					appendPropertiesObject(definition, objectClass, parameterClass, includedFields, excludedFields);
@@ -308,12 +310,12 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		return "$" + sb.hashCode();
 	}
 
-	private void appendPropertiesDtObject(final Map<String, Object> entity, final Class<? extends DtObject> objectClass, final Set<String> includedFields, final Set<String> excludedFields) {
+	private void appendPropertiesDtObject(final Map<String, Object> entity, final Class<? extends DataObject> objectClass, final Set<String> includedFields, final Set<String> excludedFields) {
 		//can't be a primitive nor array nor DtListDelta
 		final Map<String, Object> properties = new LinkedHashMap<>();
 		final List<String> required = new ArrayList<>(); //mandatory fields
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(objectClass);
-		for (final DtField dtField : dtDefinition.getFields()) {
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(objectClass);
+		for (final DataField dtField : dataDefinition.getFields()) {
 			final String fieldName = dtField.name();
 			if (isExcludedField(fieldName, includedFields, excludedFields)) {
 				continue;
@@ -349,7 +351,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		return excludedFields.contains(fieldName);
 	}
 
-	private static Type getFieldType(final DtField dtField) {
+	private static Type getFieldType(final DataField dtField) {
 		final Class<?> dtClass = dtField.smartTypeDefinition().getJavaClass();
 		if (dtField.cardinality().hasMany()) {
 			return new CustomParameterizedType(dtField.getTargetJavaClass(), dtClass);
@@ -477,10 +479,10 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 					.with(webServiceParam.getParamType(), prefix + "sortFieldName").build());
 			pseudoWebServiceParams.add(WebServiceParam.builder(boolean.class)
 					.with(webServiceParam.getParamType(), prefix + "sortDesc").build());
-		} else if (DtObject.class.isAssignableFrom(webServiceParam.getType())) {
-			final Class<? extends DtObject> paramClass = (Class<? extends DtObject>) webServiceParam.getType();
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(paramClass);
-			for (final DtField dtField : dtDefinition.getFields()) {
+		} else if (DataObject.class.isAssignableFrom(webServiceParam.getType())) {
+			final Class<? extends DataObject> paramClass = (Class<? extends DataObject>) webServiceParam.getType();
+			final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(paramClass);
+			for (final DataField dtField : dataDefinition.getFields()) {
 				final String fieldName = dtField.name();
 				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.smartTypeDefinition().getJavaClass())
 						.with(webServiceParam.getParamType(), prefix + fieldName)
@@ -494,7 +496,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		final Class<?> paramClass = webServiceParam.getType();
 		return webServiceParam.getParamType() == WebServiceParamType.Query &&
 				(DtListState.class.isAssignableFrom(paramClass)
-						|| DtObject.class.isAssignableFrom(paramClass));
+						|| DataObject.class.isAssignableFrom(paramClass));
 	}
 
 	private static boolean isMultipleInOneOutParams(final WebServiceParam webServiceParam) {
@@ -522,7 +524,11 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 				break;
 			case Query:
 				//Never use "formData": WebServices don't use formData while XHR request
-				inValue = "query";
+				if (webServiceParam.getType().isAssignableFrom(VFile.class)) {
+					inValue = "formData"; //should we ?
+				} else {
+					inValue = "query";
+				}
 				nameValue = webServiceParam.getName();
 				break;
 			case Header:

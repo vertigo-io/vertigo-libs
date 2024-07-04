@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -121,7 +121,7 @@ public final class WebServiceParam {
 						.isTrue(isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name))
 				.when(name.isEmpty(), () -> Assertion.check()
 						.isTrue(WebServiceTypeUtil.isAssignableFrom(DtListState.class, type)
-								|| WebServiceTypeUtil.isAssignableFrom(DtObject.class, type),
+								|| WebServiceTypeUtil.isAssignableFrom(DataObject.class, type),
 								"Only DtObject and DtListState can be map from Query parameters")); //msg don't talk about deprecated class
 	}
 
@@ -152,8 +152,8 @@ public final class WebServiceParam {
 				.isNotNull(excludedFields)
 				.isNotNull(dtObjectValidatorClasses)
 				.isTrue(dtObjectValidatorClasses.isEmpty()
-						|| WebServiceTypeUtil.isAssignableFrom(DtObject.class, type)
-						|| WebServiceTypeUtil.isParameterizedBy(DtObject.class, type), "Validators aren't supported for {0}", type);
+						|| WebServiceTypeUtil.isAssignableFrom(DataObject.class, type)
+						|| WebServiceTypeUtil.isParameterizedBy(DataObject.class, type), "Validators aren't supported for {0}", type);
 		//-----
 		this.paramType = paramType;
 		this.type = type;

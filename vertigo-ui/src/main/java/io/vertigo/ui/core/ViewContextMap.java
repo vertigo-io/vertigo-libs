@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,10 +39,10 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListURIForMasterData;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
@@ -113,7 +113,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @param key Clé de context
 	 * @return UiObject du context
 	 */
-	public <O extends DtObject> UiObject<O> getUiObject(final String key) {
+	public <O extends DataObject> UiObject<O> getUiObject(final String key) {
 		return (UiObject<O>) get(key);
 	}
 
@@ -121,7 +121,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @param key Clé de context
 	 * @return UiList du context
 	 */
-	public <O extends DtObject> UiList<O> getUiList(final String key) {
+	public <O extends DataObject> UiList<O> getUiList(final String key) {
 		return (UiList<O>) get(key);
 	}
 
@@ -129,7 +129,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @param key Clé de context
 	 * @return UiListModifiable du context
 	 */
-	public <O extends DtObject> BasicUiListModifiable<O> getUiListModifiable(final String key) {
+	public <O extends DataObject> BasicUiListModifiable<O> getUiListModifiable(final String key) {
 		return (BasicUiListModifiable<O>) get(key);
 	}
 
@@ -203,7 +203,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @param dtObject DtObject recherché
 	 * @return Clé de context de l'élément (null si non trouvé)
 	 */
-	public String findKey(final DtObject dtObject) {
+	public String findKey(final DataObject dtObject) {
 		Assertion.check().isNotNull(dtObject);
 		//-----
 		final String contextKey = reverseUiObjectIndex.get(dtObject);
@@ -226,7 +226,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 				.isFalse(unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX))
 				.isNotBlank(key)
 				.isNotNull(value, "la valeur doit être renseignée pour {0}", key)
-				.isFalse(value instanceof DtObject, "Vous devez poser des uiObject dans le context pas des objets métiers ({0})", key)
+				.isFalse(value instanceof DataObject, "Vous devez poser des uiObject dans le context pas des objets métiers ({0})", key)
 				.isFalse(value instanceof DtList, "Vous devez poser des uiList dans le context pas des listes d'objets métiers ({0})", key);
 		viewContextUpdateSecurity.assertIsUpdatable(key);
 		//-----
@@ -369,7 +369,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * Ajoute un objet de type form au context.
 	 * @param dto Objet à publier
 	 */
-	public <O extends DtObject> void publish(final String contextKey, final O dto) {
+	public <O extends DataObject> void publish(final String contextKey, final O dto) {
 		final UiObject<O> mapUiObject = new MapUiObject<>(dto, viewContextUpdateSecurity);
 		mapUiObject.setInputKey(contextKey);
 		put(contextKey, mapUiObject);
@@ -388,14 +388,14 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	/**
 	 * @return objet métier validé. Lance une exception si erreur.
 	 */
-	public <O extends DtObject> O readDto(final String contextKey, final UiMessageStack uiMessageStack) {
+	public <O extends DataObject> O readDto(final String contextKey, final UiMessageStack uiMessageStack) {
 		return readDto(contextKey, new DefaultDtObjectValidator<>(), uiMessageStack);
 	}
 
 	/**
 	 * @return objet métier validé. Lance une exception si erreur.
 	 */
-	public <O extends DtObject> O readDto(final String contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
+	public <O extends DataObject> O readDto(final String contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
 		checkErrors(contextKey, uiMessageStack);
 		// ---
 		final O validatedDto = ((UiObject<O>) getUiObject(contextKey)).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
@@ -430,7 +430,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		//----
 		valueTransformers.computeIfAbsent(objectKey,
 				k -> new HashMap<>()).put(objectFieldName,
-				List.of(PROTECTED_VALUE_TRANSFORMER));
+						List.of(PROTECTED_VALUE_TRANSFORMER));
 	}
 
 	public String obtainFkList(final String objectKey, final String objectFieldName) {
@@ -439,7 +439,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 				.isTrue(objectFieldName.endsWith("_display"), "Can't accept {0}, only '_display' transformer is accepted", objectKey);
 		//----
 		final String fieldName = objectFieldName.substring(0, objectFieldName.length() - "_display".length());
-		final DtDefinition fkDefinition = getUiObject(objectKey).getDtDefinition().getField(fieldName).getFkDtDefinition();
+		final DataDefinition fkDefinition = getUiObject(objectKey).getDtDefinition().getField(fieldName).getFkDtDefinition();
 		final String uiMdListContextKey = fkDefinition.getClassSimpleName() + "MdList";
 		if (!containsKey(uiMdListContextKey)) {
 			unmodifiable = false; //hem :(

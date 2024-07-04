@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import java.util.Optional;
 
 import io.vertigo.core.node.component.Component;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.KeyConcept;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.KeyConcept;
 
 /**
  * Specific SearchIndex loader.
@@ -34,7 +34,7 @@ import io.vertigo.datamodel.structure.model.KeyConcept;
  * @param <I> Indexed data's type
  * @author npiedeloup, pchretien
  */
-public interface SearchLoader<K extends KeyConcept, I extends DtObject> extends Component {
+public interface SearchLoader<K extends KeyConcept, I extends DataObject> extends Component {
 	/**
 	 * Load all data from a list of keyConcepts.
 	 * @param searchChunk the chunk
@@ -63,6 +63,6 @@ public interface SearchLoader<K extends KeyConcept, I extends DtObject> extends 
 	 * If it's comparable for the whole entity set (like a sequence, or an lastModified), it could be use for delta reindexing
 	 * @return optional version field
 	 */
-	Optional<DtFieldName<K>> getVersionFieldName();
+	Optional<DataFieldName<K>> getVersionFieldName();
 
 }

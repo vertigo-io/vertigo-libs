@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import io.vertigo.vega.authentication.WebAuthenticationManager;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.impl.authentication.WebAuthenticationManagerImpl;
+import io.vertigo.vega.impl.ratelimiting.RateLimitingManagerImpl;
 import io.vertigo.vega.impl.token.TokenManagerImpl;
 import io.vertigo.vega.impl.webservice.WebServiceManagerImpl;
 import io.vertigo.vega.impl.webservice.catalog.CatalogWebServices;
@@ -34,6 +35,8 @@ import io.vertigo.vega.plugins.authentication.aad.AzureAdWebAuthenticationPlugin
 import io.vertigo.vega.plugins.authentication.local.LocalWebAuthenticationPlugin;
 import io.vertigo.vega.plugins.authentication.oidc.OIDCWebAuthenticationPlugin;
 import io.vertigo.vega.plugins.authentication.saml2.SAML2WebAuthenticationPlugin;
+import io.vertigo.vega.plugins.ratelimiting.mem.RateLimitingMemStorePlugin;
+import io.vertigo.vega.plugins.ratelimiting.redis.RateLimitingRedisStorePlugin;
 import io.vertigo.vega.plugins.webservice.handler.AccessTokenWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.AnalyticsWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.ApiKeyWebServiceHandlerPlugin;
@@ -49,11 +52,13 @@ import io.vertigo.vega.plugins.webservice.handler.SessionWebServiceHandlerPlugin
 import io.vertigo.vega.plugins.webservice.handler.ValidatorWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.scanner.annotations.AnnotationsWebServiceScannerPlugin;
 import io.vertigo.vega.plugins.webservice.webserver.javalin.JavalinWebServerPlugin;
+import io.vertigo.vega.ratelimiting.RateLimitingManager;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.WebServiceManager;
 
 /**
  * Defines module Vega.
+ *
  * @author pchretien
  */
 public final class VegaFeatures extends Features<VegaFeatures> {
@@ -78,6 +83,27 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 		return this;
 	}
 
+	@Feature("rateLimiting")
+	public VegaFeatures withRateLimiting(final Param... params) {
+		getModuleConfigBuilder()
+				.addComponent(RateLimitingManager.class, RateLimitingManagerImpl.class, params);
+		return this;
+	}
+
+	@Feature("rateLimiting.redis")
+	public VegaFeatures withRateLimitingRedisStore(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(RateLimitingRedisStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("rateLimiting.mem")
+	public VegaFeatures withRateLimitingMemStore(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(RateLimitingMemStorePlugin.class, params);
+		return this;
+	}
+
 	@Feature("webservices.token")
 	public VegaFeatures withWebServicesTokens(final Param... params) {
 		//-----
@@ -94,9 +120,9 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	}
 
 	@Feature("webservices.rateLimiting")
-	public VegaFeatures withWebServicesRateLimiting() {
+	public VegaFeatures withWebServicesRateLimiting(final Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(RateLimitingWebServiceHandlerPlugin.class);
+				.addPlugin(RateLimitingWebServiceHandlerPlugin.class, params);
 		return this;
 	}
 

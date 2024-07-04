@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,10 +41,10 @@ import io.vertigo.account.impl.authorization.dsl.rules.DslParserUtil;
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
 /**
  * Deserializer json
@@ -60,13 +60,13 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 	@Override
 	public SecuredEntity deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 		final JsonObject jsonSecuredEntity = json.getAsJsonObject();
-		final DtDefinition entityDefinition = findDtDefinition(jsonSecuredEntity.get("entity").getAsString());
+		final DataDefinition entityDefinition = DataModelUtil.findDataDefinition(jsonSecuredEntity.get("entity").getAsString());
 		//----
 		asserUnsupportedAttributes("SecuredEntity " + entityDefinition.getClassSimpleName(), jsonSecuredEntity, SECURED_ENTITY_SUPPORTED_ATTRIBUTES);
 		//----
-		final List<DtField> securityFields = new ArrayList<>();
+		final List<DataField> securityFields = new ArrayList<>();
 		for (final JsonElement securityField : jsonSecuredEntity.get("securityFields").getAsJsonArray()) {
-			securityFields.add(deserializeDtField(entityDefinition, securityField.getAsString()));
+			securityFields.add(deserializeDataField(entityDefinition, securityField.getAsString()));
 		}
 
 		final List<SecurityDimension> advancedDimensions = new ArrayList<>();
@@ -86,7 +86,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 	}
 
 	private static Authorization deserializeOperations(
-			final DtDefinition entityDefinition,
+			final DataDefinition entityDefinition,
 			final JsonObject operation,
 			final JsonDeserializationContext context,
 			final Map<String, Authorization> permissionPerOperations) {
@@ -123,10 +123,11 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 				.map(e -> e.getKey())
 				.collect(Collectors.toSet());
 		unsupportedAttributes.removeAll(supportedAttributes);
-		Assertion.check().isTrue(unsupportedAttributes.isEmpty(), "Json declaration of {0} can't support some attribut(s) : {1}. You may use one of {2}", objectName, unsupportedAttributes, supportedAttributes);
+		Assertion.check().isTrue(unsupportedAttributes.isEmpty(), "Json declaration of {0} can't support some attribut(s) : {1}. You may use one of {2}", objectName, unsupportedAttributes,
+				supportedAttributes);
 	}
 
-	private static Set<Authorization> resolveAuthorizations(final Set<String> authorizationNames, final Map<String, Authorization> permissionPerOperations, final DtDefinition entityDefinition) {
+	private static Set<Authorization> resolveAuthorizations(final Set<String> authorizationNames, final Map<String, Authorization> permissionPerOperations, final DataDefinition entityDefinition) {
 		final Set<Authorization> authorizations;
 		if (authorizationNames == null) {
 			authorizations = Collections.emptySet();
@@ -138,7 +139,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		return authorizations;
 	}
 
-	private static Authorization resolvePermission(final String operationName, final Map<String, Authorization> permissionPerOperations, final DtDefinition entityDefinition) {
+	private static Authorization resolvePermission(final String operationName, final Map<String, Authorization> permissionPerOperations, final DataDefinition entityDefinition) {
 		Assertion.check().isTrue(permissionPerOperations.containsKey(operationName),
 				"Operation {0} not declared on {1} (may check declaration order)", operationName, entityDefinition.getName());
 		//-----
@@ -160,14 +161,14 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 	}
 
 	private static SecurityDimension deserializeSecurityDimensions(
-			final DtDefinition entityDefinition,
+			final DataDefinition entityDefinition,
 			final JsonObject advancedDimension,
 			final JsonDeserializationContext context) {
 		final String name = advancedDimension.get("name").getAsString();
 		final SecurityDimensionType type = SecurityDimensionType.valueOf(advancedDimension.get("type").getAsString());
 		final List<String> fieldNames = deserializeList(advancedDimension.get("fields"), String.class, context);
-		final List<DtField> fields = fieldNames.stream()
-				.map(fieldName -> deserializeDtField(entityDefinition, fieldName))
+		final List<DataField> fields = fieldNames.stream()
+				.map(fieldName -> deserializeDataField(entityDefinition, fieldName))
 				.toList();
 		final List<String> values = deserializeList(advancedDimension.get("values"), String.class, context);
 		return new SecurityDimension(name, type, fields, values);
@@ -178,7 +179,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		return new KnownParameterizedType(rawClass, typeArguments);
 	}
 
-	private static DtField deserializeDtField(final DtDefinition entityDefinition, final String fieldName) {
+	private static DataField deserializeDataField(final DataDefinition entityDefinition, final String fieldName) {
 		return entityDefinition.getField(fieldName);
 	}
 
@@ -192,8 +193,4 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		return context.deserialize(jsonElement, createParameterizedType(List.class, elementClass));
 	}
 
-	private static DtDefinition findDtDefinition(final String entityName) {
-		final String name = DtDefinition.PREFIX + entityName;
-		return Node.getNode().getDefinitionSpace().resolve(name, DtDefinition.class);
-	}
 }

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.impl.authentication.AuthenticationResult;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
-import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -96,7 +95,7 @@ public class LocalWebAuthenticationPlugin implements WebAuthenticationPlugin<Aut
 	@Override
 	public void doRedirectToSso(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
 		try {
-			final var loginCompleteUrl = WebAuthenticationUtil.resolveExternalUrl(httpRequest, getExternalUrlOptional()) + loginUrl;
+			final var loginCompleteUrl = resolveExternalUrl(httpRequest) + loginUrl;
 			httpResponse.sendRedirect(loginCompleteUrl);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
@@ -105,12 +104,12 @@ public class LocalWebAuthenticationPlugin implements WebAuthenticationPlugin<Aut
 	}
 
 	@Override
-	public boolean doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
-		final var session = httpRequest.getSession(false);
-		if (session != null) {
-			session.invalidate();
+	public void doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final Optional<String> redirectUrlOpt) {
+		try {
+			httpResponse.sendRedirect(resolveExternalUrl(httpRequest) + redirectUrlOpt.orElse("/"));
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
 		}
-		return false;
 	}
 
 	@Override

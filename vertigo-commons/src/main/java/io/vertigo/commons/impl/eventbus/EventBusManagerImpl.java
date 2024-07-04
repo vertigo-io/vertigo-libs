@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,7 +123,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 		}
 	}
 
-	private void eventBusExcecutor(final Consumer listener, final Event event) {
+	private static void eventBusExcecutor(final Consumer listener, final Event event) {
 		try {//try catch needed to ensure execution of other listener aren't suppressed
 			listener.accept(event);
 		} catch (final Exception e) {

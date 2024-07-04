@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,17 +29,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * ParameterizedType use for UiObject.
  * @author npiedeloup
  */
-final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer<UiObject<D>> {
+final class UiObjectDeserializer<D extends DataObject> implements JsonDeserializer<UiObject<D>> {
 
 	/** {@inheritDoc} */
 	@Override
@@ -48,8 +48,8 @@ final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer
 		final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
 		final JsonObject jsonObject = json.getAsJsonObject();
 		final D inputDto = context.deserialize(jsonObject, dtoClass);
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtoClass);
-		final Set<String> dtFields = getFieldNames(dtDefinition);
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(dtoClass);
+		final Set<String> dtFields = getFieldNames(dataDefinition);
 		final Set<String> modifiedFields = new HashSet<>();
 		for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
 			final String fieldName = entry.getKey();
@@ -72,9 +72,9 @@ final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer
 		return uiObject;
 	}
 
-	private static Set<String> getFieldNames(final DtDefinition dtDefinition) {
+	private static Set<String> getFieldNames(final DataDefinition dataDefinition) {
 		final Set<String> dtFieldNames = new HashSet<>();
-		for (final DtField dtField : dtDefinition.getFields()) {
+		for (final DataField dtField : dataDefinition.getFields()) {
 			dtFieldNames.add(dtField.name());
 		}
 		return dtFieldNames;

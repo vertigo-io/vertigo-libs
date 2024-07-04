@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,10 +31,10 @@ import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 
 /**
@@ -48,7 +48,7 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 	private final String userLoginField;
 	private final String userPasswordField;
 	private final String userTokenIdField;
-	private DtDefinition userCredentialDefinition;
+	private DataDefinition userCredentialDefinition;
 	private UsernamePasswordAuthenticationToken defaultUserTrustedCredential;
 
 	/**
@@ -90,7 +90,7 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 	@Override
 	public Optional<String> authenticateAccount(final AuthenticationToken token) {
 		final Criteria criteriaByLogin = Criterions.isEqualTo(() -> userLoginField, token.getPrincipal());
-		final DtList<DtObject> results = entityStoreManager.find(userCredentialDefinition, criteriaByLogin, DtListState.of(2));
+		final DtList<DataObject> results = entityStoreManager.find(userCredentialDefinition, criteriaByLogin, DtListState.of(2));
 		//may ensure, that valid or invalid login took the same time, so we don't assert no result here
 		Assertion.check().isTrue(results.size() <= 1, "Too many matching credentials for {0}", token.getPrincipal());
 
@@ -122,7 +122,7 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		userCredentialDefinition = Node.getNode().getDefinitionSpace().resolve(userCredentialEntity, DtDefinition.class);
+		userCredentialDefinition = Node.getNode().getDefinitionSpace().resolve(userCredentialEntity, DataDefinition.class);
 		defaultUserTrustedCredential = new UsernamePasswordAuthenticationToken("defaultLogin", "defaultPassword");
 	}
 

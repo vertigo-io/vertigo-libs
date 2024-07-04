@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import java.util.Arrays;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
@@ -61,12 +61,12 @@ public final class DtListDeltaJsonConverter implements JsonConverter {
 		//-----
 		final Type paramGenericType = webServiceParam.getGenericType();
 		final String objectPath;
-		final UiListDelta<DtObject> uiListDelta;
+		final UiListDelta<DataObject> uiListDelta;
 		if (input instanceof String) {
 			uiListDelta = jsonReaderEngine.uiListDeltaFromJson((String) input, paramGenericType);
 			objectPath = "";
 		} else if (input instanceof UiContext) {
-			uiListDelta = (UiListDelta<DtObject>) ((UiContext) input).get(webServiceParam.getName());
+			uiListDelta = (UiListDelta<DataObject>) ((UiContext) input).get(webServiceParam.getName());
 			Assertion.check().isNotNull(uiListDelta, "InnerParam not found : {0}", webServiceParam);
 			objectPath = webServiceParam.getName();
 		} else {

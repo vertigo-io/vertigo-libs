@@ -1,4 +1,4 @@
-<th:block th:fragment="modal(componentId, title, closeLabel, srcUrl, iframe_attrs, modal_attrs)" 
+<th:block th:fragment="modal(componentId, title, closeLabel, srcUrl, width, height, iframe_attrs, section_attrs, modal_attrs)" 
 	  th:assert="${componentId} != null"
 	  th:attr=" objectKey=${model.vContext['componentStates'].addComponentState(componentId).addPrimitive('opened', false)},
 	   objectKey=${model.vContext['componentStates']['__${componentId}__'].addPrimitive('title', title?:'')},
@@ -10,7 +10,7 @@
 				    <vu:button flat dense v-close-popup icon="keyboard_arrow_left" color="primary" textColor="white" th:title="#{layout.modal.close}" />
 				    <q-toolbar-title class="text-white">{{ componentStates.[[${componentId}]].title }}</q-toolbar-title>
 				</q-toolbar>
-				<q-card-section class="q-pa-none">
+				<q-card-section class="q-pa-none" th:style="|width:${width?:'560px'};height:${height?:'420px'}" th:attr="__${section_attrs}__">
 					<iframe th:v-bind:src="|componentStates.${componentId}.srcUrl|" th:attr="__${iframe_attrs}__" ></iframe>
 				</q-card-section>
 				<q-toolbar th:if="${closeLabel} != null" class="bg-primary" >

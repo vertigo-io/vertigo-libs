@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,23 +26,23 @@ import java.util.function.Predicate;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.util.DateUtil;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
-final class Criterion<D extends DtObject> extends Criteria<D> {
+final class Criterion<D extends DataObject> extends Criteria<D> {
 	private static final long serialVersionUID = -7797854063455062775L;
 
 	private static final String DATE_PATTERN = "dd/MM/yyyy";
 	private static final String INSTANT_PATTERN = "dd/MM/yyyy HH:mm:ss";
 
-	private final DtFieldName<D> dtFieldName;
+	private final DataFieldName<D> dataFieldName;
 	private final CriterionOperator criterionOperator;
 	private final Serializable[] values;
 
-	Criterion(final DtFieldName<D> dtFieldName, final CriterionOperator criterionOperator, final Serializable... values) {
+	Criterion(final DataFieldName<D> dtFieldName, final CriterionOperator criterionOperator, final Serializable... values) {
 		Assertion.check()
 				.isNotNull(dtFieldName)
 				.isNotNull(criterionOperator)
@@ -53,13 +53,13 @@ final class Criterion<D extends DtObject> extends Criteria<D> {
 								criterionOperator));
 		//---
 		this.criterionOperator = criterionOperator;
-		this.dtFieldName = dtFieldName;
+		this.dataFieldName = dtFieldName;
 		this.values = values;
 	}
 
 	@Override
 	String toString(final CriteriaCtx ctx, final CriteriaEncoder criteriaEncoder) {
-		return criteriaEncoder.encodeOperator(ctx, criterionOperator, dtFieldName, values);
+		return criteriaEncoder.encodeOperator(ctx, criterionOperator, dataFieldName, values);
 	}
 
 	@Override
@@ -68,8 +68,8 @@ final class Criterion<D extends DtObject> extends Criteria<D> {
 	}
 
 	private boolean test(final D entity) {
-		final DtDefinition entitytDefinition = DtObjectUtil.findDtDefinition(entity.getClass());
-		final DtField dtField = entitytDefinition.getField(dtFieldName);
+		final DataDefinition entitytDefinition = DataModelUtil.findDataDefinition(entity.getClass());
+		final DataField dtField = entitytDefinition.getField(dataFieldName);
 
 		final Object value = dtField.getDataAccessor().getValue(entity);
 		final Serializable[] criterionValues = new Serializable[values.length];

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
@@ -189,8 +189,8 @@ public final class AnnotationsWebServiceScannerUtil {
 
 	private static WebServiceParam buildWebServiceParam(final Annotation[] annotations, final Type paramType) {
 		final WebServiceParamBuilder builder = WebServiceParam.builder(paramType);
-		if (WebServiceTypeUtil.isAssignableFrom(DtObject.class, paramType)
-				|| WebServiceTypeUtil.isParameterizedBy(DtObject.class, paramType)) {
+		if (WebServiceTypeUtil.isAssignableFrom(DataObject.class, paramType)
+				|| WebServiceTypeUtil.isParameterizedBy(DataObject.class, paramType)) {
 			builder.addValidatorClasses(DefaultDtObjectValidator.class);
 		} else if (isImplicitParam(paramType)) {
 			builder.with(WebServiceParamType.Implicit, getImplicitParam(paramType).name());

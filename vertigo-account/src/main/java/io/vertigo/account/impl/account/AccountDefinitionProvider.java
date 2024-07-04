@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.smarttype.FormatterConfig;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
 
 /**
  * Provides all the definitions used in the 'account' module.
@@ -48,7 +48,7 @@ public final class AccountDefinitionProvider implements SimpleDefinitionProvider
 		final SmartTypeDefinition smartTypeAccountEmail = SmartTypeDefinition.builder("STyXAccountEmail", BasicType.String).build();
 		final SmartTypeDefinition smartTypeAccountPhoto = SmartTypeDefinition.builder("STyXAccountPhoto", BasicType.String).build();
 
-		final DtDefinition accountDtDefinition = DtDefinition.builder("DtAccount")
+		final DataDefinition accountDtDefinition = DataDefinition.builder("DtAccount")
 				.addIdField(ID, "id", smartTypeAccountId)
 				.addDataField(DISPLAY_NAME, "displayName", smartTypeAccountName, Cardinality.OPTIONAL_OR_NULLABLE, true)
 				.addDataField(EMAIL, "email", smartTypeAccountEmail, Cardinality.OPTIONAL_OR_NULLABLE, true)
@@ -57,7 +57,7 @@ public final class AccountDefinitionProvider implements SimpleDefinitionProvider
 				.withDisplayField(DISPLAY_NAME)
 				.build();
 
-		final DtDefinition accountGroupDtDefinition = DtDefinition.builder("DtAccountGroup")
+		final DataDefinition accountGroupDtDefinition = DataDefinition.builder("DtAccountGroup")
 				.addIdField(ID, "id", smartTypeAccountId)
 				.addDataField(DISPLAY_NAME, "displayName", smartTypeAccountName, Cardinality.OPTIONAL_OR_NULLABLE, true)
 				.withSortField(DISPLAY_NAME)

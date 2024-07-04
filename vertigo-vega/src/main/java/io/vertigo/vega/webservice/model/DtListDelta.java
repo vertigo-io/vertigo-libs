@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,15 @@ package io.vertigo.vega.webservice.model;
 import java.io.Serializable;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
 
 /**
  * Delta operations on List.
  * @author npiedeloup (16 sept. 2014 18:13:55)
  * @param <D> Object type
  */
-public final class DtListDelta<D extends DtObject> implements Serializable {
+public final class DtListDelta<D extends DataObject> implements Serializable {
 	private static final long serialVersionUID = -5002177631553042497L;
 
 	private final DtList<D> dtListCreates;

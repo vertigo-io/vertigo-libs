@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,14 +25,14 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * ParameterizedType use for UiList.
  * @author npiedeloup
  */
-final class UiListDeserializer<D extends DtObject> implements JsonDeserializer<UiListModifiable<D>> {
+final class UiListDeserializer<D extends DataObject> implements JsonDeserializer<UiListModifiable<D>> {
 
 	/** {@inheritDoc} */
 	@Override

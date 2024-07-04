@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,13 +36,13 @@ import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionId;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
+import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.FormatterException;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.vega.webservice.validation.DtObjectErrors;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -57,11 +57,11 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author pchretien, npiedeloup
  * @param <D> DtObject type
  */
-public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webservice.model.UiObject<D> {
+public class VegaUiObject<D extends DataObject> implements io.vertigo.vega.webservice.model.UiObject<D> {
 	private static final long serialVersionUID = -4639050257543017072L;
 
 	/** Référence vers la définition. */
-	private final DefinitionId<DtDefinition> dtDefinitionId;
+	private final DefinitionId<DataDefinition> dataDefinitionId;
 	protected final Set<String> fieldIndex;
 
 	private String inputKey;
@@ -92,13 +92,13 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 				.isNotNull(modifiedFields, "modifiedFields can't be null");
 		//-----
 		this.inputDto = inputDto;
-		this.dtDefinitionId = DtObjectUtil.findDtDefinition(inputDto).id();
+		this.dataDefinitionId = DataModelUtil.findDataDefinition(inputDto).id();
 		fieldIndex = Collections.unmodifiableSet(getDtDefinition().getFields().stream()
-				.map(DtField::name)
+				.map(DataField::name)
 				.collect(Collectors.toSet()));
 
 		for (final String field : modifiedFields) {
-			setTypedValue(field, (Serializable) getDtField(field).getDataAccessor().getValue(inputDto));
+			setTypedValue(field, (Serializable) getDataField(field).getDataAccessor().getValue(inputDto));
 		}
 
 	}
@@ -159,8 +159,8 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @return DtDefinition de l'objet métier
 	 */
 	@Override
-	public final DtDefinition getDtDefinition() {
-		return dtDefinitionId.get();
+	public final DataDefinition getDtDefinition() {
+		return dataDefinitionId.get();
 	}
 
 	private DtObjectErrors getDtObjectErrors() {
@@ -177,7 +177,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 				.isNotNull(serverSideDto, "serverSideDto is mandatory")
 				.isNotNull(inputDto, "inputDto is mandatory");
 		//-----
-		for (final DtField dtField : getDtDefinition().getFields()) {
+		for (final DataField dtField : getDtDefinition().getFields()) {
 			if (isModified(dtField.name())) {
 				dtField.getDataAccessor().setValue(serverSideDto, dtField.getDataAccessor().getValue(inputDto));
 			}
@@ -227,13 +227,13 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		getDtObjectErrors().flushIntoMessageStack(inputKey, uiMessageStack);
 		inputBuffer.clear();
 		if (serverSideDto != null) {
-			inputDto = (D) DtObjectUtil.createDtObject(getDtDefinition());
+			inputDto = (D) DataModelUtil.createDataObject(getDtDefinition());
 			return serverSideDto;
 		}
 		return inputDto;
 	}
 
-	protected final DtField getDtField(final String camelField) {
+	protected final DataField getDataField(final String camelField) {
 		return getDtDefinition().getField(camelField);
 	}
 
@@ -284,7 +284,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 			return inputBuffer.get(fieldName);
 		}
 		final Object value = doGetTypedValue(fieldName);
-		final DtField dtField = getDtField(fieldName);
+		final DataField dtField = getDataField(fieldName);
 		final SmartTypeDefinition smartType = dtField.smartTypeDefinition();
 		final List<String> inputValues = new ArrayList<>();
 
@@ -330,7 +330,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 				.isNotNull(stringValue, "formatted value can't be null, but may be empty : {0}", fieldName);
 		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		//-----
-		final DtField dtField = getDtField(fieldName);
+		final DataField dtField = getDataField(fieldName);
 		//---
 		isChecked = false;
 		getDtObjectErrors().clearErrors(dtField.name());
@@ -379,7 +379,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 
 	}
 
-	private Tuple<String, Serializable> tryFormat(final SmartTypeManager smartTypeManager, final DtField dtField, final String inputValue) {
+	private Tuple<String, Serializable> tryFormat(final SmartTypeManager smartTypeManager, final DataField dtField, final String inputValue) {
 		String formattedValue;
 		Serializable typedValue = null;
 		try {
@@ -395,7 +395,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		return Tuple.of(formattedValue, typedValue);
 	}
 
-	private Tuple<String, Serializable> tryFormatWithAdapter(final BasicTypeAdapter basicTypeAdapter, final DtField dtField, final String inputValue) {
+	private Tuple<String, Serializable> tryFormatWithAdapter(final BasicTypeAdapter basicTypeAdapter, final DataField dtField, final String inputValue) {
 		String formattedValue;
 		Serializable typedValue = null;
 		try {
@@ -430,7 +430,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 
 	@Override
 	public final void setTypedValue(final String fieldName, final Serializable value) {
-		final DtField dtField = getDtField(fieldName);
+		final DataField dtField = getDataField(fieldName);
 		isChecked = false;
 
 		//on a trois choix :
@@ -451,7 +451,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	private Object doGetTypedValue(final String fieldName) {
 		Assertion.check().isNotBlank(fieldName);
 		//
-		final DtField dtField = getDtField(fieldName);
+		final DataField dtField = getDataField(fieldName);
 		if (isModified(fieldName)) {
 			//Si le tableaux des valeurs formatées n'a pas été créé la valeur est null.
 			return dtField.getDataAccessor().getValue(inputDto);
@@ -477,7 +477,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		return isModified(fieldName) && getDtObjectErrors().hasError(fieldName);
 	}
 
-	private void doSetTypedValue(final DtField dtField, final Serializable typedValue) {
+	private void doSetTypedValue(final DataField dtField, final Serializable typedValue) {
 		dtField.getDataAccessor().setValue(inputDto, typedValue);
 	}
 

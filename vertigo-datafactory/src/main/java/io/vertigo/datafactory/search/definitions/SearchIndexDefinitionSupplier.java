@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import java.util.stream.Stream;
 
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
 
 public final class SearchIndexDefinitionSupplier implements DefinitionSupplier {
 
@@ -61,13 +61,13 @@ public final class SearchIndexDefinitionSupplier implements DefinitionSupplier {
 
 	@Override
 	public SearchIndexDefinition get(final DefinitionSpace definitionSpace) {
-		final DtDefinition keyConceptDtDefinition = definitionSpace.resolve(myKeyConceptDtDefinitionName, DtDefinition.class);
-		final DtDefinition indexDtDefinition = definitionSpace.resolve(myIndexDtDefinitionName, DtDefinition.class);
+		final DataDefinition keyConceptDtDefinition = definitionSpace.resolve(myKeyConceptDtDefinitionName, DataDefinition.class);
+		final DataDefinition indexDtDefinition = definitionSpace.resolve(myIndexDtDefinitionName, DataDefinition.class);
 
-		final Map<DtField, List<DtField>> copyToFields = new HashMap<>(); //(map fromField : [toField, toField, ...])
+		final Map<DataField, List<DataField>> copyToFields = new HashMap<>(); //(map fromField : [toField, toField, ...])
 		for (final Map.Entry<String, String[]> indexCopyTo : myIndexCopyTo.entrySet()) {
-			final DtField dtFieldFrom = indexDtDefinition.getField(indexCopyTo.getKey());
-			final List<DtField> dtFieldTos = Stream.of(indexCopyTo.getValue())
+			final DataField dtFieldFrom = indexDtDefinition.getField(indexCopyTo.getKey());
+			final List<DataField> dtFieldTos = Stream.of(indexCopyTo.getValue())
 					.map(indexDtDefinition::getField)
 					.toList();
 			copyToFields.put(dtFieldFrom, dtFieldTos);

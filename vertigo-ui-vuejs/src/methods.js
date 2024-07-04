@@ -1,6 +1,6 @@
 import * as Quasar from "quasar"
-import { sortDate } from "quasar/src/utils/private/sort.js"
-import { isNumber, isDate } from "quasar/src/utils/is.js"
+import { sortDate } from "quasar/src/utils/private.sort/sort.js"
+import { isNumber, isDate } from "quasar/src/utils/is/is.js"
 
 export default {
     onAjaxError: function (response) {
@@ -23,7 +23,7 @@ export default {
             }
             //Setup Generic Response Messages
             if (response.status === 401) {
-                notif.message = this.$q.lang.vui.ajaxErrors.code401	            
+                notif.message = this.$q.lang.vui.ajaxErrors.code401
                 this.$root.$emit('unauthorized', response) //Emit Logout Event
                 return;
             } else if (response.status === 403) {
@@ -100,14 +100,22 @@ export default {
         return null;
     },
 
-    transformListForSelection: function (list, valueField, labelField, filterFunction) {
-        var rawList = this.$data.vueData[list];
+    transformListForSelection: function (list, valueField, labelField, filterFunction, searchValue) {
+        let rawList = this.$data.vueData[list];
         if (filterFunction) {
             rawList = rawList.filter(filterFunction);
+        }
+        if (searchValue != null && searchValue.trim() !== '') {
+            const searchNormalized = this.unaccentLower(searchValue);
+            rawList = rawList.filter(val => this.unaccentLower(val[labelField].toString()).indexOf(searchNormalized) > -1); // label contains
         }
         return rawList.map(function (object) {
             return { value: object[valueField], label: object[labelField].toString() } // a label is always a string
         });
+    },
+    
+    unaccentLower: function(value) {
+        return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
     },
 
     paginationAndSortHandler: function (params) {
@@ -117,18 +125,19 @@ export default {
         var oldPagination = componentStates[pagination.componentId].pagination;
         if (oldPagination.sortBy != pagination.sortBy || oldPagination.descending != pagination.descending) {
             if (pagination.sortBy) {
+                let sortedColumn = componentStates[pagination.componentId].columns.find(column => column.name === pagination.sortBy);
                 // it's a sort
                 if (pagination.sortUrl) {
                     //order call the server
                     pagination.page = 1 //reset pagination
-                    this.$http.post(pagination.sortUrl, this.objectToFormData({ sortFieldName: pagination.sortBy, sortDesc: pagination.descending, CTX: this.$data.vueData.CTX }))
+                    this.$http.post(pagination.sortUrl, this.objectToFormData({ sortFieldName: sortedColumn.field, sortDesc: pagination.descending, CTX: this.$data.vueData.CTX }))
                         .then(function (response) {
                             vueData[pagination.listKey] = response.data.model[pagination.listKey];
                             this.$data.vueData.CTX = response.data.model['CTX'];
                         }.bind(this));
                 } else {
                     //do locally
-                    this.$refs[pagination.componentId].sortMethod.apply(this.$refs[pagination.componentId], [vueData[pagination.listKey], pagination.sortBy, pagination.descending])
+                    this.$refs[pagination.componentId].sortMethod.apply(this.$refs[pagination.componentId], [vueData[pagination.listKey], sortedColumn.field, pagination.descending])
                 }
             } // if we reset the sort we do nothing
         }
@@ -153,7 +162,7 @@ export default {
                 if (sortedColumn.datetimeFormat) {
                         const
                         dir = descending === true ? -1 : 1,
-                        val =  v => v[sortBy]
+                        val =  v => v[sortedColumn.field]
 
                     return data.sort((a, b) => {
                         let A = val(a),
@@ -161,7 +170,7 @@ export default {
                         return ((Quasar.date.extractDate(A, sortedColumn.datetimeFormat).getTime() > Quasar.date.extractDate(B, sortedColumn.datetimeFormat).getTime()) ? 1 : -1) * dir;
                     })
                 } else {
-                    return this.sortCiAi(data, sortBy, descending)
+                    return this.sortCiAi(data, sortedColumn.field, descending)
                 }
             }.bind(this)
         }
@@ -205,8 +214,8 @@ export default {
         this.$data.vueData[object][field] = item.value;
     },
 
-    searchAutocomplete: function (list, valueField, labelField, componentId, url, terms, update, abort) {
-        if (terms.length < 2) {
+    searchAutocomplete: function (list, valueField, labelField, componentId, url, minQueryLength, terms, update, abort) {
+        if (terms.length < minQueryLength) {
             abort();
             return
         }
@@ -242,7 +251,7 @@ export default {
         }
         
     },
-	loadMissingAutocompleteOption: function (list, valueField, labelField, componentId, url, value){
+    loadMissingAutocompleteOption: function (list, valueField, labelField, componentId, url, value){
         if (!value || (this.$data.componentStates[componentId].options
             .filter(function (option) { return option.value === value }.bind(this)).length > 0)) {
             return
@@ -261,7 +270,7 @@ export default {
             .then(function () {// always executed
                 this.$data.componentStates[componentId].loading = false;
             }.bind(this));
-	},
+    },
     decodeDate: function (value, format) {
         if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY'), 'DD/MM/YYYY')) {
             return Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY'), format);
@@ -357,7 +366,10 @@ export default {
 
         if (componentStates[collectionComponentId].pagination && componentStates[collectionComponentId].pagination.sortBy) {
             var collectionPagination = componentStates[collectionComponentId].pagination;
-            params.append('sortFieldName', collectionPagination.sortBy);
+            let sortedColumn = componentStates[collectionComponentId].columns.find(column => column.name === collectionPagination.sortBy);
+            if (sortedColumn.field != null) {
+                params.append('sortFieldName', sortedColumn.field);
+            }
             params.append('sortDesc', collectionPagination.descending);
         }
         this.httpPostAjax(searchUrl, params, {
@@ -448,7 +460,7 @@ export default {
         component.addFiles(event.dataTransfer.files);
     },
     httpPostAjax: function (url, paramsIn, options) {
-        var paramsInResolved = Array.isArray(paramsIn) ? this.vueDataParams(paramsIn) : paramsIn;
+        var paramsInResolved = !paramsIn ? [] :  Array.isArray(paramsIn) ? this.vueDataParams(paramsIn) : paramsIn;
         let vueData = this.$data.vueData;
         let uiMessageStack = this.$data.uiMessageStack;
         let params = this.isFormData(paramsInResolved) ? paramsInResolved : this.objectToFormData(paramsInResolved);
@@ -496,21 +508,23 @@ export default {
 
     hasFieldsError: function (object, field, rowIndex) {
         const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
+        const fieldName = field.split("_")[0]; // trim any qualifier like "_fmt"
         if (fieldsErrors) {
             var objectName = rowIndex != null ? object + '[' + rowIndex + ']' : object;
             return Object.prototype.hasOwnProperty.call(fieldsErrors, objectName) &&
-                fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], field) && fieldsErrors[objectName][field].length > 0
+                fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], fieldName) && fieldsErrors[objectName][fieldName].length > 0
         }
         return false;
     },
 
     getErrorMessage: function (object, field, rowIndex) {
         const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
+        const fieldName = field.split("_")[0]; // trim any qualifier like "_fmt"
         if (fieldsErrors) {
             var objectName = rowIndex != null ? object + '[' + rowIndex + ']' : object;
             if (Object.prototype.hasOwnProperty.call(fieldsErrors, objectName) &&
-                fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], field)) {
-                return fieldsErrors[objectName][field].join(', ');
+                fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], fieldName)) {
+                return fieldsErrors[objectName][fieldName].join(', ');
             }
         } else {
             return '';
@@ -537,6 +551,21 @@ export default {
                 } else {
                     this._vueDataParamsKey(params, contextKey, attribute, vueDataValue)
                 }
+            } else if (vueDataValue && Array.isArray(vueDataValue) === true) {
+                // array
+                vueDataValue.forEach(function (value, index) {
+                    if(!attribute) {
+                        Object.keys(value).forEach(function (propertyKey) {
+                            if (!propertyKey.includes("_") ) {
+                                //  properties that start with _ are private and don't belong to the serialized entity
+                                // we filter field with modifiers (like <field>_display and <field>_fmt)
+                                this._vueDataParamsKey(params, contextKey +']['+ index , propertyKey, value)
+                            }
+                        }.bind(this));
+                    } else {
+                        this._vueDataParamsKey(params, contextKey +']['+ index, attribute, value)
+                    }
+                }.bind(this));
             } else {
                 //primitive
                 this.appendToFormData(params, 'vContext[' + contextKey + ']', vueDataValue);

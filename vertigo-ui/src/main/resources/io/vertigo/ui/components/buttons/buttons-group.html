@@ -1,5 +1,4 @@
-<th:block th:fragment="buttons-group(moreLabel, xs, sm, md, lg, xl, contentTags, other_attrs)"
-	  th:assert="${moreLabel} != null"
+<th:block th:fragment="buttons-group(moreLabel, color, textColor, xs, sm, md, lg, xl, contentTags, btn_attrs, other_attrs)"
 	  th:with="buttonsCount=${contentTags.size()},xl=${xl?:99},lg=${lg?:xl},md=${md?:lg},sm=${sm?:md},xs=${xs?:sm}">
 	
 	<th:block th:each="contentItem,iter:${contentTags}">
@@ -7,15 +6,16 @@
 		th:class="${iter.index>=xl?'gt-xl':iter.index>=lg?'gt-lg':iter.index>=md?'gt-md':iter.index>=sm?'gt-sm':iter.index>=xs?'gt-xs':''}"/>		
 	</th:block>
 	<th:block>
-		<q-btn round size="lg" color="primary" icon="more_horiz" direction="down" th:title="#{buttons.buttons-group.moreActions}" class="on-left"
-		th:classappend="${buttonsCount>=lg?'lt-xl':buttonsCount>=md?'lt-lg':buttonsCount>=sm?'lt-md':buttonsCount>=xs?'lt-sm':buttonsCount>0?'lt-xs':''}">
-			<span class="sr-only" vu:text="#{buttons.buttons-group.moreActions}"></span>
-			<q-menu>
-				<q-list class="column items-center" th:each="contentItem,iter:${contentTags}">
-					<q-item th:class="${iter.index>=xl?'':iter.index>=lg?'lt-xl':iter.index>=md?'lt-lg':iter.index>=sm?'lt-md':iter.index>=xs?'lt-sm':'lt-xs'}">
-					<vu:content-item size="md" :round="false" label="${contentItem.getAttribute('title')}" />
-					</q-item>
-				</q-list>
+		<q-btn round size="lg" th:color="${color?:'primary'}" th:text-color="${textColor?:''}" icon="more_horiz" direction="down" th:title="${moreLabel?:'__#{buttons.buttons-group.moreActions}__'}" class="on-left"
+				th:classappend="${buttonsCount>=lg?'lt-xl':buttonsCount>=md?'lt-lg':buttonsCount>=sm?'lt-md':buttonsCount>=xs?'lt-sm':buttonsCount>0?'lt-xs':''}" th:attr="__${btn_attrs}__">
+			<span class="sr-only" vu:text="${moreLabel?:'__#{buttons.buttons-group.moreActions}__'}"></span>
+			<q-menu auto-close class="more-elements">
+				<div class="column no-wrap q-pa-xs">
+					<vu:content-item th:each="contentItem,iter:${contentTags}"
+						th:class="'q-ma-none ' + ${iter.index>=xl?'':iter.index>=lg?'lt-xl':iter.index>=md?'lt-lg':iter.index>=sm?'lt-md':iter.index>=xs?'lt-sm':'lt-xs'}"
+					    align="left" size="md" :round="false" color="primary" label="${contentItem.getAttribute('title')}">
+					</vu:content-item >
+				</div>
 			</q-menu>
 		</q-btn>
 	</th:block>

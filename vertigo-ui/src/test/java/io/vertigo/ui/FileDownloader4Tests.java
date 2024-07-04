@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -144,7 +144,7 @@ public class FileDownloader4Tests {
 		}
 
 		final URL fileToDownload = new URL(fileToDownloadLocation);
-		final File downloadedFile = new TempFile("test", ".tmp");
+		final File downloadedFile = TempFile.of("test", ".tmp");
 		if (downloadedFile.canWrite() == false) {
 			downloadedFile.setWritable(true);
 		}

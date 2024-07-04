@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.vega.engines.webservice.json.AbstractUiListModifiable;
 import io.vertigo.vega.webservice.model.UiObject;
 
-public class BasicUiListModifiable<D extends DtObject> extends AbstractUiListModifiable<D> {
+public class BasicUiListModifiable<D extends DataObject> extends AbstractUiListModifiable<D> {
 
 	private static final long serialVersionUID = -6612061761970992295L;
 	private ViewContextUpdateSecurity viewContextUpdateSecurity;

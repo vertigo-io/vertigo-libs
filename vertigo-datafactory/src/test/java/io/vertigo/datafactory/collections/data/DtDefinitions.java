@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import io.vertigo.datafactory.collections.data.domain.SmartCar;
 import io.vertigo.datafactory.collections.data.domain.SmartItem;
 import io.vertigo.datafactory.collections.data.domain.SmartItemCd;
 import io.vertigo.datafactory.collections.data.domain.SmartItemIhm;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
 
 public final class DtDefinitions implements Iterable<Class<?>> {
 	@Override
@@ -37,7 +37,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		}).iterator();
 	}
 
-	public enum Fields implements DtFieldName<SmartItem> {
+	public enum Fields implements DataFieldName<SmartItem> {
 		id, label
 	}
 }

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.Set;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.vortex.bb.BBKey;
 import io.vertigo.vortex.bb.BBKeyPattern;
-import io.vertigo.vortex.bb.BlackBoard.Type;
+import io.vertigo.vortex.bb.BBType;
 
 public interface BlackBoardStorePlugin extends Plugin {
 
@@ -35,7 +35,7 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 * @param key the key
 	 * @return if the key exists
 	 */
-	boolean exists(final BBKey key);
+	boolean keysExists(final BBKey key);
 
 	/**
 	 * Returns all the keys matching the pattern
@@ -44,7 +44,7 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 * @param keyPattern the pattern
 	 * @return A list of keys
 	 */
-	Set<BBKey> keys(final BBKeyPattern keyPattern);
+	Set<BBKey> keysFindAll(final BBKeyPattern keyPattern);
 
 	/**
 	 * Deletes all the keys matching the pattern
@@ -53,7 +53,7 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 *
 	 * @param keyPattern the pattern
 	 */
-	void delete(final BBKeyPattern keyPattern);
+	void keysDeleteAll(final BBKeyPattern keyPattern);
 
 	/**
 	 * Returns the key type or null if the keys doesn't exist
@@ -61,7 +61,7 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 * @param key the key
 	 * @return the key type or null
 	 */
-	Type getType(final BBKey key);
+	BBType keysGetType(final BBKey key);
 
 	//------------------------------------
 	//--- KV
@@ -79,9 +79,9 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 * @param key the key
 	 * @return the value mapped with the key or null if the key does not exist
 	 */
-	String getString(final BBKey key);
+	String stringGet(final BBKey key);
 
-	void putString(final BBKey key, final String value);
+	void stringPut(final BBKey key, final String value);
 
 	//--- KV Integer
 	/**
@@ -90,9 +90,9 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 * @param key the key
 	 * @return the value mapped with the key or null if the key does not exist
 	 */
-	Integer getInteger(final BBKey key);
+	Integer integerGet(final BBKey key);
 
-	void putInteger(final BBKey key, final Integer value);
+	void integerPut(final BBKey key, final Integer value);
 
 	/**
 	 * Increments the value (must be an integer) at the key by a value
@@ -100,7 +100,7 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 * @param key the key
 	 * @param value the value
 	 */
-	void incrBy(final BBKey key, final int value);
+	void integerIncrBy(final BBKey key, final int value);
 
 	//--- KV Boolean
 	/**
@@ -109,9 +109,9 @@ public interface BlackBoardStorePlugin extends Plugin {
 	 * @param key the key
 	 * @return the value mapped with the key or null if the key does not exist
 	 */
-	Boolean getBoolean(final BBKey key);
+	Boolean boolGet(final BBKey key);
 
-	void putBoolean(final BBKey key, final Boolean value);
+	void boolPut(final BBKey key, final Boolean value);
 
 	//------------------------------------
 	//- List

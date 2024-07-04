@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,14 +27,14 @@ import io.vertigo.datamodel.criteria.CriteriaEncoder;
 import io.vertigo.datamodel.criteria.CriteriaLogicalOperator;
 import io.vertigo.datamodel.criteria.CriterionOperator;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.DtListURI;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.DtListURI;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 
 /**
  * Implementation d'une liste filtré par un Criteria.
@@ -55,12 +55,12 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 
 	/**
 	 * Constructor.
-	 *  @param dtDefinition Id de la Définition de DT
+	 *  @param dataDefinition Id de la Définition de DT
 	 * @param criteria critere
 	 * @param dtListState Etat de la liste : Sort, Top, Offset
 	 */
-	DtListURIForCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
-		super(dtDefinition);
+	DtListURIForCriteria(final DataDefinition dataDefinition, final Criteria<E> criteria, final DtListState dtListState) {
+		super(dataDefinition);
 		Assertion.check()
 				.isNotNull(criteria)
 				.isNotNull(dtListState);
@@ -91,17 +91,17 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	* @param dtoCriteria Objet de critère
 	* @return Criteria resultant
 	*/
-	public static <E extends Entity> Criteria<E> createCriteria(final DtObject dtoCriteria) {
+	public static <E extends Entity> Criteria<E> createCriteria(final DataObject dtoCriteria) {
 		Assertion.check().isNotNull(dtoCriteria);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtoCriteria);
+		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(dtoCriteria);
 
 		Criteria<E> criteria = Criterions.alwaysTrue();
-		for (final DtField field : dtDefinition.getFields()) {
+		for (final DataField field : dataDefinition.getFields()) {
 			final String fieldName = field.name();
-			if (field.getType() != DtField.FieldType.COMPUTED) {
+			if (field.getType() != DataField.FieldType.COMPUTED) {
 				final Object value = field.getDataAccessor().getValue(dtoCriteria);
-				if (value instanceof String && field.getType() != DtField.FieldType.FOREIGN_KEY) {
+				if (value instanceof String && field.getType() != DataField.FieldType.FOREIGN_KEY) {
 					//si String et pas une FK : on met en préfix
 					criteria = criteria.and(Criterions.startsWith(() -> fieldName, (String) value));
 				} else if (value != null) {
@@ -123,8 +123,8 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	private int getCriteriaHashCode() {
 		return getCriteria().toStringAnCtx(new CriteriaEncoder() {
 			@Override
-			public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DtFieldName dtFieldName, final Serializable[] values) {
-				return criterionOperator.name() + "-" + dtFieldName.name() + "@" + Arrays.hashCode(values);
+			public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DataFieldName dataFieldName, final Serializable[] values) {
+				return criterionOperator.name() + "-" + dataFieldName.name() + "@" + Arrays.hashCode(values);
 			}
 
 			@Override

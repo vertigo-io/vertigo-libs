@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,14 +32,14 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.definitions.FormatterException;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.smarttype.definitions.FormatterException;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.vega.engines.webservice.json.VegaUiObject;
 import io.vertigo.vega.webservice.model.UiList;
@@ -47,10 +47,11 @@ import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * Wrapper d'affichage des listes d'objets métier.
+ *
  * @author npiedeloup
  * @param <O> the type of entity
  */
-public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends AbstractList<UiObject<O>> implements UiList<O>, Serializable {
+public abstract class AbstractUiListUnmodifiable<O extends DataObject> extends AbstractList<UiObject<O>> implements UiList<O>, Serializable {
 	private static final long serialVersionUID = 5475819598230056558L;
 
 	protected static final int NB_MAX_ELEMENTS = 1000; //Max nb elements in list. Must be kept under 1000 to ensure good performances.
@@ -68,19 +69,20 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	private final Map<String, Map<Serializable, UiObject<O>>> uiObjectByFieldValue = new HashMap<>();
 
 	//==========================================================================
-	private final DefinitionId<DtDefinition> dtDefinitionId;
+	private final DefinitionId<DataDefinition> dtDefinitionId;
 	private final String camelIdFieldName; //nullable (Option n'est pas serializable)
 
 	/**
 	 * Constructeur.
+	 *
 	 * @param dtDefinition DtDefinition
 	 */
-	AbstractUiListUnmodifiable(final DtDefinition dtDefinition, final Optional<DtFieldName<O>> keyFieldNameOpt) {
+	AbstractUiListUnmodifiable(final DataDefinition dtDefinition, final Optional<DataFieldName<O>> keyFieldNameOpt) {
 		Assertion.check().isNotNull(dtDefinition);
 		//-----
 		dtDefinitionId = dtDefinition.id();
-		final Optional<DtField> idFieldOpt = getDtDefinition().getIdField();
-		final Optional<DtField> keyFieldOpt = getDtDefinition().getKeyField();
+		final Optional<DataField> idFieldOpt = getDtDefinition().getIdField();
+		final Optional<DataField> keyFieldOpt = getDtDefinition().getKeyField();
 		if (idFieldOpt.isPresent()) {
 			camelIdFieldName = idFieldOpt.get().name();
 		} else if (keyFieldOpt.isPresent()) {
@@ -116,6 +118,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	/**
 	 * Initialize l'index des UiObjects par Clé.
 	 * Attention : nécessite la DtList (appel obtainDtList).
+	 *
 	 * @param keyFieldName Nom du champs à indexer
 	 */
 	protected final void initUiObjectByKeyIndex(final String keyFieldName) {
@@ -128,6 +131,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	/**
 	 * Récupère la liste des elements.
 	 * Peut-être appelé souvant : doit assurer un cache local (transient au besoin) si chargement.
+	 *
 	 * @return Liste des éléments
 	 */
 	protected abstract DtList<O> obtainDtList();
@@ -136,7 +140,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * @return DtDefinition de l'objet métier
 	 */
 	@Override
-	public final DtDefinition getDtDefinition() {
+	public final DataDefinition getDtDefinition() {
 		return dtDefinitionId.get();
 	}
 
@@ -158,8 +162,8 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	/** {@inheritDoc} */
 	@Override
 	public int indexOf(final Object o) {
-		if (o instanceof DtObject) {
-			return indexOfDtObject((DtObject) o);
+		if (o instanceof DataObject) {
+			return indexOfDtObject((DataObject) o);
 		} else if (o instanceof UiObject) {
 			return indexOfUiObject((UiObject<O>) o);
 		}
@@ -180,7 +184,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * @param dtObject DtObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	private int indexOfDtObject(final DtObject dtObject) {
+	private int indexOfDtObject(final DataObject dtObject) {
 		Assertion.check().isNotNull(dtObject);
 		//-----
 		return obtainDtList().indexOf(dtObject);
@@ -189,6 +193,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	/**
 	 * Récupère un objet par la valeur de son identifiant.
 	 * Utilisé par les select, radio et autocomplete en mode ReadOnly.
+	 *
 	 * @param keyFieldName Nom du champ identifiant
 	 * @param keyValue Valeur de l'identifiant
 	 * @return UiObject
@@ -206,12 +211,12 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	}
 
 	private UiObject<O> loadMissingEntity(final String keyFieldName, final Serializable keyValue, final Map<Serializable, UiObject<O>> uiObjectById) {
-		final DtDefinition dtDefinition = getDtDefinition();
+		final DataDefinition dtDefinition = getDtDefinition();
 		// ---
 		Assertion.check().isTrue(dtDefinition.getIdField().isPresent(), "The definition : {0} must have an id to retrieve missing elements by Id", dtDefinition);
 		// ---
 		UiObject<O> uiObject;
-		final DtField dtField = dtDefinition.getField(keyFieldName);
+		final DataField dtField = dtDefinition.getField(keyFieldName);
 		Assertion.check().isTrue(dtField.getType().isId(), "La clé {0} de la liste doit être la PK", keyFieldName);
 
 		final O entity = (O) loadDto(keyValue);
@@ -222,15 +227,19 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	}
 
 	private Entity loadDto(final Object key) {
+		if (transactionManager.get().hasCurrentTransaction()) {
+			return entityStoreManager.get().<Entity>readOne(UID.of(getDtDefinition(), key));
+		}
 		//-- Transaction BEGIN
 		try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-			return entityStoreManager.get().<Entity> readOne(UID.of(getDtDefinition(), key));
+			return entityStoreManager.get().<Entity>readOne(UID.of(getDtDefinition(), key));
 		}
 	}
 
 	/**
 	 * Récupère l'index des UiObjects par Id.
 	 * Calcul l'index si besoin.
+	 *
 	 * @param keyFieldName Nom du champ identifiant
 	 * @return Index des UiObjects par Id
 	 */
@@ -254,6 +263,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 
 	/**
 	 * Return a Serializable List for client.
+	 *
 	 * @param fieldsForClient List of fields
 	 * @param valueTransformers Map of transformers
 	 * @return ArrayList of HashMap (needed for Serializable)

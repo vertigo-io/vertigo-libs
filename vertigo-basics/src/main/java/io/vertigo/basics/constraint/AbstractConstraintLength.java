@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@
 package io.vertigo.basics.constraint;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.definitions.Constraint;
-import io.vertigo.datamodel.structure.definitions.DtProperty;
-import io.vertigo.datamodel.structure.definitions.Property;
+import io.vertigo.datamodel.smarttype.definitions.Constraint;
+import io.vertigo.datamodel.smarttype.definitions.DtProperty;
+import io.vertigo.datamodel.smarttype.definitions.Property;
 
 /**
  * Implémentation de base des contraintes de longueur sur une donnée quelconque.

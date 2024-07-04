@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ public final class TestUtil {
 		try {
 			try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
 				Assertion.check().isNotNull(in, "fichier non trouvé : {0}", fileName);
-				final File file = new TempFile("tmp", '.' + FileUtil.getFileExtension(fileName));
+				final File file = TempFile.of("tmp", '.' + FileUtil.getFileExtension(fileName));
 				FileUtil.copy(in, file);
 				return FSFile.of(file.toPath());
 			}

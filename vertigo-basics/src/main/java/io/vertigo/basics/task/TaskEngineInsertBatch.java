@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.util.StringUtil;
@@ -36,12 +37,12 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.statement.SqlStatementBuilder;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
+import io.vertigo.datamodel.data.definitions.DataAccessor;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DataAccessor;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.task.definitions.TaskAttribute;
 
 /**
@@ -60,8 +61,9 @@ public final class TaskEngineInsertBatch extends AbstractTaskEngineSQL {
 			final ScriptManager scriptManager,
 			final VTransactionManager transactionManager,
 			final SqlManager sqlManager,
-			final SmartTypeManager smartTypeManager) {
-		super(scriptManager, transactionManager, sqlManager, smartTypeManager);
+			final SmartTypeManager smartTypeManager,
+			final AnalyticsManager analyticsManager) {
+		super(scriptManager, transactionManager, sqlManager, smartTypeManager, analyticsManager);
 	}
 
 	/** {@inheritDoc} */
@@ -79,8 +81,8 @@ public final class TaskEngineInsertBatch extends AbstractTaskEngineSQL {
 		// gestion de generatedKey
 		final GenerationMode generationMode = connection.getDataBase().getSqlDialect().getGenerationMode();
 		final DtList<Entity> list = getValue(listAttribute.name());
-		final DtDefinition dtDefinition = list.getDefinition();
-		final DtField idField = dtDefinition.getIdField().get();
+		final DataDefinition dataDefinition = list.getDefinition();
+		final DataField idField = dataDefinition.getIdField().get();
 
 		final Tuple<Integer, List<?>> result = getSqlManager().executeBatchWithGeneratedKeys(sqlStatement,
 				generationMode,

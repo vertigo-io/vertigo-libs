@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,17 +27,16 @@ import java.util.stream.Collectors;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.Fragment;
+import io.vertigo.datamodel.data.model.UID;
+import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.structure.definitions.DataAccessor;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.Fragment;
-import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 
@@ -87,7 +86,7 @@ public class DAO<E extends Entity, P> {
 	 * @return the saved entity
 	 */
 	public final E save(final E entity) {
-		if (DtObjectUtil.getId(entity) == null) {
+		if (DataModelUtil.getId(entity) == null) {
 			return entityStoreManager.create(entity);
 		}
 
@@ -142,27 +141,27 @@ public class DAO<E extends Entity, P> {
 	 * @return merged root entity merged with the fragment
 	 */
 	public final E reloadAndMerge(final Fragment<E> fragment) {
-		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragment);
-		final DtDefinition entityDefinition = fragmentDefinition.getFragment().get();
-		final Map<String, DtField> entityFields = indexFields(entityDefinition.getFields());
-		final DtField idField = entityDefinition.getIdField().get();
-		final P entityId = (P) idField.getDataAccessor().getValue(fragment);//etrange on utilise l'accessor de l'entity sur le fragment
-		final E dto = get(entityId);
-		for (final DtField fragmentField : fragmentDefinition.getFields()) {
+		final var fragmentDefinition = DataModelUtil.findDataDefinition(fragment);
+		final var entityDefinition = fragmentDefinition.getFragment().get();
+		final var entityFields = indexFields(entityDefinition.getFields());
+		final var idField = entityDefinition.getIdField().get();
+		final var entityId = (P) idField.getDataAccessor().getValue(fragment);//etrange on utilise l'accessor de l'entity sur le fragment
+		final var dto = get(entityId);
+		for (final DataField fragmentField : fragmentDefinition.getFields()) {
 			//On vérifie la présence du champ dans l'Entity (il peut s'agir d'un champ non persistent d'UI
 			if (entityFields.containsKey(fragmentField.name())) {
-				final DataAccessor fragmentDataAccessor = fragmentField.getDataAccessor();
-				final DataAccessor entityDataAccessor = entityFields.get(fragmentField.name()).getDataAccessor();
+				final var fragmentDataAccessor = fragmentField.getDataAccessor();
+				final var entityDataAccessor = entityFields.get(fragmentField.name()).getDataAccessor();
 				entityDataAccessor.setValue(dto, fragmentDataAccessor.getValue(fragment));
 			}
 		}
 		return dto;
 	}
 
-	private static Map<String, DtField> indexFields(final List<DtField> fields) {
+	private static Map<String, DataField> indexFields(final List<DataField> fields) {
 		return fields
 				.stream()
-				.collect(Collectors.toMap(DtField::name, Function.identity()));
+				.collect(Collectors.toMap(DataField::name, Function.identity()));
 	}
 
 	/**
@@ -182,7 +181,17 @@ public class DAO<E extends Entity, P> {
 	 * @param id identifiant de l'objet persistant à supprimer
 	 */
 	public final void delete(final P id) {
-		delete(createDtObjectUID(id));
+		delete(createUID(id));
+	}
+
+	/**
+	 * Delete a list of objects (performance optimized).
+	 * You should take care of supplying a reasonable chunk size (max 5 000)
+	 *
+	 * @param entities the list of objets to delete
+	 */
+	public final void deleteList(final List<UID<E>> uids) {
+		entityStoreManager.deleteList(uids);
 	}
 
 	/**
@@ -203,11 +212,11 @@ public class DAO<E extends Entity, P> {
 	 * @return F Fragment recherché
 	 */
 	public final <F extends Fragment<E>> F getFragment(final UID<E> uid, final Class<F> fragmentClass) {
-		final E dto = entityStoreManager.readOne(uid);
-		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragmentClass);
-		final F fragment = fragmentClass.cast(DtObjectUtil.createDtObject(fragmentDefinition));
-		for (final DtField dtField : fragmentDefinition.getFields()) {
-			final DataAccessor dataAccessor = dtField.getDataAccessor();
+		final var dto = entityStoreManager.readOne(uid);
+		final var fragmentDefinition = DataModelUtil.findDataDefinition(fragmentClass);
+		final var fragment = fragmentClass.cast(DataModelUtil.createDataObject(fragmentDefinition));
+		for (final DataField dtField : fragmentDefinition.getFields()) {
+			final var dataAccessor = dtField.getDataAccessor();
 			dataAccessor.setValue(fragment, dataAccessor.getValue(dto));
 			//etrange on utilise l'accessor du fragment sur l'entity
 		}
@@ -223,7 +232,7 @@ public class DAO<E extends Entity, P> {
 	 * @return D Object objet recherché
 	 */
 	public final E get(final P id) {
-		return get(createDtObjectUID(id));
+		return get(createUID(id));
 	}
 
 	/**
@@ -234,7 +243,7 @@ public class DAO<E extends Entity, P> {
 	 * @return D Fragment recherché
 	 */
 	public final <F extends Fragment<E>> F get(final P id, final Class<F> fragmentClass) {
-		final UID<E> uid = UID.of(DtObjectUtil.findDtDefinition(fragmentClass).getFragment().get(), id);
+		final UID<E> uid = UID.of(DataModelUtil.findDataDefinition(fragmentClass).getFragment().get(), id);
 		return getFragment(uid, fragmentClass);
 	}
 
@@ -244,23 +253,23 @@ public class DAO<E extends Entity, P> {
 	 * @param id identifiant de l'objet persistant recherché
 	 * @return UID recherchée
 	 */
-	protected final UID<E> createDtObjectUID(final P id) {
+	protected final UID<E> createUID(final P id) {
 		return UID.of(getDtDefinition(), id);
 	}
 
 	/**
-	 * @param dtFieldName de l'object à récupérer NOT NULL
+	 * @param dataFieldName de l'object à récupérer NOT NULL
 	 * @param value de l'object à récupérer NOT NULL
 	 * @param dtListState Etat de la liste : Sort, top, offset
 	 * @return DtList<D> récupéré NOT NUL
 	 */
-	public final DtList<E> getListByDtFieldName(final DtFieldName dtFieldName, final Serializable value, final DtListState dtListState) {
-		final Criteria<E> criteria = Criterions.isEqualTo(dtFieldName, value);
+	public final DtList<E> getListByDataFieldName(final DataFieldName dataFieldName, final Serializable value, final DtListState dtListState) {
+		final Criteria<E> criteria = Criterions.isEqualTo(dataFieldName, value);
 		// Verification de la valeur est du type du champ
-		final DtDefinition dtDefinition = getDtDefinition();
-		final DtField dtField = dtDefinition.getField(dtFieldName.name());
+		final var dataDefinition = getDtDefinition();
+		final var dtField = dataDefinition.getField(dataFieldName.name());
 		smartTypeManager.checkType(dtField.smartTypeDefinition(), dtField.cardinality(), value);
-		return entityStoreManager.find(dtDefinition, criteria, dtListState);
+		return entityStoreManager.find(dataDefinition, criteria, dtListState);
 	}
 
 	/**
@@ -295,7 +304,7 @@ public class DAO<E extends Entity, P> {
 		return entityStoreManager.find(getDtDefinition(), criteria, dtListState);
 	}
 
-	private DtDefinition getDtDefinition() {
-		return DtObjectUtil.findDtDefinition(entityClass);
+	private DataDefinition getDtDefinition() {
+		return DataModelUtil.findDataDefinition(entityClass);
 	}
 }

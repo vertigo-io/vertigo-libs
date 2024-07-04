@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,27 +23,27 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Entity;
 
 /**
  * @author pchretien
  */
 public abstract class AbstractAccountStorePlugin implements Activeable {
 
-	private DtDefinition userDtDefinition;
+	private DataDefinition userDtDefinition;
 	private final String userDtDefinitionName;
 	private final String userToAccountMappingStr;
 
-	private AccountMapperHelper<DtField, AccountProperty> mapperHelper; //AccountAttribute from UserAttribute
+	private AccountMapperHelper<DataField, AccountProperty> mapperHelper; //AccountAttribute from UserAttribute
 
 	private enum AccountProperty {
 		id, displayName, email, authToken, photo
 	}
 
 	/**
-	 * @param userDtDefinitionName User dtDefinition name
+	 * @param userDtDefinitionName User dataDefinition name
 	 * @param userToAccountMappingStr User to account conversion mapping
 	 */
 	protected AbstractAccountStorePlugin(
@@ -60,7 +60,7 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public final void start() {
-		userDtDefinition = Node.getNode().getDefinitionSpace().resolve(userDtDefinitionName, DtDefinition.class);
+		userDtDefinition = Node.getNode().getDefinitionSpace().resolve(userDtDefinitionName, DataDefinition.class);
 		mapperHelper = new AccountMapperHelper(userDtDefinition, AccountProperty.class, userToAccountMappingStr)
 				.withMandatoryDestField(AccountProperty.id)
 				.withMandatoryDestField(AccountProperty.displayName)
@@ -80,7 +80,7 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 		//rien
 	}
 
-	protected final DtDefinition getUserDtDefinition() {
+	protected final DataDefinition getUserDtDefinition() {
 		return userDtDefinition;
 	}
 
@@ -99,7 +99,7 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 	}
 
 	private String parseAttribute(final AccountProperty accountProperty, final Entity userEntity) {
-		final DtField attributeField = mapperHelper.getSourceAttribute(accountProperty);
+		final DataField attributeField = mapperHelper.getSourceAttribute(accountProperty);
 		if (attributeField != null) {
 			final Object value = attributeField.getDataAccessor().getValue(userEntity);
 			return value != null ? String.valueOf(value) : null;

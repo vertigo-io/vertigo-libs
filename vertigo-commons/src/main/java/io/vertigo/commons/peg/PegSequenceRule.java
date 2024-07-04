@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,21 +78,13 @@ final class PegSequenceRule implements PegRule<List<Object>> {
 				index = cursor.getIndex();
 				results.add(cursor.getValue());
 				if (cursor.getBestUncompleteRule().isPresent()) {
-					best = keepBestUncompleteRule(cursor.getBestUncompleteRule().get(), best);
+					best = PegNoMatchFoundException.keepBestUncompleteRule(cursor.getBestUncompleteRule().get(), best);
 				}
 			}
 		} catch (final PegNoMatchFoundException e) {
-			throw keepBestUncompleteRule(new PegNoMatchFoundException(text, e.getIndex(), e, getExpression()), best);
+			throw PegNoMatchFoundException.keepBestUncompleteRule(new PegNoMatchFoundException(text, e.getIndex(), e, getExpression()), best);
 		}
-		return new PegResult<>(index, results);
+		return new PegResult<>(index, results, best);
 	}
 
-	private static PegNoMatchFoundException keepBestUncompleteRule(final PegNoMatchFoundException first, final PegNoMatchFoundException otherNullable) {
-		Assertion.check().isNotNull(first);
-		//----
-		if (otherNullable == null || otherNullable.getIndex() < first.getIndex()) {
-			return first;
-		}
-		return otherNullable;
-	}
 }

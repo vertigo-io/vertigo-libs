@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,12 @@ public final class DataFilterBuilder implements Builder<DataFilter> {
 		myMeasurement = measurement;
 	}
 
+	/**
+	 * Add a filter to the data filter
+	 * @param field Field name (tag or field)
+	 * @param value Value to filter on; <b>null</b> value mean no filter, <b>empty string</b> mean field shouldn't exists, <b>*</b> mean field must exists
+	 * @return this builder
+	 */
 	public DataFilterBuilder addFilter(final String field, final String value) {
 		Assertion.check()
 				.isNotBlank(field)

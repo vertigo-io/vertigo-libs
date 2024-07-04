@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,8 @@ import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinition;
 import io.vertigo.datamodel.smarttype.AdapterConfig;
 import io.vertigo.datamodel.smarttype.ConstraintConfig;
@@ -41,14 +43,12 @@ import io.vertigo.datamodel.smarttype.annotations.Constraint;
 import io.vertigo.datamodel.smarttype.annotations.Constraints;
 import io.vertigo.datamodel.smarttype.annotations.Formatter;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
+import io.vertigo.datamodel.smarttype.definitions.DtProperty;
+import io.vertigo.datamodel.smarttype.definitions.Properties;
+import io.vertigo.datamodel.smarttype.definitions.PropertiesBuilder;
+import io.vertigo.datamodel.smarttype.definitions.Property;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition.Scope;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtProperty;
-import io.vertigo.datamodel.structure.definitions.Properties;
-import io.vertigo.datamodel.structure.definitions.PropertiesBuilder;
-import io.vertigo.datamodel.structure.definitions.Property;
-import io.vertigo.datamodel.structure.model.DtObject;
 
 public class SmartTypesLoader implements Loader {
 
@@ -90,9 +90,9 @@ public class SmartTypesLoader implements Loader {
 			for (final Adapter adapter : adapters) {
 				adapterConfigs.add(new AdapterConfig(adapter.type(), adapter.clazz(), adapter.targetBasicType()));
 			}
-			if (DtObject.class.isAssignableFrom(targetJavaClass)) {
+			if (DataObject.class.isAssignableFrom(targetJavaClass)) {
 				scope = Scope.DATA_TYPE;
-				Assertion.check().isTrue(field.getName().equals(DtDefinition.PREFIX + targetJavaClass.getSimpleName()), "The name of the SmartType {0} is not consistent with the class {1}",
+				Assertion.check().isTrue(field.getName().equals(DataDefinition.PREFIX + targetJavaClass.getSimpleName()), "The name of the SmartType {0} is not consistent with the class {1}",
 						field.getName(), targetJavaClass);
 			} else {
 				Assertion.check().isTrue(adapters.length > 0,
@@ -119,9 +119,9 @@ public class SmartTypesLoader implements Loader {
 					.forEach(constraintConfig -> {
 						final Optional<String> msgOpt = StringUtil.isBlank(constraintConfig.msg()) ? Optional.empty() : Optional.of(constraintConfig.msg());
 						final Optional<String> resourceMsgOpt = StringUtil.isBlank(constraintConfig.resourceMsg()) ? Optional.empty() : Optional.of(constraintConfig.resourceMsg());
-						final Constructor<? extends io.vertigo.datamodel.structure.definitions.Constraint> constructor = ClassUtil.findConstructor(constraintConfig.constraintClass(),
+						final Constructor<? extends io.vertigo.datamodel.smarttype.definitions.Constraint> constructor = ClassUtil.findConstructor(constraintConfig.constraintClass(),
 								new Class[] { String.class, Optional.class, Optional.class });
-						final io.vertigo.datamodel.structure.definitions.Constraint newConstraint = ClassUtil.newInstance(constructor,
+						final io.vertigo.datamodel.smarttype.definitions.Constraint newConstraint = ClassUtil.newInstance(constructor,
 								new Object[] { constraintConfig.arg(), msgOpt, resourceMsgOpt });
 						propertiesBuilder.addValue(newConstraint.getProperty(), newConstraint.getPropertyValue());
 					});

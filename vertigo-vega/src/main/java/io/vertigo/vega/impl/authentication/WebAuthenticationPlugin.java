@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,6 +99,17 @@ public interface WebAuthenticationPlugin<T> extends Plugin {
 		return Tuple.of(AuthenticationResult.ofNotConsumed(), httpRequest);
 	}
 
-	boolean doLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse);
+	/**
+	 * Handle the logout request
+	 *
+	 * @param httpRequest the request
+	 * @param httpResponse the response
+	 * @param redirectUrlOpt the url to redirect after logout
+	 */
+	void doLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Optional<String> redirectUrlOpt);
+
+	default String resolveExternalUrl(final HttpServletRequest httpRequest) {
+		return WebAuthenticationUtil.resolveExternalUrl(httpRequest, getExternalUrlOptional());
+	}
 
 }

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
@@ -32,7 +32,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author npiedeloup
  * @param <O> the type of entity
  */
-public final class ClusterUiList<O extends DtObject> extends AbstractUiListUnmodifiable<O> {
+public final class ClusterUiList<O extends DataObject> extends AbstractUiListUnmodifiable<O> {
 	private static final long serialVersionUID = 5475819598230056558L;
 
 	private final DtList<O> dtList;
@@ -45,7 +45,7 @@ public final class ClusterUiList<O extends DtObject> extends AbstractUiListUnmod
 	 * Constructeur.
 	 * @param dtList Liste à encapsuler
 	 */
-	public ClusterUiList(final DtList<O> dtList, final Optional<DtFieldName<O>> keyFieldNameOpt, final String code, final String label, final String listType, final Long totalCount) {
+	public ClusterUiList(final DtList<O> dtList, final Optional<DataFieldName<O>> keyFieldNameOpt, final String code, final String label, final String listType, final Long totalCount) {
 		super(dtList.getDefinition(), keyFieldNameOpt);
 		//-----
 		this.dtList = dtList;
@@ -93,7 +93,7 @@ public final class ClusterUiList<O extends DtObject> extends AbstractUiListUnmod
 		return dtList
 				.stream()
 				.limit(50) //we consider only the first 50 elements
-				.map(DtObject::toString)
+				.map(DataObject::toString)
 				.collect(Collectors.joining("; ",
 						"uiList(" + dtList.size() + " element(s) :", ")"));
 	}

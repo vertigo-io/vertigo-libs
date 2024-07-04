@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ import io.vertigo.account.authorization.definitions.rulemodel.RuleUserPropertyVa
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.Entity;
 
 /**
  * Translate a security rule into a criteria to be used in SQL queries and as a Java predicate.
@@ -138,7 +138,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		}
 	}
 
-	private Criteria<E> simpleToCriteria(final DtFieldName<E> fieldName, final ValueOperator operator, final Serializable value) {
+	private Criteria<E> simpleToCriteria(final DataFieldName<E> fieldName, final ValueOperator operator, final Serializable value) {
 		switch (operator) {
 			case EQ:
 				return Criterions.isEqualTo(fieldName, value);
@@ -158,7 +158,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 	}
 
 	private Criteria<E> enumToCriteria(final SecurityDimension securityDimension, final ValueOperator operator, final String value) {
-		final DtFieldName<E> fieldName = securityDimension::getName;
+		final DataFieldName<E> fieldName = securityDimension::getName;
 		switch (operator) {
 			case EQ:
 				return Criterions.isEqualTo(fieldName, value);
@@ -197,7 +197,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 	private <K extends Serializable> Criteria<E> treeToCriteria(final SecurityDimension securityDimension, final ValueOperator operator, final K[] treeKeys) {
 		//on vérifie qu'on a bien toutes les clées.
 		final List<String> strDimensionfields = securityDimension.getFields().stream()
-				.map(DtField::name)
+				.map(DataField::name)
 				.toList();
 		Assertion.check()
 				.isTrue(strDimensionfields.size() <= treeKeys.length, "Entity security tree must have the same or at least the {0} firsts fields ({1}) of User securityKey {2}", strDimensionfields.size(), strDimensionfields, securityDimension.getName());
@@ -209,12 +209,12 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		//cas particuliers du == et du !=
 		if (operator == ValueOperator.EQ) {
 			for (int i = 0; i < strDimensionfields.size(); i++) {
-				final DtFieldName<E> fieldName = strDimensionfields.get(i)::toString;
+				final DataFieldName<E> fieldName = strDimensionfields.get(i)::toString;
 				mainCriteria = andCriteria(mainCriteria, Criterions.isEqualTo(fieldName, treeKeys[i]));
 			}
 		} else if (operator == ValueOperator.NEQ) {
 			for (int i = 0; i < strDimensionfields.size(); i++) {
-				final DtFieldName<E> fieldName = strDimensionfields.get(i)::toString;
+				final DataFieldName<E> fieldName = strDimensionfields.get(i)::toString;
 				mainCriteria = andCriteria(mainCriteria, Criterions.isNotEqualTo(fieldName, treeKeys[i]));
 			}
 		} else { //cas des < , <= , > et >=
@@ -226,7 +226,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 
 			//1- règles avant le point de pivot : 'Eq' pout tous les opérateurs
 			for (int i = 0; i < lastIndexNotNull; i++) {
-				final DtFieldName<E> fieldName = strDimensionfields.get(i)::toString;
+				final DataFieldName<E> fieldName = strDimensionfields.get(i)::toString;
 				switch (operator) {
 					case GT:
 					case GTE:
@@ -249,7 +249,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 
 			//2- règles pour le point de pivot
 			if (lastIndexNotNull >= 0) {
-				final DtFieldName<E> fieldName = strDimensionfields.get(lastIndexNotNull)::toString;
+				final DataFieldName<E> fieldName = strDimensionfields.get(lastIndexNotNull)::toString;
 				switch (operator) {
 					case GT:
 						//pour > : doit être null (car non inclus)
@@ -276,7 +276,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 
 			//3- règles après le point de pivot (les null du user donc)
 			for (int i = lastIndexNotNull + 1; i < strDimensionfields.size(); i++) {
-				final DtFieldName<E> fieldName = strDimensionfields.get(i)::toString;
+				final DataFieldName<E> fieldName = strDimensionfields.get(i)::toString;
 				switch (operator) {
 					case GT:
 					case GTE:

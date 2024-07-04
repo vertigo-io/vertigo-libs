@@ -3,10 +3,10 @@ import * as Quasar from "quasar"
 
 export default {
     created: function(elMaxi, binding) {
-            const topOffset = binding.value.topOffset;
-            const topOffsetElSelector = binding.value.topOffsetEl;
-            const leftOffset = binding.value.leftOffset;
-            const leftOffsetElSelector = binding.value.leftOffsetEl;
+            const topOffset = binding.value?binding.value.topOffset:null;
+            const topOffsetElSelector = binding.value?binding.value.topOffsetEl:null;
+            const leftOffset = binding.value?binding.value.leftOffset:null;
+            const leftOffsetElSelector = binding.value?binding.value.leftOffsetEl:null;
             const elMini = elMaxi.querySelector('.mini')
             for(var i=0 ; i<elMaxi.childNodes.length; i++) {
                 var elChild = elMaxi.childNodes[i];
@@ -16,18 +16,25 @@ export default {
             }
             
             Vue.minifyHandler = function() {
-                var currentTopOffset = Vue.minifyComputeOffset(topOffset, topOffsetElSelector, 0, 'TOP');
-                var currentLeftOffset = Vue.minifyComputeOffset(leftOffset, leftOffsetElSelector, 0, 'LEFT');
-                
-                var elMiniHeight = elMini.getBoundingClientRect().height-currentTopOffset;
+                var scrollContainer = elMaxi.closest('.q-page-container'); 
+                var currentYScroll = scrollContainer?-scrollContainer.getBoundingClientRect().y:window.pageYOffset;
+                var currentXScroll = scrollContainer?-scrollContainer.getBoundingClientRect().x:window.pageXOffset;
+                var currentTopOffset = elMaxi.getBoundingClientRect().y+currentYScroll;
+                var currentLeftOffset = elMaxi.getBoundingClientRect().x+currentXScroll;
+                if(topOffset || topOffsetElSelector) {
+                    currentTopOffset = Vue.minifyComputeOffset(topOffset, topOffsetElSelector, 0, 'TOP');
+                }
+                if(leftOffset || leftOffsetElSelector) {
+                    currentLeftOffset = Vue.minifyComputeOffset(leftOffset, leftOffsetElSelector, 0, 'LEFT');
+                }
+                var elMiniHeight = elMini.getBoundingClientRect().height;
                 var elMaxiHeight = elMaxi.getBoundingClientRect().height;
                 //We check if nav should be fixed
                 // Add the fixed class to the header when you reach its scroll position. Remove "fixed" when you leave the scroll position
-                if (window.pageYOffset > elMaxiHeight-elMiniHeight) {
+                if (currentYScroll > elMaxiHeight-elMiniHeight) {
                     elMini.classList.add("visible");
-                    elMini.style.top=0;//top
-                    elMini.style.paddingTop = currentTopOffset+"px";  
-                    elMini.style.paddingLeft = currentLeftOffset+"px";    			
+                    elMini.style.top=currentTopOffset+"px";//top
+                    elMini.style.left=currentLeftOffset+"px";//left  			
                 } else {
                     elMini.classList.remove("visible");
                     elMini.style.top = (-elMiniHeight-currentTopOffset)+"px";
@@ -40,10 +47,11 @@ export default {
                     currentOffset = offset;
                 } else if(offsetElSelector) {
                     var offsetElement = document.querySelector(offsetElSelector);
+                    var offsetRect = offsetElement.getBoundingClientRect();
                     if(direction === 'LEFT') {
-                        currentOffset = offsetElement.getBoundingClientRect().width+offsetElement.getBoundingClientRect().x;
+                        currentOffset = offsetRect.width+offsetRect.x;
                     } else if(direction === 'TOP') {
-                        currentOffset = offsetElement.getBoundingClientRect().height+offsetElement.getBoundingClientRect().y;
+                        currentOffset = offsetRect.height+offsetRect.y;
                     }
                 }
                 return currentOffset;
@@ -54,9 +62,9 @@ export default {
         updated : function() {
             const interval = 50;
             const maxDelay = 1000;
-            for(var delay = interval ; delay < maxDelay ; delay += delay) {
-                setTimeout(Vue.minifyHandler,delay);
-            }
+            //for(var delay = interval ; delay < maxDelay ; delay += delay) {
+                setTimeout(Vue.minifyHandler,50);
+            //}
         },
         unmounted: function(elMaxi) {
             window.removeEventListener('scroll');

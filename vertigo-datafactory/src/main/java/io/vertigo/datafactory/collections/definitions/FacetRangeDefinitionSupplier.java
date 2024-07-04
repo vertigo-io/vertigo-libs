@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition.FacetOrder;
 import io.vertigo.datafactory.collections.model.FacetValue;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 
 public final class FacetRangeDefinitionSupplier implements DefinitionSupplier {
 
@@ -42,8 +42,8 @@ public final class FacetRangeDefinitionSupplier implements DefinitionSupplier {
 		this.myName = name;
 	}
 
-	public FacetRangeDefinitionSupplier withDtDefinition(final String dtDefinitionName) {
-		this.myDtDefinitionName = dtDefinitionName;
+	public FacetRangeDefinitionSupplier withDtDefinition(final String dataDefinitionName) {
+		this.myDtDefinitionName = dataDefinitionName;
 		return this;
 	}
 
@@ -74,7 +74,7 @@ public final class FacetRangeDefinitionSupplier implements DefinitionSupplier {
 
 	@Override
 	public FacetDefinition get(final DefinitionSpace definitionSpace) {
-		final DtDefinition indexDtDefinition = definitionSpace.resolve(myDtDefinitionName, DtDefinition.class);
+		final DataDefinition indexDtDefinition = definitionSpace.resolve(myDtDefinitionName, DataDefinition.class);
 		return FacetDefinition.createFacetDefinitionByRange(
 				myName,
 				indexDtDefinition.getField(myFieldName),

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public final class VFileUtil {
 	}
 
 	private static Path doCreateTempPath(final VFile fileInfo) throws IOException {
-		final File tmpFile = new TempFile("fileInfo", '.' + FileUtil.getFileExtension(fileInfo.getFileName()));
+		final File tmpFile = TempFile.of("fileInfo", '.' + FileUtil.getFileExtension(fileInfo.getFileName()));
 		try (final InputStream inputStream = fileInfo.createInputStream()) {
 			FileUtil.copy(inputStream, tmpFile);
 			return tmpFile.toPath();

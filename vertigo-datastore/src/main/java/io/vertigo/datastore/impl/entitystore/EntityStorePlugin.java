@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,17 @@
  */
 package io.vertigo.datastore.impl.entitystore;
 
+import java.util.List;
+
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.datamodel.criteria.Criteria;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.association.DtListURIForNNAssociation;
-import io.vertigo.datamodel.structure.definitions.association.DtListURIForSimpleAssociation;
-import io.vertigo.datamodel.structure.model.DtList;
-import io.vertigo.datamodel.structure.model.DtListState;
-import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.association.DtListURIForNNAssociation;
+import io.vertigo.datamodel.data.definitions.association.DtListURIForSimpleAssociation;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
+import io.vertigo.datamodel.data.model.Entity;
+import io.vertigo.datamodel.data.model.UID;
 
 /**
  * The DataStorePlugin class defines the logical way used to read and write data in a data store.
@@ -54,42 +56,42 @@ public interface EntityStorePlugin extends Plugin {
 
 	/**
 	 * Returns the number of elements contained in the definition.
-	 * @param dtDefinition Définition de DT
+	 * @param dataDefinition Définition de DT
 	 * @return the number of elements
 	 */
-	int count(final DtDefinition dtDefinition);
+	int count(final DataDefinition dataDefinition);
 
 	/**
 	 * Récupération de l'objet correspondant à l'URI fournie.
 	 *
 	 * @param uid UID de l'objet à charger
 	 * @param <E> the type of entity
-	 * @param dtDefinition Definition
+	 * @param dataDefinition Definition
 	 * @return D correspondant à l'URI fournie.
 	 */
-	<E extends Entity> E readNullable(DtDefinition dtDefinition, UID<E> uid);
+	<E extends Entity> E readNullable(DataDefinition dataDefinition, UID<E> uid);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
 	 * NOT NULL
 	 *
 	 * @param uid UID de la collection à charger
-	 * @param dtDefinition Definition
+	 * @param dataDefinition Definition
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <E> the type of entity
 	 */
-	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uid);
+	<E extends Entity> DtList<E> findAll(final DataDefinition dataDefinition, final DtListURIForNNAssociation uid);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
 	 * NOT NULL
 	 *
 	 * @param uid UID de la collection à charger
-	 * @param dtDefinition Definition
+	 * @param dataDefinition Definition
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <E> the type of entity
 	 */
-	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uid);
+	<E extends Entity> DtList<E> findAll(final DataDefinition dataDefinition, final DtListURIForSimpleAssociation uid);
 
 	//==========================================================================
 	//=============================== WRITE ====================================
@@ -98,48 +100,58 @@ public interface EntityStorePlugin extends Plugin {
 	 * Creates an object.
 	 * No object with the same id must have been created previously.
 	 *
-	 * @param dtDefinition Definition
+	 * @param dataDefinition Definition
 	 * @param entity Object to create
 	 * @return the created entity
 	 */
-	<E extends Entity> E create(DtDefinition dtDefinition, E entity);
+	<E extends Entity> E create(DataDefinition dataDefinition, E entity);
 
 	<E extends Entity> DtList<E> createList(DtList<E> entities);
 
 	/**
 	 * Updates an object.
 	 * This object must have an id.
-	 * @param dtDefinition Definition
+	 * @param dataDefinition Definition
 	 * @param entity Object to update
 	 */
-	void update(DtDefinition dtDefinition, Entity entity);
+	void update(DataDefinition dataDefinition, Entity entity);
 
+	/**
+	 * Update a list of entities
+	 * @param entities entities
+	 */
 	<E extends Entity> void updateList(DtList<E> entities);
 
 	/**
 	 * Deletes an object identified by an uri.
-	 * @param dtDefinition Definition
+	 * @param dataDefinition Definition
 	 * @param uid UID
 	 */
-	void delete(DtDefinition dtDefinition, UID<?> uid);
+	void delete(DataDefinition dataDefinition, UID<?> uid);
+
+	/**
+	 * Deletes a list of entities
+	 * @param uids uids of entities to delete
+	 */
+	<E extends Entity> void deleteList(List<UID<E>> uids);
 
 	/**
 	 * Loads for update.
 	 *
-	 * @param dtDefinition Object's definition
+	 * @param dataDefinition Object's definition
 	 * @param uid Object's uid
 	 * @param <E> the type of entity
 	 * @return D Object value.
 	 */
-	<E extends Entity> E readNullableForUpdate(DtDefinition dtDefinition, UID<?> uid);
+	<E extends Entity> E readNullableForUpdate(DataDefinition dataDefinition, UID<?> uid);
 
 	/**
 	 * Finds a lists of entities matching a criteria.
-	 * @param dtDefinition the definition of entities to find
+	 * @param dataDefinition the definition of entities to find
 	 * @param criteria the criteria to match
 	 * @param dtListState listState of rows to retrieve
 	 * @return the list
 	 */
-	<E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState);
+	<E extends Entity> DtList<E> findByCriteria(final DataDefinition dataDefinition, final Criteria<E> criteria, final DtListState dtListState);
 
 }

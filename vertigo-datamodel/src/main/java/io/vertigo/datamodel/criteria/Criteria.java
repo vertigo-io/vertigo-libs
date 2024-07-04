@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
-import io.vertigo.datamodel.structure.definitions.DtFieldName;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
+import io.vertigo.datamodel.data.model.DataObject;
 
 /**
  * A criteria to filter a list.
@@ -34,7 +34,7 @@ import io.vertigo.datamodel.structure.model.DtObject;
  * @param <D> the type of dtObject filtered with this criteria
  * @author mlaroche
  */
-public abstract class Criteria<D extends DtObject> implements Serializable {
+public abstract class Criteria<D extends DataObject> implements Serializable {
 	private static final long serialVersionUID = -990254492823334724L;
 
 	/**
@@ -83,8 +83,8 @@ public abstract class Criteria<D extends DtObject> implements Serializable {
 		return toStringAnCtx(new CriteriaEncoder() {
 
 			@Override
-			public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DtFieldName dtFieldName, final Serializable[] values) {
-				final String fieldName = dtFieldName.name();
+			public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DataFieldName dataFieldName, final Serializable[] values) {
+				final String fieldName = dataFieldName.name();
 				//---
 				switch (criterionOperator) {
 					case IS_NOT_NULL:
@@ -95,24 +95,24 @@ public abstract class Criteria<D extends DtObject> implements Serializable {
 						if (values[0] == null) {
 							return fieldName + " is null ";
 						}
-						return fieldName + " = #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+						return fieldName + " = #" + ctx.attributeName(dataFieldName, values[0]) + "#";
 					case NEQ:
 						if (values[0] == null) {
 							return fieldName + " is not null ";
 						}
-						return "(" + fieldName + " is null " + encodeLogicalOperator(CriteriaLogicalOperator.OR) + " " + fieldName + " != #" + ctx.attributeName(dtFieldName, values[0]) + "# )";
+						return "(" + fieldName + " is null " + encodeLogicalOperator(CriteriaLogicalOperator.OR) + " " + fieldName + " != #" + ctx.attributeName(dataFieldName, values[0]) + "# )";
 					case GT:
-						return fieldName + " > #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+						return fieldName + " > #" + ctx.attributeName(dataFieldName, values[0]) + "#";
 					case GTE:
-						return fieldName + " >= #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+						return fieldName + " >= #" + ctx.attributeName(dataFieldName, values[0]) + "#";
 					case LT:
-						return fieldName + " < #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+						return fieldName + " < #" + ctx.attributeName(dataFieldName, values[0]) + "#";
 					case LTE:
-						return fieldName + " <= #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+						return fieldName + " <= #" + ctx.attributeName(dataFieldName, values[0]) + "#";
 					case BETWEEN:
 						return fieldName + " between(" + CriterionLimit.class.cast(values[0]) + "," + CriterionLimit.class.cast(values[1]) + ")";
 					case STARTS_WITH:
-						return fieldName + " startWith  #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+						return fieldName + " startWith  #" + ctx.attributeName(dataFieldName, values[0]) + "#";
 					case IN:
 						return Stream.of(values)
 								.map(Serializable::toString)

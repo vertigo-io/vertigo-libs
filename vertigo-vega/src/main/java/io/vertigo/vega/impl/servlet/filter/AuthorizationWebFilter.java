@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,10 +76,7 @@ public final class AuthorizationWebFilter extends AbstractFilter {
 	@Override
 	public void doInit() {
 		final FilterConfig filterConfig = getFilterConfig();
-		final String errorCodeValue = filterConfig.getInitParameter(ERROR_CODE_PARAM_NAME);
-		if (errorCodeValue != null) {
-			errorCode = Integer.parseInt(errorCodeValue);
-		}
+		errorCode = parseParam(ERROR_CODE_PARAM_NAME, Integer.class, errorCode);
 
 		final Enumeration<String> authz = filterConfig.getInitParameterNames();
 		while (authz.hasMoreElements()) {

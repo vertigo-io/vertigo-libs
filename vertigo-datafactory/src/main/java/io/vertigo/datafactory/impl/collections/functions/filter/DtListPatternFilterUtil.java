@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.DateUtil;
 import io.vertigo.datamodel.criteria.CriterionLimit;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.definitions.DtDefinition;
-import io.vertigo.datamodel.structure.definitions.DtField;
-import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.model.DataObject;
 
 /**
  * Parser des filtres utilisant une syntaxe définie.
@@ -67,15 +67,15 @@ public final class DtListPatternFilterUtil {
 		//private constructor
 	}
 
-	static <D extends DtObject> Predicate<D> createDtListFilterForPattern(final FilterPattern filterPattern, final String[] parsedFilter, final DtDefinition dtDefinition) {
+	static <D extends DataObject> Predicate<D> createDtListFilterForPattern(final FilterPattern filterPattern, final String[] parsedFilter, final DataDefinition dataDefinition) {
 		Assertion.check()
 				.isNotNull(filterPattern)
 				.isNotNull(parsedFilter)
-				.isNotNull(dtDefinition);
+				.isNotNull(dataDefinition);
 		//-----
 		//Si on trouve un pattern, on passe sur du code spécifique
 		final String fieldName = parsedFilter[1]; //attention parsedFilter[0] = filtre entier
-		final DtField dtField = dtDefinition.getField(fieldName);
+		final DataField dtField = dataDefinition.getField(fieldName);
 		Assertion.check().isTrue(dtField.smartTypeDefinition().getScope().isBasicType(), "Only primitive types can be used in pattern");
 		final BasicType dataType = dtField.smartTypeDefinition().getBasicType();
 
@@ -116,7 +116,7 @@ public final class DtListPatternFilterUtil {
 		return Optional.of(groups);
 	}
 
-	private static <D extends DtObject> Predicate<D> createDtListTermFilter(final String[] parsedFilter, final String fieldName, final BasicType dataType) {
+	private static <D extends DataObject> Predicate<D> createDtListTermFilter(final String[] parsedFilter, final String fieldName, final BasicType dataType) {
 		final Serializable filterValue = convertToValue(parsedFilter[2], dataType, false);
 		final Predicate predicate;
 		if (filterValue != null) {
@@ -127,7 +127,7 @@ public final class DtListPatternFilterUtil {
 		return predicate;
 	}
 
-	private static <D extends DtObject> Predicate<D> createDtListRangeFilter(
+	private static <D extends DataObject> Predicate<D> createDtListRangeFilter(
 			final String[] parsedFilter,
 			final String fieldName,
 			final BasicType dataType) {
