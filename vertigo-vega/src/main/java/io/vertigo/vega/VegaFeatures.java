@@ -34,7 +34,6 @@ import io.vertigo.vega.impl.webservice.client.WebServiceClientAmplifierMethod;
 import io.vertigo.vega.plugins.authentication.aad.AzureAdWebAuthenticationPlugin;
 import io.vertigo.vega.plugins.authentication.local.LocalWebAuthenticationPlugin;
 import io.vertigo.vega.plugins.authentication.oidc.OIDCWebAuthenticationPlugin;
-import io.vertigo.vega.plugins.authentication.saml2.SAML2WebAuthenticationPlugin;
 import io.vertigo.vega.plugins.ratelimiting.mem.RateLimitingMemStorePlugin;
 import io.vertigo.vega.plugins.ratelimiting.redis.RateLimitingRedisStorePlugin;
 import io.vertigo.vega.plugins.webservice.handler.AccessTokenWebServiceHandlerPlugin;
@@ -197,8 +196,6 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 
 	@Feature("authentication.saml2")
 	public VegaFeatures withSAML2WebAuthentication(final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(SAML2WebAuthenticationPlugin.class, params);
 		return this;
 	}
 

@@ -1,0 +1,28 @@
+<th:block th:fragment="slider-edit(object, field, label, min, max, step, required, input_attrs)"
+		  vu:alias="slider" vu:selector="${viewMode=='edit'}"
+		  th:assert="${object} != null and ${field} != null"
+		  th:with="fieldPath=|${object}.${field}|,
+	  			   myLabel=${modifiableTable!=null ? null : (label?:model.util.label(object + '.' + field))},
+		 		   myMin=${min?:model.util.getMinValue(fieldPath)?:'0' },
+		           myMax=${max?:model.util.getMaxValue(fieldPath)?:'2000'},
+		           myStep=${step?:model.util.getStep(myMin, myMax)},
+			   	   myRequired=${required != null ? required : model.util.required(object + '.' + field)}" >
+	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
+	<DsfrRange
+			th:label="${myLabel}"
+			th:required="${myRequired}"
+			th:name="|vContext[${object}][${field}]|"
+			th:v-model="${'vueData.' + object + '.' + field}"
+			th::min="${myMin}"
+			th::max="${myMax}"
+			th::step="${myStep}"
+			input_attrs="${input_attrs}"
+	>
+	</DsfrRange>
+</th:block>
+
+<th:block th:fragment="slider-read(object, field, label, min, max, step, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)" 
+	vu:alias="slider" vu:selector="${viewMode=='read'}"
+	th:assert="${object} != null and ${field} != null" >
+	<vu:text-field-read object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}" input_attrs="${input_attrs}" after_label_slot="after_label_slot" />
+</th:block>

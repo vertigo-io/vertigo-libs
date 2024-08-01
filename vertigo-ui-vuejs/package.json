@@ -8,12 +8,14 @@
     "build-lib": "vite build && cp dist/vertigo-ui.* ../vertigo-ui/src/main/resources/io/vertigo/ui/static/js/"
   },
   "dependencies": {
+    "@gouvfr/dsfr": "^1.12.1",
+    "@gouvminint/vue-dsfr": "^5.19.0",
     "@mdi/font": "^7.4.47",
     "animate.css": "^4.1.1",
     "axios": "^1.7.2",
     "core-js": "^3.37.1",
-	"d3-color": "^3.1.0",
-	"d3-interpolate": "^3.0.1"
+    "d3-color": "^3.1.0",
+    "d3-interpolate": "^3.0.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.5",

@@ -23,6 +23,11 @@ import VMinify from './directives/VMinify'
 import VScrollSpy from './directives/VScrollSpy'
 
 import VMethods from './methods'
+import DsfrMethods from './methods-dsfr'
+
+import '@gouvfr/dsfr/dist/dsfr.min.css'      // Import des styles du DSFR //
+import '@gouvminint/vue-dsfr/styles'         // Import des styles globaux propre à VueDSFR
+import VueDsfr from '@gouvminint/vue-dsfr'
 
 import EnUs from './lang/vertigo-ui-lang-en-us'
 import Fr from './lang/vertigo-ui-lang-fr'
@@ -37,7 +42,10 @@ var VertigoUi = {
   },
 
    install : function (vueApp , options) {
-      
+
+    // plugins
+    vueApp.use(VueDsfr);
+
     // components
     vueApp.component("v-chatbot", VChatbot);
     vueApp.component("v-commands", VCommands);
@@ -60,7 +68,7 @@ var VertigoUi = {
     vueApp.directive("if-unsaved-updates", VIfUnsavedUpdates);
     vueApp.directive("minify", VMinify);
     vueApp.directive("scroll-spy", VScrollSpy);
-    
+
     if (!options.axios) {
         console.error('You have to install axios')
         return
@@ -75,7 +83,7 @@ var VertigoUi = {
             return options.axios
             }
         },
-    
+
         $http: {
             get() {
             return options.axios
@@ -88,11 +96,11 @@ var VertigoUi = {
             }
         }
     });
-   
-   
+
+
  },
 
- methods: VMethods,
+ methods: VMethods | DsfrMethods,
 
  initData : function(instance, json) {
     instance.vueData = json.vueData;

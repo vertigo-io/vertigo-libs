@@ -6,3 +6,18 @@
            <span class="sr-only" th:if="${label==null && vTitle!=null}" th:text="|{{${vTitle?:''}}}|"></span></vu:content>
     </q-btn>
 </th:block>
+
+<th:block th:fragment="button(label, icon, title, v-title, other_attrs)"
+          th:assert="(${label} != null or (${icon} != null and (${title} != null or ${vTitle} != null)))">
+
+    <DsfrButton th:icon="${icon?:''}"
+                th:icon-only="${label==null}"
+                th:label="${label?:''}"
+                th:title="${vTitle==null ? (title?:'') : ''}"
+                th::title="${vTitle?:''}"
+                th:attr="__${other_attrs}__">
+        <vu:content/>
+        <span class="sr-only" th:if="${label==null && vTitle==null}" vu:text="${title?:''}"></span>
+        <span class="sr-only" th:if="${label==null && vTitle!=null}" th:text="|{{ ${vTitle?:''} }}|"></span>
+    </DsfrButton>
+</th:block>

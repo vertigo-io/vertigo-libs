@@ -1,0 +1,14 @@
+<th:block th:fragment="link(label, icon, url, title, v-title, size, url, iconRight, download, detailLabel, other_attrs)"
+          th:assert="${label} != null and ${url} != null"
+          th:with="iconClass=${iconRight ? 'fr-link--icon-right' : 'fr-link--icon-left'},
+                   sizeClass=${(size=='sm' or size=='lg') ? 'fr-link--' + size : ''}">
+    <a th::href="|${disabled}?null:'${url}'|"
+       th:class="${'fr-link' + (download==null?:'--download')}"
+       th:attrappend="download==null?:'download=\'true\''"
+       th:classappend="${sizeClass + ' ' + (icon==null ?: icon + ' ' + iconClass)}"
+       th:attr="__${other_attrs}__">
+        <th:block vu:text="${label?:''}"/>
+        <vu:content/>
+        <span th:if="${detailLabel!=null}" class="fr-link__detail" th:text="${detailLabel}"></span>
+    </a>
+</th:block>

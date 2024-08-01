@@ -1,0 +1,49 @@
+<th:block th:fragment="select-edit(object, field, list, rowIndex, label, valueField, labelField, filterFunction, required, input_attrs)" vu:alias="select" vu:selector="${viewMode=='edit'}"
+		  th:assert="${object} != null and ${field} != null and ${list} != null"
+		  th:with="myComponentId='select_'+${object}+'_'+${field},
+	  			   myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
+	  			   myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)},
+	  			   myLabel=${modifiableTable!=null?null:label?:model.util.label(object + '.' + field)},
+      			   myRequired=${required != null ? required : model.util.required(object + '.' + field)}">
+	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
+	<vu:include-data object="${list}" field="${myValueField}"/>
+	<vu:include-data object="${list}" field="${myLabelField}"/>
+
+	<!-- Les options attendues sont des couples { text: '', value: '' } -->
+	<DsfrSelect
+			th:required="${myRequired}"
+			th:label="${myLabel}"
+			th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}', ${filterFunction?:null})|"
+			th::name="${model.util.contextKey(object, field, rowIndex)}"
+			th:v-model="|vueData.${object}.${field}|"
+			th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+			th:attr="__${input_attrs}__">
+	>
+	</DsfrSelect>
+</th:block>
+
+<th:block th:fragment="select-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, required, searchable, edit_content_slot, after_label_slot, input_attrs, label_attrs)" 
+		  th:if="${modifiableTable==null}"
+		  vu:alias="select"
+		  vu:selector="${viewMode=='read'}"
+    	  th:assert="${object} != null and ${field} != null and ${list} != null"
+		  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
+		           myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)},
+		           value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')}">
+	<vu:label-read object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}">
+		<span th:if="${value!=null}"
+			  th:attr="__${input_attrs}__"
+			  vu:text="${model.vContext[__${list}__].getById('__${myValueField}__', value)['__${myLabelField}__']}">
+		</span>
+	</vu:label-read>
+</th:block>
+
+<th:block th:fragment="select-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, required, searchable, edit_content_slot, after_label_slot, input_attrs, label_attrs)" 
+		  th:if="${modifiableTable!=null}"
+	      vu:alias="select"
+		  vu:selector="${viewMode=='read'}"
+    	  th:assert="${object} != null and ${field} != null and ${list} != null"
+    	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
+    	           myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}">
+        <vu:field-read field="${field}" list="${list}" listKey="${valueField}" listDisplay="${labelField}"/>
+</th:block>
