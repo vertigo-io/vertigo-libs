@@ -85,7 +85,8 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	@Autowired
 	private ApplicationContext applicationContext;
 
-	private static final String COMPONENT_PATH_PREFIX = "io/vertigo/ui/components/";
+	private static final String COMPONENT_PATH_PREFIX = "io/vertigo/ui/components/quasar/";
+	private static final String DSFR_COMPONENT_PATH_PREFIX = "io/vertigo/ui/components/dsfr/";
 
 	/*
 	* STEP 1 - Create SpringResourceTemplateResolver
@@ -134,6 +135,14 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 				.flatMap(m -> m.getUiComponents().stream())
 				.collect(Collectors.toUnmodifiableSet());
 		templateEngine.addDialect("vu", new VUiStandardDialect(uiComponents));
+
+		// dsfr components
+		// TODO: Faire mieux
+		final var moduleDsfrUiComponents = new VModuleUiComponent(List.of(DSFR_COMPONENT_PATH_PREFIX));
+
+		templateEngine.addTemplateResolver(moduleDsfrUiComponents.templateResolvers.get(0));
+
+		templateEngine.addDialect("vui-dsfr", new VUiStandardDialect("vui-dsfr", moduleDsfrUiComponents.getUiComponents()));
 
 		templateEngine.addDialect(new LayoutDialect());
 

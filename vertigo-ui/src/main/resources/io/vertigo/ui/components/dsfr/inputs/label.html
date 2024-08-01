@@ -1,0 +1,17 @@
+<th:block th:fragment="label-edit(object, field, rowIndex, label, required, label_attrs)" vu:alias="label" vu:selector="${viewMode=='edit'}"
+          th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
+          th:assert="${object} != null and ${field} != null">
+    <DsfrFieldset th:legend="${myLabel}"
+                  th:attr="__${label_attrs}__">
+        <vu:content/>
+    </DsfrFieldset>
+</th:block>
+
+<th:block th:fragment="label-read(object, field, rowIndex, label, label_attrs)" vu:alias="label" vu:selector="${viewMode=='read'}"
+          th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
+          th:assert="${object} != null and ${field} != null">
+    <DsfrFieldset th:legend="${myLabel}"
+                  th:attr="__${label_attrs}__">
+        <vu:content/>
+    </DsfrFieldset>
+</th:block>

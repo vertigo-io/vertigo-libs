@@ -1,0 +1,48 @@
+<th:block th:fragment="checkbox-multiple-edit(object, field, label, componentId, list, valueField, labelField, filterFunction, layout, required, input_attrs)" vu:alias="checkbox-multiple" vu:selector="${viewMode=='edit'}"
+	  th:assert="${object} != null and ${field} != null and ${list} != null"
+	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
+	   		   myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)},
+	   		   inline=${(layout != null && layout == 'horizontal') ? true : false },
+	   		   myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
+>
+
+	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
+	<vu:include-data object="${list}" field="${myValueField}"/>
+	<vu:include-data object="${list}" field="${myLabelField}"/>
+
+	<!-- Les options attendues sont les props à passer à DsfrCheckbox -->
+	<DsfrCheckboxSet th:legend="${label}"
+					 th:required="${myRequired}"
+					 th::inline="${inline}"
+					 th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+					 th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}', ${filterFunction?:null})|"
+					 th:v-model="|vueData.${object}.${field}|"
+					 th:name="|vContext[${object}][${field}]|"
+					 th:attr="__${input_attrs}__"
+	>
+		<vu:content/>
+	</DsfrCheckboxSet>
+</th:block>
+
+<th:block th:fragment="checkbox-multiple-read(object, field, label, list, valueField, labelField, filterFunction, layout, input_attrs)" vu:alias="checkbox-multiple" vu:selector="${viewMode=='read'}"
+  th:assert="${object} != null and ${field} != null and ${list} != null"
+	th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
+	         myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)},
+	         inline=${(layout != null && layout == 'horizontal') ? true : false }">
+
+	<vu:include-data object="${object}" field="${field}"/>
+	<vu:include-data object="${list}" field="${myValueField}"/>
+	<vu:include-data object="${list}" field="${myLabelField}"/>
+
+	<!-- Il faut adapter le transformListForSelection -->
+	<DsfrCheckboxSet th:legend="${label}"
+					 th::inline="${inline}"
+					 th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+					 th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}', ${filterFunction?:null})|"
+					 th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
+					 disabled
+					 th:attr="__${input_attrs}__"
+	>
+		<vu:content/>
+	</DsfrCheckboxSet>
+</th:block>

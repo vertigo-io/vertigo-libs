@@ -1,0 +1,52 @@
+<th:block th:fragment="button-submit(label, icon, action, title, loading, other_attrs)"
+          th:assert="(${label} != null or (${icon} != null and ${title} != null)) and ${action} != null"
+          th:with="myComponentId='button'+${action}" >
+
+    <DsfrButton th:icon="${icon?:''}"
+                th:icon-only="${label==null}"
+                th:label="${label?:''}"
+                th:title="${vTitle==null ? (title?:'') : ''}"
+                th::title="${vTitle?:''}"
+                th:formaction="${action}"
+                type="submit"
+                th:attr="__${other_attrs}__">
+        <vu:content/>
+        <span class="sr-only" th:if="${label==null && vTitle==null}" vu:text="${title?:''}"></span>
+        <span class="sr-only" th:if="${label==null && vTitle!=null}" th:text="|{{ ${vTitle?:''} }}|"></span>
+    </DsfrButton>
+</th:block>
+
+<th:block th:fragment="button-submit-confirm(label, icon, action, title, loading, titleMessage, confirmMessage, labelOk, labelCancel, actions_slot, other_attrs)"
+          th:assert="(${label} != null or (${icon} != null and ${title} != null)) and ${action} != null"
+          th:with="myComponentId='button'+${action},
+                   myLabelOk=${labelOk?:'Oui'},
+                   myLabelCancel=${labelCancel?:'Non'}"
+          th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('confirm',false)}">
+
+    <DsfrButton th:icon="${icon?:''}"
+                th:icon-only="${label==null}"
+                th:label="${label?:''}"
+                th:title="${vTitle==null ? (title?:'') : ''}"
+                th::title="${vTitle?:''}"
+                th:@click="|componentStates.${myComponentId}.confirm = true|"
+                th:ref="${myComponentId}"
+                th:attr="__${other_attrs}__">
+        <span class="sr-only" th:if="${label==null && vTitle==null}" vu:text="${title?:''}"></span>
+        <span class="sr-only" th:if="${label==null && vTitle!=null}" th:text="|{{ ${vTitle?:''} }}|"></span>
+    </DsfrButton>
+    <DsfrModal th:origin="|$refs.${myComponentId}|" size="sm" th:title="${titleMessage}">
+        <vu:content>
+            <p vu:text="${confirmMessage}"></p>
+        </vu:content>
+        <template #footer>
+            <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
+                <button class="fr-btn fr-icon-checkbox-circle-line fr-btn--icon-left">
+                    Label bouton
+                </button>
+                <button class="fr-btn fr-icon-checkbox-circle-line fr-btn--icon-left fr-btn--secondary">
+                    Label bouton
+                </button>
+            </div>
+        </template>
+    </DsfrModal>
+</th:block>

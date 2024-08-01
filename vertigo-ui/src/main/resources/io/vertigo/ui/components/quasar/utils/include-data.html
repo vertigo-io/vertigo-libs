@@ -1,0 +1,24 @@
+<th:block
+		th:fragment="include-data(object, field, modifiable, modifiableAllLines)" 
+		th:assert="${object} != null and ${field} != null and (${modifiable} == null or ${modifiableAllLines} == null)" 
+		th:attr="objectKey=${model.vContext.addKeyForClient('__${object}__', '__${field}__', rowIndex?:(modifiableAllLines!=null && modifiableAllLines)?'*':null, modifiableAllLines?:modifiable?:false)}" 
+		th:remove="all"></th:block>
+		
+<th:block
+		th:fragment="include-data-primitive(key, modifiable)" 
+		th:assert="${key} != null" 
+		th:attr="objectKey=${model.vContext.addKeyForClient('__${key}__', modifiable?:false)}"
+		th:remove="all"></th:block>
+
+<th:block
+		th:fragment="include-data-map(object, field, list, listKey, listDisplay)" 
+		th:assert="${object} != null and ${field} != null" 
+		th:with="myList=${list?:model.vContext.obtainFkList(object, field)}, myListKey=${listKey?:model.util.getIdField(myList)}, myListDisplay=${listDisplay?:model.util.getDisplayField(myList)}"
+		th:attr="objectKey=${model.vContext.addListValueTransformer('__${object}__', '__${field}__', '__${myList}__', '__${myListKey}__', '__${myListDisplay}__')}, objectKey=${model.vContext.addKeyForClient('__${object}__', '__${field}__', null, false)} " 	
+		th:remove="all"></th:block>
+		
+<th:block
+		th:fragment="include-data-protected(object, field)" 
+		th:assert="${object} != null and ${field} != null" 
+		th:attr="protectedValue=${model.vContext.addProtectedValueTransformer('__${object}__', '__${field}__')}, objectKey=${model.vContext.addKeyForClient('__${object}__', '__${field}__', null, false)}"
+		th:remove="all"></th:block>		

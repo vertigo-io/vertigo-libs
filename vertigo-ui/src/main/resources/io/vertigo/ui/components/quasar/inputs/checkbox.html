@@ -12,7 +12,16 @@
 		</q-checkbox>
 	</vu:label-edit>
 	<input type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" th:v-bind:value="${model.util.vueDataKey(object, field, rowIndex)}" />
-</th:block> 
+</th:block>
+
+<th:block th:fragment="checkbox-edit(object, field, label, required, edit_content_slot, after_label_slot, label_attrs, input_attrs)" vu:alias="checkbox" vu:selector="${viewMode=='edit'}"
+		  th:assert="${object} != null and ${field} != null"
+		  th:with="myRequired=${required != null ? required : model.util.required(object + '.' + field)}">
+	<DsfrCheckbox th:label="${label}">
+
+	</DsfrCheckbox>
+</th:block>
+
 
 <th:block th:fragment="checkbox-read(object, field, label, required, edit_content_slot, after_label_slot, label_attrs, input_attrs)" vu:alias="checkbox" vu:selector="${viewMode=='read'}" >
 	<vu:include-data object="${object}" field="${field}"/>
