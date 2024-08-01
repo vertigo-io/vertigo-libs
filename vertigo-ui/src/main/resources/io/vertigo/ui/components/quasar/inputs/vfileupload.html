@@ -1,0 +1,72 @@
+<th:block th:fragment="v-fileupload-edit(url, downloadUrl, key, object, field, multiple, simple, uploader_attrs)" 
+	vu:alias="v-fileupload" vu:selector="${viewMode=='edit'}"
+	th:assert="((${key} != null and ${label} != null) or (${object} != null and ${field} != null)) and ${url} != null"
+	th:with="object=${object?:key}, myComponentId=${model.util.generateComponentUID('uploader', object, field, rowIndex)}, downloadUrl=${downloadUrl?:(url + '/download/')}, myMultiple=${multiple?:false}, mySimple=${simple?:false}" >
+		<vu:include-data-primitive key="${object}" th:if="${field==null}" modifiable="true" />
+        <vu:include-data object="${object}" field="${field}" th:if="${field!=null}" modifiable="true"/>
+        
+        <input type="hidden" th:v-if="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)}).length == 0|" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
+        <input type="hidden" th:v-for="|fileUri in vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|" th::name="${model.util.contextKey(object, field, rowIndex)}" v-bind:value="fileUri" />
+        <v-file-upload
+            inputId="${myComponentId}__input"
+            :readonly="false"
+            th:url="${url}" 
+            field-name="file"
+            th::multiple="${myMultiple}"
+            th:v-bind:file-info-uris="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|"
+            th:@update:file-info-uris="|(newFileInfoUris) => ${model.util.vueDataKey(object, field, rowIndex)} = vueDataToObject(newFileInfoUris)|"
+            th:@download-file="|(fileUri) => goTo('${downloadUrl}' + fileUri)|"
+            th:attr="__${uploader_attrs}__"></v-file-upload>
+</th:block>
+
+<th:block th:fragment="v-fileupload-read(url, downloadUrl, key, object, field, multiple, simple, uploader_attrs)" 
+    vu:alias="v-fileupload" vu:selector="${viewMode=='read'}"
+    th:assert="(${key} != null or (${object} != null and ${field} != null)) and ${url} != null"
+    th:with="object=${object?:key}, myComponentId=${model.util.generateComponentUID('uploader', object, field, rowIndex)}, downloadUrl=${downloadUrl?:(url + '/download/')}, myMultiple=${multiple?:false}, mySimple=${simple?:false}" >
+       <vu:include-data-primitive key="${object}" th:if="${field==null}"/>
+       <vu:include-data object="${object}" field="${field}" th:if="${field!=null}"/>        
+       <v-file-upload 
+            th::ref="${myComponentId}"
+            :readonly="true"
+            class="q-uploader-readonly"
+            th:url="${url}" 
+            field-name="file"
+            th::simple="${mySimple}"
+            th::multiple="${myMultiple}"
+            th:v-bind:file-info-uris="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|"
+            th:@download-file="|(fileUri) => goTo('${downloadUrl}' + fileUri)|"
+            th:attr="__${uploader_attrs}__"></v-file-upload>
+</th:block>
+
+<th:block th:fragment="v-fileupload-dropzone(key, dropzone_attrs)" 
+    th:assert="${key} != null"
+    th:with="myComponentId='uploader_'+${key}+'_drop',fileComponentId='uploader_'+${key}"
+    th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('dragover',false)}" >
+        <div class="dropzone-area" 
+            th:@dragenter.prevent="|uploader_dragenter('${myComponentId}')|"
+            th:attr="__${dropzone_attrs}__">
+	        <vu:content/>
+	        <div th:v-if="|componentStates.${myComponentId}.dragover|" class="absolute-full q-uploader__dnd"
+	        th:@dragleave.prevent="|uploader_dragleave('${myComponentId}')|"
+	        th:@drop.prevent="|uploader_dragleave('${myComponentId}'); uploader_drop($event, '${fileComponentId}')|"
+            @dragover.prevent 
+            ></div>
+        </div>
+</th:block>
+
+<th:block th:fragment="v-fileupload-simple(url, downloadUrl, key, multiple, uploader_attrs)" 
+    th:assert="${key} != null and ${url} != null">
+    <vu:v-fileupload simple="true" />
+</th:block>
+
+<th:block th:fragment="v-fileupload-simple-object-edit(url, downloadUrl, object, field, multiple, uploader_attrs)" 
+    vu:alias="v-fileupload-simple-object" vu:selector="${viewMode=='edit'}"
+    th:assert="${object} != null and ${field} != null and ${url} != null">
+        <vu:v-fileupload-edit simple="true" />
+</th:block>
+
+<th:block th:fragment="v-fileupload-simple-object-read(url, downloadUrl, object, field, multiple, uploader_attrs)" 
+    vu:alias="v-fileupload-simple-object" vu:selector="${viewMode=='read'}"
+    th:assert="${object} != null and ${field} != null and ${url} != null">
+        <vu:v-fileupload-read simple="true" />
+</th:block>

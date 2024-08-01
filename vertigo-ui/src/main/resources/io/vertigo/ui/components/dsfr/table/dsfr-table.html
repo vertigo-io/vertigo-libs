@@ -1,0 +1,32 @@
+<th:block th:fragment="dsfr-table(list, componentId, selectable, rowKey, rowsPerPage, sortUrl, sortBy, descending, navOnRow, color, tableClass, autoColClass, title, v-title, subtitle, v-subtitle, dontUseHeading, top_right_slot, top_left_slot, header_slot, actions_slot, additional_content_slot, contentTags, tr_attrs, item_attrs, table_attrs)"
+          th:assert="${componentId} != null and !(${sortUrl} != null and ${sortBy} != null) and !(${descending} != null and ${sortBy} == null)"
+          th:with="tableKey=${list},
+                   rowIndex='props.rowIndex',
+                   listSize=${model.vContext[__${list}__].size()},
+                   mySelectable=${selectable?:false},
+                   myRowKey=${rowKey?:model.util.getIdField(list)},
+	               myRowsPerPage=${rowsPerPage?:10},
+	               myAutoColClass=${autoColClass?:false}">
+
+    <th:block th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')},
+                       objectKey=${model.vContext['componentStates'][__${componentId}__].addList('selected')},
+                       objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false },
+                       objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {'page': 1 , 'rowsPerPage' : myRowsPerPage, 'componentId' : componentId, 'listKey' : list})}" th:remove="all" />
+    <th:block th:if="${sortUrl != null}" th:attr="objectKey=${model.vContext['componentStates'][__${componentId}__]['pagination'].put('sortUrl', sortUrl)}" th:remove="all" />
+    <th:block th:if="${sortUrl != null}" th:attr="objectKey=${model.vContext['componentStates'][__${componentId}__]['pagination'].put('rowsNumber', listSize)}" th:remove="all" />
+    <th:block th:if="${sortBy != null}"  th:attr="objectKey=${model.vContext['componentStates'][__${componentId}__]['pagination'].put('sortBy', sortBy)}" th:remove="all" />
+    <th:block th:if="${descending != null}" th:attr="objectKey=${model.vContext['componentStates'][__${componentId}__]['pagination'].put('descending', descending)}" th:remove="all" />
+
+    <dsfr-v-table th:title="${vTitle==null?title?:'':''}" th::title="${vTitle?:''}"
+                  th::columns="|componentStates.${componentId}.columns|"
+                  th::rows="|vueData.${list}|"
+                  th:attr="__${table_attrs}__">
+        <template v-slot:default="{ props }">
+            <vu:content></vu:content>
+            <vu:dsfr-column name="action" label="Actions" sortable="false" align="right" th:if="${actions_slot != null}">
+                <vu:content-slot name="actions_slot" th:with="label=null, title=null, vTitle=null"/>
+            </vu:dsfr-column>
+        </template>
+    </dsfr-v-table>
+
+</th:block>

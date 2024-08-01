@@ -1,0 +1,37 @@
+<th:block
+        th:fragment="dsfr-radio-edit(object, field, label, list, valueField, labelField, disabledField, hintField, filterFunction, layout, required, input_attrs)"
+        vu:alias="dsfr-radio" vu:selector="${viewMode=='edit'}"
+        th:assert="${object} != null and ${field} != null and ${list} != null"
+        th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
+		  		 myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)},
+		  		 myLabel=${modifiableTable!=null ? null : (label?:model.util.label(object + '.' + field)) },
+		  		 inline=${(layout != null && layout == 'horizontal') ? true : false },
+	  			 myRequired=${required != null ? required : model.util.required(object + '.' + field)}">
+    <vu:include-data object="${object}" field="${field}" modifiable="true"/>
+    <vu:include-data object="${list}" field="${myValueField}"/>
+    <vu:include-data object="${list}" field="${myLabelField}"/>
+
+    <dsfr-radio-button-set th:legend="${myLabel}"
+                           th:required="${required}"
+                           th::inline="${inline}"
+                           th::options="|dsfrTransformListForRadio('${list}', '${myValueField}', '${myLabelField}', '${disabledField}', '${hintField}', ${filterFunction?:null})|"
+                           th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+                           th:v-model="|vueData.${object}.${field}|"
+                           th:name="|vContext[${object}][${field}]|"
+                           th:attr="__${input_attrs}__"
+    >
+        <vu:content/>
+    </dsfr-radio-button-set>
+</th:block>
+
+<th:block
+        th:fragment="dsfr-radio-read(object, field, label, list, valueField, labelField, filterFunction, layout, required, input_attrs)"
+        vu:alias="dsfr-radio" vu:selector="${viewMode=='read'}">
+    <vu:dsfr-select-read object="${object}"
+                         field="${field}"
+                         label="${label}"
+                         list="${list}"
+                         valueField="${valueField}"
+                         labelField="${labelField}"
+                         input_attrs="${input_attrs}"/>
+</th:block>

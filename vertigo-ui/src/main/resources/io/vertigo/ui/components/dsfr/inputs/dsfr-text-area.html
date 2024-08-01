@@ -1,0 +1,36 @@
+<th:block
+        th:fragment="dsfr-text-area-edit(object, field, rowIndex, label, required, input_attrs)"
+        vu:alias="dsfr-text-area" vu:selector="${viewMode=='edit'}"
+        th:with="myLabel=${label?:model.util.label(object + '.' + field)},
+                 myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
+        th:assert="${object} != null and ${field} != null">
+    <vu:include-data object="${object}" field="${field}" modifiable="true"/>
+
+    <dsfr-input th:label="${myLabel}"
+                th::label-visible="${myLabel!=null}"
+                th:required="${myRequired}"
+                th::name="${model.util.contextKey(object, field, rowIndex)}"
+                th::is-invalid="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
+                :is-textarea="true"
+                th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+                th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
+                th:attr="__${input_attrs}__">
+        <vu:content/>
+    </dsfr-input>
+</th:block>
+<th:block
+        th:fragment="dsfr-text-area-read(object, field, label, required, input_attrs)"
+        vu:alias="dsfr-text-area" vu:selector="${viewMode=='read'}"
+        th:assert="${object} != null and ${field} != null"
+        th:with="myLabel=${label?:model.util.label(object + '.' + field)}">
+    <vu:include-data object="${object}" field="${field}"/>
+
+    <dsfr-input th:label="${myLabel}"
+                th::label-visible="${myLabel!=null}"
+                th::name="${model.util.contextKey(object, field, rowIndex)}"
+                :is-textarea="true"
+                readonly
+                th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
+                th:attr="__${input_attrs}__">
+    </dsfr-input>
+</th:block>

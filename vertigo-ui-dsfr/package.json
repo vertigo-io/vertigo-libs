@@ -1,0 +1,20 @@
+{
+  "name": "dsfr-umd",
+  "version": "5.19.2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "build-lib": "vite build && cp dist/*.* ../vertigo-ui/src/main/resources/io/vertigo/ui/static/3rdParty/dsfr@5.19.2/"
+  },
+  "dependencies": {
+    "@gouvfr/dsfr": "^1.12.1",
+    "@gouvminint/vue-dsfr": "^5.19.2",
+    "oh-vue-icons": "^1.0.0-rc3",
+    "vue": "^3.4.29"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.5",
+    "vite": "^5.3.1"
+  }
+}

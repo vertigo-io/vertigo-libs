@@ -88,8 +88,8 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	private static final String COMPONENT_PATH_PREFIX = "io/vertigo/ui/components/";
 
 	/*
-	* STEP 1 - Create SpringResourceTemplateResolver
-	* */
+	 * STEP 1 - Create SpringResourceTemplateResolver
+	 * */
 	@Bean
 	public SpringResourceTemplateResolver templateResolver() {
 		final SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
@@ -103,8 +103,8 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	}
 
 	/*
-	* STEP 2 - Create SpringTemplateEngine
-	* */
+	 * STEP 2 - Create SpringTemplateEngine
+	 * */
 	@Bean
 	public SpringTemplateEngine templateEngine() {
 		final List<VModuleUiComponent> moduleUiComponents = getModuleUiComponents();

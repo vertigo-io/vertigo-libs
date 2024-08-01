@@ -97,7 +97,7 @@ public final class UiUtil implements Serializable {
 		final var prefix = component +
 				Long.toHexString(UUID.randomUUID().getLeastSignificantBits()) +
 				"_";
-		return contextGet(prefix, object, field, row, true);
+		return contextGet(prefix, object, field, row, false);
 	}
 
 	/**

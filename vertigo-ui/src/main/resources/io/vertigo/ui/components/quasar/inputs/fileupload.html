@@ -7,8 +7,8 @@
         
         <input type="hidden" th:v-if="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)}).length == 0|" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
         <input type="hidden" th:v-for="|fileUri in vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|" th::name="${model.util.contextKey(object, field, rowIndex)}" v-bind:value="fileUri" />
-        <v-file-upload 
-            th::ref="${myComponentId}"
+        <v-file-upload-quasar 
+            th:ref="${myComponentId}"
             :readonly="false"
             th:url="${url}" 
             field-name="file"
@@ -17,7 +17,7 @@
             th:v-bind:file-info-uris="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|"
             th:@update:file-info-uris="|(newFileInfoUris) => ${model.util.vueDataKey(object, field, rowIndex)} = vueDataToObject(newFileInfoUris)|"
             th:@download-file="|(fileUri) => goTo('${downloadUrl}' + fileUri)|"
-            th:attr="__${uploader_attrs}__"></v-file-upload>
+            th:attr="__${uploader_attrs}__"></v-file-upload-quasar>
 </th:block>
 
 <th:block th:fragment="fileupload-read(url, downloadUrl, key, object, field, multiple, simple, uploader_attrs)" 
@@ -26,8 +26,8 @@
     th:with="object=${object?:key}, myComponentId=${model.util.generateComponentUID('uploader', object, field, rowIndex)}, downloadUrl=${downloadUrl?:(url + '/download/')}, myMultiple=${multiple?:false}, mySimple=${simple?:false}" >
        <vu:include-data-primitive key="${object}" th:if="${field==null}"/>
        <vu:include-data object="${object}" field="${field}" th:if="${field!=null}"/>        
-       <v-file-upload 
-            th::ref="${myComponentId}"
+       <v-file-upload-quasar 
+            th:ref="${myComponentId}"
             :readonly="true"
             class="q-uploader-readonly"
             th:url="${url}" 
@@ -36,7 +36,7 @@
             th::multiple="${myMultiple}"
             th:v-bind:file-info-uris="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|"
             th:@download-file="|(fileUri) => goTo('${downloadUrl}' + fileUri)|"
-            th:attr="__${uploader_attrs}__"></v-file-upload>
+            th:attr="__${uploader_attrs}__"></v-file-upload-quasar>
 </th:block>
 
 <th:block th:fragment="fileupload-dropzone(key, dropzone_attrs)" 

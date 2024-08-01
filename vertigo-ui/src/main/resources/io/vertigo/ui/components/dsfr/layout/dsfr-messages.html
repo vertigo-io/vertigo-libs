@@ -1,4 +1,4 @@
-<th:block th:fragment="messages-dsfr(class, small)"
+<th:block th:fragment="dsfr-messages(class, small)"
           th:with="smallClass=${(small!=null && small)?'fr-alert--sm':''}, pClass=${(small!=null && small)?'':'fr-alert__title'}">
     <div v-if="uiMessageStack.globalErrors && uiMessageStack.globalErrors.length > 0" th:classappend="${class}" th:class="|fr-alert fr-alert--error ${smallClass}|">
         <p th:class="${pClass}" v-for="message in uiMessageStack.globalErrors">{{message}}</p>

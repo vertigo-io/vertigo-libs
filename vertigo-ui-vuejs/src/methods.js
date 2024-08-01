@@ -92,6 +92,17 @@ export default {
         return notifyMessages;
       }
     },
+	
+	i18n: function(key) {
+		let lang = VertigoUi.lang[VertigoUi.vuiLang];
+		return this.getDescendantProp(lang, key);
+	},
+	
+	getDescendantProp: function(obj, expression) {
+	    var arr = expression.split(".");
+	    while(arr.length && (obj = obj[arr.shift()]));
+	    return obj;
+	},
 
     getSafeValue: function (objectkey, fieldKey, subFieldKey) {
         if (this.$data.vueData[objectkey] && this.$data.vueData[objectkey][fieldKey]) {
@@ -447,9 +458,14 @@ export default {
             }
         }
     },
-    uploader_dragenter(componentId) {
+    uploader_dragenter(componentId, event) {
         let componentStates = this.$data.componentStates;
         componentStates[componentId].dragover = true;
+    },
+    uploader_dragover(event, componentId) {
+        if (!this.$refs[componentId]?.canAddFiles()) {
+            event.dataTransfer.dropEffect = 'none';
+        }
     },
     uploader_dragleave(componentId) {
         let componentStates = this.$data.componentStates;
@@ -467,11 +483,13 @@ export default {
         if (autoHeight === 'true') {
             ifrm.style.opacity = '0'; // should be already hidden but otherwise we hide it to avoid flickering
             //ifrm.style.height = "100px"; // set to 100px to get height without blank padding at bottom, but not less than 100px
-        
-            let newHeight = this.getDocHeight(doc) + 4 + "px"; // IE opt. for bing/msn needs a bit added or scrollbar appears
-        
-            ifrm.style.height = ""; // reset iframe height to extends again
-            this.componentStates[compId].height = newHeight; // set the height of the modal
+            
+            setTimeout(function() { // slight delay to allow the iframe to be fully loaded and rendered
+                let newHeight = this.getDocHeight(doc) + 4 + "px"; // IE opt. for bing/msn needs a bit added or scrollbar appears
+            
+                ifrm.style.height = ""; // reset iframe height to extends again
+                this.componentStates[compId].height = newHeight; // set the height of the modal
+            }.bind(this), 1);
         }
         this.componentStates[compId].loading = false;
         ifrm.style.opacity = '1'; // show the iframe

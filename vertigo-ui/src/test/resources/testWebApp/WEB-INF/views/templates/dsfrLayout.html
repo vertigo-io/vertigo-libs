@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:vu="https://vertigo.io/thymeleaf/vertigo-ui"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <vu:head-meta vuejsDevMode useDsfr/>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description"
+          content="Demo Application of Vertigo UI powered by SpringMvc, Thymeleaf and Quasar Framework"/>
+    <meta name="author" content="Klee Group"/>
+
+    <link rel="icon" th:href="@{/static/img/favicon.ico}"/>
+
+    <script type="text/javascript" th:src="@{/vertigo-ui/static/js/vertigo-ui-extensions.js}"></script>
+</head>
+
+<body class="mat desktop no-touch platform-mat">
+<vu:page vuejsDevMode useDsfr> <!-- vuiSsr -->
+
+    <dsfr-header
+            service-title="Vertigo DSFR"
+            service-description="Page de test des composants"
+            :logo-text="['Vertigo', 'DSFR']"
+    >
+    </dsfr-header>
+
+
+    <div class="fr-container fr-my-2w">
+        <section layout:fragment="content"></section>
+    </div>
+
+    <dsfr-footer home-link="/"
+                 a11yComplience="non conforme"
+                 :logo-text="['Vertigo', 'DSFR']"
+    >
+    </dsfr-footer>
+
+</vu:page>
+
+<div layout:fragment="javascript-footer">
+</div>
+</body>
+</html>

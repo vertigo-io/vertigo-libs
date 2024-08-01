@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:vu="https://vertigo.io/thymeleaf/vertigo-ui"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{templates/dsfrLayout}"
+>
+
+<head>
+    <title>Component Details</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <vu:messages />
+    <vu:form id="myFormId">
+
+        <vu:block id="movie" title="#{movie.title.information}" >
+            <vu:include-data object="movies" field="*" />
+            <vu:include-data-primitive key='timeZoneList'/>
+            <vu:include-data-primitive key='selectedTimeZoneList' modifiable/>
+
+            <vu:grid cols="3">
+                <vu:dsfr-text-field :class="{ disabled: true && false || false }" object="movie" field="movId"/>
+                <vu:dsfr-text-field object="movie" field="title" class="fieldTitle v-field__required"/>
+
+
+                <vu:dsfr-text-field object="movie" field="year"  debounce="500" hint="Debouncing 500ms" required>
+                    <vu:slot name="after_label_slot">
+                        <v-icon name="ri-question-fill"
+                                color="var(--blue-france-sun-113-625)"
+                                title="Year of publishing">
+                        </v-icon>
+                    </vu:slot>
+                </vu:dsfr-text-field>
+                <vu:dsfr-slider object="movie" field="year"  />
+                <vu:knob object="movie" field="year"/>
+                <vu:dsfr-select object="movie" field="movId" list="movies" />
+                <vu:dsfr-select object="movie" field="movId" list="moviesDisplay" labelField="title" />
+                <vu:grid-cell col="lg-8">
+                    <vu:dsfr-text-area object="movie" field="title"/>
+                </vu:grid-cell>
+                <vu:dsfr-date object="movie" field="released"/>
+                <vu:dsfr-datetime object="movie" field="lastModified" />
+                <vu:autocomplete object="movie" field="movId" list="moviesMdl" minQueryLength="2"/>
+                <vu:dsfr-radio object="movie" field="movId" list="movies" layout="horizontal" valueField="movId" labelField="movId"/>
+                <vu:dsfr-radio object="movie" field="movId" list="movies" valueField="movId" labelField="title"/>
+                <vu:dsfr-text-field object="movie" field="movId"/>
+                <vu:dsfr-text-area object="movie" field="title" />
+                <vu:chips-autocomplete object="movie" field="tags" list="movies" staticData="false"/>
+                <vu:grid-cell/>
+                <vu:grid-cell col="1">
+                    <vu:autocomplete-multiple object="movieDisplayInput" field="movIds" list="moviesMdl"  />
+                    <vu:dsfr-checkbox-multiple object="movieDisplayInput" field="movIds" list="moviesMdl" valueField="movId" hintField="description" labelField="title"/>
+                </vu:grid-cell>
+                <vu:grid-cell>
+                    <q-checkbox v-model="dataX.selectedTimeZoneListArray"
+                                v-for="item in vueData.timeZoneList" :val="item" :label="item"
+                                @update:model-value="() => {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
+                    <q-checkbox v-model="dataX.selectedTimeZoneListArray"
+                                v-for="item in vueData.timeZoneList" :val="item" :label="item"
+                                :disabled="true || false"
+                                @update:model-value="() => {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
+                </vu:grid-cell>
+                <q-btn th:@click="|httpPostAjax('@{_ajaxArray}', vueDataParams(['selectedTimeZoneList']))|" color="primary" label="Ajax save" ></q-btn>
+
+                <vu:grid-cell>
+                    <vu:dsfr-link url="@{/componentsDemo/myFiles}" label="insee.csv" download detailLabel="Fichier CSV"></vu:dsfr-link>
+                </vu:grid-cell>
+
+                <vu:grid-cell>
+                    <vu:fileupload-dropzone key="myFilesUris">
+                        <vu:fileupload label="Upload file" th:url="'@{/commons/upload}'" key="myFilesUris1" multiple />
+                    </vu:fileupload-dropzone>
+                </vu:grid-cell>
+                <vu:fileupload-simple label="Simple upload file" th:url="'@{/commons/upload}'" key="myFilesUris3" multiple/>
+                <vu:fileupload-simple-object label="Movie pictures" th:url="'@{/commons/upload}'" object="movie" field="pictures" multiple/>
+                <vu:fileupload-simple-object label="Movie main picture" th:url="'@{/commons/upload}'" object="movie" field="mainPicture"/>
+
+                <vu:modal componentId="myModal" closeLabel="Close" />
+                <vu:grid-cell class="q-gutter-md">
+                    <vu:dsfr-button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}" color="primary"/>
+                    <vu:dsfr-button-submit th:if="${model.modeReadOnly}" label="Edit" action="@{_edit}" color="primary"/>
+                    <vu:dsfr-button-submit th:if="${!model.modeReadOnly}" id="saveAction" label="Save (Default)" action="@{_save}" color="primary" />
+                    <vu:dsfr-button-submit th:if="${!model.modeReadOnly}" id="saveAction" label="Save Files Only" action="@{_saveFilesOnly}" color="primary" />
+
+                    <vu:button-link th:if="${model.modeEdit}"  label="Movies" url="@{/movies/}" color="primary" />
+                    <q-btn th:label="OpenModal" th:@click="|openModal('myModal', '@{/movies/}')|"></q-btn>
+                </vu:grid-cell>
+                <vu:grid-cell class="q-gutter-md">
+                    <vu:dsfr-button-submit th:if="${!model.modeReadOnly}" id="saveActionDtCheck" label="Save (with DtObj Check)" action="@{_saveDtCheck}" color="primary" />
+                    <vu:dsfr-button-submit th:if="${!model.modeReadOnly}" id="saveActionUiCheck" label="Save (with UiObj Check)" action="@{_saveUiCheck}" color="primary" />
+                </vu:grid-cell>
+
+            </vu:grid>
+        </vu:block>
+        <br/>
+        <vu:block id="movieManual" title="Test manual grid">
+            <div class="row">
+                <vu:dsfr-text-field class="col-6" object="movie" field="title" />
+                <vu:dsfr-text-field class="q-mx-md col-1" object="movie" field="movId" />
+                <div class="col-grow"></div>
+            </div>
+        </vu:block>
+
+        <vu:dsfr-accordion componentId="acc1"
+                           title="Accordéon n°1"/>
+        <vu:dsfr-accordion componentId="acc2"
+                           title="Accordéon n°2"/>
+        <vu:dsfr-accordion componentId="acc3"
+                           title="Accordéon n°3"/>
+
+        <vu:dsfr-accordions-group componentId="accs">
+            <vu:dsfr-accordion title="Accordéon n°1"/>
+            <vu:dsfr-accordion title="Accordéon n°2"/>
+            <vu:dsfr-accordion title="Accordéon n°3"/>
+        </vu:dsfr-accordions-group>
+
+    </vu:form>
+
+    <br/>
+    <h6>Test Cards</h6>
+    <vu:cards list="movies" componentId="movieCards"
+              cardClass="col-lg-3 col-md-6 col-xs-12"
+              sortUrl="@{/movies/_sort}" rowsPerPage="8" showMore="true" showMoreLabel="Show more" >
+        <div class="nav" th:@click="|goTo('@{/basemanagement/base/information/}'+item.baseId)|">
+            <a th::href="|'@{/movie/}'+item.movId|" >{{item.movId}}</a>
+        </div>
+    </vu:cards>
+
+    <br/>
+    <h6>Test table</h6>
+    <vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}"
+              th:tr_@click.native="|goTo('@{/movie/}'+props.row.movId)|" tr_class="nav">
+        <vu:slot name="actions_slot"><q-btn label="View detail" th:@click="|openModal('movieDetailModal', '@{/movie/}'+props.row.movId, {  })|"></q-btn></vu:slot>
+        <vu:include-data object="movies" field="movId" />
+        <vu:column field="movId" >
+            <a th::href="|'@{/movie/}'+props.row.movId|" >{{props.row.movId}}</a>
+        </vu:column>
+        <vu:column field="title" sortable="true" />
+        <vu:column name="tata" label="Tata">
+            another column  : {{props.row.movId}} : {{props.row.title}}
+        </vu:column>
+    </vu:table>
+
+    <vu:include-data object="movies" field="movId" />
+    <!--
+    -->
+    <vu:dsfr-table list="movies"
+                   componentId="movieTable2"
+                   sortUrl="@{/movies/_sort}"
+                   th:tr_@click.native="|goTo('@{/movie /}'+ props.row.movId)|">
+        <vu:slot name="actions_slot">
+            <vu:dsfr-button label="View detail" size="sm" tertiary th:@click="|openModal('movieDetailModal', '@{/movie/}'+props.row.movId, {  })|"/>
+        </vu:slot>
+        <vu:dsfr-column field="movId" >
+            <a th::href="|'@{/movie/}' + props.row.movId|" >{{ props.row.movId }}</a>
+        </vu:dsfr-column>
+        <vu:dsfr-column field="title" sortable="true" />
+        <vu:dsfr-column name="tata" label="Tata">
+            another column  : {{ props.row.movId }} : {{ props.row.title }}
+        </vu:dsfr-column>
+    </vu:dsfr-table>
+
+</div>
+
+</body>
+</html>

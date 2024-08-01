@@ -1,4 +1,4 @@
-<th:block th:fragment="head(title, vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion)" >
+<th:block th:fragment="head(title, vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, useDsfr, dsfrVersion)" >
 		<meta charset="utf8">
 		<vu:head-meta
 		    vueJsVersion="${vueJsVersion}"
@@ -7,18 +7,21 @@
 		    vuiSsr="${vuiSsr}"
 		    vertigoUiVersion="${vertigoUiVersion}"
 		    useQuasar="${useQuasar}"
-		    quasarVersion="${quasarVersion}"/>
+		    quasarVersion="${quasarVersion}"
+		    useDsfr="${useDsfr}"
+		    dsfrVersion="${dsfrVersion}"/>
 		<vu:content/>
 		<title vu:text="${title}"></title>
 	</head>
 </th:block>
 
-<th:block th:fragment="head-meta(vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion)"
+<th:block th:fragment="head-meta(vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, useDsfr, dsfrVersion)"
         th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, 
                  isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false},
                  isVuiSsr=${vuiSsr != null ? vuiSsr : false},
                  myVueJsVersion=${vueJsVersion?:'3.4.31'}, myVertigoUiVersion=${vertigoUiVersion?:'4.2.0'},
-                 myUseQuasar=${useQuasar ?: true}, myQuasarVersion=${quasarVersion?:'2.16.5'}">
+                 myUseQuasar=${useQuasar ?: true}, myQuasarVersion=${quasarVersion?:'2.16.5'},
+                 myUseDsfr=${useDsfr ?: false}, myDsfrVersion=${dsfrVersion?:'5.19.2'}">
                  
 	<link th:href="@{/vertigo-ui/static/3rdParty/roboto/v20/css/roboto.css}" rel="stylesheet" type="text/css"/>
 	<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v142/css/materialIconsOutlined.css}" rel="stylesheet" type="text/css"/>
@@ -34,6 +37,12 @@
     <script th:if="${isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@__${myVueJsVersion}__/dist/vue.global.js}"></script>
    	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js}" ></script>
     
+    <!--/* Vertigo UI - DSFR */-->
+    <th:block th:if="${myUseDsfr}">
+	    <link th:href="@{/vertigo-ui/static/3rdParty/dsfr@__${myDsfrVersion}__/style.css}" rel="stylesheet" type="text/css"/>
+		<script th:src="@{/vertigo-ui/static/3rdParty/dsfr@__${myDsfrVersion}__/dsfr.umd.js}"></script>
+	</th:block>
+
     <!--/* Defered scripts */-->
     
     <!--/* Quasar */-->

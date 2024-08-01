@@ -1,0 +1,30 @@
+<th:block th:fragment="dsfr-accordion(componentId, other_attrs)"
+          vu:alias="dsfr-accordion"
+          th:assert="${componentId} != null or (${componentId == null} and ${isAccordionGroup})">
+    <th:block th:if="${isAccordionsGroup}">
+        <dsfr-accordion
+                th::expanded-id="|componentStates.__${componentIdGroup}__.expand|"
+                th:@expand="|componentStates.__${componentIdGroup}__.expand = $event|"
+                th:attr="__${other_attrs}__">
+            <vu:content/>
+        </dsfr-accordion>
+    </th:block>
+    <th:block th:unless="${isAccordionsGroup}" th:with="o=${model.vContext['componentStates'].addComponentState(componentId).addPrimitive('expand', '')}">
+        <dsfr-accordion
+                th::expanded-id="|componentStates.__${componentId}__.expand|"
+                th:@expand="|componentStates.__${componentId}__.expand = $event|"
+                th:attr="__${other_attrs}__">
+            <vu:content/>
+        </dsfr-accordion>
+    </th:block>
+</th:block>
+
+<th:block th:fragment="dsfr-accordions-group(componentId, other_attrs)"
+          vu:alias="dsfr-accordions-group"
+          th:assert="${componentId} != null"
+          th:with="isAccordionsGroup=true, componentIdGroup=${componentId},
+                   o=${model.vContext['componentStates'].addComponentState(componentIdGroup).addPrimitive('expand', '')}">
+    <dsfr-accordions-group th:attr="__${other_attrs}__">
+        <vu:content/>
+    </dsfr-accordions-group>
+</th:block>

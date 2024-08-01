@@ -11,7 +11,7 @@ const VUiApp = Vue.createApp({
 		  vuiLang : VertigoUi.vuiLang
 	  }
   },
-  methods: { ...VertigoUi.methods, ...VUiExtensions.methods }
+  methods: { ...VertigoUi.methods, ...(typeof DSFR === 'undefined' || DSFR?.methods), ...VUiExtensions.methods }
 }, {...VUiExtensions.rootOptions });
 if (Quasar.lang.enUS) {
   Quasar.lang.enUS.vui = {...Quasar.lang.enUS.vui, ...VertigoUi.lang.enUS};
@@ -21,6 +21,8 @@ if (Quasar.lang.fr) {
 }
 
 window.dispatchEvent(new CustomEvent('vui-before-plugins', { detail : {vuiAppInstance : VUiApp}}));
+
+if (typeof DSFR !== 'undefined') VUiApp.use(DSFR);
 
 VUiApp.use(Quasar, {
 	config: window?.quasarConfig || {},
@@ -39,7 +41,9 @@ window.dispatchEvent(new CustomEvent('vui-after-page-mounted', { detail : {vuiAp
 axios.interceptors.response.use(function(response) {
     return response;
 }, function(error) {
-    VUiPage.onAjaxError(error.response);
+    if (error.code !== "ERR_CANCELED") {
+        VUiPage.onAjaxError(error.response);
+    }
     return Promise.reject(error);
 })
 
