@@ -2109,11 +2109,10 @@ function Sa(e, t, n, o, i, a) {
           }, 1032, ["icon", "onClick"])) : D("", !0),
           a.globalCanAddFiles(d.files) && !d.readonly ? ($(), L(r, {
             key: 3,
-            type: "a",
-            href: "#",
             icon: e.$q.iconSet.uploader.add,
             flat: "",
-            dense: ""
+            dense: "",
+            onClick: d.pickFiles
           }, {
             default: P(() => [
               R(c),
@@ -2124,8 +2123,8 @@ function Sa(e, t, n, o, i, a) {
                 _: 1
               })
             ]),
-            _: 1
-          }, 8, ["icon"])) : D("", !0)
+            _: 2
+          }, 1032, ["icon", "onClick"])) : D("", !0)
         ])
       ]),
       key: "1"
