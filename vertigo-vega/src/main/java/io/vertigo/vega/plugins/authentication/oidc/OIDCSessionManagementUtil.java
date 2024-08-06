@@ -71,7 +71,9 @@ final class OIDCSessionManagementUtil {
 				}
 			}
 		}
-		throw new VSystemException("Failed to validate data received from Authorization service - could not validate state");
+		// can happen if we go back after auth, keycloak will redirect with the previous state that does not exists anymore (we have deleted if on login success)
+		// we still not permit to authenticate with a previously used state but we do not want to stop redirect on already authenticated session
+		return null;
 	}
 
 	private static void dumpStates(final HttpSession session) {
