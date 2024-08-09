@@ -16,6 +16,7 @@
 	        emit-value
 	        th::use-input="${searchable == true}"
 	        th::hide-selected="${searchable == true}"
+            th:@vue:before-mount="|componentStates.${myComponentId}.searchValue = ''|"
             th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}', ${filterFunction?:null}, ${searchable != null && searchable ? 'componentStates.'+myComponentId+'.searchValue' : null})|"
             th:@filter="${searchable != null && searchable ? '(val, update, abort) => update(() => this.componentStates.'+myComponentId+'.searchValue = val, ref => ref.setOptionIndex(0))' :null}"
 			th::label-width="${overridedLabelWidth?:3}"
