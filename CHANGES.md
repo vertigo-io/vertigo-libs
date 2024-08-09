@@ -136,6 +136,7 @@ Running 4.2.0 - 2024/07/04
   - materialIcon v140 -> v142
   - fontawesome 6.4.2 -> 6.5.2
 
+
 Release 4.1.0 - 2023/11/09
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-400-to-410)
