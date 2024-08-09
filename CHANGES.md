@@ -1,12 +1,140 @@
 Version history
 ===============
 
-Running 4.2.0
+Running 4.3.0
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-420-to-430)
+  
+more to come :)
+
+
+Running 4.2.0 - 2024/07/04
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-410-to-420)
 * **Github : split `vertigo-extensions` to `vertigo-libs` and `vertigo-modules`**  
-  
-more to come :)
+* **[all] Pom declare dependencyManagment to help dependencies versions config**
+* **[DataModel] Rename some model classes :**
+  - DtObject to DataObject
+  - DtField to DataField
+  - DtFieldName to DataFieldName
+  - DtDefinition to DataDefinition
+  - DtObjectUtil to DataModelUtil 
+* **[DataModel] Move `io.vertigo.datamodel.structure.*` to `io.vertigo.datamodel.data.*`**
+* **[DataModel] Move `Criteria`, `Task`, `property` to [DataFactory]**
+* [DataModel] Simpler generics on DtList
+* [DataFactory] Sort multiple columns
+* [DataStore] Change getKeyAs return <K extends Serializable>
+* [DataStore] Delete List on entityStore by batch
+* [DataStore] Add redis KVStorePlugin
+* [Database] Fix code for H2 referential integrity error code
+* [Database] Fix requests for filter = "*", "" and null (<b>null</b> value mean no filter, <b>empty string</b> mean field shouldn't exists, <b>*</b> mean field must exists)
+* [Commons] Peg : Rule for space (no empty)
+* [Commons] Peg : Improved transmission of "BestUncompleteRule" + fix choice
+* [Commons] Peg : Named rules can now define error messages too
+* [Basics] Add analytics metrics rowCount to SQL taskEngine
+* [Ui] Better handling of missing context with a redirectUrl
+* [Ui] Add default handler for notfound error (to stay anonymous)
+* [Ui] Update i18n message for MISSING_VIEW_CONTEXT
+* [UI] Connect Thymeleaf i18n to Vertigo Locale manager
+* [UI] Add warn if multiple components with same ID (component state)
+* [UI] Fix error page display in some cases
+* [UI] StMultipleId will return empty array if blank
+* [UI] Improve constraint error message resolver (simpler and with params)
+* [UI] Make `ComponentStates.addPrimitive` fluent
+* [Ui] Add RateLimitingHandlerInterceptor using RateLimitingManager
+* [Ui] Support ResponseStatusException to fix a status code (like 404)
+* [Ui] Add Js UI sourceMap
+* [Ui] Fix httpPostAjax error if no parameter
+* [UI] Autodetect components in provided folders
+* [Ui] Get keyField or idField
+* [Ui] Fix autofocus
+* [Ui] Add minqueryLength to autocomplete
+* [Ui] Fix rendering autocomplete
+* [Ui] Fix VMinify showing. And default offset to top/left of maxi element
+* [Ui] VMinify accept empty binding
+* [UI] Add material icons outlined
+* [UI] Add 'searchable' attribute on select & add params to VComments
+* [UI] Better VNotification style
+* [UI] Fix buttons-group
+* [UI] Improve geolocation component (add map picker)
+* [UI] Add some missing props on vu:block, v-map and vu:geolocation via map_overview
+* [UI] Fix modal responsiveness. 'iframe_width' and 'iframe_height' must be replaced with 'width' and 'height'
+* [UI] Search : Add map search, active on vu:geolocation in edit mode. (Need additional JS/CSS, automatically disabled if JS not present in the page)
+* [UI] Add 'separator' attribute to vu:list component
+* [UI] Table : Don't show action section in grid mode if no actions_slot
+* [UI] Fix table top-left-slot output
+* [Ui] Fix Css class for column headers
+* [Ui] Add support for dynamic title and subtitle in table
+* [UI] vu:column, fix error when ' is present in column name
+* [UI] Table : Switch header slot to allow v-slot:header-cell-xxx slot 
+* [Ui] Fix bad passing attributs (label, title) in form and table
+* [Ui] Fix style action column for table modifiable
+* [UI] Fix : Remove empty template from table with no title
+* [UI] Improve column name handling
+* [Ui] Fix vu:label parameter (missing rowIndex)
+* [Ui] Better error message for getDisplayField/getIdField
+* [UI] Fix checkbox-multiple + add to component demo
+* [UI] Add class attribute to messages-dsfr component
+* [UI] Trim qualifiers for getErrorMessage and hasFieldsError
+* [Ui] Add error message when list is not publish updatable
+* [UI] Better handling of transaction in ProtectedValueUtil
+* [UI] Remove constraint fileupload component to 320px
+* [UI] vu:block : Fix empty q-item-section when no icon
+* [Ui] fix block param title passed to content
+* [UI] Date component use uiDatetimeFormat SmartType property if present
+* [UI] Fix transaction on Mdl loading in AbstractUiListUnmodifiable
+* [UiVueJs] Don't constraint "v-modal" if modal is maximized
+* [UiVueJs] Fix VScrollSpy width when resizing
+* [UiVueJs] Add support of array to vueDataParams (for Ajax post)
+* [UiVueJs] Add quasar Tree utilities
+* [UiVueJs] Upgrade dashboard chartjs
+* [UiVueJs] Add access to global file size in v-file-upload
+* [Vega] Support sorting in uiListModifiable (add by index and keep order while validate)
+* [Vega] Fix rateLimiting parameter transmission from VegaFeature
+* [Vega] Upgrade AbstractFilter.parseParam to support standard type (number, boolean, string), default value and envParameter : ${xxx}
+* [Vega] Correction lowerCamelCase json object field (like lists)
+* [Vega] Add advanced RateLimitingManager (with banishment)
+* [Vega] Add `getFieldsToNullCheck` to Abstract validator
+* [Vega] Fix swagger for VFile WS and parameterizedType with wildcard
+* [Vega] Auth manager can now transmit redirect URL to auth plugin
+* [FileStore] Fix inverted assertion in FsFileStorePlugin
+* [FileStore] Add S3FileStorePlugin
+* [OIDC] Add loginLocaleParamName to forward locale to SSO (eg keycloak)
+* [Account] Add tryLogin to check login/password without login
+* [Account] Add assert operation with load
+* [Vortex] Work in progress : simple parser
+* [all] Update libs 
+  - c3p0 0.9.5.5 -> 0.10.1
+  - janino 3.1.10 -> 3.1.12
+  - log4j-slf4j2-impl 2.23.1 -> (import core)
+  - ojdbc10 19.21.0.0 -> ojdbc11 23.4.0.24.05
+  - postgresql 42.6.0 -> 42.7.3
+  - liquibase-core 4.24.0 -> 4.28.0
+  - lucene 8.11.1 -> 8.11.3
+  - speedbjni 2.7.0 -> 2.8.0
+  - ehcache 3.9.11 -> 3.10.8
+  - tika-core 2.9.0 -> 2.9.2
+  - guava 32.1.3-jre -> 33.2.1-jre
+  - servlet 5.0.0 -> 6.1.0
+  - rest-assured 5.3.2 -> 5.4.0
+  - spring-webmvc 6.0.13 -> 6.1.10
+  - jersey 3.1.3 -> 3.1.6 (not 3.1.7 jdk21)
+* [Ui-vuejs] update libs 
+  - *JS libs :*
+  - axios 1.6.0 -> 1.7.2
+  - core-js 3.33.2 -> 3.37.1
+  - quasar 2.16.5 -> 2.13.0
+  - vue 3.3.7 -> 3.4.31
+  - vitejs/plugin-vue 4.4.0 -> 5.0.5
+  - eslint 8.53.0 -> 9.6.0
+  - eslint-plugin-vue 9.18.1 -> 9.27.0
+  - ol 8.1.0 -> 9.2.4
+  - vite 4.5.0 -> 5.3.3
+  - vite-plugin-mkcert 1.16.0 -> 1.17.5
+  - *3rd party :*
+  - materialdesignicons 7.3.67 -> 7.4.47
+  - materialIcon v140 -> v142
+  - fontawesome 6.4.2 -> 6.5.2
 
 
 Release 4.1.0 - 2023/11/09
