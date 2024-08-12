@@ -138,10 +138,8 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 
 		// dsfr components
 		// TODO: Faire mieux
-		final var moduleDsfrUiComponents = new VModuleUiComponent(List.of(DSFR_COMPONENT_PATH_PREFIX));
-
+		final var moduleDsfrUiComponents = new VModuleUiComponent("vui-dsfr", List.of(DSFR_COMPONENT_PATH_PREFIX));
 		templateEngine.addTemplateResolver(moduleDsfrUiComponents.templateResolvers.get(0));
-
 		templateEngine.addDialect("vui-dsfr", new VUiStandardDialect("vui-dsfr", moduleDsfrUiComponents.getUiComponents()));
 
 		templateEngine.addDialect(new LayoutDialect());
@@ -153,18 +151,18 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		final List<VModuleUiComponent> moduleUiComponents = new ArrayList<>();
 
 		// built in components
-		moduleUiComponents.add(new VModuleUiComponent(List.of(COMPONENT_PATH_PREFIX)));
+		moduleUiComponents.add(new VModuleUiComponent("vu", List.of(COMPONENT_PATH_PREFIX)));
 
 		// legacy project component registering. Deprecated, to be removed
 		if (getCustomComponentsPathPrefix() != null) {
-			moduleUiComponents.add(new VModuleUiComponent(getCustomComponentsPathPrefix() + "components/", getCustomComponentNames()));
+			moduleUiComponents.add(new VModuleUiComponent("vu", getCustomComponentsPathPrefix() + "components/", getCustomComponentNames()));
 		}
 		// ---
 
 		// add ui components by definition (and DefaultUiModuleFeatures)
 		final var vSpringMvcConfigDefinitions = Node.getNode().getDefinitionSpace().getAll(VSpringMvcConfigDefinition.class);
 		vSpringMvcConfigDefinitions.forEach(mvcConfigDefinition -> {
-			moduleUiComponents.add(new VModuleUiComponent(mvcConfigDefinition.getComponentDirs()));
+			moduleUiComponents.add(new VModuleUiComponent("vu", mvcConfigDefinition.getComponentDirs()));
 		});
 
 		return moduleUiComponents;
@@ -174,22 +172,22 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		private final Set<NamedComponentDefinition> uiComponents = new HashSet<>(); // used to resolve components into pages (dialect = vu: namespace)
 		private final List<VuiResourceTemplateResolver> templateResolvers = new ArrayList<>(); // used to resolve component files when found in page
 
-		public VModuleUiComponent(final List<String> componentDirs) {
+		public VModuleUiComponent(final String dialectPrefix, final List<String> componentDirs) {
 			for (final var dir : componentDirs) {
 				final var componentNames = getComponentNames(dir);
-				resolveComponents(dir, componentNames);
+				resolveComponents(dir, dialectPrefix, componentNames);
 			}
 		}
 
-		public VModuleUiComponent(final String pathPrefix, final Set<String> componentNames) {
-			resolveComponents(pathPrefix, componentNames);
+		public VModuleUiComponent(final String pathPrefix, final String dialectPrefix, final Set<String> componentNames) {
+			resolveComponents(pathPrefix, dialectPrefix, componentNames);
 		}
 
-		private void resolveComponents(final String pathPrefix, final Set<String> componentNames) {
+		private void resolveComponents(final String pathPrefix, final String dialectPrefix, final Set<String> componentNames) {
 			if (!componentNames.isEmpty()) {
 				final VuiResourceTemplateResolver resolver = getComponentsResolver(pathPrefix);
 
-				final NamedComponentParser parser = new NamedComponentParser("vu", resolver);
+				final NamedComponentParser parser = new NamedComponentParser(dialectPrefix, resolver);
 				for (final String componentName : componentNames) {
 					uiComponents.addAll(parser.parseComponent(componentName));
 				}

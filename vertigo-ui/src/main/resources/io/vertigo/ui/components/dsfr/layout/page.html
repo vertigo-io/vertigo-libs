@@ -4,6 +4,7 @@
 	isVuiSsr=${vuiSsr != null ? vuiSsr : false},
 	pendingAction=${model.vContext['componentStates'].addComponentState('pendingAction').addList('actionNames')},
 	myQuasarVersion=${quasarVersion?:'2.16.5'},myVertigoUiVersion=${vertigoUiVersion?:'4.2.0'}">
+	<h1>DSFR</h1>
 	<div th:if="${!isVuiSsr}" id="page">
 		<vu:content/>
 	</div>
