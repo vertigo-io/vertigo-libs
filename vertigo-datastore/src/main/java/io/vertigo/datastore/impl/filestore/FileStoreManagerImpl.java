@@ -110,9 +110,9 @@ public final class FileStoreManagerImpl implements FileStoreManager, SimpleDefin
 	@Override
 	public String resolveMimeType(final VFile vFile) {
 		return mimeTypeResolverPluginOpt
-				.map(plugin -> plugin.resolveMimeType(vFile))
-				.map(mimeTypeOpt -> mimeTypeOpt.orElseGet(() -> URLConnection.guessContentTypeFromName(vFile.getFileName())))
-				.orElse("application/octet-stream");
+			    .flatMap(plugin -> plugin.resolveMimeType(vFile))
+			    .or(() -> Optional.ofNullable(URLConnection.guessContentTypeFromName(vFile.getFileName())))
+			    .orElse("application/octet-stream");
 	}
 
 }

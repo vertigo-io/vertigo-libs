@@ -37,6 +37,7 @@ import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
 import io.vertigo.datastore.plugins.filestore.db.DbFileStorePlugin;
 import io.vertigo.datastore.plugins.filestore.fs.FsFileStorePlugin;
 import io.vertigo.datastore.plugins.filestore.fs.FsFullFileStorePlugin;
+import io.vertigo.datastore.plugins.filestore.mimetype.simplemagic.SimpleMagicMimeTypeResolverPlugin;
 import io.vertigo.datastore.plugins.filestore.mimetype.tika.TikaMimeTypeResolverPlugin;
 import io.vertigo.datastore.plugins.filestore.s3.S3FileStorePlugin;
 import io.vertigo.datastore.plugins.kvstore.berkeley.BerkeleyKVStorePlugin;
@@ -123,6 +124,13 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 	public DataStoreFeatures withTikaMimeTypeResolver() {
 		getModuleConfigBuilder()
 				.addPlugin(TikaMimeTypeResolverPlugin.class);
+		return this;
+	}
+	
+	@Feature("filestore.mimeType.simplemagic")
+	public DataStoreFeatures withSimpleMagicMimeTypeResolver() {
+		getModuleConfigBuilder()
+				.addPlugin(SimpleMagicMimeTypeResolverPlugin.class);
 		return this;
 	}
 

@@ -52,9 +52,19 @@ public final class TestUtil {
 	 * @return VFile
 	 */
 	public static VFile createVFile(final String fileName, final Class<?> baseClass) {
+		return createVFile(fileName, baseClass, FileUtil.getFileExtension(fileName));
+	}
+	
+	/**
+	 * Crée un VFile relativement d'un class de base.
+	 * @param fileName Nom/path du fichier
+	 * @param baseClass Class de base pour le chemin relatif
+	 * @return VFile
+	 */
+	public static VFile createVFile(final String fileName, final Class<?> baseClass, final String extension) {
 		try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
 			Assertion.check().isNotNull(in, "fichier non trouvé : {0}", fileName);
-			final File file = TempFile.of("tmp", '.' + FileUtil.getFileExtension(fileName));
+			final File file = TempFile.of("tmp", '.' + extension);
 			FileUtil.copy(in, file);
 			return FSFile.of(file.toPath());
 		} catch (final IOException e) {

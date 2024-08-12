@@ -25,8 +25,8 @@
                         <q-btn v-if="slotProps.isUploading  && !slotProps.readonly" type="a" href="#" :icon="$q.iconSet.uploader.clear" flat dense @click="slotProps.abort">
                             <q-tooltip>{{$q.lang.vui.uploader.clear}}</q-tooltip>
                         </q-btn>
-                        <q-btn v-if="globalCanAddFiles(slotProps.files) && !slotProps.readonly" type="a" href="#" :icon="$q.iconSet.uploader.add" flat dense>
-                            <q-uploader-add-trigger></q-uploader-add-trigger>
+                        <q-btn v-if="globalCanAddFiles(slotProps.files) && !slotProps.readonly" :icon="$q.iconSet.uploader.add" flat dense @click="slotProps.pickFiles">
+							<q-uploader-add-trigger></q-uploader-add-trigger>
                             <q-tooltip>{{$q.lang.vui.uploader.add}}</q-tooltip>
                         </q-btn>
                     </div>

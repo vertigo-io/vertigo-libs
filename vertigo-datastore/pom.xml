@@ -47,6 +47,11 @@
 				<artifactId>guava</artifactId>
 				<version>33.2.1-jre</version> <!-- for tika : cve in 31.1-jre -->
 			</dependency>
+			<dependency>
+				<groupId>com.j256.simplemagic</groupId>
+				<artifactId>simplemagic</artifactId>
+				<version>1.17</version>
+			</dependency>
 
 			<dependency>
 				<groupId>io.vertigo</groupId>
@@ -142,6 +147,11 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.j256.simplemagic</groupId>
+			<artifactId>simplemagic</artifactId>
 			<optional>true</optional>
 		</dependency>
 

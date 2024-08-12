@@ -79,7 +79,12 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 	/** {@inheritDoc} */
 	@Override
 	protected String extractConstraintName(final String msg) {
-		return extractConstraintName(msg, "violation", '"', ' ');
+		String constraintName = extractConstraintName(msg, "violation", '"', ' ');
+		//constraint name may contains the schema prefix : should remove it before looking for message key
+		if(constraintName!=null && constraintName.contains(".")) {
+			return constraintName.substring(constraintName.indexOf(".")+1, constraintName.length());
+		}
+		return constraintName;
 	}
 
 	private static String extractConstraintName(
