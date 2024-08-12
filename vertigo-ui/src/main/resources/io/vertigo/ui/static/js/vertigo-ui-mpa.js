@@ -14,7 +14,7 @@ const VUiApp = Vue.createApp({
   methods: { ...VertigoUi.methods, ...VUiExtensions.methods }
 }, {...VUiExtensions.rootOptions });
 if (Quasar.lang.enUS) {
-  Quasar.lang.enUS.vui = {...Quasar.lang.enUs.vui, ...VertigoUi.lang.enUS};
+  Quasar.lang.enUS.vui = {...Quasar.lang.enUS.vui, ...VertigoUi.lang.enUS};
 }
 if (Quasar.lang.fr) {
   Quasar.lang.fr.vui = {...Quasar.lang.fr.vui, ...VertigoUi.lang.fr};
