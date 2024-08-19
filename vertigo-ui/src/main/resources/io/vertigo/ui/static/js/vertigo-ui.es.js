@@ -808,7 +808,7 @@ const Un = /* @__PURE__ */ M(En, [["render", Ln]]), jn = {
     };
   },
   created: function() {
-    this.facetValueTranslatorProvider(this);
+    this.facetValueTranslatorProvider !== void 0 && this.facetValueTranslatorProvider(this);
   },
   methods: {
     addFacetValueTranslator(e, t) {
