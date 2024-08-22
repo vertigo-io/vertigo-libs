@@ -76,6 +76,6 @@ public abstract class AbstractRule<R, M> implements PegRule<R> {
 		//---
 		final R result = handle(parserCursor.getValue());
 		//---
-		return new PegResult<>(end, result);
+		return new PegResult<>(end, result, parserCursor.getBestUncompleteRule().orElse(null));
 	}
 }
