@@ -432,6 +432,8 @@ table .q-uploader .q-btn {
 }
 
 .q-dialog__inner--minimized .v-modal .q-card__section {
+	width: 560px;
+	height: 420px;
 	max-height: calc(100vh - 100px);
 	max-width: calc(100vw - 100px);
 	overflow: auto;

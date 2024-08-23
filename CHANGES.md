@@ -5,6 +5,11 @@ Running 4.3.0
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-420-to-430)
   
+* [Ui] Various fix
+  - Fileupload, add can be triggered by keybloard
+  - Select, searchable component state is now correctly cleared on mounting
+* [Ui] Change modal default size from 'style' to css & add 'autoHeight' property
+
 more to come :)
 
 

@@ -1,8 +1,12 @@
-<th:block th:fragment="modal(componentId, title, closeLabel, srcUrl, width, height, iframe_attrs, section_attrs, modal_attrs)" 
+<th:block th:fragment="modal(componentId, title, closeLabel, srcUrl, width, height, autoHeight, iframe_attrs, section_attrs, modal_attrs)" 
 	  th:assert="${componentId} != null"
-	  th:attr=" objectKey=${model.vContext['componentStates'].addComponentState(componentId).addPrimitive('opened', false)},
-	   objectKey=${model.vContext['componentStates']['__${componentId}__'].addPrimitive('title', title?:'')},
-	   objectKey=${model.vContext['componentStates']['__${componentId}__'].addPrimitive('srcUrl', srcUrl?:'')}" >
+	  th:attr=" objectKey=${model.vContext['componentStates'].addComponentState(componentId)
+	                                                         .addPrimitive('opened', false)
+	                                                         .addPrimitive('loading', true)
+	                                                         .addPrimitive('title', title?:'')
+                                                             .addPrimitive('srcUrl', srcUrl?:'')
+                                                             .addPrimitive('width', width?:'')
+                                                             .addPrimitive('height', height?:'')}" >
 	<q-dialog th:v-model="|componentStates.${componentId}.opened|" th:attr="__${modal_attrs}__">
 			<vu:content>
 			<q-card class="bg-white v-modal">
@@ -10,8 +14,15 @@
 				    <vu:button flat dense v-close-popup icon="keyboard_arrow_left" color="primary" textColor="white" th:title="#{layout.modal.close}" />
 				    <q-toolbar-title class="text-white">{{ componentStates.[[${componentId}]].title }}</q-toolbar-title>
 				</q-toolbar>
-				<q-card-section class="q-pa-none" th:style="|width:${width?:'560px'};height:${height?:'420px'}" th:attr="__${section_attrs}__">
-					<iframe th:v-bind:src="|componentStates.${componentId}.srcUrl|" th:attr="__${iframe_attrs}__" ></iframe>
+				<q-card-section class="q-pa-none" th::style="|{width:componentStates.${componentId}.width, height:componentStates.${componentId}.height}|" th:attr="__${section_attrs}__">
+					<div class="loading absolute-center" th:v-if="|componentStates.${componentId}.loading|"><q-spinner-tail size="xl"></q-spinner-tail></div>
+					<iframe th:v-bind:src="|componentStates.${componentId}.srcUrl|"
+					        th:attr="__${iframe_attrs}__"
+					        th:style="${autoHeight == true ? 'height:100px; opacity:0':''}"
+					        th:@vue:before-mount="|componentStates.${componentId}.loading=true; componentStates.${componentId}.height='${height?:''}';|"
+					        onload="VUiPage.modal_iframeLoad(this)"
+					        th:data-auto-height="${autoHeight}"
+					        th:data-component-id="${componentId}"></iframe>
 				</q-card-section>
 				<q-toolbar th:if="${closeLabel} != null" class="bg-primary" >
 				    <q-btn flat v-close-popup th:label="${closeLabel}" text-color="white" ></q-btn>

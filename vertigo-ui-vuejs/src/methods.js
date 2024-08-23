@@ -459,6 +459,30 @@ export default {
         var component = this.$refs[componentId];
         component.addFiles(event.dataTransfer.files);
     },
+    modal_iframeLoad(ifrm) {
+        let compId = ifrm.dataset.componentId;
+        let autoHeight = ifrm.dataset.autoHeight;
+        let doc = ifrm.contentDocument? ifrm.contentDocument: ifrm.contentWindow.document;
+        
+        if (autoHeight === 'true') {
+            ifrm.style.opacity = '0'; // should be already hidden but otherwise we hide it to avoid flickering
+            //ifrm.style.height = "100px"; // set to 100px to get height without blank padding at bottom, but not less than 100px
+        
+            let newHeight = this.getDocHeight(doc) + 4 + "px"; // IE opt. for bing/msn needs a bit added or scrollbar appears
+        
+            ifrm.style.height = ""; // reset iframe height to extends again
+            this.componentStates[compId].height = newHeight; // set the height of the modal
+        }
+        this.componentStates[compId].loading = false;
+        ifrm.style.opacity = '1'; // show the iframe
+    },
+    getDocHeight : function(doc) {
+        doc = doc || document;
+        let body = doc.body, html = doc.documentElement;
+        let height = Math.max( body.scrollHeight, body.offsetHeight, 
+                               html.scrollHeight, html.offsetHeight, html.clientHeight);
+        return height;
+    },
     httpPostAjax: function (url, paramsIn, options) {
         var paramsInResolved = !paramsIn ? [] :  Array.isArray(paramsIn) ? this.vueDataParams(paramsIn) : paramsIn;
         let vueData = this.$data.vueData;
