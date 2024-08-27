@@ -454,9 +454,7 @@ public final class DslListFilterBuilderTest {
 				{ "NOM_NAISSANCE:#str1# NOM=#str1#", testBean, 24, "Terminal ':' is expected" }, //0
 				{ "NOM_NAISSANCE:#str1# NOM:#str1# (NOM_NAISSANCE:#str1# NOM=#str1#) NOM_NAISSANCE:#str1# NOM:#str1# ", testBean, 57, "Terminal ':' is expected" }, //1
 		};
-
 		testErrorObjectFixedQuery(testQueries);
-
 	}
 
 	private PegNoMatchFoundException rootCause(final WrappedException e) {
