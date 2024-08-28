@@ -17,7 +17,7 @@
 	<vu:include-data th:if="${myDisplayField != null}" object="${list}" field="${myDisplayField}"/>
 	<vu:include-data th:if="${mySortField != null && mySortField != myDisplayField}" object="${list}" field="${mySortField}"/>
 	<q-td th:key="${columnName}" :props="props" th:with="label=null"  th:attr="__${td_attrs}__" >
-		<vu:content><th:block th:if="${myDisplayField != null}">{{ props.row.[[${myDisplayField}]] }}</th:block><template th:if="${mySuffix != null}" th:v-if="|props.row['${myDisplayField}'] != null && props.row['${myDisplayField}'] != ''|"><span vu:text="${mySuffix}"></span></template></vu:content><!--/* Default content */-->
+		<vu:content><th:block th:if="${myDisplayField != null}">{{ props.row.[[${myDisplayField}]] }}<template th:if="${mySuffix != null}" th:v-if="|props.row['${myDisplayField}'] != null && props.row['${myDisplayField}'] != ''|"><span vu:text="${mySuffix}"></span></template></th:block></vu:content><!--/* Default content */-->
 	</q-td>
 </th:block> 
 
@@ -33,7 +33,7 @@
 	<div class="q-table__grid-item-row" th:attr="__${td_attrs}__" >
 		<div class="q-table__grid-item-title" vu:text="${columnLabel}"></div>
 		<div class="q-table__grid-item-value" th:with="label=null">
-        	 <vu:content><th:block th:if="${myDisplayField != null}">{{ props.row.[[${myDisplayField}]] }}</th:block><template th:if="${mySuffix != null}" th:v-if="|props.row['${myDisplayField}'] != null && props.row['${myDisplayField}'] != ''|"><span vu:text="${mySuffix}"></span></template></vu:content>
+        	 <vu:content><th:block th:if="${myDisplayField != null}">{{ props.row.[[${myDisplayField}]] }}<template th:if="${mySuffix != null}" th:v-if="|props.row['${myDisplayField}'] != null && props.row['${myDisplayField}'] != ''|"><span vu:text="${mySuffix}"></span></template></th:block></vu:content>
 		</div>
 	</div>
 </th:block> 
