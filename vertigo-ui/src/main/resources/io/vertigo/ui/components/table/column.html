@@ -27,7 +27,7 @@
 	      th:assert="${(field != null) or (name != null and label != null)}"
 	      th:with="columnName=${field != null ? field : name },
 	               columnLabel=${label != null ? label : model.util.label('__${list + '.' + field}__')},
-	               myDisplayField=${model.util.resolveDisplayField(list, field)},
+	               myDisplayField=${field != null ? model.util.resolveDisplayField(list, field) : null},
 	               mySuffix=${model.util.smartTypeUnit(list, field, null)}" >
 	<vu:include-data th:if="${myDisplayField != null}" object="${list}" field="${myDisplayField}"/>
 	<div class="q-table__grid-item-row" th:attr="__${td_attrs}__" >
