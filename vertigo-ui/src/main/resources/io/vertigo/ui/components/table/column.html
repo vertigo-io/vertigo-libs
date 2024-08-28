@@ -8,7 +8,7 @@
 	               columnClass=${model.util.smartTypeCss(list, field, class, 'col_'+name)},
 	               columnSortable=${sortable != null ? sortable : (field != null) },
 	               mySortField=${sortField?:field},
-	               myDisplayField=${model.util.resolveDisplayField(list, field)},
+	               myDisplayField=${field != null ? model.util.resolveDisplayField(list, field) : null},
 	               mySuffix=${model.util.smartTypeUnit(list, field, null)}">
 	<th:block th:with="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('columns', {'name': columnName, 'field': mySortField, 'label': columnLabel, 'align': columnAlign, 'sortable': (modifiableTable!=null?false:columnSortable), 'classes':(class?:columnClass), 'headerClasses':(class?:columnClass) })},
 				myDatetimeFormat=${datetimeFormat?:(field !=null ? model.util.getUiDatetimeFormat(list + '.' + field) : null)}">
