@@ -40,9 +40,10 @@
 </th:block>
 <th:block th:fragment="text-field-read-reactive(object, field, rowIndex, label, suffix, required, input_attrs, label_attrs)" 
 		th:assert="${object} != null and ${field} != null" 
-		th:with="mySuffix=${model.util.smartTypeUnit(object, field, suffix)}">
-	<vu:include-data object="${object}" field="${field}"/>
+		th:with="myDisplayField=${model.util.resolveDisplayField(object, field)},
+		         mySuffix=${model.util.smartTypeUnit(object, field, suffix)}">
+	<vu:include-data object="${object}" field="${myDisplayField}"/>
 	<vu:label-read label=${label} label_attrs="${label_attrs}" >
-		<span th:attr="__${input_attrs}__" >{{[[${model.util.vueDataKey(object, field, rowIndex)}]]}}</span><span th:if="${mySuffix!=''}" th:v-if="|${model.util.contextGet(object, field, rowIndex)}!=''|" vu:text="${mySuffix}"></span>
+		<span th:attr="__${input_attrs}__" >{{[[${model.util.vueDataKey(object, myDisplayField, rowIndex)}]]}}</span><template th:if="${mySuffix!=null}" th:v-if="|${model.util.vueDataKey(object, myDisplayField, rowIndex)} != null && ${model.util.vueDataKey(object, myDisplayField, rowIndex)} != ''|"><span vu:text="${mySuffix}"></span></template>
 	</vu:label-read>
 </th:block>

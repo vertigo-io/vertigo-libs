@@ -41,6 +41,7 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Node;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
@@ -351,7 +352,7 @@ public final class UiUtil implements Serializable {
 			throw new VSystemException("Id field (or key field) must be set on the definition for entity '{0}' (needed to display the list '{1}' from context).", dtDefinition, uiListKey);
 		}
 
-		return idFieldOpt.isPresent()?idFieldOpt.get().name():keyFieldOpt.get().name();
+		return idFieldOpt.isPresent() ? idFieldOpt.get().name() : keyFieldOpt.get().name();
 	}
 
 	/**
@@ -471,5 +472,35 @@ public final class UiUtil implements Serializable {
 				.isNotNull(dtDefinition, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
 		return dtDefinition.getField(fieldName);
 
+	}
+
+	/**
+	 * Resolve the field name to be displayed, numeric fields use the formatted version with _fmt suffix.
+	 *
+	 * @param object the object name in the context
+	 * @param field the field name of the object
+	 * @return the resolved field name
+	 */
+	public static String resolveDisplayField(final String object, final String field) {
+		if (StringUtil.isBlank(object) || StringUtil.isBlank(field)) {
+			return null;
+		}
+
+		if (field.contains("_")) {
+			return field; // we don't modify the field if it already contains a modifier
+		}
+
+		final var dataField = getDataField(object + "." + field);
+		final var basicType = dataField.smartTypeDefinition().getBasicType();
+
+		switch (basicType) {
+			case BigDecimal:
+			case Double:
+			case Integer:
+			case Long:
+				return field + "_fmt";
+			default:
+				return field;
+		}
 	}
 }
