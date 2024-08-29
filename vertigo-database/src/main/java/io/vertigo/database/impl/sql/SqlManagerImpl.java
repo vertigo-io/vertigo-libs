@@ -18,7 +18,6 @@
 package io.vertigo.database.impl.sql;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
@@ -41,7 +40,6 @@ import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.statement.SqlParameter;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
-import io.vertigo.database.sql.vendor.SqlMapping;
 
 /**
 * Implémentation standard du gestionnaire des données et des accès aux données.
@@ -82,8 +80,8 @@ public final class SqlManagerImpl implements SqlManager {
 		this.analyticsManager = analyticsManager;
 		connectionProviderPluginMap = new HashMap<>();
 		for (final SqlConnectionProviderPlugin sqlConnectionProviderPlugin : sqlConnectionProviderPlugins) {
-			final String name = sqlConnectionProviderPlugin.getName();
-			final SqlConnectionProvider previous = connectionProviderPluginMap.put(name, sqlConnectionProviderPlugin);
+			final var name = sqlConnectionProviderPlugin.getName();
+			final var previous = connectionProviderPluginMap.put(name, sqlConnectionProviderPlugin);
 			Assertion.check().isNull(previous, "ConnectionProvider {0}, was already registered", name);
 		}
 		localeManager.add("io.vertigo.database.impl.sql.DataBase", io.vertigo.database.impl.sql.Resources.values());
@@ -94,7 +92,7 @@ public final class SqlManagerImpl implements SqlManager {
 	/** {@inheritDoc} */
 	@Override
 	public SqlConnectionProvider getConnectionProvider(final String name) {
-		final SqlConnectionProvider sqlConnectionProvider = connectionProviderPluginMap.get(name);
+		final var sqlConnectionProvider = connectionProviderPluginMap.get(name);
 		Assertion.check().isNotNull(sqlConnectionProvider, "ConnectionProvider {0}, wasn't registered.", name);
 		return sqlConnectionProvider;
 	}
@@ -112,7 +110,7 @@ public final class SqlManagerImpl implements SqlManager {
 				.isNotNull(dataType)
 				.isNotNull(connection);
 		//-----
-		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
+		try (final var statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
 			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), basicTypeAdapters, connection);
 			//-----
 			return traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecuteQuery(statement, tracer, dataType, basicTypeAdapters, limit, connection));
@@ -130,8 +128,8 @@ public final class SqlManagerImpl implements SqlManager {
 			final Integer limit,
 			final SqlConnection connection) {
 		// ResultSet JDBC
-		final SqlMapping mapping = connection.getDataBase().getSqlMapping();
-		try (final ResultSet resultSet = statement.executeQuery()) {
+		final var mapping = connection.getDataBase().getSqlMapping();
+		try (final var resultSet = statement.executeQuery()) {
 			//Le Handler a la responsabilité de créer les données.
 			final List<O> result = sqlStatementDriver.buildResult(dataType, basicTypeAdapters, mapping, resultSet, limit);
 			tracer.setMeasure("nbSelectedRow", result.size());
@@ -158,12 +156,12 @@ public final class SqlManagerImpl implements SqlManager {
 				.isNotNull(dataType)
 				.isNotNull(connection);
 		//---
-		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), generationMode, new String[] { columnName }, connection)) {
+		try (final var statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), generationMode, new String[] { columnName }, connection)) {
 			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), basicTypeAdapters, connection);
 			//---
 			//execution de la Requête
 			final int result = traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecute(statement, tracer));
-			final List<O> generatedIds = sqlStatementDriver.getGeneratedKeys(statement, columnName, dataType, connection);
+			final List<O> generatedIds = sqlStatementDriver.getGeneratedKeys(statement, generationMode, columnName, dataType, connection);
 			if (generatedIds.isEmpty()) {
 				throw new SQLException("GeneratedKeys empty", "02000", NO_GENERATED_KEY_ERROR_VENDOR_CODE);
 			}
@@ -186,7 +184,7 @@ public final class SqlManagerImpl implements SqlManager {
 				.isNotNull(sqlStatement)
 				.isNotNull(connection);
 		//---
-		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
+		try (final var statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
 			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), basicTypeAdapters, connection);
 			//---
 			return traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecute(statement, tracer));
@@ -197,7 +195,7 @@ public final class SqlManagerImpl implements SqlManager {
 
 	private static int doExecute(final PreparedStatement statement, final Tracer tracer) {
 		try {
-			final int res = statement.executeUpdate();
+			final var res = statement.executeUpdate();
 			tracer.setMeasure("nbModifiedRow", res);
 			return res;
 		} catch (final SQLException e) {
@@ -231,7 +229,7 @@ public final class SqlManagerImpl implements SqlManager {
 				.isNotNull(sqlStatement)
 				.isNotNull(connection);
 		//---
-		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
+		try (final var statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
 			for (final List<SqlParameter> parameters : sqlStatement.getSqlParametersForBatch()) {
 				sqlStatementDriver.setParameters(statement, parameters, basicTypeAdapters, connection);
 				statement.addBatch();
@@ -244,9 +242,9 @@ public final class SqlManagerImpl implements SqlManager {
 
 	private static OptionalInt doExecuteBatch(final PreparedStatement statement, final Tracer tracer) {
 		try {
-			final int[] res = statement.executeBatch();
+			final var res = statement.executeBatch();
 			//Calcul du nombre total de lignes affectées par le batch.
-			int count = 0;
+			var count = 0;
 			for (final int rowCount : res) {
 				count += rowCount;
 				if (rowCount == Statement.SUCCESS_NO_INFO) {
@@ -277,13 +275,13 @@ public final class SqlManagerImpl implements SqlManager {
 				.isNotNull(dataType)
 				.isNotNull(connection);
 		//---
-		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), generationMode, new String[] { columnName }, connection)) {
+		try (final var statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), generationMode, new String[] { columnName }, connection)) {
 			for (final List<SqlParameter> parameters : sqlStatement.getSqlParametersForBatch()) {
 				sqlStatementDriver.setParameters(statement, parameters, basicTypeAdapters, connection);
 				statement.addBatch();
 			}
-			final OptionalInt result = traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecuteBatch(statement, tracer));
-			final List<O> generatedIds = sqlStatementDriver.getGeneratedKeys(statement, columnName, dataType, connection);
+			final var result = traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecuteBatch(statement, tracer));
+			final List<O> generatedIds = sqlStatementDriver.getGeneratedKeys(statement, generationMode, columnName, dataType, connection);
 			if (generatedIds.isEmpty()) {
 				throw new SQLException("GeneratedKeys wasNull", "23502");
 			}
@@ -302,7 +300,7 @@ public final class SqlManagerImpl implements SqlManager {
 		final String requestTracerHeader;
 		if (sql.startsWith("/*")) { //default build query startWith /* task name */ : use it for tracer header
 			final int indexStart;
-			final int indexEnds = sql.indexOf("*/");
+			final var indexEnds = sql.indexOf("*/");
 			if (sql.startsWith("/* TaskEngine : ")) { //default build query startWith /* task name */ : use it for tracer header
 				indexStart = "/* TaskEngine : ".length();
 			} else {
@@ -317,7 +315,7 @@ public final class SqlManagerImpl implements SqlManager {
 				"sql",
 				"/execute/" + requestTracerHeader,
 				tracer -> {
-					final O result = function.apply(tracer);
+					final var result = function.apply(tracer);
 					tracer.setTag("statementHeader", requestTracerHeader)
 							.setMetadata("statement", sql.substring(0, Math.min(REQUEST_STATEMENT_FOR_TRACER, sql.length())));
 					return result;
