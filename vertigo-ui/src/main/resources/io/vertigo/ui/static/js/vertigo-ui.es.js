@@ -116,7 +116,7 @@ const M = (e, t) => {
       });
     }
   }
-}, wt = window.Vue.renderList, bt = window.Vue.Fragment, N = window.Vue.openBlock, Fe = window.Vue.createElementBlock, pe = window.Vue.resolveComponent, se = window.Vue.createVNode, me = window.Vue.withCtx, K = window.Vue.createBlock, re = window.Vue.createCommentVNode, yt = window.Vue.toDisplayString, G = window.Vue.createElementVNode, Kt = window.Vue.withKeys, Zt = { class: "bot" }, en = { class: "q-pr-md" }, tn = { class: "sys-chat" }, nn = { class: "q-pb-sm" }, on = { class: "sys-chat non-selectable" }, an = { class: "text-blue-2 q-caption" }, sn = { class: "row docs-btn" }, rn = { class: "message-processing sys-chat non-selectable" }, ln = { class: "non-selectable" }, cn = { class: "message-response row docs-btn q-pl-sm non-selectable" };
+}, wt = window.Vue.renderList, bt = window.Vue.Fragment, N = window.Vue.openBlock, Fe = window.Vue.createElementBlock, pe = window.Vue.resolveComponent, se = window.Vue.createVNode, me = window.Vue.withCtx, K = window.Vue.createBlock, re = window.Vue.createCommentVNode, yt = window.Vue.toDisplayString, Y = window.Vue.createElementVNode, Kt = window.Vue.withKeys, Zt = { class: "bot" }, en = { class: "q-pr-md" }, tn = { class: "sys-chat" }, nn = { class: "q-pb-sm" }, on = { class: "sys-chat non-selectable" }, an = { class: "text-blue-2 q-caption" }, sn = { class: "row docs-btn" }, rn = { class: "message-processing sys-chat non-selectable" }, ln = { class: "non-selectable" }, cn = { class: "message-response row docs-btn q-pl-sm non-selectable" };
 function dn(e, t, n, o, i, a) {
   const s = pe("q-rating"), r = pe("q-chat-message"), l = pe("q-btn"), c = pe("q-spinner-dots"), u = pe("q-scroll-area"), p = pe("q-input");
   return N(), Fe("div", Zt, [
@@ -125,7 +125,7 @@ function dn(e, t, n, o, i, a) {
       ref: "scroller"
     }, {
       default: me(() => [
-        G("div", en, [
+        Y("div", en, [
           (N(!0), Fe(bt, null, wt(e.messages, (f, h) => (N(), Fe("div", { key: h }, [
             f.rating ? (N(), K(r, {
               class: "animate-fade",
@@ -158,7 +158,7 @@ function dn(e, t, n, o, i, a) {
               stamp: f.stamp
             }, null, 8, ["label", "sent", "text-color", "bg-color", "name", "avatar", "text", "stamp"])) : re("", !0)
           ]))), 128)),
-          G("div", tn, [
+          Y("div", tn, [
             e.error ? (N(), K(r, {
               key: 0,
               class: "animate-fade",
@@ -167,7 +167,7 @@ function dn(e, t, n, o, i, a) {
               size: "12"
             }, {
               default: me(() => [
-                G("div", nn, yt(e.$q.lang.vui.chatbot.errorMessage), 1),
+                Y("div", nn, yt(e.$q.lang.vui.chatbot.errorMessage), 1),
                 se(l, {
                   class: "full-width",
                   onClick: t[0] || (t[0] = (f) => a.askBot(e.lastPayload)),
@@ -179,7 +179,7 @@ function dn(e, t, n, o, i, a) {
               _: 1
             })) : re("", !0)
           ]),
-          G("div", on, [
+          Y("div", on, [
             e.inputConfig.buttons.length > 0 ? (N(), K(r, {
               key: 0,
               class: "animate-fade",
@@ -187,8 +187,8 @@ function dn(e, t, n, o, i, a) {
               size: "12"
             }, {
               default: me(() => [
-                G("div", an, yt(e.$q.lang.vui.suggestedAnswers), 1),
-                G("div", sn, [
+                Y("div", an, yt(e.$q.lang.vui.suggestedAnswers), 1),
+                Y("div", sn, [
                   (N(!0), Fe(bt, null, wt(e.inputConfig.buttons, (f, h) => (N(), K(l, {
                     class: "full-width",
                     key: "repChatBtn-" + h,
@@ -202,7 +202,7 @@ function dn(e, t, n, o, i, a) {
               _: 1
             })) : re("", !0)
           ]),
-          G("div", rn, [
+          Y("div", rn, [
             e.processing ? (N(), K(r, {
               key: 0,
               class: "animate-fade",
@@ -214,7 +214,7 @@ function dn(e, t, n, o, i, a) {
               _: 1
             })) : re("", !0)
           ]),
-          G("div", ln, [
+          Y("div", ln, [
             e.inputConfig.showRating ? (N(), K(r, {
               key: 0,
               class: "animate-fade",
@@ -236,7 +236,7 @@ function dn(e, t, n, o, i, a) {
       ]),
       _: 1
     }, 512),
-    G("div", cn, [
+    Y("div", cn, [
       se(p, {
         type: e.inputConfig.modeTextarea ? "textarea" : "text",
         ref: "input",
@@ -866,16 +866,16 @@ const Un = /* @__PURE__ */ M(En, [["render", Ln]]), jn = {
       return this.isFacetExpanded(e) ? t : t.slice(0, this.maxValues);
     }
   }
-}, xe = window.Vue.renderList, ye = window.Vue.Fragment, S = window.Vue.openBlock, Y = window.Vue.createElementBlock, Q = window.Vue.toDisplayString, ee = window.Vue.createTextVNode, le = window.Vue.resolveComponent, T = window.Vue.withCtx, te = window.Vue.createBlock, ce = window.Vue.createCommentVNode, ne = window.Vue.createVNode, In = { class: "facets" }, Hn = {
+}, xe = window.Vue.renderList, ye = window.Vue.Fragment, S = window.Vue.openBlock, G = window.Vue.createElementBlock, Q = window.Vue.toDisplayString, ee = window.Vue.createTextVNode, le = window.Vue.resolveComponent, T = window.Vue.withCtx, te = window.Vue.createBlock, ce = window.Vue.createCommentVNode, ne = window.Vue.createVNode, In = { class: "facets" }, Hn = {
   key: 0,
   class: "selectedFacets q-pb-md"
 };
 function Rn(e, t, n, o, i, a) {
   const s = le("q-chip"), r = le("q-item-label"), l = le("q-checkbox"), c = le("q-item-section"), u = le("q-item"), p = le("q-btn"), f = le("q-list");
-  return S(), Y("div", In, [
-    a.isAnyFacetValueSelected() ? (S(), Y("div", Hn, [
-      (S(!0), Y(ye, null, xe(n.selectedFacets, (h, d) => (S(), Y("div", { key: d }, [
-        a.facetMultipleByCode(d) ? ce("", !0) : (S(!0), Y(ye, { key: 0 }, xe(h, (m) => (S(), te(s, {
+  return S(), G("div", In, [
+    a.isAnyFacetValueSelected() ? (S(), G("div", Hn, [
+      (S(!0), G(ye, null, xe(n.selectedFacets, (h, d) => (S(), G("div", { key: d }, [
+        a.facetMultipleByCode(d) ? ce("", !0) : (S(!0), G(ye, { key: 0 }, xe(h, (m) => (S(), te(s, {
           clickable: "",
           class: "q-mb-sm",
           key: m.code,
@@ -889,20 +889,20 @@ function Rn(e, t, n, o, i, a) {
         }, 1032, ["onClick"]))), 128))
       ]))), 128))
     ])) : ce("", !0),
-    (S(!0), Y(ye, null, xe(n.facets, (h) => (S(), te(f, {
+    (S(!0), G(ye, null, xe(n.facets, (h) => (S(), te(f, {
       key: h.code,
       class: "facetValues q-py-none",
       dense: ""
     }, {
       default: T(() => [
-        h.multiple || !a.isFacetSelected(h.code) ? (S(), Y(ye, { key: 0 }, [
+        h.multiple || !a.isFacetSelected(h.code) ? (S(), G(ye, { key: 0 }, [
           ne(r, { header: "" }, {
             default: T(() => [
               ee(Q(h.label), 1)
             ]),
             _: 2
           }, 1024),
-          (S(!0), Y(ye, null, xe(a.selectedInvisibleFacets(h.code), (d) => (S(), te(u, {
+          (S(!0), G(ye, null, xe(a.selectedInvisibleFacets(h.code), (d) => (S(), te(u, {
             key: d.code,
             class: "facetValue q-ml-md",
             clickable: "",
@@ -937,7 +937,7 @@ function Rn(e, t, n, o, i, a) {
             ]),
             _: 2
           }, 1032, ["onClick"]))), 128)),
-          (S(!0), Y(ye, null, xe(a.visibleFacets(h.code, h.values), (d) => (S(), te(u, {
+          (S(!0), G(ye, null, xe(a.visibleFacets(h.code, h.values), (d) => (S(), te(u, {
             key: d.code,
             class: "facetValue q-ml-md",
             clickable: "",
@@ -1029,10 +1029,10 @@ const zn = /* @__PURE__ */ M(jn, [["render", Rn]]), Jn = {
       this.$props.modelValue && (e = JSON.stringify({ lon: this.$data.inputObject.lon, lat: this.$data.inputObject.lat }), this.$props.modelValue._v_inputValue = e), this.$emit("update:modelValue", this.$data.inputObject);
     }
   }
-}, Gn = window.Vue.resolveComponent, St = window.Vue.createVNode, Yn = window.Vue.openBlock, Qn = window.Vue.createElementBlock, Xn = { class: "row" };
+}, Yn = window.Vue.resolveComponent, St = window.Vue.createVNode, Gn = window.Vue.openBlock, Qn = window.Vue.createElementBlock, Xn = { class: "row" };
 function Wn(e, t, n, o, i, a) {
-  const s = Gn("q-input");
-  return Yn(), Qn("div", Xn, [
+  const s = Yn("q-input");
+  return Gn(), Qn("div", Xn, [
     St(s, {
       label: "Longitude",
       "stack-label": "",
@@ -1715,8 +1715,8 @@ const Po = /* @__PURE__ */ M(So, [["render", Bo]]), Re = window.Quasar, y = wind
       }
     }).bind(this));
   }
-}, Ao = window.Vue.renderSlot, Lo = window.Vue.toDisplayString, Ft = window.Vue.createElementVNode, Uo = window.Vue.resolveComponent, jo = window.Vue.withCtx, Ot = window.Vue.openBlock, Io = window.Vue.createBlock, Ho = window.Vue.createCommentVNode, Ro = window.Vue.createElementBlock, zo = ["id"], Jo = ["id"], Go = { class: "text-subtitle2" };
-function Yo(e, t, n, o, i, a) {
+}, Ao = window.Vue.renderSlot, Lo = window.Vue.toDisplayString, Ft = window.Vue.createElementVNode, Uo = window.Vue.resolveComponent, jo = window.Vue.withCtx, Ot = window.Vue.openBlock, Io = window.Vue.createBlock, Ho = window.Vue.createCommentVNode, Ro = window.Vue.createElementBlock, zo = ["id"], Jo = ["id"], Yo = { class: "text-subtitle2" };
+function Go(e, t, n, o, i, a) {
   const s = Uo("q-card");
   return Ot(), Ro("div", { id: n.id }, [
     Ft("div", {
@@ -1728,7 +1728,7 @@ function Yo(e, t, n, o, i, a) {
       }, {
         default: jo(() => [
           Ao(e.$slots, "card", { objectDisplayed: e.objectDisplayed }, () => [
-            Ft("div", Go, Lo(e.objectDisplayed[n.nameField]), 1)
+            Ft("div", Yo, Lo(e.objectDisplayed[n.nameField]), 1)
           ])
         ]),
         _: 3
@@ -1736,7 +1736,7 @@ function Yo(e, t, n, o, i, a) {
     ], 8, Jo)
   ], 8, zo);
 }
-const Qo = /* @__PURE__ */ M(No, [["render", Yo]]), Xo = window.Quasar, Wo = {
+const Qo = /* @__PURE__ */ M(No, [["render", Go]]), Xo = window.Quasar, Wo = {
   props: {
     modelValue: { type: String, required: !0 },
     list: { type: Array, required: !0 },
@@ -1901,7 +1901,7 @@ const sa = /* @__PURE__ */ M(Wo, [["render", ia]]), ra = window.Quasar.format, {
       return la(this.getGlobalSize());
     }
   }
-}, I = window.Vue.toDisplayString, Ge = window.Vue.createTextVNode, ae = window.Vue.resolveComponent, P = window.Vue.withCtx, H = window.Vue.createVNode, $ = window.Vue.openBlock, L = window.Vue.createBlock, D = window.Vue.createCommentVNode, W = window.Vue.createElementBlock, R = window.Vue.createElementVNode, Mt = window.Vue.renderList, lt = window.Vue.Fragment, da = window.Vue.normalizeClass, ua = window.Vue.mergeProps, fa = window.Vue.createSlots, ha = { class: "q-uploader__header-content flex flex-center no-wrap q-gutter-xs" }, pa = { class: "col column justify-center" }, ma = {
+}, I = window.Vue.toDisplayString, Ye = window.Vue.createTextVNode, ae = window.Vue.resolveComponent, P = window.Vue.withCtx, H = window.Vue.createVNode, $ = window.Vue.openBlock, L = window.Vue.createBlock, D = window.Vue.createCommentVNode, W = window.Vue.createElementBlock, R = window.Vue.createElementVNode, Mt = window.Vue.renderList, lt = window.Vue.Fragment, da = window.Vue.normalizeClass, ua = window.Vue.mergeProps, fa = window.Vue.createSlots, ha = { class: "q-uploader__header-content flex flex-center no-wrap q-gutter-xs" }, pa = { class: "col column justify-center" }, ma = {
   key: 0,
   class: "q-uploader__title"
 }, ga = {
@@ -2042,7 +2042,7 @@ function Sa(e, t, n, o, i, a) {
             default: P(() => [
               H(s, null, {
                 default: P(() => [
-                  Ge(I(e.$q.lang.vui.uploader.clear), 1)
+                  Ye(I(e.$q.lang.vui.uploader.clear), 1)
                 ]),
                 _: 1
               })
@@ -2073,7 +2073,7 @@ function Sa(e, t, n, o, i, a) {
             default: P(() => [
               H(s, null, {
                 default: P(() => [
-                  Ge(I(e.$q.lang.vui.uploader.clear_all), 1)
+                  Ye(I(e.$q.lang.vui.uploader.clear_all), 1)
                 ]),
                 _: 1
               })
@@ -2100,7 +2100,7 @@ function Sa(e, t, n, o, i, a) {
             default: P(() => [
               H(s, null, {
                 default: P(() => [
-                  Ge(I(e.$q.lang.vui.uploader.clear), 1)
+                  Ye(I(e.$q.lang.vui.uploader.clear), 1)
                 ]),
                 _: 1
               })
@@ -2118,7 +2118,7 @@ function Sa(e, t, n, o, i, a) {
               H(c),
               H(s, null, {
                 default: P(() => [
-                  Ge(I(e.$q.lang.vui.uploader.add), 1)
+                  Ye(I(e.$q.lang.vui.uploader.add), 1)
                 ]),
                 _: 1
               })
@@ -2314,19 +2314,19 @@ function Pa() {
   return this.rgb().formatHex8();
 }
 function Na() {
-  return Gt(this).formatHsl();
+  return Yt(this).formatHsl();
 }
 function Nt() {
   return this.rgb().formatRgb();
 }
 function Ke(e) {
   var t, n;
-  return e = (e + "").trim().toLowerCase(), (t = Da.exec(e)) ? (n = t[1].length, t = parseInt(t[1], 16), n === 6 ? At(t) : n === 3 ? new O(t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, (t & 15) << 4 | t & 15, 1) : n === 8 ? Ye(t >> 24 & 255, t >> 16 & 255, t >> 8 & 255, (t & 255) / 255) : n === 4 ? Ye(t >> 12 & 15 | t >> 8 & 240, t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, ((t & 15) << 4 | t & 15) / 255) : null) : (t = Ea.exec(e)) ? new O(t[1], t[2], t[3], 1) : (t = Ta.exec(e)) ? new O(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, 1) : (t = Fa.exec(e)) ? Ye(t[1], t[2], t[3], t[4]) : (t = Oa.exec(e)) ? Ye(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, t[4]) : (t = Ma.exec(e)) ? jt(t[1], t[2] / 100, t[3] / 100, 1) : (t = Ba.exec(e)) ? jt(t[1], t[2] / 100, t[3] / 100, t[4]) : Bt.hasOwnProperty(e) ? At(Bt[e]) : e === "transparent" ? new O(NaN, NaN, NaN, 0) : null;
+  return e = (e + "").trim().toLowerCase(), (t = Da.exec(e)) ? (n = t[1].length, t = parseInt(t[1], 16), n === 6 ? At(t) : n === 3 ? new O(t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, (t & 15) << 4 | t & 15, 1) : n === 8 ? Ge(t >> 24 & 255, t >> 16 & 255, t >> 8 & 255, (t & 255) / 255) : n === 4 ? Ge(t >> 12 & 15 | t >> 8 & 240, t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, ((t & 15) << 4 | t & 15) / 255) : null) : (t = Ea.exec(e)) ? new O(t[1], t[2], t[3], 1) : (t = Ta.exec(e)) ? new O(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, 1) : (t = Fa.exec(e)) ? Ge(t[1], t[2], t[3], t[4]) : (t = Oa.exec(e)) ? Ge(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, t[4]) : (t = Ma.exec(e)) ? jt(t[1], t[2] / 100, t[3] / 100, 1) : (t = Ba.exec(e)) ? jt(t[1], t[2] / 100, t[3] / 100, t[4]) : Bt.hasOwnProperty(e) ? At(Bt[e]) : e === "transparent" ? new O(NaN, NaN, NaN, 0) : null;
 }
 function At(e) {
   return new O(e >> 16 & 255, e >> 8 & 255, e & 255, 1);
 }
-function Ye(e, t, n, o) {
+function Ge(e, t, n, o) {
   return o <= 0 && (e = t = n = NaN), new O(e, t, n, o);
 }
 function Aa(e) {
@@ -2383,7 +2383,7 @@ function fe(e) {
 function jt(e, t, n, o) {
   return o <= 0 ? e = t = n = NaN : n <= 0 || n >= 1 ? e = t = NaN : t <= 0 && (e = NaN), new j(e, t, n, o);
 }
-function Gt(e) {
+function Yt(e) {
   if (e instanceof j) return new j(e.h, e.s, e.l, e.opacity);
   if (e instanceof Te || (e = Ke(e)), !e) return new j();
   if (e instanceof j) return e;
@@ -2392,7 +2392,7 @@ function Gt(e) {
   return r ? (t === a ? s = (n - o) / r + (n < o) * 6 : n === a ? s = (o - t) / r + 2 : s = (t - n) / r + 4, r /= l < 0.5 ? a + i : 2 - a - i, s *= 60) : r = l > 0 && l < 1 ? 0 : s, new j(s, r, l, e.opacity);
 }
 function ht(e, t, n, o) {
-  return arguments.length === 1 ? Gt(e) : new j(e, t, n, o ?? 1);
+  return arguments.length === 1 ? Yt(e) : new j(e, t, n, o ?? 1);
 }
 function j(e, t, n, o) {
   this.h = +e, this.s = +t, this.l = +n, this.opacity = +o;
@@ -2434,7 +2434,7 @@ function ct(e, t, n) {
   return (e < 60 ? t + (n - t) * e / 60 : e < 180 ? n : e < 240 ? t + (n - t) * (240 - e) / 60 : t) * 255;
 }
 const mt = (e) => () => e;
-function Yt(e, t) {
+function Gt(e, t) {
   return function(n) {
     return e + n * t;
   };
@@ -2446,7 +2446,7 @@ function Ua(e, t, n) {
 }
 function ja(e, t) {
   var n = t - e;
-  return n ? Yt(e, n > 180 || n < -180 ? n - 360 * Math.round(n / 360) : n) : mt(isNaN(e) ? t : e);
+  return n ? Gt(e, n > 180 || n < -180 ? n - 360 * Math.round(n / 360) : n) : mt(isNaN(e) ? t : e);
 }
 function Ia(e) {
   return (e = +e) == 1 ? qe : function(t, n) {
@@ -2455,7 +2455,7 @@ function Ia(e) {
 }
 function qe(e, t) {
   var n = t - e;
-  return n ? Yt(e, n) : mt(isNaN(e) ? t : e);
+  return n ? Gt(e, n) : mt(isNaN(e) ? t : e);
 }
 const Ha = function e(t) {
   var n = Ia(t);
@@ -2480,7 +2480,7 @@ let ie = { color: Ke, interpolateHsl: za, interpolateRgb: Ha };
 function dt(e, t, n) {
   if (e != "DEFAULT") {
     var o, i = Ja;
-    e == "RAINBOW" || e == "iRAINBOW" ? o = ["#FF0000", "#FFA500", "#FFFF00", "#00FF00", "#00FF00", "rgb(75, 0, 130)", "rgb(238, 130, 238)"] : e == "SPECTRUM" || e == "iSPECTRUM" ? (o = ["rgb(230, 30, 30)", "rgb(230, 230, 30)", "rgb(30, 230, 30)", "rgb(30, 230, 230)", "rgb(30, 30, 230)", "rgb(230, 30, 230)", "rgb(230, 30, 30)"], i = Ya) : e == "RED2GREEN" || e == "iRED2GREEN" ? o = ["rgb(255, 51, 51)", "rgb(250, 235, 0)", "rgb(51, 200, 51)"] : e == "GREEN2BLUE" || e == "iGREEN2BLUE" ? o = ["rgb(51, 153, 51)", "rgb(51, 153, 200)", "rgb(51, 51, 255)"] : e == "HEAT" || e == "iHEAT" ? o = ["rgb(255, 51, 51)", "rgb(255, 255, 51)", "rgb(51, 153, 51)", "rgb(51, 153, 255)"] : e == "GREEN:INTENSITY" || e == "iGREEN:INTENSITY" ? (o = ["rgb(51, 153, 51)", "rgb(170, 250, 170)"], i = Ga) : e == "ANDROID" || e == "iANDROID" ? o = ["#0099CC", "#9933CC", "#CC0000", "#FF8800", "#669900"] : (e == "ANDROID:LIGHT" || e == "iANDROID:LIGHT") && (o = ["#33B5E5", "#AA66CC", "#ff4444", "#ffbb33", "#99cc00"]), e.charAt(0) == "i" && (o = o.reverse());
+    e == "RAINBOW" || e == "iRAINBOW" ? o = ["#FF0000", "#FFA500", "#FFFF00", "#00FF00", "#00FF00", "rgb(75, 0, 130)", "rgb(238, 130, 238)"] : e == "SPECTRUM" || e == "iSPECTRUM" ? (o = ["rgb(230, 30, 30)", "rgb(230, 230, 30)", "rgb(30, 230, 30)", "rgb(30, 230, 230)", "rgb(30, 30, 230)", "rgb(230, 30, 230)", "rgb(230, 30, 30)"], i = Ga) : e == "RED2GREEN" || e == "iRED2GREEN" ? o = ["rgb(255, 51, 51)", "rgb(250, 235, 0)", "rgb(51, 200, 51)"] : e == "GREEN2BLUE" || e == "iGREEN2BLUE" ? o = ["rgb(51, 153, 51)", "rgb(51, 153, 200)", "rgb(51, 51, 255)"] : e == "HEAT" || e == "iHEAT" ? o = ["rgb(255, 51, 51)", "rgb(255, 255, 51)", "rgb(51, 153, 51)", "rgb(51, 153, 255)"] : e == "GREEN:INTENSITY" || e == "iGREEN:INTENSITY" ? (o = ["rgb(51, 153, 51)", "rgb(170, 250, 170)"], i = Ya) : e == "ANDROID" || e == "iANDROID" ? o = ["#0099CC", "#9933CC", "#CC0000", "#FF8800", "#669900"] : (e == "ANDROID:LIGHT" || e == "iANDROID:LIGHT") && (o = ["#33B5E5", "#AA66CC", "#ff4444", "#ffbb33", "#99cc00"]), e.charAt(0) == "i" && (o = o.reverse());
     var s, a = o[0] == o[o.length - 1], s = i(o, t + (a ? 1 : 0));
     return n ? s.map(function(r, l) {
       var c = ie.color(r);
@@ -2493,12 +2493,12 @@ function Ja(e, t) {
     return ie.interpolateHsl(i, a)(n);
   });
 }
-function Ga(e, t) {
+function Ya(e, t) {
   return gt(e, t, function(n, o, i, a, s) {
     return ie.interpolateRgb(i, a)(n);
   });
 }
-function Ya(e, t) {
+function Ga(e, t) {
   return gt(e, t, function(n, o, i, a, s) {
     var r = { r: null, g: null, b: null }, l = o ? ie.rgb(o) : r, c = ie.rgb(i), u = ie.rgb(a), p = s ? ie.rgb(s) : r, f = Math.max(Math.min(Math.round(ut(n, l.r, c.r, u.r, p.r)), 255), 0), h = Math.max(Math.min(Math.round(ut(n, l.g, c.g, u.g, p.g)), 255), 0), d = Math.max(Math.min(Math.round(ut(n, l.b, c.b, u.b, p.b)), 255), 0);
     return ie.rgb(f, h, d);
@@ -2555,7 +2555,7 @@ const Qa = {
   props: {
     title: { type: String },
     type: { type: String, required: !0 },
-    datas: { type: Array },
+    datas: { type: Object },
     dataSeriesTranslator: { type: Function },
     queryUrl: { type: String },
     queryClusteredMeasure: { type: Object },
@@ -2563,13 +2563,13 @@ const Qa = {
     queryDataFilter: { type: Object },
     queryTimeFilter: { type: Object },
     queryGroupBy: { type: String },
-    colors: { type: String, required: !0, default: "DEFAULT" },
+    colors: { type: String, default: "DEFAULT" },
     labels: { type: Object, required: !0 },
     minTime: { type: String },
     maxTime: { type: String },
     fillGapDim: { type: String },
     fillGapValue: { type: Number },
-    timeFormat: { type: String, required: !0, default: "DD/MM/YYYY HH:mm" },
+    timeFormat: { type: String, default: "DD/MM/YYYY HH:mm" },
     verticalLines: { type: Array },
     /** {x, label, color} */
     additionalOptions: { type: Object }
@@ -2649,11 +2649,13 @@ const Qa = {
         var g = i.filter((J) => J !== o);
         f = Object.values(g);
         var b = this.toChartJsBubblesData(e, g.keys(), g, o);
-        d = [{ data: b }], h = this.getChartJsBubblesOptions(e, g.keys(), o, g, s, r), this.setChartJsColorOptions(d, a, 0.5);
+        d = [{ data: b }], h = this.getChartJsBubblesOptions(e, g.keys(), o, g, s, r), this.setChartJsColorOptions(d, a, 1, 0.5);
       } else if (this.type === "linechart")
         m = "line", d = this.toChartJsData(e, i, n, o), h = this.getChartJsLineOptions(e, o, i, n, s, r), this.setChartJsColorOptions(d, a);
-      else if (this.type === "stakedbarchart")
-        m = "bar", d = this.toChartJsData(e, i, n, o), h = this.getStackedOptions(e, o, i, n, s, r), this.setChartJsColorOptions(d, a);
+      else if (this.type === "barchart")
+        m = "bar", d = this.toChartJsData(e, i, n, o), h = this.getChartJsLineOptions(e, o, i, n, s, r), this.setChartJsColorOptions(d, a, 1, 0.5);
+      else if (this.type === "stackedbarchart")
+        m = "bar", d = this.toChartJsData(e, i, n, o), h = this.getStackedOptions(e, o, i, n, s, r), this.setChartJsColorOptions(d, a, 1, 0.5);
       else if (this.type === "polararea") {
         m = "polarArea", d = this.toChartJsData(e, i, n, o);
         var v = this.toChartJsPieData(d, i);
@@ -2688,10 +2690,10 @@ const Qa = {
         window.dashboardGraphChart[this.$data.graphChartId] = q;
       }
     },
-    setChartJsColorOptions: function(e, t, n) {
+    setChartJsColorOptions: function(e, t, n, o) {
       if (t)
-        for (var o = dt(t, e.length, n), i = dt(t, e.length, n ? n * 0.25 : 0.25), a = 0; a < e.length; a++)
-          e[a].borderColor = o[a], e[a].backgroundColor = i[a], e[a].pointBackgroundColor = o[a], e[a].pointBorderColor = "#FFFFFFAF", e[a].pointBorderWidth = 2, e[a].fill = !0;
+        for (var i = dt(t, e.length, n), a = dt(t, e.length, o || (n ? n * 0.25 : 0.25)), s = 0; s < e.length; s++)
+          e[s].borderColor = i[s], e[s].backgroundColor = a[s], e[s].pointBackgroundColor = i[s], e[s].pointBorderColor = "#FFFFFFAF", e[s].pointBorderWidth = 2, e[s].fill = !0;
     },
     setChartJsPieColorOptions: function(e, t, n) {
       if (t)
@@ -2803,6 +2805,9 @@ const Qa = {
           },
           line: {
             tension: 0
+          },
+          bar: {
+            borderWidth: 3
           }
         }
       };
@@ -2826,8 +2831,17 @@ const Qa = {
       }, s;
     },
     getStackedOptions: function(e, t, n, o, i, a) {
-      var s = this.getChartJsLineOptions(e, dataQuery, n, o, a);
-      return s.scales.x.stacked = !0, s.scales.y.stacked = !0, s;
+      var s = this.getChartJsLineOptions(e, t, n, o, i, a), r = {
+        scales: {
+          x: {
+            stacked: !0
+          },
+          y: {
+            stacked: !0
+          }
+        }
+      };
+      return this.mergeDeep(s, r);
     },
     toChartJsBubblesData: function(e, t, n, o) {
       for (var i = new Array(), a = 0; a < e.length; a++) {
