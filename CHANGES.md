@@ -6,9 +6,13 @@ Running 4.3.0
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-420-to-430)
   
 * [Ui] Various fix
-  - Fileupload, add can be triggered by keybloard
+  - Fileupload, add can be triggered by keyboard
   - Select, searchable component state is now correctly cleared on mounting
 * [Ui] Change modal default size from 'style' to css & add 'autoHeight' property
+* [Ui] Add DSFR components
+* [Ui] Add VFileUpload component (not quasar based)
+* [Ui] Scripts are now all located in header
+* [Ui] Display formatted numerics in table and text-field-read-reactive
 
 more to come :)
 
