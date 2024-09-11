@@ -2,20 +2,17 @@
           vu:alias="dsfr-accordion"
           th:assert="${componentId} != null or (${componentId == null} and ${isAccordionGroup})">
     <th:block th:if="${isAccordionsGroup}">
-        <dsfr-accordion
-                th::expanded-id="|componentStates.__${componentIdGroup}__.expand|"
-                th:@expand="|componentStates.__${componentIdGroup}__.expand = $event|"
-                th:attr="__${other_attrs}__">
+        <dsfr-accordion th:attr="__${other_attrs}__">
             <vu:content/>
         </dsfr-accordion>
     </th:block>
-    <th:block th:unless="${isAccordionsGroup}" th:with="o=${model.vContext['componentStates'].addComponentState(componentId).addPrimitive('expand', '')}">
-        <dsfr-accordion
-                th::expanded-id="|componentStates.__${componentId}__.expand|"
-                th:@expand="|componentStates.__${componentId}__.expand = $event|"
-                th:attr="__${other_attrs}__">
-            <vu:content/>
-        </dsfr-accordion>
+    <th:block th:unless="${isAccordionsGroup}"
+              th:with="o=${model.vContext['componentStates'].addComponentState(componentId).addPrimitive('expand', '')}">
+        <dsfr-accordions-group th:v-model="|componentStates.__${componentId}__.expand|">
+            <dsfr-accordion th:attr="__${other_attrs}__">
+                <vu:content/>
+            </dsfr-accordion>
+        </dsfr-accordions-group>
     </th:block>
 </th:block>
 
@@ -24,7 +21,7 @@
           th:assert="${componentId} != null"
           th:with="isAccordionsGroup=true, componentIdGroup=${componentId},
                    o=${model.vContext['componentStates'].addComponentState(componentIdGroup).addPrimitive('expand', '')}">
-    <dsfr-accordions-group th:attr="__${other_attrs}__">
+    <dsfr-accordions-group th:attr="__${other_attrs}__" th:v-model="|componentStates.__${componentId}__.expand|">
         <vu:content/>
     </dsfr-accordions-group>
 </th:block>

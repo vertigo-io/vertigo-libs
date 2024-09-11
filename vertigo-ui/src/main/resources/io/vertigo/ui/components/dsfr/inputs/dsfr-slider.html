@@ -16,7 +16,7 @@
 			th::min="${myMin}"
 			th::max="${myMax}"
 			th::step="${myStep}"
-			input_attrs="${input_attrs}"
+			th:attr="__${input_attrs}__"
 	>
 		<vu:content/>
 	</dsfr-range>

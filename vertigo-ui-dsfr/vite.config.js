@@ -14,7 +14,7 @@ export default defineConfig({
       fileName: (format) => `dsfr.${format}.js`,
     },
     rollupOptions: {
-      external: ['vue', 'oh-vue-icons/icons'],
+      external: ['vue'],
       output: {
         globals: {
           vue: 'Vue'

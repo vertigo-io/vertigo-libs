@@ -7,12 +7,12 @@
                    columnClass=${model.util.smartTypeCss(list, field, class, 'col_'+name)},
                    columnSortable=${sortable != null ? sortable : (field != null) }">
 
-    <th:block th:with="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('columns', {'key': columnName, 'field': field, 'label': columnLabel, 'align': columnAlign, 'sortable': (modifiableTable!=null?false:columnSortable), 'classes':(class?:columnClass), 'headerClasses':(class?:columnClass) })},"/>
+    <th:block th:with="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('columns', {'key': columnName, 'field': field, 'label': columnLabel, 'align': columnAlign, 'classes':(class?:columnClass), 'headerClasses':(class?:columnClass) })}"/>
+    <th:block th:if="(modifiableTable!=null?false:columnSortable)"
+              th:with="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('sortableRows', columnName)}" />
     <vu:include-data th:if="${field != null}" object="${list}" field="${field}"/>
 
-    <dsfr-v-td :props="props" th:key="${columnName}" th:with="label=null"  th:attr="__${td_attrs}__">
-        <template v-slot:default="{ props }">
-            <vu:content><th:block th:if="${field != null}">{{ props.row.[[${field}]] }}</th:block></vu:content><!--/* Default content */-->
-        </template>
-    </dsfr-v-td>
+    <template th:v-if="|colKey === '${columnName}'|">
+        <vu:content><th:block th:if="${field != null}">{{ props.row.[[${field}]] }}</th:block></vu:content><!--/* Default content */-->
+    </template>
 </th:block>

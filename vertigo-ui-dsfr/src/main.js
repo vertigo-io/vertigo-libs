@@ -8,8 +8,6 @@ import RouterLink from "@/components/Routerlink.vue";
 import DsfrFacets from "@/components/DsfrFacets.vue";
 
 import './utils.css'
-import DsfrVTable from "@/components/DsfrVTable.vue";
-import DsfrVTd from "@/components/DsfrVTd.vue";
 
 var DSFR = {
     install: function (vueApp, options) {
@@ -17,8 +15,6 @@ var DSFR = {
 
         vueApp.component('RouterLink', RouterLink)
         vueApp.component('DsfrFacets', DsfrFacets)
-        vueApp.component('DsfrVTable', DsfrVTable)
-        vueApp.component('DsfrVTd', DsfrVTd)
     },
 
     methods: DsfrMethods,

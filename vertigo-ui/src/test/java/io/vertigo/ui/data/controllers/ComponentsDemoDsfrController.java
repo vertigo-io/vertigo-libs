@@ -140,6 +140,7 @@ public class ComponentsDemoDsfrController extends AbstractVSpringMvcController {
 		fileUris2.add(fileInfoTmp3.getURI());
 		myMovie.setPictures(fileUris2); //TODO
 		mySubList.get(0).setMainPicture(fileInfoTmp1.getURI());
+		myMovie.setYear(2024);
 
 		viewContext
 				.publishDto(movieKey, myMovie)
