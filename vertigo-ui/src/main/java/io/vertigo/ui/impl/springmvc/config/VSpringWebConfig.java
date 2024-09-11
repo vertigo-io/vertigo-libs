@@ -41,6 +41,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.RequestToViewNameTranslator;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -335,7 +336,12 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		registry.addResourceHandler("/vertigo-ui/static/**")
 				.addResourceLocations("classpath:/io/vertigo/ui/static/")
 				.setCacheControl(CacheControl.maxAge(2, TimeUnit.HOURS).cachePublic());
+	}
 
+	@Bean
+	public LocaleResolver localeResolver() {
+		// project can override this method or provide a LocaleResolver bean marked with @Primary
+		return new VertigoLocaleResolver();
 	}
 
 	protected boolean isDevMode() {
