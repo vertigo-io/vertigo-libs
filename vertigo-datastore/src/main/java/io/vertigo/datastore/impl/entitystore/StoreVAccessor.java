@@ -26,7 +26,7 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
  * This class is a way to access an entity defined by a relationship.
  * It's a kind of box (aka optional) that offers a small list of methods.
  *
- * @author pchretien
+ * @author pchretien, mlaroche, npiedeloup
  *
  * @param <E> the type of entity
  */
@@ -52,6 +52,28 @@ public class StoreVAccessor<E extends Entity> extends VAccessor<E> {
 			final E value = entityStoreManager.readOne(getUID());
 			set(value);
 		}
+	}
+
+	/**
+	 * Loads the value if needed.
+	 */
+	public void loadIfAbsent() {
+		if (getUID() != null && !isLoaded()) {
+			load();
+		}
+	}
+
+	/**
+	 * Loads the value if needed.
+	 * @deprecated This usage is discouraged : prefer explicit loading by using load() then get()
+	 */
+	@Deprecated
+	public E lazyGet() {
+		if (getUID() == null) {
+			return null;
+		}
+		loadIfAbsent();
+		return get();
 	}
 
 }
