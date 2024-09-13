@@ -1,0 +1,40 @@
+{
+  "name": "vertigo-wysiwyg",
+  "version": "2.6.6",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "build-lib": "vite build && cp dist/*.* ../vertigo-ui/src/main/resources/io/vertigo/ui/static/js/wysiwyg/"
+  },
+  "dependencies": {
+    "@tiptap/extension-blockquote": "^2.6.6",
+    "@tiptap/extension-bold": "^2.6.6",
+    "@tiptap/extension-bullet-list": "^2.6.6",
+    "@tiptap/extension-document": "^2.6.6",
+    "@tiptap/extension-gapcursor": "^2.6.6",
+    "@tiptap/extension-hard-break": "^2.6.6",
+    "@tiptap/extension-heading": "^2.6.6",
+    "@tiptap/extension-history": "^2.6.6",
+    "@tiptap/extension-horizontal-rule": "^2.6.6",
+    "@tiptap/extension-italic": "^2.6.6",
+    "@tiptap/extension-link": "^2.6.6",
+    "@tiptap/extension-list-item": "^2.6.6",
+    "@tiptap/extension-list-keymap": "^2.6.6",
+    "@tiptap/extension-ordered-list": "^2.6.6",
+    "@tiptap/extension-paragraph": "^2.6.6",
+    "@tiptap/extension-strike": "^2.6.6",
+    "@tiptap/extension-subscript": "^2.6.6",
+    "@tiptap/extension-superscript": "^2.6.6",
+    "@tiptap/extension-text": "^2.6.6",
+    "@tiptap/extension-text-align": "^2.6.6",
+    "@tiptap/extension-underline": "^2.6.6",
+    "@tiptap/vue-3": "^2.6.6",
+    "vue": "^3.4.31"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.5",
+    "sass-embedded": "^1.78.0",
+    "vite": "^5.3.1"
+  }
+}

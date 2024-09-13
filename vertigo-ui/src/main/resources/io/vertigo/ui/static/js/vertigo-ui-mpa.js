@@ -24,6 +24,8 @@ window.dispatchEvent(new CustomEvent('vui-before-plugins', { detail : {vuiAppIns
 
 if (typeof DSFR !== 'undefined') VUiApp.use(DSFR);
 
+if (typeof WYSIWYG !== 'undefined') VUiApp.use(WYSIWYG)
+
 VUiApp.use(Quasar, {
 	config: window?.quasarConfig || {},
 	lang : Quasar.lang[VertigoUi.vuiLang]

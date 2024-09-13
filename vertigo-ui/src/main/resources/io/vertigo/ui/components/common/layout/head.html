@@ -1,4 +1,4 @@
-<th:block th:fragment="head(title, vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, useDsfr, dsfrVersion)" >
+<th:block th:fragment="head(title, vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, useDsfr, dsfrVersion, useWysiwyg)" >
 		<meta charset="utf8">
 		<vu:head-meta
 		    vueJsVersion="${vueJsVersion}"
@@ -9,13 +9,14 @@
 		    useQuasar="${useQuasar}"
 		    quasarVersion="${quasarVersion}"
 		    useDsfr="${useDsfr}"
-		    dsfrVersion="${dsfrVersion}"/>
+		    dsfrVersion="${dsfrVersion}"
+		    useWysiwyg="${useWysiwyg}"/>
 		<vu:content/>
 		<title vu:text="${title}"></title>
 	</head>
 </th:block>
 
-<th:block th:fragment="head-meta(vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, useDsfr, dsfrVersion)"
+<th:block th:fragment="head-meta(vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, useDsfr, dsfrVersion, useWysiwyg)"
         th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, 
                  isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false},
                  isVuiSsr=${vuiSsr != null ? vuiSsr : false},
@@ -41,6 +42,12 @@
     <th:block th:if="${myUseDsfr}">
 	    <link th:href="@{/vertigo-ui/static/3rdParty/dsfr@__${myDsfrVersion}__/style.css}" rel="stylesheet" type="text/css"/>
 		<script th:src="@{/vertigo-ui/static/3rdParty/dsfr@__${myDsfrVersion}__/dsfr.umd.js}"></script>
+	</th:block>
+	
+	<!--/* Wysiwyg (with tiptap editor) */-->
+	<th:block th:if="${useWysiwyg}">
+		<link th:href="@{/vertigo-ui/static/js/wysiwyg/style.css}" rel="stylesheet" type="text/css"/>
+		<script th:src="@{/vertigo-ui/static/js/wysiwyg/vertigo-wysiwyg.umd.js}"></script>
 	</th:block>
 
     <!--/* Defered scripts */-->
