@@ -1,5 +1,5 @@
 <template>
-    <div class="vFileUpload">
+    <div class="v-fileupload">
         <div v-if="$slots.header" class="header">
         {{ $slots.header.$attrs }}
             <slot name="header" v-bind="{...$data, ...$props, canAddFiles, addFiles, abortUpload, removeFile, downloadFile, getGlobalSize, getGlobalSizeLabel, humanStorageSize}"/>
@@ -13,17 +13,17 @@
                             <span :style="{color: file.status === 'IN_PROGRESS' ? 'blue' : file.status == 'ERROR' ? 'red' : ''}">{{ file.name }}</span>
                             <span v-if="file.status === 'ERROR'" style="color:red">{{ file.errorMessage }}</span>
                             <span style="color: grey">{{ humanStorageSize(file.size) }}</span>
-                            <span v-if="file.status === 'IN_PROGRESS'">{{ this.i18n('uploader.progress') }} : {{ (file.progress * 100).toFixed() }} %</span>
-                            <span v-if="file.status === 'IN_PROGRESS' && file.estimated != null">{{ this.i18n('uploader.estimated') }} : {{ (file.estimated).toFixed() }} s</span>
+                            <span v-if="file.status === 'IN_PROGRESS'">{{ $vui.i18n().uploader.progress }} : {{ (file.progress * 100).toFixed() }} %</span>
+                            <span v-if="file.status === 'IN_PROGRESS' && file.estimated != null">{{ $vui.i18n().uploader.estimated }} : {{ (file.estimated).toFixed() }} s</span>
                             
                             <button v-if="file.status === 'OK'" @click.prevent="downloadFile(file)">
-                                {{ this.i18n('uploader.download') }}
+                                {{ $vui.i18n().uploader.download }}
                             </button>
                             <button v-if="file.status === 'IN_PROGRESS'" @click.prevent="abortUpload(file)">
-                                {{ this.i18n('uploader.abort') }}
+                                {{ $vui.i18n().uploader.abort }}
                             </button>
                             <button v-if="!this.readonly && file.status !== 'IN_PROGRESS'" style="color: red" @click.prevent="removeFile(file)">
-                                {{ this.i18n('uploader.remove') }}
+                                {{ $vui.i18n().uploader.remove }}
                             </button>
                         </span>
                     </slot>
@@ -57,10 +57,10 @@ export default {
         accept: String,
         multiple: { type : Boolean, default : true  },
         maxFiles: Number,
-        callbackOnDelete: { type : Function|Boolean, default : false },
+        callbackOnDelete: { default : false },
         inputProps: { type: Object }
   },
-  emits: ["update:file-info-uris", "download-file"],
+  emits: ["update:file-info-uris", "download-file", "file-ok", "file-failed"],
   computed: {
       
   },
@@ -97,10 +97,10 @@ export default {
   data : function() {
       return {
           files:[],
-          units: [i18n('uploader.unit_b'),
-                  i18n('uploader.unit_kb'),
-                  i18n('uploader.unit_mb'),
-                  i18n('uploader.unit_gb')]
+          units: [this.$vui.i18n().uploader.unit_b,
+                  this.$vui.i18n().uploader.unit_kb,
+                  this.$vui.i18n().uploader.unit_mb,
+                  this.$vui.i18n().uploader.unit_gb]
       }
   },
   methods: {
@@ -221,13 +221,9 @@ function doUploadfile(vFile) {
             this.$emit('file-failed', error);
             vFile.status = "ERROR";
             if (error?.response?.status === 413) {
-                vFile.errorMessage = this.i18n('uploader.fileErrorTooBig');
+                vFile.errorMessage = this.$vui.i18n().uploader.fileErrorTooBig;
             }
         }.bind(this));
-}
-
-function i18n(key) {
-    return VertigoUi.methods.i18n(key);
 }
 
 </script>

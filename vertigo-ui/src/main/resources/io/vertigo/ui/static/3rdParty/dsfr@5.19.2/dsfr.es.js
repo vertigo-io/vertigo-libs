@@ -6446,7 +6446,7 @@ const fs = {
     });
   }
 }, df = ["href"], uf = {
-  __name: "RouterLink",
+  __name: "Routerlink",
   props: ["to"],
   setup(t) {
     const e = t;

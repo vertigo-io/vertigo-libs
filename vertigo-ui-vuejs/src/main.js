@@ -86,7 +86,7 @@ var VertigoUi = {
 
             $vui: {
                 get() {
-                    return VertigoUi.getBoundMethods(this, VMethods);
+                    return VertigoUi.getBoundMethods(VMethods, VMethods);
                 }
             }
         });

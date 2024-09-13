@@ -93,17 +93,10 @@ export default {
       }
     },
 	
-	i18n: function(key) {
-		let lang = VertigoUi.lang[VertigoUi.vuiLang];
-		return this.getDescendantProp(lang, key);
+	i18n: function() {
+		return VertigoUi.lang[VertigoUi.vuiLang];
 	},
 	
-	getDescendantProp: function(obj, expression) {
-	    var arr = expression.split(".");
-	    while(arr.length && (obj = obj[arr.shift()]));
-	    return obj;
-	},
-
     getSafeValue: function (objectkey, fieldKey, subFieldKey) {
         if (this.$data.vueData[objectkey] && this.$data.vueData[objectkey][fieldKey]) {
             return this.$data.vueData[objectkey][fieldKey][subFieldKey];

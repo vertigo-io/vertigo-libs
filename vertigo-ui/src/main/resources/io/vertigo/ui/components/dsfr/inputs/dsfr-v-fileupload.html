@@ -14,50 +14,49 @@
         <input type="hidden" th:v-for="|fileUri in vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|" th::name="${model.util.contextKey(object, field, rowIndex)}" v-bind:value="fileUri" />
         
         <div class="fr-upload-group">
-	        <vu:dsfr-label-edit key="${key}" object="${object}" field="${field}" label="${label}" hint="${hint}" required="${myRequired}" label_attrs="${label_attrs}" />
-		        <v-file-upload
-		            th:input-id="|${myComponentId}__input|"
-		            th::readonly="${readonly?:false}"
-		            th:url="${url}" 
-		            field-name="file"
-		            th:accept="${accept}"
-		            th::multiple="${myMultiple}"
-		            th:max-files="${maxFiles}"
-		            class="fr-upload"
-		            th:callback-on-delete="${callbackOnDelete}"
-		            th:v-bind:file-info-uris="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|"
-		            th:@update:file-info-uris="|(newFileInfoUris) => ${model.util.vueDataKey(object, field, rowIndex)} = vueDataToObject(newFileInfoUris)|"
-		            th:@download-file="|(fileUri) => goTo('${downloadUrl}' + fileUri)|"
-		            th:attr="__${uploader_attrs}__">
-		            
-		            <template #files="slotProps">
-		           	    <div v-for="file in slotProps.files" class="file">
-		           	        <div :class="{'fr-message--error' : file.status === 'ERROR'}">
-		           	            <a v-if="file.status === 'OK'" href="#" @click.prevent="slotProps.downloadFile(file)">{{ file.name }}</a>
-		                           <span v-if="file.status !== 'OK'">{{ file.name }}<template v-if="file.errorMessage"> ({{ file.errorMessage }})</template></span>
-		           	        </div>
-		           	        <div class="fr-hint-text">
-		           	            {{ file.name.split('.').pop().toUpperCase() }} – {{ slotProps.humanStorageSize(file.size) }}
-							    <template v-if="file.status === 'IN_PROGRESS'">
-								    - 
-								    <v-icon name="ri-loader-4-line" scale="0.8" animation="spin"></v-icon>
-								    {{ (file.progress * 100).toFixed() }} % - 
-								    <a href="#" @click.prevent="slotProps.abortUpload(file)">
-								        <v-icon name="ri-close-line" scale="0.8"></v-icon>{{ i18n('uploader.abort') }}
-								    </a>
-								</template>
-								<template v-if="!slotProps.readonly && file.status != 'IN_PROGRESS'">
-									- 
-									<a href="#" @click.prevent="slotProps.removeFile(file)">
-										<v-icon name="ri-delete-bin-line"></v-icon> {{ i18n('uploader.remove') }}
-									</a>
-								</template>
-							</div>
+	        <vu:dsfr-label-edit key="${key}" object="${object}" field="${field}" label="${label}" hint="${hint}" required="${myRequired}" th:for="|${myComponentId}__input|" label_attrs="${label_attrs}" />
+	        <v-file-upload
+	            th:input-id="|${myComponentId}__input|"
+	            th::readonly="${readonly?:false}"
+	            th:url="${url}" 
+	            field-name="file"
+	            th:accept="${accept}"
+	            th::multiple="${myMultiple}"
+	            th::max-files="${maxFiles}"
+	            class="fr-upload"
+	            th:callback-on-delete="${callbackOnDelete}"
+	            th:v-bind:file-info-uris="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|"
+	            th:@update:file-info-uris="|(newFileInfoUris) => ${model.util.vueDataKey(object, field, rowIndex)} = vueDataToObject(newFileInfoUris)|"
+	            th:@download-file="|(fileUri) => goTo('${downloadUrl}' + fileUri)|"
+	            th:attr="__${uploader_attrs}__">
+	            
+	            <template #files="slotProps">
+	           	    <div v-for="file in slotProps.files" class="file">
+	           	        <div :class="{'fr-message--error' : file.status === 'ERROR'}">
+	           	            <a v-if="file.status === 'OK'" href="#" @click.prevent="slotProps.downloadFile(file)">{{ file.name }}</a>
+	                           <span v-if="file.status !== 'OK'">{{ file.name }}<template v-if="file.errorMessage"> ({{ file.errorMessage }})</template></span>
+	           	        </div>
+	           	        <div class="fr-hint-text">
+	           	            {{ file.name.split('.').pop().toUpperCase() }} – {{ slotProps.humanStorageSize(file.size) }}
+						    <template v-if="file.status === 'IN_PROGRESS'">
+							    - 
+							    <v-icon name="ri-loader-4-line" scale="0.8" animation="spin"></v-icon>
+							    {{ (file.progress * 100).toFixed() }} % - 
+							    <a href="#" @click.prevent="slotProps.abortUpload(file)">
+							        <v-icon name="ri-close-line" scale="0.8"></v-icon>{{ $vui.i18n().uploader.abort }}
+							    </a>
+							</template>
+							<template v-if="!slotProps.readonly && file.status != 'IN_PROGRESS'">
+								- 
+								<a href="#" @click.prevent="slotProps.removeFile(file)">
+									<v-icon name="ri-delete-bin-line"></v-icon> {{ $vui.i18n().uploader.remove }}
+								</a>
+							</template>
 						</div>
-		            </template>
-		            
-		        </v-file-upload>
-		    </vu:dsfr-label-edit>
+					</div>
+	            </template>
+	            
+	        </v-file-upload>
 	    </div>
 </th:block>
 
@@ -84,4 +83,7 @@
             ></div>
         </div>
 </th:block>
-
+<th:block th:fragment="dsfr-v-fileupload-dropzone-read(uploaderRef, dropzone_attrs)" 
+    vu:alias="dsfr-v-fileupload-dropzone" vu:selector="${viewMode=='read'}">
+    <vu:content/>
+</th:block>

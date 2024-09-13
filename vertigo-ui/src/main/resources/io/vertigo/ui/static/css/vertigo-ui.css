@@ -361,7 +361,7 @@ thead tr:hover:last-child th:last-child:not(:first-child), tr:hover td:nth-last-
   opacity: 0 !important;
 }
 
-.vFileUpload .files .file {
+.v-fileupload .files .file {
 	padding-bottom: 1rem;
 }
 
