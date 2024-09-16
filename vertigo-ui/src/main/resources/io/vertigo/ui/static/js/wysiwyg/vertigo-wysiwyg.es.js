@@ -16348,6 +16348,10 @@ const Ab = Te.create({
     linkConfiguration: {
       type: Object,
       default: {}
+    },
+    autofocus: {
+      type: Boolean,
+      default: !1
     }
   }, {
     modelValue: {},
@@ -16539,7 +16543,8 @@ const Ab = Te.create({
       extensions: [d0, f0, h0, w0, T0, I0, ...l],
       onUpdate: function({ editor: u }) {
         t.value = u.getHTML();
-      }
+      },
+      autofocus: r.autofocus
     });
     bd(t, (u, d) => {
       var f, h;

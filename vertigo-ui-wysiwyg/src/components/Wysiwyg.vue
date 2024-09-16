@@ -98,6 +98,10 @@
     linkConfiguration: {
       type: Object,
       default: {}
+    },
+    autofocus: {
+      type: Boolean,
+      default: false
     }
   })
 
@@ -294,8 +298,10 @@
     extensions: [Document, Paragraph, Text, History, HardBreak, Gapcursor, ...activeExtensions],
     onUpdate: function({editor}) {
         model.value = editor.getHTML();
-    }
+    },
+    autofocus: props.autofocus,
   })
+  
   
   watch(model, (newValue, oldValue) => {
     if (newValue !== editor?.value?.getHTML()) {
