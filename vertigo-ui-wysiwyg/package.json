@@ -10,6 +10,7 @@
   "dependencies": {
     "@tiptap/extension-blockquote": "^2.6.6",
     "@tiptap/extension-bold": "^2.6.6",
+    "@tiptap/extension-bubble-menu": "^2.6.6",
     "@tiptap/extension-bullet-list": "^2.6.6",
     "@tiptap/extension-document": "^2.6.6",
     "@tiptap/extension-gapcursor": "^2.6.6",

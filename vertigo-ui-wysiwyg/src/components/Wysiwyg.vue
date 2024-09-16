@@ -30,6 +30,23 @@
                  @click="commands[btn].action(editor)"></button>
         </div>
       </div>
+      <bubble-menu :editor="editor"
+                   :tippy-options="{ duration: 100 }"
+                   v-if="editor && bubbleToolbar">
+        <div class="toolbar bubble">
+          <div v-for="btnGroup in bubbleToolbar" class="button-group" :class="{'gap' : btnGroup.length === 0}">
+            <button v-for="btn in btnGroup"
+                    type="button" :key="btn"
+                    :class="[commands[btn].class, {'is-active': commands[btn].active?.(editor)}]"
+                    :aria-pressed="commands[btn].active?.(editor)"
+                    :disabled="commands[btn].disabled?.(editor)"
+                    :aria-disabled="commands[btn].disabled?.(editor)"
+                    :title="$vui.i18n().wysiwyg[btn]"
+                    :aria-label="$vui.i18n().wysiwyg[btn]"
+                    @click="commands[btn].action(editor)"></button>
+          </div>
+        </div>
+      </bubble-menu>
       <editor-content :editor="editor" class="editor"></editor-content>
     </template>
   </div>
@@ -39,7 +56,7 @@
   import { watch, ref } from 'vue'
 
   // import mandatory tiptap components
-  import { useEditor, EditorContent } from '@tiptap/vue-3'
+  import { useEditor, EditorContent, BubbleMenu } from '@tiptap/vue-3'
   import Document from '@tiptap/extension-document'
   import Paragraph from '@tiptap/extension-paragraph'
   import Text from '@tiptap/extension-text'
@@ -64,15 +81,7 @@
   import Subscript from '@tiptap/extension-subscript'
   import Superscript from '@tiptap/extension-superscript'
   
-  const TextAlign = RawTextAlign.configure({
-    types: ['heading', 'paragraph'],
-  })
-  
-  // Consider exposing additional configuration, for example for domain whitelist https://tiptap.dev/docs/editor/extensions/marks/link#validate
-  const Link = RawLink.configure({
-    openOnClick: false,
-  })
-  
+  // props and model  
   let displayHtml = ref(false);
   
   const model = defineModel();
@@ -81,10 +90,29 @@
     toolbar: {
       type: Array,
       default: [['bold', 'italic', 'underline'], ['unordered', 'ordered', 'outdent', 'indent'], [], ['undo', 'redo'], ['viewsource']]
+    },
+    bubbleToolbar: {
+      type: Array,
+      default: null
+    },
+    linkConfiguration: {
+      type: Object,
+      default: {}
     }
   })
 
+  // Configure extensions 
+  const TextAlign = RawTextAlign.configure({
+    types: ['heading', 'paragraph'],
+  })
+  
+  // Example for domain whitelist https://tiptap.dev/docs/editor/extensions/marks/link#validate
+  const Link = RawLink.configure({
+    openOnClick: false,
+    ...props.linkConfiguration
+  })
 
+  // commands definitions
   const commands = {
     'bold' : {
       class: 'mdi mdi-format-bold',
@@ -330,6 +358,13 @@
       border: 1px solid #ccc;
       padding: 0.3rem;
       font-size: 18px;
+      
+      &.bubble {
+        background-color: white;
+        border-radius: 0.7rem;
+        box-shadow: 5px 5px 10px #ccc;
+        padding: 0.2rem;
+      }
       
       .button-group {
         position: relative;
