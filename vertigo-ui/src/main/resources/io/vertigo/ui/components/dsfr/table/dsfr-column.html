@@ -1,18 +1,16 @@
 <th:block th:fragment="dsfr-column-table(list, field, name, label, align, sortable, datetimeFormat, class, td_attrs)" vu:alias="dsfr-column"
           vu:selector="${renderTableAsGrid == null || !renderTableAsGrid }"
           th:assert="${(field != null) or (name != null and label != null)}"
-          th:with="columnName=${name != null ? name : field},
+          th:with="columnName=${name != null ? name : 'col_' + field},
                    columnLabel=${label != null ? label : model.util.label(list + '.' + field)},
                    columnAlign=${model.util.smartTypeAlign(list, field, align)},
                    columnClass=${model.util.smartTypeCss(list, field, class, 'col_'+name)},
                    columnSortable=${sortable != null ? sortable : (field != null) }">
 
-    <th:block th:with="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('columns', {'key': columnName, 'field': field, 'label': columnLabel, 'align': columnAlign, 'classes':(class?:columnClass), 'headerClasses':(class?:columnClass) })}"/>
-    <th:block th:if="(modifiableTable!=null?false:columnSortable)"
-              th:with="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('sortableRows', columnName)}" />
+    <th:block th:with="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('columns', {'key': columnName, 'field': field, 'label': columnLabel, 'align': columnAlign, 'sortable': (modifiableTable!=null?false:columnSortable), 'classes':(class?:columnClass), 'headerClasses':(class?:columnClass) })}"/>
     <vu:include-data th:if="${field != null}" object="${list}" field="${field}"/>
 
     <template th:v-if="|colKey === '${columnName}'|">
-        <vu:content><th:block th:if="${field != null}">{{ props.row.[[${field}]] }}</th:block></vu:content><!--/* Default content */-->
+        <vu:content><th:block th:if="${field != null}">{{ cell.[[${field}]] }}</th:block></vu:content><!--/* Default content */-->
     </template>
 </th:block>

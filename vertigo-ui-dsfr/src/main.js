@@ -8,6 +8,7 @@ import RouterLink from "@/components/Routerlink.vue";
 import DsfrFacets from "@/components/DsfrFacets.vue";
 
 import './utils.css'
+import './surcharges.css'
 
 var DSFR = {
     install: function (vueApp, options) {

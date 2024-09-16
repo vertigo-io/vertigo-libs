@@ -13,7 +13,7 @@
                        objectKey=${model.vContext['componentStates'][__${componentId}__].addList('sortableRows')},
                        objectKey=${model.vContext['componentStates'][__${componentId}__].addList('selected')},
                        objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false },
-                       objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {'page': 1 , 'rowsPerPage' : myRowsPerPage, 'componentId' : componentId, 'listKey' : list})}"
+                       objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {'page': 0 , 'rowsPerPage' : myRowsPerPage, 'componentId' : componentId, 'listKey' : list})}"
               th:remove="all"/>
     <th:block th:if="${sortUrl != null}"
               th:attr="objectKey=${model.vContext['componentStates'][__${componentId}__]['pagination'].put('sortUrl', sortUrl)}"
@@ -29,10 +29,13 @@
               th:remove="all"/>
 
     <dsfr-data-table th:title="${vTitle==null?title?:'':''}" th::title="${vTitle?:''}"
-                     th::header-row="|componentStates.${componentId}.columns|"
+                     th::headers-row="|componentStates.${componentId}.columns|"
                      th::rows="|vueData.${list}|"
                      th::rows-per-page="|componentStates.${componentId}.pagination.rowsPerPage|"
-                     th::sortable-rows="|componentStates.${componentId}.sortableRows|"
+                     th::sortable-rows="|componentStates.${componentId}.columns.filter(o => o.sortable).map(o => o.key)|"
+                     th:v-model:selection="|componentStates.${componentId}.selected|"
+                     th::selectable-rows="${mySelectable ? 'true' : 'false'}"
+                     th:v-model:current-page="|componentStates.${componentId}.pagination.page|"
                      th:attr="__${table_attrs}__">
         <vu:content-slot name="table_slot" th:with="label=null, title=null, vTitle=null"/>
         <template #cell="{ colKey, cell }">

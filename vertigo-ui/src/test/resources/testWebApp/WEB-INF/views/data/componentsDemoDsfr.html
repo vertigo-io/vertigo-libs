@@ -10,7 +10,7 @@
 </head>
 
 <body>
-<div layout:fragment="content">
+<th:block layout:fragment="content">
     <vu:messages />
     <vu:form id="myFormId">
 
@@ -145,23 +145,27 @@
     <vu:include-data object="movies" field="movId" />
     <!--
     -->
+    selection : {{ componentStates.movieTable2.selected }}
     <vu:dsfr-table list="movies"
                    componentId="movieTable2"
                    sortUrl="@{/movies/_sort}"
-                   th:tr_@click.native="|goTo('@{/movie /}'+ props.row.movId)|">
+                   :pagination="true"
+                   row-key="movId"
+                   selectable
+    >
         <vu:slot name="actions_slot">
-            <vu:dsfr-button label="View detail" size="sm" tertiary th:@click="|openModal('movieDetailModal', '@{/movie/}'+props.row.movId, {  })|"/>
+            <vu:dsfr-button label="View detail" size="sm" tertiary th:@click="|openModal('movieDetailModal', '@{/movie/}' + cell.movId, {  })|"/>
         </vu:slot>
-        <vu:dsfr-column field="movId" >
-            <a th::href="|'@{/movie/}' + props.row.movId|" >{{ props.row.movId }}</a>
+        <vu:dsfr-column field="movId">
+            <a th::href="|'@{/movie/}' + cell.movId|">{{ cell.movId }}</a>
         </vu:dsfr-column>
-        <vu:dsfr-column field="title" sortable="true" />
+        <vu:dsfr-column field="title"/>
         <vu:dsfr-column name="tata" label="Tata">
-            another column  : {{ props.row.movId }} : {{ props.row.title }}
+            another column  : {{ cell.movId }} : {{ cell.title }}
         </vu:dsfr-column>
     </vu:dsfr-table>
 
-</div>
+</th:block>
 
 </body>
 </html>
