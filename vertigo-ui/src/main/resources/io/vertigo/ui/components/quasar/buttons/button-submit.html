@@ -7,19 +7,22 @@
            <vu:content><span class="sr-only" th:if="${label==null}" vu:text="${title?:''}"></span></vu:content>
     </q-btn>
 </th:block>
-<th:block th:fragment="button-submit-confirm(actions_slot, label, icon, color, text-color, action, title, loading, formId, confirmMessage, labelOk, labelCancel, other_attrs)"
+<th:block th:fragment="button-submit-confirm(actions_slot, key, label, icon, color, text-color, action, title, loading, formId, confirmMessage, labelOk, labelCancel, other_attrs)"
       th:assert="(${label} != null or (${icon} != null and ${title} != null)) and ${action} != null and ${formId} != null"
-      th:with="myComponentId='button'+${action},myLabelOk=${labelOk?:'Oui'},myLabelCancel=${labelCancel?:'Non'}, myLoading=${loading}?:true"
-      th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('confirm',false)}">
+      th:with="myComponentId=${model.util.generateComponentUID('button', action, null, null)},
+               myKey=${key?:'(props?.rowIndex || ``)'},
+               myLabelOk=${labelOk?:'Oui'},
+               myLabelCancel=${labelCancel?:'Non'},
+               myLoading=${loading}?:true">
     <q-btn th:icon="${icon?:''}" th:label="${label?:''}" th:title="${title?:''}"
-           th:@click="|componentStates.${myComponentId}.confirm = true|"
+           th:@click="|$refs['${myComponentId}'+ ${myKey}].show()|"
            th::round="${label==null?'true':''}" th:color="${color?:'primary'}" th:text-color="${textColor?:''}" th:attr="__${other_attrs}__">
          <span class="sr-only" th:if="${label==null}" vu:text="${title?:''}"></span>
-         <q-dialog th:v-model="|componentStates.${myComponentId}.confirm|" persistent>
+         <q-dialog th::ref="|'${myComponentId}' + ${myKey}|" persistent>
           <q-card>
             <q-card-section class="row items-center">
             <vu:content>
-              <span class="q-ml-sm" vu:text="${confirmMessage}"></span>            
+              <span class="q-ml-sm" vu:text="${confirmMessage}"></span>
             </vu:content>
             </q-card-section>
             <q-card-actions align="right" vu:slot="actions_slot">
