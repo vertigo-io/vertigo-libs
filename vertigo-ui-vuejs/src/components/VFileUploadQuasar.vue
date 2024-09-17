@@ -109,7 +109,7 @@ export default {
         downloadUrl : { type : String, default : (props) => props.baseUrl + '/download'},
         multiple: { type : Boolean, default : true  }
   },
-  emits: ["update:file-info-uris", "download-file"],
+  emits: ["update:file-info-uris", "download-file", "init-ok", "init-ko"],
   computed: {
       
   },
@@ -127,8 +127,11 @@ export default {
                     this.files = uiFileInfos.map((uiFileInfo) => {
                         return uiFileInfo;
                     })
+                    this.$emit('init-ok');
                 }.bind(this))
             .catch(function (error) { //Ko
+                    this.$emit('update:file-info-uris', []); // reset
+                    this.$emit('init-ko');
                     if(error.response) {
                         this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file "+xhrParams);
                     } else {
@@ -174,21 +177,21 @@ export default {
             var newFileInforUris = [...this.fileInfoUris];
             var xhrParams = {};
             xhrParams[this.fieldName] = removedFile.fileUri;
-                this.$http.delete(this.url, { params: xhrParams, credentials: false })
-                    .then(function (/*response*/) { //Ok
-                        if (this.multiple) {
-                            this.files.splice(indexOfFile, 1)
-                            newFileInforUris.splice(indexOfFile, 1);
-                        } else {
-                            this.files.splice(0);
-                            newFileInforUris.splice(0);
-                        }
-                        this.$emit('update:file-info-uris', newFileInforUris);
-                        //this.uploader_forceComputeUploadedSize(componentId);
-                    }.bind(this))
-                    .catch(function (error) { //Ko
-                        this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't remove temporary file");
-                    }.bind(this));
+            this.$http.delete(this.url, { params: xhrParams, credentials: false })
+                .then(function (/*response*/) { //Ok
+                    if (this.multiple) {
+                        this.files.splice(indexOfFile, 1)
+                        newFileInforUris.splice(indexOfFile, 1);
+                    } else {
+                        this.files.splice(0);
+                        newFileInforUris.splice(0);
+                    }
+                    this.$emit('update:file-info-uris', newFileInforUris);
+                    //this.uploader_forceComputeUploadedSize(componentId);
+                }.bind(this))
+                .catch(function (error) { //Ko
+                    this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't remove temporary file");
+                }.bind(this));
             
     },
     globalCanAddFiles(quasarFiles) {

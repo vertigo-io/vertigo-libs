@@ -92,11 +92,11 @@ export default {
         return notifyMessages;
       }
     },
-	
-	i18n: function() {
-		return VertigoUi.lang[VertigoUi.vuiLang];
-	},
-	
+    
+    i18n: function() {
+        return VertigoUi.lang[VertigoUi.vuiLang];
+    },
+    
     getSafeValue: function (objectkey, fieldKey, subFieldKey) {
         if (this.$data.vueData[objectkey] && this.$data.vueData[objectkey][fieldKey]) {
             return this.$data.vueData[objectkey][fieldKey][subFieldKey];
@@ -546,8 +546,7 @@ export default {
         const fieldName = field.split("_")[0]; // trim any qualifier like "_fmt"
         if (fieldsErrors) {
             var objectName = rowIndex != null ? object + '[' + rowIndex + ']' : object;
-            return Object.prototype.hasOwnProperty.call(fieldsErrors, objectName) &&
-                fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], fieldName) && fieldsErrors[objectName][fieldName].length > 0
+            return fieldsErrors?.[objectName]?.[fieldName]?.length > 0;
         }
         return false;
     },

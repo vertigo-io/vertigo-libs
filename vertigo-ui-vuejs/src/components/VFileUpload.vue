@@ -60,7 +60,7 @@ export default {
         callbackOnDelete: { default : false },
         inputProps: { type: Object }
   },
-  emits: ["update:file-info-uris", "download-file", "file-ok", "file-failed"],
+  emits: ["update:file-info-uris", "download-file", "file-ok", "file-failed", "init-ok", "init-ko"],
   computed: {
       
   },
@@ -78,8 +78,11 @@ export default {
                     this.files = uiFileInfos.map((uiFileInfo) => {
                         return {...uiFileInfo, status: "OK"};
                     })
+                    this.$emit('init-ok');
                 }.bind(this))
             .catch(function (error) { //Ko
+                    this.$emit('update:file-info-uris', []); // reset
+                    this.$emit('init-ko');
                     if (this.$q) {
                         if(error.response) {
                             this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file "+xhrParams);
