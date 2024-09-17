@@ -1,4 +1,4 @@
-<th:block th:fragment="head(title, vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, useDsfr, dsfrVersion, useWysiwyg)" >
+<th:block th:fragment="head(title, vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, useDsfr, useWysiwyg)" >
 		<meta charset="utf8">
 		<vu:head-meta
 		    vueJsVersion="${vueJsVersion}"
@@ -9,20 +9,19 @@
 		    useQuasar="${useQuasar}"
 		    quasarVersion="${quasarVersion}"
 		    useDsfr="${useDsfr}"
-		    dsfrVersion="${dsfrVersion}"
 		    useWysiwyg="${useWysiwyg}"/>
 		<vu:content/>
 		<title vu:text="${title}"></title>
 	</head>
 </th:block>
 
-<th:block th:fragment="head-meta(vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, useDsfr, dsfrVersion, useWysiwyg)"
+<th:block th:fragment="head-meta(vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, useDsfr, useWysiwyg)"
         th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, 
                  isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false},
                  isVuiSsr=${vuiSsr != null ? vuiSsr : false},
                  myVueJsVersion=${vueJsVersion?:'3.4.31'}, myVertigoUiVersion=${vertigoUiVersion?:'4.2.0'},
                  myUseQuasar=${useQuasar ?: true}, myQuasarVersion=${quasarVersion?:'2.16.5'},
-                 myUseDsfr=${useDsfr ?: false}, myDsfrVersion=${dsfrVersion?:'5.19.2'}">
+                 myUseDsfr=${useDsfr ?: false}">
                  
 	<link th:href="@{/vertigo-ui/static/3rdParty/roboto/v20/css/roboto.css}" rel="stylesheet" type="text/css"/>
 	<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v142/css/materialIconsOutlined.css}" rel="stylesheet" type="text/css"/>
@@ -40,8 +39,8 @@
     
     <!--/* Vertigo UI - DSFR */-->
     <th:block th:if="${myUseDsfr}">
-	    <link th:href="@{/vertigo-ui/static/3rdParty/dsfr@__${myDsfrVersion}__/style.css}" rel="stylesheet" type="text/css"/>
-		<script th:src="@{/vertigo-ui/static/3rdParty/dsfr@__${myDsfrVersion}__/dsfr.umd.js}"></script>
+	    <link th:href="@{/vertigo-ui/static/3rdParty/dsfr/style.css}" rel="stylesheet" type="text/css"/>
+		<script th:src="@{/vertigo-ui/static/3rdParty/dsfr/dsfr.umd.js}"></script>
 	</th:block>
 	
 	<!--/* Wysiwyg (with tiptap editor) */-->
