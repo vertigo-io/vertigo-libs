@@ -3,10 +3,10 @@
           th:with="iconClass=${(iconRight?:false) ? 'fr-link--icon-right' : 'fr-link--icon-left'},
                    sizeClass=${(size=='sm' or size=='lg') ? 'fr-link--' + size : ''}">
     <a th::href="|${disabled}?null:'${url}'|"
-       th:class="${'fr-link' + (download==null?:'--download')}"
-       th:classappend="${sizeClass + ' ' + (icon==null ?: icon + ' ' + iconClass)}"
+       th:class="${'fr-link ' + (download==null?'':'fr-link--download')}"
+       th:classappend="${sizeClass + ' ' + (icon==null ?'': (icon + ' ' + iconClass))}"
        th:attr="__${other_attrs}__">
-        <th:block vu:text="${label?:''}"/>
+        <th:block th:text="${label?:''}"/>
         <span th:if="${detailLabel!=null}" class="fr-link__detail" th:text="${detailLabel}"></span>
         <!--th:attrappend="${download==null?:'download='true'}"-->
     </a>
