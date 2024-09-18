@@ -14,6 +14,11 @@
     <vu:messages />
     <vu:form id="myFormId">
 
+        <vu:dsfr-breadcrumb>
+            <vu:dsfr-breadcrumb-el label="Accueil" url="'#'"/>
+            <vu:dsfr-breadcrumb-el label="Page de démo"/>
+        </vu:dsfr-breadcrumb>
+
         <vu:block id="movie" title="#{movie.title.information}" >
             <vu:include-data object="movies" field="*" />
             <vu:include-data-primitive key='timeZoneList'/>

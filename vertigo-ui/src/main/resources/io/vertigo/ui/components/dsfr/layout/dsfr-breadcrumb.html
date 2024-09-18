@@ -1,0 +1,9 @@
+<th:block th:fragment="dsfr-breadcrumb(class, other_attrs)"
+          th:attr="o=${model.vContext['componentStates'].addComponentState('breadcrumb').addList('links')}">
+    <dsfr-breadcrumb :links="componentStates.breadcrumb.links" th:attr="__${other_attrs}__"></dsfr-breadcrumb>
+    <vu:content/>
+</th:block>
+
+<th:block th:fragment="dsfr-breadcrumb-el(label, url)">
+    <th:block th:attr="o=${model.vContext['componentStates']['breadcrumb'].addObjectToList('links', {'text': label, 'to': url})}"/>
+</th:block>
