@@ -36,24 +36,28 @@
 	<script th:if="${!isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@__${myVueJsVersion}__/dist/vue.global.prod.js}"></script>
     <script th:if="${isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@__${myVueJsVersion}__/dist/vue.global.js}"></script>
    	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js}" ></script>
-    
-    <!--/* Vertigo UI - DSFR */-->
-    <th:block th:if="${myUseDsfr}">
-	    <link th:href="@{/vertigo-ui/static/3rdParty/dsfr/style.css}" rel="stylesheet" type="text/css"/>
-		<script th:src="@{/vertigo-ui/static/3rdParty/dsfr/dsfr.umd.js}"></script>
-	</th:block>
-	
+
 	<!--/* Wysiwyg (with tiptap editor) */-->
 	<th:block th:if="${useWysiwyg}">
 		<link th:href="@{/vertigo-ui/static/js/wysiwyg/style.css}" rel="stylesheet" type="text/css"/>
 		<script th:src="@{/vertigo-ui/static/js/wysiwyg/vertigo-wysiwyg.umd.js}"></script>
 	</th:block>
 
+	<!--/* Quasar CSS */-->
+	<th:block th:if="${myUseQuasar}">
+		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@__${myQuasarVersion}__/dist/quasar.css}" rel="stylesheet" type="text/css"/>
+	</th:block>
+
+	<!--/* Vertigo UI - DSFR */-->
+	<th:block th:if="${myUseDsfr}">
+		<link th:href="@{/vertigo-ui/static/3rdParty/dsfr/style.css}" rel="stylesheet" type="text/css"/>
+		<script th:src="@{/vertigo-ui/static/3rdParty/dsfr/dsfr.umd.js}"></script>
+	</th:block>
+
     <!--/* Defered scripts */-->
     
     <!--/* Quasar */-->
     <th:block th:if="${myUseQuasar}">
-		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@__${myQuasarVersion}__/dist/quasar.css}" rel="stylesheet" type="text/css"/>
 		<script th:if="${!isVuejsDevMode}" defer th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@__${myQuasarVersion}__/dist/quasar.umd.prod.js}"></script>
 	    <script th:if="${isVuejsDevMode}" defer th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@__${myQuasarVersion}__/dist/quasar.umd.js}"></script>
 	    <script defer th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@__${myQuasarVersion}__/dist/lang/__${model.util.getCurrentLocalePrefixForQuasar()}__.umd.prod.js}"></script>
