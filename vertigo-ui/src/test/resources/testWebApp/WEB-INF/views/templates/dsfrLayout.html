@@ -19,17 +19,28 @@
 <body class="mat desktop no-touch platform-mat">
 <vu:page> <!-- vuiSsr -->
 
-    <dsfr-header
+    <vu:dsfr-header
             service-title="Vertigo DSFR"
             service-description="Page de test des composants"
             :logo-text="['Vertigo', 'DSFR']"
     >
-    </dsfr-header>
+        <vu:dsfr-header-skip-link label="Aller au contenu" id="content"/>
+
+        <vu:dsfr-header-quick-link label="Notifications" url="'#'" icon="fr-icon-notification-3-line"/>
+        <vu:dsfr-header-quick-link label="Aide" url="'#'" icon="fr-icon-question-line"/>
+
+        <vu:dsfr-header-nav-item label="Accueil" url="'#'"/>
+        <vu:dsfr-header-nav-item label="Accueil" url="'#'"/>
+        <vu:dsfr-header-nav-item-menu label="Menu">
+            <vu:dsfr-header-nav-item label="Accueil" url="'#'"/>
+            <vu:dsfr-header-nav-item label="Accueil" url="'#'"/>
+        </vu:dsfr-header-nav-item-menu>
+    </vu:dsfr-header>
 
 
-    <div class="fr-container fr-my-2w">
-        <section layout:fragment="content"></section>
-    </div>
+    <main class="fr-container fr-my-2w" id="content">
+        <th:block layout:fragment="content"></th:block>
+    </main>
 
     <dsfr-footer home-link="/"
                  a11yComplience="non conforme"

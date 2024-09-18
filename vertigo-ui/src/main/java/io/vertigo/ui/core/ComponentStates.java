@@ -55,6 +55,14 @@ public final class ComponentStates extends HashMap<String, Serializable> {
 
 		private static final long serialVersionUID = -162303456261091792L;
 
+		public ComponentState() {
+			super();
+		}
+
+		public ComponentState(final Map object) {
+			super(object);
+		}
+
 		public List<Serializable> addList(final String key) {
 			Assertion.check().isNotBlank(key);
 			//---
@@ -63,12 +71,20 @@ public final class ComponentStates extends HashMap<String, Serializable> {
 			return list;
 		}
 
-		public HashMap<String, Serializable> addObjectToList(final String listKey, final Map object) {
+		public ComponentState getLastObjectFromList(final String listKey) {
+			Assertion.check()
+					.isNotBlank(listKey);
+			//---
+			final List list = (List) get(listKey);
+			return (ComponentState) list.get(list.size() - 1);
+		}
+
+		public ComponentState addObjectToList(final String listKey, final Map object) {
 			Assertion.check()
 					.isNotBlank(listKey)
 					.isNotNull(object);
 			//---
-			final HashMap<String, Serializable> modifiableObject = new HashMap<>(object);// just to have a modifiable map
+			final ComponentState modifiableObject = new ComponentState(object);// just to have a modifiable map
 			((List) get(listKey)).add(modifiableObject);
 			return modifiableObject;
 		}
