@@ -56,7 +56,7 @@
   import { watch, ref } from 'vue'
 
   // import mandatory tiptap components
-  import { useEditor, EditorContent, BubbleMenu } from '@tiptap/vue-3'
+  import { useEditor, EditorContent, BubbleMenu, findParentNode, isList } from '@tiptap/vue-3'
   import Document from '@tiptap/extension-document'
   import Paragraph from '@tiptap/extension-paragraph'
   import Text from '@tiptap/extension-text'
@@ -145,13 +145,13 @@
     'unordered' : {
       class: 'mdi mdi-format-list-bulleted',
       action: (editor) => editor.chain().focus().toggleBulletList().run(),
-      active: (editor) => editor.isActive('bulletList'),
+      active: (editor) => getListTypeNodeName(editor) === 'bulletList',
       extensions: [BulletList, ListItem, ListKeymap]
     },
     'ordered' : {
       class: 'mdi mdi-format-list-numbered',
       action: (editor) => editor.chain().focus().toggleOrderedList().run(),
-      active: (editor) => editor.isActive('orderedList'),
+      active: (editor) => getListTypeNodeName(editor) === 'orderedList',
       extensions: [OrderedList, ListItem, ListKeymap]
     },
     'outdent' : {
@@ -341,6 +341,11 @@
       .setLink({ href: url.startsWith('http://') ? url : `http://${url}` })
       .run()
     };
+    
+  const getListTypeNodeName = function(editor) {
+    const parentListNode = findParentNode(node => isList(node.type.name, editor.extensionManager.extensions))(editor.state.selection);
+    return parentListNode?.node?.type.name;
+  }
 </script>
 
 
