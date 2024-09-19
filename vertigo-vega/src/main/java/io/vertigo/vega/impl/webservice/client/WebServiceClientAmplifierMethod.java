@@ -31,6 +31,9 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.gson.JsonSyntaxException;
 
 import io.vertigo.account.authorization.VSecurityException;
@@ -53,13 +56,16 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public final class WebServiceClientAmplifierMethod implements AmplifierMethod {
 
+	/** WARN : with debug level, some sensible data can be logged. */
+	private static final Logger LOGGER = LogManager.getLogger(WebServiceClientAmplifierMethod.class);
+
 	private final Map<String, HttpClientConnector> httpClientConnectorByName = new HashMap<>();
 	private final JsonEngine jsonReaderEngine;
 	private final AnalyticsManager analyticsManager;
 
 	/**
-	* @param jsonReaderEngine jsonReaderEngine
-	*/
+	 * @param jsonReaderEngine jsonReaderEngine
+	 */
 	@Inject
 	public WebServiceClientAmplifierMethod(final JsonEngine jsonReaderEngine,
 			final List<HttpClientConnector> httpClientConnectors,
@@ -103,7 +109,11 @@ public final class WebServiceClientAmplifierMethod implements AmplifierMethod {
 		final String name = "/" + webServiceDefinition.getVerb().name() + "/" + webServiceDefinition.getPath();
 		response = analyticsManager.traceWithReturn("wsclient", name, tracer -> {
 			try {
-				return httpClientConnector.getClient().send(httpRequest, BodyHandlers.ofString());
+				final var res = httpClientConnector.getClient().send(httpRequest, BodyHandlers.ofString());
+				if (LOGGER.isDebugEnabled()) {
+					LOGGER.debug("Response of {}\n{}", name, httpResponseToString(res));
+				}
+				return res;
 			} catch (final IOException e) {
 				throw WrappedException.wrap(e);
 			} catch (final InterruptedException e) {
@@ -136,6 +146,17 @@ public final class WebServiceClientAmplifierMethod implements AmplifierMethod {
 		} else {
 			throw WrappedException.wrap(new VSystemException(response.body()));
 		}
+	}
+
+	private String httpResponseToString(final HttpResponse response) {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("Response Status: ").append(response.statusCode()).append("\n");
+		sb.append("Response Headers: ").append(response.headers().map()).append("\n");
+		final var responseBody = response.body();
+		if (responseBody != null && !"".equals(responseBody)) {
+			sb.append("Response Body: ").append(responseBody).append("\n");
+		}
+		return sb.toString();
 	}
 
 	private Map convertErrorFromJson(final String json, final Type type) {
@@ -172,7 +193,8 @@ public final class WebServiceClientAmplifierMethod implements AmplifierMethod {
 		return namedArgs;
 	}
 
-	private HttpRequest createHttpRequest(final WebServiceDefinition webServiceDefinition, final Map<String, Object> namedArgs, final HttpClientConnector httpClientConnector, final Optional<RequestSpecializer> requestSpecializerOpt) {
+	private HttpRequest createHttpRequest(final WebServiceDefinition webServiceDefinition, final Map<String, Object> namedArgs, final HttpClientConnector httpClientConnector,
+			final Optional<RequestSpecializer> requestSpecializerOpt) {
 		final HttpRequestBuilder httpRequestBuilder = new HttpRequestBuilder(httpClientConnector.getUrlPrefix(), webServiceDefinition.getPath(), jsonReaderEngine);
 		httpRequestBuilder.header("Content-Type", "application/json;charset=UTF-8");
 		httpRequestBuilder.verb(webServiceDefinition.getVerb());
@@ -202,10 +224,15 @@ public final class WebServiceClientAmplifierMethod implements AmplifierMethod {
 		}
 		requestSpecializerOpt.ifPresent(
 				requestSpecializer -> requestSpecializer.specialize(httpRequestBuilder, webServiceDefinition, namedArgs, httpClientConnector));
-		return httpRequestBuilder.build();
+		final var req = httpRequestBuilder.build();
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Call WS {}", httpRequestBuilder.requestString());
+		}
+		return req;
 	}
 
 	private static WebServiceDefinition createWebServiceDefinition(final Method method) {
 		return AnnotationsWebServiceScannerUtil.buildWebServiceDefinition(method).get();
 	}
+
 }

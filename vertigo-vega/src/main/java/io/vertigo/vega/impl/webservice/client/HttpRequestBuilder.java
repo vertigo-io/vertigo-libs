@@ -27,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -49,7 +50,8 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 
 	private final java.net.http.HttpRequest.Builder httpRequestBuilder = HttpRequest.newBuilder();
 	private final Map<String, String> pathParams = new HashMap<>();
-	private final Map<String, String> queryParams = new HashMap<>();
+	private final Map<String, String> headersParams = new LinkedHashMap<>();
+	private final Map<String, String> queryParams = new LinkedHashMap<>();
 	private Verb myVerb = null;
 	private Object body = null;
 	private String jsonBody = null;
@@ -84,6 +86,8 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 	public HttpRequest build() {
 		httpRequestBuilder.uri(buildURI());
 
+		headersParams.forEach(httpRequestBuilder::header);
+
 		BodyPublisher bodyPublisher = BodyPublishers.noBody();
 		if (body != null) {
 			if (jsonBody == null) {
@@ -115,6 +119,21 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 		return httpRequestBuilder.build();
 	}
 
+	public String requestString() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append(myVerb).append(" ").append(buildURI());
+		sb.append("\nRequests Headers: ");
+		if (!headersParams.isEmpty()) {
+			sb.append(headersParams);
+		}
+		if (body != null) {
+			sb.append("\nRequests Body: ");
+			final var jsonBody = prepareBody();
+			sb.append(jsonBody);
+		}
+		return sb.toString();
+	}
+
 	public URI buildURI() {
 		final StringBuilder resourceQuery = new StringBuilder(urlPrefix);
 		String resourcePathMerged = resourcePath;
@@ -134,7 +153,7 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 	}
 
 	public void header(final String name, final String value) {
-		httpRequestBuilder.setHeader(name, value);
+		headersParams.put(name, value);
 	}
 
 	public void pathParam(final String name, final String value) {
@@ -188,7 +207,7 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 	}
 
 	public void verb(final Verb verb) {
-		this.myVerb = verb;
+		myVerb = verb;
 	}
 
 }
