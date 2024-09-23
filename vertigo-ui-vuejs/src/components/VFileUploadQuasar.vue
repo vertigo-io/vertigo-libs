@@ -115,30 +115,32 @@ export default {
   },
   mounted() {
       this.changeIcon();
-      var xhrParams = new URLSearchParams()
-      this.fileInfoUris.forEach((fileInfoUri) => {
-          xhrParams.append(this.fieldName, fileInfoUri);
-      });
-
-      this.$http.get(this.url + '/fileInfos', { params: xhrParams, credentials: false })
-            .then(function (response) { //Ok
-                    var uiFileInfos = response.data;
-
-                    this.files = uiFileInfos.map((uiFileInfo) => {
-                        return uiFileInfo;
-                    })
-                    this.$emit('init-ok');
-                }.bind(this))
-            .catch(function (error) { //Ko
-                    this.$emit('update:file-info-uris', []); // reset
-                    this.$emit('init-ko');
-                    if(error.response) {
-                        this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file "+xhrParams);
-                    } else {
-                        this.$q.notify(error + " Can't load file "+xhrParams);
-                    }
-                }.bind(this)
-        );
+      if (this.fileInfoUris.length > 0) {
+        var xhrParams = new URLSearchParams()
+        this.fileInfoUris.forEach((fileInfoUri) => {
+            xhrParams.append(this.fieldName, fileInfoUri);
+        });
+        
+        this.$http.get(this.url + '/fileInfos', { params: xhrParams, credentials: false })
+              .then(function (response) { //Ok
+                      var uiFileInfos = response.data;
+        
+                      this.files = uiFileInfos.map((uiFileInfo) => {
+                          return uiFileInfo;
+                      })
+                      this.$emit('init-ok');
+                  }.bind(this))
+              .catch(function (error) { //Ko
+                      this.$emit('update:file-info-uris', []); // reset
+                      this.$emit('init-ko');
+                      if(error.response) {
+                          this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file "+xhrParams);
+                      } else {
+                          this.$q.notify(error + " Can't load file "+xhrParams);
+                      }
+                  }.bind(this)
+          );
+      };
   },
   data : function() {
       return {

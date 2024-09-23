@@ -65,33 +65,35 @@ export default {
       
   },
   mounted() {
-      // load previously uploaded files infos from server
-      let xhrParams = new URLSearchParams()
-      this.fileInfoUris.forEach((fileInfoUri) => {
-          xhrParams.append(this.fieldName, fileInfoUri);
-      });
-
-      this.$http.get(this.url + '/fileInfos', { params: xhrParams, credentials: false })
-            .then(function (response) { //Ok
-                    let uiFileInfos = response.data;
-
-                    this.files = uiFileInfos.map((uiFileInfo) => {
-                        return {...uiFileInfo, status: "OK"};
-                    })
-                    this.$emit('init-ok');
-                }.bind(this))
-            .catch(function (error) { //Ko
-                    this.$emit('update:file-info-uris', []); // reset
-                    this.$emit('init-ko');
-                    if (this.$q) {
-                        if(error.response) {
-                            this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file "+xhrParams);
-                        } else {
-                            this.$q.notify(error + " Can't load file "+xhrParams);
-                        }
-                    }
-                }.bind(this)
-      );
+      if (this.fileInfoUris.length > 0) {
+        // load previously uploaded files infos from server
+        let xhrParams = new URLSearchParams()
+        this.fileInfoUris.forEach((fileInfoUri) => {
+            xhrParams.append(this.fieldName, fileInfoUri);
+        });
+        
+        this.$http.get(this.url + '/fileInfos', { params: xhrParams, credentials: false })
+              .then(function (response) { //Ok
+                      let uiFileInfos = response.data;
+        
+                      this.files = uiFileInfos.map((uiFileInfo) => {
+                          return {...uiFileInfo, status: "OK"};
+                      })
+                      this.$emit('init-ok');
+                  }.bind(this))
+              .catch(function (error) { //Ko
+                      this.$emit('update:file-info-uris', []); // reset
+                      this.$emit('init-ko');
+                      if (this.$q) {
+                          if(error.response) {
+                              this.$q.notify(error.response.status + ":" + error.response.statusText + " Can't load file "+xhrParams);
+                          } else {
+                              this.$q.notify(error + " Can't load file "+xhrParams);
+                          }
+                      }
+                  }.bind(this)
+          );
+      };
         
       if (typeof this.callbackOnDelete !== 'function' && typeof this.callbackOnDelete !== 'boolean') {
           console.error('callback-on-delete must be a function or a boolean');

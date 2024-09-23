@@ -116,18 +116,18 @@ const E = (e, t) => {
       });
     }
   }
-}, Vt = window.Vue.renderList, qt = window.Vue.Fragment, B = window.Vue.openBlock, Ae = window.Vue.createElementBlock, we = window.Vue.resolveComponent, ce = window.Vue.createVNode, ye = window.Vue.withCtx, ne = window.Vue.createBlock, ue = window.Vue.createCommentVNode, Dt = window.Vue.toDisplayString, X = window.Vue.createElementVNode, dn = window.Vue.withKeys, cn = { class: "bot" }, un = { class: "q-pr-md" }, fn = { class: "sys-chat" }, hn = { class: "q-pb-sm" }, pn = { class: "sys-chat non-selectable" }, mn = { class: "text-blue-2 q-caption" }, gn = { class: "row docs-btn" }, bn = { class: "message-processing sys-chat non-selectable" }, wn = { class: "non-selectable" }, yn = { class: "message-response row docs-btn q-pl-sm non-selectable" };
+}, Vt = window.Vue.renderList, qt = window.Vue.Fragment, P = window.Vue.openBlock, Ae = window.Vue.createElementBlock, we = window.Vue.resolveComponent, ce = window.Vue.createVNode, ye = window.Vue.withCtx, ne = window.Vue.createBlock, ue = window.Vue.createCommentVNode, Dt = window.Vue.toDisplayString, X = window.Vue.createElementVNode, dn = window.Vue.withKeys, cn = { class: "bot" }, un = { class: "q-pr-md" }, fn = { class: "sys-chat" }, hn = { class: "q-pb-sm" }, pn = { class: "sys-chat non-selectable" }, mn = { class: "text-blue-2 q-caption" }, gn = { class: "row docs-btn" }, bn = { class: "message-processing sys-chat non-selectable" }, wn = { class: "non-selectable" }, yn = { class: "message-response row docs-btn q-pl-sm non-selectable" };
 function vn(e, t, n, a, s, o) {
   const i = we("q-rating"), r = we("q-chat-message"), l = we("q-btn"), d = we("q-spinner-dots"), u = we("q-scroll-area"), p = we("q-input");
-  return B(), Ae("div", cn, [
+  return P(), Ae("div", cn, [
     ce(u, {
       class: "bg-grey-2 col-grow row q-pa-sm",
       ref: "scroller"
     }, {
       default: ye(() => [
         X("div", un, [
-          (B(!0), Ae(qt, null, Vt(e.messages, (f, h) => (B(), Ae("div", { key: h }, [
-            f.rating ? (B(), ne(r, {
+          (P(!0), Ae(qt, null, Vt(e.messages, (f, h) => (P(), Ae("div", { key: h }, [
+            f.rating ? (P(), ne(r, {
               class: "animate-fade",
               key: "msgRating-" + h,
               sent: f.sent,
@@ -145,7 +145,7 @@ function vn(e, t, n, a, s, o) {
               ]),
               _: 2
             }, 1032, ["sent", "bg-color", "avatar"])) : ue("", !0),
-            f.text ? (B(), ne(r, {
+            f.text ? (P(), ne(r, {
               class: "animate-fade",
               key: "msg-" + h,
               label: f.label,
@@ -159,7 +159,7 @@ function vn(e, t, n, a, s, o) {
             }, null, 8, ["label", "sent", "text-color", "bg-color", "name", "avatar", "text", "stamp"])) : ue("", !0)
           ]))), 128)),
           X("div", fn, [
-            e.error ? (B(), ne(r, {
+            e.error ? (P(), ne(r, {
               key: 0,
               class: "animate-fade",
               "bg-color": "orange-4",
@@ -180,7 +180,7 @@ function vn(e, t, n, a, s, o) {
             })) : ue("", !0)
           ]),
           X("div", pn, [
-            e.inputConfig.buttons.length > 0 ? (B(), ne(r, {
+            e.inputConfig.buttons.length > 0 ? (P(), ne(r, {
               key: 0,
               class: "animate-fade",
               "bg-color": "primary",
@@ -189,7 +189,7 @@ function vn(e, t, n, a, s, o) {
               default: ye(() => [
                 X("div", mn, Dt(e.$q.lang.vui.suggestedAnswers), 1),
                 X("div", gn, [
-                  (B(!0), Ae(qt, null, Vt(e.inputConfig.buttons, (f, h) => (B(), ne(l, {
+                  (P(!0), Ae(qt, null, Vt(e.inputConfig.buttons, (f, h) => (P(), ne(l, {
                     class: "full-width",
                     key: "repChatBtn-" + h,
                     onClick: (c) => o.postAnswerBtn(f),
@@ -203,7 +203,7 @@ function vn(e, t, n, a, s, o) {
             })) : ue("", !0)
           ]),
           X("div", bn, [
-            e.processing ? (B(), ne(r, {
+            e.processing ? (P(), ne(r, {
               key: 0,
               class: "animate-fade",
               "bg-color": "grey-4"
@@ -215,7 +215,7 @@ function vn(e, t, n, a, s, o) {
             })) : ue("", !0)
           ]),
           X("div", wn, [
-            e.inputConfig.showRating ? (B(), ne(r, {
+            e.inputConfig.showRating ? (P(), ne(r, {
               key: 0,
               class: "animate-fade",
               "bg-color": "primary",
@@ -256,7 +256,7 @@ function vn(e, t, n, a, s, o) {
         onClick: t[4] || (t[4] = (f) => o.postAnswerText()),
         disable: e.processing || e.inputConfig.responseText.trim() === "" && e.inputConfig.rating === 0
       }, null, 8, ["disable"]),
-      n.devMode === !0 ? (B(), ne(l, {
+      n.devMode === !0 ? (P(), ne(l, {
         key: 0,
         round: "",
         color: "red",
@@ -544,9 +544,9 @@ const Tn = /* @__PURE__ */ E(_n, [["render", En]]), lt = window.Quasar, On = {
       return t > 0 ? t + " days" : (t = lt.date.getDateDiff(Date.now(), e, "hours"), t > 0 ? t + " hours" : (t = lt.date.getDateDiff(Date.now(), e, "minutes"), t > 0 ? t + " min" : "Now"));
     }
   }
-}, ke = window.Vue.toDisplayString, Ie = window.Vue.createTextVNode, P = window.Vue.resolveComponent, k = window.Vue.withCtx, $e = window.Vue.openBlock, ze = window.Vue.createBlock, dt = window.Vue.createCommentVNode, x = window.Vue.createVNode, Mn = window.Vue.renderList, Pn = window.Vue.Fragment, Mt = window.Vue.createElementBlock, Pt = window.Vue.createElementVNode, Nn = window.Vue.normalizeClass, Bn = ["src"];
+}, ke = window.Vue.toDisplayString, Ie = window.Vue.createTextVNode, N = window.Vue.resolveComponent, k = window.Vue.withCtx, $e = window.Vue.openBlock, ze = window.Vue.createBlock, dt = window.Vue.createCommentVNode, x = window.Vue.createVNode, Mn = window.Vue.renderList, Nn = window.Vue.Fragment, Mt = window.Vue.createElementBlock, Nt = window.Vue.createElementVNode, Bn = window.Vue.normalizeClass, Pn = ["src"];
 function An(e, t, n, a, s, o) {
-  const i = P("q-badge"), r = P("q-btn"), l = P("big"), d = P("q-item-label"), u = P("q-input"), p = P("q-item-section"), f = P("q-item"), h = P("q-separator"), c = P("q-avatar"), m = P("q-icon"), g = P("q-popup-edit"), w = P("q-list"), v = P("q-drawer");
+  const i = N("q-badge"), r = N("q-btn"), l = N("big"), d = N("q-item-label"), u = N("q-input"), p = N("q-item-section"), f = N("q-item"), h = N("q-separator"), c = N("q-avatar"), m = N("q-icon"), g = N("q-popup-edit"), w = N("q-list"), v = N("q-drawer");
   return $e(), Mt("span", null, [
     x(r, {
       round: "",
@@ -631,18 +631,18 @@ function An(e, t, n, a, s, o) {
               _: 1
             }),
             x(h),
-            ($e(!0), Mt(Pn, null, Mn(e.list, (b) => ($e(), ze(f, {
+            ($e(!0), Mt(Nn, null, Mn(e.list, (b) => ($e(), ze(f, {
               key: b.uuid,
-              class: Nn(["items-start", { "cursor-pointer": b.author == n.connectedAccount }])
+              class: Bn(["items-start", { "cursor-pointer": b.author == n.connectedAccount }])
             }, {
               default: k(() => [
                 x(p, { avatar: "" }, {
                   default: k(() => [
                     x(c, null, {
                       default: k(() => [
-                        Pt("img", {
+                        Nt("img", {
                           src: n.baseUrl + "x/accounts/api/" + b.author + "/photo"
-                        }, null, 8, Bn)
+                        }, null, 8, Pn)
                       ]),
                       _: 2
                     }, 1024)
@@ -657,7 +657,7 @@ function An(e, t, n, a, s, o) {
                       ]),
                       _: 2
                     }, 1024),
-                    Pt("div", null, ke(b.msg), 1)
+                    Nt("div", null, ke(b.msg), 1)
                   ]),
                   _: 2
                 }, 1024),
@@ -734,7 +734,7 @@ const Ln = /* @__PURE__ */ E(On, [["render", An]]), Un = {
       return "border: 3px solid " + e + "; background-color: " + e + "; color: white; padding: 5px; width: 70px; height: 70px;";
     }
   }
-}, In = window.Vue.renderList, zn = window.Vue.Fragment, ct = window.Vue.openBlock, ut = window.Vue.createElementBlock, Ve = window.Vue.resolveComponent, Rn = window.Vue.normalizeStyle, _e = window.Vue.createVNode, Re = window.Vue.withCtx, Nt = window.Vue.toDisplayString, Oe = window.Vue.createElementVNode, jn = { class: "row q-col-gutter-md" }, Hn = { class: "row col items-center" }, Gn = { class: "q-subheading text-bold" }, Jn = /* @__PURE__ */ Oe("div", { class: "col" }, null, -1), Yn = { class: "row col q-body-2 text-justify" };
+}, In = window.Vue.renderList, zn = window.Vue.Fragment, ct = window.Vue.openBlock, ut = window.Vue.createElementBlock, Ve = window.Vue.resolveComponent, Rn = window.Vue.normalizeStyle, _e = window.Vue.createVNode, Re = window.Vue.withCtx, Bt = window.Vue.toDisplayString, Oe = window.Vue.createElementVNode, jn = { class: "row q-col-gutter-md" }, Hn = { class: "row col items-center" }, Gn = { class: "q-subheading text-bold" }, Jn = /* @__PURE__ */ Oe("div", { class: "col" }, null, -1), Yn = { class: "row col q-body-2 text-justify" };
 function Qn(e, t, n, a, s, o) {
   const i = Ve("q-icon"), r = Ve("q-item-section"), l = Ve("q-toggle"), d = Ve("q-item"), u = Ve("q-card");
   return ct(), ut("div", jn, [
@@ -762,7 +762,7 @@ function Qn(e, t, n, a, s, o) {
               _e(r, null, {
                 default: Re(() => [
                   Oe("div", Hn, [
-                    Oe("div", Gn, Nt(p.label), 1),
+                    Oe("div", Gn, Bt(p.label), 1),
                     Jn,
                     Oe("div", null, [
                       _e(l, {
@@ -774,7 +774,7 @@ function Qn(e, t, n, a, s, o) {
                       }, null, 8, ["modelValue", "onUpdate:modelValue"])
                     ])
                   ]),
-                  Oe("div", Yn, Nt(p.description), 1)
+                  Oe("div", Yn, Bt(p.description), 1)
                 ]),
                 _: 2
               }, 1024)
@@ -1029,11 +1029,11 @@ const to = /* @__PURE__ */ E(Kn, [["render", eo]]), no = {
       this.$props.modelValue && (e = JSON.stringify({ lon: this.$data.inputObject.lon, lat: this.$data.inputObject.lat }), this.$props.modelValue._v_inputValue = e), this.$emit("update:modelValue", this.$data.inputObject);
     }
   }
-}, oo = window.Vue.resolveComponent, Bt = window.Vue.createVNode, ao = window.Vue.openBlock, io = window.Vue.createElementBlock, so = { class: "row" };
+}, oo = window.Vue.resolveComponent, Pt = window.Vue.createVNode, ao = window.Vue.openBlock, io = window.Vue.createElementBlock, so = { class: "row" };
 function ro(e, t, n, a, s, o) {
   const i = oo("q-input");
   return ao(), io("div", so, [
-    Bt(i, {
+    Pt(i, {
       label: "Longitude",
       "stack-label": "",
       modelValue: e.inputObject.lon,
@@ -1043,7 +1043,7 @@ function ro(e, t, n, a, s, o) {
       ],
       modelModifiers: { number: !0 }
     }, null, 8, ["modelValue", "onUpdate:modelValue"]),
-    Bt(i, {
+    Pt(i, {
       label: "Latitude",
       "stack-label": "",
       modelValue: e.inputObject.lat,
@@ -1246,7 +1246,7 @@ const Do = /* @__PURE__ */ E(vo, [["render", qo]]), Ge = window.Quasar, Fo = {
     clearInterval(this.timer);
   }
 }, Je = window.Vue.toDisplayString, Ye = window.Vue.createTextVNode, re = window.Vue.resolveComponent, z = window.Vue.withCtx, Qe = window.Vue.openBlock, pt = window.Vue.createBlock, Eo = window.Vue.createCommentVNode, To = window.Vue.renderList, Oo = window.Vue.Fragment, Mo = window.Vue.createElementBlock, Z = window.Vue.createVNode;
-function Po(e, t, n, a, s, o) {
+function No(e, t, n, a, s, o) {
   const i = re("q-badge"), r = re("q-icon"), l = re("q-item-section"), d = re("q-item-label"), u = re("q-item"), p = re("q-list"), f = re("q-menu"), h = re("q-btn");
   return Qe(), pt(h, {
     round: "",
@@ -1335,7 +1335,7 @@ function Po(e, t, n, a, s, o) {
     _: 1
   }, 8, ["flat", "color", "text-color", "icon"]);
 }
-const No = /* @__PURE__ */ E(Fo, [["render", Po]]), It = window.Quasar, O = window.ol, Bo = {
+const Bo = /* @__PURE__ */ E(Fo, [["render", No]]), It = window.Quasar, O = window.ol, Po = {
   props: {
     id: { type: String, required: !0 },
     initialZoomLevel: { type: Number },
@@ -1414,7 +1414,7 @@ function Ho(e, t, n, a, s, o) {
     Io(e.$slots, "default", Lo(Uo(e.$attrs)))
   ], 8, jo);
 }
-const Go = /* @__PURE__ */ E(Bo, [["render", Ho]]), Xe = window.Quasar, y = window.ol, Jo = {
+const Go = /* @__PURE__ */ E(Po, [["render", Ho]]), Xe = window.Quasar, y = window.ol, Jo = {
   props: {
     id: { type: String, required: !0 },
     list: { type: Array },
@@ -1836,17 +1836,20 @@ const ga = /* @__PURE__ */ E(ra, [["render", ma]]), ba = window.Vue.ref, wa = {
   emits: ["update:file-info-uris", "download-file", "file-ok", "file-failed", "init-ok", "init-ko"],
   computed: {},
   mounted() {
-    let e = new URLSearchParams();
-    this.fileInfoUris.forEach((t) => {
-      e.append(this.fieldName, t);
-    }), this.$http.get(this.url + "/fileInfos", { params: e, credentials: !1 }).then((function(t) {
-      let n = t.data;
-      this.files = n.map((a) => ({ ...a, status: "OK" })), this.$emit("init-ok");
-    }).bind(this)).catch(
-      (function(t) {
-        this.$emit("update:file-info-uris", []), this.$emit("init-ko"), this.$q && (t.response ? this.$q.notify(t.response.status + ":" + t.response.statusText + " Can't load file " + e) : this.$q.notify(t + " Can't load file " + e));
-      }).bind(this)
-    ), typeof this.callbackOnDelete != "function" && typeof this.callbackOnDelete != "boolean" && console.error("callback-on-delete must be a function or a boolean");
+    if (this.fileInfoUris.length > 0) {
+      let e = new URLSearchParams();
+      this.fileInfoUris.forEach((t) => {
+        e.append(this.fieldName, t);
+      }), this.$http.get(this.url + "/fileInfos", { params: e, credentials: !1 }).then((function(t) {
+        let n = t.data;
+        this.files = n.map((a) => ({ ...a, status: "OK" })), this.$emit("init-ok");
+      }).bind(this)).catch(
+        (function(t) {
+          this.$emit("update:file-info-uris", []), this.$emit("init-ko"), this.$q && (t.response ? this.$q.notify(t.response.status + ":" + t.response.statusText + " Can't load file " + e) : this.$q.notify(t + " Can't load file " + e));
+        }).bind(this)
+      );
+    }
+    typeof this.callbackOnDelete != "function" && typeof this.callbackOnDelete != "boolean" && console.error("callback-on-delete must be a function or a boolean");
   },
   data: function() {
     return {
@@ -1955,10 +1958,10 @@ const R = window.Vue.toDisplayString, Ze = window.Vue.normalizeProps, et = windo
 }, Da = {
   key: 0,
   style: { color: "red" }
-}, Fa = { style: { color: "grey" } }, Ea = { key: 1 }, Ta = { key: 2 }, Oa = ["onClick"], Ma = ["onClick"], Pa = ["onClick"], Na = {
+}, Fa = { style: { color: "grey" } }, Ea = { key: 1 }, Ta = { key: 2 }, Oa = ["onClick"], Ma = ["onClick"], Na = ["onClick"], Ba = {
   key: 0,
   class: "input"
-}, Ba = ["id", "accept", "multiple"];
+}, Pa = ["id", "accept", "multiple"];
 function Aa(e, t, n, a, s, o) {
   return L(), U("div", xa, [
     e.$slots.header ? (L(), U("div", Sa, [
@@ -1989,11 +1992,11 @@ function Aa(e, t, n, a, s, o) {
                 key: 5,
                 style: { color: "red" },
                 onClick: gt((r) => o.removeFile(i), ["prevent"])
-              }, R(e.$vui.i18n().uploader.remove), 9, Pa)) : ee("", !0)
+              }, R(e.$vui.i18n().uploader.remove), 9, Na)) : ee("", !0)
             ]))), 256))
           ])
         ]),
-        o.canAddFiles() ? (L(), U("div", Na, [
+        o.canAddFiles() ? (L(), U("div", Ba, [
           Ee(e.$slots, "input", Ze(et({ ...e.$data, ...e.$props, canAddFiles: o.canAddFiles, addFiles: o.addFiles, abortUpload: o.abortUpload, removeFile: o.removeFile, downloadFile: o.downloadFile, getGlobalSize: o.getGlobalSize, getGlobalSizeLabel: o.getGlobalSizeLabel, humanStorageSize: o.humanStorageSize })), () => [
             Te("input", jt({
               id: e.$props.inputId,
@@ -2002,7 +2005,7 @@ function Aa(e, t, n, a, s, o) {
               accept: e.$props.accept,
               multiple: e.$props.multiple,
               onChange: t[0] || (t[0] = (i) => o.addFiles(i.target.files))
-            }, e.$props.inputProps), null, 16, Ba)
+            }, e.$props.inputProps), null, 16, Pa)
           ])
         ])) : ee("", !0)
       ])
@@ -2029,18 +2032,19 @@ const La = /* @__PURE__ */ E(wa, [["render", Aa]]), Ua = window.Quasar.format, {
   emits: ["update:file-info-uris", "download-file", "init-ok", "init-ko"],
   computed: {},
   mounted() {
-    this.changeIcon();
-    var e = new URLSearchParams();
-    this.fileInfoUris.forEach((t) => {
-      e.append(this.fieldName, t);
-    }), this.$http.get(this.url + "/fileInfos", { params: e, credentials: !1 }).then((function(t) {
-      var n = t.data;
-      this.files = n.map((a) => a), this.$emit("init-ok");
-    }).bind(this)).catch(
-      (function(t) {
-        this.$emit("update:file-info-uris", []), this.$emit("init-ko"), t.response ? this.$q.notify(t.response.status + ":" + t.response.statusText + " Can't load file " + e) : this.$q.notify(t + " Can't load file " + e);
-      }).bind(this)
-    );
+    if (this.changeIcon(), this.fileInfoUris.length > 0) {
+      var e = new URLSearchParams();
+      this.fileInfoUris.forEach((t) => {
+        e.append(this.fieldName, t);
+      }), this.$http.get(this.url + "/fileInfos", { params: e, credentials: !1 }).then((function(t) {
+        var n = t.data;
+        this.files = n.map((a) => a), this.$emit("init-ok");
+      }).bind(this)).catch(
+        (function(t) {
+          this.$emit("update:file-info-uris", []), this.$emit("init-ko"), t.response ? this.$q.notify(t.response.status + ":" + t.response.statusText + " Can't load file " + e) : this.$q.notify(t + " Can't load file " + e);
+        }).bind(this)
+      );
+    }
   },
   data: function() {
     return {
@@ -2096,7 +2100,7 @@ const La = /* @__PURE__ */ E(wa, [["render", Aa]]), Ua = window.Quasar.format, {
       return Ia(this.getGlobalSize());
     }
   }
-}, H = window.Vue.toDisplayString, tt = window.Vue.createTextVNode, le = window.Vue.resolveComponent, N = window.Vue.withCtx, G = window.Vue.createVNode, _ = window.Vue.openBlock, I = window.Vue.createBlock, D = window.Vue.createCommentVNode, te = window.Vue.createElementBlock, J = window.Vue.createElementVNode, Ht = window.Vue.renderList, bt = window.Vue.Fragment, Ra = window.Vue.normalizeClass, ja = window.Vue.mergeProps, Ha = window.Vue.createSlots, Ga = { class: "q-uploader__header-content flex flex-center no-wrap q-gutter-xs" }, Ja = { class: "col column justify-center" }, Ya = {
+}, H = window.Vue.toDisplayString, tt = window.Vue.createTextVNode, le = window.Vue.resolveComponent, B = window.Vue.withCtx, G = window.Vue.createVNode, _ = window.Vue.openBlock, I = window.Vue.createBlock, D = window.Vue.createCommentVNode, te = window.Vue.createElementBlock, J = window.Vue.createElementVNode, Ht = window.Vue.renderList, bt = window.Vue.Fragment, Ra = window.Vue.normalizeClass, ja = window.Vue.mergeProps, Ha = window.Vue.createSlots, Ga = { class: "q-uploader__header-content flex flex-center no-wrap q-gutter-xs" }, Ja = { class: "col column justify-center" }, Ya = {
   key: 0,
   class: "q-uploader__title"
 }, Qa = {
@@ -2122,7 +2126,7 @@ function si(e, t, n, a, s, o) {
     onFailed: o.failedFiles,
     readonly: e.$props.readonly || !o.globalCanAddFiles([])
   }, e.$attrs, { ref: "quasarUploader" }), Ha({
-    list: N((c) => [
+    list: B((c) => [
       J("div", Ka, [
         G(f, {
           "label-width": 3,
@@ -2132,7 +2136,7 @@ function si(e, t, n, a, s, o) {
           "stack-label": "",
           borderless: ""
         }, {
-          control: N(() => [
+          control: B(() => [
             J("div", Wa, [
               e.$props.readonly ? D("", !0) : (_(!0), te(bt, { key: 0 }, Ht(c.files, (m) => (_(), te(bt, {
                 key: m.name
@@ -2221,7 +2225,7 @@ function si(e, t, n, a, s, o) {
             flat: "",
             dense: ""
           }, {
-            default: N(() => [
+            default: B(() => [
               G(d)
             ]),
             _: 1
@@ -2234,9 +2238,9 @@ function si(e, t, n, a, s, o) {
             dense: "",
             onClick: c.abort
           }, {
-            default: N(() => [
+            default: B(() => [
               G(i, null, {
-                default: N(() => [
+                default: B(() => [
                   tt(H(e.$q.lang.vui.uploader.abort), 1)
                 ]),
                 _: 1
@@ -2251,11 +2255,11 @@ function si(e, t, n, a, s, o) {
   }, [
     e.$props.simple ? {
       name: "header",
-      fn: N(() => []),
+      fn: B(() => []),
       key: "0"
     } : {
       name: "header",
-      fn: N((c) => [
+      fn: B((c) => [
         J("div", Ga, [
           c.queuedFiles.length > 0 && !c.readonly ? (_(), I(r, {
             key: 0,
@@ -2265,9 +2269,9 @@ function si(e, t, n, a, s, o) {
             dense: "",
             onClick: c.removeQueuedFiles
           }, {
-            default: N(() => [
+            default: B(() => [
               G(i, null, {
-                default: N(() => [
+                default: B(() => [
                   tt(H(e.$q.lang.vui.uploader.clear_all), 1)
                 ]),
                 _: 1
@@ -2292,9 +2296,9 @@ function si(e, t, n, a, s, o) {
             dense: "",
             onClick: c.abort
           }, {
-            default: N(() => [
+            default: B(() => [
               G(i, null, {
-                default: N(() => [
+                default: B(() => [
                   tt(H(e.$q.lang.vui.uploader.abort), 1)
                 ]),
                 _: 1
@@ -2309,10 +2313,10 @@ function si(e, t, n, a, s, o) {
             dense: "",
             onClick: c.pickFiles
           }, {
-            default: N(() => [
+            default: B(() => [
               G(d),
               G(i, null, {
-                default: N(() => [
+                default: B(() => [
                   tt(H(e.$q.lang.vui.uploader.add), 1)
                 ]),
                 _: 1
@@ -2335,9 +2339,9 @@ function nn(e, t) {
   for (var a in t) n[a] = t[a];
   return n;
 }
-function Be() {
+function Pe() {
 }
-var Pe = 0.7, at = 1 / Pe, xe = "\\s*([+-]?\\d+)\\s*", Ne = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)\\s*", Y = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)%\\s*", li = /^#([0-9a-f]{3,8})$/, di = new RegExp(`^rgb\\(${xe},${xe},${xe}\\)$`), ci = new RegExp(`^rgb\\(${Y},${Y},${Y}\\)$`), ui = new RegExp(`^rgba\\(${xe},${xe},${xe},${Ne}\\)$`), fi = new RegExp(`^rgba\\(${Y},${Y},${Y},${Ne}\\)$`), hi = new RegExp(`^hsl\\(${Ne},${Y},${Y}\\)$`), pi = new RegExp(`^hsla\\(${Ne},${Y},${Y},${Ne}\\)$`), Gt = {
+var Ne = 0.7, at = 1 / Ne, xe = "\\s*([+-]?\\d+)\\s*", Be = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)\\s*", Y = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)%\\s*", li = /^#([0-9a-f]{3,8})$/, di = new RegExp(`^rgb\\(${xe},${xe},${xe}\\)$`), ci = new RegExp(`^rgb\\(${Y},${Y},${Y}\\)$`), ui = new RegExp(`^rgba\\(${xe},${xe},${xe},${Be}\\)$`), fi = new RegExp(`^rgba\\(${Y},${Y},${Y},${Be}\\)$`), hi = new RegExp(`^hsl\\(${Be},${Y},${Y}\\)$`), pi = new RegExp(`^hsla\\(${Be},${Y},${Y},${Be}\\)$`), Gt = {
   aliceblue: 15792383,
   antiquewhite: 16444375,
   aqua: 65535,
@@ -2487,7 +2491,7 @@ var Pe = 0.7, at = 1 / Pe, xe = "\\s*([+-]?\\d+)\\s*", Ne = "\\s*([+-]?(?:\\d*\\
   yellow: 16776960,
   yellowgreen: 10145074
 };
-xt(Be, st, {
+xt(Pe, st, {
   copy(e) {
     return Object.assign(new this.constructor(), this, e);
   },
@@ -2525,7 +2529,7 @@ function nt(e, t, n, a) {
   return a <= 0 && (e = t = n = NaN), new M(e, t, n, a);
 }
 function bi(e) {
-  return e instanceof Be || (e = st(e)), e ? (e = e.rgb(), new M(e.r, e.g, e.b, e.opacity)) : new M();
+  return e instanceof Pe || (e = st(e)), e ? (e = e.rgb(), new M(e.r, e.g, e.b, e.opacity)) : new M();
 }
 function _t(e, t, n, a) {
   return arguments.length === 1 ? bi(e) : new M(e, t, n, a ?? 1);
@@ -2533,12 +2537,12 @@ function _t(e, t, n, a) {
 function M(e, t, n, a) {
   this.r = +e, this.g = +t, this.b = +n, this.opacity = +a;
 }
-xt(M, _t, nn(Be, {
+xt(M, _t, nn(Pe, {
   brighter(e) {
     return e = e == null ? at : Math.pow(at, e), new M(this.r * e, this.g * e, this.b * e, this.opacity);
   },
   darker(e) {
-    return e = e == null ? Pe : Math.pow(Pe, e), new M(this.r * e, this.g * e, this.b * e, this.opacity);
+    return e = e == null ? Ne : Math.pow(Ne, e), new M(this.r * e, this.g * e, this.b * e, this.opacity);
   },
   rgb() {
     return this;
@@ -2580,7 +2584,7 @@ function Wt(e, t, n, a) {
 }
 function on(e) {
   if (e instanceof j) return new j(e.h, e.s, e.l, e.opacity);
-  if (e instanceof Be || (e = st(e)), !e) return new j();
+  if (e instanceof Pe || (e = st(e)), !e) return new j();
   if (e instanceof j) return e;
   e = e.rgb();
   var t = e.r / 255, n = e.g / 255, a = e.b / 255, s = Math.min(t, n, a), o = Math.max(t, n, a), i = NaN, r = o - s, l = (o + s) / 2;
@@ -2592,12 +2596,12 @@ function Ct(e, t, n, a) {
 function j(e, t, n, a) {
   this.h = +e, this.s = +t, this.l = +n, this.opacity = +a;
 }
-xt(j, Ct, nn(Be, {
+xt(j, Ct, nn(Pe, {
   brighter(e) {
     return e = e == null ? at : Math.pow(at, e), new j(this.h, this.s, this.l * e, this.opacity);
   },
   darker(e) {
-    return e = e == null ? Pe : Math.pow(Pe, e), new j(this.h, this.s, this.l * e, this.opacity);
+    return e = e == null ? Ne : Math.pow(Ne, e), new j(this.h, this.s, this.l * e, this.opacity);
   },
   rgb() {
     var e = this.h % 360 + (this.h < 0) * 360, t = isNaN(e) || isNaN(this.s) ? 0 : this.s, n = this.l, a = n + (n < 0.5 ? n : 1 - n) * t, s = 2 * n - a;
@@ -3124,7 +3128,7 @@ const qi = {
 function Mi(e, t, n, a, s, o) {
   return Ei(), Ti("canvas", Oi, null, 512);
 }
-const Pi = /* @__PURE__ */ E(Fi, [["render", Mi]]), Ni = {
+const Ni = /* @__PURE__ */ E(Fi, [["render", Mi]]), Bi = {
   mounted: function(e, t, n) {
     var a = t.value;
     if (!window.watcherUpdates && (window.watcherUpdates = {
@@ -3153,7 +3157,7 @@ const Pi = /* @__PURE__ */ E(Fi, [["render", Mi]]), Ni = {
   unmounted: function() {
     window.removeEventListener("beforeunload", window.watcherUpdates.beforeWindowUnload);
   }
-}, Bi = {
+}, Pi = {
   mounted: function(e, t, n) {
     var a = t.value;
     a && !window.autofocus && (window.autofocus = !0, e.focus());
@@ -3800,7 +3804,7 @@ var sn = {
     return Object.keys(t).forEach((a) => n[a] = t[a].bind(e)), n;
   },
   install: function(e, t) {
-    if (e.component("v-chatbot", $n), e.component("v-commands", Tn), e.component("v-comments", Ln), e.component("v-extensions-store", Xn), e.component("v-facets", to), e.component("v-geopoint-input", lo), e.component("v-handles", yo), e.component("v-json-editor", Do), e.component("v-notifications", No), e.component("v-map", Go), e.component("v-map-layer", ia), e.component("v-tree", ga), e.component("v-file-upload", La), e.component("v-file-upload-quasar", ri), e.component("v-dashboard-chart", Pi), e.directive("alert-unsaved-updates", Ni), e.directive("autofocus", Bi), e.directive("if-unsaved-updates", Li), e.directive("minify", Ii), e.directive("scroll-spy", zi), !t.axios) {
+    if (e.component("v-chatbot", $n), e.component("v-commands", Tn), e.component("v-comments", Ln), e.component("v-extensions-store", Xn), e.component("v-facets", to), e.component("v-geopoint-input", lo), e.component("v-handles", yo), e.component("v-json-editor", Do), e.component("v-notifications", Bo), e.component("v-map", Go), e.component("v-map-layer", ia), e.component("v-tree", ga), e.component("v-file-upload", La), e.component("v-file-upload-quasar", ri), e.component("v-dashboard-chart", Ni), e.directive("alert-unsaved-updates", Bi), e.directive("autofocus", Pi), e.directive("if-unsaved-updates", Li), e.directive("minify", Ii), e.directive("scroll-spy", zi), !t.axios) {
       console.error("You have to install axios");
       return;
     }
