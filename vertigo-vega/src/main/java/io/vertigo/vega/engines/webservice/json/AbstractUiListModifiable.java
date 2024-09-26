@@ -229,7 +229,7 @@ public abstract class AbstractUiListModifiable<D extends DataObject> extends Abs
 	public UiObject<D> get(final int row) {
 		//id>=0 : par index dans la UiList (pour boucle, uniquement dans la même request)
 		Assertion.check()
-				.isTrue(row >= 0, "Le getteur utilisé n'est pas le bon")
+				.isTrue(row >= 0, "Used getter isn't the good one")
 				.isTrue(row <= DtListState.DEFAULT_MAX_ROWS, "UiListModifiable is limited to " + DtListState.DEFAULT_MAX_ROWS + " elements");
 
 		//SKE MLA : lazy initialisation of buffer uiObjects for size changing uiListModifiable
