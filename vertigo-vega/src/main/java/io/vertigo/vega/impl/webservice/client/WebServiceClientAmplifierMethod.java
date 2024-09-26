@@ -196,12 +196,13 @@ public final class WebServiceClientAmplifierMethod implements AmplifierMethod {
 	private HttpRequest createHttpRequest(final WebServiceDefinition webServiceDefinition, final Map<String, Object> namedArgs, final HttpClientConnector httpClientConnector,
 			final Optional<RequestSpecializer> requestSpecializerOpt) {
 		final HttpRequestBuilder httpRequestBuilder = new HttpRequestBuilder(httpClientConnector.getUrlPrefix(), webServiceDefinition.getPath(), jsonReaderEngine);
-		httpRequestBuilder.header("Content-Type", "application/json;charset=UTF-8");
 		httpRequestBuilder.verb(webServiceDefinition.getVerb());
+		boolean hasBody = false;
 		for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {
 			switch (webServiceParam.getParamType()) {
 				case Body:
 					httpRequestBuilder.bodyParam(namedArgs.get(webServiceParam.getName()), webServiceParam);
+					hasBody = true;
 					break;
 				case Header:
 					httpRequestBuilder.header(webServiceParam.getName(), String.valueOf(namedArgs.get(webServiceParam.getName())));
@@ -211,6 +212,7 @@ public final class WebServiceClientAmplifierMethod implements AmplifierMethod {
 					break;
 				case InnerBody:
 					httpRequestBuilder.innerBodyParam(webServiceParam.getName(), namedArgs.get(webServiceParam.getName()), webServiceParam);
+					hasBody = true;
 					break;
 				case Path:
 					httpRequestBuilder.pathParam(webServiceParam.getName(), String.valueOf(namedArgs.get(webServiceParam.getName())));
@@ -222,6 +224,10 @@ public final class WebServiceClientAmplifierMethod implements AmplifierMethod {
 					break;
 			}
 		}
+		if (hasBody) {
+			httpRequestBuilder.header("Content-Type", "application/json;charset=UTF-8");
+		}
+
 		requestSpecializerOpt.ifPresent(
 				requestSpecializer -> requestSpecializer.specialize(httpRequestBuilder, webServiceDefinition, namedArgs, httpClientConnector));
 		final var req = httpRequestBuilder.build();
