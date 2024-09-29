@@ -37,11 +37,13 @@ import redis.clients.jedis.params.SetParams;
  * @author npiedeloup
  */
 public final class RateLimitingRedisStorePlugin implements RateLimitingStorePlugin {
+
 	static final String PREFIX_REDIS_KEY = "rateLimiting:";
 	static final String BANISHED_KEY = PREFIX_REDIS_KEY + "banishedKeys";
 	static final String BANISH_COUNTER_KEY = "banishCounter";
 	static final String BANISH_INSTANT_KEY = "banishInstant";
 	static final String HITS_COUNTER_KEY = "hits";
+	static final String FIRST_HIT_INSTANT_KEY = "time";
 
 	private final RedisConnector redisConnector;
 
@@ -64,11 +66,30 @@ public final class RateLimitingRedisStorePlugin implements RateLimitingStorePlug
 	}
 
 	@Override
-	public long touch(final String userKey, final long windowSeconds) {
+	public long touch(final String userKey, final long incrBy, final long windowSeconds) {
 		final var jedis = redisConnector.getClient();
 		//we initialize with the expire is not present
 		jedis.set(getPrefixKey(HITS_COUNTER_KEY, userKey), "0", new SetParams().nx().ex(windowSeconds));
-		return jedis.incr(getPrefixKey(HITS_COUNTER_KEY, userKey));
+		jedis.set(getPrefixKey(FIRST_HIT_INSTANT_KEY, userKey), String.valueOf(Instant.now().getEpochSecond()), new SetParams().nx().ex(windowSeconds));
+		return jedis.incrBy(getPrefixKey(HITS_COUNTER_KEY, userKey), incrBy);
+	}
+
+	@Override
+	public void extendsWindow(final String userKey, final long newWindowSeconds) {
+		final var jedis = redisConnector.getClient();
+		//we extends with the expire
+		jedis.expire(getPrefixKey(HITS_COUNTER_KEY, userKey), newWindowSeconds);
+		jedis.expire(getPrefixKey(FIRST_HIT_INSTANT_KEY, userKey), newWindowSeconds);
+	}
+
+	@Override
+	public long getFirstHitAgeSecond(final String userKey) {
+		final var jedis = redisConnector.getClient();
+		final var firstHitInstantStr = jedis.get(getPrefixKey(FIRST_HIT_INSTANT_KEY, userKey));
+		if (firstHitInstantStr != null) {
+			return Instant.now().getEpochSecond() - Long.parseLong(firstHitInstantStr);
+		}
+		return 0;
 	}
 
 	@Override
@@ -165,4 +186,5 @@ public final class RateLimitingRedisStorePlugin implements RateLimitingStorePlug
 			}
 		}
 	}
+
 }
