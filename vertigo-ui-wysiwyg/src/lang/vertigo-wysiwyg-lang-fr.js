@@ -27,5 +27,6 @@ export default {
 	'removeFormat': 'Supprimer le formatage',
 	'undo': 'Annuler',
 	'redo': 'Rétablir',
-	'viewsource': 'Voir le source'
+	'viewsource': 'Voir le source',
+	'infoBlock': 'Information',
 };

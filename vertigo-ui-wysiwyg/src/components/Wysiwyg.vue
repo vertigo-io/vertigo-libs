@@ -64,6 +64,9 @@
   import HardBreak from '@tiptap/extension-hard-break'
   import Gapcursor from '@tiptap/extension-gapcursor'
   
+  // usefull for custom commands
+  import { mergeAttributes, Node, wrappingInputRule } from '@tiptap/core'
+  
   // import extensions
   import Bold from '@tiptap/extension-bold'
   import Italic from '@tiptap/extension-italic'
@@ -283,6 +286,11 @@
     'viewsource' : {
       class: 'mdi mdi-code-tags',
       action: () => displayHtml.value = !displayHtml.value
+    },
+    'infoBlock' : {
+      class: 'mdi mdi-information-outline',
+      action: (editor) => editor.chain().focus().toggleCustom().run(),
+      active: (editor) => editor.isActive('info-block'),
     }
     
   }
@@ -293,9 +301,38 @@
                              .flatMap(btn => commands[btn].extensions)
                              .filter((value, index, self) => self.indexOf(value) === index); // remove duplicates
   
+  // ############# TEMPORARY #################
+  
+  const customExtension = Node.create({
+    name: 'info-block',
+    content: 'block+',
+    group: 'block',
+    defining: true,
+    addOptions() {
+      return {
+        HTMLAttributes: { class: 'info-block' },
+      }
+    },
+    parseHTML() {
+      return [
+        { tag: 'div' },
+      ]
+    },
+    renderHTML({ HTMLAttributes }) {
+      return ['div', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
+    },
+    addCommands() {
+      return {
+        toggleCustom: () => ({ commands }) => {
+          return commands.toggleWrap(this.name)
+        },
+      }
+    },
+  })
+  // #########################################
   const editor = useEditor({
     content: model.value,
-    extensions: [Document, Paragraph, Text, History, HardBreak, Gapcursor, ...activeExtensions],
+    extensions: [Document, Paragraph, Text, History, HardBreak, Gapcursor, customExtension, ...activeExtensions],
     onUpdate: function({editor}) {
         model.value = editor.getHTML();
     },

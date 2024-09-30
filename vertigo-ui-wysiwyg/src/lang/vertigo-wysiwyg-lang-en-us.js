@@ -27,5 +27,6 @@ export default {
 	'removeFormat': 'Remove Format',
 	'undo': 'Undo',
 	'redo': 'Redo',
-	'viewsource': 'View Source'
+	'viewsource': 'View Source',
+	'infoBlock': 'Information',
 };
