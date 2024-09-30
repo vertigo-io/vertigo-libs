@@ -1,5 +1,5 @@
 <th:block
-        th:fragment="dsfr-table(list, componentId, selectable, rowKey, rowsPerPage, sortUrl, sortBy, descending, navOnRow, color, tableClass, autoColClass, title, v-title, subtitle, v-subtitle, dontUseHeading, top_right_slot, top_left_slot, header_slot, actions_slot, table_slot, additional_content_slot, contentTags, tr_attrs, item_attrs, table_attrs)"
+        th:fragment="dsfr-table(list, componentId, selectable, rowKey, rowsPerPage, sortUrl, sortBy, descending, actions_slot, header_slot, table_slot, table_attrs)"
         th:assert="${componentId} != null and !(${sortUrl} != null and ${sortBy} != null) and !(${descending} != null and ${sortBy} == null)"
         th:with="tableKey=${list},
                    rowIndex='props.rowIndex',
@@ -38,6 +38,9 @@
                      th:v-model:current-page="|componentStates.${componentId}.pagination.page|"
                      th:attr="__${table_attrs}__">
         <vu:content-slot name="table_slot" th:with="label=null, title=null, vTitle=null"/>
+        <template #header="{ key, label }">
+            <vu:content-slot name="header_slot" th:with="label=null, title=null, vTitle=null"/>
+        </template>
         <template #cell="{ colKey, cell }">
             <vu:content></vu:content>
             <vu:dsfr-column name="action" label="Actions" sortable="false" align="right"

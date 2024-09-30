@@ -1,0 +1,27 @@
+<th:block th:fragment="dsfr-select-multiple-edit(object, field, list, rowIndex, label, description, valueField, labelField, filterFunction, required, input_attrs)" vu:alias="dsfr-select-multiple" vu:selector="${viewMode=='edit'}"
+          th:assert="${object} != null and ${field} != null and ${list} != null"
+          th:with="myComponentId='select_m_'+${object}+'_'+${field},
+	  			   myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
+	  			   myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)},
+	  			   myLabel=${modifiableTable!=null?null:label?:model.util.label(object + '.' + field)},
+      			   myRequired=${required != null ? required : model.util.required(object + '.' + field)}">
+    <vu:include-data object="${object}" field="${field}" modifiable="true"/>
+    <vu:include-data object="${list}" field="${myValueField}"/>
+    <vu:include-data object="${list}" field="${myLabelField}"/>
+
+    <dsfr-select-multiple
+            th:select-id="${myComponentId}"
+            th:required="${myRequired}"
+            th:label="${myLabel}"
+            th:description="${description}"
+            th::options="|dsfrTransformListForSelection('${list}', '${myValueField}', '${myLabelField}', ${filterFunction?:null})|"
+            th::name="${model.util.contextKey(object, field, rowIndex)}"
+            th:v-model="|vueData.${object}.${field}|"
+            th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+            th:attr="__${input_attrs}__">
+        >
+        <vu:content/>
+    </dsfr-select-multiple>
+    <input th:v-for="|id in ${model.util.vueDataKey(object, field, rowIndex)}|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" th:v-bind:value="id" />
+    <input th:v-if="|vueData.${object}.${field}.length == 0|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
+</th:block>

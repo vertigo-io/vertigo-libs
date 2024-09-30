@@ -15,12 +15,12 @@
 	</head>
 </th:block>
 
-<th:block th:fragment="head-meta(vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, useDsfr, useWysiwyg)"
+<th:block th:fragment="head-meta(vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, disableQuasarStyle, useDsfr, useWysiwyg)"
         th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, 
                  isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false},
                  isVuiSsr=${vuiSsr != null ? vuiSsr : false},
                  myVueJsVersion=${vueJsVersion?:'3.4.31'}, myVertigoUiVersion=${vertigoUiVersion?:'4.2.0'},
-                 myUseQuasar=${useQuasar ?: true}, myQuasarVersion=${quasarVersion?:'2.16.5'},
+                 myUseQuasar=${useQuasar ?: true}, myQuasarVersion=${quasarVersion?:'2.16.5'}, myDisableQuasarStyle=${disableQuasarStyle?:false},
                  myUseDsfr=${useDsfr ?: false}">
                  
 	<link th:href="@{/vertigo-ui/static/3rdParty/roboto/v20/css/roboto.css}" rel="stylesheet" type="text/css"/>
@@ -44,7 +44,7 @@
 	</th:block>
 
 	<!--/* Quasar CSS */-->
-	<th:block th:if="${myUseQuasar}">
+	<th:block th:if="${myUseQuasar && !myDisableQuasarStyle}">
 		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@__${myQuasarVersion}__/dist/quasar.css}" rel="stylesheet" type="text/css"/>
 	</th:block>
 

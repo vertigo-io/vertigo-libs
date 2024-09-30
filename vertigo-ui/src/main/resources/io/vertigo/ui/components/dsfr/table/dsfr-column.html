@@ -14,3 +14,11 @@
         <vu:content><th:block th:if="${field != null}">{{ cell.[[${field}]] }}</th:block></vu:content><!--/* Default content */-->
     </template>
 </th:block>
+
+<th:block th:fragment="dsfr-column-header-table(name, field)" vu:alias="dsfr-column-header"
+          th:assert="${(field != null) or (name != null)}"
+          th:with="columnName=${name != null ? name : 'col_' + field}">
+    <template th:v-if="|key === '${columnName}'|">
+        <vu:content>{{ label }}</vu:content><!--/* Default content */-->
+    </template>
+</th:block>

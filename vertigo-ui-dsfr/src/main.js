@@ -6,6 +6,7 @@ import VueDsfr from '@gouvminint/vue-dsfr'              // Import (par défaut) 
 import DsfrMethods from './methods'
 import RouterLink from "@/components/Routerlink.vue";
 import DsfrFacets from "@/components/DsfrFacets.vue";
+import DsfrSelectMultiple from "@/components/DsfrSelectMultiple/DsfrSelectMultiple.vue";
 
 import './utils.css'
 import './surcharges.css'
@@ -15,6 +16,7 @@ var DSFR = {
         vueApp.use(VueDsfr);
 
         vueApp.component('RouterLink', RouterLink)
+        vueApp.component('DsfrSelectMultiple', DsfrSelectMultiple)
         vueApp.component('DsfrFacets', DsfrFacets)
     },
 
