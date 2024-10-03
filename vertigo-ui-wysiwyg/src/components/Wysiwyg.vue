@@ -375,7 +375,7 @@
       .chain()
       .focus()
       .extendMarkRange('link')
-      .setLink({ href: url.startsWith('http://') ? url : `http://${url}` })
+      .setLink({ href: /^https?:\/\//i.test(url) ? url : `http://${url}` })
       .run()
     };
     

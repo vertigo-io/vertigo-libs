@@ -16585,7 +16585,7 @@ const Ab = Te.create({
           d.chain().focus().extendMarkRange("link").unsetLink().run();
           return;
         }
-        d.chain().focus().extendMarkRange("link").setLink({ href: h.startsWith("http://") ? h : `http://${h}` }).run();
+        d.chain().focus().extendMarkRange("link").setLink({ href: /^https?:\/\//i.test(h) ? h : `http://${h}` }).run();
       }
     }, f = function(d) {
       var h;
