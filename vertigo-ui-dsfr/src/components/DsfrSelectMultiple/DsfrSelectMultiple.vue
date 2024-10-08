@@ -3,6 +3,7 @@ import {ref, computed, watch} from 'vue';
 import {useCollapsable} from '@/composables/useCollapsable'
 
 import type {DsfrSelectMultipleProps} from './DsfrSelectMultiple.types'
+import {getRandomId} from "@/utils/random-utils";
 
 export type {DsfrSelectMultipleProps}
 
@@ -17,10 +18,9 @@ const {
 
 // Props
 const props = withDefaults(defineProps<DsfrSelectMultipleProps>(), {
-  selectId: () => 'id',
+  id: () => getRandomId("select-multiple"),
   options: () => [],
   label: '',
-  selectId: '',
   name: undefined,
   description: undefined,
   successMessage: '',
@@ -91,41 +91,44 @@ let filterFn = function (event) {
   localOptions.value = props.options.filter(o => o.text.toLowerCase().indexOf(needle) > -1);
 }
 
+let focusOption = function(itemId) {
+  document.getElementById(`${props.id}_option_${itemId}`).focus()
+}
+
 let focusOptionDown = function (event) {
-  if (document.activeElement.id.startsWith("opt-")) {
-    const optId = Number(document.activeElement.id.split("-")[1]);
-    if (optId < localOptions.value.length - 1) {
-      document.getElementById(`opt-${optId + 1}`).focus();
-    } else {
-      focusFirstOption()
-    }
-  } else {
-    focusFirstOption();
-  }
+  const activeId = document.activeElement.id;
+  const itemId = activeId.startsWith(`${props.id}_option_`)
+      ? Number(activeId.split("_")[2])
+      : -1;
+
+  const nextId = itemId + 1 < localOptions.value.length - 1
+      ? itemId + 1
+      : 0;
+  focusOption(nextId);
 }
 
 let focusOptionUp = function (event) {
-  if (document.activeElement.id.startsWith("opt-")) {
-    const optId = Number(document.activeElement.id.split("-")[1]);
-    if (optId > 0) {
-      document.getElementById(`opt-${optId - 1}`).focus();
-    } else {
-      focusLastOption()
-    }
-  } else {
-    focusLastOption()
-  }
+  const activeId = document.activeElement.id;
+  const itemId = activeId.startsWith(`${props.id}_option_`)
+      ? Number(activeId.split("_")[2])
+      : -1;
+
+  const nextId = itemId - 1 >= 0
+      ? itemId - 1
+      : localOptions.value.length - 1;
+  focusOption(nextId);
 }
 
 let focusFirstOption = function (event) {
-  document.getElementById("opt-0").focus();
+  focusOption(0)
 }
 
 let focusLastOption = function (event) {
-  document.getElementById(`opt-${localOptions.value.length - 1}`).focus();
+  focusOption(localOptions.value.length - 1)
 }
 
-let focusTabFromDiv = function (event) {
+/* Détermine le prochain focus lorsque l’on appuie sur tab une fois dans le popup*/
+let setFocusTabFromDiv = function (event) {
   if (!event.shiftKey) {
     if (props.comboHasButton) {
       if (!expanded.value) {
@@ -143,12 +146,13 @@ let focusTabFromDiv = function (event) {
   }
 }
 
-let focusTabInDiv = function (event) {
+/* Détermine le prochain focus lorsque l’on appuie sur tab une fois sur le champs select*/
+let setFocusTabInDiv = function (event) {
   if (!event.shiftKey) {
-    if (props.comboHasButton && !props.comboHasFilter && document.activeElement.id === `${props.selectId}_button`) {
+    if (props.comboHasButton && !props.comboHasFilter && document.activeElement.id === `${props.id}_button`) {
       event.preventDefault();
       expanded.value = false
-    } else if (props.comboHasFilter && document.activeElement.id === `${props.selectId}_filter`) {
+    } else if (props.comboHasFilter && document.activeElement.id === `${props.id}_filter`) {
       event.preventDefault();
       expanded.value = false
     }
@@ -158,14 +162,34 @@ let focusTabInDiv = function (event) {
   }
 }
 
-let focusAltTab = function (event) {
-  if (document.activeElement.id.startsWith("opt-")) {
+let setFocusForShiftTab = function (event) {
+  if (document.activeElement.id.startsWith(`${props.id}_option_`)) {
     if (props.comboHasFilter) {
       event.preventDefault()
       filter.value.focus()
     } else if (props.comboHasButton) {
       button.value.focus()
     }
+  }
+}
+
+let setFocusByFirstCharacter = (event) => {
+  let char = event.key;
+  if ((char.length > 1 && char.match(/\S/)) || document.activeElement.id === `${props.id}_filter`) {
+    return;
+  }
+
+  char = char.toLowerCase();
+
+  let filteredItems = localOptions.value.filter(o => o.text.toLowerCase().startsWith(char))
+  let activeDocumentId = document.activeElement.id;
+  for (let item of filteredItems) {
+    let domItem = document.querySelector(`[data-id='${item.value}']`)
+    if (activeDocumentId === domItem.id) {
+      continue;
+    }
+    domItem.focus()
+    break;
   }
 }
 
@@ -178,12 +202,10 @@ let focusAltTab = function (event) {
   >
     <label
         class="fr-label"
-        for="selectId"
+        :for="id"
     >
-      <!-- @slot Slot pour personnaliser tout le contenu de la balise <label> cf. [DsfrInput](/?path=/story/composants-champ-de-saisie-champ-simple-dsfrinput--champ-avec-label-personnalise). Une **props porte le même nom pour un label simple** (texte sans mise en forme) -->
       <slot name="label">
         {{ label }}
-        <!-- @slot Slot pour indiquer que le champ est obligatoire. Par défaut, met une astérisque si `required` est à true (dans un `<span class="required">`) -->
         <slot name="required-tip">
           <span
               v-if="required"
@@ -198,21 +220,22 @@ let focusAltTab = function (event) {
     </label>
 
     <div
-        :id="selectId"
+        :id="id"
         :class="{ [`fr-select--${messageType}`]: message !== ''}"
         class="fr-input"
         @click.prevent.stop="expanded = !expanded"
-        @keyup.esc.stop="expanded = false"
-        @keyup.space.prevent="expanded = !expanded"
+        @keydown.esc.stop="expanded = false"
+        @keydown.space.prevent="expanded = !expanded"
         @keydown.down.prevent="focusFirstOption"
         @keydown.up.prevent="focusLastOption"
-        @keydown.tab="focusTabFromDiv"
+        @keydown.tab="setFocusTabFromDiv"
+        @keydown="setFocusByFirstCharacter"
         tabindex="0"
         role="combobox"
         aria-haspopup="listbox"
         aria-autocomplete="none"
         :aria-disabled="disabled"
-        :aria-controls="`${selectId}_list`"
+        :aria-controls="`${id}_list`"
         :aria-expanded="expanded"
         :aria-required="required"
         v-bind="$attrs"
@@ -220,21 +243,22 @@ let focusAltTab = function (event) {
       <p>{{ selectionDisplay }}</p>
     </div>
     <div
-        :id="`${selectId}_list`"
+        :id="`${id}_list`"
         ref="collapse"
         class="fr-collapse fr-menu fr-select__menu fr-pb-3v fr-pt-4v bg-white"
         :class="{ 'fr-collapse--expanded': cssExpanded, 'fr-collapsing': collapsing }"
         @keyup.esc="expanded = false"
-        @keydown.tab="focusTabInDiv"
+        @keydown.tab="setFocusTabInDiv"
         @keydown.down.prevent="focusOptionDown"
         @keydown.up.prevent="focusOptionUp"
-        @keydown.shift.tab="focusAltTab"
+        @keydown.shift.tab="setFocusForShiftTab"
+        @keydown="setFocusByFirstCharacter"
         @transitionend="onTransitionEnd(expanded)"
     >
       <ul class="fr-btns-group fr-btns-group--icon-left" v-if="comboHasButton">
         <li>
           <button class="fr-btn fr-btn--tertiary"
-                  :id="`${selectId}_button`"
+                  :id="`${id}_button`"
                   @click="selectAll()"
                   ref="button"
                   :class="`${selectAllIcon}`" type="button">{{ selectAllText }}
@@ -244,7 +268,7 @@ let focusAltTab = function (event) {
 
       <div class="fr-input-wrap fr-icon-search-line fr-mb-3v" v-if="comboHasFilter">
         <input class="fr-input"
-               :id="`${selectId}_filter`"
+               :id="`${id}_filter`"
                ref="filter"
                @input="filterFn"
                aria-label="Rechercher une option"
@@ -257,11 +281,11 @@ let focusAltTab = function (event) {
         <span class="fr-hint-text" v-if="comboDescription">{{ comboDescription }}</span>
       </p>
 
-      <ul role="listbox" class="fr-select__ul">
+      <ul role="listbox" aria-multiselectable="true" class="fr-select__ul">
         <li v-for="(option, idx) in localOptions" class="fr-checkbox-group fr-checkbox-group--sm fr-py-1v"
             role="option" :aria-selected="modelValue.includes(option.value)">
-          <input :id="`opt-${idx}`" type="checkbox" class="" :value="option.value" v-model="modelValue">
-          <label class="fr-label" :for="`opt-${idx}`">
+          <input :id="`${id}_option_${idx}`" :data-id="option.value" type="checkbox" class="" tabindex="-1" :value="option.value" v-model="modelValue">
+          <label class="fr-label" :for="`opt_${idx}`">
             {{ option.text }}
           </label>
         </li>

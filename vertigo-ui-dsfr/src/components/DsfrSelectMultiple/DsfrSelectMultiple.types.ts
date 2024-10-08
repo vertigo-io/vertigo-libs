@@ -2,7 +2,7 @@ export type DsfrSelectOption = string | number | null | undefined;
 export type DsfrSelectMultipleProps = {
     required?: boolean;
     disabled?: boolean;
-    selectId?: string;
+    id?: string;
     name?: string;
     description?: string;
     modelValue?: DsfrSelectOption;

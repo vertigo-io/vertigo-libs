@@ -7,3 +7,11 @@
 .sortable-header {
     align-items: center;
 }
+
+.fr-menu__list .fr-nav__link:not(:disabled) {
+    color: var(--text-action-high-blue-france);
+}
+
+.fr-menu__list .fr-nav__link:not(:disabled) {
+    color: var(--text-action-high-blue-france);
+}

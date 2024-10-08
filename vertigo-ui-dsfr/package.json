@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@gouvfr/dsfr": "^1.12.1",
-    "@gouvminint/vue-dsfr": "^7.0.0",
+    "@gouvminint/vue-dsfr": "^7.0.1",
     "vue": "^3.4.29"
   },
   "devDependencies": {
