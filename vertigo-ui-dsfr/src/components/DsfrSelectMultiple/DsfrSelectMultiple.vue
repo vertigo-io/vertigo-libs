@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {ref, computed, watch} from 'vue';
+import {ref, computed, watch, onMounted, onUnmounted} from 'vue';
 import {useCollapsable} from '@/composables/useCollapsable'
 
 import type {DsfrSelectMultipleProps} from './DsfrSelectMultiple.types'
@@ -38,11 +38,19 @@ const localOptions = ref(props.options)
 watch(expanded, (newValue, oldValue) => {
   if (newValue !== oldValue) {
     doExpand(newValue)
+    if (newValue) {
+      document.addEventListener("click", handleFocusOut);
+      document.addEventListener("touchstart", handleFocusOut);
+    } else {
+      document.removeEventListener("click", handleFocusOut);
+      document.removeEventListener("touchstart", handleFocusOut);
+    }
   }
 })
 
 // Ref
 
+const container = ref(null)
 const button = ref(null)
 const filter = ref(null)
 
@@ -91,41 +99,29 @@ let filterFn = function (event) {
   localOptions.value = props.options.filter(o => o.text.toLowerCase().indexOf(needle) > -1);
 }
 
-let focusOption = function(itemId) {
-  document.getElementById(`${props.id}_option_${itemId}`).focus()
-}
+const getNextFocusableItem = (currentItemId, direction) => {
+  const nextId = direction === "down"
+      ? (currentItemId + 1) % localOptions.value.length
+      : (currentItemId - 1 + localOptions.value.length) % localOptions.value.length;
 
-let focusOptionDown = function (event) {
+  const item = document.getElementById(`${props.id}_option_${nextId}`);
+
+  return item.ariaDisabled === "true"
+      ? getNextFocusableItem(nextId, direction)
+      : item;
+};
+
+const focusNextOption = (direction) => {
   const activeId = document.activeElement.id;
-  const itemId = activeId.startsWith(`${props.id}_option_`)
+  const currentItemId = activeId.startsWith(`${props.id}_option_`)
       ? Number(activeId.split("_")[2])
-      : -1;
+      : (direction === "down" ? -1 : 0);
 
-  const nextId = itemId + 1 < localOptions.value.length - 1
-      ? itemId + 1
-      : 0;
-  focusOption(nextId);
-}
+  getNextFocusableItem(currentItemId, direction).focus();
+};
 
-let focusOptionUp = function (event) {
-  const activeId = document.activeElement.id;
-  const itemId = activeId.startsWith(`${props.id}_option_`)
-      ? Number(activeId.split("_")[2])
-      : -1;
-
-  const nextId = itemId - 1 >= 0
-      ? itemId - 1
-      : localOptions.value.length - 1;
-  focusOption(nextId);
-}
-
-let focusFirstOption = function (event) {
-  focusOption(0)
-}
-
-let focusLastOption = function (event) {
-  focusOption(localOptions.value.length - 1)
-}
+const focusOptionDown = (event) => focusNextOption("down");
+const focusOptionUp = (event) => focusNextOption("up");
 
 /* Détermine le prochain focus lorsque l’on appuie sur tab une fois dans le popup*/
 let setFocusTabFromDiv = function (event) {
@@ -193,11 +189,19 @@ let setFocusByFirstCharacter = (event) => {
   }
 }
 
+let handleFocusOut = (event) => {
+  if (!container.value.contains(document.activeElement)) {
+    expanded.value = false;
+  }
+}
+
 </script>
 
 <template>
   <div
+      ref="container"
       class="fr-select-group"
+      @keyup.tab="handleFocusOut"
       :class="{ [`fr-select-group--${messageType}`]: message !== ''}"
   >
     <label
@@ -226,8 +230,8 @@ let setFocusByFirstCharacter = (event) => {
         @click.prevent.stop="expanded = !expanded"
         @keydown.esc.stop="expanded = false"
         @keydown.space.prevent="expanded = !expanded"
-        @keydown.down.prevent="focusFirstOption"
-        @keydown.up.prevent="focusLastOption"
+        @keydown.down.prevent="focusOptionDown"
+        @keydown.up.prevent="focusOptionUp"
         @keydown.tab="setFocusTabFromDiv"
         @keydown="setFocusByFirstCharacter"
         tabindex="0"

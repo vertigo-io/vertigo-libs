@@ -4,6 +4,12 @@
   </dsfr-menu>
 </th:block>
 
+<th:block th:fragment="dsfr-header-menu(other_attrs)" vu:alias="dsfr-header-menu">
+  <dsfr-header-menu th:attr="__${other_attrs}__">
+    <vu:content/>
+  </dsfr-header-menu>
+</th:block>
+
 <th:block th:fragment="dsfr-menu-link(other_attrs)" vu:alias="dsfr-menu-link">
   <dsfr-menu-link th:attr="__${other_attrs}__"></dsfr-menu-link>
 </th:block>

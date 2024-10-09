@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "vite --port 3001",
     "build": "vite build",
     "build-lib": "vite build && cp dist/*.* ../vertigo-ui/src/main/resources/io/vertigo/ui/static/3rdParty/dsfr/"
   },

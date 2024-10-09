@@ -21,7 +21,7 @@
                  isVuiSsr=${vuiSsr != null ? vuiSsr : false},
                  myVueJsVersion=${vueJsVersion?:'3.4.31'}, myVertigoUiVersion=${vertigoUiVersion?:'4.2.0'},
                  myUseQuasar=${useQuasar ?: true}, myQuasarVersion=${quasarVersion?:'2.16.5'}, myDisableQuasarStyle=${disableQuasarStyle?:false},
-                 myUseDsfr=${useDsfr ?: false}">
+                 myUseDsfr=${useDsfr ?: false}, myDsfrDevMode=${dsfrDevMode ?: false}">
                  
 	<link th:href="@{/vertigo-ui/static/3rdParty/roboto/v20/css/roboto.css}" rel="stylesheet" type="text/css"/>
 	<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v142/css/materialIconsOutlined.css}" rel="stylesheet" type="text/css"/>
@@ -53,6 +53,7 @@
 		<link th:href="@{/vertigo-ui/static/3rdParty/dsfr/style.css}" rel="stylesheet" type="text/css"/>
 		<script th:src="@{/vertigo-ui/static/3rdParty/dsfr/dsfr.umd.js}"></script>
 	</th:block>
+
 
     <!--/* Defered scripts */-->
     

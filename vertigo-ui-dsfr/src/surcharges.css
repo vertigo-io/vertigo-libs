@@ -8,10 +8,12 @@
     align-items: center;
 }
 
+/* Corrige la couleur d’affichage des menus déroulants */
 .fr-menu__list .fr-nav__link:not(:disabled) {
     color: var(--text-action-high-blue-france);
 }
 
-.fr-menu__list .fr-nav__link:not(:disabled) {
-    color: var(--text-action-high-blue-france);
+/* */
+span.required {
+    color: var(--text-default-error)
 }

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {inject, onMounted} from "vue";
+import {inject, onMounted, ref} from "vue";
 import type {DsfrMenuButtonProps} from './DsfrMenu.types'
 
 export type {DsfrMenuButtonProps}
@@ -12,15 +12,11 @@ defineOptions({
   inheritAttrs: false
 })
 
-const { itemCounter, incrementCounter, addMenuItem } = inject("itemCounter")
-incrementCounter();
+const { menuItemIndex, addMenuItem } = inject("menuItem")
 
 const id = inject("id")
-const currentCount = itemCounter.value
-
-onMounted(() => {
-  addMenuItem(props.label, currentCount)
-})
+const currentCount = menuItemIndex.value
+addMenuItem(props.label, currentCount)
 
 </script>
 
