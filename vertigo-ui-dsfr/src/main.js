@@ -14,6 +14,10 @@ import DsfrMenuLink from "@/components/DsfrMenu/DsfrMenuLink.vue";
 import DsfrSelectMultiple from "@/components/DsfrSelectMultiple/DsfrSelectMultiple.vue";
 import DsfrHeaderMenu from "@/components/DsfrMenu/DsfrHeaderMenu.vue";
 
+import DsfrCustomHeader from "@/components/DsfrHeader/DsfrCustomHeader.vue";
+import DsfrCustomHeaderMenuLinks from "@/components/DsfrHeader/DsfrCustomHeaderMenuLinks.vue";
+import DsfrCustomDataTable from "@/components/DsfrDataTable/DsfrCustomDataTable.vue";
+
 import './utils.css'
 import './surcharges.css'
 
@@ -29,6 +33,11 @@ var DSFR = {
         vueApp.component('DsfrMenu', DsfrMenu)
         vueApp.component('DsfrMenuLink', DsfrMenuLink)
         vueApp.component('DsfrHeaderMenu', DsfrHeaderMenu)
+
+        // Surcharges
+        vueApp.component('DsfrCustomHeader', DsfrCustomHeader)
+        vueApp.component('DsfrCustomHeaderMenuLinks', DsfrCustomHeaderMenuLinks)
+        vueApp.component('DsfrCustomDataTable', DsfrCustomDataTable)
     },
 
     methods: DsfrMethods,

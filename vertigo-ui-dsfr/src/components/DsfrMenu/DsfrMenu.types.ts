@@ -10,4 +10,5 @@ export type DsfrMenuProps = {
 
 export type DsfrMenuButtonProps = {
     label: string;
+    url?: string;
 }

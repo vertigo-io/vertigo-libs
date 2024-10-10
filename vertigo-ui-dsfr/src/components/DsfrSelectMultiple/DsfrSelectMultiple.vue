@@ -7,6 +7,10 @@ import {getRandomId} from "@/utils/random-utils";
 
 export type {DsfrSelectMultipleProps}
 
+defineOptions({
+  inheritAttrs: false
+})
+
 // Collapsable
 const {
   collapse,

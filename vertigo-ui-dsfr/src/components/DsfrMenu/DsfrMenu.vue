@@ -8,6 +8,10 @@ import {VIcon} from "@gouvminint/vue-dsfr";
 
 export type {DsfrMenuProps}
 
+defineOptions({
+  inheritAttrs: false
+})
+
 // Collapsable
 const {
   collapse,
@@ -184,6 +188,15 @@ let handleFocusOut = (event) => {
   --ul-type: none;
   --ul-start: 0;
   --li-bottom: 0;
+  padding: 0;
+}
+
+.fr-menu__list .fr-btn--secondary {
+  box-shadow: unset;
+}
+
+.fr-menu__list :deep(.fr-nav__link:not(:disabled)) {
+  color: var(--text-action-high-blue-france);
 }
 
 </style>

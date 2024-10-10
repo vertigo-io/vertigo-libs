@@ -6,7 +6,8 @@
           th:assert="(${object} != null and ${field} != null) or ${label} != null">
     <label class="fr-label"
            th:attr="__${label_attrs}__">
-        <span vu:text="${myLabel}"/><span th:if="${!myRequired}" th:text="| (#{inputs.label.optional})|"></span>
+        <span vu:text="${myLabel}"/>
+        <span th:if="${myRequired}" class="required">&nbsp;*</span>
         <span th:if="${hint != null}" class="fr-hint-text" vu:text="${hint}"></span>
     </label>
     <vu:content/>

@@ -5,7 +5,8 @@ import type {DsfrMenuButtonProps} from './DsfrMenu.types'
 export type {DsfrMenuButtonProps}
 
 const props = withDefaults(defineProps<DsfrMenuButtonProps>(), {
-  label: ''
+  label: '',
+  url: ''
 })
 
 defineOptions({
@@ -22,7 +23,12 @@ addMenuItem(props.label, currentCount)
 
 <template>
   <li role="none">
-    <dsfr-button tabindex="-1" role="menuitem" :label="label" :id="`${id}_item_${currentCount}`" secondary class="fr-nav__link" v-bind="$attrs"/>
+    <template v-if="url === ''">
+      <dsfr-button tabindex="-1" role="menuitem" :label="label" :id="`${id}_item_${currentCount}`" secondary class="fr-nav__link" v-bind="$attrs"/>
+    </template>
+    <template v-else>
+      <a tabindex="-1" role="menuitem" :id="`${id}_item_${currentCount}`" :href="url" class="fr-btn fr-btn--secondary fr-nav__link" v-bind="$attrs">{{ label }}</a>
+    </template>
   </li>
 </template>
 

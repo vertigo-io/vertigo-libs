@@ -24,6 +24,22 @@
             service-description="Page de test des composants"
             :logo-text="['Vertigo', 'DSFR']"
     >
+        <vu:slot name="header_slot">
+            <template #header-menu-link>
+                <li>
+                    <vu:dsfr-header-menu logout-url="#"
+                                         icon="ri-account-circle-fill"
+                                         nom="Joe Nathang"
+                                         email="joenathang@pm.me"
+                                         label="Mon espace">
+                        <vu:dsfr-menu-link icon="ri-checkbox-circle-line" label="Mon profil utilisateur"/>
+                        <vu:dsfr-menu-link icon="ri-mail-line" disabled label="Messagerie"/>
+                        <vu:dsfr-menu-link icon="ri-notification-2-line" label="Notifications"/>
+                        <vu:dsfr-menu-link icon="ri-circle-line" label="Mon périmètre"/>
+                    </vu:dsfr-header-menu>
+                </li>
+            </template>
+        </vu:slot>
         <vu:dsfr-header-skip-link label="Aller au contenu" id="content"/>
 
         <vu:dsfr-header-quick-link label="Notifications" url="'#'" icon="fr-icon-notification-3-line"/>

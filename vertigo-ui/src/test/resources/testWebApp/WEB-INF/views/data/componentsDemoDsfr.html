@@ -40,7 +40,7 @@
                                  label="Mon espace">
                 <vu:dsfr-menu-link icon="ri-checkbox-circle-line" label="Mon profil utilisateur"/>
                 <vu:dsfr-menu-link icon="ri-mail-line" disabled label="Messagerie"/>
-                <vu:dsfr-menu-link icon="ri-notification-2-line" label="Notifications"/>
+                <vu:dsfr-menu-link icon="ri-notification-2-line" th:url="@{/notifications}" label="Notifications"/>
                 <vu:dsfr-menu-link icon="ri-circle-line" label="Mon périmètre"/>
             </vu:dsfr-header-menu>
 
@@ -154,6 +154,7 @@
                    componentId="movieTable2"
                    sortUrl="@{/movies/_sort}"
                    :pagination="true"
+                   sorted="movId_col"
                    row-key="movId"
                    selectable
     >
@@ -173,7 +174,7 @@
             <a th::href="|'@{/movie/}' + cell.movId|">{{ cell.movId }}</a>
         </vu:dsfr-column>
         <vu:dsfr-column field="title"/>
-        <vu:dsfr-column name="tata" label="Tata">
+        <vu:dsfr-column name="toto" label="Autre colonne">
             another column : {{ cell.movId }} : {{ cell.title }}
         </vu:dsfr-column>
     </vu:dsfr-table>

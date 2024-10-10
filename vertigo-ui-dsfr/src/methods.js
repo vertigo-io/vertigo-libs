@@ -1,5 +1,5 @@
 export default {
-    _searchAndFilterList: function(list, valueField, labelField, filterFunction, searchValue) {
+    _searchAndFilterList: function (list, valueField, labelField, filterFunction, searchValue) {
         let rawList = this.$data.vueData[list];
         if (filterFunction) {
             rawList = rawList.filter(filterFunction);
@@ -13,19 +13,30 @@ export default {
     dsfrTransformListForSelection: function (list, valueField, labelField, filterFunction, searchValue) {
         let rawList = this._searchAndFilterList(list, valueField, labelField, filterFunction, searchValue);
         return rawList.map(function (object) {
-            return { value: object[valueField], text: object[labelField].toString() } // a label is always a string
+            return {value: object[valueField], text: object[labelField].toString()} // a label is always a string
         });
     },
     dsfrTransformListForRadio: function (list, valueField, labelField, disabledField, hintField, filterFunction, searchValue) {
         let rawList = this._searchAndFilterList(list, valueField, labelField, filterFunction, searchValue);
         return rawList.map(function (object) {
-            return { value: object[valueField], label: object[labelField].toString(), hint: object[hintField], disabled: object[disabledField] } // a label is always a string
+            return {
+                value: object[valueField],
+                label: object[labelField].toString(),
+                hint: object[hintField],
+                disabled: object[disabledField]
+            } // a label is always a string
         });
     },
     dsfrTransformListForCheckbox: function (list, valueField, labelField, disabledField, hintField, name, filterFunction, searchValue) {
         let rawList = this._searchAndFilterList(list, valueField, labelField, filterFunction, searchValue);
         return rawList.map(function (object) {
-            return { value: object[valueField], label: object[labelField].toString(), name: name, hint: object[hintField], disabled: object[disabledField] } // a label is always a string
+            return {
+                value: object[valueField],
+                label: object[labelField].toString(),
+                name: name,
+                hint: object[hintField],
+                disabled: object[disabledField]
+            } // a label is always a string
         });
     }
 }

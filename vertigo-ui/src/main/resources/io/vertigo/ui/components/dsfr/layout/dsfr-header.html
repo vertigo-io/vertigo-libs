@@ -1,4 +1,4 @@
-<th:block th:fragment="dsfr-header(class, other_attrs)"
+<th:block th:fragment="dsfr-header(class, header_slot, header_attrs)"
           th:attr="o=${model.vContext['componentStates'].addComponentState('dsfrHeader').addList('quickLinks')},
                    o=${model.vContext['componentStates']['dsfrHeader'].addList('skipLinks')},
                    o=${model.vContext['componentStates']['dsfrHeader'].addList('navItems')}">
@@ -7,13 +7,14 @@
             :links="componentStates.dsfrHeader.skipLinks"
     ></dsfr-skip-links>
 
-    <dsfr-header :quick-links="componentStates.dsfrHeader.quickLinks"
-                 th:attr="__${other_attrs}__">
+    <dsfr-custom-header :quick-links="componentStates.dsfrHeader.quickLinks"
+                 th:attr="__${header_attrs}__">
         <template #mainnav>
             <dsfr-navigation :nav-items="componentStates.dsfrHeader.navItems">
             </dsfr-navigation>
         </template>
-    </dsfr-header>
+        <vu:content-slot name="header_slot"/>
+    </dsfr-custom-header>
 
     <vu:content/>
 </th:block>

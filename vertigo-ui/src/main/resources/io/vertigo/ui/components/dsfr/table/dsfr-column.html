@@ -1,13 +1,13 @@
 <th:block th:fragment="dsfr-column-table(list, field, name, label, align, sortable, datetimeFormat, class, td_attrs)" vu:alias="dsfr-column"
           vu:selector="${renderTableAsGrid == null || !renderTableAsGrid }"
           th:assert="${(field != null) or (name != null and label != null)}"
-          th:with="columnName=${name != null ? name : 'col_' + field},
+          th:with="columnName=${name != null ? name : field},
                    columnLabel=${label != null ? label : model.util.label(list + '.' + field)},
                    columnAlign=${model.util.smartTypeAlign(list, field, align)},
                    columnClass=${model.util.smartTypeCss(list, field, class, 'col_'+name)},
                    columnSortable=${sortable != null ? sortable : (field != null) }">
 
-    <th:block th:with="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('columns', {'key': columnName, 'field': field, 'label': columnLabel, 'align': columnAlign, 'sortable': (modifiableTable!=null?false:columnSortable), 'classes':(class?:columnClass), 'headerClasses':(class?:columnClass) })}"/>
+    <th:block th:with="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('columns', {'key': columnName, 'field': field, 'label': columnLabel, 'align': columnAlign, 'sortable': (modifiableTable!=null?false:columnSortable)})}"/>
     <vu:include-data th:if="${field != null}" object="${list}" field="${field}"/>
 
     <template th:v-if="|colKey === '${columnName}'|">
@@ -17,7 +17,7 @@
 
 <th:block th:fragment="dsfr-column-header-table(name, field)" vu:alias="dsfr-column-header"
           th:assert="${(field != null) or (name != null)}"
-          th:with="columnName=${name != null ? name : 'col_' + field}">
+          th:with="columnName=${name != null ? name : field}">
     <template th:v-if="|key === '${columnName}'|">
         <vu:content>{{ label }}</vu:content><!--/* Default content */-->
     </template>

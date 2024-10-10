@@ -8,6 +8,10 @@ import {VIcon} from "@gouvminint/vue-dsfr";
 
 export type {DsfrHeaderMenuProps}
 
+defineOptions({
+  inheritAttrs: false
+})
+
 // Collapsable
 const {
   collapse,
@@ -113,7 +117,7 @@ let handleFocusOut = (event) => {
 </script>
 
 <template>
-  <div class="relative-position" @keyup.tab="handleFocusOut" ref="container">
+  <div class="relative-position fr-menu-header" @keyup.tab="handleFocusOut" ref="container">
     <button
         :id="id"
         @click.prevent.stop="expanded = !expanded"
@@ -123,7 +127,7 @@ let handleFocusOut = (event) => {
         @keydown.up.prevent="focusOptionUp"
         @keydown="setFocusByFirstCharacter"
         @keydown.tab="expanded = false"
-        class="fr-btn fr-btn--tertiary fr-menu__btn"
+        class="fr-btn fr-btn--tertiary-no-outline fr-menu__btn fr-btn--sm"
         aria-haspopup="menu"
         aria-autocomplete="none"
         :aria-disabled="disabled"
@@ -137,7 +141,7 @@ let handleFocusOut = (event) => {
     <div
         :id="`${id}_menu`"
         ref="collapse"
-        class="fr-collapse fr-menu fr-menu-header fr-select__menu fr-pb-3v fr-pt-4v bg-white"
+        class="fr-collapse fr-menu fr-menu-header__modal fr-select__menu fr-pb-3v fr-pt-4v bg-white"
         role="menu"
         :aria-labelledby="id"
         :class="{ 'fr-collapse--expanded': cssExpanded, 'fr-collapsing': collapsing }"
@@ -171,6 +175,11 @@ let handleFocusOut = (event) => {
   position: relative;
 }
 
+.fr-menu {
+  width: max-content;
+  text-align: left;
+}
+
 .fr-label {
   font-weight: bold;
 }
@@ -179,7 +188,11 @@ let handleFocusOut = (event) => {
   font-weight: normal;
 }
 
-.fr-menu-header {
+.fr-menu__btn {
+  margin-bottom: 1px !important;
+}
+
+.fr-menu-header__modal {
   pointer-events: unset !important;
   margin: 0 !important;
 }
@@ -210,6 +223,29 @@ let handleFocusOut = (event) => {
   --ul-type: none;
   --ul-start: 0;
   --li-bottom: 0;
+  padding: 0;
+  margin-top: 8px;
+}
+
+.fr-menu__list .fr-btn--secondary {
+  box-shadow: unset;
+}
+
+.fr-menu-header__list :deep(li .fr-btn) {
+  min-height: 2.5rem !important;
+  padding: .75rem 1rem !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: unset !important;
+}
+
+.fr-menu-header__list :deep(li .fr-btn:not(:disabled)) {
+  color: var(--text-action-high-grey);
+}
+
+.fr-menu-header__list :deep(li:last-child .fr-btn:not(:disabled)) {
+  padding: .25rem .75rem !important;
+  color: var(--text-action-high-blue-france);
 }
 
 .bg-white {

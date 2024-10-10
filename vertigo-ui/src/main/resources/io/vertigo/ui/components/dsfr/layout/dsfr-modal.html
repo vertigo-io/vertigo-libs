@@ -1,5 +1,5 @@
-<th:block th:fragment="dsfr-modal(componentId, title, closeLabel, srcUrl, width, height, autoHeight, iframe_attrs, section_attrs, modal_attrs)"
-      th:assert="${componentId} != null"
+<th:block th:fragment="dsfr-modal(componentId, title, closeLabel, srcUrl, width, height, autoHeight, iframeTitle, iframe_attrs, section_attrs, modal_attrs)"
+      th:assert="${componentId} != null || ${iframeTitle} != null"
       th:attr=" objectKey=${model.vContext['componentStates'].addComponentState(componentId)
 	                                                         .addPrimitive('opened', false)
 	                                                         .addPrimitive('loading', true)
@@ -26,6 +26,7 @@
                             :onload="'VUiPage.modal_iframeLoad(this)'"
 					        th:data-auto-height="${autoHeight}"
 					        th:data-component-id="${componentId}"
+                            th:title="${iframeTitle}"
                             th:attr="__${iframe_attrs}__" ></iframe>
                 </div>
             </template>
