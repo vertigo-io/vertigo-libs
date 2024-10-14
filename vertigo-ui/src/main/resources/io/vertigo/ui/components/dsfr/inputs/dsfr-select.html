@@ -23,16 +23,16 @@
 	</dsfr-select>
 </th:block>
 
-<th:block th:fragment="dsfr-select-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, required, searchable, input_attrs, label_attrs)"
+<th:block th:fragment="dsfr-select-read(object, field, rowIndex, label, list, valueField, labelField, filterFunction, required, searchable, label_attrs, input_attrs)"
 		  th:if="${modifiableTable==null}"
 		  vu:alias="dsfr-select"
 		  vu:selector="${viewMode=='read'}"
     	  th:assert="${object} != null and ${field} != null and ${list} != null"
 		  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
 		           myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)},
-	  			   myLabel=${label?:model.util.label(object + '.' + field)},
+          		   myLabel=${label?:model.util.label(object + '.' + field)},
 		           value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')}">
-	<vu:dsfr-label-read object="${object}" field="${field}" label="${myLabel}" label_attrs="${label_attrs}">
+	<vu:dsfr-label-read object="${object}" field="${field}" label="${myLabel}">
 		<span th:if="${value!=null}"
 			  th:attr="__${input_attrs}__"
 			  vu:text="${model.vContext[__${list}__].getById('__${myValueField}__', value)['__${myLabelField}__']}">
