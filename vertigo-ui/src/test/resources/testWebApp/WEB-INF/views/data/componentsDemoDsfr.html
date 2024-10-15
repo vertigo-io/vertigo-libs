@@ -99,7 +99,7 @@
                                       hint="Taille maximale : 500 Mo. Formats supportés : jpg, png, pdf. Plusieurs fichiers possibles. Lorem ipsum dolor sit amet, consectetur adipiscing."
                                       th:url="'@{/commons/upload}'" required object="movie" field="pictures"/>
 
-                <vu:modal componentId="myModal" closeLabel="Close"/>
+                <vu:dsfr-modal componentId="myModal" iframeTitle="Coucou" closeLabel="Close"/>
                 <vu:dsfr-grid-cell class="q-gutter-md">
                     <vu:dsfr-button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}"
                                            color="primary"/>

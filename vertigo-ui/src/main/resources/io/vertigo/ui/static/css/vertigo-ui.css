@@ -470,8 +470,14 @@ table .q-uploader .q-btn {
 	height: 100%;
 }
 
+/* Le footer fait partie de l’iframe */
 .v-modal .fr-modal__content {
-	margin-bottom: 1rem;
+	margin-bottom: 0;
+}
+
+.v-modal .fr-modal__footer {
+    margin-left: 0;
+    margin-right: 0;
 }
 
 /******** dev mode of authorizations *******/
