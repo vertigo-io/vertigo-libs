@@ -480,6 +480,10 @@ table .q-uploader .q-btn {
     margin-right: 0;
 }
 
+[v-cloak] {
+    visibility: hidden;
+}
+
 /******** dev mode of authorizations *******/
 
 .authz--locked-overlay::after {
