@@ -4,17 +4,17 @@
       			   myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
           th:assert="${object} != null and ${field} != null">
     <vu:include-data object="${object}" field="${field}" modifiable="true"/>
-    <dsfr-input type="datetime-local"
-                th:label="${myLabel}"
-                th::label-visible="${myLabel!=null}"
-                th:required="${myRequired}"
-                th::name="${model.util.contextKey(object, field, rowIndex)}"
-                th::is-invalid="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
-                th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
-                th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
-                th:attr="__${input_attrs}__">
+    <dsfr-input-group type="datetime-local"
+                      th:label="${myLabel}"
+                      th::label-visible="${myLabel!=null}"
+                      th:required="${myRequired}"
+                      th::name="${model.util.contextKey(object, field, rowIndex)}"
+                      th::is-invalid="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
+                      th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+                      th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
+                      th:attr="__${input_attrs}__">
         <vu:content/>
-    </dsfr-input>
+    </dsfr-input-group>
 </th:block>
 
 <th:block

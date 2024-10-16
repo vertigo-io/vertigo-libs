@@ -11,13 +11,14 @@
 
 <body>
 <th:block layout:fragment="content">
-    <vu:messages/>
     <vu:form id="myFormId">
 
         <vu:dsfr-breadcrumb>
             <vu:dsfr-breadcrumb-el label="Accueil" url="'#'"/>
             <vu:dsfr-breadcrumb-el label="Page de démo"/>
         </vu:dsfr-breadcrumb>
+
+        <vu:dsfr-messages small></vu:dsfr-messages>
 
         <vu:block id="movie" title="#{movie.title.information}">
             <vu:include-data object="movies" field="*"/>
@@ -47,7 +48,8 @@
             <vu:dsfr-grid cols="3" class="fr-grid-row--gutters">
 
                 <vu:dsfr-text-field :class="{ disabled: true && false || false }" object="movie" field="movId"/>
-                <vu:dsfr-text-field object="movie" field="title" class="fieldTitle v-field__required"/>
+                <vu:dsfr-text-field object="movie" field="title"/>
+                <vu:dsfr-select object="movie" field="title" list="moviesDisplay" labelField="title"/>
 
 
                 <vu:dsfr-text-field object="movie" field="year" debounce="500" hint="Debouncing 500ms" required>
