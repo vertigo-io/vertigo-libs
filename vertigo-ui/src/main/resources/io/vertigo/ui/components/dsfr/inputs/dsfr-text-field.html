@@ -53,10 +53,10 @@
         th:with="myDisplayField=${model.util.resolveDisplayField(object, field)},
 		         mySuffix=${model.util.smartTypeUnit(object, field, suffix)}">
     <vu:include-data object="${object}" field="${myDisplayField}"/>
-    <vu:label-read label=${label} label_attrs="${label_attrs}">
+    <vu:dsfr-label-read label=${label} label_attrs="${label_attrs}">
         <span th:attr="__${input_attrs}__">{{[[${model.util.vueDataKey(object, myDisplayField, rowIndex)}]]}}</span>
         <template th:if="${mySuffix!='' && mySuffix!=null}"
                   th:v-if="|${model.util.vueDataKey(object, myDisplayField, rowIndex)} != null && ${model.util.vueDataKey(object, myDisplayField, rowIndex)} != ''|">
             <span vu:text="${mySuffix}"></span></template>
-    </vu:label-read>
+    </vu:dsfr-label-read>
 </th:block>

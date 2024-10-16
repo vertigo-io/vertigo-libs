@@ -24,7 +24,7 @@
 	</dsfr-select>
 </th:block>
 
-<th:block th:fragment="dsfr-select-read(object, field, rowIndex, label, list, valueField, labelField, filterFunction, required, searchable, label_attrs, input_attrs)"
+<th:block th:fragment="dsfr-select-read(object, field, rowIndex, label, list, valueField, labelField, filterFunction, required, searchable, label_attrs)"
 		  th:if="${modifiableTable==null}"
 		  vu:alias="dsfr-select"
 		  vu:selector="${viewMode=='read'}"
@@ -35,7 +35,6 @@
 		           value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')}">
 	<vu:dsfr-label-read object="${object}" field="${field}" label="${myLabel}">
 		<span th:if="${value!=null}"
-			  th:attr="__${input_attrs}__"
 			  vu:text="${model.vContext[__${list}__].getById('__${myValueField}__', value)['__${myLabelField}__']}">
 		</span>
 	</vu:dsfr-label-read>

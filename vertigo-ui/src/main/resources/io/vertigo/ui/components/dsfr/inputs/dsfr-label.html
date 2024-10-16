@@ -6,7 +6,7 @@
           th:assert="(${object} != null and ${field} != null) or ${label} != null">
     <label class="fr-label"
            th:attr="__${label_attrs}__">
-        <span vu:text="${myLabel}"/>
+        <span vu:text="${myLabel}"></span>
         <span th:if="${myRequired}" class="required">&nbsp;*</span>
         <span th:if="${hint != null}" class="fr-hint-text" vu:text="${hint}"></span>
     </label>
@@ -17,7 +17,8 @@
           vu:selector="${viewMode=='read'}"
           th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
           th:assert="${object} != null and ${field} != null">
-    <vu:dsfr-label-edit required="false">
+    <p class="readonly">
+        <span class="fr-label" vu:text="${myLabel}"></span>
         <vu:content/>
-    </vu:dsfr-label-edit>
+    </p>
 </th:block>

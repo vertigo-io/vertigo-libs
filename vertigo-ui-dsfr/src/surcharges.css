@@ -12,3 +12,10 @@
 span.required {
     color: var(--text-default-error)
 }
+
+/* */
+.readonly > .fr-label {
+    color: var(--text-action-high-grey);
+    font-weight: 500;
+    padding-bottom: .5rem;
+}
