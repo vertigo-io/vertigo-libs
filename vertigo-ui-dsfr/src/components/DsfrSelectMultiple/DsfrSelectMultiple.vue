@@ -194,7 +194,7 @@ let setFocusByFirstCharacter = (event) => {
 }
 
 let handleFocusOut = (event) => {
-  if (!container.value.contains(document.activeElement)) {
+  if (!container.value.contains(event.target)) {
     expanded.value = false;
   }
 }
@@ -231,7 +231,7 @@ let handleFocusOut = (event) => {
         :id="id"
         :class="{ [`fr-select--${messageType}`]: message !== ''}"
         class="fr-input"
-        @click.prevent.stop="expanded = !expanded"
+        @click="expanded = !expanded"
         @keydown.esc.stop="expanded = false"
         @keydown.space.prevent="expanded = !expanded"
         @keydown.down.prevent="focusOptionDown"
@@ -290,10 +290,12 @@ let handleFocusOut = (event) => {
       </p>
 
       <ul role="listbox" aria-multiselectable="true" class="fr-select__ul">
-        <li v-for="(option, idx) in localOptions" class="fr-checkbox-group fr-checkbox-group--sm fr-py-1v"
-            role="option" :aria-selected="modelValue.includes(option.value)">
+        <li v-for="(option, idx) in localOptions"
+            class="fr-checkbox-group fr-checkbox-group--sm fr-py-1v"
+            role="option"
+            :aria-selected="modelValue.includes(option.value)">
           <input :id="`${id}_option_${idx}`" :data-id="option.value" type="checkbox" class="" tabindex="-1" :value="option.value" v-model="modelValue">
-          <label class="fr-label" :for="`opt_${idx}`">
+          <label class="fr-label" :for="`${id}_option_${idx}`">
             {{ option.text }}
           </label>
         </li>

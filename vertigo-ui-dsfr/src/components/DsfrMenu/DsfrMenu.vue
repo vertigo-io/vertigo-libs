@@ -103,7 +103,7 @@ let setFocusByFirstCharacter = (event) => {
 }
 
 let handleFocusOut = (event) => {
-  if (!container.value.contains(document.activeElement)) {
+  if (!container.value.contains(event.target)) {
     expanded.value = false;
   }
 }
