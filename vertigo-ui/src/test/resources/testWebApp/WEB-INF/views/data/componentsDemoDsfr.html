@@ -59,7 +59,9 @@
                     </vu:slot>
                 </vu:dsfr-text-field>
                 <vu:dsfr-slider object="movie" field="year"/>
-                <vu:dsfr-select object="movie" field="movId" list="movies" label="on-update" @update:model-value="console.log('coucou')"/>
+                <vu:dsfr-select object="movie" field="movId" list="movies" label="on-update"
+                                noneLabel="Aucun"
+                                @update:model-value="console.log('coucou')"/>
                 <vu:dsfr-text-field-read-reactive object="movie" field="movId" label="Séléction choisie"/>
                 <vu:dsfr-select object="movie" field="movId" list="moviesDisplay" labelField="title"/>
 
@@ -75,18 +77,16 @@
                 <vu:dsfr-text-field object="movie" field="movId"/>
                 <vu:dsfr-text-area object="movie" field="title"/>
                 <vu:dsfr-grid-cell/>
-                <vu:dsfr-grid-cell col="1">
-                    <vu:dsfr-select-multiple object="movieDisplayInput" field="movIds"
-                                             combo-label="Label"
-                                             combo-description="Ceci est une description plus complète"
-                                             description="DEBUG :"
-                                             has-filter="true" has-button="true"
-                                             list="moviesMdl" valueField="movId" labelField="title"/>
+                <vu:dsfr-select-multiple object="movieDisplayInput" field="movIds"
+                                         combo-label="Label"
+                                         combo-description="Ceci est une description plus complète"
+                                         description="DEBUG :"
+                                         has-filter="true" has-button="true"
+                                         list="moviesMdl" valueField="movId" labelField="title"/>
 
-                    <!-- <vu:autocomplete-multiple object="movieDisplayInput" field="movIds" list="moviesMdl"/> -->
-                    <vu:dsfr-checkbox-multiple object="movieDisplayInput" field="movIds" list="moviesMdl"
-                                               valueField="movId" hintField="description" labelField="title"/>
-                </vu:dsfr-grid-cell>
+                <vu:dsfr-checkbox-multiple object="movieDisplayInput" field="movIds" list="moviesMdl"
+                                           valueField="movId" hintField="description" labelField="title"/>
+
                 <q-btn th:@click="|httpPostAjax('@{_ajaxArray}', vueDataParams(['selectedTimeZoneList']))|"
                        color="primary" label="Ajax save"></q-btn>
 
@@ -148,20 +148,21 @@
     </vu:form>
 
     <br/>
-    <h6>Test table</h6>
     <vu:include-data object="movies" field="movId"/>
     selection : {{ componentStates.movieTable2.selected }}
     <vu:dsfr-table list="movies"
                    componentId="movieTable2"
                    sortUrl="@{/movies/_sort}"
                    :pagination="true"
+                   title="Test table"
                    sorted="movId_col"
                    row-key="movId"
                    selectable
     >
         <vu:slot name="actions_slot">
-            <vu:dsfr-button label="View detail" size="sm" tertiary
-                            th:@click="|openModal('movieDetailModal', '@{/movie/}' + cell.movId, {  })|"/>
+            <vu:dsfr-button icon="ri-information-2-line" size="sm" tertiary
+                            vTitle="'`Ouvrir la modale de la ligne n°${idx}`'"
+            />
         </vu:slot>
         <vu:slot name="header_slot">
             <vu:dsfr-column-header field="movId">

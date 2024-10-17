@@ -3,6 +3,7 @@
  * /// SURCHARGE ///
  * Ce composant est une surcharge temporaire du composant dsfr-header
  * - Ajout d’un slot header-menu-link pour permettre l’usage du DsfrHeaderMenu
+ * - [L221] ajout d’un slot header-search pour la barre de recherche
  *
  *
  */
@@ -214,20 +215,22 @@ provide(registerNavigationLinkKey, () => {
                 />
               </template>
             </div>
-            <div
-                v-if="showSearch"
-                class="fr-header__search  fr-modal"
-            >
-              <DsfrSearchBar
-                  :searchbar-id="searchbarId"
-                  :label="searchLabel"
-                  :model-value="modelValue"
-                  :placeholder="placeholder"
-                  style="justify-content: flex-end"
-                  @update:model-value="emit('update:modelValue', $event)"
-                  @search="emit('search', $event)"
-              />
-            </div>
+            <slot name="header-search">
+              <div
+                  v-if="showSearch"
+                  class="fr-header__search  fr-modal"
+              >
+                <DsfrSearchBar
+                    :searchbar-id="searchbarId"
+                    :label="searchLabel"
+                    :model-value="modelValue"
+                    :placeholder="placeholder"
+                    style="justify-content: flex-end"
+                    @update:model-value="emit('update:modelValue', $event)"
+                    @search="emit('search', $event)"
+                />
+              </div>
+            </slot>
           </div>
         </div>
         <div
