@@ -30,7 +30,7 @@
 			<vu:content-slot name="edit_content_slot"/>
 	</q-select>
 	<input th:v-for="|id in ${model.util.vueDataKey(object, field, rowIndex)}|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" th:v-bind:value="id" />
-	<input th:v-if="|vueData.${object}.${field}.length == 0|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
+	<input th:v-if="|${model.util.vueDataKey(object, field, rowIndex)}.length == 0|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
 </th:block> 
 
 <th:block th:fragment="select-multiple-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)" 
