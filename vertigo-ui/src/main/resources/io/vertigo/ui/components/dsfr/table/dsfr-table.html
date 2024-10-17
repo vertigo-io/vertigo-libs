@@ -1,13 +1,13 @@
 <th:block
-        th:fragment="dsfr-table(list, componentId, selectable, rowKey, rowsPerPage, sortUrl, sortBy, descending, actions_slot, header_slot, table_slot, table_attrs)"
-        th:assert="${componentId} != null and !(${sortUrl} != null and ${sortBy} != null) and !(${descending} != null and ${sortBy} == null)"
+        th:fragment="dsfr-table(list, componentId, title, vTitle, selectable, rowKey, rowsPerPage, sortUrl, sortBy, descending, actions_slot, header_slot, table_slot, table_attrs)"
+        th:assert="${componentId} != null and (${title} != null or ${vTitle} != null) and !(${sortUrl} != null and ${sortBy} != null) and !(${descending} != null and ${sortBy} == null)"
         th:with="tableKey=${list},
-                   rowIndex='props.rowIndex',
-                   listSize=${model.vContext[__${list}__].size()},
-                   mySelectable=${selectable?:false},
-                   myRowKey=${rowKey?:model.util.getIdField(list)},
-	               myRowsPerPage=${rowsPerPage?:10},
-	               myAutoColClass=${autoColClass?:false}">
+                 rowIndex='props.rowIndex',
+                 listSize=${model.vContext[__${list}__].size()},
+                 mySelectable=${selectable?:false},
+                 myRowKey=${rowKey?:model.util.getIdField(list)},
+	             myRowsPerPage=${rowsPerPage?:10},
+	             myAutoColClass=${autoColClass?:false}">
 
     <th:block th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')},
                        objectKey=${model.vContext['componentStates'][__${componentId}__].addList('sortableRows')},
@@ -29,14 +29,14 @@
               th:remove="all"/>
 
     <dsfr-custom-data-table th:title="${vTitle==null?title?:'':''}" th::title="${vTitle?:''}"
-                     th::headers-row="|componentStates.${componentId}.columns|"
-                     th::rows="|vueData.${list}|"
-                     th::rows-per-page="|componentStates.${componentId}.pagination.rowsPerPage|"
-                     th::sortable-rows="|componentStates.${componentId}.columns.filter(o => o.sortable).map(o => o.key)|"
-                     th:v-model:selection="|componentStates.${componentId}.selected|"
-                     th::selectable-rows="${mySelectable ? 'true' : 'false'}"
-                     th:v-model:current-page="|componentStates.${componentId}.pagination.page|"
-                     th:attr="__${table_attrs}__">
+                            th::headers-row="|componentStates.${componentId}.columns|"
+                            th::rows="|vueData.${list}|"
+                            th::rows-per-page="|componentStates.${componentId}.pagination.rowsPerPage|"
+                            th::sortable-rows="|componentStates.${componentId}.columns.filter(o => o.sortable).map(o => o.key)|"
+                            th:v-model:selection="|componentStates.${componentId}.selected|"
+                            th::selectable-rows="${mySelectable ? 'true' : 'false'}"
+                            th:v-model:current-page="|componentStates.${componentId}.pagination.page|"
+                            th:attr="__${table_attrs}__">
         <vu:content-slot name="table_slot" th:with="label=null, title=null, vTitle=null"/>
         <template #header="{ key, label }">
             <vu:content-slot name="header_slot" th:with="label=null, title=null, vTitle=null"/>

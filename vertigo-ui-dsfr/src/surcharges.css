@@ -8,19 +8,26 @@
     align-items: center;
 }
 
-/* */
+/* Color de l’étoile required */
 span.required {
     color: var(--text-default-error)
 }
 
-/* */
+/* Gère l’affichage des champs en lecture */
 .readonly > .fr-label {
     color: var(--text-action-high-grey);
     font-weight: 500;
     padding-bottom: .5rem;
 }
 
+/* Permet des retours à la ligne en flex */
 .fr-col-break {
     width: 100%;
     padding: 0 !important;
 }
+
+/* Corrige l’affichage de certains textes dans les tableaux */
+td p {
+    font-size: inherit;
+}
+
