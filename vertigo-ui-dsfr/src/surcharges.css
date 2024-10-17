@@ -19,3 +19,8 @@ span.required {
     font-weight: 500;
     padding-bottom: .5rem;
 }
+
+.fr-col-break {
+    width: 100%;
+    padding: 0 !important;
+}
