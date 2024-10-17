@@ -7566,7 +7566,7 @@ const ep = /* @__PURE__ */ Ie(Ff, [["render", Jf], ["__scopeId", "data-v-e1d6020
   key: 0,
   class: "fr-header__search fr-modal"
 }, iv = ["aria-label"], uv = { class: "fr-container" }, dv = { class: "fr-header__menu-links" }, cv = {
-  key: 0,
+  key: 1,
   class: "flex justify-center items-center"
 }, fv = { class: "fr-header__menu fr-modal" }, pv = {
   key: 0,
@@ -7765,17 +7765,15 @@ const ep = /* @__PURE__ */ Ie(Ff, [["render", Jf], ["__scopeId", "data-v-e1d6020
                   key: 0,
                   hidemodal: u
                 }) : h("", !0),
-                L(v.$slots, "header-search", {}, () => [
-                  o.value ? (s(), c("div", cv, [
-                    X($(Ae), {
-                      "searchbar-id": v.searchbarId,
-                      "model-value": v.modelValue,
-                      placeholder: v.placeholder,
-                      "onUpdate:modelValue": T[7] || (T[7] = (b) => n("update:modelValue", b)),
-                      onSearch: T[8] || (T[8] = (b) => n("search", b))
-                    }, null, 8, ["searchbar-id", "model-value", "placeholder"])
-                  ])) : h("", !0)
-                ])
+                o.value ? (s(), c("div", cv, [
+                  X($(Ae), {
+                    "searchbar-id": v.searchbarId,
+                    "model-value": v.modelValue,
+                    placeholder: v.placeholder,
+                    "onUpdate:modelValue": T[7] || (T[7] = (b) => n("update:modelValue", b)),
+                    onSearch: T[8] || (T[8] = (b) => n("search", b))
+                  }, null, 8, ["searchbar-id", "model-value", "placeholder"])
+                ])) : h("", !0)
               ])
             ], 10, iv)) : h("", !0),
             L(v.$slots, "default")

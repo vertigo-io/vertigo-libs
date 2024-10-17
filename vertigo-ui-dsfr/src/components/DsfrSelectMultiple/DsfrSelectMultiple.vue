@@ -211,6 +211,7 @@ let handleFocusOut = (event) => {
     <label
         class="fr-label"
         :for="id"
+        :id="`${id}_label`"
     >
       <slot name="label">
         {{ label }}
@@ -242,6 +243,7 @@ let handleFocusOut = (event) => {
         role="combobox"
         aria-haspopup="listbox"
         aria-autocomplete="none"
+        :aria-labelledby="`${id}_label`"
         :aria-disabled="disabled"
         :aria-controls="`${id}_list`"
         :aria-expanded="expanded"

@@ -1,9 +1,9 @@
 <th:block th:fragment="dsfr-grid-cell(col, class, div_attrs)"
-th:with="cellCols=${col!=null?(col instanceof T(java.lang.Number)?(' fr-col-md-'+(12/tableCols)*col):' fr-col-'+col):''}">
+		  th:with="cellCols=${col!=null?(col instanceof T(java.lang.Number)?(' fr-col-md-'+(12/tableCols)*col):' fr-col-'+col):''}"
+>
 	<div th:class="${cellCols+' '+(class?:'')}" th:with="overridedLabelWidth=1" th:attr="__${div_attrs}__"><vu:content/></div>
 </th:block>
 
-<th:block th:fragment="dsfr-grid-break()"
-		  th:with="">
+<th:block th:fragment="dsfr-grid-break()">
 	<div class="fr-col-break"></div>
 </th:block>

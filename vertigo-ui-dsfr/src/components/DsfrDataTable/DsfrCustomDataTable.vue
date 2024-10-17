@@ -5,7 +5,7 @@
  * - [L126] Modification du paramètre du slot `cell` pour que celui-ci soit toujours l’objet de notre ligne
  *   Cela est nécessaire car renommer la key d’une colonne dans sa définition provoque bien d’autres problèmes
  * - [L78] Prise en compte de la colonne trié lors du tri
- *
+ * - [L269] Ajoute la notion du rang de la ligne dans le slot de modification d’une cellule, nécessaire pour des raisons d’accessibilité
  *
  */
 
@@ -255,7 +255,6 @@ function copyToClipboard (text: string) {
               <td
                   v-for="(cell, cellIdx) of row"
                   :key="typeof cell === 'object' ? cell[rowKey] : cell"
-                  tabindex="0"
                   @keydown.ctrl.c="copyToClipboard(typeof cell === 'object' ? cell[rowKey] : cell)"
                   @keydown.meta.c="copyToClipboard(typeof cell === 'object' ? cell[rowKey] : cell)"
               >
@@ -266,6 +265,7 @@ function copyToClipboard (text: string) {
                         ? headersRow[cellIdx].key
                         : headersRow[cellIdx],
                       cell,
+                      idx: idx+1
                     }"
                 >
                   <!-- @vue-expect-error TS2538 -->

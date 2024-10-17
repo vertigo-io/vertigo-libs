@@ -41,7 +41,7 @@
         <template #header="{ key, label }">
             <vu:content-slot name="header_slot" th:with="label=null, title=null, vTitle=null"/>
         </template>
-        <template #cell="{ colKey, cell }">
+        <template #cell="{ colKey, cell, idx }">
             <vu:content></vu:content>
             <vu:dsfr-column name="action" label="Actions" sortable="false" align="right"
                             th:if="${actions_slot != null}">
