@@ -112,6 +112,13 @@ export default {
         if (searchValue != null && searchValue.trim() !== '') {
             const searchNormalized = this.unaccentLower(searchValue);
             rawList = rawList.filter(val => this.unaccentLower(val[labelField].toString()).indexOf(searchNormalized) > -1); // label contains
+			rawList.sort((a,b) => {
+				const startWithA = this.unaccentLower(a[labelField].toString()).startsWith(searchNormalized);
+				const startWithB = this.unaccentLower(b[labelField].toString()).startsWith(searchNormalized);
+				if (startWithA && !startWithB) return -1;
+				if (!startWithA && startWithB) return 1;
+				return 0;
+			});
         }
         return rawList.map(function (object) {
             return { value: object[valueField], label: object[labelField].toString() } // a label is always a string
