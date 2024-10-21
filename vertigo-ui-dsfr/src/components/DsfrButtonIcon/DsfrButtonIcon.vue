@@ -125,11 +125,11 @@ const onMouseLeave = () => {
   <button
       :id="`button-${id}`"
       ref="source"
-      class="fr-btn fr-btn--tooltip"
+      class="fr-btn fr-btn--sm"
       :class="{
         'fr-btn--tertiary': !noOutline,
         'fr-btn--tertiary-no-outline': noOutline,
-        icon: true
+        [icon]: true
       }"
       :aria-labelledby="id"
       @mouseenter="onMouseEnter()"

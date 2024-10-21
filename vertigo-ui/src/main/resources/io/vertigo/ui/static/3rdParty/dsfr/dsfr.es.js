@@ -8074,10 +8074,10 @@ const ep = /* @__PURE__ */ Ie(Ff, [["render", Jf], ["__scopeId", "data-v-e1d6020
         id: `button-${v.id}`,
         ref_key: "source",
         ref: a,
-        class: ["fr-btn fr-btn--tooltip", {
+        class: ["fr-btn fr-btn--sm", {
           "fr-btn--tertiary": !v.noOutline,
           "fr-btn--tertiary-no-outline": v.noOutline,
-          icon: !0
+          [v.icon]: !0
         }],
         "aria-labelledby": v.id,
         onMouseenter: T[0] || (T[0] = (y) => x()),
@@ -8100,7 +8100,7 @@ const ep = /* @__PURE__ */ Ie(Ff, [["render", Jf], ["__scopeId", "data-v-e1d6020
       ], 14, Ov)
     ], 64));
   }
-}), Hv = /* @__PURE__ */ Ie(qv, [["__scopeId", "data-v-0f116c8c"]]);
+}), Hv = /* @__PURE__ */ Ie(qv, [["__scopeId", "data-v-994c0be2"]]);
 var Kv = {
   install: function(t, e) {
     t.use(Lf), t.component("RouterLink", $f), t.component("DsfrFacets", ep), t.component("DsfrSelectMultiple", Ep), t.component("DsfrMenu", ip), t.component("DsfrMenuLink", cp), t.component("DsfrHeaderMenu", Np), t.component("DsfrCustomHeader", vv), t.component("DsfrCustomHeaderMenuLinks", mt), t.component("DsfrCustomDataTable", Vv), t.component("DsfrButtonIcon", Hv);

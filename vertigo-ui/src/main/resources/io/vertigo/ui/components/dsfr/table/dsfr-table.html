@@ -45,7 +45,9 @@
             <vu:content></vu:content>
             <vu:dsfr-column name="action" label="Actions" sortable="false" align="right"
                             th:if="${actions_slot != null}">
-                <vu:content-slot name="actions_slot" th:with="label=null, title=null, vTitle=null"/>
+                <div class="flex gap--sm">
+                    <vu:content-slot name="actions_slot" th:with="label=null, title=null, vTitle=null"/>
+                </div>
             </vu:dsfr-column>
         </template>
     </dsfr-custom-data-table>
