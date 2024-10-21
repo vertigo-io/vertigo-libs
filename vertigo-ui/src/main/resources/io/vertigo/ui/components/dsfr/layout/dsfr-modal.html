@@ -11,7 +11,6 @@
     <dsfr-modal th:v-model:opened="|componentStates.${componentId}.opened|"
                 th:@close="|componentStates.${componentId}.opened = false|"
                 th::title="|componentStates.${componentId}.title|"
-                th:close-button-title="#{layout.modal.close}"
                 class="v-modal"
                 th:attr="__${modal_attrs}__">
         <vu:content>
@@ -31,7 +30,7 @@
                 </div>
             </template>
             <template #footer th:if="${closeLabel} != null">
-                <vu:dsfr-button label="${closeLabel}" title="${closeLabel}" type="button" th::on-click="|() => componentStates.${componentId}.opened = false|" />
+                <vu:dsfr-button label="${closeLabel}" title="${closeLabel}" type="button" th:@click="|() => componentStates.${componentId}.opened = false|" />
             </template>
         </vu:content>
     </dsfr-modal>

@@ -6732,15 +6732,16 @@ const Xi = {
       };
     });
   }
-}, Mf = ["href"], $f = {
+}, Mf = ["href", "aria-current"], $f = {
   __name: "RouterLink",
   props: ["to"],
   setup(t) {
-    const e = t;
-    return (a, n) => (s(), c("a", {
-      href: e.to
+    const e = t, a = e.to === "/" ? window.location.pathname === e.to : window.location.pathname.startsWith(e.to);
+    return (n, l) => (s(), c("a", {
+      href: e.to,
+      "aria-current": $(a) ? "page" : void 0
     }, [
-      L(a.$slots, "default")
+      L(n.$slots, "default")
     ], 8, Mf));
   }
 }, Ie = (t, e) => {

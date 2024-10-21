@@ -100,7 +100,21 @@
                                       hint="Taille maximale : 500 Mo. Formats supportés : jpg, png, pdf. Plusieurs fichiers possibles. Lorem ipsum dolor sit amet, consectetur adipiscing."
                                       th:url="'@{/commons/upload}'" required object="movie" field="pictures"/>
 
-                <vu:dsfr-modal componentId="myModal" iframeTitle="Coucou" closeLabel="Close"/>
+                <vu:dsfr-dialog title="Comment ça va ?" componentId="dialog">
+                    <vu:slot name="actions_slot">
+                        <vu:dsfr-button label="Ok super" secondary/>
+                        <vu:dsfr-button label="Ah oui ?" primary @click="componentStates.dialog.opened = false"/>
+                    </vu:slot>
+                    <p>
+                        C’est une super modale
+                    </p>
+                </vu:dsfr-dialog>
+                <dsfr-button @click="componentStates.dialog.opened = true" label="Ouvre-moi" secondary type="button"></dsfr-button>
+
+                <vu:dsfr-modal componentId="myModal"
+                               iframeTitle="Coucou"
+                               autoHeight
+                               closeLabel="Close"/>
                 <vu:dsfr-grid-cell class="q-gutter-md">
                     <vu:dsfr-button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}"
                                            color="primary"/>
