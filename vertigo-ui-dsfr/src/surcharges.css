@@ -31,3 +31,7 @@ td p {
     font-size: inherit;
 }
 
+/* Search-bar avec texte visible */
+.fr-search-bar--visible-button-text .fr-btn {
+    max-width: unset;
+}
