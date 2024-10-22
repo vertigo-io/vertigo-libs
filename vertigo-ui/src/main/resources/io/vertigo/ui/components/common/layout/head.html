@@ -15,21 +15,23 @@
 	</head>
 </th:block>
 
-<th:block th:fragment="head-meta(vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, disableQuasarStyle, useDsfr, useWysiwyg)"
+<th:block th:fragment="head-meta(vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, onlyDsfrStyle, useDsfr, useWysiwyg)"
         th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, 
                  isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false},
                  isVuiSsr=${vuiSsr != null ? vuiSsr : false},
                  myVueJsVersion=${vueJsVersion?:'3.4.31'}, myVertigoUiVersion=${vertigoUiVersion?:'4.2.0'},
-                 myUseQuasar=${useQuasar ?: true}, myQuasarVersion=${quasarVersion?:'2.16.5'}, myDisableQuasarStyle=${disableQuasarStyle?:false},
+                 myUseQuasar=${useQuasar ?: true}, myQuasarVersion=${quasarVersion?:'2.16.5'}, myOnlyDsfrStyle=${onlyDsfrStyle?:false},
                  myUseDsfr=${useDsfr ?: false}, myDsfrDevMode=${dsfrDevMode ?: false}">
-                 
-	<link th:href="@{/vertigo-ui/static/3rdParty/roboto/v20/css/roboto.css}" rel="stylesheet" type="text/css"/>
-	<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v142/css/materialIconsOutlined.css}" rel="stylesheet" type="text/css"/>
-	<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v142/css/materialIcons.css}" rel="stylesheet" type="text/css"/>
-	<link th:href="@{/vertigo-ui/static/3rdParty/use.fontawesome.com/releases/v6.5.2/css/all.min.css}" rel="stylesheet" type="text/css"/>
-	<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/ionicons@4.6.4-1/dist/css/ionicons.min.css}" rel="stylesheet" type="text/css"/>
-	<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css}" rel="stylesheet" type="text/css"/>
-	<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css}" rel="stylesheet" type="text/css"/>
+
+	<th:block th:if="${!myOnlyDsfrStyle}">
+		<link th:href="@{/vertigo-ui/static/3rdParty/roboto/v20/css/roboto.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v142/css/materialIconsOutlined.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v142/css/materialIcons.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/use.fontawesome.com/releases/v6.5.2/css/all.min.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/ionicons@4.6.4-1/dist/css/ionicons.min.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css}" rel="stylesheet" type="text/css"/>
+	</th:block>
     
 
     <!--/* VueJS */-->
@@ -44,7 +46,7 @@
 	</th:block>
 
 	<!--/* Quasar CSS */-->
-	<th:block th:if="${myUseQuasar && !myDisableQuasarStyle}">
+	<th:block th:if="${myUseQuasar && !myOnlyDsfrStyle}">
 		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@__${myQuasarVersion}__/dist/quasar.css}" rel="stylesheet" type="text/css"/>
 	</th:block>
 
