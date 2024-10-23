@@ -7808,7 +7808,7 @@ const ep = /* @__PURE__ */ Ie(Ff, [["render", Jf], ["__scopeId", "data-v-e1d6020
     bottomActionsRow: { default: () => [] },
     selectableRows: { type: Boolean },
     sortableRows: { type: [Boolean, Array] },
-    sorted: {},
+    sorted: { default: "" },
     sortFn: {},
     verticalBorders: { type: Boolean },
     bottomCaption: { type: Boolean },
@@ -7840,10 +7840,12 @@ const ep = /* @__PURE__ */ Ie(Ff, [["render", Jf], ["__scopeId", "data-v-e1d6020
   setup(t, { emit: e }) {
     const a = t, n = e, l = ie(t, "selection"), r = ie(t, "rowsPerPage"), o = ie(t, "currentPage"), i = I(() => Math.ceil(a.rows.length / r.value)), u = I(() => a.pages ?? Array.from({ length: i.value }).map((b, S) => ({ label: `${S + 1}`, title: `Page ${S + 1}`, href: `#${S + 1}` }))), f = I(() => o.value * r.value), p = I(() => (o.value + 1) * r.value);
     function m(b, S) {
-      const k = w.value ?? a.sorted;
+      const k = w.value;
       return (b[k] ?? b) < (S[k] ?? S) ? -1 : (b[k] ?? b) > (S[k] ?? S) ? 1 : 0;
     }
-    const w = ie(t, "sortedBy"), B = ie(t, "sortedDesc");
+    const w = ie(t, "sortedBy");
+    w.value = a.sorted;
+    const B = ie(t, "sortedDesc");
     function x(b) {
       if (!(!a.sortableRows || Array.isArray(a.sortableRows) && !a.sortableRows.includes(b))) {
         if (w.value === b) {
@@ -8025,7 +8027,7 @@ const ep = /* @__PURE__ */ Ie(Ff, [["render", Jf], ["__scopeId", "data-v-e1d6020
       ], 2)
     ]));
   }
-}), Vv = /* @__PURE__ */ Ie(Nv, [["__scopeId", "data-v-51abb005"]]), jv = ["id", "aria-labelledby"], Ov = ["id"], qv = /* @__PURE__ */ M({
+}), Vv = /* @__PURE__ */ Ie(Nv, [["__scopeId", "data-v-9a5cb2d0"]]), jv = ["id", "aria-labelledby"], Ov = ["id"], qv = /* @__PURE__ */ M({
   __name: "DsfrButtonIcon",
   props: {
     id: { default: () => Fe("tooltip") },
