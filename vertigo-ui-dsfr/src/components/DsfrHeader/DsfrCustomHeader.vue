@@ -215,12 +215,11 @@ provide(registerNavigationLinkKey, () => {
                 />
               </template>
             </div>
-            <slot name="header-search">
-              <div
-                  v-if="showSearch"
-                  class="fr-header__search  fr-modal"
+              <div class="fr-header__search fr-modal"
               >
+                <slot name="header-search"></slot>
                 <DsfrSearchBar
+                    v-if="showSearch"
                     :searchbar-id="searchbarId"
                     :label="searchLabel"
                     :model-value="modelValue"
@@ -230,7 +229,6 @@ provide(registerNavigationLinkKey, () => {
                     @search="emit('search', $event)"
                 />
               </div>
-            </slot>
           </div>
         </div>
         <div
@@ -268,6 +266,7 @@ provide(registerNavigationLinkKey, () => {
               >
                 <slot name="header-menu-link"></slot>
               </DsfrCustomHeaderMenuLinks>
+              <slot name="header-search"></slot>
             </div>
 
             <template v-if="modalOpened">

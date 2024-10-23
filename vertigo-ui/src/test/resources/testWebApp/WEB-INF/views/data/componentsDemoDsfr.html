@@ -159,6 +159,34 @@
             <vu:dsfr-accordion title="Accordéon n°3"/>
         </vu:dsfr-accordions-group>
 
+        <div class="fr-tabs fr-mt-4w">
+            <ul class="fr-tabs__list" aria-label="#{eleve.dossier.onglets.titre}">
+                <li>
+                    <a class="fr-tabs__tab fr-icon-arrow-right-line fr-tabs__tab--icon-left fr-tabs__tab--active"
+                       th:href="@{/dossier/eleve/projet/}">
+                        Coucou n°1
+                    </a>
+                </li>
+                <li>
+                    <a class="fr-tabs__tab fr-icon-arrow-right-line fr-tabs__tab--icon-left"
+                       th:href="@{/dossier/eleve/auto-evaluation/}">
+                        Coucou n°2
+                    </a>
+                </li>
+                <li>
+                    <a class="fr-tabs__tab fr-icon-arrow-right-line fr-tabs__tab--icon-left"
+                       th:href="@{/dossier/eleve/candidatures/}">
+                        Coucou n°3
+                    </a>
+                </li>
+            </ul>
+            <div class="fr-tabs__panel fr-tabs__panel--selected">
+                <vu:dsfr-text-field class="" object="movie" field="title"/>
+                <vu:dsfr-text-field class="" object="movie" field="movId"/>
+            </div>
+        </div>
+
+
     </vu:form>
 
     <br/>
