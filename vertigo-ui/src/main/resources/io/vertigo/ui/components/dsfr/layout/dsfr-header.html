@@ -8,6 +8,7 @@
     ></dsfr-skip-links>
 
     <dsfr-custom-header :quick-links="componentStates.dsfrHeader.quickLinks"
+                        @on-mounted="dsfrUpdateMenuNavigationActiveState"
                  th:attr="__${header_attrs}__">
         <template #mainnav>
             <dsfr-navigation :nav-items="componentStates.dsfrHeader.navItems">

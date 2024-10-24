@@ -3,8 +3,8 @@
  * /// SURCHARGE ///
  * Ce composant est une surcharge temporaire du composant dsfr-header
  * - Ajout d’un slot header-menu-link pour permettre l’usage du DsfrHeaderMenu
- * - [L221] ajout d’un slot header-search pour la barre de recherche
- *
+ * - Ajout d’un slot header-search pour la barre de recherche
+ * - Ajout d’un évenement dans le mounted pour la gestion du componentStates de navigation
  *
  */
 
@@ -49,6 +49,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', payload: string): void
   (e: 'search', payload: string): void
   (e: 'language-select', payload: DsfrLanguageSelectorElement): void
+  (e: 'on-mounted'): void
 }>()
 
 const languageSelector = toRef(props, 'languageSelector')
@@ -71,6 +72,7 @@ const onKeyDown = (e: KeyboardEvent) => {
 
 onMounted(() => {
   document.addEventListener('keydown', onKeyDown)
+  emit('on-mounted')
 })
 onUnmounted(() => {
   document.removeEventListener('keydown', onKeyDown)

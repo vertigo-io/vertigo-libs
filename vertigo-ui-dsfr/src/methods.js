@@ -42,5 +42,12 @@ export default {
                 disabled: object[disabledField]
             } // a label is always a string
         });
+    },
+    dsfrUpdateMenuNavigationActiveState: function () {
+        this.componentStates?.dsfrHeader?.navItems
+            .filter(item => item.title)
+            .forEach(item => {
+                item.active = item.links.some(link => window.location.pathname.startsWith(link.to));
+            });
     }
 }
