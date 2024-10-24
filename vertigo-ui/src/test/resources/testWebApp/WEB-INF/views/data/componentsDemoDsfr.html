@@ -45,10 +45,25 @@
                 <vu:dsfr-menu-link icon="ri-circle-line" label="Mon périmètre"/>
             </vu:dsfr-header-menu>
 
+            <h6>Test grid</h6>
+            <vu:dsfr-grid cols="3" class="fr-grid-row--gutters">
+                <template v-if="true">
+                    <vu:dsfr-text-field object="movie" field="title"/>
+                </template>
+                <template v-if="false">
+                    <vu:dsfr-text-field object="movie" field="title"/>
+                </template>
+                <template v-if="true">
+                    <vu:dsfr-text-field object="movie" field="title"/>
+                </template>
+            </vu:dsfr-grid>
+
+            <h6>Global</h6>
             <vu:dsfr-grid cols="3" class="fr-grid-row--gutters">
 
                 <vu:dsfr-text-field :class="{ disabled: true && false || false }" object="movie" field="movId"/>
                 <vu:dsfr-text-field object="movie" field="title"/>
+
 
                 <vu:dsfr-text-field object="movie" field="year" debounce="500" hint="Debouncing 500ms" required>
                     <vu:slot name="after_label_slot">
