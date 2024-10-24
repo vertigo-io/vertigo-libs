@@ -6709,7 +6709,7 @@ const Xi = {
     let i = this._searchAndFilterList(t, e, a, l, o).map(function(u) {
       return { value: u[e], text: u[a].toString() };
     });
-    return n != null && n !== "" && i.unshift({ value: null, text: n }), i;
+    return n != null && n !== "" && i.unshift({ value: "", text: n }), i;
   },
   dsfrTransformListForRadio: function(t, e, a, n, l, o, r) {
     return this._searchAndFilterList(t, e, a, o, r).map(function(u) {
