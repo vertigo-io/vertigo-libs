@@ -16,7 +16,7 @@ export default {
             return {value: object[valueField], text: object[labelField].toString()} // a label is always a string
         });
         if (nullText !== undefined && nullText !== null && nullText !== '') {
-            result.unshift({value: null, text: nullText});
+            result.unshift({value: '', text: nullText});
         }
         return result;
     },
