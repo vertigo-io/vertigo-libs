@@ -24,14 +24,20 @@
 </th:block>
 
 <th:block
-        th:fragment="dsfr-text-field-read(object, field, rowIndex, label, suffix, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
+        th:fragment="dsfr-text-field-read(object, field, rowIndex, label, suffix, required, emptyValue, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
         vu:alias="dsfr-text-field" vu:selector="${viewMode=='read'}" th:if="${modifiableTable==null}"
         th:assert="${object} != null and ${field} != null"
         th:with="mySuffix=${model.util.smartTypeUnit(object, field, suffix)},
-             useSuffix=${__${model.util.contextGet(object, field, rowIndex)}__!='' && mySuffix!='' && mySuffix!=null}">
+		         value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')},
+          		 myEmptyValue=${emptyValue?:'Non renseigné'},
+                 useSuffix=${__${model.util.contextGet(object, field, rowIndex)}__!='' && mySuffix!='' && mySuffix!=null}">
     <vu:dsfr-label-read label="${label}" label_attrs="${label_attrs}" after_label_slot="after_label_slot">
-        <span vu:text="${__${model.util.contextGet(object, field, rowIndex)}__}"
-              th:attr="__${input_attrs}__"></span><span th:if="${useSuffix}" vu:text="${mySuffix}"></span>
+        <span th:if="${value != null}"
+              vu:text="${__${model.util.contextGet(object, field, rowIndex)}__}"
+              th:attr="__${input_attrs}__"></span>
+        <span class="no-value" th:if="${value==null}"
+              th:text="${myEmptyValue}"></span>
+        <span th:if="${useSuffix}" vu:text="${mySuffix}"></span>
     </vu:dsfr-label-read>
 </th:block>
 
@@ -42,9 +48,11 @@
         th:with="mySuffix=${model.util.smartTypeUnit(object, field, suffix)},
              useSuffix=${__${model.util.contextGet(object, field, rowIndex)}__!='' && mySuffix!='' && mySuffix!=null}">
     <vu:include-data object="${object}" field="${field}"/>
-    <span th:attr="__${input_attrs}__">{{[[${model.util.vueDataKey(object, field, rowIndex)}]]}}</span><span
-        th:if="${useSuffix}" th:v-if="|${model.util.contextGet(object, field, rowIndex)}!=''|"
-        vu:text="${mySuffix}"></span>
+    <span th:attr="__${input_attrs}__">
+        {{ [[${model.util.vueDataKey(object, field, rowIndex)}]] }}
+    </span>
+    <span th:if="${useSuffix}" th:v-if="|${model.util.contextGet(object, field, rowIndex)}!=''|"
+          vu:text="${mySuffix}"></span>
 </th:block>
 
 <th:block

@@ -165,6 +165,13 @@ public class ComponentsDemoDsfrController extends AbstractVSpringMvcController {
 				.toModeCreate();
 	}
 
+	@GetMapping("/read")
+	public void initRead(final ViewContext viewContext) throws URISyntaxException, IOException {
+		initContext(viewContext);
+		viewContext.toModeReadOnly();
+	}
+
+
 	@PostMapping("/movies/{movieId}")
 	public void doSaveMovieManualValidation(final ViewContext viewContext,
 			@ViewAttribute("movie") final UiObject<Movie> movieUiObject,

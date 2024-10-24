@@ -25,7 +25,7 @@
 	</dsfr-select>
 </th:block>
 
-<th:block th:fragment="dsfr-select-read(object, field, rowIndex, label, list, valueField, labelField, filterFunction, required, searchable, label_attrs)"
+<th:block th:fragment="dsfr-select-read(object, field, rowIndex, label, list, valueField, labelField, emptyValue, filterFunction, required, searchable, label_attrs)"
 		  th:if="${modifiableTable==null}"
 		  vu:alias="dsfr-select"
 		  vu:selector="${viewMode=='read'}"
@@ -33,11 +33,13 @@
 		  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
 		           myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)},
           		   myLabel=${label?:model.util.label(object + '.' + field)},
+          		   myEmptyValue=${emptyValue?:'Non renseigné'},
 		           value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')}">
 	<vu:dsfr-label-read object="${object}" field="${field}" label="${myLabel}">
 		<span th:if="${value!=null}"
 			  vu:text="${model.vContext[__${list}__].getById('__${myValueField}__', value)['__${myLabelField}__']}">
 		</span>
+		<span class="no-value" th:if="${value==null}" th:text="${myEmptyValue}"></span>
 	</vu:dsfr-label-read>
 </th:block>
 

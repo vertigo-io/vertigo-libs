@@ -20,6 +20,15 @@ span.required {
     padding-bottom: .5rem;
 }
 
+p.readonly {
+    margin-bottom: .5rem;
+}
+
+.readonly .no-value {
+    font-style: italic;
+    color: var(--text-mention-grey);
+}
+
 /* Permet des retours à la ligne en flex */
 .fr-col-break {
     width: 100%;
