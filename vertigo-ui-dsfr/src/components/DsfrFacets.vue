@@ -15,7 +15,7 @@
     </div>
     <div v-for="facet in facets" :key="facet.code" class="facets">
       <template v-if="facet.multiple || !isFacetSelected(facet.code)">
-        <h6 class="fr-mb-1w">{{ facet.label }}</h6>
+        <h6 class="fr-mb-1w fr-text--md">{{ facet.label }}</h6>
 
         <ul>
           <template v-for="(value) in selectedInvisibleFacets(facet.code)" :key="value.code">
