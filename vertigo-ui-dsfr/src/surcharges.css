@@ -1,3 +1,8 @@
+/* Accessibilité du contraste des éléments désactivés */
+:root {
+    --text-disabled-grey: #767676
+}
+
 /* Corrige la taille de la selection du nombre d’éléments par page  */
 .fr-table .fr-select {
     max-width: min-content;
