@@ -68,10 +68,8 @@
              class="fr-messages-group"
              role="alert"
         >
-            <p th:id="|${myComponentId}__desc|"
-               class="fr-error-text  fr-mt-3v"
-               th:text="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
-            >
+            <p th:id="|${myComponentId}__desc|" class="fr-error-text fr-mt-3v">
+                {{ getErrorMessage('[[${object}]]', '[[${field}]]', [[${rowIndex}]]) }}
             </p>
         </div>
     </div>
