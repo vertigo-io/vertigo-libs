@@ -218,6 +218,11 @@
 }
 
 /* Display utils */
+
+.hidden {
+    display: none;
+}
+
 @media screen and (max-width: 576px) {
     .hidden-sm {
         display: none !important;
@@ -233,6 +238,24 @@
 @media screen and (max-width: 992px) {
     .hidden-lg {
         display: none !important;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .show-sm {
+        display: unset !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .show-md {
+        display: unset !important;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .show-lg {
+        display: unset !important;
     }
 }
 
