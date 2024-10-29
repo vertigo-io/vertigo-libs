@@ -28,6 +28,14 @@
     display: flex;
 }
 
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.flex-wrap-reverse {
+    flex-wrap: wrap-reverse;
+}
+
 .flex-nowrap {
     flex-wrap: nowrap;
 }
@@ -152,27 +160,35 @@
 .font-thin {
     font-weight: 100;
 }
+
 .font-extralight {
     font-weight: 200;
 }
+
 .font-light {
     font-weight: 300;
 }
+
 .font-normal {
     font-weight: 400;
 }
+
 .font-medium {
     font-weight: 500;
 }
+
 .font-semibold {
     font-weight: 600;
 }
+
 .font-bold {
     font-weight: 700;
 }
+
 .font-extrabold {
     font-weight: 800;
 }
+
 .font-black {
     font-weight: 900;
 }
@@ -180,18 +196,43 @@
 .text-left {
     text-align: left;
 }
+
 .text-center {
     text-align: center;
 }
+
 .text-right {
     text-align: right;
 }
+
 .text-justify {
     text-align: justify;
 }
+
 .text-start {
     text-align: start;
 }
+
 .text-end {
     text-align: end;
 }
+
+/* Display utils */
+@media screen and (max-width: 576px) {
+    .hidden-sm {
+        display: none !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .hidden-md {
+        display: none !important;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .hidden-lg {
+        display: none !important;
+    }
+}
+
