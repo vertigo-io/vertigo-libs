@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="fr-mb-2w" v-if="isAnyFacetValueSelected()">
-      <div v-for="(selectedFacetValues, selectedFacet) in selectedFacets" :key="selectedFacet">
+    <div class="fr-mb-2w flex flex-column gap--sm" v-if="isAnyFacetValueSelected()">
+      <template v-for="(selectedFacetValues, selectedFacet) in selectedFacets" :key="selectedFacet">
         <template v-if="!facetMultipleByCode(selectedFacet)">
           <DsfrTag class="fr-tag--dismiss"
                    tag-name="button"
@@ -11,7 +11,7 @@
             {{ facetLabelByCode(selectedFacet) }}: {{ facetValueLabelByCode(selectedFacet, selectedFacetValue) }}
           </DsfrTag>
         </template>
-      </div>
+      </template>
     </div>
     <div v-for="facet in facets" :key="facet.code" class="facets">
       <template v-if="facet.multiple || !isFacetSelected(facet.code)">
