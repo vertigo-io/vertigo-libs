@@ -7109,7 +7109,7 @@ const ep = /* @__PURE__ */ Ie(Ff, [["render", Jf], ["__scopeId", "data-v-0be4e59
       ], 42, op)
     ], 544));
   }
-}), ip = /* @__PURE__ */ Ie(sp, [["__scopeId", "data-v-f10618fa"]]), up = { role: "none" }, dp = ["id", "href"], cp = /* @__PURE__ */ M({
+}), ip = /* @__PURE__ */ Ie(sp, [["__scopeId", "data-v-e161f8ec"]]), up = { role: "none" }, dp = ["id", "href"], cp = /* @__PURE__ */ M({
   inheritAttrs: !1,
   __name: "DsfrMenuLink",
   props: {

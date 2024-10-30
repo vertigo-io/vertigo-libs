@@ -108,6 +108,10 @@ let handleFocusOut = (event) => {
   }
 }
 
+let closeMenu = () => {
+  expanded.value = false;
+}
+
 </script>
 
 <template>
