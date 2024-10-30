@@ -478,21 +478,25 @@ export default {
     modal_iframeLoad(ifrm) {
         let compId = ifrm.dataset.componentId;
         let autoHeight = ifrm.dataset.autoHeight;
-        let doc = ifrm.contentDocument? ifrm.contentDocument: ifrm.contentWindow.document;
-        
+
         if (autoHeight === 'true') {
             ifrm.style.opacity = '0'; // should be already hidden but otherwise we hide it to avoid flickering
             //ifrm.style.height = "100px"; // set to 100px to get height without blank padding at bottom, but not less than 100px
-            
-            setTimeout(function() { // slight delay to allow the iframe to be fully loaded and rendered
-                let newHeight = this.getDocHeight(doc) + 4 + "px"; // IE opt. for bing/msn needs a bit added or scrollbar appears
-            
-                ifrm.style.height = ""; // reset iframe height to extends again
-                this.componentStates[compId].height = newHeight; // set the height of the modal
-            }.bind(this), 1);
+
+            this.modal_iframeAjustHeight(ifrm)
         }
         this.componentStates[compId].loading = false;
         ifrm.style.opacity = '1'; // show the iframe
+    },
+    modal_iframeAjustHeight(ifrm) {
+        let compId = ifrm.dataset.componentId;
+        let doc = ifrm.contentDocument? ifrm.contentDocument: ifrm.contentWindow.document;
+        setTimeout(function() { // slight delay to allow the iframe to be fully loaded and rendered
+            let newHeight = this.getDocHeight(doc) + 4 + "px"; // IE opt. for bing/msn needs a bit added or scrollbar appears
+
+            ifrm.style.height = ""; // reset iframe height to extends again
+            this.componentStates[compId].height = newHeight; // set the height of the modal
+        }.bind(this), 1);
     },
     getDocHeight : function(doc) {
         doc = doc || document;
