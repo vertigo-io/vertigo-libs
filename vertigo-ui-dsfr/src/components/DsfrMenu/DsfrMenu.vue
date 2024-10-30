@@ -108,10 +108,11 @@ let handleFocusOut = (event) => {
   }
 }
 
-let closeMenu = () => {
+function closeMenu() {
   expanded.value = false;
 }
 
+defineExpose({ closeMenu })
 </script>
 
 <template>
