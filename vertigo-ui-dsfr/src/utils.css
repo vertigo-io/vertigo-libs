@@ -22,6 +22,10 @@
     white-space: pre;
 }
 
+.whitespace-nowrap {
+    white-space: nowrap;
+}
+
 /* flex utils */
 
 .flex {
