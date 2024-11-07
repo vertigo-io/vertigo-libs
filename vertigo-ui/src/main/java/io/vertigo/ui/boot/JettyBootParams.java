@@ -35,6 +35,7 @@ public class JettyBootParams {
 	private final String contextRoot;
 	private final Optional<String> contextPath;
 	private final Class<? extends WebApplicationInitializer> webApplicationInitializerClass;
+	private final Optional<String> jettySessionStoreCollectionName;
 	private final boolean join;
 
 	JettyBootParams(
@@ -48,6 +49,7 @@ public class JettyBootParams {
 			final String keystorePassword,
 			final String sslKeystoreAlias,
 			final Optional<String> jettyNodeName,
+			final Optional<String> jettySessionStoreCollectionName,
 			final boolean join) {
 		Assertion.check()
 				.isNotBlank(contextRoot)
@@ -70,6 +72,7 @@ public class JettyBootParams {
 		this.contextRoot = contextRoot;
 		this.contextPath = contextPath;
 		this.webApplicationInitializerClass = webApplicationInitializerClass;
+		this.jettySessionStoreCollectionName = jettySessionStoreCollectionName;
 		this.join = join;
 	}
 
@@ -115,6 +118,10 @@ public class JettyBootParams {
 
 	public Class<? extends WebApplicationInitializer> getWebApplicationInitializerClass() {
 		return webApplicationInitializerClass;
+	}
+
+	public Optional<String> getJettySessionStoreCollectionName() {
+		return jettySessionStoreCollectionName;
 	}
 
 	public boolean isJoin() {

@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import org.springframework.web.WebApplicationInitializer;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 
 public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
@@ -38,6 +39,7 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 	private String myKeystorePassword;
 	private String mySslKeystoreAlias;
 	private String myJettyNodeName;
+	private String myJettySessionStoreCollectionName;
 	private boolean myJoin = true;// true by default
 
 	public JettyBootParamsBuilder(final String contextRoot, final Class<? extends WebApplicationInitializer> webApplicationInitializerClass) {
@@ -78,6 +80,13 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 		return this;
 	}
 
+	public JettyBootParamsBuilder withJettySessionStoreCollectionName(final String jettySessionStoreCollectionName) {
+		Assertion.check().isNotBlank(jettySessionStoreCollectionName);
+		//---
+		myJettySessionStoreCollectionName = jettySessionStoreCollectionName;
+		return this;
+	}
+
 	public JettyBootParamsBuilder noJoin() {
 		myJoin = false;
 		return this;
@@ -96,6 +105,7 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 				myKeystorePassword,
 				mySslKeystoreAlias,
 				Optional.ofNullable(myJettyNodeName),
+				Optional.ofNullable(myJettySessionStoreCollectionName),
 				myJoin);
 	}
 
