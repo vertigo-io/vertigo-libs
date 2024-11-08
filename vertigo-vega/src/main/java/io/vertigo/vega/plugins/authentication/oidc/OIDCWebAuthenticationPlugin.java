@@ -275,6 +275,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 		try {
 
 			final HTTPRequestConfigurator requestConfigurator = new HTTPRequestConfigurator() {
+
 				@Override
 				public void configure(final HTTPRequest httpRequest) {
 					httpRequest.setConnectTimeout(httpConnectTimeout);
@@ -496,13 +497,14 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 				final var redirectUrl = resolveExternalUrl(httpRequest) + redirectUrlOpt.get();
 				logoutParam += "?" + oidcParameters.logoutRedirectUriParamNameOpt().get() + "=" + URLEncoder.encode(redirectUrl, StandardCharsets.UTF_8);
 			}
-			if (oidcParameters.logoutIdParamNameOpt().isPresent()) {
+			final var session = httpRequest.getSession(false);
+			if (oidcParameters.logoutIdParamNameOpt().isPresent() && session != null) { //if we have a OIDC ID TOKEN : we send it to the logout endpoint
 				if (logoutParam == "") {
 					logoutParam = "?";
 				} else {
 					logoutParam += "&";
 				}
-				logoutParam += oidcParameters.logoutIdParamNameOpt().get() + "=" + httpRequest.getSession().getAttribute(OIDC_ID_TOKEN);
+				logoutParam += oidcParameters.logoutIdParamNameOpt().get() + "=" + session.getAttribute(OIDC_ID_TOKEN);
 			}
 		}
 
