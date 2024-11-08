@@ -40,6 +40,8 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 	private String mySslKeystoreAlias;
 	private String myJettyNodeName;
 	private String myJettySessionStoreCollectionName;
+	private boolean myNoJettySessionCache;
+	//TODO parameter si cache null ou default (si on croit dans l'affinité de session ou non)
 	private boolean myJoin = true;// true by default
 
 	public JettyBootParamsBuilder(final String contextRoot, final Class<? extends WebApplicationInitializer> webApplicationInitializerClass) {
@@ -87,6 +89,11 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 		return this;
 	}
 
+	public JettyBootParamsBuilder noJettySessionCache() {
+		myNoJettySessionCache = true;
+		return this;
+	}
+
 	public JettyBootParamsBuilder noJoin() {
 		myJoin = false;
 		return this;
@@ -106,6 +113,7 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 				mySslKeystoreAlias,
 				Optional.ofNullable(myJettyNodeName),
 				Optional.ofNullable(myJettySessionStoreCollectionName),
+				myNoJettySessionCache,
 				myJoin);
 	}
 

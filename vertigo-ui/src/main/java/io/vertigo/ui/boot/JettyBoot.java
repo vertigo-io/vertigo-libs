@@ -77,10 +77,10 @@ public class JettyBoot {
 		final var jettySessionStoreCollectionNameOpt = jettyBootParams.getJettySessionStoreCollectionName();
 		if (jettySessionStoreCollectionNameOpt.isPresent()) {
 			server.addBean(new KVSessionDataStoreFactory(jettySessionStoreCollectionNameOpt.get())); //we set kvStore sessionStore
-			server.addBean(new NullSessionCacheFactory()); //we inactive sessionCache : to use SessionStore every times
+			if (jettyBootParams.isNoJettySessionCache()) {
+				server.addBean(new NullSessionCacheFactory()); //we inactive sessionCache : to use SessionStore every times
+			}
 		}
-
-		server.addBean(new NullSessionCacheFactory()); //we inactive sessionCache
 
 		// Create HTTP Config
 		final var httpConfig = new HttpConfiguration();

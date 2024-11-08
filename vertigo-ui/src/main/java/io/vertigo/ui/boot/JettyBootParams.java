@@ -36,6 +36,7 @@ public class JettyBootParams {
 	private final Optional<String> contextPath;
 	private final Class<? extends WebApplicationInitializer> webApplicationInitializerClass;
 	private final Optional<String> jettySessionStoreCollectionName;
+	private final boolean noJettySessionCache;
 	private final boolean join;
 
 	JettyBootParams(
@@ -50,6 +51,7 @@ public class JettyBootParams {
 			final String sslKeystoreAlias,
 			final Optional<String> jettyNodeName,
 			final Optional<String> jettySessionStoreCollectionName,
+			final boolean noJettySessionCache,
 			final boolean join) {
 		Assertion.check()
 				.isNotBlank(contextRoot)
@@ -60,7 +62,11 @@ public class JettyBootParams {
 						() -> Assertion.check()
 								.isNotBlank(keystoreUrl)
 								.isNotBlank(keystorePassword)
-								.isNotBlank(sslKeystoreAlias));
+								.isNotBlank(sslKeystoreAlias))
+				.when(
+						noJettySessionCache,
+						() -> Assertion.check()
+								.isTrue(jettySessionStoreCollectionName.isPresent(), "When noJettySessionCache, jettySessionStoreCollectionName must be provided"));
 		//---
 		this.port = port;
 		this.sslDisabled = sslDisabled;
@@ -73,6 +79,7 @@ public class JettyBootParams {
 		this.contextPath = contextPath;
 		this.webApplicationInitializerClass = webApplicationInitializerClass;
 		this.jettySessionStoreCollectionName = jettySessionStoreCollectionName;
+		this.noJettySessionCache = noJettySessionCache;
 		this.join = join;
 	}
 
@@ -122,6 +129,10 @@ public class JettyBootParams {
 
 	public Optional<String> getJettySessionStoreCollectionName() {
 		return jettySessionStoreCollectionName;
+	}
+
+	public boolean isNoJettySessionCache() {
+		return noJettySessionCache;
 	}
 
 	public boolean isJoin() {
