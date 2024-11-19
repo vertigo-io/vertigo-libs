@@ -132,7 +132,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 		return Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> new PurgeFileStoreDaemon(this), 5 * 60));
 	}
 
-	void deleteOldFiles() {
+	public void deleteOldFiles() {
 		if (purgeDelayMinutesOpt.isPresent()) {
 			final long maxTime = System.currentTimeMillis() - purgeDelayMinutesOpt.get() * 60L * 1000L;
 			doDeleteOldFiles(documentRoot, maxTime);
