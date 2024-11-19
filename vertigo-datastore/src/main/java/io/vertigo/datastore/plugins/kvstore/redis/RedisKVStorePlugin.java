@@ -125,13 +125,11 @@ public final class RedisKVStorePlugin implements KVStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final KVCollection collection, final String id) {
+	public boolean remove(final KVCollection collection, final String id) {
 		final var jedis = redisConnector.getClient();
 		final var isRemoved = jedis.del(REDIS_KV_KEY_PREFIX + collection.name() + ':' + id);
 		// ---
-		if (isRemoved == 0) {
-			throw new RuntimeException(LocaleMessageText.of("Unable to remove non existing element collection '{0}' with key '{1}'", collection.name(), id).getDisplay());
-		}
+		return isRemoved > 0;
 	}
 
 	/** {@inheritDoc} */
