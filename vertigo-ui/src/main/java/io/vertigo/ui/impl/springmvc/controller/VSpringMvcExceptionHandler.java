@@ -55,7 +55,7 @@ public final class VSpringMvcExceptionHandler {
 	@ExceptionHandler(SessionException.class)
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	public static Object handleSessionException(final SessionException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
-		LOGGER.error("User try an unauthorized action " + request.getMethod() + " " + request.getRequestURL(), LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
+		LOGGER.error("User try an unauthorized action " + request.getMethod() + " " + request.getRequestURL() + " : " + ex.getMessage(), LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
 		return doHandleThrowable(ex, request, response, HttpStatus.UNAUTHORIZED, "Unauthorized action"); //no stacktrace but throws Ex too
 	}
 
@@ -81,7 +81,7 @@ public final class VSpringMvcExceptionHandler {
 	@ExceptionHandler(VSecurityException.class)
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	public static Object handleSecurityException(final VSecurityException ex, final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
-		LOGGER.error("User try a forbidden action " + request.getMethod() + " " + request.getRequestURL(), LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
+		LOGGER.error("User try a forbidden action " + request.getMethod() + " " + request.getRequestURL() + " : " + ex.getMessage(), LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
 		return doHandleThrowable(ex, request, response, HttpStatus.FORBIDDEN, "Forbidden action"); //no stacktrace but throws Ex too
 	}
 
