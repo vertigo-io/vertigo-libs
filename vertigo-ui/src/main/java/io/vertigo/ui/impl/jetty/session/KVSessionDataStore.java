@@ -1,6 +1,7 @@
 package io.vertigo.ui.impl.jetty.session;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -16,7 +17,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.session.AbstractSessionDataStore;
@@ -128,7 +128,7 @@ public class KVSessionDataStore extends AbstractSessionDataStore {
 	@Override
 	public boolean delete(final String id) throws Exception {
 		LOG.debug("Deleting SessionID {} from KVStore {}", id, sessionCollectionName);
-		getKVStoreManager().remove(SESSIONS_COLLECTION_NAME, id);
+		getKVStoreManager().removeIfExists(SESSIONS_COLLECTION_NAME, id);
 		loadedSessionId.remove(id);
 		return true;
 	}
