@@ -1,4 +1,4 @@
-export type DsfrButtonTooltipProps = {
+export type DsfrComponentTooltipProps = {
     id?: string
     label?: string
     noOutline?: boolean
@@ -8,5 +8,12 @@ export type DsfrButtonTooltipProps = {
     icon: string
     iconRight?: boolean
     iconOnly?: boolean
-    content: string
+    isLink?: boolean
+    content?: string
+    inline?: boolean
+    href?: string
+}
+
+export type DsfrLinkTooltipProps = {
+    isLink?: boolean
 }

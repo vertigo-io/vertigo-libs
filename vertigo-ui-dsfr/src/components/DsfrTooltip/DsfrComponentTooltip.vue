@@ -8,14 +8,17 @@ import {computed, onMounted, onUnmounted, ref, watch} from 'vue'
 
 import {getRandomId} from '@/utils/random-utils'
 
-import type {DsfrButtonTooltipProps} from './DsfrButtonTooltip.types'
+import type {DsfrComponentTooltipProps} from './DsfrComponentTooltip.types'
 
-export type {DsfrButtonTooltipProps}
+export type {DsfrComponentTooltipProps}
 
-const props = withDefaults(defineProps<DsfrButtonTooltipProps>(), {
+const props = withDefaults(defineProps<DsfrComponentTooltipProps>(), {
   id: () => getRandomId('tooltip'),
   icon: '',
-  label: ''
+  label: '',
+  isLink: false,
+  inline: false,
+  href: ''
 })
 
 const show = ref(false)
@@ -128,19 +131,24 @@ const onMouseLeave = () => {
 </script>
 
 <template>
-  <button
+  <component
       :id="`button-${id}`"
       ref="source"
-      class="fr-btn"
+      :is="href !== '' ? 'a' : 'button'"
+      :href="href !== '' ? href : undefined"
       :class="{
+        'fr-link': isLink && !inline,
+        'fr-btn': !isLink,
         'fr-btn--secondary': secondary && !tertiary,
         'fr-btn--tertiary': tertiary && !secondary && !noOutline,
         'fr-btn--tertiary-no-outline': tertiary && !secondary && noOutline,
         'fr-btn--sm': sm,
         'fr-btn--md': md,
         'fr-btn--lg': lg,
-        'fr-btn--icon-right': !iconOnly && dsfrIcon && iconRight,
-        'fr-btn--icon-left': !iconOnly && dsfrIcon && !iconRight,
+        'fr-btn--icon-right': !isLink && !iconOnly && dsfrIcon && iconRight,
+        'fr-btn--icon-left': !isLink && !iconOnly && dsfrIcon && !iconRight,
+        'fr-link--icon-right': isLink && !inline && !iconOnly && dsfrIcon && iconRight,
+        'fr-link--icon-left': isLink && !inline && !iconOnly && dsfrIcon && !iconRight,
         'inline-flex': !dsfrIcon,
         reverse: iconRight && !dsfrIcon,
         'fr-btn--custom-tooltip': iconOnly,
@@ -155,7 +163,7 @@ const onMouseLeave = () => {
       v-bind="$attrs"
   >
     {{ label }}
-  </button>
+  </component>
   <p
       :id="id"
       ref="tooltip"

@@ -130,14 +130,23 @@
 
                 <h2>Tooltip</h2>
 
-                <dsfr-button-tooltip @click="componentStates.dialog.opened = true" label="Ouvre-moi" secondary type="button">Ouvre la modale juste normal tqt</dsfr-button-tooltip>
+                <vu:dsfr-grid-cell class="q-gutter-md">
+                    <dsfr-button-tooltip @click="componentStates.dialog.opened = true" label="Ouvre-moi" secondary type="button">Ouvre la modale juste normal tqt</dsfr-button-tooltip>
 
-                <dsfr-button icon="fr-icon-arrow-right-line" icon-only></dsfr-button>
-                <dsfr-button-tooltip icon="fr-icon-arrow-right-line" icon-only>Icône seulement</dsfr-button-tooltip>
-                <dsfr-button icon="fr-icon-arrow-right-line" label="Avec texte"></dsfr-button>
-                <dsfr-button-tooltip icon="fr-icon-arrow-right-line" label="Avec texte">
-                    Le fameux tooltip
-                </dsfr-button-tooltip>
+                    <dsfr-button icon="fr-icon-arrow-right-line" icon-only></dsfr-button>
+                    <dsfr-button-tooltip icon="fr-icon-arrow-right-line" icon-only>Icône seulement</dsfr-button-tooltip>
+                    <dsfr-button icon="fr-icon-arrow-right-line" label="Avec texte"></dsfr-button>
+                    <dsfr-button-tooltip icon="fr-icon-arrow-right-line" label="Avec texte">
+                        Le fameux tooltip
+                    </dsfr-button-tooltip>
+
+                    <dsfr-link-tooltip th:href="@{/}" label="Ceci est un lien">Lien</dsfr-link-tooltip>
+                    <dsfr-link-tooltip :is-link="false" tertiary th:href="@{/}" label="Ceci est un lien">Bouton (lien)</dsfr-link-tooltip>
+
+                    <p>
+                        Lorem ipsum doleret <dsfr-link-tooltip inline th:href="@{/}" label="ispum demso">ipsum demso</dsfr-link-tooltip>
+                    </p>
+                </vu:dsfr-grid-cell>
 
                 <vu:dsfr-modal componentId="myModal"
                                iframeTitle="Coucou"
@@ -230,15 +239,18 @@
                    selectable
     >
         <vu:slot name="actions_slot">
-            <vu:dsfr-button-icon icon="ri-information-2-line"
-                                 label="'`Ouvrir la modale de la ligne n°${idx}`'"
-            />
-            <vu:dsfr-button-icon icon="fr-icon-delete-bin-line"
-                                 label="'`Ouvrir la modale de la ligne n°${idx}`'"
-            />
-            <vu:dsfr-button-icon icon="fr-icon-eye-line"
-                                 label="'`Ouvrir la modale de la ligne n°${idx}`'"
-            />
+            <dsfr-button-tooltip icon="ri-information-2-line"
+                                 icon-only tertiary
+                                 content="'`Ouvrir la modale de la ligne n°${idx}`'"
+            ></dsfr-button-tooltip>
+            <dsfr-button-tooltip icon="fr-icon-delete-bin-line"
+                                 icon-only tertiary
+                                 content="'`Ouvrir la modale de la ligne n°${idx}`'"
+            ></dsfr-button-tooltip>
+            <dsfr-button-tooltip icon="fr-icon-eye-line"
+                                 icon-only tertiary
+                                 content="'`Ouvrir la modale de la ligne n°${idx}`'"
+            ></dsfr-button-tooltip>
         </vu:slot>
         <vu:slot name="header_slot">
             <vu:dsfr-column-header field="movId">
