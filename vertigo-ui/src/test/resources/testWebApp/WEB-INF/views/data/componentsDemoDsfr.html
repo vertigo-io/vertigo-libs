@@ -25,8 +25,8 @@
             <vu:include-data-primitive key='timeZoneList'/>
             <vu:include-data-primitive key='selectedTimeZoneList' modifiable/>
 
-            <vu:dsfr-menu secondary label="Menu">
-                <vu:dsfr-menu-link icon="ri-checkbox-circle-line" label="Coucou n°3"/>
+            <vu:dsfr-menu secondary label="Menu" ref="menutest">
+                <vu:dsfr-menu-link icon="ri-checkbox-circle-line" label="Coucou n°3" th:url="@{/}"/>
                 <vu:dsfr-menu-link label="Coucou n°2"/>
                 <vu:dsfr-menu-link disabled label="Coucou n°1"/>
                 <vu:dsfr-menu-link disabled label="Coucou n°1 bis"/>
@@ -39,8 +39,9 @@
                                  nom="Joe Nathang"
                                  email="joenathang@pm.me"
                                  label="Mon espace">
-                <vu:dsfr-menu-link icon="ri-checkbox-circle-line" label="Mon profil utilisateur"/>
-                <vu:dsfr-menu-link icon="ri-mail-line" disabled label="Messagerie"/>
+                <vu:dsfr-menu-link icon="fr-icon-mail-line" label="Mon profil utilisateur"/>
+                <vu:dsfr-menu-link icon="ri-mail-line" disabled th:url="@{/notifications}" label="Messagerie"/>
+                <vu:dsfr-menu-link icon="fr-icon-mail-line" disabled th:url="@{/notifications}" label="Messagerie"/>
                 <vu:dsfr-menu-link icon="ri-notification-2-line" th:url="@{/notifications}" label="Notifications"/>
                 <vu:dsfr-menu-link icon="ri-circle-line" label="Mon périmètre"/>
             </vu:dsfr-header-menu>
@@ -211,7 +212,7 @@
     <vu:dsfr-table list="movies"
                    componentId="movieTable2"
                    sortUrl="@{/movies/_sort}"
-                   :pagination="true"
+                   pagination="false"
                    title="Test table"
                    sorted="movId"
                    row-key="movId"

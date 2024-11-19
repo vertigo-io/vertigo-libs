@@ -125,7 +125,7 @@ const onMouseLeave = () => {
   <button
       :id="`button-${id}`"
       ref="source"
-      class="fr-btn fr-btn--sm"
+      class="fr-btn fr-btn--custom-tooltip"
       :class="{
         'fr-btn--tertiary': !noOutline,
         'fr-btn--tertiary-no-outline': noOutline,
@@ -157,5 +157,31 @@ const onMouseLeave = () => {
 <style scoped>
 .fr-tooltip {
   transition: opacity 0.3s ease-in-out;
+}
+
+.fr-btn--custom-tooltip {
+  font-size: .875rem;
+  line-height: 1.5rem;
+  max-height: 2rem !important;
+  max-width: 2rem !important;
+  min-height: 2rem;
+  overflow: hidden;
+  padding: .25rem .5rem !important;
+  white-space: nowrap;
+}
+
+.fr-btn--custom-tooltip::before {
+  --icon-size: 1rem !important;
+  background-color: currentColor;
+  content: "";
+  display: inline-block;
+  flex: 0 0 auto;
+  height: var(--icon-size);
+  margin-left: 0;
+  margin-right: .5rem;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  vertical-align: calc((.75em - var(--icon-size)) * .5);
+  width: var(--icon-size);
 }
 </style>
