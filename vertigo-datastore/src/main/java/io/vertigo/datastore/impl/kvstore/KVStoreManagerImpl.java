@@ -25,15 +25,18 @@ import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.MapBuilder;
+import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.datastore.kvstore.KVCollection;
 import io.vertigo.datastore.kvstore.KVStoreManager;
 
 /**
-* Standard implementation of the Key-Value DataBase.
-*
-* @author pchretien
-*/
+ * Standard implementation of the Key-Value DataBase.
+ *
+ * @author pchretien
+ */
 public final class KVStoreManagerImpl implements KVStoreManager {
+
 	private final Map<KVCollection, KVStorePlugin> kvStoreByCollection;
 
 	/**
@@ -76,7 +79,16 @@ public final class KVStoreManagerImpl implements KVStoreManager {
 	/** {@inheritDoc} */
 	@Override
 	public void remove(final KVCollection collection, final String id) {
-		getKVStorePlugin(collection).remove(collection, id);
+		final boolean exists = getKVStorePlugin(collection).remove(collection, id);
+		if (!exists) {
+			throw new VSystemException(LocaleMessageText.of("Unable to remove non existing element from collection '{0}' with key '{1}'", collection.name(), id).getDisplay());
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean removeIfExists(final KVCollection collection, final String id) {
+		return getKVStorePlugin(collection).remove(collection, id);
 	}
 
 	/** {@inheritDoc} */

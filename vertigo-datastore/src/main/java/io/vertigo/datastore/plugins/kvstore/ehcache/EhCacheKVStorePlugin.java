@@ -60,6 +60,7 @@ import io.vertigo.datastore.kvstore.KVCollection;
  * @author pchretien, npiedeloup
  */
 public final class EhCacheKVStorePlugin implements KVStorePlugin, Activeable {
+
 	private static final String ANALYTICS_CATEGORY = "kvstore";
 	private final org.ehcache.CacheManager manager;
 	private final StatisticsService statisticsService;
@@ -183,6 +184,7 @@ public final class EhCacheKVStorePlugin implements KVStorePlugin, Activeable {
 	}
 
 	private static class JavaObjectSerializer implements Serializer<Object> {
+
 		private final Codec<Serializable, byte[]> codec;
 
 		JavaObjectSerializer(final Codec<Serializable, byte[]> codec) {
@@ -239,10 +241,16 @@ public final class EhCacheKVStorePlugin implements KVStorePlugin, Activeable {
 	}
 
 	@Override
-	public void remove(final KVCollection collection, final String id) {
-		analyticsManager.trace(ANALYTICS_CATEGORY, "remove", tracer -> {
+	public boolean remove(final KVCollection collection, final String id) {
+		return analyticsManager.traceWithReturn(ANALYTICS_CATEGORY, "remove", tracer -> {
 			tracer.setTag("collection", collection.name());
-			getEHCache(collection).remove(id);
+			final var ehCache = getEHCache(collection);
+			final var exists = ehCache.containsKey(id);
+			if (exists) {
+				ehCache.remove(id);
+			}
+			return exists;
+
 		});
 	}
 

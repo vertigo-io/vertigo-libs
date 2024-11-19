@@ -35,7 +35,6 @@ import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.daemon.DaemonManager;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
@@ -123,15 +122,13 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final KVCollection collection, final String key) {
+	public boolean remove(final KVCollection collection, final String key) {
 		Assertion.check()
 				.isNotNull(collection)
 				.isNotBlank(key);
 		//-----
 		final var oldValue = getCollectionData(collection).remove(key);
-		if (oldValue == null) {
-			throw new VSystemException("delete has failed because no data found with key : {0}", key);
-		}
+		return oldValue != null;
 	}
 
 	/** {@inheritDoc} */
@@ -192,6 +189,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 	 * @author npiedeloup
 	 */
 	public static final class RemoveTooOldElementsDaemon implements Daemon {
+
 		private final DelayedMemoryKVStorePlugin delayedMemoryKVDataStorePlugin;
 
 		/**
