@@ -7,12 +7,12 @@ export type {DsfrLinkTooltipProps}
 import DsfrComponentTooltip from "@/components/DsfrTooltip/DsfrComponentTooltip.vue";
 
 const props = withDefaults(defineProps<DsfrLinkTooltipProps>(), {
-  isLink: true
+  asButton: false
 })
 </script>
 
 <template>
-  <DsfrComponentTooltip :is-link="isLink" v-bind="$attrs"><slot></slot></DsfrComponentTooltip>
+  <DsfrComponentTooltip :is-link="!asButton" v-bind="$attrs"><slot></slot></DsfrComponentTooltip>
 </template>
 
 <style scoped>

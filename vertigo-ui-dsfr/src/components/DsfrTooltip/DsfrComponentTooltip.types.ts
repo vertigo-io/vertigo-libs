@@ -15,5 +15,5 @@ export type DsfrComponentTooltipProps = {
 }
 
 export type DsfrLinkTooltipProps = {
-    isLink?: boolean
+    asButton?: boolean
 }

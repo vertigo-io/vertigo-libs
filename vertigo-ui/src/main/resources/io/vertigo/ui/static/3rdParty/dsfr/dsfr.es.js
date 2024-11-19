@@ -8160,10 +8160,12 @@ const tp = /* @__PURE__ */ _e(Pf, [["render", ep], ["__scopeId", "data-v-0be4e59
 }), zv = /* @__PURE__ */ M({
   __name: "DsfrLinkTooltip",
   props: {
-    isLink: { type: Boolean, default: !0 }
+    asButton: { type: Boolean, default: !1 }
   },
   setup(t) {
-    return (e, a) => (s(), R(al, q({ "is-link": e.isLink }, e.$attrs), {
+    return (e, a) => (s(), R(al, q({
+      "is-link": !e.asButton
+    }, e.$attrs), {
       default: G(() => [
         A(e.$slots, "default")
       ]),
