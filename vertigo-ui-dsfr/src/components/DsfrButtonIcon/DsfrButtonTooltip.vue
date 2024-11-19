@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Ce composant permet de créer des boutons sans texte, qui utilise un tooltip custom qui répond mieux aux besoins d’accessibilités
+ * Ce composant permet de créer des boutons, qui utilise un tooltip custom qui répond mieux aux besoins d’accessibilités
  *
  */
 
@@ -8,14 +8,14 @@ import {computed, onMounted, onUnmounted, ref, watch} from 'vue'
 
 import {getRandomId} from '@/utils/random-utils'
 
-import type {DsfrButtonIconProps} from './DsfrButtonIcon.types'
+import type {DsfrButtonTooltipProps} from './DsfrButtonTooltip.types'
 
-export type {DsfrButtonIconProps}
+export type {DsfrButtonTooltipProps}
 
-const props = withDefaults(defineProps<DsfrButtonIconProps>(), {
+const props = withDefaults(defineProps<DsfrButtonTooltipProps>(), {
   id: () => getRandomId('tooltip'),
-  noOutline: false,
-  icon: ''
+  icon: '',
+  label: ''
 })
 
 const show = ref(false)
@@ -76,6 +76,12 @@ onUnmounted(() => {
   window.removeEventListener('scroll', computePosition)
 })
 
+const sm = computed(() => ['sm', 'small'].includes(props.size))
+const md = computed(() => ['md', 'medium'].includes(props.size))
+const lg = computed(() => ['lg', 'large'].includes(props.size))
+
+const dsfrIcon = computed(() => typeof props.icon === 'string' && props.icon.startsWith('fr-icon-'))
+
 const tooltipStyle = computed(() => (`transform: translate(${translateX.value}, ${translateY.value}); --arrow-x: ${arrowX.value}; opacity: ${opacity.value};'`))
 const tooltipClass = computed(() => ({
   'fr-tooltip--shown': show.value,
@@ -125,11 +131,21 @@ const onMouseLeave = () => {
   <button
       :id="`button-${id}`"
       ref="source"
-      class="fr-btn fr-btn--custom-tooltip"
+      class="fr-btn"
       :class="{
-        'fr-btn--tertiary': !noOutline,
-        'fr-btn--tertiary-no-outline': noOutline,
-        [icon]: true
+        'fr-btn--secondary': secondary && !tertiary,
+        'fr-btn--tertiary': tertiary && !secondary && !noOutline,
+        'fr-btn--tertiary-no-outline': tertiary && !secondary && noOutline,
+        'fr-btn--sm': sm,
+        'fr-btn--md': md,
+        'fr-btn--lg': lg,
+        'fr-btn--icon-right': !iconOnly && dsfrIcon && iconRight,
+        'fr-btn--icon-left': !iconOnly && dsfrIcon && !iconRight,
+        'inline-flex': !dsfrIcon,
+        reverse: iconRight && !dsfrIcon,
+        'fr-btn--custom-tooltip': iconOnly,
+        'justify-center': !dsfrIcon && iconOnly,
+        [icon as string]: dsfrIcon,
       }"
       :aria-labelledby="id"
       @mouseenter="onMouseEnter()"
@@ -138,6 +154,7 @@ const onMouseLeave = () => {
       @blur="onMouseLeave()"
       v-bind="$attrs"
   >
+    {{ label }}
   </button>
   <p
       :id="id"
@@ -183,5 +200,15 @@ const onMouseLeave = () => {
   mask-size: 100% 100%;
   vertical-align: calc((.75em - var(--icon-size)) * .5);
   width: var(--icon-size);
+}
+
+.inline-flex {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.reverse {
+  flex-direction: row-reverse;
 }
 </style>

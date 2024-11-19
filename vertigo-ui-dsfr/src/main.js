@@ -18,7 +18,7 @@ import DsfrCustomHeader from "@/components/DsfrHeader/DsfrCustomHeader.vue";
 import DsfrCustomHeaderMenuLinks from "@/components/DsfrHeader/DsfrCustomHeaderMenuLinks.vue";
 import DsfrCustomDataTable from "@/components/DsfrDataTable/DsfrCustomDataTable.vue";
 
-import DsfrButtonIcon from "@/components/DsfrButtonIcon/DsfrButtonIcon.vue";
+import DsfrButtonTooltip from "@/components/DsfrButtonIcon/DsfrButtonTooltip.vue";
 
 import './utils.css'
 import './surcharges.css'
@@ -42,7 +42,7 @@ var DSFR = {
         vueApp.component('DsfrCustomDataTable', DsfrCustomDataTable)
 
         // Autres
-        vueApp.component('DsfrButtonIcon', DsfrButtonIcon)
+        vueApp.component('DsfrButtonTooltip', DsfrButtonTooltip)
     },
 
     methods: DsfrMethods,

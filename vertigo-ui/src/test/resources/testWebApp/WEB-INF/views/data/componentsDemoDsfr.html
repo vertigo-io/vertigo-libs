@@ -128,6 +128,17 @@
                 </vu:dsfr-dialog>
                 <dsfr-button @click="componentStates.dialog.opened = true" label="Ouvre-moi" secondary type="button"></dsfr-button>
 
+                <h2>Tooltip</h2>
+
+                <dsfr-button-tooltip @click="componentStates.dialog.opened = true" label="Ouvre-moi" secondary type="button">Ouvre la modale juste normal tqt</dsfr-button-tooltip>
+
+                <dsfr-button icon="fr-icon-arrow-right-line" icon-only></dsfr-button>
+                <dsfr-button-tooltip icon="fr-icon-arrow-right-line" icon-only>Icône seulement</dsfr-button-tooltip>
+                <dsfr-button icon="fr-icon-arrow-right-line" label="Avec texte"></dsfr-button>
+                <dsfr-button-tooltip icon="fr-icon-arrow-right-line" label="Avec texte">
+                    Le fameux tooltip
+                </dsfr-button-tooltip>
+
                 <vu:dsfr-modal componentId="myModal"
                                iframeTitle="Coucou"
                                autoHeight
