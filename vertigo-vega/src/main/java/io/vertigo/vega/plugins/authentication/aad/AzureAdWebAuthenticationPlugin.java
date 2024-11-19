@@ -58,6 +58,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.vega.impl.authentication.AuthenticationResult;
+import io.vertigo.vega.impl.authentication.WebAuthenticationManagerImpl;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -239,11 +240,13 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 
 		final IConfidentialClientApplication app = azureAdConnector.getClient();
 
-		/**CHECKME : token cache is not necessary anymore
-		final Object tokenCache = httpRequest.getSession().getAttribute(TOKEN_CACHE_SESSION_ATTRIBUTE);		 
-		if (tokenCache != null) {
-			app.tokenCache().deserialize(tokenCache.toString());
-		}*/
+		/**
+		 * CHECKME : token cache is not necessary anymore
+		 * final Object tokenCache = httpRequest.getSession().getAttribute(TOKEN_CACHE_SESSION_ATTRIBUTE);
+		 * if (tokenCache != null) {
+		 * app.tokenCache().deserialize(tokenCache.toString());
+		 * }
+		 */
 
 		final SilentParameters parameters = SilentParameters.builder(
 				Collections.singleton("User.Read"),
@@ -284,11 +287,14 @@ public class AzureAdWebAuthenticationPlugin implements WebAuthenticationPlugin<I
 		final String nonce = UUID.randomUUID().toString();
 
 		AzureAdSessionManagementUtil.storeStateAndNonceInSession(httpRequest.getSession(), state, nonce, requestedUri);
-
 		try {
-			httpResponse.setStatus(302);
 			final String authorizationCodeUrl = getAuthorizationCodeUrl(httpRequest.getParameter("claims"), scope, redirectURL, state, nonce);
-			httpResponse.sendRedirect(authorizationCodeUrl);
+			if (!WebAuthenticationManagerImpl.isJsonRequest(httpRequest)) {//If WebService call the 302 redirection is not possible, we return a 401
+				httpResponse.sendRedirect(authorizationCodeUrl);
+			} else {
+				httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				httpResponse.setHeader("Location", authorizationCodeUrl);
+			}
 		} catch (final Exception e) {
 			WrappedException.wrap(e);
 		}

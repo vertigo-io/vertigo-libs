@@ -91,6 +91,7 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.vega.impl.authentication.AuthenticationResult;
+import io.vertigo.vega.impl.authentication.WebAuthenticationManagerImpl;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -483,7 +484,12 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 		final var authRequest = authRequestBuilder.build();
 
 		try {
-			httpResponse.sendRedirect(authRequest.toURI().toString()); // send 302 redirect to OIDC auth endpoint
+			if (!WebAuthenticationManagerImpl.isJsonRequest(httpRequest)) {//If WebService call the 302 redirection is not possible, we return a 401
+				httpResponse.sendRedirect(authRequest.toURI().toString());// send 302 redirect to OIDC auth endpoint
+			} else {
+				httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				httpResponse.setHeader("Location", authRequest.toURI().toString());
+			}
 		} catch (final IOException e) {
 			throw new VSystemException(e, "Unable to redirect user to OIDC auth endpoint.");
 		}
