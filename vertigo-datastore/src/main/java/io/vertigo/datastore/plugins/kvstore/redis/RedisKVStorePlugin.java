@@ -33,10 +33,10 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.connectors.redis.RedisConnector;
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.ListBuilder;
 import io.vertigo.core.lang.VSystemException;
-import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datastore.impl.kvstore.KVStorePlugin;
 import io.vertigo.datastore.kvstore.KVCollection;
@@ -51,12 +51,14 @@ import redis.clients.jedis.params.SetParams;
  */
 public final class RedisKVStorePlugin implements KVStorePlugin {
 
+	private static final String ANALYTICS_CATEGORY = "kvstore";
 	private static final String REDIS_KV_KEY_PREFIX = "kv:";
 	private static final int MAX_LOOP = 100_000;
 	private final Map<KVCollection, RedisCollectionConfig> configsMap;
 	private final List<KVCollection> collections;
 	private final RedisConnector redisConnector;
 	private final CodecManager codecManager;
+	private final AnalyticsManager analyticsManager;
 
 	/**
 	 * Constructor.
@@ -76,13 +78,16 @@ public final class RedisKVStorePlugin implements KVStorePlugin {
 			@ParamValue("collections") final String collections,
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<RedisConnector> redisConnectors,
-			final CodecManager codecManager) {
+			final CodecManager codecManager,
+			final AnalyticsManager analyticsManager) {
 		Assertion.check()
 				.isNotBlank(collections)
 				.isNotNull(connectorNameOpt)
 				.isNotNull(redisConnectors)
-				.isNotNull(codecManager);
+				.isNotNull(codecManager)
+				.isNotNull(analyticsManager);
 		//-----
+		this.analyticsManager = analyticsManager;
 		this.codecManager = codecManager;
 		final var collectionConfigs = parseCollectionConfigs(collections);
 		configsMap = collectionConfigs.stream().collect(Collectors.toMap(RedisCollectionConfig::collection, Function.identity()));
@@ -135,19 +140,20 @@ public final class RedisKVStorePlugin implements KVStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void clear(final KVCollection collection) {
-		final var jedis = redisConnector.getClient();
-
-		final Consumer<List<String>> keyConsumer = keys -> {
-			if (!keys.isEmpty()) {
-				jedis.del(keys.toArray(new String[keys.size()]));
-			}
-		};
-		scan(jedis,
-				REDIS_KV_KEY_PREFIX + collection.name() + ':' + '*',
-				keyConsumer,
-				() -> false,
-				0);
-
+		analyticsManager.trace(ANALYTICS_CATEGORY, "clear", tracer -> {
+			tracer.setTag("collection", collection.name());
+			final var jedis = redisConnector.getClient();
+			final Consumer<List<String>> keyConsumer = keys -> {
+				if (!keys.isEmpty()) {
+					jedis.del(keys.toArray(new String[keys.size()]));
+				}
+			};
+			scan(jedis,
+					REDIS_KV_KEY_PREFIX + collection.name() + ':' + '*',
+					keyConsumer,
+					() -> false,
+					0);
+		});
 	}
 
 	/** {@inheritDoc} */
@@ -158,13 +164,16 @@ public final class RedisKVStorePlugin implements KVStorePlugin {
 				.isNotNull(element)
 				.isTrue(element instanceof Serializable, "Value must be Serializable {0}", element.getClass().getSimpleName());
 		// ---
-		final var jedis = redisConnector.getClient();
-		final var key = REDIS_KV_KEY_PREFIX + collection.name() + ':' + id;
-		final var collectionConfig = configsMap.get(collection);
-		jedis.set(
-				key.getBytes(StandardCharsets.UTF_8),
-				serializeObject((Serializable) element),
-				SetParams.setParams().ex(collectionConfig.timeToLiveSeconds()));
+		analyticsManager.trace(ANALYTICS_CATEGORY, "put", tracer -> {
+			tracer.setTag("collection", collection.name());
+			final var jedis = redisConnector.getClient();
+			final var key = REDIS_KV_KEY_PREFIX + collection.name() + ':' + id;
+			final var collectionConfig = configsMap.get(collection);
+			jedis.set(
+					key.getBytes(StandardCharsets.UTF_8),
+					serializeObject((Serializable) element),
+					SetParams.setParams().ex(collectionConfig.timeToLiveSeconds()));
+		});
 	}
 
 	/** {@inheritDoc} */
@@ -174,62 +183,73 @@ public final class RedisKVStorePlugin implements KVStorePlugin {
 				.isNotNull(id)
 				.isNotNull(clazz);
 		//-----
-		final var jedis = redisConnector.getClient();
-		final var key = REDIS_KV_KEY_PREFIX + collection.name() + ':' + id;
-		return Optional.ofNullable(jedis.get(key.getBytes(StandardCharsets.UTF_8)))
-				.map(data -> clazz.cast(deserializeObject(data)));
+		return analyticsManager.traceWithReturn(ANALYTICS_CATEGORY, "find", tracer -> {
+			tracer.setTag("collection", collection.name());
+			final var jedis = redisConnector.getClient();
+			final var key = REDIS_KV_KEY_PREFIX + collection.name() + ':' + id;
+			return Optional.ofNullable(jedis.get(key.getBytes(StandardCharsets.UTF_8)))
+					.map(data -> clazz.cast(deserializeObject(data)));
+		});
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <C> List<C> findAll(final KVCollection collection, final int skip, final Integer limit, final Class<C> clazz) {
-		final var resultKeys = new ArrayList<String>();
-		final Supplier<Boolean> stopCondition = () -> limit == null ? false : limit.equals(resultKeys.size());
-		final Consumer<List<String>> keyConsumer = keys -> {
-			var resultStream = keys.stream();
+		return analyticsManager.traceWithReturn(ANALYTICS_CATEGORY, "findAll", tracer -> {
+			tracer.setTag("collection", collection.name());
 
-			if (limit != null && (limit - resultKeys.size() - keys.size()) < 0) {
-				resultStream = resultStream.limit(limit - resultKeys.size());
-			}
-			resultKeys.addAll(resultStream.toList());
-		};
+			final var resultKeys = new ArrayList<String>();
+			final Supplier<Boolean> stopCondition = () -> limit == null ? false : limit.equals(resultKeys.size());
+			final Consumer<List<String>> keyConsumer = keys -> {
+				var resultStream = keys.stream();
 
-		final var jedis = redisConnector.getClient();
-		scan(jedis,
-				REDIS_KV_KEY_PREFIX + collection.name() + ':' + '*',
-				keyConsumer,
-				stopCondition,
-				skip);
+				if (limit != null && limit - resultKeys.size() - keys.size() < 0) {
+					resultStream = resultStream.limit(limit - resultKeys.size());
+				}
+				resultKeys.addAll(resultStream.toList());
+			};
 
-		return resultKeys.stream()
-				.map(key -> jedis.get(key.getBytes(StandardCharsets.UTF_8)))
-				.filter(data -> data != null)
-				.map(data -> clazz.cast(deserializeObject(data)))
-				.toList();
+			final var jedis = redisConnector.getClient();
+			scan(jedis,
+					REDIS_KV_KEY_PREFIX + collection.name() + ':' + '*',
+					keyConsumer,
+					stopCondition,
+					skip);
+
+			return resultKeys.stream()
+					.map(key -> jedis.get(key.getBytes(StandardCharsets.UTF_8)))
+					.filter(data -> data != null)
+					.map(data -> clazz.cast(deserializeObject(data)))
+					.toList();
+		});
 
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public int count(final KVCollection collection) {
-		final var count = new AtomicInteger(0);
-		scan(redisConnector.getClient(),
-				REDIS_KV_KEY_PREFIX + collection.name() + ':' + '*',
-				keys -> count.addAndGet(keys.size()),
-				() -> false,
-				0);
-		return count.get();
+		return analyticsManager.traceWithReturn(ANALYTICS_CATEGORY, "count", tracer -> {
+			tracer.setTag("collection", collection.name());
+
+			final var count = new AtomicInteger(0);
+			scan(redisConnector.getClient(),
+					REDIS_KV_KEY_PREFIX + collection.name() + ':' + '*',
+					keys -> count.addAndGet(keys.size()),
+					() -> false,
+					0);
+			return count.get();
+		});
 	}
 
-	private final byte[] serializeObject(final Serializable serializable) {
+	private byte[] serializeObject(final Serializable serializable) {
 		return codecManager.getCompressedSerializationCodec().encode(serializable);
 	}
 
-	private final Serializable deserializeObject(final byte[] data) {
+	private Serializable deserializeObject(final byte[] data) {
 		return codecManager.getCompressedSerializationCodec().decode(data);
 	}
 
-	private static final void scan(
+	private static void scan(
 			final UnifiedJedis jedis,
 			final String keyPattern,
 			final Consumer<List<String>> keysConsumer,
