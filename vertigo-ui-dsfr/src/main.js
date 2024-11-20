@@ -20,6 +20,7 @@ import DsfrCustomDataTable from "@/components/DsfrDataTable/DsfrCustomDataTable.
 
 import DsfrButtonTooltip from "@/components/DsfrTooltip/DsfrButtonTooltip.vue";
 import DsfrLinkTooltip from "@/components/DsfrTooltip/DsfrLinkTooltip.vue";
+import DsfrLink from "@/components/DsfrLink/DsfrLink.vue";
 
 import './utils.css'
 import './surcharges.css'
@@ -45,6 +46,7 @@ var DSFR = {
         // Autres
         vueApp.component('DsfrButtonTooltip', DsfrButtonTooltip)
         vueApp.component('DsfrLinkTooltip', DsfrLinkTooltip)
+        vueApp.component('DsfrLink', DsfrLink)
     },
 
     methods: DsfrMethods,
