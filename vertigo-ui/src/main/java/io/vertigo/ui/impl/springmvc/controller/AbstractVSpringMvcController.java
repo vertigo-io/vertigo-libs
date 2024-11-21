@@ -99,7 +99,7 @@ public abstract class AbstractVSpringMvcController {
 				throw new VSystemException("Context manquant");
 			} else {
 				if (ctxId.indexOf('$') == -1) { //client try to use a old ctx as ctx
-					throw new ExpiredViewContextException("Context manquant", Optional.empty());
+					throw new ExpiredViewContextException("Init context manquant", Optional.empty());
 				}
 				ctxInit = ctxId.substring(0, ctxId.indexOf('$'));
 				final String ctxUid = ctxId.substring(ctxId.indexOf('$') + 1);
