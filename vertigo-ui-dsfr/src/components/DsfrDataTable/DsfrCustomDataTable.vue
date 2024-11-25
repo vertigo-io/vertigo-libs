@@ -10,9 +10,9 @@
  *
  */
 
-import { getRandomId } from '@/utils/random-utils'
+import {getRandomId} from '@/utils/random-utils'
 
-import { computed, ref } from 'vue'
+import {computed, ref} from 'vue'
 import {DsfrPagination, VIcon} from "@gouvminint/vue-dsfr";
 
 export type Page = { href?: string, label: string, title: string }
@@ -65,16 +65,20 @@ const emit = defineEmits<{
   'update:current-page': [page: number]
 }>()
 
-const selection = defineModel<string[]>('selection', { default: [] })
-const rowsPerPage = defineModel<number>('rowsPerPage', { default: 10 })
-const currentPage = defineModel<number>('currentPage', { default: 1 })
+const selection = defineModel<string[]>('selection', {default: []})
+const rowsPerPage = defineModel<number>('rowsPerPage', {default: 10})
+const currentPage = defineModel<number>('currentPage', {default: 1})
 const pageCount = computed(() => Math.ceil(props.rows.length / rowsPerPage.value))
-const pages = computed<Page[]>(() => props.pages ?? Array.from({ length: pageCount.value }).map((x, i) => ({ label: `${i + 1}`, title: `Page ${i + 1}`, href: `#${i + 1}` })))
+const pages = computed<Page[]>(() => props.pages ?? Array.from({length: pageCount.value}).map((x, i) => ({
+  label: `${i + 1}`,
+  title: `Page ${i + 1}`,
+  href: `#${i + 1}`
+})))
 
 const lowestLimit = computed(() => currentPage.value * rowsPerPage.value)
 const highestLimit = computed(() => (currentPage.value + 1) * rowsPerPage.value)
 
-function defaultSortFn (a: string | DsfrDataTableRow, b: string | DsfrDataTableRow) {
+function defaultSortFn(a: string | DsfrDataTableRow, b: string | DsfrDataTableRow) {
   const key = sortedBy.value
   // @ts-expect-error TS7015
   if (((a as DsfrDataTableRow)[key] ?? a) < ((b as DsfrDataTableRow)[key] ?? b)) {
@@ -87,11 +91,12 @@ function defaultSortFn (a: string | DsfrDataTableRow, b: string | DsfrDataTableR
   return 0
 }
 
-const sortedBy = defineModel<string | undefined>('sortedBy', { default: undefined })
+const sortedBy = defineModel<string | undefined>('sortedBy', {default: undefined})
 sortedBy.value = props.sorted
 
-const sortedDesc = defineModel('sortedDesc', { default: false })
-function sortBy (key: string) {
+const sortedDesc = defineModel('sortedDesc', {default: false})
+
+function sortBy(key: string) {
   if (!props.sortableRows || (Array.isArray(props.sortableRows) && !props.sortableRows.includes(key))) {
     return
   }
@@ -107,6 +112,7 @@ function sortBy (key: string) {
   sortedDesc.value = false
   sortedBy.value = key
 }
+
 const sortedRows = computed(() => {
   const _sortedRows = sortedBy.value ? props.rows.slice().sort(props.sortFn ?? defaultSortFn) : props.rows.slice()
   if (sortedDesc.value) {
@@ -136,25 +142,27 @@ const finalRows = computed(() => {
   return rows
 })
 
-function selectAll (bool: boolean) {
+function selectAll(bool: boolean) {
   if (bool) {
     const keyIndex = props.headersRow.findIndex(header => (header as DsfrDataTableHeaderCellObject).key ?? header)
     selection.value = finalRows.value.map(row => row[keyIndex] as string)
   }
   selection.value!.length = 0
 }
+
 const wholeSelection = ref(false)
-function checkSelection () {
+
+function checkSelection() {
   wholeSelection.value = selection.value.length === finalRows.value.length
 }
 
-function onPaginationOptionsChange () {
+function onPaginationOptionsChange() {
   emit('update:current-page', 0)
   wholeSelection.value = false
   selection.value.length = 0
 }
 
-function copyToClipboard (text: string) {
+function copyToClipboard(text: string) {
   navigator.clipboard.writeText(text)
 }
 </script>
@@ -167,9 +175,7 @@ function copyToClipboard (text: string) {
       <div class="fr-table__container">
         <div class="fr-table__content">
           <table :id="id">
-            <slot name="caption">
-              <caption>{{ title }}</caption>
-            </slot>
+            <caption :class="{ 'sr-only' : noCaption }">{{ title }}</caption>
             <thead>
             <tr>
               <th
@@ -212,14 +218,15 @@ function copyToClipboard (text: string) {
                   >
                     {{ typeof header === 'object' ? header.label : header }}
                   </slot>
-                  <span v-if="sortedBy !== ((header as DsfrDataTableHeaderCellObject).key ?? header) && (sortableRows === true || (Array.isArray(sortableRows) && sortableRows.includes((header as DsfrDataTableHeaderCellObject).key ?? header)))">
+                  <span
+                      v-if="sortedBy !== ((header as DsfrDataTableHeaderCellObject).key ?? header) && (sortableRows === true || (Array.isArray(sortableRows) && sortableRows.includes((header as DsfrDataTableHeaderCellObject).key ?? header)))">
                       <VIcon
                           name="ri-sort-asc"
                           color="var(--grey-625-425)"
                       />
                     </span>
                   <span v-else-if="sortedBy === ((header as DsfrDataTableHeaderCellObject).key ?? header)">
-                      <VIcon :name="sortedDesc ? 'ri-sort-desc' : 'ri-sort-asc'" />
+                      <VIcon :name="sortedDesc ? 'ri-sort-desc' : 'ri-sort-asc'"/>
                     </span>
                 </div>
               </th>
@@ -341,18 +348,23 @@ function copyToClipboard (text: string) {
 .flex {
   display: flex;
 }
+
 .justify-between {
   justify-content: space-between;
 }
+
 .items-center {
   align-items: center;
 }
+
 .gap-2 {
   gap: 0.5rem;
 }
+
 :deep(.fr-pagination__link) {
   margin-bottom: 0 !important;
 }
+
 .sortable-header {
   display: flex;
   justify-content: space-between;
