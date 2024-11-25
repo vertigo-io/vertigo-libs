@@ -48,6 +48,10 @@
     flex-direction: column;
 }
 
+.order-none {
+    order: 0;
+}
+
 .grow {
     flex-grow: 1;
 }

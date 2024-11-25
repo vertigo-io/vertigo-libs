@@ -6,6 +6,7 @@
  *   Cela est nécessaire car renommer la key d’une colonne dans sa définition provoque bien d’autres problèmes
  * - [L78] Prise en compte de la colonne trié lors du tri
  * - [L269] Ajoute la notion du rang de la ligne dans le slot de modification d’une cellule, nécessaire pour des raisons d’accessibilité
+ * - Ajoute un slot pour le titre (caption)
  *
  */
 
@@ -166,9 +167,9 @@ function copyToClipboard (text: string) {
       <div class="fr-table__container">
         <div class="fr-table__content">
           <table :id="id">
-            <caption>
-              {{ title }}
-            </caption>
+            <slot name="caption">
+              <caption>{{ title }}</caption>
+            </slot>
             <thead>
             <tr>
               <th

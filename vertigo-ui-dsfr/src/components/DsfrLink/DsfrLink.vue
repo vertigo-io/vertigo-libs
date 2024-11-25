@@ -22,6 +22,8 @@ const sm = computed(() => ['sm', 'small'].includes(props.size))
 const md = computed(() => ['md', 'medium'].includes(props.size))
 const lg = computed(() => ['lg', 'large'].includes(props.size))
 
+const type = computed(() => props.asButton ? 'btn' : 'link')
+
 const dsfrIcon = computed(() => typeof props.icon === 'string' && props.icon.startsWith('fr-icon-'))
 </script>
 
@@ -32,18 +34,15 @@ const dsfrIcon = computed(() => typeof props.icon === 'string' && props.icon.sta
       :href="href !== '' && !disabled ? href : undefined"
       :aria-disabled="disabled"
       :class="{
-        'fr-link': !asButton && !inline,
-        'fr-btn': asButton,
+        [`fr-${type}`]: !inline,
         'fr-btn--secondary': secondary && !tertiary,
         'fr-btn--tertiary': tertiary && !secondary && !noOutline,
         'fr-btn--tertiary-no-outline': tertiary && !secondary && noOutline,
-        'fr-btn--sm': sm,
-        'fr-btn--md': md,
-        'fr-btn--lg': lg,
-        'fr-btn--icon-right': asButton && !iconOnly && dsfrIcon && iconRight,
-        'fr-btn--icon-left': asButton && !iconOnly && dsfrIcon && !iconRight,
-        'fr-link--icon-right': !asButton && !inline && !iconOnly && dsfrIcon && iconRight,
-        'fr-link--icon-left': !asButton && !inline && !iconOnly && dsfrIcon && !iconRight,
+        [`fr-${type}--sm`]: sm,
+        [`fr-${type}--md`]: md,
+        [`fr-${type}--lg`]: lg,
+        [`fr-${type}--icon-right`]: !iconOnly && dsfrIcon && iconRight,
+        [`fr-${type}--icon-left`]: !iconOnly && dsfrIcon && !iconRight,
         'inline-flex': !dsfrIcon,
         reverse: iconRight && !dsfrIcon,
         'fr-btn--custom-tooltip': iconOnly,

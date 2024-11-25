@@ -140,8 +140,10 @@
                         Le fameux tooltip
                     </dsfr-button-tooltip>
 
+                    <dsfr-link th:href="@{/}" size="sm">Petit lien</dsfr-link>
+                    <dsfr-link th:href="@{/}" as-button size="sm">Petit lien</dsfr-link>
                     <dsfr-link-tooltip th:href="@{/}" label="Ceci est un lien">Lien</dsfr-link-tooltip>
-                    <dsfr-link-tooltip :as-button="true" tertiary th:href="@{/}" label="Ceci est un lien">Bouton (lien)</dsfr-link-tooltip>
+                    <dsfr-link-tooltip as-button tertiary th:href="@{/}" label="Ceci est un lien">Bouton (lien)</dsfr-link-tooltip>
 
                     <p>
                         Lorem ipsum doleret <dsfr-link-tooltip inline th:href="@{/}" label="ispum demso">ipsum demso</dsfr-link-tooltip>
