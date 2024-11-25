@@ -7853,7 +7853,11 @@ const tp = /* @__PURE__ */ he(Pf, [["render", ep], ["__scopeId", "data-v-0be4e59
   }),
   emits: /* @__PURE__ */ ke(["update:current-page"], ["update:selection", "update:rowsPerPage", "update:currentPage", "update:sortedBy", "update:sortedDesc"]),
   setup(t, { emit: e }) {
-    const a = t, n = e, l = ie(t, "selection"), o = ie(t, "rowsPerPage"), r = ie(t, "currentPage"), i = w(() => Math.ceil(a.rows.length / o.value)), u = w(() => a.pages ?? Array.from({ length: i.value }).map((m, T) => ({ label: `${T + 1}`, title: `Page ${T + 1}`, href: `#${T + 1}` }))), c = w(() => r.value * o.value), p = w(() => (r.value + 1) * o.value);
+    const a = t, n = e, l = ie(t, "selection"), o = ie(t, "rowsPerPage"), r = ie(t, "currentPage"), i = w(() => Math.ceil(a.rows.length / o.value)), u = w(() => a.pages ?? Array.from({ length: i.value }).map((m, T) => ({
+      label: `${T + 1}`,
+      title: `Page ${T + 1}`,
+      href: `#${T + 1}`
+    }))), c = w(() => r.value * o.value), p = w(() => (r.value + 1) * o.value);
     function g(m, T) {
       const y = _.value;
       return (m[y] ?? m) < (T[y] ?? T) ? -1 : (m[y] ?? m) > (T[y] ?? T) ? 1 : 0;
@@ -7903,9 +7907,9 @@ const tp = /* @__PURE__ */ he(Pf, [["render", ep], ["__scopeId", "data-v-0be4e59
         d("div", yv, [
           d("div", kv, [
             d("table", { id: m.id }, [
-              A(m.$slots, "caption", {}, () => [
-                d("caption", null, b(m.title), 1)
-              ], !0),
+              d("caption", {
+                class: N({ "sr-only": m.noCaption })
+              }, b(m.title), 3),
               d("thead", null, [
                 d("tr", null, [
                   m.selectableRows ? (s(), f("th", _v, [
@@ -8044,7 +8048,7 @@ const tp = /* @__PURE__ */ he(Pf, [["render", ep], ["__scopeId", "data-v-0be4e59
       ], 2)
     ]));
   }
-}), Ov = /* @__PURE__ */ he(jv, [["__scopeId", "data-v-f1dce434"]]), Hv = ["id"], qv = /* @__PURE__ */ M({
+}), Ov = /* @__PURE__ */ he(jv, [["__scopeId", "data-v-0bee5f91"]]), Hv = ["id"], qv = /* @__PURE__ */ M({
   __name: "DsfrComponentTooltip",
   props: {
     id: { default: () => Be("tooltip") },
