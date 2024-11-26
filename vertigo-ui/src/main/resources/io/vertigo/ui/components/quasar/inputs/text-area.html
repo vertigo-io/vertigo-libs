@@ -8,6 +8,7 @@
 			autogrow
 			th:v-model="${model.util.vueDataKey(object, field, rowIndex)}" 
 			th::name="${model.util.contextKey(object, field, rowIndex)}"
+			th:maxlength="${model.util.smartTypeMaxLength(object, field)}"
 			th::label-width="${overridedLabelWidth?:3}"
 			th:label="${modifiableTable!=null?null:myLabel}"
             th:classappend="|${myRequired?'v-field_'+'_required':''}${after_label_slot!=null?' v-field_'+'_has_after_label':''}|"
