@@ -1,4 +1,4 @@
-<th:block th:fragment="dsfr-accordion(componentId, other_attrs)"
+<th:block th:fragment="dsfr-accordion(componentId, opened, other_attrs)"
           vu:alias="dsfr-accordion"
           th:assert="${componentId} != null or (${componentId == null} and ${isAccordionGroup})">
     <th:block th:if="${isAccordionsGroup}">
@@ -6,8 +6,9 @@
             <vu:content/>
         </dsfr-accordion>
     </th:block>
-    <th:block th:unless="${isAccordionsGroup}"
-              th:with="o=${model.vContext['componentStates'].addComponentState(componentId).addPrimitive('expand', '')}">
+    <th:block th:unless="${isAccordionsGroup}">
+        <th:block th:if="${opened == null or opened == false}" th:with="o=${model.vContext['componentStates'].addComponentState(componentId).addPrimitive('expand', -1)}"/>
+        <th:block th:if="${opened == true}" th:with="o=${model.vContext['componentStates'].addComponentState(componentId).addPrimitive('expand', 0)}"/>
         <dsfr-accordions-group th:v-model="|componentStates.__${componentId}__.expand|">
             <dsfr-accordion th:attr="__${other_attrs}__">
                 <vu:content/>
