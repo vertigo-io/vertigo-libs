@@ -3,27 +3,27 @@
           th:assert="${object} != null and ${field} != null"
           th:with="myRequired=${required != null ? required : model.util.required(object + '.' + field)}">
     <vu:include-data object="${object}" field="${field}" modifiable/>
-    <dsfr-checkbox th:label="${label}"
-                   th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
-                   th:name="${model.util.contextKey(object, field, rowIndex)}"
-                   th:required="${required}"
-                   th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
-                   th:attr="__${input_attrs}__"
+    <dsfr-custom-checkbox th:label="${label}"
+                          th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
+                          th:name="${model.util.contextKey(object, field, rowIndex)}"
+                          th:required="${required}"
+                          th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+                          th:attr="__${input_attrs}__"
     >
         <vu:content/>
-    </dsfr-checkbox>
+    </dsfr-custom-checkbox>
 </th:block>
 
 
 <th:block th:fragment="dsfr-checkbox-read(object, field, label, input_attrs)" vu:alias="dsfr-checkbox"
           vu:selector="${viewMode=='read'}">
     <vu:include-data object="${object}" field="${field}"/>
-    <dsfr-checkbox th:label="${label}"
-                   th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
-                   th:name="${model.util.contextKey(object, field, rowIndex)}"
-                   disabled
-                   th:attr="__${input_attrs}__"
+    <dsfr-custom-checkbox th:label="${label}"
+                          th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
+                          th:name="${model.util.contextKey(object, field, rowIndex)}"
+                          disabled
+                          th:attr="__${input_attrs}__"
     >
         <vu:content/>
-    </dsfr-checkbox>
+    </dsfr-custom-checkbox>
 </th:block>
