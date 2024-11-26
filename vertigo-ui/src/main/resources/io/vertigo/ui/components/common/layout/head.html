@@ -1,9 +1,10 @@
-<th:block th:fragment="head(title, vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, useDsfr, useWysiwyg)" >
+<th:block th:fragment="head(title, vueJsVersion, axiosVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, useDsfr, useWysiwyg)" >
 		<meta charset="utf8">
 		<vu:head-meta
 		    vueJsVersion="${vueJsVersion}"
 		    vuejsDevMode="${vuejsDevMode}"
 		    vuiDevMode="${vuiDevMode}"
+		    axiosVersion="${axiosVersion}"
 		    vuiSsr="${vuiSsr}"
 		    vertigoUiVersion="${vertigoUiVersion}"
 		    useQuasar="${useQuasar}"
@@ -15,11 +16,12 @@
 	</head>
 </th:block>
 
-<th:block th:fragment="head-meta(vueJsVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, onlyDsfrStyle, useDsfr, useWysiwyg)"
+<th:block th:fragment="head-meta(vueJsVersion, axiosVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, onlyDsfrStyle, useDsfr, useWysiwyg)"
         th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, 
                  isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false},
                  isVuiSsr=${vuiSsr != null ? vuiSsr : false},
                  myVueJsVersion=${vueJsVersion?:'3.4.31'}, myVertigoUiVersion=${vertigoUiVersion?:'4.2.0'},
+                 myAxiosVersion=${axiosVersion?:'1.7.8'},
                  myUseQuasar=${useQuasar ?: true}, myQuasarVersion=${quasarVersion?:'2.16.5'}, myOnlyDsfrStyle=${onlyDsfrStyle?:false},
                  myUseDsfr=${useDsfr ?: false}, myDsfrDevMode=${dsfrDevMode ?: false}">
 
@@ -37,7 +39,7 @@
     <!--/* VueJS */-->
 	<script th:if="${!isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@__${myVueJsVersion}__/dist/vue.global.prod.js}"></script>
     <script th:if="${isVuejsDevMode}" th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@__${myVueJsVersion}__/dist/vue.global.js}"></script>
-   	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js}" ></script>
+   	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/axios@__${myAxiosVersion}__/dist/axios.min.js}" ></script>
 
 	<!--/* Wysiwyg (with tiptap editor) */-->
 	<th:block th:if="${useWysiwyg}">
