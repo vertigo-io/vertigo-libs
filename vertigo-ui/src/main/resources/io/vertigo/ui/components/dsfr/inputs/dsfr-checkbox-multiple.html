@@ -1,5 +1,5 @@
 <th:block
-        th:fragment="dsfr-checkbox-multiple-edit(object, field, label, componentId, list, valueField, labelField, filterFunction, layout, required, input_attrs)"
+        th:fragment="dsfr-checkbox-multiple-edit(object, field, label, componentId, list, valueField, labelField, disableField, hintField, filterFunction, layout, required, input_attrs)"
         vu:alias="dsfr-checkbox-multiple" vu:selector="${viewMode=='edit'}"
         th:assert="${object} != null and ${field} != null and ${list} != null"
         th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
@@ -12,6 +12,8 @@
     <vu:include-data object="${object}" field="${field}" modifiable="true"/>
     <vu:include-data object="${list}" field="${myValueField}"/>
     <vu:include-data object="${list}" field="${myLabelField}"/>
+    <vu:include-data th:unless="${disableField == null}" object="${list}" field="${disableField}"/>
+    <vu:include-data th:unless="${hintField == null}" object="${list}" field="${hintField}"/>
 
     <dsfr-checkbox-set th:legend="${myLabel}"
                        th:required="${myRequired}"
@@ -27,7 +29,7 @@
 </th:block>
 
 <th:block
-        th:fragment="dsfr-checkbox-multiple-read(object, field, label, list, valueField, labelField, filterFunction, layout, input_attrs)"
+        th:fragment="dsfr-checkbox-multiple-read(object, field, label, list, valueField, labelField, disableField, hintField, filterFunction, layout, input_attrs)"
         vu:alias="dsfr-checkbox-multiple" vu:selector="${viewMode=='read'}"
         th:assert="${object} != null and ${field} != null and ${list} != null"
         th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
@@ -38,6 +40,8 @@
     <vu:include-data object="${object}" field="${field}"/>
     <vu:include-data object="${list}" field="${myValueField}"/>
     <vu:include-data object="${list}" field="${myLabelField}"/>
+    <vu:include-data th:unless="${disableField == null}" object="${list}" field="${disableField}"/>
+    <vu:include-data th:unless="${hintField == null}" object="${list}" field="${hintField}"/>
 
     <dsfr-checkbox-set th:legend="${myLabel}"
                        th::inline="${inline}"
