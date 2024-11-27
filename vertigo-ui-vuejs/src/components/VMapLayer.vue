@@ -1,7 +1,7 @@
 <template>
     <div :id="id" >
         <div :id="id+'Popup'">
-            <q-card v-if="popupDisplayed" class="q-px-md">
+            <q-card v-if="popupDisplayed" >
                 <slot name="card" v-bind:objectDisplayed="objectDisplayed">
                       <div class="text-subtitle2">{{objectDisplayed[nameField]}}</div>
                 </slot>
@@ -74,7 +74,7 @@ export default {
                   // console.log('watch cluster');
                   let newClusterCoordString = this.computeCoordString(newVal);
                   
-                  if (!!this._clusterCoordString && newClusterCoordString !== this._clusterCoordString) {
+                  if (!!this._clusterCoordString) {
                       this.$data.items = [];
                       this.$data.clusters = [];
                       for(let i =0 ; i< newVal.length; i++) {
@@ -125,7 +125,7 @@ export default {
                 } else {
                     geoObject = object[geoField];
                 }
-                if(geoObject != null) {
+                if(geoObject != null && geoObject.lon != null && geoObject.lat != null) {
                     let iconFeature = new ol.Feature({
                         geometry : new ol.geom.Point(ol.proj.fromLonLat([ geoObject.lon, geoObject.lat ])),
                     });
@@ -138,17 +138,18 @@ export default {
                     return iconFeature;
                 } 
                 return null;
-            }.bind(this));
+            }.bind(this))
+            .filter(object => object != null);
             
             let arrayOfClusterFeatures = this.$data.clusters
             .filter(function(object) {
-                return object[geoField]!=null;
+                return object.geoLocation!=null;
             }).map(function(object) {
                 let geoObject;
-                if (typeof object[geoField] === 'string' || object[geoField] instanceof String){
-                    geoObject = JSON.parse(object[geoField]);
+                if (typeof object.geoLocation === 'string' || object.geoLocation instanceof String){
+                    geoObject = JSON.parse(object.geoLocation);
                 } else {
-                    geoObject = object[geoField];
+                    geoObject = object.geoLocation;
                 }
                 if(geoObject != null) {
                     let iconFeature = new ol.Feature({
@@ -176,7 +177,7 @@ export default {
                 let extentPadded = ol.geom.Polygon.fromExtent(this.$data.vectorSource.getExtent())
                 extentPadded.scale(1.2);
                 this.olMap.getView().fit(extentPadded, {size : this.olMap.getSize(), maxZoom : maxZoomResolved, duration: 750});
-            }
+            } 
         },
         fetchList: function(topLeft, bottomRight) {
             this.$http.get(this.baseUrl+'_geoSearch?topLeft="'+ topLeft.lat+','+topLeft.lon+'"&bottomRight="'+ bottomRight.lat+','+bottomRight.lon+ '"', { timeout:5*1000, })
@@ -200,6 +201,9 @@ export default {
             return JSON.stringify(valueCoord);
         },
         updateMap: function() {
+            if (Object.keys(this.$data.vectorSource).length == 0 ) {
+                this.$data.vectorSource = new ol.source.Vector({});
+            }
             this.$data.vectorSource.clear();
             this.$data.vectorSource.addFeatures(this.features);
             if (this.$props.fitOnDataUpdate) {
@@ -362,6 +366,12 @@ export default {
             
             // fit view
             this.fitView();
+
+            if (this.$props.object && this.features.length == 0) {
+                //---
+                this.olMap.getView().setCenter(ol.proj.fromLonLat([2.333333, 48.866667])) // default to paris
+                this.olMap.vInitialZoomOverride = 3
+            }
                 
             // handle refresh if an endPoint is specified
             this.olMap.on('moveend', function(e) {
@@ -386,19 +396,23 @@ export default {
                 this.olMap.addOverlay(popup);
                 // display popup on click
                 this.olMap.on('click', function(evt) {
-                  let feature = this.olMap.forEachFeatureAtPixel(evt.pixel,
-                    function(feature) {
-                      return feature;
-                    });
-                  if (feature && feature.get('features') && feature.get('features').length == 1) {
-                    let coordinates = feature.getGeometry().getCoordinates();
-                    popup.setPosition(coordinates);
-                    this.$data.popupDisplayed = true;
-                    this.$data.objectDisplayed = feature.get('features')[0].get('innerObject');
-                    evt.stopPropagation();
-                    Quasar.debounce(this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
-                  } else {
-                      this.$data.popupDisplayed = false;
+                  if (evt.originalEvent.target instanceof HTMLCanvasElement ) {
+                    let feature = this.olMap.forEachFeatureAtPixel(evt.pixel,
+                        function(feature) {
+                        return feature;
+                        });
+                    if (feature && feature.get('features') && feature.get('features').length == 1) {
+                        if (!Object.hasOwn(feature.get('features')[0].get('innerObject'), 'geoHash') ) {
+                            let coordinates = feature.getGeometry().getCoordinates();
+                            popup.setPosition(coordinates);
+                            this.$data.popupDisplayed = true;
+                            this.$data.objectDisplayed = feature.get('features')[0].get('innerObject');
+                            evt.stopPropagation();
+                            Quasar.debounce(this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
+                        }
+                    } else {
+                        this.$data.popupDisplayed = false;
+                    }
                   }
                 }.bind(this));
                   
@@ -414,14 +428,16 @@ export default {
                 }.bind(this));
             } else {
                 this.olMap.on('click', function(evt) {
-                  let feature = this.olMap.forEachFeatureAtPixel(evt.pixel,
-                    function(feature) {
-                      return feature;
-                    });
-                  if (feature && feature.get('features') && feature.get('features').length == 1) {
-                    let coordinates = feature.getGeometry().getCoordinates();
-                    evt.stopPropagation();
-                    Quasar.debounce(this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
+                  if (evt.originalEvent.target instanceof HTMLCanvasElement ) {
+                    let feature = this.olMap.forEachFeatureAtPixel(evt.pixel,
+                        function(feature) {
+                        return feature;
+                        });
+                    if (feature && feature.get('features') && feature.get('features').length == 1) {
+                        let coordinates = feature.getGeometry().getCoordinates();
+                        evt.stopPropagation();
+                        Quasar.debounce(this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
+                    }
                   }
                 }.bind(this));
             }
