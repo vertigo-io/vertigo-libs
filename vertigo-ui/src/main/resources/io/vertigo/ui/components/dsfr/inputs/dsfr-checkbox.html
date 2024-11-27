@@ -5,8 +5,8 @@
     <vu:include-data object="${object}" field="${field}" modifiable/>
     <dsfr-custom-checkbox th:label="${label}"
                           th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
-                          th:name="${model.util.contextKey(object, field, rowIndex)}"
-                          th:required="${required}"
+                          th::name="${model.util.contextKey(object, field, rowIndex)}"
+                          th::required="${required}"
                           th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
                           th:attr="__${input_attrs}__"
     >
