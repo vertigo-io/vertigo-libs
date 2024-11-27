@@ -1,9 +1,9 @@
 <template>
-    <q-btn round :flat="!hasNew" dense :color="hasNew?'accent':'secondary'" :text-color="hasNew?'accent-inverted':'secondary-inverted'" :icon="count>0?icon:iconNone" class="on-left" >
+    <q-btn round :flat="!hasNew" dense :color="hasNew?colorNew:color" :text-color="hasNew?textColorNew:textColor" :icon="count>0?icon:iconNone" >
         <q-badge color="red" text-color="white" floating v-if="count>0" >{{count}}</q-badge>
         <q-menu class="notifications">
             <q-list style="width:300px">
-                <q-item v-for="notif in list" :key="notif.uuid" tag="a" :href="notif.targetUrl" >
+                <q-item v-for="notif in list" :key="notif.uuid" tag="a" :href="targetUrlPrefix + notif.targetUrl" >
                     <q-item-section avatar><q-icon :name="toIcon(notif.type)" size="2rem"></q-icon></q-item-section>
                     <q-item-section><q-item-label>{{notif.title}}</q-item-label><q-item-label caption lines="3">{{notif.content}}</q-item-label></q-item-section>
                     <q-item-section side top>
@@ -21,8 +21,13 @@ export default {
     props : {
         icon : { type: String, 'default': 'notifications' },
         iconNone : { type: String, 'default': 'notifications_none' },
+        color : { type: String, 'default': 'secondary' },
+        colorNew : { type: String, 'default': 'accent' },
+        textColor : { type: String, 'default': 'secondary-inverted' },
+        textColorNew : { type: String, 'default': 'accent-inverted' },
         typeIconMap : { type: Object, 'default': function() { return {} } },
-        baseUrl : { type: String, 'default': '/api/', required:true }
+        baseUrl : { type: String, 'default': '/api/', required:true },
+        targetUrlPrefix : { type: String, 'default': '/', required:true }
     },
     data: function() {
         return {
@@ -81,8 +86,8 @@ export default {
             this.list = sortedList;
             // Met à jour le nombre total de notifications
             this.count = sortedList.length;
-            this.hasNew = newElements.length>0;
             if(!this.firstCall) {
+                this.hasNew = newElements.length>0;
                 newElements.forEach(function(notif) {
                     this.$q.notify({ 
                         type : 'info',
@@ -93,6 +98,9 @@ export default {
                         position : 'bottom-right'
                     })
                 }.bind(this));
+            } else {
+                // firstcall hasnew is true only if last notif is recent enough (2 times the polling interval)
+                this.hasNew = newElements.length > 0 && Quasar.date.getDateDiff(Date.now(), newElements[0].creationDate, 'seconds') < 2 * 5  
             }
             
             // Booléen indiquant s'il s'agit du premier appel à la MaJ des notifications

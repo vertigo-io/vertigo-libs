@@ -31,9 +31,12 @@ export default {
             checkForMap();
           },
           postInit() {
-              if (this.$props.initialZoomLevel) {
-                    this.olMap.getView().setZoom(this.$props.initialZoomLevel);
-               }
+            if (this.$props.initialZoomLevel) {
+                this.olMap.getView().setZoom(this.$props.initialZoomLevel);
+            }
+            if (this.olMap.vInitialZoomOverride) {
+                this.olMap.getView().setZoom(this.olMap.vInitialZoomOverride);
+            }
           }
     },
     mounted : function() {        
@@ -92,8 +95,11 @@ export default {
         
         setTimeout(function () {
             this.olMap.on('click', function(evt) {
-                evt.stopPropagation();
-                Quasar.debounce(this.$emit('click',ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) , 300);
+                if (evt.originalEvent.target instanceof HTMLCanvasElement ) {
+                    // only when click on the map
+                    evt.stopPropagation();
+                    Quasar.debounce(this.$emit('click',ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) , 300);
+                }
             }.bind(this)); 
         }.bind(this), 300); 
     }
