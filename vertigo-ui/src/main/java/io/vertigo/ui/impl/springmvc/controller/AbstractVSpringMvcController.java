@@ -249,12 +249,8 @@ public abstract class AbstractVSpringMvcController {
 	}
 
 	/** {@inheritDoc} */
-	private static ViewContext getViewContext() {
-		final var attributes = RequestContextHolder.currentRequestAttributes();
-		final var viewContext = (ViewContext) attributes.getAttribute("viewContext", RequestAttributes.SCOPE_REQUEST);
-		Assertion.check().isNotNull(viewContext);
-		//---
-		return viewContext;
+	protected static ViewContext getViewContext() {
+		return UiRequestUtil.getCurrentViewContext();
 	}
 
 	/**
@@ -302,7 +298,7 @@ public abstract class AbstractVSpringMvcController {
 	/**
 	 * @return Pile des messages utilisateur.
 	 */
-	public static final UiMessageStack getUiMessageStack() {
+	protected static final UiMessageStack getUiMessageStack() {
 		return UiRequestUtil.obtainCurrentUiMessageStack();
 	}
 
