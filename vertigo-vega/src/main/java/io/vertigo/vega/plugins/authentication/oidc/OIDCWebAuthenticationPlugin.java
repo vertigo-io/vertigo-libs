@@ -505,21 +505,20 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 				logoutParam += "&" + oidcParameters.logoutRedirectUriParamNameOpt().get() + "=" + URLEncoder.encode(redirectUrl, StandardCharsets.UTF_8);
 			}
 		}
-		final var sessionOpt = securityManager.getCurrentUserSession();
-		if (sessionOpt.isPresent()) {
-			final var session = sessionOpt.get();
-
-			if (oidcParameters.logoutIdParamNameOpt().isPresent()) {
-				final String idToken = (String) session.getAttribute(OIDC_ID_TOKEN);
-				if (!StringUtil.isBlank(idToken)) { //if we have a OIDC ID TOKEN : we send it to the logout endpoint
-					logoutParam += "&";
-					logoutParam += oidcParameters.logoutIdParamNameOpt().get() + "=" + idToken;
-				}
+		final var session = httpRequest.getSession(false);
+		if (oidcParameters.logoutIdParamNameOpt().isPresent() && session != null) {
+			final String idToken = (String) session.getAttribute(OIDC_ID_TOKEN);
+			if (!StringUtil.isBlank(idToken)) { //if we have a OIDC ID TOKEN : we send it to the logout endpoint
+				logoutParam += "&";
+				logoutParam += oidcParameters.logoutIdParamNameOpt().get() + "=" + idToken;
 			}
+		}
 
-			// forward user locale to the SSO, for example keycloak uses ui_locales parameter
-			if (oidcParameters.loginLocaleParamNameOpt().isPresent()) {
-				final var locale = session.getLocale() == null ? Locale.FRENCH : session.getLocale();
+		// forward user locale to the SSO, for example keycloak uses ui_locales parameter
+		if (oidcParameters.loginLocaleParamNameOpt().isPresent()) {
+			final var sessionOpt = securityManager.getCurrentUserSession();
+			if (sessionOpt.isPresent()) {
+				final var locale = sessionOpt.get().getLocale() == null ? Locale.FRENCH : sessionOpt.get().getLocale();
 				logoutParam += "&";
 				logoutParam += oidcParameters.loginLocaleParamNameOpt().get() + "=" + locale.getLanguage();
 			}
