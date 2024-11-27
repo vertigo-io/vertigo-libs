@@ -126,6 +126,11 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 		plugin.doRedirectToSso(httpRequest, httpResponse);
 	}
 
+	public static boolean isJsonRequest(final HttpServletRequest request) {
+		final String acceptHeader = request.getHeader("Accept");
+		return acceptHeader != null && acceptHeader.contains("application/json");
+	}
+
 	private Tuple<Boolean, HttpServletRequest> handleCallback(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
 		final var plugin = getPluginForUrlCallBackRequest(httpRequest);
 		final Optional<String> requestedUrL = plugin.getRequestedUri(httpRequest);
@@ -191,9 +196,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 	private WebAuthenticationPlugin getPluginForUrlCallBackRequest(final HttpServletRequest httpRequest) {
 		return webAuthenticationPluginsByUrlHandlerPrefix.entrySet()
 				.stream()
-				.filter(entry -> {
-					return httpRequest.getRequestURI().startsWith(httpRequest.getContextPath() + entry.getKey());
-				})
+				.filter(entry -> httpRequest.getRequestURI().startsWith(httpRequest.getContextPath() + entry.getKey()))
 				.findFirst()
 				.orElseThrow(() -> new VSystemException("No Plugin found for url : {0} ", httpRequest.getRequestURI()))
 				.getValue();
@@ -204,9 +207,7 @@ public final class WebAuthenticationManagerImpl implements WebAuthenticationMana
 				webAuthenticationPluginsByUrlHandlerPrefix.entrySet().stream(),
 				webAuthenticationPluginsByUrlPrefix.entrySet().stream())
 				.filter(
-						entry -> {
-							return httpRequest.getRequestURI().startsWith(httpRequest.getContextPath() + entry.getKey());
-						})
+						entry -> httpRequest.getRequestURI().startsWith(httpRequest.getContextPath() + entry.getKey()))
 				.findFirst()
 				.orElseThrow(() -> new VSystemException("No Plugin found for url : {0} ", httpRequest.getRequestURI()))
 				.getValue();

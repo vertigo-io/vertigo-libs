@@ -1,0 +1,14 @@
+<th:block th:fragment="dsfr-button(label, icon, title, vTitle, other_attrs)"
+          th:assert="(${label} != null or (${icon} != null and (${title} != null or ${vTitle} != null)))">
+
+    <dsfr-button th:icon="${icon?:''}"
+                th::icon-only="${label==null}"
+                th:label="${label?:''}"
+                th:title="${vTitle==null ? (title?:'') : ''}"
+                th::title="${vTitle?:''}"
+                th:attr="__${other_attrs}__">
+        <vu:content/>
+        <span class="sr-only" th:if="${label==null && vTitle==null}" vu:text="${title?:''}"></span>
+        <span class="sr-only" th:if="${label==null && vTitle!=null}" th:text="|{{ ${vTitle?:''} }}|"></span>
+    </dsfr-button>
+</th:block>

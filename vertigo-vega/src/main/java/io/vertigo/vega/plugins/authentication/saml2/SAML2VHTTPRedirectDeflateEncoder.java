@@ -73,6 +73,8 @@ import org.w3c.dom.Element;
 import com.google.common.collect.Lists;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.vega.impl.authentication.WebAuthenticationManagerImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.shibboleth.shared.codec.Base64Support;
 import net.shibboleth.shared.codec.EncodingException;
@@ -101,8 +103,9 @@ final class SAML2HTTPRedirectDeflateEncoder {
 		// helper
 	}
 
-	static void encode(final HttpServletResponse httpServletResponse, final MessageContext messageContext) throws MessageEncodingException {
+	static void encode(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse, final MessageContext messageContext) throws MessageEncodingException {
 		Assertion.check()
+				.isNotNull(httpServletRequest)
 				.isNotNull(httpServletResponse)
 				.isNotNull(messageContext);
 		//---
@@ -124,7 +127,12 @@ final class SAML2HTTPRedirectDeflateEncoder {
 		httpServletResponse.setCharacterEncoding("UTF-8");
 
 		try {
-			httpServletResponse.sendRedirect(redirectURL);
+			if (!WebAuthenticationManagerImpl.isJsonRequest(httpServletRequest)) {//If WebService call the 302 redirection is not possible, we return a 401
+				httpServletResponse.sendRedirect(redirectURL);// send 302 redirect to SAML auth endpoint
+			} else {
+				httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				httpServletResponse.setHeader("Location", redirectURL);
+			}
 		} catch (final IOException e) {
 			throw new MessageEncodingException("Problem sending HTTP redirect", e);
 		}
@@ -269,7 +277,7 @@ final class SAML2HTTPRedirectDeflateEncoder {
 	 * @return signature algorithm to use with the associated signing credential
 	 *
 	 * @throws MessageEncodingException thrown if the algorithm URI is not supplied explicitly and
-	 *          could not be derived from the supplied credential
+	 *         could not be derived from the supplied credential
 	 */
 	private static String getSignatureAlgorithmURI(final SignatureSigningParameters signingParameters)
 			throws MessageEncodingException {
@@ -316,15 +324,15 @@ final class SAML2HTTPRedirectDeflateEncoder {
 	}
 
 	/**
-	* Gets the response URL from the message context.
-	*
-	* @param messageContext current message context
-	*
-	* @return response URL from the message context
-	*
-	* @throws MessageEncodingException throw if no relying party endpoint is available
-	*/
-	private static URI getEndpointURL(MessageContext messageContext) throws MessageEncodingException {
+	 * Gets the response URL from the message context.
+	 *
+	 * @param messageContext current message context
+	 *
+	 * @return response URL from the message context
+	 *
+	 * @throws MessageEncodingException throw if no relying party endpoint is available
+	 */
+	private static URI getEndpointURL(final MessageContext messageContext) throws MessageEncodingException {
 		try {
 			return SAMLBindingSupport.getEndpointURL(messageContext);
 		} catch (final BindingException e) {
@@ -333,14 +341,14 @@ final class SAML2HTTPRedirectDeflateEncoder {
 	}
 
 	/**
-	* Helper method that marshalls the given message.
-	*
-	* @param message message the marshall and serialize
-	*
-	* @return marshalled message
-	*
-	* @throws MessageEncodingException thrown if the give message can not be marshalled into its DOM representation
-	*/
+	 * Helper method that marshalls the given message.
+	 *
+	 * @param message message the marshall and serialize
+	 *
+	 * @return marshalled message
+	 *
+	 * @throws MessageEncodingException thrown if the give message can not be marshalled into its DOM representation
+	 */
 	private static Element marshallMessage(@Nonnull final XMLObject message) throws MessageEncodingException {
 		LOG.debug("Marshalling message");
 
@@ -352,7 +360,8 @@ final class SAML2HTTPRedirectDeflateEncoder {
 		}
 	}
 
-	/** A subclass of {@link DeflaterOutputStream} which defaults in a no-wrap {@link Deflater} instance and
+	/**
+	 * A subclass of {@link DeflaterOutputStream} which defaults in a no-wrap {@link Deflater} instance and
 	 * closes it when the stream is closed.
 	 */
 	private static class NoWrapAutoEndDeflaterOutputStream extends DeflaterOutputStream {

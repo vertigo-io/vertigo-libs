@@ -94,10 +94,10 @@ public final class UiUtil implements Serializable {
 	 * @return Name in context (use for input name)
 	 */
 	public static String generateComponentUID(final String component, final String object, final String field, final String row) {
-		final String prefix = component +
+		final var prefix = component +
 				Long.toHexString(UUID.randomUUID().getLeastSignificantBits()) +
 				"_";
-		return contextGet(prefix, object, field, row, true);
+		return contextGet(prefix, object, field, row, false);
 	}
 
 	/**
@@ -239,20 +239,7 @@ public final class UiUtil implements Serializable {
 			final var smartTypeDefinition = getDataField(object + '.' + fieldName).smartTypeDefinition();
 			if (smartTypeDefinition.getScope().isBasicType()) {
 				final var dataType = smartTypeDefinition.getBasicType();
-				switch (dataType) {
-					case Long:
-					case Integer:
-					case Double:
-					case BigDecimal:
-						return "right";
-					case Boolean:
-					case Instant:
-					case LocalDate:
-					case String:
-					case DataStream:
-					default:
-						return "left";
-				}
+				return dataType.isNumber() ? "right" : "left";
 			}
 		}
 		return "left";
@@ -351,7 +338,7 @@ public final class UiUtil implements Serializable {
 			throw new VSystemException("Id field (or key field) must be set on the definition for entity '{0}' (needed to display the list '{1}' from context).", dtDefinition, uiListKey);
 		}
 
-		return idFieldOpt.isPresent()?idFieldOpt.get().name():keyFieldOpt.get().name();
+		return idFieldOpt.isPresent() ? idFieldOpt.get().name() : keyFieldOpt.get().name();
 	}
 
 	/**
@@ -390,9 +377,9 @@ public final class UiUtil implements Serializable {
 	public static String compileVueJsTemplate(final String template) {
 		final var requestParameter = new JsonObject();
 		requestParameter.add("template", new JsonPrimitive(template));
-		final JsonObject compiledTemplate = callRestWS("http://localhost:8083/", GSON.toJson(requestParameter), JsonObject.class);
+		final var compiledTemplate = (JsonObject) callRestWS("http://localhost:8083/", GSON.toJson(requestParameter), JsonObject.class);
 		final var render = compiledTemplate.get("render").getAsString();
-		final List<String> staticRenderFns = StreamSupport.stream(compiledTemplate.get("staticRenderFns").getAsJsonArray().spliterator(), false)
+		final var staticRenderFns = StreamSupport.stream(compiledTemplate.get("staticRenderFns").getAsJsonArray().spliterator(), false)
 				.map(JsonElement::getAsString)
 				.toList();
 
@@ -471,5 +458,28 @@ public final class UiUtil implements Serializable {
 				.isNotNull(dtDefinition, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
 		return dtDefinition.getField(fieldName);
 
+	}
+
+	/**
+	 * Resolve the field name to be displayed, numeric fields use the formatted version with _fmt suffix.
+	 *
+	 * @param object the object name in the context
+	 * @param field the field name of the object
+	 * @return the resolved field name
+	 */
+	public static String resolveDisplayField(final String object, final String field) {
+		Assertion.check()
+				.isNotBlank(object)
+				.isNotBlank(field);
+		// ---
+		if (field.contains("_")) {
+			return field; // we don't modify the field if it already contains a modifier
+		}
+		final var dataField = getDataField(object + "." + field);
+		final var smartTypeDefinition = dataField.smartTypeDefinition();
+		if (smartTypeDefinition.getScope().isBasicType()) {
+			return smartTypeDefinition.getBasicType().isNumber() ? field + "_fmt" : field;
+		}
+		return field;
 	}
 }

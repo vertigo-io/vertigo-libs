@@ -1,0 +1,27 @@
+<th:block th:fragment="dsfr-datetime-edit(object, field, label, format, required, input_attrs)" vu:alias="dsfr-datetime"
+          vu:selector="${viewMode=='edit'}"
+          th:with="myLabel=${modifiableTable!=null ? null : (label?:model.util.label(object + '.' + field)) },
+      			   myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
+          th:assert="${object} != null and ${field} != null">
+    <vu:include-data object="${object}" field="${field}" modifiable="true"/>
+    <dsfr-input-group type="datetime-local"
+                      th:label="${myLabel}"
+                      th::label-visible="${myLabel!=null}"
+                      th:required="${myRequired}"
+                      th::name="${model.util.contextKey(object, field, rowIndex)}"
+                      th::is-invalid="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
+                      th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+                      th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
+                      th:attr="__${input_attrs}__">
+        <vu:content/>
+    </dsfr-input-group>
+</th:block>
+
+<th:block
+        th:fragment="dsfr-datetime-read(object, field, label, format, required, input_attrs)"
+        vu:alias="dsfr-datetime" vu:selector="${viewMode=='read'}">
+    <vu:dsfr-text-field-read object="${object}"
+                             field="${field}"
+                             label="${label}"
+                             input_attrs="${input_attrs}"/>
+</th:block>

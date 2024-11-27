@@ -1,0 +1,31 @@
+<th:block th:fragment="text-editor-edit(object, field, rowIndex, edit_content_slot, showErrors, input_attrs)" 
+    th:with="myComponentId='editor_'+${object}+'_'+${field}, isPlainTextOnly=${plainTextOnly != null ? plainTextOnly : false},
+     isPlainTextOnly=${plainTextOnly != null ? plainTextOnly : false},
+     isShowErrors=${showErrors != null ? showErrors : myLabel==null},
+     pastePlainText=${isPlainTextOnly?'''ref''='''+myComponentId+''',''@paste.stop''=''evt => pastePlainTextCapture(evt,`'+myComponentId+'`)''':''},  
+     "
+	vu:alias="text-editor" vu:selector="${viewMode=='edit'}"
+	th:assert="${object} != null and ${field} != null">
+	
+	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
+	
+	<v-wysiwyg  
+		th:v-model="${model.util.vueDataKey(object, field, rowIndex)}" 
+		th::class="|{'q-editor--error':hasFieldsError('${object}', '${field}', ${rowIndex})}|"
+		th:attr=" __${input_attrs}__" >
+		Please follow documentation to enable the editor<!--/* add useWysiwyg="true" to your vu:head */-->
+	</v-wysiwyg>
+	
+	<div th:if="${isShowErrors}" th:v-if="|hasFieldsError('${object}', '${field}', ${rowIndex})|" role="alert" class="text-negative" 
+	      th:text="|{{getErrorMessage('${object}', '${field}', ${rowIndex})}}|"></div>
+	      
+	<input type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" th::value="${model.util.vueDataKey(object, field, rowIndex)}"  />
+</th:block>
+<th:block th:fragment="text-editor-read(object, field, showErrors, edit_content_slot, input_attrs)" 
+	vu:alias="text-editor" vu:selector="${viewMode=='read'}"
+	th:assert="${object} != null and ${field} != null" >
+	
+	<div class="texte-riche" >
+		<div v-pre th:utext="${__${model.util.contextGet(object, field, rowIndex)}__}" th:attr="__${input_attrs}__"></div>
+	</div>
+</th:block>

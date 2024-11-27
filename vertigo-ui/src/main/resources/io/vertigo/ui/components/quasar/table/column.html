@@ -1,0 +1,39 @@
+<th:block th:fragment="column-table(list, field, name, label, align, sortable, sortField, datetimeFormat, class, td_attrs)"
+          vu:alias="column"
+          vu:selector="${renderTableAsGrid == null || !renderTableAsGrid }"
+	      th:assert="${(field != null) or (name != null and label != null)}"
+	      th:with="columnName=${name != null ? name : field},
+	               columnLabel=${label != null ? label : model.util.label(list + '.' + field)},
+	               columnAlign=${model.util.smartTypeAlign(list, field, align)},
+	               columnClass=${model.util.smartTypeCss(list, field, class, 'col_'+name)},
+	               columnSortable=${sortable != null ? sortable : (field != null) },
+	               mySortField=${sortField?:field},
+	               myDisplayField=${field != null ? model.util.resolveDisplayField(list, field) : null},
+	               mySuffix=${model.util.smartTypeUnit(list, field, null)}">
+	<th:block th:with="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('columns', {'name': columnName, 'field': mySortField, 'label': columnLabel, 'align': columnAlign, 'sortable': (modifiableTable!=null?false:columnSortable), 'classes':(class?:columnClass), 'headerClasses':(class?:columnClass) })},
+				myDatetimeFormat=${datetimeFormat?:(field !=null ? model.util.getUiDatetimeFormat(list + '.' + field) : null)}">
+		<th:block th:if="${myDatetimeFormat != null}" th:attr="datetimeFormatKey=${objectKey.put('datetimeFormat', myDatetimeFormat)}" th:remove="all"></th:block>
+	</th:block>
+	<vu:include-data th:if="${myDisplayField != null}" object="${list}" field="${myDisplayField}"/>
+	<vu:include-data th:if="${mySortField != null && mySortField != myDisplayField}" object="${list}" field="${mySortField}"/>
+	<q-td th:key="${columnName}" :props="props" th:with="label=null"  th:attr="__${td_attrs}__" >
+		<vu:content><th:block th:if="${myDisplayField != null}">{{ props.row.[[${myDisplayField}]] }}<template th:if="${mySuffix != null}" th:v-if="|props.row['${myDisplayField}'] != null && props.row['${myDisplayField}'] != ''|"><span vu:text="${mySuffix}"></span></template></th:block></vu:content><!--/* Default content */-->
+	</q-td>
+</th:block> 
+
+<th:block th:fragment="column-grid(list, field, name, label, align, sortable, sortField, datetimeFormat, class, td_attrs)"
+          vu:alias="column"
+          vu:selector="${renderTableAsGrid?:false}"
+	      th:assert="${(field != null) or (name != null and label != null)}"
+	      th:with="columnName=${field != null ? field : name },
+	               columnLabel=${label != null ? label : model.util.label('__${list + '.' + field}__')},
+	               myDisplayField=${field != null ? model.util.resolveDisplayField(list, field) : null},
+	               mySuffix=${model.util.smartTypeUnit(list, field, null)}" >
+	<vu:include-data th:if="${myDisplayField != null}" object="${list}" field="${myDisplayField}"/>
+	<div class="q-table__grid-item-row" th:attr="__${td_attrs}__" >
+		<div class="q-table__grid-item-title" vu:text="${columnLabel}"></div>
+		<div class="q-table__grid-item-value" th:with="label=null">
+        	 <vu:content><th:block th:if="${myDisplayField != null}">{{ props.row.[[${myDisplayField}]] }}<template th:if="${mySuffix != null}" th:v-if="|props.row['${myDisplayField}'] != null && props.row['${myDisplayField}'] != ''|"><span vu:text="${mySuffix}"></span></template></th:block></vu:content>
+		</div>
+	</div>
+</th:block> 

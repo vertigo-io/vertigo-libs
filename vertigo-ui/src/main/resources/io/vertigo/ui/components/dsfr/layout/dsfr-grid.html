@@ -1,0 +1,20 @@
+<th:block th:fragment="dsfr-grid(cols, contentTags, class, other_attrs)"
+	th:with="layout='grid', currentColumnCount=0, tableCols=${cols?:2}, overridedLabelWidth=${cols?:2}, denseMode=${dense?:false}" >
+	<div class="fr-grid-row" th:classappend="${class}" th:attr="__${other_attrs}__" >
+		<th:block th:each="contentItem:${contentTags}">
+			<th:block th:if="${contentItem.isTag('dsfr-grid-cell') || contentItem.isTag('dsfr-grid-break')}">
+				<vu:content-item th:with="class=null"/>
+			</th:block>
+			<th:block th:if="${contentItem.isTag('template')}">
+				<div th:attr="v-if=${contentItem.getAttribute('v-if')}"
+					 th:class="${'fr-col-12 fr-col-md-'+(12/tableCols)}">
+					<vu:content-item th:with="class=null"/>
+				</div>
+			</th:block>
+			<div th:if="${!contentItem.isTag('dsfr-grid-cell') && !contentItem.isTag('template') && !contentItem.isTag('dsfr-grid-break') && !contentItem.isTag('include-data')}"
+				 th:class="${'fr-col-12 fr-col-md-'+(12/tableCols)}">
+				<vu:content-item th:with="class=null"/>
+			</div>
+		</th:block>
+	</div>
+</th:block>

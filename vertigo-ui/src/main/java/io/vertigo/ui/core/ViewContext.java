@@ -38,7 +38,6 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.model.Facet;
 import io.vertigo.datafactory.collections.model.FacetValue;
-import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datafactory.search.model.SearchQuery;
@@ -610,7 +609,7 @@ public final class ViewContext implements Serializable {
 	 * @param contextKey Context key
 	 * @return selectedFacetValues
 	 */
-	public <O extends DataObject> SelectedFacetValues getSelectedFacetValues(final ViewContextKey<FacetedQueryResult<O, FacetedQuery>> contextKey) {
+	public <O extends DataObject> SelectedFacetValues getSelectedFacetValues(final ViewContextKey<FacetedQueryResult<O, SearchQuery>> contextKey) {
 		return ((UiSelectedFacetValues) get(contextKey.get() + "_selectedFacets")).toSelectedFacetValues();
 	}
 

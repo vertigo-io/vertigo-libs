@@ -97,7 +97,7 @@ public final class VFileTest {
 	public void testObtainReadOnlyFile() {
 		final Path file = TestUtil.getFile("data/testFile.txt", getClass());
 		final VFile vFile = FSFile.of(file);
-		checVFile(VFileUtil.obtainReadOnlyPath(vFile), file);
+		checkVFile(VFileUtil.obtainReadOnlyPath(vFile), file);
 	}
 
 	@Test
@@ -149,7 +149,7 @@ public final class VFileTest {
 		//nada
 	}
 
-	private static void checVFile(final Path outFile, final Path inFile) {
+	private static void checkVFile(final Path outFile, final Path inFile) {
 		Assertions.assertEquals(inFile.toFile().getAbsolutePath(), outFile.toFile().getAbsolutePath());
 	}
 }

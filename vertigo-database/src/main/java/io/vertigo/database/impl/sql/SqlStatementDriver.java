@@ -17,7 +17,6 @@
  */
 package io.vertigo.database.impl.sql;
 
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -70,7 +69,7 @@ final class SqlStatementDriver {
 
 	PreparedStatement createStatement(final String sql, final SqlConnection connection) throws SQLException {
 		//created PrepareStatement must be use into a try-with-resource in caller
-		final PreparedStatement preparedStatement = connection.getJdbcConnection()
+		final var preparedStatement = connection.getJdbcConnection()
 				.prepareStatement(sql, Statement.NO_GENERATED_KEYS);
 		//by experience 150 is a right value (Oracle is set by default at 10 : that's not sufficient)
 		preparedStatement.setFetchSize(FETCH_SIZE);
@@ -83,7 +82,7 @@ final class SqlStatementDriver {
 			final String[] generatedColumns,
 			final SqlConnection connection) throws SQLException {
 		//created PrepareStatement must be use into a try-with-resource in caller
-		final PreparedStatement preparedStatement = switch (generationMode) {
+		final var preparedStatement = switch (generationMode) {
 			case GENERATED_KEYS -> connection.getJdbcConnection()
 					.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			case GENERATED_COLUMNS -> connection.getJdbcConnection()
@@ -102,15 +101,15 @@ final class SqlStatementDriver {
 			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlConnection connection) throws SQLException {
 		//-----
-		for (int index = 0; index < parameters.size(); index++) {
-			final SqlParameter parameter = parameters.get(index);
-			final Class javaDataType = parameter.dataType();
+		for (var index = 0; index < parameters.size(); index++) {
+			final var parameter = parameters.get(index);
+			final var javaDataType = parameter.dataType();
 			if (isPrimitive(parameter.dataType())) {
 				connection.getDataBase().getSqlMapping().setValueOnStatement(
 						statement, index + 1, javaDataType, parameter.value());
 			} else {
 				// complex we find the adapter
-				final BasicTypeAdapter adapter = basicTypeAdapters.get(parameter.dataType());
+				final var adapter = basicTypeAdapters.get(parameter.dataType());
 				connection.getDataBase().getSqlMapping().setValueOnStatement(
 						statement, index + 1, adapter.getBasicType().getJavaClass(), adapter.toBasic(parameter.value()));
 			}
@@ -149,9 +148,9 @@ final class SqlStatementDriver {
 			final SqlMapping sqlMapping,
 			final ResultSet resultSet,
 			final Integer limit) throws SQLException {
-		final boolean isPrimitive = isPrimitive(dataType);
+		final var isPrimitive = isPrimitive(dataType);
 
-		final MyField[] fields = isPrimitive ? null : findFields(dataType, resultSet.getMetaData());
+		final var fields = isPrimitive ? null : findFields(dataType, resultSet.getMetaData());
 		//Dans le cas d'une collection on retourne toujours qqChose
 		//Si la requête ne retourne aucune ligne, on retourne une collection vide.
 		final List<O> list = new ArrayList<>();
@@ -181,14 +180,14 @@ final class SqlStatementDriver {
 			final ResultSet resultSet,
 			final Class<O> dataType,
 			final MyField[] fields) throws SQLException {
-		final O bean = ClassUtil.newInstance(dataType);
+		final var bean = ClassUtil.newInstance(dataType);
 		Object value;
-		for (int i = 0; i < fields.length; i++) {
+		for (var i = 0; i < fields.length; i++) {
 			final Class<?> javaFieldDataType = fields[i].type;
 			if (isPrimitive(javaFieldDataType)) {
 				fields[i].setValue(bean, mapping.getValueForResultSet(resultSet, i + 1, javaFieldDataType));
 			} else {
-				final BasicTypeAdapter adapter = basicTypeAdapters.get(javaFieldDataType);
+				final var adapter = basicTypeAdapters.get(javaFieldDataType);
 				value = adapter.toJava(mapping.getValueForResultSet(resultSet, i + 1, adapter.getBasicType().getJavaClass()), javaFieldDataType);
 				fields[i].setValue(bean, value);
 			}
@@ -204,15 +203,15 @@ final class SqlStatementDriver {
 	private static MyField[] findFields(
 			final Class dataType,
 			final ResultSetMetaData resultSetMetaData) throws SQLException {
-		final MyField[] fields = new MyField[resultSetMetaData.getColumnCount()];
+		final var fields = new MyField[resultSetMetaData.getColumnCount()];
 		String columnLabel;
-		for (int i = 0; i < fields.length; i++) {
+		for (var i = 0; i < fields.length; i++) {
 			//getColumnLabel permet de récupérer le nom adapté lors du select (avec un select truc as machin from xxx)
 			columnLabel = resultSetMetaData.getColumnLabel(i + 1);
 			// toUpperCase nécessaire pour postgreSQL et SQLServer
-			final String expectedFieldName = StringUtil.constToLowerCamelCase(columnLabel.toUpperCase(Locale.ENGLISH));
+			final var expectedFieldName = StringUtil.constToLowerCamelCase(columnLabel.toUpperCase(Locale.ENGLISH));
 			try {
-				final Method getter = dataType.getDeclaredMethod("get" + StringUtil.first2UpperCase(expectedFieldName));
+				final var getter = dataType.getDeclaredMethod("get" + StringUtil.first2UpperCase(expectedFieldName));
 				fields[i] = new MyField(expectedFieldName, getter.getReturnType());
 			} catch (final NoSuchMethodException e) {
 				throw WrappedException.wrap(e);
@@ -257,23 +256,27 @@ final class SqlStatementDriver {
 
 	<O> List<O> getGeneratedKeys(
 			final PreparedStatement statement,
+			final GenerationMode generationMode,
 			final String columnName,
 			final Class<O> dataType,
 			final SqlConnection connection) throws SQLException {
 		Assertion.check()
+				.isNotNull(generationMode)
 				.isNotBlank(columnName)
 				.isNotNull(dataType);
 		//-----
 		// L'utilisation des generatedKeys permet d'avoir un seul appel réseau entre le
 		// serveur d'application et la base de données pour un insert et la récupération de la
 		// valeur de la clé primaire en respectant les standards jdbc et sql ansi.
-		final SqlMapping sqlMapping = connection.getDataBase().getSqlMapping();
+		final var sqlMapping = connection.getDataBase().getSqlMapping();
 		final List<O> generatedKeys = new ArrayList<>();
-		try (final ResultSet rs = statement.getGeneratedKeys()) {
+		try (final var rs = statement.getGeneratedKeys()) {
 			while (rs.next()) {
-				//ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
-				int pkRsCol = rs.findColumn(columnName); //on cherche le bon index de la pk
-				final O id = sqlMapping.getValueForResultSet(rs, pkRsCol, dataType);
+				final var pkRsCol = switch (generationMode) {
+					case GENERATED_KEYS -> 0; //ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
+					case GENERATED_COLUMNS -> rs.findColumn(columnName); //on cherche le bon index de la pk;
+				};
+				final var id = sqlMapping.getValueForResultSet(rs, pkRsCol, dataType);
 				if (rs.wasNull()) {
 					throw new SQLException("GeneratedKeys wasNull", "23502", NULL_GENERATED_KEY_ERROR_VENDOR_CODE);
 				}

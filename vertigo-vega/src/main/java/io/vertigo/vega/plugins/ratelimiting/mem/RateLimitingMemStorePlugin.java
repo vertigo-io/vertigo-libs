@@ -52,6 +52,16 @@ public final class RateLimitingMemStorePlugin implements RateLimitingStorePlugin
 	private final ConcurrentMap<String, AtomicLong> hitsCounter = new ConcurrentHashMap<>();
 
 	/**
+	 * First hit by userKey.
+	 */
+	private final ConcurrentMap<String, Instant> firstHit = new ConcurrentHashMap<>();
+
+	/**
+	 * extended window by userKey.
+	 */
+	private final ConcurrentMap<String, Instant> extendedWindow = new ConcurrentHashMap<>();
+
+	/**
 	 * Banish counter by userKey.
 	 */
 	private final ConcurrentMap<String, AtomicInteger> banishCounter = new ConcurrentHashMap<>();
@@ -89,10 +99,24 @@ public final class RateLimitingMemStorePlugin implements RateLimitingStorePlugin
 	}
 
 	@Override
-	public long touch(final String userKey, final long windowSeconds) {
+	public long touch(final String userKey, final long incrBy, final long windowSeconds) {
 		final var value = new AtomicLong(0);
 		final var oldValue = hitsCounter.putIfAbsent(userKey, value);
-		return (oldValue != null ? oldValue : value).incrementAndGet();
+		firstHit.putIfAbsent(userKey, Instant.now());
+		return (oldValue != null ? oldValue : value).addAndGet(incrBy);
+	}
+
+	@Override
+	public void extendsWindow(final String userKey, final long newWindowSeconds) {
+		extendedWindow.put(userKey, Instant.now().plusSeconds(newWindowSeconds));
+	}
+
+	@Override
+	public long remainingSeconds(final String userKey) {
+		if (extendedWindow.containsKey(userKey)) {
+			return ChronoUnit.SECONDS.between(Instant.now(), extendedWindow.get(userKey));
+		}
+		return windowSeconds - (System.currentTimeMillis() - lastRateLimitResetTime) / 1000;
 	}
 
 	@Override
@@ -108,15 +132,21 @@ public final class RateLimitingMemStorePlugin implements RateLimitingStorePlugin
 		banishInstant.putIfAbsent(userKey, banishUntil);
 	}
 
-	@Override
-	public long remainingSeconds(final String userKey) {
-		return windowSeconds - (System.currentTimeMillis() - lastRateLimitResetTime) / 1000;
-	}
-
-	void resetRateLimitWindow() {
-		hitsCounter.clear();
+	private void resetRateLimitWindow() {
+		extendedWindow.entrySet().removeIf(entry -> Instant.now().isAfter(entry.getValue()));
+		hitsCounter.keySet().retainAll(extendedWindow.keySet());//remove hitsCounter if not in extendedWindow
+		firstHit.keySet().retainAll(extendedWindow.keySet());//remove firstHit if not in extendedWindow
 		lastRateLimitResetTime = System.currentTimeMillis();
 		resetBanish(maxBanishSeconds);
+	}
+
+	@Override
+	public long getFirstHitAgeSecond(final String userKey) {
+		final Instant firstHitInstant = firstHit.get(userKey);
+		if (firstHitInstant == null) {
+			return -1;
+		}
+		return ChronoUnit.SECONDS.between(firstHitInstant, Instant.now());
 	}
 
 	private void resetBanish(final long maxBanishSeconds) {
@@ -149,4 +179,5 @@ public final class RateLimitingMemStorePlugin implements RateLimitingStorePlugin
 	public Map<String, Instant> getBanishments() {
 		return Collections.unmodifiableMap(banishInstant);
 	}
+
 }

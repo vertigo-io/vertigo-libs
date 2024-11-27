@@ -27,8 +27,17 @@ public interface RateLimitingStorePlugin extends Plugin {
 	/**
 	 * Hit count by userKey, over a window.
 	 * @param userKey user key (like ip)
+	 * @param incrBy increment by
+	 * @param windowSeconds window in seconds
 	 */
-	long touch(String userKey, final long windowSeconds);
+	long touch(String userKey, final long incrBy, final long windowSeconds);
+
+	/**
+	 * Get first hit age for a userKey.
+	 * @param userKey userKey user key (like ip)
+	 * @return age in second (-1 if unknown)
+	 */
+	long getFirstHitAgeSecond(final String userKey);
 
 	/**
 	 * Get remaining seconds in window for a userKey.
@@ -73,5 +82,7 @@ public interface RateLimitingStorePlugin extends Plugin {
 	 * @return banish until instant.
 	 */
 	Instant getBanishInstant(String userKey);
+
+	void extendsWindow(String userKey, final long newWindowSeconds);
 
 }

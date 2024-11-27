@@ -24,6 +24,13 @@ import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.ListVAccessor;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 
+/**
+ * This class is a way to access a list of foreign entities defined by a relationship.
+ * It's a kind of box (aka optional) that offers a small list of methods.
+ *
+ * @author pchretien, mlaroche, npiedeloup *
+ * @param <E> the type of entity
+ */
 public class StoreListVAccessor<E extends Entity> extends ListVAccessor<E> {
 
 	private static final long serialVersionUID = -4840484505809842010L;
@@ -50,6 +57,28 @@ public class StoreListVAccessor<E extends Entity> extends ListVAccessor<E> {
 	@Override
 	public final void set(final DtList<E> dtList) {
 		throw new VSystemException("StoreListVAccessor cannot be set, you can only load it");
+	}
+
+	/**
+	 * Loads the value if needed.
+	 */
+	public void loadIfAbsent() {
+		if (getSourceUID() != null && !isLoaded()) {
+			load();
+		}
+	}
+
+	/**
+	 * Loads the value if needed.
+	 * @deprecated This usage is discouraged : prefer explicit loading by using load() then get()
+	 */
+	@Deprecated
+	public DtList<E> lazyGet() {
+		if (getSourceUID() == null) {
+			return null;
+		}
+		loadIfAbsent();
+		return get();
 	}
 
 }

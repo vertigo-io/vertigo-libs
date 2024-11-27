@@ -60,9 +60,10 @@ import io.vertigo.core.lang.WrappedException;
  * @author pchretien
  */
 final class BerkeleyDatabase {
+
 	/** Purge V1 : scan all db, only decode timestamp in value **/
 	private static final String PURGE_V1 = "V1";
-	/** Purge V2 : scan Diskordered, limit removed elements per run*/
+	/** Purge V2 : scan Diskordered, limit removed elements per run */
 	private static final String PURGE_V2 = "V2";
 	private static final String PURGE_V3 = "V3";
 	private static final long PRECISION = 1000 * 60; //minutes
@@ -88,7 +89,8 @@ final class BerkeleyDatabase {
 	 * @param transactionManager Transaction manager
 	 * @param codecManager Codec manager
 	 */
-	BerkeleyDatabase(final String databaseName, final Environment env, final long timeToLiveSeconds, final Optional<String> purgeVersion, final VTransactionManager transactionManager, final CodecManager codecManager, final AnalyticsManager analyticsManager) {
+	BerkeleyDatabase(final String databaseName, final Environment env, final long timeToLiveSeconds, final Optional<String> purgeVersion, final VTransactionManager transactionManager,
+			final CodecManager codecManager, final AnalyticsManager analyticsManager) {
 		Assertion.check()
 				.isNotNull(databaseName)
 				.isNotNull(transactionManager)
@@ -112,6 +114,7 @@ final class BerkeleyDatabase {
 		database = env.openDatabase(null, databaseName, databaseConfig);
 		if (PURGE_V3.equals(this.purgeVersion) && timeToLiveSeconds > 0) {
 			final SecondaryKeyCreator keyCreator = new SecondaryKeyCreator() {
+
 				@Override
 				public boolean createSecondaryKey(final SecondaryDatabase secondary, final DatabaseEntry key, final DatabaseEntry data, final DatabaseEntry result) {
 					final long createTime = (long) timePrefixDataBinding.entryToObject(data);
@@ -252,7 +255,7 @@ final class BerkeleyDatabase {
 	/**
 	 * @param id Element id to remove
 	 */
-	void delete(final String id) {
+	boolean delete(final String id) {
 		Assertion.check().isNotBlank(id);
 		//-----
 		final DatabaseEntry idEntry = new DatabaseEntry();
@@ -266,11 +269,12 @@ final class BerkeleyDatabase {
 			throw WrappedException.wrap(e);
 		}
 		if (OperationStatus.NOTFOUND.equals(status)) {
-			throw new VSystemException("delete has failed because no data found with key : {0}", id);
+			return false;
 		}
 		if (!OperationStatus.SUCCESS.equals(status)) {
 			throw new VSystemException("delete has failed");
 		}
+		return true;
 	}
 
 	/**

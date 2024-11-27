@@ -1,6 +1,7 @@
 {
   "name": "@vertigo-io/vertigo-ui-vuejs",
   "version": "4.2.0",
+  "type": "module",
   "scripts": {
     "dev": "vite --port 3000",
     "build": "vite build",
@@ -12,8 +13,8 @@
     "animate.css": "^4.1.1",
     "axios": "^1.7.2",
     "core-js": "^3.37.1",
-	"d3-color": "^3.1.0",
-	"d3-interpolate": "^3.0.1"
+    "d3-color": "^3.1.0",
+    "d3-interpolate": "^3.0.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.5",

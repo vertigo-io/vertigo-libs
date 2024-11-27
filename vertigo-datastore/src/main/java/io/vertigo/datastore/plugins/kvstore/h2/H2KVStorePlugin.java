@@ -45,7 +45,6 @@ import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.ListBuilder;
-import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -62,6 +61,7 @@ import io.vertigo.datastore.kvstore.KVCollection;
  * @author mlaroche, pchretien, npiedeloup
  */
 public final class H2KVStorePlugin implements KVStorePlugin, SimpleDefinitionProvider, Activeable {
+
 	private static final String ANALYTICS_CATEGORY = "kvstore";
 	private static final int REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS = 30;
 
@@ -218,13 +218,11 @@ public final class H2KVStorePlugin implements KVStorePlugin, SimpleDefinitionPro
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final KVCollection collection, final String key) {
-		analyticsManager.trace(ANALYTICS_CATEGORY, "remove", tracer -> {
+	public boolean remove(final KVCollection collection, final String key) {
+		return analyticsManager.traceWithReturn(ANALYTICS_CATEGORY, "remove", tracer -> {
 			tracer.setTag("collection", collection.name());
 			final var removedObject = getMap(collection).remove(key);
-			if (removedObject == null) {
-				throw new RuntimeException(LocaleMessageText.of("Unable to remove non existing element collection '{0}' with key '{1}'", collection.name(), key).getDisplay());
-			}
+			return removedObject != null;
 		});
 	}
 
@@ -339,6 +337,7 @@ public final class H2KVStorePlugin implements KVStorePlugin, SimpleDefinitionPro
 	}
 
 	static class H2KVEntry implements Serializable {
+
 		private static final long serialVersionUID = 1L;
 
 		final Long timestamp;

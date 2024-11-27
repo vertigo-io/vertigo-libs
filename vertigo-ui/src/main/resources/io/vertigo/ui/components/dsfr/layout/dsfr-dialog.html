@@ -1,0 +1,17 @@
+<th:block th:fragment="dsfr-dialog(title, componentId, actions_slot, other_attrs)"
+          th:assert="${(title != null) and (name != componentId)}"
+          th:attr=" objectKey=${model.vContext['componentStates'].addComponentState(componentId)
+	                                                             .addPrimitive('opened', false)}"
+>
+    <dsfr-modal th:title="${title}"
+                th:v-model:opened="|componentStates.__${componentId}__.opened|"
+                th:@close="|componentStates.${componentId}.opened = false|"
+                th:attr="__${other_attrs}__">
+        <vu:content></vu:content>
+        <template #footer>
+            <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-sm fr-btns-group--icon-left">
+                <vu:content-slot name="actions_slot"/>
+            </div>
+        </template>
+    </dsfr-modal>
+</th:block>

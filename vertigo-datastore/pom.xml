@@ -45,6 +45,11 @@
 				<artifactId>guava</artifactId>
 				<version>33.2.1-jre</version> <!-- for tika : cve in 31.1-jre -->
 			</dependency>
+			<dependency>
+				<groupId>com.j256.simplemagic</groupId>
+				<artifactId>simplemagic</artifactId>
+				<version>1.17</version>
+			</dependency>
 
 			<dependency>
 				<groupId>io.vertigo</groupId>
@@ -63,21 +68,21 @@
 			<dependency>
 				<groupId>io.vertigo</groupId>
 				<artifactId>vertigo-database</artifactId>
-				<version>${vertigo.version}</version>
+				<version>${project.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>io.vertigo</groupId>
 				<artifactId>vertigo-datamodel</artifactId>
-				<version>${vertigo.version}</version>
+				<version>${project.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>io.vertigo</groupId>
 				<artifactId>vertigo-basics</artifactId>
-				<version>${vertigo.version}</version>
+				<version>${project.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -140,6 +145,11 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.j256.simplemagic</groupId>
+			<artifactId>simplemagic</artifactId>
 			<optional>true</optional>
 		</dependency>
 

@@ -22,6 +22,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -95,10 +96,13 @@ public abstract class AbstractVSpringMvcController {
 		if ("POST".equals(request.getMethod()) || "PUT".equals(request.getMethod()) || "DELETE".equals(request.getMethod())
 				|| ctxId != null && acceptCtxQueryParam()) {
 			if (ctxId == null) {
-				throw new VSystemException("Context ctxId manquant");
+				throw new VSystemException("Context manquant");
 			} else {
+				if (ctxId.indexOf('$') == -1) { //client try to use a old ctx as ctx
+					throw new ExpiredViewContextException("Init context manquant", Optional.empty());
+				}
 				ctxInit = ctxId.substring(0, ctxId.indexOf('$'));
-				final var ctxUid = ctxId.substring(ctxId.indexOf('$') + 1);
+				final String ctxUid = ctxId.substring(ctxId.indexOf('$') + 1);
 				ViewContextMap viewContextMap;
 				try (var transactionWritable = transactionManager.createCurrentTransaction()) {
 					viewContextMap = kvStoreManager.find(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(ctxUid, request), ViewContextMap.class).orElse(null);

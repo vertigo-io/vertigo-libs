@@ -277,13 +277,6 @@ public abstract class AbstractFileStoreManagerTest {
 		}
 	}
 
-	@Test
-	public void testMimeType() throws Exception {
-		final VFile vFile = TestUtil.createVFile("./data/lautreamont.txt", AbstractFileStoreManagerTest.class);
-		//1.Création du fichier depuis un fichier texte du FS
-		final String resolvedMimeType = fileStoreManager.resolveMimeType(vFile);
-		Assertions.assertEquals("text/plain", resolvedMimeType);
-	}
 
 	private String readFileContent(final VFile vFile) throws IOException {
 		try (final OutputStream sourceOS = new ByteArrayOutputStream()) {

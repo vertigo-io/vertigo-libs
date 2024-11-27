@@ -53,11 +53,11 @@ public interface KVStorePlugin extends Plugin {
 
 	/**
 	 * Removes an element defined by an id from a collection.
-	 * If the collection doesn't contain the is then a exception is thrown.
 	 * @param collection the collection
 	 * @param id the id
+	 * @return if element exists before removed
 	 */
-	void remove(KVCollection collection, String id);
+	boolean remove(KVCollection collection, String id);
 
 	/**
 	 * Removes all elements from a collection.

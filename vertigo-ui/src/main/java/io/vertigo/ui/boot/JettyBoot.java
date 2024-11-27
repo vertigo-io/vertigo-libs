@@ -41,11 +41,13 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.session.DefaultSessionIdManager;
+import org.eclipse.jetty.server.session.NullSessionCacheFactory;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.springframework.web.WebApplicationInitializer;
 
+import io.vertigo.ui.impl.jetty.session.KVSessionDataStoreFactory;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -70,6 +72,14 @@ public class JettyBoot {
 			final var sessionIdManager = new DefaultSessionIdManager(server);
 			sessionIdManager.setWorkerName(jettyNodeNameOpt.get());
 			server.setSessionIdManager(sessionIdManager);
+		}
+
+		final var jettySessionStoreCollectionNameOpt = jettyBootParams.getJettySessionStoreCollectionName();
+		if (jettySessionStoreCollectionNameOpt.isPresent()) {
+			server.addBean(new KVSessionDataStoreFactory(jettySessionStoreCollectionNameOpt.get())); //we set kvStore sessionStore
+			if (jettyBootParams.isNoJettySessionCache()) {
+				server.addBean(new NullSessionCacheFactory()); //we inactive sessionCache : to use SessionStore every times
+			}
 		}
 
 		// Create HTTP Config

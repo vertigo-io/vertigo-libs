@@ -361,10 +361,24 @@ thead tr:hover:last-child th:last-child:not(:first-child), tr:hover td:nth-last-
   opacity: 0 !important;
 }
 
+.v-fileupload .files .file {
+	padding-bottom: 1rem;
+}
+
 .dropzone-area {
 	position: relative;
 }
 
+.dropzone-area__dnd {
+	position: absolute;
+	top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    outline: 1px dashed currentColor;
+    outline-offset: 5px;
+    background: rgba(255, 255, 255, 0.6);
+}
 .q-uploader {
 	width:auto !important;
 }
@@ -431,16 +445,43 @@ table .q-uploader .q-btn {
     max-width:unset !important;
 }
 
+.v-modal .loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .q-dialog__inner--minimized .v-modal .q-card__section {
+	width: 560px;
+	height: 420px;
 	max-height: calc(100vh - 100px);
 	max-width: calc(100vw - 100px);
 	overflow: auto;
 }
 
-.v-modal .q-card__section iframe {
+.v-modal .v-modal__dsfr-content {
+	height: 420px;
+}
+
+.v-modal iframe {
 	display: block;
 	width: 100%;
 	height: 100%;
+}
+
+/* Le footer fait partie de l’iframe */
+.v-modal .fr-modal__content {
+	margin-bottom: 0;
+}
+
+.v-modal .fr-modal__footer {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+[v-cloak] {
+    visibility: hidden;
 }
 
 /******** dev mode of authorizations *******/
@@ -517,4 +558,23 @@ table .q-uploader .q-btn {
 .ol-geocoder .gcd-gl-input {
 	top: .125em !important;
 	height: 2.25em !important;
+}
+
+
+
+/********  conflit handling between dsfr and quasar *******/
+.q-separator {
+ 	padding: unset;
+ }
+ 
+.q-item[href], .q-btn[href] {
+    background-image: unset; 
+}
+
+a[href]:active.q-item {
+	background-color: inherit;
+}
+
+button:not(:disabled):hover.q-btn-item {
+	background-color: transparent;
 }

@@ -22,6 +22,7 @@ import java.time.Instant;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -42,6 +43,7 @@ import jakarta.servlet.http.HttpSession;
  * @author npiedeloup
  */
 public final class RateLimitingManagerImpl implements RateLimitingManager {
+
 	private static final Logger LOG = LogManager.getLogger(RateLimitingManagerImpl.class);
 
 	private static final String HEADER_RATE_LIMIT_LIMIT = "X-Rate-Limit-Limit"; //the rate limit ceiling for that given request
@@ -64,6 +66,9 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 
 	private final int windowSeconds;
 	private final long maxRequests;
+	private final double maxRequestsPerMinutes;
+	private final Optional<Long> maxDayRequests; //compute maximum requests per min over a whole day
+	private final Optional<Double> maxDayRequestsPerMinutes;
 
 	private final boolean insertHeaders;
 
@@ -78,6 +83,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 	private double banishRepeaterMult = 2; //Banish mult for repeaters
 	private long maxBanishSeconds = 7 * 24 * 60 * 60; //Max banish seconds
 	private String banishMessage = "1 request/min"; //Banish message
+	private final Set<String> whiteListUsers;
 
 	private final AnalyticsManager analyticsManager;
 	private final RateLimitingStorePlugin rateLimitingStorePlugin;
@@ -85,6 +91,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 	@Inject
 	public RateLimitingManagerImpl(@ParamValue("windowSeconds") final Optional<Integer> windowSeconds,
 			@ParamValue("maxRequests") final Optional<Long> maxRequests,
+			@ParamValue("maxDayRequests") final Optional<Long> maxDayRequests,
 			@ParamValue("errorCode") final Optional<Integer> errorCode,
 			@ParamValue("overRateLimitMode") final Optional<String> overRateLimitMode,
 			@ParamValue("insertHeaders") final Optional<Boolean> insertHeaders,
@@ -95,6 +102,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 			@ParamValue("banishRepeaterMult") final Optional<Double> banishRepeaterMult,
 			@ParamValue("maxBanishSeconds") final Optional<Long> maxBanishSeconds,
 			@ParamValue("banishMessage") final Optional<String> banishMessage,
+			@ParamValue("whiteListUsers") final Optional<String> whiteListUsers,
 			final RateLimitingStorePlugin rateLimitingStorePlugin,
 			final AnalyticsManager analyticsManager) {
 		this.rateLimitingStorePlugin = rateLimitingStorePlugin;
@@ -103,10 +111,15 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 		Assertion.check()
 				.isNotNull(windowSeconds)
 				.isNotNull(maxRequests)
-				.isNotNull(insertHeaders);
+				.isNotNull(maxDayRequests)
+				.isNotNull(insertHeaders)
+				.when(maxDayRequests.isPresent(), () -> Assertion.check()
+						.isTrue(maxDayRequests.get() >= maxRequests.orElse(DEFAULT_MAX_REQUESTS_VALUE),
+								"maxDayRequests must be greater than maxRequests"));
 		//-----
 		this.windowSeconds = windowSeconds.orElse(DEFAULT_WINDOW_SECONDS);
 		this.maxRequests = maxRequests.orElse(DEFAULT_MAX_REQUESTS_VALUE);
+		this.maxDayRequests = maxDayRequests;
 		this.errorCode = errorCode.orElse(429); //TOO_MANY_REQUESTS
 		this.overRateLimitMode = OverRateLimitMode.valueOf(overRateLimitMode.orElse(OverRateLimitMode.reject.name()));
 
@@ -119,8 +132,15 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 		this.banishRepeaterMult = banishRepeaterMult.orElse(DEFAULT_BANISH_REPEATER_MULT); //Banish mult for repeaters
 		this.maxBanishSeconds = maxBanishSeconds.orElse(DEFAULT_BANISH_MAX_SECONDS); //Max banish seconds
 
-		final double maxRequestsPerMinutes = Math.round(this.maxRequests * 60.0 * 10.0 / this.windowSeconds) / 10.0;
-		this.banishMessage = banishMessage.orElse(maxRequestsPerMinutes + " requests/min"); //Message returned if banished
+		maxRequestsPerMinutes = this.maxRequests * 60.0 / this.windowSeconds;
+		maxDayRequestsPerMinutes = maxDayRequests.isPresent() ? Optional.of(this.maxDayRequests.get() * 60.0 / (24 * 60 * 60)) : Optional.empty();
+		final StringBuilder defaultBanishMessage = new StringBuilder().append(Math.round(maxRequestsPerMinutes * 10.0) / 10.0).append(" requests/min for short time");
+		if (maxDayRequests.isPresent()) {
+			defaultBanishMessage.append(", and ").append(Math.round(maxDayRequestsPerMinutes.get() * 10.0) / 10.0).append(" requests/min by day");
+		}
+		this.banishMessage = banishMessage.orElse(defaultBanishMessage.toString()); //Message returned if banished
+
+		this.whiteListUsers = whiteListUsers.map(s -> Set.of(s.split("\\s*,\\s*"))).orElse(Set.of());
 	}
 
 	@Override
@@ -137,6 +157,9 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 			return true;
 		}
 		final String userKey = obtainUserKey(request);
+		if (whiteListUsers.contains(userKey)) { //fast bypass
+			return true;
+		}
 
 		final Instant banishUntil = rateLimitingStorePlugin.getBanishInstant(userKey);
 		final Instant now = Instant.now();
@@ -147,55 +170,89 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 			return false;
 		}
 
-		final long hits = rateLimitingStorePlugin.touch(userKey, windowSeconds);
-		final long remainingSeconds = rateLimitingStorePlugin.remainingSeconds(userKey);
+		final long hits = rateLimitingStorePlugin.touch(userKey, 1, windowSeconds);
+		final long remainingSeconds = insertHeaders ? rateLimitingStorePlugin.remainingSeconds(userKey) : 0;//if we dont insert headers, we dont need to compute remainingSeconds
+
 		if (hits > maxRequests) {
-			switch (overRateLimitMode) {
-				case nothing:
-					break;
-				case logOnly:
-					logRateLimitExceeded(userKey, hits);
-					analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer
-							.setMeasure("overLimitHits", hits)
-							.setTag("rateLimited", "logOnly"));
-					break;
-				case reject:
-					logRateLimitExceeded(userKey, hits);
-					addHeaderReject(response, remainingSeconds);
-					analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer
-							.setMeasure("overLimitHits", hits)
-							.setTag("rateLimited", "rejected"));
-					response.sendError(errorCode);
-					return false;
-				case banish:
-					final long banishForSeconds = banish(userKey);
-					logRateLimitExceeded(userKey, hits);
-					addHeaderBanish(response, banishForSeconds);
-					analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer
-							.setMeasure("overLimitHits", hits)
-							.setMeasure("banishedForSeconds", banishForSeconds)
-							.setTag("rateLimited", "banish"));
-					response.sendError(errorCode, banishMessage);
-					return false;
-				default:
-					throw new IllegalArgumentException("Unsupported overRateLimitMode " + overRateLimitMode);
+			if (!overRateLimitExceeded(response, userKey, hits, remainingSeconds)) {
+				return false;
 			}
 		}
-		addHeaderRemaining(response, hits, remainingSeconds);
+		if (maxDayRequestsPerMinutes.isPresent()) { //if max daily rate is activated
+			final double maxDayRequestsPerMinutesD = maxDayRequestsPerMinutes.get();
+
+			final long countHitsFloor = (long) Math.ceil(maxDayRequestsPerMinutesD * windowSeconds / 60);
+			if (hits >= countHitsFloor) { //for every window, if it exceeded maxDailyRate we update counter and trackTime
+				final String dailyUserKey = userKey + "Daily";
+				final long initialDailyWindow = 2 * windowSeconds;
+				final long dailyHits = rateLimitingStorePlugin.touch(dailyUserKey, hits == countHitsFloor ? countHitsFloor : 1, initialDailyWindow);
+				if (dailyHits > maxDayRequests.get()) {
+					final long dailyRemainingSeconds = insertHeaders ? rateLimitingStorePlugin.remainingSeconds(dailyUserKey) : 0;//if we dont insert headers, we dont need to compute remainingSeconds
+					if (!overRateLimitExceeded(response, userKey, dailyHits, dailyRemainingSeconds)) {
+						return false;
+					}
+				}
+
+				final long newDailyWindow = (long) Math.min(dailyHits * 60 / maxDayRequestsPerMinutesD, 24 * 60 * 60);
+				if (newDailyWindow > initialDailyWindow //after the first window
+						&& dailyHits % countHitsFloor == 0) { //every countHitsFloor, we check if we need to update window
+					final long dailyAgeSeconds = rateLimitingStorePlugin.getFirstHitAgeSecond(dailyUserKey);
+					final double currentRequestsPerMinute = dailyAgeSeconds > 0 ? dailyHits * 60.0 / dailyAgeSeconds : maxDayRequestsPerMinutesD;
+					//we recompute TTL to wait if hitrate go down to daily rate
+					if (currentRequestsPerMinute > maxDayRequestsPerMinutesD) { //if we are over maxDayRequestsPerMinutes, we extend window
+						rateLimitingStorePlugin.extendsWindow(dailyUserKey, newDailyWindow - dailyAgeSeconds);//extend window to reach maxDayRequestsPerMinutes, max 24h
+					}
+				}
+			}
+		}
+		addHeaderRemaining(response, hits, remainingSeconds, maxRequests);
 		return true;
 	}
 
-	private void addHeaderRemaining(final HttpServletResponse response, final long hits, final long remainingSeconds) {
-		if (insertHeaders) {
-			response.addHeader(HEADER_RATE_LIMIT_LIMIT, String.valueOf(maxRequests));
-			response.addHeader(HEADER_RATE_LIMIT_RESET, String.valueOf(remainingSeconds));
-			response.addHeader(HEADER_RATE_LIMIT_REMAINING, String.valueOf(maxRequests - hits));
+	private boolean overRateLimitExceeded(final HttpServletResponse response, final String userKey, final long hits, final long remainingSeconds) throws IOException {
+		switch (overRateLimitMode) {
+			case nothing:
+				return true;
+			case logOnly:
+				logRateLimitExceeded(userKey, hits, maxRequests);
+				analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer
+						.setMeasure("overLimitHits", hits)
+						.setTag("rateLimited", "logOnly"));
+				return true;
+			case reject:
+				logRateLimitExceeded(userKey, hits, maxRequests);
+				addHeaderReject(response, remainingSeconds, maxRequests);
+				analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer
+						.setMeasure("overLimitHits", hits)
+						.setTag("rateLimited", "rejected"));
+				response.sendError(errorCode);
+				return false;
+			case banish:
+				final long banishForSeconds = banish(userKey);
+				logRateLimitExceeded(userKey, hits, maxRequests);
+				addHeaderBanish(response, banishForSeconds);
+				analyticsManager.getCurrentTracer().ifPresent(tracer -> tracer
+						.setMeasure("overLimitHits", hits)
+						.setMeasure("banishedForSeconds", banishForSeconds)
+						.setTag("rateLimited", "banish"));
+				response.sendError(errorCode, banishMessage);
+				return false;
+			default:
+				throw new IllegalArgumentException("Unsupported overRateLimitMode " + overRateLimitMode);
 		}
 	}
 
-	private void addHeaderReject(final HttpServletResponse response, final long remainingSeconds) {
+	private void addHeaderRemaining(final HttpServletResponse response, final long hits, final long remainingSeconds, final long currentMaxRequests) {
 		if (insertHeaders) {
-			response.addHeader(HEADER_RATE_LIMIT_LIMIT, String.valueOf(maxRequests));
+			response.addHeader(HEADER_RATE_LIMIT_LIMIT, String.valueOf(currentMaxRequests));
+			response.addHeader(HEADER_RATE_LIMIT_RESET, String.valueOf(remainingSeconds));
+			response.addHeader(HEADER_RATE_LIMIT_REMAINING, String.valueOf(currentMaxRequests - hits));
+		}
+	}
+
+	private void addHeaderReject(final HttpServletResponse response, final long remainingSeconds, final long currentMaxRequests) {
+		if (insertHeaders) {
+			response.addHeader(HEADER_RATE_LIMIT_LIMIT, String.valueOf(currentMaxRequests));
 			response.addHeader(HEADER_RATE_LIMIT_RESET, String.valueOf(remainingSeconds));
 		}
 	}
@@ -215,10 +272,10 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 		return banishedForSeconds;
 	}
 
-	private void logRateLimitExceeded(final String userKey, final long hits) {
-		if (hits == maxRequests + 1) {
+	private void logRateLimitExceeded(final String userKey, final long hits, final long currentMaxRequests) {
+		if (hits == currentMaxRequests + 1) {
 			LOG.warn("Rate limit exceeded ({})", userKey);
-		} else if ((hits - maxRequests) % logEveryXRequests == 0) {
+		} else if ((hits - currentMaxRequests) % logEveryXRequests == 0) {
 			LOG.info("Rate limit exceeded ({})", userKey);
 		}
 	}
@@ -238,7 +295,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 			final Enumeration<String> ipEnumeration = request.getHeaders("X-Forwarded-For");
 			if (ipEnumeration != null) {
 				if (ipEnumeration.hasMoreElements()) {
-					return Optional.of(ipEnumeration.nextElement());
+					return Optional.of(ipEnumeration.nextElement().trim());
 				}
 			} //if no X-Forwarded-For : use remoteAddr
 		}

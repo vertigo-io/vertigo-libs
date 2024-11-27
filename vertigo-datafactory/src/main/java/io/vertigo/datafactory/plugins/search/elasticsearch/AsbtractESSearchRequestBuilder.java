@@ -151,7 +151,7 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 	@Override
 	public R build() {
 		Assertion.check()
-				.isNotNull(myIndexDtDefinition, "You must set Index DtDefinition")
+				.isNotNull(myIndexDtDefinition, "You must set Index DataDefinition")
 				.isNotNull(mySearchQuery, "You must set SearchQuery")
 				.isNotNull(myListState, "You must set ListState")
 				.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent(), () -> Assertion.check() //si il y a un cluster on vérifie le maxRows

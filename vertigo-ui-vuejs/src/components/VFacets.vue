@@ -104,7 +104,7 @@ export default {
       }
   },
   created : function() {
-    this.facetValueTranslatorProvider(this);
+      if (this.facetValueTranslatorProvider !== undefined) this.facetValueTranslatorProvider(this);
   },
   methods: {
       addFacetValueTranslator(facetCode, facetValueCodeTranslator) {

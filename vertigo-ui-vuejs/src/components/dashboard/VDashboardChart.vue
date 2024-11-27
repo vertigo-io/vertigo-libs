@@ -71,8 +71,8 @@ const verticalLinePlugin = {
 export default {
 	props : {
         title:                          { type: String,  },
-		type:          					{ type: String,  required: true },
-		datas:                          { type: Array,   },
+		type:          					{ type: String, required: true },
+		datas:                          { type: Object,  },
 		dataSeriesTranslator:           { type: Function,},
 		queryUrl:                       { type: String,  },
         queryClusteredMeasure:     		{ type: Object,  },
@@ -80,14 +80,14 @@ export default {
 		queryDataFilter:  				{ type: Object,  },
 		queryTimeFilter:				{ type: Object,  },
 		queryGroupBy:                   { type: String,  },
-        colors: 						{ type: String,  required: true,   default:'DEFAULT' },
-		labels:                         { type: Object,  required: true },
+        colors: 						{ type: String, default:'DEFAULT' },
+		labels:                         { type: Object, required: true },
         minTime:                        { type: String, },
         maxTime:                        { type: String, },
 		fillGapDim:                     { type: String, },
 		fillGapValue:					{ type: Number, },
-		timeFormat:                     { type: String,  required: true,   default:'DD/MM/YYYY HH:mm' },
-		verticalLines: 					{ type: Array, }, /** {x, label, color} */
+		timeFormat:                     { type: String, default:'DD/MM/YYYY HH:mm' },
+		verticalLines: 					{ type: Array,  }, /** {x, label, color} */
         additionalOptions: 				{ type: Object, },
 	},
 	created : function () {
@@ -198,17 +198,23 @@ export default {
                 var bubblesData = this.toChartJsBubblesData(datas, realLabels.keys(), realLabels, queryGroupBy);
 				chartJsDataSets = [ {data: bubblesData }];
 				chartOptions = this.getChartJsBubblesOptions(datas, realLabels.keys(), queryGroupBy, realLabels, chartTitle, additionalOptions);
-				this.setChartJsColorOptions(chartJsDataSets, dataColors, 0.5);
+				this.setChartJsColorOptions(chartJsDataSets, dataColors, 1, 0.5);
 			} else if (this.type ==="linechart") {
 				chartJsType = 'line';
 				chartJsDataSets = this.toChartJsData(datas, dataLabels, timedSeries, queryGroupBy);
 				chartOptions = this.getChartJsLineOptions(datas, queryGroupBy, dataLabels, timedSeries, chartTitle, additionalOptions);
 				this.setChartJsColorOptions(chartJsDataSets, dataColors);
-			} else if (this.type ==="stakedbarchart") {
+			} else if (this.type ==="barchart") {
 				chartJsType = 'bar';
 				chartJsDataSets = this.toChartJsData(datas, dataLabels, timedSeries, queryGroupBy);
+				chartOptions = this.getChartJsLineOptions(datas, queryGroupBy, dataLabels, timedSeries, chartTitle, additionalOptions);
+				this.setChartJsColorOptions(chartJsDataSets, dataColors, 1, 0.5);
+			} else if (this.type ==="stackedbarchart") {
+				chartJsType = 'bar';
+				chartJsDataSets = this.toChartJsData(datas, dataLabels, timedSeries, queryGroupBy);
+				//chartOptions = this.getChartJsLineOptions(datas, queryGroupBy, dataLabels, timedSeries, chartTitle, additionalOptions);
 				chartOptions = this.getStackedOptions(datas, queryGroupBy, dataLabels, timedSeries, chartTitle, additionalOptions);
-				this.setChartJsColorOptions(chartJsDataSets, dataColors);
+				this.setChartJsColorOptions(chartJsDataSets, dataColors, 1, 0.5);
 			} else if (this.type ==="polararea") {
 				chartJsType = 'polarArea';
 				chartJsDataSets = this.toChartJsData(datas, dataLabels, timedSeries, queryGroupBy);
@@ -259,10 +265,10 @@ export default {
                 graphChart.update("none");
 			}
 		},
-		setChartJsColorOptions: function(datasets, dataColors, opacity) {
+		setChartJsColorOptions: function(datasets, dataColors, opacity, bgOpacity) {
 			if(dataColors) {
 				var myColors = getColors(dataColors, datasets.length, opacity);
-				var myBgColors = getColors(dataColors, datasets.length, opacity?opacity*0.25:0.25);
+				var myBgColors = getColors(dataColors, datasets.length, bgOpacity?bgOpacity:(opacity?opacity*0.25:0.25));
                 for(var i = 0 ; i<datasets.length; i++) {
 					datasets[i].borderColor = myColors[i];
                     datasets[i].backgroundColor = myBgColors[i];
@@ -404,6 +410,9 @@ export default {
 					},
 					line : {
 						tension: 0
+					}, 
+					bar : {
+						borderWidth: 3
 					}
 				}
 			};
@@ -440,10 +449,18 @@ export default {
 
 
 		 getStackedOptions: function(datas, queryGroupBy, dataLabels, timedSeries, chartTitle, additionalOptions){
-			var options = this.getChartJsLineOptions(datas, dataQuery, dataLabels, timedSeries, additionalOptions)
-			options.scales.x.stacked = true;
-			options.scales.y.stacked = true;
-			return options;
+			var options = this.getChartJsLineOptions(datas, queryGroupBy, dataLabels, timedSeries, chartTitle, additionalOptions);
+			var stackedOptions = {				
+                scales : {
+                    x: {
+                        stacked: true
+                    },						
+					y: {
+						stacked: true
+					}
+                }
+            };
+			return this.mergeDeep(options, stackedOptions);
 		},
 
 
