@@ -119,6 +119,10 @@
                                       hint="Taille maximale : 500 Mo. Formats supportés : jpg, png, pdf. Plusieurs fichiers possibles. Lorem ipsum dolor sit amet, consectetur adipiscing."
                                       th:url="'@{/commons/upload}'" required object="movie" field="pictures"/>
 
+                <vu:dsfr-dialog title="Comment ça va ?" key="movie.released">
+                    Hello coucou
+                </vu:dsfr-dialog>
+
                 <vu:dsfr-dialog title="Comment ça va ?" componentId="dialog">
                     <vu:slot name="actions_slot">
                         <vu:dsfr-button label="Ok super" secondary/>

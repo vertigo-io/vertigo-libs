@@ -1,11 +1,12 @@
-<th:block th:fragment="dsfr-dialog(title, componentId, actions_slot, other_attrs)"
-          th:assert="${(title != null) and (name != componentId)}"
-          th:attr=" objectKey=${model.vContext['componentStates'].addComponentState(componentId)
-	                                                             .addPrimitive('opened', false)}"
+<th:block th:fragment="dsfr-dialog(title, componentId, key, actions_slot, other_attrs)"
+          th:assert="${(title != null) and !(key != null and componentId != null) and !(key == null and componentId == null)}"
 >
+    <th:block th:if="${componentId != null and key == null}"
+              th:attr="o=${model.vContext['componentStates'].addComponentState(componentId).addPrimitive('opened', false)}"/>
+
     <dsfr-modal th:title="${title}"
-                th:v-model:opened="|componentStates.__${componentId}__.opened|"
-                th:@close="|componentStates.${componentId}.opened = false|"
+                th:v-model:opened="${componentId != null ? 'componentStates.__${componentId}__.opened' : 'vueData.__${key}__'}"
+                th:@close="${componentId != null ? 'componentStates.__${componentId}__.opened = false' : 'vueData.__${key}__ = false'}"
                 th:attr="__${other_attrs}__">
         <vu:content></vu:content>
         <template #footer>
