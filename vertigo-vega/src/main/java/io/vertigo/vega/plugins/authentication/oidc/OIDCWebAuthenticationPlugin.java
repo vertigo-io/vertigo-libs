@@ -137,7 +137,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 	/** {@inheritDoc} */
 	@Override
 	public Optional<String> getRequestedUri(final HttpServletRequest httpRequest) {
-		final var additionalInfos = oidcClient.retreiveAdditionalInfos(URI.create(WebAuthenticationUtil.getRequestedUriWithQueryString(httpRequest)), httpRequest.getSession());
+		final var additionalInfos = oidcClient.retrieveAdditionalInfos(URI.create(WebAuthenticationUtil.getRequestedUriWithQueryString(httpRequest)), httpRequest.getSession());
 		return Optional.ofNullable((String) additionalInfos.get(REQUESTED_URI));
 	}
 
