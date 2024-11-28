@@ -57,6 +57,8 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 
 	private static final Logger LOG = LogManager.getLogger(OIDCWebAuthenticationPlugin.class);
 
+	private static final String REQUESTED_URI = "requestedUri";
+
 	private final OIDCClient oidcClient;
 
 	private final String[] requestedScopes;
@@ -135,7 +137,8 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 	/** {@inheritDoc} */
 	@Override
 	public Optional<String> getRequestedUri(final HttpServletRequest httpRequest) {
-		return oidcClient.getRequestedUri(URI.create(WebAuthenticationUtil.getRequestedUriWithQueryString(httpRequest)), httpRequest.getSession());
+		final var additionalInfos = oidcClient.retreiveAdditionalInfos(URI.create(WebAuthenticationUtil.getRequestedUriWithQueryString(httpRequest)), httpRequest.getSession());
+		return Optional.ofNullable((String) additionalInfos.get(REQUESTED_URI));
 	}
 
 	/** {@inheritDoc} */
@@ -169,10 +172,10 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 		final var localeOpt = securityManager.getCurrentUserSession().map(UserSession::getLocale);
 
 		final String loginUrl = oidcClient.getLoginUrl(
-				URI.create(WebAuthenticationUtil.resolveUrlRedirect(httpRequest)),
 				resolveCallbackUri(httpRequest),
 				httpRequest.getSession(false),
 				localeOpt,
+				Map.of(REQUESTED_URI, WebAuthenticationUtil.resolveUrlRedirect(httpRequest)),
 				requestedScopes);
 
 		try {
