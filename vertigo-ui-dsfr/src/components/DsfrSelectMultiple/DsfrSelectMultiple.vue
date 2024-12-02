@@ -327,5 +327,7 @@ let handleFocusOut = (event) => {
   --xl-block: 0;
   --ul-type: none;
   padding-left: 0;
+  overflow-y: scroll;
+  height: 300px;
 }
 </style>
