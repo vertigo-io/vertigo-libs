@@ -7251,16 +7251,16 @@ const tp = /* @__PURE__ */ ye(Pf, [["render", ep], ["__scopeId", "data-v-0be4e59
       p.value.contains($.target) || (i.value = !1);
     };
     return ($, V) => (s(), f(K, null, [
-      d("div", {
+      d("div", H({
         ref_key: "container",
         ref: p,
-        class: R(["fr-select-group", { [`fr-select-group--${B.value}`]: C.value !== "" }]),
+        class: ["fr-select-group", { [`fr-select-group--${B.value}`]: C.value !== "" }],
         onKeyup: V[13] || (V[13] = Y(
           //@ts-ignore
           (...z) => F(q) && F(q)(...z),
           ["tab"]
         ))
-      }, [
+      }, $.$attrs), [
         d("label", {
           class: "fr-label",
           for: $.id,
@@ -7274,9 +7274,9 @@ const tp = /* @__PURE__ */ ye(Pf, [["render", ep], ["__scopeId", "data-v-0be4e59
           ], !0),
           $.description ? (s(), f("span", gp, b($.description), 1)) : h("", !0)
         ], 8, vp),
-        d("div", H({
+        d("div", {
           id: $.id,
-          class: [{ [`fr-select--${B.value}`]: C.value !== "" }, "fr-input"],
+          class: R([{ [`fr-select--${B.value}`]: C.value !== "" }, "fr-input"]),
           onClick: V[0] || (V[0] = (z) => i.value = !i.value),
           onKeydown: [
             V[1] || (V[1] = Y(U((z) => i.value = !1, ["stop"]), ["esc"])),
@@ -7300,9 +7300,9 @@ const tp = /* @__PURE__ */ ye(Pf, [["render", ep], ["__scopeId", "data-v-0be4e59
           "aria-controls": `${$.id}_list`,
           "aria-expanded": i.value,
           "aria-required": $.required
-        }, $.$attrs), [
+        }, [
           d("p", null, b(S.value), 1)
-        ], 16, bp),
+        ], 42, bp),
         d("div", {
           id: `${$.id}_list`,
           ref_key: "collapse",
@@ -7380,7 +7380,7 @@ const tp = /* @__PURE__ */ ye(Pf, [["render", ep], ["__scopeId", "data-v-0be4e59
             ], 8, Cp))), 256))
           ])
         ], 42, hp)
-      ], 34),
+      ], 16),
       C.value ? (s(), f("p", {
         key: 0,
         id: `select-${B.value}-desc-${B.value}`,
@@ -7388,7 +7388,7 @@ const tp = /* @__PURE__ */ ye(Pf, [["render", ep], ["__scopeId", "data-v-0be4e59
       }, b(C.value), 11, Ep)) : h("", !0)
     ], 64));
   }
-}), Lp = /* @__PURE__ */ ye(Sp, [["__scopeId", "data-v-0efc3cf7"]]), Ap = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], Mp = ["id", "aria-labelledby", "onKeydown"], $p = {
+}), Lp = /* @__PURE__ */ ye(Sp, [["__scopeId", "data-v-0f44d71e"]]), Ap = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], Mp = ["id", "aria-labelledby", "onKeydown"], $p = {
   key: 0,
   class: "fr-label fr-mb-0"
 }, Fp = {

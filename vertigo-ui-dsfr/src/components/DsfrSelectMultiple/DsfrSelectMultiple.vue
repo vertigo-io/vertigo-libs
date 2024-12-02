@@ -207,6 +207,7 @@ let handleFocusOut = (event) => {
       class="fr-select-group"
       @keyup.tab="handleFocusOut"
       :class="{ [`fr-select-group--${messageType}`]: message !== ''}"
+      v-bind="$attrs"
   >
     <label
         class="fr-label"
@@ -248,7 +249,6 @@ let handleFocusOut = (event) => {
         :aria-controls="`${id}_list`"
         :aria-expanded="expanded"
         :aria-required="required"
-        v-bind="$attrs"
     >
       <p>{{ selectionDisplay }}</p>
     </div>
