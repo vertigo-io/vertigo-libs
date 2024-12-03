@@ -328,6 +328,6 @@ let handleFocusOut = (event) => {
   --ul-type: none;
   padding-left: 0;
   overflow-y: scroll;
-  height: 300px;
+  max-height: 300px;
 }
 </style>
