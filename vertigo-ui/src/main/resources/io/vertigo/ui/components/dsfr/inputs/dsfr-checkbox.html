@@ -1,9 +1,10 @@
 <th:block th:fragment="dsfr-checkbox-edit(object, field, label, required, input_attrs)" vu:alias="dsfr-checkbox"
           vu:selector="${viewMode=='edit'}"
           th:assert="${object} != null and ${field} != null"
-          th:with="myRequired=${required != null ? required : model.util.required(object + '.' + field)}">
+          th:with="myRequired=${required != null ? required : model.util.required(object + '.' + field)},
+                   myLabel=${label?:model.util.label(object + '.' + field)}">
     <vu:include-data object="${object}" field="${field}" modifiable/>
-    <dsfr-custom-checkbox th:label="${label}"
+    <dsfr-custom-checkbox th:label="${myLabel}"
                           th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
                           th::name="${model.util.contextKey(object, field, rowIndex)}"
                           th::required="${required}"
@@ -16,6 +17,7 @@
 
 
 <th:block th:fragment="dsfr-checkbox-read(object, field, label, input_attrs)" vu:alias="dsfr-checkbox"
+          th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
           vu:selector="${viewMode=='read'}">
     <vu:include-data object="${object}" field="${field}"/>
     <dsfr-custom-checkbox th:label="${label}"
