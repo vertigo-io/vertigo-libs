@@ -51,7 +51,7 @@ const dsfrIcon = computed(() => typeof props.icon === 'string' && props.icon.sta
       }"
       v-bind="$attrs"
   >
-    <slot></slot>
+    <slot>{{ label }}</slot>
   </a>
 </template>
 
