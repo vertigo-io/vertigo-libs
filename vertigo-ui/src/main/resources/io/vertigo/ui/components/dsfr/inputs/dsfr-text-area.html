@@ -1,6 +1,7 @@
 <th:block
         th:fragment="dsfr-text-area-edit(object, field, rowIndex, label, required, input_attrs)"
-        vu:alias="dsfr-text-area" vu:selector="${viewMode=='edit'}"
+        vu:alias="dsfr-text-area"
+        vu:selector="${viewMode=='edit' && (readonly==null || !readonly)}"
         th:with="myLabel=${label?:model.util.label(object + '.' + field)},
                  myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
         th:assert="${object} != null and ${field} != null">
@@ -20,7 +21,7 @@
 </th:block>
 <th:block
         th:fragment="dsfr-text-area-read(object, field, label, required, input_attrs)"
-        vu:alias="dsfr-text-area" vu:selector="${viewMode=='read'}"
+        vu:alias="dsfr-text-area" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}"
         th:assert="${object} != null and ${field} != null"
         th:with="myLabel=${label?:model.util.label(object + '.' + field)}">
     <vu:include-data object="${object}" field="${field}"/>

@@ -1,8 +1,8 @@
 <th:block
         th:fragment="dsfr-text-field-edit(object, field, rowIndex, label, suffix, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
-        vu:alias="dsfr-text-field" vu:selector="${viewMode=='edit'}"
+        vu:alias="dsfr-text-field" vu:selector="${viewMode=='edit' && (readonly==null || !readonly)}"
         th:with="myLabel=${label?:model.util.label(object + '.' + field)},
-	         myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
+	             myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
         th:assert="${object} != null and ${field} != null">
     <vu:include-data object="${object}" field="${field}" modifiable="true"/>
 
@@ -25,7 +25,7 @@
 
 <th:block
         th:fragment="dsfr-text-field-read(object, field, rowIndex, label, suffix, required, emptyValue, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
-        vu:alias="dsfr-text-field" vu:selector="${viewMode=='read'}" th:if="${modifiableTable==null}"
+        vu:alias="dsfr-text-field" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}" th:if="${modifiableTable==null}"
         th:assert="${object} != null and ${field} != null"
         th:with="mySuffix=${model.util.smartTypeUnit(object, field, suffix)},
 		         value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')},
@@ -43,7 +43,7 @@
 
 <th:block
         th:fragment="dsfr-text-field-read(object, field, rowIndex, label, suffix, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
-        vu:alias="dsfr-text-field" vu:selector="${viewMode=='read'}" th:if="${modifiableTable!=null}"
+        vu:alias="dsfr-text-field" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}" th:if="${modifiableTable!=null}"
         th:assert="${object} != null and ${field} != null"
         th:with="mySuffix=${model.util.smartTypeUnit(object, field, suffix)},
              useSuffix=${__${model.util.contextGet(object, field, rowIndex)}__!='' && mySuffix!='' && mySuffix!=null}">

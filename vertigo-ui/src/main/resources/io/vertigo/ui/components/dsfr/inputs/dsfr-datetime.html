@@ -1,5 +1,5 @@
 <th:block th:fragment="dsfr-datetime-edit(object, field, label, format, required, input_attrs)" vu:alias="dsfr-datetime"
-          vu:selector="${viewMode=='edit'}"
+          vu:selector="${viewMode=='edit' && (readonly==null || !readonly)}"
           th:with="myLabel=${modifiableTable!=null ? null : (label?:model.util.label(object + '.' + field)) },
       			   myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
           th:assert="${object} != null and ${field} != null">
@@ -19,7 +19,7 @@
 
 <th:block
         th:fragment="dsfr-datetime-read(object, field, label, format, required, input_attrs)"
-        vu:alias="dsfr-datetime" vu:selector="${viewMode=='read'}">
+        vu:alias="dsfr-datetime" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}">
     <vu:dsfr-text-field-read object="${object}"
                              field="${field}"
                              label="${label}"

@@ -63,9 +63,11 @@
             <h6>Global</h6>
             <vu:dsfr-grid cols="3" class="fr-grid-row--gutters">
 
-                <vu:dsfr-text-field :class="{ disabled: true && false || false }" object="movie" field="movId"/>
-                <vu:dsfr-text-field object="movie" field="title" emptyValue="Non renseignée"/>
-
+                <vu:dsfr-text-field :class="{ disabled: true && false || false }" readonly="true" object="movie" field="movId"/>
+                <th:block th:with="readonly=true">
+                    <vu:dsfr-text-field object="movie" field="title" emptyValue="Non renseignée"/>
+                </th:block>
+                <vu:dsfr-text-field object="movie" field="title" th:with="readonly=true" emptyValue="Non renseignée"/>
 
                 <vu:dsfr-text-field object="movie" field="year" debounce="500" hint="Debouncing 500ms" required>
                     <vu:slot name="after_label_slot">

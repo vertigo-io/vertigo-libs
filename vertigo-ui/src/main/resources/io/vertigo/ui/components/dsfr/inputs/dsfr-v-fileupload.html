@@ -1,6 +1,7 @@
 <th:block
         th:fragment="dsfr-v-fileupload-edit(url, downloadUrl, key, object, field, label, hint, required, accept, multiple, maxFiles, callbackOnDelete, label_attrs, uploader_attrs)"
-        vu:alias="dsfr-v-fileupload" vu:selector="${viewMode=='edit'}"
+        vu:alias="dsfr-v-fileupload"
+        vu:selector="${viewMode=='edit' && (readonly==null || !readonly)}"
         th:assert="((${key} != null and ${label} != null) or (${object} != null and ${field} != null)) and ${url} != null"
         th:with="object=${object?:key},
 	         myComponentId=${model.util.generateComponentUID('uploader', object, field, rowIndex)},
@@ -77,7 +78,7 @@
 
 <th:block
         th:fragment="dsfr-v-fileupload-read(url, downloadUrl, key, object, field, label, hint, required, accept, multiple, maxFiles, callbackOnDelete, label_attrs, uploader_attrs)"
-        vu:alias="dsfr-v-fileupload" vu:selector="${viewMode=='read'}"
+        vu:alias="dsfr-v-fileupload" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}"
         th:assert="(${key} != null or (${object} != null and ${field} != null)) and ${url} != null">
     <vu:dsfr-v-fileupload-edit th:with="readonly=true"/>
 </th:block>
@@ -100,6 +101,6 @@
     </div>
 </th:block>
 <th:block th:fragment="dsfr-v-fileupload-dropzone-read(uploaderRef, dropzone_attrs)"
-          vu:alias="dsfr-v-fileupload-dropzone" vu:selector="${viewMode=='read'}">
+          vu:alias="dsfr-v-fileupload-dropzone" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}">
     <vu:content/>
 </th:block>

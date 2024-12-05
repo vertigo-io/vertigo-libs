@@ -1,4 +1,5 @@
-<th:block th:fragment="dsfr-select-multiple-edit(object, field, list, rowIndex, label, description, valueField, labelField, filterFunction, required, input_attrs)" vu:alias="dsfr-select-multiple" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="dsfr-select-multiple-edit(object, field, list, rowIndex, label, description, valueField, labelField, filterFunction, required, input_attrs)" vu:alias="dsfr-select-multiple"
+          vu:selector="${viewMode=='edit' && (readonly==null || !readonly)}"
           th:assert="${object} != null and ${field} != null and ${list} != null"
           th:with="myComponentId='select_m_'+${object}+'_'+${field},
 	  			   myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
@@ -27,7 +28,7 @@
 
 <th:block th:fragment="dsfr-select-multiple-read(object,field, rowIndex, label, list, valueField, labelField, emtpyValue, filterFunction, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
           th:if="${modifiableTable==null}"
-          vu:alias="dsfr-select-multiple" vu:selector="${viewMode=='read'}"
+          vu:alias="dsfr-select-multiple" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}"
           th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
                    myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)},
           		   myEmptyValue=${emptyValue?:'Non renseigné'},
@@ -43,7 +44,7 @@
 
 <th:block th:fragment="dsfr-select-multiple-read(object, field, rowIndex, label, list, valueField, labelField, filterFunction, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
           th:if="${modifiableTable!=null}"
-          vu:alias="dsfr-select-multiple" vu:selector="${viewMode=='read'}"
+          vu:alias="dsfr-select-multiple" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}"
           th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}">
     <vu:include-data object="${object}" field="${field}"/>
     <vu:include-data object="${list}" field="${myValueField}"/>

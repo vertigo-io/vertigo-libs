@@ -1,5 +1,6 @@
 <th:block th:fragment="dsfr-slider-edit(object, field, label, min, max, step, required, input_attrs)"
-		  vu:alias="dsfr-slider" vu:selector="${viewMode=='edit'}"
+		  vu:alias="dsfr-slider"
+		  vu:selector="${viewMode=='edit' && (readonly==null || !readonly)}"
 		  th:assert="${object} != null and ${field} != null"
 		  th:with="fieldPath=|${object}.${field}|,
 	  			   myLabel=${modifiableTable!=null ? null : (label?:model.util.label(object + '.' + field))},
@@ -23,7 +24,7 @@
 </th:block>
 
 <th:block th:fragment="dsfr-slider-read(object, field, label, min, max, step, required, input_attrs)"
-	vu:alias="dsfr-slider" vu:selector="${viewMode=='read'}"
+	vu:alias="dsfr-slider" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}"
 	th:assert="${object} != null and ${field} != null" >
 	<vu:dsfr-text-field-read object="${object}" field="${field}" label="${label}" input_attrs="${input_attrs}" />
 </th:block>
