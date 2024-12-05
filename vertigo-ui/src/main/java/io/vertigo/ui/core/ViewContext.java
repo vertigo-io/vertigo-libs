@@ -423,7 +423,7 @@ public final class ViewContext implements Serializable {
 	public <O extends DataObject> DtList<O> readDtListModifiable(final ViewContextKey<O> contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
 		checkDtListErrors(contextKey, uiMessageStack);
 		// ---
-		final DtList<O> validatedList = ((BasicUiListModifiable) getUiListModifiable(contextKey)).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
+		final DtList<O> validatedList = getUiListModifiable(contextKey).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
 		if (uiMessageStack.hasErrors()) {
 			throw new ValidationUserException();
 		}
@@ -452,7 +452,7 @@ public final class ViewContext implements Serializable {
 	 * @param code Code
 	 */
 	public <E extends Entity> ViewContext publishMdl(final ViewContextKey<E> contextKey, final DataDefinition entityDefinition, final String code) {
-		put(contextKey, new UiMdList<E>(new DtListURIForMasterData(entityDefinition, code)));
+		put(contextKey, new UiMdList<>(new DtListURIForMasterData(entityDefinition, code)));
 		return this;
 	}
 
