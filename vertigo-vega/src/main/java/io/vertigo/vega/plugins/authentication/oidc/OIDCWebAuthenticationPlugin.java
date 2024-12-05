@@ -18,8 +18,10 @@
 package io.vertigo.vega.plugins.authentication.oidc;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -171,11 +173,14 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 	public void doRedirectToSso(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
 		final var localeOpt = securityManager.getCurrentUserSession().map(UserSession::getLocale);
 
+		final Map<String, Serializable> additionalInfos = new HashMap<>();
+		additionalInfos.put(REQUESTED_URI, WebAuthenticationUtil.resolveUrlRedirect(httpRequest));
+
 		final String loginUrl = oidcClient.getLoginUrl(
 				resolveCallbackUri(httpRequest),
 				httpRequest.getSession(false),
 				localeOpt,
-				Map.of(REQUESTED_URI, WebAuthenticationUtil.resolveUrlRedirect(httpRequest)),
+				additionalInfos,
 				requestedScopes);
 
 		try {
