@@ -39,6 +39,7 @@ import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.connectors.oidc.OIDCClient;
 import io.vertigo.connectors.oidc.OIDCDeploymentConnector;
+import io.vertigo.connectors.oidc.state.OIDCSessionStateStorage;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
@@ -49,6 +50,7 @@ import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Base authentication handler for OpenId Connect.
@@ -139,17 +141,24 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 	/** {@inheritDoc} */
 	@Override
 	public Optional<String> getRequestedUri(final HttpServletRequest httpRequest) {
-		final var additionalInfos = oidcClient.retrieveAdditionalInfos(URI.create(WebAuthenticationUtil.getRequestedUriWithQueryString(httpRequest)), httpRequest.getSession());
+		final var additionalInfos = oidcClient.retrieveAdditionalInfos(
+				URI.create(WebAuthenticationUtil.getRequestedUriWithQueryString(httpRequest)),
+				OIDCSessionStateStorage.of(httpRequest.getSession()));
+
 		return Optional.ofNullable((String) additionalInfos.get(REQUESTED_URI));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public AuthenticationResult<OIDCTokens> doHandleCallback(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+		final HttpSession session = httpRequest.getSession();
+
 		final var oidcTokens = oidcClient.parseResponse(
 				URI.create(WebAuthenticationUtil.getRequestedUriWithQueryString(httpRequest)),
 				resolveCallbackUri(httpRequest),
-				httpRequest.getSession());
+				OIDCSessionStateStorage.of(session));
+
+		OIDCSessionStateStorage.storeIdTokenInSession(session, oidcTokens.getIDTokenString()); // store ID token in session, keycloak needs it for logout with redirect
 
 		LOG.info("User sucessfully authenticated with OIDC provider");
 
@@ -178,7 +187,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 
 		final String loginUrl = oidcClient.getLoginUrl(
 				resolveCallbackUri(httpRequest),
-				httpRequest.getSession(false),
+				OIDCSessionStateStorage.of(httpRequest.getSession(false)),
 				localeOpt,
 				additionalInfos,
 				requestedScopes);
@@ -203,9 +212,12 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 
 		final var localeOpt = securityManager.getCurrentUserSession().map(UserSession::getLocale);
 
+		final var idTokenOpt = Optional.ofNullable(httpRequest.getSession(false))
+				.map(OIDCSessionStateStorage::retrieveIdTokenFromSession);
+
 		final String ssoLogoutUrl = oidcClient.getLogoutUrl(
 				redirectUrlOpt.map(url -> resolveExternalUrl(httpRequest) + url).map(URI::create),
-				Optional.ofNullable(httpRequest.getSession(false)),
+				idTokenOpt,
 				localeOpt);
 
 		try {
