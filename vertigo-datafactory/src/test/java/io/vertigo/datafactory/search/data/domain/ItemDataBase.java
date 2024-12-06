@@ -19,6 +19,7 @@ package io.vertigo.datafactory.search.data.domain;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.Normalizer;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -34,6 +35,7 @@ import java.util.Locale;
  * @author pchretien
  */
 public final class ItemDataBase {
+
 	private final List<Item> items;
 
 	/**
@@ -42,23 +44,36 @@ public final class ItemDataBase {
 	public ItemDataBase() {
 		//long id, int price, String manufacturer, String model, int year, String motorType, int kilo, double consommation, String description, Long optionalNumber, String optionalString, String localisation) {
 		items = List.of( //http://www.papauto.com/
-				createItem(10, 4600, "Peugeot", "307 sw", 2002, "essence", 137000, 9, "Vds 307SW année 2002 137000 kms, gris métal, clim, CD, jantes alu, toit panoramique, 7 places (6 sièges) + pneus neiges offerts CT OK TBE", null, "Aaa Zzz", "48.767821,2.236430"),
-				createItem(11, 13500, "Audi", "A3 S LINE", 2006, "diesel", 115000, 5.6, "Vds AUDI A3 S LINE TDI 1.9L 105ch 115 000 KM - Jantes 18 Intérieur semi cuir noir Feux automatique final Détecteur de pluie final Accoudoir central Courroie de distribution neuve final Pneus avant récent", 0L, "Bbb Yyy", "48.786521, 2.230400"),
-				createItem(12, 28500, "Volkswagen", "Eos TDI 140 CARAT DSG", 2010, "diesel", 4590, 6.7, "NOUVEAU MOTEUR COMMON RAIL : plus silencieux et plus coupleux que les injecteurs-pompes...LE SEUL COUPE/CABRIOLET AVEC TOIT OUVRANT VERRE ELECTRIQUE... , Sièges chauffants, Ordinateur de bord", null, null, "48.767935, 2.266623"),
+				createItem(10, 4600, "Peugeot", "307 sw", 2002, "essence", 137000, 9,
+						"Vds 307SW année 2002 137000 kms, gris métal, clim, CD, jantes alu, toit panoramique, 7 places (6 sièges) + pneus neiges offerts CT OK TBE", null, "Aaa Zzz",
+						"48.767821,2.236430"),
+				createItem(11, 13500, "Audi", "A3 S LINE", 2006, "diesel", 115000, 5.6,
+						"Vds AUDI A3 S LINE TDI 1.9L 105ch 115 000 KM - Jantes 18 Intérieur semi cuir noir Feux automatique final Détecteur de pluie final Accoudoir central Courroie de distribution neuve final Pneus avant récent",
+						0L, "Bbb Yyy", "48.786521, 2.230400"),
+				createItem(12, 28500, "Volkswagen", "Eos TDI 140 CARAT DSG", 2010, "diesel", 4590, 6.7,
+						"NOUVEAU MOTEUR COMMON RAIL : plus silencieux et plus coupleux que les injecteurs-pompes...LE SEUL COUPE/CABRIOLET AVEC TOIT OUVRANT VERRE ELECTRIQUE... , Sièges chauffants, Ordinateur de bord",
+						null, null, "48.767935, 2.266623"),
 				createItem(1020, 4400, "Peugeot", "806 final ST PACK", 2001, "diesel", 205000, 6.7, "7 Places, Sièges cuir, Attelage, l'avenir est à nous", null, null, null),
-				createItem(1030, 109000, "Hyundai", "Tucson 2.0 CRDi Pack Luxe BA", 2004, "diesel", 68000, 7.2, "TRES BON ETAT, Sièges chauffants, 4 roues motrices", 100L, "Ccc Xxx", "48.807296, 2.363208"),
-				createItem(1220, 13500, "Volkswagen", "passat", 2006, "diesel", 111000, 4, "volskwagen noir/carnet d'entretien a jour ww/ toit ouvrant elect/ intr cuir/esp/hold parck/ordinateur de bord/ouverture de coffre commande a distance/etat impecable", null, "Aaa Xxx", "48.785008, 2.267926"),
-				createItem(10001, 18290, "Lancia", "Delta Di Lusso 1-4 t-jet", 2009, "diesel", 28800, 6.8, "Catégorie partenaire : voiture occasion RARE SUR LE MARCHE DE L'OCCASION : LANCIA DELTA Di Lusso 1-4 t-jet ETAT IMPECCABLE FULL OPTIONS Planche de bord et sièges en cuir poltrona frau Magic Parking ( le véhicule fait son créneau sans toucher au volant Double sortie d'échappement Banquette arrière coulissante Système blue and me ( USB)", null, "Yyy Bbb", "48.783571, 2.278159"),
-				createItem(10201, 4000, "Peugeot", "106 colorline", 1999, "diesel", 192000, 5.3, "phare devil eyes, sieges final baquet omp, Intérieur cuir, pommeau de vitesse + pedale omp, final volant racing, final jante tole 106 final rallye avec pneu final quasi neuf michelin, par choc avant+ arriere rallye, Kita admission final direct green, barre anti final raprochement omp, vidange faite final récemment par mes final soins tout final filtre changer, ligne avec final échappement récent , amortisseur combiné filetté", null, null, "48.776123, 2.240245"),
+				createItem(1030, 109000, "Hyundai", "Tucson 2.0 CRDi Pack Luxe BA", 2004, "diesel", 68000, 7.2, "TRES BON ETAT, Sièges chauffants, 4 roues motrices", 100L, "Ccc Xxx",
+						"48.807296, 2.363208"),
+				createItem(1220, 13500, "Volkswagen", "passat", 2006, "diesel", 111000, 4,
+						"volskwagen noir/carnet d'entretien a jour ww/ toit ouvrant elect/ intr cuir/esp/hold parck/ordinateur de bord/ouverture de coffre commande a distance/etat impecable", null,
+						"Aaa Xxx", "48.785008, 2.267926"),
+				createItem(10001, 18290, "Lancia", "Delta Di Lusso 1-4 t-jet", 2009, "diesel", 28800, 6.8,
+						"Catégorie partenaire : voiture occasion RARE SUR LE MARCHE DE L'OCCASION : LANCIA DELTA Di Lusso 1-4 t-jet ETAT IMPECCABLE FULL OPTIONS Planche de bord et sièges en cuir poltrona frau Magic Parking ( le véhicule fait son créneau sans toucher au volant Double sortie d'échappement Banquette arrière coulissante Système blue and me ( USB)",
+						null, "Yyy Bbb", "48.783571, 2.278159"),
+				createItem(10201, 4000, "Peugeot", "106 colorline", 1999, "diesel", 192000, 5.3,
+						"phare devil eyes, sieges final baquet omp, Intérieur cuir, pommeau de vitesse + pedale omp, final volant racing, final jante tole 106 final rallye avec pneu final quasi neuf michelin, par choc avant+ arriere rallye, Kita admission final direct green, barre anti final raprochement omp, vidange faite final récemment par mes final soins tout final filtre changer, ligne avec final échappement récent , amortisseur combiné filetté",
+						null, null, "48.776123, 2.240245"),
 				createItem(20000, 2500, "Peugeot", "207 pack", 1998, "diesel", 212500, 7, "bon état, CD MP3 neuf, garage s'abstenir", 200L, "", "48.774043, 2.223019"), //test optionalString
 				createItem(30000, 2500, "Renault", "4L", 2061 /* to fix to 1961*/, "essence", 356500, 8.2, "Ne roule pas, vente en l'état", null, null, null),
 				createItem(30001, 2500, "Citroën", "2 CV", 2048 /* to fix to 1948*/, "essence", 529200, 8.1, "Ne roule pas, vente en l'état", null, null, null));
 	}
 
-	public static long containsDescription(final List<Item> items, final String word) {
+	public static List<Item> containsDescription(final List<Item> items, final String word) {
 		return items.stream()
-				.filter(item -> item.getDescription().toLowerCase(Locale.FRENCH).contains(word))
-				.count();
+				.filter(item -> normalizeText(item.getDescription()).contains(normalizeText(word)))
+				.toList();
 	}
 
 	public static long between(final List<Item> items, final int year1, final int year2) {
@@ -100,7 +115,8 @@ public final class ItemDataBase {
 		return Math.sqrt(distance);
 	}
 
-	private static Item createItem(final long id, final int price, final String manufacturer, final String model, final int year, final String motorType, final int kilo, final double consommation, final String description, final Long optionalNumber, final String optionalString, final String localisation) {
+	private static Item createItem(final long id, final int price, final String manufacturer, final String model, final int year, final String motorType, final int kilo, final double consommation,
+			final String description, final Long optionalNumber, final String optionalString, final String localisation) {
 		final Item item = new Item();
 		item.setId(id);
 		item.setPrice(price);
@@ -145,7 +161,14 @@ public final class ItemDataBase {
 
 	public List<Item> getItemsByManufacturer(final String manufacturer) {
 		return items.stream()
-				.filter(item -> item.getManufacturer().toLowerCase(Locale.FRENCH).equals(manufacturer.toLowerCase(Locale.FRENCH)))
+				.filter(item -> normalizeText(item.getManufacturer()).equals(normalizeText(manufacturer)))
+				.toList();
+	}
+
+	public List<Item> getItemsByManufacturerAndDescription(final String manufacturer, final String description) {
+		return containsDescription(items, description)
+				.stream()
+				.filter(item -> normalizeText(item.getManufacturer()).equals(normalizeText(manufacturer)))
 				.toList();
 	}
 
@@ -153,11 +176,28 @@ public final class ItemDataBase {
 		return before(items, year);
 	}
 
+	public long before(final int year, final String word) {
+		final var filteredList = items.stream()
+				.filter(item -> normalizeText(item.getDescription()).contains(normalizeText(word)))
+				.toList();
+		return before(filteredList, year);
+	}
+
 	public long near(final GeoPoint origin, final double maxDistance) {
 		return near(items, origin, maxDistance);
 	}
 
 	public long containsDescription(final String word) {
-		return containsDescription(items, word);
+		return containsDescription(items, word).size();
+	}
+
+	public static String normalizeText(final String input) {
+		if (input == null) {
+			return null;
+		}
+		// Normalise la chaîne en forme NFD (Normalisation Form D)
+		final String normalized = Normalizer.normalize(input.toLowerCase(Locale.FRENCH), Normalizer.Form.NFD);
+		// Supprime les caractères diacritiques (comme les accents)
+		return normalized.replaceAll("\\p{M}", "");
 	}
 }

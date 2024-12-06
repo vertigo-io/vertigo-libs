@@ -134,7 +134,7 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 			final Map<I, Map<DataField, String>> resultHighlights) {
 		final Map<FacetValue, DtList<I>> resultCluster = new LinkedHashMap<>();
 		final FacetDefinition facetDefinition = searchQuery.getClusteringFacetDefinition();
-		final Aggregation facetAggregation = queryResponse.getAggregations().get(facetDefinition.getName());
+		final Aggregation facetAggregation = obtainAggregation(queryResponse, facetDefinition.getName());
 		if (facetDefinition.isRangeFacet()) {
 			//Cas des facettes par 'range'
 			final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) facetAggregation;
