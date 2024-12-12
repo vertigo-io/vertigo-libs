@@ -2,6 +2,7 @@
           th:with="smallClass=${(small!=null && small)?'fr-alert--sm':''}, pClass=${(small!=null && small)?'':'fr-alert__title'}">
     <div v-if="uiMessageStack.globalErrors && uiMessageStack.globalErrors.length > 0"
          th:classappend="${class}"
+         role="alert"
          th:class="|fr-alert fr-alert--error ${smallClass}|"
          v-cloak
     >
@@ -9,6 +10,7 @@
     </div>
     <div v-if="uiMessageStack.globalWarnings && uiMessageStack.globalWarnings.length > 0"
          th:classappend="${class}"
+         role="status"
          th:class="|fr-alert fr-alert--warning ${smallClass}|"
          v-cloak
     >
@@ -16,6 +18,7 @@
     </div>
     <div v-if="uiMessageStack.globalInfos && uiMessageStack.globalInfos.length > 0"
          th:classappend="${class}"
+         role="status"
          th:class="|fr-alert fr-alert--info ${smallClass}|"
          v-cloak
     >
@@ -23,6 +26,7 @@
     </div>
     <div v-if="uiMessageStack.globalSuccess && uiMessageStack.globalSuccess.length > 0"
          th:classappend="${class}"
+         role="status"
          th:class="|fr-alert fr-alert--success ${smallClass}|"
          v-cloak
     >
