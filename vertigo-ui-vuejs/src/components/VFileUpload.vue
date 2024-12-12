@@ -16,9 +16,9 @@
                             <span v-if="file.status === 'IN_PROGRESS'">{{ $vui.i18n().uploader.progress }} : {{ (file.progress * 100).toFixed() }} %</span>
                             <span v-if="file.status === 'IN_PROGRESS' && file.estimated != null">{{ $vui.i18n().uploader.estimated }} : {{ (file.estimated).toFixed() }} s</span>
                             
-                            <button v-if="file.status === 'OK'" @click.prevent="downloadFile(file)">
+                            <a v-if="file.status === 'OK'" @click="downloadFile(file)" :href="downloadUrl + file.uri">
                                 {{ $vui.i18n().uploader.download }}
-                            </button>
+                            </a>
                             <button v-if="file.status === 'IN_PROGRESS'" @click.prevent="abortUpload(file)">
                                 {{ $vui.i18n().uploader.abort }}
                             </button>
@@ -54,6 +54,7 @@ export default {
         fileInfoUris: Array,
         fieldName: String,
         url : String,
+        downloadUrl: String,
         accept: String,
         multiple: { type : Boolean, default : true  },
         maxFiles: Number,

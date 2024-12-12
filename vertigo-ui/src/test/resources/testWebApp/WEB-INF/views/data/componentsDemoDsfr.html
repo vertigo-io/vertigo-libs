@@ -122,6 +122,7 @@
 
                 <vu:dsfr-v-fileupload label="Movie pictures"
                                       hint="Taille maximale : 500 Mo. Formats supportés : jpg, png, pdf. Plusieurs fichiers possibles. Lorem ipsum dolor sit amet, consectetur adipiscing."
+                                      @download-file="(uri) => console.log('Downloading ', uri)"
                                       th:url="'@{/commons/upload}'" required object="movie" field="pictures"/>
 
                 <vu:dsfr-dialog title="Comment ça va ?" componentId="dialog">

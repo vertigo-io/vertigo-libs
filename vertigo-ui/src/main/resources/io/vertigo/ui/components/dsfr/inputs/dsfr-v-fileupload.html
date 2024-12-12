@@ -33,14 +33,14 @@
                 th:callback-on-delete="${callbackOnDelete}"
                 th:v-bind:file-info-uris="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|"
                 th:@update:file-info-uris="|(newFileInfoUris) => ${model.util.vueDataKey(object, field, rowIndex)} = vueDataToObject(newFileInfoUris)|"
-                th:@download-file="|(fileUri) => goTo('${downloadUrl}' + fileUri)|"
+                th:download-url="${downloadUrl}"
                 th:attr="__${uploader_attrs}__">
 
             <template #files="slotProps">
                 <div v-for="file in slotProps.files" class="file">
                     <div :class="{'fr-message--error' : file.status === 'ERROR'}">
-                        <a v-if="file.status === 'OK'" href="#" @click.prevent="slotProps.downloadFile(file)">{{
-                            file.name }}</a>
+                        <a v-if="file.status === 'OK'" th::href="|'${downloadUrl}' + file.fileUri|" @click="slotProps.downloadFile(file)">
+                            {{ file.name }}</a>
                         <span v-if="file.status !== 'OK'">{{ file.name }}<template v-if="file.errorMessage"> ({{ file.errorMessage }})</template></span>
                     </div>
                     <div class="fr-hint-text">
@@ -49,17 +49,17 @@
                             -
                             <v-icon name="ri-loader-4-line" scale="0.8" animation="spin"></v-icon>
                             {{ (file.progress * 100).toFixed() }} % -
-                            <a href="#" @click.prevent="slotProps.abortUpload(file)">
+                            <button @click.prevent="slotProps.abortUpload(file)">
                                 <v-icon name="ri-close-line" scale="0.8"></v-icon>
                                 {{ $vui.i18n().uploader.abort }}
-                            </a>
+                            </button>
                         </template>
                         <template v-if="!slotProps.readonly && file.status != 'IN_PROGRESS'">
                             -
-                            <a href="#" @click.prevent="slotProps.removeFile(file)">
+                            <button @click.prevent="slotProps.removeFile(file)">
                                 <v-icon name="ri-delete-bin-7-line"></v-icon>
                                 {{ $vui.i18n().uploader.remove }}
-                            </a>
+                            </button>
                         </template>
                     </div>
                 </div>
