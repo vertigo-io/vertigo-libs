@@ -54,6 +54,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -141,6 +142,8 @@ public class ComponentsDemoDsfrController extends AbstractVSpringMvcController {
 		myMovie.setPictures(fileUris2); //TODO
 		mySubList.get(0).setMainPicture(fileInfoTmp1.getURI());
 		myMovie.setYear(2024);
+		myMovie.setReleased(LocalDate.now());
+		myMovie.setLastModified(Instant.now());
 
 		viewContext
 				.publishDto(movieKey, myMovie)

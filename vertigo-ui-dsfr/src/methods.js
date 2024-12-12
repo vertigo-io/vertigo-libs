@@ -1,4 +1,29 @@
+import { format, parse } from 'date-fns'
+
 export default {
+    dsfrDecodeDate: function (value, formatDate) {
+        if (typeof value !== "string" || value === "" ) {
+            return value;
+        }
+        const regex = /^\d{4}-\d{2}-\d{2}$/;
+        if (regex.test(value)) {
+            return value;
+        }
+
+        const date = parse(value, formatDate, new Date());
+        return format(date, 'yyyy-MM-dd');
+    },
+    dsfrDecodeDateTime: function (value, formatDate) {
+        if (value === "") {
+            return value;
+        }
+        const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
+        if (regex.test(value)) {
+            return value;
+        }
+        const date = parse(value, formatDate, new Date());
+        return format(date, "yyyy-MM-dd'T'HH:mm");
+    },
     _searchAndFilterList: function (list, valueField, labelField, filterFunction, searchValue) {
         let rawList = this.$data.vueData[list];
         if (filterFunction) {

@@ -87,8 +87,11 @@
                 <vu:dsfr-grid-cell col="lg-8">
                     <vu:dsfr-text-area object="movie" field="title"/>
                 </vu:dsfr-grid-cell>
+
                 <vu:dsfr-date object="movie" field="released"/>
+                <input type="datetime-local" value="" id="toto">
                 <vu:dsfr-datetime object="movie" field="lastModified"/>
+
                 <vu:autocomplete object="movie" field="movId" list="moviesMdl" minQueryLength="2"/>
                 <vu:dsfr-radio object="movie" field="movId" list="movies" layout="horizontal" valueField="movId"
                                labelField="movId"/>
@@ -120,10 +123,6 @@
                 <vu:dsfr-v-fileupload label="Movie pictures"
                                       hint="Taille maximale : 500 Mo. Formats supportés : jpg, png, pdf. Plusieurs fichiers possibles. Lorem ipsum dolor sit amet, consectetur adipiscing."
                                       th:url="'@{/commons/upload}'" required object="movie" field="pictures"/>
-
-                <vu:dsfr-dialog title="Comment ça va ?" key="movie.released">
-                    Hello coucou
-                </vu:dsfr-dialog>
 
                 <vu:dsfr-dialog title="Comment ça va ?" componentId="dialog">
                     <vu:slot name="actions_slot">
