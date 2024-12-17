@@ -1,10 +1,10 @@
-<th:block th:fragment="dsfr-dialog(title, componentId, key, actions_slot, other_attrs)"
-          th:assert="${(title != null) and !(key != null and componentId != null) and !(key == null and componentId == null)}"
+<th:block th:fragment="dsfr-dialog(title, v-title, componentId, key, actions_slot, other_attrs)"
+          th:assert="${(title != null or vTitle != null) and !(key != null and componentId != null) and !(key == null and componentId == null)}"
 >
     <th:block th:if="${componentId != null and key == null}"
               th:attr="o=${model.vContext['componentStates'].addComponentState(componentId).addPrimitive('opened', false)}"/>
 
-    <dsfr-modal th:title="${title}"
+    <dsfr-modal th:title="${vTitle==null ? (title?:'') :''}" th::title="${vTitle?:''}"
                 th:v-model:opened="${componentId != null ? 'componentStates.__${componentId}__.opened' : 'vueData.__${key}__'}"
                 th:@close="${componentId != null ? 'componentStates.__${componentId}__.opened = false' : 'vueData.__${key}__ = false'}"
                 th:attr="__${other_attrs}__">
