@@ -23,6 +23,7 @@
         <v-file-upload
                 th:input-id="|${myComponentId}__input|"
                 th::readonly="${readonly?:false}"
+                th:required="${myRequired}"
                 th::aria-describedby="|hasFieldsError('${object}', '${field}', ${rowIndex}) ? '${myComponentId}__desc' : undefined|"
                 th:url="${url}"
                 field-name="file"
