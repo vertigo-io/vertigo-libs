@@ -49,7 +49,7 @@
             <h6>Test grid</h6>
             <vu:dsfr-grid cols="3" class="fr-grid-row--gutters">
                 <template v-if="true">
-                    <vu:dsfr-text-field object="movie" field="title"/>
+                    <vu:dsfr-text-field object="movie" label-visible="false" field="title"/>
                 </template>
                 <template v-if="false">
                     <vu:dsfr-text-field object="movie" field="title"/>
@@ -125,7 +125,7 @@
                                       @download-file="(uri) => console.log('Downloading ', uri)"
                                       th:url="'@{/commons/upload}'" required object="movie" field="pictures"/>
 
-                <vu:dsfr-dialog title="Comment ça va ?" componentId="dialog">
+                <vu:dsfr-dialog v-title="vueData.movie.title" componentId="dialog">
                     <vu:slot name="actions_slot">
                         <vu:dsfr-button label="Ok super" secondary/>
                         <vu:dsfr-button label="Ah oui ?" primary @click="componentStates.dialog.opened = false"/>
