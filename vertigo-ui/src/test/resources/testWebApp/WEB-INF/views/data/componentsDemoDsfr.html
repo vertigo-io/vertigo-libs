@@ -63,7 +63,8 @@
             <h6>Global</h6>
             <vu:dsfr-grid cols="3" class="fr-grid-row--gutters">
 
-                <vu:dsfr-text-field :class="{ disabled: true && false || false }" readonly="true" object="movie" field="movId"/>
+                <vu:dsfr-text-field :class="{ disabled: true && false || false }" readonly="true" object="movie"
+                                    field="movId"/>
                 <th:block th:with="readonly=true">
                     <vu:dsfr-text-field object="movie" field="title" emptyValue="Non renseignée"/>
                 </th:block>
@@ -134,12 +135,15 @@
                         C’est une super modale
                     </p>
                 </vu:dsfr-dialog>
-                <dsfr-button @click="componentStates.dialog.opened = true" label="Ouvre-moi" secondary type="button"></dsfr-button>
+                <dsfr-button @click="componentStates.dialog.opened = true" label="Ouvre-moi" secondary
+                             type="button"></dsfr-button>
 
                 <h2>Tooltip</h2>
 
                 <vu:dsfr-grid-cell class="q-gutter-md">
-                    <dsfr-button-tooltip @click="componentStates.dialog.opened = true" label="Ouvre-moi" secondary type="button">Ouvre la modale juste normal tqt</dsfr-button-tooltip>
+                    <dsfr-button-tooltip @click="componentStates.dialog.opened = true" label="Ouvre-moi" secondary
+                                         type="button">Ouvre la modale juste normal tqt
+                    </dsfr-button-tooltip>
 
                     <dsfr-button icon="fr-icon-arrow-right-line" icon-only></dsfr-button>
                     <dsfr-button-tooltip icon="fr-icon-arrow-right-line" icon-only>Icône seulement</dsfr-button-tooltip>
@@ -151,10 +155,12 @@
                     <dsfr-link th:href="@{/}" size="sm">Petit lien</dsfr-link>
                     <dsfr-link th:href="@{/}" as-button size="sm">Petit lien</dsfr-link>
                     <dsfr-link-tooltip th:href="@{/}" label="Ceci est un lien">Lien</dsfr-link-tooltip>
-                    <dsfr-link-tooltip as-button tertiary th:href="@{/}" label="Ceci est un lien">Bouton (lien)</dsfr-link-tooltip>
+                    <dsfr-link-tooltip as-button tertiary th:href="@{/}" label="Ceci est un lien">Bouton (lien)
+                    </dsfr-link-tooltip>
 
                     <p>
-                        Lorem ipsum doleret <dsfr-link-tooltip inline th:href="@{/}" label="ispum demso">ipsum demso</dsfr-link-tooltip>
+                        Lorem ipsum doleret
+                        <dsfr-link-tooltip inline th:href="@{/}" label="ispum demso">ipsum demso</dsfr-link-tooltip>
                     </p>
 
                     <dsfr-link th:href="@{/dossier/eleve/candidatures/}" as-button secondary disabled>
@@ -237,6 +243,11 @@
                 <vu:dsfr-text-field class="" object="movie" field="movId"/>
             </div>
         </div>
+
+        <vu:dsfr-button-submit-confirm componentId="com"
+                                       confirmMessage="Coucou la confirmation"
+                                       action="@{/}"
+                                       label="Bouton de confirmation"/>
 
 
     </vu:form>
