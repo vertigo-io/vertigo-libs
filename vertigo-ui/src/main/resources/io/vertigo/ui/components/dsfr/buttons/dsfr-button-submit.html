@@ -16,9 +16,9 @@
     </dsfr-button>
 </th:block>
 
-<th:block th:fragment="dsfr-button-submit-confirm(label, icon, action, title, loading, titleMessage, confirmMessage, labelOk, labelCancel, actions_slot, modal_attrs, other_attrs)"
-          th:assert="(${label} != null or (${icon} != null and ${title} != null)) and ${action} != null"
-          th:with="myComponentId='button'+${action},
+<th:block th:fragment="dsfr-button-submit-confirm(label, icon, action, componentId, title, loading, titleMessage, confirmMessage, labelOk, labelCancel, modal_attrs, other_attrs)"
+          th:assert="(${label} != null or (${icon} != null and ${title} != null)) and ${action} != null and ${componentId} != null"
+          th:with="myComponentId='${componentId}',
                    myLabelOk=${labelOk?:'Oui'},
                    myLabelCancel=${labelCancel?:'Non'},
                    myLoading=${loading}?:true"
