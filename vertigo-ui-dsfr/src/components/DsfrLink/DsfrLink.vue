@@ -43,7 +43,6 @@ const dsfrIcon = computed(() => typeof props.icon === 'string' && props.icon.sta
         [`fr-${type}--lg`]: lg,
         [`fr-${type}--icon-right`]: !iconOnly && dsfrIcon && iconRight,
         [`fr-${type}--icon-left`]: !iconOnly && dsfrIcon && !iconRight,
-        'inline-flex': !dsfrIcon,
         reverse: iconRight && !dsfrIcon,
         'fr-btn--custom-tooltip': iconOnly,
         'justify-center': !dsfrIcon && iconOnly,
@@ -56,12 +55,6 @@ const dsfrIcon = computed(() => typeof props.icon === 'string' && props.icon.sta
 </template>
 
 <style scoped>
-.inline-flex {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
 .reverse {
   flex-direction: row-reverse;
 }

@@ -11062,7 +11062,6 @@ const Xv = /* @__PURE__ */ Le(Pv, [["render", zv], ["__scopeId", "data-v-0be4e59
         [`fr-${l.value}--lg`]: n.value,
         [`fr-${l.value}--icon-right`]: !s.iconOnly && o.value && s.iconRight,
         [`fr-${l.value}--icon-left`]: !s.iconOnly && o.value && !s.iconRight,
-        "inline-flex": !o.value,
         reverse: s.iconRight && !o.value,
         "fr-btn--custom-tooltip": s.iconOnly,
         "justify-center": !o.value && s.iconOnly,
@@ -11074,7 +11073,7 @@ const Xv = /* @__PURE__ */ Le(Pv, [["render", zv], ["__scopeId", "data-v-0be4e59
       ], !0)
     ], 16, Gb));
   }
-}), zb = /* @__PURE__ */ Le(Kb, [["__scopeId", "data-v-940896f7"]]);
+}), zb = /* @__PURE__ */ Le(Kb, [["__scopeId", "data-v-cc8b0ebe"]]);
 var Xb = {
   install: function(a, t) {
     a.use(Ep), a.component("RouterLink", Bv), a.component("DsfrFacets", Xv), a.component("DsfrSelectMultiple", Ih), a.component("DsfrMenu", rh), a.component("DsfrMenuLink", ih), a.component("DsfrHeaderMenu", $h), a.component("DsfrCustomHeader", cb), a.component("DsfrCustomHeaderMenuLinks", Rt), a.component("DsfrCustomDataTable", Fb), a.component("DsfrCustomCheckbox", qb), a.component("DsfrButtonTooltip", Yb), a.component("DsfrLinkTooltip", Qb), a.component("DsfrLink", zb);
