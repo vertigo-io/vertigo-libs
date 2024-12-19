@@ -12,10 +12,12 @@
     <vu:include-data-primitive key="${object}" th:if="${field==null}" modifiable="true"/>
     <vu:include-data object="${object}" field="${field}" th:if="${field!=null}" modifiable="true"/>
 
-    <input type="hidden" th:v-if="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)}).length == 0|"
-           th::name="${model.util.contextKey(object, field, rowIndex)}" value=""/>
-    <input type="hidden" th:v-for="|fileUri in vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|"
-           th::name="${model.util.contextKey(object, field, rowIndex)}" v-bind:value="fileUri"/>
+    <th:block th:unless="${readonly == true}">
+        <input type="hidden" th:v-if="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)}).length == 0|"
+               th::name="${model.util.contextKey(object, field, rowIndex)}" value=""/>
+        <input type="hidden" th:v-for="|fileUri in vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|"
+               th::name="${model.util.contextKey(object, field, rowIndex)}" v-bind:value="fileUri"/>
+    </th:block>
 
     <div class="fr-upload-group">
         <vu:dsfr-label-edit key="${key}" object="${object}" field="${field}" label="${label}" hint="${hint}"
