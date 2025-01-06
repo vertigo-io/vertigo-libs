@@ -68,3 +68,44 @@ td p {
 .fr-tabs__tab--active {
     background-size: 100% 2px, 1px calc(100% - 1px), 1px calc(100% - 1px), 0 1px;
 }
+
+/* DSFR Autocomplete */
+
+.autocomplete-result-list {
+    z-index: 2;
+    background: #EEEEEE;
+    border: 1px solid #A0A0A0;
+    border-radius: 3px;
+    list-style: none;
+    padding: 0.2rem;
+    box-shadow: 2px 2px 10px #F0F0F0;
+    margin-top: 1px;
+}
+
+.autocomplete-result-list li {
+    padding: .2rem .4rem;
+    border-radius: 3px;
+    font-size: 1rem;
+    font-family: sans-serif;
+}
+
+.autocomplete-result:hover, .autocomplete-result[aria-selected=true] {
+    background: #E0E0E6;
+}
+
+[data-position=below] .autocomplete-input[aria-expanded=true] {
+    border-bottom-color: transparent;
+}
+
+[data-position=above] .autocomplete-input[aria-expanded=true] {
+    border-top-color: transparent;
+}
+
+.autocomplete-empty-list {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    top: 100%;
+}
+
+/**/

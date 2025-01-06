@@ -23,12 +23,14 @@ import DsfrButtonTooltip from "@/components/DsfrTooltip/DsfrButtonTooltip.vue";
 import DsfrLinkTooltip from "@/components/DsfrTooltip/DsfrLinkTooltip.vue";
 import DsfrLink from "@/components/DsfrLink/DsfrLink.vue";
 
+import Autocomplete from "@trevoreyre/autocomplete-vue/Autocomplete.vue";
+
 import './utils.css'
 import './surcharges.css'
 
 var DSFR = {
     install: function (vueApp, options) {
-        vueApp.use(VueDsfr);
+        vueApp.use(VueDsfr)
 
         vueApp.component('RouterLink', RouterLink)
         vueApp.component('DsfrFacets', DsfrFacets)
@@ -49,6 +51,8 @@ var DSFR = {
         vueApp.component('DsfrButtonTooltip', DsfrButtonTooltip)
         vueApp.component('DsfrLinkTooltip', DsfrLinkTooltip)
         vueApp.component('DsfrLink', DsfrLink)
+
+        vueApp.component('autocomplete', Autocomplete)
     },
 
     methods: DsfrMethods,

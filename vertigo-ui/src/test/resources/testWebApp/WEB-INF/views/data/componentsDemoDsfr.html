@@ -78,7 +78,21 @@
                         </v-icon>
                     </vu:slot>
                 </vu:dsfr-text-field>
-                <vu:dsfr-slider object="movie" field="year"/>
+
+                <div>
+                    <vu:dsfr-autocomplete object="movie" field="movId"
+                                          hint="Autocompletion"
+                                          componentId="movieCompletion"
+                                          noResultLabel="Aucun résultat"
+                                          list="moviesMdl" labelField="title" valueField="movId"
+                                          minQueryLength="2"/>
+                </div>
+
+                <th:block>
+                    <!--
+                    <vu:dsfr-slider object="movie" field="year"/>
+                    -->
+                </th:block>
                 <vu:dsfr-select object="movie" field="movId" list="movies" label="on-update"
                                 noneLabel="Aucun"
                                 @update:model-value="console.log('coucou')"/>
@@ -253,6 +267,7 @@
     </vu:form>
 
     <br/>
+
     <vu:include-data object="movies" field="movId"/>
     selection : {{ componentStates.movieTable2.selected }}
     <vu:dsfr-table list="movies"

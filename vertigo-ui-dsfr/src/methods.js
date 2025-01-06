@@ -68,6 +68,59 @@ export default {
             } // a label is always a string
         });
     },
+    dsfrSearchAutocomplete: function (list, valueField, labelField, componentId, url, minQueryLength, terms) {
+        if (terms.length < minQueryLength) {
+            return Promise.resolve([]);
+        }
+
+        return this.$http.post(url, this.objectToFormData({ terms, list, valueField, labelField, CTX: this.$data.vueData.CTX }))
+            .then((response) => {
+                return response.data.map((object) => ({
+                    value: object[valueField],
+                    label: object[labelField].toString(), // A label is always a string
+                }));
+            })
+            .catch(() => {
+                return []; // On error, resolve with an empty array
+            });
+    },
+    dsfrLoadAutocompleteById: function (list, valueField, labelField, componentId, url, objectName, fieldName, rowIndex) {
+        //Method use when value(id) is set by another way : like Ajax Viewcontext update, other component, ...
+        //if options already contains the value (id) : we won't reload.
+        var value
+        if (rowIndex != null) {
+            value = this.$data.vueData[objectName][rowIndex][fieldName];
+        } else {
+            value = this.$data.vueData[objectName][fieldName];
+        }
+
+        if (Array.isArray(value)) {
+            value.forEach(element => this.dsfrLoadMissingAutocompleteOption(list, valueField, labelField, componentId, url, element));
+        } else {
+            this.dsfrLoadMissingAutocompleteOption(list, valueField, labelField, componentId, url, value);
+        }
+
+    },
+    dsfrLoadMissingAutocompleteOption: function (list, valueField, labelField, componentId, url, value){
+        if (!value || (this.$data.componentStates[componentId].options.filter(function (option) { return option.value === value }.bind(this)).length > 0)) {
+            return
+        }
+        this.$data.componentStates[componentId].loading = true;
+        this.$http.post(url, this.objectToFormData({ value: value, list: list, valueField: valueField, labelField: labelField, CTX: this.$data.vueData.CTX }))
+            .then(function (response) {
+                let res = response.data.map(function (object) {
+                    return { value: object[valueField], label: object[labelField].toString() } // a label is always a string
+                });
+                this.$data.componentStates[componentId].options = this.$data.componentStates[componentId].options.concat(res);
+                return this.$data.componentStates[componentId].options;
+            }.bind(this))
+            .catch(function (error) {
+                this.$q.notify(error.response.status + ":" + error.response.statusText);
+            }.bind(this))
+            .then(function () {// always executed
+                this.$data.componentStates[componentId].loading = false;
+            }.bind(this));
+    },
     dsfrUpdateMenuNavigationActiveState: function () {
         this.componentStates?.dsfrHeader?.navItems
             .filter(item => item.title)
