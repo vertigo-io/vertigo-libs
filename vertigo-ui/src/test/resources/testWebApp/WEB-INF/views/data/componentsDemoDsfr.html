@@ -142,13 +142,16 @@
 
                 <vu:dsfr-dialog v-title="vueData.movie.title" componentId="dialog">
                     <vu:slot name="actions_slot">
-                        <vu:dsfr-button label="Ok super" secondary/>
-                        <vu:dsfr-button label="Ah oui ?" primary @click="componentStates.dialog.opened = false"/>
+                        <vu:dsfr-action-group>
+                            <vu:dsfr-button label="Ok super" secondary/>
+                            <vu:dsfr-button label="Ah oui ?" primary @click="componentStates.dialog.opened = false"/>
+                        </vu:dsfr-action-group>
                     </vu:slot>
                     <p>
                         C’est une super modale
                     </p>
                 </vu:dsfr-dialog>
+
                 <dsfr-button @click="componentStates.dialog.opened = true" label="Ouvre-moi" secondary
                              type="button"></dsfr-button>
 
@@ -231,27 +234,14 @@
         </vu:dsfr-accordions-group>
 
         <div class="fr-tabs fr-mt-4w">
-            <ul class="fr-tabs__list" aria-label="#{eleve.dossier.onglets.titre}">
-                <li>
-                    <a class="fr-tabs__tab fr-icon-arrow-right-line fr-tabs__tab--icon-left fr-tabs__tab--active"
-                       th:href="@{/dossier/eleve/projet/}">
-                        Coucou n°1
-                    </a>
-                </li>
-                <li>
-                    <a class="fr-tabs__tab fr-icon-arrow-right-line fr-tabs__tab--icon-left"
-                       th:href="@{/dossier/eleve/auto-evaluation/}">
-                        Coucou n°2
-                    </a>
-                </li>
-                <li>
-                    <a class="fr-tabs__tab fr-icon-arrow-right-line fr-tabs__tab--icon-left"
-                       th:href="@{/dossier/eleve/candidatures/}">
-                        Coucou n°3
-                    </a>
-
-                </li>
-            </ul>
+            <vu:dsfr-tab-list aria-label="#{eleve.dossier.onglets.titre}">
+                <vu:dsfr-tab th:href="@{/dossier/eleve/projet/}" active
+                             class="fr-icon-arrow-right-line fr-tabs__tab--icon-left">Coucou</vu:dsfr-tab>
+                <vu:dsfr-tab th:href="@{/dossier/eleve/auto-evaluation/}"
+                             class="fr-icon-arrow-right-line fr-tabs__tab--icon-left">Coucou</vu:dsfr-tab>
+                <vu:dsfr-tab th:href="@{/dossier/eleve/candidatures/}"
+                             class="fr-icon-arrow-right-line fr-tabs__tab--icon-left">Coucou</vu:dsfr-tab>
+            </vu:dsfr-tab-list>
             <div class="fr-tabs__panel fr-tabs__panel--selected">
                 <vu:dsfr-text-field class="" object="movie" field="title"/>
                 <vu:dsfr-text-field class="" object="movie" field="movId"/>
