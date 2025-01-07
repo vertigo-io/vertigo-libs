@@ -1,0 +1,18 @@
+<!--/* Notion de faux onglets pour simplifier l’écriture */-->
+
+<ul th:fragment="dsfr-tab-list(class, other_attrs)" class="fr-tabs__list"
+     th:classappend="${class}"
+     th:attr="__${other_attrs}__">
+    <vu:content/>
+</ul>
+
+<li th:fragment="dsfr-tab(class, active, other_attrs)">
+    <a class="fr-tabs__tab"
+       th:classappend="|
+            ${class}
+            ${active == true ? 'fr-tabs__tab--active' : ''}
+       |"
+       th:attr="__${other_attrs}__">
+        <vu:content/>
+    </a>
+</li>
