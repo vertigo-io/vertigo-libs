@@ -367,7 +367,7 @@ export default {
             // fit view
             this.fitView();
 
-            if (this.$props.object && this.features.length == 0) {
+            if (this.features.length == 0) {
                 //---
                 this.olMap.getView().setCenter(ol.proj.fromLonLat([2.333333, 48.866667])) // default to paris
                 this.olMap.vInitialZoomOverride = 3

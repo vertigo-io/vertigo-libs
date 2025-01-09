@@ -1761,7 +1761,7 @@ const Yo = /* @__PURE__ */ O(Bo, [["render", Jo]]), Ke = window.Quasar, y = wind
             })
           }), s[i] = l), l;
         }
-      }).bind(this)), this.olMap.addLayer(n), this.fitView(), this.$props.object && this.features.length == 0 && (this.olMap.getView().setCenter(y.proj.fromLonLat([2.333333, 48.866667])), this.olMap.vInitialZoomOverride = 3), this.olMap.on("moveend", (function(o) {
+      }).bind(this)), this.olMap.addLayer(n), this.fitView(), this.features.length == 0 && (this.olMap.getView().setCenter(y.proj.fromLonLat([2.333333, 48.866667])), this.olMap.vInitialZoomOverride = 3), this.olMap.on("moveend", (function(o) {
         let i = o.map.getView().calculateExtent(), r = y.proj.transformExtent(i, "EPSG:3857", "EPSG:4326"), l = y.extent.getTopLeft(r), d = y.extent.getBottomRight(r);
         this.baseUrl && Ke.debounce(this.fetchList({ lat: l[0], lon: l[1] }, { lat: d[0], lon: d[1] }), 300), Ke.debounce(this.$emit("moveend", l, d), 300);
       }).bind(this)), this.$props.nameField) {
