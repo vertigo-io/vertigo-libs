@@ -1,14 +1,18 @@
-<th:block th:fragment="fileupload-edit(url, downloadUrl, key, object, field, multiple, simple, uploader_attrs)" 
+<th:block th:fragment="fileupload-edit(url, componentId, downloadUrl, key, object, field, multiple, simple, uploader_attrs)" 
 	vu:alias="fileupload" vu:selector="${viewMode=='edit'}"
 	th:assert="(${key} != null or (${object} != null and ${field} != null)) and ${url} != null"
-	th:with="object=${object?:key}, myComponentId=${model.util.generateComponentUID('uploader', object, field, rowIndex)}, downloadUrl=${downloadUrl?:(url + '/download/')}, myMultiple=${multiple?:false}, mySimple=${simple?:false}" >
+	th:with="object=${object ?: key},
+	         myComponentId=${componentId ?: model.util.generateComponentUID('uploader', object, field, rowIndex)},
+	         downloadUrl=${downloadUrl ?: (url + '/download/')},
+	         myMultiple=${multiple ?: false},
+	         mySimple=${simple ?: false}" >
 		<vu:include-data-primitive key="${object}" th:if="${field==null}" modifiable="true" />
         <vu:include-data object="${object}" field="${field}" th:if="${field!=null}" modifiable="true"/>
         
         <input type="hidden" th:v-if="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)}).length == 0|" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
         <input type="hidden" th:v-for="|fileUri in vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|" th::name="${model.util.contextKey(object, field, rowIndex)}" v-bind:value="fileUri" />
         <v-file-upload-quasar 
-            th:ref="${myComponentId}"
+            th::ref="|'${myComponentId}'|"
             :readonly="false"
             th:url="${url}" 
             field-name="file"
@@ -20,14 +24,18 @@
             th:attr="__${uploader_attrs}__"></v-file-upload-quasar>
 </th:block>
 
-<th:block th:fragment="fileupload-read(url, downloadUrl, key, object, field, multiple, simple, uploader_attrs)" 
+<th:block th:fragment="fileupload-read(url, componentId, downloadUrl, key, object, field, multiple, simple, uploader_attrs)" 
     vu:alias="fileupload" vu:selector="${viewMode=='read'}"
     th:assert="(${key} != null or (${object} != null and ${field} != null)) and ${url} != null"
-    th:with="object=${object?:key}, myComponentId=${model.util.generateComponentUID('uploader', object, field, rowIndex)}, downloadUrl=${downloadUrl?:(url + '/download/')}, myMultiple=${multiple?:false}, mySimple=${simple?:false}" >
+    th:with="object=${object ?: key},
+             myComponentId=${componentId ?: model.util.generateComponentUID('uploader', object, field, rowIndex)},
+             downloadUrl=${downloadUrl ?: (url + '/download/')},
+             myMultiple=${multiple ?: false},
+             mySimple=${simple ?: false}" >
        <vu:include-data-primitive key="${object}" th:if="${field==null}"/>
        <vu:include-data object="${object}" field="${field}" th:if="${field!=null}"/>        
        <v-file-upload-quasar 
-            th:ref="${myComponentId}"
+            th::ref="|'${myComponentId}'|"
             :readonly="true"
             class="q-uploader-readonly"
             th:url="${url}" 
