@@ -438,7 +438,7 @@ function Nr(a, t) {
     missing: /* @__PURE__ */ new Set()
   };
 }
-function Ve(a, t) {
+function je(a, t) {
   const e = pa[a] || (pa[a] = /* @__PURE__ */ Object.create(null));
   return e[t] || (e[t] = Nr(a, t));
 }
@@ -462,7 +462,7 @@ function Za(a) {
 function jr(a) {
   const t = typeof a == "string" ? wt(a, !0, et) : a;
   if (t) {
-    const e = Ve(t.provider, t.prefix), n = t.name;
+    const e = je(t.provider, t.prefix), n = t.name;
     return e.icons[n] || (e.missing.has(n) ? null : void 0);
   }
 }
@@ -470,7 +470,7 @@ function qr(a, t) {
   const e = wt(a, !0, et);
   if (!e)
     return !1;
-  const n = Ve(e.provider, e.prefix);
+  const n = je(e.provider, e.prefix);
   return t ? Vr(n, e.name, t) : (n.missing.add(e.name), !0);
 }
 function Hr(a, t) {
@@ -489,7 +489,7 @@ function Hr(a, t) {
     name: "a"
   }))
     return !1;
-  const n = Ve(t, e);
+  const n = je(t, e);
   return !!Ut(n, a);
 }
 const Ja = Object.freeze({
@@ -797,7 +797,7 @@ function dl(a) {
     if (n.name === r.name && n.prefix === r.prefix && n.provider === r.provider)
       return;
     n = r;
-    const l = r.provider, o = r.prefix, s = r.name, u = e[l] || (e[l] = /* @__PURE__ */ Object.create(null)), d = u[o] || (u[o] = Ve(l, o));
+    const l = r.provider, o = r.prefix, s = r.name, u = e[l] || (e[l] = /* @__PURE__ */ Object.create(null)), d = u[o] || (u[o] = je(l, o));
     let p;
     s in d.icons ? p = t.loaded : o === "" || d.missing.has(s) ? p = t.missing : p = t.pending;
     const m = {
@@ -1133,7 +1133,7 @@ function un() {
     wl(!0);
     for (const a in xt)
       sn(a, (t) => {
-        const e = t.data, n = t.provider, r = e.prefix, l = Ve(
+        const e = t.data, n = t.provider, r = e.prefix, l = je(
           n,
           r
         );
@@ -1293,11 +1293,11 @@ const El = (a, t) => {
     const { provider: d, prefix: p } = u;
     if (p === s && d === o)
       return;
-    o = d, s = p, l.push(Ve(d, p));
+    o = d, s = p, l.push(je(d, p));
     const m = r[d] || (r[d] = /* @__PURE__ */ Object.create(null));
     m[p] || (m[p] = []);
   }), n.pending.forEach((u) => {
-    const { provider: d, prefix: p, name: m } = u, w = Ve(d, p), E = w.pendingIcons || (w.pendingIcons = /* @__PURE__ */ new Set());
+    const { provider: d, prefix: p, name: m } = u, w = je(d, p), E = w.pendingIcons || (w.pendingIcons = /* @__PURE__ */ new Set());
     E.has(m) || (E.add(m), r[d][p].push(m));
   }), l.forEach((u) => {
     const d = r[u.provider][u.prefix];
@@ -1688,7 +1688,7 @@ const Fl = {
       ]))
     ], 14, jl));
   }
-}), je = /* @__PURE__ */ ke(Hl, [["__scopeId", "data-v-118397f5"]]), Dt = /* @__PURE__ */ S({
+}), qe = /* @__PURE__ */ ke(Hl, [["__scopeId", "data-v-118397f5"]]), Dt = /* @__PURE__ */ S({
   __name: "DsfrButtonGroup",
   props: {
     buttons: { default: () => [] },
@@ -1732,7 +1732,7 @@ const Fl = {
       "data-testid": "fr-btns"
     }, [
       (i(!0), f(Q, null, U($.buttons, ({ onClick: x, ...I }, P) => (i(), f("li", { key: P }, [
-        ee(je, Y({ ref_for: !0 }, I, { onClick: x }), null, 16, ["onClick"])
+        ee(qe, Y({ ref_for: !0 }, I, { onClick: x }), null, 16, ["onClick"])
       ]))), 128)),
       B($.$slots, "default")
     ], 6));
@@ -1769,7 +1769,7 @@ const Fl = {
         _: 1
       })) : g("", !0),
       r.content ? (i(), f("p", Wl, v(r.content), 1)) : g("", !0),
-      r.button ? (i(), V(je, De(Y({ key: 3 }, r.button)), null, 16)) : g("", !0),
+      r.button ? (i(), V(qe, De(Y({ key: 3 }, r.button)), null, 16)) : g("", !0),
       r.$slots.default && !r.content ? (i(), f("div", Yl, [
         B(r.$slots, "default", {}, void 0, !0)
       ])) : B(r.$slots, "default", { key: 5 }, void 0, !0)
@@ -3368,7 +3368,7 @@ const Fl = {
         "onUpdate:modelValue": r[0] || (r[0] = (l) => e("update:modelValue", l)),
         onKeydown: r[1] || (r[1] = Z((l) => e("search", n.modelValue), ["enter"]))
       }, null, 8, ["id", "placeholder", "model-value", "label-visible", "label", "disabled", "aria-disabled"]),
-      ee(je, {
+      ee(qe, {
         title: "Rechercher",
         disabled: n.disabled,
         "aria-disabled": n.disabled,
@@ -3800,7 +3800,7 @@ const Fl = {
 * tabbable 6.2.0
 * @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
 */
-var gn = ["input:not([inert])", "select:not([inert])", "textarea:not([inert])", "a[href]:not([inert])", "button:not([inert])", "[tabindex]:not(slot):not([inert])", "audio[controls]:not([inert])", "video[controls]:not([inert])", '[contenteditable]:not([contenteditable="false"]):not([inert])', "details>summary:first-of-type:not([inert])", "details:not([inert])"], pt = /* @__PURE__ */ gn.join(","), bn = typeof Element > "u", qe = bn ? function() {
+var gn = ["input:not([inert])", "select:not([inert])", "textarea:not([inert])", "a[href]:not([inert])", "button:not([inert])", "[tabindex]:not(slot):not([inert])", "audio[controls]:not([inert])", "video[controls]:not([inert])", '[contenteditable]:not([contenteditable="false"]):not([inert])', "details>summary:first-of-type:not([inert])", "details:not([inert])"], pt = /* @__PURE__ */ gn.join(","), bn = typeof Element > "u", He = bn ? function() {
 } : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector, mt = !bn && Element.prototype.getRootNode ? function(a) {
   var t;
   return a == null || (t = a.getRootNode) === null || t === void 0 ? void 0 : t.call(a);
@@ -3818,7 +3818,7 @@ var gn = ["input:not([inert])", "select:not([inert])", "textarea:not([inert])", 
   if (ht(a))
     return [];
   var n = Array.prototype.slice.apply(a.querySelectorAll(pt));
-  return t && qe.call(a, pt) && n.unshift(a), n = n.filter(e), n;
+  return t && He.call(a, pt) && n.unshift(a), n = n.filter(e), n;
 }, kn = function a(t, e, n) {
   for (var r = [], l = Array.from(t); l.length; ) {
     var o = l.shift();
@@ -3830,7 +3830,7 @@ var gn = ["input:not([inert])", "select:not([inert])", "textarea:not([inert])", 
           candidates: d
         });
       } else {
-        var p = qe.call(o, pt);
+        var p = He.call(o, pt);
         p && n.filter(o) && (e || !t.includes(o)) && r.push(o);
         var m = o.shadowRoot || // check for an undisclosed shadow
         typeof n.getShadowRoot == "function" && n.getShadowRoot(o), w = !ht(m, !1) && (!n.shadowRootFilter || n.shadowRootFilter(o));
@@ -3847,12 +3847,12 @@ var gn = ["input:not([inert])", "select:not([inert])", "textarea:not([inert])", 
   return r;
 }, wn = function(a) {
   return !isNaN(parseInt(a.getAttribute("tabindex"), 10));
-}, Ne = function(a) {
+}, Ve = function(a) {
   if (!a)
     throw new Error("No node provided");
   return a.tabIndex < 0 && (/^(AUDIO|VIDEO|DETAILS)$/.test(a.tagName) || Mu(a)) && !wn(a) ? 0 : a.tabIndex;
 }, Cu = function(a, t) {
-  var e = Ne(a);
+  var e = Ve(a);
   return e < 0 && t && !wn(a) ? 0 : e;
 }, Pu = function(a, t) {
   return a.tabIndex === t.tabIndex ? a.documentOrder - t.documentOrder : a.tabIndex - t.tabIndex;
@@ -3906,8 +3906,8 @@ var gn = ["input:not([inert])", "select:not([inert])", "textarea:not([inert])", 
   var e = t.displayCheck, n = t.getShadowRoot;
   if (getComputedStyle(a).visibility === "hidden")
     return !0;
-  var r = qe.call(a, "details>summary:first-of-type"), l = r ? a.parentElement : a;
-  if (qe.call(l, "details:not([open]) *"))
+  var r = He.call(a, "details>summary:first-of-type"), l = r ? a.parentElement : a;
+  if (He.call(l, "details:not([open]) *"))
     return !0;
   if (!e || e === "full" || e === "legacy-full") {
     if (typeof n == "function") {
@@ -3933,7 +3933,7 @@ var gn = ["input:not([inert])", "select:not([inert])", "textarea:not([inert])", 
         for (var e = 0; e < t.children.length; e++) {
           var n = t.children.item(e);
           if (n.tagName === "LEGEND")
-            return qe.call(t, "fieldset[disabled] *") ? !0 : !n.contains(a);
+            return He.call(t, "fieldset[disabled] *") ? !0 : !n.contains(a);
         }
         return !0;
       }
@@ -3947,7 +3947,7 @@ var gn = ["input:not([inert])", "select:not([inert])", "textarea:not([inert])", 
   ht(t) || Lu(t) || Fu(t, a) || // For a details element with a summary, the summary element gets the focus
   Bu(t) || Nu(t));
 }, qt = function(a, t) {
-  return !(Ou(t) || Ne(t) < 0 || !vt(a, t));
+  return !(Ou(t) || Ve(t) < 0 || !vt(a, t));
 }, Vu = function(a) {
   var t = parseInt(a.getAttribute("tabindex"), 10);
   return !!(isNaN(t) || t >= 0);
@@ -3985,11 +3985,11 @@ var gn = ["input:not([inert])", "select:not([inert])", "textarea:not([inert])", 
 }, We = function(a, t) {
   if (t = t || {}, !a)
     throw new Error("No node provided");
-  return qe.call(a, pt) === !1 ? !1 : qt(t, a);
+  return He.call(a, pt) === !1 ? !1 : qt(t, a);
 }, Wu = /* @__PURE__ */ gn.concat("iframe").join(","), Pt = function(a, t) {
   if (t = t || {}, !a)
     throw new Error("No node provided");
-  return qe.call(a, Wu) === !1 ? !1 : vt(t, a);
+  return He.call(a, Wu) === !1 ? !1 : vt(t, a);
 };
 /*!
 * focus-trap 7.6.2
@@ -4193,7 +4193,7 @@ var Ba = {
       }), te = L.slice().reverse().find(function(se) {
         return We(se);
       }), ie = !!A.find(function(se) {
-        return Ne(se) > 0;
+        return Ve(se) > 0;
       });
       return {
         container: C,
@@ -4275,7 +4275,7 @@ var Ba = {
         });
         if (se < 0 && (ie.container === A || Pt(A, r.tabbableOptions) && !We(A, r.tabbableOptions) && !ie.nextTabbableNode(A, !1)) && (se = te), se >= 0) {
           var Ie = se === 0 ? l.tabbableGroups.length - 1 : se - 1, Ce = l.tabbableGroups[Ie];
-          ne = Ne(A) >= 0 ? Ce.lastTabbableNode : Ce.lastDomTabbableNode;
+          ne = Ve(A) >= 0 ? Ce.lastTabbableNode : Ce.lastDomTabbableNode;
         } else Je(L) || (ne = ie.nextTabbableNode(A, !1));
       } else {
         var W = l.tabbableGroups.findIndex(function(ve) {
@@ -4284,7 +4284,7 @@ var Ba = {
         });
         if (W < 0 && (ie.container === A || Pt(A, r.tabbableOptions) && !We(A, r.tabbableOptions) && !ie.nextTabbableNode(A)) && (W = te), W >= 0) {
           var G = W === l.tabbableGroups.length - 1 ? 0 : W + 1, ae = l.tabbableGroups[G];
-          ne = Ne(A) >= 0 ? ae.firstTabbableNode : ae.firstDomTabbableNode;
+          ne = Ve(A) >= 0 ? ae.firstTabbableNode : ae.firstDomTabbableNode;
         } else Je(L) || (ne = ie.nextTabbableNode(A));
       }
     } else
@@ -4315,7 +4315,7 @@ var Ba = {
       C.stopImmediatePropagation();
       var j, K = !0;
       if (l.mostRecentlyFocusedNode)
-        if (Ne(l.mostRecentlyFocusedNode) > 0) {
+        if (Ve(l.mostRecentlyFocusedNode) > 0) {
           var ne = u(l.mostRecentlyFocusedNode), te = l.containerGroups[ne].tabbableNodes;
           if (te.length > 0) {
             var ie = te.findIndex(function(se) {
@@ -4326,7 +4326,7 @@ var Ba = {
         } else
           l.containerGroups.some(function(se) {
             return se.tabbableNodes.some(function(Ie) {
-              return Ne(Ie) > 0;
+              return Ve(Ie) > 0;
             });
           }) || (K = !1);
       else
@@ -4844,7 +4844,7 @@ const ld = {
           ], !0)
         ])) : g("", !0)
       ], 10, gd),
-      ee(je, Y({
+      ee(qe, Y({
         id: t.id,
         ref_key: "host",
         ref: l,
@@ -4883,7 +4883,7 @@ const ld = {
         }, " Utilisez la tabulation (ou les touches flèches) pour naviguer dans la liste des suggestions ", 8, wd),
         W.selectAll ? (i(), f("ul", _d, [
           c("li", null, [
-            ee(je, {
+            ee(qe, {
               type: "button",
               name: "select-all",
               secondary: "",
@@ -7054,7 +7054,7 @@ const ld = {
   DsfrBackToTop: Er,
   DsfrBadge: Ka,
   DsfrBreadcrumb: Ar,
-  DsfrButton: je,
+  DsfrButton: qe,
   DsfrButtonGroup: Dt,
   DsfrCallout: Kl,
   DsfrCard: so,
@@ -8170,11 +8170,11 @@ const Se = {
         return Va(n);
       case "XXXX":
       case "XX":
-        return Fe(n);
+        return Ne(n);
       case "XXXXX":
       case "XXX":
       default:
-        return Fe(n, ":");
+        return Ne(n, ":");
     }
   },
   // Timezone (ISO-8601. If offset is 0, output is `'+00:00'` or equivalent)
@@ -8185,11 +8185,11 @@ const Se = {
         return Va(n);
       case "xxxx":
       case "xx":
-        return Fe(n);
+        return Ne(n);
       case "xxxxx":
       case "xxx":
       default:
-        return Fe(n, ":");
+        return Ne(n, ":");
     }
   },
   // Timezone (GMT)
@@ -8202,7 +8202,7 @@ const Se = {
         return "GMT" + Na(n, ":");
       case "OOOO":
       default:
-        return "GMT" + Fe(n, ":");
+        return "GMT" + Ne(n, ":");
     }
   },
   // Timezone (specific non-location)
@@ -8215,7 +8215,7 @@ const Se = {
         return "GMT" + Na(n, ":");
       case "zzzz":
       default:
-        return "GMT" + Fe(n, ":");
+        return "GMT" + Ne(n, ":");
     }
   },
   // Seconds timestamp
@@ -8233,9 +8233,9 @@ function Na(a, t = "") {
   return l === 0 ? e + String(r) : e + String(r) + t + oe(l, 2);
 }
 function Va(a, t) {
-  return a % 60 === 0 ? (a > 0 ? "-" : "+") + oe(Math.abs(a) / 60, 2) : Fe(a, t);
+  return a % 60 === 0 ? (a > 0 ? "-" : "+") + oe(Math.abs(a) / 60, 2) : Ne(a, t);
 }
-function Fe(a, t = "") {
+function Ne(a, t = "") {
   const e = a > 0 ? "-" : "+", n = Math.abs(a), r = oe(Math.trunc(n / 60), 2), l = oe(n % 60, 2);
   return e + r + t + l;
 }
@@ -9971,7 +9971,12 @@ const ev = {
       e.active = e.links.some((n) => window.location.pathname.startsWith(n.to));
     });
   }
-}, tv = ["href", "aria-current"], av = {
+}, tv = "abcdefghijklmnopqrstuvwyz0123456789", Wa = tv.repeat(10), av = () => {
+  const a = Math.floor(Math.random() * Wa.length);
+  return Wa[a];
+}, nv = (a) => Array.from({ length: a }).map(av).join(""), Fe = (a = "", t = "") => (a ? `${a}-` : "") + nv(5) + (t ? `-${t}` : ""), rv = {
+  getRandomId: Fe
+}, lv = ["href", "aria-current"], ov = {
   __name: "RouterLink",
   props: ["to"],
   setup(a) {
@@ -9981,16 +9986,16 @@ const ev = {
       "aria-current": O(e) ? "page" : void 0
     }, [
       B(n.$slots, "default")
-    ], 8, tv));
+    ], 8, lv));
   }
 }, Ae = (a, t) => {
   const e = a.__vccOpts || a;
   for (const [n, r] of t)
     e[n] = r;
   return e;
-}, nv = {
+}, sv = {
   name: "DsfrFacets",
-  components: { DsfrCheckbox: Tt, DsfrTag: la, DsfrButton: je },
+  components: { DsfrCheckbox: Tt, DsfrTag: la, DsfrButton: qe },
   props: {
     facets: Array,
     selectedFacets: Object,
@@ -10069,14 +10074,14 @@ const ev = {
       return this.isFacetExpanded(a) ? t : t.slice(0, this.maxValues);
     }
   }
-}, rv = {
+}, iv = {
   key: 0,
   class: "fr-mb-2w flex flex-column gap--sm"
-}, lv = { class: "fr-mb-1w fr-text--md" }, ov = { key: 0 }, sv = { class: "facet" }, iv = { class: "flex justify-between w-full fr-mb-0" }, uv = { class: "facet--count" }, dv = { key: 1 }, cv = { class: "flex justify-between w-full" }, fv = { class: "facet--count" }, pv = { key: 0 }, mv = { class: "facet" }, hv = { class: "flex justify-between w-full fr-mb-0" }, vv = { class: "facet--count" }, gv = { key: 1 }, bv = { class: "flex justify-between w-full" }, yv = { class: "facet--count" }, kv = { class: "fr-mb-2w" };
-function wv(a, t, e, n, r, l) {
+}, uv = { class: "fr-mb-1w fr-text--md" }, dv = { key: 0 }, cv = { class: "facet" }, fv = { class: "flex justify-between w-full fr-mb-0" }, pv = { class: "facet--count" }, mv = { key: 1 }, hv = { class: "flex justify-between w-full" }, vv = { class: "facet--count" }, gv = { key: 0 }, bv = { class: "facet" }, yv = { class: "flex justify-between w-full fr-mb-0" }, kv = { class: "facet--count" }, wv = { key: 1 }, _v = { class: "flex justify-between w-full" }, xv = { class: "facet--count" }, Dv = { class: "fr-mb-2w" };
+function Tv(a, t, e, n, r, l) {
   const o = _e("DsfrTag"), s = _e("DsfrCheckbox"), u = _e("DsfrButton");
   return i(), f("div", null, [
-    l.isAnyFacetValueSelected() ? (i(), f("div", rv, [
+    l.isAnyFacetValueSelected() ? (i(), f("div", iv, [
       (i(!0), f(Q, null, U(e.selectedFacets, (d, p) => (i(), f(Q, { key: p }, [
         l.facetMultipleByCode(p) ? g("", !0) : (i(!0), f(Q, { key: 0 }, U(d, (m) => (i(), V(o, {
           class: "fr-tag--dismiss",
@@ -10096,37 +10101,37 @@ function wv(a, t, e, n, r, l) {
       class: "facets"
     }, [
       d.multiple || !l.isFacetSelected(d.code) ? (i(), f(Q, { key: 0 }, [
-        c("h6", lv, v(d.label), 1),
+        c("h6", uv, v(d.label), 1),
         c("ul", null, [
           (i(!0), f(Q, null, U(l.selectedInvisibleFacets(d.code), (p) => (i(), f(Q, {
             key: p.code
           }, [
-            d.multiple ? (i(), f("li", ov, [
-              c("div", sv, [
+            d.multiple ? (i(), f("li", dv, [
+              c("div", cv, [
                 ee(s, {
                   small: "",
                   modelValue: !0,
                   "onUpdate:modelValue": (m) => a.$emit("toogle-facet", d.code, p.code, e.contextKey)
                 }, {
                   label: X(() => [
-                    c("p", iv, [
+                    c("p", fv, [
                       F(v(l.facetValueLabelByCode(d.code, p.code)) + " ", 1),
-                      c("span", uv, v(p.count), 1)
+                      c("span", pv, v(p.count), 1)
                     ])
                   ]),
                   _: 2
                 }, 1032, ["onUpdate:modelValue"])
               ])
-            ])) : (i(), f("li", dv, [
+            ])) : (i(), f("li", mv, [
               ee(u, {
                 tertiary: "",
                 "no-outline": "",
                 onClick: (m) => a.$emit("toogle-facet", d.code, p.code, e.contextKey)
               }, {
                 default: X(() => [
-                  c("span", cv, [
+                  c("span", hv, [
                     F(v(l.facetValueLabelByCode(d.code, p.code)) + " ", 1),
-                    c("span", fv, v(p.count), 1)
+                    c("span", vv, v(p.count), 1)
                   ])
                 ]),
                 _: 2
@@ -10138,8 +10143,8 @@ function wv(a, t, e, n, r, l) {
           (i(!0), f(Q, null, U(l.visibleFacets(d.code, d.values), (p) => (i(), f(Q, {
             key: p.code
           }, [
-            d.multiple ? (i(), f("li", pv, [
-              c("div", mv, [
+            d.multiple ? (i(), f("li", gv, [
+              c("div", bv, [
                 ee(s, {
                   small: "",
                   modelValue: l.isFacetValueSelected(d.code, p.code),
@@ -10147,24 +10152,24 @@ function wv(a, t, e, n, r, l) {
                   "onUpdate:modelValue": (m) => a.$emit("toogle-facet", d.code, p.code, e.contextKey)
                 }, {
                   label: X(() => [
-                    c("p", hv, [
+                    c("p", yv, [
                       F(v(l.facetValueLabelByCode(d.code, p.code)) + " ", 1),
-                      c("span", vv, v(p.count), 1)
+                      c("span", kv, v(p.count), 1)
                     ])
                   ]),
                   _: 2
                 }, 1032, ["modelValue", "onUpdate:modelValue"])
               ])
-            ])) : (i(), f("li", gv, [
+            ])) : (i(), f("li", wv, [
               ee(u, {
                 tertiary: "",
                 "no-outline": "",
                 onClick: (m) => a.$emit("toogle-facet", d.code, p.code, e.contextKey)
               }, {
                 default: X(() => [
-                  c("span", bv, [
+                  c("span", _v, [
                     F(v(l.facetValueLabelByCode(d.code, p.code)) + " ", 1),
-                    c("span", yv, v(p.count), 1)
+                    c("span", xv, v(p.count), 1)
                   ])
                 ]),
                 _: 2
@@ -10172,7 +10177,7 @@ function wv(a, t, e, n, r, l) {
             ]))
           ], 64))), 128))
         ]),
-        c("div", kv, [
+        c("div", Dv, [
           d.values.length > e.maxValues && !l.isFacetExpanded(d.code) ? (i(), V(u, {
             key: 0,
             size: "sm",
@@ -10200,7 +10205,7 @@ function wv(a, t, e, n, r, l) {
     ]))), 128))
   ]);
 }
-const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e596"]]), ua = () => {
+const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e596"]]), ua = () => {
   const a = H(), t = H(!1), e = H(!1), n = () => {
     if (!a.value)
       return;
@@ -10224,19 +10229,16 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
       t.value = !1, a.value && o === !1 && a.value.style.removeProperty("--collapse-max-height");
     }
   };
-}, xv = "abcdefghijklmnopqrstuvwyz0123456789", Wa = xv.repeat(10), Dv = () => {
-  const a = Math.floor(Math.random() * Wa.length);
-  return Wa[a];
-}, Tv = (a) => Array.from({ length: a }).map(Dv).join(""), He = (a = "", t = "") => (a ? `${a}-` : "") + Tv(5) + (t ? `-${t}` : ""), Iv = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], Ev = ["id", "aria-labelledby", "onKeydown"], Mv = {
+}, Ev = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], Mv = ["id", "aria-labelledby", "onKeydown"], Cv = {
   class: "fr-menu__list",
   role: "none"
-}, Cv = /* @__PURE__ */ S({
+}, Pv = /* @__PURE__ */ S({
   inheritAttrs: !1,
   __name: "DsfrMenu",
   props: {
     label: { default: "" },
     icon: { default: "" },
-    id: { default: () => He("menu") },
+    id: { default: () => Fe("menu") },
     disabled: { type: Boolean, default: !1 },
     secondary: { type: Boolean, default: !1 },
     tertiary: { type: Boolean, default: !1 }
@@ -10321,7 +10323,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
           name: b.icon
         }, null, 8, ["name"])) : g("", !0),
         c("span", null, v(b.label), 1)
-      ], 16, Iv),
+      ], 16, Ev),
       c("div", {
         id: `${b.id}_menu`,
         ref_key: "collapse",
@@ -10339,13 +10341,13 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
         ],
         onTransitionend: k[8] || (k[8] = (h) => O(o)(d.value))
       }, [
-        c("ul", Mv, [
+        c("ul", Cv, [
           B(b.$slots, "default", {}, void 0, !0)
         ])
-      ], 42, Ev)
+      ], 42, Mv)
     ], 544));
   }
-}), Pv = /* @__PURE__ */ Ae(Cv, [["__scopeId", "data-v-089ea365"]]), Lv = { role: "none" }, Bv = ["id", "href"], $v = /* @__PURE__ */ S({
+}), Lv = /* @__PURE__ */ Ae(Pv, [["__scopeId", "data-v-089ea365"]]), Bv = { role: "none" }, $v = ["id", "href"], Av = /* @__PURE__ */ S({
   inheritAttrs: !1,
   __name: "DsfrMenuLink",
   props: {
@@ -10357,7 +10359,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
     const t = a, { menuItemIndex: e, addMenuItem: n } = Qe("menuItem"), r = T(() => typeof t.icon == "string" && t.icon.startsWith("fr-icon-")), l = `fr-btn fr-btn--secondary fr-nav__link ${r ? t.icon : ""} fr-btn--icon-left`, o = Qe("id"), s = e.value;
     return n(t.label, s), (u, d) => {
       const p = _e("dsfr-button"), m = _e("v-icon");
-      return i(), f("li", Lv, [
+      return i(), f("li", Bv, [
         u.url === "" ? (i(), V(p, Y({
           key: 0,
           tabindex: "-1",
@@ -10380,39 +10382,39 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
             name: u.icon
           }, null, 8, ["name"])),
           F(" " + v(u.label), 1)
-        ], 16, Bv))
+        ], 16, $v))
       ]);
     };
   }
-}), Av = /* @__PURE__ */ Ae($v, [["__scopeId", "data-v-ca9ed6c2"]]), Sv = ["for", "id"], Ov = {
+}), Sv = /* @__PURE__ */ Ae(Av, [["__scopeId", "data-v-ca9ed6c2"]]), Ov = ["for", "id"], Rv = {
   key: 0,
   class: "required"
-}, Rv = {
+}, Fv = {
   key: 0,
   class: "fr-hint-text"
-}, Fv = ["id", "onKeydown", "aria-labelledby", "aria-disabled", "aria-controls", "aria-expanded", "aria-required"], Nv = ["id", "onKeydown"], Vv = {
+}, Nv = ["id", "onKeydown", "aria-labelledby", "aria-disabled", "aria-controls", "aria-expanded", "aria-required"], Vv = ["id", "onKeydown"], jv = {
   key: 0,
   class: "fr-btns-group fr-btns-group--icon-left"
-}, jv = ["id"], qv = {
+}, qv = ["id"], Hv = {
   key: 1,
   class: "fr-input-wrap fr-icon-search-line fr-mb-3v"
-}, Hv = ["id"], Wv = {
+}, Wv = ["id"], Yv = {
   key: 2,
   class: "fr-label fr-mb-2v"
-}, Yv = {
+}, Qv = {
   key: 0,
   class: "fr-hint-text"
-}, Qv = {
+}, Kv = {
   role: "listbox",
   "aria-multiselectable": "true",
   class: "fr-select__ul"
-}, Kv = ["aria-selected"], zv = ["id", "data-id", "value"], Gv = ["for"], Xv = ["id"], Uv = /* @__PURE__ */ S({
+}, zv = ["aria-selected"], Gv = ["id", "data-id", "value"], Xv = ["for"], Uv = ["id"], Zv = /* @__PURE__ */ S({
   inheritAttrs: !1,
   __name: "DsfrSelectMultiple",
   props: /* @__PURE__ */ Le({
     required: { type: Boolean },
     disabled: { type: Boolean },
-    id: { default: () => He("select-multiple") },
+    id: { default: () => Fe("select-multiple") },
     name: { default: void 0 },
     description: { default: void 0 },
     modelValue: {},
@@ -10502,11 +10504,11 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
           B(L.$slots, "label", {}, () => [
             F(v(L.label) + " ", 1),
             B(L.$slots, "required-tip", {}, () => [
-              L.required ? (i(), f("span", Ov, " *")) : g("", !0)
+              L.required ? (i(), f("span", Rv, " *")) : g("", !0)
             ], !0)
           ], !0),
-          L.description ? (i(), f("span", Rv, v(L.description), 1)) : g("", !0)
-        ], 8, Sv),
+          L.description ? (i(), f("span", Fv, v(L.description), 1)) : g("", !0)
+        ], 8, Ov),
         c("div", {
           id: L.id,
           class: R([{ [`fr-select--${_.value}`]: E.value !== "" }, "fr-input"]),
@@ -10535,7 +10537,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
           "aria-required": L.required
         }, [
           c("p", null, v(x.value), 1)
-        ], 42, Fv),
+        ], 42, Nv),
         c("div", {
           id: `${L.id}_list`,
           ref_key: "collapse",
@@ -10560,7 +10562,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
           ],
           onTransitionend: j[12] || (j[12] = (K) => O(l)(s.value))
         }, [
-          L.comboHasButton ? (i(), f("ul", Vv, [
+          L.comboHasButton ? (i(), f("ul", jv, [
             c("li", null, [
               c("button", {
                 class: R(["fr-btn fr-btn--tertiary", `${$.value}`]),
@@ -10569,10 +10571,10 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
                 ref_key: "button",
                 ref: m,
                 type: "button"
-              }, v(y.value), 11, jv)
+              }, v(y.value), 11, qv)
             ])
           ])) : g("", !0),
-          L.comboHasFilter ? (i(), f("div", qv, [
+          L.comboHasFilter ? (i(), f("div", Hv, [
             c("input", {
               class: "fr-input",
               id: `${L.id}_filter`,
@@ -10583,13 +10585,13 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
               "aria-label": "Rechercher une option",
               placeholder: "Rechercher",
               type: "text"
-            }, null, 40, Hv)
+            }, null, 40, Wv)
           ])) : g("", !0),
-          L.comboLabel ? (i(), f("p", Wv, [
+          L.comboLabel ? (i(), f("p", Yv, [
             F(v(L.comboLabel) + " ", 1),
-            L.comboDescription ? (i(), f("span", Yv, v(L.comboDescription), 1)) : g("", !0)
+            L.comboDescription ? (i(), f("span", Qv, v(L.comboDescription), 1)) : g("", !0)
           ])) : g("", !0),
-          c("ul", Qv, [
+          c("ul", Kv, [
             (i(!0), f(Q, null, U(d.value, (K, ne) => (i(), f("li", {
               class: "fr-checkbox-group fr-checkbox-group--sm fr-py-1v",
               role: "option",
@@ -10603,43 +10605,43 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
                 tabindex: "-1",
                 value: K.value,
                 "onUpdate:modelValue": j[7] || (j[7] = (te) => u.value = te)
-              }, null, 8, zv), [
+              }, null, 8, Gv), [
                 [lt, u.value]
               ]),
               c("label", {
                 class: "fr-label",
                 for: `${L.id}_option_${ne}`
-              }, v(K.text), 9, Gv)
-            ], 8, Kv))), 256))
+              }, v(K.text), 9, Xv)
+            ], 8, zv))), 256))
           ])
-        ], 42, Nv)
+        ], 42, Vv)
       ], 16),
       E.value ? (i(), f("p", {
         key: 0,
         id: `select-${_.value}-desc-${_.value}`,
         class: R(`fr-${_.value}-text`)
-      }, v(E.value), 11, Xv)) : g("", !0)
+      }, v(E.value), 11, Uv)) : g("", !0)
     ], 64));
   }
-}), Zv = /* @__PURE__ */ Ae(Uv, [["__scopeId", "data-v-7e35aa8f"]]), Jv = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], eg = ["id", "aria-labelledby", "onKeydown"], tg = {
+}), Jv = /* @__PURE__ */ Ae(Zv, [["__scopeId", "data-v-7e35aa8f"]]), eg = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], tg = ["id", "aria-labelledby", "onKeydown"], ag = {
   key: 0,
   class: "fr-label fr-mb-0"
-}, ag = {
+}, ng = {
   key: 0,
   class: "fr-hint-text"
-}, ng = {
+}, rg = {
   class: "fr-menu-header__list fr-mx-n4v fr-pt-2v fr-mb-0",
   role: "none"
-}, rg = {
+}, lg = {
   role: "none",
   class: "fr-p-2v"
-}, lg = ["id", "href"], og = /* @__PURE__ */ S({
+}, og = ["id", "href"], sg = /* @__PURE__ */ S({
   inheritAttrs: !1,
   __name: "DsfrHeaderMenu",
   props: {
     label: { default: "" },
     icon: { default: "" },
-    id: { default: () => He("header-menu") },
+    id: { default: () => Fe("header-menu") },
     disabled: { type: Boolean, default: !1 },
     logoutUrl: { default: "" },
     logoutLabel: { default: "Se déconnecter" },
@@ -10723,7 +10725,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
           name: I.icon
         }, null, 8, ["name"])) : g("", !0),
         c("span", null, v(I.label), 1)
-      ], 16, Jv),
+      ], 16, eg),
       c("div", {
         id: `${I.id}_menu`,
         ref_key: "collapse",
@@ -10742,14 +10744,14 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
         onTransitionend: P[8] || (P[8] = (b) => O(l)(u.value))
       }, [
         B(I.$slots, "detail", {}, () => [
-          I.nom === "" && I.email === "" ? g("", !0) : (i(), f("p", tg, [
+          I.nom === "" && I.email === "" ? g("", !0) : (i(), f("p", ag, [
             F(v(I.nom) + " ", 1),
-            I.email !== "" ? (i(), f("span", ag, v(I.email), 1)) : g("", !0)
+            I.email !== "" ? (i(), f("span", ng, v(I.email), 1)) : g("", !0)
           ]))
         ], !0),
-        c("ul", ng, [
+        c("ul", rg, [
           B(I.$slots, "default", {}, void 0, !0),
-          c("li", rg, [
+          c("li", lg, [
             I.logoutUrl !== "" ? (i(), f("a", {
               key: 0,
               id: `${I.id}_item_${O(d) - 1}`,
@@ -10757,13 +10759,13 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
               role: "menuitem",
               tabindex: "-1",
               href: I.logoutUrl
-            }, v(I.logoutLabel), 9, lg)) : g("", !0)
+            }, v(I.logoutLabel), 9, og)) : g("", !0)
           ])
         ])
-      ], 42, eg)
+      ], 42, tg)
     ], 544));
   }
-}), sg = /* @__PURE__ */ Ae(og, [["__scopeId", "data-v-2c51eb4a"]]), ig = Symbol("header"), ug = ["aria-label"], dg = { class: "fr-btns-group" }, Qt = /* @__PURE__ */ S({
+}), ig = /* @__PURE__ */ Ae(sg, [["__scopeId", "data-v-2c51eb4a"]]), ug = Symbol("header"), dg = ["aria-label"], cg = { class: "fr-btns-group" }, Qt = /* @__PURE__ */ S({
   __name: "DsfrCustomHeaderMenuLinks",
   props: {
     links: { default: () => [] },
@@ -10776,7 +10778,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
       role: "navigation",
       "aria-label": n.navAriaLabel
     }, [
-      c("ul", dg, [
+      c("ul", cg, [
         (i(!0), f(Q, null, U(n.links, (l, o) => (i(), f("li", { key: o }, [
           ee(O(ra), Y({ ref_for: !0 }, l, {
             "on-click": (s) => {
@@ -10787,39 +10789,39 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
         ]))), 128)),
         B(n.$slots, "default")
       ])
-    ], 8, ug));
+    ], 8, dg));
   }
-}), cg = {
+}), fg = {
   role: "banner",
   class: "fr-header"
-}, fg = { class: "fr-header__body" }, pg = { class: "fr-container width-inherit" }, mg = { class: "fr-header__body-row" }, hg = { class: "fr-header__brand fr-enlarge-link" }, vg = { class: "fr-header__brand-top" }, gg = { class: "fr-header__logo" }, bg = {
+}, pg = { class: "fr-header__body" }, mg = { class: "fr-container width-inherit" }, hg = { class: "fr-header__body-row" }, vg = { class: "fr-header__brand fr-enlarge-link" }, gg = { class: "fr-header__brand-top" }, bg = { class: "fr-header__logo" }, yg = {
   key: 0,
   class: "fr-header__operator"
-}, yg = ["src", "alt"], kg = {
+}, kg = ["src", "alt"], wg = {
   key: 1,
   class: "fr-header__navbar"
-}, wg = ["aria-label", "title", "data-fr-opened"], _g = ["aria-label", "title"], xg = {
+}, _g = ["aria-label", "title", "data-fr-opened"], xg = ["aria-label", "title"], Dg = {
   key: 0,
   class: "fr-header__service"
-}, Dg = { class: "fr-header__service-title" }, Tg = {
+}, Tg = { class: "fr-header__service-title" }, Ig = {
   key: 0,
   class: "fr-badge fr-badge--sm fr-badge--green-emeraude"
-}, Ig = {
+}, Eg = {
   key: 0,
   class: "fr-header__service-tagline"
-}, Eg = {
+}, Mg = {
   key: 1,
   class: "fr-header__service"
-}, Mg = { class: "fr-header__tools" }, Cg = {
+}, Cg = { class: "fr-header__tools" }, Pg = {
   key: 0,
   class: "fr-header__tools-links"
-}, Pg = { class: "fr-header__search fr-modal" }, Lg = ["aria-label"], Bg = { class: "fr-container" }, $g = { class: "fr-header__menu-links" }, Ag = {
+}, Lg = { class: "fr-header__search fr-modal" }, Bg = ["aria-label"], $g = { class: "fr-container" }, Ag = { class: "fr-header__menu-links" }, Sg = {
   key: 1,
   class: "flex justify-center items-center"
-}, Sg = { class: "fr-header__menu fr-modal" }, Og = {
+}, Og = { class: "fr-header__menu fr-modal" }, Rg = {
   key: 0,
   class: "fr-container"
-}, Rg = /* @__PURE__ */ S({
+}, Fg = /* @__PURE__ */ S({
   __name: "DsfrCustomHeader",
   props: {
     searchbarId: { default: "searchbar-header" },
@@ -10866,16 +10868,16 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
       var y;
       return !!((y = E.operator) != null && y.call(E).length) || !!e.operatorImgSrc;
     }), $ = T(() => !!E.mainnav);
-    return Oe(ig, () => u), (y, x) => {
+    return Oe(ug, () => u), (y, x) => {
       var P, b, k;
       const I = _e("RouterLink");
-      return i(), f("header", cg, [
-        c("div", fg, [
-          c("div", pg, [
-            c("div", mg, [
-              c("div", hg, [
-                c("div", vg, [
-                  c("div", gg, [
+      return i(), f("header", fg, [
+        c("div", pg, [
+          c("div", mg, [
+            c("div", hg, [
+              c("div", vg, [
+                c("div", gg, [
+                  c("div", bg, [
                     ee(I, {
                       to: y.homeTo,
                       title: `${y.homeLabel} - ${y.serviceTitle}`
@@ -10889,7 +10891,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
                       _: 1
                     }, 8, ["to", "title"])
                   ]),
-                  _.value ? (i(), f("div", bg, [
+                  _.value ? (i(), f("div", yg, [
                     B(y.$slots, "operator", {}, () => [
                       y.operatorImgSrc ? (i(), f("img", {
                         key: 0,
@@ -10897,10 +10899,10 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
                         src: y.operatorImgSrc,
                         alt: y.operatorImgAlt,
                         style: xe(y.operatorImgStyle)
-                      }, null, 12, yg)) : g("", !0)
+                      }, null, 12, kg)) : g("", !0)
                     ])
                   ])) : g("", !0),
-                  y.showSearch || $.value || (P = y.quickLinks) != null && P.length ? (i(), f("div", kg, [
+                  y.showSearch || $.value || (P = y.quickLinks) != null && P.length ? (i(), f("div", wg, [
                     y.showSearch ? (i(), f("button", {
                       key: 0,
                       class: "fr-btn fr-btn--search",
@@ -10909,7 +10911,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
                       title: y.showSearchLabel,
                       "data-fr-opened": o.value,
                       onClick: x[0] || (x[0] = J((h) => m(), ["prevent", "stop"]))
-                    }, null, 8, wg)) : g("", !0),
+                    }, null, 8, _g)) : g("", !0),
                     $.value || (b = y.quickLinks) != null && b.length ? (i(), f("button", {
                       key: 1,
                       id: "button-menu",
@@ -10921,32 +10923,32 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
                       title: y.menuLabel,
                       "data-testid": "open-menu-btn",
                       onClick: x[1] || (x[1] = J((h) => p(), ["prevent", "stop"]))
-                    }, null, 8, _g)) : g("", !0)
+                    }, null, 8, xg)) : g("", !0)
                   ])) : g("", !0)
                 ]),
-                y.serviceTitle ? (i(), f("div", xg, [
+                y.serviceTitle ? (i(), f("div", Dg, [
                   ee(I, Y({
                     to: y.homeTo,
                     title: `${y.homeLabel} - ${y.serviceTitle}`
                   }, y.$attrs), {
                     default: X(() => [
-                      c("p", Dg, [
+                      c("p", Tg, [
                         F(v(y.serviceTitle) + " ", 1),
-                        y.showBeta ? (i(), f("span", Tg, " BETA ")) : g("", !0)
+                        y.showBeta ? (i(), f("span", Ig, " BETA ")) : g("", !0)
                       ])
                     ]),
                     _: 1
                   }, 16, ["to", "title"]),
-                  y.serviceDescription ? (i(), f("p", Ig, v(y.serviceDescription), 1)) : g("", !0)
+                  y.serviceDescription ? (i(), f("p", Eg, v(y.serviceDescription), 1)) : g("", !0)
                 ])) : g("", !0),
-                !y.serviceTitle && y.showBeta ? (i(), f("div", Eg, x[9] || (x[9] = [
+                !y.serviceTitle && y.showBeta ? (i(), f("div", Mg, x[9] || (x[9] = [
                   c("p", { class: "fr-header__service-title" }, [
                     c("span", { class: "fr-badge fr-badge--sm fr-badge--green-emeraude" }, "BETA")
                   ], -1)
                 ]))) : g("", !0)
               ]),
-              c("div", Mg, [
-                (k = y.quickLinks) != null && k.length || r.value ? (i(), f("div", Cg, [
+              c("div", Cg, [
+                (k = y.quickLinks) != null && k.length || r.value ? (i(), f("div", Pg, [
                   l.value ? g("", !0) : (i(), V(Qt, {
                     key: 0,
                     links: y.quickLinks,
@@ -10961,7 +10963,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
                     onSelect: x[2] || (x[2] = (h) => n("language-select", h))
                   }), null, 16)) : g("", !0)
                 ])) : g("", !0),
-                c("div", Pg, [
+                c("div", Lg, [
                   B(y.$slots, "header-search"),
                   y.showSearch ? (i(), V(O(rt), {
                     key: 0,
@@ -10984,7 +10986,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
               role: "dialog",
               "aria-modal": "true"
             }, [
-              c("div", Bg, [
+              c("div", $g, [
                 c("button", {
                   id: "close-button",
                   class: "fr-btn fr-btn--close",
@@ -10992,7 +10994,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
                   "data-testid": "close-modal-btn",
                   onClick: x[5] || (x[5] = J((h) => u(), ["prevent", "stop"]))
                 }, v(y.closeMenuModalLabel), 1),
-                c("div", $g, [
+                c("div", Ag, [
                   r.value ? (i(), V(O(nt), Y({ key: 0 }, r.value, {
                     onSelect: x[6] || (x[6] = (h) => r.value.currentLanguage = h.codeIso)
                   }), null, 16)) : g("", !0),
@@ -11014,7 +11016,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
                   key: 0,
                   hidemodal: u
                 }) : g("", !0),
-                o.value ? (i(), f("div", Ag, [
+                o.value ? (i(), f("div", Sg, [
                   ee(O(rt), {
                     "searchbar-id": y.searchbarId,
                     "model-value": y.modelValue,
@@ -11024,30 +11026,30 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
                   }, null, 8, ["searchbar-id", "model-value", "placeholder"])
                 ])) : g("", !0)
               ])
-            ], 10, Lg)) : g("", !0),
+            ], 10, Bg)) : g("", !0),
             B(y.$slots, "default")
           ])
         ]),
-        c("div", Sg, [
-          $.value && !s.value ? (i(), f("div", Og, [
+        c("div", Og, [
+          $.value && !s.value ? (i(), f("div", Rg, [
             B(y.$slots, "mainnav", { hidemodal: u })
           ])) : g("", !0)
         ])
       ]);
     };
   }
-}), Fg = { class: "fr-table" }, Ng = { class: "fr-table__wrapper" }, Vg = { class: "fr-table__container" }, jg = { class: "fr-table__content" }, qg = ["id"], Hg = {
+}), Ng = { class: "fr-table" }, Vg = { class: "fr-table__wrapper" }, jg = { class: "fr-table__container" }, qg = { class: "fr-table__content" }, Hg = ["id"], Wg = {
   key: 0,
   class: "fr-cell--fixed",
   role: "columnheader"
-}, Wg = { class: "fr-checkbox-group fr-checkbox-group--sm" }, Yg = ["id", "checked"], Qg = ["for"], Kg = ["tabindex", "onClick", "onKeydown"], zg = { key: 0 }, Gg = { key: 1 }, Xg = ["data-row-key"], Ug = {
+}, Yg = { class: "fr-checkbox-group fr-checkbox-group--sm" }, Qg = ["id", "checked"], Kg = ["for"], zg = ["tabindex", "onClick", "onKeydown"], Gg = { key: 0 }, Xg = { key: 1 }, Ug = ["data-row-key"], Zg = {
   key: 0,
   class: "fr-cell--fixed",
   role: "columnheader"
-}, Zg = { class: "fr-checkbox-group fr-checkbox-group--sm" }, Jg = ["id", "value"], eb = ["for"], tb = ["onKeydown"], ab = { class: "flex gap-2 items-center" }, nb = ["selected"], rb = ["value", "selected"], lb = { class: "flex ml-1" }, ob = { class: "self-center" }, sb = /* @__PURE__ */ S({
+}, Jg = { class: "fr-checkbox-group fr-checkbox-group--sm" }, eb = ["id", "value"], tb = ["for"], ab = ["onKeydown"], nb = { class: "flex gap-2 items-center" }, rb = ["selected"], lb = ["value", "selected"], ob = { class: "flex ml-1" }, sb = { class: "self-center" }, ib = /* @__PURE__ */ S({
   __name: "DsfrCustomDataTable",
   props: /* @__PURE__ */ Le({
-    id: { default: () => He("table") },
+    id: { default: () => Fe("table") },
     title: {},
     rowKey: { default: 0 },
     headersRow: {},
@@ -11135,28 +11137,28 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
     function k(h) {
       navigator.clipboard.writeText(h);
     }
-    return (h, M) => (i(), f("div", Fg, [
-      c("div", Ng, [
-        c("div", Vg, [
-          c("div", jg, [
+    return (h, M) => (i(), f("div", Ng, [
+      c("div", Vg, [
+        c("div", jg, [
+          c("div", qg, [
             c("table", { id: h.id }, [
               c("caption", {
                 class: R({ "sr-only": h.noCaption })
               }, v(h.title), 3),
               c("thead", null, [
                 c("tr", null, [
-                  h.selectableRows ? (i(), f("th", Hg, [
-                    c("div", Wg, [
+                  h.selectableRows ? (i(), f("th", Wg, [
+                    c("div", Yg, [
                       c("input", {
                         id: `table-select--${h.id}-all`,
                         checked: I.value,
                         type: "checkbox",
                         onInput: M[0] || (M[0] = (D) => x(D.target.checked))
-                      }, null, 40, Yg),
+                      }, null, 40, Qg),
                       c("label", {
                         class: "fr-label",
                         for: `table-select--${h.id}-all`
-                      }, " Sélectionner tout ", 8, Qg)
+                      }, " Sélectionner tout ", 8, Kg)
                     ])
                   ])) : g("", !0),
                   (i(!0), f(Q, null, U(h.headersRow, (D, z) => (i(), f("th", Y({
@@ -11177,18 +11179,18 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
                       B(h.$slots, "header", Y({ ref_for: !0 }, typeof D == "object" ? D : { key: D, label: D }), () => [
                         F(v(typeof D == "object" ? D.label : D), 1)
                       ], !0),
-                      w.value !== (D.key ?? D) && (h.sortableRows === !0 || Array.isArray(h.sortableRows) && h.sortableRows.includes(D.key ?? D)) ? (i(), f("span", zg, [
+                      w.value !== (D.key ?? D) && (h.sortableRows === !0 || Array.isArray(h.sortableRows) && h.sortableRows.includes(D.key ?? D)) ? (i(), f("span", Gg, [
                         ee(O(pe), {
                           name: "ri-sort-asc",
                           color: "var(--grey-625-425)"
                         })
-                      ])) : w.value === (D.key ?? D) ? (i(), f("span", Gg, [
+                      ])) : w.value === (D.key ?? D) ? (i(), f("span", Xg, [
                         ee(O(pe), {
                           name: E.value ? "ri-sort-desc" : "ri-sort-asc"
                         }, null, 8, ["name"])
                       ])) : g("", !0)
                     ], 2)
-                  ], 16, Kg))), 128))
+                  ], 16, zg))), 128))
                 ])
               ]),
               c("tbody", null, [
@@ -11196,21 +11198,21 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
                   key: `row-${z}`,
                   "data-row-key": z + 1
                 }, [
-                  h.selectableRows ? (i(), f("th", Ug, [
-                    c("div", Zg, [
+                  h.selectableRows ? (i(), f("th", Zg, [
+                    c("div", Jg, [
                       Be(c("input", {
                         id: `row-select-${h.id}-${z}`,
                         "onUpdate:modelValue": M[1] || (M[1] = (q) => r.value = q),
                         value: h.rows[z][h.rowKey] ?? `row-${z}`,
                         type: "checkbox",
                         onChange: M[2] || (M[2] = (q) => P())
-                      }, null, 40, Jg), [
+                      }, null, 40, eb), [
                         [lt, r.value]
                       ]),
                       c("label", {
                         class: "fr-label",
                         for: `row-select-${h.id}-${z}`
-                      }, " Sélectionner la ligne " + v(z + 1), 9, eb)
+                      }, " Sélectionner la ligne " + v(z + 1), 9, tb)
                     ])
                   ])) : g("", !0),
                   (i(!0), f(Q, null, U(D, (q, C) => (i(), f("td", {
@@ -11227,10 +11229,10 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
                     }), () => [
                       F(v(typeof q == "object" ? q[h.rowKey] : q), 1)
                     ], !0)
-                  ], 40, tb))), 128))
-                ], 8, Xg))), 128))
+                  ], 40, ab))), 128))
+                ], 8, Ug))), 128))
               ])
-            ], 8, qg)
+            ], 8, Hg)
           ])
         ])
       ]),
@@ -11242,7 +11244,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
             key: 0,
             class: R(["flex justify-between items-center", h.paginationWrapperClass])
           }, [
-            c("div", ab, [
+            c("div", nb, [
               M[6] || (M[6] = c("label", {
                 class: "fr-label",
                 for: "pagination-options"
@@ -11258,18 +11260,18 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
                   selected: !h.paginationOptions.includes(l.value),
                   disabled: "true",
                   hidden: "hidden"
-                }, " Sélectionner une option ", 8, nb),
+                }, " Sélectionner une option ", 8, rb),
                 (i(!0), f(Q, null, U(h.paginationOptions, (D, z) => (i(), f("option", {
                   key: z,
                   value: D,
                   selected: +D === l.value
-                }, v(D), 9, rb))), 128))
+                }, v(D), 9, lb))), 128))
               ], 544), [
                 [zt, l.value]
               ])
             ]),
-            c("div", lb, [
-              c("span", ob, "Page " + v(o.value + 1) + " sur " + v(s.value), 1)
+            c("div", ob, [
+              c("span", sb, "Page " + v(o.value + 1) + " sur " + v(s.value), 1)
             ]),
             ee(O(na), {
               "current-page": o.value,
@@ -11281,22 +11283,22 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
       ], 2)
     ]));
   }
-}), ib = /* @__PURE__ */ Ae(sb, [["__scopeId", "data-v-0bee5f91"]]), ub = ["id", "name", "value", "checked", "required", "data-testid", "data-test"], db = ["for"], cb = {
+}), ub = /* @__PURE__ */ Ae(ib, [["__scopeId", "data-v-0bee5f91"]]), db = ["id", "name", "value", "checked", "required", "data-testid", "data-test"], cb = ["for"], fb = {
   key: 0,
   class: "required"
-}, fb = {
+}, pb = {
   key: 0,
   class: "fr-hint-text"
-}, pb = {
+}, mb = {
   key: 0,
   class: "fr-messages-group",
   "aria-live": "assertive",
   role: "alert"
-}, mb = /* @__PURE__ */ S({
+}, hb = /* @__PURE__ */ S({
   inheritAttrs: !1,
   __name: "DsfrCustomCheckbox",
   props: /* @__PURE__ */ Le({
-    id: { default: () => He("basic", "checkbox") },
+    id: { default: () => Fe("basic", "checkbox") },
     name: {},
     required: { type: Boolean },
     value: {},
@@ -11336,7 +11338,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
         }, l.$attrs, {
           "data-testid": `input-checkbox-${l.id}`,
           "data-test": `input-checkbox-${l.id}`
-        }), null, 16, ub), [
+        }), null, 16, db), [
           [lt, r.value]
         ]),
         c("label", {
@@ -11346,16 +11348,16 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
           B(l.$slots, "label", {}, () => [
             F(v(l.label) + " ", 1),
             B(l.$slots, "required-tip", {}, () => [
-              l.required ? (i(), f("span", cb, " *")) : g("", !0)
+              l.required ? (i(), f("span", fb, " *")) : g("", !0)
             ])
           ]),
-          l.hint ? (i(), f("span", fb, [
+          l.hint ? (i(), f("span", pb, [
             B(l.$slots, "hint", {}, () => [
               F(v(l.hint), 1)
             ])
           ])) : g("", !0)
-        ], 8, db),
-        e.value ? (i(), f("div", pb, [
+        ], 8, cb),
+        e.value ? (i(), f("div", mb, [
           c("p", {
             class: R(["fr-message--info flex items-center", n.value])
           }, v(e.value), 3)
@@ -11363,10 +11365,10 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
       ], 2)
     ], 2));
   }
-}), hb = ["id"], vb = /* @__PURE__ */ S({
+}), vb = ["id"], gb = /* @__PURE__ */ S({
   __name: "DsfrComponentTooltip",
   props: {
-    id: { default: () => He("tooltip") },
+    id: { default: () => Fe("tooltip") },
     label: { default: "" },
     noOutline: { type: Boolean },
     secondary: { type: Boolean },
@@ -11465,10 +11467,10 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
         B(k.$slots, "default", {}, () => [
           F(v(k.content), 1)
         ], !0)
-      ], 14, hb)
+      ], 14, vb)
     ], 64));
   }
-}), tr = /* @__PURE__ */ Ae(vb, [["__scopeId", "data-v-95dd9f76"]]), gb = /* @__PURE__ */ S({
+}), tr = /* @__PURE__ */ Ae(gb, [["__scopeId", "data-v-95dd9f76"]]), bb = /* @__PURE__ */ S({
   __name: "DsfrButtonTooltip",
   setup(a) {
     return (t, e) => (i(), V(tr, Y({ "is-link": !1 }, t.$attrs), {
@@ -11478,7 +11480,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
       _: 3
     }, 16));
   }
-}), bb = /* @__PURE__ */ S({
+}), yb = /* @__PURE__ */ S({
   __name: "DsfrLinkTooltip",
   props: {
     asButton: { type: Boolean, default: !1 }
@@ -11493,10 +11495,10 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
       _: 3
     }, 16, ["is-link"]));
   }
-}), yb = ["id", "href", "aria-disabled"], kb = /* @__PURE__ */ S({
+}), kb = ["id", "href", "aria-disabled"], wb = /* @__PURE__ */ S({
   __name: "DsfrLink",
   props: {
-    id: { default: () => He("link") },
+    id: { default: () => Fe("link") },
     label: { default: "" },
     noOutline: { type: Boolean },
     secondary: { type: Boolean },
@@ -11536,18 +11538,18 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-0be4e59
       B(s.$slots, "default", {}, () => [
         F(v(s.label), 1)
       ], !0)
-    ], 16, yb));
+    ], 16, kb));
   }
-}), wb = /* @__PURE__ */ Ae(kb, [["__scopeId", "data-v-cc8b0ebe"]]), _b = (a, t) => a.matches ? a.matches(t) : a.msMatchesSelector ? a.msMatchesSelector(t) : a.webkitMatchesSelector ? a.webkitMatchesSelector(t) : null, xb = (a, t) => {
+}), _b = /* @__PURE__ */ Ae(wb, [["__scopeId", "data-v-cc8b0ebe"]]), xb = (a, t) => a.matches ? a.matches(t) : a.msMatchesSelector ? a.msMatchesSelector(t) : a.webkitMatchesSelector ? a.webkitMatchesSelector(t) : null, Db = (a, t) => {
   let e = a;
   for (; e && e.nodeType === 1; ) {
-    if (_b(e, t))
+    if (xb(e, t))
       return e;
     e = e.parentNode;
   }
   return null;
-}, Db = (a, t) => a.closest ? a.closest(t) : xb(a, t), Tb = (a) => !!(a && typeof a.then == "function");
-class Ib {
+}, Tb = (a, t) => a.closest ? a.closest(t) : Db(a, t), Ib = (a) => !!(a && typeof a.then == "function");
+class Eb {
   constructor({
     search: t,
     autoSelect: e = !1,
@@ -11625,7 +11627,7 @@ class Ib {
       t.preventDefault();
     });
     N(this, "handleResultClick", (t) => {
-      const { target: e } = t, n = Db(e, "[data-result-index]");
+      const { target: e } = t, n = Tb(e, "[data-result-index]");
       if (n) {
         this.selectedIndex = parseInt(n.dataset.resultIndex, 10);
         const r = this.results[this.selectedIndex];
@@ -11668,15 +11670,15 @@ class Ib {
       const n = t.getBoundingClientRect(), r = e.getBoundingClientRect();
       r.top < n.top ? t.scrollTop -= n.top - r.top : r.bottom > n.bottom && (t.scrollTop += r.bottom - n.bottom);
     });
-    this.search = Tb(t) ? t : (E) => Promise.resolve(t(E)), this.autoSelect = e, this.setValue = n, this.setAttribute = r, this.onUpdate = l, this.onSubmit = o, this.autocorrect = u, this.onShow = s, this.onHide = d, this.onLoading = p, this.onLoaded = m, this.submitOnEnter = w;
+    this.search = Ib(t) ? t : (E) => Promise.resolve(t(E)), this.autoSelect = e, this.setValue = n, this.setAttribute = r, this.onUpdate = l, this.onSubmit = o, this.autocorrect = u, this.onShow = s, this.onHide = d, this.onLoading = p, this.onLoaded = m, this.submitOnEnter = w;
   }
 }
-const Eb = (a, t) => {
+const Mb = (a, t) => {
   const e = a.getBoundingClientRect(), n = t.getBoundingClientRect();
   return /* 1 */ e.bottom + n.height > window.innerHeight && /* 2 */
   window.innerHeight - e.bottom < e.top && /* 3 */
   window.pageYOffset + e.top - n.height > 0 ? "above" : "below";
-}, Mb = (a, t, e) => {
+}, Cb = (a, t, e) => {
   let n;
   return function() {
     const l = this, o = arguments, s = function() {
@@ -11684,7 +11686,7 @@ const Eb = (a, t) => {
     };
     clearTimeout(n), n = setTimeout(s, t);
   };
-}, Cb = (a) => {
+}, Pb = (a) => {
   if (a != null && a.length) {
     const t = a.startsWith("#");
     return {
@@ -11692,7 +11694,7 @@ const Eb = (a, t) => {
       content: t ? a.substring(1) : a
     };
   }
-}, Pb = {
+}, Lb = {
   name: "Autocomplete",
   inheritAttrs: !1,
   props: {
@@ -11731,7 +11733,7 @@ const Eb = (a, t) => {
   },
   emits: ["update", "submit"],
   data() {
-    const a = new Ib({
+    const a = new Eb({
       search: this.search,
       autoSelect: this.autoSelect,
       setValue: this.setValue,
@@ -11743,7 +11745,7 @@ const Eb = (a, t) => {
       onLoaded: this.handleLoaded,
       submitOnEnter: this.submitOnEnter
     });
-    return this.debounceTime > 0 && (a.handleInput = Mb(a.handleInput, this.debounceTime)), {
+    return this.debounceTime > 0 && (a.handleInput = Cb(a.handleInput, this.debounceTime)), {
       core: a,
       value: this.defaultValue,
       resultListId: `${this.baseClass}-result-list-${pr()}`,
@@ -11796,7 +11798,7 @@ const Eb = (a, t) => {
       };
     },
     resultListProps() {
-      const a = this.position === "below" ? "top" : "bottom", t = Cb(this.resultListLabel);
+      const a = this.position === "below" ? "top" : "bottom", t = Pb(this.resultListLabel);
       return {
         id: this.resultListId,
         class: `${this.baseClass}-result-list`,
@@ -11835,7 +11837,7 @@ const Eb = (a, t) => {
     document.body.removeEventListener("click", this.handleDocumentClick);
   },
   updated() {
-    !this.$refs.input || !this.$refs.resultList || (this.resetPosition && this.results.length > 0 && (this.resetPosition = !1, this.position = Eb(
+    !this.$refs.input || !this.$refs.resultList || (this.resetPosition && this.results.length > 0 && (this.resetPosition = !1, this.position = Mb(
       this.$refs.input,
       this.$refs.resultList
     )), this.core.checkSelectedResultVisible(this.$refs.resultList));
@@ -11870,7 +11872,7 @@ const Eb = (a, t) => {
     }
   }
 };
-function Lb(a, t, e, n, r, l) {
+function Bb(a, t, e, n, r, l) {
   return i(), f("div", Y({ ref: "root" }, {
     class: a.$attrs.class,
     ...a.$attrs.style ? { style: a.$attrs.style } : {}
@@ -11906,15 +11908,16 @@ function Lb(a, t, e, n, r, l) {
     ])
   ], 16);
 }
-const Bb = /* @__PURE__ */ Ae(Pb, [["render", Lb]]);
-var $b = {
+const $b = /* @__PURE__ */ Ae(Lb, [["render", Bb]]);
+var Ab = {
   install: function(a, t) {
-    a.use(em), a.component("RouterLink", av), a.component("DsfrFacets", _v), a.component("DsfrSelectMultiple", Zv), a.component("DsfrMenu", Pv), a.component("DsfrMenuLink", Av), a.component("DsfrHeaderMenu", sg), a.component("DsfrCustomHeader", Rg), a.component("DsfrCustomHeaderMenuLinks", Qt), a.component("DsfrCustomDataTable", ib), a.component("DsfrCustomCheckbox", mb), a.component("DsfrButtonTooltip", gb), a.component("DsfrLinkTooltip", bb), a.component("DsfrLink", wb), a.component("autocomplete", Bb);
+    a.use(em), a.component("RouterLink", ov), a.component("DsfrFacets", Iv), a.component("DsfrSelectMultiple", Jv), a.component("DsfrMenu", Lv), a.component("DsfrMenuLink", Sv), a.component("DsfrHeaderMenu", ig), a.component("DsfrCustomHeader", Fg), a.component("DsfrCustomHeaderMenuLinks", Qt), a.component("DsfrCustomDataTable", ub), a.component("DsfrCustomCheckbox", hb), a.component("DsfrButtonTooltip", bb), a.component("DsfrLinkTooltip", yb), a.component("DsfrLink", _b), a.component("autocomplete", $b);
   },
-  methods: ev
+  methods: ev,
+  utils: rv
 };
-window && (window.DSFR = $b);
+window && (window.DSFR = Ab);
 export {
-  $b as default
+  Ab as default
 };
 //# sourceMappingURL=dsfr.es.js.map

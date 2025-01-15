@@ -17,3 +17,7 @@ export const getRandomString = (length: number) => {
 export const getRandomId = (prefix = '', suffix = '') => {
     return (prefix ? `${prefix}-` : '') + getRandomString(5) + (suffix ? `-${suffix}` : '')
 }
+
+export default {
+    getRandomId
+}

@@ -6,6 +6,8 @@ import '@gouvminint/vue-dsfr/styles'                    // Import des styles glo
 import VueDsfr from '@gouvminint/vue-dsfr'              // Import (par défaut) de la bibliothèque //
 
 import DsfrMethods from './methods'
+import Utils from './utils/random-utils'
+
 import RouterLink from "@/components/Routerlink.vue";
 import DsfrFacets from "@/components/DsfrFacets.vue";
 
@@ -56,6 +58,7 @@ var DSFR = {
     },
 
     methods: DsfrMethods,
+    utils: Utils
 }
 
 if (window) {
