@@ -254,3 +254,12 @@
 .leading-loose {
     line-height: 2;
 }
+
+/* Font italic */
+.italic {
+    font-style: italic;
+}
+
+.not-italic	{
+    font-style: normal;
+}
