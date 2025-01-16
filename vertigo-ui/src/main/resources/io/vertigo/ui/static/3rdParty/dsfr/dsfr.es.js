@@ -11386,7 +11386,7 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
     const t = a, e = H(!1), n = H(null), r = H(null), l = H("0px"), o = H("0px"), s = H("0px"), u = H(!1), d = H(0);
     async function p() {
       var K, ne, te, ie, se, Ie;
-      if (typeof document > "u" || !e.value)
+      if (typeof document > "u" || !e.value || r.value.matches(":empty"))
         return;
       await new Promise((Ce) => setTimeout(Ce, 100));
       const k = (K = n.value) == null ? void 0 : K.getBoundingClientRect().top, h = (ne = n.value) == null ? void 0 : ne.offsetHeight, M = (te = n.value) == null ? void 0 : te.offsetWidth, D = (ie = n.value) == null ? void 0 : ie.getBoundingClientRect().left, z = (se = r.value) == null ? void 0 : se.offsetHeight, q = (Ie = r.value) == null ? void 0 : Ie.offsetWidth, A = !(k - z < 0) && k + h + z >= document.documentElement.offsetHeight;
@@ -11470,7 +11470,7 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
       ], 14, vb)
     ], 64));
   }
-}), tr = /* @__PURE__ */ Ae(gb, [["__scopeId", "data-v-95dd9f76"]]), bb = /* @__PURE__ */ S({
+}), tr = /* @__PURE__ */ Ae(gb, [["__scopeId", "data-v-9e091ad8"]]), bb = /* @__PURE__ */ S({
   __name: "DsfrButtonTooltip",
   setup(a) {
     return (t, e) => (i(), V(tr, Y({ "is-link": !1 }, t.$attrs), {

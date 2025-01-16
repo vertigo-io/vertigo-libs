@@ -36,7 +36,7 @@ async function computePosition() {
   if (typeof document === 'undefined') {
     return
   }
-  if (!show.value) {
+  if (!show.value || tooltip.value.matches(":empty")) {
     return
   }
 
