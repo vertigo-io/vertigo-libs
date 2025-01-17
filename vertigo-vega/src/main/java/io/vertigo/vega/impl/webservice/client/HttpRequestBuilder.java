@@ -128,8 +128,8 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 		}
 		if (body != null) {
 			sb.append("\nRequests Body: ");
-			final var jsonBody = prepareBody();
-			sb.append(jsonBody);
+			final var newJsonBody = prepareBody();
+			sb.append(newJsonBody);
 		}
 		return sb.toString();
 	}

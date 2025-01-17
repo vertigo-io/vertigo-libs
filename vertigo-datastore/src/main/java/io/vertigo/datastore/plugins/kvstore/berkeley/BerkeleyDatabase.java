@@ -28,25 +28,21 @@ import org.apache.logging.log4j.Logger;
 import com.sleepycat.bind.EntryBinding;
 import com.sleepycat.bind.tuple.TupleBinding;
 import com.sleepycat.je.CacheMode;
-import com.sleepycat.je.Cursor;
 import com.sleepycat.je.CursorConfig;
 import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.DatabaseEntry;
 import com.sleepycat.je.DatabaseException;
-import com.sleepycat.je.DiskOrderedCursor;
 import com.sleepycat.je.DiskOrderedCursorConfig;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 import com.sleepycat.je.SecondaryConfig;
-import com.sleepycat.je.SecondaryCursor;
 import com.sleepycat.je.SecondaryDatabase;
 import com.sleepycat.je.SecondaryKeyCreator;
 import com.sleepycat.je.Transaction;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionResourceId;
 import io.vertigo.core.analytics.AnalyticsManager;
@@ -105,7 +101,7 @@ final class BerkeleyDatabase {
 		timePrefixDataBinding = new BerkeleyTimePrefixDataBinding();
 		this.timeToLiveSeconds = timeToLiveSeconds;
 
-		final DatabaseConfig databaseConfig = new DatabaseConfig()
+		final var databaseConfig = new DatabaseConfig()
 				.setReadOnly(false)
 				.setAllowCreate(true)
 				.setTransactional(true)
@@ -117,12 +113,12 @@ final class BerkeleyDatabase {
 
 				@Override
 				public boolean createSecondaryKey(final SecondaryDatabase secondary, final DatabaseEntry key, final DatabaseEntry data, final DatabaseEntry result) {
-					final long createTime = (long) timePrefixDataBinding.entryToObject(data);
+					final var createTime = (long) timePrefixDataBinding.entryToObject(data);
 					timeBinding.objectToEntry(createTime / PRECISION, result);
 					return true;
 				}
 			};
-			final SecondaryConfig secConfig = new SecondaryConfig()
+			final var secConfig = new SecondaryConfig()
 					.setKeyCreator(keyCreator);
 			secConfig.setAllowCreate(true)
 					.setSortedDuplicates(true)
@@ -144,8 +140,8 @@ final class BerkeleyDatabase {
 	}
 
 	private Transaction getCurrentBerkeleyTransaction() {
-		final VTransaction transaction = transactionManager.getCurrentTransaction();
-		BerkeleyResource berkeleyResource = transaction.getResource(berkeleyResourceId);
+		final var transaction = transactionManager.getCurrentTransaction();
+		var berkeleyResource = transaction.getResource(berkeleyResourceId);
 		if (berkeleyResource == null) {
 			//On a rien trouvé il faut créer la resourceLucene et l'ajouter à la transaction
 			berkeleyResource = new BerkeleyResource(database.getEnvironment());
@@ -167,8 +163,8 @@ final class BerkeleyDatabase {
 				.isNotNull(id)
 				.isNotNull(clazz);
 		//-----
-		final DatabaseEntry idEntry = new DatabaseEntry();
-		final DatabaseEntry dataEntry = new DatabaseEntry();
+		final var idEntry = new DatabaseEntry();
+		final var dataEntry = new DatabaseEntry();
 
 		keyBinding.objectToEntry(id, idEntry);
 
@@ -199,8 +195,8 @@ final class BerkeleyDatabase {
 				.isTrue(object instanceof Serializable, "Value must be Serializable {0}", object.getClass().getSimpleName());
 		//-----
 		//-----
-		final DatabaseEntry idEntry = new DatabaseEntry();
-		final DatabaseEntry dataEntry = new DatabaseEntry();
+		final var idEntry = new DatabaseEntry();
+		final var dataEntry = new DatabaseEntry();
 
 		keyBinding.objectToEntry(id, idEntry);
 		dataBinding.objectToEntry(Serializable.class.cast(object), dataEntry);
@@ -224,12 +220,12 @@ final class BerkeleyDatabase {
 	 * @return Values
 	 */
 	public <C> List<C> findAll(final int skip, final Integer limit, final Class<C> clazz) {
-		final DatabaseEntry idEntry = new DatabaseEntry();
-		final DatabaseEntry dataEntry = new DatabaseEntry();
+		final var idEntry = new DatabaseEntry();
+		final var dataEntry = new DatabaseEntry();
 		final List<C> list = new ArrayList<>();
 
-		try (final Cursor cursor = database.openCursor(getCurrentBerkeleyTransaction(), null)) {
-			int find = 0;
+		try (final var cursor = database.openCursor(getCurrentBerkeleyTransaction(), null)) {
+			var find = 0;
 			while ((limit == null || find < limit + skip) && cursor.getNext(idEntry, dataEntry, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
 				final Object object = dataBinding.entryToObject(dataEntry);
 				if (clazz.isInstance(object)) {
@@ -258,7 +254,7 @@ final class BerkeleyDatabase {
 	boolean delete(final String id) {
 		Assertion.check().isNotBlank(id);
 		//-----
-		final DatabaseEntry idEntry = new DatabaseEntry();
+		final var idEntry = new DatabaseEntry();
 
 		keyBinding.objectToEntry(id, idEntry);
 
@@ -294,8 +290,8 @@ final class BerkeleyDatabase {
 			secDatabaseConfig = null;
 		}
 
-		final String dataBaseName = database.getDatabaseName();
-		final DatabaseConfig databaseConfig = database.getConfig();
+		final var dataBaseName = database.getDatabaseName();
+		final var databaseConfig = database.getConfig();
 		database.close();
 
 		database.getEnvironment().truncateDatabase(null, dataBaseName, false);
@@ -332,14 +328,14 @@ final class BerkeleyDatabase {
 	}
 
 	private void removeTooOldElementsV1() {
-		final DatabaseEntry foundKey = new DatabaseEntry();
-		final DatabaseEntry foundData = new DatabaseEntry();
-		int removed = 0;
-		int readed = 0;
+		final var foundKey = new DatabaseEntry();
+		final var foundData = new DatabaseEntry();
+		var removed = 0;
+		var readed = 0;
 
-		final int dataCount = (int) database.count();
-		Transaction transaction = database.getEnvironment().beginTransaction(null, null);
-		Cursor cursor = database.openCursor(transaction, null);
+		final var dataCount = (int) database.count();
+		var transaction = database.getEnvironment().beginTransaction(null, null);
+		var cursor = database.openCursor(transaction, null);
 		try {
 			while (cursor.getNext(foundKey, foundData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
 				readed++;
@@ -360,8 +356,8 @@ final class BerkeleyDatabase {
 			LOGGER.info("Berkeley database ({}) purge {} elements ({} readed)", database.getDatabaseName(), removed, readed);
 		}
 
-		final int purgeRead = readed;
-		final int purgeDelete = removed;
+		final var purgeRead = readed;
+		final var purgeDelete = removed;
 		analyticsManager.getCurrentTracer().ifPresent(tracer -> {
 			tracer.setMeasure("totalSize", dataCount)
 					.setMeasure("purgeRead", purgeRead)
@@ -375,20 +371,20 @@ final class BerkeleyDatabase {
 	 *
 	 */
 	private void removeTooOldElementsV2() {
-		final DatabaseEntry foundKey = new DatabaseEntry();
-		final DatabaseEntry foundData = new DatabaseEntry();
-		int lastRemoved = 0;
-		int removed = 0;
-		int notFound = 0;
-		int readed = 0;
+		final var foundKey = new DatabaseEntry();
+		final var foundData = new DatabaseEntry();
+		var lastRemoved = 0;
+		var removed = 0;
+		var notFound = 0;
+		var readed = 0;
 
-		final int dataCount = (int) database.count();
-		final int maxDelete = Math.max(dataCount / 5, 100_000);
-		final int chunckDelete = maxDelete / 10;
-		int notEmptyChunckCount = 0;
-		final long start = System.currentTimeMillis();
+		final var dataCount = (int) database.count();
+		final var maxDelete = Math.max(dataCount / 5, 100_000);
+		final var chunckDelete = maxDelete / 10;
+		var notEmptyChunckCount = 0;
+		final var start = System.currentTimeMillis();
 		final List<String> toDeleteIds = new ArrayList<>();
-		try (final DiskOrderedCursor doCursor = database.openCursor(DiskOrderedCursorConfig.DEFAULT)) {
+		try (final var doCursor = database.openCursor(DiskOrderedCursorConfig.DEFAULT)) {
 			//String result = "";
 			while (doCursor.getNext(foundKey, foundData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
 				if (doNeedToRemove(foundKey, foundData)) {
@@ -410,14 +406,14 @@ final class BerkeleyDatabase {
 			}
 			//System.out.println(readed + ": " + result);
 		}
-		final long readEnd = System.currentTimeMillis();
+		final var readEnd = System.currentTimeMillis();
 		final long deleteEnd;
-		Transaction transaction = database.getEnvironment().beginTransaction(null, null);
+		var transaction = database.getEnvironment().beginTransaction(null, null);
 		try {
 			removed = 0;
 			for (final String deleteId : toDeleteIds) {
 				keyBinding.objectToEntry(deleteId, foundKey);
-				final OperationStatus status = database.delete(transaction, foundKey);
+				final var status = database.delete(transaction, foundKey);
 
 				if (status != OperationStatus.SUCCESS) {
 					notFound++;
@@ -435,10 +431,10 @@ final class BerkeleyDatabase {
 			LOGGER.info("Berkeley database ({}) purge {} elements ({} not found, read {}ms, delete {}ms)", database.getDatabaseName(), removed, notFound, readEnd - start, deleteEnd - readEnd);
 		}
 
-		final int purgeRead = readed;
-		final int purgeNotFound = notFound;
-		final int purgeDelete = removed;
-		final int purgeNotEmptyChunck = notEmptyChunckCount;
+		final var purgeRead = readed;
+		final var purgeNotFound = notFound;
+		final var purgeDelete = removed;
+		final var purgeNotEmptyChunck = notEmptyChunckCount;
 		analyticsManager.getCurrentTracer().ifPresent(tracer -> {
 			tracer.setMeasure("totalSize", dataCount)
 					.setMeasure("purgeNotEmptyChunck", purgeNotEmptyChunck)
@@ -452,33 +448,31 @@ final class BerkeleyDatabase {
 	}
 
 	private void removeTooOldElementsV3() {
-		final DatabaseEntry foundKey = new DatabaseEntry();
-		final DatabaseEntry foundData = new DatabaseEntry();
+		final var foundKey = new DatabaseEntry();
+		final var foundData = new DatabaseEntry();
 		if (secDatabase == null) {
 			return;
 		}
 		//final int lastRemoved = 0;
-		int removed = 0;
-		final int notFound = 0;
-		int readed = 0;
+		var removed = 0;
+		final var notFound = 0;
+		var readed = 0;
 
-		final int dataCount = (int) database.count();
+		final var dataCount = (int) database.count();
 		//final int maxDelete = Math.max(dataCount / 10, 10_000);
-		final int notEmptyChunckCount = 0;
-		final Transaction transaction = secDatabase.getEnvironment().beginTransaction(null, null);
+		final var notEmptyChunckCount = 0;
+		final var transaction = secDatabase.getEnvironment().beginTransaction(null, null);
 		try {
-			final SecondaryCursor cursor = secDatabase.openCursor(transaction, CursorConfig.READ_UNCOMMITTED);
-			long firstCreateTimeS = System.currentTimeMillis() / PRECISION;
-			try {
+
+			var firstCreateTimeS = System.currentTimeMillis() / PRECISION;
+			try (final var cursor = secDatabase.openCursor(transaction, CursorConfig.READ_UNCOMMITTED)) {
 				if (cursor.getNext(foundKey, foundData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
 					firstCreateTimeS = getItemCreateTimeSecondSec(foundKey);
 					readed++;
 				}
-			} finally {
-				cursor.close();
 			}
-			final long minRemoveTime = System.currentTimeMillis() / PRECISION - timeToLiveSeconds * 1000 / PRECISION;
-			for (long removeT = firstCreateTimeS; removeT < minRemoveTime; removeT++) {
+			final var minRemoveTime = System.currentTimeMillis() / PRECISION - timeToLiveSeconds * 1000 / PRECISION;
+			for (var removeT = firstCreateTimeS; removeT < minRemoveTime; removeT++) {
 				timeBinding.objectToEntry(removeT, foundKey);
 				if (secDatabase.delete(transaction, foundKey) == OperationStatus.SUCCESS) {
 					removed++;
@@ -489,10 +483,10 @@ final class BerkeleyDatabase {
 			LOGGER.info("Berkeley database ({}) purge {} elements ({} readed)", database.getDatabaseName(), removed, readed);
 		}
 
-		final int purgeRead = readed;
-		final int purgeNotFound = notFound;
-		final int purgeDelete = removed;
-		final int purgeNotEmptyChunck = notEmptyChunckCount;
+		final var purgeRead = readed;
+		final var purgeNotFound = notFound;
+		final var purgeDelete = removed;
+		final var purgeNotEmptyChunck = notEmptyChunckCount;
 		analyticsManager.getCurrentTracer().ifPresent(tracer -> {
 			tracer.setMeasure("totalSize", dataCount)
 					.setMeasure("purgeNotEmptyChunck", purgeNotEmptyChunck)
@@ -515,7 +509,7 @@ final class BerkeleyDatabase {
 	}
 
 	private boolean doNeedToRemove(final DatabaseEntry theKey, final DatabaseEntry theData) {
-		String key = "IdError";
+		var key = "IdError";
 		try {
 			key = keyBinding.entryToObject(theKey); // test if key is readable
 			return !(boolean) dataTimeCheckBinding.entryToObject(theData); // return true if data is too old
