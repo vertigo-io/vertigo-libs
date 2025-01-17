@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -139,9 +139,10 @@ public final class VSpringMvcUiMessageStack implements UiMessageStack {
 	@Override
 	public void addFieldMessage(final Level level, final String message, final DataObject dto, final String fieldName) {
 		final var dtoKey = UiRequestUtil.getCurrentViewContext().findKey(dto);
-		if (dtoKey == null) {
-			throw new VSystemException("The provided dataObject is not in the current context");
-		}
+
+		Assertion.check()
+				.isNotNull(dtoKey, "The provided dataObject is not in the current context");
+
 		addFieldMessage(level, message, dtoKey, fieldName);
 	}
 
