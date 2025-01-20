@@ -406,7 +406,7 @@ thead tr:hover:last-child th:last-child:not(:first-child), tr:hover td:nth-last-
     overflow:auto; 
 }
 .q-uploader__list.scroll .q-field--auto-height .q-field__control {
-	max-height: 300px;
+	max-height: 254px;
 }
 .q-uploader .q-field__label {
 	top: 10px;
