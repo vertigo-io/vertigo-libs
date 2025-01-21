@@ -75,7 +75,8 @@ const selectAllText = computed(() => {
 })
 
 const selectionDisplay = computed(() => {
-  let result = `${props.modelValue.length} options séléctionnées`
+  const count = props.options.filter(o => props.modelValue.includes(o.value)).length;
+  let result = `${count} options séléctionnées`
   if (props.modelValue.length > 2) {
     return result;
   } else {
@@ -92,7 +93,8 @@ let selectAll = function () {
   if (props.modelValue.length >= localOptions.value.length) {
     props.modelValue.length = 0;
   } else {
-    for (let opt of localOptions.value) {
+    const unduplicatedOptions = localOptions.value.filter(o => !props.modelValue.includes(o.value));
+    for (let opt of unduplicatedOptions) {
       props.modelValue.push(opt.value)
     }
   }

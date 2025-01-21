@@ -1,7 +1,7 @@
 var ar = Object.defineProperty;
 var nr = (a, t, e) => t in a ? ar(a, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : a[t] = e;
 var N = (a, t, e) => nr(a, typeof t != "symbol" ? t + "" : t, e);
-import { defineComponent as S, ref as H, computed as T, onMounted as be, watch as me, onUnmounted as Te, Comment as rr, cloneVNode as lr, h as da, openBlock as i, createElementBlock as f, normalizeClass as R, createElementVNode as c, withModifiers as J, createTextVNode as F, toDisplayString as v, unref as O, Fragment as Q, renderList as U, createVNode as ee, withKeys as Z, withCtx as X, createBlock as V, resolveDynamicComponent as ge, mergeProps as Y, createCommentVNode as g, mergeModels as Le, useModel as we, withDirectives as Be, vModelCheckbox as lt, renderSlot as B, inject as Qe, toRef as ot, provide as Oe, resolveComponent as _e, useCssVars as Ya, nextTick as Qa, normalizeStyle as xe, normalizeProps as De, guardReactiveProps as yt, useAttrs as or, useSlots as Kt, hasInjectionContext as sr, reactive as ir, Teleport as ur, vModelSelect as zt, onBeforeUnmount as dr, Transition as cr, vShow as fr, useId as pr, toHandlers as mr } from "vue";
+import { defineComponent as S, ref as H, computed as T, onMounted as be, watch as me, onUnmounted as Te, Comment as rr, cloneVNode as lr, h as da, openBlock as i, createElementBlock as f, normalizeClass as R, createElementVNode as c, withModifiers as J, createTextVNode as F, toDisplayString as v, unref as O, Fragment as K, renderList as U, createVNode as ee, withKeys as Z, withCtx as X, createBlock as V, resolveDynamicComponent as ge, mergeProps as Y, createCommentVNode as g, mergeModels as Le, useModel as we, withDirectives as Be, vModelCheckbox as lt, renderSlot as B, inject as Qe, toRef as ot, provide as Oe, resolveComponent as _e, useCssVars as Ya, nextTick as Qa, normalizeStyle as xe, normalizeProps as De, guardReactiveProps as yt, useAttrs as or, useSlots as Kt, hasInjectionContext as sr, reactive as ir, Teleport as ur, vModelSelect as zt, onBeforeUnmount as dr, Transition as cr, vShow as fr, useId as pr, toHandlers as mr } from "vue";
 const Gt = Symbol("accordions"), Xt = Symbol("header"), kt = Symbol("tabs"), $e = () => {
   const a = H(), t = H(!1), e = H(!1), n = () => {
     if (!a.value)
@@ -246,7 +246,7 @@ const Gt = Symbol("accordions"), Xt = Symbol("header"), kt = Symbol("tabs"), $e 
           onTransitionend: u[1] || (u[1] = (p) => O(l)(o.value))
         }, [
           c("ol", Br, [
-            (i(!0), f(Q, null, U(s.links, (p, m) => (i(), f("li", {
+            (i(!0), f(K, null, U(s.links, (p, m) => (i(), f("li", {
               key: m,
               class: "fr-breadcrumb__item",
               "data-testid": "lis"
@@ -1731,7 +1731,7 @@ const Fl = {
       }]),
       "data-testid": "fr-btns"
     }, [
-      (i(!0), f(Q, null, U($.buttons, ({ onClick: x, ...I }, P) => (i(), f("li", { key: P }, [
+      (i(!0), f(K, null, U($.buttons, ({ onClick: x, ...I }, P) => (i(), f("li", { key: P }, [
         ee(qe, Y({ ref_for: !0 }, I, { onClick: x }), null, 16, ["onClick"])
       ]))), 128)),
       B($.$slots, "default")
@@ -1874,7 +1874,7 @@ const Fl = {
                     F(v(d.title), 1)
                   ]),
                   _: 1
-                }, 8, ["to"])) : (i(), f(Q, { key: 2 }, [
+                }, 8, ["to"])) : (i(), f(K, { key: 2 }, [
                   F(v(d.title), 1)
                 ], 64))
               ]),
@@ -1915,7 +1915,7 @@ const Fl = {
               reverse: ""
             }, null, 8, ["buttons", "size"])) : g("", !0),
             d.linksGroup.length ? (i(), f("ul", to, [
-              (i(!0), f(Q, null, U(d.linksGroup, (w, E) => (i(), f("li", {
+              (i(!0), f(K, null, U(d.linksGroup, (w, E) => (i(), f("li", {
                 key: `card-link-${E}`
               }, [
                 w.to ? (i(), V(m, {
@@ -1948,7 +1948,7 @@ const Fl = {
             }, null, 8, lo)
           ])) : g("", !0),
           d.badges.length ? (i(), f("ul", oo, [
-            (i(!0), f(Q, null, U(d.badges, (w, E) => (i(), f("li", { key: E }, [
+            (i(!0), f(K, null, U(d.badges, (w, E) => (i(), f("li", { key: E }, [
               ee(Ka, Y({ ref_for: !0 }, w), null, 16)
             ]))), 128))
           ])) : g("", !0)
@@ -2081,7 +2081,7 @@ const Fl = {
           ])
         ], 8, vo),
         B(o.$slots, "default", {}, () => [
-          (i(!0), f(Q, null, U(o.options, (u) => (i(), V(Tt, {
+          (i(!0), f(K, null, U(o.options, (u) => (i(), V(Tt, {
             id: u.id,
             key: u.id || u.name,
             modelValue: l.value,
@@ -2119,7 +2119,7 @@ const Fl = {
   emits: ["acceptAll", "refuseAll", "customize"],
   setup(a) {
     const t = a, e = T(() => typeof t.url == "string" && t.url.startsWith("http")), n = T(() => t.url ? e.value ? "a" : "RouterLink" : "a"), r = T(() => ({ [e.value ? "href" : "to"]: t.url }));
-    return (l, o) => (i(), f(Q, null, [
+    return (l, o) => (i(), f(K, null, [
       c("div", ko, [
         c("p", wo, [
           B(l.$slots, "default", {}, () => [
@@ -2203,7 +2203,7 @@ const Fl = {
               onClick: $[1] || ($[1] = J((b) => p(), ["prevent"]))
             }, v(_.prevPageTitle), 9, Eo)
           ]),
-          (i(!0), f(Q, null, U(o.value, (b, k) => (i(), f("li", { key: k }, [
+          (i(!0), f(K, null, U(o.value, (b, k) => (i(), f("li", { key: k }, [
             c("a", {
               href: b == null ? void 0 : b.href,
               class: "fr-pagination__link fr-unhidden-lg",
@@ -2354,7 +2354,7 @@ const Fl = {
                       }, " Sélectionner tout ", 8, Ho)
                     ])
                   ])) : g("", !0),
-                  (i(!0), f(Q, null, U(h.headersRow, (D, z) => (i(), f("th", Y({
+                  (i(!0), f(K, null, U(h.headersRow, (D, z) => (i(), f("th", Y({
                     key: typeof D == "object" ? D.key : D,
                     scope: "col",
                     ref_for: !0
@@ -2387,7 +2387,7 @@ const Fl = {
                 ])
               ]),
               c("tbody", null, [
-                (i(!0), f(Q, null, U(y.value, (D, z) => (i(), f("tr", {
+                (i(!0), f(K, null, U(y.value, (D, z) => (i(), f("tr", {
                   key: `row-${z}`,
                   "data-row-key": z + 1
                 }, [
@@ -2408,7 +2408,7 @@ const Fl = {
                       }, " Sélectionner la ligne " + v(z + 1), 9, Uo)
                     ])
                   ])) : g("", !0),
-                  (i(!0), f(Q, null, U(D, (q, C) => (i(), f("td", {
+                  (i(!0), f(K, null, U(D, (q, C) => (i(), f("td", {
                     key: typeof q == "object" ? q[h.rowKey] : q,
                     tabindex: "0",
                     onKeydown: [
@@ -2454,7 +2454,7 @@ const Fl = {
                   disabled: "true",
                   hidden: "hidden"
                 }, " Sélectionner une option ", 8, es),
-                (i(!0), f(Q, null, U(h.paginationOptions, (D, z) => (i(), f("option", {
+                (i(!0), f(K, null, U(h.paginationOptions, (D, z) => (i(), f("option", {
                   key: z,
                   value: D,
                   selected: +D === l.value
@@ -2580,7 +2580,7 @@ const Fl = {
     return (t, e) => (i(), f("div", ks, [
       t.title ? (i(), f("h4", ws, v(t.title), 1)) : g("", !0),
       c("ul", null, [
-        (i(!0), f(Q, null, U(t.files, (n, r) => (i(), f("li", { key: r }, [
+        (i(!0), f(K, null, U(t.files, (n, r) => (i(), f("li", { key: r }, [
           ee(fn, {
             title: n.title,
             format: n.format,
@@ -2753,7 +2753,7 @@ const Fl = {
         _: 1
       })),
       t.networks.length ? (i(), f("ul", Ys, [
-        (i(!0), f(Q, null, U(t.networks, (n, r) => (i(), f("li", { key: r }, [
+        (i(!0), f(K, null, U(t.networks, (n, r) => (i(), f("li", { key: r }, [
           c("a", {
             class: R(["fr-btn", `fr-btn--${n.type}`]),
             title: n.name,
@@ -2886,7 +2886,7 @@ const Fl = {
         ])) : g("", !0),
         c("div", ni, [
           c("ul", null, [
-            (i(!0), f(Q, null, U(t.subPartners, (n, r) => (i(), f("li", { key: r }, [
+            (i(!0), f(K, null, U(t.subPartners, (n, r) => (i(), f("li", { key: r }, [
               c("a", {
                 class: "fr-footer__partners-link",
                 href: n.href,
@@ -3081,7 +3081,7 @@ const Fl = {
                 ], !0)
               ]),
               c("ul", ki, [
-                (i(!0), f(Q, null, U(p.ecosystemLinks, ({ href: E, label: _, title: $, ...y }, x) => (i(), f("li", {
+                (i(!0), f(K, null, U(p.ecosystemLinks, ({ href: E, label: _, title: $, ...y }, x) => (i(), f("li", {
                   key: x,
                   class: "fr-footer__content-item"
                 }, [
@@ -3100,7 +3100,7 @@ const Fl = {
           p.partners ? (i(), V(vn, De(Y({ key: 0 }, p.partners)), null, 16)) : g("", !0),
           c("div", _i, [
             c("ul", xi, [
-              (i(!0), f(Q, null, U(e.value, (E, _) => (i(), f("li", {
+              (i(!0), f(K, null, U(e.value, (E, _) => (i(), f("li", {
                 key: _,
                 class: "fr-footer__bottom-item"
               }, [
@@ -3142,7 +3142,7 @@ const Fl = {
       return i(), f("div", null, [
         c("h3", Ei, v(t.categoryName), 1),
         c("ul", Mi, [
-          (i(!0), f(Q, null, U(t.links, (r, l) => (i(), f("li", { key: l }, [
+          (i(!0), f(K, null, U(t.links, (r, l) => (i(), f("li", { key: l }, [
             typeof r.to == "string" && r.to.startsWith("http") ? (i(), f("a", {
               key: 0,
               class: "fr-footer__top-link",
@@ -3239,7 +3239,7 @@ const Fl = {
             onTransitionend: E[1] || (E[1] = (y) => O(u)(d.value))
           }, [
             c("ul", Vi, [
-              (i(!0), f(Q, null, U(w.languages, (y, x) => (i(), f("li", { key: x }, [
+              (i(!0), f(K, null, U(w.languages, (y, x) => (i(), f("li", { key: x }, [
                 c("a", {
                   class: "fr-translate__language fr-nav__link",
                   hreflang: y.codeIso,
@@ -3290,7 +3290,7 @@ const Fl = {
     ]);
     return t({
       focus: l
-    }), (d, p) => (i(), f(Q, null, [
+    }), (d, p) => (i(), f(K, null, [
       c("label", {
         class: R(u.value),
         for: d.id
@@ -3453,7 +3453,7 @@ const Fl = {
       "aria-label": n.navAriaLabel
     }, [
       c("ul", Ki, [
-        (i(!0), f(Q, null, U(n.links, (l, o) => (i(), f("li", { key: o }, [
+        (i(!0), f(K, null, U(n.links, (l, o) => (i(), f("li", { key: o }, [
           ee(ra, Y({ ref_for: !0 }, l, {
             "on-click": (s) => {
               var u;
@@ -3770,7 +3770,7 @@ const Fl = {
         "onUpdate:modelValue": e[0] || (e[0] = (n) => t.$emit("update:modelValue", n))
       }), null, 16, ["is-valid", "is-invalid", "label", "hint", "description-id", "label-visible", "model-value", "placeholder"])),
       c("div", _u, [
-        Array.isArray(t.errorMessage) ? (i(!0), f(Q, { key: 0 }, U(t.errorMessage, (n) => (i(), f("p", {
+        Array.isArray(t.errorMessage) ? (i(!0), f(K, { key: 0 }, U(t.errorMessage, (n) => (i(), f("p", {
           id: t.descriptionId,
           key: n,
           "data-testid": t.descriptionId,
@@ -3781,7 +3781,7 @@ const Fl = {
           "data-testid": t.descriptionId,
           class: "fr-error-text"
         }, v(t.errorMessage), 9, Du)) : g("", !0),
-        Array.isArray(t.validMessage) ? (i(!0), f(Q, { key: 2 }, U(t.validMessage, (n) => (i(), f("p", {
+        Array.isArray(t.validMessage) ? (i(!0), f(K, { key: 2 }, U(t.validMessage, (n) => (i(), f("p", {
           id: t.descriptionId,
           key: n,
           "data-testid": t.descriptionId,
@@ -4142,17 +4142,17 @@ var Ba = {
   }, u = function(C, A) {
     var L = typeof (A == null ? void 0 : A.composedPath) == "function" ? A.composedPath() : void 0;
     return l.containerGroups.findIndex(function(j) {
-      var K = j.container, ne = j.tabbableNodes;
-      return K.contains(C) || // fall back to explicit tabbable search which will take into consideration any
+      var Q = j.container, ne = j.tabbableNodes;
+      return Q.contains(C) || // fall back to explicit tabbable search which will take into consideration any
       //  web components if the `tabbableOptions.getShadowRoot` option was used for
       //  the trap, enabling shadow DOM support in tabbable (`Node.contains()` doesn't
       //  look inside web components even if open)
-      (L == null ? void 0 : L.includes(K)) || ne.find(function(te) {
+      (L == null ? void 0 : L.includes(Q)) || ne.find(function(te) {
         return te === C;
       });
     });
   }, d = function(C) {
-    var A = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, L = A.hasFallback, j = L === void 0 ? !1 : L, K = A.params, ne = K === void 0 ? [] : K, te = r[C];
+    var A = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, L = A.hasFallback, j = L === void 0 ? !1 : L, Q = A.params, ne = Q === void 0 ? [] : Q, te = r[C];
     if (typeof te == "function" && (te = te.apply(void 0, Gu(ne))), te === !0 && (te = void 0), !te) {
       if (te === void 0 || te === !1)
         return te;
@@ -4188,7 +4188,7 @@ var Ba = {
     return C;
   }, m = function() {
     if (l.containerGroups = l.containers.map(function(C) {
-      var A = qu(C, r.tabbableOptions), L = Hu(C, r.tabbableOptions), j = A.length > 0 ? A[0] : void 0, K = A.length > 0 ? A[A.length - 1] : void 0, ne = L.find(function(se) {
+      var A = qu(C, r.tabbableOptions), L = Hu(C, r.tabbableOptions), j = A.length > 0 ? A[0] : void 0, Q = A.length > 0 ? A[A.length - 1] : void 0, ne = L.find(function(se) {
         return We(se);
       }), te = L.slice().reverse().find(function(se) {
         return We(se);
@@ -4204,7 +4204,7 @@ var Ba = {
         /** First tabbable node in container, __tabindex__ order; `undefined` if none. */
         firstTabbableNode: j,
         /** Last tabbable node in container, __tabindex__ order; `undefined` if none. */
-        lastTabbableNode: K,
+        lastTabbableNode: Q,
         // NOTE: DOM order is NOT NECESSARILY "document position" order, but figuring that out
         //  would require more than just https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition
         //  because that API doesn't work with Shadow DOM as well as it should (@see
@@ -4261,14 +4261,14 @@ var Ba = {
     });
     return A || (A === !1 ? !1 : C);
   }, $ = function(C) {
-    var A = C.target, L = C.event, j = C.isBackward, K = j === void 0 ? !1 : j;
+    var A = C.target, L = C.event, j = C.isBackward, Q = j === void 0 ? !1 : j;
     A = A || ut(L), m();
     var ne = null;
     if (l.tabbableGroups.length > 0) {
       var te = u(A, L), ie = te >= 0 ? l.containerGroups[te] : void 0;
       if (te < 0)
-        K ? ne = l.tabbableGroups[l.tabbableGroups.length - 1].lastTabbableNode : ne = l.tabbableGroups[0].firstTabbableNode;
-      else if (K) {
+        Q ? ne = l.tabbableGroups[l.tabbableGroups.length - 1].lastTabbableNode : ne = l.tabbableGroups[0].firstTabbableNode;
+      else if (Q) {
         var se = l.tabbableGroups.findIndex(function(ve) {
           var Pe = ve.firstTabbableNode;
           return A === Pe;
@@ -4313,7 +4313,7 @@ var Ba = {
       L && (l.mostRecentlyFocusedNode = A);
     else {
       C.stopImmediatePropagation();
-      var j, K = !0;
+      var j, Q = !0;
       if (l.mostRecentlyFocusedNode)
         if (Ve(l.mostRecentlyFocusedNode) > 0) {
           var ne = u(l.mostRecentlyFocusedNode), te = l.containerGroups[ne].tabbableNodes;
@@ -4321,17 +4321,17 @@ var Ba = {
             var ie = te.findIndex(function(se) {
               return se === l.mostRecentlyFocusedNode;
             });
-            ie >= 0 && (r.isKeyForward(l.recentNavEvent) ? ie + 1 < te.length && (j = te[ie + 1], K = !1) : ie - 1 >= 0 && (j = te[ie - 1], K = !1));
+            ie >= 0 && (r.isKeyForward(l.recentNavEvent) ? ie + 1 < te.length && (j = te[ie + 1], Q = !1) : ie - 1 >= 0 && (j = te[ie - 1], Q = !1));
           }
         } else
           l.containerGroups.some(function(se) {
             return se.tabbableNodes.some(function(Ie) {
               return Ve(Ie) > 0;
             });
-          }) || (K = !1);
+          }) || (Q = !1);
       else
-        K = !1;
-      K && (j = $({
+        Q = !1;
+      Q && (j = $({
         // move FROM the MRU node, not event-related node (which will be the node that is
         //  outside the trap causing the focus escape we're trying to fix)
         target: l.mostRecentlyFocusedNode,
@@ -4377,8 +4377,8 @@ var Ba = {
   }, D = function(C) {
     var A = C.some(function(L) {
       var j = Array.from(L.removedNodes);
-      return j.some(function(K) {
-        return K === l.mostRecentlyFocusedNode;
+      return j.some(function(Q) {
+        return Q === l.mostRecentlyFocusedNode;
       });
     });
     A && E(p());
@@ -4402,10 +4402,10 @@ var Ba = {
         return this;
       var A = s(C, "onActivate"), L = s(C, "onPostActivate"), j = s(C, "checkCanFocusTrap");
       j || m(), l.active = !0, l.paused = !1, l.nodeFocusedBeforeActivation = e.activeElement, A == null || A();
-      var K = function() {
+      var Q = function() {
         j && m(), h(), q(), L == null || L();
       };
-      return j ? (j(l.containers.concat()).then(K, K), this) : (K(), this);
+      return j ? (j(l.containers.concat()).then(Q, Q), this) : (Q(), this);
     },
     deactivate: function(C) {
       if (!l.active)
@@ -4416,14 +4416,14 @@ var Ba = {
         checkCanReturnFocus: r.checkCanReturnFocus
       }, C);
       clearTimeout(l.delayInitialFocusTimer), l.delayInitialFocusTimer = void 0, M(), l.active = !1, l.paused = !1, q(), Ba.deactivateTrap(n, o);
-      var L = s(A, "onDeactivate"), j = s(A, "onPostDeactivate"), K = s(A, "checkCanReturnFocus"), ne = s(A, "returnFocus", "returnFocusOnDeactivate");
+      var L = s(A, "onDeactivate"), j = s(A, "onPostDeactivate"), Q = s(A, "checkCanReturnFocus"), ne = s(A, "returnFocus", "returnFocusOnDeactivate");
       L == null || L();
       var te = function() {
         $a(function() {
           ne && E(_(l.nodeFocusedBeforeActivation)), j == null || j();
         });
       };
-      return ne && K ? (K(_(l.nodeFocusedBeforeActivation)).then(te, te), this) : (te(), this);
+      return ne && Q ? (Q(_(l.nodeFocusedBeforeActivation)).then(te, te), this) : (te(), this);
     },
     pause: function(C) {
       if (l.paused || !l.active)
@@ -4788,7 +4788,7 @@ const ld = {
         const ae = n(G, t.idKey);
         W.add(ae);
       }), s.value = Array.from(W);
-    }, K = (W) => {
+    }, Q = (W) => {
       const [G] = x();
       G && (W.preventDefault(), G.focus());
     }, ne = (W) => {
@@ -4916,8 +4916,8 @@ const ld = {
               placeholder: "Rechercher",
               type: "text",
               onKeydown: [
-                Z(K, ["down"]),
-                Z(K, ["right"]),
+                Z(Q, ["down"]),
+                Z(Q, ["right"]),
                 Z(se, ["tab"])
               ]
             }, null, 8, ["modelValue", "aria-describedby", "aria-controls"])
@@ -4937,7 +4937,7 @@ const ld = {
         }, {
           default: X(() => [
             B(W.$slots, "legend", {}, void 0, !0),
-            (i(!0), f(Q, null, U(A.value, (ae) => (i(), f("div", {
+            (i(!0), f(K, null, U(A.value, (ae) => (i(), f("div", {
               key: `${r(ae, W.id, t.idKey)}-checkbox`,
               class: "fr-fieldset__element"
             }, [
@@ -5063,7 +5063,7 @@ const ld = {
         }, v(t.title), 1)
       ]),
       c("ul", Sd, [
-        (i(!0), f(Q, null, U(t.links, (n, r) => (i(), f("li", {
+        (i(!0), f(K, null, U(t.links, (n, r) => (i(), f("li", {
           key: r,
           class: "fr-nav__link"
         }, [
@@ -5098,7 +5098,7 @@ const ld = {
       s.value && l(!0);
     }), (u, d) => {
       const p = _e("RouterLink");
-      return i(), f(Q, null, [
+      return i(), f(K, null, [
         c("button", {
           class: "fr-nav__btn",
           "aria-expanded": s.value,
@@ -5145,7 +5145,7 @@ const ld = {
                 ])
               ]),
               B(u.$slots, "default", {}, void 0, !0),
-              (i(!0), f(Q, null, U(u.menus, (m, w) => (i(), V(Tn, Y({
+              (i(!0), f(K, null, U(u.menus, (m, w) => (i(), V(Tn, Y({
                 key: w,
                 ref_for: !0
               }, m), null, 16))), 128))
@@ -5192,7 +5192,7 @@ const ld = {
       u !== d && l(u);
     }), be(() => {
       s.value && l(!0);
-    }), (u, d) => (i(), f(Q, null, [
+    }), (u, d) => (i(), f(K, null, [
       c("button", {
         class: "fr-nav__btn",
         "aria-expanded": s.value,
@@ -5212,7 +5212,7 @@ const ld = {
       }, [
         c("ul", zd, [
           B(u.$slots, "default"),
-          (i(!0), f(Q, null, U(u.links, (p, m) => (i(), V(En, { key: m }, {
+          (i(!0), f(K, null, U(u.links, (p, m) => (i(), V(En, { key: m }, {
             default: X(() => [
               ee(Et, Y({ ref_for: !0 }, p, {
                 onToggleId: d[1] || (d[1] = (w) => u.$emit("toggleId", u.expandedId))
@@ -5263,7 +5263,7 @@ const ld = {
     }, [
       c("ul", Xd, [
         B(s.$slots, "default"),
-        (i(!0), f(Q, null, U(s.navItems, (d, p) => (i(), V(Dn, {
+        (i(!0), f(K, null, U(s.navItems, (d, p) => (i(), V(Dn, {
           id: d.id,
           key: p
         }, {
@@ -5391,13 +5391,13 @@ const ld = {
           c("li", null, [
             c("cite", null, v(t.source), 1)
           ]),
-          (i(!0), f(Q, null, U(t.details, (n, r) => (i(), f("li", { key: r }, [
+          (i(!0), f(K, null, U(t.details, (n, r) => (i(), f("li", { key: r }, [
             typeof n == "object" ? (i(), f("a", {
               key: 0,
               target: "_blank",
               rel: "noopener noreferrer",
               href: n.url
-            }, v(n.label), 9, fc)) : (i(), f(Q, { key: 1 }, [
+            }, v(n.label), 9, fc)) : (i(), f(K, { key: 1 }, [
               F(v(n), 1)
             ], 64))
           ]))), 128))
@@ -5559,7 +5559,7 @@ const ld = {
           ])
         ], 8, Mc)) : g("", !0),
         B(u.$slots, "default", {}, () => [
-          (i(!0), f(Q, null, U(u.options, (p, m) => (i(), V(Cn, Y({
+          (i(!0), f(K, null, U(u.options, (p, m) => (i(), V(Cn, Y({
             key: typeof p.value == "boolean" ? m : p.value || m,
             name: u.name,
             "aria-disabled": p.disabled,
@@ -5798,7 +5798,7 @@ const ld = {
         ], 10, Xc)) : g("", !0),
         c("div", Zc, [
           B(l.$slots, "default", {}, () => [
-            (i(!0), f(Q, null, U(l.options, (s, u) => (i(), V(Pn, Y({
+            (i(!0), f(K, null, U(l.options, (s, u) => (i(), V(Pn, Y({
               key: s.value || u,
               name: l.name || s.name,
               ref_for: !0
@@ -5874,7 +5874,7 @@ const ld = {
           disabled: "",
           hidden: ""
         }, v(r.defaultUnselectedText), 9, rf),
-        (i(!0), f(Q, null, U(r.options, (o, s) => (i(), f("option", {
+        (i(!0), f(K, null, U(r.options, (o, s) => (i(), f("option", {
           key: s,
           selected: r.modelValue === o || typeof o == "object" && o.value === r.modelValue,
           value: typeof o == "object" ? o.value : o,
@@ -5914,7 +5914,7 @@ const ld = {
       return i(), f("div", uf, [
         c("p", df, v(n.title), 1),
         c("ul", cf, [
-          (i(!0), f(Q, null, U(n.networks, (o, s) => (i(), f("li", { key: s }, [
+          (i(!0), f(K, null, U(n.networks, (o, s) => (i(), f("li", { key: s }, [
             c("a", {
               class: R(`fr-btn fr-btn--${o.name}`),
               title: `${o.label} - nouvelle fenêtre`,
@@ -6013,7 +6013,7 @@ const ld = {
       }, [
         c("ul", yf, [
           B(p.$slots, "default"),
-          (i(!0), f(Q, null, U(p.menuItems, (E, _) => (i(), V(Bn, {
+          (i(!0), f(K, null, U(p.menuItems, (E, _) => (i(), V(Bn, {
             key: _,
             active: E.active
           }, {
@@ -6029,7 +6029,7 @@ const ld = {
                 ]),
                 _: 2
               }, 1040, ["aria-current"])),
-              E.menuItems ? (i(), f(Q, { key: 1 }, [
+              E.menuItems ? (i(), f(K, { key: 1 }, [
                 ee(Ln, {
                   active: !!E.active,
                   expanded: !!E.expanded,
@@ -6155,7 +6155,7 @@ const ld = {
     return (e, n) => (i(), f("div", If, [
       c("nav", Ef, [
         c("ul", Mf, [
-          (i(!0), f(Q, null, U(e.links, (r) => (i(), f("li", {
+          (i(!0), f(K, null, U(e.links, (r) => (i(), f("li", {
             key: r.id
           }, [
             c("a", {
@@ -6211,7 +6211,7 @@ const ld = {
     return (t, e) => (i(), f("nav", Ff, [
       c("h2", Nf, v(t.title), 1),
       c("ol", Vf, [
-        (i(!0), f(Q, null, U(t.anchors, (n, r) => (i(), f("li", { key: r }, [
+        (i(!0), f(K, null, U(t.anchors, (n, r) => (i(), f("li", { key: r }, [
           c("a", {
             class: "fr-summary__link",
             href: n.link
@@ -6326,7 +6326,7 @@ const ld = {
   },
   setup(a) {
     return (t, e) => t.headers ? (i(), f("tr", zf, [
-      (i(!0), f(Q, null, U(t.headers, (n, r) => (i(), V(On, {
+      (i(!0), f(K, null, U(t.headers, (n, r) => (i(), V(On, {
         key: r,
         header: (typeof n == "object" ? n : {}).text || n,
         "header-attrs": n.headerAttrs
@@ -6352,7 +6352,7 @@ const ld = {
           F(v(r.field.text), 1)
         ]),
         _: 1
-      }, 16)) : (i(), f(Q, { key: 1 }, [
+      }, 16)) : (i(), f(K, { key: 1 }, [
         F(v(n.value ? r.field : r.field.text), 1)
       ], 64))
     ], 16));
@@ -6366,7 +6366,7 @@ const ld = {
   setup(a) {
     return (t, e) => (i(), f("tr", De(yt(t.rowAttrs)), [
       B(t.$slots, "default"),
-      (i(!0), f(Q, null, U(t.rowData, (n, r) => (i(), V(Fn, {
+      (i(!0), f(K, null, U(t.rowData, (n, r) => (i(), V(Fn, {
         key: r,
         field: n ?? "",
         "cell-attrs": typeof n == "object" && n !== null && !n.component ? n.cellAttrs : {}
@@ -6417,7 +6417,7 @@ const ld = {
         ]),
         c("tbody", null, [
           B(x.$slots, "default", {}, void 0, !0),
-          x.rows && x.rows.length ? (i(!0), f(Q, { key: 0 }, U(w.value, (P, b) => (i(), V(Nn, {
+          x.rows && x.rows.length ? (i(!0), f(K, { key: 0 }, U(w.value, (P, b) => (i(), V(Nn, {
             key: x.rowKey && r(P) ? typeof x.rowKey == "string" ? r(P)[x.headers.indexOf(x.rowKey)].toString() : x.rowKey(r(P)) : b,
             "row-data": r(P),
             "row-attrs": "rowAttrs" in P ? P.rowAttrs : {}
@@ -6435,7 +6435,7 @@ const ld = {
                     title: "Résultats par page - le nombre résultats est mis à jour dès sélection d’une valeur",
                     onChange: I[1] || (I[1] = (P) => n("update:currentPage"))
                   }, [
-                    (i(), f(Q, null, U(d, (P, b) => c("option", {
+                    (i(), f(K, null, U(d, (P, b) => c("option", {
                       key: b,
                       value: P
                     }, v(P), 9, ap)), 64))
@@ -6567,7 +6567,7 @@ const ld = {
         "aria-label": b.tabListName
       }, [
         B(b.$slots, "tab-items", {}, () => [
-          (i(!0), f(Q, null, U(b.tabTitles, (h, M) => (i(), V(Sn, {
+          (i(!0), f(K, null, U(b.tabTitles, (h, M) => (i(), V(Sn, {
             key: M,
             icon: h.icon,
             "panel-id": h.panelId || `${w(M)}-panel`,
@@ -6585,7 +6585,7 @@ const ld = {
           }, 1032, ["icon", "panel-id", "tab-id", "onClick"]))), 128))
         ])
       ], 8, ip),
-      (i(!0), f(Q, null, U(b.tabContents, (h, M) => {
+      (i(!0), f(K, null, U(b.tabContents, (h, M) => {
         var D, z, q, C;
         return i(), V(An, {
           key: M,
@@ -6628,7 +6628,7 @@ const ld = {
           label: u.iconOnly ? u.label : void 0,
           class: "fr-mr-1v"
         }, s.value), null, 16, ["label"])) : g("", !0),
-        u.iconOnly ? g("", !0) : (i(), f(Q, { key: 1 }, [
+        u.iconOnly ? g("", !0) : (i(), f(K, { key: 1 }, [
           F(v(u.label), 1)
         ], 64)),
         B(u.$slots, "default", {}, void 0, !0)
@@ -6643,7 +6643,7 @@ const ld = {
   },
   setup(a) {
     return (t, e) => (i(), f("ul", cp, [
-      (i(!0), f(Q, null, U(t.tags, ({ icon: n, label: r, ...l }, o) => (i(), f("li", { key: o }, [
+      (i(!0), f(K, null, U(t.tags, ({ icon: n, label: r, ...l }, o) => (i(), f("li", { key: o }, [
         ee(la, Y({ ref_for: !0 }, l, {
           icon: n,
           label: r
@@ -6779,7 +6779,7 @@ const ld = {
   },
   setup(a) {
     return (t, e) => (i(), f("div", Ip, [
-      (i(!0), f(Q, null, U(t.tiles, (n, r) => (i(), f("div", {
+      (i(!0), f(K, null, U(t.tiles, (n, r) => (i(), f("div", {
         key: r,
         class: R({
           [n.containerClass ?? "no-class"]: n.containerClass,
@@ -6861,8 +6861,8 @@ const ld = {
       await new Promise((te) => setTimeout(te, 100));
       const D = (I = n.value) == null ? void 0 : I.getBoundingClientRect().top, z = (P = n.value) == null ? void 0 : P.offsetHeight, q = (b = n.value) == null ? void 0 : b.offsetWidth, C = (k = n.value) == null ? void 0 : k.getBoundingClientRect().left, A = (h = r.value) == null ? void 0 : h.offsetHeight, L = (M = r.value) == null ? void 0 : M.offsetWidth, j = !(D - A < 0) && D + z + A >= document.documentElement.offsetHeight;
       u.value = j;
-      const K = C + q >= document.documentElement.offsetWidth, ne = C + q / 2 - L / 2 <= 0;
-      o.value = j ? `${D - A + 8}px` : `${D + z - 8}px`, d.value = 1, l.value = K ? `${C + q - L - 4}px` : ne ? `${C + 4}px` : `${C + q / 2 - L / 2}px`, s.value = K ? `${L / 2 - q / 2 + 4}px` : ne ? `${-(L / 2) + q / 2 - 4}px` : "0px";
+      const Q = C + q >= document.documentElement.offsetWidth, ne = C + q / 2 - L / 2 <= 0;
+      o.value = j ? `${D - A + 8}px` : `${D + z - 8}px`, d.value = 1, l.value = Q ? `${C + q - L - 4}px` : ne ? `${C + 4}px` : `${C + q / 2 - L / 2}px`, s.value = Q ? `${L / 2 - q / 2 + 4}px` : ne ? `${-(L / 2) + q / 2 - 4}px` : "0px";
     }
     me(e, p, { immediate: !0 }), be(() => {
       window.addEventListener("scroll", p);
@@ -6891,7 +6891,7 @@ const ld = {
     }, x = () => {
       t.onHover || (e.value = !e.value);
     };
-    return (I, P) => (i(), f(Q, null, [
+    return (I, P) => (i(), f(K, null, [
       (i(), V(ge(I.onHover ? "a" : "button"), Y(I.$attrs, {
         id: `link-${I.id}`,
         ref_key: "source",
@@ -7020,7 +7020,7 @@ const ld = {
     ratio: { default: "16x9" }
   },
   setup(a) {
-    return (t, e) => (i(), f(Q, null, [
+    return (t, e) => (i(), f(K, null, [
       c("figure", {
         class: R(["fr-content-media", {
           "fr-content-media--sm": t.size === "small",
@@ -10082,8 +10082,8 @@ function Tv(a, t, e, n, r, l) {
   const o = _e("DsfrTag"), s = _e("DsfrCheckbox"), u = _e("DsfrButton");
   return i(), f("div", null, [
     l.isAnyFacetValueSelected() ? (i(), f("div", iv, [
-      (i(!0), f(Q, null, U(e.selectedFacets, (d, p) => (i(), f(Q, { key: p }, [
-        l.facetMultipleByCode(p) ? g("", !0) : (i(!0), f(Q, { key: 0 }, U(d, (m) => (i(), V(o, {
+      (i(!0), f(K, null, U(e.selectedFacets, (d, p) => (i(), f(K, { key: p }, [
+        l.facetMultipleByCode(p) ? g("", !0) : (i(!0), f(K, { key: 0 }, U(d, (m) => (i(), V(o, {
           class: "fr-tag--dismiss",
           "tag-name": "button",
           key: m.code,
@@ -10096,14 +10096,14 @@ function Tv(a, t, e, n, r, l) {
         }, 1032, ["onClick"]))), 128))
       ], 64))), 128))
     ])) : g("", !0),
-    (i(!0), f(Q, null, U(e.facets, (d) => (i(), f("div", {
+    (i(!0), f(K, null, U(e.facets, (d) => (i(), f("div", {
       key: d.code,
       class: "facets"
     }, [
-      d.multiple || !l.isFacetSelected(d.code) ? (i(), f(Q, { key: 0 }, [
+      d.multiple || !l.isFacetSelected(d.code) ? (i(), f(K, { key: 0 }, [
         c("h6", uv, v(d.label), 1),
         c("ul", null, [
-          (i(!0), f(Q, null, U(l.selectedInvisibleFacets(d.code), (p) => (i(), f(Q, {
+          (i(!0), f(K, null, U(l.selectedInvisibleFacets(d.code), (p) => (i(), f(K, {
             key: p.code
           }, [
             d.multiple ? (i(), f("li", dv, [
@@ -10140,7 +10140,7 @@ function Tv(a, t, e, n, r, l) {
           ], 64))), 128))
         ]),
         c("ul", null, [
-          (i(!0), f(Q, null, U(l.visibleFacets(d.code, d.values), (p) => (i(), f(Q, {
+          (i(!0), f(K, null, U(l.visibleFacets(d.code, d.values), (p) => (i(), f(K, {
             key: p.code
           }, [
             d.multiple ? (i(), f("li", gv, [
@@ -10443,25 +10443,27 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
       L !== j && (r(L), L ? (document.addEventListener("click", A), document.addEventListener("touchstart", A)) : (document.removeEventListener("click", A), document.removeEventListener("touchstart", A)));
     });
     const p = H(null), m = H(null), w = H(null), E = T(() => o.errorMessage || o.successMessage), _ = T(() => o.errorMessage !== "" ? "error" : "valid"), $ = T(() => o.modelValue.length === d.value.length ? "fr-icon-close-circle-line" : "fr-icon-check-line"), y = T(() => o.modelValue.length === d.value.length ? "Tout déselectionner" : "Tout sélectionner"), x = T(() => {
-      let L = `${o.modelValue.length} options séléctionnées`;
-      return o.modelValue.length > 2 ? L : o.options.filter((j) => o.modelValue.includes(j.value)).map((j) => j.text).join(", ");
+      let j = `${o.options.filter((Q) => o.modelValue.includes(Q.value)).length} options séléctionnées`;
+      return o.modelValue.length > 2 ? j : o.options.filter((Q) => o.modelValue.includes(Q.value)).map((Q) => Q.text).join(", ");
     });
     let I = function() {
       if (o.modelValue.length >= d.value.length)
         o.modelValue.length = 0;
-      else
-        for (let L of d.value)
-          o.modelValue.push(L.value);
+      else {
+        const L = d.value.filter((j) => !o.modelValue.includes(j.value));
+        for (let j of L)
+          o.modelValue.push(j.value);
+      }
     }, P = function(L) {
       const j = L.target.value.toLowerCase();
-      d.value = o.options.filter((K) => K.text.toLowerCase().indexOf(j) > -1);
+      d.value = o.options.filter((Q) => Q.text.toLowerCase().indexOf(j) > -1);
     };
     const b = (L, j) => {
-      const K = j === "down" ? (L + 1) % d.value.length : (L - 1 + d.value.length) % d.value.length, ne = document.getElementById(`${o.id}_option_${K}`);
-      return ne.ariaDisabled === "true" ? b(K, j) : ne;
+      const Q = j === "down" ? (L + 1) % d.value.length : (L - 1 + d.value.length) % d.value.length, ne = document.getElementById(`${o.id}_option_${Q}`);
+      return ne.ariaDisabled === "true" ? b(Q, j) : ne;
     }, k = (L) => {
-      const j = document.activeElement.id, K = j.startsWith(`${o.id}_option_`) ? Number(j.split("_")[2]) : L === "down" ? -1 : 0;
-      b(K, L).focus();
+      const j = document.activeElement.id, Q = j.startsWith(`${o.id}_option_`) ? Number(j.split("_")[2]) : L === "down" ? -1 : 0;
+      b(Q, L).focus();
     }, h = (L) => k("down"), M = (L) => k("up");
     let D = function(L) {
       L.shiftKey || (o.comboHasButton ? s.value || (s.value = !0, L.preventDefault(), setTimeout(() => m.value.focus(), 100)) : o.comboHasFilter && (s.value || (s.value = !0, L.preventDefault(), setTimeout(() => w.value.focus(), 100))));
@@ -10474,8 +10476,8 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
       if (j.length > 1 && j.match(/\S/) || document.activeElement.id === `${o.id}_filter`)
         return;
       j = j.toLowerCase();
-      let K = d.value.filter((te) => te.text.toLowerCase().startsWith(j)), ne = document.activeElement.id;
-      for (let te of K) {
+      let Q = d.value.filter((te) => te.text.toLowerCase().startsWith(j)), ne = document.activeElement.id;
+      for (let te of Q) {
         let ie = document.querySelector(`[data-id='${te.value}']`);
         if (ne !== ie.id) {
           ie.focus();
@@ -10485,14 +10487,14 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
     }, A = (L) => {
       p.value.contains(L.target) || (s.value = !1);
     };
-    return (L, j) => (i(), f(Q, null, [
+    return (L, j) => (i(), f(K, null, [
       c("div", Y({
         ref_key: "container",
         ref: p,
         class: ["fr-select-group", { [`fr-select-group--${_.value}`]: E.value !== "" }],
         onKeyup: j[13] || (j[13] = Z(
           //@ts-ignore
-          (...K) => O(A) && O(A)(...K),
+          (...Q) => O(A) && O(A)(...Q),
           ["tab"]
         ))
       }, L.$attrs), [
@@ -10512,19 +10514,19 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
         c("div", {
           id: L.id,
           class: R([{ [`fr-select--${_.value}`]: E.value !== "" }, "fr-input"]),
-          onClick: j[0] || (j[0] = (K) => s.value = !s.value),
+          onClick: j[0] || (j[0] = (Q) => s.value = !s.value),
           onKeydown: [
-            j[1] || (j[1] = Z(J((K) => s.value = !1, ["stop"]), ["esc"])),
-            j[2] || (j[2] = Z(J((K) => s.value = !s.value, ["prevent"]), ["space"])),
+            j[1] || (j[1] = Z(J((Q) => s.value = !1, ["stop"]), ["esc"])),
+            j[2] || (j[2] = Z(J((Q) => s.value = !s.value, ["prevent"]), ["space"])),
             Z(J(h, ["prevent"]), ["down"]),
             Z(J(M, ["prevent"]), ["up"]),
             j[3] || (j[3] = Z(
               //@ts-ignore
-              (...K) => O(D) && O(D)(...K),
+              (...Q) => O(D) && O(D)(...Q),
               ["tab"]
             )),
             j[4] || (j[4] = //@ts-ignore
-            (...K) => O(C) && O(C)(...K))
+            (...Q) => O(C) && O(C)(...Q))
           ],
           tabindex: "0",
           role: "combobox",
@@ -10543,31 +10545,31 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
           ref_key: "collapse",
           ref: t,
           class: R(["fr-collapse fr-menu fr-select__menu fr-pb-3v fr-pt-4v bg-white", { "fr-collapse--expanded": O(n), "fr-collapsing": O(e) }]),
-          onKeyup: j[8] || (j[8] = Z((K) => s.value = !1, ["esc"])),
+          onKeyup: j[8] || (j[8] = Z((Q) => s.value = !1, ["esc"])),
           onKeydown: [
             j[9] || (j[9] = Z(
               //@ts-ignore
-              (...K) => O(z) && O(z)(...K),
+              (...Q) => O(z) && O(z)(...Q),
               ["tab"]
             )),
             Z(J(h, ["prevent"]), ["down"]),
             Z(J(M, ["prevent"]), ["up"]),
             j[10] || (j[10] = Z(J(
               //@ts-ignore
-              (...K) => O(q) && O(q)(...K),
+              (...Q) => O(q) && O(q)(...Q),
               ["shift"]
             ), ["tab"])),
             j[11] || (j[11] = //@ts-ignore
-            (...K) => O(C) && O(C)(...K))
+            (...Q) => O(C) && O(C)(...Q))
           ],
-          onTransitionend: j[12] || (j[12] = (K) => O(l)(s.value))
+          onTransitionend: j[12] || (j[12] = (Q) => O(l)(s.value))
         }, [
           L.comboHasButton ? (i(), f("ul", jv, [
             c("li", null, [
               c("button", {
                 class: R(["fr-btn fr-btn--tertiary", `${$.value}`]),
                 id: `${L.id}_button`,
-                onClick: j[5] || (j[5] = (K) => O(I)()),
+                onClick: j[5] || (j[5] = (Q) => O(I)()),
                 ref_key: "button",
                 ref: m,
                 type: "button"
@@ -10581,7 +10583,7 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
               ref_key: "filter",
               ref: w,
               onInput: j[6] || (j[6] = //@ts-ignore
-              (...K) => O(P) && O(P)(...K)),
+              (...Q) => O(P) && O(P)(...Q)),
               "aria-label": "Rechercher une option",
               placeholder: "Rechercher",
               type: "text"
@@ -10592,18 +10594,18 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
             L.comboDescription ? (i(), f("span", Qv, v(L.comboDescription), 1)) : g("", !0)
           ])) : g("", !0),
           c("ul", Kv, [
-            (i(!0), f(Q, null, U(d.value, (K, ne) => (i(), f("li", {
+            (i(!0), f(K, null, U(d.value, (Q, ne) => (i(), f("li", {
               class: "fr-checkbox-group fr-checkbox-group--sm fr-py-1v",
               role: "option",
-              "aria-selected": u.value.includes(K.value)
+              "aria-selected": u.value.includes(Q.value)
             }, [
               Be(c("input", {
                 id: `${L.id}_option_${ne}`,
-                "data-id": K.value,
+                "data-id": Q.value,
                 type: "checkbox",
                 class: "",
                 tabindex: "-1",
-                value: K.value,
+                value: Q.value,
                 "onUpdate:modelValue": j[7] || (j[7] = (te) => u.value = te)
               }, null, 8, Gv), [
                 [lt, u.value]
@@ -10611,7 +10613,7 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
               c("label", {
                 class: "fr-label",
                 for: `${L.id}_option_${ne}`
-              }, v(K.text), 9, Xv)
+              }, v(Q.text), 9, Xv)
             ], 8, zv))), 256))
           ])
         ], 42, Vv)
@@ -10623,7 +10625,7 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
       }, v(E.value), 11, Uv)) : g("", !0)
     ], 64));
   }
-}), Jv = /* @__PURE__ */ Ae(Zv, [["__scopeId", "data-v-7e35aa8f"]]), eg = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], tg = ["id", "aria-labelledby", "onKeydown"], ag = {
+}), Jv = /* @__PURE__ */ Ae(Zv, [["__scopeId", "data-v-39e017b7"]]), eg = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], tg = ["id", "aria-labelledby", "onKeydown"], ag = {
   key: 0,
   class: "fr-label fr-mb-0"
 }, ng = {
@@ -10779,7 +10781,7 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
       "aria-label": n.navAriaLabel
     }, [
       c("ul", cg, [
-        (i(!0), f(Q, null, U(n.links, (l, o) => (i(), f("li", { key: o }, [
+        (i(!0), f(K, null, U(n.links, (l, o) => (i(), f("li", { key: o }, [
           ee(O(ra), Y({ ref_for: !0 }, l, {
             "on-click": (s) => {
               var u;
@@ -11161,7 +11163,7 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
                       }, " Sélectionner tout ", 8, Kg)
                     ])
                   ])) : g("", !0),
-                  (i(!0), f(Q, null, U(h.headersRow, (D, z) => (i(), f("th", Y({
+                  (i(!0), f(K, null, U(h.headersRow, (D, z) => (i(), f("th", Y({
                     key: typeof D == "object" ? D.key : D,
                     scope: "col",
                     ref_for: !0
@@ -11194,7 +11196,7 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
                 ])
               ]),
               c("tbody", null, [
-                (i(!0), f(Q, null, U(y.value, (D, z) => (i(), f("tr", {
+                (i(!0), f(K, null, U(y.value, (D, z) => (i(), f("tr", {
                   key: `row-${z}`,
                   "data-row-key": z + 1
                 }, [
@@ -11215,7 +11217,7 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
                       }, " Sélectionner la ligne " + v(z + 1), 9, tb)
                     ])
                   ])) : g("", !0),
-                  (i(!0), f(Q, null, U(D, (q, C) => (i(), f("td", {
+                  (i(!0), f(K, null, U(D, (q, C) => (i(), f("td", {
                     key: typeof q == "object" ? q[h.rowKey] : q,
                     onKeydown: [
                       Z(J((A) => k(typeof q == "object" ? q[h.rowKey] : q), ["ctrl"]), ["c"]),
@@ -11261,7 +11263,7 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
                   disabled: "true",
                   hidden: "hidden"
                 }, " Sélectionner une option ", 8, rb),
-                (i(!0), f(Q, null, U(h.paginationOptions, (D, z) => (i(), f("option", {
+                (i(!0), f(K, null, U(h.paginationOptions, (D, z) => (i(), f("option", {
                   key: z,
                   value: D,
                   selected: +D === l.value
@@ -11385,11 +11387,11 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
   setup(a) {
     const t = a, e = H(!1), n = H(null), r = H(null), l = H("0px"), o = H("0px"), s = H("0px"), u = H(!1), d = H(0);
     async function p() {
-      var K, ne, te, ie, se, Ie;
+      var Q, ne, te, ie, se, Ie;
       if (typeof document > "u" || !e.value || r.value.matches(":empty"))
         return;
       await new Promise((Ce) => setTimeout(Ce, 100));
-      const k = (K = n.value) == null ? void 0 : K.getBoundingClientRect().top, h = (ne = n.value) == null ? void 0 : ne.offsetHeight, M = (te = n.value) == null ? void 0 : te.offsetWidth, D = (ie = n.value) == null ? void 0 : ie.getBoundingClientRect().left, z = (se = r.value) == null ? void 0 : se.offsetHeight, q = (Ie = r.value) == null ? void 0 : Ie.offsetWidth, A = !(k - z < 0) && k + h + z >= document.documentElement.offsetHeight;
+      const k = (Q = n.value) == null ? void 0 : Q.getBoundingClientRect().top, h = (ne = n.value) == null ? void 0 : ne.offsetHeight, M = (te = n.value) == null ? void 0 : te.offsetWidth, D = (ie = n.value) == null ? void 0 : ie.getBoundingClientRect().left, z = (se = r.value) == null ? void 0 : se.offsetHeight, q = (Ie = r.value) == null ? void 0 : Ie.offsetWidth, A = !(k - z < 0) && k + h + z >= document.documentElement.offsetHeight;
       u.value = A;
       const L = D + M >= document.documentElement.offsetWidth, j = D + M / 2 - q / 2 <= 0;
       o.value = A ? `${k - z + 8}px` : `${k + h - 8}px`, d.value = 1, l.value = L ? `${D + M - q - 4}px` : j ? `${D + 4}px` : `${D + M / 2 - q / 2}px`, s.value = L ? `${q / 2 - M / 2 + 4}px` : j ? `${-(q / 2) + M / 2 - 4}px` : "0px";
@@ -11419,7 +11421,7 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
     }, b = () => {
       e.value = !1;
     };
-    return (k, h) => (i(), f(Q, null, [
+    return (k, h) => (i(), f(K, null, [
       (i(), V(ge(k.href !== "" ? "a" : "button"), Y({
         id: `button-${k.id}`,
         ref_key: "source",
@@ -11470,7 +11472,7 @@ const Iv = /* @__PURE__ */ Ae(sv, [["render", Tv], ["__scopeId", "data-v-0be4e59
       ], 14, vb)
     ], 64));
   }
-}), tr = /* @__PURE__ */ Ae(gb, [["__scopeId", "data-v-9e091ad8"]]), bb = /* @__PURE__ */ S({
+}), tr = /* @__PURE__ */ Ae(gb, [["__scopeId", "data-v-6caed894"]]), bb = /* @__PURE__ */ S({
   __name: "DsfrButtonTooltip",
   setup(a) {
     return (t, e) => (i(), V(tr, Y({ "is-link": !1 }, t.$attrs), {
@@ -11894,7 +11896,7 @@ function Bb(a, t, e, n, r, l) {
           onBlur: t[3] || (t[3] = (...o) => r.core.handleBlur && r.core.handleBlur(...o))
         }), null, 16),
         c("ul", Y({ ref: "resultList" }, l.resultListProps, mr(l.resultListListeners, !0)), [
-          (i(!0), f(Q, null, U(r.results, (o, s) => B(a.$slots, "result", {
+          (i(!0), f(K, null, U(r.results, (o, s) => B(a.$slots, "result", {
             result: o,
             props: l.resultProps[s]
           }, () => [
