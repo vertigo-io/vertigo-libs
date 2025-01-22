@@ -17,8 +17,8 @@
                            th::inline="${inline}"
                            th::options="|dsfrTransformListForRadio('${list}', '${myValueField}', '${myLabelField}', '${disabledField}', '${hintField}', ${filterFunction?:null})|"
                            th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
-                           th:v-model="|vueData.${object}.${field}|"
-                           th:name="|vContext[${object}][${field}]|"
+                           th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
+                           th::name="${model.util.contextKey(object, field, rowIndex)}"
                            th:attr="__${input_attrs}__"
     >
         <vu:content/>
