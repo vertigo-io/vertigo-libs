@@ -109,3 +109,13 @@ td p {
 }
 
 /**/
+
+/* Inputs in tables */
+.fr-table td .fr-label + .fr-input {
+    margin-top: 0;
+}
+
+.fr-table:not(.force-visible-label) td .fr-label {
+    visibility: collapse;
+    height: 0;
+}

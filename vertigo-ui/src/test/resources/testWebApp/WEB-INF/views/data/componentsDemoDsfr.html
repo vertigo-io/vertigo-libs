@@ -289,6 +289,7 @@
     <vu:dsfr-table list="movies"
                    componentId="movieTable2"
                    sortUrl="@{/movies/_sort}"
+                   class="force-visible-label"
                    pagination="true"
                    title="Test table"
                    sorted="movId"
@@ -321,7 +322,9 @@
         <vu:dsfr-column field="movId">
             <a th::href="|'@{/movie/}' + cell.movId|">{{ cell.movId }}</a>
         </vu:dsfr-column>
-        <vu:dsfr-column field="title"/>
+        <vu:dsfr-column field="title">
+            <vu:dsfr-text-field-edit object="movies" field="title"></vu:dsfr-text-field-edit>
+        </vu:dsfr-column>
         <vu:dsfr-column name="toto" label="Autre colonne">
             another column : {{ cell.movId }} : {{ cell.title }}
         </vu:dsfr-column>

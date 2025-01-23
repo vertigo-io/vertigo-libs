@@ -2,7 +2,7 @@
         th:fragment="dsfr-table(list, componentId, title, vTitle, selectable, pagination, rowKey, rowsPerPage, sortUrl, sortBy, descending, noResultLabel, actions_slot, header_slot, table_slot, table_attrs)"
         th:assert="${componentId} != null and (${title} != null or ${vTitle} != null) and !(${sortUrl} != null and ${sortBy} != null) and !(${descending} != null and ${sortBy} == null)"
         th:with="tableKey=${list},
-                 rowIndex='idx - 1',
+                 rowIndex='(idx - 1)',
                  listSize=${model.vContext[__${list}__].size()},
                  mySelectable=${selectable?:false},
                  myPagination=${pagination?:true},
