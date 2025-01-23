@@ -63,7 +63,9 @@
             <h6>Global</h6>
             <vu:dsfr-grid cols="3" class="fr-grid-row--gutters">
 
-                <vu:dsfr-text-field :class="{ disabled: true && false || false }" readonly="true" object="movie"
+                <vu:dsfr-text-field :class="{ disabled: true && false || false }"
+                                    readonly
+                                    object="movie"
                                     field="movId"/>
                 <th:block th:with="readonly=true">
                     <vu:dsfr-text-field object="movie" field="title" emptyValue="Non renseignée"/>
@@ -97,7 +99,7 @@
                                 noneLabel="Aucun"
                                 @update:model-value="console.log('coucou')"/>
                 <vu:dsfr-text-field-read-reactive object="movie" field="movId" label="Séléction choisie"/>
-                <vu:dsfr-select object="movie" field="movId" list="moviesDisplay" labelField="title"/>
+                <vu:dsfr-select object="movie" field="movId" list="moviesDisplay" otherInput otherLabel="Autre film" labelField="title"/>
 
                 <vu:dsfr-grid-cell col="lg-8">
                     <vu:dsfr-text-area object="movie" field="title"/>
@@ -121,7 +123,7 @@
                                          has-filter="true" has-button="true"
                                          list="moviesMdl" valueField="movId" labelField="title"/>
 
-                <vu:dsfr-checkbox object="movieDisplayInput" required field="movIds" value="2"></vu:dsfr-checkbox>
+                <vu:dsfr-checkbox object="movie" field="testBoolean" label="Boolean" required value="true"></vu:dsfr-checkbox>
 
                 <vu:dsfr-checkbox-multiple object="movieDisplayInput" field="movIds" list="moviesMdl"
                                            valueField="movId" hintField="description" labelField="title"/>
@@ -175,6 +177,9 @@
                     <dsfr-link-tooltip as-button tertiary th:href="@{/}" label="Ceci est un lien">Bouton (lien)
                     </dsfr-link-tooltip>
 
+                    <dsfr-link-tooltip as-button tertiary th:href="@{/}" label="Ceci est un lien tooltip vide">
+                    </dsfr-link-tooltip>
+
                     <p>
                         Lorem ipsum doleret
                         <dsfr-link-tooltip inline th:href="@{/}" label="ispum demso">ipsum demso</dsfr-link-tooltip>
@@ -185,10 +190,7 @@
                     </dsfr-link>
                 </vu:dsfr-grid-cell>
 
-                <vu:dsfr-modal componentId="myModal"
-                               iframeTitle="Coucou"
-                               autoHeight
-                               closeLabel="Close"/>
+
                 <vu:dsfr-grid-cell class="q-gutter-md">
                     <vu:dsfr-button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}"
                                            color="primary"/>
@@ -200,7 +202,9 @@
                                            action="@{_saveFilesOnly}" color="primary"/>
 
                     <vu:button-link th:if="${model.modeEdit}" label="Movies" url="@{/movies/}" color="primary"/>
-                    <q-btn th:label="OpenModal" th:@click="|openModal('myModal', '@{/movies/}')|"></q-btn>
+
+                    <dsfr-button label="OpenModal" th:@click="|openModal('myModal', '@{/movies/}')|" type="button"></dsfr-button>
+
                 </vu:dsfr-grid-cell>
                 <vu:dsfr-grid-cell class="q-gutter-md">
                     <vu:dsfr-button-submit th:if="${!model.modeReadOnly}" id="saveActionDtCheck"
@@ -210,6 +214,11 @@
                 </vu:dsfr-grid-cell>
 
             </vu:dsfr-grid>
+
+            <vu:dsfr-modal componentId="myModal"
+                           iframeTitle="Coucou"
+                           autoHeight
+                           closeLabel="Close"/>
         </vu:block>
         <br/>
         <vu:block id="movieManual" title="Test manual grid">
@@ -236,11 +245,14 @@
         <div class="fr-tabs fr-mt-4w">
             <vu:dsfr-tab-list aria-label="#{eleve.dossier.onglets.titre}">
                 <vu:dsfr-tab th:href="@{/dossier/eleve/projet/}" active
-                             class="fr-icon-arrow-right-line fr-tabs__tab--icon-left">Coucou</vu:dsfr-tab>
+                             class="fr-icon-arrow-right-line fr-tabs__tab--icon-left">Coucou
+                </vu:dsfr-tab>
                 <vu:dsfr-tab th:href="@{/dossier/eleve/auto-evaluation/}"
-                             class="fr-icon-arrow-right-line fr-tabs__tab--icon-left">Coucou</vu:dsfr-tab>
+                             class="fr-icon-arrow-right-line fr-tabs__tab--icon-left">Coucou
+                </vu:dsfr-tab>
                 <vu:dsfr-tab th:href="@{/dossier/eleve/candidatures/}"
-                             class="fr-icon-arrow-right-line fr-tabs__tab--icon-left">Coucou</vu:dsfr-tab>
+                             class="fr-icon-arrow-right-line fr-tabs__tab--icon-left">Coucou
+                </vu:dsfr-tab>
             </vu:dsfr-tab-list>
             <div class="fr-tabs__panel fr-tabs__panel--selected">
                 <vu:dsfr-text-field class="" object="movie" field="title"/>
@@ -248,6 +260,20 @@
             </div>
         </div>
 
+    <ul class="fr-tabs__list">
+        <li>
+            <a class="fr-tabs__tab fr-icon-arrow-right-line fr-tabs__tab--icon-left fr-tabs__tab--active"
+               href="/test/dossier/eleve/projet/">Coucou n°1</a>
+        </li>
+        <li>
+            <a class="fr-tabs__tab fr-icon-arrow-right-line fr-tabs__tab--icon-left"
+               href="/test/dossier/eleve/auto-evaluation/">Coucou</a>
+        </li>
+        <li>
+            <a class="fr-tabs__tab fr-icon-arrow-right-line fr-tabs__tab--icon-left"
+               href="/test/dossier/eleve/candidatures/">Coucou</a>
+        </li>
+    </ul>
         <vu:dsfr-button-submit-confirm componentId="com"
                                        confirmMessage="Coucou la confirmation"
                                        action="@{/}"
@@ -263,7 +289,7 @@
     <vu:dsfr-table list="movies"
                    componentId="movieTable2"
                    sortUrl="@{/movies/_sort}"
-                   pagination="false"
+                   pagination="true"
                    title="Test table"
                    sorted="movId"
                    row-key="movId"

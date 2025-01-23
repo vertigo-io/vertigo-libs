@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {provide, ref, watch} from 'vue';
+import {computed, provide, ref, watch} from 'vue';
 import {useCollapsable} from '@/composables/useCollapsable'
 
 import type {DsfrMenuProps} from './DsfrMenu.types'
@@ -40,7 +40,7 @@ const addMenuItem = (label, id) => {
   menuItems.push(`${label}@${id}`)
 }
 
-provide('menuItem', { menuItemIndex, addMenuItem })
+provide('menuItem', {menuItemIndex, addMenuItem})
 provide('id', props.id)
 
 watch(expanded, (newValue, oldValue) => {
@@ -112,7 +112,11 @@ function closeMenu() {
   expanded.value = false;
 }
 
-defineExpose({ closeMenu })
+const sm = computed(() => ['sm', 'small'].includes(props.size))
+const md = computed(() => ['md', 'medium'].includes(props.size))
+const lg = computed(() => ['lg', 'large'].includes(props.size))
+
+defineExpose({closeMenu})
 </script>
 
 <template>
@@ -129,7 +133,10 @@ defineExpose({ closeMenu })
         class="fr-btn fr-menu__btn"
         :class="{
           'fr-btn--secondary': secondary,
-          'fr-btn--tertiary': tertiary
+          'fr-btn--tertiary': tertiary,
+          'fr-btn--sm': sm,
+          'fr-btn--md': md,
+          'fr-btn--lg': lg,
         }"
         aria-haspopup="menu"
         aria-autocomplete="none"

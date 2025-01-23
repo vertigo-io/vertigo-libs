@@ -7,6 +7,8 @@
  * - [L78] Prise en compte de la colonne trié lors du tri
  * - [L269] Ajoute la notion du rang de la ligne dans le slot de modification d’une cellule, nécessaire pour des raisons d’accessibilité
  * - Ajoute un slot pour le titre (caption)
+ * - Ajoute le nombre de page dans le footer
+ * - Ajoute la possibilité de masquer le libellé d’une colonne via un sr-only
  *
  */
 
@@ -32,6 +34,8 @@ export type DsfrDataTableProps = {
   topActionsRow?: string[]
   bottomActionsRow?: string[]
   selectableRows?: boolean
+  showToggleAll?: boolean
+  showNbRows?: boolean
   sortableRows?: boolean | string[]
   sorted: string
   sortFn?: (a: unknown, b: unknown) => number
@@ -43,6 +47,7 @@ export type DsfrDataTableProps = {
   paginationOptions?: number[]
   currentPage?: number
   rowsPerPage?: number
+  noResultLabel?: string
   bottomActionBarClass?: string | Record<string, boolean> | Array<string | Record<string, boolean>>
   paginationWrapperClass?: string | Record<string, boolean> | Array<string | Record<string, boolean>>
 }
@@ -54,6 +59,8 @@ const props = withDefaults(defineProps<DsfrDataTableProps>(), {
   currentPage: 0,
   rowsPerPage: 10,
   rowKey: 0,
+  showToggleAll: true,
+  showNbRows: false,
   paginationOptions: () => [
     5,
     10,
@@ -68,7 +75,7 @@ const emit = defineEmits<{
 const selection = defineModel<string[]>('selection', {default: []})
 const rowsPerPage = defineModel<number>('rowsPerPage', {default: 10})
 const currentPage = defineModel<number>('currentPage', {default: 1})
-const pageCount = computed(() => Math.ceil(props.rows.length / rowsPerPage.value))
+const pageCount = computed(() => Math.max(Math.ceil(props.rows.length / rowsPerPage.value), 1))
 const pages = computed<Page[]>(() => props.pages ?? Array.from({length: pageCount.value}).map((x, i) => ({
   label: `${i + 1}`,
   title: `Page ${i + 1}`,
@@ -144,8 +151,7 @@ const finalRows = computed(() => {
 
 function selectAll(bool: boolean) {
   if (bool) {
-    const keyIndex = props.headersRow.findIndex(header => (header as DsfrDataTableHeaderCellObject).key ?? header)
-    selection.value = finalRows.value.map(row => row[keyIndex] as string)
+    selection.value = finalRows.value.map(row => row[0][props.rowKey] as string)
   }
   selection.value!.length = 0
 }
@@ -183,7 +189,7 @@ function copyToClipboard(text: string) {
                   class="fr-cell--fixed"
                   role="columnheader"
               >
-                <div class="fr-checkbox-group fr-checkbox-group--sm">
+                <div class="fr-checkbox-group fr-checkbox-group--sm" v-if="showToggleAll">
                   <!-- @vue-expect-error TS2538 -->
                   <input
                       :id="`table-select--${id}-all`"
@@ -210,7 +216,9 @@ function copyToClipboard(text: string) {
                   @keydown.space="sortBy((header as DsfrDataTableHeaderCellObject).key ?? header)"
               >
                 <div
-                    :class="{ 'sortable-header': sortableRows === true || (Array.isArray(sortableRows) && sortableRows.includes((header as DsfrDataTableHeaderCellObject).key ?? header)) }"
+                    :class="{ 'sortable-header': sortableRows === true || (Array.isArray(sortableRows) && sortableRows.includes((header as DsfrDataTableHeaderCellObject).key ?? header)),
+                              'fr-sr-only': typeof header === 'object' ? header.hideLabel : false
+                            }"
                 >
                   <slot
                       name="header"
@@ -218,6 +226,7 @@ function copyToClipboard(text: string) {
                   >
                     {{ typeof header === 'object' ? header.label : header }}
                   </slot>
+
                   <span
                       v-if="sortedBy !== ((header as DsfrDataTableHeaderCellObject).key ?? header) && (sortableRows === true || (Array.isArray(sortableRows) && sortableRows.includes((header as DsfrDataTableHeaderCellObject).key ?? header)))">
                       <VIcon
@@ -248,7 +257,7 @@ function copyToClipboard(text: string) {
                   <input
                       :id="`row-select-${id}-${idx}`"
                       v-model="selection"
-                      :value="rows[idx][rowKey] ?? `row-${idx}`"
+                      :value="row[0][rowKey] ?? `row-${idx}`"
                       type="checkbox"
                       @change="checkSelection()"
                   >
@@ -283,6 +292,10 @@ function copyToClipboard(text: string) {
                 </slot>
               </td>
             </tr>
+            <tr v-if="finalRows.length === 0">
+              <td :colspan="selectableRows ? headersRow.length + 1 : headersRow.length">{{ props.noResultLabel }}</td>
+            </tr>
+
             </tbody>
           </table>
         </div>
@@ -296,10 +309,12 @@ function copyToClipboard(text: string) {
             v-if="pagination && !$slots.pagination"
         >
           <div
-              class="flex  justify-between  items-center"
+              class="flex justify-between items-center"
               :class="paginationWrapperClass"
           >
-            <div class="flex  gap-2  items-center">
+            <p class="fr-mb-0 fr-ml-1v" v-if="showNbRows">{{ rows.length }} résulat(s)</p>
+
+            <div class="flex gap-2 items-center">
               <label
                   class="fr-label"
                   for="pagination-options"

@@ -1,6 +1,6 @@
 /* Corrige la taille de la selection du nombre d’éléments par page  */
 .fr-table .fr-select {
-    max-width: min-content;
+    max-width: 5rem;
 }
 
 /* Corrige l’alignement des colonnes lorsqu’on ajoute quelque chose dans le header */
