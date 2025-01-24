@@ -20,10 +20,10 @@ package io.vertigo.datafactory.impl.search.dsl.rules;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.rule.PegAbstractRule;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
 import io.vertigo.datafactory.impl.search.dsl.model.DslBlockQuery;
 import io.vertigo.datafactory.impl.search.dsl.model.DslQuery;
 
@@ -32,7 +32,7 @@ import io.vertigo.datafactory.impl.search.dsl.model.DslQuery;
  * (preMultiQuery)\((queries|rangeQuery|fixedQuery|multiQuery|)+\)(postMultiQuery)
  * @author npiedeloup
  */
-final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<Object>> {
+final class DslMultiQueryRule extends PegAbstractRule<DslBlockQuery, List<Object>> {
 	private static final int MAX_DEPTH = 3;
 
 	/**

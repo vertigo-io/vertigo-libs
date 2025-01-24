@@ -19,9 +19,9 @@ package io.vertigo.datafactory.impl.search.dsl.rules;
 
 import java.util.List;
 
-import io.vertigo.commons.peg.AbstractRule;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.rule.PegAbstractRule;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
 import io.vertigo.datafactory.impl.search.dsl.model.DslFixedQuery;
 
 /**
@@ -29,7 +29,7 @@ import io.vertigo.datafactory.impl.search.dsl.model.DslFixedQuery;
  * (fixedQuery)
  * @author npiedeloup
  */
-final class DslFixedQueryRule extends AbstractRule<DslFixedQuery, List<Object>> {
+final class DslFixedQueryRule extends PegAbstractRule<DslFixedQuery, List<Object>> {
 
 	DslFixedQueryRule() {
 		super(createMainRule(), "fixedQuery");

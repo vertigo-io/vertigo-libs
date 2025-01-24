@@ -22,10 +22,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.rule.PegAbstractRule;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
 import io.vertigo.datafactory.impl.search.dsl.model.DslExpression;
 import io.vertigo.datafactory.impl.search.dsl.model.DslMultiExpression;
 
@@ -34,7 +34,7 @@ import io.vertigo.datafactory.impl.search.dsl.model.DslMultiExpression;
  * (preMultiExpression)\((expression|multiExpression)+\)(postMultiExpression)
  * @author npiedeloup
  */
-final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegChoice> {
+final class DslMultiExpressionRule extends PegAbstractRule<DslMultiExpression, PegChoice> {
 	private static final int MAX_DEPTH = 3;
 
 	/**

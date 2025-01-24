@@ -15,9 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.peg;
+package io.vertigo.commons.peg.rule;
 
-import io.vertigo.commons.peg.PegRule.Dummy;
+import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.commons.peg.PegResult;
+import io.vertigo.commons.peg.rule.PegRule.Dummy;
 import io.vertigo.core.lang.Assertion;
 
 /**
@@ -41,7 +43,7 @@ final class PegWhiteSpaceRule implements PegRule<Dummy> {
 		super();
 		Assertion.check().isNotNull(blanks);
 		//-----
-		rule = PegRules.word(emptyAccepted, blanks, PegWordRule.Mode.ACCEPT, "_");
+		rule = PegRules.word(emptyAccepted, blanks, PegWordRuleMode.ACCEPT, "_");
 		expression = rule.getExpression();
 	}
 

@@ -20,10 +20,10 @@ package io.vertigo.datafactory.impl.search.dsl.rules;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.rule.PegAbstractRule;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
 import io.vertigo.datafactory.impl.search.dsl.model.DslExpression;
 import io.vertigo.datafactory.impl.search.dsl.model.DslField;
 import io.vertigo.datafactory.impl.search.dsl.model.DslMultiField;
@@ -34,7 +34,7 @@ import io.vertigo.datafactory.impl.search.dsl.model.DslQuery;
  * (preExpression)(field|multiField):(query)(postExpression)
  * @author npiedeloup
  */
-final class DslExpressionRule extends AbstractRule<DslExpression, List<Object>> {
+final class DslExpressionRule extends PegAbstractRule<DslExpression, List<Object>> {
 
 	DslExpressionRule() {
 		super(createMainRule(), "expression");

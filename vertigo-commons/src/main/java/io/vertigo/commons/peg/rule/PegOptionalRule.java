@@ -15,10 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.peg;
+package io.vertigo.commons.peg.rule;
 
 import java.util.Optional;
 
+import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.commons.peg.PegResult;
 import io.vertigo.core.lang.Assertion;
 
 /**

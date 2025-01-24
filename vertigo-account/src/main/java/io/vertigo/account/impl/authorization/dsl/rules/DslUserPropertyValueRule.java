@@ -20,16 +20,16 @@ package io.vertigo.account.impl.authorization.dsl.rules;
 import java.util.List;
 
 import io.vertigo.account.authorization.definitions.rulemodel.RuleUserPropertyValue;
-import io.vertigo.commons.peg.AbstractRule;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.rule.PegAbstractRule;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
 
 /**
  * Parsing rule for userProperty.
  * ${(userProperty)}
  * @author npiedeloup
  */
-final class DslUserPropertyValueRule extends AbstractRule<RuleUserPropertyValue, List<Object>> {
+final class DslUserPropertyValueRule extends PegAbstractRule<RuleUserPropertyValue, List<Object>> {
 
 	DslUserPropertyValueRule() {
 		super(createMainRule(), "userProperty");

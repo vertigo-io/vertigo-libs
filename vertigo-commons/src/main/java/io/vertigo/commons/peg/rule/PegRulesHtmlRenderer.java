@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.peg;
+package io.vertigo.commons.peg.rule;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -90,9 +90,9 @@ public final class PegRulesHtmlRenderer {
 				whiteSpace((PegWhiteSpaceRule) rule);
 			} else if (rule instanceof PegWordRule) {
 				word((PegWordRule) rule);
-			} else if (rule instanceof AbstractRule) {
-				detectGrammar(((AbstractRule<?, ?>) rule).getMainRule()); //on calcul la grammaire en dessous, avant de l'associer à cette règle
-				populateGramar(rule, readGramar(((AbstractRule<?, ?>) rule).getMainRule()));
+			} else if (rule instanceof PegAbstractRule) {
+				detectGrammar(((PegAbstractRule<?, ?>) rule).getMainRule()); //on calcul la grammaire en dessous, avant de l'associer à cette règle
+				populateGramar(rule, readGramar(((PegAbstractRule<?, ?>) rule).getMainRule()));
 			} else {
 				populateGramar(rule, rule.getExpression());
 			}

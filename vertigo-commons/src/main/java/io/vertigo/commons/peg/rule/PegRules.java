@@ -15,14 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.peg;
+package io.vertigo.commons.peg.rule;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.commons.peg.PegRule.Dummy;
-import io.vertigo.commons.peg.PegWordRule.Mode;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegOperatorTerm;
+import io.vertigo.commons.peg.rule.PegRule.Dummy;
 import io.vertigo.core.locale.LocaleMessageKey;
 
 /**
@@ -172,7 +173,7 @@ public final class PegRules {
 	 * @param readableExpression Expression nommée
 	 * @return Word rule (capture a word)
 	 */
-	public static PegRule<String> word(final boolean emptyAccepted, final String checkedChars, final Mode mode, final String readableExpression) {
+	public static PegRule<String> word(final boolean emptyAccepted, final String checkedChars, final PegWordRuleMode mode, final String readableExpression) {
 		return new PegWordRule(emptyAccepted, checkedChars, mode, readableExpression);
 	}
 
@@ -194,4 +195,82 @@ public final class PegRules {
 		return pegRulesHtmlRenderer.render(rootRule);
 	}
 
+	/**
+	 * Rule to resolve operations. The result is not resolved immediately but through a solver that resolve operands to Objects handled by the operator class.
+	 *
+	 * @param <A> Type of the operand
+	 * @param <B> Type of the operator
+	 * @param <R> Type of the result
+	 * @param operandRule Rule to match operands
+	 * @param operatorClass enum of type PegOperatorTerm
+	 * @param isOperatorSpaced if operators need to be spaced from operands
+	 * @return the rule
+	 */
+	public static <A, B extends Enum<B> & PegOperatorTerm<R>, R> PegRule<PegDelayedOperationSolver<A, B, R>> delayedOperation(final PegRule<A> operandRule, final Class<B> operatorClass,
+			final boolean isOperatorSpaced) {
+		return new PegDelayedOperationRule<>(operandRule, operatorClass, isOperatorSpaced, true);
+	}
+
+	/**
+	 * Rule to resolve operations, non greedy. The result is not resolved immediately but through a solver that resolve operands to Objects handled by the operator class.
+	 *
+	 * @param <A> Type of the operand
+	 * @param <B> Type of the operator
+	 * @param <R> Type of the result
+	 * @param operandRule Rule to match operands
+	 * @param operatorClass enum of type PegOperatorTerm
+	 * @param isOperatorSpaced if operators need to be spaced from operands
+	 * @return the rule
+	 */
+	public static <A, B extends Enum<B> & PegOperatorTerm<R>, R> PegRule<PegDelayedOperationSolver<A, B, R>> delayedOperationLazy(final PegRule<A> operandRule, final Class<B> operatorClass,
+			final boolean isOperatorSpaced) {
+		return new PegDelayedOperationRule<>(operandRule, operatorClass, isOperatorSpaced, false);
+	}
+
+	/**
+	 * Rule to resolve operations. The operandRule must have in output the same type as handled by the operator.
+	 *
+	 * @param <A> Type of the operand
+	 * @param <B> Type of the operator
+	 * @param operandRule Rule to match operands
+	 * @param operatorClass enum of type PegOperatorTerm
+	 * @param isOperatorSpaced if operators need to be spaced from operands
+	 * @return the rule
+	 */
+	public static <A, B extends Enum<B> & PegOperatorTerm<A>> PegRule<A> operation(final PegRule<A> operandRule, final Class<B> operatorClass,
+			final boolean isOperatorSpaced) {
+		return new PegOperationRule<>(operandRule, operatorClass, isOperatorSpaced, true);
+	}
+
+	/**
+	 * Rule to resolve operations, non greedy. The operandRule must have in output the same type as handled by the operator.
+	 *
+	 * @param <A> Type of the operand
+	 * @param <B> Type of the operator
+	 * @param operandRule Rule to match operands
+	 * @param operatorClass enum of type PegOperatorTerm
+	 * @param isOperatorSpaced if operators need to be spaced from operands
+	 * @return the rule
+	 */
+	public static <A, B extends Enum<B> & PegOperatorTerm<A>> PegRule<A> operationLazy(final PegRule<A> operandRule, final Class<B> operatorClass,
+			final boolean isOperatorSpaced) {
+		return new PegOperationRule<>(operandRule, operatorClass, isOperatorSpaced, false);
+	}
+
+	/**
+	 * Rule to resolve comparisons Rule for comparisons. Eg : $test == true<br/>
+	 * Each side of the comparison supports operations. Eg : $test + $test2 == 5<br/>
+	 * <br/>
+	 * Supported comparators are : =, !=, <, <=, >, >=<br/>
+	 * Supported operators are : +, -, *, /<br/>
+	 * <br/>
+	 * The result is not resolved immediately but through a solver that resolve operands to java Objects handled by the
+	 * {@link io.vertigo.commons.peg.term.PegArithmeticsOperatorTerm PegArithmeticsOperatorTerm} class.
+	 *
+	 * @param valueRule Rule to match the values individually
+	 * @return the rule
+	 */
+	public static PegRule<PegComparisonRuleSolver> comparison(final PegRule<String> valueRule) {
+		return new PegComparisonRule(valueRule);
+	}
 }

@@ -27,14 +27,18 @@ import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.commons.peg.rule.PegWordRuleMode;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
+
 public final class ParserTest {
 	private static final PegRule<String> HELLO = PegRules.term("hello");
 	private static final PegRule<String> WORLD = PegRules.term("world");
 	private static final PegRule<String> MUSIC = PegRules.term("music");
 	private static final PegRule<String> SPACE = PegRules.term(" ");
 	private static final PegRule<String> FROM = PegRules.term("from");
-	private static final PegRule<String> WHERE = PegRules.word(false, "abcdefghijklmnopqrstuvwxyz", PegWordRule.Mode.ACCEPT, "where");
-	private static final PegRule<String> PROPERTY = PegRules.word(false, "\"", PegWordRule.Mode.REJECT_ESCAPABLE, "property");
+	private static final PegRule<String> WHERE = PegRules.word(false, "abcdefghijklmnopqrstuvwxyz", PegWordRuleMode.ACCEPT, "where");
+	private static final PegRule<String> PROPERTY = PegRules.word(false, "\"", PegWordRuleMode.REJECT_ESCAPABLE, "property");
 	private static final PegRule<String> AB = PegRules.term("ab");
 	//---
 	private static final PegRule<List<String>> MANY_AB = PegRules.zeroOrMore(AB, false);//=(AB, true) no global (can match abc)

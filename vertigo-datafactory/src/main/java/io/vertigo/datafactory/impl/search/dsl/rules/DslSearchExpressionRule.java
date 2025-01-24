@@ -19,9 +19,9 @@ package io.vertigo.datafactory.impl.search.dsl.rules;
 
 import java.util.List;
 
-import io.vertigo.commons.peg.AbstractRule;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.rule.PegAbstractRule;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
 import io.vertigo.datafactory.impl.search.dsl.model.DslMultiExpression;
 
 /**
@@ -29,7 +29,7 @@ import io.vertigo.datafactory.impl.search.dsl.model.DslMultiExpression;
  * (multiExpression)+
  * @author npiedeloup
  */
-public final class DslSearchExpressionRule extends AbstractRule<List<DslMultiExpression>, List<DslMultiExpression>> {
+public final class DslSearchExpressionRule extends PegAbstractRule<List<DslMultiExpression>, List<DslMultiExpression>> {
 
 	public DslSearchExpressionRule() {
 		super(createMainRule(), "searchExpression");

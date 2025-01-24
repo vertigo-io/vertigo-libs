@@ -15,8 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.peg;
+package io.vertigo.commons.peg.rule;
 
+import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.commons.peg.PegResult;
 import io.vertigo.core.lang.Assertion;
 
 /**
@@ -27,33 +29,23 @@ import io.vertigo.core.lang.Assertion;
  *
  * @author pchretien
  */
-public final class PegWordRule implements PegRule<String> {
-	/** Mode de selection des caractères. */
-	public enum Mode {
-		/** N'accepte que les caractères passés en paramètre. */
-		ACCEPT,
-		/** Accepte tout sauf les caractères passés en paramètre. */
-		REJECT,
-		/** Accepte tout sauf les caractères passés en paramètre.
-		 * Avec la possibilité d'echaper un caractère avec le \ */
-		REJECT_ESCAPABLE
-	}
-
+final class PegWordRule implements PegRule<String> {
 	private static final char escapeChar = '\\';
 	private final String acceptedCharacters;
 	private final String rejectedCharacters;
 	private final String readableExpression;
 	private final boolean emptyAccepted;
-	private final Mode mode;
+	private final PegWordRuleMode mode;
 
 	/**
 	 * Constructor.
+	 *
 	 * @param emptyAccepted Si les mots vides sont acceptés
 	 * @param checkedChars Liste des caractères vérifiés
 	 * @param mode Indique le comportement du parseur : si les caractères vérifiés sont les seuls acceptés, sinon les seuls rejetés, et si l'echappement est autorisé
 	 * @param readableCheckedChar Expression lisible des caractères vérifiés
 	 */
-	PegWordRule(final boolean emptyAccepted, final String checkedChars, final Mode mode, final String readableCheckedChar) {
+	PegWordRule(final boolean emptyAccepted, final String checkedChars, final PegWordRuleMode mode, final String readableCheckedChar) {
 		super();
 		Assertion.check()
 				.isNotNull(mode)
@@ -62,7 +54,7 @@ public final class PegWordRule implements PegRule<String> {
 		//-----
 		this.emptyAccepted = emptyAccepted;
 		this.mode = mode;
-		if (mode == Mode.ACCEPT) {
+		if (mode == PegWordRuleMode.ACCEPT) {
 			acceptedCharacters = checkedChars;
 			rejectedCharacters = "";
 		} else {
@@ -85,15 +77,15 @@ public final class PegWordRule implements PegRule<String> {
 		// On vérifie que le caractère est contenu dans les caractères acceptés.
 		// On vérifie que le caractère n'est pas contenu dans les caractères rejetés.
 		while (index < text.length()
-				&& (mode != Mode.ACCEPT || acceptedCharacters.indexOf(text.charAt(index)) >= 0)
-				&& (mode == Mode.REJECT_ESCAPABLE && (index > 0) && text.charAt(index - 1) == escapeChar || (rejectedCharacters.indexOf(text.charAt(index)) < 0))) {
+				&& (mode != PegWordRuleMode.ACCEPT || acceptedCharacters.indexOf(text.charAt(index)) >= 0)
+				&& (mode == PegWordRuleMode.REJECT_ESCAPABLE && (index > 0) && text.charAt(index - 1) == escapeChar || (rejectedCharacters.indexOf(text.charAt(index)) < 0))) {
 			index++;
 		}
 		if (!emptyAccepted && index == start) {
 			throw new PegNoMatchFoundException(text, start, null, "Mot respectant {0} attendu", getExpression());
 		}
 		String word = text.substring(start, index);
-		if (mode == Mode.REJECT_ESCAPABLE) {
+		if (mode == PegWordRuleMode.REJECT_ESCAPABLE) {
 			word = word.replaceAll("\\\\(.)", "$1");
 		}
 		return new PegResult<>(index, word);

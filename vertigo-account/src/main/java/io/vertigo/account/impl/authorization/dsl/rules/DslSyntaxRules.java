@@ -19,9 +19,9 @@ package io.vertigo.account.impl.authorization.dsl.rules;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.commons.peg.PegResult;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
-import io.vertigo.commons.peg.PegWordRule;
+import io.vertigo.commons.peg.rule.PegWordRuleMode;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
 
 /**
  *
@@ -40,7 +40,7 @@ final class DslSyntaxRules {
 	private static final String DELIMITERS = RESERVED + WHITE_SPACE;
 
 	/** règle de lectures des blancs. */
-	static final PegRule<?> SPACES = PegRules.word(true, WHITE_SPACE, PegWordRule.Mode.ACCEPT, "_");
+	static final PegRule<?> SPACES = PegRules.word(true, WHITE_SPACE, PegWordRuleMode.ACCEPT, "_");
 
 	/** block start. */
 	static final PegRule<String> BLOCK_START = PegRules.term("(");
@@ -54,10 +54,10 @@ final class DslSyntaxRules {
 
 	//Il faut gérer le caractère d'évitement.
 	/** word. */
-	static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRule.Mode.REJECT, "WORD");
+	static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRuleMode.REJECT, "WORD");
 
 	/** fixed word. */
-	static final PegRule<String> FIXED_WORD = PegRules.word(false, WHITE_SPACE + "]),=<>", PegWordRule.Mode.REJECT, "!_");
+	static final PegRule<String> FIXED_WORD = PegRules.word(false, WHITE_SPACE + "]),=<>", PegWordRuleMode.REJECT, "!_");
 
 	/** depth overflow. */
 	static final PegRule<?> DEPTH_OVERFLOW = new DepthOverflowRule();

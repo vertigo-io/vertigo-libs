@@ -15,8 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.peg;
+package io.vertigo.commons.peg.rule;
 
+import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.commons.peg.PegResult;
 import io.vertigo.core.lang.Assertion;
 
 /**
@@ -28,12 +30,12 @@ import io.vertigo.core.lang.Assertion;
  * @param <R> Type of the product text parsing
  * @param <M> Type of the parent parsing rule
  */
-public abstract class AbstractRule<R, M> implements PegRule<R> {
+public abstract class PegAbstractRule<R, M> implements PegRule<R> {
 	private final PegRule<M> mainRule;
 	private final PegRule<M> innerRule;
 	private final String expression;
 
-	protected AbstractRule(final PegRule<M> mainRule) {
+	protected PegAbstractRule(final PegRule<M> mainRule) {
 		Assertion.check().isNotNull(mainRule);
 		//-----
 		this.innerRule = mainRule;
@@ -41,7 +43,7 @@ public abstract class AbstractRule<R, M> implements PegRule<R> {
 		this.expression = mainRule.getExpression();
 	}
 
-	protected AbstractRule(final PegRule<M> mainRule, final String ruleName) {
+	protected PegAbstractRule(final PegRule<M> mainRule, final String ruleName) {
 		Assertion.check()
 				.isNotNull(mainRule)
 				.isNotBlank(ruleName);
