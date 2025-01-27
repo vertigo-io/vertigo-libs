@@ -47,7 +47,9 @@
         </template>
         <template #cell="{ colKey, cell, idx }">
             <vu:content></vu:content>
-            <vu:dsfr-column name="action" label="Actions" sortable="false" align="right"
+            <vu:dsfr-column name="action" label="Actions"
+                            sortable="false" align="right"
+                            hideLabel="true"
                             th:if="${actions_slot != null}">
                 <div class="flex gap--sm">
                     <vu:content-slot name="actions_slot" th:with="label=null, title=null, vTitle=null"/>

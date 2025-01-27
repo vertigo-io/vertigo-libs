@@ -52,6 +52,14 @@
     flex-direction: column;
 }
 
+.flex-row-reverse {
+    flex-direction: row-reverse;
+}
+
+.flex-column-reverse {
+    flex-direction: column-reverse;
+}
+
 .order-none {
     order: 0;
 }
@@ -211,7 +219,7 @@
 
 /* Text align */
 .text-left {
-    text-align: left;
+    text-align: left !important;
 }
 
 .text-center {
@@ -219,7 +227,7 @@
 }
 
 .text-right {
-    text-align: right;
+    text-align: right !important;
 }
 
 .text-justify {

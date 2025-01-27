@@ -8,6 +8,7 @@
  * - [L269] Ajoute la notion du rang de la ligne dans le slot de modification d’une cellule, nécessaire pour des raisons d’accessibilité
  * - Ajoute un slot pour le titre (caption)
  * - Ajoute le nombre de page dans le footer
+ * - Ajoute la possibilité de changer la taille de la pagination
  * - Ajoute la possibilité de masquer le libellé d’une colonne via un sr-only
  *
  */
@@ -43,6 +44,7 @@ export type DsfrDataTableProps = {
   bottomCaption?: boolean
   noCaption?: boolean
   pages?: Page[]
+  footerSize: 'sm' | 'small' | 'md' | 'medium'
   pagination?: boolean
   paginationOptions?: number[]
   currentPage?: number
@@ -84,6 +86,9 @@ const pages = computed<Page[]>(() => props.pages ?? Array.from({length: pageCoun
 
 const lowestLimit = computed(() => currentPage.value * rowsPerPage.value)
 const highestLimit = computed(() => (currentPage.value + 1) * rowsPerPage.value)
+
+const isFooterSizeSm = computed(() => ['sm', 'small'].includes(props.footerSize));
+
 
 function defaultSortFn(a: string | DsfrDataTableRow, b: string | DsfrDataTableRow) {
   const key = sortedBy.value
@@ -210,6 +215,10 @@ function copyToClipboard(text: string) {
                   :key="typeof header === 'object' ? header.key : header"
                   scope="col"
                   v-bind="typeof header === 'object' && header.headerAttrs"
+                  :class="{
+                    'text-right': header.align === 'right',
+                    'text-left': header.align === 'left'
+                  }"
                   :tabindex="sortableRows ? 0 : undefined"
                   @click="sortBy((header as DsfrDataTableHeaderCellObject).key ?? (Array.isArray(rows[0]) ? idx : header))"
                   @keydown.enter="sortBy((header as DsfrDataTableHeaderCellObject).key ?? header)"
@@ -217,7 +226,8 @@ function copyToClipboard(text: string) {
               >
                 <div
                     :class="{ 'sortable-header': sortableRows === true || (Array.isArray(sortableRows) && sortableRows.includes((header as DsfrDataTableHeaderCellObject).key ?? header)),
-                              'fr-sr-only': typeof header === 'object' ? header.hideLabel : false
+                              'fr-sr-only': typeof header === 'object' ? header.hideLabel : false,
+                              'flex-row-reverse': typeof header === 'object' ? header.align === 'right' : false,
                             }"
                 >
                   <slot
@@ -274,6 +284,10 @@ function copyToClipboard(text: string) {
               <td
                   v-for="(cell, cellIdx) of row"
                   :key="typeof cell === 'object' ? cell[rowKey] : cell"
+                  :class="{
+                    'text-right': headersRow[cellIdx].align === 'right',
+                    'text-left': headersRow[cellIdx].align === 'left'
+                  }"
                   @keydown.ctrl.c="copyToClipboard(typeof cell === 'object' ? cell[rowKey] : cell)"
                   @keydown.meta.c="copyToClipboard(typeof cell === 'object' ? cell[rowKey] : cell)"
               >
@@ -312,11 +326,14 @@ function copyToClipboard(text: string) {
               class="flex justify-between items-center"
               :class="paginationWrapperClass"
           >
-            <p class="fr-mb-0 fr-ml-1v" v-if="showNbRows">{{ rows.length }} résulat(s)</p>
+            <p class="fr-mb-0 fr-ml-1v"
+               :class="{ 'fr-text--sm': isFooterSizeSm }"
+               v-if="showNbRows">{{ rows.length }} résulat(s)</p>
 
             <div class="flex gap-2 items-center">
               <label
                   class="fr-label"
+                  :class="{ 'fr-text--sm': isFooterSizeSm }"
                   for="pagination-options"
               >
                 Résultats par page :
@@ -346,11 +363,16 @@ function copyToClipboard(text: string) {
               </select>
             </div>
             <div class="flex ml-1">
-              <span class="self-center">Page {{ currentPage + 1 }} sur {{ pageCount }}</span>
+              <span class="self-center"
+                    :class="{ 'fr-text--sm': isFooterSizeSm }"
+              >
+                Page {{ currentPage + 1 }} sur {{ pageCount }}</span>
             </div>
             <DsfrPagination
                 v-model:current-page="currentPage"
                 :pages="pages"
+                next-page-title="Précédent"
+                prev-page-title="Suivant"
             />
           </div>
         </template>

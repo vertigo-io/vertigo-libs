@@ -295,6 +295,7 @@
                    sorted="movId"
                    row-key="movId"
                    :no-caption="false"
+                   footer-size="sm"
                    selectable
     >
         <vu:slot name="actions_slot">
@@ -322,7 +323,7 @@
         <vu:dsfr-column field="movId">
             <a th::href="|'@{/movie/}' + cell.movId|">{{ cell.movId }}</a>
         </vu:dsfr-column>
-        <vu:dsfr-column field="title">
+        <vu:dsfr-column field="title" align="right">
             <vu:dsfr-text-field-edit object="movies" field="title"></vu:dsfr-text-field-edit>
         </vu:dsfr-column>
         <vu:dsfr-column name="toto" label="Autre colonne">
