@@ -20,7 +20,6 @@ package io.vertigo.commons.peg.term;
 import java.util.List;
 
 import io.vertigo.commons.peg.PegParsingValueException;
-import io.vertigo.commons.peg.PegTerm;
 
 /**
  * All comparison operators.

@@ -22,7 +22,6 @@ import java.util.function.Function;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.commons.peg.rule.PegComparisonRuleSolver;
 import io.vertigo.commons.peg.rule.PegRule;
 import io.vertigo.commons.peg.rule.PegRules;
 import io.vertigo.commons.peg.rule.PegWordRuleMode;
@@ -30,7 +29,7 @@ import io.vertigo.commons.peg.term.PegCompareTerm;
 
 public class CompareTest {
 
-	private static final PegRule<PegComparisonRuleSolver> RULE = PegRules.comparison(PegRules.word(false, "0123456789", PegWordRuleMode.ACCEPT, "0-9"));
+	private static final PegRule<PegSolver<String, Object, Boolean>> RULE = PegRules.delayedOperationAndComparison(PegRules.word(false, "0123456789", PegWordRuleMode.ACCEPT, "0-9"));
 
 	private static final Function<String, Object> TERM_PARSER = s -> Integer.parseInt(s);
 

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.peg;
+package io.vertigo.commons.peg.term;
 
 /**
  * Interface for all operator terms. Operators have a priority of execution and can be applied to two operands.

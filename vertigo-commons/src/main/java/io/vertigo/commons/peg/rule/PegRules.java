@@ -22,8 +22,9 @@ import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.commons.peg.PegChoice;
-import io.vertigo.commons.peg.PegOperatorTerm;
+import io.vertigo.commons.peg.PegSolver;
 import io.vertigo.commons.peg.rule.PegRule.Dummy;
+import io.vertigo.commons.peg.term.PegOperatorTerm;
 import io.vertigo.core.locale.LocaleMessageKey;
 
 /**
@@ -201,12 +202,12 @@ public final class PegRules {
 	 * @param <A> Type of the operand
 	 * @param <B> Type of the operator
 	 * @param <R> Type of the result
-	 * @param operandRule Rule to match operands
+	 * @param operandRule Rule to match operands. Actual values are resolved later by the solver.
 	 * @param operatorClass enum of type PegOperatorTerm
 	 * @param isOperatorSpaced if operators need to be spaced from operands
 	 * @return the rule
 	 */
-	public static <A, B extends Enum<B> & PegOperatorTerm<R>, R> PegRule<PegDelayedOperationSolver<A, B, R>> delayedOperation(final PegRule<A> operandRule, final Class<B> operatorClass,
+	public static <A, B extends Enum<B> & PegOperatorTerm<R>, R> PegRule<PegSolver<A, R, R>> delayedOperation(final PegRule<A> operandRule, final Class<B> operatorClass,
 			final boolean isOperatorSpaced) {
 		return new PegDelayedOperationRule<>(operandRule, operatorClass, isOperatorSpaced, true);
 	}
@@ -222,7 +223,7 @@ public final class PegRules {
 	 * @param isOperatorSpaced if operators need to be spaced from operands
 	 * @return the rule
 	 */
-	public static <A, B extends Enum<B> & PegOperatorTerm<R>, R> PegRule<PegDelayedOperationSolver<A, B, R>> delayedOperationLazy(final PegRule<A> operandRule, final Class<B> operatorClass,
+	public static <A, B extends Enum<B> & PegOperatorTerm<R>, R> PegRule<PegSolver<A, R, R>> delayedOperationLazy(final PegRule<A> operandRule, final Class<B> operatorClass,
 			final boolean isOperatorSpaced) {
 		return new PegDelayedOperationRule<>(operandRule, operatorClass, isOperatorSpaced, false);
 	}
@@ -258,19 +259,43 @@ public final class PegRules {
 	}
 
 	/**
-	 * Rule to resolve comparisons Rule for comparisons. Eg : $test == true<br/>
-	 * Each side of the comparison supports operations. Eg : $test + $test2 == 5<br/>
+	 * Rule for comparisons with delayed term resolution.
+	 * Eg : "$test == true"
+	 * Supported comparators are : =, !=, <, <=, >, >=
+	 *
+	 * @param <A> the type of the main rule result
+	 * @param valueRule Rule to match each side of the comparison. Actual values are resolved later by the solver.
+	 * @return the rule
+	 */
+	public static <A> PegRule<PegSolver<A, Object, Boolean>> delayedComparison(final PegRule<A> valueRule) {
+		return new PegDelayedComparisonRule<>(valueRule);
+	}
+
+	/**
+	 * Rule for simple comparisons.
+	 * Eg : "15 > 12"
+	 * Supported comparators are : =, !=, <, <=, >, >=
+	 *
+	 * @param valueRule Rule to match each side of the comparison
+	 * @return the rule
+	 */
+	public static PegRule<Boolean> comparison(final PegRule<?> valueRule) {
+		return new PegComparisonRule(valueRule);
+	}
+
+	/**
+	 * Rule for make operations and then compare. Eg : $test + $test2 == 5<br/>
+	 * <br/>
+	 * {@link #handle} returns a function that takes a function to parse the terms (String -> Object) and returns the result of the comparison.<br/>
 	 * <br/>
 	 * Supported comparators are : =, !=, <, <=, >, >=<br/>
 	 * Supported operators are : +, -, *, /<br/>
-	 * <br/>
-	 * The result is not resolved immediately but through a solver that resolve operands to java Objects handled by the
-	 * {@link io.vertigo.commons.peg.term.PegArithmeticsOperatorTerm PegArithmeticsOperatorTerm} class.
 	 *
-	 * @param valueRule Rule to match the values individually
+	 * @param <A> The raw value type from the term parser rule
+	 * @param valueRule Rule to match the values individually. Actuel values are resolved later by the solver.
 	 * @return the rule
 	 */
-	public static PegRule<PegComparisonRuleSolver> comparison(final PegRule<String> valueRule) {
-		return new PegComparisonRule(valueRule);
+	public static <A> PegRule<PegSolver<A, Object, Boolean>> delayedOperationAndComparison(final PegRule<A> valueRule) {
+		return new PegDelayedOperationAndComparisonRule<>(valueRule);
 	}
 }

@@ -17,24 +17,29 @@
  */
 package io.vertigo.commons.peg.rule;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+import java.util.function.Function;
 
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegEnumRuleHelper;
 import io.vertigo.commons.peg.PegNoMatchFoundException;
-import io.vertigo.commons.peg.PegOperatorTerm;
 import io.vertigo.commons.peg.PegResult;
+import io.vertigo.commons.peg.PegSolver;
 import io.vertigo.commons.peg.term.PegBracketsTerm;
+import io.vertigo.commons.peg.term.PegOperatorTerm;
 
 /**
- * Rule for parsing an operation (eg : 12 * 5 + $test), resolving terms (operands) later through OperationSolver.
+ * Rule for parsing an operation (eg : 12 * 5 + $test), resolving terms (operands) later through PegSolver.
  *
  * @param <A> Type of the operand
  * @param <B> Type of the operator
  * @param <R> Type of the result
  * @author skerdudou
  */
-class PegDelayedOperationRule<A, B extends Enum<B> & PegOperatorTerm<R>, R> implements PegRule<PegDelayedOperationSolver<A, B, R>> {
+class PegDelayedOperationRule<A, B extends Enum<B> & PegOperatorTerm<R>, R> implements PegRule<PegSolver<A, R, R>> {
 
 	private static final PegRule<Dummy> SPACES_RULE = PegRules.blanks();
 	private static final PegRule<PegBracketsTerm> OPEN_BRACKET_RULE = PegEnumRuleHelper.getIndividualRuleSkipSpaces(PegBracketsTerm.OPEN);
@@ -64,7 +69,7 @@ class PegDelayedOperationRule<A, B extends Enum<B> & PegOperatorTerm<R>, R> impl
 	}
 
 	@Override
-	public PegResult<PegDelayedOperationSolver<A, B, R>> parse(final String text, final int start) throws PegNoMatchFoundException {
+	public PegResult<PegSolver<A, R, R>> parse(final String text, final int start) throws PegNoMatchFoundException {
 		/*
 		state 0 :
 		 - ( => state 0, brackets + 1
@@ -150,6 +155,111 @@ class PegDelayedOperationRule<A, B extends Enum<B> & PegOperatorTerm<R>, R> impl
 		}
 
 		return new PegResult<>(endParsingIndex, new PegDelayedOperationSolver<>(rawStack, operatorClass));
+	}
+
+	/**
+	 * Class to solve the operation after providing the function to parse the operand. Used by PegDelayedOperationRule.
+	 *
+	 * @param <A> Type of the operand
+	 * @param <B> Type of the operator
+	 * @param <R> Type of the result
+	 * @author skerdudou
+	 */
+	private static class PegDelayedOperationSolver<A, B extends PegOperatorTerm<R>, R> implements PegSolver<A, R, R> {
+
+		private final List<Object> rawStack; // Reverse Polish notation stack
+		private final Class<B> operatorClass;
+
+		private PegDelayedOperationSolver(final List<Object> inputStack, final Class<B> operatorClass) {
+			// Resolving the parentheses and operator priority by converting to reverse polish notation
+			// using https://en.wikipedia.org/wiki/Shunting_yard_algorithm
+
+			this.operatorClass = operatorClass;
+			rawStack = new ArrayList<>();
+
+			final Deque<Object> operatorStack = new ArrayDeque<>();
+			for (final var o : inputStack) {
+				if (operatorClass.isAssignableFrom(o.getClass())) {
+					// operator
+					final B operator = operatorClass.cast(o);
+					while (!operatorStack.isEmpty() && operatorStack.peek() != PegBracketsTerm.OPEN) {
+						final var prevOp = operatorClass.cast(operatorStack.peek());
+						if (prevOp.getPriority() > operator.getPriority()) {
+							rawStack.add(operatorStack.pop());
+						} else {
+							break;
+						}
+					}
+					operatorStack.push(o);
+				} else if (o == PegBracketsTerm.OPEN) {
+					operatorStack.push(o);
+				} else if (o == PegBracketsTerm.CLOSE) {
+					while (!operatorStack.isEmpty() && operatorStack.peek() != PegBracketsTerm.OPEN) {
+						rawStack.add(operatorStack.pop());
+					}
+					if (operatorStack.isEmpty()) {
+						throw new IllegalArgumentException("Mismatched parentheses");
+					}
+					operatorStack.pop(); // remove the open bracket
+				} else {
+					// operand (enforced by OperationRule)
+					rawStack.add(o);
+				}
+
+			}
+
+			while (!operatorStack.isEmpty()) {
+				rawStack.add(operatorStack.pop());
+			}
+
+		}
+
+		/**
+		 * Solve the expression.
+		 *
+		 * @param operandResolver Function to parse the operand value
+		 * @return the result
+		 */
+		@Override
+		public R apply(final Function<A, R> operandResolver) {
+			final var inStack = resolveValues(operandResolver);
+			final Deque<R> workingStack = new ArrayDeque<>();
+
+			// stack is in reverse polish notation, just apply the operators on the 2 last operands
+			for (final var element : inStack) {
+				if (element != null && operatorClass.isAssignableFrom(element.getClass())) {
+					final var operator = operatorClass.cast(element);
+					final var right = workingStack.pop();
+					final var left = workingStack.pop();
+					workingStack.push(operator.apply(left, right));
+				} else {
+					// operand
+					workingStack.push((R) element); // enforced by resolveValues
+				}
+			}
+
+			if (workingStack.size() != 1) {
+				throw new IllegalArgumentException("Invalid expression");
+			}
+
+			return workingStack.pop();
+		}
+
+		private List<Object> resolveValues(final Function<A, R> operandResolver) {
+			final var outStack = new ArrayList<>(rawStack.size());
+			for (final var elem : rawStack) {
+				if (operatorClass.isAssignableFrom(elem.getClass())) {
+					outStack.add(elem); // operator
+				} else {
+					// operand (enforced by constructor/OperationRule)
+					// raw value ready to be resolved
+					final R value = operandResolver.apply((A) elem);
+					outStack.add(value);
+				}
+			}
+			return outStack;
+		}
+
 	}
 
 }

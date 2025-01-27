@@ -28,6 +28,7 @@ import io.vertigo.commons.peg.rule.PegAbstractRule;
 import io.vertigo.commons.peg.rule.PegRule;
 import io.vertigo.commons.peg.rule.PegRules;
 import io.vertigo.commons.peg.rule.PegWordRuleMode;
+import io.vertigo.commons.peg.term.PegOperatorTerm;
 
 public class CalculatorTest {
 

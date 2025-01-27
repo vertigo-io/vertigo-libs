@@ -21,8 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BinaryOperator;
 
-import io.vertigo.commons.peg.PegOperatorTerm;
-
 /**
  * All boolean operators.
  */

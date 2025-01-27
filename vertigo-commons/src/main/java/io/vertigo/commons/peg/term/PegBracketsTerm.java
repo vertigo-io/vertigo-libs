@@ -19,8 +19,6 @@ package io.vertigo.commons.peg.term;
 
 import java.util.List;
 
-import io.vertigo.commons.peg.PegTerm;
-
 public enum PegBracketsTerm implements PegTerm {
 	OPEN("("),
 	CLOSE(")");

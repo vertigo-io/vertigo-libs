@@ -17,49 +17,33 @@
  */
 package io.vertigo.commons.peg.rule;
 
-import java.util.List;
-
-import io.vertigo.commons.peg.PegEnumRuleHelper;
-import io.vertigo.commons.peg.term.PegArithmeticsOperatorTerm;
-import io.vertigo.commons.peg.term.PegCompareTerm;
+import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.commons.peg.PegResult;
 
 /**
- * Rule for comparisons. Eg : $test == true<br/>
- * Each side of the comparison supports operations. Eg : $test + $test2 == 5<br/>
- * <br/>
- * {@link #handle} returns a function that takes a function to parse the terms (String -> Object) and returns the result of the comparison.<br/>
- * <br/>
- * Supported comparators are : =, !=, <, <=, >, >=<br/>
- * Supported operators are : +, -, *, /<br/>
+ * Rule for simple comparisons.
+ * Eg : "15 > 12"
+ * Supported comparators are : =, !=, <, <=, >, >=
  *
  * @author skerdudou
  */
-class PegComparisonRule extends PegAbstractRule<PegComparisonRuleSolver, List<Object>> {
+class PegComparisonRule implements PegRule<Boolean> {
+	private final PegDelayedComparisonRule<?> mainRule;
 
-	public PegComparisonRule(final PegRule<String> valueRule) {
-		super(getRule(valueRule));
-	}
-
-	private static PegRule<List<Object>> getRule(final PegRule<String> valueRule) {
-		final PegDelayedOperationRule<String, PegArithmeticsOperatorTerm, Object> termRule = new PegDelayedOperationRule<>(valueRule, PegArithmeticsOperatorTerm.class, false, false);
-
-		return PegRules.named(
-				PegRules.sequence(
-						termRule, // 0
-						PegRules.skipBlanks(),
-						PegRules.named(PegEnumRuleHelper.getGlobalRule(PegCompareTerm.class), "comparator", "Expected {0}"), // 2
-						PegRules.skipBlanks(),
-						termRule), // 4
-				"term comparator term");
+	public PegComparisonRule(final PegRule<?> valueRule) {
+		mainRule = new PegDelayedComparisonRule<>(valueRule);
 	}
 
 	@Override
-	protected PegComparisonRuleSolver handle(final List<Object> elements) {
-		return f -> {
-			final var leftVal = ((PegDelayedOperationSolver<String, PegArithmeticsOperatorTerm, Object>) elements.get(0)).solve(f);
-			final var rightVal = ((PegDelayedOperationSolver<String, PegArithmeticsOperatorTerm, Object>) elements.get(4)).solve(f);
-
-			return PegCompareTerm.doCompare(leftVal, rightVal, (PegCompareTerm) elements.get(2));
-		};
+	public String getExpression() {
+		return mainRule.getExpression();
 	}
+
+	@Override
+	public PegResult<Boolean> parse(final String text, final int start) throws PegNoMatchFoundException {
+		final var mainResult = mainRule.parse(text, start);
+
+		return new PegResult<>(mainResult.getIndex(), mainResult.getValue().apply(f -> f));
+	}
+
 }

@@ -20,8 +20,8 @@ package io.vertigo.commons.peg.rule;
 import java.util.function.Function;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
-import io.vertigo.commons.peg.PegOperatorTerm;
 import io.vertigo.commons.peg.PegResult;
+import io.vertigo.commons.peg.term.PegOperatorTerm;
 
 /**
  * Rule to parse an operation. The operandRule must have in output the same type as handled by the operator.
@@ -47,7 +47,7 @@ class PegOperationRule<A, B extends Enum<B> & PegOperatorTerm<A>> implements Peg
 	public PegResult<A> parse(final String text, final int start) throws PegNoMatchFoundException {
 		final var mainResult = mainRule.parse(text, start);
 
-		return new PegResult<>(mainResult.getIndex(), mainResult.getValue().solve(Function.identity()));
+		return new PegResult<>(mainResult.getIndex(), mainResult.getValue().apply(Function.identity()));
 	}
 
 }
