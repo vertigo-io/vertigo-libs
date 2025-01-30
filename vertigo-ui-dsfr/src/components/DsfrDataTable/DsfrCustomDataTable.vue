@@ -186,7 +186,7 @@ function copyToClipboard(text: string) {
       <div class="fr-table__container">
         <div class="fr-table__content">
           <table :id="id">
-            <caption :class="{ 'sr-only' : noCaption }">{{ title }}</caption>
+            <caption :class="{ 'fr-sr-only' : noCaption }">{{ title }}</caption>
             <thead>
             <tr>
               <th

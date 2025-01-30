@@ -28,14 +28,14 @@
             <template #header-menu-link>
                 <li>
                     <vu:dsfr-header-menu logout-url="#"
-                                         icon="ri-account-circle-fill"
+                                         icon="fr-icon-account-circle-fill"
                                          nom="Joe Nathang"
                                          email="joenathang@pm.me"
                                          label="Mon espace">
-                        <vu:dsfr-menu-link icon="ri-checkbox-circle-line" label="Mon profil utilisateur" url="#"/>
-                        <vu:dsfr-menu-link icon="ri-mail-line" disabled label="Messagerie"/>
-                        <vu:dsfr-menu-link icon="ri-notification-2-line" label="Notifications"/>
-                        <vu:dsfr-menu-link icon="ri-circle-line" label="Mon périmètre"/>
+                        <vu:dsfr-menu-link icon="fr-icon-checkbox-circle-line" label="Mon profil utilisateur" url="#"/>
+                        <vu:dsfr-menu-link icon="fr-icon-mail-line" disabled label="Messagerie"/>
+                        <vu:dsfr-menu-link icon="fr-icon-notification-2-line" label="Notifications" url="#"/>
+                        <vu:dsfr-menu-link icon="fr-icon-circle-line" label="Mon périmètre"/>
                     </vu:dsfr-header-menu>
                 </li>
             </template>
@@ -50,7 +50,7 @@
 
         <vu:dsfr-header-nav-item label="Accueil" th:url="@{/componentsDemoDsfr/}"/>
         <vu:dsfr-header-nav-item label="Accueil" url="'/'"/>
-        <vu:dsfr-header-nav-item label="Accueil" url="'/tarte/'"/>
+        <vu:dsfr-header-nav-item label="Accueil" url="'/tarte/'" active="true"/>
         <vu:dsfr-header-nav-item-menu label="Menu">
             <vu:dsfr-header-nav-item label="Accueil" th:url="@{/componentsDemoDsfr/}"/>
             <vu:dsfr-header-nav-item label="Accueil" url="'#'"/>

@@ -123,9 +123,12 @@ export default {
     },
     dsfrUpdateMenuNavigationActiveState: function () {
         this.componentStates?.dsfrHeader?.navItems
-            .filter(item => item.title)
             .forEach(item => {
-                item.active = item.links.some(link => window.location.pathname.startsWith(link.to));
+                if (item.title) {
+                    item.active = item.links.some(link => link.setActive === true || window.location.pathname.startsWith(link.to));
+                } else {
+                    item.active = item.setActive === true;
+                }
             });
     }
 }

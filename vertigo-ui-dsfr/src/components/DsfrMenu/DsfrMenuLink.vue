@@ -29,7 +29,10 @@ addMenuItem(props.label, currentCount)
 <template>
   <li role="none">
     <template v-if="url === ''">
-      <dsfr-button tabindex="-1" role="menuitem" :label="label" :id="`${id}_item_${currentCount}`" :icon="icon" tertiary no-outline class="fr-nav__link" v-bind="$attrs"/>
+      <dsfr-button tabindex="-1" role="menuitem" :label="label" :id="`${id}_item_${currentCount}`"
+                   :icon="icon" tertiary no-outline icon-left
+                   class="fr-nav__link"
+                   v-bind="$attrs"/>
     </template>
     <template v-else>
       <a tabindex="-1"
@@ -38,7 +41,6 @@ addMenuItem(props.label, currentCount)
          :href="url"
          :class="aClass"
          v-bind="$attrs">
-        <v-icon v-if="!dsfrIcon" :name="icon"></v-icon>
         {{ label }}
       </a>
     </template>

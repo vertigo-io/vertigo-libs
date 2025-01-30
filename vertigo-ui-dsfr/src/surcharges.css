@@ -119,3 +119,19 @@ td p {
     visibility: collapse;
     height: 0;
 }
+
+/* */
+div.fr-menu {
+    width: fit-content;
+    max-width: 15rem;
+}
+
+@media (min-width: 78em) {
+    div.fr-menu {
+        max-width: 18rem;
+    }
+
+    div.fr-select__menu {
+        max-width: 25rem;
+    }
+}

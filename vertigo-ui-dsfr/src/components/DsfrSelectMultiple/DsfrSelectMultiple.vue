@@ -234,7 +234,7 @@ let handleFocusOut = (event) => {
     <div
         :id="id"
         :class="{ [`fr-select--${messageType}`]: message !== ''}"
-        class="fr-input"
+        class="fr-input fr-select--menu flex"
         @click="expanded = !expanded"
         @keydown.esc.stop="expanded = false"
         @keydown.space.prevent="expanded = !expanded"
@@ -252,7 +252,10 @@ let handleFocusOut = (event) => {
         :aria-expanded="expanded"
         :aria-required="required"
     >
-      <p>{{ selectionDisplay }}</p>
+      <p class="grow overflow">{{ selectionDisplay }}</p>
+      <div class="fr-pl-1v fr-select__icon">
+        <v-icon style="font-size: 1rem" name="ri-arrow-down-s-line"></v-icon>
+      </div>
     </div>
     <div
         :id="`${id}_list`"
@@ -269,7 +272,7 @@ let handleFocusOut = (event) => {
     >
       <ul class="fr-btns-group fr-btns-group--icon-left" v-if="comboHasButton">
         <li>
-          <button class="fr-btn fr-btn--tertiary"
+          <button class="fr-btn fr-btn--tertiary fr-btn--sm"
                   :id="`${id}_button`"
                   @click="selectAll()"
                   ref="button"
@@ -319,6 +322,14 @@ let handleFocusOut = (event) => {
 .fr-select__menu {
   pointer-events: unset !important;
   margin: 0 !important;
+}
+
+p.overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+  height: 1.5rem;
 }
 
 .bg-white {

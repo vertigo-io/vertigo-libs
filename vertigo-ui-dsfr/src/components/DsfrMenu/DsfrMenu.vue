@@ -132,20 +132,20 @@ defineExpose({closeMenu})
         @keydown.tab="expanded = false"
         class="fr-btn fr-menu__btn"
         :class="{
+          [icon as string]: true,
           'fr-btn--secondary': secondary,
           'fr-btn--tertiary': tertiary,
           'fr-btn--sm': sm,
           'fr-btn--md': md,
           'fr-btn--lg': lg,
         }"
+        type="button"
         aria-haspopup="menu"
-        aria-autocomplete="none"
         :aria-disabled="disabled"
         :aria-controls="`${id}_menu`"
         :aria-expanded="expanded"
         v-bind="$attrs"
     >
-      <v-icon class="fr-mr-2v" v-if="icon !== ''" :name="icon"></v-icon>
       <span>{{ label }}</span>
     </button>
     <div

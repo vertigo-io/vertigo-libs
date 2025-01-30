@@ -127,21 +127,21 @@ let handleFocusOut = (event) => {
         @keydown.up.prevent="focusOptionUp"
         @keydown="setFocusByFirstCharacter"
         @keydown.tab="expanded = false"
-        class="fr-btn fr-btn--tertiary-no-outline fr-menu__btn fr-btn--sm"
+        class="fr-btn fr-btn--tertiary-no-outline fr-menu__btn fr-btn--sm fr-btn--icon-left"
+        :class="{ [icon as string]: true }"
+        type="button"
         aria-haspopup="menu"
-        aria-autocomplete="none"
         :aria-disabled="disabled"
         :aria-controls="`${id}_menu`"
         :aria-expanded="expanded"
         v-bind="$attrs"
     >
-      <v-icon class="fr-mr-2v" v-if="icon !== ''" :name="icon"></v-icon>
       <span>{{ label }}</span>
     </button>
     <div
         :id="`${id}_menu`"
         ref="collapse"
-        class="fr-collapse fr-menu fr-menu-header__modal fr-select__menu fr-pb-3v fr-pt-4v bg-white"
+        class="fr-collapse fr-menu fr-menu-header__modal fr-pb-3v fr-pt-4v bg-white"
         role="menu"
         :aria-labelledby="id"
         :class="{ 'fr-collapse--expanded': cssExpanded, 'fr-collapsing': collapsing }"
@@ -160,10 +160,12 @@ let handleFocusOut = (event) => {
       </slot>
       <ul class="fr-menu-header__list fr-mx-n4v fr-pt-2v fr-mb-0" role="none">
         <slot></slot>
-        <li role="none" class="fr-p-2v">
-          <a v-if="logoutUrl !== ''" :id="`${id}_item_${menuItemIndex - 1}`"
-             class="fr-btn w-full fr-btn--sm fr-btn--tertiary fr-icon-logout-box-r-line fr-btn--icon-left"
-             role="menuitem" tabindex="-1" :href="logoutUrl">{{ logoutLabel }}</a>
+        <li role="none">
+          <div class="fr-p-2v">
+            <a v-if="logoutUrl !== ''" :id="`${id}_item_${menuItemIndex - 1}`"
+               class="fr-btn fr-btn--sm fr-btn--tertiary fr-icon-logout-box-r-line fr-btn--icon-left"
+               role="menuitem" tabindex="-1" :href="logoutUrl">{{ logoutLabel }}</a>
+          </div>
         </li>
       </ul>
     </div>
