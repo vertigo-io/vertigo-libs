@@ -17,9 +17,9 @@
  */
 package io.vertigo.commons.peg.rule;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -77,7 +77,7 @@ class PegDelayedOperationRule<A, B extends Enum<B> & PegOperatorTerm<R>, R> impl
 		state 1 :
 		 - operator => state 0
 		 - ) => state 1, brackets - 1
-
+		
 		spaces dont change state
 		*/
 		var state = 0;
@@ -177,7 +177,7 @@ class PegDelayedOperationRule<A, B extends Enum<B> & PegOperatorTerm<R>, R> impl
 			this.operatorClass = operatorClass;
 			rawStack = new ArrayList<>();
 
-			final Deque<Object> operatorStack = new ArrayDeque<>();
+			final Deque<Object> operatorStack = new LinkedList<>();
 			for (final var o : inputStack) {
 				if (operatorClass.isAssignableFrom(o.getClass())) {
 					// operator
@@ -223,7 +223,7 @@ class PegDelayedOperationRule<A, B extends Enum<B> & PegOperatorTerm<R>, R> impl
 		@Override
 		public R apply(final Function<A, R> operandResolver) {
 			final var inStack = resolveValues(operandResolver);
-			final Deque<R> workingStack = new ArrayDeque<>();
+			final Deque<R> workingStack = new LinkedList<>();
 
 			// stack is in reverse polish notation, just apply the operators on the 2 last operands
 			for (final var element : inStack) {
