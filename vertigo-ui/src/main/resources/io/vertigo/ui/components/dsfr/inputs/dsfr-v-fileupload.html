@@ -7,7 +7,7 @@
 	         myComponentId=${model.util.generateComponentUID('uploader', object, field, rowIndex)},
 	         downloadUrl=${downloadUrl?:(url + '/download/')},
 	         myMultiple=${multiple?:false},
-	         myRequired=${required != null ? required : field == null ? false : null}">
+	         myRequired=${required != null ? required : model.util.required(object + '.' + field)}">
 
     <vu:include-data-primitive key="${object}" th:if="${field==null}" modifiable="true"/>
     <vu:include-data object="${object}" field="${field}" th:if="${field!=null}" modifiable="true"/>
