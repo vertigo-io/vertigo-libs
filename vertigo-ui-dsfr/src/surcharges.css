@@ -131,6 +131,10 @@ div.fr-menu {
         max-width: 18rem;
     }
 
+    div.fr-menu .fr-menu__list {
+        max-width: 18rem;
+    }
+
     div.fr-select__menu {
         max-width: 25rem;
     }
