@@ -77,7 +77,7 @@ class PegDelayedOperationRule<A, B extends Enum<B> & PegOperatorTerm<R>, R> impl
 		state 1 :
 		 - operator => state 0
 		 - ) => state 1, brackets - 1
-		
+
 		spaces dont change state
 		*/
 		var state = 0;
@@ -184,7 +184,7 @@ class PegDelayedOperationRule<A, B extends Enum<B> & PegOperatorTerm<R>, R> impl
 					final B operator = operatorClass.cast(o);
 					while (!operatorStack.isEmpty() && operatorStack.peek() != PegBracketsTerm.OPEN) {
 						final var prevOp = operatorClass.cast(operatorStack.peek());
-						if (prevOp.getPriority() > operator.getPriority()) {
+						if (prevOp.getPriority() >= operator.getPriority()) {
 							rawStack.add(operatorStack.pop());
 						} else {
 							break;

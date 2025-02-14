@@ -50,6 +50,9 @@ public class CalculatorTest {
 
 		final var result5 = CALCULATOR_RULE.parse("121 /   11 ");
 		Assertions.assertEquals(11, result5.getValue());
+
+		final var result6 = CALCULATOR_RULE.parse("10-4-6");
+		Assertions.assertEquals(0, result6.getValue());
 	}
 
 	@Test
