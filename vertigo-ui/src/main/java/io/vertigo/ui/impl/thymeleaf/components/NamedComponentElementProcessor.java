@@ -40,6 +40,7 @@ import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IAttribute;
 import org.thymeleaf.model.ICloseElementTag;
+import org.thymeleaf.model.IComment;
 import org.thymeleaf.model.IElementTag;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IOpenElementTag;
@@ -66,6 +67,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 
 public class NamedComponentElementProcessor extends AbstractElementModelProcessor {
+
 	private static final String COMPONENT_PARAMS = "params";
 	/** For reserved chars @see https://www.thymeleaf.org/doc/articles/standarddialect5minutes.html */
 	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^(([^$@~#*]\\{)|.(?!\\{)).*$"; //use to detect if we should escape in placeholder : must encode js string, like 'mylabel'
@@ -306,7 +308,9 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 	private static boolean isVisible(final ITemplateContext context, final IModel firstLevelTagModel) {
 		final ITemplateEvent firstLevelTag = firstLevelTagModel.get(0);
-		if (firstLevelTag instanceof IProcessableElementTag) {
+		if (firstLevelTag instanceof IComment) {
+			return false;
+		} else if (firstLevelTag instanceof IProcessableElementTag) {
 			final IAttribute ifAttribute = ((IProcessableElementTag) firstLevelTag).getAttribute("th:if");
 			if (ifAttribute != null) {
 				final IStandardExpressionParser expressionParser = StandardExpressions.getExpressionParser(context.getConfiguration());
@@ -395,7 +399,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			if (placeholderValues != null) {
 				affectationString = placeholderValues
 						.entrySet().stream()
-						.map((entry1) -> {
+						.map(entry1 -> {
 							if (entry1.getKey().isEmpty()) {
 								return (String) entry1.getValue();
 							}
@@ -407,7 +411,8 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			}
 			structureHandler.setLocalVariable(placeholder, preAffectationString + affectationString);
 
-			/** It works, may be used to check placeholder params to avoid override : but may prefer use of declared component's params.
+			/**
+			 * It works, may be used to check placeholder params to avoid override : but may prefer use of declared component's params.
 			 * structureHandler.setLocalVariable(placeholder + "Map", placeholderValues);
 			 */
 		}
@@ -646,19 +651,18 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			c = str.charAt(i);
 			if (c == '-') {
 				upper = true;
+			} else if (upper) {
+				result.append(Character.toUpperCase(c));
+				upper = false;
 			} else {
-				if (upper) {
-					result.append(Character.toUpperCase(c));
-					upper = false;
-				} else {
-					result.append(c); //on ne force pas lowerCase ici
-				}
+				result.append(c); //on ne force pas lowerCase ici
 			}
 		}
 		return result.toString();
 	}
 
 	private final static class UnmodifiableDeque<E> extends ArrayDeque<E> {
+
 		private static final long serialVersionUID = 1415497376066075497L;
 
 		/** {@inheritDoc} */
