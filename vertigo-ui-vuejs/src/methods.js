@@ -65,25 +65,25 @@ export default {
         var notifyMessages = [];
         if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalErrors') && uiMessageStack.globalErrors && uiMessageStack.globalErrors.length > 0) {
            uiMessageStack.globalErrors.forEach(function(uiMessage) { notifyMessages.push( {
-            type: 'negative', message: uiMessage,
+            color: 'negative', message: uiMessage,
             multiLine: true, timeout: 2500,
            })});
         }
         if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalWarnings') && uiMessageStack.globalWarnings && uiMessageStack.globalWarnings.length > 0) {
            uiMessageStack.globalWarnings.forEach(function(uiMessage) { notifyMessages.push( {
-            type: 'warning', message: uiMessage,
+            color: 'warning', message: uiMessage,
             multiLine: true, timeout: 2500,
            })});
         }
         if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalInfos') && uiMessageStack.globalInfos && uiMessageStack.globalInfos.length > 0) {
            uiMessageStack.globalInfos.forEach(function(uiMessage) { notifyMessages.push( {
-            type: 'info', message: uiMessage,
+            color: 'info', message: uiMessage,
             multiLine: true, timeout: 2500,
            })});
         }
         if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalSuccess') && uiMessageStack.globalSuccess && uiMessageStack.globalSuccess.length > 0) {
            uiMessageStack.globalSuccess.forEach(function(uiMessage) { notifyMessages.push( {
-            type: 'positive', message: uiMessage,
+            color: 'positive', message: uiMessage,
             multiLine: true, timeout: 2500,
            })});
         }
@@ -521,9 +521,14 @@ export default {
               vueData[key] = response.data.model[key];
             }
           });
-          Object.keys(response.data.uiMessageStack).forEach(function (key) {
-            uiMessageStack[key] = response.data.uiMessageStack[key];
-          });
+		  if (options && options.notifyUiMessageStack) {
+			var notifyMessages = this.uiMessageStackToNotify(response.data.uiMessageStack);
+			notifyMessages.forEach(function(notifyMessage) { this.$q.notify(notifyMessage)}.bind(this));
+		  } else {
+			Object.keys(response.data.uiMessageStack).forEach(function (key) {
+	          uiMessageStack[key] = response.data.uiMessageStack[key];
+	        });
+		  }
           if (options && options.onSuccess) {
             options.onSuccess.call(this, response, window);
           }
