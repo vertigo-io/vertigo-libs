@@ -178,6 +178,10 @@ img.avatar {
 	color:var(--v-accent-invert) !important;
 }
 
+.q-table th .q-checkbox__inner {
+	color: currentColor;
+}
+
 .q-table-container th.sortable:hover,
 .q-table-container th.sorted {
   color: rgba(255,255,255,1);  
