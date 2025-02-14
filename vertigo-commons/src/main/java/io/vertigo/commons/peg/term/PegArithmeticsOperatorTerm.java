@@ -18,9 +18,10 @@
 package io.vertigo.commons.peg.term;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BinaryOperator;
 
 import io.vertigo.commons.peg.PegParsingValueException;
 
@@ -35,13 +36,10 @@ public enum PegArithmeticsOperatorTerm implements PegOperatorTerm<Object> {
 
 	private final String str;
 	private final int priority;
-	private final BinaryOperator<Object> binaryOperator;
 
 	PegArithmeticsOperatorTerm(final int priority, final String str) {
 		this.priority = priority;
 		this.str = str;
-
-		binaryOperator = (a, b) -> doArithmetics(a, b, this);
 	}
 
 	@Override
@@ -56,7 +54,7 @@ public enum PegArithmeticsOperatorTerm implements PegOperatorTerm<Object> {
 
 	@Override
 	public Object apply(final Object left, final Object right) {
-		return binaryOperator.apply(left, right);
+		return doArithmetics(left, right, this);
 	}
 
 	private static Object doArithmetics(final Object left, final Object right, final PegArithmeticsOperatorTerm operator) {
@@ -81,7 +79,15 @@ public enum PegArithmeticsOperatorTerm implements PegOperatorTerm<Object> {
 				case PLUS -> leftD.add(rightD);
 				case MINUS -> leftD.subtract(rightD);
 				case MULTIPLY -> leftD.multiply(rightD);
-				case DIVIDE -> leftD.divide(rightD);
+				case DIVIDE -> {
+					final var mc = new MathContext((int) Math.min(leftD.precision() +
+							(long) Math.ceil(10.0 * rightD.precision() / 3.0),
+							Integer.MAX_VALUE),
+							RoundingMode.HALF_UP);
+					// MathContext from BigDecimal::divide, but with different rounding mode
+					// Useful to preserve precision while not throwing exception on infinite decimal
+					yield leftD.divide(rightD, mc);
+				}
 			};
 		}
 		// TODO: handle other types (ex dates)
