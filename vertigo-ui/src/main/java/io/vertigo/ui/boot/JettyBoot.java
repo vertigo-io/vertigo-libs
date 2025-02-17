@@ -48,6 +48,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.springframework.web.WebApplicationInitializer;
 
 import io.vertigo.ui.impl.jetty.session.KVSessionDataStoreFactory;
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -208,8 +209,12 @@ public class JettyBoot {
 	private static class NotFoundErrorHandler extends ErrorHandler {
 
 		@Override
-		public void handle(final String target, final Request baseRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
-			if (response.isCommitted() || baseRequest.isHandled()) {
+		public void handle(final String target, final Request baseRequest, final HttpServletRequest request,
+				final HttpServletResponse response) throws IOException, ServletException {
+			if (response.isCommitted() || baseRequest.isHandled()
+			//Check if we are in an error dispatch : Jetty HttpChannel.dispatch reopen the request and remove the isHandled flag
+					|| DispatcherType.ERROR.equals(baseRequest.getDispatcherType())) {
+
 				return;
 			}
 
