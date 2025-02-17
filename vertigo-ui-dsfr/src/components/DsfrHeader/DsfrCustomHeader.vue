@@ -82,10 +82,7 @@ const showMenu = () => {
   modalOpened.value = true
   menuOpened.value = true
   searchModalOpened.value = false
-  // Sans le setTimeout, le focus n'est pas fait
-  setTimeout(() => {
-    document.getElementById('close-button')?.focus()
-  })
+  document.getElementById('close-button')?.focus()
 }
 const showSearchModal = () => {
   modalOpened.value = true
@@ -157,7 +154,7 @@ provide(registerNavigationLinkKey, () => {
                     class="fr-btn--menu  fr-btn"
                     :data-fr-opened="showMenu"
                     aria-controls="header-navigation"
-                    aria-haspopup="dialog"
+                    aria-haspopup="menu"
                     :aria-label="menuLabel"
                     :title="menuLabel"
                     data-testid="open-menu-btn"
@@ -206,7 +203,6 @@ provide(registerNavigationLinkKey, () => {
                 v-if="quickLinks?.length || languageSelector"
                 class="fr-header__tools-links"
             >
-              <slot name="before-quick-links" />
               <DsfrCustomHeaderMenuLinks
                   v-if="!menuOpened"
                   :links="quickLinks"
@@ -214,7 +210,6 @@ provide(registerNavigationLinkKey, () => {
               >
                 <slot name="header-menu-link"></slot>
               </DsfrCustomHeaderMenuLinks>
-              <slot name="after-quick-links" />
               <template v-if="languageSelector">
                 <DsfrLanguageSelector
                     v-bind="languageSelector"
@@ -264,7 +259,6 @@ provide(registerNavigationLinkKey, () => {
                     @select="languageSelector.currentLanguage = $event.codeIso"
                 />
               </template>
-              <slot name="before-quick-links" />
               <DsfrCustomHeaderMenuLinks
                   v-if="menuOpened"
                   role="navigation"
@@ -274,7 +268,6 @@ provide(registerNavigationLinkKey, () => {
               >
                 <slot name="header-menu-link"></slot>
               </DsfrCustomHeaderMenuLinks>
-              <slot name="after-quick-links" />
               <slot name="header-search"></slot>
             </div>
 

@@ -76,7 +76,7 @@ const emit = defineEmits<{
 
 const selection = defineModel<string[]>('selection', {default: []})
 const rowsPerPage = defineModel<number>('rowsPerPage', {default: 10})
-const currentPage = defineModel<number>('currentPage', {default: 0})
+const currentPage = defineModel<number>('currentPage', {default: 1})
 const pageCount = computed(() => Math.max(Math.ceil(props.rows.length / rowsPerPage.value), 1))
 const pages = computed<Page[]>(() => props.pages ?? Array.from({length: pageCount.value}).map((x, i) => ({
   label: `${i + 1}`,
@@ -89,10 +89,6 @@ const highestLimit = computed(() => (currentPage.value + 1) * rowsPerPage.value)
 
 const isFooterSizeSm = computed(() => ['sm', 'small'].includes(props.footerSize));
 
-const sortedBy = defineModel<string | undefined>('sortedBy', {default: undefined})
-sortedBy.value = props.sorted
-
-const sortedDesc = defineModel('sortedDesc', {default: false})
 
 function defaultSortFn(a: string | DsfrDataTableRow, b: string | DsfrDataTableRow) {
   const key = sortedBy.value
@@ -106,6 +102,11 @@ function defaultSortFn(a: string | DsfrDataTableRow, b: string | DsfrDataTableRo
   }
   return 0
 }
+
+const sortedBy = defineModel<string | undefined>('sortedBy', {default: undefined})
+sortedBy.value = props.sorted
+
+const sortedDesc = defineModel('sortedDesc', {default: false})
 
 function sortBy(key: string) {
   if (!props.sortableRows || (Array.isArray(props.sortableRows) && !props.sortableRows.includes(key))) {
@@ -160,10 +161,15 @@ function selectAll(bool: boolean) {
   selection.value!.length = 0
 }
 
-const wholeSelection = computed(() => selection.value.length === finalRows.value.length)
+const wholeSelection = ref(false)
+
+function checkSelection() {
+  wholeSelection.value = selection.value.length === finalRows.value.length
+}
 
 function onPaginationOptionsChange() {
   emit('update:current-page', 0)
+  wholeSelection.value = false
   selection.value.length = 0
 }
 
@@ -263,6 +269,7 @@ function copyToClipboard(text: string) {
                       v-model="selection"
                       :value="row[0][rowKey] ?? `row-${idx}`"
                       type="checkbox"
+                      @change="checkSelection()"
                   >
                   <label
                       class="fr-label"
@@ -277,7 +284,6 @@ function copyToClipboard(text: string) {
               <td
                   v-for="(cell, cellIdx) of row"
                   :key="typeof cell === 'object' ? cell[rowKey] : cell"
-                  tabindex="0"
                   :class="{
                     'text-right': headersRow[cellIdx].align === 'right',
                     'text-left': headersRow[cellIdx].align === 'left'
@@ -364,7 +370,6 @@ function copyToClipboard(text: string) {
             </div>
             <DsfrPagination
                 v-model:current-page="currentPage"
-                @update:current-page="selection.length = 0"
                 :pages="pages"
                 next-page-title="Précédent"
                 prev-page-title="Suivant"

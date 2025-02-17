@@ -24,7 +24,6 @@ const props = withDefaults(defineProps<DsfrCheckboxProps>(), {
   errorMessage: '',
   validMessage: '',
   label: '',
-  readonlyOpacity: 0.75,
 })
 
 const message = computed(() => props.errorMessage || props.validMessage)
@@ -36,7 +35,7 @@ const modelValue = defineModel()
 <template>
   <div
       class="fr-fieldset__element"
-      :class="{ 'fr-fieldset__element--inline': inline, readonly }"
+      :class="{ 'fr-fieldset__element--inline': inline }"
   >
     <div
         class="fr-checkbox-group"
@@ -57,7 +56,6 @@ const modelValue = defineModel()
           v-bind="$attrs"
           :data-testid="`input-checkbox-${id}`"
           :data-test="`input-checkbox-${id}`"
-          :tabindex="readonly ? -1 : undefined"
       >
       <label
           :for="id"
@@ -100,11 +98,3 @@ const modelValue = defineModel()
     </div>
   </div>
 </template>
-
-<style scoped>
-.fr-fieldset__element.readonly {
-  pointer-events: none;
-  cursor: not-allowed;
-  opacity: v-bind('readonlyOpacity');
-}
-</style>

@@ -74,7 +74,6 @@ watch(show, computePosition, {immediate: true})
 
 onMounted(() => {
   window.addEventListener('scroll', computePosition)
-  source.value.addEventListener('click', show.value = false);
 })
 onUnmounted(() => {
   window.removeEventListener('scroll', computePosition)
