@@ -21,11 +21,11 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Function;
 
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegEnumRuleHelper;
 import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.commons.peg.PegParsingValueException;
 import io.vertigo.commons.peg.PegResult;
 import io.vertigo.commons.peg.PegSolver;
 import io.vertigo.commons.peg.term.PegBracketsTerm;
@@ -77,7 +77,7 @@ class PegDelayedOperationRule<A, B extends Enum<B> & PegOperatorTerm<R>, R> impl
 		state 1 :
 		 - operator => state 0
 		 - ) => state 1, brackets - 1
-
+		
 		spaces dont change state
 		*/
 		var state = 0;
@@ -219,9 +219,10 @@ class PegDelayedOperationRule<A, B extends Enum<B> & PegOperatorTerm<R>, R> impl
 		 *
 		 * @param operandResolver Function to parse the operand value
 		 * @return the result
+		 * @throws PegParsingValueException if the operation can't be solved
 		 */
 		@Override
-		public R apply(final Function<A, R> operandResolver) {
+		public R apply(final PegSolverFunction<A, R> operandResolver) throws PegParsingValueException {
 			final var inStack = resolveValues(operandResolver);
 			final Deque<R> workingStack = new LinkedList<>();
 
@@ -245,7 +246,7 @@ class PegDelayedOperationRule<A, B extends Enum<B> & PegOperatorTerm<R>, R> impl
 			return workingStack.pop();
 		}
 
-		private List<Object> resolveValues(final Function<A, R> operandResolver) {
+		private List<Object> resolveValues(final PegSolverFunction<A, R> operandResolver) throws PegParsingValueException {
 			final var outStack = new ArrayList<>(rawStack.size());
 			for (final var elem : rawStack) {
 				if (operatorClass.isAssignableFrom(elem.getClass())) {

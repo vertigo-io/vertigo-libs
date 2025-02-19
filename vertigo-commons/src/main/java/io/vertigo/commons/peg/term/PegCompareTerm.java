@@ -51,7 +51,7 @@ public enum PegCompareTerm implements PegTerm {
 		return List.of(str);
 	}
 
-	public static Boolean doCompare(final Object left, final Object right, final PegCompareTerm operator) {
+	public static Boolean doCompare(final Object left, final Object right, final PegCompareTerm operator) throws PegParsingValueException {
 		final Object leftResolved = convertIntegersToLong(left);
 		final Object rightResolved = convertIntegersToLong(right);
 

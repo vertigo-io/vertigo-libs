@@ -57,8 +57,12 @@ public class CalculatorTest {
 
 	@Test
 	public void testFail() {
-		//l'opérateur  $ n'existe pas
+		// $ operator does not exist
 		Assertions.assertThrows(PegNoMatchFoundException.class, () -> CALCULATOR_RULE.parse("2 $ 3"));
+
+		// calculation error
+		final var e = Assertions.assertThrows(PegNoMatchFoundException.class, () -> CALCULATOR_RULE.parse("10/0"));
+		Assertions.assertTrue(e.getMessage().contains("/ by zero"), "Error message is not correct, it should contain '/ by zero'");
 	}
 
 	public enum CalculatorOperator implements PegOperatorTerm<Integer> {
@@ -88,10 +92,14 @@ public class CalculatorTest {
 		}
 
 		@Override
-		public Integer apply(final Integer left, final Integer right) {
-			return binaryOperator.apply(left, right);
-		}
+		public Integer apply(final Integer left, final Integer right) throws PegParsingValueException {
+			try {
+				return binaryOperator.apply(left, right);
+			} catch (final ArithmeticException e) {
+				throw new PegParsingValueException(e.getMessage());
+			}
 
+		}
 	}
 
 	private static class TermRule extends PegAbstractRule<Integer, String> {

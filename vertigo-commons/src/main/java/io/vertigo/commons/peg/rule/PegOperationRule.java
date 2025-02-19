@@ -17,10 +17,10 @@
  */
 package io.vertigo.commons.peg.rule;
 
-import java.util.function.Function;
-
 import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.commons.peg.PegParsingValueException;
 import io.vertigo.commons.peg.PegResult;
+import io.vertigo.commons.peg.PegSolver.PegSolverFunction;
 import io.vertigo.commons.peg.term.PegOperatorTerm;
 
 /**
@@ -47,7 +47,11 @@ class PegOperationRule<A, B extends Enum<B> & PegOperatorTerm<A>> implements Peg
 	public PegResult<A> parse(final String text, final int start) throws PegNoMatchFoundException {
 		final var mainResult = mainRule.parse(text, start);
 
-		return new PegResult<>(mainResult.getIndex(), mainResult.getValue().apply(Function.identity()));
+		try {
+			return new PegResult<>(mainResult.getIndex(), mainResult.getValue().apply(PegSolverFunction.identity()));
+		} catch (final PegParsingValueException e) {
+			throw new PegNoMatchFoundException(text, start, null, e.getMessage());
+		}
 	}
 
 }

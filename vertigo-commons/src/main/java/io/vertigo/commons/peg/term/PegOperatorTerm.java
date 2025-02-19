@@ -17,6 +17,8 @@
  */
 package io.vertigo.commons.peg.term;
 
+import io.vertigo.commons.peg.PegParsingValueException;
+
 /**
  * Interface for all operator terms. Operators have a priority of execution and can be applied to two operands.
  *
@@ -32,6 +34,14 @@ public interface PegOperatorTerm<T> extends PegTerm {
 	 */
 	int getPriority();
 
-	T apply(T left, T right);
+	/**
+	 * Apply the operator to the two operands.
+	 *
+	 * @param left the left operand
+	 * @param right the right operand
+	 * @return the result of the operation
+	 * @throws PegParsingValueException if the operator cannot be applied to the operands
+	 */
+	T apply(T left, T right) throws PegParsingValueException;
 
 }

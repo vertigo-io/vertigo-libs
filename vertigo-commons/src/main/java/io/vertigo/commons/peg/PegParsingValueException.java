@@ -20,7 +20,7 @@ package io.vertigo.commons.peg;
 /**
  * Used when a value can't be parsed.
  */
-public class PegParsingValueException extends RuntimeException {
+public class PegParsingValueException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 

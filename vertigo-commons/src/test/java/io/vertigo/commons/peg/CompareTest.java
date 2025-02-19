@@ -17,11 +17,10 @@
  */
 package io.vertigo.commons.peg;
 
-import java.util.function.Function;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.commons.peg.PegSolver.PegSolverFunction;
 import io.vertigo.commons.peg.rule.PegRule;
 import io.vertigo.commons.peg.rule.PegRules;
 import io.vertigo.commons.peg.rule.PegWordRuleMode;
@@ -31,10 +30,10 @@ public class CompareTest {
 
 	private static final PegRule<PegSolver<String, Object, Boolean>> RULE = PegRules.delayedOperationAndComparison(PegRules.word(false, "0123456789", PegWordRuleMode.ACCEPT, "0-9"));
 
-	private static final Function<String, Object> TERM_PARSER = s -> Integer.parseInt(s);
+	private static final PegSolverFunction<String, Object> TERM_PARSER = s -> Integer.parseInt(s);
 
 	@Test
-	public void testCompareTerm() {
+	public void testCompareTerm() throws PegParsingValueException {
 		final var i12 = Integer.valueOf(12);
 		final var i13 = Integer.valueOf(13);
 
@@ -60,7 +59,7 @@ public class CompareTest {
 	}
 
 	@Test
-	public void testComparisonRule() throws PegNoMatchFoundException {
+	public void testComparisonRule() throws PegNoMatchFoundException, PegParsingValueException {
 		Assertions.assertTrue(RULE.parse("5*3 > 12").getValue().apply(TERM_PARSER));
 
 		Assertions.assertFalse(RULE.parse("5*3 >= 3 * (3+2) +1").getValue().apply(TERM_PARSER));

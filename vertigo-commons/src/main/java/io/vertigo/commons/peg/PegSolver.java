@@ -1,7 +1,5 @@
 package io.vertigo.commons.peg;
 
-import java.util.function.Function;
-
 /**
  * Generic interface for a solver that uses a function to transform raw data into a qualified value and then returns a result.
  *
@@ -10,5 +8,19 @@ import java.util.function.Function;
  * @param <R> Result type
  * @author skerdudou
  */
-public interface PegSolver<S, I, R> extends Function<Function<S, I>, R> {
+@FunctionalInterface
+public interface PegSolver<S, I, R> {
+
+	R apply(PegSolverFunction<S, I> t) throws PegParsingValueException;
+
+	@FunctionalInterface
+	public interface PegSolverFunction<S, I> {
+
+		I apply(S t) throws PegParsingValueException;
+
+		static <T> PegSolverFunction<T, T> identity() {
+			return t -> t;
+		}
+
+	}
 }

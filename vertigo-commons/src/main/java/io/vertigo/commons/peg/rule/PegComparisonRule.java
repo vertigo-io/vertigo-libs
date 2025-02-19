@@ -18,6 +18,7 @@
 package io.vertigo.commons.peg.rule;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.commons.peg.PegParsingValueException;
 import io.vertigo.commons.peg.PegResult;
 
 /**
@@ -43,7 +44,11 @@ class PegComparisonRule implements PegRule<Boolean> {
 	public PegResult<Boolean> parse(final String text, final int start) throws PegNoMatchFoundException {
 		final var mainResult = mainRule.parse(text, start);
 
-		return new PegResult<>(mainResult.getIndex(), mainResult.getValue().apply(f -> f));
+		try {
+			return new PegResult<>(mainResult.getIndex(), mainResult.getValue().apply(f -> f));
+		} catch (final PegParsingValueException e) {
+			throw new PegNoMatchFoundException(text, start, null, e.getMessage());
+		}
 	}
 
 }

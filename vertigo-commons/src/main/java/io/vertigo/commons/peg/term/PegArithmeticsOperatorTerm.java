@@ -53,11 +53,14 @@ public enum PegArithmeticsOperatorTerm implements PegOperatorTerm<Object> {
 	}
 
 	@Override
-	public Object apply(final Object left, final Object right) {
+	public Object apply(final Object left, final Object right) throws PegParsingValueException {
 		return doArithmetics(left, right, this);
 	}
 
-	private static Object doArithmetics(final Object left, final Object right, final PegArithmeticsOperatorTerm operator) {
+	private static Object doArithmetics(final Object left, final Object right, final PegArithmeticsOperatorTerm operator) throws PegParsingValueException {
+		if (left == null || right == null) {
+			throw new PegParsingValueException("Can't compute with null values");
+		}
 		if (left.getClass() != right.getClass()) {
 			throw new PegParsingValueException("Cannot compute on different types", left, right, operator.getStrValues().get(0));
 		}
