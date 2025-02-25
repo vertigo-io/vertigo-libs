@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import {ref, computed, watch, onMounted, onUnmounted} from 'vue';
+import {ref, computed, watch} from 'vue';
 import {useCollapsable} from '@/composables/useCollapsable'
 
 import type {DsfrSelectMultipleProps} from './DsfrSelectMultiple.types'
-import {getRandomId} from "@/utils/random-utils";
+import {useRandomId} from "@/utils/random-utils";
 
 export type {DsfrSelectMultipleProps}
 
@@ -22,7 +22,7 @@ const {
 
 // Props
 const props = withDefaults(defineProps<DsfrSelectMultipleProps>(), {
-  id: () => getRandomId("select-multiple"),
+  id: () => useRandomId("select-multiple"),
   options: () => [],
   label: '',
   name: undefined,

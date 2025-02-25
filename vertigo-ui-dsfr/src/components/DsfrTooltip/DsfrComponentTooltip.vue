@@ -6,14 +6,14 @@
 
 import {computed, onMounted, onUnmounted, ref, watch} from 'vue'
 
-import {getRandomId} from '@/utils/random-utils'
+import {useRandomId} from '@/utils/random-utils'
 
 import type {DsfrComponentTooltipProps} from './DsfrComponentTooltip.types'
 
 export type {DsfrComponentTooltipProps}
 
 const props = withDefaults(defineProps<DsfrComponentTooltipProps>(), {
-  id: () => getRandomId('tooltip'),
+  id: () => useRandomId('tooltip'),
   icon: '',
   label: '',
   isLink: false,
@@ -74,6 +74,7 @@ watch(show, computePosition, {immediate: true})
 
 onMounted(() => {
   window.addEventListener('scroll', computePosition)
+  source.value.addEventListener('click', () => show.value = false);
 })
 onUnmounted(() => {
   window.removeEventListener('scroll', computePosition)

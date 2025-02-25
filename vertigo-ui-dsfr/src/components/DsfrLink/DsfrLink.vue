@@ -2,14 +2,14 @@
 
 import {computed} from "vue";
 
-import {getRandomId} from '@/utils/random-utils'
+import {useRandomId} from '@/utils/random-utils'
 
 import type {DsfrLinkProps} from './DsfrLink.types'
 
 export type {DsfrLinkProps}
 
 const props = withDefaults(defineProps<DsfrLinkProps>(), {
-  id: () => getRandomId('link'),
+  id: () => useRandomId('link'),
   icon: '',
   label: '',
   disabled: false,

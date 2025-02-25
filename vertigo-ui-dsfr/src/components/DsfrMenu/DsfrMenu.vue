@@ -3,7 +3,7 @@ import {computed, provide, ref, watch} from 'vue';
 import {useCollapsable} from '@/composables/useCollapsable'
 
 import type {DsfrMenuProps} from './DsfrMenu.types'
-import {getRandomId} from '@/utils/random-utils'
+import {useRandomId} from '@/utils/random-utils'
 import {VIcon} from "@gouvminint/vue-dsfr";
 
 export type {DsfrMenuProps}
@@ -22,7 +22,7 @@ const {
 } = useCollapsable()
 
 const props = withDefaults(defineProps<DsfrMenuProps>(), {
-  id: () => getRandomId("menu"),
+  id: () => useRandomId("menu"),
   icon: '',
   label: '',
   secondary: false,

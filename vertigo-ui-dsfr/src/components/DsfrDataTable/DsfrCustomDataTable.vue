@@ -10,10 +10,11 @@
  * - Ajoute le nombre de page dans le footer
  * - Ajoute la possibilité de changer la taille de la pagination
  * - Ajoute la possibilité de masquer le libellé d’une colonne via un sr-only
+ * - Ajoute la possibilité de reset la page courante via la méthode resetCurrentPage()
  *
  */
 
-import {getRandomId} from '@/utils/random-utils'
+import {useRandomId} from '@/utils/random-utils'
 
 import {computed, ref} from 'vue'
 import {DsfrPagination, VIcon} from "@gouvminint/vue-dsfr";
@@ -55,7 +56,7 @@ export type DsfrDataTableProps = {
 }
 
 const props = withDefaults(defineProps<DsfrDataTableProps>(), {
-  id: () => getRandomId('table'),
+  id: () => useRandomId('table'),
   topActionsRow: () => [],
   bottomActionsRow: () => [],
   currentPage: 0,
@@ -176,6 +177,13 @@ function onPaginationOptionsChange() {
 function copyToClipboard(text: string) {
   navigator.clipboard.writeText(text)
 }
+
+function resetCurrentPage() {
+  currentPage.value = 0
+}
+
+defineExpose({ resetCurrentPage })
+
 </script>
 
 <template>
@@ -323,7 +331,7 @@ function copyToClipboard(text: string) {
             v-if="pagination && !$slots.pagination"
         >
           <div
-              class="flex justify-between items-center"
+              class="flex justify-between items-center flex-wrap"
               :class="paginationWrapperClass"
           >
             <p class="fr-mb-0 fr-ml-1v"

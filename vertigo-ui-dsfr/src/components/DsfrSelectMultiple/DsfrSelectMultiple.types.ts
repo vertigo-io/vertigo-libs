@@ -5,7 +5,7 @@ export type DsfrSelectMultipleProps = {
     id?: string;
     name?: string;
     description?: string;
-    modelValue?: DsfrSelectOption;
+    modelValue?: DsfrSelectOption[];
     label?: string;
     options?: (
         | DsfrSelectOption

@@ -9,7 +9,7 @@
 		           myStep=${step?:model.util.getStep(myMin, myMax)},
 			   	   myRequired=${required != null ? required : model.util.required(object + '.' + field)}" >
 	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
-	<dsfr-range
+	<dsfr-custom-range
 			th:label="${myLabel}"
 			th:required="${myRequired}"
 			th:name="|vContext[${object}][${field}]|"
@@ -20,7 +20,7 @@
 			th:attr="__${input_attrs}__"
 	>
 		<vu:content/>
-	</dsfr-range>
+	</dsfr-custom-range>
 </th:block>
 
 <th:block th:fragment="dsfr-slider-read(object, field, label, min, max, step, required, input_attrs)"
