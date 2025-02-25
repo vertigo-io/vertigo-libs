@@ -21,7 +21,7 @@
 
     <div class="fr-upload-group">
         <vu:dsfr-label-edit key="${key}" object="${object}" field="${field}" label="${label}" hint="${hint}"
-                            required="${myRequired}" th:for="|${myComponentId}__input|" label_attrs="${label_attrs}"/>
+                            required="${readonly == true ? false : myRequired}" th:for="|${myComponentId}__input|" label_attrs="${label_attrs}"/>
         <v-file-upload
                 th:input-id="|${myComponentId}__input|"
                 th::readonly="${readonly?:false}"
