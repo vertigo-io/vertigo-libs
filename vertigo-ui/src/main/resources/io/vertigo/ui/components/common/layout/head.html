@@ -20,10 +20,11 @@
         th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, 
                  isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false},
                  isVuiSsr=${vuiSsr != null ? vuiSsr : false},
-                 myVueJsVersion=${vueJsVersion?:'3.4.31'}, myVertigoUiVersion=${vertigoUiVersion?:'4.2.0'},
+                 myVueJsVersion=${vueJsVersion?:'3.5.13'}, myVertigoUiVersion=${vertigoUiVersion?:'4.2.0'},
                  myAxiosVersion=${axiosVersion?:'1.7.8'},
                  myUseQuasar=${useQuasar ?: true}, myQuasarVersion=${quasarVersion?:'2.16.5'}, myOnlyDsfrStyle=${onlyDsfrStyle?:false},
-                 myUseDsfr=${useDsfr ?: false}, myDsfrDevMode=${dsfrDevMode ?: false}">
+                 myUseDsfr=${useDsfr ?: false}, myDsfrDevMode=${dsfrDevMode ?: false}"
+		>
 
 	<th:block th:if="${!myOnlyDsfrStyle}">
 		<link th:href="@{/vertigo-ui/static/3rdParty/roboto/v20/css/roboto.css}" rel="stylesheet" type="text/css"/>
