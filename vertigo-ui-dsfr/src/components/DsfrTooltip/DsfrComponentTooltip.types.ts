@@ -4,6 +4,7 @@ export type DsfrComponentTooltipProps = {
     noOutline?: boolean
     secondary?: boolean
     tertiary?: boolean
+    disabled?: boolean
     size?: 'sm' | 'small' | 'lg' | 'large' | 'md' | 'medium' | '' | undefined
     icon: string
     iconRight?: boolean

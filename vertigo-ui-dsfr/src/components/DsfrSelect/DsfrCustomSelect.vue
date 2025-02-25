@@ -48,8 +48,12 @@ const messageType = computed(() => {
 })
 
 const convertString = function (e) {
-  let isString = props.options.length > 0 && typeof props.options[0].value === 'string'
+  if (e === '') { return null }
 
+  let isFirstString = props.options.length > 0 && props.options[0].value !== '' && typeof props.options[0].value === 'string'
+  let indexToCheck = isFirstString ? 0 : 1
+
+  let isString = props.options.length > indexToCheck && typeof props.options[indexToCheck].value === 'string'
   return isNaN(e) || isString
       ? e
       : parseInt(e, 10)

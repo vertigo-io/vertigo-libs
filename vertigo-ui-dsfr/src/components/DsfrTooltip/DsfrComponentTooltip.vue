@@ -32,7 +32,7 @@ const arrowX = ref('0px')
 const top = ref(false)
 const opacity = ref(0)
 
-async function computePosition() {
+async function computePosition () {
   if (typeof document === 'undefined') {
     return
   }
@@ -47,6 +47,8 @@ async function computePosition() {
   const sourceLeft = source.value?.getBoundingClientRect().left as number
   const tooltipHeight = tooltip.value?.offsetHeight as number
   const tooltipWidth = tooltip.value?.offsetWidth as number
+  const tooltipTop = tooltip.value?.offsetTop as number
+  const tooltipLeft = tooltip.value?.offsetLeft as number
   const isSourceAtTop = (sourceTop - tooltipHeight) < 0
   const isSourceAtBottom = !isSourceAtTop && (sourceTop + sourceHeight + tooltipHeight) >= document.documentElement.offsetHeight
   top.value = isSourceAtBottom
@@ -54,14 +56,14 @@ async function computePosition() {
   const isSourceOnLeftSide = (sourceLeft + (sourceWidth / 2) - (tooltipWidth / 2)) <= 0
 
   translateY.value = isSourceAtBottom
-      ? `${sourceTop - tooltipHeight + 8}px`
-      : `${sourceTop + sourceHeight - 8}px`
+      ? `${sourceTop - tooltipTop - tooltipHeight + 8}px`
+      : `${sourceTop - tooltipTop + sourceHeight - 8}px`
   opacity.value = 1
   translateX.value = isSourceOnRightSide
-      ? `${sourceLeft + sourceWidth - tooltipWidth - 4}px`
+      ? `${sourceLeft - tooltipLeft + sourceWidth - tooltipWidth - 4}px`
       : isSourceOnLeftSide
-          ? `${sourceLeft + 4}px`
-          : `${sourceLeft + (sourceWidth / 2) - (tooltipWidth / 2)}px`
+          ? `${sourceLeft - tooltipLeft + 4}px`
+          : `${sourceLeft - tooltipLeft + (sourceWidth / 2) - (tooltipWidth / 2)}px`
 
   arrowX.value = isSourceOnRightSide
       ? `${(tooltipWidth / 2) - (sourceWidth / 2) + 4}px`
@@ -70,13 +72,13 @@ async function computePosition() {
           : '0px'
 }
 
-watch(show, computePosition, {immediate: true})
+watch(show, computePosition, { immediate: true })
 
 onMounted(() => {
   window.addEventListener('scroll', computePosition)
   source.value.addEventListener('click', () => show.value = false);
 })
-onUnmounted(() => {
+onUnmounted (() => {
   window.removeEventListener('scroll', computePosition)
 })
 
@@ -93,7 +95,7 @@ const tooltipClass = computed(() => ({
   'fr-placement--bottom': !top.value,
 }))
 
-const clickListener = (event: MouseEvent) => {
+const clickHandler = (event: MouseEvent) => {
   if (!show.value) {
     return
   }
@@ -106,29 +108,34 @@ const clickListener = (event: MouseEvent) => {
   show.value = false
 }
 
-const onEscapeKey = (event: KeyboardEvent) => {
+const keydownHandler = (event: KeyboardEvent) => {
   if (event.key === 'Escape') {
     show.value = false
   }
 }
 
-onMounted(() => {
-  document.documentElement.addEventListener('click', clickListener)
-  document.documentElement.addEventListener('keydown', onEscapeKey)
-})
-
-onUnmounted(() => {
-  document.documentElement.removeEventListener('click', clickListener)
-  document.documentElement.removeEventListener('keydown', onEscapeKey)
-})
-
-const onMouseEnter = () => {
-  show.value = true
+const onMouseEnterHandler = (event: MouseEvent) => {
+  if ((event.target === source.value || source.value?.contains(event.target as Node))) {
+    show.value = true
+    // @ts-ignore internal property available just for this component
+    globalThis.__vueDsfr__lastTooltipShow.value = false
+  }
 }
 
 const onMouseLeave = () => {
   show.value = false
 }
+
+onMounted(() => {
+  document.documentElement.addEventListener('keydown', keydownHandler)
+  document.documentElement.addEventListener('mouseover', onMouseEnterHandler)
+})
+
+onUnmounted(() => {
+  document.documentElement.removeEventListener('keydown', keydownHandler)
+  document.documentElement.removeEventListener('mouseover', onMouseEnterHandler)
+})
+
 </script>
 
 <template>
@@ -156,10 +163,11 @@ const onMouseLeave = () => {
         'justify-center': !dsfrIcon && iconOnly,
         [icon as string]: dsfrIcon,
       }"
+      :disabled="href !== '' ? undefined : disabled"
+      :aria-disabled="disabled"
       :aria-labelledby="id"
-      @mouseenter="onMouseEnter()"
       @mouseleave="onMouseLeave()"
-      @focus="onMouseEnter()"
+      @focus="onMouseEnterHandler($event)"
       @blur="onMouseLeave()"
       v-bind="$attrs"
   >
