@@ -11724,7 +11724,7 @@ const wv = /* @__PURE__ */ Ae(tv, [["render", yv], ["__scopeId", "data-v-0be4e59
         id: `button-${g.id}`,
         ref_key: "source",
         ref: n,
-        href: g.href !== "" ? g.href : void 0,
+        href: g.href !== "" && !g.disabled ? g.href : void 0,
         class: {
           "fr-link": g.isLink && !g.inline,
           "fr-btn": !g.isLink,
@@ -11771,7 +11771,7 @@ const wv = /* @__PURE__ */ Ae(tv, [["render", yv], ["__scopeId", "data-v-0be4e59
       ], 14, Sb)
     ], 64));
   }
-}), er = /* @__PURE__ */ Ae($b, [["__scopeId", "data-v-b328db72"]]), Ab = /* @__PURE__ */ O({
+}), er = /* @__PURE__ */ Ae($b, [["__scopeId", "data-v-55833790"]]), Ab = /* @__PURE__ */ O({
   __name: "DsfrButtonTooltip",
   setup(a) {
     return (t, e) => (i(), j(er, K({ "is-link": !1 }, t.$attrs), {

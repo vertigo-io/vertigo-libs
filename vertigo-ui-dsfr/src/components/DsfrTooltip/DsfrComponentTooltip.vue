@@ -143,7 +143,7 @@ onUnmounted(() => {
       :id="`button-${id}`"
       ref="source"
       :is="href !== '' ? 'a' : 'button'"
-      :href="href !== '' ? href : undefined"
+      :href="(href !== '' && !disabled) ? href : undefined"
       :class="{
         'fr-link': isLink && !inline,
         'fr-btn': !isLink,
