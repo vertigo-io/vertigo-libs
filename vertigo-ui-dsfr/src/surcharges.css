@@ -135,3 +135,18 @@ div.fr-menu {
         max-width: 25rem;
     }
 }
+
+/* disabled buttons using aria */
+button[aria-disabled="true"] {
+    --idle: transparent;
+    --hover: var(--background-disabled-grey-hover);
+    --active: var(--background-disabled-grey-active);
+    background-color: var(--background-disabled-grey);
+    color: var(--text-disabled-grey);
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+button[aria-disabled="true"]:hover {
+    background-color: var(--background-disabled-grey);
+}

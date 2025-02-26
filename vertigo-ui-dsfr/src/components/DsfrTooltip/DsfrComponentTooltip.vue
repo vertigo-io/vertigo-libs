@@ -129,11 +129,22 @@ const onMouseLeave = () => {
 onMounted(() => {
   document.documentElement.addEventListener('keydown', keydownHandler)
   document.documentElement.addEventListener('mouseover', onMouseEnterHandler)
+  if (props.disabled) {
+    source.value.addEventListener('click', e => e.preventDefault());
+  }
 })
 
 onUnmounted(() => {
   document.documentElement.removeEventListener('keydown', keydownHandler)
   document.documentElement.removeEventListener('mouseover', onMouseEnterHandler)
+})
+
+watch(props.disabled, () => {
+  if (props.disabled) {
+    source.value.addEventListener('click', e => e.preventDefault());
+  } else {
+    source.value.removeEventListener('click', e => e.preventDefault());
+  }
 })
 
 </script>
@@ -163,7 +174,6 @@ onUnmounted(() => {
         'justify-center': !dsfrIcon && iconOnly,
         [icon as string]: dsfrIcon,
       }"
-      :disabled="href !== '' ? undefined : disabled"
       :aria-disabled="disabled"
       :aria-labelledby="id"
       @mouseleave="onMouseLeave()"
