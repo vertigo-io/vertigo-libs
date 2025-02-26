@@ -116,7 +116,10 @@ export default {
         let resolvedMaxFiles = this.multiple ? this.maxFiles : 1;
         
         return resolvedMaxFiles == null || this.$data.files.filter(file => file.status != "ERROR").length < resolvedMaxFiles;
-    }, 
+    },
+    reset() {
+      this.files.length = 0
+    },
     addFiles(files) {
         // clear old errors
         this.files = this.files.filter(file => file.status != "ERROR");
