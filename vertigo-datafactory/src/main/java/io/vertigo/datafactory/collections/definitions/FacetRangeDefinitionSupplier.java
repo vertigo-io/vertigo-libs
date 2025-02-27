@@ -23,6 +23,7 @@ import java.util.List;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition.FacetOrder;
 import io.vertigo.datafactory.collections.model.FacetValue;
@@ -63,7 +64,7 @@ public final class FacetRangeDefinitionSupplier implements DefinitionSupplier {
 	}
 
 	public FacetRangeDefinitionSupplier withRange(final String code, final String filter, final String label) {
-		facetValues.add(new FacetValue(code, ListFilter.of(filter), LocaleMessageText.of(label)));
+		facetValues.add(new FacetValue(code, ListFilter.of(filter), LocaleMessageText.ofDefaultMsg(label, () -> StringUtil.first2LowerCase(myName) + "$val" + code + "$label")));
 		return this;
 	}
 
@@ -74,11 +75,11 @@ public final class FacetRangeDefinitionSupplier implements DefinitionSupplier {
 
 	@Override
 	public FacetDefinition get(final DefinitionSpace definitionSpace) {
-		final DataDefinition indexDtDefinition = definitionSpace.resolve(myDtDefinitionName, DataDefinition.class);
+		final var indexDtDefinition = definitionSpace.resolve(myDtDefinitionName, DataDefinition.class);
 		return FacetDefinition.createFacetDefinitionByRange(
 				myName,
 				indexDtDefinition.getField(myFieldName),
-				LocaleMessageText.of(myLabel),
+				LocaleMessageText.ofDefaultMsg(myLabel, () -> StringUtil.first2LowerCase(myName) + "$label"),
 				facetValues,
 				myMultiSelectable,
 				myOrder);
