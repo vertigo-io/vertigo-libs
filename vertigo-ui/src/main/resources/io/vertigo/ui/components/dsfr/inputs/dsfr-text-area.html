@@ -1,5 +1,5 @@
 <th:block
-        th:fragment="dsfr-text-area-edit(object, field, rowIndex, label, required, input_attrs)"
+        th:fragment="dsfr-text-area-edit(object, field, rowIndex, labelVisible, label, required, input_attrs)"
         vu:alias="dsfr-text-area"
         vu:selector="${viewMode=='edit' && (readonly==null || !readonly)}"
         th:with="myLabel=${label?:model.util.label(object + '.' + field)},
