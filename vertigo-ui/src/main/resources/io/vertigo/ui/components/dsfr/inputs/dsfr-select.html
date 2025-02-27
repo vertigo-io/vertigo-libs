@@ -22,7 +22,6 @@
 			th:v-model="|vueData.${object}.${field}|"
 			th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
 			th:attr="__${input_attrs}__">
-	>
 		<vu:content/>
 	</dsfr-custom-select>
 </th:block>
