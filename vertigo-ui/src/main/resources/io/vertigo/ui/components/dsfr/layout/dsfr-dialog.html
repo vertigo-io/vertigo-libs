@@ -9,7 +9,7 @@
                 th:@close="${componentId != null ? 'componentStates.__${componentId}__.opened = false' : 'vueData.__${key}__ = false'}"
                 th:attr="__${other_attrs}__">
         <vu:content></vu:content>
-        <template #footer>
+        <template #footer th:if="${actions_slot != null}">
             <vu:content-slot name="actions_slot"/>
         </template>
     </dsfr-modal>
