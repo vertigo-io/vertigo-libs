@@ -16,7 +16,7 @@
 			<dependency>
 				<groupId>org.glassfish.jersey.core</groupId>
 				<artifactId>jersey-client</artifactId>
-				<version>3.1.6</version> <!-- 3.1.6 for jdk17, 3.1.7 for jdk21 -->
+				<version>3.1.10</version> <!-- 3.1.6 for jdk17, 3.1.7 for jdk21 -->
 			</dependency>
 			<dependency>
 			    <groupId>org.glassfish.jersey.inject</groupId>
