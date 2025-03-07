@@ -22,7 +22,7 @@ th:assert="${withFields} == null"> <!-- withFields unsupported yet -->
 			</div>
 		</div>
 		<div v-if="uiMessageStack.globalWarnings && uiMessageStack.globalWarnings.length > 0" class="col-12">
-			<div class="q-card bg-warning text-white">
+			<div class="q-card bg-warning text-black row">
             <div class="q-card-main">
 				<div class="q-list">
 					<div v-for="message in uiMessageStack.globalWarnings" class="q-item">
@@ -35,7 +35,7 @@ th:assert="${withFields} == null"> <!-- withFields unsupported yet -->
 			</div>
 		</div>
 		<div v-if="uiMessageStack.globalInfos && uiMessageStack.globalInfos.length > 0" class="col-12">
-			<div class="q-card bg-info text-white">
+			<div class="q-card bg-info text-black">
             <div class="q-card-main">
 				<div class="q-list">
 					<div v-for="message in uiMessageStack.globalInfos" class="q-item">
@@ -48,7 +48,7 @@ th:assert="${withFields} == null"> <!-- withFields unsupported yet -->
 			</div>
 		</div>
 		<div v-if="uiMessageStack.globalSuccess && uiMessageStack.globalSuccess.length > 0" class="col-12">
-			<div class="q-card bg-positive text-white">
+			<div class="q-card bg-positive text-black">
             <div class="q-card-main">
 				<div class="q-list">
 					<div v-for="message in uiMessageStack.globalSuccess" class="q-item">
