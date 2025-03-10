@@ -28,7 +28,8 @@ export default {
             days : "days",
             hours : "hours",
             minutes : "min",
-            seconds : "s"
+            seconds : "s",
+			serverLost : "Reconnecting to server..."
         },
         commands : {
             globalPlaceholder : "Type / to show all available commands",

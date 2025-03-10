@@ -28,7 +28,8 @@ export default {
             days : "jours",
             hours : "heures",
             minutes : "min",
-            seconds : "s"
+            seconds : "s",
+			serverLost : "Reconnexion au serveur en cours...",
         },
         commands : {
             globalPlaceholder : "Taper / pour afficher les commandes disponibles",

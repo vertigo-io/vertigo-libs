@@ -43,7 +43,9 @@ window.dispatchEvent(new CustomEvent('vui-after-page-mounted', { detail : {vuiAp
 axios.interceptors.response.use(function(response) {
     return response;
 }, function(error) {
-    if (error.code !== "ERR_CANCELED") {
+    if (error.code !== "ERR_CANCELED" && // silent error for canceled requests
+		!error.config.vNoDefaultErrorHandler // custom config added to axios request config to make the error silent (from VertigoUi)
+	    ) {
         VUiPage.onAjaxError(error.response);
     }
     return Promise.reject(error);

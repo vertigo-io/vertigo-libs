@@ -1,5 +1,6 @@
 <template>
-    <q-btn round :flat="!hasNew" dense :color="hasNew?colorNew:color" :text-color="hasNew?textColorNew:textColor" :icon="count>0?icon:iconNone" >
+    <q-btn round :flat="!hasNew" dense :color="hasNew?colorNew:color" :text-color="hasNew?textColorNew:textColor"
+	       :icon="wasError?iconError:count>0?icon:iconNone" :title="wasError?$q.lang.vui.notifications.serverLost:''">
         <q-badge color="red" text-color="white" floating v-if="count>0" >{{count}}</q-badge>
         <q-menu class="notifications">
             <q-list style="width:300px">
@@ -21,6 +22,7 @@ export default {
     props : {
         icon : { type: String, 'default': 'notifications' },
         iconNone : { type: String, 'default': 'notifications_none' },
+		iconError : { type: String, 'default': 'warning' },
         color : { type: String, 'default': 'secondary' },
         colorNew : { type: String, 'default': 'accent' },
         textColor : { type: String, 'default': 'secondary-inverted' },
@@ -46,7 +48,7 @@ export default {
     },
     methods: {
         fetchNotificationsList: function() {
-            this.$http.get(this.baseUrl+'x/notifications/api/messages', { timeout:5*1000, })
+            this.$http.get(this.baseUrl+'x/notifications/api/messages', { timeout:5*1000, vNoDefaultErrorHandler:true})
             .then( function (response) { //Ok
                 this.updateNotificationsData(response.data);
                 if(this.wasError) {
