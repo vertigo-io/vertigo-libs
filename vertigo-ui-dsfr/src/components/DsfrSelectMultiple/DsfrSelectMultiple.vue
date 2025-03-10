@@ -57,6 +57,7 @@ watch(expanded, (newValue, oldValue) => {
 const container = ref(null)
 const button = ref(null)
 const filter = ref(null)
+const filterValue = ref('')
 
 // Computed
 
@@ -68,10 +69,10 @@ const messageType = computed(() => {
 })
 
 const selectAllIcon = computed(() => {
-  return props.modelValue.length === localOptions.value.length ? 'fr-icon-close-circle-line' : 'fr-icon-check-line'
+  return localOptions.value.every(x => props.modelValue.includes(x.value)) ? 'fr-icon-close-circle-line' : 'fr-icon-check-line'
 })
 const selectAllText = computed(() => {
-  return props.modelValue.length === localOptions.value.length ? 'Tout déselectionner' : 'Tout sélectionner'
+  return localOptions.value.every(x => props.modelValue.includes(x.value)) ? 'Tout déselectionner' : 'Tout sélectionner'
 })
 
 const selectionDisplay = computed(() => {
@@ -84,6 +85,16 @@ const selectionDisplay = computed(() => {
         .filter(o => props.modelValue.includes(o.value))
         .map(o => o.text)
         .join(", ")
+  }
+})
+
+const offset = computed(() => {
+  if (props.comboHasButton && props.comboHasFilter) {
+    return 2;
+  } else if (props.comboHasButton || props.comboHasFilter) {
+    return 1;
+  } else {
+    return 0;
   }
 })
 
@@ -105,75 +116,82 @@ let filterFn = function (event) {
   localOptions.value = props.options.filter(o => o.text.toLowerCase().indexOf(needle) > -1);
 }
 
+/*
+  Gère les evenements claviers de la div principale
+ */
+const handleDivKeypress = function (e) {
+  switch (e.key) {
+    case 'Escape':
+    case 'Esc':
+      e.stopPropagation();
+      expanded.value = false;
+      break;
+    case ' ':
+    case 'Space':
+      if (document.activeElement.id === props.id) {
+        e.preventDefault();
+        expanded.value = !expanded.value
+      }
+      break;
+    case 'Down':
+    case 'ArrowDown':
+      e.preventDefault();
+      if (!expanded.value) {
+        expanded.value = true
+        setTimeout(() => focusItemDown(e), 100)
+      } else {
+        focusItemDown(e)
+      }
+      break;
+    case 'Up':
+    case 'ArrowUp':
+      e.preventDefault();
+      if (!expanded.value) {
+        expanded.value = true
+        setTimeout(() => focusItemUp(e), 100)
+      } else {
+        focusItemUp(e)
+      }
+      break;
+    case 'Tab':
+      expanded.value = false;
+      break;
+    default:
+      if (props.comboHasFilter && document.activeElement.id === `${props.id}_item_1`) {
+        // Filter has focus
+      } else {
+        if (props.comboHasFilter) {
+          filter.value.focus()
+        } else {
+          setFocusByFirstCharacter(e);
+        }
+      }
+  }
+}
+
 const getNextFocusableItem = (currentItemId, direction) => {
   const nextId = direction === "down"
-      ? (currentItemId + 1) % localOptions.value.length
-      : (currentItemId - 1 + localOptions.value.length) % localOptions.value.length;
+      ? (currentItemId + 1) % (localOptions.value.length + offset.value)
+      : (currentItemId - 1 + localOptions.value.length + offset.value) % (localOptions.value.length + offset.value);
 
-  const item = document.getElementById(`${props.id}_option_${nextId}`);
+  const item = document.getElementById(`${props.id}_item_${nextId}`);
 
-  return item.ariaDisabled === "true"
+  return item === null || item.ariaDisabled === "true"
       ? getNextFocusableItem(nextId, direction)
       : item;
 };
 
-const focusNextOption = (direction) => {
+const focusNextItem = (direction) => {
   const activeId = document.activeElement.id;
-  const currentItemId = activeId.startsWith(`${props.id}_option_`)
+  const currentItemId = activeId.startsWith(`${props.id}_item_`)
       ? Number(activeId.split("_")[2])
       : (direction === "down" ? -1 : 0);
 
   getNextFocusableItem(currentItemId, direction).focus();
 };
 
-const focusOptionDown = (event) => focusNextOption("down");
-const focusOptionUp = (event) => focusNextOption("up");
-
-/* Détermine le prochain focus lorsque l’on appuie sur tab une fois dans le popup*/
-let setFocusTabFromDiv = function (event) {
-  if (!event.shiftKey) {
-    if (props.comboHasButton) {
-      if (!expanded.value) {
-        expanded.value = true
-        event.preventDefault()
-        setTimeout(() => button.value.focus(), 100)
-      }
-    } else if (props.comboHasFilter) {
-      if (!expanded.value) {
-        expanded.value = true
-        event.preventDefault()
-        setTimeout(() => filter.value.focus(), 100)
-      }
-    }
-  }
-}
-
-/* Détermine le prochain focus lorsque l’on appuie sur tab une fois sur le champs select*/
-let setFocusTabInDiv = function (event) {
-  if (!event.shiftKey) {
-    if (props.comboHasButton && !props.comboHasFilter && document.activeElement.id === `${props.id}_button`) {
-      event.preventDefault();
-      expanded.value = false
-    } else if (props.comboHasFilter && document.activeElement.id === `${props.id}_filter`) {
-      event.preventDefault();
-      expanded.value = false
-    }
-    if (!props.comboHasFilter && !props.comboHasButton) {
-      expanded.value = false
-    }
-  }
-}
-
-let setFocusForShiftTab = function (event) {
-  if (document.activeElement.id.startsWith(`${props.id}_option_`)) {
-    if (props.comboHasFilter) {
-      event.preventDefault()
-      filter.value.focus()
-    } else if (props.comboHasButton) {
-      button.value.focus()
-    }
-  }
-}
+const focusItemDown = (event) => focusNextItem("down");
+const focusItemUp = (event) => focusNextItem("up");
 
 let setFocusByFirstCharacter = (event) => {
   let char = event.key;
@@ -236,12 +254,7 @@ let handleFocusOut = (event) => {
         :class="{ [`fr-select--${messageType}`]: message !== ''}"
         class="fr-input fr-select--menu flex"
         @click="expanded = !expanded"
-        @keydown.esc.stop="expanded = false"
-        @keydown.space.prevent="expanded = !expanded"
-        @keydown.down.prevent="focusOptionDown"
-        @keydown.up.prevent="focusOptionUp"
-        @keydown.tab="setFocusTabFromDiv"
-        @keydown="setFocusByFirstCharacter"
+        @keydown="handleDivKeypress"
         tabindex="0"
         role="combobox"
         aria-haspopup="listbox"
@@ -262,19 +275,15 @@ let handleFocusOut = (event) => {
         ref="collapse"
         class="fr-collapse fr-menu fr-select__menu fr-pb-3v fr-pt-4v bg-white"
         :class="{ 'fr-collapse--expanded': cssExpanded, 'fr-collapsing': collapsing }"
-        @keyup.esc="expanded = false"
-        @keydown.tab="setFocusTabInDiv"
-        @keydown.down.prevent="focusOptionDown"
-        @keydown.up.prevent="focusOptionUp"
-        @keydown.shift.tab="setFocusForShiftTab"
-        @keydown="setFocusByFirstCharacter"
+        @keydown="handleDivKeypress"
         @transitionend="onTransitionEnd(expanded)"
     >
       <ul class="fr-btns-group fr-btns-group--icon-left" v-if="comboHasButton">
         <li>
           <button class="fr-btn fr-btn--tertiary fr-btn--sm"
-                  :id="`${id}_button`"
+                  :id="`${id}_item_0`"
                   @click="selectAll()"
+                  tabindex="-1"
                   ref="button"
                   :class="`${selectAllIcon}`" type="button">{{ selectAllText }}
           </button>
@@ -283,9 +292,11 @@ let handleFocusOut = (event) => {
 
       <div class="fr-input-wrap fr-icon-search-line fr-mb-3v" v-if="comboHasFilter">
         <input class="fr-input"
-               :id="`${id}_filter`"
+               :id="`${id}_item_1`"
                ref="filter"
                @input="filterFn"
+               v-model="filterValue"
+               tabindex="-1"
                aria-label="Rechercher une option"
                placeholder="Rechercher"
                type="text">
@@ -301,8 +312,8 @@ let handleFocusOut = (event) => {
             class="fr-checkbox-group fr-checkbox-group--sm fr-py-1v"
             role="option"
             :aria-selected="modelValue.includes(option.value)">
-          <input :id="`${id}_option_${idx}`" :data-id="option.value" type="checkbox" class="" tabindex="-1" :value="option.value" v-model="modelValue">
-          <label class="fr-label" :for="`${id}_option_${idx}`">
+          <input :id="`${id}_item_${idx + offset}`" :data-id="option.value" type="checkbox" class="" tabindex="-1" :value="option.value" v-model="modelValue">
+          <label class="fr-label" :for="`${id}_item_${idx + offset}`">
             {{ option.text }}
           </label>
         </li>
