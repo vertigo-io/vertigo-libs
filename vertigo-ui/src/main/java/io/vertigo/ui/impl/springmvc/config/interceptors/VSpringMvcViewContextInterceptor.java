@@ -31,6 +31,8 @@ public final class VSpringMvcViewContextInterceptor implements HandlerIntercepto
 	@Override
 	public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception {
 		if (handler instanceof HandlerMethod) {
+			UiRequestUtil.restoreUiMessageStackFromSession();
+
 			final HandlerMethod handlerMethod = (HandlerMethod) handler;
 			if (AbstractVSpringMvcController.class.isAssignableFrom(handlerMethod.getBeanType())) {
 				((AbstractVSpringMvcController) handlerMethod.getBean()).prepareContext(request);
@@ -62,9 +64,8 @@ public final class VSpringMvcViewContextInterceptor implements HandlerIntercepto
 					controller.storeContext(request);
 				}
 			}
-			if (response.getStatus() / 100 == 2 || UiRequestUtil.isJsonRequest(request) || response.getStatus() / 100 == 4) {
-				//we reset uiMessageStack only in case of viewable page 2xx or 4xx or ajax request. We are sure to keep it on error page 5xx or redirect 3xx.
-				UiRequestUtil.removeCurrentUiMessageStack();
+			if (UiRequestUtil.isDelayUiMessageStack()) {
+				UiRequestUtil.storeUiMessageStackInSession();
 			}
 		}
 	}

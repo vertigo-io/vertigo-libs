@@ -17,6 +17,7 @@
  */
 package io.vertigo.ui.impl.springmvc.util;
 
+import java.time.Instant;
 import java.util.Optional;
 
 import org.springframework.web.context.request.RequestAttributes;
@@ -31,17 +32,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * Utilitaire d'accès à la Request.
+ * Utility class for accessing and manipulating request associated attributes.
+ *
  * @author npiedeloup
  */
 public final class UiRequestUtil {
 
+	public static final String UI_MESSAGE_STACK_ATTRIBUTE_NAME = "uiMessageStack";
+
 	private UiRequestUtil() {
-		//rien
+		// Utility class
 	}
 
 	/**
-	 * Invalide la session Http (ie Logout)
+	 * Invalidates the current HTTP session, effectively logging out the user.
 	 */
 	public static void invalidateHttpSession() {
 		final HttpSession session = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getSession(false);
@@ -50,6 +54,11 @@ public final class UiRequestUtil {
 		}
 	}
 
+	/**
+	 * Retrieves the current ViewContext.
+	 *
+	 * @return the current ViewContext
+	 */
 	public static ViewContext getCurrentViewContext() {
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
 		final ViewContext viewContext = (ViewContext) attributes.getAttribute("viewContext", RequestAttributes.SCOPE_REQUEST);
@@ -59,25 +68,67 @@ public final class UiRequestUtil {
 		return viewContext;
 	}
 
+	/**
+	 * Obtains the current UiMessageStack.
+	 *
+	 * @return the current UiMessageStack
+	 */
 	public static UiMessageStack obtainCurrentUiMessageStack() {
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-		UiMessageStack uiMessageStack = (UiMessageStack) attributes.getAttribute("uiMessageStack", RequestAttributes.SCOPE_SESSION);
+		UiMessageStack uiMessageStack = (UiMessageStack) attributes.getAttribute(UI_MESSAGE_STACK_ATTRIBUTE_NAME, RequestAttributes.SCOPE_REQUEST);
 		//---
 		if (uiMessageStack == null) {
 			uiMessageStack = new VSpringMvcUiMessageStack();
-			attributes.setAttribute("uiMessageStack", uiMessageStack, RequestAttributes.SCOPE_SESSION);
+			setCurrentUiMessageStack(uiMessageStack);
 		}
 		//---
 		return uiMessageStack;
 	}
 
-	public static void removeCurrentUiMessageStack() {
-		if (!isDelayUiMessageStack()) {
-			final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-			attributes.removeAttribute("uiMessageStack", RequestAttributes.SCOPE_SESSION);
+	/**
+	 * Sets the UiMessageStack for the current request.
+	 *
+	 * @param uiMessageStack the UiMessageStack to set
+	 */
+	public static void setCurrentUiMessageStack(final UiMessageStack uiMessageStack) {
+		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
+		attributes.setAttribute(UI_MESSAGE_STACK_ATTRIBUTE_NAME, uiMessageStack, RequestAttributes.SCOPE_REQUEST);
+	}
+
+	/**
+	 * Stores the current UiMessageStack in the session. The stack is kept for max 3 minutes.
+	 */
+	public static void storeUiMessageStackInSession() {
+		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
+		attributes.setAttribute(UI_MESSAGE_STACK_ATTRIBUTE_NAME, obtainCurrentUiMessageStack(), RequestAttributes.SCOPE_SESSION);
+		attributes.setAttribute(UI_MESSAGE_STACK_ATTRIBUTE_NAME + "_validUntil", Instant.now().plusSeconds(180), RequestAttributes.SCOPE_SESSION);
+	}
+
+	/**
+	 * Restores the UiMessageStack from the session to the request and removes it from the session.
+	 */
+	public static void restoreUiMessageStackFromSession() {
+		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
+		final UiMessageStack uiMessageStack = (UiMessageStack) attributes.getAttribute(UI_MESSAGE_STACK_ATTRIBUTE_NAME, RequestAttributes.SCOPE_SESSION);
+		//---
+		if (uiMessageStack != null) {
+			final Instant validUntil = (Instant) attributes.getAttribute(UI_MESSAGE_STACK_ATTRIBUTE_NAME + "_validUntil", RequestAttributes.SCOPE_SESSION);
+
+			attributes.removeAttribute(UI_MESSAGE_STACK_ATTRIBUTE_NAME, RequestAttributes.SCOPE_SESSION);
+			attributes.removeAttribute(UI_MESSAGE_STACK_ATTRIBUTE_NAME + "_validUntil", RequestAttributes.SCOPE_SESSION);
+
+			if (Instant.now().isBefore(validUntil)) {
+				setCurrentUiMessageStack(uiMessageStack);
+			}
 		}
 	}
 
+	/**
+	 * Sets a request-scoped attribute.
+	 *
+	 * @param name the name of the attribute
+	 * @param value the value of the attribute
+	 */
 	public static void setRequestScopedAttribute(final String name, final Object value) {
 		Assertion.check().isNotBlank(name);
 		//---
@@ -85,6 +136,14 @@ public final class UiRequestUtil {
 		attributes.setAttribute(name, value, RequestAttributes.SCOPE_REQUEST);
 	}
 
+	/**
+	 * Retrieves a request-scoped attribute as an Optional.
+	 *
+	 * @param <O> the type of the attribute
+	 * @param name the name of the attribute
+	 * @param valueClass the class of the attribute
+	 * @return an Optional containing the attribute value, or an empty Optional if not found
+	 */
 	public static <O> Optional<O> getRequestScopedAttribute(final String name, final Class<O> valueClass) {
 		Assertion.check()
 				.isNotBlank(name)
@@ -95,14 +154,28 @@ public final class UiRequestUtil {
 		return Optional.ofNullable(value);
 	}
 
+	/**
+	 * Persist the UiMessageStack until next request. Useful for example in the "close modale and refresh parent" pattern, to display messages from the popin in the parent.
+	 */
 	public static void delayUiMessageStack() {
 		setRequestScopedAttribute("delayUiMessageStack", true);
 	}
 
+	/**
+	 * Determines if delayUiMessageStack have been called in the current request.
+	 *
+	 * @return true if delayUiMessageStack have been called in the current request.
+	 */
 	public static boolean isDelayUiMessageStack() {
 		return getRequestScopedAttribute("delayUiMessageStack", Boolean.class).orElse(Boolean.FALSE);
 	}
 
+	/**
+	 * Checks if the given HTTP request is a JSON request based on the "Accept" header.
+	 *
+	 * @param request the HTTP request
+	 * @return true if the request is a JSON request, false otherwise
+	 */
 	public static boolean isJsonRequest(final HttpServletRequest request) {
 		final String acceptHeader = request.getHeader("Accept");
 		return acceptHeader != null && acceptHeader.contains("application/json");
