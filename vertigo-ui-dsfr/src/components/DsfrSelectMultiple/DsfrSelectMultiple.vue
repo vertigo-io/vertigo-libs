@@ -88,16 +88,6 @@ const selectionDisplay = computed(() => {
   }
 })
 
-const offset = computed(() => {
-  if (props.comboHasButton && props.comboHasFilter) {
-    return 2;
-  } else if (props.comboHasButton || props.comboHasFilter) {
-    return 1;
-  } else {
-    return 0;
-  }
-})
-
 // Methods
 
 let selectAll = function () {
@@ -154,14 +144,20 @@ const handleDivKeypress = function (e) {
       }
       break;
     case 'Tab':
-      expanded.value = false;
+      handleTab(e);
       break;
     default:
-      if (props.comboHasFilter && document.activeElement.id === `${props.id}_item_1`) {
+      let isAlphaNumeric = /^[a-zA-Z0-9àâäçéèêëîïôöùûüÿÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸ]$/.test(e.key);
+
+      if (!isAlphaNumeric && e.shiftKey) {
+        return
+      }
+
+      if (props.comboHasFilter && document.activeElement.id === `${props.id}_filter`) {
         // Filter has focus
       } else {
-        if (props.comboHasFilter) {
-          filter.value.focus()
+        if (props.comboHasFilter && isAlphaNumeric) {
+          filter.value.focus();
         } else {
           setFocusByFirstCharacter(e);
         }
@@ -171,8 +167,8 @@ const handleDivKeypress = function (e) {
 
 const getNextFocusableItem = (currentItemId, direction) => {
   const nextId = direction === "down"
-      ? (currentItemId + 1) % (localOptions.value.length + offset.value)
-      : (currentItemId - 1 + localOptions.value.length + offset.value) % (localOptions.value.length + offset.value);
+      ? (currentItemId + 1) % (localOptions.value.length)
+      : (currentItemId - 1 + localOptions.value.length) % (localOptions.value.length);
 
   const item = document.getElementById(`${props.id}_item_${nextId}`);
 
@@ -192,6 +188,43 @@ const focusNextItem = (direction) => {
 
 const focusItemDown = (event) => focusNextItem("down");
 const focusItemUp = (event) => focusNextItem("up");
+
+const handleTab = (e) => {
+  if (!expanded.value) {
+    return
+  }
+
+  const elements = [];
+
+  if (props.comboHasButton) {
+    elements.push(`${props.id}_button`);
+  }
+  if (props.comboHasFilter) {
+    elements.push(`${props.id}_filter`);
+  }
+
+  elements.push('item');
+
+  const currentIndex = elements.indexOf(e.target.id);
+  let nextIndex;
+
+  if (e.shiftKey) {
+    // Navigation en arrière (Shift + Tab)
+    nextIndex = (currentIndex - 1 + elements.length) % elements.length;
+  } else {
+    // Navigation en avant (Tab)
+    nextIndex = (currentIndex + 1) % elements.length;
+  }
+
+  const nextElement = document.getElementById(elements[nextIndex]);
+  if (elements[nextIndex] === 'item') {
+    focusItemDown();
+    e.preventDefault();
+  } else if (nextElement) {
+    nextElement.focus();
+    e.preventDefault();
+  }
+}
 
 let setFocusByFirstCharacter = (event) => {
   let char = event.key;
@@ -216,6 +249,17 @@ let setFocusByFirstCharacter = (event) => {
 let handleFocusOut = (event) => {
   if (!container.value.contains(event.target)) {
     expanded.value = false;
+  }
+}
+
+let toggleOption = (event, value) => {
+  if (modelValue.value.includes(value)) {
+    modelValue.value.splice(modelValue.value.indexOf(value), 1);
+  } else {
+    modelValue.value.push(value);
+    if (localOptions.value.length === 1) {
+      filterValue.value = "";
+    }
   }
 }
 
@@ -255,14 +299,14 @@ let handleFocusOut = (event) => {
         class="fr-input fr-select--menu flex"
         @click="expanded = !expanded"
         @keydown="handleDivKeypress"
+        :value="selectionDisplay"
         tabindex="0"
-        role="combobox"
-        aria-haspopup="listbox"
         aria-autocomplete="none"
-        :aria-labelledby="`${id}_label`"
-        :aria-disabled="disabled"
-        :aria-controls="`${id}_list`"
+        role="combobox"
         :aria-expanded="expanded"
+        aria-haspopup="dialog"
+        :aria-controls="`${id}_dialog`"
+        :aria-disabled="disabled"
         :aria-required="required"
     >
       <p class="grow overflow">{{ selectionDisplay }}</p>
@@ -271,51 +315,61 @@ let handleFocusOut = (event) => {
       </div>
     </div>
     <div
-        :id="`${id}_list`"
+        :id="`${id}_dialog`"
         ref="collapse"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Choix des options"
         class="fr-collapse fr-menu fr-select__menu fr-pb-3v fr-pt-4v bg-white"
         :class="{ 'fr-collapse--expanded': cssExpanded, 'fr-collapsing': collapsing }"
         @keydown="handleDivKeypress"
         @transitionend="onTransitionEnd(expanded)"
     >
-      <ul class="fr-btns-group fr-btns-group--icon-left" v-if="comboHasButton">
-        <li>
-          <button class="fr-btn fr-btn--tertiary fr-btn--sm"
-                  :id="`${id}_item_0`"
-                  @click="selectAll()"
-                  tabindex="-1"
-                  ref="button"
-                  :class="`${selectAllIcon}`" type="button">{{ selectAllText }}
-          </button>
-        </li>
-      </ul>
+      <div class="fr-btns-group fr-btns-group--icon-left" v-if="comboHasButton">
+        <button class="fr-btn fr-btn--tertiary fr-btn--sm"
+                :id="`${id}_button`"
+                @click="selectAll()"
+                ref="button"
+                :class="`${selectAllIcon}`" type="button">{{ selectAllText }}
+        </button>
+      </div>
 
       <div class="fr-input-wrap fr-icon-search-line fr-mb-3v" v-if="comboHasFilter">
         <input class="fr-input"
-               :id="`${id}_item_1`"
+               :id="`${id}_filter`"
                ref="filter"
                @input="filterFn"
                v-model="filterValue"
-               tabindex="-1"
                aria-label="Rechercher une option"
+               :aria-controls="`${id}_listbox`"
                placeholder="Rechercher"
                type="text">
       </div>
 
-      <p class="fr-label fr-mb-2v" v-if="comboLabel">
+      <p class="fr-label fr-mb-2v" :id="`${id}_combolabel`" v-if="comboLabel">
         {{ comboLabel }}
         <span class="fr-hint-text" v-if="comboDescription">{{ comboDescription }}</span>
       </p>
 
-      <ul role="listbox" aria-multiselectable="true" class="fr-select__ul">
+      <ul role="listbox"
+          aria-multiselectable="true"
+          :aria-describedby="comboLabel ? `${id}_combolabel` : null"
+          :id="`${id}_listbox`"
+          aria-live="polite"
+          class="fr-select__ul">
         <li v-for="(option, idx) in localOptions"
-            class="fr-checkbox-group fr-checkbox-group--sm fr-py-1v"
+            class="fr-checkbox-group fr-checkbox-group--sm fr-py-0 fr-my-1v"
+            :id="`${id}_item_${idx}`"
+            tabindex="-1"
             role="option"
+            @keydown.space.prevent="(e) => toggleOption(e, option.value)"
+            @click="(e) => toggleOption(e, option.value)"
             :aria-selected="modelValue.includes(option.value)">
-          <input :id="`${id}_item_${idx + offset}`" :data-id="option.value" type="checkbox" class="" tabindex="-1" :value="option.value" v-model="modelValue">
-          <label class="fr-label" :for="`${id}_item_${idx + offset}`">
+          <input :data-id="option.value" type="hidden" class="" tabindex="-1"
+                 :value="option.value" v-model="modelValue">
+          <span>
             {{ option.text }}
-          </label>
+          </span>
         </li>
       </ul>
     </div>
@@ -354,4 +408,45 @@ p.overflow {
   overflow-y: scroll;
   max-height: 300px;
 }
+
+ul[aria-multiselectable=true] li[aria-selected=true] span::before {
+  --data-uri-svg: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23f5f5fe' d='m10 15.17 9.2-9.2 1.4 1.42L10 18l-6.36-6.36 1.4-1.42z'/%3E%3C/svg%3E");
+  background-color: var(--background-active-blue-france);
+  background-image: radial-gradient(at 5px 4px, transparent 4px, var(--border-active-blue-france) 4px, var(--border-active-blue-france) 5px, transparent 6px), linear-gradient(var(--border-active-blue-france), var(--border-active-blue-france)), radial-gradient(at calc(100% - 5px) 4px, transparent 4px, var(--border-active-blue-france) 4px, var(--border-active-blue-france) 5px, transparent 6px), linear-gradient(var(--border-active-blue-france), var(--border-active-blue-france)), radial-gradient(at calc(100% - 5px) calc(100% - 4px), transparent 4px, var(--border-active-blue-france) 4px, var(--border-active-blue-france) 5px, transparent 6px), linear-gradient(var(--border-active-blue-france), var(--border-active-blue-france)), radial-gradient(at 5px calc(100% - 4px), transparent 4px, var(--border-active-blue-france) 4px, var(--border-active-blue-france) 5px, transparent 6px), linear-gradient(var(--border-active-blue-france), var(--border-active-blue-france)), var(--data-uri-svg);
+}
+
+ul[aria-multiselectable=true] li span {
+  --data-uri-svg: none;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-left: 2rem;
+  position: relative;
+  cursor: pointer;
+}
+
+ul {
+  padding: 0 4px !important;
+}
+
+ul[aria-multiselectable=true] li span::before {
+  height: 1rem;
+  left: -1.5rem;
+  margin-top: .25rem;
+  width: 1rem;
+
+  background-image: radial-gradient(at 5px 4px, transparent 4px, var(--border-action-high-blue-france) 4px, var(--border-action-high-blue-france) 5px, transparent 6px), linear-gradient(var(--border-action-high-blue-france), var(--border-action-high-blue-france)), radial-gradient(at calc(100% - 5px) 4px, transparent 4px, var(--border-action-high-blue-france) 4px, var(--border-action-high-blue-france) 5px, transparent 6px), linear-gradient(var(--border-action-high-blue-france), var(--border-action-high-blue-france)), radial-gradient(at calc(100% - 5px) calc(100% - 4px), transparent 4px, var(--border-action-high-blue-france) 4px, var(--border-action-high-blue-france) 5px, transparent 6px), linear-gradient(var(--border-action-high-blue-france), var(--border-action-high-blue-france)), radial-gradient(at 5px calc(100% - 4px), transparent 4px, var(--border-action-high-blue-france) 4px, var(--border-action-high-blue-france) 5px, transparent 6px), linear-gradient(var(--border-action-high-blue-france), var(--border-action-high-blue-france)), var(--data-uri-svg);
+  background-position: 0 0, .25rem 0, 100% 0, 0 .25rem, 100% 100%, calc(100% - .25rem) 100%, 0 100%, 100% .25rem, 50%;
+  background-repeat: no-repeat;
+  background-size: .25rem .25rem, calc(100% - .25rem) 1px, .25rem .25rem, 1px calc(100% - .5rem), .25rem .25rem, calc(100% - .5rem) 1px, .25rem .25rem, 1px calc(100% - .5rem), 1rem;
+  border-radius: .25rem;
+  content: "";
+  display: block;
+  margin-right: .5rem;
+  position: absolute;
+  top: 0;
+}
+
 </style>
