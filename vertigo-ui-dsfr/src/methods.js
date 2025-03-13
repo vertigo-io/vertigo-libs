@@ -130,5 +130,42 @@ export default {
                     item.active = item.setActive === true;
                 }
             });
+    },
+    dsfrHandleSortedByChange: function (newSortedBy, componentId) {
+        let componentStates = this.$data.componentStates;
+        let pagination = componentStates[componentId].pagination;
+        pagination.sortBy = newSortedBy;
+        if (pagination.sortUrl) {
+            this.dsfrServerSideSort(componentId)
+        }
+    },
+    dsfrHandleSortedDescChange: function (newSortedDesc, componentId) {
+        let componentStates = this.$data.componentStates;
+        let pagination = componentStates[componentId].pagination;
+        pagination.descending = newSortedDesc;
+        if (pagination.sortUrl) {
+            this.dsfrServerSideSort(componentId)
+        }
+    },
+    dsfrTableRows: function(componentId) {
+        let pagination = this.$data.componentStates[componentId].pagination;
+        let rows = this.$data.vueData[pagination.listKey];
+        // DataTableDsfr alw ays reverse locally so we need to reverse it before to keep server order
+        return pagination.descending ? rows.slice().reverse() : rows;
+    },
+    dsfrServerSideSort: function (componentId){
+        let componentStates = this.$data.componentStates;
+        let pagination = componentStates[componentId].pagination;
+        let vueData = this.$data.vueData;
+        pagination.page = 0 //reset pagination (0 based in dsfr)
+        if (pagination.sortBy) {
+            this.$http.post(pagination.sortUrl, this.objectToFormData({ sortFieldName: pagination.sortBy, sortDesc: pagination.descending, CTX: this.$data.vueData.CTX }))
+                .then(
+                    function (response) {
+                        vueData[pagination.listKey] = response.data.model[pagination.listKey];
+                        this.$data.vueData.CTX = response.data.model['CTX'];
+                    }.bind(this)
+            );
+        }
     }
 }

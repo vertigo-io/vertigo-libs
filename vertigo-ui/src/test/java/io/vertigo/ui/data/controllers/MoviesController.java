@@ -59,9 +59,9 @@ public final class MoviesController extends AbstractVSpringMvcController {
 
 	@GetMapping("/")
 	public void initContext(final ViewContext viewContext) {
-		final DtListState dtListState = DtListState.defaultOf(Movie.class);
-		final DtList<MovieDisplay> sortedList = movieServices.getMoviesDisplay(dtListState);
-		final FacetedQueryResult<MovieIndex, SearchQuery> facetedQueryResult = movieServices.searchMovies("", SelectedFacetValues.empty().build(), dtListState, Optional.empty());
+		final var dtListState = DtListState.defaultOf(Movie.class);
+		final var sortedList = movieServices.getMoviesDisplay(dtListState);
+		final var facetedQueryResult = movieServices.searchMovies("", SelectedFacetValues.empty().build(), dtListState, Optional.empty());
 
 		viewContext.publishDtList(MOVIES, MovieDisplayFields.movId, sortedList)
 				.publishRef(CRITERIA, "")
@@ -74,7 +74,7 @@ public final class MoviesController extends AbstractVSpringMvcController {
 			@ViewAttribute("criteria") final String criteria,
 			@ViewAttribute("result") final SelectedFacetValues selectedFacetValues,
 			final DtListState dtListState) {
-		final FacetedQueryResult<MovieIndex, SearchQuery> facetedQueryResult = movieServices.searchMovies(criteria, selectedFacetValues, dtListState, Optional.empty());
+		final var facetedQueryResult = movieServices.searchMovies(criteria, selectedFacetValues, dtListState, Optional.empty());
 		viewContext.publishFacetedQueryResult(FCTS, MovieIndexFields.movId, facetedQueryResult, CRITERIA);
 		return viewContext;
 	}

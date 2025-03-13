@@ -31,7 +31,7 @@
 
     <dsfr-custom-data-table th:title="${vTitle==null?title?:'':''}" th::title="${vTitle?:''}"
                             th::headers-row="|componentStates.${componentId}.columns|"
-                            th::rows="|vueData.${list}|"
+                            th::rows="|dsfrTableRows('${componentId}')|"
                             th:row-key="${myRowKey}"
                             th::pagination="${myPagination}"
                             th::rows-per-page="|componentStates.${componentId}.pagination.rowsPerPage|"
@@ -40,6 +40,9 @@
                             th::selectable-rows="${mySelectable ? 'true' : 'false'}"
                             th:v-model:current-page="|componentStates.${componentId}.pagination.page|"
                             th:no-result-label="${noResultLabel?:'Aucun résultat'}"
+							th:@update:sorted-by="${sortUrl != null ? 'sortedBy => dsfrHandleSortedByChange(sortedBy, ''__${componentId}__'')' : null}"
+							th:@update:sorted-desc="${sortUrl != null ? 'sortedDesc => dsfrHandleSortedDescChange(sortedDesc, ''__${componentId}__'')' : null}"
+							th::sort-fn="${sortUrl != null ? '(a,b) => 0' : null}"
                             th:attr="__${table_attrs}__">
         <vu:content-slot name="table_slot" th:with="label=null, title=null, vTitle=null"/>
         <template #header="{ key, label }">

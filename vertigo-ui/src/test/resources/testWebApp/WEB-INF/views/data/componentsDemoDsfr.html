@@ -288,11 +288,10 @@
     selection : {{ componentStates.movieTable2.selected }}
     <vu:dsfr-table list="movies"
                    componentId="movieTable2"
-                   sortUrl="@{/movies/_sort}"
+				   sortUrl="@{/movies/_sort}"
                    class="force-visible-label"
                    pagination="true"
                    title="Test table"
-                   sorted="movId"
                    row-key="movId"
                    :no-caption="false"
                    footer-size="sm"
@@ -301,15 +300,15 @@
         <vu:slot name="actions_slot">
             <dsfr-button-tooltip icon="ri-information-2-line"
                                  icon-only tertiary
-                                 content="'`Ouvrir la modale de la ligne n°${idx}`'"
+                                 :content="`Ouvrir la modale de la ligne n°${idx}`"
             ></dsfr-button-tooltip>
             <dsfr-button-tooltip icon="fr-icon-delete-bin-line"
                                  icon-only tertiary
-                                 content="'`Ouvrir la modale de la ligne n°${idx}`'"
+                                 :content="`Ouvrir la modale de la ligne n°${idx}`"
             ></dsfr-button-tooltip>
             <dsfr-button-tooltip icon="fr-icon-eye-line"
                                  icon-only tertiary
-                                 content="'`Ouvrir la modale de la ligne n°${idx}`'"
+                                 :content="`Ouvrir la modale de la ligne n°${idx}`"
             ></dsfr-button-tooltip>
         </vu:slot>
         <vu:slot name="header_slot">
