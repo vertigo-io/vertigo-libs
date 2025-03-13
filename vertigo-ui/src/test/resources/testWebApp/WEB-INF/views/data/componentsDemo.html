@@ -17,126 +17,124 @@
 <body>
     <div layout:fragment="content">
         <vu:messages />
-            <vu:form id="myFormId">
-           
-            
-                <vu:block id="movie" title="#{movie.title.information}" >
-                       <vu:include-data object="movies" field="*" />
-                       <vu:include-data-primitive key='timeZoneList'/>
-                       <vu:include-data-primitive key='selectedTimeZoneList' modifiable/>
-                       <vu:grid cols="3">
-                        <vu:text-field :class="{ disabled: true && false || false }" object="movie" field="movId"/>
-                        <vu:text-field object="movie" field="title" class="fieldTitle v-field__required"/>
-                        <vu:text-field object="movie" field="year"  debounce="500" hint="Debouncing 500ms" required>
-                            <vu:slot name="after_label_slot">
+        <br/>
+        <vu:form id="myFormId">
+            <vu:block id="movie" title="#{movie.title.information}" >
+                <vu:include-data object="movies" field="*" />
+                <vu:include-data-primitive key='timeZoneList'/>
+                <vu:include-data-primitive key='selectedTimeZoneList' modifiable/>
+                <vu:grid cols="3">
+                    <vu:text-field :class="{ disabled: true && false || false }" object="movie" field="movId"/>
+                    <vu:text-field object="movie" field="title" class="fieldTitle v-field__required"/>
+                    <vu:text-field object="movie" field="year"  debounce="500" hint="Debouncing 500ms" required>
+                        <vu:slot name="after_label_slot">
                             <q-icon name="info" title="Year of publishing" size="sm"></q-icon>
+                        </vu:slot>
+                    </vu:text-field>
+                    <vu:slider object="movie" field="year"  />
+                    <vu:knob object="movie" field="year"/>
+                    <vu:select object="movie" field="movId" list="movies" />
+                    <vu:select object="movie" field="movId" list="moviesDisplay" labelField="title" />
+                    <vu:grid-cell col="lg-8">
+                        <vu:text-area object="movie" field="title"/>
+                    </vu:grid-cell>
+                    <vu:date object="movie" field="released"/>
+                    <vu:datetime object="movie" field="lastModified" />
+                    <vu:autocomplete object="movie" field="movId" list="moviesMdl" minQueryLength="2"/>
+                    <vu:radio object="movie" field="movId" list="movies" layout="horizontal" labelField="movId"/>
+                    <vu:radio object="movie" field="movId" list="movies" />
+                    <vu:text-field object="movie" field="movId"/>
+                    <vu:text-area object="movie" field="title" />
+                    <vu:chips-autocomplete object="movie" field="tags" list="movies" staticData="false"/>
+                    <vu:grid-cell/>
+                    <vu:grid-cell col="1">
+                        <vu:autocomplete-multiple object="movieDisplayInput" field="movIds" list="moviesMdl"  />
+                        <vu:checkbox-multiple object="movieDisplayInput" field="movIds" list="moviesMdl" />
+                    </vu:grid-cell>
+                    <vu:grid-cell col="1">
+                        <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" @update:model-value="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
+                        <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" 
+                        :disabled="true || false"
+                        @update:model-value="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
+                    </vu:grid-cell>
+                    <q-btn th:@click="|httpPostAjax('@{_ajaxArray}', vueDataParams(['selectedTimeZoneList']))|" color="primary" label="Ajax save" ></q-btn>
+                    
+                    <vu:grid-cell>
+                        <a th:href="@{/componentsDemo/myFiles}">insee.csv</a>
+                    </vu:grid-cell>
+                    
+                    <vu:grid-cell>
+                        <vu:fileupload-dropzone key="myFilesUris">
+                            <vu:fileupload label="Upload file" th:url="'@{/commons/upload}'" key="myFilesUris1" multiple />           
+                        </vu:fileupload-dropzone>
+                    </vu:grid-cell>                
+                    <vu:fileupload-simple label="Simple upload file" th:url="'@{/commons/upload}'" key="myFilesUris3" multiple/>                            
+                    <vu:fileupload-simple-object label="Movie pictures" th:url="'@{/commons/upload}'" object="movie" field="pictures" multiple/>                            
+                    <vu:fileupload-simple-object label="Movie main picture" th:url="'@{/commons/upload}'" object="movie" field="mainPicture"/>                            
+                    
+                    <vu:modal componentId="myModal" closeLabel="Close" />
+                    <vu:grid-cell class="q-gutter-md">
+                        <vu:button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}" color="primary"/>
+                        <vu:button-submit th:if="${model.modeReadOnly}" label="Edit" action="@{_edit}" color="primary"/>
+                        <vu:button-submit th:if="${!model.modeReadOnly}" id="saveAction" label="Save (Default)" action="@{_save}" color="primary" />
+                        <vu:button-submit th:if="${!model.modeReadOnly}" id="saveAction" label="Save Files Only" action="@{_saveFilesOnly}" color="primary" />
+                        <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save (confirm with attr)" action="@{_save2}" formId="myFormId" confirmMessage="Etes vous sûr ?" color="primary" />
+                        <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save (confirm with content)" action="@{_save}" formId="myFormId" color="primary">
+                            <span>C'est OK ?</span>
+                        </vu:button-submit-confirm>
+                        <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save (confirm with custom actions)" action="@{notUsed}" formId="myFormId" confirmMessage="Etes vous sûr ?" color="primary">
+                            <vu:slot name="actions_slot">
+                                <q-btn flat label="Cancel custom" color="primary" v-close-popup ></q-btn>
+                                <q-btn type="submit" th:formaction="@{_save}" form="myFormId" label="Ok custom" color="primary" v-close-popup ></q-btn>
                             </vu:slot>
-                        </vu:text-field>
-                        <vu:slider object="movie" field="year"  />
-                        <vu:knob object="movie" field="year"/>
-                        <vu:select object="movie" field="movId" list="movies" />
-                        <vu:select object="movie" field="movId" list="moviesDisplay" labelField="title" />
-                        <vu:grid-cell col="lg-8">
-                            <vu:text-area object="movie" field="title"/>
-                        </vu:grid-cell>
-                        <vu:date object="movie" field="released"/>
-                        <vu:datetime object="movie" field="lastModified" />
-                        <vu:autocomplete object="movie" field="movId" list="moviesMdl" minQueryLength="2"/>
-                        <vu:radio object="movie" field="movId" list="movies" layout="horizontal" labelField="movId"/>
-                        <vu:radio object="movie" field="movId" list="movies" />
-                        <vu:text-field object="movie" field="movId"/>
-                        <vu:text-area object="movie" field="title" />
-                        <vu:chips-autocomplete object="movie" field="tags" list="movies" staticData="false"/>
-                        <vu:grid-cell/>
-                        <vu:grid-cell col="1">
-							 <vu:autocomplete-multiple object="movieDisplayInput" field="movIds" list="moviesMdl"  />
-							 <vu:checkbox-multiple object="movieDisplayInput" field="movIds" list="moviesMdl" />
-						</vu:grid-cell>
-                        <vu:grid-cell col="1">
-                            <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" @update:model-value="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
-                            <q-checkbox v-model="dataX.selectedTimeZoneListArray" v-for="item in vueData.timeZoneList" :val="item" :label="item" 
-                            :disabled="true || false"
-                            @update:model-value="function() {vueData.selectedTimeZoneList = dataX.selectedTimeZoneListArray.join(';')}"></q-checkbox>
-                        </vu:grid-cell>
-                        <q-btn th:@click="|httpPostAjax('@{_ajaxArray}', vueDataParams(['selectedTimeZoneList']))|" color="primary" label="Ajax save" ></q-btn>
+                            <span>C'est OK ?</span>
+                        </vu:button-submit-confirm>
                         
-                        <vu:grid-cell>
-                            <a th:href="@{/componentsDemo/myFiles}">insee.csv</a>
-                        </vu:grid-cell>
+                        <vu:button-link th:if="${model.modeEdit}"  label="Movies" url="@{/movies/}" color="primary" />
+                        <q-btn  th:label="OpenModal" th:@click="|openModal('myModal', '@{/movies/}')|"></q-btn>
+                    </vu:grid-cell>
+                    <vu:grid-cell class="q-gutter-md">
+                        <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionDtCheck" label="Save (with DtObj Check)" action="@{_saveDtCheck}" color="primary" />
+                        <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionUiCheck" label="Save (with UiObj Check)" action="@{_saveUiCheck}" color="primary" />
                         
-                        <vu:grid-cell>
-                            <vu:fileupload-dropzone key="myFilesUris">
-                                <vu:fileupload label="Upload file" th:url="'@{/commons/upload}'" key="myFilesUris1" multiple />           
-                            </vu:fileupload-dropzone>
-                        </vu:grid-cell>                
-                        <vu:fileupload-simple label="Simple upload file" th:url="'@{/commons/upload}'" key="myFilesUris3" multiple/>                            
-                        <vu:fileupload-simple-object label="Movie pictures" th:url="'@{/commons/upload}'" object="movie" field="pictures" multiple/>                            
-                        <vu:fileupload-simple-object label="Movie main picture" th:url="'@{/commons/upload}'" object="movie" field="mainPicture"/>                            
-                        
-                        <vu:modal componentId="myModal" closeLabel="Close" />
-                        <vu:grid-cell class="q-gutter-md">
-                            <vu:button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}" color="primary"/>
-                            <vu:button-submit th:if="${model.modeReadOnly}" label="Edit" action="@{_edit}" color="primary"/>
-                            <vu:button-submit th:if="${!model.modeReadOnly}" id="saveAction" label="Save (Default)" action="@{_save}" color="primary" />
-                            <vu:button-submit th:if="${!model.modeReadOnly}" id="saveAction" label="Save Files Only" action="@{_saveFilesOnly}" color="primary" />
-                            <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save (confirm with attr)" action="@{_save2}" formId="myFormId" confirmMessage="Etes vous sûr ?" color="primary" />
-                            <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save (confirm with content)" action="@{_save}" formId="myFormId" color="primary">
-                               <span>C'est OK ?</span>
-                            </vu:button-submit-confirm>
-                            <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save (confirm with custom actions)" action="@{notUsed}" formId="myFormId" confirmMessage="Etes vous sûr ?" color="primary">
-                               <vu:slot name="actions_slot">
-                                 <q-btn flat label="Cancel custom" color="primary" v-close-popup ></q-btn>
-                                 <q-btn type="submit" th:formaction="@{_save}" form="myFormId" label="Ok custom" color="primary" v-close-popup ></q-btn>
-                               </vu:slot>
-                               <span>C'est OK ?</span>
-                            </vu:button-submit-confirm>
-                            
-                            <vu:button-link th:if="${model.modeEdit}"  label="Movies" url="@{/movies/}" color="primary" />
-                            <q-btn  th:label="OpenModal" th:@click="|openModal('myModal', '@{/movies/}')|"></q-btn>
-                        </vu:grid-cell>
-                        <vu:grid-cell class="q-gutter-md">
-                            <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionDtCheck" label="Save (with DtObj Check)" action="@{_saveDtCheck}" color="primary" />
-                            <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionUiCheck" label="Save (with UiObj Check)" action="@{_saveUiCheck}" color="primary" />
-                            
-                        </vu:grid-cell>
-                       
-                    </vu:grid>
-                </vu:block>
-                <br/>
-                <vu:block id="movieManual" title="Test manual grid">
-                 <div class="row">
+                    </vu:grid-cell>
+                   
+                </vu:grid>
+            </vu:block>
+            <br/>
+            <vu:block id="movieManual" title="Test manual grid">
+                <div class="row">
                     <vu:text-field class="col-6" object="movie" field="title" />
                     <vu:text-field class="q-mx-md col-1" object="movie" field="movId" />
-                    <div class="col-grow"></div>
-                 </div>
-                </vu:block>
-                
-            </vu:form>
-            
-            <br/>
-           <h6>Test Cards</h6>
-            <vu:cards list="movies" componentId="movieCards" 
-            cardClass="col-lg-3 col-md-6 col-xs-12" 
-            sortUrl="@{/movies/_sort}" rowsPerPage="8" showMore="true" showMoreLabel="Show more" >
-                <div class="nav" th:@click="|goTo('@{/basemanagement/base/information/}'+item.baseId)|">
-                    <a th::href="|'@{/movie/}'+item.movId|" >{{item.movId}}</a>
                 </div>
-            </vu:cards>
+            </vu:block>
             
-            <br/>
-           <h6>Test table</h6>
-            <vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}"
-                th:tr_@click.native="|goTo('@{/movie/}'+props.row.movId)|" tr_class="nav">
-                <vu:slot name="actions_slot"><q-btn label="View detail" th:@click="|openModal('movieDetailModal', '@{/movie/}'+props.row.movId, {  })|"></q-btn></vu:slot>
-                <vu:include-data object="movies" field="movId" />
-                <vu:column field="movId" >
-                    <a th::href="|'@{/movie/}'+props.row.movId|" >{{props.row.movId}}</a>
-                </vu:column>
-                <vu:column field="title" sortable="true" />
-                <vu:column name="tata" label="Tata">
-                    another column  : {{props.row.movId}} : {{props.row.title}}
-                </vu:column>                       
-            </vu:table>
+        </vu:form>
+        
+        <br/>
+        <h6>Test Cards</h6>
+        <vu:cards list="movies" componentId="movieCards" 
+        cardClass="col-lg-3 col-md-6 col-xs-12" 
+        sortUrl="@{/movies/_sort}" rowsPerPage="8" showMore="true" showMoreLabel="Show more" >
+            <div class="nav" th:@click="|goTo('@{/basemanagement/base/information/}'+item.baseId)|">
+                <a th::href="|'@{/movie/}'+item.movId|" >{{item.movId}}</a>
+            </div>
+        </vu:cards>
+        
+        <br/>
+        <h6>Test table</h6>
+        <vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}"
+            th:tr_@click.native="|goTo('@{/movie/}'+props.row.movId)|" tr_class="nav">
+            <vu:slot name="actions_slot"><q-btn label="View detail" th:@click="|openModal('movieDetailModal', '@{/movie/}'+props.row.movId, {  })|"></q-btn></vu:slot>
+            <vu:include-data object="movies" field="movId" />
+            <vu:column field="movId" >
+                <a th::href="|'@{/movie/}'+props.row.movId|" >{{props.row.movId}}</a>
+            </vu:column>
+            <vu:column field="title" sortable="true" />
+            <vu:column name="tata" label="Tata">
+               another column  : {{props.row.movId}} : {{props.row.title}}
+           </vu:column>                       
+        </vu:table>
             
     </div>
     
