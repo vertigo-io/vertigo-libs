@@ -117,7 +117,7 @@ public final class UiRequestUtil {
 			attributes.removeAttribute(UI_MESSAGE_STACK_ATTRIBUTE_NAME, RequestAttributes.SCOPE_SESSION);
 			attributes.removeAttribute(UI_MESSAGE_STACK_ATTRIBUTE_NAME + "_validUntil", RequestAttributes.SCOPE_SESSION);
 
-			if (Instant.now().isBefore(validUntil)) {
+			if (validUntil != null && Instant.now().isBefore(validUntil)) {
 				setCurrentUiMessageStack(uiMessageStack);
 			}
 		}
