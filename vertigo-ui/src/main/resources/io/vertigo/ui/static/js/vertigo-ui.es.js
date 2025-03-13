@@ -3441,6 +3441,7 @@ const S = window.Quasar, vt = {
       return Object.prototype.hasOwnProperty.call(e, "globalErrors") && e.globalErrors && e.globalErrors.length > 0 && e.globalErrors.forEach(function(n) {
         t.push({
           color: "negative",
+          textColor: "white",
           message: n,
           multiLine: !0,
           timeout: 2500
@@ -3448,6 +3449,7 @@ const S = window.Quasar, vt = {
       }), Object.prototype.hasOwnProperty.call(e, "globalWarnings") && e.globalWarnings && e.globalWarnings.length > 0 && e.globalWarnings.forEach(function(n) {
         t.push({
           color: "warning",
+          textColor: "black",
           message: n,
           multiLine: !0,
           timeout: 2500
@@ -3455,6 +3457,7 @@ const S = window.Quasar, vt = {
       }), Object.prototype.hasOwnProperty.call(e, "globalInfos") && e.globalInfos && e.globalInfos.length > 0 && e.globalInfos.forEach(function(n) {
         t.push({
           color: "info",
+          textColor: "black",
           message: n,
           multiLine: !0,
           timeout: 2500
@@ -3462,6 +3465,7 @@ const S = window.Quasar, vt = {
       }), Object.prototype.hasOwnProperty.call(e, "globalSuccess") && e.globalSuccess && e.globalSuccess.length > 0 && e.globalSuccess.forEach(function(n) {
         t.push({
           color: "positive",
+          textColor: "black",
           message: n,
           multiLine: !0,
           timeout: 2500

@@ -65,25 +65,25 @@ export default {
         var notifyMessages = [];
         if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalErrors') && uiMessageStack.globalErrors && uiMessageStack.globalErrors.length > 0) {
            uiMessageStack.globalErrors.forEach(function(uiMessage) { notifyMessages.push( {
-            color: 'negative', message: uiMessage,
+            color: 'negative', textColor:'white', message: uiMessage,
             multiLine: true, timeout: 2500,
            })});
         }
         if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalWarnings') && uiMessageStack.globalWarnings && uiMessageStack.globalWarnings.length > 0) {
            uiMessageStack.globalWarnings.forEach(function(uiMessage) { notifyMessages.push( {
-            color: 'warning', message: uiMessage,
+            color: 'warning', textColor:'black', message: uiMessage,
             multiLine: true, timeout: 2500,
            })});
         }
         if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalInfos') && uiMessageStack.globalInfos && uiMessageStack.globalInfos.length > 0) {
            uiMessageStack.globalInfos.forEach(function(uiMessage) { notifyMessages.push( {
-            color: 'info', message: uiMessage,
+            color: 'info', textColor:'black', message: uiMessage,
             multiLine: true, timeout: 2500,
            })});
         }
         if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalSuccess') && uiMessageStack.globalSuccess && uiMessageStack.globalSuccess.length > 0) {
            uiMessageStack.globalSuccess.forEach(function(uiMessage) { notifyMessages.push( {
-            color: 'positive', message: uiMessage,
+            color: 'positive', textColor:'black', message: uiMessage,
             multiLine: true, timeout: 2500,
            })});
         }
