@@ -1,19 +1,28 @@
-<th:block th:fragment="dsfr-button-submit(label, icon, action, title, loading, other_attrs)"
+<th:block th:fragment="dsfr-button-submit(label, icon, action, title, loading, disabled, v-disabled, other_attrs)"
           th:assert="(${label} != null or (${icon} != null and ${title} != null)) and ${action} != null"
-          th:with="myComponentId='button'+${action}" >
-
-    <dsfr-button th:icon="${icon?:''}"
-                th::icon-only="${label==null}"
-                th:label="${label?:''}"
-                th:title="${vTitle==null ? (title?:'') : ''}"
-                th::title="${vTitle?:''}"
-                th:formaction="${action}"
-                type="submit"
-                th:attr="__${other_attrs}__">
-        <vu:content/>
-        <span class="sr-only" th:if="${label==null && vTitle==null}" vu:text="${title?:''}"></span>
-        <span class="sr-only" th:if="${label==null && vTitle!=null}" th:text="|{{ ${vTitle?:''} }}|"></span>
-    </dsfr-button>
+          th:with="myComponentId='button'+${action}, myLoading=${loading}?:true" >
+	<span style="display: inline-flex; position: relative">
+		<span th:v-if="${myLoading}?|isPendingAction('${action}')|:false"
+		      style="position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+			<v-icon name="ri-loader-4-line" animation="spin" color="black" ></v-icon>
+		</span>
+		
+	    <dsfr-button th:icon="${icon?:''}"
+	                th::icon-only="${label==null}"
+	                th:label="${label?:''}"
+	                th:title="${vTitle==null ? (title?:'') : ''}"
+	                th::title="${vTitle?:''}"
+	                th:formaction="${action}"
+	                th:@click="${myLoading}?|pushPendingAction('${action}')|:''"
+	                type="submit"
+	                th::disabled="${disabled?:'('+vDisabled+')'} + ' || ' + ${myLoading} + ' && isPendingAction(\'' + ${action} + '\')'"
+	                th:attr="__${other_attrs}__">
+	        
+	        <vu:content/>
+	        <span class="sr-only" th:if="${label==null && vTitle==null}" vu:text="${title?:''}"></span>
+	        <span class="sr-only" th:if="${label==null && vTitle!=null}" th:text="|{{ ${vTitle?:''} }}|"></span>
+	    </dsfr-button>
+    </span>
 </th:block>
 
 <th:block th:fragment="dsfr-button-submit-confirm(label, icon, action, componentId, title, loading, titleMessage, confirmMessage, labelOk, labelCancel, modal_attrs, other_attrs)"
