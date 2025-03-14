@@ -34,14 +34,14 @@
                             th::rows="|dsfrTableRows('${componentId}')|"
                             th:row-key="${myRowKey}"
                             th::pagination="${myPagination}"
-                            th::rows-per-page="|componentStates.${componentId}.pagination.rowsPerPage|"
+                            th:v-model:rows-per-page="|componentStates.${componentId}.pagination.rowsPerPage|"
                             th::sortable-rows="|componentStates.${componentId}.columns.filter(o => o.sortable).map(o => o.key)|"
                             th:v-model:selection="|componentStates.${componentId}.selected|"
                             th::selectable-rows="${mySelectable ? 'true' : 'false'}"
                             th:v-model:current-page="|componentStates.${componentId}.pagination.page|"
                             th:no-result-label="${noResultLabel?:'Aucun résultat'}"
-							th:@update:sorted-by="${sortUrl != null ? 'sortedBy => dsfrHandleSortedByChange(sortedBy, ''__${componentId}__'')' : null}"
-							th:@update:sorted-desc="${sortUrl != null ? 'sortedDesc => dsfrHandleSortedDescChange(sortedDesc, ''__${componentId}__'')' : null}"
+							th:@update:sorted-by="|sortedBy => dsfrHandleSortedByChange(sortedBy, '${componentId}')|"
+							th:@update:sorted-desc="|sortedDesc => dsfrHandleSortedDescChange(sortedDesc, '${componentId}')|"
 							th::sort-fn="${sortUrl != null ? '(a,b) => 0' : null}"
                             th:attr="__${table_attrs}__">
         <vu:content-slot name="table_slot" th:with="label=null, title=null, vTitle=null"/>

@@ -150,8 +150,11 @@ export default {
     dsfrTableRows: function(componentId) {
         let pagination = this.$data.componentStates[componentId].pagination;
         let rows = this.$data.vueData[pagination.listKey];
-        // DataTableDsfr alw ays reverse locally so we need to reverse it before to keep server order
-        return pagination.descending ? rows.slice().reverse() : rows;
+        if (pagination.sortUrl && pagination.descending ) {
+            // DataTableDsfr alw ays reverse locally so we need to reverse it before to keep server order
+            return rows.slice().reverse();
+        }
+        return rows;
     },
     dsfrServerSideSort: function (componentId){
         let componentStates = this.$data.componentStates;

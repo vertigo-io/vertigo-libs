@@ -9981,7 +9981,7 @@ const ev = {
   },
   dsfrTableRows: function(a) {
     let t = this.$data.componentStates[a].pagination, e = this.$data.vueData[t.listKey];
-    return t.descending ? e.slice().reverse() : e;
+    return t.sortUrl && t.descending ? e.slice().reverse() : e;
   },
   dsfrServerSideSort: function(a) {
     let e = this.$data.componentStates[a].pagination, n = this.$data.vueData;
