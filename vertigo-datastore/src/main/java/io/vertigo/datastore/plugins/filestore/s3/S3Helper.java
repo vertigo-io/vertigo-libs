@@ -29,14 +29,17 @@ import java.util.Map;
 
 import io.minio.GetObjectArgs;
 import io.minio.GetObjectResponse;
+import io.minio.ListObjectsArgs;
 import io.minio.MinioClient;
 import io.minio.ObjectWriteResponse;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
+import io.minio.Result;
 import io.minio.SetObjectTagsArgs;
 import io.minio.StatObjectArgs;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.MinioException;
+import io.minio.messages.Item;
 import io.vertigo.connectors.s3.S3Connector;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
@@ -49,7 +52,7 @@ import io.vertigo.core.util.FileUtil;
 /**
  * Usual S3 operations.
  *
- * @author skerdudou
+ * @author skerdudou, xdurand
  */
 class S3Helper implements Manager {
 	private static final long PART_SIZE = 10L * 1024L * 1024L; // 10Mo
@@ -134,6 +137,19 @@ class S3Helper implements Manager {
 		} catch (final MinioException | InvalidKeyException | NoSuchAlgorithmException | IllegalArgumentException | IOException e) {
 			throw new VSystemException(e, "Unable to read S3 object '" + bucketName + ":" + filePath + "'");
 		}
+	}
+
+	public Iterable<Result<Item>> listObjects(final String bucketName) {
+		try {
+			return getS3Client().listObjects(
+					ListObjectsArgs.builder()
+						.bucket(bucketName)
+						.recursive(true)
+						.build());
+		} catch (final IllegalArgumentException e) {
+			throw new VSystemException(e, "Unable to list S3 objects '" + bucketName + "'");
+		}
+
 	}
 
 	public void saveFile(final String bucketName, final InputStream inputStream, final String filePath) {

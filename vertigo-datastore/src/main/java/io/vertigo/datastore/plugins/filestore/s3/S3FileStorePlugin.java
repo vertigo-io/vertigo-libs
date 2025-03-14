@@ -22,25 +22,41 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.connectors.s3.S3Connector;
 import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.daemon.Daemon;
+import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
+import io.vertigo.datamodel.criteria.Criteria;
+import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.util.DataModelUtil;
@@ -57,10 +73,16 @@ import io.vertigo.datastore.impl.filestore.model.StreamFile;
 /**
  * Store file data in S3 and metadatas in database.
  *
- * @author pchretien, npiedeloup, skerdudou
+ * @author skerdudou, xdurand
  */
-public final class S3FileStorePlugin implements FileStorePlugin, Activeable {
+public final class S3FileStorePlugin implements FileStorePlugin, Activeable, SimpleDefinitionProvider {
+
+	private static final Logger LOG = LogManager.getLogger(S3FileStorePlugin.class);
+
 	private static final String STORE_READ_ONLY = "Store is in read-only mode";
+	private static final int PURGE_MAX_BATCH_SIZE = 1000;
+
+	private static final int PURGE_DEAMON_MIN_PERIODE_SECONDS = 5; //5 seconds minimum
 
 	/**
 	 * List of the storage Dto fields.
@@ -93,6 +115,8 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable {
 	private final VTransactionManager transactionManager;
 	private final String fileInfoClassName;
 	private final boolean useTags;
+	private final Optional<Integer> purgeDelayMinutesOpt;
+	private final String dmnUniqueName;
 
 	private final S3Helper s3Helper;
 
@@ -105,7 +129,11 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable {
 	 * @param fileInfoClass file info class
 	 * @param readOnly read only store. Default to false
 	 * @param useTags tag state on s3 files (state = uncommited|commited). Default to true.
-	 * Can hang in some race conditions. Ex: during a transaction, create a file, re-read the same file but do not consume input stream, then commit transaction
+	 *        Can hang in some race conditions. Ex: during a transaction, create a file, re-read the same file but do not consume input stream, then commit transaction
+	 * @param purgeDelayMinutesOpt purge files older than this delay.
+	 *        In S3, if you can, you should use the lifecycle policy to automatically delete old file.
+	 *        But some CSP don't have this feature implemented yet and in that case you should use this algorithmic purge.
+	 *        Also note that this algorithmic purge will perform many API call, so be aware that this purge could incurs extra costs.
 	 * @param transactionManager used to stick at Vertigo transaction level
 	 * @param s3Connector S3 connector
 	 * @param analyticsManager Analytics Manager
@@ -118,6 +146,7 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable {
 			@ParamValue("fileInfoClass") final String fileInfoClassName,
 			@ParamValue("readOnly") final Optional<Boolean> readOnlyOpt,
 			@ParamValue("useTags") final Optional<Boolean> useTagsOpt,
+			@ParamValue("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt,
 			final VTransactionManager transactionManager,
 			final S3Connector s3Connector,
 			final AnalyticsManager analyticsManager) {
@@ -136,6 +165,12 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable {
 		this.bucketName = bucketName;
 		this.storeDataDefinitionName = storeDataDefinitionName;
 		this.fileInfoClassName = fileInfoClassName;
+		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
+		if (this.purgeDelayMinutesOpt.isPresent()) {
+			dmnUniqueName = "DmnPurgeS3Daemon$t" + this.purgeDelayMinutesOpt.get() + "n" + this.name;
+		} else {
+			dmnUniqueName = "DmnPurgeS3Daemon";
+		}
 		s3Helper = new S3Helper(s3Connector, analyticsManager);
 	}
 
@@ -150,6 +185,27 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable {
 	@Override
 	public void stop() {
 		//NOP
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		final List<? extends Definition> definition;
+		if (purgeDelayMinutesOpt.isPresent()) {
+			final int purgePeriodSeconds = Math.max(PURGE_DEAMON_MIN_PERIODE_SECONDS, purgeDelayMinutesOpt.get()) * 60; //
+			definition = Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> new DeleteOldFilesDaemon(this), purgePeriodSeconds));
+		} else {
+			definition = Collections.EMPTY_LIST;
+		}
+		return definition;
+	}
+
+	/**
+	 * Call by Daemon to purge old files
+	 */
+	public void deleteOldFiles() {
+		if (purgeDelayMinutesOpt.isPresent()) {
+			doDeleteOldFiles();
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -182,6 +238,7 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable {
 	}
 
 	private static class S3FileInfo extends AbstractFileInfo {
+
 		private static final long serialVersionUID = -451514505811232766L;
 
 		protected S3FileInfo(final FileInfoDefinition fileInfoDefinition, final VFile vFile) {
@@ -355,6 +412,56 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable {
 	/** Retrieves the current transaction. */
 	private VTransaction getCurrentTransaction() {
 		return transactionManager.getCurrentTransaction();
+	}
+
+	private void doDeleteOldFiles() {
+		//only if purgeDelayMinutesOpt is present
+		final Instant expirityTime = Instant.now().minusSeconds(purgeDelayMinutesOpt.get() * 60);
+		final Criteria<Entity> criteriaExpired = Criterions.isLessThan(() -> DtoFields.lastModified.name(), expirityTime);
+
+		try (VTransactionWritable tr = transactionManager.createCurrentTransaction()) {
+			final DtList<Entity> expiredEntities = getEntityStoreManager().find(storeDataDefinition, criteriaExpired, DtListState.of(PURGE_MAX_BATCH_SIZE));
+
+			if (expiredEntities.isEmpty() == false) {
+				LOG.info("{0} s3 files has expired and will be deleted", expiredEntities.size());
+
+				final List<String> expiredS3Paths = new ArrayList<>();
+				final List<UID<Entity>> expiredEntitiesUids = new ArrayList<>();
+				for (final Entity entity : expiredEntities) {
+					expiredS3Paths.add(getValue(entity, DtoFields.filePath, String.class));
+					expiredEntitiesUids.add(entity.getUID());
+				}
+
+				tr.addAfterCompletion(new S3ActionDeleteList(bucketName, expiredS3Paths, s3Helper));
+
+				getEntityStoreManager().deleteList(expiredEntitiesUids);
+				tr.commit();
+			}
+		}
+	}
+
+	/**
+	 * Daemon to delete old files.
+	 * @author xdurand
+	 */
+	public static final class DeleteOldFilesDaemon implements Daemon {
+
+		private final S3FileStorePlugin s3FileStorePlugin;
+
+		/**
+		 * @param s3FileStorePlugin This plugin
+		 */
+		public DeleteOldFilesDaemon(final S3FileStorePlugin s3FileStorePlugin) {
+			Assertion.check().isNotNull(s3FileStorePlugin);
+			//------
+			this.s3FileStorePlugin = s3FileStorePlugin;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public void run() {
+			s3FileStorePlugin.deleteOldFiles();
+		}
 	}
 
 }
