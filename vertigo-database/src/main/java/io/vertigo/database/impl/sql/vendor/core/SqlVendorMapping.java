@@ -33,12 +33,13 @@ import io.vertigo.database.sql.vendor.SqlMapping;
 /**
  * this class implements the default mapping to a sql database
  * Its behavior is defined by construction :
- * 	- createWithBooleanAsBit
- *  - createWithBooleanAsBoolean
+ * - createWithBooleanAsBit
+ * - createWithBooleanAsBoolean
  *
  * @author pchretien
  */
 public final class SqlVendorMapping implements SqlMapping {
+
 	private static final String TYPE_UNSUPPORTED = "Type unsupported : ";
 
 	private final boolean booleanAsBit;
@@ -77,7 +78,13 @@ public final class SqlVendorMapping implements SqlMapping {
 			return Types.VARCHAR;
 		}
 		if (DataStream.class.isAssignableFrom(dataType)) {
-			return Types.BLOB;
+			//For better compatibility with postgresql bytea : use VARBINARY instead of BLOB: https://github.com/pgjdbc/pgjdbc/issues/1751#issuecomment-613880184
+			//Warn : VARBINARY is not supported for all databases' types
+			// PostgreSQL use BYTEA
+			// MySQL use VARBINARY, not BLOB
+			// Oracle use RAW, not BLOB
+			// SQLServer use VARBINARY, not IMAGE
+			return Types.VARBINARY;
 		}
 		//---Dates
 		//java.util.Date is now Deprecated and must be replaced by LocalDate or Instant
