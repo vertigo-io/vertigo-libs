@@ -28,11 +28,12 @@ import io.vertigo.core.node.component.Manager;
  * - CSV null donne ""
  * - HTML null donne ""
  * - les fonctions de Hachage MD5 et SHA1 n'autorisent pas les null.
- * - pour tous les autres cas null  donne null
+ * - pour tous les autres cas null donne null
  *
  * @author pchretien
  */
 public interface CodecManager extends Manager {
+
 	/**
 	 * @return Codec HTML.
 	 */
@@ -70,6 +71,14 @@ public interface CodecManager extends Manager {
 	 * @return Codec Base 64.
 	 */
 	Codec<byte[], String> getBase64Codec();
+
+	/**
+	 * Le codage base 64 original
+	 * Attention : A ne pas utiliser sur des URLs devant être utilisées dans un navigateur.
+	 * A utiliser sur la totalité des données ou sur un multiple de 3 octets (un buffer de 1024 NE MARCHE PAS)
+	 * @return Codec Base 64.
+	 */
+	Codec<byte[], String> getBase64LegacyCodec();
 
 	/**
 	 * @return Codec cryptographique.

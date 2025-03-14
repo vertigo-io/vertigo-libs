@@ -22,7 +22,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-import io.vertigo.commons.impl.codec.base64.Base64Codec;
+import io.vertigo.commons.impl.codec.base64.Base64UrlCodec;
 
 /**
  * Classe utilitaire offrant un ensemble de services concernant les DtObject.
@@ -35,7 +35,7 @@ public final class PasswordHelper {
 
 	private final Charset defaultCharsetUTF8;
 	private final MessageDigest sha256Digest;
-	private final Base64Codec base64Codec;
+	private final Base64UrlCodec base64Codec;
 	private final SecureRandom rnd;
 
 	/**
@@ -48,7 +48,7 @@ public final class PasswordHelper {
 			throw new RuntimeException(e);
 		}
 		defaultCharsetUTF8 = Charset.forName("UTF-8");
-		base64Codec = new Base64Codec();
+		base64Codec = new Base64UrlCodec();
 		rnd = new SecureRandom();
 	}
 

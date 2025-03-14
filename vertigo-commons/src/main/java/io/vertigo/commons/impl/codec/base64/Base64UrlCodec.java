@@ -29,7 +29,7 @@ import io.vertigo.core.lang.Assertion;
  * {voir wikipedia http://en.wikipedia.org/wiki/Base64#Privacy-Enhanced_Mail_.28PEM.29}
  * @author  npiedeloup
  */
-public final class Base64Codec implements Codec<byte[], String> {
+public final class Base64UrlCodec implements Codec<byte[], String> {
 
 	/** {@inheritDoc} */
 	@Override
