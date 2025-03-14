@@ -9971,21 +9971,13 @@ const ev = {
       e.title ? e.active = e.links.some((n) => n.setActive === !0 || window.location.pathname.startsWith(n.to)) : e.active = e.setActive === !0;
     });
   },
-  dsfrHandleSortedByChange: function(a, t) {
-    let n = this.$data.componentStates[t].pagination;
-    n.sortBy = a, n.sortUrl && this.dsfrServerSideSort(t);
-  },
-  dsfrHandleSortedDescChange: function(a, t) {
-    let n = this.$data.componentStates[t].pagination;
-    n.descending = a, n.sortUrl && this.dsfrServerSideSort(t);
-  },
   dsfrTableRows: function(a) {
     let t = this.$data.componentStates[a].pagination, e = this.$data.vueData[t.listKey];
     return t.sortUrl && t.descending ? e.slice().reverse() : e;
   },
   dsfrServerSideSort: function(a) {
     let e = this.$data.componentStates[a].pagination, n = this.$data.vueData;
-    e.page = 0, e.sortBy && this.$http.post(e.sortUrl, this.objectToFormData({ sortFieldName: e.sortBy, sortDesc: e.descending, CTX: this.$data.vueData.CTX })).then(
+    e.page = 0, e.sortUrl && e.sortBy && this.$http.post(e.sortUrl, this.objectToFormData({ sortFieldName: e.sortBy, sortDesc: e.descending, CTX: this.$data.vueData.CTX })).then(
       (function(r) {
         n[e.listKey] = r.data.model[e.listKey], this.$data.vueData.CTX = r.data.model.CTX;
       }).bind(this)

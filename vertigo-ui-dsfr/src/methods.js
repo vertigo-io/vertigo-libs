@@ -131,22 +131,6 @@ export default {
                 }
             });
     },
-    dsfrHandleSortedByChange: function (newSortedBy, componentId) {
-        let componentStates = this.$data.componentStates;
-        let pagination = componentStates[componentId].pagination;
-        pagination.sortBy = newSortedBy;
-        if (pagination.sortUrl) {
-            this.dsfrServerSideSort(componentId)
-        }
-    },
-    dsfrHandleSortedDescChange: function (newSortedDesc, componentId) {
-        let componentStates = this.$data.componentStates;
-        let pagination = componentStates[componentId].pagination;
-        pagination.descending = newSortedDesc;
-        if (pagination.sortUrl) {
-            this.dsfrServerSideSort(componentId)
-        }
-    },
     dsfrTableRows: function(componentId) {
         let pagination = this.$data.componentStates[componentId].pagination;
         let rows = this.$data.vueData[pagination.listKey];
@@ -161,7 +145,7 @@ export default {
         let pagination = componentStates[componentId].pagination;
         let vueData = this.$data.vueData;
         pagination.page = 0 //reset pagination (0 based in dsfr)
-        if (pagination.sortBy) {
+        if (pagination.sortUrl && pagination.sortBy) {
             this.$http.post(pagination.sortUrl, this.objectToFormData({ sortFieldName: pagination.sortBy, sortDesc: pagination.descending, CTX: this.$data.vueData.CTX }))
                 .then(
                     function (response) {

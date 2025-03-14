@@ -40,9 +40,12 @@
                             th::selectable-rows="${mySelectable ? 'true' : 'false'}"
                             th:v-model:current-page="|componentStates.${componentId}.pagination.page|"
                             th:no-result-label="${noResultLabel?:'Aucun résultat'}"
-							th:@update:sorted-by="|sortedBy => dsfrHandleSortedByChange(sortedBy, '${componentId}')|"
-							th:@update:sorted-desc="|sortedDesc => dsfrHandleSortedDescChange(sortedDesc, '${componentId}')|"
+							th:v-model:sorted-by="|componentStates.${componentId}.pagination.sortBy|"
+							th:v-model:sorted-desc="|componentStates.${componentId}.pagination.descending|"
+							th:@update:sorted-by="${sortUrl != null ? 'sortedBy => dsfrServerSideSort(''__${componentId}__'')' : null}"
+							th:@update:sorted-desc="${sortUrl != null ? 'sortedDesc => dsfrServerSideSort(''__${componentId}__'')' : null}"
 							th::sort-fn="${sortUrl != null ? '(a,b) => 0' : null}"
+							th:sorted="${sortUrl == null && sortBy != null ? '__${sortBy}__' : null}"
                             th:attr="__${table_attrs}__">
         <vu:content-slot name="table_slot" th:with="label=null, title=null, vTitle=null"/>
         <template #header="{ key, label }">
