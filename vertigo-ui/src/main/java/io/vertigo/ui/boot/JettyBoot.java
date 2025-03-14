@@ -65,6 +65,9 @@ public class JettyBoot {
 	public static void startServer(
 			final JettyBootParams jettyBootParams,
 			final Function<WebAppContext, List<Handler>> additionalHandlersProvider) throws Exception {
+
+		final var start = System.currentTimeMillis();
+
 		server = new Server(jettyBootParams.getPort());
 
 		//set workerName if present
@@ -170,6 +173,7 @@ public class JettyBoot {
 			}
 			System.exit(1);
 		}
+		LOG.info("Server started in {} seconds", (System.currentTimeMillis() - start) / 1000);
 		if (jettyBootParams.isJoin()) {
 			try {
 				server.join();
